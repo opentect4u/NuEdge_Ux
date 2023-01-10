@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Client_manageComponent } from './client_manage.component';
+import { SchemeComponent } from './scheme.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
-import { ClientModificationComponent } from './clientModification/clientModification.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ScmModificationComponent } from './scmModification/scmModification.component';
 
-const routes: Routes = [{path:'',component:Client_manageComponent}]
+
+const routes: Routes =[{path:'',component:SchemeComponent}]
+
 
 @NgModule({
   imports: [
@@ -17,10 +19,11 @@ const routes: Routes = [{path:'',component:Client_manageComponent}]
     MatIconModule,
     MatDialogModule
   ],
-  declarations: [Client_manageComponent,ClientModificationComponent]
+  declarations: [SchemeComponent,ScmModificationComponent]
 })
-export class Client_manageModule {
+export class SchemeModule { 
+
   constructor() {
-    console.log("Client_manageModule Loaded");
+    console.log('Scheme Module Loaded');
   }
- }
+}

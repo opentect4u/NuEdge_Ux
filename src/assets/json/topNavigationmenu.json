@@ -12,6 +12,12 @@
             },
             {
                 "parent_id":"M-1",
+                "menu_name":"Employee",
+                "has_submenu":"N",
+                "url":"/main/employee"
+            },
+            {
+                "parent_id":"M-1",
                 "menu_name":"RNT",
                 "has_submenu":"N",
                 "url":"/main/rntmaster"
@@ -51,6 +57,42 @@
                 "menu_name":"Form",
                 "has_submenu":"N",
                 "url":"/main/formmaster"
+            },
+            {
+                "parent_id":"M-1",
+                "menu_name":"Transaction Type",
+                "has_submenu":"N",
+                "url":"/main/transtype"
+            },
+            {
+                "parent_id":"M-1",
+                "menu_name":"Transaction",
+                "has_submenu":"N",
+                "url":"/main/trans"
+            },
+            {
+                "parent_id":"M-1",
+                "menu_name":"Bank",
+                "has_submenu":"N",
+                "url":"/main/bank"
+            },
+            {
+                "parent_id":"M-1",
+                "menu_name":"Scheme",
+                "has_submenu":"N",
+                "url":"/main/scheme"
+            }, 
+            {
+                "parent_id":"M-1",
+                "menu_name":"Document Type",
+                "has_submenu":"N",
+                "url":"/main/docsType"
+            }, 
+            {
+                "parent_id":"M-1",
+                "menu_name":"Documents",
+                "has_submenu":"N",
+                "url":"/main/docs"
             }
         ]
     },

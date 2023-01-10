@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  <form  [formGroup]="__trnsForm" (ngSubmit)="submit()" id="__trnsForm" autocomplete="off" ngNativeValidate>
+    <div class="row">
+      <div class="col-sm-12 card_2">
+        <label for="trans_Type">Transaction Type <span class="text-danger">*</span></label>
+         <select class="form-control" formControlName="trans_id" id="trans_Type">
+           <option value="">Select Transaction Type</option>
+          <option *ngFor="let __transType of __transTypeMaster" value="{{__transType.id}}">{{__transType.trns_type}}</option>
+         </select>
+        <div class="invalid-feedback" *ngIf="__trnsForm.get('trans_id').invalid && (__trnsForm.get('trans_id').dirty || __trnsForm.get('trans_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__trnsForm.get('trans_id')).errors?.required">*Please provide transaction type</span>
+        </div>
+      </div>
+      <div class="col-sm-12 card_2">
+        <label for="trnsName">Transaction Name <span class="text-danger">*</span></label>
+        <input type="text" name="trns_name" id="trnsName" class="form-control" placeholder="Enter Transaction Name" formControlName="trns_name">
+        <div class="invalid-feedback" *ngIf="__trnsForm.get('trns_name').invalid && (__trnsForm.get('trns_name').dirty || __trnsForm.get('trns_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__trnsForm.get('trns_name')).errors?.required">*Please provide transaction name</span>
+        </div>
+      </div>
+    </div>
+</form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" >
+  <button class="btn" mat-dialog-close>Cancel</button>
+  <button class="btn addBtn" mat-button  form="__trnsForm" [disabled]="this.__trnsForm.invalid">Submit</button>
+</mat-dialog-actions>

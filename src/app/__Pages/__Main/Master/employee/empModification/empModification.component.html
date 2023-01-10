@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  <form  [formGroup]="__empForm" (ngSubmit)="submit()" id="__empForm" autocomplete="off" ngNativeValidate>
+    <div class="row">
+      <div class="col-sm-12 card_2">
+        <label for="empCode">Employee Code <span class="text-danger">*</span></label>
+        <input type="text" [readOnly]="this.data.id != ''" name="emp_code" id="empCode" class="form-control" placeholder="Enter Employee Code" formControlName="emp_code">
+        <div class="invalid-feedback" *ngIf="__empForm.get('emp_code').invalid && (__empForm.get('emp_code').dirty || __empForm.get('emp_code').touched)">
+          <span class="invalid-feedback" *ngIf="(__empForm.get('emp_code')).errors?.required">*Please provide employee code</span>
+        </div>
+      </div>
+      <div class="col-sm-12 card_2">
+        <label for="empName">Employee Name <span class="text-danger">*</span></label>
+        <input type="text" name="emp_name" id="empName" class="form-control" placeholder="Enter Employee Name" formControlName="emp_name">
+        <div class="invalid-feedback" *ngIf="__empForm.get('emp_name').invalid && (__empForm.get('emp_name').dirty || __empForm.get('emp_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__empForm.get('emp_name')).errors?.required">*Please provide employee name</span>
+        </div>
+      </div>
+    </div>
+</form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" >
+  <button class="btn" mat-dialog-close>Cancel</button>
+  <button class="btn addBtn" mat-button  form="__empForm" [disabled]="this.__empForm.invalid">Submit</button>
+</mat-dialog-actions>

@@ -1,26 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Client_manageComponent } from './client_manage.component';
+import { BankComponent } from './bank.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
-import { ClientModificationComponent } from './clientModification/clientModification.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { BankModificationComponent } from './bankModification/bankModification.component';
 
-const routes: Routes = [{path:'',component:Client_manageComponent}]
+const routes: Routes = [{path:'',component:BankComponent}]
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(routes),
     SearchModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    RouterModule.forChild(routes)
   ],
-  declarations: [Client_manageComponent,ClientModificationComponent]
+  declarations: [BankComponent,BankModificationComponent]
 })
-export class Client_manageModule {
+export class BankModule {
   constructor() {
-    console.log("Client_manageModule Loaded");
+    console.log("Bank Module Loaded");
   }
  }

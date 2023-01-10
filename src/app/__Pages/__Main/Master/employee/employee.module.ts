@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Client_manageComponent } from './client_manage.component';
+import { EmployeeComponent } from './employee.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
-import { ClientModificationComponent } from './clientModification/clientModification.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { EmpModificationComponent } from './empModification/empModification.component';
 
-const routes: Routes = [{path:'',component:Client_manageComponent}]
+const routes: Routes = [{path:'',component:EmployeeComponent}]
 
 @NgModule({
   imports: [
@@ -17,10 +17,13 @@ const routes: Routes = [{path:'',component:Client_manageComponent}]
     MatIconModule,
     MatDialogModule
   ],
-  declarations: [Client_manageComponent,ClientModificationComponent]
+  declarations: [EmployeeComponent,EmpModificationComponent]
 })
-export class Client_manageModule {
+export class EmployeeModule {
+  /**
+   *
+   */
   constructor() {
-    console.log("Client_manageModule Loaded");
+      console.log('Employee Module Loaded');
   }
  }

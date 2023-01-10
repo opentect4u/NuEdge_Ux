@@ -18,10 +18,9 @@ constructor(private __http:HttpClient) { }
         return this.__http.post(`${environment.apiUrl + __url}`,__dt);
   }
   else{
-       var __data = __dt ? '?' + __data : '';
+       var __data = __dt ? '?' + __dt : '';
        return this.__http.get(`${environment.apiUrl + __url + __data}`);
   }
-
  }
  
 

@@ -5,7 +5,7 @@
       <div class="col-sm-12 card_2">
         <label for="catName">Category <span class="text-danger">*</span></label>
          <select class="form-control" formControlName="category_id" id="catName">
-           <option value="">Select Product</option>
+           <option value="">Select Category</option>
           <option *ngFor="let __cats of __catMaster" value="{{__cats.id}}">{{__cats.cat_name}}</option>
          </select>
         <div class="invalid-feedback" *ngIf="__subcatForm.get('category_id').invalid && (__subcatForm.get('category_id').dirty || __subcatForm.get('category_id').touched)">

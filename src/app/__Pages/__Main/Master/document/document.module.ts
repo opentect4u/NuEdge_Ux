@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Client_manageComponent } from './client_manage.component';
+import { DocumentComponent } from './document.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
-import { ClientModificationComponent } from './clientModification/clientModification.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { DocsModificationComponent } from './docsModification/docsModification.component';
 
-const routes: Routes = [{path:'',component:Client_manageComponent}]
+const routes: Routes =[{path:'',component:DocumentComponent}]
 
 @NgModule({
   imports: [
@@ -17,10 +17,10 @@ const routes: Routes = [{path:'',component:Client_manageComponent}]
     MatIconModule,
     MatDialogModule
   ],
-  declarations: [Client_manageComponent,ClientModificationComponent]
+  declarations: [DocumentComponent,DocsModificationComponent]
 })
-export class Client_manageModule {
+export class DocumentModule {
   constructor() {
-    console.log("Client_manageModule Loaded");
+    console.log('Document Module Loaded');
   }
  }

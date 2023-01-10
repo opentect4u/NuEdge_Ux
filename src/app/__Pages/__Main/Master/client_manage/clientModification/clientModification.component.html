@@ -1,0 +1,121 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  <form  [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm" autocomplete="off" ngNativeValidate>
+    <div class="row card_2">
+      <div class="col-sm-6">
+        <label for="clientName">Client Name <span class="text-danger">*</span></label>
+        <input type="text" name="client_name" id="clientName" class="form-control" placeholder="Enter Client Name" formControlName="client_name">
+        <div class="invalid-feedback" *ngIf="__clientForm.get('client_name').invalid && (__clientForm.get('client_name').dirty || __clientForm.get('client_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('client_name')).errors?.required">*Please provide client name</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="dob">Date Of Birth <span class="text-danger">*</span></label>
+        <input type="date" name="dob" id="dob" class="form-control" formControlName="dob">
+        <div class="invalid-feedback" *ngIf="__clientForm.get('dob').invalid && (__clientForm.get('dob').dirty || __clientForm.get('dob').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('dob')).errors?.required">*Please provide date of birth</span>
+        </div>
+      </div>
+    </div>
+    <div class="row card_2">
+      <div class="col-sm-6">
+        <label for="panNo">Pan No <span class="text-danger">*</span></label>
+        <input type="text" name="pan" id="panNo" class="form-control" placeholder="Enter Pan No" formControlName="pan">
+        <div class="invalid-feedback" *ngIf="__clientForm.get('pan').invalid && (__clientForm.get('pan').dirty || __clientForm.get('pan').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).errors?.required">*Please provide pan number</span>
+        </div>
+      </div>
+    </div>
+    <div class="row card_2">
+      <div class="col-sm-6">
+        <label for="mblNumber">Mobile Number <span class="text-danger">*</span></label>
+        <input type="text" name="mobile" id="mblNumber" class="form-control" placeholder="Enter Mobile Number" formControlName="mobile">
+        <div class="invalid-feedback" *ngIf="__clientForm.get('mobile').invalid && (__clientForm.get('mobile').dirty || __clientForm.get('mobile').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).errors?.required">*Please provide client name</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="sec_mobile">Alternative mobile number</label>
+        <input type="text" name="sec_mobile" id="sec_mobile" placeholder="Enter Alternative Mobile Number" class="form-control" formControlName="sec_mobile">
+        <div class="invalid-feedback" *ngIf="__clientForm.get('sec_mobile').invalid && (__clientForm.get('sec_mobile').dirty || __clientForm.get('sec_mobile').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).errors?.required">*Please provide date of birth</span>
+        </div>
+      </div>
+    </div>
+    <div class="row card_2">
+      <div class="col-sm-6">
+        <label for="email">Email <span class="text-danger">*</span></label>
+        <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email" formControlName="email">
+        <div class="invalid-feedback" *ngIf="__clientForm.get('email').invalid && (__clientForm.get('email').dirty || __clientForm.get('email').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('email')).errors?.required">*Please provide client name</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="sec_email">Alternative Email</label>
+        <input type="text" name="sec_email" id="sec_email"  class="form-control"   placeholder="Enter Alternative Email" formControlName="sec_email">
+        <div class="invalid-feedback" *ngIf="__clientForm.get('sec_email').invalid && (__clientForm.get('sec_email').dirty || __clientForm.get('sec_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_email')).errors?.required">*Please provide date of birth</span>
+        </div>
+      </div>
+    </div>
+    <div class="row card_2">
+      <div class="col-sm-6">
+        <label for="addr">Address Line 1 <span class="text-danger">*</span></label>
+        <textarea cols="30" rows="4"  name="add_line_1" id="addr" class="form-control"  formControlName="add_line_1"></textarea>
+        <div class="invalid-feedback" *ngIf="__clientForm.get('add_line_1').invalid && (__clientForm.get('add_line_1').dirty || __clientForm.get('add_line_1').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('add_line_1')).errors?.required">*Please provide address line 1</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="addr2">Address Line 2</label>
+        <textarea cols="30" rows="4"  name="add_line_2" id="addr2" class="form-control"  formControlName="add_line_2"></textarea>
+        <div class="invalid-feedback" *ngIf="__clientForm.get('add_line_2').invalid && (__clientForm.get('add_line_2').dirty || __clientForm.get('add_line_2').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('add_line_2')).errors?.required">*Please provide address line 2</span>
+        </div>
+      </div>
+    </div>
+    <div class="row card_2">
+      <div class="col-sm-6">
+        <label for="__state">State <span class="text-danger">*</span></label>
+        <select name="state" id="__state" class="form-control" formControlName="state">
+        <option value="">Select State</option>
+        <option value="W">West Bengal</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="__clientForm.get('state').invalid && (__clientForm.get('state').dirty || __clientForm.get('state').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('state')).errors?.required">*Please provide state</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="_dist">District</label>
+        <select name="dist" id="_dist" class="form-control" formControlName="dist">
+          <option value="">Select District</option>
+           <option value="N">North 24 PGS</option>
+          </select>
+        <div class="invalid-feedback" *ngIf="__clientForm.get('dist').invalid && (__clientForm.get('dist').dirty || __clientForm.get('dist').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('dist')).errors?.required">*Please provide district</span>
+        </div>
+      </div>
+    </div>
+    <div class="row card_2">
+      <div class="col-sm-6">
+        <label for="__city">City / Village <span class="text-danger">*</span></label>
+        <input type="text" name="city" id="__city" class="form-control" placeholder="Enter city or village" formControlName="city">
+       
+        <div class="invalid-feedback" *ngIf="__clientForm.get('city').invalid && (__clientForm.get('city').dirty || __clientForm.get('city').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('city')).errors?.required">*Please provide city or village</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="__pin">Pincode</label>
+        <input name="pin" id="__pin" class="form-control" formControlName="pincode"/>
+        <div class="invalid-feedback" *ngIf="__clientForm.get('pincode').invalid && (__clientForm.get('pincode').dirty || __clientForm.get('pincode').touched)">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('pincode')).errors?.required">*Please provide pincode</span>
+        </div>
+      </div>
+    </div>
+</form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" >
+  <button class="btn" mat-dialog-close>Cancel</button>
+  <button class="btn addBtn" mat-button  form="__clientForm" [disabled]="this.__clientForm.invalid">Submit</button>
+</mat-dialog-actions>

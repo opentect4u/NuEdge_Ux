@@ -58,9 +58,44 @@ const routes: Routes = [
         data: { id: 11, title: "NuEdge - Form Type Master",pageTitle:"Form Type Master"}
       },
       {
+        path: 'transtype',
+        loadChildren: () => import('../__Main/Master/transType/transType.module').then(m => m.TransTypeModule),
+        data: { id: 12, title: "NuEdge - Transaction Type Master",pageTitle:"Transaction Type Master"}
+      },
+      {
+        path: 'trans',
+        loadChildren: () => import('../__Main/Master/transaction/transaction.module').then(m => m.TransactionModule),
+        data: { id: 13, title: "NuEdge - Transaction  Master",pageTitle:"Transaction  Master"}
+      },
+      {
+        path: 'bank',
+        loadChildren: () => import('../__Main/Master/bank/bank.module').then(m => m.BankModule),
+        data: { id: 14, title: "NuEdge - Bank  Master",pageTitle:"Bank Master"}
+      },
+      {
+        path: 'scheme',
+        loadChildren: () => import('../__Main/Master/scheme/scheme.module').then(m => m.SchemeModule),
+        data: { id: 15, title: "NuEdge - Scheme  Master",pageTitle:"Scheme Master"}
+      },
+      {
+        path: 'employee',
+        loadChildren: () => import('../__Main/Master/employee/employee.module').then(m => m.EmployeeModule),
+        data: { id: 16, title: "NuEdge - Employee Master",pageTitle:"Employee Master"}
+      },
+      {
+        path:'docsType',
+        loadChildren:() => import('../__Main/Master/docsMaster/docsMaster.module').then(m => m.DocsMasterModule),
+        data:{id:17,title: "NuEdge - Document Master",pageTitle:"Document Master"}
+      },
+      {
+        path:'docs',
+        loadChildren:() => import('../__Main/Master/document/document.module').then(m => m.DocumentModule),
+        data:{id:18,title: "NuEdge - Document Master",pageTitle:"Document Master"}
+      },
+      {
         path:'rcvForm',
         loadChildren:()=> import('../__Main/Operations/RcvFrm/RcvFrm.module').then(m => m.RcvFrmModule),
-        data:{id:11,title:"NuEdge - Operation Recieve Form",pageTitle:"Recieve Form"}
+        data:{id:19,title:"NuEdge - Operation Recieve Form",pageTitle:"Recieve Form"}
       },
       {
         path: '',
