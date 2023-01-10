@@ -1,0 +1,79 @@
+  <core-search [__flag]="'N'"></core-search>
+<div class="card card_2">
+  <div class="card-body">
+    <form  [formGroup]="__rcvForm" (ngSubmit)="recieveForm()" ngNativeValidate>
+    <div class="row mb-2">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-5 ">
+        <label for="PrdType">Product Type <span class="text-danger">*</span></label>
+        <select name="prdType" class="form-control" id="PrdType" formControlName="product_type">
+          <option value="">Select Product Type</option>
+          <option value="1">Mutual Fund</option>
+          <option value="2">Fixed Deposit</option>
+          <option value="3">Bond</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="__rcvForm.get('product_type').invalid && (__rcvForm.get('product_type').dirty || __rcvForm.get('product_type').touched)">
+          <span class="invalid-feedback" *ngIf="(__rcvForm.get('product_type')).errors?.required">*Please provide product type</span>
+        </div>
+      </div>
+      <div class="col-sm-5 ">
+        <label for="FrmType">Form Type <span class="text-danger">*</span></label>
+        <select name="frmType" class="form-control" id="FrmType" formControlName="form_type">
+          <option value="">Select Form Type</option>
+          <option value="1">frmType -1</option>
+          <option value="2">frmType -2</option>
+          <option value="3">frmType -3</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="__rcvForm.get('form_type').invalid && (__rcvForm.get('form_type').dirty || __rcvForm.get('form_type').touched)">
+          <span class="invalid-feedback" *ngIf="(__rcvForm.get('form_type')).errors?.required">*Please provide form type</span>
+        </div>
+      </div>     
+      <div class="col-sm-1"></div>
+    </div>  
+    <div class="row mb-2">      
+      <div class="col-sm-1"></div>
+      <div class="col-sm-5 ">
+        <label for="AplNumber">Application Number</label>
+        <input type="text" name="aplNumber" id="AplNumber" class="form-control" formControlName="application_no">  
+      </div>
+      <div class="col-sm-5 ">
+        <label for="PanNumber">Pan No <span class="text-danger">*</span></label>
+        <input type="text" name="panNumber" id="PanNumber" class="form-control" formControlName="pan_no">  
+      <div class="invalid-feedback" *ngIf="__rcvForm.get('pan_no').invalid && (__rcvForm.get('pan_no').dirty || __rcvForm.get('pan_no').touched)">
+        <span class="invalid-feedback" *ngIf="(__rcvForm.get('pan_no')).errors?.required">*Please provide pan number
+        </span>
+        <span class="invalid-feedback" *ngIf="(__rcvForm.get('pan_no')).errors?.pattern">*Please provide valid pan
+          Number</span>
+        </div>  
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="row mb-2">      
+      <div class="col-sm-1"></div>
+      <div class="col-sm-5 ">
+        <label for="MblNumber">Mobile Number <span class="text-danger">*</span></label>
+        <input type="text" name="mblNumber" id="MblNumber" class="form-control" formControlName="mobile_no"> 
+        <div class="invalid-feedback" *ngIf="__rcvForm.get('mobile_no').invalid && (__rcvForm.get('mobile_no').dirty || __rcvForm.get('mobile_no').touched)">
+           <span class="invalid-feedback" *ngIf="(__rcvForm.get('mobile_no')).errors?.required">*Please provide mobile number</span>
+        </div> 
+      </div>
+      <div class="col-sm-5 ">
+        <label for="EmlId">Email <span class="text-danger">*</span></label>
+        <input type="text" name="emlId" id="EmlId" class="form-control" formControlName="email">  
+        <div class="invalid-feedback" *ngIf="__rcvForm.get('email').invalid && (__rcvForm.get('email').dirty || __rcvForm.get('email').touched)">
+          <span class="invalid-feedback" *ngIf="(__rcvForm.get('email')).errors?.required">*Please provide email</span>
+          <span class="invalid-feedback" *ngIf="(__rcvForm.get('email')).errors?.email">*Please provide valid email</span>
+        </div> 
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="row">
+      <div class="col-sm-1"></div>
+       <div class="col-sm-10">
+          <input type="submit" value="SUBMIT" class="btn addBtn" [disabled]="__rcvForm.invalid">
+       </div>
+    </div>
+  </form>
+  </div>
+</div>
+

@@ -1,0 +1,44 @@
+[
+    {
+        "id":1,
+        "icon":"",
+        "title":"Suman Mitra",
+        "scores":10
+    },
+    {
+        "id":2,
+        "icon":"",
+        "title":"Chittaranjan Maity",
+        "scores":10
+    },
+    {
+        "id":3,
+        "icon":"",
+        "title":"Tanmoy Mondal",
+        "scores":10
+    },
+    {
+        "id":4,
+        "icon":"",
+        "title":"Suvrojit Banarjee",
+        "scores":10
+    },
+    {
+        "id":5,
+        "icon":"",
+        "title":"Subham Samantha",
+        "scores":10
+    },
+    {
+        "id":6,
+        "icon":"",
+        "title":"Somnath Thakur",
+        "scores":10
+    },
+    {
+        "id":7,
+        "icon":"",
+        "title":"Utsav Roy",
+        "scores":10
+    }
+]

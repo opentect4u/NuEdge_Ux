@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  <form  [formGroup]="__rntForm" (ngSubmit)="submit()" id="__rntForm" autocomplete="off" ngNativeValidate>
+    <div class="row">
+      <div class="col-sm-12">
+        <label for="rntName">RNT Name <span class="text-danger">*</span></label>
+        <input type="text" name="rnt_name" id="rntName" class="form-control card_2" placeholder="Enter RNT Name" formControlName="rnt_name">
+        <div class="invalid-feedback" *ngIf="__rntForm.get('rnt_name').invalid && (__rntForm.get('rnt_name').dirty || __rntForm.get('rnt_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__rntForm.get('rnt_name')).errors?.required">*Please provide RNT name</span>
+        </div>
+     
+      </div>
+    </div>
+</form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" >
+  <button class="btn" mat-dialog-close>Cancel</button>
+  <button class="btn addBtn" mat-button  form="__rntForm" [disabled]="this.__rntForm.invalid">Submit</button>
+</mat-dialog-actions>

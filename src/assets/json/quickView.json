@@ -1,0 +1,32 @@
+[
+    {
+        "id":1,
+        "icon":"",
+        "title":"Performance Report",
+        "scores":0
+    },
+    {
+        "id":2,
+        "icon":"",
+        "title":"TAT FAILURE",
+        "scores":0
+    },
+    {
+        "id":3,
+        "icon":"",
+        "title":"Day Sales",
+        "scores":0
+    },
+    {
+        "id":4,
+        "icon":"",
+        "title":"Support Ticket Log",
+        "scores":0
+    },
+    {
+        "id":5,
+        "icon":"",
+        "title":"Broker's Sales",
+        "scores":0
+    }
+]

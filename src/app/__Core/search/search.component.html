@@ -1,0 +1,59 @@
+
+  <div class="card card_2">
+    <div class="card-body">
+            <div class="progressMainSec">
+              <div class="flexSec_1">
+                <div class="processMain_1">
+                  <a class="iconButton" (click)="navigate()"><i class="fa fa-long-arrow-left backIcon" aria-hidden="true"></i></a>
+                  <span class="title">{{__pageTitle?.pageTitle}}</span>
+                </div>
+                <div class="processMain_2" __searchResVisibility (appOutsideClick) = "outsideClick($event)" *ngIf="__flag == 'Y'">
+                  <div class="searchDiv" >
+                    <form [formGroup]="__SearchForm" autocomplete="off" >
+                      <core-input [_type]="'search'" 
+                      [__class]="'searchInput'"
+                      [__readonly]="false" 
+                      [__required]="false" 
+                      [_placeholder]="__placeholder"
+                      [formControl]="$any(__SearchForm.controls['searchItem'])"
+                      ></core-input>
+                    </form>
+                    <i class="fa fa-search searchIcon"  aria-hidden="true"></i>
+                    <div class="serachresult" #searchResult>
+                      <ul *ngIf="__items.length > 0">
+                        <li *ngFor="let items of __items" (click)="getItems(items)">
+                          <a *ngIf="__pageTitle?.id  == 5">{{items.rnt_name}}</a>
+                          <a *ngIf="__pageTitle?.id  == 6">{{items.product_name}}</a>
+                          <a *ngIf="__pageTitle?.id  == 7">{{items.amc_name}}</a>
+                          <a *ngIf="__pageTitle?.id  == 8">{{items.cat_name}}</a>
+                          <a *ngIf="__pageTitle?.id  == 9">{{items.subcategory_name}}</a>
+                          <a *ngIf="__pageTitle?.id  == 10">{{items.brn_name}}</a>
+                          <a *ngIf="__pageTitle?.id  == 11">{{items.form_name}}</a>
+
+
+
+                        </li>
+                      </ul>
+                      <div class="noDataFound" *ngIf="__items.length == 0">
+                        <h5 class="text-center">
+                          Sorry!! No Results Found
+                        </h5>
+                        <p>If your result match,they will appear here</p>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="processMain_3 text-right" *ngIf="__flag == 'Y'">
+                  <button class="addBtn" (click)="addMasters(0)">
+                    <i class="fa fa-plus backIcon" aria-hidden="true"></i>
+                    Add New
+                  </button>
+                </div>
+              </div>
+            </div>
+    </div>
+  </div>
+  
+
+

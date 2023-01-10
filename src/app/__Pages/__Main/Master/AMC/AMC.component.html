@@ -1,0 +1,34 @@
+<core-search 
+(__searchItem)="getSearchItem($event)" 
+[__flag]="'Y'" 
+[__placeholder]="'Search by AMC name'"
+[__api_name]="'/amc'"
+></core-search>
+
+<div class="card" *ngIf="__selectAMC.length > 0">
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>SL No.</th>
+          <th>Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let __selectedItems of __selectAMC;let i =index">
+           <td>{{i + 1}}</td>
+           <td>{{__selectedItems.amc_name}}</td>
+           <td>
+            <a (click)="populateDT(__selectedItems)">
+              <mat-icon class="edit_icon">edit</mat-icon>
+            </a>
+            <a>
+              <mat-icon class="delete_icon">delete</mat-icon>
+            </a>
+           </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

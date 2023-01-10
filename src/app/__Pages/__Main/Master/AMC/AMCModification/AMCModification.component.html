@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  <form  [formGroup]="__amcForm" (ngSubmit)="submit()" id="__amcForm" autocomplete="off" ngNativeValidate>
+    <div class="row">
+      <div class="col-sm-12 card_2">
+        <label for="rntName">RNT <span class="text-danger">*</span></label>
+        <select class="form-control " formControlName="rnt_id" id="rntName">
+          <option value="">Select RNT</option>
+          <option *ngFor="let __rnts of __RntMaster" value="{{__rnts.id}}">{{__rnts.rnt_name}}</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="__amcForm.get('rnt_id').invalid && (__amcForm.get('rnt_id').dirty || __amcForm.get('rnt_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('rnt_id')).errors?.required">*Please provide RNT name</span>
+        </div>
+      </div>
+      <div class="col-sm-12 card_2">
+        <label for="productName">Product <span class="text-danger">*</span></label>
+         <select class="form-control" formControlName="product_id" id="productName">
+           <option value="">Select Product</option>
+          <option *ngFor="let __products of __ProductMaster" value="{{__products.id}}">{{__products.product_name}}</option>
+         </select>
+        <div class="invalid-feedback" *ngIf="__amcForm.get('product_id').invalid && (__amcForm.get('product_id').dirty || __amcForm.get('product_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('product_id')).errors?.required">*Please provide product name</span>
+        </div>
+      </div>
+      <div class="col-sm-12 card_2">
+        <label for="amcName">AMC Name <span class="text-danger">*</span></label>
+        <input type="text" name="amc_name" id="amcName" class="form-control" placeholder="Enter AMC Name" formControlName="amc_name">
+        <div class="invalid-feedback" *ngIf="__amcForm.get('amc_name').invalid && (__amcForm.get('amc_name').dirty || __amcForm.get('amc_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_name')).errors?.required">*Please provide AMC name</span>
+        </div>
+      </div>
+    </div>
+</form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" >
+  <button class="btn" mat-dialog-close>Cancel</button>
+  <button class="btn addBtn" mat-button  form="__amcForm" [disabled]="this.__amcForm.invalid">Submit</button>
+</mat-dialog-actions>

@@ -1,0 +1,114 @@
+[
+    {
+      "id":1,
+      "title":"Human Resources",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_1"
+    },
+    {
+      "id":2,
+      "title":"Admin",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_2"
+    },
+    {
+      "id":3,
+      "title":"Account & Finance",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_3"
+  
+    },
+    {
+      "id":4,
+      "title":"Customer Service",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_4"
+
+    },
+    {
+      "id":5,
+      "title":"Online",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_5"
+
+    },
+    {
+      "id":6,
+      "title":"Sales",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_6"
+    },
+    {
+      "id":7,
+      "title":"Marketing",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_7"
+    },
+    {
+      "id":8,
+      "title":"Operations",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_8"
+    },
+    {
+      "id":9,
+      "title":"Research",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_9"
+    },
+    {
+      "id":10,
+      "title":"Products",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_10"
+    },
+    {
+      "id":11,
+      "title":"Reports",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_11"
+    },
+    {
+      "id":12,
+      "title":"Asset Management",
+      "icon":"fa fa-user-o",
+       "value":0,
+       "img":"",
+       "url":"",
+       "class":"iconSec iconCol_12"
+    }
+  ]
+  
