@@ -6,11 +6,12 @@
     font-weight: 500;
 }
 
-.btn:hover,
+.btn{background: #5687e6; color: #fff;;}
+/* .btn:hover,
 .btn:focus {
     color: #fff !important;
     text-decoration: none;
-}
+} */
 
 .flexSecCard {
     padding: 20px;
@@ -32,6 +33,7 @@
     padding: 1.25rem 1.75rem;
     flex: 1 1 auto;
     padding: 1.25rem;
+    box-shadow: 0 0 3px 2px #ece9e9;
 }
 
 .card .card-body .titleSec {
@@ -83,33 +85,35 @@
 
 .addBtn {
     /* float: right; */
-    border: 0px;
-    outline: 0;
-    background: #6477a5;
-    color: #f8f8f8;
-    font-weight: 400;
-    padding: 10px 13px;
-    line-height: 17px;
-    border-radius: 2px;
+border: 0px;
+outline: 0;
+background: #5687e6;
+color: #f8f8f8;
+font-weight: 400;
+padding: 8px 13px;
+line-height: 17px;
+border-radius: 2px;
 }
 
 .searchInput {
     width: 100%;
     border: 1px solid #d1d1d1;
-    height: 50px;
-    padding: 10px 30px 10px 57px;
+    height: 36px;
+    padding: 6px 30px 6px 57px;
     outline: 0;
     background: #ffffff;
     transition: .2s all;
     display: block;
-    border-radius: 6px;
+    border-radius: 30px;
+    color: #444;
 }
 
 .searchInput:focus {
-    border-bottom-left-radius: 0px;
+    /* border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    border-top-right-radius: 6px; */
+    border-radius: 30px;
 }
 
 .flexSec_1 {
@@ -177,6 +181,8 @@
     width: 59%;
 }
 table{width: 100%;}
-td,th{width:33%;text-align: center!important;}
+
+/* td,th{width:33%;text-align: center!important;} */
+
 .edit_icon{color: #6477a5;margin-right: 9px;}
 .delete_icon{color: #de3039;}

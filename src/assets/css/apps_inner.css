@@ -70,12 +70,35 @@
 
 
 
+table.table_Custome thead{  background: #3bb8b3; color: #fff;}
 
+.editeCustom_table{font-size: 18px;}
 
+.trushCustom_table{font-size: 18px;}
+.trushCustom_table a i{color:#ec3237;}
 
+.table_marg_left{margin-left: 30px;}
 
+.form-control {
+  display: block;
+  width: 100%;
+  height: 38px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #d7d7d7;
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);}
 
+  .mat-dialog-actions.popupBoxSubmitSec {display: block; min-height: inherit;}
 
+.btn.cancelCusBtn{background: #eee; color: #333;}
+.btn.cancelCusBtn:hover{background: #ccc; color: #333;}
+
+.mrgLeft{margin-left: 15px;}
 
 
 
