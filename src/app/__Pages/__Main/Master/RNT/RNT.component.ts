@@ -25,7 +25,7 @@ export class RNTComponent implements OnInit {
   }
   openDialog(id, rnt_name) {
     const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '30%';
+    disalogConfig.width = '50%';
     disalogConfig.data = {
       id: id,
       title: id == 0 ? 'Add RNT' : 'Update RNT',

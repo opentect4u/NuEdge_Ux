@@ -1,27 +1,35 @@
 <div class="topSec">
+  <div class="topSec_1">
   <div class="container-fluid topSecSub">
     <div class="topLeftSec">
       <div class="logoTop"><img src="../../../../../assets/images/logo.jpg" alt="NuEdge Logo" [routerLink]="['/main/']"/></div>
-      <div class="topNavDropdown">
-        <ul class="nav navbar-nav">
-          <li *ngFor="let __menus of __top_menu">
-            <a (click)="navigate(__menus)">{{__menus.menu_name}} <span class="caret" *ngIf="__menus.has_submenu == 'Y'"></span></a>
-            <ul class="dropdown-menu" *ngIf="__menus.has_submenu == 'Y'">
-              <li *ngFor="let __submenus of __menus.sub_menu">
-                <a [routerLink]="[__submenus.url]">{{__submenus.menu_name}} <span class="caret" *ngIf="__submenus.has_submenu == 'Y'"></span></a>
-                <ul class="dropdown-menu" *ngIf="__submenus.has_submenu == 'Y'">
-                  <li *ngFor="let __submenus of __submenus.sub_menu">
-                    <a>{{__submenus.menu_name}} <span class="caret" *ngIf="__submenus.has_submenu == 'Y'"></span></a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+      
     </div>
     <div class="topRightSec">
       <core-list [__items]="__rightHeaderMenu" [__flag]="'RL'" [__classUL]=""></core-list>
     </div>
   </div>
+</div>
+
+<div class="topSec_2">
+	<div class="container-fluid topSecSub">
+    <div class="topNavDropdown">
+      <ul class="nav navbar-nav">
+        <li *ngFor="let __menus of __top_menu">
+          <a (click)="navigate(__menus)">{{__menus.menu_name}} <span class="caret" *ngIf="__menus.has_submenu == 'Y'"></span></a>
+          <ul class="dropdown-menu" *ngIf="__menus.has_submenu == 'Y'">
+            <li *ngFor="let __submenus of __menus.sub_menu">
+              <a [routerLink]="[__submenus.url]">{{__submenus.menu_name}} <span class="caret" *ngIf="__submenus.has_submenu == 'Y'"></span></a>
+              <ul class="dropdown-menu" *ngIf="__submenus.has_submenu == 'Y'">
+                <li *ngFor="let __submenus of __submenus.sub_menu">
+                  <a>{{__submenus.menu_name}} <span class="caret" *ngIf="__submenus.has_submenu == 'Y'"></span></a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 </div>

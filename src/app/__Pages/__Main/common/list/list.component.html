@@ -2,12 +2,13 @@
   <li *ngFor="let items of __items" [ngClass]="{'thumbnailLi' : items.flag == 'P','searchBox':items.flag == 'S'}">
     <a *ngIf="items.flag == 'N' || items.flag == 'S'" (click)="getItems(items)"><i [class]="items.icon" aria-hidden="true"></i></a>
     <a *ngIf="items.flag == 'P'" class="dropbtn loginThumb" (click)="openProfileMenu()">NC</a>
+    
     <div id="myDropdown" class="dropdown-content" #profileDRP *ngIf="items.flag == 'P'">
       <a><i class="fa fa-user-o" aria-hidden="true"></i> My Profile</a>
       <a><i class="fa fa-unlock-alt" aria-hidden="true"></i> Change Password</a>
       <a [routerLink]="['/']"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
     </div>
-    <div id="myDIV2" class="serachBoxTop darkBlack" #searchInput *ngIf="items.flag == 'S'">
+    <div class="serachBoxTop" #searchInput *ngIf="items.flag == 'S'">
       <label class="field"><input type="search" value=""></label><label class="button"><input type="submit"
           value="Search"></label>
     </div>

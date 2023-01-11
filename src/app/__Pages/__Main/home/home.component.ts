@@ -14,10 +14,10 @@ export class HomeComponent implements OnInit {
   __quickView:view[] = QuickView;
   __employeeScores:view[] = EmployeeScores;
   __topValues:any = [
-    {title:"title-1",value:999,class_name:"red"},
-    {title:"title-2",value:9999,class_name:"seeGreen"},
-    {title:"title-3",value:9999,class_name:"yellow"},
-    {title:"title-3",value:9999,class_name:"darkBlue"}
+    {title:"title-1",value:999,class_name:"blue_Gredient"},
+    {title:"title-2",value:9999,class_name:"seeGreen_Gredient"},
+    {title:"title-3",value:9999,class_name:"red_Gredient"},
+    {title:"title-3",value:9999,class_name:"yellow_Gredient"}
   ]
   constructor() { }
 

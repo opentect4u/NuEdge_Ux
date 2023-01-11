@@ -5,7 +5,7 @@
 [__api_name]="'/rnt'"
 ></core-search>
 
-<div class="card" *ngIf="__selectRNT.length > 0">
+<!-- <div class="card" *ngIf="__selectRNT.length > 0">
   <div class="card-body">
     <table class="table">
       <thead>
@@ -27,6 +27,37 @@
               <mat-icon class="delete_icon">delete</mat-icon>
             </a>
            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> -->
+<div class="card">
+  <div class="card-body">
+    <table class="table table_Custome">
+      <thead>
+        <tr>
+          <th>SL No.</th>
+          <th>Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Suman Mitra</td>
+          <td>
+            <a href="#" class="editeCustom_table">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
+            </a>
+            <a href="#" class="trushCustom_table table_marg_left">
+              <i class="fa fa-trash-o" aria-hidden="true"></i>
+
+            </a>
+          </td>
+
+  
         </tr>
       </tbody>
     </table>
