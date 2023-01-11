@@ -64,12 +64,12 @@
 .navbar-nav > li > a {
 	padding-top: 3px;
 	padding-bottom: 3px;
-	color: #fff;
+	color: #fff!important;
 	font-weight: 400;}
 .navbar-nav > li:hover a{color: #1f4584;}	
 .navbar-nav > li > a:hover{color: #1f4584;}	
 	
-.nav > li > a:hover, .nav > li > a:focus {background-color: #fff; color: #1f4584;}
+.nav > li > a:hover, .nav > li > a:focus {background-color: #fff; color: #1f4584!important;}
 	.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus{color: #fff;}
 	
 

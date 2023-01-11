@@ -7,7 +7,7 @@
 ></core-search>
 <div class="card" *ngIf="__selectTrnstype.length > 0">
   <div class="card-body">
-    <table class="table">
+    <table class="table table_Custome">
       <thead>
         <tr>
           <th>SL No.</th>
@@ -20,10 +20,10 @@
            <td>{{i + 1}}</td>
            <td>{{__selectedItems.trns_type}}</td>
            <td>
-            <a (click)="populateDT(__selectedItems)">
+            <a (click)="populateDT(__selectedItems)" class="editeCustom_table">
               <mat-icon class="edit_icon">edit</mat-icon>
             </a>
-            <a>
+            <a  class="trushCustom_table table_marg_left">
               <mat-icon class="delete_icon">delete</mat-icon>
             </a>
            </td>
