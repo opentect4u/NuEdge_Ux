@@ -2,8 +2,7 @@
   <div class="topSec_1">
   <div class="container-fluid topSecSub">
     <div class="topLeftSec">
-      <div class="logoTop"><img src="../../../../../assets/images/logo.jpg" alt="NuEdge Logo" [routerLink]="['/main/']"/></div>
-      
+      <div class="logoTop"><img src="../../../../../assets/images/logo.jpg" alt="NuEdge Logo" [routerLink]="['/main/']"/></div>  
     </div>
     <div class="topRightSec">
       <core-list [__items]="__rightHeaderMenu" [__flag]="'RL'" [__classUL]=""></core-list>
@@ -11,22 +10,53 @@
   </div>
 </div>
 
-<div class="topSec_2">
+<div class="topSec_2" *ngIf="__rtDt?.id > 3">
 	<div class="container-fluid topSecSub">
     <div class="topNavDropdown">
       <ul class="nav navbar-nav">
         <li *ngFor="let __menus of __top_menu">
-          <a (click)="navigate(__menus)">{{__menus.menu_name}} <span class="caret" *ngIf="__menus.has_submenu == 'Y'"></span></a>
-          <ul class="dropdown-menu" *ngIf="__menus.has_submenu == 'Y'">
-            <li *ngFor="let __submenus of __menus.sub_menu">
-              <a [routerLink]="[__submenus.url]">{{__submenus.menu_name}} <span class="caret" *ngIf="__submenus.has_submenu == 'Y'"></span></a>
-              <ul class="dropdown-menu" *ngIf="__submenus.has_submenu == 'Y'">
-                <li *ngFor="let __submenus of __submenus.sub_menu">
-                  <a>{{__submenus.menu_name}} <span class="caret" *ngIf="__submenus.has_submenu == 'Y'"></span></a>
+          <a mat-button *ngIf="__menus.sub_menu.length == 0" (click)="navigate(__menus)">
+            {{__menus.menu_name}}
+          </a>
+           <ng-container *ngIf="__menus.sub_menu.length > 0">
+            <a
+            mat-button
+            [matMenuTriggerFor]="levelOne"
+            #levelOneTrigger="matMenuTrigger"
+            (mouseenter)="levelOneTrigger.openMenu()"
+          >
+           {{__menus.menu_name}}
+              <mat-icon>arrow_drop_down</mat-icon>
+          </a>
+          <mat-menu #levelOne="matMenu" xPosition="after" yPosition="below">
+            <span>
+              <ng-container *ngFor="let childL1 of __menus.sub_menu">
+                <li *ngIf="childL1.has_submenu == 'N'" mat-menu-item>
+                  <button mat-menu-item [routerLink]="[childL1.url]">{{childL1.menu_name}}</button>
                 </li>
-              </ul>
-            </li>
-          </ul>
+                <ng-container *ngIf="childL1.sub_menu && childL1.sub_menu.length > 0">
+                  <li mat-menu-item [matMenuTriggerFor]="levelTwo">
+                    <span>{{childL1.menu_name}}</span>
+                  </li>
+      
+                  <mat-menu #levelTwo="matMenu">
+                    <ng-container *ngFor="let childL2 of childL1.sub_menu">
+                      <li class="p-0" mat-menu-item>
+                        <a class="nav-link"
+                          >{{childL2.menu_name}}
+                          <!-- <i *ngIf="childL2.icon" [ngClass]="childL2.icon"></i> -->
+                        </a>
+                      </li>
+                    </ng-container>
+                  </mat-menu>
+                </ng-container>
+
+
+
+              </ng-container>
+            </span>
+          </mat-menu>
+           </ng-container>
         </li>
       </ul>
     </div>

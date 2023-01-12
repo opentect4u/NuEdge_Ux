@@ -43,8 +43,6 @@ export class SearchComponent implements OnInit {
 
   getItems(__items) {
     // this.__SearchForm.controls['searchItem'].setValue(__items.title);
-    console.log(__items);
-    
     this.generateData(__items.id,'F',__items);
     this.__searchRlt.nativeElement.style.display = 'none';
   }

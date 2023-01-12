@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { map } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RNTmodificationComponent } from './RNTmodification/RNTmodification.component';
 
 @Component({
@@ -9,8 +11,8 @@ import { RNTmodificationComponent } from './RNTmodification/RNTmodification.comp
 })
 export class RNTComponent implements OnInit {
   __selectRNT: any = [];
-  constructor(private __dialog: MatDialog) { }
-  ngOnInit() {}
+  constructor(private __dialog: MatDialog,private __dbIntr: DbIntrService) { }
+  ngOnInit() {this.getRNTmaster()}
   getSearchItem(__ev) {
     this.__selectRNT.length = 0;
     if (__ev.flag == 'A') {
@@ -25,7 +27,7 @@ export class RNTComponent implements OnInit {
   }
   openDialog(id, rnt_name) {
     const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '50%';
+    disalogConfig.width = '40%';
     disalogConfig.data = {
       id: id,
       title: id == 0 ? 'Add RNT' : 'Update RNT',
@@ -39,5 +41,10 @@ export class RNTComponent implements OnInit {
         this.__selectRNT[this.__selectRNT.findIndex(x => x.id == dt.id)].rnt_name = dt.rnt_name;
       }
     });
+  }
+  getRNTmaster(){
+    this.__dbIntr.api_call(0,'/rnt',null).pipe(map((x:any) => x.data)).subscribe(res => {
+      this.__selectRNT = res;
+    })
   }
 }

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { map } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 
 @Component({
@@ -9,8 +11,8 @@ import { DocsModificationComponent } from './docsModification/docsModification.c
 })
 export class DocsMasterComponent implements OnInit {
   __selectDocs: any = [];
-  constructor(private __dialog: MatDialog) { }
-  ngOnInit() {}
+  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService) { }
+  ngOnInit() {this.getDocumentmaster();}
   getSearchItem(__ev) {
     this.__selectDocs.length = 0;
     if (__ev.flag == 'A') {
@@ -37,5 +39,10 @@ export class DocsMasterComponent implements OnInit {
         this.__selectDocs[this.__selectDocs.findIndex(x => x.id == dt.id)].doc_type = dt.doc_type;
       }
     });
+  }
+  getDocumentmaster(){
+    this.__dbIntr.api_call(0,'/documenttype',null).pipe(map((x:any) => x.data)).subscribe(res => {
+      this.__selectDocs = res;
+    })
   }
 }

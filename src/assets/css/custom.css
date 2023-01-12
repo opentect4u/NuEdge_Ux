@@ -89,10 +89,12 @@ border: 0px;
 outline: 0;
 background: #5687e6;
 color: #f8f8f8;
-font-weight: 400;
-padding: 8px 13px;
+/* padding: 8px 13px; */
 line-height: 17px;
 border-radius: 2px;
+width: 100px;
+font-weight: 500;
+padding: 10px;
 }
 
 .searchInput {

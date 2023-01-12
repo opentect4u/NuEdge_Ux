@@ -95,7 +95,13 @@ table.table_Custome thead{  background: #3bb8b3; color: #fff;}
 
   .mat-dialog-actions.popupBoxSubmitSec {display: block; min-height: inherit;}
 
-.btn.cancelCusBtn{background: #eee; color: #333;}
+.btn.cancelCusBtn{
+  background: #eee; 
+  color: #333;
+  width: 100px;
+  font-weight: 500;
+  padding: 8px 10px;
+}
 .btn.cancelCusBtn:hover{background: #ccc; color: #333;}
 
 .mrgLeft{margin-left: 15px;}

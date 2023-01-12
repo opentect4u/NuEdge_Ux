@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   api_url:"https://my-json-server.typicode.com/Uxtrendz/apis/videoList",
-  apiUrl:"http://192.168.1.25/nuedge/api/v1"
+  apiUrl:"http://192.168.1.25/nuedge/api/v1",
+  clientdocUrl:"http://192.168.1.25/nuedge/public/client-doc"
 };
 
 /*

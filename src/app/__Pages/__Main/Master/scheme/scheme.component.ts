@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { map } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { ScmModificationComponent } from './scmModification/scmModification.component';
 
 @Component({
@@ -9,9 +11,8 @@ import { ScmModificationComponent } from './scmModification/scmModification.comp
 })
 export class SchemeComponent implements OnInit {
   __selectScheme:any=[];
-  constructor(private __dialog: MatDialog) { }
-  ngOnInit(): void {
-  }
+  constructor(private __dialog: MatDialog,private __dbIntr:DbIntrService) { }
+  ngOnInit(): void {this.getSchememaster();}
   getSearchItem(__ev) {
     this.__selectScheme.length = 0;
     if (__ev.flag == 'A') {
@@ -42,5 +43,10 @@ export class SchemeComponent implements OnInit {
         this.__selectScheme[this.__selectScheme.findIndex(x => x.id == dt.id)].product_id = dt?.product_id;
       }
     });
+  }
+  getSchememaster(){
+    this.__dbIntr.api_call(0,'/scheme',null).pipe(map((x:any) => x.data)).subscribe(res => {
+      this.__selectScheme = res;
+    })
   }
 }

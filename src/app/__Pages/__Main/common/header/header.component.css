@@ -1,0 +1,9 @@
+::ng-deep .mat-button-wrapper span{
+    color: #fff;
+    font-weight: 400;
+    font-size: 14px;
+}
+::ng-deep.mat-menu-panel {
+    width: 450px !important;
+    max-height: 500px!important;
+  }

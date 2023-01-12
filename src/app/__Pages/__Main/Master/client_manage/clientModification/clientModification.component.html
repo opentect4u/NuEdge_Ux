@@ -1,7 +1,9 @@
-<h2 mat-dialog-title>{{data.title}}</h2>
+<h2 mat-dialog-title class="modal-title">
+  {{data.title}}
+</h2>
 <mat-dialog-content>
   <form  [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm" autocomplete="off" ngNativeValidate>
-    <div class="row card_2">
+    <div class="row my-4">
       <div class="col-sm-6">
         <label for="clientName">Client Name <span class="text-danger">*</span></label>
         <input type="text" name="client_name" id="clientName" class="form-control" placeholder="Enter Client Name" formControlName="client_name">
@@ -17,7 +19,7 @@
         </div>
       </div>
     </div>
-    <div class="row card_2">
+    <div class="row my-4">
       <div class="col-sm-6">
         <label for="panNo">Pan No <span class="text-danger">*</span></label>
         <input type="text" name="pan" id="panNo" class="form-control" placeholder="Enter Pan No" formControlName="pan">
@@ -26,7 +28,7 @@
         </div>
       </div>
     </div>
-    <div class="row card_2">
+    <div class="row my-4">
       <div class="col-sm-6">
         <label for="mblNumber">Mobile Number <span class="text-danger">*</span></label>
         <input type="text" name="mobile" id="mblNumber" class="form-control" placeholder="Enter Mobile Number" formControlName="mobile">
@@ -42,7 +44,7 @@
         </div>
       </div>
     </div>
-    <div class="row card_2">
+    <div class="row my-4">
       <div class="col-sm-6">
         <label for="email">Email <span class="text-danger">*</span></label>
         <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email" formControlName="email">
@@ -58,7 +60,7 @@
         </div>
       </div>
     </div>
-    <div class="row card_2">
+    <div class="row my-4">
       <div class="col-sm-6">
         <label for="addr">Address Line 1 <span class="text-danger">*</span></label>
         <textarea cols="30" rows="4"  name="add_line_1" id="addr" class="form-control"  formControlName="add_line_1"></textarea>
@@ -74,7 +76,7 @@
         </div>
       </div>
     </div>
-    <div class="row card_2">
+    <div class="row my-4">
       <div class="col-sm-6">
         <label for="__state">State <span class="text-danger">*</span></label>
         <select name="state" id="__state" class="form-control" formControlName="state">
@@ -96,7 +98,7 @@
         </div>
       </div>
     </div>
-    <div class="row card_2">
+    <div class="row my-4">
       <div class="col-sm-6">
         <label for="__city">City / Village <span class="text-danger">*</span></label>
         <input type="text" name="city" id="__city" class="form-control" placeholder="Enter city or village" formControlName="city">

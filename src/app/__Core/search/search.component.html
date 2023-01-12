@@ -7,7 +7,7 @@
                   <a class="iconButton" (click)="navigate()"><i class="fa fa-long-arrow-left backIcon" aria-hidden="true"></i></a>
                   <span class="title">{{__pageTitle?.pageTitle}}</span>
                 </div>
-                <div class="processMain_2" __searchResVisibility (appOutsideClick) = "outsideClick($event)" *ngIf="__flag == 'Y'">
+                <div class="processMain_2" __searchResVisibility (appOutsideClick) = "outsideClick($event)">
                   <div class="searchDiv" >
                     <form [formGroup]="__SearchForm" autocomplete="off" >
                       <core-input [_type]="'search'" 
@@ -50,7 +50,7 @@
                   </div>
                 </div>
                 <div class="processMain_3 text-right" *ngIf="__flag == 'Y'">
-                  <button class="addBtn" (click)="addMasters(0)">
+                  <button class="addBtn roundedBtn" (click)="addMasters(0)">
                     <i class="fa fa-plus backIcon" aria-hidden="true"></i>
                     Add New
                   </button>

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { map } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 import { AMCModificationComponent } from './AMCModification/AMCModification.component';
 
 @Component({
@@ -9,8 +12,9 @@ import { AMCModificationComponent } from './AMCModification/AMCModification.comp
 })
 export class AMCComponent implements OnInit {
   __selectAMC:any=[];
-  constructor(private __dialog: MatDialog) { }
+  constructor(private __dialog: MatDialog,private __dbIntr: DbIntrService) { }
   ngOnInit(): void {
+    this.getAMCMaster();
   }
   getSearchItem(__ev) {
     this.__selectAMC.length = 0;
@@ -41,5 +45,10 @@ export class AMCComponent implements OnInit {
         this.__selectAMC[this.__selectAMC.findIndex(x => x.id == dt.id)].product_id = dt.product_id;
       }
     });
+  }
+  getAMCMaster(){
+    this.__dbIntr.api_call(0,'/amc',null).pipe(map((x:any) => x.data)).subscribe(res =>{
+      this.__selectAMC = res;
+    })
   }
 }

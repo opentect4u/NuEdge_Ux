@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'home-menuTiles',
@@ -8,9 +9,16 @@ import { Component, Input, OnInit } from '@angular/core';
 export class MenuTilesComponent implements OnInit {
   @Input() __items: any = [];
   @Input() __flag:string;
-  constructor() { }
+  constructor(private  __utility: UtiliService) { }
 
   ngOnInit() {
   }
-
+  navigate(__items){
+   console.log(__items);
+    if(this.__flag == 'BM'){
+      if(__items.url){
+        this.__utility.navigate(__items.url);
+      }
+    }
+  }
 }

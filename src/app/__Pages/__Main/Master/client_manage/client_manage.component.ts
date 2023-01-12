@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { map } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { ClientModificationComponent } from './clientModification/clientModification.component';
 
 @Component({
@@ -9,8 +11,8 @@ import { ClientModificationComponent } from './clientModification/clientModifica
 })
 export class Client_manageComponent implements OnInit {
   __selectClients: any = [];
-  constructor(private __dialog: MatDialog) { }
-  ngOnInit() {}
+  constructor(private __dialog: MatDialog,private __dbIntr: DbIntrService) { }
+  ngOnInit() {this.getClientMaster();}
   getSearchItem(__ev) {
     this.__selectClients.length = 0;
     if (__ev.flag == 'A') {
@@ -26,6 +28,7 @@ export class Client_manageComponent implements OnInit {
   openDialog(id, items) {
     const disalogConfig = new MatDialogConfig();
     disalogConfig.width = '95%';
+    disalogConfig.panelClass= 'fullscreen-dialog';
     disalogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Client Master' : 'Update Client Master',
@@ -37,6 +40,11 @@ export class Client_manageComponent implements OnInit {
         // this.__selectClients[this.__selectClients.findIndex(x => x.id == dt.id)].doc_type = dt.doc_type;
       }
     });
+  }
+  getClientMaster(){
+  this.__dbIntr.api_call(0,'/client',null).pipe(map((x:any) => x.data)).subscribe(res => {
+    this.__selectClients = res;
+  })
   }
   
 }

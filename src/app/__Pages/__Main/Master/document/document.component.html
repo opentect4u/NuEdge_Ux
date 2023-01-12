@@ -1,13 +1,13 @@
 <core-search 
 (__searchItem)="getSearchItem($event)" 
-[__flag]="'Y'" 
+[__flag]="'N'" 
 [__api_name]="'/documentsearch'"
 [__placeholder]="'Search by Name, Pan, Mobile, Email, DOB, Client code'">
 </core-search>
 
-<div class="card" *ngIf="__selectClients.length > 0">
+<div class="card" >
   <div class="card-body">
-    <table class="table">
+    <table class="table table_Custome" *ngIf="__documents.length > 0">
       <thead>
         <tr>
           <th>SL No.</th>
@@ -15,11 +15,12 @@
           <th>Name</th>
           <th>Pan</th>
           <th>Mobile</th>
-          <th>Action</th>
+          <th>Edit</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let __selectedItems of __selectClients;let i =index">
+        <tr *ngFor="let __selectedItems of __documents;let i =index">
            <td>{{i + 1}}</td>
            <td>{{__selectedItems.client_code}}</td>
            <td>{{__selectedItems.client_name}}</td>
@@ -30,6 +31,8 @@
             <a (click)="populateDT(__selectedItems)">
               <mat-icon class="edit_icon">edit</mat-icon>
             </a>
+           </td>
+           <td>
             <a>
               <mat-icon class="delete_icon">delete</mat-icon>
             </a>
@@ -37,5 +40,12 @@
         </tr>
       </tbody>
     </table>
+   
+     <div class="noDataAvailable" *ngIf="__documents.length == 0">
+      <h4 class="my-4">No Documents Available For This Client </h4>
+       <p class="my-4 text-muted">If there are any documents available, they will appear here </p>
+       <button class="btn addBtn" (click)="addMasters(0,'')">+ Add New</button>
+     </div>
+       
   </div>
 </div>

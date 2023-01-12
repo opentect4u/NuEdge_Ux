@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { map } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { SubcateModificationComponent } from './subcateModification/subcateModification.component';
 
 @Component({
@@ -9,9 +11,8 @@ import { SubcateModificationComponent } from './subcateModification/subcateModif
 })
 export class SubcategoryComponent implements OnInit {
   __selectSubCategory:any=[];
-  constructor(private __dialog: MatDialog) { }
-  ngOnInit(): void {
-  }
+  constructor(private __dialog: MatDialog,private __dbIntr:DbIntrService) { }
+  ngOnInit(): void {this.getCategorymaster();}
   getSearchItem(__ev) {
     this.__selectSubCategory.length = 0;
     if (__ev.flag == 'A') {
@@ -39,5 +40,10 @@ export class SubcategoryComponent implements OnInit {
         this.__selectSubCategory[this.__selectSubCategory.findIndex(x => x.id == dt.id)].subcategory_name = dt?.subcategory_name;
       }
     });
+  }
+  getCategorymaster(){
+    this.__dbIntr.api_call(0,'/subcategory',null).pipe(map((x:any) => x.data)).subscribe(res => {
+      this.__selectSubCategory = res;
+    })
   }
 }

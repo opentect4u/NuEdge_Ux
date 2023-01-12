@@ -9,14 +9,23 @@ import topmenu from '../../../../../assets/json/topNavigationmenu.json';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  __rtDt: any;
   __rightHeaderMenu: menuList[] = rightHeaderMenu;
   __top_menu: any[] = topmenu;
   constructor(private __utility:UtiliService) {
+    this.__utility.__route$.subscribe(res =>{
+      if(res){
+        console.log(res);
+        
+        this.__rtDt = res;
+      }
+    })
   }
 
   ngOnInit() {
   }
   navigate(__items){
+    console.log(__items);
     if(__items.url){
       this.__utility.navigate(__items.url);
     }

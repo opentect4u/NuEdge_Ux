@@ -1,9 +1,60 @@
 <h2 mat-dialog-title>{{data.title}}</h2>
 <mat-dialog-content>
+    
+  <form [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm">
+    <div class="row">
+      <div class="col-sm-12">
+        <label for="clName">Client Name</label>
+        <select name="clName" id="clName" formControlName="client_code" class="form-control" >
+         <option valie="">Select Client</option>
+         <option value="{{__client.client_code}}" *ngFor="let __client of __clMaster"> {{__client.client_name}}</option>
+        </select>
+      </div>
+        <table class="table table_Custome my-4">
+           <thead>
+            <tr>
+              <th>
+                Document type
+              </th>
+              <th>
+                Document
+              </th>
+              <th >
+                <mat-icon  (click)="addItem()" *ngIf="this.data.__docsDetail.length == 0">add</mat-icon>
+              </th>
+            </tr>
+           </thead>
+           <tbody  formArrayName="doc_dtls">
+              <tr  *ngFor="let item of __docs.controls; let i = index;">
+                <ng-container [formGroupName]="i">
+                  <td>
+                    <select name="_doc_type" id="_doc_type" formControlName="doc_type_id" class="form-control">
+                     <option value="">Select document type</option>
+                     <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input type="file" name="docFile" id="docFile" class="form-control" formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)">
+                  </td>
+                  <td>
+                    <ng-container  *ngIf="this.data.__docsDetail.length == 0">
+                      <mat-icon type="button" *ngIf="i > 0" (click)="removeDocument(i)">delete</mat-icon>
+                    </ng-container>
+                    <ng-container *ngIf="this.data.__docsDetail.length > 0">
+                       <!-- Showing Images -->
+                    </ng-container>
+                  </td>
+                </ng-container>
+              </tr>
+           </tbody>
+        </table>
+      </div>
+ 
+  </form>
 
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-  <button class="btn addBtn" mat-button>Submit</button>
+  <button class="btn addBtn" mat-button form="__clientForm"   [disabled]="__clientForm.invalid">Submit</button>
   <button class="btn cancelCusBtn mrgLeft" mat-dialog-close>Cancel</button>
 </mat-dialog-actions>
 <br clear="all">

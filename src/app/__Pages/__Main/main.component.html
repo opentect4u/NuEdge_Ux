@@ -1,4 +1,4 @@
 <common-header></common-header>
-<div class="container-fluid mainContainerSec" __MenuShow>
+<div class="container-fluid mainContainerSec" __MenuShow [ngClass]="{'mainContainerSecNoMenu':__rtDt?.id == 3}">
   <router-outlet></router-outlet>
 </div>
