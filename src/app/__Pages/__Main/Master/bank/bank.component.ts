@@ -26,14 +26,15 @@ export class BankComponent implements OnInit {
     this.openDialog(__items.id, __items);
   }
   openDialog(id, __items) {
-    const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '50%';
-    disalogConfig.data = {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '40%';
+    dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Bank' : 'Update Bank',
       items: __items
     };
-    const dialogref = this.__dialog.open(BankModificationComponent, disalogConfig);
+    dialogConfig.autoFocus = false;
+    const dialogref = this.__dialog.open(BankModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       if (dt?.id > 0) {
         this.__selectbnk[this.__selectbnk.findIndex(x => x.id == dt.id)].ifs_code= dt?.ifs_code;

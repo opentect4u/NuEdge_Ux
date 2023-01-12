@@ -6,6 +6,7 @@ import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SubcateModificationComponent } from './subcateModification/subcateModification.component';
+import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes =[{path:'',component:SubcategoryComponent}]
 
@@ -16,7 +17,8 @@ const routes: Routes =[{path:'',component:SubcategoryComponent}]
     RouterModule.forChild(routes),
     SearchModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonModule
   ],
   declarations: [SubcategoryComponent,SubcateModificationComponent]
 })

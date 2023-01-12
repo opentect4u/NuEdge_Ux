@@ -26,14 +26,15 @@ export class SchemeComponent implements OnInit {
     this.openDialog(__items.id, __items);
   }
   openDialog(id, __items) {
-    const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '60%';
-    disalogConfig.data = {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '70%';
+    dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Scheme' : 'Update Scheme',
       items: __items
     };
-    const dialogref = this.__dialog.open(ScmModificationComponent, disalogConfig);
+    dialogConfig.autoFocus = false;
+    const dialogref = this.__dialog.open(ScmModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       if (dt?.id > 0) {
         this.__selectScheme[this.__selectScheme.findIndex(x => x.id == dt.id)].category_id = dt?.category_id;

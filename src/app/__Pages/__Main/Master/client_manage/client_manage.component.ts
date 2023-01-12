@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { ClientModificationComponent } from './clientModification/clientModification.component';
@@ -10,40 +11,49 @@ import { ClientModificationComponent } from './clientModification/clientModifica
   styleUrls: ['./client_manage.component.css']
 })
 export class Client_manageComponent implements OnInit {
-  __selectClients: any = [];
+
+  __columns: string[] = ['sl_no', 'cl_code', 'cl_name', 'pan','mobile','edit','delete'];
+  __selectClients = new MatTableDataSource();
   constructor(private __dialog: MatDialog,private __dbIntr: DbIntrService) { }
   ngOnInit() {this.getClientMaster();}
   getSearchItem(__ev) {
-    this.__selectClients.length = 0;
     if (__ev.flag == 'A') {
       this.openDialog(__ev.id, '');
     }
-    else {
-      this.__selectClients.push(__ev.item);
+    else if(__ev.flag == 'F') {
+      this.__selectClients = new MatTableDataSource([__ev.item]);
+      this.__selectClients._updateChangeSubscription();
+    }
+    else{
+      this.getClientMaster();
+       this.__selectClients._updateChangeSubscription();
     }
   }
   populateDT(__items) {
     this.openDialog(__items.id, __items);
   }
   openDialog(id, items) {
-    const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '95%';
-    disalogConfig.panelClass= 'fullscreen-dialog';
-    disalogConfig.data = {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '98%';
+    dialogConfig.panelClass= 'fullscreen-dialog';
+    dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Client Master' : 'Update Client Master',
       items: items
     };
-    const dialogref = this.__dialog.open(ClientModificationComponent, disalogConfig);
+    dialogConfig.autoFocus=false;
+    const dialogref = this.__dialog.open(ClientModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
-      if (dt?.id > 0) {
-        // this.__selectClients[this.__selectClients.findIndex(x => x.id == dt.id)].doc_type = dt.doc_type;
+      if (dt) {
+        // this.__selectClients.push(dt);
+        this.__selectClients.data.push(dt);
+        this.__selectClients._updateChangeSubscription();
       }
     });
   }
   getClientMaster(){
   this.__dbIntr.api_call(0,'/client',null).pipe(map((x:any) => x.data)).subscribe(res => {
-    this.__selectClients = res;
+    this.__selectClients = new MatTableDataSource(res);
   })
   }
   

@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { RcvFormAdditionComponent } from './rcvFormAddition/rcvFormAddition.component';
 
 @Component({
   selector: 'app-RcvFrm',
@@ -9,63 +13,57 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
   styleUrls: ['./RcvFrm.component.css']
 })
 export class RcvFrmComponent implements OnInit {
-  __productMaster: any = [];
-  __empMaster: any = [];
-  __formTypeMaster: any=[];
 
-  __rcvForm = new FormGroup({
-    product_id: new FormControl('', [Validators.required]),
-    application_no: new FormControl(''),
-    form_type_id: new FormControl('', [Validators.required]),
-    pan_no: new FormControl('', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}')]),
-    mobile: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    euin_from: new FormControl('',[Validators.required]),
-    id:new FormControl('')
-  });
-  constructor(private dbIntr: DbIntrService) { }
+  __columns: string[] = ['sl_no', 'temp_tin_no', 'rcv_datetime', 'bu_type'];
+  __RcvForms = new MatTableDataSource();
+  constructor(
+    private __dialog: MatDialog,
+    private __dbIntr: DbIntrService,
+    private __utility: UtiliService
+    ) { }
 
   ngOnInit() {
-  this.getProductMaster();
-  this.getEmployeeMaster();
-  }
-  ngAfterViewInit(){
-    this.__rcvForm.controls["product_id"].valueChanges.subscribe(res =>{
-      this.getformTypeByProductId(res);
-    })
-  }
-  recieveForm() {
-    if (this.__rcvForm.invalid) {
-      return;
-    }
-    this.dbIntr.api_call(1,'/formreceivedAdd',this.__rcvForm.value).pipe(map((x: any) => x.suc)).subscribe(res =>{
-      console.log(res);
-      if(res == 1){
-        //Saved Success-fully
-        this.__rcvForm.reset();
-      }
-    })
+  this.getRvcFormMaster();
   }
   getSearchItem(__ev) {
-      console.log(__ev);
+    if(__ev.flag == 'A'){
+      this.__dbIntr.api_call(0,'/formreceivedshow',null).pipe((map((x: any) => x.data))).subscribe( res =>{
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.width = '98%';
+        dialogConfig.panelClass= 'fullscreen-dialog';
+        dialogConfig.data = {
+          id: 0,
+          title: 'Form Recieve',
+          data:res
+        };
+        dialogConfig.autoFocus = false;
+        dialogConfig.autoFocus=false;
+        const dialogref = this.__dialog.open(RcvFormAdditionComponent, dialogConfig);
+        dialogref.afterClosed().subscribe(dt => {
+          if (dt) {
+            console.log(dt);
+            this.__RcvForms.data.push(dt);
+            this.__RcvForms._updateChangeSubscription();
+            this.__utility.showSnackbar('Form Recieved Succssfully','');
+          }
+        });
+      })
+     
+    }
+    else if(__ev.flag == 'F'){
+      // console.log(__ev.item);
+      this.__RcvForms = new MatTableDataSource([__ev.item]);
+    }
+    else{
+      this.getRvcFormMaster();
+       this.__RcvForms._updateChangeSubscription();
+    }
   }
 
-  getProductMaster() {
-    this.dbIntr.api_call(0, '/product', null).pipe(map((x: any) => x.data)).subscribe(res => {
-      this.__productMaster = res;
+  getRvcFormMaster(){
+    this.__dbIntr.api_call(0,'/formreceived',null).pipe(map((x: any) => x.data)).subscribe(res => {
+      // console.log(res);
+      this.__RcvForms = new MatTableDataSource(res);
     })
-  }
-  getEmployeeMaster(){
-    this.dbIntr.api_call(0, '/employee', null).pipe(map((x: any) => x.data)).subscribe(res => {
-      this.__empMaster = res;
-    })
-  }
-
-  getformTypeByProductId(product_id){
-  this.dbIntr.api_call(0,'/formtypeUsingPro','product_id='+product_id).pipe(map((x:any) => x.data)).subscribe(res =>{
-     console.log(res);
-    this.__formTypeMaster = res;
-  })
-
   }
 }

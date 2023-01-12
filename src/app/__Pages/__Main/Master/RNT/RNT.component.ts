@@ -26,14 +26,15 @@ export class RNTComponent implements OnInit {
     this.openDialog(__items.id, __items.rnt_name);
   }
   openDialog(id, rnt_name) {
-    const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '40%';
-    disalogConfig.data = {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '40%';
+    dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add RNT' : 'Update RNT',
       rnt_name: rnt_name
     };
-    const dialogref = this.__dialog.open(RNTmodificationComponent, disalogConfig);
+    dialogConfig.autoFocus = false;
+    const dialogref = this.__dialog.open(RNTmodificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
     console.log(dt);
     

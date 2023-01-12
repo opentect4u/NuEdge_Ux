@@ -57,7 +57,10 @@ export class SearchComponent implements OnInit {
   navigate(){
    this.__loc.back();
   }
-  addMasters(__id: number){this.generateData(__id,'A','');}
+  addMasters(__id: number){this.generateData(__id,'A','');
+ console.log(__id);
+ 
+}
   generateData(_id: number,__flag: string,__items){
     var dt ={
       id:_id,
@@ -65,5 +68,14 @@ export class SearchComponent implements OnInit {
       item:__items
     }
     this.__searchItem.emit(dt);
+  }
+  ClearText(){
+    var dt ={
+      id:0,
+      flag:'C',
+      item:''
+    }
+    this.__searchItem.emit(dt); 
+    this.__SearchForm.controls['searchItem'].patchValue('');
   }
 }

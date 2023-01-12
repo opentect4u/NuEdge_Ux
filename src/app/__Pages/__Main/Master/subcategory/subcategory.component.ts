@@ -26,14 +26,15 @@ export class SubcategoryComponent implements OnInit {
     this.openDialog(__items.id, __items);
   }
   openDialog(id, __items) {
-    const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '30%';
-    disalogConfig.data = {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '40%';
+    dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Sub-Category' : 'Update Sub-Category',
       items: __items
     };
-    const dialogref = this.__dialog.open(SubcateModificationComponent, disalogConfig);
+    dialogConfig.autoFocus = false;
+    const dialogref = this.__dialog.open(SubcateModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       if (dt?.id > 0) {
         this.__selectSubCategory[this.__selectSubCategory.findIndex(x => x.id == dt.id)].category_id = dt?.category_id;

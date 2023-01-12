@@ -1,8 +1,15 @@
-<h2 mat-dialog-title>{{data.title}}</h2>
+<!-- <h2 mat-dialog-title>{{data.title}}</h2> -->
+<div mat-dialog-title class="dialog-title">
+  <h2>{{data.title}}</h2>
+  <button mat-icon-button  [mat-dialog-close]="true">
+    <mat-icon >close</mat-icon>
+  </button>
+</div>
+
 <mat-dialog-content>
   <form  [formGroup]="__categoryForm" (ngSubmit)="submit()" id="__categoryForm" autocomplete="off" ngNativeValidate>
     <div class="row">
-      <div class="col-sm-12 card_2">
+      <div class="col-sm-12 my-3">
         <label for="productName">Product <span class="text-danger">*</span></label>
          <select class="form-control" formControlName="product_id" id="productName">
            <option value="">Select Product</option>
@@ -12,7 +19,7 @@
           <span class="invalid-feedback" *ngIf="(__categoryForm.get('product_id')).errors?.required">*Please provide product name</span>
         </div>
       </div>
-      <div class="col-sm-12 card_2">
+      <div class="col-sm-12 my-3">
         <label for="catName">Category <span class="text-danger">*</span></label>
         <input type="text" name="cat_name" id="catName" class="form-control" placeholder="Enter Category" formControlName="cat_name">
         <div class="invalid-feedback" *ngIf="__categoryForm.get('cat_name').invalid && (__categoryForm.get('cat_name').dirty || __categoryForm.get('cat_name').touched)">
@@ -23,7 +30,7 @@
 </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-  <button class="btn cancelCusBtn mrgLeft" mat-dialog-close>Cancel</button>
-  <button class="btn addBtn" mat-button  form="__categoryForm" [disabled]="this.__categoryForm.invalid">Submit</button>
+  <!-- <button class="btn cancelCusBtn mrgLeft" mat-dialog-close>Cancel</button> -->
+  <button class="btn addBtn"  form="__categoryForm" [disabled]="this.__categoryForm.invalid">Submit</button>
 </mat-dialog-actions>
 <br clear="all">

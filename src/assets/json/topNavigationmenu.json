@@ -50,7 +50,7 @@
     },
     {
         "id": 2,
-        "menu_name": "Recieve Form",
+        "menu_name": "Form Recieve",
         "has_submenu": "N",
         "sub_menu": [],
         "url": "/main/rcvForm"

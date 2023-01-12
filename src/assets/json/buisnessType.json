@@ -1,0 +1,11 @@
+[
+    {
+        "id":"D","bu_type":"B2C - Direct"
+    },
+    {
+        "id":"I","bu_type":"B2C - Indirect"
+    },
+    {
+        "id":"B","bu_type":"B2B"
+    }
+]

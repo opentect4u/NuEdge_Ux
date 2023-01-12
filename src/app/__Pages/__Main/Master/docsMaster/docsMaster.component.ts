@@ -26,14 +26,15 @@ export class DocsMasterComponent implements OnInit {
     this.openDialog(__items.id, __items.doc_type);
   }
   openDialog(id, doc_type) {
-    const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '50%';
-    disalogConfig.data = {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '40%';
+    dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Document Type' : 'Update Document Type',
       doc_type: doc_type
     };
-    const dialogref = this.__dialog.open(DocsModificationComponent, disalogConfig);
+    dialogConfig.autoFocus = false;
+    const dialogref = this.__dialog.open(DocsModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       if (dt?.id > 0) {
         this.__selectDocs[this.__selectDocs.findIndex(x => x.id == dt.id)].doc_type = dt.doc_type;

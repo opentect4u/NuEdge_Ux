@@ -19,10 +19,13 @@
                       ></core-input>
                     </form>
                     <i class="fa fa-search searchIcon"  aria-hidden="true"></i>
+                    <i class="fa fa-times clearIcon" (click)="ClearText()" *ngIf="$any(__SearchForm.controls['searchItem']).value != ''" aria-hidden="true"></i>
                     <div class="serachresult" #searchResult>
                       <ul *ngIf="__items.length > 0">
                         <li *ngFor="let items of __items" (click)="getItems(items)">
                           <a *ngIf="__pageTitle?.id  == 4 || __pageTitle?.id  == 18">{{items.client_code}} | {{items.client_name}}  | {{items.pan}} | {{items.mobile}}</a>
+                          <!-- <a *ngIf="">{{items.client_code}} | {{items.client_name}}  | {{items.pan}} | {{items.mobile}}</a> -->
+                          <a *ngIf="__pageTitle?.id  == 19">{{items.temp_tin_id}} | {{items.product_name}}  | {{items.pan_no}}</a>
                           <a *ngIf="__pageTitle?.id  == 5">{{items.rnt_name}}</a>
                           <a *ngIf="__pageTitle?.id  == 6">{{items.product_name}}</a>
                           <a *ngIf="__pageTitle?.id  == 7">{{items.amc_name}}</a>

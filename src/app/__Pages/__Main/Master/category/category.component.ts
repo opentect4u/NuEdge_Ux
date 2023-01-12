@@ -28,14 +28,15 @@ export class CategoryComponent implements OnInit {
     this.openDialog(__items.id, __items);
   }
   openDialog(id, __items) {
-    const disalogConfig = new MatDialogConfig();
-    disalogConfig.width = '30%';
-    disalogConfig.data = {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '40%';
+    dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Category' : 'Update Category',
       items: __items
     };
-    const dialogref = this.__dialog.open(CategoryModificationComponent, disalogConfig);
+    dialogConfig.autoFocus = false;
+    const dialogref = this.__dialog.open(CategoryModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       console.log(dt);
       if (dt?.id > 0) {

@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { delay } from 'rxjs/operators';
@@ -13,6 +14,7 @@ export class UtiliService {
   private __renderer: Renderer2;
   public readonly __route$ = this.__route.asObservable().pipe(delay(1));
   constructor(private __router: Router,
+    private _snackBar: MatSnackBar,
     private _renderer: RendererFactory2,
     @Inject(DOCUMENT) private __docs: Document) {
     this.__renderer = _renderer.createRenderer(null, null);
@@ -42,6 +44,13 @@ export class UtiliService {
     if (<HTMLElement>this.__docs.getElementById('mainJquery')) {
       this.__docs.getElementById('mainJquery').remove();
     }
+  }
+
+  showSnackbar(__msg,icon_name){
+    let config = new MatSnackBarConfig();
+    config.duration = 5*2000;
+    // config.duration = 10;
+    this._snackBar.open(__msg,'',config);
   }
 
 }

@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { dates } from 'src/app/__Utility/disabledt';
 
 @Component({
   selector: 'master-clientModification',
@@ -10,28 +12,33 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
   styleUrls: ['./clientModification.component.css']
 })
 export class ClientModificationComponent implements OnInit {
+  __maxDt = dates.disabeldDates();
+  __stateMaster: any=[];
   __clientForm = new FormGroup({
     client_name: new FormControl('', [Validators.required]),
     dob: new FormControl('', Validators.required),
-    pan: new FormControl('', Validators.required),
-    mobile: new FormControl('', Validators.required),
-    sec_mobile: new FormControl(''),
+    pan: new FormControl('', [Validators.required,Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'),Validators.minLength(10),Validators.maxLength(10)]),
+    mobile: new FormControl('', 
+    [Validators.required,Validators.minLength(10),Validators.maxLength(10),Validators.pattern("^[0-9]*$")]
+    ),
+    sec_mobile: new FormControl('',[Validators.minLength(10),Validators.maxLength(10),Validators.pattern("^[0-9]*$")]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    sec_email: new FormControl('', [Validators.email]),
+    sec_email: new FormControl('',[Validators.email]),
     add_line_1: new FormControl('', [Validators.required]),
     add_line_2: new FormControl(''),
     city: new FormControl('', Validators.required),
     dist: new FormControl('', Validators.required),
     state: new FormControl('', Validators.required),
-    pincode: new FormControl('', Validators.required),
+    pincode: new FormControl('', [Validators.required,Validators.minLength(6),Validators.maxLength(6)]),
     id: new FormControl(0)
   })
   constructor(
     public dialogRef: MatDialogRef<ClientModificationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
+    private __utility: UtiliService,
     public __dialog: MatDialog) {
-    console.log(this.data);
+    // console.log(this.data);
     if (this.data.id > 0) {
       this.__clientForm.setValue({
         client_name: this.data.items.client_name,
@@ -53,19 +60,29 @@ export class ClientModificationComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getStateMaster();
   }
   submit() {
     if (this.__clientForm.invalid) {
       return;
     }
-    this.__dbIntr.api_call(1, '/clientAddEdit', this.__clientForm.value).pipe(map((x: any) => x.suc)).subscribe(res => {
+    this.__dbIntr.api_call(1, '/clientAddEdit', this.__clientForm.value).subscribe((res: any) => {
       console.log(res);
-      if (res == 1) {
-        this.dialogRef.close(this.__clientForm.value);
+      if (res.suc == 1) {
+        this.dialogRef.close(res.data);
+        console.log(res.data.client_code);
+        this.__utility.showSnackbar('Client with code '+ res.data.client_code +' has been added successfully','');
       }
     })
-
   }
-
+  preventNonumeric(__ev){
+    dates.numberOnly(__ev);
+  }
+  getStateMaster(){
+    this.__dbIntr.api_call(0,'/states',null).pipe(map((x: any) => x.data)).subscribe(res =>{
+      // console.log(res);
+      this.__stateMaster = res;
+    })
+  }
 
 }

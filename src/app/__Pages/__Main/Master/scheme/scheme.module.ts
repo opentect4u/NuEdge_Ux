@@ -6,6 +6,7 @@ import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ScmModificationComponent } from './scmModification/scmModification.component';
+import { MatButtonModule } from '@angular/material/button';
 
 
 const routes: Routes =[{path:'',component:SchemeComponent}]
@@ -17,7 +18,8 @@ const routes: Routes =[{path:'',component:SchemeComponent}]
     RouterModule.forChild(routes),
     SearchModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonModule
   ],
   declarations: [SchemeComponent,ScmModificationComponent]
 })

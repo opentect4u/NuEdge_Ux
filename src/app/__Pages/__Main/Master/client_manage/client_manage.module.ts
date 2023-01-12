@@ -6,6 +6,8 @@ import { SearchModule } from 'src/app/__Core/search/search.module';
 import { ClientModificationComponent } from './clientModification/clientModification.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 const routes: Routes = [{path:'',component:Client_manageComponent}]
 
@@ -15,7 +17,9 @@ const routes: Routes = [{path:'',component:Client_manageComponent}]
     RouterModule.forChild(routes),
     SearchModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonModule,
+    MatTableModule
   ],
   declarations: [Client_manageComponent,ClientModificationComponent]
 })

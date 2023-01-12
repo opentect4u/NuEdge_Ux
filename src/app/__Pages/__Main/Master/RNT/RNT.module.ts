@@ -6,6 +6,7 @@ import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RNTmodificationComponent } from './RNTmodification/RNTmodification.component';
 import {MatIconModule} from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 const __routes: Routes = [{ path: '', component: RNTComponent }]
 
 
@@ -15,7 +16,8 @@ const __routes: Routes = [{ path: '', component: RNTComponent }]
     RouterModule.forChild(__routes),
     SearchModule,
     MatDialogModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule
   ],
   declarations: [RNTComponent, RNTmodificationComponent]
 })

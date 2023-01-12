@@ -6,6 +6,7 @@ import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BankModificationComponent } from './bankModification/bankModification.component';
+import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes = [{path:'',component:BankComponent}]
 
@@ -15,7 +16,8 @@ const routes: Routes = [{path:'',component:BankComponent}]
     SearchModule,
     MatIconModule,
     MatDialogModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    MatButtonModule
   ],
   declarations: [BankComponent,BankModificationComponent]
 })

@@ -1,95 +1,49 @@
   <core-search 
   [__flag]="'Y'"
-  (__searchRlt)="getSearchItem($event)"
+  (__searchItem)="getSearchItem($event)"
   [__api_name]="'/formreceived'"
   [__placeholder]="'Search by temporary TIN number, pan, mobile, email, application number'"
   ></core-search>
-<div class="card card_2">
-  <div class="card-body">
-    <form  [formGroup]="__rcvForm" (ngSubmit)="recieveForm()" ngNativeValidate autocomplete="off">
-    <div class="row form-group mb-2">
-      <div class="col-sm-1"></div>
-      <div class="col-sm-5 ">
-        <label for="PrdType">Product Type <span class="text-danger">*</span></label>
-        <select name="prdType" class="form-control" id="PrdType" formControlName="product_id">
-          <option value="">Select Product Type</option>
-        <option *ngFor="let __prd of __productMaster" value="{{__prd.id}}">{{__prd.product_name}}</option>
-        </select>
-        <div class="invalid-feedback" *ngIf="__rcvForm.get('product_id').invalid && (__rcvForm.get('product_id').dirty || __rcvForm.get('product_id').touched)">
-          <span class="invalid-feedback" *ngIf="(__rcvForm.get('product_id')).errors?.required">*Please provide product type</span>
-        </div>
-      </div>
-      <div class="col-sm-5 ">
-        <label for="FrmType">Form Type <span class="text-danger">*</span></label>
-        <select name="frmType" class="form-control" id="FrmType" formControlName="form_type_id">
-          <option value="">Select Form Type</option>
-          <option *ngFor="let __formType of __formTypeMaster" value="{{__formType.id}}">{{__formType.form_name}}</option>
-        </select>
-        <div class="invalid-feedback" *ngIf="__rcvForm.get('form_type_id').invalid && (__rcvForm.get('form_type_id').dirty || __rcvForm.get('form_type_id').touched)">
-          <span class="invalid-feedback" *ngIf="(__rcvForm.get('form_type_id')).errors?.required">*Please provide form type</span>
-        </div>
-      </div>     
-      <div class="col-sm-1"></div>
-    </div>  
-    <div class="row form-group mb-2">      
-      <div class="col-sm-1"></div>
-      <div class="col-sm-5 ">
-        <label for="AplNumber">Application Number</label>
-        <input type="text" name="aplNumber" id="AplNumber" class="form-control" formControlName="application_no">  
-      </div>
-      <div class="col-sm-5 ">
-        <label for="employee">Recieve From <span class="text-danger">*</span></label>
-        <select name="euin_from" class="form-control" id="employee" formControlName="euin_from">
-          <option value="">Select Employee</option>
-        <option *ngFor="let __emp of __empMaster" value="{{__emp.emp_code}}">{{__emp.emp_name}}</option>
-        </select>
-        <div class="invalid-feedback" *ngIf="__rcvForm.get('euin_from').invalid && (__rcvForm.get('euin_from').dirty || __rcvForm.get('euin_from').touched)">
-          <span class="invalid-feedback" *ngIf="(__rcvForm.get('euin_from')).errors?.required">*Please provide recieve from</span>
-        </div>
-      </div>
-      <div class="col-sm-1"></div>
-    </div>
-    <div class="row form-group mb-2">      
-      <div class="col-sm-1"></div>
-      <div class="col-sm-5 ">
-        <label for="PanNumber">Pan No <span class="text-danger">*</span></label>
-        <input type="text" placeholder="eg. ABCDE1234E" name="panNumber" id="PanNumber" class="form-control" formControlName="pan_no">  
-      <div class="invalid-feedback" *ngIf="__rcvForm.get('pan_no').invalid && (__rcvForm.get('pan_no').dirty || __rcvForm.get('pan_no').touched)">
-        <span class="invalid-feedback" *ngIf="(__rcvForm.get('pan_no')).errors?.required">*Please provide pan number
-        </span>
-        <span class="invalid-feedback" *ngIf="(__rcvForm.get('pan_no')).errors?.pattern">*Please provide valid pan
-          Number</span>
-        </div>  
-      </div>
-      <div class="col-sm-5 ">
-        <label for="MblNumber">Mobile Number <span class="text-danger">*</span></label>
-        <input type="text" name="mblNumber" id="MblNumber" class="form-control" formControlName="mobile"> 
-        <div class="invalid-feedback" *ngIf="__rcvForm.get('mobile').invalid && (__rcvForm.get('mobile').dirty || __rcvForm.get('mobile').touched)">
-           <span class="invalid-feedback" *ngIf="(__rcvForm.get('mobile')).errors?.required">*Please provide mobile number</span>
-        </div> 
-      </div>
-      <div class="col-sm-1"></div>
-    </div>
-    <div class="row form-group">
-      <div class="col-sm-1"></div>
-      <div class="col-sm-5">
-        <label for="EmlId">Email <span class="text-danger">*</span></label>
-        <input type="text" name="emlId" id="EmlId" class="form-control" formControlName="email">  
-        <div class="invalid-feedback" *ngIf="__rcvForm.get('email').invalid && (__rcvForm.get('email').dirty || __rcvForm.get('email').touched)">
-          <span class="invalid-feedback" *ngIf="(__rcvForm.get('email')).errors?.required">*Please provide email</span>
-          <span class="invalid-feedback" *ngIf="(__rcvForm.get('email')).errors?.email">*Please provide valid email</span>
-        </div> 
-      </div>
-      <div class="col-sm-5"></div>
-      <div class="col-sm-1"></div>
-    </div>
-    <div class="row">
-      <div class="col-sm-1"></div>
-       <div class="col-sm-10">
-          <input type="submit" value="SUBMIT" class="btn addBtn" [disabled]="__rcvForm.invalid">
-       </div>
-    </div>
-  </form>
-  </div>
+<!-- <div class="card mt-4">
+  <div class="card-body"> -->
+   
+    
+  <table mat-table [dataSource]="__RcvForms" class="mat-elevation-z3">
+    <!-- Sl No. -->
+    <ng-container matColumnDef="sl_no">
+      <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+      <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+    </ng-container>
+
+      <!-- Recieve Date Time -->
+      <ng-container matColumnDef="rcv_datetime">
+        <th mat-header-cell *matHeaderCellDef>Recieved Date Time</th>
+        <td mat-cell *matCellDef="let element">{{element.rec_datetime | date:'dd/MM/YYYY h:mma'}}</td>
+      </ng-container>
+
+
+    <!--Temporary TIN No.-->
+    <ng-container matColumnDef="temp_tin_no">
+      <th mat-header-cell *matHeaderCellDef>Temporary TIN No.</th>
+      <td mat-cell *matCellDef="let element">{{element.temp_tin_id}}</td>
+    </ng-container>
+  
+
+  
+    <!-- Buisness Type-->
+    <ng-container matColumnDef="bu_type">
+      <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+      <td mat-cell *matCellDef="let element">{{element.bu_type  == 'D' ? 'B2C - Direct' : element.bu_type  == 'I' ? 'B2C - Indirect' : 'B2B'}}</td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="__columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data found</td>
+    </tr>
+  </table>
+   
+<!-- 
 </div>
+</div> -->
 
