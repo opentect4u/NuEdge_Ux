@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { SubcateModificationComponent } from './subcateModification/subcateModification.component';
@@ -10,16 +11,19 @@ import { SubcateModificationComponent } from './subcateModification/subcateModif
   styleUrls: ['./subcategory.component.css']
 })
 export class SubcategoryComponent implements OnInit {
-  __selectSubCategory:any=[];
+  __columns: string[] = ['sl_no','subcat_name','edit','delete'];
+  __selectSubCategory= new MatTableDataSource();
   constructor(private __dialog: MatDialog,private __dbIntr:DbIntrService) { }
-  ngOnInit(): void {this.getCategorymaster();}
+  ngOnInit(): void {this.getSubCategorymaster();}
   getSearchItem(__ev) {
-    this.__selectSubCategory.length = 0;
     if (__ev.flag == 'A') {
       this.openDialog(__ev.id, '');
     }
-    else {
-      this.__selectSubCategory.push(__ev.item);
+    else if(__ev.flag == 'F'){
+      this.__selectSubCategory = new MatTableDataSource([__ev.item]);
+    }
+    else{
+      this.getSubCategorymaster();
     }
   }
   populateDT(__items) {
@@ -36,15 +40,32 @@ export class SubcategoryComponent implements OnInit {
     dialogConfig.autoFocus = false;
     const dialogref = this.__dialog.open(SubcateModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
-      if (dt?.id > 0) {
-        this.__selectSubCategory[this.__selectSubCategory.findIndex(x => x.id == dt.id)].category_id = dt?.category_id;
-        this.__selectSubCategory[this.__selectSubCategory.findIndex(x => x.id == dt.id)].subcategory_name = dt?.subcategory_name;
+      if (dt) {
+        if(dt.id > 0){
+            this.updateRow(dt.data);
+        }
+        else{
+          this.addRow(dt.data);
+        }
       }
     });
   }
-  getCategorymaster(){
+  getSubCategorymaster(){
     this.__dbIntr.api_call(0,'/subcategory',null).pipe(map((x:any) => x.data)).subscribe(res => {
-      this.__selectSubCategory = res;
+      this.__selectSubCategory = new MatTableDataSource(res);
     })
+  }
+  updateRow(row_obj) {
+    this.__selectSubCategory.data = this.__selectSubCategory.data.filter((value: any, key) => {
+      if (value.id == row_obj.id) {
+        value.subcategory_name = row_obj.subcategory_name;
+        value.category_id = row_obj.category_id
+      }
+      return true;
+    });
+  }
+  addRow(row_obj) {
+    this.__selectSubCategory.data.push(row_obj);
+    this.__selectSubCategory._updateChangeSubscription();
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
@@ -10,16 +11,22 @@ import { DocsModificationComponent } from './docsModification/docsModification.c
   styleUrls: ['./docsMaster.component.css']
 })
 export class DocsMasterComponent implements OnInit {
-  __selectDocs: any = [];
+  __columns: string[] = ['sl_no','doc_type','edit','delete'];
+
+  __selectDocs = new  MatTableDataSource();
   constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService) { }
   ngOnInit() {this.getDocumentmaster();}
   getSearchItem(__ev) {
-    this.__selectDocs.length = 0;
+    // this.__selectDocs.length = 0;
     if (__ev.flag == 'A') {
       this.openDialog(__ev.id, '');
     }
-    else {
-      this.__selectDocs.push(__ev.item);
+    else if(__ev.flag == 'F'){
+      // this.__selectDocs.push(__ev.item);
+      this.__selectDocs = new MatTableDataSource([__ev.item]);
+    }
+    else{
+      this.getDocumentmaster();
     }
   }
   populateDT(__items) {
@@ -36,14 +43,31 @@ export class DocsMasterComponent implements OnInit {
     dialogConfig.autoFocus = false;
     const dialogref = this.__dialog.open(DocsModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
-      if (dt?.id > 0) {
-        this.__selectDocs[this.__selectDocs.findIndex(x => x.id == dt.id)].doc_type = dt.doc_type;
+      if (dt) {
+        if(dt?.id > 0){
+           this.updateRow(dt.data);
+        }
+        else{
+          this.addRow(dt.data);
+        }
       }
     });
   }
   getDocumentmaster(){
     this.__dbIntr.api_call(0,'/documenttype',null).pipe(map((x:any) => x.data)).subscribe(res => {
-      this.__selectDocs = res;
+      this.__selectDocs = new MatTableDataSource(res);
     })
+  }
+  updateRow(row_obj) {
+    this.__selectDocs.data = this.__selectDocs.data.filter((value: any, key) => {
+      if (value.id == row_obj.id) {
+        value.doc_type = row_obj.doc_type;
+      }
+      return true;
+    });
+  }
+  addRow(row_obj) {
+    this.__selectDocs.data.push(row_obj);
+    this.__selectDocs._updateChangeSubscription();
   }
 }

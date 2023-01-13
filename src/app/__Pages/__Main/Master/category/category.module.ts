@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CategoryModificationComponent } from './categoryModification/categoryModification.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 
 const routes:Routes = [{path:'',component:CategoryComponent}]
@@ -19,7 +20,8 @@ const routes:Routes = [{path:'',component:CategoryComponent}]
     SearchModule,
     MatIconModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   declarations: [CategoryComponent,CategoryModificationComponent]
 })

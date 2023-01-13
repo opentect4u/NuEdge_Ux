@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DocsMasterComponent } from './docsMaster.component';
+import { KycComponent } from './kyc.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
+import { KyModificationComponent } from './kyModification/kyModification.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { DocsModificationComponent } from './docsModification/docsModification.component';
-import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-const routes: Routes =[{path:'',component:DocsMasterComponent}]
+import { MatButtonModule } from '@angular/material/button';
+
+const routes: Routes = [{ path: '', component: KycComponent }]
+
 @NgModule({
   imports: [
     CommonModule,
@@ -16,13 +18,14 @@ const routes: Routes =[{path:'',component:DocsMasterComponent}]
     RouterModule.forChild(routes),
     MatDialogModule,
     MatIconModule,
-    MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatButtonModule
   ],
-  declarations: [DocsMasterComponent,DocsModificationComponent]
+  declarations: [KycComponent,KyModificationComponent]
 })
-export class DocsMasterModule { 
+export class KycModule {
+
   constructor() {
-    console.log("Document Master Module Loaded");
+    console.log('Kyc Module Loaded');
   }
 }

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'master-categoryModification',
@@ -18,6 +19,7 @@ export class CategoryModificationComponent implements OnInit {
   })
   constructor(
     public dialogRef: MatDialogRef<CategoryModificationComponent>,
+    private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog) {   
@@ -36,10 +38,11 @@ export class CategoryModificationComponent implements OnInit {
     if (this.__categoryForm.invalid) {
       return;
     }
-    this.__dbIntr.api_call(1, '/categoryAddEdit', this.__categoryForm.value).pipe(map((x: any) => x.suc)).subscribe(res => {
-      if (res == 1) {
-        this.dialogRef.close(this.__categoryForm.value);
+    this.__dbIntr.api_call(1, '/categoryAddEdit', this.__categoryForm.value).subscribe((res: any) => {
+      if (res.suc == 1) {
+        this.dialogRef.close({id:this.data.id,data:res.data});
       }
+      this.__utility.showSnackbar(this.data.id > 0 ? 'Category updated successfully' : 'Category added successfully', '');
     })
   }
   getProductMaster() {

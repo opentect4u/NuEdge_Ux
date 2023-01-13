@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SubcateModificationComponent } from './subcateModification/subcateModification.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 const routes: Routes =[{path:'',component:SubcategoryComponent}]
 
@@ -18,7 +19,8 @@ const routes: Routes =[{path:'',component:SubcategoryComponent}]
     SearchModule,
     MatIconModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   declarations: [SubcategoryComponent,SubcateModificationComponent]
 })

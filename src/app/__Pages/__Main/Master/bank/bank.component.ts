@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { map } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { BankModificationComponent } from './bankModification/bankModification.component';
 
 @Component({
@@ -8,18 +11,20 @@ import { BankModificationComponent } from './bankModification/bankModification.c
   styleUrls: ['./bank.component.css']
 })
 export class BankComponent implements OnInit {
-
-  __selectbnk:any=[];
-  constructor(private __dialog: MatDialog) { }
-  ngOnInit(): void {
-  }
+  __columns: string[] = ['sl_no','bank_name','edit','delete'];
+  __selectbnk = new MatTableDataSource();
+  constructor(private __dialog: MatDialog,private __dbIntr: DbIntrService) { }
+  ngOnInit(): void {this.getBankMaster();}
   getSearchItem(__ev) {
-    this.__selectbnk.length = 0;
+    // this.__selectbnk.length = 0;
     if (__ev.flag == 'A') {
       this.openDialog(__ev.id, '');
     }
-    else {
-      this.__selectbnk.push(__ev.item);
+    else if(__ev.flag == 'F'){
+      this.__selectbnk = new MatTableDataSource([__ev.itmm]);
+    }
+    else{
+      this.getBankMaster();
     }
   }
   populateDT(__items) {
@@ -36,10 +41,35 @@ export class BankComponent implements OnInit {
     dialogConfig.autoFocus = false;
     const dialogref = this.__dialog.open(BankModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
-      if (dt?.id > 0) {
-        this.__selectbnk[this.__selectbnk.findIndex(x => x.id == dt.id)].ifs_code= dt?.ifs_code;
-        this.__selectbnk[this.__selectbnk.findIndex(x => x.id == dt.id)].bank_name = dt?. bank_name;
+      if (dt) {
+        if(dt?.id > 0){
+          this.updateRow(dt.data);
+        }
+        else{
+          this.addRow(dt.data);
+        }
       }
     });
+  }
+  getBankMaster(){
+    this.__dbIntr.api_call(0,'/depositbank',null).pipe((map((x: any)=> x.data))).subscribe(res => {
+     this.__selectbnk =new MatTableDataSource(res);
+    })
+  }
+  updateRow(row_obj) {
+    console.log(row_obj);
+    
+    this.__selectbnk.data = this.__selectbnk.data.filter((value: any, key) => {
+      if (value.id == row_obj.id) {
+        value.bank_name = row_obj.bank_name;
+        value.ifs_code = row_obj.ifs_code;
+
+      }
+      return true;
+    });
+  }
+  addRow(row_obj) {
+    this.__selectbnk.data.push(row_obj);
+    this.__selectbnk._updateChangeSubscription();
   }
 }

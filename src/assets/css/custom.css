@@ -33,7 +33,7 @@
     padding: 1.25rem 1.75rem;
     flex: 1 1 auto;
     padding: 1.25rem;
-    box-shadow: 0 0 3px 2px #ece9e9;
+    /* box-shadow: 0 0 3px 2px #ece9e9; */
 }
 
 .card .card-body .titleSec {

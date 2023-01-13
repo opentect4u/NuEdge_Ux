@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BankModificationComponent } from './bankModification/bankModification.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 const routes: Routes = [{path:'',component:BankComponent}]
 
@@ -17,7 +18,8 @@ const routes: Routes = [{path:'',component:BankComponent}]
     MatIconModule,
     MatDialogModule,
     RouterModule.forChild(routes),
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   declarations: [BankComponent,BankModificationComponent]
 })

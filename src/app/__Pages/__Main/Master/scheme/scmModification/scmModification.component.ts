@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'master-scmModification',
@@ -24,6 +25,7 @@ export class ScmModificationComponent implements OnInit {
   })
   constructor(
     public dialogRef: MatDialogRef<ScmModificationComponent>,
+    private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog) {
@@ -48,10 +50,11 @@ export class ScmModificationComponent implements OnInit {
     if (this.__scmForm.invalid) {
       return;
     }
-    this.__dbIntr.api_call(1, '/schemeAddEdit', this.__scmForm.value).pipe(map((x: any) => x.suc)).subscribe(res => {
-      if (res == 1) {
-        this.dialogRef.close(this.__scmForm.value);
+    this.__dbIntr.api_call(1, '/schemeAddEdit', this.__scmForm.value).subscribe((res: any) => {
+      if (res.suc == 1) {
+        this.dialogRef.close({ id: this.data.id, data: res.data });
       }
+      this.__utility.showSnackbar(this.data.id > 0 ? 'Scheme updated successfully' : 'Scheme added successfully', '');
     })
   }
   ngAfterViewInit() {

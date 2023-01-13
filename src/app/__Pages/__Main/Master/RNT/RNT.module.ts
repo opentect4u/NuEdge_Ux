@@ -7,6 +7,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RNTmodificationComponent } from './RNTmodification/RNTmodification.component';
 import {MatIconModule} from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 const __routes: Routes = [{ path: '', component: RNTComponent }]
 
 
@@ -17,7 +18,8 @@ const __routes: Routes = [{ path: '', component: RNTComponent }]
     SearchModule,
     MatDialogModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   declarations: [RNTComponent, RNTmodificationComponent]
 })

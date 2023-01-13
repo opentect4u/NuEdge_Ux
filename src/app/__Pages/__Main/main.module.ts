@@ -105,6 +105,11 @@ const routes: Routes = [
         data:{id:20,title:"NuEdge - Operation Dashboard", pageTitle:"Operation Dashboard"}
       },
       {
+        path:'kyc',
+        loadChildren:()=> import('./Kyc/kyc.module').then(m => m.KycModule),
+        data:{id:21,title:"NuEdge - Kyc",pageTitle:"Kyc",has_menubar:'Y'}
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'

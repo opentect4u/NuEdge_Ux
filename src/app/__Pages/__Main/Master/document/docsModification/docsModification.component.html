@@ -1,60 +1,90 @@
-<h2 mat-dialog-title>{{data.title}}</h2>
+<!-- <h2 mat-dialog-title>{{data.title}}</h2> -->
+<div mat-dialog-title class="dialog-title">
+  <h2>{{data.title}}</h2>
+  <button mat-icon-button  [mat-dialog-close]="">
+    <mat-icon >close</mat-icon>
+  </button>
+</div>
 <mat-dialog-content>
-    
+  <core-search 
+  *ngIf="this.data.id == 0"
+  (__searchItem)="getSearchItem($event)" 
+  [__flag]="'N'" 
+  [__api_name]="'/client'"
+  [__placeholder]="'Search by Name, Pan, Mobile, Email, DOB, Client code'">
+  </core-search>
   <form [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm">
-    <div class="row">
-      <div class="col-sm-12">
-        <label for="clName">Client Name</label>
-        <select name="clName" id="clName" formControlName="client_code" class="form-control" >
-         <option valie="">Select Client</option>
-         <option value="{{__client.client_code}}" *ngFor="let __client of __clMaster"> {{__client.client_name}}</option>
-        </select>
+    <div class="row my-5" *ngIf="__isvisible">
+      <div class="col-sm-4">
+        <label for="clientCode">Client Code</label>
+        <input type="text" name="clientCode" id="clientCode" class="form-control" formControlName="client_code">
       </div>
-        <table class="table table_Custome my-4">
-           <thead>
-            <tr>
-              <th>
-                Document type
-              </th>
-              <th>
-                Document
-              </th>
-              <th >
-                <mat-icon  (click)="addItem()" *ngIf="this.data.__docsDetail.length == 0">add</mat-icon>
-              </th>
-            </tr>
-           </thead>
-           <tbody  formArrayName="doc_dtls">
-              <tr  *ngFor="let item of __docs.controls; let i = index;">
-                <ng-container [formGroupName]="i">
-                  <td>
-                    <select name="_doc_type" id="_doc_type" formControlName="doc_type_id" class="form-control">
-                     <option value="">Select document type</option>
-                     <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}</option>
-                    </select>
-                  </td>
-                  <td>
-                    <input type="file" name="docFile" id="docFile" class="form-control" formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)">
-                  </td>
-                  <td>
-                    <ng-container  *ngIf="this.data.__docsDetail.length == 0">
-                      <mat-icon type="button" *ngIf="i > 0" (click)="removeDocument(i)">delete</mat-icon>
-                    </ng-container>
-                    <ng-container *ngIf="this.data.__docsDetail.length > 0">
-                       <!-- Showing Images -->
-                    </ng-container>
-                  </td>
+      <div class="col-sm-4">
+        <label for="pan_no">Pan No.</label>
+        <input type="text" name="pan_no" id="pan_no" class="form-control" formControlName="pan_no">
+      </div>
+      <div class="col-sm-4">
+        <label for="mobile">Mobile</label>
+        <input type="text" name="mobile" id="mobile" class="form-control" formControlName="mobile">
+      </div>
+    </div>
+    <div class="row my-5" *ngIf="__isvisible">
+      <div class="col-sm-6">
+        <label for="client_name">Client Name</label>
+        <input type="text" name="client_name" id="client_name" class="form-control" formControlName="client_name">
+      </div>
+      <div class="col-sm-6">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" class="form-control" formControlName="email">
+      </div>
+    </div>
+    <table class="table table_Custome my-4">
+        <thead>
+        <tr>
+          <th>
+            Document type
+          </th>
+          <th>
+            Document
+          </th>
+          <th>
+            Thumbnail
+          </th>
+          <th >
+            <mat-icon  (click)="addItem()">add</mat-icon>
+          </th>
+        </tr>
+        </thead>
+        <tbody  formArrayName="doc_dtls">
+          <tr  *ngFor="let item of __docs.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td class="rowWidth">
+                <select name="_doc_type" id="_doc_type" formControlName="doc_type_id" class="form-control">
+                  <option value="">Select document type</option>
+                  <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}</option>
+                </select>
+              </td>
+              <td  class="rowWidth">
+                <input type="file" name="docFile" id="docFile" class="form-control" formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)">
+              </td>
+              <td  class="rowWidth">
+                    <img  [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
+              </td>
+              <td>
+                <ng-container  *ngIf="__docs.controls[i].get('id')?.value == 0">
+                  <mat-icon type="button"  *ngIf="i > 0" (click)="removeDocument(i)">delete</mat-icon>
                 </ng-container>
-              </tr>
-           </tbody>
-        </table>
-      </div>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+    </table>
+
  
   </form>
 
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-  <button class="btn addBtn" mat-button form="__clientForm"   [disabled]="__clientForm.invalid">Submit</button>
-  <button class="btn cancelCusBtn mrgLeft" mat-dialog-close>Cancel</button>
+  <button class="btn addBtn" form="__clientForm"   [disabled]="__clientForm.invalid">Submit</button>
 </mat-dialog-actions>
 <br clear="all">

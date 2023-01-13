@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ScmModificationComponent } from './scmModification/scmModification.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 
 const routes: Routes =[{path:'',component:SchemeComponent}]
@@ -19,7 +20,8 @@ const routes: Routes =[{path:'',component:SchemeComponent}]
     SearchModule,
     MatIconModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   declarations: [SchemeComponent,ScmModificationComponent]
 })

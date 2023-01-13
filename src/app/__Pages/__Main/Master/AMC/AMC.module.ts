@@ -7,6 +7,7 @@ import { AMCModificationComponent } from './AMCModification/AMCModification.comp
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 const routes: Routes =[{path:'',component:AMCComponent}]
 @NgModule({
@@ -16,7 +17,8 @@ const routes: Routes =[{path:'',component:AMCComponent}]
     SearchModule,
     MatDialogModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   declarations: [AMCComponent,AMCModificationComponent]
 })

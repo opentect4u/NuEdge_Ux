@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'master-AMCModification',
@@ -22,6 +23,7 @@ export class AMCModificationComponent implements OnInit {
     public dialogRef: MatDialogRef<AMCModificationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
+    private __utility: UtiliService,
     public __dialog: MatDialog) {
     if (this.data.id > 0) {
       this.__amcForm.setValue({
@@ -41,11 +43,12 @@ export class AMCModificationComponent implements OnInit {
     if (this.__amcForm.invalid) {
       return;
     }
-    this.__dbIntr.api_call(1, '/amcAddEdit', this.__amcForm.value).pipe(map((x: any) => x.suc)).subscribe(res => {
+    this.__dbIntr.api_call(1, '/amcAddEdit', this.__amcForm.value).subscribe((res: any) => {
       console.log(res);
-      if (res == 1) {
-        this.dialogRef.close(this.__amcForm.value);
+      if (res.suc == 1) {
+        this.dialogRef.close({ id: this.data.id, data: res.data });
       }
+      this.__utility.showSnackbar(this.data.id > 0 ? 'AMC updated successfully' : 'AMC added successfully', '');
     })
   }
   getRNTMaster() {

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'master-bankModification',
@@ -17,6 +18,7 @@ export class BankModificationComponent implements OnInit {
   })
   constructor(
     public dialogRef: MatDialogRef<BankModificationComponent>,
+    private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog) {
@@ -34,10 +36,12 @@ export class BankModificationComponent implements OnInit {
     if (this.__bankForm.invalid) {
       return;
     }
-    this.__dbIntr.api_call(1, '/depositbankAddEdit', this.__bankForm.value).pipe(map((x: any) => x.suc)).subscribe(res => {
-      if (res == 1) {
-        this.dialogRef.close(this.__bankForm.value);
+    this.__dbIntr.api_call(1, '/depositbankAddEdit', this.__bankForm.value).subscribe((res: any) => {
+      console.log(res);
+      if (res.suc == 1) {
+        this.dialogRef.close({ id: this.data.id, data: res.data });
       }
+      this.__utility.showSnackbar(this.data.id > 0 ? 'Bank updated successfully' : 'Bank added successfully', '');
     })
   }
 

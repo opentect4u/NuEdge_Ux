@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'master-docsModification',
@@ -17,6 +18,7 @@ export class DocsModificationComponent implements OnInit {
 constructor(
   public dialogRef:MatDialogRef<DocsModificationComponent>,
   @Inject(MAT_DIALOG_DATA) public data: any,
+  private __utility : UtiliService,
   private __dbIntr:DbIntrService,
   public __dialog: MatDialog) {
   console.log(this.data);
@@ -34,11 +36,12 @@ submit(){
   if(this.__docsForm.invalid){
     return;
   }
-  this.__dbIntr.api_call(1,'/documenttypeAddEdit',this.__docsForm.value).pipe(map((x:any) => x.suc)).subscribe(res =>{
+  this.__dbIntr.api_call(1, '/documenttypeAddEdit', this.__docsForm.value).subscribe((res: any) => {
     console.log(res);
-    if(res == 1){
-      this.dialogRef.close(this.__docsForm.value);
+    if (res.suc == 1) {
+      this.dialogRef.close({ id: this.data.id, data: res.data });
     }
+    this.__utility.showSnackbar(this.data.id > 0 ? 'Document type updated successfully' : 'Document type added successfully', '');
   })
   
 }
