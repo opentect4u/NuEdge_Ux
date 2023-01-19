@@ -8,6 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RcvFormAdditionComponent } from './rcvFormAddition/rcvFormAddition.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
 const routes:Routes= [{path:'',component:RcvFrmComponent}]
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ const routes:Routes= [{path:'',component:RcvFrmComponent}]
     MatTableModule,
     MatDialogModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatPaginatorModule
   ],
   declarations: [RcvFrmComponent,RcvFormAdditionComponent],
   providers:[DatePipe]

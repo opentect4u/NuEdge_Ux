@@ -1,17 +1,14 @@
-<core-search 
-(__searchItem)="getSearchItem($event)" 
-[__flag]="'Y'" 
-[__api_name]="'/documentsearch'"
-[__placeholder]="'Search by Name, Pan, Mobile, Email, DOB, Client code'">
+<core-search (__searchItem)="getSearchItem($event)" [__flag]="'Y'" [__api_name]="'/documentsearch'"
+  [__placeholder]="'Search by Name, Pan, Mobile, Email, DOB, Client code'">
 </core-search>
 
-
-<table mat-table [dataSource]="__documents" class="mat-elevation-z3">
-  <!-- Sl No. -->
-  <ng-container matColumnDef="sl_no">
-    <th mat-header-cell *matHeaderCellDef>Sl no.</th>
-    <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
-  </ng-container>
+<div class="mat-elevation-z3">
+  <table mat-table [dataSource]="__documents">
+    <!-- Sl No. -->
+    <ng-container matColumnDef="sl_no">
+      <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+      <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+    </ng-container>
 
     <!-- Recieve Date Time -->
     <ng-container matColumnDef="cl_code">
@@ -20,52 +17,53 @@
     </ng-container>
 
 
-  <!--Temporary TIN No.-->
-  <ng-container matColumnDef="cl_name">
-    <th mat-header-cell *matHeaderCellDef>Client Name</th>
-    <td mat-cell *matCellDef="let element">{{element.client_name}}</td>
-  </ng-container>
+    <!--Temporary TIN No.-->
+    <ng-container matColumnDef="cl_name">
+      <th mat-header-cell *matHeaderCellDef>Client Name</th>
+      <td mat-cell *matCellDef="let element">{{element.client_name}}</td>
+    </ng-container>
 
 
 
-  <!-- Buisness Type-->
-  <ng-container matColumnDef="pan">
-    <th mat-header-cell *matHeaderCellDef>Pan</th>
-    <td mat-cell *matCellDef="let element">{{element.pan}}</td>
-  </ng-container>
+    <!-- Buisness Type-->
+    <ng-container matColumnDef="pan">
+      <th mat-header-cell *matHeaderCellDef>Pan</th>
+      <td mat-cell *matCellDef="let element">{{element.pan}}</td>
+    </ng-container>
 
-  
-  <!-- Buisness Type-->
-  <ng-container matColumnDef="mobile">
-    <th mat-header-cell *matHeaderCellDef>Mobile</th>
-    <td mat-cell *matCellDef="let element">{{element.mobile}}</td>
-  </ng-container>
 
-   
-  <!-- Buisness Type-->
-  <ng-container matColumnDef="edit">
-    <th mat-header-cell *matHeaderCellDef>Edit</th>
-    <td mat-cell *matCellDef="let element">
-      <a (click)="populateDT(element)">
-        <mat-icon class="edit_icon">edit</mat-icon>
-      </a>
-    </td>
-  </ng-container>
-   
-  <!-- Buisness Type-->
-  <ng-container matColumnDef="delete">
-    <th mat-header-cell *matHeaderCellDef>Delete</th>
-    <td mat-cell *matCellDef="let element">
-      <a>
-        <mat-icon class="delete_icon">delete</mat-icon>
-      </a>
-    </td>
-  </ng-container>
+    <!-- Buisness Type-->
+    <ng-container matColumnDef="mobile">
+      <th mat-header-cell *matHeaderCellDef>Mobile</th>
+      <td mat-cell *matCellDef="let element">{{element.mobile}}</td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="__columns"></tr>
-  <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
-  <tr class="mat-row" *matNoDataRow>
-    <td class="mat-cell" colspan="7">No data found</td>
-  </tr>
-</table>
- 
+
+    <!-- Buisness Type-->
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef>Edit</th>
+      <td mat-cell *matCellDef="let element">
+        <a (click)="populateDT(element)">
+          <mat-icon class="edit_icon">edit</mat-icon>
+        </a>
+      </td>
+    </ng-container>
+
+    <!-- Buisness Type-->
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef>Delete</th>
+      <td mat-cell *matCellDef="let element">
+        <a>
+          <mat-icon class="delete_icon">delete</mat-icon>
+        </a>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="__columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="7">No data found</td>
+    </tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+</div>

@@ -2,6 +2,11 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
+import { amc } from 'src/app/__Model/amc';
+import { category } from 'src/app/__Model/__category';
+import { product } from 'src/app/__Model/__productMst';
+import { responseDT } from 'src/app/__Model/__responseDT';
+import { subcat } from 'src/app/__Model/__subcategory';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
@@ -11,10 +16,10 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./scmModification.component.css']
 })
 export class ScmModificationComponent implements OnInit {
-  __prdMaster: any = [];
-  __amcMaster: any = [];
-  __catMaster: any = [];
-  __subcatMaster: any = []
+  __prdMaster: product[];
+  __amcMaster: amc[];
+  __catMaster: category[];
+  __subcatMaster: subcat[];
   __scmForm = new FormGroup({
     category_id: new FormControl('', [Validators.required]),
     subcategory_id: new FormControl('', [Validators.required]),
@@ -48,48 +53,49 @@ export class ScmModificationComponent implements OnInit {
   ngOnInit() { }
   submit() {
     if (this.__scmForm.invalid) {
+      this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
     this.__dbIntr.api_call(1, '/schemeAddEdit', this.__scmForm.value).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }
-      this.__utility.showSnackbar(this.data.id > 0 ? 'Scheme updated successfully' : 'Scheme added successfully', '');
+      this.__utility.showSnackbar(res.suc == 1 ? (this.data.id == 1 ? 'Scheme updated successfully' : 'Scheme added successfully') : 'Something went wrong! please try again later', res.suc);
     })
   }
   ngAfterViewInit() {
-    /*--------------Trigger when Product changes---------------*/ 
+    /*--------------Trigger when Product changes---------------*/
     this.__scmForm.controls["product_id"].valueChanges.subscribe(res => {
       this.getamcMasterbyproductId(res);
       this.getcatMasterbyproductId(res);
       this.__scmForm.controls["subcategory_id"].patchValue('');
-      this.__subcatMaster.length = 0;
+      this.__subcatMaster = [];
     })
-    /*--------------End---------------*/ 
+    /*--------------End---------------*/
 
-    /*--------------Trigger when Category changes---------------*/ 
+    /*--------------Trigger when Category changes---------------*/
     this.__scmForm.controls["category_id"].valueChanges.subscribe(res => {
       this.getsubcatMasterbyproductId(res);
     })
-    /*--------------End---------------*/ 
+    /*--------------End---------------*/
   }
-  getproductMaster() {
-    this.__dbIntr.api_call(0, '/product', null).pipe(map((x: any) => x.data)).subscribe(res => {
+  private getproductMaster() {
+    this.__dbIntr.api_call(0, '/product', null).pipe(map((x: responseDT) => x.data)).subscribe((res: product[]) => {
       this.__prdMaster = res;
     })
   }
-  getamcMasterbyproductId(product_id) {
-    this.__dbIntr.api_call(0, '/amcUsingPro', 'product_id=' + product_id).pipe(map((x: any) => x.data)).subscribe(res => {
+  private getamcMasterbyproductId(product_id) {
+    this.__dbIntr.api_call(0, '/amcUsingPro', 'product_id=' + product_id).pipe(map((x: responseDT) => x.data)).subscribe((res: amc[]) => {
       this.__amcMaster = res;
     })
   }
-  getcatMasterbyproductId(product_id) {
-    this.__dbIntr.api_call(0, '/catUsingPro', 'product_id=' + product_id).pipe(map((x: any) => x.data)).subscribe(res => {
+  private getcatMasterbyproductId(product_id) {
+    this.__dbIntr.api_call(0, '/catUsingPro', 'product_id=' + product_id).pipe(map((x: responseDT) => x.data)).subscribe((res: category[]) => {
       this.__catMaster = res;
     })
   }
-  getsubcatMasterbyproductId(cat_id) {
-    this.__dbIntr.api_call(0, '/subcatUsingPro', 'category_id=' + cat_id).pipe(map((x: any) => x.data)).subscribe(res => {
+  private getsubcatMasterbyproductId(cat_id) {
+    this.__dbIntr.api_call(0, '/subcatUsingPro', 'category_id=' + cat_id).pipe(map((x: responseDT) => x.data)).subscribe((res: subcat[]) => {
       this.__subcatMaster = res;
     })
   }

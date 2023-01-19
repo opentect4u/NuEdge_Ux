@@ -36,7 +36,6 @@ export class FormModificationComponent implements OnInit {
       return;
     }
     this.__dbIntr.api_call(1, '/formtypeAddEdit', this.__formTypeForm.value).pipe(map((x: any) => x.suc)).subscribe(res => {
-      console.log(res);
       if (res == 1) {
         this.dialogRef.close(this.__formTypeForm.value);
       }

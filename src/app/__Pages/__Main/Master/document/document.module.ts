@@ -8,6 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const routes: Routes =[{path:'',component:DocumentComponent}]
 
@@ -19,7 +20,8 @@ const routes: Routes =[{path:'',component:DocumentComponent}]
     MatIconModule,
     MatDialogModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    MatPaginatorModule
   ],
   declarations: [DocumentComponent,DocsModificationComponent]
 })

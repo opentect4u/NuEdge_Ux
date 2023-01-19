@@ -1,4 +1,7 @@
+
+
 export  class dates{
+  constructor(){}
      public static disabeldDates(){
             console.log(new Date().toISOString().split('T')[0]);
           return new Date().toISOString().split('T')[0]
@@ -10,6 +13,5 @@ export  class dates{
         }
         return true;
     
-      }
-     
+      } 
 }

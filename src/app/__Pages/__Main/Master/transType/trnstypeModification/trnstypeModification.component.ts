@@ -38,7 +38,6 @@ export class TrnstypeModificationComponent implements OnInit {
       return;
     }
     this.__dbIntr.api_call(1, '/transctiontypeAddEdit', this.__trns_type.value).pipe(map((x: any) => x.suc)).subscribe(res => {
-      console.log(res);
       if (res == 1) {
         this.dialogRef.close(this.__trns_type.value);
       }

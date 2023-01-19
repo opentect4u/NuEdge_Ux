@@ -12,11 +12,9 @@ export class HeaderComponent implements OnInit {
   __rtDt: any;
   __rightHeaderMenu: menuList[] = rightHeaderMenu;
   __top_menu: any[] = topmenu;
-  constructor(private __utility:UtiliService) {
-    this.__utility.__route$.subscribe(res =>{
-      if(res){
-        console.log(res);
-        
+  constructor(private __utility: UtiliService) {
+    this.__utility.__route$.subscribe(res => {
+      if (res) {
         this.__rtDt = res;
       }
     })
@@ -24,9 +22,9 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
   }
-  navigate(__items){
+  navigate(__items) {
     console.log(__items);
-    if(__items.url){
+    if (__items.url) {
       this.__utility.navigate(__items.url);
     }
   }

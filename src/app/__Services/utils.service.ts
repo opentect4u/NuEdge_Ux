@@ -4,6 +4,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { SnkbarComponent } from '../__Core/snkbar/snkbar.component';
 import { Route } from '../__Model/route';
 
 @Injectable({
@@ -46,11 +47,16 @@ export class UtiliService {
     }
   }
 
-  showSnackbar(__msg,icon_name){
-    let config = new MatSnackBarConfig();
-    config.duration = 5*2000;
-    // config.duration = 10;
-    this._snackBar.open(__msg,'',config);
+  showSnackbar(__msg,_suc){
+    this._snackBar.openFromComponent(SnkbarComponent,
+      {
+        // duration:4000,
+        data: {
+          message: __msg,
+          icon: _suc == 1 ? 'check_circle_outline' : 'error_outline',
+          suc: _suc
+        }
+      })
   }
 
 }

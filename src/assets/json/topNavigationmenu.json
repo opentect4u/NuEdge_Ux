@@ -90,19 +90,19 @@
                         "parent_id": "TMF-1",
                         "menu_name": "Financial",
                         "has_submenu": "N",
-                        "url": ""
+                        "url": "/main/mftrax/fin"
                     },
                     {
                         "parent_id": "TMF-2",
                         "menu_name": "Non-Financial",
                         "has_submenu": "N",
-                        "url": ""
+                        "url": "/main/mftrax/nonfin"
                     },
                     {
                         "parent_id": "TMF-3",
                         "menu_name": "NFO",
                         "has_submenu": "N",
-                        "url": ""
+                        "url": "/main/mftrax/nfo"
                     }
                 ]
             },
@@ -111,21 +111,21 @@
                 "menu_name": "Fixed Deposit",
                 "has_submenu": "N",
                 "sub_menu": [],
-                "url":"/"
+                "url":"/main/home"
             },
             {
                 "id": "T-4",
                 "menu_name": "Insuarance",
                 "has_submenu": "N",
                 "sub_menu": [],
-                "url":"/"
+                "url":"/main/home"
             },
             {
                 "id": "T-5",
                 "menu_name": "NPS",
                 "has_submenu": "N",
                 "sub_menu": [],
-                "url":"/"
+                "url":"/main/home"
             }
         ]
     }

@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SchemeComponent } from './scheme.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
-import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ScmModificationComponent } from './scmModification/scmModification.component';
-import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 const routes: Routes =[{path:'',component:SchemeComponent}]
@@ -18,10 +17,9 @@ const routes: Routes =[{path:'',component:SchemeComponent}]
     CommonModule,
     RouterModule.forChild(routes),
     SearchModule,
-    MatIconModule,
     MatDialogModule,
-    MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
   ],
   declarations: [SchemeComponent,ScmModificationComponent]
 })

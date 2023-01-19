@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
+import { docType } from 'src/app/__Model/__docTypeMst';
+import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 
@@ -11,28 +14,26 @@ import { DocsModificationComponent } from './docsModification/docsModification.c
   styleUrls: ['./docsMaster.component.css']
 })
 export class DocsMasterComponent implements OnInit {
-  __columns: string[] = ['sl_no','doc_type','edit','delete'];
-
-  __selectDocs = new  MatTableDataSource();
+  __columns: string[] = ['sl_no', 'doc_type', 'edit', 'delete'];
+  __selectDocs = new MatTableDataSource<docType>([]);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService) { }
-  ngOnInit() {this.getDocumentmaster();}
+  ngOnInit() { this.getDocumentmaster(); }
   getSearchItem(__ev) {
-    // this.__selectDocs.length = 0;
     if (__ev.flag == 'A') {
-      this.openDialog(__ev.id, '');
+      this.openDialog(__ev.id);
     }
-    else if(__ev.flag == 'F'){
-      // this.__selectDocs.push(__ev.item);
-      this.__selectDocs = new MatTableDataSource([__ev.item]);
+    else if (__ev.flag == 'F') {
+      this.setPaginator([__ev.item]);
     }
-    else{
+    else {
       this.getDocumentmaster();
     }
   }
-  populateDT(__items) {
+  populateDT(__items: docType) {
     this.openDialog(__items.id, __items.doc_type);
   }
-  openDialog(id, doc_type) {
+  private openDialog(id: number, doc_type: string | null = null) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '40%';
     dialogConfig.data = {
@@ -44,30 +45,34 @@ export class DocsMasterComponent implements OnInit {
     const dialogref = this.__dialog.open(DocsModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       if (dt) {
-        if(dt?.id > 0){
-           this.updateRow(dt.data);
+        if (dt?.id > 0) {
+          this.updateRow(dt.data);
         }
-        else{
+        else {
           this.addRow(dt.data);
         }
       }
     });
   }
-  getDocumentmaster(){
-    this.__dbIntr.api_call(0,'/documenttype',null).pipe(map((x:any) => x.data)).subscribe(res => {
-      this.__selectDocs = new MatTableDataSource(res);
+  private getDocumentmaster() {
+    this.__dbIntr.api_call(0, '/documenttype', null).pipe(map((x: responseDT) => x.data)).subscribe((res: docType[]) => {
+      this.setPaginator(res);
     })
   }
-  updateRow(row_obj) {
-    this.__selectDocs.data = this.__selectDocs.data.filter((value: any, key) => {
+  private updateRow(row_obj: docType) {
+    this.__selectDocs.data = this.__selectDocs.data.filter((value: docType, key) => {
       if (value.id == row_obj.id) {
         value.doc_type = row_obj.doc_type;
       }
       return true;
     });
   }
-  addRow(row_obj) {
-    this.__selectDocs.data.push(row_obj);
+  private addRow(row_obj: docType) {
+    this.__selectDocs.data.unshift(row_obj);
     this.__selectDocs._updateChangeSubscription();
+  }
+  private setPaginator(__res) {
+    this.__selectDocs = new MatTableDataSource(__res);
+    this.__selectDocs.paginator = this.paginator;
   }
 }

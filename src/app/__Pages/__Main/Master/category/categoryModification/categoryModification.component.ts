@@ -2,6 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
+import { product } from 'src/app/__Model/__productMst';
+import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
@@ -11,10 +13,10 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./categoryModification.component.css']
 })
 export class CategoryModificationComponent implements OnInit {
-  __ProductMaster: any = [];
+  __ProductMaster: product[];
   __categoryForm = new FormGroup({
     product_id: new FormControl('', [Validators.required]),
-     cat_name: new FormControl('', [Validators.required]),
+    cat_name: new FormControl('', [Validators.required]),
     id: new FormControl(0)
   })
   constructor(
@@ -22,7 +24,7 @@ export class CategoryModificationComponent implements OnInit {
     private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
-    public __dialog: MatDialog) {   
+    public __dialog: MatDialog) {
     if (this.data.id > 0) {
       this.__categoryForm.setValue({
         cat_name: this.data.items.cat_name,
@@ -36,17 +38,18 @@ export class CategoryModificationComponent implements OnInit {
   ngOnInit() { }
   submit() {
     if (this.__categoryForm.invalid) {
+      this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
     this.__dbIntr.api_call(1, '/categoryAddEdit', this.__categoryForm.value).subscribe((res: any) => {
       if (res.suc == 1) {
-        this.dialogRef.close({id:this.data.id,data:res.data});
+        this.dialogRef.close({ id: this.data.id, data: res.data });
       }
-      this.__utility.showSnackbar(this.data.id > 0 ? 'Category updated successfully' : 'Category added successfully', '');
+      this.__utility.showSnackbar(res.suc == 1 ? (this.data.id == 1 ? 'Category updated successfully' : 'Category added successfully') : 'Something went wrong! please try again later', res.suc);
     })
   }
   getProductMaster() {
-    this.__dbIntr.api_call(0, '/product', null).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__dbIntr.api_call(0, '/product', null).pipe(map((x: responseDT) => x.data)).subscribe((res: product[]) => {
       this.__ProductMaster = res;
     })
   }

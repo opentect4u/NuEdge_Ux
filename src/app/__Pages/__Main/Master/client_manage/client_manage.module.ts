@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const routes: Routes = [{path:'',component:Client_manageComponent}]
 
@@ -19,7 +20,8 @@ const routes: Routes = [{path:'',component:Client_manageComponent}]
     MatIconModule,
     MatDialogModule,
     MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
   ],
   declarations: [Client_manageComponent,ClientModificationComponent]
 })

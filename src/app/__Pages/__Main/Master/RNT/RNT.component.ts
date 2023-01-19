@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
+import { rnt } from 'src/app/__Model/Rnt';
+import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RNTmodificationComponent } from './RNTmodification/RNTmodification.component';
 
@@ -11,23 +14,31 @@ import { RNTmodificationComponent } from './RNTmodification/RNTmodification.comp
   styleUrls: ['./RNT.component.css']
 })
 export class RNTComponent implements OnInit {
-  __columns: string[] = ['sl_no','rnt_name','edit','delete'];
-  __selectRNT = new MatTableDataSource();
-  constructor(private __dialog: MatDialog,private __dbIntr: DbIntrService) { }
-  ngOnInit() {this.getRNTmaster()}
+  __columns: string[] = ['sl_no', 'rnt_name', 'edit', 'delete'];
+  __selectRNT = new MatTableDataSource<rnt>([]);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  constructor(
+    private __dialog: MatDialog, 
+    private __dbIntr: DbIntrService
+    ) { }
+  ngOnInit() { 
+    this.getRNTmaster() 
+  }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
-      this.openDialog(__ev.id, '');
+      this.openDialog(__ev.id);
+    }
+    else if (__ev.flag == 'F') {
+      this.setPaginator([__ev.item]);
     }
     else {
-      // this.__selectRNT.push(__ev.item);
-      this.__selectRNT = new MatTableDataSource([__ev.item]);
+      this.getRNTmaster();
     }
   }
-  populateDT(__items) {
+  populateDT(__items: rnt) {
     this.openDialog(__items.id, __items.rnt_name);
   }
-  openDialog(id, rnt_name) {
+  private openDialog(id: number, rnt_name: string| null = null) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '40%';
     dialogConfig.data = {
@@ -38,32 +49,35 @@ export class RNTComponent implements OnInit {
     dialogConfig.autoFocus = false;
     const dialogref = this.__dialog.open(RNTmodificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
-    console.log(dt);
-      if(dt){
-            if (dt.id > 0) {
-              this.updateRow(dt.data)
-            }
-            else{
-              this.addRow(dt.data);
-            }
+      if (dt) {
+        if (dt.id > 0) {
+          this.updateRow(dt.data)
+        }
+        else {
+          this.addRow(dt.data);
+        }
       }
     });
   }
-  getRNTmaster(){
-    this.__dbIntr.api_call(0,'/rnt',null).pipe(map((x:any) => x.data)).subscribe(res => {
-      this.__selectRNT = new MatTableDataSource(res);
+  private getRNTmaster() {
+    this.__dbIntr.api_call(0, '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe((res: rnt[]) => {
+      this.setPaginator(res);
     })
   }
-  updateRow(row_obj) {
-    this.__selectRNT.data = this.__selectRNT.data.filter((value: any, key) => {
+  private updateRow(row_obj: rnt) {
+    this.__selectRNT.data = this.__selectRNT.data.filter((value: rnt, key) => {
       if (value.id == row_obj.id) {
         value.rnt_name = row_obj.rnt_name;
       }
       return true;
     });
   }
-  addRow(row_obj) {
-    this.__selectRNT.data.push(row_obj);
+  private addRow(row_obj: rnt) {
+    this.__selectRNT.data.unshift(row_obj);
     this.__selectRNT._updateChangeSubscription();
+  }
+  private setPaginator(__res){
+    this.__selectRNT = new MatTableDataSource(__res);
+    this.__selectRNT.paginator = this.paginator;
   }
 }

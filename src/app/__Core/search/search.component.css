@@ -1,36 +1,8 @@
-.noDataFound {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    flex-direction: column;
-}
-
-.noDataFound h5 {
-    font-size: 18px;
-    color: gray;
-    font-weight: 500;
-    margin: 0;
-}
-
-.noDataFound p {
-    font-size: 15px;
-    color: gray;
-    font-weight: 500;
-    margin: 11px 0;
-}
-
-
-.roundedBtn {
-    border-radius: 20px
-}
-
 .clearIcon {
     position: absolute;
-    top: 50%;
+    top: 26%;
     right: 0;
-    transform: translate(-14px, -8px);
-    font-size: 16px;
+    transform: translate(-12px, -8px);
 }
 
 .clearIcon:hover {

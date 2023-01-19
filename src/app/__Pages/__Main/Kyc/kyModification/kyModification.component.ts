@@ -8,35 +8,37 @@ import { environment } from 'src/environments/environment';
 import kycType from '../../../../../assets/json/kycMaster.json';
 import kycLoginType from '../../../../../assets/json/kycloginType.json';
 import kycLoginAt from '../../../../../assets/json/kycLoginAt.json';
+import { responseDT } from 'src/app/__Model/__responseDT';
+import { client } from 'src/app/__Model/__clientMst';
+import { docType } from 'src/app/__Model/__docTypeMst';
 @Component({
   selector: 'kyc-kyModification',
   templateUrl: './kyModification.component.html',
   styleUrls: ['./kyModification.component.css']
 })
 export class KyModificationComponent implements OnInit {
-  __kycLoginAt: any=[];
+  __kycLoginAt: any = [];
   __kycLoginType = kycLoginType;
   __kycType = kycType;
   __noImg: string = '../../../../../../assets/images/noimg.jpg';
   __isvisible: boolean = false;
   __selectFiles: any = [];
-  // __docs:FormArray;
-  __clMaster: any = [];
-  __docTypeMaster; any = [];
+  __clMaster: client[];
+  __docTypeMaster: docType[];
   __clientForm = new FormGroup({
-    client_id: new FormControl(''),
-    client_code:new FormControl(''),
-    pan_no:new FormControl(''),
-    _client_code: new FormControl({ value: '', disabled: true },[Validators.required]),
-    _pan_no: new FormControl({ value: '', disabled: true },[Validators.required]),
-    mobile: new FormControl({ value: '', disabled: true },[Validators.required]),
-    client_name: new FormControl({ value: '', disabled: true },[Validators.required]),
-    email: new FormControl({ value: '', disabled: true },[Validators.required]),
+    client_id: new FormControl('', [Validators.required]),
+    client_code: new FormControl('', [Validators.required]),
+    pan_no: new FormControl('', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
+    _client_code: new FormControl('', [Validators.required]),
+    _pan_no: new FormControl('', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
+    mobile: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
+    client_name: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
     doc_dtls: new FormArray([]),
-    temp_tin_id: new FormControl('',[Validators.required]),
-    kyc_type:new FormControl('',[Validators.required]),
-    kyc_login_type:new FormControl('',[Validators.required]),
-    kyc_login_at:new FormControl('',[Validators.required]),
+    temp_tin_id: new FormControl('', [Validators.required]),
+    kyc_type: new FormControl('', [Validators.required]),
+    kyc_login_type: new FormControl('', [Validators.required]),
+    kyc_login_at: new FormControl('', [Validators.required]),
   })
   constructor(
     public dialogRef: MatDialogRef<KyModificationComponent>,
@@ -49,56 +51,55 @@ export class KyModificationComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.data.items !='') {
+    if (this.data.items != '') {
       this.__clientForm.patchValue({
-        client_id:this.data.items.id,
+        client_id: this.data.items.id,
         client_code: this.data.items.client_code,
-        pan_no:  this.data.items.pan,
+        pan_no: this.data.items.pan,
         _client_code: this.data.items.client_code,
-        _pan_no:  this.data.items.pan,
+        _pan_no: this.data.items.pan,
         mobile: this.data.items.mobile,
         client_name: this.data.items.client_name,
         email: this.data.items.email,
-        temp_tin_id:this.data.kyc_data.temp_tin_id,
-        kyc_type:this.data.kyc_data.kyc_type,
-        kyc_login_type:this.data.kyc_data.kyc_login_type,
-        kyc_login_at:this.data.kyc_data.kyc_login_at,
+        temp_tin_id: this.data.kyc_data.temp_tin_id,
+        kyc_type: this.data.kyc_data.kyc_type,
+        kyc_login_type: this.data.kyc_data.kyc_login_type,
+        kyc_login_at: this.data.kyc_data.kyc_login_at,
       })
       this.setFormControl(this.data.items);
       this.getKycLoginAtMaster(this.data.kyc_data.kyc_login_type);
     }
   }
-  ngAfterViewInit(){
-    this.__clientForm.get('kyc_login_type').valueChanges.subscribe(res =>{
-          switch(res){
-            case 'R':this.getKycLoginAtMaster(res);break;
-            case 'A':this.getKycLoginAtMaster(res);break;
-            case 'N':this.__kycLoginAt = kycLoginAt;break;
-            default:break;
-          }
+  ngAfterViewInit() {
+    this.__clientForm.get('kyc_login_type').valueChanges.subscribe(res => {
+      switch (res) {
+        case 'R': this.getKycLoginAtMaster(res); break;
+        case 'A': this.getKycLoginAtMaster(res); break;
+        case 'N': this.__kycLoginAt = kycLoginAt; break;
+        default: break;
+      }
     })
   }
   getClientMaster() {
-    this.__dbIntr.api_call(0, '/client', null).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__dbIntr.api_call(0, '/client', null).pipe(map((x: responseDT) => x.data)).subscribe((res: client[]) => {
       this.__clMaster = res;
     })
   }
   getDocumnetTypeMaster() {
-    this.__dbIntr.api_call(0, '/documenttype', null).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__dbIntr.api_call(0, '/documenttype', null).pipe(map((x: responseDT) => x.data)).subscribe((res: docType[]) => {
       this.__docTypeMaster = res;
     })
   }
   submit() {
     if (this.__clientForm.invalid) {
+      this.__utility.showSnackbar('Submition failed due to some error', 0);
       return;
     }
-    console.log(this.__clientForm.value);
-    
-    this.__dbIntr.api_call(1,'/kycAddEdit',this.__clientForm.value).pipe((map((x: any) => x.suc))).subscribe(res => {
-      this.__utility.showSnackbar(res == 1 ? 'Kyc Added Successfully' : 'Something went wrong', '');
+    this.__dbIntr.api_call(1, '/kycAddEdit', this.__clientForm.value).pipe((map((x: responseDT) => x.suc))).subscribe((res: number) => {
       if (res == 1) {
         this.dialogRef.close(res);
       }
+      this.__utility.showSnackbar(res == 1 ? 'Kyc submitted Successfully' : 'Something went wrong! Please try again later', res);
     })
 
   }
@@ -107,7 +108,7 @@ export class KyModificationComponent implements OnInit {
     console.log(this.__clientForm.get('client_id').value)
     return new FormGroup({
       id: new FormControl(id),
-      doc_type_id: new FormControl({value: type_id, disabled: true }),
+      doc_type_id: new FormControl({ value: type_id, disabled: true }),
       file_preview: new FormControl(`${environment.clientdocUrl}` + this.__clientForm.get('client_id').value + '/' + doc),
     });
   }
@@ -126,16 +127,14 @@ export class KyModificationComponent implements OnInit {
     return this.__clientForm.get("doc_dtls") as FormArray;
   }
   getSearchItem(__ev) {
-    console.log(__ev);
     if (__ev.flag == 'F') {
       this.__dbIntr.api_call(0, '/kycshowadd', 'search=' + __ev.item.client_code).pipe(map((x: any) => x.data)).subscribe(res => {
-        console.log(res);
         this.__clientForm.patchValue({
-          client_id:res[0].id,
+          client_id: res[0].id,
           client_code: res[0].client_code,
-          pan_no:  res[0].pan,
+          pan_no: res[0].pan,
           _client_code: res[0].client_code,
-          _pan_no:  res[0].pan,
+          _pan_no: res[0].pan,
           mobile: res[0].mobile,
           client_name: res[0].client_name,
           email: res[0].email,
@@ -145,15 +144,15 @@ export class KyModificationComponent implements OnInit {
     }
   }
 
-  getKycLoginAtMaster(kyc_login_type){
-    this.__dbIntr.api_call(0,kyc_login_type == 'R' ? '/rnt' : '/amc',null).pipe(map((x: any) => x.data)).subscribe(res =>{
+  getKycLoginAtMaster(kyc_login_type) {
+    this.__dbIntr.api_call(0, kyc_login_type == 'R' ? '/rnt' : '/amc', null).pipe(map((x: responseDT) => x.data)).subscribe(res => {
       this.__kycLoginAt = res;
     })
   }
 
-  setFormControl(res){
-    this.__isvisible =true;
-    res.client_doc.forEach(element =>{
+  setFormControl(res) {
+    this.__isvisible = true;
+    res.client_doc.forEach(element => {
       this.__docs.push(this.setItem(element.id, element.doc_type_id, element.doc_name));
     })
   }

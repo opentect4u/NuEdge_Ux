@@ -5,9 +5,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
 import { AMCModificationComponent } from './AMCModification/AMCModification.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const routes: Routes =[{path:'',component:AMCComponent}]
 @NgModule({
@@ -16,9 +15,8 @@ const routes: Routes =[{path:'',component:AMCComponent}]
     RouterModule.forChild(routes),
     SearchModule,
     MatDialogModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
   ],
   declarations: [AMCComponent,AMCModificationComponent]
 })

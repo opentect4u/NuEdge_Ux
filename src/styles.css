@@ -2,25 +2,13 @@
     margin: 15px 0px;
 }
 
-html,
-body {
-    height: 100%;
-}
-
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
 td,
 th {
     text-align: center !important;
     font-size: 15px !important;
 }
 
-.cdk-overlay-container {
-    z-index: 99999 !important;
-}
+.cdk-overlay-container {z-index: 99999 !important;}
 
 
 
@@ -60,7 +48,6 @@ th {
 .mat-dialog-actions {
     padding: 11px 23px !important;
     border-top: 1px solid #cecece;
-    /* background: #f6f6f6; */
     background: #e7e7e7ba;
 
 }
@@ -73,7 +60,7 @@ th {
 label {
     color: #3a5076;
     font-weight: 500;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .dialog-title {
@@ -87,7 +74,12 @@ label {
     color: #fff;
     font-size: 18px;
 }
-
-.dialog-title h2 {
-    font-size: 18px;
-}
+.dialog-title h2 {font-size: 18px;}
+tr.mat-header-row {border-top: 4px solid #3f51b5a8;}
+.ngx-spinner-overlay {z-index: 999991 !important;}
+ button:focus {outline: none !important}
+.mat-menu-item:hover:not([disabled]),
+.mat-menu-item-highlighted:not([disabled]) {background: rgb(31 69 132) !important;color: #fff !important;}
+.active{background: rgb(31 69 132) !important;color: #fff !important;}
+.mat-menu-content:not(:empty){padding:0px!important}
+.activeMainmenu{background-color: #fff;color:rgb(4, 4, 136);border-radius:0px!important;font-weight: 600;}

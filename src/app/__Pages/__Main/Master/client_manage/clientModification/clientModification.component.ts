@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
+import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
@@ -38,7 +39,6 @@ export class ClientModificationComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private __utility: UtiliService,
     public __dialog: MatDialog) {
-    // console.log(this.data);
     if (this.data.id > 0) {
       this.__clientForm.setValue({
         client_name: this.data.items.client_name,
@@ -64,14 +64,13 @@ export class ClientModificationComponent implements OnInit {
   }
   submit() {
     if (this.__clientForm.invalid) {
+      this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
     this.__dbIntr.api_call(1, '/clientAddEdit', this.__clientForm.value).subscribe((res: any) => {
-      console.log(res);
       if (res.suc == 1) {
         this.dialogRef.close(res.data);
-        console.log(res.data.client_code);
-        this.__utility.showSnackbar('Client with code '+ res.data.client_code +' has been added successfully','');
+        this.__utility.showSnackbar(res.suc == 1 ? this.data.id > 0 ? 'Client with code '+ res.data.client_code +' has been updated successfully' : 'Client with code '+ res.data.client_code +' has been added successfully' : 'Something went wrong! Please try again later','');
       }
     })
   }
@@ -79,8 +78,7 @@ export class ClientModificationComponent implements OnInit {
     dates.numberOnly(__ev);
   }
   getStateMaster(){
-    this.__dbIntr.api_call(0,'/states',null).pipe(map((x: any) => x.data)).subscribe(res =>{
-      // console.log(res);
+    this.__dbIntr.api_call(0,'/states',null).pipe(map((x: responseDT) => x.data)).subscribe(res =>{
       this.__stateMaster = res;
     })
   }

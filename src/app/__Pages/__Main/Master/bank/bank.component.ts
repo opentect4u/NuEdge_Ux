@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
+import { bank } from 'src/app/__Model/__bank';
+import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { BankModificationComponent } from './bankModification/bankModification.component';
 
@@ -11,26 +14,26 @@ import { BankModificationComponent } from './bankModification/bankModification.c
   styleUrls: ['./bank.component.css']
 })
 export class BankComponent implements OnInit {
-  __columns: string[] = ['sl_no','bank_name','edit','delete'];
-  __selectbnk = new MatTableDataSource();
-  constructor(private __dialog: MatDialog,private __dbIntr: DbIntrService) { }
-  ngOnInit(): void {this.getBankMaster();}
+  __columns: string[] = ['sl_no', 'bank_name', 'edit', 'delete'];
+  __selectbnk = new MatTableDataSource<bank>([]);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService) { }
+  ngOnInit(): void { this.getBankMaster(); }
   getSearchItem(__ev) {
-    // this.__selectbnk.length = 0;
     if (__ev.flag == 'A') {
-      this.openDialog(__ev.id, '');
+      this.openDialog(__ev.id);
     }
-    else if(__ev.flag == 'F'){
-      this.__selectbnk = new MatTableDataSource([__ev.itmm]);
+    else if (__ev.flag == 'F') {
+      this.setPaginator([__ev.item]);
     }
-    else{
+    else {
       this.getBankMaster();
     }
   }
-  populateDT(__items) {
+  populateDT(__items: bank) {
     this.openDialog(__items.id, __items);
   }
-  openDialog(id, __items) {
+  private openDialog(id: number, __items: bank | null = null) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '40%';
     dialogConfig.data = {
@@ -42,24 +45,22 @@ export class BankComponent implements OnInit {
     const dialogref = this.__dialog.open(BankModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       if (dt) {
-        if(dt?.id > 0){
+        if (dt?.id > 0) {
           this.updateRow(dt.data);
         }
-        else{
+        else {
           this.addRow(dt.data);
         }
       }
     });
   }
-  getBankMaster(){
-    this.__dbIntr.api_call(0,'/depositbank',null).pipe((map((x: any)=> x.data))).subscribe(res => {
-     this.__selectbnk =new MatTableDataSource(res);
+  private getBankMaster() {
+    this.__dbIntr.api_call(0, '/depositbank', null).pipe((map((x: responseDT) => x.data))).subscribe((res: bank[]) => {
+      this.setPaginator(res);
     })
   }
-  updateRow(row_obj) {
-    console.log(row_obj);
-    
-    this.__selectbnk.data = this.__selectbnk.data.filter((value: any, key) => {
+  private updateRow(row_obj: bank) {
+    this.__selectbnk.data = this.__selectbnk.data.filter((value: bank, key) => {
       if (value.id == row_obj.id) {
         value.bank_name = row_obj.bank_name;
         value.ifs_code = row_obj.ifs_code;
@@ -68,8 +69,12 @@ export class BankComponent implements OnInit {
       return true;
     });
   }
-  addRow(row_obj) {
-    this.__selectbnk.data.push(row_obj);
+  private addRow(row_obj: bank) {
+    this.__selectbnk.data.unshift(row_obj);
     this.__selectbnk._updateChangeSubscription();
+  }
+  private setPaginator(__res) {
+    this.__selectbnk = new MatTableDataSource(__res);
+    this.__selectbnk.paginator = this.paginator;
   }
 }

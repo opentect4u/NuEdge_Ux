@@ -1,10 +1,10 @@
-export class menuBodyList{
-    public id:number;
-    public icon:string;
-    public title:string;
-    public img:string;
-    public value:number;
-    public url:string;
-    public class:string;
+export interface menuBodyList {
+    id: number;
+    icon: string;
+    title: string;
+    img: string;
+    value: number;
+    url: string;
+    class: string;
 
 }

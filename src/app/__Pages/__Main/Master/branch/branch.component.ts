@@ -34,7 +34,6 @@ export class BranchComponent implements OnInit {
     };
     const dialogref = this.__dialog.open(BranchModificationComponent, disalogConfig);
     dialogref.afterClosed().subscribe(dt => {
-      console.log(dt);
       if (dt?.id > 0) {
         this.__selectBranch[this.__selectBranch.findIndex(x => x.id == dt.id)].brn_code = dt?.brn_code;
         this.__selectBranch[this.__selectBranch.findIndex(x => x.id == dt.id)].brn_name = dt?.brn_name;

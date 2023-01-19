@@ -14,7 +14,6 @@ export class MenuTilesComponent implements OnInit {
   ngOnInit() {
   }
   navigate(__items){
-   console.log(__items);
     if(this.__flag == 'BM'){
       if(__items.url){
         this.__utility.navigate(__items.url);

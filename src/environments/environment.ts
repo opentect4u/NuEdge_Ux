@@ -6,9 +6,13 @@ export const environment = {
   production: false,
   api_url: "https://my-json-server.typicode.com/Uxtrendz/apis/videoList",
   // apiUrl: "https://opentech4u.co.in/nuedge_api/api/v1",
-  // clientdocUrl: "https://opentech4u.co.in/nuedge_api/public/client-doc"
-  apiUrl:"http://192.168.1.25/nuedge/api/v1",
-  clientdocUrl:"http://192.168.1.25/nuedge/public/client-doc/"
+  // clientdocUrl: "https://opentech4u.co.in/nuedge_api/public/client-doc/"
+  // apiUrl:"http://192.168.1.25/nuedge/api/v1",
+  // clientdocUrl:"http://192.168.1.25/nuedge/public/client-doc/"
+  apiUrl:"http://192.168.1.245/nuedge/api/v1",
+  clientdocUrl:"http://192.168.1.245/nuedge/public/client-doc/",
+  app_formUrl:"http://192.168.1.245/nuedge/public/application-form/"
+
 };
 
 /*

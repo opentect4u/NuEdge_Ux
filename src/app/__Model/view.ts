@@ -1,6 +1,6 @@
-export class view{
-    public id:number;
-    public icon:string;
-    public title:string;
-    public scores:number;
+export interface view{
+     id:number;
+     icon:string;
+     title:string;
+     scores:number;
 }

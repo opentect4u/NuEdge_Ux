@@ -4,10 +4,9 @@ import { DocsMasterComponent } from './docsMaster.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
-import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 const routes: Routes =[{path:'',component:DocsMasterComponent}]
 @NgModule({
   imports: [
@@ -15,9 +14,8 @@ const routes: Routes =[{path:'',component:DocsMasterComponent}]
     SearchModule,
     RouterModule.forChild(routes),
     MatDialogModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
   ],
   declarations: [DocsMasterComponent,DocsModificationComponent]
 })

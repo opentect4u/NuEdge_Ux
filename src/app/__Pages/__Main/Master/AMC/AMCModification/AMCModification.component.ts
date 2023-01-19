@@ -2,6 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
+import { rnt } from 'src/app/__Model/Rnt';
+import { product } from 'src/app/__Model/__productMst';
+import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
@@ -11,8 +14,8 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./AMCModification.component.css']
 })
 export class AMCModificationComponent implements OnInit {
-  __RntMaster: any = [];
-  __ProductMaster: any = [];
+  __RntMaster: rnt[] = [];
+  __ProductMaster: product[] = [];
   __amcForm = new FormGroup({
     rnt_id: new FormControl('', [Validators.required]),
     product_id: new FormControl('', [Validators.required]),
@@ -41,23 +44,23 @@ export class AMCModificationComponent implements OnInit {
   ngOnInit() { }
   submit() {
     if (this.__amcForm.invalid) {
+      this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
     this.__dbIntr.api_call(1, '/amcAddEdit', this.__amcForm.value).subscribe((res: any) => {
-      console.log(res);
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }
-      this.__utility.showSnackbar(this.data.id > 0 ? 'AMC updated successfully' : 'AMC added successfully', '');
+      this.__utility.showSnackbar(res.suc == 1 ? (this.data.id == 1 ? 'AMC updated successfully' : 'AMC added successfully') : 'Something went wrong! please try again later', res.suc);
     })
   }
   getRNTMaster() {
-    this.__dbIntr.api_call(0, '/rnt', null).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__dbIntr.api_call(0, '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe((res: rnt[]) => {
       this.__RntMaster = res;
     })
   }
   getProductMaster() {
-    this.__dbIntr.api_call(0, '/product', null).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__dbIntr.api_call(0, '/product', null).pipe(map((x: responseDT) => x.data)).subscribe((res: product[]) => {
       this.__ProductMaster = res;
     })
   }

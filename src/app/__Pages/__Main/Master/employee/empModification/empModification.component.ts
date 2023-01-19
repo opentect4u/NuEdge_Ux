@@ -20,7 +20,6 @@ export class EmpModificationComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog) {
-      console.log(data.id);
     if (this.data.id != '') {
       this.__empForm.setValue({
         emp_name: this.data.items.emp_name,

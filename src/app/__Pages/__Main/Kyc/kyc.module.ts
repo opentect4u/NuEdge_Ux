@@ -8,6 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const routes: Routes = [{ path: '', component: KycComponent }]
 
@@ -19,7 +20,8 @@ const routes: Routes = [{ path: '', component: KycComponent }]
     MatDialogModule,
     MatIconModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    MatPaginatorModule
   ],
   declarations: [KycComponent,KyModificationComponent]
 })

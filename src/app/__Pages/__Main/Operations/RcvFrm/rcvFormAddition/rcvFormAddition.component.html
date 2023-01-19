@@ -13,7 +13,7 @@
           [readonly]="true">
       </div>
       <div class="col-sm-6">
-        <label for="arn_no">Form Type <span class="text-danger">*</span></label>
+        <label for="arn_no">From Type <span class="text-danger">*</span></label>
         <input type="text" name="arn_no" id="arn_no" class="form-control" formControlName="arn_no" [readonly]="true">
       </div>
     </div>
@@ -87,15 +87,15 @@
         </div>
       </div>
       <div class="col-sm-6">
-        <label for="FrmType">Form Type <span class="text-danger">*</span></label>
-        <select name="frmType" class="form-control" id="FrmType" formControlName="form_type_id">
-          <option value="">Select Form Type</option>
-          <option *ngFor="let __formType of __formTypeMaster" value="{{__formType.id}}">{{__formType.form_name}}
+        <label for="FrmType">Transaction Type <span class="text-danger">*</span></label>
+        <select name="frmType" class="form-control" id="FrmType" formControlName="trans_id">
+          <option value="">Select Transaction Type</option>
+          <option *ngFor="let __formType of __formTypeMaster" value="{{__formType.id}}">{{__formType.trns_name}} - {{__formType.trans_type_id == 1 ? 'Financial' : __formType.trans_type_id == 3 ? 'Non Financial' : 'NFO'}}
           </option>
         </select>
         <div class="invalid-feedback"
-          *ngIf="__rcvForm.get('form_type_id').invalid && (__rcvForm.get('form_type_id').dirty || __rcvForm.get('form_type_id').touched)">
-          <span class="invalid-feedback" *ngIf="(__rcvForm.get('form_type_id')).errors?.required">*Please provide form
+          *ngIf="__rcvForm.get('trans_id').invalid && (__rcvForm.get('trans_id').dirty || __rcvForm.get('trans_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__rcvForm.get('trans_id')).errors?.required">*Please provide form
             type</span>
         </div>
       </div>

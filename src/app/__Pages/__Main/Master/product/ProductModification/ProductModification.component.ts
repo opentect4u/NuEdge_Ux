@@ -33,7 +33,6 @@ submit(){
   if(this.__prdForm.invalid){
     return;
   }
-  console.log(this.__prdForm.value);
   this.__dbIntr.api_call(1,'/productAddEdit',this.__prdForm.value).pipe(map((x:any) => x.suc)).subscribe(res =>{
     if(res == 1){
         this.dialogRef.close(this.__prdForm.value);
