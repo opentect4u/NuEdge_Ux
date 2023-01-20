@@ -15,7 +15,6 @@ export class MainComponent implements OnInit {
     // this.loadDropdownScript();
     this.__utility.__route$.subscribe(res => {
       if (res) {
-
         this.__rtDt = res;
       }
     })

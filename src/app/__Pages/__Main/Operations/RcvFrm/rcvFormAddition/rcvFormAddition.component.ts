@@ -105,6 +105,8 @@ export class RcvFormAdditionComponent implements OnInit {
       return;
     }
     this.__dbIntr.api_call(1, '/formreceivedAdd', this.__rcvForm.value).subscribe((res: responseDT) => {
+      console.log(res);
+      
       if (res.suc == 1) {
         this.__rcvForm.reset();
         this.dialogRef.close(res);

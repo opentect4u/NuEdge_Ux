@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'app-mfTrax',
@@ -7,7 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MfTraxComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+   }
 
   ngOnInit() {
   }

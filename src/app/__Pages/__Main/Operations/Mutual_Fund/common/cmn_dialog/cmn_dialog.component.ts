@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
 import { amc } from 'src/app/__Model/amc';
+import { rnt } from 'src/app/__Model/Rnt';
 import { bank } from 'src/app/__Model/__bank';
 import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -30,6 +31,7 @@ export class Cmn_dialogComponent implements OnInit {
   __catMst: category[];
   __subCatMst: subcat[];
   __bankMst: bank[];
+  __rntMst: rnt[];
   __financialForm = new FormGroup({
     id: new FormControl(this.data.id),
     sip_to: new FormControl(''),
@@ -43,7 +45,7 @@ export class Cmn_dialogComponent implements OnInit {
     login_at: new FormControl(this.data.id ? this.data.data.rnt_login_at : '', [Validators.required]),
     remarks: new FormControl(this.data.id ? (this.data.data.remarks != null ? this.data.data.remarks : '') : ''),
     app_form_scan_status: new FormControl(this.data.id ? (this.data.data.form_scan_status == "true") : false, [Validators.requiredTrue]),
-    file: new FormControl('', this.data.id ? [fileValidators.fileExtensionValidator(this.allowedExtensions)]  : [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
+    file: new FormControl('', this.data.id ? [fileValidators.fileExtensionValidator(this.allowedExtensions)] : [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
     app_form_scan: new FormControl('', this.data.id ? [] : [Validators.required]),
     frm_rec_dateTime: new FormControl(''),
     sub_arn_no: new FormControl(''),
@@ -55,7 +57,7 @@ export class Cmn_dialogComponent implements OnInit {
     first_email: new FormControl('', [Validators.required, Validators.email]),
     first_mobile: new FormControl('', [Validators.required]),
 
-    second_kyc: new FormControl( ''),
+    second_kyc: new FormControl(''),
     second_client_code: new FormControl(this.data.id ? this.data.data.second_client_code : ''),
     second_client_name: new FormControl(''),
     second_pan: new FormControl('', [Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
@@ -94,36 +96,39 @@ export class Cmn_dialogComponent implements OnInit {
     this.getAmcMaster();
     this.getCatgoryMaster();
     this.getBankMaster();
+    this.getRNTMaster();
   }
 
   ngOnInit() {
-    if (this.data.id) { 
+    if (this.data.id) {
       this.populateRCVforDtls();
       this.getSubcategoryAccordingToCategory(this.data.data.trans_catg);
       this.getSchemeMaster(this.data.data.trans_catg, this.data.data.trans_subcat);
-      this.setCLDtls(this.data.data.first_client_code,1);
-      if(this.data.data.second_client_code){
+      this.setCLDtls(this.data.data.first_client_code, 1);
+      if (this.data.data.second_client_code) {
         this.setCLDtls(this.data.data.second_client_code, 2);
       }
-      if(this.data.data.third_client_code){
-        this.setCLDtls(this.data.data.third_client_code,3);
+      if (this.data.data.third_client_code) {
+        this.setCLDtls(this.data.data.third_client_code, 3);
       }
       setTimeout(() => {
-        if(this.__financialForm.get('trans_type').value == '1' || this.__financialForm.get('trans_type').value == '6'){
-        this.setFormControl('scheme_name',this.data.data.trans_scheme_to);}
-        else if(this.__financialForm.get('trans_type').value == '3' 
-                || this.__financialForm.get('trans_type').value == '4' 
-                ||  this.__financialForm.get('trans_type').value == '5'){   
-                  console.log('sss');
-                  
-          this.setFormControl('trans_scheme_from',this.data.data.trans_scheme_from);
-          this.setFormControl('trans_scheme_to',this.data.data.trans_scheme_to);
+        if (this.__financialForm.get('trans_type').value == '1' || this.__financialForm.get('trans_type').value == '6') {
+          console.log('scheme_name');
+
+          this.setFormControl('scheme_name', this.data.data.trans_scheme_to);
         }
-        else{
-          this.setFormControl('sip_from',this.data.data.sip_from);
-          this.setFormControl('sip_to',this.data.data.sip_to);
+        else if (this.__financialForm.get('trans_type').value == '3'
+          || this.__financialForm.get('trans_type').value == '4'
+          || this.__financialForm.get('trans_type').value == '5') {
+          this.setFormControl('trans_scheme_from', this.data.data.trans_scheme_from);
+          this.setFormControl('trans_scheme_to', this.data.data.trans_scheme_to);
         }
-        }, 1000);
+        else {
+          this.setFormControl('scheme_name', this.data.data.trans_scheme_to);
+          this.setFormControl('sip_from', this.datePipe.transform(this.data.data.sip_start_date, 'yyyy-MM-dd'));
+          this.setFormControl('sip_to', this.datePipe.transform(this.data.data.sip_end_date, 'yyyy-MM-dd'));
+        }
+      }, 1000);
     }
   }
   ngAfterViewInit() {
@@ -131,7 +136,7 @@ export class Cmn_dialogComponent implements OnInit {
     /***** event emit on category change*/
     this.__financialForm.get('trans_catg').valueChanges.subscribe(res => {
       console.log(res);
-      
+
       if (res) {
         this.getSubcategoryAccordingToCategory(res);
       }
@@ -145,7 +150,7 @@ export class Cmn_dialogComponent implements OnInit {
     /****** event emit on transtype change*/
     this.__financialForm.get('trans_type').valueChanges.subscribe(res => {
       console.log(res);
-      
+
       switch (Number(res)) {
         case 2:
           this.setValidators(['sip_from', 'sip_to', 'scheme_name'], 'A');
@@ -175,6 +180,8 @@ export class Cmn_dialogComponent implements OnInit {
   submitMF() {
     if (this.__financialForm.invalid) {
       this.__utility.showSnackbar('Error!! Form submition failed due to some error', 0)
+      console.log(this.__financialForm);
+
       return;
     }
     const fb = new FormData();
@@ -215,16 +222,20 @@ export class Cmn_dialogComponent implements OnInit {
     fb.append('amc_id', this.__financialForm.value.amc_id);
     fb.append('trans_type_id', this.data.trans_type == 'F' ? '1' : this.data.trans_type == 'N' ? '3' : '4');
     console.log(this.__financialForm.value.app_form_scan);
-    
+
     fb.append('app_form_scan', this.__financialForm.value.app_form_scan);
     fb.append('entry_date', this.__financialForm.value.entry_date);
-    fb.append('tin_no',this.data.id);
-    this.__dbIntr.api_call(1, this.data.id ? '/mfTraxUpdate' :  '/mfTraxCreate', fb).subscribe((res: any) => {
+    fb.append('tin_no', this.data.id);
+    this.__dbIntr.api_call(1, this.data.id ? '/mfTraxUpdate' : '/mfTraxCreate', fb).subscribe((res: any) => {
       this.dialogRef.close({ id: this.data.id, data: res.data })
       this.__utility.showSnackbar(res.suc == 1 ? 'Form Submitted Successfully' : res.msg, res.suc)
     })
   }
-
+   getRNTMaster(){
+    this.__dbIntr.api_call(0,'/rnt',null).pipe(map((x: responseDT) => x.data)).subscribe((res: rnt[]) => {
+      this.__rntMst = res;
+    })
+   }
   getTransactionTypeMasterAccordingTotransType() {
     this.__dbIntr.api_call(0, '/showTrans', "trans_type_id=" + (this.data.trans_type == 'F' ? 1 : (this.data.trans_type == 'N' ? 3 : 4))).pipe(map((x: responseDT) => x.data)).subscribe((res: trnsType[]) => {
       this.__transTypeMst = res;
@@ -232,10 +243,10 @@ export class Cmn_dialogComponent implements OnInit {
   }
   getSchemeMaster(cat_id, subcat_id) {
     console.log(cat_id + '' + subcat_id);
-    
+
     this.__dbIntr.api_call(0, '/scheme', "product_id=" + this.data.parent_id + '&category_id=' + cat_id + "&subcategory_id=" + subcat_id).pipe(map((x: responseDT) => x.data)).subscribe((res: scheme[]) => {
-     console.log(res);
-     
+      console.log(res);
+
       this.__schemeMst = res;
     })
   }
@@ -255,40 +266,40 @@ export class Cmn_dialogComponent implements OnInit {
     })
   }
   getClDtlsAccordingtoClCode(__clcode, index) {
-     this.setCLDtls(__clcode.value,index);
+    this.setCLDtls(__clcode.value, index);
   }
 
- setCLDtls(__clCode,index){
-  if(__clCode != ''){
-    this.__dbIntr.api_call(0, '/client', 'client_code=' + __clCode.toString().toUpperCase()).subscribe((res: responseDT) => {
-      console.log(res);
-      console.log(index);
+  setCLDtls(__clCode, index) {
+    if (__clCode != '') {
+      this.__dbIntr.api_call(0, '/client', 'client_code=' + __clCode.toString().toUpperCase()).subscribe((res: responseDT) => {
+        console.log(res);
+        console.log(index);
+        switch (index) {
+          case 2: this.setValidators(['second_email', 'second_mobile', 'second_client_name', 'second_kyc', 'second_pan'], res.data.length > 0 ? 'A' : 'R'); break;
+          case 3: this.setValidators(['third_email', 'third_mobile', 'third_client_name', 'third_kyc', 'third_pan'], res.data.length > 0 ? 'A' : 'R'); break;
+          default: break;
+        }
+        this.setFormControl(index == 1 ? 'first_pan' : (index == 2 ? 'second_pan' : 'third_pan'), res.data[0]?.pan);
+        this.setFormControl(index == 1 ? 'first_client_name' : (index == 2 ? 'second_client_name' : 'third_client_name'), res.data[0]?.client_name);
+        this.setFormControl(index == 1 ? 'first_kyc' : (index == 2 ? 'second_kyc' : 'third_kyc'), res.data[0]?.final_kyc_status ? res.data[0]?.final_kyc_status : '');
+        this.setFormControl(index == 1 ? 'first_email' : (index == 2 ? 'second_email' : 'third_email'), res.data[0]?.email ? res.data[0]?.email : '');
+        this.setFormControl(index == 1 ? 'first_mobile' : (index == 2 ? 'second_mobile' : 'third_mobile'), res.data[0]?.mobile ? res.data[0]?.mobile : '');
+      })
+    }
+    else {
       switch (index) {
-        case 2: this.setValidators(['second_email', 'second_mobile', 'second_client_name', 'second_kyc', 'second_pan'], res.data.length > 0 ? 'A' : 'R'); break;
-        case 3: this.setValidators(['third_email', 'third_mobile', 'third_client_name', 'third_kyc', 'third_pan'], res.data.length > 0 ? 'A' : 'R'); break;
+        case 2: this.setValidators(['second_email', 'second_mobile', 'second_client_name', 'second_kyc', 'second_pan'], 'R'); break;
+        case 3: this.setValidators(['third_email', 'third_mobile', 'third_client_name', 'third_kyc', 'third_pan'], 'R'); break;
         default: break;
       }
-      this.setFormControl(index == 1 ? 'first_pan' : (index == 2 ? 'second_pan' : 'third_pan'), res.data[0]?.pan);
-      this.setFormControl(index == 1 ? 'first_client_name' : (index == 2 ? 'second_client_name' : 'third_client_name'), res.data[0]?.client_name);
-      this.setFormControl(index == 1 ? 'first_kyc' : (index == 2 ? 'second_kyc' : 'third_kyc'), res.data[0]?.final_kyc_status ? res.data[0]?.final_kyc_status : '');
-      this.setFormControl(index == 1 ? 'first_email' : (index == 2 ? 'second_email' : 'third_email'), res.data[0]?.email ? res.data[0]?.email : '');
-      this.setFormControl(index == 1 ? 'first_mobile' : (index == 2 ? 'second_mobile' : 'third_mobile'), res.data[0]?.mobile ? res.data[0]?.mobile : '');
-    })
-  }
-  else{
-    switch (index) {
-      case 2: this.setValidators(['second_email', 'second_mobile', 'second_client_name', 'second_kyc', 'second_pan'], 'R'); break;
-      case 3: this.setValidators(['third_email', 'third_mobile', 'third_client_name', 'third_kyc', 'third_pan'], 'R'); break;
-      default: break;
+      this.setFormControl(index == 1 ? 'first_pan' : (index == 2 ? 'second_pan' : 'third_pan'), '');
+      this.setFormControl(index == 1 ? 'first_client_name' : (index == 2 ? 'second_client_name' : 'third_client_name'), '');
+      this.setFormControl(index == 1 ? 'first_kyc' : (index == 2 ? 'second_kyc' : 'third_kyc'), '');
+      this.setFormControl(index == 1 ? 'first_email' : (index == 2 ? 'second_email' : 'third_email'), '');
+      this.setFormControl(index == 1 ? 'first_mobile' : (index == 2 ? 'second_mobile' : 'third_mobile'), '');
     }
-    this.setFormControl(index == 1 ? 'first_pan' : (index == 2 ? 'second_pan' : 'third_pan'), '');
-    this.setFormControl(index == 1 ? 'first_client_name' : (index == 2 ? 'second_client_name' : 'third_client_name'), '');
-    this.setFormControl(index == 1 ? 'first_kyc' : (index == 2 ? 'second_kyc' : 'third_kyc'), '');
-    this.setFormControl(index == 1 ? 'first_email' : (index == 2 ? 'second_email' : 'third_email'), '');
-    this.setFormControl(index == 1 ? 'first_mobile' : (index == 2 ? 'second_mobile' : 'third_mobile'), '');
-  }
 
- }
+  }
 
   getRcvFromDtls(_ev) {
     if (this.__financialForm.get('temp_tin_id').value != '') {
@@ -320,17 +331,17 @@ export class Cmn_dialogComponent implements OnInit {
     });
   }
   callSchememaster(_cat, _subcat) {
-    if (_cat && _subcat) {  
+    if (_cat && _subcat) {
       this.getSchemeMaster(this.__financialForm.get('trans_catg').value, this.__financialForm.get('trans_subcatg').value);
     }
 
   }
   getFIle(__ev) {
     this.__financialForm.get('file').setValidators(
-      this.data.id ? 
-      [fileValidators.fileExtensionValidator(this.allowedExtensions), fileValidators.fileSizeValidator(__ev.files)] 
-      :[Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions), fileValidators.fileSizeValidator(__ev.files)]
-      );
+      this.data.id ?
+        [fileValidators.fileExtensionValidator(this.allowedExtensions), fileValidators.fileSizeValidator(__ev.files)]
+        : [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions), fileValidators.fileSizeValidator(__ev.files)]
+    );
     this.__financialForm.get('file').updateValueAndValidity();
     if (this.__financialForm.get('file').status == 'VALID' && __ev.files.length > 0) {
       const reader = new FileReader();
@@ -345,10 +356,10 @@ export class Cmn_dialogComponent implements OnInit {
     console.log(this.__financialForm.get('app_form_scan'));
   }
   populateRCVforDtls() {
-    this.__dbIntr.api_call(0, '/formreceived', 
-    "temp_tin_id=" + this.__financialForm.get('temp_tin_id').value.toString().toUpperCase() + 
-    '&trans_type_id=' + (this.data.trans_type == 'F' ? 1 : (this.data.trans_type == 'N' ? 3 : 4)) +
-    '&flag=' + (this.data.id ? 'U' : 'C')
+    this.__dbIntr.api_call(0, '/formreceived',
+      "temp_tin_id=" + this.__financialForm.get('temp_tin_id').value.toString().toUpperCase() +
+      '&trans_type_id=' + (this.data.trans_type == 'F' ? 1 : (this.data.trans_type == 'N' ? 3 : 4)) +
+      '&flag=' + (this.data.id ? 'U' : 'C')
     ).subscribe((res: responseDT) => {
       if (res.suc == 1 && res.data.length > 0) {
         this.setFormControl('trans_type', res.data[0]?.trans_id);

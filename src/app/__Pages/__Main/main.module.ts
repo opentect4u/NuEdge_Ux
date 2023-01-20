@@ -79,11 +79,11 @@ const routes: Routes = [
         loadChildren: () => import('../__Main/Master/scheme/scheme.module').then(m => m.SchemeModule),
         data: { id: 15, title: "NuEdge - Scheme  Master", pageTitle: "Scheme Master", has_menubar: 'Y' }
       },
-      {
-        path: 'employee',
-        loadChildren: () => import('../__Main/Master/employee/employee.module').then(m => m.EmployeeModule),
-        data: { id: 16, title: "NuEdge - Employee Master", pageTitle: "Employee Master" }
-      },
+      // {
+      //   path: 'employee',
+      //   loadChildren: () => import('../__Main/Master/employee/employee.module').then(m => m.EmployeeModule),
+      //   data: { id: 16, title: "NuEdge - Employee Master", pageTitle: "Employee Master" }
+      // },
       {
         path: 'docsType',
         loadChildren: () => import('../__Main/Master/docsMaster/docsMaster.module').then(m => m.DocsMasterModule),

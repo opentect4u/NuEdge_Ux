@@ -4,7 +4,7 @@
     <mat-icon>close</mat-icon>
   </button>
 </div>
-<mat-dialog-content>
+<mat-dialog-content >
   <form [formGroup]="__financialForm" id="__finForm" (ngSubmit)="submitMF()" ngNativeValidate>
 
     <div class="row my-5">
@@ -91,7 +91,7 @@
       </div>
       <div class="col-sm-6">
         <label for="amc_name">AMC <span class="text-danger">*</span></label>
-        <select name="amc_name" id="amc_name" class="form-control select2" formControlName="amc_id">
+        <select  id="amc_name" class="form-control" formControlName="amc_id">
           <option value="">Select AMC</option>
           <option [value]="__amc.id" *ngFor="let __amc of __amcMst">{{__amc.amc_name}}</option>
         </select>
@@ -364,7 +364,7 @@
         <label for="login_at">Login At <span class="text-danger">*</span></label>
         <select name="login_at" id="login_at" class="form-control" formControlName="login_at">
           <option value="">Select Login At</option>
-          <option [value]="__amc.id" *ngFor="let __amc of __amcMst">{{__amc.amc_name}}</option>
+          <option [value]="__rnt.id" *ngFor="let __rnt of __rntMst">{{__rnt.rnt_name}}</option>
         </select>
         <div class="invalid-feedback"
           *ngIf="__financialForm.get('login_at').invalid && (__financialForm.get('login_at').dirty || __financialForm.get('login_at').touched)">

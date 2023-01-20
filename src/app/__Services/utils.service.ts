@@ -36,7 +36,7 @@ export class UtiliService {
   //Adding Dropdown Script
   addScript() {
     let __script = this.__renderer.createElement('script');
-    __script.src = "./assets/menu_file/menu_jQuery.js";
+    __script.src = "./assets/js/appendselect2.js";
     __script.id = "mainJquery";
     this.__renderer.appendChild(this.__docs.body, __script);
   }

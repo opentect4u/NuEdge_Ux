@@ -1,7 +1,7 @@
 import { DatePipe, Location } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
@@ -40,7 +40,9 @@ export class SearchComponent implements OnInit {
       pipe(
         debounceTime(200),
         distinctUntilChanged(),
-        switchMap(dt => dt?.length > 1 ? this.__dbIntr.searchItems(this.__api_name, dt + (this.__pageTitle?.trans_type_id ? "&trans_type_id=" + this.__pageTitle?.trans_type_id : '')) : [])
+        switchMap(dt => dt?.length > 1 ? 
+          this.__dbIntr.searchItems(this.__api_name, dt + (this.__pageTitle?.trans_type_id ? "&trans_type_id=" + this.__pageTitle?.trans_type_id : ''))
+          : []),
       ).subscribe({
         next: (value) => {
           this.__items = value.data;

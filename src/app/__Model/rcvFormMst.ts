@@ -18,4 +18,5 @@ export interface rcvForm {
     temp_tin_id: string
     updated_at: string
     updated_by: any
+    trans_name:string
 }
