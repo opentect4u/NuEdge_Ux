@@ -17,7 +17,7 @@ import { RcvFormAdditionComponent } from './rcvFormAddition/rcvFormAddition.comp
 })
 export class RcvFrmComponent implements OnInit {
 
-  __columns: string[] = ['sl_no', 'temp_tin_no','trans_type','trans_name', 'rcv_datetime', 'bu_type'];
+  __columns: string[] = ['sl_no', 'temp_tin_no', 'rcv_datetime', 'bu_type'];
   __RcvForms = new MatTableDataSource<rcvForm>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   constructor(
