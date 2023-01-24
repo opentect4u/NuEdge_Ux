@@ -47,7 +47,13 @@ export class AMCModificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
-    this.__dbIntr.api_call(1, '/amcAddEdit', this.__amcForm.value).subscribe((res: any) => {
+    const __amc = new FormData();
+    __amc.append("amc_name",this.__amcForm.value.amc_name);
+    __amc.append("product_id",this.__amcForm.value.product_id);
+    __amc.append("rnt_id",this.__amcForm.value.rnt_id);
+    __amc.append("id",this.__amcForm.value.id);
+
+    this.__dbIntr.api_call(1, '/amcAddEdit', __amc).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }

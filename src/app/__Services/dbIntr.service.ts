@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpContext} from '@angular/common/http'
+import {HttpClient, HttpContext, HttpHeaders} from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { BYPASS_LOG } from '../__Interceptors/network.interceptor';

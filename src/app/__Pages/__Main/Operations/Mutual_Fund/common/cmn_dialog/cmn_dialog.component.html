@@ -4,7 +4,7 @@
     <mat-icon>close</mat-icon>
   </button>
 </div>
-<mat-dialog-content >
+<mat-dialog-content>
   <form [formGroup]="__financialForm" id="__finForm" (ngSubmit)="submitMF()" ngNativeValidate>
 
     <div class="row my-5">
@@ -14,8 +14,8 @@
       </div>
       <div class="col-sm-6">
         <label for="temp_tin_id">Temporary TIN Number <span class="text-danger">*</span></label>
-        <input type="text" placeholder="Enter Temporary TIN Number" [attr.disabled]="this.data?.id"
-          name="temp_tin_id" id="temp_tin_id" class="form-control text-uppercase" formControlName="temp_tin_id"
+        <input type="text" placeholder="Enter Temporary TIN Number" [attr.disabled]="this.data?.id" name="temp_tin_id"
+          id="temp_tin_id" class="form-control text-uppercase" formControlName="temp_tin_id"
           (change)="getRcvFromDtls($event.target)">
         <div class="invalid-feedback"
           *ngIf="__financialForm.get('temp_tin_id').invalid && (__financialForm.get('temp_tin_id').dirty || __financialForm.get('temp_tin_id').touched)">
@@ -30,7 +30,7 @@
         <div class="row">
           <div class="col-sm-6">
             <label for="frm_rec_dateTime">Form Recieve Date Time</label>
-            <input type="text" readonly name="frm_rec_dateTime" id="frm_rec_dateTime" readonly class="form-control"
+            <input type="text" readonly name="frm_rec_dateTime" id="frm_rec_dateTime" class="form-control"
               formControlName="frm_rec_dateTime" placeholder="Form Recieve Date Time">
           </div>
           <div class="col-sm-3" *ngIf="__financialForm.get('sub_arn_no').value != ''">
@@ -72,9 +72,6 @@
           placeholder="EUIN To">
       </div>
     </div>
-
-
-
     <div class="row my-5">
       <div class="col-sm-6">
         <label for="trns_type">Transaction Type <span class="text-danger">*</span></label>
@@ -91,7 +88,7 @@
       </div>
       <div class="col-sm-6">
         <label for="amc_name">AMC <span class="text-danger">*</span></label>
-        <select  id="amc_name" class="form-control" formControlName="amc_id">
+        <select id="amc_name" class="form-control" formControlName="amc_id" [attr.disabled]="this.data?.id">
           <option value="">Select AMC</option>
           <option [value]="__amc.id" *ngFor="let __amc of __amcMst">{{__amc.amc_name}}</option>
         </select>
@@ -105,7 +102,7 @@
     <div class="row my-5">
       <div class="col-sm-6">
         <label for="cat">Category <span class="text-danger">*</span></label>
-        <select name="cat" id="cat" class="form-control" formControlName="trans_catg">
+        <select name="cat" id="cat" class="form-control" formControlName="trans_catg" [attr.disabled]="this.data?.id">
           <option value="">Select category</option>
           <option *ngFor="let __cat of __catMst" [value]="__cat.id">{{__cat.cat_name}}</option>
         </select>
@@ -117,7 +114,8 @@
       </div>
       <div class="col-sm-6">
         <label for="sub_cat">Sub Category <span class="text-danger">*</span></label>
-        <select name="sub_cat" id="sub_cat" class="form-control" formControlName="trans_subcatg">
+        <select name="sub_cat" id="sub_cat" class="form-control" formControlName="trans_subcatg"
+          [attr.disabled]="this.data?.id">
           <option value="">Select sub category</option>
           <option [value]="__subcat.id" *ngFor="let __subcat of __subCatMst"> {{__subcat.subcategory_name}}</option>
         </select>
@@ -132,7 +130,8 @@
       *ngIf="__financialForm.get('trans_type').value == '3' || __financialForm.get('trans_type').value == '4' || __financialForm.get('trans_type').value == '5'">
       <div class="col-sm-6">
         <label for="schm_from">Scheme From <span class="text-danger">*</span></label>
-        <select name="schm_from" id="schm_from" class="form-control" formControlName="trans_scheme_from">
+        <select name="schm_from" id="schm_from" class="form-control" formControlName="trans_scheme_from"
+          [attr.disabled]="this.data?.id">
           <option value="">Select scheme from</option>
           <option [value]="__scmMst.id" *ngFor="let __scmMst of __schemeMst">{{__scmMst.scheme_name}}</option>
         </select>
@@ -144,7 +143,8 @@
       </div>
       <div class="col-sm-6">
         <label for="schm_to">Scheme To <span class="text-danger">*</span></label>
-        <select name="schm_to" id="schm_to" class="form-control" formControlName="trans_scheme_to">
+        <select name="schm_to" id="schm_to" class="form-control" formControlName="trans_scheme_to"
+          [attr.disabled]="this.data?.id">
           <option value="">Select scheme to</option>
           <option [value]="__scmMst.id" *ngFor="let __scmMst of __schemeMst">{{__scmMst.scheme_name}}</option>
         </select>
@@ -159,7 +159,7 @@
       *ngIf="__financialForm.get('trans_type').value != '3' && __financialForm.get('trans_type').value != '4' && __financialForm.get('trans_type').value != '5'">
       <div class="col-sm-6">
         <label for="schem_name">Scheme Name <span class="text-danger">*</span></label>
-        <select id="schem_name" class="form-control" formControlName="scheme_name">
+        <select id="schem_name" class="form-control" formControlName="scheme_name" [attr.disabled]="this.data?.id">
           <option value="">Select Scheme</option>
           <option [value]="__scheme.id" *ngFor="let __scheme of __schemeMst">{{__scheme.scheme_name}}</option>
         </select>
@@ -170,12 +170,12 @@
         </div>
       </div>
     </div>
-
     <div class="row my-5"
       *ngIf="__financialForm.get('trans_type').value == '2' || __financialForm.get('trans_type').value == '7'">
       <div class="col-sm-6">
         <label for="spi_from">SIP From <span class="text-danger">*</span></label>
-        <input type="date" name="spi_from" id="spi_from" class="form-control" formControlName="sip_from">
+        <input type="date" name="spi_from" id="spi_from" class="form-control" formControlName="sip_from"
+          [attr.disabled]="this.data?.id">
         <div class="invalid-feedback"
           *ngIf="__financialForm.get('sip_from').invalid && (__financialForm.get('sip_from').dirty || __financialForm.get('sip_from').touched)">
           <span class="invalid-feedback" *ngIf="(__financialForm.get('sip_from')).errors?.required">*Please provide sip
@@ -184,7 +184,8 @@
       </div>
       <div class="col-sm-6">
         <label for="spi_to">SIP To <span class="text-danger">*</span></label>
-        <input type="date" name="spi_to" id="spi_to" class="form-control" formControlName="sip_to">
+        <input type="date" name="spi_to" id="spi_to" class="form-control" formControlName="sip_to"
+          [attr.disabled]="this.data?.id">
         <div class="invalid-feedback"
           *ngIf="__financialForm.get('sip_to').invalid && (__financialForm.get('sip_to').dirty || __financialForm.get('sip_to').touched)">
           <span class="invalid-feedback" *ngIf="(__financialForm.get('sip_to')).errors?.required">*Please provide sip
@@ -192,15 +193,14 @@
         </div>
       </div>
     </div>
-
-
     <div class="row my-5">
       <div class="col-sm-12">
         <div class="row my-5">
           <div class="col-sm-6">
             <label for="client_code1">1st Client Code <span class="text-danger">*</span></label>
             <input type="text" name="client_code1" id="client_code1" class="form-control text-uppercase"
-              formControlName="first_client_code" (change)="getClDtlsAccordingtoClCode($event.target,1)">
+              formControlName="first_client_code" (change)="getClDtlsAccordingtoClCode($event.target,1)"
+              [attr.disabled]="this.data?.id">
             <div class="invalid-feedback"
               *ngIf="__financialForm.get('first_client_code').invalid && (__financialForm.get('first_client_code').dirty || __financialForm.get('first_client_code').touched)">
               <span class="invalid-feedback" *ngIf="(__financialForm.get('first_client_code')).errors?.required">*Please
@@ -218,7 +218,8 @@
             <label for="first_kyc_view">Kyc
               Status <span class="text-danger">*</span>
             </label>
-            <select name="first_kyc" id="first_kyc" class="form-control" formControlName="first_kyc">
+            <select name="first_kyc" id="first_kyc" class="form-control" formControlName="first_kyc"
+              [attr.disabled]="this.data?.id">
               <option value="">Select KYC</option>
               <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
             </select>
@@ -248,11 +249,12 @@
             <label for="client_code2">2nd Client Code
             </label>
             <input type="text" name="client_code" id="client_code" class="form-control text-uppercase"
-              formControlName="second_client_code" (change)="getClDtlsAccordingtoClCode($event.target,2)">
+              formControlName="second_client_code" (change)="getClDtlsAccordingtoClCode($event.target,2)"
+              [attr.disabled]="this.data?.id">
           </div>
           <div class="col-sm-6">
             <label for="client_name1">2nd Client Name
-                {{this.__financialForm.get('second_client_name').value}}
+              {{this.__financialForm.get('second_client_name').value}}
             </label>
             <input type="text" [attr.readonly]="true" id="client_name2" class="form-control"
               formControlName="second_client_name">
@@ -262,7 +264,8 @@
           <div class="col-sm-3">
             <label for="second_kyc_view">Kyc Status
             </label>
-            <select name="second_kyc" id="second_kyc" class="form-control" formControlName="second_kyc">
+            <select name="second_kyc" id="second_kyc" class="form-control" formControlName="second_kyc"
+              [attr.disabled]="this.data?.id">
               <option value="">Select KYC</option>
               <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
             </select>
@@ -291,7 +294,8 @@
           <div class="col-sm-6">
             <label for="client_code3">3rd Client Code</label>
             <input type="text" name="client_code3" id="client_code3" class="form-control text-uppercase"
-              formControlName="third_client_code" (change)="getClDtlsAccordingtoClCode($event.target,3)">
+              formControlName="third_client_code" (change)="getClDtlsAccordingtoClCode($event.target,3)"
+              [attr.disabled]="this.data?.id">
           </div>
           <div class="col-sm-6">
             <label for="client_name3">3rd Client Name</label>
@@ -303,7 +307,8 @@
           <div class="col-sm-3">
             <label for="third_kyc">Kyc Status
             </label>
-            <select name="third_kyc" id="third_kyc" class="form-control" formControlName="third_kyc">
+            <select name="third_kyc" id="third_kyc" class="form-control" formControlName="third_kyc"
+              [attr.disabled]="this.data?.id">
               <option value="">Select KYC</option>
               <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
             </select>
@@ -329,7 +334,8 @@
     <div class="row my-5">
       <div class="col-sm-6">
         <label for="amt">Amount <span class="text-danger">*</span></label>
-        <input type="text" name="amt" id="amt" class="form-control" formControlName="amount" placeholder="Enter Amount">
+        <input type="text" name="amt" id="amt" class="form-control" formControlName="amount" placeholder="Enter Amount"
+          [attr.disabled]="this.data?.id">
         <div class="invalid-feedback"
           *ngIf="__financialForm.get('amount').invalid && (__financialForm.get('amount').dirty || __financialForm.get('amount').touched)">
           <span class="invalid-feedback" *ngIf="(__financialForm.get('amount')).errors?.required">*Please provide
@@ -339,7 +345,7 @@
       <div class="col-sm-6">
         <label for="chq_no">Cheque No <span class="text-danger">*</span></label>
         <input type="text" name="chq_no" id="chq_no" class="form-control" formControlName="chq_no"
-          placeholder="Enter Cheque Number">
+          placeholder="Enter Cheque Number" [attr.disabled]="this.data?.id">
         <div class="invalid-feedback"
           *ngIf="__financialForm.get('chq_no').invalid && (__financialForm.get('chq_no').dirty || __financialForm.get('chq_no').touched)">
           <span class="invalid-feedback" *ngIf="(__financialForm.get('chq_no')).errors?.required">*Please provide cheque
@@ -350,7 +356,7 @@
     <div class="row my-4">
       <div class="col-sm-6">
         <label for="bank">Bank <span class="text-danger">*</span></label>
-        <select name="bank" id="bank" class="form-control" formControlName="chq_bank">
+        <select name="bank" id="bank" class="form-control" formControlName="chq_bank" [attr.disabled]="this.data?.id">
           <option value="">Select bank</option>
           <option [value]="__bnkMst.id" *ngFor="let __bnkMst of __bankMst"> {{__bnkMst.bank_name}}</option>
         </select>
@@ -362,7 +368,8 @@
       </div>
       <div class="col-sm-6">
         <label for="login_at">Login At <span class="text-danger">*</span></label>
-        <select name="login_at" id="login_at" class="form-control" formControlName="login_at">
+        <select name="login_at" id="login_at" class="form-control" formControlName="login_at"
+          [attr.disabled]="this.data?.id">
           <option value="">Select Login At</option>
           <option [value]="__rnt.id" *ngFor="let __rnt of __rntMst">{{__rnt.rnt_name}}</option>
         </select>
@@ -376,7 +383,7 @@
     <div class="row my-3">
       <div class="col-sm-12">
         <label for="remarks">Remarks</label>
-        <textarea name="remarks" id="remarks" cols="30" rows="5" class="form-control"
+        <textarea [attr.disabled]="this.data?.id" name="remarks" id="remarks" cols="30" rows="5" class="form-control"
           formControlName="remarks"></textarea>
       </div>
     </div>
@@ -385,7 +392,7 @@
         <label for="file">Upload Scan Application Form <span class="text-danger"
             *ngIf="this.data.id == null">*</span></label>
         <input type="file" name="file" id="file" formControlName="file" class="form-control"
-          (change)="getFIle($event.target)" accept=".jpg,.jpeg,.png">
+          *ngIf="this.data?.id == null" (change)="getFIle($event.target)" accept=".jpg,.jpeg,.png">
         <div class="invalid-feedback"
           *ngIf=" __financialForm.get('file').invalid && ( __financialForm.get('file').dirty ||  __financialForm.get('file').touched)">
           <span class="invalid-feedback" *ngIf=" __financialForm.get('file').errors?.required">*Please
@@ -396,21 +403,64 @@
             not exceed than
             2MB.</span>
         </div>
+        <br clear="all" />
         <img *ngIf="this.__financialForm.get('filePreview').value" class="imgThumbnail"
           [src]="this.__financialForm.get('filePreview').value" alt="Application form Image">
 
       </div>
       <div class="col-sm-2">
         <label for="app_form_scan_status">
-          <input type="checkbox" [value]="true" id="app_form_scan_status" formControlName="app_form_scan_status"> Form
+          <input type="checkbox" [value]="true" id="app_form_scan_status" formControlName="app_form_scan_status"
+            [attr.disabled]="this.data?.id"> Form
           Scan Status</label>
       </div>
     </div>
-
+    <div class="row my-5" *ngIf="this.data.id != null">
+      <div class="col-sm-6">
+        <label for="cut_off_time">Cut Off Time</label>
+        <input type="datetime-local" name="cut_off_time" id="cut_off_time" class="form-control"
+          formControlName="cut_off_time" >
+          <div class="invalid-feedback"
+          *ngIf="__financialForm.get('cut_off_time').invalid && (__financialForm.get('cut_off_time').dirty || __financialForm.get('cut_off_time').touched)">
+          <span class="invalid-feedback" *ngIf="(__financialForm.get('cut_off_time')).errors?.required">*Please provide
+            cuto off time</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <label for="login_date">Login Date</label>
+        <input type="date"  id="login_date" class="form-control" formControlName="login_date"
+          >
+          <div class="invalid-feedback"
+          *ngIf="__financialForm.get('login_date').invalid && (__financialForm.get('login_date').dirty || __financialForm.get('login_date').touched)">
+          <span class="invalid-feedback" *ngIf="(__financialForm.get('login_date')).errors?.required">*Please provide
+            login date</span>
+        </div>
+      </div>
+    </div>
+    <div class="row my-5" *ngIf="this.data.id != null">
+      <div class="col-sm-6">
+        <label for="ack_copy">Upload Acknowledgement Copy</label>
+        <input type="file" accept=".jpg,.jpeg,.png" id="ack_copy" class="form-control" formControlName="ack_copy"
+          (change)="getFile($event)" *ngIf=" this.data.data.form_status == 'P'">
+          <div class="invalid-feedback"
+          *ngIf=" __financialForm.get('ack_copy').invalid && ( __financialForm.get('ack_copy').dirty ||  __financialForm.get('ack_copy').touched)">
+          <span class="invalid-feedback" *ngIf=" __financialForm.get('ack_copy').errors?.required">*Please
+            provide file</span>
+          <span class="invalid-feedback" *ngIf="__financialForm.get('ack_copy').errors?.inValidExt">*Invalid
+            file extension.</span>
+          <span class="invalid-feedback" *ngIf="__financialForm.get('ack_copy').errors?.fileSizeValidator">*File size must
+            not exceed than
+            2MB.</span>
+        </div>
+          <br clear="all"/>
+        <img *ngIf="this.__financialForm.get('ack_filePreview').value" class="imgThumbnail"
+          [src]="this.__financialForm.get('ack_filePreview').value" alt="Application Acknowledge Copy Image">
+      </div>
+    </div>
   </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+<mat-dialog-actions align="end" class="popupBoxSubmitSec"  *ngIf="this.data.data.form_status != 'A'">
   <button class="btn addBtn" form="__finForm" [disabled]="__financialForm.invalid">Submit</button>
 </mat-dialog-actions>
 <br clear="all">

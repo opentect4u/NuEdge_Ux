@@ -35,7 +35,11 @@ export class DocsModificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
-    this.__dbIntr.api_call(1, '/documenttypeAddEdit', this.__docsForm.value).subscribe((res: any) => {
+    const __docType = new FormData();
+    __docType.append("doc_type",this.__docsForm.value.doc_type);
+    __docType.append("id",this.__docsForm.value.id);
+
+    this.__dbIntr.api_call(1, '/documenttypeAddEdit', __docType).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }

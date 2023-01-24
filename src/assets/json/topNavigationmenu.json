@@ -6,7 +6,7 @@
         "sub_menu": [
             {
                 "parent_id": "M-1",
-                "menu_name": "RNT",
+                "menu_name": "R&T",
                 "has_submenu": "N",
                 "url": "/main/rntmaster"
             },
@@ -128,5 +128,18 @@
                 "url":"/main/home"
             }
         ]
+    },
+    {
+        "id": 7,
+        "menu_name": "Reports",
+        "has_submenu": "Y",
+        "sub_menu": [
+            {
+                "id": "R-1",
+                "menu_name": "Day Sheet Reports",
+                "has_submenu": "N",
+                "sub_menu": [],
+                "url":"/main/reports/daySheet"
+            }]
     }
 ]

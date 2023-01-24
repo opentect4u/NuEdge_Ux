@@ -21,6 +21,8 @@ export class FinancialComponent implements OnInit {
 
   ngOnInit() { }
   getSearchItem(__ev) {
+    console.log(__ev.item);
+    
     if (__ev.flag == 'A') {
       this.openDialog(null, '');
     }

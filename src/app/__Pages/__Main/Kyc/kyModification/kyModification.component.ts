@@ -95,7 +95,22 @@ export class KyModificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
       return;
     }
-    this.__dbIntr.api_call(1, '/kycAddEdit', this.__clientForm.value).pipe((map((x: responseDT) => x.suc))).subscribe((res: number) => {
+      const __kyc = new FormData();
+    __kyc.append("client_id",this.__clientForm.value.client_id);
+    __kyc.append("client_code",this.__clientForm.value.client_code);
+    __kyc.append("pan_no",this.__clientForm.value.pan_no);
+    __kyc.append("_client_code",this.__clientForm.value._client_code);
+    __kyc.append("_pan_no",this.__clientForm.value._pan_no);
+    __kyc.append("mobile",this.__clientForm.value.mobile);
+    __kyc.append("client_name",this.__clientForm.value.client_name);
+    __kyc.append("email",this.__clientForm.value.email);
+    __kyc.append("doc_dtls",this.__clientForm.value.doc_dtls);
+    __kyc.append("temp_tin_id",this.__clientForm.value.temp_tin_id);
+    __kyc.append("kyc_type",this.__clientForm.value.kyc_type);
+    __kyc.append("kyc_login_type",this.__clientForm.value.kyc_login_type);
+    __kyc.append("kyc_login_at",this.__clientForm.value.kyc_login_at);
+
+    this.__dbIntr.api_call(1, '/kycAddEdit', __kyc).pipe((map((x: responseDT) => x.suc))).subscribe((res: number) => {
       if (res == 1) {
         this.dialogRef.close(res);
       }

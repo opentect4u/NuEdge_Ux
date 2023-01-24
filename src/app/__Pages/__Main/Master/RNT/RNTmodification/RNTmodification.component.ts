@@ -36,7 +36,11 @@ export class RNTmodificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
-    this.__dbIntr.api_call(1, '/rntAddEdit', this.__rntForm.value).subscribe((res: any) => {
+    const fb = new FormData();
+    fb.append("rnt_name",this.__rntForm.value.rnt_name);
+    fb.append("id",this.__rntForm.value.id);
+
+    this.__dbIntr.api_call(1, '/rntAddEdit', fb).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }

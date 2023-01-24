@@ -2,6 +2,7 @@
   [__api_name]="'/documenttype'"></core-search>
 
 <div class="mat-elevation-z3">
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
 
   <table mat-table [dataSource]="__selectDocs">
     <!-- Sl No. -->
@@ -45,5 +46,4 @@
       <td class="mat-cell" colspan="4">No data found</td>
     </tr>
   </table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
 </div>

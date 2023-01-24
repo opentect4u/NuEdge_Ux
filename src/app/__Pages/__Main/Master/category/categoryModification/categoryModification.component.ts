@@ -41,7 +41,12 @@ export class CategoryModificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
-    this.__dbIntr.api_call(1, '/categoryAddEdit', this.__categoryForm.value).subscribe((res: any) => {
+    const __cat = new FormData();
+    __cat.append("cat_name",this.__categoryForm.value.cat_name);
+    __cat.append("product_id",this.__categoryForm.value.product_id);
+    __cat.append("id",this.__categoryForm.value.id);
+
+    this.__dbIntr.api_call(1, '/categoryAddEdit', __cat).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }

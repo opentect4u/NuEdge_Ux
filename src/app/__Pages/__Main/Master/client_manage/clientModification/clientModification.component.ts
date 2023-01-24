@@ -67,10 +67,25 @@ export class ClientModificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
+        const __client = new FormData();
+        __client.append("client_name",this.__clientForm.value.client_name);
+        __client.append("dob",this.__clientForm.value.dob);
+        __client.append("pan",this.__clientForm.value.pan);
+        __client.append("mobile",this.__clientForm.value.mobile);
+        __client.append("sec_mobile",this.__clientForm.value.sec_mobile);
+        __client.append("email",this.__clientForm.value.email);
+        __client.append("sec_email",this.__clientForm.value.sec_email);
+        __client.append("add_line_1",this.__clientForm.value.add_line_1);
+        __client.append("add_line_2",this.__clientForm.value.add_line_2);
+        __client.append("city",this.__clientForm.value.city);
+        __client.append("dist",this.__clientForm.value.dist);
+        __client.append("state",this.__clientForm.value.state);
+        __client.append("pincode",this.__clientForm.value.pincode);
+        __client.append("id",this.__clientForm.value.id);
     this.__dbIntr.api_call(1, '/clientAddEdit', this.__clientForm.value).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close(res.data);
-        this.__utility.showSnackbar(res.suc == 1 ? this.data.id > 0 ? 'Client with code '+ res.data.client_code +' has been updated successfully' : 'Client with code '+ res.data.client_code +' has been added successfully' : 'Something went wrong! Please try again later','');
+        this.__utility.showSnackbar(res.suc == 1 ? this.data.id > 0 ? 'Client with code '+ res.data.client_code +' has been updated successfully' : 'Client with code '+ res.data.client_code +' has been added successfully' : 'Something went wrong! Please try again later',res.suc);
       }
     })
   }

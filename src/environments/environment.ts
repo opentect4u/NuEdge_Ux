@@ -4,14 +4,16 @@
 
 export const environment = {
   production: false,
-  // api_url: "https://my-json-server.typicode.com/Uxtrendz/apis/videoList",
-  // apiUrl: "https://opentech4u.co.in/nuedge_api/api/v1",
-  // clientdocUrl: "https://opentech4u.co.in/nuedge_api/public/client-doc/",
+  apiUrl: "https://opentech4u.co.in/nuedge_api/api/v1",
+  clientdocUrl: "https://opentech4u.co.in/nuedge_api/public/client-doc/",
+  app_formUrl:"https://opentech4u.co.in/nuedge_api/public/application-form/",
+  ack_formUrl:"https://opentech4u.co.in/nuedge_api/public/acknowledgement-copy/"
 
   // NuEdge
-  apiUrl:"http://192.168.1.25/nuedge/api/v1",
-  clientdocUrl:"http://192.168.1.25/nuedge/public/client-doc/",
-  app_formUrl:"http://192.168.1.25/nuedge/public/application-form/"
+  // apiUrl:"http://192.168.1.25/nuedge/api/v1",
+  // clientdocUrl:"http://192.168.1.25/nuedge/public/client-doc/",
+  // app_formUrl:"http://192.168.1.25/nuedge/public/application-form/",
+  // ack_formUrl:"http://192.168.1.25/nuedge/public/acknowledgement-copy/"
 
   //Tribarna
   // apiUrl:"http://192.168.1.245/nuedge/api/v1",

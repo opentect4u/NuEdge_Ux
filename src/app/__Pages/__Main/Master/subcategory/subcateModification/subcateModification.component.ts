@@ -24,11 +24,7 @@ export class SubcateModificationComponent implements OnInit {
     private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
-    public __dialog: MatDialog) {
-    this.getCategoryMaster();
-
-
-  }
+    public __dialog: MatDialog) {this.getCategoryMaster();}
 
   ngOnInit() {
     if (this.data.id > 0) {
@@ -44,7 +40,11 @@ export class SubcateModificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
-    this.__dbIntr.api_call(1, '/subcategoryAddEdit', this.__subcatForm.value).subscribe((res: any) => {
+    const __subcat = new FormData();
+    __subcat.append("subcategory_name",this.__subcatForm.value.subcategory_name);
+    __subcat.append("category_id",this.__subcatForm.value.category_id);
+    __subcat.append("id",this.__subcatForm.value.id);
+    this.__dbIntr.api_call(1, '/subcategoryAddEdit', __subcat).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }

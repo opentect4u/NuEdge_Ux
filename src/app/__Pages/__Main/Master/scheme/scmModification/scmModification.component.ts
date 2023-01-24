@@ -56,7 +56,15 @@ export class ScmModificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
-    this.__dbIntr.api_call(1, '/schemeAddEdit', this.__scmForm.value).subscribe((res: any) => {
+    const __scm =new FormData();
+    __scm.append("product_id", this.__scmForm.value.product_id);
+        __scm.append("amc_id", this.__scmForm.value.amc_id);
+       __scm.append("category_id", this.__scmForm.value.category_id);
+        __scm.append("subcategory_id", this.__scmForm.value.subcategory_id);
+        __scm.append("scheme_name", this.__scmForm.value.scheme_name);
+        __scm.append("id", this.data.id);
+
+    this.__dbIntr.api_call(1, '/schemeAddEdit', __scm).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }

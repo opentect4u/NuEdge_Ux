@@ -82,7 +82,21 @@ export class Cmn_dialogComponent implements OnInit {
     chq_bank: new FormControl(this.data.id ? this.data.data.chq_bank : '', [Validators.required]),
     amc_id: new FormControl(this.data.id ? this.data.data.amc_id : '', [Validators.required]),
     trans_type_id: new FormControl(this.data.parent_id),
-    filePreview: new FormControl(this.data.id ? `${environment.app_formUrl + this.data.data.app_form_scan}` : '')
+    filePreview: new FormControl(this.data.id ? `${environment.app_formUrl + this.data.data.app_form_scan}` : ''),
+
+
+    cut_off_time:new FormControl(this.data.data.form_status == 'A' ?  this.datePipe.transform(this.data.data.rnt_login_cutt_off,'YYYY-MM-ddTHH:mm') : '',
+    this.data.id != null && this.data.data.form_status == 'P' ? [Validators.required] : []  
+    ),
+    login_date: new FormControl(
+      this.data.data.form_status == 'A' ? this.datePipe.transform(this.data.data.rnt_login_dt, 'yyyy-MM-dd') : '',
+      this.data.id != null && this.data.data.form_status == 'P' ? [Validators.required] : []  ),
+    ack_copy:new FormControl(
+      '',
+      this.data.id != null && this.data.data.form_status == 'P' ? [Validators.required,fileValidators.fileExtensionValidator(this.allowedExtensions)] : []  ),
+    ack_file:new FormControl(''),
+    ack_filePreview: new FormControl(
+      this.data.data.form_status == 'A' ? `${environment.ack_formUrl + this.data.data.ack_copy_scan}` : '')
   })
   constructor(
     public dialogRef: MatDialogRef<Cmn_dialogComponent>,
@@ -91,7 +105,10 @@ export class Cmn_dialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
   ) {
-    console.log(data);
+    console.log(this.data);
+    console.log(this.__financialForm.get('cut_off_time').value);
+    console.log(this.__financialForm.get('login_date').value);
+
     this.getTransactionTypeMasterAccordingTotransType();
     this.getAmcMaster();
     this.getCatgoryMaster();
@@ -105,11 +122,15 @@ export class Cmn_dialogComponent implements OnInit {
       this.getSubcategoryAccordingToCategory(this.data.data.trans_catg);
       this.getSchemeMaster(this.data.data.trans_catg, this.data.data.trans_subcat);
       this.setCLDtls(this.data.data.first_client_code, 1);
+
       if (this.data.data.second_client_code) {
         this.setCLDtls(this.data.data.second_client_code, 2);
       }
       if (this.data.data.third_client_code) {
         this.setCLDtls(this.data.data.third_client_code, 3);
+      }
+      if(this.data.data.form_status == 'A'){
+        this.setFormStatus(['cut_off_time','login_date','ack_copy']);
       }
       setTimeout(() => {
         if (this.__financialForm.get('trans_type').value == '1' || this.__financialForm.get('trans_type').value == '6') {
@@ -177,11 +198,9 @@ export class Cmn_dialogComponent implements OnInit {
     })
     /****** */
   }
-  submitMF() {
+  submitMF() {   
     if (this.__financialForm.invalid) {
       this.__utility.showSnackbar('Error!! Form submition failed due to some error', 0)
-      console.log(this.__financialForm);
-
       return;
     }
     const fb = new FormData();
@@ -221,11 +240,14 @@ export class Cmn_dialogComponent implements OnInit {
     fb.append('chq_bank', this.__financialForm.value.chq_bank);
     fb.append('amc_id', this.__financialForm.value.amc_id);
     fb.append('trans_type_id', this.data.trans_type == 'F' ? '1' : this.data.trans_type == 'N' ? '3' : '4');
-    console.log(this.__financialForm.value.app_form_scan);
-
     fb.append('app_form_scan', this.__financialForm.value.app_form_scan);
     fb.append('entry_date', this.__financialForm.value.entry_date);
     fb.append('tin_no', this.data.id);
+    if(this.data.id){
+      fb.append('rnt_login_cutt_off', this.__financialForm.value.cut_off_time);
+      fb.append('rnt_login_date', this.__financialForm.value.login_date);
+      fb.append('ack_copy_scan', this.__financialForm.value.ack_file);
+    }
     this.__dbIntr.api_call(1, this.data.id ? '/mfTraxUpdate' : '/mfTraxCreate', fb).subscribe((res: any) => {
       this.dialogRef.close({ id: this.data.id, data: res.data })
       this.__utility.showSnackbar(res.suc == 1 ? 'Form Submitted Successfully' : res.msg, res.suc)
@@ -382,6 +404,29 @@ export class Cmn_dialogComponent implements OnInit {
         this.setFormControl('sub_brk_cd', '');
         this.setFormControl('trans_type', '');
       }
+    })
+  }
+  getFile(__ev){
+    this.__financialForm.get('ack_copy').setValidators([
+      Validators.required, 
+      fileValidators.fileExtensionValidator(this.allowedExtensions), 
+      fileValidators.fileSizeValidator(__ev.target.files[0])]);
+      this.__financialForm.get('ack_copy').updateValueAndValidity();
+    if(__ev.target.files.length > 0 && this.__financialForm.get('ack_copy').status == 'VALID'){
+      const reader = new FileReader();
+      reader.onload = e => this.setFormControl('ack_filePreview', reader.result);
+      reader.readAsDataURL(__ev.target.files[0]);
+      this.setFormControl('ack_file', __ev.target.files[0]);
+    }
+    else{
+      this.setFormControl('ack_file', '');
+      this.setFormControl('ack_filePreview', '');
+    }
+
+  }
+  setFormStatus(__formCtrl){
+    __formCtrl.forEach(element =>{
+      this.__financialForm.get(element).disable();
     })
   }
 }

@@ -6,42 +6,9 @@
 ></core-search>
 
 
-<!-- 
-
-<div class="card" *ngIf="__selectScheme.length > 0">
-  <div class="card-body">
-    <table class="table table_Custome ">
-      <thead>
-        <tr>
-          <th>SL No.</th>
-          <th>Name</th>
-          <th>Edit</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let __selectedItems of __selectScheme;let i =index">
-           <td>{{i + 1}}</td>
-           <td>{{__selectedItems.scheme_name}}</td>
-           <td>
-            <a (click)="populateDT(__selectedItems)">
-              <mat-icon class="edit_icon">edit</mat-icon>
-            </a>
-           </td>
-           <td>
-            <a>
-              <mat-icon class="delete_icon">delete</mat-icon>
-            </a>
-           </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div> -->
-
-
-
   <div  class="mat-elevation-z3">
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+
     <table mat-table [dataSource]="__selectScheme">
   <!-- Sl No. -->
   <ng-container matColumnDef="sl_no">
@@ -84,5 +51,4 @@
     <td class="mat-cell" colspan="4">No data found</td>
   </tr>
 </table>
-<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
 </div>

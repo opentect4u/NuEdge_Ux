@@ -104,7 +104,25 @@ export class RcvFormAdditionComponent implements OnInit {
       this.__utility.showSnackbar('Error!! submition failed due to some error',0);
       return;
     }
-    this.__dbIntr.api_call(1, '/formreceivedAdd', this.__rcvForm.value).subscribe((res: responseDT) => {
+      const __rcv = new FormData();
+    __rcv.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd)
+    __rcv.append("sub_arn_no",this.__rcvForm.value.sub_arn_no)
+    __rcv.append("bu_type",this.__rcvForm.value.bu_type)
+    __rcv.append("euin_to",this.__rcvForm.value.euin_to)
+    __rcv.append("arn_no",this.__rcvForm.value.arn_no)
+    __rcv.append("rec_datetime",this.__rcvForm.value.rec_datetime)
+    __rcv.append("product_id",this.__rcvForm.value.product_id)
+    __rcv.append("application_no",this.__rcvForm.value.application_no)
+    __rcv.append("trans_id",this.__rcvForm.value.trans_id)
+    __rcv.append("pan_no",this.__rcvForm.value.pan_no)
+    __rcv.append("mobile",this.__rcvForm.value.mobile)
+    __rcv.append("email",this.__rcvForm.value.email)
+    __rcv.append("euin_from",this.__rcvForm.value.euin_from)
+   __rcv.append("id",this.__rcvForm.value.id)
+
+
+
+    this.__dbIntr.api_call(1, '/formreceivedAdd', __rcv).subscribe((res: responseDT) => {
       console.log(res);
       
       if (res.suc == 1) {

@@ -27,7 +27,7 @@ const routes: Routes = [
       {
         path: 'rntmaster',
         loadChildren: () => import('../__Main/Master/RNT/RNT.module').then(m => m.RNTModule),
-        data: { id: 5, title: "NuEdge - RNT Master", pageTitle: "RNT Master", has_menubar: 'Y' }
+        data: { id: 5, title: "NuEdge - R&T Master", pageTitle: "R&T Master", has_menubar: 'Y' }
       },
       // {
       //   path: 'productmaster',
@@ -113,6 +113,11 @@ const routes: Routes = [
         path: 'mftrax',
         loadChildren: () => import('./Operations/Mutual_Fund/mfTrax.module').then(m => m.MfTraxModule),
         data: { id: 22, title: "NuEdge - MF Trax", pageTitle: "MF Trax", has_member: 'Y' }
+      },
+      {
+         path:'reports',
+         loadChildren:()=> import('./Operations/reports/reports.module').then(m => m.ReportsModule),
+         data:{id:26,title: "NuEdge - Reports", pageTitle: "Reports", has_member: 'Y'}
       },
       {
         path: '',

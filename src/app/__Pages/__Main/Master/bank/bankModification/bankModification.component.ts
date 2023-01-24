@@ -36,7 +36,11 @@ export class BankModificationComponent implements OnInit {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
     }
-    this.__dbIntr.api_call(1, '/depositbankAddEdit', this.__bankForm.value).subscribe((res: any) => {
+    const __bank = new FormData();
+    __bank.append("ifs_code",this.__bankForm.value.ifs_code);
+    __bank.append("bank_name",this.__bankForm.value.bank_name);
+    __bank.append("id",this.__bankForm.value.id);
+    this.__dbIntr.api_call(1, '/depositbankAddEdit', __bank).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
       }
