@@ -19,7 +19,7 @@ const routes: Routes = [
     children: [
       { path: 'daySheet', 
       component: DaySheetComponent, 
-      data: { id: 26, title: "NuEdge - Day Sheet Reports", pageTitle: " Day Sheet Reports", has_member: 'Y' } 
+      data: { id: 27, title: "NuEdge - Day Sheet Reports", pageTitle: " Day Sheet Reports", has_member: 'Y' } 
       }
     ]
   }]

@@ -320,12 +320,16 @@ width: 43px;}
 .smallBox{
 	background: #fff; 
 /*	background: rgb(228,228,228); background: linear-gradient(0deg, rgba(228,228,228,1) 0%, rgba(251,251,251,1) 100%); */
-	box-shadow: 0 0 3px 2px #ece9e9; border-radius:5px; padding: 15px; text-align: center; margin-bottom: 35px;}
+	/* box-shadow: 0 0 3px 2px #ece9e9;  */
+  box-shadow: 1px 0px 16px 2px #c6c6c6; /*Suman Mitra add this*/
+  border: 1px solid #cdcdcd;/*Suman Mitra add this*/
+  border-radius:5px; padding: 15px; text-align: center; margin-bottom: 35px;}
 .smallBox .smallBoxIconSec{width: 100%; margin-bottom: 13px;}
 .smallBox .smallBoxIconSec .iconSec{width: 60px; height: 60px; border-radius: 50px; margin: 0 auto; display: flex; align-items: center;}
 .smallBox .smallBoxIconSec .iconSec i{color: #fff; font-size: 25px; margin: 0 auto;}
 .smallBox h2{color: #444444; font-size: 16px; font-weight: 600;}
 
+.smallBox:hover{box-shadow: none;cursor: pointer;transition: .2s ease-in;}
 
 .boxMid{border-radius:8px; overflow: hidden; box-shadow: 0 0 3px 2px #ece9e9; margin-bottom: 20px; height: 100%;}
 .boxMid .titleSec{background:#1f4584; padding: 9px 15px;}

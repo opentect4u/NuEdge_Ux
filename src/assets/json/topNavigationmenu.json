@@ -1,56 +1,8 @@
 [
-    {
-        "id": 1,
-        "menu_name": "Masters",
-        "has_submenu": "Y",
-        "sub_menu": [
-            {
-                "parent_id": "M-1",
-                "menu_name": "R&T",
-                "has_submenu": "N",
-                "url": "/main/rntmaster"
-            },
-            {
-                "parent_id": "M-1",
-                "menu_name": "AMC",
-                "has_submenu": "N",
-                "url": "/main/amcmaster"
-            },
-            {
-                "parent_id": "M-1",
-                "menu_name": "Category",
-                "has_submenu": "N",
-                "url": "/main/category"
-            },
-            {
-                "parent_id": "M-1",
-                "menu_name": "SubCategory",
-                "has_submenu": "N",
-                "url": "/main/subcategory"
-            },
-            {
-                "parent_id": "M-1",
-                "menu_name": "Bank",
-                "has_submenu": "N",
-                "url": "/main/bank"
-            },
-            {
-                "parent_id": "M-1",
-                "menu_name": "Scheme",
-                "has_submenu": "N",
-                "url": "/main/scheme"
-            },
-            {
-                "parent_id": "M-1",
-                "menu_name": "Document Type",
-                "has_submenu": "N",
-                "url": "/main/docsType"
-            }
-        ]
-    },
+  
     {
         "id": 2,
-        "menu_name": "Form Recieve",
+        "menu_name": "Form Recievable",
         "has_submenu": "N",
         "sub_menu": [],
         "url": "/main/rcvForm"

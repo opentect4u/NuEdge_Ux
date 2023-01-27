@@ -1,3 +1,5 @@
+import { submenu } from "./submenu";
+
 export interface menuBodyList {
     id: number;
     icon: string;
@@ -6,5 +8,6 @@ export interface menuBodyList {
     value: number;
     url: string;
     class: string;
+    sub_menu?:submenu[];
 
 }

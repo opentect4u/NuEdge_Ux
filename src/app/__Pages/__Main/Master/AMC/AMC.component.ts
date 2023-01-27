@@ -36,8 +36,10 @@ export class AMCComponent implements OnInit {
     this.openDialog(__items.id, __items);
   }
   private openDialog(id: number, __items: amc | null = null) {
+    console.log(__items);
+    
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '40%';
+    dialogConfig.width = '55%';
     dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add AMC' : 'Update AMC',
@@ -67,10 +69,42 @@ export class AMCComponent implements OnInit {
       if (value.id == row_obj.id) {
         value.amc_name = row_obj.amc_name;
         value.product_id = row_obj.product_id;
-        value.rnt_id = row_obj.rnt_id
+        value.rnt_id = row_obj.rnt_id;
+        value.website=row_obj.website;
+
+
+        value.ofc_addr=row_obj.ofc_addr;
+        value.cus_care_no=row_obj.cus_care_no;
+        value.cus_care_email=row_obj.cus_care_email;
+
+        value.l1_name=row_obj.l1_name;
+        value.l1_email=row_obj.l1_email;
+        value.l1_contact_no=row_obj.l1_contact_no;
+
+        value.l2_name=row_obj.l2_name;
+        value.l2_email=row_obj.l2_email;
+        value.l2_contact_no=row_obj.l2_contact_no;
+
+        value.l3_name=row_obj.l3_name;
+        value.l3_email=row_obj.l3_email;
+        value.l3_contact_no=row_obj.l3_contact_no;
+
+        value.l4_name=row_obj.l4_name;
+        value.l4_email=row_obj.l3_email;
+        value.l4_contact_no=row_obj.l4_contact_no;
+
+        value.l5_name=row_obj.l5_name;
+        value.l5_email=row_obj.l5_email;
+        value.l5_contact_no=row_obj.l5_contact_no;
+
+        value.l6_name=row_obj.l6_name;
+        value.l6_email=row_obj.l6_email;
+        value.l6_contact_no=row_obj.l6_contact_no;
+
       }
       return true;
     });
+
   }
   private addRow(row_obj: amc) {
     this.__selectAMC.data.unshift(row_obj);

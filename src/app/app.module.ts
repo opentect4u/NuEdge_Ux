@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { NetworkInterceptor } from './__Interceptors/network.interceptor';
 import { SnkbarModule } from './__Core/snkbar/snkbar.module';
-import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 /*<====== End =========>*/
 
 @NgModule({

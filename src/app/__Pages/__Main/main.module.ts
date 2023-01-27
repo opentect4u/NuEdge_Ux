@@ -20,6 +20,11 @@ const routes: Routes = [
         data: { id: 3, title: "NuEdge - Home", pageTitle: "", has_menubar: 'N' }
       },
       {
+        path:'mst',
+        loadChildren:()=> import('./Master/home/home.module').then(m => m.HomeModule),
+        data:{id:13,title: "NuEdge - Master Dashboard",pageTitle:"",has_menubar:'N'}
+      },
+      {
         path: 'clientmaster',
         loadChildren: () => import('../__Main/Master/client_manage/client_manage.module').then(m => m.Client_manageModule),
         data: { id: 4, title: "NuEdge - Client Master", pageTitle: "Client Master", has_menubar: 'Y' }
@@ -29,11 +34,6 @@ const routes: Routes = [
         loadChildren: () => import('../__Main/Master/RNT/RNT.module').then(m => m.RNTModule),
         data: { id: 5, title: "NuEdge - R&T Master", pageTitle: "R&T Master", has_menubar: 'Y' }
       },
-      // {
-      //   path: 'productmaster',
-      //   loadChildren: () => import('../__Main/Master/product/product.module').then(m => m.ProductModule),
-      //   data: { id: 6, title: "NuEdge - Product Master",pageTitle:"Product Master"}
-      // },
       {
         path: 'amcmaster',
         loadChildren: () => import('../__Main/Master/AMC/AMC.module').then(m => m.AMCModule),
@@ -49,26 +49,6 @@ const routes: Routes = [
         loadChildren: () => import('../__Main/Master/subcategory/subcategory.module').then(m => m.SubcategoryModule),
         data: { id: 9, title: "NuEdge - Sub-Category Master", pageTitle: "Sub-Category Master", has_menubar: 'Y' }
       },
-      // {
-      //   path: 'branch',
-      //   loadChildren: () => import('../__Main/Master/branch/branch.module').then(m => m.BranchModule),
-      //   data: { id: 10, title: "NuEdge - Branch Master",pageTitle:"Branch Master"}
-      // },
-      // {
-      //   path: 'formmaster',
-      //   loadChildren: () => import('../__Main/Master/form/form.module').then(m => m.FormModule),
-      //   data: { id: 11, title: "NuEdge - Form Type Master",pageTitle:"Form Type Master"}
-      // },
-      // {
-      //   path: 'transtype',
-      //   loadChildren: () => import('../__Main/Master/transType/transType.module').then(m => m.TransTypeModule),
-      //   data: { id: 12, title: "NuEdge - Transaction Type Master",pageTitle:"Transaction Type Master"}
-      // },
-      // {
-      //   path: 'trans',
-      //   loadChildren: () => import('../__Main/Master/transaction/transaction.module').then(m => m.TransactionModule),
-      //   data: { id: 13, title: "NuEdge - Transaction  Master",pageTitle:"Transaction  Master"}
-      // },
       {
         path: 'bank',
         loadChildren: () => import('../__Main/Master/bank/bank.module').then(m => m.BankModule),
@@ -79,11 +59,6 @@ const routes: Routes = [
         loadChildren: () => import('../__Main/Master/scheme/scheme.module').then(m => m.SchemeModule),
         data: { id: 15, title: "NuEdge - Scheme  Master", pageTitle: "Scheme Master", has_menubar: 'Y' }
       },
-      // {
-      //   path: 'employee',
-      //   loadChildren: () => import('../__Main/Master/employee/employee.module').then(m => m.EmployeeModule),
-      //   data: { id: 16, title: "NuEdge - Employee Master", pageTitle: "Employee Master" }
-      // },
       {
         path: 'docsType',
         loadChildren: () => import('../__Main/Master/docsMaster/docsMaster.module').then(m => m.DocsMasterModule),
@@ -118,6 +93,31 @@ const routes: Routes = [
          path:'reports',
          loadChildren:()=> import('./Operations/reports/reports.module').then(m => m.ReportsModule),
          data:{id:26,title: "NuEdge - Reports", pageTitle: "Reports", has_member: 'Y'}
+      },
+      {
+         path:'mstOperations',
+         loadChildren:()=> import('./Dashboards/mstOpDashboard/mstOpDashboard.module').then(m => m.MstOpDashboardModule),
+         data:{id:28,title: "NuEdge - Master Operations Dasboard", pageTitle: "", has_member: 'Y'}
+      },
+      {
+         path:'clntMstHome',
+         loadChildren:()=> import('./Dashboards/clntMstDashboard/clntMstDashboard.module').then(m => m.ClntMstDashboardModule),
+         data:{id:29,title: "NuEdge - Client Master Dasboard", pageTitle: "", has_member: 'Y'}
+      },
+      {
+        path:'mfdashboard',
+        loadChildren:()=> import('./Dashboards/MFDashboard/MFDashboard.module').then(m => m.MFDashboardModule),
+        data:{id:30,title: "NuEdge - Mutual Fund Dashboard", pageTitle: "", has_member: 'Y'}
+      },
+      {
+        path:'manualentrdashboard',
+        loadChildren:()=> import('./Dashboards/manualEntrDashboard/manualEntrDashboard.module').then(m => m.ManualEntrDashboardModule),
+        data:{id:31,title: "NuEdge - Manual Entry Dashboard", pageTitle: "", has_member: 'Y'}
+      },
+      {
+        path:'MfTraxDashboard',
+        loadChildren:()=> import('./Dashboards/MfTraxDashboard/MfTraxDashboard.module').then(m => m.MfTraxDashboardModule),
+        data:{id:32,title: "NuEdge - MF Trax Dashboard", pageTitle: "", has_member: 'Y'}
       },
       {
         path: '',
