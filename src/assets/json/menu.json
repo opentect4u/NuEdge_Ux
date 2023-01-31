@@ -1,171 +1,215 @@
 [
     {
-      "id":1,
+      "id":0,
       "title":"Human Resources",
+      "mat_icon":"group",
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_1"
+       "class":"iconSec iconCol_1",
+       "sub_menu": []
     },
     {
-      "id":2,
+      "id":0,
       "title":"Admin",
+      "mat_icon":"admin_panel_settings",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_2"
+       "class":"iconSec iconCol_2",
+       "sub_menu": []
     },
     {
-      "id":3,
+      "id":0,
       "title":"Account & Finance",
+      "mat_icon":"account_balance",
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_3"
+       "class":"iconSec iconCol_3",
+       "sub_menu": []
   
     },
     {
-      "id":4,
+      "id":0,
       "title":"Customer Service",
+      "mat_icon":"support_agent",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_4"
+       "class":"iconSec iconCol_4",
+       "sub_menu": []
 
     },
     {
-      "id":5,
+      "id":0,
       "title":"Online",
+      "mat_icon":"online_prediction",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_5"
+       "class":"iconSec iconCol_5",
+       "sub_menu": []
 
     },
     {
-      "id":6,
+      "id":0,
       "title":"Sales",
+      "mat_icon":"person",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_6"
+       "class":"iconSec iconCol_6",
+       "sub_menu": []
     },
     {
       "id":7,
       "title":"Marketing",
+      "mat_icon":"real_estate_agent",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_7"
+       "class":"iconSec iconCol_7",
+       "sub_menu": []
     },
     {
-      "id":8,
+      "id":5,
       "title":"Operations",
+      "mat_icon":"file_open",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
-       "url":"/main/ophome",
-       "class":"iconSec iconCol_8"
+       "url":"/main/operations/ophome",
+       "class":"iconSec iconCol_8",
+       "sub_menu": []
     },
     {
       "id":9,
       "title":"Research",
+      "mat_icon":"biotech",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_9"
+       "class":"iconSec iconCol_9",
+       "sub_menu": []
     },
     {
       "id":10,
       "title":"Products",
+      "mat_icon":"category",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_10"
+       "class":"iconSec iconCol_10",
+       "sub_menu": []
     },
     {
       "id":11,
       "title":"Reports",
+      "mat_icon":"history",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_11"
+       "class":"iconSec iconCol_11",
+       "sub_menu": []
     },
     {
       "id":12,
       "title":"Asset Management",
+      "mat_icon":"web_asset",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
        "url":"",
-       "class":"iconSec iconCol_12"
+       "class":"iconSec iconCol_12",
+       "sub_menu": []
     },
     {
-      "id":13,
+      "id":4,
       "title":"Master",
+      "mat_icon":"dataset",
+
       "icon":"fa fa-user-o",
        "value":0,
        "img":"",
-       "url":"/main/mst",
+       "url":"/main/master/home",
        "class":"iconSec iconCol_12",
        "sub_menu": [
         {
-            "id": 1,
+            "id": 3,
             "menu_name": "R&T",
             "has_submenu": "N",
-            "url": "/main/rntmaster"
-        },
-        {
-            "id": 2,
-            "menu_name": "AMC",
-            "has_submenu": "N",
-            "url": "/main/amcmaster"
-        },
-        {
-            "id": 3,
-            "menu_name": "Category",
-            "has_submenu": "N",
-            "url": "/main/category"
+            "url": "/main/master/rntDashboard",
+            "icon":"grade"
         },
         {
             "id": 4,
-            "menu_name": "SubCategory",
+            "menu_name": "AMC",
             "has_submenu": "N",
-            "url": "/main/subcategory"
+            "url": "/main/master/amcmaster",
+            "icon":"account_balance"
         },
         {
             "id": 5,
-            "menu_name": "Bank",
+            "menu_name": "Category",
             "has_submenu": "N",
-            "url": "/main/bank"
+            "url": "/main/master/category",
+            "icon":"category"
         },
         {
             "id": 6,
-            "menu_name": "Scheme",
+            "menu_name": "SubCategory",
             "has_submenu": "N",
-            "url": "/main/scheme"
+            "url": "/main/master/subcategory",
+            "icon":"history"
         },
         {
             "id": 7,
-            "menu_name": "Document Type",
+            "menu_name": "Bank",
             "has_submenu": "N",
-            "url": "/main/docsType"
+            "url": "/main/master/bank",
+            "icon":"new_releases"
         },
         {
-          "id": 8,
+            "id": 8,
+            "menu_name": "Scheme",
+            "has_submenu": "N",
+            "url": "/main/master/scheme",
+            "icon":"stars"
+        },
+        {
+            "id": 9,
+            "menu_name": "Document Type",
+            "has_submenu": "N",
+            "url": "/main/master/docsType",
+            "icon":"stars"
+        },
+        {
+          "id": 10,
           "menu_name": "Operations",
           "has_submenu": "N",
-          "url": "/main/mstOperations"
+          "url": "/main/master/mstOperations",
+          "icon":"history"
         }
     ]
     }

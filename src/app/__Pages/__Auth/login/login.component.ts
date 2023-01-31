@@ -20,6 +20,6 @@ export class LoginComponent implements OnInit {
      if(this.loginForm.invalid){
       return;
      }
-    this.__utils.navigate('/main/',null);
+    this.__utils.navigate('/main/home',null);
   }
 }

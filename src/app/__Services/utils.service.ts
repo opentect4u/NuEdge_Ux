@@ -29,6 +29,10 @@ export class UtiliService {
       this.__router.navigate([__route_url]);
     }
   }
+  navigatewithqueryparams(url,_params){
+    this.__router.navigate([url],_params)
+   
+  }
   //Get Route Details
   getRoute(__route) {
     this.__route.next(__route);
@@ -50,7 +54,7 @@ export class UtiliService {
   showSnackbar(__msg,_suc){
     this._snackBar.openFromComponent(SnkbarComponent,
       {
-        // duration:4000,
+        duration:4000,
         data: {
           message: __msg,
           icon: _suc == 1 ? 'check_circle_outline' : 'error_outline',

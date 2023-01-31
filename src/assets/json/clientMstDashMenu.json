@@ -1,16 +1,16 @@
 [
     {
-        "id": 4,
+        "id": 2,
         "menu_name": "Create Client Code",
         "has_submenu": "N",
-        "url": "/main/clientmaster",
+        "url": "/main/master/clientmaster",
         "sub_menu": []
     },
     {
         "id": 18,
         "menu_name": "Document Master",
         "has_submenu": "N",
-        "url": "/main/docs",
+        "url": "/main/master/docs",
         "sub_menu": []
     },
     {

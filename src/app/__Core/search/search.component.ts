@@ -1,7 +1,7 @@
 import { DatePipe, Location } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import {  debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
@@ -34,7 +34,9 @@ export class SearchComponent implements OnInit {
       })
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    console.log('res');
+   }
   ngAfterViewInit() {
     this.__SearchForm.controls['searchItem'].valueChanges.
       pipe(

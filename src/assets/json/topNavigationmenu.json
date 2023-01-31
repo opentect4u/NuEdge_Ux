@@ -8,14 +8,14 @@
         "url": "/main/rcvForm"
     },
     {
-        "id": 3,
+        "id": 0,
         "menu_name": "Client Master",
         "has_submenu": "N",
         "url": "/main/clientmaster",
         "sub_menu": []
     },
     {
-        "id": 4,
+        "id": 0,
         "menu_name": "Document Master",
         "has_submenu": "N",
         "url": "/main/docs",
@@ -93,5 +93,69 @@
                 "sub_menu": [],
                 "url":"/main/reports/daySheet"
             }]
+    },
+    {
+        "id": 4,
+        "menu_name": "Masters",
+        "has_submenu": "Y",
+        "sub_menu": [
+            {
+                "parent_id": 4,
+                "menu_name": "R&T",
+                "has_submenu": "N",
+                "url": "/main/master/rntDashboard",
+                "icon":"",
+                "id":14
+                
+            },
+            {
+                "parent_id": 4,
+                "menu_name": "AMC",
+                "has_submenu": "N",
+                "url": "/main/master/amcmaster",
+                "icon":"",
+                "id":4
+            },
+            {
+                "parent_id": 4,
+                "menu_name": "Category",
+                "has_submenu": "N",
+                "url": "/main/master/category",
+                "icon":"",
+                "id":5
+            },
+            {
+                "parent_id": 4,
+                "menu_name": "SubCategory",
+                "has_submenu": "N",
+                "url": "/main/master/subcategory",
+                "icon":"",
+                "id":6
+            },
+            {
+                "parent_id": 4,
+                "menu_name": "Bank",
+                "has_submenu": "N",
+                "url": "/main/master/bank",
+                "icon":"",
+                "id":7
+            },
+            {
+                "parent_id": 4,
+                "menu_name": "Scheme",
+                "has_submenu": "N",
+                "url": "/main/master/scheme",
+                "icon":"",
+                "id":8
+            },
+            {
+                "parent_id": 4,
+                "menu_name": "Document Type",
+                "has_submenu": "N",
+                "url": "/main/master/docsType",
+                "icon":"",
+                "id":9
+            }
+        ]
     }
 ]

@@ -1,11 +1,8 @@
-::ng-deep .mat-button-wrapper span {
-    color: #fff;
-    font-weight: 400;
-    font-size: 14px;
-}
-
-::ng-deep.mat-menu-panel {
-    width: 450px !important;
-    max-height: 500px !important;
-}
+::ng-deep .mat-button-wrapper span {color: #fff;font-weight: 400;font-size: 14px;}
+::ng-deep.mat-menu-panel {height: auto!important;max-width: 200px !important;}
 .mat-button{margin:0px 5px;}
+.headerMenu{padding: 10px;}
+.headerMenu:nth-child(odd){border-right: 1px solid #d9d9d9;border-bottom: 1px solid #cfcfcf;}
+.headerMenu:nth-child(even){border-bottom: 1px solid #cfcfcf;}
+.headerMenu:hover{cursor: pointer;background: #e7e7e7;transition: .3s all;}
+.headerMenu mat-icon{font-size: 21px;text-align: center;}

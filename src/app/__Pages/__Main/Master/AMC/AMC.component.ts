@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { amc } from 'src/app/__Model/amc';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -17,9 +18,9 @@ export class AMCComponent implements OnInit {
   __columns: string[] = ['sl_no', 'amc_name', 'edit', 'delete'];
   __selectAMC = new MatTableDataSource<amc>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService) { }
+  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService,private route :ActivatedRoute) { }
   ngOnInit(): void {
-    this.getAMCMaster();
+    this.getAMCMaster(this.route.snapshot.queryParamMap.get('id') == null ? this.route.snapshot.queryParamMap.get('id') : ('rnt_id='+this.route.snapshot.queryParamMap.get('id')));
   }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
@@ -59,8 +60,10 @@ export class AMCComponent implements OnInit {
       }
     });
   }
-  private getAMCMaster() {
-    this.__dbIntr.api_call(0, '/amc', null).pipe(map((x: responseDT) => x.data)).subscribe((res: amc[]) => {
+  private getAMCMaster(__params: string | null = null) {
+    console.log(__params);
+    
+    this.__dbIntr.api_call(0, '/amc', __params).pipe(map((x: responseDT) => x.data)).subscribe((res: amc[]) => {
       this.setPaginator(res);
     })
   }

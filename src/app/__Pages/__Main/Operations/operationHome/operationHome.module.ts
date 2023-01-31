@@ -12,4 +12,13 @@ const routes: Routes =[{path:'',component:OperationHomeComponent}]
   ],
   declarations: [OperationHomeComponent]
 })
-export class OperationHomeModule { }
+export class OperationHomeModule {
+
+  /**
+   *
+   */
+  constructor() {
+    console.log('Operation Home Module Loaded');
+    
+  }
+ }

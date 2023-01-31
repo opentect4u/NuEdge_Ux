@@ -4,9 +4,13 @@ export class fileValidators {
     /************* Check file size must not exceed than 2mb ***************** */
     static fileSizeValidator(files: FileList | null = null): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
+          console.log(files.length);
+          
             if(control.value &&  files.length > 0){
                 const fileSize = files[0].size;
                 const fileSizeInKB = Math.round(fileSize / 1024);
+                console.log(fileSizeInKB);
+                
                 if (fileSizeInKB > 2048) {
                 return  {
                     fileSizeValidator: true
@@ -20,6 +24,25 @@ export class fileValidators {
                 };
             }
     /************* End ***************** */
+
+
+
+    static fileSizeValidatorcopy(files: FileList | null = null): boolean {
+          if(files.length > 0){
+              const fileSize = files[0].size;
+              const fileSizeInKB = Math.round(fileSize / 1024);
+              console.log(fileSizeInKB);
+              
+              if (fileSizeInKB > 2048) {
+              return  false
+              } else {
+              return true;
+              }
+              }
+              return false;
+      };
+          
+
 
 
     /************* Check file extension***************** */
@@ -41,5 +64,13 @@ export class fileValidators {
         };
       } 
     /************* End ***************** */
+
+    static fileExtensionValidatorcopy(validExt: Array<string>,files) {
+       
+        // if(files.length > 0){
+           
+        // }
+        console.log(files[0].name.split('.').pop());
+    } 
 
 }

@@ -19,7 +19,10 @@ export class HomeComponent implements OnInit {
     {title:"title-3",value:9999,class_name:"red_Gredient"},
     {title:"title-3",value:9999,class_name:"yellow_Gredient"}
   ]
-  constructor() { }
+  constructor() {
+    console.log(this.__menu);
+    
+   }
 
   ngOnInit() {
   }

@@ -8,6 +8,6 @@ export interface menuBodyList {
     value: number;
     url: string;
     class: string;
-    sub_menu?:submenu[];
+    sub_menu?:any[];
 
 }

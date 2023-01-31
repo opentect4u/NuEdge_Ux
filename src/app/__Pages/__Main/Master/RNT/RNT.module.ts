@@ -4,7 +4,6 @@ import { RNTComponent } from './RNT.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatDialogModule } from '@angular/material/dialog';
-import { RNTmodificationComponent } from './RNTmodification/RNTmodification.component';
 import { MatTableModule } from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 const __routes: Routes = [{ path: '', component: RNTComponent }]
@@ -19,7 +18,7 @@ const __routes: Routes = [{ path: '', component: RNTComponent }]
     MatTableModule,
     MatPaginatorModule
   ],
-  declarations: [RNTComponent, RNTmodificationComponent]
+  declarations: [RNTComponent]
 })
 export class RNTModule {
 

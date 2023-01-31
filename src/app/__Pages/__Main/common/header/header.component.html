@@ -11,12 +11,27 @@
     </div>
   </div>
 
-  <div class="topSec_2" *ngIf="__rtDt?.id > 3">
+  <!-- <div class="topSec_2" *ngIf="__rtDt?.id > 3"> -->
+  <div class="topSec_2 mat-elevation-z8">
     <div class="container-fluid topSecSub">
       <div class="topNavDropdown">
-
         <ul class="nav navbar-nav">
-          <li *ngFor="let __menus of __top_menu">
+         <li *ngFor="let menus of __top_menu" title="{{menus.title}}">
+          <button *ngIf="menus?.sub_menu.length == 0" mat-icon-button>
+            <mat-icon>{{menus.mat_icon}}</mat-icon>
+          </button>
+          <button *ngIf="menus?.sub_menu.length > 0" mat-icon-button [matMenuTriggerFor]="levelOne" #levelOneTrigger="matMenuTrigger">
+            <mat-icon>{{menus.mat_icon}}</mat-icon>
+          </button>
+           <mat-menu #levelOne="matMenu" xPosition="after" yPosition="below">
+              <div class="row p-0 m-0">
+                <div class="col-sm-4 d-flex justify-content-center headerMenu" *ngFor="let shoe of menus.sub_menu">
+                  <mat-icon>{{shoe.icon}}</mat-icon>
+                </div>
+              </div>
+          </mat-menu>
+         </li>
+          <!-- <li *ngFor="let __menus of __top_menu">
             <button mat-button *ngIf="__menus.sub_menu.length == 0" [routerLink]="[__menus.url]"
               routerLinkActive="activeMainmenu">{{__menus.menu_name}}</button>
 
@@ -28,14 +43,11 @@
               </button>
               <mat-menu #levelOne="matMenu" xPosition="after" yPosition="below">
                 <ng-container *ngFor="let childL1 of __menus.sub_menu">
-                  <!-- <li > -->
+
                   <button *ngIf="childL1.has_submenu == 'N'" mat-menu-item [routerLink]="[childL1.url]"
                     routerLinkActive="active">{{childL1.menu_name}}</button>
-                  <!-- </li> -->
                   <ng-container *ngIf="childL1.sub_menu && childL1.sub_menu.length > 0">
-                    <!-- <li mat-menu-item [matMenuTriggerFor]="levelTwo"> -->
                     <button mat-menu-item [matMenuTriggerFor]="levelTwo">{{childL1.menu_name}}</button>
-                    <!-- </li> -->
 
                     <mat-menu #levelTwo="matMenu">
                       <ng-container *ngFor="let childL2 of childL1.sub_menu">
@@ -46,13 +58,10 @@
                       </ng-container>
                     </mat-menu>
                   </ng-container>
-
-
-
                 </ng-container>
               </mat-menu>
             </ng-container>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>

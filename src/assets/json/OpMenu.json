@@ -1,22 +1,21 @@
 [
-    
     { 
-        "id": 30,
-        "menu_name":"Acknowledgement",
+        "id": 2,
+        "menu_name":"Mutual Fund",
+        "has_submenu":"Y",
+        "url":"/main/operations/mfdashboard"
+    },
+    { 
+        "id": 0,
+        "menu_name":"Fixed Deposit",
         "has_submenu":"Y",
         "url":""
     },
     { 
-        "id": 30,
-        "menu_name":"Mutual Fund",
+        "id": 0,
+        "menu_name":"Insurance",
         "has_submenu":"Y",
-        "url":"/main/mfdashboard"
-    },
-    { 
-        "id": 26,
-        "menu_name":"Reoprt",
-        "has_submenu":"Y",
-        "url":"/main/reports/daySheet"
+        "url":""
     }
-  ]
+]
   
