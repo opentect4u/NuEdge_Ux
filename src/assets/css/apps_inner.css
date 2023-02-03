@@ -101,7 +101,7 @@ table.table_Custome thead,tfoot{
   border-radius: 5px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);}
 
-  .mat-dialog-actions.popupBoxSubmitSec {display: block; min-height: inherit;}
+  /* .mat-dialog-actions.popupBoxSubmitSec {display: block; min-height: inherit;} */
 
 .btn.cancelCusBtn{
   background: #eee; 

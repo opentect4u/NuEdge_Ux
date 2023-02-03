@@ -1,3 +1,4 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -21,7 +22,7 @@ export class DocsMasterComponent implements OnInit {
   __columns: string[] = ['sl_no', 'doc_type', 'edit', 'delete'];
   __selectDocs = new MatTableDataSource<docType>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService,private __utility: UtiliService) { }
+  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService,private __utility: UtiliService, private overlay: Overlay) { }
   ngOnInit() { this.getDocumentmaster(); }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
@@ -35,8 +36,10 @@ export class DocsMasterComponent implements OnInit {
     }
   }
   populateDT(__items: docType) {
-    console.log('assasass');
-    this.__utility.navigatewithqueryparams('/main/master/docTypeModify', {queryParams:{id:btoa(__items.id.toString())}})
+    // this.__utility.navigatewithqueryparams('/main/master/docTypeModify', {queryParams:{id:btoa(__items.id.toString())}})
+     console.log(__items);
+     this.openDialog(__items.id,__items.doc_type);
+     
   }
   private openDialog(id: number, doc_type: string | null = null) {
     const dialogConfig = new MatDialogConfig();
@@ -44,9 +47,14 @@ export class DocsMasterComponent implements OnInit {
     dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Document Type' : 'Update Document Type',
-      doc_type: doc_type
+      doc_type: doc_type,
     };
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.disableClose = false;
     dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop()
+
     const dialogref = this.__dialog.open(DocsModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       if (dt) {

@@ -1,9 +1,20 @@
 <!-- <h2 mat-dialog-title>{{data.title}}</h2> -->
 <div mat-dialog-title class="dialog-title">
-  <h2>{{data.title}}</h2>
-  <button mat-icon-button  [mat-dialog-close]="">
-    <mat-icon >close</mat-icon>
-  </button>
+  <h2 >{{data.title}}</h2>
+  <div class="btnIcon">
+    <button mat-icon-button  (click)="minimize()" *ngIf="!__isVisible">
+      <mat-icon >remove</mat-icon>
+    </button>
+    <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
+      <mat-icon>check_box_outline_blank</mat-icon>
+    </button>
+
+    <button mat-icon-button  [mat-dialog-close]="">
+      <mat-icon >close</mat-icon>
+    </button>
+
+  </div>
+
 </div>
 
 <mat-dialog-content>

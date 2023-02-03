@@ -7,6 +7,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import {OverlayModule} from '@angular/cdk/overlay';
 const routes: Routes =[{path:'',component:DocsMasterComponent}]
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ const routes: Routes =[{path:'',component:DocsMasterComponent}]
     RouterModule.forChild(routes),
     MatDialogModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    OverlayModule
   ],
   declarations: [DocsMasterComponent,DocsModificationComponent]
 })

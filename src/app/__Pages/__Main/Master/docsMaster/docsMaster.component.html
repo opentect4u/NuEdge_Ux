@@ -1,7 +1,7 @@
 
 <div class="row flexSec">
   <div class="col-sm-2" *ngFor="let items of __menu"  (click)="navigate(items)">
-    <div class="smallBox">
+    <div class="smallBox mb-0">
      <div class="smallBoxIconSec">
       <div class="iconCol_12 iconSec">
         <i class="fa fa-user-o" aria-hidden="true"></i>
@@ -20,7 +20,7 @@
   [__api_name]="'/documenttype'">
 </core-search>
 
-<div class="mat-elevation-z3">
+<div class="mat-elevation-z3 my-4">
   <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
 
   <table mat-table [dataSource]="__selectDocs">

@@ -10,6 +10,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./docsModification.component.css']
 })
 export class DocsModificationComponent implements OnInit {
+  __isVisible:boolean = false;
   __docsForm = new FormGroup({
     doc_type: new FormControl('', [Validators.required]),
     id: new FormControl(0)
@@ -25,6 +26,7 @@ export class DocsModificationComponent implements OnInit {
         doc_type: this.data.doc_type,
         id: this.data.id
       });
+     
     }
   }
 
@@ -45,5 +47,15 @@ export class DocsModificationComponent implements OnInit {
       }
       this.__utility.showSnackbar(res.suc == 1 ? (this.data.id == 1 ? 'Document type updated successfully' : 'Document type added successfully') : 'Something went wrong! please try again later', res.suc);
     })
+  }
+  minimize(){
+    this.dialogRef.updateSize("40%",'60px');
+    this.dialogRef.updatePosition({bottom: '0px', right: '0px' });
+    this.__isVisible = !this.__isVisible;
+  }
+  maximize(){
+    this.dialogRef.updateSize("40%",'257px');
+    this.dialogRef.updatePosition({top:'200px',left: '400px'});
+    this.__isVisible = !this.__isVisible;
   }
 }

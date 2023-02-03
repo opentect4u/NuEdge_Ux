@@ -41,7 +41,8 @@
                   <a *ngIf="__pageTitle?.id  == 7">{{items.bank_name}}</a>
                   <a *ngIf="__pageTitle?.id  == 33">{{items.plan_name}}</a>
                   <a *ngIf="__pageTitle?.id  == 37">{{items.opt_name}}</a>
-                  <a *ngIf="__pageTitle?.id  == 2">{{items.client_code}}
+                  <a *ngIf="__pageTitle?.id  == 50">{{items.doc_type}}</a>
+                  <a *ngIf="__pageTitle?.id  == 2 || __pageTitle?.id  == 12">{{items.client_code}}
                     | {{items.client_name}} | {{items.pan}} | {{items.mobile}}</a>
                 </li>
               </ul>
@@ -55,7 +56,7 @@
             </div>
           </div>
         </div>
-        <!-- <div class="processMain_3 text-right" *ngIf="__flag == 'Y'">
+        <!-- <div class="processMain_3 text-right" *ngIf="__isSearch == 'Y'">
           <button class="addBtn roundedBtn" (click)="addMasters(0)">
             <i class="fa fa-plus backIcon" aria-hidden="true"></i>
             Add New
