@@ -15,6 +15,9 @@ import { DocsModificationComponent } from './docsModification/docsModification.c
   styleUrls: ['./docsMaster.component.css']
 })
 export class DocsMasterComponent implements OnInit {
+  __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "/main/master/docTypeModify","icon":"","id":48,"flag":"M"},
+  {"parent_id": 4,"menu_name": "Upload CSV","has_submenu": "N","url": "main/master/uploadDocTypeCsv","icon":"","id":49,"flag":"U"}
+ ]
   __columns: string[] = ['sl_no', 'doc_type', 'edit', 'delete'];
   __selectDocs = new MatTableDataSource<docType>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -32,7 +35,6 @@ export class DocsMasterComponent implements OnInit {
     }
   }
   populateDT(__items: docType) {
-
     console.log('assasass');
     this.__utility.navigatewithqueryparams('/main/master/docTypeModify', {queryParams:{id:btoa(__items.id.toString())}})
   }
@@ -78,4 +80,12 @@ export class DocsMasterComponent implements OnInit {
     this.__selectDocs = new MatTableDataSource(__res);
     this.__selectDocs.paginator = this.paginator;
   }
+  navigate(items){
+     switch(items.flag){
+      case "M":this.openDialog(0);break;
+      case "U":this.__utility.navigate(items.url);break;
+      default: break;
+
+     }
+}
 }
