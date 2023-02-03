@@ -9,7 +9,8 @@ export interface amc {
   rnt_id: number
   updated_at: string
   updated_by: any
-
+  sip_start_date: Date;
+  sip_end_date: Date;
   l1_contact_no: number
   l1_email: string
   l1_name: string

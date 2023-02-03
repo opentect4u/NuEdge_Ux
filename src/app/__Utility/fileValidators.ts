@@ -65,12 +65,10 @@ export class fileValidators {
       } 
     /************* End ***************** */
 
-    static fileExtensionValidatorcopy(validExt: Array<string>,files) {
-       
-        // if(files.length > 0){
-           
-        // }
-        console.log(files[0].name.split('.').pop());
+    static fileExtensionValidatorcopy(validExt: Array<string>,files:FileList): Promise<boolean> {
+      return new Promise((resolve,reject) =>{
+          resolve(((validExt.findIndex((x: string) => x == files[0].name.split('.').pop())) == -1) ? false : true);
+      })
     } 
 
 }

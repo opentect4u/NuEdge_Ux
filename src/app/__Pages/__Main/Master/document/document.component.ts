@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 
 @Component({
@@ -17,7 +18,7 @@ export class DocumentComponent implements OnInit {
   __columns: string[] = ['sl_no', 'cl_code', 'cl_name', 'pan', 'mobile', 'edit', 'delete'];
   __documents = new MatTableDataSource<client>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService) { }
+  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService,private __utility: UtiliService) { }
   ngOnInit() {
     this.getDocumentMaster();
   }
@@ -32,9 +33,11 @@ export class DocumentComponent implements OnInit {
       this.getDocumentMaster();
     }
   }
-  populateDT(__items: client) {
+  populateDT(__items) {
     console.log(__items);
-    this.openDialog(__items.id, __items);
+    // this.openDialog(__items.id, __items);
+    console.log(__items);
+    this.__utility.navigatewithqueryparams('/main/master/docsModify', {queryParams: {id:btoa(__items.client_id.toString()),client_code:btoa(__items.client_code.toString())}});
   }
   openDialog(id: number, items: client | null = null) {
     const dialogConfig = new MatDialogConfig();

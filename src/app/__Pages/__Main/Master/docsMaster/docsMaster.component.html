@@ -1,5 +1,12 @@
-<core-search (__searchItem)="getSearchItem($event)" [__flag]="'Y'" [__placeholder]="'Search by document type'"
-  [__api_name]="'/documenttype'"></core-search>
+
+
+
+
+<core-search (__searchItem)="getSearchItem($event)" 
+[__flag]="'Y'" 
+[__placeholder]="'Search by document type'"
+  [__api_name]="'/documenttype'">
+</core-search>
 
 <div class="mat-elevation-z3">
   <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>

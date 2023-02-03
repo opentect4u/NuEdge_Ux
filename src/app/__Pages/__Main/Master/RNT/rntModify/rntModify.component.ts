@@ -21,7 +21,7 @@ export class RntModifyComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   __rntForm = new FormGroup({
     rnt_name: new FormControl('', [Validators.required]),
-    id: new FormControl(this.__route.snapshot.params.id),
+    id: new FormControl(atob(this.__route.snapshot.queryParamMap.get('id')) ? atob(this.__route.snapshot.queryParamMap.get('id')) : 0),
     ofc_address: new FormControl('', [Validators.required]),
     cust_care_no: new FormControl('', [Validators.pattern("^[0-9]*$")]),
     cust_care_email: new FormControl('', [Validators.email]),
@@ -51,7 +51,7 @@ export class RntModifyComponent implements OnInit {
             this.updateRow(res.data);
           }
           //if the particular id is not presenet in current list then only route by url with out doing any changes
-          this.__router.navigateByUrl('/main/master/rntmodify/' + btoa('0'), { skipLocationChange: false }).then(res => {
+          this.__router.navigateByUrl('/main/master/rntmodify/' + {queryParams:{id:btoa('0')}}, { skipLocationChange: false }).then(res => {
             // set logic if needed
            })
         }
@@ -85,8 +85,8 @@ export class RntModifyComponent implements OnInit {
     );
   }
   previewParticularRNT() {
-    if (Number(atob(this.__route.snapshot.params.id)) > 0) {
-      this.__dbIntr.api_call(0, '/rnt', 'id=' + atob(this.__route.snapshot.params.id)).pipe(map((x: any) => x.data)).subscribe(res => {
+    if (this.__route.snapshot.queryParamMap.get('id') != null) {
+      this.__dbIntr.api_call(0, '/rnt', 'id=' + atob(this.__route.snapshot.queryParamMap.get('id'))).pipe(map((x: any) => x.data)).subscribe(res => {
         this.populateDT(res[0]);
       })
     }
@@ -121,6 +121,6 @@ export class RntModifyComponent implements OnInit {
     });
   }
   showCorrospondingAMC(__rntDtls:rnt){
-    this.__utility.navigatewithqueryparams('/main/master/amcmaster',{queryParams:{id:__rntDtls.id}})
+    this.__utility.navigatewithqueryparams('/main/master/amcmaster',{queryParams:{id:btoa(__rntDtls.id.toString())}})
   }
 }

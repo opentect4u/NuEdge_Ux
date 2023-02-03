@@ -95,17 +95,19 @@ export class SearchComponent implements OnInit {
     this.__SearchForm.controls['searchItem'].reset('');
   }
   getSelectItemFromSearchList(__items) {
-    let item = this.__pageTitle.id == 5 ? __items.rnt_name
-      : this.__pageTitle.id == 7 ? __items.amc_name
-        : this.__pageTitle.id == 8 ? __items.cat_name
-          : this.__pageTitle.id == 9 ? __items.subcategory_name
-            : this.__pageTitle.id == 14 ? __items.bank_name
-              : this.__pageTitle.id == 15 ? __items.scheme_name
+    let item = this.__pageTitle.id == 13 ? __items.rnt_name
+      : this.__pageTitle.id == 4 ? __items.amc_name
+        : this.__pageTitle.id == 5 ? __items.cat_name
+          : this.__pageTitle.id == 6 ? __items.subcategory_name
+            : this.__pageTitle.id == 7 ? __items.bank_name
+              : this.__pageTitle.id == 8 ? __items.scheme_name
                 : this.__pageTitle.id == 17 ? __items.doc_type
                   : this.__pageTitle.id == 19 ? __items.temp_tin_id + '|' + __items.product_name
-                    : this.__pageTitle?.id == 4 || this.__pageTitle?.id == 18 || this.__pageTitle?.id == 21 ?
+                    : this.__pageTitle?.id == 2 ?
                       __items.client_code + '|' + __items.client_name + '|' + __items.pan + '|' + __items.mobile 
-                      : this.__pageTitle?.trans_type_id ? __items.tin_no + ' | ' + this.__datePipe.transform(__items.entry_date,'dd/MM-YYYY') : '';
+                      : this.__pageTitle?.trans_type_id ? __items.tin_no + ' | ' + this.__datePipe.transform(__items.entry_date,'dd/MM-YYYY') 
+                      : this.__pageTitle?.id == 33 ? __items.plan_name 
+                      : this.__pageTitle?.id == 37 ? __items.opt_name : '';
       ;
 
     return item;

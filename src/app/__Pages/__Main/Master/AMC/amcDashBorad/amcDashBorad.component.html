@@ -1,0 +1,13 @@
+
+<div class="row flexSec">
+  <div class="col-sm-2" *ngFor="let items of __menu"  [routerLink]="[items.url]">
+    <div class="smallBox">
+     <div class="smallBoxIconSec">
+      <div class="iconCol_12 iconSec">
+        <i class="fa fa-user-o" aria-hidden="true"></i>
+      </div>
+    </div>
+    <h2>{{items.menu_name}}</h2>
+  </div>
+</div>
+</div>

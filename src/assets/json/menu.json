@@ -1,217 +1,216 @@
 [
-    {
-      "id":0,
-      "title":"Human Resources",
-      "mat_icon":"group",
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_1",
-       "sub_menu": []
-    },
-    {
-      "id":0,
-      "title":"Admin",
-      "mat_icon":"admin_panel_settings",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_2",
-       "sub_menu": []
-    },
-    {
-      "id":0,
-      "title":"Account & Finance",
-      "mat_icon":"account_balance",
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_3",
-       "sub_menu": []
-  
-    },
-    {
-      "id":0,
-      "title":"Customer Service",
-      "mat_icon":"support_agent",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_4",
-       "sub_menu": []
-
-    },
-    {
-      "id":0,
-      "title":"Online",
-      "mat_icon":"online_prediction",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_5",
-       "sub_menu": []
-
-    },
-    {
-      "id":0,
-      "title":"Sales",
-      "mat_icon":"person",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_6",
-       "sub_menu": []
-    },
-    {
-      "id":7,
-      "title":"Marketing",
-      "mat_icon":"real_estate_agent",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_7",
-       "sub_menu": []
-    },
-    {
-      "id":5,
-      "title":"Operations",
-      "mat_icon":"file_open",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"/main/operations/ophome",
-       "class":"iconSec iconCol_8",
-       "sub_menu": []
-    },
-    {
-      "id":9,
-      "title":"Research",
-      "mat_icon":"biotech",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_9",
-       "sub_menu": []
-    },
-    {
-      "id":10,
-      "title":"Products",
-      "mat_icon":"category",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_10",
-       "sub_menu": []
-    },
-    {
-      "id":11,
-      "title":"Reports",
-      "mat_icon":"history",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_11",
-       "sub_menu": []
-    },
-    {
-      "id":12,
-      "title":"Asset Management",
-      "mat_icon":"web_asset",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"",
-       "class":"iconSec iconCol_12",
-       "sub_menu": []
-    },
-    {
-      "id":4,
-      "title":"Master",
-      "mat_icon":"dataset",
-
-      "icon":"fa fa-user-o",
-       "value":0,
-       "img":"",
-       "url":"/main/master/home",
-       "class":"iconSec iconCol_12",
-       "sub_menu": [
-        {
-            "id": 3,
-            "menu_name": "R&T",
-            "has_submenu": "N",
-            "url": "/main/master/rntDashboard",
-            "icon":"grade"
-        },
-        {
-            "id": 4,
-            "menu_name": "AMC",
-            "has_submenu": "N",
-            "url": "/main/master/amcmaster",
-            "icon":"account_balance"
-        },
-        {
-            "id": 5,
-            "menu_name": "Category",
-            "has_submenu": "N",
-            "url": "/main/master/category",
-            "icon":"category"
-        },
-        {
-            "id": 6,
-            "menu_name": "SubCategory",
-            "has_submenu": "N",
-            "url": "/main/master/subcategory",
-            "icon":"history"
-        },
-        {
-            "id": 7,
-            "menu_name": "Bank",
-            "has_submenu": "N",
-            "url": "/main/master/bank",
-            "icon":"new_releases"
-        },
-        {
-            "id": 8,
-            "menu_name": "Scheme",
-            "has_submenu": "N",
-            "url": "/main/master/scheme",
-            "icon":"stars"
-        },
-        {
-            "id": 9,
-            "menu_name": "Document Type",
-            "has_submenu": "N",
-            "url": "/main/master/docsType",
-            "icon":"stars"
-        },
-        {
-          "id": 10,
-          "menu_name": "Operations",
-          "has_submenu": "N",
-          "url": "/main/master/mstOperations",
-          "icon":"history"
-        }
+  {
+    "id": 0,
+    "title": "Human Resources",
+    "mat_icon": "group",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_1",
+    "sub_menu": []
+  },
+  {
+    "id": 0,
+    "title": "Admin",
+    "mat_icon": "admin_panel_settings",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_2",
+    "sub_menu": []
+  },
+  {
+    "id": 0,
+    "title": "Account & Finance",
+    "mat_icon": "account_balance",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_3",
+    "sub_menu": []
+  },
+  {
+    "id": 0,
+    "title": "Customer Service",
+    "mat_icon": "support_agent",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_4",
+    "sub_menu": []
+  },
+  {
+    "id": 0,
+    "title": "Online",
+    "mat_icon": "online_prediction",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_5",
+    "sub_menu": []
+  },
+  {
+    "id": 0,
+    "title": "Sales",
+    "mat_icon": "person",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_6",
+    "sub_menu": []
+  },
+  {
+    "id": 7,
+    "title": "Marketing",
+    "mat_icon": "real_estate_agent",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_7",
+    "sub_menu": []
+  },
+  {
+    "id": 5,
+    "title": "Operations",
+    "mat_icon": "file_open",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "/main/operations/ophome",
+    "class": "iconSec iconCol_8",
+    "sub_menu": []
+  },
+  {
+    "id": 9,
+    "title": "Research",
+    "mat_icon": "biotech",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_9",
+    "sub_menu": []
+  },
+  {
+    "id": 10,
+    "title": "Products",
+    "mat_icon": "category",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_10",
+    "sub_menu": []
+  },
+  {
+    "id": 11,
+    "title": "Reports",
+    "mat_icon": "history",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_11",
+    "sub_menu": []
+  },
+  {
+    "id": 12,
+    "title": "Asset Management",
+    "mat_icon": "web_asset",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "",
+    "class": "iconSec iconCol_12",
+    "sub_menu": []
+  },
+  {
+    "id": 4,
+    "title": "Master",
+    "mat_icon": "dataset",
+    "icon": "fa fa-user-o",
+    "value": 0,
+    "img": "",
+    "url": "/main/master/home",
+    "class": "iconSec iconCol_12",
+    "sub_menu": [
+      {
+        "id": 14,
+        "menu_name": "R&T",
+        "has_submenu": "N",
+        "url": "/main/master/rntDashboard",
+        "icon": "grade"
+      },
+      {
+        "id": 16,
+        "menu_name": "AMC",
+        "has_submenu": "N",
+        "url": "/main/master/amcDashboard",
+        "icon": "account_balance"
+      },
+      {
+        "id": 19,
+        "menu_name": "Category",
+        "has_submenu": "N",
+        "url": "/main/master/catDashboard",
+        "icon": "category"
+      },
+      {
+        "id": 22,
+        "menu_name": "SubCategory",
+        "has_submenu": "N",
+        "url": "/main/master/subcatDashboard",
+        "icon": "history"
+      },
+      {
+        "id": 25,
+        "menu_name": "Bank",
+        "has_submenu": "N",
+        "url": "/main/master/bnkDashboard",
+        "icon": "new_releases"
+      },
+      {
+        "id": 8,
+        "menu_name": "Scheme",
+        "has_submenu": "N",
+        "url": "/main/master/scmDashboard",
+        "icon": "stars"
+      },
+      {
+        "id": 9,
+        "menu_name": "Document Type",
+        "has_submenu": "N",
+        "url": "/main/master/docType",
+        "icon": "stars"
+      },
+      {
+        "id": 33,
+        "menu_name": "Plan",
+        "has_submenu": "N",
+        "url": "/main/master/planDashboard",
+        "icon": "stars"
+      },
+      {
+        "id": 38,
+        "menu_name": "Option",
+        "has_submenu": "N",
+        "url": "/main/master/optionDashboard",
+        "icon": "stars"
+      },
+      {
+        "id": 10,
+        "menu_name": "Operations",
+        "has_submenu": "N",
+        "url": "/main/master/mstOperations",
+        "icon": "history"
+      }
     ]
-    }
-  ]
-  
+  }
+]

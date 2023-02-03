@@ -2112,7 +2112,7 @@ textarea.form-control {
   border-color: #28a745;
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
-
+/* 
 .was-validated .custom-select:valid ~ .valid-feedback,
 .was-validated .custom-select:valid ~ .valid-tooltip, .custom-select.is-valid ~ .valid-feedback,
 .custom-select.is-valid ~ .valid-tooltip {
@@ -2175,7 +2175,7 @@ textarea.form-control {
 .was-validated .custom-file-input:valid:focus ~ .custom-file-label, .custom-file-input.is-valid:focus ~ .custom-file-label {
   border-color: #28a745;
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-}
+} */
 
 .invalid-feedback {
   display: block;

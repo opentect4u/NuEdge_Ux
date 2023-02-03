@@ -33,7 +33,7 @@ export class RNTComponent implements OnInit {
     }
   }
   populateDT(__items: rnt) {
-    this.__utility.navigate('/main/master/rntmodify',btoa(__items.id.toString()));
+    this.__utility.navigatewithqueryparams('/main/master/rntmodify',{queryParams:{id:btoa(__items.id.toString())}})
   }
 
   private getRNTmaster() {
@@ -46,6 +46,6 @@ export class RNTComponent implements OnInit {
     this.__selectRNT.paginator = this.paginator;
   }
   showCorrospondingAMC(__rntDtls){
-    this.__utility.navigatewithqueryparams('/main/master/amcmaster',{queryParams:{id:__rntDtls.id}})
+    this.__utility.navigatewithqueryparams('/main/master/amcmaster',{queryParams:{id:btoa(__rntDtls.id.toString())}})
   }
 }

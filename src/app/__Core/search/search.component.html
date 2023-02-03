@@ -22,7 +22,7 @@
             <div class="serachresult" #searchResult>
               <ul *ngIf="__items.length > 0">
                 <li *ngFor="let items of __items" (click)="getItems(items)">
-                  <a *ngIf="__pageTitle?.id  == 4 || __pageTitle?.id  == 18 || __pageTitle?.id  == 21">{{items.client_code}}
+                  <!-- <a *ngIf="__pageTitle?.id  == 4 || __pageTitle?.id  == 18 || __pageTitle?.id  == 21">{{items.client_code}}
                     | {{items.client_name}} | {{items.pan}} | {{items.mobile}}</a>
                   <a *ngIf="__pageTitle?.id  == 19">{{items.temp_tin_id}} | {{items.product_name}} | {{items.pan_no}}</a>
                   <a *ngIf="__pageTitle?.id  == 5">{{items.rnt_name}}</a>
@@ -32,8 +32,17 @@
                   <a *ngIf="__pageTitle?.id  == 14">{{items.bank_name}}</a>
                   <a *ngIf="__pageTitle?.id  == 15">{{items.scheme_name}}</a>
                   <a *ngIf="__pageTitle?.id  == 17">{{items.doc_type}}</a>
-                  <a *ngIf="__pageTitle?.trans_type_id">{{items.tin_no}} | {{items.entry_date | date:'dd/MM/YYYY'}}</a>
-
+                  <a *ngIf="__pageTitle?.trans_type_id">{{items.tin_no}} | {{items.entry_date | date:'dd/MM/YYYY'}}</a> -->
+                  <a *ngIf="__pageTitle?.id  == 8">{{items.scheme_name}}</a>
+                  <a *ngIf="__pageTitle?.id  == 4">{{items.amc_name}}</a>
+                  <a *ngIf="__pageTitle?.id  == 13">{{items.rnt_name}}</a>
+                  <a *ngIf="__pageTitle?.id  == 5">{{items.cat_name}}</a>
+                  <a *ngIf="__pageTitle?.id  == 6">{{items.subcategory_name}}</a>
+                  <a *ngIf="__pageTitle?.id  == 7">{{items.bank_name}}</a>
+                  <a *ngIf="__pageTitle?.id  == 33">{{items.plan_name}}</a>
+                  <a *ngIf="__pageTitle?.id  == 37">{{items.opt_name}}</a>
+                  <a *ngIf="__pageTitle?.id  == 2">{{items.client_code}}
+                    | {{items.client_name}} | {{items.pan}} | {{items.mobile}}</a>
                 </li>
               </ul>
               <div class="noDataFound" *ngIf="__items.length == 0">

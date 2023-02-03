@@ -9,5 +9,8 @@ export interface bank {
     ifs_code: string
     updated_at: string
     updated_by: any
+    branch_name:string, 
+    micr_code:string, 
+    branch_addr:string
   }
   

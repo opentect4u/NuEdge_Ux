@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { docType } from 'src/app/__Model/__docTypeMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 
 @Component({
@@ -17,7 +18,7 @@ export class DocsMasterComponent implements OnInit {
   __columns: string[] = ['sl_no', 'doc_type', 'edit', 'delete'];
   __selectDocs = new MatTableDataSource<docType>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService) { }
+  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService,private __utility: UtiliService) { }
   ngOnInit() { this.getDocumentmaster(); }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
@@ -31,7 +32,9 @@ export class DocsMasterComponent implements OnInit {
     }
   }
   populateDT(__items: docType) {
-    this.openDialog(__items.id, __items.doc_type);
+
+    console.log('assasass');
+    this.__utility.navigatewithqueryparams('/main/master/docTypeModify', {queryParams:{id:btoa(__items.id.toString())}})
   }
   private openDialog(id: number, doc_type: string | null = null) {
     const dialogConfig = new MatDialogConfig();

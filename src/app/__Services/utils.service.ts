@@ -30,6 +30,8 @@ export class UtiliService {
     }
   }
   navigatewithqueryparams(url,_params){
+    console.log(url);
+    
     this.__router.navigate([url],_params)
    
   }

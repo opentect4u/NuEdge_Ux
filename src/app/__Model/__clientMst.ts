@@ -1,3 +1,5 @@
+import { docs } from "./docs"
+
 export interface client {
     client_name: string
     client_code: string
@@ -18,4 +20,9 @@ export interface client {
     created_at:string
     updated_by:number
     updated_at:string
+    gurdians_name: string
+    gurdians_pan: string
+    relation: string;
+    client_doc:docs[]
+    client_type: string
   }

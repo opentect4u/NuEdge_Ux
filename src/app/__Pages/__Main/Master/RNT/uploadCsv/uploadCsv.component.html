@@ -20,15 +20,24 @@
                <label for="fileDropRef">Browse files</label>
              </div>
                <p class="my-4"><strong>Note:</strong><span> Format allowed: CSV,XLSX  ( Maximum Size Upto 2MB )</span></p>
-              <!-- <div class="invalid-feedback"
-              *ngIf=" __uploadRnt.get('rntFile').invalid && ( __uploadRnt.get('rntFile').dirty ||  __uploadRnt.get('rntFile').touched)">
-              <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.required">*Please
-                provide file</span>
-              <span class="invalid-feedback"
-                *ngIf="__uploadRnt.get('file').errors?.fileSizeValidator">*File size must not exceed than
-                2MB.</span>
-              </div> -->
-              <strong #showing class="text-danger"></strong>
+               <div class="invalid-feedback"
+               *ngIf=" __uploadRnt.get('rntFile').invalid && ( __uploadRnt.get('rntFile').dirty ||  __uploadRnt.get('rntFile').touched)">
+               <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.required">*Please
+                 provide file</span>
+               <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.inValidExt">*Please
+                 provide valid file format</span>
+               <span class="invalid-feedback" *ngIf="__uploadRnt.get('rntFile').errors?.fileSizeValidator">*File size
+                 must not exceed than
+                 2MB.</span>
+             </div>
+             <!-- Custom Validators -->
+             <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.checkRequire">*Pleaseprovide
+               file</span>
+             <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.checkExt">*Please provide valid
+               file format</span>
+             <span class="invalid-feedback" *ngIf="__uploadRnt.get('rntFile').errors?.checkSize">*File size must not
+               exceed than 2 MB.</span>
+             <!-- End -->
 
               <div class="files-list my-3" *ngIf="this.__uploadRnt.get('file').value">
                 <div class="single-file" >

@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { CategoryComponent } from './category.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
-import { MatDialogModule } from '@angular/material/dialog';
-import { CategoryModificationComponent } from './categoryModification/categoryModification.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
@@ -17,11 +15,10 @@ const routes:Routes = [{path:'',component:CategoryComponent}]
     CommonModule,
     RouterModule.forChild(routes),
     SearchModule,
-    MatDialogModule,
     MatTableModule,
     MatPaginatorModule
   ],
-  declarations: [CategoryComponent,CategoryModificationComponent]
+  declarations: [CategoryComponent]
 })
 export class CategoryModule { 
   constructor() {
