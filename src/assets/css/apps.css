@@ -784,44 +784,78 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 
-.smallBox {
+/* .smallBox {
   background: #fff;
-  /*	background: rgb(228,228,228); background: linear-gradient(0deg, rgba(228,228,228,1) 0%, rgba(251,251,251,1) 100%); */
-  /* box-shadow: 0 0 3px 2px #ece9e9;  */
   box-shadow: 1px 0px 16px 2px #c6c6c6;
-  /*Suman Mitra add this*/
   border: 1px solid #cdcdcd;
-  /*Suman Mitra add this*/
   border-radius: 5px;
   padding: 15px;
   text-align: center;
   margin-bottom: 35px;
-}
+} */
 
-.smallBox .smallBoxIconSec {
-  width: 100%;
+.smallBox{
+  background: #fff;
+  box-shadow: 0px 1px 9px 0px #757575;
+  border: 1px solid #cdcdcd;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
   margin-bottom: 13px;
 }
 
-.smallBox .smallBoxIconSec .iconSec {
+/* .smallBox .smallBoxIconSec {
+  width: 100%;
+  margin-bottom: 13px;
+} */
+.smallBox .smallBoxIconSec{
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* .smallBox .smallBoxIconSec .iconSec {
   width: 60px;
   height: 60px;
   border-radius: 50px;
   margin: 0 auto;
   display: flex;
   align-items: center;
+} */
+.smallBox .smallBoxIconSec .iconSec {
+  width: 45px;
+  height: 45px;
+  border-radius: 50px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
 }
 
-.smallBox .smallBoxIconSec .iconSec i {
+
+
+/* .smallBox .smallBoxIconSec .iconSec i {
   color: #fff;
   font-size: 25px;
   margin: 0 auto;
+} */
+/* .smallBox .smallBoxIconSec .iconSec i{
+  color: #fff;
+  font-size: 20px;
+  margin: 0 auto;
+} */
+.smallBox .smallBoxIconSec .iconSec i{
+  color: #fff;
+  font-size: 15px;
+  margin: 0 auto;
 }
-
-.smallBox h2 {
+/* .smallBox h2 {
   color: #444444;
   font-size: 16px;
   font-weight: 600;
+} */
+.smallBox h2 {
+  color: #444444;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .smallBox:hover {

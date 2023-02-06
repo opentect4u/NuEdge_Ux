@@ -5,6 +5,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AmcModificationComponent } from './amcModification/amcModification.component';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 const routes: Routes =[{path:'',component:AMCComponent}]
 @NgModule({
@@ -13,9 +17,12 @@ const routes: Routes =[{path:'',component:AMCComponent}]
     RouterModule.forChild(routes),
     SearchModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule,
+    OverlayModule,
+    DragDropModule
   ],
-  declarations: [AMCComponent]
+  declarations: [AMCComponent,AmcModificationComponent]
 })
 export class AMCModule {
   constructor() {

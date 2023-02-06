@@ -4,12 +4,13 @@
 
 td,
 th {
-    text-align: center !important;
+    text-align: left !important;
     font-size: 15px !important;
 }
-
 .cdk-overlay-container {z-index: 99999 !important;}
-
+.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    line-height: 38px!important;
+}
 
 /* 
 ::-webkit-scrollbar {
@@ -83,3 +84,14 @@ label {
 .mat-menu-content:not(:empty){padding:0px!important}
 .activeMainmenu{background-color: #fff;color:rgb(4, 4, 136);border-radius:0px!important;font-weight: 600;}
 /* .mat-menu-panel{padding:22px!important;} */
+.mat_dialog{
+    height: 100%!important;
+    width: 60%!important;
+}
+tr.mat-header-row {
+    height: 45px!important;
+}
+.full_screen{
+    height: 100%!important;
+    width: 100%!important;
+}

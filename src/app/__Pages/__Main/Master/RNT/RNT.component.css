@@ -1,4 +1,27 @@
-td th{
-    width: 33%!important;
+td,th{
+    width: 20%!important;
+}
+.paginator{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 25px;
+    border-top: 1px solid #c5c5c5;
+    background: #fff
+}
+.paginator ul{
+    list-style: none;
+}
+.paginator ul li{
+    display: block;
+    float: left;
+}
+.paginator .paginatorContainer mat-icon{
+    vertical-align: inherit;
 }
 
+.paginator ul li a{
+    padding: 12px;
+    background: gray;
+    margin-right: 5px;
+}

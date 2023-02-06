@@ -71,14 +71,15 @@
 
 
 table.table_Custome thead,tfoot{  
-  /* background: #3bb8b3;  */
+  background: #3bb8b3; 
   /* background: #3a5076;
   color: #fff; */
 }
+table.table_Custome thead tr th{color: #fff;}
 
-  /* tr:nth-child(even) {
+  tr:nth-child(even) {
     background-color: #f2f2f2;
-  } */
+  }
 
 .editeCustom_table{font-size: 18px;}
 

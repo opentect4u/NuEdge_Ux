@@ -145,14 +145,14 @@
         "id": 14,
         "menu_name": "R&T",
         "has_submenu": "N",
-        "url": "/main/master/rntDashboard",
+        "url": "/main/master/rntmaster",
         "icon": "grade"
       },
       {
         "id": 16,
         "menu_name": "AMC",
         "has_submenu": "N",
-        "url": "/main/master/amcDashboard",
+        "url": "/main/master/amcmaster",
         "icon": "account_balance"
       },
       {

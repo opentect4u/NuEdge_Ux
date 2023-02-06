@@ -17,6 +17,12 @@ constructor(private __http:HttpClient) {
   return this.__http.get<any>(`${environment.apiUrl + __url +'?search='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
 
+ getpaginationData(url){
+  console.log(url);
+  
+  return this.__http.get<any>(url, { context: new HttpContext().set(BYPASS_LOG,  true) })
+ }
+
  api_call(__flag: number,__url:string, __dt: any){
   if(__flag > 0){
         return this.__http.post(`${environment.apiUrl + __url}`,__dt);

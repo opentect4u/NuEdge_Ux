@@ -11,6 +11,9 @@ import { Route } from '../__Model/route';
   providedIn: 'root'
 })
 export class UtiliService {
+  private __isvisibleMenuIcon = new BehaviorSubject<any>(null);
+  public readonly __isvisibleMenuIcon$ = this.__isvisibleMenuIcon.asObservable().pipe(delay(1));
+
   private __route = new BehaviorSubject<Route>(null);
   private __renderer: Renderer2;
   public readonly __route$ = this.__route.asObservable().pipe(delay(1));
@@ -38,6 +41,10 @@ export class UtiliService {
   //Get Route Details
   getRoute(__route) {
     this.__route.next(__route);
+  }
+
+  getmenuIconVisible(isVisible){
+    this.__isvisibleMenuIcon.next(isVisible)
   }
   //Adding Dropdown Script
   addScript() {

@@ -44,6 +44,7 @@ export class DocsMasterComponent implements OnInit {
   private openDialog(id: number, doc_type: string | null = null) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '40%';
+    dialogConfig.id ="0";
     dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Document Type' : 'Update Document Type',
@@ -53,7 +54,7 @@ export class DocsMasterComponent implements OnInit {
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
-    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop()
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
 
     const dialogref = this.__dialog.open(DocsModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {

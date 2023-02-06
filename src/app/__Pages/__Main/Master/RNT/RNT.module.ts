@@ -4,7 +4,13 @@ import { RNTComponent } from './RNT.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatTableModule } from '@angular/material/table';
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { RntModificationComponent } from './rntModification/rntModification.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { OverlayModule } from '@angular/cdk/overlay';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { ReplacePipe } from 'src/app/__Pipes/replace.pipe';
 const __routes: Routes = [{ path: '', component: RNTComponent }]
 
 
@@ -14,9 +20,15 @@ const __routes: Routes = [{ path: '', component: RNTComponent }]
     RouterModule.forChild(__routes),
     SearchModule,
     MatTableModule,
-    MatPaginatorModule
+    MatDialogModule,
+    ReactiveFormsModule,
+    OverlayModule,
+    DragDropModule,
+    MatButtonToggleModule,
+    
+
   ],
-  declarations: [RNTComponent]
+  declarations: [RNTComponent,RntModificationComponent,ReplacePipe]
 })
 export class RNTModule {
 
