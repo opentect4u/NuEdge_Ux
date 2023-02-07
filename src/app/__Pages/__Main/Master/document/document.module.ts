@@ -9,6 +9,9 @@ import { DocsModificationComponent } from './docsModification/docsModification.c
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 const routes: Routes =[{path:'',component:DocumentComponent}]
 
@@ -21,7 +24,10 @@ const routes: Routes =[{path:'',component:DocumentComponent}]
     MatDialogModule,
     MatTableModule,
     MatButtonModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    SharedModule,
+    DragDropModule,
+    MatButtonToggleModule
   ],
   declarations: [DocumentComponent,DocsModificationComponent]
 })

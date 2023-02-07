@@ -1,21 +1,25 @@
-<!-- <h2 mat-dialog-title>{{data.title}}</h2> -->
-<div mat-dialog-title class="dialog-title">
-  <h2 >{{data.title}}</h2>
-  <div class="btnIcon">
-    <button mat-icon-button  (click)="minimize()" *ngIf="!__isVisible">
-      <mat-icon >remove</mat-icon>
-    </button>
-    <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-      <mat-icon>check_box_outline_blank</mat-icon>
-    </button>
 
-    <button mat-icon-button  [mat-dialog-close]="">
-      <mat-icon >close</mat-icon>
-    </button>
-
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    
+      <button mat-icon-button  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+  
+    </div>
+  
   </div>
-
-</div>
 
 <mat-dialog-content>
   <form  [formGroup]="__docsForm" (ngSubmit)="submit()" id="__docsForm" autocomplete="off" ngNativeValidate>
@@ -35,3 +39,4 @@
   <button class="btn addBtn"  form="__docsForm" [disabled]="this.__docsForm.invalid">Submit</button>
 </mat-dialog-actions>
 <br clear="all">
+</div>

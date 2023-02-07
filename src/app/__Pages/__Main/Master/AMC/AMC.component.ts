@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
@@ -24,8 +24,8 @@ export class AMCComponent implements OnInit {
 
   __columns: string[] = ['sl_no', 'amc_name', 'edit', 'delete'];
   __selectAMC = new MatTableDataSource<amc>([]);
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
+  __pageNumber= new FormControl(10);
+  __paginate:any=[];
   constructor(  
     private __dialog:MatDialog,
     private __utility: UtiliService,
@@ -33,7 +33,7 @@ export class AMCComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private route :ActivatedRoute) { }
   ngOnInit(): void {
-    this.getAMCMaster(this.route.snapshot.queryParamMap.get('id') == null ? this.route.snapshot.queryParamMap.get('id') : ('rnt_id='+atob(this.route.snapshot.queryParamMap.get('id'))));
+    this.getAMCMaster(this.route.snapshot.queryParamMap.get('id') == null ? this.route.snapshot.queryParamMap.get('id') : ('&rnt_id='+atob(this.route.snapshot.queryParamMap.get('id'))));
   }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
@@ -42,7 +42,7 @@ export class AMCComponent implements OnInit {
       this.setPaginator([__ev.item]);
     }
     else {
-      this.getAMCMaster(this.route.snapshot.queryParamMap.get('id') == null ? this.route.snapshot.queryParamMap.get('id') : ('rnt_id='+atob(this.route.snapshot.queryParamMap.get('id'))));
+      this.getAMCMaster(this.route.snapshot.queryParamMap.get('id') == null ? '' : ('&rnt_id='+atob(this.route.snapshot.queryParamMap.get('id'))));
     }
   }
   populateDT(__items: amc) {
@@ -50,16 +50,17 @@ export class AMCComponent implements OnInit {
     this.openDialog(__items,__items.id);
   }
 
-  private getAMCMaster(__params: string | null = null) {
+  private getAMCMaster(__params: string | null = null,__paginate: string | null = "10") {
     console.log(__params);
     
-    this.__dbIntr.api_call(0, '/amc', __params).pipe(map((x: responseDT) => x.data)).subscribe((res: amc[]) => {
-      this.setPaginator(res);
+    this.__dbIntr.api_call(0, '/amc', 'paginate=' + __paginate + __params).pipe(map((x: responseDT) => x.data)).subscribe((res: any) => {
+      console.log(res);
+      this.__paginate = res.links;
+      this.setPaginator(res.data);
     })
   }
   private setPaginator(__res) {
     this.__selectAMC = new MatTableDataSource(__res);
-    this.__selectAMC.paginator = this.paginator;
   }
   navigate(__items){
      switch(__items.flag){
@@ -153,4 +154,16 @@ export class AMCComponent implements OnInit {
       return true;
     });
   }
+  getval(__paginate){
+    this.__pageNumber.setValue(__paginate);
+     this.getAMCMaster('',__paginate);
+ }
+ getPaginate(__paginate){
+  if(__paginate.url){
+   this.__dbIntr.getpaginationData(__paginate.url + ('&paginate='+this.__pageNumber.value)).pipe(map((x: any) => x.data)).subscribe((res: any) => {
+     this.setPaginator(res.data);
+     this.__paginate = res.links;
+   })
+  }
+}
 }

@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ClOutsideClickDirective } from 'src/app/__Directives/clOutsideClick.directive';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [{path:'',component:DocModifyComponent}]
 
@@ -19,8 +20,9 @@ const routes: Routes = [{path:'',component:DocModifyComponent}]
     MatTableModule,
     MatButtonModule,
     MatIconModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    SharedModule
   ],
-  declarations: [DocModifyComponent,ClOutsideClickDirective]
+  declarations: [DocModifyComponent]
 })
 export class DocModifyModule { }

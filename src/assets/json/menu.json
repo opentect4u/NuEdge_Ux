@@ -159,28 +159,28 @@
         "id": 19,
         "menu_name": "Category",
         "has_submenu": "N",
-        "url": "/main/master/catDashboard",
+        "url": "/main/master/category",
         "icon": "category"
       },
       {
         "id": 22,
         "menu_name": "SubCategory",
         "has_submenu": "N",
-        "url": "/main/master/subcatDashboard",
+        "url": "/main/master/subcategory",
         "icon": "history"
       },
       {
         "id": 25,
         "menu_name": "Bank",
         "has_submenu": "N",
-        "url": "/main/master/bnkDashboard",
+        "url": "/main/master/bank",
         "icon": "new_releases"
       },
       {
         "id": 8,
         "menu_name": "Scheme",
         "has_submenu": "N",
-        "url": "/main/master/scmDashboard",
+        "url": "/main/master/scheme",
         "icon": "stars"
       },
       {
@@ -194,14 +194,14 @@
         "id": 33,
         "menu_name": "Plan",
         "has_submenu": "N",
-        "url": "/main/master/planDashboard",
+        "url": "/main/master/plan",
         "icon": "stars"
       },
       {
         "id": 38,
         "menu_name": "Option",
         "has_submenu": "N",
-        "url": "/main/master/optionDashboard",
+        "url": "/main/master/option",
         "icon": "stars"
       },
       {

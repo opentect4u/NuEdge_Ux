@@ -1,0 +1,50 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    
+      <button mat-icon-button  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+  
+    </div>
+  
+  </div>
+  <mat-dialog-content>
+    <form  [formGroup]="__categoryForm" (ngSubmit)="submit()" id="__categoryForm" autocomplete="off" ngNativeValidate>
+      <div class="row">
+        <div class="col-sm-12 my-3">
+          <label for="productName">Product <span class="text-danger">*</span></label>
+           <select class="form-control" formControlName="product_id" id="productName">
+             <option value="">Select Product</option>
+            <option *ngFor="let __products of __ProductMaster" value="{{__products.id}}">{{__products.product_name}}</option>
+           </select>
+          <div class="invalid-feedback" *ngIf="__categoryForm.get('product_id').invalid && (__categoryForm.get('product_id').dirty || __categoryForm.get('product_id').touched)">
+            <span class="invalid-feedback" *ngIf="(__categoryForm.get('product_id')).errors?.required">*Please provide product name</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-3">
+          <label for="catName">Category <span class="text-danger">*</span></label>
+          <input type="text" name="cat_name" id="catName" class="form-control" placeholder="Enter Category" formControlName="cat_name">
+          <div class="invalid-feedback" *ngIf="__categoryForm.get('cat_name').invalid && (__categoryForm.get('cat_name').dirty || __categoryForm.get('cat_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__categoryForm.get('cat_name')).errors?.required">*Please provide category</span>
+          </div>
+        </div>
+      </div>
+  </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn"  form="__categoryForm" [disabled]="this.__categoryForm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+</div>

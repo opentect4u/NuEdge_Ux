@@ -5,6 +5,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { PlanModificationComponent } from '../planModification/planModification.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 const routes: Routes =[{path:'',component:PlanComponent}]
@@ -15,8 +21,13 @@ const routes: Routes =[{path:'',component:PlanComponent}]
     RouterModule.forChild(routes),
     SearchModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule,
+    DragDropModule,
+    OverlayModule,
+    MatButtonToggleModule,
+    SharedModule
   ],
-  declarations: [PlanComponent]
+  declarations: [PlanComponent,PlanModificationComponent]
 })
 export class PlanModule { }

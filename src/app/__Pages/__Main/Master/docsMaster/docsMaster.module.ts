@@ -8,6 +8,8 @@ import { DocsModificationComponent } from './docsModification/docsModification.c
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import {OverlayModule} from '@angular/cdk/overlay';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 const routes: Routes =[{path:'',component:DocsMasterComponent}]
 @NgModule({
   imports: [
@@ -17,7 +19,9 @@ const routes: Routes =[{path:'',component:DocsMasterComponent}]
     MatDialogModule,
     MatTableModule,
     MatPaginatorModule,
-    OverlayModule
+    OverlayModule,
+    SharedModule,
+    MatButtonToggleModule
   ],
   declarations: [DocsMasterComponent,DocsModificationComponent]
 })

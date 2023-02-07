@@ -16,6 +16,7 @@ export class SearchComponent implements OnInit {
   @Input() __flag: string;
   @Input() __placeholder: string;
   @Input() __api_name: string;
+  @Input() __paginate:string;
   __pageTitle: any;
   __items: any = [];
   __SearchForm: FormGroup = new FormGroup({
@@ -43,7 +44,7 @@ export class SearchComponent implements OnInit {
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(dt => dt?.length > 1 ? 
-          this.__dbIntr.searchItems(this.__api_name, dt + (this.__pageTitle?.trans_type_id ? "&trans_type_id=" + this.__pageTitle?.trans_type_id : ''))
+          this.__dbIntr.searchItems(this.__api_name, dt + (this.__pageTitle?.trans_type_id ? "&trans_type_id=" + this.__pageTitle?.trans_type_id : '') + '&paginate='+ this.__paginate)
           : []),
       ).subscribe({
         next: (value) => {

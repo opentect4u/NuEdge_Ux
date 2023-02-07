@@ -5,6 +5,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { SubcateModificationComponent } from './subcateModification/subcateModification.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes =[{path:'',component:SubcategoryComponent}]
 
@@ -15,9 +21,14 @@ const routes: Routes =[{path:'',component:SubcategoryComponent}]
     RouterModule.forChild(routes),
     SearchModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule,
+    DragDropModule,
+    OverlayModule,
+    MatButtonToggleModule,
+    SharedModule
   ],
-  declarations: [SubcategoryComponent]
+  declarations: [SubcategoryComponent,SubcateModificationComponent]
 })
 export class SubcategoryModule { 
   constructor() {

@@ -1,7 +1,8 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap ,skip} from 'rxjs/operators';
+import { client } from 'src/app/__Model/__clientMst';
 // import { client } from 'src/app/__Model/__clientMst';
 import { docType } from 'src/app/__Model/__docTypeMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -16,14 +17,18 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./docsModification.component.css']
 })
 export class DocsModificationComponent implements OnInit {
+  __chkIsDocAvailable: string = 'N';
+  __isvisible:boolean =false;
+  @ViewChild('searchResult') __searchRlt: ElementRef;
+  __items: client[] = [];
   @ViewChild('scrollTobottom') __scroll: ElementRef;
   allowedExtensions = ['jpg', 'png', 'jpeg'];
   __noImg: string = '../../../../../../assets/images/noimg.png';
-  __isvisible: boolean = false;
+  __isVisible: boolean = false;
   __docTypeMaster: docType[];
   __clientForm = new FormGroup({
     client_id: new FormControl('', [Validators.required]),
-    client_code: new FormControl({ value: '', disabled: true }),
+    client_code: new FormControl({ value: '', disabled: false }),
     pan_no: new FormControl({ value: '', disabled: true }),
     mobile: new FormControl({ value: '', disabled: true }),
     client_name: new FormControl({ value: '', disabled: true }),
@@ -37,56 +42,64 @@ export class DocsModificationComponent implements OnInit {
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog,
   ) {
-    this.getDocumnetTypeMaster();
+    this.__utility.__isvisibleMenuIcon$.pipe(skip(1)).subscribe(res =>{
+      if(this.data.id == res.id && this.data.flag == res.flag){
+        this.__isVisible = res.isVisible
+      }
+    })
   }
   ngOnInit() {
-    if (this.data.id > 0) {
-      this.__isvisible = true;
-      this.setClientForm(this.data.items.client_code, this.data.items.pan, this.data.items.mobile, this.data.items.client_name, this.data.items.email, this.data.cl_id)
-      if (this.data.__docsDetail.length > 0) {
-        this.data.__docsDetail.forEach(element => {
-          this.__docs.push(this.setItem(element.id, element.doc_type_id, element.doc_name));
-        });
-      }
-      else {
-        this.addItem();
-      }
-    }
-    else {
-      this.addItem();
-    }
+    // console.log(this.data.id);
+    
+    this.getDocumnetTypeMaster();
+    this.addItem();
+    if(this.data.id > 0){
+      this.populateDT({client_code:this.data.items.client_code,client_id:this.data.items.client_id})
+}
   }
-  // getClientMaster() {
-  //   this.__dbIntr.api_call(0, '/client', null).pipe(map((x: responseDT) => x.data)).subscribe((res: client[]) => {
-  //     this.__clMaster = res;
-  //   })
-  // }
+   
+  ngAfterViewInit(){
+    this.__clientForm.controls['client_code'].valueChanges.
+      pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap(dt => dt?.length > 1 ?
+          this.__dbIntr.searchItems('/documentsearch', dt)
+          : []),
+      ).subscribe({
+        next: (value) => {
+          // console.log(value);
+          this.__items = value.data;
+          this.searchResultVisibility('block');
+        },
+        complete: () => console.log(''),
+        error: (err) => console.log()
+
+      })
+  }
+
+  get __docs(): FormArray {
+    return this.__clientForm.get("doc_dtls") as FormArray;
+  }
+  addItem(): void {
+    this.__docs.push(this.createItem());
+  }
   getDocumnetTypeMaster() {
     this.__dbIntr.api_call(0, '/documenttype', null).pipe(map((x: responseDT) => x.data)).subscribe((res: docType[]) => {
       this.__docTypeMaster = res;
     })
   }
-  submit() {
-    if (this.__clientForm.invalid) {
-      this.__utility.showSnackbar(this.__clientForm.get('client_id').value == '' ? 'Error !! No client selected' : 'Submition failed due to some error', 0);
-      return;
-    }
-    const fd = new FormData();
-    fd.append("client_id", this.__clientForm.value.client_id);
-    for (let i = 0; i < this.__clientForm.value.doc_dtls.length; i++) {
-      if (typeof (this.__clientForm.value.doc_dtls[i].file) != 'string') {
-        fd.append("file[]", this.__clientForm.value.doc_dtls[i].file);
-        fd.append("doc_type_id[]", this.__clientForm.value.doc_dtls[i].doc_type_id);
-        fd.append("row_id[]", this.__clientForm.value.doc_dtls[i].id);
-      }
-    }
-    this.__dbIntr.api_call(1, this.data.id > 0 ? '/documentEdit' : '/documentAdd', fd).pipe((map((x: responseDT) => x.suc))).subscribe((res: number) => {
-      if (res == 1) {
-        this.dialogRef.close(res);
-      }
-      this.__utility.showSnackbar(res == 1 ? 'Document Uploaded Successfully' : 'Something went wrong! Please try again later', res);
-    })
-
+  minimize(){
+    this.dialogRef.updateSize("30%",'55px');
+    this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
+  }
+  maximize(){
+    this.dialogRef.updateSize("60%");
+    this.__isVisible = !this.__isVisible;
+  }
+  fullScreen(){
+    this.dialogRef.updateSize("100%");
+    this.__isVisible = !this.__isVisible;
   }
   createItem(): FormGroup {
     return new FormGroup({
@@ -97,71 +110,81 @@ export class DocsModificationComponent implements OnInit {
       file: new FormControl('')
     });
   }
-  setItem(id, type_id, doc) {
+  setItem(id, type_id, doc, cl_id) {
     return new FormGroup({
       id: new FormControl(id),
       doc_type_id: new FormControl(type_id, [Validators.required]),
       doc_name: new FormControl(''),
-      file_preview: new FormControl(`${environment.clientdocUrl}` + this.data.cl_id + '/' + doc),
-      file: new FormControl(`${environment.clientdocUrl}` + this.data.cl_id + '/' + doc)
-    });
+      file_preview: new FormControl( doc!= null ? `${environment.clientdocUrl}` + cl_id + '/' + doc : ''),
+      file: new FormControl( doc!= null ? `${environment.clientdocUrl}` + cl_id + '/' + doc : '')
+    });  
   }
-
-  addItem(): void {
-    this.__docs.push(this.createItem());
-    if (this.__docs.length > 1) {
-      setTimeout(() => {
-        this.__scroll.nativeElement.scroll({
-          top: this.__scroll.nativeElement.scrollHeight,
-          left: 0,
-          behaviour: 'smooth'
-        });
-      }, 50);
+  searchResultVisibility(display_mode) {
+    this.__searchRlt.nativeElement.style.display = display_mode;
+  }
+  outsideClick(__ev) {
+    if (__ev) {
+      this.searchResultVisibility('none');
     }
   }
-  removeDocument(__index) {
-    this.__docs.removeAt(__index);
-  }
-  getFiles(__ev, index, __type_id) {
-    this.__docs.controls[index].get('doc_name').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
-    this.__docs.controls[index].get('doc_name').updateValueAndValidity();
-
-      if (this.__docs.controls[index].get('doc_name').status == 'VALID') {
-        const file = __ev.target.files[0];
-        const reader = new FileReader();
-        reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
-        reader.readAsDataURL(file);
-        this.__docs.controls[index].get('file')?.patchValue(__ev.target.files[0]);
-      }
-    else {
-      this.setFileValue(index)
-    }
-    console.log(this.__docs);
-
-  }
-  get __docs(): FormArray {
-    return this.__clientForm.get("doc_dtls") as FormArray;
-  }
-  getSearchItem(__ev) {
-    if (__ev.flag == 'F') {
-      this.setClientForm(__ev.item.client_code, __ev.item.pan, __ev.item.mobile, __ev.item.client_name, __ev.item.email, __ev.item.id)
-    }
-    this.__isvisible = __ev.flag == 'F' ? true : false;
-  }
-  setFileValue(index) {
-    this.__docs.controls[index].get('file_preview')?.reset();
-    this.__docs.controls[index].get('file')?.reset();
-  }
-  setClientForm(cl_code, pan_no, mobile, cl_name, email, id) {
-    this.__clientForm.patchValue({
-      client_code: cl_code,
-      pan_no: pan_no,
-      mobile: mobile,
-      client_name: cl_name,
-      email: email,
-      client_id: id
+  populateDT(client){
+    // console.log(client);
+    
+    // this.__clientForm.controls['client_code'].reset(client_code, { onlySelf: true, emitEvent: false });
+    this.__dbIntr.api_call(0,'/documentsearch','client_id='+client.client_id).pipe(map((x: any) => x.data)).subscribe((res: client[]) =>{
+      this.getItems(res[0]);
     })
+}
+getItems(__client) {
+  // console.log(__client);
+  this.__clientForm.controls['client_code'].reset(__client.client_code, { onlySelf: true, emitEvent: false });
+  this.searchResultVisibility('none');
+  this.__clientForm.patchValue({
+    pan_no: __client.pan,
+    mobile: __client.mobile,
+    client_name: __client.client_name,
+    email: __client.email,
+    client_id: __client.id
+  })
+  this.__isvisible = true;
 
+  this.__docs.controls.length = 0;
+  if (__client.client_doc.length > 0) {
+    __client.client_doc.forEach(element => {
+      this.__docs.push(this.setItem(element.id, element.doc_type_id, element.doc_name, element.client_id));
+    })
   }
+  else {
+    this.addItem();
+  }
+  this.__chkIsDocAvailable = __client.client_doc.length > 0 ? 'Y' : 'N';
 
+}
+submit(){
+
+}
+removeDocument(__index) {
+  this.__docs.removeAt(__index);
+}
+getFiles(__ev, index, __type_id) {
+  this.__docs.controls[index].get('doc_name').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
+  this.__docs.controls[index].get('doc_name').updateValueAndValidity();
+
+  if (this.__docs.controls[index].get('doc_name').status == 'VALID') {
+    const file = __ev.target.files[0];
+    const reader = new FileReader();
+    reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
+    reader.readAsDataURL(file);
+    this.__docs.controls[index].get('file')?.patchValue(__ev.target.files[0]);
+  }
+  else {
+    this.setFileValue(index)
+  }
+  // console.log(this.__docs);
+
+}
+setFileValue(index) {
+  this.__docs.controls[index].get('file_preview')?.reset();
+  this.__docs.controls[index].get('file')?.reset();
+}
 }

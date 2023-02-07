@@ -20,10 +20,8 @@
   [__api_name]="'/documenttype'">
 </core-search>
 
-<div class="mat-elevation-z3 my-4">
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
-
-  <table mat-table [dataSource]="__selectDocs">
+<div class="mat-elevation-z3">
+  <table mat-table [dataSource]="__selectDocs" class="table_Custome">
     <!-- Sl No. -->
     <ng-container matColumnDef="sl_no">
       <th mat-header-cell *matHeaderCellDef>Sl no.</th>
@@ -62,7 +60,45 @@
     <tr mat-header-row *matHeaderRowDef="__columns"></tr>
     <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="4">No data found</td>
+      <td class="mat-cell" colspan="4" class="text-center">No data found</td>
     </tr>
   </table>
+  
+  <div class="paginator">
+    <div class="itemsPerPage">
+      <label>Items Per Page :&nbsp; </label>
+      <mat-button-toggle-group #group="matButtonToggleGroup">
+        <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
+          10
+        </mat-button-toggle>
+        <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
+         50
+        </mat-button-toggle>
+        <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
+          100
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    
+    <!-- <mat-paginator [pageSizeOptions]="[__pageNumber.value]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator> -->
+  
+     
+    <div class="paginatorContainer">
+      <mat-button-toggle-group *ngFor="let paginate of __paginate">
+        <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+          <label>
+                 <!-- {{(paginate.label | replace) == 'N' ? '' : ''}} -->
+                 <mat-icon  *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+                 <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+                 <span *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+  
+          </label>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  
+  
+  
+  
+  </div>
 </div>

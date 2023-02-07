@@ -1,4 +1,7 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -7,17 +10,26 @@ import { option } from 'src/app/__Model/option';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { global } from 'src/app/__Utility/globalFunc';
+import { OptionModificationComponent } from '../optionModification/optionModification.component';
 @Component({
   selector: 'app-option',
   templateUrl: './option.component.html',
   styleUrls: ['./option.component.css']
 })
 export class OptionComponent implements OnInit {
+  __pageNumber= new FormControl(10);
+  __paginate:any=[];
+  __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "","icon":"","id":40,"flag":"M"},
+             {"parent_id": 4,"menu_name": "Upload CSV","has_submenu": "N","url": "main/master/uploadOption","icon":"","id":39,"flag":"U"}]
+  
   __columns: string[] = ['sl_no', 'opt_name', 'edit', 'delete'];
-  __selectAMC = new MatTableDataSource<option>([]);
+  __selectOPT = new MatTableDataSource<option>([]);
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(  private __utility: UtiliService,private __dbIntr: DbIntrService,private route :ActivatedRoute) { }
+  constructor(  private __utility: UtiliService,private __dbIntr: DbIntrService,private route :ActivatedRoute,
+    private __dialog: MatDialog,
+    private overlay: Overlay) { }
   ngOnInit(): void {
     this.getOptionMaster();
   }
@@ -32,17 +44,89 @@ export class OptionComponent implements OnInit {
     }
   }
   populateDT(__items: option) {
-    this.__utility.navigatewithqueryparams('/main/master/optionModify',{queryParams:{id: btoa(__items.id.toString())}})
+    // this.__utility.navigatewithqueryparams('/main/master/optionModify',{queryParams:{id: btoa(__items.id.toString())}})
+    this.openDialog(__items,__items.id);
   }
 
-  private getOptionMaster(__params: string | null = null) {
-    this.__dbIntr.api_call(0, '/option', __params).pipe(map((x: responseDT) => x.data)).subscribe((res: option[]) => {
-      this.setPaginator(res);
+  private getOptionMaster(__params: string | null = null,__paginate: string | null ="10") {
+    this.__dbIntr.api_call(0, '/option', "paginate="+__paginate).pipe(map((x: responseDT) => x.data)).subscribe((res: any) => {
+      console.log(res);
+      
+      this.setPaginator(res.data);
+      this.__paginate =res.links;
     })
   }
   private setPaginator(__res) {
-    this.__selectAMC = new MatTableDataSource(__res);
-    this.__selectAMC.paginator = this.paginator;
+    this.__selectOPT = new MatTableDataSource(__res);
+    this.__selectOPT.paginator = this.paginator;
   }
+  openDialog(__opt: option | null = null , __optId: number){
+    console.log(__opt);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = "40%";
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data ={
+      flag:'O',
+      id:__optId,
+      items:__opt,
+      title:  __optId == 0 ? 'Add Option' : 'Update Option',
+      right:global.randomIntFromInterval(1,60)
+    }
+    dialogConfig.id = __optId > 0  ? __optId.toString() : "0";
+    try{
+      const dialogref = this.__dialog.open(OptionModificationComponent, dialogConfig);
+      dialogref.afterClosed().subscribe(dt => {
+        if (dt) {
+          if (dt?.id > 0) {
+            this.updateRow(dt.data);
+          }
+          else {
+            this.__selectOPT.data.unshift(dt.data);
+            this.__selectOPT._updateChangeSubscription();
+          }
+        }
+      });
+    }
+    catch(ex){
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.updateSize('40%')
+      this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:"O"})
+    }
+  
+  }
+  updateRow(row_obj:option){
+    console.log(row_obj);
+    
+    this.__selectOPT.data = this.__selectOPT.data.filter((value: option, key) => {
+      if (value.id == row_obj.id) {
+       value.id = row_obj.id,
+       value.opt_name = row_obj.opt_name
+      }
+      return true;
+    });
 
+  }
+  navigate(__menu){
+    switch(__menu.flag){
+      case 'M' :this.openDialog(null,0); break;
+      case 'U' :this.__utility.navigate(__menu.url); break;
+       default:break;
+    }
+  }
+  getval(__paginate){
+    this.__pageNumber.setValue(__paginate);
+     this.getOptionMaster(__paginate);
+ }
+ getPaginate(__paginate){
+  if(__paginate.url){
+   this.__dbIntr.getpaginationData(__paginate.url + ('&paginate='+this.__pageNumber.value)).pipe(map((x: any) => x.data)).subscribe((res: any) => {
+     this.setPaginator(res.data);
+     this.__paginate = res.links;
+   })
+  }
+}
 }

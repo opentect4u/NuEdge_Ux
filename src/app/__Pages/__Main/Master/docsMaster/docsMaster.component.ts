@@ -1,5 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,6 +17,8 @@ import { DocsModificationComponent } from './docsModification/docsModification.c
   styleUrls: ['./docsMaster.component.css']
 })
 export class DocsMasterComponent implements OnInit {
+  __pageNumber= new FormControl(10);
+  __paginate:any=[];
   __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "/main/master/docTypeModify","icon":"","id":48,"flag":"M"},
   {"parent_id": 4,"menu_name": "Upload CSV","has_submenu": "N","url": "main/master/uploadDocTypeCsv","icon":"","id":49,"flag":"U"}
  ]
@@ -37,25 +40,25 @@ export class DocsMasterComponent implements OnInit {
   }
   populateDT(__items: docType) {
     // this.__utility.navigatewithqueryparams('/main/master/docTypeModify', {queryParams:{id:btoa(__items.id.toString())}})
-     console.log(__items);
      this.openDialog(__items.id,__items.doc_type);
      
   }
   private openDialog(id: number, doc_type: string | null = null) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '40%';
-    dialogConfig.id ="0";
+    dialogConfig.id =id > 0  ? id.toString() : "0";
     dialogConfig.data = {
       id: id,
       title: id == 0 ? 'Add Document Type' : 'Update Document Type',
       doc_type: doc_type,
+      flag:"D"
     };
     dialogConfig.hasBackdrop = false;
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
-
+    try{
     const dialogref = this.__dialog.open(DocsModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
       if (dt) {
@@ -67,10 +70,17 @@ export class DocsMasterComponent implements OnInit {
         }
       }
     });
+    }
+    catch(ex){
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.updateSize("40%");
+      this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:"D"})
+    }
   }
-  private getDocumentmaster() {
-    this.__dbIntr.api_call(0, '/documenttype', null).pipe(map((x: responseDT) => x.data)).subscribe((res: docType[]) => {
-      this.setPaginator(res);
+  private getDocumentmaster(__paginate: string | null = "10") {
+    this.__dbIntr.api_call(0, '/documenttype', "paginate="+__paginate).pipe(map((x: responseDT) => x.data)).subscribe((res: any) => {
+      this.setPaginator(res.data);
+      this.__paginate = res.links;
     })
   }
   private updateRow(row_obj: docType) {
@@ -96,5 +106,17 @@ export class DocsMasterComponent implements OnInit {
       default: break;
 
      }
+}
+getval(__paginate){
+  this.__pageNumber.setValue(__paginate);
+   this.getDocumentmaster(__paginate);
+}
+getPaginate(__paginate){
+if(__paginate.url){
+ this.__dbIntr.getpaginationData(__paginate.url + ('&paginate='+this.__pageNumber.value)).pipe(map((x: any) => x.data)).subscribe((res: any) => {
+   this.setPaginator(res.data);
+   this.__paginate = res.links;
+ })
+}
 }
 }

@@ -220,5 +220,4 @@ export class UploadCsvComponent implements OnInit {
       ]);
     this.__uploadRnt.get('rntFile').updateValueAndValidity();
   }
-
 }
