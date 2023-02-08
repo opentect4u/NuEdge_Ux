@@ -48,6 +48,16 @@ const routes: Routes = [
         loadChildren: () => import('../__Main/Operations/RcvFrm/RcvFrm.module').then(m => m.RcvFrmModule),
         data: { id: 19, title: "NuEdge - Operation Recieve Form", pageTitle: "Recieve Form" }
       },
+      {
+        path:'rcvFormmodification',
+        loadChildren:()=> import('../__Main/Operations/RcvFrm/rcvFormModification/rcvFormModification.module').then(m => m.RcvFormModificationModule),
+        data:{id:52,title:"NuEdge - Operation Form Recievable", pageTitle:"Recievable Form"}
+      },
+      {
+        path:'rcvDashboard',
+        loadChildren:()=> import('../__Main/Operations/RcvFrm/rcvDashboard/rcvDashboard.module').then(m => m.RcvDashboardModule),
+        data:{id:53,title:"NuEdge - Operation Form Recievable Dashboard", pageTitle:"Recievable Form dashboard"}
+      },
     //  {
     //     path: 'mftrax',
     //     loadChildren: () => import('./Operations/Mutual_Fund/mfTrax.module').then(m => m.MfTraxModule),

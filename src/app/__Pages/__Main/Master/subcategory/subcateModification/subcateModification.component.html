@@ -22,7 +22,7 @@
   </div>
 
 <mat-dialog-content>
-  <form  [formGroup]="__subcatForm" (ngSubmit)="submit()" id="__subcatForm" autocomplete="off" ngNativeValidate>
+  <form  [formGroup]="__subcatForm" (ngSubmit)="submit()" id="__subcatForm_{{data.id}}" autocomplete="off" ngNativeValidate>
     <div class="row">
       <div class="col-sm-12 my-3">
         <label for="catName">Category <span class="text-danger">*</span></label>
@@ -45,7 +45,7 @@
 </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-  <button class="btn addBtn"   form="__subcatForm" [disabled]="this.__subcatForm.invalid">Submit</button>
+  <button class="btn addBtn"   [attr.form]="'__subcatForm_'+data.id" [disabled]="this.__subcatForm.invalid">Submit</button>
 </mat-dialog-actions>
 <br clear="all">
 </div>

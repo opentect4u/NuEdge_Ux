@@ -6,47 +6,41 @@
 </div>
 <mat-dialog-content>
   <form [formGroup]="__rcvForm" (ngSubmit)="recieveForm()" id="__rcvForm" ngNativeValidate autocomplete="off">
-    <div class="row my-4">
-      <div class="col-sm-6">
-        <label for="arn_no">Recieved Date Time <span class="text-danger">*</span></label>
-        <input type="text" name="arn_no" id="arn_no" class="form-control" formControlName="rec_datetime"
-          [readonly]="true">
-      </div>
-      <div class="col-sm-6">
-        <label for="arn_no">From Type <span class="text-danger">*</span></label>
-        <input type="text" name="arn_no" id="arn_no" class="form-control" formControlName="arn_no" [readonly]="true">
-      </div>
-    </div>
-    <div class="row my-4">
-      <div class="col-sm-6">
+
+    <div class="row">
+      <div class="col-sm-12 my-3">
         <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
         <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
           <option value=""> Select Buisness Type</option>
           <option *ngFor="let __bu_type of __buisness_type" value="{{__bu_type.id}}">{{__bu_type.bu_type}}</option>
         </select>
-
         <div class="invalid-feedback"
           *ngIf="__rcvForm.get('bu_type').invalid && (__rcvForm.get('bu_type').dirty || __rcvForm.get('bu_type').touched)">
           <span class="invalid-feedback" *ngIf="(__rcvForm.get('bu_type')).errors?.required">*Please provide buisness
             type</span>
         </div>
       </div>
-      <div class="col-sm-6">
-        <label for="euin_to">EUIN To <span class="text-danger">*</span></label>
-        <select name="euin_to" id="euin_to" formControlName="euin_to" class="form-control">
-          <option value=""> Select EUIN To</option>
-          <option value="{{__items.emp_code}}" *ngFor="let __items of __empMaster">{{__items.emp_name}}</option>
-        </select>
+      <div class="col-sm-12 my-3" *ngIf="__rcvForm.get('bu_type').value">
+         <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+          <div>
+            <label for="Euin">EUIN<span class="text-danger">*</span></label>
+            <input type="search" name="euin_no" id="Euin" class="form-control" placeholder="Serach By EUIN Number" formControlname="euin_no">
+            <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+              <div class="serachresult_client" #searchResult>
+                
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="invalid-feedback"
           *ngIf="__rcvForm.get('euin_to').invalid && (__rcvForm.get('euin_to').dirty || __rcvForm.get('euin_to').touched)">
-          <span class="invalid-feedback" *ngIf="(__rcvForm.get('euin_to')).errors?.required">*Please provide EUIN
-            To</span>
+          <span class="invalid-feedback" *ngIf="(__rcvForm.get('euin_to')).errors?.required">*Please provide EUIN number</span>
         </div>
       </div>
     </div>
 
-    <div class="row my-4" *ngIf="__rcvForm.get('bu_type').value == 'B'">
-      <div class="col-sm-6">
+    <div class="row" *ngIf="__rcvForm.get('bu_type').value == 'B'">
+      <div class="col-sm-12 my-3">
         <label for="sub_arn_no">Sub Broker ARN <span class="text-danger">*</span></label>
         <select name="sub_arn_no" id="sub_arn_no" formControlName="sub_arn_no" class="form-control">
           <option value=""> Select Sub Broker ARN</option>
@@ -58,7 +52,7 @@
             broker ARN</span>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-12 my-3">
         <label for="sub_brk_cd">Sub Broker Code <span class="text-danger">*</span></label>
         <select name="sub_brk_cd" id="sub_brk_cd" formControlName="sub_brk_cd" class="form-control">
           <option value=""> Select Sub Broker Code</option>
@@ -73,20 +67,8 @@
       </div>
     </div>
 
-    <div class="row my-4">
-      <div class="col-sm-6">
-        <label for="PrdType">Product Type <span class="text-danger">*</span></label>
-        <select name="prdType" class="form-control" id="PrdType" formControlName="product_id">
-          <option value="">Select Product Type</option>
-          <option *ngFor="let __prd of __productMaster" value="{{__prd.id}}">{{__prd.product_name}}</option>
-        </select>
-        <div class="invalid-feedback"
-          *ngIf="__rcvForm.get('product_id').invalid && (__rcvForm.get('product_id').dirty || __rcvForm.get('product_id').touched)">
-          <span class="invalid-feedback" *ngIf="(__rcvForm.get('product_id')).errors?.required">*Please provide product
-            type</span>
-        </div>
-      </div>
-      <div class="col-sm-6">
+    <div class="row">
+      <div class="col-sm-12 my-3">
         <label for="FrmType">Transaction Type <span class="text-danger">*</span></label>
         <select name="frmType" class="form-control" id="FrmType" formControlName="trans_id">
           <option value="">Select Transaction Type</option>
@@ -100,13 +82,13 @@
         </div>
       </div>
     </div>
-    <div class="row my-4">
-      <div class="col-sm-6">
+    <div class="row">
+      <div class="col-sm-12 my-3">
         <label for="AplNumber">Application Number</label>
         <input type="text" name="aplNumber" id="AplNumber" class="form-control" formControlName="application_no"
           placeholder="Enter Application Number">
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-12 my-3">
         <label for="employee">Form Submitted By <span class="text-danger">*</span></label>
         <select name="euin_from" class="form-control" id="employee" formControlName="euin_from">
           <option value="">Select Employee</option>
@@ -119,8 +101,8 @@
         </div>
       </div>
     </div>
-    <div class="row my-4">
-      <div class="col-sm-6">
+    <div class="row">
+      <div class="col-sm-12 my-3">
         <label for="PanNumber">Pan No <span class="text-danger">*</span></label>
         <input type="text" placeholder="eg. ABCDE1234E" name="panNumber" id="PanNumber" class="form-control"
           formControlName="pan_no" minlength="10" maxlength="10">
@@ -135,7 +117,7 @@
           <span class="invalid-feedback" *ngIf="(__rcvForm.get('pan_no')).hasError('maxlength')"> * Pan number must be 10 characters long</span>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-12 my-3">
         <label for="MblNumber">Mobile Number <span class="text-danger">*</span></label>
         <input type="text" (keypress)="preventNonumeric($event)" name="mblNumber" id="MblNumber" class="form-control"
           placeholder="Enter Mobile Number" formControlName="mobile" maxlength="10" minlength="10">
@@ -152,8 +134,8 @@
         </div>
       </div>
     </div>
-    <div class="row my-4">
-      <div class="col-sm-6">
+    <div class="row">
+      <div class="col-sm-12 my-3">
         <label for="EmlId">Email <span class="text-danger">*</span></label>
         <input type="text" name="emlId" id="EmlId" class="form-control" formControlName="email"
           placeholder="Enter Email">

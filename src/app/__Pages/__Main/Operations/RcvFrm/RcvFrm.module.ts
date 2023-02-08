@@ -9,6 +9,7 @@ import { RcvFormAdditionComponent } from './rcvFormAddition/rcvFormAddition.comp
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedModule } from 'src/app/shared/shared.module';
 const routes:Routes= [{path:'',component:RcvFrmComponent}]
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ const routes:Routes= [{path:'',component:RcvFrmComponent}]
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    SharedModule
   ],
   declarations: [RcvFrmComponent,RcvFormAdditionComponent],
   providers:[DatePipe]

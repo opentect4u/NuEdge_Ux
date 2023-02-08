@@ -1,0 +1,226 @@
+<div class="card my-5">
+  <div class="card_body">
+            <div class="row">
+              <div class="col-sm-7 p-5">
+              <form [formGroup]="__rcvForm" (ngSubmit)="recieveForm()" id="__rcvForm" ngNativeValidate autocomplete="off">
+                <!-- Buisness Type -->
+                <div class="row">
+                  <div class="col-sm-12 my-3">
+                    <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
+                    <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
+                      <option value=""> Select Buisness Type</option>
+                      <option *ngFor="let __bu_type of __buisness_type" value="{{__bu_type.id}}">{{__bu_type.bu_type}}</option>
+                    </select>
+                    <div class="invalid-feedback"
+                      *ngIf="__rcvForm.get('bu_type').invalid && (__rcvForm.get('bu_type').dirty || __rcvForm.get('bu_type').touched)">
+                      <span class="invalid-feedback" *ngIf="(__rcvForm.get('bu_type')).errors?.required">*Please provide buisness
+                        type</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 my-3" *ngIf="__rcvForm.get('bu_type').value == 'B'">
+                  <!-- //ARN -->
+                  <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                    <div>
+                      <label for="subbrkArn">Sub Broker ARN<span class="text-danger">*</span></label>
+                      <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker ARN" formControlName="sub_arn_no">
+                      <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                        <div class="serachresult_client" #subBrkArn>
+                          <ul *ngIf="__subbrkArnMst.length > 0">
+                            <li *ngFor="let items of __subbrkArnMst" (click)="getItems(items,'S')">
+                             {{items.arn_no}} | {{items.bro_name}}
+                            </li>
+                          </ul>
+                          <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                            <h5 class="text-center">
+                              Sorry!! No Sub-Brokers Found
+                            </h5>
+                            <p>If your result match,they will appear here</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="col-sm-12 my-3" *ngIf="__rcvForm.get('bu_type').value == 'B'">
+                    <!-- Sub broker code -->
+                    <label for="subbrkCD">Sub Broker Code<span class="text-danger">*</span></label>
+                    <input type="search" id="subbrkCD" class="form-control" placeholder="Serach By Sub Broker Code" formControlName="sub_brk_cd" readonly>
+                  </div>
+                  <div class="col-sm-12 my-3" *ngIf="__rcvForm.get('bu_type').value != ''">
+                     <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+                      <div>
+                        <label for="Euin">EUIN<span class="text-danger">*</span></label>
+                        <input type="search" id="Euin" class="form-control" placeholder="Serach By EUIN Number" formControlName="euin_no">
+                        <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                          <div class="serachresult_client" #searchResult>
+                            <ul *ngIf="__euinMst.length > 0">
+                              <li *ngFor="let items of __euinMst" (click)="getItems(items,'E')">
+                               {{items.euin_no}} | {{items.emp_name}}
+                              </li>
+                            </ul>
+                            <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                              <h5 class="text-center">
+                                Sorry!! No EUIN Numbers Found
+                              </h5>
+                              <p>If your result match,they will appear here</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="invalid-feedback"
+                      *ngIf="__rcvForm.get('euin_no').invalid && (__rcvForm.get('euin_no').dirty || __rcvForm.get('euin_no').touched)">
+                      <span class="invalid-feedback" *ngIf="(__rcvForm.get('euin_no')).errors?.required">*Please provide EUIN number</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- End -->
+
+                <!-- Client Dtls -->
+                <div class="row">
+                  <div class="col-sm-12 my-3">
+                    <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+                      <div class="searchDiv">
+
+                        <label class="clientCode" for="__clntCd"><p class="m-0">Client Code <span class="text-danger">*</span></p>
+                           <button *ngIf="__isCldtlsEmpty && __rcvForm.get('client_code').value" 
+                           (click)="createClientCode()"  
+                           color="primary" type="button" mat-button [matMenuTriggerFor]="menu">	
+                           <mat-icon>add</mat-icon> Create Client 
+                          </button>
+
+                        </label>
+                        <mat-menu #menu="matMenu">
+                          <button mat-menu-item *ngFor="let clOption of __mcOptionMenu" (click)="navigateTo(clOption)">
+                            <span>{{clOption.name}}</span>
+                          </button>
+                        </mat-menu>
+                        <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="client_code"
+                        placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                        <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
+                          <div class="serachresult_client" #clientCd>
+                            <ul *ngIf="__clientMst.length > 0">
+                              <li *ngFor="let items of __clientMst" (click)="getItems(items,'C')">
+                               {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                              </li>
+                            </ul>
+                            <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                              <h5 class="text-center">
+                                Sorry!! No Results Found
+                              </h5>
+                              <p>If your result match,they will appear here</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 my-3" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
+                    <label for="__clName">Client Name
+                      <button (click)="openDialog('C')" *ngIf="this.__dialogDtForClient"   mat-icon-button type="button"  aria-label="Example icon button with a eye icon" title="View Client Details">
+                        <mat-icon>remove_red_eye</mat-icon>
+                      </button>
+                    </label>
+                        <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true">
+                  </div>
+                </div>
+                <!-- End -->
+                <!-- Transaction Type & Scheme-->
+                <div class="row">
+                  <div class="col-sm-12 my-3">
+                    <label for="FrmType">Transaction Type <span class="text-danger">*</span></label>
+                    <select name="frmType" class="form-control" id="FrmType" formControlName="trans_id">
+                      <option value="">Select Transaction Type</option>
+                      <option *ngFor="let __formType of __transType" value="{{__formType.id}}">{{__formType.trns_name}}</option>
+                    </select>
+                    <div class="invalid-feedback"
+                      *ngIf="__rcvForm.get('trans_id').invalid && (__rcvForm.get('trans_id').dirty || __rcvForm.get('trans_id').touched)">
+                      <span class="invalid-feedback" *ngIf="(__rcvForm.get('trans_id')).errors?.required">*Please provide form
+                        type</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 my-3">
+                    <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforScheme($event)">
+                      <div>
+                        <label for="schemeName">Scheme Name<span class="text-danger">*</span>
+                          <button *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')"  mat-icon-button type="button"  aria-label="Example icon button with a eye icon" title="View Client Details">
+                            <mat-icon>remove_red_eye</mat-icon>
+                          </button>
+                        </label>
+                        <input type="search" id="schemeName" class="form-control" placeholder="Serach By Scheme Name" formControlName="scheme_name">
+                        <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforScheme($event)">
+                          <div class="serachresult_client" #schemeRes>
+                            <ul *ngIf="__schemeMst.length > 0">
+                              <li *ngFor="let items of __schemeMst" (click)="getItems(items,'SC')">
+                               {{items.scheme_name}}
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End -->
+
+                <!-- Receive From & Investment Type & Application Number -->
+                <div class="row">
+                  <div class="col-sm-12 my-3">
+                    <label for="frmrcv">Receive From</label>
+                    <input type="text" name="frmrcv" id="frmrcv" class="form-control" placeholder="Enter Receive From" formControlName="recv_from">
+                    <div class="invalid-feedback"
+                    *ngIf="__rcvForm.get('recv_from').invalid && (__rcvForm.get('recv_from').dirty || __rcvForm.get('recv_from').touched)">
+                    <span class="invalid-feedback" *ngIf="(__rcvForm.get('recv_from')).errors?.required">*Please provide receive from</span>
+                  </div>
+                  </div>
+                  <div class="col-sm-12 my-3">
+                    <label for="inv_type">Investment Type</label>
+                    <select name="inv_type" class="form-control" id="inv_type" formControlName="inv_type">
+                      <option value="">Select Investment Type</option>
+                      <option value="F">Fresh</option>
+                      <option value="A">Additional</option>
+                    </select>
+                    <div class="invalid-feedback"
+                    *ngIf="__rcvForm.get('inv_type').invalid && (__rcvForm.get('inv_type').dirty || __rcvForm.get('inv_type').touched)">
+                    <span class="invalid-feedback" *ngIf="(__rcvForm.get('inv_type')).errors?.required">*Please provide investment type</span>
+                  </div>
+                  </div>
+                  <div class="col-sm-12 my-3">
+                    <label for="application_no">Application Number</label>
+                    <input type="search" 
+                    name="application_no" 
+                    id="application_no" 
+                    class="form-control" 
+                    formControlName="application_no"
+                    placeholder="Enter Application Number">
+                  </div>
+                </div>
+                <!-- End -->
+                <div class="row my-3">
+                  <div class="col-sm-6">
+                    <label for="kyc_stats">KYC Status: </label>
+                    <label class="ml-2">
+                      <input type="radio" value="Y" formControlName="kyc_status">
+                        <span>&nbsp;With KYC</span>
+                    </label>
+                    <label class="ml-2">
+                      <input type="radio" value="N" formControlName="kyc_status">
+                        <span>&nbsp;Without KYC</span>
+                    </label>
+                  </div>
+                  <div class="col-sm-6">
+
+                  </div>
+                </div>
+                <div class="row ">
+                  <div class="col-sm-12 my-1 ">
+                    <button class="btn addBtn  ml-2" form="__rcvForm" [disabled]="this.__rcvForm.invalid">
+                     Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+              </div>
+            </div>
+  </div>
+</div>

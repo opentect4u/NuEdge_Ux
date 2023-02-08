@@ -21,7 +21,7 @@
   
   </div>
   <mat-dialog-content>
-    <form  [formGroup]="__bankForm" (ngSubmit)="submit()" id="__bnkForm"  autocomplete="off" ngNativeValidate>
+    <form  [formGroup]="__bankForm" (ngSubmit)="submit()" id="__bnkForm_{{data.id}}"  autocomplete="off" ngNativeValidate>
       <div class="row">
         <div class="col-sm-12 my-3">
           <label for="ifsCode">IFSC <span class="text-danger">*</span></label>
@@ -64,7 +64,7 @@
   </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-    <button class="btn addBtn"  form="__bnkForm" [disabled]="this.__bankForm.invalid">Submit</button>
+    <button class="btn addBtn"  [attr.form]="'__bnkForm_'+data.id" [disabled]="this.__bankForm.invalid">Submit</button>
   </mat-dialog-actions>
   <br clear="all">
 </div>

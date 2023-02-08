@@ -1,8 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { product } from 'src/app/__Model/__productMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -15,6 +15,7 @@ import buisnessType from '../../../../../../assets/json/buisnessType.json';
   styleUrls: ['./rcvFormAddition.component.css']
 })
 export class RcvFormAdditionComponent implements OnInit {
+  @ViewChild('searchResult') __searchRlt: ElementRef;
   __sub_arn_no: any=[];
   __sub_arn_code: any=[];
   __buisness_type: any = buisnessType;
@@ -26,10 +27,7 @@ export class RcvFormAdditionComponent implements OnInit {
     sub_brk_cd: new FormControl(''),
     sub_arn_no: new FormControl(''),
     bu_type: new FormControl('', [Validators.required]),
-    euin_to: new FormControl('', [Validators.required]),
-    arn_no: new FormControl(this.data.data.arn_no, [Validators.required]),
-    rec_datetime: new FormControl(this.__datePipe.transform(new Date(), 'dd/MM/YYYY h:mma'), [Validators.required]),
-    product_id: new FormControl('', [Validators.required]),
+    euin_no: new FormControl('', [Validators.required]),
     application_no: new FormControl(''),
     trans_id: new FormControl('', [Validators.required]),
     pan_no: new FormControl('', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'),Validators.minLength(10),Validators.maxLength(10)]),
@@ -48,38 +46,54 @@ export class RcvFormAdditionComponent implements OnInit {
   ) { }
 
   ngOnInit() { 
-    this.getProductMaster(); 
-    this.getEmployeeMaster();
-    this.getsubBrokerARNmaster();
+    // this.getProductMaster(); 
+    // this.getEmployeeMaster();
+    // this.getsubBrokerARNmaster();
   }
   ngAfterViewInit() {
 
+
+    this.__rcvForm.controls['euin_no'].valueChanges.
+    pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(dt => dt?.length > 1 ?
+        this.__dbIntr.searchItems('/employee', dt)
+        : []),
+    ).subscribe({
+      next: (value) => {
+        console.log(value);
+      },
+      complete: () => console.log(''),
+      error: (err) => console.log()
+    })
+
     /******Event occured when product  is changed */
-    this.__rcvForm.controls["product_id"].valueChanges.subscribe(res => {
-      this.getformTypeByProductId(res);
-    });
+    // this.__rcvForm.controls["product_id"].valueChanges.subscribe(res => {
+    //   this.getformTypeByProductId(res);
+    // });
     /******END */
 
 
     /******Event occured when sub broker arn no  is changed */
-    this.__rcvForm.controls["sub_arn_no"].valueChanges.subscribe(res => {
-      this.getSubBrokersbyArnNo(res);
-    })
+    // this.__rcvForm.controls["sub_arn_no"].valueChanges.subscribe(res => {
+    //   this.getSubBrokersbyArnNo(res);
+    // })
     /******END */
 
     /******Event occured when buisness type is changed */
-    this.__rcvForm.controls["bu_type"].valueChanges.subscribe(res => {
-      if(res == 'B'){
-        this.__rcvForm.get('sub_brk_cd').setValidators([Validators.required]);
-        this.__rcvForm.get('sub_arn_no').setValidators([Validators.required]);
-      }
-      else{
-        this.__rcvForm.get('sub_brk_cd').clearValidators();
-        this.__rcvForm.get('sub_arn_no').clearValidators();
-      }
-      this.__rcvForm.get('sub_brk_cd').updateValueAndValidity();
-      this.__rcvForm.get('sub_arn_no').updateValueAndValidity();
-    })
+    // this.__rcvForm.controls["bu_type"].valueChanges.subscribe(res => {
+    //   if(res == 'B'){
+    //     this.__rcvForm.get('sub_brk_cd').setValidators([Validators.required]);
+    //     this.__rcvForm.get('sub_arn_no').setValidators([Validators.required]);
+    //   }
+    //   else{
+    //     this.__rcvForm.get('sub_brk_cd').clearValidators();
+    //     this.__rcvForm.get('sub_arn_no').clearValidators();
+    //   }
+    //   this.__rcvForm.get('sub_brk_cd').updateValueAndValidity();
+    //   this.__rcvForm.get('sub_arn_no').updateValueAndValidity();
+    // })
     /**END */
   }
 
@@ -108,16 +122,13 @@ export class RcvFormAdditionComponent implements OnInit {
     __rcv.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd)
     __rcv.append("sub_arn_no",this.__rcvForm.value.sub_arn_no)
     __rcv.append("bu_type",this.__rcvForm.value.bu_type)
-    __rcv.append("euin_to",this.__rcvForm.value.euin_to)
-    __rcv.append("arn_no",this.__rcvForm.value.arn_no)
+    __rcv.append("euin_no",this.__rcvForm.value.euin_no)
     __rcv.append("rec_datetime",this.__rcvForm.value.rec_datetime)
-    __rcv.append("product_id",this.__rcvForm.value.product_id)
     __rcv.append("application_no",this.__rcvForm.value.application_no)
     __rcv.append("trans_id",this.__rcvForm.value.trans_id)
     __rcv.append("pan_no",this.__rcvForm.value.pan_no)
     __rcv.append("mobile",this.__rcvForm.value.mobile)
     __rcv.append("email",this.__rcvForm.value.email)
-    __rcv.append("euin_from",this.__rcvForm.value.euin_from)
    __rcv.append("id",this.__rcvForm.value.id)
 
 
@@ -143,5 +154,8 @@ export class RcvFormAdditionComponent implements OnInit {
    }
    preventNonumeric(__ev){
     dates.numberOnly(__ev);
+  }
+  outsideClick(__ev){
+
   }
 }

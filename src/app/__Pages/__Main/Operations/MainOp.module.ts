@@ -12,7 +12,7 @@ import { RouterModule, Routes } from '@angular/router';
         data: {parentId:5,id:1, title: "NuEdge - Operation Dashboard", pageTitle: "Operation Dashboard" }
       },
        {
-        path:'mfdashboard',
+        path:'mfdashboard/:id',
         loadChildren:()=> import('./MFDashboard/MFDashboard.module').then(m => m.MFDashboardModule),
         data:{parentId:5,id:2,title: "NuEdge - Mutual Fund Dashboard", pageTitle: "", has_member: 'Y'}
       },

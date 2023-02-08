@@ -1,0 +1,58 @@
+<div mat-dialog-title class="dialog-title" [title]="data.title">
+  <h2>{{data.title}}</h2>
+  <div class="btnIcon">
+    <button mat-icon-button [mat-dialog-close]="">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="__frmDtls">
+    <div class="row" *ngIf="data.flag == 'C'">
+      <div class="col-sm-12 my-3">
+        <label>Client Code</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="client_code">
+      </div>
+      <div class="col-sm-12 my-3">
+        <label>Client Name</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="client_name">
+      </div>
+      <div class="col-sm-12 my-3">
+        <label>Date Of Birth</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="dob">
+      </div>
+      <div class="col-sm-12 my-3">
+        <label>Pan Number</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="pan">
+      </div>
+      <div class="col-sm-12 my-3">
+        <label>Email</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="email">
+      </div>
+      <div class="col-sm-12 my-3">
+        <label>Mobile</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="mobile">
+      </div>
+    </div>
+    <div class="row" *ngIf="data.flag == 'S'">
+      <div class="col-sm-12 my-3">
+        <label>AMC</label>
+         <input type="text" class="form-control" formControlName="amc" [attr.disabled]="true">
+      </div>
+      <div class="col-sm-12 my-3">
+        <label>Category</label>
+         <input type="text" class="form-control" formControlName="cat" [attr.disabled]="true">
+      </div>
+      <div class="col-sm-12 my-3">
+        <label>Sub Category</label>
+         <input type="text" class="form-control" formControlName="sub_cat" [attr.disabled]="true">
+      </div>
+      <div class="col-sm-12 my-3">
+        <label>RNT</label>
+         <input type="text" class="form-control" formControlName="rnt" [attr.disabled]="true">
+      </div>
+
+    </div>
+  </form>
+</mat-dialog-content>

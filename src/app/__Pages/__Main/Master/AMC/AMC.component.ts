@@ -33,7 +33,7 @@ export class AMCComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private route :ActivatedRoute) { }
   ngOnInit(): void {
-    this.getAMCMaster(this.route.snapshot.queryParamMap.get('id') == null ? this.route.snapshot.queryParamMap.get('id') : ('&rnt_id='+atob(this.route.snapshot.queryParamMap.get('id'))));
+    this.getAMCMaster(this.route.snapshot.queryParamMap.get('id') == null ? '' : ('&rnt_id='+atob(this.route.snapshot.queryParamMap.get('id'))));
   }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {

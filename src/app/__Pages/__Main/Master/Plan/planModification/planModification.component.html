@@ -22,7 +22,7 @@
   </div>
 
 <mat-dialog-content>
-  <form  [formGroup]="__plnForm" (ngSubmit)="submit()" autocomplete="off" id="__plnForm" ngNativeValidate>
+  <form  [formGroup]="__plnForm" (ngSubmit)="submit()" autocomplete="off" id="__plnForm_{{data.id}}" ngNativeValidate>
     <div class="row">
       <div class="col-sm-12 my-3">
         <label for="pln_name">Plan <span class="text-danger">*</span></label>
@@ -35,7 +35,7 @@
 </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-  <button class="btn addBtn"   form="__plnForm" [disabled]="this.__plnForm.invalid">Submit</button>
+  <button class="btn addBtn"   [attr.form]="'__plnForm_'+data.id" [disabled]="this.__plnForm.invalid">Submit</button>
 </mat-dialog-actions>
 <br clear="all">
 </div>

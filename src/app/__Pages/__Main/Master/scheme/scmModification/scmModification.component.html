@@ -22,7 +22,7 @@
   </div>
 
 <mat-dialog-content>
-  <form  [formGroup]="__scmForm" (ngSubmit)="submit()" id="__scmForm"  autocomplete="off" ngNativeValidate>
+  <form  [formGroup]="__scmForm" (ngSubmit)="submit()" id="__scmForm_{{data.id}}"  autocomplete="off" ngNativeValidate>
     <div class="row">
       <div class="col-sm-12 my-4">
         <label for="prdName">Product <span class="text-danger">*</span></label>
@@ -133,7 +133,7 @@
 </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-  <button class="btn addBtn"   form="__scmForm" [disabled]="this.__scmForm.invalid">Submit</button>
+  <button class="btn addBtn"   [attr.form]="'__scmForm_'+data.id" [disabled]="this.__scmForm.invalid">Submit</button>
 </mat-dialog-actions>
 <br clear="all">
 </div>

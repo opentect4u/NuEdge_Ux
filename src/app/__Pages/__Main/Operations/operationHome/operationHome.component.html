@@ -1,6 +1,6 @@
 
 <div class="row flexSec">
-    <div class="col-sm-2" *ngFor="let items of __menu" [routerLink]="items.url">
+    <div class="col-sm-2" *ngFor="let items of __menu" (click)="navigate(items)">
       <div class="smallBox">
        <div class="smallBoxIconSec">
         <div class="iconCol_12 iconSec">
