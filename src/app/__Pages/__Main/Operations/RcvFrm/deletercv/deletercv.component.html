@@ -1,0 +1,16 @@
+<div mat-dialog-title class="dialog-title" [title]="data.title">
+  <h2>Alert!!</h2>
+  <div class="btnIcon">
+    <button mat-icon-button [mat-dialog-close]="">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+<mat-dialog-content>
+  <h4 style="padding: 25px;">Are you sure you want to delete?</h4>
+</mat-dialog-content>
+  
+<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <button class="btn addBtn  ml-2" (click)="delete()"> Delete</button>
+</mat-dialog-actions>
+<br clear="all">

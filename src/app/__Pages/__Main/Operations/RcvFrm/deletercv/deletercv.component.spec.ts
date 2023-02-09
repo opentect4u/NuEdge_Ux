@@ -2,23 +2,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { createClientComponent } from './createClient\'.component';
 
-// import { ClModifcationComponent } from './clModifcation.component';
+import { DeletercvComponent } from './deletercv.component';
 
-describe('ClModifcationComponent', () => {
-  let component: createClientComponent;
-  let fixture: ComponentFixture<createClientComponent>;
+describe('DeletercvComponent', () => {
+  let component: DeletercvComponent;
+  let fixture: ComponentFixture<DeletercvComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ createClientComponent ]
+      declarations: [ DeletercvComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(createClientComponent);
+    fixture = TestBed.createComponent(DeletercvComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

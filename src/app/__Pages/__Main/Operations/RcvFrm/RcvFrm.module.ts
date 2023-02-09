@@ -8,8 +8,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RcvFormAdditionComponent } from './rcvFormAddition/rcvFormAddition.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { DeletercvComponent } from './deletercv/deletercv.component';
 const routes:Routes= [{path:'',component:RcvFrmComponent}]
 @NgModule({
   imports: [
@@ -20,10 +21,10 @@ const routes:Routes= [{path:'',component:RcvFrmComponent}]
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
-    MatPaginatorModule,
-    SharedModule
+    SharedModule,
+    MatButtonToggleModule
   ],
-  declarations: [RcvFrmComponent,RcvFormAdditionComponent],
+  declarations: [RcvFrmComponent,RcvFormAdditionComponent,DeletercvComponent],
   providers:[DatePipe]
 })
 export class RcvFrmModule {

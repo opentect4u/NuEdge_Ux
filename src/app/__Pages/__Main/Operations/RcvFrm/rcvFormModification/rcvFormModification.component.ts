@@ -23,14 +23,15 @@ export class RcvFormModificationComponent implements OnInit {
   @ViewChild('clientCd') __clientCode: ElementRef;
   @ViewChild('schemeRes') __scheme: ElementRef;
     
+  __trans_types: any=[]
 
   __isCldtlsEmpty: boolean = false;
    __dialogDtForClient: any;
    __dialogDtForScheme: any;
    __mcOptionMenu: any=[
-    {"flag":"M","name":"Minor"},
-    {"flag":"P","name":"Pan Holder"},
-    {"flag":"N","name":"Non Pan Holder"}
+    {"flag":"M","name":"Minor","icon":"person_pin"},
+    {"flag":"P","name":"Pan Holder","icon":"credit_card"},
+    {"flag":"N","name":"Non Pan Holder","icon":"credit_card_off"}
    ]
   __transType: any=[];
   __clientMst: client[] =[];
@@ -46,13 +47,13 @@ export class RcvFormModificationComponent implements OnInit {
     application_no: new FormControl(''),
     trans_id: new FormControl('', [Validators.required]),
     id: new FormControl(''),
-    client_code: new FormControl(''),
-    client_id: new FormControl(''),
+    client_code: new FormControl('',[Validators.required]),
+    client_id: new FormControl('',[Validators.required]),
     client_name: new FormControl(''),
-    scheme_id: new FormControl(''),
-    scheme_name: new FormControl(''),
-    recv_from: new FormControl(''),
-    inv_type: new FormControl(''),
+    scheme_id: new FormControl('',[Validators.required]),
+    scheme_name: new FormControl('',[Validators.required]),
+    recv_from: new FormControl('',[Validators.required]),
+    inv_type: new FormControl('',[Validators.required]),
     kyc_status: new FormControl('')
   });
   constructor(
@@ -61,7 +62,20 @@ export class RcvFormModificationComponent implements OnInit {
     private __dbIntr: DbIntrService,private __utility: UtiliService,private __rtDt: ActivatedRoute) { }
 
   ngOnInit() {
+    console.log(atob(this.__rtDt.snapshot.queryParamMap.get('type_id')));
+    this.getTransactionTypeDtls();
     this.getTransactionType();
+    console.log(this.__rtDt.snapshot.queryParamMap.get('temp_tin_no'));
+    if(this.__rtDt.snapshot.queryParamMap.get('temp_tin_no')!= null){
+      this.setRcvFormDtls();
+    }
+  }
+  getTransactionTypeDtls(){
+    this.__dbIntr.api_call(0,'/formreceivedshow','product_id='+atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) + '&trans_type_id='+atob(this.__rtDt.snapshot.queryParamMap.get('type_id'))).pipe(pluck("data")).subscribe(res => {
+        console.log(res);
+        this.__trans_types = res;
+    
+    })
   }
   getTransactionType(){
     this.__dbIntr.api_call(0,'/showTrans','trans_type_id='+atob(this.__rtDt.snapshot.queryParamMap.get('type_id'))).pipe(pluck("data")).subscribe((res:any) => {
@@ -69,7 +83,33 @@ export class RcvFormModificationComponent implements OnInit {
       this.__transType = res;
     })
   }
+  setRcvFormDtls(){
+    this.__dbIntr.api_call(0,'/formreceived','temp_tin_no='+atob(this.__rtDt.snapshot.queryParamMap.get('temp_tin_no'))).pipe(pluck("data")).subscribe(res =>{
+      console.log(res);
+      this.__rcvForm.patchValue({
+          sub_brk_cd:res[0].sub_brk_cd ,
+          bu_type:res[0].bu_type ,
+          application_no:res[0].application_no ,
+          trans_id:res[0].trans_id ,
+          id:res[0].id ,
+          client_id:res[0].client_id ,
+          client_name:res[0].client_name,
+          scheme_id:res[0].scheme_id ,
+          recv_from:res[0].recv_from ,
+          inv_type:res[0].inv_type ,
+          kyc_status:res[0].kyc_status,
+          product_id:res[0].kyc_status
+      })
+      this.__rcvForm.controls['client_code'].reset(res[0].client_code,{ onlySelf: true, emitEvent: false });
+      this.__rcvForm.controls['euin_no'].reset(res[0].euin_no,{ onlySelf: true, emitEvent: false });
+      this.__rcvForm.controls['scheme_name'].reset(res[0].scheme_name,{ onlySelf: true, emitEvent: false });
+      this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_arn_no,{ onlySelf: true, emitEvent: false });
+      this.__dialogDtForClient = {id:res[0].client_id,client_type:res[0].client_type,client_name:res[0].client_name};
+      this.__dialogDtForScheme = {id:res[0].scheme_id,scheme_name:res[0].scheme_name};
+      this.__clientMst.push(this.__dialogDtForClient);
 
+    })
+  }
   outsideClick(__ev){
     if (__ev) {
       this.searchResultVisibility('none');
@@ -126,10 +166,13 @@ export class RcvFormModificationComponent implements OnInit {
       map((x: any) => x.data)
     ).subscribe({
       next: (value) => {
-        console.log(value.data);
         this.__clientMst = value.data;
         this.__isCldtlsEmpty = value.data.length > 0 ? false : true;
         this.searchResultVisibilityForClient('block');
+        this.__rcvForm.patchValue({
+          client_id:'',
+          client_name:''
+        })
       },
       complete: () => console.log(''),
       error: (err) => console.log()
@@ -172,15 +215,14 @@ export class RcvFormModificationComponent implements OnInit {
   searchResultVisibilityForScheme(display_mode){
     this.__scheme.nativeElement.style.display= display_mode;
    }
-  search
   getItems(__euinDtls,__type){
     console.log(__euinDtls);
     
     switch(__type){
-      case 'E':    this.__rcvForm.controls['euin_no'].reset(__euinDtls.euin_no,{ onlySelf: true, emitEvent: false });
+      case 'E':    this.__rcvForm.controls['euin_no'].reset(__euinDtls.euin_no+' - '+__euinDtls.emp_name,{ onlySelf: true, emitEvent: false });
                    this.searchResultVisibility('none');
                    break;
-      case 'S':     this.__rcvForm.controls['sub_arn_no'].reset(__euinDtls.arn_no,{ onlySelf: true, emitEvent: false });
+      case 'S':     this.__rcvForm.controls['sub_arn_no'].reset(__euinDtls.arn_no+' - '+__euinDtls.bro_name,{ onlySelf: true, emitEvent: false });
                     this.__rcvForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
                     this.searchResultVisibilityForSubBrkArn('none');
                     break;
@@ -225,30 +267,39 @@ export class RcvFormModificationComponent implements OnInit {
     const __rcvForm = new FormData();
     __rcvForm.append("bu_type",this.__rcvForm.value.bu_type);
     __rcvForm.append("euin_no",this.__rcvForm.value.euin_no);
-    __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no);
-    __rcvForm.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd);
+    __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no : '');
+    __rcvForm.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd ? this.__rcvForm.value.sub_brk_cd : '');
     __rcvForm.append("client_id",this.__rcvForm.value.client_id);
     __rcvForm.append("product_id",atob(this.__rtDt.snapshot.queryParamMap.get('product_id')));
     __rcvForm.append("trans_id",this.__rcvForm.value.trans_id);
     __rcvForm.append("scheme_id",this.__rcvForm.value.scheme_id);
     __rcvForm.append("recv_from",this.__rcvForm.value.recv_from);
     __rcvForm.append("inv_type",this.__rcvForm.value.inv_type);
-    __rcvForm.append("application_no",this.__rcvForm.value.application_no);
+    __rcvForm.append("application_no",this.__rcvForm.value.application_no ? this.__rcvForm.value.application_no : '');
     __rcvForm.append("kyc_status",this.__rcvForm.value.kyc_status);
    __rcvForm.append("id",this.__rcvForm.value.id)
-    this.__dbIntr.api_call(1,'/formreceivedAdd',__rcvForm).subscribe((res: any) =>{
-      this.__utility.navigatewithqueryparams('/main/rcvForm',{queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}})
+   __rcvForm.append("temp_tin_no",this.__rtDt.snapshot.queryParamMap.get('temp_tin_no') ? atob(this.__rtDt.snapshot.queryParamMap.get('temp_tin_no')) : this.__rtDt.snapshot.queryParamMap.get('temp_tin_no'));
+
+    this.__dbIntr.api_call(1,this.__rtDt.snapshot.queryParamMap.get('temp_tin_no') ? '/formreceivedEdit' : '/formreceivedAdd',__rcvForm).subscribe((res: any) =>{
+      if(this.__rtDt.snapshot.queryParamMap.get('temp_tin_no')){
+        this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN number ' + res.data.temp_tin_no + ' has been updated successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
+      }
+      else{
       this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN number ' + res.data.temp_tin_no + ' has been received successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
-      
+      }
+      this.__rcvForm.reset();
     })
   }
   openDialog(__type){
+    console.log(this.__dialogDtForClient);
+    
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
-    dialogConfig.disableClose = true;
-    dialogConfig.hasBackdrop = false;
-    dialogConfig.width = "50%";
+    // dialogConfig.disableClose = true;
+    // dialogConfig.hasBackdrop = false;
+    dialogConfig.width =  __type == 'C'  ? "100%" : "50%";
+    if(__type == 'C'){dialogConfig.panelClass="fullscreen-dialog";}
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data ={
       flag:__type,
@@ -278,8 +329,9 @@ export class RcvFormModificationComponent implements OnInit {
     dialogConfig.closeOnNavigation = true;
     // dialogConfig.disableClose = true;
     // dialogConfig.hasBackdrop = false;
-    dialogConfig.width = "80%";
+    dialogConfig.width = "100%";
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.panelClass="fullscreen-dialog"
     dialogConfig.data ={
       flag:'CL',
       id:0,
@@ -289,8 +341,21 @@ export class RcvFormModificationComponent implements OnInit {
     }
     try{
       const dialogref = this.__dialog.open(createClientComponent, dialogConfig);
+      dialogref.afterClosed().subscribe(dt => {
+        console.log(dt);
+               if(dt){
+                 this.getItems(dt.data,'C')
+               }
+      })
     }
     catch(ex){
     }
+  }
+  navigateTODashboard(__type_id){
+    this.__utility.navigatewithqueryparams('main/rcvForm',{queryParams:{
+      product_id: this.__rtDt.snapshot.queryParamMap.get('product_id'),
+      type_id: this.__rtDt.snapshot.queryParamMap.get('type_id'),
+       trans_id: btoa(__type_id)
+    }})
   }
 }
