@@ -103,7 +103,7 @@ export class SearchComponent implements OnInit {
             : this.__pageTitle.id == 7 ? __items.bank_name
               : this.__pageTitle.id == 8 ? __items.scheme_name
                 : this.__pageTitle.id == 50 ? __items.doc_type
-                  : this.__pageTitle.id == 19 ? __items.temp_tin_id + '|' + __items.product_name
+                  : this.__pageTitle.id == 19 ? __items.temp_tin_no
                     : (this.__pageTitle?.id == 2 || this.__pageTitle?.id == 12) ?
                      ( __items.client_code ? __items.client_code + '|' : '') + __items.client_name + '|' + (__items.pan ? __items.pan + '|' : '') + __items.mobile 
                       : this.__pageTitle?.trans_type_id ? __items.tin_no + ' | ' + this.__datePipe.transform(__items.entry_date,'dd/MM-YYYY') 

@@ -6,6 +6,7 @@ import { mutualFund } from 'src/app/__Model/__MutualFund';
 
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 import { Cmn_dialogComponent } from '../common/cmn_dialog/cmn_dialog.component';
 
 @Component({
@@ -15,7 +16,7 @@ import { Cmn_dialogComponent } from '../common/cmn_dialog/cmn_dialog.component';
 })
 export class FinancialComponent implements OnInit {
   __financMst = new MatTableDataSource<mutualFund>([]);
-  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService) {
+  constructor(private __dialog: MatDialog, private __dbIntr: DbIntrService,private __utility: UtiliService) {
     this.getFianancMaster();
   }
 
@@ -78,5 +79,9 @@ export class FinancialComponent implements OnInit {
 
   getSelectedItemForUpdate(__ev: mutualFund) {
     this.openDialog(__ev.tin_no, __ev);
+  }
+
+  navigate(){
+   this.__utility.navigatewithqueryparams('/main/operations/mfTraxEntry/prodTypeModification',{queryParams:{product_id:btoa("1"),product_type:btoa("1")}});
   }
 }

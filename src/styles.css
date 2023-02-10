@@ -98,3 +98,68 @@ tr.mat-header-row {
     height: 100%!important;
     width: 100%!important;
 }
+
+
+.clientCode{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.separator{
+    /* padding: 24px; */
+    border: 1px solid #c3c3c3;
+    border-radius: 12px;
+    box-shadow: 0px 1px 8px #999999;
+    height: 500px;
+}
+.separator .separator_header {
+    border-bottom: 1px solid #c3c3c3;
+    height: 50px;
+    border-radius: 12px 12px 0px 0px;
+    display: flex;
+    padding: 0px 10px;
+    align-items: center;
+    background: #3bb8b3;
+    color: #fff;
+}
+.separator .separator_header h3 {
+    font-size: 17px;
+    font-weight: 500;
+}
+.separator .separator_body{
+   height: calc(500px - 75px);
+   padding: 25px;
+   overflow: auto;
+}
+
+.countOf_transType{
+    width: 45px;
+    height: 45px;
+    border-radius: 50px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.countOf_transType span{
+    font-size: 19px;
+}
+.smallBoxWidth{
+    width: 209px;
+}
+
+.smallBox .smallBoxIconSec .customiconSec {
+    width: 60px!important;
+    height: 60px!important;
+    justify-content: center!important;
+}
+
+.iconCol_13{
+    background: #3bb8b3;
+}
+.customiconSec span{
+    font-size:17px;
+    font-weight: 500;
+    color:#fff;
+}

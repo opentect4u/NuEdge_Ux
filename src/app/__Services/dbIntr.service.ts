@@ -16,10 +16,13 @@ constructor(private __http:HttpClient) {
  searchItems(__url,__searchTerm):Observable<any>{
   return this.__http.get<any>(`${environment.apiUrl + __url +'?search='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
+ searchTin(__url,__searchTerm):Observable<any>{
+  return this.__http.get<any>(`${environment.apiUrl + __url +'?temp_tin_no='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
+ }
 
  getpaginationData(url){
   console.log(url);
-  
+
   return this.__http.get<any>(url, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
 

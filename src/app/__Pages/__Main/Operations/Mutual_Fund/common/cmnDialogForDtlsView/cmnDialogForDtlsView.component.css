@@ -1,0 +1,21 @@
+td,
+th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    width: 25%;
+}
+
+td img {
+    height: 102px;
+    width: 144px;
+    object-fit: contain;
+}
+
+td {
+    vertical-align: middle !important;
+}
+
+.rowWidth {
+    width: 30% !important;
+}

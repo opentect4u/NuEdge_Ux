@@ -45,7 +45,6 @@ export class Cmn_dialogComponent implements OnInit {
     login_at: new FormControl(this.data.id ? this.data.data.rnt_login_at : '', [Validators.required]),
     remarks: new FormControl(this.data.id ? (this.data.data.remarks != null ? this.data.data.remarks : '') : ''),
     app_form_scan_status: new FormControl(this.data.id ? (this.data.data.form_scan_status == "true") : false, [Validators.requiredTrue]),
-    file: new FormControl('', this.data.id ? [fileValidators.fileExtensionValidator(this.allowedExtensions)] : [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
     app_form_scan: new FormControl('', this.data.id ? [] : [Validators.required]),
     frm_rec_dateTime: new FormControl(''),
     sub_arn_no: new FormControl(''),
@@ -82,7 +81,6 @@ export class Cmn_dialogComponent implements OnInit {
     chq_bank: new FormControl(this.data.id ? this.data.data.chq_bank : '', [Validators.required]),
     amc_id: new FormControl(this.data.id ? this.data.data.amc_id : '', [Validators.required]),
     trans_type_id: new FormControl(this.data.parent_id),
-    filePreview: new FormControl(this.data.id ? `${environment.app_formUrl + this.data.data.app_form_scan}` : ''),
 
 
     cut_off_time:new FormControl(this.data.data.form_status == 'A' ?  this.datePipe.transform(this.data.data.rnt_login_cutt_off,'YYYY-MM-ddTHH:mm') : '',
@@ -96,7 +94,9 @@ export class Cmn_dialogComponent implements OnInit {
       this.data.id != null && this.data.data.form_status == 'P' ? [Validators.required,fileValidators.fileExtensionValidator(this.allowedExtensions)] : []  ),
     ack_file:new FormControl(''),
     ack_filePreview: new FormControl(
-      this.data.data.form_status == 'A' ? `${environment.ack_formUrl + this.data.data.ack_copy_scan}` : '')
+      this.data.data.form_status == 'A' ? `${environment.ack_formUrl + this.data.data.ack_copy_scan}` : ''),
+    filePreview: new FormControl(this.data.id ? `${environment.app_formUrl + this.data.data.app_form_scan}` : ''),
+    file: new FormControl('', this.data.id ? [fileValidators.fileExtensionValidator(this.allowedExtensions)] : [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)])
   })
   constructor(
     public dialogRef: MatDialogRef<Cmn_dialogComponent>,

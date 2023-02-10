@@ -32,6 +32,11 @@ const routes: Routes = [
         path:'nfo',
         component:NFOComponent,
         data:{ id: 25, has_menu: 'Y', title: 'NuEdge - NFO', pageTitle: "NFO" , trans_type_id:4}
+      },
+      {
+        path:'prodTypeModification',
+        loadChildren:()=> import('./transTypeModification/transTypeModification.module').then(m => m.TransTypeModificationModule),
+        data:{id:0,has_menu:'Y',title:'NuEdge - Product Type Modification'}
       }
     ]
   }
