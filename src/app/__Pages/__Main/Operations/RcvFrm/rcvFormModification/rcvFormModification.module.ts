@@ -10,7 +10,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DialogDtlsComponent } from '../dialogDtls/dialogDtls.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import {MatMenuModule} from '@angular/material/menu';
-import { createClientComponent } from '../createClient/createClient\'.component';
+import { createClientComponent } from '../createClient/createClient.component';
 const routes:Routes= [{path:'',component:RcvFormModificationComponent}]
 @NgModule({
   imports: [

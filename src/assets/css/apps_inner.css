@@ -70,8 +70,8 @@
 
 
 
-table.table_Custome thead{  
-  background: #3bb8b3; 
+table.table_Custome thead{
+  background: #3bb8b3;
   /* background: #3a5076;
   color: #fff; */
 }
@@ -91,7 +91,7 @@ table.table_Custome thead tr th{color: #fff;}
 .form-control {
   display: block;
   width: 100%;
-  height: 38px;
+  /* height: 38px; */
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.428571429;
@@ -105,7 +105,7 @@ table.table_Custome thead tr th{color: #fff;}
   /* .mat-dialog-actions.popupBoxSubmitSec {display: block; min-height: inherit;} */
 
 .btn.cancelCusBtn{
-  background: #eee; 
+  background: #eee;
   color: #333;
   width: 100px;
   font-weight: 500;

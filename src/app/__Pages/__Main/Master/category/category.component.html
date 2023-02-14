@@ -34,7 +34,7 @@
     <ng-container matColumnDef="cat_name">
       <th mat-header-cell *matHeaderCellDef>Category</th>
       <td mat-cell *matCellDef="let element">
-       
+
       <a (click)="showCorrospondingAMC(element)" class="hoverableText"> {{element.cat_name}}</a>
 
       </td>
@@ -82,26 +82,22 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-    
-    <!-- <mat-paginator [pageSizeOptions]="[__pageNumber.value]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator> -->
-  
-     
+
     <div class="paginatorContainer">
       <mat-button-toggle-group *ngFor="let paginate of __paginate">
         <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
           <label>
-                 <!-- {{(paginate.label | replace) == 'N' ? '' : ''}} -->
                  <mat-icon  *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
                  <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
                  <span *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
-  
+
           </label>
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-  
-  
-  
-  
+
+
+
+
   </div>
 </div>

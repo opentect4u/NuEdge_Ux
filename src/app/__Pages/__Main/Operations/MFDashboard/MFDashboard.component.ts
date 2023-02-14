@@ -10,7 +10,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 export class MFDashboardComponent implements OnInit {
 
   __menus = [
-    
+
   ]
 
   constructor(private __rtDt: ActivatedRoute,private __utility: UtiliService) {
@@ -18,7 +18,7 @@ export class MFDashboardComponent implements OnInit {
 
   ngOnInit() {
   }
-  navigate(){
-        this.__utility.navigatewithqueryparams('/main/rcvDashboard',{queryParams:{product_id:this.__rtDt.snapshot.params['id']}})
+  navigate(__url){
+        this.__utility.navigatewithqueryparams(__url,{queryParams:{product_id:this.__rtDt.snapshot.params['id']}})
   }
 }

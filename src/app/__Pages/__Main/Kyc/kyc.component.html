@@ -1,3 +1,21 @@
+
+
+<div class="row flexSec">
+  <div class="col-sm-2" *ngFor="let items of __menu"  (click)="navigate(items)">
+    <div class="smallBox">
+     <div class="smallBoxIconSec">
+      <div class="iconCol_12 iconSec">
+        <i class="fa fa-user-o" aria-hidden="true"></i>
+      </div>
+    </div>
+    <h2>{{items.menu_name}}</h2>
+  </div>
+</div>
+</div>
+
+
+
+
 <core-search
 (__searchItem)="getSearchItem($event)" 
 [__flag]="'Y'" 
@@ -5,8 +23,6 @@
 [__api_name]="'/client'"
 >
 </core-search>
-
-
 
 <div class="mat-elevation-z3">
 <table mat-table [dataSource]="__selectClients">
@@ -60,7 +76,7 @@
   <tr mat-header-row *matHeaderRowDef="__columns"></tr>
   <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
   <tr class="mat-row" *matNoDataRow>
-    <td class="mat-cell" colspan="7">No data found</td>
+    <td class="mat-cell" colspan="6">No data found</td>
   </tr>
 </table>
 <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>

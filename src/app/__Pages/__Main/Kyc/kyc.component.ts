@@ -12,6 +12,10 @@ import { KyModificationComponent } from './kyModification/kyModification.compone
   styleUrls: ['./kyc.component.css']
 })
 export class KycComponent implements OnInit {
+
+  __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "","icon":"","id":16,"flag":"M"}];
+
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   __columns: string[] = ['sl_no', 'tin_no', 'entry_dt', 'pan', 'edit', 'delete'];
   __selectClients = new MatTableDataSource();
@@ -36,20 +40,20 @@ export class KycComponent implements OnInit {
   populateDT(__items) {
     this.openDialog(__items.pan_no, __items);
   }
-  checkKycExistOrNot(client_code) {
-    this.__dbIntr.api_call(0, '/kyc', client_code == '' ? null : 'search=' + client_code).pipe(map((x: any) => x.data)).subscribe(res => {
+  checkKycExistOrNot(client_code,__paginate: string | null = "10") {
+    this.__dbIntr.api_call(0, '/kyc','paginate='+ __paginate + (client_code == '' ? '' : 'search=' + client_code)).pipe(map((x: any) => x.data)).subscribe(res => {
       this.__selectClients = new MatTableDataSource(res);
       this.__selectClients.paginator = this.paginator;
     })
   }
 
 
-  openDialog(id, __items) {
+  openDialog(id: string | null = null, __items) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '98%';
     dialogConfig.panelClass = 'fullscreen-dialog';
     dialogConfig.autoFocus = false;
-    if (id != '') {
+    if (id) {
       this.__dbIntr.api_call(0, '/kycshowadd', 'search=' + __items.client_code).pipe(map((x: any) => x.data)).subscribe(res => {
         console.log(res);
         dialogConfig.data = {
@@ -66,7 +70,7 @@ export class KycComponent implements OnInit {
     }
     else {
       dialogConfig.data = {
-        id: id,
+        id: 0,
         title: 'Add Kyc',
         items: __items
       };
@@ -74,5 +78,8 @@ export class KycComponent implements OnInit {
       dialogref.afterClosed().subscribe(dt => {
       });
     }
+  }
+  navigate(__items){
+     this.openDialog('','');
   }
 }

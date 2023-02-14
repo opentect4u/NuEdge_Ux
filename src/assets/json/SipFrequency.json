@@ -1,0 +1,9 @@
+[
+    {"id":"D","freq_name":"Daily"},
+    {"id":"W","freq_name":"Weekly"},
+    {"id":"F","freq_name":"fortnightly"},
+    {"id":"M","freq_name":"Monthly"},
+    {"id":"Q","freq_name":"Quarterly"},
+    {"id":"S","freq_name":"Semi Anually"},
+    {"id":"A","freq_name":"Anually"}
+]

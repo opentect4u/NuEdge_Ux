@@ -47,7 +47,7 @@ export class DialogDtlsComponent implements OnInit {
   ) { }
 
   ngOnInit() {    
-    if(this.data.flag == 'S'){
+    if(this.data.flag == 'S' || this.data.flag == 'ST'){
      this.getscmDtls();
     }
     if(this.data.flag == 'C'){

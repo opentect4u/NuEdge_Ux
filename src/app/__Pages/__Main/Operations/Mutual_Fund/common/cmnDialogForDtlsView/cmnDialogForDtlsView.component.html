@@ -48,11 +48,11 @@
       </div>
       <div class="col-sm-12 my-3">
         <label>Address 1</label>
-        <textarea class="form-control"  cols="30" rows="5" formControlName="add_line_1"></textarea>
+        <textarea class="form-control"  cols="30" rows="5" formControlName="add_line_1" [attr.disabled]="true"></textarea>
       </div>
       <div class="col-sm-12 my-3">
         <label>Address 2</label>
-        <textarea class="form-control"  cols="30" rows="5" formControlName="add_line_2"></textarea>
+        <textarea class="form-control"  cols="30" rows="5" formControlName="add_line_2" [attr.disabled]="true"></textarea>
       </div>
       <div class="col-sm-12 my-3">
         <label>State</label>
@@ -111,7 +111,7 @@
         </table>
       </div>
     </div>
-    <div class="row" *ngIf="data.flag == 'S'">
+    <div class="row" *ngIf="data.flag == 'S' || data.flag == 'ST'">
       <div class="col-sm-12 my-3">
         <label>AMC</label>
          <input type="text" class="form-control" formControlName="amc" [attr.disabled]="true">

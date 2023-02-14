@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogDtlsComponent } from '../dialogDtls/dialogDtls.component';
 import { Overlay } from '@angular/cdk/overlay';
-import { createClientComponent } from '../createClient/createClient\'.component';
+import { createClientComponent } from '../createClient/createClient.component';
 
 @Component({
   selector: 'app-rcvFormModification',
@@ -22,12 +22,14 @@ export class RcvFormModificationComponent implements OnInit {
   @ViewChild('subBrkArn') __subBrkArn: ElementRef;
   @ViewChild('clientCd') __clientCode: ElementRef;
   @ViewChild('schemeRes') __scheme: ElementRef;
-    
+  @ViewChild('schemeswitchTo') __scheme_swicth_to: ElementRef;
+
   __trans_types: any=[]
 
   __isCldtlsEmpty: boolean = false;
    __dialogDtForClient: any;
    __dialogDtForScheme: any;
+   __dialogDtForSchemeTo: any;
    __mcOptionMenu: any=[
     {"flag":"M","name":"Minor","icon":"person_pin"},
     {"flag":"P","name":"Pan Holder","icon":"credit_card"},
@@ -38,6 +40,7 @@ export class RcvFormModificationComponent implements OnInit {
   __euinMst: any=[];
   __subbrkArnMst: any=[];
   __schemeMst: any=[];
+  __schemeMstforSwitchTo: any=[];
   __buisness_type: any = buisnessType;
   __rcvForm = new FormGroup({
     sub_brk_cd: new FormControl(''),
@@ -54,7 +57,9 @@ export class RcvFormModificationComponent implements OnInit {
     scheme_name: new FormControl('',[Validators.required]),
     recv_from: new FormControl('',[Validators.required]),
     inv_type: new FormControl('',[Validators.required]),
-    kyc_status: new FormControl('')
+    kyc_status: new FormControl(''),
+    switch_scheme_to: new FormControl(''),
+    scheme_id_to: new FormControl('')
   });
   constructor(
     private overlay: Overlay,
@@ -74,7 +79,7 @@ export class RcvFormModificationComponent implements OnInit {
     this.__dbIntr.api_call(0,'/formreceivedshow','product_id='+atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) + '&trans_type_id='+atob(this.__rtDt.snapshot.queryParamMap.get('type_id'))).pipe(pluck("data")).subscribe(res => {
         console.log(res);
         this.__trans_types = res;
-    
+
     })
   }
   getTransactionType(){
@@ -154,7 +159,7 @@ export class RcvFormModificationComponent implements OnInit {
       complete: () => console.log(''),
       error: (err) => console.log()
     })
-    
+
     //Client Code Search
     this.__rcvForm.controls['client_code'].valueChanges.
     pipe(
@@ -195,6 +200,30 @@ export class RcvFormModificationComponent implements OnInit {
           complete: () => console.log(''),
           error: (err) => console.log()
         })
+ 
+
+         //switch Scheme Search
+         this.__rcvForm.controls['switch_scheme_to'].valueChanges.
+        pipe(
+          debounceTime(200),
+          distinctUntilChanged(),
+          switchMap(dt => dt?.length > 1 ?
+            this.__dbIntr.searchItems('/scheme', dt + '&amc_id='+ this.__dialogDtForScheme?.amc_id)
+            : []),
+          map((x: any) => x.data)
+        ).subscribe({
+          next: (value) => {
+            // this.__schemeMst = value.data
+            console.log(value);
+            this.__schemeMstforSwitchTo = value;
+            console.log(this.__schemeMstforSwitchTo);
+            
+            this.searchResultVisibilityForSchemeSwicthTo('block');
+          },
+          complete: () => console.log(''),
+          error: (err) => console.log()
+        })
+
 
    //On Change on buisness type
     this.__rcvForm.controls["bu_type"].valueChanges.subscribe(res => {
@@ -215,9 +244,12 @@ export class RcvFormModificationComponent implements OnInit {
   searchResultVisibilityForScheme(display_mode){
     this.__scheme.nativeElement.style.display= display_mode;
    }
+   searchResultVisibilityForSchemeSwicthTo(display_mode){
+     this.__scheme_swicth_to.nativeElement.style.display = display_mode;
+   }
   getItems(__euinDtls,__type){
     console.log(__euinDtls);
-    
+
     switch(__type){
       case 'E':    this.__rcvForm.controls['euin_no'].reset(__euinDtls.euin_no+' - '+__euinDtls.emp_name,{ onlySelf: true, emitEvent: false });
                    this.searchResultVisibility('none');
@@ -228,16 +260,24 @@ export class RcvFormModificationComponent implements OnInit {
                     break;
 
       case 'C':    this.__dialogDtForClient = __euinDtls;
-                   this.__rcvForm.controls['client_code'].reset(__euinDtls.client_code,{ onlySelf: true, emitEvent: false }) 
+                   this.__rcvForm.controls['client_code'].reset(__euinDtls.client_code,{ onlySelf: true, emitEvent: false })
                    this.__rcvForm.patchValue({client_name:__euinDtls.client_name,client_id:__euinDtls.id});
                    this.searchResultVisibilityForClient('none');
                    break;
 
       case 'SC':    this.__dialogDtForScheme = __euinDtls;
-                    this.__rcvForm.controls['scheme_name'].reset(__euinDtls.scheme_name,{ onlySelf: true, emitEvent: false }) 
+                    this.__rcvForm.controls['scheme_name'].reset(__euinDtls.scheme_name,{ onlySelf: true, emitEvent: false })
                     this.__rcvForm.patchValue({scheme_id:__euinDtls.id});
                     this.searchResultVisibilityForScheme('none');
       break;
+
+      case 'ST':  this.__dialogDtForSchemeTo = __euinDtls;
+                   console.log(this.__dialogDtForSchemeTo);
+
+                  this.__rcvForm.controls['switch_scheme_to'].reset(__euinDtls.scheme_name,{ onlySelf: true, emitEvent: false });
+                  this.__rcvForm.patchValue({scheme_id_to : __euinDtls.id});
+                  this.searchResultVisibilityForSchemeSwicthTo('none');
+                  break;
 
       default: break;
     }
@@ -254,11 +294,21 @@ export class RcvFormModificationComponent implements OnInit {
       this.searchResultVisibilityForClient('none');
     }
   }
-  outsideClickforScheme(__ev){  
+  outsideClickforScheme(__ev){
         if(__ev){
           this.searchResultVisibilityForScheme('none');
         }
   }
+ 
+
+  outsideClickForSchemeSwitchTo(__ev){
+    if(__ev){
+         this.searchResultVisibilityForSchemeSwicthTo('none');
+    }
+  }
+
+
+
   recieveForm(){
     if(this.__rcvForm.invalid){
       this.__utility.showSnackbar('Forms can not be submitted, please try again later',0);
@@ -266,8 +316,8 @@ export class RcvFormModificationComponent implements OnInit {
     }
     const __rcvForm = new FormData();
     __rcvForm.append("bu_type",this.__rcvForm.value.bu_type);
-    __rcvForm.append("euin_no",this.__rcvForm.value.euin_no);
-    __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no : '');
+    __rcvForm.append("euin_no",this.__rcvForm.value.euin_no.split(' ')[0]);
+    __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no.split(' ')[0] : '');
     __rcvForm.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd ? this.__rcvForm.value.sub_brk_cd : '');
     __rcvForm.append("client_id",this.__rcvForm.value.client_id);
     __rcvForm.append("product_id",atob(this.__rtDt.snapshot.queryParamMap.get('product_id')));
@@ -279,7 +329,10 @@ export class RcvFormModificationComponent implements OnInit {
     __rcvForm.append("kyc_status",this.__rcvForm.value.kyc_status);
    __rcvForm.append("id",this.__rcvForm.value.id)
    __rcvForm.append("temp_tin_no",this.__rtDt.snapshot.queryParamMap.get('temp_tin_no') ? atob(this.__rtDt.snapshot.queryParamMap.get('temp_tin_no')) : this.__rtDt.snapshot.queryParamMap.get('temp_tin_no'));
+   if(this.__rcvForm.value.trans_id == 3){
+   __rcvForm.append("scheme_id_to",this.__rcvForm.get('scheme_id_to').value);
 
+   }
     this.__dbIntr.api_call(1,this.__rtDt.snapshot.queryParamMap.get('temp_tin_no') ? '/formreceivedEdit' : '/formreceivedAdd',__rcvForm).subscribe((res: any) =>{
       if(this.__rtDt.snapshot.queryParamMap.get('temp_tin_no')){
         this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN number ' + res.data.temp_tin_no + ' has been updated successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
@@ -287,12 +340,14 @@ export class RcvFormModificationComponent implements OnInit {
       else{
       this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN number ' + res.data.temp_tin_no + ' has been received successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
       }
+      this.settransTypeCount(this.__rcvForm.value.trans_id == 1 ? 0 : (this.__rcvForm.value.trans_id == 2 ? 1 : 2));
+
       this.__rcvForm.reset();
     })
   }
   openDialog(__type){
     console.log(this.__dialogDtForClient);
-    
+
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -303,8 +358,8 @@ export class RcvFormModificationComponent implements OnInit {
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data ={
       flag:__type,
-      title:  __type == 'C' ?  this.__dialogDtForClient.client_name :  this.__dialogDtForScheme.scheme_name,
-      dt: __type == 'C' ? this.__dialogDtForClient :  this.__dialogDtForScheme 
+      title:  __type == 'C' ?  this.__dialogDtForClient.client_name :  (__type == 'ST' ? this.__dialogDtForSchemeTo.scheme_name :   this.__dialogDtForScheme.scheme_name),
+      dt: __type == 'C' ? this.__dialogDtForClient : (__type == 'ST' ? this.__dialogDtForSchemeTo : this.__dialogDtForScheme)
     }
     try{
       const dialogref = this.__dialog.open(DialogDtlsComponent, dialogConfig);
@@ -312,18 +367,15 @@ export class RcvFormModificationComponent implements OnInit {
     catch(ex){
     }
   }
-  createClientCode(){
-    console.log('assa');
-    
-  }
+
   navigateTo(menu){
     console.log(menu);
-    
+
     this.openDialogforClient(menu);
   }
   openDialogforClient(__menu){
     console.log(__menu);
-    
+
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = true;
@@ -357,5 +409,8 @@ export class RcvFormModificationComponent implements OnInit {
       type_id: this.__rtDt.snapshot.queryParamMap.get('type_id'),
        trans_id: btoa(__type_id)
     }})
+  }
+  settransTypeCount(__index) {
+    this.__trans_types[__index].count = this.__trans_types[__index].count + 1
   }
 }

@@ -5,7 +5,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { RntModificationComponent } from './rntModification/rntModification.component';
@@ -29,8 +28,8 @@ export class RNTComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private __dialog:MatDialog
     ) { }
-  ngOnInit() { 
-    this.getRNTmaster() 
+  ngOnInit() {
+    this.getRNTmaster()
   }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {}
@@ -67,7 +66,7 @@ export class RNTComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.hasBackdrop = false;
     dialogConfig.width = "60%";
-    dialogConfig.height = "100%";
+    // dialogConfig.height = "100%";
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data ={
       flag:'R',
@@ -96,7 +95,7 @@ export class RNTComponent implements OnInit {
       console.log(ex);
       this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:"R"})
     }
-  
+
   }
 
   randomIntFromInterval(min, max) {

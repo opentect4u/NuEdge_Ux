@@ -53,7 +53,7 @@ export class CmnDialogForDtlsViewComponent implements OnInit {
   ngOnInit() {  
     console.log(this.data);
       
-    if(this.data.flag == 'S'){
+    if(this.data.flag == 'S' || this.data.flag == 'ST'){
      this.getscmDtls();
     }
     else if(this.data.flag == 'C' || this.data.flag == 'FC' || this.data.flag == 'TC'){

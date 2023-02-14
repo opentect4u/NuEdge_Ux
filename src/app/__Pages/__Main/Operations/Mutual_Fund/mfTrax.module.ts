@@ -9,10 +9,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { NonfinancialComponent } from './nonfinancial/nonfinancial.component';
 import { NFOComponent } from './NFO/NFO.component';
 import { MasterTblComponent } from './common/MasterTbl/MasterTbl.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { SharedModule } from 'src/app/shared/shared.module';
 const routes: Routes = [
   {
     path: '',
@@ -50,10 +51,11 @@ const routes: Routes = [
     MatButtonModule,
     MatDialogModule,
     MatTableModule,
-    MatPaginatorModule,
+    MatButtonToggleModule,
+    SharedModule
   ],
   declarations: [
-    MfTraxComponent, 
+    MfTraxComponent,
     FinancialComponent,
     Cmn_dialogComponent,
     NonfinancialComponent,

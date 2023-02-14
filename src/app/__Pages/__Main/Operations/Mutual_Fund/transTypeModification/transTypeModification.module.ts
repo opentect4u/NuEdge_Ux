@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { CmnDialogForDtlsViewComponent } from '../common/cmnDialogForDtlsView/cmnDialogForDtlsView.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { DialogForCreateClientComponent } from '../common/dialogForCreateClient/dialogForCreateClient.component';
+import { MatMenuModule } from '@angular/material/menu';
 const routes: Routes = [{path:'',component:TransTypeModificationComponent}]
 
 @NgModule({
@@ -20,8 +22,12 @@ const routes: Routes = [{path:'',component:TransTypeModificationComponent}]
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
-    OverlayModule
+    OverlayModule,
+    MatMenuModule
   ],
-  declarations: [TransTypeModificationComponent,CmnDialogForDtlsViewComponent]
+  declarations: [
+    TransTypeModificationComponent,
+    CmnDialogForDtlsViewComponent,
+    DialogForCreateClientComponent]
 })
 export class TransTypeModificationModule { }

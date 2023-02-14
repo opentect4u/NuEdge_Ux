@@ -13,8 +13,14 @@
 </div>
 
 
-<core-search [__flag]="'Y'" (__searchItem)="getSearchItem($event)" [__api_name]="'/mfTraxShow'"
-  [__placeholder]="'Search TIN Number'"></core-search>
 
-<mf-common-MasterTbl [__MstDT]="__financMst" (__selectedItems)="getSelectedItemForUpdate($event)"></mf-common-MasterTbl>
+<mf-common-MasterTbl
+[__paginate]="__paginate"
+[__pageNumber]="__pageNumber"
+[__MstDT]="__financMst"
+[api_name]="'/mfTraxShow'"
+[__transType_id]="__transType_id"
+[__prod_id]="__prod_id"
+[__trans_id]="__trans_id"
+(__selectedItems)="getSelectedItemForUpdate($event)"></mf-common-MasterTbl>
 

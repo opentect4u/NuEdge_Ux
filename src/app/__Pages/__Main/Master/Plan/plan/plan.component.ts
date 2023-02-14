@@ -1,8 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
@@ -22,10 +21,9 @@ export class PlanComponent implements OnInit {
   __paginate:any=[];
   __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "","icon":"","id":36,"flag":"M"},
              {"parent_id": 4,"menu_name": "Upload CSV","has_submenu": "N","url": "main/master/uploadPln","icon":"","id":35,"flag":"U"}]
-  
+
   __columns: string[] = ['sl_no', 'plan_name', 'edit', 'delete'];
   __selectPLN= new MatTableDataSource<plan>([]);
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(  private overlay : Overlay,private __utility: UtiliService,private __dbIntr: DbIntrService,private route :ActivatedRoute,private __dialog: MatDialog) { }
   ngOnInit(): void {
@@ -48,7 +46,7 @@ export class PlanComponent implements OnInit {
 
   private getPLANMaster(__params: string | null = '',__paginate:string | null = "10") {
     console.log(__params);
-    
+
     this.__dbIntr.api_call(0, '/plan', "paginate="+__paginate).pipe(map((x: responseDT) => x.data)).subscribe((res: any) => {
       this.setPaginator(res.data);
       this.__paginate = res.links;
@@ -56,7 +54,7 @@ export class PlanComponent implements OnInit {
   }
   private setPaginator(__res) {
     this.__selectPLN= new MatTableDataSource(__res);
-    this.__selectPLN.paginator = this.paginator;
+    // this.__selectPLN.paginator = this.paginator;
   }
 
   openDialog(__pln: plan | null = null , __plnId: number){
@@ -95,7 +93,7 @@ export class PlanComponent implements OnInit {
       console.log(ex);
       this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:"P"})
     }
-  
+
   }
   updateRow(row_obj){
     this.__selectPLN.data = this.__selectPLN.data.filter((value: plan, key) => {

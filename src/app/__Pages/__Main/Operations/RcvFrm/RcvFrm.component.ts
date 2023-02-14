@@ -7,11 +7,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { rcvForm } from 'src/app/__Model/rcvFormMst';
-import { responseDT } from 'src/app/__Model/__responseDT';
+// import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { DeletercvComponent } from './deletercv/deletercv.component';
-import { DialogDtlsComponent } from './dialogDtls/dialogDtls.component';
+// import { DialogDtlsComponent } from './dialogDtls/dialogDtls.component';
 import { RcvFormAdditionComponent } from './rcvFormAddition/rcvFormAddition.component';
 
 @Component({

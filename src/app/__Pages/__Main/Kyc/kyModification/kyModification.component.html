@@ -6,28 +6,28 @@
   </button>
 </div>
 <mat-dialog-content>
-  <core-search 
-  *ngIf="this.data.id == ''"
-  (__searchItem)="getSearchItem($event)" 
-  [__flag]="'N'" 
-  [__api_name]="'/client'"
-  [__placeholder]="'Search by Name, Pan, Mobile, Email, DOB, Client code'">
-  </core-search>
-  <div class="card my-2">
-    <div class="card-body">
   <form [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm" ngNativeValidate>
-    <div class="row my-5">
-      <div class="col-sm-4">
+    <div class="row my-3">
+      <div class="col-sm-12">
         <label for="clientCode">Client Code <span class="text-danger">*</span></label>
-        <input type="text"  readonly name="clientCode" id="clientCode" class="form-control" formControlName="_client_code">
+        <input type="text"  
+        name="clientCode" 
+        id="clientCode" 
+        class="form-control" 
+        formControlName="_client_code"
+        >
       </div>
-      <div class="col-sm-4">
+      </div>
+    <div class="row ">
+      <div class="col-sm-12">
         <label for="pan_no">Pan No. <span class="text-danger">*</span></label>
-        <input type="text" readonly name="pan_no" id="pan_no" class="form-control" formControlName="_pan_no">
+        <input type="text" name="pan_no" id="pan_no" class="form-control" formControlName="_pan_no">
       </div>
-      <div class="col-sm-4">
+      </div>
+    <div class="row my-3">
+      <div class="col-sm-12">
         <label for="mobile">Mobile <span class="text-danger">*</span></label>
-        <input type="text" readonly name="mobile" id="mobile" class="form-control" formControlName="mobile">
+        <input type="text"  name="mobile" id="mobile" class="form-control" formControlName="mobile">
       </div>
     </div>
     <div class="row my-5">
@@ -112,8 +112,7 @@
     </div>
 
   </form>
-</div>
-</div>
+
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
   <button class="btn addBtn" form="__clientForm"   [disabled]="__clientForm.invalid">Submit</button>

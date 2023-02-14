@@ -1,5 +1,5 @@
 <div class="row flexSec">
-  <div class="col-sm-2" (click)="navigate()">
+  <div class="col-sm-2" (click)="navigate('/main/rcvDashboard')">
     <div class="smallBox">
       <div class="smallBoxIconSec">
         <div class="iconCol_12 iconSec">
@@ -9,8 +9,8 @@
       <h2>Form Receivable</h2>
     </div>
   </div>
-  
-  <div class="col-sm-2" [routerLink]="['/main/operations/manualEntr']">
+
+  <div class="col-sm-2" (click)="navigate('/main/operations/manualEntr')">
     <div class="smallBox">
       <div class="smallBoxIconSec">
         <div class="iconCol_12 iconSec">

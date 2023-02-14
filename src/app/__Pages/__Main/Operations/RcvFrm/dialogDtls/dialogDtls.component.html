@@ -111,7 +111,7 @@
         </table>
       </div>
     </div>
-    <div class="row" *ngIf="data.flag == 'S'">
+    <div class="row" *ngIf="data.flag == 'S' || data.flag == 'ST'">
       <div class="col-sm-12 my-3">
         <label>AMC</label>
          <input type="text" class="form-control" formControlName="amc" [attr.disabled]="true">

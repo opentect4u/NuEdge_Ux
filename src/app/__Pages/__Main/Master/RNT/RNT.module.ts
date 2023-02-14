@@ -25,8 +25,6 @@ const __routes: Routes = [{ path: '', component: RNTComponent }]
     OverlayModule,
     DragDropModule,
     MatButtonToggleModule,
-    
-
   ],
   declarations: [RNTComponent,RntModificationComponent,ReplacePipe]
 })
