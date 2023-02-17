@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { Route } from 'src/app/__Model/route';
+import { UtiliService } from 'src/app/__Services/utils.service';
 // import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
@@ -10,17 +13,20 @@ import { Route } from 'src/app/__Model/route';
 export class MainComponent implements OnInit {
   __rtDt: Route;
   constructor(
-    // private __utility: UtiliService
+    private __actRt: ActivatedRoute,
+   private router: Router,
+    private __utility: UtiliService
   ) {
+    this.__utility.__route$.subscribe(res =>{
+      console.log(res);
+      this.__rtDt = res;
+
+    })
     // this.loadDropdownScript();
-    // this.__utility.__route$.subscribe(res => {
-    //   if (res) {
-    //     this.__rtDt = res;
-    //   }
-    // })
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   // For Loading Script of top drop down menu in header.
   // loadDropdownScript() {

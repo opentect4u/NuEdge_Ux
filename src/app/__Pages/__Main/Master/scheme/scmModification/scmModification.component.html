@@ -12,19 +12,19 @@
       <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-    
+
       <button mat-icon-button  [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-  
+
     </div>
-  
+
   </div>
 
 <mat-dialog-content>
   <form  [formGroup]="__scmForm" (ngSubmit)="submit()" id="__scmForm_{{data.id}}"  autocomplete="off" ngNativeValidate>
     <div class="row">
-      <div class="col-sm-12 my-4">
+      <!-- <div class="col-sm-12 my-4">
         <label for="prdName">Product <span class="text-danger">*</span></label>
         <select class="form-control" formControlName="product_id" id="prdName">
           <option value="">Select Product</option>
@@ -33,7 +33,7 @@
         <div class="invalid-feedback" *ngIf="__scmForm.get('product_id').invalid && (__scmForm.get('product_id').dirty || __scmForm.get('product_id').touched)">
           <span class="invalid-feedback" *ngIf="(__scmForm.get('product_id')).errors?.required">*Please provide Product</span>
         </div>
-      </div>
+      </div> -->
       <div class="col-sm-12 my-4">
         <label for="amcName">AMC <span class="text-danger">*</span></label>
         <select class="form-control" formControlName="amc_id" id="amcName">
@@ -73,10 +73,10 @@
         </div>
       </div>
       <div class="col-sm-12 my-4">
-        <label for="isin_number">ISIN Number <span class="text-danger">*</span></label>
-        <input type="text" name="isin_number" id="isin_number" class="form-control" formControlName="isin_no" placeholder="Enter ISIN number"/>
-        <div class="invalid-feedback" *ngIf="__scmForm.get('isin_no').invalid && (__scmForm.get('isin_no').dirty || __scmForm.get('isin_no').touched)">
-          <span class="invalid-feedback" *ngIf="(__scmForm.get('isin_no')).errors?.required">*Please provide ISIN number</span>
+        <label for="isin_number">GSTIN <span class="text-danger">*</span></label>
+        <input type="text" name="isin_number" id="isin_number" class="form-control" formControlName="gstin_no" placeholder="Enter ISIN number"/>
+        <div class="invalid-feedback" *ngIf="__scmForm.get('gstin_no').invalid && (__scmForm.get('gstin_no').dirty || __scmForm.get('gstin_no').touched)">
+          <span class="invalid-feedback" *ngIf="(__scmForm.get('gstin_no')).errors?.required">*Please provide ISIN number</span>
         </div>
       </div>
       <!-- New -->

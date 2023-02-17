@@ -75,12 +75,15 @@
         <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
           100
         </mat-button-toggle>
+        <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+          All
+        </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-    
+
     <!-- <mat-paginator [pageSizeOptions]="[__pageNumber.value]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator> -->
-  
-     
+
+
     <div class="paginatorContainer">
       <mat-button-toggle-group *ngFor="let paginate of __paginate">
         <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
@@ -89,14 +92,14 @@
                  <mat-icon  *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
                  <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
                  <span *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
-  
+
           </label>
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-  
-  
-  
-  
+
+
+
+
   </div>
 </div>

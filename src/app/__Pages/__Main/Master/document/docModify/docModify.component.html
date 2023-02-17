@@ -9,7 +9,7 @@
           <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
             <div>
               <label for="">Search By Client Code:</label>
-              <input type="search" name="clientCode" id="clientCode" class="form-control" formControlName="client_code" placeholder="Search By Client Code">           
+              <input type="search" name="clientCode" id="clientCode" class="form-control" formControlName="client_code" placeholder="Search By Client Code">
               <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
                 <div class="serachresult_client" #searchResult>
                   <ul *ngIf="__items.length > 0">
@@ -19,7 +19,7 @@
                   </ul>
                   <div class="noDataFound" *ngIf="__items.length == 0">
                     <h5 class="text-center">
-                      Sorry!! No Results Found
+                      Sorry!! No Records Found
                     </h5>
                     <p>If your result match,they will appear here</p>
                   </div>
@@ -81,7 +81,7 @@
                       <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}
                       </option>
                     </select>
-      
+
                     <div class="invalid-feedback"
                       *ngIf=" __docs.controls[i].get('doc_type_id').invalid && ( __docs.controls[i].get('doc_type_id').dirty ||  __docs.controls[i].get('doc_type_id').touched)">
                       <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_type_id').errors?.required">*Please
@@ -101,7 +101,7 @@
                         *ngIf="__docs.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
                         2MB.</span>
                     </div>
-      
+
                   </td>
                   <td class="rowWidth">
                     <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">

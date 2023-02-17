@@ -138,78 +138,59 @@
     "icon": "fa fa-user-o",
     "value": 0,
     "img": "",
-    "url": "/main/master/home",
+    "url": "/main/master/products",
     "class": "iconSec iconCol_12",
     "sub_menu": [
       {
         "id": 14,
         "menu_name": "R&T",
         "has_submenu": "N",
-        "url": "/main/master/rntmaster",
+        "url": "/main/master/productwisemenu/rnt",
         "icon": "grade"
       },
       {
         "id": 16,
         "menu_name": "AMC",
         "has_submenu": "N",
-        "url": "/main/master/amcmaster",
+        "url": "/main/master/productwisemenu/amc",
         "icon": "account_balance"
       },
       {
         "id": 19,
         "menu_name": "Category",
         "has_submenu": "N",
-        "url": "/main/master/category",
+        "url": "/main/master/productwisemenu/category",
         "icon": "category"
       },
       {
         "id": 22,
         "menu_name": "SubCategory",
         "has_submenu": "N",
-        "url": "/main/master/subcategory",
+        "url": "/main/master/productwisemenu/subcategory",
         "icon": "history"
       },
-      {
-        "id": 25,
-        "menu_name": "Bank",
-        "has_submenu": "N",
-        "url": "/main/master/bank",
-        "icon": "new_releases"
-      },
+
       {
         "id": 8,
         "menu_name": "Scheme",
         "has_submenu": "N",
-        "url": "/main/master/scheme",
+        "url": "/main/master/productwisemenu/scheme",
         "icon": "stars"
       },
-      {
-        "id": 9,
-        "menu_name": "Document Type",
-        "has_submenu": "N",
-        "url": "/main/master/docType",
-        "icon": "stars"
-      },
+
       {
         "id": 33,
         "menu_name": "Plan",
         "has_submenu": "N",
-        "url": "/main/master/plan",
+        "url": "/main/master/productwisemenu/plan",
         "icon": "stars"
       },
       {
         "id": 38,
         "menu_name": "Option",
         "has_submenu": "N",
-        "url": "/main/master/option",
+        "url": "/main/master/productwisemenu/option",
         "icon": "stars"
-      },
-      {
-        "id": 10,
-        "menu_name": "Operations",
-        "has_submenu": "N",
-        "url": "/main/master/mstOperations",
-        "icon": "history"
       }
     ]
   }

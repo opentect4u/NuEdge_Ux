@@ -10,7 +10,17 @@ export interface rnt {
      ofc_addr?: any;
      website: any;
      cus_care_no?:number
-     cus_care_email?:any
+     cus_care_email?:any,
+
+    head_ofc_contact_per: any
+    head_contact_per_mob: any
+    head_contact_per_email: any
+    head_ofc_addr: any
+
+    local_ofc_contact_per: any
+    local_contact_per_mob: any
+    local_contact_per_email: any
+    local_ofc_addr: any
 
 }
 /****************END***********************/

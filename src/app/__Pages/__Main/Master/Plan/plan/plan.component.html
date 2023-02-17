@@ -1,25 +1,20 @@
-
 <div class="row flexSec">
-  <div class="col-sm-2" *ngFor="let items of __menu"  (click)="navigate(items)">
+  <div class="col-sm-2" *ngFor="let items of __menu" (click)="navigate(items)">
     <div class="smallBox">
-     <div class="smallBoxIconSec">
-      <div class="iconCol_12 iconSec">
-        <i class="fa fa-user-o" aria-hidden="true"></i>
+      <div class="smallBoxIconSec">
+        <div class="iconCol_12 iconSec">
+          <i class="fa fa-user-o" aria-hidden="true"></i>
+        </div>
       </div>
+      <h2>{{items.menu_name}}</h2>
     </div>
-    <h2>{{items.menu_name}}</h2>
   </div>
 </div>
-</div>
 
 
 
-<core-search 
-(__searchItem)="getSearchItem($event)" 
-[__flag]="'Y'" 
-[__placeholder]="'Search by Plan name'"
-[__api_name]="'/plan'"
-></core-search>
+<core-search (__searchItem)="getSearchItem($event)" [__flag]="'Y'" [__placeholder]="'Search by Plan name'"
+  [__api_name]="'/plan'"></core-search>
 
 <div class="mat-elevation-z3">
 
@@ -29,16 +24,16 @@
       <th mat-header-cell *matHeaderCellDef>Sl no.</th>
       <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
     </ng-container>
-  
-  
-  
+
+
+
     <!--Temporary TIN No.-->
     <ng-container matColumnDef="plan_name">
       <th mat-header-cell *matHeaderCellDef>Plan</th>
       <td mat-cell *matCellDef="let element">{{element.plan_name}}</td>
     </ng-container>
-  
-  
+
+
     <!-- Buisness Type-->
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef>Edit</th>
@@ -48,7 +43,7 @@
         </a>
       </td>
     </ng-container>
-     
+
     <!-- Buisness Type-->
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef>Delete</th>
@@ -58,7 +53,7 @@
         </a>
       </td>
     </ng-container>
-  
+
     <tr mat-header-row *matHeaderRowDef="__columns"></tr>
     <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
     <tr class="mat-row" *matNoDataRow>
@@ -73,26 +68,26 @@
           10
         </mat-button-toggle>
         <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
-         50
+          50
         </mat-button-toggle>
         <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
           100
         </mat-button-toggle>
+        <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+          All
+        </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-    
-    <!-- <mat-paginator [pageSizeOptions]="[__pageNumber.value]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator> -->
-  
-     
+
     <div class="paginatorContainer">
       <mat-button-toggle-group *ngFor="let paginate of __paginate">
         <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
           <label>
-                 <!-- {{(paginate.label | replace) == 'N' ? '' : ''}} -->
-                 <mat-icon  *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
-                 <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
-                 <span *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
-  
+            <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+            <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+            <span
+              *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
           </label>
         </mat-button-toggle>
       </mat-button-toggle-group>

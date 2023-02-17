@@ -31,7 +31,12 @@ export class FinancialComponent implements OnInit {
   ngOnInit() { }
   // + ('&trans_id='+ this.__trans_id)
   getFianancMaster(__paginate: string  | null = "10") {
-    this.__dbIntr.api_call(0, '/mfTraxShow', 'trans_type_id=' + this.__transType_id + '&paginate='+ __paginate ).pipe(map((x: responseDT) => x.data)).subscribe((res: any) => {
+    this.__dbIntr.api_call(0, '/mfTraxShow', 
+    'trans_type_id=' + this.__transType_id 
+    + '&paginate='+ __paginate 
+    + (this.__rtDt.snapshot.queryParamMap.get('trans_id') ? '&trans_id=' 
+    + atob(this.__rtDt.snapshot.queryParamMap.get('trans_id')) : '') )
+    .pipe(map((x: responseDT) => x.data)).subscribe((res: any) => {
       this.setPaginator(res.data);
       this.__paginate = res.links;
     })

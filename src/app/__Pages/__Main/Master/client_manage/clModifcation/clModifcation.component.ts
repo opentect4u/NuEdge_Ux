@@ -21,17 +21,22 @@ export class ClModifcationComponent implements OnInit {
   __city: any = [];
   __docTypeMaster: docType[];
   __noImg: string = '../../../../../../assets/images/noimg.png';
-  allowedExtensions = ['jpg', 'png', 'jpeg'];
+  // allowedExtensions = ['jpg', 'png', 'jpeg'];
+  allowedExtensions = ['pdf'];
+
   __maxDt = dates.disabeldDates();
   __stateMaster: any = [];
   __clientForm = new FormGroup({
+    anniversary_date: new FormControl('',this.data.cl_type == 'P' || this.data.cl_type == 'N' ? [Validators.required]:[]),
     client_name: new FormControl(this.data.id > 0 ? this.data.items.client_name : '', [Validators.required]),
     dob: new FormControl(this.data.id > 0 ? this.data.items.dob : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     pan: new FormControl(this.data.id > 0 ? this.data.items.pan : '', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]
     ),
+    dob_actual: new FormControl(this.data.id > 0 ? this.data.items.pan : '',this.data.cl_type == 'E' ? [] : [Validators.required]),
     mobile: new FormControl(this.data.id > 0 ? this.data.items.mobile : '',
       this.data.cl_type == 'E' ? [] : [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]
     ),
+    same_as_above: new FormControl(''),
     sec_mobile: new FormControl(this.data.id > 0 ? this.data.items.sec_mobile : '', this.data.cl_type == 'E' ? [] : [Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]),
     email: new FormControl(this.data.id > 0 ? this.data.items.email : '', this.data.cl_type == 'E' ? [] : [Validators.email]),
     sec_email: new FormControl(this.data.id > 0 ? this.data.items.sec_email : '', this.data.cl_type == 'E' ? [] : [Validators.email]),
@@ -53,7 +58,7 @@ export class ClModifcationComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog
-  ) { 
+  ) {
     this.__utility.__isvisibleMenuIcon$.pipe(skip(1)).subscribe(res =>{
       if(this.data.id == res.id && this.data.flag == res.flag){
         this.__isVisible = res.isVisible
@@ -68,7 +73,7 @@ export class ClModifcationComponent implements OnInit {
     if(this.data.id > 0 ){
       this.getDistrict_city();
       console.log(this.data.items);
-      
+
       if(this.data.items.client_doc.length > 0){
         this.data.items.client_doc.forEach(element => {
             this.__docs.push(this.setItem(element.id, element.doc_type_id, element.doc_name, element.client_id));
@@ -94,7 +99,7 @@ export class ClModifcationComponent implements OnInit {
   ngAfterViewInit() {
     /** Trigger on Change on State */
     this.__clientForm.get('state').valueChanges.subscribe(res => {
-      console.log(res);  
+      console.log(res);
       if (this.data.client_type == 'E' && this.data.id == 0) {
         //Nothing to deal with
       }
@@ -113,6 +118,10 @@ export class ClModifcationComponent implements OnInit {
       }
     })
     /**End */
+    this.__clientForm.get('same_as_above').valueChanges.subscribe(res => {
+        this.__clientForm.controls['dob_actual'].setValue(res ? this.__clientForm.value.dob : '');
+    })
+
 
   }
   getDocumnetTypeMaster() {
@@ -148,6 +157,8 @@ export class ClModifcationComponent implements OnInit {
       return;
     }
     const __client = new FormData();
+    __client.append("dob_actual", this.__clientForm.value.dob_actual);
+    __client.append("anniversary_date", this.__clientForm.value.anniversary_date);
     __client.append("client_name", this.__clientForm.value.client_name);
     __client.append("dob", this.__clientForm.value.dob);
     __client.append("pan", this.__clientForm.value.pan);
@@ -186,7 +197,7 @@ export class ClModifcationComponent implements OnInit {
     if(_pan.target.value != ''){
       this.__dbIntr.api_call(0,'/client','pan='+_pan.target.value).subscribe((res: responseDT) =>{
         if(res.data.length > 0){this.__utility.showSnackbar('Pan Number already exist! please try with another one',0);}
-      })  
+      })
     }
   }
   preventNonumeric(__ev) {
@@ -244,6 +255,7 @@ export class ClModifcationComponent implements OnInit {
     this.__docs.controls[index].get('doc_name').updateValueAndValidity();
     if (this.__docs.controls[index].get('doc_name').status == 'VALID') {
       const file = __ev.target.files[0];
+
       const reader = new FileReader();
       reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
       reader.readAsDataURL(file);
@@ -288,7 +300,7 @@ export class ClModifcationComponent implements OnInit {
               validators: [Validators.required]
             }
             ,
-            
+
             {
               name: "pincode",
               validators: [Validators.required, Validators.minLength(6), Validators.maxLength(6)]
@@ -324,5 +336,4 @@ export class ClModifcationComponent implements OnInit {
     });
   }
 
-  
 }

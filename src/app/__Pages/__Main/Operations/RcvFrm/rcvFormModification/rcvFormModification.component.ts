@@ -194,7 +194,7 @@ export class RcvFormModificationComponent implements OnInit {
           map((x: any) => x.data)
         ).subscribe({
           next: (value) => {
-            this.__schemeMst = value.data
+            this.__schemeMst = value;
             this.searchResultVisibilityForScheme('block');
           },
           complete: () => console.log(''),

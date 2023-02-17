@@ -18,5 +18,5 @@ export interface scheme {
   pip_add_min_amt:string
   sip_add_min_amt:string
   isin_no:string,
+  gstin_no:string
   }
-  

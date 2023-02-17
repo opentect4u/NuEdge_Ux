@@ -83,7 +83,7 @@ export class UploadScmComponent implements OnInit {
       header: 'pip_fresh_min_amt',
       cell: (element: Record<string, any>) => `${element['pip_fresh_min_amt']}`,
       isDate: true
-    }, 
+    },
     {
       columnDef: 'sip_fresh_min_amt',
       header: 'sip_fresh_min_amt',
@@ -150,7 +150,7 @@ export class UploadScmComponent implements OnInit {
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
-    
+
   }
   previewlatestCategoryEntry() {
     this.__dbIntr.api_call(0, '/scheme', null).pipe(pluck('data')).subscribe((res: scheme[]) => {
@@ -160,9 +160,10 @@ export class UploadScmComponent implements OnInit {
   }
   populateDT(__items: scheme) {
     // this.__utility.navigate('/main/master/cateModify', btoa(__items.id.toString()));
-    this.__utility.navigatewithqueryparams('/main/master/scmModify',{queryParams: {id:btoa(__items.id.toString()),flag:btoa(__items.scheme_type)}});
+    this.__utility.navigatewithqueryparams('/main/master/productwisemenu/scheme',
+    {queryParams: {id:btoa(__items.id.toString()),flag:btoa(__items.scheme_type)}});
   }
-  getFiles(__ev) {  
+  getFiles(__ev) {
       this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);
       this.__uploadRnt.get('file')?.patchValue(this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : '');
       // this.onFileDropped(__ev);
@@ -205,7 +206,7 @@ export class UploadScmComponent implements OnInit {
             this.__uploadRnt.get('rntFile').updateValueAndValidity();
           }
         }
-      }); 
+      });
   }
 /**
    * format bytes

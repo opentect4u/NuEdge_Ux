@@ -14,30 +14,23 @@
 
 
 
-<core-search (__searchItem)="getSearchItem($event)" 
-[__flag]="'Y'" 
+<!-- <core-search (__searchItem)="getSearchItem($event)"
+[__flag]="'Y'"
 [__placeholder]="'Search by document type'"
   [__api_name]="'/documenttype'">
 </core-search>
 
 <div class="mat-elevation-z3">
   <table mat-table [dataSource]="__selectDocs" class="table_Custome">
-    <!-- Sl No. -->
     <ng-container matColumnDef="sl_no">
       <th mat-header-cell *matHeaderCellDef>Sl no.</th>
       <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
     </ng-container>
-
-
-
-    <!--Temporary TIN No.-->
     <ng-container matColumnDef="doc_type">
       <th mat-header-cell *matHeaderCellDef>Document Type</th>
       <td mat-cell *matCellDef="let element">{{element.doc_type}}</td>
     </ng-container>
 
-
-    <!-- Buisness Type-->
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef>Edit</th>
       <td mat-cell *matCellDef="let element">
@@ -47,7 +40,7 @@
       </td>
     </ng-container>
 
-    <!-- Buisness Type-->
+
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef>Delete</th>
       <td mat-cell *matCellDef="let element">
@@ -63,7 +56,7 @@
       <td class="mat-cell" colspan="4" class="text-center">No data found</td>
     </tr>
   </table>
-  
+
   <div class="paginator">
     <div class="itemsPerPage">
       <label>Items Per Page :&nbsp; </label>
@@ -77,28 +70,30 @@
         <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
           100
         </mat-button-toggle>
+        <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+          All
+        </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-    
-    <!-- <mat-paginator [pageSizeOptions]="[__pageNumber.value]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator> -->
-  
-     
+
+
+
+
     <div class="paginatorContainer">
       <mat-button-toggle-group *ngFor="let paginate of __paginate">
         <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
           <label>
-                 <!-- {{(paginate.label | replace) == 'N' ? '' : ''}} -->
                  <mat-icon  *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
                  <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
                  <span *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
-  
+
           </label>
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-  
-  
-  
-  
+
+
+
+
   </div>
-</div>
+</div> -->

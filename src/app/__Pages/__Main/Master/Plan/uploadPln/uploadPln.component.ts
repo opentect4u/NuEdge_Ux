@@ -13,7 +13,7 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
 @Component({
   selector: 'app-uploadPln',
   templateUrl: './uploadPln.component.html',
-  styleUrls: ['./uploadPln.component.css']
+  styleUrls: ['./uploadPln.component.css'],
 })
 export class UploadPlnComponent implements OnInit {
   displayedColumns: Array<string> = [];
@@ -22,55 +22,88 @@ export class UploadPlnComponent implements OnInit {
     {
       columnDef: 'plan_name',
       header: 'plan_name',
-      cell: (element: Record<string, any>) => `${element['plan_name']}`
+      cell: (element: Record<string, any>) => `${element['plan_name']}`,
     },
   ];
-  tableData = new MatTableDataSource(
-    [{
-      "plan_name": "XXXXXXXX",
-    }]
-  );
+  tableData = new MatTableDataSource([
+    {
+      plan_name: 'XXXXXXXX',
+    },
+  ]);
   allowedExtensions = ['csv', 'xlsx'];
   __uploadRnt = new FormGroup({
-    rntFile: new FormControl('', [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
-    file: new FormControl('')
-  })
+    rntFile: new FormControl('', [
+      Validators.required,
+      fileValidators.fileExtensionValidator(this.allowedExtensions),
+    ]),
+    file: new FormControl(''),
+  });
   __columns: string[] = ['sl_no', 'rnt_name', 'edit', 'delete'];
   __selectRNT = new MatTableDataSource<plan>([]);
-  constructor(private __dbIntr: DbIntrService, private __utility: UtiliService) { this.previewlatestRntEntry(); }
+  constructor(
+    private __dbIntr: DbIntrService,
+    private __utility: UtiliService
+  ) {
+    this.previewlatestRntEntry();
+  }
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   }
   previewlatestRntEntry() {
-    this.__dbIntr.api_call(0, '/plan', null).pipe(map((x: responseDT) => x.data)).subscribe((res: plan[]) => {
-      this.__selectRNT = new MatTableDataSource(res);
-      this.__selectRNT.paginator =this.paginator;
-    })
+    this.__dbIntr
+      .api_call(0, '/plan', null)
+      .pipe(map((x: responseDT) => x.data))
+      .subscribe((res: plan[]) => {
+        this.__selectRNT = new MatTableDataSource(res);
+        this.__selectRNT.paginator = this.paginator;
+      });
   }
 
   populateDT(__items: plan) {
-    this.__utility.navigatewithqueryparams('/main/master/plnModify', {queryParams:{id:btoa(__items.id.toString())}});
+    this.__utility.navigatewithqueryparams(
+      '/main/master/productwisemenu/plan',
+      { queryParams: { id: btoa(__items.id.toString()) } }
+    );
   }
   getFiles(__ev) {
-    this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);
-    this.__uploadRnt.get('file')?.patchValue(this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : '');
+    this.__uploadRnt
+      .get('rntFile')
+      .setValidators([
+        Validators.required,
+        fileValidators.fileSizeValidator(__ev.files),
+        fileValidators.fileExtensionValidator(this.allowedExtensions),
+      ]);
+    this.__uploadRnt
+      .get('file')
+      ?.patchValue(
+        this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : ''
+      );
     // this.onFileDropped(__ev);
   }
   uploadRnt() {
-
     if (this.__uploadRnt.invalid) {
-      this.__utility.showSnackbar("Please recheck the form again & resubmit", 0);
-      return
+      this.__utility.showSnackbar(
+        'Please recheck the form again & resubmit',
+        0
+      );
+      return;
     }
     const __uploadRnt = new FormData();
     __uploadRnt.append('file', this.__uploadRnt.get('file').value);
-    this.__dbIntr.api_call(1, '/planimport', __uploadRnt).subscribe((res: responseDT) => {
-      this.__utility.showSnackbar(res.suc == 1 ? 'File Uploadation Successfull' : 'Something went wrong! please try again later', res.suc);
-      if (res.suc == 1) {
-        this.deleteFiles();
-      }
-    })
+    this.__dbIntr
+      .api_call(1, '/planimport', __uploadRnt)
+      .subscribe((res: responseDT) => {
+        this.__utility.showSnackbar(
+          res.suc == 1
+            ? 'File Uploadation Successfull'
+            : 'Something went wrong! please try again later',
+          res.suc
+        );
+        if (res.suc == 1) {
+          this.deleteFiles();
+        }
+      });
   }
   onFileDropped(__ev) {
     this.__uploadRnt.get('file').patchValue('');
@@ -98,10 +131,10 @@ export class UploadPlnComponent implements OnInit {
       });
   }
   /**
-     * format bytes
-     * @param bytes (File size in bytes)
-     * @param decimals (Decimals point)
-     */
+   * format bytes
+   * @param bytes (File size in bytes)
+   * @param decimals (Decimals point)
+   */
   formatBytes(bytes: any, decimals: any = 2) {
     if (bytes === 0) {
       return '0 Bytes';

@@ -25,7 +25,7 @@ export class ScmModificationComponent implements OnInit {
   __scmForm = new FormGroup({
       category_id: new FormControl(this.data.id > 0 ? this.data.items.category_id : '', [Validators.required]),
     subcategory_id: new FormControl(this.data.id > 0 ? this.data.items.subcategory_id : '', [Validators.required]),
-    product_id: new FormControl(this.data.id > 0 ? this.data.items.product_id : '', [Validators.required]),
+    product_id: new FormControl(this.data.product_id),
     amc_id: new FormControl(this.data.id > 0 ? this.data.items.amc_id : '', [Validators.required]),
     scheme_name: new FormControl(this.data.id > 0 ? this.data.items.scheme_name : '', [Validators.required]),
     scheme_type: new FormControl(this.data.scheme_type),
@@ -37,7 +37,7 @@ export class ScmModificationComponent implements OnInit {
       sip_fresh_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_fresh_min_amt : '',[Validators.required]),
       pip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.pip_add_min_amt : '',[Validators.required]),
       sip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_add_min_amt : '',[Validators.required]),
-      isin_no:new FormControl(this.data.id > 0 ? this.data.items.isin_no : '',[Validators.required]),
+      gstin_no:new FormControl(this.data.id > 0 ? this.data.items.gstin_no : '',[Validators.required]),
   })
   constructor(
     public dialogRef: MatDialogRef<ScmModificationComponent>,
@@ -56,21 +56,24 @@ export class ScmModificationComponent implements OnInit {
     this.getProductMaster();
     if(this.data.id > 0){
       this.getamcMasterbyproductId(this.data.items.product_id);
-          this.getcatMasterbyproductId(this.data.items.product_id);
+        this.getcatMasterbyproductId(this.data.items.product_id);
         this.getsubcatMasterbyproductId(this.data.items.category_id);
-
+    }
+    else{
+      this.getamcMasterbyproductId(this.data.product_id);
+      this.getcatMasterbyproductId(this.data.product_id);
     }
   }
   ngAfterViewInit(){
       /*--------------Trigger when Product changes---------------*/
-      this.__scmForm.controls["product_id"].valueChanges.subscribe(res => {
-          this.getamcMasterbyproductId(res);
-          this.getcatMasterbyproductId(res);
-        this.__scmForm.controls["subcategory_id"].patchValue('');
-        this.__subcatMaster = [];
-      })
+      // this.__scmForm.controls["product_id"].valueChanges.subscribe(res => {
+      //     this.getamcMasterbyproductId(res);
+      //     this.getcatMasterbyproductId(res);
+      //   this.__scmForm.controls["subcategory_id"].patchValue('');
+      //   this.__subcatMaster = [];
+      // })
       /*--------------End---------------*/
-  
+
       /*--------------Trigger when Category changes---------------*/
       this.__scmForm.controls["category_id"].valueChanges.subscribe(res => {
         console.log(res);
@@ -130,7 +133,7 @@ export class ScmModificationComponent implements OnInit {
       __scm.append("sip_fresh_min_amt",this.__scmForm.value.sip_fresh_min_amt);
       __scm.append("pip_add_min_amt",this.__scmForm.value.pip_add_min_amt);
       __scm.append("sip_add_min_amt",this.__scmForm.value.sip_add_min_amt);
-      __scm.append("isin_no",this.__scmForm.value.isin_no);
+      __scm.append("gstin_no",this.__scmForm.value.gstin_no);
         this.__dbIntr.api_call(1, '/schemeAddEdit', __scm).subscribe((res: any) => {
       if (res.suc == 1) {
            this.reset();

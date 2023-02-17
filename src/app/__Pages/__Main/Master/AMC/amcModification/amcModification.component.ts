@@ -20,12 +20,24 @@ export class AmcModificationComponent implements OnInit {
   __ProductMaster: product[] = [];
   __amcForm = new FormGroup({
     rnt_id: new FormControl(this.data.id > 0 ? (this.data.amc.rnt_id ? this.data.amc.rnt_id : '') : '', [Validators.required]),
-    product_id: new FormControl(this.data.id > 0 ? (this.data.amc.product_id ? this.data.amc.product_id : '') : '', [Validators.required]),
+
+
+    head_ofc_contact_per: new FormControl(this.data.id > 0 ? this.data.amc.head_ofc_contact_per : ''),
+    head_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.amc.head_contact_per_mob : '',[Validators.pattern("^[0-9]*$")]),
+    head_contact_per_email: new FormControl(this.data.id > 0 ? this.data.amc.head_contact_per_email : '',[Validators.email]),
+    head_ofc_addr: new FormControl(this.data.id > 0 ? this.data.amc.head_ofc_addr : ''),
+
+    local_ofc_contact_per: new FormControl(this.data.id > 0 ? this.data.amc.local_ofc_contact_per : ''),
+    local_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.amc.local_contact_per_mob : '',[Validators.pattern("^[0-9]*$")]),
+    local_contact_per_email: new FormControl(this.data.id > 0 ? this.data.amc.local_contact_per_email : '',[Validators.email]),
+    local_ofc_addr: new FormControl(this.data.id > 0 ? this.data.amc.local_ofc_addr : ''),
+
+    // product_id: new FormControl(this.data.id > 0 ? (this.data.amc.product_id ? this.data.amc.product_id : '') : '', [Validators.required]),
     amc_name: new FormControl(this.data.id > 0 ? (this.data.amc.amc_name ? this.data.amc.amc_name : '') : '', [Validators.required]),
-    ofc_address: new FormControl(this.data.id > 0 ? (this.data.amc.ofc_addr ? this.data.amc.ofc_addr : '') : '', [Validators.required]),
+    ofc_address: new FormControl(this.data.id > 0 ? (this.data.amc.ofc_addr ? this.data.amc.ofc_addr : '') : ''),
     cust_care_no: new FormControl(this.data.id > 0 ? (this.data.amc.cus_care_no ? this.data.amc.cus_care_no : '') : '', [Validators.required, Validators.pattern("^[0-9]*$")]),
     cust_care_email: new FormControl(this.data.id > 0 ? (this.data.amc.cus_care_email ? this.data.amc.cus_care_email : '') : '', [Validators.required, Validators.email]),
-    web_site: new FormControl(this.data.id > 0 ? (this.data.amc.website  ? this.data.amc.website  : ''): '', [Validators.required]),
+    web_site: new FormControl(this.data.id > 0 ? (this.data.amc.website  ? this.data.amc.website  : ''): ''),
     l1_name: new FormControl(this.data.id > 0 ? (this.data.amc.l1_name!="null"  ? this.data.amc.l1_name  : ''): '', [Validators.required]),
     l1_email: new FormControl(this.data.id > 0 ? (this.data.amc.l1_email!="null" ? this.data.amc.l1_email : '') : '', [Validators.required, Validators.email]),
     l1_contact_no: new FormControl(this.data.id > 0 ? (this.data.amc.l1_contact_no> 0 ? this.data.amc.l1_contact_no : '') : '', [Validators.required, Validators.pattern("^[0-9]*$")]),
@@ -45,8 +57,8 @@ export class AmcModificationComponent implements OnInit {
     l6_email: new FormControl(this.data.id > 0 ? (this.data.amc.l6_email!="null" ? this.data.amc.l6_email : '') : ''),
     l6_contact_no: new FormControl(this.data.id > 0 ? (this.data.amc.l6_contact_no> 0 ? this.data.amc.l6_contact_no : '') : ''),
     id: new FormControl(this.data.id),
-    sip_start_date: new FormControl(this.data.id > 0 ? this.data.amc.sip_start_date : '', [Validators.required]),
-    sip_end_date: new FormControl(this.data.id > 0 ? this.data.amc.sip_end_date : '', [Validators.required])
+    gstin:new FormControl(this.data.id > 0 ? this.data.amc.gstin : '',[Validators.required])
+
   })
   constructor(
     public dialogRef: MatDialogRef<AmcModificationComponent>,
@@ -54,13 +66,13 @@ export class AmcModificationComponent implements OnInit {
     private __utility: UtiliService,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog
-  ) { 
+  ) {
 
   }
 
   ngOnInit() {
     this.getRNTMaster();
-    this.getProductMaster();
+    // this.getProductMaster();
   }
   fullScreen(){
     this.dialogRef.removePanelClass('mat_dialog');
@@ -81,11 +93,11 @@ export class AmcModificationComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
-  getProductMaster() {
-    this.__dbIntr.api_call(0, '/product', null).pipe(map((x: responseDT) => x.data)).subscribe((res: product[]) => {
-      this.__ProductMaster = res;
-    })
-  }
+  // getProductMaster() {
+  //   this.__dbIntr.api_call(0, '/product', null).pipe(map((x: responseDT) => x.data)).subscribe((res: product[]) => {
+  //     this.__ProductMaster = res;
+  //   })
+  // }
   getRNTMaster() {
     this.__dbIntr.api_call(0, '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe((res: rnt[]) => {
       this.__RntMaster = res;
@@ -101,14 +113,14 @@ export class AmcModificationComponent implements OnInit {
     }
     const __amc = new FormData();
     __amc.append("amc_name", this.__amcForm.value.amc_name);
-    __amc.append("product_id", this.__amcForm.value.product_id);
+    __amc.append("product_id", this.data.product_id);
     __amc.append("rnt_id", this.__amcForm.value.rnt_id);
     __amc.append("cus_care_no", this.__amcForm.value.cust_care_no > 0 ? this.__amcForm.value.cust_care_no : '');
     __amc.append("ofc_addr", this.__amcForm.value.ofc_address);
     __amc.append("cus_care_email", this.__amcForm.value.cust_care_email);
     __amc.append("website", this.__amcForm.value.web_site);
-    __amc.append("sip_start_date", this.__amcForm.value.sip_start_date);
-    __amc.append("sip_end_date", this.__amcForm.value.sip_end_date);
+    // __amc.append("sip_start_date", this.__amcForm.value.sip_start_date);
+    // __amc.append("sip_end_date", this.__amcForm.value.sip_end_date);
 
     __amc.append("l1_name", this.__amcForm.value.l1_name);
     __amc.append("l1_email", this.__amcForm.value.l1_email);
@@ -137,11 +149,21 @@ export class AmcModificationComponent implements OnInit {
 
     __amc.append("id", this.__amcForm.value.id);
 
+    __amc.append("head_ofc_contact_per",this.__amcForm.value.head_ofc_contact_per);
+    __amc.append("head_contact_per_mob",this.__amcForm.value.head_contact_per_mob);
+    __amc.append("head_contact_per_email",this.__amcForm.value.head_contact_per_email);
+    __amc.append("head_ofc_addr",this.__amcForm.value.head_ofc_addr);
+    __amc.append("local_ofc_contact_per",this.__amcForm.value.local_ofc_contact_per);
+    __amc.append("local_contact_per_mob",this.__amcForm.value.local_contact_per_mob);
+    __amc.append("local_contact_per_email",this.__amcForm.value.local_contact_per_email);
+    __amc.append("local_ofc_addr",this.__amcForm.value.local_ofc_addr);
+    __amc.append("gstin",this.__amcForm.value.gstin);
+
     this.__dbIntr.api_call(1, '/amcAddEdit', __amc).subscribe((res: any) => {
       if (res.suc == 1) {
       this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'AMC updated successfully' : 'AMC added successfully') : 'Something went wrong! please try again later', res.suc);
       this.reset();
-      this.dialogRef.close({ id: this.data.id, data: res.data }) 
+      this.dialogRef.close({ id: this.data.id, data: res.data })
     }
     })
   }

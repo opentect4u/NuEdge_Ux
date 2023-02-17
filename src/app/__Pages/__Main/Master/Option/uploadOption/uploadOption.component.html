@@ -2,48 +2,53 @@
   <div class="col-sm-7 p-0">
     <div class="cardSec m-1">
       <div class="card_header">
-        <h3>Upload AMC</h3>
+        <h3>Upload Option</h3>
       </div>
       <div class="card_body">
 
         <form [formGroup]="__uploadRnt" (ngSubmit)="uploadRnt()">
           <div class="row">
             <div class="col-sm-12">
-              <button class="float-right mb-5" color="primary" type="button" mat-button (click)="exporter.exportTable('csv',{fileName:'SampleOption'})"><mat-icon>download</mat-icon>Download Sample </button>
+              <button class="float-right mb-5" color="primary" type="button" mat-button
+                (click)="exporter.exportTable('csv',{fileName:'SampleOption'})">
+                <mat-icon>download</mat-icon>Download Sample
+              </button>
             </div>
             <div class="col-sm-12">
               <div class="container_zone" appOptionDrag (fileDropped)="onFileDropped($event)">
-               <img src="../../../../../../assets/images/____upload.png" alt="Upload Images" height="63" width="63">
-              <input type="file" accept=".csv,.xlsx" max="1" min="1" #fileDropRef  name="upload_file" id="fileDropRef" accept=".csv,.xlsx" class="form-control" (change)="getFiles($event.target)" formControlName="rntFile">
-               <h3>Drag and drop files here</h3>
-               <h3>or</h3>
-               <label for="fileDropRef">Browse files</label>
-             </div>
-               <p class="my-4"><strong>Note:</strong><span> Format allowed: CSV,XLSX  ( Maximum Size Upto 2MB )</span></p>
-               <div class="invalid-feedback"
-               *ngIf=" __uploadRnt.get('rntFile').invalid && ( __uploadRnt.get('rntFile').dirty ||  __uploadRnt.get('rntFile').touched)">
-               <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.required">*Please
-                 provide file</span>
-               <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.inValidExt">*Please
-                 provide valid file format</span>
-               <span class="invalid-feedback" *ngIf="__uploadRnt.get('rntFile').errors?.fileSizeValidator">*File size
-                 must not exceed than
-                 2MB.</span>
-             </div>
-             <!-- Custom Validators -->
-             <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.checkRequire">*Pleaseprovide
-               file</span>
-             <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.checkExt">*Please provide valid
-               file format</span>
-             <span class="invalid-feedback" *ngIf="__uploadRnt.get('rntFile').errors?.checkSize">*File size must not
-               exceed than 2 MB.</span>
-             <!-- End -->
+                <img src="../../../../../../assets/images/____upload.png" alt="Upload Images" height="63" width="63">
+                <input type="file" accept=".csv,.xlsx" max="1" min="1" #fileDropRef name="upload_file" id="fileDropRef"
+                  accept=".csv,.xlsx" class="form-control" (change)="getFiles($event.target)" formControlName="rntFile">
+                <h3>Drag and drop files here</h3>
+                <h3>or</h3>
+                <label for="fileDropRef">Browse files</label>
+              </div>
+              <p class="my-4"><strong>Note:</strong><span> Format allowed: CSV,XLSX ( Maximum Size Upto 2MB )</span></p>
+              <div class="invalid-feedback"
+                *ngIf=" __uploadRnt.get('rntFile').invalid && ( __uploadRnt.get('rntFile').dirty ||  __uploadRnt.get('rntFile').touched)">
+                <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.required">*Please
+                  provide file</span>
+                <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.inValidExt">*Please
+                  provide valid file format</span>
+                <span class="invalid-feedback" *ngIf="__uploadRnt.get('rntFile').errors?.fileSizeValidator">*File size
+                  must not exceed than
+                  2MB.</span>
+              </div>
+              <!-- Custom Validators -->
+              <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.checkRequire">*Pleaseprovide
+                file</span>
+              <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rntFile').errors?.checkExt">*Please provide valid
+                file format</span>
+              <span class="invalid-feedback" *ngIf="__uploadRnt.get('rntFile').errors?.checkSize">*File size must not
+                exceed than 2 MB.</span>
+              <!-- End -->
 
               <div class="files-list my-3" *ngIf="this.__uploadRnt.get('file').value">
-                <div class="single-file" >
+                <div class="single-file">
                   <div class="file-icon" style="width: 50px">
-                    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                      x="0px" y="0px" viewBox="0 0 58 58" style="enable-background:new 0 0 58 58;" xml:space="preserve">
+                    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58 58"
+                      style="enable-background:new 0 0 58 58;" xml:space="preserve">
                       <polygon style="fill:#EDEADA;" points="51.5,14 37.5,0 6.5,0 6.5,58 51.5,58 " />
                       <g>
                         <path style="fill:#CEC9AE;"
@@ -69,91 +74,89 @@
                     </p>
                     <!-- <app-progress [progress]="file?.progress"></app-progress> -->
                   </div>
-        
+
                   <!-- Delete Icon -->
                   <div class="delete" (click)="deleteFiles()">
                     <mat-icon>
                       delete_forever
-                      </mat-icon>
+                    </mat-icon>
                   </div>
                 </div>
-          </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <button class="btn addBtn"  [disabled]="this.__uploadRnt.invalid">Upload</button>
-            </div>  
+              <button class="btn addBtn" [disabled]="this.__uploadRnt.invalid">Upload</button>
+            </div>
           </div>
         </form>
 
       </div>
-      </div>
     </div>
-    <div class="col-sm-5 p-0">
-      <div class="cardSec m-1">
-        <div class="card_header">
-          <h3>Recent Entries</h3>
-          <button mat-icon-button title="View All R&T" [routerLink]="['/main/master/plan']">
-            <mat-icon>north_east</mat-icon>
-          </button>
-        </div>
-        <div class="card_body">
-        <mat-paginator hidden [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator>
-          <table mat-table [dataSource]="__selectOpt">
-            <!-- Sl No. -->
-            <ng-container matColumnDef="sl_no">
-              <th mat-header-cell *matHeaderCellDef>Sl no.</th>
-              <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
-            </ng-container>
-            <!--Temporary TIN No.-->
-            <ng-container matColumnDef="opt_name">
-              <th mat-header-cell *matHeaderCellDef>Option</th>
-              <td mat-cell *matCellDef="let element">
+  </div>
+  <div class="col-sm-5 p-0">
+    <div class="cardSec m-1">
+      <div class="card_header">
+        <h3>Recent Entries</h3>
+        <button mat-icon-button title="View All Option" [routerLink]="['/main/master/productwisemenu/option']">
+          <mat-icon>north_east</mat-icon>
+        </button>
+      </div>
+      <div class="card_body">
+        <mat-paginator hidden [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"
+          [showFirstLastButtons]="true"></mat-paginator>
+        <table mat-table [dataSource]="__selectOpt">
+          <!-- Sl No. -->
+          <ng-container matColumnDef="sl_no">
+            <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+          </ng-container>
+          <!--Temporary TIN No.-->
+          <ng-container matColumnDef="opt_name">
+            <th mat-header-cell *matHeaderCellDef>Option</th>
+            <td mat-cell *matCellDef="let element">
               {{element.opt_name}}
-              </td>
-            </ng-container>
-            <!-- Buisness Type-->
-            <ng-container matColumnDef="edit">
-              <th mat-header-cell *matHeaderCellDef>Edit</th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-icon-button (click)="populateDT(element)">
-                  <mat-icon class="edit_icon">edit</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-            <!-- Buisness Type-->
-            <ng-container matColumnDef="delete">
-              <th mat-header-cell *matHeaderCellDef>Delete</th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-icon-button>
-                  <mat-icon class="delete_icon">delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="__columns"></tr>
-            <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
-            <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" colspan="4">No data found</td>
-            </tr>
-          </table>
-        </div>
+            </td>
+          </ng-container>
+          <!-- Buisness Type-->
+          <ng-container matColumnDef="edit">
+            <th mat-header-cell *matHeaderCellDef>Edit</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button (click)="populateDT(element)">
+                <mat-icon class="edit_icon">edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <!-- Buisness Type-->
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef>Delete</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button>
+                <mat-icon class="delete_icon">delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="__columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data found</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
+</div>
 
 
 <mat-table hidden class="mat-elevation-z8" [dataSource]="tableData" matTableExporter #exporter="matTableExporter">
-  <ng-container
-    *ngFor="let disCol of tableColumns let colIndex = index;"
-    matColumnDef="{{disCol.columnDef}}"
-  >
+  <ng-container *ngFor="let disCol of tableColumns let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
     <th mat-header-cell *matHeaderCellDef>
       {{ disCol.header }}
     </th>
 
     <td mat-cell *matCellDef="let element">
-      <span > 
+      <span>
         {{ disCol.cell(element) }}
       </span>
     </td>

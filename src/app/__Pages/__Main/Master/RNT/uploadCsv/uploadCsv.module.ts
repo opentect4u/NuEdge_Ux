@@ -9,8 +9,13 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { DragDirective } from 'src/app/__Directives/drag.directive';
 
-
-const routes: Routes = [{path:'',component:UploadCsvComponent}]
+const routes: Routes = [
+  {
+    path: '',
+    component: UploadCsvComponent,
+    // data: { breadcrumb: 'RNT Upload' },
+  },
+];
 
 @NgModule({
   imports: [
@@ -20,8 +25,8 @@ const routes: Routes = [{path:'',component:UploadCsvComponent}]
     MatIconModule,
     ReactiveFormsModule,
     MatTableModule,
-    MatTableExporterModule
+    MatTableExporterModule,
   ],
-  declarations: [UploadCsvComponent,DragDirective]
+  declarations: [UploadCsvComponent, DragDirective],
 })
-export class UploadCsvModule { }
+export class UploadCsvModule {}

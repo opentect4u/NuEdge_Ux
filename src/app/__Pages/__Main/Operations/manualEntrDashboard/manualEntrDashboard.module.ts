@@ -3,19 +3,20 @@ import { CommonModule } from '@angular/common';
 import { ManualEntrDashboardComponent } from './manualEntrDashboard.component';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes=[{path:'',component:ManualEntrDashboardComponent}]
+const routes: Routes = [
+  {
+    path: '',
+    component: ManualEntrDashboardComponent,
+    data: { breadcrumb: 'Trax Type' },
+  },
+];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [ManualEntrDashboardComponent]
+  imports: [CommonModule, RouterModule.forChild(routes)],
+  declarations: [ManualEntrDashboardComponent],
 })
 export class ManualEntrDashboardModule {
-
-   constructor() {
+  constructor() {
     console.log('Menual Entry Dashboard Module Loaded');
-   }
-   
- }
+  }
+}

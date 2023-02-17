@@ -11,6 +11,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { BnkrptComponent } from './bankRpt/bnkRpt.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTableExporterModule } from 'mat-table-exporter';
 
 const routes: Routes = [{path:'',component:BankComponent}]
 
@@ -25,9 +28,11 @@ const routes: Routes = [{path:'',component:BankComponent}]
     DragDropModule,
     OverlayModule,
     MatButtonToggleModule,
-    SharedModule
+    SharedModule,
+    MatRadioModule,
+    MatTableExporterModule
   ],
-  declarations: [BankComponent,BnkModificationComponent]
+  declarations: [BankComponent,BnkModificationComponent,BnkrptComponent]
 })
 export class BankModule {
   constructor() {

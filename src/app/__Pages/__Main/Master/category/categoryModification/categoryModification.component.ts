@@ -16,7 +16,7 @@ export class CategoryModificationComponent implements OnInit {
   __isVisible:boolean = false;
   __ProductMaster: product[];
   __categoryForm = new FormGroup({
-    product_id: new FormControl(this.data.id > 0 ? this.data.items.product_id : '', [Validators.required]),
+    product_id: new FormControl(this.data.product_id),
     cat_name: new FormControl(this.data.id > 0 ? this.data.items.cat_name : '', [Validators.required]),
     id: new FormControl(this.data.id)
   })

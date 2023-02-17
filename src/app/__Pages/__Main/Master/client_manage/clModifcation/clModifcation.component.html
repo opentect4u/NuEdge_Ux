@@ -12,13 +12,13 @@
       <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-    
+
       <button mat-icon-button  [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-  
+
     </div>
-  
+
   </div>
 
 <mat-dialog-content>
@@ -26,9 +26,9 @@
     <div class="row" *ngIf="this.data.cl_type != 'M' && this.data.cl_type != 'N'">
         <div class="col-sm-12 my-4">
           <label for="panNo">Pan No <span class="text-danger">*</span></label>
-          <input type="text" name="pan" id="panNo" 
-          class="form-control" 
-          placeholder="eg. XXXXX1234X" 
+          <input type="text" name="pan" id="panNo"
+          class="form-control"
+          placeholder="eg. XXXXX1234X"
           formControlName="pan" minlength="10" maxlength="10"
           (change)="checkPanExistornot($event)"
           >
@@ -52,18 +52,47 @@
           </div>
         </div>
         <div class="col-sm-12 my-4" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
-          <label for="dob">Date Of Birth <span class="text-danger">*</span></label>
-          <input type="date" 
-          name="dob" 
-          id="dob" 
-          class="form-control" 
+          <label for="dob">Date Of Birth As Pan<span class="text-danger">*</span></label>
+          <input type="date"
+          name="dob"
+          id="dob"
+          class="form-control"
           [max]="__maxDt"
           formControlName="dob">
           <div class="invalid-feedback" *ngIf="__clientForm.get('dob').invalid && (__clientForm.get('dob').dirty || __clientForm.get('dob').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('dob')).errors?.required">*Please provide date of birth</span>
           </div>
         </div>
-        
+        <div class="col-sm-12 my-auto" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+          <input type="checkbox" formControlName="same_as_above" id="same_as_above" class="form-check-input"/>
+          <label for="same_as_above" class="form-check-label ml-4">Same As Above</label>
+        </div>
+        <div class="col-sm-12 my-4" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+          <label for="dob_actual">Actual Date Of Birth<span class="text-danger">*</span></label>
+          <input type="date"
+          name="dob_actual"
+          id="dob_actual"
+          class="form-control"
+          [max]="__maxDt"
+          formControlName="dob_actual">
+          <div class="invalid-feedback" *ngIf="__clientForm.get('dob_actual').invalid && (__clientForm.get('dob_actual').dirty || __clientForm.get('dob_actual').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('dob_actual')).errors?.required">*Please provide actual date of birth</span>
+          </div>
+        </div>
+
+        <div class="col-sm-12 my-4" *ngIf="this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+          <label for="dob_actual">Anniversary Date<span class="text-danger">*</span></label>
+          <input type="date"
+          name="anniversary_date"
+          id="anniversary_date"
+          class="form-control"
+          [max]="__maxDt"
+          formControlName="anniversary_date">
+          <div class="invalid-feedback" *ngIf="__clientForm.get('anniversary_date').invalid && (__clientForm.get('anniversary_date').dirty || __clientForm.get('anniversary_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('anniversary_date')).errors?.required">*Please provide anniversary date</span>
+          </div>
+        </div>
+
       </div>
 
       <div class="row" *ngIf="this.data.cl_type == 'M'">
@@ -88,8 +117,15 @@
           </div>
         </div>
         <div class="col-sm-12 my-4">
-          <label for="relations">Relations <span class="text-danger">*</span></label>
-          <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea>
+          <label for="relations">Relationship <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="relations">
+          <option value="">Select Relations</option>
+          <option value="S">Son</option>
+          <option value="D">Daughter</option>
+          <option value="F">Father</option>
+          <option value="M">Mother</option>
+          </select>
+          <!-- <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea> -->
           <div class="invalid-feedback" *ngIf="__clientForm.get('relations').invalid && (__clientForm.get('relations').dirty || __clientForm.get('relations').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('relations')).errors?.required">*Please provide relations</span>
           </div>
@@ -106,7 +142,7 @@
             <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('minlength')">*mobile number must be 10 digits</span>
             <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('maxlength')">*mobile number must be 10 digits</span>
             <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('pattern')">*allow only digits</span>
-  
+
           </div>
         </div>
         <div class="col-sm-12 my-4">
@@ -115,7 +151,7 @@
           <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('minlength')">*mobile number must be 10 digits</span>
           <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('maxlength')">*mobile number must be 10 digits</span>
           <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('pattern')">*allow only digits</span>
-  
+
         </div>
       </div>
       <div class="row" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
@@ -125,14 +161,14 @@
           <div class="invalid-feedback" *ngIf="__clientForm.get('email').invalid && (__clientForm.get('email').dirty || __clientForm.get('email').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('email')).errors?.required">*Please provide email</span>
             <span class="invalid-feedback" *ngIf="(__clientForm.get('email')).errors?.email">*Please provide valid email</span>
-          
+
           </div>
         </div>
         <div class="col-sm-12 my-4">
           <label for="sec_email">Alternative Email</label>
           <input type="text" name="sec_email" id="sec_email"  class="form-control"   placeholder="Enter Alternative Email" formControlName="sec_email">
           <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_email')).errors?.email">*Please provide valid email</span>
-           
+
         </div>
       </div>
       <div class="row" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
@@ -191,7 +227,7 @@
           </div>
         </div>
       </div>
-            
+
       <div class="divider" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
         <span>Upload Documents</span>
        <hr class="line"/>
@@ -226,7 +262,7 @@
                   <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}
                   </option>
                 </select>
-  
+
                 <div class="invalid-feedback"
                   *ngIf=" __docs.controls[i].get('doc_type_id').invalid && ( __docs.controls[i].get('doc_type_id').dirty ||  __docs.controls[i].get('doc_type_id').touched)">
                   <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_type_id').errors?.required">*Please
@@ -234,8 +270,10 @@
                 </div>
               </td>
               <td class="rowWidth">
-                <input type="file" accept=".jpg,.jpeg,.png" name="docFile" id="docFile" class="form-control"
+                <input type="file" accept=".pdf" name="docFile" id="docFile" class="form-control"
                   formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)">
+                <!-- <input type="file" accept=".jpg,.jpeg,.png" name="docFile" id="docFile" class="form-control"
+                  formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)"> -->
                 <div class="invalid-feedback"
                   *ngIf=" __docs.controls[i].get('doc_name').invalid && ( __docs.controls[i].get('doc_name').dirty ||  __docs.controls[i].get('doc_name').touched)">
                   <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_name').errors?.required">*Please
@@ -246,10 +284,13 @@
                     *ngIf="__docs.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
                     2MB.</span>
                 </div>
-  
+
               </td>
               <td class="rowWidth">
-                <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
+                <!-- <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image"> -->
+                <a>
+                  <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
+                </a>
               </td>
               <td>
                 <ng-container *ngIf="__docs.controls[i].get('id')?.value == 0">

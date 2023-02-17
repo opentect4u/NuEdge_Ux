@@ -29,10 +29,20 @@ export interface amc {
   l6_contact_no: number
   l6_email: string
   l6_name: string
-
+  gstin: string;
   ofc_addr: string
   website: string
   cus_care_no:number
-  cus_care_email:string
+  cus_care_email:string,
+
+  head_ofc_contact_per: any
+  head_contact_per_mob: any
+  head_contact_per_email: any
+  head_ofc_addr: any
+
+  local_ofc_contact_per: any
+  local_contact_per_mob: any
+  local_contact_per_email: any
+  local_ofc_addr: any
 }
 /****************END***********************/

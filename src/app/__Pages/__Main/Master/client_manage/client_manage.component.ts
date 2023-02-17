@@ -5,7 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -34,9 +34,27 @@ export class Client_manageComponent implements OnInit {
     private __RtDT: ActivatedRoute,
     private __dbIntr: DbIntrService,
     private __utility:UtiliService) { 
-      console.log(atob(this.__RtDT.snapshot.queryParamMap.get('flag')));
+      // console.log(atob(this.__RtDT.snapshot.queryParamMap.get('flag')));
     }
-  ngOnInit() {this.getClientMaster(atob(this.__RtDT.snapshot.queryParamMap.get('flag')));}
+  ngOnInit() {
+    this.getClientMaster(atob(this.__RtDT.snapshot.queryParamMap.get('flag')));
+     if(this.__RtDT.snapshot.queryParamMap.get('id')){
+      this.getClDetailsParticular();
+     }
+ }
+
+getClDetailsParticular(){
+  this.__dbIntr.api_call
+  (0,'/client',
+  'flag='+ atob(this.__RtDT.snapshot.queryParamMap.get('flag')) 
+  + '&id='+ atob(this.__RtDT.snapshot.queryParamMap.get('id')))
+  .pipe(pluck("data")).subscribe((res: client[]) =>{
+    console.log(res);
+    if(res.length > 0){
+      this.openDialog(res[0],res[0].id,res[0].client_type);
+    }
+  })
+}
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {}
     else if(__ev.flag == 'F') {

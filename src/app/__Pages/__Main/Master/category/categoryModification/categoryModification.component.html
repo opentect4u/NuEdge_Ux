@@ -12,18 +12,18 @@
       <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-    
+
       <button mat-icon-button  [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-  
+
     </div>
-  
+
   </div>
   <mat-dialog-content>
     <form  [formGroup]="__categoryForm" (ngSubmit)="submit()" id="__categoryForm_{{data.id}}" autocomplete="off" ngNativeValidate>
       <div class="row">
-        <div class="col-sm-12 my-3">
+        <!-- <div class="col-sm-12 my-3">
           <label for="productName">Product <span class="text-danger">*</span></label>
            <select class="form-control" formControlName="product_id" id="productName">
              <option value="">Select Product</option>
@@ -32,8 +32,8 @@
           <div class="invalid-feedback" *ngIf="__categoryForm.get('product_id').invalid && (__categoryForm.get('product_id').dirty || __categoryForm.get('product_id').touched)">
             <span class="invalid-feedback" *ngIf="(__categoryForm.get('product_id')).errors?.required">*Please provide product name</span>
           </div>
-        </div>
-        <div class="col-sm-12 my-3">
+        </div> -->
+        <div class="col-sm-12 my-5">
           <label for="catName">Category <span class="text-danger">*</span></label>
           <input type="text" name="cat_name" id="catName" class="form-control" placeholder="Enter Category" formControlName="cat_name">
           <div class="invalid-feedback" *ngIf="__categoryForm.get('cat_name').invalid && (__categoryForm.get('cat_name').dirty || __categoryForm.get('cat_name').touched)">

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { pluck } from 'rxjs/operators';
+import { pluck, take } from 'rxjs/operators';
 import { Column } from 'src/app/__Model/column';
 import { docType } from 'src/app/__Model/__docTypeMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -41,12 +41,12 @@ export class UploadCsvComponent implements OnInit {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   }
   previewlatestDocumnetType() {
-    this.__dbIntr.api_call(0, '/documenttype', null).pipe(pluck('data')).subscribe((res: docType[]) => {
+    this.__dbIntr.api_call(0, '/documenttype', null).pipe(pluck('data'),take(5)).subscribe((res: docType[]) => {
       this.__selectRNT = new MatTableDataSource(res);
     })
   }
   populateDT(__items: docType) {
-    this.__utility.navigatewithqueryparams('/main/master/docTypeModify', {queryParams: {id:btoa(__items.id.toString())}});
+    this.__utility.navigatewithqueryparams('/main/master/docType', {queryParams: {id:btoa(__items.id.toString())}});
   }
   getFiles(__ev) {  
       this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);

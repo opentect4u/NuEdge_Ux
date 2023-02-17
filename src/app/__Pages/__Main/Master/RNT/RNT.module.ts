@@ -11,7 +11,12 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { ReplacePipe } from 'src/app/__Pipes/replace.pipe';
-const __routes: Routes = [{ path: '', component: RNTComponent }]
+import { RntrptComponent } from './rntRpt/rntRpt.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTableExporterModule } from 'mat-table-exporter';
+import { MatRadioModule } from '@angular/material/radio';
+import { SharedModule } from 'src/app/shared/shared.module';
+const __routes: Routes = [{ path: '', component: RNTComponent}]
 
 
 @NgModule({
@@ -22,11 +27,15 @@ const __routes: Routes = [{ path: '', component: RNTComponent }]
     MatTableModule,
     MatDialogModule,
     ReactiveFormsModule,
+    SharedModule,
     OverlayModule,
     DragDropModule,
     MatButtonToggleModule,
+    MatCheckboxModule,
+    MatTableExporterModule,
+    MatRadioModule
   ],
-  declarations: [RNTComponent,RntModificationComponent,ReplacePipe]
+  declarations: [RNTComponent,RntModificationComponent,RntrptComponent,ReplacePipe]
 })
 export class RNTModule {
 

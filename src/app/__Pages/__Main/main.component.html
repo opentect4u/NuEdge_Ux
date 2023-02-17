@@ -1,5 +1,6 @@
 <common-header></common-header>
 <!-- [ngClass]="{'mainContainerSecNoMenu':__rtDt?.id == 3}" -->
 <div class="container-fluid mainContainerSec" __MenuShow>
+  <main-brdCrmbs [hidden]="__rtDt?.id == 3"></main-brdCrmbs>
   <router-outlet></router-outlet>
 </div>

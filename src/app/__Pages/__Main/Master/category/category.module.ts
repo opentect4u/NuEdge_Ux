@@ -4,13 +4,15 @@ import { CategoryComponent } from './category.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { CategoryModificationComponent } from './categoryModification/categoryModification.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { CatrptComponent } from './catRpt/catRpt.component';
+import { MatTableExporterModule } from 'mat-table-exporter';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 const routes:Routes = [{path:'',component:CategoryComponent}]
@@ -26,11 +28,16 @@ const routes:Routes = [{path:'',component:CategoryComponent}]
     OverlayModule,
     DragDropModule,
     SharedModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatTableExporterModule,
+    MatRadioModule
   ],
-  declarations: [CategoryComponent,CategoryModificationComponent]
+  declarations: [
+    CategoryComponent,
+    CatrptComponent,
+    CategoryModificationComponent]
 })
-export class CategoryModule { 
+export class CategoryModule {
   constructor() {
     console.log('CategoryModule loaded');
   }

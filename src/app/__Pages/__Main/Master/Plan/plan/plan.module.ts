@@ -11,6 +11,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { PlanrptComponent } from '../planRpt/planRpt.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTableExporterModule } from 'mat-table-exporter';
 
 
 const routes: Routes =[{path:'',component:PlanComponent}]
@@ -26,8 +29,10 @@ const routes: Routes =[{path:'',component:PlanComponent}]
     DragDropModule,
     OverlayModule,
     MatButtonToggleModule,
-    SharedModule
+    SharedModule,
+    MatRadioModule,
+    MatTableExporterModule
   ],
-  declarations: [PlanComponent,PlanModificationComponent]
+  declarations: [PlanComponent,PlanModificationComponent,PlanrptComponent]
 })
 export class PlanModule { }

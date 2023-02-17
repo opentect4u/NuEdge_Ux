@@ -11,6 +11,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SubcatrptComponent } from './subcatRpt/subcatRpt.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTableExporterModule } from 'mat-table-exporter';
 
 const routes: Routes =[{path:'',component:SubcategoryComponent}]
 
@@ -26,11 +29,13 @@ const routes: Routes =[{path:'',component:SubcategoryComponent}]
     DragDropModule,
     OverlayModule,
     MatButtonToggleModule,
-    SharedModule
+    SharedModule,
+    MatRadioModule,
+    MatTableExporterModule
   ],
-  declarations: [SubcategoryComponent,SubcateModificationComponent]
+  declarations: [SubcategoryComponent,SubcateModificationComponent,SubcatrptComponent]
 })
-export class SubcategoryModule { 
+export class SubcategoryModule {
   constructor() {
     console.log('Sub-category Module Loaded');
   }

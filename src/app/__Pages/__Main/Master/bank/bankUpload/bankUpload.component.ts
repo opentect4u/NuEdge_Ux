@@ -75,7 +75,7 @@ export class BankUploadComponent implements OnInit {
   }
   populateDT(__items: bank) {
     // this.__utility.navigate('/main/master/cateModify', btoa(__items.id.toString()));
-    this.__utility.navigatewithqueryparams('/main/master/bnkModify',{queryParams: {id:btoa(__items.id.toString())}});
+    this.__utility.navigatewithqueryparams('/main/master/bank',{queryParams: {id:btoa(__items.id.toString())}});
   }
   getFiles(__ev) {  
       this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);

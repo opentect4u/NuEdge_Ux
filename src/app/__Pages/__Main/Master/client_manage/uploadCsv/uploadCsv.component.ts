@@ -148,7 +148,7 @@ export class UploadCsvComponent implements OnInit {
     })
   }
   populateDT(__items: client) {
-    this.__utility.navigatewithqueryparams('/main/master/clModify', { queryParams: { flag: btoa(__items.client_type), id: btoa(__items.id.toString()) } })
+    this.__utility.navigatewithqueryparams('/main/master/clientmaster', { queryParams: { flag: btoa(__items.client_type), id: btoa(__items.id.toString()) } })
   }
   getFiles(__ev) {
     this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);

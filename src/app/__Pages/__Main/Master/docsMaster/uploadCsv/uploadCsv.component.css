@@ -24,3 +24,7 @@
     color: #38424c;
     margin: 8px 0px;
   }
+
+  td,th{
+    width:25%!important;
+  }

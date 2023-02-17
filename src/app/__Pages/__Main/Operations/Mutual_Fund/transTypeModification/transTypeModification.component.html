@@ -27,7 +27,7 @@
                       </label>
                       <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
                         formControlName="temp_tin_no" placeholder="Search by Temporary TIN Number">
-                        <span class="spinner-border" *ngIf="__istemporaryspinner && __traxForm.get('temp_tin_no').value.length > 1"></span>
+                        <span class="spinner-border" *ngIf="__istemporaryspinner && __traxForm.get('temp_tin_no').value?.length > 1"></span>
                       <div class="processMain_2" __searchResVisibility
                         (appOutsideClick)="outsideClickfortempTin($event)">
                         <div class="serachresult_client" #searchTin>
@@ -38,7 +38,7 @@
                           </ul>
                           <div class="noDataFound" *ngIf="__temp_tinMst.length == 0">
                             <h5 class="text-center">
-                              Sorry!! No Results Found
+                              Sorry!! No Records Found
                             </h5>
                             <p>Temporary TIN Number Not AVailable</p>
                           </div>
@@ -110,7 +110,7 @@
                         <label for="Euin">EUIN<span class="text-danger">*</span></label>
                         <input type="search" id="Euin" class="form-control" placeholder="Serach By EUIN Number"
                           formControlName="euin_no">
-                        <span class="spinner-border" *ngIf="__isEuinNumberVisible && __traxForm.get('euin_no').value.length > 1"></span>
+                        <span class="spinner-border" *ngIf="__isEuinNumberVisible && __traxForm.get('euin_no').value?.length > 1"></span>
                         <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
                           <div class="serachresult_client" #searchResult>
                             <ul *ngIf="__euinMst.length > 0">
@@ -152,7 +152,7 @@
                       <input type="search" name="__clntCd" id="__clntCd" class="form-control"
                         formControlName="client_code"
                         placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
-                        <span class="spinner-border" *ngIf="__isclientVisible && __traxForm.get('client_code').value.length > 1"></span>
+                        <span class="spinner-border" *ngIf="__isclientVisible && __traxForm.get('client_code').value?.length > 1"></span>
 
                       <div class="processMain_2" __searchResVisibility
                         (appOutsideClick)="outsideClickforClient($event)">
@@ -164,7 +164,7 @@
                           </ul>
                           <div class="noDataFound" *ngIf="__clientMst.length == 0">
                             <h5 class="text-center">
-                              Sorry!! No Results Found
+                              Sorry!! No Records Found
                             </h5>
                             <p>To create a new client .Please click on Create Client</p>
                           </div>
@@ -216,7 +216,7 @@
                 </div>
               </div>
               <!-- End -->
-  
+
               <!-- First Client KYC Status -->
               <ng-container *ngIf="__traxForm.get('kyc_status').value == 'Y'">
                 <div class="row mt-5">
@@ -291,7 +291,7 @@
                                       </ul>
                                       <div class="noDataFound" *ngIf="__sec_clientMst.length == 0">
                                         <h5 class="text-center">
-                                          Sorry!! No Results Found
+                                          Sorry!! No Records Found
                                         </h5>
                                         <p>To create a new client .Please click on Create Client</p>
                                       </div>
@@ -338,8 +338,8 @@
                         <td class="text-center">
                           <ng-container
                             *ngIf="
-                            __SecondClient 
-                            &&__traxForm.get('second_client_code').value 
+                            __SecondClient
+                            &&__traxForm.get('second_client_code').value
                             && __traxForm.get('second_client_name').value">
                             <button type="button" mat-button color="primary"
                               (click)="openDialogForAdditionalApplicant('FC')">
@@ -410,7 +410,7 @@
                                       </ul>
                                       <div class="noDataFound" *ngIf="__third_clientMst.length == 0">
                                         <h5 class="text-center">
-                                          Sorry!! No Results Found
+                                          Sorry!! No Records Found
                                         </h5>
                                         <p>To create a new client .Please click on Create Client</p>
                                       </div>
@@ -527,7 +527,7 @@
                                 {{items.scheme_name}}
                               </li>
                             </ul>
-  
+
                             <div class="noDataFound" *ngIf="__schemeMst.length == 0">
                               <h5 class="text-center">
                                 Sorry!! No Schemes Results Found
@@ -538,7 +538,7 @@
                         </div>
                       </div>
                     </div>
-  
+
                   </div>
                   <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
                     <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')" mat-button
@@ -565,7 +565,7 @@
                                {{items.scheme_name}}
                               </li>
                             </ul>
-  
+
                             <div class="noDataFound" *ngIf="__schemeMstforSwitchTo.length == 0">
                               <h5 class="text-center">
                                 Sorry!! No Schemes Results Found
@@ -610,7 +610,7 @@
                       <span class="invalid-feedback" *ngIf="(__traxForm.get('inv_type')).errors?.required">*Please provide
                         investment type</span>
                     </div>
-  
+
                   </div>
                 </div>
                 <div class="row mt-5" *ngIf="__traxForm.get('inv_type').value == 'F'">
@@ -622,7 +622,7 @@
                 </div>
               </ng-container>
               <!-- End -->
-             
+
               <!-- Folio Number -->
               <ng-container *ngIf="__traxForm.get('inv_type').value == 'A' || __traxForm.get('trans_id').value == '3'">
                 <div class="row mt-5" >
@@ -707,7 +707,7 @@
                   </div>
                 </div>
               </div>
-             
+
               <div class="row mt-5">
                 <div class="col-sm-12 ">
                   <label for="option_to">Option For Scheme To<span class="text-danger">*</span></label>
@@ -766,7 +766,7 @@
                 </div>
               </div>
               </ng-container>
-              
+
               <!-- SIP -->
               <ng-container *ngIf="__traxForm.get('trans_id').value == '2'">
                 <div class="row">
@@ -829,10 +829,10 @@
                 <div class="row mt-5">
                   <div class="col-sm-12">
                     <label for="amount">Amount</label>
-                    <input type="text" 
-                    name="amount" 
-                    id="amount" 
-                    formControlName="amount" 
+                    <input type="text"
+                    name="amount"
+                    id="amount"
+                    formControlName="amount"
                     [class.is-invalid]="__checkAmt && __traxForm.get('amount').value"
                     [class.is-valid]="!__checkAmt && __traxForm.get('amount').value"
                     class="form-control"
@@ -858,7 +858,7 @@
 
                     <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforbank($event)">
                       <div class="searchDiv">
-                        <label for="__clntCd">Bank 
+                        <label for="__clntCd">Bank
                           <span class="text-danger">  * </span>
                         </label>
                         <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="chq_bank"
@@ -872,7 +872,7 @@
                             </ul>
                             <div class="noDataFound" *ngIf="__bnkMst.length == 0">
                               <h5 class="text-center">
-                                Sorry!! No Results Found
+                                Sorry!! No Records Found
                               </h5>
                               <p>Banks are not available</p>
                             </div>
@@ -936,7 +936,7 @@
       <div class="col-sm-3 p-5">
         <div class="row">
           <div class="col-sm-12  clientCode my-3" *ngFor="let trns_type of __trans_types_Cnt"
-            (click)="navigateTODashboard(trns_type.count)">
+            (click)="navigateTODashboard(trns_type)">
             <div class="smallBox smallBoxWidth">
               <div class="smallBoxIconSec">
                 <div class="iconCol_13 iconSec customiconSec">

@@ -10,6 +10,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { DoctyperptComponent } from './docTypeRpt/docTypeRpt.component';
+import { MatTableExporterModule } from 'mat-table-exporter';
+import { MatRadioModule } from '@angular/material/radio';
 const routes: Routes =[{path:'',component:DocsMasterComponent}]
 @NgModule({
   imports: [
@@ -21,11 +24,13 @@ const routes: Routes =[{path:'',component:DocsMasterComponent}]
     MatPaginatorModule,
     OverlayModule,
     SharedModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatTableExporterModule,
+    MatRadioModule
   ],
-  declarations: [DocsMasterComponent,DocsModificationComponent]
+  declarations: [DocsMasterComponent,DocsModificationComponent,DoctyperptComponent]
 })
-export class DocsMasterModule { 
+export class DocsMasterModule {
   constructor() {
     console.log("Document Master Module Loaded");
   }

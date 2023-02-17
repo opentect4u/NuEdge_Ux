@@ -11,7 +11,11 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { RplcePipe } from 'src/app/__Pipes/rplce.pipe';
-
+import { AmcrptComponent } from './amcRpt/amcRpt.component';
+import {MatRadioModule} from '@angular/material/radio';
+import { SharedModule } from 'src/app/shared/shared.module';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatTableExporterModule } from 'mat-table-exporter';
 const routes: Routes =[{path:'',component:AMCComponent}]
 @NgModule({
   imports: [
@@ -23,9 +27,18 @@ const routes: Routes =[{path:'',component:AMCComponent}]
     MatDialogModule,
     OverlayModule,
     DragDropModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatRadioModule,
+    SharedModule,
+    MatCheckboxModule,
+    MatTableExporterModule
   ],
-  declarations: [AMCComponent,AmcModificationComponent,RplcePipe]
+  declarations: [
+    AMCComponent,
+    AmcModificationComponent,
+    RplcePipe,
+    AmcrptComponent
+  ]
 })
 export class AMCModule {
   constructor() {

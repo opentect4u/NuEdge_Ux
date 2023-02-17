@@ -2,22 +2,22 @@
   <div class="card-body">
 
     <div class="progressMainSec">
-        
-      <div class="flexSec_1">
-        <div class="processMain_1">
-          <a class="iconButton" *ngIf="__flag == 'Y'" (click)="navigate()"><i class="fa fa-long-arrow-left backIcon"
+
+      <div class="flexSec_1" [ngStyle]="{'justify-content':__flag != 'Y' ?  'end':''}">
+        <div class="processMain_1" [hidden]="__flag != 'Y'">
+          <a class="iconButton" (click)="navigate()"><i class="fa fa-long-arrow-left backIcon"
               aria-hidden="true"></i></a>
-          <span class="title" *ngIf="__flag == 'Y'">{{__pageTitle?.pageTitle}}</span>
+          <span class="title" >{{__pageTitle?.pageTitle}}</span>
           <!-- <button class="mr-3 ml-3" color="primary" type="button" mat-raised-button ><mat-icon>add</mat-icon>&nbsp;Manual Entry</button>
           <button color="primary" type="button" mat-raised-button ><mat-icon>cloud_upload</mat-icon>&nbsp;Upload Csv</button> -->
         </div>
-        <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+        <div class="processMain_2"  __searchResVisibility (appOutsideClick)="outsideClick($event)">
           <div class="searchDiv">
             <form [formGroup]="__SearchForm" autocomplete="off">
               <core-input [_type]="'search'" [__class]="'searchInput'" [__readonly]="false" [__required]="false"
                 [_placeholder]="__placeholder" [formControl]="$any(__SearchForm.controls['searchItem'])"></core-input>
             </form>
-            <mat-icon class="searchIcon">search</mat-icon>               
+            <mat-icon class="searchIcon">search</mat-icon>
               <button mat-icon-button class="clearIcon" (click)="ClearText()"
               *ngIf="$any(__SearchForm.controls['searchItem']).value != ''">
                 <mat-icon>close</mat-icon>
@@ -53,7 +53,7 @@
               </ul>
               <div class="noDataFound" *ngIf="__items.length == 0">
                 <h5 class="text-center">
-                  Sorry!! No Results Found
+                  Sorry!! No Records Found
                 </h5>
                 <p>If your result match,they will appear here</p>
               </div>
