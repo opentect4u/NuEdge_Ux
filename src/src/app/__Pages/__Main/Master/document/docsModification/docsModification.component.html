@@ -1,0 +1,295 @@
+<!-- <h2 mat-dialog-title>{{data.title}}</h2>
+<div mat-dialog-title class="dialog-title">
+  <h2>{{data.title}}</h2>
+  <button mat-icon-button [mat-dialog-close]="">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<mat-dialog-content #scrollTobottom>
+  <core-search *ngIf="this.data.id == 0" (__searchItem)="getSearchItem($event)" [__flag]="'N'" [__api_name]="'/client'"
+    [__placeholder]="'Search by Name, Pan, Mobile, Email, DOB, Client code'">
+  </core-search>
+  <form [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm">
+    <div class="row my-5" *ngIf="__isvisible">
+      <div class="col-sm-4">
+        <label for="clientCode">Client Code</label>
+        <input type="text" name="clientCode" id="clientCode" class="form-control" formControlName="client_code">
+      </div>
+      <div class="col-sm-4">
+        <label for="pan_no">Pan No.</label>
+        <input type="text" name="pan_no" id="pan_no" class="form-control" formControlName="pan_no">
+      </div>
+      <div class="col-sm-4">
+        <label for="mobile">Mobile</label>
+        <input type="text" name="mobile" id="mobile" class="form-control" formControlName="mobile">
+      </div>
+    </div>
+    <div class="row my-5" *ngIf="__isvisible">
+      <div class="col-sm-6">
+        <label for="client_name">Client Name</label>
+        <input type="text" name="client_name" id="client_name" class="form-control" formControlName="client_name">
+      </div>
+      <div class="col-sm-6">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" class="form-control" formControlName="email">
+      </div>
+    </div>
+    <table class="my-4">
+      <thead>
+        <tr>
+          <th>
+            Document type <span class="text-danger">*</span>
+          </th>
+          <th>
+            Document <span class="text-danger">*</span>
+            <p class="my-1"><label>Allowed format : </label><small> JPG,PNG,JPEG</small></p>
+            <p class="m-0"><label>File Size:</label> <small> 2MB (max)</small></p>
+          </th>
+          <th>
+            Thumbnail
+          </th>
+          <th>
+            <button mat-icon-button type="button">
+              <mat-icon (click)="addItem()">add</mat-icon>
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody formArrayName="doc_dtls">
+        <tr *ngFor="let item of __docs.controls; let i = index;">
+          <ng-container [formGroupName]="i">
+            <td class="rowWidth">
+              <select name="_doc_type" id="_doc_type" formControlName="doc_type_id" class="form-control">
+                <option value="">Select document type</option>
+                <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}
+                </option>
+              </select>
+
+              <div class="invalid-feedback"
+                *ngIf=" __docs.controls[i].get('doc_type_id').invalid && ( __docs.controls[i].get('doc_type_id').dirty ||  __docs.controls[i].get('doc_type_id').touched)">
+                <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_type_id').errors?.required">*Please
+                  provide document type</span>
+              </div>
+            </td>
+            <td class="rowWidth">
+              <input type="file" accept=".jpg,.jpeg,.png" name="docFile" id="docFile" class="form-control"
+                formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)">
+              <div class="invalid-feedback"
+                *ngIf=" __docs.controls[i].get('doc_name').invalid && ( __docs.controls[i].get('doc_name').dirty ||  __docs.controls[i].get('doc_name').touched)">
+                <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_name').errors?.required">*Please
+                  provide file</span>
+                <span class="invalid-feedback" *ngIf="__docs.controls[i].get('doc_name').errors?.inValidExt">*Invalid
+                  file extension.</span>
+                <span class="invalid-feedback"
+                  *ngIf="__docs.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
+                  2MB.</span>
+              </div>
+
+            </td>
+            <td class="rowWidth">
+              <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
+            </td>
+            <td>
+              <ng-container *ngIf="__docs.controls[i].get('id')?.value == 0">
+                <button mat-icon-button type="button" *ngIf="i > 0">
+                  <mat-icon class="delete_icon" (click)="removeDocument(i)">delete</mat-icon>
+                </button>
+              </ng-container>
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>
+            Document type <span class="text-danger">*</span>
+          </th>
+          <th>
+            Document <span class="text-danger">*</span>
+            <p class="my-1"><label>Allowed format : </label><small> JPG,PNG,JPEG</small></p>
+            <p class="m-0"><label>File Size:</label> <small> 2MB (max)</small></p>
+          </th>
+          <th>
+            Thumbnail
+          </th>
+          <th>
+            <button mat-icon-button type="button">
+              <mat-icon (click)="addItem()">add</mat-icon>
+            </button>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <button class="btn addBtn" form="__clientForm" [disabled]="__clientForm.invalid">Submit</button>
+</mat-dialog-actions>
+<br clear="all"> -->
+
+
+
+
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    
+      <button mat-icon-button  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+  
+    </div>
+  
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="__clientForm" (ngSubmit)="submit()" id="__doc_form_{{data.id}}" class="mt-3">
+      <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+        <div>
+          <label for="">Search By Client Code:</label>
+          <input type="search" name="clientCode" id="clientCode" class="form-control" formControlName="client_code" placeholder="Search By Client Code">           
+          <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+            <div class="serachresult_client" #searchResult>
+              <ul *ngIf="__items.length > 0">
+                <li *ngFor="let items of __items" (click)="getItems(items)">
+                  {{items.client_code}} | {{items.client_name}} | {{items.pan}} | {{items.mobile}}
+                </li>
+              </ul>
+              <div class="noDataFound" *ngIf="__items.length == 0">
+                <h5 class="text-center">
+                  Sorry!! No Clients Found
+                </h5>
+                <p>If your result match,they will appear here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 my-3" *ngIf="__isvisible">
+          <label for="pan_no">Pan No.</label>
+          <input type="text" name="pan_no" id="pan_no" class="form-control" formControlName="pan_no" placeholder="Pan Number">
+        </div>
+        <div class="col-sm-12 my-3" *ngIf="__isvisible">
+          <label for="mobile">Mobile</label>
+          <input type="text" name="mobile" id="mobile" class="form-control" formControlName="mobile" placeholder="Mobile Number">
+        </div>
+      </div>
+      <div class="row" *ngIf="__isvisible">
+        <div class="col-sm-12 my-4">
+          <label for="client_name">Client Name</label>
+          <input type="text" name="client_name" id="client_name" class="form-control" formControlName="client_name"  placeholder="Client Name">
+        </div>
+        <div class="col-sm-12 my-4">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" class="form-control" formControlName="email" placeholder="Email Id">
+        </div>
+      </div>
+      <div class="divider">
+        <span>Upload Documents</span>
+       <hr class="line"/>
+      </div>
+      <table class="my-4">
+        <thead>
+          <tr>
+            <th>
+              Document type <span class="text-danger">*</span>
+            </th>
+            <th>
+              Document <span class="text-danger">*</span>
+              <p class="my-1"><label>Allowed format : </label><small> JPG,PNG,JPEG</small></p>
+              <p class="m-0"><label>File Size:</label> <small> 2MB (max)</small></p>
+            </th>
+            <th>
+              Thumbnail
+            </th>
+            <th>
+              <button mat-icon-button type="button">
+                <mat-icon (click)="addItem()">add</mat-icon>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody formArrayName="doc_dtls">
+          <tr *ngFor="let item of __docs.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td class="rowWidth">
+                <select name="_doc_type" id="_doc_type" formControlName="doc_type_id" class="form-control">
+                  <option value="">Select document type</option>
+                  <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}
+                  </option>
+                </select>
+  
+                <div class="invalid-feedback"
+                  *ngIf=" __docs.controls[i].get('doc_type_id').invalid && ( __docs.controls[i].get('doc_type_id').dirty ||  __docs.controls[i].get('doc_type_id').touched)">
+                  <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_type_id').errors?.required">*Please
+                    provide document type</span>
+                </div>
+              </td>
+              <td class="rowWidth">
+                <input type="file" accept=".jpg,.jpeg,.png" name="docFile" id="docFile" class="form-control"
+                  formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)">
+                <div class="invalid-feedback"
+                  *ngIf=" __docs.controls[i].get('doc_name').invalid && ( __docs.controls[i].get('doc_name').dirty ||  __docs.controls[i].get('doc_name').touched)">
+                  <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_name').errors?.required">*Please
+                    provide file</span>
+                  <span class="invalid-feedback" *ngIf="__docs.controls[i].get('doc_name').errors?.inValidExt">*Invalid
+                    file extension.</span>
+                  <span class="invalid-feedback"
+                    *ngIf="__docs.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
+                    2MB.</span>
+                </div>
+  
+              </td>
+              <td class="rowWidth">
+                <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
+              </td>
+              <td>
+                <ng-container *ngIf="__docs.controls[i].get('id')?.value == 0">
+                  <button mat-icon-button type="button" *ngIf="i > 0">
+                    <mat-icon class="delete_icon" (click)="removeDocument(i)">delete</mat-icon>
+                  </button>
+                </ng-container>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>
+              Document type <span class="text-danger">*</span>
+            </th>
+            <th>
+              Document <span class="text-danger">*</span>
+              <p class="my-1"><label>Allowed format : </label><small> JPG,PNG,JPEG</small></p>
+              <p class="m-0"><label>File Size:</label> <small> 2MB (max)</small></p>
+            </th>
+            <th>
+              Thumbnail
+            </th>
+            <th>
+              <button mat-icon-button type="button">
+                <mat-icon (click)="addItem()">add</mat-icon>
+              </button>
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn"  [attr.form]="'__doc_form_'+data.id" [disabled]="__clientForm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+</div>

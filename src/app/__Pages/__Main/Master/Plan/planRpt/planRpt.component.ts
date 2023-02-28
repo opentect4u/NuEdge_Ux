@@ -30,7 +30,7 @@ export class PlanrptComponent implements OnInit {
   __exportedClmns: string[] = ['sl_no', 'plan'];
   __paginate: any= [];
   __selectPLN = new MatTableDataSource<plan>([]);
-  __isVisible: boolean = false;
+  __isVisible: boolean = true;
 constructor(
   private __Rpt: RPTService,
   public dialogRef: MatDialogRef<PlanrptComponent>,
@@ -43,13 +43,14 @@ constructor(
 }
 
 ngOnInit(){
-  this.getPlanmaster();
-  this.tableExport();
+  // this.getPlanmaster();
+  // this.tableExport();
+  this.submit();
 }
 
 tableExport(){
   const __catExport = new FormData();
-  __catExport.append('cat_id',this.__catForm.value.cat_id ? this.__catForm.value.cat_id : '');
+  __catExport.append('plan_name',this.__catForm.value.plan_name ? this.__catForm.value.plan_name : '');
   this.__dbIntr.api_call(1,'/planExport',__catExport).pipe(map((x: any) => x.data)).subscribe((res: plan[]) =>{
      console.log(res);
     this.__export = new MatTableDataSource(res);
@@ -73,7 +74,10 @@ getPaginate(__paginate) {
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url + ('&paginate=' + this.__pageNumber.value)
+        __paginate.url
+        + ('&paginate=' + this.__pageNumber.value)
+        + ('&plan_name=' + this.__catForm.value.plan_name)
+
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -84,7 +88,8 @@ getPaginate(__paginate) {
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  this.getPlanmaster(this.__pageNumber.value);
+  // this.getPlanmaster(this.__pageNumber.value);
+  this.submit();
 }
 
 populateDT(__items: plan) {
@@ -135,7 +140,7 @@ openDialog(__category: plan | null = null, __catId: number) {
     const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
     dialogRef.updateSize('40%');
     this.__utility.getmenuIconVisible({
-      id: Number(dialogConfig.id),
+      id: __catId,
       isVisible: false,
       flag: 'P',
     });
@@ -187,15 +192,12 @@ exportPdf(){
 submit(){
   const __amcSearch = new FormData();
   __amcSearch.append('plan_name',this.__catForm.value.plan_name);
+  __amcSearch.append('paginate',this.__pageNumber.value);
    this.__dbIntr.api_call(1,'/planDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);
-     this.showColumns();
      this.tableExport();
    })
 }
 
-showColumns(){
-
-}
 }

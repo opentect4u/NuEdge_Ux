@@ -32,7 +32,7 @@ export class OptrptComponent implements OnInit {
   __exportedClmns: string[] = ['sl_no', 'option'];
   __paginate: any= [];
   __selectOption = new MatTableDataSource<option>([]);
-  __isVisible: boolean = false;
+  __isVisible: boolean = true;
 constructor(
   private __Rpt: RPTService,
   public dialogRef: MatDialogRef<OptrptComponent>,
@@ -42,17 +42,19 @@ constructor(
   private __dbIntr: DbIntrService,
   private __utility: UtiliService
 ) {
+  
 }
 
 
 ngOnInit(){
-  this.getOptionmaster();
-  this.tableExport();
+  // this.getOptionmaster();
+  // this.tableExport();
+  this.submit();
 }
 
 tableExport(){
   const __catExport = new FormData();
-  __catExport.append('opt_name',this.__catForm.value.opt_name ? this.__catForm.value.opt_name : '');
+  __catExport.append('opt_name',this.__catForm.value.option ? this.__catForm.value.option : '');
   this.__dbIntr.api_call(1,'/optionExport',__catExport).pipe(map((x: any) => x.data)).subscribe((res: option[]) =>{
      console.log(res);
     this.__export = new MatTableDataSource(res);
@@ -76,7 +78,9 @@ getPaginate(__paginate) {
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url + ('&paginate=' + this.__pageNumber.value)
+        __paginate.url
+        + ('&paginate=' + this.__pageNumber.value)
+        + ('&option=' + this.__catForm.value.option)
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -87,7 +91,8 @@ getPaginate(__paginate) {
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  this.getOptionmaster(this.__pageNumber.value);
+  // this.getOptionmaster(this.__pageNumber.value);
+  this.submit();
 }
 
 populateDT(__items: option) {
@@ -182,7 +187,8 @@ exportPdf(){
 }
 submit(){
   const __amcSearch = new FormData();
-  __amcSearch.append('option',this.__catForm.value.opt_name);
+  __amcSearch.append('option',this.__catForm.value.option);
+  __amcSearch.append('paginate',this.__pageNumber.value);
    this.__dbIntr.api_call(1,'/optionDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);

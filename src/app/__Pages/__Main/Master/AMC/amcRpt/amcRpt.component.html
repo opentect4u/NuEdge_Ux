@@ -28,9 +28,16 @@
       <div class="col-sm-6 my-auto">
           <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
             <mat-radio-button value="2">Summary</mat-radio-button>
-            <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
+            <mat-radio-button value="1" class="radio1">Detail</mat-radio-button>
           </mat-radio-group>
       </div>
+      <div class="col-sm-6 my-auto">
+        <mat-button-toggle-group class="float-right" aria-label="Font Style">
+          <mat-button-toggle value="R" (click)="refreshOrAdvanceFlt()">
+            <mat-icon>sync</mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
     </div>
     <ng-container>
       <div class="row my-5">
@@ -102,18 +109,18 @@
       </div>
       <div class="row mt-5" *ngIf="__detalsSummaryForm.get('options').value == '1'">
         <div class="col-sm-12">
-          <mat-checkbox formControlName="l1" color="primary">level1</mat-checkbox>
-          <mat-checkbox formControlName="l2" class="ml-4" color="primary">level2</mat-checkbox>
-          <mat-checkbox formControlName="l3" class="ml-4" color="primary">level3</mat-checkbox>
-          <mat-checkbox formControlName="l4" class="ml-4" color="primary">level4</mat-checkbox>
-          <mat-checkbox formControlName="l5" class="ml-4" color="primary">level5</mat-checkbox>
-          <mat-checkbox formControlName="l6" class="ml-4" color="primary">level6</mat-checkbox>
+          <mat-checkbox formControlName="l1" color="primary">Level-1</mat-checkbox>
+          <mat-checkbox formControlName="l2" class="ml-4" color="primary">Level-2</mat-checkbox>
+          <mat-checkbox formControlName="l3" class="ml-4" color="primary">Level-3</mat-checkbox>
+          <mat-checkbox formControlName="l4" class="ml-4" color="primary">Level-4</mat-checkbox>
+          <mat-checkbox formControlName="l5" class="ml-4" color="primary">Level-5</mat-checkbox>
+          <mat-checkbox formControlName="l6" class="ml-4" color="primary">Level-6</mat-checkbox>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-12">
             <button mat-raised-button  color="primary" class="float-right">
-              <mat-icon>visibility</mat-icon>
+              <!-- <mat-icon>visibility</mat-icon> -->
               Show
             </button>
         </div>
@@ -134,14 +141,29 @@
 
 <div class="mat-elevation-z3">
   <div class="example_container_header">
-    <div class="btnGrp">
-      <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
-        <mat-icon>download</mat-icon> Export Pdf
+    <div class="btnGrp d-flex">
+      <mat-form-field appearance="fill">
+        <mat-label>Select Columns</mat-label>
+        <mat-select [formControl]="toppings" multiple>
+          <mat-option
+          *ngFor="let topping of toppingList"
+          [value]="topping.id">
+          {{topping.text}}
+        </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>system_update_alt</mat-icon>
       </button>
-      <button class="float-right" color="primary" type="button" mat-button
-        (click)="exporter.exportTable('xlsx',{fileName:'AMC'})">
-        <mat-icon>download</mat-icon> Export Excel
-      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="exportPdf()">
+          <mat-icon>download</mat-icon> Export Pdf
+        </button>
+        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'AMC'})">
+          <mat-icon>download</mat-icon> Export Excel
+        </button>
+      </mat-menu>
     </div>
 
   </div>
@@ -369,14 +391,6 @@
       </ng-container>
 
 
-
-
-
-
-
-
-
-
       <!-- Buisness Type-->
       <ng-container matColumnDef="delete" stickyEnd>
         <th mat-header-cell *matHeaderCellDef>Delete</th>
@@ -388,9 +402,9 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="__columns;sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+      <tr mat-row tabindex="999" *matRowDef="let row; columns: __columns;"></tr>
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4" class="text-center">No data found</td>
+        <td class="mat-cell" [attr.colspan]="__columns.length" class="text-center">No Amc History found</td>
       </tr>
     </table>
   </div>
@@ -665,7 +679,7 @@
     <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
     <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="4" class="text-center">No Amc History Found</td>
+      <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Amc History Found</td>
     </tr>
   </table>
 

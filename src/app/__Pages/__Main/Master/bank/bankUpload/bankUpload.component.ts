@@ -8,12 +8,39 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
+
 @Component({
   selector: 'app-bankUpload',
   templateUrl: './bankUpload.component.html',
   styleUrls: ['./bankUpload.component.css']
 })
 export class BankUploadComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:"Bank",
+      url:'/main/master/bank',
+      hasQueryParams:true,
+      queryParams:''
+    },
+       {
+      label:"Bank Upload",
+      url:'/main/master/uploadbnk',
+      hasQueryParams:true,
+      queryParams:''
+    }
+]
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
@@ -67,6 +94,7 @@ export class BankUploadComponent implements OnInit {
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestCategoryEntry() {
     this.__dbIntr.api_call(0, '/depositbank', null).pipe(pluck('data')).subscribe((res: bank[]) => {

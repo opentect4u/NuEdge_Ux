@@ -1,0 +1,10 @@
+.clearIcon {
+    position: absolute;
+    top: 15%;
+    right: 0;
+    transform: translate(-12px, -8px);
+}
+
+.clearIcon:hover {
+    cursor: pointer;
+}

@@ -31,7 +31,7 @@ export class DoctyperptComponent implements OnInit {
   __exportedClmns: string[] = ['sl_no', 'doc_type'];
   __paginate: any= [];
   __selectdocType = new MatTableDataSource<docType>([]);
-  __isVisible: boolean = false;
+  __isVisible: boolean = true;
 constructor(
   private __Rpt: RPTService,
   public dialogRef: MatDialogRef<DoctyperptComponent>,
@@ -44,8 +44,9 @@ constructor(
 }
 
 ngOnInit(){
-  this.getDocTypemaster();
-  this.tableExport();
+  // this.getDocTypemaster();
+  // this.tableExport();
+  this.submit();
 }
 
 tableExport(){
@@ -74,7 +75,9 @@ getPaginate(__paginate) {
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url + ('&paginate=' + this.__pageNumber.value)
+        __paginate.url
+        + ('&paginate=' + this.__pageNumber.value)
+        + ('&doc_type=' + this.__catForm.value.doc_type)
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -189,16 +192,13 @@ exportPdf(){
 }
 submit(){
   const __amcSearch = new FormData();
-  __amcSearch.append('doc_type',this.__catForm.value.plan_name);
+  __amcSearch.append('doc_type',this.__catForm.value.doc_type);
+  __amcSearch.append('paginate',this.__pageNumber.value);
    this.__dbIntr.api_call(1,'/documenttypeDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);
-     this.showColumns();
      this.tableExport();
    })
 }
 
-showColumns(){
-
-}
 }

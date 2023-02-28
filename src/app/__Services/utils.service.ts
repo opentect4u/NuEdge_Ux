@@ -6,13 +6,14 @@ import { BehaviorSubject } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { IBreadCrumb } from '../app.component';
 import { SnkbarComponent } from '../__Core/snkbar/snkbar.component';
+import { breadCrumb } from '../__Model/brdCrmb';
 import { Route } from '../__Model/route';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtiliService {
-  private __brdCrumbs = new BehaviorSubject<IBreadCrumb[]>([]);
+  private __brdCrumbs = new BehaviorSubject<breadCrumb[]>([]);
   public readonly __brdCrumbs$ =  this.__brdCrumbs.asObservable().pipe(delay(1));
   private __isvisibleMenuIcon = new BehaviorSubject<any>(null);
   public readonly __isvisibleMenuIcon$ = this.__isvisibleMenuIcon.asObservable().pipe(delay(1));

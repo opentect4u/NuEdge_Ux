@@ -25,11 +25,18 @@
       <div class="card-body p-5">
         <form [formGroup]="__rntSearchForm" (ngSubmit)="submit()" autoComplete="off">
         <div class="row ">
-          <div class="col-sm-6 my-auto">
+          <div class="col-sm-8 my-auto">
               <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
                 <mat-radio-button value="2">Summary</mat-radio-button>
-                <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
+                <mat-radio-button value="1" class="ml-5">Detail</mat-radio-button>
               </mat-radio-group>
+          </div>
+          <div class="col-sm-4 my-auto">
+            <mat-button-toggle-group #group="matButtonToggleGroup" class="float-right">
+              <mat-button-toggle value="center" aria-label="Text align center" (click)="reset()">
+                <mat-icon>restart_alt</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
           </div>
         </div>
           <div class="row my-5">
@@ -62,13 +69,13 @@
             </div>
             <div class="col-sm-5">
               <label for="contact_person">Contact Person</label>
-              <input type="text" name="contact_person" id="contact_person" formControlName="contact_person">
+              <input type="text" name="contact_person" id="contact_person" placeholder="Contact Person" class="form-control" formControlName="contact_person">
             </div>
           </div>
           <div class="row">
             <div class="col-sm-12">
                 <button mat-raised-button  color="primary" class="float-right">
-                  <mat-icon>visibility</mat-icon>
+                  <!-- <mat-icon>visibility</mat-icon> -->
                   Show
                 </button>
             </div>
@@ -78,21 +85,45 @@
     </div>
     <div class="mat-elevation-z3">
       <div class="example_container_header">
-        <div class="btnGrp">
-          <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
+        <div class="btnGrp d-flex">
+
+          <mat-form-field appearance="fill">
+            <mat-label>Select Columns</mat-label>
+            <mat-select [formControl]="toppings" multiple>
+              <mat-option
+              *ngFor="let topping of toppingList"
+              [value]="topping.id">
+              {{topping.text}}
+            </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>system_update_alt</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'R&T'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+          <!-- <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
             <mat-icon>download</mat-icon> Export Pdf
           </button>
           <button class="float-right" color="primary" type="button" mat-button
           (click)="exporter.exportTable('xlsx',{fileName:'R&T'})" >
             <mat-icon>download</mat-icon> Export Excel
-          </button>
+          </button> -->
         </div>
 
       </div>
        <div class="example-container">
 
       <table mat-table [dataSource]="__selectRNT" class="table_Custome">
-        <ng-container matColumnDef="sl_no">
+        <ng-container matColumnDef="sl_no" sticky>
           <th mat-header-cell *matHeaderCellDef>Sl no.</th>
           <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
         </ng-container>
@@ -100,11 +131,18 @@
 
 
 
-        <ng-container matColumnDef="rnt_name">
+        <ng-container matColumnDef="rnt_name" sticky>
           <th mat-header-cell *matHeaderCellDef>R&T</th>
           <td mat-cell *matCellDef="let element">
             <!-- <a (click)="showCorrospondingAMC(element)" class="hoverableText">{{element.rnt_name}}</a> -->
             {{element.rnt_name}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="web_site">
+          <th mat-header-cell *matHeaderCellDef>Web Site</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.website}}
           </td>
         </ng-container>
 
@@ -172,7 +210,7 @@
         </ng-container>
 
 
-        <ng-container matColumnDef="edit">
+        <ng-container matColumnDef="edit" sticky>
           <th mat-header-cell *matHeaderCellDef>Edit</th>
           <td mat-cell *matCellDef="let element">
             <button mat-icon-button (click)="populateDT(element)">
@@ -181,7 +219,7 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="delete">
+        <ng-container matColumnDef="delete" [stickyEnd]="true">
           <th mat-header-cell *matHeaderCellDef>Delete</th>
           <td mat-cell *matCellDef="let element">
             <button mat-icon-button>
@@ -190,10 +228,10 @@
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="__columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+        <tr mat-header-row *matHeaderRowDef="__columns;sticky:true"></tr>
+        <tr tabindex="999" mat-row *matRowDef="let row; columns: __columns;"></tr>
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="5" class="text-center">No data found</td>
+          <td class="mat-cell" [attr.colspan]="__columns.length" class="text-center">No data found</td>
         </tr>
       </table>
       </div>
@@ -201,13 +239,13 @@
         <div class="itemsPerPage">
           <label>Items Per Page :&nbsp; </label>
           <mat-button-toggle-group #group="matButtonToggleGroup">
-            <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
+            <mat-button-toggle value="10" aria-label="Text align left" (click)="getval('10')">
               10
             </mat-button-toggle>
-            <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
+            <mat-button-toggle value="50" aria-label="Text align center" (click)="getval('50')">
               50
             </mat-button-toggle>
-            <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
+            <mat-button-toggle value="100" aria-label="Text align right" (click)="getval('100')">
               100
             </mat-button-toggle>
             <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
@@ -236,8 +274,8 @@
       </div>
 
 
-      <table id="daySheetRpt"
-      hidden mat-table
+      <table id="rnt_rpt"
+      style="display:none" mat-table
       [dataSource]="__export"
       matTableExporter
       #exporter="matTableExporter">
@@ -256,6 +294,13 @@
           <th mat-header-cell *matHeaderCellDef>R&T</th>
           <td mat-cell *matCellDef="let element">
             <p clas="text-wrap">{{element.rnt_name}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="web_site">
+          <th mat-header-cell *matHeaderCellDef>Web Site</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.website}}
           </td>
         </ng-container>
 

@@ -1,0 +1,24 @@
+[
+    {
+        "id": 41,
+        "menu_name": "Create Client Code",
+        "has_submenu": "N",
+        "url": "/main/master/clOption",
+        "sub_menu": [
+        ]
+    },
+    {
+        "id": 18,
+        "menu_name": "Document Master",
+        "has_submenu": "N",
+        "url": "/main/master/docs",
+        "sub_menu": []
+    },
+    {
+        "id": 29,
+        "menu_name": "Reports",
+        "has_submenu": "N",
+        "url": "",
+        "sub_menu": []
+    }
+]

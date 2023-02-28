@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map, pluck } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { option } from 'src/app/__Model/option';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -19,6 +20,31 @@ import { OptrptComponent } from '../optRpt/optRpt.component';
   styleUrls: ['./option.component.css'],
 })
 export class OptionComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Option",
+      url:'/main/master/productwisemenu/option',
+      hasQueryParams:true,
+      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+    }
+]
   __pageNumber = new FormControl(10);
   __paginate: any = [];
   __menu = [
@@ -63,7 +89,8 @@ export class OptionComponent implements OnInit {
     private overlay: Overlay
   ) {}
   ngOnInit(): void {
-    this.getOptionMaster();
+    // this.getOptionMaster();
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
     if (this.route.snapshot.queryParamMap.get('id')) {
       this.getParticularOption();
     }
@@ -174,7 +201,8 @@ export class OptionComponent implements OnInit {
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__menu.url);
+        // this.__utility.navigate(__menu.url);
+        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}})
         break;
         case 'R':
           this.openDialogForReports(atob(this.route.snapshot.queryParamMap.get('product_id')));
@@ -195,6 +223,7 @@ export class OptionComponent implements OnInit {
     dialogConfig.panelClass = "fullscreen-dialog"
     dialogConfig.id = "O",
     dialogConfig.data = {
+      flag:'O',
       product_id:__prdId
     }
     try {
@@ -206,7 +235,9 @@ export class OptionComponent implements OnInit {
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.addPanelClass('mat_dialog');
       this.__utility.getmenuIconVisible({
-        product_id:__prdId
+        product_id:__prdId,
+        flag:'O',
+        id:__prdId
       });
     }
   }

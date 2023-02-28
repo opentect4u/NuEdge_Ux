@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map, pluck } from 'rxjs/operators';
 import { amc } from 'src/app/__Model/amc';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -19,6 +20,33 @@ import { AmcrptComponent } from './amcRpt/amcRpt.component';
   styleUrls: ['./AMC.component.css'],
 })
 export class AMCComponent implements OnInit {
+
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"AMC",
+      url:'/main/master/productwisemenu/amc',
+      hasQueryParams:true,
+      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+    }
+]
+
   __menu = [
     {
       parent_id: 4,
@@ -61,14 +89,13 @@ export class AMCComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
   ngOnInit(): void {
-    // if (this.route.snapshot.queryParamMap.get('amc_id')) {
-    //   this.getParticularAMCMaster();
-    // }
-    // this.getAMCMaster(
-    //   this.route.snapshot.queryParamMap.get('id') == null
-    //     ? ''
-    //     : '&rnt_id=' + atob(this.route.snapshot.queryParamMap.get('id'))
-    // );
+    if (this.route.snapshot.queryParamMap.get('amc_id')) {
+        this.getParticularAMCMaster();
+    }
+    else if(this.route.snapshot.queryParamMap.get('id')){
+         this.navigate({flag:'R'});
+    }
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
@@ -99,7 +126,6 @@ export class AMCComponent implements OnInit {
   }
 
   populateDT(__items: amc) {
-    // this.__utility.navigatewithqueryparams('/main/master/amcModify',{queryParams:{id: btoa(__items.id.toString())}})
     this.openDialog(__items, __items.id);
   }
 
@@ -126,11 +152,14 @@ export class AMCComponent implements OnInit {
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__items.url);
+        // this.__utility.navigate(__items.url);
+        this.__utility.navigatewithqueryparams(__items.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}})
         break;
       default: this.openDialogForReports(
-        this.route.snapshot.queryParamMap.get('id'),
-        this.route.snapshot.queryParamMap.get('amc_id')
+        global.getActualVal(this.route.snapshot.queryParamMap.get('id'))
+        ? atob(this.route.snapshot.queryParamMap.get('id')) : '',
+        global.getActualVal(this.route.snapshot.queryParamMap.get('amc_id')) ?
+        atob(this.route.snapshot.queryParamMap.get('amc_id')) : ''
       );
         break;
     }

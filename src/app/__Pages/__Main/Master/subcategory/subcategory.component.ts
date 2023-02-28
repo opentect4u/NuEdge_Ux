@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map, pluck } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { subcat } from 'src/app/__Model/__subcategory';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -20,6 +21,31 @@ import { SubcatrptComponent } from './subcatRpt/subcatRpt.component';
   styleUrls: ['./subcategory.component.css'],
 })
 export class SubcategoryComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Sub Category",
+      url:'/main/master/productwisemenu/subcategory',
+      hasQueryParams:true,
+      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+    }
+]
   __pageNumber = new FormControl(10);
   __paginate: any = [];
   __menu = [
@@ -62,14 +88,13 @@ export class SubcategoryComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
   ngOnInit(): void {
-    this.getSubCategorymaster(
-      this.route.snapshot.queryParamMap.get('id') == null
-        ? ''
-        : '&category_id=' + atob(this.route.snapshot.queryParamMap.get('id'))
-    );
-    if (this.route.snapshot.queryParamMap.get('sub_cat_id')) {
-      this.getParticularSubcategory();
+    if(this.route.snapshot.queryParamMap.get('id')){
+       this.navigate({flag:'R'});//Showing Reports of sub category for the corrosponding category
     }
+    else if(this.route.snapshot.queryParamMap.get('sub_cat_id')){
+         this.getParticularSubcategory();
+    }
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
@@ -176,11 +201,16 @@ export class SubcategoryComponent implements OnInit {
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__menu.url);
+        // this.__utility.navigate(__menu.url);
+        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}});
         break;
         case 'R':
           // this.__utility.navigate(__menu.url);
-          this.openDialogForReports(atob(this.route.snapshot.queryParamMap.get('product_id')))
+          this.openDialogForReports(
+            global.getActualVal(this.route.snapshot.queryParamMap.get('product_id')) ?atob(this.route.snapshot.queryParamMap.get('product_id')) : '',
+            global.getActualVal(this.route.snapshot.queryParamMap.get('id')) ?atob(this.route.snapshot.queryParamMap.get('id')) : '',
+            global.getActualVal(this.route.snapshot.queryParamMap.get('sub_cat_id')) ?atob(this.route.snapshot.queryParamMap.get('sub_cat_id')) : ''
+            )
           break;
       default:
         break;
@@ -204,7 +234,7 @@ export class SubcategoryComponent implements OnInit {
         });
     }
   }
-  openDialogForReports(__prodid: string | null = null){
+  openDialogForReports(__prodid: string | null = null,__catId: string | null = null,__subcatId:string | null = null){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -216,7 +246,9 @@ export class SubcategoryComponent implements OnInit {
     dialogConfig.panelClass = "fullscreen-dialog"
     dialogConfig.id = "S",
     dialogConfig.data = {
-      product_id:__prodid
+      product_id:__prodid,
+      cat_id:__catId,
+      sub_cat_id:__subcatId
     }
     try {
       const dialogref = this.__dialog.open(

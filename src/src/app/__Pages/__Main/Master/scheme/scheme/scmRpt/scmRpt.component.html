@@ -1,0 +1,296 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title">
+    <h2>Scheme Reports</h2>
+    <div class="btnIcon">
+      <button mat-icon-button (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <div class="card my-5">
+      <div class="card-body p-5">
+        <form [formGroup]="__scmForm" (ngSubmit)="submit()" autocomplete="off">
+          <div class="row ">
+            <div class="col-sm-6 my-auto">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+                <mat-radio-button value="2">Summary</mat-radio-button>
+                <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-sm-6 ">
+              <mat-button-toggle-group class="float-right" aria-label="Font Style" formControlName="advanceFlt">
+                <mat-button-toggle value="A" (click)="refreshOrAdvanceFlt()">
+                  <mat-icon>filter_alt</mat-icon>Advanced Filter
+                </mat-button-toggle>
+                <mat-button-toggle value="R" (click)="refreshOrAdvanceFlt()">
+                  <mat-icon>sync</mat-icon>
+                </mat-button-toggle>
+
+              </mat-button-toggle-group>
+            </div>
+          </div>
+          <ng-container>
+            <div class="row my-5">
+              <div class="col-sm-4">
+                <label for="amc_name">Amc </label>
+                <input type="text" placeholder="Enter Amc" name="amc_name" id="amc_name" class="form-control"
+                  formControlName="amc_name">
+              </div>
+              <div class="col-sm-4">
+                <label for="scm_name">Scheme </label>
+                <input type="text" placeholder="Scheme Name" name="scm_name" id="scm_name" class="form-control"
+                  formControlName="scheme_name">
+              </div>
+
+            </div>
+            <div class="row my-5" *ngIf="__scmForm.get('advanceFlt').value == 'A'">
+              <div class="col-sm-4">
+                <label for="cat_id">Category </label>
+                <input type="text" placeholder="Enter Category" name="cat_id" id="cat_id" class="form-control"
+                  formControlName="cat_id">
+              </div>
+              <div class="col-sm-4">
+                <label for="subcat_id">SubCategory </label>
+                <input type="text" placeholder="SubCategory Name" name="subcat_id" id="subcat_id" class="form-control"
+                  formControlName="subcat_id">
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <button mat-raised-button color="primary" class="float-right">
+                  <mat-icon>visibility</mat-icon>
+                  Show
+                </button>
+              </div>
+            </div>
+          </ng-container>
+
+        </form>
+      </div>
+    </div>
+    <div class="mat-elevation-z3">
+      <div class="example_container_header">
+        <div class="btnGrp">
+          <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
+            <mat-icon>download</mat-icon> Export Pdf
+          </button>
+          <button class="float-right" color="primary" type="button" mat-button
+            (click)="exporter.exportTable('xlsx',{fileName:'Scheme'})">
+            <mat-icon>download</mat-icon> Export Excel
+          </button>
+        </div>
+
+      </div>
+      <div class="example-container">
+        <table mat-table [dataSource]="__selectScm" class="table_Custome">
+          <!-- Sl No. -->
+          <ng-container matColumnDef="sl_no" sticky>
+            <th mat-header-cell *matHeaderCellDef>SL No.</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+          </ng-container>
+
+
+
+          <!--Temporary TIN No.-->
+          <ng-container matColumnDef="scheme_name" sticky>
+            <th mat-header-cell *matHeaderCellDef>Scheme</th>
+            <td mat-cell *matCellDef="let element">{{element.scheme_name}}</td>
+          </ng-container>
+          <ng-container matColumnDef="scheme_type" sticky>
+            <th mat-header-cell *matHeaderCellDef>Scheme Type</th>
+            <td mat-cell *matCellDef="let element">{{element.scheme_type == 'O' ? 'Ongoing Scheme' : 'NFO'}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="amc_name">
+            <th mat-header-cell *matHeaderCellDef>Amc</th>
+            <td mat-cell *matCellDef="let element">{{element.amc_name}}</td>
+          </ng-container>
+          <ng-container matColumnDef="cat_name">
+            <th mat-header-cell *matHeaderCellDef>Category</th>
+            <td mat-cell *matCellDef="let element">{{element.cat_name}}</td>
+          </ng-container>
+          <ng-container matColumnDef="subcat_name">
+            <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+            <td mat-cell *matCellDef="let element">{{element.subcategory_name}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="nfo_start_dt">
+            <th mat-header-cell *matHeaderCellDef>NFO Start Date</th>
+            <td mat-cell *matCellDef="let element">{{element.nfo_start_dt}}</td>
+          </ng-container>
+          <ng-container matColumnDef="nfo_end_dt">
+            <th mat-header-cell *matHeaderCellDef>NFO End Date</th>
+            <td mat-cell *matCellDef="let element">{{element.nfo_end_dt}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="nfo_reopen_dt">
+            <th mat-header-cell *matHeaderCellDef>NFO Reopen Date</th>
+            <td mat-cell *matCellDef="let element">{{element.nfo_reopen_dt}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="pip_fresh_min_amt">
+            <th mat-header-cell *matHeaderCellDef>Fresh Amount (PIP)</th>
+            <td mat-cell *matCellDef="let element">{{element.pip_fresh_min_amt  | currency:'INR'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="pip_add_min_amt">
+            <th mat-header-cell *matHeaderCellDef>Additional Amount (PIP)</th>
+            <td mat-cell *matCellDef="let element">{{element.pip_add_min_amt  | currency:'INR'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="sip_fresh_min_amt">
+            <th mat-header-cell *matHeaderCellDef>Fresh Amount (SIP)</th>
+            <td mat-cell *matCellDef="let element">{{element.sip_fresh_min_amt  | currency:'INR'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="sip_add_min_amt">
+            <th mat-header-cell *matHeaderCellDef>Additional Amount (SIP)</th>
+            <td mat-cell *matCellDef="let element">{{element.sip_add_min_amt  | currency:'INR':'symbol-narrow':'4.2-2'}}</td>
+          </ng-container>
+
+          <!-- Buisness Type-->
+          <ng-container matColumnDef="edit" sticky>
+            <th mat-header-cell *matHeaderCellDef>Edit</th>
+            <td mat-cell *matCellDef="let element">
+              <a (click)="populateDT(element)">
+                <mat-icon class="edit_icon">edit</mat-icon>
+              </a>
+            </td>
+          </ng-container>
+
+          <!-- Buisness Type-->
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef>Delete</th>
+            <td mat-cell *matCellDef="let element">
+              <a>
+                <mat-icon class="delete_icon">delete</mat-icon>
+              </a>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="__columns; sticky:true"></tr>
+          <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No Scheme History Found</td>
+          </tr>
+        </table>
+      </div>
+      <div class="paginator">
+        <div class="itemsPerPage">
+          <label>Items Per Page :&nbsp; </label>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
+              10
+            </mat-button-toggle>
+            <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
+              50
+            </mat-button-toggle>
+            <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
+              100
+            </mat-button-toggle>
+            <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+              All
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <div class="paginatorContainer">
+          <mat-button-toggle-group *ngFor="let paginate of __paginate">
+            <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+              <label>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+                <span
+                  *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
+              </label>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+
+
+
+      </div>
+
+      <table id="scheme" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+
+
+        <ng-container matColumnDef="sl_no">
+          <th mat-header-cell *matHeaderCellDef>SL No.</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="scheme_name">
+          <th mat-header-cell *matHeaderCellDef>Scheme</th>
+          <td mat-cell *matCellDef="let element">{{element.scheme_name}}</td>
+        </ng-container>
+        <ng-container matColumnDef="scheme_type">
+          <th mat-header-cell *matHeaderCellDef>Scheme Type</th>
+          <td mat-cell *matCellDef="let element">{{element.scheme_type == 'O' ? 'Ongoing Scheme' : 'NFO'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="amc_name">
+          <th mat-header-cell *matHeaderCellDef>Amc</th>
+          <td mat-cell *matCellDef="let element">{{element.amc_name}}</td>
+        </ng-container>
+        <ng-container matColumnDef="cat_name">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let element">{{element.cat_name}}</td>
+        </ng-container>
+        <ng-container matColumnDef="subcat_name">
+          <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+          <td mat-cell *matCellDef="let element">{{element.subcategory_name}}</td>
+        </ng-container>
+        <ng-container matColumnDef="nfo_start_dt">
+          <th mat-header-cell *matHeaderCellDef>NFO Start Date</th>
+          <td mat-cell *matCellDef="let element">{{element.nfo_start_dt}}</td>
+        </ng-container>
+        <ng-container matColumnDef="nfo_end_dt">
+          <th mat-header-cell *matHeaderCellDef>NFO End Date</th>
+          <td mat-cell *matCellDef="let element">{{element.nfo_end_dt}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nfo_reopen_dt">
+          <th mat-header-cell *matHeaderCellDef>NFO Reopen Date</th>
+          <td mat-cell *matCellDef="let element">{{element.nfo_reopen_dt}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="pip_fresh_min_amt">
+          <th mat-header-cell *matHeaderCellDef>Fresh Amount (PIP)</th>
+          <td mat-cell *matCellDef="let element">{{element.pip_fresh_min_amt | currency:'INR'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="pip_add_min_amt">
+          <th mat-header-cell *matHeaderCellDef>Additional Amount (PIP)</th>
+          <td mat-cell *matCellDef="let element">{{element.pip_add_min_amt  | currency:'INR'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="sip_fresh_min_amt">
+          <th mat-header-cell *matHeaderCellDef>Fresh Amount (SIP)</th>
+          <td mat-cell *matCellDef="let element">{{element.sip_fresh_min_amt  | currency:'INR'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="sip_add_min_amt">
+          <th mat-header-cell *matHeaderCellDef>Additional Amount (SIP)</th>
+          <td mat-cell *matCellDef="let element">{{element.sip_add_min_amt  | currency:'INR'}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
+        <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Scheme History Found</td>
+        </tr>
+      </table>
+    </div>
+  </mat-dialog-content>
+</div>

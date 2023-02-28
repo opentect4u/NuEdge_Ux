@@ -145,37 +145,49 @@
       <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-    
+
       <button mat-icon-button  [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-  
+
     </div>
-  
+
   </div>
   <mat-dialog-content>
     <form [formGroup]="__clientForm" (ngSubmit)="submit()" id="__doc_form_{{data.id}}" class="mt-3">
-      <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
-        <div>
-          <label for="">Search By Client Code:</label>
-          <input type="search" name="clientCode" id="clientCode" class="form-control" formControlName="client_code" placeholder="Search By Client Code">           
-          <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
-            <div class="serachresult_client" #searchResult>
-              <ul *ngIf="__items.length > 0">
-                <li *ngFor="let items of __items" (click)="getItems(items)">
-                  {{items.client_code}} | {{items.client_name}} | {{items.pan}} | {{items.mobile}}
-                </li>
-              </ul>
-              <div class="noDataFound" *ngIf="__items.length == 0">
-                <h5 class="text-center">
-                  Sorry!! No Clients Found
-                </h5>
-                <p>If your result match,they will appear here</p>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+            <div class="searchDiv">
+              <label for="">Client Code:</label>
+              <input
+              [attr.disabled]="this.data.items && this.data.items?.client_doc.length > 0"
+              type="search"
+               name="clientCode"
+               id="clientCode"
+               class="form-control"
+               formControlName="client_code"
+               placeholder="Search By Client Code">
+              <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                <div class="serachresult_client" #searchResult>
+                  <ul *ngIf="__items.length > 0">
+                    <li *ngFor="let items of __items" (click)="getItems(items)">
+                      {{items.client_code}} | {{items.client_name}} | {{items.pan}} | {{items.mobile}}
+                    </li>
+                  </ul>
+                  <div class="noDataFound" *ngIf="__items.length == 0">
+                    <h5 class="text-center">
+                      Sorry!! No Clients Found
+                    </h5>
+                    <p>If your result match,they will appear here</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="row">
         <div class="col-sm-12 my-3" *ngIf="__isvisible">
           <label for="pan_no">Pan No.</label>
@@ -230,7 +242,7 @@
                   <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}
                   </option>
                 </select>
-  
+
                 <div class="invalid-feedback"
                   *ngIf=" __docs.controls[i].get('doc_type_id').invalid && ( __docs.controls[i].get('doc_type_id').dirty ||  __docs.controls[i].get('doc_type_id').touched)">
                   <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_type_id').errors?.required">*Please
@@ -250,7 +262,7 @@
                     *ngIf="__docs.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
                     2MB.</span>
                 </div>
-  
+
               </td>
               <td class="rowWidth">
                 <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">

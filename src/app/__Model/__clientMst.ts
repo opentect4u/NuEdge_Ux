@@ -24,5 +24,8 @@ export interface client {
     gurdians_pan: string
     relation: string;
     client_doc:docs[]
-    client_type: string
+    client_type: string,
+    anniversary_date: string,
+    dob_actual: string;
+    client_type_mode: string;
   }

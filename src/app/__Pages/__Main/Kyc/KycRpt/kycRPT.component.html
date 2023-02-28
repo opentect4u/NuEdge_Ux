@@ -1,0 +1,422 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >Kyc Reports</h2>
+    <div class="btnIcon">
+      <button mat-icon-button  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+<div class="card">
+  <div class="card-body p-5">
+    <form [formGroup]="__kycForm" (ngSubmit)="KycRpt()" autocomplete="off">
+      <div class="row">
+        <div class="col-sm-8 my-auto">
+          <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+            <mat-radio-button value="2">Summary</mat-radio-button>
+            <mat-radio-button value="1" class="radio1">Detail</mat-radio-button>
+            <mat-radio-button value="3" class="radio1">Day Sheet</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="col-sm-4 my-auto" >
+          <mat-button-toggle-group #group="matButtonToggleGroup" class="float-right">
+            <mat-button-toggle value="A" aria-label="Text align left"
+            (click)="
+            __isAdditional=!__isAdditional"
+            >
+              <mat-icon>filter_alt</mat-icon>
+              Advance Filter
+            </mat-button-toggle>
+            <mat-button-toggle value="R" aria-label="Text align center" (click)="
+          __kycForm.reset();
+          __isAdditional=false;
+          __kycForm.get('options').setValue('2')">
+              <mat-icon>restart_alt</mat-icon>
+            </mat-button-toggle>
+
+          </mat-button-toggle-group>
+        </div>
+      </div>
+      <ng-container *ngIf="__kycForm.get('options').value!= '3'">
+      <div class="row my-5">
+        <div class="col-sm-4">
+          <label for="client_code">Client Details</label>
+          <input type="text" name="client_code" id="client_code" class="form-control"
+            placeholder="Enter Client Code / Name / Pan / email / dob" formControlName="client_code">
+        </div>
+        <div class="col-sm-4">
+          <label for="sub_brk_cd">Sub Broker Code</label>
+          <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control" formControlName="sub_brk_cd"
+            placeholder="Enter Sub Broker Code">
+        </div>
+      </div>
+      <div class="row my-5">
+        <div class="col-sm-4">
+          <label for="start_date">Start Date</label>
+          <input type="date" [min]="getminDate()" [max]="getTodayDate()" name="start_date" id="start_date" class="form-control" formControlName="start_date">
+        </div>
+        <div class="col-sm-4">
+          <label for="end_date">End Date</label>
+          <input type="date" [min]="getminDate()" [max]="getTodayDate()" name="end_date" id="end_date" class="form-control" formControlName="end_date">
+        </div>
+      </div>
+      <div class="row my-5">
+      <div class="col-sm-5 my-auto">
+        <label for="">Buisness Type: </label>
+        <label *ngFor="let bu_type of __bu_type; let i=index" for="{{bu_type.id}}" class="mx-3">
+          <input type="checkbox" id="{{bu_type.id}}" [value]="bu_type.id" (change)="onbuTypeChange($event)" />
+          {{bu_type.bu_type}}
+        </label>
+      </div>
+      </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="__kycForm.get('options').value == '3'">
+      <div class="row my-5">
+        <div class="col-sm-6">
+          <mat-radio-group aria-label="Select an option" color="primary" formControlName="date_status">
+            <mat-radio-button value="T">Today</mat-radio-button>
+            <mat-radio-button value="D" class="radio2">Date Range</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <ng-container *ngIf="__kycForm.get('date_status').value== 'D'">
+        <div class="row my-5">
+          <div class="col-sm-4">
+            <label for="start_date">Start Date</label>
+            <input type="date" [min]="getminDate()" [max]="getTodayDate()" name="start_date" id="start_date" class="form-control" formControlName="start_date">
+          </div>
+           <div class="col-sm-1"></div>
+          <div class="col-sm-4">
+            <label for="end_date">End Date</label>
+            <input type="date" [min]="getminDate()" [max]="getTodayDate()" name="end_date" id="end_date" class="form-control" formControlName="end_date">
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- <div class="row my-5">
+        <div class="col-sm-4">
+          <mat-radio-group aria-label="Select an option" color="primary" formControlName="login_status">
+            <mat-radio-button value="N">Not Logged</mat-radio-button>
+            <mat-radio-button value="L" class="radio3">Logged</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div> -->
+
+    </ng-container>
+    <ng-container *ngIf="__isAdditional">
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="login_type">Kyc Login Type</label>
+          <select name="login_type" id="login_type" class="form-control" formControlName="login_type">
+            <option value="">Select Login At</option>
+            <option [value]="__kycloginType.id" *ngFor="let __kycloginType of __kycLoginType">
+              {{__kycloginType.value}}
+            </option>
+          </select>
+        </div>
+        <div class="col-sm-4" >
+          <label for="login_at">Kyc Login At</label>
+          <select name="login_at" id="login_at" class="form-control" formControlName="login_at">
+            <option value="">Select Login At</option>
+            <option value="{{__item.id}}" *ngFor="let __item of __kycLoginAt">
+              {{this.__kycForm.get('login_type').value == 'R' ? __item.rnt_name : (this.__kycForm.get('login_type').value == 'A' ? __item.amc_name : __item.value)}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+    </ng-container>
+      <div class="row">
+        <div class="col-sm-12">
+          <button mat-raised-button color="primary" class="float-right">
+            Show
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="mat-elevation-z3">
+  <div class="example_container_header">
+    <div class="btnGrp d-flex">
+
+      <mat-form-field appearance="fill">
+        <mat-label>Select Columns</mat-label>
+        <mat-select [formControl]="toppings" multiple>
+          <mat-option
+          *ngFor="let topping of toppingList"
+          [value]="topping.id">
+          {{topping.text}}
+        </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>system_update_alt</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="exportPdf()">
+          <mat-icon>download</mat-icon> Export Pdf
+        </button>
+        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'KYCReport'})">
+          <mat-icon>download</mat-icon> Export Excel
+        </button>
+      </mat-menu>
+    </div>
+
+</div>
+
+
+
+<div class="example-container">
+
+  <table mat-table [dataSource]="__kycRpt" class="table_Custome">
+    <!-- Sl No. -->
+    <ng-container matColumnDef="sl_no">
+      <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+      <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+    </ng-container>
+
+      <!-- Recieve Date Time -->
+      <ng-container matColumnDef="tin_no">
+        <th mat-header-cell *matHeaderCellDef>TIN No.</th>
+        <td mat-cell *matCellDef="let element">{{element.tin_no}}</td>
+      </ng-container>
+          <!-- Recieve Date Time -->
+          <ng-container matColumnDef="bu_type">
+            <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+            <td mat-cell *matCellDef="let element">{{element.bu_type == 'B' ? 'B2B' : element.bu_type == 'I' ? 'B2C - Indirect' : 'B2C - Direct'}}</td>
+          </ng-container>
+              <!-- Recieve Date Time -->
+              <ng-container matColumnDef="sub_brk_cd">
+                <th mat-header-cell *matHeaderCellDef>Sub Broker ARN</th>
+                <td mat-cell *matCellDef="let element">{{element.arn_no}}</td>
+              </ng-container>
+                  <!-- Recieve Date Time -->
+                  <ng-container matColumnDef="euin_no">
+                    <th mat-header-cell *matHeaderCellDef>EUIN</th>
+                    <td mat-cell *matCellDef="let element">{{element.euin_no}}</td>
+                  </ng-container>
+                     <!-- Recieve Date Time -->
+                     <ng-container matColumnDef="client_name">
+                      <th mat-header-cell *matHeaderCellDef>Client Name</th>
+                      <td mat-cell *matCellDef="let element">{{element.client_name}}</td>
+                    </ng-container>
+                         <!-- Recieve Date Time -->
+                         <ng-container matColumnDef="client_code">
+                          <th mat-header-cell *matHeaderCellDef>Client Code</th>
+                          <td mat-cell *matCellDef="let element">{{element.pan}}</td>
+                        </ng-container>
+
+                            <!-- Recieve Date Time -->
+                            <ng-container matColumnDef="kyc_type">
+                              <th mat-header-cell *matHeaderCellDef>Kyc Type</th>
+                              <td mat-cell *matCellDef="let element">{{element.kyc_type == 'F' ? 'KYC Fresh' : 'KYC Modified'}}</td>
+                            </ng-container>
+
+                             <!-- Recieve Date Time -->
+                    <ng-container matColumnDef="login_at">
+                      <th mat-header-cell *matHeaderCellDef>Kyc Login At</th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.kyc_login_type == 'R' ? element.rnt_name : (element.kyc_login_type == 'A' ? element.amc_name : 'NuEdge Online')}}
+                      </td>
+                    </ng-container>
+                      <!-- Recieve Date Time -->
+                      <ng-container matColumnDef="login_type">
+                        <th mat-header-cell *matHeaderCellDef>Kyc Login Type</th>
+                        <td mat-cell *matCellDef="let element">
+                          {{element.kyc_login_type =='R' ? 'R&T' : (element.kyc_login_type =='A' ? 'AMC' : 'NuEdge Online')}}
+                        </td>
+                      </ng-container>
+                             <!-- Recieve Date Time -->
+                             <ng-container matColumnDef="amc_office">
+                              <th mat-header-cell *matHeaderCellDef>Amc Office</th>
+                              <td mat-cell *matCellDef="let element">{{element.amc_name}}</td>
+                            </ng-container>
+    <ng-container matColumnDef="entry_dt">
+      <th mat-header-cell *matHeaderCellDef>Entry Date</th>
+      <td mat-cell *matCellDef="let element">{{element.entry_dt}}</td>
+    </ng-container>
+
+
+
+    <!-- Buisness Type-->
+    <ng-container matColumnDef="pan">
+      <th mat-header-cell *matHeaderCellDef>Pan</th>
+      <td mat-cell *matCellDef="let element">{{element.pan_no}}</td>
+    </ng-container>
+
+    <!-- Buisness Type-->
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef>Edit</th>
+      <td mat-cell *matCellDef="let element">
+        <!-- (click)="populateDT(element)" -->
+        <a>
+          <mat-icon class="edit_icon">edit</mat-icon>
+        </a>
+      </td>
+    </ng-container>
+
+    <!-- Buisness Type-->
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef>Delete</th>
+      <td mat-cell *matCellDef="let element">
+        <a>
+          <mat-icon class="delete_icon">delete</mat-icon>
+        </a>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="__columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" [attr.colspan]="__columns.length">No data found</td>
+    </tr>
+  </table>
+  </div>
+
+
+  <div class="paginator">
+    <div class="itemsPerPage">
+      <label>Items Per Page :&nbsp; </label>
+      <mat-button-toggle-group #group="matButtonToggleGroup">
+        <mat-button-toggle value="10" aria-label="Text align left" (click)="getval('10')">
+          10
+        </mat-button-toggle>
+        <mat-button-toggle value="50" aria-label="Text align center" (click)="getval('50')">
+          50
+        </mat-button-toggle>
+        <mat-button-toggle value="100" aria-label="Text align right" (click)="getval('100')">
+          100
+        </mat-button-toggle>
+        <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
+          All
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <div class="paginatorContainer">
+      <mat-button-toggle-group *ngFor="let paginate of __paginate">
+        <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+          <label>
+            <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+            <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+            <span
+              *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
+          </label>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+
+
+
+  </div>
+
+
+
+  <div id="KycRPT" style="display:none">
+    <table mat-table   [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+    <!-- Sl No. -->
+    <ng-container matColumnDef="sl_no">
+      <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+      <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+    </ng-container>
+          <!-- Recieve Date Time -->
+          <ng-container matColumnDef="tin_no">
+            <th mat-header-cell *matHeaderCellDef>TIN No.</th>
+            <td mat-cell *matCellDef="let element">{{element.tin_no}}</td>
+          </ng-container>
+     <!-- Recieve Date Time -->
+     <ng-container matColumnDef="bu_type">
+      <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+      <td mat-cell *matCellDef="let element">{{element.bu_type == 'B' ? 'B2B' : element.bu_type == 'I' ? 'B2C - Indirect' : 'B2C - Direct'}}</td>
+    </ng-container>
+        <!-- Recieve Date Time -->
+        <ng-container matColumnDef="sub_brk_cd">
+          <th mat-header-cell *matHeaderCellDef>Sub Broker ARN</th>
+          <td mat-cell *matCellDef="let element">{{element.arn_no}}</td>
+        </ng-container>
+            <!-- Recieve Date Time -->
+            <ng-container matColumnDef="euin_no">
+              <th mat-header-cell *matHeaderCellDef>EUIN</th>
+              <td mat-cell *matCellDef="let element">{{element.euin_no}}</td>
+            </ng-container>
+               <!-- Recieve Date Time -->
+               <ng-container matColumnDef="client_name">
+                <th mat-header-cell *matHeaderCellDef>Client Name</th>
+                <td mat-cell *matCellDef="let element">{{element.client_name}}</td>
+              </ng-container>
+                   <!-- Recieve Date Time -->
+                   <ng-container matColumnDef="client_code">
+                    <th mat-header-cell *matHeaderCellDef>Client Code</th>
+                    <td mat-cell *matCellDef="let element">{{element.pan}}</td>
+                  </ng-container>
+
+                      <!-- Recieve Date Time -->
+                      <ng-container matColumnDef="kyc_type">
+                        <th mat-header-cell *matHeaderCellDef>Kyc Type</th>
+                        <td mat-cell *matCellDef="let element">{{element.kyc_type == 'F' ? 'KYC Fresh' : 'KYC Modified'}}</td>
+                      </ng-container>
+
+                    <!-- Recieve Date Time -->
+                    <ng-container matColumnDef="login_at">
+                      <th mat-header-cell *matHeaderCellDef>Kyc Login At</th>
+                      <td mat-cell *matCellDef="let element">
+                        {{element.kyc_login_type == 'R' ? element.rnt_name : (element.kyc_login_type == 'A' ? element.amc_name : 'NuEdge Online')}}
+                      </td>
+                    </ng-container>
+                      <!-- Recieve Date Time -->
+                      <ng-container matColumnDef="login_type">
+                        <th mat-header-cell *matHeaderCellDef>Kyc Login Type</th>
+                        <td mat-cell *matCellDef="let element">
+                          {{element.kyc_login_type =='R' ? 'R&T' : (element.kyc_login_type =='A' ? 'AMC' : 'NuEdge Online')}}
+                        </td>
+                      </ng-container>
+                       <!-- Recieve Date Time -->
+                       <ng-container matColumnDef="amc_office">
+                        <th mat-header-cell *matHeaderCellDef>Amc Office</th>
+                        <td mat-cell *matCellDef="let element">{{element.amc_name}}</td>
+                      </ng-container>
+<ng-container matColumnDef="entry_dt">
+<th mat-header-cell *matHeaderCellDef>Entry Date</th>
+<td mat-cell *matCellDef="let element">{{element.entry_dt}}</td>
+</ng-container>
+
+
+
+<!-- Buisness Type-->
+<ng-container matColumnDef="pan">
+<th mat-header-cell *matHeaderCellDef>Pan</th>
+<td mat-cell *matCellDef="let element">{{element.pan_no}}</td>
+</ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
+      <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Financial History
+          Found</td>
+      </tr>
+    </table>
+    </div>
+</div>
+  </mat-dialog-content>
+  </div>

@@ -13,6 +13,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { DoctyperptComponent } from './docTypeRpt/docTypeRpt.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatMenuModule } from '@angular/material/menu';
 const routes: Routes =[{path:'',component:DocsMasterComponent}]
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ const routes: Routes =[{path:'',component:DocsMasterComponent}]
     SharedModule,
     MatButtonToggleModule,
     MatTableExporterModule,
-    MatRadioModule
+    MatRadioModule,
+    MatMenuModule
   ],
   declarations: [DocsMasterComponent,DocsModificationComponent,DoctyperptComponent]
 })

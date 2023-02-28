@@ -1,0 +1,8 @@
+[
+  {"id":1,"name":"NRI - RI"},
+  {"id":2,"name":"RI - NRI"},
+  {"id":3,"name":"NRI - OCI"},
+  {"id":4,"name":"OCI - NRI"},
+  {"id":5,"name":"OCI - RI"},
+  {"id":6,"name":"RI - OCI"}
+]

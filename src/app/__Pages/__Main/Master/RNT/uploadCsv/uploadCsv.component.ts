@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 
 import { pluck, take } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { rnt } from 'src/app/__Model/Rnt';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -16,6 +18,9 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
   styleUrls: ['./uploadCsv.component.css'],
 })
 export class UploadCsvComponent implements OnInit {
+
+
+
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
@@ -64,15 +69,49 @@ export class UploadCsvComponent implements OnInit {
   });
   __columns: string[] = ['sl_no', 'rnt_name', 'edit', 'delete'];
   __selectRNT = new MatTableDataSource<rnt>([]);
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"R&T",
+      url:'/main/master/productwisemenu/rnt',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"R&T Upload",
+      url:'/main/master/productwisemenu/rnt/rntUpload',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    }
+]
+
   constructor(
     private __dbIntr: DbIntrService,
-    private __utility: UtiliService
+    private __utility: UtiliService,
+    public  __rtDt: ActivatedRoute
   ) {
     this.previewlatestRntEntry();
   }
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestRntEntry() {
     this.__dbIntr
@@ -84,7 +123,7 @@ export class UploadCsvComponent implements OnInit {
   }
   populateDT(__items: rnt) {
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/rnt', {
-      queryParams: { id: btoa(__items.id.toString()) },
+      queryParams: { product_id:this.__rtDt.snapshot.queryParamMap.get('product_id'), id: btoa(__items.id.toString()) },
     });
   }
   getFiles(__ev) {
@@ -178,7 +217,10 @@ export class UploadCsvComponent implements OnInit {
   }
   showCorrospondingAMC(__rntDtls) {
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/amc', {
-      queryParams: { id: btoa(__rntDtls.id.toString()) },
+      queryParams: {
+        id: btoa(__rntDtls.id.toString()),
+        product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')
+      },
     });
   }
 }

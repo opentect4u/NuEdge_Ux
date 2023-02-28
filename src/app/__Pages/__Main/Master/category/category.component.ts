@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map, pluck } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -19,6 +20,31 @@ import { CatrptComponent } from './catRpt/catRpt.component';
   styleUrls: ['./category.component.css'],
 })
 export class CategoryComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Category",
+      url:'/main/master/productwisemenu/category',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    }
+]
   __pageNumber = new FormControl(10);
   __paginate: any = [];
   __menu = [
@@ -60,10 +86,11 @@ export class CategoryComponent implements OnInit {
     private __utility: UtiliService
   ) {}
   ngOnInit(): void {
-    this.getCategorymaster();
+    // this.getCategorymaster();
     if (this.__rtDt.snapshot.queryParamMap.get('id')) {
       this.getParticularCategory();
     }
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
@@ -165,7 +192,7 @@ export class CategoryComponent implements OnInit {
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__menu.url);
+        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')}});
         break;
       case 'R':this.openDialogForReports(this.__rtDt.snapshot.queryParamMap.get('product_id'));break;
       default:

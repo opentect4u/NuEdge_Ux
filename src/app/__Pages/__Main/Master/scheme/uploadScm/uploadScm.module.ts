@@ -11,6 +11,7 @@ import { MatTableExporterModule } from 'mat-table-exporter';
 import { RouterModule, Routes } from '@angular/router';
 import { SchemDragDirective } from 'src/app/__Directives/schemDrag.directive';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatRadioModule } from '@angular/material/radio';
 
 const routes: Routes = [{ path: '', component: UploadScmComponent }]
 
@@ -23,7 +24,8 @@ const routes: Routes = [{ path: '', component: UploadScmComponent }]
     ReactiveFormsModule,
     MatTableModule,
     MatTableExporterModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatRadioModule
   ],
   declarations: [UploadScmComponent,SchemDragDirective]
 })

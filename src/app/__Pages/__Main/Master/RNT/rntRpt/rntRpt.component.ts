@@ -18,6 +18,24 @@ templateUrl: './rntRpt.component.html',
 styleUrls: ['./rntRpt.component.css']
 })
 export class RntrptComponent implements OnInit {
+
+  toppings = new FormControl();
+  toppingList: any = [{id:'edit',text:'Edit'},
+                          {id:'sl_no',text:'SL No'},
+                          {id:'rnt_name',text:'R&T'},
+                          {id:'web_site',text:'Web Site'},
+                          {id:'cus_care_no',text:'Customer Care Number'},
+                          {id:'cus_care_email',text:'Customer Care Email'},
+                          {id:'head_contact_per',text:'Head Office Contact Person'},
+                          {id:'head_contact_per_mobile',text:'Head Office Contact Person Mobile'},
+                          {id:'head_contact_per_email',text:'Head Office Contact Person Email'},
+                          {id:'head_contact_per_addr',text:'Head Office Contact Person Address'},
+                          {id:'local_contact_per',text:'Local Office Contact Person'},
+                          {id:'local_contact_per_mobile',text:'Local Office Contact Person Mobile'},
+                          {id:'local_contact_per_email',text:'Local Office Contact Person Email'},
+                          {id:'local_contact_per_addr',text:'Local Office Contact Person Address'},
+                          {id:'delete',text:'Delete'}];
+
   __isrntspinner: boolean =false;
   __rntMst: rnt[] = [];
   @ViewChild('searchRnt') __searchRnt: ElementRef;
@@ -26,12 +44,13 @@ export class RntrptComponent implements OnInit {
   __pageNumber = new FormControl(10);
   __columns: string[] = [];
   __export =  new MatTableDataSource<rnt>([]);
-  __exportedClmns: string[] =[ 'sl_no','rnt_name', 'cus_care_no','cus_care_email'];
-  __columnsForsummary: string[] = ['edit','sl_no','rnt_name', 'cus_care_no','cus_care_email', 'delete'];
+  __exportedClmns: string[] =[ 'sl_no','rnt_name', 'web_site','cus_care_no','cus_care_email'];
+  __columnsForsummary: string[] = ['edit','sl_no','rnt_name','web_site', 'cus_care_no','cus_care_email', 'delete'];
   __columnsForDetails: string[] = [
     'edit',
     'sl_no',
     'rnt_name',
+    'web_site',
     'cus_care_no',
     'cus_care_email',
     'head_contact_per',
@@ -43,7 +62,7 @@ export class RntrptComponent implements OnInit {
     'local_contact_per_email',
     'local_contact_per_addr',
     'delete'];
-  __isVisible:boolean= false;
+  __isVisible:boolean= true;
   __rntSearchForm = new FormGroup({
     options: new FormControl('2'),
     rnt_name: new FormControl(''),
@@ -63,9 +82,11 @@ constructor(
 }
 
 ngOnInit(){
-  this.getRNTmaster();
+  // this.getRNTmaster();
   this.__columns =  this.__columnsForsummary;
-  this.tableExport();
+  this.toppings.setValue(this.__columns);
+  // this.tableExport();
+  this.submit();
 }
 
 ngAfterViewInit(){
@@ -85,6 +106,7 @@ ngAfterViewInit(){
   )
   .subscribe({
     next: (value) => {
+      this.__rntSearchForm.get('rnt_id').setValue('');
       this.__rntMst = value;
       this.searchResultVisibility('block','R')
       this.__isrntspinner = false;
@@ -95,9 +117,12 @@ ngAfterViewInit(){
   this.__rntSearchForm.controls['options'].valueChanges.subscribe(res =>{
     if(res == '1'){
       this.__columns = this.__columnsForDetails;
+       this.toppings.setValue(this.__columns);
+
       this.__exportedClmns = [
         'sl_no',
         'rnt_name',
+        'web_site',
         'cus_care_no',
         'cus_care_email',
         'head_contact_per',
@@ -111,11 +136,17 @@ ngAfterViewInit(){
     ]
     }
     else{
-      // this.showColumns();
       this.__columns = this.__columnsForsummary;
-      this.__exportedClmns =['sl_no','rnt_name', 'cus_care_no','cus_care_email'];
+      this.toppings.setValue(this.__columns);
+      this.__exportedClmns =['sl_no','rnt_name','web_site','cus_care_no','cus_care_email'];
     }
   })
+
+  this.toppings.valueChanges.subscribe((res) => {
+    const clm = ['edit','delete']
+    this.__columns = res;
+    this.__exportedClmns = res.filter(item => !clm.includes(item))
+  });
 }
 outsideClick(__ev,__mode){
   if(__ev){
@@ -246,7 +277,8 @@ fullScreen(){
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  this.getRNTmaster(this.__pageNumber.value);
+  // this.getRNTmaster(this.__pageNumber.value);
+this.submit();
 }
 getPaginate(__paginate){
   if (__paginate.url) {
@@ -294,7 +326,6 @@ private updateRow(row_obj: rnt) {
       value.head_contact_per_mob = row_obj.head_contact_per_mob
       value.head_contact_per_email = row_obj.head_contact_per_email
       value.head_ofc_addr = row_obj.head_ofc_addr
-
       value.local_ofc_contact_per = row_obj.local_ofc_contact_per
       value.local_contact_per_mob = row_obj.local_contact_per_mob
       value.local_contact_per_email = row_obj.local_contact_per_email
@@ -305,8 +336,9 @@ private updateRow(row_obj: rnt) {
 }
 submit(){
   const __amcSearch = new FormData();
-    __amcSearch.append('rnt_id',this.__rntSearchForm.value.rnt_id);
-    __amcSearch.append('contact_person',this.__rntSearchForm.value.contact_person);
+    __amcSearch.append('rnt_id',this.__rntSearchForm.value.rnt_id ? this.__rntSearchForm.value.rnt_id : '');
+    __amcSearch.append('contact_person',this.__rntSearchForm.value.contact_person ? this.__rntSearchForm.value.contact_person : '');
+    __amcSearch.append('paginate',this.__pageNumber.value);
 
      this.__dbIntr.api_call(1,'/rntDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
       this.__paginate =res.links;
@@ -319,12 +351,15 @@ submit(){
 tableExport(){
   const __amcExport = new FormData();
   __amcExport.append('rnt_id',this.__rntSearchForm.value.rnt_id ? this.__rntSearchForm.value.rnt_id : '');
+  __amcExport.append('contact_person',this.__rntSearchForm.value.contact_person);
+  // __amcExport.append('paginate',this.__pageNumber.value);
+
   this.__dbIntr.api_call(1,'/rntExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: rnt[]) =>{
     this.__export = new MatTableDataSource(res);
   })
 }
 exportPdf(){
-  this.__Rpt.downloadReport('#daySheetRpt',
+  this.__Rpt.downloadReport('#rnt_rpt',
   {
     title: 'R&T '
   }, 'R&T')
@@ -384,5 +419,14 @@ private addRow(row_obj: rnt) {
   this.__selectRNT._updateChangeSubscription();
   this.__export.data.unshift(row_obj);
   this.__export._updateChangeSubscription();
+}
+reset(){
+  this.__rntSearchForm.patchValue(
+   { options: '2',
+    rnt_name:'',
+    rnt_id:'',
+    contact_person:''}
+  );
+   this.submit();
 }
 }

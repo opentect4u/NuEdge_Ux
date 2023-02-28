@@ -7,7 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: MastermenudashboardComponent,
-    data: { breadcrumb: 'Menus' },
+    data: { breadcrumb: 'Mutual Fund' },
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
@@ -72,9 +72,19 @@ const routes: Routes = [
             (m) => m.ScmMainLandingModule
           ),
       },
+      {
+        path:'trnsType',
+        loadChildren:() => import('../transType/transType.module').then(m => m.TransTypeModule),
+      },
+      {
+        path:'trns',
+        loadChildren:()=> import('../transaction/transaction.module').then(m => m.TransactionModule)
+      },
+      {
+        path:'sipType',
+        loadChildren:()=> import('../SipType/sipType.module').then(m => m.SiptypeModule)
+      }
     ],
-    // }
-    // ]
   },
 ];
 

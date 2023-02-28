@@ -1,0 +1,6 @@
+[
+  {"id":1,"name":"KYC Rejected"},
+  {"id":2,"name":"Incomplete KYC"},
+  {"id":3,"name":"CVLMF KYC"},
+  {"id":4,"name":"No Data Found"}
+]

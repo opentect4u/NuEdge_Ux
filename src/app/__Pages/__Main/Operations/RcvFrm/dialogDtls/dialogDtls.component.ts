@@ -46,7 +46,8 @@ export class DialogDtlsComponent implements OnInit {
     private __dbIntr: DbIntrService
   ) { }
 
-  ngOnInit() {    
+  ngOnInit() {
+     console.log(this.data);
     if(this.data.flag == 'S' || this.data.flag == 'ST'){
      this.getscmDtls();
     }
@@ -70,9 +71,9 @@ export class DialogDtlsComponent implements OnInit {
               city:res[0].city_name,
               pincode:res[0].pincode,
               client_type: res[0].client_type == 'P' ? 'Pan Holder' : res[0].client_type == 'N' ? 'Non Pan Holder' : 'Minor',
-              gurdians_pan:res[0].gurdians_pan ,
-              gurdians_name:res[0].gurdians_name ,
-              relations:res[0].relations 
+              gurdians_pan:res[0].guardians_pan ,
+              gurdians_name:res[0].guardians_name ,
+              relations:res[0].relation
             });
             res[0].client_doc.forEach(element =>{
                 this.__docs.push(this.setItem(element.id, element.doc_type_id, element.doc_name, element.client_id));

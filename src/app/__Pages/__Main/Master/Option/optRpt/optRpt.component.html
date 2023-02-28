@@ -24,29 +24,33 @@
   <div class="card my-5">
     <div class="card-body p-5">
   <form [formGroup]="__catForm" (ngSubmit)="submit()" autocomplete="off">
-    <div class="row ">
+    <!-- <div class="row ">
       <div class="col-sm-6 my-auto">
           <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
             <mat-radio-button value="2">Summary</mat-radio-button>
             <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
           </mat-radio-group>
       </div>
-    </div>
+    </div> -->
     <ng-container>
-      <div class="row my-5">
-        <div class="col-sm-5">
-           <label for="option">option</label>
-           <input type="text" name="option" id="option" class="form-control" formControlName="option">
-        </div>
-      </div>
       <div class="row">
+        <div class="col-sm-5">
+           <label for="option">Option</label>
+           <input type="text" placeholder="Enter Option" name="option" id="option" class="form-control" formControlName="option">
+        </div>
+        <div class="col-sm-7 my-auto">
+          <button mat-raised-button  color="primary" class="float-right">
+            Show
+          </button>
+      </div>
+      </div>
+      <!-- <div class="row">
         <div class="col-sm-12">
             <button mat-raised-button  color="primary" class="float-right">
-              <mat-icon>visibility</mat-icon>
               Show
             </button>
         </div>
-      </div>
+      </div> -->
     </ng-container>
 
   </form>
@@ -55,13 +59,24 @@
 <div class="mat-elevation-z3">
   <div class="example_container_header">
     <div class="btnGrp">
-      <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>system_update_alt</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="exportPdf()">
+          <mat-icon>download</mat-icon> Export Pdf
+        </button>
+        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Option'})">
+          <mat-icon>download</mat-icon> Export Excel
+        </button>
+      </mat-menu>
+      <!-- <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
         <mat-icon>download</mat-icon> Export Pdf
       </button>
       <button class="float-right" color="primary" type="button" mat-button
         (click)="exporter.exportTable('xlsx',{fileName:'Option'})">
         <mat-icon>download</mat-icon> Export Excel
-      </button>
+      </button> -->
     </div>
 
   </div>
@@ -113,16 +128,16 @@
     <div class="itemsPerPage">
       <label>Items Per Page :&nbsp; </label>
       <mat-button-toggle-group #group="matButtonToggleGroup">
-        <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
+        <mat-button-toggle value="10" aria-label="Text align left" (click)="getval('10')">
           10
         </mat-button-toggle>
-        <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
+        <mat-button-toggle value="50" aria-label="Text align center" (click)="getval('50')">
           50
         </mat-button-toggle>
-        <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
+        <mat-button-toggle value="100" aria-label="Text align right" (click)="getval('100')">
           100
         </mat-button-toggle>
-        <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+        <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
           All
         </mat-button-toggle>
       </mat-button-toggle-group>

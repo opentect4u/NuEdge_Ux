@@ -1,0 +1,16 @@
+  <div [class]="__flag == 'Q' ? 'boxMid' : 'boxMid_2'">
+    <div class="titleSec">
+      <h3>{{__flag == 'Q' ? 'Quick View' : 'Employee Scores'}}</h3>
+      <p>
+        <i [class]="__flag == 'Q' ? 'fa fa-clock-o timerCustom' : 'fa fa-calendar-o'" aria-hidden="true"></i> 
+        {{__flag == 'Q' ? 'Last 24 hrs' : '22/04/2022 - 24/11/2022'}}
+      </p>
+    </div>
+    <div class="bodyPart">
+      <ul>
+        <li *ngFor="let __items of __listItems">
+          <a>{{__items.title}} <span *ngIf="__flag == 'E'">{{__items.scores}} / 10</span></a>
+        </li>
+      </ul>
+    </div>
+  </div>

@@ -1,18 +1,26 @@
 [
     {
+    "id":"N",
+    "value":"KYC REGISTERED - New KYC"
+    },
+    {
         "id":"R",
         "value":"KYC Rejected"
     },
     {
         "id":"M",
-        "value":"Modified KYC Reject"
+        "value":"Modified KYC Rejected"
+    },
+      {
+        "id":"I",
+        "value":"Incomplete KYC"
     },
     {
-        "id":"N",
-        "value":"KYC REGISTERED - New KYC"
+      "id":"C",
+      "value":"CVLMF KYC"
     },
     {
-        "id":"U",
-        "value":"Modified Under Process"
+      "id":"F",
+      "value":"No Data Found"
     }
 ]

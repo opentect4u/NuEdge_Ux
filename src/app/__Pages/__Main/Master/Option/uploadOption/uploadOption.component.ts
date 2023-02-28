@@ -2,7 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { option } from 'src/app/__Model/option';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -16,6 +18,37 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
   styleUrls: ['./uploadOption.component.css'],
 })
 export class UploadOptionComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Option",
+      url:'/main/master/productwisemenu/option',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Option Upload",
+      url:'/main/master/productwisemenu/option/uploadOption',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    }
+]
   displayedColumns: Array<string> = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tableColumns: Array<Column> = [
@@ -42,13 +75,16 @@ export class UploadOptionComponent implements OnInit {
   __selectOpt = new MatTableDataSource<option>([]);
   constructor(
     private __dbIntr: DbIntrService,
-    private __utility: UtiliService
+    private __utility: UtiliService,
+    public __rtDt: ActivatedRoute
   ) {
     this.previewlatestOptEntry();
+
   }
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestOptEntry() {
     this.__dbIntr
@@ -63,7 +99,10 @@ export class UploadOptionComponent implements OnInit {
   populateDT(__items: option) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/option',
-      { queryParams: { id: btoa(__items.id.toString()) } }
+      { queryParams: {
+        id: btoa(__items.id.toString()),
+        product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')
+      } }
     );
   }
   getFiles(__ev) {

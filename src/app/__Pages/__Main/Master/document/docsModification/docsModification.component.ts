@@ -49,15 +49,15 @@ export class DocsModificationComponent implements OnInit {
     })
   }
   ngOnInit() {
-    // console.log(this.data.id);
-    
+    console.log(this.data.items?.client_doc);
+
     this.getDocumnetTypeMaster();
     this.addItem();
     if(this.data.id > 0){
-      this.populateDT({client_code:this.data.items.client_code,client_id:this.data.items.client_id})
+      this.populateDT({client_code:this.data.items.client_code,client_id:this.data.items.id})
 }
   }
-   
+
   ngAfterViewInit(){
     this.__clientForm.controls['client_code'].valueChanges.
       pipe(
@@ -117,7 +117,7 @@ export class DocsModificationComponent implements OnInit {
       doc_name: new FormControl(''),
       file_preview: new FormControl( doc!= null ? `${environment.clientdocUrl}` + cl_id + '/' + doc : ''),
       file: new FormControl( doc!= null ? `${environment.clientdocUrl}` + cl_id + '/' + doc : '')
-    });  
+    });
   }
   searchResultVisibility(display_mode) {
     this.__searchRlt.nativeElement.style.display = display_mode;
@@ -128,8 +128,8 @@ export class DocsModificationComponent implements OnInit {
     }
   }
   populateDT(client){
-    // console.log(client);
-    
+    console.log(client);
+
     // this.__clientForm.controls['client_code'].reset(client_code, { onlySelf: true, emitEvent: false });
     this.__dbIntr.api_call(0,'/documentsearch','client_id='+client.client_id).pipe(map((x: any) => x.data)).subscribe((res: client[]) =>{
       this.getItems(res[0]);
@@ -187,4 +187,5 @@ setFileValue(index) {
   this.__docs.controls[index].get('file_preview')?.reset();
   this.__docs.controls[index].get('file')?.reset();
 }
+
 }

@@ -37,6 +37,11 @@ const routes: Routes = [
         },
       },
       {
+          path:'reports',
+          loadChildren:()=>
+          import('./daySheetRPT/daySheetRpt.module').then(m => m.DaysheetrptModule)
+      },
+      {
         path: 'manualEntr',
         loadChildren: () =>
           import('./manualEntrDashboard/manualEntrDashboard.module').then(
@@ -73,6 +78,11 @@ const routes: Routes = [
         redirectTo: 'ophome',
         pathMatch: 'full',
       },
+      {
+        path:'acknowledgement',
+        loadChildren:()=>import('../Operations/Mutual_Fund/AcknowlegeMent/ackMain.module').then(m => m.AckmainModule),
+        data:{breadcrumb:'Acknowledgement'}
+      }
     ],
   },
 ];

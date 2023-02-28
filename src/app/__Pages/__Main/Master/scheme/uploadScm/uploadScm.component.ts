@@ -10,21 +10,47 @@ import { scheme } from 'src/app/__Model/__schemeMst';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 @Component({
   selector: 'app-uploadScm',
   templateUrl: './uploadScm.component.html',
   styleUrls: ['./uploadScm.component.css']
 })
 export class UploadScmComponent implements OnInit {
+   __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.__route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.__route.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Scheme",
+      url:'/main/master/productwisemenu/scheme',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__route.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Scheme Upload",
+      url:'/main/master/productwisemenu/scheme/uploadScm',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__route.snapshot.queryParamMap.get('product_id')}
+    }
+]
   displayedColumns: Array<string> = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tableColumns: Array<Column> = [
-
-    {
-      columnDef: 'product_id',
-      header: 'product_id',
-      cell: (element: Record<string, any>) => `${element['product_id']}`
-    },
     {
       columnDef: 'amc_id',
       header: 'amc_id',
@@ -47,12 +73,6 @@ export class UploadScmComponent implements OnInit {
       columnDef: 'scheme_name',
       header: 'scheme_name',
       cell: (element: Record<string, any>) => `${element['scheme_name']}`
-    },
-    {
-      columnDef: 'isin_no',
-      header: 'isin_no',
-      cell: (element: Record<string, any>) => `${element['isin_no']}`,
-      isDate: true
     },
     {
       columnDef: 'scheme_type',
@@ -85,41 +105,20 @@ export class UploadScmComponent implements OnInit {
       isDate: true
     },
     {
-      columnDef: 'sip_fresh_min_amt',
-      header: 'sip_fresh_min_amt',
-      cell: (element: Record<string, any>) => `${element['sip_fresh_min_amt']}`,
-      isDate: true
-    }, {
       columnDef: 'pip_add_min_amt',
       header: 'pip_add_min_amt',
       cell: (element: Record<string, any>) => `${element['pip_add_min_amt']}`,
       isDate: true
     },
     {
-      columnDef: 'sip_add_min_amt',
-      header: 'sip_add_min_amt',
-      cell: (element: Record<string, any>) => `${element['sip_add_min_amt']}`,
+      columnDef: 'sip_freq_wise_amt',
+      header: 'sip_freq_wise_amt',
+      cell: (element: Record<string, any>) => `${element['sip_freq_wise_amt']}`,
       isDate: true
     }
   ];
-  tableData = new MatTableDataSource(
-    [{
-      product_id:1,
-        amc_id:1,
-        category_id:1,
-        subcategory_id:1,
-        scheme_name:"Others",
-        id:1,
-        scheme_type:'N',
-        nfo_start_dt:'01-01-2023',
-        nfo_end_dt:'01-01-2023',
-        nfo_reopen_dt:'01-01-2023',
-        pip_fresh_min_amt:2000,
-        sip_fresh_min_amt:3000,
-        pip_add_min_amt:4000,
-        sip_add_min_amt:5000,
-        isin_no:"XXXX12345"
-    },
+
+   __dataTbleForNFO = [
     {
       product_id:2,
         amc_id:3,
@@ -127,30 +126,68 @@ export class UploadScmComponent implements OnInit {
         subcategory_id:5,
         scheme_name:"Others1",
         id:2,
-        scheme_type:'O',
-        nfo_start_dt:'',
-        nfo_end_dt:'',
-        nfo_reopen_dt:'',
+        scheme_type:'N',
+        nfo_start_dt:'2023-02-27',
+        nfo_end_dt:'2023-02-27',
+        nfo_reopen_dt:'2023-02-27',
         pip_fresh_min_amt:2000,
-        sip_fresh_min_amt:3000,
         pip_add_min_amt:4000,
-        sip_add_min_amt:5000,
-        isin_no:"XXXX12346"
+        sip_freq_wise_amt:
+        JSON.stringify([{"id":"D","freq_name":"Daily","is_cheked":true,"sip_fresh_min_amt":"2000","sip_add_min_amt":"3000"},
+        {"id":"W","freq_name":"Weekly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+        {"id":"F","freq_name":"fortnightly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+        {"id":"M","freq_name":"Monthly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+        {"id":"Q","freq_name":"Quarterly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+        {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+        {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
+        ]),
     }
-  ]
-  );
+   ];
+   __dataTbleForOngoing = [
+    {
+      product_id:2,
+      amc_id:3,
+      category_id:4,
+      subcategory_id:5,
+      scheme_name:"Others1",
+      id:2,
+      scheme_type:'O',
+      pip_fresh_min_amt:2000,
+      pip_add_min_amt:4000,
+      sip_freq_wise_amt:
+      JSON.stringify([{"id":"D","freq_name":"Daily","is_cheked":true,"sip_fresh_min_amt":"2000","sip_add_min_amt":"3000"},
+      {"id":"W","freq_name":"Weekly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+      {"id":"F","freq_name":"fortnightly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+      {"id":"M","freq_name":"Monthly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+      {"id":"Q","freq_name":"Quarterly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+      {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+      {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
+      ]),
+    }
+   ]
+
+  tableData = new MatTableDataSource<any>(this.__dataTbleForNFO);
   allowedExtensions = ['csv', 'xlsx'];
   __uploadRnt = new FormGroup({
     rntFile: new FormControl('', [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
-    file: new FormControl('')
+    file: new FormControl(''),
+    scheme_type: new FormControl('N',[Validators.required])
   })
   __columns: string[] = ['sl_no', 'scm_name', 'edit', 'delete'];
   __selectRNT = new MatTableDataSource<scheme>([]);
-  constructor(private __dbIntr: DbIntrService, private __utility: UtiliService,private __route: ActivatedRoute) { this.previewlatestCategoryEntry(); }
+  constructor(
+    private __dbIntr: DbIntrService,
+    private __utility: UtiliService,
+    public __route: ActivatedRoute) { this.previewlatestCategoryEntry(); }
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
-
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
+  }
+  ngAfterViewInit(){
+      this.__uploadRnt.controls['scheme_type'].valueChanges.subscribe(res =>{
+           this.tableData = new MatTableDataSource(res == 'N' ? this.__dataTbleForNFO : this.__dataTbleForOngoing);
+      })
   }
   previewlatestCategoryEntry() {
     this.__dbIntr.api_call(0, '/scheme', null).pipe(pluck('data')).subscribe((res: scheme[]) => {
@@ -176,6 +213,8 @@ export class UploadScmComponent implements OnInit {
     }
     const __uploadRnt = new FormData();
     __uploadRnt.append('file', this.__uploadRnt.get('file').value);
+    __uploadRnt.append('scheme_type', this.__uploadRnt.get('schcme_type').value);
+
     this.__dbIntr.api_call(1, '/schemeimport', __uploadRnt).subscribe((res: responseDT) => {
       this.__utility.showSnackbar(res.suc == 1 ? 'File Uploadation Successfull' : 'Something went wrong! please try again later', res.suc);
       if (res.suc == 1) {

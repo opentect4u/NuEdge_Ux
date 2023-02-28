@@ -24,25 +24,24 @@
   <div class="card my-5">
     <div class="card-body p-5">
   <form [formGroup]="__catForm" (ngSubmit)="submit()" autocomplete="off">
-    <div class="row ">
+    <!-- <div class="row ">
       <div class="col-sm-6 my-auto">
           <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
             <mat-radio-button value="2">Summary</mat-radio-button>
             <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
           </mat-radio-group>
       </div>
-    </div>
+    </div> -->
     <ng-container>
-      <div class="row my-5">
+      <div class="row">
         <div class="col-sm-5">
-          <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'A')">
-            <div class="searchDiv">
-              <label for="cat_name">Category
-              </label>
+          <!-- <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'C')"> -->
+            <!-- <div class="searchDiv"> -->
+              <label for="cat_name">Category</label>
               <input type="search" name="cat_name" id="cat_name" class="form-control"
-                formControlName="cat_name" placeholder="Search by Category">
-                <span class="spinner-border" *ngIf="__iscatspinner && __catForm.get('cat_name').value?.length > 1"></span>
-               <div class="processMain_2" __searchResVisibility
+                formControlName="cat_name" placeholder="Enter Category">
+                <!-- <span class="spinner-border" *ngIf="__iscatspinner && __catForm.get('cat_name').value?.length > 1"></span> -->
+               <!-- <div class="processMain_2" __searchResVisibility
                 (appOutsideClick)="outsideClick($event,'C')">
                 <div class="serachresult_client" #searchcat>
                   <ul *ngIf="__catMst.length > 0">
@@ -57,19 +56,24 @@
                     <p>Categories Not AVailable</p>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </div> -->
+            <!-- </div> -->
+          <!-- </div> -->
         </div>
+        <div class="col-sm-7 my-auto">
+          <button mat-raised-button  color="primary" class="float-right">
+            Show
+          </button>
+          
       </div>
-      <div class="row">
+      </div>
+      <!-- <div class="row">
         <div class="col-sm-12">
             <button mat-raised-button  color="primary" class="float-right">
-              <mat-icon>visibility</mat-icon>
               Show
             </button>
         </div>
-      </div>
+      </div> -->
     </ng-container>
 
   </form>
@@ -78,13 +82,24 @@
 <div class="mat-elevation-z3">
   <div class="example_container_header">
     <div class="btnGrp">
-      <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>system_update_alt</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="exportPdf()">
+          <mat-icon>download</mat-icon> Export Pdf
+        </button>
+        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Category'})">
+          <mat-icon>download</mat-icon> Export Excel
+        </button>
+      </mat-menu>
+      <!-- <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
         <mat-icon>download</mat-icon> Export Pdf
       </button>
       <button class="float-right" color="primary" type="button" mat-button
         (click)="exporter.exportTable('xlsx',{fileName:'Category'})">
         <mat-icon>download</mat-icon> Export Excel
-      </button>
+      </button> -->
     </div>
 
   </div>
@@ -113,9 +128,9 @@
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef>Edit</th>
       <td mat-cell *matCellDef="let element">
-        <a (click)="populateDT(element)">
+        <button mat-icon-button (click)="populateDT(element)">
           <mat-icon class="edit_icon">edit</mat-icon>
-        </a>
+        </button>
       </td>
     </ng-container>
 
@@ -129,7 +144,7 @@
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="__columns"></tr>
+    <tr mat-header-row *matHeaderRowDef="__columns;sticky:true"></tr>
     <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell" colspan="4" class="text-center">No data found</td>

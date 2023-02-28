@@ -1,0 +1,18 @@
+[
+    {
+        "id":"R",
+        "value":"KYC Rejected"
+    },
+    {
+        "id":"M",
+        "value":"Modified KYC Reject"
+    },
+    {
+        "id":"N",
+        "value":"KYC REGISTERED - New KYC"
+    },
+    {
+        "id":"U",
+        "value":"Modified Under Process"
+    }
+]

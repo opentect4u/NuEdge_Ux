@@ -19,6 +19,24 @@ templateUrl: './catRpt.component.html',
 styleUrls: ['./catRpt.component.css']
 })
 export class CatrptComponent implements OnInit {
+
+  toppings = new FormControl();
+  toppingList: any = [{id:'edit',text:'Edit'},
+                          {id:'sl_no',text:'SL No'},
+                          {id:'rnt_name',text:'R&T'},
+                          {id:'cus_care_no',text:'Customer Care Number'},
+                          {id:'cus_care_email',text:'Customer Care Email'},
+                          {id:'head_contact_per',text:'Head Office Contact Person'},
+                          {id:'head_contact_per_mobile',text:'Head Office Contact Person Mobile'},
+                          {id:'head_contact_per_email',text:'Head Office Contact Person Email'},
+                          {id:'head_contact_per_addr',text:'Head Office Contact Person Address'},
+                          {id:'local_contact_per',text:'Local Office Contact Person'},
+                          {id:'local_contact_per_mobile',text:'Local Office Contact Person Mobile'},
+                          {id:'local_contact_per_email',text:'Local Office Contact Person Email'},
+                          {id:'local_contact_per_addr',text:'Local Office Contact Person Address'},
+                          {id:'delete',text:'Delete'}];
+
+
   @ViewChild('searchcat') __searchCat : ElementRef;
   __iscatspinner: boolean = false;
   __catMst: category[] = [];
@@ -33,7 +51,7 @@ export class CatrptComponent implements OnInit {
   __exportedClmns: string[] = ['sl_no', 'cat_name'];
   __paginate: any= [];
   __selectCategory = new MatTableDataSource<category>([]);
-  __isVisible: boolean = false;
+  __isVisible: boolean = true;
 constructor(
   private __Rpt: RPTService,
   public dialogRef: MatDialogRef<CatrptComponent>,
@@ -46,44 +64,47 @@ constructor(
 }
 
 ngOnInit(){
-  this.getCategorymaster();
-  this.tableExport();
+  // this.getCategorymaster();
+  // this.tableExport();
+  this.submit();
 }
-ngAfterViewInit(){
-  this.__catForm.controls['cat_name'].valueChanges
-      .pipe(
-        tap(() => this.__iscatspinner = true),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1
-            ? this.__dbIntr.searchItems(
-              '/category',
-              dt)
-            : []
-        ),
-        map((x: responseDT) => x.data),
-      )
-      .subscribe({
-        next: (value) => {
-          this.__catMst = value;
-          this.searchResultVisibility('block','A')
-          this.__iscatspinner = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => console.log(),
-      });
-}
+// ngAfterViewInit(){
+//   this.__catForm.controls['cat_name'].valueChanges
+//       .pipe(
+//         tap(() => this.__iscatspinner = true),
+//         debounceTime(200),
+//         distinctUntilChanged(),
+//         switchMap((dt) =>
+//           dt?.length > 1
+//             ? this.__dbIntr.searchItems(
+//               '/category',
+//               dt)
+//             : []
+//         ),
+//         map((x: responseDT) => x.data),
+//       )
+//       .subscribe({
+//         next: (value) => {
+//           this.__catMst = value;
+//           this.searchResultVisibility('block','A')
+//           this.__iscatspinner = false;
+//         },
+//         complete: () => console.log(''),
+//         error: (err) => console.log(),
+//       });
+// }
 tableExport(){
   const __catExport = new FormData();
-  __catExport.append('cat_id',this.__catForm.value.cat_id ? this.__catForm.value.cat_id : '');
+  __catExport.append('cat_name',this.__catForm.value.cat_name ? this.__catForm.value.cat_name : '');
+  // __catExport.append('cat_id',this.__catForm.value.cat_id ? this.__catForm.value.cat_id : '');
+
   this.__dbIntr.api_call(1,'/categoryExport',__catExport).pipe(map((x: any) => x.data)).subscribe((res: category[]) =>{
     this.__export = new MatTableDataSource(res);
   })
 }
-searchResultVisibility(display_mode,__type){
-   this.__searchCat.nativeElement.style.display = display_mode;
-}
+// searchResultVisibility(display_mode,__type){
+//    this.__searchCat.nativeElement.style.display = display_mode;
+// }
 private getCategorymaster(__paginate: string | null = '10') {
   this.__dbIntr
     .api_call(0, '/category', 'paginate=' + __paginate)
@@ -101,6 +122,7 @@ getPaginate(__paginate) {
     this.__dbIntr
       .getpaginationData(
         __paginate.url + ('&paginate=' + this.__pageNumber.value)
+        +('&cat_name='+this.__catForm.value.cat_name)
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -111,7 +133,8 @@ getPaginate(__paginate) {
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  this.getCategorymaster(this.__pageNumber.value);
+  // this.getCategorymaster(this.__pageNumber.value);
+  this.submit();
 }
 
 populateDT(__items: category) {
@@ -162,7 +185,7 @@ openDialog(__category: category | null = null, __catId: number) {
     const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
     dialogRef.updateSize('40%');
     this.__utility.getmenuIconVisible({
-      id: Number(dialogConfig.id),
+      id: __catId,
       isVisible: false,
       flag: 'C',
     });
@@ -170,6 +193,15 @@ openDialog(__category: category | null = null, __catId: number) {
 }
 private updateRow(row_obj: category) {
   this.__selectCategory.data = this.__selectCategory.data.filter(
+    (value: category, key) => {
+      if (value.id == row_obj.id) {
+        value.cat_name = row_obj.cat_name;
+        value.product_id = row_obj.product_id;
+      }
+      return true;
+    }
+  );
+  this.__export.data = this.__export.data.filter(
     (value: category, key) => {
       if (value.id == row_obj.id) {
         value.cat_name = row_obj.cat_name;
@@ -206,30 +238,31 @@ exportPdf(){
 }
 submit(){
   const __amcSearch = new FormData();
-  __amcSearch.append('cat_id',this.__catForm.value.cat_id);
+  __amcSearch.append('cat_name',this.__catForm.value.cat_name);
+  __amcSearch.append('paginate',this.__pageNumber.value);
    this.__dbIntr.api_call(1,'/categoryDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);
-     this.showColumns();
+    //  this.showColumns();
      this.tableExport();
    })
 }
-outsideClick(__ev,mode){
-  if(__ev){
-    this.searchResultVisibility('none',mode)
- }
-}
-getItems(__items,__type){
-  switch(__type){
-   case 'A':  break;
-   case 'C':   this.__catForm.controls['cat_id'].setValue(__items.id)
-               this.__catForm.controls['cat_name'].reset(__items.rnt_name,{ onlySelf: true,emitEvent: false})
-               this.searchResultVisibility('none','C');
-               break;
-   default: break;
-  }
-}
-showColumns(){
+// outsideClick(__ev,mode){
+//   if(__ev){
+//     this.searchResultVisibility('none',mode)
+//  }
+// }
+// getItems(__items,__type){
+//   switch(__type){
+//    case 'A':  break;
+//    case 'C':   this.__catForm.controls['cat_id'].setValue(__items.id)
+//                this.__catForm.controls['cat_name'].reset(__items.rnt_name,{ onlySelf: true,emitEvent: false})
+//                this.searchResultVisibility('none','C');
+//                break;
+//    default: break;
+//   }
+// }
+// showColumns(){
 
-}
+// }
 }

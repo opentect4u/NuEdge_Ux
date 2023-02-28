@@ -14,6 +14,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { OptrptComponent } from '../optRpt/optRpt.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 const routes: Routes =[{path:'',component:OptionComponent}]
@@ -31,7 +32,8 @@ const routes: Routes =[{path:'',component:OptionComponent}]
     MatButtonToggleModule,
     SharedModule,
     MatTableExporterModule,
-    MatRadioModule
+    MatRadioModule,
+    MatMenuModule
   ],
   declarations: [OptionComponent,OptionModificationComponent,OptrptComponent]
 })

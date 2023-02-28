@@ -1,5 +1,5 @@
-<div mat-dialog-title class="dialog-title" [title]="data.title">
-  <h2>{{data.title}} {{"(" + this.__frmDtls.get('client_type').value + ")"}}</h2>
+<div mat-dialog-title class="dialog-title" >
+  <h2>{{data.title}} {{data.type == 'C' ? ("(" + this.__frmDtls.get('client_type').value + ")") : ''}}</h2>
   <div class="btnIcon">
     <button mat-icon-button [mat-dialog-close]="">
       <mat-icon>close</mat-icon>
@@ -35,8 +35,14 @@
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="gurdians_name">
       </div>
       <div class="col-sm-12 my-3"  *ngIf="this.data.dt.client_type == 'M'">
-        <label>Relations</label>
-        <input type="text" class="form-control" [attr.disabled]="true" formControlName="relations">
+        <label>RelationShip</label>
+        <select class="form-control" formControlName="relations" [attr.disabled]="true">
+          <option value="">Select RelationShip</option>
+          <option value="S">Son</option>
+          <option value="D">Daughter</option>
+          <option value="F">Father</option>
+          <option value="M">Mother</option>
+        </select>
       </div>
       <div class="col-sm-12 my-3">
         <label>Email</label>
@@ -48,11 +54,11 @@
       </div>
       <div class="col-sm-12 my-3">
         <label>Address 1</label>
-        <textarea class="form-control"  cols="30" rows="5" formControlName="add_line_1"></textarea>
+        <textarea class="form-control" [attr.disabled]="true" cols="30" rows="5" formControlName="add_line_1"></textarea>
       </div>
       <div class="col-sm-12 my-3">
         <label>Address 2</label>
-        <textarea class="form-control"  cols="30" rows="5" formControlName="add_line_2"></textarea>
+        <textarea class="form-control" [attr.disabled]="true" cols="30" rows="5" formControlName="add_line_2"></textarea>
       </div>
       <div class="col-sm-12 my-3">
         <label>State</label>

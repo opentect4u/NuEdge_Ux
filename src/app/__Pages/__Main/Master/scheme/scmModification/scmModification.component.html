@@ -72,13 +72,13 @@
           <span class="invalid-feedback" *ngIf="(__scmForm.get('scheme_name')).errors?.required">*Please provide scheme</span>
         </div>
       </div>
-      <div class="col-sm-12 my-4">
+      <!-- <div class="col-sm-12 my-4">
         <label for="isin_number">GSTIN <span class="text-danger">*</span></label>
         <input type="text" name="isin_number" id="isin_number" class="form-control" formControlName="gstin_no" placeholder="Enter ISIN number"/>
         <div class="invalid-feedback" *ngIf="__scmForm.get('gstin_no').invalid && (__scmForm.get('gstin_no').dirty || __scmForm.get('gstin_no').touched)">
           <span class="invalid-feedback" *ngIf="(__scmForm.get('gstin_no')).errors?.required">*Please provide ISIN number</span>
         </div>
-      </div>
+      </div> -->
       <!-- New -->
       <div class="col-sm-12 my-4" *ngIf="this.data.scheme_type == 'N'">
         <label for="nfo_start_dt">NFO Start Date <span class="text-danger">*</span></label>
@@ -101,11 +101,36 @@
           <span class="invalid-feedback" *ngIf="(__scmForm.get('nfo_reopen_dt')).errors?.required">*Please provide nfo reopen date</span>
         </div>
       </div>
+
+      <div class="col-sm-12 my-4" *ngIf="this.data.scheme_type == 'N'">
+        <label for="nfo_entry_date">Entry Date <span class="text-danger">*</span></label>
+        <input type="date" name="nfo_entry_date" id="nfo_entry_date" class="form-control" formControlName="nfo_entry_date"/>
+        <div class="invalid-feedback" *ngIf="__scmForm.get('nfo_entry_date').invalid && (__scmForm.get('nfo_entry_date').dirty || __scmForm.get('nfo_entry_date').touched)">
+          <span class="invalid-feedback" *ngIf="(__scmForm.get('nfo_entry_date')).errors?.required">*Please provide nfo reopen date</span>
+        </div>
+      </div>
+
+     <div class="col-sm-12 my-4">
+          <label for="sip_date">SIP Date <span class="text-danger">*</span></label>
+          <ng-multiselect-dropdown #multiSelect
+          id="sip_date"
+          [placeholder]="'Select Dates'"
+          [settings]="settings"
+          [data]="__dates"
+          formControlName="sip_date">
+        </ng-multiselect-dropdown>
+        <div class="invalid-feedback" *ngIf="__scmForm.get('sip_date').invalid && (__scmForm.get('sip_date').dirty || __scmForm.get('sip_date').touched)">
+          <span class="invalid-feedback" *ngIf="(__scmForm.get('sip_date')).errors?.required">*Please provide sip date</span>
+        </div>
+     </div>
+
       <div class="col-sm-12 my-4">
         <label for="pip_fresh_min_amt">PIP Fresh Min Amount <span class="text-danger">*</span></label>
         <input type="text" name="pip_fresh_min_amt" id="pip_fresh_min_amt" class="form-control" formControlName="pip_fresh_min_amt" placeholder="Enter PIP Fresh Min Amount"/>
         <div class="invalid-feedback" *ngIf="__scmForm.get('pip_fresh_min_amt').invalid && (__scmForm.get('pip_fresh_min_amt').dirty || __scmForm.get('pip_fresh_min_amt').touched)">
           <span class="invalid-feedback" *ngIf="(__scmForm.get('pip_fresh_min_amt')).errors?.required">*Please provide PIP fresh min amount</span>
+          <span class="invalid-feedback" *ngIf="(__scmForm.get('pip_fresh_min_amt')).hasError('pattern')">*Only digits allow </span>
+
         </div>
       </div>
       <div class="col-sm-12 my-4">
@@ -113,9 +138,11 @@
         <input type="text" name="pip_add_min_amt" id="pip_add_min_amt" class="form-control" formControlName="pip_add_min_amt" placeholder="Enter PIP Additional Min Amount"/>
         <div class="invalid-feedback" *ngIf="__scmForm.get('pip_add_min_amt').invalid && (__scmForm.get('pip_add_min_amt').dirty || __scmForm.get('pip_add_min_amt').touched)">
           <span class="invalid-feedback" *ngIf="(__scmForm.get('pip_add_min_amt')).errors?.required">*Please provide PIP additional min amount</span>
+          <span class="invalid-feedback" *ngIf="(__scmForm.get('pip_add_min_amt')).hasError('pattern')">*Only digits allow </span>
+
         </div>
       </div>
-      <div class="col-sm-12 my-4">
+      <!-- <div class="col-sm-12 my-4">
         <label for="sip_fresh_min_amt">SIP Fresh Min Amount <span class="text-danger">*</span></label>
         <input type="text" name="sip_fresh_min_amt" id="sip_fresh_min_amt" class="form-control" formControlName="sip_fresh_min_amt" placeholder="Enter SIP Fresh Min Amount"/>
         <div class="invalid-feedback" *ngIf="__scmForm.get('sip_fresh_min_amt').invalid && (__scmForm.get('sip_fresh_min_amt').dirty || __scmForm.get('sip_fresh_min_amt').touched)">
@@ -128,8 +155,98 @@
         <div class="invalid-feedback" *ngIf="__scmForm.get('sip_add_min_amt').invalid && (__scmForm.get('sip_add_min_amt').dirty || __scmForm.get('sip_add_min_amt').touched)">
           <span class="invalid-feedback" *ngIf="(__scmForm.get('sip_add_min_amt')).errors?.required">*Please provide SIP addiotional min amount</span>
         </div>
+      </div> -->
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <table class="my-4">
+        <thead>
+          <tr>
+            <th colspan="4" class="text-center p-5">
+                    Set SIP Amount (Fresh & Additional) with frequency
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p class="m-0">
+                <mat-checkbox color="primary" formControlName="is_selectall"></mat-checkbox>
+              </p>
+            </th>
+            <th>
+              Frequency
+            </th>
+            <th>
+              SIP Fresh Minimum Amount
+            </th>
+            <th>
+              SIP Additional Minimum Amount
+            </th>
+          </tr>
+        </thead>
+        <tbody formArrayName="frequency">
+          <tr *ngFor="let item of frequency.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td >
+                <p class="m-0"><mat-checkbox
+                  color="primary"
+                  formControlName="is_checked"
+                  (change)="getCheckboxVal(i,$event.checked)"
+                  ></mat-checkbox></p>
+              </td>
+              <td>
+                {{frequency.controls[i].get('freq_name').value}}
+                <span class="text-danger" *ngIf="frequency.controls[i].get('is_checked').value">(*)</span>
+              </td>
+              <td >
+                <input type="text"
+                name="sip_fresh_min_amt{{i + 1}}"
+                id="sip_fresh_min_amt{{i}}"
+                class="form-control"
+                placeholder="Enter Sip Fresh Minimum Amount"
+                formControlName="sip_fresh_min_amt"
+                (keypress)="preventNonumeric($event,i)"
+                 >
+                 <div class="invalid-feedback"
+                 *ngIf="frequency.controls[i].get('sip_fresh_min_amt').invalid && (frequency.controls[i].get('sip_fresh_min_amt').dirty || frequency.controls[i].get('sip_fresh_min_amt').touched)">
+                  <span class="invalid-feedback" *ngIf="(frequency.controls[i].get('sip_fresh_min_amt')).errors?.required">*Please provide mandatory field</span>
+                  <span class="invalid-feedback" *ngIf="(frequency.controls[i].get('sip_fresh_min_amt')).hasError('pattern')">*Only digits allow </span>
+
+                </div>
+              </td>
+              <td >
+                <input type="text"
+                name="sip_add_min_amt{{i + 1}}"
+                id="sip_add_min_amt{{i}}"
+                class="form-control"
+                placeholder="Enter Sip Additional Minimum Amount"
+                formControlName="sip_add_min_amt"
+                 >
+                 <div class="invalid-feedback" *ngIf="frequency.controls[i].get('sip_add_min_amt').invalid && (frequency.controls[i].get('sip_add_min_amt').dirty || frequency.controls[i].get('sip_add_min_amt').touched)">
+                  <span class="invalid-feedback" *ngIf="(frequency.controls[i].get('sip_add_min_amt')).errors?.required">*Please provide mandatory field</span>
+                  <span class="invalid-feedback" *ngIf="(frequency.controls[i].get('sip_add_min_amt')).hasError('pattern')">*Only digits allow </span>
+                </div>
+              </td>
+
+            </ng-container>
+          </tr>
+        </tbody>
+        <!-- <tfoot>
+          <tr>
+            <th>
+              Frequency
+            </th>
+            <th>
+              SIP Fresh Minimum Amount
+            </th>
+            <th>
+              SIP Additional Minimum Amount
+            </th>
+          </tr>
+        </tfoot> -->
+      </table>
       </div>
     </div>
+
 </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">

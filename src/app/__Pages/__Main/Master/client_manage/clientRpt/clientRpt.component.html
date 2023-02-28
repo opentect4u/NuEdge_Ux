@@ -1,0 +1,381 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title">
+    <h2>Client Reports</h2>
+    <div class="btnIcon">
+      <button mat-icon-button (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <div class="card my-5">
+      <div class="card-body p-5">
+        <form [formGroup]="__clientForm" (ngSubmit)="submit()" autocomplete="off">
+          <div class="row ">
+            <div class="col-sm-6 my-auto">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+                <mat-radio-button value="2">Summary</mat-radio-button>
+                <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-sm-6 ">
+              <mat-button-toggle-group class="float-right" aria-label="Font Style" formControlName="advanceFlt">
+                <mat-button-toggle value="A">
+                  <mat-icon>filter_alt</mat-icon>Advanced Filter
+                </mat-button-toggle>
+                <mat-button-toggle value="R" (click)="refreshOrAdvanceFlt()">
+                  <mat-icon>sync</mat-icon>
+                </mat-button-toggle>
+
+              </mat-button-toggle-group>
+            </div>
+          </div>
+
+            <div class="row my-5">
+              <div class="col-sm-3">
+                <label for="pan">Pan </label>
+                <input type="text" placeholder="Enter Pan" name="pan" id="pan" class="form-control"
+                  formControlName="pan">
+              </div>
+              <div class="col-sm-3">
+                <label for="cl_name">Client Name </label>
+                <input type="text" placeholder="Enter Client Name" name="cl_name" id="cl_name" class="form-control"
+                  formControlName="name">
+              </div>
+              <div class="col-sm-3">
+                <label for="cl_dob">Dob </label>
+                <input type="date" placeholder="Enter Client Name" name="cl_dob" id="cl_dob" class="form-control"
+                  formControlName="dob">
+              </div>
+              <div class="col-sm-3">
+                <label for="cl_mobile">Mobile </label>
+                <input type="date" placeholder="Enter Client Name" name="cl_mobile" id="cl_mobile" class="form-control"
+                  formControlName="mobile">
+              </div>
+            </div>
+            <div class="row my-5" *ngIf="__clientForm.get('advanceFlt').value == 'A'">
+              <div class="col-sm-4">
+                <label for="cat_id">State </label>
+                 <select class="form-control" formControlName="state">
+                   <option value="">Select State</option>
+                   <option [value]="state.id" *ngFor="let state of __stateMst">{{state.name}}</option>
+                 </select>
+              </div>
+              <div class="col-sm-4">
+                <label for="dist">District </label>
+                <select class="form-control" id="dist" formControlName="dist">
+                  <option value="">Select District</option>
+                  <option [value]="district.id" *ngFor="let district of __distMst">{{district.name}}</option>
+
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <label for="city">City </label>
+                <select class="form-control" id="city" formControlName="city">
+                  <option value="">Select City</option>
+                  <option [value]="city.id" *ngFor="let city of __cityMst">{{city.name}}</option>
+                </select>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <button mat-raised-button color="primary" class="float-right">
+                  <!-- <mat-icon>visibility</mat-icon> -->
+                  Show
+                </button>
+              </div>
+            </div>
+        </form>
+      </div>
+    </div>
+    <div class="mat-elevation-z3">
+      <div class="example_container_header">
+        <div class="btnGrp d-flex">
+
+          <mat-form-field appearance="fill">
+            <mat-label>Select Columns</mat-label>
+            <mat-select [formControl]="toppings" multiple>
+              <mat-option
+              *ngFor="let topping of toppingList"
+              [value]="topping.id">
+              {{topping.text}}
+            </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>system_update_alt</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item  (click)="exporter.exportTable('xlsx',{fileName:'Client'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+
+      </div>
+      <div class="example-container">
+        <table mat-table [dataSource]="__selectClient" class="table_Custome">
+            <!-- Sl No. -->
+            <ng-container matColumnDef="sl_no" [sticky]="__clientForm.get('options').value == '1' ? true : false">
+              <th mat-header-cell *matHeaderCellDef>SL No.</th>
+              <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+            </ng-container>
+
+              <!-- Recieve Date Time -->
+              <ng-container matColumnDef="cl_code" >
+                <th mat-header-cell *matHeaderCellDef>Client Code</th>
+                <td mat-cell *matCellDef="let element">{{element.client_code}}</td>
+              </ng-container>
+
+            <ng-container matColumnDef="cl_name">
+              <th mat-header-cell *matHeaderCellDef>Client Name</th>
+              <td mat-cell *matCellDef="let element">{{element.client_name}}</td>
+            </ng-container>
+            <ng-container matColumnDef="pan">
+              <th mat-header-cell *matHeaderCellDef>Pan</th>
+              <td mat-cell *matCellDef="let element">{{element.pan}}</td>
+            </ng-container>
+
+             <ng-container matColumnDef="dob">
+              <th mat-header-cell *matHeaderCellDef>Dob As Pan</th>
+              <td mat-cell *matCellDef="let element">{{element.dob}}</td>
+            </ng-container>
+              <ng-container matColumnDef="dob_actual">
+                <th mat-header-cell *matHeaderCellDef>Actual Dob</th>
+                <td mat-cell *matCellDef="let element">{{element.dob_actual}}</td>
+              </ng-container>
+              <ng-container matColumnDef="mobile">
+                <th mat-header-cell *matHeaderCellDef>Mobile</th>
+                <td mat-cell *matCellDef="let element">{{element.mobile}}</td>
+              </ng-container>
+              <ng-container matColumnDef="alt_mobile">
+                <th mat-header-cell *matHeaderCellDef>Alternative Mobile</th>
+                <td mat-cell *matCellDef="let element">{{element.sec_mobile}}</td>
+              </ng-container>
+              <ng-container matColumnDef="alt_email">
+                <th mat-header-cell *matHeaderCellDef>Alternative Email</th>
+                <td mat-cell *matCellDef="let element">{{element.sec_email}}</td>
+              </ng-container>
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>Email</th>
+                  <td mat-cell *matCellDef="let element">{{element.email}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="guar_pan">
+                  <th mat-header-cell *matHeaderCellDef>Gurdian Pan</th>
+                  <td mat-cell *matCellDef="let element">{{element.gurdians_pan}}</td>
+                </ng-container>
+                <ng-container matColumnDef="guar_name">
+                  <th mat-header-cell *matHeaderCellDef>Gurdian Name</th>
+                  <td mat-cell *matCellDef="let element">{{element.gurdians_name}}</td>
+                </ng-container>
+                  <ng-container matColumnDef="relation">
+                    <th mat-header-cell *matHeaderCellDef>RelationShip</th>
+                    <td mat-cell *matCellDef="let element">{{element.relation}}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="addr_1">
+                    <th mat-header-cell *matHeaderCellDef>Address-1</th>
+                    <td mat-cell *matCellDef="let element">{{element.add_line_1}}</td>
+                  </ng-container>
+                    <ng-container matColumnDef="addr_2">
+                      <th mat-header-cell *matHeaderCellDef>Address-2</th>
+                      <td mat-cell *matCellDef="let element">{{element.add_line_2}}</td>
+                    </ng-container>
+                  <ng-container matColumnDef="state">
+                    <th mat-header-cell *matHeaderCellDef>State</th>
+                    <td mat-cell *matCellDef="let element">{{element.state_name}}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="dist">
+                    <th mat-header-cell *matHeaderCellDef>District</th>
+                    <td mat-cell *matCellDef="let element">{{element.district_name}}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="city">
+                    <th mat-header-cell *matHeaderCellDef>City</th>
+                    <td mat-cell *matCellDef="let element">{{element.city_name}}</td>
+                  </ng-container>
+                    <ng-container matColumnDef="pincode">
+                      <th mat-header-cell *matHeaderCellDef>Pincode</th>
+                      <td mat-cell *matCellDef="let element">{{element.pincode}}</td>
+                    </ng-container>
+
+
+            <!-- Buisness Type-->
+            <ng-container matColumnDef="edit" [sticky]="__clientForm.get('options').value == '1' ? true : false">
+              <th mat-header-cell *matHeaderCellDef>Edit</th>
+              <td mat-cell *matCellDef="let element">
+                <a (click)="populateDT(element)">
+                  <mat-icon class="edit_icon">edit</mat-icon>
+                </a>
+              </td>
+            </ng-container>
+
+            <!-- Buisness Type-->
+            <ng-container matColumnDef="delete" [stickyEnd]="__clientForm.get('options').value == '1' ? true : false">
+              <th mat-header-cell *matHeaderCellDef>Delete</th>
+              <td mat-cell *matCellDef="let element">
+                <a>
+                  <mat-icon class="delete_icon">delete</mat-icon>
+                </a>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="__columns;sticky:true"></tr>
+            <tr mat-row tabindex="999" *matRowDef="let row; columns: __columns;"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center" [attr.colspan]="__columns.length">No Client's history found</td>
+            </tr>
+          </table>
+      </div>
+      <div class="paginator">
+        <div class="itemsPerPage">
+          <label>Items Per Page :&nbsp; </label>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
+              10
+            </mat-button-toggle>
+            <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
+              50
+            </mat-button-toggle>
+            <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
+              100
+            </mat-button-toggle>
+            <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+              All
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <div class="paginatorContainer">
+          <mat-button-toggle-group *ngFor="let paginate of __paginate">
+            <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+              <label>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+                <span
+                  *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
+              </label>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+
+
+
+      </div>
+
+      <table id="client" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+
+            <!-- Sl No. -->
+            <ng-container matColumnDef="sl_no">
+              <th mat-header-cell *matHeaderCellDef>SL No.</th>
+              <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+            </ng-container>
+
+              <!-- Recieve Date Time -->
+              <ng-container matColumnDef="cl_code">
+                <th mat-header-cell *matHeaderCellDef>Client Code</th>
+                <td mat-cell *matCellDef="let element">{{element.client_code}}</td>
+              </ng-container>
+
+            <ng-container matColumnDef="cl_name">
+              <th mat-header-cell *matHeaderCellDef>Client Name</th>
+              <td mat-cell *matCellDef="let element">{{element.client_name}}</td>
+            </ng-container>
+            <ng-container matColumnDef="pan">
+              <th mat-header-cell *matHeaderCellDef>Pan</th>
+              <td mat-cell *matCellDef="let element">{{element.pan}}</td>
+            </ng-container>
+
+             <ng-container matColumnDef="dob">
+              <th mat-header-cell *matHeaderCellDef>Dob As Pan</th>
+              <td mat-cell *matCellDef="let element">{{element.dob}}</td>
+            </ng-container>
+              <ng-container matColumnDef="dob_actual">
+                <th mat-header-cell *matHeaderCellDef>Actual Dob</th>
+                <td mat-cell *matCellDef="let element">{{element.dob_actual}}</td>
+              </ng-container>
+              <ng-container matColumnDef="mobile">
+                <th mat-header-cell *matHeaderCellDef>Mobile</th>
+                <td mat-cell *matCellDef="let element">{{element.mobile}}</td>
+              </ng-container>
+              <ng-container matColumnDef="alt_mobile">
+                <th mat-header-cell *matHeaderCellDef>Alternative Mobile</th>
+                <td mat-cell *matCellDef="let element">{{element.sec_mobile}}</td>
+              </ng-container>
+              <ng-container matColumnDef="alt_email">
+                <th mat-header-cell *matHeaderCellDef>Alternative Email</th>
+                <td mat-cell *matCellDef="let element">{{element.sec_email}}</td>
+              </ng-container>
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>Email</th>
+                  <td mat-cell *matCellDef="let element">{{element.email}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="guar_pan">
+                  <th mat-header-cell *matHeaderCellDef>Gurdian Pan</th>
+                  <td mat-cell *matCellDef="let element">{{element.gurdians_pan}}</td>
+                </ng-container>
+                <ng-container matColumnDef="guar_name">
+                  <th mat-header-cell *matHeaderCellDef>Gurdian Name</th>
+                  <td mat-cell *matCellDef="let element">{{element.gurdians_name}}</td>
+                </ng-container>
+                  <ng-container matColumnDef="relation">
+                    <th mat-header-cell *matHeaderCellDef>RelationShip</th>
+                    <td mat-cell *matCellDef="let element">{{element.relation}}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="addr_1">
+                    <th mat-header-cell *matHeaderCellDef>Address-1</th>
+                    <td mat-cell *matCellDef="let element">{{element.add_line_1}}</td>
+                  </ng-container>
+                    <ng-container matColumnDef="addr_2">
+                      <th mat-header-cell *matHeaderCellDef>Address-2</th>
+                      <td mat-cell *matCellDef="let element">{{element.add_line_2}}</td>
+                    </ng-container>
+                  <ng-container matColumnDef="state">
+                    <th mat-header-cell *matHeaderCellDef>State</th>
+                    <td mat-cell *matCellDef="let element">{{element.state_name}}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="dist">
+                    <th mat-header-cell *matHeaderCellDef>District</th>
+                    <td mat-cell *matCellDef="let element">{{element.district_name}}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="city">
+                    <th mat-header-cell *matHeaderCellDef>City</th>
+                    <td mat-cell *matCellDef="let element">{{element.city_name}}</td>
+                  </ng-container>
+                    <ng-container matColumnDef="pincode">
+                      <th mat-header-cell *matHeaderCellDef>Pincode</th>
+                      <td mat-cell *matCellDef="let element">{{element.pincode}}</td>
+                    </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
+        <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Scheme History Found</td>
+        </tr>
+      </table>
+    </div>
+  </mat-dialog-content>
+</div>

@@ -12,13 +12,32 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { BnkrptComponent } from './bankRpt/bnkRpt.component';
 import { BnkModificationComponent } from './bnkModification/bnkModification.component';
-
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 @Component({
   selector: 'master-bank',
   templateUrl: './bank.component.html',
   styleUrls: ['./bank.component.css']
 })
 export class BankComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:"Bank",
+      url:'/main/master/bank',
+      hasQueryParams:true,
+      queryParams:''
+    }
+]
   __pageNumber= new FormControl(10);
   __paginate:any=[];
   __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "","icon":"","id":26,"flag":"M"},
@@ -34,7 +53,8 @@ export class BankComponent implements OnInit {
     private __rtDt: ActivatedRoute,
     private __utility: UtiliService) { }
   ngOnInit(): void {
-    this.getBankMaster();
+    // this.getBankMaster();
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
     if(this.__rtDt.snapshot.queryParamMap.get('id')){
       this.getParticularBank();
      }

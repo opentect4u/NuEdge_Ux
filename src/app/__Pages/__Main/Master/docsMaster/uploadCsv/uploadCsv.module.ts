@@ -9,7 +9,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { DocTypeDirective } from 'src/app/__Directives/docType.directive';
 
-
 const routes: Routes = [{path:'',component:UploadCsvComponent}]
 
 @NgModule({

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { map, skip } from 'rxjs/operators';
 import { IBreadCrumb } from 'src/app/app.component';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
@@ -9,7 +10,9 @@ templateUrl: './breadCrmbs.component.html',
 styleUrls: ['./breadCrmbs.component.css']
 })
 export class BreadcrmbsComponent implements OnInit {
-  breadcrumbs: IBreadCrumb[];
+  // breadcrumbs: IBreadCrumb[];
+  breadcrumbs: breadCrumb[];
+
 constructor(
   private __utility: UtiliService
 ) {
@@ -23,5 +26,9 @@ constructor(
 }
 
 ngOnInit(){
+}
+getDtls(__brdCrumbs){
+  console.log(__brdCrumbs);
+
 }
 }

@@ -27,10 +27,8 @@ export class CategoryModificationComponent implements OnInit {
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog) {
 
-    this.getProductMaster();
+    // this.getProductMaster();
     this.__utility.__isvisibleMenuIcon$.pipe(skip(1)).subscribe(res =>{
-      console.log(res);
-      // this.__isVisible = res;
       if(this.data.id == res.id && this.data.flag == res.flag){
         this.__isVisible = res.isVisible
       }

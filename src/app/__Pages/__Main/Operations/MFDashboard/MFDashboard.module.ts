@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: '',
     component: MFDashboardComponent,
-    data: { breadcrumb: 'Products' },
+    data: { breadcrumb: null }
   },
 ];
 @NgModule({

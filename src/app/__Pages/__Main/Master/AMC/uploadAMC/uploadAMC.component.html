@@ -99,7 +99,7 @@
     <div class="cardSec m-1">
       <div class="card_header">
         <h3>Recent Entries</h3>
-        <button mat-icon-button title="View All AMC" [routerLink]="['/main/master/productwisemenu/amc']">
+        <button mat-icon-button title="View All AMC" [routerLink]="['/main/master/productwisemenu/amc']" [queryParams]="{product_id:__rtDt.snapshot.queryParamMap.get('product_id')}">
           <mat-icon>north_east</mat-icon>
         </button>
       </div>

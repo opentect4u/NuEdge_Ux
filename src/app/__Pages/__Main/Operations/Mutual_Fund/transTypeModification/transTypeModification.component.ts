@@ -20,8 +20,9 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
 import buisnessType from '../../../../../../assets/json/buisnessType.json';
-import { CmnDialogForDtlsViewComponent } from '../common/cmnDialogForDtlsView/cmnDialogForDtlsView.component';
 import KycMst from '../../../../../../assets/json/kyc.json';
+import { CmnDialogForDtlsViewComponent } from '../common/cmnDialogForDtlsView/cmnDialogForDtlsView.component';
+
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { DialogForCreateClientComponent } from '../common/dialogForCreateClient/dialogForCreateClient.component';
 import __sipFrequency from '../../../../../../assets/json/SipFrequency.json';
@@ -67,7 +68,7 @@ export class TransTypeModificationComponent implements OnInit {
   __clientMst: client[] = [];
   __bnkMst: bank[] = [];
   __euinMst: any = [];
- 
+
   OptionMst: option[];
   PlanMst: plan[];
   @ViewChild('searchTin') __searchTin: ElementRef;
@@ -287,7 +288,7 @@ export class TransTypeModificationComponent implements OnInit {
         error: (err) => console.log(),
       });
 
-    
+
       //scheme To Search
       this.__traxForm.controls['switch_scheme_to'].valueChanges.
       pipe(
@@ -523,13 +524,13 @@ export class TransTypeModificationComponent implements OnInit {
       if(this.__traxForm.get('trans_id').value == 1 || this.__traxForm.get('trans_id').value == 2){
           if(this.__traxForm.get('inv_type').value == 'F'){
              this.checkAmtrightorNot(
-              this.__traxForm.get('trans_id').value == 1 ? 
+              this.__traxForm.get('trans_id').value == 1 ?
               this.__sipdtRng_amtRng.pip_fresh_min_amt: this.__sipdtRng_amtRng.sip_fresh_min_amt,
               Number(res));
           }
           else{
             this.checkAmtrightorNot(
-              this.__traxForm.get('trans_id').value == 1 ? 
+              this.__traxForm.get('trans_id').value == 1 ?
               this.__sipdtRng_amtRng.pip_add_min_amt: this.__sipdtRng_amtRng.sip_add_min_amt,
               Number(res));
           }
@@ -547,7 +548,7 @@ export class TransTypeModificationComponent implements OnInit {
        else{
         this.removeValidations([{name:'sub_brk_cd',valid:[Validators.required]},{name:'sub_arn_no',valid:[Validators.required]}]);
        }
-    }) 
+    })
 
     //Kyc_status Change
     this.__traxForm.get('kyc_status').valueChanges.subscribe(res =>{
@@ -599,7 +600,7 @@ export class TransTypeModificationComponent implements OnInit {
     console.log(__items);
     this.searchResultVisibility('none');
     console.log(__items.inv_type);
-    
+
     this.__traxForm.patchValue({
       bu_type: __items.bu_type,
       application_no: __items.application_no,
@@ -640,7 +641,7 @@ export class TransTypeModificationComponent implements OnInit {
         onlySelf: true,
         emitEvent: false,
       });
-      this.__traxForm.patchValue({ scheme_id_to: __items.scheme_id_to });  
+      this.__traxForm.patchValue({ scheme_id_to: __items.scheme_id_to });
       this.__dialogDtForSchemeTo = {
         id: __items.scheme_id_to,
         scheme_name: __items.scheme_name_to,
@@ -747,7 +748,7 @@ export class TransTypeModificationComponent implements OnInit {
         this.__traxForm.controls['bank_id'].setValue(__euinDtls.id);
         this.searchResultVisibilityForBnk('none');
         break;
-     
+
      case 'ST': this.__dialogDtForSchemeTo = __euinDtls;
                   this.__traxForm.controls['switch_scheme_to'].reset(__euinDtls.scheme_name,{ onlySelf: true, emitEvent: false });
                   this.__traxForm.patchValue({scheme_id_to : __euinDtls.id});
@@ -799,7 +800,7 @@ export class TransTypeModificationComponent implements OnInit {
       this.searchResultVisibilityForSubBrkArn('none');
     }
   }
-  
+
   outsideClickForSchemeSwitchTo(__ev){
     if(__ev){
          this.searchResultVisibilityForSchemeSwicthTo('none');
@@ -818,15 +819,15 @@ export class TransTypeModificationComponent implements OnInit {
         __type == 'C'
           ? this.__dialogDtForClient.client_name
           : __type == 'S'
-            ? this.__dialogDtForScheme.scheme_name 
-            : __type == 'ST' ? this.__dialogDtForSchemeTo.scheme_name 
+            ? this.__dialogDtForScheme.scheme_name
+            : __type == 'ST' ? this.__dialogDtForSchemeTo.scheme_name
             :this.__dialogDtForBnk.bank_name,
       dt:
         __type == 'C'
           ? this.__dialogDtForClient
           : __type == 'S'
             ? this.__dialogDtForScheme
-            : __type == 'ST' 
+            : __type == 'ST'
             ? this.__dialogDtForSchemeTo :
             this.__dialogDtForBnk,
     };
@@ -861,6 +862,7 @@ export class TransTypeModificationComponent implements OnInit {
       );
     } catch (ex) { }
   }
+
   getFIle(__ev) {
     console.log(__ev);
 
@@ -974,7 +976,7 @@ export class TransTypeModificationComponent implements OnInit {
         res.suc
       );
       this.settransTypeCount(this.__traxForm.value.trans_id == 1 ? 0 : (this.__traxForm.value.trans_id == 2 ? 1 : 2));
-    });  
+    });
    }
   }
   getadditionalApplicant(__items, __type) {
@@ -1088,7 +1090,7 @@ export class TransTypeModificationComponent implements OnInit {
   getschemwisedt(__scheme_id) {
     this.__dbIntr.api_call(0, '/scheme', 'scheme_id=' + __scheme_id).pipe(pluck("data")).subscribe(res => {
       console.log(res);
-      
+
       this.__sipdtRng_amtRng = res[0];
       this.send_date.setMonth(this.send_date.getMonth() + 1);
       this.send_date.setFullYear(new Date().getFullYear());

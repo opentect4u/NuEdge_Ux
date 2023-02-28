@@ -12,6 +12,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { DocrptComponent } from './docRPT/docRPT.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTableExporterModule } from 'mat-table-exporter';
 
 const routes: Routes =[{path:'',component:DocumentComponent}]
 
@@ -27,9 +32,16 @@ const routes: Routes =[{path:'',component:DocumentComponent}]
     MatPaginatorModule,
     SharedModule,
     DragDropModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatMenuModule,
+    MatTableExporterModule
   ],
-  declarations: [DocumentComponent,DocsModificationComponent]
+  declarations: [
+    DocumentComponent,
+    DocrptComponent,
+    DocsModificationComponent]
 })
 export class DocumentModule {
   constructor() {

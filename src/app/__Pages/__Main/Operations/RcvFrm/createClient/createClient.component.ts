@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
 import { map, skip } from 'rxjs/operators';
 import { docType } from 'src/app/__Model/__docTypeMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -21,7 +22,7 @@ export class createClientComponent implements OnInit {
   __city: any = [];
   __docTypeMaster: docType[];
   __noImg: string = '../../../../../../assets/images/noimg.png';
-  allowedExtensions = ['jpg', 'png', 'jpeg'];
+  allowedExtensions = ['pdf'];
   __maxDt = dates.disabeldDates();
   __stateMaster: any = [];
   __clientForm = new FormGroup({
@@ -44,18 +45,19 @@ export class createClientComponent implements OnInit {
     id: new FormControl(this.data.id),
     gurdians_pan: new FormControl(this.data.id > 0 ? this.data.items.gurdians_pan : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
     gurdians_name: new FormControl(this.data.id > 0 ? this.data.items.gurdians_name : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    relations: new FormControl(this.data.id > 0 ? this.data.items.relations : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    relations: new FormControl(this.data.id > 0 ? this.data.items.relation : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     doc_dtls: new FormArray([])
   })
   constructor(
+    private  sanitizer: DomSanitizer,
     public dialogRef: MatDialogRef<createClientComponent>,
     private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog
-  ) { 
+  ) {
     console.log(this.data);
-    
+
   }
 
   ngOnInit() {
@@ -89,7 +91,7 @@ export class createClientComponent implements OnInit {
   ngAfterViewInit() {
     /** Trigger on Change on State */
     this.__clientForm.get('state').valueChanges.subscribe(res => {
-      console.log(res);  
+      console.log(res);
       if (this.data.client_type == 'E' && this.data.id == 0) {
         //Nothing to deal with
       }
@@ -181,7 +183,7 @@ export class createClientComponent implements OnInit {
     if(_pan.target.value != ''){
       this.__dbIntr.api_call(0,'/client','pan='+_pan.target.value).subscribe((res: responseDT) =>{
         if(res.data.length > 0){this.__utility.showSnackbar('Pan Number already exist! please try with another one',0);}
-      })  
+      })
     }
   }
   preventNonumeric(__ev) {
@@ -218,6 +220,8 @@ export class createClientComponent implements OnInit {
       file: new FormControl('')
     });
   }
+
+  
   removeDocument(__index) {
     this.__docs.removeAt(__index);
   }
@@ -235,13 +239,16 @@ export class createClientComponent implements OnInit {
     });
   }
   getFiles(__ev, index, __type_id) {
+    console.log(__ev);
+
     this.__docs.controls[index].get('doc_name').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.__docs.controls[index].get('doc_name').updateValueAndValidity();
     if (this.__docs.controls[index].get('doc_name').status == 'VALID') {
-      const file = __ev.target.files[0];
-      const reader = new FileReader();
-      reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
-      reader.readAsDataURL(file);
+      // const file = __ev.target.files[0];
+      // const reader = new FileReader();
+      // reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
+      // reader.readAsDataURL(file);
+      this.__docs.controls[index].get('file_preview')?.patchValue(this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL( __ev.target.files[0])));
       this.__docs.controls[index].get('file')?.patchValue(__ev.target.files[0]);
     }
     else {
@@ -283,7 +290,7 @@ export class createClientComponent implements OnInit {
               validators: [Validators.required]
             }
             ,
-            
+
             {
               name: "pincode",
               validators: [Validators.required, Validators.minLength(6), Validators.maxLength(6)]
@@ -319,5 +326,5 @@ export class createClientComponent implements OnInit {
     });
   }
 
-  
+
 }

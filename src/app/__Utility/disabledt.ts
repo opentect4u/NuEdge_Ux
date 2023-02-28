@@ -12,6 +12,16 @@ export  class dates{
           return false;
         }
         return true;
-    
-      } 
+
+      }
+      public static getminDate(){
+        var dt = new Date();
+        dt.setDate(dt.getDate() - 15);
+        return dt.toISOString().substring(0,10);
+      }
+      public static getTodayDate(){
+        var today = new Date();
+        console.log(today.toISOString().substring(0,10));
+        return today.toISOString().substring(0,10);
+      }
 }

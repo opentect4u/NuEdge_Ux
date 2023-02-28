@@ -2,8 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 
 import { pluck } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { rnt } from 'src/app/__Model/Rnt';
 import { category } from 'src/app/__Model/__category';
@@ -11,12 +13,45 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
+
 @Component({
   selector: 'app-catUpload',
   templateUrl: './catUpload.component.html',
   styleUrls: ['./catUpload.component.css'],
 })
 export class CatUploadComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Category",
+      url:'/main/master/productwisemenu/category',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Category Upload",
+      url:'/main/master/productwisemenu/amc/uploadcategory',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    }
+]
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: Array<string> = [];
@@ -51,13 +86,15 @@ export class CatUploadComponent implements OnInit {
   __selectRNT = new MatTableDataSource<category>([]);
   constructor(
     private __dbIntr: DbIntrService,
-    private __utility: UtiliService
+    private __utility: UtiliService,
+    public __rtDt: ActivatedRoute
   ) {
     this.previewlatestCategoryEntry();
   }
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestCategoryEntry() {
     this.__dbIntr
@@ -72,7 +109,10 @@ export class CatUploadComponent implements OnInit {
     // this.__utility.navigate('/main/master/cateModify', btoa(__items.id.toString()));
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/category',
-      { queryParams: { id: btoa(__items.id.toString()) } }
+      { queryParams: {
+        id: btoa(__items.id.toString()),
+        product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')
+      } }
     );
   }
   getFiles(__ev) {
@@ -168,7 +208,10 @@ export class CatUploadComponent implements OnInit {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/subcategory',
       {
-        queryParams: { id: btoa(__rntDtls.id.toString()) },
+        queryParams: {
+          id: btoa(__rntDtls.id.toString()),
+          product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')
+        },
       }
     );
   }

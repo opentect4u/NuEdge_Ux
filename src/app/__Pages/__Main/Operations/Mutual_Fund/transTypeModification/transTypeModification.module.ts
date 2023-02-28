@@ -27,7 +27,8 @@ const routes: Routes = [{path:'',component:TransTypeModificationComponent}]
   ],
   declarations: [
     TransTypeModificationComponent,
-    CmnDialogForDtlsViewComponent,
-    DialogForCreateClientComponent]
+    // CmnDialogForDtlsViewComponent,
+    // DialogForCreateClientComponent
+  ]
 })
 export class TransTypeModificationModule { }

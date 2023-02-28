@@ -9,6 +9,7 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { map } from 'rxjs/operators';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { environment } from 'src/environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dialogForCreateClient',
@@ -23,7 +24,7 @@ export class DialogForCreateClientComponent implements OnInit {
   __city: any = [];
   __docTypeMaster: docType[];
   __noImg: string = '../../../../../../assets/images/noimg.png';
-  allowedExtensions = ['jpg', 'png', 'jpeg'];
+  allowedExtensions = ['pdf'];
   __maxDt = dates.disabeldDates();
   __stateMaster: any = [];
   __clientForm = new FormGroup({
@@ -46,10 +47,11 @@ export class DialogForCreateClientComponent implements OnInit {
     id: new FormControl(this.data.id),
     gurdians_pan: new FormControl(this.data.id > 0 ? this.data.items.gurdians_pan : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
     gurdians_name: new FormControl(this.data.id > 0 ? this.data.items.gurdians_name : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    relations: new FormControl(this.data.id > 0 ? this.data.items.relations : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    relations: new FormControl(this.data.id > 0 ? this.data.items.relation : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     doc_dtls: new FormArray([])
   })
   constructor(
+    private sanitizer: DomSanitizer,
     public dialogRef: MatDialogRef<DialogForCreateClientComponent>,
     private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -237,10 +239,12 @@ export class DialogForCreateClientComponent implements OnInit {
     this.__docs.controls[index].get('doc_name').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.__docs.controls[index].get('doc_name').updateValueAndValidity();
     if (this.__docs.controls[index].get('doc_name').status == 'VALID') {
-      const file = __ev.target.files[0];
-      const reader = new FileReader();
-      reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
-      reader.readAsDataURL(file);
+      // const file = __ev.target.files[0];
+      // const reader = new FileReader();
+      // reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
+      // reader.readAsDataURL(file);
+      this.__docs.controls[index].get('file_preview')?.patchValue(this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL( __ev.target.files[0])));
+
       this.__docs.controls[index].get('file')?.patchValue(__ev.target.files[0]);
     }
     else {

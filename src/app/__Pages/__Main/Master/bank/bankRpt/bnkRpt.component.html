@@ -100,7 +100,7 @@
       <div class="row">
         <div class="col-sm-12">
             <button mat-raised-button  color="primary" class="float-right">
-              <mat-icon>visibility</mat-icon>
+              <!-- <mat-icon>visibility</mat-icon> -->
               Show
             </button>
         </div>
@@ -113,13 +113,24 @@
 <div class="mat-elevation-z3">
   <div class="example_container_header">
     <div class="btnGrp">
-      <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>system_update_alt</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="exportPdf()">
+          <mat-icon>download</mat-icon> Export Pdf
+        </button>
+        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Bank'})">
+          <mat-icon>download</mat-icon> Export Excel
+        </button>
+      </mat-menu>
+      <!-- <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
         <mat-icon>download</mat-icon> Export Pdf
       </button>
       <button class="float-right" color="primary" type="button" mat-button
         (click)="exporter.exportTable('xlsx',{fileName:'Bank'})">
         <mat-icon>download</mat-icon> Export Excel
-      </button>
+      </button> -->
     </div>
 
   </div>

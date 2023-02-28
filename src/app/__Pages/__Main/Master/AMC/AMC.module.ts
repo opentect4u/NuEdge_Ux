@@ -16,6 +16,8 @@ import {MatRadioModule} from '@angular/material/radio';
 import { SharedModule } from 'src/app/shared/shared.module';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatTableExporterModule } from 'mat-table-exporter';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 const routes: Routes =[{path:'',component:AMCComponent}]
 @NgModule({
   imports: [
@@ -31,7 +33,10 @@ const routes: Routes =[{path:'',component:AMCComponent}]
     MatRadioModule,
     SharedModule,
     MatCheckboxModule,
-    MatTableExporterModule
+    MatTableExporterModule,
+    MatMenuModule,
+    MatSelectModule,
+
   ],
   declarations: [
     AMCComponent,

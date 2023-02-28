@@ -16,6 +16,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatRadioModule } from '@angular/material/radio';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 const __routes: Routes = [{ path: '', component: RNTComponent}]
 
 
@@ -33,7 +35,9 @@ const __routes: Routes = [{ path: '', component: RNTComponent}]
     MatButtonToggleModule,
     MatCheckboxModule,
     MatTableExporterModule,
-    MatRadioModule
+    MatRadioModule,
+    MatMenuModule,
+    MatSelectModule
   ],
   declarations: [RNTComponent,RntModificationComponent,RntrptComponent,ReplacePipe]
 })

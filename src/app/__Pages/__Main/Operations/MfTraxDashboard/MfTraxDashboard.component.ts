@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { submenu } from 'src/app/__Model/submenu';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
@@ -9,7 +10,38 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./MfTraxDashboard.component.css']
 })
 export class MfTraxDashboardComponent implements OnInit {
-
+  // main/operations/MfTrax
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Operation",
+      url:'/main/operations/ophome',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ? "Mutual Fund" : "others",
+      url:'/main/operations/mfdashboard' + '/' + this.__rtDt.snapshot.queryParamMap.get('product_id'),
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:"Manual Entry",
+      url:'/main/operations/manualEntr',
+      hasQueryParams:true,
+      queryParams:{product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"MF Trax",
+      url:'/main/operations/MfTrax',
+      hasQueryParams:true,
+      queryParams:{product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    }
+]
   __menu: submenu[] = [
     {
       id: 1,
@@ -36,7 +68,8 @@ export class MfTraxDashboardComponent implements OnInit {
     private __rtDt: ActivatedRoute) { }
 
   ngOnInit() {
-    console.log(this.__rtDt.snapshot.queryParamMap.get('product_id'));
+    // console.log(this.__rtDt.snapshot.queryParamMap.get('product_id'));
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
 
   }
   navigate(__items){

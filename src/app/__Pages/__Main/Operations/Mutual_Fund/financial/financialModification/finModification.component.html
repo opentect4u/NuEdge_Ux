@@ -1,0 +1,1020 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2>{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form ngNativeValidate [formGroup]="__traxForm" id="__traxForm_{{data.id}}" (ngSubmit)="submit()" autocomplete="off">
+      <div class="row">
+        <div class="col-sm-12">
+          <label class="ml-2"><input type="radio" value="Y" formControlName="tin_status"><span>&nbsp;With
+              TTIN</span></label>
+          <label class="ml-3"><input type="radio" value="N" formControlName="tin_status"><span>&nbsp;Without
+              TTIN</span></label>
+        </div>
+      </div>
+      <ng-container *ngIf="__traxForm.get('tin_status').value == 'Y'">
+      <div class="row mt-5">
+        <div class="col-sm-12 ">
+          <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
+            <div class="searchDiv">
+              <label for="__temp_tin_no">Temporary TIN Number
+                <span class="text-danger">*</span>
+              </label>
+              <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
+                formControlName="temp_tin_no" placeholder="Search by Temporary TIN Number">
+                <span class="spinner-border" *ngIf="__istemporaryspinner && __traxForm.get('temp_tin_no').value?.length > 1"></span>
+              <div class="processMain_2" __searchResVisibility
+                (appOutsideClick)="outsideClickfortempTin($event)">
+                <div class="serachresult_client" #searchTin>
+                  <ul *ngIf="__temp_tinMst.length > 0">
+                    <li *ngFor="let items of __temp_tinMst" (click)="getItems(items)">
+                      {{items.temp_tin_no}} | {{items.client_name}} | {{items.trans_name}}
+                    </li>
+                  </ul>
+                  <div class="noDataFound" *ngIf="__temp_tinMst.length == 0">
+                    <h5 class="text-center">
+                      Sorry!! No Records Found
+                    </h5>
+                    <p>Temporary TIN Number Not AVailable</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+      <div class="row mt-5">
+        <div class="col-sm-12 ">
+          <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
+          <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
+            <option value=""> Select Buisness Type</option>
+            <option *ngFor="let __bu_type of __buisness_type" value="{{__bu_type.id}}">{{__bu_type.bu_type}}
+            </option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__traxForm.get('bu_type').invalid && (__traxForm.get('bu_type').dirty || __traxForm.get('bu_type').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('bu_type')).errors?.required">*Please provide
+              buisness
+              type</span>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="__traxForm.get('bu_type').value == 'B'">
+        <div class="row mt-5">
+          <div class="col-sm-12 ">
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+              <div class="searchDiv">
+                <label for="subbrkArn">Sub Broker ARN<span class="text-danger">*</span></label>
+                <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker ARN"
+                  formControlName="sub_arn_no">
+                <div class="processMain_2" __searchResVisibility
+                  (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                  <div class="serachresult_client" #subBrkArn>
+                    <ul *ngIf="__subbrkArnMst.length > 0">
+                      <li *ngFor="let items of __subbrkArnMst" (click)="getItemsDtls(items,'S')">
+                        {{items.arn_no}} | {{items.bro_name}}
+                      </li>
+                    </ul>
+                    <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                      <h5 class="text-center">
+                        Sorry!! No Sub-Brokers Found
+                      </h5>
+                      <p>If your result match,they will appear here</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-sm-12 ">
+            <label>Sub Broker Code <span class="text-danger">*</span></label>
+            <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control"
+              formControlName="sub_brk_cd" [attr.disabled]="true" placeholder="Sub Broker Code">
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="__traxForm.get('bu_type').value != ''">
+        <div class="row mt-5">
+          <div class="col-sm-12">
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+              <div class="searchDiv">
+                <label for="Euin">EUIN<span class="text-danger">*</span></label>
+                <input type="search" id="Euin" class="form-control" placeholder="Serach By EUIN Number"
+                  formControlName="euin_no">
+                <span class="spinner-border" *ngIf="__isEuinNumberVisible && __traxForm.get('euin_no').value?.length > 1"></span>
+                <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                  <div class="serachresult_client" #searchResult>
+                    <ul *ngIf="__euinMst.length > 0">
+                      <li *ngFor="let items of __euinMst" (click)="getItemsDtls(items,'E')">
+                        {{items.euin_no}} | {{items.emp_name}}
+                      </li>
+                    </ul>
+                    <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                      <h5 class="text-center">
+                        Sorry!! No EUIN Numbers Found
+                      </h5>
+                      <p>If your result match,they will appear here</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('euin_no').invalid && (__traxForm.get('euin_no').dirty || __traxForm.get('euin_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('euin_no')).errors?.required">*Please
+                provide
+                EUIN number</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- First Client Dtls -->
+      <div class="row mt-5">
+        <div [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-9':__isCldtlsEmpty}">
+          <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+            <div class="searchDiv">
+              <label for="__clntCd">Client Code <span class="text-danger">*</span></label>
+              <p class="invalid-feedback"
+                *ngIf="!__dialogDtForClient && __traxForm.get('client_code').value && __clientMst.length > 0">
+                Client Does Not Exist
+              </p>
+              <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                formControlName="client_code"
+                placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                <span class="spinner-border" *ngIf="__isclientVisible && __traxForm.get('client_code').value?.length > 1"></span>
+
+              <div class="processMain_2" __searchResVisibility
+                (appOutsideClick)="outsideClickforClient($event)">
+                <div class="serachresult_client" #clientCd>
+                  <ul *ngIf="__clientMst.length > 0">
+                    <li *ngFor="let items of __clientMst" (click)="getItemsDtls(items,'C')">
+                      {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                    </li>
+                  </ul>
+                  <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                    <h5 class="text-center">
+                      Sorry!! No Records Found
+                    </h5>
+                    <p>To create a new client .Please click on Create Client</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3 clientCode" *ngIf="__isCldtlsEmpty && __traxForm.get('client_code').value">
+          <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+            <mat-icon>add</mat-icon> Create Client
+          </button>
+          <mat-menu #menu="matMenu">
+            <div class="row p-0 m-0">
+              <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                *ngFor="let clOption of __mcOptionMenu" (click)="openDialogForclientcreation(clOption,'F')">
+                <mat-icon>{{clOption.icon}}</mat-icon>
+              </div>
+            </div>
+          </mat-menu>
+        </div>
+      </div>
+
+      <ng-container *ngIf="__traxForm.get('client_code').value && __traxForm.get('client_name').value">
+        <div class="row mt-5">
+          <div [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-9':__dialogDtForClient}">
+            <label for="__clName">Client Name</label>
+            <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
+              formControlName="client_name" [attr.disabled]="true">
+          </div>
+          <div class="col-sm-3  clientCode" *ngIf="__dialogDtForClient">
+            <button (click)="openDialog('C')" color="primary" mat-button type="button"
+              aria-label="Example icon button with a eye icon" title="View Client Details">
+              <mat-icon>remove_red_eye</mat-icon>
+              View Details
+            </button>
+          </div>
+
+        </div>
+      </ng-container>
+
+      <!-- KYC Status -->
+      <div class="row mt-5">
+        <div class="col-sm-12 ">
+          <label class="ml-2"><input type="radio" value="Y" formControlName="kyc_status"><span>&nbsp;With
+              KYC</span></label>
+          <label class="ml-3"><input type="radio" value="N" formControlName="kyc_status"><span>&nbsp;Without
+              KYC</span></label>
+        </div>
+      </div>
+      <!-- End -->
+
+      <!-- First Client KYC Status -->
+      <ng-container>
+        <div class="row mt-5">
+          <div class="col-sm-12">
+            <label for="first_kyc_view">Client KYC Status <span class="text-danger">*</span>
+            </label>
+            <select name="first_kyc" id="first_kyc" class="form-control" formControlName="first_kyc">
+              <option value="">Select KYC</option>
+              <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+            </select>
+          </div>
+
+        </div>
+      </ng-container>
+
+
+      <!-- Mode Of Holding -->
+      <div class="row mt-5">
+        <div class="col-sm-12">
+          <label for="mode_of_holding">Mode Of Holding <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="mode_of_holding">
+            <option value="">Select mode of holding</option>
+            <option value="A">Any Or Survivor</option>
+            <option value="J">Joint</option>
+            <option value="S">Single</option>
+          </select>
+        </div>
+      </div>
+      <!-- End -->
+        <!-- Additional Applicant -->
+        <div class="row mt-5"
+        *ngIf="__traxForm.get('mode_of_holding').value == 'A' || __traxForm.get('mode_of_holding').value == 'J'">
+        <div class="col-sm-12">
+          <table>
+            <thead>
+              <tr>
+                <th class="text-center">
+                  Second Applicant
+                </th>
+                <th class="text-center">
+                  <button mat-button color="primary" type="button" *ngIf="!__isSHowAdditionalTble"
+                    (click)="__isSHowAdditionalTble=!__isSHowAdditionalTble">
+                    + Add Additional Applicant
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="row mt-5">
+                    <div class="col-sm-12 ">
+                      <div class="progressMainSec" appClOutsideClick
+                        (appOutsideClick)="outsideClickforSecondClient($event)">
+                        <div class="searchDiv">
+                          <label for="__clntCd">Client Code</label>
+                          <p class="invalid-feedback"
+                            *ngIf="!__SecondClient && __traxForm.get('second_client_code').value && __sec_clientMst.length > 0">
+                            Client Does Not Exist
+                          </p>
+                          <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                            formControlName="second_client_code"
+                            placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                          <div class="processMain_2" __searchResVisibility
+                            (appOutsideClick)="outsideClickforSecondClient($event)">
+                            <div class="serachresult_client" #secondclientCd>
+                              <ul *ngIf="__sec_clientMst.length > 0">
+                                <li *ngFor="let items of __sec_clientMst"
+                                  (click)="getadditionalApplicant(items,'FC')">
+                                  {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                                </li>
+                              </ul>
+                              <div class="noDataFound" *ngIf="__sec_clientMst.length == 0">
+                                <h5 class="text-center">
+                                  Sorry!! No Records Found
+                                </h5>
+                                <p>To create a new client .Please click on Create Client</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 my-4">
+                      <label for="second_cl_name">Client name</label>
+                      <input #secondClName type="text"
+                        [attr.disabled]="__SecondClient && __traxForm.get('second_client_code').value"
+                        name="second_client_name" id="second_client_name"
+                        placeholder="Enter Second Applicant Name" class="form-control"
+                        formControlName="second_client_name" />
+                    </div>
+                    <div class="col-sm-12 my-4">
+                      <label for="second_cl_name">Pan No</label>
+                      <input type="text" [attr.disabled]="__SecondClient" name="second_client_pan"
+                        id="second_client_pan" placeholder="Enter Second Applicant Pan" class="form-control"
+                        formControlName="second_client_pan" />
+                        <div class="invalid-feedback" *ngIf="__traxForm.get('second_client_pan').invalid && (__traxForm.get('second_client_pan').dirty || __traxForm.get('second_client_pan').touched)">
+                          <span class="invalid-feedback" *ngIf="(__traxForm.get('second_client_pan')).errors?.required">*Please provide pan number</span>
+                          <span class="invalid-feedback" *ngIf="(__traxForm.get('second_client_pan')).errors?.pattern">*Please provide valid pan
+                            Number</span>
+                            <span class="invalid-feedback" *ngIf="(__traxForm.get('second_client_pan')).hasError('minlength')">*pan
+                              Number Must Be 10 Characters Long</span>
+                              <span class="invalid-feedback" *ngIf="(__traxForm.get('second_client_pan')).hasError('maxlength')">*pan
+                                number must be 10 characters long</span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 my-4">
+                      <label for="second_client_kyc">KYC Status
+                      </label>
+                      <select name="second_client_kyc" id="second_client_kyc" class="form-control"
+                        formControlName="second_client_kyc">
+                        <option value="">Select KYC</option>
+                        <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <ng-container
+                    *ngIf="
+                    __SecondClient
+                    &&__traxForm.get('second_client_code').value
+                    && __traxForm.get('second_client_name').value">
+                    <button type="button" mat-button color="primary"
+                      (click)="openDialogForAdditionalApplicant('FC')">
+                      <mat-icon>visibility</mat-icon> View Details
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="__issecCldtlsEmpty || __traxForm.get('second_client_code').value == ''">
+                    <button mat-button color="primary" type="button"
+                      [matMenuTriggerFor]="menu_for_second_applicant">
+                      <mat-icon>add</mat-icon> Create Client Code
+                    </button>
+
+                    <mat-menu #menu_for_second_applicant="matMenu">
+                      <div class="row  p-0 m-0">
+                        <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                          *ngFor="let clOption of __mcOptionMenu"
+                          (click)="openDialogForclientcreation(clOption,'S')">
+                          <mat-icon>{{clOption.icon}}</mat-icon>
+                        </div>
+                      </div>
+                    </mat-menu>
+                    <button mat-button color="primary" type="button" (click)="createClientTemporary('FC')">
+                      <mat-icon>add</mat-icon>Add Existing
+                    </button>
+
+                  </ng-container>
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+          <table *ngIf="__isSHowAdditionalTble" class="mt-2">
+            <thead>
+              <tr>
+                <th class="text-center">Additional Client</th>
+                <th class="text-center">
+                  <button type="button" mat-button color="accent" (click)="cancel()">
+                    <mat-icon> close </mat-icon>
+                    Cancel
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="row mt-5">
+                    <div class="col-sm-12 ">
+                      <div class="progressMainSec" appClOutsideClick
+                        (appOutsideClick)="outsideClickforThirdClient($event)">
+                        <div class="searchDiv">
+                          <label for="__clntCd">Client Code</label>
+                          <p class="invalid-feedback"
+                            *ngIf="!__ThirdClient && __traxForm.get('third_client_code').value && __third_clientMst.length > 0">
+                            Client Does Not Exist
+                          </p>
+                          <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                            formControlName="third_client_code"
+                            placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                          <div class="processMain_2" __searchResVisibility
+                            (appOutsideClick)="outsideClickforThirdClient($event)">
+                            <div class="serachresult_client" #thirdclientCd>
+                              <ul *ngIf="__third_clientMst.length > 0">
+                                <li *ngFor="let items of __third_clientMst"
+                                  (click)="getadditionalApplicant(items,'TC')">
+                                  {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                                </li>
+                              </ul>
+                              <div class="noDataFound" *ngIf="__third_clientMst.length == 0">
+                                <h5 class="text-center">
+                                  Sorry!! No Records Found
+                                </h5>
+                                <p>To create a new client .Please click on Create Client</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12  my-4">
+                      <label for="second_cl_name">Client name</label>
+                      <input #thirdClName type="text" [attr.disabled]="__ThirdClient" name="third_client_name"
+                        placeholder="Enter Additional Applicant Name" id="third_client_name"
+                        class="form-control" formControlName="third_client_name" />
+                    </div>
+                    <div class="col-sm-12 my-4 ">
+                      <label for="second_cl_name">Pan No</label>
+                      <input type="text" [attr.disabled]="__ThirdClient" name="third_client_pan"
+                        placeholder="Enter Additional Applicant Pan" id="third_client_pan" class="form-control"
+                        formControlName="third_client_pan" />
+                        <div class="invalid-feedback" *ngIf="__traxForm.get('third_client_pan').invalid && (__traxForm.get('third_client_pan').dirty || __traxForm.get('third_client_pan').touched)">
+                          <span class="invalid-feedback" *ngIf="(__traxForm.get('third_client_pan')).errors?.required">*Please provide pan number</span>
+                          <span class="invalid-feedback" *ngIf="(__traxForm.get('third_client_pan')).errors?.pattern">*Please provide valid pan
+                            Number</span>
+                            <span class="invalid-feedback" *ngIf="(__traxForm.get('third_client_pan')).hasError('minlength')">*pan
+                              Number Must Be 10 Characters Long</span>
+                              <span class="invalid-feedback" *ngIf="(__traxForm.get('third_client_pan')).hasError('maxlength')">*pan
+                                number must be 10 characters long</span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12  my-4">
+                      <label for="third_client_kyc">KYC Status
+                      </label>
+                      <select name="third_client_kyc" id="third_client_kyc" class="form-control"
+                        formControlName="third_client_kyc">
+                        <option value="">Select KYC</option>
+                        <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <ng-container
+                    *ngIf="__traxForm.get('third_client_code').value && __traxForm.get('third_client_name').value && __ThirdClient">
+                    <button type="button" mat-button color="primary"
+                      (click)="openDialogForAdditionalApplicant('TC')">
+                      <mat-icon>visibility</mat-icon> View Details
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="__traxForm.get('third_client_code').value == '' ||  __isthirdCldtlsEmpty">
+                    <button mat-button color="primary" type="button"
+                      [matMenuTriggerFor]="menu_for_third_applicant">
+                      <mat-icon>add</mat-icon>
+                      Create Client Code
+                    </button>
+                    <mat-menu #menu_for_third_applicant="matMenu">
+                      <div class="row mt-5 p-0 m-0">
+                        <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                          *ngFor="let clOption of __mcOptionMenu"
+                          (click)="openDialogForclientcreation(clOption,'T')">
+                          <mat-icon>{{clOption.icon}}</mat-icon>
+                        </div>
+                      </div>
+                    </mat-menu>
+
+                    <button type="button" mat-button color="primary" (click)="createClientTemporary('TC')">
+                      <mat-icon>add</mat-icon>
+                      Add Existing
+                    </button>
+                  </ng-container>
+                </td>
+              </tr>
+
+
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End -->
+    <!-- Transaction Type -->
+      <div class="row mt-5">
+        <div class="col-sm-12 ">
+          <label for="FrmType">Transaction <span class="text-danger">*</span></label>
+          <select name="frmType" class="form-control" id="FrmType" formControlName="trans_id">
+            <option value="">Select Transaction</option>
+            <option *ngFor="let __formType of __transType" value="{{__formType.id}}">{{__formType.trns_name}}
+            </option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__traxForm.get('trans_id').invalid && (__traxForm.get('trans_id').dirty || __traxForm.get('trans_id').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('trans_id')).errors?.required">*Please provide
+              form
+              type</span>
+          </div>
+        </div>
+      </div>
+      <!-- End -->
+        <!-- Scheme From / Scheme  -->
+        <div class="row mt-5" >
+          <div [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-9':__dialogDtForScheme}">
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforScheme($event)">
+              <div class="searchDiv">
+                <label for="schemeName">
+                  {{__traxForm.get('trans_id').value == '3' ? 'Switch Scheme From' : 'Scheme Name'}}
+                  <span class="text-danger">*</span></label>
+                <input type="search" id="schemeName" class="form-control" placeholder="Serach By Scheme Name"
+                  formControlName="scheme_name">
+                <div class="processMain_2" __searchResVisibility
+                  (appOutsideClick)="outsideClickforScheme($event)">
+                  <div class="serachresult_client" #schemeRes>
+                    <ul *ngIf="__schemeMst.length > 0">
+                      <li *ngFor="let items of __schemeMst" (click)="getItemsDtls(items,'SC')">
+                        {{items.scheme_name}}
+                      </li>
+                    </ul>
+
+                    <div class="noDataFound" *ngIf="__schemeMst.length == 0">
+                      <h5 class="text-center">
+                        Sorry!! No Schemes Results Found
+                      </h5>
+                      <p>If your result match,they will appear here</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
+            <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')" mat-button
+              type="button" aria-label="Example icon button with a eye icon" title="View Scheme Details">
+              <mat-icon>remove_red_eye</mat-icon>
+              View Details
+            </button>
+          </div>
+        </div>
+         <!-- End -->
+          <!-- Option & Plan For SWITCH FROM-->
+            <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
+              <div class="row mt-5">
+                <div class="col-sm-12">
+                  <label for="plan">Plan For Scheme From <span class="text-danger">*</span></label>
+                  <select name="plan" id="plan" formControlName="plan" class="form-control">
+                    <option value=""> Select Plan</option>
+                    <option *ngFor="let _pln of PlanMst" value="{{_pln.id}}">{{_pln.plan_name}}</option>
+                  </select>
+                  <div class="invalid-feedback"
+                    *ngIf="__traxForm.get('plan').invalid && (__traxForm.get('plan').dirty || __traxForm.get('plan').touched)">
+                    <span class="invalid-feedback" *ngIf="(__traxForm.get('plan')).errors?.required">*Please provide
+                      plan</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-sm-12 ">
+                  <label for="option">Option For Scheme From<span class="text-danger">*</span></label>
+                  <select name="option" id="option" formControlName="option" class="form-control">
+                    <option value=""> Select Option</option>
+                    <option *ngFor="let _opts of OptionMst" value="{{_opts.id}}">{{_opts.opt_name}}</option>
+                  </select>
+                  <div class="invalid-feedback"
+                    *ngIf="__traxForm.get('option').invalid && (__traxForm.get('option').dirty || __traxForm.get('option').touched)">
+                    <span class="invalid-feedback" *ngIf="(__traxForm.get('option')).errors?.required">*Please provide
+                      option</span>
+                  </div>
+                </div>
+              </div>
+              </ng-container>
+
+        <!-- Scheme To -->
+       <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
+        <div class="row mt-5" >
+          <div [ngClass]="{'col-sm-12': !__dialogDtForSchemeTo,'col-sm-9':__dialogDtForSchemeTo}">
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickForSchemeSwitchTo($event)">
+              <div  class="searchDiv">
+                <label for="schemeTo">Switch Scheme To <span class="text-danger">*</span></label>
+                <input type="search" id="schemeTo" class="form-control" placeholder="Serach By Scheme Name" formControlName="switch_scheme_to">
+                <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickForSchemeSwitchTo($event)">
+                  <div class="serachresult_client" #schemeswitchTo>
+                    <ul *ngIf="__schemeMstforSwitchTo.length > 0">
+                      <li *ngFor="let items of __schemeMstforSwitchTo" (click)="getItemsDtls(items,'ST')">
+                       {{items.scheme_name}}
+                      </li>
+                    </ul>
+
+                    <div class="noDataFound" *ngIf="__schemeMstforSwitchTo.length == 0">
+                      <h5 class="text-center">
+                        Sorry!! No Schemes Results Found
+                      </h5>
+                      <p>If your result match,they will appear here</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3 clientCode" *ngIf="__dialogDtForSchemeTo">
+            <button color="primary" *ngIf="this.__dialogDtForSchemeTo" (click)="openDialog('ST')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
+              <mat-icon>remove_red_eye</mat-icon>
+              View Details
+            </button>
+          </div>
+        </div>
+      </ng-container>
+        <!-- Option & Plan For SWITCH TO-->
+        <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
+          <div class="row mt-5">
+              <div class="col-sm-12">
+                <label for="plan_to">Plan For Scheme To <span class="text-danger">*</span></label>
+                <select name="plan_2" id="plan_to" formControlName="plan_to" class="form-control">
+                  <option value=""> Select Plan</option>
+                  <option *ngFor="let _pln of PlanMst" value="{{_pln.id}}">{{_pln.plan_name}}</option>
+                </select>
+                <div class="invalid-feedback"
+                  *ngIf="__traxForm.get('plan').invalid && (__traxForm.get('plan').dirty || __traxForm.get('plan').touched)">
+                  <span class="invalid-feedback" *ngIf="(__traxForm.get('plan')).errors?.required">*Please provide
+                    plan</span>
+                </div>
+              </div>
+              </div>
+          <div class="row mt-5">
+            <div class="col-sm-12 ">
+              <label for="option_to">Option For Scheme To<span class="text-danger">*</span></label>
+              <select name="option_to" id="option_to" formControlName="option_to" class="form-control">
+                <option value=""> Select Option</option>
+                <option *ngFor="let _opts of OptionMst" value="{{_opts.id}}">{{_opts.opt_name}}</option>
+              </select>
+              <div class="invalid-feedback"
+                *ngIf="__traxForm.get('option').invalid && (__traxForm.get('option').dirty || __traxForm.get('option').touched)">
+                <span class="invalid-feedback" *ngIf="(__traxForm.get('option')).errors?.required">*Please provide
+                  option</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- End -->
+      <!-- Receive from -->
+      <!-- <div class="row mt-5">
+        <div class="col-sm-12">
+          <label>Receive From <span class="text-danger">*</span></label>
+          <input type="text" name="recv_from" id="recv_from" class="form-control" formControlName="recv_from"
+            placeholder="Enter Form Receive From">
+        </div>
+      </div> -->
+
+      <!-- Investment Type -->
+      <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
+        <div class="row mt-5">
+          <div class="col-sm-12">
+            <label for="inv_type">Investment Type <span class="text-danger">*</span></label>
+            <select name="inv_type" id="inv_type" formControlName="inv_type" class="form-control">
+              <option value=""> Select investment type</option>
+              <option value="F"> Fresh</option>
+              <option value="A"> Additional</option>
+            </select>
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('inv_type').invalid && (__traxForm.get('inv_type').dirty || __traxForm.get('inv_type').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('inv_type')).errors?.required">*Please provide
+                investment type</span>
+            </div>
+
+          </div>
+        </div>
+        <div class="row mt-5" *ngIf="__traxForm.get('inv_type').value == 'F'">
+          <div class="col-sm-12 ">
+            <label for="appl_number"> Application Number</label>
+            <input type="text" name="appl_number" id="appl_number" formControlName="application_no"
+              class="form-control" placeholder="Enter Application Number">
+          </div>
+        </div>
+      </ng-container>
+      <!-- End -->
+
+      <!-- Folio Number -->
+      <ng-container *ngIf="__traxForm.get('inv_type').value == 'A' || __traxForm.get('trans_id').value == '3'">
+        <div class="row mt-5" >
+          <div class="col-sm-12">
+            <label for="folio_number"> Folio Number</label>
+            <input type="text" name="folio_number" id="folio_number" formControlName="folio_number"
+              class="form-control" placeholder="Enter Folio Number">
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('folio_number').invalid && (__traxForm.get('folio_number').dirty || __traxForm.get('folio_number').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('folio_number')).errors?.required">*Please provide
+                folio number</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- End -->
+
+
+
+      <!-- Option & Plan For SIP/PIP-->
+     <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
+       <!-- Plan -->
+       <div class="row mt-5">
+        <div class="col-sm-12">
+          <label for="plan">Plan <span class="text-danger">*</span></label>
+          <select name="plan" id="plan" formControlName="plan" class="form-control">
+            <option value=""> Select Plan</option>
+            <option *ngFor="let _pln of PlanMst" value="{{_pln.id}}">{{_pln.plan_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__traxForm.get('plan').invalid && (__traxForm.get('plan').dirty || __traxForm.get('plan').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('plan')).errors?.required">*Please provide
+              plan</span>
+          </div>
+        </div>
+      </div>
+        <!-- Option -->
+        <div class="row mt-5">
+          <div class="col-sm-12 ">
+            <label for="option">Option <span class="text-danger">*</span></label>
+            <select name="option" id="option" formControlName="option" class="form-control">
+              <option value=""> Select Option</option>
+              <option *ngFor="let _opts of OptionMst" value="{{_opts.id}}">{{_opts.opt_name}}</option>
+            </select>
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('option').invalid && (__traxForm.get('option').dirty || __traxForm.get('option').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('option')).errors?.required">*Please provide
+                option</span>
+            </div>
+          </div>
+        </div>
+
+     </ng-container>
+     <!-- End -->
+
+
+
+     <!-- End -->
+      <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
+        <div class="row mt-5" >
+          <div class="col-sm-12">
+            <label for="switch_by"> Switch By</label>
+              <select class="form-control" formControlName="switch_by">
+                <option value="">Select Switch By</option>
+                <option value="A">Amount</option>
+                <option value="U">Unit</option>
+                <option value="AU">All Unit</option>
+              </select>
+          </div>
+        </div>
+        <div class="row mt-5"  *ngIf="__traxForm.get('switch_by').value == 'A'">
+          <div class="col-sm-12">
+            <label for="Switch_amt">Amount</label>
+            <input type="text" name="Switch_amt" id="Switch_amt" formControlName="switch_amt" class="form-control"
+              placeholder="Enter Amount">
+          </div>
+        </div>
+      <div class="row mt-5" *ngIf="__traxForm.get('switch_by').value == 'U' || __traxForm.get('switch_by').value == 'AU'">
+        <div class="col-sm-12">
+          <label for="unit">{{__traxForm.get('switch_by').value == 'AU' ? 'All Unit' : 'Unit'}}</label>
+          <input type="text" name="unit" id="unit" formControlName="unit" class="form-control"
+            placeholder="Enter Unit">
+        </div>
+      </div>
+      </ng-container>
+
+      <!-- SIP -->
+      <ng-container *ngIf="__traxForm.get('trans_id').value == '2'">
+        <div class="row">
+          <div class="col-sm-12 my-4">
+            <label for="sip_type">SIP Type</label>
+            <select class="form-control" id="sip_type" formControlName="sip_type">
+              <option value="">Select SIP Type</option>
+              <option [value]="sip_type.id" *ngFor="let sip_type of __sipType">{{sip_type.sip_type_name}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 my-4">
+            <label for="sip_freq">SIP frequency</label>
+            <select class="form-control" id="sip_freq" formControlName="sip_frequency">
+              <option value="">Select SIP Frequency</option>
+              <option [value]="frequency.id" *ngFor="let frequency of __sipfreq">{{frequency.freq_name}}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 my-4">
+            <label for="sip_date">SIP Date </label>
+            <ng-multiselect-dropdown #multiSelect
+            id="sip_date"
+            [placeholder]="'Select Dates'"
+            [settings]="settings"
+            [data]="__dates"
+            formControlName="sip_date"
+            [disabled]="true">
+          </ng-multiselect-dropdown>
+          <!-- <div class="invalid-feedback" *ngIf="__traxForm.get('sip_date').invalid && (__traxForm.get('sip_date').dirty || __traxForm.get('sip_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_date')).errors?.required">*Please provide sip date</span>
+          </div> -->
+       </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 my-4">
+            <label for="sip_start_date">SIP Start Date</label>
+            <input type="date" formControlName="sip_start_date" name="sip_start_date" id="sip_start_date"
+              class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 my-4">
+            <label for="sip_duration">SIP Duration</label>
+            <select class="form-control" id="sip_duration" formControlName="sip_duration">
+              <option value="">Select SIP Duration</option>
+              <option value="M">Manual</option>
+              <option value="P">Perpetual</option>
+            </select>
+          </div>
+          <ng-container *ngIf="__traxForm.get('sip_duration').value == 'M'">
+            <div class="col-sm-12 my-4">
+              <label for="duration">Duration</label>
+              <input type="text" name="sip_stardurationt_date" id="duration" class="form-control"
+                formControlName="duration" (change)="setStartDT($event)">
+            </div>
+            <!-- <div class="col-sm-12 my-4">
+              <label for="period">Select Period</label>
+              <select class="form-control" id="period" formControlName="period">
+                <option value="">Select Period</option>
+                <option value="Y">Year</option>
+                <option value="M">Month</option>
+              </select>
+            </div> -->
+          </ng-container>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 my-4">
+            <label for="sip_end_date">SIP End Date</label>
+            <input type="date" name="sip_end_date" id="sip_end_date" class="form-control"
+              formControlName="sip_end_date">
+          </div>
+        </div>
+      </ng-container>
+      <!-- End -->
+
+       <ng-container *ngIf="__traxForm.get('trans_id').value == '2' && __traxForm.get('sip_type').value == '3'">
+        <div class="row mt-5">
+          <div class="col-sm-12">
+            <label for="first_inv_amt">First Investment Amount</label>
+            <input type="text"
+            name="first_inv_amt"
+            id="first_inv_amt"
+            formControlName="first_inv_amt"
+            [class.is-invalid]="__chkInvAmt && __traxForm.get('first_inv_amt').value"
+            [class.is-valid]="!__chkInvAmt && __traxForm.get('first_inv_amt').value"
+            class="form-control"
+              placeholder="Enter First Investment Amount">
+              <div class="invalid-feedback" *ngIf="__chkInvAmt && __traxForm.get('first_inv_amt').value">
+                <span class="invalid-feedback"> * Amount must be greater than {{getInvAmt | currency:'INR'}}</span>
+              </div>
+          </div>
+        </div>
+       </ng-container>
+
+      <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
+        <!-- Amount -->
+        <div class="row mt-5">
+          <div class="col-sm-12">
+            <label for="amount">Amount</label>
+            <input type="text"
+            name="amount"
+            id="amount"
+            formControlName="amount"
+            [class.is-invalid]="__checkAmt && __traxForm.get('amount').value"
+            [class.is-valid]="!__checkAmt && __traxForm.get('amount').value"
+            class="form-control"
+              placeholder="Enter Amount">
+              <div class="invalid-feedback" *ngIf="__checkAmt && __traxForm.get('amount').value">
+                <span class="invalid-feedback"> * Amount must be greater than {{getamttocheckwith  | currency:'INR'}}</span>
+              </div>
+          </div>
+        </div>
+        <!-- End -->
+        <!-- Cheque Number -->
+        <div class="row mt-5" *ngIf="this.__traxForm.get('sip_type').value != '2'">
+          <div class="col-sm-12">
+            <label for="chq">Cheque Number</label>
+            <input type="text" name="chq"  (keypress)="preventNonumeric($event)" id="chq" maxlength="6" minlength="6" formControlName="chq_no" class="form-control"
+              placeholder="Enter Cheque Number">
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('chq_no').invalid && (__traxForm.get('chq_no').dirty || __traxForm.get('chq_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).errors?.required">*Please provide cheque number
+                number</span>
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).hasError('minlength')">*cheque number
+                must be 6 digits</span>
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).hasError('maxlength')">*cheque number
+                must be 6 digits</span>
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).hasError('pattern')">*allow only
+                digits</span>
+
+            </div>
+          </div>
+        </div>
+        <!-- End -->
+        <!-- Bank -->
+        <div class="row mt-5">
+          <div [ngClass]="{'col-sm-12':!__dialogDtForBnk,'col-sm-10': __dialogDtForBnk}">
+
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforbank($event)">
+              <div class="searchDiv">
+                <label for="__clntCd">MICR Code
+                  <span class="text-danger"> *</span>
+                </label>
+                <input type="search " name="__clntCd" id="__clntCd" class="form-control" formControlName="chq_bank"
+                  placeholder="Search By Ifs Code , Branch Name">
+                <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforbank($event)">
+                  <div class="serachresult_client" #searchbnk>
+                    <ul *ngIf="__bnkMst.length > 0">
+                      <li *ngFor="let items of __bnkMst" (click)="getItemsDtls(items,'B')">
+                        {{items.bank_name}} | {{items.ifs_code}} | {{items.branch_name}}
+                      </li>
+                    </ul>
+                    <div class="noDataFound" *ngIf="__bnkMst.length == 0">
+                      <h5 class="text-center">
+                        Sorry!! No Records Found
+                      </h5>
+                      <p>Banks are not available</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2 clientCode" *ngIf="__dialogDtForBnk && __traxForm.get('chq_bank').value">
+            <button (click)="openDialog('B')" color="primary" mat-button type="button"
+              aria-label="Example icon button with a eye icon" title="View Bank Details">
+              <mat-icon>remove_red_eye</mat-icon>
+              View Details
+            </button>
+          </div>
+        </div>
+        <div class="row" *ngIf="__traxForm.get('chq_bank').value && this.__dialogDtForBnk">
+          <div class="col-sm-12">
+            <label for="bnk_name">Bank</label>
+            <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control" [attr.disabled]="true"/>
+          </div>
+        </div>
+        <!-- End -->
+    </ng-container>
+      <div class="row mt-5">
+        <div class="col-sm-12 ">
+          <label for="file">Upload Scan Application Form <span class="text-danger">*</span></label>
+          <input type="file" name="file" id="file" formControlName="file" class="form-control"
+            (change)="getFIle($event.target)" accept=".jpg,.jpeg,.png">
+          <div class="invalid-feedback"
+            *ngIf=" __traxForm.get('file').invalid && ( __traxForm.get('file').dirty ||  __traxForm.get('file').touched)">
+            <span class="invalid-feedback" *ngIf=" __traxForm.get('file').errors?.required">*Please
+              provide file</span>
+            <span class="invalid-feedback" *ngIf="__traxForm.get('file').errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback" *ngIf="__traxForm.get('file').errors?.fileSizeValidator">*File size
+              must
+              not exceed than
+              2MB.</span>
+          </div>
+          <ng-container *ngIf="this.__traxForm.get('filePreview').value">
+            <br clear="all" />
+            <img  class="imgThumbnail"
+              [src]="this.__traxForm.get('filePreview').value" alt="Application form Image">
+          </ng-container >
+
+
+        </div>
+      </div>
+      <div class="row my-5">
+        <div class="col-sm-12">
+          <label for="rnt_login_at">Form will be submitted at <span class="text-danger">*</span></label>
+          <select name="rnt_login_at" id="rnt_login_at" formControlName="rnt_login_at" class="form-control">
+            <option value="">Select form will be submitted at</option>
+            <option [value]="__rnt_login.id" *ngFor="let __rnt_login of __rnt_login_at">{{__rnt_login.rnt_name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="file">Remarks</label>
+          <textarea name="rmks" id="rmks" cols="30" rows="5" formControlName="remarks" class="form-control"></textarea>
+        </div>
+      </div>
+    </form>
+
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn" [attr.form]="'__traxForm_'+data.id" [disabled]="__traxForm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+  </div>

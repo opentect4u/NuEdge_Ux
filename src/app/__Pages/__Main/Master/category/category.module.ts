@@ -13,6 +13,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { CatrptComponent } from './catRpt/catRpt.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 const routes:Routes = [{path:'',component:CategoryComponent}]
@@ -30,7 +31,8 @@ const routes:Routes = [{path:'',component:CategoryComponent}]
     SharedModule,
     MatButtonToggleModule,
     MatTableExporterModule,
-    MatRadioModule
+    MatRadioModule,
+    MatMenuModule
   ],
   declarations: [
     CategoryComponent,

@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { map, skip } from 'rxjs/operators';
+import { DomSanitizer } from '@angular/platform-browser';
+import { map, pluck, skip } from 'rxjs/operators';
 import { docType } from 'src/app/__Model/__docTypeMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -15,6 +16,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./clModifcation.component.css']
 })
 export class ClModifcationComponent implements OnInit {
+  __clTypeMst: any=[];
   __isVisible:boolean =false;
   _clId: number = 0;
   __district: any = [];
@@ -50,9 +52,11 @@ export class ClModifcationComponent implements OnInit {
     gurdians_pan: new FormControl(this.data.id > 0 ? this.data.items.gurdians_pan : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
     gurdians_name: new FormControl(this.data.id > 0 ? this.data.items.gurdians_name : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     relations: new FormControl(this.data.id > 0 ? this.data.items.relations : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    doc_dtls: new FormArray([])
+    doc_dtls: new FormArray([]),
+    client_type: new FormControl(this.data.cl_type == 'P' ? this.data.items?.client_type_mode : '',this.data.cl_type == 'P' ? [Validators.required] : [])
   })
   constructor(
+    private sanitizer: DomSanitizer,
     public dialogRef: MatDialogRef<ClModifcationComponent>,
     private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -67,6 +71,7 @@ export class ClModifcationComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getClientType();
     this.setfrmCtrlValidatior();
     this.getStateMaster();
     this.getDocumnetTypeMaster();
@@ -88,7 +93,11 @@ export class ClModifcationComponent implements OnInit {
     }
 
   }
-
+  getClientType(){
+    this.__dbIntr.api_call(0,'/clientType',null).pipe(pluck("data")).subscribe(res =>{
+    this.__clTypeMst = res;
+    })
+  }
   getDistrict_city(){
     if(this.data.id > 0 && this.data.client_type != 'E'){
       this.getDistrict(this.data.items.state);
@@ -177,7 +186,9 @@ export class ClModifcationComponent implements OnInit {
     __client.append("relation", this.__clientForm.value.relations ? this.__clientForm.value.relations : '');
     __client.append("id", this.__clientForm.value.id);
     __client.append("client_type", this.data.cl_type);
-
+        if(this.data.cl_type == 'P'){
+          __client.append("client_type_mode", this.__clientForm.value.client_type);
+        }
     for (let i = 0; i < this.__clientForm.value.doc_dtls.length; i++) {
       if (typeof (this.__clientForm.value.doc_dtls[i].file) != 'string') {
         __client.append("file[]", this.__clientForm.value.doc_dtls[i].file);
@@ -254,11 +265,12 @@ export class ClModifcationComponent implements OnInit {
     this.__docs.controls[index].get('doc_name').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.__docs.controls[index].get('doc_name').updateValueAndValidity();
     if (this.__docs.controls[index].get('doc_name').status == 'VALID') {
-      const file = __ev.target.files[0];
+      // const file = __ev.target.files[0];
 
-      const reader = new FileReader();
-      reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
-      reader.readAsDataURL(file);
+      // const reader = new FileReader();
+      // reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
+      // reader.readAsDataURL(file);
+      this.__docs.controls[index].get('file_preview')?.patchValue(this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL( __ev.target.files[0])));
       this.__docs.controls[index].get('file')?.patchValue(__ev.target.files[0]);
     }
     else {

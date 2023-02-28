@@ -2,8 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 
 import { pluck } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { rnt } from 'src/app/__Model/Rnt';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -17,6 +19,37 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
   styleUrls: ['./uploadSubcat.component.css'],
 })
 export class UploadSubcatComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Sub Category",
+      url:'/main/master/productwisemenu/subcategory',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Sub Category Upload",
+      url:'/main/master/productwisemenu/subcategory/uploadSubcat',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    }
+]
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   displayedColumns: Array<string> = [];
@@ -51,13 +84,15 @@ export class UploadSubcatComponent implements OnInit {
   __selectRNT = new MatTableDataSource<subcat>([]);
   constructor(
     private __dbIntr: DbIntrService,
-    private __utility: UtiliService
+    private __utility: UtiliService,
+    private __rtDt: ActivatedRoute
   ) {
     this.previewlatestCategoryEntry();
   }
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestCategoryEntry() {
     this.__dbIntr

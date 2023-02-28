@@ -12,6 +12,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 import { DoctyperptComponent } from './docTypeRpt/docTypeRpt.component';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 
 @Component({
   selector: 'master-docsMaster',
@@ -19,6 +20,26 @@ import { DoctyperptComponent } from './docTypeRpt/docTypeRpt.component';
   styleUrls: ['./docsMaster.component.css']
 })
 export class DocsMasterComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:"Document type",
+      url:'/main/master/docType',
+      hasQueryParams:true,
+      queryParams:''
+    }
+]
+  
   __pageNumber= new FormControl(10);
   __paginate:any=[];
   __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "/main/master/docTypeModify","icon":"","id":48,"flag":"M"},
@@ -34,7 +55,8 @@ export class DocsMasterComponent implements OnInit {
     private __utility: UtiliService,
     private overlay: Overlay) { }
   ngOnInit() {
-    this.getDocumentmaster();
+    // this.getDocumentmaster();
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
     if(this.__rtDT.snapshot.queryParamMap.get('id')){
       this.getParticularDocument();
     }

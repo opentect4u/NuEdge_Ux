@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { rnt } from 'src/app/__Model/Rnt';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -17,6 +18,31 @@ import { RntrptComponent } from './rntRpt/rntRpt.component';
   styleUrls: ['./RNT.component.css'],
 })
 export class RNTComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+                              label:"Home",
+                              url:'/main',
+                              hasQueryParams:false,
+                              queryParams:''
+                              },
+                              {
+                                label:"Master",
+                                url:'/main/master/products',
+                                hasQueryParams:false,
+                                queryParams:''
+                              },
+                              {
+                                label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+                                url:'/main/master/productwisemenu/home',
+                                hasQueryParams:true,
+                                queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+                              },
+                              {
+                                label:"R&T",
+                                url:'/main/master/productwisemenu/rnt',
+                                hasQueryParams:false,
+                                queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+                              }
+  ]
   __menu = [
     {
       parent_id: 4,
@@ -58,11 +84,15 @@ export class RNTComponent implements OnInit {
     private __rtDt: ActivatedRoute
   ) {}
   ngOnInit() {
-    // console.log(this.__rtDt.snapshot.queryParamMap.get('id'));
+    console.log(this.__rtDt.snapshot.queryParamMap.get('id'));
     if (this.__rtDt.snapshot.queryParamMap.get('id')) {
       this.getParticularRNt(atob(this.__rtDt.snapshot.queryParamMap.get('id')));
     }
-    this.getRNTmaster();
+    // this.getRNTmaster();
+    this.setBreadCrumb();
+  }
+  setBreadCrumb(){
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
 
   getParticularRNt(__id) {
@@ -143,7 +173,6 @@ export class RNTComponent implements OnInit {
       });
     } catch (ex) {
       console.log(ex);
-
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.addPanelClass('mat_dialog');
       this.__utility.getmenuIconVisible({
@@ -190,7 +219,8 @@ export class RNTComponent implements OnInit {
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__menu.url);
+        // this.__utility.navigate(__menu.url);
+        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}})
         break;
         case 'R':
                this.openDialogForReport(atob(this.__rtDt.snapshot.queryParamMap.get('product_id')))

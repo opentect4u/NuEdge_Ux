@@ -13,13 +13,13 @@
 
 
 
-<core-search (__searchItem)="getSearchItem($event)" [__flag]="'Y'" [__placeholder]="'Search by Plan name'"
+<!-- <core-search (__searchItem)="getSearchItem($event)" [__flag]="'Y'" [__placeholder]="'Search by Plan name'"
   [__api_name]="'/plan'"></core-search>
 
 <div class="mat-elevation-z3">
 
   <table mat-table [dataSource]="__selectPLN" class="table_Custome">
-    <!-- Sl No. -->
+
     <ng-container matColumnDef="sl_no">
       <th mat-header-cell *matHeaderCellDef>Sl no.</th>
       <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
@@ -27,14 +27,13 @@
 
 
 
-    <!--Temporary TIN No.-->
+
     <ng-container matColumnDef="plan_name">
       <th mat-header-cell *matHeaderCellDef>Plan</th>
       <td mat-cell *matCellDef="let element">{{element.plan_name}}</td>
     </ng-container>
 
 
-    <!-- Buisness Type-->
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef>Edit</th>
       <td mat-cell *matCellDef="let element">
@@ -44,7 +43,6 @@
       </td>
     </ng-container>
 
-    <!-- Buisness Type-->
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef>Delete</th>
       <td mat-cell *matCellDef="let element">
@@ -93,4 +91,4 @@
       </mat-button-toggle-group>
     </div>
   </div>
-</div>
+</div> -->

@@ -10,9 +10,15 @@
           <div class="row">
             <div class="col-sm-12">
               <button class="float-right mb-5" color="primary" type="button" mat-button
-                (click)="exporter.exportTable('csv',{fileName:'SampleScheme'})">
+                (click)="exporter.exportTable('csv',{fileName:(__uploadRnt.get('scheme_type').value == 'N' ? 'NFO' : 'Ongoing') + 'SampleScheme'})">
                 <mat-icon>download</mat-icon>Download Sample
               </button>
+            </div>
+            <div class="col-sm-12 mb-5">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="scheme_type">
+                <mat-radio-button value="O">Ongoing Scheme</mat-radio-button>
+                <mat-radio-button value="N" class="ml-5">NFO</mat-radio-button>
+              </mat-radio-group>
             </div>
             <div class="col-sm-12">
               <div class="container_zone" appSchemDrag (fileDropped)="onFileDropped($event)">
@@ -99,7 +105,10 @@
     <div class="cardSec m-1">
       <div class="card_header">
         <h3>Recent Entries</h3>
-        <button mat-icon-button title="View All Scheme" [routerLink]="['/main/master/productwisemenu/scheme']">
+        <button mat-icon-button
+        [queryParams]="{product_id:this.__route.snapshot.queryParamMap.get('product_id')}"
+        title="View All Scheme"
+        [routerLink]="['/main/master/productwisemenu/scheme']">
           <mat-icon>north_east</mat-icon>
         </button>
       </div>

@@ -14,6 +14,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { PlanrptComponent } from '../planRpt/planRpt.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableExporterModule } from 'mat-table-exporter';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 const routes: Routes =[{path:'',component:PlanComponent}]
@@ -31,7 +32,8 @@ const routes: Routes =[{path:'',component:PlanComponent}]
     MatButtonToggleModule,
     SharedModule,
     MatRadioModule,
-    MatTableExporterModule
+    MatTableExporterModule,
+    MatMenuModule
   ],
   declarations: [PlanComponent,PlanModificationComponent,PlanrptComponent]
 })

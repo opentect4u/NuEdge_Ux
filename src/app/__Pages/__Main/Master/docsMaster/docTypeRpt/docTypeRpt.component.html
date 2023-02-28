@@ -1,7 +1,7 @@
 
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
   <div mat-dialog-title class="dialog-title">
-    <h2 >Option Reports</h2>
+    <h2 >Document Types Reports</h2>
     <div class="btnIcon">
       <button mat-icon-button  (click)="minimize()" >
         <mat-icon >remove</mat-icon>
@@ -24,25 +24,28 @@
   <div class="card my-5">
     <div class="card-body p-5">
   <form [formGroup]="__catForm" (ngSubmit)="submit()" autocomplete="off">
-    <div class="row ">
+   <!--  <div class="row ">
       <div class="col-sm-6 my-auto">
           <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
             <mat-radio-button value="2">Summary</mat-radio-button>
             <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
           </mat-radio-group>
       </div>
-    </div>
+    </div> -->
     <ng-container>
-      <div class="row my-5">
+      <div class="row">
         <div class="col-sm-5">
            <label for="doc_type">Document type</label>
-           <input type="text" name="doc_type" id="doc_type" class="form-control" formControlName="doc_type">
+           <input type="text" placeholder="Enter Document Type"
+           name="doc_type" id="doc_type"
+           class="form-control"
+           formControlName="doc_type">
         </div>
       </div>
       <div class="row">
         <div class="col-sm-12">
             <button mat-raised-button  color="primary" class="float-right">
-              <mat-icon>visibility</mat-icon>
+              <!-- <mat-icon>visibility</mat-icon> -->
               Show
             </button>
         </div>
@@ -55,13 +58,24 @@
 <div class="mat-elevation-z3">
   <div class="example_container_header">
     <div class="btnGrp">
-      <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
+           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>system_update_alt</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="exportPdf()">
+          <mat-icon>download</mat-icon> Export Pdf
+        </button>
+        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'DocumentType'})">
+          <mat-icon>download</mat-icon> Export Excel
+        </button>
+      </mat-menu>
+      <!-- <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
         <mat-icon>download</mat-icon> Export Pdf
       </button>
       <button class="float-right" color="primary" type="button" mat-button
         (click)="exporter.exportTable('xlsx',{fileName:'DocumentType'})">
         <mat-icon>download</mat-icon> Export Excel
-      </button>
+      </button> -->
     </div>
 
   </div>

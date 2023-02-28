@@ -5,11 +5,13 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { client } from 'src/app/__Model/__clientMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
+import { DocrptComponent } from './docRPT/docRPT.component';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 
 @Component({
@@ -18,6 +20,38 @@ import { DocsModificationComponent } from './docsModification/docsModification.c
   styleUrls: ['./document.component.css']
 })
 export class DocumentComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] =[
+    {
+      label: 'Home',
+      url: '/main',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label: 'Master',
+      url: '/main/master/products',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label: 'Operations',
+      url: '/main/master/mstOperations',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label: 'Client Master',
+      url: '/main/master/clntMstHome',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label: 'Document',
+      url: '/main/master/docs',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+  ]
   __columns: string[] = ['sl_no', 'cl_code', 'cl_name', 'pan', 'mobile', 'edit', 'delete'];
   __documents = new MatTableDataSource<client>([]);
   __pageNumber= new FormControl(10);
@@ -25,11 +59,12 @@ export class DocumentComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   constructor(
     private overlay: Overlay,
-    private __dialog: MatDialog, 
+    private __dialog: MatDialog,
     private __dbIntr: DbIntrService,
     private __utility: UtiliService) { }
   ngOnInit() {
-    this.getDocumentMaster();
+    // this.getDocumentMaster();
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   getSearchItem(__ev) {
     if (__ev.flag == 'A') {
@@ -49,11 +84,11 @@ export class DocumentComponent implements OnInit {
   }
   openDialog(id: number, items: client | null = null) {
     console.log(items);
-    
+
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.width = '60%';
-    dialogConfig.id = id > 0  ? id.toString() : "0";    
+    dialogConfig.id = id > 0  ? id.toString() : "0";
     dialogConfig.hasBackdrop = false;
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = false;
@@ -93,8 +128,38 @@ export class DocumentComponent implements OnInit {
     this.__documents = new MatTableDataSource(__res);
     this.__documents.paginator = this.paginator;
   }
-  openDocumentMst(){
-      this.openDialog(0);
+  openDocumentMst(__mode){
+    switch(__mode){
+      case 'M' :this.openDialog(0);break;
+      case 'R': this.openDialogFormRPT();break;
+      default: break;
+    }
+  }
+  openDialogFormRPT(){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '100%';
+    dialogConfig.height = '100%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.panelClass = "fullscreen-dialog"
+    dialogConfig.id = "CL";
+    dialogConfig.data = {
+      flag: "DMRPT"
+    };
+
+    try {
+      const dialogref = this.__dialog.open(
+        DocrptComponent,
+        dialogConfig
+      );
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+    }
+
   }
   getval(__paginate){
     this.__pageNumber.setValue(__paginate);

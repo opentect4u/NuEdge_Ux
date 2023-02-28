@@ -8,13 +8,39 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
-
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 @Component({
   selector: 'app-uploadCsv',
   templateUrl: './uploadCsv.component.html',
   styleUrls: ['./uploadCsv.component.css']
 })
 export class UploadCsvComponent implements OnInit {
+    __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:"Document type",
+      url:'/main/master/docType',
+      hasQueryParams:true,
+      queryParams:''
+    },
+     {
+      label:"Document type Upload",
+      url:'/main/master/uploadDocTypeCsv',
+      hasQueryParams:true,
+      queryParams:''
+    }
+]
+  
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
@@ -39,6 +65,7 @@ export class UploadCsvComponent implements OnInit {
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestDocumnetType() {
     this.__dbIntr.api_call(0, '/documenttype', null).pipe(pluck('data'),take(5)).subscribe((res: docType[]) => {

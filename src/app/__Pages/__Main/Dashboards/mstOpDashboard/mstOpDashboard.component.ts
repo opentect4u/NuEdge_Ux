@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'app-mstOpDashboard',
@@ -7,9 +10,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MstOpDashboardComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit() {
-  }
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+ },
+ {
+   label:"Master",
+    url:'/main/master/products',
+    hasQueryParams:false,
+    queryParams:''
+ },
+ {
+  label:"Operations",
+  url:'/main/master/mstOperations',
+  hasQueryParams:false,
+  queryParams:''
+ }
+]
+  constructor(private __utility:UtiliService) {}
+ ngOnInit() {this.__utility.getBreadCrumb(this.__brdCrmbs);}
 
 }

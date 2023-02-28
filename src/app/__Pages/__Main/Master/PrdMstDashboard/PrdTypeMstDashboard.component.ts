@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
@@ -7,6 +8,20 @@ templateUrl: './PrdTypeMstDashboard.component.html',
 styleUrls: ['./PrdTypeMstDashboard.component.css']
 })
 export class PrdtypemstdashboardComponent implements OnInit {
+
+  __brdCrmbs: breadCrumb[] = [{
+                                 label:"Home",
+                                 url:'/main',
+                                 hasQueryParams:false,
+                                 queryParams:''
+                              },
+                              {
+                                label:"Master",
+                                 url:'/main/master/products',
+                                 hasQueryParams:false,
+                                 queryParams:''
+                              }
+                            ]
 
   __menu = [
     {
@@ -58,7 +73,7 @@ constructor(
 }
 
 ngOnInit(){
-
+  this.__utility.getBreadCrumb(this.__brdCrmbs);
 }
 navigate(__items){
   // this.__utility.navigate(__items.url,btoa(__items.id));

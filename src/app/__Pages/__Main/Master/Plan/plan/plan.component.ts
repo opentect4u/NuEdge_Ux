@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map, pluck } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { plan } from 'src/app/__Model/plan';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -18,6 +19,31 @@ import { PlanrptComponent } from '../planRpt/planRpt.component';
   styleUrls: ['./plan.component.css'],
 })
 export class PlanComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Plan",
+      url:'/main/master/productwisemenu/plan',
+      hasQueryParams:true,
+      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+    }
+]
   __pageNumber = new FormControl(10);
   __paginate: any = [];
   __menu = [
@@ -61,7 +87,8 @@ export class PlanComponent implements OnInit {
     private __dialog: MatDialog
   ) {}
   ngOnInit(): void {
-    this.getPLANMaster();
+   this.__utility.getBreadCrumb(this.__brdCrmbs);
+    // this.getPLANMaster();
     if (this.route.snapshot.queryParamMap.get('id')) {this.getParticularPlan();}
   }
 
@@ -167,7 +194,8 @@ export class PlanComponent implements OnInit {
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__menu.url);
+        // this.__utility.navigate(__menu.url);
+        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}})
         break;
       case 'R':
         this.openDialogForReports(atob(this.route.snapshot.queryParamMap.get('product_id')))

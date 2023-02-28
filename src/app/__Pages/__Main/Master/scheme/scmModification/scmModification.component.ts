@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { map, skip } from 'rxjs/operators';
 import { amc } from 'src/app/__Model/amc';
@@ -9,35 +9,61 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { subcat } from 'src/app/__Model/__subcategory';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
-
+import { dates } from 'src/app/__Utility/disabledt';
+import dateslist from '../../../../../../assets/json/dates.json';
+import __sipFrequency from '../../../../../../assets/json/SipFrequency.json';
 @Component({
   selector: 'app-scmModification',
   templateUrl: './scmModification.component.html',
   styleUrls: ['./scmModification.component.css']
 })
 export class ScmModificationComponent implements OnInit {
+  __dates = dateslist;
   __isVisible:boolean = false;
   __amcMaster: amc[];
   __catMaster: category[];
   __subcatMaster: subcat[];
   __ProductMaster:product[] = [];
 
+  settings = {
+    singleSelection: false,
+    idField: 'id',
+    textField: 'date',
+    enableCheckAll: true,
+    selectAllText: 'Select All',
+    unSelectAllText: 'Deselect All',
+    allowSearchFilter: false,
+    limitSelection: -1,
+    clearSearchFilter: true,
+    maxHeight: 197,
+    itemsShowLimit: 31,
+    searchPlaceholderText: 'Search',
+    noDataAvailablePlaceholderText: 'No recors found',
+    closeDropDownOnSelection: false,
+    showSelectedItemsAtTop: false,
+    defaultOpen: false,
+  };
+
   __scmForm = new FormGroup({
-      category_id: new FormControl(this.data.id > 0 ? this.data.items.category_id : '', [Validators.required]),
+      category_id: new FormControl('', [Validators.required]),
     subcategory_id: new FormControl(this.data.id > 0 ? this.data.items.subcategory_id : '', [Validators.required]),
     product_id: new FormControl(this.data.product_id),
     amc_id: new FormControl(this.data.id > 0 ? this.data.items.amc_id : '', [Validators.required]),
     scheme_name: new FormControl(this.data.id > 0 ? this.data.items.scheme_name : '', [Validators.required]),
     scheme_type: new FormControl(this.data.scheme_type),
+    sip_date: new FormControl(this.data.id > 0 ? JSON.parse(this.data.items.sip_date) : '',[Validators.required]),
     id: new FormControl(this.data.id),
+    nfo_entry_date: new FormControl(this.data.id > 0 ? this.data.items.nfo_reopen_dt : '',this.data.scheme_type == 'N' ? [Validators.required] : []),
     nfo_start_dt: new FormControl(this.data.id > 0 ? this.data.items.nfo_start_dt : '',this.data.scheme_type == 'N' ? [Validators.required] : []),
-      nfo_end_dt: new FormControl(this.data.id > 0 ? this.data.items.nfo_end_dt : '',this.data.scheme_type == 'N' ? [Validators.required] : []),
-      nfo_reopen_dt: new FormControl(this.data.id > 0 ? this.data.items.nfo_reopen_dt : '',this.data.scheme_type == 'N' ? [Validators.required] : []),
-      pip_fresh_min_amt: new FormControl(this.data.id > 0 ? this.data.items.pip_fresh_min_amt : '',[Validators.required]),
-      sip_fresh_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_fresh_min_amt : '',[Validators.required]),
-      pip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.pip_add_min_amt : '',[Validators.required]),
-      sip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_add_min_amt : '',[Validators.required]),
-      gstin_no:new FormControl(this.data.id > 0 ? this.data.items.gstin_no : '',[Validators.required]),
+    nfo_end_dt: new FormControl(this.data.id > 0 ? this.data.items.nfo_end_dt : '',this.data.scheme_type == 'N' ? [Validators.required] : []),
+    nfo_reopen_dt: new FormControl(this.data.id > 0 ? this.data.items.nfo_reopen_dt : '',this.data.scheme_type == 'N' ? [Validators.required] : []),
+    pip_fresh_min_amt: new FormControl(this.data.id > 0 ? this.data.items.pip_fresh_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
+    // sip_fresh_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_fresh_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
+    pip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.pip_add_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
+    // sip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_add_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
+    gstin_no:new FormControl(this.data.id > 0 ? this.data.items.gstin_no : ''),
+    frequency: new FormArray([]),
+    is_selectall: new FormControl(false)
   })
   constructor(
     public dialogRef: MatDialogRef<ScmModificationComponent>,
@@ -54,17 +80,48 @@ export class ScmModificationComponent implements OnInit {
 
   ngOnInit() {
     this.getProductMaster();
+    this.setFrequencyAmt(this.data.id > 0 ? JSON.parse(this.data.items.sip_freq_wise_amt) : __sipFrequency);
     if(this.data.id > 0){
       this.getamcMasterbyproductId(this.data.items.product_id);
         this.getcatMasterbyproductId(this.data.items.product_id);
         this.getsubcatMasterbyproductId(this.data.items.category_id);
+        this.__scmForm.controls['category_id'].setValue(this.data.items.category_id,{emitEvent:false,onlySelf:true});
     }
     else{
       this.getamcMasterbyproductId(this.data.product_id);
       this.getcatMasterbyproductId(this.data.product_id);
     }
+
+  }
+  setFrequencyAmt(freq_dtls){
+    console.log(freq_dtls);
+
+   freq_dtls.forEach(freqDtls =>{
+      this.addFrequency(freqDtls);
+      console.log(freqDtls);
+    })
   }
   ngAfterViewInit(){
+
+   this.__scmForm.controls['is_selectall'].valueChanges.subscribe(res =>{
+           this.frequency.controls.map((value,index) =>{
+             console.log(index);
+             console.log(value);
+             value.get('is_checked').patchValue(res,{ emitEvent: false })
+             this.setFormControldependOnCheckbox(index,res);
+           })
+   })
+
+   this.__scmForm.get('frequency').valueChanges.subscribe((val) => {
+     //For checking or Unchecking the select All checkbox base on select check box inside the table body
+    const allSelected = val.every(bool => bool.is_checked);
+    if (this.__scmForm.get('is_selectall').value !== allSelected) {
+      this.__scmForm.get('is_selectall').patchValue(allSelected, { emitEvent: false });
+    }
+   })
+
+  //  this.frequency.controls
+
       /*--------------Trigger when Product changes---------------*/
       // this.__scmForm.controls["product_id"].valueChanges.subscribe(res => {
       //     this.getamcMasterbyproductId(res);
@@ -88,6 +145,8 @@ export class ScmModificationComponent implements OnInit {
   }
   private getcatMasterbyproductId(product_id) {
     this.__dbIntr.api_call(0, '/catUsingPro', 'product_id=' + product_id).pipe(map((x: responseDT) => x.data)).subscribe((res: category[]) => {
+       console.log(res);
+
       this.__catMaster = res;
     })
   }
@@ -114,6 +173,7 @@ export class ScmModificationComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit(){
+    //  console.log(this.__scmForm.value.frequency);
     if (this.__scmForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error',0);
       return;
@@ -130,10 +190,12 @@ export class ScmModificationComponent implements OnInit {
       __scm.append("nfo_end_dt",this.__scmForm.value.nfo_end_dt);
       __scm.append("nfo_reopen_dt",this.__scmForm.value.nfo_reopen_dt);
       __scm.append("pip_fresh_min_amt",this.__scmForm.value.pip_fresh_min_amt);
-      __scm.append("sip_fresh_min_amt",this.__scmForm.value.sip_fresh_min_amt);
+      __scm.append("sip_date",JSON.stringify(this.__scmForm.value.sip_date));
       __scm.append("pip_add_min_amt",this.__scmForm.value.pip_add_min_amt);
-      __scm.append("sip_add_min_amt",this.__scmForm.value.sip_add_min_amt);
+      __scm.append("frequency",JSON.stringify(this.__scmForm.value.frequency));
+
       __scm.append("gstin_no",this.__scmForm.value.gstin_no);
+      __scm.append("nfo_entry_date",this.data.scheme_type == 'N' ? this.__scmForm.value.nfo_entry_date : '');
         this.__dbIntr.api_call(1, '/schemeAddEdit', __scm).subscribe((res: any) => {
       if (res.suc == 1) {
            this.reset();
@@ -145,4 +207,32 @@ export class ScmModificationComponent implements OnInit {
   reset(){
     this.__scmForm.reset();
   }
+  get  frequency(): FormArray {
+    return this.__scmForm.get("frequency") as FormArray;
+  }
+  addFrequency(_freDtls){
+  this.frequency.push(this.createFrequcncy(_freDtls));
+  }
+  createFrequcncy(_freDtls): FormGroup {
+    return new FormGroup({
+      id: new FormControl(_freDtls.id),
+      freq_name: new FormControl(_freDtls.freq_name),
+      is_checked: new FormControl(_freDtls.is_checked),
+      sip_fresh_min_amt: new FormControl(_freDtls.sip_fresh_min_amt,[Validators.pattern("^[0-9]*$")]),
+      sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt,[Validators.pattern("^[0-9]*$")]),
+    });
+  }
+  preventNonumeric(__ev,index) {
+    dates.numberOnly(__ev)
+  }
+  getCheckboxVal(i,checked){
+     this.setFormControldependOnCheckbox(i,checked);
+  }
+  setFormControldependOnCheckbox(i,__res){
+    this.frequency.controls[i].get('sip_fresh_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
+    this.frequency.controls[i].get('sip_add_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
+    this.frequency.controls[i].get('sip_fresh_min_amt').updateValueAndValidity();
+    this.frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
+  }
+
 }

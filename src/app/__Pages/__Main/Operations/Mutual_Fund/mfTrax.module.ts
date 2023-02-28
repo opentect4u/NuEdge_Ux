@@ -14,6 +14,24 @@ import { NFOComponent } from './NFO/NFO.component';
 import { MasterTblComponent } from './common/MasterTbl/MasterTbl.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { FinmodificationComponent } from './financial/financialModification/finModification.component';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { TransTypeModificationComponent } from './transTypeModification/transTypeModification.component';
+import { CmnDialogForDtlsViewComponent } from './common/cmnDialogForDtlsView/cmnDialogForDtlsView.component';
+import { DialogForCreateClientComponent } from './common/dialogForCreateClient/dialogForCreateClient.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { FinrptComponent } from './financial/finRPT/finRPT.component';
+import { MatTableExporterModule } from 'mat-table-exporter';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { NforptComponent } from './NFO/NfoRPT/nfoRpt.component';
+import { NfomodificationComponent } from './NFO/nfoModification/nfoModification.component';
+import { NonfinrptComponent } from './nonfinancial/nonfinRPT/nonFinRPT.component';
+import { NonfinmodificationComponent } from './nonfinancial/nonFinModification/nonFInModification.component';
+// import {MatDatepickerModule} from '@angular/material/datepicker';
 const routes: Routes = [
   {
     path: '',
@@ -52,14 +70,31 @@ const routes: Routes = [
     MatDialogModule,
     MatTableModule,
     MatButtonToggleModule,
-    SharedModule
+    SharedModule,
+    OverlayModule,
+    DragDropModule,
+    MatMenuModule,
+    MatTableExporterModule,
+    NgMultiSelectDropDownModule,
+    MatChipsModule,
+    MatRadioModule,
+    MatSelectModule,
+    // MatDatepickerModule
   ],
   declarations: [
+    NonfinrptComponent,
     MfTraxComponent,
     FinancialComponent,
     Cmn_dialogComponent,
+    FinmodificationComponent,
+    NfomodificationComponent,
+    NforptComponent,
     NonfinancialComponent,
     MasterTblComponent,
+    FinrptComponent,
+    CmnDialogForDtlsViewComponent,
+    NonfinmodificationComponent,
+    DialogForCreateClientComponent,
     NFOComponent],
   entryComponents:[Cmn_dialogComponent],
   providers:[DatePipe]

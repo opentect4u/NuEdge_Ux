@@ -1,0 +1,40 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+<div mat-dialog-title class="dialog-title" >
+  <h2 [title]="data.title">{{data.title}}</h2>
+  <div class="btnIcon">
+    <button mat-icon-button  (click)="minimize()" >
+      <mat-icon >remove</mat-icon>
+    </button>
+    <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
+      <mat-icon>check_box_outline_blank</mat-icon>
+    </button>
+    <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <mat-icon>content_copy</mat-icon>
+    </button>
+
+    <button mat-icon-button  [mat-dialog-close]="">
+      <mat-icon >close</mat-icon>
+    </button>
+
+  </div>
+
+</div>
+<mat-dialog-content>
+  <form  [formGroup]="__trns_type" (ngSubmit)="submit()" [attr.id]="'__trns_type_'+ this.data.id" autocomplete="off" ngNativeValidate>
+    <div class="row">
+      <div class="col-sm-12 my-5">
+        <label for="trnsType">Transaction Type <span class="text-danger">*</span></label>
+        <input type="text" name="trns_type" id="trnsType" class="form-control" placeholder="Enter Transaction Type" formControlName="trns_type">
+        <div class="invalid-feedback" *ngIf="__trns_type.get('trns_type').invalid && (__trns_type.get('trns_type').dirty || __trns_type.get('trns_type').touched)">
+          <span class="invalid-feedback" *ngIf="(__trns_type.get('trns_type')).errors?.required">*Please provide transaction type</span>
+        </div>
+      </div>
+    </div>
+</form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <button class="btn addBtn"  [attr.form]="'__trns_type_'+ this.data.id" [disabled]="this.__trns_type.invalid">Submit</button>
+</mat-dialog-actions>
+<br clear="all">
+</div>

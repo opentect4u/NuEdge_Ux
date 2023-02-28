@@ -20,24 +20,27 @@ styleUrls: ['./subcatRpt.component.css']
 })
 export class SubcatrptComponent implements OnInit {
   @ViewChild('searchcat') __searchCat : ElementRef;
+  @ViewChild('searchsubcat') searchsubcat : ElementRef;
+
+
   __export =  new MatTableDataSource<subcat>([]);
   __catMst: category[] =[];
   __subcatMst: subcat[]=[];
   __iscatspinner: boolean = false;
   __issubcatspinner: boolean = false;
- __isVisible: boolean =false;
+ __isVisible: boolean =true;
  __subcatForm = new FormGroup({
   subcat_name: new FormControl(''),
-  subcat_id: new FormControl(''),
+  subcat_id: new FormControl(this.data.sub_cat_id ? this.data.sub_cat_id : ''),
   cat_name: new FormControl(''),
-  cat_id: new FormControl(''),
+  cat_id: new FormControl(this.data.cat_id ? this.data.cat_id : ''),
   options:new FormControl('2')
 });
 __selectSubCategory = new MatTableDataSource<subcat>([]);
 __pageNumber = new FormControl(10);
 __paginate: any = [];
-__exportedClmns:string[] = ['sl_no', 'subcat_name'];
-__columns: string[] = [ 'edit','sl_no', 'subcat_name','delete'];
+__exportedClmns:string[] = ['sl_no', 'cat_name','subcat_name'];
+__columns: string[] = [ 'edit','sl_no', 'cat_name','subcat_name','delete'];
 constructor(
   private __Rpt: RPTService,
   private __dialog: MatDialog,
@@ -56,8 +59,9 @@ exportPdf(){
 }
 
 ngOnInit(){
-  this.getSubCategorymaster();
-  this.tableExport();
+  // this.getSubCategorymaster();
+  // this.tableExport();
+  this.submit();
 }
 getSubCategorymaster(
   params: string | null = null,
@@ -91,6 +95,7 @@ private setPaginator(__res) {
   )
   .subscribe({
     next: (value) => {
+      this.__subcatForm.controls['cat_id'].setValue('')
       this.__catMst = value;
       this.searchResultVisibility('block','C')
       this.__iscatspinner = false;
@@ -116,6 +121,7 @@ private setPaginator(__res) {
   )
   .subscribe({
     next: (value) => {
+      this.__subcatForm.controls['subcat_id'].setValue('');
       this.__subcatMst = value;
       this.searchResultVisibility('block','S')
       this.__issubcatspinner = false;
@@ -144,13 +150,12 @@ maximize(){
 }
 submit(){
   const __amcSearch = new FormData();
-  __amcSearch.append('cat_id',this.__subcatForm.value.cat_id);
-  __amcSearch.append('subcat_id',this.__subcatForm.value.cat_id);
-
+  __amcSearch.append('cat_id',global.getActualVal(this.__subcatForm.value.cat_id));
+  __amcSearch.append('subcat_id',global.getActualVal(this.__subcatForm.value.subcat_id));
+  __amcSearch.append('paginate',this.__pageNumber.value);
    this.__dbIntr.api_call(1,'/subcategoryDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);
-    //  this.showColumns();
      this.tableExport();
    })
 }
@@ -160,6 +165,8 @@ outsideClick(__ev,mode){
  }
 }
 getItems(__items,__type){
+  console.log(__type);
+
   switch(__type){
    case 'S': this.__subcatForm.controls['subcat_id'].setValue(__items.id)
               this.__subcatForm.controls['subcat_name'].reset(__items.subcategory_name,{ onlySelf: true,emitEvent: false})
@@ -181,21 +188,29 @@ tableExport(){
   })
 }
 searchResultVisibility(display_mode,__type){
+  console.log(__type);
+  console.log(display_mode);
+
+
   switch(__type){
-    case 'S' : break;
+    case 'S' : this.searchsubcat.nativeElement.style.display = display_mode;break;
     case 'C' :this.__searchCat.nativeElement.style.display = display_mode;break;
+    default: break;
   }
 
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  this.getSubCategorymaster(this.__pageNumber.value);
+  this.submit();
 }
 getPaginate(__paginate) {
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url + ('&paginate=' + this.__pageNumber.value)
+        __paginate.url
+        + ('&paginate=' + this.__pageNumber.value)
+        +('&cat_id=' + this.__subcatForm.value.cat_id)
+        +('&subcat_id=' + this.__subcatForm.value.subcat_id)
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -254,6 +269,7 @@ updateRow(row_obj: subcat) {
       if (value.id == row_obj.id) {
         value.subcategory_name = row_obj.subcategory_name;
         value.category_id = row_obj.category_id;
+        value.cat_name = row_obj.cat_name
       }
       return true;
     }
@@ -263,9 +279,17 @@ updateRow(row_obj: subcat) {
       if (value.id == row_obj.id) {
         value.subcategory_name = row_obj.subcategory_name;
         value.category_id = row_obj.category_id;
+        value.cat_name = row_obj.cat_name
       }
       return true;
     }
   );
+}
+refreshOrAdvanceFlt(){
+  this.__subcatForm.reset();
+  this.__subcatForm.patchValue({
+    options:'2'
+  });
+  this.submit();
 }
 }

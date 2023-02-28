@@ -1,0 +1,5 @@
+.imgThumbnail{
+    height: 200px;
+    object-fit: cover;
+    margin-top:3px;
+}

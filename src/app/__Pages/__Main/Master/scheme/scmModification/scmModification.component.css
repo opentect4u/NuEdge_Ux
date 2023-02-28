@@ -1,0 +1,19 @@
+td,
+th {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  width: 30%;
+  font-size: 13px!important;
+  text-align: center!important;
+  font-weight: 500;
+}
+
+td,
+th:nth-child(1) {
+    width: 3% !important;
+}
+td,
+th:nth-child(2) {
+    width: 17% !important;
+}
+

@@ -4,16 +4,19 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://opentech4u.co.in/nuedge_api/api/v1',
-  clientdocUrl: 'https://opentech4u.co.in/nuedge_api/public/client-doc/',
-  app_formUrl: 'https://opentech4u.co.in/nuedge_api/public/application-form/',
-  ack_formUrl:'https://opentech4u.co.in/nuedge_api/public/acknowledgement-copy/',
+  // apiUrl: 'https://opentech4u.co.in/nuedge_api/api/v1',
+  // clientdocUrl: 'https://opentech4u.co.in/nuedge_api/public/client-doc/',
+  // app_formUrl: 'https://opentech4u.co.in/nuedge_api/public/application-form/',
+  // ack_formUrl:'https://opentech4u.co.in/nuedge_api/public/acknowledgement-copy/',
+  // kyc_formUrl:"https://opentech4u.co.in/nuedge_api/public/kyc-form/"
 
   // NuEdge
-  // apiUrl:"http://192.168.1.25/nuedge/api/v1",
-  // clientdocUrl:"http://192.168.1.25/nuedge/public/client-doc/",
-  // app_formUrl:"http://192.168.1.25/nuedge/public/application-form/",
-  // ack_formUrl:"http://192.168.1.25/nuedge/public/acknowledgement-copy/"
+  apiUrl:"http://192.168.1.25/nuedge/api/v1",
+  clientdocUrl:"http://192.168.1.25/nuedge/public/client-doc/",
+  app_formUrl:"http://192.168.1.25/nuedge/public/application-form/",
+  ack_formUrl:"http://192.168.1.25/nuedge/public/acknowledgement-copy/",
+  kyc_formUrl:"http://192.168.1.25/nuedge/public/kyc-form/"
+
 
   //Tribarna
   // apiUrl:"http://192.168.1.245/nuedge/api/v1",

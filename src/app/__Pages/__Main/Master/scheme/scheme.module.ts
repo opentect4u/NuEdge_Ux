@@ -10,8 +10,14 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-
-
+import { ScmRptComponent } from './scmRpt/scmRpt.component';
+import { MatTableExporterModule } from 'mat-table-exporter';
+import { MatRadioModule } from '@angular/material/radio';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 const routes: Routes = [{ path: '', component: SchemeComponent }]
 
 
@@ -25,9 +31,17 @@ const routes: Routes = [{ path: '', component: SchemeComponent }]
     DragDropModule,
     OverlayModule,
     SharedModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatTableExporterModule,
+    MatRadioModule,
+    NgMultiSelectDropDownModule,
+    MatMenuModule,
+    MatIconModule,
+    MatSelectModule,
+    MatCheckboxModule
+
   ],
-  declarations: [SchemeComponent,ScmModificationComponent]
+  declarations: [SchemeComponent,ScmModificationComponent,ScmRptComponent]
 })
 export class SchemeModule {
 

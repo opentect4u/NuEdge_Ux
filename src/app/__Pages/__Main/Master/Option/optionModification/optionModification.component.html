@@ -12,13 +12,13 @@
       <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-    
+
       <button mat-icon-button  [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-  
+
     </div>
-  
+
   </div>
 
 <mat-dialog-content>
@@ -28,7 +28,7 @@
         <label for="pln_name">Option <span class="text-danger">*</span></label>
           <input type="text" name="pln_name" id="pln_name" class="form-control" formControlName="opt_name" placeholder="Enter Option">
         <div class="invalid-feedback" *ngIf="__optForm.get('opt_name').invalid && (__optForm.get('opt_name').dirty || __optForm.get('opt_name').touched)">
-          <span class="invalid-feedback" *ngIf="(__optForm.get('opt_name')).errors?.required">*Please provide Option</span>
+          <span class="invalid-feedback" *ngIf="(__optForm.get('opt_name')).errors?.required">*Please Provide Option</span>
         </div>
       </div>
     </div>

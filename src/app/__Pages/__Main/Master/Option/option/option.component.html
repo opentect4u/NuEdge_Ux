@@ -11,13 +11,13 @@
   </div>
 </div>
 
-<core-search (__searchItem)="getSearchItem($event)" [__flag]="'Y'" [__placeholder]="'Search by Option'"
+<!-- <core-search (__searchItem)="getSearchItem($event)" [__flag]="'Y'" [__placeholder]="'Search by Option'"
   [__api_name]="'/option'"></core-search>
 
 <div class="mat-elevation-z3">
 
   <table mat-table [dataSource]="__selectOPT" class="table_Custome">
-    <!-- Sl No. -->
+
     <ng-container matColumnDef="sl_no">
       <th mat-header-cell *matHeaderCellDef>Sl no.</th>
       <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
@@ -25,14 +25,13 @@
 
 
 
-    <!--Temporary TIN No.-->
+
     <ng-container matColumnDef="opt_name">
       <th mat-header-cell *matHeaderCellDef>Option</th>
       <td mat-cell *matCellDef="let element">{{element.opt_name}}</td>
     </ng-container>
 
 
-    <!-- Buisness Type-->
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef>Edit</th>
       <td mat-cell *matCellDef="let element">
@@ -42,7 +41,7 @@
       </td>
     </ng-container>
 
-    <!-- Buisness Type-->
+
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef>Delete</th>
       <td mat-cell *matCellDef="let element">
@@ -83,7 +82,6 @@
       <mat-button-toggle-group *ngFor="let paginate of __paginate">
         <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
           <label>
-            <!-- {{(paginate.label | replace) == 'N' ? '' : ''}} -->
             <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
             <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
             <span
@@ -99,4 +97,4 @@
 
   </div>
 
-</div>
+</div> -->

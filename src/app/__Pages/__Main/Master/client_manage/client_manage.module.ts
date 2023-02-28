@@ -13,6 +13,11 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ClModifcationComponent } from './clModifcation/clModifcation.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ClientRptComponent } from './clientRpt/clientRpt.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTableExporterModule } from 'mat-table-exporter';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 
 const routes: Routes = [{path:'',component:Client_manageComponent}]
 
@@ -29,9 +34,13 @@ const routes: Routes = [{path:'',component:Client_manageComponent}]
     OverlayModule,
     SharedModule,
     DragDropModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatRadioModule,
+    MatTableExporterModule,
+    MatMenuModule,
+    MatSelectModule
   ],
-  declarations: [Client_manageComponent,ClModifcationComponent]
+  declarations: [Client_manageComponent,ClModifcationComponent,ClientRptComponent]
 })
 export class Client_manageModule {
   constructor() {

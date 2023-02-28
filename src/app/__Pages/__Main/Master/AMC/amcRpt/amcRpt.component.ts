@@ -22,11 +22,47 @@ import { AmcModificationComponent } from '../amcModification/amcModification.com
 export class AmcrptComponent implements OnInit {
   @ViewChild('searchAmc') __searchAmc: ElementRef;
   @ViewChild('searchRnt') __searchRnt: ElementRef;
-
+  toppings = new FormControl();
+  toppingList: any = [
+    {id:'edit',text:'Edit'},
+    {id:'sl_no',text:'SL No.'},
+    {id:'amc_name',text:'Amc'},
+    {id:'R&T',text:'R&T'},
+    {id:'web_site',text:'Web Site'},
+    {id:'cust_care_number',text:'Customer Care Number'},
+    {id:'cust_care_email',text:'Customer Care Email'},
+    {id:'head_contact_per',text:'Head Contact Person Name'},
+    {id:'head_contact_per_mobile',text:'Head Contact Person Mobile'},
+    {id:'head_contact_per_email',text:'Head Contact Person Email'},
+    {id:'head_contact_per_addr',text:'Head Contact Person Address'},
+    {id:'local_contact_per',text:'Local Contact Person Name'},
+    {id:'local_contact_per_mobile',text:'Local Contact Person Mobile'},
+    {id:'local_contact_per_email',text:'Local Contact Person Email'},
+    {id:'local_contact_per_addr',text:'Local Contact Person Address'},
+    {id:'l1_name',text:'Level-1 Name'},
+    {id:'l1_email',text:'Level-1 Email'},
+    {id:'l1_contact_no',text:'Level-1 Contact Number'},
+    {id:'l2_name',text:'Level-2 Name'},
+    {id:'l2_email',text:'Level-2 email'},
+    {id:'l2_contact_no',text:'Level-2 Contact Number'},
+    {id:'l3_name',text:'Level-3 Name'},
+    {id:'l3_email',text:'Level-3 Email'},
+    {id:'l3_contact_no',text:'Level-3 Contact Number'},
+    {id:'l4_name',text:'Level-4 Name'},
+    {id:'l4_email',text:'Level-4 Email'},
+    {id:'l4_contact_no',text:'Level-4 Contact Number'},
+    {id:'l5_name',text:'Level-5 Name'},
+    {id:'l5_email',text:'Level-5 Email'},
+    {id:'l5_contact_no',text:'Level-5 Contact Number'},
+    {id:'l6_name',text:'Level-6 Name'},
+    {id:'l6_email',text:'Level-6 Email'},
+    {id:'l6_contact_no',text:'Level-6 Contact Number'},
+    {id:'delete',text:'Delete'}
+];
   __isamcspinner: boolean =false;
   __isrntspinner: boolean =false;
   __isshowSearchBtn: boolean =false;
-  __isVisible:boolean= false;
+  __isVisible:boolean= true;
   __amcMst: amc[] = [];
   __rntMst: rnt[] = [];
   __export= new MatTableDataSource<amc>([]);
@@ -87,7 +123,7 @@ export class AmcrptComponent implements OnInit {
        options: new FormControl('2'),
        rnt_name: new FormControl(''),
        amc_name: new FormControl(''),
-       rnt_id: new FormControl(''),
+       rnt_id: new FormControl(this.data.rnt_id ? this.data.rnt_id :  ''),
        amc_id: new FormControl(''),
        contact_per: new FormControl(''),
        gst_in: new FormControl(''),
@@ -108,17 +144,18 @@ export class AmcrptComponent implements OnInit {
      private __dbIntr: DbIntrService) {}
      __paginate: any=[];
   ngOnInit() {
-    // this.getAMCMaster();
-       if (this.data.amc_id) {
-      // this.getParticularAMCMaster();
-       }
-       this.getAMCMaster(
-          this.data.rnt_id == null
-        ? ''
-        : '&rnt_id=' + atob(this.data.rnt_id)
-    );
+    console.log(this.data);
+
+    //    if (this.data.amc_id) {
+    //    }
+    //    this.getAMCMaster(
+    //       this.data.rnt_id == null
+    //     ? ''
+    //     : '&rnt_id=' + atob(this.data.rnt_id)
+    // );
     this.__columns =  this.__columnsForsummary;
-    this.tableExport();
+    this.toppings.setValue(this.__columns);
+    this.submit();
   }
 
 
@@ -198,7 +235,20 @@ export class AmcrptComponent implements OnInit {
         // this.__columns = res == '1' ?  this.__columnsForDetails : this.__columnsForsummary;
         if(res == '1'){
           this.__columns = this.__columnsForDetails;
+          this.toppings.setValue(this.__columns);
           this.__exportedClmns = ['sl_no','amc_name','R&T',
+          'web_site',
+          'cust_care_number',
+          'cust_care_email',
+          'head_contact_per',
+          'head_contact_per_mobile',
+          'head_contact_per_email',
+          'head_contact_per_addr',
+          'local_contact_per',
+          'local_contact_per_mobile',
+          'local_contact_per_email',
+          'local_contact_per_addr',
+
           'l1_name',
           'l1_email',
           'l1_contact_no',
@@ -232,6 +282,11 @@ export class AmcrptComponent implements OnInit {
           this.showColumns();
         }
       })
+      this.toppings.valueChanges.subscribe((res) => {
+        const clm = ['edit','delete']
+        this.__columns = res;
+        this.__exportedClmns = res.filter(item => !clm.includes(item))
+      });
   }
 
   openDialog(__amc: amc,__amcId){
@@ -284,7 +339,12 @@ export class AmcrptComponent implements OnInit {
     if (__paginate.url) {
       this.__dbIntr
         .getpaginationData(
-          __paginate.url + ('&paginate=' + this.__pageNumber.value)
+          __paginate.url
+          + ('&paginate=' + this.__pageNumber.value)
+          + ('&rnt_id=' + this.__detalsSummaryForm.value.rnt_id)
+          + ('&amc_id=' + this.__detalsSummaryForm.value.amc_id)
+          + ('&gstin=' + this.__detalsSummaryForm.value.gst_in)
+          + ('&contact_person=' + this.__detalsSummaryForm.value.contact_per)
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -365,10 +425,11 @@ export class AmcrptComponent implements OnInit {
   // }
   submit(){
     const __amcSearch = new FormData();
-    __amcSearch.append('rnt_id',this.__detalsSummaryForm.value.rnt_id);
-    __amcSearch.append('amc_id',this.__detalsSummaryForm.value.amc_id);
-   __amcSearch.append('gstin',this.__detalsSummaryForm.value.gst_in);
-   __amcSearch.append('contact_person',this.__detalsSummaryForm.value.contact_per);
+    __amcSearch.append('paginate',this.__pageNumber.value);
+    __amcSearch.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? this.__detalsSummaryForm.value.rnt_id : '');
+    __amcSearch.append('amc_id',this.__detalsSummaryForm.value.amc_id ? this.__detalsSummaryForm.value.amc_id : '');
+   __amcSearch.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
+   __amcSearch.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
 
      this.__dbIntr.api_call(1,'/amcDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
       this.__paginate =res.links;
@@ -380,10 +441,10 @@ export class AmcrptComponent implements OnInit {
 
   tableExport(){
     const __amcExport = new FormData();
-    __amcExport.append('amc_id',this.__detalsSummaryForm.value.amc_id ? this.__detalsSummaryForm.value.amc_id : '');
     __amcExport.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? this.__detalsSummaryForm.value.rnt_id : '');
-    __amcExport.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
-    __amcExport.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
+    __amcExport.append('amc_id',this.__detalsSummaryForm.value.amc_id ? this.__detalsSummaryForm.value.amc_id : '');
+   __amcExport.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
+   __amcExport.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
     this.__dbIntr.api_call(1,'/amcExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
        console.log(res);
       this.__export = new MatTableDataSource(res);
@@ -425,14 +486,26 @@ export class AmcrptComponent implements OnInit {
           this.__exportedClmns = [ ...this.__exportedClmns ,'l6_name','l6_email','l6_contact_no'];
          }
          columnDt = [...columnDt,'delete'];
-         console.log(columnDt);
          this.__columns = columnDt;
-         console.log(this.__exportedClmns);
+         this.toppings.setValue(this.__columns);
 
        }
        else{
          this.__columns = this.__columnsForDetails;
+         this.toppings.setValue(this.__columns);
+
          this.__exportedClmns = ['sl_no','amc_name','R&T',
+                                    'web_site',
+                                      'cust_care_number',
+                                      'cust_care_email',
+                                      'head_contact_per',
+                                      'head_contact_per_mobile',
+                                      'head_contact_per_email',
+                                      'head_contact_per_addr',
+                                      'local_contact_per',
+                                      'local_contact_per_mobile',
+                                      'local_contact_per_email',
+                                      'local_contact_per_addr',
                                   'l1_name',
                                   'l1_email',
                                   'l1_contact_no',
@@ -518,5 +591,12 @@ export class AmcrptComponent implements OnInit {
     {
       title: 'AMC '
     }, 'AMC')
+  }
+  refreshOrAdvanceFlt(){
+    this.__detalsSummaryForm.reset('');
+    this.__detalsSummaryForm.patchValue({
+      options:'2'
+    });
+    this.submit();
   }
 }

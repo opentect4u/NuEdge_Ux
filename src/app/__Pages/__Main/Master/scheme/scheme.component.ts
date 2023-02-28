@@ -11,6 +11,8 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { ScmModificationComponent } from './scmModification/scmModification.component';
+import { ScmRptComponent } from './scmRpt/scmRpt.component';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 
 @Component({
   selector: 'master-scheme',
@@ -18,6 +20,31 @@ import { ScmModificationComponent } from './scmModification/scmModification.comp
   styleUrls: ['./scheme.component.css'],
 })
 export class SchemeComponent implements OnInit {
+   __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Master",
+      url:'/main/master/products',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      url:'/main/master/productwisemenu/home',
+      hasQueryParams:true,
+      queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    },
+    {
+      label:"Scheme",
+      url:'/main/master/productwisemenu/scheme',
+      hasQueryParams:true,
+      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+    }
+]
   __paginate: any = [];
   __pageNumber = new FormControl(10);
 
@@ -49,6 +76,15 @@ export class SchemeComponent implements OnInit {
       id: 21,
       flag: 'U',
     },
+    {
+      parent_id: 4,
+      menu_name: 'Reports',
+      has_submenu: 'N',
+      url: '',
+      icon: '',
+      id: 0,
+      flag: 'R',
+    },
   ];
 
   __columns: string[] = ['sl_no', 'scm_name', 'scm_type', 'edit', 'delete'];
@@ -61,13 +97,15 @@ export class SchemeComponent implements OnInit {
     private overlay: Overlay
   ) {}
   ngOnInit(): void {
-    this.getSchememaster();
-    if (
-      this.__rtDt.snapshot.queryParamMap.get('id') &&
-      this.__rtDt.snapshot.queryParamMap.get('flag')
-    ) {
-      this.getParticularScheme();
-    }
+        this.__utility.getBreadCrumb(this.__brdCrmbs);
+
+    // this.getSchememaster();
+    // if (
+    //   this.__rtDt.snapshot.queryParamMap.get('id') &&
+    //   this.__rtDt.snapshot.queryParamMap.get('flag')
+    // ) {
+    //   this.getParticularScheme();
+    // }
   }
   getParticularScheme() {
     this.__dbIntr
@@ -132,7 +170,7 @@ export class SchemeComponent implements OnInit {
       product_id:this.__rtDt.snapshot.queryParamMap.get('product_id') ? atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) : '',
       scheme_type: __scmType,
     };
-    dialogConfig.id = __scmId > 0 ? __scmId.toString() : '0';
+    dialogConfig.id = __scmType + (__scmId > 0 ? '_'+__scmId.toString() : '_0');
     try {
       const dialogref = this.__dialog.open(
         ScmModificationComponent,
@@ -185,13 +223,51 @@ export class SchemeComponent implements OnInit {
   navigate(__menu) {
     switch (__menu.flag) {
       case 'U':
-        this.__utility.navigate(__menu.url);
+        // this.__utility.navigate(__menu.url);
+        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}});
         break;
+        case 'R':
+          this.opendialogForReports(atob(this.__rtDt.snapshot.queryParamMap.get('product_id')));
+          break;
       default:
         this.openDialog(null, 0, __menu.flag);
         break;
     }
   }
+
+
+   opendialogForReports(__prdId){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '100%';
+    dialogConfig.height = '100%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.panelClass = "fullscreen-dialog"
+    dialogConfig.id = "SC",
+    dialogConfig.data = {
+      flag:"SC",
+      product_id:__prdId
+    }
+    try {
+      const dialogref = this.__dialog.open(
+        ScmRptComponent,
+        dialogConfig
+      );
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+      this.__utility.getmenuIconVisible({
+        product_id:__prdId,
+        flag:"SC"
+      });
+    }
+   }
+
+
+
   getval(__paginate) {
     this.__pageNumber.setValue(__paginate);
     this.getSchememaster(__paginate);

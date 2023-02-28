@@ -1,9 +1,9 @@
 [
-    {"id":"D","freq_name":"Daily"},
-    {"id":"W","freq_name":"Weekly"},
-    {"id":"F","freq_name":"fortnightly"},
-    {"id":"M","freq_name":"Monthly"},
-    {"id":"Q","freq_name":"Quarterly"},
-    {"id":"S","freq_name":"Semi Anually"},
-    {"id":"A","freq_name":"Anually"}
+    {"id":"D","freq_name":"Daily","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+    {"id":"W","freq_name":"Weekly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+    {"id":"F","freq_name":"fortnightly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+    {"id":"M","freq_name":"Monthly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+    {"id":"Q","freq_name":"Quarterly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+    {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+    {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
 ]

@@ -7,6 +7,7 @@ import { UtiliService } from './__Services/utils.service';
 export interface IBreadCrumb {
   label: string;
   url: string;
+  queryParams: any
 }
 
 @Component({
@@ -23,23 +24,23 @@ export class AppComponent {
     private __utility: UtiliService
   ) {
     this.setTitle();
-    this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
+    // this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
     console.log(this.__actRoute.root);
 
   }
 
   ngOnInit() {
-    this.__router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        distinctUntilChanged()
-      )
-      .subscribe(() => {
-        console.log(this.__actRoute);
+    // this.__router.events
+    //   .pipe(
+    //     filter((event) => event instanceof NavigationEnd),
+    //     distinctUntilChanged()
+    //   )
+    //   .subscribe(() => {
+    //     console.log(this.__actRoute);
 
-        this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
-        this.__utility.getBreadCrumb(this.breadcrumbs);
-      });
+    //     this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
+    //     this.__utility.getBreadCrumb(this.breadcrumbs);
+    //   });
   }
 
   /**
@@ -84,18 +85,21 @@ export class AppComponent {
       route.routeConfig && route.routeConfig.path ? route.routeConfig.path : '';
 
     // If the route is dynamic route such as ':id', remove it
-    // const lastRoutePart = path.split('/').pop();
-    // console.log(lastRoutePart);
+    const lastRoutePart = path.split('/').pop();
+    console.log(lastRoutePart);
 
-    // const isDynamicRoute = lastRoutePart.startsWith(':');
-    // if(isDynamicRoute && !!route.snapshot) {
-    //   console.log(lastRoutePart);
+    const isDynamicRoute = lastRoutePart.startsWith(':');
+    if(isDynamicRoute && !!route.snapshot) {
+      console.log(lastRoutePart);
 
-    //   const paramName = lastRoutePart.split(':')[1];
-    //   console.log('paramName:' + paramName);
-    //   path = path.replace(lastRoutePart, route.snapshot.params[paramName]);
-    //   console.log('path:' + paramName);
-    //   label = atob(route.snapshot.params[paramName]);
+      const paramName = lastRoutePart.split(':')[1];
+      console.log('paramName:' + paramName);
+      path = path.replace(lastRoutePart, route.snapshot.params[paramName]);
+      console.log('path:' + paramName);
+      label = atob(route.snapshot.params[paramName]);
+    }
+    // if(route.snapshot){
+    //   console.log(route.snapshot.queryParamMap);
     // }
 
     console.log(route?.routeConfig?.path);
@@ -104,6 +108,7 @@ export class AppComponent {
     const breadcrumb: IBreadCrumb = {
       label: label,
       url: nextUrl,
+      queryParams:  route.snapshot.queryParamMap.keys.length > 0 ? route.snapshot.queryParamMap : ''
     };
     // Only adding route with non-empty label
     const newBreadcrumbs = breadcrumb.label

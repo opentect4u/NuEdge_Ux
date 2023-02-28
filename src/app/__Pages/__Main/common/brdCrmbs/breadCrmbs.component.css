@@ -2,7 +2,7 @@
   a:hover,
   span:hover {
     color: dimgrey;
-    text-decoration: none;
+    text-decoration: underline;
     cursor:pointer;
   }
   li {

@@ -191,7 +191,30 @@
         "has_submenu": "N",
         "url": "/main/master/productwisemenu/option",
         "icon": "stars"
+      },
+      {
+        "id":39,
+        "menu_name":"Transaction Type",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/trnsType",
+        "icon": "stars"
+      },
+      {
+        "id":39,
+        "menu_name":"Transaction",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/trns",
+        "icon": "stars"
       }
+      ,
+      {
+        "id":40,
+        "menu_name":"SIP Type",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/sipType",
+        "icon": "stars"
+      }
+
     ]
   }
 ]

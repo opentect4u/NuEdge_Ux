@@ -2,7 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 import { pluck } from 'rxjs/operators';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { client } from 'src/app/__Model/__clientMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -17,6 +19,56 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
   styleUrls: ['./uploadCsv.component.css']
 })
 export class UploadCsvComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] =[
+    {
+      label: 'Home',
+      url: '/main',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label: 'Master',
+      url: '/main/master/products',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label: 'Operations',
+      url: '/main/master/mstOperations',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label: 'Client Master',
+      url: '/main/master/clntMstHome',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label: 'Create Client Code',
+      url: '/main/master/clOption',
+      hasQueryParams: false,
+      queryParams: '',
+    },
+    {
+      label:
+      atob(this.__rtDt.snapshot.queryParamMap.get('flag')) == 'E' ? 'Existing'
+      : atob(this.__rtDt.snapshot.queryParamMap.get('flag')) == 'M' ? "Minor"
+      : atob(this.__rtDt.snapshot.queryParamMap.get('flag')) == 'P' ? 'Pan Holder' : 'Non Pan Holder',
+      url: '/main/master/clientmaster',
+      hasQueryParams: true,
+      queryParams: {flag:this.__rtDt.snapshot.queryParamMap.get('flag')},
+    },
+    {
+      label:
+      atob(this.__rtDt.snapshot.queryParamMap.get('flag')) == 'E' ? 'Existing Client Upload'
+      : atob(this.__rtDt.snapshot.queryParamMap.get('flag')) == 'M' ? "Minor Client Upload"
+      : atob(this.__rtDt.snapshot.queryParamMap.get('flag')) == 'P' ? 'Pan Holder Client Upload' : 'Non Pan Holder Client Upload',
+      url: '/main/master/clUploadCsv',
+      hasQueryParams: true,
+      queryParams: {flag:this.__rtDt.snapshot.queryParamMap.get('flag')},
+    }
+  ]
   @ViewChild(MatPaginator) paginator: MatPaginator;
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
@@ -135,10 +187,14 @@ export class UploadCsvComponent implements OnInit {
   })
   __columns: string[] = ['sl_no', 'client_name', 'edit', 'delete'];
   __selectClient = new MatTableDataSource<client>([]);
-  constructor(private __dbIntr: DbIntrService, private __utility: UtiliService) { this.previewlatestRntEntry(); }
+  constructor(
+    public __rtDt: ActivatedRoute,
+    private __dbIntr: DbIntrService,
+    private __utility: UtiliService) { this.previewlatestRntEntry(); }
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestRntEntry() {
     this.__dbIntr.api_call(0, '/client', null).pipe(pluck('data')).subscribe((res: client[]) => {

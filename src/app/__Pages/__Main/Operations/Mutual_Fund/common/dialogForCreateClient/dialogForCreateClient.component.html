@@ -75,8 +75,16 @@
           </div>
         </div>
         <div class="col-sm-12 my-4">
-          <label for="relations">Relations <span class="text-danger">*</span></label>
-          <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea>
+          <!-- <label for="relations">Relations <span class="text-danger">*</span></label>
+          <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea> -->
+          <label>RelationShip</label>
+            <select class="form-control" formControlName="relations">
+              <option value="">Select RelationShip</option>
+              <option value="S">Son</option>
+              <option value="D">Daughter</option>
+              <option value="F">Father</option>
+              <option value="M">Mother</option>
+            </select>
           <div class="invalid-feedback" *ngIf="__clientForm.get('relations').invalid && (__clientForm.get('relations').dirty || __clientForm.get('relations').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('relations')).errors?.required">*Please provide relations</span>
           </div>
@@ -191,7 +199,7 @@
             </th>
             <th>
               Document
-              <p class="my-1"><label>Allowed format : </label><small> JPG,PNG,JPEG</small></p>
+              <p class="my-1"><label>Allowed format : </label><small> pdf</small></p>
               <p class="m-0"><label>File Size:</label> <small> 2MB (max)</small></p>
             </th>
             <th>
@@ -221,7 +229,7 @@
                 </div>
               </td>
               <td class="rowWidth">
-                <input type="file" accept=".jpg,.jpeg,.png" name="docFile" id="docFile" class="form-control"
+                <input type="file" accept=".pdf" name="docFile" id="docFile" class="form-control"
                   formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)">
                 <div class="invalid-feedback"
                   *ngIf=" __docs.controls[i].get('doc_name').invalid && ( __docs.controls[i].get('doc_name').dirty ||  __docs.controls[i].get('doc_name').touched)">
@@ -236,7 +244,11 @@
 
               </td>
               <td class="rowWidth">
-                <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
+                <a [href]="__docs.controls[i].get('file_preview')?.value" target="__blank" *ngIf="__docs.controls[i].get('file_preview')?.value">
+                  <img src="../../../../../../assets/images/pdf.png"  alt="preview Image">
+                </a>
+                <img [src]="__noImg" *ngIf="!__docs.controls[i].get('file_preview')?.value">
+                <!-- <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image"> -->
               </td>
               <td>
                 <ng-container *ngIf="__docs.controls[i].get('id')?.value == 0">
@@ -255,7 +267,7 @@
             </th>
             <th>
               Document <span class="text-danger">*</span>
-              <p class="my-1"><label>Allowed format : </label><small> JPG,PNG,JPEG</small></p>
+              <p class="my-1"><label>Allowed format : </label><small> Pdf</small></p>
               <p class="m-0"><label>File Size:</label> <small> 2MB (max)</small></p>
             </th>
             <th>
