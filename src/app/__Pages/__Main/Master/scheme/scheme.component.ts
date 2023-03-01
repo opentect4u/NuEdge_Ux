@@ -214,7 +214,13 @@ export class SchemeComponent implements OnInit {
             (value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt),
             (value.pip_add_min_amt = row_obj.pip_add_min_amt),
             (value.sip_add_min_amt = row_obj.sip_add_min_amt),
+            (value.sip_date = row_obj.sip_date),
+            (value.sip_freq_wise_amt = row_obj.sip_freq_wise_amt),
             (value.gstin_no = row_obj.gstin_no);
+            (value.stp_date = row_obj.stp_date);
+            (value.swp_date = row_obj.swp_date);
+            (value.swp_freq_wise_amt = row_obj.swp_freq_wise_amt);
+            (value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt);
         }
         return true;
       }

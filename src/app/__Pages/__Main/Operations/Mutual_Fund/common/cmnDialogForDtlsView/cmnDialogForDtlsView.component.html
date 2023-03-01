@@ -138,7 +138,7 @@
       </div>
 
     </div>
-    <div class="row" *ngIf="data.flag == 'B'">
+    <div class="row" *ngIf="data.flag == 'B' || data.flag == 'NB' || data.flag == 'OB'">
       <div class="col-sm-12 my-3">
         <label>Ifs Code</label>
          <input type="text" class="form-control" formControlName="ifs_code" [attr.disabled]="true">

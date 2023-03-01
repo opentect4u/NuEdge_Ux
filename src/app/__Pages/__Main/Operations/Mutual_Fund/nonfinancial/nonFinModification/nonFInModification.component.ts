@@ -17,12 +17,48 @@ import buisnessType from '../../../../../../../assets/json/buisnessType.json';
 import { CmnDialogForDtlsViewComponent } from '../../common/cmnDialogForDtlsView/cmnDialogForDtlsView.component';
 import { DialogForCreateClientComponent } from '../../common/dialogForCreateClient/dialogForCreateClient.component';
 import changeStatus from '../../../../../../../assets/json/changeStatus.json';
+import dateslist from '../../../../../../../assets/json/dates.json';
+import SipFrequency from '../../../../../../../assets/json/SipFrequency.json';
+import withoutKycMst from '../../../../../../../assets/json/withoutKyc.json';
+import KycMst from '../../../../../../../assets/json/kyc.json';
+import transmissionType from '../../../../../../../assets/json/TransmissionType.json';
+import { bank } from 'src/app/__Model/__bank';
 @Component({
 selector: 'nonFInModification-component',
 templateUrl: './nonFInModification.component.html',
 styleUrls: ['./nonFInModification.component.css']
 })
 export class NonfinmodificationComponent implements OnInit {
+
+  __isT1Visible: boolean = true;
+  __trnsmissionType = transmissionType;
+  __SecondClient: client;
+
+  __checkedAmt: any;
+  __isAmtcheck:boolean = false;
+  __frq = SipFrequency;
+  __dates: any= dateslist;
+  settings = {
+    singleSelection: false,
+    idField: 'id',
+    textField: 'date',
+    enableCheckAll: true,
+    selectAllText: 'Select All',
+    unSelectAllText: 'Deselect All',
+    allowSearchFilter: false,
+    limitSelection: -1,
+    clearSearchFilter: true,
+    maxHeight: 197,
+    itemsShowLimit: 31,
+    searchPlaceholderText: 'Search',
+    noDataAvailablePlaceholderText: 'No recors found',
+    closeDropDownOnSelection: false,
+    showSelectedItemsAtTop: false,
+    defaultOpen: false,
+  };
+  __issecCldtlsEmpty: boolean = true;
+
+  __kycMst: any[];
   __rnt_login_at: rnt[];
   __changeOfStatus = changeStatus;
   allowedExtensions = ['jpg', 'png', 'jpeg'];
@@ -35,8 +71,13 @@ export class NonfinmodificationComponent implements OnInit {
   @ViewChild('subBrkArnFrNonFin') __subBrkArn: ElementRef;
   @ViewChild('searchEUIN') __searchEUIN: ElementRef;
   @ViewChild('schemeRes') __schemeRes: ElementRef;
-  @ViewChild('searchbnkOld') __searchbnkOld: ElementRef;
+  // @ViewChild('searchbnkOld') __searchbnkOld: ElementRef;
   @ViewChild('clientCdForNonFin') __clientCdForNonFin: ElementRef;
+  @ViewChild('searchbnk') __searchbnk: ElementRef;
+  @ViewChild('secondclientCd') __secondCl: ElementRef;
+  @ViewChild('thirdClName') __thirdClName: ElementRef;
+  @ViewChild('thirdclientCd') __thirdCl: ElementRef;
+
   __isVisible: boolean = false;
   __istemporaryspinner: boolean = false;
   __issubBrkArnspinner: boolean =false;
@@ -44,6 +85,8 @@ export class NonfinmodificationComponent implements OnInit {
   __isclientVisible: boolean = false;
   __isCldtlsEmpty: boolean = false;
   __isschemeSpinner: boolean = false;
+  __isbnkSpinner: boolean = false;
+  __isthirdCldtlsEmpty: boolean = true;
 
   __noofdaystobeAdded:any;
   __dialogDtForScheme: any;
@@ -51,6 +94,7 @@ export class NonfinmodificationComponent implements OnInit {
   __dialogForExistingBank: any;
   __dialogFornewBank: any;
 
+  __third_clientMst: client[] = [];
   __plnMst: plan[] = [];
   __optionMst: option[] = [];
   __temp_tinMst: any=[];
@@ -58,7 +102,15 @@ export class NonfinmodificationComponent implements OnInit {
   __euinMst: any=[];
   __clientMst: client[] =[]
   __transType: any=[];
-  __schemeMst: scheme[] =[]
+  __schemeMst: scheme[] =[];
+  __bnkMst: bank[] = [];
+  __swpMst: any=[];
+  __frequency:any=[];
+  __sec_clientMst: client[] = [];
+
+  __isSHowAdditionalTble:boolean = false;
+  __ThirdClient: client;
+
   __mcOptionMenu: any = [
     { flag: 'M', name: 'Minor', icon: 'person_pin' },
     { flag: 'P', name: 'Pan Holder', icon: 'credit_card' },
@@ -77,11 +129,20 @@ constructor(
         newbnk_micr:new FormControl(''),
         newbnk_name: new FormControl(''),
         newbnk_id: new FormControl(''),
-
-        oldBnk_micr:new FormControl(''),
-        oldBnk_name: new FormControl(''),
-        oldBnk_id: new FormControl(''),
-
+        newbnk_accNo: new FormControl(''),
+        oldbnk_micr:new FormControl(''),
+        oldbnk_name: new FormControl(''),
+        oldbnk_id: new FormControl(''),
+        oldbnk_accNo: new FormControl(''),
+        duration: new FormControl(''),
+        swp_amount: new FormControl(''),
+        swp_end_date: new FormControl(''),
+        swp_duration: new FormControl(''),
+        swp_start_date: new FormControl(''),
+        swp_dates: new FormControl(''),
+        swp_freq: new FormControl(''),
+        stp_type: new FormControl(''),
+        swp_type: new FormControl(''),
         redemp_type: new FormControl(''),
         unit_type: new FormControl(''),
         redemp_unit: new FormControl(''),
@@ -118,12 +179,31 @@ constructor(
            Validators.required,
            fileValidators.fileExtensionValidator(this.allowedExtensions),
          ]),
+         transmission_type: new FormControl(''),
          folio_pan: new FormControl(''),
          email: new FormControl('',[Validators.email]),
          mobile:new FormControl('',[Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]),
          change_contact_type: new FormControl(''),
          add_line_1: new FormControl(''),
          add_line_2: new FormControl(''),
+         minorToMajorpan: new FormControl(''),
+         kyc_status: new FormControl(''),
+         first_kyc: new FormControl(''),
+
+         second_client_code: new FormControl(''),
+         second_client_id: new FormControl(''),
+         second_client_name: new FormControl(''),
+         second_client_pan: new FormControl(''),
+         second_kyc: new FormControl(''),
+
+         third_client_code: new FormControl(''),
+         third_client_id: new FormControl(''),
+         third_client_name: new FormControl(''),
+         third_client_pan: new FormControl(''),
+         third_kyc: new FormControl(''),
+
+
+
 
   })
 ngOnInit(){
@@ -155,6 +235,57 @@ getOptionMst(){
    })
 }
 ngAfterViewInit(){
+   //Second Client Code Search
+   this.__nonfinForm.controls['third_client_code'].valueChanges
+   .pipe(
+     debounceTime(200),
+     distinctUntilChanged(),
+     switchMap((dt) =>
+       dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+     ),
+     map((x: any) => x.data)
+   )
+   .subscribe({
+     next: (value) => {
+       this.__third_clientMst = value.data;
+       this.__isthirdCldtlsEmpty = value.data.length > 0 ? false : true;
+       this.searchResultVisibilityForThirdClient('block');
+       this.__ThirdClient = null;
+       this.__nonfinForm.patchValue({
+         third_client_id: '',
+         third_client_name: '',
+         third_client_pan: '',
+       });
+     },
+     complete: () => console.log(''),
+     error: (err) => console.log(),
+   });
+   //Second Client Code Search
+   this.__nonfinForm.controls['second_client_code'].valueChanges
+   .pipe(
+     debounceTime(200),
+     distinctUntilChanged(),
+     switchMap((dt) =>
+       dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+     ),
+     map((x: any) => x.data)
+   )
+   .subscribe({
+     next: (value) => {
+       this.__sec_clientMst = value.data;
+       this.__issecCldtlsEmpty = value.data.length > 0 ? false : true;
+       this.searchResultVisibilityForSecondClient('block');
+       this.__SecondClient = null;
+       this.__nonfinForm.patchValue({
+         second_client_id: '',
+         second_client_name: '',
+         second_client_pan: '',
+       });
+     },
+     complete: () => console.log(''),
+     error: (err) => console.log(),
+   });
+  // Temporary Tin Number
   this.__nonfinForm.controls['temp_tin_no'].valueChanges
   .pipe(
     tap(() => this.__istemporaryspinner = true),
@@ -182,28 +313,48 @@ ngAfterViewInit(){
     complete: () => console.log(''),
     error: (err) =>this.__istemporaryspinner = false,
   });
+  // Sub Broker ARN Search
+  this.__nonfinForm.controls['sub_arn_no'].valueChanges.
+    pipe(
+      tap(()=> this.__issubBrkArnspinner = true),
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(dt => dt?.length > 1 ?
+        this.__dbIntr.searchItems('/showsubbroker', dt)
+        : []),
+      map((x: responseDT) => x.data)
+    ).subscribe({
+      next: (value) => {
+        this.__subbrkArnMst = value
+        this.searchResultVisibilityForSubBrkArn('block');
+        this.__nonfinForm.controls['sub_brk_cd'].setValue('');
+        this.__issubBrkArnspinner = false;
+      },
+      complete: () => console.log(''),
+      error: (err) =>this.__issubBrkArnspinner = false,
+    })
 
-
-    // Sub Broker ARN Search
-    this.__nonfinForm.controls['sub_arn_no'].valueChanges.
-      pipe(
-        tap(()=> this.__issubBrkArnspinner = true),
+    //bank change
+    // Bank SEARCH
+    this.__nonfinForm.controls['newbnk_micr'].valueChanges
+      .pipe(
+        tap(() => this.__isbnkSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
-        switchMap(dt => dt?.length > 1 ?
-          this.__dbIntr.searchItems('/showsubbroker', dt)
-          : []),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.__dbIntr.searchItems('/depositbank', dt) : []
+        ),
         map((x: responseDT) => x.data)
-      ).subscribe({
+      )
+      .subscribe({
         next: (value) => {
-          this.__subbrkArnMst = value
-          this.searchResultVisibilityForSubBrkArn('block');
-          this.__nonfinForm.controls['sub_brk_cd'].setValue('');
-          this.__issubBrkArnspinner = false;
+          this.__isbnkSpinner = false;
+          this.__bnkMst = value;
+          this.searchResultVisibilityForBnk('block');
         },
         complete: () => console.log(''),
-        error: (err) =>this.__issubBrkArnspinner = false,
-      })
+        error: (err) =>this.__isbnkSpinner = false,
+      });
 
  // EUIN NUMBER SEARCH
  this.__nonfinForm.controls['euin_no'].valueChanges
@@ -262,6 +413,7 @@ ngAfterViewInit(){
     error: (err) =>this.__isclientVisible = false,
   });
 
+
   this.__nonfinForm.controls['tin_status'].valueChanges.subscribe(res =>{
     this.__nonfinForm.controls['temp_tin_no'].setValidators(res == 'Y' ? [Validators.required] : null);
     this.__nonfinForm.controls['temp_tin_no'].updateValueAndValidity();
@@ -275,7 +427,22 @@ ngAfterViewInit(){
   })
 
   this.__nonfinForm.controls['trans_id'].valueChanges.subscribe(res =>{
-
+  this.__isAmtcheck = false;
+  this.__checkedAmt ='';
+  this.__nonfinForm.controls['transmission_type'].setValidators(res == '19' ? [Validators.required] : null);
+  this.__nonfinForm.controls['first_kyc'].setValidators(res == '20' ? [Validators.required] : null);
+  this.__nonfinForm.controls['swp_amount'].removeValidators([Validators.required]);
+  this.__nonfinForm.controls['duration'].removeValidators([Validators.required]);
+  this.__nonfinForm.controls['swp_end_date'].setValidators((res == '30' || res == '31') ? [Validators.required] : null);
+  this.__nonfinForm.controls['swp_duration'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
+  this.__nonfinForm.controls['swp_start_date'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
+  this.__nonfinForm.controls['swp_dates'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
+   this.__nonfinForm.controls['swp_freq'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
+   this.__nonfinForm.controls['swp_type'].setValidators(res == '30' ? [Validators.required] : null);
+   this.__nonfinForm.controls['stp_type'].setValidators(res == '31' ? [Validators.required] : null);
+    this.__nonfinForm.controls['newbnk_accNo'].setValidators((res == '15' || res == '16') ? [Validators.required] : null);
+    this.__nonfinForm.controls['newbnk_id'].setValidators((res == '15' || res == '16') ? [Validators.required] : null);
+     this.__nonfinForm.controls['newbnk_micr'].setValidators((res == '15' || res == '16') ? [Validators.required] : null);
     this.__nonfinForm.controls['unit_type'].removeValidators([Validators.required]);
     this.__nonfinForm.controls['redemp_unit'].removeValidators([Validators.required]);
     this.__nonfinForm.controls['redemp_amount'].removeValidators([Validators.required]);
@@ -294,6 +461,20 @@ ngAfterViewInit(){
     this.__nonfinForm.controls['nominee_opt_out'].setValidators((res == '25') ? [Validators.required] : null);
     this.__nonfinForm.controls['folio_pan'].setValidators((res == '28') ? [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)] : null);
     this.__nonfinForm.controls['redemp_type'].setValidators((res == '29') ? [Validators.required] : null);
+    this.__nonfinForm.controls['minorToMajorpan'].setValidators((res == '20') ? [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)] : null)
+    this.__nonfinForm.controls['kyc_status'].setValidators(res == '20' ? [Validators.required] : null);
+    this.__nonfinForm.controls['first_kyc'].updateValueAndValidity();
+    this.__nonfinForm.controls['minorToMajorpan'].updateValueAndValidity();
+    this.__nonfinForm.controls['kyc_status'].updateValueAndValidity();
+    this.__nonfinForm.controls['stp_type'].updateValueAndValidity();
+    this.__nonfinForm.controls['swp_amount'].updateValueAndValidity();
+    this.__nonfinForm.controls['duration'].updateValueAndValidity();
+    this.__nonfinForm.controls['swp_end_date'].updateValueAndValidity();
+    this.__nonfinForm.controls['swp_duration'].updateValueAndValidity();
+    this.__nonfinForm.controls['swp_start_date'].updateValueAndValidity();
+    this.__nonfinForm.controls['swp_dates'].updateValueAndValidity();
+    this.__nonfinForm.controls['swp_freq'].updateValueAndValidity();
+     this.__nonfinForm.controls['swp_type'].updateValueAndValidity();
     this.__nonfinForm.controls['cancel_effective_date'].updateValueAndValidity();
     this.__nonfinForm.controls['change_contact_type'].updateValueAndValidity();
     this.__nonfinForm.controls['email'].updateValueAndValidity();
@@ -312,11 +493,35 @@ ngAfterViewInit(){
     this.__nonfinForm.controls['redemp_unit'].updateValueAndValidity();
     this.__nonfinForm.controls['redemp_amount'].updateValueAndValidity();
     this.__nonfinForm.controls['add_line_1'].updateValueAndValidity();
+    this.__nonfinForm.controls['newbnk_id'].updateValueAndValidity();
+    this.__nonfinForm.controls['newbnk_micr'].updateValueAndValidity();
+    this.__nonfinForm.controls['newbnk_accNo'].updateValueAndValidity();
+    this.__nonfinForm.controls['transmission_type'].updateValueAndValidity();
+
     if(res ==  '7' || res ==  '8' || res ==  '9'){
       this.calculatecancellationeffectivedt(res)
     }
     else if(res == '22'){
      this.getState();
+    }
+    else if(res == '30' || res == '31'){
+      this.getSwpType(this.__nonfinForm.controls['trans_id'].value);
+      // this.getSchemeWiseFrequency(this.__nonfinForm.controls['scheme_id'].value)
+    }
+
+  })
+
+  this.__nonfinForm.controls['swp_duration'].valueChanges.subscribe(res =>{
+    if(this.__nonfinForm.controls['trans_id'].value == '30' && res){
+      this.__nonfinForm.controls['duration'].setValidators(res == 'M' ? [Validators.required] : null)
+      this.__nonfinForm.controls['duration'].updateValueAndValidity();
+    }
+  })
+
+  //Kyc_status Change
+  this.__nonfinForm.get('kyc_status').valueChanges.subscribe(res =>{
+    if(res){
+      this.__kycMst = res == 'Y' ? KycMst : withoutKycMst;
     }
   })
 
@@ -378,7 +583,65 @@ ngAfterViewInit(){
   }
 
  })
+
+ //Folio Number
+ this.__nonfinForm.controls['folio_no'].valueChanges.subscribe(res =>{
+  this.getdetailsbyFolio(res);
+ })
+
+ //Swp_duration change
+ this.__nonfinForm.controls['swp_duration'].valueChanges.subscribe((res) => {
+  if(res == 'P'){
+    //  this.removeValidations([{name:'duration',valid:[Validators.required]}]);
+      let getDT = new Date();
+     this.__nonfinForm.get('swp_end_date').setValue('2999-12-'+((getDT.getDate().toString()).length > 1 ? getDT.getDate() : ('0' + getDT.getDate())));
+     console.log( this.__nonfinForm.get('swp_end_date').value);
+
+  }
+  else if(res == 'M'){
+   if(this.__nonfinForm.get('trans_id').value == '30'){
+    //  this.setValidations([{name:'duration',valid:[Validators.required]}]);
+     this.__nonfinForm.get('swp_end_date').setValue('');
+   }
+  }
+});
+//Swp frequency change
+this.__nonfinForm.controls['swp_freq'].valueChanges.subscribe(res =>{
+
+})
+// SWP Amount
+this.__nonfinForm.controls['swp_amount'].valueChanges.subscribe(res =>{
+   this.checkAmt(res,this.__nonfinForm.controls['swp_freq'].value)
+})
+
 }
+
+getdetailsbyFolio(__folioDtls){
+  this.__dbIntr.api_call(0,'/mfTraxFolioDetails','folio_no='+__folioDtls).pipe(pluck("data")).subscribe(res =>{
+    console.log(res);
+
+     this.setCLients(res[0])
+  })
+}
+
+setCLients(res){
+  console.log(res);
+
+  this.getadditionalApplicant({
+    id:res.second_client_id,
+    client_code:res.second_client_code,
+    client_name:res.second_client_name,
+    pan:res.second_client_pan,
+    },'FC');
+
+    this.getadditionalApplicant({
+      id:res.third_client_id,
+      client_code:res.third_client_code,
+      client_name:res.third_client_name,
+      pan:res.third_client_pan,
+      },'TC')
+}
+
 getState(){
   this.__dbIntr.api_call(0,'/states',null).pipe(pluck("data")).subscribe(res =>{
     this.__stateMst = res;
@@ -499,6 +762,29 @@ submitnonFinForm(){
     fb.append('redemp_unit',this.__nonfinForm.value.redemp_type == 'U' ?  this.__nonfinForm.value.redemp_unit : '');
     fb.append('redemp_amount',this.__nonfinForm.value.redemp_type == 'A' ?  this.__nonfinForm.value.redemp_amount : '');
    }
+   else if(this.__nonfinForm.value.trans_id == '15' || this.__nonfinForm.value.trans_id == '16'){
+    fb.append('acc_no', this.__nonfinForm.value.newbnk_accNo);
+    fb.append('acc_bank_id',  this.__nonfinForm.value.newbnk_id);
+   }
+   else if(this.__nonfinForm.value.trans_id == '30' || this.__nonfinForm.value.trans_id == '31'){
+    fb.append('swp_type', this.__nonfinForm.value.trans_id == '30' ?  this.__nonfinForm.value.swp_type : "");
+    fb.append('stp_type', this.__nonfinForm.value.trans_id == '31' ?  this.__nonfinForm.value.stp_type : "");
+    fb.append('swp_stp_frequency',  this.__nonfinForm.value.swp_freq);
+    fb.append('swp_stp_start_date',  this.__nonfinForm.value.swp_start_date);
+    fb.append('swp_stp_end_date',  this.__nonfinForm.value.swp_end_date);
+    fb.append('swp_stp_duration_type',  this.__nonfinForm.value.swp_duration);
+    fb.append('swp_stp_duration',  this.__nonfinForm.value.duration);
+    fb.append('swp_stp_amount',this.__nonfinForm.value.swp_amount);
+   }
+   else if(this.__nonfinForm.value.trans_id == '20'){
+    fb.append('minor_to_major_pan',this.__nonfinForm.value.minorToMajorpan);
+    fb.append('kyc_status',this.__nonfinForm.value.kyc_status);
+    fb.append('first_kyc',this.__nonfinForm.value.first_kyc);
+   }
+   else if(this.__nonfinForm.value.trans_id == '19'){
+    fb.append('transmission_type',this.__nonfinForm.value.transmission_type);
+   }
+
     this.__dbIntr.api_call(1, '/mfTraxCreate', fb).subscribe((res: any) => {
       if(res.suc == 1){
         this.__nonfinForm.reset();
@@ -521,18 +807,47 @@ outsideClickfortempTin(__ev){
 }
 outsideClickforbank(__ev){
   if(__ev){
-
+     this.searchResultVisibilityForBnk('none');
   }
 }
+outsideClickforThirdClient(__ev) {
+  if (__ev) {
+    this.searchResultVisibilityForThirdClient('none');
+  }
+}
+
 outsideClickforScheme(__ev){
   // this.__istemporaryspinner = false;
    if(__ev){
       this.searchResultVisibilityForScheme('none');
    }
 }
+
+outsideClickforSecondClient(__ev){
+if(__ev){
+  this.searchResultVisibilityForSecondClient('none')
+}
+}
+
+
+//third client Search Resullt off
+searchResultVisibilityForThirdClient(display_mode) {
+  if(this.__thirdCl){
+    this.__thirdCl.nativeElement.style.display = display_mode;
+  }
+}
+
+//second client Search Resullt off
+searchResultVisibilityForSecondClient(display_mode) {
+  if(this.__secondCl){
+    this.__secondCl.nativeElement.style.display = display_mode;
+  }
+
+}
+
 //bank Search Resullt off
 searchResultVisibilityForBnk(display_mode) {
-  this.__searchbnkOld.nativeElement.style.display = display_mode;
+  this.__searchbnk.nativeElement.style.display = display_mode;
 }
   //Scheme Search Resullt off
   searchResultVisibilityForScheme(display_mode) {
@@ -584,6 +899,7 @@ getItems(__items){
   folio_no: __items.folio_no,
   scheme_id:__items.scheme_id ? __items.scheme_id : '',
  })
+ this.getSchemeWiseFrequency(__items.scheme_id);
  this.__nonfinForm.controls['temp_tin_no'].patchValue(__items.temp_tin_no,{emitEvent:false})
  this.__nonfinForm.controls['euin_no'].patchValue((__items.euin_no + ' - ' + __items.emp_name),{emitEvent:false})
  this.__nonfinForm.controls['client_code'].patchValue(__items.client_code,{emitEvent:false})
@@ -604,6 +920,16 @@ getItemsDtls(__euinDtls,__type){
       );
       this.searchResultVisibilityForEuin('none');
       break;
+
+      case 'B' : this.__dialogFornewBank = __euinDtls;
+                this.__nonfinForm.controls['newbnk_micr'].reset(__euinDtls.micr_code, {
+                  onlySelf: true,
+                  emitEvent: false,
+                });
+                this.__nonfinForm.controls['newbnk_name'].setValue(__euinDtls.bank_name);
+                this.__nonfinForm.controls['newbnk_id'].setValue(__euinDtls.id);
+                this.searchResultVisibilityForBnk('none');
+                break;
       case 'C':
         this.__dialogDtForClient = __euinDtls;
         this.__nonfinForm.controls['client_code'].reset(__euinDtls.client_code, {
@@ -641,11 +967,15 @@ openDialog(__type){
     title:
       __type == 'C'
         ? this.__dialogDtForClient.client_name
-        :this.__dialogDtForScheme.scheme_name,
+        : __type == 'S' ? this.__dialogDtForScheme.scheme_name
+        : __type == 'NB' ?  this.__dialogFornewBank.bank_name
+        : this.__dialogForExistingBank.bank_name,
     dt:
       __type == 'C'
         ? this.__dialogDtForClient
-        :this.__dialogDtForScheme,
+        : __type == 'S' ? this.__dialogDtForScheme
+        : __type == 'NB' ? this.__dialogFornewBank
+        : this.__dialogForExistingBank,
   };
   try {
     const dialogref = this.__dialog.open(
@@ -749,6 +1079,186 @@ setFormControl(formcontrlname, __val) {
 }
 preventNonumeric(__ev) {
   dates.numberOnly(__ev)
+}
+
+getSwpType(__trans_id){
+  this.__dbIntr.api_call(0,__trans_id == '30' ? '/swpType' : '/stpType',null).pipe(pluck("data")).subscribe(res =>{
+   this.__swpMst = res;
+  })
+}
+getSchemeWiseFrequency(__scheme_id){
+  this.__dbIntr.api_call(0,'/scheme','scheme_id='+ __scheme_id).pipe(pluck("data")).subscribe((res: scheme[]) =>{
+    this.__nonfinForm.controls['swp_dates'].setValue(
+      this.__nonfinForm.controls['trans_id'].value == '30' ? JSON.parse(res[0].swp_date) : JSON.parse(res[0].stp_date)
+      );
+    // if(this.__tr)
+    if(this.__nonfinForm.value.trans_id == '30'){
+      this.__frequency = res[0].swp_freq_wise_amt ?
+      (JSON.parse(res[0].swp_freq_wise_amt).filter(((x: any)=> x.is_checked == true))) : [];
+    }
+    else{
+      this.__frequency = res[0].stp_freq_wise_amt ?
+      (JSON.parse(res[0].stp_freq_wise_amt).filter(((x: any)=> x.is_checked == true))) : [];
+    }
+
+
+    var date = new Date(); // Now
+    date.setDate(date.getDate()
+    + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x: any) => x.sl_no == (this.__nonfinForm.value.trans_id == '30' ? 5 : 7))].param_value));
+    console.log(JSON.parse(this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()));
+
+      if(JSON.parse(this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()) != -1)
+      {
+         console.log('IF');
+
+          this.__nonfinForm.patchValue({
+            swp_start_date: date.toISOString().slice(0, 10),
+          })
+      }
+      else{
+        console.log(date.toISOString().substring(0,10));
+        console.log(date.getMonth());
+        console.log(JSON.parse(res[0]?.stp_date));
+
+        var found = JSON.parse((this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)).find(function(element) {return Number(element.date) > Number(date.getDate())});
+        console.log(found);
+
+         if(found){
+          console.log(found);
+
+                this.__nonfinForm.get('swp_start_date').setValue(
+                  date.getFullYear()
+                  +'-'+(date.getMonth().toString().length > 1 ?  (date.getMonth() + 1) : '0'+(date.getMonth() + 1))
+                  +'-'+found.date);
+         }
+         else{
+          console.log('NOT FOUND' + found);
+           date.setDate(date.getDate() + 60);
+          this.__nonfinForm.get('swp_start_date').setValue(
+            date.getFullYear()
+            +'-'+
+            (date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+
+            date.getMonth())
+            +'-'+
+             (JSON.parse(
+              (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
+              )[0]?.date.length > 1 ? JSON.parse(
+                (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
+                )[0]?.date
+             :'0'+JSON.parse(
+              (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
+              )[0].date));
+           console.log( this.__nonfinForm.get('swp_start_date').value);
+        }
+      }
+  })
+
+}
+
+setSipEndDate() {
+  if (this.__nonfinForm.controls['duration'].value) {
+    let getDT = new Date(this.__nonfinForm.controls['swp_start_date'].value);
+    // this.__nonfinForm.controls['period'].value == 'Y' ?
+    //   getDT.setFullYear(new Date().getFullYear() + Number(this.__nonfinForm.controls['duration'].value))
+    //   : getDT.setMonth(getDT.getMonth() + Number(Number(this.__nonfinForm.controls['duration'].value)));
+    // this.__nonfinForm.controls['sip_end_date'].setValue(getDT.toISOString().slice(0, 10));
+  }
+  else {
+    this.__nonfinForm.controls['swp_end_date'].setValue('');
+  }
+
+}
+setEndDT(__ev){
+  let _calculateDT;
+  var dt = new Date(this.__nonfinForm.get('swp_start_date').value);
+    switch(this.__nonfinForm.controls['swp_freq'].value){
+       case 'D' : _calculateDT = new Date(dt.setDate(dt.getDate() + Number(__ev.target.value))).toISOString().substring(0 ,10);
+       break;
+       case 'W' :_calculateDT = new Date(dt.setDate(dt.getDate() + (Number(__ev.target.value) * 7))).toISOString().substring(0 ,10);
+       break;
+       case 'F' :_calculateDT = new Date(dt.setDate(dt.getDate() + (Number(__ev.target.value) * 14))).toISOString().substring(0 ,10);
+       break;
+       case 'M' :_calculateDT = new Date(dt.setMonth(dt.getMonth() + (Number(__ev.target.value)))).toISOString().substring(0 ,10);
+       break;
+       case 'Q' : break;
+       case 'S' : break;
+       case 'A' :_calculateDT = new Date(dt.setFullYear(dt.getFullYear() + (Number(__ev.target.value)))).toISOString().substring(0 ,10);
+       break;
+       default: break;
+    }
+    this.__nonfinForm.controls['swp_end_date'].setValue(_calculateDT);
+}
+checkAmt(res,swp_freq){
+  console.log(swp_freq);
+  if(res && swp_freq){
+    this.__checkedAmt = Number(this.__frequency.filter((x: any) => x.id == swp_freq)[0].sip_add_min_amt);
+    console.log(Number(res) >
+    Number(this.__frequency.filter((x: any) => x.id == swp_freq)[0].sip_add_min_amt));
+    this.__isAmtcheck = (Number(res) >
+    Number(this.__frequency.filter((x: any) => x.id == swp_freq)[0].sip_add_min_amt)) ? false : true;
+    console.log(this.__isAmtcheck);
+  }
+}
+
+
+getadditionalApplicant(__items, __type) {
+  switch (__type) {
+    case 'FC':
+      this.__SecondClient = __items;
+      this.__nonfinForm.controls['second_client_code'].reset(
+        __items ? __items.client_code : '',
+        { onlySelf: true, emitEvent: false }
+      );
+      this.__nonfinForm.patchValue({
+        second_client_name: __items ? __items.client_name : '',
+        second_client_id: __items ? __items.id : '',
+        second_client_pan: __items ? __items.pan : '',
+      });
+      this.searchResultVisibilityForSecondClient('none');
+      break;
+    case 'TC':
+      this.__ThirdClient = __items;
+      this.__nonfinForm.controls['third_client_code'].reset(
+        __items ? __items.client_code : '',
+        { onlySelf: true, emitEvent: false }
+      );
+      this.__nonfinForm.patchValue({
+        third_client_name: __items ? __items.client_name : '',
+        third_client_id: __items ? __items.id : '',
+        third_client_pan: __items ? __items.pan : '',
+      });
+      this.searchResultVisibilityForThirdClient('none');
+      console.log( this.__nonfinForm.controls['third_client_code'].value);
+
+      break;
+    default:
+      break;
+  }
+}
+
+openDialogForAdditionalApplicant(__type) {
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.autoFocus = false;
+  dialogConfig.closeOnNavigation = false;
+  dialogConfig.width = '100%';
+  if (__type == 'C') {
+    dialogConfig.panelClass = 'fullscreen-dialog';
+  }
+  dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+  dialogConfig.data = {
+    flag: __type,
+    title:
+      __type == 'FC'
+        ? this.__SecondClient.client_name
+        : this.__ThirdClient.client_name,
+    dt: __type == 'FC' ? this.__SecondClient : this.__ThirdClient,
+  };
+  try {
+    const dialogref = this.__dialog.open(
+      CmnDialogForDtlsViewComponent,
+      dialogConfig
+    );
+  } catch (ex) { }
 }
 
 }

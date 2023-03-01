@@ -38,11 +38,11 @@ export class CmnDialogForDtlsViewComponent implements OnInit {
        gurdians_pan: new FormControl(''),
        gurdians_name: new FormControl(''),
        relations: new FormControl(''),
-       bank_name: new FormControl(this.data.flag == 'B' ? this.data.dt.bank_name : ''),
-       ifs_code:new FormControl(this.data.flag == 'B' ? this.data.dt.ifs_code : ''),
-       micr_code: new FormControl(this.data.flag == 'B' ? this.data.dt.micr_code : ''),
-       branch_name:new FormControl(this.data.flag == 'B' ? this.data.dt.branch_name : ''),
-       branch_addr: new FormControl(this.data.flag == 'B' ? this.data.dt.branch_addr : ''),
+       bank_name: new FormControl((this.data.flag == 'B' || this.data.flag == 'NB' || this.data.flag == 'OB') ? this.data.dt.bank_name : ''),
+       ifs_code:new FormControl((this.data.flag == 'B' || this.data.flag == 'NB' || this.data.flag == 'OB') ? this.data.dt.ifs_code : ''),
+       micr_code: new FormControl((this.data.flag == 'B' || this.data.flag == 'NB' || this.data.flag == 'OB') ? this.data.dt.micr_code : ''),
+       branch_name:new FormControl((this.data.flag == 'B' || this.data.flag == 'NB' || this.data.flag == 'OB') ? this.data.dt.branch_name : ''),
+       branch_addr: new FormControl((this.data.flag == 'B' || this.data.flag == 'NB' || this.data.flag == 'OB') ? this.data.dt.branch_addr : ''),
    })
   constructor(
     public dialogRef: MatDialogRef<CmnDialogForDtlsViewComponent>,

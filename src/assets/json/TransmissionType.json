@@ -1,0 +1,8 @@
+[
+  {"id":1,"type":"T1 - Incase of second or third holder death"},
+  {"id":2,"type":"T2 - Incase of first holder death"},
+  {"id":3,"type":"T3 - Claim by nominee or legal hear"},
+  {"id":4,"type":"T4 - Incase of change of karta due to demise of registered karta"},
+  {"id":5,"type":"T5 - Incase of claim by surviving members of a HUF"}
+
+]

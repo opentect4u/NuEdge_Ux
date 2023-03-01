@@ -154,22 +154,26 @@ export class ScmRptComponent implements OnInit {
       (value: scheme, key) => {
         if (value.id == row_obj.id) {
           (value.product_id = row_obj.product_id),
-            (value.amc_id = row_obj.amc_id),
-            (value.category_id = row_obj.category_id),
-            (value.subcategory_id = row_obj.subcategory_id),
-            (value.scheme_name = row_obj.scheme_name),
-            (value.id = row_obj.id),
-            (value.scheme_type = row_obj.scheme_type),
-            (value.nfo_start_dt = row_obj.nfo_start_dt),
-            (value.nfo_end_dt = row_obj.nfo_end_dt),
-            (value.nfo_reopen_dt = row_obj.nfo_reopen_dt),
-            (value.pip_fresh_min_amt = row_obj.pip_fresh_min_amt),
-            (value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt),
-            (value.pip_add_min_amt = row_obj.pip_add_min_amt),
-            (value.sip_add_min_amt = row_obj.sip_add_min_amt),
-            (value.gstin_no = row_obj.gstin_no);
-            value.sip_date = row_obj.sip_date;
-            value.sip_freq_wise_amt =row_obj.sip_freq_wise_amt;
+          (value.amc_id = row_obj.amc_id),
+          (value.category_id = row_obj.category_id),
+          (value.subcategory_id = row_obj.subcategory_id),
+          (value.scheme_name = row_obj.scheme_name),
+          (value.id = row_obj.id),
+          (value.scheme_type = row_obj.scheme_type),
+          (value.nfo_start_dt = row_obj.nfo_start_dt),
+          (value.nfo_end_dt = row_obj.nfo_end_dt),
+          (value.nfo_reopen_dt = row_obj.nfo_reopen_dt),
+          (value.pip_fresh_min_amt = row_obj.pip_fresh_min_amt),
+          (value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt),
+          (value.pip_add_min_amt = row_obj.pip_add_min_amt),
+          (value.sip_add_min_amt = row_obj.sip_add_min_amt),
+          (value.sip_date = row_obj.sip_date),
+          (value.sip_freq_wise_amt = row_obj.sip_freq_wise_amt),
+          (value.gstin_no = row_obj.gstin_no);
+          (value.stp_date = row_obj.stp_date);
+          (value.swp_date = row_obj.swp_date);
+          (value.swp_freq_wise_amt = row_obj.swp_freq_wise_amt);
+          (value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt);
         }
         return true;
       }
@@ -178,20 +182,26 @@ export class ScmRptComponent implements OnInit {
       (value: scheme, key) => {
         if (value.id == row_obj.id) {
           (value.product_id = row_obj.product_id),
-            (value.amc_id = row_obj.amc_id),
-            (value.category_id = row_obj.category_id),
-            (value.subcategory_id = row_obj.subcategory_id),
-            (value.scheme_name = row_obj.scheme_name),
-            (value.id = row_obj.id),
-            (value.scheme_type = row_obj.scheme_type),
-            (value.nfo_start_dt = row_obj.nfo_start_dt),
-            (value.nfo_end_dt = row_obj.nfo_end_dt),
-            (value.nfo_reopen_dt = row_obj.nfo_reopen_dt),
-            (value.pip_fresh_min_amt = row_obj.pip_fresh_min_amt),
-            (value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt),
-            (value.pip_add_min_amt = row_obj.pip_add_min_amt),
-            (value.sip_add_min_amt = row_obj.sip_add_min_amt),
-            (value.gstin_no = row_obj.gstin_no);
+          (value.amc_id = row_obj.amc_id),
+          (value.category_id = row_obj.category_id),
+          (value.subcategory_id = row_obj.subcategory_id),
+          (value.scheme_name = row_obj.scheme_name),
+          (value.id = row_obj.id),
+          (value.scheme_type = row_obj.scheme_type),
+          (value.nfo_start_dt = row_obj.nfo_start_dt),
+          (value.nfo_end_dt = row_obj.nfo_end_dt),
+          (value.nfo_reopen_dt = row_obj.nfo_reopen_dt),
+          (value.pip_fresh_min_amt = row_obj.pip_fresh_min_amt),
+          (value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt),
+          (value.pip_add_min_amt = row_obj.pip_add_min_amt),
+          (value.sip_add_min_amt = row_obj.sip_add_min_amt),
+          (value.sip_date = row_obj.sip_date),
+          (value.sip_freq_wise_amt = row_obj.sip_freq_wise_amt),
+          (value.gstin_no = row_obj.gstin_no);
+          (value.stp_date = row_obj.stp_date);
+          (value.swp_date = row_obj.swp_date);
+          (value.swp_freq_wise_amt = row_obj.swp_freq_wise_amt);
+          (value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt);
         }
         return true;
       }

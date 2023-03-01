@@ -114,7 +114,7 @@
           <label for="sip_date">SIP Date <span class="text-danger">*</span></label>
           <ng-multiselect-dropdown #multiSelect
           id="sip_date"
-          [placeholder]="'Select Dates'"
+          [placeholder]="'Select SIP Dates'"
           [settings]="settings"
           [data]="__dates"
           formControlName="sip_date">
@@ -142,21 +142,8 @@
 
         </div>
       </div>
-      <!-- <div class="col-sm-12 my-4">
-        <label for="sip_fresh_min_amt">SIP Fresh Min Amount <span class="text-danger">*</span></label>
-        <input type="text" name="sip_fresh_min_amt" id="sip_fresh_min_amt" class="form-control" formControlName="sip_fresh_min_amt" placeholder="Enter SIP Fresh Min Amount"/>
-        <div class="invalid-feedback" *ngIf="__scmForm.get('sip_fresh_min_amt').invalid && (__scmForm.get('sip_fresh_min_amt').dirty || __scmForm.get('sip_fresh_min_amt').touched)">
-          <span class="invalid-feedback" *ngIf="(__scmForm.get('sip_fresh_min_amt')).errors?.required">*Please provide SIP fresh min amount</span>
-        </div>
-      </div>
-      <div class="col-sm-12 my-4">
-        <label for="sip_add_min_amt">SIP Additional Min Amount <span class="text-danger">*</span></label>
-        <input type="text" name="sip_add_min_amt" id="sip_add_min_amt" class="form-control" formControlName="sip_add_min_amt" placeholder="Enter SIP Additional Min Amount"/>
-        <div class="invalid-feedback" *ngIf="__scmForm.get('sip_add_min_amt').invalid && (__scmForm.get('sip_add_min_amt').dirty || __scmForm.get('sip_add_min_amt').touched)">
-          <span class="invalid-feedback" *ngIf="(__scmForm.get('sip_add_min_amt')).errors?.required">*Please provide SIP addiotional min amount</span>
-        </div>
-      </div> -->
     </div>
+    <!-- SIP Frequency Wise Amount -->
     <div class="row">
       <div class="col-sm-12">
         <table class="my-4">
@@ -190,7 +177,7 @@
                 <p class="m-0"><mat-checkbox
                   color="primary"
                   formControlName="is_checked"
-                  (change)="getCheckboxVal(i,$event.checked)"
+                  (change)="getCheckboxVal(i,$event.checked,'1')"
                   ></mat-checkbox></p>
               </td>
               <td>
@@ -243,6 +230,193 @@
             </th>
           </tr>
         </tfoot> -->
+      </table>
+      </div>
+    </div>
+
+    <!-- SWP frequency Wise Amount -->
+    <div class="row my-5">
+      <div class="col-sm-12">
+        <label for="swp_date">SWP Date <span class="text-danger">*</span></label>
+        <ng-multiselect-dropdown #multiSelectFrSWP
+        id="swp_date"
+        [placeholder]="'Select SWP Dates'"
+        [settings]="settings"
+        [data]="__dates"
+        formControlName="swp_date">
+      </ng-multiselect-dropdown>
+      <div class="invalid-feedback" *ngIf="__scmForm.get('swp_date').invalid && (__scmForm.get('swp_date').dirty || __scmForm.get('swp_date').touched)">
+        <span class="invalid-feedback" *ngIf="(__scmForm.get('swp_date')).errors?.required">*Please provide swp date</span>
+      </div>
+      </div>
+      <div class="col-sm-12">
+        <table class="my-4">
+        <thead>
+          <tr>
+            <th colspan="4" class="text-center p-5">
+                    <!-- Set SWP Amount (Fresh & Additional) with frequency -->
+                    Set SWP Amount with frequency
+
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p class="m-0">
+                <mat-checkbox color="primary" formControlName="is_selectall_for_swp"></mat-checkbox>
+              </p>
+            </th>
+            <th>
+              Frequency
+            </th>
+            <th>
+              <!-- SWP Fresh Minimum Amount -->
+              SWP Amount
+            </th>
+            <!-- <th>
+              SWP Additional Minimum Amount
+            </th> -->
+          </tr>
+        </thead>
+        <tbody formArrayName="swp_frequency">
+          <tr *ngFor="let item of swp_frequency.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td >
+                <p class="m-0"><mat-checkbox
+                  color="primary"
+                  formControlName="is_checked"
+                  (change)="getCheckboxVal(i,$event.checked,'2')"
+                  ></mat-checkbox></p>
+              </td>
+              <td>
+                {{swp_frequency.controls[i].get('freq_name').value}}
+                <span class="text-danger" *ngIf="swp_frequency.controls[i].get('is_checked').value">(*)</span>
+              </td>
+              <!-- <td >
+                <input type="text"
+                name="sip_fresh_min_amt{{i + 1}}"
+                id="sip_fresh_min_amt{{i}}"
+                class="form-control"
+                placeholder="Enter Sip Fresh Minimum Amount"
+                formControlName="sip_fresh_min_amt"
+                (keypress)="preventNonumeric($event,i)"
+                 >
+                 <div class="invalid-feedback"
+                 *ngIf="swp_frequency.controls[i].get('sip_fresh_min_amt').invalid && (swp_frequency.controls[i].get('sip_fresh_min_amt').dirty || swp_frequency.controls[i].get('sip_fresh_min_amt').touched)">
+                  <span class="invalid-feedback" *ngIf="(swp_frequency.controls[i].get('sip_fresh_min_amt')).errors?.required">*Please provide mandatory field</span>
+                  <span class="invalid-feedback" *ngIf="(swp_frequency.controls[i].get('sip_fresh_min_amt')).hasError('pattern')">*Only digits allow </span>
+
+                </div>
+              </td> -->
+              <td >
+                <input type="text"
+                name="swp_add_min_amt{{i + 1}}"
+                id="swp_add_min_amt{{i}}"
+                class="form-control"
+                placeholder="Enter SWP Amount"
+                formControlName="sip_add_min_amt"
+                 >
+                 <div class="invalid-feedback" *ngIf="swp_frequency.controls[i].get('sip_add_min_amt').invalid && (swp_frequency.controls[i].get('sip_add_min_amt').dirty || swp_frequency.controls[i].get('sip_add_min_amt').touched)">
+                  <span class="invalid-feedback" *ngIf="(swp_frequency.controls[i].get('sip_add_min_amt')).errors?.required">*Please provide mandatory field</span>
+                  <span class="invalid-feedback" *ngIf="(swp_frequency.controls[i].get('sip_add_min_amt')).hasError('pattern')">*Only digits allow </span>
+                </div>
+              </td>
+
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <!-- STP Frequency Wise Amount -->
+    <div class="row my-5">
+      <div class="col-sm-12">
+        <label for="stp_date">STP Date <span class="text-danger">*</span></label>
+        <ng-multiselect-dropdown #multiSelectFrSWP
+        id="stp_date"
+        [placeholder]="'Select STP Dates'"
+        [settings]="settings"
+        [data]="__dates"
+        formControlName="stp_date">
+      </ng-multiselect-dropdown>
+      <div class="invalid-feedback" *ngIf="__scmForm.get('stp_date').invalid && (__scmForm.get('stp_date').dirty || __scmForm.get('stp_date').touched)">
+        <span class="invalid-feedback" *ngIf="(__scmForm.get('stp_date')).errors?.required">*Please provide stp date</span>
+      </div>
+      </div>
+      <div class="col-sm-12">
+        <table class="my-4">
+        <thead>
+          <tr>
+            <th colspan="4" class="text-center p-5">
+                    <!-- Set STP Amount (Fresh & Additional) with frequency -->
+                    Set STP Amount with frequency
+
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p class="m-0">
+                <mat-checkbox color="primary" formControlName="is_selectall_for_stp"></mat-checkbox>
+              </p>
+            </th>
+            <th>
+              Frequency
+            </th>
+            <th>
+              <!-- STP Fresh Minimum Amount -->
+              STP  Amount
+            </th>
+            <!-- <th>
+              STP Additional Minimum Amount
+            </th> -->
+          </tr>
+        </thead>
+        <tbody formArrayName="stp_frequency">
+          <tr *ngFor="let item of stp_frequency.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td >
+                <p class="m-0"><mat-checkbox
+                  color="primary"
+                  formControlName="is_checked"
+                  (change)="getCheckboxVal(i,$event.checked,'3')"
+                  ></mat-checkbox></p>
+              </td>
+              <td>
+                {{stp_frequency.controls[i].get('freq_name').value}}
+                <span class="text-danger" *ngIf="stp_frequency.controls[i].get('is_checked').value">(*)</span>
+              </td>
+              <!-- <td >
+                <input type="text"
+                name="sip_fresh_min_amt{{i + 1}}"
+                id="sip_fresh_min_amt{{i}}"
+                class="form-control"
+                placeholder="Enter Sip Fresh Minimum Amount"
+                formControlName="sip_fresh_min_amt"
+                (keypress)="preventNonumeric($event,i)"
+                 >
+                 <div class="invalid-feedback"
+                 *ngIf="stp_frequency.controls[i].get('sip_fresh_min_amt').invalid && (stp_frequency.controls[i].get('sip_fresh_min_amt').dirty || stp_frequency.controls[i].get('sip_fresh_min_amt').touched)">
+                  <span class="invalid-feedback" *ngIf="(stp_frequency.controls[i].get('sip_fresh_min_amt')).errors?.required">*Please provide mandatory field</span>
+                  <span class="invalid-feedback" *ngIf="(stp_frequency.controls[i].get('sip_fresh_min_amt')).hasError('pattern')">*Only digits allow </span>
+
+                </div>
+              </td> -->
+              <td >
+                <input type="text"
+                name="stp_add_min_amt{{i + 1}}"
+                id="stp_add_min_amt{{i}}"
+                class="form-control"
+                placeholder="Enter STP Amount"
+                formControlName="sip_add_min_amt"
+                 >
+                 <div class="invalid-feedback" *ngIf="stp_frequency.controls[i].get('sip_add_min_amt').invalid && (stp_frequency.controls[i].get('sip_add_min_amt').dirty || stp_frequency.controls[i].get('sip_add_min_amt').touched)">
+                  <span class="invalid-feedback" *ngIf="(stp_frequency.controls[i].get('sip_add_min_amt')).errors?.required">*Please provide mandatory field</span>
+                  <span class="invalid-feedback" *ngIf="(stp_frequency.controls[i].get('sip_add_min_amt')).hasError('pattern')">*Only digits allow </span>
+                </div>
+              </td>
+
+            </ng-container>
+          </tr>
+        </tbody>
       </table>
       </div>
     </div>

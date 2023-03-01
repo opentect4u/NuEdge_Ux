@@ -63,7 +63,15 @@ export class ScmModificationComponent implements OnInit {
     // sip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_add_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
     gstin_no:new FormControl(this.data.id > 0 ? this.data.items.gstin_no : ''),
     frequency: new FormArray([]),
-    is_selectall: new FormControl(false)
+    is_selectall: new FormControl(false),
+    swp_date: new FormControl(this.data.id > 0 ? JSON.parse(this.data.items.swp_date) : '',[Validators.required]),
+    swp_frequency: new FormArray([]),
+    is_selectall_for_swp: new FormControl(false),
+
+    stp_date: new FormControl(this.data.id > 0 ? JSON.parse(this.data.items.stp_date) : '',[Validators.required]),
+    stp_frequency: new FormArray([]),
+    is_selectall_for_stp: new FormControl(false),
+
   })
   constructor(
     public dialogRef: MatDialogRef<ScmModificationComponent>,
@@ -81,6 +89,8 @@ export class ScmModificationComponent implements OnInit {
   ngOnInit() {
     this.getProductMaster();
     this.setFrequencyAmt(this.data.id > 0 ? JSON.parse(this.data.items.sip_freq_wise_amt) : __sipFrequency);
+    this.setSwpfrequencyAmt(this.data.id > 0 ? JSON.parse(this.data.items.swp_freq_wise_amt) : __sipFrequency);
+    this.setStpFrequency(this.data.id > 0 ? JSON.parse(this.data.items.stp_freq_wise_amt) : __sipFrequency);
     if(this.data.id > 0){
       this.getamcMasterbyproductId(this.data.items.product_id);
         this.getcatMasterbyproductId(this.data.items.product_id);
@@ -94,19 +104,39 @@ export class ScmModificationComponent implements OnInit {
 
   }
   setFrequencyAmt(freq_dtls){
-    console.log(freq_dtls);
-
    freq_dtls.forEach(freqDtls =>{
       this.addFrequency(freqDtls);
-      console.log(freqDtls);
+    })
+  }
+  setSwpfrequencyAmt(freq_dtls){
+    console.log(freq_dtls);
+
+    freq_dtls.forEach(freqDtls =>{
+      this.addSwpFrequency(freqDtls);
+    })
+  }
+  setStpFrequency(freq_dtls){
+    freq_dtls.forEach(freqDtls =>{
+      this.addStpFrequency(freqDtls);
     })
   }
   ngAfterViewInit(){
+    this.__scmForm.controls['is_selectall_for_stp'].valueChanges.subscribe(res =>{
+      this.stp_frequency.controls.map((value,index) =>{
+        value.get('is_checked').patchValue(res,{ emitEvent: false })
+        this.setStpFormControldependOnCheckbox(index,res);
+      })
+   })
+   this.__scmForm.get('stp_frequency').valueChanges.subscribe((val) => {
+    //For checking or Unchecking the select All checkbox base on select check box inside the table body
+      const allSelected = val.every(bool => bool.is_checked);
+      if (this.__scmForm.get('is_selectall_for_stp').value !== allSelected) {
+        this.__scmForm.get('is_selectall_for_stp').patchValue(allSelected, { emitEvent: false });
+      }
+  })
 
    this.__scmForm.controls['is_selectall'].valueChanges.subscribe(res =>{
            this.frequency.controls.map((value,index) =>{
-             console.log(index);
-             console.log(value);
              value.get('is_checked').patchValue(res,{ emitEvent: false })
              this.setFormControldependOnCheckbox(index,res);
            })
@@ -120,16 +150,23 @@ export class ScmModificationComponent implements OnInit {
     }
    })
 
-  //  this.frequency.controls
+   this.__scmForm.controls['is_selectall_for_swp'].valueChanges.subscribe(res =>{
+    console.log(res);
 
-      /*--------------Trigger when Product changes---------------*/
-      // this.__scmForm.controls["product_id"].valueChanges.subscribe(res => {
-      //     this.getamcMasterbyproductId(res);
-      //     this.getcatMasterbyproductId(res);
-      //   this.__scmForm.controls["subcategory_id"].patchValue('');
-      //   this.__subcatMaster = [];
-      // })
-      /*--------------End---------------*/
+    this.swp_frequency.controls.map((value,index) =>{
+      value.get('is_checked').patchValue(res,{ emitEvent: false })
+      this.setSwpFormControldependOnCheckbox(index,res);
+    })
+   })
+
+   this.__scmForm.get('swp_frequency').valueChanges.subscribe((val) => {
+    //For checking or Unchecking the select All checkbox base on select check box inside the table body
+   const allSelected = val.every(bool => bool.is_checked);
+   if (this.__scmForm.get('is_selectall_for_swp').value !== allSelected) {
+     this.__scmForm.get('is_selectall_for_swp').patchValue(allSelected, { emitEvent: false });
+   }
+  })
+
 
       /*--------------Trigger when Category changes---------------*/
       this.__scmForm.controls["category_id"].valueChanges.subscribe(res => {
@@ -190,10 +227,13 @@ export class ScmModificationComponent implements OnInit {
       __scm.append("nfo_end_dt",this.__scmForm.value.nfo_end_dt);
       __scm.append("nfo_reopen_dt",this.__scmForm.value.nfo_reopen_dt);
       __scm.append("pip_fresh_min_amt",this.__scmForm.value.pip_fresh_min_amt);
-      __scm.append("sip_date",JSON.stringify(this.__scmForm.value.sip_date));
       __scm.append("pip_add_min_amt",this.__scmForm.value.pip_add_min_amt);
       __scm.append("frequency",JSON.stringify(this.__scmForm.value.frequency));
-
+      __scm.append("swp_freq_wise_amt",JSON.stringify(this.__scmForm.value.swp_frequency));
+      __scm.append("stp_freq_wise_amt",JSON.stringify(this.__scmForm.value.stp_frequency));
+      __scm.append("sip_date",JSON.stringify(this.__scmForm.value.sip_date));
+      __scm.append("swp_date",JSON.stringify(this.__scmForm.value.swp_date));
+      __scm.append("stp_date",JSON.stringify(this.__scmForm.value.stp_date));
       __scm.append("gstin_no",this.__scmForm.value.gstin_no);
       __scm.append("nfo_entry_date",this.data.scheme_type == 'N' ? this.__scmForm.value.nfo_entry_date : '');
         this.__dbIntr.api_call(1, '/schemeAddEdit', __scm).subscribe((res: any) => {
@@ -210,6 +250,21 @@ export class ScmModificationComponent implements OnInit {
   get  frequency(): FormArray {
     return this.__scmForm.get("frequency") as FormArray;
   }
+
+  get swp_frequency():FormArray{
+    return this.__scmForm.get('swp_frequency') as FormArray;
+   }
+   get stp_frequency():FormArray{
+    return this.__scmForm.get('stp_frequency') as FormArray;
+   }
+
+   addSwpFrequency(__freDtls){
+    this.swp_frequency.push(this.createFrequencyforSWP_STP(__freDtls))
+   }
+   addStpFrequency(__freDtls){
+    this.stp_frequency.push(this.createFrequencyforSWP_STP(__freDtls));
+   }
+
   addFrequency(_freDtls){
   this.frequency.push(this.createFrequcncy(_freDtls));
   }
@@ -222,17 +277,42 @@ export class ScmModificationComponent implements OnInit {
       sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt,[Validators.pattern("^[0-9]*$")]),
     });
   }
+
+  createFrequencyforSWP_STP(_freDtls): FormGroup {
+    return new FormGroup({
+      id: new FormControl(_freDtls.id),
+      freq_name: new FormControl(_freDtls.freq_name),
+      is_checked: new FormControl(_freDtls.is_checked),
+      sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt,[Validators.pattern("^[0-9]*$")]),
+    });
+  }
   preventNonumeric(__ev,index) {
     dates.numberOnly(__ev)
   }
-  getCheckboxVal(i,checked){
-     this.setFormControldependOnCheckbox(i,checked);
+  getCheckboxVal(i,checked,__id){
+    switch(__id){
+     case '1':this.setFormControldependOnCheckbox(i,checked);break;
+     case '2':this.setSwpFormControldependOnCheckbox(i,checked);break;
+     default: this.setStpFormControldependOnCheckbox(i,checked);break;
+    }
   }
   setFormControldependOnCheckbox(i,__res){
     this.frequency.controls[i].get('sip_fresh_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
     this.frequency.controls[i].get('sip_add_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
     this.frequency.controls[i].get('sip_fresh_min_amt').updateValueAndValidity();
     this.frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
+  }
+  setSwpFormControldependOnCheckbox(i,__res){
+    this.swp_frequency.controls[i].get('sip_fresh_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
+    this.swp_frequency.controls[i].get('sip_add_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
+    this.swp_frequency.controls[i].get('sip_fresh_min_amt').updateValueAndValidity();
+    this.swp_frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
+  }
+  setStpFormControldependOnCheckbox(i,__res){
+    this.stp_frequency.controls[i].get('sip_fresh_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
+    this.stp_frequency.controls[i].get('sip_add_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
+    this.stp_frequency.controls[i].get('sip_fresh_min_amt').updateValueAndValidity();
+    this.stp_frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
   }
 
 }
