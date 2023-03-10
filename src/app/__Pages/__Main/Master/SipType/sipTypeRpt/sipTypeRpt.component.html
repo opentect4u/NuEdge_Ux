@@ -3,20 +3,19 @@
   <div mat-dialog-title class="dialog-title">
     <h2 >SIP Type Reports</h2>
     <div class="btnIcon">
-      <button mat-icon-button  (click)="minimize()" >
-        <mat-icon >remove</mat-icon>
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
       </button>
-      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-
-      <button mat-icon-button  [mat-dialog-close]="">
-        <mat-icon >close</mat-icon>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
       </button>
 
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
 
   </div>
@@ -86,18 +85,18 @@
 
   </div>
   <div class="example-container">
-    <table mat-table [dataSource]="__selecttrnsType" class="table_Custome">
+    <table mat-table [dataSource]="__selecttrnsType" class="table_Custome" matSort (matSortChange)="sortData($event)">
       <!-- Sl No. -->
       <ng-container matColumnDef="sl_no">
-        <th mat-header-cell *matHeaderCellDef>SL No.</th>
+        <th mat-header-cell *matHeaderCellDef>Sl No</th>
         <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
       </ng-container>
 
 
 
       <!--Temporary TIN No.-->
-      <ng-container matColumnDef="sipType_name">
-        <th mat-header-cell *matHeaderCellDef>SIP Type</th>
+      <ng-container matColumnDef="sip_type_name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="sip_type_name">SIP Type</th>
         <td mat-cell *matCellDef="let element">{{element.sip_type_name}}</td>
       </ng-container>
 
@@ -106,9 +105,6 @@
       <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef>Edit</th>
         <td mat-cell *matCellDef="let element">
-          <!-- <a (click)="populateDT(element)">
-            <mat-icon class="edit_icon">edit</mat-icon>
-          </a> -->
           <button mat-icon-button (click)="populateDT(element)">
             <mat-icon class="edit_icon">edit</mat-icon>
           </button>
@@ -118,17 +114,17 @@
       <!-- Buisness Type-->
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef>Delete</th>
-        <td mat-cell *matCellDef="let element">
-          <a>
+        <td mat-cell *matCellDef="let element;let i = index">
+          <button mat-icon-button (click)="delete(element,i)">
             <mat-icon class="delete_icon">delete</mat-icon>
-          </a>
+          </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="__columns"></tr>
       <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4"  class="text-center">No SIP History Found</td>
+        <td class="mat-cell" [attr.colspan]="__columns.length"  class="text-center">No SIP History Found</td>
       </tr>
     </table>
 </div>
@@ -178,13 +174,13 @@
 
 
   <ng-container matColumnDef="sl_no">
-    <th mat-header-cell *matHeaderCellDef>SL no.</th>
+    <th mat-header-cell *matHeaderCellDef>Sl No</th>
     <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
   </ng-container>
 
 
       <!--Temporary TIN No.-->
-      <ng-container matColumnDef="sipType_name">
+      <ng-container matColumnDef="sip_type_name">
         <th mat-header-cell *matHeaderCellDef>SIP Type</th>
         <td mat-cell *matCellDef="let element">{{element.sip_type_name}}</td>
       </ng-container>
@@ -193,7 +189,7 @@
     <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
     <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="4" class="text-center">No SIP History Found</td>
+      <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No SIP History Found</td>
     </tr>
   </table>
 </div>

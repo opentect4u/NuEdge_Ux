@@ -3,20 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SchemeComponent } from './scheme.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchModule } from 'src/app/__Core/search/search.module';
-import { MatTableModule } from '@angular/material/table';
 import { ScmModificationComponent } from './scmModification/scmModification.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ScmRptComponent } from './scmRpt/scmRpt.component';
-import { MatTableExporterModule } from 'mat-table-exporter';
-import { MatRadioModule } from '@angular/material/radio';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 const routes: Routes = [{ path: '', component: SchemeComponent }]
 
@@ -26,20 +16,9 @@ const routes: Routes = [{ path: '', component: SchemeComponent }]
     CommonModule,
     RouterModule.forChild(routes),
     SearchModule,
-    MatTableModule,
-    MatDialogModule,
-    DragDropModule,
-    OverlayModule,
     SharedModule,
-    MatButtonToggleModule,
-    MatTableExporterModule,
-    MatRadioModule,
     NgMultiSelectDropDownModule,
-    MatMenuModule,
-    MatIconModule,
-    MatSelectModule,
     MatCheckboxModule
-
   ],
   declarations: [SchemeComponent,ScmModificationComponent,ScmRptComponent]
 })

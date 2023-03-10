@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {map} from 'rxjs/operators';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { plan } from 'src/app/__Model/plan';
 import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -21,6 +22,7 @@ templateUrl: './trnsRpt.component.html',
 styleUrls: ['./trnsRpt.component.css']
 })
 export class TrnsrptComponent implements OnInit {
+  __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
   __trns_type: any=[];
   __trnsType = new FormGroup({
     trns_name: new FormControl(''),
@@ -28,8 +30,8 @@ export class TrnsrptComponent implements OnInit {
   })
   __export =  new MatTableDataSource<any>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit','sl_no','Transaction Type', 'Transaction', 'delete'];
-  __exportedClmns: string[] = ['sl_no', 'Transaction Type','Transaction'];
+  __columns: string[] = ['edit','delete','sl_no','trns_type', 'trns_name'];
+  __exportedClmns: string[] = ['sl_no', 'trns_type','trns_name'];
   __paginate: any= [];
   __selecttrnsType = new MatTableDataSource<any>([]);
   __isVisible: boolean = true;
@@ -48,8 +50,24 @@ ngOnInit(){
   // this.getTrnsMst();
   // this.tableExport();
   this.getTransactionTypeMst();
-  this.submit();
+  this.getTransMst();
 }
+
+getTransMst(column_name: string | null = '',sort_by: string | null | '' = 'asc'){
+  const __tranSearch = new FormData();
+  __tranSearch.append('paginate',this.__pageNumber.value);
+  __tranSearch.append('product_id',this.data.product_id);
+  __tranSearch.append('column_name',column_name);
+  __tranSearch.append('sort_by',sort_by);
+  __tranSearch.append('trns_name',this.__trnsType.value.trns_name ? this.__trnsType.value.trns_name : '');
+  __tranSearch.append('trns_type_id',this.__trnsType.value.trans_type_id ? this.__trnsType.value.trans_type_id : '');
+   this.__dbIntr.api_call(1,'/transctionSearch',__tranSearch).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__paginate =res.links;
+    this.setPaginator(res.data);
+     this.tableExport(column_name,sort_by);
+   })
+}
+
 getTransactionTypeMst(){
   this.__dbIntr.api_call(0,'/transctiontype',
   'product_id=' + this.data.product_id).pipe(map((x: responseDT) => x.data))
@@ -58,13 +76,15 @@ getTransactionTypeMst(){
   });
 }
 
-tableExport(){
-  const __catExport = new FormData();
-  __catExport.append('paginate',this.__pageNumber.value);
-  __catExport.append('product_id',this.data.product_id);
-  __catExport.append('trns_name',this.__trnsType.value.trns_name ? this.__trnsType.value.trns_name : '');
-  __catExport.append('trns_type_id',this.__trnsType.value.trans_type_id ? this.__trnsType.value.trans_type_id : '');
-  this.__dbIntr.api_call(1,'/transctionExport',__catExport).pipe(map((x: any) => x.data)).subscribe((res: any[]) =>{
+tableExport(column_name: string | null = '',sort_by: string | null | '' = 'asc'){
+  const __trnsExport = new FormData();
+  __trnsExport.append('paginate',this.__pageNumber.value);
+  __trnsExport.append('product_id',this.data.product_id);
+  __trnsExport.append('column_name',column_name);
+  __trnsExport.append('sort_by',sort_by);
+  __trnsExport.append('trns_name',this.__trnsType.value.trns_name ? this.__trnsType.value.trns_name : '');
+  __trnsExport.append('trns_type_id',this.__trnsType.value.trans_type_id ? this.__trnsType.value.trans_type_id : '');
+  this.__dbIntr.api_call(1,'/transctionExport',__trnsExport).pipe(map((x: any) => x.data)).subscribe((res: any[]) =>{
     this.__export = new MatTableDataSource(res);
   })
 }
@@ -89,6 +109,9 @@ getPaginate(__paginate) {
         + ('&paginate=' + this.__pageNumber.value)
         + ('&trns_name='+this.__trnsType.value.trns_name)
         + ('&trns_type_id='+this.__trnsType.value.trans_type_id)
+        + ('&product_id='+this.data.product_id)
+        + ('&column_name='+this.__sortColumnsAscOrDsc.active)
+        + ('&sort_by='+this.__sortColumnsAscOrDsc.direction)
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -99,7 +122,6 @@ getPaginate(__paginate) {
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  // this.getTrnsMst(this.__pageNumber.value);
   this.submit();
 }
 
@@ -109,7 +131,6 @@ populateDT(__items: any) {
 }
 openDialog(id, __items) {
   console.log(__items);
-
   const dialogConfig = new MatDialogConfig();
   dialogConfig.autoFocus = false;
   dialogConfig.closeOnNavigation = false;
@@ -175,18 +196,7 @@ exportPdf(){
   }, 'Transaction')
 }
 submit(){
-  const __amcSearch = new FormData();
-  // __amcSearch.append('trns_type',this.__trnsType.value.trns_type);
-  __amcSearch.append('paginate',this.__pageNumber.value);
-  __amcSearch.append('product_id',this.data.product_id);
-  __amcSearch.append('trns_name',this.__trnsType.value.trns_name ? this.__trnsType.value.trns_name : '');
-  __amcSearch.append('trns_type_id',this.__trnsType.value.trans_type_id ? this.__trnsType.value.trans_type_id : '');
-   this.__dbIntr.api_call(1,'/transctionSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-    this.__paginate =res.links;
-    this.setPaginator(res.data);
-    //  this.showColumns();
-     this.tableExport();
-   })
+   this.getTransMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
 }
 private updateRow(row_obj: any) {
   this.__selecttrnsType.data = this.__selecttrnsType.data.filter(
@@ -213,5 +223,35 @@ addRow(row_obj){
   this.__export.data.unshift(row_obj);
   this.__export._updateChangeSubscription();
   this.__selecttrnsType._updateChangeSubscription();
+}
+sortData(sort){
+  this.__sortColumnsAscOrDsc =sort;
+  this.submit();
+}
+delete(__el,index){
+  const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'TT',
+      id: __el.id,
+      title: 'Delete '  + __el.trns_name,
+      api_name:'/trnsDelete'
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.__selecttrnsType.data.splice(index,1);
+          this.__selecttrnsType._updateChangeSubscription();
+          this.__export.data.splice(this.__export.data.findIndex((x: any) => x.id == __el.id),1);
+          this.__export._updateChangeSubscription();
+        }
+      }
+
+    })
 }
 }

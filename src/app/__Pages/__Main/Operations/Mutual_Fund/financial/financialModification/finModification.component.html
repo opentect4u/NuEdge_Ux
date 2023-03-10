@@ -1,21 +1,19 @@
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
-  <div mat-dialog-title class="dialog-title" [title]="data.title">
+  <div mat-dialog-title class="dialog-title">
     <h2>{{data.title}}</h2>
     <div class="btnIcon">
-      <button mat-icon-button (click)="minimize()">
-        <mat-icon>remove</mat-icon>
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-
-      <button mat-icon-button [mat-dialog-close]="">
-        <mat-icon>close</mat-icon>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
       </button>
-
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
     </div>
 
   </div>
@@ -788,9 +786,9 @@
       <ng-container *ngIf="__traxForm.get('trans_id').value == '2'">
         <div class="row">
           <div class="col-sm-12 my-4">
-            <label for="sip_type">SIP Type</label>
+            <label for="sip_type">SIP Type <span class="text-danger">*</span></label>
             <select class="form-control" id="sip_type" formControlName="sip_type">
-              <option value="">Select SIP Type</option>
+              <option value="">Select</option>
               <option [value]="sip_type.id" *ngFor="let sip_type of __sipType">{{sip_type.sip_type_name}}
               </option>
             </select>
@@ -798,7 +796,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 my-4">
-            <label for="sip_freq">SIP frequency</label>
+            <label for="sip_freq">SIP frequency <span class="text-danger">*</span></label>
             <select class="form-control" id="sip_freq" formControlName="sip_frequency">
               <option value="">Select SIP Frequency</option>
               <option [value]="frequency.id" *ngFor="let frequency of __sipfreq">{{frequency.freq_name}}
@@ -810,30 +808,26 @@
         <div class="row">
           <div class="col-sm-12 my-4">
             <label for="sip_date">SIP Date </label>
-            <ng-multiselect-dropdown #multiSelect
-            id="sip_date"
-            [placeholder]="'Select Dates'"
-            [settings]="settings"
-            [data]="__dates"
-            formControlName="sip_date"
-            [disabled]="true">
-          </ng-multiselect-dropdown>
-          <!-- <div class="invalid-feedback" *ngIf="__traxForm.get('sip_date').invalid && (__traxForm.get('sip_date').dirty || __traxForm.get('sip_date').touched)">
-            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_date')).errors?.required">*Please provide sip date</span>
-          </div> -->
+             <input type="text"
+             placeholder="Enter SIP Date"
+             name="sip_date" id="sip_date" class="form-control" formControlName="sip_date"
+             >
+             <span class="invalid-feedback" *ngIf="__traxForm.controls['sip_date'].errors?.sipDatesExists">
+              * Date is not available
+            </span>
        </div>
         </div>
 
         <div class="row">
           <div class="col-sm-12 my-4">
-            <label for="sip_start_date">SIP Start Date</label>
+            <label for="sip_start_date">SIP Start Date <span class="text-danger">*</span></label>
             <input type="date" formControlName="sip_start_date" name="sip_start_date" id="sip_start_date"
               class="form-control">
           </div>
         </div>
         <div class="row">
           <div class="col-sm-12 my-4">
-            <label for="sip_duration">SIP Duration</label>
+            <label for="sip_duration">SIP Duration <span class="text-danger">*</span></label>
             <select class="form-control" id="sip_duration" formControlName="sip_duration">
               <option value="">Select SIP Duration</option>
               <option value="M">Manual</option>
@@ -842,8 +836,8 @@
           </div>
           <ng-container *ngIf="__traxForm.get('sip_duration').value == 'M'">
             <div class="col-sm-12 my-4">
-              <label for="duration">Duration</label>
-              <input type="text" name="sip_stardurationt_date" id="duration" class="form-control"
+              <label for="duration">Duration <span class="text-danger">*</span></label>
+              <input type="text" placeholder="Enter Duration" name="sip_stardurationt_date" id="duration" class="form-control"
                 formControlName="duration" (change)="setStartDT($event)">
             </div>
             <!-- <div class="col-sm-12 my-4">
@@ -858,7 +852,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 my-4">
-            <label for="sip_end_date">SIP End Date</label>
+            <label for="sip_end_date">SIP End Date <span class="text-danger">*</span></label>
             <input type="date" name="sip_end_date" id="sip_end_date" class="form-control"
               formControlName="sip_end_date">
           </div>
@@ -869,7 +863,7 @@
        <ng-container *ngIf="__traxForm.get('trans_id').value == '2' && __traxForm.get('sip_type').value == '3'">
         <div class="row mt-5">
           <div class="col-sm-12">
-            <label for="first_inv_amt">First Investment Amount</label>
+            <label for="first_inv_amt">First Investment Amount <span class="text-danger">*</span></label>
             <input type="text"
             name="first_inv_amt"
             id="first_inv_amt"
@@ -889,7 +883,7 @@
         <!-- Amount -->
         <div class="row mt-5">
           <div class="col-sm-12">
-            <label for="amount">Amount</label>
+            <label for="amount">Amount <span class="text-danger">*</span></label>
             <input type="text"
             name="amount"
             id="amount"
@@ -907,7 +901,7 @@
         <!-- Cheque Number -->
         <div class="row mt-5" *ngIf="this.__traxForm.get('sip_type').value != '2'">
           <div class="col-sm-12">
-            <label for="chq">Cheque Number</label>
+            <label for="chq">Cheque Number <span class="text-danger">*</span></label>
             <input type="text" name="chq"  (keypress)="preventNonumeric($event)" id="chq" maxlength="6" minlength="6" formControlName="chq_no" class="form-control"
               placeholder="Enter Cheque Number">
               <div class="invalid-feedback"
@@ -970,6 +964,76 @@
         </div>
         <!-- End -->
     </ng-container>
+
+     <ng-container *ngIf="__traxForm.get('sip_type').value == '4'">
+
+      <div class="row">
+        <!-- sip_name -->
+        <div class="col-sm-12 my-5">
+          <label class="sip_name">SIP Name</label>
+          <input type="text" name="sip_name" id="sip_name" class="form-control" formControlName="sip_name">
+        </div>
+        <!-- swp_freq -->
+        <div class="col-sm-12">
+          <label class="swp_freq">SWP Frequency <span class="text-danger">*</span></label>
+          <select class="form-control" id="swp_freq" formControlName="swp_freq">
+            <option value="">Select</option>
+            <option [value]="__swpFreq.id" *ngFor="let __swpFreq of __swp_freq">{{__swpFreq.freq_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__traxForm.get('swp_freq').invalid && (__traxForm.get('swp_freq').dirty || __traxForm.get('swp_freq').touched)">
+          <span class="invalid-feedback" *ngIf="(__traxForm.get('swp_freq')).errors?.required">*Please provide
+            swp frequency</span>
+        </div>
+        </div>
+         <!-- swp_start_date -->
+        <div class="col-sm-12 my-5">
+          <label class="swp_start_date">SWP Start Date <span class="text-danger">*</span></label>
+          <input type="date" name="swp_start_date" id="swp_start_date" class="form-control" formControlName="swp_start_date">
+          <div class="invalid-feedback"
+          *ngIf="__traxForm.get('swp_start_date').invalid && (__traxForm.get('swp_start_date').dirty || __traxForm.get('swp_start_date').touched)">
+          <span class="invalid-feedback" *ngIf="(__traxForm.get('swp_start_date')).errors?.required">*Please provide
+            swp start date</span>
+        </div>
+        </div>
+
+           <!-- swp_duration -->
+          <div class="col-sm-12">
+            <label class="swp_duration">Duration <span class="text-danger">*</span></label>
+            <input type="date" name="swp_duration" id="swp_duration" class="form-control" formControlName="swp_duration">
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('swp_duration').invalid && (__traxForm.get('swp_duration').dirty || __traxForm.get('swp_duration').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('swp_duration')).errors?.required">*Please provide
+              swp duration</span>
+             </div>
+        </div>
+
+           <!-- swp_start_date -->
+           <div class="col-sm-12 my-5">
+            <label class="swp_end_date">SWP End Date <span class="text-danger">*</span></label>
+            <input type="date" name="swp_end_date" id="swp_end_date" class="form-control" formControlName="swp_end_date">
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('swp_end_date').invalid && (__traxForm.get('swp_end_date').dirty || __traxForm.get('swp_end_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('swp_end_date')).errors?.required">*Please provide
+              swp end date</span>
+          </div>
+          </div>
+
+         <!-- swp_installment_amt -->
+         <div class="col-sm-12">
+          <label class="swp_installment_amt">SWP Installment Amount <span class="text-danger">*</span></label>
+          <input type="date" name="swp_installment_amt" id="swp_installment_amt" class="form-control" formControlName="swp_installment_amt">
+          <div class="invalid-feedback"
+          *ngIf="__traxForm.get('swp_installment_amt').invalid && (__traxForm.get('swp_installment_amt').dirty || __traxForm.get('swp_installment_amt').touched)">
+          <span class="invalid-feedback" *ngIf="(__traxForm.get('swp_installment_amt')).errors?.required">*Please provide
+            swp installment amount</span>
+           </div>
+      </div>
+
+      </div>
+
+     </ng-container>
+
       <div class="row mt-5">
         <div class="col-sm-12 ">
           <label for="file">Upload Scan Application Form <span class="text-danger">*</span></label>

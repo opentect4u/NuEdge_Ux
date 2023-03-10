@@ -3,17 +3,17 @@
   <div mat-dialog-title class="dialog-title" >
     <h2 >Sub Category Report</h2>
     <div class="btnIcon">
-      <button mat-icon-button  (click)="minimize()" >
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
         <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
 
-      <button mat-icon-button  [mat-dialog-close]="">
+      <button mat-icon-button title="Close"  [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
     </div>
@@ -24,30 +24,15 @@
     <div class="card my-5">
       <div class="card-body p-5">
     <form [formGroup]="__subcatForm" (ngSubmit)="submit()" autocomplete="off">
-      <div class="row ">
-        <div class="col-sm-8 my-auto">
-            <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
-              <mat-radio-button value="2">Summary</mat-radio-button>
-              <mat-radio-button value="1" class="radio1">Detail</mat-radio-button>
-            </mat-radio-group>
-        </div>
-        <div class="col-sm-4">
-          <mat-button-toggle-group class="float-right" aria-label="Font Style">
-            <mat-button-toggle value="R" (click)="refreshOrAdvanceFlt()">
-              <mat-icon>sync</mat-icon>
-            </mat-button-toggle>
-          </mat-button-toggle-group>
-        </div>
-      </div>
       <ng-container>
-        <div class="row my-5">
-          <div class="col-sm-5">
+        <div class="row my-3">
+          <div class="col-sm-4">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'C')">
               <div class="searchDiv">
                 <label for="cat_name">Category
                 </label>
                 <input type="search" name="cat_name" id="cat_name" class="form-control"
-                  formControlName="cat_name" placeholder="Search by Category">
+                  formControlName="cat_name" placeholder="Search By Category">
                   <span class="spinner-border" *ngIf="__iscatspinner && __subcatForm.get('cat_name').value?.length > 1"></span>
                  <div class="processMain_2" __searchResVisibility
                   (appOutsideClick)="outsideClick($event,'C')">
@@ -68,13 +53,13 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-5">
+          <div class="col-sm-4">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'S')">
               <div class="searchDiv">
-                <label for="subcat_name">SubCategory
+                <label for="subcat_name">Sub Category
                 </label>
                 <input type="search" name="subcat_name" id="subcat_name" class="form-control"
-                  formControlName="subcat_name" placeholder="Search by Sub Category">
+                  formControlName="subcat_name" placeholder="Search By Sub Category">
                   <span class="spinner-border" *ngIf="__issubcatspinner && __subcatForm.get('subcat_name').value?.length > 1"></span>
                  <div class="processMain_2" __searchResVisibility
                   (appOutsideClick)="outsideClick($event,'S')">
@@ -88,20 +73,27 @@
                       <h5 class="text-center">
                         Sorry!! No Records Found
                       </h5>
-                      <p>SubCategories Not AVailable</p>
+                      <p>Sub Category Not Available</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div class="col-sm-4 my-auto">
+            <mat-button-toggle-group class="float-right" aria-label="Font Style">
+              <mat-button-toggle value="R" (click)="refreshOrAdvanceFlt()">
+                <mat-icon>sync</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
         </div>
         <div class="row">
           <div class="col-sm-12">
-              <button mat-raised-button  color="primary" class="float-right">
-                <!-- <mat-icon>visibility</mat-icon> -->
-                Show
-              </button>
+            <button mat-raised-button  color="primary" class="float-right">
+              <!-- <mat-icon>visibility</mat-icon> -->
+              Show
+            </button>
           </div>
         </div>
       </ng-container>
@@ -120,7 +112,7 @@
           <button mat-menu-item (click)="exportPdf()">
             <mat-icon>download</mat-icon> Export Pdf
           </button>
-          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SubCategory'})">
+          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Sub Category'})">
             <mat-icon>download</mat-icon> Export Excel
           </button>
         </mat-menu>
@@ -135,24 +127,24 @@
 
     </div>
     <div class="example-container">
-    <table mat-table [dataSource]="__selectSubCategory" class="table_Custome">
+    <table mat-table [dataSource]="__selectSubCategory" class="table_Custome" matSort (matSortChange)="sortData($event)">
       <!-- Sl No. -->
       <ng-container matColumnDef="sl_no">
-        <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+        <th mat-header-cell *matHeaderCellDef>Sl No</th>
         <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
       </ng-container>
 
 
 
       <!--Temporary TIN No.-->
-      <ng-container matColumnDef="subcat_name">
-        <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+      <ng-container matColumnDef="subcategory_name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="subcategory_name">Sub Category</th>
         <td mat-cell *matCellDef="let element">{{element.subcategory_name}}</td>
       </ng-container>
 
         <!--Temporary TIN No.-->
         <ng-container matColumnDef="cat_name">
-          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="cat_name">Category</th>
           <td mat-cell *matCellDef="let element">{{element.cat_name}}</td>
         </ng-container>
 
@@ -170,10 +162,10 @@
       <!-- Buisness Type-->
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef>Delete</th>
-        <td mat-cell *matCellDef="let element">
-          <a>
+        <td mat-cell *matCellDef="let element;let i = index">
+          <button mat-icon-button (click)="delete(element,i)">
             <mat-icon class="delete_icon">delete</mat-icon>
-          </a>
+          </button>
         </td>
       </ng-container>
 
@@ -235,7 +227,7 @@
 
     <!-- Sl No. -->
     <ng-container matColumnDef="sl_no" >
-      <th mat-header-cell *matHeaderCellDef>Serial no.</th>
+      <th mat-header-cell *matHeaderCellDef>Sl No</th>
       <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
     </ng-container>
      <!--Temporary TIN No.-->
@@ -245,7 +237,7 @@
     </ng-container>
 
     <!--Temporary TIN No.-->
-    <ng-container matColumnDef="subcat_name" >
+    <ng-container matColumnDef="subcategory_name" >
       <th mat-header-cell *matHeaderCellDef>Sub Category</th>
       <td mat-cell *matCellDef="let element">
         <p>{{element.subcategory_name}}</p>

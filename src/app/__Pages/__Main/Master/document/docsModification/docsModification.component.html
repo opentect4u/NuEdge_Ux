@@ -133,23 +133,21 @@
 
 
 <div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title" [title]="data.title">
+  <div mat-dialog-title class="dialog-title">
     <h2 >{{data.title}}</h2>
     <div class="btnIcon">
-      <button mat-icon-button  (click)="minimize()" >
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
         <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-
-      <button mat-icon-button  [mat-dialog-close]="">
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-
     </div>
 
   </div>

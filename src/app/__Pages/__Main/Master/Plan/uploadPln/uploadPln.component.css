@@ -16,11 +16,37 @@
     padding: 11px 20px;
     width: 200px;
   }
-  
-  
+
+
   h3 {
     font-size: 17px;
     font-weight: 500;
     color: #38424c;
     margin: 8px 0px;
+  }
+
+
+
+
+  .mat-row,
+  .mat-header-row {
+    display: table-row;
+  }
+  .mat-cell,
+  .mat-header-cell {
+    word-wrap: initial;
+    display: table-cell;
+    line-break: unset;
+    padding: 0px 5px;
+    width: 25%;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    text-align:center!important;
+    font-size: 12px!important;
+    font-weight: 500!important;
+
+  }
+  mat-row, mat-header-row, mat-footer-row, th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+    border: 1px solid #cecece;
   }

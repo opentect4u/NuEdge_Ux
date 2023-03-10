@@ -24,39 +24,130 @@ export class UploadCsvComponent implements OnInit {
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
-      columnDef: 'R&T',
-      header: 'rnt_name',
+      columnDef: 'R&T Full Name',
+      header: 'R&T Full Name',
+      cell: (element: Record<string, any>) => `${element['rnt_full_name']}`,
+    },
+    {
+      columnDef: 'R&T Short Name',
+      header: 'R&T Short Name',
       cell: (element: Record<string, any>) => `${element['rnt_name']}`,
     },
     {
       columnDef: 'WebSite',
-      header: 'website',
+      header: 'Website',
       cell: (element: Record<string, any>) => `${element['web_site']}`,
       isDate: true,
     },
     {
-      columnDef: 'ofc_addr',
-      header: 'ofc_addr',
-      cell: (element: Record<string, any>) => `${element['ofc_addr']}`,
-    },
-    {
       columnDef: 'cus_care_no',
-      header: 'cus_care_no',
+      header: 'Customer Care Number',
       cell: (element: Record<string, any>) => `${element['cus_care_no']}`,
     },
     {
       columnDef: 'cus_care_email',
-      header: 'cus_care_email',
+      header: 'Customer Care Email',
       cell: (element: Record<string, any>) => `${element['cus_care_email']}`,
+    },
+    {
+      columnDef:'head_ofc_contact_per',
+      header:'Head Office Contact Person',
+      cell: (element: Record<string, any>) => `${element['head_ofc_contact_per']}`,
+
+    },
+    {
+      columnDef:'head_contact_per_mob',
+      header:'Head Office Contact Person Mobile',
+      cell: (element: Record<string, any>) => `${element['head_contact_per_mob']}`,
+
+    },
+    {
+      columnDef:'head_contact_per_email',
+      header:'Head Office Contact Person Email',
+      cell: (element: Record<string, any>) => `${element['head_contact_per_email']}`,
+
+    },
+    {
+      columnDef:'head_ofc_addr',
+      header:'Head Office Address',
+      cell: (element: Record<string, any>) => `${element['head_ofc_addr']}`,
+    },
+    {
+      columnDef:'local_ofc_contact_per',
+      header:'Local Office Contact Person',
+      cell: (element: Record<string, any>) => `${element['local_ofc_contact_per']}`,
+
+    },
+    {
+      columnDef:'local_contact_per_mob',
+      header:'Local Office Contact Person Mobile',
+      cell: (element: Record<string, any>) => `${element['local_contact_per_mob']}`,
+
+    },
+    {
+      columnDef:'local_contact_per_email',
+      header:'Local Office Contact Person Email',
+      cell: (element: Record<string, any>) => `${element['local_contact_per_email']}`,
+
+    },
+    {
+      columnDef:'local_ofc_addr',
+      header:'Local Office Address',
+      cell: (element: Record<string, any>) => `${element['local_ofc_addr']}`,
+    },
+    {
+      columnDef:'login_url',
+      header:'Login URL',
+      cell: (element: Record<string, any>) => `${element['login_url']}`,
+    },
+    {
+      columnDef:'login_id',
+      header:'Login ID',
+      cell: (element: Record<string, any>) => `${element['login_id']}`,
+    },
+    {
+      columnDef:'login_pass',
+      header:'Login Password',
+      cell: (element: Record<string, any>) => `${element['login_pass']}`,
+    },
+    {
+      columnDef: 'cus_care_whatsapp_no',
+      header: 'Customer Care WhatsApp Number',
+      cell: (element: Record<string, any>) => `${element['cus_care_whatsapp_no']}`,
+    },
+    {
+      columnDef:'gstin',
+      header:'GSTIN',
+      cell: (element: Record<string, any>) => `${element['gstin']}`,
+    },
+    {
+      columnDef:'security_qus_ans',
+      header:'Security Question Answer',
+      cell: (element: Record<string, any>) => `${element['security_qus_ans']}`,
     },
   ];
   tableData = new MatTableDataSource([
     {
       rnt_name: 'CAMS',
+      rnt_full_name:'Computer Age Management Services Limited',
       web_site: 'www.axismf.com',
-      ofc_addr: 'Kanak Building, 41,Chowringhee Road, Kolkata-700041',
       cus_care_no: 1111111111,
       cus_care_email: 'abc@gmail.com',
+      head_ofc_contact_per:'TEST',
+      head_contact_per_mob:'1111111111',
+      head_contact_per_email:'abc@gmail.com',
+      head_ofc_addr:'Bompas Road',
+      local_ofc_contact_per:'TEST',
+      local_contact_per_mob:'1111111111',
+      local_contact_per_email:'abc@gmail.com',
+      local_ofc_addr:'Bompas Road',
+      login_url:'www.google.com',
+      login_id:'nuedge@gmail.com',
+      login_pass:'XXXXX',
+      cus_care_whatsapp_no:'111111111111',
+      gstin:'GST/IN/1234',
+      security_qus_ans:JSON.stringify([{"id":0,"sec_qus":"Test Questions?","sec_ans":"Test Answer"}])
+
     },
   ]);
   allowedExtensions = ['csv', 'xlsx'];
@@ -67,7 +158,7 @@ export class UploadCsvComponent implements OnInit {
     ]),
     file: new FormControl(''),
   });
-  __columns: string[] = ['sl_no', 'rnt_name', 'edit', 'delete'];
+  __columns: string[] = ['sl_no', 'rnt_name', 'edit'];
   __selectRNT = new MatTableDataSource<rnt>([]);
   __brdCrmbs: breadCrumb[] = [{
     label:"Home",

@@ -63,6 +63,13 @@ export class PrdtypemstdashboardComponent implements OnInit {
       "flag": "N",
       "url": "/main/master/mstOperations",
       "icon": "history"
+    },
+    {
+      "id":11,
+      "menu_name":"Email Template",
+      "flag":'N',
+      "url":"/main/master/emailTemplate",
+      "icon":"mail"
     }
 ]
 

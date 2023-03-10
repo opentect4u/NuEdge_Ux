@@ -203,3 +203,9 @@ margin-left: 247px;
 .radio3{
 margin-left: 215px;
 }
+.mat-sort-header-container {
+  justify-content: center!important;
+}
+.mat-sort-header-arrow{
+  color: #fff;
+}

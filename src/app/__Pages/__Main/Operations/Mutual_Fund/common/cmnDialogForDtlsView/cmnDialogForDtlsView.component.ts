@@ -56,7 +56,7 @@ export class CmnDialogForDtlsViewComponent implements OnInit {
     if(this.data.flag == 'S' || this.data.flag == 'ST'){
      this.getscmDtls();
     }
-    else if(this.data.flag == 'C' || this.data.flag == 'FC' || this.data.flag == 'TC'){
+    else if(this.data.flag == 'C' || this.data.flag == 'ESC' || this.data.flag == 'NTC' || this.data.flag == 'NSC' || this.data.flag == 'ETC' || this.data.flag == 'C1' || this.data.flag == 'FC' || this.data.flag == 'TC'){
       this.getDocumnetTypeMaster();
       this.__dbIntr.api_call(0,'/client','client_id='+this.data.dt.id).pipe(pluck("data")).subscribe(res =>{
             console.log(res);

@@ -15,6 +15,7 @@ import { SubcatrptComponent } from './subcatRpt/subcatRpt.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 const routes: Routes =[{path:'',component:SubcategoryComponent}]
 
@@ -33,7 +34,8 @@ const routes: Routes =[{path:'',component:SubcategoryComponent}]
     SharedModule,
     MatRadioModule,
     MatTableExporterModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSortModule
   ],
   declarations: [SubcategoryComponent,SubcateModificationComponent,SubcatrptComponent]
 })

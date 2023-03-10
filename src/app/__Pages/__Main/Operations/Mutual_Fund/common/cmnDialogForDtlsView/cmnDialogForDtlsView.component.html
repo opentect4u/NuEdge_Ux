@@ -9,7 +9,7 @@
 
 <mat-dialog-content>
   <form [formGroup]="__frmDtls">
-    <div class="row" *ngIf="data.flag == 'C' || data.flag == 'FC' || data.flag == 'TC'">
+    <div class="row" *ngIf="data.flag == 'C' || data.flag == 'ESC' || data.flag == 'NTC' || data.flag == 'NSC' || data.flag == 'ETC' || data.flag == 'C1' || data.flag == 'FC' || data.flag == 'TC'">
       <div class="col-sm-12 my-3">
         <label>Client Code</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="client_code">

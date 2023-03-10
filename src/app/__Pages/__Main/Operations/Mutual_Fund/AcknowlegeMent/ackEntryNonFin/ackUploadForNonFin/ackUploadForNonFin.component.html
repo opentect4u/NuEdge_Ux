@@ -1,0 +1,87 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="__ackUpload" (ngSubmit)="UploadAcknowledgement()" [id]="'__ack_'+data.tin_no">
+      <div class="row">
+        <div class="col-sm-12 my-5" >
+          <label for="rnt_login_dt">Login Date <span class="text-danger">*</span></label>
+          <input
+          [max]="getcurrenctDatetime()"
+          [readonly]="this.data.isViewMode"
+          step="1"
+          type="date"
+          name="rnt_login_dt"
+          id="rnt_login_dt"
+          class="form-control"
+          formControlName="rnt_login_dt">
+        </div>
+
+        <div class="col-sm-12" >
+          <label for="login_time">Login Time <span class="text-danger">*</span></label>
+          <input
+          [readonly]="this.data.isViewMode"
+          step="1"
+          type="time"
+          name="login_time"
+          id="login_time"
+          class="form-control"
+          formControlName="rnt_login_time">
+        </div>
+        <div class="col-sm-12 my-5" *ngIf="!this.data.isViewMode">
+          <label for="ack_file">Upload Acknowledgement <span class="text-danger">*</span></label>
+          <input (change)="getFile($event)"  type="file" name="ack_file" id="ack_file" class="form-control" formControlName="ack_file">
+          <div class="invalid-feedback"
+          *ngIf=" __ackUpload.get('ack_file').invalid && ( __ackUpload.get('ack_file').dirty ||  __ackUpload.get('ack_file').touched)">
+          <span class="invalid-feedback" *ngIf=" __ackUpload.get('ack_file').errors?.required">*Please
+            provide file</span>
+          <span class="invalid-feedback" *ngIf="__ackUpload.get('ack_file').errors?.inValidExt">*Invalid
+            file extension.</span>
+          <span class="invalid-feedback"
+            *ngIf="__ackUpload.get('ack_file').errors?.fileSizeValidator">*File size must not exceed than
+            2MB.</span>
+        </div>
+        </div>
+        <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">
+          <label *ngIf="this.__ackUpload.get('file').value" for="">Acknowledgement Copy</label>
+          <br/>
+          <div class="file-man-box" *ngIf="this.__ackUpload.get('file').value">
+            <div class="file_img-box">
+             <a target="__blank" [attr.href]="this.__ackUpload.get('file').value"><img src="../../../../../../../../assets/images/pdf.png" alt="Pdf View"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-sm-12">
+          <label for="remarks">Remarks</label>
+          <textarea name="remarks" class="form-control" id="remarks" cols="30" rows="5" formControlName="remarks"></textarea>
+        </div>
+      </div>
+
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec" *ngIf="!this.data.isViewMode">
+    <button class="btn addBtn" [attr.form]="'__ack_'+data.tin_no" [disabled]="this.__ackUpload.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+  </div>

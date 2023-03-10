@@ -53,14 +53,14 @@ export class UploadPlnComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tableColumns: Array<Column> = [
     {
-      columnDef: 'plan_name',
-      header: 'plan_name',
-      cell: (element: Record<string, any>) => `${element['plan_name']}`,
+      columnDef: 'Plan',
+      header: 'Plan',
+      cell: (element: Record<string, any>) => `${element['Plan']}`,
     },
   ];
   tableData = new MatTableDataSource([
     {
-      plan_name: 'XXXXXXXX',
+      "Plan": 'XXXXXXXX',
     },
   ]);
   allowedExtensions = ['csv', 'xlsx'];
@@ -71,7 +71,7 @@ export class UploadPlnComponent implements OnInit {
     ]),
     file: new FormControl(''),
   });
-  __columns: string[] = ['sl_no', 'rnt_name', 'edit', 'delete'];
+  __columns: string[] = ['sl_no', 'rnt_name', 'edit'];
   __selectRNT = new MatTableDataSource<plan>([]);
   constructor(
     private __dbIntr: DbIntrService,

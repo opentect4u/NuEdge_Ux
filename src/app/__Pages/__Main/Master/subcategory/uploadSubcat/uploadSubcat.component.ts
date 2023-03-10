@@ -55,21 +55,21 @@ export class UploadSubcatComponent implements OnInit {
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
-      columnDef: 'category_id',
-      header: 'category_id',
-      cell: (element: Record<string, any>) => `${element['category_id']}`,
+      columnDef: 'category Id',
+      header: 'category Id',
+      cell: (element: Record<string, any>) => `${element['category Id']}`,
     },
     {
-      columnDef: 'subcategory_name',
-      header: 'subcategory_name',
-      cell: (element: Record<string, any>) => `${element['subcategory_name']}`,
+      columnDef: 'Sub Category',
+      header: 'Sub Category',
+      cell: (element: Record<string, any>) => `${element['Sub Category']}`,
       isDate: true,
     },
   ];
   tableData = new MatTableDataSource([
     {
-      subcategory_name: 'Others',
-      category_id: 1,
+      "Sub Category": 'Others',
+      "category Id": 1,
     },
   ]);
   allowedExtensions = ['csv', 'xlsx'];
@@ -80,12 +80,12 @@ export class UploadSubcatComponent implements OnInit {
     ]),
     file: new FormControl(''),
   });
-  __columns: string[] = ['sl_no', 'subcate', 'edit', 'delete'];
+  __columns: string[] = ['sl_no', 'subcate', 'edit'];
   __selectRNT = new MatTableDataSource<subcat>([]);
   constructor(
     private __dbIntr: DbIntrService,
     private __utility: UtiliService,
-    private __rtDt: ActivatedRoute
+    public __rtDt: ActivatedRoute
   ) {
     this.previewlatestCategoryEntry();
   }

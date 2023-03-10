@@ -162,7 +162,7 @@
         <mat-paginator hidden [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator>
         <table mat-table [dataSource]="__documents">
           <ng-container matColumnDef="sl_no">
-            <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+            <th mat-header-cell *matHeaderCellDef>Sl o.</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
 

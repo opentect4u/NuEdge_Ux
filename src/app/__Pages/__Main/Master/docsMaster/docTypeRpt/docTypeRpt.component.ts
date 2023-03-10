@@ -21,6 +21,7 @@ templateUrl: './docTypeRpt.component.html',
 styleUrls: ['./docTypeRpt.component.css']
 })
 export class DoctyperptComponent implements OnInit {
+  __sortAscOrDsc = {active: '',direction:'asc'};
   __catForm = new FormGroup({
     doc_type: new FormControl(''),
      options:new FormControl('2')
@@ -44,32 +45,34 @@ constructor(
 }
 
 ngOnInit(){
-  // this.getDocTypemaster();
-  // this.tableExport();
-  this.submit();
+  this.getDocumnetTypeMst();
 }
 
-tableExport(){
-  const __catExport = new FormData();
-  __catExport.append('doc_type',this.__catForm.value.doc_type ? this.__catForm.value.doc_type : '');
-  this.__dbIntr.api_call(1,'/documenttypeExport',__catExport).pipe(map((x: any) => x.data)).subscribe((res: docType[]) =>{
+ getDocumnetTypeMst(column_name: string | null = '',sort_by: string | null | ''='asc'){
+  const __docTypeSearch = new FormData();
+  __docTypeSearch.append('doc_type',this.__catForm.value.doc_type ? this.__catForm.value.doc_type : '');
+  __docTypeSearch.append('paginate',this.__pageNumber.value);
+  __docTypeSearch.append('column_name',column_name);
+  __docTypeSearch.append('sort_by',sort_by);
+   this.__dbIntr.api_call(1,'/documenttypeDetailSearch',__docTypeSearch).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__paginate =res.links;
+    this.setPaginator(res.data);
+     this.tableExport(column_name,sort_by);
+   })
+ }
+
+tableExport(column_name: string | null = '',sort_by: string | null | ''='asc'){
+  const __docTypeExport = new FormData();
+  __docTypeExport.append('column_name',column_name);
+  __docTypeExport.append('sort_by',sort_by);
+  __docTypeExport.append('doc_type',this.__catForm.value.doc_type ? this.__catForm.value.doc_type : '');
+  this.__dbIntr.api_call(1,'/documenttypeExport',__docTypeExport).pipe(map((x: any) => x.data)).subscribe((res: docType[]) =>{
      console.log(res);
     this.__export = new MatTableDataSource(res);
   })
 }
-
-private getDocTypemaster(__paginate: string | null = '10') {
-  this.__dbIntr
-  .api_call(0, '/documenttype', 'paginate=' + __paginate)
-  .pipe(map((x: responseDT) => x.data))
-  .subscribe((res: any) => {
-    this.setPaginator(res.data);
-    this.__paginate = res.links;
-  });
-}
 private setPaginator(__res) {
   this.__selectdocType = new MatTableDataSource(__res);
-  // this.__selectdocType.paginator = this.paginator;
 }
 getPaginate(__paginate) {
   if (__paginate.url) {
@@ -78,6 +81,8 @@ getPaginate(__paginate) {
         __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
         + ('&doc_type=' + this.__catForm.value.doc_type)
+        + ('&column_name=' + this.__sortAscOrDsc.active)
+        + ('&sort_by=' + this.__sortAscOrDsc.direction)
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -88,11 +93,10 @@ getPaginate(__paginate) {
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  this.getDocTypemaster(this.__pageNumber.value);
+  this.submit();
 }
 
 populateDT(__items: docType) {
-  // this.__utility.navigatewithqueryparams('/main/master/catModify',{queryParams:{id:btoa(__items.id.toString())}})
   this.openDialog(__items.doc_type, __items.id);
 }
 showCorrospondingAMC(__items) {
@@ -104,8 +108,6 @@ showCorrospondingAMC(__items) {
   );
 }
 openDialog(__category: string | null = null, __catId: number) {
-  console.log(__catId);
-
   const dialogConfig = new MatDialogConfig();
   dialogConfig.autoFocus = false;
   dialogConfig.closeOnNavigation = false;
@@ -191,14 +193,12 @@ exportPdf(){
   }, 'DocumentType')
 }
 submit(){
-  const __amcSearch = new FormData();
-  __amcSearch.append('doc_type',this.__catForm.value.doc_type);
-  __amcSearch.append('paginate',this.__pageNumber.value);
-   this.__dbIntr.api_call(1,'/documenttypeDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-    this.__paginate =res.links;
-    this.setPaginator(res.data);
-     this.tableExport();
-   })
+ this.getDocumnetTypeMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
+}
+
+sortData(sort){
+  this.__sortAscOrDsc = sort;
+  this.submit();
 }
 
 }

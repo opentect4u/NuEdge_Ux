@@ -4,20 +4,19 @@
 <div mat-dialog-title class="dialog-title" [title]="data.title">
   <h2 >{{data.title}}</h2>
   <div class="btnIcon">
-    <button mat-icon-button  (click)="minimize()" >
-      <mat-icon >remove</mat-icon>
+    <button mat-icon-button title="Minimize" (click)="minimize()">
+      <mat-icon>remove</mat-icon>
     </button>
-    <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-      <mat-icon>check_box_outline_blank</mat-icon>
-    </button>
-    <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+    <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
       <mat-icon>content_copy</mat-icon>
     </button>
-
-    <button mat-icon-button  [mat-dialog-close]="">
-      <mat-icon >close</mat-icon>
+    <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+      <mat-icon>check_box_outline_blank </mat-icon>
     </button>
 
+    <button mat-icon-button title="Close" [mat-dialog-close]="">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
   </div>
 <!-- </div> -->
@@ -25,7 +24,7 @@
   <form  [formGroup]="__trns_type" (ngSubmit)="submit()" [attr.id]="'__sip_type_' + data.id" autocomplete="off" ngNativeValidate>
     <div class="row">
       <div class="col-sm-12 my-5">
-        <label for="sip_type_name">Sip Type <span class="text-danger">*</span></label>
+        <label for="sip_type_name">SIP Type <span class="text-danger">*</span></label>
         <input type="text" name="trns_type" id="sip_type_name" class="form-control" placeholder="Enter Sip Type" formControlName="sip_type_name">
         <div class="invalid-feedback" *ngIf="__trns_type.get('sip_type_name').invalid && (__trns_type.get('sip_type_name').dirty || __trns_type.get('sip_type_name').touched)">
           <span class="invalid-feedback" *ngIf="(__trns_type.get('sip_type_name')).errors?.required">*Please provide sip type</span>

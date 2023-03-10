@@ -2,18 +2,17 @@
   <div mat-dialog-title class="dialog-title" [title]="data.title">
     <h2>{{data.title}}</h2>
     <div class="btnIcon">
-      <button mat-icon-button (click)="minimize()">
-        <mat-icon>remove</mat-icon>
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-
-      <button mat-icon-button [mat-dialog-close]="">
-        <mat-icon>close</mat-icon>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
       </button>
     </div>
   </div>
@@ -225,7 +224,7 @@
             <label for="trans_id">Transaction <span class="text-danger">*</span></label>
             <select name="trans_id" id="trans_id" formControlName="trans_id" class="form-control">
               <option value=""> Select Transaction</option>
-              <option *ngFor="let __transType of __transType" value="{{__transType.id}}">{{__transType.id}} - {{__transType.trns_name}}
+              <option *ngFor="let __transType of __transType" value="{{__transType.id}}">{{__transType.trns_name}}
               </option>
             </select>
             <div class="invalid-feedback"
@@ -238,13 +237,15 @@
         <!-- Folio Number -->
         <div class="row">
           <div class="col-sm-12">
-             <label for="folio_no">Folio Number <span class="text-danger">*</span></label>
+             <label for="folio_no">
+              {{__nonfinForm.get('trans_id').value == '33' ? 'Targeted Folio' : 'Folio Number' }}
+              <span class="text-danger">*</span></label>
              <input type="text" placeholder="Enter Folio Number" name="folio_no" id="folio_no" class="form-control" formControlName="folio_no">
              <div class="invalid-feedback"
              *ngIf="__nonfinForm.get('folio_no').invalid && (__nonfinForm.get('folio_no').dirty || __nonfinForm.get('folio_no').touched)">
              <span class="invalid-feedback" *ngIf="(__nonfinForm.get('folio_no')).errors?.required">*Please provide
-               folio
-               number</span>
+              {{__nonfinForm.get('trans_id').value == '33' ? 'Targeted Folio' : 'Folio Number' }}
+            </span>
            </div>
             </div>
         </div>
@@ -319,9 +320,72 @@
           </div>
           </div>
         </div>
-        <!-- Cancellation Effective Date -->
+
+         <ng-container *ngIf="__nonfinForm.get('trans_id').value == '33'">
+            <div class="row mt-5">
+              <div class="col-sm-12">
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="text-center">
+                        <mat-checkbox color="primary" formControlName="is_merge_folio_checked_all"></mat-checkbox>
+                      </th>
+                      <th class="text-center">Source Folio</th>
+                      <th class="text-center">
+                        <button  mat-icon-button  type="button" (click)="addmeregeFolios()"><mat-icon>add</mat-icon></button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="merge_folio">
+
+                    <tr *ngFor="let item of merge_folio.controls; let i = index;">
+                      <ng-container [formGroupName]="i">
+                        <td class="text-center">
+                          <mat-checkbox color="primary" formControlName="is_checked"></mat-checkbox>
+                        </td>
+                      <td class="folio_tbl">
+                            <input type="text"
+                            name="folio_no" id="folio_no" class="form-control"
+                              formControlName="folio_no"
+                              placeholder="Enter Folio Number">
+                      </td>
+                      <td class="text-center">
+
+                        <button *ngIf="i > 0"
+                          mat-icon-button
+                          color="warn"
+                          (click)="deletemergeFolio(i)">
+                          <mat-icon> delete </mat-icon>
+
+                        </button>
+                      </td>
+                      </ng-container>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+         </ng-container>
+
         <ng-container *ngIf="(__nonfinForm.get('trans_id').value == '7' || __nonfinForm.get('trans_id').value == '8' || __nonfinForm.get('trans_id').value == '9')">
+
+          <!-- Installment Date -->
           <div class="row">
+            <div class="col-sm-12">
+              <label for="installment_dt">Installment Date <span class="text-danger">*</span></label>
+              <input type="text" name="installment_dt" id="installment_dt" class="form-control" formControlName="installment_dt">
+              <div class="invalid-feedback"
+                *ngIf="__nonfinForm.get('installment_dt').invalid && (__nonfinForm.get('installment_dt').dirty || __nonfinForm.get('installment_dt').touched)">
+                <span class="invalid-feedback" *ngIf="(__nonfinForm.get('installment_dt')).errors?.required">*Please provide
+                  installment date</span>
+              </div>
+            </div>
+          </div>
+
+        <!-- Cancellation Effective Date -->
+          <div class="row my-5">
             <div class="col-sm-12">
                <label for="cancel_effective_date">Cancellation Effective Date <span class="text-danger">*</span></label>
                <input
@@ -337,13 +401,26 @@
               cancellation effective date</span>
           </div>
           </div>
+
+          <!-- Amount -->
+          <div class="row">
+            <div class="col-sm-12">
+              <label for="installment_amt">Amount</label>
+              <input type="text" placeholder="Enter Amount" name="installment_amt" id="installment_amt" class="form-control" formControlName="installment_amt">
+              <div class="invalid-feedback"
+              *ngIf="__nonfinForm.get('installment_amt').invalid && (__nonfinForm.get('installment_amt').dirty || __nonfinForm.get('installment_amt').touched)">
+              <span class="invalid-feedback" *ngIf="(__nonfinForm.get('installment_amt')).errors?.required">*Please provide
+                amount</span>
+            </div>
+            </div>
+          </div>
         </ng-container>
 
         <!-- Email & mobile for Change Of Contact Details -->
         <ng-container *ngIf="__nonfinForm.get('trans_id').value == '18'">
           <div class="row">
             <div class="col-sm-12">
-                <label for="change_type">Change Type</label>
+                <label for="change_type">Change Type <span class="text-danger">*</span></label>
                 <select class="form-control" formControlName="change_contact_type" id="change_type">
                   <option value="">Select</option>
                   <option value="E">Email</option>
@@ -352,7 +429,7 @@
                 </select>
             </div>
               <div class="col-sm-12  my-5" *ngIf="__nonfinForm.get('change_contact_type').value == 'E' || __nonfinForm.get('change_contact_type').value == 'B'">
-                <label for="email">Email</label>
+                <label for="email">Email <span class="text-danger">*</span></label>
                 <input type="email" placeholder="Enter Email" name="email" id="email" formControlName="email" class="form-control">
                 <div class="invalid-feedback"
                 *ngIf="__nonfinForm.get('email').invalid && (__nonfinForm.get('email').dirty || __nonfinForm.get('email').touched)">
@@ -362,8 +439,20 @@
                   email</span>
               </div>
               </div>
-              <div class="col-sm-12" *ngIf="__nonfinForm.get('change_contact_type').value == 'M' || __nonfinForm.get('change_contact_type').value == 'B'">
-                <label for="mobile">Mobile</label>
+              <div class="col-sm-12" *ngIf="__nonfinForm.get('change_contact_type').value == 'E' || __nonfinForm.get('change_contact_type').value == 'B'">
+                <label for="email_dec">Email Declaration <span class="text-danger">*</span></label>
+                <select class="form-control" formControlName="email_dec" id="email_dec">
+                  <option value="">Select</option>
+                  <option [value]="dec.id" *ngFor="let dec of __declaration"> {{dec.declaration}}</option>
+                </select>
+                <div class="invalid-feedback"
+                *ngIf="__nonfinForm.get('email_dec').invalid && (__nonfinForm.get('email_dec').dirty || __nonfinForm.get('email_dec').touched)">
+                <span class="invalid-feedback" *ngIf="(__nonfinForm.get('email_dec')).errors?.required">*Please provide
+                  email declaration</span>
+                   </div>
+               </div>
+              <div class="col-sm-12 my-5" *ngIf="__nonfinForm.get('change_contact_type').value == 'M' || __nonfinForm.get('change_contact_type').value == 'B'">
+                <label for="mobile">Mobile <span class="text-danger">*</span></label>
                <input type="text" (keypress)="preventNonumeric($event)" maxlength="10" minlength="10" placeholder="Enter Mobile" name="mobile" id="mobile" formControlName="mobile" class="form-control">
                <div class="invalid-feedback"
                *ngIf="__nonfinForm.get('mobile').invalid && (__nonfinForm.get('mobile').dirty || __nonfinForm.get('mobile').touched)">
@@ -378,6 +467,19 @@
 
              </div>
               </div>
+              <div class="col-sm-12" *ngIf="__nonfinForm.get('change_contact_type').value == 'M' || __nonfinForm.get('change_contact_type').value == 'B'">
+                <label for="mob_dec">Mobile Declaration <span class="text-danger">*</span></label>
+                <select class="form-control" formControlName="mob_dec" id="mob_dec">
+                  <option value="">Select</option>
+                  <option [value]="dec.id" *ngFor="let dec of __declaration"> {{dec.declaration}}</option>
+                </select>
+                <div class="invalid-feedback"
+                *ngIf="__nonfinForm.get('mob_dec').invalid && (__nonfinForm.get('mob_dec').dirty || __nonfinForm.get('mob_dec').touched)">
+                <span class="invalid-feedback" *ngIf="(__nonfinForm.get('mob_dec')).errors?.required">*Please provide
+                  mobile declaration</span>
+                   </div>
+               </div>
+
             </div>
          </ng-container>
 
@@ -492,14 +594,14 @@
 
          </ng-container>
 
-         <!-- Change of Status -->
+         <!-- Change of type -->
          <ng-container *ngIf="__nonfinForm.get('trans_id').value == '24'">
           <div class="row my-5">
             <div class="col-sm-12">
-              <label for="change_status">Change Type</label>
+              <label for="change_status">Change Status</label>
               <select class="form-control" formControlName="change_status" id="change_status">
                 <option value="">Select</option>
-                <option [value]="statusChange.id" *ngFor="let statusChange of __changeOfStatus">{{statusChange.name}}</option>
+                <option [ngValue]="statusChange" *ngFor="let statusChange of __changeOfStatus">{{statusChange.name}}</option>
               </select>
               <div class="invalid-feedback"
               *ngIf="__nonfinForm.get('change_status').invalid && (__nonfinForm.get('change_status').dirty || __nonfinForm.get('change_status').touched)">
@@ -782,18 +884,28 @@
              </div>
              <div class="row">
               <div class="col-sm-12">
-                <label for="sip_date">
+                <label for="stp_swp_date">
                   <!-- SWP Dates  -->
                   {{__nonfinForm.get('trans_id').value == '30' ? 'SWP Dates' : 'STP Dates'}}
                   <span class="text-danger">*</span></label>
-                <ng-multiselect-dropdown #multiSelect
+                <!-- <ng-multiselect-dropdown #multiSelect
                 id="sip_date"
                 [placeholder]="'SWP Dates'"
                 [settings]="settings"
                 [data]="__dates"
                 formControlName="swp_dates"
                 [attr.disabled]="true">
-              </ng-multiselect-dropdown>
+              </ng-multiselect-dropdown> -->
+              <input type="text" name="stp_swp_date" id="stp_swp_date" class="form-control" formControlName="swp_dates">
+              <div class="invalid-feedback"
+              *ngIf="__nonfinForm.get('swp_dates').invalid && (__nonfinForm.get('swp_dates').dirty || __nonfinForm.get('swp_dates').touched)">
+              <span class="invalid-feedback" *ngIf="(__nonfinForm.get('swp_dates')).errors?.required">*Please provide
+                {{__nonfinForm.get('trans_id').value == '30' ? 'SWP' : 'STP'}} Dates</span>
+                 <span class="invalid-feedback" *ngIf="__nonfinForm.controls['swp_dates'].errors?.DatesExists">
+                * Date is not available
+              </span>
+              </div>
+
               </div>
              </div>
              <div class="row my-5">
@@ -923,6 +1035,7 @@
             </div>
            </ng-container>
 
+           <!-- Transmission -->
            <ng-container *ngIf="__nonfinForm.get('trans_id').value == '19'">
             <div class="row">
               <div class="col-sm-12">
@@ -933,7 +1046,8 @@
                 </select>
               </div>
             </div>
-            <ng-container *ngIf="__nonfinForm.get('transmission_type').value == '1'">
+
+            <ng-container *ngIf="__nonfinForm.get('transmission_type').value == '1' || __nonfinForm.get('transmission_type').value == '2'">
             <div class="row my-5">
               <div class="col-sm-12">
                 <table>
@@ -943,10 +1057,10 @@
                         Second Applicant
                       </th>
                       <th class="text-center">
-                        <!-- <button mat-button color="primary" type="button" *ngIf="!__isSHowAdditionalTble"
+                        <button mat-button color="primary" type="button" *ngIf="!__isSHowAdditionalTble"
                           (click)="__isSHowAdditionalTble=!__isSHowAdditionalTble">
                           + Add Additional Applicant
-                        </button> -->
+                        </button>
                       </th>
                     </tr>
                   </thead>
@@ -1018,38 +1132,18 @@
                             <mat-icon>visibility</mat-icon> View Details
                           </button>
                         </ng-container>
-                        <!-- <ng-container *ngIf="__issecCldtlsEmpty || __nonfinForm.get('second_client_code').value == ''">
-                          <button mat-button color="primary" type="button"
-                            [matMenuTriggerFor]="menu_for_second_applicant">
-                            <mat-icon>add</mat-icon> Create Client Code
-                          </button>
-
-                          <mat-menu #menu_for_second_applicant="matMenu">
-                            <div class="row  p-0 m-0">
-                              <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
-                                *ngFor="let clOption of __mcOptionMenu"
-                                (click)="openDialogForclientcreation(clOption,'S')">
-                                <mat-icon>{{clOption.icon}}</mat-icon>
-                              </div>
-                            </div>
-                          </mat-menu>
-                          <button mat-button color="primary" type="button" (click)="createClientTemporary('FC')">
-                            <mat-icon>add</mat-icon>Add Existing
-                          </button>
-
-                        </ng-container> -->
                       </td>
                     </tr>
 
                   </tbody>
                   </table>
-                  <table *ngIf="__isT1Visible">
+                  <table *ngIf="__isSHowAdditionalTble">
                     <thead>
                       <tr>
                         <th>Third Applicant</th>
                         <th>
-                          <button type="button" mat-button color="accent" (click)="__isT1Visible=!__isT1Visible">
-                            <mat-icon> trash_outline </mat-icon>
+                          <button type="button" mat-button color="accent" (click)="__isSHowAdditionalTble=!__isSHowAdditionalTble">
+                            <mat-icon> delete </mat-icon>
                             Remove
                           </button>
                         </th>
@@ -1127,6 +1221,679 @@
             </div>
           </ng-container>
 
+          <ng-container *ngIf="__nonfinForm.get('transmission_type').value == '3'">
+            <div class="row my-5">
+              <div class="col-sm-12">
+                <label for="existing_mode_of_holding">Existing Mode of Holding</label>
+                <select class="form-control" id="existing_mode_of_holding" formControlName="existing_mode_of_holding">
+                  <option value="">Select</option>
+                  <option value="A">Any Or Survivor</option>
+                  <option value="J">Joint</option>
+                  <option value="S">Single</option>
+                </select>
+              </div>
+            </div>
+            </ng-container>
+
+            <!-- If Existing Mode of holding is 'Single' or Transmission Type == '4' || '3' -->
+            <ng-container *ngIf="__nonfinForm.get('existing_mode_of_holding').value == 'S' || __nonfinForm.get('transmission_type').value == '4'">
+              <div class="row" [ngClass]="{'my-5' : __nonfinForm.get('transmission_type').value == '4'}">
+                <div [ngClass]="{'col-sm-12':!__isFirstClaimant,'col-sm-9':__isFirstClaimant}">
+                  <div class="progressMainSec" appClOutsideClick
+                  (appOutsideClick)="outsideClickforClaimant($event)">
+                  <div class="searchDiv">
+                    <label for="claimant_first_client_code">Claiment {{(__nonfinForm.get('transmission_type').value == '4') ? 'HUF' : ''}} Details</label>
+                    <input type="search" name="claimant_first_client_code" id="claimant_first_client_code" class="form-control"
+                      formControlName="claimant_first_client_code"
+                      placeholder="Search By  Name, Code, Email, Mobile, Pan & DOB">
+                    <div class="processMain_2" __searchResVisibility
+                      (appOutsideClick)="outsideClickforClaimant($event)">
+                      <div class="serachresult_client" #secondFirstCliamant>
+                        <ul *ngIf="__claimant_first.length > 0">
+                          <li *ngFor="let items of __claimant_first"
+                            (click)="getadditionalApplicant(items,'C1')">
+                            {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__claimant_first.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Records Found
+                          </h5>
+                          <p>To create a new client .Please click on Create Client</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <div class="col-sm-3 clientCode" *ngIf="__isFirstClaimant && __nonfinForm.get('claimant_first_client_code').value">
+                  <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+                    <mat-icon>add</mat-icon> Create Client
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <div class="row p-0 m-0">
+                      <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                        *ngFor="let clOption of __mcOptionMenu" (click)="openDialogForclientcreation(clOption,'C1')">
+                        <mat-icon>{{clOption.icon}}</mat-icon>
+                      </div>
+                    </div>
+                  </mat-menu>
+                </div>
+              </div>
+              <ng-container *ngIf="__FirstClaimant && __nonfinForm.get('claimant_first_client_code').value && __nonfinForm.get('claimant_first_client_name').value">
+                <div class="row my-5">
+                  <div [ngClass]="{'col-sm-12': !__FirstClaimant,'col-sm-9':__FirstClaimant}">
+                    <label for="claimant_first_client_name">
+                      Claimant {{(__nonfinForm.get('transmission_type').value == '4') ? 'HUF' : ''}} Name
+                    </label>
+                    <input
+                    [attr.disabled]="true"
+                    type="search"
+                    name="claimant_first_client_name"
+                    id="claimant_first_client_name"
+                    class="form-control"
+                    formControlName="claimant_first_client_name">
+                  </div>
+                  <div class="col-sm-3  clientCode" *ngIf="__FirstClaimant">
+                    <button (click)="openDialog('C1')" color="primary" mat-button type="button"
+                      aria-label="Example icon button with a eye icon" title="View Client Details">
+                      <mat-icon>remove_red_eye</mat-icon>
+                      View Details
+                    </button>
+                  </div>
+
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="__nonfinForm.get('transmission_type').value == '3'">
+            <!-- If Existing Mode of holding is 'Joint/ Anyone Or Survivor' -->
+            <ng-container *ngIf="__nonfinForm.get('existing_mode_of_holding').value == 'J' || __nonfinForm.get('existing_mode_of_holding').value == 'A'">
+             <table>
+              <thead>
+                <tr>
+                  <th class="text-center">Existing Second Applicant</th>
+                  <th class="text-center">
+                    <button mat-button color="primary" type="button" *ngIf="!__isShowExThirdClient"
+                          (click)="__isShowExThirdClient=!__isShowExThirdClient">
+                          + Add Additional Applicant
+                        </button>
+                  </th>
+                </tr>
+              </thead>
+               <tbody>
+                <tr>
+                  <td>
+                     <div class="row">
+                      <div class="col-sm-12">
+                        <div class="progressMainSec" appClOutsideClick
+                        (appOutsideClick)="outsideClickforExistingSecondClient($event)">
+                        <div class="searchDiv">
+                          <label for="__clntCd">Client Details</label>
+                          <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                            formControlName="existing_second_client_code"
+                            placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                          <div class="processMain_2" __searchResVisibility
+                            (appOutsideClick)="outsideClickforExistingSecondClient($event)">
+                            <div class="serachresult_client" #secondexistingSecclientCd>
+                              <ul *ngIf="__ex_sec_client.length > 0">
+                                <li *ngFor="let items of __ex_sec_client"
+                                  (click)="getadditionalApplicant(items,'ESC')">
+                                  {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                                </li>
+                              </ul>
+                              <div class="noDataFound" *ngIf="__ex_sec_client.length == 0">
+                                <h5 class="text-center">
+                                  Sorry!! No Records Found
+                                </h5>
+                                <p>To create a new client .Please click on Create Client</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                      <div class="col-sm-12 my-5">
+                        <label for="existing_second_client_name">
+                           Client Name
+                        </label>
+                        <input
+                        type="text"
+                       [attr.disabled]="true"
+                       class="form-control"
+                        name="existing_second_client_name"
+                        id="existing_second_client_name"
+                        formControlName="existing_second_client_name"
+                        >
+                      </div>
+                      <div class="col-sm-12">
+                        <label for="existing_second_client_pan">
+                          Pan
+                       </label>
+                       <input
+                       [attr.disabled]="true"
+                       type="text"
+                       class="form-control"
+                       name="existing_second_client_pan"
+                       id="existing_second_client_pan"
+                       formControlName="existing_second_client_pan"
+                       >
+                      </div>
+                     </div>
+                  </td>
+                  <td class="text-center">
+                    <!-- <ng-container *ngIf="!__exsitingSecClient">
+                      <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+                        <mat-icon>add</mat-icon> Create Client
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <div class="row p-0 m-0">
+                          <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                            *ngFor="let clOption of __mcOptionMenu" (click)="openDialogForclientcreation(clOption,'ESC')">
+                            <mat-icon>{{clOption.icon}}</mat-icon>
+                          </div>
+                        </div>
+                      </mat-menu>
+                    </ng-container> -->
+                    <ng-container *ngIf="__exsitingSecClient">
+                      <button (click)="openDialog('ESC')" color="primary" mat-button type="button"
+                      aria-label="Example icon button with a eye icon" title="View Client Details">
+                      <mat-icon>remove_red_eye</mat-icon>
+                      View Details
+                    </button>
+                    </ng-container>
+                  </td>
+                </tr>
+               </tbody>
+
+             </table>
+              <table *ngIf="__isShowExThirdClient">
+                <thead>
+                  <tr>
+                    <th class="text-center">
+                      Existing Third Applicant
+                    </th>
+                    <th class="text-center">
+                      <button type="button" mat-button color="accent" (click)="__isShowExThirdClient=!__isShowExThirdClient">
+                        <mat-icon> close </mat-icon>
+                        Cancel
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="progressMainSec" appClOutsideClick
+                          (appOutsideClick)="outsideClickforExistingThirdClient($event)">
+                          <div class="searchDiv">
+                            <label for="__clntCd">Client Details</label>
+                            <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                              formControlName="existing_third_client_code"
+                              placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                            <div class="processMain_2" __searchResVisibility
+                              (appOutsideClick)="outsideClickforExistingThirdClient($event)">
+                              <div class="serachresult_client" #secondexistingThirdclientCd>
+                                <ul *ngIf="__ex_third_client.length > 0">
+                                  <li *ngFor="let items of __ex_third_client"
+                                    (click)="getadditionalApplicant(items,'ETC')">
+                                    {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                                  </li>
+                                </ul>
+                                <div class="noDataFound" *ngIf="__ex_third_client.length == 0">
+                                  <h5 class="text-center">
+                                    Sorry!! No Records Found
+                                  </h5>
+                                  <p>To create a new client .Please click on Create Client</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                        <div class="col-sm-12 my-5">
+                          <label for="existing_third_client_name">
+                             Client Name
+                          </label>
+                          <input
+                          type="text"
+                         [attr.disabled]="true"
+                         class="form-control"
+                          name="existing_third_client_name"
+                          id="existing_third_client_name"
+                          formControlName="existing_third_client_name"
+                          >
+                        </div>
+                        <div class="col-sm-12">
+                          <label for="existing_third_client_pan">
+                            Pan
+                         </label>
+                         <input
+                         [attr.disabled]="true"
+                         type="text"
+                         class="form-control"
+                         name="existing_third_client_pan"
+                         id="existing_third_client_pan"
+                         formControlName="existing_third_client_pan"
+                         >
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <!-- <ng-container *ngIf="!__exsitingThirdClient">
+                        <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+                          <mat-icon>add</mat-icon> Create Client
+                        </button>
+                        <mat-menu #menu="matMenu">
+                          <div class="row p-0 m-0">
+                            <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                              *ngFor="let clOption of __mcOptionMenu" (click)="openDialogForclientcreation(clOption,'ETC')">
+                              <mat-icon>{{clOption.icon}}</mat-icon>
+                            </div>
+                          </div>
+                        </mat-menu>
+                      </ng-container> -->
+                      <ng-container *ngIf="__exsitingThirdClient">
+                        <button (click)="openDialog('ETC')" color="primary" mat-button type="button"
+                        aria-label="Example icon button with a eye icon" title="View Client Details">
+                        <mat-icon>remove_red_eye</mat-icon>
+                        View Details
+                      </button>
+                      </ng-container>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-container>
+
+            <!-- New Mode Of Holding -->
+            <div class="row my-5">
+              <div class="col-sm-12">
+                <label for="new_mode_of_holding">New Mode of Holding</label>
+                <select class="form-control" id="new_mode_of_holding" formControlName="new_mode_of_holding">
+                  <option value="">Select</option>
+                  <option value="A">Any Or Survivor</option>
+                  <option value="J">Joint</option>
+                  <option value="S">Single</option>
+                </select>
+              </div>
+            </div>
+            <ng-container *ngIf="__nonfinForm.get('new_mode_of_holding').value == 'J' || __nonfinForm.get('existing_mode_of_holding').value == 'A'">
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="text-center">
+                          Additional Second Client
+                      </th>
+                      <th class="text-center">
+                        <button mat-button color="primary" type="button"
+                        (click)="__isShowNewThirdClient = !__isShowNewThirdClient"
+                        *ngIf="!__isShowNewThirdClient">
+                        + Add Additional Applicant
+                      </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div class="progressMainSec" appClOutsideClick
+                            (appOutsideClick)="outsideClickfornewSecondClient($event)">
+                            <div class="searchDiv">
+                              <label for="__clntCd">Client Details</label>
+                              <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                                formControlName="new_second_client_code"
+                                placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                              <div class="processMain_2" __searchResVisibility
+                                (appOutsideClick)="outsideClickfornewSecondClient($event)">
+                                <div class="serachresult_client" #secondnewSecclientCd>
+                                  <ul *ngIf="__new_sec_client.length > 0">
+                                    <li *ngFor="let items of __new_sec_client"
+                                      (click)="getadditionalApplicant(items,'NSC')">
+                                      {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                                    </li>
+                                  </ul>
+                                  <div class="noDataFound" *ngIf="__new_sec_client.length == 0">
+                                    <h5 class="text-center">
+                                      Sorry!! No Records Found
+                                    </h5>
+                                    <p>To create a new client .Please click on Create Client</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          </div>
+                          <div class="col-sm-12 my-5">
+                            <label for="new_second_client_name">
+                               Client Name
+                            </label>
+                            <input
+                            type="text"
+                           [attr.disabled]="true"
+                           class="form-control"
+                            name="new_second_client_name"
+                            id="new_second_client_name"
+                            formControlName="new_second_client_name"
+                            >
+                          </div>
+                          <div class="col-sm-12">
+                            <label for="new_second_client_pan">
+                              Pan
+                           </label>
+                           <input
+                           [attr.disabled]="true"
+                           type="text"
+                           class="form-control"
+                           name="new_second_client_pan"
+                           id="new_second_client_pan"
+                           formControlName="new_second_client_pan"
+                           >
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <ng-container *ngIf="!__newSecClient">
+                          <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+                            <mat-icon>add</mat-icon> Create Client
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <div class="row p-0 m-0">
+                              <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                                *ngFor="let clOption of __mcOptionMenu" (click)="openDialogForclientcreation(clOption,'NSC')">
+                                <mat-icon>{{clOption.icon}}</mat-icon>
+                              </div>
+                            </div>
+                          </mat-menu>
+                        </ng-container>
+                        <ng-container *ngIf="__newSecClient">
+                          <button (click)="openDialog('NSC')" color="primary" mat-button type="button"
+                          aria-label="Example icon button with a eye icon" title="View Client Details">
+                          <mat-icon>remove_red_eye</mat-icon>
+                          View Details
+                        </button>
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table *ngIf="__isShowNewThirdClient">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Additional Third Applicant</th>
+                      <th class="text-center">
+                        <button type="button" mat-button color="accent" (click)="__isShowNewThirdClient=!__isShowNewThirdClient">
+                          <mat-icon> close </mat-icon>
+                          Cancel
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div class="progressMainSec" appClOutsideClick
+                            (appOutsideClick)="outsideClickfornewThirdClient($event)">
+                            <div class="searchDiv">
+                              <label for="__clntCd">Client Details</label>
+                              <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                                formControlName="new_third_client_code"
+                                placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                              <div class="processMain_2" __searchResVisibility
+                                (appOutsideClick)="outsideClickfornewThirdClient($event)">
+                                <div class="serachresult_client" #secondnewThirdclientCd>
+                                  <ul *ngIf="__new_third_client.length > 0">
+                                    <li *ngFor="let items of __new_third_client"
+                                      (click)="getadditionalApplicant(items,'NTC')">
+                                      {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                                    </li>
+                                  </ul>
+                                  <div class="noDataFound" *ngIf="__new_sec_client.length == 0">
+                                    <h5 class="text-center">
+                                      Sorry!! No Records Found
+                                    </h5>
+                                    <p>To create a new client .Please click on Create Client</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          </div>
+                          <div class="col-sm-12 my-5">
+                            <label for="new_third_client_name">
+                               Client Name
+                            </label>
+                            <input
+                            type="text"
+                           [attr.disabled]="true"
+                           class="form-control"
+                            name="new_third_client_name"
+                            id="new_third_client_name"
+                            formControlName="new_third_client_name"
+                            >
+                          </div>
+                          <div class="col-sm-12">
+                            <label for="new_third_client_pan">
+                              Pan
+                           </label>
+                           <input
+                           [attr.disabled]="true"
+                           type="text"
+                           class="form-control"
+                           name="new_third_client_pan"
+                           id="new_third_client_pan"
+                           formControlName="new_third_client_pan"
+                           >
+                          </div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <ng-container *ngIf="!__newThirdClient">
+                          <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+                            <mat-icon>add</mat-icon> Create Client
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <div class="row p-0 m-0">
+                              <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                                *ngFor="let clOption of __mcOptionMenu" (click)="openDialogForclientcreation(clOption,'NTC')">
+                                <mat-icon>{{clOption.icon}}</mat-icon>
+                              </div>
+                            </div>
+                          </mat-menu>
+                        </ng-container>
+                        <ng-container *ngIf="__newThirdClient">
+                          <button (click)="openDialog('NTC')" color="primary" mat-button type="button"
+                          aria-label="Example icon button with a eye icon" title="View Client Details">
+                          <mat-icon>remove_red_eye</mat-icon>
+                          View Details
+                        </button>
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="__nonfinForm.get('transmission_type').value == '5'">
+            <div class="row mt-5">
+              <div class="col-sm-12">
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="text-center">Claimants Details</th>
+                      <th class="text-center">
+                        <button *ngIf="t5_clientDtls.controls.length < 7" mat-button color="primary" type="button" (click)="addClient()">+ Additional Claimant</button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="t5_clientDtls">
+
+                    <tr *ngFor="let item of t5_clientDtls.controls; let i = index;">
+                      <ng-container [formGroupName]="i">
+                      <td>
+                       <div class="row">
+                        <div class="col-sm-12">
+                          <input type="hidden" name="id" formControlName="id" value="{{i}}" class="form-control">
+                          <div class="progressMainSec" appClOutsideClick
+                          (appOutsideClick)="outsideClickforClaimantT5($event,i)">
+                          <div class="searchDiv">
+                            <label for="client_code">Claiment Details</label>
+                            <input type="search"
+                            name="client_code" id="client_code" class="form-control"
+                              formControlName="client_code"
+                              placeholder="Search By  Name, Code, Email, Mobile, Pan & DOB">
+                            <div class="processMain_2" __searchResVisibility
+                              (appOutsideClick)="outsideClickforClaimantT5($event,i)">
+                              <div class="serachresult_client" #secondCliamants>
+                                <ul *ngIf="__claimantMst.length > 0">
+                                  <li *ngFor="let items of __claimantMst" (click)="getclaimaents(items,i)">
+                                    {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                                  </li>
+                                </ul>
+                                <div class="noDataFound" *ngIf="__claimantMst.length == 0">
+                                  <h5 class="text-center">
+                                    Sorry!! No Records Found
+                                  </h5>
+                                  <p>To create a new client .Please click on Create Client</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                       </div>
+                       <div class="row my-5">
+                        <div class="col-sm-12">
+                          <label for="claimant_name_{{i}}">Claiment Name</label>
+                          <input placeholder="Name" [attr.disabled]="true" type="search" name="claimant_name_{{i}}" id="claimant_name_{{i}}" class="form-control"
+                          formControlName="client_name">
+                        </div>
+                       </div>
+                       <div class="row">
+                        <div class="col-sm-12">
+                          <label for="claimant_pan_{{i}}">Pan</label>
+                          <input placeholder="Pan Number" [attr.disabled]="true" type="search" name="claimant_pan_{{i}}" id="claimant_pan_{{i}}" class="form-control"
+                          formControlName="pan">
+                        </div>
+                       </div>
+                      </td>
+                      <td class="text-center">
+                        <button
+                        color="primary"
+                        type="button"
+                        *ngIf="t5_clientDtls.controls[i].get('client_code').value && __claimantMst.length == 0"
+                        mat-button>
+                          <mat-icon>add</mat-icon> Create Client
+                        </button>
+                        <!-- <mat-menu #menu="matMenu">
+                           [matMenuTriggerFor]="menu"
+                          <div class="row p-0 m-0">
+                            <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                              *ngFor="let clOption of __mcOptionMenu" (click)="openDialogForclientcreation(clOption,'F')">
+                              <mat-icon>{{clOption.icon}}</mat-icon>
+                            </div>
+                          </div>
+                        </mat-menu> -->
+                        <button *ngIf="i > 0"
+                          mat-button
+                          color="accent"
+                          (click)="deleteClient(i)">
+                          <mat-icon> delete </mat-icon>
+                          Remove
+                        </button>
+                      </td>
+                      </ng-container>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th class="text-center">Claimants Details</th>
+                      <th class="text-center">
+                        <button mat-button color="primary" type="button" (click)="addClient()">+ Additional Claimant</button>
+                      </th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </ng-container>
+
+           </ng-container>
+
+           <!-- Redemption -->
+           <ng-container *ngIf="__nonfinForm.get('trans_id').value == '17'">
+             <div class="row">
+              <div class="col-sm-12">
+                <label for="warrant_no">Warrant Number <span class="text-danger">*</span></label>
+                <input type="text" placeholder="Enter Warrant Number" name="warrant_no" id="warrant_no" class="form-control" formControlName="warrant_no">
+                <div class="invalid-feedback"
+                *ngIf="__nonfinForm.get('warrant_no').invalid && (__nonfinForm.get('warrant_no').dirty || __nonfinForm.get('warrant_no').touched)">
+                <span class="invalid-feedback" *ngIf="(__nonfinForm.get('warrant_no')).errors?.required">*Please provide
+                  warrant number</span>
+              </div>
+              </div>
+             </div>
+             <div class="row my-5">
+              <div class="col-sm-12">
+                <label for="warrant_amt">Warrant Amount <span class="text-danger">*</span></label>
+                <input type="text" placeholder="Enter Warrant Amount" name="warrant_amt" id="warrant_amt" class="form-control" formControlName="warrant_amt">
+                <div class="invalid-feedback"
+                *ngIf="__nonfinForm.get('warrant_amt').invalid && (__nonfinForm.get('warrant_amt').dirty || __nonfinForm.get('warrant_amt').touched)">
+                <span class="invalid-feedback" *ngIf="(__nonfinForm.get('warrant_amt')).errors?.required">*Please provide
+                  warrant amount</span>
+              </div>
+              </div>
+             </div>
+             <div class="row">
+              <div class="col-sm-12">
+                <label for="warrant_dt">Warrant Date <span class="text-danger">*</span></label>
+                <input type="date"  name="warrant_dt" id="warrant_dt" class="form-control" formControlName="warrant_dt">
+                <div class="invalid-feedback"
+                *ngIf="__nonfinForm.get('warrant_dt').invalid && (__nonfinForm.get('warrant_dt').dirty || __nonfinForm.get('warrant_dt').touched)">
+                <span class="invalid-feedback" *ngIf="(__nonfinForm.get('warrant_dt')).errors?.required">*Please provide
+                  warrant date</span>
+              </div>
+              </div>
+             </div>
+             <div class="row mt-5">
+              <div class="col-sm-12">
+                <label for="warrant_remarks">Warrant Remarks</label>
+                <textarea class="form-control" placeholder="Enter Warrant Remarks"  formControlName="warrant_remarks" id="warrant_remarks" rows="3" cols="12"></textarea>
+              </div>
+             </div>
+           </ng-container>
+
+           <!-- Change Mode Of Holding -->
+           <ng-container *ngIf="__nonfinForm.get('trans_id').value == '32'">
+               <div class="row">
+                   <div class="col-sm-12">
+                        <label for="change_mode_of_holding">Existing Mode Of Holding <span class="text-danger">*</span></label>
+                         <select class="form-control" id="change_mode_of_holding" formControlName="change_existing_mode_of_holding">
+                          <option value="">Select</option>
+                          <option value="J">Joint</option>
+                          <option value="A">Anyone Or Survivor</option>
+                         </select>
+                         <div class="invalid-feedback"
+                         *ngIf="__nonfinForm.get('change_existing_mode_of_holding').invalid && (__nonfinForm.get('change_existing_mode_of_holding').dirty || __nonfinForm.get('change_existing_mode_of_holding').touched)">
+                         <span class="invalid-feedback" *ngIf="(__nonfinForm.get('change_existing_mode_of_holding')).errors?.required">*Please provide existing mode of holding</span>
+                       </div>
+                   </div>
+                   <div class="col-sm-12 my-5">
+                    <label for="change_new_mode_of_holding">New Mode Of Holding</label>
+                     <select [attr.disabled]="true" class="form-control" id="change_new_mode_of_holding" formControlName="change_new_mode_of_holding">
+                      <option value="">Select</option>
+                      <option value="J">Joint</option>
+                      <option value="A">Anyone Or Survivor</option>
+                     </select>
+               </div>
+               </div>
            </ng-container>
 
         <!-- Upload File -->

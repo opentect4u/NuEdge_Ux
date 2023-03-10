@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angu
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { amc } from 'src/app/__Model/amc';
 import { rnt } from 'src/app/__Model/Rnt';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -20,25 +21,33 @@ import { AmcModificationComponent } from '../amcModification/amcModification.com
   styleUrls: ['./amcRpt.component.css'],
 })
 export class AmcrptComponent implements OnInit {
+  __sortColumnsAscOrDsc: any= {active: '',direction:'asc'};
   @ViewChild('searchAmc') __searchAmc: ElementRef;
   @ViewChild('searchRnt') __searchRnt: ElementRef;
   toppings = new FormControl();
   toppingList: any = [
     {id:'edit',text:'Edit'},
-    {id:'sl_no',text:'SL No.'},
-    {id:'amc_name',text:'Amc'},
-    {id:'R&T',text:'R&T'},
-    {id:'web_site',text:'Web Site'},
+    {id:'delete',text:'Delete'},
+    {id:'sl_no',text:'Sl No'},
+    {id:'amc_name',text:'AMC Full Name'},
+    {id:'amc_short_name',text:'AMC Short Name'},
+    {id:'rnt_name',text:'R&T'},
+    {id:"gstin",text:"GSTIN"},
+    {id:'website',text:'Web Site'},
+    {id:'cus_care_whatsapp_no',text:'Customer Care WhatsApp Number'},
     {id:'cust_care_number',text:'Customer Care Number'},
     {id:'cust_care_email',text:'Customer Care Email'},
-    {id:'head_contact_per',text:'Head Contact Person Name'},
-    {id:'head_contact_per_mobile',text:'Head Contact Person Mobile'},
+    {id:'head_ofc_contact_per',text:'Head Contact Person Name'},
+    {id:'head_contact_per_mob',text:'Head Contact Person Mobile'},
     {id:'head_contact_per_email',text:'Head Contact Person Email'},
-    {id:'head_contact_per_addr',text:'Head Contact Person Address'},
-    {id:'local_contact_per',text:'Local Contact Person Name'},
-    {id:'local_contact_per_mobile',text:'Local Contact Person Mobile'},
+    {id:'head_ofc_addr',text:'Head Office Address'},
+    {id:'local_ofc_contact_per',text:'Local Contact Person Name'},
+    {id:'local_contact_per_mob',text:'Local Contact Person Mobile'},
     {id:'local_contact_per_email',text:'Local Contact Person Email'},
-    {id:'local_contact_per_addr',text:'Local Contact Person Address'},
+    {id:'local_ofc_addr',text:'Local Office Address'},
+    {id:'login_url',text:'Login URL'},
+    {id:'login_id',text:'Login ID'},
+    {id:'login_pass',text:'Login Password'},
     {id:'l1_name',text:'Level-1 Name'},
     {id:'l1_email',text:'Level-1 Email'},
     {id:'l1_contact_no',text:'Level-1 Contact Number'},
@@ -57,7 +66,6 @@ export class AmcrptComponent implements OnInit {
     {id:'l6_name',text:'Level-6 Name'},
     {id:'l6_email',text:'Level-6 Email'},
     {id:'l6_contact_no',text:'Level-6 Contact Number'},
-    {id:'delete',text:'Delete'}
 ];
   __isamcspinner: boolean =false;
   __isrntspinner: boolean =false;
@@ -66,29 +74,37 @@ export class AmcrptComponent implements OnInit {
   __amcMst: amc[] = [];
   __rntMst: rnt[] = [];
   __export= new MatTableDataSource<amc>([]);
-  __exportedClmns: string[] =[ 'sl_no','amc_name','R&T'];
+  __exportedClmns: string[] =[ 'sl_no','amc_name','amc_short_name','rnt_name'];
   __columnsForsummary: string[] = [
     'edit',
+    'delete',
     'sl_no',
     'amc_name',
-    'R&T',
-    'delete'];
+    'amc_short_name',
+    'rnt_name'];
   __columnsForDetails: string[] = [
     'edit',
+    'delete',
     'sl_no',
     'amc_name',
-    'R&T',
-    'web_site',
+    'amc_short_name',
+    'rnt_name',
+    'gstin',
+    'website',
+    'cus_care_whatsapp_no',
     'cust_care_number',
     'cust_care_email',
-    'head_contact_per',
-    'head_contact_per_mobile',
+    'head_ofc_contact_per',
+    'head_contact_per_mob',
     'head_contact_per_email',
-    'head_contact_per_addr',
-    'local_contact_per',
-    'local_contact_per_mobile',
+    'head_ofc_addr',
+    'local_ofc_contact_per',
+    'local_contact_per_mob',
     'local_contact_per_email',
-    'local_contact_per_addr',
+    'local_ofc_addr',
+    'login_url',
+    'login_id',
+    'login_pass',
     'l1_name',
     'l1_email',
     'l1_contact_no',
@@ -114,7 +130,7 @@ export class AmcrptComponent implements OnInit {
     'l6_contact_no',
 
 
-    'delete'];
+];
 
     __columns: string[];
   __selectAMC = new MatTableDataSource<amc>([]);
@@ -144,20 +160,28 @@ export class AmcrptComponent implements OnInit {
      private __dbIntr: DbIntrService) {}
      __paginate: any=[];
   ngOnInit() {
-    console.log(this.data);
-
-    //    if (this.data.amc_id) {
-    //    }
-    //    this.getAMCMaster(
-    //       this.data.rnt_id == null
-    //     ? ''
-    //     : '&rnt_id=' + atob(this.data.rnt_id)
-    // );
     this.__columns =  this.__columnsForsummary;
     this.toppings.setValue(this.__columns);
-    this.submit();
+    this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
   }
 
+   getAmcMst(column_name: string | null = null, sort_by: string | null = null){
+    const __amcSearch = new FormData();
+    __amcSearch.append('paginate',this.__pageNumber.value);
+    __amcSearch.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? this.__detalsSummaryForm.value.rnt_id : '');
+    __amcSearch.append('amc_id',this.__detalsSummaryForm.value.amc_id ? this.__detalsSummaryForm.value.amc_id : '');
+   __amcSearch.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
+   __amcSearch.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
+   __amcSearch.append('column_name',column_name ? column_name : '');
+   __amcSearch.append('sort_by',sort_by ? sort_by : 'asc');
+     this.__dbIntr.api_call(1,'/amcDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
+      this.__paginate = res.links;
+      this.setPaginator(res.data);
+       this.showColumns();
+       this.tableExport(column_name,sort_by);
+     })
+
+   }
 
 
   private getAMCMaster(
@@ -232,23 +256,28 @@ export class AmcrptComponent implements OnInit {
       });
 
       this.__detalsSummaryForm.controls['options'].valueChanges.subscribe(res =>{
-        // this.__columns = res == '1' ?  this.__columnsForDetails : this.__columnsForsummary;
         if(res == '1'){
           this.__columns = this.__columnsForDetails;
           this.toppings.setValue(this.__columns);
-          this.__exportedClmns = ['sl_no','amc_name','R&T',
-          'web_site',
+          this.__exportedClmns = ['sl_no','amc_name',
+          'amc_short_name',
+          'rnt_name',
+          'gstin',
+          'website',
+          'cus_care_whatsapp_no',
           'cust_care_number',
           'cust_care_email',
-          'head_contact_per',
-          'head_contact_per_mobile',
+          'head_ofc_contact_per',
+          'head_contact_per_mob',
           'head_contact_per_email',
-          'head_contact_per_addr',
-          'local_contact_per',
-          'local_contact_per_mobile',
+          'head_ofc_addr',
+          'local_ofc_contact_per',
+          'local_contact_per_mob',
           'local_contact_per_email',
-          'local_contact_per_addr',
-
+          'local_ofc_addr',
+          'login_url',
+          'login_id',
+          'login_pass',
           'l1_name',
           'l1_email',
           'l1_contact_no',
@@ -290,6 +319,8 @@ export class AmcrptComponent implements OnInit {
   }
 
   openDialog(__amc: amc,__amcId){
+    console.log(this.data.id);
+
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -303,7 +334,7 @@ export class AmcrptComponent implements OnInit {
       id: __amcId,
       amc: __amc,
       title: __amcId == 0 ? 'Add AMC' : 'Update AMC',
-      product_id:this.data.id,
+      product_id:this.data.product_id,
       right: global.randomIntFromInterval(1,60)
     };
     dialogConfig.id = __amcId > 0 ? __amcId.toString() : '0';
@@ -333,7 +364,7 @@ export class AmcrptComponent implements OnInit {
   }
   getval(__itemsPerPage){
     this.__pageNumber.setValue(__itemsPerPage);
-    this.getAMCMaster('', __itemsPerPage);
+    this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
   }
   getPaginate(__paginate){
     if (__paginate.url) {
@@ -345,6 +376,8 @@ export class AmcrptComponent implements OnInit {
           + ('&amc_id=' + this.__detalsSummaryForm.value.amc_id)
           + ('&gstin=' + this.__detalsSummaryForm.value.gst_in)
           + ('&contact_person=' + this.__detalsSummaryForm.value.contact_per)
+          + ('&column_name=' + this.__sortColumnsAscOrDsc.active)
+          + ('&sort_by=' + this.__sortColumnsAscOrDsc.direction)
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -357,6 +390,72 @@ export class AmcrptComponent implements OnInit {
   updateRow(row_obj: amc) {
     this.__selectAMC.data = this.__selectAMC.data.filter((value: amc, key) => {
       if (value.id == row_obj.id) {
+
+        value.login_id = row_obj.login_id;
+        value.login_url = row_obj.login_url;
+        value.login_pass = row_obj.login_pass;
+        value.cus_care_whatsapp_no = row_obj.cus_care_whatsapp_no;
+        value.security_qus_ans = row_obj.security_qus_ans;
+        value.amc_name = row_obj.amc_name;
+        value.product_id = row_obj.product_id;
+        value.rnt_id = row_obj.rnt_id;
+        value.website = row_obj.website;
+        value.sip_start_date = row_obj.sip_start_date;
+        value.sip_end_date = row_obj.sip_end_date;
+
+        value.ofc_addr = row_obj.ofc_addr;
+        value.cus_care_no = row_obj.cus_care_no;
+        value.cus_care_email = row_obj.cus_care_email;
+        value.gstin = row_obj.gstin;
+
+
+        value.l1_name = row_obj.l1_name;
+        value.l1_email = row_obj.l1_email;
+        value.l1_contact_no = row_obj.l1_contact_no;
+
+        value.l2_name = row_obj.l2_name;
+        value.l2_email = row_obj.l2_email;
+        value.l2_contact_no = row_obj.l2_contact_no;
+
+        value.l3_name = row_obj.l3_name;
+        value.l3_email = row_obj.l3_email;
+        value.l3_contact_no = row_obj.l3_contact_no;
+
+        value.l4_name = row_obj.l4_name;
+        value.l4_email = row_obj.l3_email;
+        value.l4_contact_no = row_obj.l4_contact_no;
+
+        value.l5_name = row_obj.l5_name;
+        value.l5_email = row_obj.l5_email;
+        value.l5_contact_no = row_obj.l5_contact_no;
+
+        value.l6_name = row_obj.l6_name;
+        value.l6_email = row_obj.l6_email;
+        value.l6_contact_no = row_obj.l6_contact_no;
+
+        value.head_ofc_contact_per = row_obj.head_ofc_contact_per;
+        value.head_contact_per_mob = row_obj.head_contact_per_mob;
+        value.head_contact_per_email = row_obj.head_contact_per_email;
+        value.head_ofc_addr = row_obj.head_ofc_addr;
+
+        value.local_ofc_contact_per = row_obj.local_ofc_contact_per;
+        value.local_contact_per_mob = row_obj.local_contact_per_mob;
+        value.local_contact_per_email = row_obj.local_contact_per_email;
+        value.local_ofc_addr = row_obj.local_ofc_addr;
+        value.amc_short_name =row_obj.amc_short_name;
+
+      }
+      return true;
+    });
+
+    this.__export.data = this.__export.data.filter((value: amc, key) => {
+      if (value.id == row_obj.id) {
+        value.amc_short_name =row_obj.amc_short_name;
+        value.login_id = row_obj.login_id;
+        value.login_url = row_obj.login_url;
+        value.login_pass = row_obj.login_pass;
+        value.cus_care_whatsapp_no = row_obj.cus_care_whatsapp_no;
+        value.security_qus_ans = row_obj.security_qus_ans;
         value.amc_name = row_obj.amc_name;
         value.product_id = row_obj.product_id;
         value.rnt_id = row_obj.rnt_id;
@@ -411,56 +510,35 @@ export class AmcrptComponent implements OnInit {
     this.__selectAMC.data.unshift(row_obj);
     this.__selectAMC._updateChangeSubscription();
   }
-  // getSearchItem(__ev){
-  //   if (__ev.flag == 'A') {
-  //   } else if (__ev.flag == 'F') {
-  //     this.setPaginator([__ev.item]);
-  //   } else {
-  //     this.getAMCMaster(
-  //       this.data.rnt_id == null
-  //         ? ''
-  //         : '&rnt_id=' + atob(this.data.rnt_id)
-  //     );
-  //   }
-  // }
-  submit(){
-    const __amcSearch = new FormData();
-    __amcSearch.append('paginate',this.__pageNumber.value);
-    __amcSearch.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? this.__detalsSummaryForm.value.rnt_id : '');
-    __amcSearch.append('amc_id',this.__detalsSummaryForm.value.amc_id ? this.__detalsSummaryForm.value.amc_id : '');
-   __amcSearch.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
-   __amcSearch.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
+  submit(){this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);}
 
-     this.__dbIntr.api_call(1,'/amcDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-      this.__paginate =res.links;
-      this.setPaginator(res.data);
-       this.showColumns();
-       this.tableExport();
-     })
-  }
-
-  tableExport(){
+  tableExport(column_name: string | null = null, sort_by: string | null = null){
     const __amcExport = new FormData();
     __amcExport.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? this.__detalsSummaryForm.value.rnt_id : '');
     __amcExport.append('amc_id',this.__detalsSummaryForm.value.amc_id ? this.__detalsSummaryForm.value.amc_id : '');
    __amcExport.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
    __amcExport.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
-    this.__dbIntr.api_call(1,'/amcExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
-       console.log(res);
+   __amcExport.append('column_name',column_name ? column_name : '');
+   __amcExport.append('sort_by',sort_by ? sort_by : 'asc');
+   this.__dbIntr.api_call(1,'/amcExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
       this.__export = new MatTableDataSource(res);
     })
   }
 
   showColumns(){
+    console.log(this.__detalsSummaryForm.value.options );
+
     if( this.__detalsSummaryForm.value.options == '1'){
+      console.log('sasa');
+
       if(this.__detalsSummaryForm.value.l1
        || this.__detalsSummaryForm.value.l2
        || this.__detalsSummaryForm.value.l3
        || this.__detalsSummaryForm.value.l4
        || this.__detalsSummaryForm.value.l5
        || this.__detalsSummaryForm.value.l6){
-         var columnDt =  [ 'edit','sl_no','amc_name','R&T'];
-         this.__exportedClmns = ['sl_no','amc_name','R&T'];
+         var columnDt =  [ 'edit','delete','sl_no','amc_name','amc_short_name','rnt_name','gstin'];
+         this.__exportedClmns = ['sl_no','amc_name','rnt_name'];
          if(this.__detalsSummaryForm.value.l1){
            columnDt = [...columnDt,'l1_name','l1_email','l1_contact_no'];
           this.__exportedClmns = [ ...this.__exportedClmns ,'l1_name','l1_email','l1_contact_no'];
@@ -485,55 +563,16 @@ export class AmcrptComponent implements OnInit {
            columnDt = [...columnDt,'l6_name','l6_email','l6_contact_no'];
           this.__exportedClmns = [ ...this.__exportedClmns ,'l6_name','l6_email','l6_contact_no'];
          }
-         columnDt = [...columnDt,'delete'];
+        //  columnDt = [...columnDt,];
          this.__columns = columnDt;
          this.toppings.setValue(this.__columns);
-
        }
        else{
-         this.__columns = this.__columnsForDetails;
+        //  this.__columns = this.__columnsForsummary;
+        this.__columns = this.__columnsForDetails;
+        const clm = ['edit','delete']
          this.toppings.setValue(this.__columns);
-
-         this.__exportedClmns = ['sl_no','amc_name','R&T',
-                                    'web_site',
-                                      'cust_care_number',
-                                      'cust_care_email',
-                                      'head_contact_per',
-                                      'head_contact_per_mobile',
-                                      'head_contact_per_email',
-                                      'head_contact_per_addr',
-                                      'local_contact_per',
-                                      'local_contact_per_mobile',
-                                      'local_contact_per_email',
-                                      'local_contact_per_addr',
-                                  'l1_name',
-                                  'l1_email',
-                                  'l1_contact_no',
-
-                                  'l2_name',
-                                  'l2_email',
-                                  'l2_contact_no',
-
-                                  'l3_name',
-                                  'l3_email',
-                                  'l3_contact_no',
-
-                                  'l4_name',
-                                  'l4_email',
-                                  'l4_contact_no',
-
-                                  'l4_name',
-                                  'l4_email',
-                                  'l4_contact_no',
-
-                                  'l5_name',
-                                  'l5_email',
-                                  'l5_contact_no',
-
-                                  'l6_name',
-                                  'l6_email',
-                                  'l6_contact_no',
-                                ]
+         this.__exportedClmns = this.__columns.filter(item => !clm.includes(item))
        }
      }
   }
@@ -597,6 +636,39 @@ export class AmcrptComponent implements OnInit {
     this.__detalsSummaryForm.patchValue({
       options:'2'
     });
-    this.submit();
+    this.showColumns();
+    this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
+  }
+  sortData(sort: any) {
+    this.__sortColumnsAscOrDsc = sort;
+    this.getAmcMst(sort.active, sort.direction == '' ? 'asc' : sort.direction);
+     console.log(this.__detalsSummaryForm.value.options);
+
+  }
+  delete(__el,index){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'A',
+      id: __el.id,
+      title: 'Delete '  + __el.amc_name,
+      api_name:'/amcDelete'
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.__selectAMC.data.splice(index,1);
+          this.__selectAMC._updateChangeSubscription();
+          this.__export.data.splice(this.__export.data.findIndex((x: any) => x.id == __el.id),1);
+          this.__export._updateChangeSubscription();
+        }
+      }
+
+    })
   }
 }

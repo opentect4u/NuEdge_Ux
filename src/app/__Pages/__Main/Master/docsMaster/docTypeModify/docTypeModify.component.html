@@ -12,7 +12,7 @@
               <input type="text" name="doc_type" id="doctype" class="form-control" placeholder="Enter Document Type" formControlName="doc_type">
               <div class="invalid-feedback" *ngIf="__docsForm.get('doc_type').invalid && (__docsForm.get('doc_type').dirty || __docsForm.get('doc_type').touched)">
                 <span class="invalid-feedback" *ngIf="(__docsForm.get('doc_type')).errors?.required">*Please provide document type</span>
-              </div> 
+              </div>
             </div>
           </div>
           <div class="row ">
@@ -39,7 +39,7 @@
         <mat-paginator hidden [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator>
         <table mat-table [dataSource]="__selectDocs">
           <ng-container matColumnDef="sl_no">
-            <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+            <th mat-header-cell *matHeaderCellDef>Sl o.</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
 

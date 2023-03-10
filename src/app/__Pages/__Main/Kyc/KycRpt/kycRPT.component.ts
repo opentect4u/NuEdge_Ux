@@ -21,6 +21,8 @@ templateUrl: './kycRPT.component.html',
 styleUrls: ['./kycRPT.component.css']
 })
 export class KycrptComponent implements OnInit {
+
+  __sortAscOrDsc = {active: '',direction:'asc'};
   __kycLoginType =kycLoginType;
   __kycLoginAt: any= [];
   __isAdditional: boolean = false;
@@ -28,7 +30,7 @@ export class KycrptComponent implements OnInit {
   WindowObject: any;
   toppings = new FormControl();
   toppingList: any = [{id: "edit",text:"Edit"},
-  {id: "sl_no",text:"SL No."},
+  {id: "sl_no",text:"Sl No"},
   {id: "tin_no",text:"TIN Number"},
   {id: "bu_type",text:"Buisness Type"},
   {id: "sub_brk_cd",text:"Sub Broker ARN"},
@@ -210,7 +212,7 @@ fullScreen(){
   this.__isVisible = !this.__isVisible;
 }
 
-KycRpt(){
+ getkycRptMst(column_name: string | null = '',sort_by: string | null | '' = 'asc'){
   const __kyc = new FormData();
   __kyc.append('paginate',this.__pageNumber.value);
   __kyc.append('option', this.__kycForm.value.options);
@@ -218,6 +220,8 @@ KycRpt(){
   __kyc.append('login_type',this.__kycForm.value.login_type);
   __kyc.append('start_date',this.__kycForm.value.start_date);
   __kyc.append('end_date',this.__kycForm.value.end_date);
+  __kyc.append('column_name',column_name);
+  __kyc.append('sort_by',sort_by);
   if(this.__kycForm.get('options').value != '3'){
   __kyc.append(
     'client_code',
@@ -244,19 +248,43 @@ else{
 
       this.__kycRpt = new MatTableDataSource(res.data);
       this.__paginate = res.links;
-      this.tableExport();
+      this.tableExport(column_name,sort_by);
   })
+
+
+ }
+
+KycRpt(){
+  this.getkycRptMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  // this.getRNTmaster(this.__pageNumber.value);
-this.KycRpt();
+  this.KycRpt();
 }
+
 getPaginate(__paginate){
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url + ('&paginate=' + this.__pageNumber.value)
+        __paginate.url 
+        + ('&paginate=' + this.__pageNumber.value)
+        + ('&option='+  this.__kycForm.value.options)
+        + ('&login_at=' + this.__kycForm.value.login_at)
+        + ('&login_type=' + this.__kycForm.value.login_type)
+        + ('&start_date=' + this.__kycForm.value.start_date)
+        + ('&end_date=' + this.__kycForm.value.end_date)
+        + ('&sort_by=' + this.__sortAscOrDsc.direction)
+        + ('&column_name=' + this.__sortAscOrDsc.active)
+        +  (this.__kycForm.get('options').value != '3' 
+        ?  (('&client_code=' + (this.__kycForm.value.client_code ? this.__kycForm.value.client_code : ''))
+        + ( '&sub_brk_cd=' + (this.__kycForm.value.sub_brk_cd ? this.__kycForm.value.sub_brk_cd : ''))
+        + ('&bu_type=' + (this.__kycForm.value.bu_type.length > 0 ? JSON.stringify(this.__kycForm.value.bu_type): '')))
+        : (
+        + ('&login_status=' + this.__kycForm.value.login_status)
+        + ('&date_status=' + this.__kycForm.value.date_status)
+        )
+        )
+
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -265,12 +293,16 @@ getPaginate(__paginate){
       });
   }
 }
-tableExport(){
+tableExport(column_name: string | null = '',sort_by: string | null | '' = 'asc'){
   const __kyc = new FormData();
-  __kyc.append('paginate',this.__pageNumber.value);
+  // __kyc.append('paginate',this.__pageNumber.value);
   __kyc.append('option', this.__kycForm.value.options);
   __kyc.append('login_at',this.__kycForm.value.login_at);
   __kyc.append('login_type',this.__kycForm.value.login_type);
+  __kyc.append('start_date',this.__kycForm.value.start_date);
+  __kyc.append('end_date',this.__kycForm.value.end_date);
+  __kyc.append('column_name',column_name);
+  __kyc.append('sort_by',sort_by);
   if(this.__kycForm.get('options').value != '3'){
   __kyc.append(
     'client_code',
@@ -290,8 +322,6 @@ tableExport(){
 else{
   __kyc.append('login_status',this.__kycForm.value.login_status);
   __kyc.append('date_status',this.__kycForm.value.date_status);
-  __kyc.append('start_date',this.__kycForm.value.start_date);
-  __kyc.append('end_date',this.__kycForm.value.end_date);
 }
   this.__dbIntr.api_call(1,'/kycExport',__kyc).pipe(map((x: any) => x.data)).subscribe((res: any) =>{
     this.__export = new MatTableDataSource(res);
@@ -428,5 +458,20 @@ openDialog(id: string | null = null, __items) {
     dialogRef.addPanelClass('mat_dialog');
   }
 
+}
+reset(){
+  this.__kycForm.reset();
+  this.__isAdditional=false;
+  this.__kycForm.get('options').setValue('2');
+  this.__sortAscOrDsc = {active:'',direction:'asc'};
+  this.__kycForm.patchValue({
+    start_date:this.getTodayDate(),
+    end_date: this.getTodayDate()
+  });
+  this.KycRpt();
+}
+sortData(sort){
+  this.__sortAscOrDsc =sort;
+  this.KycRpt();
 }
 }

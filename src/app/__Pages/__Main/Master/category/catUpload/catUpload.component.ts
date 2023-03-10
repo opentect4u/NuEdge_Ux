@@ -57,21 +57,22 @@ export class CatUploadComponent implements OnInit {
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
-      columnDef: 'product_id',
-      header: 'product_id',
-      cell: (element: Record<string, any>) => `${element['product_id']}`,
+      columnDef: 'Product Id',
+      header: 'Product Id',
+      cell: (element: Record<string, any>) => `${element['Product Id']}`,
+      isDate: true,
     },
     {
-      columnDef: 'cat_name',
-      header: 'cat_name',
-      cell: (element: Record<string, any>) => `${element['cat_name']}`,
+      columnDef: 'Category',
+      header: 'Category',
+      cell: (element: Record<string, any>) => `${element['Category']}`,
       isDate: true,
     },
   ];
   tableData = new MatTableDataSource([
     {
-      cat_name: 'Others',
-      product_id: 1,
+      "Category": 'Others',
+      "Product Id":1
     },
   ]);
   allowedExtensions = ['csv', 'xlsx'];
@@ -82,7 +83,7 @@ export class CatUploadComponent implements OnInit {
     ]),
     file: new FormControl(''),
   });
-  __columns: string[] = ['sl_no', 'Cat_name', 'edit', 'delete'];
+  __columns: string[] = ['sl_no', 'Cat_name', 'edit'];
   __selectRNT = new MatTableDataSource<category>([]);
   constructor(
     private __dbIntr: DbIntrService,

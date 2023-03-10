@@ -22,9 +22,11 @@ templateUrl: './rcvFormRpt.component.html',
 styleUrls: ['./rcvFormRpt.component.css']
 })
 export class RcvformrptComponent implements OnInit {
+
+  __sortAscOrDsc: any= {active:'',direction:'asc'};
     toppings = new FormControl();
     toppingList: any = [{id:'edit',text:'Edit'},
-                            {id:'sl_no',text:'SL No'},
+                            {id:'sl_no',text:'Sl No'},
                             {id:'temp_tin_no',text:'Temporary Tin Number'},
                             {id:'bu_type',text:'Buisness type'},
                             {id:'arn_no',text:'ARN Number'},
@@ -87,13 +89,12 @@ constructor(
 }
 __trans_types: any;
 ngOnInit(){
-  // this.getRvcFormMaster();
-  this.tableExport();
+  // this.tableExport();
   this.getTransactionTypeDtls();
   this.__columns = this.__columnsForSummary;
   this.toppings.setValue(this.__columns);
   this.getTransactionType();
-  this.submit();
+  this.getRcvForm();
 }
 getTransactionType(){
   console.log('aas');
@@ -102,6 +103,32 @@ getTransactionType(){
     this.__transType = res;
   })
 }
+
+  getRcvForm(column_name: string | null = '', sort_by: string| null | '' = 'asc'){
+    const __rcvFormSearch = new FormData();
+  __rcvFormSearch.append('paginate',this.__pageNumber.value);
+  __rcvFormSearch.append('trans_type_id',this.data.trans_type_id ? this.data.trans_type_id : '');
+  __rcvFormSearch.append('product_id',this.data.product_id ? this.data.product_id : '');
+  __rcvFormSearch.append('client_code',this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '');
+  __rcvFormSearch.append('recv_from',this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : '');
+  __rcvFormSearch.append('sub_brk_cd',this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '');
+  __rcvFormSearch.append('euin_no',this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : '');
+  __rcvFormSearch.append('temp_tin_no',this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : '');
+  __rcvFormSearch.append('inv_type',this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : '');
+  __rcvFormSearch.append('trans_type',this.__rcvForms.value.trans_type ? this.__rcvForms.value.trans_type  : '');
+  __rcvFormSearch.append('bu_type',JSON.stringify(this.__rcvForms.value.bu_type));
+  __rcvFormSearch.append('column_name',column_name);
+  __rcvFormSearch.append('sort_by',sort_by);
+  // __rcvFormSearch.append('kyc_status',JSON.stringify(this.__rcvForms.value.kyc_status));
+  this.__dbIntr.api_call(1,'/formreceivedDetailSearch',__rcvFormSearch).pipe(map((x: any) => x.data)).subscribe((res: any) =>{
+    this.__paginate = res.links;
+    this.__RcvForms = new MatTableDataSource(res.data);
+    this.__RcvForms._updateChangeSubscription();
+    this.tableExport(column_name,sort_by);
+  })
+  }
+
+
 
 onKycChange(e: any) {
   const kyc_status: FormArray = this.__rcvForms.get('kyc_status') as FormArray;
@@ -179,20 +206,23 @@ ngAfterViewInit(){
   });
 }
 
-tableExport(){
-  const __amcExport = new FormData();
-  __amcExport.append('trans_type_id',this.data.trans_type_id ? this.data.trans_type_id : '');
-  __amcExport.append('product_id',this.data.product_id ? this.data.product_id : '');
-  __amcExport.append('client_code',this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '');
-  __amcExport.append('recv_from',this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : '');
-  __amcExport.append('sub_brk_cd',this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '');
-  __amcExport.append('euin_no',this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : '');
-  __amcExport.append('temp_tin_no',this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : '');
-  __amcExport.append('inv_type',this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : '');
-  __amcExport.append('trans_type',this.__rcvForms.value.trans_type ? this.__rcvForms.value.trans_type  : '');
-  __amcExport.append('bu_type',JSON.stringify(this.__rcvForms.value.bu_type));
-  // __amcExport.append('kyc_status',JSON.stringify(this.__rcvForms.value.kyc_status));
-  this.__dbIntr.api_call(1,'/formreceivedExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
+tableExport(column_name: string | null = '', sort_by: string| null | '' = 'asc'){
+  const __rcvFormExport = new FormData();
+  __rcvFormExport.append('trans_type_id',this.data.trans_type_id ? this.data.trans_type_id : '');
+  __rcvFormExport.append('product_id',this.data.product_id ? this.data.product_id : '');
+  __rcvFormExport.append('client_code',this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '');
+  __rcvFormExport.append('recv_from',this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : '');
+  __rcvFormExport.append('sub_brk_cd',this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '');
+  __rcvFormExport.append('euin_no',this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : '');
+  __rcvFormExport.append('temp_tin_no',this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : '');
+  __rcvFormExport.append('inv_type',this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : '');
+  __rcvFormExport.append('trans_type',this.__rcvForms.value.trans_type ? this.__rcvForms.value.trans_type  : '');
+  __rcvFormExport.append('bu_type',JSON.stringify(this.__rcvForms.value.bu_type));
+  __rcvFormExport.append('column_name',column_name);
+  __rcvFormExport.append('sort_by',sort_by);
+
+  // __rcvFormExport.append('kyc_status',JSON.stringify(this.__rcvForms.value.kyc_status));
+  this.__dbIntr.api_call(1,'/formreceivedExport',__rcvFormExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
     this.__export = new MatTableDataSource(res);
     this.__export._updateChangeSubscription();
   })
@@ -207,8 +237,6 @@ getRvcFormMaster(__paginate: string | null = "10"){
     })
 }
 getval(__itemsPerPage){
-  console.log(__itemsPerPage);
-
   this.__pageNumber.setValue(__itemsPerPage);
   this.submit();
 }
@@ -216,7 +244,20 @@ getPaginate(__paginate){
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url + ('&paginate=' + this.__pageNumber.value)
+        __paginate.url 
+        + ('&paginate=' + this.__pageNumber.value)
+        + ('&sort_by=' + this.__sortAscOrDsc.direction)
+        + ('&column_name=' + this.__sortAscOrDsc.active)
+        + ('&trans_type_id=' + this.data.trans_type_id ? this.data.trans_type_id : '')
+        + ('&product_id=' + this.data.product_id ? this.data.product_id : '')
+        + ('&client_code=' + this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '')
+        + ('&recv_from=' + this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : '')
+        + ('&sub_brk_cd=' + this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '')
+        + ('&euin_no=' + this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : '')
+        + ('&temp_tin_no=' + this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : '')
+        + ('&inv_type=' + this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : '')
+        + ('&trans_type=' + this.__rcvForms.value.trans_type ? this.__rcvForms.value.trans_type  : '')
+        + ('&bu_type=' + JSON.stringify(this.__rcvForms.value.bu_type))
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -322,26 +363,17 @@ maximize(){
   }
 
   submit(){
-    const __amcExport = new FormData();
-      console.log(this.__pageNumber.value);
-
-    __amcExport.append('paginate',this.__pageNumber.value);
-    __amcExport.append('trans_type_id',this.data.trans_type_id ? this.data.trans_type_id : '');
-    __amcExport.append('product_id',this.data.product_id ? this.data.product_id : '');
-    __amcExport.append('client_code',this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '');
-    __amcExport.append('recv_from',this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : '');
-    __amcExport.append('sub_brk_cd',this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '');
-    __amcExport.append('euin_no',this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : '');
-    __amcExport.append('temp_tin_no',this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : '');
-    __amcExport.append('inv_type',this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : '');
-    __amcExport.append('trans_type',this.__rcvForms.value.trans_type ? this.__rcvForms.value.trans_type  : '');
-    __amcExport.append('bu_type',JSON.stringify(this.__rcvForms.value.bu_type));
-    // __amcExport.append('kyc_status',JSON.stringify(this.__rcvForms.value.kyc_status));
-    this.__dbIntr.api_call(1,'/formreceivedDetailSearch',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: any) =>{
-      this.__paginate = res.links;
-      this.__RcvForms = new MatTableDataSource(res.data);
-      this.__RcvForms._updateChangeSubscription();
-      this.tableExport();
-    })
+    this.getRcvForm(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
+  }
+  sortData(sort){
+    this.__sortAscOrDsc = sort;
+    this.getRcvForm(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
+  }
+  reset(){
+    this.__rcvForms.reset();
+    this.__isAdd=false;
+    this.__rcvForms.get('options').setValue('2');
+    this.__sortAscOrDsc = {active: '',direction : 'asc'}
+    this.submit();
   }
 }

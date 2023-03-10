@@ -14,6 +14,8 @@ import { DoctyperptComponent } from './docTypeRpt/docTypeRpt.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 const routes: Routes =[{path:'',component:DocsMasterComponent}]
 @NgModule({
   imports: [
@@ -28,7 +30,9 @@ const routes: Routes =[{path:'',component:DocsMasterComponent}]
     MatButtonToggleModule,
     MatTableExporterModule,
     MatRadioModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSortModule,
+    DragDropModule
   ],
   declarations: [DocsMasterComponent,DocsModificationComponent,DoctyperptComponent]
 })

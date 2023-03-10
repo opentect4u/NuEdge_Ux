@@ -15,6 +15,7 @@ import { BnkrptComponent } from './bankRpt/bnkRpt.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 const routes: Routes = [{path:'',component:BankComponent}]
 
@@ -32,7 +33,8 @@ const routes: Routes = [{path:'',component:BankComponent}]
     SharedModule,
     MatRadioModule,
     MatTableExporterModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSortModule
   ],
   declarations: [BankComponent,BnkModificationComponent,BnkrptComponent]
 })

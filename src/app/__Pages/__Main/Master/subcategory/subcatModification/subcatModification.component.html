@@ -32,7 +32,7 @@
         </div>
         <div class="col-sm-12 my-3">
           <label for="subCatName">Sub Category <span class="text-danger">*</span></label>
-          <input type="text" name="subcategory_name" id="catName" class="form-control" placeholder="Enter SubCategory" formControlName="subcategory_name">
+          <input type="text" name="subcategory_name" id="catName" class="form-control" placeholder="Enter Sub Category" formControlName="subcategory_name">
           <div class="invalid-feedback" *ngIf="__subcatForm.get('subcategory_name').invalid && (__subcatForm.get('subcategory_name').dirty || __subcatForm.get('subcategory_name').touched)">
             <span class="invalid-feedback" *ngIf="(__subcatForm.get('subcategory_name')).errors?.required">*Please provide subcategory</span>
           </div>

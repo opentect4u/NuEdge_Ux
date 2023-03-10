@@ -15,6 +15,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 const routes: Routes = [{path:'',component:TransactionComponent,
 data:{breadcrumb:'Transaction'}}]
@@ -34,6 +35,7 @@ data:{breadcrumb:'Transaction'}}]
     MatRadioModule,
     MatTableExporterModule,
     MatTableModule,
+    MatSortModule,
     MatMenuModule
   ],
   declarations: [TransactionComponent,TrnsModificationComponent,TrnsrptComponent]

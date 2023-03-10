@@ -1,8 +1,8 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject, ElementRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit,Inject, ElementRef, ViewChild, QueryList, ViewChildren } from '@angular/core';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA, } from '@angular/material/dialog';
-import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { option } from 'src/app/__Model/option';
 import { plan } from 'src/app/__Model/plan';
 import { rnt } from 'src/app/__Model/Rnt';
@@ -23,6 +23,8 @@ import withoutKycMst from '../../../../../../../assets/json/withoutKyc.json';
 import KycMst from '../../../../../../../assets/json/kyc.json';
 import transmissionType from '../../../../../../../assets/json/TransmissionType.json';
 import { bank } from 'src/app/__Model/__bank';
+import { merge, Observable, of, Subscription } from 'rxjs';
+import declaration from '../../../../../../../assets/json/Declaration.json';
 @Component({
 selector: 'nonFInModification-component',
 templateUrl: './nonFInModification.component.html',
@@ -30,6 +32,9 @@ styleUrls: ['./nonFInModification.component.css']
 })
 export class NonfinmodificationComponent implements OnInit {
 
+  __declaration = declaration;
+    subscr:Subscription;
+  __claimantMst: client[] = [];
   __isT1Visible: boolean = true;
   __trnsmissionType = transmissionType;
   __SecondClient: client;
@@ -77,6 +82,13 @@ export class NonfinmodificationComponent implements OnInit {
   @ViewChild('secondclientCd') __secondCl: ElementRef;
   @ViewChild('thirdClName') __thirdClName: ElementRef;
   @ViewChild('thirdclientCd') __thirdCl: ElementRef;
+  @ViewChild('secondFirstCliamant') __secondFirstCliamant: ElementRef;
+  @ViewChild('secondexistingSecclientCd') __secondexistingSecclientCd: ElementRef;
+  @ViewChild('secondexistingThirdclientCd') secondexistingThirdclientCd: ElementRef;
+  @ViewChild('secondnewSecclientCd') __secondnewSecclientCd: ElementRef;
+  @ViewChild('secondnewThirdclientCd') __secondnewThirdclientCd: ElementRef;
+  @ViewChild('secondCliamants') __secondCliamants: ElementRef;
+  @ViewChildren("secondCliamants") private slides: QueryList<ElementRef>;
 
   __isVisible: boolean = false;
   __istemporaryspinner: boolean = false;
@@ -87,6 +99,7 @@ export class NonfinmodificationComponent implements OnInit {
   __isschemeSpinner: boolean = false;
   __isbnkSpinner: boolean = false;
   __isthirdCldtlsEmpty: boolean = true;
+  __isFirstClaimant: boolean = false;
 
   __noofdaystobeAdded:any;
   __dialogDtForScheme: any;
@@ -107,9 +120,23 @@ export class NonfinmodificationComponent implements OnInit {
   __swpMst: any=[];
   __frequency:any=[];
   __sec_clientMst: client[] = [];
-
+  __claimant_first: client[] = [];
+  __ex_sec_client: client[] =[];
+  __ex_third_client: client[] =[];
+  __new_sec_client: client[]= [];
+  __new_third_client: client[]= [];
+  swp_dates: any=[];
   __isSHowAdditionalTble:boolean = false;
+  __isShowExThirdClient:boolean = false;
+  __isShowNewThirdClient:boolean = false;
+
   __ThirdClient: client;
+  __FirstClaimant: client;
+  __exsitingSecClient:client;
+  __exsitingThirdClient:client;
+  __newSecClient: client;
+  __newThirdClient: client;
+
 
   __mcOptionMenu: any = [
     { flag: 'M', name: 'Minor', icon: 'person_pin' },
@@ -126,6 +153,11 @@ constructor(
 ) {
 }
   __nonfinForm = new FormGroup({
+        mob_dec: new FormControl(''),
+        email_dec: new FormControl(''),
+
+        change_existing_mode_of_holding: new FormControl(''),
+        change_new_mode_of_holding: new FormControl(''),
         newbnk_micr:new FormControl(''),
         newbnk_name: new FormControl(''),
         newbnk_id: new FormControl(''),
@@ -139,7 +171,7 @@ constructor(
         swp_end_date: new FormControl(''),
         swp_duration: new FormControl(''),
         swp_start_date: new FormControl(''),
-        swp_dates: new FormControl(''),
+        swp_dates: new FormControl('',{updateOn:'blur'}),
         swp_freq: new FormControl(''),
         stp_type: new FormControl(''),
         swp_type: new FormControl(''),
@@ -164,7 +196,7 @@ constructor(
          client_name: new FormControl('', [Validators.required]),
          client_code: new FormControl('', [Validators.required]),
          trans_id: new FormControl('',[Validators.required]),
-         folio_no: new FormControl('',[Validators.required]),
+         folio_no: new FormControl('',{validators:[Validators.required],updateOn:'blur'}),
          plan_id: new FormControl('',[Validators.required]),
          option_id: new FormControl('',[Validators.required]),
          scheme_name: new FormControl('',[Validators.required]),
@@ -202,8 +234,42 @@ constructor(
          third_client_pan: new FormControl(''),
          third_kyc: new FormControl(''),
 
+         existing_mode_of_holding: new FormControl(''),
+         claimant_first_client_id: new FormControl(''),
+         claimant_first_client_name: new FormControl(''),
+         claimant_first_client_code: new FormControl(''),
+         claimant_first_client_pan: new FormControl(''),
 
+         existing_second_client_id: new FormControl(''),
+         existing_second_client_name: new FormControl(''),
+         existing_second_client_code: new FormControl(''),
+         existing_second_client_pan: new FormControl(''),
 
+         existing_third_client_id: new FormControl(''),
+         existing_third_client_name: new FormControl(''),
+         existing_third_client_code: new FormControl(''),
+         existing_third_client_pan: new FormControl(''),
+
+         new_mode_of_holding: new FormControl(''),
+         new_second_client_id: new FormControl(''),
+         new_second_client_name: new FormControl(''),
+         new_second_client_code: new FormControl(''),
+         new_second_client_pan: new FormControl(''),
+
+         new_third_client_id: new FormControl(''),
+         new_third_client_name: new FormControl(''),
+         new_third_client_code: new FormControl(''),
+         new_third_client_pan: new FormControl(''),
+
+         t5_clientDtls: new FormArray([]),
+         warrant_no: new FormControl(''),
+         warrant_dt: new FormControl(''),
+         warrant_amt: new FormControl(''),
+         warrant_remarks: new FormControl(''),
+         installment_amt: new FormControl(''),
+         installment_dt: new FormControl('',{updateOn:'blur'}),
+         merge_folio: new FormArray([]),
+         is_merge_folio_checked_all: new FormControl('')
 
   })
 ngOnInit(){
@@ -212,6 +278,52 @@ ngOnInit(){
   this.getOptionMst();
   this.getnumberofdaystobeadded();
   this.getrntMst();
+  this.addClient();
+}
+
+get  t5_clientDtls(): FormArray {
+  return this.__nonfinForm.get("t5_clientDtls") as FormArray;
+}
+addClient(){
+    this.t5_clientDtls.push(this.createclientDtls(),{emitEvent:false});
+    this.changeEvent();
+}
+
+changeEvent(){
+ this.t5_clientDtls.controls.map((x,index: number) =>{
+    console.log(x);
+    this.subscr =  x.get('client_code').valueChanges.
+    pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((dt) =>
+      dt.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+      ),
+      map((x: any) => x.data)
+    ).
+    subscribe(res =>{
+      console.log(res);
+
+      this.slides.find((x,i) => i == index).nativeElement.style.display = 'block';
+      this.__claimantMst = res.data;
+      this.searchResultVisibilityForClaimantT5('block',index);
+      this.t5_clientDtls.controls[index].patchValue({
+        client_name:'',
+        client_id:'',
+        pan:'',
+      })
+    })
+  })
+}
+
+createclientDtls(): FormGroup {
+  return new FormGroup({
+    id: new FormControl(0),
+    client_name: new FormControl(''),
+    client_code: new FormControl(''),
+    pan: new FormControl(''),
+    client_id: new FormControl('')
+  });
 }
 getrntMst(){
   this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck("data")).subscribe((res: rnt[]) =>{
@@ -252,14 +364,135 @@ ngAfterViewInit(){
        this.searchResultVisibilityForThirdClient('block');
        this.__ThirdClient = null;
        this.__nonfinForm.patchValue({
-         third_client_id: '',
-         third_client_name: '',
-         third_client_pan: '',
+        claimant_first_client_id: '',
+        claimant_first_client_name: '',
+        claimant_first_client_pan: '',
        });
      },
      complete: () => console.log(''),
      error: (err) => console.log(),
    });
+
+
+   this.__nonfinForm.controls['existing_second_client_code'].valueChanges.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((dt) =>
+      dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+    ),
+    map((x: any) => x.data)
+  )
+  .subscribe({
+    next: (value) => {
+      this.__ex_sec_client = value.data;
+      this.searchResultVisibilityForExistingSecondClient('block');
+      this.__exsitingSecClient = null;
+      this.__nonfinForm.patchValue({
+       existing_second_client_id: '',
+       existing_second_client_name: '',
+       existing_second_client_pan: '',
+      });
+    },
+    complete: () => console.log(''),
+    error: (err) => console.log(),
+  });
+
+  this.__nonfinForm.controls['new_second_client_code'].valueChanges.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((dt) =>
+      dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+    ),
+    map((x: any) => x.data)
+  )
+  .subscribe({
+    next: (value) => {
+      this.__new_sec_client = value.data;
+      this.searchResultVisibilityForNewSecondClient('block');
+      this.__newSecClient = null;
+      this.__nonfinForm.patchValue({
+       new_second_client_id: '',
+       new_second_client_name: '',
+       new_second_client_pan: '',
+      });
+    },
+    complete: () => console.log(''),
+    error: (err) => console.log(),
+  });
+
+  this.__nonfinForm.controls['new_third_client_code'].valueChanges.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((dt) =>
+      dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+    ),
+    map((x: any) => x.data)
+  )
+  .subscribe({
+    next: (value) => {
+      this.__new_third_client = value.data;
+      this.searchResultVisibilityForNewThirdClient('block');
+      this.__newThirdClient = null;
+      this.__nonfinForm.patchValue({
+       new_third_client_id: '',
+       new_third_client_name: '',
+       new_third_client_pan: '',
+      });
+    },
+    complete: () => console.log(''),
+    error: (err) => console.log(),
+  });
+
+
+  this.__nonfinForm.controls['existing_third_client_code'].valueChanges.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((dt) =>
+      dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+    ),
+    map((x: any) => x.data)
+  )
+  .subscribe({
+    next: (value) => {
+      this.__ex_third_client = value.data;
+      this.searchResultVisibilityForExistingThirdClient('block');
+      this.__exsitingThirdClient = null;
+      this.__nonfinForm.patchValue({
+       existing_third_client_id: '',
+       existing_third_client_name: '',
+       existing_third_client_pan: '',
+      });
+    },
+    complete: () => console.log(''),
+    error: (err) => console.log(),
+  });
+
+   //Claimant Details Search
+   this.__nonfinForm.controls['claimant_first_client_code'].valueChanges.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((dt) =>
+      dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+    ),
+    map((x: any) => x.data)
+  )
+  .subscribe({
+    next: (value) => {
+      this.__claimant_first = value.data;
+      this.__isFirstClaimant = value.data.length > 0 ? false : true;
+      this.searchResultVisibilityForFirstClaimant('block');
+      this.__FirstClaimant = null;
+      this.__nonfinForm.patchValue({
+        third_client_id: '',
+        third_client_name: '',
+        third_client_pan: '',
+      });
+    },
+    complete: () => console.log(''),
+    error: (err) => console.log(),
+  });
+
+
    //Second Client Code Search
    this.__nonfinForm.controls['second_client_code'].valueChanges
    .pipe(
@@ -426,9 +659,20 @@ ngAfterViewInit(){
           this.__nonfinForm.controls['sub_arn_no'].updateValueAndValidity();
   })
 
+  this.__nonfinForm.controls['installment_dt'].valueChanges.subscribe(res =>{
+      this.calculatecancellationeffectivedt(res,this.__nonfinForm.controls['trans_id'].value);
+
+  })
+
   this.__nonfinForm.controls['trans_id'].valueChanges.subscribe(res =>{
   this.__isAmtcheck = false;
   this.__checkedAmt ='';
+  this.merge_folio.controls = [];
+  this.__nonfinForm.controls['change_existing_mode_of_holding'].setValidators(res == '32' ? [Validators.required] : null);
+  this.__nonfinForm.controls['warrant_no'].setValidators(res == '17' ? [Validators.required] : null);
+  this.__nonfinForm.controls['warrant_dt'].setValidators(res == '17' ? [Validators.required] : null);
+  this.__nonfinForm.controls['warrant_amt'].setValidators(res == '17' ? [Validators.required] : null);
+
   this.__nonfinForm.controls['transmission_type'].setValidators(res == '19' ? [Validators.required] : null);
   this.__nonfinForm.controls['first_kyc'].setValidators(res == '20' ? [Validators.required] : null);
   this.__nonfinForm.controls['swp_amount'].removeValidators([Validators.required]);
@@ -437,6 +681,7 @@ ngAfterViewInit(){
   this.__nonfinForm.controls['swp_duration'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
   this.__nonfinForm.controls['swp_start_date'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
   this.__nonfinForm.controls['swp_dates'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
+  this.__nonfinForm.controls['swp_dates'].setAsyncValidators((res == '30'  || res == '31') ? this.DateValidators() : null)
    this.__nonfinForm.controls['swp_freq'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
    this.__nonfinForm.controls['swp_type'].setValidators(res == '30' ? [Validators.required] : null);
    this.__nonfinForm.controls['stp_type'].setValidators(res == '31' ? [Validators.required] : null);
@@ -448,6 +693,8 @@ ngAfterViewInit(){
     this.__nonfinForm.controls['redemp_amount'].removeValidators([Validators.required]);
     this.__nonfinForm.controls['email'].removeValidators([Validators.required,Validators.email]);
     this.__nonfinForm.controls['mobile'].removeValidators([Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]);
+    this.__nonfinForm.controls['installment_amt'].setValidators((res ==  '7' || res ==  '8' || res ==  '9') ? [Validators.required] : null);
+    this.__nonfinForm.controls['installment_dt'].setValidators((res ==  '7' || res ==  '8' || res ==  '9') ? [Validators.required] : null);
     this.__nonfinForm.controls['cancel_effective_date'].setValidators((res ==  '7' || res ==  '8' || res ==  '9') ? [Validators.required] : null);
     this.__nonfinForm.controls['state'].setValidators((res == '22') ? [Validators.required] : null);
     this.__nonfinForm.controls['dist'].setValidators((res == '22') ? [Validators.required] : null);
@@ -463,43 +710,50 @@ ngAfterViewInit(){
     this.__nonfinForm.controls['redemp_type'].setValidators((res == '29') ? [Validators.required] : null);
     this.__nonfinForm.controls['minorToMajorpan'].setValidators((res == '20') ? [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)] : null)
     this.__nonfinForm.controls['kyc_status'].setValidators(res == '20' ? [Validators.required] : null);
-    this.__nonfinForm.controls['first_kyc'].updateValueAndValidity();
-    this.__nonfinForm.controls['minorToMajorpan'].updateValueAndValidity();
-    this.__nonfinForm.controls['kyc_status'].updateValueAndValidity();
-    this.__nonfinForm.controls['stp_type'].updateValueAndValidity();
-    this.__nonfinForm.controls['swp_amount'].updateValueAndValidity();
-    this.__nonfinForm.controls['duration'].updateValueAndValidity();
-    this.__nonfinForm.controls['swp_end_date'].updateValueAndValidity();
-    this.__nonfinForm.controls['swp_duration'].updateValueAndValidity();
-    this.__nonfinForm.controls['swp_start_date'].updateValueAndValidity();
-    this.__nonfinForm.controls['swp_dates'].updateValueAndValidity();
-    this.__nonfinForm.controls['swp_freq'].updateValueAndValidity();
-     this.__nonfinForm.controls['swp_type'].updateValueAndValidity();
-    this.__nonfinForm.controls['cancel_effective_date'].updateValueAndValidity();
-    this.__nonfinForm.controls['change_contact_type'].updateValueAndValidity();
-    this.__nonfinForm.controls['email'].updateValueAndValidity();
-    this.__nonfinForm.controls['mobile'].updateValueAndValidity();
-    this.__nonfinForm.controls['state'].updateValueAndValidity();
-    this.__nonfinForm.controls['dist'].updateValueAndValidity();
-    this.__nonfinForm.controls['city'].updateValueAndValidity();
-    this.__nonfinForm.controls['pincode'].updateValueAndValidity();
-    this.__nonfinForm.controls['reason_for_change'].updateValueAndValidity();
-    this.__nonfinForm.controls['new_name'].updateValueAndValidity();
-    this.__nonfinForm.controls['change_status'].updateValueAndValidity();
-    this.__nonfinForm.controls['nominee_opt_out'].updateValueAndValidity();
-    this.__nonfinForm.controls['folio_pan'].updateValueAndValidity();
-    this.__nonfinForm.controls['redemp_type'].updateValueAndValidity();
-    this.__nonfinForm.controls['unit_type'].updateValueAndValidity();
-    this.__nonfinForm.controls['redemp_unit'].updateValueAndValidity();
-    this.__nonfinForm.controls['redemp_amount'].updateValueAndValidity();
-    this.__nonfinForm.controls['add_line_1'].updateValueAndValidity();
-    this.__nonfinForm.controls['newbnk_id'].updateValueAndValidity();
-    this.__nonfinForm.controls['newbnk_micr'].updateValueAndValidity();
-    this.__nonfinForm.controls['newbnk_accNo'].updateValueAndValidity();
-    this.__nonfinForm.controls['transmission_type'].updateValueAndValidity();
+
+    this.__nonfinForm.controls['change_existing_mode_of_holding'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['installment_amt'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['installment_dt'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['warrant_no'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['warrant_dt'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['warrant_amt'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['first_kyc'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['minorToMajorpan'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['kyc_status'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['stp_type'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['swp_amount'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['duration'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['swp_end_date'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['swp_duration'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['swp_start_date'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['swp_dates'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['swp_freq'].updateValueAndValidity({emitEvent:false});
+     this.__nonfinForm.controls['swp_type'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['cancel_effective_date'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['change_contact_type'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['email'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['mobile'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['state'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['dist'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['city'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['pincode'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['reason_for_change'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['new_name'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['change_status'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['nominee_opt_out'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['folio_pan'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['redemp_type'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['unit_type'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['redemp_unit'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['redemp_amount'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['add_line_1'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['newbnk_id'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['newbnk_micr'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['newbnk_accNo'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['transmission_type'].updateValueAndValidity({emitEvent:false});
 
     if(res ==  '7' || res ==  '8' || res ==  '9'){
-      this.calculatecancellationeffectivedt(res)
+      this.calculatecancellationeffectivedt(this.__nonfinForm.controls['installment_dt'].value,res)
     }
     else if(res == '22'){
      this.getState();
@@ -508,13 +762,32 @@ ngAfterViewInit(){
       this.getSwpType(this.__nonfinForm.controls['trans_id'].value);
       // this.getSchemeWiseFrequency(this.__nonfinForm.controls['scheme_id'].value)
     }
+    else if(res == '33'){
+       this.addmeregeFolios();
+    }
 
+  })
+
+
+
+  this.__nonfinForm.controls['transmission_type'].valueChanges.subscribe(res =>{
+    this.__nonfinForm.controls['existing_mode_of_holding'].setValue('',{emitEvent:false});
+    if(res == '4'){
+      this.__nonfinForm.controls['claimant_first_client_code'].reset('',{emitEvent:false,onlySelf:true});
+      this.__nonfinForm.patchValue({
+        claimant_first_client_id:'',
+        claimant_first_client_name:'',
+        claimant_first_client_pan:''
+      })
+      this.__isFirstClaimant = false;
+      this.__FirstClaimant = null;
+    }
   })
 
   this.__nonfinForm.controls['swp_duration'].valueChanges.subscribe(res =>{
     if(this.__nonfinForm.controls['trans_id'].value == '30' && res){
       this.__nonfinForm.controls['duration'].setValidators(res == 'M' ? [Validators.required] : null)
-      this.__nonfinForm.controls['duration'].updateValueAndValidity();
+      this.__nonfinForm.controls['duration'].updateValueAndValidity({emitEvent:false});
     }
   })
 
@@ -614,32 +887,107 @@ this.__nonfinForm.controls['swp_amount'].valueChanges.subscribe(res =>{
    this.checkAmt(res,this.__nonfinForm.controls['swp_freq'].value)
 })
 
+//change_existing_mode_of_holding
+this.__nonfinForm.controls['change_existing_mode_of_holding'].valueChanges.subscribe(res =>{
+     this.__nonfinForm.get('change_new_mode_of_holding').setValue(res ? (res == 'J' ? 'A' : 'J') : '');
+})
+
+//swp_dates change
+this.__nonfinForm.get('swp_dates').valueChanges.subscribe(res =>{
+  if(res){
+    this.setStartDateBydate(this.__nonfinForm.controls['trans_id'].value,res);
+  }
+  else{
+    this.__nonfinForm.get('swp_start_date').setValue('');
+  }
+})
+
+
+this.__nonfinForm.get('is_merge_folio_checked_all').valueChanges.subscribe(res =>{
+  this.merge_folio.controls.map(x => x.get('is_checked').setValue(res));
+})
+this.merge_folio.valueChanges.subscribe((val) => {
+  //For checking or Unchecking the select All checkbox base on select check box inside the table body
+    const allSelected = val.every(bool => bool.is_checked);
+    if (this.__nonfinForm.get('is_merge_folio_checked_all').value !== allSelected) {
+      this.__nonfinForm.get('is_merge_folio_checked_all').patchValue(allSelected, { emitEvent: false });
+    }
+})
+
 }
 
+get  merge_folio(): FormArray {
+  return this.__nonfinForm.get("merge_folio") as FormArray;
+}
+createMergeFolios(): FormGroup {
+  return new FormGroup({
+    id: new FormControl(0),
+    folio_no: new FormControl(''),
+    is_checked: new FormControl(this.__nonfinForm.get('is_merge_folio_checked_all').value)
+  });
+}
+
+addmeregeFolios(){
+  this.merge_folio.push(this.createMergeFolios());
+}
+
+
+setStartDateBydate(__trans_id,res){
+  console.log(res);
+
+  var date = new Date();
+  var dt = new Date()
+  switch(__trans_id.toString()){
+    case '30':
+      date.setDate(
+        date.getDate()
+        + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x) => x.sl_no == 5)].param_value))
+        break;
+    case '31':
+            date.setDate(
+              date.getDate()
+              + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x) => x.sl_no == 7)].param_value))
+
+              break;
+    default: break;
+  }
+   if(Number(date.getDate()) > Number(res)){
+       dt.setDate(res.length > 1 ? res : '0'+res);
+       dt.setMonth(dt.getMonth() + 2);
+   }
+   else{
+     dt.setDate(res.length > 1 ? res : '0'+res);
+     dt.setMonth(dt.getMonth() + 1);
+
+   }
+   this.__nonfinForm.get('swp_start_date').setValue(dt.toISOString().slice(0, 10))
+}
 getdetailsbyFolio(__folioDtls){
   this.__dbIntr.api_call(0,'/mfTraxFolioDetails','folio_no='+__folioDtls).pipe(pluck("data")).subscribe(res =>{
     console.log(res);
 
-     this.setCLients(res[0])
+     this.setClients(res[0])
   })
 }
 
-setCLients(res){
-  console.log(res);
-
-  this.getadditionalApplicant({
-    id:res.second_client_id,
-    client_code:res.second_client_code,
-    client_name:res.second_client_name,
-    pan:res.second_client_pan,
-    },'FC');
-
+setClients(res){
+  if(res){
+    this.__isSHowAdditionalTble = res.third_client_id ? true : false;
     this.getadditionalApplicant({
-      id:res.third_client_id,
-      client_code:res.third_client_code,
-      client_name:res.third_client_name,
-      pan:res.third_client_pan,
-      },'TC')
+      id:res.second_client_id,
+      client_code:res.second_client_code,
+      client_name:res.second_client_name,
+      pan:res.second_client_pan,
+      },'FC');
+
+      this.getadditionalApplicant({
+        id:res.third_client_id,
+        client_code:res.third_client_code,
+        client_name:res.third_client_name,
+        pan:res.third_client_pan,
+        },'TC')
+  }
+
 }
 
 getState(){
@@ -657,34 +1005,48 @@ getCity(dist_id){
     this.__cityMst = res;
   })
 }
-calculatecancellationeffectivedt(__trans_id){
+calculatecancellationeffectivedt(inst_dt,__trans_id){
+  console.log(inst_dt);
+
+  if(inst_dt){
    var dt = new Date();
-  switch(__trans_id.toString()){
+   var date = new Date();
+   switch(__trans_id.toString()){
     case '7':
       dt.setDate(
         dt.getDate()
         + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x) => x.sl_no == 4)].param_value))
-        this.__nonfinForm.controls['cancel_effective_date'].setValue(dt.toISOString().substring(0,10));
-        console.log(dt.toISOString().substring(0,10));
         break;
     case '8':
             dt.setDate(
               dt.getDate()
               + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x) => x.sl_no == 6)].param_value))
-              this.__nonfinForm.controls['cancel_effective_date'].setValue(dt.toISOString().substring(0,10));
-              console.log(dt.toISOString().substring(0,10));
+
               break;
     case '9':
             dt.setDate(
               dt.getDate()
               + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x) => x.sl_no == 8)].param_value))
-              this.__nonfinForm.controls['cancel_effective_date'].setValue(dt.toISOString().substring(0,10));
-              console.log(dt.toISOString().substring(0,10));
+
               break;
 
     default: break;
   }
+    if(Number(dt.getDate()) > Number(inst_dt)){
+      date.setMonth(date.getMonth() + 2);
+      console.log(date);
 
+    }
+    else{
+      date.setMonth(date.getMonth() + 1);
+      console.log(date);
+    }
+    date.setDate(inst_dt);
+    console.log(date);
+
+  this.__nonfinForm.controls['cancel_effective_date'].setValue(date.toISOString().substring(0,10));
+
+ }
 }
 minimize(){
   this.dialogRef.updateSize("30%",'55px');
@@ -719,11 +1081,8 @@ submitnonFinForm(){
     fb.append('app_form_scan', this.__nonfinForm.value.app_form_scan);
     fb.append('tin_status', this.__nonfinForm.value.tin_status);
     fb.append('plan', this.__nonfinForm.value.plan_id);
-    fb.append('cancel_eff_dt',
-    (this.__nonfinForm.value.trans_id == '7'
-    || this.__nonfinForm.value.trans_id == '8'
-    || this.__nonfinForm.value.trans_id == '9')
-    ? this.__nonfinForm.value.cancel_effective_date : '');
+
+
     fb.append('option', this.__nonfinForm.value.option_id);
     fb.append('euin_no', this.__nonfinForm.value.euin_no ? this.__nonfinForm.value.euin_no.split(' ')[0] : '');
     if (this.__nonfinForm.value.bu_type == '2') {
@@ -734,6 +1093,21 @@ submitnonFinForm(){
     fb.append('change_contact_type', this.__nonfinForm.value.change_contact_type);
     fb.append('email', (this.__nonfinForm.value.change_contact_type == 'E' || this.__nonfinForm.value.change_contact_type == 'B') ?  this.__nonfinForm.value.email : '');
     fb.append('mobile', (this.__nonfinForm.value.change_contact_type == 'M' || this.__nonfinForm.value.change_contact_type == 'B') ?  this.__nonfinForm.value.mobile : '');
+    fb.append('email_dec',(this.__nonfinForm.value.change_contact_type == 'E' || this.__nonfinForm.value.change_contact_type == 'B') ?  this.__nonfinForm.value.email_dec : '')
+    fb.append('mob_dec',(this.__nonfinForm.value.change_contact_type == 'M' || this.__nonfinForm.value.change_contact_type == 'B') ?  this.__nonfinForm.value.mob_dec : '')
+  }
+   else if(this.__nonfinForm.value.trans_id == '7'
+   || this.__nonfinForm.value.trans_id == '8'
+   || this.__nonfinForm.value.trans_id == '9'){
+    fb.append('installment_dt',
+    this.__nonfinForm.value.installment_dt
+    ? this.__nonfinForm.value.installment_dt : '');
+    fb.append('cancel_eff_dt',
+    this.__nonfinForm.value.cancel_effective_date
+    ? this.__nonfinForm.value.cancel_effective_date : '');
+    fb.append('swp_stp_amt',
+    this.__nonfinForm.value.installment_amt
+    ? this.__nonfinForm.value.installment_amt : '');
    }
    else if(this.__nonfinForm.value.trans_id == '22'){
     fb.append('state', this.__nonfinForm.value.state);
@@ -748,7 +1122,7 @@ submitnonFinForm(){
     fb.append('new_name', this.__nonfinForm.value.new_name);
    }
    else if(this.__nonfinForm.value.trans_id == '24'){
-    fb.append('change_status', this.__nonfinForm.value.change_status);
+    fb.append('change_status', this.__nonfinForm.controls['change_status'].value.client_type_id);
    }
    else if(this.__nonfinForm.value.trans_id == '25'){
     fb.append('nominee_opt_out', this.__nonfinForm.value.nominee_opt_out);
@@ -783,14 +1157,47 @@ submitnonFinForm(){
    }
    else if(this.__nonfinForm.value.trans_id == '19'){
     fb.append('transmission_type',this.__nonfinForm.value.transmission_type);
+    if(this.__nonfinForm.value.transmission_type == '2'){
+      fb.append('transmission_second_client_id', this.__nonfinForm.value.second_client_id ? this.__nonfinForm.value.second_client_id : '' );
+      fb.append('transmission_third_client_id', this.__nonfinForm.value.third_client_id ? this.__nonfinForm.value.third_client_id : '' );
+    }
+    else if(this.__nonfinForm.value.transmission_type == '3'){
+      fb.append('existing_mode_of_holding', this.__nonfinForm.value.existing_mode_of_holding ? this.__nonfinForm.value.existing_mode_of_holding : '' );
+      fb.append('transmission_first_client_id',this.__nonfinForm.value.claimant_first_client_code ? this.__nonfinForm.value.claimant_first_client_code : '')
+      fb.append('new_mode_of_holding', this.__nonfinForm.value.new_mode_of_holding ? this.__nonfinForm.value.new_mode_of_holding : '' );
+      fb.append('transmission_second_client_id', this.__nonfinForm.value.new_second_client_code ? this.__nonfinForm.value.new_second_client_code : '' );
+      fb.append('transmission_third_client_id', this.__nonfinForm.value.new_third_client_code ? this.__nonfinForm.value.new_third_client_code : '' );
+      fb.append('transmission_ex_second_client_id', this.__nonfinForm.value.existing_second_client_code ? this.__nonfinForm.value.existing_second_client_code : '' );
+      fb.append('transmission_ex_third_client_id', this.__nonfinForm.value.existing_third_client_code ? this.__nonfinForm.value.existing_third_client_code : '' );
+    }
+    else if(this.__nonfinForm.value.transmission_type == '4'){
+      fb.append('transmission_first_client_id',this.__nonfinForm.value.claimant_first_client_code ? this.__nonfinForm.value.claimant_first_client_code : '')
+    }
+    else if(this.__nonfinForm.value.transmission_type == '5'){
+      fb.append('t5_clientDtls',JSON.stringify(this.__nonfinForm.controls['t5_clientDtls'].value))
+    }
+   }
+   else if(this.__nonfinForm.value.trans_id == '17'){
+    fb.append('warrant_remarks',this.__nonfinForm.value.warrant_remarks);
+    fb.append('warrant_amt',this.__nonfinForm.value.warrant_amt);
+    fb.append('warrant_dt',this.__nonfinForm.value.warrant_dt);
+    fb.append('warrant_no',this.__nonfinForm.value.warrant_no);
+   }
+   else if(this.__nonfinForm.value.trans_id == '32'){
+    fb.append('change_existing_mode_of_holding',this.__nonfinForm.value.change_existing_mode_of_holding);
+    fb.append('change_new_mode_of_holding',this.__nonfinForm.value.change_new_mode_of_holding);
+   }
+   else if(this.__nonfinForm.value.trans_id == '33'){
+    fb.append('merge_folio',JSON.stringify(this.__nonfinForm.controls['merge_folio'].value))
    }
 
     this.__dbIntr.api_call(1, '/mfTraxCreate', fb).subscribe((res: any) => {
       if(res.suc == 1){
-        this.__nonfinForm.reset();
+        // this.__nonfinForm.reset();
         this.__nonfinForm.controls['tin_status'].patchValue('Y');
         this.__dialogDtForClient = null;
         this.__dialogDtForScheme = null;
+        this.dialogRef.close({data:res.data});
       }
       this.__utility.showSnackbar(
         res.suc == 1 ? 'Form Submitted Successfully' : res.msg,
@@ -829,6 +1236,23 @@ if(__ev){
 }
 }
 
+outsideClickfornewSecondClient(__ev){
+  if(__ev){
+   this.searchResultVisibilityForNewSecondClient('none');
+  }
+}
+outsideClickfornewThirdClient(__ev){
+  if(__ev){
+    this.searchResultVisibilityForNewThirdClient('none');
+  }
+}
+searchResultVisibilityForNewThirdClient(display_mode){
+  this.__secondnewSecclientCd.nativeElement.style.display = display_mode;
+}
+
+searchResultVisibilityForNewSecondClient(display_mode){
+   this.__secondnewSecclientCd.nativeElement.style.display = display_mode;
+}
 
 //third client Search Resullt off
 searchResultVisibilityForThirdClient(display_mode) {
@@ -859,6 +1283,22 @@ outsideClick(__ev) {
   if (__ev) {
     this.searchResultVisibilityForEuin('none');
   }
+}
+outsideClickforExistingSecondClient(__ev){
+  if(__ev){
+  this.searchResultVisibilityForExistingSecondClient('none');
+  }
+}
+outsideClickforExistingThirdClient(__ev){
+ if(__ev){
+  this.searchResultVisibilityForExistingThirdClient('none');
+ }
+}
+searchResultVisibilityForExistingThirdClient(display_mode){
+  this.secondexistingThirdclientCd.nativeElement.style.display = display_mode;
+}
+searchResultVisibilityForExistingSecondClient(display_mode){
+  this.__secondexistingSecclientCd.nativeElement.style.display = display_mode;
 }
 outsideClickforClient(__ev){
   if(__ev){
@@ -950,6 +1390,7 @@ getItemsDtls(__euinDtls,__type){
         });
         this.__nonfinForm.patchValue({ scheme_id: __euinDtls.id });
         this.searchResultVisibilityForScheme('none');
+        this.getSchemeWiseFrequency(__euinDtls.id);
         // this.getschemwisedt(__euinDtls.id);
         break;
     default: break;
@@ -960,18 +1401,28 @@ openDialog(__type){
   const dialogConfig = new MatDialogConfig();
   dialogConfig.autoFocus = false;
   dialogConfig.closeOnNavigation = false;
-  dialogConfig.width = __type == 'C' ? '100%' : '50%';
+  dialogConfig.width = (__type == 'C' || __type == 'C1' || __type == 'ESC' || __type == 'NSC'|| __type == 'NTC' ||  __type == 'ETC') ? '100%' : '50%';
   dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
   dialogConfig.data = {
     flag: __type,
     title:
-      __type == 'C'
-        ? this.__dialogDtForClient.client_name
-        : __type == 'S' ? this.__dialogDtForScheme.scheme_name
-        : __type == 'NB' ?  this.__dialogFornewBank.bank_name
-        : this.__dialogForExistingBank.bank_name,
+    __type == 'NTC' ? this.__newThirdClient.client_name :
+    __type == 'NSC' ? this.__newSecClient.client_name :
+    __type == 'ETC' ? this.__exsitingThirdClient.client_name :
+    __type == 'ESC' ? this.__exsitingSecClient.client_name :
+      __type == 'C1'? this.__FirstClaimant.client_name
+      : __type == 'C'
+      ? this.__dialogDtForClient.client_name
+      : __type == 'S' ? this.__dialogDtForScheme.scheme_name
+      : __type == 'NB' ?  this.__dialogFornewBank.bank_name
+      : this.__dialogForExistingBank.bank_name,
     dt:
-      __type == 'C'
+    __type == 'NTC' ? this.__newThirdClient :
+    __type == 'NSC' ? this.__newSecClient :
+    __type == 'ETC' ? this.__exsitingThirdClient :
+    __type == 'ESC' ? this.__exsitingSecClient :
+    __type == 'C1'? this.__FirstClaimant
+        :__type == 'C'
         ? this.__dialogDtForClient
         : __type == 'S' ? this.__dialogDtForScheme
         : __type == 'NB' ? this.__dialogFornewBank
@@ -1028,6 +1479,26 @@ openDialogForclientcreation(__menu, __mode) {
           //   this.__isthirdCldtlsEmpty = false;
           //   this.getadditionalApplicant(dt.data, 'TC');
           //   break;
+          case 'C1':
+            this.__isFirstClaimant = false;
+            this.getadditionalApplicant(dt.data, 'C1');
+            break;
+            case 'ESC':
+            // this.__isFirstClaimant = false;
+            this.getadditionalApplicant(dt.data, 'ESC');
+            break;
+            case 'ETC':
+              // this.__isFirstClaimant = false;
+              this.getadditionalApplicant(dt.data, 'ETC');
+              break;
+              case 'NSC':
+              // this.__isFirstClaimant = false;
+              this.getadditionalApplicant(dt.data, 'NSC');
+              break;
+              case 'NTC':
+              // this.__isFirstClaimant = false;
+              this.getadditionalApplicant(dt.data, 'NTC');
+              break;
           default:
             break;
         }
@@ -1088,10 +1559,7 @@ getSwpType(__trans_id){
 }
 getSchemeWiseFrequency(__scheme_id){
   this.__dbIntr.api_call(0,'/scheme','scheme_id='+ __scheme_id).pipe(pluck("data")).subscribe((res: scheme[]) =>{
-    this.__nonfinForm.controls['swp_dates'].setValue(
-      this.__nonfinForm.controls['trans_id'].value == '30' ? JSON.parse(res[0].swp_date) : JSON.parse(res[0].stp_date)
-      );
-    // if(this.__tr)
+   this.swp_dates = this.__nonfinForm.controls['trans_id'].value == '30' ? JSON.parse(res[0].swp_date) : JSON.parse(res[0].stp_date);
     if(this.__nonfinForm.value.trans_id == '30'){
       this.__frequency = res[0].swp_freq_wise_amt ?
       (JSON.parse(res[0].swp_freq_wise_amt).filter(((x: any)=> x.is_checked == true))) : [];
@@ -1100,57 +1568,55 @@ getSchemeWiseFrequency(__scheme_id){
       this.__frequency = res[0].stp_freq_wise_amt ?
       (JSON.parse(res[0].stp_freq_wise_amt).filter(((x: any)=> x.is_checked == true))) : [];
     }
+    // var date = new Date();
+    // date.setDate(date.getDate()
+    // + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x: any) => x.sl_no == (this.__nonfinForm.value.trans_id == '30' ? 5 : 7))].param_value));
+    // console.log(JSON.parse(this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()));
 
+    //   if(JSON.parse(this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()) != -1)
+    //   {
+    //      console.log('IF');
 
-    var date = new Date(); // Now
-    date.setDate(date.getDate()
-    + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x: any) => x.sl_no == (this.__nonfinForm.value.trans_id == '30' ? 5 : 7))].param_value));
-    console.log(JSON.parse(this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()));
+    //       this.__nonfinForm.patchValue({
+    //         swp_start_date: date.toISOString().slice(0, 10),
+    //       })
+    //   }
+    //   else{
+    //     console.log(date.toISOString().substring(0,10));
+    //     console.log(date.getMonth());
+    //     console.log(JSON.parse(res[0]?.stp_date));
 
-      if(JSON.parse(this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()) != -1)
-      {
-         console.log('IF');
+    //     var found = JSON.parse((this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)).find(function(element) {return Number(element.date) > Number(date.getDate())});
+    //     console.log(found);
 
-          this.__nonfinForm.patchValue({
-            swp_start_date: date.toISOString().slice(0, 10),
-          })
-      }
-      else{
-        console.log(date.toISOString().substring(0,10));
-        console.log(date.getMonth());
-        console.log(JSON.parse(res[0]?.stp_date));
+    //      if(found){
+    //       console.log(found);
 
-        var found = JSON.parse((this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)).find(function(element) {return Number(element.date) > Number(date.getDate())});
-        console.log(found);
-
-         if(found){
-          console.log(found);
-
-                this.__nonfinForm.get('swp_start_date').setValue(
-                  date.getFullYear()
-                  +'-'+(date.getMonth().toString().length > 1 ?  (date.getMonth() + 1) : '0'+(date.getMonth() + 1))
-                  +'-'+found.date);
-         }
-         else{
-          console.log('NOT FOUND' + found);
-           date.setDate(date.getDate() + 60);
-          this.__nonfinForm.get('swp_start_date').setValue(
-            date.getFullYear()
-            +'-'+
-            (date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+
-            date.getMonth())
-            +'-'+
-             (JSON.parse(
-              (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
-              )[0]?.date.length > 1 ? JSON.parse(
-                (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
-                )[0]?.date
-             :'0'+JSON.parse(
-              (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
-              )[0].date));
-           console.log( this.__nonfinForm.get('swp_start_date').value);
-        }
-      }
+    //             this.__nonfinForm.get('swp_start_date').setValue(
+    //               date.getFullYear()
+    //               +'-'+(date.getMonth().toString().length > 1 ?  (date.getMonth() + 1) : '0'+(date.getMonth() + 1))
+    //               +'-'+found.date);
+    //      }
+    //      else{
+    //       console.log('NOT FOUND' + found);
+    //        date.setDate(date.getDate() + 60);
+    //       this.__nonfinForm.get('swp_start_date').setValue(
+    //         date.getFullYear()
+    //         +'-'+
+    //         (date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+
+    //         date.getMonth())
+    //         +'-'+
+    //          (JSON.parse(
+    //           (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
+    //           )[0]?.date.length > 1 ? JSON.parse(
+    //             (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
+    //             )[0]?.date
+    //          :'0'+JSON.parse(
+    //           (this.__nonfinForm.value.trans_id == '30' ? res[0]?.swp_date : res[0]?.stp_date)
+    //           )[0].date));
+    //        console.log( this.__nonfinForm.get('swp_start_date').value);
+    //     }
+    //   }
   })
 
 }
@@ -1231,6 +1697,72 @@ getadditionalApplicant(__items, __type) {
       console.log( this.__nonfinForm.controls['third_client_code'].value);
 
       break;
+    case 'C1':
+      this.__FirstClaimant = __items;
+      this.__nonfinForm.controls['claimant_first_client_code'].reset(
+        __items ? __items.client_code : '',
+        { onlySelf: true, emitEvent: false }
+      );
+      this.__nonfinForm.patchValue({
+        claimant_first_client_name: __items ? __items.client_name : '',
+        claimant_first_client_id: __items ? __items.id : '',
+        claimant_first_client_pan: __items ? __items.pan : '',
+      });
+      this.searchResultVisibilityForFirstClaimant('none');
+      break;
+
+      case 'ESC':
+      this.__exsitingSecClient = __items;
+      this.__nonfinForm.controls['existing_second_client_code'].reset(
+        __items ? __items.client_code : '',
+        { onlySelf: true, emitEvent: false }
+      );
+      this.__nonfinForm.patchValue({
+        existing_second_client_name: __items ? __items.client_name : '',
+        existing_second_client_id: __items ? __items.id : '',
+        existing_second_client_pan: __items ? __items.pan : '',
+      });
+      this.searchResultVisibilityForExistingSecondClient('none');
+      break;
+      case 'ETC':
+      this.__exsitingThirdClient = __items;
+      this.__nonfinForm.controls['existing_third_client_code'].reset(
+        __items ? __items.client_code : '',
+        { onlySelf: true, emitEvent: false }
+      );
+      this.__nonfinForm.patchValue({
+        existing_third_client_name: __items ? __items.client_name : '',
+        existing_third_client_id: __items ? __items.id : '',
+        existing_third_client_pan: __items ? __items.pan : '',
+      });
+      this.searchResultVisibilityForExistingThirdClient('none');
+      break;
+      case 'NSC':
+        this.__newSecClient = __items;
+        this.__nonfinForm.controls['new_second_client_code'].reset(
+          __items ? __items.client_code : '',
+          { onlySelf: true, emitEvent: false }
+        );
+        this.__nonfinForm.patchValue({
+          new_second_client_name: __items ? __items.client_name : '',
+          new_second_client_id: __items ? __items.id : '',
+          new_second_client_pan: __items ? __items.pan : '',
+        });
+        this.searchResultVisibilityForNewSecondClient('none');
+        break;
+        case 'NTC':
+        this.__newThirdClient = __items;
+        this.__nonfinForm.controls['new_third_client_code'].reset(
+          __items ? __items.client_code : '',
+          { onlySelf: true, emitEvent: false }
+        );
+        this.__nonfinForm.patchValue({
+          new_third_client_name: __items ? __items.client_name : '',
+          new_third_client_id: __items ? __items.id : '',
+          new_third_client_pan: __items ? __items.pan : '',
+        });
+        this.searchResultVisibilityForNewThirdClient('none');
+        break;
     default:
       break;
   }
@@ -1241,7 +1773,7 @@ openDialogForAdditionalApplicant(__type) {
   dialogConfig.autoFocus = false;
   dialogConfig.closeOnNavigation = false;
   dialogConfig.width = '100%';
-  if (__type == 'C') {
+  if (__type == 'C' || __type == 'C1') {
     dialogConfig.panelClass = 'fullscreen-dialog';
   }
   dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
@@ -1259,6 +1791,65 @@ openDialogForAdditionalApplicant(__type) {
       dialogConfig
     );
   } catch (ex) { }
+}
+
+outsideClickforClaimant(__ev){
+  if(__ev){
+    this.searchResultVisibilityForFirstClaimant('none');
+  }
+}
+outsideClickforClaimantT5(__ev,index){
+  if(__ev){
+   this.searchResultVisibilityForClaimantT5('none',index);
+  }
+}
+searchResultVisibilityForClaimantT5(display_mode,index){
+  this.slides.find((x,i) => i == index).nativeElement.style.display = display_mode;
+}
+
+searchResultVisibilityForFirstClaimant(display_mode){
+  this.__secondFirstCliamant.nativeElement.style.display = display_mode;
+}
+deleteClient(index:number){
+  this.t5_clientDtls.removeAt(index,{emitEvent:false});
+  this.subscr.unsubscribe();
+  this.changeEvent();
+}
+getclaimaents(__items,index){
+  console.log(__items);
+
+  this.t5_clientDtls.at(index).get('client_name').setValue(__items.client_name);
+  this.t5_clientDtls.at(index).get('client_id').setValue(__items.id);
+  this.t5_clientDtls.at(index).get('client_code').setValue(__items.client_code,{emitEvent:false});
+  this.t5_clientDtls.at(index).get('pan').setValue(__items.pan);
+  this.searchResultVisibilityForClaimantT5('none',index);
+}
+
+
+checkIfDatesExists(sip_date: string): Observable<boolean> {
+  return of(this.swp_dates.some(ele => ele.date == sip_date)).pipe(delay(500));
+}
+ DateValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    console.log(control);
+
+    return this.checkIfDatesExists(control.value).pipe(
+      map(res => {
+        console.log(res);
+         if(control.value){
+        // if res is true, sip_date exists, return true
+           return res ?  null : { DatesExists: true };
+        // NB: Return null if there is no error
+         }
+         return null
+
+      })
+    );
+  };
+}
+
+deletemergeFolio(index){
+  this.merge_folio.removeAt(index);
 }
 
 }

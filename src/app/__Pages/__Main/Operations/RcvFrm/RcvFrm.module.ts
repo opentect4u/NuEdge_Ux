@@ -22,6 +22,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
 import { RcvformmodifyfornfoComponent } from './rcvFormModifyForNFO/rcvFormModifyForNFO.component';
 import { RcvfrmmodificationfornonfinComponent } from './rcvFormmodificationForNonFIn/rcvFrmModificationForNonFin.component';
+import { MatSortModule } from '@angular/material/sort';
 const routes:Routes= [{path:'',component:RcvFrmComponent}]
 @NgModule({
   imports: [
@@ -41,7 +42,8 @@ const routes:Routes= [{path:'',component:RcvFrmComponent}]
     DragDropModule,
     MatChipsModule,
     MatRadioModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSortModule
   ],
   declarations: [RcvFrmComponent,
     RcvFormAdditionComponent,

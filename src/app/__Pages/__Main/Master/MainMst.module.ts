@@ -94,6 +94,17 @@ const routes: Routes = [
         },
       },
       {
+         path:'emailTemplate',
+         loadChildren:()=> import('./EmailTemplate/emailTemplate.module').then(m => m.EmailtemplateModule),
+         data:{
+          parentId: 4,
+          id: 27,
+          title: 'NuEdge - Email Template',
+          pageTitle: 'Email Template',
+          has_menubar: 'Y',
+         }
+      },
+      {
         path: 'mstOperations',
         loadChildren: () =>
           import('../Dashboards/mstOpDashboard/mstOpDashboard.module').then(

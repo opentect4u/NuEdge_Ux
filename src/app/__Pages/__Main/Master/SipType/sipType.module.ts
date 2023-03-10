@@ -17,6 +17,7 @@ import { MatTableModule } from '@angular/material/table';
 import { SiptypemodificationComponent } from './sipTypeModification/sipTypeModification.component';
 import { SiptyperptComponent } from './sipTypeRpt/sipTypeRpt.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 const routes: Routes = [
   {
     path:'',
@@ -40,7 +41,8 @@ const routes: Routes = [
       MatRadioModule,
       MatTableExporterModule,
       MatTableModule,
-      MatMenuModule
+      MatMenuModule,
+      MatSortModule
     ],
     providers: []
 })

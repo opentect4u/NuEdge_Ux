@@ -21,9 +21,9 @@ import KycMst from '../../../../../../../assets/json/kyc.json';
 import withoutKycMst from '../../../../../../../assets/json/withoutKyc.json';
 import { option } from 'src/app/__Model/option';
 import { plan } from 'src/app/__Model/plan';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
-import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { Overlay } from '@angular/cdk/overlay';
 import { CmnDialogForDtlsViewComponent } from '../../common/cmnDialogForDtlsView/cmnDialogForDtlsView.component';
@@ -31,12 +31,14 @@ import { DialogForCreateClientComponent } from '../../common/dialogForCreateClie
 import dateslist from '../../../../../../../assets/json/dates.json';
 import { dates } from 'src/app/__Utility/disabledt';
 import { rnt } from 'src/app/__Model/Rnt';
+import { Observable, of } from 'rxjs';
 @Component({
   selector: 'finModification-component',
   templateUrl: './finModification.component.html',
   styleUrls: ['./finModification.component.css'],
 })
 export class FinmodificationComponent implements OnInit {
+  __swp_freq: any=[];
   __rnt_login_at: rnt[];
   __sipDT: any=[];
   __dates: any= dateslist;
@@ -63,7 +65,9 @@ export class FinmodificationComponent implements OnInit {
 
   __isVisible:boolean =false;
 
-  __sipfreq = __sipFrequency;
+  // __sipfreq = __sipFrequency;
+  __sipfreq: any=[];
+
   __mcOptionMenu: any = [
     { flag: 'M', name: 'Minor', icon: 'person_pin' },
     { flag: 'P', name: 'Pan Holder', icon: 'credit_card' },
@@ -123,6 +127,13 @@ export class FinmodificationComponent implements OnInit {
   __product_id: string = this.data.product_id;
   __product_type: string = this.data.trans_type_id;
   __traxForm = new FormGroup({
+    sip_name: new FormControl(''),
+    swp_freq: new FormControl(''),
+    swp_start_date: new FormControl(''),
+    swp_duration: new FormControl(''),
+    swp_installment_amt: new FormControl(''),
+    swp_end_date: new FormControl(''),
+
     kyc_status: new FormControl('', [Validators.required]),
     first_kyc: new FormControl('',[Validators.required]),
     tin_status: new FormControl('Y', [Validators.required]),
@@ -190,7 +201,9 @@ export class FinmodificationComponent implements OnInit {
     period: new FormControl(''),
     sip_start_date: new FormControl(''),
     sip_end_date: new FormControl(''),
-    sip_date: new FormControl(''),
+    sip_date: new FormControl('',
+    {asyncValidators: [this.sipDateValidators()],
+    updateOn: 'blur'}),
     switch_amt: new FormControl(''),
     switch_scheme_to: new FormControl(''),
     scheme_id_to: new FormControl(''),
@@ -203,7 +216,7 @@ export class FinmodificationComponent implements OnInit {
     plan_to: new FormControl(''),
     rnt_login_at: new FormControl('',[Validators.required])
   });
-
+  __noofdaystobeAdded:any;
   send_date = new Date();
   formattedDate: any;
   constructor(
@@ -219,7 +232,15 @@ export class FinmodificationComponent implements OnInit {
     this.getrntMst();
     this.getOptionMst();
     this.getPlanMst();
+    this.getnumberofdaystobeadded();
     this.getTransactionType();
+  }
+  getnumberofdaystobeadded(){
+    this.__dbIntr.api_call(0,'/mdparams',null).pipe(pluck("data")).subscribe(res =>{
+      console.log(res);
+
+      this.__noofdaystobeAdded = res;
+    })
   }
 
   getrntMst(){
@@ -510,7 +531,7 @@ export class FinmodificationComponent implements OnInit {
           sip_start_date: '',
           sip_end_date: '',
           sip_date:''
-        });
+        },{emitEvent:false});
       }
         this.__checkAmt = res == '3' ? false : this.__checkAmt;
         this.__chkInvAmt = res == '2' ? true : false;
@@ -579,8 +600,10 @@ export class FinmodificationComponent implements OnInit {
            if(res == 'P'){
               this.removeValidations([{name:'duration',valid:[Validators.required]}]);
                let getDT = new Date();
-               console.log(getDT.getDate()+'/12/2999');
-              this.__traxForm.get('sip_end_date').setValue('2999-12-'+getDT.getDate());
+               getDT.setMonth(12);
+               getDT.setFullYear(2999);
+              //  console.log(getDT.getDate()+'/12/2999');
+              this.__traxForm.get('sip_end_date').setValue(getDT.toISOString().substring(0,10));
               console.log( this.__traxForm.get('sip_end_date').value);
 
            }
@@ -630,7 +653,7 @@ export class FinmodificationComponent implements OnInit {
       }
       else if(this.__traxForm.get('inv_type').value == 'A'){
         this.checkFirstInvAmtrightornot(
-          this.__sipdtRng_amtRng.pip_add_mitn_amt,
+          this.__sipdtRng_amtRng.pip_add_min_amt,
           Number(res)
          )
       }
@@ -641,24 +664,35 @@ export class FinmodificationComponent implements OnInit {
 
     //Amount Change Event for pip & sip
     this.__traxForm.get('amount').valueChanges.subscribe(res =>{
-      // console.log(res);
-      if(this.__traxForm.get('trans_id').value == 1 || this.__traxForm.get('trans_id').value == 2){
+      if(res){
+      if(this.__traxForm.get('trans_id').value == 1){
           if(this.__traxForm.get('inv_type').value == 'F'){
              this.checkAmtrightorNot(
-              this.__traxForm.get('trans_id').value == 1 ?
-              this.__sipdtRng_amtRng.pip_fresh_min_amt: this.__sipdtRng_amtRng.sip_fresh_min_amt,
+              this.__sipdtRng_amtRng.pip_fresh_min_amt,
               Number(res));
           }
-          else{
+          else if(this.__traxForm.get('inv_type').value == 'A'){
             this.checkAmtrightorNot(
-              this.__traxForm.get('trans_id').value == 1 ?
-              this.__sipdtRng_amtRng.pip_add_min_amt: this.__sipdtRng_amtRng.sip_add_min_amt,
+              this.__sipdtRng_amtRng.pip_add_min_amt,
               Number(res));
           }
       }
-      else{
-        //no need to check
+      else if(this.__traxForm.get('trans_id').value == 2){
+        console.log(this.__sipfreq);
+
+        if(this.__traxForm.get('inv_type').value == 'F'){
+          this.checkAmtrightorNot(
+            Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_fresh_min_amt),
+            Number(res));
+        }
+        else if(this.__traxForm.get('inv_type').value == 'A'){
+          this.checkAmtrightorNot(
+            Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_add_min_amt),
+            Number(res));
+        }
+
       }
+     }
     })
 
     //change in buisness type
@@ -675,10 +709,18 @@ export class FinmodificationComponent implements OnInit {
     this.__traxForm.get('kyc_status').valueChanges.subscribe(res =>{
       console.log(res);
       this.__kycMst = res == 'Y' ? KycMst : withoutKycMst;
-      // if(res == 'Y'){
-      //   this.setValidations([{name:'first_kyc',valid:[Validators.required]}])
-      // }
-      // else{this.removeValidations([{name:'first_kyc',valid:[Validators.required]}])}
+    })
+
+    //sip_date change
+    this.__traxForm.get('sip_date').valueChanges.subscribe(res =>{
+      // console.log(this.__traxForm.get('sip_date'));
+
+      if(res){
+          this.setStartDateBySIPdate(res);
+      }
+      else{
+        this.__traxForm.get('sip_start_date').setValue('');
+      }
     })
   }
   //Sub Broker search result off
@@ -806,6 +848,7 @@ export class FinmodificationComponent implements OnInit {
     this.__traxForm.patchValue({
       bu_type: __items.bu_type,
       application_no: __items.application_no,
+      folio_number:__items.folio_no,
       // recv_from: __items.recv_from,
       inv_type: __items.inv_type,
       trans_id: __items.trans_id,
@@ -868,46 +911,71 @@ export class FinmodificationComponent implements OnInit {
   }
   getschemwisedt(__scheme_id) {
     this.__dbIntr.api_call(0, '/scheme', 'scheme_id=' + __scheme_id).pipe(pluck("data")).subscribe(res => {
-      this.setStartDateAgainstScheme(res[0]?.sip_date);
+      this.__sipfreq = res[0].sip_freq_wise_amt ? JSON.parse(res[0].sip_freq_wise_amt).filter((x: any) => x.is_checked == true) : [];
+      this.__swp_freq = res[0].swp_freq_wise_amt ? JSON.parse(res[0].swp_freq_wise_amt).filter((x: any) => x.is_checked == true) : [];
+      this.setSipDateAgainstScheme(res[0]?.sip_date);
       this.__sipdtRng_amtRng = res[0];
-      console.log(this.__sipdtRng_amtRng);
+      // var date = new Date();
+      // date.setDate(
+      //   date.getDate()
+      //   + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x: any) => x.sl_no == 3)].param_value));
+      //   console.log(JSON.parse(res[0]?.sip_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()));
 
-      var date = new Date(); // Now
-      date.setDate(date.getDate() + 30);
+      //   console.log(date.toISOString().substring(0,10));
 
-      if(JSON.parse(res[0]?.sip_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()) != -1)
-      {
-          this.__traxForm.patchValue({
-            sip_start_date: date.toISOString().slice(0, 10),
-          })
-      }
-      else{
-        var found = JSON.parse(res[0]?.sip_date).find(function(element) {return Number(element.date) > Number(date.getDate())});
-         if(found){
-                this.__traxForm.get('sip_start_date').setValue(date.getFullYear()+'-'+(date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+date.getMonth())+'-'+found.date);
-         }
-         else{
-           date.setDate(date.getDate() + 60);
-          this.__traxForm.get('sip_start_date').setValue(
-            date.getFullYear()
-            +'-'+
-            (date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+
-            date.getMonth())
-            +'-'+
-             (JSON.parse(res[0]?.sip_date)[0]?.date.length > 1 ? JSON.parse(res[0]?.sip_date)[0]?.date
-             :'0'+JSON.parse(res[0].sip_date)[0].date));
-           console.log( this.__traxForm.get('sip_start_date').value);
+      // if(JSON.parse(res[0]?.sip_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()) != -1)
+      // {
+      //     this.__traxForm.patchValue({
+      //       sip_start_date: date.toISOString().slice(0, 10),
+      //     })
+      // }
+      // else{
+      //   var found = JSON.parse(res[0]?.sip_date).find(function(element) {return Number(element.date) > Number(date.getDate())});
+      //    if(found){
+      //           this.__traxForm.get('sip_start_date').setValue(date.getFullYear()+'-'+(date.getMonth().toString().length > 1 ?  (date.getMonth() + 1) : '0'+(date.getMonth() + 1))+'-'+found.date);
+      //    }
+      //    else{
+      //      date.setDate(date.getDate() + 60);
+      //     this.__traxForm.get('sip_start_date').setValue(
+      //       date.getFullYear()
+      //       +'-'+
+      //       (date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+
+      //       date.getMonth())
+      //       +'-'+
+      //        (JSON.parse(res[0]?.sip_date)[0]?.date.length > 1 ? JSON.parse(res[0]?.sip_date)[0]?.date
+      //        :'0'+JSON.parse(res[0].sip_date)[0].date));
+      //      console.log( this.__traxForm.get('sip_start_date').value);
 
-        }
-      }
+      //   }
+      // }
     })
   }
 
-  setStartDateAgainstScheme(__dt){
+  setSipDateAgainstScheme(__dt){
     if(this.__traxForm.get('trans_id').value == '2'){
       this.__sipDT = JSON.parse(__dt);
-      this.__traxForm.get('sip_date').setValue(JSON.parse(__dt))
+      // this.__traxForm.get('sip_date').setValue(JSON.parse(__dt));
     }
+  }
+  setStartDateBySIPdate(res){
+    console.log(res);
+
+       var date = new Date();
+       var dt = new Date()
+
+       date.setDate(
+          date.getDate()
+        + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x: any) => x.sl_no == 3)].param_value));
+        if(Number(date.getDate()) > Number(res)){
+            dt.setDate(res.length > 1 ? res : '0'+res);
+            dt.setMonth(dt.getMonth() + 2);
+        }
+        else{
+          dt.setDate(res.length > 1 ? res : '0'+res);
+          dt.setMonth(dt.getMonth() + 1);
+        }
+        this.__traxForm.get('sip_start_date').setValue(dt.toISOString().slice(0, 10))
+
   }
 
   getItemsDtls(__euinDtls, __type) {
@@ -1137,7 +1205,9 @@ export class FinmodificationComponent implements OnInit {
         this.__dialogDtForSchemeTo = null;
         this.__dialogDtForClient = null;
         this.__dialogDtForScheme = null;
+        this.dialogRef.close({data:res.data});
       }
+
       this.__utility.showSnackbar(
         res.suc == 1 ? 'Form Submitted Successfully' : res.msg,
         res.suc
@@ -1316,44 +1386,44 @@ export class FinmodificationComponent implements OnInit {
      this.setEndDate(__ev.target.value);
   }
   setEndDate(__dt){
-    console.log(__dt);
-
-    var dt;
-      if(this.__traxForm.controls['sip_frequency'].value == 'D'){
-              //Daily
-          dt = new Date(this.__traxForm.get('sip_start_date').value);
-          let _calculateDT = new Date(dt.setDate(dt.getDate() + Number(__dt))).toISOString().substring(0 ,10);
-          this.__traxForm.controls['sip_end_date'].setValue(_calculateDT);
-
+    let _calculateDT;
+    var dt = new Date(this.__traxForm.get('sip_start_date').value);
+      switch(this.__traxForm.controls['sip_frequency'].value){
+         case 'D' : _calculateDT = new Date(dt.setDate(dt.getDate() + Number(__dt))).toISOString().substring(0 ,10);
+         break;
+         case 'W' :_calculateDT = new Date(dt.setDate(dt.getDate() + (Number(__dt) * 7))).toISOString().substring(0 ,10);
+         break;
+         case 'F' :_calculateDT = new Date(dt.setDate(dt.getDate() + (Number(__dt) * 14))).toISOString().substring(0 ,10);
+         break;
+         case 'M' :_calculateDT = new Date(dt.setMonth(dt.getMonth() + (Number(__dt)))).toISOString().substring(0 ,10);
+         break;
+         case 'Q' : break;
+         case 'S' : break;
+         case 'A' :_calculateDT = new Date(dt.setFullYear(dt.getFullYear() + (Number(__dt)))).toISOString().substring(0 ,10);
+         break;
+         default: break;
       }
-      else if(this.__traxForm.controls['sip_frequency'].value == 'W'){
-              //weekly
-              // dt = new Date(this.__traxForm.get('sip_start_date').value);
-              // let _calculateDT = new Date(dt.setDate(dt.getDate() + (Number(__dt) * 7))).toISOString().substring(0 ,10);
-              // this.__traxForm.controls['sip_end_date'].setValue(_calculateDT);
-
-      }
-      else if(this.__traxForm.controls['sip_frequency'].value == 'F'){
-              //fortnightly
-
-      }
-      else if(this.__traxForm.controls['sip_frequency'].value == 'M'){
-              //Monthly
-              dt = new Date(this.__traxForm.get('sip_start_date').value);
-              let _calculateDT = new Date(dt.setMonth(dt.getMonth() + Number(__dt))).toISOString().substring(0 ,10);
-              this.__traxForm.controls['sip_end_date'].setValue(_calculateDT);
-      }
-      else if(this.__traxForm.controls['sip_frequency'].value == 'Q'){
-              //Querterly
-
-      }
-      else if(this.__traxForm.controls['sip_frequency'].value == 'S'){
-              //Semi Anually
-
-      }
-      else if(this.__traxForm.controls['sip_frequency'].value == 'A'){
-              //Anually
-      }
+      this.__traxForm.controls['sip_end_date'].setValue(_calculateDT);
   }
+  checkIfDatesExists(sip_date: string): Observable<boolean> {
+    return of(this.__sipDT.some(ele => ele.date === sip_date)).pipe(delay(1000));
+  }
+  sipDateValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      console.log(control);
 
+      return this.checkIfDatesExists(control.value).pipe(
+        map(res => {
+          console.log(res);
+           if(control.value){
+          // if res is true, sip_date exists, return true
+             return res ?  null : { sipDatesExists: true };
+          // NB: Return null if there is no error
+           }
+           return null
+
+        })
+      );
+    };
+  }
 }

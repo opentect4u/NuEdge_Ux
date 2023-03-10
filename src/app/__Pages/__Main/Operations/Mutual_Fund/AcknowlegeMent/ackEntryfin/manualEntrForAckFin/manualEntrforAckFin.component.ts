@@ -18,6 +18,7 @@ templateUrl: './manualEntrforAckFin.component.html',
 styleUrls: ['./manualEntrforAckFin.component.css']
 })
 export class ManualentrforackfinComponent implements OnInit {
+
   __transType: any = [];
   __bu_type = buType;
   __rnt: rnt[];
@@ -48,26 +49,7 @@ export class ManualentrforackfinComponent implements OnInit {
     'euin_no',
     'first_client_name',
     'first_client_code',
-    'first_client_pan',
-    // 'mode_of_holding',
-    // 'second_client_name',
-    // 'second_client_code',
-    // 'second_client_pan',
-    // 'third_client_name',
-    // 'third_client_code',
-    // 'third_client_pan',
-    // 'transaction',
-    // 'scheme_name',
-    // 'plan',
-    // 'option',
-    // 'amount',
-    // 'chq',
-    // 'bank',
-    // 'inv_type',
-    // 'apl_no',
-    // 'fol_no',
-    // 'kyc_status',
-    // 'delete'
+    'first_client_pan'
   ];
   __ackMst = new MatTableDataSource<any>([]);
 constructor(
@@ -251,10 +233,11 @@ updateRow(row_obj){
   this.__ackMst.data = this.__ackMst.data.filter((value: any, key) => {
     if (value.tin_no == row_obj.tin_no) {
      value.rnt_login_cutt_off = row_obj.rnt_login_cutt_off,
-     value.rnt_login_dt = row_obj.rnt_login_dt?.split(' ')[0],
+     value.rnt_login_dt = row_obj.rnt_login_dt,
      value.rnt_login_time = row_obj.rnt_login_dt?.split(' ')[1],
      value.ack_copy_scan = `${row_obj.ack_copy_scan}`,
-     value.form_status = row_obj.form_status
+     value.form_status = row_obj.form_status,
+     value.ack_remarks = row_obj.ack_remarks
     }
     return true;
   });

@@ -10,7 +10,7 @@
             <div class="col-sm-12 my-3">
               <label for="ifsCode">IFSC <span class="text-danger">*</span></label>
               <input type="text" name="ifs_code" id="ifsCode" class="form-control" placeholder="Enter IFSC" formControlName="ifs_code">
-               
+
               <div class="invalid-feedback" *ngIf="__bankForm.get('ifs_code').invalid && (__bankForm.get('ifs_code').dirty || __bankForm.get('ifs_code').touched)">
                 <span class="invalid-feedback" *ngIf="(__bankForm.get('ifs_code')).errors?.required">*Please provide IFSC</span>
               </div>
@@ -22,7 +22,7 @@
                 <span class="invalid-feedback" *ngIf="(__bankForm.get('bank_name')).errors?.required">*Please provide bank name</span>
               </div>
             </div>
-            
+
             <div class="col-sm-12 my-3">
               <label for="branch_name">Branch Name <span class="text-danger">*</span></label>
               <input type="text" name="bank_name" id="branch_name" class="form-control" placeholder="Enter Branch Name" formControlName="branch_name">
@@ -44,7 +44,7 @@
                 <span class="invalid-feedback" *ngIf="(__bankForm.get('branch_addr')).errors?.required">*Please provide branch address</span>
               </div>
             </div>
- 
+
 
 
             <div class="col-sm-12 my-3">
@@ -52,7 +52,7 @@
                 {{this.__bankId > 0 ? 'Update' : 'Submit'}}
               </button>
               <button class="btn  resetBtn" (click)="reset()" type="reset">RESET</button>
-              
+
             </div>
           </div>
       </form>
@@ -72,7 +72,7 @@
         <table mat-table [dataSource]="__selectbnk">
           <!-- Sl No. -->
           <ng-container matColumnDef="sl_no">
-            <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
 

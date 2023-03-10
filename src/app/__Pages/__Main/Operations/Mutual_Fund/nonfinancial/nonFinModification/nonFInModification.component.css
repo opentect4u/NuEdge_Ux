@@ -4,7 +4,7 @@ th {
   padding: 8px;
   width: 30%;
   font-size: 13px!important;
-  text-align: center!important;
+  /* text-align: left!important; */
   font-weight: 500;
 }
 
@@ -15,5 +15,10 @@ th:nth-child(1) {
 td,
 th:nth-child(2) {
     width: 17% !important;
+}
+
+.folio_tbl{
+  width: 80%!important;
+  text-align: center;
 }
 

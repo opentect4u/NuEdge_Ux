@@ -3,20 +3,19 @@
   <div mat-dialog-title class="dialog-title">
     <h2 >Option Reports</h2>
     <div class="btnIcon">
-      <button mat-icon-button  (click)="minimize()" >
-        <mat-icon >remove</mat-icon>
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
       </button>
-      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-
-      <button mat-icon-button  [mat-dialog-close]="">
-        <mat-icon >close</mat-icon>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
       </button>
 
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
 
   </div>
@@ -59,7 +58,7 @@
 <div class="mat-elevation-z3">
   <div class="example_container_header">
     <div class="btnGrp">
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <button mat-icon-button  [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
         <mat-icon>system_update_alt</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
@@ -81,18 +80,18 @@
 
   </div>
   <div class="example-container">
-    <table mat-table [dataSource]="__selectOption" class="table_Custome">
+    <table mat-table matSort (matSortChange)="sortData($event)" [dataSource]="__selectOption" class="table_Custome">
       <!-- Sl No. -->
       <ng-container matColumnDef="sl_no">
-        <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+        <th mat-header-cell *matHeaderCellDef>Sl No</th>
         <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
       </ng-container>
 
 
 
       <!--Temporary TIN No.-->
-      <ng-container matColumnDef="option">
-        <th mat-header-cell *matHeaderCellDef>Option</th>
+      <ng-container matColumnDef="opt_name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="opt_name">Option</th>
         <td mat-cell *matCellDef="let element">{{element.opt_name}}</td>
       </ng-container>
 
@@ -110,10 +109,10 @@
       <!-- Buisness Type-->
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef>Delete</th>
-        <td mat-cell *matCellDef="let element">
-          <a>
+        <td mat-cell *matCellDef="let element;let i = index">
+          <button mat-icon-button (click)="delete(element,i)">
             <mat-icon class="delete_icon">delete</mat-icon>
-          </a>
+          </button>
         </td>
       </ng-container>
 
@@ -170,12 +169,12 @@
 
 
   <ng-container matColumnDef="sl_no">
-    <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+    <th mat-header-cell *matHeaderCellDef>Sl No</th>
     <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
   </ng-container>
 
   <!--Temporary TIN No.-->
-  <ng-container matColumnDef="option">
+  <ng-container matColumnDef="opt_name">
     <th mat-header-cell *matHeaderCellDef>Option</th>
     <td mat-cell *matCellDef="let element">{{element.opt_name}}</td>
   </ng-container>

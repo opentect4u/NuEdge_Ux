@@ -3,18 +3,17 @@
   <div mat-dialog-title class="dialog-title" [title]="data.title">
     <h2 >{{data.title}} {{data.id > 0 ? '(' +data.__rnt.rnt_name+')' : ''}}</h2>
     <div class="btnIcon">
-      <button mat-icon-button  (click)="minimize()" >
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
         <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
 
-
-      <button mat-icon-button  [mat-dialog-close]="">
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
 
@@ -25,14 +24,29 @@
     <form [formGroup]="__rntForm" (ngSubmit)="submit()" id="__rntForm_{{data.id}}" autocomplete="off" ngNativeValidate>
       <div class="row">
         <div class="col-sm-12 my-3">
-          <label for="rntName" class="mb-3">R&T Name <span class="text-danger">*</span></label>
-          <input type="text" name="rnt_name" id="rntName" class="form-control" placeholder="Enter R&T Name"
+          <label for="rnt_full_name" class="mb-3">R&T Full Name <span class="text-danger">*</span></label>
+          <input type="text" name="rnt_full_name" id="rnt_full_name" class="form-control" placeholder="Enter R&T Full Name"
+            formControlName="rnt_full_name">
+          <div class="invalid-feedback"
+            *ngIf="__rntForm.get('rnt_full_name').invalid && (__rntForm.get('rnt_full_name').dirty || __rntForm.get('rnt_full_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__rntForm.get('rnt_full_name')).errors?.required">*Please provide R&T
+              full name</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-3">
+          <label for="rntName" class="mb-3">R&T Short Name <span class="text-danger">*</span></label>
+          <input type="text" name="rnt_name" id="rntName" class="form-control" placeholder="Enter R&T Short Name"
             formControlName="rnt_name">
           <div class="invalid-feedback"
             *ngIf="__rntForm.get('rnt_name').invalid && (__rntForm.get('rnt_name').dirty || __rntForm.get('rnt_name').touched)">
             <span class="invalid-feedback" *ngIf="(__rntForm.get('rnt_name')).errors?.required">*Please provide R&T
-              name</span>
+              short name</span>
           </div>
+        </div>
+        <div class="col-sm-12 my-3">
+          <label for="gstin">GSTIN</label>
+          <input type="text" name="gstin" id="gstin" class="form-control"
+            placeholder="Enter GSTIN" formControlName="gstin">
         </div>
 
         <div class="col-sm-12 my-3">
@@ -40,15 +54,17 @@
           <input type="text" name="web_site" id="web_site" class="form-control" placeholder="Enter Website"
             formControlName="web_site">
         </div>
-        <!-- <div class="col-sm-12 my-3">
-          <label for="ofc_add">Office Address <span class="text-danger">*</span></label>
-          <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="ofc_address"
-            class="form-control" placeholder="Enter Office Address"></textarea>
-            <div class="invalid-feedback"
-            *ngIf="__rntForm.get('ofc_address').invalid && (__rntForm.get('ofc_address').dirty || __rntForm.get('ofc_address').touched)">
-            <span class="invalid-feedback" *ngIf="(__rntForm.get('ofc_address')).errors?.required">*Please provide office address</span>
+
+        <div class="col-sm-12 my-3">
+          <label for="cus_care_whatsapp_no">Customer Care WhatsApp Number</label>
+          <input (keypress)="preventNonumeric($event)" type="text" name="cus_care_whatsapp_no" id="cus_care_whatsapp_no"
+            class="form-control" placeholder="Enter Customer Care WhatsApp Number" formControlName="cus_care_whatsapp_no">
+          <div class="invalid-feedback"
+            *ngIf="__rntForm.get('cus_care_whatsapp_no').invalid && (__rntForm.get('cus_care_whatsapp_no').dirty || __rntForm.get('cus_care_whatsapp_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__rntForm.get('cus_care_whatsapp_no')).hasError('pattern')">*Digits allow
+              only</span>
           </div>
-        </div> -->
+        </div>
         <div class="col-sm-12 my-3">
           <label for="cust_care_no">Customer Care Number</label>
           <input (keypress)="preventNonumeric($event)" type="text" name="cust_care_no" id="cust_care_no"
@@ -78,21 +94,21 @@
        </div>
       <div class="row">
         <div class="col-sm-12 my-3">
-          <label for="head_ofc_cotact_per">Contact person</label>
+          <label for="head_ofc_cotact_per">Contact Person</label>
         <input type="text"
         name="head_ofc_cotact_per"
         id="head_ofc_cotact_per"
         formControlName="head_ofc_contact_per" class="form-control" placeholder="Enter Contact Person">
         </div>
         <div class="col-sm-12 my-3">
-          <label for="head_contact_per_mob">Contact person mobile</label>
+          <label for="head_contact_per_mob">Contact Person Mobile</label>
         <input type="text" name="head_contact_per_mob" id="head_contact_per_mob" formControlName="head_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
         <div class="invalid-feedback" *ngIf="__rntForm.get('head_contact_per_mob').invalid && (__rntForm.get('head_contact_per_mob').dirty || __rntForm.get('head_contact_per_mob').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('head_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
         </div>
       </div>
         <div class="col-sm-12 my-3">
-          <label for="head_contact_per_email">Contact person email</label>
+          <label for="head_contact_per_email">Contact Person Email</label>
         <input type="text" name="head_contact_per_email" id="head_contact_per_email" formControlName="head_contact_per_email" class="form-control" placeholder="Enter Contact Person Email">
         <div class="invalid-feedback" *ngIf="__rntForm.get('head_contact_per_email').invalid && (__rntForm.get('head_contact_per_email').dirty || __rntForm.get('head_contact_per_email').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('head_contact_per_email').errors?.email)">*Please provide valid email</span>
@@ -112,18 +128,18 @@
        </div>
       <div class="row">
         <div class="col-sm-12 my-3">
-          <label for="local_ofc_contact_per">Contact person</label>
+          <label for="local_ofc_contact_per">Contact Person</label>
         <input type="text" name="local_ofc_contact_per" id="local_ofc_contact_per" formControlName="local_ofc_contact_per" class="form-control" placeholder="Enter Contact Person">
         </div>
         <div class="col-sm-12 my-3">
-          <label for="local_contact_per_mob">Contact person mobile</label>
+          <label for="local_contact_per_mob">Contact Person Mobile</label>
         <input  (keypress)="preventNonumeric($event)" type="text" name="local_contact_per_mob" id="local_contact_per_mob" formControlName="local_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
         <div class="invalid-feedback" *ngIf="__rntForm.get('local_contact_per_mob').invalid && (__rntForm.get('local_contact_per_mob').dirty || __rntForm.get('local_contact_per_mob').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('local_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
         </div>
       </div>
         <div class="col-sm-12 my-3">
-          <label for="local_contact_per_email">Contact person email</label>
+          <label for="local_contact_per_email">Contact Person Email</label>
         <input type="text" name="local_contact_per_email" id="local_contact_per_email" formControlName="local_contact_per_email" class="form-control" placeholder="Enter Contact Person Email">
         <div class="invalid-feedback" *ngIf="__rntForm.get('local_contact_per_email').invalid && (__rntForm.get('local_contact_per_email').dirty || __rntForm.get('local_contact_per_email').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('local_contact_per_email').errors?.email)">*Please provide valid email</span>
@@ -137,6 +153,77 @@
         </div>
       </div>
       </div>
+
+      <div class="row">
+        <div class="col-sm-12 my-3">
+          <label for="login_url" class="mb-3">Login URL </label>
+          <input type="text" name="login_url" id="login_url" class="form-control" placeholder="Enter Login URL"
+            formControlName="login_url">
+        </div>
+
+        <div class="col-sm-12 my-3">
+          <label for="login_id" class="mb-3">Login ID </label>
+          <input type="text" name="login_id" id="login_id" class="form-control" placeholder="Enter Login ID"
+            formControlName="login_id">
+          <!-- <div class="invalid-feedback"
+            *ngIf="__rntForm.get('login_id').invalid && (__rntForm.get('login_id').dirty || __rntForm.get('login_id').touched)">
+            <span class="invalid-feedback" *ngIf="(__rntForm.get('login_id')).errors?.required">*Please provide login ID</span>
+          </div> -->
+        </div>
+
+        <div class="col-sm-12 my-3">
+          <label for="login_pass" class="mb-3">Login Password </label>
+          <input type="text" name="login_pass" id="login_pass" class="form-control" placeholder="Enter Login Password"
+            formControlName="login_pass">
+          <!-- <div class="invalid-feedback"
+            *ngIf="__rntForm.get('login_pass').invalid && (__rntForm.get('login_pass').dirty || __rntForm.get('login_pass').touched)">
+            <span class="invalid-feedback" *ngIf="(__rntForm.get('login_pass')).errors?.required">*Please provide login password</span>
+          </div> -->
+        </div>
+      </div>
+
+       <!-- Security Qustion Answer -->
+       <div class="row">
+        <div class="col-sm-12">
+
+          <table class="my-4">
+        <thead>
+          <tr>
+            <th>
+              Security Question
+            </th>
+            <th>
+              Security Answer
+            </th>
+            <th>
+              <button mat-icon-button type="button">
+                <mat-icon (click)="addSecurityQuesAns()">add</mat-icon>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody formArrayName="sec_qusAns">
+          <tr *ngFor="let item of sec_qusAns.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td class="rowWidth">
+                <input type="text" placeholder="Enter Security Question" name="sec_qus" id="sec_qus" class="form-control" formControlName="sec_qus">
+              </td>
+              <td class="rowWidth">
+                <input type="text" placeholder="Enter Security Answer" name="sec_ans" id="sec_ans" class="form-control" formControlName="sec_ans">
+              </td>
+              <td class="rowWidth">
+                <button mat-icon-button type="button" *ngIf="i > 0">
+                  <mat-icon (click)="removeSecurityQuesAns(i)">delete</mat-icon>
+                </button>
+              </td>
+
+            </ng-container>
+          </tr>
+              </tbody></table>
+
+        </div>
+     </div>
+
     </form>
   </mat-dialog-content>
 

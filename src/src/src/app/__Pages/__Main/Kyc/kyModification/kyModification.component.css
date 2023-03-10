@@ -1,9 +1,0 @@
-
-/* table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;} */
-td, th {border: 1px solid #dddddd;text-align: center;padding: 8px; width: 50%;}
-td img{
-    height: 101px;
-    width: 101px;
-    object-fit: contain;
-}
-td{vertical-align: middle!important;}

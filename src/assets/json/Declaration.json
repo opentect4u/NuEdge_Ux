@@ -1,0 +1,12 @@
+[
+  {"id":1,"declaration":"Self(default)"},
+  {"id":2,"declaration":"Spouse"},
+  {"id":3,"declaration":"Dependent Children"},
+  {"id":4,"declaration":"Dependent Sibling"},
+  {"id":5,"declaration":"Dependent Parents"},
+  {"id":6,"declaration":"Guardian"},
+  {"id":7,"declaration":"PMS"},
+  {"id":8,"declaration":"Custodian"},
+  {"id":9,"declaration":"POA"}
+]
+

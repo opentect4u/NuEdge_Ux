@@ -20,7 +20,7 @@
     </div>
     <div class="col-sm-12 my-3">
       <label for="subCatName">Sub Category <span class="text-danger">*</span></label>
-      <input type="text" name="subcategory_name" id="catName" class="form-control" placeholder="Enter SubCategory" formControlName="subcategory_name">
+      <input type="text" name="subcategory_name" id="catName" class="form-control" placeholder="Enter Sub Category" formControlName="subcategory_name">
       <div class="invalid-feedback" *ngIf="__subcatForm.get('subcategory_name').invalid && (__subcatForm.get('subcategory_name').dirty || __subcatForm.get('subcategory_name').touched)">
         <span class="invalid-feedback" *ngIf="(__subcatForm.get('subcategory_name')).errors?.required">*Please provide subcategory</span>
       </div>
@@ -30,7 +30,7 @@
         {{this.__subcateId > 0 ? 'Update' : 'Submit'}}
       </button>
       <button class="btn  resetBtn" (click)="reset()" type="reset">RESET</button>
-      
+
     </div>
   </div>
 </form>
@@ -52,7 +52,7 @@
     <table mat-table [dataSource]="__selectCategory">
       <!-- Sl No. -->
       <ng-container matColumnDef="sl_no">
-        <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+        <th mat-header-cell *matHeaderCellDef>Sl No</th>
         <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
       </ng-container>
 

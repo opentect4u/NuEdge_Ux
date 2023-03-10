@@ -18,6 +18,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 
 const routes: Routes = [{path:'',component:Client_manageComponent}]
 
@@ -38,7 +39,8 @@ const routes: Routes = [{path:'',component:Client_manageComponent}]
     MatRadioModule,
     MatTableExporterModule,
     MatMenuModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSortModule
   ],
   declarations: [Client_manageComponent,ClModifcationComponent,ClientRptComponent]
 })

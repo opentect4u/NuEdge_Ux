@@ -2,20 +2,19 @@
   <div mat-dialog-title class="dialog-title">
     <h2>Financial Reports</h2>
     <div class="btnIcon">
-      <button mat-icon-button (click)="minimize()">
-        <mat-icon>remove</mat-icon>
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-
-      <button mat-icon-button [mat-dialog-close]="">
-        <mat-icon>close</mat-icon>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
       </button>
 
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
     </div>
 
   </div>
@@ -45,10 +44,7 @@
                   <mat-icon>filter_alt</mat-icon>
                   Advance Filter
                 </mat-button-toggle>
-                <mat-button-toggle value="center" aria-label="Text align center" (click)="
-              __rcvForms.reset();
-              __isAdd=false;
-              __rcvForms.get('options').setValue('2')">
+                <mat-button-toggle value="center" aria-label="Text align center" (click)="reset()">
                   <mat-icon>restart_alt</mat-icon>
                 </mat-button-toggle>
 
@@ -225,162 +221,162 @@
 
       </div>
       <div class="example-container">
-        <table mat-table [dataSource]="__financMst" class="table_Custome">
-          <ng-container matColumnDef="sl_no" sticky>
-            <th mat-header-cell *matHeaderCellDef>SL No.</th>
+        <table mat-table [dataSource]="__financMst" matSort (matSortChange)="sortData($event)" class="table_Custome">
+          <ng-container matColumnDef="sl_no">
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
 
           <ng-container matColumnDef="temp_tin_no">
-            <th mat-header-cell *matHeaderCellDef>TIN Number</th>
+            <th mat-sort-header="temp_tin_no" mat-header-cell *matHeaderCellDef>TIN Number</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no}}</td>
           </ng-container>
           <ng-container matColumnDef="bu_type">
-            <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+            <th mat-sort-header="bu_type" mat-header-cell *matHeaderCellDef>Buisness Type</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{(element.bu_type == 'D' ? 'B2C - Direct' : (element.bu_type == 'I' ? 'B2C - Indirect' : 'B2B'))}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="arn_no">
-            <th mat-header-cell *matHeaderCellDef>ARN No</th>
+            <th mat-sort-header="arn_no" mat-header-cell *matHeaderCellDef>ARN No</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.arn_no}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="rnt_name">
-            <th mat-header-cell *matHeaderCellDef>R&T</th>
+            <th mat-sort-header="rnt_name" mat-header-cell *matHeaderCellDef>R&T</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.rnt_name ? element.rnt_name : ''}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="euin_no">
-            <th mat-header-cell *matHeaderCellDef>EUIN</th>
+            <th mat-sort-header="euin_no" mat-header-cell *matHeaderCellDef>EUIN</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.euin_no}}
             </td>
           </ng-container>
           <ng-container matColumnDef="amount">
-            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <th mat-sort-header="amount" mat-header-cell *matHeaderCellDef>Amount</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.amount}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="chq">
-            <th mat-header-cell *matHeaderCellDef>Cheque</th>
+            <th mat-sort-header="chq" mat-header-cell *matHeaderCellDef>Cheque</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.chq_no}}
             </td>
           </ng-container>
           <ng-container matColumnDef="bank">
-            <th mat-header-cell *matHeaderCellDef>Bank</th>
+            <th mat-sort-header="bank" mat-header-cell *matHeaderCellDef>Bank</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.chq_bank}}
             </td>
           </ng-container>
           <ng-container matColumnDef="inv_type">
-            <th mat-header-cell *matHeaderCellDef>Investment Type</th>
+            <th mat-sort-header="inv_type" mat-header-cell *matHeaderCellDef>Investment Type</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.inv_type == 'F' ? 'Fresh' : "Additional"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="apl_no">
-            <th mat-header-cell *matHeaderCellDef>Application Number</th>
+            <th mat-sort-header="apl_no" mat-header-cell *matHeaderCellDef>Application Number</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.apl_no}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="mode_of_holding">
-            <th mat-header-cell *matHeaderCellDef>Mode Of Holding</th>
+            <th mat-sort-header="mode_of_holding" mat-header-cell *matHeaderCellDef>Mode Of Holding</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.mode_of_holding == 'S' ? 'Single' : element.mode_of_holding == 'J' ? 'Joint' : 'Any Or Survivor'}}
             </td>
           </ng-container>
           <ng-container matColumnDef="plan">
-            <th mat-header-cell *matHeaderCellDef>Plan</th>
+            <th mat-sort-header="plan" mat-header-cell *matHeaderCellDef>Plan</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.plan}}
             </td>
           </ng-container>
           <ng-container matColumnDef="option">
-            <th mat-header-cell *matHeaderCellDef>Option</th>
+            <th mat-sort-header="option" mat-header-cell *matHeaderCellDef>Option</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.option}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="fol_no">
-            <th mat-header-cell *matHeaderCellDef>Folio Number</th>
+            <th mat-sort-header="fol_no" mat-header-cell *matHeaderCellDef>Folio Number</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.fol_no}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="kyc_status">
-            <th mat-header-cell *matHeaderCellDef>KYC Status</th>
+            <th mat-sort-header="kyc_status" mat-header-cell *matHeaderCellDef>KYC Status</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.kyc_status}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="first_client_name">
-            <th mat-header-cell *matHeaderCellDef>First Client Name</th>
+            <th mat-sort-header="first_client_name" mat-header-cell *matHeaderCellDef>First Client Name</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.first_client_name}}</td>
           </ng-container>
 
 
           <ng-container matColumnDef="first_client_code">
-            <th mat-header-cell *matHeaderCellDef>First Client Code</th>
+            <th mat-sort-header="first_client_code" mat-header-cell *matHeaderCellDef>First Client Code</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.first_client_code}}</td>
           </ng-container>
 
           <ng-container matColumnDef="first_client_pan">
-            <th mat-header-cell *matHeaderCellDef>First Client Pan</th>
+            <th mat-sort-header="first_client_pan" mat-header-cell *matHeaderCellDef>First Client Pan</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.first_client_pan}}</td>
           </ng-container>
 
           <ng-container matColumnDef="second_client_name">
-            <th mat-header-cell *matHeaderCellDef>Second Client Name</th>
+            <th mat-sort-header="second_client_name" mat-header-cell *matHeaderCellDef>Second Client Name</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.second_client_name ? element.second_client_name : ''}}</td>
           </ng-container>
 
           <ng-container matColumnDef="second_client_code">
-            <th mat-header-cell *matHeaderCellDef>Second Client Code</th>
+            <th mat-sort-header="second_client_code" mat-header-cell *matHeaderCellDef>Second Client Code</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.second_client_code ? element.second_client_code : ''}}</td>
           </ng-container>
 
           <ng-container matColumnDef="second_client_pan">
-            <th mat-header-cell *matHeaderCellDef>Second Client Pan</th>
+            <th mat-sort-header="second_client_pan" mat-header-cell *matHeaderCellDef>Second Client Pan</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.second_client_pan ? element.second_client_pan : ''}}</td>
           </ng-container>
 
 
           <ng-container matColumnDef="third_client_name">
-            <th mat-header-cell *matHeaderCellDef>Third Client Name</th>
+            <th mat-sort-header="third_client_name" mat-header-cell *matHeaderCellDef>Third Client Name</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.third_client_name ? element.third_client_name : ''}}</td>
           </ng-container>
 
           <ng-container matColumnDef="third_client_code">
-            <th mat-header-cell *matHeaderCellDef>Third Client Code</th>
+            <th mat-sort-header="third_client_code" mat-header-cell *matHeaderCellDef>Third Client Code</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.third_client_code ? element.third_client_code : ''}}</td>
           </ng-container>
 
           <ng-container matColumnDef="third_client_pan">
-            <th mat-header-cell *matHeaderCellDef>Third Client Pan</th>
+            <th mat-sort-header="third_client_pan" mat-header-cell *matHeaderCellDef>Third Client Pan</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.third_client_pan ? element.third_client_pan : ''}}</td>
           </ng-container>
 
 
           <ng-container matColumnDef="transaction">
-            <th mat-header-cell *matHeaderCellDef>Transaction</th>
+            <th mat-sort-header="transaction" mat-header-cell *matHeaderCellDef>Transaction</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.trans_name}}</td>
           </ng-container>
           <ng-container matColumnDef="scheme_name">
-            <th mat-header-cell *matHeaderCellDef>Scheme Name</th>
+            <th mat-sort-header="scheme_name" mat-header-cell *matHeaderCellDef>Scheme Name</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.scheme_name}}</td>
           </ng-container>
 
@@ -455,7 +451,7 @@
       <table mat-table   [dataSource]="__export" matTableExporter #exporter="matTableExporter">
 
         <ng-container matColumnDef="sl_no">
-          <th mat-header-cell *matHeaderCellDef>SL No.</th>
+          <th mat-header-cell *matHeaderCellDef>Sl No</th>
           <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
         </ng-container>
 

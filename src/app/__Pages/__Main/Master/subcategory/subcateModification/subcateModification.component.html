@@ -3,22 +3,21 @@
   <div mat-dialog-title class="dialog-title" [title]="data.title">
     <h2 >{{data.title}}</h2>
     <div class="btnIcon">
-      <button mat-icon-button  (click)="minimize()" >
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
         <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-    
-      <button mat-icon-button  [mat-dialog-close]="">
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close"  [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-  
     </div>
-  
+
   </div>
 
 <mat-dialog-content>
@@ -36,9 +35,9 @@
       </div>
       <div class="col-sm-12 my-3">
         <label for="subCatName">Sub Category <span class="text-danger">*</span></label>
-        <input type="text" name="subcategory_name" id="catName" class="form-control" placeholder="Enter SubCategory" formControlName="subcategory_name">
+        <input type="text" name="subcategory_name" id="catName" class="form-control" placeholder="Enter Sub Category" formControlName="subcategory_name">
         <div class="invalid-feedback" *ngIf="__subcatForm.get('subcategory_name').invalid && (__subcatForm.get('subcategory_name').dirty || __subcatForm.get('subcategory_name').touched)">
-          <span class="invalid-feedback" *ngIf="(__subcatForm.get('subcategory_name')).errors?.required">*Please provide subcategory</span>
+          <span class="invalid-feedback" *ngIf="(__subcatForm.get('subcategory_name')).errors?.required">*Please provide sub category</span>
         </div>
       </div>
     </div>

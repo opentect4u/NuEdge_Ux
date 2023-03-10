@@ -9,9 +9,9 @@
         <div class="row" *ngIf="__cl_type != 'M' && __cl_type != 'N'">
             <div class="col-sm-12 my-4">
               <label for="panNo">Pan No <span class="text-danger">*</span></label>
-              <input type="text" name="pan" id="panNo" 
-              class="form-control" 
-              placeholder="eg. XXXXX1234X" 
+              <input type="text" name="pan" id="panNo"
+              class="form-control"
+              placeholder="eg. XXXXX1234X"
               formControlName="pan" minlength="10" maxlength="10"
               (change)="checkPanExistornot($event)"
               >
@@ -36,17 +36,17 @@
             </div>
             <div class="col-sm-12 my-4" *ngIf="(__cl_type == 'E' && _clId > 0) || __cl_type == 'M' || __cl_type == 'N'||__cl_type == 'P'">
               <label for="dob">Date Of Birth <span class="text-danger">*</span></label>
-              <input type="date" 
-              name="dob" 
-              id="dob" 
-              class="form-control" 
+              <input type="date"
+              name="dob"
+              id="dob"
+              class="form-control"
               [max]="__maxDt"
               formControlName="dob">
               <div class="invalid-feedback" *ngIf="__clientForm.get('dob').invalid && (__clientForm.get('dob').dirty || __clientForm.get('dob').touched)">
                 <span class="invalid-feedback" *ngIf="(__clientForm.get('dob')).errors?.required">*Please provide date of birth</span>
               </div>
             </div>
-            
+
           </div>
 
           <div class="row" *ngIf="__cl_type == 'M'">
@@ -89,7 +89,7 @@
                 <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('minlength')">*mobile number must be 10 digits</span>
                 <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('maxlength')">*mobile number must be 10 digits</span>
                 <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('pattern')">*allow only digits</span>
-      
+
               </div>
             </div>
             <div class="col-sm-12 my-4">
@@ -98,7 +98,7 @@
               <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('minlength')">*mobile number must be 10 digits</span>
               <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('maxlength')">*mobile number must be 10 digits</span>
               <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('pattern')">*allow only digits</span>
-      
+
             </div>
           </div>
           <div class="row" *ngIf="(__cl_type == 'E' && _clId > 0) || __cl_type == 'M' || __cl_type == 'N'||__cl_type == 'P'">
@@ -108,14 +108,14 @@
               <div class="invalid-feedback" *ngIf="__clientForm.get('email').invalid && (__clientForm.get('email').dirty || __clientForm.get('email').touched)">
                 <span class="invalid-feedback" *ngIf="(__clientForm.get('email')).errors?.required">*Please provide email</span>
                 <span class="invalid-feedback" *ngIf="(__clientForm.get('email')).errors?.email">*Please provide valid email</span>
-              
+
               </div>
             </div>
             <div class="col-sm-12 my-4">
               <label for="sec_email">Alternative Email</label>
               <input type="text" name="sec_email" id="sec_email"  class="form-control"   placeholder="Enter Alternative Email" formControlName="sec_email">
               <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_email')).errors?.email">*Please provide valid email</span>
-               
+
             </div>
           </div>
           <div class="row" *ngIf="(__cl_type == 'E' && _clId > 0) || __cl_type == 'M' || __cl_type == 'N'||__cl_type == 'P'">
@@ -174,7 +174,7 @@
               </div>
             </div>
           </div>
-                
+
           <div class="divider" *ngIf="(__cl_type == 'E' && _clId > 0) || __cl_type == 'M' || __cl_type == 'N'||__cl_type == 'P'">
             <span>Upload Documents</span>
            <hr class="line"/>
@@ -209,7 +209,7 @@
                       <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}
                       </option>
                     </select>
-      
+
                     <div class="invalid-feedback"
                       *ngIf=" __docs.controls[i].get('doc_type_id').invalid && ( __docs.controls[i].get('doc_type_id').dirty ||  __docs.controls[i].get('doc_type_id').touched)">
                       <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_type_id').errors?.required">*Please
@@ -229,7 +229,7 @@
                         *ngIf="__docs.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
                         2MB.</span>
                     </div>
-      
+
                   </td>
                   <td class="rowWidth">
                     <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
@@ -292,7 +292,7 @@
         <table mat-table [dataSource]="__selectClient">
           <!-- Sl No. -->
           <ng-container matColumnDef="sl_no">
-            <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
 

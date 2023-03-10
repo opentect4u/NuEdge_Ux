@@ -52,87 +52,126 @@ export class UploadScmComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tableColumns: Array<Column> = [
     {
-      columnDef: 'amc_id',
-      header: 'amc_id',
-      cell: (element: Record<string, any>) => `${element['amc_id']}`,
+      columnDef: 'AMC ID',
+      header: 'AMC ID',
+      cell: (element: Record<string, any>) => `${element['AMC ID']}`,
       isDate: true
     },
     {
-      columnDef: 'category_id',
-      header: 'category_id',
-      cell: (element: Record<string, any>) => `${element['category_id']}`,
+      columnDef: 'Category ID',
+      header: 'Category ID',
+      cell: (element: Record<string, any>) => `${element['Category ID']}`,
       isDate: true
     },
     {
-      columnDef: 'subcategory_id',
-      header: 'subcategory_id',
-      cell: (element: Record<string, any>) => `${element['subcategory_id']}`,
+      columnDef: 'Sub Category ID',
+      header: 'Sub Category ID',
+      cell: (element: Record<string, any>) => `${element['Sub Category ID']}`,
       isDate: true
     },
     {
-      columnDef: 'scheme_name',
-      header: 'scheme_name',
-      cell: (element: Record<string, any>) => `${element['scheme_name']}`
+      columnDef: 'Scheme',
+      header: 'Scheme',
+      cell: (element: Record<string, any>) => `${element['Scheme']}`
     },
     {
-      columnDef: 'scheme_type',
-      header: 'scheme_type',
-      cell: (element: Record<string, any>) => `${element['scheme_type']}`,
+      columnDef: 'Scheme Type',
+      header: 'Scheme Type',
+      cell: (element: Record<string, any>) => `${element['Scheme Type']}`,
       isDate: true
     },
     {
-      columnDef: 'nfo_start_dt',
-      header: 'nfo_start_dt',
-      cell: (element: Record<string, any>) => `${element['nfo_start_dt']}`,
+      columnDef: 'NFO Start Date',
+      header: 'NFO Start Date',
+      cell: (element: Record<string, any>) => `${element['NFO Start Date']}`,
       isDate: true
     },
     {
-      columnDef: 'nfo_end_dt',
-      header: 'nfo_end_dt',
-      cell: (element: Record<string, any>) => `${element['nfo_end_dt']}`,
+      columnDef: 'NFO End Date',
+      header: 'NFO End Date',
+      cell: (element: Record<string, any>) => `${element['NFO End Date']}`,
       isDate: true
     },
     {
-      columnDef: 'nfo_reopen_dt',
-      header: 'nfo_reopen_dt',
-      cell: (element: Record<string, any>) => `${element['nfo_reopen_dt']}`,
+      columnDef: 'NFO Reopen Date',
+      header: 'NFO Reopen Date',
+      cell: (element: Record<string, any>) => `${element['NFO Reopen Date']}`,
       isDate: true
     } ,
     {
-      columnDef: 'pip_fresh_min_amt',
-      header: 'pip_fresh_min_amt',
-      cell: (element: Record<string, any>) => `${element['pip_fresh_min_amt']}`,
+      columnDef: 'PIP Fresh Minimum Amount',
+      header: 'PIP Fresh Minimum Amount',
+      cell: (element: Record<string, any>) => `${element['PIP Fresh Minimum Amount']}`,
       isDate: true
     },
     {
-      columnDef: 'pip_add_min_amt',
-      header: 'pip_add_min_amt',
-      cell: (element: Record<string, any>) => `${element['pip_add_min_amt']}`,
+      columnDef: 'PIP Fresh Additional Amount',
+      header: 'PIP Fresh Additional Amount',
+      cell: (element: Record<string, any>) => `${element['PIP Fresh Additional Amount']}`,
       isDate: true
     },
     {
-      columnDef: 'sip_freq_wise_amt',
-      header: 'sip_freq_wise_amt',
-      cell: (element: Record<string, any>) => `${element['sip_freq_wise_amt']}`,
+      columnDef: 'SIP Date',
+      header: 'SIP Date',
+      cell: (element: Record<string, any>) => `${element['SIP Date']}`,
+      isDate: true
+    },
+    {
+      columnDef: 'SWP Date',
+      header: 'SWP Date',
+      cell: (element: Record<string, any>) => `${element['SWP Date']}`,
+      isDate: true
+    },
+    {
+      columnDef: 'STP Date',
+      header: 'STP Date',
+      cell: (element: Record<string, any>) => `${element['STP Date']}`,
+      isDate: true
+    },
+    {
+      columnDef: 'SIP Frequency Wise Amount',
+      header: 'SIP Frequency Wise Amount',
+      cell: (element: Record<string, any>) => `${element['SIP Frequency Wise Amount']}`,
+      isDate: true
+    },
+    {
+      columnDef: 'SWP frequency Wise Amount',
+      header: 'SWP frequency Wise Amount',
+      cell: (element: Record<string, any>) => `${element['SWP frequency Wise Amount']}`,
+      isDate: true
+    },
+    {
+      columnDef: 'STP Frequency Wise Amount',
+      header: 'STP Frequency Wise Amount',
+      cell: (element: Record<string, any>) => `${element['STP Frequency Wise Amount']}`,
       isDate: true
     }
   ];
 
    __dataTbleForNFO = [
     {
-      product_id:2,
-        amc_id:3,
-        category_id:4,
-        subcategory_id:5,
-        scheme_name:"Others1",
-        id:2,
-        scheme_type:'N',
-        nfo_start_dt:'2023-02-27',
-        nfo_end_dt:'2023-02-27',
-        nfo_reopen_dt:'2023-02-27',
-        pip_fresh_min_amt:2000,
-        pip_add_min_amt:4000,
-        sip_freq_wise_amt:
+        "Product ID":2,
+        "AMC ID":3,
+        "Category ID":4,
+        "Sub Category ID":5,
+        "Scheme":"Others1",
+        "Id":2,
+        "Scheme Type":'N',
+        "NFO Start Date":'2023-02-27',
+        "NFO End Date":'2023-02-27',
+        "NFO Reopen Date":'2023-02-27',
+        "PIP Fresh Minimum Amount":2000,
+        "PIP Fresh Additional Amount":4000,
+        "SIP Date":JSON.stringify(
+          [{"id":"1" ,"date":"1"},{"id":"4" ,"date":"4"}]
+        ),
+        "STP Date":JSON.stringify(
+          [{"id":"2" ,"date":"2"},{"id":"3" ,"date":"3"}]
+        ),
+        "SWP Date":JSON.stringify(
+          [{"id":"3" ,"date":"3"},{"id":"4" ,"date":"4"}]
+        ),
+        "SIP Frequency Wise Amount":
         JSON.stringify([{"id":"D","freq_name":"Daily","is_cheked":true,"sip_fresh_min_amt":"2000","sip_add_min_amt":"3000"},
         {"id":"W","freq_name":"Weekly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
         {"id":"F","freq_name":"fortnightly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
@@ -141,25 +180,70 @@ export class UploadScmComponent implements OnInit {
         {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
         {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
         ]),
+        "SWP frequency Wise Amount":
+        JSON.stringify([{"id":"D","freq_name":"Daily","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"W","freq_name":"Weekly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"F","freq_name":"fortnightly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"M","freq_name":"Monthly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"Q","freq_name":"Quarterly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+        {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
+        ]),
+        "STP Frequency Wise Amount":
+        JSON.stringify([{"id":"D","freq_name":"Daily","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"W","freq_name":"Weekly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"F","freq_name":"fortnightly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"M","freq_name":"Monthly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"Q","freq_name":"Quarterly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+        {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+        {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
+        ]),
     }
    ];
    __dataTbleForOngoing = [
     {
-      product_id:2,
-      amc_id:3,
-      category_id:4,
-      subcategory_id:5,
-      scheme_name:"Others1",
-      id:2,
-      scheme_type:'O',
-      pip_fresh_min_amt:2000,
-      pip_add_min_amt:4000,
-      sip_freq_wise_amt:
+      "Product ID":2,
+      "AMC ID":3,
+      "Category ID":4,
+      "Sub Category ID":5,
+      "Scheme":"Others1",
+      "Id":2,
+      "Scheme Type":'N',
+      "PIP Fresh Minimum Amount":2000,
+      "PIP Fresh Additional Amount":4000,
+      "SIP Date":JSON.stringify(
+        [{"id":"1" ,"date":"1"},{"id":"4" ,"date":"4"}]
+      ),
+      "STP Date":JSON.stringify(
+        [{"id":"2" ,"date":"2"},{"id":"3" ,"date":"3"}]
+      ),
+      "SWP Date":JSON.stringify(
+        [{"id":"3" ,"date":"3"},{"id":"4" ,"date":"4"}]
+      ),
+      "SIP Frequency Wise Amount":
       JSON.stringify([{"id":"D","freq_name":"Daily","is_cheked":true,"sip_fresh_min_amt":"2000","sip_add_min_amt":"3000"},
       {"id":"W","freq_name":"Weekly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
       {"id":"F","freq_name":"fortnightly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
       {"id":"M","freq_name":"Monthly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
       {"id":"Q","freq_name":"Quarterly","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+      {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+      {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
+      ]),
+      "SWP frequency Wise Amount":
+      JSON.stringify([{"id":"D","freq_name":"Daily","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"W","freq_name":"Weekly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"F","freq_name":"fortnightly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"M","freq_name":"Monthly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"Q","freq_name":"Quarterly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
+      {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
+      ]),
+      "STP Frequency Wise Amount":
+      JSON.stringify([{"id":"D","freq_name":"Daily","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"W","freq_name":"Weekly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"F","freq_name":"fortnightly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"M","freq_name":"Monthly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
+      {"id":"Q","freq_name":"Quarterly","is_cheked":true,"sip_fresh_min_amt":"","sip_add_min_amt":"3000"},
       {"id":"S","freq_name":"Semi Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""},
       {"id":"A","freq_name":"Anually","is_cheked":false,"sip_fresh_min_amt":"","sip_add_min_amt":""}
       ]),
@@ -183,11 +267,20 @@ export class UploadScmComponent implements OnInit {
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     this.__utility.getBreadCrumb(this.__brdCrmbs);
+    console.log(this.tableData);
+
   }
   ngAfterViewInit(){
       this.__uploadRnt.controls['scheme_type'].valueChanges.subscribe(res =>{
+           const columnsforNFO = ['NFO Start Date','NFO End Date','NFO Reopen Date']
            this.tableData = new MatTableDataSource(res == 'N' ? this.__dataTbleForNFO : this.__dataTbleForOngoing);
-      })
+            if(res == 'O'){
+              this.displayedColumns = this.displayedColumns.filter((x) => !columnsforNFO.includes(x));
+            }
+            else{
+              this.displayedColumns.splice(5,0,...columnsforNFO)
+            }
+          })
   }
   previewlatestCategoryEntry() {
     this.__dbIntr.api_call(0, '/scheme', null).pipe(pluck('data')).subscribe((res: scheme[]) => {

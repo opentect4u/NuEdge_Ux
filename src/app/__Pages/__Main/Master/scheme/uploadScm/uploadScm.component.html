@@ -8,17 +8,18 @@
 
         <form [formGroup]="__uploadRnt" (ngSubmit)="uploadRnt()">
           <div class="row">
-            <div class="col-sm-12">
-              <button class="float-right mb-5" color="primary" type="button" mat-button
-                (click)="exporter.exportTable('csv',{fileName:(__uploadRnt.get('scheme_type').value == 'N' ? 'NFO' : 'Ongoing') + 'SampleScheme'})">
-                <mat-icon>download</mat-icon>Download Sample
-              </button>
-            </div>
             <div class="col-sm-12 mb-5">
               <mat-radio-group aria-label="Select an option" color="primary" formControlName="scheme_type">
                 <mat-radio-button value="O">Ongoing Scheme</mat-radio-button>
                 <mat-radio-button value="N" class="ml-5">NFO</mat-radio-button>
               </mat-radio-group>
+            </div>
+
+            <div class="col-sm-12">
+              <button class="float-right mb-5" color="primary" type="button" mat-button
+                (click)="exporter.exportTable('csv',{fileName:(__uploadRnt.get('scheme_type').value == 'N' ? 'NFO' : 'Ongoing') + 'SampleScheme'})">
+                <mat-icon>download</mat-icon>Download Sample
+              </button>
             </div>
             <div class="col-sm-12">
               <div class="container_zone" appSchemDrag (fileDropped)="onFileDropped($event)">
@@ -119,7 +120,7 @@
         <table mat-table [dataSource]="__selectRNT">
           <!-- Sl No. -->
           <ng-container matColumnDef="sl_no">
-            <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
           <!--Temporary TIN No.-->

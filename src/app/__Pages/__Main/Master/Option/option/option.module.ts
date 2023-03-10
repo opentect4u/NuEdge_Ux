@@ -15,6 +15,7 @@ import { OptrptComponent } from '../optRpt/optRpt.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 
 const routes: Routes =[{path:'',component:OptionComponent}]
@@ -33,7 +34,8 @@ const routes: Routes =[{path:'',component:OptionComponent}]
     SharedModule,
     MatTableExporterModule,
     MatRadioModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSortModule
   ],
   declarations: [OptionComponent,OptionModificationComponent,OptrptComponent]
 })

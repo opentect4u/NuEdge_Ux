@@ -16,6 +16,7 @@ import { MatTableExporterModule } from 'mat-table-exporter';
 import { TrnstyperptComponent } from './trnsTypeRpt/trnsTypeRpt.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 const routes: Routes = [
   {
@@ -29,16 +30,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     SearchModule,
-    MatIconModule,
-    MatDialogModule,
-    DragDropModule,
-    OverlayModule,
-    MatButtonToggleModule,
     SharedModule,
-    MatRadioModule,
-    MatTableExporterModule,
-    MatTableModule,
-    MatMenuModule
   ],
   declarations: [TransTypeComponent,TrnstyperptComponent,TrnstypeModificationComponent]
 })

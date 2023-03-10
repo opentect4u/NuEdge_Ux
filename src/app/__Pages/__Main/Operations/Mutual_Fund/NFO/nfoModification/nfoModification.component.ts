@@ -806,6 +806,7 @@ export class NfomodificationComponent implements OnInit {
     this.__traxForm.patchValue({
       bu_type: __items.bu_type,
       application_no: __items.application_no,
+      folio_number: __items.folio_no,
       // recv_from: __items.recv_from,
       inv_type: __items.inv_type,
       trans_id: __items.trans_id,

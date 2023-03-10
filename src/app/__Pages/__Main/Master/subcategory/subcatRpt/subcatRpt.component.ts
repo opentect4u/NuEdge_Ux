@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { subcat } from 'src/app/__Model/__subcategory';
@@ -19,10 +20,10 @@ templateUrl: './subcatRpt.component.html',
 styleUrls: ['./subcatRpt.component.css']
 })
 export class SubcatrptComponent implements OnInit {
+
+  __sortAscOrDsc: any= {active:'',direction:'asc'};
   @ViewChild('searchcat') __searchCat : ElementRef;
   @ViewChild('searchsubcat') searchsubcat : ElementRef;
-
-
   __export =  new MatTableDataSource<subcat>([]);
   __catMst: category[] =[];
   __subcatMst: subcat[]=[];
@@ -39,8 +40,8 @@ export class SubcatrptComponent implements OnInit {
 __selectSubCategory = new MatTableDataSource<subcat>([]);
 __pageNumber = new FormControl(10);
 __paginate: any = [];
-__exportedClmns:string[] = ['sl_no', 'cat_name','subcat_name'];
-__columns: string[] = [ 'edit','sl_no', 'cat_name','subcat_name','delete'];
+__exportedClmns:string[] = ['sl_no', 'cat_name','subcategory_name'];
+__columns: string[] = [ 'edit','delete','sl_no', 'cat_name','subcategory_name'];
 constructor(
   private __Rpt: RPTService,
   private __dialog: MatDialog,
@@ -59,10 +60,24 @@ exportPdf(){
 }
 
 ngOnInit(){
-  // this.getSubCategorymaster();
-  // this.tableExport();
-  this.submit();
+  this.getSubcatMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
 }
+
+ getSubcatMst(column_name: string | null = null,sort_by: string | null= null){
+  const __amcSearch = new FormData();
+  __amcSearch.append('cat_id',global.getActualVal(this.__subcatForm.value.cat_id));
+  __amcSearch.append('subcat_id',global.getActualVal(this.__subcatForm.value.subcat_id));
+  __amcSearch.append('paginate',this.__pageNumber.value);
+  __amcSearch.append('column_name',column_name ? column_name : '');
+  __amcSearch.append('sort_by',sort_by ? sort_by : '');
+   this.__dbIntr.api_call(1,'/subcategoryDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__paginate =res.links;
+    this.setPaginator(res.data);
+     this.tableExport(column_name,sort_by);
+   })
+
+
+ }
 getSubCategorymaster(
   params: string | null = null,
   __paginate: string | null = '10'
@@ -149,15 +164,7 @@ maximize(){
   this.__isVisible = !this.__isVisible;
 }
 submit(){
-  const __amcSearch = new FormData();
-  __amcSearch.append('cat_id',global.getActualVal(this.__subcatForm.value.cat_id));
-  __amcSearch.append('subcat_id',global.getActualVal(this.__subcatForm.value.subcat_id));
-  __amcSearch.append('paginate',this.__pageNumber.value);
-   this.__dbIntr.api_call(1,'/subcategoryDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-    this.__paginate =res.links;
-    this.setPaginator(res.data);
-     this.tableExport();
-   })
+  this.getSubcatMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
 }
 outsideClick(__ev,mode){
   if(__ev){
@@ -179,10 +186,12 @@ getItems(__items,__type){
    default: break;
   }
 }
-tableExport(){
+tableExport(column_name: string | null = null,sort_by: string | null= null){
   const __catExport = new FormData();
   __catExport.append('cat_id',this.__subcatForm.value.cat_id ? this.__subcatForm.value.cat_id : '');
   __catExport.append('subcat_id',this.__subcatForm.value.subcat_id ? this.__subcatForm.value.subcat_id : '');
+  __catExport.append('column_name',column_name ? column_name : '');
+  __catExport.append('sort_by',sort_by ? sort_by : '');
   this.__dbIntr.api_call(1,'/subcategoryExport',__catExport).pipe(map((x: any) => x.data)).subscribe((res: subcat[]) =>{
     this.__export = new MatTableDataSource(res);
   })
@@ -201,7 +210,7 @@ searchResultVisibility(display_mode,__type){
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  this.submit();
+  this.getSubcatMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
 }
 getPaginate(__paginate) {
   if (__paginate.url) {
@@ -211,6 +220,8 @@ getPaginate(__paginate) {
         + ('&paginate=' + this.__pageNumber.value)
         +('&cat_id=' + this.__subcatForm.value.cat_id)
         +('&subcat_id=' + this.__subcatForm.value.subcat_id)
+        + ('&column_name='+ this.__sortAscOrDsc.active)
+        + ('&sort_by='+ this.__sortAscOrDsc.sort_by)
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -290,6 +301,36 @@ refreshOrAdvanceFlt(){
   this.__subcatForm.patchValue({
     options:'2'
   });
-  this.submit();
+  this.getSubcatMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
+}
+sortData(sort){
+  this.__sortAscOrDsc = sort;
+  this.getSubcatMst(sort.active,sort.direction!='' ? sort.direction : 'asc');
+}
+delete(__el,index){
+  const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'S',
+      id: __el.id,
+      title: 'Delete '  + __el.subcategory_name,
+      api_name:'/catDelete'
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.__selectSubCategory.data.splice(index,1);
+          this.__selectSubCategory._updateChangeSubscription();
+          this.__export.data.splice(this.__export.data.findIndex((x: any) => x.id == __el.id),1);
+          this.__export._updateChangeSubscription();
+        }
+      }
+
+    })
 }
 }

@@ -31,6 +31,8 @@ import { NforptComponent } from './NFO/NfoRPT/nfoRpt.component';
 import { NfomodificationComponent } from './NFO/nfoModification/nfoModification.component';
 import { NonfinrptComponent } from './nonfinancial/nonfinRPT/nonFinRPT.component';
 import { NonfinmodificationComponent } from './nonfinancial/nonFinModification/nonFInModification.component';
+import { MatSortModule } from '@angular/material/sort';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 // import {MatDatepickerModule} from '@angular/material/datepicker';
 const routes: Routes = [
   {
@@ -79,7 +81,9 @@ const routes: Routes = [
     MatChipsModule,
     MatRadioModule,
     MatSelectModule,
-    // MatDatepickerModule
+    MatCheckboxModule,
+    MatSortModule,
+
   ],
   declarations: [
     NonfinrptComponent,

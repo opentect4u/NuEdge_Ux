@@ -54,7 +54,7 @@ export class AckhomeComponent implements OnInit {
       id: 3,
       menu_name: "Non-Financial",
       has_submenu: "N",
-      url: "/main/operations/mfTraxEntry/nonfin"
+      url: "/main/operations/acknowledgement/ackNonFin"
   },
   {
       id: 4,

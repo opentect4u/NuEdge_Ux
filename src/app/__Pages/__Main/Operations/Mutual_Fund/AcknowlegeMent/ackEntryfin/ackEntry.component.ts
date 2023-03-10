@@ -70,7 +70,7 @@ navigate(__mode){
   switch(__mode){
     case 'A':
       this.opendDialog(
-      '0',
+      null,
       atob(this.__rtDt.snapshot.queryParamMap.get('product_id')),
       atob(this.__rtDt.snapshot.queryParamMap.get('trans_type_id'))
       )
@@ -97,18 +97,16 @@ opendDialog(__temp_tin_no,prd_id,trans_type_id){
      flag:'ACK',
      product_id:prd_id,
      trans_type_id:trans_type_id,
-     id:__temp_tin_no ?  __temp_tin_no : 'ACK-0',
-     title:'Acknowledgement Entry For ' + (trans_type_id == '1' ? 'Financial' : 'NFO')
+     id:__temp_tin_no ?  __temp_tin_no : 'ACK-' + trans_type_id,
+     title:'Acknowledgement Entry For ' + (trans_type_id == '1' ? 'Financial' : (trans_type_id == '4' ? 'NFO' : 'Non Financial'))
   };
-  dialogConfig.id = __temp_tin_no ? 'ACK-'+__temp_tin_no : 'ACK-0';
+  dialogConfig.id = __temp_tin_no ? 'ACK-'+__temp_tin_no : 'ACK-'+trans_type_id;
   try {
     const dialogref = this.__dialog.open(
       ManualentrforackfinComponent,
       dialogConfig
     );
-    dialogref.afterClosed().subscribe((dt) => {
-
-    });
+    dialogref.afterClosed().subscribe((dt) => {});
   } catch (ex) {
     const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
     dialogRef.updateSize('60%');

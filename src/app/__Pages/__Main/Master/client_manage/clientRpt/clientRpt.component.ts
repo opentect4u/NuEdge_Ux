@@ -23,9 +23,10 @@ import { ClModifcationComponent } from '../clModifcation/clModifcation.component
   styleUrls: ['./clientRpt.component.css'],
 })
 export class ClientRptComponent implements OnInit {
+  __sortAscOrDsc: any= {active: '',direction:'asc'};
   toppings = new FormControl();
   toppingList: any = [{id: "edit",text:"Edit"},
-  {id:'sl_no',text:'SL No.'},
+  {id:'sl_no',text:'Sl No'},
     {id:'cl_code',text:'Client Code'},
     {id:'cl_name',text:'Client Name'},
     {id:'pan',text:'Pan'},
@@ -121,7 +122,7 @@ export class ClientRptComponent implements OnInit {
   ngOnInit() {
     this.__columns = this.__columnsForsummary;
     this.toppings.setValue(this.__columns);
-    this.submit();
+    this.getClientRPTMst();
     this.getState();
   }
   getState(){
@@ -140,7 +141,7 @@ export class ClientRptComponent implements OnInit {
     })
   }
 
-  tableExport() {
+  tableExport(column_name: string | null ='', sort_by:string | null | '' = 'asc') {
     const __client = new FormData();
     __client.append('pan', this.__clientForm.value.pan);
     __client.append('client_name', this.__clientForm.value.name);
@@ -149,7 +150,10 @@ export class ClientRptComponent implements OnInit {
     __client.append('state', this.__clientForm.value.state);
     __client.append('dist', this.__clientForm.value.dist);
     __client.append('city', this.__clientForm.value.city);
-    __client.append('pincode', this.__clientForm.value.pincode);
+    // __client.append('pincode', this.__clientForm.value.pincode);
+    __client.append('column_name',column_name);
+    __client.append('sort_by',sort_by);
+
     this.__dbIntr
       .api_call(1, '/clientExport', __client)
       .pipe(map((x: any) => x.data))
@@ -234,7 +238,9 @@ export class ClientRptComponent implements OnInit {
           + ('&state=' +  this.__clientForm.value.state)
           + ('&dist=' +  this.__clientForm.value.dist)
           + ('&city=' +  this.__clientForm.value.city)
-          + ('&pincode=' +  this.__clientForm.value.pincode)
+          // + ('&pincode=' +  this.__clientForm.value.pincode)
+          + ('&column_name=' +  this.__sortAscOrDsc.active)
+          + ('&sort_by=' +  this.__sortAscOrDsc.direction)
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -245,7 +251,7 @@ export class ClientRptComponent implements OnInit {
   }
   getval(__paginate) {
     this.__pageNumber.setValue(__paginate.toString());
-    this.getClientMaster(this.__pageNumber.value);
+    this.submit();
   }
   getClientMaster(__paginate: string | null = '10') {
     this.__dbIntr
@@ -296,22 +302,30 @@ export class ClientRptComponent implements OnInit {
       'Client'
     );
   }
+
+   
+  getClientRPTMst(column_name: string | null ='', sort_by:string | null | '' = 'asc'){
+      const __client = new FormData();
+      __client.append('pan', this.__clientForm.value.pan);
+      __client.append('client_name', this.__clientForm.value.name);
+      __client.append('dob', this.__clientForm.value.dob);
+      __client.append('mobile', this.__clientForm.value.mobile);
+      __client.append('state', this.__clientForm.value.state);
+      __client.append('dist', this.__clientForm.value.dist);
+      __client.append('city', this.__clientForm.value.city);
+      // __client.append('pincode', this.__clientForm.value.pincode);
+      __client.append('paginate', this.__pageNumber.value);
+      __client.append('column_name',column_name);
+      __client.append('sort_by', sort_by);
+      this.__dbIntr.api_call(1,'/clientDetailSearch',__client).pipe(pluck("data")).subscribe((res: any) =>{
+        this.setPaginator(res.data);
+        this.__paginate = res.links;
+        this.tableExport(column_name,sort_by);
+      })
+  }
+   
   submit() {
-    const __client = new FormData();
-    __client.append('pan', this.__clientForm.value.pan);
-    __client.append('client_name', this.__clientForm.value.name);
-    __client.append('dob', this.__clientForm.value.dob);
-    __client.append('mobile', this.__clientForm.value.mobile);
-    __client.append('state', this.__clientForm.value.state);
-    __client.append('dist', this.__clientForm.value.dist);
-    __client.append('city', this.__clientForm.value.city);
-    __client.append('pincode', this.__clientForm.value.pincode);
-    __client.append('paginate', this.__pageNumber.value);
-    this.__dbIntr.api_call(1,'/clientDetailSearch',__client).pipe(pluck("data")).subscribe((res: any) =>{
-      this.setPaginator(res.data);
-      this.__paginate = res.links;
-      this.tableExport();
-    })
+     this.getClientRPTMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction)
   }
   refreshOrAdvanceFlt() {
     // this.getClientMaster();
@@ -326,8 +340,8 @@ export class ClientRptComponent implements OnInit {
       options: '2',
       advanceFlt: '',
     })
+    this.__sortAscOrDsc = {active:'',direction:'asc'};
     this.submit();
-    // this.tableExport();
   }
   populateDT(__items) {
     this.openDialog(__items, __items.id, __items.client_type);
@@ -457,5 +471,9 @@ export class ClientRptComponent implements OnInit {
         value.anniversary_date = row_obj.anniversary_date
         value.dob_actual = row_obj.dob_actual
       })
+  }
+  sortData(sort){
+    this.__sortAscOrDsc = sort;
+    this.submit();
   }
 }

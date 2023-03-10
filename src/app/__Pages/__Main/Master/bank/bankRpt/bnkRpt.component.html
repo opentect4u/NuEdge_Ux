@@ -3,17 +3,17 @@
   <div mat-dialog-title class="dialog-title">
     <h2 >Plan Reports</h2>
     <div class="btnIcon">
-      <button mat-icon-button  (click)="minimize()" >
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
         <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
 
-      <button mat-icon-button  [mat-dialog-close]="">
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
 
@@ -135,35 +135,35 @@
 
   </div>
   <div class="example-container">
-    <table mat-table [dataSource]="__selectPLN" class="table_Custome">
+    <table mat-table [dataSource]="__selectPLN" matSort (matSortChange)="sortData($event)" class="table_Custome">
       <!-- Sl No. -->
       <ng-container matColumnDef="sl_no">
-        <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+        <th mat-header-cell *matHeaderCellDef>Sl No</th>
         <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
       </ng-container>
 
       <!--Temporary TIN No.-->
       <ng-container matColumnDef="bank_name">
-        <th mat-header-cell *matHeaderCellDef>Bank</th>
+        <th mat-sort-header="bank_name" mat-header-cell *matHeaderCellDef>Bank</th>
         <td mat-cell *matCellDef="let element"><p class="text-wrap">{{element.bank_name}}</p></td>
       </ng-container>
         <!--Temporary TIN No.-->
         <ng-container matColumnDef="ifsc_code">
-          <th mat-header-cell *matHeaderCellDef>Ifsc</th>
+          <th mat-sort-header="ifsc_code" mat-header-cell *matHeaderCellDef>Ifsc</th>
           <td mat-cell *matCellDef="let element"><p class="text-wrap">{{element.ifs_code}}</p></td>
         </ng-container>
         <ng-container matColumnDef="micr_code">
-          <th mat-header-cell *matHeaderCellDef>MICR</th>
+          <th mat-sort-header="micr_code" mat-header-cell *matHeaderCellDef>MICR</th>
           <td mat-cell *matCellDef="let element"><p class="text-wrap">{{element.micr_code}}</p></td>
         </ng-container>
           <!--Temporary TIN No.-->
           <ng-container matColumnDef="branch_name">
-            <th mat-header-cell *matHeaderCellDef>Branch</th>
+            <th mat-sort-header="branch_name" mat-header-cell *matHeaderCellDef>Branch</th>
             <td mat-cell *matCellDef="let element"><p class="text-wrap">{{element.branch_name}}</p></td>
           </ng-container>
              <!--Temporary TIN No.-->
              <ng-container matColumnDef="branch_addr">
-              <th mat-header-cell *matHeaderCellDef>Branch Address</th>
+              <th mat-sort-header="branch_addr" mat-header-cell *matHeaderCellDef>Branch Address</th>
               <td mat-cell *matCellDef="let element"><p class="text-wrap">{{element.branch_addr}}</p></td>
             </ng-container>
 
@@ -193,7 +193,7 @@
         <td class="mat-cell" colspan="4">No data found</td>
       </tr>
     </table>
-</div>
+  </div>
   <div class="paginator">
     <div class="itemsPerPage">
       <label>Items Per Page :&nbsp; </label>
@@ -240,7 +240,7 @@
 
 
   <ng-container matColumnDef="sl_no">
-    <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+    <th mat-header-cell *matHeaderCellDef>Sl No</th>
     <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
   </ng-container>
 

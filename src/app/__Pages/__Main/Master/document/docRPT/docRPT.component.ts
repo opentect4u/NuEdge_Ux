@@ -22,9 +22,10 @@ templateUrl: './docRPT.component.html',
 styleUrls: ['./docRPT.component.css']
 })
 export class DocrptComponent implements OnInit {
+  __sortAscOrDsc: any = {active:'',direction:'asc'};
   toppings = new FormControl();
   toppingList: any = [{id: "edit",text:"Edit"},
-  {id:'sl_no',text:'SL No.'},
+  {id:'sl_no',text:'Sl No'},
     {id:'cl_code',text:'Client Code'},
     {id:'cl_name',text:'Client Name'},
     {id:'pan',text:'Pan'},
@@ -120,9 +121,9 @@ export class DocrptComponent implements OnInit {
     this.__columns = this.__columnsForsummary;
     this.toppings.setValue(this.__columns);
     // this.tableExport();
-    this.submit();
+    this.getDocumentMst();
   }
-  tableExport() {
+  tableExport(column_name:string | null = '',sort_by: string | null| ''='asc') {
     const __client = new FormData();
     __client.append('pan', this.__clientForm.value.pan);
     __client.append('client_name', this.__clientForm.value.name);
@@ -131,12 +132,13 @@ export class DocrptComponent implements OnInit {
     __client.append('state', this.__clientForm.value.state);
     __client.append('dist', this.__clientForm.value.dist);
     __client.append('city', this.__clientForm.value.city);
-    __client.append('pincode', this.__clientForm.value.pincode);
+    // __client.append('pincode', this.__clientForm.value.pincode);
+    __client.append('column_name', column_name);
+    __client.append('sort_by', sort_by);
     this.__dbIntr
       .api_call(1, '/clientExport', __client)
       .pipe(map((x: any) => x.data))
       .subscribe((res: client[]) => {
-        console.log(res);
         this.__export = new MatTableDataSource(res);
       });
   }
@@ -294,7 +296,8 @@ export class DocrptComponent implements OnInit {
       'Client'
     );
   }
-  submit() {
+
+  getDocumentMst(column_name:string | null = '',sort_by:string | null | ''= 'asc'){
     const __client = new FormData();
     __client.append('pan', this.__clientForm.value.pan);
     __client.append('client_name', this.__clientForm.value.name);
@@ -303,16 +306,21 @@ export class DocrptComponent implements OnInit {
     __client.append('state', this.__clientForm.value.state);
     __client.append('dist', this.__clientForm.value.dist);
     __client.append('city', this.__clientForm.value.city);
-    __client.append('pincode', this.__clientForm.value.pincode);
+    // __client.append('pincode', this.__clientForm.value.pincode);
     __client.append('paginate', this.__pageNumber.value);
+    __client.append('column_name', column_name);
+    __client.append('sort_by', sort_by);
+
     this.__dbIntr.api_call(1,'/clientDetailSearch',__client).pipe(pluck("data")).subscribe((res: any) =>{
       this.setPaginator(res.data);
       this.__paginate = res.links;
-      this.tableExport();
+      this.tableExport(column_name,sort_by);
     })
   }
+  submit() {
+     this.getDocumentMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
+  }
   refreshOrAdvanceFlt() {
-    // this.getClientMaster();
     this.__clientForm.patchValue({
       pan: '',
       name: '',
@@ -324,8 +332,8 @@ export class DocrptComponent implements OnInit {
       options: '2',
       advanceFlt: '',
     })
+    this.__sortAscOrDsc = {active:'',direction:'asc'};
     this.submit();
-    // this.tableExport();
   }
   populateDT(__items) {
     console.log(__items);
@@ -424,5 +432,9 @@ export class DocrptComponent implements OnInit {
         value.anniversary_date = row_obj.anniversary_date
         value.dob_actual = row_obj.dob_actual
       })
+  }
+  sortData(sort){
+    this.__sortAscOrDsc = sort;
+    this.submit();
   }
 }

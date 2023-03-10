@@ -24,11 +24,12 @@ import buType from '../../../../../../../assets/json/buisnessType.json';
   styleUrls: ['./finRPT.component.css'],
 })
 export class FinrptComponent implements OnInit {
+  __sortAscOrDsc: any = {active: '',direction:'asc'};
   WindowObject:any;
   divToPrint: any;
   toppings = new FormControl();
   toppingList: any = [{id: "edit",text:"Edit"},
-  {id: "sl_no",text:"SL No."},
+  {id: "sl_no",text:"Sl No."},
   {id: "temp_tin_no",text:"TIN Number"},
   {id: "rnt_name",text:"R&T"},
   {id: "bu_type",text:"Buisness Type"},
@@ -225,6 +226,89 @@ export class FinrptComponent implements OnInit {
     this.getSubCategory();
     this.getRnt();
   }
+  
+  getFinRPT(column_name: string | null = '',sort_by: string | null | '' = ''){
+    const __mfTrax = new FormData();
+    __mfTrax.append('paginate', this.__pageNumber.value);
+    __mfTrax.append('option', this.__rcvForms.value.options);
+    __mfTrax.append('trans_type_id', this.data.trans_type_id);
+    __mfTrax.append('trans_id', this.data.trans_id);
+    __mfTrax.append('column_name', column_name);
+    __mfTrax.append('sort_by', sort_by);
+    if(this.__rcvForms.get('options').value != '3'){
+
+    __mfTrax.append(
+      'client_code',
+      this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : ''
+    );
+    __mfTrax.append(
+      'sub_brk_cd',
+      this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : ''
+    );
+    __mfTrax.append(
+      'trans_type',
+      this.__rcvForms.value.trans_type.length > 0
+        ? JSON.stringify(this.__rcvForms.value.trans_type)
+        : ''
+    );
+    __mfTrax.append(
+      'tin_no',
+      this.__rcvForms.value.tin_no ? this.__rcvForms.value.tin_no : ''
+    );
+    __mfTrax.append(
+      'amc_name',
+      this.__rcvForms.value.amc_name ? this.__rcvForms.value.amc_name : ''
+    );
+    __mfTrax.append(
+      'inv_type',
+      this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : ''
+    );
+    __mfTrax.append(
+      'euin_no',
+      this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : ''
+    );
+    __mfTrax.append(
+      'brn_cd',
+      this.__rcvForms.value.brn_cd ? this.__rcvForms.value.brn_cd : ''
+    );
+    __mfTrax.append(
+      'rnt_name',
+      this.__rcvForms.value.rnt_name.length > 0
+        ? JSON.stringify(this.__rcvForms.value.rnt_name)
+        : ''
+    );
+    __mfTrax.append(
+      'bu_type',
+      this.__rcvForms.value.bu_type.length > 0
+        ? JSON.stringify(this.__rcvForms.value.bu_type)
+        : ''
+    );
+    __mfTrax.append(
+      'cat_id',
+      this.__rcvForms.value.cat_id ? this.__rcvForms.value.cat_id : ''
+    );
+    __mfTrax.append(
+      'subcat_id',
+      this.__rcvForms.value.subcat_id ? this.__rcvForms.value.subcat_id : ''
+    );
+  }
+  else{
+    __mfTrax.append('login_status',this.__rcvForms.value.login_status);
+    __mfTrax.append('date_status',this.__rcvForms.value.date_status);
+    __mfTrax.append('start_date',this.__rcvForms.value.start_date);
+    __mfTrax.append('end_date',this.__rcvForms.value.end_date);
+  }
+    this.__dbIntr
+      .api_call(1, '/mfTraxDetailSearch', __mfTrax)
+      .pipe(pluck('data'))
+      .subscribe((res: any) => {
+        this.__paginate = res.links;
+        this.setPaginator(res.data);
+        this.tableExport(column_name,sort_by);
+      });
+
+  }
+   
   getRnt() {
     this.__dbIntr
       .api_call(0, '/rnt', null)
@@ -273,11 +357,13 @@ export class FinrptComponent implements OnInit {
         this.__trans_types = res;
       });
   }
-  tableExport() {
+  tableExport(column_name: string | null = '',sort_by: string | null | '' ='asc') {
     const __mfTrax = new FormData();
     __mfTrax.append('option', this.__rcvForms.value.options);
     __mfTrax.append('trans_type_id', this.data.trans_type_id);
     __mfTrax.append('trans_id', this.data.trans_id);
+    __mfTrax.append('column_name', column_name);
+    __mfTrax.append('sort_by', sort_by);
     if(this.__rcvForms.get('options').value != '3'){
     __mfTrax.append(
       'client_code',
@@ -389,15 +475,38 @@ export class FinrptComponent implements OnInit {
 
   getval(__paginate) {
     this.__pageNumber = __paginate.toString();
-    this.getPaginate();
+    this.submit();
   }
   getPaginate(__paginate: any | null = null) {
     if (__paginate) {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber) +
-            (this.data.trans_id ? '&trans_id=' + this.data.trans_id : '')
+            ('&paginate=' + this.__pageNumber) 
+            + (this.data.trans_id ? '&trans_id=' + this.data.trans_id : '')
+            + ('&option=' + this.__rcvForms.value.options)
+            + ('&trans_type_id=' + this.data.trans_type_id)
+            + ('&trans_id=' +  this.data.trans_id)
+            + ('&column_name=' +  this.__sortAscOrDsc.active)
+            + ('&sort_by=' +  this.__sortAscOrDsc.direction)
+            + (this.__rcvForms.get('options').value != '3' 
+            ? ('&client_code='+ this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '')
+            + ('&sub_brk_cd=' + this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '')
+            + ('&trans_type=' + (this.__rcvForms.value.trans_type.length > 0 ? JSON.stringify(this.__rcvForms.value.trans_type): ''))
+            + ('&tin_no='+ this.__rcvForms.value.tin_no ? this.__rcvForms.value.tin_no : '')
+            + ('&amc_name='+ this.__rcvForms.value.amc_name ? this.__rcvForms.value.amc_name : '')
+            + ('&inv_type=' + this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : '')
+            + ('&euin_no=' +this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : '')
+            + ('&brn_cd='+this.__rcvForms.value.brn_cd ? this.__rcvForms.value.brn_cd : '')
+            + ('&rnt_name' + (this.__rcvForms.value.rnt_name.length > 0 ? JSON.stringify(this.__rcvForms.value.rnt_name): ''))
+            + ('&bu_type' + (this.__rcvForms.value.bu_type.length > 0? JSON.stringify(this.__rcvForms.value.bu_type): ''))
+            + ('&cat_id=' +this.__rcvForms.value.cat_id ? this.__rcvForms.value.cat_id : '')
+            + ('&subcat_id=' +this.__rcvForms.value.subcat_id ? this.__rcvForms.value.subcat_id : '')
+            : ('&login_status=' + this.__rcvForms.value.login_status)
+            +('&date_status=' + this.__rcvForms.value.date_status)
+            +('&start_date=' + this.__rcvForms.value.start_date)
+            +('&end_date=' + this.__rcvForms.value.end_date)
+            )
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -413,93 +522,12 @@ export class FinrptComponent implements OnInit {
     }
   }
   setPaginator(res) {
-    console.log(res);
-
     this.__financMst = new MatTableDataSource(res);
-    console.log(this.__financMst);
-
     this.__paginate = res.links;
   }
   populateDT(__element) {}
   submit() {
-    console.log(this.__rcvForms.value);
-
-    const __mfTrax = new FormData();
-    __mfTrax.append('paginate', this.__pageNumber.value);
-    __mfTrax.append('option', this.__rcvForms.value.options);
-    __mfTrax.append('trans_type_id', this.data.trans_type_id);
-    __mfTrax.append('trans_id', this.data.trans_id);
-    if(this.__rcvForms.get('options').value != '3'){
-
-    __mfTrax.append(
-      'client_code',
-      this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : ''
-    );
-    __mfTrax.append(
-      'sub_brk_cd',
-      this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : ''
-    );
-    __mfTrax.append(
-      'trans_type',
-      this.__rcvForms.value.trans_type.length > 0
-        ? JSON.stringify(this.__rcvForms.value.trans_type)
-        : ''
-    );
-    __mfTrax.append(
-      'tin_no',
-      this.__rcvForms.value.tin_no ? this.__rcvForms.value.tin_no : ''
-    );
-    __mfTrax.append(
-      'amc_name',
-      this.__rcvForms.value.amc_name ? this.__rcvForms.value.amc_name : ''
-    );
-    __mfTrax.append(
-      'inv_type',
-      this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : ''
-    );
-    __mfTrax.append(
-      'euin_no',
-      this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : ''
-    );
-    __mfTrax.append(
-      'brn_cd',
-      this.__rcvForms.value.brn_cd ? this.__rcvForms.value.brn_cd : ''
-    );
-    __mfTrax.append(
-      'rnt_name',
-      this.__rcvForms.value.rnt_name.length > 0
-        ? JSON.stringify(this.__rcvForms.value.rnt_name)
-        : ''
-    );
-    __mfTrax.append(
-      'bu_type',
-      this.__rcvForms.value.bu_type.length > 0
-        ? JSON.stringify(this.__rcvForms.value.bu_type)
-        : ''
-    );
-    __mfTrax.append(
-      'cat_id',
-      this.__rcvForms.value.cat_id ? this.__rcvForms.value.cat_id : ''
-    );
-    __mfTrax.append(
-      'subcat_id',
-      this.__rcvForms.value.subcat_id ? this.__rcvForms.value.subcat_id : ''
-    );
-  }
-  else{
-    __mfTrax.append('login_status',this.__rcvForms.value.login_status);
-    __mfTrax.append('date_status',this.__rcvForms.value.date_status);
-    __mfTrax.append('start_date',this.__rcvForms.value.start_date);
-    __mfTrax.append('end_date',this.__rcvForms.value.end_date);
-  }
-    this.__dbIntr
-      .api_call(1, '/mfTraxDetailSearch', __mfTrax)
-      .pipe(pluck('data'))
-      .subscribe((res: any) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
-        this.tableExport();
-      });
+      this.getFinRPT(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
   }
   exportPdf() {
     if(this.__rcvForms.get('options').value == '3'){
@@ -600,5 +628,16 @@ export class FinrptComponent implements OnInit {
   }
   getTodayDate(){
     return dates.getTodayDate();
+  }
+  sortData(sort){
+    this.__sortAscOrDsc =sort;
+    this.submit();
+  }
+  reset(){
+    this.__rcvForms.reset();
+    this.__isAdd=false;
+    this.__rcvForms.get('options').setValue('2');
+    this.__sortAscOrDsc = {active:'',direction:'asc'};
+    this.submit();
   }
 }

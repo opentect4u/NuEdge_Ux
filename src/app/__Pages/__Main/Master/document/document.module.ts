@@ -17,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableExporterModule } from 'mat-table-exporter';
+import { MatSortModule } from '@angular/material/sort';
 
 const routes: Routes =[{path:'',component:DocumentComponent}]
 
@@ -36,7 +37,8 @@ const routes: Routes =[{path:'',component:DocumentComponent}]
     MatSelectModule,
     MatRadioModule,
     MatMenuModule,
-    MatTableExporterModule
+    MatTableExporterModule,
+    MatSortModule
   ],
   declarations: [
     DocumentComponent,

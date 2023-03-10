@@ -93,6 +93,8 @@ export class AMCComponent implements OnInit {
         this.getParticularAMCMaster();
     }
     else if(this.route.snapshot.queryParamMap.get('id')){
+      console.log(this.route.snapshot.queryParamMap.get('id'));
+
          this.navigate({flag:'R'});
     }
     this.__utility.getBreadCrumb(this.__brdCrmbs);
@@ -214,6 +216,12 @@ export class AMCComponent implements OnInit {
     this.__selectAMC.data = this.__selectAMC.data.filter((value: amc, key) => {
       if (value.id == row_obj.id) {
         value.amc_name = row_obj.amc_name;
+        value.amc_short_name = row_obj.amc_short_name;
+        value.login_id = row_obj.login_id;
+        value.login_pass = row_obj.login_pass;
+        value.login_url = row_obj.login_url;
+        value.security_qus_ans = row_obj.security_qus_ans;
+
         value.product_id = row_obj.product_id;
         value.rnt_id = row_obj.rnt_id;
         value.website = row_obj.website;
@@ -260,6 +268,7 @@ export class AMCComponent implements OnInit {
       }
       return true;
     });
+
   }
   getval(__paginate) {
     this.__pageNumber.setValue(__paginate);
@@ -291,7 +300,8 @@ export class AMCComponent implements OnInit {
     dialogConfig.id = "R",
     dialogConfig.data = {
       amc_id:amc_id,
-      rnt_id:__rnt_id
+      rnt_id:__rnt_id,
+      product_id:this.route.snapshot.queryParamMap.get('product_id') ? atob(this.route.snapshot.queryParamMap.get('product_id')) : '',
     }
     try {
       const dialogref = this.__dialog.open(

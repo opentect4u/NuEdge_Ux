@@ -6,6 +6,7 @@ import { pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -14,13 +15,14 @@ templateUrl: './ackUpload.component.html',
 styleUrls: ['./ackUpload.component.css']
 })
 export class AckuploadComponent implements OnInit {
+  allowedExtensions = ['pdf'];
 
   __ackUpload = new FormGroup({
     login_cutt_off: new FormControl(this.data.data.rnt_login_cutt_off ? this.data.data.rnt_login_cutt_off : ''),
-    rnt_login_dt: new FormControl(this.data.data.rnt_login_dt ? this.data.data.rnt_login_dt : '',[Validators.required]),
-    ack_file: new FormControl('',[Validators.required]),
-    rnt_login_time: new FormControl(this.data.data.rnt_login_time ? this.data.data.rnt_login_time : '',[Validators.required]),
-    remarks: new FormControl(''),
+    rnt_login_dt: new FormControl(this.data.data.rnt_login_dt ? this.data.data.rnt_login_dt.split(' ')[0] : '',[Validators.required]),
+    ack_file: new FormControl('',[Validators.required,fileValidators.fileExtensionValidator(this.allowedExtensions)]),
+    rnt_login_time: new FormControl(this.data.data.rnt_login_dt ? this.data.data.rnt_login_dt.split(' ')[1] : '',[Validators.required]),
+    remarks: new FormControl(this.data.data.ack_remarks ? this.data.data.ack_remarks : ''),
     file: new FormControl(this.data.data.ack_copy_scan ? `${environment.ack_formUrl + this.data.data.ack_copy_scan}` : '')
   })
   __isVisible: boolean =false;
@@ -70,6 +72,16 @@ fullScreen(){
 }
 getFile(__ev){
   this.__ackUpload.controls['file'].setValue(__ev.target.files[0]);
+
+  this.__ackUpload.controls['ack_file'].setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
+  this.__ackUpload.controls['ack_file'].updateValueAndValidity();
+  if (this.__ackUpload.controls['ack_file'].status == 'VALID' && __ev.target.files.length > 0) {
+    // this.__docs.controls[index].get('file_preview')?.patchValue(this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL( __ev.target.files[0])));
+    this.__ackUpload.controls['file'].setValue(__ev.target.files[0]);
+  }
+  else {
+    this.__ackUpload.controls['file'].setValue('');
+  }
 }
 
 }

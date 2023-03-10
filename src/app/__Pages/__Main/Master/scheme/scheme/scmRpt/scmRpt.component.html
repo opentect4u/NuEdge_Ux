@@ -63,8 +63,8 @@
                   formControlName="cat_id">
               </div>
               <div class="col-sm-4">
-                <label for="subcat_id">SubCategory </label>
-                <input type="text" placeholder="SubCategory Name" name="subcat_id" id="subcat_id" class="form-control"
+                <label for="subcat_id">Sub Category </label>
+                <input type="text" placeholder="Sub Category Name" name="subcat_id" id="subcat_id" class="form-control"
                   formControlName="subcat_id">
               </div>
 
@@ -99,7 +99,7 @@
         <table mat-table [dataSource]="__selectScm" class="table_Custome">
           <!-- Sl No. -->
           <ng-container matColumnDef="sl_no" sticky>
-            <th mat-header-cell *matHeaderCellDef>SL No.</th>
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
 
@@ -125,7 +125,7 @@
             <td mat-cell *matCellDef="let element">{{element.cat_name}}</td>
           </ng-container>
           <ng-container matColumnDef="subcat_name">
-            <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+            <th mat-header-cell *matHeaderCellDef>Sub Category</th>
             <td mat-cell *matCellDef="let element">{{element.subcategory_name}}</td>
           </ng-container>
 
@@ -229,7 +229,7 @@
 
 
         <ng-container matColumnDef="sl_no">
-          <th mat-header-cell *matHeaderCellDef>SL No.</th>
+          <th mat-header-cell *matHeaderCellDef>Sl No</th>
           <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
         </ng-container>
 
@@ -251,7 +251,7 @@
           <td mat-cell *matCellDef="let element">{{element.cat_name}}</td>
         </ng-container>
         <ng-container matColumnDef="subcat_name">
-          <th mat-header-cell *matHeaderCellDef>SubCategory</th>
+          <th mat-header-cell *matHeaderCellDef>Sub Category</th>
           <td mat-cell *matCellDef="let element">{{element.subcategory_name}}</td>
         </ng-container>
         <ng-container matColumnDef="nfo_start_dt">

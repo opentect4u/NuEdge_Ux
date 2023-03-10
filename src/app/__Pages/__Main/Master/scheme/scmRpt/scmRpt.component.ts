@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { scheme } from 'src/app/__Model/__schemeMst';
@@ -20,24 +21,25 @@ import { ScmModificationComponent } from '../scmModification/scmModification.com
   styleUrls: ['./scmRpt.component.css']
 })
 export class ScmRptComponent implements OnInit {
+
+  __sortAscOrDsc: any = {active: '',direction:'asc'};
   @ViewChild('searchcat') __searchCat : ElementRef;
   @ViewChild('searchsubcat') searchsubcat : ElementRef;
   toppings = new FormControl();
   toppingList: any = [{id: "edit",text:"Edit"},
-  {id: "sl_no",text:"SL No."},
+  {id: "delete",text:"Delete"},
+  {id: "sl_no",text:"Sl No"},
   {id: "scheme_name",text:"Scheme"},
   {id: "scheme_type",text:"Scheme Type"},
   {id: "amc_name",text:"Amc"},
   {id: "cat_name",text:"Category"},
-  {id: "subcat_name",text:"Sub Category"},
+  {id: "subcate_name",text:"Sub Category"},
   {id: "nfo_start_dt",text:"NFO Start Date"},
   {id: "nfo_end_dt",text:"NFO End Date"},
   {id: "nfo_reopen_dt",text:"NFO Reopen Date"},
   {id: "pip_fresh_min_amt",text:"Fresh Amount (PIP)"},
   {id: "pip_add_min_amt",text:"Additional Amount (PIP)"},
-  {id: "sip_fresh_min_amt",text:"Fresh Amount (SIP)"},
-  {id: "sip_add_min_amt",text:"Additional Amount (SIP)"},
-  {id: "delete",text:"Delete"}];
+];
   __scmForm = new FormGroup({
     amc_name: new FormControl(''),
     scheme_name: new FormControl(''),
@@ -57,22 +59,21 @@ export class ScmRptComponent implements OnInit {
   __catMst: category[] =[];
   __subcatMst: subcat[]=[];
   __columnsForsummary: string[] = [
-    'edit','sl_no','scheme_name','scheme_type','delete'];
+    'edit','delete','sl_no','scheme_name','scheme_type','delete'];
   __columnsForDetails: string[] = [
     'edit',
+    'delete',
     'sl_no',
     'scheme_name',
     'scheme_type',
     'amc_name',
     'cat_name',
-    'subcat_name',
+    'subcate_name',
     'nfo_start_dt',
     'nfo_end_dt',
     'nfo_reopen_dt',
     'pip_fresh_min_amt',
     'pip_add_min_amt',
-    'sip_fresh_min_amt',
-    'sip_add_min_amt',
     'delete'
     ];
   __export = new MatTableDataSource<scheme>([]);
@@ -91,13 +92,26 @@ export class ScmRptComponent implements OnInit {
   ngOnInit() {
     this.__columns = this.__columnsForsummary;
     this.toppings.setValue(this.__columns);
-    // this.getSchememaster();
-    // this.tableExport();
-    this.submit();
+    this.getSchemeMst();
   }
-  populateDT(__scm: scheme){
-    console.log(__scm);
 
+  getSchemeMst(column_name: string | null  = '',sort_by: string | null = 'asc'){
+    const __scmExport = new FormData();
+    __scmExport.append('paginate',this.__pageNumber.value);
+    __scmExport.append('column_name',column_name);
+    __scmExport.append('sort_by',sort_by);
+    __scmExport.append('scheme_name',this.__scmForm.value.scheme_name ? this.__scmForm.value.scheme_name : '');
+    __scmExport.append('cat_id',this.__scmForm.value.cat_id ? this.__scmForm.value.cat_id : '');
+    __scmExport.append('amc_name',this.__scmForm.value.amc_name ? this.__scmForm.value.amc_name : '');
+    __scmExport.append('subcat_id',this.__scmForm.value.subcat_id ? this.__scmForm.value.subcat_id : '');
+    this.__dbIntr.api_call(1,'/schemeDetailSearch',__scmExport).pipe(map((x: any) => x.data)).subscribe(res => {
+      this.__paginate =res.links;
+      this.setPaginator(res.data);
+      this.tableExport(column_name,sort_by);
+     })
+  }
+
+  populateDT(__scm: scheme){
     this.openDialog(__scm, __scm.id, __scm.scheme_type);
   }
   openDialog(
@@ -105,8 +119,6 @@ export class ScmRptComponent implements OnInit {
     __scmId: number,
     __scmType: string
   ) {
-    console.log(__scheme);
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -174,6 +186,9 @@ export class ScmRptComponent implements OnInit {
           (value.swp_date = row_obj.swp_date);
           (value.swp_freq_wise_amt = row_obj.swp_freq_wise_amt);
           (value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt);
+          (value.ava_special_sip = row_obj.ava_special_sip);
+          (value.special_sip_name = row_obj.special_sip_name);
+
         }
         return true;
       }
@@ -202,6 +217,8 @@ export class ScmRptComponent implements OnInit {
           (value.swp_date = row_obj.swp_date);
           (value.swp_freq_wise_amt = row_obj.swp_freq_wise_amt);
           (value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt);
+          (value.ava_special_sip = row_obj.ava_special_sip);
+          (value.special_sip_name = row_obj.special_sip_name);
         }
         return true;
       }
@@ -213,8 +230,8 @@ export class ScmRptComponent implements OnInit {
              this.__columns = this.__columnsForDetails;
              this.toppings.setValue(this.__columns);
              this.__exportedClmns = [
-              'sl_no','scheme_name','scheme_type','amc_name','cat_name','subcat_name','nfo_start_dt','nfo_end_dt',
-              'nfo_reopen_dt','pip_fresh_min_amt','pip_add_min_amt','sip_fresh_min_amt','sip_add_min_amt'
+              'sl_no','scheme_name','scheme_type','amc_name','cat_name','subcate_name','nfo_start_dt','nfo_end_dt',
+              'nfo_reopen_dt','pip_fresh_min_amt','pip_add_min_amt',
              ];
        }
        else{
@@ -283,10 +300,6 @@ export class ScmRptComponent implements OnInit {
 
   refreshOrAdvanceFlt(){
     if(this.__scmForm.controls['advanceFlt'].value == 'R'){
-        //  this.getSchememaster();
-        // this.tableExport();
-        // this.__scmForm.reset();
-        // this.__scmForm.get('options').setValue('2');
         this.__scmForm.patchValue({
           amc_name:'',
           scheme_name:'',
@@ -297,25 +310,15 @@ export class ScmRptComponent implements OnInit {
           options:'2',
           advanceFlt:''
         })
-        this.submit();
+        this.getSchemeMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
     }
 
   }
-  submit(){
+  submit(){this.getSchemeMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);}
+  tableExport(column_name: string | null  = '',sort_by: string | null = 'asc'){
     const __scmExport = new FormData();
-    __scmExport.append('paginate',this.__pageNumber.value);
-    __scmExport.append('scheme_name',this.__scmForm.value.scheme_name ? this.__scmForm.value.scheme_name : '');
-    __scmExport.append('cat_id',this.__scmForm.value.cat_id ? this.__scmForm.value.cat_id : '');
-    __scmExport.append('amc_name',this.__scmForm.value.amc_name ? this.__scmForm.value.amc_name : '');
-    __scmExport.append('subcat_id',this.__scmForm.value.subcat_id ? this.__scmForm.value.subcat_id : '');
-    this.__dbIntr.api_call(1,'/schemeDetailSearch',__scmExport).pipe(map((x: any) => x.data)).subscribe(res => {
-      this.__paginate =res.links;
-      this.setPaginator(res.data);
-      this.tableExport();
-     })
-  }
-  tableExport(){
-    const __scmExport = new FormData();
+    __scmExport.append('column_name',column_name);
+    __scmExport.append('sort_by',sort_by);
     __scmExport.append('scheme_name',this.__scmForm.value.scheme_name ? this.__scmForm.value.scheme_name : '');
     __scmExport.append('cat_id',this.__scmForm.value.cat_id ? this.__scmForm.value.cat_id : '');
     __scmExport.append('amc_name',this.__scmForm.value.amc_name ? this.__scmForm.value.amc_name : '');
@@ -346,6 +349,8 @@ export class ScmRptComponent implements OnInit {
           + ('&cat_id='+ this.__scmForm.value.cat_id)
           + ('&amc_name='+ this.__scmForm.value.amc_name)
           + ('&subcat_id='+ this.__scmForm.value.subcat_id)
+          + ('&column_name='+ this.__sortAscOrDsc.active)
+          + ('&sort_by='+ this.__sortAscOrDsc.direction)
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -418,5 +423,35 @@ export class ScmRptComponent implements OnInit {
       case 'C' :this.__searchCat.nativeElement.style.display = display_mode;break;
     }
 
+  }
+  sortData(sort){
+    this.__sortAscOrDsc = sort;
+    this.getSchemeMst(sort.active,sort.direction);
+  }
+  delete(__el,index){
+    const dialogConfig = new MatDialogConfig();
+      dialogConfig.autoFocus = false;
+      dialogConfig.role = "alertdialog";
+      dialogConfig.data = {
+        flag: 'S',
+        id: __el.id,
+        title: 'Delete '  + __el.subcategory_name,
+        api_name:'/catDelete'
+      };
+      const dialogref = this.__dialog.open(
+        DeletemstComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe((dt) => {
+        if(dt){
+          if(dt.suc == 1){
+            this.__selectScm.data.splice(index,1);
+            this.__selectScm._updateChangeSubscription();
+            this.__export.data.splice(this.__export.data.findIndex((x: any) => x.id == __el.id),1);
+            this.__export._updateChangeSubscription();
+          }
+        }
+
+      })
   }
 }

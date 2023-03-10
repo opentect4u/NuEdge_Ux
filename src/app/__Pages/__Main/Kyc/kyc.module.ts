@@ -20,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSortModule } from '@angular/material/sort';
 
 const routes: Routes = [{ path: '', component: KycComponent }]
 
@@ -40,7 +41,8 @@ const routes: Routes = [{ path: '', component: KycComponent }]
     MatTableExporterModule,
     MatMenuModule,
     SharedModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSortModule
   ],
   declarations: [KycComponent,KyModificationComponent,KycrptComponent,DialogfrclientComponent,DialogfrclientviewComponent]
 })

@@ -155,7 +155,7 @@ export class SubcategoryComponent implements OnInit {
       flag: 'S',
       id: __subcatId,
       items: __subcategory,
-      title: __subcatId == 0 ? 'Add SubCategory' : 'Update SubCategory',
+      title: __subcatId == 0 ? 'Add Sub Category' : 'Update Sub Category',
       right: global.randomIntFromInterval(1, 60),
     };
     dialogConfig.id = __subcatId > 0 ? __subcatId.toString() : '0';

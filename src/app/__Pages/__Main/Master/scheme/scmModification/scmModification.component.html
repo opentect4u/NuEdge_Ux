@@ -1,22 +1,21 @@
 
 <div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title" [title]="data.title">
+  <div mat-dialog-title class="dialog-title">
     <h2 >{{data.title}}</h2>
     <div class="btnIcon">
-      <button mat-icon-button  (click)="minimize()" >
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
         <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button  (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
       </button>
-
-      <button mat-icon-button  [mat-dialog-close]="">
-        <mat-icon >close</mat-icon>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
       </button>
 
+      <button mat-icon-button title="Close"  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
     </div>
 
   </div>
@@ -58,7 +57,7 @@
       <div class="col-sm-12 my-4">
         <label for="subCatName">Sub Category <span class="text-danger">*</span></label>
         <select class="form-control" formControlName="subcategory_id" id="subCatName">
-          <option value="">Select SubCategory</option>
+          <option value="">Select Sub Category</option>
          <option *ngFor="let __subcats of __subcatMaster" value="{{__subcats.id}}">{{__subcats.subcategory_name}}</option>
         </select>
         <div class="invalid-feedback" *ngIf="__scmForm.get('subcategory_id').invalid && (__scmForm.get('subcategory_id').dirty || __scmForm.get('subcategory_id').touched)">
@@ -233,6 +232,25 @@
       </table>
       </div>
     </div>
+
+     <div class="row">
+      <div class="col-sm-12 my-3">
+        <mat-checkbox color="primary" formControlName="ava_special_sip">Available Special SIP</mat-checkbox>
+      </div>
+      <div class="col-sm-12">
+        <label for="special_sip_name">Special SIP Name <span class="text-danger" *ngIf="__scmForm.controls['ava_special_sip'].value">*</span></label>
+        <input
+        type="text"
+        name="special_sip_name"
+        id="special_sip_name"
+        class="form-control"
+        placeholder="Enter Special SIP Name"
+        formControlName="special_sip_name">
+        <div class="invalid-feedback" *ngIf="__scmForm.get('special_sip_name').invalid && (__scmForm.get('special_sip_name').dirty || __scmForm.get('special_sip_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__scmForm.get('special_sip_name')).errors?.required">*Please provide special sip</span>
+        </div>
+      </div>
+     </div>
 
     <!-- SWP frequency Wise Amount -->
     <div class="row my-5">

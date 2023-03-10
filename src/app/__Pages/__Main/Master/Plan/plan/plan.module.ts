@@ -15,6 +15,7 @@ import { PlanrptComponent } from '../planRpt/planRpt.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 
 const routes: Routes =[{path:'',component:PlanComponent}]
@@ -24,16 +25,8 @@ const routes: Routes =[{path:'',component:PlanComponent}]
     CommonModule,
     RouterModule.forChild(routes),
     SearchModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatDialogModule,
-    DragDropModule,
-    OverlayModule,
-    MatButtonToggleModule,
-    SharedModule,
-    MatRadioModule,
-    MatTableExporterModule,
-    MatMenuModule
+    SharedModule
+
   ],
   declarations: [PlanComponent,PlanModificationComponent,PlanrptComponent]
 })

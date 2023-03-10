@@ -4,9 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
-import { plan } from 'src/app/__Model/plan';
 import { bank } from 'src/app/__Model/__bank';
-import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
@@ -53,7 +51,8 @@ export class BnkrptComponent implements OnInit {
   __exportedClmns: string[] = ['sl_no', 'bank_name','ifsc_code'];
   __paginate: any= [];
   __selectPLN = new MatTableDataSource<bank>([]);
-  __isVisible: boolean = false;
+  __isVisible: boolean = true;
+  __sortAscOrDsc = {active:'',direction:'asc'}
 constructor(
   private __Rpt: RPTService,
   public dialogRef: MatDialogRef<BnkrptComponent>,
@@ -66,33 +65,38 @@ constructor(
 }
 
 ngOnInit(){
-  this.getBankmaster();
-  this.tableExport();
+   this.getBankMst();
   this.__columns =this.__columnsForsummary;
 }
 
-tableExport(){
-  const __catExport = new FormData();
-  __catExport.append('bnk_name',this.__catForm.value.bnk_name ? this.__catForm.value.bnk_name : '');
-  __catExport.append('micr_code',this.__catForm.value.micr_code ? this.__catForm.value.micr_code : '');
-  __catExport.append('ifsc',this.__catForm.value.ifsc ? this.__catForm.value.ifsc : '');
-  this.__dbIntr.api_call(1,'/depositbankExport',__catExport).pipe(map((x: any) => x.data)).subscribe((res: bank[]) =>{
-     console.log(res);
+ getBankMst(column_name: string | null = '',sort_by: string | null | '' ='asc'){
+  const __bnkSearch = new FormData();
+  __bnkSearch.append('bnk_name',this.__catForm.value.bnk_name ? this.__catForm.value.bnk_name : '');
+  __bnkSearch.append('micr_code',this.__catForm.value.micr_code ? this.__catForm.value.micr_code : '');
+  __bnkSearch.append('ifsc',this.__catForm.value.ifsc ? this.__catForm.value.ifsc : '');
+  __bnkSearch.append('paginate',this.__pageNumber.value);
+  __bnkSearch.append('column_name',column_name);
+  __bnkSearch.append('sort_by',sort_by);
+   this.__dbIntr.api_call(1,'/depositbankDetailSearch',__bnkSearch).pipe(map((x: any) => x.data)).subscribe(res => {
+    this.__paginate =res.links;
+    this.setPaginator(res.data);
+     this.tableExport(column_name,sort_by);
+   })
+
+ }
+
+tableExport(column_name: string | null = '',sort_by: string | null | '' ='asc'){
+  const __bnkExport = new FormData();
+  __bnkExport.append('column_name',column_name);
+  __bnkExport.append('sort_by',sort_by);
+  __bnkExport.append('bnk_name',this.__catForm.value.bnk_name ? this.__catForm.value.bnk_name : '');
+  __bnkExport.append('micr_code',this.__catForm.value.micr_code ? this.__catForm.value.micr_code : '');
+  __bnkExport.append('ifsc',this.__catForm.value.ifsc ? this.__catForm.value.ifsc : '');
+  this.__dbIntr.api_call(1,'/depositbankExport',__bnkExport).pipe(map((x: any) => x.data)).subscribe((res: bank[]) =>{
     this.__export = new MatTableDataSource(res);
   })
 }
 
-private getBankmaster(__paginate: string | null = '10') {
-  this.__dbIntr
-  .api_call(0, '/depositbank', 'paginate=' + __paginate)
-  .pipe(map((x: responseDT) => x.data))
-  .subscribe((res: any) => {
-     console.log(res);
-
-    this.setPaginator(res.data);
-    this.__paginate = res.links;
-  });
-}
 
 ngAfterViewInit(){
   this.__catForm.controls['micr_code'].valueChanges
@@ -173,7 +177,11 @@ getPaginate(__paginate) {
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url + ('&paginate=' + this.__pageNumber.value)
+        __paginate.url 
+        + ('&paginate=' + this.__pageNumber.value)
+        + ('&bnk_name=' + this.__catForm.value.bnk_name ? this.__catForm.value.bnk_name : '')
+        + ('&micr_code=' + this.__catForm.value.micr_code ? this.__catForm.value.micr_code : '')
+        + ('&ifsc=' + this.__catForm.value.ifsc ? this.__catForm.value.ifsc : '')
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -184,7 +192,8 @@ getPaginate(__paginate) {
 }
 getval(__paginate) {
   this.__pageNumber.setValue(__paginate.toString());
-  this.getBankmaster(this.__pageNumber.value);
+  // this.getBankmaster(this.__pageNumber.value);
+  this.submit();
 }
 
 populateDT(__items: bank) {
@@ -293,19 +302,9 @@ exportPdf(){
   }, 'Bank')
 }
 submit(){
-  const __amcSearch = new FormData();
-  __amcSearch.append('bnk_name',this.__catForm.value.bnk_name);
-   this.__dbIntr.api_call(1,'/depositbankDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-    this.__paginate =res.links;
-    this.setPaginator(res.data);
-     this.showColumns();
-     this.tableExport();
-   })
+   this.getBankMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
 }
 
-showColumns(){
-
-}
 outsideClick(__ev,__mode){
   if(__ev){
      this.searchResultVisibility('none',__mode)
@@ -323,7 +322,6 @@ searchResultVisibility(display_mode,__mode) {
 }
 getItems(__amc,__type){
   console.log(__type);
-
  switch(__type){
   case 'M': this.__catForm.controls['micr_code'].reset(__amc.micr_code,{ onlySelf: true,emitEvent: false})
               this.searchResultVisibility('none','M');
@@ -334,5 +332,9 @@ getItems(__amc,__type){
               break;
   default: break;
  }
+}
+sortData(sort){
+  this.__sortAscOrDsc =sort;
+  this.submit();
 }
 }

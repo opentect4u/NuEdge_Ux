@@ -26,7 +26,7 @@
   display: table-cell;
   line-break: unset;
   padding: 0px 5px;
-  width: 17%;
+  width: 20%;
   white-space: nowrap;
   overflow: hidden;
   vertical-align: middle;
@@ -82,4 +82,8 @@ td.mat-footer-cell {
 }
 ::ng-deep .mat-form-field-wrapper{
   padding:0px!important;
+}
+
+.highlight{
+  background: #42A948; /* green */
 }

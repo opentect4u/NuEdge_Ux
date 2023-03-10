@@ -3,14 +3,14 @@
   <div mat-dialog-title class="dialog-title" >
     <h2 [title]="data.title">{{data.title}}</h2>
     <div class="btnIcon">
-      <button mat-icon-button title="Minimize"  (click)="minimize()" >
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
         <mat-icon >remove</mat-icon>
       </button>
-      <button mat-icon-button   (click)="maximize()" *ngIf="__isVisible">
-        <mat-icon>check_box_outline_blank</mat-icon>
-      </button>
-      <button mat-icon-button  (click)="fullScreen()" *ngIf="!__isVisible">
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
         <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
       </button>
 
       <button mat-icon-button title="Close" [mat-dialog-close]="">
@@ -21,7 +21,7 @@
 
   </div>
   <mat-dialog-content>
-        <form [formGroup]="__rcvForm" (ngSubmit)="recieveForm()" [attr.id]="'__rcvForm' + data.id" ngNativeValidate autocomplete="off">
+        <form [formGroup]="__rcvForm" (ngSubmit)="recieveForm()" [attr.id]="'__rcvForm_Fin' + data.id" ngNativeValidate autocomplete="off">
           <!-- Buisness Type -->
           <div class="row">
             <div class="col-sm-12 my-3">
@@ -322,7 +322,7 @@
         </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-    <button class="btn addBtn"   [attr.form]="'__rcvForm' + data.id" [disabled]="this.__rcvForm.invalid">Submit</button>
+    <button class="btn addBtn"   [attr.form]="'__rcvForm_Fin' + data.id" [disabled]="this.__rcvForm.invalid">Submit</button>
   </mat-dialog-actions>
   <br clear="all">
   </div>

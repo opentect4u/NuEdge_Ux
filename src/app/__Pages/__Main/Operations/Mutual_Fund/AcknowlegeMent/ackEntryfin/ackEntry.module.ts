@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule, Routes } from '@angular/router';
 import { MatTableExporterModule } from 'mat-table-exporter';
@@ -53,7 +54,8 @@ const routes : Routes = [
       MatTableExporterModule,
       MatMenuModule,
       MatIconModule,
-      MatChipsModule
+      MatChipsModule,
+      MatSortModule
     ],
     providers: []
 })

@@ -96,7 +96,7 @@ export class NonfinancialComponent implements OnInit {
     dialogConfig.hasBackdrop = false;
     dialogConfig.disableClose = true;
     dialogConfig.closeOnNavigation = false;
-    dialogConfig.id = 'NonFin_' + __id;     
+    dialogConfig.id = 'NonFin_' + __id;
     dialogConfig.data = {
       id: __id,
       title: 'Non Financial Entry',
@@ -120,7 +120,7 @@ export class NonfinancialComponent implements OnInit {
         flag:'NonFin_'+ __id
       });
     }
-    
+
   }
   addRow(row_obj) {
     this.__nonFinMst.data.unshift(row_obj);
@@ -137,7 +137,8 @@ export class NonfinancialComponent implements OnInit {
       switch(__mode){
         case 'M': this.openDialog('0',null)
                    break; //open Modal For NonFinancial Modification
-        case 'R': break; //open Modal For NonFinancial Reports
+        case 'R': this.openDialogForRPT();
+                 break; //open Modal For NonFinancial Reports
         default: break;
       }
   }
@@ -151,7 +152,7 @@ export class NonfinancialComponent implements OnInit {
     dialogConfig.height = '100%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.panelClass = "fullscreen-dialog"
-    dialogConfig.id = "FINRPT",
+    dialogConfig.id = "NONFINRPT",
     dialogConfig.data = {
       product_id: this.__prod_id,
       trans_type_id: this.__transType_id,

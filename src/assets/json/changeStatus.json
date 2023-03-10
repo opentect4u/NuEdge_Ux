@@ -1,8 +1,10 @@
 [
-  {"id":1,"name":"NRI - RI"},
-  {"id":2,"name":"RI - NRI"},
-  {"id":3,"name":"NRI - OCI"},
-  {"id":4,"name":"OCI - NRI"},
-  {"id":5,"name":"OCI - RI"},
-  {"id":6,"name":"RI - OCI"}
+  {"id":1,"client_type_id":1,"name":"NRI - RI"},
+  {"id":2,"client_type_id":3,"name":"RI - NRI (Repartiable)"},
+  {"id":3,"client_type_id":4,"name":"RI - NRI (Non-Repartiable)"},
+  {"id":4,"client_type_id":30,"name":"NRI - OCI"},
+  {"id":5,"client_type_id":3,"name":"OCI - NRI (Repartiable)"},
+  {"id":6,"client_type_id":4,"name":"OCI - NRI (Non-Repartiable)"},
+  {"id":7,"client_type_id":1,"name":"OCI - RI"},
+  {"id":8,"client_type_id":30,"name":"RI - OCI"}
 ]

@@ -14,6 +14,7 @@ import { CatrptComponent } from './catRpt/catRpt.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 
 const routes:Routes = [{path:'',component:CategoryComponent}]
@@ -32,7 +33,8 @@ const routes:Routes = [{path:'',component:CategoryComponent}]
     MatButtonToggleModule,
     MatTableExporterModule,
     MatRadioModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSortModule
   ],
   declarations: [
     CategoryComponent,

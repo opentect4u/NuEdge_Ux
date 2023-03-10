@@ -58,7 +58,7 @@
       <div class="col-sm-12 my-4">
         <label for="subCatName">Sub Category <span class="text-danger">*</span></label>
         <select class="form-control" formControlName="subcategory_id" id="subCatName">
-          <option value="">Select SubCategory</option>
+          <option value="">Select Sub Category</option>
          <option *ngFor="let __subcats of __subcatMaster" value="{{__subcats.id}}">{{__subcats.subcategory_name}}</option>
         </select>
         <div class="invalid-feedback" *ngIf="__scmForm.get('subcategory_id').invalid && (__scmForm.get('subcategory_id').dirty || __scmForm.get('subcategory_id').touched)">

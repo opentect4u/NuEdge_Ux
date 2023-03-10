@@ -3,6 +3,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
   MatDialog,
+  MatDialogConfig,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
@@ -17,7 +18,9 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
+import { global } from 'src/app/__Utility/globalFunc';
 import buType from '../../../../../../../../assets/json/buisnessType.json';
+import { AckuploadComponent } from '../ackUpload/ackUpload.component';
 @Component({
 selector: 'ackRPT-component',
 templateUrl: './ackRPT.component.html',
@@ -28,7 +31,7 @@ export class AckrptComponent implements OnInit {
   divToPrint: any;
   toppings = new FormControl();
   toppingList: any = [{id: "edit",text:"Edit"},
-  {id: "sl_no",text:"SL No."},
+  {id: "sl_no",text:"Sl No"},
   {id: "temp_tin_no",text:"TIN Number"},
   {id: "rnt_name",text:"R&T"},
   {id: "rnt_login_cut_off",text:"Login Cut Off"},
@@ -59,8 +62,8 @@ export class AckrptComponent implements OnInit {
   {id: "kyc_status",text:"KYC Status"},
   // {id: "delete",text:"Delete"}
 ];
-
-
+  
+  __sortAscOrDsc: any = {active: '',direction:'asc'};
   __category: category[];
   __subCat: subcat[];
   __bu_type = buType;
@@ -220,9 +223,8 @@ export class AckrptComponent implements OnInit {
     this.toppings.setValue(this.__columns);
     // this.getFianancMaster();
     // this.tableExport();
-    this.submit();
+    this.getAckRPT();
     this.getTransactionTypeDtls();
-
     this.getCategory();
     this.getSubCategory();
     this.getRnt();
@@ -276,11 +278,13 @@ export class AckrptComponent implements OnInit {
         this.__trans_types = res;
       });
   }
-  tableExport() {
+  tableExport(column_name: string | null ='',sort_by: string | null | '' = 'asc') {
     const __mfTrax = new FormData();
     __mfTrax.append('option', this.__rcvForms.value.options);
     __mfTrax.append('trans_type_id', this.data.trans_type_id);
     __mfTrax.append('trans_id', this.data.trans_id);
+    __mfTrax.append('column_name', column_name);
+    __mfTrax.append('sort_by', sort_by);
     if(this.__rcvForms.get('options').value != '3'){
     __mfTrax.append(
       'client_code',
@@ -392,15 +396,38 @@ export class AckrptComponent implements OnInit {
 
   getval(__paginate) {
     this.__pageNumber = __paginate.toString();
-    this.getPaginate();
+    this.submit();
   }
   getPaginate(__paginate: any | null = null) {
     if (__paginate) {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber) +
-            (this.data.trans_id ? '&trans_id=' + this.data.trans_id : '')
+            ('&paginate=' + this.__pageNumber) 
+            + (this.data.trans_id ? '&trans_id=' + this.data.trans_id : '')
+            + ('&option=' + this.__rcvForms.value.options)
+            + ('&trans_type_id=' + this.data.trans_type_id)
+            + ('&trans_id=' +  this.data.trans_id)
+            + ('&column_name=' +  this.__sortAscOrDsc.active)
+            + ('&sort_by=' +  this.__sortAscOrDsc.direction)
+            + (this.__rcvForms.get('options').value != '3' 
+            ? ('&client_code='+ this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '')
+            + ('&sub_brk_cd=' + this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '')
+            + ('&trans_type=' + (this.__rcvForms.value.trans_type.length > 0 ? JSON.stringify(this.__rcvForms.value.trans_type): ''))
+            + ('&tin_no='+ this.__rcvForms.value.tin_no ? this.__rcvForms.value.tin_no : '')
+            + ('&amc_name='+ this.__rcvForms.value.amc_name ? this.__rcvForms.value.amc_name : '')
+            + ('&inv_type=' + this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : '')
+            + ('&euin_no=' +this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : '')
+            + ('&brn_cd='+this.__rcvForms.value.brn_cd ? this.__rcvForms.value.brn_cd : '')
+            + ('&rnt_name' + (this.__rcvForms.value.rnt_name.length > 0 ? JSON.stringify(this.__rcvForms.value.rnt_name): ''))
+            + ('&bu_type' + (this.__rcvForms.value.bu_type.length > 0? JSON.stringify(this.__rcvForms.value.bu_type): ''))
+            + ('&cat_id=' +this.__rcvForms.value.cat_id ? this.__rcvForms.value.cat_id : '')
+            + ('&subcat_id=' +this.__rcvForms.value.subcat_id ? this.__rcvForms.value.subcat_id : '')
+            : ('&login_status=' + this.__rcvForms.value.login_status)
+            +('&date_status=' + this.__rcvForms.value.date_status)
+            +('&start_date=' + this.__rcvForms.value.start_date)
+            +('&end_date=' + this.__rcvForms.value.end_date)
+            )
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -416,22 +443,82 @@ export class AckrptComponent implements OnInit {
     }
   }
   setPaginator(res) {
-    console.log(res);
-
     this.__financMst = new MatTableDataSource(res);
-    console.log(this.__financMst);
-
     this.__paginate = res.links;
   }
-  populateDT(__element) {}
-  submit() {
-    console.log(this.__rcvForms.value);
+  populateDT(__items) {
+    const dialogConfig = new MatDialogConfig();
+  dialogConfig.autoFocus = false;
+  dialogConfig.closeOnNavigation = false;
+  dialogConfig.disableClose = true;
+  dialogConfig.hasBackdrop = false;
+  dialogConfig.width = '50%';
+  dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+  dialogConfig.data = {
+    flag: 'ACKUPL',
+    isViewMode: __items.form_status == 'P' ? false : true,
+    tin: __items.tin_no,
+    tin_no: __items.tin_no,
+    title: 'Upload Acknowledgement',
+    right: global.randomIntFromInterval(1, 60),
+    data:__items
+  };
+  dialogConfig.id = 'ACKUPL_' + __items.tin_no ? __items.tin_no.toString() : '0';
+  try {
+    const dialogref = this.__dialog.open(
+      AckuploadComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if (dt) {
+          this.updateRow(dt.data);
+      }
+    });
+  } catch (ex) {
+    const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+    dialogRef.updateSize('40%');
+    this.__utility.getmenuIconVisible({
+      id: Number(dialogConfig.id),
+      isVisible: false,
+      flag: 'ACKUPL',
+    });
+  }
+  }
+  updateRow(row_obj){
+    this.__financMst.data = this.__financMst.data.filter((value: any, key) => {
+      if (value.tin_no == row_obj.tin_no) {
+       value.rnt_login_cutt_off = row_obj.rnt_login_cutt_off,
+       value.rnt_login_dt = row_obj.rnt_login_dt,
+       value.rnt_login_time = row_obj.rnt_login_dt?.split(' ')[1],
+       value.ack_copy_scan = `${row_obj.ack_copy_scan}`,
+       value.form_status = row_obj.form_status,
+       value.ack_remarks = row_obj.ack_remarks
+      }
+      return true;
+    });
+    this.__export.data = this.__export.data.filter((value: any, key) => {
+      if (value.tin_no == row_obj.tin_no) {
+       value.rnt_login_cutt_off = row_obj.rnt_login_cutt_off,
+       value.rnt_login_dt = row_obj.rnt_login_dt,
+       value.rnt_login_time = row_obj.rnt_login_dt?.split(' ')[1],
+       value.ack_copy_scan = `${row_obj.ack_copy_scan}`,
+       value.form_status = row_obj.form_status,
+       value.ack_remarks = row_obj.ack_remarks
+      }
+      return true;
+    });
 
+  }
+  
+  getAckRPT(column_name: string | null ='',sort_by: string | null | '' = 'asc'){
     const __mfTrax = new FormData();
     __mfTrax.append('paginate', this.__pageNumber.value);
     __mfTrax.append('option', this.__rcvForms.value.options);
     __mfTrax.append('trans_type_id', this.data.trans_type_id);
     __mfTrax.append('trans_id', this.data.trans_id);
+    __mfTrax.append('column_name', column_name);
+    __mfTrax.append('sort_by', sort_by);
+
     if(this.__rcvForms.get('options').value != '3'){
 
     __mfTrax.append(
@@ -501,8 +588,13 @@ export class AckrptComponent implements OnInit {
       .subscribe((res: any) => {
         this.__paginate = res.links;
         this.setPaginator(res.data);
-        this.tableExport();
+        this.tableExport(column_name,sort_by);
       });
+
+  }
+
+  submit() {
+    this.getAckRPT(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
   }
   exportPdf() {
     if(this.__rcvForms.get('options').value == '3'){
@@ -603,5 +695,10 @@ export class AckrptComponent implements OnInit {
   }
   getTodayDate(){
     return dates.getTodayDate();
+  }
+
+  sortData(sort){
+    this.__sortAscOrDsc = sort;
+    this.submit();
   }
 }

@@ -1,0 +1,74 @@
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="__emailTemplate" autocomplete="off" [attr.id]="'__emailForm_'+data.id" (ngSubmit)="submitEmailTemplate()">
+      <div class="row my-5">
+        <div class="col-sm-12">
+          <label for="event">Event <span class="text-danger">*</span></label>
+          <input type="text"
+           placeholder= 'Enter Email Event'
+           [readonly]="this.data.id > 0 ? true : false"
+            name="event" id="event" class="form-control" formControlName="event">
+          <div class="invalid-feedback"
+            *ngIf="__emailTemplate.get('event').invalid && (__emailTemplate.get('event').dirty || __emailTemplate.get('event').touched)">
+            <span class="invalid-feedback" *ngIf="(__emailTemplate.get('event')).errors?.required">*Please provide
+              email event</span>
+          </div>
+        </div>
+      </div>
+      <div class="row my-5">
+        <div class="col-sm-12">
+          <label for="subject">Subject <span class="text-danger">*</span></label>
+          <input type="text" placeholder= 'Enter Email Subject' name="subject" id="subject" class="form-control" formControlName="subject">
+          <div class="invalid-feedback"
+            *ngIf="__emailTemplate.get('subject').invalid && (__emailTemplate.get('subject').dirty || __emailTemplate.get('subject').touched)">
+            <span class="invalid-feedback" *ngIf="(__emailTemplate.get('subject')).errors?.required">*Please provide
+              email subject</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-sm-12">
+          <label for="body">Body <span class="text-danger">*</span></label>
+          <textarea
+          name="body"
+          id="body"
+          class="form-control"
+          rows="5"
+          cols="12"
+          placeholder= 'Enter Email Body'
+          formControlName="body"
+          ></textarea>
+          <div class="invalid-feedback"
+            *ngIf="__emailTemplate.get('body').invalid && (__emailTemplate.get('body').dirty || __emailTemplate.get('body').touched)">
+            <span class="invalid-feedback" *ngIf="(__emailTemplate.get('body')).errors?.required">*Please provide
+              email body</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn"  [attr.form]="'__emailForm_'+data.id" [disabled]="this.__emailTemplate.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+  </div>

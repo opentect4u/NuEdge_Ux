@@ -29,7 +29,7 @@
                 {{this.__cateId > 0 ? 'Update' : 'Submit'}}
               </button>
               <button class="btn  resetBtn" (click)="reset()" type="reset">RESET</button>
-              
+
             </div>
           </div>
       </form>
@@ -49,7 +49,7 @@
         <table mat-table [dataSource]="__selectCategory">
           <!-- Sl No. -->
           <ng-container matColumnDef="sl_no">
-            <th mat-header-cell *matHeaderCellDef>Sl no.</th>
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
 

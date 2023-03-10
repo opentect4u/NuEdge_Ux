@@ -26,5 +26,6 @@ export interface scheme {
   stp_freq_wise_amt:any;
   swp_date:any;
   swp_freq_wise_amt:any
-
+  ava_special_sip: boolean;
+  special_sip_name: string;
   }

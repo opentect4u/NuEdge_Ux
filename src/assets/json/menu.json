@@ -164,7 +164,7 @@
       },
       {
         "id": 22,
-        "menu_name": "SubCategory",
+        "menu_name": "Sub Category",
         "has_submenu": "N",
         "url": "/main/master/productwisemenu/subcategory",
         "icon": "history"

@@ -18,6 +18,12 @@ import {RouterModule, Routes} from '@angular/router';
               path:'ackEntry',
               loadChildren:()=>import('./ackEntryfin/ackEntry.module').then(m => m.AckentryModule),
               data:{breadcrumb:null}
+            },
+            {
+              path:'ackNonFin',
+              loadChildren:()=> import('./ackEntryNonFin/ackEntryNonFin.module').then(m => m.AckEntryNonFinModule),
+              data:{breadcrumb:null}
+
             }
       ]
     }
