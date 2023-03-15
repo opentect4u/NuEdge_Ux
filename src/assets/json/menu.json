@@ -200,15 +200,14 @@
         "icon": "stars"
       },
       {
-        "id":39,
+        "id":40,
         "menu_name":"Transaction",
         "has_submenu":"N",
         "url":"/main/master/productwisemenu/trns",
         "icon": "stars"
-      }
-      ,
+      },
       {
-        "id":40,
+        "id":41,
         "menu_name":"SIP Type",
         "has_submenu":"N",
         "url":"/main/master/productwisemenu/sipType",

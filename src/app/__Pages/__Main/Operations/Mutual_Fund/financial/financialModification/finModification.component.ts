@@ -32,6 +32,7 @@ import dateslist from '../../../../../../../assets/json/dates.json';
 import { dates } from 'src/app/__Utility/disabledt';
 import { rnt } from 'src/app/__Model/Rnt';
 import { Observable, of } from 'rxjs';
+import { scheme } from 'src/app/__Model/__schemeMst';
 @Component({
   selector: 'finModification-component',
   templateUrl: './finModification.component.html',
@@ -77,7 +78,7 @@ export class FinmodificationComponent implements OnInit {
   __isEuinNumberVisible: boolean = false;
   __isclientVisible: boolean = false;
 
-  __sipdtRng_amtRng: any = [];
+  __sipdtRng_amtRng: scheme;
   __subbrkArnMst: any = [];
   __checkAmt: boolean = true;
   __chkInvAmt: boolean = true;
@@ -128,9 +129,9 @@ export class FinmodificationComponent implements OnInit {
   __product_type: string = this.data.trans_type_id;
   __traxForm = new FormGroup({
     sip_name: new FormControl(''),
-    swp_freq: new FormControl(''),
-    swp_start_date: new FormControl(''),
-    swp_duration: new FormControl(''),
+    swp_freq: new FormControl('',{updateOn:'blur'}),
+    swp_start_date: new FormControl('',{updateOn:'blur'}),
+    swp_duration: new FormControl('',{updateOn:'blur'}),
     swp_installment_amt: new FormControl(''),
     swp_end_date: new FormControl(''),
 
@@ -214,7 +215,11 @@ export class FinmodificationComponent implements OnInit {
     Switch_amt: new FormControl(''),
     option_to: new FormControl(''),
     plan_to: new FormControl(''),
-    rnt_login_at: new FormControl('',[Validators.required])
+    rnt_login_at: new FormControl('',[Validators.required]),
+    step_up_percentage: new FormControl(''),
+    step_up_amt: new FormControl(''),
+    step_up_by: new FormControl(''),
+
   });
   __noofdaystobeAdded:any;
   send_date = new Date();
@@ -503,96 +508,98 @@ export class FinmodificationComponent implements OnInit {
     this.__traxForm.controls['trans_id'].valueChanges.subscribe((res) => {
       if (res == '2') {
         this.getSipTypeMst();
-        this.setValidations(
-          [{ name: 'sip_type', valid: [Validators.required] },
-            { name: 'sip_frequency', valid: [Validators.required] },
+        this.setValidations([
+          { name: 'sip_frequency', valid: [Validators.required] },
           { name: 'sip_duration', valid: [Validators.required] },
           { name: 'duration', valid: [Validators.required] },
-          // { name: 'sip_date', valid: [Validators.required] },
           { name: 'sip_start_date', valid: [Validators.required] },
-          { name: 'sip_end_date', valid: [Validators.required] }]
-        )
+          { name: 'sip_end_date', valid: [Validators.required] },
+        ]);
+        this.__traxForm.get('sip_type').setValidators([Validators.required]);
+        this.__traxForm
+          .get('sip_type')
+          .setAsyncValidators(this.sipSipTypeExistValidators());
+        this.__traxForm
+          .get('sip_type')
+          .updateValueAndValidity({ emitEvent: false });
       } else {
-        this.removeValidations(
-          [{ name: 'sip_type', valid: [Validators.required] },
-            { name: 'sip_frequency', valid: [Validators.required] },
+        this.removeValidations([
+          { name: 'sip_type', valid: [Validators.required] },
+          { name: 'sip_frequency', valid: [Validators.required] },
           { name: 'inv_type', valid: [Validators.required] },
           { name: 'sip_duration', valid: [Validators.required] },
           { name: 'duration', valid: [Validators.required] },
           // { name: 'sip_date', valid: [Validators.required] },
           { name: 'sip_start_date', valid: [Validators.required] },
-          { name: 'sip_end_date', valid: [Validators.required] }]
-        )
-        this.__traxForm.patchValue({
-          sip_frequency: '',
-          sip_duration: '',
-          duration: '',
-          period: '',
-          sip_start_date: '',
-          sip_end_date: '',
-          sip_date:''
-        },{emitEvent:false});
+          { name: 'sip_end_date', valid: [Validators.required] },
+        ]);
+        this.__traxForm.patchValue(
+          {
+            sip_frequency: '',
+            sip_duration: '',
+            duration: '',
+            period: '',
+            sip_start_date: '',
+            sip_end_date: '',
+            sip_date: '',
+          },
+          { emitEvent: false }
+        );
+         this.__traxForm
+          .get('sip_type')
+          .removeAsyncValidators(this.sipSipTypeExistValidators());
+          this.__traxForm
+          .get('sip_type')
+          .updateValueAndValidity({ emitEvent: false });
       }
-        this.__checkAmt = res == '3' ? false : this.__checkAmt;
-        this.__chkInvAmt = res == '2' ? true : false;
-        if(res == '3'){
-          this.removeValidations(
-            [
-              {name:'amount',valid:[Validators.required]},
-              {name:'chq_no',valid:[
-                Validators.required,
-                Validators.minLength(6),
-                Validators.maxLength(6),
-                Validators.pattern("^[0-9]*$")]},
-              {name:'chq_bank',valid:[Validators.required]},
-              {name:'bank_id',valid:[Validators.required]},
-            ]);
-            this.setValidations(
-              [
-                {name:'switch_scheme_to',valid:[Validators.required]},
-                {name:'scheme_id_to',valid:[Validators.required]}
-              ])
-        }
-        else{
-          this.setValidations(
-            [
-              {name:'amount',valid:[Validators.required]},
-              {name:'chq_no',valid:[Validators.required,
-                Validators.minLength(6),
-                Validators.maxLength(6),
-                Validators.pattern("^[0-9]*$")]},
-              {name:'chq_bank',valid:[Validators.required]},
-              {name:'bank_id',valid:[Validators.required]},
-            ]);
-            this.removeValidations(
-              [
-                {name:'switch_scheme_to',valid:[Validators.required]},
-                {name:'scheme_id_to',valid:[Validators.required]}
-              ])
-        }
+      this.__checkAmt = res == '3' ? false : this.__checkAmt;
+      this.__chkInvAmt = res == '2' ? true : false;
+      if (res == '3') {
+        this.removeValidations([
+          { name: 'amount', valid: [Validators.required] },
+          {
+            name: 'chq_no',
+            valid: [
+              Validators.required,
+              Validators.minLength(6),
+              Validators.maxLength(6),
+              Validators.pattern('^[0-9]*$'),
+            ],
+          },
+          { name: 'chq_bank', valid: [Validators.required] },
+          { name: 'bank_id', valid: [Validators.required] },
+        ]);
+        this.setValidations([
+          { name: 'switch_scheme_to', valid: [Validators.required] },
+          { name: 'scheme_id_to', valid: [Validators.required] },
+        ]);
+      } else {
+        this.setValidations([
+          { name: 'amount', valid: [Validators.required] },
+          {
+            name: 'chq_no',
+            valid: [
+              Validators.required,
+              Validators.minLength(6),
+              Validators.maxLength(6),
+              Validators.pattern('^[0-9]*$'),
+            ],
+          },
+          { name: 'chq_bank', valid: [Validators.required] },
+          { name: 'bank_id', valid: [Validators.required] },
+        ]);
+        this.removeValidations([
+          { name: 'switch_scheme_to', valid: [Validators.required] },
+          { name: 'scheme_id_to', valid: [Validators.required] },
+        ]);
+      }
     });
 
     //Sip Type Change
     this.__traxForm.controls['sip_type'].valueChanges.subscribe(res =>{
-         if(res == '2'){
-          this.removeValidations([
-            {name:'chq_no',valid:[
-                Validators.required,
-                Validators.minLength(6),
-                Validators.maxLength(6),
-                Validators.pattern("^[0-9]*$")]
-              }
-              ]);
-
-         }
-         else{
-          this.setValidations([{name:'chq_no',valid:[
-            Validators.required,
-            Validators.minLength(6),
-            Validators.maxLength(6),
-            Validators.pattern("^[0-9]*$")]}]);
-         }
-         this.__chkInvAmt = res == '2' ? this.__chkInvAmt : true;
+          this.__traxForm.get('chq_no').setValidators(res != '2' ?[Validators.required,Validators.minLength(6),Validators.maxLength(6),Validators.pattern("^[0-9]*$")] : null);
+          this.__traxForm.get('chq_no').updateValueAndValidity();
+          this.__chkInvAmt = res == '2' ? this.__chkInvAmt : true;
     })
 
     //Sip_duration change
@@ -722,7 +729,60 @@ export class FinmodificationComponent implements OnInit {
         this.__traxForm.get('sip_start_date').setValue('');
       }
     })
+
+    //SWP Duration
+    this.__traxForm.get('swp_duration').valueChanges.subscribe(res =>{
+         this.setSWPEndDate(
+          this.__traxForm.get('swp_freq').value,
+          res,
+          this.__traxForm.get('swp_start_date').value);
+    })
+
+     //SWP Start Date
+     this.__traxForm.get('swp_start_date').valueChanges.subscribe(res =>{
+      this.setSWPEndDate(
+       this.__traxForm.get('swp_freq').value,
+       this.__traxForm.get('swp_duration').value,
+       res);
+      })
+
+      //SWP Frequemcy
+     this.__traxForm.get('swp_freq').valueChanges.subscribe(res =>{
+      this.setSWPEndDate(
+       res,
+       this.__traxForm.get('swp_duration').value,
+       this.__traxForm.get('swp_start_date').value);
+      })
   }
+
+  setSWPEndDate(swp_freq,swp_duration,swp_start_date){
+    if(swp_freq && swp_duration && swp_start_date){
+      let _calculateDT;
+      var dt = new Date(swp_start_date);
+        switch(swp_freq){
+           case 'D' : _calculateDT = new Date(dt.setDate(dt.getDate() + Number(swp_duration))).toISOString().substring(0 ,10);
+           break;
+           case 'W' :_calculateDT = new Date(dt.setDate(dt.getDate() + (Number(swp_duration) * 7))).toISOString().substring(0 ,10);
+           break;
+           case 'F' :_calculateDT = new Date(dt.setDate(dt.getDate() + (Number(swp_duration) * 14))).toISOString().substring(0 ,10);
+           break;
+           case 'M' :_calculateDT = new Date(dt.setMonth(dt.getMonth() + (Number(swp_duration)))).toISOString().substring(0 ,10);
+           break;
+           case 'Q' : break;
+           case 'S' : break;
+           case 'A' :_calculateDT = new Date(dt.setFullYear(dt.getFullYear() + (Number(swp_duration)))).toISOString().substring(0 ,10);
+           break;
+           default: break;
+        }
+        this.__traxForm.controls['swp_end_date'].setValue(_calculateDT);
+    }
+    else{
+      this.__traxForm.controls['swp_end_date'].setValue('');
+    }
+
+  }
+
+
   //Sub Broker search result off
   searchResultVisibilityForSubBrkArn(display_mode) {
     this.__subBrkArn.nativeElement.style.display = display_mode;
@@ -915,39 +975,10 @@ export class FinmodificationComponent implements OnInit {
       this.__swp_freq = res[0].swp_freq_wise_amt ? JSON.parse(res[0].swp_freq_wise_amt).filter((x: any) => x.is_checked == true) : [];
       this.setSipDateAgainstScheme(res[0]?.sip_date);
       this.__sipdtRng_amtRng = res[0];
-      // var date = new Date();
-      // date.setDate(
-      //   date.getDate()
-      //   + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x: any) => x.sl_no == 3)].param_value));
-      //   console.log(JSON.parse(res[0]?.sip_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()));
-
-      //   console.log(date.toISOString().substring(0,10));
-
-      // if(JSON.parse(res[0]?.sip_date).findIndex((x:any) => x?.date ==  (date.getDate()).toString()) != -1)
-      // {
-      //     this.__traxForm.patchValue({
-      //       sip_start_date: date.toISOString().slice(0, 10),
-      //     })
-      // }
-      // else{
-      //   var found = JSON.parse(res[0]?.sip_date).find(function(element) {return Number(element.date) > Number(date.getDate())});
-      //    if(found){
-      //           this.__traxForm.get('sip_start_date').setValue(date.getFullYear()+'-'+(date.getMonth().toString().length > 1 ?  (date.getMonth() + 1) : '0'+(date.getMonth() + 1))+'-'+found.date);
-      //    }
-      //    else{
-      //      date.setDate(date.getDate() + 60);
-      //     this.__traxForm.get('sip_start_date').setValue(
-      //       date.getFullYear()
-      //       +'-'+
-      //       (date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+
-      //       date.getMonth())
-      //       +'-'+
-      //        (JSON.parse(res[0]?.sip_date)[0]?.date.length > 1 ? JSON.parse(res[0]?.sip_date)[0]?.date
-      //        :'0'+JSON.parse(res[0].sip_date)[0].date));
-      //      console.log( this.__traxForm.get('sip_start_date').value);
-
-      //   }
-      // }
+      this.__traxForm.get('sip_name').setValue(res[0].special_sip_name);
+      if(this.__traxForm.get('trans_id').value == '2' && this.__traxForm.get('sip_type').value == '4'){
+        this.__traxForm.get('sip_type').updateValueAndValidity();
+      }
     })
   }
 
@@ -967,13 +998,15 @@ export class FinmodificationComponent implements OnInit {
           date.getDate()
         + Number(this.__noofdaystobeAdded[this.__noofdaystobeAdded.findIndex((x: any) => x.sl_no == 3)].param_value));
         if(Number(date.getDate()) > Number(res)){
-            dt.setDate(res.length > 1 ? res : '0'+res);
+            dt.setDate(res);
             dt.setMonth(dt.getMonth() + 2);
         }
         else{
-          dt.setDate(res.length > 1 ? res : '0'+res);
+          dt.setDate(res);
           dt.setMonth(dt.getMonth() + 1);
         }
+        console.log(dt);
+
         this.__traxForm.get('sip_start_date').setValue(dt.toISOString().slice(0, 10))
 
   }
@@ -1184,16 +1217,30 @@ export class FinmodificationComponent implements OnInit {
       fb.append('period', this.__traxForm.value.period);
       fb.append('sip_frequency', this.__traxForm.value.sip_frequency);
     }
-    if (this.__traxForm.value.bu_type == '2') {
-      fb.append('sub_brk_cd', this.__traxForm.value.sub_brk_cd ? this.__traxForm.value.sub_brk_cd.split(' ')[0] : '');
-      fb.append('sub_arn_no', this.__traxForm.value.sub_arn_no ? this.__traxForm.value.sub_arn_no : '');
-    }
-    if(this.__traxForm.value.trans_id == '3'){
+    else if(this.__traxForm.value.trans_id == '3'){
       fb.append('option_to', this.__traxForm.value.option_to);
       fb.append('plan_to', this.__traxForm.value.plan_to);
       fb.append('scheme_id_to', this.__traxForm.value.scheme_id_to);
       fb.append('switch_by',this.__traxForm.value.switch_by);
       fb.append('unit',this.__traxForm.value.switch_by == 'U' ? this.__traxForm.value.unit : this.__traxForm.value.all_unit);
+    }
+
+    if (this.__traxForm.value.bu_type == '2') {
+      fb.append('sub_brk_cd', this.__traxForm.value.sub_brk_cd ? this.__traxForm.value.sub_brk_cd.split(' ')[0] : '');
+      fb.append('sub_arn_no', this.__traxForm.value.sub_arn_no ? this.__traxForm.value.sub_arn_no : '');
+    }
+
+    if(this.__traxForm.value.sip_type == '4'){
+      fb.append('swp_frequency',this.__traxForm.value.swp_freq);
+      fb.append('swp_start_date',this.__traxForm.value.swp_start_date);
+      fb.append('swp_duration',this.__traxForm.value.swp_duration);
+      fb.append('swp_end_date',this.__traxForm.value.swp_end_date);
+      fb.append('swp_inst_amount',this.__traxForm.value.swp_installment_amt);
+    }
+    else if(this.__traxForm.value.sip_type == '5'){
+      fb.append('step_up_percentage',this.__traxForm.get('step_up_by').value == 'P' ? this.__traxForm.value.step_up_percentage: '');
+      fb.append('step_up_amount',this.__traxForm.get('step_up_by').value == 'A' ? this.__traxForm.value.step_up_amt: '');
+      fb.append('step_up_by', this.__traxForm.value.step_up_by);
     }
     this.__dbIntr.api_call(1, '/mfTraxCreate', fb).subscribe((res: any) => {
       if(res.suc == 1){
@@ -1422,6 +1469,32 @@ export class FinmodificationComponent implements OnInit {
            }
            return null
 
+        })
+      );
+    };
+  }
+
+
+  checkIfSpecialSIPExists(sip_type): Observable<boolean> {
+    console.log(this.__sipdtRng_amtRng.ava_special_sip);
+
+    return of(this.__sipdtRng_amtRng.ava_special_sip  == "true" ? true : false);
+  }
+  sipSipTypeExistValidators(): AsyncValidatorFn {
+
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+     console.log(control);
+
+      return this.checkIfSpecialSIPExists(control.value).pipe(
+        map(res => {
+          console.log(typeof(res));
+
+           if(control.value == '4'){
+          // if res is true, special sip exists, return true
+             return res ?  null : { sipTypeExists: true };
+          // NB: Return null if there is no error
+           }
+           return null
         })
       );
     };

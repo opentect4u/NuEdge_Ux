@@ -40,6 +40,16 @@ export class UploadCsvComponent implements OnInit {
       isDate: true,
     },
     {
+      columnDef:'gstin',
+      header:'GSTIN',
+      cell: (element: Record<string, any>) => `${element['gstin']}`,
+    },
+    {
+      columnDef: 'cus_care_whatsapp_no',
+      header: 'Customer Care WhatsApp Number',
+      cell: (element: Record<string, any>) => `${element['cus_care_whatsapp_no']}`,
+    },
+    {
       columnDef: 'cus_care_no',
       header: 'Customer Care Number',
       cell: (element: Record<string, any>) => `${element['cus_care_no']}`,
@@ -95,6 +105,7 @@ export class UploadCsvComponent implements OnInit {
       header:'Local Office Address',
       cell: (element: Record<string, any>) => `${element['local_ofc_addr']}`,
     },
+
     {
       columnDef:'login_url',
       header:'Login URL',
@@ -111,19 +122,74 @@ export class UploadCsvComponent implements OnInit {
       cell: (element: Record<string, any>) => `${element['login_pass']}`,
     },
     {
-      columnDef: 'cus_care_whatsapp_no',
-      header: 'Customer Care WhatsApp Number',
-      cell: (element: Record<string, any>) => `${element['cus_care_whatsapp_no']}`,
+      columnDef:'security_qus_1',
+      header:'Security Question 1',
+      cell: (element: Record<string, any>) => `${element['security_question_1']}`,
     },
     {
-      columnDef:'gstin',
-      header:'GSTIN',
-      cell: (element: Record<string, any>) => `${element['gstin']}`,
+      columnDef:'security_ans_1',
+      header:'Security Answer 1',
+      cell: (element: Record<string, any>) => `${element['security_answer_1']}`,
     },
     {
-      columnDef:'security_qus_ans',
-      header:'Security Question Answer',
-      cell: (element: Record<string, any>) => `${element['security_qus_ans']}`,
+      columnDef:'security_qus_2',
+      header:'Security Question 2',
+      cell: (element: Record<string, any>) => `${element['security_question_2']}`,
+    },
+    {
+      columnDef:'security_ans_2',
+      header:'Security Answer 2',
+      cell: (element: Record<string, any>) => `${element['security_answer_2']}`,
+    },
+    {
+      columnDef:'security_qus_3',
+      header:'Security Question 3',
+      cell: (element: Record<string, any>) => `${element['security_question_3']}`,
+    },
+    {
+      columnDef:'security_ans_3',
+      header:'Security Answer 3',
+      cell: (element: Record<string, any>) => `${element['security_answer_3']}`,
+    },
+    {
+      columnDef:'security_qus_4',
+      header:'Security Question 4',
+      cell: (element: Record<string, any>) => `${element['security_question_4']}`,
+    },
+    {
+      columnDef:'security_ans_4',
+      header:'Security Answer 4',
+      cell: (element: Record<string, any>) => `${element['security_answer_4']}`,
+    },
+    {
+      columnDef:'security_qus_5',
+      header:'Security Question 5',
+      cell: (element: Record<string, any>) => `${element['security_question_5']}`,
+    },
+    {
+      columnDef:'security_ans_5',
+      header:'Security Answer 5',
+      cell: (element: Record<string, any>) => `${element['security_answer_5']}`,
+    },
+    {
+      columnDef:'security_qus_6',
+      header:'Security Question 6',
+      cell: (element: Record<string, any>) => `${element['security_question_6']}`,
+    },
+    {
+      columnDef:'security_ans_6',
+      header:'Security Answer 6',
+      cell: (element: Record<string, any>) => `${element['security_answer_6']}`,
+    },
+    {
+      columnDef:'security_qus_7',
+      header:'Security Question 7',
+      cell: (element: Record<string, any>) => `${element['security_question_7']}`,
+    },
+    {
+      columnDef:'security_ans_7',
+      header:'Security Answer 7',
+      cell: (element: Record<string, any>) => `${element['security_answer_7']}`,
     },
   ];
   tableData = new MatTableDataSource([
@@ -146,7 +212,20 @@ export class UploadCsvComponent implements OnInit {
       login_pass:'XXXXX',
       cus_care_whatsapp_no:'111111111111',
       gstin:'GST/IN/1234',
-      security_qus_ans:JSON.stringify([{"id":0,"sec_qus":"Test Questions?","sec_ans":"Test Answer"}])
+      security_question_1: "",
+      security_answer_1: "",
+      security_question_2: "",
+      security_answer_2: "",
+      security_question_3: "",
+      security_answer_3: "",
+      security_question_4: "",
+      security_answer_4: "",
+      security_question_5: "",
+      security_answer_5: "",
+      security_question_6: "",
+      security_answer_6: "",
+      security_question_7: "",
+      security_answer_7: "",
 
     },
   ]);
@@ -207,9 +286,9 @@ export class UploadCsvComponent implements OnInit {
   previewlatestRntEntry() {
     this.__dbIntr
       .api_call(0, '/rnt', null)
-      .pipe(take(5), pluck('data'))
+      .pipe(pluck('data'))
       .subscribe((res: rnt[]) => {
-        this.__selectRNT = new MatTableDataSource(res);
+        this.__selectRNT = new MatTableDataSource(res.slice(0,5));
       });
   }
   populateDT(__items: rnt) {

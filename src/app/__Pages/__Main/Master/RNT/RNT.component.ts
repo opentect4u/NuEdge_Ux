@@ -223,7 +223,7 @@ export class RNTComponent implements OnInit {
         this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}})
         break;
         case 'R':
-               this.openDialogForReport(atob(this.__rtDt.snapshot.queryParamMap.get('product_id')))
+               this.openDialogForReport()
           break;
       default:
         break;

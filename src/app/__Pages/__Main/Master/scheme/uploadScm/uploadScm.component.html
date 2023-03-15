@@ -8,27 +8,63 @@
 
         <form [formGroup]="__uploadRnt" (ngSubmit)="uploadRnt()">
           <div class="row">
-            <div class="col-sm-12 mb-5">
+            <div class="col-sm-12">
+              <button class="float-right" color="primary" type="button" mat-button
+                (click)="exporter.exportTable('csv',{fileName:(__uploadRnt.get('scheme_type').value == 'N' ? 'NFO' : 'Ongoing') + 'SampleScheme'})">
+                <mat-icon>download</mat-icon>Download Sample
+              </button>
+            </div>
+
+            <div class="col-sm-12 my-5">
               <mat-radio-group aria-label="Select an option" color="primary" formControlName="scheme_type">
                 <mat-radio-button value="O">Ongoing Scheme</mat-radio-button>
                 <mat-radio-button value="N" class="ml-5">NFO</mat-radio-button>
               </mat-radio-group>
             </div>
 
-            <div class="col-sm-12">
-              <button class="float-right mb-5" color="primary" type="button" mat-button
-                (click)="exporter.exportTable('csv',{fileName:(__uploadRnt.get('scheme_type').value == 'N' ? 'NFO' : 'Ongoing') + 'SampleScheme'})">
-                <mat-icon>download</mat-icon>Download Sample
-              </button>
+
+
+            <div class="col-sm-12 ">
+              <label for="amcName">AMC <span class="text-danger">*</span></label>
+              <select class="form-control" formControlName="amc_id" id="amcName">
+                <option value="">Select AMC</option>
+               <option *ngFor="let __amc of __amcMaster" value="{{__amc.id}}">{{__amc.amc_short_name}}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="__uploadRnt.get('amc_id').invalid && (__uploadRnt.get('amc_id').dirty || __uploadRnt.get('amc_id').touched)">
+                <span class="invalid-feedback" *ngIf="(__uploadRnt.get('amc_id')).errors?.required">*Please provide AMC</span>
+              </div>
             </div>
+            <div class="col-sm-12 my-5">
+              <label for="catName">Category <span class="text-danger">*</span></label>
+               <select class="form-control" formControlName="cat_id" id="catName">
+                 <option value="">Select Category</option>
+                <option *ngFor="let __cats of __catMaster" value="{{__cats.id}}">{{__cats.cat_name}}</option>
+               </select>
+              <div class="invalid-feedback" *ngIf="__uploadRnt.get('cat_id').invalid && (__uploadRnt.get('cat_id').dirty || __uploadRnt.get('cat_id').touched)">
+                <span class="invalid-feedback" *ngIf="(__uploadRnt.get('cat_id')).errors?.required">*Please provide category</span>
+              </div>
+            </div>
+
             <div class="col-sm-12">
+              <label for="subCatName">Sub Category <span class="text-danger">*</span></label>
+              <select class="form-control" formControlName="subcat_id" id="subCatName">
+                <option value="">Select Sub Category</option>
+               <option *ngFor="let __subcats of __subcatMaster" value="{{__subcats.id}}">{{__subcats.subcategory_name}}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="__uploadRnt.get('subcat_id').invalid && (__uploadRnt.get('subcat_id').dirty || __uploadRnt.get('subcat_id').touched)">
+                <span class="invalid-feedback" *ngIf="(__uploadRnt.get('subcat_id')).errors?.required">*Please provide subcategory</span>
+              </div>
+            </div>
+
+
+            <div class="col-sm-12 my-5">
               <div class="container_zone" appSchemDrag (fileDropped)="onFileDropped($event)">
                 <img src="../../../../../../assets/images/____upload.png" alt="Upload Images" height="63" width="63">
                 <input type="file" accept=".csv,.xlsx" max="1" min="1" #fileDropRef name="upload_file" id="fileDropRef"
                   accept=".csv,.xlsx" class="form-control" (change)="getFiles($event.target)" formControlName="rntFile">
                 <h3>Drag and drop files here</h3>
                 <h3>or</h3>
-                <label for="fileDropRef">Browse files</label>
+                <label for="fileDropRef" class="label">Browse files</label>
               </div>
               <p class="my-4"><strong>Note:</strong><span> Format allowed: CSV,XLSX ( Maximum Size Upto 2MB )</span></p>
               <div class="invalid-feedback"
@@ -136,15 +172,6 @@
             <td mat-cell *matCellDef="let element">
               <button mat-icon-button (click)="populateDT(element)">
                 <mat-icon class="edit_icon">edit</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-          <!-- Buisness Type-->
-          <ng-container matColumnDef="delete">
-            <th mat-header-cell *matHeaderCellDef>Delete</th>
-            <td mat-cell *matCellDef="let element">
-              <button mat-icon-button>
-                <mat-icon class="delete_icon">delete</mat-icon>
               </button>
             </td>
           </ng-container>

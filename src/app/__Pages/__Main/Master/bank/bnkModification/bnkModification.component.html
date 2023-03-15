@@ -16,9 +16,9 @@
       <button mat-icon-button title="Close" [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-  
+
     </div>
-  
+
   </div>
   <mat-dialog-content>
     <form  [formGroup]="__bankForm" (ngSubmit)="submit()" id="__bnkForm_{{data.id}}"  autocomplete="off" ngNativeValidate>
@@ -26,19 +26,19 @@
         <div class="col-sm-12 my-3">
           <label for="ifsCode">IFSC <span class="text-danger">*</span></label>
           <input type="text" name="ifs_code" id="ifsCode" class="form-control" placeholder="Enter IFSC" formControlName="ifs_code">
-           
+
           <div class="invalid-feedback" *ngIf="__bankForm.get('ifs_code').invalid && (__bankForm.get('ifs_code').dirty || __bankForm.get('ifs_code').touched)">
             <span class="invalid-feedback" *ngIf="(__bankForm.get('ifs_code')).errors?.required">*Please provide IFSC</span>
           </div>
         </div>
         <div class="col-sm-12 my-3">
           <label for="bankName">Bank <span class="text-danger">*</span></label>
-          <input type="text" name="bank_name" id="bankName" class="form-control" placeholder="Enter Bank Name" formControlName="bank_name">
+          <input type="text" name="bank_name" id="bankName" class="form-control" placeholder="Enter Bank" formControlName="bank_name">
           <div class="invalid-feedback" *ngIf="__bankForm.get('bank_name').invalid && (__bankForm.get('bank_name').dirty || __bankForm.get('bank_name').touched)">
-            <span class="invalid-feedback" *ngIf="(__bankForm.get('bank_name')).errors?.required">*Please provide bank name</span>
+            <span class="invalid-feedback" *ngIf="(__bankForm.get('bank_name')).errors?.required">*Please provide bank</span>
           </div>
         </div>
-        
+
         <div class="col-sm-12 my-3">
           <label for="branch_name">Branch Name <span class="text-danger">*</span></label>
           <input type="text" name="bank_name" id="branch_name" class="form-control" placeholder="Enter Branch Name" formControlName="branch_name">

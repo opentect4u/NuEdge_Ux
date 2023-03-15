@@ -269,7 +269,10 @@ constructor(
          installment_amt: new FormControl(''),
          installment_dt: new FormControl('',{updateOn:'blur'}),
          merge_folio: new FormArray([]),
-         is_merge_folio_checked_all: new FormControl('')
+         is_merge_folio_checked_all: new FormControl(''),
+
+         existing_nominee: new FormArray([]),
+         new_nominee: new FormArray([])
 
   })
 ngOnInit(){
@@ -284,6 +287,43 @@ ngOnInit(){
 get  t5_clientDtls(): FormArray {
   return this.__nonfinForm.get("t5_clientDtls") as FormArray;
 }
+
+get new_nominee(): FormArray{
+  return this.__nonfinForm.get('new_nominee') as FormArray;
+}
+get existing_nominee(): FormArray{
+  return this.__nonfinForm.get('existing_nominee') as FormArray;
+}
+
+ addExistingNominee(){
+  this.existing_nominee.push(this.createNominee(),{emitEvent:false});
+ }
+ addNewNominee(){
+  this.new_nominee.push(this.createNominee(),{emitEvent:false});
+ }
+
+ createNominee(): FormGroup {
+  return new FormGroup({
+    id: new FormControl(0),
+    nominee_name: new FormControl(''),
+    percentage: new FormControl('',
+   {
+    validators:[Validators.maxLength(3), Validators.pattern("^[0-9]*$")],
+    asyncValidators:this.checkPercentageValidators(),
+    updateOn:'blur'
+  }
+    ),
+  });
+}
+
+deletenominees(index,flag){
+     switch(flag){
+       case 'E' : this.existing_nominee.removeAt(index);break;
+       case 'N' : this.new_nominee.removeAt(index);break;
+       default : break;
+     }
+}
+
 addClient(){
     this.t5_clientDtls.push(this.createclientDtls(),{emitEvent:false});
     this.changeEvent();
@@ -347,6 +387,9 @@ getOptionMst(){
    })
 }
 ngAfterViewInit(){
+
+
+
    //Second Client Code Search
    this.__nonfinForm.controls['third_client_code'].valueChanges
    .pipe(
@@ -672,7 +715,6 @@ ngAfterViewInit(){
   this.__nonfinForm.controls['warrant_no'].setValidators(res == '17' ? [Validators.required] : null);
   this.__nonfinForm.controls['warrant_dt'].setValidators(res == '17' ? [Validators.required] : null);
   this.__nonfinForm.controls['warrant_amt'].setValidators(res == '17' ? [Validators.required] : null);
-
   this.__nonfinForm.controls['transmission_type'].setValidators(res == '19' ? [Validators.required] : null);
   this.__nonfinForm.controls['first_kyc'].setValidators(res == '20' ? [Validators.required] : null);
   this.__nonfinForm.controls['swp_amount'].removeValidators([Validators.required]);
@@ -764,6 +806,15 @@ ngAfterViewInit(){
     }
     else if(res == '33'){
        this.addmeregeFolios();
+    }
+    else if(res == '11'){
+      console.log('ssss');
+
+      this.addExistingNominee();
+      this.addNewNominee();
+    }
+    else if(res == '22'){
+      this.addNewNominee();
     }
 
   })
@@ -1189,6 +1240,13 @@ submitnonFinForm(){
    }
    else if(this.__nonfinForm.value.trans_id == '33'){
     fb.append('merge_folio',JSON.stringify(this.__nonfinForm.controls['merge_folio'].value))
+   }
+   else if(this.__nonfinForm.value.trans_id == '11'){
+    fb.append('existing_nominee',JSON.stringify(this.__nonfinForm.controls['existing_nominee'].value))
+    fb.append('new_nominee',JSON.stringify(this.__nonfinForm.controls['new_nominee'].value))
+   }
+   else if(this.__nonfinForm.value.trans_id == '21'){
+    fb.append('new_nominee',JSON.stringify(this.__nonfinForm.controls['new_nominee'].value))
    }
 
     this.__dbIntr.api_call(1, '/mfTraxCreate', fb).subscribe((res: any) => {
@@ -1848,8 +1906,35 @@ checkIfDatesExists(sip_date: string): Observable<boolean> {
   };
 }
 
+
+checkPercentageValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    console.log(control);
+
+    return this.checkIfPercentageGreater().pipe(
+      map((res) => {
+        console.log(res);
+
+        if (control.value) {
+          return res ? { percentageExists: true } : null;
+        }
+        return null;
+      })
+    );
+  };
+}
+checkIfPercentageGreater(): Observable<boolean> {
+  let sum = 0;
+  const ctr = this.existing_nominee.controls;
+  ctr.forEach((__el: any) => {
+    sum += Number(__el.controls.percentage.value);
+  });
+  return of(sum > 100).pipe(delay(1000));
+}
+
 deletemergeFolio(index){
   this.merge_folio.removeAt(index);
 }
+
 
 }

@@ -27,7 +27,7 @@
             <div class="col-sm-6 my-auto">
               <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
                 <mat-radio-button value="2">Summary</mat-radio-button>
-                <mat-radio-button value="1" class="radio1">Detail</mat-radio-button>
+                <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
               </mat-radio-group>
             </div>
             <div class="col-sm-6 ">
@@ -43,7 +43,7 @@
             </div>
           </div>
           <ng-container>
-            <div class="row my-5">
+            <div class="row mt-2">
               <div class="col-sm-4">
                 <label for="amc_name">Amc </label>
                 <input type="text" placeholder="Enter Amc" name="amc_name" id="amc_name" class="form-control"
@@ -56,10 +56,10 @@
               </div>
 
             </div>
-            <ng-container  *ngIf="__scmForm.get('advanceFlt').value == 'A'">
-            <div class="row my-5">
-              <div class="col-sm-4">
-                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'C')">
+            <ng-container  >
+            <div class="row mt-3">
+              <div class="col-sm-4" >
+                <div class="progressMainSec" *ngIf="__scmForm.get('advanceFlt').value == 'A'" appClOutsideClick (appOutsideClick)="outsideClick($event,'C')">
                   <div class="searchDiv">
                     <label for="cat_name">Category
                     </label>
@@ -85,8 +85,8 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm-4">
-                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'S')">
+              <div class="col-sm-4" >
+                <div class="progressMainSec" *ngIf="__scmForm.get('advanceFlt').value == 'A'" appClOutsideClick (appOutsideClick)="outsideClick($event,'S')">
                   <div class="searchDiv">
                     <label for="subcat_name">Sub Category
                     </label>
@@ -112,16 +112,20 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </ng-container>
-            <div class="row">
-              <div class="col-sm-12">
+              <div class="col-sm-4 my-auto">
                 <button mat-raised-button color="primary" class="float-right">
-                  <!-- <mat-icon>visibility</mat-icon> -->
                   Show
                 </button>
               </div>
             </div>
+          </ng-container>
+            <!-- <div class="row">
+              <div class="col-sm-12">
+                <button mat-raised-button color="primary" class="float-right">
+                  Show
+                </button>
+              </div>
+            </div> -->
           </ng-container>
 
         </form>
@@ -225,10 +229,10 @@
           <!-- Buisness Type-->
           <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef>Delete</th>
-            <td mat-cell *matCellDef="let element">
-              <a>
+            <td mat-cell *matCellDef="let element;let i =index">
+              <button mat-icon-button (click)="delete(element,i)">
                 <mat-icon class="delete_icon">delete</mat-icon>
-              </a>
+              </button>
             </td>
           </ng-container>
 

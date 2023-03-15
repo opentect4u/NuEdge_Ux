@@ -9,10 +9,22 @@
         <form [formGroup]="__uploadRnt" (ngSubmit)="uploadRnt()">
           <div class="row">
             <div class="col-sm-12">
-              <button class="float-right mb-5" color="primary" type="button" mat-button
+              <button class="float-right" color="primary" type="button" mat-button
                 (click)="exporter.exportTable('csv',{fileName:'SampleAMC'})">
                 <mat-icon>download</mat-icon>Download Sample
               </button>
+            </div>
+            <div class="col-sm-12 my-5">
+              <label for="rnt_id">R&T <span class="text-danger">*</span></label>
+              <select class="form-control" formControlName="rnt_id">
+                <option value="">Select</option>
+                <option *ngFor="let rnt of __rntMst" [value]="rnt.id">{{rnt.rnt_name}}</option>
+              </select>
+              <div class="invalid-feedback"
+              *ngIf=" __uploadRnt.get('rnt_id').invalid && ( __uploadRnt.get('rnt_id').dirty ||  __uploadRnt.get('rnt_id').touched)">
+              <span class="invalid-feedback" *ngIf=" __uploadRnt.get('rnt_id').errors?.required">*Please
+                provide R&T</span>
+                </div>
             </div>
             <div class="col-sm-12">
               <div class="container_zone" appDragAmc (fileDropped)="onFileDropped($event)">
@@ -21,7 +33,7 @@
                   accept=".csv,.xlsx" class="form-control" (change)="getFiles($event.target)" formControlName="rntFile">
                 <h3>Drag and drop files here</h3>
                 <h3>or</h3>
-                <label for="fileDropRef">Browse files</label>
+                <label for="fileDropRef" class="label">Browse files</label>
               </div>
               <p class="my-4"><strong>Note:</strong><span> Format allowed: CSV,XLSX ( Maximum Size Upto 2MB )</span></p>
               <div class="invalid-feedback"
@@ -76,10 +88,13 @@
                   </div>
 
                   <!-- Delete Icon -->
-                  <div class="delete" (click)="deleteFiles()">
-                    <mat-icon>
-                      delete_forever
-                    </mat-icon>
+                  <div class="delete">
+                    <button type="button" mat-icon-button  (click)="deleteFiles()">
+                      <mat-icon>
+                        delete_forever
+                      </mat-icon>
+                    </button>
+
                   </div>
                 </div>
               </div>

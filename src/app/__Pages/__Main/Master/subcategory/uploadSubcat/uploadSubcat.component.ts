@@ -8,6 +8,7 @@ import { pluck } from 'rxjs/operators';
 import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { rnt } from 'src/app/__Model/Rnt';
+import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { subcat } from 'src/app/__Model/__subcategory';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -55,11 +56,6 @@ export class UploadSubcatComponent implements OnInit {
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
-      columnDef: 'category Id',
-      header: 'category Id',
-      cell: (element: Record<string, any>) => `${element['category Id']}`,
-    },
-    {
       columnDef: 'Sub Category',
       header: 'Sub Category',
       cell: (element: Record<string, any>) => `${element['Sub Category']}`,
@@ -68,12 +64,12 @@ export class UploadSubcatComponent implements OnInit {
   ];
   tableData = new MatTableDataSource([
     {
-      "Sub Category": 'Others',
-      "category Id": 1,
+      "Sub Category": 'Others'
     },
   ]);
   allowedExtensions = ['csv', 'xlsx'];
   __uploadRnt = new FormGroup({
+    cat_id: new FormControl('',[Validators.required]),
     rntFile: new FormControl('', [
       Validators.required,
       fileValidators.fileExtensionValidator(this.allowedExtensions),
@@ -82,6 +78,7 @@ export class UploadSubcatComponent implements OnInit {
   });
   __columns: string[] = ['sl_no', 'subcate', 'edit'];
   __selectRNT = new MatTableDataSource<subcat>([]);
+  __catMst: category[] = [];
   constructor(
     private __dbIntr: DbIntrService,
     private __utility: UtiliService,
@@ -93,13 +90,19 @@ export class UploadSubcatComponent implements OnInit {
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     this.__utility.getBreadCrumb(this.__brdCrmbs);
+    this.getCategory();
+  }
+  getCategory(){
+    this.__dbIntr.api_call(0,'/category',null).pipe(pluck("data")).subscribe((res: category[]) =>{
+     this.__catMst = res;
+    })
   }
   previewlatestCategoryEntry() {
     this.__dbIntr
       .api_call(0, '/subcategory', null)
       .pipe(pluck('data'))
       .subscribe((res: subcat[]) => {
-        this.__selectRNT = new MatTableDataSource(res);
+        this.__selectRNT = new MatTableDataSource(res.splice(0,5));
         this.__selectRNT.paginator = this.paginator;
       });
   }
@@ -107,7 +110,10 @@ export class UploadSubcatComponent implements OnInit {
     // this.__utility.navigate('/main/master/cateModify', btoa(__items.id.toString()));
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/subcategory',
-      { queryParams: { sub_cat_id: btoa(__items.id.toString()) } }
+      { queryParams: {
+        sub_cat_id: btoa(__items.id.toString()),
+        product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')
+      } }
     );
   }
   getFiles(__ev) {
@@ -134,7 +140,8 @@ export class UploadSubcatComponent implements OnInit {
       return;
     }
     const __uploadRnt = new FormData();
-    __uploadRnt.append('file', this.__uploadRnt.get('file').value);
+    __uploadRnt.append('file', this.__uploadRnt.value.file);
+    __uploadRnt.append('cat_id',this.__uploadRnt.value.cat_id)
     this.__dbIntr
       .api_call(1, '/subcategoryimport', __uploadRnt)
       .subscribe((res: responseDT) => {

@@ -266,7 +266,7 @@ getPaginate(__paginate){
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url 
+        __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
         + ('&option='+  this.__kycForm.value.options)
         + ('&login_at=' + this.__kycForm.value.login_at)
@@ -275,7 +275,7 @@ getPaginate(__paginate){
         + ('&end_date=' + this.__kycForm.value.end_date)
         + ('&sort_by=' + this.__sortAscOrDsc.direction)
         + ('&column_name=' + this.__sortAscOrDsc.active)
-        +  (this.__kycForm.get('options').value != '3' 
+        +  (this.__kycForm.get('options').value != '3'
         ?  (('&client_code=' + (this.__kycForm.value.client_code ? this.__kycForm.value.client_code : ''))
         + ( '&sub_brk_cd=' + (this.__kycForm.value.sub_brk_cd ? this.__kycForm.value.sub_brk_cd : ''))
         + ('&bu_type=' + (this.__kycForm.value.bu_type.length > 0 ? JSON.stringify(this.__kycForm.value.bu_type): '')))

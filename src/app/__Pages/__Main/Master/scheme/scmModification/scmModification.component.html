@@ -37,7 +37,7 @@
         <label for="amcName">AMC <span class="text-danger">*</span></label>
         <select class="form-control" formControlName="amc_id" id="amcName">
           <option value="">Select AMC</option>
-         <option *ngFor="let __amc of __amcMaster" value="{{__amc.id}}">{{__amc.amc_name}}</option>
+         <option *ngFor="let __amc of __amcMaster" value="{{__amc.id}}">{{__amc.amc_short_name}}</option>
         </select>
         <div class="invalid-feedback" *ngIf="__scmForm.get('amc_id').invalid && (__scmForm.get('amc_id').dirty || __scmForm.get('amc_id').touched)">
           <span class="invalid-feedback" *ngIf="(__scmForm.get('amc_id')).errors?.required">*Please provide AMC</span>
@@ -105,7 +105,7 @@
         <label for="nfo_entry_date">Entry Date <span class="text-danger">*</span></label>
         <input type="date" name="nfo_entry_date" id="nfo_entry_date" class="form-control" formControlName="nfo_entry_date"/>
         <div class="invalid-feedback" *ngIf="__scmForm.get('nfo_entry_date').invalid && (__scmForm.get('nfo_entry_date').dirty || __scmForm.get('nfo_entry_date').touched)">
-          <span class="invalid-feedback" *ngIf="(__scmForm.get('nfo_entry_date')).errors?.required">*Please provide nfo reopen date</span>
+          <span class="invalid-feedback" *ngIf="(__scmForm.get('nfo_entry_date')).errors?.required">*Please provide entry date</span>
         </div>
       </div>
 

@@ -514,10 +514,10 @@ export class AmcrptComponent implements OnInit {
 
   tableExport(column_name: string | null = null, sort_by: string | null = null){
     const __amcExport = new FormData();
-    __amcExport.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? this.__detalsSummaryForm.value.rnt_id : '');
-    __amcExport.append('amc_id',this.__detalsSummaryForm.value.amc_id ? this.__detalsSummaryForm.value.amc_id : '');
-   __amcExport.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
-   __amcExport.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
+    __amcExport.append('rnt_id',this.__detalsSummaryForm.value.rnt_id!='null' ? this.__detalsSummaryForm.value.rnt_id : '');
+    __amcExport.append('amc_id',this.__detalsSummaryForm.value.amc_id!='null' ? this.__detalsSummaryForm.value.amc_id : '');
+   __amcExport.append('gstin',this.__detalsSummaryForm.value.gst_in!='null' ? this.__detalsSummaryForm.value.gst_in : '');
+   __amcExport.append('contact_person',this.__detalsSummaryForm.value.contact_per!='null' ? this.__detalsSummaryForm.value.contact_per : '');
    __amcExport.append('column_name',column_name ? column_name : '');
    __amcExport.append('sort_by',sort_by ? sort_by : 'asc');
    this.__dbIntr.api_call(1,'/amcExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
@@ -634,7 +634,19 @@ export class AmcrptComponent implements OnInit {
   refreshOrAdvanceFlt(){
     this.__detalsSummaryForm.reset('');
     this.__detalsSummaryForm.patchValue({
-      options:'2'
+      options:'2',
+      rnt_name: '',
+       amc_name: '',
+       rnt_id: this.data.rnt_id ? this.data.rnt_id :  '',
+       amc_id: '',
+       contact_per: '',
+       gst_in: '',
+       l1: '',
+       l2: '',
+       l3: '',
+       l4: '',
+       l5: '',
+       l6: '',
     });
     this.showColumns();
     this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
@@ -670,5 +682,15 @@ export class AmcrptComponent implements OnInit {
       }
 
     })
+  }
+  showCorrospondingScheme(__el){
+    console.log(__el);
+    // this.__utility.navigatewithqueryparams(
+    //   '/main/master/productwisemenu/scheme',
+    //   {queryParams:{
+    //     product_id:btoa(this.data.product_id)
+    //   }}
+    // )
+
   }
 }

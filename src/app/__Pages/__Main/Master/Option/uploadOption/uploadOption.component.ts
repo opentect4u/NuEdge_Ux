@@ -54,7 +54,7 @@ export class UploadOptionComponent implements OnInit {
   tableColumns: Array<Column> = [
     {
       columnDef: 'opt_name',
-      header: 'opt_name',
+      header: 'Option',
       cell: (element: Record<string, any>) => `${element['opt_name']}`,
     },
   ];
@@ -71,7 +71,7 @@ export class UploadOptionComponent implements OnInit {
     ]),
     file: new FormControl(''),
   });
-  __columns: string[] = ['sl_no', 'opt_name', 'edit', 'delete'];
+  __columns: string[] = ['sl_no', 'opt_name', 'edit'];
   __selectOpt = new MatTableDataSource<option>([]);
   constructor(
     private __dbIntr: DbIntrService,

@@ -20,7 +20,7 @@
     </div>
 
   </div>
-  <mat-dialog-content>
+  <mat-dialog-content  #scrollContainer>
     <form [formGroup]="__rntForm" (ngSubmit)="submit()" id="__rntForm_{{data.id}}" autocomplete="off" ngNativeValidate>
       <div class="row">
         <div class="col-sm-12 my-3">
@@ -196,7 +196,7 @@
               Security Answer
             </th>
             <th>
-              <button mat-icon-button type="button">
+              <button  mat-icon-button type="button" *ngIf="sec_qusAns.controls.length < 7">
                 <mat-icon (click)="addSecurityQuesAns()">add</mat-icon>
               </button>
             </th>
@@ -212,8 +212,8 @@
                 <input type="text" placeholder="Enter Security Answer" name="sec_ans" id="sec_ans" class="form-control" formControlName="sec_ans">
               </td>
               <td class="rowWidth">
-                <button mat-icon-button type="button" *ngIf="i > 0">
-                  <mat-icon (click)="removeSecurityQuesAns(i)">delete</mat-icon>
+                <button color="accent" mat-icon-button type="button" *ngIf="i > 0">
+                  <mat-icon  (click)="removeSecurityQuesAns(i)">delete</mat-icon>
                 </button>
               </td>
 

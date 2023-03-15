@@ -161,12 +161,19 @@ export class CatrptComponent implements OnInit {
     this.openDialog(__items, __items.id);
   }
   showCorrospondingAMC(__items) {
+    console.log(this.data.product_id);
+
+    this.dialogRef.close();
     this.__utility.navigatewithqueryparams(
       'main/master/productwisemenu/subcategory',
       {
-        queryParams: { id: btoa(__items.id.toString()) },
+        queryParams: {
+          id: btoa(__items.id.toString()),
+          product_id: this.data.product_id
+        },
       }
     );
+
   }
   openDialog(__category: category | null = null, __catId: number) {
     const dialogConfig = new MatDialogConfig();

@@ -57,12 +57,6 @@ export class CatUploadComponent implements OnInit {
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
-      columnDef: 'Product Id',
-      header: 'Product Id',
-      cell: (element: Record<string, any>) => `${element['Product Id']}`,
-      isDate: true,
-    },
-    {
       columnDef: 'Category',
       header: 'Category',
       cell: (element: Record<string, any>) => `${element['Category']}`,
@@ -71,8 +65,7 @@ export class CatUploadComponent implements OnInit {
   ];
   tableData = new MatTableDataSource([
     {
-      "Category": 'Others',
-      "Product Id":1
+      "Category": 'Others'
     },
   ]);
   allowedExtensions = ['csv', 'xlsx'];
@@ -102,7 +95,7 @@ export class CatUploadComponent implements OnInit {
       .api_call(0, '/category', null)
       .pipe(pluck('data'))
       .subscribe((res: category[]) => {
-        this.__selectRNT = new MatTableDataSource(res);
+        this.__selectRNT = new MatTableDataSource(res.splice(0,5));
         this.__selectRNT.paginator = this.paginator;
       });
   }
@@ -140,6 +133,7 @@ export class CatUploadComponent implements OnInit {
       return;
     }
     const __uploadRnt = new FormData();
+    __uploadRnt.append('product_id',this.__rtDt.snapshot.queryParamMap.get('product_id'));
     __uploadRnt.append('file', this.__uploadRnt.get('file').value);
     this.__dbIntr
       .api_call(1, '/categoryimport', __uploadRnt)

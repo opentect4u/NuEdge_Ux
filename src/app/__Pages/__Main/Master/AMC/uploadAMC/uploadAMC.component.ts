@@ -51,7 +51,7 @@ export class UploadAMCComponent implements OnInit {
     }
 ]
 
-
+  __rntMst: rnt[] = [];
   displayedColumns: Array<string> = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tableColumns: Array<Column> = [
@@ -65,11 +65,6 @@ export class UploadAMCComponent implements OnInit {
       columnDef: 'AMC Short Name',
       header: 'AMC Short Name',
       cell: (element: Record<string, any>) => `${element['AMC Short Name']}`,
-    },
-    {
-      columnDef: 'R&T Id',
-      header: 'R&T Id',
-      cell: (element: Record<string, any>) => `${element['R&T Id']}`,
     },
     {
       columnDef:'GSTIN',
@@ -133,9 +128,9 @@ export class UploadAMCComponent implements OnInit {
 
     },
     {
-      columnDef:'Local Office Contact Person Email',
+      columnDef:'Local Office Contact Email',
       header:'Local Office Contact Person Email',
-      cell: (element: Record<string, any>) => `${element['Local Office Contact Person Email']}`,
+      cell: (element: Record<string, any>) => `${element['Local Office Contact Email']}`,
 
     },
     {
@@ -144,14 +139,99 @@ export class UploadAMCComponent implements OnInit {
       cell: (element: Record<string, any>) => `${element['Local Office Address']}`,
     },
     {
+      columnDef:'login_url',
+      header:'Login URL',
+      cell: (element: Record<string, any>) => `${element['login_url']}`,
+    },
+    {
+      columnDef:'login_id',
+      header:'Login ID',
+      cell: (element: Record<string, any>) => `${element['login_id']}`,
+    },
+    {
+      columnDef:'login_pass',
+      header:'Login Password',
+      cell: (element: Record<string, any>) => `${element['login_pass']}`,
+    },
+    {
+      columnDef:'security_qus_1',
+      header:'Security Question 1',
+      cell: (element: Record<string, any>) => `${element['security_question_1']}`,
+    },
+    {
+      columnDef:'security_ans_1',
+      header:'Security Answer 1',
+      cell: (element: Record<string, any>) => `${element['security_answer_1']}`,
+    },
+    {
+      columnDef:'security_qus_2',
+      header:'Security Question 2',
+      cell: (element: Record<string, any>) => `${element['security_question_2']}`,
+    },
+    {
+      columnDef:'security_ans_2',
+      header:'Security Answer 2',
+      cell: (element: Record<string, any>) => `${element['security_answer_2']}`,
+    },
+    {
+      columnDef:'security_qus_3',
+      header:'Security Question 3',
+      cell: (element: Record<string, any>) => `${element['security_question_3']}`,
+    },
+    {
+      columnDef:'security_ans_3',
+      header:'Security Answer 3',
+      cell: (element: Record<string, any>) => `${element['security_answer_3']}`,
+    },
+    {
+      columnDef:'security_qus_4',
+      header:'Security Question 4',
+      cell: (element: Record<string, any>) => `${element['security_question_4']}`,
+    },
+    {
+      columnDef:'security_ans_4',
+      header:'Security Answer 4',
+      cell: (element: Record<string, any>) => `${element['security_answer_4']}`,
+    },
+    {
+      columnDef:'security_qus_5',
+      header:'Security Question 5',
+      cell: (element: Record<string, any>) => `${element['security_question_5']}`,
+    },
+    {
+      columnDef:'security_ans_5',
+      header:'Security Answer 5',
+      cell: (element: Record<string, any>) => `${element['security_answer_5']}`,
+    },
+    {
+      columnDef:'security_qus_6',
+      header:'Security Question 6',
+      cell: (element: Record<string, any>) => `${element['security_question_6']}`,
+    },
+    {
+      columnDef:'security_ans_6',
+      header:'Security Answer 6',
+      cell: (element: Record<string, any>) => `${element['security_answer_6']}`,
+    },
+    {
+      columnDef:'security_qus_7',
+      header:'Security Question 7',
+      cell: (element: Record<string, any>) => `${element['security_question_7']}`,
+    },
+    {
+      columnDef:'security_ans_7',
+      header:'Security Answer 7',
+      cell: (element: Record<string, any>) => `${element['security_answer_7']}`,
+    },
+    {
       columnDef: 'Level-1 Name',
       header: 'Level-1 Name',
       cell: (element: Record<string, any>) => `${element['Level-1 Name']}`,
     },
     {
-      columnDef: 'Level-1 Contat',
-      header: 'Level-1 Contat',
-      cell: (element: Record<string, any>) => `${element['Level-1 Contat']}`,
+      columnDef: 'Level-1 Contact',
+      header: 'Level-1 Contact',
+      cell: (element: Record<string, any>) => `${element['Level-1 Contact']}`,
     },
     {
       columnDef: 'Level-1 Email',
@@ -246,7 +326,7 @@ export class UploadAMCComponent implements OnInit {
       "id": 11,
       "Level-1 Contact": 9831348519,
       "Level-1 Email": 'ashishb@hdfcfund.com',
-      "Level-1 name": 'Ashish Bhatia',
+      "Level-1 Name": 'Ashish Bhatia',
       "Level-2 Contact": 9748513090,
       "Level-2 Email": 'servicesssouthkolkata@hdfcfund.com',
       "Level-2 Name": 'Nabanita Deb',
@@ -264,7 +344,6 @@ export class UploadAMCComponent implements OnInit {
       "Level-6 Name": "",
       "Office Address": 'G2, Thapar House, 163, S.P.Mukherjee Road, Kolkata-700026',
       "Product Id": 1,
-      "R&T Id": 1,
       "updated_at": '2023-02-01T06:07:38.000000Z',
       "updated_by": "",
       "website": 'www.hdfcfund.com',
@@ -276,11 +355,29 @@ export class UploadAMCComponent implements OnInit {
       "Local Office Contact Person":'TEST',
       "Local Office Contact Person Mobile":'1111111111',
       "Local Office Contact Email":'abc@gmail.com',
-      "Local Office Address":'Bompas Road'
+      "Local Office Address":'Bompas Road',
+      "login_url":'www.google.com',
+      "login_id":'nuedge@gmail.com',
+      "login_pass":'XXXXX',
+      "security_question_1": "",
+      "security_answer_1": "",
+      "security_question_2": "",
+      "security_answer_2": "",
+      "security_question_3": "",
+      "security_answer_3": "",
+      "security_question_4": "",
+      "security_answer_4": "",
+      "security_question_5": "",
+      "security_answer_5": "",
+      "security_question_6": "",
+      "security_answer_6": "",
+      "security_question_7": "",
+      "security_answer_7": "",
     },
   ]);
   allowedExtensions = ['csv', 'xlsx'];
   __uploadRnt = new FormGroup({
+    rnt_id: new FormControl('',[Validators.required]),
     rntFile: new FormControl('', [
       Validators.required,
       fileValidators.fileExtensionValidator(this.allowedExtensions),
@@ -300,13 +397,19 @@ export class UploadAMCComponent implements OnInit {
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     this.__utility.getBreadCrumb(this.__brdCrmbs);
+    this.getRntMst();
+  }
+  getRntMst(){
+    this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck("data")).subscribe((res: rnt[]) =>{
+     this.__rntMst = res;
+    })
   }
   previewlatestRntEntry() {
     this.__dbIntr
       .api_call(0, '/amc', null)
       .pipe(pluck('data'))
       .subscribe((res: amc[]) => {
-        this.__selectRNT = new MatTableDataSource(res);
+        this.__selectRNT = new MatTableDataSource(res.splice(0,5));
         this.__selectRNT.paginator = this.paginator;
       });
   }
@@ -343,7 +446,10 @@ export class UploadAMCComponent implements OnInit {
       return;
     }
     const __uploadRnt = new FormData();
-    __uploadRnt.append('file', this.__uploadRnt.get('file').value);
+    __uploadRnt.append('file', this.__uploadRnt.value.file);
+    __uploadRnt.append('rnt_id',this.__uploadRnt.value.rnt_id);
+    __uploadRnt.append('product_id',this.__rtDt.snapshot.queryParamMap.get('product_id'));
+
     this.__dbIntr
       .api_call(1, '/amcimport', __uploadRnt)
       .subscribe((res: responseDT) => {

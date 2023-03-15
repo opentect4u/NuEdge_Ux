@@ -315,7 +315,7 @@ delete(__el,index){
       flag: 'S',
       id: __el.id,
       title: 'Delete '  + __el.subcategory_name,
-      api_name:'/catDelete'
+      api_name:'/subcatDelete'
     };
     const dialogref = this.__dialog.open(
       DeletemstComponent,

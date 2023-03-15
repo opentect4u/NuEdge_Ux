@@ -45,31 +45,31 @@ export class BankUploadComponent implements OnInit {
   tableColumns: Array<Column> = [
     {
       columnDef: 'ifs_code',
-      header: 'ifs_code',
+      header: 'IFSC',
       cell: (element: Record<string, any>) => `${element['ifs_code']}`
     },
     {
       columnDef: 'bank_name',
-      header: 'bank_name',
+      header: 'Bank',
       cell: (element: Record<string, any>) => `${element['bank_name']}`,
       isDate: true
     },
     {
       columnDef: 'branch_name',
-      header: 'branch_name',
+      header: 'Branch',
       cell: (element: Record<string, any>) => `${element['branch_name']}`,
       isDate: true
     }
     ,
     {
       columnDef: 'micr_code',
-      header: 'micr_code',
+      header: 'MICR',
       cell: (element: Record<string, any>) => `${element['micr_code']}`,
       isDate: true
     } ,
     {
       columnDef: 'branch_addr',
-      header: 'branch_addr',
+      header: 'Branch Address',
       cell: (element: Record<string, any>) => `${element['branch_addr']}`,
       isDate: true
     }
@@ -79,7 +79,7 @@ export class BankUploadComponent implements OnInit {
       bank_name: "Others",
       ifs_code: 1,
       branch_name:"HB",
-      branch_addr:"Kamarpara",
+      branch_addr:"Sodepur,Kamarpara",
       micr_code:"M-1234"
     }]
   );
@@ -88,7 +88,7 @@ export class BankUploadComponent implements OnInit {
     rntFile: new FormControl('', [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
     file: new FormControl('')
   })
-  __columns: string[] = ['sl_no', 'bank_name', 'edit', 'delete'];
+  __columns: string[] = ['sl_no', 'bank_name', 'edit'];
   __selectRNT = new MatTableDataSource<bank>([]);
   constructor(private __dbIntr: DbIntrService, private __utility: UtiliService) { this.previewlatestCategoryEntry(); }
 
@@ -105,7 +105,7 @@ export class BankUploadComponent implements OnInit {
     // this.__utility.navigate('/main/master/cateModify', btoa(__items.id.toString()));
     this.__utility.navigatewithqueryparams('/main/master/bank',{queryParams: {id:btoa(__items.id.toString())}});
   }
-  getFiles(__ev) {  
+  getFiles(__ev) {
       this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);
       this.__uploadRnt.get('file')?.patchValue(this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : '');
       // this.onFileDropped(__ev);
@@ -148,7 +148,7 @@ export class BankUploadComponent implements OnInit {
             this.__uploadRnt.get('rntFile').updateValueAndValidity();
           }
         }
-      }); 
+      });
   }
 /**
    * format bytes

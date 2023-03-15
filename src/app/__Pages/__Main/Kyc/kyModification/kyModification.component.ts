@@ -5,7 +5,8 @@ import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from '
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { environment } from 'src/environments/environment';
-import kycType from '../../../../../assets/json/kycMaster.json';
+import kycfresh from '../../../../../assets/json/kycFresh.json';
+import kycModification from '../../../../../assets/json/kycModificatiotype.json';
 import kycLoginType from '../../../../../assets/json/kycloginType.json';
 import kycLoginAt from '../../../../../assets/json/kycLoginAt.json';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -23,8 +24,10 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
   styleUrls: ['./kyModification.component.css']
 })
 export class KyModificationComponent implements OnInit {
-  allowedExtensions = ['pdf'];
 
+  __kycfresh_mod: any=[];
+
+  allowedExtensions = ['pdf'];
   __subbrkArnMst: any=[];
   __clientMst: client[] =[];
   __euinMst: any=[];
@@ -45,7 +48,7 @@ export class KyModificationComponent implements OnInit {
   ];
   __kycLoginAt: any = [];
   __kycLoginType = kycLoginType;
-  __kycType = kycType;
+  __kycType: any=[];
   __noImg: string = '../../../../../../assets/images/noimg.jpg';
   __isvisible: boolean = false;
   __selectFiles: any = [];
@@ -74,7 +77,9 @@ export class KyModificationComponent implements OnInit {
     remarks: new FormControl(''),
     scaned_form: new FormControl('',[Validators.required,fileValidators.fileExtensionValidator(this.allowedExtensions)]),
     scaned_file: new FormControl(''),
-    preview_scaned_file: new FormControl('')
+    preview_scaned_file: new FormControl(''),
+    kyc_fresh_modification: new FormControl('',[Validators.required]),
+
   })
   constructor(
     public dialogRef: MatDialogRef<KyModificationComponent>,
@@ -117,6 +122,14 @@ export class KyModificationComponent implements OnInit {
     else{
       this.getKycLoginAtMaster('R');
     }
+    this.getKycType();
+  }
+  getKycType(){
+    this.__dbIntr.api_call(0,'/showTrans','trans_type_id=2').pipe(pluck("data")).subscribe(res =>{
+      console.log(res);
+
+      this.__kycType = res;
+    })
   }
   ngAfterViewInit() {
 
@@ -225,7 +238,18 @@ export class KyModificationComponent implements OnInit {
         default: break;
       }
     })
+
+    this.__clientForm.controls['kyc_type'].valueChanges.subscribe(res =>{
+              switch(res){
+                case '13': this.__kycfresh_mod = kycfresh;break;
+                case '12': this.__kycfresh_mod = kycModification;break;
+                default: this.__kycfresh_mod = [];break;
+              }
+    })
   }
+
+  // getfreshOrModificationTypeMst()
+
   getClientMaster() {
     this.__dbIntr.api_call(0, '/client', null).pipe(map((x: responseDT) => x.data)).subscribe((res: client[]) => {
       this.__clMaster = res;
@@ -263,16 +287,18 @@ export class KyModificationComponent implements OnInit {
     __kyc.append("remarks",this.__clientForm.value.remarks);
     __kyc.append("scaned_form",this.__clientForm.value.scaned_file);
 
-
-
-
+    if(this.__clientForm.value.kyc_type == '13'){
+      __kyc.append("fresh_type",this.__clientForm.value.kyc_fresh_modification);
+    }
+    else{
+      __kyc.append("modification_type",this.__clientForm.value.kyc_fresh_modification);
+    }
     this.__dbIntr.api_call(1, '/kycAddEdit', __kyc).pipe((map((x: responseDT) => x.suc))).subscribe((res: number) => {
       if (res == 1) {
         this.dialogRef.close(res);
       }
       this.__utility.showSnackbar(res == 1 ? 'Kyc submitted Successfully' : 'Something went wrong! Please try again later', res);
     })
-
   }
 
   setItem(id, type_id, doc) {

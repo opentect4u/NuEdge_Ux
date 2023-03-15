@@ -30,7 +30,7 @@ export class TrnsrptComponent implements OnInit {
   })
   __export =  new MatTableDataSource<any>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit','delete','sl_no','trns_type', 'trns_name'];
+  __columns: string[] = ['edit','sl_no','trns_type', 'trns_name'];
   __exportedClmns: string[] = ['sl_no', 'trns_type','trns_name'];
   __paginate: any= [];
   __selecttrnsType = new MatTableDataSource<any>([]);

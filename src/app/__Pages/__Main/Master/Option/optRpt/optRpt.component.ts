@@ -8,6 +8,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatTableExporterModule } from 'mat-table-exporter';
 import { map } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { option } from 'src/app/__Model/option';
@@ -16,7 +17,7 @@ import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { OptionModificationComponent } from '../optionModification/optionModification.component';
-
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'optRpt-component',
   templateUrl: './optRpt.component.html',
@@ -242,4 +243,13 @@ export class OptrptComponent implements OnInit {
 
       })
   }
+  exportTbl(){
+    // let { sheetName, fileName } = getFileName(name);
+    let targetTableElm = document.getElementById('Option');
+    let wb = XLSX.utils.table_to_book(targetTableElm, <XLSX.Table2SheetOpts>{
+      sheet: 'AMC'
+    });
+    XLSX.writeFile(wb, `option.xlsx`,{cellStyles:true});
+  }
+
 }

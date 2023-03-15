@@ -106,6 +106,12 @@ export class SchemeComponent implements OnInit {
     // ) {
     //   this.getParticularScheme();
     // }
+    if(this.__rtDt.snapshot.queryParamMap.get('amc_id')){
+      this.opendialogForReports(
+        atob(this.__rtDt.snapshot.queryParamMap.get('product_id')),
+        atob(this.__rtDt.snapshot.queryParamMap.get('amc_id'))
+        )
+    }
   }
   getParticularScheme() {
     this.__dbIntr
@@ -242,7 +248,7 @@ export class SchemeComponent implements OnInit {
   }
 
 
-   opendialogForReports(__prdId){
+   opendialogForReports(__prdId,amc_id: string | null = null){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -255,7 +261,8 @@ export class SchemeComponent implements OnInit {
     dialogConfig.id = "SC",
     dialogConfig.data = {
       flag:"SC",
-      product_id:__prdId
+      product_id:__prdId,
+      amc_id: amc_id
     }
     try {
       const dialogref = this.__dialog.open(

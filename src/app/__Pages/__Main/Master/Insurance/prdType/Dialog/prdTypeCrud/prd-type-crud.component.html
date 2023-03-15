@@ -1,0 +1,58 @@
+
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}} {{data.id > 0 ? '(' +data.Product_type.product_type+')' : ''}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="__prdType" [attr.id]="'__prdType__'+ this.data.id" (ngSubmit)="submit()">
+      <div class="row">
+        <div class="col-sm-12 my-5">
+          <label class="form-label" for="ins_type_id">Type Of Insurance <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="ins_type_id">
+            <option value="">Select</option>
+            <option *ngFor="let insType of instTypeMst" [value]="insType.id">{{insType.type}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__prdType.get('ins_type_id').invalid && (__prdType.get('ins_type_id').dirty || __prdType.get('ins_type_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__prdType.get('ins_type_id')).errors?.required">*Please provide insurance type
+            </span>
+        </div>
+
+        </div>
+        <div class="col-sm-12 mb-3">
+          <label for="product_type" class="form-label">Product Type <span class="text-danger">*</span></label>
+          <input type="text" placeholder="Enter Product Type" name="product_type" id="product_type" class="form-control" formControlName="product_type">
+          <div class="invalid-feedback"
+          *ngIf="__prdType.get('product_type').invalid && (__prdType.get('product_type').dirty || __prdType.get('product_type').touched)">
+          <span class="invalid-feedback" *ngIf="(__prdType.get('product_type')).errors?.required">*Please provide product type
+            </span>
+        </div>
+        </div>
+      </div>
+
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn  ml-2" [attr.form]="'__prdType__'+ data.id" [disabled]="this.__prdType.invalid">
+      {{this.data.id > 0 ? 'Update' : 'Submit'}}
+    </button>
+  </mat-dialog-actions>
+  <br clear="all">
+    </div>

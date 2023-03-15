@@ -40,12 +40,12 @@ export class UploadCsvComponent implements OnInit {
       queryParams:''
     }
 ]
-  
+
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
       columnDef: 'doc_type',
-      header: 'doc_type',
+      header: 'Document Type',
       cell: (element: Record<string, any>) => `${element['doc_type']}`
     }
   ];
@@ -59,7 +59,7 @@ export class UploadCsvComponent implements OnInit {
     rntFile: new FormControl('', [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
     file: new FormControl('')
   })
-  __columns: string[] = ['sl_no', 'doc_type', 'edit', 'delete'];
+  __columns: string[] = ['sl_no', 'doc_type', 'edit'];
   __selectRNT = new MatTableDataSource<docType>([]);
   constructor(private __dbIntr: DbIntrService, private __utility: UtiliService) { this.previewlatestDocumnetType(); }
 
@@ -69,13 +69,13 @@ export class UploadCsvComponent implements OnInit {
   }
   previewlatestDocumnetType() {
     this.__dbIntr.api_call(0, '/documenttype', null).pipe(pluck('data'),take(5)).subscribe((res: docType[]) => {
-      this.__selectRNT = new MatTableDataSource(res);
+      this.__selectRNT = new MatTableDataSource(res.slice(0,5));
     })
   }
   populateDT(__items: docType) {
     this.__utility.navigatewithqueryparams('/main/master/docType', {queryParams: {id:btoa(__items.id.toString())}});
   }
-  getFiles(__ev) {  
+  getFiles(__ev) {
       this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);
       this.__uploadRnt.get('file')?.patchValue(this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : '');
       // this.onFileDropped(__ev);
@@ -118,7 +118,7 @@ export class UploadCsvComponent implements OnInit {
             this.__uploadRnt.get('rntFile').updateValueAndValidity();
           }
         }
-      }); 
+      });
   }
 /**
    * format bytes

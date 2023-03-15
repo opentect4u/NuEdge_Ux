@@ -1,0 +1,446 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >Company Reports</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+
+  <mat-dialog-content>
+    <div class="card my-5">
+      <div class="card-body p-5">
+        <form [formGroup]="__rntSearchForm" (ngSubmit)="submit()" autoComplete="off">
+        <div class="row ">
+          <div class="col-sm-8 my-auto">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+                <mat-radio-button value="2">Summary</mat-radio-button>
+                <mat-radio-button value="1" class="ml-5">Detail</mat-radio-button>
+              </mat-radio-group>
+          </div>
+          <div class="col-sm-4 my-auto">
+            <mat-button-toggle-group #group="matButtonToggleGroup" class="float-right">
+              <mat-button-toggle value="center" aria-label="Text align center" (click)="reset()">
+                <mat-icon>restart_alt</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+        </div>
+          <div class="row my-3">
+            <div class="col-sm-3">
+              <label class="form-label" for="ins_type_id">Type Of Insurance</label>
+              <select class="form-control" formControlName="ins_type">
+                <option value="">Select</option>
+                <option *ngFor="let insType of instTypeMst" [value]="insType.id">{{insType.type}}</option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+                  <label for="comp_name">Company</label>
+                  <input type="search" name="comp_name" id="comp_name" class="form-control"
+                    formControlName="comp_name" placeholder="Enter Company">
+            </div>
+            <div class="col-sm-3">
+              <label for="contact_person">Contact Person</label>
+              <input type="text" name="contact_person" id="contact_person" placeholder="Contact Person" class="form-control" formControlName="contact_person">
+            </div>
+            <div class="col-sm-3 my-auto">
+              <button mat-raised-button  color="primary" class="float-right">
+                Show
+              </button>
+          </div>
+          </div>
+          <!-- <div class="row">
+            <div class="col-sm-12">
+                <button mat-raised-button  color="primary" class="float-right">
+                  Show
+                </button>
+            </div>
+          </div> -->
+        </form>
+      </div>
+    </div>
+    <div class="mat-elevation-z3">
+      <div class="example_container_header">
+        <div class="btnGrp d-flex">
+
+          <mat-form-field appearance="fill">
+            <mat-label>Select Columns</mat-label>
+            <mat-select [formControl]="toppings" multiple>
+              <mat-option
+              *ngFor="let topping of toppingList"
+              [value]="topping.id">
+              {{topping.text}}
+            </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>system_update_alt</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Company'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+
+      </div>
+       <div class="example-container">
+
+      <table mat-table [dataSource]="__selectRNT" class="table_Custome"
+      matSort (matSortChange)="sortData($event)">
+        <ng-container matColumnDef="sl_no">
+          <th mat-header-cell *matHeaderCellDef>Sl No</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+        </ng-container>
+
+
+
+
+        <ng-container matColumnDef="comp_short_name">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header="comp_short_name">Company Short Name</th>
+          <td mat-cell *matCellDef="let element">
+              <span [title]="element.comp_short_name">{{element.comp_short_name ? (element.comp_short_name | ellipsis: 25) : ''}}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="ins_type" >
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="ins_type">Insurance Type</th>
+          <td mat-cell *matCellDef="let element">
+            <p class="text-wrap">{{element.ins_type}}</p>
+          </td>
+        </ng-container>
+
+        <!-- New Field Added -->
+        <ng-container matColumnDef="comp_full_name">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header="comp_full_name">Company Full Name</th>
+          <td mat-cell *matCellDef="let element">
+            <span [title]="element.comp_full_name">
+              {{element.comp_full_name ?  (element.comp_full_name | ellipsis: 25)  : ''}}
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="login_url">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header="login_url">Login URL</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{element.login_url}}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="login_pass">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header="login_pass">Login Password</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.login_pass}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="login_id">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header="login_id">Login ID</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.login_id}}
+          </td>
+        </ng-container>
+        <!-- End -->
+        <ng-container matColumnDef="cus_care_whatsApp_no">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="cus_care_whatsApp_no">Customer Care WhatsApp Number</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.cus_care_whatsapp_no}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="website">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="website">Web Site</th>
+          <td mat-cell *matCellDef="let element">
+            <!-- <a href="{{element.website}}" target="__blank"> -->
+              {{element.website}}
+            <!-- </a> -->
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cus_care_no">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="cus_care_no">Customer Care Number</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.cus_care_no}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cus_care_email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="cus_care_email">Customer Care Email</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.cus_care_email}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="head_ofc_contact_per">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="head_ofc_contact_per">Head Office Contact Person</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.head_ofc_contact_per}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="head_contact_per_mobile">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="head_contact_per_mobile">Head Office Contact Person Mobile</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.head_contact_per_mob}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="head_contact_per_email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="head_contact_per_email">Head Office Contact Person Email</th>
+          <td mat-cell *matCellDef="let element">
+             <!-- <p class="text-wrap"> -->
+              <span [title]="element.head_contact_per_email">
+                {{element.head_contact_per_email}}
+              </span>
+            <!-- </p> -->
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="head_ofc_addr">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="head_ofc_addr">Head Office Contact Person Address</th>
+          <td mat-cell *matCellDef="let element">
+           <p [title]="element.head_ofc_addr">{{element.head_ofc_addr ? (element.head_ofc_addr | ellipsis:25) : ''}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="local_ofc_contact_per">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="local_ofc_contact_per">Local Office Contact Person</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.local_ofc_contact_per}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="local_contact_per_mobile">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="local_contact_per_mobile">Local Office Contact Person Mobile</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.local_contact_per_mob}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="local_contact_per_email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="local_contact_per_email">Local Office Contact Person Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.local_contact_per_email}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="local_ofc_addr">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="local_ofc_addr">Local Office Contact Person Address</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap" [title]="element.local_ofc_addr">{{element.local_ofc_addr | ellipsis:25}}</p>
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="edit" sticky>
+          <th mat-header-cell *matHeaderCellDef>Edit</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button (click)="populateDT(element)">
+              <mat-icon class="edit_icon">edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef>Delete</th>
+          <td mat-cell *matCellDef="let element;let i=index">
+            <button mat-icon-button (click)="delete(element,i)">
+              <mat-icon class="delete_icon">delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="__columns;sticky:true"></tr>
+        <tr tabindex="999" mat-row *matRowDef="let row; columns: __columns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="__columns.length" class="text-center">No Records Found</td>
+        </tr>
+      </table>
+      </div>
+      <div class="paginator">
+        <div class="itemsPerPage">
+          <label>Items Per Page :&nbsp; </label>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle value="10" aria-label="Text align left" (click)="getval('10')">
+              10
+            </mat-button-toggle>
+            <mat-button-toggle value="50" aria-label="Text align center" (click)="getval('50')">
+              50
+            </mat-button-toggle>
+            <mat-button-toggle value="100" aria-label="Text align right" (click)="getval('100')">
+              100
+            </mat-button-toggle>
+            <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
+              All
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <div class="paginatorContainer">
+          <mat-button-toggle-group *ngFor="let paginate of __paginate">
+            <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+              <label>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+                <span
+                  *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
+              </label>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+
+
+
+      </div>
+
+
+      <table id="comp_rpt"
+      style="display:none" mat-table
+      [dataSource]="__export"
+      matTableExporter
+      #exporter="matTableExporter">
+
+
+        <!-- Sl No. -->
+        <ng-container matColumnDef="sl_no" >
+          <th mat-header-cell *matHeaderCellDef>Sl No</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+        </ng-container>
+
+
+
+        <!--Temporary TIN No.-->
+        <ng-container matColumnDef="comp_short_name" >
+          <th mat-header-cell *matHeaderCellDef>Company Short Name</th>
+          <td mat-cell *matCellDef="let element">
+            <p class="text-wrap">{{element.comp_short_name}}</p>
+          </td>
+        </ng-container>
+     <!--Temporary TIN No.-->
+     <ng-container matColumnDef="ins_type" >
+      <th mat-header-cell *matHeaderCellDef>Insurance Type</th>
+      <td mat-cell *matCellDef="let element">
+        <p class="text-wrap">{{element.ins_type}}</p>
+      </td>
+    </ng-container>
+
+         <!-- New Field Added -->
+         <ng-container matColumnDef="comp_full_name">
+          <th mat-header-cell *matHeaderCellDef >Company Full Name</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.comp_full_name}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="login_url">
+          <th mat-header-cell *matHeaderCellDef >Login URL</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.login_url}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="login_pass">
+          <th mat-header-cell *matHeaderCellDef  >Login Password</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.login_pass}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="login_id">
+          <th mat-header-cell *matHeaderCellDef>Login ID</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.login_id}}
+          </td>
+        </ng-container>
+        <!-- End -->
+
+        <ng-container matColumnDef="website">
+          <th mat-header-cell *matHeaderCellDef>Web Site</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.website}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cus_care_whatsApp_no">
+          <th mat-header-cell *matHeaderCellDef>Customer Care WhatsApp Number</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.cus_care_whatsapp_no}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cus_care_no">
+          <th mat-header-cell *matHeaderCellDef>Customer Care Number</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.cus_care_no}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="cus_care_email">
+          <th mat-header-cell *matHeaderCellDef>Customer Care Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.cus_care_email}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="head_ofc_contact_per">
+          <th mat-header-cell *matHeaderCellDef>Head Office Contact Person</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.head_ofc_contact_per}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="head_contact_per_mobile">
+          <th mat-header-cell *matHeaderCellDef>Head Office Contact Person Mobile</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.head_contact_per_mob}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="head_contact_per_email">
+          <th mat-header-cell *matHeaderCellDef>Head Office Contact Person Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.head_contact_per_email}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="head_ofc_addr">
+          <th mat-header-cell *matHeaderCellDef>Head Office Contact Person Address</th>
+          <td mat-cell *matCellDef="let element">
+           <p class="text-wrap">{{element.head_ofc_addr}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="local_ofc_contact_per">
+          <th mat-header-cell *matHeaderCellDef>Local Office Contact Person</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.local_ofc_contact_per}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="local_contact_per_mobile">
+          <th mat-header-cell *matHeaderCellDef>Local Office Contact Person Mobile</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.local_contact_per_mob}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="local_contact_per_email">
+          <th mat-header-cell *matHeaderCellDef>Local Office Contact Person Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.local_contact_per_email}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="local_ofc_addr">
+          <th mat-header-cell *matHeaderCellDef>Local Office Contact Person Address</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.local_ofc_addr}}</p>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="__exportedClmns" class="highlight"></tr>
+        <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4" class="text-center">No Company History Found</td>
+        </tr>
+      </table>
+
+    </div>
+  </mat-dialog-content>
+  </div>

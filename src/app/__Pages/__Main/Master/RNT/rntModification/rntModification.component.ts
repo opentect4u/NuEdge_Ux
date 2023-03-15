@@ -1,4 +1,4 @@
-import { Component, OnInit ,Inject, SimpleChanges} from '@angular/core';
+import { Component, OnInit ,Inject, SimpleChanges, ElementRef, ViewChild} from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { skip } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { global } from 'src/app/__Utility/globalFunc';
   styleUrls: ['./rntModification.component.css']
 })
 export class RntModificationComponent implements OnInit {
+  @ViewChild('scrollContainer') private __ScrollContainer: ElementRef;
   __isVisible:boolean = false;
   __rntForm = new FormGroup({
     rnt_name: new FormControl(this.data.id > 0 ? this.data.__rnt.rnt_name : '', [Validators.required]),
@@ -123,6 +124,9 @@ export class RntModificationComponent implements OnInit {
          this.sec_qusAns.push(this.SecurityQuesAns(el.id,el.sec_qus,el.sec_ans));
       })
     }
+    try {
+      this.__ScrollContainer.nativeElement.scrollTop = this.__ScrollContainer.nativeElement.scrollHeight;
+  } catch(err) { }
   }
   SecurityQuesAns(id: number | null = 0,
     sec_qus:string | null = '',

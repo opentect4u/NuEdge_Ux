@@ -294,8 +294,12 @@ const routes: Routes = [
       },
 
       /**End */
-
-
+      /** Insurance - Master*/
+      {
+        path:'insurance',
+        loadChildren:()=> import('./Insurance/ins-lnd.module').then(m => m.InsLndModule),
+      },
+      /** END */
       {
         path: '',
         redirectTo: 'products',

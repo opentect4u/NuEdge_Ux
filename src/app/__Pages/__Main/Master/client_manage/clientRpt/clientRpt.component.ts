@@ -9,6 +9,7 @@ import {
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { map, pluck } from 'rxjs/operators';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { client } from 'src/app/__Model/__clientMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -16,7 +17,7 @@ import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { ClModifcationComponent } from '../clModifcation/clModifcation.component';
-
+import { clientColumns } from 'src/app/__Utility/clientColumns';
 @Component({
   selector: 'app-clientRpt',
   templateUrl: './clientRpt.component.html',
@@ -25,27 +26,7 @@ import { ClModifcationComponent } from '../clModifcation/clModifcation.component
 export class ClientRptComponent implements OnInit {
   __sortAscOrDsc: any= {active: '',direction:'asc'};
   toppings = new FormControl();
-  toppingList: any = [{id: "edit",text:"Edit"},
-  {id:'sl_no',text:'Sl No'},
-    {id:'cl_code',text:'Client Code'},
-    {id:'cl_name',text:'Client Name'},
-    {id:'pan',text:'Pan'},
-    {id:'dob',text:'Date Of Birth'},
-    {id:'dob_actual',text:'Actual Date Of Birth'},
-    {id:'guar_pan',text:'Gurdians Pan'},
-    {id:'guar_name',text:'Gurdians Name'},
-    {id:'relation',text:'Relation'},
-    {id:'mobile',text:'Mobile'},
-    {id:'alt_mobile',text:'Alternative Mobile'},
-    {id:'email',text:'Email'},
-    {id:'alt_email',text:'Alternative Email'},
-    {id:'addr_1',text:'Addres-1'},
-    {id:'addr_2',text:'Addres-2'},
-    {id:'state',text:'State'},
-    {id:'dist',text:'District'},
-    {id:'city',text:'City'},
-    {id:'pincode',text:'Picode'},
-  {id: "delete",text:"Delete"}];
+  toppingList: any =[];
   __isVisible: boolean = true;
   __paginate: any = [];
   __pageNumber = new FormControl(10);
@@ -54,50 +35,8 @@ export class ClientRptComponent implements OnInit {
   __stateMst: any=[];
   __distMst: any=[];
   __cityMst: any=[];
-
-  __exportedClmns: string[] = [
-    'sl_no',
-    'cl_code',
-    'cl_name',
-    'pan',
-    'mobile',
-    'email',
-  ];
+  __exportedClmns: string[] = [];
   __columns: string[] = [];
-
-  __columnsForsummary: string[] = [
-    'edit',
-    'sl_no',
-    'cl_code',
-    'cl_name',
-    'pan',
-    'mobile',
-    'email',
-    'delete',
-  ];
-  __columnsForDetails: string[] = [
-    'edit',
-    'sl_no',
-    'cl_code',
-    'cl_name',
-    'pan',
-    'dob',
-    'dob_actual',
-    'guar_pan',
-    'guar_name',
-    'relation',
-    'mobile',
-    'alt_mobile',
-    'email',
-    'alt_email',
-    'addr_1',
-    'addr_2',
-    'state',
-    'dist',
-    'city',
-    'pincode',
-    'delete',
-  ];
   __clientForm = new FormGroup({
     pan: new FormControl(''),
     name: new FormControl(''),
@@ -120,11 +59,31 @@ export class ClientRptComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.__columns = this.__columnsForsummary;
-    this.toppings.setValue(this.__columns);
+    this.setColumns('2');
     this.getClientRPTMst();
     this.getState();
   }
+
+   setColumns(res){
+    const __columnToRemove =  ['edit','delete'];
+    const columns = this.data.client_type == 'P' ?
+    clientColumns.PAN_HOLDER_CLIENT :
+    (this.data.client_type == 'N' ? clientColumns.NON_PAN_HOLDER_CLIENT
+    : (this.data.client_type == 'E'
+    ? clientColumns.EXISTING_CLIENT : clientColumns.MINOR_CLIENT));
+
+    this.__columns = res == '2'
+    ?  (this.data.client_type == 'E' ? clientColumns.INITIAL_COLUMNS.filter((x: any) => x!= 'client_code')
+    : ((this.data.client_type == 'N' || this.data.client_type == 'M')
+    ? clientColumns.INITIAL_COLUMNS.filter((x: any) => x!= 'pan')
+    : clientColumns.INITIAL_COLUMNS))
+    : columns;
+
+    this.toppingList = clientColumns.COLUMN_SELECTOR.filter((x: any) => columns.includes(x.id));
+    this.toppings.setValue(this.__columns);
+    this.__exportedClmns = this.__columns.filter((x: any) => !__columnToRemove.includes(x));
+   }
+
   getState(){
     this.__dbIntr.api_call(0,'/states',null).pipe(pluck("data")).subscribe(res =>{
       this.__stateMst = res;
@@ -152,7 +111,8 @@ export class ClientRptComponent implements OnInit {
     __client.append('city', this.__clientForm.value.city);
     // __client.append('pincode', this.__clientForm.value.pincode);
     __client.append('column_name',column_name);
-    __client.append('sort_by',sort_by);
+    __client.append('sort_by',sort_by ? sort_by : 'asc');
+    __client.append('client_type',this.data.client_type);
 
     this.__dbIntr
       .api_call(1, '/clientExport', __client)
@@ -165,42 +125,7 @@ export class ClientRptComponent implements OnInit {
 
   ngAfterViewInit() {
     this.__clientForm.controls['options'].valueChanges.subscribe((res) => {
-      if (res == '1') {
-        this.__columns = this.__columnsForDetails;
-        this.toppings.setValue(this.__columns);
-        this.__exportedClmns = [
-          'sl_no',
-          'cl_code',
-          'cl_name',
-          'pan',
-          'dob',
-          'dob_actual',
-          'guar_pan',
-          'guar_name',
-          'relation',
-          'mobile',
-          'alt_mobile',
-          'email',
-          'alt_email',
-          'addr_1',
-          'addr_2',
-          'state',
-          'dist',
-          'city',
-          'pincode',
-        ];
-      } else {
-        this.__columns = this.__columnsForsummary;
-        this.toppings.setValue(this.__columns);
-        this.__exportedClmns = [
-          'sl_no',
-          'cl_code',
-          'cl_name',
-          'pan',
-          'mobile',
-          'email',
-        ];
-      }
+      this.setColumns(res);
     });
     this.toppings.valueChanges.subscribe(res =>{
       const clm = ['edit','delete']
@@ -303,7 +228,7 @@ export class ClientRptComponent implements OnInit {
     );
   }
 
-   
+
   getClientRPTMst(column_name: string | null ='', sort_by:string | null | '' = 'asc'){
       const __client = new FormData();
       __client.append('pan', this.__clientForm.value.pan);
@@ -316,14 +241,15 @@ export class ClientRptComponent implements OnInit {
       // __client.append('pincode', this.__clientForm.value.pincode);
       __client.append('paginate', this.__pageNumber.value);
       __client.append('column_name',column_name);
-      __client.append('sort_by', sort_by);
+      __client.append('sort_by', sort_by ? sort_by : 'asc');
+      __client.append('client_type',this.data.client_type);
       this.__dbIntr.api_call(1,'/clientDetailSearch',__client).pipe(pluck("data")).subscribe((res: any) =>{
         this.setPaginator(res.data);
         this.__paginate = res.links;
         this.tableExport(column_name,sort_by);
       })
   }
-   
+
   submit() {
      this.getClientRPTMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction)
   }
@@ -475,5 +401,33 @@ export class ClientRptComponent implements OnInit {
   sortData(sort){
     this.__sortAscOrDsc = sort;
     this.submit();
+  }
+  deleteClient(__el,index){
+    console.log(__el.id);
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'CL',
+      id: __el.id,
+      title: 'Delete '  + __el.client_name,
+      api_name:'/clientDelete'
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.__selectClient.data.splice(index,1);
+          this.__selectClient._updateChangeSubscription();
+          this.__export.data.splice(this.__export.data.findIndex((x: any) => x.id == __el.id),1);
+          this.__export._updateChangeSubscription();
+        }
+      }
+
+    })
   }
 }

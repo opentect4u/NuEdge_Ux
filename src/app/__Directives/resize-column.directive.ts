@@ -24,16 +24,16 @@ export class ResizeColumnDirective implements OnInit {
 
   ngOnInit() {
     if (this.resizable) {
-      const row = this.renderer.parentNode(this.column);
-      const thead = this.renderer.parentNode(row);
-      this.table = this.renderer.parentNode(thead);
+      // const row = this.renderer.parentNode(this.column);
+      // const thead = this.renderer.parentNode(row);
+      // this.table = this.renderer.parentNode(thead);
 
-      const resizer = this.renderer.createElement("span");
-      this.renderer.addClass(resizer, "resize-holder");
-      this.renderer.appendChild(this.column, resizer);
-      this.renderer.listen(resizer, "mousedown", this.onMouseDown);
-      this.renderer.listen(this.table, "mousemove", this.onMouseMove);
-      this.renderer.listen("document", "mouseup", this.onMouseUp);
+      // const resizer = this.renderer.createElement("span");
+      // this.renderer.addClass(resizer, "resize-holder");
+      // this.renderer.appendChild(this.column, resizer);
+      // this.renderer.listen(resizer, "mousedown", this.onMouseDown);
+      // this.renderer.listen(this.table, "mousemove", this.onMouseMove);
+      // this.renderer.listen("document", "mouseup", this.onMouseUp);
     }
   }
 

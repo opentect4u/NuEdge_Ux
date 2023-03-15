@@ -1,0 +1,16 @@
+[
+      {
+            "id":1,
+            "menu_name":"Company",
+            "has_submenu":"N",
+            "url":"/main/master/insurance/company",
+            "icon": "stars"
+          },
+          {
+            "id":2,
+            "menu_name":"Product Type",
+            "has_submenu":"N",
+            "url":"/main/master/insurance/producttype",
+            "icon": "stars"
+          }
+]

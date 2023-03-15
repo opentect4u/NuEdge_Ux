@@ -29,7 +29,7 @@ export class TrnstyperptComponent implements OnInit {
   })
   __export =  new MatTableDataSource<any>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit', 'delete','sl_no', 'trns_type'];
+  __columns: string[] = ['edit','sl_no', 'trns_type'];
   __exportedClmns: string[] = ['sl_no', 'trns_type'];
   __paginate: any= [];
   __selecttrnsType = new MatTableDataSource<any>([]);

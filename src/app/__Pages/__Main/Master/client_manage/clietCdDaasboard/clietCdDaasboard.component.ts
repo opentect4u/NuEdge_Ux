@@ -76,8 +76,11 @@ export class ClietCdDaasboardComponent implements OnInit {
     this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   navigate(__items) {
+    console.log(__items);
+
     switch (__items.flag) {
       case 'E':
+        console.log('E');
         this.__utility.navigatewithqueryparams(__items.url, {
           queryParams: { flag: btoa(__items.flag) },
         });
@@ -86,7 +89,9 @@ export class ClietCdDaasboardComponent implements OnInit {
         this.__utility.navigate(__items.url);
         break;
       case 'U':
-        this.__utility.navigate(__items.url);
+        this.__utility.navigatewithqueryparams(__items.url, {
+          queryParams: { flag: btoa('E') },
+        });
         break;
       default:
         this.__utility.showSnackbar(

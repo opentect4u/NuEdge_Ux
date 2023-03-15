@@ -59,7 +59,7 @@ export class ScmRptComponent implements OnInit {
   __catMst: category[] =[];
   __subcatMst: subcat[]=[];
   __columnsForsummary: string[] = [
-    'edit','delete','sl_no','scheme_name','scheme_type','delete'];
+    'edit','delete','sl_no','scheme_name','scheme_type'];
   __columnsForDetails: string[] = [
     'edit',
     'delete',
@@ -73,8 +73,7 @@ export class ScmRptComponent implements OnInit {
     'nfo_end_dt',
     'nfo_reopen_dt',
     'pip_fresh_min_amt',
-    'pip_add_min_amt',
-    'delete'
+    'pip_add_min_amt'
     ];
   __export = new MatTableDataSource<scheme>([]);
   __iscatspinner: boolean =false;
@@ -99,7 +98,7 @@ export class ScmRptComponent implements OnInit {
     const __scmExport = new FormData();
     __scmExport.append('paginate',this.__pageNumber.value);
     __scmExport.append('column_name',column_name);
-    __scmExport.append('sort_by',sort_by);
+    __scmExport.append('sort_by',sort_by.toUpperCase());
     __scmExport.append('scheme_name',this.__scmForm.value.scheme_name ? this.__scmForm.value.scheme_name : '');
     __scmExport.append('cat_id',this.__scmForm.value.cat_id ? this.__scmForm.value.cat_id : '');
     __scmExport.append('amc_name',this.__scmForm.value.amc_name ? this.__scmForm.value.amc_name : '');
@@ -435,8 +434,8 @@ export class ScmRptComponent implements OnInit {
       dialogConfig.data = {
         flag: 'S',
         id: __el.id,
-        title: 'Delete '  + __el.subcategory_name,
-        api_name:'/catDelete'
+        title: 'Delete '  + __el.scheme_name,
+        api_name:'/schemeDelete'
       };
       const dialogref = this.__dialog.open(
         DeletemstComponent,

@@ -28,6 +28,7 @@ export class NonfinrptComponent implements OnInit {
   divToPrint: any;
   toppings = new FormControl();
   toppingList: any = [{id: "edit",text:"Edit"},
+  {id: "delete",text:"Delete"},
   {id: "sl_no",text:"Sl No"},
   {id: "temp_tin_no",text:"TIN Number"},
   {id: "rnt_name",text:"R&T"},
@@ -54,8 +55,7 @@ export class NonfinrptComponent implements OnInit {
   {id: "inv_type",text:"Investment Type"},
   {id: "apl_no",text:"Application Number"},
   {id: "fol_no",text:"Folio Number"},
-  {id: "kyc_status",text:"KYC Status"},
-  {id: "delete",text:"Delete"}];
+  {id: "kyc_status",text:"KYC Status"}];
 
   __sortAscOrDsc = {active:'',direction:'asc'};
   __category: category[];
@@ -99,17 +99,18 @@ export class NonfinrptComponent implements OnInit {
   __trans_types: any;
   __columnsForSummary: string[] = [
     'edit',
+    'delete',
     'sl_no',
     'temp_tin_no',
     'rnt_name',
     'bu_type',
     'transaction',
-    'scheme_name',
-    'delete',
+    'scheme_name'
   ];
 
   __columnsForDtls: string[] = [
     'edit',
+    'delete',
     'sl_no',
     'temp_tin_no',
     'rnt_name',
@@ -136,8 +137,7 @@ export class NonfinrptComponent implements OnInit {
     'inv_type',
     'apl_no',
     'fol_no',
-    'kyc_status',
-    'delete'
+    'kyc_status'
   ];
   constructor(
     private overlay: Overlay,
@@ -398,14 +398,14 @@ export class NonfinrptComponent implements OnInit {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber) 
+            ('&paginate=' + this.__pageNumber)
             + (this.data.trans_id ? '&trans_id=' + this.data.trans_id : '')
             + ('&option=' + this.__rcvForms.value.options)
             + ('&trans_type_id=' + this.data.trans_type_id)
             + ('&trans_id=' +  this.data.trans_id)
             + ('&column_name=' +  this.__sortAscOrDsc.active)
             + ('&sort_by=' +  this.__sortAscOrDsc.direction)
-            + (this.__rcvForms.get('options').value != '3' 
+            + (this.__rcvForms.get('options').value != '3'
             ? ('&client_code='+ this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '')
             + ('&sub_brk_cd=' + this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '')
             + ('&trans_type=' + (this.__rcvForms.value.trans_type.length > 0 ? JSON.stringify(this.__rcvForms.value.trans_type): ''))

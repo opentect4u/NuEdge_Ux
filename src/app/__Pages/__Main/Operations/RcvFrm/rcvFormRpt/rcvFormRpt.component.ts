@@ -26,6 +26,7 @@ export class RcvformrptComponent implements OnInit {
   __sortAscOrDsc: any= {active:'',direction:'asc'};
     toppings = new FormControl();
     toppingList: any = [{id:'edit',text:'Edit'},
+                            {id:'delete',text:'Delete'},
                             {id:'sl_no',text:'Sl No'},
                             {id:'temp_tin_no',text:'Temporary Tin Number'},
                             {id:'bu_type',text:'Buisness type'},
@@ -37,8 +38,7 @@ export class RcvformrptComponent implements OnInit {
                             {id:'inv_type',text:'Investment Type'},
                             {id:'apl_no',text:'Application Number'},
                             {id:'fol_no',text:'Folio Number'},
-                            {id:'kyc_status',text:'KYC Status'},
-                            {id:'delete',text:'Delete'}];
+                            {id:'kyc_status',text:'KYC Status'}];
   __bu_type = buType;
   __kycStatus : any = [{"id":"Y","status":"With KYC"},{"id":"N","status":"Without KYC"}]
   __export= new MatTableDataSource<any>([]);
@@ -49,8 +49,9 @@ export class RcvformrptComponent implements OnInit {
   __paginate: any= [];
   __columns: string[] = [];
   __exportedClmns: string[] = ['sl_no', 'temp_tin_no',  'bu_type','rcv_datetime'];
- __columnsForSummary: string[] = ['edit','sl_no', 'temp_tin_no',  'bu_type','rcv_datetime','delete'];
+ __columnsForSummary: string[] = ['edit','delete','sl_no', 'temp_tin_no',  'bu_type','rcv_datetime'];
  __columnsForDtls: string[] = ['edit',
+                                'delete',
                                 'sl_no',
                                 'temp_tin_no',
                                 'bu_type',
@@ -62,8 +63,8 @@ export class RcvformrptComponent implements OnInit {
                                 'inv_type',
                                 'apl_no',
                                 'fol_no',
-                                'kyc_status',
-                                'delete']
+                                'kyc_status'
+                                ]
   __rcvForms  = new FormGroup({
      options:new FormControl('2'),
      client_code: new FormControl(''),
@@ -244,7 +245,7 @@ getPaginate(__paginate){
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url 
+        __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
         + ('&sort_by=' + this.__sortAscOrDsc.direction)
         + ('&column_name=' + this.__sortAscOrDsc.active)

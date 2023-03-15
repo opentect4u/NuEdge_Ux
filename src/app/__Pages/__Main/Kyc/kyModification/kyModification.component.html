@@ -179,12 +179,25 @@
         <label for="kyc_type">Kyc Type <span class="text-danger">*</span></label>
         <select name="kyc_type" id="kyc_type" formControlName="kyc_type" class="form-control">
           <option value="">Select kyc type</option>
-          <option value="{{__item.id}}" *ngFor="let __item of __kycType">{{__item.value}}</option>
+          <option value="{{__item.id}}" *ngFor="let __item of __kycType">{{__item.trns_name}}</option>
          </select>
          <div class="invalid-feedback" *ngIf="__clientForm.get('kyc_type').invalid && (__clientForm.get('kyc_type').dirty || __clientForm.get('kyc_type').touched)">
           <span class="invalid-feedback" *ngIf="(__clientForm.get('kyc_type')).errors?.required">*Please provide kyc type</span>
         </div>
       </div>
+
+      <ng-container *ngIf="__clientForm.get('kyc_type').value">
+        <div class="col-sm-12 mt-5">
+          <label for="kyc_fresh_modification">{{__clientForm.get('kyc_type').value == '13' ? 'Fresh Type' : 'Modification Type'}} <span class="text-danger">*</span></label>
+          <select name="kyc_fresh_modification" id="kyc_fresh_modification" formControlName="kyc_fresh_modification" class="form-control">
+            <option value="">Select</option>
+            <option value="{{__item.id}}" *ngFor="let __item of __kycfresh_mod">{{__item.name}}</option>
+           </select>
+           <div class="invalid-feedback" *ngIf="__clientForm.get('kyc_fresh_modification').invalid && (__clientForm.get('kyc_fresh_modification').dirty || __clientForm.get('kyc_fresh_modification').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('kyc_fresh_modification')).errors?.required">*Please provide {{__clientForm.get('kyc_type').value == '13' ? 'fresh type' : 'modification type'}}</span>
+          </div>
+        </div>
+      </ng-container>
     </div>
     <div class="row my-5">
       <div class="col-sm-12">
@@ -243,7 +256,7 @@
 
       <div class="col-sm-12">
          <label for="remarks">Remarks</label>
-          <textArea cols="12" rows="5" formControlName="remarks" class="form-control"></textArea>
+          <textarea cols="12" rows="5" formControlName="remarks" class="form-control"></textarea>
       </div>
 
     </div>

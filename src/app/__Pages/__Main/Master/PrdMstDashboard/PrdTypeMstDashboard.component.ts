@@ -40,7 +40,7 @@ export class PrdtypemstdashboardComponent implements OnInit {
         "id": 3,
         "menu_name":"Insurance",
         "flag":"Y",
-        "url":"/main/master/productwisemenu/home"
+        "url":"/main/master/insurance"
     },
 
     {

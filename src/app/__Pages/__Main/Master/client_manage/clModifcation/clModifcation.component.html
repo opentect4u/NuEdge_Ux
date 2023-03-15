@@ -25,7 +25,7 @@
       ngNativeValidate>
       <div class="row" *ngIf="this.data.cl_type != 'M' && this.data.cl_type != 'N'">
         <div class="col-sm-12 my-4">
-          <label for="panNo">Pan No <span class="text-danger">*</span></label>
+          <label for="panNo">PAN Number <span class="text-danger">*</span></label>
           <input type="text" name="pan" id="panNo" class="form-control" placeholder="eg. XXXXX1234X"
             formControlName="pan" minlength="10" maxlength="10" (change)="checkPanExistornot($event)">
           <div class="invalid-feedback"
@@ -65,7 +65,7 @@
         </div>
         <div class="col-sm-12 my-4"
           *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
-          <label for="dob">Date Of Birth As Pan<span class="text-danger">*</span></label>
+          <label for="dob">DOB As Per PAN<span class="text-danger">*</span></label>
           <input type="date" name="dob" id="dob" class="form-control" [max]="__maxDt" formControlName="dob">
           <div class="invalid-feedback"
             *ngIf="__clientForm.get('dob').invalid && (__clientForm.get('dob').dirty || __clientForm.get('dob').touched)">
@@ -106,7 +106,7 @@
 
       <div class="row" *ngIf="this.data.cl_type == 'M'">
         <div class="col-sm-12 my-4">
-          <label for="gur_pan">Gurdians Pan <span class="text-danger">*</span></label>
+          <label for="gur_pan">Gurdians PAN <span class="text-danger">*</span></label>
           <input type="text" name="gur_pan" id="gur_pan" class="form-control" placeholder="eg. XXXXX1234X"
             formControlName="gurdians_pan" minlength="10" maxlength="10">
           <div class="invalid-feedback"
@@ -115,9 +115,9 @@
               pan number</span>
             <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).errors?.pattern">*Please provide
               valid pan
-              Number</span>
+              number</span>
             <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).hasError('minlength')">*pan
-              Number Must Be 10 Characters Long</span>
+              number must be 10 characters long</span>
             <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).hasError('maxlength')">*pan
               number must be 10 characters long</span>
           </div>
@@ -133,9 +133,9 @@
           </div>
         </div>
         <div class="col-sm-12 my-4">
-          <label for="relations">RelationShip <span class="text-danger">*</span></label>
+          <label for="relations">Relationship <span class="text-danger">*</span></label>
           <select class="form-control" formControlName="relations">
-            <option value="">Select RelationShip</option>
+            <option value="">Select Relationship</option>
             <option value="S">Son</option>
             <option value="D">Daughter</option>
             <option value="F">Father</option>
@@ -145,7 +145,7 @@
           <div class="invalid-feedback"
             *ngIf="__clientForm.get('relations').invalid && (__clientForm.get('relations').dirty || __clientForm.get('relations').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('relations')).errors?.required">*Please provide
-              relations</span>
+              relationship</span>
           </div>
         </div>
       </div>

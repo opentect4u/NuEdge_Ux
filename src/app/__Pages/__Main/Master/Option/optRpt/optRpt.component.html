@@ -65,7 +65,8 @@
         <button mat-menu-item (click)="exportPdf()">
           <mat-icon>download</mat-icon> Export Pdf
         </button>
-        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Option'})">
+        <!-- (click)="exporter.exportTable('xlsx',{fileName:'Option'})" -->
+        <button mat-menu-item (click)="exportTbl()">
           <mat-icon>download</mat-icon> Export Excel
         </button>
       </mat-menu>
@@ -179,8 +180,8 @@
     <td mat-cell *matCellDef="let element">{{element.opt_name}}</td>
   </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
-    <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+    <tr mat-header-row *matHeaderRowDef="__exportedClmns" class="bck"></tr>
+    <tr mat-row *matRowDef="let row; columns: __exportedClmns;" ></tr>
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell" colspan="4" class="text-center">No Options History Found</td>
     </tr>

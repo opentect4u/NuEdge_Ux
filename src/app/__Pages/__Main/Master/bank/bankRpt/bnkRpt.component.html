@@ -1,7 +1,7 @@
 
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
   <div mat-dialog-title class="dialog-title">
-    <h2 >Plan Reports</h2>
+    <h2 >Bank Reports</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()" >
         <mat-icon >remove</mat-icon>
@@ -37,10 +37,10 @@
       <div class="col-sm-5">
         <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'I')">
           <div class="searchDiv">
-            <label for="ifsc">IFS Code
+            <label for="ifsc">IFSC
             </label>
             <input type="search" name="ifsc" id="ifsc" class="form-control"
-              formControlName="ifsc" placeholder="Search by IFS Code">
+              formControlName="ifsc" placeholder="Search by IFSC">
               <span class="spinner-border" *ngIf="__isifsspinner && __catForm.get('ifsc').value?.length > 1"></span>
              <div class="processMain_2" __searchResVisibility
               (appOutsideClick)="outsideClick($event,'I')">
@@ -54,7 +54,7 @@
                   <h5 class="text-center">
                     Sorry!! No Records Found
                   </h5>
-                  <p class="text-wrap">Ifs Code Not AVailable</p>
+                  <p class="text-wrap">IFSC Not Available</p>
                 </div>
               </div>
             </div>
@@ -67,7 +67,7 @@
             <label for="micr_code">MICR
             </label>
             <input type="search" name="micr_code" id="micr_code" class="form-control"
-              formControlName="micr_code" placeholder="Search by Micr">
+              formControlName="micr_code" placeholder="Search by MICR">
               <span class="spinner-border" *ngIf="__ismicrspinner && __catForm.get('micr_code').value?.length > 1"></span>
             <div class="processMain_2" __searchResVisibility
               (appOutsideClick)="outsideClick($event,'M')">
@@ -88,6 +88,11 @@
           </div>
         </div>
       </div>
+      <div class="col-sm-2 my-auto">
+        <button mat-raised-button  color="primary" class="float-right">
+          Show
+        </button>
+      </div>
     </div>
     <ng-container>
 
@@ -97,14 +102,13 @@
            <input type="text" name="bnk_name" id="bnk_name" class="form-control" formControlName="bnk_name">
         </div>
       </div> -->
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-sm-12">
             <button mat-raised-button  color="primary" class="float-right">
-              <!-- <mat-icon>visibility</mat-icon> -->
               Show
             </button>
         </div>
-      </div>
+      </div> -->
     </ng-container>
 
   </form>
