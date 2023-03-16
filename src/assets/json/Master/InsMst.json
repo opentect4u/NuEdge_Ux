@@ -12,5 +12,12 @@
             "has_submenu":"N",
             "url":"/main/master/insurance/producttype",
             "icon": "stars"
+          },
+          {
+            "id":3,
+            "menu_name":"Product",
+            "has_submenu":"N",
+            "url":"/main/master/insurance/product",
+            "icon":"stars"
           }
 ]

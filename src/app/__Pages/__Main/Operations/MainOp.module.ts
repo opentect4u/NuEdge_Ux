@@ -82,6 +82,11 @@ const routes: Routes = [
         path:'acknowledgement',
         loadChildren:()=>import('../Operations/Mutual_Fund/AcknowlegeMent/ackMain.module').then(m => m.AckmainModule),
         data:{breadcrumb:'Acknowledgement'}
+      },
+      // Insurance
+      {
+        path:'insurance',
+        loadChildren:()=> import('./Insurance/ins-main.module').then(m => m.InsMainModule)
       }
     ],
   },

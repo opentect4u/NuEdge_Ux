@@ -27,6 +27,14 @@ import { RouterModule, Routes } from '@angular/router';
     {
       path:'uploadcompany',
       loadChildren:()=> import('./cmp-mst/upload-cmp/upload-cmp.module').then(m => m.UploadCmpModule)
+    },
+    {
+      path:'product',
+      loadChildren:()=> import('./product/product.module').then(m => m.ProductModule)
+    },
+    {
+      path:'uploadproduct',
+      loadChildren:()=> import('./product/upload-product/upload-product.module').then(m => m.UploadProductModule)
     }
   ]
 }]

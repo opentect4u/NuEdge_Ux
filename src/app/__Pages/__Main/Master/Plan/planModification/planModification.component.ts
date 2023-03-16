@@ -21,7 +21,7 @@ export class PlanModificationComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog
-  ) { 
+  ) {
     this.__utility.__isvisibleMenuIcon$.pipe(skip(1)).subscribe(res =>{
       if(this.data.id == res.id && this.data.flag == res.flag){
         this.__isVisible = res.isVisible
@@ -60,7 +60,7 @@ export class PlanModificationComponent implements OnInit {
         this.dialogRef.close({id:this.data.id,data:res.data});
       }
       this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'PLAN updated successfully' : 'PLAN added successfully') : 'Something went wrong! please try again later', res.suc);
-      this.reset();
+      // this.reset();
 
     })
   }

@@ -165,6 +165,8 @@ export class PlanrptComponent implements OnInit {
           } else {
             this.__selectPLN.data.unshift(dt.data);
             this.__selectPLN._updateChangeSubscription();
+            this.__export.data.unshift(dt.data);
+            this.__export._updateChangeSubscription();
           }
         }
       });

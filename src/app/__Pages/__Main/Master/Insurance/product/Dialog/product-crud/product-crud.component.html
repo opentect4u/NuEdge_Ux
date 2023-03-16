@@ -1,0 +1,69 @@
+
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="__prdForm" [attr.id]="'__insPrdForm_'+ data.id" (ngSubmit)="submitProduct()">
+      <div class="row">
+        <div class="col-sm-12 my-3">
+          <label class="form-label" for="ins_type_id">Type Of Insurance <span class="text-danger">*</span></label>
+          <select class="form-control" id="ins_type_id" name="ins_type_id" formControlName = "ins_type_id">
+            <option value="">Select</option>
+             <option *ngFor="let insType of __insTypeMst" [value]="insType.id">{{insType.type}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__prdForm.get('ins_type_id').invalid && (__prdForm.get('ins_type_id').dirty || __prdForm.get('ins_type_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__prdForm.get('ins_type_id')).errors?.required">*Please provide insurance type
+            </span>
+        </div>
+        </div>
+        <div class="col-sm-12">
+          <label class="form-label" for="company_id">Company Name <span class="text-danger">*</span></label>
+          <select class="form-control" id="company_name" name="company_name"  formControlName="company_id">
+            <option value="">Select</option>
+            <option *ngFor="let cmpMst of __cmpMst" [value]="cmpMst.id">{{cmpMst.comp_short_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__prdForm.get('company_id').invalid && (__prdForm.get('company_id').dirty || __prdForm.get('company_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__prdForm.get('company_id')).errors?.required">*Please provide company name
+            </span>
+        </div>
+        </div>
+        <div class="col-sm-12 my-3">
+          <label class="form-label" for="product_name">Product Name<span class="text-danger">*</span></label>
+           <input type="text" class="form-control" placeholder="Enter Product Name" formControlName="product_name" id="product_name" name="product_name"/>
+          <div class="invalid-feedback"
+          *ngIf="__prdForm.get('product_name').invalid && (__prdForm.get('product_name').dirty || __prdForm.get('product_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__prdForm.get('product_name')).errors?.required">*Please provide product name
+            </span>
+        </div>
+        </div>
+      </div>
+
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn  ml-2" [attr.form]="'__insPrdForm_'+ data.id" [disabled]="this.__prdForm.invalid">
+      {{this.data.id > 0 ? 'Update' : 'Submit'}}
+    </button>
+  </mat-dialog-actions>
+  <br clear="all">
+</div>

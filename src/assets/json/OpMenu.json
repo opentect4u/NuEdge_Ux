@@ -1,21 +1,25 @@
 [
-    { 
+    {
         "id": 1,
         "menu_name":"Mutual Fund",
         "has_submenu":"Y",
-        "url":"/main/operations/mfdashboard"
+        "url":"/main/operations/mfdashboard",
+        "flag":"M"
     },
-    { 
+    {
         "id": 2,
         "menu_name":"Fixed Deposit",
         "has_submenu":"Y",
-        "url":""
+        "url":"",
+        "flag":"F"
+
     },
-    { 
+    {
         "id": 3,
         "menu_name":"Insurance",
         "has_submenu":"Y",
-        "url":""
+        "url":"/main/operations/insurance",
+        "flag":"I"
+
     }
 ]
-  

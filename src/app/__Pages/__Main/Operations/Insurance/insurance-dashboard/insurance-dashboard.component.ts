@@ -1,0 +1,56 @@
+import { Component, OnInit } from '@angular/core';
+import { breadCrumb } from 'src/app/__Model/brdCrmb';
+import { submenu } from 'src/app/__Model/submenu';
+import { UtiliService } from 'src/app/__Services/utils.service';
+
+@Component({
+  selector: 'app-insurance-dashboard',
+  templateUrl: './insurance-dashboard.component.html',
+  styleUrls: ['./insurance-dashboard.component.css']
+})
+export class InsuranceDashboardComponent implements OnInit {
+  __brdCrmbs: breadCrumb[] = [{
+    label:"Home",
+    url:'/main',
+    hasQueryParams:false,
+    queryParams:''
+    },
+    {
+      label:"Operation",
+      url:'/main/operations/ophome',
+      hasQueryParams:false,
+      queryParams:''
+    },
+    {
+      label:"Insurance",
+      url:'/main/operations/insurance',
+      hasQueryParams:false,
+      queryParams:''
+    }
+]
+__menu: submenu[] = [
+  {
+    id: 1,
+    menu_name: "Form Recievable",
+    has_submenu: "N",
+    url: "/main/operations/insurance/rcvForm"
+},
+{
+    id: 3,
+    menu_name: "Insurance Trax",
+    has_submenu: "N",
+    url: ""
+}
+]
+
+  constructor(private __utility: UtiliService) {
+   }
+
+  ngOnInit() {
+    this.__utility.getBreadCrumb(this.__brdCrmbs);
+  }
+  navigate(__url){
+        this.__utility.navigate(__url)
+  }
+
+}
