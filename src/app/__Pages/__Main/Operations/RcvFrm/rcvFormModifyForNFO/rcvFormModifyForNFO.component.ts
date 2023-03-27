@@ -19,11 +19,11 @@ templateUrl: './rcvFormModifyForNFO.component.html',
 styleUrls: ['./rcvFormModifyForNFO.component.css']
 })
 export class RcvformmodifyfornfoComponent implements OnInit {
-  @ViewChild('searchResult') __searchRlt: ElementRef;
-  @ViewChild('subBrkArn') __subBrkArn: ElementRef;
-  @ViewChild('clientCd') __clientCode: ElementRef;
-  @ViewChild('schemeRes') __scheme: ElementRef;
-  @ViewChild('schemeswitchTo') __scheme_swicth_to: ElementRef;
+  @ViewChild('searchResult',{static:true}) __searchRlt: ElementRef;
+  @ViewChild('subBrkArn',{static:true}) __subBrkArn: ElementRef;
+  @ViewChild('clientCd',{static:true}) __clientCode: ElementRef;
+  @ViewChild('schemeRes',{static:true}) __scheme: ElementRef;
+  @ViewChild('schemeswitchTo',{static:true}) __scheme_swicth_to: ElementRef;
   __trans_types: any=[]
   __isVisible:boolean = true;
   __isEntryDTGreater: boolean = false;
@@ -56,7 +56,7 @@ export class RcvformmodifyfornfoComponent implements OnInit {
     client_name: new FormControl(''),
     scheme_id: new FormControl('',[Validators.required]),
     scheme_name: new FormControl('',[Validators.required]),
-    recv_from: new FormControl('',[Validators.required]),
+    recv_from: new FormControl(''),
     inv_type: new FormControl('',[Validators.required]),
     kyc_status: new FormControl(''),
     switch_scheme_to: new FormControl(''),
@@ -81,12 +81,8 @@ constructor(
 
 ngOnInit(){
   console.log(this.data);
-
   this.getTransactionTypeDtls();
   this.getTransactionType();
-  if(this.data.temp_tin_no){
-    this.setRcvFormDtls();
-  }
 }
 getTransactionTypeDtls(){
   this.__dbIntr.api_call(0,'/formreceivedshow','product_id='+this.data.product_id + '&trans_type_id='+this.data.trans_type_id).pipe(pluck("data")).subscribe(res => {
@@ -105,31 +101,55 @@ getTransactionType(){
 }
 setRcvFormDtls(){
   this.__dbIntr.api_call(0,'/formreceived','temp_tin_no='+ this.data.temp_tin_no).pipe(pluck("data")).subscribe(res =>{
-    console.log(res);
+   console.log(res);
     this.__rcvForm.patchValue({
-        sub_brk_cd:res[0].sub_brk_cd ,
         bu_type:res[0].bu_type ,
         application_no:res[0].application_no ,
         trans_id:res[0].trans_id ,
         id:res[0].id ,
-        client_id:res[0].client_id ,
-        client_name:res[0].client_name,
-        scheme_id:res[0].scheme_id ,
         recv_from:res[0].recv_from ,
         inv_type:res[0].inv_type ,
         kyc_status:res[0].kyc_status,
         product_id:res[0].product_id,
+        folio_no:res[0].inv_type == 'A' ? res[0].folio_no : ''
     })
-    this.__rcvForm.controls['client_code'].reset(res[0].client_code,{ onlySelf: true, emitEvent: false });
-    this.__rcvForm.controls['euin_no'].reset(res[0].euin_no,{ onlySelf: true, emitEvent: false });
-    this.__rcvForm.controls['scheme_name'].reset(res[0].scheme_name,{ onlySelf: true, emitEvent: false });
-    this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_arn_no,{ onlySelf: true, emitEvent: false });
-    this.__rcvForm.controls['sub_brk_cd'].reset(res[0].sub_brk_cd);
+    setTimeout(() => {
 
-    this.__dialogDtForClient = {id:res[0].client_id,client_type:res[0].client_type,client_name:res[0].client_name};
-    this.__dialogDtForScheme = {id:res[0].scheme_id,scheme_name:res[0].scheme_name};
+    this.getItems(
+      {
+        euin_no:res[0].euin_no,
+        emp_name:res[0].emp_name,
+      },
+      'E');
+    if(res[0].bu_type == 'B'){
+      this.getItems(
+        {
+          arn_no: res[0].sub_arn_no,
+          code:res[0].sub_brk_cd
+        },
+        'S')
+    }
+    this.getItems(
+      {
+        client_code:res[0].client_code,
+        id: res[0].client_id,
+       client_name: res[0].client_name,
+       client_type:res[0].client_type
+      },
+      'C'
+    );
     this.__clientMst.push(this.__dialogDtForClient);
+    this.getItems(
+      {
+        id: res[0].scheme_id,
+        scheme_name: res[0].scheme_name,
+        nfo_entry_date:res[0].nfo_entry_date
 
+      },
+      'SC'
+    );
+
+  }, 500);
   })
 }
 outsideClick(__ev){
@@ -138,6 +158,11 @@ outsideClick(__ev){
   }
 }
 ngAfterViewInit() {
+  // Getting Data from Report on click on particular ROW
+  if(this.data.temp_tin_no){
+    this.setRcvFormDtls();
+  }
+  // End
   // EUIN NUMBER SEARCH
   this.__rcvForm.controls['euin_no'].valueChanges.
   pipe(
@@ -270,18 +295,23 @@ ngAfterViewInit() {
   })
 }
 searchResultVisibility(display_mode) {
+  if(this.__searchRlt)
   this.__searchRlt.nativeElement.style.display = display_mode;
 }
 searchResultVisibilityForSubBrkArn(display_mode){
+  if(this.__subBrkArn)
   this.__subBrkArn.nativeElement.style.display = display_mode;
 }
 searchResultVisibilityForClient(display_mode){
+  if(this.__clientCode)
  this.__clientCode.nativeElement.style.display= display_mode;
 }
 searchResultVisibilityForScheme(display_mode){
+  if(this.__scheme)
   this.__scheme.nativeElement.style.display= display_mode;
  }
  searchResultVisibilityForSchemeSwicthTo(display_mode){
+  if(this.__scheme_swicth_to)
    this.__scheme_swicth_to.nativeElement.style.display = display_mode;
  }
  getItems(__euinDtls,__type){
@@ -291,7 +321,7 @@ searchResultVisibilityForScheme(display_mode){
     case 'E':    this.__rcvForm.controls['euin_no'].reset(__euinDtls.euin_no+' - '+__euinDtls.emp_name,{ onlySelf: true, emitEvent: false });
                  this.searchResultVisibility('none');
                  break;
-    case 'S':     this.__rcvForm.controls['sub_arn_no'].reset(__euinDtls.arn_no+' - '+__euinDtls.bro_name,{ onlySelf: true, emitEvent: false });
+    case 'S':     this.__rcvForm.controls['sub_arn_no'].reset(__euinDtls.arn_no,{ onlySelf: true, emitEvent: false });
                   this.__rcvForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
                   this.searchResultVisibilityForSubBrkArn('none');
                   break;
@@ -330,7 +360,9 @@ searchResultVisibilityForScheme(display_mode){
 }
 
 checkWhetherNfoEntryDateisgreaterornot(__entrDt){
-        this.__isEntryDTGreater = __entrDt > new Date().toISOString().substring(0,10) ? false : true;
+  console.log(__entrDt);
+
+        this.__isEntryDTGreater = __entrDt >= new Date().toISOString().substring(0,10) ? false : true;
         return !this.__isEntryDTGreater;
 }
 
@@ -367,7 +399,7 @@ recieveForm(){
   const __rcvForm = new FormData();
   __rcvForm.append("bu_type",this.__rcvForm.value.bu_type);
   __rcvForm.append("euin_no",this.__rcvForm.value.euin_no.split(' ')[0]);
-  __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no.split(' ')[0] : '');
+  __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no : '');
   __rcvForm.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd ? this.__rcvForm.value.sub_brk_cd : '');
   __rcvForm.append("client_id",this.__rcvForm.value.client_id);
   __rcvForm.append("product_id",this.data.product_id);

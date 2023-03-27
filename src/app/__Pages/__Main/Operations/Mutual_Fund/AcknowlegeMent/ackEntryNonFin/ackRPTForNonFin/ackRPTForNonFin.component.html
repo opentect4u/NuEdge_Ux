@@ -109,7 +109,7 @@
               <div class="col-sm-6 my-auto">
                 <label for="">R&T: </label>
                 <label *ngFor="let __rnt of __rnt; let i=index" for="rnt_{{__rnt.id}}" class="mx-3">
-                  <input type="checkbox" id="rnt_{{__rnt.id}}" [value]="__rnt.id" (change)="onbuTypeChange($event)" />
+                  <input type="checkbox" id="rnt_{{__rnt.id}}" [value]="__rnt.id" (change)="onrntTypeChange($event)" />
                   {{__rnt.rnt_name}}
                 </label>
               </div>
@@ -420,7 +420,7 @@
             </td>
           </ng-container>
 
-          <!-- 
+          <!--
             <ng-container matColumnDef="delete" sticky>
             <th mat-header-cell *matHeaderCellDef>Delete</th>
             <td mat-cell *matCellDef="let element">
@@ -428,7 +428,7 @@
                 <mat-icon class="delete_icon">delete</mat-icon>
               </button>
             </td>
-          </ng-container> 
+          </ng-container>
         -->
 
           <tr mat-header-row *matHeaderRowDef="__columns;sticky:true"></tr>

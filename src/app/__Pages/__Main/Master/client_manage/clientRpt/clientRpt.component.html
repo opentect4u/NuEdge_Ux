@@ -225,12 +225,13 @@
 
 
             <!-- Buisness Type-->
-            <ng-container matColumnDef="edit" [sticky]="__clientForm.get('options').value == '1' ? true : false">
+            <ng-container matColumnDef="edit"
+            [sticky]="__clientForm.get('options').value == '1' ? true : false">
               <th mat-header-cell *matHeaderCellDef>Edit</th>
               <td mat-cell *matCellDef="let element">
-                <a (click)="populateDT(element)">
+                <button mat-icon-button (click)="populateDT(element)">
                   <mat-icon class="edit_icon">edit</mat-icon>
-                </a>
+                </button>
               </td>
             </ng-container>
 

@@ -19,6 +19,9 @@ import {MatSortModule} from '@angular/material/sort';
 import { DeletemstComponent } from './deleteMst/deleteMst.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { A11yModule } from '@angular/cdk/a11y';
+import { CreateClientComponent } from './create-client/create-client.component';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 @NgModule({
   imports: [
     CommonModule,
@@ -35,17 +38,27 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule,
+    A11yModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   declarations: [
     BnkrplcPipe,
     ClOutsideClickDirective,
+    ResizeColumnDirective,
     elipsisPipe,
-    DeletemstComponent],
-  exports:[BnkrplcPipe,ClOutsideClickDirective,elipsisPipe,
+    DeletemstComponent,
+    CreateClientComponent],
+  exports:[
+    BnkrplcPipe,
+    ClOutsideClickDirective,
+    elipsisPipe,
+    ResizeColumnDirective,
+    A11yModule,
     MatDialogModule,
     MatTableModule,
     ReactiveFormsModule,
+    NgMultiSelectDropDownModule,
     OverlayModule,
     MatSortModule,
     DragDropModule,

@@ -239,6 +239,7 @@ export class FinmodificationComponent implements OnInit {
     this.getPlanMst();
     this.getnumberofdaystobeadded();
     this.getTransactionType();
+
   }
   getnumberofdaystobeadded(){
     this.__dbIntr.api_call(0,'/mdparams',null).pipe(pluck("data")).subscribe(res =>{
@@ -281,7 +282,9 @@ export class FinmodificationComponent implements OnInit {
         this.__transType = res;
       });
   }
+
   ngAfterViewInit() {
+
     this.__traxForm.controls['temp_tin_no'].valueChanges
       .pipe(
         tap(() => this.__istemporaryspinner = true),
@@ -671,6 +674,8 @@ export class FinmodificationComponent implements OnInit {
 
     //Amount Change Event for pip & sip
     this.__traxForm.get('amount').valueChanges.subscribe(res =>{
+      console.log(res);
+
       if(res){
       if(this.__traxForm.get('trans_id').value == 1){
           if(this.__traxForm.get('inv_type').value == 'F'){
@@ -686,6 +691,9 @@ export class FinmodificationComponent implements OnInit {
       }
       else if(this.__traxForm.get('trans_id').value == 2){
         console.log(this.__sipfreq);
+        console.log(this.__traxForm.controls['sip_frequency'].value);
+
+        console.log(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_fresh_min_amt);
 
         if(this.__traxForm.get('inv_type').value == 'F'){
           this.checkAmtrightorNot(
@@ -823,7 +831,7 @@ export class FinmodificationComponent implements OnInit {
   setValidations(__frmCtrl) {
     __frmCtrl.forEach(element => {
       this.__traxForm.controls[element.name].setValidators(element.valid);
-      this.__traxForm.controls[element.name].updateValueAndValidity();
+      this.__traxForm.controls[element.name].updateValueAndValidity({emitEvent:false});
     });
   }
   removeValidations(__frmCtrl) {
@@ -1476,9 +1484,9 @@ export class FinmodificationComponent implements OnInit {
 
 
   checkIfSpecialSIPExists(sip_type): Observable<boolean> {
-    console.log(this.__sipdtRng_amtRng.ava_special_sip);
+    // console.log(this.__sipdtRng_amtRng.ava_special_sip);
 
-    return of(this.__sipdtRng_amtRng.ava_special_sip  == "true" ? true : false);
+    return of(this.__sipdtRng_amtRng?.ava_special_sip  == "true" ? true : false);
   }
   sipSipTypeExistValidators(): AsyncValidatorFn {
 

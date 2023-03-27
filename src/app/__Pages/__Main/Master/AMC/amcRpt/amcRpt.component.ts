@@ -35,7 +35,8 @@ export class AmcrptComponent implements OnInit {
     {id:"gstin",text:"GSTIN"},
     {id:'website',text:'Web Site'},
     {id:'cus_care_whatsapp_no',text:'Customer Care WhatsApp Number'},
-    {id:'cust_care_number',text:'Customer Care Number'},
+    {id:'distributor_care_no',text:'Distributor Care Number'},
+    {id:'distributor_care_email',text:'Distributor Care Email'},
     {id:'cust_care_email',text:'Customer Care Email'},
     {id:'head_ofc_contact_per',text:'Head Contact Person Name'},
     {id:'head_contact_per_mob',text:'Head Contact Person Mobile'},
@@ -94,6 +95,8 @@ export class AmcrptComponent implements OnInit {
     'cus_care_whatsapp_no',
     'cust_care_number',
     'cust_care_email',
+    'distributor_care_no',
+    'distributor_care_email',
     'head_ofc_contact_per',
     'head_contact_per_mob',
     'head_contact_per_email',
@@ -390,7 +393,6 @@ export class AmcrptComponent implements OnInit {
   updateRow(row_obj: amc) {
     this.__selectAMC.data = this.__selectAMC.data.filter((value: amc, key) => {
       if (value.id == row_obj.id) {
-
         value.login_id = row_obj.login_id;
         value.login_url = row_obj.login_url;
         value.login_pass = row_obj.login_pass;
@@ -402,48 +404,39 @@ export class AmcrptComponent implements OnInit {
         value.website = row_obj.website;
         value.sip_start_date = row_obj.sip_start_date;
         value.sip_end_date = row_obj.sip_end_date;
-
         value.ofc_addr = row_obj.ofc_addr;
         value.cus_care_no = row_obj.cus_care_no;
         value.cus_care_email = row_obj.cus_care_email;
         value.gstin = row_obj.gstin;
-
-
         value.l1_name = row_obj.l1_name;
         value.l1_email = row_obj.l1_email;
         value.l1_contact_no = row_obj.l1_contact_no;
-
         value.l2_name = row_obj.l2_name;
         value.l2_email = row_obj.l2_email;
         value.l2_contact_no = row_obj.l2_contact_no;
-
         value.l3_name = row_obj.l3_name;
         value.l3_email = row_obj.l3_email;
         value.l3_contact_no = row_obj.l3_contact_no;
-
         value.l4_name = row_obj.l4_name;
         value.l4_email = row_obj.l3_email;
         value.l4_contact_no = row_obj.l4_contact_no;
-
         value.l5_name = row_obj.l5_name;
         value.l5_email = row_obj.l5_email;
         value.l5_contact_no = row_obj.l5_contact_no;
-
         value.l6_name = row_obj.l6_name;
         value.l6_email = row_obj.l6_email;
         value.l6_contact_no = row_obj.l6_contact_no;
-
         value.head_ofc_contact_per = row_obj.head_ofc_contact_per;
         value.head_contact_per_mob = row_obj.head_contact_per_mob;
         value.head_contact_per_email = row_obj.head_contact_per_email;
         value.head_ofc_addr = row_obj.head_ofc_addr;
-
         value.local_ofc_contact_per = row_obj.local_ofc_contact_per;
         value.local_contact_per_mob = row_obj.local_contact_per_mob;
         value.local_contact_per_email = row_obj.local_contact_per_email;
         value.local_ofc_addr = row_obj.local_ofc_addr;
         value.amc_short_name =row_obj.amc_short_name;
-
+        value.distributor_care_email  = row_obj.distributor_care_email;
+        value.distributor_care_no  = row_obj.distributor_care_no;
       }
       return true;
     });

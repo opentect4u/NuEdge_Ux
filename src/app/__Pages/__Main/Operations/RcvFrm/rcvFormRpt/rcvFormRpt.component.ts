@@ -309,10 +309,11 @@ try{
   dialogConfig.data = {
   flag:'RF',
   id: __items.temp_tin_no,
-  title: 'Form Recievable' + (__items.trans_type_id == '4' ? ' - NFO' :  (__items.trans_type_id == '1' ? ' - Financial_' : '- Non Financial_')),
+  title: 'Form Recievable' + (__items.trans_type_id == '4' ? ' - NFO' :  (__items.trans_type_id == '1' ? ' - Financial' : '- Non Financial')),
   product_id:__items.product_id,
   trans_type_id:__items.trans_type_id,
   temp_tin_no:__items.temp_tin_no,
+  data: __items,
   right:global.randomIntFromInterval(1,60)
 };
    var dialogref;

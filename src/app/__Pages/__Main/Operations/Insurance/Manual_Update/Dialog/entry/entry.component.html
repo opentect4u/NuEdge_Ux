@@ -1,0 +1,194 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" >
+    <h2 [title]="data.title">{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="__manualUpdateForm" (ngSubmit)="manualUpdate()" [attr.id]="'__MU_'+ this.data.tin_no">
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="medical_trigger">Medical Trigger <span class="text-danger">*</span></label>
+            <select
+            class="form-control"
+            formControlName="medical_trigger">
+              <option value="">Select</option>
+              <option value="Y">Yes</option>
+              <option value="N"
+            >No</option>
+            </select>
+            <div class="invalid-feedback"
+          *ngIf="__manualUpdateForm.get('medical_trigger').invalid && (__manualUpdateForm.get('medical_trigger').dirty || __manualUpdateForm.get('medical_trigger').touched)">
+          <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('medical_trigger')).errors?.required">*Please provide
+            medical trigger
+            </span>
+        </div>
+          </div>
+        </div>
+        <ng-container *ngIf="__manualUpdateForm.get('medical_trigger').value == 'Y'">
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="medical_status">Medical Status <span class="text-danger">*</span></label>
+            <select
+            class="form-control"
+            formControlName="medical_status"
+            >
+              <option value="">Select</option>
+              <option
+              [value]="status.id" *ngFor="let status of __medicalStatus">{{status.status_name}}</option>
+            </select>
+            <div class="invalid-feedback"
+          *ngIf="__manualUpdateForm.get('medical_status').invalid && (__manualUpdateForm.get('medical_status').dirty || __manualUpdateForm.get('medical_status').touched)">
+          <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('medical_status')).errors?.required">*Please provide
+            medical status
+            </span>
+          </div>
+        </div>
+        </div>
+      </ng-container>
+        <div class="row mb-3">
+          <div class="col-sm-12">
+            <label for="policy_status">Policy Status <span class="text-danger">*</span></label>
+            <select
+            class="form-control"
+            formControlName="policy_status">
+              <option value="">Select</option>
+              <option value="I">Issued</option>
+              <option value="R">Reject</option>
+              <option value="P">In-process</option>
+
+            </select>
+            <div class="invalid-feedback"
+          *ngIf="__manualUpdateForm.get('policy_status').invalid && (__manualUpdateForm.get('policy_status').dirty || __manualUpdateForm.get('policy_status').touched)">
+          <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('policy_status')).errors?.required">*Please provide
+            policy status
+            </span>
+          </div>
+        </div>
+        </div>
+        <ng-container *ngIf="__manualUpdateForm.get('policy_status').value == 'I'">
+          <div class="row">
+            <div class="col-sm-12">
+              <label for="policy_issue_dt">Policy Issued Date <span class="text-danger">*</span></label>
+              <input type="date"
+               name="policy_issue_dt" id="policy_issue_dt" class="form-control" formControlName="policy_issue_dt">
+              <div class="invalid-feedback"
+              *ngIf="__manualUpdateForm.get('policy_issue_dt').invalid && (__manualUpdateForm.get('policy_issue_dt').dirty || __manualUpdateForm.get('policy_issue_dt').touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('policy_issue_dt')).errors?.required">*Please provide
+                policy issued date
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <label for="risk_dt">Risk Start Date <span class="text-danger">*</span></label>
+              <input
+              type="date"
+              name="risk_dt" id="risk_dt"
+              class="form-control" formControlName="risk_dt">
+              <div class="invalid-feedback"
+              *ngIf="__manualUpdateForm.get('risk_dt').invalid && (__manualUpdateForm.get('risk_dt').dirty || __manualUpdateForm.get('risk_dt').touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('risk_dt')).errors?.required">*Please provide
+                risk start date
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <label for="maturity_dt">Maturity Date <span class="text-danger">*</span></label>
+              <input type="date"
+              name="maturity_dt"
+              id="maturity_dt" class="form-control" formControlName="maturity_dt">
+              <div class="invalid-feedback"
+              *ngIf="__manualUpdateForm.get('maturity_dt').invalid && (__manualUpdateForm.get('maturity_dt').dirty || __manualUpdateForm.get('maturity_dt').touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('maturity_dt')).errors?.required">*Please provide
+                maturity date
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-12" *ngIf="this.data.data.mode_of_premium != 'S'">
+              <label for="next_renewal_dt">Next Renewal Date <span class="text-danger">*</span></label>
+              <input type="date"
+              name="next_renewal_dt"
+              id="next_renewal_dt"
+              class="form-control" formControlName="next_renewal_dt">
+              <div class="invalid-feedback"
+              *ngIf="__manualUpdateForm.get('next_renewal_dt').invalid && (__manualUpdateForm.get('next_renewal_dt').dirty || __manualUpdateForm.get('next_renewal_dt').touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('next_renewal_dt')).errors?.required">*Please provide
+                next renewal date
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <label for="policy_no">Policy No <span class="text-danger">*</span></label>
+              <input type="text"
+              name="policy_no"
+              id="policy_no" class="form-control" formControlName="policy_no">
+              <div class="invalid-feedback"
+              *ngIf="__manualUpdateForm.get('policy_no').invalid && (__manualUpdateForm.get('policy_no').dirty || __manualUpdateForm.get('policy_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('policy_no')).errors?.required">*Please provide
+                policy number
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-12" *ngIf="!this.data.isViewMode">
+              <label for="policy_copy_scan">Policy Copy Scan <span class="text-danger">*</span></label>
+              <input
+              type="file"
+              (change)="getFIle($event.target)"
+              accept=".pdf"
+              name="policy_copy_scan"
+              id="policy_copy_scan"
+              class="form-control"
+              formControlName="file">
+              <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+              <div class="invalid-feedback"
+              *ngIf=" __manualUpdateForm.get('file').invalid && ( __manualUpdateForm.get('file').dirty ||  __manualUpdateForm.get('file').touched)">
+              <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get('file').errors?.required">*Please
+                provide file</span>
+              <span class="invalid-feedback" *ngIf="__manualUpdateForm.get('file').errors?.inValidExt">*Invalid
+                file extension.</span>
+              <span class="invalid-feedback" *ngIf="__manualUpdateForm.get('file').errors?.fileSizeValidator">*File size
+                must
+                not exceed than
+                2MB.</span>
+            </div>
+            </div>
+            <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">
+              <label  for="">Policy Copy</label>
+              <br/>
+              <div class="file-man-box">
+                <div class="file_img-box">
+                 <a target="__blank" [attr.href]="this.__manualUpdateForm.get('filePreview').value"><img src="../../../../../../../../assets/images/pdf.png" alt="Pdf View"></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+          <div class="row">
+            <div class="col-sm-12">
+              <label for="policy_status">Remarks</label>
+              <textarea formControlName="reject_remarks" placeholder="Enter Remarks" class="form-control" rows="5" cols="5"></textarea>
+          </div>
+          </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button  *ngIf="!this.data.isViewMode" class="btn addBtn"  [attr.form]="'__MU_'+ this.data.tin_no" [disabled]="__manualUpdateForm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+    </div>

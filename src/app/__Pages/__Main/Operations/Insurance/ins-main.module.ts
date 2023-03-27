@@ -15,6 +15,18 @@ const routes: Routes = [
       {
         path:'rcvForm',
         loadChildren:()=> import('./RcvForm/rcv-form.module').then(m => m.RcvFormModule)
+      },
+      {
+        path:'trax',
+        loadChildren:()=> import('./ManualEntry/ins-manual-entry.module').then(m => m.InsManualEntryModule)
+      },
+      {
+        path:'ack',
+        loadChildren:()=> import('./Acknowledgement/ack-home.module').then(m => m.AckHomeModule)
+      },
+      {
+        path:'manualupdate',
+        loadChildren:()=> import('./Manual_Update/manual-update.module').then(m => m.ManualUpdateModule)
       }
     ]
   }

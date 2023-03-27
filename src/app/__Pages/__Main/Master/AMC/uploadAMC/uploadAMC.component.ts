@@ -91,6 +91,16 @@ export class UploadAMCComponent implements OnInit {
       header: 'Customer Care Email',
       cell: (element: Record<string, any>) => `${element['Customer Care Email']}`,
     },
+    {
+      columnDef: 'distributor_care_no',
+      header: 'Distributor Care Number',
+      cell: (element: Record<string, any>) => `${element['distributor_care_no']}`,
+    },
+    {
+      columnDef: 'distributor_care_email',
+      header: 'Distributor Care Email',
+      cell: (element: Record<string, any>) => `${element['distributor_care_email']}`,
+    },
 
     {
       columnDef:'Head Office Contact Person',
@@ -323,6 +333,8 @@ export class UploadAMCComponent implements OnInit {
       "Customer Care WhatsApp Number": 180030106767,
       "Customer Care Email": 'hello@hdfcfund.com',
       "Customer Care Number": 180030106767,
+      "distributor_care_no":"1111111111",
+      "distributor_care_email":"hello@hdfcfund.com",
       "id": 11,
       "Level-1 Contact": 9831348519,
       "Level-1 Email": 'ashishb@hdfcfund.com',

@@ -26,19 +26,97 @@ export class CmpCrudComponent implements OnInit {
     sec_qusAns: new FormArray([]),
     id: new FormControl(this.data.id),
     ofc_address: new FormControl(this.data.id > 0 ? this.data.cmp.ofc_addr : ''),
-    cust_care_no: new FormControl(this.data.id > 0 ? this.data.cmp.cus_care_no : '', [Validators.pattern("^[0-9]*$")]),
+    cust_care_no: new FormControl(this.data.id > 0 ? this.data.cmp.cus_care_no : '',
+    [Validators.pattern("^[0-9]*$"),
+    Validators.minLength(10),
+    Validators.maxLength(10)]
+    ),
     cust_care_email: new FormControl(this.data.id > 0 ? this.data.cmp.cus_care_email : '', [Validators.email]),
     web_site: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.cmp.website) : ''),
     gstin: new FormControl(this.data.id > 0 ? this.data.cmp.gstin : ''),
     head_ofc_contact_per: new FormControl(this.data.id > 0 ? this.data.cmp.head_ofc_contact_per : ''),
-    head_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.cmp.head_contact_per_mob : '',[Validators.pattern("^[0-9]*$")]),
+    head_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.cmp.head_contact_per_mob : '',
+    [Validators.pattern("^[0-9]*$"),
+    Validators.minLength(10),
+    Validators.maxLength(10)]
+    ),
     head_contact_per_email: new FormControl(this.data.id > 0 ? this.data.cmp.head_contact_per_email : '',[Validators.email]),
     head_ofc_addr: new FormControl(this.data.id > 0 ? this.data.cmp.head_ofc_addr : ''),
-    cus_care_whatsapp_no: new FormControl(this.data.id > 0 ? this.data.cmp.cus_care_whatsapp_no : '',[Validators.pattern("^[0-9]*$")]),
+    cus_care_whatsapp_no: new FormControl(this.data.id > 0 ? this.data.cmp.cus_care_whatsapp_no : '',
+    [Validators.pattern("^[0-9]*$"),
+    Validators.minLength(10),
+    Validators.maxLength(10)]
+    ),
     local_ofc_contact_per: new FormControl(this.data.id > 0 ? this.data.cmp.local_ofc_contact_per : ''),
-    local_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.cmp.local_contact_per_mob : '',[Validators.pattern("^[0-9]*$")]),
+    local_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.cmp.local_contact_per_mob : '',
+    [Validators.pattern("^[0-9]*$"),
+    Validators.minLength(10),
+    Validators.maxLength(10)]
+    ),
     local_contact_per_email: new FormControl(this.data.id > 0 ? this.data.cmp.local_contact_per_email : '',[Validators.email]),
     local_ofc_addr: new FormControl(this.data.id > 0 ? this.data.cmp.local_ofc_addr : ''),
+    distributor_care_email: new FormControl(this.data.id > 0 ? this.data.cmp.distributor_care_email : '',[Validators.email]),
+    distributor_care_no: new FormControl(this.data.id > 0 ? this.data.cmp.distributor_care_no : '',
+    [
+    Validators.pattern("^[0-9]*$"),
+    Validators.minLength(10),
+    Validators.maxLength(10)
+    ]),
+    level_1:new FormGroup({
+      name:new FormControl(this.data.id > 0 ? this.data.cmp.l1_name : ''),
+      contact:new FormControl(this.data.id > 0 ? this.data.cmp.l1_contact : '',
+      [Validators.minLength(10),
+       Validators.maxLength(10),
+       Validators.pattern("^[0-9]*$")
+      ]),
+      email:new FormControl(this.data.id > 0 ? this.data.cmp.l1_email : '',[Validators.email])
+    }),
+    level_2:new FormGroup({
+      name:new FormControl(this.data.id > 0 ? this.data.cmp.l2_name : ''),
+      contact:new FormControl(this.data.id > 0 ? this.data.cmp.l2_contact : '',
+      [Validators.minLength(10),
+       Validators.maxLength(10),
+       Validators.pattern("^[0-9]*$")
+      ]),
+      email:new FormControl(this.data.id > 0 ? this.data.cmp.l2_email : '',[Validators.email])
+    }),
+    level_3:new FormGroup({
+      name:new FormControl(this.data.id > 0 ? this.data.cmp.l3_name : ''),
+      contact:new FormControl(this.data.id > 0 ? this.data.cmp.l3_contact : '',
+      [Validators.minLength(10),
+       Validators.maxLength(10),
+       Validators.pattern("^[0-9]*$")
+      ]),
+      email:new FormControl(this.data.id > 0 ? this.data.cmp.l3_email : '',[Validators.email])
+    }),
+    level_4:new FormGroup({
+    is_same: new FormControl(false),
+      name:new FormControl(this.data.id > 0 ? this.data.cmp.l4_name : ''),
+      contact:new FormControl(this.data.id > 0 ? this.data.cmp.l4_contact : '',
+      [Validators.minLength(10),
+       Validators.maxLength(10),
+       Validators.pattern("^[0-9]*$")
+      ]),
+      email:new FormControl(this.data.id > 0 ? this.data.cmp.l4_email : '',[Validators.email])
+    }),
+    level_5:new FormGroup({
+      name:new FormControl(this.data.id > 0 ? this.data.cmp.l5_name : ''),
+      contact:new FormControl(this.data.id > 0 ? this.data.cmp.l5_contact : '',
+      [Validators.minLength(10),
+       Validators.maxLength(10),
+       Validators.pattern("^[0-9]*$")
+      ]),
+      email:new FormControl(this.data.id > 0 ? this.data.cmp.l5_email : '',[Validators.email])
+    }),
+    level_6:new FormGroup({
+      name:new FormControl(this.data.id > 0 ? this.data.cmp.l6_name : ''),
+      contact:new FormControl(this.data.id > 0 ? this.data.cmp.l6_contact : '',
+      [Validators.minLength(10),
+       Validators.maxLength(10),
+       Validators.pattern("^[0-9]*$")
+      ]),
+      email:new FormControl(this.data.id > 0 ? this.data.cmp.l6_email : '',[Validators.email])
+    }),
   })
   instTypeMst: any=[];
   constructor(
@@ -70,7 +148,7 @@ export class CmpCrudComponent implements OnInit {
       })
     }
     try {
-      this.__ScrollContainer.nativeElement.scrollTop = this.__ScrollContainer.nativeElement.scrollHeight;
+      // this.__ScrollContainer.nativeElement.scrollTop = this.__ScrollContainer.nativeElement.scrollHeight;
     } catch(err) { }
   }
   get sec_qusAns(): FormArray {
@@ -96,6 +174,29 @@ export class CmpCrudComponent implements OnInit {
   }
   submit(){
     const fb = new FormData();
+    fb.append("l1_name", global.getActualVal(this.__cmpForm.get(['level_1','name']).value));
+    fb.append("l1_contact_no", global.getActualVal(this.__cmpForm.get(['level_1','contact']).value));
+    fb.append("l1_email", global.getActualVal(this.__cmpForm.get(['level_1','email']).value));
+
+    fb.append("l2_name", global.getActualVal(this.__cmpForm.get(['level_2','name']).value));
+    fb.append("l2_contact_no", global.getActualVal(this.__cmpForm.get(['level_2','contact']).value));
+    fb.append("l2_email", global.getActualVal(this.__cmpForm.get(['level_2','email']).value));
+
+    fb.append("l3_name", global.getActualVal(this.__cmpForm.get(['level_3','name']).value));
+    fb.append("l3_contact_no", global.getActualVal(this.__cmpForm.get(['level_3','contact']).value));
+    fb.append("l3_email", global.getActualVal(this.__cmpForm.get(['level_3','email']).value));
+
+    fb.append("l4_name", global.getActualVal(this.__cmpForm.get(['level_4','name']).value));
+    fb.append("l4_contact_no", global.getActualVal(this.__cmpForm.get(['level_4','contact']).value));
+    fb.append("l4_email", global.getActualVal(this.__cmpForm.get(['level_4','email']).value));
+
+    fb.append("l5_name", global.getActualVal(this.__cmpForm.get(['level_5','name']).value));
+    fb.append("l5_contact_no", global.getActualVal(this.__cmpForm.get(['level_5','contact']).value));
+    fb.append("l5_email", global.getActualVal(this.__cmpForm.get(['level_5','email']).value));
+
+    fb.append("l6_name", global.getActualVal(this.__cmpForm.get(['level_6','name']).value));
+    fb.append("l6_contact_no", global.getActualVal(this.__cmpForm.get(['level_6','contact']).value));
+    fb.append("l6_email", global.getActualVal(this.__cmpForm.get(['level_6','email']).value));
     fb.append('login_pass',global.getActualVal(this.__cmpForm.value.login_pass));
     fb.append('login_id',global.getActualVal(this.__cmpForm.value.login_id));
     fb.append('login_url',global.getActualVal(this.__cmpForm.value.login_url));
@@ -141,5 +242,12 @@ export class CmpCrudComponent implements OnInit {
   }
   removeSecurityQuesAns(index){
     this.sec_qusAns.removeAt(index);
+  }
+  ngAfterViewInit(){
+    this.__cmpForm.get(['level_4','is_same']).valueChanges.subscribe(res =>{
+      this.__cmpForm.get(['level_4','name']).setValue(res ? this.__cmpForm.get('local_ofc_contact_per').value : '');
+      this.__cmpForm.get(['level_4','contact']).setValue(res ? this.__cmpForm.get('local_contact_per_mob').value : '');
+      this.__cmpForm.get(['level_4','email']).setValue(res ? this.__cmpForm.get('local_contact_per_email').value : '');
+    })
   }
 }

@@ -25,7 +25,7 @@
       ngNativeValidate>
       <div class="row" *ngIf="this.data.cl_type != 'M' && this.data.cl_type != 'N'">
         <div class="col-sm-12 my-4">
-          <label for="panNo">PAN Number <span class="text-danger">*</span></label>
+          <label for="panNo">PAN <span class="text-danger">*</span></label>
           <input type="text" name="pan" id="panNo" class="form-control" placeholder="eg. XXXXX1234X"
             formControlName="pan" minlength="10" maxlength="10" (change)="checkPanExistornot($event)">
           <div class="invalid-feedback"
@@ -75,9 +75,10 @@
         </div>
         <div class="col-sm-12 my-auto"
           *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
-          <input type="checkbox" formControlName="same_as_above" id="same_as_above" class="form-check-input m-1" />
+          <!-- <input type="checkbox" formControlName="same_as_above" id="same_as_above" class="form-check-input m-1" />
           <label for="same_as_above" class="ml-5 mb-0">&nbsp;Same As Above
-          </label>
+          </label> -->
+          <mat-checkbox formControlName="same_as_above" color="primary">Same As Above</mat-checkbox>
         </div>
         <div class="col-sm-12 my-4"
           *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">

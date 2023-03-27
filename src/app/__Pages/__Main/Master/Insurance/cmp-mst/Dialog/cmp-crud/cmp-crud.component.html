@@ -70,22 +70,34 @@
 
         <div class="col-sm-12 my-3">
           <label for="cus_care_whatsapp_no">Customer Care WhatsApp Number</label>
-          <input (keypress)="preventNonumeric($event)" type="text" name="cus_care_whatsapp_no" id="cus_care_whatsapp_no"
+          <input (keypress)="preventNonumeric($event)" minlength="10"
+          maxlength="10" type="text" name="cus_care_whatsapp_no" id="cus_care_whatsapp_no"
             class="form-control" placeholder="Enter Customer Care WhatsApp Number" formControlName="cus_care_whatsapp_no">
           <div class="invalid-feedback"
             *ngIf="__cmpForm.get('cus_care_whatsapp_no').invalid && (__cmpForm.get('cus_care_whatsapp_no').dirty || __cmpForm.get('cus_care_whatsapp_no').touched)">
             <span class="invalid-feedback" *ngIf="(__cmpForm.get('cus_care_whatsapp_no')).hasError('pattern')">*Digits allow
               only</span>
+              <span class="invalid-feedback" *ngIf="(__cmpForm.get('cus_care_whatsapp_no')).hasError('maxlength')">*mobile number
+                must be 10 digits</span>
+                <span class="invalid-feedback" *ngIf="(__cmpForm.get('cus_care_whatsapp_no')).hasError('minlength')">*mobile number
+                  must be 10 digits</span>
           </div>
         </div>
         <div class="col-sm-12 my-3">
           <label for="cust_care_no">Customer Care Number</label>
-          <input (keypress)="preventNonumeric($event)" type="text" name="cust_care_no" id="cust_care_no"
+          <input (keypress)="preventNonumeric($event)" type="text"
+          minlength="10"
+          maxlength="10"
+          name="cust_care_no" id="cust_care_no"
             class="form-control" placeholder="Enter Customer Care Number" formControlName="cust_care_no">
           <div class="invalid-feedback"
             *ngIf="__cmpForm.get('cust_care_no').invalid && (__cmpForm.get('cust_care_no').dirty || __cmpForm.get('cust_care_no').touched)">
             <span class="invalid-feedback" *ngIf="(__cmpForm.get('cust_care_no')).hasError('pattern')">*Digits allow
               only</span>
+              <span class="invalid-feedback" *ngIf="(__cmpForm.get('cust_care_no')).hasError('maxlength')">*mobile number
+                must be 10 digits</span>
+                <span class="invalid-feedback" *ngIf="(__cmpForm.get('cust_care_no')).hasError('minlength')">*mobile number
+                  must be 10 digits</span>
           </div>
         </div>
         <div class="col-sm-12 my-3">
@@ -97,6 +109,26 @@
             <span class="invalid-feedback" *ngIf="(__cmpForm.get('cust_care_email').errors?.email)">*Please provide
               valid
               email</span>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <label for="distributor_care_no">Distributor Care Number </label>
+          <input (keypress)="preventNonumeric($event)" maxlength="10"
+          minlength="10" type="text" name="distributor_care_no" id="distributor_care_no" class="form-control" placeholder="Enter Distributor Care Number"  formControlName="distributor_care_no">
+          <div class="invalid-feedback" *ngIf="__cmpForm.get('distributor_care_no').invalid && (__cmpForm.get('distributor_care_no').dirty || __cmpForm.get('distributor_care_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__cmpForm.get('distributor_care_no')).hasError('pattern')">*Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(__cmpForm.get('distributor_care_no')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+              <span class="invalid-feedback" *ngIf="(__cmpForm.get('distributor_care_no')).hasError('maxlength')">*mobile number
+                must be 10 digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-3">
+          <label for="distributor_care_email" >Distributor Care Email </label>
+          <input (keypress)="preventNonumeric($event)" type="email" name="distributor_care_email" id="distributor_care_email" class="form-control" placeholder="Enter Distributor Care Email"  formControlName="distributor_care_email">
+          <div class="invalid-feedback" *ngIf="__cmpForm.get('distributor_care_email').invalid && (__cmpForm.get('distributor_care_email').dirty || __cmpForm.get('distributor_care_email').touched)">
+            <span class="invalid-feedback" *ngIf="(__cmpForm.get('distributor_care_email').errors?.email)">*Please provide valid email</span>
           </div>
         </div>
       </div>
@@ -115,9 +147,20 @@
         </div>
         <div class="col-sm-12 my-3">
           <label for="head_contact_per_mob">Contact Person Mobile</label>
-        <input type="text" name="head_contact_per_mob" id="head_contact_per_mob" formControlName="head_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
+        <input type="text"
+        name="head_contact_per_mob"
+        id="head_contact_per_mob"
+        formControlName="head_contact_per_mob"
+        maxlength ="10"
+        minlength ="10"
+        class="form-control"
+        placeholder="Enter Contact Person Mobile">
         <div class="invalid-feedback" *ngIf="__cmpForm.get('head_contact_per_mob').invalid && (__cmpForm.get('head_contact_per_mob').dirty || __cmpForm.get('head_contact_per_mob').touched)">
           <span class="invalid-feedback" *ngIf="(__cmpForm.get('head_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get('head_contact_per_mob')).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__cmpForm.get('head_contact_per_mob')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
         </div>
       </div>
         <div class="col-sm-12 my-3">
@@ -146,9 +189,21 @@
         </div>
         <div class="col-sm-12 my-3">
           <label for="local_contact_per_mob">Contact Person Mobile</label>
-        <input  (keypress)="preventNonumeric($event)" type="text" name="local_contact_per_mob" id="local_contact_per_mob" formControlName="local_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
+        <input
+        (keypress)="preventNonumeric($event)"
+        type="text"
+        name="local_contact_per_mob"
+        id="local_contact_per_mob"
+        formControlName="local_contact_per_mob"
+        maxlength="10"
+          minlength="10"
+        class="form-control" placeholder="Enter Contact Person Mobile">
         <div class="invalid-feedback" *ngIf="__cmpForm.get('local_contact_per_mob').invalid && (__cmpForm.get('local_contact_per_mob').dirty || __cmpForm.get('local_contact_per_mob').touched)">
           <span class="invalid-feedback" *ngIf="(__cmpForm.get('local_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get('local_contact_per_mob')).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__cmpForm.get('local_contact_per_mob')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
         </div>
       </div>
         <div class="col-sm-12 my-3">
@@ -235,7 +290,299 @@
               </tbody></table>
 
         </div>
-     </div>
+       </div>
+
+       <!-- Level - 1 -->
+     <ng-container formGroupName="level_1">
+      <div class="divider">
+        <span>Lavel-1(Operation)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row" >
+        <div class="col-sm-12">
+          <label for="name">Name</label>
+          <input type="text"
+           name="name"
+            id="name"
+            class="form-control"
+            placeholder="Enter Name"
+            formControlName="name">
+        </div>
+        <div class="col-sm-12">
+          <label for="contact">Contact</label>
+          <input type="text"
+           name="contact"
+           maxlength ="10"
+           minlength ="10"
+          id="contact"
+          class="form-control"
+          placeholder="Enter Contact"
+          (keypress)="preventNonumeric($event)"
+          formControlName="contact">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_1','contact']).invalid && (__cmpForm.get(['level_1','contact']).dirty || __cmpForm.get(['level_1','contact']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_1','contact'])).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_1','contact'])).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_1','contact'])).hasError('pattern')">*allow only
+            digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_1','email']).invalid && (__cmpForm.get(['level_1','email']).dirty || __cmpForm.get(['level_1','email']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_1','email'])).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+     </ng-container>
+
+     <!-- Level - 2 -->
+     <ng-container formGroupName="level_2">
+      <div class="divider">
+        <span>Lavel-2(Operation Head)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row" >
+        <div class="col-sm-12">
+          <label for="name">Name</label>
+          <input type="text"
+           name="name"
+            id="name"
+            class="form-control"
+            placeholder="Enter Name"
+            formControlName="name">
+        </div>
+        <div class="col-sm-12">
+          <label for="contact">Contact</label>
+          <input type="text"
+           name="contact"
+           maxlength ="10"
+           minlength ="10"
+          id="contact"
+          class="form-control"
+          placeholder="Enter Contact"
+          (keypress)="preventNonumeric($event)"
+          formControlName="contact">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_2','contact']).invalid && (__cmpForm.get(['level_2','contact']).dirty || __cmpForm.get(['level_2','contact']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_2','contact'])).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_2','contact'])).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_2','contact'])).hasError('pattern')">*allow only
+            digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_2','email']).invalid && (__cmpForm.get(['level_2','email']).dirty || __cmpForm.get(['level_2','email']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_2','email'])).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+     </ng-container>
+
+     <!-- Level - 3 -->
+     <ng-container formGroupName="level_3">
+      <div class="divider">
+        <span>Lavel-3(RM - Sales)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row" >
+        <div class="col-sm-12">
+          <label for="name">Name</label>
+          <input type="text"
+           name="name"
+
+            id="name"
+            class="form-control"
+            placeholder="Enter Name"
+            formControlName="name">
+        </div>
+        <div class="col-sm-12">
+          <label for="contact">Contact</label>
+          <input type="text"
+           name="contact"
+           maxlength ="10"
+           minlength ="10"
+          id="contact"
+          class="form-control"
+          placeholder="Enter Contact"
+          (keypress)="preventNonumeric($event)"
+          formControlName="contact">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_3','contact']).invalid && (__cmpForm.get(['level_3','contact']).dirty || __cmpForm.get(['level_3','contact']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_3','contact'])).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_3','contact'])).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_3','contact'])).hasError('pattern')">*allow only
+            digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_3','email']).invalid && (__cmpForm.get(['level_3','email']).dirty || __cmpForm.get(['level_3','email']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_3','email'])).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+     </ng-container>
+
+     <!-- Level - 4 -->
+     <ng-container formGroupName="level_4">
+      <div class="divider">
+        <span>Lavel-4(Area Manager/Regional Manager)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row" >
+        <div class="col-sm-12">
+          <mat-checkbox color="primary" formControlName="is_same"> Same As Local Office</mat-checkbox>
+        </div>
+        <div class="col-sm-12">
+          <label for="name">Name</label>
+          <input type="text"
+           name="name"
+            id="name"
+            class="form-control"
+            placeholder="Enter Name"
+            formControlName="name">
+        </div>
+        <div class="col-sm-12">
+          <label for="contact">Contact</label>
+          <input type="text"
+           name="contact"
+           maxlength ="10"
+           minlength ="10"
+          id="contact"
+          class="form-control"
+          placeholder="Enter Contact"
+          (keypress)="preventNonumeric($event)"
+          formControlName="contact">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_4','contact']).invalid && (__cmpForm.get(['level_4','contact']).dirty || __cmpForm.get(['level_4','contact']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_4','contact'])).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_4','contact'])).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_4','contact'])).hasError('pattern')">*allow only
+            digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_4','email']).invalid && (__cmpForm.get(['level_4','email']).dirty || __cmpForm.get(['level_4','email']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_4','email'])).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+     </ng-container>
+
+     <!-- Level - 5 -->
+     <ng-container formGroupName="level_5">
+      <div class="divider">
+        <span>Lavel-5(Zonal Manager/State Head)</span>
+       <hr class="line"/>
+      </div>
+      <div class="row" >
+        <div class="col-sm-12">
+          <label for="name">Name</label>
+          <input type="text"
+           name="name"
+            id="name"
+            class="form-control"
+            placeholder="Enter Name"
+            formControlName="name">
+        </div>
+        <div class="col-sm-12">
+          <label for="contact">Contact</label>
+          <input type="text"
+           name="contact"
+           maxlength ="10"
+           minlength ="10"
+          id="contact"
+          class="form-control"
+          placeholder="Enter Contact"
+          (keypress)="preventNonumeric($event)"
+          formControlName="contact">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_5','contact']).invalid && (__cmpForm.get(['level_5','contact']).dirty || __cmpForm.get(['level_5','contact']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_5','contact'])).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_5','contact'])).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_5','contact'])).hasError('pattern')">*allow only
+            digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_5','email']).invalid && (__cmpForm.get(['level_5','email']).dirty || __cmpForm.get(['level_5','email']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_5','email'])).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+     </ng-container>
+
+     <!-- Level - 6 -->
+     <ng-container formGroupName="level_6">
+      <div class="divider">
+        <span>Lavel-6(National Sales Head/Product Head)</span>
+       <hr class="line"/>
+      </div>
+      <div class="row mb-2">
+        <div class="col-sm-12">
+          <label for="name">Name</label>
+          <input type="text"
+           name="name"
+            id="name"
+            class="form-control"
+            placeholder="Enter Name"
+            formControlName="name">
+        </div>
+        <div class="col-sm-12">
+          <label for="contact">Contact</label>
+          <input type="text"
+           name="contact"
+           maxlength ="10"
+           minlength ="10"
+          id="contact"
+          class="form-control"
+          placeholder="Enter Contact"
+          (keypress)="preventNonumeric($event)"
+          formControlName="contact">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_6','contact']).invalid && (__cmpForm.get(['level_6','contact']).dirty || __cmpForm.get(['level_6','contact']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_6','contact'])).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_6','contact'])).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_6','contact'])).hasError('pattern')">*allow only
+            digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <div class="invalid-feedback"
+          *ngIf="__cmpForm.get(['level_6','email']).invalid && (__cmpForm.get(['level_6','email']).dirty || __cmpForm.get(['level_6','email']).touched)">
+          <span class="invalid-feedback" *ngIf="(__cmpForm.get(['level_6','email'])).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+     </ng-container>
 
     </form>
 

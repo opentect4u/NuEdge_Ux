@@ -34,6 +34,8 @@ export interface amc {
   website: string
   cus_care_no:number
   cus_care_email:string,
+  distributor_care_no?:string;
+  distributor_care_email?:string;
 
   head_ofc_contact_per?: string
   head_contact_per_mob?: string

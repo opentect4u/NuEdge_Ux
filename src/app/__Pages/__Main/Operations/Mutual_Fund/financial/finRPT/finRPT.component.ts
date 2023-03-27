@@ -3,6 +3,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
   MatDialog,
+  MatDialogConfig,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
@@ -18,6 +19,7 @@ import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
 import buType from '../../../../../../../assets/json/buisnessType.json';
+import { FinmodificationComponent } from '../financialModification/finModification.component';
 @Component({
   selector: 'finRPT-component',
   templateUrl: './finRPT.component.html',
@@ -226,7 +228,7 @@ export class FinrptComponent implements OnInit {
     this.getSubCategory();
     this.getRnt();
   }
-  
+
   getFinRPT(column_name: string | null = '',sort_by: string | null | '' = ''){
     const __mfTrax = new FormData();
     __mfTrax.append('paginate', this.__pageNumber.value);
@@ -308,7 +310,7 @@ export class FinrptComponent implements OnInit {
       });
 
   }
-   
+
   getRnt() {
     this.__dbIntr
       .api_call(0, '/rnt', null)
@@ -482,14 +484,14 @@ export class FinrptComponent implements OnInit {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber) 
+            ('&paginate=' + this.__pageNumber)
             + (this.data.trans_id ? '&trans_id=' + this.data.trans_id : '')
             + ('&option=' + this.__rcvForms.value.options)
             + ('&trans_type_id=' + this.data.trans_type_id)
             + ('&trans_id=' +  this.data.trans_id)
             + ('&column_name=' +  this.__sortAscOrDsc.active)
             + ('&sort_by=' +  this.__sortAscOrDsc.direction)
-            + (this.__rcvForms.get('options').value != '3' 
+            + (this.__rcvForms.get('options').value != '3'
             ? ('&client_code='+ this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '')
             + ('&sub_brk_cd=' + this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '')
             + ('&trans_type=' + (this.__rcvForms.value.trans_type.length > 0 ? JSON.stringify(this.__rcvForms.value.trans_type): ''))
@@ -525,7 +527,54 @@ export class FinrptComponent implements OnInit {
     this.__financMst = new MatTableDataSource(res);
     this.__paginate = res.links;
   }
-  populateDT(__element) {}
+  populateDT(__element) {
+    console.log(__element);
+
+    // const dialogConfig = new MatDialogConfig();
+    // dialogConfig.autoFocus = false;
+    // dialogConfig.closeOnNavigation = false;
+    // dialogConfig.disableClose = true;
+    // dialogConfig.hasBackdrop = false;
+    // dialogConfig.width = '60%';
+    // dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    // dialogConfig.data = {
+    //    flag:'FIN',
+    //    product_id:this.data.product_id,
+    //    trans_type_id:this.data.trans_type_id,
+    //    id:__element.temp_tin_no ?  __element.temp_tin_no : '0',
+    //    title:'Financial Entry',
+    //    data: __element
+    // };
+    // dialogConfig.id = __element.temp_tin_no ?  __element.temp_tin_no : '0';
+    // try {
+    //   const dialogref = this.__dialog.open(
+    //     FinmodificationComponent,
+    //     dialogConfig
+    //   );
+    //   dialogref.afterClosed().subscribe((dt) => {
+    //     if (dt) {
+    //       if (dt?.id > 0) {
+    //         if (dt.cl_type == 'E') {
+
+    //         } else {
+    //           // this.updateRow(dt.data);
+    //         }
+    //       } else {
+
+    //       }
+    //     }
+    //   });
+    // } catch (ex) {
+    //   const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+    //   dialogRef.updateSize('60%');
+    //   console.log(ex);
+    //   this.__utility.getmenuIconVisible({
+    //     id: Number(dialogConfig.id),
+    //     isVisible: false,
+    //     flag:'FIN'
+    //   });
+    // }
+  }
   submit() {
       this.getFinRPT(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
   }

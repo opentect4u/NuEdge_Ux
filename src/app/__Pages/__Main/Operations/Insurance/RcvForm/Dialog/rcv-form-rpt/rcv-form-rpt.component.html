@@ -1,6 +1,6 @@
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
   <div mat-dialog-title class="dialog-title">
-    <h2>Form Receivable Reports for Insurance</h2>
+    <h2>Form Receivable Reports For Insurance</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()" >
         <mat-icon >remove</mat-icon>
@@ -38,20 +38,20 @@
               </mat-button-toggle-group>
             </div>
           </div>
-          <div class="row my-5">
+          <div class="row my-4">
             <div class="col-sm-4">
-              <label for="tin_no">Temporary Tin Number</label>
+              <label for="tin_no">Temporary TIN Number</label>
               <input type="text" placeholder="Enter Temporary TIN Number" name="tin_no" id="tin_no" class="form-control"
                 formControlName="temp_tin_no">
             </div>
             <div class="col-sm-4">
               <label for="proposer_code">Proposer Details</label>
               <input type="text" name="proposer_code" id="proposer_code" class="form-control" formControlName="proposer_code"
-                placeholder="Enter Client code / Name / pan / email">
+                placeholder="Enter Proposer code / Name / pan / email">
             </div>
 
             <div class="col-sm-4">
-              <label for="euin_no">EUIN</label>
+              <label for="euin_no">Employee</label>
               <input type="text" name="euin_no" id="euin_no" class="form-control" placeholder='Enter EUIN'
                 formControlName="euin_no">
             </div>
@@ -70,7 +70,7 @@
             </div>
           </div>
 
-          <div class="row my-5">
+          <div class="row mt-5">
 
             <div class="col-sm-8">
               <label for="">Buisness Type: </label>
@@ -79,8 +79,13 @@
                 {{bu_type.bu_type}}
               </label>
             </div>
+            <div class="col-sm-4 my-auto">
+              <button mat-raised-button color="primary" class="float-right">
+                Show
+              </button>
+            </div>
           </div>
-          <div class="row" >
+          <!-- <div class="row" >
             <div class="col-sm-4" >
             </div>
             <div class="col-sm-4"></div>
@@ -89,11 +94,7 @@
                 Show
               </button>
             </div>
-          </div>
-
-          <!-- <div class="row my-5"> -->
-
-          <!-- </div> -->
+          </div> -->
         </form>
       </div>
 
@@ -157,7 +158,7 @@
             </td>
           </ng-container>
           <ng-container matColumnDef="proposer_name">
-            <th mat-sort-header="proposer_name" mat-header-cell *matHeaderCellDef>Client</th>
+            <th mat-sort-header="proposer_name" mat-header-cell *matHeaderCellDef>Proposer</th>
             <td mat-cell *matCellDef="let element">{{element.proposer_name}}
             </td>
           </ng-container>
@@ -186,9 +187,9 @@
           <ng-container matColumnDef="edit" sticky>
             <th mat-header-cell *matHeaderCellDef>Edit</th>
             <td mat-cell *matCellDef="let element">
-              <a (click)="populateDT(element)">
+              <button  mat-icon-button (click)="populateDT(element)">
                 <mat-icon class="edit_icon">edit</mat-icon>
-              </a>
+              </button>
             </td>
           </ng-container>
 
@@ -196,9 +197,9 @@
           <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef>Delete</th>
             <td mat-cell *matCellDef="let element,let i = index">
-              <a (click)="deleteRcvForm(element,i)">
+              <button mat-icon-button (click)="deleteRcvForm(element,i)">
                 <mat-icon class="delete_icon">delete</mat-icon>
-              </a>
+              </button>
             </td>
           </ng-container>
 
@@ -290,7 +291,7 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="proposer_name">
-          <th mat-header-cell *matHeaderCellDef>Proposer Name</th>
+          <th mat-header-cell *matHeaderCellDef>Proposer</th>
           <td mat-cell *matCellDef="let element">{{element.proposer_name}}
           </td>
         </ng-container>

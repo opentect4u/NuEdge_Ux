@@ -42,6 +42,9 @@
               <div class="searchDiv">
                 <label for="subbrkArn">Sub Broker ARN<span class="text-danger">*</span></label>
                 <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker ARN" formControlName="sub_arn_no">
+                <span class="spinner-border"
+                *ngIf="__isSubBrkArnSpinner && __rcvForm.get('sub_arn_no').value.length > 1"
+              ></span>
                 <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
                   <div class="serachresult_client" #subBrkArn>
                     <ul *ngIf="__subbrkArnMst.length > 0">
@@ -74,6 +77,9 @@
                   class="form-control"
                   placeholder="Serach By EUIN Number"
                   formControlName="euin_no">
+                  <span class="spinner-border"
+                  *ngIf="__isEuinSpinner && __rcvForm.get('euin_no').value.length > 1"
+                ></span>
                   <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
                     <div class="serachresult_client" #searchResult>
                       <ul *ngIf="__euinMst.length > 0">
@@ -95,6 +101,8 @@
               <div class="invalid-feedback"
                 *ngIf="__rcvForm.get('euin_no').invalid && (__rcvForm.get('euin_no').dirty || __rcvForm.get('euin_no').touched)">
                 <span class="invalid-feedback" *ngIf="(__rcvForm.get('euin_no')).errors?.required">*Please provide EUIN number</span>
+                <span class="invalid-feedback" *ngIf="(__rcvForm.get('euin_no')).errors?.EUINExists">*EUIN does not exist</span>
+
               </div>
             </div>
           </div>
@@ -102,7 +110,7 @@
 
           <!-- Client Dtls -->
           <div class="row">
-            <div class="my-3" [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-10':__isCldtlsEmpty}">
+            <div class="my-3" [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-8':__isCldtlsEmpty}">
               <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
                 <div class="searchDiv">
                   <label for="__clntCd">Client Code <span class="text-danger">*</span></label>
@@ -113,6 +121,9 @@
                   class="form-control"
                   formControlName="client_code"
                   placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
+                  <span class="spinner-border"
+                  *ngIf="__isClientSpinner && __rcvForm.get('client_code').value.length > 1"
+                ></span>
                   <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
                     <div class="serachresult_client" #clientCd>
                       <ul *ngIf="__clientMst.length > 0">
@@ -131,7 +142,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-2 clientCode" *ngIf="__isCldtlsEmpty && __rcvForm.get('client_code').value" >
+            <div class="col-sm-4 clientCode" *ngIf="__isCldtlsEmpty && __rcvForm.get('client_code').value" >
               <button
               color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
               <mat-icon>add</mat-icon> Create Client
@@ -147,11 +158,11 @@
           </div>
 
           <div class="row">
-            <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-10':__dialogDtForClient}" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
+            <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-8':__dialogDtForClient}" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
               <label for="__clName">Client Name</label>
                   <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true">
             </div>
-            <div class="col-sm-2 clientCode" *ngIf="__dialogDtForClient && __rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
+            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForClient && __rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
               <button (click)="openDialog('C')" color="primary" *ngIf="this.__dialogDtForClient"   mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Client Details">
                 <mat-icon>remove_red_eye</mat-icon>
                 View Details
@@ -174,7 +185,7 @@
                   type</span>
               </div>
             </div>
-            <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-10':__dialogDtForScheme}">
+            <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-8':__dialogDtForScheme}">
               <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforScheme($event)">
                 <div  class="searchDiv">
                   <label for="schemeName">
@@ -182,6 +193,10 @@
                     <span class="text-danger">*</span></label>
                   <input type="search" id="schemeName" class="form-control" placeholder="Serach By Scheme Name"
                   formControlName="scheme_name">
+
+                  <span class="spinner-border"
+                *ngIf="__isschemeSpinner && __rcvForm.get('scheme_name').value.length > 1"
+              ></span>
                   <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforScheme($event)">
                     <div class="serachresult_client" #schemeRes>
                       <ul *ngIf="__schemeMst.length > 0">
@@ -201,7 +216,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-2 clientCode" *ngIf="__dialogDtForScheme">
+            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForScheme">
               <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
                 <mat-icon>remove_red_eye</mat-icon>
                 View Details
@@ -248,12 +263,12 @@
           <!-- Receive From & Investment Type & Application Number -->
           <div class="row">
             <div class="col-sm-12 my-3">
-              <label for="frmrcv">Receive From <span class="text-danger">*</span></label>
+              <label for="frmrcv">Receive From</label>
               <input type="text" name="frmrcv" id="frmrcv" class="form-control" placeholder="Enter Receive From" formControlName="recv_from">
-              <div class="invalid-feedback"
+              <!-- <div class="invalid-feedback"
               *ngIf="__rcvForm.get('recv_from').invalid && (__rcvForm.get('recv_from').dirty || __rcvForm.get('recv_from').touched)">
               <span class="invalid-feedback" *ngIf="(__rcvForm.get('recv_from')).errors?.required">*Please provide receive from</span>
-            </div>
+            </div> -->
             </div>
             <div class="col-sm-12 my-3">
               <label for="inv_type">Investment Type</label>

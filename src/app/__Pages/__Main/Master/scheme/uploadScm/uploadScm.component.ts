@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { pluck } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { Column } from 'src/app/__Model/column';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { scheme } from 'src/app/__Model/__schemeMst';
@@ -20,9 +20,13 @@ import { subcat } from 'src/app/__Model/__subcategory';
   styleUrls: ['./uploadScm.component.css']
 })
 export class UploadScmComponent implements OnInit {
-  __amcMaster: amc[];
-  __catMaster: category[];
-  __subcatMaster: subcat[];
+
+  __colcat: string[] = ['id','cat_name'];
+  __colAmc: string[] = ['id','amc_short_name'];
+  __colsubCate: string[] = ['id','cat_name','subcat_name']
+  __amcMaster =  new MatTableDataSource<amc>([]);
+  __catMaster =  new MatTableDataSource<category>([]);
+  __subcatMaster = new MatTableDataSource<subcat>([]);
    __brdCrmbs: breadCrumb[] = [{
     label:"Home",
     url:'/main',
@@ -57,6 +61,22 @@ export class UploadScmComponent implements OnInit {
   displayedColumns: Array<string> = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tableColumns: Array<Column> = [
+    {
+      columnDef: 'amc__short_name',
+      header: 'AMC Short Name',
+      cell: (element: Record<string, any>) => `${element['amc__short_name']}`
+    },
+    {
+      columnDef: 'cat_name',
+      header: 'Category Name',
+      cell: (element: Record<string, any>) => `${element['cat_name']}`
+    },
+    {
+      columnDef: 'sub_cat_name',
+      header: 'Sub Category Name',
+      cell: (element: Record<string, any>) => `${element['sub_cat_name']}`
+    },
+
     {
       columnDef: 'Scheme',
       header: 'Scheme',
@@ -298,6 +318,9 @@ export class UploadScmComponent implements OnInit {
 
    __dataTbleForNFO = [
     {
+        "cat_name":"XXXX",
+        "sub_cat_name":"XXXX",
+        "amc__short_name":"XXXX",
         "Scheme":"Others1",
         "Id":2,
         "NFO Start Date":'2023-02-27',
@@ -343,6 +366,9 @@ export class UploadScmComponent implements OnInit {
    ];
    __dataTbleForOngoing = [
     {
+      "cat_name":"XXXX",
+      "sub_cat_name":"XXXX",
+      "amc__short_name":"XXXX",
       "Scheme":"Others1",
       "Id":2,
       "PIP Fresh Minimum Amount":2000,
@@ -381,13 +407,12 @@ export class UploadScmComponent implements OnInit {
       "Anually STP Amount":"2000",
     }
    ]
-
   tableData = new MatTableDataSource<any>(this.__dataTbleForNFO);
   allowedExtensions = ['csv', 'xlsx'];
   __uploadRnt = new FormGroup({
-    cat_id: new FormControl('',[Validators.required]),
-    amc_id: new FormControl('',[Validators.required]),
-    subcat_id: new FormControl('',[Validators.required]),
+    // cat_id: new FormControl('',[Validators.required]),
+    // amc_id: new FormControl('',[Validators.required]),
+    // subcat_id: new FormControl('',[Validators.required]),
     rntFile: new FormControl('', [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
     file: new FormControl(''),
     scheme_type: new FormControl('N',[Validators.required])
@@ -402,34 +427,30 @@ export class UploadScmComponent implements OnInit {
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     this.__utility.getBreadCrumb(this.__brdCrmbs);
-    this.getcategoryMst(this.__route.snapshot.queryParamMap.get('product_id'));
-    this.getAmcMst(this.__route.snapshot.queryParamMap.get('product_id'));
+    this.getCategory();
+    this.getAmc();
+    this.getSubcategory();
   }
 
-  getAmcMst(product_id){
-    this.__dbIntr.api_call(0,'/amcUsingPro','product_id='+ atob(product_id)).pipe(pluck('data')).subscribe((res: amc[]) =>{
-       this.__amcMaster = res;
+  private getCategory(){
+    this.__dbIntr.api_call(0, '/catUsingPro', 'product_id=' + (atob(this.__route.snapshot.queryParamMap.get('product_id')))).pipe(map((x: responseDT) => x.data)).subscribe((res: category[]) => {
+     this.__catMaster = new MatTableDataSource(res);
+   })
+  }
+
+  private getAmc(){
+    this.__dbIntr.api_call(0,'/amc','product_id='+ + (atob(this.__route.snapshot.queryParamMap.get('product_id')))).pipe(map((x: responseDT) => x.data)).subscribe((res: amc[]) => {
+      this.__amcMaster = new MatTableDataSource(res);
     })
   }
-  getcategoryMst(product_id){
-    this.__dbIntr.api_call(
-      0,
-      '/catUsingPro',
-      'product_id='+ atob(product_id))
-      .pipe(pluck('data')).subscribe((res: category[]) =>{
-      this.__catMaster = res;
-   })
-  }
+private getSubcategory(){
+  this.__dbIntr.api_call(0,'/subcategory','product_id='+ + (atob(this.__route.snapshot.queryParamMap.get('product_id')))).pipe(map((x: responseDT) => x.data)).subscribe((res: subcat[]) => {
+    console.log(res);
 
-  getSubcategoryMst(cat_id){
-    this.__dbIntr.api_call(
-      0,
-      '/subcatUsingPro',
-      'category_id='+ cat_id)
-      .pipe(pluck('data')).subscribe((res: subcat[]) =>{
-      this.__subcatMaster = res;
-   })
-  }
+    this.__subcatMaster = new MatTableDataSource(res);
+  })
+}
+
 
   ngAfterViewInit(){
       this.__uploadRnt.controls['scheme_type'].valueChanges.subscribe(res =>{
@@ -439,15 +460,9 @@ export class UploadScmComponent implements OnInit {
               this.displayedColumns = this.displayedColumns.filter((x) => !columnsforNFO.includes(x));
             }
             else{
-              this.displayedColumns.splice(1,0,...columnsforNFO)
+              this.displayedColumns.splice(4,0,...columnsforNFO)
             }
           })
-
-          this.__uploadRnt.controls['cat_id'].valueChanges.subscribe(res =>{
-            this.getSubcategoryMst(res);
-
-          })
-
   }
   previewlatestCategoryEntry() {
     this.__dbIntr.api_call(0, '/scheme', null).pipe(pluck('data')).subscribe((res: scheme[]) => {
@@ -473,13 +488,13 @@ export class UploadScmComponent implements OnInit {
     }
     const __uploadRnt = new FormData();
     __uploadRnt.append('file', this.__uploadRnt.get('file').value);
-    __uploadRnt.append("amc_id", this.__uploadRnt.value.amc_id);
-    __uploadRnt.append("category_id", this.__uploadRnt.value.cat_id);
-    __uploadRnt.append("subcategory_id", this.__uploadRnt.value.subcat_id);
+    // __uploadRnt.append("amc_id", this.__uploadRnt.value.amc_id);
+    // __uploadRnt.append("category_id", this.__uploadRnt.value.cat_id);
+    // __uploadRnt.append("subcategory_id", this.__uploadRnt.value.subcat_id);
     __uploadRnt.append('scheme_type', this.__uploadRnt.value.scheme_type);
     __uploadRnt.append('product_id', this.__route.snapshot.queryParamMap.get('product_id'));
-    this.__dbIntr.api_call(1, '/schemeimport', __uploadRnt).subscribe((res: responseDT) => {
-      this.__utility.showSnackbar(res.suc == 1 ? 'File Uploadation Successfull' : 'Something went wrong! please try again later', res.suc);
+    this.__dbIntr.api_call(1, '/schemeimport', __uploadRnt).subscribe((res: any) => {
+      this.__utility.showSnackbar(res.suc == 1 ? 'File Uploadation Successfull' : res.msg, res.suc);
       if (res.suc == 1) {
         this.deleteFiles();
       }
@@ -527,11 +542,6 @@ formatBytes(bytes:any, decimals: any = 2) {
 }
 deleteFiles(){
   // this.__uploadRnt.reset({emitEvent:false});
-  this.__uploadRnt.patchValue({
-    amc_id:'',
-    cat_id:'',
-    subcat_id:''
-  });
   this.__uploadRnt
     .get('rntFile')
     .setValidators([
@@ -539,6 +549,10 @@ deleteFiles(){
       fileValidators.fileExtensionValidator(this.allowedExtensions),
     ]);
   this.__uploadRnt.get('rntFile').updateValueAndValidity();
+  this.__uploadRnt.patchValue({
+    rntFile: '',
+    file: ''
+  })
 }
 
 }

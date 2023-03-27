@@ -69,7 +69,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
     id: new FormControl(this.data.id),
     sub_brk_cd: new FormControl(''),
     sub_arn_no: new FormControl(''),
-    bu_type: new FormControl('', [Validators.required]),
+    bu_type: new FormControl(this.data.data ? this.data.data.bu_type : '', [Validators.required]),
     euin_no: new FormControl('', [Validators.required]),
     client_code: new FormControl('', [Validators.required]),
     client_id: new FormControl('', [Validators.required]),
@@ -80,7 +80,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
     scheme_name: new FormControl('', [Validators.required]),
     kyc_modification: new FormControl(''),
     existing_kyc_status: new FormControl(''),
-    recv_from: new FormControl('', [Validators.required]),
+    recv_from: new FormControl(''),
   });
   constructor(
     public dialogRef: MatDialogRef<RcvfrmmodificationfornonfinComponent>,
@@ -95,6 +95,42 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
 
   ngOnInit() {
     this.getTransactionType();
+    setTimeout(() => {
+    this.setFormControl();
+    }, 500);
+  }
+  setFormControl(){
+      this.__rcvFormForNonFin.patchValue({
+        folio_number: this.data.data.folio_no ? this.data.data.folio_no : '',
+        recv_from:this.data.data.recv_from ? this.data.data.recv_from : '',
+        trans_id: this.data.data.trans_id ? this.data.data.trans_id : ''
+      });
+      this.getItems(
+        {
+          client_name:this.data.data.client_name,
+          client_code: this.data.data.client_code,
+          id:this.data.data.client_id
+        },
+        'C'
+      );
+      this.__rcvFormForNonFin.controls['euin_no'].setValue(this.data.data.euin_no+ ' - '+ this.data.data.emp_name,{emitEvent:false});
+      if(this.data.data.bu_type == 'B'){
+        this.getItems(
+          {
+             arn_no: this.data.data.sub_arn_no,
+             code:this.data.data.sub_brk_cd
+          },
+          'S'
+        )
+      }
+
+      this.getItems(
+        {
+          scheme_name: this.data.data.scheme_name,
+          id: this.data.data.scheme_id
+        },
+        'SC'
+      );
   }
   ngAfterViewInit() {
     this.__rcvFormForNonFin.controls['bu_type'].valueChanges.subscribe(
@@ -297,7 +333,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
     __rcvFormForNonFin.append(
       'sub_arn_no',
       this.__rcvFormForNonFin.value.sub_arn_no
-        ? this.__rcvFormForNonFin.value.sub_arn_no.split(' ')[0]
+        ? this.__rcvFormForNonFin.value.sub_arn_no
         : ''
     );
     __rcvFormForNonFin.append(
@@ -426,7 +462,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
     switch (__mode) {
       case 'S':
         this.__rcvFormForNonFin.controls['sub_arn_no'].reset(
-          __euinDtls.arn_no + ' - ' + __euinDtls.bro_name,
+          __euinDtls.arn_no,
           { onlySelf: true, emitEvent: false }
         );
         this.__rcvFormForNonFin.controls['sub_brk_cd'].setValue(

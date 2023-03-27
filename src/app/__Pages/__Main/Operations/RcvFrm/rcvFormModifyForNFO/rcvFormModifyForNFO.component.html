@@ -102,7 +102,7 @@
 
           <!-- Client Dtls -->
           <div class="row">
-            <div class="my-3" [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-10':__isCldtlsEmpty}">
+            <div class="my-3" [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-8':__isCldtlsEmpty}">
               <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
                 <div class="searchDiv">
                   <label for="__clntCd">Client Code <span class="text-danger">*</span></label>
@@ -131,7 +131,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-2 clientCode" *ngIf="__isCldtlsEmpty && __rcvForm.get('client_code').value" >
+            <div class="col-sm-4 clientCode" *ngIf="__isCldtlsEmpty && __rcvForm.get('client_code').value" >
               <button
               color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
               <mat-icon>add</mat-icon> Create Client
@@ -147,11 +147,11 @@
           </div>
 
           <div class="row">
-            <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-10':__dialogDtForClient}" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
+            <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-8':__dialogDtForClient}" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
               <label for="__clName">Client Name</label>
                   <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true">
             </div>
-            <div class="col-sm-2 clientCode" *ngIf="__dialogDtForClient && __rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
+            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForClient && __rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
               <button (click)="openDialog('C')" color="primary" *ngIf="this.__dialogDtForClient"   mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Client Details">
                 <mat-icon>remove_red_eye</mat-icon>
                 View Details
@@ -174,7 +174,7 @@
                   type</span>
               </div>
             </div>
-            <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-10':__dialogDtForScheme}">
+            <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-8':__dialogDtForScheme}">
               <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforScheme($event)">
                 <div  class="searchDiv">
                   <label for="schemeName">
@@ -203,7 +203,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-2 clientCode" *ngIf="__dialogDtForScheme">
+            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForScheme">
               <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
                 <mat-icon>remove_red_eye</mat-icon>
                 View Details

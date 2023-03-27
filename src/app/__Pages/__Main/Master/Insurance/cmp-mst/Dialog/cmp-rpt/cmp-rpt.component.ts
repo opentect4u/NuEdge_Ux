@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, ElementRef, OnInit, ViewChild,Inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
@@ -19,6 +19,8 @@ import { CmpCrudComponent } from '../cmp-crud/cmp-crud.component';
   styleUrls: ['./cmp-rpt.component.css']
 })
 export class CmpRPTComponent implements OnInit {
+  settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company');
+  __companyMst : insComp[] = [];
   __sortAscOrDsc: any= {active:'',direction:'asc'};
   toppings = new FormControl();
   toppingList: any = [
@@ -106,7 +108,7 @@ export class CmpRPTComponent implements OnInit {
   ];
   __isVisible: boolean = true;
   __rntSearchForm = new FormGroup({
-    ins_type: new FormControl(''),
+    ins_type: new FormArray([]),
     options: new FormControl('2'),
     comp_name: new FormControl(''),
     contact_person: new FormControl(''),
@@ -122,6 +124,7 @@ export class CmpRPTComponent implements OnInit {
     public dialogRef: MatDialogRef<CmpRPTComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+   console.log(this.settings);
 
   }
 
@@ -130,7 +133,14 @@ export class CmpRPTComponent implements OnInit {
     this.toppings.setValue(this.__columns);
     this.getRntMst();
     this.getInstTypeMSt();
+    this.getComponyMst();
+  }
+  getComponyMst(){
+    this.__dbIntr.api_call(0,'/ins/company',null).pipe(pluck("data")).subscribe((res: insComp[]) =>{
+      console.log(res);
 
+      this.__companyMst = res;
+   })
   }
   getInstTypeMSt(){
     this.__dbIntr.api_call(0,'/ins/type',null).pipe(pluck("data")).subscribe(res =>{
@@ -186,8 +196,8 @@ export class CmpRPTComponent implements OnInit {
       this.__columns = res;
       this.__exportedClmns = res.filter((item) => !clm.includes(item));
     });
-  }
 
+  }
   private setPaginator(__res) {
     this.__selectRNT = new MatTableDataSource(__res);
   }
@@ -222,11 +232,11 @@ export class CmpRPTComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          +  ('&comp_name = ' + this.__rntSearchForm.value.comp_name ? this.__rntSearchForm.value.comp_name : '')
+          +  ('&comp_name = ' + this.__rntSearchForm.value.comp_name ? JSON.stringify(this.__rntSearchForm.value.comp_name) : '')
           +  ('&contact_person=' + this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person : '')
           +  ('&column_name=' + this.__sortAscOrDsc.active ? this.__sortAscOrDsc.active : '')
           +  ('&sort_by=' + this.__sortAscOrDsc.direction ? this.__sortAscOrDsc.direction : 'asc')
-          +  ('&ins_type_id=' + this.__rntSearchForm.value.ins_type? this.__rntSearchForm.value.ins_type : '')
+          +  ('&ins_type_id=' + this.__rntSearchForm.value.ins_type ? JSON.stringify(this.__rntSearchForm.value.ins_type) : '[]')
           )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -259,6 +269,24 @@ export class CmpRPTComponent implements OnInit {
         value.security_qus_ans = row_obj.security_qus_ans;
         value.gstin = row_obj.gstin;
         value.cus_care_whatsapp_no = row_obj.cus_care_whatsapp_no;
+        value.l1_name = row_obj.l1_name;
+        value.l1_email = row_obj.l1_email;
+        value.l1_contact_no = row_obj.l1_contact_no;
+        value.l2_name = row_obj.l2_name;
+        value.l2_email = row_obj.l2_email;
+        value.l2_contact_no = row_obj.l2_contact_no;
+        value.l3_name = row_obj.l3_name;
+        value.l3_email = row_obj.l3_email;
+        value.l3_contact_no = row_obj.l3_contact_no;
+        value.l4_name = row_obj.l4_name;
+        value.l4_email = row_obj.l3_email;
+        value.l4_contact_no = row_obj.l4_contact_no;
+        value.l5_name = row_obj.l5_name;
+        value.l5_email = row_obj.l5_email;
+        value.l5_contact_no = row_obj.l5_contact_no;
+        value.l6_name = row_obj.l6_name;
+        value.l6_email = row_obj.l6_email;
+        value.l6_contact_no = row_obj.l6_contact_no;
       }
       return true;
     });
@@ -285,6 +313,24 @@ export class CmpRPTComponent implements OnInit {
         value.security_qus_ans = row_obj.security_qus_ans;
         value.gstin = row_obj.gstin;
         value.cus_care_whatsapp_no = row_obj.cus_care_whatsapp_no;
+        value.l1_name = row_obj.l1_name;
+        value.l1_email = row_obj.l1_email;
+        value.l1_contact_no = row_obj.l1_contact_no;
+        value.l2_name = row_obj.l2_name;
+        value.l2_email = row_obj.l2_email;
+        value.l2_contact_no = row_obj.l2_contact_no;
+        value.l3_name = row_obj.l3_name;
+        value.l3_email = row_obj.l3_email;
+        value.l3_contact_no = row_obj.l3_contact_no;
+        value.l4_name = row_obj.l4_name;
+        value.l4_email = row_obj.l3_email;
+        value.l4_contact_no = row_obj.l4_contact_no;
+        value.l5_name = row_obj.l5_name;
+        value.l5_email = row_obj.l5_email;
+        value.l5_contact_no = row_obj.l5_contact_no;
+        value.l6_name = row_obj.l6_name;
+        value.l6_email = row_obj.l6_email;
+        value.l6_contact_no = row_obj.l6_contact_no;
       }
       return true;
     });
@@ -293,12 +339,10 @@ export class CmpRPTComponent implements OnInit {
   }
   submit() {this.getRntMst();}
   getRntMst(column_name: string | null = null, sort_by: string | null = null) {
-    console.log(sort_by);
-
     const __amcSearch = new FormData();
     __amcSearch.append(
       'comp_name',
-      this.__rntSearchForm.value.comp_name ? this.__rntSearchForm.value.comp_name : ''
+      this.__rntSearchForm.value.comp_name ? JSON.stringify(this.__rntSearchForm.value.comp_name) : ''
     );
     __amcSearch.append(
       'contact_person',
@@ -310,8 +354,8 @@ export class CmpRPTComponent implements OnInit {
     __amcSearch.append('column_name', (column_name ? column_name : ''));
     __amcSearch.append('sort_by', (sort_by ? sort_by : 'asc'));
     __amcSearch.append('ins_type_id', this.__rntSearchForm.value.ins_type
-                        ? this.__rntSearchForm.value.ins_type
-                        : '');
+                        ? JSON.stringify(this.__rntSearchForm.value.ins_type)
+                        : '[]');
 
     this.__dbIntr
       .api_call(1, '/ins/companyDetailSearch', __amcSearch)
@@ -332,7 +376,7 @@ export class CmpRPTComponent implements OnInit {
     const __amcExport = new FormData();
     __amcExport.append(
       'comp_name',
-      this.__rntSearchForm.value.comp_name ? this.__rntSearchForm.value.comp_name : ''
+      this.__rntSearchForm.value.comp_name ? JSON.stringify(this.__rntSearchForm.value.comp_name) : ''
     );
     __amcExport.append(
       'contact_person',
@@ -341,8 +385,8 @@ export class CmpRPTComponent implements OnInit {
     __amcExport.append('column_name', (column_name ? column_name : ''));
     __amcExport.append('sort_by', (sort_by ? sort_by : 'asc'));
     __amcExport.append('ins_type_id', this.__rntSearchForm.value.ins_type
-                        ? this.__rntSearchForm.value.ins_type
-                        : '');
+                        ? JSON.stringify(this.__rntSearchForm.value.ins_type)
+                        : '[]');
     this.__dbIntr
       .api_call(1, '/ins/companyExport', __amcExport)
       .pipe(map((x: any) => x.data))
@@ -454,4 +498,25 @@ export class CmpRPTComponent implements OnInit {
 
     })
   }
+  onInsTypeChange(e){
+    console.log(e.source.value);
+
+    const ins_type: FormArray = this.__rntSearchForm.get('ins_type') as FormArray;
+    if (e.checked) {
+      ins_type.push(new FormControl(e.source.value));
+    } else {
+      let i: number = 0;
+      ins_type.controls.forEach((item: any) => {
+        if (item.value == e.source.value) {
+          ins_type.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
+    }
+    openProduct(__el){
+      this.dialogRef.close();
+      this.__utility.navigatewithqueryparams('/main/master/insurance/product',{queryParams:{product_id:btoa(this.data.product_id),comp_id:btoa(__el.id)}});
+    }
 }

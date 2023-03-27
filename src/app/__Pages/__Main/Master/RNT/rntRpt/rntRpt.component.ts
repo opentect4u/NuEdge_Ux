@@ -1,4 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
   OnInit,
@@ -7,6 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
 import {
   MatDialog,
   MatDialogConfig,
@@ -36,6 +38,34 @@ import { RntModificationComponent } from '../rntModification/rntModification.com
   styleUrls: ['./rntRpt.component.css'],
 })
 export class RntrptComponent implements OnInit {
+  __l1_bg_color:string = '#8bb6c03d';
+  __l2_bg_color:string = '#28a74538';
+  __l3_bg_color:string = '#f4433642';
+  __l4_bg_color:string = '#8bb6c09c';
+  __l5_bg_color:string = '#8bb6c09c';
+  __l6_bg_color:string = '#8bb6c09c';
+
+
+
+  settings = {
+    singleSelection: false,
+    idField: 'id',
+    textField: 'text',
+    enableCheckAll: true,
+    selectAllText: 'Select All',
+    unSelectAllText: 'Deselect All',
+    allowSearchFilter: true,
+    limitSelection: -1,
+    clearSearchFilter: true,
+    maxHeight: 197,
+    itemsShowLimit: 3,
+    searchPlaceholderText: 'Search Columns',
+    noDataAvailablePlaceholderText: 'No recors found',
+    closeDropDownOnSelection: false,
+    showSelectedItemsAtTop: false,
+    defaultOpen: false,
+  };
+
   __sortAscOrDsc: any= {active:'',direction:'asc'};
   toppings = new FormControl();
   toppingList: any = [
@@ -48,6 +78,8 @@ export class RntrptComponent implements OnInit {
     { id: 'cus_care_whatsApp_no', text: 'Customer Care WhatsApp Number' },
     { id: 'cus_care_no', text: 'Customer Care Number' },
     { id: 'cus_care_email', text: 'Customer Care Email' },
+    { id: 'distributor_care_email', text: 'Distributor Care Email' },
+    { id: 'distributor_care_no', text: 'Distributor Care Number' },
     { id: 'head_ofc_contact_per', text: 'Head Office Contact Person' },
     {id: 'head_contact_per_mobile',text: 'Head Office Contact Person Mobile',},
     { id: 'head_contact_per_email', text: 'Head Office Contact Person Email' },
@@ -68,6 +100,24 @@ export class RntrptComponent implements OnInit {
     { id: 'login_url', text: 'Login URL'},
     { id: 'login_id', text: 'Login ID'},
     { id: 'login_pass', text: 'Login Password'},
+    {id:'l1_name',text:'Level-1 Name'},
+    {id:'l1_email',text:'Level-1 Email'},
+    {id:'l1_contact_no',text:'Level-1 Contact Number'},
+    {id:'l2_name',text:'Level-2 Name'},
+    {id:'l2_email',text:'Level-2 email'},
+    {id:'l2_contact_no',text:'Level-2 Contact Number'},
+    {id:'l3_name',text:'Level-3 Name'},
+    {id:'l3_email',text:'Level-3 Email'},
+    {id:'l3_contact_no',text:'Level-3 Contact Number'},
+    {id:'l4_name',text:'Level-4 Name'},
+    {id:'l4_email',text:'Level-4 Email'},
+    {id:'l4_contact_no',text:'Level-4 Contact Number'},
+    {id:'l5_name',text:'Level-5 Name'},
+    {id:'l5_email',text:'Level-5 Email'},
+    {id:'l5_contact_no',text:'Level-5 Contact Number'},
+    {id:'l6_name',text:'Level-6 Name'},
+    {id:'l6_email',text:'Level-6 Email'},
+    {id:'l6_contact_no',text:'Level-6 Contact Number'},
   ];
 
   __isrntspinner: boolean = false;
@@ -108,6 +158,8 @@ export class RntrptComponent implements OnInit {
     'cus_care_whatsApp_no',
     'cus_care_no',
     'cus_care_email',
+    'distributor_care_email',
+    'distributor_care_no',
     'head_ofc_contact_per',
     'head_contact_per_mobile',
     'head_contact_per_email',
@@ -119,6 +171,30 @@ export class RntrptComponent implements OnInit {
     'login_url',
     'login_id',
     'login_pass',
+
+    'l1_name',
+    'l1_email',
+    'l1_contact_no',
+
+    'l2_name',
+    'l2_email',
+    'l2_contact_no',
+
+    'l3_name',
+    'l3_email',
+    'l3_contact_no',
+
+    'l4_name',
+    'l4_email',
+    'l4_contact_no',
+
+    'l5_name',
+    'l5_email',
+    'l5_contact_no',
+
+    'l6_name',
+    'l6_email',
+    'l6_contact_no',
   ];
   __isVisible: boolean = true;
   __rntSearchForm = new FormGroup({
@@ -135,7 +211,8 @@ export class RntrptComponent implements OnInit {
     private __dialog: MatDialog,
     private __Rpt: RPTService,
     public dialogRef: MatDialogRef<RntrptComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(DOCUMENT) private document: any
   ) {}
 
   ngOnInit() {
@@ -177,6 +254,8 @@ export class RntrptComponent implements OnInit {
          'cus_care_whatsApp_no',
           'cus_care_no',
           'cus_care_email',
+          'distributor_care_email',
+          'distributor_care_no',
           'head_ofc_contact_per',
           'head_contact_per_mobile',
           'head_contact_per_email',
@@ -188,6 +267,29 @@ export class RntrptComponent implements OnInit {
           'login_url',
           'login_id',
           'login_pass',
+          'l1_name',
+          'l1_email',
+          'l1_contact_no',
+
+          'l2_name',
+          'l2_email',
+          'l2_contact_no',
+
+          'l3_name',
+          'l3_email',
+          'l3_contact_no',
+
+          'l4_name',
+          'l4_email',
+          'l4_contact_no',
+
+          'l5_name',
+          'l5_email',
+          'l5_contact_no',
+
+          'l6_name',
+          'l6_email',
+          'l6_contact_no',
         ];
       } else {
         this.__columns = this.__columnsForsummary;
@@ -205,10 +307,15 @@ export class RntrptComponent implements OnInit {
     });
 
     this.toppings.valueChanges.subscribe((res) => {
-      const clm = ['edit', 'delete'];
-      this.__columns = res;
-      this.__exportedClmns = res.filter((item) => !clm.includes(item));
+      // console.log(res);
+
+      this.setColumns(res);
     });
+  }
+  setColumns(res){
+    const clm = ['edit', 'delete'];
+    this.__columns = res;
+    this.__exportedClmns = res.filter((item) => !clm.includes(item));
   }
   outsideClick(__ev, __mode) {
     if (__ev) {
@@ -298,6 +405,26 @@ export class RntrptComponent implements OnInit {
         value.security_qus_ans = row_obj.security_qus_ans;
         value.gstin = row_obj.gstin;
         value.cus_care_whatsapp_no = row_obj.cus_care_whatsapp_no;
+        value.distributor_care_email = row_obj.distributor_care_email;
+        value.distributor_care_no = row_obj.distributor_care_no;
+        value.l1_name = row_obj.l1_name;
+        value.l1_email = row_obj.l1_email;
+        value.l1_contact_no = row_obj.l1_contact_no;
+        value.l2_name = row_obj.l2_name;
+        value.l2_email = row_obj.l2_email;
+        value.l2_contact_no = row_obj.l2_contact_no;
+        value.l3_name = row_obj.l3_name;
+        value.l3_email = row_obj.l3_email;
+        value.l3_contact_no = row_obj.l3_contact_no;
+        value.l4_name = row_obj.l4_name;
+        value.l4_email = row_obj.l3_email;
+        value.l4_contact_no = row_obj.l4_contact_no;
+        value.l5_name = row_obj.l5_name;
+        value.l5_email = row_obj.l5_email;
+        value.l5_contact_no = row_obj.l5_contact_no;
+        value.l6_name = row_obj.l6_name;
+        value.l6_email = row_obj.l6_email;
+        value.l6_contact_no = row_obj.l6_contact_no;
       }
       return true;
     });
@@ -324,6 +451,26 @@ export class RntrptComponent implements OnInit {
         value.security_qus_ans = row_obj.security_qus_ans;
         value.gstin = row_obj.gstin;
         value.cus_care_whatsapp_no = row_obj.cus_care_whatsapp_no;
+        value.distributor_care_email = row_obj.distributor_care_email;
+        value.distributor_care_no = row_obj.distributor_care_no;
+        value.l1_name = row_obj.l1_name;
+        value.l1_email = row_obj.l1_email;
+        value.l1_contact_no = row_obj.l1_contact_no;
+        value.l2_name = row_obj.l2_name;
+        value.l2_email = row_obj.l2_email;
+        value.l2_contact_no = row_obj.l2_contact_no;
+        value.l3_name = row_obj.l3_name;
+        value.l3_email = row_obj.l3_email;
+        value.l3_contact_no = row_obj.l3_contact_no;
+        value.l4_name = row_obj.l4_name;
+        value.l4_email = row_obj.l3_email;
+        value.l4_contact_no = row_obj.l4_contact_no;
+        value.l5_name = row_obj.l5_name;
+        value.l5_email = row_obj.l5_email;
+        value.l5_contact_no = row_obj.l5_contact_no;
+        value.l6_name = row_obj.l6_name;
+        value.l6_email = row_obj.l6_email;
+        value.l6_contact_no = row_obj.l6_contact_no;
       }
       return true;
     });
@@ -490,4 +637,5 @@ export class RntrptComponent implements OnInit {
     this.dialogRef.close();
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/amc',{queryParams:{product_id:btoa(this.data.product_id),id:btoa(__rnt.id)}});
   }
+
 }

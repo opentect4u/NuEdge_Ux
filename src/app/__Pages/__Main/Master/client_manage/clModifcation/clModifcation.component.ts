@@ -9,6 +9,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
+import { global } from 'src/app/__Utility/globalFunc';
 import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-clModifcation',
@@ -29,31 +30,31 @@ export class ClModifcationComponent implements OnInit {
   __maxDt = dates.disabeldDates();
   __stateMaster: any = [];
   __clientForm = new FormGroup({
-    anniversary_date: new FormControl('',this.data.cl_type == 'P' || this.data.cl_type == 'N' ? [Validators.required]:[]),
-    client_name: new FormControl(this.data.id > 0 ? this.data.items.client_name : '', [Validators.required]),
-    dob: new FormControl(this.data.id > 0 ? this.data.items.dob : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    pan: new FormControl(this.data.id > 0 ? this.data.items.pan : '', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]
+    anniversary_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.anniversary_date) : '',this.data.cl_type == 'P' || this.data.cl_type == 'N' ? [Validators.required]:[]),
+    client_name: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.client_name) : '', [Validators.required]),
+    dob: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.dob) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    pan: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.pan) : '', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]
     ),
-    dob_actual: new FormControl(this.data.id > 0 ? this.data.items.pan : '',this.data.cl_type == 'E' ? [] : [Validators.required]),
-    mobile: new FormControl(this.data.id > 0 ? this.data.items.mobile : '',
+    dob_actual: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pan) : '',this.data.cl_type == 'E' ? [] : [Validators.required]),
+    mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.mobile) : '',
       this.data.cl_type == 'E' ? [] : [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]
     ),
     same_as_above: new FormControl(''),
-    sec_mobile: new FormControl(this.data.id > 0 ? this.data.items.sec_mobile : '', this.data.cl_type == 'E' ? [] : [Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]),
-    email: new FormControl(this.data.id > 0 ? this.data.items.email : '', this.data.cl_type == 'E' ? [] : [Validators.email]),
-    sec_email: new FormControl(this.data.id > 0 ? this.data.items.sec_email : '', this.data.cl_type == 'E' ? [] : [Validators.email]),
-    add_line_1: new FormControl(this.data.id > 0 ? this.data.items.add_line_1 : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    add_line_2: new FormControl(this.data.id > 0 ? this.data.items.add_line_2 : ''),
-    state: new FormControl(this.data.id > 0 ? this.data.items.state : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    dist: new FormControl(this.data.id > 0 ? this.data.items.dist : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    city: new FormControl(this.data.id > 0 ? this.data.items.city : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    pincode: new FormControl(this.data.id > 0 ? this.data.items.pincode : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
+    sec_mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_mobile) : '', this.data.cl_type == 'E' ? [] : [Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]),
+    email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.email) : '', this.data.cl_type == 'E' ? [] : [Validators.email]),
+    sec_email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_email) : '', this.data.cl_type == 'E' ? [] : [Validators.email]),
+    add_line_1: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_1) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    add_line_2: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_2) : ''),
+    state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    pincode: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pincode) : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
     id: new FormControl(this.data.id),
-    gurdians_pan: new FormControl(this.data.id > 0 ? this.data.items.gurdians_pan : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
-    gurdians_name: new FormControl(this.data.id > 0 ? this.data.items.gurdians_name : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    relations: new FormControl(this.data.id > 0 ? this.data.items.relations : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    gurdians_pan: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.gurdians_pan) : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
+    gurdians_name: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.gurdians_name) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    relations: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.relations)  : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     doc_dtls: new FormArray([]),
-    client_type: new FormControl(this.data.cl_type == 'P' ? this.data.items?.client_type_mode : '',this.data.cl_type == 'P' ? [Validators.required] : [])
+    client_type: new FormControl(this.data.cl_type == 'P' ?  global.getActualVal(this.data.items?.client_type_mode) : '',this.data.cl_type == 'P' ? [Validators.required] : [])
   })
   constructor(
     private sanitizer: DomSanitizer,
@@ -71,14 +72,14 @@ export class ClModifcationComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.data);
+
     this.getClientType();
     this.setfrmCtrlValidatior();
     this.getStateMaster();
     this.getDocumnetTypeMaster();
     if(this.data.id > 0 ){
       this.getDistrict_city();
-      console.log(this.data.items);
-
       if(this.data.items.client_doc.length > 0){
         this.data.items.client_doc.forEach(element => {
             this.__docs.push(this.setItem(element.id, element.doc_type_id, element.doc_name, element.client_id));

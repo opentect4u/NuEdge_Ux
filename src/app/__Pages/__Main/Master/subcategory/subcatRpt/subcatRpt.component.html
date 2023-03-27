@@ -46,7 +46,7 @@
                       <h5 class="text-center">
                         Sorry!! No Records Found
                       </h5>
-                      <p>Categories Not AVailable</p>
+                      <p>Categories Not Available</p>
                     </div>
                   </div>
                 </div>
@@ -153,9 +153,9 @@
       <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef>Edit</th>
         <td mat-cell *matCellDef="let element">
-          <a (click)="populateDT(element)">
+          <button mat-icon-button (click)="populateDT(element)">
             <mat-icon class="edit_icon">edit</mat-icon>
-          </a>
+          </button>
         </td>
       </ng-container>
 

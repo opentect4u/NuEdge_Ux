@@ -28,13 +28,13 @@ export class UploadCsvComponent implements OnInit {
       queryParams:''
     },
     {
-      label:"Document type",
+      label:"Document Type",
       url:'/main/master/docType',
       hasQueryParams:true,
       queryParams:''
     },
      {
-      label:"Document type Upload",
+      label:"Document Type Upload",
       url:'/main/master/uploadDocTypeCsv',
       hasQueryParams:true,
       queryParams:''

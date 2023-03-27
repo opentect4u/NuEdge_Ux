@@ -1,14 +1,13 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Inject, ElementRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { debounceTime, distinctUntilChanged, map, pluck, skip, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, pluck, skip, switchMap, tap } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
-import { product } from 'src/app/__Model/__productMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
-import { dates } from 'src/app/__Utility/disabledt';
 import buisnessType from '../../../../../../assets/json/buisnessType.json';
 import { createClientComponent } from '../createClient/createClient.component';
 import { DialogDtlsComponent } from '../dialogDtls/dialogDtls.component';
@@ -18,6 +17,12 @@ templateUrl: './rcvModification.component.html',
 styleUrls: ['./rcvModification.component.css']
 })
 export class RcvmodificationComponent implements OnInit {
+
+  __isClientSpinner: boolean = false;
+  __isEuinSpinner: boolean = false;
+  __isSubBrkArnSpinner: boolean = false;
+  __isschemeSpinner: boolean = false;
+
   @ViewChild('searchResult') __searchRlt: ElementRef;
   @ViewChild('subBrkArn') __subBrkArn: ElementRef;
   @ViewChild('clientCd') __clientCode: ElementRef;
@@ -46,7 +51,12 @@ export class RcvmodificationComponent implements OnInit {
     sub_brk_cd: new FormControl(''),
     sub_arn_no: new FormControl(''),
     bu_type: new FormControl('', [Validators.required]),
-    euin_no: new FormControl('', [Validators.required]),
+    euin_no: new FormControl('',
+    {
+      validators:[Validators.required],
+      asyncValidators:this.checkEuinExist()
+    }
+    ),
     application_no: new FormControl(''),
     trans_id: new FormControl('', [Validators.required]),
     id: new FormControl(''),
@@ -55,7 +65,7 @@ export class RcvmodificationComponent implements OnInit {
     client_name: new FormControl(''),
     scheme_id: new FormControl('',[Validators.required]),
     scheme_name: new FormControl('',[Validators.required]),
-    recv_from: new FormControl('',[Validators.required]),
+    recv_from: new FormControl(''),
     inv_type: new FormControl('',[Validators.required]),
     kyc_status: new FormControl(''),
     switch_scheme_to: new FormControl(''),
@@ -117,8 +127,10 @@ setRcvFormDtls(){
         kyc_status:res[0].kyc_status,
         product_id:res[0].product_id,
     })
+    console.log(res[0]);
+   this.__euinMst = [{euin_no: res[0].euin_no,emp_name:res[0].emp_name}];
     this.__rcvForm.controls['client_code'].reset(res[0].client_code,{ onlySelf: true, emitEvent: false });
-    this.__rcvForm.controls['euin_no'].reset(res[0].euin_no,{ onlySelf: true, emitEvent: false });
+    this.__rcvForm.controls['euin_no'].reset(res[0].euin_no+ ' - ' + res[0].emp_name,{ onlySelf: true, emitEvent: false });
     this.__rcvForm.controls['scheme_name'].reset(res[0].scheme_name,{ onlySelf: true, emitEvent: false });
     this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_arn_no,{ onlySelf: true, emitEvent: false });
     this.__rcvForm.controls['sub_brk_cd'].reset(res[0].sub_brk_cd);
@@ -138,6 +150,7 @@ ngAfterViewInit() {
   // EUIN NUMBER SEARCH
   this.__rcvForm.controls['euin_no'].valueChanges.
   pipe(
+    tap(()=> this.__isEuinSpinner = true),
     debounceTime(200),
     distinctUntilChanged(),
     switchMap(dt => dt?.length > 1 ?
@@ -147,17 +160,22 @@ ngAfterViewInit() {
   ).subscribe({
     next: (value) => {
       console.log(value);
-      this.__euinMst = value
+      this.__euinMst = value;
       this.searchResultVisibility('block');
+      this.__isEuinSpinner = false;
     },
     complete: () => console.log(''),
-    error: (err) => console.log()
+    error: (err) => {
+      this.__isEuinSpinner = false;
+
+    }
   })
 
   //SUB BROKER ARN SEARCH
 
   this.__rcvForm.controls['sub_arn_no'].valueChanges.
   pipe(
+    tap(()=> this.__isSubBrkArnSpinner = true),
     debounceTime(200),
     distinctUntilChanged(),
     switchMap(dt => dt?.length > 1 ?
@@ -169,14 +187,19 @@ ngAfterViewInit() {
       console.log(value);
       this.__subbrkArnMst = value
       this.searchResultVisibilityForSubBrkArn('block');
+      this.__isSubBrkArnSpinner = false;
+      this.getItems(null,'E');
     },
     complete: () => console.log(''),
-    error: (err) => console.log()
+    error: (err) => {
+      this.__isSubBrkArnSpinner = false;
+    }
   })
 
   //Client Code Search
   this.__rcvForm.controls['client_code'].valueChanges.
   pipe(
+    tap(()=> this.__isClientSpinner = true),
     debounceTime(200),
     distinctUntilChanged(),
     switchMap(dt => dt?.length > 1 ?
@@ -191,15 +214,20 @@ ngAfterViewInit() {
       this.__rcvForm.patchValue({
         client_id:'',
         client_name:''
-      })
+      });
+      this.__isClientSpinner = false;
     },
     complete: () => console.log(''),
-    error: (err) => console.log()
+    error: (err) => {
+      this.__isClientSpinner = false;
+    }
+
   })
 
       //Scheme Search
       this.__rcvForm.controls['scheme_name'].valueChanges.
       pipe(
+        tap(()=> this.__isschemeSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(dt => dt?.length > 1 ?
@@ -212,10 +240,12 @@ ngAfterViewInit() {
           this.__rcvForm.patchValue({scheme_id:''});
           this.__schemeMst = value;
           this.searchResultVisibilityForScheme('block');
-
+          this.__isschemeSpinner = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log()
+        error: (err) => {
+          this.__isschemeSpinner = false;
+        }
       })
 
 
@@ -246,6 +276,8 @@ ngAfterViewInit() {
       this.__rcvForm.controls['sub_arn_no'].reset('',{ onlySelf: true, emitEvent: false });
       this.__rcvForm.controls['euin_no'].reset('',{ onlySelf: true, emitEvent: false });
       this.__rcvForm.controls['sub_brk_cd'].reset('',{ onlySelf: true, emitEvent: false });
+      this.__rcvForm.setValidators(res == 'B' ? [Validators.required] : null);
+      this.__rcvForm.updateValueAndValidity();
   })
 
   this.__rcvForm.controls["inv_type"].valueChanges.subscribe(res =>{
@@ -293,10 +325,13 @@ searchResultVisibilityForScheme(display_mode){
   console.log(__euinDtls);
 
   switch(__type){
-    case 'E':    this.__rcvForm.controls['euin_no'].reset(__euinDtls.euin_no+' - '+__euinDtls.emp_name,{ onlySelf: true, emitEvent: false });
+    case 'E':    this.__rcvForm.controls['euin_no'].reset(
+      __euinDtls ? __euinDtls.euin_no+' - '+__euinDtls.emp_name : ''
+      ,
+      { onlySelf: true, emitEvent: false });
                  this.searchResultVisibility('none');
                  break;
-    case 'S':     this.__rcvForm.controls['sub_arn_no'].reset(__euinDtls.arn_no+' - '+__euinDtls.bro_name,{ onlySelf: true, emitEvent: false });
+    case 'S':     this.__rcvForm.controls['sub_arn_no'].reset(__euinDtls.arn_no,{ onlySelf: true, emitEvent: false });
                   this.__rcvForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
                   this.searchResultVisibilityForSubBrkArn('none');
                   break;
@@ -356,8 +391,8 @@ recieveForm(){
   }
   const __rcvForm = new FormData();
   __rcvForm.append("bu_type",this.__rcvForm.value.bu_type);
-  __rcvForm.append("euin_no",this.__rcvForm.value.euin_no.split(' ')[0]);
-  __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no.split(' ')[0] : '');
+  __rcvForm.append("euin_no",this.__rcvForm.value.euin_no.includes(" ") ? this.__rcvForm.value.euin_no.split(' ')[0] : this.__rcvForm.value.euin_no);
+  __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no : '');
   __rcvForm.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd ? this.__rcvForm.value.sub_brk_cd : '');
   __rcvForm.append("client_id",this.__rcvForm.value.client_id);
   __rcvForm.append("product_id",this.data.product_id);
@@ -463,5 +498,37 @@ maximize(){
 fullScreen(){
   this.dialogRef.updateSize("80%");
   this.__isVisible = !this.__isVisible;
+}
+
+checkIfEuinExist(res): Observable<boolean>{
+  console.log(this.__euinMst);
+
+  if(this.__euinMst.length > 0){
+    console.log(this.__euinMst.find((x: any) => x.euin_no == res.includes(' ') ? res.split(" ")[0] : res));
+      return of(this.__euinMst.find((x: any) => x.euin_no ==  (res.includes(' ') ? res.split(" ")[0] : res)) ? false : true);
+  }
+  else{
+    return of(true);
+  }
+}
+
+checkEuinExist(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    console.log(control);
+
+    return this.checkIfEuinExist(control.value).pipe(
+      map(res => {
+        if(control.value){
+          // if res is true, euin exists, return true
+             return res ?  { EUINExists: true } : null;
+          // NB: Return null if there is no error
+           }
+         return null;
+      })
+    );
+  };
+}
+checkEuin_Emp(res){
+   return this.__rcvForm.get('euin_no').value === res;
 }
 }

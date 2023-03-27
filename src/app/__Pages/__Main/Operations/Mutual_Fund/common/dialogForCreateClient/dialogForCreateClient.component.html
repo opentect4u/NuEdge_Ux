@@ -12,7 +12,7 @@
   <form  [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm_" autocomplete="off" ngNativeValidate>
     <div class="row" *ngIf="this.data.cl_type != 'M' && this.data.cl_type != 'N'">
         <div class="col-sm-12 my-4">
-          <label for="panNo">Pan No <span class="text-danger">*</span></label>
+          <label for="panNo">PAN No<span class="text-danger">*</span></label>
           <input type="text" name="pan" id="panNo"
           class="form-control"
           placeholder="eg. XXXXX1234X"
@@ -55,7 +55,7 @@
 
       <div class="row" *ngIf="this.data.cl_type == 'M'">
         <div class="col-sm-12 my-4">
-          <label for="gur_pan">Gurdians Pan <span class="text-danger">*</span></label>
+          <label for="gur_pan">Gurdians PAN <span class="text-danger">*</span></label>
           <input type="text" name="gur_pan" id="gur_pan" class="form-control" placeholder="eg. XXXXX1234X" formControlName="gurdians_pan" minlength="10" maxlength="10">
           <div class="invalid-feedback" *ngIf="__clientForm.get('gurdians_pan').invalid && (__clientForm.get('gurdians_pan').dirty || __clientForm.get('gurdians_pan').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).errors?.required">*Please provide pan number</span>

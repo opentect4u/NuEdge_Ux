@@ -139,7 +139,8 @@ export class FinancialComponent implements OnInit {
        product_id:prd_id,
        trans_type_id:trans_type_id,
        id:__temp_tin_no ?  __temp_tin_no : '0',
-       title:'Financial Entry'
+       title:'Financial Entry',
+       data: null
     };
     dialogConfig.id = __temp_tin_no ?  __temp_tin_no : '0';
     try {

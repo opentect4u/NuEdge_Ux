@@ -111,7 +111,7 @@
 
               <label for="">Transaction Type : </label>
               <label *ngFor="let __trns of __transType; let i=index" for="{{__trns.id}}" class="mx-3">
-                <input type="checkbox" id="{{__trns.id}}" [value]="__trns.id" (change)="onbuTypeChange($event)" />
+                <input type="checkbox" id="{{__trns.id}}" [value]="__trns.id" (change)="ontrnsTypeChange($event)" />
                 {{__trns.trns_name}}
               </label>
             </div>
@@ -120,7 +120,7 @@
             <div class="col-sm-12 my-auto">
               <label for="">R&T: </label>
               <label *ngFor="let __rnt of __rnt; let i=index" for="rnt_{{__rnt.id}}" class="mx-3">
-                <input type="checkbox" id="rnt_{{__rnt.id}}" [value]="__rnt.id" (change)="onbuTypeChange($event)" />
+                <input type="checkbox" id="rnt_{{__rnt.id}}" [value]="__rnt.id" (change)="onrntTypeChange($event)" />
                 {{__rnt.rnt_name}}
               </label>
             </div>
@@ -156,7 +156,13 @@
             <div class="row my-5">
               <div class="col-sm-4">
                 <label for="start_date">Start Date</label>
-                <input type="date" [min]="getminDate()" [max]="getTodayDate()" name="start_date" id="start_date" class="form-control" formControlName="start_date">
+                <input type="date"
+                [min]="getminDate()"
+                [max]="getTodayDate()"
+                name="start_date"
+                id="start_date"
+                class="form-control"
+                formControlName="start_date">
               </div>
                <div class="col-sm-1"></div>
               <div class="col-sm-4">

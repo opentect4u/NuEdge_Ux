@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { AckuploadComponent } from '../ackUpload/ackUpload.component';
 import buType from '../../../../../../../../assets/json/buisnessType.json';
 import { rnt } from 'src/app/__Model/Rnt';
+import { dates } from 'src/app/__Utility/disabledt';
 
 @Component({
 selector: 'manualEntrforAckFin-component',
@@ -26,8 +27,8 @@ export class ManualentrforackfinComponent implements OnInit {
   __paginate: any = [];
   __pageNumber= new FormControl(10);
   __ackForm = new FormGroup({
-    start_date: new FormControl(''),
-    end_date: new FormControl(''),
+    start_date: new FormControl(dates.getTodayDate()),
+    end_date: new FormControl(dates.getTodayDate()),
     sub_brk_cd: new FormControl(''),
     tin_no: new FormControl(''),
     trans_type: new FormArray([]),
@@ -245,7 +246,8 @@ updateRow(row_obj){
  finalSubmitAck(){
   const __finalSubmit =  new FormData();
   __finalSubmit.append('trans_type_id',this.data.trans_type_id);
-  this.__dbIntr.api_call(1,'/ackFinalSubmit',__finalSubmit).subscribe(res => {console.log(res);
+  this.__dbIntr.api_call(1,'/ackFinalSubmit',__finalSubmit).subscribe((res: any) => {
+    this.__utility.showSnackbar(res.msg,res.suc);
   })
  }
  onbuTypeChange(e: any) {
@@ -295,5 +297,11 @@ ontrnsTypeChange(e: any) {
       i++;
     });
   }
+}
+getTodayDate(){
+  return dates.getTodayDate()
+}
+getMinDate(){
+  return dates.getminDate();
 }
 }

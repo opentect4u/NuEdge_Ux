@@ -62,7 +62,8 @@ th {
 label {
     color: #3a5076;
     font-weight: 500;
-    font-size: 13px;
+    font-size: 12px;
+    margin: 9px 0px;
 }
 
 .dialog-title {
@@ -167,15 +168,15 @@ tr.mat-header-row {
 
 .spinner-border{
   position: absolute;
-    right: 12px;
-    top: 50%;
-    display: inline-block;
-    vertical-align: text-bottom;
-    border: 0.15em solid currentColor;
-    border-right-color: #c5202000!important;
-    border-radius: 50%;
-    animation: spinner-border .75s linear infinite;
-    border: 2px solid #5e5e5e;
+  right: 12px;
+  top: 59%;
+  display: inline-block;
+  vertical-align: text-bottom;
+  border: 0.15em solid currentColor;
+  border-right-color: #c5202000!important;
+  border-radius: 50%;
+  animation: spinner-border .75s linear infinite;
+  border: 2px solid #3a5076;
     }
 
     .breadcrumb>li {
@@ -209,3 +210,5 @@ margin-left: 215px;
 .mat-sort-header-arrow{
   color: #fff;
 }
+
+

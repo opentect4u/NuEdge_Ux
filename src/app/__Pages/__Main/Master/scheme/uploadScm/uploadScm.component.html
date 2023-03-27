@@ -10,9 +10,24 @@
           <div class="row">
             <div class="col-sm-12">
               <button class="float-right" color="primary" type="button" mat-button
-                (click)="exporter.exportTable('csv',{fileName:(__uploadRnt.get('scheme_type').value == 'N' ? 'NFO' : 'Ongoing') + 'SampleScheme'})">
-                <mat-icon>download</mat-icon>Download Sample
-              </button>
+              (click)="exporter.exportTable('csv',{fileName:(__uploadRnt.get('scheme_type').value == 'N' ? 'NFO' : 'Ongoing') + 'SampleScheme'})">
+              <mat-icon>download</mat-icon>Download Sample
+            </button>
+
+            <button class="float-right" color="primary" type="button" mat-button
+            (click)="exporter3.exportTable('csv',{fileName:'SampleSubCategory'})">
+            <mat-icon>download</mat-icon>Download Sub Category
+          </button>
+              <button class="float-right" color="primary" type="button" mat-button
+              (click)="exporter1.exportTable('csv',{fileName:'SampleCategory'})">
+              <mat-icon>download</mat-icon>Download Category
+            </button>
+
+            <button class="float-right" color="primary" type="button" mat-button
+            (click)="exporter2.exportTable('csv',{fileName:'SampleAMC'})">
+            <mat-icon>download</mat-icon>Download AMC
+          </button>
+
             </div>
 
             <div class="col-sm-12 my-5">
@@ -24,7 +39,7 @@
 
 
 
-            <div class="col-sm-12 ">
+            <!-- <div class="col-sm-12 ">
               <label for="amcName">AMC <span class="text-danger">*</span></label>
               <select class="form-control" formControlName="amc_id" id="amcName">
                 <option value="">Select AMC</option>
@@ -54,7 +69,7 @@
               <div class="invalid-feedback" *ngIf="__uploadRnt.get('subcat_id').invalid && (__uploadRnt.get('subcat_id').dirty || __uploadRnt.get('subcat_id').touched)">
                 <span class="invalid-feedback" *ngIf="(__uploadRnt.get('subcat_id')).errors?.required">*Please provide subcategory</span>
               </div>
-            </div>
+            </div> -->
 
 
             <div class="col-sm-12 my-5">
@@ -187,7 +202,7 @@
 </div>
 
 
-<table mat-table hidden [dataSource]="tableData" matTableExporter class="mat-elevation-z8" #exporter="matTableExporter">
+<table mat-table hidden [dataSource]="tableData" matTableExporter class="mat-elevation-z8"  #exporter="matTableExporter">
   <ng-container *ngFor="let disCol of tableColumns let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
     <th mat-header-cell *matHeaderCellDef>
       {{ disCol.header }}
@@ -203,4 +218,66 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<table mat-table hidden [dataSource]="__catMaster" matTableExporter #exporter1="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+  <!--Temporary TIN No.-->
+  <ng-container matColumnDef="cat_name">
+    <th mat-header-cell *matHeaderCellDef>Category</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.cat_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__colcat"></tr>
+  <tr mat-row *matRowDef="let row; columns: __colcat;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="2">No data found</td>
+  </tr>
+</table>
+<table mat-table hidden [dataSource]="__amcMaster" matTableExporter #exporter2="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="amc_short_name">
+    <th mat-header-cell *matHeaderCellDef>AMC Short Name</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.amc_short_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__colAmc"></tr>
+  <tr mat-row *matRowDef="let row; columns: __colAmc;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="2">No data found</td>
+  </tr>
+</table>
+
+<table mat-table hidden [dataSource]="__subcatMaster" matTableExporter #exporter3="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+  <!--Temporary TIN No.-->
+  <ng-container matColumnDef="cat_name">
+    <th mat-header-cell *matHeaderCellDef>Category</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.cat_name}}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="subcat_name">
+    <th mat-header-cell *matHeaderCellDef>Sub Category<th>
+    <td mat-cell *matCellDef="let element">
+      {{element.subcategory_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__colsubCate"></tr>
+  <tr mat-row *matRowDef="let row; columns: __colsubCate;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="3">No data found</td>
+  </tr>
 </table>

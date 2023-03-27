@@ -62,7 +62,7 @@ export class AckrptComponent implements OnInit {
   {id: "kyc_status",text:"KYC Status"},
   // {id: "delete",text:"Delete"}
 ];
-  
+
   __sortAscOrDsc: any = {active: '',direction:'asc'};
   __category: category[];
   __subCat: subcat[];
@@ -403,14 +403,14 @@ export class AckrptComponent implements OnInit {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber) 
+            ('&paginate=' + this.__pageNumber)
             + (this.data.trans_id ? '&trans_id=' + this.data.trans_id : '')
             + ('&option=' + this.__rcvForms.value.options)
             + ('&trans_type_id=' + this.data.trans_type_id)
             + ('&trans_id=' +  this.data.trans_id)
             + ('&column_name=' +  this.__sortAscOrDsc.active)
             + ('&sort_by=' +  this.__sortAscOrDsc.direction)
-            + (this.__rcvForms.get('options').value != '3' 
+            + (this.__rcvForms.get('options').value != '3'
             ? ('&client_code='+ this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : '')
             + ('&sub_brk_cd=' + this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : '')
             + ('&trans_type=' + (this.__rcvForms.value.trans_type.length > 0 ? JSON.stringify(this.__rcvForms.value.trans_type): ''))
@@ -509,7 +509,7 @@ export class AckrptComponent implements OnInit {
     });
 
   }
-  
+
   getAckRPT(column_name: string | null ='',sort_by: string | null | '' = 'asc'){
     const __mfTrax = new FormData();
     __mfTrax.append('paginate', this.__pageNumber.value);

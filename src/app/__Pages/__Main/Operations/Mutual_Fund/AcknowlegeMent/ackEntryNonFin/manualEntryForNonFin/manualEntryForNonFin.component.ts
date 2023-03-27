@@ -240,7 +240,8 @@ updateRow(row_obj){
  finalSubmitAck(){
   const __finalSubmit =  new FormData();
   __finalSubmit.append('trans_type_id',this.data.trans_type_id);
-  this.__dbIntr.api_call(1,'/ackFinalSubmit',__finalSubmit).subscribe(res => {console.log(res);
+  this.__dbIntr.api_call(1,'/ackFinalSubmit',__finalSubmit).subscribe((res: any) => {
+    this.__utility.showSnackbar(res.msg,res.suc)
   })
  }
  onbuTypeChange(e: any) {

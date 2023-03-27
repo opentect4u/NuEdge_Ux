@@ -72,6 +72,12 @@ __menu = [
     if(this.rtDt.snapshot.queryParamMap.get('id')){
       this.getparticularProduct(atob(this.rtDt.snapshot.queryParamMap.get('id')));
     }
+    if(this.rtDt.snapshot.queryParamMap.get('comp_id')){
+      this.navigate(
+         this.__menu.find((x: any) => x.flag == 'R')
+      )
+
+    }
   }
   getparticularProduct(res){
     console.log(res);
@@ -94,7 +100,11 @@ __menu = [
         break;
         case 'R':
           // this.openDialogForReport();
-               this.openDialogForReport(atob(this.rtDt.snapshot.queryParamMap.get('product_id')))
+               this.openDialogForReport(
+                atob(this.rtDt.snapshot.queryParamMap.get('product_id')),
+                this.rtDt.snapshot.queryParamMap.get('comp_id') ?
+                atob(this.rtDt.snapshot.queryParamMap.get('comp_id')) : '',
+                )
           break;
       default:
         break;
@@ -135,7 +145,7 @@ __menu = [
       });
     }
   }
-  openDialogForReport(__prdId){
+  openDialogForReport(__prdId,__comp_id){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -147,7 +157,8 @@ __menu = [
     dialogConfig.panelClass = "fullscreen-dialog"
     dialogConfig.id = "INSPRODUCT",
     dialogConfig.data = {
-      product_id:__prdId
+      product_id:__prdId,
+      company_id:__comp_id
     }
     try {
       const dialogref = this.__dialog.open(

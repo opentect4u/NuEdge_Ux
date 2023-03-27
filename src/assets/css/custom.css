@@ -527,3 +527,14 @@ table {
   border-radius: 15px;
   box-shadow: 0px 0px 20px 0px #b9b9b9;
 } */
+.searchDiv p{
+  font-size: 11px;
+  font-weight: bold;
+  margin: 0;
+}
+mat-hint p{
+  font-size: 12px;
+  font-weight: 600;
+  color: #3a5076;
+  padding: 6px 0px!important;
+}

@@ -33,7 +33,14 @@ export class SubcateModificationComponent implements OnInit {
       })
     }
 
-  ngOnInit() {this.getCategoryMaster();}
+  ngOnInit() {this.getCategoryMaster();this.disabledFormControl();}
+  disabledFormControl(){
+    if(this.data.id > 0){
+      console.log(this.data.id);
+
+      this.__subcatForm.controls['category_id'].disable({onlySelf:true,emitEvent:false});
+    }
+  }
   submit() {
     if (this.__subcatForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error',0);

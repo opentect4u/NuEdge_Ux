@@ -21,10 +21,14 @@
     <form ngNativeValidate [formGroup]="__traxForm" id="__traxForm_{{data.id}}" (ngSubmit)="submit()" autocomplete="off">
       <div class="row">
         <div class="col-sm-12">
-          <label class="ml-2"><input type="radio" value="Y" formControlName="tin_status"><span>&nbsp;With
+          <!-- <label class="ml-2"><input type="radio" value="Y" formControlName="tin_status"><span>&nbsp;With
               TTIN</span></label>
           <label class="ml-3"><input type="radio" value="N" formControlName="tin_status"><span>&nbsp;Without
-              TTIN</span></label>
+              TTIN</span></label> -->
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="tin_status">
+                <mat-radio-button value="Y">With TTin</mat-radio-button>
+                <mat-radio-button value="N" class="ml-5">Without TTIN</mat-radio-button>
+              </mat-radio-group>
         </div>
       </div>
       <ng-container *ngIf="__traxForm.get('tin_status').value == 'Y'">
@@ -50,7 +54,7 @@
                     <h5 class="text-center">
                       Sorry!! No Records Found
                     </h5>
-                    <p>Temporary TIN Number Not AVailable</p>
+                    <p>Temporary TIN Number Not Available</p>
                   </div>
                 </div>
               </div>
@@ -219,10 +223,14 @@
       <!-- KYC Status -->
       <div class="row mt-5">
         <div class="col-sm-12 ">
-          <label class="ml-2"><input type="radio" value="Y" formControlName="kyc_status"><span>&nbsp;With
+          <!-- <label class="ml-2"><input type="radio" value="Y" formControlName="kyc_status"><span>&nbsp;With
               KYC</span></label>
           <label class="ml-3"><input type="radio" value="N" formControlName="kyc_status"><span>&nbsp;Without
-              KYC</span></label>
+              KYC</span></label> -->
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="kyc_status">
+                <mat-radio-button value="Y">With KYC</mat-radio-button>
+                <mat-radio-button value="N" class="ml-5">Without KYC</mat-radio-button>
+              </mat-radio-group>
         </div>
       </div>
       <!-- End -->
@@ -908,7 +916,7 @@
               <div class="invalid-feedback"
               *ngIf="__traxForm.get('chq_no').invalid && (__traxForm.get('chq_no').dirty || __traxForm.get('chq_no').touched)">
               <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).errors?.required">*Please provide cheque number
-                number</span>
+                </span>
               <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).hasError('minlength')">*cheque number
                 must be 6 digits</span>
               <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).hasError('maxlength')">*cheque number

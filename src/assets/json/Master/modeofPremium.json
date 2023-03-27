@@ -1,0 +1,22 @@
+[
+  {
+    "id":"M",
+    "name":"Monthly"
+  },
+  {
+    "id":"Q",
+    "name":"Quarterly"
+  },
+  {
+    "id":"H",
+    "name":"Half yearly"
+  },
+  {
+    "id":"A",
+    "name":"Annualy"
+  },
+  {
+    "id":"S",
+    "name":"Single"
+  }
+]

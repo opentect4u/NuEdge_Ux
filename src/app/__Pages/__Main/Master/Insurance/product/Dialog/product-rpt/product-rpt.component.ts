@@ -19,13 +19,14 @@ import { ProductCrudComponent } from '../product-crud/product-crud.component';
   styleUrls: ['./product-rpt.component.css']
 })
 export class ProductRPTComponent implements OnInit {
+  __settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Companies');
   __prdSearchForm = new FormGroup({
     ins_type_id: new FormControl(''),
     product_name: new FormControl(''),
-    company_id: new FormControl('')
+    company_id: new FormControl([])
   });
-  __exportedClmns: string[] = ['sl_no','ins_type_name','comp_full_name','comp_short_name','product_name'];
-  __columns: string[] = ['edit','delete','sl_no','ins_type_name','comp_full_name','comp_short_name','product_name']
+  __exportedClmns: string[] = ['sl_no','ins_type_name','comp_full_name','comp_short_name','product_type','product_name'];
+  __columns: string[] = ['edit','delete','sl_no','ins_type_name','comp_full_name','comp_short_name','product_type','product_name']
   __isVisible : boolean = true;
   __selectPrdMst = new MatTableDataSource<insProduct>([]);
   __exportPrdMst = new MatTableDataSource<insProduct>([])
@@ -41,17 +42,31 @@ export class ProductRPTComponent implements OnInit {
     private __dialog: MatDialog,
     private __dbIntr: DbIntrService,
     private __utility: UtiliService
-  ) { }
+  ) {
+    this.getcompanyMst();
+  }
   __insTypeMst: any= [];
   ngOnInit(): void {
     this.getInsTypeMst();
-    this.getproductMst();
-    this.getcompanyMst();
+    setTimeout(()=>{
+      this.getproductMst();
+    },500)
   }
   getcompanyMst(res: string | null = ''){
-    this.__dbIntr.api_call(0,'/ins/company','ins_type_id='+res).pipe(pluck("data")).subscribe((res: insComp[]) =>{
-       console.log(res);
+    this.__dbIntr.api_call(0,'/ins/company',null).pipe(pluck("data")).subscribe((res: insComp[]) =>{
       this.__companyMst = res;
+      if(this.data.company_id){
+       this.__prdSearchForm.patchValue({
+        company_id:this.__companyMst.filter((x: any) => x.id == Number(this.data.company_id)).map((x: insComp) =>
+        ({
+          id:x.id,
+          comp_short_name:x.comp_short_name
+        })
+        )
+       });
+       console.log( this.__prdSearchForm.value.company_id);
+
+      }
     })
   }
   ngAfterViewInit(){
@@ -89,8 +104,9 @@ export class ProductRPTComponent implements OnInit {
   }
   getproductMst(column_name: string | null = '', sort_by: string | null = 'asc'){
     const __fb = new FormData();
+    console.log(JSON.stringify(this.__prdSearchForm.value.company_id));
     __fb.append('product_name',global.getActualVal(this.__prdSearchForm.value.product_name));
-    __fb.append('company_id',global.getActualVal(this.__prdSearchForm.value.company_id));
+    __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id));
     __fb.append('ins_type_id',global.getActualVal(this.__prdSearchForm.value.ins_type_id));
     __fb.append('paginate', this.__pageNumber.value);
     __fb.append('column_name', column_name);
@@ -230,7 +246,9 @@ export class ProductRPTComponent implements OnInit {
         value.comp_short_name = row_obj.comp_short_name;
         value.product_name = row_obj.product_name;
         value.ins_type_id = row_obj.ins_type_id;
-        value.ins_type_name = row_obj.ins_type_name
+        value.ins_type_name = row_obj.ins_type_name;
+        value.product_type_id = row_obj.product_type_id
+        value.product_type = row_obj.product_type
       }
       return true;
     });
@@ -243,7 +261,9 @@ export class ProductRPTComponent implements OnInit {
         value.comp_short_name = row_obj.comp_short_name;
         value.product_name = row_obj.product_name;
         value.ins_type_id = row_obj.ins_type_id;
-        value.ins_type_name = row_obj.ins_type_name
+        value.ins_type_name = row_obj.ins_type_name;
+        value.product_type_id = row_obj.product_type_id
+        value.product_type = row_obj.product_type
       }
       return true;
     });

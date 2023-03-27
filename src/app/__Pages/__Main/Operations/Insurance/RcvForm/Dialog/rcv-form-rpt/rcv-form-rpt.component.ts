@@ -4,6 +4,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { map, pluck } from 'rxjs/operators';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -213,25 +214,30 @@ private setPaginator(__res) {
 this.__RcvForms = new MatTableDataSource(__res);
 }
 deleteRcvForm(__element,index){
-// const dialogConfig = new MatDialogConfig();
-// dialogConfig.autoFocus = false;
-// dialogConfig.closeOnNavigation = false;
-// dialogConfig.width =  "40%";
-// dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
-// dialogConfig.data ={
-//    temp_tin_no:__element.temp_tin_no
-// }
-// try{
-//   const dialogref = this.__dialog.open(DeletercvComponent, dialogConfig);
-//   dialogref.afterClosed().subscribe(dt => {
-//     if(dt){
-//       this.__RcvForms.data.splice(index,1);
-//       this.__RcvForms._updateChangeSubscription();
-//     }
-//   })
-// }
-// catch(ex){
-// }
+const dialogConfig = new MatDialogConfig();
+dialogConfig.autoFocus = false;
+dialogConfig.closeOnNavigation = false;
+dialogConfig.width =  "30%";
+dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+dialogConfig.data ={
+  flag: 'D',
+  id: __element.temp_tin_no,
+  title: 'Delete ' + __element.temp_tin_no,
+  api_name:'/ins/formreceivedDelete'
+}
+try{
+  const dialogref = this.__dialog.open(DeletemstComponent, dialogConfig);
+  dialogref.afterClosed().subscribe(dt => {
+    if(dt){
+      this.__RcvForms.data.splice(index,1);
+      this.__RcvForms._updateChangeSubscription();
+      this.__export.data.splice(this.__export.data.findIndex((x: any) => x.temp_tin_no == __element.temp_tin_no),1);
+      this.__export._updateChangeSubscription();
+    }
+  })
+}
+catch(ex){
+}
 }
 populateDT(__items){
 console.log(__items);

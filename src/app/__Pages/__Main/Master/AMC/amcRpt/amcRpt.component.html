@@ -28,7 +28,7 @@
       <div class="col-sm-6 my-auto">
           <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
             <mat-radio-button value="2">Summary</mat-radio-button>
-            <mat-radio-button value="1" class="radio1">Detail</mat-radio-button>
+            <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
           </mat-radio-group>
       </div>
       <div class="col-sm-6 my-auto">
@@ -61,7 +61,7 @@
                     <h5 class="text-center">
                       Sorry!! No Records Found
                     </h5>
-                    <p>AMC Not AVailable</p>
+                    <p>AMC Not Available</p>
                   </div>
                 </div>
               </div>
@@ -109,12 +109,12 @@
       </div>
       <div class="row mt-5" *ngIf="__detalsSummaryForm.get('options').value == '1'">
         <div class="col-sm-12">
-          <mat-checkbox formControlName="l1" color="primary">Level-1</mat-checkbox>
-          <mat-checkbox formControlName="l2" class="ml-4" color="primary">Level-2</mat-checkbox>
-          <mat-checkbox formControlName="l3" class="ml-4" color="primary">Level-3</mat-checkbox>
-          <mat-checkbox formControlName="l4" class="ml-4" color="primary">Level-4</mat-checkbox>
-          <mat-checkbox formControlName="l5" class="ml-4" color="primary">Level-5</mat-checkbox>
-          <mat-checkbox formControlName="l6" class="ml-4" color="primary">Level-6</mat-checkbox>
+          <mat-checkbox formControlName="l1" color="primary">Level-1(Operation)</mat-checkbox>
+          <mat-checkbox formControlName="l2" class="ml-3" color="primary">Level-2 (Operation Head)</mat-checkbox>
+          <mat-checkbox formControlName="l3" class="ml-3" color="primary">Level-3(RM - Sales)</mat-checkbox>
+          <mat-checkbox formControlName="l4" class="ml-3" color="primary">Level-4(Area Manager / Regional Manager)</mat-checkbox>
+          <mat-checkbox formControlName="l5" class="ml-3" color="primary">Level-5(Zonal Manager / State Head)</mat-checkbox>
+          <mat-checkbox formControlName="l6" class="ml-3" color="primary">Level-6(National Sales Head / Product Head)</mat-checkbox>
         </div>
       </div>
       <div class="row">
@@ -172,7 +172,7 @@
 
 
       <!-- Buisness Type-->
-      <ng-container matColumnDef="edit" sticky>
+      <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef>Edit</th>
         <td mat-cell *matCellDef="let element">
           <a (click)="populateDT(element)">
@@ -247,6 +247,21 @@
            <p class="text-wrap">{{element.cus_care_whatsapp_no}}</p>
         </td>
       </ng-container>
+
+      <ng-container matColumnDef="distributor_care_no">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="distributor_care_no">Distributor Care Number</th>
+        <td mat-cell *matCellDef="let element">
+           <p class="text-wrap">{{element.distributor_care_no}}</p>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="distributor_care_email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="distributor_care_email">Distributor Care Email</th>
+        <td mat-cell *matCellDef="let element">
+           <p class="text-wrap">{{element.distributor_care_email}}</p>
+        </td>
+      </ng-container>
+
        <!-- For Detailed -->
        <ng-container matColumnDef="login_url">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="login_url">Login URL</th>
@@ -276,7 +291,8 @@
       <ng-container matColumnDef="website">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="website">Web Site</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.website}}</p>
+           <!-- <p class="text-wrap">{{element.website}}</p> -->
+           <a [attr.href]="'//' + element.website"  target="_blank">{{element.website}}</a>
         </td>
       </ng-container>
       <ng-container matColumnDef="cust_care_number">
@@ -312,7 +328,7 @@
       <ng-container matColumnDef="head_ofc_addr">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="head_ofc_addr">Head Office Address</th>
         <td mat-cell *matCellDef="let element">
-         <p>{{element.head_ofc_addr ? (element.head_ofc_addr | ellipsis:25) : ''}}</p>
+         <p title="{{element.head_ofc_addr}}">{{element.head_ofc_addr ? (element.head_ofc_addr | ellipsis:25) : ''}}</p>
         </td>
       </ng-container>
 
@@ -337,7 +353,7 @@
       <ng-container matColumnDef="local_ofc_addr">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="local_ofc_addr">Local Office Address</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.local_ofc_addr ? (element.local_ofc_addr | ellipsis:25) : ''}}</p>
+           <p class="text-wrap" title="{{element.local_ofc_addr}}">{{element.local_ofc_addr ? (element.local_ofc_addr | ellipsis:25) : ''}}</p>
         </td>
       </ng-container>
 
@@ -574,6 +590,24 @@
          <p>{{element.cus_care_email}}</p>
       </td>
     </ng-container>
+
+
+    <ng-container matColumnDef="distributor_care_no">
+      <th mat-header-cell *matHeaderCellDef>Distributor Care Number</th>
+      <td mat-cell *matCellDef="let element">
+         <p class="text-wrap">{{element.distributor_care_no}}</p>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="distributor_care_email">
+      <th mat-header-cell *matHeaderCellDef>Distributor Care Email</th>
+      <td mat-cell *matCellDef="let element">
+         <p class="text-wrap">{{element.distributor_care_email}}</p>
+      </td>
+    </ng-container>
+
+
+
     <ng-container matColumnDef="head_ofc_contact_per">
       <th mat-header-cell *matHeaderCellDef>Head Office Contact Person</th>
       <td mat-cell *matCellDef="let element">

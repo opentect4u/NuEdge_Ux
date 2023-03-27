@@ -5,20 +5,24 @@ import {
   HttpEvent,
   HttpInterceptor,
   HttpContextToken,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpResponse
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, finalize } from 'rxjs/operators';
+import {storage} from '../__Utility/storage';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UtiliService } from '../__Services/utils.service';
 export const BYPASS_LOG = new HttpContextToken(() => false);
+export const IS_CACHE = new HttpContextToken(() => false);
+
 @Injectable()
 export class NetworkInterceptor implements HttpInterceptor {
   totalRequests = 0;
   requestsCompleted = 0;
   constructor(private __spinner: NgxSpinnerService,private __utility:UtiliService) {}
-
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  private cache = new Map<string, any>();
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (request.context.get(BYPASS_LOG) === true){
       return next.handle(request);
     }
@@ -60,6 +64,11 @@ export class NetworkInterceptor implements HttpInterceptor {
         } else {
         }
         return throwError(() => new Error(error.statusText));
+      }),
+      tap((event: any) =>{
+        if(request.method != 'GET' && request.context.get(IS_CACHE)){
+          storage.set__scmDtls(request.body?.data)
+        }
       })
     )
   }

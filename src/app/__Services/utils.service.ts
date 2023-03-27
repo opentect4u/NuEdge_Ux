@@ -81,4 +81,27 @@ export class UtiliService {
       })
   }
 
+   public settingsfroMultiselectDropdown(__id,__text,__placeholder){
+    console.log(__id + '' + __text);
+
+     let settings = {
+        singleSelection: false,
+        idField: __id,
+        textField: __text,
+        enableCheckAll: true,
+        selectAllText: 'Select All',
+        unSelectAllText: 'Deselect All',
+        allowSearchFilter: true,
+        limitSelection: -1,
+        clearSearchFilter: true,
+        maxHeight: 197,
+        itemsShowLimit: 31,
+        searchPlaceholderText: __placeholder,
+        noDataAvailablePlaceholderText: 'No recors found',
+        closeDropDownOnSelection: false,
+        showSelectedItemsAtTop: false,
+        defaultOpen: false,
+      };
+      return settings;
+    }
 }

@@ -24,5 +24,16 @@ export  class dates{
         console.log(today.toISOString().substring(0,10));
         return today.toISOString().substring(0,10);
       }
-      
+      public static isNumber(evt) {
+         console.log(evt);
+
+        const pattern = /[0-9\+\-\ ]/;
+        let inputChar = String.fromCharCode(evt.key);
+
+        if (!pattern.test(inputChar)) {
+          // invalid character, prevent input
+          event.preventDefault();
+        }
+    }
+
 }

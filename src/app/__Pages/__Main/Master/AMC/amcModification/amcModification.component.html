@@ -28,14 +28,17 @@
           <label for="amcName">AMC Full Name <span class="text-danger">*</span></label>
           <input type="text" name="amc_name" id="amcName" class="form-control" placeholder="Enter AMC Name" formControlName="amc_name">
           <div class="invalid-feedback" *ngIf="__amcForm.get('amc_name').invalid && (__amcForm.get('amc_name').dirty || __amcForm.get('amc_name').touched)">
-            <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_name')).errors?.required">*Please provide AMC name</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_name')).errors?.required">*Please provide AMC full name</span>
           </div>
         </div>
 
         <div class="col-sm-12 my-3">
           <label for="amcshortName">AMC Short Name</label>
           <input type="text" name="amc_short_name" id="amcshortName" class="form-control" placeholder="Enter AMC Name" formControlName="amc_short_name">
-        </div>
+          <div class="invalid-feedback" *ngIf="__amcForm.get('amc_short_name').invalid && (__amcForm.get('amc_short_name').dirty || __amcForm.get('amc_short_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_short_name')).errors?.required">*Please provide AMC short name</span>
+          </div>
+         </div>
         <div class="col-sm-12 my-3">
           <label for="rntName">R&T <span class="text-danger">*</span></label>
           <select class="form-control " formControlName="rnt_id" id="rntName">
@@ -63,17 +66,35 @@
         <div class="row">
 
           <div class="col-sm-12 my-3">
-            <label for="cus_care_whatsapp_no">Customer Care WhatsApp Number</label>
-            <input (keypress)="preventNonumeric($event)" type="text" name="cus_care_whatsapp_no" id="cus_care_whatsapp_no" class="form-control" placeholder="Enter Customer Care WhatsApp Number"  formControlName="cus_care_whatsapp_no">
+            <label for="cus_care_whatsapp_no">
+              Customer Care WhatsApp Number
+            </label>
+            <input (keypress)="preventNonumeric($event)"
+             type="text" name="cus_care_whatsapp_no"
+             maxlength="10"
+             minlength="10"
+             id="cus_care_whatsapp_no" class="form-control"
+             placeholder="Enter Customer Care WhatsApp Number"  formControlName="cus_care_whatsapp_no">
             <div class="invalid-feedback" *ngIf="__amcForm.get('cus_care_whatsapp_no').invalid && (__amcForm.get('cus_care_whatsapp_no').dirty || __amcForm.get('cus_care_whatsapp_no').touched)">
               <span class="invalid-feedback" *ngIf="(__amcForm.get('cus_care_whatsapp_no')).hasError('pattern')">*Digits allow only</span>
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('cus_care_whatsapp_no')).hasError('minlength')">*mobile number
+                must be 10 digits</span>
+                <span class="invalid-feedback" *ngIf="(__amcForm.get('cus_care_whatsapp_no')).hasError('maxlength')">*mobile number
+                  must be 10 digits</span>
             </div>
           </div>
           <div class="col-sm-12 my-3">
-            <label for="cust_care_no">Customer Care Number </label>
-            <input (keypress)="preventNonumeric($event)" type="text" name="cust_care_no" id="cust_care_no" class="form-control" placeholder="Enter Customer Care Number"  formControlName="cust_care_no">
+            <label for="cust_care_no">Customer Care Number
+
+            </label>
+            <input (keypress)="preventNonumeric($event)" maxlength="10"
+            minlength="10" type="text" name="cust_care_no" id="cust_care_no" class="form-control" placeholder="Enter Customer Care Number"  formControlName="cust_care_no">
             <div class="invalid-feedback" *ngIf="__amcForm.get('cust_care_no').invalid && (__amcForm.get('cust_care_no').dirty || __amcForm.get('cust_care_no').touched)">
               <span class="invalid-feedback" *ngIf="(__amcForm.get('cust_care_no')).hasError('pattern')">*Digits allow only</span>
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('cust_care_no')).hasError('minlength')">*mobile number
+                must be 10 digits</span>
+                <span class="invalid-feedback" *ngIf="(__amcForm.get('cust_care_no')).hasError('maxlength')">*mobile number
+                  must be 10 digits</span>
             </div>
           </div>
           <div class="col-sm-12 my-3">
@@ -81,6 +102,28 @@
             <input (keypress)="preventNonumeric($event)" type="email" name="cust_care_email" id="cust_care_email" class="form-control" placeholder="Enter Customer Care Email"  formControlName="cust_care_email">
             <div class="invalid-feedback" *ngIf="__amcForm.get('cust_care_email').invalid && (__amcForm.get('cust_care_email').dirty || __amcForm.get('cust_care_email').touched)">
               <span class="invalid-feedback" *ngIf="(__amcForm.get('cust_care_email').errors?.email)">*Please provide valid email</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="distributor_care_no">Distributor Care Number </label>
+            <input (keypress)="preventNonumeric($event)" maxlength="10"
+            minlength="10" type="text" name="distributor_care_no" id="distributor_care_no" class="form-control" placeholder="Enter Distributor Care Number"  formControlName="distributor_care_no">
+            <div class="invalid-feedback" *ngIf="__amcForm.get('distributor_care_no').invalid && (__amcForm.get('distributor_care_no').dirty || __amcForm.get('distributor_care_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('distributor_care_no')).hasError('pattern')">*Digits allow only</span>
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('distributor_care_no')).hasError('minlength')">*mobile number
+                must be 10 digits</span>
+                <span class="invalid-feedback" *ngIf="(__amcForm.get('distributor_care_no')).hasError('maxlength')">*mobile number
+                  must be 10 digits</span>
+            </div>
+          </div>
+          <div class="col-sm-12 my-3">
+            <label for="distributor_care_email" >Distributor Care Email </label>
+            <input (keypress)="preventNonumeric($event)" type="email" name="distributor_care_email" id="distributor_care_email" class="form-control" placeholder="Enter Distributor Care Email"  formControlName="distributor_care_email">
+            <div class="invalid-feedback" *ngIf="__amcForm.get('distributor_care_email').invalid && (__amcForm.get('distributor_care_email').dirty || __amcForm.get('distributor_care_email').touched)">
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('distributor_care_email').errors?.email)">*Please provide valid email</span>
             </div>
           </div>
         </div>
@@ -99,9 +142,14 @@
           </div>
           <div class="col-sm-12 my-3">
             <label for="head_contact_per_mob">Contact Person Mobile</label>
-          <input type="text" name="head_contact_per_mob" id="head_contact_per_mob" formControlName="head_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
+          <input type="text" maxlength="10"
+          minlength="10" name="head_contact_per_mob" id="head_contact_per_mob" formControlName="head_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
           <div class="invalid-feedback" *ngIf="__amcForm.get('head_contact_per_mob').invalid && (__amcForm.get('head_contact_per_mob').dirty || __amcForm.get('head_contact_per_mob').touched)">
             <span class="invalid-feedback" *ngIf="(__amcForm.get('head_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('head_contact_per_mob')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('head_contact_per_mob')).hasError('maxlength')">*mobile number
+                must be 10 digits</span>
           </div>
         </div>
           <div class="col-sm-12 my-3">
@@ -130,9 +178,14 @@
           </div>
           <div class="col-sm-12 my-3">
             <label for="local_contact_per_mob">Contact Person Mobile</label>
-          <input  (keypress)="preventNonumeric($event)" type="text" name="local_contact_per_mob" id="local_contact_per_mob" formControlName="local_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
+          <input maxlength="10"
+          minlength="10"  (keypress)="preventNonumeric($event)" type="text" name="local_contact_per_mob" id="local_contact_per_mob" formControlName="local_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
           <div class="invalid-feedback" *ngIf="__amcForm.get('local_contact_per_mob').invalid && (__amcForm.get('local_contact_per_mob').dirty || __amcForm.get('local_contact_per_mob').touched)">
             <span class="invalid-feedback" *ngIf="(__amcForm.get('local_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('local_contact_per_mob')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('local_contact_per_mob')).hasError('maxlength')">*mobile number
+                must be 10 digits</span>
           </div>
         </div>
           <div class="col-sm-12 my-3">
@@ -223,15 +276,38 @@
           <label for="l1_name">Name</label>
           <input type="text" name="l1_name" id="l1_name" class="form-control" placeholder="Enter Name" formControlName="l1_name">
         </div>
+
+        <div class="col-sm-12 my-3">
+          <label for="l1_contact_no">Contact</label>
+          <input type="text"
+           name="l1_contact_no"
+           maxlength ="10"
+           minlength ="10"
+            id="l1_contact_no"
+            class="form-control"
+            placeholder="Enter Contact"
+            (keypress)="preventNonumeric($event)"
+            formControlName="l1_contact_no">
+            <div class="invalid-feedback"
+            *ngIf="__amcForm.get('l1_contact_no').invalid && (__amcForm.get('l1_contact_no').dirty || __amcForm.get('l1_contact_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l1_contact_no')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l1_contact_no')).hasError('maxlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l1_contact_no')).hasError('pattern')">*allow only
+              digits</span>
+
+          </div>
+        </div>
+
         <div class="col-sm-12 my-3">
           <label for="l1_email">Email</label>
           <input type="text" name="l1_email" id="l1_email" class="form-control" placeholder="Enter Email Id" formControlName="l1_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l1_email').invalid && (__amcForm.get('l1_email').dirty || __amcForm.get('l1_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l1_email')).errors?.email">*Please provide valid email</span>
         </div>
-        <div class="col-sm-12 my-3">
-          <label for="l1_contact_no">Contact</label>
-          <input type="text" name="l1_contact_no" id="l1_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l1_contact_no">
         </div>
-
       </div>
 
 
@@ -244,13 +320,31 @@
           <label for="l2_name">Name</label>
           <input type="text" name="l2_name" id="l2_name" class="form-control" placeholder="Enter Name" formControlName="l2_name">
         </div>
+
+        <div class="col-sm-12 my-3">
+          <label for="l2_contact_no">Contact</label>
+          <input type="text"  maxlength ="10"
+          minlength ="10" name="l2_contact_no" id="l2_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l2_contact_no">
+
+          <div class="invalid-feedback"
+            *ngIf="__amcForm.get('l2_contact_no').invalid && (__amcForm.get('l2_contact_no').dirty || __amcForm.get('l2_contact_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l2_contact_no')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l2_contact_no')).hasError('maxlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l2_contact_no')).hasError('pattern')">*allow only
+              digits</span>
+          </div>
+
+        </div>
+
         <div class="col-sm-12 my-3">
           <label for="l2_email">Email</label>
           <input type="text" name="l2_email" id="l2_email" class="form-control" placeholder="Enter Email Id" formControlName="l2_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l2_email').invalid && (__amcForm.get('l2_email').dirty || __amcForm.get('l2_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l2_email')).errors?.email">*Please provide valid email</span>
         </div>
-        <div class="col-sm-12 my-3">
-          <label for="l2_contact_no">Contact</label>
-          <input type="text" name="l2_contact_no" id="l2_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l2_contact_no">
         </div>
 
       </div>
@@ -265,14 +359,27 @@
           <input type="text" name="l3_name" id="l3_name" class="form-control" placeholder="Enter Name" formControlName="l3_name">
         </div>
         <div class="col-sm-12 my-3">
-          <label for="l3_email">Email</label>
-          <input type="text" name="l3_email" id="l3_email" class="form-control" placeholder="Enter Email Id" formControlName="l3_email">
+          <label for="l3_contact_no">Contact</label>
+          <input type="text" maxlength ="10"
+          minlength ="10" name="l3_contact_no" id="l3_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l3_contact_no">
+          <div class="invalid-feedback"
+            *ngIf="__amcForm.get('l3_contact_no').invalid && (__amcForm.get('l3_contact_no').dirty || __amcForm.get('l3_contact_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l3_contact_no')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l3_contact_no')).hasError('maxlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l3_contact_no')).hasError('pattern')">*allow only
+              digits</span>
+          </div>
         </div>
         <div class="col-sm-12 my-3">
-          <label for="l3_contact_no">Contact</label>
-          <input type="text" name="l3_contact_no" id="l3_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l3_contact_no">
+          <label for="l3_email">Email</label>
+          <input type="text" name="l3_email" id="l3_email" class="form-control" placeholder="Enter Email Id" formControlName="l3_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l3_email').invalid && (__amcForm.get('l3_email').dirty || __amcForm.get('l3_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l3_email')).errors?.email">*Please provide valid email</span>
         </div>
-
+        </div>
       </div>
 
 
@@ -281,19 +388,35 @@
         <hr class="line"/>
        </div>
       <div class="row">
+        <div class="col-sm-12">
+          <mat-checkbox color="primary"  formControlName="is_same"> Same As Local Office</mat-checkbox>
+        </div>
         <div class="col-sm-12 my-3">
           <label for="l4_name">Name</label>
           <input type="text" name="l4_name" id="l4_name" class="form-control" placeholder="Enter Name" formControlName="l4_name">
         </div>
         <div class="col-sm-12 my-3">
-          <label for="l4_email">Email</label>
-          <input type="text" name="l4_email" id="l4_email" class="form-control" placeholder="Enter Email Id" formControlName="l4_email">
+          <label for="l4_contact_no">Contact</label>
+          <input type="text" maxlength ="10"
+          minlength ="10" name="l4_contact_no" id="l4_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l4_contact_no">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l4_contact_no').invalid && (__amcForm.get('l4_contact_no').dirty || __amcForm.get('l4_contact_no').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l4_contact_no')).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l4_contact_no')).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l4_contact_no')).hasError('pattern')">*allow only
+            digits</span>
+        </div>
         </div>
         <div class="col-sm-12 my-3">
-          <label for="l4_contact_no">Contact</label>
-          <input type="text" name="l4_contact_no" id="l4_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l4_contact_no">
+          <label for="l4_email">Email</label>
+          <input type="text" name="l4_email" id="l4_email" class="form-control" placeholder="Enter Email Id" formControlName="l4_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l4_email').invalid && (__amcForm.get('l4_email').dirty || __amcForm.get('l4_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l4_email')).errors?.email">*Please provide valid email</span>
         </div>
-
+        </div>
       </div>
 
 
@@ -305,17 +428,30 @@
       <div class="row">
         <div class="col-sm-12 my-3">
           <label for="l5_name">Name</label>
-          <input type="text" name="l5_name" id="l5_name" class="form-control" placeholder="Enter Name" formControlName="l5_name">
+          <input type="text"  name="l5_name" id="l5_name" class="form-control" placeholder="Enter Name" formControlName="l5_name">
+        </div>
+        <div class="col-sm-12 my-3">
+          <label for="l5_contact_no">Contact</label>
+          <input type="text" maxlength ="10"
+          minlength ="10" name="l5_contact_no" id="l5_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l5_contact_no">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l5_contact_no').invalid && (__amcForm.get('l5_contact_no').dirty || __amcForm.get('l5_contact_no').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l5_contact_no')).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l5_contact_no')).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l5_contact_no')).hasError('pattern')">*allow only
+            digits</span>
+        </div>
         </div>
         <div class="col-sm-12 my-3">
           <label for="l5_email">Email</label>
           <input type="text" name="l5_email" id="l5_email" class="form-control" placeholder="Enter Email Id" formControlName="l5_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l5_email').invalid && (__amcForm.get('l5_email').dirty || __amcForm.get('l5_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l5_email')).errors?.email">*Please provide valid email</span>
         </div>
-        <div class="col-sm-12 my-3">
-          <label for="l5_contact_no">Contact</label>
-          <input type="text" name="l5_contact_no" id="l5_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l5_contact_no">
         </div>
-
       </div>
 
       <div class="divider">
@@ -328,12 +464,26 @@
           <input type="text" name="l6_name" id="l6_name" class="form-control" placeholder="Enter Name" formControlName="l6_name">
         </div>
         <div class="col-sm-12 my-3">
-          <label for="l6_email">Email</label>
-          <input type="text" name="l6_email" id="l6_email" class="form-control" placeholder="Enter Email Id" formControlName="l6_email">
+          <label for="l6_contact_no">Contact</label>
+          <input type="text" maxlength ="10"
+          minlength ="10" name="l6_contact_no" id="l6_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l6_contact_no">
+            <div class="invalid-feedback"
+            *ngIf="__amcForm.get('l6_contact_no').invalid && (__amcForm.get('l6_contact_no').dirty || __amcForm.get('l6_contact_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l6_contact_no')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l6_contact_no')).hasError('maxlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l6_contact_no')).hasError('pattern')">*allow only
+              digits</span>
+          </div>
         </div>
         <div class="col-sm-12 my-3">
-          <label for="l6_contact_no">Contact</label>
-          <input type="text" name="l6_contact_no" id="l6_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l6_contact_no">
+          <label for="l6_email">Email</label>
+          <input type="text" name="l6_email" id="l6_email" class="form-control" placeholder="Enter Email Id" formControlName="l6_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l6_email').invalid && (__amcForm.get('l6_email').dirty || __amcForm.get('l6_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l6_email')).errors?.email">*Please provide valid email</span>
+        </div>
         </div>
       </div>
 

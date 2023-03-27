@@ -31,7 +31,7 @@ export class RcvFormCrudComponent implements OnInit {
   __dialogDtForClient: any;
   __isCldtlsEmpty: boolean = false;
   __mcOptionMenu: any=[
-    {"flag":"M","name":"Minor","icon":"person_pin"},
+    // {"flag":"M","name":"Minor","icon":"person_pin"},
     {"flag":"P","name":"Pan Holder","icon":"credit_card"},
     {"flag":"N","name":"Non Pan Holder","icon":"credit_card_off"}
    ]
@@ -41,13 +41,13 @@ export class RcvFormCrudComponent implements OnInit {
   @Inject(MAT_DIALOG_DATA) public data: any,
   private __dbIntr: DbIntrService,
   public __dialog: MatDialog,
-  private overlay: Overlay,
+  private overlay: Overlay
   ) { }
   __insTypeMst: any=[];
   __rcvForm = new FormGroup({
     bu_type: new FormControl('',[Validators.required]),
     euin_no: new FormControl('',[Validators.required]),
-    sub_brk_cd: new FormControl(''),
+    // sub_brk_cd: new FormControl(''),
     sub_arn_no: new FormControl(''),
     insure_bu_type: new FormControl('',[Validators.required]),
     ins_type_id: new FormControl('',[Validators.required]),
@@ -59,6 +59,7 @@ export class RcvFormCrudComponent implements OnInit {
   })
 
   ngOnInit(): void {
+
     this.getInsTypeMst();
     if(this.data.temp_tin_no){
       this.setRcvFormDtls();
@@ -68,7 +69,7 @@ export class RcvFormCrudComponent implements OnInit {
     this.__dbIntr.api_call(0,'/ins/formreceived','temp_tin_no='+ this.data.temp_tin_no).pipe(pluck("data")).subscribe(res =>{
       console.log(res);
       this.__rcvForm.patchValue({
-          sub_brk_cd:res[0].sub_brk_cd ,
+          // sub_brk_cd:res[0].sub_brk_cd ,
           bu_type:res[0].bu_type ,
           id:res[0].id ,
           proposer_id:res[0].proposer_id ,
@@ -78,12 +79,12 @@ export class RcvFormCrudComponent implements OnInit {
           insure_bu_type: res[0].insure_bu_type
       })
       this.__rcvForm.controls['proposer_code'].reset(res[0].proposer_code,{ onlySelf: true, emitEvent: false });
-      this.__rcvForm.controls['euin_no'].reset(res[0].euin_no,{ onlySelf: true, emitEvent: false });
+      this.__rcvForm.controls['euin_no'].reset(res[0].euin_no +' - '+res[0].emp_name,{ onlySelf: true, emitEvent: false });
       this.__dialogDtForClient = {id:res[0].proposer_id,proposer_type:res[0].proposer_type,client_name:res[0].proposer_name};
       this.__clientMst.push(this.__dialogDtForClient);
       if(res[0].bu_type == 'B'){
-        this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_arn_no,{ onlySelf: true, emitEvent: false });
-        this.__rcvForm.controls['sub_brk_cd'].reset(res[0].sub_brk_cd);
+        this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_brk_cd,{ onlySelf: true, emitEvent: false });
+        // this.__rcvForm.controls['sub_brk_cd'].reset(res[0].sub_brk_cd);
        }
 
     })
@@ -124,7 +125,7 @@ export class RcvFormCrudComponent implements OnInit {
     map((x: responseDT) => x.data)
   ).subscribe({
     next: (value) => {
-      this.__rcvForm.controls['sub_brk_cd'].setValue('');
+      // this.__rcvForm.controls['sub_brk_cd'].setValue('');
       this.__subbrkArnMst = value
       this.searchResultVisibilityForSubBrkArn('block');
       this.__isSubArnPending = false;
@@ -137,14 +138,13 @@ export class RcvFormCrudComponent implements OnInit {
 
   //  Change Of Buisness
   this.__rcvForm.controls['bu_type'].valueChanges.subscribe(res =>{
-    this.__rcvForm.controls['sub_brk_cd'].setValidators(res == 'B' ? [Validators.required] : null);
+    // this.__rcvForm.controls['sub_brk_cd'].setValidators(res == 'B' ? [Validators.required] : null);
     this.__rcvForm.controls['sub_arn_no'].setValidators(res == 'B' ? [Validators.required] : null);
-    this.__rcvForm.controls['sub_brk_cd'].updateValueAndValidity({emitEvent:false});
+    // this.__rcvForm.controls['sub_brk_cd'].updateValueAndValidity({emitEvent:false});
     this.__rcvForm.controls['sub_arn_no'].updateValueAndValidity({emitEvent:false});
   })
 
   // Change of Proposer code
-  //Client Code Search
   this.__rcvForm.controls['proposer_code'].valueChanges.
   pipe(
     tap(()=> this.__isClientPending = true),
@@ -204,8 +204,8 @@ export class RcvFormCrudComponent implements OnInit {
     __rcvForm.append('temp_tin_no',this.data ? this.data.temp_tin_no : '');
 
     if(this.__rcvForm.value.bu_type == 'B'){
-      __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no.split(' ')[0] : '');
-      __rcvForm.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd ? this.__rcvForm.value.sub_brk_cd : '');
+      __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no : '');
+      // __rcvForm.append("sub_brk_cd",this.__rcvForm.value.sub_brk_cd ? this.__rcvForm.value.sub_brk_cd : '');
     }
 
   //  __rcvForm.append("id",this.__rcvForm.value.id)
@@ -241,11 +241,13 @@ export class RcvFormCrudComponent implements OnInit {
                 this.__rcvForm.controls['euin_no'].setValue(__euinDtls.euin_no+' - '+__euinDtls.emp_name,{emitEvent: false});
                 this.searchResultVisibility('none');
                 break
-      case 'S' : this.__rcvForm.controls['sub_arn_no'].reset(__euinDtls.arn_no+' - '+__euinDtls.bro_name,{ onlySelf: true, emitEvent: false });
-                  this.__rcvForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
+      case 'S' : this.__rcvForm.controls['sub_arn_no'].reset(__euinDtls.code,{ onlySelf: true, emitEvent: false });
+                  // this.__rcvForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
                   this.searchResultVisibilityForSubBrkArn('none');
                   break;
       case 'C':    this.__dialogDtForClient = __euinDtls;
+      console.log(__euinDtls);
+
                   this.__rcvForm.controls['proposer_code'].reset(__euinDtls.client_code,{ onlySelf: true, emitEvent: false })
                   this.__rcvForm.patchValue({proposer_name:__euinDtls.client_name,proposer_id:__euinDtls.id});
                   this.searchResultVisibilityForClient('none');

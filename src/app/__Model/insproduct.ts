@@ -6,4 +6,6 @@ export class insProduct{
   public ins_type_name:string;
   public comp_short_name:string;
   public comp_full_name:string;
+  public product_type_id: number;
+  public product_type: string;
 }

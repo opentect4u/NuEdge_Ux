@@ -33,13 +33,13 @@ export class DocsMasterComponent implements OnInit {
       queryParams:''
     },
     {
-      label:"Document type",
+      label:"Document Type",
       url:'/main/master/docType',
       hasQueryParams:true,
       queryParams:''
     }
 ]
-  
+
   __pageNumber= new FormControl(10);
   __paginate:any=[];
   __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "/main/master/docTypeModify","icon":"","id":48,"flag":"M"},

@@ -929,7 +929,7 @@ ngAfterViewInit(){
    }
   }
 });
-//Swp frequency change
+//SWP frequency change
 this.__nonfinForm.controls['swp_freq'].valueChanges.subscribe(res =>{
 
 })

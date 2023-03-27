@@ -173,6 +173,7 @@ export class RcvFrmComponent implements OnInit {
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     try{
       dialogConfig.data = {
+      data:null,
       flag:type + 'RF',
       id: 0,
       title: 'Form Recievable' + (atob(this.__rtDt.snapshot.queryParamMap.get('type_id')) == '4' ? ' - NFO' : (atob(this.__rtDt.snapshot.queryParamMap.get('type_id')) == '1' ? ' - Financial' : ' - Non Financial')),
