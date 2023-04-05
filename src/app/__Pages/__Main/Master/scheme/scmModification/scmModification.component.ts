@@ -87,7 +87,9 @@ export class ScmModificationComponent implements OnInit {
       :  JSON.parse(this.__getPrevScmDT.stp_date),[Validators.required]),
     stp_frequency: new FormArray([]),
     is_selectall_for_stp: new FormControl(false),
-    ava_special_sip: new FormControl(this.data.id > 0 ? this.data.items.ava_special_sip : global.getActualVal(this.__getPrevScmDT.ava_special_sip)),
+    ava_special_sip: new FormControl(this.data.id > 0 ?
+      (this.data.items.ava_special_sip == "true" ? true : false)
+      : (this.__getPrevScmDT.ava_special_sip == "true" ? true : false)),
     special_sip_name: new FormControl(this.data.id > 0 ? this.data.items.special_sip_name : global.getActualVal(this.__getPrevScmDT.special_sip_name))
 
   })
@@ -105,7 +107,7 @@ export class ScmModificationComponent implements OnInit {
     }
 
   ngOnInit() {
-    console.log(this.__getPrevScmDT);
+    console.log(this.data);
 
     this.getProductMaster();
     this.setFrequencyAmt(this.data.id > 0 ? JSON.parse(this.data.items.sip_freq_wise_amt) : __sipFrequency);

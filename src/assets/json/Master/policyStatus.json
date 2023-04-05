@@ -1,0 +1,6 @@
+[
+  {"id":"I","value":"Issued"},
+  {"id":"R","value":"Rejected"},
+  {"id":"P","value":"Inprocess"},
+  {"id":"A","value":"All"}
+]

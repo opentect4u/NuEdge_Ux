@@ -1,0 +1,7 @@
+
+[
+  {"id":"L","value":"Logged In"},
+  {"id":"N","value":"Not Logged In"},
+  {"id":"R","value":"Rejected"},
+  {"id":"A","value":"All"}
+]

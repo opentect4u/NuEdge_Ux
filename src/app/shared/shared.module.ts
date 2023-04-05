@@ -22,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { A11yModule } from '@angular/cdk/a11y';
 import { CreateClientComponent } from './create-client/create-client.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @NgModule({
   imports: [
     CommonModule,
@@ -40,6 +41,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     MatButtonModule,
     MatSelectModule,
     A11yModule,
+    MatTooltipModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   declarations: [
@@ -48,7 +50,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     ResizeColumnDirective,
     elipsisPipe,
     DeletemstComponent,
-    CreateClientComponent],
+    CreateClientComponent
+  ],
   exports:[
     BnkrplcPipe,
     ClOutsideClickDirective,
@@ -65,6 +68,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     MatButtonToggleModule,
     MatCheckboxModule,
     MatTableExporterModule,
+    MatTooltipModule,
     MatRadioModule,
     MatMenuModule,
     MatIconModule,

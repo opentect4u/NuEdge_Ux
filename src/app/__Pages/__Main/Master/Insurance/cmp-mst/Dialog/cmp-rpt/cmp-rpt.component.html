@@ -57,14 +57,23 @@
 
           </div>
           <div class="row">
+            <div class="col-sm-12">
+              <ng-container *ngFor="let levels of __levels; let i = index" formArrayName="levels">
+                <mat-checkbox color="primary" class="mr-3" [formControlName]="i">{{levels.value}}</mat-checkbox>
+              </ng-container>
+            </div>
+          </div>
+          <div class="row my-3">
             <div class="col-sm-6 my-auto">
               <mat-checkbox color="primary"
+              #insTypeChecked
               [id]="insType.id"
               [class]="i == 0 ? '' : 'ml-3'"
               *ngFor="let insType of instTypeMst;let i=index"
               [value]="insType.id"
               (change)="onInsTypeChange($event)"
               > {{insType.type}}</mat-checkbox>
+              <mat-checkbox class="ml-3" color="primary" formControlName="is_all"> All</mat-checkbox>
             </div>
             <div class="col-sm-6 my-auto">
               <button mat-raised-button  color="primary" class="float-right">
@@ -127,13 +136,13 @@
         <ng-container matColumnDef="comp_short_name">
           <th mat-header-cell *matHeaderCellDef  mat-sort-header="comp_short_name">Company Short Name</th>
           <td mat-cell *matCellDef="let element">
-              <span [title]="element.comp_short_name">{{element.comp_short_name ? (element.comp_short_name | ellipsis: 25) : ''}}</span>
+              <span [title]="element.comp_short_name">{{element.comp_short_name ? (element.comp_short_name | ellipsis: 25) : 'N/A'}}</span>
           </td>
         </ng-container>
         <ng-container matColumnDef="ins_type" >
           <th mat-header-cell *matHeaderCellDef mat-sort-header="ins_type">Insurance Type</th>
           <td mat-cell *matCellDef="let element">
-            <p class="text-wrap">{{element.ins_type}}</p>
+            <p class="text-wrap">{{element.ins_type ? element.ins_type : 'N/A'}}</p>
           </td>
         </ng-container>
 
@@ -142,40 +151,40 @@
           <th mat-header-cell *matHeaderCellDef  mat-sort-header="comp_full_name">Company Full Name</th>
           <td mat-cell *matCellDef="let element">
             <a class="hoverableText" (click)="openProduct(element)"  [title]="element.comp_full_name">
-              {{element.comp_full_name ?  (element.comp_full_name | ellipsis: 25)  : ''}}
+              {{element.comp_full_name ?  (element.comp_full_name | ellipsis: 25)  : 'N/A'}}
             </a>
           </td>
         </ng-container>
         <ng-container matColumnDef="login_url">
           <th mat-header-cell *matHeaderCellDef  mat-sort-header="login_url">Login URL</th>
           <td mat-cell *matCellDef="let element">
-            <span>{{element.login_url}}</span>
+            <span>{{element.login_url ? element.login_url : 'N/A'}}</span>
           </td>
         </ng-container>
         <ng-container matColumnDef="login_pass">
           <th mat-header-cell *matHeaderCellDef  mat-sort-header="login_pass">Login Password</th>
           <td mat-cell *matCellDef="let element">
-            {{element.login_pass}}
+            {{element.login_pass ? element.login_pass : 'N/A'}}
           </td>
         </ng-container>
         <ng-container matColumnDef="login_id">
           <th mat-header-cell *matHeaderCellDef  mat-sort-header="login_id">Login ID</th>
           <td mat-cell *matCellDef="let element">
-            {{element.login_id}}
+            {{element.login_id ? element.login_id : 'N/A'}}
           </td>
         </ng-container>
         <!-- End -->
         <ng-container matColumnDef="cus_care_whatsApp_no">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="cus_care_whatsApp_no">Customer Care WhatsApp Number</th>
           <td mat-cell *matCellDef="let element">
-            {{element.cus_care_whatsapp_no}}
+            {{element.cus_care_whatsapp_no ? element.cus_care_whatsapp_no : 'N/A'}}
           </td>
         </ng-container>
         <ng-container matColumnDef="website">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="website">Web Site</th>
           <td mat-cell *matCellDef="let element">
             <!-- <a href="{{element.website}}" target="__blank"> -->
-              {{element.website}}
+              {{element.website ? element.website : 'N/A'}}
             <!-- </a> -->
           </td>
         </ng-container>
@@ -183,26 +192,26 @@
         <ng-container matColumnDef="cus_care_no">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="cus_care_no">Customer Care Number</th>
           <td mat-cell *matCellDef="let element">
-            {{element.cus_care_no}}
+            {{element.cus_care_no ? element.cus_care_no : 'N/A'}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="cus_care_email">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="cus_care_email">Customer Care Email</th>
           <td mat-cell *matCellDef="let element">
-            {{element.cus_care_email}}
+            {{element.cus_care_email ? element.cus_care_email : 'N/A'}}
           </td>
         </ng-container>
         <ng-container matColumnDef="head_ofc_contact_per">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="head_ofc_contact_per">Head Office Contact Person</th>
           <td mat-cell *matCellDef="let element">
-             <p class="text-wrap">{{element.head_ofc_contact_per}}</p>
+             <p class="text-wrap">{{element.head_ofc_contact_per ? element.head_ofc_contact_per : 'N/A'}}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="head_contact_per_mobile">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="head_contact_per_mobile">Head Office Contact Person Mobile</th>
           <td mat-cell *matCellDef="let element">
-             <p class="text-wrap">{{element.head_contact_per_mob}}</p>
+             <p class="text-wrap">{{element.head_contact_per_mob ? element.head_contact_per_mob : 'N/A'}}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="head_contact_per_email">
@@ -210,7 +219,7 @@
           <td mat-cell *matCellDef="let element">
              <!-- <p class="text-wrap"> -->
               <span [title]="element.head_contact_per_email">
-                {{element.head_contact_per_email}}
+                {{element.head_contact_per_email ? element.head_contact_per_email : 'N/A'}}
               </span>
             <!-- </p> -->
           </td>
@@ -218,37 +227,170 @@
         <ng-container matColumnDef="head_ofc_addr">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="head_ofc_addr">Head Office Contact Person Address</th>
           <td mat-cell *matCellDef="let element">
-           <p [title]="element.head_ofc_addr">{{element.head_ofc_addr ? (element.head_ofc_addr | ellipsis:25) : ''}}</p>
+           <p [title]="element.head_ofc_addr">{{element.head_ofc_addr ? (element.head_ofc_addr | ellipsis:25) : 'N/A'}}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="local_ofc_contact_per">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="local_ofc_contact_per">Local Office Contact Person</th>
           <td mat-cell *matCellDef="let element">
-             <p class="text-wrap">{{element.local_ofc_contact_per}}</p>
+             <p class="text-wrap">{{element.local_ofc_contact_per ? element.local_ofc_contact_per : 'N/A'}}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="local_contact_per_mobile">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="local_contact_per_mobile">Local Office Contact Person Mobile</th>
           <td mat-cell *matCellDef="let element">
-             <p class="text-wrap">{{element.local_contact_per_mob}}</p>
+             <p class="text-wrap">{{element.local_contact_per_mob ? element.local_contact_per_mob : 'N/A'}}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="local_contact_per_email">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="local_contact_per_email">Local Office Contact Person Email</th>
           <td mat-cell *matCellDef="let element">
-             <p class="text-wrap">{{element.local_contact_per_email}}</p>
+             <p class="text-wrap">{{element.local_contact_per_email ? element.local_contact_per_email : 'N/A'}}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="local_ofc_addr">
           <th mat-header-cell *matHeaderCellDef mat-sort-header="local_ofc_addr">Local Office Contact Person Address</th>
           <td mat-cell *matCellDef="let element">
-             <p class="text-wrap" [title]="element.local_ofc_addr">{{element.local_ofc_addr | ellipsis:25}}</p>
+             <p class="text-wrap" [title]="element.local_ofc_addr">{{element.local_ofc_addr ? (element.local_ofc_addr | ellipsis:25) : "N/A"}}</p>
           </td>
         </ng-container>
 
 
-        <ng-container matColumnDef="edit" sticky>
+            <ng-container matColumnDef="distributor_care_no">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="distributor_care_no">Distributor Care Number</th>
+              <td mat-cell *matCellDef="let element">
+                <p class="text-wrap">{{element.distributor_care_no ? element.distributor_care_no : 'N/A'}}</p>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="distributor_care_email">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="distributor_care_email">Distributor Care Email</th>
+              <td mat-cell *matCellDef="let element">
+                <p class="text-wrap">{{element.distributor_care_email ? element.distributor_care_email : 'N/A'}}</p>
+              </td>
+            </ng-container>
+
+        <ng-container matColumnDef="l1_name">
+          <th mat-sort-header="l1_name" mat-header-cell *matHeaderCellDef>Level-1 Name</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l1_name ? element.l1_name : 'N/A'}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l1_contact_no">
+          <th mat-sort-header="l1_contact_no" mat-header-cell *matHeaderCellDef>Level-1 Contact</th>
+          <td mat-cell *matCellDef="let element">
+           <p>{{element.l1_contact_no ? element.l1_contact_no : 'N/A'}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l1_email">
+          <th mat-sort-header="l1_email" mat-header-cell *matHeaderCellDef>Level-1 Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l1_email ? element.l1_email : "N/A"}}</p>
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="l2_name">
+          <th mat-sort-header="l2_name" mat-header-cell *matHeaderCellDef>Level-2 Name</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l2_name ? element.l2_name : 'N/A'}}</p>
+          </td>
+        </ng-container>
+
+
+
+        <ng-container matColumnDef="l2_contact_no">
+          <th mat-sort-header="l2_contact_no" mat-header-cell *matHeaderCellDef>Level-2 Contact</th>
+          <td mat-cell *matCellDef="let element">
+               <p class="text-wrap">{{element.l2_contact_no ? element.l2_contact_no : 'N/A'}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l2_email">
+          <th mat-sort-header="l2_email" mat-header-cell *matHeaderCellDef>Level-2 Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l2_email ? element.l2_email : "N/A"}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l3_name">
+          <th mat-sort-header="l3_name" mat-header-cell *matHeaderCellDef>Level-3 Name</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l3_name ? element.l3_name : 'N/A'}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l3_contact_no">
+          <th mat-sort-header="l3_contact_no" mat-header-cell *matHeaderCellDef>Level-3 Contact</th>
+          <td mat-cell *matCellDef="let element">
+      <p class="text-wrap">{{element.l3_contact_no ? element.l3_contact_no : 'N/A'}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l3_email">
+          <th mat-sort-header="l3_email" mat-header-cell *matHeaderCellDef>Level-3 Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l3_email ? element.l3_email : 'N/A'}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l4_name">
+          <th mat-sort-header="l4_name" mat-header-cell *matHeaderCellDef>Level-4 Name</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l4_name ? element.l4_name : 'N/A'}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l4_contact_no">
+          <th mat-sort-header="l4_contact_no" mat-header-cell *matHeaderCellDef>Level-4 Contact</th>
+          <td mat-cell *matCellDef="let element">
+      <p class="text-wrap">{{element.l4_contact_no ? element.l4_contact_no : 'N/A'}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l4_email">
+          <th mat-sort-header="l4_email" mat-header-cell *matHeaderCellDef>Level-4 Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l4_email ? element.l4_email : 'N/A'}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l5_name">
+          <th mat-sort-header="l5_name" mat-header-cell *matHeaderCellDef>Level-5 Name</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l5_name ? element.l5_name : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l5_contact_no">
+          <th mat-sort-header="l5_contact_no" mat-header-cell *matHeaderCellDef>Level-5 Contact</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l5_contact_no  ? element.l5_contact_no : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l5_email">
+          <th mat-sort-header="l5_email" mat-header-cell *matHeaderCellDef>Level-5 Email</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l5_email  ? element.l5_email : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l6_name">
+          <th mat-sort-header="l6_name" mat-header-cell *matHeaderCellDef>Level-6 Name</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l6_name  ? element.l6_name : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l6_contact_no">
+          <th mat-sort-header="l6_contact_no" mat-header-cell *matHeaderCellDef>Level-6 Contact</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l6_contact_no  ? element.l6_contact_no : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l6_email">
+          <th mat-sort-header="l6_email" mat-header-cell *matHeaderCellDef>Level-6 Email</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l6_email  ? element.l6_email : 'N/A'}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="edit">
           <th mat-header-cell *matHeaderCellDef>Edit</th>
           <td mat-cell *matCellDef="let element">
             <button mat-icon-button (click)="populateDT(element)">
@@ -331,14 +473,14 @@
         <ng-container matColumnDef="comp_short_name" >
           <th mat-header-cell *matHeaderCellDef>Company Short Name</th>
           <td mat-cell *matCellDef="let element">
-            <p class="text-wrap">{{element.comp_short_name}}</p>
+            <p class="text-wrap">{{element.comp_short_name ? element.comp_short_name : 'N/A'}}</p>
           </td>
         </ng-container>
      <!--Temporary TIN No.-->
      <ng-container matColumnDef="ins_type" >
       <th mat-header-cell *matHeaderCellDef>Insurance Type</th>
       <td mat-cell *matCellDef="let element">
-        <p class="text-wrap">{{element.ins_type}}</p>
+        <p class="text-wrap">{{element.ins_type ? element.ins_type : 'N/A'}}</p>
       </td>
     </ng-container>
 
@@ -442,6 +584,135 @@
           <th mat-header-cell *matHeaderCellDef>Local Office Contact Person Address</th>
           <td mat-cell *matCellDef="let element">
              <p class="text-wrap">{{element.local_ofc_addr}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="distributor_care_no">
+          <th mat-header-cell *matHeaderCellDef>Distributor Care Number</th>
+          <td mat-cell *matCellDef="let element">
+            <p class="text-wrap">{{element.distributor_care_no}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="distributor_care_email">
+          <th mat-header-cell *matHeaderCellDef>Distributor Care Email</th>
+          <td mat-cell *matCellDef="let element">
+            <p class="text-wrap">{{element.distributor_care_email}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l1_name">
+          <th mat-header-cell *matHeaderCellDef>Level-1 Name</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l1_name}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l1_contact_no">
+          <th mat-header-cell *matHeaderCellDef>Level-1 Contact</th>
+          <td mat-cell *matCellDef="let element">
+           <p>{{element.l1_contact_no}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l1_email">
+          <th  mat-header-cell *matHeaderCellDef>Level-1 Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l1_email}}</p>
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="l2_name">
+          <th mat-header-cell *matHeaderCellDef>Level-2 Name</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l2_name}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l2_contact_no">
+          <th  mat-header-cell *matHeaderCellDef>Level-2 Contact</th>
+          <td mat-cell *matCellDef="let element">
+               <p class="text-wrap">{{element.l2_contact_no}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l2_email">
+          <th  mat-header-cell *matHeaderCellDef>Level-2 Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l2_email}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l3_name">
+          <th  mat-header-cell *matHeaderCellDef>Level-3 Name</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l3_name}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l3_contact_no">
+          <th  mat-header-cell *matHeaderCellDef>Level-3 Contact</th>
+          <td mat-cell *matCellDef="let element">
+      <p class="text-wrap">{{element.l3_contact_no}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l3_email">
+          <th mat-header-cell *matHeaderCellDef>Level-3 Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l3_email}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l4_name">
+          <th mat-header-cell *matHeaderCellDef>Level-4 Name</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l4_name}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l4_contact_no">
+          <th mat-header-cell *matHeaderCellDef>Level-4 Contact</th>
+          <td mat-cell *matCellDef="let element">
+      <p class="text-wrap">{{element.l4_contact_no}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l4_email">
+          <th  mat-header-cell *matHeaderCellDef>Level-4 Email</th>
+          <td mat-cell *matCellDef="let element">
+             <p class="text-wrap">{{element.l4_email}}</p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l5_name">
+          <th  mat-header-cell *matHeaderCellDef>Level-5 Name</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l5_name!= 'null' ? element.l5_name : ''}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l5_contact_no">
+          <th  mat-header-cell *matHeaderCellDef>Level-5 Contact</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l5_contact_no!= 'null'  ? element.l5_contact_no : ''}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l5_email">
+          <th  mat-header-cell *matHeaderCellDef>Level-5 Email</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l5_email!= 'null'  ? element.l5_email : ''}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="l6_name">
+          <th  mat-header-cell *matHeaderCellDef>Level-6 Name</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l6_name!= 'null'  ? element.l6_name : ''}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l6_contact_no">
+          <th  mat-header-cell *matHeaderCellDef>Level-6 Contact</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l6_contact_no!= 'null'  ? element.l6_contact_no : ''}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="l6_email">
+          <th mat-header-cell *matHeaderCellDef>Level-6 Email</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.l6_email!= 'null'  ? element.l6_email : ''}}
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="__exportedClmns" class="highlight"></tr>

@@ -1,12 +1,14 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit,Inject, ElementRef, QueryList, ViewChildren, ViewChild } from '@angular/core';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { map, pluck } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { insComp } from 'src/app/__Model/insComp';
+import { insPrdType } from 'src/app/__Model/insPrdType';
 import { insProduct } from 'src/app/__Model/insproduct';
+import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -19,11 +21,17 @@ import { ProductCrudComponent } from '../product-crud/product-crud.component';
   styleUrls: ['./product-rpt.component.css']
 })
 export class ProductRPTComponent implements OnInit {
+  @ViewChild('prdName') __prdName: ElementRef;
+  __isProductnameVisisble: boolean = false;
+  @ViewChildren("insTypeChecked") private __insTypeChecked: QueryList<ElementRef>;
+  __settings_productType = this.__utility.settingsfroMultiselectDropdown('id','product_type','Search Product Type');
   __settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Companies');
   __prdSearchForm = new FormGroup({
-    ins_type_id: new FormControl(''),
+    ins_type_id: new FormArray([]),
     product_name: new FormControl(''),
-    company_id: new FormControl([])
+    company_id: new FormControl([]),
+    is_all: new FormControl(false),
+    product_type_id: new FormControl([])
   });
   __exportedClmns: string[] = ['sl_no','ins_type_name','comp_full_name','comp_short_name','product_type','product_name'];
   __columns: string[] = ['edit','delete','sl_no','ins_type_name','comp_full_name','comp_short_name','product_type','product_name']
@@ -34,6 +42,8 @@ export class ProductRPTComponent implements OnInit {
   __paginate: any = [];
   __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
   __companyMst: insComp[] = [];
+  __prdTypeMst: insPrdType[] = [];
+  __productMst: insProduct[]= [];
   constructor(
     private __Rpt: RPTService,
     public dialogRef: MatDialogRef<ProductRPTComponent>,
@@ -48,9 +58,15 @@ export class ProductRPTComponent implements OnInit {
   __insTypeMst: any= [];
   ngOnInit(): void {
     this.getInsTypeMst();
+    this.getproductTypeMst();
     setTimeout(()=>{
       this.getproductMst();
     },500)
+  }
+  getproductTypeMst(){
+   this.__dbIntr.api_call(0,'/ins/productType',null).pipe(pluck("data")).subscribe((res: insPrdType[]) =>{
+    this.__prdTypeMst = res;
+   })
   }
   getcompanyMst(res: string | null = ''){
     this.__dbIntr.api_call(0,'/ins/company',null).pipe(pluck("data")).subscribe((res: insComp[]) =>{
@@ -70,9 +86,42 @@ export class ProductRPTComponent implements OnInit {
     })
   }
   ngAfterViewInit(){
-    this.__prdSearchForm.controls['ins_type_id'].valueChanges.subscribe(res =>{
-      this.getcompanyMst(res);
+    this.__prdSearchForm.controls['is_all'].valueChanges.subscribe(res =>{
+      const ins_type: FormArray = this.__prdSearchForm.get('ins_type_id') as FormArray;
+      ins_type.clear();
+      if(!res){
+        this.uncheckAll();
+      }
+      else{
+        this.__insTypeMst.forEach(__el =>{
+          ins_type.push(new FormControl(__el.id));
+        })
+        this.checkAll();
+      }
     })
+
+     // Product NAME SEARCH
+  this.__prdSearchForm.controls['product_name'].valueChanges.
+  pipe(
+    tap(()=> this.__isProductnameVisisble = true),
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap(dt => dt?.length > 1 ?
+      this.__dbIntr.searchItems('/ins/product', dt )
+      : []),
+    map((x: responseDT) => x.data)
+  ).subscribe({
+    next: (value) => {
+      console.log(value);
+      this.__productMst = value
+      this.searchResultVisibility('block');
+      this.__isProductnameVisisble = false;
+    },
+    complete: () => console.log(''),
+    error: (err) => {
+      this.__isProductnameVisisble = false;
+    }
+  })
   }
   getInsTypeMst(){
     this.__dbIntr.api_call(0,'/ins/type',null).pipe(pluck("data")).subscribe(res =>{
@@ -107,8 +156,9 @@ export class ProductRPTComponent implements OnInit {
     console.log(JSON.stringify(this.__prdSearchForm.value.company_id));
     __fb.append('product_name',global.getActualVal(this.__prdSearchForm.value.product_name));
     __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id));
-    __fb.append('ins_type_id',global.getActualVal(this.__prdSearchForm.value.ins_type_id));
+    __fb.append('ins_type_id',JSON.stringify(this.__prdSearchForm.value.ins_type_id));
     __fb.append('paginate', this.__pageNumber.value);
+    __fb.append('product_type_id',JSON.stringify(this.__prdSearchForm.value.product_type_id))
     __fb.append('column_name', column_name);
     __fb.append('sort_by', sort_by);
      this.__dbIntr.api_call(1,'/ins/productDetailSearch',__fb).pipe(pluck("data")).subscribe((res: any) =>{
@@ -177,10 +227,11 @@ export class ProductRPTComponent implements OnInit {
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
             ('&product_name=' + global.getActualVal(this.__prdSearchForm.value.product_name)) +
-            ('&ins_type_id=' +  global.getActualVal(this.__prdSearchForm.value.ins_type_id)) +
-            ('&company_id=' +  global.getActualVal(this.__prdSearchForm.value.company_id)) +
-            ('&sort_by=' + +this.__sortColumnsAscOrDsc.direction) +
-            ('&column_name=' + +this.__sortColumnsAscOrDsc.active)
+            ('&ins_type_id=' +  JSON.stringify(this.__prdSearchForm.value.ins_type_id)) +
+            ('&company_id=' +  JSON.stringify(this.__prdSearchForm.value.company_id)) +
+            ('&sort_by=' + this.__sortColumnsAscOrDsc.direction) +
+            ('&column_name=' + this.__sortColumnsAscOrDsc.active) +
+            ('&product_type_id='+ JSON.stringify(this.__prdSearchForm.value.product_type_id))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -272,4 +323,56 @@ export class ProductRPTComponent implements OnInit {
   resetValues(){
     this.__prdSearchForm.reset();
   }
+
+  onInsTypeChange(e){
+    const ins_type: FormArray = this.__prdSearchForm.get('ins_type_id') as FormArray;
+    if (e.checked) {
+      ins_type.push(new FormControl(e.source.value));
+    } else {
+      let i: number = 0;
+      ins_type.controls.forEach((item: any) => {
+        if (item.value == e.source.value) {
+          ins_type.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
+    this.__prdSearchForm.get('is_all').setValue(ins_type.controls.length == 3 ?  true : false,{emitEvent: false})
+    }
+    uncheckAll(){
+      this.__insTypeChecked.forEach((element:any) => {
+        element.checked = false;
+      });
+    }
+    checkAll(){
+        this.__insTypeChecked.forEach((element:any) => {
+          element.checked = true;
+        });
+    }
+    outsideClick(__ev){
+      if(__ev){
+        console.log(__ev);
+
+        this.searchResultVisibility('none');
+      }
+    }
+    searchResultVisibility(display_mode){
+      this.__prdName.nativeElement.style.display = display_mode;
+    }
+    getItems(__items: insProduct,__mode){
+      this.__prdSearchForm.controls['product_name'].reset(__items ? __items.product_name : '',{emitEvent: false});
+      this.searchResultVisibility('none');
+    }
+    reset(){
+      this.__prdSearchForm.patchValue({
+        company_id: [],
+        is_all: false,
+        product_type_id: []
+      });
+       this.getItems(null,'P');
+       (<FormArray>this.__prdSearchForm.get('ins_type_id')).clear();
+       this.uncheckAll();
+       this.searchProduct();
+    }
 }

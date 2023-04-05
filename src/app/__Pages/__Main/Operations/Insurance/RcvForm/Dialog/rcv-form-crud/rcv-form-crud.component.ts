@@ -1,12 +1,14 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit,Inject, ElementRef, ViewChild} from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { debounceTime, delay, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { global } from 'src/app/__Utility/globalFunc';
 import buType from '../../../../../../../../assets/json/buisnessType.json';
 import { CreateProposerComponent } from '../create-proposer/create-proposer.component';
 import { DialogDtlsComponent } from '../dialog-dtls/dialog-dtls.component';
@@ -46,13 +48,21 @@ export class RcvFormCrudComponent implements OnInit {
   __insTypeMst: any=[];
   __rcvForm = new FormGroup({
     bu_type: new FormControl('',[Validators.required]),
-    euin_no: new FormControl('',[Validators.required]),
+    euin_no: new FormControl('',
+    {
+      validators:[Validators.required],
+      asyncValidators:[this.EmpValidators()]
+    }
+    ),
     // sub_brk_cd: new FormControl(''),
     sub_arn_no: new FormControl(''),
     insure_bu_type: new FormControl('',[Validators.required]),
-    ins_type_id: new FormControl('',[Validators.required]),
-    proposer_code: new FormControl('',[Validators.required]),
-    proposer_name: new FormControl('',[Validators.required]),
+    ins_type_id: new FormControl(''),
+    proposer_code: new FormControl('',{
+      validators:[Validators.required],
+      asyncValidators:[this.ClientValidators()]
+    }),
+    proposer_name: new FormControl(''),
     recv_from: new FormControl(''),
      proposer_id: new FormControl('',[Validators.required]),
      id: new FormControl('')
@@ -69,7 +79,6 @@ export class RcvFormCrudComponent implements OnInit {
     this.__dbIntr.api_call(0,'/ins/formreceived','temp_tin_no='+ this.data.temp_tin_no).pipe(pluck("data")).subscribe(res =>{
       console.log(res);
       this.__rcvForm.patchValue({
-          // sub_brk_cd:res[0].sub_brk_cd ,
           bu_type:res[0].bu_type ,
           id:res[0].id ,
           proposer_id:res[0].proposer_id ,
@@ -78,15 +87,20 @@ export class RcvFormCrudComponent implements OnInit {
           ins_type_id: res[0].ins_type_id,
           insure_bu_type: res[0].insure_bu_type
       })
+      this.__dialogDtForClient = {id:res[0].proposer_id,
+        proposer_type:res[0].proposer_type,
+        client_name:res[0].proposer_name,
+        client_code: res[0].proposer_code
+      };
+      this.__clientMst.push(this.__dialogDtForClient);
       this.__rcvForm.controls['proposer_code'].reset(res[0].proposer_code,{ onlySelf: true, emitEvent: false });
       this.__rcvForm.controls['euin_no'].reset(res[0].euin_no +' - '+res[0].emp_name,{ onlySelf: true, emitEvent: false });
-      this.__dialogDtForClient = {id:res[0].proposer_id,proposer_type:res[0].proposer_type,client_name:res[0].proposer_name};
-      this.__clientMst.push(this.__dialogDtForClient);
+      this.__euinMst.push({euin_no:res[0].euin_no,emp_name:res[0].emp_name});
+
       if(res[0].bu_type == 'B'){
         this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_brk_cd,{ onlySelf: true, emitEvent: false });
-        // this.__rcvForm.controls['sub_brk_cd'].reset(res[0].sub_brk_cd);
+        this.__subbrkArnMst.push({code:res[0].sub_brk_cd,arn_no:res[0].arn_no,bro_name:res[0].broker_name});
        }
-
     })
   }
   ngAfterViewInit(){
@@ -97,7 +111,16 @@ export class RcvFormCrudComponent implements OnInit {
     debounceTime(200),
     distinctUntilChanged(),
     switchMap(dt => dt?.length > 1 ?
-      this.__dbIntr.searchItems('/employee', dt + (this.__rcvForm.controls['sub_arn_no'].value ? '&sub_arn_no=' + this.__rcvForm.controls['sub_arn_no'].value.split(' ')[0] : ''))
+      this.__dbIntr.searchItems('/employee',
+      global.containsSpecialChars(dt) ? dt.split(' ')[0] : dt
+      +
+      (
+        this.__rcvForm.controls['bu_type'].value == 'B'?
+        (this.__rcvForm.controls['sub_arn_no'].value ?
+        '&sub_arn_no=' + this.__rcvForm.controls['sub_arn_no'].value : '') : ''
+      )
+
+      )
       : []),
     map((x: responseDT) => x.data)
   ).subscribe({
@@ -138,10 +161,12 @@ export class RcvFormCrudComponent implements OnInit {
 
   //  Change Of Buisness
   this.__rcvForm.controls['bu_type'].valueChanges.subscribe(res =>{
-    // this.__rcvForm.controls['sub_brk_cd'].setValidators(res == 'B' ? [Validators.required] : null);
     this.__rcvForm.controls['sub_arn_no'].setValidators(res == 'B' ? [Validators.required] : null);
-    // this.__rcvForm.controls['sub_brk_cd'].updateValueAndValidity({emitEvent:false});
+    this.__rcvForm.controls['sub_arn_no'].setAsyncValidators(res == 'B' ? [this.SubBrokerValidators()] : null);
     this.__rcvForm.controls['sub_arn_no'].updateValueAndValidity({emitEvent:false});
+    if(res == 'B'){
+      this.__rcvForm.controls['euin_no'].reset('',{emitEvent: false});
+    }
   })
 
   // Change of Proposer code
@@ -171,6 +196,29 @@ export class RcvFormCrudComponent implements OnInit {
     }
   })
 
+
+   /**change Event of sub Broker Arn Number */
+   this.__rcvForm.controls['sub_brk_cd'].valueChanges
+   .pipe(
+     tap(() => (this.__isSubArnPending = true)),
+     debounceTime(200),
+     distinctUntilChanged(),
+     switchMap((dt) =>
+       dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
+     ),
+     map((x: responseDT) => x.data)
+   )
+   .subscribe({
+     next: (value) => {
+       this.__subbrkArnMst = value;
+       this.searchResultVisibilityForSubBrkArn('block');
+       this.__isSubArnPending = false;
+     },
+     complete: () => console.log(''),
+     error: (err) => {
+       this.__isSubArnPending = false;
+     },
+   });
   }
   getInsTypeMst(){
     this.__dbIntr.api_call(0,'/ins/type',null).pipe(pluck("data")).subscribe(res =>{
@@ -318,4 +366,71 @@ export class RcvFormCrudComponent implements OnInit {
     catch(ex){
     }
   }
+
+  checkIfEmpExists(emp_name: string): Observable<boolean> {
+        if(global.containsSpecialChars(emp_name)){
+          return of(
+            this.__euinMst.findIndex((x) => x.euin_no == emp_name.split(' ')[0])!= -1);
+        }
+        else{
+          return of(this.__euinMst.findIndex((x) => x.euin_no == emp_name)!= -1);
+
+        }
+  }
+  EmpValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfEmpExists(control.value).pipe(
+        map(res => {
+           if(control.value){
+            console.log(res);
+
+          // if res is true, sip_date exists, return true
+             return res ?  null : { empExists: true };
+          // NB: Return null if there is no error
+           }
+           return null
+
+        })
+      );
+    };
+  }
+
+  checkIfSubBrokerExist(subBrk: string): Observable<boolean> {
+      return of(this.__subbrkArnMst.findIndex((x) => x.code == subBrk)!= -1);
+  }
+  SubBrokerValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfSubBrokerExist(control.value).pipe(
+        map(res => {
+           if(control.value){
+            console.log(res);
+
+          // if res is true, sip_date exists, return true
+             return res ?  null : { empExists: true };
+          // NB: Return null if there is no error
+           }
+           return null
+
+        })
+      );
+    };
+  }
+
+  checkIfClientExist(clientDtls: string): Observable<boolean> {
+    return of(this.__clientMst.findIndex((x) => x.client_code == clientDtls)!= -1);
+  }
+ ClientValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfClientExist(control.value).pipe(
+      map(res => {
+         if(control.value){
+           return res ?  null : { proposerExists: true };
+         }
+         return null
+
+      })
+    );
+  };
+}
+
 }

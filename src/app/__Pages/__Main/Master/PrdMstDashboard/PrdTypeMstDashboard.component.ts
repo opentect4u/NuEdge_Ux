@@ -33,8 +33,8 @@ export class PrdtypemstdashboardComponent implements OnInit {
     {
         "id": 2,
         "menu_name":"Fixed Deposit",
-        "flag":"Y",
-        "url":"/main/master/productwisemenu/home"
+        "flag":"N",
+        "url":"/main/master/fixedeposit"
     },
     {
         "id": 3,

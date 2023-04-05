@@ -163,7 +163,7 @@ export class ClientRptComponent implements OnInit {
           + ('&state=' +  this.__clientForm.value.state)
           + ('&dist=' +  this.__clientForm.value.dist)
           + ('&city=' +  this.__clientForm.value.city)
-          // + ('&pincode=' +  this.__clientForm.value.pincode)
+           + ('&client_type=' +this.data.client_type)
           + ('&column_name=' +  this.__sortAscOrDsc.active)
           + ('&sort_by=' +  this.__sortAscOrDsc.direction)
         )
@@ -341,6 +341,8 @@ export class ClientRptComponent implements OnInit {
     }
   }
   updateRow(row_obj){
+    console.log(row_obj);
+
       this.__selectClient.data = this.__selectClient.data.filter((value: client, key) => {
         value.client_name = row_obj.client_name
         value.client_code = row_obj.client_code

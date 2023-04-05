@@ -1,7 +1,8 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { debounceTime, distinctUntilChanged, map, switchMap ,skip} from 'rxjs/operators';
+import { DomSanitizer } from '@angular/platform-browser';
+import { debounceTime, distinctUntilChanged, map, switchMap ,skip, tap} from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
 // import { client } from 'src/app/__Model/__clientMst';
 import { docType } from 'src/app/__Model/__docTypeMst';
@@ -17,12 +18,14 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./docsModification.component.css']
 })
 export class DocsModificationComponent implements OnInit {
+  __isClientPending: boolean = false;
   __chkIsDocAvailable: string = 'N';
   __isvisible:boolean =false;
   @ViewChild('searchResult') __searchRlt: ElementRef;
   __items: client[] = [];
+  __client_doc:client[] =[];
   @ViewChild('scrollTobottom') __scroll: ElementRef;
-  allowedExtensions = ['jpg', 'png', 'jpeg'];
+  allowedExtensions = ['pdf'];
   __noImg: string = '../../../../../../assets/images/noimg.png';
   __isVisible: boolean = false;
   __docTypeMaster: docType[];
@@ -36,6 +39,7 @@ export class DocsModificationComponent implements OnInit {
     doc_dtls: new FormArray([])
   })
   constructor(
+    private sanitizer: DomSanitizer,
     public dialogRef: MatDialogRef<DocsModificationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __utility: UtiliService,
@@ -61,19 +65,23 @@ export class DocsModificationComponent implements OnInit {
   ngAfterViewInit(){
     this.__clientForm.controls['client_code'].valueChanges.
       pipe(
+        tap(() => this.__isClientPending = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(dt => dt?.length > 1 ?
           this.__dbIntr.searchItems('/documentsearch', dt)
           : []),
       ).subscribe({
-        next: (value) => {
+        next: (value: any) => {
           // console.log(value);
           this.__items = value.data;
           this.searchResultVisibility('block');
+          this.__isClientPending = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log()
+        error: (err) => {
+          this.__isClientPending = false;
+        }
 
       })
   }
@@ -136,7 +144,7 @@ export class DocsModificationComponent implements OnInit {
     })
 }
 getItems(__client) {
-  // console.log(__client);
+  this.__client_doc = __client.client_doc;
   this.__clientForm.controls['client_code'].reset(__client.client_code, { onlySelf: true, emitEvent: false });
   this.searchResultVisibility('none');
   this.__clientForm.patchValue({
@@ -161,7 +169,21 @@ getItems(__client) {
 
 }
 submit(){
-
+   const __client = new FormData();
+  __client.append('client_id',this.__clientForm.value.client_id);
+  for (let i = 0; i < this.__clientForm.value.doc_dtls.length; i++) {
+    if (typeof (this.__clientForm.value.doc_dtls[i].file) != 'string') {
+      __client.append("file[]", this.__clientForm.value.doc_dtls[i].file);
+      __client.append("doc_type_id[]", this.__clientForm.value.doc_dtls[i].doc_type_id);
+      __client.append("row_id[]", this.__clientForm.value.doc_dtls[i].id);
+    }
+  }
+  this.__dbIntr.api_call(1,this.__client_doc.length > 0 ? '/documentEdit' : '/documentAdd',__client).subscribe((res: any) =>{
+               this.__utility.showSnackbar(res.suc == 1 ? 'Document ' + (this.__client_doc.length > 0 ? 'added' : 'updated') + ' successfully' : res.msg,res.suc);
+               if(res.suc == 1){
+                this.dialogRef.close();
+               }
+  })
 }
 removeDocument(__index) {
   this.__docs.removeAt(__index);
@@ -171,10 +193,11 @@ getFiles(__ev, index, __type_id) {
   this.__docs.controls[index].get('doc_name').updateValueAndValidity();
 
   if (this.__docs.controls[index].get('doc_name').status == 'VALID') {
-    const file = __ev.target.files[0];
-    const reader = new FileReader();
-    reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
-    reader.readAsDataURL(file);
+    // const file = __ev.target.files[0];
+    // const reader = new FileReader();
+    // reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
+    // reader.readAsDataURL(file);
+    this.__docs.controls[index].get('file_preview')?.patchValue(this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL( __ev.target.files[0])));
     this.__docs.controls[index].get('file')?.patchValue(__ev.target.files[0]);
   }
   else {

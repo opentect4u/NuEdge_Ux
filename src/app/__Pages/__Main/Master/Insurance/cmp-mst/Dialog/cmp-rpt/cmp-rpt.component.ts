@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, ElementRef, OnInit, ViewChild,Inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild,Inject, QueryList, ViewChildren } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,6 +11,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
+import { cmpMstClm } from 'src/app/__Utility/InsuranceColumns/compMst';
 import { CmpCrudComponent } from '../cmp-crud/cmp-crud.component';
 
 @Component({
@@ -19,58 +20,20 @@ import { CmpCrudComponent } from '../cmp-crud/cmp-crud.component';
   styleUrls: ['./cmp-rpt.component.css']
 })
 export class CmpRPTComponent implements OnInit {
+  @ViewChildren("insTypeChecked") private __insTypeChecked: QueryList<ElementRef>;
   settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company');
   __companyMst : insComp[] = [];
   __sortAscOrDsc: any= {active:'',direction:'asc'};
   toppings = new FormControl();
-  toppingList: any = [
-    { id: 'edit', text: 'Edit' },
-    { id: 'delete', text: 'Delete' },
-    { id: 'sl_no', text: 'Sl No' },
-    { id: 'ins_type', text: 'Insurance Type'},
-    { id: 'comp_full_name', text: 'Company Full name'},
-    { id: 'comp_short_name', text: 'Company Short Name'},
-    { id: 'website', text: 'Web Site' },
-    { id: 'cus_care_whatsApp_no', text: 'Customer Care WhatsApp Number' },
-    { id: 'cus_care_no', text: 'Customer Care Number' },
-    { id: 'cus_care_email', text: 'Customer Care Email' },
-    { id: 'head_ofc_contact_per', text: 'Head Office Contact Person' },
-    {id: 'head_contact_per_mobile',text: 'Head Office Contact Person Mobile',},
-    { id: 'head_contact_per_email', text: 'Head Office Contact Person Email' },
-    { id: 'head_ofc_addr', text: 'Head Office Contact Person Address' },
-    { id: 'local_ofc_contact_per', text: 'Local Office Contact Person' },
-    {
-      id: 'local_contact_per_mobile',
-      text: 'Local Office Contact Person Mobile',
-    },
-    {
-      id: 'local_contact_per_email',
-      text: 'Local Office Contact Person Email',
-    },
-    {
-      id: 'local_ofc_addr',
-      text: 'Local Office Contact Person Address',
-    },
-    { id: 'login_url', text: 'Login URL'},
-    { id: 'login_id', text: 'Login ID'},
-    { id: 'login_pass', text: 'Login Password'},
-  ];
+  toppingList: any = cmpMstClm.COLUMN_SELECTOR;
 
+  __levels = cmpMstClm.LEVELS;
   __isrntspinner: boolean = false;
   __paginate: any = [];
   __pageNumber = new FormControl(10);
   __columns: string[] = [];
   __export = new MatTableDataSource<insComp>([]);
-  __exportedClmns: string[] = [
-    'sl_no',
-    'ins_type',
-    'comp_full_name',
-    'comp_short_name',
-    'website',
-    'cus_care_whatsApp_no',
-    'cus_care_no',
-    'cus_care_email',
-  ];
+  __exportedClmns: string[] = []
   __columnsForsummary: string[] = [
     'edit',
     'delete',
@@ -112,6 +75,8 @@ export class CmpRPTComponent implements OnInit {
     options: new FormControl('2'),
     comp_name: new FormControl(''),
     contact_person: new FormControl(''),
+    is_all: new FormControl(false),
+    levels: new FormArray(this.__levels.map(x => new FormControl(false)))
   });
   __selectRNT = new MatTableDataSource<insComp>([]);
   instTypeMst: any=[];
@@ -129,11 +94,16 @@ export class CmpRPTComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.__columns = this.__columnsForsummary;
-    this.toppings.setValue(this.__columns);
+    this.setColumns(cmpMstClm.INITIAL_COLUMNS);
     this.getRntMst();
     this.getInstTypeMSt();
     this.getComponyMst();
+  }
+  setColumns(clms){
+    const __columnToRemove =  ['edit','delete'];
+    this.__columns = clms;
+    this.__exportedClmns = this.__columns.filter(x => !__columnToRemove.includes(x));
+    this.toppings.setValue(this.__columns);
   }
   getComponyMst(){
     this.__dbIntr.api_call(0,'/ins/company',null).pipe(pluck("data")).subscribe((res: insComp[]) =>{
@@ -149,46 +119,17 @@ export class CmpRPTComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.__rntSearchForm.controls['options'].valueChanges.subscribe((res) => {
-      if (res == '1') {
-        this.__columns = this.__columnsForDetails;
-        this.toppings.setValue(this.__columns);
 
-        this.__exportedClmns = [
-          'sl_no',
-          'ins_type',
-          'comp_short_name',
-          'comp_full_name',
-          'website',
-         'cus_care_whatsApp_no',
-          'cus_care_no',
-          'cus_care_email',
-          'head_ofc_contact_per',
-          'head_contact_per_mobile',
-          'head_contact_per_email',
-          'head_ofc_addr',
-          'local_ofc_contact_per',
-          'local_contact_per_mobile',
-          'local_contact_per_email',
-          'local_ofc_addr',
-          'login_url',
-          'login_id',
-          'login_pass',
-        ];
-      } else {
-        this.__columns = this.__columnsForsummary;
-        this.toppings.setValue(this.__columns);
-        this.__exportedClmns = [
-          'sl_no',
-          'ins_type',
-          'comp_short_name',
-          'comp_full_name',
-          'website',
-          'cus_care_whatsApp_no',
-          'cus_care_no',
-          'cus_care_email',
-        ];
-      }
+    this.__rntSearchForm.controls.levels.valueChanges.subscribe(res =>{
+      this.__rntSearchForm.controls.levels.setValue(
+      this.__rntSearchForm.controls.levels.value.map((value, i) => value ? this.__levels[i].name : false),
+      { emitEvent: false }
+      )
+    })
+
+
+    this.__rntSearchForm.controls['options'].valueChanges.subscribe((res) => {
+      this.setColumns(res == '2' ? cmpMstClm.INITIAL_COLUMNS : cmpMstClm.COLUMNFORDETAILS);
     });
 
     this.toppings.valueChanges.subscribe((res) => {
@@ -197,7 +138,25 @@ export class CmpRPTComponent implements OnInit {
       this.__exportedClmns = res.filter((item) => !clm.includes(item));
     });
 
+    this.__rntSearchForm.controls['is_all'].valueChanges.subscribe(res =>{
+      const ins_type: FormArray = this.__rntSearchForm.get('ins_type') as FormArray;
+      ins_type.clear();
+      if(!res){
+        this.uncheckAll();
+      }
+      else{
+        this.instTypeMst.forEach(__el =>{
+          ins_type.push(new FormControl(__el.id));
+        })
+        this.checkAll();
+      }
+    })
+
+
+
   }
+
+
   private setPaginator(__res) {
     this.__selectRNT = new MatTableDataSource(__res);
   }
@@ -337,7 +296,47 @@ export class CmpRPTComponent implements OnInit {
     // console.log( this.__export.data);
 
   }
-  submit() {this.getRntMst();}
+  submit() {
+    this.getRntMst();
+    this.getColumnsAfterSubmit();
+  }
+  getColumnsAfterSubmit(){
+    let clmns = this.__rntSearchForm.value.options == '2' ? cmpMstClm.INITIAL_COLUMNS : cmpMstClm.MODIFIEDCLM;
+    var clmsforlevel;
+    const checkboxControl = (this.__rntSearchForm.controls.levels as FormArray);
+    const formValue = {
+      levels: checkboxControl.value.filter(value => !!value)
+    };
+    if(formValue.levels.length > 0){
+      formValue.levels.forEach(__el =>{
+
+        switch(__el.toString()){
+          case '1': clmsforlevel = cmpMstClm.l1;
+                    clmns = [...clmns,...clmsforlevel];
+                    break;
+          case '2': clmsforlevel = cmpMstClm.l2;
+                    clmns = [...clmns,...clmsforlevel];
+                    break;
+          case '3': clmsforlevel = cmpMstClm.l3;
+                    clmns = [...clmns,...clmsforlevel];
+                    break;
+          case '4': clmsforlevel = cmpMstClm.l4;
+                    clmns = [...clmns,...clmsforlevel];
+                    break;
+          case '5': clmsforlevel = cmpMstClm.l5;
+                    clmns = [...clmns,...clmsforlevel];
+                    break;
+          case '6': clmsforlevel = cmpMstClm.l6;
+                    clmns = [...clmns,...clmsforlevel];
+                    break;
+        }
+      })
+      this.setColumns(clmns);
+    }
+
+  }
+
+
   getRntMst(column_name: string | null = null, sort_by: string | null = null) {
     const __amcSearch = new FormData();
     __amcSearch.append(
@@ -462,10 +461,27 @@ export class CmpRPTComponent implements OnInit {
       comp_name: '',
       comp_id: '',
       contact_person: '',
-      ins_type:''
     });
+    (<FormArray>this.__rntSearchForm.get('ins_type')).clear();
+    (<FormArray>this.__rntSearchForm.get('levels')).setValue(
+    this.__levels.map(x => false)
+    )
+    this.uncheckAll();
     this.getRntMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
 
+  }
+  uncheckAll(){
+    console.log('uncheckAll');
+    this.__insTypeChecked.forEach((element:any) => {
+      element.checked = false;
+    });
+  }
+  checkAll(){
+    console.log('checkAll');
+
+      this.__insTypeChecked.forEach((element:any) => {
+        element.checked = true;
+      });
   }
   sortData(sort: any) {
     console.log(sort);
@@ -479,7 +495,7 @@ export class CmpRPTComponent implements OnInit {
     dialogConfig.data = {
       flag: 'CMP',
       id: __el.id,
-      title: 'Delete '  + __el.com_short_name,
+      title: 'Delete '  + __el.comp_short_name,
       api_name:'/ins/companyDelete'
     };
     const dialogref = this.__dialog.open(

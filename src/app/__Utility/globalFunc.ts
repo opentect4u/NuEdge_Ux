@@ -6,4 +6,11 @@ export class global{
     public static  getActualVal(__item): any{
       return  __item ? __item : ''
     }
+    public static containsSpecialChars(str) {
+      const specialChars = /[ ]/;
+      console.log(str);
+
+      return specialChars.test(str);
+    }
+
 }

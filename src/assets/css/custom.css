@@ -538,3 +538,11 @@ mat-hint p{
   color: #3a5076;
   padding: 6px 0px!important;
 }
+
+.errorIcon{
+  font-size: 17px!important;
+  height: 20px!important;
+  width: 20px!important;
+  color: #dd4848;
+  text-align: center;
+}

@@ -21,13 +21,6 @@
       <div class="card-body p-5">
         <form [formGroup]="__prdSearchForm" (ngSubmit)="searchProduct()" autocomplete="off">
             <div class="row">
-              <div class="col-sm-3">
-                <label class="form-label">Type Of Insurance</label>
-                <select class="form-control" formControlName="ins_type_id">
-                  <option value="">Select</option>
-                  <option *ngFor="let insType of __insTypeMst" [value]="insType.id">{{insType.type}}</option>
-                </select>
-              </div>
               <div class="col-sm-4">
                  <label class="form-label">Company</label>
                 <ng-multiselect-dropdown #multiSelect
@@ -39,14 +32,67 @@
               </ng-multiselect-dropdown>
               </div>
               <div class="col-sm-4">
-                <label class="form-label">Product Name</label>
-                <input type="text" class="form-control" formControlName="product_name" placeholder="Enter Product Name">
+                <label class="form-label">Product Type</label>
+                <ng-multiselect-dropdown #multiSelect
+                id="product_type_id"
+                [placeholder]="'Select Product Type'"
+                [settings]="__settings_productType"
+                [data]="__prdTypeMst"
+                formControlName="product_type_id">
+              </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-4">
+                <!-- <label class="form-label">Product Name</label>
+                <input type="text" class="form-control" formControlName="product_name" placeholder="Enter Product Name"> -->
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+                <div class="searchDiv">
+                  <label for="Prd">Product</label>
+                   <input type="text"
+                   class="form-control"
+                   id="Prd"
+                   formControlName="product_name"
+                   placeholder="Search By Product Name">
+                  <span class="spinner-border" *ngIf="__isProductnameVisisble && __prdSearchForm.get('product_name').value?.length > 1"></span>
+                  <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                    <div class="serachresult_client" #prdName>
+                      <ul *ngIf="__productMst.length > 0">
+                        <li *ngFor="let items of __productMst" (click)="getItems(items,'P')">
+                         {{items.product_name}}
+                        </li>
+                      </ul>
+                      <div class="noDataFound" *ngIf="__productMst.length == 0">
+                        <h5 class="text-center">
+                          Sorry!! No Records Found
+                        </h5>
+                        <p>If your result match, they will appear here</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               </div>
 
             </div>
-            <div class="row">
-              <div class="col-sm-12 my-auto">
-                <button mat-raised-button color="primary" class="float-right">
+            <div class="row mt-4">
+              <div class="col-sm-6">
+                <mat-checkbox color="primary"
+                #insTypeChecked
+                [id]="insType.id"
+                class="mr-3"
+                *ngFor="let insType of __insTypeMst;let i=index"
+                [value]="insType.id"
+                (change)="onInsTypeChange($event)"
+                > {{insType.type}}</mat-checkbox>
+                <mat-checkbox class="ml-3" color="primary" formControlName="is_all"> All</mat-checkbox>
+              </div>
+              <div class="col-sm-6 my-auto">
+
+                <mat-button-toggle-group #group="matButtonToggleGroup" class="float-right">
+                  <mat-button-toggle value="center" aria-label="Text align center" (click)="reset()">
+                    <mat-icon>restart_alt</mat-icon>
+                  </mat-button-toggle>
+                </mat-button-toggle-group>
+                <button mat-raised-button color="primary" class="float-right mr-3">
                   Show
                 </button>
               </div>

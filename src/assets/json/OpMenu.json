@@ -10,7 +10,7 @@
         "id": 2,
         "menu_name":"Fixed Deposit",
         "has_submenu":"Y",
-        "url":"",
+        "url":"/main/operations/fixedeposit",
         "flag":"F"
 
     },

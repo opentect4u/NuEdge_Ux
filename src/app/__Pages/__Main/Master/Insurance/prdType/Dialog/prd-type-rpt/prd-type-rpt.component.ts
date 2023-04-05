@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, Inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit, Inject, QueryList, ElementRef, ViewChildren } from '@angular/core';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
   MatDialog,
   MatDialogConfig,
@@ -23,12 +23,15 @@ import { PrdTypeCrudComponent } from '../prdTypeCrud/prd-type-crud.component';
   styleUrls: ['./prd-type-rpt.component.css'],
 })
 export class PrdTypeRPTComponent implements OnInit {
+  @ViewChildren("insTypeChecked") private __insTypeChecked: QueryList<ElementRef>;
+  settings = this.__utility.settingsfroMultiselectDropdown('id','product_type','Search Product Type')
   __sortAscOrDsc: any = { active: '', direction: 'asc' };
   __export = new MatTableDataSource<insPrdType>([]);
   __isVisible: boolean = true;
   __prdType = new FormGroup({
-    product_type: new FormControl(''),
-    ins_type: new FormControl(''),
+    product_type: new FormControl([]),
+    ins_type: new FormArray([]),
+    is_all: new FormControl(false)
   });
   __prdTypeMst = new MatTableDataSource<insPrdType>([]);
   __pageNumber = new FormControl(10);
@@ -36,6 +39,7 @@ export class PrdTypeRPTComponent implements OnInit {
   __exportedClmns: string[] = ['sl_no', 'ins_type', 'product_type'];
   __columns: string[] = ['edit', 'delete', 'sl_no', 'ins_type', 'product_type'];
   instTypeMst: any = [];
+  __insPrdType: insPrdType[] = [];
   constructor(
     private __Rpt: RPTService,
     private __dialog: MatDialog,
@@ -61,6 +65,12 @@ export class PrdTypeRPTComponent implements OnInit {
       this.__sortAscOrDsc.direction
     );
     this.getInsType();
+    this.getProductTypeMstForDropdown();
+  }
+  getProductTypeMstForDropdown(){
+    this.__dbIntr.api_call(0,'/ins/productType',null).pipe(pluck("data")).subscribe((res: insPrdType[]) =>{
+      this.__insPrdType = res;
+    })
   }
   getInsType() {
     this.__dbIntr
@@ -70,6 +80,22 @@ export class PrdTypeRPTComponent implements OnInit {
         this.instTypeMst = res;
       });
   }
+
+  ngAfterViewInit(){
+    this.__prdType.controls['is_all'].valueChanges.subscribe(res =>{
+      const ins_type: FormArray = this.__prdType.get('ins_type') as FormArray;
+      ins_type.clear();
+      if(!res){
+        this.uncheckAll();
+      }
+      else{
+        this.instTypeMst.forEach(__el =>{
+          ins_type.push(new FormControl(__el.id));
+        })
+        this.checkAll();
+      }
+    })
+  }
   getSubcatMst(
     column_name: string | null = null,
     sort_by: string | null = null
@@ -77,11 +103,11 @@ export class PrdTypeRPTComponent implements OnInit {
     const __prdTypeSearch = new FormData();
     __prdTypeSearch.append(
       'ins_type_id',
-      global.getActualVal(this.__prdType.value.ins_type)
+      this.__prdType.value.ins_type ? JSON.stringify(this.__prdType.value.ins_type) : "[]"
     );
     __prdTypeSearch.append(
       'product_type',
-      global.getActualVal(this.__prdType.value.product_type)
+      JSON.stringify(this.__prdType.value.product_type)
     );
     __prdTypeSearch.append('paginate', this.__pageNumber.value);
     __prdTypeSearch.append('column_name', column_name ? column_name : '');
@@ -92,7 +118,7 @@ export class PrdTypeRPTComponent implements OnInit {
       .subscribe((res) => {
         this.__paginate = res.links;
         this.setPaginator(res.data);
-        this.tableExport(column_name, sort_by);
+        this.tableExport(column_name, sort_by,__prdTypeSearch);
       });
   }
   private setPaginator(__res) {
@@ -128,21 +154,12 @@ export class PrdTypeRPTComponent implements OnInit {
 
   tableExport(
     column_name: string | null = null,
-    sort_by: string | null = null
+    sort_by: string | null = null,
+    __fb: FormData
   ) {
-    const __prdTypeExport = new FormData();
-    __prdTypeExport.append(
-      'ins_type_id',
-      this.__prdType.value.ins_type ? this.__prdType.value.ins_type : ''
-    );
-    __prdTypeExport.append(
-      'product_type',
-      this.__prdType.value.product_type ? this.__prdType.value.product_type : ''
-    );
-    __prdTypeExport.append('column_name', column_name ? column_name : '');
-    __prdTypeExport.append('sort_by', sort_by ? sort_by : '');
+    __fb.delete('paginate');
     this.__dbIntr
-      .api_call(1, '/ins/productTypeExport', __prdTypeExport)
+      .api_call(1, '/ins/productTypeExport', __fb)
       .pipe(map((x: any) => x.data))
       .subscribe((res: insPrdType[]) => {
         this.__export = new MatTableDataSource(res);
@@ -162,8 +179,8 @@ export class PrdTypeRPTComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&ins_type_id=' + this.__prdType.value.ins_type) +
-            ('&product_type=' + this.__prdType.value.product_type) +
+            ('&ins_type_id=' +  this.__prdType.value.ins_type ? JSON.stringify(this.__prdType.value.ins_type) : "[]" ) +
+            ('&product_type=' + JSON.stringify(this.__prdType.value.product_type)) +
             ('&column_name=' + this.__sortAscOrDsc.active) +
             ('&sort_by=' + this.__sortAscOrDsc.sort_by)
         )
@@ -238,9 +255,10 @@ export class PrdTypeRPTComponent implements OnInit {
   refreshOrAdvanceFlt() {
     this.__prdType.patchValue({
       options: '2',
-      ins_type: '',
-      product_type: '',
+      product_type:[]
     });
+    (<FormArray>this.__prdType.get('ins_type')).clear();
+    this.uncheckAll();
     this.getSubcatMst(
       this.__sortAscOrDsc.active,
       this.__sortAscOrDsc.direction
@@ -278,4 +296,32 @@ export class PrdTypeRPTComponent implements OnInit {
       }
     });
   }
+  onInsTypeChange(e){
+    const ins_type: FormArray = this.__prdType.get('ins_type') as FormArray;
+    if (e.checked) {
+      ins_type.push(new FormControl(e.source.value));
+    } else {
+      let i: number = 0;
+      ins_type.controls.forEach((item: any) => {
+        if (item.value == e.source.value) {
+          ins_type.removeAt(i);
+          return;
+        }
+        i++;
+      });
+    }
+    console.log(ins_type.controls);
+
+    this.__prdType.get('is_all').setValue(ins_type.controls.length == 3 ?  true : false,{emitEvent: false})
+    }
+    uncheckAll(){
+      this.__insTypeChecked.forEach((element:any) => {
+        element.checked = false;
+      });
+    }
+    checkAll(){
+        this.__insTypeChecked.forEach((element:any) => {
+          element.checked = true;
+        });
+    }
 }

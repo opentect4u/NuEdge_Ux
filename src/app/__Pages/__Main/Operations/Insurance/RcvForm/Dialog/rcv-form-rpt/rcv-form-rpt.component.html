@@ -40,27 +40,147 @@
           </div>
           <div class="row my-4">
             <div class="col-sm-4">
-              <label for="tin_no">Temporary TIN Number</label>
-              <input type="text" placeholder="Enter Temporary TIN Number" name="tin_no" id="tin_no" class="form-control"
-                formControlName="temp_tin_no">
+              <label for="dt_type">Date Periods</label>
+               <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+                   <option value="">Select</option>
+                   <option value="D">Today</option>
+                   <option value="W">This Week</option>
+                   <option value="M">This Month</option>
+                   <option value="Y">This Year</option>
+                   <option value="R">Date Range</option>
+               </select>
             </div>
             <div class="col-sm-4">
-              <label for="proposer_code">Proposer Details</label>
-              <input type="text" name="proposer_code" id="proposer_code" class="form-control" formControlName="proposer_code"
-                placeholder="Enter Proposer code / Name / pan / email">
+              <label for="start_dt">Start Date</label>
+              <input type="date"
+              name="start_dt"
+              id="start_dt"
+              class="form-control" formControlName="start_dt">
+            </div>
+            <div class="col-sm-4">
+              <label for="end_dt">End Date</label>
+              <input type="date" name="end_dt"
+              id="end_dt"
+              class="form-control" formControlName="end_dt">
+            </div>
+          </div>
+          <div class="row ">
+            <div class="col-sm-4">
+              <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
+                <div class="searchDiv">
+                  <label for="__temp_tin_no">Temporary TIN Number
+                  </label>
+                  <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
+                    formControlName="temp_tin_no" placeholder="Search by Temporary TIN Number">
+                  <span class="spinner-border"
+                    *ngIf="__istemporaryspinner && __rcvForms.get('temp_tin_no').value?.length > 1"></span>
+                  <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickfortempTin($event)">
+                    <div class="serachresult_client" #searchTempTin>
+                      <ul *ngIf="__temp_tinMst.length > 0">
+                        <li *ngFor="let items of __temp_tinMst" (click)="getItems(items,'T')">
+                          {{items.temp_tin_no}} | {{items.proposer_name}} | {{items.ins_type_name}}
+                        </li>
+                      </ul>
+                      <div class="noDataFound" *ngIf="__temp_tinMst.length == 0">
+                        <h5 class="text-center">
+                          Sorry!! No Records Found
+                        </h5>
+                        <p>Temporary TIN Number Not Available</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+                <div class="searchDiv">
+                  <label for="__clntCd">Proposer Details</label>
+                  <input type="search"
+                  name="__clntCd"
+                  id="__clntCd"
+                  class="form-control"
+                  formControlName="proposer_code"
+                  placeholder="Search By Proposer Name,Proposer Code, Email, Mobile, Pan & DOB">
+                  <span class="spinner-border" *ngIf="__isClientPending && __rcvForms.get('proposer_code').value?.length > 1"></span>
+
+                  <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
+                    <div class="serachresult_client" #clientCd>
+                      <ul *ngIf="__clientMst.length > 0">
+                        <li *ngFor="let items of __clientMst" (click)="getItems(items,'C')">
+                         {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                        </li>
+                      </ul>
+                      <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                        <h5 class="text-center">
+                          Sorry!! No Records Found
+                        </h5>
+                        <p>If your result match,they will appear here</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="col-sm-4">
-              <label for="euin_no">Employee</label>
-              <input type="text" name="euin_no" id="euin_no" class="form-control" placeholder='Enter EUIN'
-                formControlName="euin_no">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+                  <div class="searchDiv">
+                    <label for="Euin">Employee</label>
+                    <input type="search" id="Euin"
+                    class="form-control"
+                    placeholder="Serach By Employee"
+                    formControlName="euin_no">
+                    <span class="spinner-border" *ngIf="__isEuinPending && __rcvForms.get('euin_no').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                      <div class="serachresult_client" #searchEUIN>
+                        <ul *ngIf="__euinMst.length > 0">
+                          <li *ngFor="let items of __euinMst" (click)="getItems(items,'E')">
+                           {{items.euin_no}} | {{items.emp_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Employees Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row my-4">
             <div class="col-sm-4">
-              <label for="sub_brk_cd">Sub Broker Code</label>
-              <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control"
-                placeholder='Enter Sub Broker Code' formControlName="sub_brk_cd">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                  <div class="searchDiv">
+                    <label for="subbrkArn">Sub Broker Code</label>
+                    <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                      formControlName="sub_brk_cd">
+                    <span class="spinner-border"
+                      *ngIf="__isSubArnPending && __rcvForms.get('sub_brk_cd').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                      <div class="serachresult_client" #subBrkArn>
+                        <ul *ngIf="__subbrkArnMst.length > 0">
+                          <li *ngFor="let items of __subbrkArnMst" (click)="getItems(items,'S')">
+                            {{items.code}} | {{items.bro_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Sub Brokers Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
             </div>
 
             <div class="col-sm-4">
@@ -69,32 +189,35 @@
                 formControlName="recv_from">
             </div>
           </div>
-
-          <div class="row mt-5">
-
-            <div class="col-sm-8">
-              <label for="">Buisness Type: </label>
-              <label *ngFor="let bu_type of __bu_type; let i=index" for="{{bu_type.id}}" class="mx-3">
-                <input type="checkbox" id="{{bu_type.id}}" [value]="bu_type.id" (change)="onbuTypeChange($event)" />
-                {{bu_type.bu_type}}
-              </label>
+          <div class="row ">
+            <div class="col-sm-5">
+              <mat-checkbox color="primary"
+              #insTypeChecked
+              [id]="insType.id"
+              [class]="i == 0 ? '' : 'ml-3'"
+              *ngFor="let insType of __insTypeMst;let i=index"
+              [value]="insType.id"
+              (change)="onInsTypeChange($event)"
+              > {{insType.type}}</mat-checkbox>
+              <mat-checkbox class="ml-3" color="primary" formControlName="is_all"> All</mat-checkbox>
             </div>
-            <div class="col-sm-4 my-auto">
+            <div class="col-sm-5">
+              <mat-checkbox
+              #buTypeChecked
+              color="primary"
+              [class]="i == 0 ? '' : 'ml-3'"
+              *ngFor="let bu_type of __bu_type; let i=index"
+              [value]="bu_type.id"
+              (change)="onbuTypeChange($event)"
+              > {{bu_type.bu_type}}</mat-checkbox>
+              <mat-checkbox class="ml-3" color="primary" formControlName="is_all_bu_type"> All</mat-checkbox>
+            </div>
+            <div class="col-sm-2 my-auto">
               <button mat-raised-button color="primary" class="float-right">
                 Show
               </button>
             </div>
           </div>
-          <!-- <div class="row" >
-            <div class="col-sm-4" >
-            </div>
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4 my-auto">
-              <button mat-raised-button color="primary" class="float-right">
-                Show
-              </button>
-            </div>
-          </div> -->
         </form>
       </div>
 
@@ -138,28 +261,29 @@
 
           <ng-container matColumnDef="rcv_datetime">
             <th mat-sort-header="rcv_datetime" mat-header-cell *matHeaderCellDef>Recieved Date Time</th>
-            <td mat-cell *matCellDef="let element">{{element.rec_datetime | date:'dd/MM/YYYY h:mma'}}</td>
+            <td mat-cell *matCellDef="let element">
+              {{element.rec_datetime ? (element.rec_datetime | date:'dd/MM/YYYY h:mma') : 'N/A'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="temp_tin_no">
             <th mat-sort-header="temp_tin_no" mat-header-cell *matHeaderCellDef>Temporary TIN No.</th>
-            <td mat-cell *matCellDef="let element">{{element.temp_tin_no}}</td>
+            <td mat-cell *matCellDef="let element">{{element.temp_tin_no ? element.temp_tin_no : 'N/A'}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="arn_no">
-            <th mat-sort-header="arn_no" mat-header-cell *matHeaderCellDef>ARN</th>
-            <td mat-cell *matCellDef="let element">{{element.arn_no}}
+          <ng-container matColumnDef="sub_brk_cd">
+            <th mat-sort-header="sub_brk_cd" mat-header-cell *matHeaderCellDef>Sub Broker Code</th>
+            <td mat-cell *matCellDef="let element">{{element.sub_brk_cd ? element.sub_brk_cd : 'N/A'}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="euin_no">
-            <th mat-sort-header="euin_no" mat-header-cell *matHeaderCellDef>EUIN</th>
-            <td mat-cell *matCellDef="let element">{{element.euin_no}}
+            <th mat-sort-header="euin_no" mat-header-cell *matHeaderCellDef>Employee</th>
+            <td mat-cell *matCellDef="let element">{{element.euin_no ? element.euin_no : 'N/A'}}
             </td>
           </ng-container>
           <ng-container matColumnDef="proposer_name">
             <th mat-sort-header="proposer_name" mat-header-cell *matHeaderCellDef>Proposer</th>
-            <td mat-cell *matCellDef="let element">{{element.proposer_name}}
+            <td mat-cell *matCellDef="let element">{{element.proposer_name ? element.proposer_name : 'N/A'}}
             </td>
           </ng-container>
           <ng-container matColumnDef="bu_type">
@@ -170,13 +294,13 @@
           </ng-container>
           <ng-container matColumnDef="recv_from">
             <th mat-sort-header="recv_from" mat-header-cell *matHeaderCellDef>Receive From</th>
-            <td mat-cell *matCellDef="let element">{{element.recv_from}}
+            <td mat-cell *matCellDef="let element">{{element.recv_from ? element.recv_from : 'N/A'}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="ins_type_name">
             <th mat-header-cell mat-sort-header="ins_type_name" *matHeaderCellDef>Insurance Type</th>
-            <td mat-cell *matCellDef="let element">{{element.ins_type_name}}</td>
+            <td mat-cell *matCellDef="let element">{{element.ins_type_name ? element.ins_type_name : 'N/A'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="insure_bu_type">
@@ -184,7 +308,7 @@
             <td mat-cell *matCellDef="let element">{{element.insure_bu_type == 'F' ? 'Fresh' : 'Renewal'}}</td>
           </ng-container>
 
-          <ng-container matColumnDef="edit" sticky>
+          <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>Edit</th>
             <td mat-cell *matCellDef="let element">
               <button  mat-icon-button (click)="populateDT(element)">
@@ -262,13 +386,13 @@
 
         <ng-container matColumnDef="recv_from">
           <th mat-header-cell *matHeaderCellDef>Receive From</th>
-          <td mat-cell *matCellDef="let element">{{element.recv_from}}
+          <td mat-cell *matCellDef="let element">{{element.recv_from ? element.recv_from : 'N/A'}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="temp_tin_no">
           <th mat-header-cell *matHeaderCellDef>Temporary TIN No.</th>
-          <td mat-cell *matCellDef="let element">{{element.temp_tin_no}}</td>
+          <td mat-cell *matCellDef="let element">{{element.temp_tin_no ? element.temp_tin_no : 'N/A'}}</td>
         </ng-container>
 
 
@@ -279,25 +403,25 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="arn_no">
-          <th mat-header-cell *matHeaderCellDef>ARN</th>
-          <td mat-cell *matCellDef="let element">{{element.arn_no}}
+        <ng-container matColumnDef="sub_brk_cd">
+          <th mat-header-cell *matHeaderCellDef>Sub Broker Code</th>
+          <td mat-cell *matCellDef="let element">{{element.sub_brk_cd ? element.sub_brk_cd : 'N/A'}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="euin_no">
-          <th mat-header-cell *matHeaderCellDef>EUIN</th>
-          <td mat-cell *matCellDef="let element">{{element.euin_no}}
+          <th mat-header-cell *matHeaderCellDef>Employee</th>
+          <td mat-cell *matCellDef="let element">{{element.euin_no ? element.euin_no : 'N/A'}}
           </td>
         </ng-container>
         <ng-container matColumnDef="proposer_name">
           <th mat-header-cell *matHeaderCellDef>Proposer</th>
-          <td mat-cell *matCellDef="let element">{{element.proposer_name}}
+          <td mat-cell *matCellDef="let element">{{element.proposer_name ? element.proposer_name : 'N/A'}}
           </td>
         </ng-container>
         <ng-container matColumnDef="ins_type_name">
           <th mat-header-cell *matHeaderCellDef>Insurance Type</th>
-          <td mat-cell *matCellDef="let element">{{element.ins_type_name}}</td>
+          <td mat-cell *matCellDef="let element">{{element.ins_type_name ? element.ins_type_name : 'N/A'}}</td>
         </ng-container>
 
         <ng-container matColumnDef="insure_bu_type">

@@ -1,0 +1,680 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title">
+    <h2 [title]="data.title">{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+
+  <form [formGroup]="__fdTrax"
+  autocomplete="off"
+  ngValidate
+  [attr.id]="'__TRAX_FD__'+ this.data.tin_no"
+  (ngSubmit)="submitFdTrax()">
+    <div class="row">
+      <div class="col-sm-12">
+        <mat-radio-group aria-label="Select an option" color="primary" formControlName="tin_status">
+          <mat-radio-button value="Y">With TTIN</mat-radio-button>
+          <mat-radio-button value="N" class="ml-5">Without TTIN</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- For TEMP TIN NUMBER -->
+      <ng-container *ngIf="__fdTrax.value.tin_status == 'Y'">
+        <div [class]="__fdTrax.value.tin_status == 'Y' ? 'col-sm-12 my-2' : ''">
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
+              <div class="searchDiv">
+                <label for="__temp_tin_no">
+                  Temporary TIN Number
+                  <span class="text-danger">*</span>
+                </label>
+                <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
+                  formControlName="temp_tin_no" placeholder="Search by Temporary TIN Number">
+                <span class="spinner-border"
+                  *ngIf="__istemporaryspinner && __fdTrax.get('temp_tin_no').value?.length > 1"></span>
+                <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickfortempTin($event)">
+                  <div class="serachresult_client" #searchTempTin>
+                    <ul *ngIf="__temp_tinMst.length > 0">
+                      <li *ngFor="let items of __temp_tinMst" (click)="getItems(items,'T')">
+                        {{items.temp_tin_no}} | {{items.investor_name}}
+                      </li>
+                    </ul>
+                    <div class="noDataFound" *ngIf="__temp_tinMst.length == 0">
+                      <h5 class="text-center">
+                        Sorry!! No Records Found
+                      </h5>
+                      <p>Temporary TIN Number Not Available</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </ng-container>
+      <div class="col-sm-12">
+      <label class="form-label">Fixed Deposit Buisness Type <span class="text-danger"> * </span></label>
+          <select class="form-control" formControlName="fd_bu_type_id">
+            <option value="">Select</option>
+            <option value="F">Fresh</option>
+            <option value="R">Renewal</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('fd_bu_type_id').invalid && (__fdTrax.get('fd_bu_type_id').dirty || __fdTrax.get('fd_bu_type_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('fd_bu_type_id')).errors?.required">*Please provide fixed deposit buisness type</span>
+        </div>
+      </div>
+
+      <div class="col-sm-12">
+        <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
+        <select class="form-control" formControlName="bu_type">
+          <option value="">Select</option>
+          <option [value]="buType.id" *ngFor="let buType of __bu_type">{{buType.bu_type}}</option>
+        </select>
+        <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('bu_type').invalid && (__fdTrax.get('bu_type').dirty || __fdTrax.get('bu_type').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('bu_type')).errors?.required">*Please provide
+            buisness
+            type</span>
+        </div>
+      </div>
+
+      <!-- For Sub Broker -->
+      <ng-container *ngIf="__fdTrax.get('bu_type').value == 'B'">
+          <div [class]="__fdTrax.get('bu_type').value == 'B' ? 'col-sm-12 my-2' : ''">
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+              <div class="searchDiv">
+                <label for="subbrkArn">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Sub Broker does not exists"
+                  *ngIf="__fdTrax.get('sub_brk_cd').errors?.subBrkExists">
+                  error</mat-icon>
+                  Sub Broker Code<span class="text-danger">*</span></label>
+                <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                  formControlName="sub_brk_cd">
+                <span class="spinner-border"
+                  *ngIf="__isSubArnPending && __fdTrax.get('sub_brk_cd').value?.length > 1"></span>
+
+                <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                  <div class="serachresult_client" #subBrkArn>
+                    <ul *ngIf="__subbrkArnMst.length > 0">
+                      <li *ngFor="let items of __subbrkArnMst" (click)="getItems(items,'S')">
+                        {{items.arn_no}} | {{items.bro_name}}
+                      </li>
+                    </ul>
+                    <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                      <h5 class="text-center">
+                        Sorry!! No Sub Brokers Found
+                      </h5>
+                      <p>If your result match,they will appear here</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+      </ng-container>
+
+      <!-- For EUIN -->
+      <ng-container *ngIf="__fdTrax.get('bu_type').value != ''">
+          <div [class]="__fdTrax.value.bu_type != '' ? 'col-sm-12 my-2' : ''">
+            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+              <div class="searchDiv">
+                <label for="Euin">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Employee does not exists"
+                  *ngIf="__fdTrax.get('euin_no').errors?.empExists">
+                  error</mat-icon>
+                  Employee Details<span class="text-danger">*</span></label>
+                <input type="search" id="Euin" class="form-control" placeholder="Serach By Employee Details"
+                  formControlName="euin_no">
+                <span class="spinner-border"
+                  *ngIf="__isEuinPending && __fdTrax.get('euin_no').value?.length > 1"></span>
+
+                <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                  <div class="serachresult_client" #searchEUIN>
+                    <ul *ngIf="__euinMst.length > 0">
+                      <li *ngFor="let items of __euinMst" (click)="getItems(items,'E')">
+                        {{items.euin_no}} | {{items.emp_name}}
+                      </li>
+                    </ul>
+                    <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                      <h5 class="text-center">
+                        Sorry!! No Employee Details Found
+                      </h5>
+                      <p>If your result match,they will appear here</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+      </ng-container>
+
+        <div class="col-sm-12 my-2">
+          <label for="comp_type_id">Type Of Company <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="comp_type_id">
+            <option value="">Select</option>
+            <option *ngFor="let comp_typeMst of __fdCompType" [value]="comp_typeMst.id">{{comp_typeMst.comp_type}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('comp_type_id').invalid && (__fdTrax.get('comp_type_id').dirty || __fdTrax.get('comp_type_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('comp_type_id')).errors?.required">*Please provide
+            company
+            type</span>
+        </div>
+        </div>
+
+        <div class="col-sm-12 my-2">
+          <label for="comp_id">Company <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="comp_id">
+            <option value="">Select</option>
+            <option *ngFor="let compMst of __fdComp" [value]="compMst.id">{{compMst.comp_short_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('comp_id').invalid && (__fdTrax.get('comp_id').dirty || __fdTrax.get('comp_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('comp_id')).errors?.required">*Please provide
+            company</span>
+        </div>
+        </div>
+
+        <div class="col-sm-12 my-2">
+          <label for="scheme_id">Scheme <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="scheme_id">
+            <option value="">Select</option>
+            <option *ngFor="let ScmMst of __fdScm" [value]="ScmMst.id">{{ScmMst.scheme_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('scheme_id').invalid && (__fdTrax.get('scheme_id').dirty || __fdTrax.get('scheme_id').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('scheme_id')).errors?.required">*Please provide
+            scheme</span>
+        </div>
+        </div>
+
+        <div class="col-sm-12 my-2">
+          <label class="form-label">Investment Type <span class="text-danger"> * </span></label>
+          <select class="form-control" formControlName="inv_type_id" [attr.disabled]="true">
+            <option value="">Select</option>
+            <option value="F">Fresh</option>
+            <option value="R">Renewal</option>
+          </select>
+        </div>
+
+
+        <ng-container *ngIf="__fdTrax.get('inv_type_id').value == 'F'">
+          <div [class]="__fdTrax.get('inv_type_id').value == 'F' ? 'col-sm-12 my-2' : ''">
+                  <label for="application_no">Application Number</label>
+                  <input type="text"
+                  name="application_no"
+                  id="application_no"
+                  class="form-control"
+                  placeholder="Enter Application Number"
+                  formControlName="application_no">
+          </div>
+        </ng-container>
+        <ng-container *ngIf="__fdTrax.get('inv_type_id').value == 'R'">
+          <div [class]="__fdTrax.get('inv_type_id').value == 'R' ? 'col-sm-12 my-2' : ''">
+                  <label for="fdr_no">FDR Number <span class="text-danger">*</span></label>
+                  <input type="text"
+                  name="fdr_no"
+                  id="fdr_no"
+                  class="form-control"
+                  placeholder="Enter FDR Number"
+
+                  formControlName="fdr_no">
+                  <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('fdr_no').invalid && (__fdTrax.get('fdr_no').dirty || __fdTrax.get('fdr_no').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('fdr_no')).errors?.required">*Please provide
+            FDR number</span>
+        </div>
+          </div>
+        </ng-container>
+
+    </div>
+
+    <div class="row my-2">
+      <div [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-8':__isCldtlsEmpty}">
+        <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+          <div class="searchDiv">
+            <label for="__clntCd">
+              <mat-icon
+                class="errorIcon"
+                #tooltip="matTooltip"
+                matTooltip="Proposer does not exists"
+                *ngIf="__fdTrax.get('investor_code').errors?.ClientExists">
+                error</mat-icon>
+              Invstor Details
+              <span class="text-danger">*</span></label>
+            <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="investor_code"
+              placeholder="Search By Investor Name,Investor Code, Email, Mobile, Pan & DOB">
+            <span class="spinner-border"
+              *ngIf="__isClientPending && __fdTrax.get('investor_code').value?.length > 1"></span>
+
+            <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
+              <div class="serachresult_client" #clientCd>
+                <ul *ngIf="__clientMst.length > 0">
+                  <li *ngFor="let items of __clientMst" (click)="getItems(items,'C')">
+                    {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                  </li>
+                </ul>
+                <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                  <h5 class="text-center">
+                    Sorry!! No Records Found
+                  </h5>
+                  <p>To create a new Investor .Please click on Create Investor</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 clientCode" *ngIf="__isCldtlsEmpty && __fdTrax.get('investor_code').value">
+        <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+          <mat-icon>add</mat-icon> Create Investor
+        </button>
+        <mat-menu #menu="matMenu">
+          <div class="row p-0 m-0">
+            <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+              *ngFor="let clOption of __mcOptionMenu" (click)="navigateTo(clOption)">
+              <mat-icon>{{clOption.icon}}</mat-icon>
+            </div>
+          </div>
+        </mat-menu>
+      </div>
+    </div>
+    <ng-container *ngIf="__fdTrax.get('investor_code').value && __fdTrax.get('investor_name').value">
+      <div class="row">
+        <div class="my-2" [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-8':__dialogDtForClient}">
+          <label for="__clName">Investor Name</label>
+          <input type="text" name="__clName" id="__clName" class="form-control" placeholder="Investor Name"
+            formControlName="investor_name" [attr.disabled]="true">
+        </div>
+        <div class="col-sm-4 clientCode"
+          *ngIf="__dialogDtForClient && __fdTrax.get('investor_code').value && __fdTrax.get('investor_name').value">
+          <button (click)="openDialog('C')" color="primary" *ngIf="this.__dialogDtForClient" mat-button type="button"
+            aria-label="Example icon button with a eye icon" title="View Investor Details">
+            <mat-icon>remove_red_eye</mat-icon>
+            View Details
+          </button>
+        </div>
+
+      </div>
+    </ng-container>
+    <div class="row">
+      <div class="col-sm-12 my-2">
+        <mat-radio-group aria-label="Select an option" color="primary" formControlName="kyc_status">
+          <mat-radio-button value="Y">With KYC</mat-radio-button>
+          <mat-radio-button value="N" class="ml-5">Without KYC</mat-radio-button>
+        </mat-radio-group>
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('kyc_status').invalid && (__fdTrax.get('kyc_status').dirty || __fdTrax.get('kyc_status').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('kyc_status')).errors?.required">*Please provide
+          Kyc Status</span>
+      </div>
+      </div>
+      <div class="col-sm-12">
+        <label for="inv_kyc">Investor Kyc Status<span class="text-danger">*</span>
+        </label>
+        <select name="inv_kyc" id="inv_kyc" class="form-control" formControlName="inv_kyc">
+          <option value="">Select KYC</option>
+          <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+        </select>
+        <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('inv_kyc').invalid && (__fdTrax.get('inv_kyc').dirty || __fdTrax.get('inv_kyc').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('inv_kyc')).errors?.required">*Please provide
+            investor Kyc Status</span>
+        </div>
+      </div>
+       <div class="col-sm-12 my-2">
+        <label for="existing_mode_of_holding">Existing Mode of Holding <span class="text-danger">*</span></label>
+        <select class="form-control" id="existing_mode_of_holding" formControlName="existing_mode_of_holding">
+          <option value="">Select</option>
+          <option value="A">Any Or Survivor</option>
+          <option value="J">Joint</option>
+          <option value="S">Single</option>
+        </select>
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('existing_mode_of_holding').invalid && (__fdTrax.get('existing_mode_of_holding').dirty || __fdTrax.get('existing_mode_of_holding').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('existing_mode_of_holding')).errors?.required">*Please provide
+          existing mode of holding</span>
+      </div>
+       </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 my-2">
+        <label for="option">Option <span class="text-danger">*</span></label>
+        <select class="form-control" formControlName="option" id="option">
+          <option value="">Select</option>
+          <option value="C">Cumulative</option>
+          <option value="N">Non Cumulative</option>
+        </select>
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('option').invalid && (__fdTrax.get('option').dirty || __fdTrax.get('option').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('option')).errors?.required">*Please provide
+          option</span>
+      </div>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label for="sub_option">Sub Option <span class="text-danger">*</span></label>
+        <select class="form-control"
+        formControlName="sub_option"
+        id="sub_option">
+          <option value="">Select</option>
+          <option [value]="subOpt.id" *ngFor="let subOpt of __subOpt" >{{subOpt.value}}</option>
+        </select>
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('sub_option').invalid && (__fdTrax.get('sub_option').dirty || __fdTrax.get('sub_option').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('sub_option')).errors?.required">*Please provide
+          sub option</span>
+      </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 my-2">
+        <label for="tenure_type">Tenure Type <span class="text-danger">*</span></label>
+        <select class="form-control" formControlName="tenure_type" id="tenure_type">
+          <option value="">Select</option>
+          <option value="M">Month</option>
+          <option value="Y">Year</option>
+        </select>
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('tenure_type').invalid && (__fdTrax.get('tenure_type').dirty || __fdTrax.get('tenure_type').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('tenure_type')).errors?.required">*Please provide
+          tenure type</span>
+      </div>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label for="tenure">Tenure <span class="text-danger">*</span></label>
+         <input type="text"
+         name="tenure"
+         id="tenure"
+         placeholder="Enter Tenure"
+         (keypress)="preventNonumeric($event)"
+         class="form-control"
+         formControlName="tenure">
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('tenure').invalid && (__fdTrax.get('tenure').dirty || __fdTrax.get('tenure').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('tenure')).errors?.required">*Please provide
+          tenure</span>
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('tenure')).hasError('pattern')">*allow only digits</span>
+      </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+
+      <div class="col-sm-12 my-2">
+        <label for="int_rate">Interest Rate(%) <span class="text-danger">*</span></label>
+         <input type="text"
+         name="int_rate"
+         id="int_rate"
+         placeholder="Enter Interest Rate"
+         (keypress)="preventNonumeric($event)"
+         class="form-control"
+         formControlName="int_rate">
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('int_rate').invalid && (__fdTrax.get('int_rate').dirty || __fdTrax.get('int_rate').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('int_rate')).errors?.required">*Please provide
+          interest rate</span>
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('int_rate')).hasError('pattern')">*allow only digits</span>
+      </div>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label for="mat_instr">Maturity Instruction <span class="text-danger">*</span></label>
+        <select class="form-control" formControlName="mat_instr" id="mat_instr">
+          <option value="">Select</option>
+          <option value="P">Autopay on Maturity</option>
+          <option value="R">Auto renew on Maturity</option>
+        </select>
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('mat_instr').invalid && (__fdTrax.get('mat_instr').dirty || __fdTrax.get('mat_instr').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('mat_instr')).errors?.required">*Please provide
+          maturity instruction</span>
+      </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 my-2">
+        <label for="amount">Amount <span class="text-danger">*</span></label>
+         <input type="text"
+         name="amount"
+         id="amount"
+         placeholder="Enter Amount"
+         (keypress)="preventNonumeric($event)"
+         class="form-control"
+         formControlName="amount">
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('amount').invalid && (__fdTrax.get('amount').dirty || __fdTrax.get('amount').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('amount')).errors?.required">*Please provide
+          amount</span>
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('amount')).hasError('pattern')">*allow only digits</span>
+      </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="my-2 col-sm-12">
+           <label for="trns_mode">Transaction Mode <span class="text-danger">*</span></label>
+           <select id="trns_mode" class="form-control" formControlName="trns_mode">
+             <option value="">Select</option>
+             <option value="N">Online</option>
+             <option value="O">Offline</option>
+           </select>
+           <div class="invalid-feedback"
+            *ngIf="__fdTrax.get('trns_mode').invalid && (__fdTrax.get('trns_mode').dirty || __fdTrax.get('trns_mode').touched)">
+            <span class="invalid-feedback" *ngIf="(__fdTrax.get('trns_mode')).errors?.required">*Please provide
+              transaction mode</span>
+          </div>
+      </div>
+      <ng-container
+      *ngIf="__fdTrax.get('trns_mode').value == 'O' || __fdTrax.get('trns_mode').value == 'N'">
+      <div [ngClass]="{'col-sm-12':!__dialogDtForBnk,'col-sm-8': __dialogDtForBnk}">
+        <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforbank($event)">
+          <div class="searchDiv">
+            <label for="__clntCd">MICR Code
+              <span class="text-danger" *ngIf="__fdTrax.get('trns_mode').value == 'O'">*</span>
+            </label>
+            <input type="search " name="__clntCd" id="__clntCd" class="form-control"
+            formControlName="micr_code"
+              placeholder="Search By Ifs Code , Branch Name">
+            <span class="spinner-border"
+              *ngIf="__isBankPending && __fdTrax.get('micr_code').value?.length > 1"></span>
+            <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforbank($event)">
+              <div class="serachresult_client" #searchbnk>
+                <ul *ngIf="__bnkMst.length > 0">
+                  <li *ngFor="let items of __bnkMst" (click)="getItems(items,'B')">
+                    {{items.bank_name}} | {{items.ifs_code}} | {{items.branch_name}}
+                  </li>
+                </ul>
+                <div class="noDataFound" *ngIf="__bnkMst.length == 0">
+                  <h5 class="text-center">
+                    Sorry!! No Records Found
+                  </h5>
+                  <p>Banks are not available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 clientCode" *ngIf="__dialogDtForBnk && __fdTrax.get('micr_code').value">
+        <button (click)="openDialog('B')" color="primary" mat-button type="button"
+          aria-label="Example icon button with a eye icon" title="View Bank Details">
+          <mat-icon>remove_red_eye</mat-icon>
+          View Details
+        </button>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label for="acc_no">
+          Account Number
+          <span class="text-danger" *ngIf="__fdTrax.get('trns_mode').value == 'O'">*</span></label>
+        <input type="text"
+        placeholder="Enter Account Number"
+        name="acc_no"
+        id="acc_no"
+        class="form-control"
+        formControlName="acc_no">
+          <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('acc_no').invalid && (__fdTrax.get('acc_no').dirty || __fdTrax.get('acc_no').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('acc_no')).errors?.required">*Please provide
+          account number
+          </span>
+          </div>
+      </div>
+     </ng-container>
+      <ng-container *ngIf="__fdTrax.get('trns_mode').value == 'N'">
+          <div [class]="__fdTrax.get('trns_mode').value == 'N' ? 'col-sm-12 my-2' : ''">
+            <label for="payment_ref_no">Payment Reference Number <span class="text-danger">*</span></label>
+            <input placeholder="Enter Payment Reference Number" type="text" name="payment_ref_no" id="payment_ref_no"
+              class="form-control" formControlName="payment_ref_no">
+              <div class="invalid-feedback"
+              *ngIf="__fdTrax.get('payment_ref_no').invalid && (__fdTrax.get('payment_ref_no').dirty || __fdTrax.get('payment_ref_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__fdTrax.get('payment_ref_no')).errors?.required">*Please provide
+              payment reference number
+              </span>
+              </div>
+        </div>
+
+      </ng-container>
+      <ng-container *ngIf="__fdTrax.get('trns_mode').value == 'O'">
+
+          <div [class]="__fdTrax.get('trns_mode').value == 'O' ? 'col-sm-12 my-2' : ''">
+            <label for="chq_no">Cheque Number <span class="text-danger">*</span></label>
+            <input maxlength="6" minlength="6" (keypress)="preventNonumeric($event)" placeholder="Enter Cheque Number"
+              type="text" name="chq_no" id="chq_no" class="form-control" formControlName="chq_no">
+            <div class="invalid-feedback"
+              *ngIf="__fdTrax.get('chq_no').invalid && (__fdTrax.get('chq_no').dirty || __fdTrax.get('chq_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__fdTrax.get('chq_no')).errors?.required">*Please provide cheque
+                number
+                </span>
+              <span class="invalid-feedback" *ngIf="(__fdTrax.get('chq_no')).hasError('minlength')">*cheque number
+                must be 6 digits</span>
+              <span class="invalid-feedback" *ngIf="(__fdTrax.get('chq_no')).hasError('maxlength')">*cheque number
+                must be 6 digits</span>
+              <span class="invalid-feedback" *ngIf="(__fdTrax.get('chq_no')).hasError('pattern')">*allow only
+                digits</span>
+
+            </div>
+          </div>
+      </ng-container>
+
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 my-2">
+        <label for="certificate_delivery_opt">Certificate Delivery Option <span class="text-danger">*</span></label>
+        <select name="certificate_delivery_opt" formControlName="certificate_delivery_opt" id="certificate_delivery_opt" class="form-control">
+          <option value="">Select</option>
+          <option value="E">EFDR</option>
+          <option value="H">Hand Delivery</option>
+          <option value="P">Postal Delivery</option>
+        </select>
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('certificate_delivery_opt').invalid && (__fdTrax.get('certificate_delivery_opt').dirty || __fdTrax.get('certificate_delivery_opt').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('certificate_delivery_opt')).errors?.required">*Please provide
+          certificate delivery option </span>
+      </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 my-2">
+        <label for="tds_info">TDS Information <span class="text-danger">*</span></label>
+          <select name="tds_info"
+          id="tds_info"
+          class="form-control"
+          formControlName="tds_info">
+          <option value="">Select</option>
+          <option *ngFor="let tdsInfo of __tdsInfo" [value]="tdsInfo.id">{{tdsInfo.name}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__fdTrax.get('tds_info').invalid && (__fdTrax.get('tds_info').dirty || __fdTrax.get('tds_info').touched)">
+          <span class="invalid-feedback" *ngIf="(__fdTrax.get('tds_info')).errors?.required">*Please provide
+            TDS information</span>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="row">
+      <div class="col-sm-12 my-3">
+        <label>Upload Scan Application Form <span class="text-danger">*</span></label>
+        <input type="file" name="file" id="file" formControlName="file" class="form-control"
+          (change)="getFIle($event.target)" accept=".pdf">
+         <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 2MB)</p></mat-hint>
+        <div class="invalid-feedback"
+          *ngIf=" __fdTrax.get('file').invalid && ( __fdTrax.get('file').dirty ||  __fdTrax.get('file').touched)">
+          <span class="invalid-feedback" *ngIf=" __fdTrax.get('file').errors?.required">*Please
+            provide file</span>
+          <span class="invalid-feedback" *ngIf="__fdTrax.get('file').errors?.inValidExt">*Invalid
+            file extension.</span>
+          <span class="invalid-feedback" *ngIf="__fdTrax.get('file').errors?.fileSizeValidator">*File size
+            must
+            not exceed than
+            2MB.</span>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="row">
+      <div class="col-sm-12 my-2">
+        <label for="login_at">Login At <span class="text-danger">*</span></label>
+        <select class="form-control" formControlName="login_at" id="login_at">
+          <option value="">Select</option>
+          <option [value]="__loginat.id" *ngFor="let __loginat of __loginAtMst">{{__loginat.comp_short_name}}</option>
+        </select>
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('login_at').invalid && (__fdTrax.get('login_at').dirty || __fdTrax.get('login_at').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('login_at')).errors?.required">*Please provide
+          login at</span>
+      </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 my-2">
+        <label for="remarks">Remarks</label>
+        <textarea
+        name="remarks"
+        id="remarks"
+        cols="12"
+        rows="5"
+        class="form-control"
+        formControlName="remarks"
+        ></textarea>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <button class="btn addBtn" [attr.form]="'__TRAX_FD__'+ this.data.tin_no"
+    [disabled]="this.__fdTrax.invalid">Submit</button>
+</mat-dialog-actions>
+<br clear="all">
+
+  </div>

@@ -1,0 +1,23 @@
+[
+  {
+        "id":1,
+        "menu_name":"Company Type",
+        "has_submenu":"N",
+        "url":"/main/master/fixedeposit/companytype",
+        "icon": "stars"
+      },
+      {
+        "id":2,
+        "menu_name":"Company",
+        "has_submenu":"N",
+        "url":"/main/master/fixedeposit/company",
+        "icon": "stars"
+      },
+      {
+        "id":3,
+        "menu_name":"Scheme",
+        "has_submenu":"N",
+        "url":"/main/master/fixedeposit/scheme",
+        "icon":"stars"
+      }
+]

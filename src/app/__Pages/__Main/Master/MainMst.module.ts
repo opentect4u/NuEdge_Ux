@@ -300,6 +300,12 @@ const routes: Routes = [
         loadChildren:()=> import('./Insurance/ins-lnd.module').then(m => m.InsLndModule),
       },
       /** END */
+      /** Fixed Deposite - Master*/
+      {
+        path:'fixedeposit',
+        loadChildren:()=>import('./Fixed_Deposite/fixdeposite.module').then(m => m.FixdepositeModule)
+      },
+      /** END */
       {
         path: '',
         redirectTo: 'products',

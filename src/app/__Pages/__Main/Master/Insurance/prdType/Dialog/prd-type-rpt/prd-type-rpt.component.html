@@ -24,31 +24,41 @@
       <div class="card-body p-5">
         <form [formGroup]="__prdType" (ngSubmit)="submit()" autocomplete="off">
           <ng-container>
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-sm-12 my-2">
-                <mat-button-toggle-group class="float-right" aria-label="Font Style">
+
+              </div>
+            </div> -->
+            <div class="row">
+              <div class="col-sm-4 my-auto">
+                <mat-checkbox color="primary"
+                #insTypeChecked
+                [id]="insType.id"
+                class="mr-3"
+                *ngFor="let insType of instTypeMst;let i=index"
+                [value]="insType.id"
+                (change)="onInsTypeChange($event)"
+                > {{insType.type}}</mat-checkbox>
+                <mat-checkbox class="ml-3" color="primary" formControlName="is_all"> All</mat-checkbox>
+              </div>
+              <div class="col-sm-4">
+                 <label for="product_type" class="form-label">Product Type</label>
+                  <ng-multiselect-dropdown #multiSelect
+                  id="comp_name"
+                  [placeholder]="'Select Product Type'"
+                  [settings]="settings"
+                  [data]="__insPrdType"
+                  formControlName="product_type">
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-4 my-auto">
+
+                <mat-button-toggle-group class="float-right ml-3" aria-label="Font Style">
                   <mat-button-toggle value="R" (click)="refreshOrAdvanceFlt()">
                     <mat-icon>sync</mat-icon>
                   </mat-button-toggle>
                 </mat-button-toggle-group>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-4">
-                <label class="form-label" for="ins_type">Type Of Insurance</label>
-                <select class="form-control" formControlName="ins_type">
-                  <option value="">Select</option>
-                  <option *ngFor="let insType of instTypeMst" [value]="insType.id">{{insType.type}}</option>
-                </select>
-              </div>
-              <div class="col-sm-4">
-                <label for="product_type" class="form-label">Product Type</label>
-                <input type="text" placeholder="Enter Product Type" name="product_type" id="product_type"
-                  class="form-control" formControlName="product_type">
-              </div>
-              <div class="col-sm-4 my-auto">
                 <button mat-raised-button color="primary" class="float-right">
-                  <!-- <mat-icon>visibility</mat-icon> -->
                   Show
                 </button>
               </div>

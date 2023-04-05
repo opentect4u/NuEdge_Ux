@@ -6,15 +6,17 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   MatDialog,
   MatDialogConfig,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
+import { Observable, of } from 'rxjs';
 import {
   debounceTime,
+  delay,
   distinctUntilChanged,
   map,
   pluck,
@@ -50,12 +52,13 @@ export class TraxEntryComponent implements OnInit {
   @ViewChild('insuredCd') __insuredCd: ElementRef;
   @ViewChild('searchbnk') __searchbnk: ElementRef;
   @ViewChild('proposer_name') __propser_name: ElementRef;
+
   __temp_tinMst: any = [];
   __euinMst: any = [];
   __subbrkArnMst: any = [];
   __bu_type = buisnessType;
   __insTypeMst: any = [];
-  __clientMst: client[] = [];
+  __clientMst: any = [];
   __insuredPerson: client[] = [];
   __cmpMst: insComp[] = [];
   __prdTypeMst: insPrdType[] = [];
@@ -89,16 +92,27 @@ export class TraxEntryComponent implements OnInit {
       this.data.data ? this.data.data.entry_tin_status : 'Y',
       [Validators.required]
     ),
-    temp_tin_no: new FormControl('', [Validators.required]),
+    temp_tin_no: new FormControl('',[Validators.required]
+    ),
     bu_type: new FormControl('', [Validators.required]),
-    euin_no: new FormControl('', [Validators.required]),
+    euin_no: new FormControl('',
+    {
+      validators:[Validators.required],
+      asyncValidators:[this.EmpValidators()]
+    }
+    ),
     // sub_brk_cd: new FormControl(''),
     sub_arn_no: new FormControl(''),
     insure_bu_type: new FormControl('', [Validators.required]),
     ins_type_id: new FormControl('', [Validators.required]),
-    proposer_name: new FormControl('', [Validators.required]),
+    proposer_name: new FormControl(''),
     proposer_id: new FormControl('', [Validators.required]),
-    proposer_code: new FormControl('', [Validators.required]),
+    proposer_code: new FormControl('',
+    {
+      validators:[Validators.required],
+      asyncValidators:[this.__utility.ClientValidators(this.__clientMst)]
+    }
+    ),
     proposal_no: new FormControl(''),
     sum_assured: new FormControl(''),
     sum_insured: new FormControl(''),
@@ -172,6 +186,7 @@ export class TraxEntryComponent implements OnInit {
         { emitEvent: false }
       );
       this.__insTrax.controls['bu_type'].setValue(this.data.data.bu_type,{emitEvent:false});
+     this.__euinMst.push({euin_no:this.data.data.euin_no,emp_name:this.data.data.emp_name});
       this.__insTrax.controls['euin_no'].setValue(
         this.data.data.euin_no + ' - ' + this.data.data.emp_name, {
         emitEvent: false,
@@ -200,7 +215,8 @@ export class TraxEntryComponent implements OnInit {
         chq_no: this.data.data.mode_of_payment == 'O' ? this.data.data.chq_no : '',
         payment_ref_no: this.data.data.mode_of_payment == 'N' ? this.data.data.payment_ref_no  : '',
         filePreview:  `${environment.ins_app_form_url + this.data.data.app_form_scan}`,
-        third_party_premium: this.data.data.third_party_premium
+        third_party_premium: this.data.data.third_party_premium,
+        od_premium:this.data.data?.od_premium
       });
      this.__insTrax.controls['file'].removeValidators([
       Validators.required,
@@ -208,16 +224,26 @@ export class TraxEntryComponent implements OnInit {
     ]);
     this.__insTrax.controls['file'].updateValueAndValidity({emitEvent:false});
     /** Propser Code */
+    this.__clientMst.push({
+      client_code:this.data.data.proposer_code,
+      id:this.data.data.proposer_id,
+      client_name:this.data.data.proposer_name,
+      pan:this.data.data.proposer_pan,
+      dob:this.data.data.proposer_dob
+    })
       this.getItems(
-        {client_code:this.data.data.proposer_code,
+        {
+          client_code:this.data.data.proposer_code,
           id:this.data.data.proposer_id,
           client_name:this.data.data.proposer_name,
           pan:this.data.data.proposer_pan,
-          dob:this.data.data.proposer_dob},
+          dob:this.data.data.proposer_dob
+        },
           'C'
         );
 
       if (this.__insTrax.value == 'B') {
+        this.__subbrkArnMst.push({code:this.data.data.code});
         this.__insTrax.controls['sub_arn_no'].setValue(this.data.data.code, {
           emitEvent: false,
         });
@@ -298,7 +324,7 @@ export class TraxEntryComponent implements OnInit {
     let premium = 0;
     premium = (gross_premium / 118) * 100;
     this.__insTrax.patchValue({
-      net_premium: premium,
+      net_premium: premium.toFixed(2),
     });
   }
   ngAfterViewInit() {
@@ -462,9 +488,9 @@ export class TraxEntryComponent implements OnInit {
       this.__insTrax.controls['sub_arn_no'].setValidators(
         res == 'B' ? [Validators.required] : null
       );
-      // this.__insTrax.controls['sub_brk_cd'].setValidators(
-      //   res == 'B' ? [Validators.required] : null
-      // );
+      this.__insTrax.controls['sub_arn_no'].setAsyncValidators(
+        res == 'B' ? [this.__utility.SubBrokerValidators(this.__subbrkArnMst)] : null
+      );
       this.__insTrax.controls['sub_arn_no'].setValue('', { emitEvent: false });
       // this.__insTrax.controls['sub_brk_cd'].setValue('', { emitEvent: false });
       this.__insTrax.controls['sub_arn_no'].updateValueAndValidity({
@@ -485,7 +511,8 @@ export class TraxEntryComponent implements OnInit {
           dt?.length > 1
             ? this.__dbIntr.searchItems(
                 '/employee',
-                dt +
+                global.containsSpecialChars(dt) ? dt.split(' ')[0] : dt
+                +
                   (this.__insTrax.controls['bu_type'].value == 'B'
                     ? this.__insTrax.controls['sub_arn_no'].value
                       ? '&sub_brk_cd=' +
@@ -928,8 +955,6 @@ export class TraxEntryComponent implements OnInit {
   }
 
   getItems(__el, mode) {
-    console.log(__el);
-
     switch (mode) {
       case 'T':
         this.__insTrax.controls['temp_tin_no'].setValue(__el.temp_tin_no, {
@@ -946,8 +971,6 @@ export class TraxEntryComponent implements OnInit {
         this.searchResultVisibilityForEUIN('none');
         break;
       case 'S':
-        console.log(__el);
-
         this.__insTrax.controls['sub_arn_no'].setValue(__el.code, {
           emitEvent: false,
         });
@@ -1007,7 +1030,16 @@ export class TraxEntryComponent implements OnInit {
       insure_bu_type: res.insure_bu_type,
     });
     setTimeout(() => {
+      this.__euinMst.push({euin_no:res.euin_no,emp_name: res.emp_name})
       this.getItems(res, 'E');
+
+      this.__clientMst.push(
+        {
+          client_code:res.proposer_code,
+          client_name: res.proposer_name,
+          id:res.proposer_id
+        }
+        );
       this.getItems(
         {
           client_code: res.proposer_code,
@@ -1019,16 +1051,15 @@ export class TraxEntryComponent implements OnInit {
         'C'
       );
       if (res.bu_type == 'B') {
-        this.getItems(res, 'S');
+        this.__subbrkArnMst.push({code:res.sub_arn_no})
+        this.getItems({code:res.sub_arn_no}, 'S');
       }
     }, 200);
   }
   navigateTo(menu) {
-    console.log(menu);
     // this.openDialogforClient(menu);
   }
   openDialog(__type) {
-    console.log(this.__dialogDtForClient);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -1056,8 +1087,6 @@ export class TraxEntryComponent implements OnInit {
     dates.numberOnly(__ev);
   }
   getFIle(__ev) {
-    console.log(__ev);
-
     this.__insTrax
       .get('file')
       .setValidators([
@@ -1075,11 +1104,8 @@ export class TraxEntryComponent implements OnInit {
       this.setFormControl('filePreview', '');
       this.setFormControl('app_form_scan', '');
     }
-    console.log(this.__insTrax.get('app_form_scan'));
   }
   setFormControl(formcontrlname, __val) {
-    console.log(formcontrlname);
-
     this.__insTrax.get(formcontrlname).patchValue(__val);
   }
   isNumber(__ev) {
@@ -1121,4 +1147,27 @@ export class TraxEntryComponent implements OnInit {
     this.__insTrax.controls['is_same'].setValue(false, { emitEvent: false });
     this.__propser_name.nativeElement.focus();
   }
+
+ checkIfEmpExists(emp_name: string): Observable<boolean> {
+    if(global.containsSpecialChars(emp_name)){
+      return of(
+        this.__euinMst.findIndex((x) => x.euin_no == emp_name.split(' ')[0])!= -1);
+    }
+    else{
+      return of(this.__euinMst.findIndex((x) => x.euin_no == emp_name)!= -1);
+
+    }
+}
+EmpValidators(): AsyncValidatorFn {
+return (control: AbstractControl): Observable<ValidationErrors | null> => {
+  return this.checkIfEmpExists(control.value).pipe(
+    map(res => {
+       if(control.value){
+         return res ?  null : { empExists: true };
+       }
+       return null
+    })
+  );
+};
+}
 }

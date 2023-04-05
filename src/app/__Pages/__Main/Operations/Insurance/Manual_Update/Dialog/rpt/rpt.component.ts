@@ -1,10 +1,10 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject } from '@angular/core';
+import { Component, OnInit,Inject, ElementRef, QueryList, ViewChildren, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { pipe } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -14,16 +14,41 @@ import { insTraxClm } from 'src/app/__Utility/InsuranceColumns/insTrax';
 import buType from '../../../../../../../../assets/json/buisnessType.json';
 import modeOfPremium from '../../../../../../../../assets/json/Master/modeofPremium.json';
 import { EntryComponent } from '../entry/entry.component';
+import policyStatus from '../../../../../../../../assets/json/Master/policyStatus.json';
+import { client } from 'src/app/__Model/__clientMst';
+import { responseDT } from 'src/app/__Model/__responseDT';
 @Component({
   selector: 'app-rpt',
   templateUrl: './rpt.component.html',
   styleUrls: ['./rpt.component.css']
 })
 export class RPTComponent implements OnInit {
+  @ViewChild('searchEUIN') __searchRlt: ElementRef;
+  @ViewChild('subBrkArn') __subBrkArn: ElementRef;
+  @ViewChild('clientCd') __clientCode: ElementRef;
+  __isClientPending: boolean =false;
+  __isEuinPending:  boolean =false;
+  __isSubArnPending: boolean = false;
+
+  @ViewChildren('insTypeChecked')
+  private __insTypeChecked: QueryList<ElementRef>;
+  @ViewChildren('insbuTypeChecked')
+  private __insbuTypeChecked: QueryList<ElementRef>;
+  @ViewChildren('buTypeChecked')
+  private __buTypeChecked: QueryList<ElementRef>;
+
+  __insuredbu_type = [
+    { id: 'F', insuredbu_type: 'Fresh' },
+    { id: 'R', insuredbu_type: 'Renewal' },
+  ];
+  __policyStatus = policyStatus;
   divToPrint: any;
   WindowObject: any;
   __mode_of_premium = modeOfPremium;
   __columns: string [] = [];
+  __clientMst: client[] =[];
+  __euinMst: any= [];
+  __subbrkArnMst: any=[];
   __insTrax = new MatTableDataSource<any>([]);
   __exportTrax= new MatTableDataSource<any>([]);
 
@@ -39,12 +64,16 @@ export class RPTComponent implements OnInit {
     options: new FormControl('2'),
     sub_brk_cd: new FormControl(''),
     tin_no: new FormControl(''),
-    ins_type_id: new FormControl(''),
-    insured_bu_type: new FormControl(''),
+    ins_type_id: new FormArray([]),
+    insured_bu_type: new FormArray([]),
     brn_cd: new FormControl(''),
     proposer_code: new FormControl(''),
     euin_no: new FormControl(''),
     bu_type: new FormArray([]),
+    policy_status: new FormControl(''),
+    is_all: new FormControl(false),
+    is_all_ins_bu_type: new FormControl(false),
+    is_all_bu_type: new FormControl(false)
   })
   toppings = new FormControl();
   toppingList = insTraxClm.COLUMN_SELECTOR.filter((x: any) => x.id != 'delete')
@@ -79,6 +108,7 @@ export class RPTComponent implements OnInit {
   }
   getInsMstRPT(column_name: string | null | undefined = '',sort_by: string | null | undefined = 'asc'){
     const __fd = new FormData();
+    __fd.append('policy_status',JSON.stringify(this.__insTraxForm.value.policy_status));
     __fd.append('bu_type',JSON.stringify(this.__insTraxForm.value.bu_type));
     __fd.append('column_name',column_name ? column_name : '');
     __fd.append('sort_by',sort_by ? sort_by : 'asc');
@@ -86,8 +116,8 @@ export class RPTComponent implements OnInit {
     __fd.append('option',global.getActualVal(this.__insTraxForm.value.options));
       __fd.append('sub_brk_cd',global.getActualVal(this.__insTraxForm.value.sub_brk_cd));
       __fd.append('tin_no',global.getActualVal(this.__insTraxForm.value.tin_no));
-      __fd.append('ins_type_id',global.getActualVal(this.__insTraxForm.value.ins_type_id));
-      __fd.append('insured_bu_type',global.getActualVal(this.__insTraxForm.value.insured_bu_type));
+      __fd.append('ins_type_id',JSON.stringify(this.__insTraxForm.value.ins_type_id));
+      __fd.append('insured_bu_type',JSON.stringify(this.__insTraxForm.value.insured_bu_type));
       __fd.append('proposer_name',global.getActualVal(this.__insTraxForm.value.proposer_code));
       __fd.append('euin_no',global.getActualVal(this.__insTraxForm.value.euin_no));
     this.__dbIntr.api_call(1,'/ins/manualUpdateDetailSearch',__fd).pipe(pluck("data")).subscribe((res: any) =>{
@@ -108,6 +138,54 @@ export class RPTComponent implements OnInit {
    })
   }
   ngAfterViewInit(){
+
+    this.__insTraxForm.controls['is_all_ins_bu_type'].valueChanges.subscribe(
+      (res) => {
+        const ins_type: FormArray = this.__insTraxForm.get(
+          'insured_bu_type'
+        ) as FormArray;
+        ins_type.clear();
+        if (!res) {
+          this.uncheckAllForInsBuType();
+        } else {
+          this.__insuredbu_type.forEach((__el) => {
+            ins_type.push(new FormControl(__el.id));
+          });
+          this.checkAllForInsBuType();
+        }
+      }
+    );
+       this.__insTraxForm.controls['is_all_bu_type'].valueChanges.subscribe(
+      (res) => {
+        const bu_type: FormArray = this.__insTraxForm.get(
+          'bu_type'
+        ) as FormArray;
+        bu_type.clear();
+        if (!res) {
+          this.uncheckAllbuType();
+        } else {
+          this.__bu_type.forEach((__el) => {
+            bu_type.push(new FormControl(__el.id));
+          });
+          this.checkAllbuType();
+        }
+      }
+    );
+
+    this.__insTraxForm.controls['is_all'].valueChanges.subscribe((res) => {
+      const ins_type: FormArray = this.__insTraxForm.get(
+        'ins_type_id'
+      ) as FormArray;
+      ins_type.clear();
+      if (!res) {
+        this.uncheckAll();
+      } else {
+        this.__insType.forEach((__el) => {
+          ins_type.push(new FormControl(__el.id));
+        });
+        this.checkAll();
+      }
+    });
     this.__insTraxForm.controls['options'].valueChanges.subscribe(res =>{
       if(res != '3'){
         this.setColumns(res);
@@ -118,7 +196,99 @@ export class RPTComponent implements OnInit {
       this.__columns = res;
       this.__exportedClmns = res.filter(item => !clm.includes(item))
     });
+      // EUIN NUMBER SEARCH
+      this.__insTraxForm.controls['euin_no'].valueChanges
+      .pipe(
+        tap(() => (this.__isEuinPending = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.__dbIntr.searchItems('/employee', dt) : []
+        ),
+        map((x: responseDT) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          console.log(value);
+          this.__euinMst = value;
+          this.searchResultVisibility('block');
+          this.__isEuinPending = false;
+        },
+        complete: () => console.log(''),
+        error: (err) => {
+          this.__isEuinPending = false;
+        },
+      });
+
+    /**change Event of sub Broker Arn Number */
+    this.__insTraxForm.controls['sub_brk_cd'].valueChanges
+      .pipe(
+        tap(() => (this.__isSubArnPending = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
+        ),
+        map((x: responseDT) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          this.__subbrkArnMst = value;
+          this.searchResultVisibilityForSubBrk('block');
+          this.__isSubArnPending = false;
+        },
+        complete: () => console.log(''),
+        error: (err) => {
+          this.__isSubArnPending = false;
+        },
+      });
+
+    this.__insTraxForm.controls['proposer_code'].valueChanges
+      .pipe(
+        tap(() => (this.__isClientPending = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+        ),
+        map((x: any) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          this.__clientMst = value.data;
+          this.searchResultVisibilityForClient('block');
+          this.__isClientPending = false;
+        },
+        complete: () => console.log(''),
+        error: (err) => {
+          this.__isClientPending = false;
+        },
+      });
   }
+
+  uncheckAll() {
+    this.__insTypeChecked.forEach((element: any) => {
+      element.checked = false;
+    });
+  }
+  checkAll() {
+    this.__insTypeChecked.forEach((element: any) => {
+      element.checked = true;
+    });
+  }
+
+  checkAllbuType(){
+    this.__buTypeChecked.forEach((element: any) => {
+      element.checked = true;
+    });
+  }
+  uncheckAllbuType(){
+    this.__buTypeChecked.forEach((element: any) => {
+      element.checked = false;
+    });
+  }
+
+
   searchInsurance(){
     this.getInsMstRPT(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
   }
@@ -153,15 +323,16 @@ export class RPTComponent implements OnInit {
           .getpaginationData(
             __paginate.url +
               ('&paginate=' + this.__pageNumber)
+              +('&policy_status=' + global.getActualVal(this.__insTraxForm.value.policy_status))
               + ('&option=' + this.__insTraxForm.value.options)
-              + ('&ins_type_id=' + this.__insTraxForm.value.options == '3' ? '' : global.getActualVal(this.__insTraxForm.value.ins_type_id))
+              + ('&ins_type_id=' + JSON.stringify(this.__insTraxForm.value.ins_type_id))
               + ('&column_name=' +  this.__sortAscOrDsc.active ? this.__sortAscOrDsc.active : '')
               + ('&sort_by=' +  this.__sortAscOrDsc.direction ? this.__sortAscOrDsc.direction : 'asc')
               + ('&tin_no='+ this.__insTraxForm.value.options == '3' ? '' : global.getActualVal(this.__insTraxForm.value.tin_no))
               + ('&euin_no=' + this.__insTraxForm.value.options == '3' ? '' : global.getActualVal(this.__insTraxForm.value.euin_no))
-              + ('&bu_type' + this.__insTraxForm.value.options == '3' ? "[]" : (this.__insTraxForm.value.bu_type.length > 0 ? JSON.stringify(this.__insTraxForm.value.bu_type): ''))
+              + ('&bu_type' + JSON.stringify(this.__insTraxForm.value.bu_type))
               +('&proposer_name=' + this.__insTraxForm.value.options == '3' ? '' : global.getActualVal(this.__insTraxForm.value.proposer_code))
-              + ('&insured_bu_type=' + this.__insTraxForm.value.options == '3' ? '' : global.getActualVal(this.__insTraxForm.value.insured_bu_type))
+              + ('&insured_bu_type=' + JSON.stringify(this.__insTraxForm.value.insured_bu_type))
               )
           .pipe(map((x: any) => x.data))
           .subscribe((res: any) => {
@@ -174,18 +345,22 @@ export class RPTComponent implements OnInit {
     }
     onbuTypeChange(e: any) {
       const bu_type: FormArray = this.__insTraxForm.get('bu_type') as FormArray;
-      if (e.target.checked) {
-        bu_type.push(new FormControl(e.target.value));
+      if (e.checked) {
+        bu_type.push(new FormControl(e.source.value));
       } else {
         let i: number = 0;
         bu_type.controls.forEach((item: any) => {
-          if (item.value == e.target.value) {
+          if (item.value == e.source.value) {
             bu_type.removeAt(i);
             return;
           }
           i++;
         });
       }
+      this.__insTraxForm.get('is_all_bu_type').setValue(
+        bu_type.controls.length == 3 ? true : false,
+        {emitEvent:false}
+      );
     }
     sortData(__ev){
       this.__sortAscOrDsc = __ev;
@@ -253,9 +428,19 @@ export class RPTComponent implements OnInit {
         options:'2',
         start_date:this.getTodayDate(),
         end_date:this.getTodayDate(),
-        ins_type_id:'',
-        insured_bu_type:'',
-      })
+        policy_status:""
+      });
+      (<FormArray>this.__insTraxForm.get('ins_type_id')).clear();
+      (<FormArray>this.__insTraxForm.get('insured_bu_type')).clear();
+      (<FormArray>this.__insTraxForm.get('bu_type')).clear();
+      this.uncheckAll();
+      this.uncheckAllForInsBuType();
+      this.uncheckAllbuType();
+      this.__insTraxForm.controls['proposer_code'].reset('', {
+        emitEvent: false,
+      });
+      this.__insTraxForm.controls['sub_brk_cd'].reset('', { emitEvent: false });
+      this.__insTraxForm.controls['euin_no'].reset('', { emitEvent: false });
       this.__sortAscOrDsc= {active:'',direction:'asc'};
       this.searchInsurance();
 
@@ -281,4 +466,118 @@ export class RPTComponent implements OnInit {
         return true;
       });
      }
+     onInsTypeChange(e) {
+      const ins_type: FormArray = this.__insTraxForm.get(
+        'ins_type_id'
+      ) as FormArray;
+      if (e.checked) {
+        ins_type.push(new FormControl(e.source.value));
+      } else {
+        let i: number = 0;
+        ins_type.controls.forEach((item: any) => {
+          if (item.value == e.source.value) {
+            ins_type.removeAt(i);
+            return;
+          }
+          i++;
+        });
+      }
+      this.__insTraxForm
+        .get('is_all')
+        .setValue(ins_type.controls.length == 3 ? true : false, {
+          emitEvent: false,
+        });
+    }
+    onInsBuTypeChange(e) {
+      const ins_bu_type: FormArray = this.__insTraxForm.get(
+        'insured_bu_type'
+      ) as FormArray;
+      if (e.checked) {
+        ins_bu_type.push(new FormControl(e.source.value));
+      } else {
+        let i: number = 0;
+        ins_bu_type.controls.forEach((item: any) => {
+          if (item.value == e.source.value) {
+            ins_bu_type.removeAt(i);
+            return;
+          }
+          i++;
+        });
+      }
+      console.log(ins_bu_type.controls);
+
+      this.__insTraxForm
+        .get('is_all_ins_bu_type')
+        .setValue(ins_bu_type.controls.length == 2 ? true : false, {
+          emitEvent: false,
+        });
+    }
+
+    uncheckAllForInsBuType() {
+      this.__insbuTypeChecked.forEach((element: any) => {
+        element.checked = false;
+      });
+    }
+    checkAllForInsBuType() {
+      this.__insbuTypeChecked.forEach((element: any) => {
+        element.checked = true;
+      });
+    }
+    outsideClickforClient(__ev) {
+      if (__ev) {
+        this.searchResultVisibilityForClient('none');
+      }
+    }
+    searchResultVisibilityForClient(display_mode) {
+      this.__clientCode.nativeElement.style.display = display_mode;
+    }
+
+    getItems(__items, __mode) {
+      console.log(__items);
+      switch (__mode) {
+        case 'C':
+          this.__insTraxForm.controls['proposer_code'].reset(
+            __items.client_name,
+            { onlySelf: true, emitEvent: false }
+          );
+          this.searchResultVisibilityForClient('none');
+          break;
+        case 'E':
+          this.__insTraxForm.controls['euin_no'].reset(__items.emp_name, {
+            onlySelf: true,
+            emitEvent: false,
+          });
+          this.searchResultVisibility('none');
+          break;
+        case 'T':
+          // this.__insTraxForm.controls['temp_tin_no'].reset(__items.temp_tin_no,{ onlySelf: true, emitEvent: false });
+          // this.searchResultVisibilityForTempTin('none');
+          break;
+        case 'S':
+          this.__insTraxForm.controls['sub_brk_cd'].reset(__items.code, {
+            onlySelf: true,
+            emitEvent: false,
+          });
+          this.searchResultVisibilityForSubBrk('none');
+          break;
+      }
+    }
+    outsideClick(__ev) {
+      if (__ev) {
+        this.__isEuinPending = false;
+        this.searchResultVisibility('none');
+      }
+    }
+    searchResultVisibility(display_mode) {
+      this.__searchRlt.nativeElement.style.display = display_mode;
+    }
+    outsideClickforSubBrkArn(__ev) {
+      if (__ev) {
+        this.searchResultVisibilityForSubBrk('none');
+      }
+    }
+    /** Search Result Off against Sub Broker */
+    searchResultVisibilityForSubBrk(display_mode) {
+      this.__subBrkArn.nativeElement.style.display = display_mode;
+    }
 }

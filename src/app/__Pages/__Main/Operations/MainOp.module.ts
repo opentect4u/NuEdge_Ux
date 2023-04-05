@@ -87,6 +87,10 @@ const routes: Routes = [
       {
         path:'insurance',
         loadChildren:()=> import('./Insurance/ins-main.module').then(m => m.InsMainModule)
+      },
+      {
+        path:'fixedeposit',
+        loadChildren:()=> import('./FixedDeposit/fixed-deposit.module').then(m => m.FixedDepositModule)
       }
     ],
   },

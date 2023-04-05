@@ -35,5 +35,18 @@ export  class dates{
           event.preventDefault();
         }
     }
+    public static calculateDT(__mode){
+     var dt = new Date();
+     switch(__mode){
+      case 'W': dt.setDate(dt.getDate() - 7);break;
+      case 'M': dt.setMonth(dt.getMonth() - 1);break;
+      case 'Y': dt.setFullYear(dt.getFullYear() - 1);break;
+      case 'D': break;
+      default: break;
+     }
+     console.log(dt.toISOString().substring(0,10));
+
+     return dt.toISOString().substring(0,10);
+    }
 
 }

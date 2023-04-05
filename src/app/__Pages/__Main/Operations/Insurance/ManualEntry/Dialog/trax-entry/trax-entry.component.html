@@ -35,7 +35,8 @@
           <div class="col-sm-12">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
               <div class="searchDiv">
-                <label for="__temp_tin_no">Temporary TIN Number
+                <label for="__temp_tin_no">
+                  Temporary TIN Number
                   <span class="text-danger">*</span>
                 </label>
                 <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
@@ -83,11 +84,18 @@
           <div class="col-sm-12">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
               <div class="searchDiv">
-                <label for="subbrkArn">Sub Broker Code<span class="text-danger">*</span></label>
+                <label for="subbrkArn">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Sub Broker does not exists"
+                  *ngIf="__insTrax.get('sub_arn_no').errors?.subBrkExists">
+                  error</mat-icon>
+                  Sub Broker Code<span class="text-danger">*</span></label>
                 <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
                   formControlName="sub_arn_no">
-                <!-- <span class="spinner-border"
-                  *ngIf="__isSubArnPending && __insTrax.get('sub_arn_no').value?.length > 1"></span> -->
+                <span class="spinner-border"
+                  *ngIf="__isSubArnPending && __insTrax.get('sub_arn_no').value?.length > 1"></span>
 
                 <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
                   <div class="serachresult_client" #subBrkArn>
@@ -123,7 +131,14 @@
           <div class="col-sm-12">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
               <div class="searchDiv">
-                <label for="Euin">Employee Details<span class="text-danger">*</span></label>
+                <label for="Euin">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Employee does not exists"
+                  *ngIf="__insTrax.get('euin_no').errors?.empExists">
+                  error</mat-icon>
+                  Employee Details<span class="text-danger">*</span></label>
                 <input type="search" id="Euin" class="form-control" placeholder="Serach By Employee Details"
                   formControlName="euin_no">
                 <span class="spinner-border"
@@ -186,8 +201,15 @@
         <div [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-8':__isCldtlsEmpty}">
           <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
             <div class="searchDiv">
-              <label for="__clntCd">Proposer Details <span class="text-danger">*</span></label>
-              <!-- <p class="text-danger" *ngIf="__clientMst.length == 0 && __insTrax.get('proposer_code').value">* Proposer does not exists</p> -->
+              <label for="__clntCd">
+                <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Proposer does not exists"
+                  *ngIf="__insTrax.get('proposer_code').errors?.ClientExists">
+                  error</mat-icon>
+                Proposer Details
+                <span class="text-danger">*</span></label>
               <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="proposer_code"
                 placeholder="Search By Proposer Name,Proposer Code, Email, Mobile, Pan & DOB">
               <span class="spinner-border"
@@ -512,7 +534,7 @@
       </div>
 
        <ng-container *ngIf="__insTrax.get('ins_type_id').value == '1' && __insTrax.get('product_type_id').value == '3'">
-        <div class="row">
+        <div class="row my-5">
           <div class="col-sm-12">
             <label>Third Party Premium <span class="text-danger">*</span></label>
             <input type="text" name="third_party_premium" id="third_party_premium" placeholder="Third Party Premium"
@@ -647,7 +669,6 @@
               <div class="invalid-feedback"
                 *ngIf="__insTrax.get('chq_no').invalid && (__insTrax.get('chq_no').dirty || __insTrax.get('chq_no').touched)">
                 <span class="invalid-feedback" *ngIf="(__insTrax.get('chq_no')).errors?.required">*Please provide cheque
-                  number
                   number</span>
                 <span class="invalid-feedback" *ngIf="(__insTrax.get('chq_no')).hasError('minlength')">*cheque number
                   must be 6 digits</span>

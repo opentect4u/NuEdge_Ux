@@ -1,0 +1,7 @@
+[
+  {"id":"C", "value":"Cumulative","option":"C"},
+  {"id":"M", "value":"Monthly","option":"N"},
+  {"id":"Q", "value":"Quarterly","option":"N"},
+  {"id":"H", "value":"Half Yearly","option":"N"},
+  {"id":"A", "value":"Annually","option":"N"}
+]

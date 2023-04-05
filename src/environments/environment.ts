@@ -22,7 +22,7 @@ export const environment = {
   app_formUrl_ins:"http://192.168.1.25/nuedge/public/ins-application-form/",
   ack_formUrl_for_ins:"http://192.168.1.25/nuedge/public/ins-acknowledgement-copy/",
   manual_update_formUrl_for_ins:"http://192.168.1.25/nuedge/public/ins-policy-copy/",
-  ins_app_form_url: "http://192.168.1.25/nuedge/public/ins-application-form/",
+  ins_app_form_url: "http://192.168.1.25/nuedge/public/ins-application-form/"
 
 
 

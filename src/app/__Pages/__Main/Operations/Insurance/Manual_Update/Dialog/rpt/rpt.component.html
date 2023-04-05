@@ -28,7 +28,6 @@
               <mat-radio-group aria-label="Select an option" formControlName="options">
                 <mat-radio-button color="primary" value="2">Summary</mat-radio-button>
                 <mat-radio-button color="primary" value="1" class="ml-5">Detail</mat-radio-button>
-                <!-- <mat-radio-button color="primary" value="3" class="ml-5">Day Sheet</mat-radio-button> -->
               </mat-radio-group>
             </div>
             <div class="col-sm-4">
@@ -38,7 +37,14 @@
             </div>
           </div>
           <ng-container *ngIf="__insTraxForm.get('options').value != '3'">
-            <div class="row my-5">
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="policy_status">Policy Status</label>
+                <select class="form-control" formControlName="policy_status" name="policy_status" id="policy_status">
+                 <option value="">Select</option>
+                 <option *ngFor="let policyStatus of __policyStatus" [value]="policyStatus.id">{{policyStatus.value}}</option>
+                </select>
+              </div>
               <div class="col-sm-3">
                 <label for="tin_no">TIN Number</label>
                   <input type="text"
@@ -49,57 +55,116 @@
                   formControlName="tin_no">
               </div>
               <div class="col-sm-3">
-                <label for="proposer_code">Proposer Details</label>
-                  <input type="text"
-                  name="proposer_code"
-                  id="proposer_code"
-                  placeholder="Enter Proposer Name / Code / PAN / Mobile"
-                  class="form-control"
-                  formControlName="proposer_code">
+                  <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+                    <div class="searchDiv">
+                      <label for="__clntCd">Proposer Details</label>
+                      <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                        formControlName="proposer_code"
+                        placeholder="Search By Proposer Name,Proposer Code, Email, Mobile, Pan & DOB">
+                      <span class="spinner-border"
+                        *ngIf="__isClientPending && __insTraxForm.get('proposer_code').value?.length > 1"></span>
+
+                      <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
+                        <div class="serachresult_client" #clientCd>
+                          <ul *ngIf="__clientMst.length > 0">
+                            <li *ngFor="let items of __clientMst" (click)="getItems(items,'C')">
+                              {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                            </li>
+                          </ul>
+                          <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                            <h5 class="text-center">
+                              Sorry!! No Records Found
+                            </h5>
+                            <p>If your result match,they will appear here</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
               </div>
               <div class="col-sm-3">
-                <label for="sub_brk_cd">Sub Broker Code</label>
-                  <input type="text"
-                  name="sub_brk_cd"
-                  id="sub_brk_cd"
-                  placeholder="Enter Sub Broker Code"
-                  class="form-control"
-                  formControlName="sub_brk_cd">
-              </div>
-              <div class="col-sm-3">
-                <label for="euin_no">EUIN</label>
-                  <input type="text"
-                  name="euin_no"
-                  id="euin_no"
-                  placeholder="Enter EUIN"
-                  class="form-control"
-                  formControlName="euin_no">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                  <div class="searchDiv">
+                    <label for="subbrkArn">Sub Broker Code</label>
+                    <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                      formControlName="sub_brk_cd">
+                    <span class="spinner-border"
+                      *ngIf="__isSubArnPending && __insTraxForm.get('sub_brk_cd').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility
+                      (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                      <div class="serachresult_client" #subBrkArn>
+                        <ul *ngIf="__subbrkArnMst.length > 0">
+                          <li *ngFor="let items of __subbrkArnMst" (click)="getItems(items,'S')">
+                            {{items.code}} | {{items.bro_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Sub Brokers Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-3">
-                <label>Type Of Insurance</label>
-                <select class="form-control" formControlName="ins_type_id">
-                  <option value="">Select</option>
-                  <option *ngFor="let insType of __insType" [value]="insType.id">{{insType.type}}</option>
-                </select>
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+                  <div class="searchDiv">
+                    <label for="Euin">Employee</label>
+                    <input type="search" id="Euin" class="form-control" placeholder="Serach By Employee"
+                      formControlName="euin_no">
+                    <span class="spinner-border"
+                      *ngIf="__isEuinPending && __insTraxForm.get('euin_no').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                      <div class="serachresult_client" #searchEUIN>
+                        <ul *ngIf="__euinMst.length > 0">
+                          <li *ngFor="let items of __euinMst" (click)="getItems(items,'E')">
+                            {{items.euin_no}} | {{items.emp_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Employees Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="col-sm-3">
-                <label>Insured Buisness Type</label>
-                <select class="form-control" formControlName="insured_bu_type">
-                  <option value="">Select</option>
-                  <option value="F">Fresh</option>
-                  <option value="R">Renewal</option>
-                </select>
+              <div class="col-sm-4 my-auto">
+                <mat-checkbox color="primary" #insTypeChecked [id]="insType.id" [class]="i == 0 ? '' : 'ml-3'"
+                *ngFor="let insType of __insType;let i=index" [value]="insType.id" (change)="onInsTypeChange($event)">
+                {{insType.type}}</mat-checkbox>
+                <mat-checkbox class="ml-3" color="primary" formControlName="is_all"> All</mat-checkbox>
               </div>
+              <div class="col-sm-3 my-auto">
+                <mat-checkbox color="primary" #insbuTypeChecked [id]="insbuType.id" [class]="i == 0 ? '' : 'ml-3'"
+                  *ngFor="let insbuType of __insuredbu_type;let i=index" [value]="insbuType.id"
+                  (change)="onInsBuTypeChange($event)"> {{insbuType.insuredbu_type}}</mat-checkbox>
+                <mat-checkbox class="ml-3" color="primary" formControlName="is_all_ins_bu_type"> All</mat-checkbox>
+              </div>
+            </div>
+            <div class="row">
+
               <div class="col-sm-5 my-auto">
-                <label for="">Buisness Type: </label>
-                <label *ngFor="let bu_type of __bu_type; let i=index" for="{{bu_type.id}}" class="mx-3">
-                  <input type="checkbox" id="{{bu_type.id}}" [value]="bu_type.id" (change)="onbuTypeChange($event)" />
-                  {{bu_type.bu_type}}
-                </label>
+                <mat-checkbox
+                 #buTypeChecked
+                 color="primary" [id]="bu_type.id" [class]="i == 0 ? '' : 'ml-3'"
+                  *ngFor="let bu_type of __bu_type;let i=index" [value]="bu_type.id" (change)="onbuTypeChange($event)">
+                  {{bu_type.bu_type}}</mat-checkbox>
+                <mat-checkbox class="ml-3" color="primary" formControlName="is_all_bu_type"> All</mat-checkbox>
               </div>
-              <div class="col-sm-1 my-auto">
+              <div class="col-sm-7 my-auto">
                 <button mat-raised-button color="primary" class="float-right">
                   Show
                 </button>
@@ -146,7 +211,7 @@
 
           <ng-container matColumnDef="tin_no">
             <th mat-sort-header="tin_no" mat-header-cell *matHeaderCellDef>TIN Number</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no ? element.tin_no : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="bu_type">
             <th mat-sort-header="bu_type" mat-header-cell *matHeaderCellDef>Buisness Type</th>
@@ -155,17 +220,17 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="arn_no">
-            <th mat-sort-header="arn_no" mat-header-cell *matHeaderCellDef>ARN No</th>
+          <ng-container matColumnDef="sub_brk_cd">
+            <th mat-sort-header="sub_brk_cd" mat-header-cell *matHeaderCellDef>Sub Broker Code</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.arn_no}}
+              {{element.sub_brk_cd ? element.sub_brk_cd : 'N/A'}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="euin_no">
-            <th mat-sort-header="euin_no" mat-header-cell *matHeaderCellDef>EUIN</th>
+            <th mat-sort-header="euin_no" mat-header-cell *matHeaderCellDef>Employee</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.euin_no ? element.euin_no : ''}}
+              {{element.euin_no ? element.euin_no : 'N/A'}}
             </td>
           </ng-container>
 
@@ -178,27 +243,27 @@
           <ng-container matColumnDef="ins_type">
             <th mat-sort-header="ins_type" mat-header-cell *matHeaderCellDef>Insurance Type</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.ins_type}}
+              {{element.ins_type ? element.ins_type : "N/A"}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="proposer_code">
             <th mat-sort-header="proposer_code" mat-header-cell *matHeaderCellDef>Proposer Code</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.proposer_code}}
+              {{element.proposer_code ? element.proposer_code : "N/A"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="proposer_name">
             <th mat-sort-header="proposer_name" mat-header-cell *matHeaderCellDef>Proposer Name</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.proposer_name}}
+              {{element.proposer_name ? element.proposer_name : "N/A"}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="proposer_pan">
             <th mat-sort-header="proposer_pan" mat-header-cell *matHeaderCellDef>Proposer PAN</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.proposer_pan}}
+              {{element.proposer_pan ? element.proposer_pan : "N/A"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="proposer_type">
@@ -211,19 +276,19 @@
           <ng-container matColumnDef="insured_person_code">
             <th mat-sort-header="insured_person_code" mat-header-cell *matHeaderCellDef>Insured Person Code</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.insured_person_code}}
+              {{element.insured_person_code ? element.insured_person_code : "N/A"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="insured_person_name">
             <th mat-sort-header="insured_person_name" mat-header-cell *matHeaderCellDef>Insured Person Name</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.insured_person_name}}
+              {{element.insured_person_name ? element.insured_person_name : "N/A"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="insured_person_pan">
             <th mat-sort-header="insured_person_pan" mat-header-cell *matHeaderCellDef>Insured Person PAN</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.insured_person_pan}}
+              {{element.insured_person_pan ? element.insured_person_pan : "N/A"}}
             </td>
           </ng-container>
 
@@ -243,34 +308,34 @@
           <ng-container matColumnDef="comp_full_name">
             <th mat-sort-header="comp_full_name" mat-header-cell *matHeaderCellDef>Company Full Name</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.comp_full_name}}
+              {{element.comp_full_name ? element.comp_full_name : "N/A"}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="comp_short_name">
             <th mat-sort-header="comp_short_name" mat-header-cell *matHeaderCellDef>Company Short Name</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_short_name}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_short_name ? element.comp_short_name : "N/A"}}</td>
           </ng-container>
 
 
           <ng-container matColumnDef="product_type">
             <th mat-sort-header="product_type" mat-header-cell *matHeaderCellDef>Product Type</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.product_type}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.product_type ? element.product_type : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="product_name">
             <th mat-sort-header="product_name" mat-header-cell *matHeaderCellDef>Product Name</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.product_name}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.product_name ? element.product_name : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="proposal_no">
             <th mat-sort-header="proposal_no" mat-header-cell *matHeaderCellDef>Proposal No</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.proposal_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.proposal_no ? element.proposal_no : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="sum_assured">
             <th mat-sort-header="sum_assured" mat-header-cell *matHeaderCellDef>Sum Assured</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.sum_assured}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.sum_assured ? element.sum_assured : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="mode_of_premium">
@@ -284,12 +349,12 @@
 
           <ng-container matColumnDef="gross_premium">
             <th mat-sort-header="gross_premium" mat-header-cell *matHeaderCellDef>Gross Premium</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.gross_premium}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.gross_premium ? element.gross_premium : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="net_premium">
             <th mat-sort-header="net_premium" mat-header-cell *matHeaderCellDef>Net Premium</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.net_premium}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.net_premium ? element.net_premium : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="mode_of_payment">
@@ -302,20 +367,20 @@
 
           <ng-container matColumnDef="acc_no">
             <th mat-sort-header="acc_no" mat-header-cell *matHeaderCellDef>Account Number</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.acc_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.acc_no ? element.acc_no : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="chq_bank">
             <th mat-sort-header="chq_bank" mat-header-cell *matHeaderCellDef>Bank</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.bank_name}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.bank_name ? element.bank_name : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="chq_no">
             <th mat-sort-header="chq_no" mat-header-cell *matHeaderCellDef>Cheque Number</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.chq_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.chq_no ? element.chq_no : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="payment_ref_no">
             <th mat-sort-header="payment_ref_no" mat-header-cell *matHeaderCellDef>Payment Reference Number</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.payment_ref_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.payment_ref_no ? element.payment_ref_no : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="entry_date">
             <th mat-sort-header="entry_date" mat-header-cell *matHeaderCellDef>Entry Date</th>
@@ -323,15 +388,15 @@
           </ng-container>
           <ng-container matColumnDef="policy_term">
             <th mat-sort-header="policy_term" mat-header-cell *matHeaderCellDef>Policy Term</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.policy_term}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.policy_term ? element.policy_term : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="policy_pre_pay_term">
             <th mat-sort-header="policy_pre_pay_term" mat-header-cell *matHeaderCellDef>Policy Premium Paying Term</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.policy_pre_pay_term}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.policy_pre_pay_term ? element.policy_pre_pay_term : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="comp_login_at">
             <th mat-sort-header="comp_login_at" mat-header-cell *matHeaderCellDef>Login At</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_login_full_name}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_login_full_name ? element.comp_login_full_name : "N/A"}}</td>
           </ng-container>
 
 
@@ -411,7 +476,7 @@
 
           <ng-container matColumnDef="tin_no">
             <th  mat-header-cell *matHeaderCellDef>TIN Number</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no ? element.tin_no : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="bu_type">
             <th  mat-header-cell *matHeaderCellDef>Buisness Type</th>
@@ -420,17 +485,17 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="arn_no">
-            <th  mat-header-cell *matHeaderCellDef>ARN No</th>
+          <ng-container matColumnDef="sub_brk_cd">
+            <th  mat-header-cell *matHeaderCellDef>Sub Broker Code</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.arn_no}}
+              {{element.sub_brk_cd ? element.sub_brk_cd : "N/A"}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="euin_no">
-            <th  mat-header-cell *matHeaderCellDef>EUIN</th>
+            <th  mat-header-cell *matHeaderCellDef>Employee</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.euin_no ? element.euin_no : ''}}
+              {{element.euin_no ? element.euin_no : 'N/A'}}
             </td>
           </ng-container>
 
@@ -443,27 +508,27 @@
           <ng-container matColumnDef="ins_type">
             <th  mat-header-cell *matHeaderCellDef>Insurance Type</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.ins_type}}
+              {{element.ins_type ? element.ins_type : "N/A"}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="proposer_code">
             <th  mat-header-cell *matHeaderCellDef>Proposer Code</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.proposer_code}}
+              {{element.proposer_code ? element.proposer_code : "N/A"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="proposer_name">
             <th  mat-header-cell *matHeaderCellDef>Proposer Name</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.proposer_name}}
+              {{element.proposer_name ? element.proposer_name : "N/A"}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="proposer_pan">
             <th  mat-header-cell *matHeaderCellDef>Proposer PAN</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.proposer_pan}}
+              {{element.proposer_pan ? element.proposer_pan : "N/A"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="proposer_type">
@@ -476,19 +541,19 @@
           <ng-container matColumnDef="insured_person_code">
             <th  mat-header-cell *matHeaderCellDef>Insured Person Code</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.insured_person_code}}
+              {{element.insured_person_code ? element.insured_person_code : "N/A"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="insured_person_name">
             <th  mat-header-cell *matHeaderCellDef>Insured Person Name</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.insured_person_name}}
+              {{element.insured_person_name ? element.insured_person_name : "N/A"}}
             </td>
           </ng-container>
           <ng-container matColumnDef="insured_person_pan">
             <th  mat-header-cell *matHeaderCellDef>Insured Person PAN</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.insured_person_pan}}
+              {{element.insured_person_pan ? element.insured_person_pan : "N/A"}}
             </td>
           </ng-container>
 
@@ -508,34 +573,34 @@
           <ng-container matColumnDef="comp_full_name">
             <th  mat-header-cell *matHeaderCellDef>Company Full Name</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.comp_full_name}}
+              {{element.comp_full_name ? element.comp_full_name : "N/A"}}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="comp_short_name">
             <th  mat-header-cell *matHeaderCellDef>Company Short Name</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_short_name}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_short_name ? element.comp_short_name : "N/A"}}</td>
           </ng-container>
 
 
           <ng-container matColumnDef="product_type">
             <th  mat-header-cell *matHeaderCellDef>Product Type</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.product_type}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.product_type ? element.product_type : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="product_name">
             <th mat-header-cell *matHeaderCellDef>Product Name</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.product_name}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.product_name ? element.product_name : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="proposal_no">
             <th mat-header-cell *matHeaderCellDef>Proposal No</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.proposal_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.proposal_no ? element.proposal_no : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="sum_assured">
             <th mat-header-cell *matHeaderCellDef>Sum Assured</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.sum_assured}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.sum_assured ? element.sum_assured : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="mode_of_premium">
@@ -549,12 +614,12 @@
 
           <ng-container matColumnDef="gross_premium">
             <th mat-header-cell *matHeaderCellDef>Gross Premium</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.gross_premium}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.gross_premium ? element.gross_premium : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="net_premium">
             <th mat-header-cell *matHeaderCellDef>Net Premium</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.net_premium}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.net_premium ? element.net_premium : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="mode_of_payment">
@@ -567,20 +632,20 @@
 
           <ng-container matColumnDef="acc_no">
             <th  mat-header-cell *matHeaderCellDef>Account Number</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.acc_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.acc_no ? element.acc_no : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="chq_bank">
             <th  mat-header-cell *matHeaderCellDef>Bank</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.bank_name}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.bank_name ? element.bank_name : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="chq_no">
             <th  mat-header-cell *matHeaderCellDef>Cheque Number</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.chq_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.chq_no ? element.chq_no : "N/A"}}</td>
           </ng-container>
 
           <ng-container matColumnDef="payment_ref_no">
             <th  mat-header-cell *matHeaderCellDef>Payment Reference Number</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.payment_ref_no}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.payment_ref_no ? element.payment_ref_no : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="entry_date">
             <th  mat-header-cell *matHeaderCellDef>Entry Date</th>
@@ -588,15 +653,15 @@
           </ng-container>
           <ng-container matColumnDef="policy_term">
             <th  mat-header-cell *matHeaderCellDef>Policy Term</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.policy_term}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.policy_term ? element.policy_term : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="policy_pre_pay_term">
             <th  mat-header-cell *matHeaderCellDef>Policy Premium Paying Term</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.policy_pre_pay_term}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.policy_pre_pay_term ? element.policy_pre_pay_term : "N/A"}}</td>
           </ng-container>
           <ng-container matColumnDef="comp_login_at">
             <th  mat-header-cell *matHeaderCellDef>Login At</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_login_at}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_login_at ? element.comp_login_at : "N/A"}}</td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="__exportedClmns;sticky:true"></tr>
           <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
