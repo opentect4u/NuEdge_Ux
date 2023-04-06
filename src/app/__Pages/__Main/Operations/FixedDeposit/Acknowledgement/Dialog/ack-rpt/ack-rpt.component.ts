@@ -35,19 +35,18 @@ import modeOfPremium from '../../../../../../../../assets/json/Master/modeofPrem
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { client } from 'src/app/__Model/__clientMst';
 
-import { TrxEntryComponent } from '../trx-entry/trx-entry.component';
 import { fdComp } from 'src/app/__Model/fdCmp';
 import subOpt from '../../../../../../../../assets/json/subOption.json';
 import tdsInfo from '../../../../../../../../assets/json/TDSInfo.json'
-
+import { AckEntryComponent } from '../ack-entry/ack-entry.component';
 
 
 @Component({
-  selector: 'app-trax-rpt',
-  templateUrl: './trax-rpt.component.html',
-  styleUrls: ['./trax-rpt.component.css']
+  selector: 'app-ack-rpt',
+  templateUrl: './ack-rpt.component.html',
+  styleUrls: ['./ack-rpt.component.css']
 })
-export class TraxRPTComponent implements OnInit {
+export class AckRPTComponent implements OnInit {
   __comp_setting = this.__utility.settingsfroMultiselectDropdown(
     'id',
     'comp_short_name',
@@ -128,7 +127,7 @@ export class TraxRPTComponent implements OnInit {
     private __Rpt: RPTService,
     private __dialog: MatDialog,
     private __utility: UtiliService,
-    public dialogRef: MatDialogRef<TraxRPTComponent>,
+    public dialogRef: MatDialogRef<AckRPTComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private overlay: Overlay,
     private __dbIntr: DbIntrService
@@ -171,7 +170,7 @@ export class TraxRPTComponent implements OnInit {
     if (this.__insTraxForm.value.options == '3') {
       __fd.append(
         'login_status',
-        global.getActualVal(this.__insTraxForm.value.login_status)
+        global.getActualVal(this.__insTraxForm.value.options)
       );
       __fd.append(
         'date_status',
@@ -212,7 +211,7 @@ export class TraxRPTComponent implements OnInit {
       );
     }
     this.__dbIntr
-      .api_call(1, '/fd/fdTraxDetailSearch', __fd)
+      .api_call(1, '/fd/ackDetailSearch', __fd)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         this.__insTrax = new MatTableDataSource(res.data);
@@ -223,7 +222,7 @@ export class TraxRPTComponent implements OnInit {
   tableExport(formData: FormData) {
     formData.delete('paginate');
     this.__dbIntr
-      .api_call(1, '/fd/fdTraxExport', formData)
+      .api_call(1, '/fd/ackExport', formData)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         this.__exportTrax = new MatTableDataSource(res);
@@ -517,39 +516,41 @@ export class TraxRPTComponent implements OnInit {
       ? this.__mode_of_premium.filter((x: any) => (x.id = premium))[0].name
       : '';
   }
-  populateDT(__el) {
-    console.log(__el);
-
+  populateDT(__items){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
-    dialogConfig.width = '80%';
-    dialogConfig.id = __el.tin_no;
-    console.log(dialogConfig.id);
-    dialogConfig.hasBackdrop = false;
-    dialogConfig.disableClose = false;
-    dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '50%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      flag: 'ACKUPLFD_' + (__items.tin_no ? __items.tin_no.toString() : '0'),
+      isViewMode: __items.form_status == 'P' ? false : true,
+      tin: __items.tin_no,
+      tin_no: __items.tin_no,
+      title: 'Upload Acknowledgement',
+      right: global.randomIntFromInterval(1, 60),
+      data:__items
+    };
+    dialogConfig.id = 'ACKUPLFD_' + (__items.tin_no ? __items.tin_no.toString() : '0');
     try {
-      dialogConfig.data = {
-        flag: 'FDTRAX_' + __el.tin_no,
-        id: 0,
-        title: 'FD Trax',
-        right: global.randomIntFromInterval(1, 60),
-        tin_no: __el.tin_no ? __el.tin_no : '',
-        data: __el,
-      };
-      console.log(dialogConfig.data);
-      const dialogref = this.__dialog.open(TrxEntryComponent, dialogConfig);
-      dialogref.afterClosed().subscribe((dt) => {});
+      const dialogref = this.__dialog.open(
+        AckEntryComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe((dt) => {
+        if (dt) {
+            this.updateRow(dt.data);
+        }
+      });
     } catch (ex) {
-      console.log(ex);
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
-      dialogRef.updateSize('80%');
+      dialogRef.updateSize('40%');
       this.__utility.getmenuIconVisible({
         id: Number(dialogConfig.id),
         isVisible: false,
-        flag: 'FDTRAX_' + __el.tin_no,
+        flag: 'ACKUPLFD_' + (__items.tin_no ? __items.tin_no.toString() : '0'),
       });
     }
   }
@@ -689,5 +690,19 @@ export class TraxRPTComponent implements OnInit {
   getTDSInfo(__id){
     return tdsInfo.filter(x => x.id == __id)[0]?.name
   }
+
+  updateRow(row_obj){
+    this.__insTrax.data = this.__insTrax.data.filter((value: any, key) => {
+      if (value.tin_no == row_obj.tin_no) {
+       value.comp_login_cutt_off = row_obj.comp_login_cutt_off,
+       value.comp_login_dt = row_obj.comp_login_dt,
+       value.comp_login_time = row_obj.comp_login_dt?.split(' ')[1],
+       value.ack_copy_scan = `${row_obj.ack_copy_scan}`,
+       value.form_status = row_obj.form_status,
+       value.ack_remarks = row_obj.ack_remarks
+      }
+      return true;
+    });
+   }
 
 }

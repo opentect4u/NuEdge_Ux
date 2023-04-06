@@ -176,7 +176,7 @@ export class InsTraxRPTComponent implements OnInit {
     if (this.__insTraxForm.value.options == '3') {
       __fd.append(
         'login_status',
-        global.getActualVal(this.__insTraxForm.value.options)
+        global.getActualVal(this.__insTraxForm.value.login_status)
       );
       __fd.append(
         'date_status',

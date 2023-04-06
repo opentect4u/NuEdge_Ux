@@ -1,12 +1,12 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject, ViewChild, ElementRef } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit,Inject, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
-import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import buisnessType from '../../../../../../../../assets/json/buisnessType.json';
 import { fdComp } from 'src/app/__Model/fdCmp';
@@ -16,6 +16,8 @@ import subOption from '../../../../../../../../assets/json/subOption.json';
 import { dates } from 'src/app/__Utility/disabledt';
 import TDSInfo from '../../../../../../../../assets/json/TDSInfo.json';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
+import { CreateInvComponent } from '../create-inv/create-inv.component';
+import { DialogDtlsComponent } from '../dialog-dtls/dialog-dtls.component';
 @Component({
   selector: 'app-trx-entry',
   templateUrl: './trx-entry.component.html',
@@ -24,9 +26,13 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
 export class TrxEntryComponent implements OnInit {
   @ViewChild('searchTempTin') __searchTempTin: ElementRef;
   @ViewChild('searchEUIN') __searchRlt: ElementRef;
-  @ViewChild('subBrkArn',{static:true}) __subBrkArn: ElementRef;
+  @ViewChild('subBrkArn') __subBrkArn: ElementRef;
   @ViewChild('clientCd') __clientCode: ElementRef;
   @ViewChild('searchbnk') __searchbnk: ElementRef;
+  @ViewChild('firstInv') __firstInv: ElementRef;
+  @ViewChild('sectInv') __secInv: ElementRef;
+
+
 
   __mcOptionMenu: any = [
     { flag: 'M', name: 'Minor', icon: 'person_pin' },
@@ -38,12 +44,15 @@ export class TrxEntryComponent implements OnInit {
   __dialogDtForClient: any;
   __dialogDtForBnk: any;
 
+
   __istemporaryspinner: boolean = false;
   __isEuinPending: boolean = false;
   __isSubArnPending: boolean = false;
   __isClientPending: boolean = false;
   __isCldtlsEmpty:boolean =false;
   __isBankPending: boolean = false;
+  __isFirstClientPending: boolean =false;
+  __isSecClientPending: boolean = false;
 
   __temp_tinMst: any = [];
   __euinMst: any = [];
@@ -52,12 +61,15 @@ export class TrxEntryComponent implements OnInit {
   __fdComp: fdComp[]= []
   __fdScm: any =[];
   __clientMst: any=[];
+  __firstInvMst: any=[];
+   __secInvMst: any=[];
   __bnkMst: any=[];
   __loginAtMst: fdComp[] = [];
   __bu_type = buisnessType;
   __tdsInfo = TDSInfo;
   __subOpt;
   __kycMst: any =[];
+  __isThirdHolderOpen:boolean = false;
   allowedExtensions = ['pdf'];
 
   __fdTrax = new FormGroup({
@@ -117,10 +129,29 @@ export class TrxEntryComponent implements OnInit {
       Validators.required,
       fileValidators.fileExtensionValidator(this.allowedExtensions),
     ]),
+
+    first_inv_dtls: new FormGroup({
+      id: new FormControl(''),
+      investor_name: new FormControl(''),
+      investor_code: new FormControl(''),
+      investor_pan: new FormControl(''),
+      dob: new FormControl(''),
+      kyc: new FormControl('')
+    }),
+    sec_inv_dtls: new FormGroup({
+      id: new FormControl(''),
+      investor_name: new FormControl(''),
+      investor_code: new FormControl(''),
+      investor_pan: new FormControl(''),
+      dob: new FormControl(''),
+      kyc: new FormControl('')
+    })
+
     })
 
   __isVisible: boolean = true;
   constructor(
+    private renderer: Renderer2,
     public dialogRef: MatDialogRef<TrxEntryComponent>,
     private __utility: UtiliService,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -134,14 +165,62 @@ export class TrxEntryComponent implements OnInit {
     this.getLoginMst();
   }
 
+
+
   getLoginMst(){
     this.__dbIntr.api_call(0,'/fd/company',null).pipe(pluck("data")).subscribe((res:fdComp[]) =>{
         this.__loginAtMst = res;
     })
   }
 
-  navigateTo(__option){
+  navigateTo(__option,__cl_type){
+    this.openDialogforClient(__option,__cl_type);
+  }
 
+  openDialogforClient(__menu,__cl_type){
+    console.log(__menu);
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = true;
+    dialogConfig.disableClose = false;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = "100%";
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.panelClass="fullscreen-dialog"
+    dialogConfig.data ={
+      flag:'CL',
+      id:0,
+      items:null,
+      title:  'Create ' + (__menu.flag == 'M' ? 'Minor' : (__menu.flag == 'P' ? 'PAN Holder' : (__menu.flag == 'N' ? 'Non Pan Holder' : 'Existing'))),
+      cl_type:__menu.flag
+    }
+    try{
+      const dialogref = this.__dialog.open(CreateInvComponent, dialogConfig);
+      dialogref.afterClosed().subscribe(dt => {
+        console.log(dt);
+               if(dt){
+
+                switch(__cl_type){
+                  case 'C' :
+                    this.__isCldtlsEmpty = false;
+                    this.__clientMst.push(dt.data);
+                    this.getItems(dt.data,'C');
+                    break;
+                  case 'SI':
+                    this.__firstInvMst.push(dt.data);
+                    this.getItems(dt.data,'SI');
+                    break;
+                  case 'TI':
+                      this.__secInvMst.push(dt.data);
+                      this.getItems(dt.data,'TI');
+                      break;
+                }
+               }
+      })
+    }
+    catch(ex){
+    }
   }
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)
@@ -175,6 +254,23 @@ export class TrxEntryComponent implements OnInit {
 
   }
   ngAfterViewInit(){
+
+    this.__fdTrax.controls['existing_mode_of_holding'].valueChanges.subscribe(res =>{
+            this.__fdTrax.get(['first_inv_dtls','investor_code']).setValidators(res == 'A' || res == 'J' ? [Validators.required] : null);
+            this.__fdTrax.get(['first_inv_dtls','investor_name']).setValidators(res == 'A' || res == 'J' ? [Validators.required] : null);
+            this.__fdTrax.get(['first_inv_dtls','dob']).setValidators(res == 'A' || res == 'J' ? [Validators.required] : null);
+            this.__fdTrax.get(['first_inv_dtls','investor_pan']).setValidators(res == 'A' || res == 'J' ? [Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)] : null);
+            this.__fdTrax.get(['first_inv_dtls','investor_code']).updateValueAndValidity({emitEvent:false});
+            this.__fdTrax.get(['first_inv_dtls','investor_name']).updateValueAndValidity({emitEvent:false});
+            this.__fdTrax.get(['first_inv_dtls','id']).updateValueAndValidity({emitEvent:false});
+            this.__fdTrax.get(['first_inv_dtls','dob']).updateValueAndValidity({emitEvent:false});
+            this.__fdTrax.get(['first_inv_dtls','investor_pan']).updateValueAndValidity({emitEvent:false});
+            if(res == 'S'){
+              this.cancel();
+              this.cancelSecondHolder();
+            }
+
+    })
 
 
     /** Transaction Mode */
@@ -272,6 +368,72 @@ export class TrxEntryComponent implements OnInit {
          this.__isClientPending = false;
        },
      });
+
+
+     /** FirstInvestor Change Event */
+     this.__fdTrax.get('first_inv_dtls.investor_code')!.valueChanges
+     .pipe(
+       tap(() =>
+        (this.__isFirstClientPending = true)),
+       debounceTime(200),
+       distinctUntilChanged(),
+       switchMap((dt) =>
+         dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+       ),
+       map((x: any) => x.data)
+     )
+     .subscribe({
+       next: (value) => {
+         this.__firstInvMst = value.data;
+         this.searchResultVisibilityForFirstClient('block');
+         console.log('ss');
+         this.__fdTrax.patchValue({
+          first_inv_dtls: {
+            investor_name: '',
+            investor_pan: '',
+          }
+         });
+         this.__isFirstClientPending = false;
+       },
+       complete: () => console.log(''),
+       error: (err) => {
+         this.__isFirstClientPending = false;
+       },
+     });
+
+      /** SecInvestor Change Event */
+      this.__fdTrax.get('sec_inv_dtls.investor_code')!.valueChanges
+      .pipe(
+        tap(() =>
+         (this.__isSecClientPending = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+        ),
+        map((x: any) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          this.__secInvMst = value.data;
+          this.searchResultVisibilityForSecClient('block');
+          console.log('ss');
+          this.__fdTrax.patchValue({
+           sec_inv_dtls: {
+             investor_name: '',
+             investor_pan: '',
+           }
+          });
+          this.__isSecClientPending = false;
+        },
+        complete: () => console.log(''),
+        error: (err) => {
+          this.__isSecClientPending = false;
+        },
+      });
+
+
+
 
 
     /** Company Type Id Change */
@@ -415,6 +577,27 @@ export class TrxEntryComponent implements OnInit {
 
   }
 
+/** Second Investor Search Bar hide show */
+  outsideClickforSecInvestor(__ev){
+    if (__ev) {
+      this.searchResultVisibilityForSecClient('none');
+    }
+  }
+  searchResultVisibilityForSecClient(display_mode){
+  this.__secInv.nativeElement.style.display = display_mode;
+  }
+
+/** First Investor Search Bar hide show */
+  outsideClickforFirstInvestor(__ev){
+    if (__ev) {
+      this.searchResultVisibilityForFirstClient('none');
+    }
+  }
+  searchResultVisibilityForFirstClient(display_mode){
+  this.__firstInv.nativeElement.style.display = display_mode;
+
+  }
+
   /**OutSide Click For Client*/
   outsideClickforClient(__ev) {
     if (__ev) {
@@ -461,8 +644,6 @@ export class TrxEntryComponent implements OnInit {
         break;
       case 'C':
         this.__dialogDtForClient = __el;
-        console.log(__el);
-
         this.__fdTrax.controls['investor_code'].reset(__el.client_code, {
           onlySelf: true,
           emitEvent: false,
@@ -473,6 +654,31 @@ export class TrxEntryComponent implements OnInit {
         });
         this.searchResultVisibilityForClient('none');
         break;
+        case 'SI':
+          this.__fdTrax.get(['first_inv_dtls','investor_code']).reset(__el ? global.getActualVal(__el.client_code) : '',{emitEvent:false})
+          this.__fdTrax.patchValue({
+            first_inv_dtls: {
+              id:__el ? global.getActualVal(__el.id) : '',
+              investor_name:__el ?  global.getActualVal(__el.client_name): '',
+              investor_pan: __el ? global.getActualVal(__el.pan): '',
+              dob:__el ? global.getActualVal(__el.dob): ''
+            }
+           });
+           this.searchResultVisibilityForFirstClient('none');
+        break;
+        case 'TI':
+        this.__fdTrax.get(['sec_inv_dtls','investor_code']).reset(__el ? global.getActualVal(__el.client_code) : '',{emitEvent:false})
+        this.__fdTrax.patchValue({
+          sec_inv_dtls: {
+            id:__el ? global.getActualVal(__el.id) : '',
+            investor_name:__el ?  global.getActualVal(__el.client_name): '',
+            investor_pan: __el ? global.getActualVal(__el.pan): '',
+            dob:__el ? global.getActualVal(__el.dob): ''
+          }
+         });
+         this.searchResultVisibilityForSecClient('none');
+         break;
+
         case 'B':
           this.__dialogDtForBnk = __el;
           this.__fdTrax.controls['micr_code'].reset(__el.micr_code, {
@@ -598,28 +804,28 @@ SubBrokerValidators(): AsyncValidatorFn {
   };
 }
 openDialog(__type) {
-  // const dialogConfig = new MatDialogConfig();
-  // dialogConfig.autoFocus = false;
-  // dialogConfig.closeOnNavigation = false;
-  // dialogConfig.width = __type == 'C' ? '100%' : '50%';
-  // dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
-  // dialogConfig.data = {
-  //   flag: __type,
-  //   title:
-  //     __type == 'C'
-  //       ? this.__dialogDtForClient.client_name
-  //         :this.__dialogDtForBnk.bank_name,
-  //   dt:
-  //     __type == 'C'
-  //       ? this.__dialogDtForClient
-  //       : this.__dialogDtForBnk,
-  // };
-  // try {
-  //   const dialogref = this.__dialog.open(
-  //     DialogForViewComponent,
-  //     dialogConfig
-  //   );
-  // } catch (ex) { }
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.autoFocus = false;
+  dialogConfig.closeOnNavigation = false;
+  dialogConfig.width = __type == 'C' ? '100%' : '50%';
+  dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+  dialogConfig.data = {
+    flag: __type,
+    title:
+      __type == 'C'
+        ? this.__dialogDtForClient.client_name
+          :this.__dialogDtForBnk.bank_name,
+    dt:
+      __type == 'C'
+        ? this.__dialogDtForClient
+        : this.__dialogDtForBnk,
+  };
+  try {
+    const dialogref = this.__dialog.open(
+      DialogDtlsComponent,
+      dialogConfig
+    );
+  } catch (ex) { }
 }
 checkIfclientExist(cl_code: string): Observable<boolean> {
   return of(this.__clientMst.findIndex((x) => x.client_code == cl_code) != -1);
@@ -688,14 +894,23 @@ submitFdTrax(){
     __fd.append('scheme_id',this.__fdTrax.value.scheme_id);
     __fd.append('investor_id',this.__fdTrax.value.investor_id);
     __fd.append('investor_code',this.__fdTrax.value.investor_code);
-    __fd.append('first_holder_id','');
-    __fd.append('first_holder_name','');
-    __fd.append('first_holder_pan','');
-    __fd.append('first_holder_dob','');
-    __fd.append('second_holder_id','');
-    __fd.append('second_holder_name','');
-    __fd.append('second_holder_pan','');
-    __fd.append('second_holder_dob','');
+    if(this.__fdTrax.value.existing_mode_of_holding != 'S'){
+      __fd.append('second_client_id',this.__fdTrax.get(['first_inv_dtls','id']).value);
+      __fd.append('second_client_name',this.__fdTrax.get(['first_inv_dtls','investor_name']).value);
+      __fd.append('second_client_pan',this.__fdTrax.get(['first_inv_dtls','investor_pan']).value);
+      __fd.append('second_client_code',this.__fdTrax.get(['first_inv_dtls','investor_code']).value);
+      __fd.append('second_client_dob',this.__fdTrax.get(['first_inv_dtls','dob']).value);
+      __fd.append('second_kyc',this.__fdTrax.get(['first_inv_dtls','kyc']).value);
+
+      __fd.append('third_client_id',this.__fdTrax.get(['sec_inv_dtls','id']).value);
+      __fd.append('third_client_name',this.__fdTrax.get(['sec_inv_dtls','investor_name']).value);
+      __fd.append('third_client_pan',this.__fdTrax.get(['sec_inv_dtls','investor_pan']).value);
+      __fd.append('third_client_code',this.__fdTrax.get(['sec_inv_dtls','investor_code']).value);
+      __fd.append('third_client_dob',this.__fdTrax.get(['sec_inv_dtls','dob']).value);
+      __fd.append('third_kyc',this.__fdTrax.get(['sec_inv_dtls','kyc']).value);
+
+    }
+
    __fd.append('kyc_status',this.__fdTrax.value.kyc_status);
    __fd.append('investor_kyc',this.__fdTrax.value.inv_kyc);
    __fd.append('fd_bu_type',this.__fdTrax.value.fd_bu_type_id);
@@ -739,4 +954,41 @@ submitFdTrax(){
 
      })
   }
+  cancel(){
+    this.__isThirdHolderOpen=false;
+    this.getItems(null,'TI');
+    this.__secInvMst.length = 0;
+    this.__fdTrax.get(['sec_inv_dtls','investor_name']).removeValidators([Validators.required]);
+    this.__fdTrax.get(['sec_inv_dtls','dob']).removeValidators([Validators.required]);
+    this.__fdTrax.get(['sec_inv_dtls','investor_pan']).removeValidators([Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]);
+    this.__fdTrax.get(['sec_inv_dtls','investor_name']).updateValueAndValidity({emitEvent:false});
+    this.__fdTrax.get(['sec_inv_dtls','dob']).updateValueAndValidity({emitEvent:false});
+    this.__fdTrax.get(['sec_inv_dtls','investor_pan']).updateValueAndValidity({emitEvent:false});
+  }
+  addThirdInvestor(){
+    this.__isThirdHolderOpen=!this.__isThirdHolderOpen;
+    this.__fdTrax.get(['sec_inv_dtls','investor_name']).setValidators([Validators.required]);
+    this.__fdTrax.get(['sec_inv_dtls','dob']).setValidators([Validators.required]);
+    this.__fdTrax.get(['sec_inv_dtls','investor_pan']).setValidators([Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'),
+    Validators.minLength(10),
+    Validators.maxLength(10)]);
+    this.__fdTrax.get(['sec_inv_dtls','investor_name']).updateValueAndValidity({emitEvent:false});
+    this.__fdTrax.get(['sec_inv_dtls','dob']).updateValueAndValidity({emitEvent:false});
+    this.__fdTrax.get(['sec_inv_dtls','investor_pan']).updateValueAndValidity({emitEvent:false});
+  }
+  cancelSecondHolder(){
+    this.getItems(null,'SI');
+    this.__secInvMst.length = 0;
+    this.__fdTrax.get(['first_inv_dtls','investor_name']).removeValidators([Validators.required]);
+    this.__fdTrax.get(['first_inv_dtls','dob']).removeValidators([Validators.required]);
+    this.__fdTrax.get(['first_inv_dtls','investor_pan']).removeValidators([Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]);
+    this.__fdTrax.get(['first_inv_dtls','investor_name']).updateValueAndValidity({emitEvent:false});
+    this.__fdTrax.get(['first_inv_dtls','dob']).updateValueAndValidity({emitEvent:false});
+    this.__fdTrax.get(['first_inv_dtls','investor_pan']).updateValueAndValidity({emitEvent:false});
+  }
+  focus(__mode){
+         var __el = this.renderer.selectRootElement('#'+__mode);
+        __el.focus();
+    }
+
 }

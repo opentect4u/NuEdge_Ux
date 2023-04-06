@@ -295,7 +295,7 @@
         <mat-menu #menu="matMenu">
           <div class="row p-0 m-0">
             <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
-              *ngFor="let clOption of __mcOptionMenu" (click)="navigateTo(clOption)">
+              *ngFor="let clOption of __mcOptionMenu" (click)="navigateTo(clOption,'C')">
               <mat-icon>{{clOption.icon}}</mat-icon>
             </div>
           </div>
@@ -329,11 +329,11 @@
         <div class="invalid-feedback"
         *ngIf="__fdTrax.get('kyc_status').invalid && (__fdTrax.get('kyc_status').dirty || __fdTrax.get('kyc_status').touched)">
         <span class="invalid-feedback" *ngIf="(__fdTrax.get('kyc_status')).errors?.required">*Please provide
-          Kyc Status</span>
+          KYC Status</span>
       </div>
       </div>
       <div class="col-sm-12">
-        <label for="inv_kyc">Investor Kyc Status<span class="text-danger">*</span>
+        <label for="inv_kyc">Investor KYC Status<span class="text-danger">*</span>
         </label>
         <select name="inv_kyc" id="inv_kyc" class="form-control" formControlName="inv_kyc">
           <option value="">Select KYC</option>
@@ -359,6 +359,283 @@
           existing mode of holding</span>
       </div>
        </div>
+       <ng-container *ngIf="__fdTrax.get('existing_mode_of_holding').value == 'J'
+       || __fdTrax.get('existing_mode_of_holding').value == 'A'">
+
+       <div class="col-sm-12 my-2">
+
+        <table>
+          <thead>
+            <tr >
+              <th class="alignItems" colspan="2" >Add First Existing Investor</th>
+            </tr>
+            <tr >
+               <th class="alignItems">
+                Investor Details
+              </th>
+               <th class="alignItems">
+                <button type="button"
+                *ngIf="!__isThirdHolderOpen"
+                (click)="addThirdInvestor()"
+                mat-icon-button
+                color="primary"
+                matTooltip="Add Additional Investor">
+                  <mat-icon>add</mat-icon>
+                </button>
+               </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  formGroupName="first_inv_dtls">
+                 <th>
+                   <div class="row">
+                    <div class="col-sm-12 my-2">
+                      <div class="progressMainSec" appClOutsideClick
+                      (appOutsideClick)="outsideClickforFirstInvestor($event)">
+                        <div class="searchDiv">
+                          <label for="__clntCd">
+                            <mat-icon
+                              class="errorIcon"
+                              #tooltip="matTooltip"
+                              matTooltip="Proposer does not exists"
+                              *ngIf="__fdTrax.get(['first_inv_dtls','investor_code']).errors?.firstClientExists">
+                              error</mat-icon>
+                            Investor Details
+                          </label>
+                          <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="investor_code"
+                            placeholder="Search By Investor Name,Investor Code, Email, Mobile, Pan & DOB">
+                          <span class="spinner-border"
+                            *ngIf="__isFirstClientPending && __fdTrax.get(['first_inv_dtls','investor_code']).value?.length > 1"></span>
+
+                          <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforFirstInvestor($event)">
+                            <div class="serachresult_client" #firstInv>
+                              <ul *ngIf="__firstInvMst.length > 0">
+                                <li *ngFor="let items of __firstInvMst" (click)="getItems(items,'SI')">
+                                  {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                                </li>
+                              </ul>
+                              <div class="noDataFound" *ngIf="__firstInvMst.length == 0">
+                                <h5 class="text-center">
+                                  Sorry!! No Records Found
+                                </h5>
+                                <p>To create a new Investor .Please click on Create Investor</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 my-2">
+                      <label for="first_inv_name">Investor Name <span class="text-danger">*</span></label>
+                      <input type="text"
+                      name="first_inv_name"
+                      placeholder="Enter Investor Name"
+                      id="first_inv_name"
+                      class="form-control"
+                      formControlName="investor_name"
+                      >
+                      <div class="invalid-feedback" *ngIf="__fdTrax.get(['first_inv_dtls','investor_name']).invalid && (__fdTrax.get(['first_inv_dtls','investor_name']).dirty || __fdTrax.get(['first_inv_dtls','investor_name']).touched)">
+                        <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_name'])).errors?.required">*Please provide investor name</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 my-2">
+                      <label for="pan">PAN</label>
+                      <input type="text"
+                      name="pan"
+                      id="pan"
+                      placeholder="Enter PAN"
+                      class="form-control"
+                      formControlName="investor_pan">
+                      <div class="invalid-feedback" *ngIf="__fdTrax.get(['first_inv_dtls','investor_pan']).invalid && (__fdTrax.get(['first_inv_dtls','investor_pan']).dirty || __fdTrax.get(['first_inv_dtls','investor_pan']).touched)">
+                        <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).errors?.pattern">*Please provide valid pan
+                          Number</span>
+                          <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).hasError('minlength')">*pan
+                            Number Must Be 10 Characters Long</span>
+                            <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).hasError('maxlength')">*pan
+                              number must be 10 characters long</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 my-2">
+                      <label for="first_dob">DOB <span class="text-danger">*</span></label>
+                      <input type="date"
+                      name="first_dob"
+                      id="first_dob"
+                      class="form-control"
+                      formControlName="dob">
+                      <div class="invalid-feedback" *ngIf="__fdTrax.get(['first_inv_dtls','dob']).invalid && (__fdTrax.get(['first_inv_dtls','dob']).dirty || __fdTrax.get(['first_inv_dtls','dob']).touched)">
+                        <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','dob'])).errors?.required">*Please provide date of birth</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <label for="kyc">KYC
+                      </label>
+                      <select name="kyc" id="kyc" class="form-control" formControlName="kyc">
+                        <option value="">Select KYC</option>
+                        <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+                      </select>
+                    </div>
+                   </div>
+                 </th>
+                 <th class="alignItems">
+                  <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+                    <mat-icon>add</mat-icon> Create Investor
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <div class="row p-0 m-0">
+                      <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                        *ngFor="let clOption of __mcOptionMenu" (click)="navigateTo(clOption,'SI')">
+                        <mat-icon>{{clOption.icon}}</mat-icon>
+                      </div>
+                    </div>
+                  </mat-menu>
+
+                <button color="primary" type="button" mat-button (click)="focus('first_inv_name')">
+                  <mat-icon>add</mat-icon> Existing
+                </button>
+                 </th>
+            </tr>
+          </tbody>
+        </table>
+        <table class="my-2" *ngIf="__isThirdHolderOpen">
+          <thead>
+            <tr >
+              <th colspan="2" class="alignItems">Add Second Existing Investor</th>
+            </tr>
+            <tr>
+               <th class="alignItems">
+                Investor Details
+              </th>
+               <th class="alignItems">
+                <button
+                type="button"
+                (click)="cancel()"
+                mat-button color="warn"
+                >
+                  <mat-icon>cancel</mat-icon>
+                  Cancel
+                </button>
+               </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  formGroupName="sec_inv_dtls">
+              <th>
+                <div class="row">
+                 <div class="col-sm-12 my-2">
+                   <div class="progressMainSec" appClOutsideClick
+                   (appOutsideClick)="outsideClickforSecInvestor($event)">
+                     <div class="searchDiv">
+                       <label for="__clntCd">
+                         <mat-icon
+                           class="errorIcon"
+                           #tooltip="matTooltip"
+                           matTooltip="Proposer does not exists"
+                           *ngIf="__fdTrax.get(['sec_inv_dtls','investor_code']).errors?.secClientExists">
+                           error</mat-icon>
+                         Investor Details
+                       </label>
+                       <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="investor_code"
+                         placeholder="Search By Investor Name,Investor Code, Email, Mobile, Pan & DOB">
+                       <span class="spinner-border"
+                         *ngIf="__isSecClientPending && __fdTrax.get(['sec_inv_dtls','investor_code']).value?.length > 1"></span>
+
+                       <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSecInvestor($event)">
+                         <div class="serachresult_client" #sectInv>
+                           <ul *ngIf="__secInvMst.length > 0">
+                             <li *ngFor="let items of __secInvMst" (click)="getItems(items,'TI')">
+                               {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                             </li>
+                           </ul>
+                           <div class="noDataFound" *ngIf="__secInvMst.length == 0">
+                             <h5 class="text-center">
+                               Sorry!! No Records Found
+                             </h5>
+                             <p>To create a new Investor .Please click on Create Investor</p>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+                 <div class="col-sm-12 my-2">
+                   <label for="sec_inv_name">Investor Name
+                    <span class="text-danger">*</span>
+                   </label>
+                   <input type="text"
+                   name="sec_inv_name"
+                   placeholder="Enter Investor Name"
+                   id="sec_inv_name"
+                   class="form-control"
+                   formControlName="investor_name"
+                   >
+                   <div class="invalid-feedback" *ngIf="__fdTrax.get(['sec_inv_dtls','investor_name']).invalid && (__fdTrax.get(['sec_inv_dtls','investor_name']).dirty || __fdTrax.get(['sec_inv_dtls','investor_name']).touched)">
+                    <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_name'])).errors?.required">*Please provide investor name</span>
+                    </div>
+                 </div>
+                 <div class="col-sm-12 my-2">
+                   <label for="sec_pan">
+                    PAN
+                   </label>
+                   <input type="text"
+                   name="sec_pan"
+                   id="sec_pan"
+                   placeholder="Enter PAN"
+                   class="form-control"
+                   formControlName="investor_pan">
+                   <div class="invalid-feedback" *ngIf="__fdTrax.get(['sec_inv_dtls','investor_pan']).invalid && (__fdTrax.get(['sec_inv_dtls','investor_pan']).dirty || __fdTrax.get(['sec_inv_dtls','investor_pan']).touched)">
+                    <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).errors?.pattern">*Please provide valid pan
+                      Number</span>
+                      <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).hasError('minlength')">*pan
+                        Number Must Be 10 Characters Long</span>
+                        <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).hasError('maxlength')">*pan
+                          number must be 10 characters long</span>
+                  </div>
+                 </div>
+                 <div class="col-sm-12 my-2">
+                  <label for="sec_dob">DOB
+                    <span class="text-danger">*</span>
+                  </label>
+                  <input type="date"
+                  name="sec_dob"
+                  id="sec_dob"
+                  class="form-control"
+                  formControlName="dob">
+                  <div class="invalid-feedback" *ngIf="__fdTrax.get(['sec_inv_dtls','dob']).invalid && (__fdTrax.get(['sec_inv_dtls','dob']).dirty || __fdTrax.get(['sec_inv_dtls','dob']).touched)">
+                    <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','dob'])).errors?.required">*Please provide date of birth</span>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <label for="kyc">KYC
+                  </label>
+                  <select name="kyc" id="kyc" class="form-control" formControlName="kyc">
+                    <option value="">Select KYC</option>
+                    <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+                  </select>
+                </div>
+                </div>
+              </th>
+              <th class="alignItems">
+                <button color="primary" type="button" mat-button [matMenuTriggerFor]="menu">
+                  <mat-icon>add</mat-icon> Create Investor
+                </button>
+                <mat-menu #menu="matMenu">
+                  <div class="row p-0 m-0">
+                    <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                      *ngFor="let clOption of __mcOptionMenu" (click)="navigateTo(clOption,'TI')">
+                      <mat-icon>{{clOption.icon}}</mat-icon>
+                    </div>
+                  </div>
+                </mat-menu>
+
+                <button color="primary" type="button" mat-button (click)="focus('sec_inv_name')">
+                  <mat-icon>add</mat-icon> Existing
+                </button>
+              </th>
+             </tr>
+          </tbody>
+        </table>
+       </div>
+       </ng-container>
     </div>
     <div class="row">
       <div class="col-sm-12 my-2">

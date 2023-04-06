@@ -22,7 +22,7 @@
   </div>
   <mat-dialog-content>
     <form [formGroup]="__rcvForm" autocomplete="off" [attr.id]="'__rcvForm_INS' + data.temp_tin_no" (ngSubmit)="recieveForm()">
-      <div class="row mt-3">
+      <div class="row my-2">
         <div class="col-sm-12">
           <label class="form-label">Buisness Type <span class="text-danger">*</span></label>
           <select class="form-control" formControlName="bu_type">
@@ -40,7 +40,7 @@
         <!-- Sub Broker Code / ARN -->
         <ng-container *ngIf="__rcvForm.value.bu_type == 'B'">
 
-          <div class="row my-5">
+          <div class="row my-2">
             <div class="col-sm-12">
               <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
                 <div class="searchDiv">
@@ -85,7 +85,7 @@
       </ng-container>
        <!-- EUIN -->
        <ng-container *ngIf="__rcvForm.value.bu_type !=''">
-        <div [class]="'row my-5'">
+        <div [class]="'row my-2'">
           <div class="col-sm-12">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
               <div class="searchDiv">
@@ -123,7 +123,7 @@
           </div>
         </div>
       </ng-container>
-      <div [class]="__rcvForm.value.bu_type =='' ? 'row my-5' : 'row'">
+      <div [class]="__rcvForm.value.bu_type =='' ? 'row my-2' : 'row'">
         <div class="col-sm-12">
           <label class="form-label">Fixed Deposit Buisness Type <span class="text-danger"> * </span></label>
           <select class="form-control" formControlName="fd_bu_type_id">
@@ -137,7 +137,7 @@
         </div>
         </div>
       </div>
-      <div [class]="__rcvForm.value.bu_type =='' ? 'row' : 'row my-5'">
+      <div [class]="__rcvForm.value.bu_type =='' ? 'row' : 'row my-2'">
         <div class="col-sm-12">
           <label class="form-label">Company <span class="text-danger"> * </span></label>
           <select class="form-control" formControlName="company_id">
@@ -150,7 +150,7 @@
           </div>
         </div>
       </div>
-      <div [class]="__rcvForm.value.bu_type =='' ? 'row my-5' : 'row' ">
+      <div [class]="__rcvForm.value.bu_type =='' ? 'row my-2' : 'row' ">
         <div class="col-sm-12">
           <label class="form-label">Scheme <span class="text-danger"> * </span></label>
           <select class="form-control" formControlName="scheme_id">
@@ -164,7 +164,7 @@
         </div>
       </div>
 
-      <div [class]="__rcvForm.value.bu_type =='' ? 'row' :'row my-5'">
+      <div [class]="__rcvForm.value.bu_type =='' ? 'row' :'row my-2'">
         <div [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-8':__isCldtlsEmpty}">
           <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
             <div class="searchDiv">
@@ -219,8 +219,8 @@
       </div>
 
 
-      <div class="row my-3">
-        <div class="my-3" [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-8':__dialogDtForClient}" *ngIf="__rcvForm.get('investor_code').value && __rcvForm.get('investor_name').value">
+      <div class="row my-2">
+        <div [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-8':__dialogDtForClient}" *ngIf="__rcvForm.get('investor_code').value && __rcvForm.get('investor_name').value">
           <label for="__clName">Investor Name</label>
               <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Investor Name" formControlName="investor_name" [attr.disabled]="true">
         </div>
@@ -233,7 +233,7 @@
 
       </div>
 
-      <div [class]="__rcvForm.value.bu_type =='' ? 'row mb-2' : 'row my-5'">
+      <div [class]="__rcvForm.value.bu_type =='' ? 'row mb-2' : 'row my-2'">
         <div class="col-sm-12">
           <label class="form-label">Receive From</label>
           <input type="text" placeholder="Enter Receieve From" class="form-control" formControlName="recv_from">

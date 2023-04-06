@@ -5,6 +5,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TrxEntryComponent } from './Dialog/trx-entry/trx-entry.component';
 import { TraxRPTComponent } from './Dialog/trax-rpt/trax-rpt.component';
+import { CreateInvComponent } from './Dialog/create-inv/create-inv.component';
+import { DialogDtlsComponent } from './Dialog/dialog-dtls/dialog-dtls.component';
 
  const routes: Routes = [{path:'',component:FdTraxComponent}]
 
@@ -12,7 +14,9 @@ import { TraxRPTComponent } from './Dialog/trax-rpt/trax-rpt.component';
   declarations: [
     FdTraxComponent,
     TrxEntryComponent,
-    TraxRPTComponent
+    TraxRPTComponent,
+    CreateInvComponent,
+    DialogDtlsComponent
   ],
   imports: [
     CommonModule,

@@ -93,7 +93,7 @@ export class RcvFormCrudComponent implements OnInit {
           fd_bu_type_id: res[0].fd_bu_type
       })
       this.__dialogDtForClient = {id:res[0].investor_id,
-         investor_type:res[0].investor_type,
+         client_type:res[0].investor_type,
         client_name:res[0].investor_name,
         client_code: res[0].investor_code
       };
@@ -103,8 +103,8 @@ export class RcvFormCrudComponent implements OnInit {
       this.__euinMst.push({euin_no:res[0].euin_no,emp_name:res[0].emp_name});
 
       if(res[0].bu_type == 'B'){
-        this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_brk_cd,{ onlySelf: true, emitEvent: false });
-        this.__subbrkArnMst.push({code:res[0].sub_brk_cd,arn_no:res[0].arn_no,bro_name:res[0].broker_name});
+        this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_arn_no,{ onlySelf: true, emitEvent: false });
+        this.__subbrkArnMst.push({code:res[0].sub_arn_no,arn_no:res[0].arn_no,bro_name:res[0].broker_name});
        }
     })
   }
@@ -383,7 +383,9 @@ export class RcvFormCrudComponent implements OnInit {
       dialogref.afterClosed().subscribe(dt => {
         console.log(dt);
                if(dt){
-                 this.getItems(dt.data,'C')
+               this.__clientMst.push(dt.data);
+               this.getItems(dt.data,'C');
+
                }
       })
     }

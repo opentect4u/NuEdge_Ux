@@ -19,6 +19,10 @@ import { RouterModule, Routes } from '@angular/router';
       {
         path:'fdtrax',
         loadChildren:()=> import('./ManualEntry/fd-trax.module').then(m => m.FdTraxModule)
+      },
+      {
+        path:'ack',
+        loadChildren:()=> import('./Acknowledgement/ack.module').then(m => m.AckModule)
       }
     ]
   }
