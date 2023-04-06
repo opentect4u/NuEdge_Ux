@@ -48,7 +48,7 @@ __menu = [
   },
   {
     menu_name: 'Upload CSV',
-    url: '',
+    url: '/main/master/fixedeposit/uploadscheme',
     flag: 'U',
   },
   {

@@ -1,0 +1,5 @@
+[
+  {"id":"P","name":"Process"},
+  {"id":"R","name":"Rejected"},
+  {"id":"N","name":"Pending"}
+]

@@ -24,7 +24,7 @@
     <form [formGroup]="__cmpForm" (ngSubmit)="submit()" [attr.id]="'__fdcmpForm_' + data.id" autocomplete="off" ngNativeValidate>
       <div class="row">
         <div class="col-sm-12 my-3">
-          <label class="form-label" for="com_type_id">Type Of Insurance <span class="text-danger">*</span></label>
+          <label class="form-label" for="com_type_id">Type Of Company <span class="text-danger">*</span></label>
           <select class="form-control" formControlName="com_type_id">
             <option value="">Select</option>
             <option *ngFor="let cmpTypeMst of __CmpTypeMst" [value]="cmpTypeMst.id">{{cmpTypeMst.comp_type}}</option>

@@ -25,61 +25,56 @@ export class ManualUpdateComponent implements OnInit {
       queryParams:''
     },
     {
-      label:"Insurance",
-      url:'/main/operations/insurance',
+      label:"Fixed Deposit",
+      url:'/main/operations/fixedeposit',
       hasQueryParams:false,
       queryParams:''
     },
     {
       label:"Manual Update",
-      url:'/main/operations/insurance/manualupdate',
-      hasQueryParams:true,
+      url:'/main/operations/fixedeposit/manualupdate',
+      hasQueryParams:false,
       queryParams:''
     }
-  ];
-
-  __menu = [
-    {
-      "parent_id": 4,
-      "menu_name": "Manual Entry",
-      "has_submenu": "N",
-      "url": "",
-      "icon":"",
-      "id":16,
-      "flag":"M"
-    },
-    {
-    "parent_id": 4,
-    "menu_name": "Reports",
-    "has_submenu": "N",
-    "url": "",
-    "icon":"",
-    "id":16,
-    "flag":"R"
-    }
-  ];
+];
+__menu: any = [
+  {
+   id: 1,
+   menu_name: "Manual Entry",
+   flag:'M'
+  },
+  {
+     id: 2,
+     menu_name: "Report",
+     flag:'R'
+   },
+]
   constructor(
     private __utility: UtiliService,
     private __dialog: MatDialog,
     private overlay: Overlay
-  ) {
-    this.setBreadCrumb();
-   }
-   setBreadCrumb(){
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
-   }
-  ngOnInit(): void {
-    console.log('sss');
+  ) { }
 
+  ngOnInit(): void {
+    this.setBrdCrmbs();
   }
-  openManualUpdate(__items){
-    switch(__items.flag){
-      case 'R':this.openDialogForRPT();break;
-      case 'M':this.openDiaog();break;
-      default: break;
+  setBrdCrmbs(){
+      this.__utility.getBreadCrumb(this.__brdCrmbs);
+  }
+  navigate(__el){
+    console.log(__el);
+    switch(__el.flag){
+      case 'M':
+        this.openDialogForManualEntry();
+        break;
+      case 'R':
+        this.openDialogForRPT();
+        break;
+
     }
   }
-  openDialogForRPT(){
+
+  openDialogForManualEntry(){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -89,29 +84,7 @@ export class ManualUpdateComponent implements OnInit {
     dialogConfig.height = '100%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.panelClass = "fullscreen-dialog"
-    dialogConfig.id = "INSMURPT",
-    dialogConfig.data = {}
-    try {
-      const dialogref = this.__dialog.open(
-        RPTComponent,
-        dialogConfig
-      );
-    } catch (ex) {
-      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
-      dialogRef.addPanelClass('mat_dialog');
-    }
-  }
-  openDiaog(){
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = false;
-    dialogConfig.closeOnNavigation = false;
-    dialogConfig.disableClose = true;
-    dialogConfig.hasBackdrop = false;
-    dialogConfig.width = '100%';
-    dialogConfig.height = '100%';
-    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
-    dialogConfig.panelClass = "fullscreen-dialog"
-    dialogConfig.id = "INSMU",
+    dialogConfig.id = "FDMU",
     dialogConfig.data = {}
     try {
       const dialogref = this.__dialog.open(
@@ -126,5 +99,27 @@ export class ManualUpdateComponent implements OnInit {
       });
     }
 
+  }
+  openDialogForRPT(){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '100%';
+    dialogConfig.height = '100%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.panelClass = "fullscreen-dialog"
+    dialogConfig.id = "FDMU",
+    dialogConfig.data = {}
+    try {
+      const dialogref = this.__dialog.open(
+        RPTComponent,
+        dialogConfig
+      );
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+    }
   }
 }

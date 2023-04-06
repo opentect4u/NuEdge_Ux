@@ -23,6 +23,18 @@ const routes = [
       {
         path:'scheme',
         loadChildren:() => import('./scheme/scheme.module').then(m => m.SchemeModule)
+      },
+      {
+        path:'uploadcsv',
+        loadChildren:()=> import('./comp/upload-csv/upload-csv.module').then(m => m.UploadCSVModule)
+      },
+      {
+        path:'uploadcsvforcompanytype',
+        loadChildren:()=>import('./compType/upload-csv/upload-csv.module').then(m => m.UploadCsvModule)
+      },
+      {
+        path:'uploadscheme',
+        loadChildren:()=> import('./scheme/upload-csv/upload-csv.module').then(m => m.UploadCsvModule)
       }
     ]
   }

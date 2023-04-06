@@ -9,28 +9,28 @@
             <div class="row">
               <div class="col-sm-12">
                 <button class="float-right " color="primary" type="button" mat-button
-                (click)="exporter.exportTable('csv',{fileName:'SampleCompanyForInsurance'})">
+                (click)="exporter.exportTable('csv',{fileName:'SampleCompanyForFD'})">
                 <mat-icon>download</mat-icon>Download Sample
               </button>
             </div>
           </div>
              <div class="row my-5">
               <div class="col-sm-12">
-                <label class="form-label" for="ins_type_id">Type Of Insurance <span class="text-danger">*</span></label>
+                <label class="form-label" for="ins_type_id">Type Of Company <span class="text-danger">*</span></label>
                 <select class="form-control" formControlName="ins_type_id">
                   <option value="">Select</option>
-                  <option *ngFor="let insType of instTypeMst" [value]="insType.id">{{insType.type}}</option>
+                  <option *ngFor="let insType of __CmpTypeMst" [value]="insType.id">{{insType.comp_type}}</option>
                 </select>
                 <div class="invalid-feedback"
                 *ngIf="__cmpForm.get('ins_type_id').invalid && (__cmpForm.get('ins_type_id').dirty || __cmpForm.get('ins_type_id').touched)">
-                <span class="invalid-feedback" *ngIf="(__cmpForm.get('ins_type_id')).errors?.required">*Please provide insurance type
+                <span class="invalid-feedback" *ngIf="(__cmpForm.get('ins_type_id')).errors?.required">*Please provide company type
                   </span>
               </div>
               </div>
              </div>
              <div class="row">
               <div class="col-sm-12">
-                <div class="container_zone" appCmpDrag (fileDropped)="onFileDropped($event)">
+                <div class="container_zone" appDrag (fileDropped)="onFileDropped($event)">
                   <img src="../../../../../../assets/images/____upload.png" alt="Upload Images" height="63" width="63">
                   <input type="file" accept=".csv,.xlsx" max="1" min="1" #fileDropRef name="upload_file" id="fileDropRef"
                     accept=".csv,.xlsx" class="form-control" (change)="getFiles($event.target)" formControlName="rntFile">
@@ -113,7 +113,7 @@
         <div class="cardSec m-1">
           <div class="card_header">
             <h3>Recent Entries</h3>
-            <button mat-icon-button title="View All Company" [routerLink]="['/main/master/insurance/company']" [queryParams]="{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}">
+            <button mat-icon-button title="View All Company" [routerLink]="['/main/master/fixedeposit/company']">
               <mat-icon>north_east</mat-icon>
             </button>
           </div>

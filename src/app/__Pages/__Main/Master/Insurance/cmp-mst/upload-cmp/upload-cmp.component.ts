@@ -58,6 +58,16 @@ export class UploadCmpComponent implements OnInit {
       cell: (element: Record<string, any>) => `${element['cus_care_email']}`,
     },
     {
+      columnDef: 'dist_care_no',
+      header: 'Distributor Care Number',
+      cell: (element: Record<string, any>) => `${element['dist_care_no']}`,
+    },
+    {
+      columnDef: 'dist_care_email',
+      header: 'Distributor Care Email',
+      cell: (element: Record<string, any>) => `${element['dist_care_email']}`,
+    },
+    {
       columnDef:'head_ofc_contact_per',
       header:'Head Office Contact Person',
       cell: (element: Record<string, any>) => `${element['head_ofc_contact_per']}`,
@@ -189,6 +199,86 @@ export class UploadCmpComponent implements OnInit {
       header:'Security Answer 7',
       cell: (element: Record<string, any>) => `${element['security_answer_7']}`,
     },
+    {
+      columnDef: 'Level-1 Email',
+      header: 'Level-1 Email',
+      cell: (element: Record<string, any>) => `${element['Level-1 Email']}`,
+    },
+    {
+      columnDef: 'Level-2 Name',
+      header: 'Level-2 Name',
+      cell: (element: Record<string, any>) => `${element['Level-2 Name']}`,
+    },
+    {
+      columnDef: 'Level-2 Contact',
+      header: 'Level-2 Contact',
+      cell: (element: Record<string, any>) => `${element['Level-2 Contact']}`,
+    },
+    {
+      columnDef: 'Level-2 Email',
+      header: 'Level-2 Email',
+      cell: (element: Record<string, any>) => `${element['Level-2 Email']}`,
+    },
+    {
+      columnDef: 'Level-3 Name',
+      header: 'Level-3 Name',
+      cell: (element: Record<string, any>) => `${element['Level-3 Name']}`,
+    },
+    {
+      columnDef: 'Level-3 Contact',
+      header: 'Level-3 Contact',
+      cell: (element: Record<string, any>) => `${element['Level-3 Contact']}`,
+    },
+    {
+      columnDef: 'Level-3 Email',
+      header: 'Level-3 Email',
+      cell: (element: Record<string, any>) => `${element['Level-3 Email']}`,
+    },
+    {
+      columnDef: 'Level-4 Name',
+      header: 'Level-4 Name',
+      cell: (element: Record<string, any>) => `${element['Level-4 Name']}`,
+    },
+    {
+      columnDef: 'Level-4 Contact',
+      header: 'Level-4 Contact',
+      cell: (element: Record<string, any>) => `${element['Level-4 Contact']}`,
+    },
+    {
+      columnDef: 'Level-4 Email',
+      header: 'Level-4 Email',
+      cell: (element: Record<string, any>) => `${element['Level-4 Email']}`,
+    },
+    {
+      columnDef: 'Level-5 Name',
+      header: 'Level-5 Name',
+      cell: (element: Record<string, any>) => `${element['Level-5 Name']}`,
+    },
+    {
+      columnDef: 'Level-5 Contact',
+      header: 'Level-5 Contact',
+      cell: (element: Record<string, any>) => `${element['Level-5 Contact']}`,
+    },
+    {
+      columnDef: 'Level-5 Email',
+      header: 'Level-5 Email',
+      cell: (element: Record<string, any>) => `${element['Level-5 Email']}`,
+    },
+    {
+      columnDef: 'Level-6 Name',
+      header: 'Level-6 Name',
+      cell: (element: Record<string, any>) => `${element['Level-6 Name']}`,
+    },
+    {
+      columnDef: 'Level-6 Contact',
+      header: 'Level-6 Contact',
+      cell: (element: Record<string, any>) => `${element['Level-6 Contact']}`,
+    },
+    {
+      columnDef: 'Level-6 Email',
+      header: 'Level-6 Email',
+      cell: (element: Record<string, any>) => `${element['Level-6 Email']}`,
+    },
   ];
   tableData = new MatTableDataSource([
     {
@@ -197,6 +287,8 @@ export class UploadCmpComponent implements OnInit {
       web_site: 'www.axismf.com',
       cus_care_no: 1111111111,
       cus_care_email: 'abc@gmail.com',
+      dist_care_no:1111111111,
+      dist_care_email: 'abc@gmail.com',
       head_ofc_contact_per:'TEST',
       head_contact_per_mob:'1111111111',
       head_contact_per_email:'abc@gmail.com',
@@ -224,6 +316,24 @@ export class UploadCmpComponent implements OnInit {
       security_answer_6: "",
       security_question_7: "",
       security_answer_7: "",
+      "Level-1 Contact": 9831348519,
+      "Level-1 Email": 'ashishb@hdfcfund.com',
+      "Level-1 Name": 'Ashish Bhatia',
+      "Level-2 Contact": 9748513090,
+      "Level-2 Email": 'servicesssouthkolkata@hdfcfund.com',
+      "Level-2 Name": 'Nabanita Deb',
+      "Level-3 Contact": 9734133268,
+      "Level-3 Email": 'servicesssouthkolkata@hdfcfund.com',
+      "Level-3 Name": 'Debobroto Chatterjee',
+      "Level-4 Contact": 9734133268,
+      "Level-4 Email": 'servicesssouthkolkata@hdfcfund.com',
+      "Level-4 Name": 'Debobroto Chatterjee',
+      "Level-5 Contact": "",
+      "Level-5 Email": "",
+      "Level-5 Name": "",
+      "Level-6 Contact": "",
+      "Level-6 Email": "",
+      "Level-6 Name": ""
     }
   ]);
   __brdCrmbs: breadCrumb[] = [{

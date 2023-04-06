@@ -9,13 +9,27 @@
         <form [formGroup]="__uploadRnt" (ngSubmit)="uploadRnt()">
           <div class="row">
             <div class="col-sm-12">
-              <button class="float-right mb-5" color="primary" type="button" mat-button
-                (click)="exporter.exportTable('csv',{fileName:'SampleOption'})">
-                <mat-icon>download</mat-icon>Download Sample
+
+
+              <button class="float-right my-2" color="primary" type="button" mat-button
+                (click)="exporter.exportTable('csv',{fileName:'SampleScheme'})">
+                <mat-icon>download</mat-icon>Download Scheme
               </button>
+
+              <button class="float-right my-2" color="primary" type="button" mat-button
+              (click)="export_comp.exportTable('csv',{fileName:'SampleCompany'})">
+              <mat-icon>download</mat-icon>Download Company
+            </button>
+
+            <button class="float-right my-2" color="primary" type="button" mat-button
+            (click)="export_comp_type.exportTable('csv',{fileName:'SampleCompanyType'})">
+            <mat-icon>download</mat-icon>Download Company Type
+          </button>
+
+
             </div>
             <div class="col-sm-12">
-              <div class="container_zone" appOptionDrag (fileDropped)="onFileDropped($event)">
+              <div class="container_zone" appDrag (fileDropped)="onFileDropped($event)">
                 <img src="../../../../../../assets/images/____upload.png" alt="Upload Images" height="63" width="63">
                 <input type="file" accept=".csv,.xlsx" max="1" min="1" #fileDropRef name="upload_file" id="fileDropRef"
                   accept=".csv,.xlsx" class="form-control" (change)="getFiles($event.target)" formControlName="rntFile">
@@ -99,27 +113,22 @@
     <div class="cardSec m-1">
       <div class="card_header">
         <h3>Recent Entries</h3>
-        <button mat-icon-button title="View All Option" [routerLink]="['/main/master/productwisemenu/option']" [queryParams]="{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}">
+        <button mat-icon-button title="View All Scheme" [routerLink]="['/main/master/fixedeposit/scheme']">
           <mat-icon>north_east</mat-icon>
         </button>
       </div>
       <div class="card_body">
-        <mat-paginator hidden [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"
-          [showFirstLastButtons]="true"></mat-paginator>
-        <table mat-table [dataSource]="__selectOpt">
-          <!-- Sl No. -->
+        <table mat-table [dataSource]="__selectScm">
           <ng-container matColumnDef="sl_no">
             <th mat-header-cell *matHeaderCellDef>Sl No</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
-          <!--Temporary TIN No.-->
-          <ng-container matColumnDef="opt_name">
-            <th mat-header-cell *matHeaderCellDef>Option</th>
+          <ng-container matColumnDef="scheme">
+            <th mat-header-cell *matHeaderCellDef>Scheme</th>
             <td mat-cell *matCellDef="let element">
-              {{element.opt_name}}
+              {{element.scheme_name}}
             </td>
           </ng-container>
-          <!-- Buisness Type-->
           <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>Edit</th>
             <td mat-cell *matCellDef="let element">
@@ -128,19 +137,10 @@
               </button>
             </td>
           </ng-container>
-          <!-- Buisness Type-->
-          <!-- <ng-container matColumnDef="delete">
-            <th mat-header-cell *matHeaderCellDef>Delete</th>
-            <td mat-cell *matCellDef="let element">
-              <button mat-icon-button>
-                <mat-icon class="delete_icon">delete</mat-icon>
-              </button>
-            </td>
-          </ng-container> -->
           <tr mat-header-row *matHeaderRowDef="__columns"></tr>
           <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No data found</td>
+            <td class="mat-cell" colspan="3">No data found</td>
           </tr>
         </table>
       </div>
@@ -165,4 +165,33 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</mat-table>
+
+<mat-table hidden class="mat-elevation-z8" [dataSource]="tableData_forcomp_type" matTableExporter #export_comp_type="matTableExporter">
+  <ng-container *ngFor="let disCol of tableColumns_forcomp_type let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ disCol.header }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <span>
+        {{ disCol.cell(element) }}
+      </span>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns__forcomp_type"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns__forcomp_type;"></tr>
+</mat-table>
+<mat-table hidden class="mat-elevation-z8" [dataSource]="tableData_forcomp" matTableExporter #export_comp="matTableExporter">
+  <ng-container *ngFor="let disCol of tableColumns_forcomp let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ disCol.header }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <span>
+        {{ disCol.cell(element) }}
+      </span>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns__forcomp"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns__forcomp;"></tr>
 </mat-table>

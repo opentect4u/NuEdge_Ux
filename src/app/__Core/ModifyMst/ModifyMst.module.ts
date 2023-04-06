@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatTableExporterModule } from 'mat-table-exporter';
-import { DragDirective } from 'src/app/__Directives/drag.directive';
 import { MstDataGetterPipe } from 'src/app/__Pipes/MstDataGetter.pipe';
 
 @NgModule({
@@ -17,9 +16,9 @@ import { MstDataGetterPipe } from 'src/app/__Pipes/MstDataGetter.pipe';
     ReactiveFormsModule,
     MatTableModule,
     MatTableExporterModule,
-    
+
   ],
-  declarations: [ModifyMstComponent, DragDirective,MstDataGetterPipe],
+  declarations: [ModifyMstComponent,MstDataGetterPipe],
   exports: [ModifyMstComponent],
 })
 export class ModifyMstModule {}

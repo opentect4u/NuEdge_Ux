@@ -23,6 +23,10 @@ import { RouterModule, Routes } from '@angular/router';
       {
         path:'ack',
         loadChildren:()=> import('./Acknowledgement/ack.module').then(m => m.AckModule)
+      },
+      {
+        path:'manualupdate',
+        loadChildren:()=> import('./ManualUpdate/manual-update.module').then(m => m.ManualUpdateModule)
       }
     ]
   }

@@ -22,7 +22,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     BrowserAnimationsModule,
     NgxSpinnerModule,
     SnkbarModule
-  ],
+    ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: NetworkInterceptor, multi: true },
     {provide:LocationStrategy, useClass:HashLocationStrategy},

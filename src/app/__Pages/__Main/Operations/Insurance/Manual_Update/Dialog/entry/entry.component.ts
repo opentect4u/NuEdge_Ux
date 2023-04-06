@@ -180,7 +180,7 @@ export class EntryComponent implements OnInit {
    }
    this.__dbIntr.api_call(1,'/ins/manualUpdate',__fb).subscribe((res: any) =>{
 
-      this.__utility.showSnackbar(res.suc == 1 ? 'Form Submitted Successfully' : res.message,res.suc);
+      this.__utility.showSnackbar(res.suc == 1 ? 'Form Submitted Successfully' : res.msg,res.suc);
       if(res.suc == 1){
         this.dialogRef.close({tin_no:res.tin_no,data:res.data});
       }
