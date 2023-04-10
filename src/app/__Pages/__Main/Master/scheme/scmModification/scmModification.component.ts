@@ -126,7 +126,9 @@ export class ScmModificationComponent implements OnInit {
 
   }
   setFrequencyAmt(freq_dtls){
+    console.log(freq_dtls);
    freq_dtls.forEach(freqDtls =>{
+    console.log(freqDtls);
       this.addFrequency(freqDtls);
     })
   }
@@ -305,7 +307,7 @@ export class ScmModificationComponent implements OnInit {
     return new FormGroup({
       id: new FormControl(_freDtls.id),
       freq_name: new FormControl(_freDtls.freq_name),
-      is_checked: new FormControl(_freDtls.is_checked),
+      is_checked: new FormControl(_freDtls.is_checked == 'true' ? true : false),
       sip_fresh_min_amt: new FormControl(_freDtls.sip_fresh_min_amt,[Validators.pattern("^[0-9]*$")]),
       sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt,[Validators.pattern("^[0-9]*$")]),
     });
@@ -315,7 +317,7 @@ export class ScmModificationComponent implements OnInit {
     return new FormGroup({
       id: new FormControl(_freDtls.id),
       freq_name: new FormControl(_freDtls.freq_name),
-      is_checked: new FormControl(_freDtls.is_checked),
+      is_checked: new FormControl(_freDtls.is_checked == 'true' ? true : false),
       sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt,[Validators.pattern("^[0-9]*$")]),
     });
   }

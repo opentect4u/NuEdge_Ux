@@ -979,6 +979,7 @@ export class FinmodificationComponent implements OnInit {
   }
   getschemwisedt(__scheme_id) {
     this.__dbIntr.api_call(0, '/scheme', 'scheme_id=' + __scheme_id).pipe(pluck("data")).subscribe(res => {
+
       this.__sipfreq = res[0].sip_freq_wise_amt ? JSON.parse(res[0].sip_freq_wise_amt).filter((x: any) => x.is_checked == true) : [];
       this.__swp_freq = res[0].swp_freq_wise_amt ? JSON.parse(res[0].swp_freq_wise_amt).filter((x: any) => x.is_checked == true) : [];
       this.setSipDateAgainstScheme(res[0]?.sip_date);
