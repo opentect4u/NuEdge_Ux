@@ -20,7 +20,7 @@
 <mat-dialog-content>
   <form  [formGroup]="__trnsForm" (ngSubmit)="submit()" [attr.id]="'__trnsForm'+ data.id" autocomplete="off" ngNativeValidate>
     <div class="row">
-      <div class="col-sm-12 card_2">
+      <div class="col-sm-12">
         <label for="trans_Type">Transaction Type <span class="text-danger">*</span></label>
          <select class="form-control" formControlName="trans_id" id="trans_Type">
            <option value="">Select Transaction Type</option>
@@ -30,7 +30,7 @@
           <span class="invalid-feedback" *ngIf="(__trnsForm.get('trans_id')).errors?.required">*Please provide transaction type</span>
         </div>
       </div>
-      <div class="col-sm-12 card_2">
+      <div class="col-sm-12 my-2">
         <label for="trnsName">Transaction Name <span class="text-danger">*</span></label>
         <input type="text" name="trns_name" id="trnsName" class="form-control" placeholder="Enter Transaction Name" formControlName="trns_name">
         <div class="invalid-feedback" *ngIf="__trnsForm.get('trns_name').invalid && (__trnsForm.get('trns_name').dirty || __trnsForm.get('trns_name').touched)">

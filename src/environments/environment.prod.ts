@@ -10,5 +10,8 @@ export const environment = {
   manual_update_formUrl_for_ins:"https://opentech4u.co.in/nuedge_api/public/ins-policy-copy/",
   manual_update_formUrl_for_fd:"https://opentech4u.co.in/nuedge_api/public/fd-policy-copy/",
   ins_app_form_url: "https://opentech4u.co.in/nuedge_api/public/ins-application-form/",
-  ack_formUrl_for_fd:"https://opentech4u.co.in/nuedge_api/public/fd-acknowledgement-copy/"
+  ack_formUrl_for_fd:"https://opentech4u.co.in/nuedge_api/public/fd-acknowledgement-copy/",
+  cert_delivery_cu_pod:"https://opentech4u.co.in/nuedge_api/public/fd-pod-copy/",
+  cert_delivery_recv_ack:"https://opentech4u.co.in/nuedge_api/public/fd-received-ack/",
+  soa_copy_url:"https://opentech4u.co.in/nuedge_api/public/soa_copy/"
 };

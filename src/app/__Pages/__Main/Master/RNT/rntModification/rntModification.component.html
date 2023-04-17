@@ -23,17 +23,21 @@
   <mat-dialog-content  #scrollContainer>
     <form [formGroup]="__rntForm" (ngSubmit)="submit()" id="__rntForm_{{data.id}}" autocomplete="off" ngNativeValidate>
       <div class="row">
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="rnt_full_name" class="mb-3">R&T Full Name <span class="text-danger">*</span></label>
           <input type="text" name="rnt_full_name" id="rnt_full_name" class="form-control" placeholder="Enter R&T Full Name"
             formControlName="rnt_full_name">
           <div class="invalid-feedback"
             *ngIf="__rntForm.get('rnt_full_name').invalid && (__rntForm.get('rnt_full_name').dirty || __rntForm.get('rnt_full_name').touched)">
-            <span class="invalid-feedback" *ngIf="(__rntForm.get('rnt_full_name')).errors?.required">*Please provide R&T
+            <span class="invalid-feedback" *ngIf="(__rntForm.get('rnt_full_name')).errors?.required">
+              <mat-icon class="text-danger">
+                error
+              </mat-icon>
+              *Please provide R&T
               full name</span>
           </div>
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="rntName" class="mb-3">R&T Short Name <span class="text-danger">*</span></label>
           <input type="text" name="rnt_name" id="rntName" class="form-control" placeholder="Enter R&T Short Name"
             formControlName="rnt_name">
@@ -43,19 +47,19 @@
               short name</span>
           </div>
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="gstin">GSTIN</label>
           <input type="text" name="gstin" id="gstin" class="form-control"
             placeholder="Enter GSTIN" formControlName="gstin">
         </div>
 
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="web_site">Web Site </label>
           <input type="text" name="web_site" id="web_site" class="form-control" placeholder="Enter Website"
             formControlName="web_site">
         </div>
 
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="cus_care_whatsapp_no">Customer Care WhatsApp Number</label>
           <input (keypress)="preventNonumeric($event)" type="text" name="cus_care_whatsapp_no" id="cus_care_whatsapp_no"
             class="form-control" minlength="10" maxlength="10" placeholder="Enter Customer Care WhatsApp Number" formControlName="cus_care_whatsapp_no">
@@ -67,7 +71,7 @@
                   must be 10 digits</span>
             </div>
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="cust_care_no">Customer Care Number</label>
           <input minlength="10" maxlength="10" (keypress)="preventNonumeric($event)" type="text" name="cust_care_no" id="cust_care_no"
             class="form-control" placeholder="Enter Customer Care Number" formControlName="cust_care_no">
@@ -79,7 +83,7 @@
                   must be 10 digits</span>
             </div>
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="cust_care_email">Customer Care Email</label>
           <input type="email" name="cust_care_email" id="cust_care_email" class="form-control"
             placeholder="Enter Customer Care Email" formControlName="cust_care_email">
@@ -103,7 +107,7 @@
                 must be 10 digits</span>
           </div>
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="distributor_care_email" >Distributor Care Email </label>
           <input (keypress)="preventNonumeric($event)" type="email" name="distributor_care_email" id="distributor_care_email" class="form-control" placeholder="Enter Distributor Care Email"  formControlName="distributor_care_email">
           <div class="invalid-feedback" *ngIf="__rntForm.get('distributor_care_email').invalid && (__rntForm.get('distributor_care_email').dirty || __rntForm.get('distributor_care_email').touched)">
@@ -117,14 +121,14 @@
         <hr class="line"/>
        </div>
       <div class="row">
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="head_ofc_cotact_per">Contact Person</label>
         <input type="text"
         name="head_ofc_cotact_per"
         id="head_ofc_cotact_per"
         formControlName="head_ofc_contact_per" class="form-control" placeholder="Enter Contact Person">
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="head_contact_per_mob">Contact Person Mobile</label>
         <input
         minlength="10" maxlength="10"
@@ -137,14 +141,14 @@
               must be 10 digits</span>
         </div>
       </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="head_contact_per_email">Contact Person Email</label>
         <input type="text" name="head_contact_per_email" id="head_contact_per_email" formControlName="head_contact_per_email" class="form-control" placeholder="Enter Contact Person Email">
         <div class="invalid-feedback" *ngIf="__rntForm.get('head_contact_per_email').invalid && (__rntForm.get('head_contact_per_email').dirty || __rntForm.get('head_contact_per_email').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('head_contact_per_email').errors?.email)">*Please provide valid email</span>
         </div>
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12 my-2">
         <label for="ofc_add">Address</label>
         <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="head_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
         <div class="invalid-feedback" *ngIf="__rntForm.get('head_ofc_addr').invalid && (__rntForm.get('head_ofc_addr').dirty || __rntForm.get('head_ofc_addr').touched)">
@@ -157,11 +161,11 @@
         <hr class="line"/>
        </div>
       <div class="row">
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="local_ofc_contact_per">Contact Person</label>
         <input type="text" name="local_ofc_contact_per" id="local_ofc_contact_per" formControlName="local_ofc_contact_per" class="form-control" placeholder="Enter Contact Person">
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="local_contact_per_mob">Contact Person Mobile</label>
         <input
         minlength="10" maxlength="10"
@@ -174,14 +178,14 @@
               must be 10 digits</span>
         </div>
       </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="local_contact_per_email">Contact Person Email</label>
         <input type="text" name="local_contact_per_email" id="local_contact_per_email" formControlName="local_contact_per_email" class="form-control" placeholder="Enter Contact Person Email">
         <div class="invalid-feedback" *ngIf="__rntForm.get('local_contact_per_email').invalid && (__rntForm.get('local_contact_per_email').dirty || __rntForm.get('local_contact_per_email').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('local_contact_per_email').errors?.email)">*Please provide valid email</span>
         </div>
         </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12 my-2">
         <label for="ofc_add">Address</label>
         <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="local_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
         <div class="invalid-feedback" *ngIf="__rntForm.get('local_ofc_addr').invalid && (__rntForm.get('local_ofc_addr').dirty || __rntForm.get('local_ofc_addr').touched)">
@@ -191,13 +195,13 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="login_url" class="mb-3">Login URL </label>
           <input type="text" name="login_url" id="login_url" class="form-control" placeholder="Enter Login URL"
             formControlName="login_url">
         </div>
 
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="login_id" class="mb-3">Login ID </label>
           <input type="text" name="login_id" id="login_id" class="form-control" placeholder="Enter Login ID"
             formControlName="login_id">
@@ -207,7 +211,7 @@
           </div> -->
         </div>
 
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label for="login_pass" class="mb-3">Login Password </label>
           <input type="text" name="login_pass" id="login_pass" class="form-control" placeholder="Enter Login Password"
             formControlName="login_pass">
@@ -221,7 +225,7 @@
        <!-- Security Qustion Answer -->
       <div class="row">
         <div class="col-sm-12">
-          <table class="my-4">
+          <table class="my-2">
         <thead>
           <tr>
             <th>

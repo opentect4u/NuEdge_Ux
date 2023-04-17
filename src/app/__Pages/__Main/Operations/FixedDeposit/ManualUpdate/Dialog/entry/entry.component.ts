@@ -7,6 +7,8 @@ import fdmanualUpdateTrnstatus from '../../../../../../../../assets/json/Master/
 import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { pluck } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { global } from 'src/app/__Utility/globalFunc';
+import { dates } from 'src/app/__Utility/disabledt';
 @Component({
   selector: 'app-entry',
   templateUrl: './entry.component.html',
@@ -21,7 +23,7 @@ export class EntryComponent implements OnInit {
     manual_trans_status: new FormControl(this.data.data.form_status == 'M' ?  this.data.data.manual_trans_status : '',[Validators.required]),
     process: new FormGroup({
       logged_in: new FormControl(this.data.data.form_status == 'M' ?  this.data.data.logged_in : ''),
-       fdr_no: new FormControl(this.data.data.form_status == 'M' ? this.data.data.fdr_no : ''),
+       fdr_no: new FormControl(global.getActualVal(this.data.data.fdr_no)),
        fdr_scan: new FormControl('', [
         fileValidators.fileExtensionValidator(this.allowedExtensions),
         ]),
@@ -94,6 +96,7 @@ export class EntryComponent implements OnInit {
        this.__manualUpdateForm.get('contact_to_comp').setValidators((res == 'N' || res == 'R') ? [Validators.required] : null);
        this.__manualUpdateForm.get(['rejected','reject_memo']).setValidators(res == 'R' ? [ fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
        this.__manualUpdateForm.get(['pending','pending_reason']).setValidators(res == 'N' ? [Validators.required] : null);
+       this.__manualUpdateForm.get(['rejected','reject_reason_id']).setValidators(res == 'R' ? [ Validators.required] : null);
 
        this.__manualUpdateForm.get(['pending','pending_reason']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['rejected','reject_memo']).updateValueAndValidity({emitEvent:false});
@@ -101,7 +104,7 @@ export class EntryComponent implements OnInit {
        this.__manualUpdateForm.get(['process','fdr_no']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['process','logged_in']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['process','fdr_scan']).updateValueAndValidity({emitEvent:false});
-
+       this.__manualUpdateForm.get(['rejected','reject_reason_id']).updateValueAndValidity({emitEvent:false})
     })
 
     this.__manualUpdateForm.controls['contact_to_comp'].valueChanges.subscribe(res =>{
@@ -111,9 +114,9 @@ export class EntryComponent implements OnInit {
 
 
     this.__manualUpdateForm.controls['contact_via'].valueChanges.subscribe(res =>{
-      this.__manualUpdateForm.get('contact_per_name').setValidators((res == 'E' || res == 'P') ? [fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
-      this.__manualUpdateForm.get('contact_per_email').setValidators(res == 'E' ? [fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
-      this.__manualUpdateForm.get('contact_per_phone').setValidators(res == 'P' ? [fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
+      this.__manualUpdateForm.get('contact_per_name').setValidators((res == 'E' || res == 'P') ? [Validators.required] : null);
+      this.__manualUpdateForm.get('contact_per_email').setValidators(res == 'E' ? [Validators.required,Validators.email] : null);
+      this.__manualUpdateForm.get('contact_per_phone').setValidators(res == 'P' ? [Validators.required,Validators.minLength(10),Validators.maxLength(10), Validators.pattern("^[0-9]*$")] : null);
       this.__manualUpdateForm.get('contact_per_name').updateValueAndValidity({emitEvent:false});
       this.__manualUpdateForm.get('contact_per_email').updateValueAndValidity({emitEvent:false});
       this.__manualUpdateForm.get('contact_per_phone').updateValueAndValidity({emitEvent:false});
@@ -225,5 +228,8 @@ export class EntryComponent implements OnInit {
          this.dialogRef.close({tin_no:res.tin_no,data:res.data});
        }
     })
+  }
+  preventNonumeric(__ev) {
+    dates.numberOnly(__ev)
   }
 }

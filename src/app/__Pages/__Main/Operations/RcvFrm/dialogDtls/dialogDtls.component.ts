@@ -111,4 +111,9 @@ export class DialogDtlsComponent implements OnInit {
     })
   }
 
+  getExtension(fileName){
+    const ext = fileName.split('.');
+    return fileName ? ext[ext.length - 1] : ''
+  }
+
 }

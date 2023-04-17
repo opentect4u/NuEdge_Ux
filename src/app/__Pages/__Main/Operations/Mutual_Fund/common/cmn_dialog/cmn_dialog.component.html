@@ -7,7 +7,7 @@
 <mat-dialog-content>
   <form [formGroup]="__financialForm" id="__finForm" (ngSubmit)="submitMF()" ngNativeValidate>
 
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-6">
         <label for="trns_DT">Transaction Date</label>
         <input type="text" name="trns_DT" id="trns_DT" readonly class="form-control" formControlName="entry_date">
@@ -25,7 +25,7 @@
       </div>
     </div>
     <!-- <p class="formHeading"> FORM RECIEVE DETAILS</p> -->
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-12">
         <div class="row">
           <div class="col-sm-6">
@@ -48,7 +48,7 @@
 
 
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-6">
         <label for="bu_type">Buisness Type</label>
         <input type="text" readonly name="bu_type" id="bu_type" readonly class="form-control" formControlName="bu_type"
@@ -60,7 +60,7 @@
           formControlName="arn_no">
       </div>
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-6">
         <label for="euin_from">Euin From</label>
         <input type="text" readonly name="euin_from" id="euin_from" readonly class="form-control"
@@ -72,7 +72,7 @@
           placeholder="EUIN To">
       </div>
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-6">
         <label for="trns_type">Transaction Type <span class="text-danger">*</span></label>
         <select name="trns_type" id="trns_type" class="form-control" formControlName="trans_type"
@@ -99,7 +99,7 @@
         </div>
       </div>
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-6">
         <label for="cat">Category <span class="text-danger">*</span></label>
         <select name="cat" id="cat" class="form-control" formControlName="trans_catg" [attr.disabled]="this.data?.id">
@@ -126,7 +126,7 @@
         </div>
       </div>
     </div>
-    <div class="row my-5"
+    <div class="row my-2"
       *ngIf="__financialForm.get('trans_type').value == '3' || __financialForm.get('trans_type').value == '4' || __financialForm.get('trans_type').value == '5'">
       <div class="col-sm-6">
         <label for="schm_from">Scheme From <span class="text-danger">*</span></label>
@@ -155,7 +155,7 @@
         </div>
       </div>
     </div>
-    <div class="row my-5"
+    <div class="row my-2"
       *ngIf="__financialForm.get('trans_type').value != '3' && __financialForm.get('trans_type').value != '4' && __financialForm.get('trans_type').value != '5'">
       <div class="col-sm-6">
         <label for="schem_name">Scheme Name <span class="text-danger">*</span></label>
@@ -170,7 +170,7 @@
         </div>
       </div>
     </div>
-    <div class="row my-5"
+    <div class="row my-2"
       *ngIf="__financialForm.get('trans_type').value == '2' || __financialForm.get('trans_type').value == '7'">
       <div class="col-sm-6">
         <label for="spi_from">SIP From <span class="text-danger">*</span></label>
@@ -193,9 +193,9 @@
         </div>
       </div>
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-12">
-        <div class="row my-5">
+        <div class="row my-2">
           <div class="col-sm-6">
             <label for="client_code1">1st Client Code <span class="text-danger">*</span></label>
             <input type="text" name="client_code1" id="client_code1" class="form-control text-uppercase"
@@ -242,9 +242,9 @@
 
 
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-12">
-        <div class="row my-5">
+        <div class="row my-2">
           <div class="col-sm-6">
             <label for="client_code2">2nd Client Code
             </label>
@@ -288,9 +288,9 @@
 
 
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-12">
-        <div class="row my-5">
+        <div class="row my-2">
           <div class="col-sm-6">
             <label for="client_code3">3rd Client Code</label>
             <input type="text" name="client_code3" id="client_code3" class="form-control text-uppercase"
@@ -331,7 +331,7 @@
 
 
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-6">
         <label for="amt">Amount <span class="text-danger">*</span></label>
         <input type="text" name="amt" id="amt" class="form-control" formControlName="amount" placeholder="Enter Amount"
@@ -353,7 +353,7 @@
         </div>
       </div>
     </div>
-    <div class="row my-4">
+    <div class="row my-2">
       <div class="col-sm-6">
         <label for="bank">Bank <span class="text-danger">*</span></label>
         <select name="bank" id="bank" class="form-control" formControlName="chq_bank" [attr.disabled]="this.data?.id">
@@ -380,14 +380,14 @@
         </div>
       </div>
     </div>
-    <div class="row my-3">
+    <div class="row my-2">
       <div class="col-sm-12">
         <label for="remarks">Remarks</label>
         <textarea [attr.disabled]="this.data?.id" name="remarks" id="remarks" cols="30" rows="5" class="form-control"
           formControlName="remarks"></textarea>
       </div>
     </div>
-    <div class="row my-5">
+    <div class="row my-2">
       <div class="col-sm-5">
         <label for="file">Upload Scan Application Form <span class="text-danger"
             *ngIf="this.data.id == null">*</span></label>
@@ -415,7 +415,7 @@
           Scan Status</label>
       </div>
     </div>
-    <div class="row my-5" *ngIf="this.data.id != null">
+    <div class="row my-2" *ngIf="this.data.id != null">
       <div class="col-sm-6">
         <label for="cut_off_time">Cut Off Time</label>
         <input type="datetime-local" name="cut_off_time" id="cut_off_time" class="form-control"
@@ -437,7 +437,7 @@
         </div>
       </div>
     </div>
-    <div class="row my-5" *ngIf="this.data.id != null">
+    <div class="row my-2" *ngIf="this.data.id != null">
       <div class="col-sm-6">
         <label for="ack_copy">Upload Acknowledgement Copy</label>
         <input type="file" accept=".jpg,.jpeg,.png" id="ack_copy" class="form-control" formControlName="ack_copy"

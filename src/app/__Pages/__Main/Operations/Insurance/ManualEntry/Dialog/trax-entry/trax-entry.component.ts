@@ -1024,10 +1024,12 @@ export class TraxEntryComponent implements OnInit {
     }
   }
   getTraxDtlsAgainstTemporaryTin(res) {
+    // this.__insTrax.controls['ins_type_id'].reset(res.ins_type_id,{onlySelf:true,emitEvent:true});
     this.__insTrax.patchValue({
       bu_type: res.bu_type,
-      ins_type_id: res.ins_type_id,
       insure_bu_type: res.insure_bu_type,
+      ins_type_id:res.ins_type_id,
+      company_id:res.company_id
     });
     setTimeout(() => {
       this.__euinMst.push({euin_no:res.euin_no,emp_name: res.emp_name})

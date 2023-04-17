@@ -17,7 +17,6 @@ constructor(
   private __utility: UtiliService
 ) {
     this.__utility.__brdCrumbs$.pipe(skip(1)).subscribe(res => {
-      console.log(res);
       if(res.length > 0){
         this.breadcrumbs = res;
       }
@@ -28,7 +27,5 @@ constructor(
 ngOnInit(){
 }
 getDtls(__brdCrumbs){
-  console.log(__brdCrumbs);
-
 }
 }

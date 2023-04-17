@@ -1,0 +1,260 @@
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" >
+    <h2 [title]="data.title">{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="__fdCertDelForm" (ngSubmit)="submitCertificate()" [attr.id]="'__FDCD_'+ this.data.tin_no">
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="certificate_delivery_opt">Certificate Delivery Option <span class="text-danger">*</span></label>
+          <select name="certificate_delivery_opt" formControlName="certificate_delivery_opt" id="certificate_delivery_opt" class="form-control">
+            <option value="">Select</option>
+            <option value="E">EFDR</option>
+            <option value="H">Hand Delivery</option>
+            <option value="P">Postal Delivery</option>
+          </select>
+        </div>
+        <!-- For Hand delivery -->
+        <ng-container
+        formGroupName="hand_delivery"
+         *ngIf="__fdCertDelForm.getRawValue().certificate_delivery_opt == 'H'">
+         <!-- Need to provide disabled Condition Only  -->
+          <ng-container  formGroupName="certificate_collected_from">
+            <div class="col-sm-12 my-2">
+              <label for="collected_from_company">Collected From Company</label>
+              <select name="collected_from_company" formControlName="collected_from_company" id="collected_from_company" class="form-control">
+                <option value="">Select</option>
+                <option value="Y">Yes</option>
+                <option value="P">Pending</option>
+              </select>
+            </div>
+             <ng-container *ngIf="__fdCertDelForm.getRawValue().hand_delivery.certificate_collected_from.collected_from_company == 'P'">
+              <div class="col-sm-12 my-2">
+                <label for="remarks">Remarks</label>
+                <textarea name="remarks" id="" cols="12" rows="5" class="form-control" formControlName="remarks"></textarea>
+              </div>
+             </ng-container>
+             <ng-container *ngIf="__fdCertDelForm.getRawValue().hand_delivery.certificate_collected_from.collected_from_company == 'Y'">
+              <div class="col-sm-12 my-2">
+                <label for="date">Certificate Collect Date</label>
+                <input type="date" name="date" id="date"  class="form-control" formControlName="date">
+              </div>
+              <div class="col-sm-12 my-2">
+                <label for="collected_by">Certificate Collected By</label>
+                <input type="text" placeholder="Enter Certificate Collected By"
+                name="collected_by"
+                id="collected_by"
+                class="form-control"
+                formControlName="collected_by">
+              </div>
+             </ng-container>
+          </ng-container>
+         <!-- End  -->
+
+
+          <ng-container
+          formGroupName="certificate_delivery_by"
+          *ngIf="data.data.cert_delivery_flag != 'P'">
+            <div class="col-sm-12 my-2">
+              <label for="delivery_by">Certificate Delivery By</label>
+              <select name="delivery_by" formControlName="delivery_by" id="delivery_by" class="form-control">
+                <option value="">Select</option>
+                <option value="I">Inperson</option>
+                <option value="C">Courior</option>
+              </select>
+            </div>
+            <div class="col-sm-12 my-2">
+              <label for="date">Certificate Delivery Date</label>
+              <input type="date" name="date" id="date"  class="form-control" formControlName="date">
+            </div>
+            <ng-container *ngIf="__fdCertDelForm.getRawValue().hand_delivery.certificate_delivery_by.delivery_by == 'I'">
+              <div class="col-sm-12 my-2">
+                <label for="name">Name</label>
+                <input type="text" name="name" placeholder="Enter Name" id="name"  class="form-control" formControlName="name">
+              </div>
+              <div class="col-sm-12 my-2">
+                <label for="contact_no">Contact No.</label>
+                <input type="text" name="contact_no" id="contact_no" placeholder="Enter Contact Number"  class="form-control" formControlName="contact_no">
+              </div>
+            </ng-container>
+            <ng-container *ngIf="__fdCertDelForm.getRawValue().hand_delivery.certificate_delivery_by.delivery_by == 'C'">
+              <div class="col-sm-12 my-2">
+                <label for="comp_name">Company Name</label>
+                <input type="text" name="comp_name" id="comp_name" placeholder="Enter Company Name"  class="form-control" formControlName="comp_name">
+              </div>
+              <div class="col-sm-12 my-2">
+                <label for="pod_no">POD No</label>
+                <input type="text" placeholder="Enter Name" name="pod_no" id="pod_no"  class="form-control" formControlName="pod_no">
+              </div>
+              <ng-container>
+                <div class="col-sm-12 my-2" *ngIf="data.data.cert_delivery_flag == 'A'">
+                  <label for="file">POD Scan</label>
+                  <input
+                  type="file"
+                  name="file"
+                  (change)="getFIle($event.target)"
+                  id="file"
+                  class="form-control"
+                  formControlName="file">
+                  <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+                 </div>
+                 <ng-container *ngIf="data.data.cert_delivery_flag == 'B' || data.data.cert_delivery_flag == 'C'">
+                  <div class="col-sm-4 my-2" >
+                    <label  for="">POD Scan</label>
+                    <div class="file-man-box">
+                      <div class="file_img-box">
+                       <a target="__blank"
+                       [attr.href]="this.__fdCertDelForm.get(['hand_delivery','certificate_delivery_by','filePreview']).value">
+                        <img   height="37" src="../../../../../../../../assets/images/pdf.png" alt="Pdf View"></a>
+                      </div>
+                    </div>
+                   </div>
+                 </ng-container>
+
+              </ng-container>
+
+            </ng-container>
+          </ng-container>
+
+
+          <ng-container
+          formGroupName="certificate_received_by"
+          *ngIf="data.data.cert_delivery_flag == 'B' || data.data.cert_delivery_flag == 'C'"
+          >
+            <div class="col-sm-12 my-2">
+              <label for="date">Certificate Received Date</label>
+              <input type="date" name="date" id="date" placeholder="Enter Name" class="form-control" formControlName="date">
+            </div>
+            <div class="col-sm-12 my-2">
+              <label for="date">Received By</label>
+              <input type="text" placeholder="Enter Received By" name="recv_by" id="recv_by" class="form-control" formControlName="recv_by">
+            </div>
+            <ng-container>
+              <div class="col-sm-12 my-2" *ngIf="data.data.cert_delivery_flag != 'C'">
+                <label for="ack_file">Acknowledgement Scan</label>
+                <input type="file"
+                name="ack_file"
+                (change)="getAckFile($event.target)"
+                id="ack_file"
+                class="form-control"
+                formControlName="ack_file">
+                <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+              </div>
+              <ng-container *ngIf="data.data.cert_delivery_flag == 'C'">
+                <div class="col-sm-4 my-2">
+                  <label  for="">Acknowledgement Scan Copy</label>
+                  <div class="file-man-box">
+                    <div class="file_img-box">
+                     <a target="__blank" [href]="this.__fdCertDelForm.get(['hand_delivery','certificate_received_by','ackfilePreview']).value">
+                      <img   height="37" src="../../../../../../../../assets/images/pdf.png" alt="Pdf View"></a>
+                    </div>
+                  </div>
+                 </div>
+               </ng-container>
+
+            </ng-container>
+
+            </ng-container>
+
+
+        </ng-container>
+        <!-- End -->
+
+
+        <!-- For POSTAL delivery -->
+        <ng-container
+        formGroupName="hand_delivery"
+         *ngIf="__fdCertDelForm.getRawValue().certificate_delivery_opt == 'P'">
+         <ng-container
+         formGroupName="certificate_delivery_by"
+         >
+           <div class="col-sm-12 my-2">
+             <label for="delivery_by">Certificate Delivery By</label>
+             <select name="delivery_by" formControlName="delivery_by" id="delivery_by" class="form-control">
+               <option value="">Select</option>
+               <option value="I">Inperson</option>
+               <option value="C">Courior</option>
+             </select>
+           </div>
+           <div class="col-sm-12 my-2">
+             <label for="date">Certificate Delivery Date</label>
+             <input type="date" name="date" id="date"  class="form-control" formControlName="date">
+           </div>
+             <div class="col-sm-12 my-2">
+               <label for="comp_name">Company Name</label>
+               <input type="text" name="comp_name" id="comp_name" placeholder="Enter Company Name"  class="form-control" formControlName="comp_name">
+             </div>
+             <div class="col-sm-12 my-2">
+               <label for="pod_no">POD No</label>
+               <input type="text" placeholder="Enter Name" name="pod_no" id="pod_no"  class="form-control" formControlName="pod_no">
+             </div>
+             <ng-container>
+               <div class="col-sm-12 my-2" *ngIf="data.data.cert_delivery_flag == 'P'">
+                 <label for="file">POD Scan</label>
+                 <input
+                 type="file"
+                 name="file"
+                 (change)="getFIle($event.target)"
+                 id="file"
+                 class="form-control"
+                 formControlName="file">
+                <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+                </div>
+                <div class="col-sm-4 my-2" *ngIf="data.data.cert_delivery_flag != 'P'">
+                  <label  for="">POD Scan</label>
+                  <div class="file-man-box">
+                    <div class="file_img-box">
+                     <a target="__blank" [attr.href]="this.__fdCertDelForm.get(['hand_delivery','certificate_delivery_by','filePreview']).value">
+                      <img   height="37" src="../../../../../../../../assets/images/pdf.png" alt="Pdf View"></a>
+                    </div>
+                  </div>
+                 </div>
+             </ng-container>
+         </ng-container>
+
+
+         <ng-container
+         formGroupName="certificate_received_by"
+         *ngIf="data.data.cert_delivery_flag == 'B' || data.data.cert_delivery_flag == 'C'">
+           <div class="col-sm-12 my-2">
+             <label for="date">Certificate Received Date</label>
+             <input type="date" name="date" id="date" placeholder="Enter Name" class="form-control" formControlName="date">
+           </div>
+           <div class="col-sm-12 my-2">
+             <label for="date">Received By</label>
+             <input type="text" placeholder="Enter Received By" name="recv_by" id="recv_by" class="form-control" formControlName="recv_by">
+           </div>
+           </ng-container>
+
+         </ng-container>
+         <!-- End -->
+      </div>
+    </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+      <button
+      *ngIf="data.data.cert_delivery_flag != 'C'"
+      class="btn addBtn"
+      [attr.form]="'__FDCD_'+ this.data.tin_no"
+      [disabled]="__fdCertDelForm.invalid">Submit</button>
+    </mat-dialog-actions>
+    <br clear="all">
+  </div>

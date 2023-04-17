@@ -1,0 +1,275 @@
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" >
+    <h2 [title]="data.title">{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+
+    <form [formGroup]="__manualUpdateForm" [attr.id]="this.data.tin_no" (ngSubmit)="submitManualUpdate()">
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="trns_status"> Transaction Status
+            <span class="text-danger">*</span>
+          </label>
+          <select name="trns_status"
+          id="trns_status"
+          class="form-control"
+          formControlName="manual_trans_status">
+          <option value="">Select</option>
+          <option [value]="trnStatus.id" *ngFor="let trnStatus of __trns_status">{{trnStatus.name}}</option>
+        </select>
+
+        <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('manual_trans_status').invalid && (__manualUpdateForm.get('manual_trans_status').dirty || __manualUpdateForm.get('manual_trans_status').touched)">
+          <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('manual_trans_status')).errors?.required">*Please provide transaction status</span>
+        </div>
+        </div>
+        <ng-container formGroupName="process" *ngIf="__manualUpdateForm.value.manual_trans_status == 'P'">
+          <div class="col-sm-12 my-2">
+            <label for="logged_in">Date
+            <span class="text-danger">*</span>
+            </label>
+            <input type="date"
+            name="logged_in"
+            id="logged_in"
+            class="form-control"
+            formControlName="logged_in">
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','logged_in']).invalid && (__manualUpdateForm.get(['process','logged_in']).dirty || __manualUpdateForm.get(['process','logged_in']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','logged_in'])).errors?.required">*Please provide date</span>
+            </div>
+          </div>
+          <div class="col-sm-12 my-2">
+            <label for="fdr_no">FDR No
+            <span class="text-danger">*</span>
+            </label>
+            <input type="text"
+            name="fdr_no"
+            placeholder="Enter FDR No"
+            id="fdr_no"
+            class="form-control"
+            formControlName="fdr_no">
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','fdr_no']).invalid && (__manualUpdateForm.get(['process','fdr_no']).dirty || __manualUpdateForm.get(['process','fdr_no']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','fdr_no'])).errors?.required">*Please provide fdr no</span>
+            </div>
+          </div>
+          <div class="col-sm-12 my-2" *ngIf="!this.data.isViewMode">
+            <label for="fdr_scan"> Upload FDR Scan</label>
+            <input type="file"
+            (change)="getFIle($event.target)"
+              accept=".pdf"
+            name="fdr_scan"
+            id="fdr_scan"
+            class="form-control"
+            formControlName="fdr_scan">
+            <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+            <div class="invalid-feedback"
+              *ngIf=" __manualUpdateForm.get(['process','fdr_scan']).invalid && ( __manualUpdateForm.get(['process','fdr_scan']).dirty ||  __manualUpdateForm.get(['process','fdr_scan']).touched)">
+              <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['process','fdr_scan']).errors?.required">*Please
+                provide file</span>
+              <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','fdr_scan']).errors?.inValidExt">*Invalid
+                file extension.</span>
+              <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','fdr_scan']).errors?.fileSizeValidator">*File size
+                must
+                not exceed than
+                2MB.</span>
+            </div>
+          </div>
+          <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">
+            <label  for="">FDR Scan Copy</label>
+            <br/>
+            <div class="file-man-box">
+              <div class="file_img-box">
+               <a target="__blank" [attr.href]="this.__manualUpdateForm.get(['process','file']).value">
+                <img   height="37" src="../../../../../../../../assets/images/pdf.png" alt="Pdf View"></a>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container
+        *ngIf="__manualUpdateForm.value.manual_trans_status == 'R'
+        || __manualUpdateForm.value.manual_trans_status == 'N'"
+        >
+           <div class="col-sm-12">
+            <label for="contact_to_comp">Contact To Company <span class="text-danger">*</span></label>
+            <select
+            class="form-control"
+            formControlName="contact_to_comp"
+            name="contact_to_comp"
+            id="contact_to_comp">
+             <option value="">Select</option>
+             <option value="Y">Yes</option>
+             <option value="N">No</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_to_comp').invalid && (__manualUpdateForm.get('contact_to_comp').dirty || __manualUpdateForm.get('contact_to_comp').touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_to_comp')).errors?.required">*Please provide contact to company</span>
+            </div>
+           </div>
+           <ng-container *ngIf="__manualUpdateForm.value.contact_to_comp == 'Y'">
+            <div class="col-sm-12">
+              <label for="contact_via">Contact Via <span class="text-danger">*</span></label>
+              <select
+              class="form-control"
+              formControlName="contact_via"
+              name="contact_via"
+              id="contact_via">
+               <option value="">Select</option>
+               <option value="E">Email</option>
+               <option value="P">Phone</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_via').invalid && (__manualUpdateForm.get('contact_via').dirty || __manualUpdateForm.get('contact_via').touched)">
+                <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_via')).errors?.required">*Please provide contact via</span>
+              </div>
+             </div>
+             <div class="col-sm-12">
+              <label for="contact_per_name">Name <span class="text-danger">*</span></label>
+              <input
+              type="text"
+              class="form-control"
+              formControlName="contact_per_name"
+              name="contact_per_name"
+              id="contact_per_name">
+              <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_per_name').invalid && (__manualUpdateForm.get('contact_per_name').dirty || __manualUpdateForm.get('contact_per_name').touched)">
+                <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_name')).errors?.required">*Please provide  name</span>
+              </div>
+             </div>
+             <ng-container *ngIf="__manualUpdateForm.value.contact_via == 'E'">
+              <div class="col-sm-12">
+              <label for="contact_per_email">Email <span class="text-danger">*</span></label>
+              <input
+              type="text"
+              class="form-control"
+              formControlName="contact_per_email"
+              name="contact_per_email"
+              id="contact_per_email">
+              <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_per_email').invalid && (__manualUpdateForm.get('contact_per_email').dirty || __manualUpdateForm.get('contact_per_email').touched)">
+                <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_email')).errors?.required">*Please provide email</span>
+                <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_email')).errors?.email">*Please provide valid email</span>
+
+              </div>
+             </div>
+             </ng-container>
+             <ng-container *ngIf="__manualUpdateForm.value.contact_via == 'P'">
+              <div class="col-sm-12">
+                <label for="contact_per_phone">Phone <span class="text-danger">*</span></label>
+                <input
+                (keypress)="preventNonumeric($event)"
+                type="text"
+                class="form-control"
+                minlength="10"
+                maxlength="10"
+                formControlName="contact_per_phone"
+                name="contact_per_phone"
+                id="contact_per_phone">
+                <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_per_phone').invalid && (__manualUpdateForm.get('contact_per_phone').dirty || __manualUpdateForm.get('contact_per_phone').touched)">
+                  <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_phone')).errors?.required">*Please provide mobile number</span>
+                  <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_phone')).hasError('minlength')">*Mobile number must be 10 digits</span>
+                  <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_phone')).hasError('maxlength')">*Mobile number must be 10 digits</span>
+                  <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_phone')).hasError('pattern')">*allow only digits</span>
+
+                </div>
+               </div>
+             </ng-container>
+           </ng-container>
+        </ng-container>
+        <ng-container formGroupName="rejected" *ngIf="__manualUpdateForm.value.manual_trans_status == 'R'">
+          <div class="col-sm-12">
+            <label for="reject_reason_id">Reject Reason <span class="text-danger">*</span></label>
+            <select
+            name="reject_reason_id"
+            id="reject_reason_id"
+            class="form-control"
+            formControlName="reject_reason_id">
+            <option value="">Select</option>
+            <option [value]="reject_reason.id" *ngFor="let reject_reason of rejectReason">{{reject_reason.reject_name}}</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['rejected','reject_reason_id']).invalid && (__manualUpdateForm.get(['rejected','reject_reason_id']).dirty || __manualUpdateForm.get(['rejected','reject_reason_id']).touched)">
+            <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['rejected','reject_reason_id'])).errors?.required">*Please provide reject reason</span>
+          </div>
+          </div>
+          <div class="col-sm-12" *ngIf="!this.data.isViewMode">
+            <label for="reject_memo">Upload Rejected Memo <span class="text-danger">*</span></label>
+            <input
+            type="file"
+            name="reject_memo"
+            id="reject_memo"
+            (change)="getFIleForMemo($event.target)"
+            class="form-control"
+            formControlName="reject_memo">
+            <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+            <div class="invalid-feedback"
+            *ngIf=" __manualUpdateForm.get(['rejected','reject_memo']).invalid && ( __manualUpdateForm.get(['rejected','reject_memo']).dirty ||  __manualUpdateForm.get(['rejected','reject_memo']).touched)">
+            <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['rejected','reject_memo']).errors?.required">*Please
+              provide file</span>
+            <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['rejected','reject_memo']).errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['rejected','reject_memo']).errors?.fileSizeValidator">*File size
+              must
+              not exceed than
+              2MB.</span>
+          </div>
+          </div>
+          <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">
+            <label  for="">Rejected Memo Copy</label>
+            <br/>
+            <div class="file-man-box">
+              <div class="file_img-box">
+               <a target="__blank" [attr.href]="this.__manualUpdateForm.get(['rejected','reject_memo_file']).value">
+                <img height="37" src="../../../../../../../../assets/images/pdf.png" alt="Pdf View"></a>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container formGroupName="pending" *ngIf="__manualUpdateForm.value.manual_trans_status == 'N'">
+          <div class="col-sm-12">
+            <label for="pending_reason">Pending Reason <span class="text-danger">*</span></label>
+            <textarea
+            name="pending_reason"
+            id="pending_reason"
+            cols="12"
+            rows="4"
+            class="form-control"
+            formControlName="pending_reason"></textarea>
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['pending','pending_reason']).invalid && (__manualUpdateForm.get(['pending','pending_reason']).dirty || __manualUpdateForm.get(['pending','pending_reason']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['pending','pending_reason'])).errors?.required">*Please provide pending reason</span>
+            </div>
+          </div>
+
+        </ng-container>
+        <div class="col-sm-12 my-2">
+          <label for="manual_update_remarks">Remarks</label>
+          <textarea
+          name="manual_update_remarks"
+          id="manual_update_remarks"
+          cols="12"
+          rows="4"
+          class="form-control"
+          formControlName="manual_update_remarks"></textarea>
+        </div>
+      </div>
+    </form>
+
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+      <button
+      *ngIf="!this.data.isViewMode"
+      class="btn addBtn"
+      [attr.form]="this.data.tin_no"
+      [disabled]="__manualUpdateForm.invalid">Submit</button>
+    </mat-dialog-actions>
+    <br clear="all">
+      </div>

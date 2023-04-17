@@ -1,9 +1,12 @@
 /* Suman Mitra add this css for bootsrap not being used */
 .invalid-feedback {
-  color: #9f030a;
+  /* color: #9f030a;
   margin-top: 4px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 500; */
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 550;
 }
 
 .btn {
@@ -470,14 +473,19 @@ table {
 }
 
 .serachresult_client ul {
-  line-height: 30px;
+  /* line-height: 30px;
   font-weight: 500;
   font-size: 13px;
+  list-style-type: none; */
+  line-height: 30px;
+  font-weight: 700;
+  font-size: 11px;
   list-style-type: none;
 }
 
 .serachresult_client ul li {
-  padding: 8px 15px;
+  padding: 3px 15px;
+  border-bottom: 1px solid #ebebeb;
 }
 
 .serachresult_client ul li:hover {
@@ -540,9 +548,10 @@ mat-hint p{
 }
 
 .errorIcon{
-  font-size: 17px!important;
-  height: 20px!important;
-  width: 20px!important;
-  color: #dd4848;
+  font-size: 13px!important;
+  height: 14px!important;
+  width: 14px!important;
+  color: #e35d69;
   text-align: center;
+  vertical-align: bottom;
 }

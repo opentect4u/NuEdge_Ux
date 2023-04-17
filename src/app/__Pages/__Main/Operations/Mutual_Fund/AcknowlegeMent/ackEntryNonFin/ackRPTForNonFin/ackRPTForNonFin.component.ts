@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChildren, ElementRef, QueryList, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
   MatDialog,
@@ -8,8 +8,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { JsonExporterService } from 'mat-table-exporter';
-import { map, pluck } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
 import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -21,12 +20,39 @@ import { dates } from 'src/app/__Utility/disabledt';
 import { global } from 'src/app/__Utility/globalFunc';
 import buType from '../../../../../../../../assets/json/buisnessType.json';
 import { AckUploadForNonFinComponent } from '../ackUploadForNonFin/ackUploadForNonFin.component';
+import { client } from 'src/app/__Model/__clientMst';
+import { amc } from 'src/app/__Model/amc';
 @Component({
   selector: 'app-ackRPTForNonFin',
   templateUrl: './ackRPTForNonFin.component.html',
   styleUrls: ['./ackRPTForNonFin.component.css']
 })
 export class AckRPTForNonFinComponent implements OnInit {
+
+  @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
+  @ViewChildren('trnsTypeChecked') private __trnsTypeChecked: QueryList<ElementRef>;
+  @ViewChildren('rntChecked') private __rntChecked: QueryList<ElementRef>;
+
+
+  @ViewChild('searchTin') __searchTin: ElementRef;
+  @ViewChild('clientCd') __clientCode: ElementRef;
+  @ViewChild('searchEUIN') __searchRlt: ElementRef;
+  @ViewChild('subBrkArn') __subBrkArn: ElementRef;
+  @ViewChild('searchAMC') __AmcSearch: ElementRef;
+
+
+  __isTinspinner: boolean = false;
+  __isClientPending: boolean = false;
+  __isSubArnPending: boolean = false;
+  __isEuinPending: boolean = false;
+  __isAmcPending: boolean = false;
+
+  amcMst: amc[] =[];
+  tinMst: any=[];
+  __clientMst: client[] =[];
+  __subbrkArnMst: any=[];
+  __euinMst: any =[];
+
   __sortAscOrDsc: any = {active: '',direction:'asc'};
 
   WindowObject:any;
@@ -56,6 +82,8 @@ export class AckRPTForNonFinComponent implements OnInit {
   __subCat: subcat[];
   __bu_type = buType;
   __rcvForms = new FormGroup({
+    is_all_bu_type: new FormControl(false),
+    is_all_rnt: new FormControl(false),
     options: new FormControl('2'),
     sub_brk_cd: new FormControl(''),
     tin_no: new FormControl(''),
@@ -129,6 +157,158 @@ export class AckRPTForNonFinComponent implements OnInit {
   ) {}
 
   ngAfterViewInit() {
+
+
+    // AMC SEARCH
+    this.__rcvForms.controls['amc_name'].valueChanges
+    .pipe(
+      tap(() => (this.__isAmcPending = true)),
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((dt) =>
+        dt?.length > 1 ? this.__dbIntr.searchItems('/amc', dt) : []
+      ),
+      map((x: responseDT) => x.data)
+    )
+    .subscribe({
+      next: (value) => {
+        this.amcMst = value;
+        this.searchResultVisibilityForAMC('block');
+        this.__isAmcPending = false;
+      },
+      complete: () => console.log(''),
+      error: (err) => {
+        this.__isAmcPending = false;
+      },
+    });
+    // End
+
+
+
+    // EUIN NUMBER SEARCH
+      this.__rcvForms.controls['euin_no'].valueChanges
+      .pipe(
+        tap(() => (this.__isEuinPending = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.__dbIntr.searchItems('/employee', dt) : []
+        ),
+        map((x: responseDT) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          this.__euinMst = value;
+          this.searchResultVisibility('block');
+          this.__isEuinPending = false;
+        },
+        complete: () => console.log(''),
+        error: (err) => {
+          this.__isEuinPending = false;
+        },
+      });
+      // End
+
+       /**change Event of sub Broker Arn Number */
+       this.__rcvForms.controls['sub_brk_cd'].valueChanges
+       .pipe(
+         tap(() => (this.__isSubArnPending = true)),
+         debounceTime(200),
+         distinctUntilChanged(),
+         switchMap((dt) =>
+           dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
+         ),
+         map((x: responseDT) => x.data)
+       )
+       .subscribe({
+         next: (value) => {
+           this.__subbrkArnMst = value;
+           this.searchResultVisibilityForSubBrk('block');
+           this.__isSubArnPending = false;
+         },
+         complete: () => console.log(''),
+         error: (err) => {
+           this.__isSubArnPending = false;
+         },
+       });
+
+
+
+          /** Client Code Change */
+          this.__rcvForms.controls['client_code'].valueChanges
+          .pipe(
+            tap(() => (this.__isClientPending = true)),
+            debounceTime(200),
+            distinctUntilChanged(),
+            switchMap((dt) =>
+              dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+            ),
+            map((x: any) => x.data)
+          )
+          .subscribe({
+            next: (value) => {
+              this.__clientMst = value.data;
+              this.searchResultVisibilityForClient('block');
+              this.__isClientPending = false;
+            },
+            complete: () => {},
+            error: (err) => {
+              this.__isClientPending = false;
+            },
+          });
+
+          /** End */
+
+     // Tin Number Search
+     this.__rcvForms.controls['tin_no'].valueChanges
+     .pipe(
+       tap(() => (this.__isTinspinner = true)),
+       debounceTime(200),
+       distinctUntilChanged(),
+       switchMap((dt) =>
+         dt?.length > 1
+           ? this.__dbIntr.ReportTINSearch('/formreceived', dt)
+           : []
+       ),
+       map((x: responseDT) => x.data)
+     )
+     .subscribe({
+       next: (value) => {
+         this.tinMst = value;
+         this.searchResultVisibilityForTin('block');
+         this.__isTinspinner = false;
+       },
+       complete: () => console.log(''),
+       error: (err) => (this.__isTinspinner = false),
+     });
+
+    this.__rcvForms.controls['is_all_bu_type'].valueChanges.subscribe((res) => {
+      const bu_type: FormArray = this.__rcvForms.get('bu_type') as FormArray;
+      bu_type.clear();
+      if (!res) {
+        this.uncheckAll_buType();
+      } else {
+        this.__bu_type.forEach((__el) => {
+          bu_type.push(new FormControl(__el.id));
+        });
+        this.checkAll_buType();
+      }
+    });
+
+    this.__rcvForms.controls['is_all_rnt'].valueChanges.subscribe((res) => {
+      const rntName: FormArray = this.__rcvForms.get('rnt_name') as FormArray;
+      rntName.clear();
+      if (!res) {
+        this.uncheckAll_rnt();
+      } else {
+        this.__rnt.forEach((__el) => {
+          rntName.push(new FormControl(__el.id));
+        });
+        this.checkAll_rnt();
+      }
+    });
+
+
     this.__rcvForms.controls['date_status'].valueChanges.subscribe(res => {
             if(res == 'T'){
               this.__rcvForms.controls['start_date'].setValue('');
@@ -610,52 +790,44 @@ export class AckRPTForNonFinComponent implements OnInit {
   }
   onbuTypeChange(e: any) {
     const bu_type: FormArray = this.__rcvForms.get('bu_type') as FormArray;
-    if (e.target.checked) {
-      bu_type.push(new FormControl(e.target.value));
+    if (e.checked) {
+      bu_type.push(new FormControl(e.source.value));
     } else {
       let i: number = 0;
       bu_type.controls.forEach((item: any) => {
-        if (item.value == e.target.value) {
+        if (item.value == e.source.value) {
           bu_type.removeAt(i);
           return;
         }
         i++;
       });
     }
+    this.__rcvForms.get('is_all_bu_type').setValue(
+      bu_type.controls.length == 3 ? true : false,
+      { emitEvent: false }
+    );
   }
   onrntTypeChange(e: any) {
     const rnt_name: FormArray = this.__rcvForms.get('rnt_name') as FormArray;
-    if (e.target.checked) {
-      rnt_name.push(new FormControl(e.target.value));
+    if (e.checked) {
+      rnt_name.push(new FormControl(e.source.value));
     } else {
       let i: number = 0;
       rnt_name.controls.forEach((item: any) => {
-        if (item.value == e.target.value) {
+        if (item.value == e.source.value) {
           rnt_name.removeAt(i);
           return;
         }
         i++;
       });
     }
+    this.__rcvForms.get('is_all_rnt').setValue(
+      rnt_name.controls.length == 3 ? true : false,
+      { emitEvent: false }
+    );
   }
 
-  ontrnsTypeChange(e: any) {
-    const trans_type: FormArray = this.__rcvForms.get(
-      'trans_type'
-    ) as FormArray;
-    if (e.target.checked) {
-      trans_type.push(new FormControl(e.target.value));
-    } else {
-      let i: number = 0;
-      trans_type.controls.forEach((item: any) => {
-        if (item.value == e.target.value) {
-          trans_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-  }
+
   getminDate(){
     return dates.getminDate();
   }
@@ -672,5 +844,116 @@ export class AckRPTForNonFinComponent implements OnInit {
     this.__rcvForms.get('options').setValue('2');
     this.__sortAscOrDsc = {active: '',direction: 'asc'};
     this.submit();
+  }
+  outsideClickforTin(__ev) {
+    if (__ev) {
+      this.searchResultVisibilityForTin('none');
+    }
+  }
+
+  outsideClickforClient(__ev) {
+    if (__ev) {
+      this.searchResultVisibilityForClient('none');
+    }
+  }
+  outsideClickforSubBrkArn(__ev) {
+    if (__ev) {
+      this.searchResultVisibilityForSubBrk('none');
+    }
+  }
+  outsideClick(__ev) {
+    if (__ev) {
+      this.searchResultVisibility('none');
+    }
+  }
+  outsideClickForAMC(__ev) {
+    if (__ev) {
+      this.searchResultVisibilityForAMC('none');
+    }
+  }
+  searchResultVisibility(display_mode) {
+    this.__searchRlt.nativeElement.style.display = display_mode;
+  }
+  /** Search Result Off against Sub Broker */
+  searchResultVisibilityForSubBrk(display_mode) {
+    this.__subBrkArn.nativeElement.style.display = display_mode;
+  }
+  searchResultVisibilityForClient(display_mode) {
+    this.__clientCode.nativeElement.style.display = display_mode;
+  }
+  searchResultVisibilityForTin(display_mode) {
+    this.__searchTin.nativeElement.style.display = display_mode;
+  }
+  searchResultVisibilityForAMC(display_mode) {
+    this.__AmcSearch.nativeElement.style.display = display_mode;
+  }
+
+  getItems(__items, __mode) {
+    switch (__mode) {
+      case 'A':
+        this.__rcvForms.controls['amc_name'].reset(__items.amc_name, {
+          emitEvent: false,
+        });
+        this.searchResultVisibilityForAMC('none');
+        break;
+      case 'C':
+        this.__rcvForms.controls['client_code'].reset(__items.client_name, {
+          emitEvent: false,
+        });
+        this.searchResultVisibilityForClient('none');
+        break;
+        case 'E':
+            this.__rcvForms.controls['euin_no'].reset(__items.emp_name, {
+            emitEvent: false,
+        });
+        this.searchResultVisibility('none');
+        break;
+      case 'T':
+        this.__rcvForms.controls['tin_no'].reset(__items.tin_no, {
+          emitEvent: false,
+        });
+        this.searchResultVisibilityForTin('none');
+        break;
+      case 'S':
+        this.__rcvForms.controls['sub_brk_cd'].reset(__items.code, {
+          emitEvent: false,
+        });
+        this.searchResultVisibilityForSubBrk('none');
+        break;
+    }
+  }
+  uncheckAll_buType() {
+    this.__buTypeChecked.forEach((element: any) => {
+      element.checked = false;
+    });
+  }
+  checkAll_buType() {
+    this.__buTypeChecked.forEach((element: any) => {
+      element.checked = true;
+    });
+  }
+
+
+  uncheckAll_trnsType() {
+    this.__trnsTypeChecked.forEach((element: any) => {
+      element.checked = false;
+    });
+  }
+  checkAll_trnsType() {
+    this.__trnsTypeChecked.forEach((element: any) => {
+      element.checked = true;
+    });
+  }
+
+
+  uncheckAll_rnt() {
+    this.__rntChecked.forEach((element: any) => {
+      element.checked = false;
+    });
+  }
+  checkAll_rnt() {
+    this.__rntChecked.forEach((element: any) => {
+      element.checked = true;
+    });
   }
 }

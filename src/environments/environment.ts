@@ -14,20 +14,29 @@ export const environment = {
   // manual_update_formUrl_for_ins:"https://opentech4u.co.in/nuedge_api/public/ins-policy-copy/",
   // manual_update_formUrl_for_fd:"https://opentech4u.co.in/nuedge_api/public/fd-policy-copy/",
   // ins_app_form_url: "https://opentech4u.co.in/nuedge_api/public/ins-application-form/",
-  // ack_formUrl_for_fd:"https://opentech4u.co.in/nuedge_api/public/fd-acknowledgement-copy/"
+  // ack_formUrl_for_fd:"https://opentech4u.co.in/nuedge_api/public/fd-acknowledgement-copy/",
+  // cert_delivery_cu_pod:"https://opentech4u.co.in/nuedge_api/public/fd-pod-copy/",
+  // cert_delivery_recv_ack:"https://opentech4u.co.in/nuedge_api/public/fd-received-ack/",
+  // soa_copy_url:"https://opentech4u.co.in/nuedge_api/public/soa_copy/"
 
   /****** NuEdge *****/
-  apiUrl:"http://192.168.1.16/nuedge/api/v1",
-  clientdocUrl:"http://192.168.1.16/nuedge/public/client-doc/",
-  app_formUrl:"http://192.168.1.16/nuedge/public/application-form/",
-  ack_formUrl:"http://192.168.1.16/nuedge/public/acknowledgement-copy/",
-  kyc_formUrl:"http://192.168.1.16/nuedge/public/kyc-form/",
-  app_formUrl_ins:"http://192.168.1.16/nuedge/public/ins-application-form/",
-  ack_formUrl_for_ins:"http://192.168.1.16/nuedge/public/ins-acknowledgement-copy/",
-  manual_update_formUrl_for_ins:"http://192.168.1.16/nuedge/public/ins-policy-copy/",
-  manual_update_formUrl_for_fd:"http://192.168.1.16/nuedge/public/fd-policy-copy/",
-  ins_app_form_url: "http://192.168.1.16/nuedge/public/ins-application-form/",
-  ack_formUrl_for_fd:"http://192.168.1.16/nuedge/public/fd-acknowledgement-copy/"
+  apiUrl:"http://192.168.1.11/nuedge/api/v1",
+  clientdocUrl:"http://192.168.1.11/nuedge/public/client-doc/",
+  app_formUrl:"http://192.168.1.11/nuedge/public/application-form/",
+  ack_formUrl:"http://192.168.1.11/nuedge/public/acknowledgement-copy/",
+  kyc_formUrl:"http://192.168.1.11/nuedge/public/kyc-form/",
+  app_formUrl_ins:"http://192.168.1.11/nuedge/public/ins-application-form/",
+  ack_formUrl_for_ins:"http://192.168.1.11/nuedge/public/ins-acknowledgement-copy/",
+  manual_update_formUrl_for_ins:"http://192.168.1.11/nuedge/public/ins-policy-copy/",
+  manual_update_formUrl_for_fd:"http://192.168.1.11/nuedge/public/fd-policy-copy/",
+  ins_app_form_url: "http://192.168.1.11/nuedge/public/ins-application-form/",
+  ack_formUrl_for_fd:"http://192.168.1.11/nuedge/public/fd-acknowledgement-copy/",
+  cert_delivery_cu_pod:"http://192.168.1.11/nuedge/public/fd-pod-copy/",
+  cert_delivery_recv_ack:"http://192.168.1.11/nuedge/public/fd-received-ack/",
+  soa_copy_url:"http://192.168.1.11/nuedge/public/soa_copy/"
+
+
+
   /****** END *******/
 
 

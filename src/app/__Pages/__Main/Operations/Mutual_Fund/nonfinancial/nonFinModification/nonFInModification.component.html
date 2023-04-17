@@ -20,7 +20,7 @@
     <form [formGroup]="__nonfinForm" (ngSubmit)="submitnonFinForm()" [attr.id]="'__NonFIn_'+ data.id"
       autocomplete="off">
       <div class="row">
-        <div class="col-sm-12 my-5">
+        <div class="col-sm-12  my-2">
           <mat-radio-group aria-label="Select an option" color="primary" formControlName="tin_status">
             <mat-radio-button value="Y">With TTin</mat-radio-button>
             <mat-radio-button value="N" class="ml-5">Without TTIN</mat-radio-button>
@@ -32,7 +32,14 @@
           <div class="col-sm-12 ">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
               <div class="searchDiv">
-                <label for="__temp_tin_no">Temporary TIN Number
+                <label for="__temp_tin_no">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Temporary TIN does not exists"
+                  *ngIf="__nonfinForm.get('temp_tin_no').errors?.TempTINExists">
+                  error</mat-icon>
+                  Temporary TIN Number
                   <span class="text-danger">*</span>
                 </label>
                 <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
@@ -59,7 +66,7 @@
           </div>
         </div>
       </ng-container>
-      <div class="row my-5">
+      <div class="row  my-2">
         <div class="col-sm-12 ">
           <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
           <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
@@ -81,7 +88,15 @@
           <div class="col-sm-12 ">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
               <div class="searchDiv">
-                <label for="subbrkArn">Sub Broker ARN<span class="text-danger">*</span></label>
+                <label for="subbrkArn">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Sub Broker does not exists"
+                  *ngIf="__nonfinForm.get('sub_arn_no').errors?.subBrkExists">
+                  error</mat-icon>
+
+                  Sub Broker ARN<span class="text-danger">*</span></label>
                 <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker ARN"
                   formControlName="sub_arn_no">
                 <span class="spinner-border"
@@ -107,7 +122,7 @@
             </div>
           </div>
         </div>
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12 ">
             <label>Sub Broker Code <span class="text-danger">*</span></label>
             <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control" formControlName="sub_brk_cd"
@@ -121,7 +136,14 @@
           <div class="col-sm-12">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
               <div class="searchDiv">
-                <label for="Euin">EUIN<span class="text-danger">*</span></label>
+                <label for="Euin">
+                  <mat-icon
+                    class="errorIcon"
+                    #tooltip="matTooltip"
+                    matTooltip="EUIN does not exists"
+                    *ngIf="__nonfinForm.get('euin_no').errors?.euinExists">
+                    error</mat-icon>
+                  EUIN<span class="text-danger">*</span></label>
                 <input type="search" id="Euin" class="form-control" placeholder="Serach By EUIN Number"
                   formControlName="euin_no">
                 <span class="spinner-border"
@@ -154,15 +176,19 @@
         </div>
       </ng-container>
       <!-- First Applicant -->
-      <div class="row my-5">
+      <div class="row  my-2">
         <div [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-9':__isCldtlsEmpty}">
           <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
             <div class="searchDiv">
-              <label for="__clntCd">Client Code <span class="text-danger">*</span></label>
-              <!-- <p class="invalid-feedback"
-                  *ngIf="!__dialogDtForClient && __nonfinForm.get('client_code').value && __clientMst.length > 0">
-                  Client Does Not Exist
-                </p> -->
+              <label for="__clntCd">
+                <mat-icon
+                class="errorIcon"
+                #tooltip="matTooltip"
+                matTooltip="Client does not exists"
+                *ngIf="__nonfinForm.get('client_code').errors?.ClientExists">
+                error</mat-icon>
+                Client Code <span class="text-danger">*</span></label>
+
               <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="client_code"
                 placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
               <span class="spinner-border"
@@ -201,26 +227,27 @@
         </div>
       </div>
       <ng-container *ngIf="__nonfinForm.get('client_code').value && __nonfinForm.get('client_name').value">
-        <div class="row my-5">
-          <div [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-9':__dialogDtForClient}">
+        <div class="row  my-2">
+          <div class="col-sm-12">
             <label for="__clName">Client Name</label>
             <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
               formControlName="client_name" [attr.disabled]="true">
-          </div>
-          <div class="col-sm-3  clientCode" *ngIf="__dialogDtForClient">
-            <button (click)="openDialog('C')" color="primary" mat-button type="button"
+              <button (click)="openDialog('C')"
+              color="primary"
+              mat-icon-button
+              class="viewIconDtls"
+              *ngIf="__dialogDtForClient"
+              type="button"
               aria-label="Example icon button with a eye icon" title="View Client Details">
               <mat-icon>remove_red_eye</mat-icon>
-              View Details
             </button>
           </div>
-
         </div>
       </ng-container>
       <!-- First Client Dtls End -->
 
       <!-- Transaction -->
-      <div class="row my-5">
+      <div class="row  my-2">
         <div class="col-sm-12">
           <label for="trans_id">Transaction <span class="text-danger">*</span></label>
           <select name="trans_id" id="trans_id" formControlName="trans_id" class="form-control">
@@ -248,17 +275,23 @@
           <div class="invalid-feedback"
             *ngIf="__nonfinForm.get('folio_no').invalid && (__nonfinForm.get('folio_no').dirty || __nonfinForm.get('folio_no').touched)">
             <span class="invalid-feedback" *ngIf="(__nonfinForm.get('folio_no')).errors?.required">*Please provide
-              {{__nonfinForm.get('trans_id').value == '33' ? 'Targeted Folio' : 'Folio Number' }}
+              {{__nonfinForm.get('trans_id').value == '33' ? 'targeted folio' : 'folio Number' }}
             </span>
           </div>
         </div>
       </div>
       <!-- Scheme Name -->
-      <div class="row  my-5">
+      <div class="row   my-2">
         <div [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-9':__dialogDtForScheme}">
           <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforScheme($event)">
             <div class="searchDiv">
               <label for="schemeName">
+                <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Scheme does not exists"
+                  *ngIf="__nonfinForm.get('scheme_name').errors?.ScmExists">
+                  error</mat-icon>
                 Scheme Name
                 <span class="text-danger">*</span></label>
               <input type="search" id="schemeName" class="form-control" placeholder="Serach By Scheme Name"
@@ -287,7 +320,8 @@
 
         </div>
         <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
-          <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')" mat-button type="button"
+          <button color="primary" *ngIf="this.__dialogDtForScheme"
+          (click)="openDialog('S')" mat-button type="button"
             aria-label="Example icon button with a eye icon" title="View Scheme Details">
             <mat-icon>remove_red_eye</mat-icon>
             View Details
@@ -310,7 +344,7 @@
         </div>
       </div>
       <!-- Option -->
-      <div class="row my-5">
+      <div class="row  my-2">
         <div class="col-sm-12">
           <label for="option">Option <span class="text-danger">*</span></label>
           <select class="form-control" id="option" formControlName="option_id">
@@ -389,7 +423,7 @@
         </div>
 
         <!-- Cancellation Effective Date -->
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="cancel_effective_date">Cancellation Effective Date <span class="text-danger">*</span></label>
             <input type="date" name="cancel_effective_date" id="cancel_effective_date" class="form-control"
@@ -411,6 +445,7 @@
               class="form-control" formControlName="installment_amt">
             <div class="invalid-feedback"
               *ngIf="__nonfinForm.get('installment_amt').invalid && (__nonfinForm.get('installment_amt').dirty || __nonfinForm.get('installment_amt').touched)">
+
               <span class="invalid-feedback" *ngIf="(__nonfinForm.get('installment_amt')).errors?.required">*Please
                 provide
                 amount</span>
@@ -431,7 +466,7 @@
               <option value="B">Both</option>
             </select>
           </div>
-          <div class="col-sm-12  my-5"
+          <div class="col-sm-12   my-2"
             *ngIf="__nonfinForm.get('change_contact_type').value == 'E' || __nonfinForm.get('change_contact_type').value == 'B'">
             <label for="email">Email <span class="text-danger">*</span></label>
             <input type="email" placeholder="Enter Email" name="email" id="email" formControlName="email"
@@ -457,7 +492,7 @@
                 email declaration</span>
             </div>
           </div>
-          <div class="col-sm-12 my-5"
+          <div class="col-sm-12  my-2"
             *ngIf="__nonfinForm.get('change_contact_type').value == 'M' || __nonfinForm.get('change_contact_type').value == 'B'">
             <label for="mobile">Mobile <span class="text-danger">*</span></label>
             <input type="text" (keypress)="preventNonumeric($event)" maxlength="10" minlength="10"
@@ -516,7 +551,7 @@
           </div>
         </div>
 
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="state">State <span class="text-danger">*</span></label>
             <select class="form-control" formControlName="state" id="state">
@@ -546,7 +581,7 @@
           </div>
         </div>
 
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="city">City <span class="text-danger">*</span></label>
             <select class="form-control" formControlName="city" id="city">
@@ -585,7 +620,7 @@
 
       <!-- Change Of Name -->
       <ng-container *ngIf="__nonfinForm.get('trans_id').value == '23'">
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="reason_for_change">Reason For Change <span class="text-danger">*</span></label>
             <select class="form-control" formControlName="reason_for_change" id="reason_for_change"
@@ -601,7 +636,7 @@
             </div>
           </div>
         </div>
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="new_name">New Name <span class="text-danger">*</span></label>
             <input type="text" name="new_name" id="new_name" class="form-control" formControlName="new_name">
@@ -617,7 +652,7 @@
 
       <!-- Change of type -->
       <ng-container *ngIf="__nonfinForm.get('trans_id').value == '24'">
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="change_status">Change Status</label>
             <select class="form-control" formControlName="change_status" id="change_status">
@@ -636,7 +671,7 @@
 
       <!-- Nominee Opt Out -->
       <ng-container *ngIf="__nonfinForm.get('trans_id').value == '25'">
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="nominee_opt_out">Reason For Nominee Opt Out</label>
             <select class="form-control" formControlName="nominee_opt_out" id="nominee_opt_out">
@@ -674,7 +709,7 @@
 
       <!-- Redemption -->
       <ng-container *ngIf="__nonfinForm.get('trans_id').value == '29'">
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="redemp_type">Redemption Type <span class="text-danger">*</span></label>
             <select class="form-control" formControlName="redemp_type" id="redemp_type">
@@ -690,7 +725,7 @@
           </div>
         </div>
         <ng-container *ngIf="__nonfinForm.get('redemp_type').value == 'U'">
-          <div class="row my-5">
+          <div class="row  my-2">
             <div class="col-sm-12">
               <label for="unit_type">Unit Type <span class="text-danger">*</span></label>
               <select class="form-control" formControlName="unit_type" id="unit_type">
@@ -706,7 +741,7 @@
             </div>
           </div>
           <ng-container *ngIf="__nonfinForm.get('unit_type').value != ''">
-            <div class="row my-5">
+            <div class="row  my-2">
               <div class="col-sm-12">
                 <label for="unit">Unit<span class="text-danger">*</span></label>
                 <input type="text" formControlName="redemp_unit" name="unit" id="unit" class="form-control"
@@ -721,7 +756,7 @@
           </ng-container>
         </ng-container>
         <ng-container *ngIf="__nonfinForm.get('redemp_type').value == 'A'">
-          <div class="row my-5">
+          <div class="row  my-2">
             <div class="col-sm-12">
               <label for="redemp_amount">Amount<span class="text-danger">*</span></label>
               <input type="text" class="form-control" placeholder="Enter Amount" formControlName="redemp_amount"
@@ -751,7 +786,7 @@
               id="accNoforOldBnk" class="form-control" formControlName="oldbnk_accNo">
           </div>
         </div>
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-10">
             <label for="oldbnk_micr">MICR Code</label>
             <input type="text" [attr.disabled]="true" placeholder="Micr Code" name="oldbnk_micr" id="oldbnk_micr"
@@ -792,7 +827,7 @@
               class="form-control" formControlName="newbnk_accNo">
           </div>
         </div>
-        <div class="row my-5">
+        <div class="row  my-2">
           <div [ngClass]="{'col-sm-12':!__dialogFornewBank,'col-sm-10': __dialogFornewBank}">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforbank($event)">
               <div class="searchDiv">
@@ -841,8 +876,11 @@
           </div>
         </div>
       </ng-container>
+
+
       <!-- SWP & STP Registration -->
-      <ng-container *ngIf="__nonfinForm.get('trans_id').value == '30' || __nonfinForm.get('trans_id').value == '31'">
+      <ng-container *ngIf="__nonfinForm.get('trans_id').value == '30'
+      || __nonfinForm.get('trans_id').value == '31'">
         <div class="row" *ngIf="__nonfinForm.get('trans_id').value == '30'">
           <div class="col-sm-12">
             <label for="swp_type">SWP Type <span class="text-danger">*</span></label>
@@ -871,7 +909,7 @@
             </div>
           </div>
         </div>
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="swp_freq">
               {{__nonfinForm.get('trans_id').value == '30' ? 'SWP Frequency' : 'STP Frequency'}}
@@ -914,8 +952,8 @@
 
           </div>
         </div>
-        <div class="row my-5">
-          <div class="col-sm-12 my-4">
+        <div class="row  my-2">
+          <div class="col-sm-12 my-2">
             <label for="swp_start_date">
               {{__nonfinForm.get('trans_id').value == '30' ? 'SWP Start Date' : 'STP Start Date'}}
               <span class="text-danger">*</span></label>
@@ -931,7 +969,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 my-4">
+          <div class="col-sm-12 my-2">
             <label for="swp_duration">
               {{__nonfinForm.get('trans_id').value == '30' ? 'SWP Duration' : 'STP Duration'}}
               <span class="text-danger">*</span></label>
@@ -950,7 +988,7 @@
         </div>
         <ng-container *ngIf="__nonfinForm.get('swp_duration').value == 'M'">
           <div class="row">
-            <div class="col-sm-12 my-4">
+            <div class="col-sm-12 my-2">
               <label for="duration">Duration <span class="text-danger">*</span></label>
               <input type="text" (change)="setEndDT($event)" placeholder="Enter Duration" name="swp_stardurationt_date"
                 id="duration" class="form-control" formControlName="duration">
@@ -959,7 +997,7 @@
 
         </ng-container>
         <div class="row">
-          <div class="col-sm-12 my-4">
+          <div class="col-sm-12 my-2">
             <label for="swp_end_date">
               {{__nonfinForm.get('trans_id').value == '30' ? 'SWP' : 'STP'}} End Date
               <span class="text-danger"></span></label>
@@ -979,8 +1017,12 @@
               {{__nonfinForm.get('trans_id').value == '30' ? 'SWP' : 'STP'}} Amount
               <span class="text-danger">*</span></label>
             <input type="text" name="swp_amount" id="swp_amount" class="form-control" formControlName="swp_amount">
-            <span class="text-danger text-bold" *ngIf="__isAmtcheck">
-              {{'Amount must be greater than ' + (__checkedAmt | currency: 'INR')}}
+            <!-- <span class="invalid-feedback" *ngIf="__isAmtcheck">
+             {{'Amount must be greater than ' + (__checkedAmt | currency: 'INR')}}
+            </span> -->
+
+            <span  class="invalid-feedback"  *ngIf="__nonfinForm.get('swp_amount').errors?.AmtExists">
+              * Amount must be greater than {{__checkedAmt  | currency:'INR'}}
             </span>
           </div>
 
@@ -1009,7 +1051,7 @@
             </div>
           </div>
         </div>
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="kyc_status">Kyc Status : </label>
             <mat-radio-group aria-label="Select an option" class="ml-5" color="primary" id="kyc_status"
@@ -1055,7 +1097,7 @@
 
         <ng-container
           *ngIf="__nonfinForm.get('transmission_type').value == '1' || __nonfinForm.get('transmission_type').value == '2'">
-          <div class="row my-5">
+          <div class="row  my-2">
             <div class="col-sm-12">
               <table>
                 <thead>
@@ -1103,14 +1145,14 @@
                             </div>
                           </div>
                         </div>
-                        <div class="col-sm-12 my-4">
+                        <div class="col-sm-12 my-2">
                           <label for="second_cl_name">Client name</label>
                           <input type="text"
                             [attr.disabled]="__SecondClient && __nonfinForm.get('second_client_code').value"
                             name="second_client_name" id="second_client_name" placeholder="Enter Second Applicant Name"
                             class="form-control" formControlName="second_client_name" />
                         </div>
-                        <div class="col-sm-12 my-4">
+                        <div class="col-sm-12 my-2">
                           <label for="second_cl_name">Pan No</label>
                           <input type="text" [attr.disabled]="__SecondClient" name="second_client_pan"
                             id="second_client_pan" placeholder="Enter Second Applicant Pan" class="form-control"
@@ -1197,7 +1239,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="col-sm-12  my-4">
+                        <div class="col-sm-12  my-2">
                           <label for="second_cl_name">Client name</label>
                           <input #thirdClName type="text" [attr.disabled]="__ThirdClient" name="third_client_name"
                             placeholder="Enter Additional Applicant Name" id="third_client_name" class="form-control"
@@ -1239,7 +1281,7 @@
         </ng-container>
 
         <ng-container *ngIf="__nonfinForm.get('transmission_type').value == '3'">
-          <div class="row my-5">
+          <div class="row  my-2">
             <div class="col-sm-12">
               <label for="existing_mode_of_holding">Existing Mode of Holding</label>
               <select class="form-control" id="existing_mode_of_holding" formControlName="existing_mode_of_holding">
@@ -1255,7 +1297,7 @@
         <!-- If Existing Mode of holding is 'Single' or Transmission Type == '4' || '3' -->
         <ng-container
           *ngIf="__nonfinForm.get('existing_mode_of_holding').value == 'S' || __nonfinForm.get('transmission_type').value == '4'">
-          <div class="row" [ngClass]="{'my-5' : __nonfinForm.get('transmission_type').value == '4'}">
+          <div class="row" [ngClass]="{' my-2' : __nonfinForm.get('transmission_type').value == '4'}">
             <div [ngClass]="{'col-sm-12':!__isFirstClaimant,'col-sm-9':__isFirstClaimant}">
               <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClaimant($event)">
                 <div class="searchDiv">
@@ -1299,7 +1341,7 @@
           </div>
           <ng-container
             *ngIf="__FirstClaimant && __nonfinForm.get('claimant_first_client_code').value && __nonfinForm.get('claimant_first_client_name').value">
-            <div class="row my-5">
+            <div class="row  my-2">
               <div [ngClass]="{'col-sm-12': !__FirstClaimant,'col-sm-9':__FirstClaimant}">
                 <label for="claimant_first_client_name">
                   Claimant {{(__nonfinForm.get('transmission_type').value == '4') ? 'HUF' : ''}} Name
@@ -1367,7 +1409,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-12 my-5">
+                      <div class="col-sm-12  my-2">
                         <label for="existing_second_client_name">
                           Client Name
                         </label>
@@ -1457,7 +1499,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-12 my-5">
+                      <div class="col-sm-12  my-2">
                         <label for="existing_third_client_name">
                           Client Name
                         </label>
@@ -1501,7 +1543,7 @@
           </ng-container>
 
           <!-- New Mode Of Holding -->
-          <div class="row my-5">
+          <div class="row  my-2">
             <div class="col-sm-12">
               <label for="new_mode_of_holding">New Mode of Holding</label>
               <select class="form-control" id="new_mode_of_holding" formControlName="new_mode_of_holding">
@@ -1560,7 +1602,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-12 my-5">
+                      <div class="col-sm-12  my-2">
                         <label for="new_second_client_name">
                           Client Name
                         </label>
@@ -1647,7 +1689,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-12 my-5">
+                      <div class="col-sm-12  my-2">
                         <label for="new_third_client_name">
                           Client Name
                         </label>
@@ -1740,7 +1782,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="row my-5">
+                        <div class="row  my-2">
                           <div class="col-sm-12">
                             <label for="claimant_name_{{i}}">Claiment Name</label>
                             <input placeholder="Name" [attr.disabled]="true" type="search" name="claimant_name_{{i}}"
@@ -1809,7 +1851,7 @@
             </div>
           </div>
         </div>
-        <div class="row my-5">
+        <div class="row  my-2">
           <div class="col-sm-12">
             <label for="warrant_amt">Warrant Amount <span class="text-danger">*</span></label>
             <input type="text" placeholder="Enter Warrant Amount" name="warrant_amt" id="warrant_amt"
@@ -1832,7 +1874,7 @@
             </div>
           </div>
         </div>
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12">
             <label for="warrant_remarks">Warrant Remarks</label>
             <textarea class="form-control" placeholder="Enter Warrant Remarks" formControlName="warrant_remarks"
@@ -1858,7 +1900,7 @@
                 mode of holding</span>
             </div>
           </div>
-          <div class="col-sm-12 my-5">
+          <div class="col-sm-12  my-2">
             <label for="change_new_mode_of_holding">New Mode Of Holding</label>
             <select [attr.disabled]="true" class="form-control" id="change_new_mode_of_holding"
               formControlName="change_new_mode_of_holding">
@@ -1987,11 +2029,13 @@
       </ng-container>
 
       <!-- Upload File -->
-      <div class="row my-5">
+      <div class="row  my-2">
         <div class="col-sm-12 ">
           <label for="file">Upload Scan Application Form <span class="text-danger">*</span></label>
           <input type="file" name="file" id="file" formControlName="file" class="form-control"
-            (change)="getFIle($event.target)" accept=".jpg,.jpeg,.png">
+            (change)="getFIle($event.target)" accept=".pdf">
+            <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 2MB)</p></mat-hint>
+
           <div class="invalid-feedback"
             *ngIf=" __nonfinForm.get('file').invalid && ( __nonfinForm.get('file').dirty ||  __nonfinForm.get('file').touched)">
             <span class="invalid-feedback" *ngIf=" __nonfinForm.get('file').errors?.required">*Please
@@ -2003,10 +2047,10 @@
               not exceed than
               2MB.</span>
           </div>
-          <ng-container *ngIf="this.__nonfinForm.get('filePreview').value">
+          <!-- <ng-container *ngIf="this.__nonfinForm.get('filePreview').value">
             <br clear="all" />
             <img class="imgThumbnail" [src]="this.__nonfinForm.get('filePreview').value" alt="Application form Image">
-          </ng-container>
+          </ng-container> -->
 
 
         </div>
@@ -2028,7 +2072,7 @@
         </div>
       </div>
       <!-- Remarks -->
-      <div class="row my-5">
+      <div class="row  my-2">
         <div class="col-sm-12">
           <label for="file">Remarks</label>
           <textarea name="rmks" id="rmks" cols="30" rows="5" formControlName="remarks" class="form-control"></textarea>
@@ -2039,7 +2083,7 @@
   </mat-dialog-content>
   <mat-dialog-actions align="end" class="popupBoxSubmitSec">
     <button class="btn addBtn" [attr.form]="'__NonFIn_'+ data.id"
-      [disabled]="__nonfinForm.invalid || __isAmtcheck">Submit</button>
+      [disabled]="__nonfinForm.invalid">Submit</button>
   </mat-dialog-actions>
   <br clear="all">
 

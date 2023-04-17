@@ -305,6 +305,7 @@ export class ManualupdateSearchComponent implements OnInit {
       return premium ? this.__mode_of_premium.filter((x: any) => x.id = premium)[0].name : '';
     }
     populateDT(__items){
+      console.log(__items);
       const dialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = false;
       dialogConfig.closeOnNavigation = false;

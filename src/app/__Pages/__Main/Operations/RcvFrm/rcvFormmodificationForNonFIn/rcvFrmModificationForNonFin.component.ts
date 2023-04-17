@@ -6,7 +6,7 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   MatDialog,
   MatDialogConfig,
@@ -31,6 +31,8 @@ import { createClientComponent } from '../createClient/createClient.component';
 import { DialogDtlsComponent } from '../dialogDtls/dialogDtls.component';
 import kycModification from '../../../../../../assets/json/kycModificatiotype.json';
 import kycFresh from '../../../../../../assets/json/kycFresh.json';
+import { global } from 'src/app/__Utility/globalFunc';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'rcvFrmModificationForNonFin-component',
@@ -57,7 +59,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
   __transType: any = [];
   __dialogDtForSchemeTo: any;
   __dialogDtForScheme: any;
-  __clientMst: client[] = [];
+  __clientMst:any = [];
   __buisness_type: any = buisnessType;
   __euinMst: any = [];
   __isCldtlsEmpty: boolean = false;
@@ -70,14 +72,25 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
     sub_brk_cd: new FormControl(''),
     sub_arn_no: new FormControl(''),
     bu_type: new FormControl(this.data.data ? this.data.data.bu_type : '', [Validators.required]),
-    euin_no: new FormControl('', [Validators.required]),
-    client_code: new FormControl('', [Validators.required]),
+    euin_no: new FormControl('',
+    {
+      validators:[Validators.required],
+      asyncValidators:[this.EUINValidators()]
+    }
+    ),
+    client_code: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.ClientValidators()]
+    }),
     client_id: new FormControl('', [Validators.required]),
     client_name: new FormControl(''),
     trans_id: new FormControl('', [Validators.required]),
     folio_number: new FormControl('', [Validators.required]),
     scheme_id: new FormControl('', [Validators.required]),
-    scheme_name: new FormControl('', [Validators.required]),
+    scheme_name: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.SchemeValidators()]
+    }),
     kyc_modification: new FormControl(''),
     existing_kyc_status: new FormControl(''),
     recv_from: new FormControl(''),
@@ -96,7 +109,9 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
   ngOnInit() {
     this.getTransactionType();
     setTimeout(() => {
-    this.setFormControl();
+      if(this.data.temp_tin_no){
+        this.setFormControl();
+      }
     }, 500);
   }
   setFormControl(){
@@ -105,24 +120,40 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
         recv_from:this.data.data.recv_from ? this.data.data.recv_from : '',
         trans_id: this.data.data.trans_id ? this.data.data.trans_id : ''
       });
-      this.getItems(
+
+
+
+      /** CLIENT BINDING */
+      this.__clientMst.push({
+        client_name:this.data.data.client_name,
+        client_code: this.data.data.client_code,
+        id:this.data.data.client_id
+      })
+      this.getItems(this.__clientMst[0],'C');
+     /** END */
+
+      /** EUIN BINDING */
+      this.__euinMst.push(
         {
-          client_name:this.data.data.client_name,
-          client_code: this.data.data.client_code,
-          id:this.data.data.client_id
-        },
-        'C'
-      );
-      this.__rcvFormForNonFin.controls['euin_no'].setValue(this.data.data.euin_no+ ' - '+ this.data.data.emp_name,{emitEvent:false});
+          euin_no:this.data.data.euin_no,
+          emp_name:this.data.data.emp_name
+        }
+      )
+      this.getItems(this.__euinMst[0],'E');
+      /** END */
+
+      /** Sub Broker Binding */
       if(this.data.data.bu_type == 'B'){
+        this.__subbrkArnMst.push({
+          arn_no: this.data.data.sub_arn_no,
+          code:this.data.data.sub_brk_cd
+       })
         this.getItems(
-          {
-             arn_no: this.data.data.sub_arn_no,
-             code:this.data.data.sub_brk_cd
-          },
+         this.__subbrkArnMst[0],
           'S'
         )
       }
+      /** END */
 
       this.getItems(
         {
@@ -135,14 +166,30 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
   ngAfterViewInit() {
     this.__rcvFormForNonFin.controls['bu_type'].valueChanges.subscribe(
       (res) => {
-        this.__rcvFormForNonFin.controls['sub_brk_cd'].setValidators(
-          res == 'B' ? [Validators.required] : null
-        );
-        this.__rcvFormForNonFin.controls['sub_arn_no'].setValidators(
-          res == 'B' ? [Validators.required] : null
-        );
-        this.__rcvFormForNonFin.controls['sub_brk_cd'].updateValueAndValidity();
-        this.__rcvFormForNonFin.controls['sub_arn_no'].updateValueAndValidity();
+        this.__rcvFormForNonFin.controls['sub_arn_no'].setValue('', {
+          onlySelf: true,
+          emitEvent: false,
+        });
+        this.__rcvFormForNonFin.controls['euin_no'].setValue('', {
+          onlySelf: true,
+          emitEvent: false,
+        });
+        this.__rcvFormForNonFin.controls['sub_brk_cd'].setValue('', {
+          onlySelf: true,
+          emitEvent: false,
+        });
+
+        if(res == 'B'){
+          this.__rcvFormForNonFin.controls['sub_arn_no'].setValidators([Validators.required]);
+          this.__rcvFormForNonFin.controls['sub_arn_no'].setAsyncValidators([this.SubBrokerValidators()]);
+          this.__rcvFormForNonFin.controls['sub_brk_cd'].setValidators([Validators.required]);
+        }
+        else{
+          this.__rcvFormForNonFin.controls['sub_arn_no'].removeValidators([Validators.required]);
+          this.__rcvFormForNonFin.controls['sub_arn_no'].removeAsyncValidators([this.SubBrokerValidators()]);
+          this.__rcvFormForNonFin.controls['sub_brk_cd'].removeValidators([Validators.required]);
+        }
+        this.__rcvFormForNonFin.controls['sub_arn_no'].updateValueAndValidity({emitEvent:false});
       }
     );
 
@@ -417,7 +464,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
         }
         // this.settransTypeCount(this.__rcvForm.value.trans_id == 1 ? 0 : (this.__rcvForm.value.trans_id == 2 ? 1 : 2));
 
-        this.__rcvFormForNonFin.reset();
+        // this.__rcvFormForNonFin.reset();
       });
   }
   outsideClickforSubBrkArn(__ev) {
@@ -536,6 +583,8 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
       dialogref.afterClosed().subscribe((dt) => {
         console.log(dt);
         if (dt) {
+          this.__clientMst.push(dt.data);
+          this.__isCldtlsEmpty = false;
           this.getItems(dt.data, 'C');
         }
       });
@@ -568,5 +617,79 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
     try {
       const dialogref = this.__dialog.open(DialogDtlsComponent, dialogConfig);
     } catch (ex) {}
+  }
+
+  checkIfEuinExists(emp_name: string): Observable<boolean> {
+    if (global.containsSpecialChars(emp_name)) {
+      return of(
+        this.__euinMst.findIndex((x) => x.euin_no == emp_name.split(' ')[0]) !=
+          -1
+      );
+    } else {
+      return of(this.__euinMst.findIndex((x) => x.euin_no == emp_name) != -1);
+    }
+  }
+  EUINValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfEuinExists(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            // if res is true, sip_date exists, return true
+            return res ? null : { euinExists: true };
+            // NB: Return null if there is no error
+          }
+          return null;
+        })
+      );
+    };
+  }
+
+
+  checkIfclientExist(cl_code: string): Observable<boolean> {
+    return of(this.__clientMst.findIndex((x) => (x.client_code == cl_code)) != -1);
+  }
+  ClientValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfclientExist(control.value).pipe(
+        map((res) => {
+
+          if (control.value) {
+            return res ? null : { ClientExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+
+  checkIfSubBrokerExist(subBrk: string): Observable<boolean> {
+    return of(this.__subbrkArnMst.findIndex((x) => x.arn_no == subBrk) != -1);
+  }
+  SubBrokerValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfSubBrokerExist(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? null : { subBrkExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+  checkIfscmExist(scm_name: string): Observable<boolean> {
+    return of(this.__schemeMst.findIndex((x) => (x.scheme_name == scm_name)) != -1);
+  }
+  SchemeValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfscmExist(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? null : { ScmExists: true };
+          }
+          return null;
+        })
+      );
+    };
   }
 }

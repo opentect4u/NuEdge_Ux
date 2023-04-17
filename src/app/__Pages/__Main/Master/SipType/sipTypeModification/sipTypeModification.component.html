@@ -23,7 +23,7 @@
 <mat-dialog-content>
   <form  [formGroup]="__trns_type" (ngSubmit)="submit()" [attr.id]="'__sip_type_' + data.id" autocomplete="off" ngNativeValidate>
     <div class="row">
-      <div class="col-sm-12 my-5">
+      <div class="col-sm-12 my-2">
         <label for="sip_type_name">SIP Type <span class="text-danger">*</span></label>
         <input type="text" name="trns_type" id="sip_type_name" class="form-control" placeholder="Enter Sip Type" formControlName="sip_type_name">
         <div class="invalid-feedback" *ngIf="__trns_type.get('sip_type_name').invalid && (__trns_type.get('sip_type_name').dirty || __trns_type.get('sip_type_name').touched)">

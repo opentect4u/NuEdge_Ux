@@ -34,6 +34,10 @@
           <option value="">Select</option>
           <option [value]="trnStatus.id" *ngFor="let trnStatus of __trns_status">{{trnStatus.name}}</option>
         </select>
+
+        <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('manual_trans_status').invalid && (__manualUpdateForm.get('manual_trans_status').dirty || __manualUpdateForm.get('manual_trans_status').touched)">
+          <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('manual_trans_status')).errors?.required">*Please provide transaction status</span>
+        </div>
         </div>
         <ng-container formGroupName="process" *ngIf="__manualUpdateForm.value.manual_trans_status == 'P'">
           <div class="col-sm-12 my-2">
@@ -45,6 +49,9 @@
             id="logged_in"
             class="form-control"
             formControlName="logged_in">
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','logged_in']).invalid && (__manualUpdateForm.get(['process','logged_in']).dirty || __manualUpdateForm.get(['process','logged_in']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','logged_in'])).errors?.required">*Please provide date</span>
+            </div>
           </div>
           <div class="col-sm-12 my-2">
             <label for="fdr_no">FDR No
@@ -56,6 +63,9 @@
             id="fdr_no"
             class="form-control"
             formControlName="fdr_no">
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','fdr_no']).invalid && (__manualUpdateForm.get(['process','fdr_no']).dirty || __manualUpdateForm.get(['process','fdr_no']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','fdr_no'])).errors?.required">*Please provide fdr no</span>
+            </div>
           </div>
           <div class="col-sm-12 my-2" *ngIf="!this.data.isViewMode">
             <label for="fdr_scan"> Upload FDR Scan</label>
@@ -95,7 +105,7 @@
         || __manualUpdateForm.value.manual_trans_status == 'N'"
         >
            <div class="col-sm-12">
-            <label for="contact_to_comp">Contact To Company</label>
+            <label for="contact_to_comp">Contact To Company <span class="text-danger">*</span></label>
             <select
             class="form-control"
             formControlName="contact_to_comp"
@@ -105,10 +115,13 @@
              <option value="Y">Yes</option>
              <option value="N">No</option>
             </select>
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_to_comp').invalid && (__manualUpdateForm.get('contact_to_comp').dirty || __manualUpdateForm.get('contact_to_comp').touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_to_comp')).errors?.required">*Please provide contact to company</span>
+            </div>
            </div>
            <ng-container *ngIf="__manualUpdateForm.value.contact_to_comp == 'Y'">
             <div class="col-sm-12">
-              <label for="contact_via">Contact Via</label>
+              <label for="contact_via">Contact Via <span class="text-danger">*</span></label>
               <select
               class="form-control"
               formControlName="contact_via"
@@ -118,6 +131,9 @@
                <option value="E">Email</option>
                <option value="P">Phone</option>
               </select>
+              <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_via').invalid && (__manualUpdateForm.get('contact_via').dirty || __manualUpdateForm.get('contact_via').touched)">
+                <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_via')).errors?.required">*Please provide contact via</span>
+              </div>
              </div>
              <div class="col-sm-12">
               <label for="contact_per_name">Name <span class="text-danger">*</span></label>
@@ -125,8 +141,12 @@
               type="text"
               class="form-control"
               formControlName="contact_per_name"
+              placeholder="Enter Name"
               name="contact_per_name"
               id="contact_per_name">
+              <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_per_name').invalid && (__manualUpdateForm.get('contact_per_name').dirty || __manualUpdateForm.get('contact_per_name').touched)">
+                <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_name')).errors?.required">*Please provide  name</span>
+              </div>
              </div>
              <ng-container *ngIf="__manualUpdateForm.value.contact_via == 'E'">
               <div class="col-sm-12">
@@ -135,19 +155,36 @@
               type="text"
               class="form-control"
               formControlName="contact_per_email"
+              placeholder="Enter Email"
               name="contact_per_email"
               id="contact_per_email">
+              <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_per_email').invalid && (__manualUpdateForm.get('contact_per_email').dirty || __manualUpdateForm.get('contact_per_email').touched)">
+                <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_email')).errors?.required">*Please provide email</span>
+                <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_email')).errors?.email">*Please provide valid email</span>
+
+              </div>
              </div>
              </ng-container>
              <ng-container *ngIf="__manualUpdateForm.value.contact_via == 'P'">
               <div class="col-sm-12">
                 <label for="contact_per_phone">Phone <span class="text-danger">*</span></label>
                 <input
+                (keypress)="preventNonumeric($event)"
                 type="text"
                 class="form-control"
+                minlength="10"
+                maxlength="10"
                 formControlName="contact_per_phone"
+                 placeholder="Enter Contact number"
                 name="contact_per_phone"
                 id="contact_per_phone">
+                <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_per_phone').invalid && (__manualUpdateForm.get('contact_per_phone').dirty || __manualUpdateForm.get('contact_per_phone').touched)">
+                  <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_phone')).errors?.required">*Please provide mobile number</span>
+                  <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_phone')).hasError('minlength')">*Mobile number must be 10 digits</span>
+                  <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_phone')).hasError('maxlength')">*Mobile number must be 10 digits</span>
+                  <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_phone')).hasError('pattern')">*allow only digits</span>
+
+                </div>
                </div>
              </ng-container>
            </ng-container>
@@ -163,6 +200,9 @@
             <option value="">Select</option>
             <option [value]="reject_reason.id" *ngFor="let reject_reason of rejectReason">{{reject_reason.reject_name}}</option>
           </select>
+          <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['rejected','reject_reason_id']).invalid && (__manualUpdateForm.get(['rejected','reject_reason_id']).dirty || __manualUpdateForm.get(['rejected','reject_reason_id']).touched)">
+            <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['rejected','reject_reason_id'])).errors?.required">*Please provide reject reason</span>
+          </div>
           </div>
           <div class="col-sm-12" *ngIf="!this.data.isViewMode">
             <label for="reject_memo">Upload Rejected Memo <span class="text-danger">*</span></label>
@@ -198,14 +238,20 @@
           </div>
         </ng-container>
         <ng-container formGroupName="pending" *ngIf="__manualUpdateForm.value.manual_trans_status == 'N'">
-          <label for="pending_reason">Pending Reason <span class="text-danger">*</span></label>
-          <textarea
-          name="pending_reason"
-          id="pending_reason"
-          cols="12"
-          rows="4"
-          class="form-control"
-          formControlName="pending_reason"></textarea>
+          <div class="col-sm-12">
+            <label for="pending_reason">Pending Reason <span class="text-danger">*</span></label>
+            <textarea
+            name="pending_reason"
+            id="pending_reason"
+            cols="12"
+            rows="4"
+            class="form-control"
+            formControlName="pending_reason"></textarea>
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['pending','pending_reason']).invalid && (__manualUpdateForm.get(['pending','pending_reason']).dirty || __manualUpdateForm.get(['pending','pending_reason']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['pending','pending_reason'])).errors?.required">*Please provide pending reason</span>
+            </div>
+          </div>
+
         </ng-container>
         <div class="col-sm-12 my-2">
           <label for="manual_update_remarks">Remarks</label>

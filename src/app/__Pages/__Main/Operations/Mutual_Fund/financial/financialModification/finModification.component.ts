@@ -33,12 +33,17 @@ import { dates } from 'src/app/__Utility/disabledt';
 import { rnt } from 'src/app/__Model/Rnt';
 import { Observable, of } from 'rxjs';
 import { scheme } from 'src/app/__Model/__schemeMst';
+import { global } from 'src/app/__Utility/globalFunc';
 @Component({
   selector: 'finModification-component',
   templateUrl: './finModification.component.html',
   styleUrls: ['./finModification.component.css'],
 })
 export class FinmodificationComponent implements OnInit {
+
+
+
+
   __swp_freq: any=[];
   __rnt_login_at: rnt[];
   __sipDT: any=[];
@@ -77,10 +82,12 @@ export class FinmodificationComponent implements OnInit {
   __istemporaryspinner: boolean = false;
   __isEuinNumberVisible: boolean = false;
   __isclientVisible: boolean = false;
+  __isSubBrkArnSpinner: boolean = false;
+  __isschemeSpinner: boolean = false;
 
   __sipdtRng_amtRng: scheme;
   __subbrkArnMst: any = [];
-  __checkAmt: boolean = true;
+  // __checkAmt: boolean = true;
   __chkInvAmt: boolean = true;
   getamttocheckwith: any;
   getInvAmt:any;
@@ -91,17 +98,18 @@ export class FinmodificationComponent implements OnInit {
   __isCldtlsEmpty: boolean = false;
   __issecCldtlsEmpty: boolean = true;
   __isthirdCldtlsEmpty: boolean = true;
-
+  __isMicrSpinner: boolean = false;
+  __isschemeToSpinner: boolean = false;
   __schemeMstforSwitchTo: any = [];
   __dialogDtForSchemeTo: any;
   __dialogDtForClient: any;
   __dialogDtForScheme: any;
   __dialogDtForBnk: bank;
   __kycMst: any[];
-  allowedExtensions = ['jpg', 'png', 'jpeg'];
+  allowedExtensions = ['pdf'];
   __buisness_type: any = buisnessType;
   __schemeMst: any = [];
-  __clientMst: client[] = [];
+  __clientMst: any = [];
   __bnkMst: bank[] = [];
   __euinMst: any = [];
 
@@ -138,30 +146,51 @@ export class FinmodificationComponent implements OnInit {
     kyc_status: new FormControl('', [Validators.required]),
     first_kyc: new FormControl('',[Validators.required]),
     tin_status: new FormControl('Y', [Validators.required]),
-    temp_tin_no: new FormControl('', [Validators.required]),
+    temp_tin_no: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.TemporaryTINValidators()]
+    }),
     bu_type: new FormControl('', [Validators.required]),
     sub_brk_cd: new FormControl('', [Validators.required]),
     sub_arn_no: new FormControl('', [Validators.required]),
-    euin_no: new FormControl('', [Validators.required]),
+    euin_no: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.EUINValidators()]
+    }),
     inv_type: new FormControl(''),
     application_no: new FormControl(''),
     // recv_from: new FormControl(''),
     folio_number: new FormControl(''),
     scheme_id: new FormControl('', [Validators.required]),
-    scheme_name: new FormControl('', [Validators.required]),
+    scheme_name: new FormControl('',
+    {
+      validators:[Validators.required],
+      asyncValidators:[this.SchemeValidators()]
+    }),
     client_id: new FormControl('', [Validators.required]),
-    client_name: new FormControl('', [Validators.required]),
-    client_code: new FormControl('', [Validators.required]),
+    client_name: new FormControl(''),
+    client_code: new FormControl('',
+     {
+      validators:[Validators.required],
+      asyncValidators:[this.ClientValidators()]
+     }
+     ),
     option: new FormControl('', [Validators.required]),
     plan: new FormControl('', [Validators.required]),
-    amount: new FormControl('', [Validators.required]),
+    amount: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.AmountValidators()]
+    }),
     chq_no: new FormControl('', [
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(6),
       Validators.pattern("^[0-9]*$")
     ]),
-    chq_bank: new FormControl('', [Validators.required]),
+    chq_bank: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.MICRValidators()]
+    }),
     ack_filePreview: new FormControl(''),
     filePreview: new FormControl(''),
     app_form_scan: new FormControl(''),
@@ -203,8 +232,7 @@ export class FinmodificationComponent implements OnInit {
     sip_start_date: new FormControl(''),
     sip_end_date: new FormControl(''),
     sip_date: new FormControl('',
-    {asyncValidators: [this.sipDateValidators()],
-    updateOn: 'blur'}),
+    {updateOn: 'blur'}),
     switch_amt: new FormControl(''),
     switch_scheme_to: new FormControl(''),
     scheme_id_to: new FormControl(''),
@@ -239,7 +267,14 @@ export class FinmodificationComponent implements OnInit {
     this.getPlanMst();
     this.getnumberofdaystobeadded();
     this.getTransactionType();
-
+    if(this.data.data){this.setFInancialData(this.data.data);}
+  }
+  setFInancialData(__res){
+    // console.log(__res);
+    // setTimeout(() => {
+    // this.__temp_tinMst.push(__res);
+    // this.getItems(__res);
+    // }, 200);
   }
   getnumberofdaystobeadded(){
     this.__dbIntr.api_call(0,'/mdparams',null).pipe(pluck("data")).subscribe(res =>{
@@ -318,6 +353,7 @@ export class FinmodificationComponent implements OnInit {
 
     this.__traxForm.controls['sub_arn_no'].valueChanges.
       pipe(
+        tap(()=> this.__isSubBrkArnSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(dt => dt?.length > 1 ?
@@ -329,9 +365,12 @@ export class FinmodificationComponent implements OnInit {
           this.__subbrkArnMst = value
           this.searchResultVisibilityForSubBrkArn('block');
           this.__traxForm.controls['sub_brk_cd'].setValue('');
+          this.__isSubBrkArnSpinner = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log()
+        error: (err) => {
+          this.__isSubBrkArnSpinner = false;
+        }
       })
 
 
@@ -340,6 +379,7 @@ export class FinmodificationComponent implements OnInit {
     //Scheme Search
     this.__traxForm.controls['scheme_name'].valueChanges
       .pipe(
+        tap(() => (this.__isschemeSpinner = true)),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
@@ -351,19 +391,26 @@ export class FinmodificationComponent implements OnInit {
         next: (value) => {
           this.__schemeMst = value;
           this.searchResultVisibilityForScheme('block');
+          this.__isschemeSpinner = false;
+          this.__dialogDtForScheme =null;
         },
         complete: () => console.log(''),
-        error: (err) => console.log(),
+        error: (err) => {
+          this.__isschemeSpinner = false;
+        },
       });
 
 
       //scheme To Search
       this.__traxForm.controls['switch_scheme_to'].valueChanges.
       pipe(
+        tap(() => this.__isschemeToSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(dt => dt?.length > 1 ?
-          this.__dbIntr.searchItems('/scheme', (dt + '&amc_id='+ this.__dialogDtForScheme?.amc_id + '&scheme_type='+ (this.data.trans_type_id == '4' ? 'N' : 'O')))
+          this.__dbIntr.searchItems('/scheme',
+          (dt + '&amc_id='+ this.__dialogDtForScheme?.amc_id +
+          '&scheme_type='+ (this.data.trans_type_id == '4' ? 'N' : 'O')))
           : []),
         map((x: any) => x.data)
       ).subscribe({
@@ -371,9 +418,13 @@ export class FinmodificationComponent implements OnInit {
           this.__schemeMstforSwitchTo = value;
           console.log(this.__schemeMstforSwitchTo);
           this.searchResultVisibilityForSchemeSwicthTo('block');
+          this.__isschemeToSpinner = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log()
+        error: (err) => {
+          this.__isschemeToSpinner = false;
+
+        }
       })
 
 
@@ -465,13 +516,15 @@ export class FinmodificationComponent implements OnInit {
           dt?.length > 1
             ? this.__dbIntr.searchItems(
               '/employee',
-              dt +
-              (this.__traxForm.controls['sub_arn_no'].value
-                ? '&sub_arn_no=' +
-                this.__traxForm.controls['sub_brk_cd'].value
-                : '')
+              (global.containsSpecialChars(dt) ? dt.split(' ')[0] : dt)
+              +
+                (this.__traxForm.value.bu_type == 'B' ?
+                (this.__traxForm.controls['sub_arn_no'].value
+                  ? '&sub_arn_no=' +
+                    this.__traxForm.controls['sub_arn_no'].value.split(' ')[0]
+                  : '') : '')
             )
-            : []
+          : []
         ),
         map((x: responseDT) => x.data),
         tap(() => this.__isEuinNumberVisible = false),
@@ -490,6 +543,7 @@ export class FinmodificationComponent implements OnInit {
     // Bank SEARCH
     this.__traxForm.controls['chq_bank'].valueChanges
       .pipe(
+        tap(()=> this.__isMicrSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
@@ -499,26 +553,35 @@ export class FinmodificationComponent implements OnInit {
       )
       .subscribe({
         next: (value) => {
-          console.log(value);
           this.__bnkMst = value;
           this.searchResultVisibilityForBnk('block');
+          this.__isMicrSpinner = false;
+          this.__dialogDtForBnk = null;
+          this.__traxForm.patchValue({
+            bank_name:''
+          })
         },
         complete: () => console.log(''),
-        error: (err) => console.log(),
+        error: (err) => {
+          this.__isMicrSpinner = false;
+        },
       });
 
     //Transaction Type change
     this.__traxForm.controls['trans_id'].valueChanges.subscribe((res) => {
       if (res == '2') {
         this.getSipTypeMst();
+        this.__traxForm.get('sip_date').setAsyncValidators([this.sipDateValidators()])
+
         this.setValidations([
           { name: 'sip_frequency', valid: [Validators.required] },
           { name: 'sip_duration', valid: [Validators.required] },
           { name: 'duration', valid: [Validators.required] },
+          { name: 'sip_date', valid: [Validators.required] },
           { name: 'sip_start_date', valid: [Validators.required] },
           { name: 'sip_end_date', valid: [Validators.required] },
+          { name: 'sip_type', valid: [Validators.required] },
         ]);
-        this.__traxForm.get('sip_type').setValidators([Validators.required]);
         this.__traxForm
           .get('sip_type')
           .setAsyncValidators(this.sipSipTypeExistValidators());
@@ -526,13 +589,14 @@ export class FinmodificationComponent implements OnInit {
           .get('sip_type')
           .updateValueAndValidity({ emitEvent: false });
       } else {
+        this.__traxForm.get('sip_date').removeAsyncValidators([this.sipDateValidators()])
         this.removeValidations([
           { name: 'sip_type', valid: [Validators.required] },
           { name: 'sip_frequency', valid: [Validators.required] },
           { name: 'inv_type', valid: [Validators.required] },
           { name: 'sip_duration', valid: [Validators.required] },
           { name: 'duration', valid: [Validators.required] },
-          // { name: 'sip_date', valid: [Validators.required] },
+          { name: 'sip_date', valid: [Validators.required] },
           { name: 'sip_start_date', valid: [Validators.required] },
           { name: 'sip_end_date', valid: [Validators.required] },
         ]);
@@ -555,9 +619,11 @@ export class FinmodificationComponent implements OnInit {
           .get('sip_type')
           .updateValueAndValidity({ emitEvent: false });
       }
-      this.__checkAmt = res == '3' ? false : this.__checkAmt;
-      this.__chkInvAmt = res == '2' ? true : false;
+
       if (res == '3') {
+        this.__traxForm.get('amount').removeAsyncValidators([this.AmountValidators()]);
+        this.__traxForm.controls['switch_scheme_to'].setAsyncValidators([this.SchemeToValidators()])
+
         this.removeValidations([
           { name: 'amount', valid: [Validators.required] },
           {
@@ -569,14 +635,21 @@ export class FinmodificationComponent implements OnInit {
               Validators.pattern('^[0-9]*$'),
             ],
           },
+          { name: 'inv_type', valid: [Validators.required] },
           { name: 'chq_bank', valid: [Validators.required] },
           { name: 'bank_id', valid: [Validators.required] },
         ]);
         this.setValidations([
           { name: 'switch_scheme_to', valid: [Validators.required] },
+          { name:'switch_by', valid:[Validators.required]},
+          { name:'plan_to' , valid:[Validators.required]},
+          { name:'option_to' , valid:[Validators.required]},
+          { name: 'folio_number', valid: [Validators.required] },
           { name: 'scheme_id_to', valid: [Validators.required] },
         ]);
+        this.__traxForm.get('switch_by').updateValueAndValidity({emitEvent:true});
       } else {
+        this.__traxForm.get('amount').setAsyncValidators([this.AmountValidators()]);
         this.setValidations([
           { name: 'amount', valid: [Validators.required] },
           {
@@ -588,14 +661,25 @@ export class FinmodificationComponent implements OnInit {
               Validators.pattern('^[0-9]*$'),
             ],
           },
+          { name: 'inv_type', valid: [Validators.required] },
           { name: 'chq_bank', valid: [Validators.required] },
           { name: 'bank_id', valid: [Validators.required] },
         ]);
+        this.__traxForm.controls['switch_scheme_to'].removeAsyncValidators([this.SchemeToValidators()])
         this.removeValidations([
           { name: 'switch_scheme_to', valid: [Validators.required] },
-          { name: 'scheme_id_to', valid: [Validators.required] },
+          { name:'switch_by', valid:[Validators.required]},
+          { name:'plan_to' , valid:[Validators.required]},
+          { name:'switch_amt' , valid:[Validators.required]},
+          { name:'unit' , valid:[Validators.required]},
+          { name:'option_to' , valid:[Validators.required]},
+          { name: 'scheme_id_to', valid: [Validators.required] }
         ]);
-      }
+        this.__traxForm.get('inv_type').updateValueAndValidity({emitEvent: true});
+
+      };
+      this.__traxForm.get('amount').updateValueAndValidity({emitEvent:true});
+
     });
 
     //Sip Type Change
@@ -646,15 +730,20 @@ export class FinmodificationComponent implements OnInit {
     //Tin Status Change
     this.__traxForm.controls['tin_status'].valueChanges.subscribe(res => {
       if (res == 'Y') {
+        this.__traxForm.controls['temp_tin_no'].setAsyncValidators([this.TemporaryTINValidators()]);
         this.setValidations([{ name: 'temp_tin_no', valid: [Validators.required] }]);
       }
       else {
+        this.__traxForm.controls['temp_tin_no'].removeAsyncValidators([this.TemporaryTINValidators()]);
         this.removeValidations([{ name: 'temp_tin_no', valid: [Validators.required] }]);
+
       }
       this.__traxForm.controls['temp_tin_no'].reset('',{ onlySelf: true,emitEvent: false});
+
     })
 
     this.__traxForm.get('first_inv_amt').valueChanges.subscribe(res =>{
+      // this.__traxForm.get('amount').updateValueAndValidity({emitEvent:true});
       if(this.__traxForm.get('inv_type').value == 'F'){
              this.checkFirstInvAmtrightornot(
               this.__sipdtRng_amtRng.pip_fresh_min_amt,
@@ -673,49 +762,58 @@ export class FinmodificationComponent implements OnInit {
     })
 
     //Amount Change Event for pip & sip
-    this.__traxForm.get('amount').valueChanges.subscribe(res =>{
-      console.log(res);
+    // this.__traxForm.get('amount').valueChanges.subscribe(res =>{
+    //   if(res){
+    //   if(this.__traxForm.get('trans_id').value == 1){
+    //       if(this.__traxForm.get('inv_type').value == 'F'){
+    //          this.checkAmtrightorNot(
+    //           this.__sipdtRng_amtRng.pip_fresh_min_amt,
+    //           Number(res));
+    //       }
+    //       else if(this.__traxForm.get('inv_type').value == 'A'){
+    //         this.checkAmtrightorNot(
+    //           this.__sipdtRng_amtRng.pip_add_min_amt,
+    //           Number(res));
+    //       }
+    //   }
+    //   else if(this.__traxForm.get('trans_id').value == 2){
+    //     if(this.__traxForm.get('inv_type').value == 'F'){
+    //       this.checkAmtrightorNot(
+    //         Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_fresh_min_amt),
+    //         Number(res));
+    //     }
+    //     else if(this.__traxForm.get('inv_type').value == 'A'){
+    //       this.checkAmtrightorNot(
+    //         Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_add_min_amt),
+    //         Number(res));
+    //     }
 
-      if(res){
-      if(this.__traxForm.get('trans_id').value == 1){
-          if(this.__traxForm.get('inv_type').value == 'F'){
-             this.checkAmtrightorNot(
-              this.__sipdtRng_amtRng.pip_fresh_min_amt,
-              Number(res));
-          }
-          else if(this.__traxForm.get('inv_type').value == 'A'){
-            this.checkAmtrightorNot(
-              this.__sipdtRng_amtRng.pip_add_min_amt,
-              Number(res));
-          }
-      }
-      else if(this.__traxForm.get('trans_id').value == 2){
-        console.log(this.__sipfreq);
-        console.log(this.__traxForm.controls['sip_frequency'].value);
-
-        console.log(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_fresh_min_amt);
-
-        if(this.__traxForm.get('inv_type').value == 'F'){
-          this.checkAmtrightorNot(
-            Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_fresh_min_amt),
-            Number(res));
-        }
-        else if(this.__traxForm.get('inv_type').value == 'A'){
-          this.checkAmtrightorNot(
-            Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_add_min_amt),
-            Number(res));
-        }
-
-      }
-     }
-    })
+    //   }
+    //  }
+    // })
 
     //change in buisness type
     this.__traxForm.get('bu_type').valueChanges.subscribe(res => {
+
+
+      this.__traxForm.controls['sub_arn_no'].setValue('', {
+        onlySelf: true,
+        emitEvent: false,
+      });
+      this.__traxForm.controls['euin_no'].setValue('', {
+        onlySelf: true,
+        emitEvent: false,
+      });
+      this.__traxForm.controls['sub_brk_cd'].setValue('', {
+        onlySelf: true,
+        emitEvent: false,
+      });
        if(res == 'B'){
+        this.__traxForm.get('sub_arn_no').setAsyncValidators([this.SubBrokerValidators()]);
         this.setValidations([{name:'sub_brk_cd',valid:[Validators.required]},{name:'sub_arn_no',valid:[Validators.required]}]);
        }
        else{
+        this.__traxForm.get('sub_arn_no').removeAsyncValidators([this.SubBrokerValidators()]);
         this.removeValidations([{name:'sub_brk_cd',valid:[Validators.required]},{name:'sub_arn_no',valid:[Validators.required]}]);
        }
     })
@@ -728,8 +826,6 @@ export class FinmodificationComponent implements OnInit {
 
     //sip_date change
     this.__traxForm.get('sip_date').valueChanges.subscribe(res =>{
-      // console.log(this.__traxForm.get('sip_date'));
-
       if(res){
           this.setStartDateBySIPdate(res);
       }
@@ -754,12 +850,30 @@ export class FinmodificationComponent implements OnInit {
        res);
       })
 
+     this.__traxForm.get('sip_frequency').valueChanges.subscribe(res =>{
+      if(res){
+        this.__traxForm.get('amount').updateValueAndValidity({emitEvent:true});
+      }
+
+     })
+
       //SWP Frequemcy
      this.__traxForm.get('swp_freq').valueChanges.subscribe(res =>{
       this.setSWPEndDate(
        res,
        this.__traxForm.get('swp_duration').value,
        this.__traxForm.get('swp_start_date').value);
+      })
+      this.__traxForm.get('inv_type').valueChanges.subscribe(res =>{
+          this.__traxForm.get('folio_number').setValidators(res == 'A' ? [Validators.required] : null);
+          this.__traxForm.get('folio_number').updateValueAndValidity({emitEvent: false});
+      })
+
+      this.__traxForm.get('switch_by').valueChanges.subscribe(res =>{
+          this.__traxForm.get('switch_amt').setValidators(res == 'A' ? [Validators.required] : null);
+          this.__traxForm.get('unit').setValidators((res == 'AU' || res == 'U') ? [Validators.required] : null);
+          this.__traxForm.get('switch_amt').updateValueAndValidity({emitEvent:false});
+          this.__traxForm.get('unit').updateValueAndValidity({emitEvent:false});
       })
   }
 
@@ -837,7 +951,7 @@ export class FinmodificationComponent implements OnInit {
   removeValidations(__frmCtrl) {
     __frmCtrl.forEach(element => {
       this.__traxForm.controls[element.name].removeValidators(element.valid);
-      this.__traxForm.controls[element.name].updateValueAndValidity();
+      this.__traxForm.controls[element.name].updateValueAndValidity({emitEvent:false});
     });
   }
   getadditionalApplicant(__items, __type) {
@@ -886,14 +1000,19 @@ export class FinmodificationComponent implements OnInit {
 
   }
   checkAmtrightorNot(checkWithamt,checkAmt){
-    if(checkWithamt){
-      this.getamttocheckwith = Number(checkWithamt);
-      this.__checkAmt = checkAmt <  Number(checkWithamt) ? true : false;
-    }
-    else{
-      this.__checkAmt = true;
-    }
+    // if(checkWithamt){
+    //   this.getamttocheckwith = Number(checkWithamt);
+    //   this.__checkAmt = Number(checkAmt) <  Number(checkWithamt) ? true : false;
+    // }
+    // else{
+    //   this.__checkAmt = true;
+    // }
+     this.getamttocheckwith = Number(checkWithamt);
+     console.log(Number(checkWithamt));
 
+     console.log(this.getamttocheckwith);
+
+      return Number(checkAmt) <  Number(checkWithamt) ? true : false;
   }
 
   checkFirstInvAmtrightornot(checkWithamt,checkAmt){
@@ -909,10 +1028,8 @@ export class FinmodificationComponent implements OnInit {
     }
   }
   getItems(__items) {
-    console.log(__items);
+    this.__traxForm.get('temp_tin_no').reset(__items.temp_tin_no,{onlySelf:true,emitEvent:false});
     this.searchResultVisibility('none');
-    console.log(__items.inv_type);
-
     this.__traxForm.patchValue({
       bu_type: __items.bu_type,
       application_no: __items.application_no,
@@ -922,72 +1039,47 @@ export class FinmodificationComponent implements OnInit {
       trans_id: __items.trans_id,
       kyc_status: __items.kyc_status,
     });
-    if(__items.bu_type == 'B'){
-      this.__traxForm.controls['sub_brk_cd'].setValue(__items.sub_brk_cd)
-      this.__traxForm.controls['sub_arn_no'].reset(__items.sub_arn_no,{  onlySelf: true,emitEvent: false,});
-    }
-    else{
-      this.removeValidations([{name:'sub_brk_cd',valid:[Validators.required]},
-                              {name:'sub_arn_no',valid:[Validators.required]}]
-                              );
-    }
 
-    this.__traxForm.controls['euin_no'].reset(
-      __items.euin_no + ' - ' + __items.emp_name,
-      { onlySelf: true, emitEvent: false }
-    );
-    this.__traxForm.controls['client_code'].reset(__items.client_code, {
-      onlySelf: true,
-      emitEvent: false,
-    });
-    this.__traxForm.patchValue({
-      client_name: __items.client_name,
-      client_id: __items.client_id,
-    });
-    this.__traxForm.controls['scheme_name'].reset(__items.scheme_name, {
-      onlySelf: true,
-      emitEvent: false,
-    });
-    this.__traxForm.patchValue({ scheme_id: __items.scheme_id });
-    this.getschemwisedt(__items.scheme_id);
-    if(__items.trans_id == 3){
-      this.__traxForm.controls['switch_scheme_to'].reset(__items.scheme_name_to, {
-        onlySelf: true,
-        emitEvent: false,
-      });
-      this.__traxForm.patchValue({ scheme_id_to: __items.scheme_id_to });
-      this.__dialogDtForSchemeTo = {
-        id: __items.scheme_id_to,
-        scheme_name: __items.scheme_name_to,
-      };
-    }
-    this.__dialogDtForClient = {
-      id: __items.client_id,
-      client_type: __items.client_type,
-      client_name: __items.client_name,
-    };
-    this.__dialogDtForScheme = {
-      id: __items.scheme_id,
-      scheme_name: __items.scheme_name,
-      amc_id: __items.amc_id
-    };
-     console.log(this.__dialogDtForScheme);
 
-    this.__clientMst.push(this.__dialogDtForClient);
-    this.__isCldtlsEmpty = this.__clientMst.length > 0 ? false : true;
-      this.getschemwisedt(__items.scheme_id);
+
+
+    setTimeout(() => {
+      this.__euinMst.length = 0;
+      this.__clientMst.length = 0;
+      this.__schemeMst.length = 0;
+      this.__schemeMstforSwitchTo.length = 0;
+      this.__clientMst.push({client_code:__items.client_code,id:__items.client_id,client_name: __items.client_name,client_type:__items.client_type});
+      this.__euinMst.push({euin_no:__items.euin_no,emp_name:__items.emp_name});
+      this.__schemeMst.push({id:__items.scheme_id,scheme_name:__items.scheme_name,amc_id:__items.amc_id});
+      this.__schemeMstforSwitchTo.push({id:__items.scheme_id_to,scheme_name:__items.scheme_name_to})
+
+      this.getItemsDtls(this.__euinMst[0],'E'); // EUIN Binding
+       this.__isCldtlsEmpty = this.__clientMst.length > 0 ? false : true;
+       this.getItemsDtls(this.__clientMst[0],'C') // CLIENT Binding
+       this.getItemsDtls(this.__schemeMst[0],'SC');// Scheme Binding
+       if(__items.bu_type == 'B'){
+        this.__subbrkArnMst.push({arn_no:__items.sub_arn_no,code:__items.sub_brk_cd})
+        this.getItemsDtls(this.__subbrkArnMst[0],'S');
+       }
+      if(__items.trans_id == 3){
+        this.getItemsDtls(this.__schemeMstforSwitchTo[0],'ST');// Scheme To Binding for switch only
+
+      }
+    }, 200);
   }
   getschemwisedt(__scheme_id) {
     this.__dbIntr.api_call(0, '/scheme', 'scheme_id=' + __scheme_id).pipe(pluck("data")).subscribe(res => {
-
-      this.__sipfreq = res[0].sip_freq_wise_amt ? JSON.parse(res[0].sip_freq_wise_amt).filter((x: any) => x.is_checked == true) : [];
-      this.__swp_freq = res[0].swp_freq_wise_amt ? JSON.parse(res[0].swp_freq_wise_amt).filter((x: any) => x.is_checked == true) : [];
+      this.__sipfreq = res[0].sip_freq_wise_amt ? JSON.parse(res[0].sip_freq_wise_amt).filter((x: any) => global.getType(x.is_checked) == true) : [];
+      this.__swp_freq = res[0].swp_freq_wise_amt ? JSON.parse(res[0].swp_freq_wise_amt).filter((x: any) => global.getType(x.is_checked) == true) : [];
+      console.log(this.__sipfreq);
       this.setSipDateAgainstScheme(res[0]?.sip_date);
       this.__sipdtRng_amtRng = res[0];
       this.__traxForm.get('sip_name').setValue(res[0].special_sip_name);
       if(this.__traxForm.get('trans_id').value == '2' && this.__traxForm.get('sip_type').value == '4'){
         this.__traxForm.get('sip_type').updateValueAndValidity();
       }
+      this.__traxForm.get('amount').updateValueAndValidity({emitEvent:true});
+
     })
   }
 
@@ -1030,7 +1122,7 @@ export class FinmodificationComponent implements OnInit {
         this.searchResultVisibilityForEuin('none');
         break;
       case 'S':
-        this.__traxForm.controls['sub_arn_no'].reset(__euinDtls.arn_no + ' - ' + __euinDtls.bro_name, { onlySelf: true, emitEvent: false });
+        this.__traxForm.controls['sub_arn_no'].reset(__euinDtls.arn_no, { onlySelf: true, emitEvent: false });
         this.__traxForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
         this.searchResultVisibilityForSubBrkArn('none');
         break;
@@ -1174,13 +1266,13 @@ export class FinmodificationComponent implements OnInit {
       );
       return;
     }
-    else if(this.__checkAmt){
-      this.__utility.showSnackbar(
-        'Error!! please provide valid amount',
-        0
-      );
-      return;
-    }
+    // else if(this.__checkAmt){
+    //   this.__utility.showSnackbar(
+    //     'Error!! please provide valid amount',
+    //     0
+    //   );
+    //   return;
+    // }
     else{
     const fb = new FormData();
     fb.append('first_inv_amt',this.__traxForm.value.first_inv_amt ? this.__traxForm.value.first_inv_amt : '');
@@ -1253,14 +1345,6 @@ export class FinmodificationComponent implements OnInit {
     }
     this.__dbIntr.api_call(1, '/mfTraxCreate', fb).subscribe((res: any) => {
       if(res.suc == 1){
-        this.__traxForm.reset();
-        this.__traxForm.controls['tin_status'].patchValue('Y');
-        this.__dialogDtForBnk = null;
-        this.__SecondClient = null;
-        this.__ThirdClient = null;
-        this.__dialogDtForSchemeTo = null;
-        this.__dialogDtForClient = null;
-        this.__dialogDtForScheme = null;
         this.dialogRef.close({data:res.data});
       }
 
@@ -1504,6 +1588,181 @@ export class FinmodificationComponent implements OnInit {
           // NB: Return null if there is no error
            }
            return null
+        })
+      );
+    };
+  }
+
+
+  checkIfTEMPTINToExist(tempTin: string): Observable<boolean> {
+    return of(this.__temp_tinMst.findIndex((x) => (x.temp_tin_no == tempTin)) != -1);
+  }
+  TemporaryTINValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfTEMPTINToExist(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? null : { TempTINExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+  checkIfEuinExists(emp_name: string): Observable<boolean> {
+    if (global.containsSpecialChars(emp_name)) {
+      return of(
+        this.__euinMst.findIndex((x) => x.euin_no == emp_name.split(' ')[0]) !=
+          -1
+      );
+    } else {
+      return of(this.__euinMst.findIndex((x) => x.euin_no == emp_name) != -1);
+    }
+  }
+  EUINValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfEuinExists(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            // if res is true, sip_date exists, return true
+            return res ? null : { euinExists: true };
+            // NB: Return null if there is no error
+          }
+          return null;
+        })
+      );
+    };
+  }
+  checkIfclientExist(cl_code: string): Observable<boolean> {
+    return of(this.__clientMst.findIndex((x) => (x.client_code == cl_code)) != -1);
+  }
+  ClientValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfclientExist(control.value).pipe(
+        map((res) => {
+
+          if (control.value) {
+            return res ? null : { ClientExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+
+
+  checkIfSubBrokerExist(subBrk: string): Observable<boolean> {
+    return of(this.__subbrkArnMst.findIndex((x) => x.arn_no == subBrk) != -1);
+  }
+  SubBrokerValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfSubBrokerExist(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? null : { subBrkExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+  checkIfscmExist(scm_name: string): Observable<boolean> {
+    console.log(this.__schemeMst);
+
+    return of(this.__schemeMst.findIndex((x) => (x.scheme_name == scm_name)) != -1);
+  }
+  SchemeValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfscmExist(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? null : { ScmExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+
+
+  checkIfscmToExist(scm_name: string): Observable<boolean> {
+    console.log(scm_name);
+
+    return of(this.__schemeMstforSwitchTo.findIndex((x) => (x.scheme_name == scm_name)) != -1);
+  }
+  SchemeToValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfscmToExist(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? null : { ScmToExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+
+  checkIfMICRExist(micrDtls: string): Observable<boolean> {
+    return of(this.__bnkMst.findIndex((x) => (x.micr_code == micrDtls) || (x.bank_name == micrDtls) || (x.ifs_code == micrDtls)) != -1);
+  }
+  MICRValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfMICRExist(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? null : { MicrExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+
+
+  amtCheck(res): boolean{
+    console.log(this.__sipfreq);
+    console.log(this.__sipdtRng_amtRng);
+
+    if(this.__traxForm.get('trans_id').value == 1){
+      if(this.__traxForm.get('inv_type').value == 'F' && this.__sipdtRng_amtRng){
+         return this.checkAmtrightorNot(
+          this.__sipdtRng_amtRng.pip_fresh_min_amt,
+          Number(res));
+      }
+      else if(this.__traxForm.get('inv_type').value == 'A' && this.__sipdtRng_amtRng){
+        return  this.checkAmtrightorNot(
+          this.__sipdtRng_amtRng.pip_add_min_amt,
+          Number(res));
+      }
+     }
+    else if(this.__traxForm.get('trans_id').value == 2){
+      if(this.__traxForm.get('inv_type').value == 'F' && this.__sipfreq.length > 0 && this.__traxForm.controls['sip_frequency'].value){
+        return  this.checkAmtrightorNot(
+          Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_fresh_min_amt),
+          Number(res));
+      }
+      else if(this.__traxForm.get('inv_type').value == 'A' && this.__sipfreq.length > 0 && this.__traxForm.controls['sip_frequency'].value){
+        return  this.checkAmtrightorNot(
+          Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_add_min_amt),
+          Number(res));
+      }
+
+    }
+    return false;
+  }
+
+  checkIfAmountLess(res): Observable<boolean> {
+     return of(this.amtCheck(res));
+  }
+  AmountValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfAmountLess(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? { AmtExists: true } : null;
+          }
+          return null;
         })
       );
     };

@@ -27,6 +27,10 @@ import { RouterModule, Routes } from '@angular/router';
       {
         path:'manualupdate',
         loadChildren:()=> import('./ManualUpdate/manual-update.module').then(m => m.ManualUpdateModule)
+      },
+      {
+        path:'fdcertificate',
+        loadChildren:()=> import('./FDCertificate/fdcertificate.module').then(m => m.FDCertificateModule)
       }
     ]
   }

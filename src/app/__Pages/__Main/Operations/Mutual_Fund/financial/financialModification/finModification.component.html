@@ -32,11 +32,18 @@
         </div>
       </div>
       <ng-container *ngIf="__traxForm.get('tin_status').value == 'Y'">
-      <div class="row mt-5">
+      <div class="row my-2">
         <div class="col-sm-12 ">
           <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
             <div class="searchDiv">
-              <label for="__temp_tin_no">Temporary TIN Number
+              <label for="__temp_tin_no">
+                <mat-icon
+                class="errorIcon"
+                #tooltip="matTooltip"
+                matTooltip="Temporary TIN does not exists"
+                *ngIf="__traxForm.get('temp_tin_no').errors?.TempTINExists">
+                error</mat-icon>
+                Temporary TIN Number
                 <span class="text-danger">*</span>
               </label>
               <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
@@ -63,7 +70,7 @@
         </div>
       </div>
     </ng-container>
-      <div class="row mt-5">
+      <div class="row my-2">
         <div class="col-sm-12 ">
           <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
           <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
@@ -80,13 +87,24 @@
         </div>
       </div>
       <ng-container *ngIf="__traxForm.get('bu_type').value == 'B'">
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12 ">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
               <div class="searchDiv">
-                <label for="subbrkArn">Sub Broker ARN<span class="text-danger">*</span></label>
+                <label for="subbrkArn">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Sub Broker does not exists"
+                  *ngIf="__traxForm.get('sub_arn_no').errors?.subBrkExists">
+                  error</mat-icon>
+
+                  Sub Broker ARN<span class="text-danger">*</span></label>
                 <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker ARN"
                   formControlName="sub_arn_no">
+                  <span class="spinner-border"
+                    *ngIf="__isSubBrkArnSpinner && __traxForm.get('sub_arn_no').value.length > 1"
+                  ></span>
                 <div class="processMain_2" __searchResVisibility
                   (appOutsideClick)="outsideClickforSubBrkArn($event)">
                   <div class="serachresult_client" #subBrkArn>
@@ -108,7 +126,7 @@
             </div>
           </div>
         </div>
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12 ">
             <label>Sub Broker Code <span class="text-danger">*</span></label>
             <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control"
@@ -117,11 +135,19 @@
         </div>
       </ng-container>
       <ng-container *ngIf="__traxForm.get('bu_type').value != ''">
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
               <div class="searchDiv">
-                <label for="Euin">EUIN<span class="text-danger">*</span></label>
+                <label for="Euin">
+                  <mat-icon
+                    class="errorIcon"
+                    #tooltip="matTooltip"
+                    matTooltip="EUIN does not exists"
+                    *ngIf="__traxForm.get('euin_no').errors?.euinExists">
+                    error</mat-icon>
+
+                  EUIN<span class="text-danger">*</span></label>
                 <input type="search" id="Euin" class="form-control" placeholder="Serach By EUIN Number"
                   formControlName="euin_no">
                 <span class="spinner-border" *ngIf="__isEuinNumberVisible && __traxForm.get('euin_no').value?.length > 1"></span>
@@ -154,15 +180,18 @@
       </ng-container>
 
       <!-- First Client Dtls -->
-      <div class="row mt-5">
+      <div class="row my-2">
         <div [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-9':__isCldtlsEmpty}">
           <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
             <div class="searchDiv">
-              <label for="__clntCd">Client Code <span class="text-danger">*</span></label>
-              <p class="invalid-feedback"
-                *ngIf="!__dialogDtForClient && __traxForm.get('client_code').value && __clientMst.length > 0">
-                Client Does Not Exist
-              </p>
+              <label for="__clntCd">
+                <mat-icon
+                class="errorIcon"
+                #tooltip="matTooltip"
+                matTooltip="Client does not exists"
+                *ngIf="__traxForm.get('client_code').errors?.ClientExists">
+                error</mat-icon>
+                Client Code <span class="text-danger">*</span></label>
               <input type="search" name="__clntCd" id="__clntCd" class="form-control"
                 formControlName="client_code"
                 placeholder="Search By Client Name,Client Code, Email, Mobile, Pan & DOB">
@@ -203,30 +232,30 @@
       </div>
 
       <ng-container *ngIf="__traxForm.get('client_code').value && __traxForm.get('client_name').value">
-        <div class="row mt-5">
-          <div [ngClass]="{'col-sm-12': !__dialogDtForClient,'col-sm-9':__dialogDtForClient}">
+        <div class="row my-2">
+          <div class="col-sm-12">
             <label for="__clName">Client Name</label>
             <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
               formControlName="client_name" [attr.disabled]="true">
+              <button (click)="openDialog('C')" color="primary" class="viewIconDtls" mat-icon-button type="button"
+              aria-label="Example icon button with a eye icon" title="View Client Details">
+              <mat-icon>remove_red_eye</mat-icon>
+            </button>
           </div>
-          <div class="col-sm-3  clientCode" *ngIf="__dialogDtForClient">
+          <!-- <div class="col-sm-3  clientCode" *ngIf="__dialogDtForClient">
             <button (click)="openDialog('C')" color="primary" mat-button type="button"
               aria-label="Example icon button with a eye icon" title="View Client Details">
               <mat-icon>remove_red_eye</mat-icon>
               View Details
             </button>
-          </div>
+          </div> -->
 
         </div>
       </ng-container>
 
       <!-- KYC Status -->
-      <div class="row mt-5">
+      <div class="row my-2">
         <div class="col-sm-12 ">
-          <!-- <label class="ml-2"><input type="radio" value="Y" formControlName="kyc_status"><span>&nbsp;With
-              KYC</span></label>
-          <label class="ml-3"><input type="radio" value="N" formControlName="kyc_status"><span>&nbsp;Without
-              KYC</span></label> -->
               <mat-radio-group aria-label="Select an option" color="primary" formControlName="kyc_status">
                 <mat-radio-button value="Y">With KYC</mat-radio-button>
                 <mat-radio-button value="N" class="ml-5">Without KYC</mat-radio-button>
@@ -237,14 +266,20 @@
 
       <!-- First Client KYC Status -->
       <ng-container>
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12">
             <label for="first_kyc_view">Client KYC Status <span class="text-danger">*</span>
             </label>
-            <select name="first_kyc" id="first_kyc" class="form-control" formControlName="first_kyc">
+            <select name="first_kyc" id="first_kyc" class="form-control"
+            formControlName="first_kyc">
               <option value="">Select KYC</option>
               <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
             </select>
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('first_kyc').invalid && (__traxForm.get('first_kyc').dirty || __traxForm.get('first_kyc').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('first_kyc')).errors?.required">*Please provide
+              kyc status</span>
+          </div>
           </div>
 
         </div>
@@ -252,7 +287,7 @@
 
 
       <!-- Mode Of Holding -->
-      <div class="row mt-5">
+      <div class="row my-2">
         <div class="col-sm-12">
           <label for="mode_of_holding">Mode Of Holding <span class="text-danger">*</span></label>
           <select class="form-control" formControlName="mode_of_holding">
@@ -261,11 +296,16 @@
             <option value="J">Joint</option>
             <option value="S">Single</option>
           </select>
+          <div class="invalid-feedback"
+          *ngIf="__traxForm.get('mode_of_holding').invalid && (__traxForm.get('mode_of_holding').dirty || __traxForm.get('mode_of_holding').touched)">
+          <span class="invalid-feedback" *ngIf="(__traxForm.get('mode_of_holding')).errors?.required">*Please provide
+            mode of holding</span>
+        </div>
         </div>
       </div>
       <!-- End -->
         <!-- Additional Applicant -->
-        <div class="row mt-5"
+        <div class="row my-2"
         *ngIf="__traxForm.get('mode_of_holding').value == 'A' || __traxForm.get('mode_of_holding').value == 'J'">
         <div class="col-sm-12">
           <table>
@@ -285,7 +325,7 @@
             <tbody>
               <tr>
                 <td>
-                  <div class="row mt-5">
+                  <div class="row my-2">
                     <div class="col-sm-12 ">
                       <div class="progressMainSec" appClOutsideClick
                         (appOutsideClick)="outsideClickforSecondClient($event)">
@@ -318,7 +358,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-sm-12 my-4">
+                    <div class="col-sm-12 my-2">
                       <label for="second_cl_name">Client name</label>
                       <input #secondClName type="text"
                         [attr.disabled]="__SecondClient && __traxForm.get('second_client_code').value"
@@ -326,7 +366,7 @@
                         placeholder="Enter Second Applicant Name" class="form-control"
                         formControlName="second_client_name" />
                     </div>
-                    <div class="col-sm-12 my-4">
+                    <div class="col-sm-12 my-2">
                       <label for="second_cl_name">Pan No</label>
                       <input type="text" [attr.disabled]="__SecondClient" name="second_client_pan"
                         id="second_client_pan" placeholder="Enter Second Applicant Pan" class="form-control"
@@ -342,7 +382,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12 my-4">
+                    <div class="col-sm-12 my-2">
                       <label for="second_client_kyc">KYC Status
                       </label>
                       <select name="second_client_kyc" id="second_client_kyc" class="form-control"
@@ -404,7 +444,7 @@
             <tbody>
               <tr>
                 <td>
-                  <div class="row mt-5">
+                  <div class="row my-2">
                     <div class="col-sm-12 ">
                       <div class="progressMainSec" appClOutsideClick
                         (appOutsideClick)="outsideClickforThirdClient($event)">
@@ -437,13 +477,13 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-sm-12  my-4">
+                    <div class="col-sm-12  my-2">
                       <label for="second_cl_name">Client name</label>
                       <input #thirdClName type="text" [attr.disabled]="__ThirdClient" name="third_client_name"
                         placeholder="Enter Additional Applicant Name" id="third_client_name"
                         class="form-control" formControlName="third_client_name" />
                     </div>
-                    <div class="col-sm-12 my-4 ">
+                    <div class="col-sm-12 my-2 ">
                       <label for="second_cl_name">Pan No</label>
                       <input type="text" [attr.disabled]="__ThirdClient" name="third_client_pan"
                         placeholder="Enter Additional Applicant Pan" id="third_client_pan" class="form-control"
@@ -459,7 +499,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12  my-4">
+                    <div class="col-sm-12  my-2">
                       <label for="third_client_kyc">KYC Status
                       </label>
                       <select name="third_client_kyc" id="third_client_kyc" class="form-control"
@@ -485,7 +525,7 @@
                       Create Client Code
                     </button>
                     <mat-menu #menu_for_third_applicant="matMenu">
-                      <div class="row mt-5 p-0 m-0">
+                      <div class="row my-2 p-0 m-0">
                         <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
                           *ngFor="let clOption of __mcOptionMenu"
                           (click)="openDialogForclientcreation(clOption,'T')">
@@ -510,7 +550,7 @@
       </div>
       <!-- End -->
     <!-- Transaction Type -->
-      <div class="row mt-5">
+      <div class="row my-2">
         <div class="col-sm-12 ">
           <label for="trans_id">Transaction <span class="text-danger">*</span></label>
           <select name="trans_id" class="form-control" id="trans_id" formControlName="trans_id">
@@ -528,15 +568,24 @@
       </div>
       <!-- End -->
         <!-- Scheme From / Scheme  -->
-        <div class="row mt-5" >
+        <div class="row my-2" >
           <div [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-9':__dialogDtForScheme}">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforScheme($event)">
               <div class="searchDiv">
                 <label for="schemeName">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Scheme does not exists"
+                  *ngIf="__traxForm.get('scheme_name').errors?.ScmExists">
+                  error</mat-icon>
                   {{__traxForm.get('trans_id').value == '3' ? 'Switch Scheme From' : 'Scheme Name'}}
                   <span class="text-danger">*</span></label>
                 <input type="search" id="schemeName" class="form-control" placeholder="Serach By Scheme Name"
                   formControlName="scheme_name">
+                  <span class="spinner-border"
+                *ngIf="__isschemeSpinner && __traxForm.get('scheme_name').value.length > 1"
+              ></span>
                 <div class="processMain_2" __searchResVisibility
                   (appOutsideClick)="outsideClickforScheme($event)">
                   <div class="serachresult_client" #schemeRes>
@@ -548,7 +597,7 @@
 
                     <div class="noDataFound" *ngIf="__schemeMst.length == 0">
                       <h5 class="text-center">
-                        Sorry!! No Schemes Results Found
+                        Sorry!! No Scheme Results Found
                       </h5>
                       <p>If your result match,they will appear here</p>
                     </div>
@@ -569,7 +618,7 @@
          <!-- End -->
           <!-- Option & Plan For SWITCH FROM-->
             <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
-              <div class="row mt-5">
+              <div class="row my-2">
                 <div class="col-sm-12">
                   <label for="plan">Plan For Scheme From <span class="text-danger">*</span></label>
                   <select name="plan" id="plan" formControlName="plan" class="form-control">
@@ -583,7 +632,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row mt-5">
+              <div class="row my-2">
                 <div class="col-sm-12 ">
                   <label for="option">Option For Scheme From<span class="text-danger">*</span></label>
                   <select name="option" id="option" formControlName="option" class="form-control">
@@ -601,12 +650,26 @@
 
         <!-- Scheme To -->
        <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
-        <div class="row mt-5" >
+        <div class="row my-2" >
           <div [ngClass]="{'col-sm-12': !__dialogDtForSchemeTo,'col-sm-9':__dialogDtForSchemeTo}">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickForSchemeSwitchTo($event)">
               <div  class="searchDiv">
-                <label for="schemeTo">Switch Scheme To <span class="text-danger">*</span></label>
-                <input type="search" id="schemeTo" class="form-control" placeholder="Serach By Scheme Name" formControlName="switch_scheme_to">
+                <label for="schemeTo">
+                  <mat-icon
+                  class="errorIcon"
+                  #tooltip="matTooltip"
+                  matTooltip="Scheme does not exists"
+                  *ngIf="__traxForm.get('switch_scheme_to').errors?.ScmToExists">
+                  error</mat-icon>
+                  Switch Scheme To <span class="text-danger">*</span></label>
+                <input type="search"
+                id="schemeTo"
+                class="form-control"
+                placeholder="Serach By Scheme Name"
+                formControlName="switch_scheme_to">
+                <span class="spinner-border"
+                *ngIf="__isschemeToSpinner && __traxForm.get('switch_scheme_to').value.length > 1"
+              ></span>
                 <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickForSchemeSwitchTo($event)">
                   <div class="serachresult_client" #schemeswitchTo>
                     <ul *ngIf="__schemeMstforSwitchTo.length > 0">
@@ -617,7 +680,7 @@
 
                     <div class="noDataFound" *ngIf="__schemeMstforSwitchTo.length == 0">
                       <h5 class="text-center">
-                        Sorry!! No Schemes Results Found
+                        Sorry!! No Scheme Results Found
                       </h5>
                       <p>If your result match,they will appear here</p>
                     </div>
@@ -636,7 +699,7 @@
       </ng-container>
         <!-- Option & Plan For SWITCH TO-->
         <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
-          <div class="row mt-5">
+          <div class="row my-2">
               <div class="col-sm-12">
                 <label for="plan_to">Plan For Scheme To <span class="text-danger">*</span></label>
                 <select name="plan_2" id="plan_to" formControlName="plan_to" class="form-control">
@@ -644,13 +707,13 @@
                   <option *ngFor="let _pln of PlanMst" value="{{_pln.id}}">{{_pln.plan_name}}</option>
                 </select>
                 <div class="invalid-feedback"
-                  *ngIf="__traxForm.get('plan').invalid && (__traxForm.get('plan').dirty || __traxForm.get('plan').touched)">
-                  <span class="invalid-feedback" *ngIf="(__traxForm.get('plan')).errors?.required">*Please provide
+                  *ngIf="__traxForm.get('plan_to').invalid && (__traxForm.get('plan_to').dirty || __traxForm.get('plan_to').touched)">
+                  <span class="invalid-feedback" *ngIf="(__traxForm.get('plan_to')).errors?.required">*Please provide
                     plan</span>
                 </div>
               </div>
               </div>
-          <div class="row mt-5">
+          <div class="row my-2">
             <div class="col-sm-12 ">
               <label for="option_to">Option For Scheme To<span class="text-danger">*</span></label>
               <select name="option_to" id="option_to" formControlName="option_to" class="form-control">
@@ -658,8 +721,8 @@
                 <option *ngFor="let _opts of OptionMst" value="{{_opts.id}}">{{_opts.opt_name}}</option>
               </select>
               <div class="invalid-feedback"
-                *ngIf="__traxForm.get('option').invalid && (__traxForm.get('option').dirty || __traxForm.get('option').touched)">
-                <span class="invalid-feedback" *ngIf="(__traxForm.get('option')).errors?.required">*Please provide
+                *ngIf="__traxForm.get('option_to').invalid && (__traxForm.get('option_to').dirty || __traxForm.get('option_to').touched)">
+                <span class="invalid-feedback" *ngIf="(__traxForm.get('option_to')).errors?.required">*Please provide
                   option</span>
               </div>
             </div>
@@ -668,7 +731,7 @@
 
         <!-- End -->
       <!-- Receive from -->
-      <!-- <div class="row mt-5">
+      <!-- <div class="row my-2">
         <div class="col-sm-12">
           <label>Receive From <span class="text-danger">*</span></label>
           <input type="text" name="recv_from" id="recv_from" class="form-control" formControlName="recv_from"
@@ -678,7 +741,7 @@
 
       <!-- Investment Type -->
       <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12">
             <label for="inv_type">Investment Type <span class="text-danger">*</span></label>
             <select name="inv_type" id="inv_type" formControlName="inv_type" class="form-control">
@@ -694,7 +757,7 @@
 
           </div>
         </div>
-        <div class="row mt-5" *ngIf="__traxForm.get('inv_type').value == 'F'">
+        <div class="row my-2" *ngIf="__traxForm.get('inv_type').value == 'F'">
           <div class="col-sm-12 ">
             <label for="appl_number"> Application Number</label>
             <input type="text" name="appl_number" id="appl_number" formControlName="application_no"
@@ -706,9 +769,9 @@
 
       <!-- Folio Number -->
       <ng-container *ngIf="__traxForm.get('inv_type').value == 'A' || __traxForm.get('trans_id').value == '3'">
-        <div class="row mt-5" >
+        <div class="row my-2" >
           <div class="col-sm-12">
-            <label for="folio_number"> Folio Number</label>
+            <label for="folio_number"> Folio Number <span class="text-danger" >*</span></label>
             <input type="text" name="folio_number" id="folio_number" formControlName="folio_number"
               class="form-control" placeholder="Enter Folio Number">
               <div class="invalid-feedback"
@@ -726,7 +789,7 @@
       <!-- Option & Plan For SIP/PIP-->
      <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
        <!-- Plan -->
-       <div class="row mt-5">
+       <div class="row my-2">
         <div class="col-sm-12">
           <label for="plan">Plan <span class="text-danger">*</span></label>
           <select name="plan" id="plan" formControlName="plan" class="form-control">
@@ -741,7 +804,7 @@
         </div>
       </div>
         <!-- Option -->
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12 ">
             <label for="option">Option <span class="text-danger">*</span></label>
             <select name="option" id="option" formControlName="option" class="form-control">
@@ -763,29 +826,51 @@
 
      <!-- End -->
       <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
-        <div class="row mt-5" >
+        <div class="row my-2" >
           <div class="col-sm-12">
-            <label for="switch_by"> Switch By</label>
+            <label for="switch_by"> Switch By <span class="text-danger">*</span></label>
               <select class="form-control" formControlName="switch_by">
                 <option value="">Select Switch By</option>
                 <option value="A">Amount</option>
                 <option value="U">Unit</option>
                 <option value="AU">All Unit</option>
               </select>
+
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('switch_by').invalid && (__traxForm.get('switch_by').dirty || __traxForm.get('switch_by').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('switch_by')).errors?.required">*Please provide
+                switch by</span>
+            </div>
           </div>
         </div>
-        <div class="row mt-5"  *ngIf="__traxForm.get('switch_by').value == 'A'">
+        <div class="row my-2"  *ngIf="__traxForm.get('switch_by').value == 'A'">
           <div class="col-sm-12">
-            <label for="Switch_amt">Amount</label>
-            <input type="text" name="Switch_amt" id="Switch_amt" formControlName="switch_amt" class="form-control"
+            <label for="Switch_amt">Amount <span class="text-danger">*</span></label>
+            <input type="text"
+            name="Switch_amt"
+            id="Switch_amt"
+            formControlName="switch_amt"
+            class="form-control"
               placeholder="Enter Amount">
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('switch_amt').invalid && (__traxForm.get('switch_amt').dirty || __traxForm.get('switch_amt').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('switch_amt')).errors?.required">*Please provide
+                amount</span>
+            </div>
           </div>
         </div>
-      <div class="row mt-5" *ngIf="__traxForm.get('switch_by').value == 'U' || __traxForm.get('switch_by').value == 'AU'">
+      <div class="row my-2" *ngIf="__traxForm.get('switch_by').value == 'U' || __traxForm.get('switch_by').value == 'AU'">
         <div class="col-sm-12">
-          <label for="unit">{{__traxForm.get('switch_by').value == 'AU' ? 'All Unit' : 'Unit'}}</label>
+          <label for="unit">{{__traxForm.get('switch_by').value == 'AU' ? 'All Unit' : 'Unit'}} <span class="text-danger">*</span></label>
           <input type="text" name="unit" id="unit" formControlName="unit" class="form-control"
-            placeholder="Enter Unit">
+            [placeholder]="__traxForm.get('switch_by').value == 'AU' ? 'Enter All Unit' : 'Enter Unit'">
+
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('unit').invalid && (__traxForm.get('unit').dirty || __traxForm.get('unit').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('unit')).errors?.required">*Please provide
+                {{__traxForm.get('switch_by').value == 'AU' ? 'all unit' : 'unit'}}
+              </span>
+            </div>
         </div>
       </div>
       </ng-container>
@@ -793,34 +878,50 @@
       <!-- SIP -->
       <ng-container *ngIf="__traxForm.get('trans_id').value == '2'">
         <div class="row">
-          <div class="col-sm-12 my-4">
+          <div class="col-sm-12 my-2">
             <label for="sip_type">SIP Type <span class="text-danger">*</span></label>
             <select class="form-control" id="sip_type" formControlName="sip_type">
               <option value="">Select</option>
               <option [value]="sip_type.id" *ngFor="let sip_type of __sipType">{{sip_type.sip_type_name}}
               </option>
             </select>
+
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('sip_type').invalid && (__traxForm.get('sip_type').dirty || __traxForm.get('sip_type').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_type')).errors?.required">*Please provide
+                SIP type</span>
+            </div>
             <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_type')).errors?.sipTypeExists">*Special sip not available</span>
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 my-4">
+          <div class="col-sm-12 my-2">
             <label for="sip_freq">SIP frequency <span class="text-danger">*</span></label>
             <select class="form-control" id="sip_freq" formControlName="sip_frequency">
               <option value="">Select SIP Frequency</option>
               <option [value]="frequency.id" *ngFor="let frequency of __sipfreq">{{frequency.freq_name}}
               </option>
             </select>
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_frequency').invalid && (__traxForm.get('sip_frequency').dirty || __traxForm.get('sip_frequency').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_frequency')).errors?.required">*Please provide
+              SIP frequency</span>
+          </div>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-sm-12 my-4">
-            <label for="sip_date">SIP Date </label>
+          <div class="col-sm-12 my-2">
+            <label for="sip_date">SIP Date <span class="text-danger">*</span></label>
              <input type="text"
              placeholder="Enter SIP Date"
              name="sip_date" id="sip_date" class="form-control" formControlName="sip_date"
              >
+             <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_date').invalid && (__traxForm.get('sip_date').dirty || __traxForm.get('sip_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_date')).errors?.required">*Please provide
+              SIP date</span>
+          </div>
              <span class="invalid-feedback" *ngIf="__traxForm.controls['sip_date'].errors?.sipDatesExists">
               * Date is not available
             </span>
@@ -828,28 +929,43 @@
         </div>
 
         <div class="row">
-          <div class="col-sm-12 my-4">
+          <div class="col-sm-12 my-2">
             <label for="sip_start_date">SIP Start Date <span class="text-danger">*</span></label>
             <input type="date" formControlName="sip_start_date" name="sip_start_date" id="sip_start_date"
               class="form-control">
+              <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_start_date').invalid && (__traxForm.get('sip_start_date').dirty || __traxForm.get('sip_start_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_start_date')).errors?.required">*Please provide
+              SIP start date</span>
+          </div>
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-12 my-4">
+          <div class="col-sm-12 my-2">
             <label for="sip_duration">SIP Duration <span class="text-danger">*</span></label>
             <select class="form-control" id="sip_duration" formControlName="sip_duration">
               <option value="">Select SIP Duration</option>
               <option value="M">Manual</option>
               <option value="P">Perpetual</option>
             </select>
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_duration').invalid && (__traxForm.get('sip_duration').dirty || __traxForm.get('sip_duration').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_duration')).errors?.required">*Please provide
+              SIP duration</span>
+          </div>
           </div>
           <ng-container *ngIf="__traxForm.get('sip_duration').value == 'M'">
-            <div class="col-sm-12 my-4">
+            <div class="col-sm-12 my-2">
               <label for="duration">Duration <span class="text-danger">*</span></label>
               <input type="text" placeholder="Enter Duration" name="sip_stardurationt_date" id="duration" class="form-control"
                 formControlName="duration" (change)="setStartDT($event)">
+                <div class="invalid-feedback"
+                *ngIf="__traxForm.get('duration').invalid && (__traxForm.get('duration').dirty || __traxForm.get('duration').touched)">
+                <span class="invalid-feedback" *ngIf="(__traxForm.get('duration')).errors?.required">*Please provide
+                  duration</span>
+              </div>
             </div>
-            <!-- <div class="col-sm-12 my-4">
+            <!-- <div class="col-sm-12 my-2">
               <label for="period">Select Period</label>
               <select class="form-control" id="period" formControlName="period">
                 <option value="">Select Period</option>
@@ -860,17 +976,22 @@
           </ng-container>
         </div>
         <div class="row">
-          <div class="col-sm-12 my-4">
+          <div class="col-sm-12 my-2">
             <label for="sip_end_date">SIP End Date <span class="text-danger">*</span></label>
             <input type="date" name="sip_end_date" id="sip_end_date" class="form-control"
               formControlName="sip_end_date">
+              <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_end_date').invalid && (__traxForm.get('sip_end_date').dirty || __traxForm.get('sip_end_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_end_date')).errors?.required">*Please provide
+              SIP end date</span>
+          </div>
           </div>
         </div>
       </ng-container>
       <!-- End -->
 
        <ng-container *ngIf="__traxForm.get('trans_id').value == '2' && __traxForm.get('sip_type').value == '3'">
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12">
             <label for="first_inv_amt">First Investment Amount <span class="text-danger">*</span></label>
             <input type="text"
@@ -890,25 +1011,32 @@
 
       <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
         <!-- Amount -->
-        <div class="row mt-5">
+        <div class="row my-2">
           <div class="col-sm-12">
             <label for="amount">Amount <span class="text-danger">*</span></label>
             <input type="text"
             name="amount"
             id="amount"
             formControlName="amount"
-            [class.is-invalid]="__checkAmt && __traxForm.get('amount').value"
-            [class.is-valid]="!__checkAmt && __traxForm.get('amount').value"
             class="form-control"
               placeholder="Enter Amount">
-              <div class="invalid-feedback" *ngIf="__checkAmt && __traxForm.get('amount').value">
+              <!-- <div class="invalid-feedback" *ngIf="__checkAmt && __traxForm.get('amount').value">
                 <span class="invalid-feedback"> * Amount must be greater than {{getamttocheckwith  | currency:'INR'}}</span>
-              </div>
+              </div> -->
+
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('amount').invalid && (__traxForm.get('amount').dirty || __traxForm.get('amount').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('amount')).errors?.required">*Please provide
+                amount</span>
+            </div>
+              <span  class="invalid-feedback"  *ngIf="__traxForm.get('amount').errors?.AmtExists">
+                * Amount must be greater than {{getamttocheckwith  | currency:'INR'}}
+              </span>
           </div>
         </div>
         <!-- End -->
         <!-- Cheque Number -->
-        <div class="row mt-5" *ngIf="this.__traxForm.get('sip_type').value != '2'">
+        <div class="row my-2" *ngIf="this.__traxForm.get('sip_type').value != '2'">
           <div class="col-sm-12">
             <label for="chq">Cheque Number <span class="text-danger">*</span></label>
             <input type="text" name="chq"  (keypress)="preventNonumeric($event)" id="chq" maxlength="6" minlength="6" formControlName="chq_no" class="form-control"
@@ -929,16 +1057,27 @@
         </div>
         <!-- End -->
         <!-- Bank -->
-        <div class="row my-5">
-          <div [ngClass]="{'col-sm-12':!__dialogDtForBnk,'col-sm-10': __dialogDtForBnk}">
+        <div class="row my-2">
+          <div class="col-sm-12">
 
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforbank($event)">
               <div class="searchDiv">
-                <label for="__clntCd">MICR Code
+                <label for="__clntCd">
+                  <mat-icon
+                    class="errorIcon"
+                    #tooltip="matTooltip"
+                    matTooltip="Bank does not exists"
+                    *ngIf="__traxForm.get('chq_bank').errors?.MicrExists">
+                    error</mat-icon>
+
+
+                  MICR Code
                   <span class="text-danger"> *</span>
                 </label>
                 <input type="search " name="__clntCd" id="__clntCd" class="form-control" formControlName="chq_bank"
                   placeholder="Search By Ifs Code , Branch Name">
+                <span class="spinner-border" *ngIf="__isMicrSpinner && __traxForm.get('chq_bank').value?.length > 1"></span>
+
                 <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforbank($event)">
                   <div class="serachresult_client" #searchbnk>
                     <ul *ngIf="__bnkMst.length > 0">
@@ -957,18 +1096,23 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-2 clientCode" *ngIf="__dialogDtForBnk && __traxForm.get('chq_bank').value">
+          <!-- <div class="col-sm-2 clientCode" *ngIf="__dialogDtForBnk && __traxForm.get('chq_bank').value">
             <button (click)="openDialog('B')" color="primary" mat-button type="button"
               aria-label="Example icon button with a eye icon" title="View Bank Details">
               <mat-icon>remove_red_eye</mat-icon>
               View Details
             </button>
-          </div>
+          </div> -->
         </div>
         <div class="row" *ngIf="__traxForm.get('chq_bank').value && this.__dialogDtForBnk">
           <div class="col-sm-12">
             <label for="bnk_name">Bank</label>
             <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control" [attr.disabled]="true"/>
+            <button (click)="openDialog('B')" color="primary" class="viewIconDtls" mat-icon-button type="button"
+            aria-label="Example icon button with a eye icon" #tooltip="matTooltip"
+            matTooltip="View Bank Details">
+            <mat-icon>remove_red_eye</mat-icon>
+          </button>
           </div>
         </div>
         <!-- End -->
@@ -979,7 +1123,7 @@
 
       <div class="row">
         <!-- sip_name -->
-        <div class="col-sm-12 my-5">
+        <div class="col-sm-12 my-2">
           <label class="sip_name">SIP Name</label>
           <input type="text" [attr.disabled]="true" placeholder="SIP Name" name="sip_name" id="sip_name" class="form-control" formControlName="sip_name">
         </div>
@@ -993,7 +1137,7 @@
 
         </div>
          <!-- swp_start_date -->
-        <div class="col-sm-12 my-5">
+        <div class="col-sm-12 my-2">
           <label class="swp_start_date">SWP Start Date <span class="text-danger">*</span></label>
           <input type="date" name="swp_start_date" id="swp_start_date" class="form-control" formControlName="swp_start_date">
 
@@ -1006,7 +1150,7 @@
         </div>
 
            <!-- swp_end_date -->
-           <div class="col-sm-12 my-5">
+           <div class="col-sm-12 my-2">
             <label class="swp_end_date">SWP End Date </label>
             <input type="date" name="swp_end_date" id="swp_end_date" class="form-control" formControlName="swp_end_date">
           </div>
@@ -1025,7 +1169,7 @@
      <!-- SIP Type STEP-UP -->
      <ng-container *ngIf="__traxForm.get('sip_type').value == '5'">
         <div class="row">
-          <div class="col-sm-12 my-5">
+          <div class="col-sm-12 my-2">
             <label form="step_up_by">STEP-UP By <span class="text-danger">*</span></label>
             <select class="form-control" id="step_up_by" formControlName="step_up_by">
             <option value="">Select</option>
@@ -1046,12 +1190,13 @@
         </div>
      </ng-container>
 
-      <div class="row mt-5">
+      <div class="row my-2">
         <div class="col-sm-12 ">
           <label for="file">Upload Scan Application Form <span class="text-danger">*</span></label>
           <input type="file" name="file" id="file" formControlName="file" class="form-control"
-            (change)="getFIle($event.target)" accept=".jpg,.jpeg,.png">
-          <div class="invalid-feedback"
+            (change)="getFIle($event.target)" accept=".pdf">
+            <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 2MB)</p></mat-hint>
+            <div class="invalid-feedback"
             *ngIf=" __traxForm.get('file').invalid && ( __traxForm.get('file').dirty ||  __traxForm.get('file').touched)">
             <span class="invalid-feedback" *ngIf=" __traxForm.get('file').errors?.required">*Please
               provide file</span>
@@ -1062,16 +1207,16 @@
               not exceed than
               2MB.</span>
           </div>
-          <ng-container *ngIf="this.__traxForm.get('filePreview').value">
+          <!-- <ng-container *ngIf="this.__traxForm.get('filePreview').value">
             <br clear="all" />
             <img  class="imgThumbnail"
               [src]="this.__traxForm.get('filePreview').value" alt="Application form Image">
-          </ng-container >
+          </ng-container > -->
 
 
         </div>
       </div>
-      <div class="row my-5">
+      <div class="row my-2">
         <div class="col-sm-12">
           <label for="rnt_login_at">Form will be submitted at <span class="text-danger">*</span></label>
           <select name="rnt_login_at" id="rnt_login_at" formControlName="rnt_login_at" class="form-control">
@@ -1081,9 +1226,9 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12 my-3">
           <label for="file">Remarks</label>
-          <textarea name="rmks" id="rmks" cols="30" rows="5" formControlName="remarks" class="form-control"></textarea>
+          <textarea name="rmks" id="rmks" cols="30" rows="12" formControlName="remarks" class="form-control"></textarea>
         </div>
       </div>
     </form>

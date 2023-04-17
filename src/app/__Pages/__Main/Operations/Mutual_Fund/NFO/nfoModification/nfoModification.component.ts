@@ -21,7 +21,7 @@ import KycMst from '../../../../../../../assets/json/kyc.json';
 import withoutKycMst from '../../../../../../../assets/json/withoutKyc.json';
 import { option } from 'src/app/__Model/option';
 import { plan } from 'src/app/__Model/plan';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -31,13 +31,21 @@ import { DialogForCreateClientComponent } from '../../common/dialogForCreateClie
 import dateslist from '../../../../../../../assets/json/dates.json';
 import { dates } from 'src/app/__Utility/disabledt';
 import { rnt } from 'src/app/__Model/Rnt';
+import { Observable, of } from 'rxjs';
+import { global } from 'src/app/__Utility/globalFunc';
 @Component({
 selector: 'nfoModification-component',
 templateUrl: './nfoModification.component.html',
 styleUrls: ['./nfoModification.component.css']
 })
 export class NfomodificationComponent implements OnInit {
-  __isEntryDTGreater: boolean = false;
+  // __isEntryDTGreater: boolean = false;
+  __isEntryDTGreater: string = null;
+  __isschemeSpinner: boolean = false;
+  __isschemeSpinnerTo: boolean = false;
+  __isSubBrkArnSpinner: boolean = false;
+  __isMicrSpinner: boolean = false;
+
   __rnt_login_at: rnt[];
   __sipDT: any=[];
   __dates: any= dateslist;
@@ -64,7 +72,8 @@ export class NfomodificationComponent implements OnInit {
 
   __isVisible:boolean =false;
 
-  __sipfreq = __sipFrequency;
+  // __sipfreq = __sipFrequency;
+  __sipfreq: any=[];
   __mcOptionMenu: any = [
     { flag: 'M', name: 'Minor', icon: 'person_pin' },
     { flag: 'P', name: 'Pan Holder', icon: 'credit_card' },
@@ -94,7 +103,7 @@ export class NfomodificationComponent implements OnInit {
   __dialogDtForScheme: any;
   __dialogDtForBnk: bank;
   __kycMst: any[];
-  allowedExtensions = ['jpg', 'png', 'jpeg'];
+  allowedExtensions = ['pdf'];
   __buisness_type: any = buisnessType;
   __schemeMst: any = [];
   __clientMst: client[] = [];
@@ -127,30 +136,48 @@ export class NfomodificationComponent implements OnInit {
     kyc_status: new FormControl('', [Validators.required]),
     first_kyc: new FormControl('',[Validators.required]),
     tin_status: new FormControl('Y', [Validators.required]),
-    temp_tin_no: new FormControl('', [Validators.required]),
+    temp_tin_no: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.TemporaryTINValidators()]
+    }),
     bu_type: new FormControl('', [Validators.required]),
     sub_brk_cd: new FormControl('', [Validators.required]),
     sub_arn_no: new FormControl('', [Validators.required]),
-    euin_no: new FormControl('', [Validators.required]),
+    euin_no: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.EUINValidators()]
+    }),
     inv_type: new FormControl(''),
     application_no: new FormControl(''),
     // recv_from: new FormControl(''),
     folio_number: new FormControl(''),
     scheme_id: new FormControl('', [Validators.required]),
-    scheme_name: new FormControl('', [Validators.required]),
+    scheme_name: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.SchemeValidators()]
+    }),
     client_id: new FormControl('', [Validators.required]),
     client_name: new FormControl('', [Validators.required]),
-    client_code: new FormControl('', [Validators.required]),
+    client_code: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.ClientValidators()]
+     }),
     option: new FormControl('', [Validators.required]),
     plan: new FormControl('', [Validators.required]),
-    amount: new FormControl('', [Validators.required]),
+    amount: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.AmountValidators()]
+    }),
     chq_no: new FormControl('', [
       Validators.required,
       Validators.minLength(6),
       Validators.maxLength(6),
       Validators.pattern("^[0-9]*$")
     ]),
-    chq_bank: new FormControl('', [Validators.required]),
+    chq_bank: new FormControl('', {
+      validators:[Validators.required],
+      asyncValidators:[this.MICRValidators()]
+    }),
     ack_filePreview: new FormControl(''),
     filePreview: new FormControl(''),
     app_form_scan: new FormControl(''),
@@ -264,6 +291,9 @@ export class NfomodificationComponent implements OnInit {
               else{
                 this.removeValidations([{name:'folio_number',valid:[Validators.required]}]);
               }
+              if(this.__traxForm.value.trans_id != '6'){
+                this.__traxForm.get('amount').updateValueAndValidity({emitEvent:true});
+              }
     })
 
     this.__traxForm.controls['temp_tin_no'].valueChanges
@@ -283,7 +313,6 @@ export class NfomodificationComponent implements OnInit {
             : []
         ),
         map((x: responseDT) => x.data),
-        tap(() => this.__istemporaryspinner = false),
       )
       .subscribe({
         next: (value) => {
@@ -292,13 +321,16 @@ export class NfomodificationComponent implements OnInit {
           this.__istemporaryspinner = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log(),
+        error: (err) => {
+         this.__istemporaryspinner = false;
+        },
       });
 
     // Sub Broker ARN Search
 
     this.__traxForm.controls['sub_arn_no'].valueChanges.
       pipe(
+        tap(() => this.__isSubBrkArnSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(dt => dt?.length > 1 ?
@@ -310,9 +342,12 @@ export class NfomodificationComponent implements OnInit {
           this.__subbrkArnMst = value
           this.searchResultVisibilityForSubBrkArn('block');
           this.__traxForm.controls['sub_brk_cd'].setValue('');
+          this.__isSubBrkArnSpinner = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log()
+        error: (err) => {
+          this.__isSubBrkArnSpinner = false;
+        }
       })
 
 
@@ -321,6 +356,7 @@ export class NfomodificationComponent implements OnInit {
     //Scheme Search
     this.__traxForm.controls['scheme_name'].valueChanges
       .pipe(
+        tap(()=> this.__isschemeSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
@@ -332,15 +368,19 @@ export class NfomodificationComponent implements OnInit {
         next: (value) => {
           this.__schemeMst = value;
           this.searchResultVisibilityForScheme('block');
+          this.__isschemeSpinner = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log(),
+        error: (err) => {
+          this.__isschemeSpinner = false;
+        },
       });
 
 
       //scheme To Search
       this.__traxForm.controls['switch_scheme_to'].valueChanges.
       pipe(
+        tap(() => this.__isschemeSpinnerTo = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap(dt => dt?.length > 1 ?
@@ -352,9 +392,12 @@ export class NfomodificationComponent implements OnInit {
           this.__schemeMstforSwitchTo = value;
           console.log(this.__schemeMstforSwitchTo);
           this.searchResultVisibilityForSchemeSwicthTo('block');
+          this.__isschemeSpinnerTo = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log()
+        error: (err) => {
+          this.__isschemeSpinnerTo = false;
+        }
       })
 
 
@@ -471,6 +514,7 @@ export class NfomodificationComponent implements OnInit {
     // Bank SEARCH
     this.__traxForm.controls['chq_bank'].valueChanges
       .pipe(
+        tap(() => this.__isMicrSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
@@ -483,9 +527,12 @@ export class NfomodificationComponent implements OnInit {
           console.log(value);
           this.__bnkMst = value;
           this.searchResultVisibilityForBnk('block');
+          this.__isMicrSpinner = false;
         },
         complete: () => console.log(''),
-        error: (err) => console.log(),
+        error: (err) => {
+          this.__isMicrSpinner = false;
+        },
       });
 
     //Transaction Type change
@@ -525,6 +572,9 @@ export class NfomodificationComponent implements OnInit {
         this.__checkAmt = res == '6' ? false : this.__checkAmt;
         this.__chkInvAmt = res == '5' ? true : false;
         if(res == '6'){
+        this.__traxForm.get('amount').removeAsyncValidators([this.AmountValidators()]);
+        this.__traxForm.controls['switch_scheme_to'].setAsyncValidators([this.SchemeToValidators()])
+        this.__traxForm.get('chq_bank').removeAsyncValidators([this.MICRValidators()]);
           this.removeValidations(
             [
               {name:'amount',valid:[Validators.required]},
@@ -535,7 +585,15 @@ export class NfomodificationComponent implements OnInit {
                 Validators.pattern("^[0-9]*$")]},
               {name:'chq_bank',valid:[Validators.required]},
               {name:'bank_id',valid:[Validators.required]},
-            ])
+            ]);
+            this.setValidations([
+              { name: 'switch_scheme_to', valid: [Validators.required] },
+              { name:'switch_by', valid:[Validators.required]},
+              { name:'plan_to' , valid:[Validators.required]},
+              { name:'option_to' , valid:[Validators.required]},
+              { name: 'folio_number', valid: [Validators.required] },
+              { name: 'scheme_id_to', valid: [Validators.required] },
+            ]);
         }
         else{
           this.setValidations(
@@ -547,8 +605,23 @@ export class NfomodificationComponent implements OnInit {
                 Validators.pattern("^[0-9]*$")]},
               {name:'chq_bank',valid:[Validators.required]},
               {name:'bank_id',valid:[Validators.required]},
-            ])
+            ]);
+          this.__traxForm.get('chq_bank').setAsyncValidators([this.MICRValidators()]);
+          this.__traxForm.get('amount').setAsyncValidators([this.AmountValidators()]);
+         this.__traxForm.controls['switch_scheme_to'].removeAsyncValidators([this.SchemeToValidators()])
+          this.removeValidations([
+            { name: 'switch_scheme_to', valid: [Validators.required] },
+            { name:'switch_by', valid:[Validators.required]},
+            { name:'plan_to' , valid:[Validators.required]},
+            { name:'switch_amt' , valid:[Validators.required]},
+            { name:'unit' , valid:[Validators.required]},
+            { name:'option_to' , valid:[Validators.required]},
+            { name: 'scheme_id_to', valid: [Validators.required] }
+          ]);
+          this.__traxForm.get('inv_type').updateValueAndValidity({emitEvent: true});
         }
+        this.__traxForm.get('amount').updateValueAndValidity({emitEvent:true});
+        this.__traxForm.get('chq_bank').updateValueAndValidity({emitEvent:true});
     });
 
     //Sip Type Change
@@ -614,11 +687,22 @@ export class NfomodificationComponent implements OnInit {
     this.__traxForm.controls['tin_status'].valueChanges.subscribe(res => {
       if (res == 'Y') {
         this.setValidations([{ name: 'temp_tin_no', valid: [Validators.required] }]);
+        this.__traxForm.get('temp_tin_no').setAsyncValidators([this.TemporaryTINValidators()]);
+        this.__traxForm.get('scheme_name').removeAsyncValidators([this.EntryDateExpiredValidators()]);
       }
       else {
         this.removeValidations([{ name: 'temp_tin_no', valid: [Validators.required] }]);
+        this.__traxForm.get('temp_tin_no').removeAsyncValidators([this.TemporaryTINValidators()]);
+        this.__traxForm.get('scheme_name').setAsyncValidators([
+          this.EntryDateExpiredValidators(),this.SchemeValidators()]);
       }
-      this.__traxForm.controls['temp_tin_no'].reset('',{ onlySelf: true,emitEvent: false});
+      this.__traxForm.get('scheme_name').updateValueAndValidity({emitEvent:false});
+      this.__traxForm.get('temp_tin_no').updateValueAndValidity({emitEvent: false});
+      // console.log(this.__istemporaryspinner);
+      this.__istemporaryspinner = false;
+      this.searchResultVisibilityForScheme('none');
+
+
     })
 
     this.__traxForm.get('first_inv_amt').valueChanges.subscribe(res =>{
@@ -630,7 +714,7 @@ export class NfomodificationComponent implements OnInit {
       }
       else if(this.__traxForm.get('inv_type').value == 'A'){
         this.checkFirstInvAmtrightornot(
-          this.__sipdtRng_amtRng.pip_add_mitn_amt,
+          this.__sipdtRng_amtRng.pip_add_min_amt,
           Number(res)
          )
       }
@@ -642,31 +726,43 @@ export class NfomodificationComponent implements OnInit {
     //Amount Change Event for pip & sip
     this.__traxForm.get('amount').valueChanges.subscribe(res =>{
       // console.log(res);
-      if(this.__traxForm.get('trans_id').value == 4 || this.__traxForm.get('trans_id').value == 5){
-          if(this.__traxForm.get('inv_type').value == 'F'){
-             this.checkAmtrightorNot(
-              this.__traxForm.get('trans_id').value == 4 ?
-              this.__sipdtRng_amtRng.pip_fresh_min_amt: this.__sipdtRng_amtRng.sip_fresh_min_amt,
-              Number(res));
-          }
-          else{
-            this.checkAmtrightorNot(
-              this.__traxForm.get('trans_id').value == 4 ?
-              this.__sipdtRng_amtRng.pip_add_min_amt: this.__sipdtRng_amtRng.sip_add_min_amt,
-              Number(res));
-          }
-      }
-      else{
-        //no need to check
-      }
+      // if(this.__traxForm.get('trans_id').value == 4 || this.__traxForm.get('trans_id').value == 5){
+      //     if(this.__traxForm.get('inv_type').value == 'F'){
+      //        this.checkAmtrightorNot(
+      //         this.__traxForm.get('trans_id').value == 4 ?
+      //         this.__sipdtRng_amtRng.pip_fresh_min_amt: this.__sipdtRng_amtRng.sip_fresh_min_amt,
+      //         Number(res));
+      //     }
+      //     else{
+      //       this.checkAmtrightorNot(
+      //         this.__traxForm.get('trans_id').value == 4 ?
+      //         this.__sipdtRng_amtRng.pip_add_min_amt: this.__sipdtRng_amtRng.sip_add_min_amt,
+      //         Number(res));
+      //     }
+      // }
+      // else{
+      //   //no need to check
+      // }
     })
 
     //change in buisness type
     this.__traxForm.get('bu_type').valueChanges.subscribe(res => {
+      this.__traxForm.controls['sub_arn_no'].setValue('', {
+        onlySelf: true,
+        emitEvent: false,
+      });
+      this.__traxForm.controls['euin_no'].setValue('', {
+        emitEvent: false,
+      });
+      this.__traxForm.controls['sub_brk_cd'].setValue('', {
+        emitEvent: false,
+      });
        if(res == 'B'){
+        this.__traxForm.get('sub_arn_no').setAsyncValidators([this.SubBrokerValidators()]);
         this.setValidations([{name:'sub_brk_cd',valid:[Validators.required]},{name:'sub_arn_no',valid:[Validators.required]}]);
        }
        else{
+        this.__traxForm.get('sub_arn_no').removeAsyncValidators([this.SubBrokerValidators()]);
         this.removeValidations([{name:'sub_brk_cd',valid:[Validators.required]},{name:'sub_arn_no',valid:[Validators.required]}]);
        }
     })
@@ -778,10 +874,13 @@ export class NfomodificationComponent implements OnInit {
   checkAmtrightorNot(checkWithamt,checkAmt){
     if(checkWithamt){
       this.getamttocheckwith = Number(checkWithamt);
-      this.__checkAmt = checkAmt <  Number(checkWithamt) ? true : false;
+      console.log( Number(checkAmt) <  Number(checkWithamt));
+
+      return  Number(checkAmt) <  Number(checkWithamt) ? true : false;
+
     }
     else{
-      this.__checkAmt = true;
+      return false;
     }
 
   }
@@ -800,80 +899,51 @@ export class NfomodificationComponent implements OnInit {
   }
   getItems(__items) {
     console.log(__items);
-    this.searchResultVisibility('none');
-    console.log(__items.inv_type);
 
+    this.__traxForm.get('temp_tin_no').reset(__items.temp_tin_no,{onlySelf:true,emitEvent:false});
+    this.searchResultVisibility('none');
     this.__traxForm.patchValue({
       bu_type: __items.bu_type,
-      application_no: __items.application_no,
-      folio_number: __items.folio_no,
-      // recv_from: __items.recv_from,
-      inv_type: __items.inv_type,
       trans_id: __items.trans_id,
+      inv_type: __items.inv_type,
+      application_no:__items.inv_type == 'F' ?  __items.application_no : '',
+      folio_number: __items.inv_type == 'A' ? __items.folio_no : '',
       kyc_status: __items.kyc_status,
     });
-    if(__items.bu_type == 'B'){
-      this.__traxForm.controls['sub_brk_cd'].setValue(__items.sub_brk_cd)
-      this.__traxForm.controls['sub_arn_no'].reset(__items.sub_arn_no,{  onlySelf: true,emitEvent: false,});
-    }
-    else{
-      this.removeValidations([{name:'sub_brk_cd',valid:[Validators.required]},
-                              {name:'sub_arn_no',valid:[Validators.required]}]
-                              );
-    }
+    setTimeout(() => {
 
-    this.__traxForm.controls['euin_no'].reset(
-      __items.euin_no + ' - ' + __items.emp_name,
-      { onlySelf: true, emitEvent: false }
-    );
-    this.__traxForm.controls['client_code'].reset(__items.client_code, {
-      onlySelf: true,
-      emitEvent: false,
-    });
-    this.__traxForm.patchValue({
-      client_name: __items.client_name,
-      client_id: __items.client_id,
-    });
-    this.__traxForm.controls['scheme_name'].reset(__items.scheme_name, {
-      onlySelf: true,
-      emitEvent: false,
-    });
-    this.__traxForm.patchValue({ scheme_id: __items.scheme_id });
-    if(__items.trans_id == 6){
-      this.__traxForm.controls['switch_scheme_to'].reset(__items.scheme_name_to, {
-        onlySelf: true,
-        emitEvent: false,
-      });
-      this.__traxForm.patchValue({ scheme_id_to: __items.scheme_id_to });
-      this.__dialogDtForSchemeTo = {
-        id: __items.scheme_id_to,
-        scheme_name: __items.scheme_name_to,
-      };
-    }
-    this.__dialogDtForClient = {
-      id: __items.client_id,
-      client_type: __items.client_type,
-      client_name: __items.client_name,
-    };
-    this.__dialogDtForScheme = {
-      id: __items.scheme_id,
-      scheme_name: __items.scheme_name,
-      amc_id:__items.amc_id
-    };
+      this.__euinMst.length = 0;
+      this.__clientMst.length = 0;
+      this.__schemeMst.length = 0;
+      this.__schemeMstforSwitchTo.length = 0;
+      this.__clientMst.push({client_code:__items.client_code,id:__items.client_id,client_name: __items.client_name,client_type:__items.client_type});
+      this.__euinMst.push({euin_no:__items.euin_no,emp_name:__items.emp_name});
+      this.__schemeMst.push({id:__items.scheme_id,scheme_name:__items.scheme_name,amc_id:__items.amc_id,nfo_entry_date:__items.nfo_entry_date});
+      this.__schemeMstforSwitchTo.push({id:__items.scheme_id_to,scheme_name:__items.scheme_name_to})
 
-    this.__clientMst.push(this.__dialogDtForClient);
-    this.__isCldtlsEmpty = this.__clientMst.length > 0 ? false : true;
-      this.getschemwisedt(__items.scheme_id);
+      this.getItemsDtls(this.__euinMst[0],'E'); // EUIN Binding
+       this.__isCldtlsEmpty = this.__clientMst.length > 0 ? false : true;
+       this.getItemsDtls(this.__clientMst[0],'C') // CLIENT Binding
+       this.getItemsDtls(this.__schemeMst[0],'SC');// Scheme Binding
+       if(__items.bu_type == 'B'){
+        this.__subbrkArnMst.push({arn_no:__items.sub_arn_no,code:__items.sub_brk_cd})
+        this.getItemsDtls(this.__subbrkArnMst[0],'S');
+        this.__isSubBrkArnSpinner = false;
+       }
+      if(__items.trans_id == 6){
+        this.getItemsDtls(this.__schemeMstforSwitchTo[0],'ST');// Scheme To Binding for switch only
+
+      }
+    }, 200);
   }
   getschemwisedt(__scheme_id) {
     this.__dbIntr.api_call(0, '/scheme', 'scheme_id=' + __scheme_id).pipe(pluck("data")).subscribe(res => {
-      this.setStartDateAgainstScheme(res[0].sip_date);
+     console.log(res);
+     this.__sipfreq = res[0].sip_freq_wise_amt ? JSON.parse(res[0].sip_freq_wise_amt).filter((x: any) => global.getType(x.is_checked) == true) : [];
+     this.setStartDateAgainstScheme(res[0].sip_date);
       this.__sipdtRng_amtRng = res[0];
-       console.log(this.__sipdtRng_amtRng);
-
-      var date = new Date(); // Now
+      var date = new Date();
       date.setDate(date.getDate() + 30);
-
       if(JSON.parse(res[0].sip_date).findIndex((x:any) => x.date ==  (date.getDate()).toString()) != -1)
       {
           this.__traxForm.patchValue({
@@ -919,7 +989,7 @@ export class NfomodificationComponent implements OnInit {
         this.searchResultVisibilityForEuin('none');
         break;
       case 'S':
-        this.__traxForm.controls['sub_arn_no'].reset(__euinDtls.arn_no + ' - ' + __euinDtls.bro_name, { onlySelf: true, emitEvent: false });
+        this.__traxForm.controls['sub_arn_no'].reset(__euinDtls.arn_no, { onlySelf: true, emitEvent: false });
         this.__traxForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
         this.searchResultVisibilityForSubBrkArn('none');
         break;
@@ -938,33 +1008,33 @@ export class NfomodificationComponent implements OnInit {
         break;
 
       case 'SC':
-
-        this.__traxForm.controls['scheme_name'].reset(__euinDtls.scheme_name, {
-          onlySelf: true,
-          emitEvent: false,
-        });
-
+        this.__isEntryDTGreater = __euinDtls.nfo_entry_date;
+        this.__dialogDtForScheme = __euinDtls;
+        this.__traxForm.controls['scheme_name'].reset(__euinDtls.scheme_name, {onlySelf: true,emitEvent: false});
+        this.__traxForm.patchValue({scheme_id:__euinDtls.id});
+        this.searchResultVisibilityForScheme('none');
         this.getschemwisedt(__euinDtls.id);
-        if(this.__traxForm.value.tin_status == 'N'){
-          if(this.checkWhetherNfoEntryDateisgreaterornot(__euinDtls.nfo_entry_date)){
-            this.__traxForm.patchValue({scheme_id:__euinDtls.id});
-            this.searchResultVisibilityForScheme('none');
-            this.__dialogDtForScheme = __euinDtls;
-            this.getschemwisedt(__euinDtls.id);
-            }
-            else{
-              this.__traxForm.patchValue({scheme_id:''});
-              this.searchResultVisibilityForScheme('none');
-              this.__dialogDtForScheme = null;
-            }
-        }
-        else{
-          this.__dialogDtForScheme = __euinDtls;
-          this.__traxForm.patchValue({ scheme_id: __euinDtls.id });
-          this.searchResultVisibilityForScheme('none');
-          this.getschemwisedt(__euinDtls.id);
-        }
+        // console.log(__euinDtls.nfo_entry_date);
 
+        // if(this.__traxForm.value.tin_status == 'N'){
+        //   if(this.checkWhetherNfoEntryDateisgreaterornot(__euinDtls.nfo_entry_date)){
+        //     this.__traxForm.patchValue({scheme_id:__euinDtls.id});
+        //     this.searchResultVisibilityForScheme('none');
+        //     this.__dialogDtForScheme = __euinDtls;
+        //     this.getschemwisedt(__euinDtls.id);
+        //     }
+        //     else{
+        //       this.__traxForm.patchValue({scheme_id:''});
+        //       this.searchResultVisibilityForScheme('none');
+        //       this.__dialogDtForScheme = null;
+        //     }
+        // }
+        // else{
+        //   this.__dialogDtForScheme = __euinDtls;
+        //   this.__traxForm.patchValue({ scheme_id: __euinDtls.id });
+        //   this.searchResultVisibilityForScheme('none');
+        //   this.getschemwisedt(__euinDtls.id);
+        // }
         break;
 
       case 'B':
@@ -987,8 +1057,8 @@ export class NfomodificationComponent implements OnInit {
     }
   }
   checkWhetherNfoEntryDateisgreaterornot(__entrDt){
-    this.__isEntryDTGreater = __entrDt > new Date().toISOString().substring(0,10) ? false : true;
-    return !this.__isEntryDTGreater;
+    // this.__isEntryDTGreater = __entrDt > new Date().toISOString().substring(0,10) ? false : true;
+    // return !this.__isEntryDTGreater;
 }
 
   outsideClickforScheme(__ev) {
@@ -1003,7 +1073,6 @@ export class NfomodificationComponent implements OnInit {
     }
   }
   outsideClickforClient(__ev) {
-    // this.__isclientVisible = false;
     if (__ev) {
       this.searchResultVisibilityForClient('none');
     }
@@ -1024,7 +1093,7 @@ export class NfomodificationComponent implements OnInit {
     }
   }
   outsideClickfortempTin(__ev) {
-    this.__istemporaryspinner = false;
+    // this.__istemporaryspinner = false;
     if (__ev) {
       this.searchResultVisibility('none');
     }
@@ -1102,7 +1171,7 @@ export class NfomodificationComponent implements OnInit {
     fb.append("bu_type",this.__traxForm.value.bu_type);
     fb.append("sub_brk_cd",this.__traxForm.value.sub_brk_cd ? this.__traxForm.value.sub_brk_cd : '');
     fb.append("sub_arn_no",this.__traxForm.value.sub_arn_no ? this.__traxForm.value.sub_arn_no.split(' ')[0] : '');
-    fb.append('temp_tin_no', this.__traxForm.value.temp_tin_no);
+    fb.append('temp_tin_no', this.__traxForm.value.tin_status == 'Y' ?  this.__traxForm.value.temp_tin_no : '');
     fb.append('remarks', this.__traxForm.value.remarks);
     fb.append("kyc_status",this.__traxForm.value.kyc_status);
     fb.append('first_client_id', this.__traxForm.value.client_id);
@@ -1151,14 +1220,15 @@ export class NfomodificationComponent implements OnInit {
     }
     this.__dbIntr.api_call(1, '/mfTraxCreate', fb).subscribe((res: any) => {
       if(res.suc == 1){
-        this.__traxForm.reset();
+        // this.__traxForm.reset();
         this.__traxForm.controls['tin_status'].patchValue('Y');
-        this.__dialogDtForBnk = null;
-        this.__SecondClient = null;
-        this.__ThirdClient = null;
-        this.__dialogDtForSchemeTo = null;
-        this.__dialogDtForClient = null;
-        this.__dialogDtForScheme = null;
+        // this.__dialogDtForBnk = null;
+        // this.__SecondClient = null;
+        // this.__ThirdClient = null;
+        // this.__dialogDtForSchemeTo = null;
+        // this.__dialogDtForClient = null;
+        // this.__dialogDtForScheme = null;
+        this.dialogRef.close({tin_no:res.tin_no,data:res.data})
       }
       this.__utility.showSnackbar(
         res.suc == 1 ? 'Form Submitted Successfully' : res.msg,
@@ -1311,30 +1381,7 @@ export class NfomodificationComponent implements OnInit {
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)
   }
-
-  public onFilterChange(item: any) {
-    console.log(item);
-  }
-  public onDropDownClose(item: any) {
-    console.log(item);
-  }
-
-  public onItemSelect(item: any) {
-    console.log(item);
-  }
-  public onDeSelect(item: any) {
-    console.log(item);
-  }
-
-  public onSelectAll(items: any) {
-    console.log(items);
-  }
-  public onDeSelectAll(items: any) {
-    console.log(items);
-  }
   setStartDT(__ev){
-    console.log(__ev);
-
      this.setEndDate(__ev.target.value);
   }
   setEndDate(__dt){
@@ -1378,4 +1425,193 @@ export class NfomodificationComponent implements OnInit {
       }
   }
 
+
+  checkIfEntryDategreater(): Observable<boolean> {
+    console.log(this.__isEntryDTGreater > new Date().toISOString().substring(0,10));
+    return of(this.__isEntryDTGreater > new Date().toISOString().substring(0,10));
+ }
+ EntryDateExpiredValidators(): AsyncValidatorFn {
+   return (control: AbstractControl): Observable<ValidationErrors | null> => {
+     return this.checkIfEntryDategreater().pipe(
+       map((res) => {
+         if (control.value && this.__traxForm.value.tin_status == 'N') {
+           return res ? null :  { __isDateGreater: true };
+         }
+         return null;
+       })
+     );
+   };
+ }
+ checkIfscmExist(scm_name: string): Observable<boolean> {
+  return of(this.__schemeMst.findIndex((x) => (x.scheme_name == scm_name)) != -1);
 }
+SchemeValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfscmExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { ScmExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+checkIfTEMPTINToExist(tempTin: string): Observable<boolean> {
+  return of(this.__temp_tinMst.findIndex((x) => (x.temp_tin_no == tempTin)) != -1);
+}
+TemporaryTINValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfTEMPTINToExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { TempTINExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+checkIfclientExist(cl_code: string): Observable<boolean> {
+  return of(this.__clientMst.findIndex((x) => (x.client_code == cl_code)) != -1);
+}
+ClientValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfclientExist(control.value).pipe(
+      map((res) => {
+
+        if (control.value) {
+          return res ? null : { ClientExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+
+
+amtCheck(res): boolean{
+if(this.__traxForm.get('trans_id').value == 4){
+    if(this.__traxForm.get('inv_type').value == 'F'  && this.__sipdtRng_amtRng){
+       return this.checkAmtrightorNot(
+        Number(this.__sipdtRng_amtRng.pip_fresh_min_amt),
+        Number(res));
+    }
+    else if(this.__traxForm.get('inv_type').value == 'A' && this.__sipdtRng_amtRng){
+      return  this.checkAmtrightorNot(
+        Number(this.__sipdtRng_amtRng.pip_add_min_amt),
+        Number(res));
+    }
+}
+else if(this.__traxForm.get('trans_id').value == 5){
+  console.log(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value));
+
+  if(this.__traxForm.get('inv_type').value == 'F' && this.__sipfreq.length > 0 && this.__traxForm.controls['sip_frequency'].value){
+    return  this.checkAmtrightorNot(
+      Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_fresh_min_amt),
+      Number(res));
+  }
+  else if(this.__traxForm.get('inv_type').value == 'A' && this.__sipfreq.length > 0 && this.__traxForm.controls['sip_frequency'].value){
+    return  this.checkAmtrightorNot(
+      Number(this.__sipfreq.filter((x: any) => x.id == this.__traxForm.controls['sip_frequency'].value)[0].sip_add_min_amt),
+      Number(res));
+  }
+}
+  return false;
+}
+
+checkIfAmountLess(res): Observable<boolean> {
+   return of(this.amtCheck(res));
+}
+AmountValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfAmountLess(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          console.log(res);
+
+          return res ? { AmtExists: true } : null;
+        }
+        return null;
+      })
+    );
+  };
+}
+
+checkIfscmToExist(scm_name: string): Observable<boolean> {
+  console.log(scm_name);
+
+  return of(this.__schemeMstforSwitchTo.findIndex((x) => (x.scheme_name == scm_name)) != -1);
+}
+SchemeToValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfscmToExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { ScmToExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+
+checkIfEuinExists(emp_name: string): Observable<boolean> {
+  if (global.containsSpecialChars(emp_name)) {
+    return of(
+      this.__euinMst.findIndex((x) => x.euin_no == emp_name.split(' ')[0]) !=
+        -1
+    );
+  } else {
+    return of(this.__euinMst.findIndex((x) => x.euin_no == emp_name) != -1);
+  }
+}
+EUINValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfEuinExists(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          // if res is true, sip_date exists, return true
+          return res ? null : { euinExists: true };
+          // NB: Return null if there is no error
+        }
+        return null;
+      })
+    );
+  };
+}
+checkIfSubBrokerExist(subBrk: string): Observable<boolean> {
+  return of(this.__subbrkArnMst.findIndex((x) => x.arn_no == subBrk) != -1);
+}
+SubBrokerValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfSubBrokerExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { subBrkExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+
+checkIfMICRExist(micrDtls: string): Observable<boolean> {
+  return of(this.__bnkMst.findIndex((x) => (x.micr_code == micrDtls) || (x.bank_name == micrDtls) || (x.ifs_code == micrDtls)) != -1);
+}
+MICRValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfMICRExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { MicrExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+}
+
+    // this.__isEntryDTGreater = __entrDt > new Date().toISOString().substring(0,10) ? false : true;
+    // return !this.__isEntryDTGreater;

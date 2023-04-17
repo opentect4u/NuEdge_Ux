@@ -197,9 +197,10 @@ export class RcvFormRPTComponent implements OnInit {
     );
     __rcvFormSearch.append(
       'start_date',
-      this.__rcvForms.getRawValue().start_dt
+      global.getActualVal(this.__rcvForms.controls['start_dt'].disabled ? this.__rcvForms.getRawValue().start_dt : this.__rcvForms.value.start_dt)
     );
-    __rcvFormSearch.append('end_date', this.__rcvForms.getRawValue().end_dt);
+    __rcvFormSearch.append('end_date',
+    global.getActualVal(this.__rcvForms.controls['end_dt'].disabled ? this.__rcvForms.getRawValue().end_dt : this.__rcvForms.value.end_dt));
     this.__dbIntr
       .api_call(1, '/ins/formreceivedDetailSearch', __rcvFormSearch)
       .pipe(map((x: any) => x.data))
@@ -333,7 +334,7 @@ export class RcvFormRPTComponent implements OnInit {
         distinctUntilChanged(),
         switchMap((dt) =>
           dt?.length > 1
-            ? this.__dbIntr.searchTin('/ins/formreceived', dt + '&flag=C')
+            ? this.__dbIntr.searchTin('/ins/formreceived', dt )
             : []
         ),
         map((x: responseDT) => x.data)
@@ -421,9 +422,9 @@ export class RcvFormRPTComponent implements OnInit {
             ('&ins_type_id=' +
               JSON.stringify(this.__rcvForms.value.ins_type_id)) +
             ('&start_date=' +
-              global.getActualVal(this.__rcvForms.getRawValue().start_dt)) +
+              global.getActualVal(this.__rcvForms.controls['start_dt'].disabled ? this.__rcvForms.getRawValue().start_dt : this.__rcvForms.value.start_dt)) +
             ('&end_date=' +
-              global.getActualVal(this.__rcvForms.value.getRawValue().end_dt)) +
+              global.getActualVal(this.__rcvForms.controls['end_dt'].disabled ? this.__rcvForms.getRawValue().end_dt : this.__rcvForms.value.end_dt)) +
             ('&column_name=' + this.__sortAscOrDsc.active) +
             ('&proposer_code=' + this.__rcvForms.value.proposer_code
               ? this.__rcvForms.value.proposer_code

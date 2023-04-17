@@ -18,7 +18,6 @@ export class MainComponent implements OnInit {
     private __utility: UtiliService
   ) {
     this.__utility.__route$.subscribe(res =>{
-      console.log(res);
       this.__rtDt = res;
 
     })

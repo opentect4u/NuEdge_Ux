@@ -11,7 +11,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
 import { global } from 'src/app/__Utility/globalFunc';
-import { storage } from 'src/app/__Utility/storage';
+import { storage } from '../../../../../__Utility/storage';
 import dateslist from '../../../../../../assets/json/dates.json';
 import __sipFrequency from '../../../../../../assets/json/SipFrequency.json';
 @Component({
@@ -21,7 +21,7 @@ import __sipFrequency from '../../../../../../assets/json/SipFrequency.json';
 })
 export class ScmModificationComponent implements OnInit {
 
-  __getPrevScmDT = storage.get_scmDtls;
+  __getPrevScmDT = storage.get_scmDtls ? storage.get_scmDtls : '';
   __dates = dateslist;
   __isVisible:boolean = false;
   __amcMaster: amc[];
@@ -60,18 +60,18 @@ export class ScmModificationComponent implements OnInit {
     scheme_type: new FormControl(this.data.scheme_type),
     sip_date:
     new FormControl(this.data.id > 0 ? JSON.parse(this.data.items.sip_date)
-    : JSON.parse(this.__getPrevScmDT.sip_date),[Validators.required]),
+    : global.getActualVal(this.__getPrevScmDT) ? JSON.parse(this.__getPrevScmDT.sip_date) : '',[Validators.required]),
     id: new FormControl(this.data.id),
-    nfo_entry_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.nfo_entry_dt) : global.getActualVal(this.__getPrevScmDT.nfo_entry_dt),this.data.scheme_type == 'N' ? [Validators.required] : []),
-    nfo_start_dt: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.nfo_start_dt ): global.getActualVal(this.__getPrevScmDT.nfo_start_dt),this.data.scheme_type == 'N' ? [Validators.required] : []),
-    nfo_end_dt: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.nfo_end_dt) : global.getActualVal(this.__getPrevScmDT.nfo_end_dt),this.data.scheme_type == 'N' ? [Validators.required] : []),
-    nfo_reopen_dt: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.nfo_reopen_dt) :  global.getActualVal(this.__getPrevScmDT.nfo_reopen_dt),this.data.scheme_type == 'N' ? [Validators.required] : []),
+    nfo_entry_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.nfo_entry_dt) : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.nfo_entry_dt : ''),this.data.scheme_type == 'N' ? [Validators.required] : []),
+    nfo_start_dt: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.nfo_start_dt ): (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.nfo_start_dt : ''),this.data.scheme_type == 'N' ? [Validators.required] : []),
+    nfo_end_dt: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.nfo_end_dt) : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.nfo_end_dt : ''),this.data.scheme_type == 'N' ? [Validators.required] : []),
+    nfo_reopen_dt: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.nfo_reopen_dt) :  (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.nfo_reopen_dt : ''),this.data.scheme_type == 'N' ? [Validators.required] : []),
     pip_fresh_min_amt: new FormControl(this.data.id > 0 ?
-      this.data.items.pip_fresh_min_amt : global.getActualVal(this.__getPrevScmDT.pip_fresh_min_amt),
+      this.data.items.pip_fresh_min_amt : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.pip_fresh_min_amt : ''),
       [Validators.required,Validators.pattern("^[0-9]*$")]),
     // sip_fresh_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_fresh_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
     pip_add_min_amt: new FormControl(this.data.id > 0 ?
-      this.data.items.pip_add_min_amt :  global.getActualVal(this.__getPrevScmDT.pip_add_min_amt),
+      this.data.items.pip_add_min_amt :  (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.pip_add_min_amt : ''),
       [Validators.required,Validators.pattern("^[0-9]*$")]),
     // sip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_add_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
     gstin_no:new FormControl(this.data.id > 0 ? this.data.items.gstin_no : ''),
@@ -79,18 +79,24 @@ export class ScmModificationComponent implements OnInit {
     is_selectall: new FormControl(false),
     swp_date: new FormControl(this.data.id > 0 ?
       JSON.parse(this.data.items.swp_date)
-      : JSON.parse(this.__getPrevScmDT.swp_date),[Validators.required]),
+      : global.getActualVal(this.__getPrevScmDT) ? JSON.parse(this.__getPrevScmDT.swp_date) : '',[Validators.required]),
     swp_frequency: new FormArray([]),
     is_selectall_for_swp: new FormControl(false),
     stp_date: new FormControl(this.data.id > 0 ?
       JSON.parse(this.data.items.stp_date)
-      :  JSON.parse(this.__getPrevScmDT.stp_date),[Validators.required]),
+      :  global.getActualVal(this.__getPrevScmDT) ? JSON.parse(this.__getPrevScmDT.stp_date) : '',[Validators.required]),
     stp_frequency: new FormArray([]),
     is_selectall_for_stp: new FormControl(false),
-    ava_special_sip: new FormControl(this.data.id > 0 ?
+    ava_special_sip: new FormControl(
+      this.data.id > 0 ?
       (this.data.items.ava_special_sip == "true" ? true : false)
-      : (this.__getPrevScmDT.ava_special_sip == "true" ? true : false)),
-    special_sip_name: new FormControl(this.data.id > 0 ? this.data.items.special_sip_name : global.getActualVal(this.__getPrevScmDT.special_sip_name))
+      : (
+        (global.getActualVal(this.__getPrevScmDT) ?
+        ((this.__getPrevScmDT.ava_special_sip == "true")
+        ? true : false) : false))
+
+      ),
+    special_sip_name: new FormControl(this.data.id > 0 ? this.data.items.special_sip_name : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.special_sip_name : ''))
 
   })
   constructor(
@@ -108,11 +114,16 @@ export class ScmModificationComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.data);
+    console.log(this.__getPrevScmDT);
 
     this.getProductMaster();
-    this.setFrequencyAmt(this.data.id > 0 ? JSON.parse(this.data.items.sip_freq_wise_amt) : __sipFrequency);
-    this.setSwpfrequencyAmt(this.data.id > 0 ? JSON.parse(this.data.items.swp_freq_wise_amt) : __sipFrequency);
-    this.setStpFrequency(this.data.id > 0 ? JSON.parse(this.data.items.stp_freq_wise_amt) : __sipFrequency);
+    this.setFrequencyAmt(this.data.id > 0 ?
+      JSON.parse(this.data.items.sip_freq_wise_amt)
+      : global.getActualVal(this.__getPrevScmDT) ? JSON.parse(this.__getPrevScmDT.sip_freq_wise_amt) : __sipFrequency);
+    this.setSwpfrequencyAmt(this.data.id > 0 ? JSON.parse(this.data.items.swp_freq_wise_amt)
+    : global.getActualVal(this.__getPrevScmDT) ? JSON.parse(this.__getPrevScmDT.swp_freq_wise_amt) : __sipFrequency);
+    this.setStpFrequency(this.data.id > 0 ? JSON.parse(this.data.items.stp_freq_wise_amt)
+    :  global.getActualVal(this.__getPrevScmDT) ? JSON.parse(this.__getPrevScmDT.stp_freq_wise_amt) : __sipFrequency);
     if(this.data.id > 0){
       this.getamcMasterbyproductId(this.data.items.product_id);
         this.getcatMasterbyproductId(this.data.items.product_id);
@@ -274,6 +285,7 @@ export class ScmModificationComponent implements OnInit {
         this.__dbIntr.api_call(1, '/schemeAddEdit', __scm,true).subscribe((res: any) => {
       if (res.suc == 1) {
            this.reset();
+           storage.setScmDtls(res.data);
            this.dialogRef.close({id:this.data.id,data:res.data});
       }
       this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Scheme updated successfully' : 'Scheme added successfully') : res.msg, res.suc);
@@ -307,17 +319,19 @@ export class ScmModificationComponent implements OnInit {
     return new FormGroup({
       id: new FormControl(_freDtls.id),
       freq_name: new FormControl(_freDtls.freq_name),
-      is_checked: new FormControl(_freDtls.is_checked == 'true' ? true : false),
+      is_checked: new FormControl(global.getType(_freDtls.is_checked)),
       sip_fresh_min_amt: new FormControl(_freDtls.sip_fresh_min_amt,[Validators.pattern("^[0-9]*$")]),
       sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt,[Validators.pattern("^[0-9]*$")]),
     });
   }
 
   createFrequencyforSWP_STP(_freDtls): FormGroup {
+    console.log(_freDtls);
+
     return new FormGroup({
       id: new FormControl(_freDtls.id),
       freq_name: new FormControl(_freDtls.freq_name),
-      is_checked: new FormControl(_freDtls.is_checked == 'true' ? true : false),
+      is_checked: new FormControl(global.getType(_freDtls.is_checked)),
       sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt,[Validators.pattern("^[0-9]*$")]),
     });
   }

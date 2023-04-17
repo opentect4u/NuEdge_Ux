@@ -52,6 +52,12 @@ __menu: submenu[] = [
       menu_name: "Manual Update",
       has_submenu: "N",
       url: "/main/operations/fixedeposit/manualupdate"
+    },
+    {
+      id:5,
+      menu_name:"FD Ceritficate Delivery",
+      has_submenu:"N",
+      url:"/main/operations/fixedeposit/fdcertificate"
     }
 ]
 

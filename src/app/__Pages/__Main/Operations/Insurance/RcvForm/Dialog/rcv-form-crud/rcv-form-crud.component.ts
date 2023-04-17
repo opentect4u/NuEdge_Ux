@@ -12,6 +12,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import buType from '../../../../../../../../assets/json/buisnessType.json';
 import { CreateProposerComponent } from '../create-proposer/create-proposer.component';
 import { DialogDtlsComponent } from '../dialog-dtls/dialog-dtls.component';
+import { insComp } from 'src/app/__Model/insComp';
 @Component({
   selector: 'app-rcv-form-crud',
   templateUrl: './rcv-form-crud.component.html',
@@ -25,7 +26,9 @@ export class RcvFormCrudComponent implements OnInit {
   __isClientPending: boolean = false;
   __isEuinPending: boolean = false;
   __isSubArnPending: boolean = false;
+  __isCompanyPending: boolean = false;
   __euinMst: any= [];
+  __insCompMst: insComp[] = [];
   __subbrkArnMst: any=[];
   __isVisible:boolean = true;
   __bu_type = buType;
@@ -62,6 +65,7 @@ export class RcvFormCrudComponent implements OnInit {
       validators:[Validators.required],
       asyncValidators:[this.ClientValidators()]
     }),
+    company_id:new FormControl('',[Validators.required]),
     proposer_name: new FormControl(''),
     recv_from: new FormControl(''),
      proposer_id: new FormControl('',[Validators.required]),
@@ -69,7 +73,6 @@ export class RcvFormCrudComponent implements OnInit {
   })
 
   ngOnInit(): void {
-
     this.getInsTypeMst();
     if(this.data.temp_tin_no){
       this.setRcvFormDtls();
@@ -77,16 +80,17 @@ export class RcvFormCrudComponent implements OnInit {
   }
   setRcvFormDtls(){
     this.__dbIntr.api_call(0,'/ins/formreceived','temp_tin_no='+ this.data.temp_tin_no).pipe(pluck("data")).subscribe(res =>{
-      console.log(res);
+
       this.__rcvForm.patchValue({
           bu_type:res[0].bu_type ,
           id:res[0].id ,
           proposer_id:res[0].proposer_id ,
           proposer_name:res[0].proposer_name,
           recv_from:res[0].recv_from ,
-          ins_type_id: res[0].ins_type_id,
-          insure_bu_type: res[0].insure_bu_type
-      })
+          insure_bu_type: res[0].insure_bu_type,
+          company_id:res[0].company_id
+      });
+      this.__rcvForm.get('ins_type_id').reset(res[0].ins_type_id,{onlySelf:true,emitEvent:true});
       this.__dialogDtForClient = {id:res[0].proposer_id,
         proposer_type:res[0].proposer_type,
         client_name:res[0].proposer_name,
@@ -103,7 +107,26 @@ export class RcvFormCrudComponent implements OnInit {
        }
     })
   }
+
+   getCompanyagainstinsuranceType(__ins_type_id){
+    this.__dbIntr.api_call(0,'/ins/company','ins_type_id='+__ins_type_id).pipe(pluck("data")).subscribe((res:insComp[]) =>{
+     this.__insCompMst = res;
+    })
+
+   }
+
   ngAfterViewInit(){
+
+    this.__rcvForm.controls['ins_type_id'].valueChanges.subscribe(res =>{
+      console.log(res);
+          if(res){
+            this.getCompanyagainstinsuranceType(res);
+          }
+          else{
+            this.__insCompMst.length = 0;
+          }
+    })
+
     // EUIN NUMBER SEARCH
   this.__rcvForm.controls['euin_no'].valueChanges.
   pipe(
@@ -198,27 +221,27 @@ export class RcvFormCrudComponent implements OnInit {
 
 
    /**change Event of sub Broker Arn Number */
-   this.__rcvForm.controls['sub_brk_cd'].valueChanges
-   .pipe(
-     tap(() => (this.__isSubArnPending = true)),
-     debounceTime(200),
-     distinctUntilChanged(),
-     switchMap((dt) =>
-       dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
-     ),
-     map((x: responseDT) => x.data)
-   )
-   .subscribe({
-     next: (value) => {
-       this.__subbrkArnMst = value;
-       this.searchResultVisibilityForSubBrkArn('block');
-       this.__isSubArnPending = false;
-     },
-     complete: () => console.log(''),
-     error: (err) => {
-       this.__isSubArnPending = false;
-     },
-   });
+  //  this.__rcvForm.controls['sub_brk_cd'].valueChanges
+  //  .pipe(
+  //    tap(() => (this.__isSubArnPending = true)),
+  //    debounceTime(200),
+  //    distinctUntilChanged(),
+  //    switchMap((dt) =>
+  //      dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
+  //    ),
+  //    map((x: responseDT) => x.data)
+  //  )
+  //  .subscribe({
+  //    next: (value) => {
+  //      this.__subbrkArnMst = value;
+  //      this.searchResultVisibilityForSubBrkArn('block');
+  //      this.__isSubArnPending = false;
+  //    },
+  //    complete: () => console.log(''),
+  //    error: (err) => {
+  //      this.__isSubArnPending = false;
+  //    },
+  //  });
   }
   getInsTypeMst(){
     this.__dbIntr.api_call(0,'/ins/type',null).pipe(pluck("data")).subscribe(res =>{
@@ -250,6 +273,7 @@ export class RcvFormCrudComponent implements OnInit {
     __rcvForm.append('ins_type_id',this.__rcvForm.value.ins_type_id);
     __rcvForm.append('insure_bu_type',this.__rcvForm.value.insure_bu_type);
     __rcvForm.append('temp_tin_no',this.data ? this.data.temp_tin_no : '');
+    __rcvForm.append('company_id',this.__rcvForm.value.company_id);
 
     if(this.__rcvForm.value.bu_type == 'B'){
       __rcvForm.append("sub_arn_no",this.__rcvForm.value.sub_arn_no ? this.__rcvForm.value.sub_arn_no : '');
@@ -310,6 +334,8 @@ export class RcvFormCrudComponent implements OnInit {
   searchResultVisibilityForSubBrkArn(display_mode){
     this.__subBrkArn.nativeElement.style.display = display_mode;
   }
+
+
   searchResultVisibilityForClient(display_mode){
     this.__clientCode.nativeElement.style.display= display_mode;
    }
@@ -432,5 +458,4 @@ export class RcvFormCrudComponent implements OnInit {
     );
   };
 }
-
 }

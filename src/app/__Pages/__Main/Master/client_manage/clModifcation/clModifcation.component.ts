@@ -263,16 +263,22 @@ export class ClModifcationComponent implements OnInit {
     });
   }
   getFiles(__ev, index, __type_id) {
+    console.log(__ev.target.files[0]);
+
     this.__docs.controls[index].get('doc_name').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.target.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
     this.__docs.controls[index].get('doc_name').updateValueAndValidity();
     if (this.__docs.controls[index].get('doc_name').status == 'VALID') {
-      // const file = __ev.target.files[0];
-
+      // if(__ev.target.files[0].type == 'application/pdf'){
+        this.__docs.controls[index].get('file_preview')?.patchValue(this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL( __ev.target.files[0])));
+      // }
+      // else{
+      //  const file = __ev.target.files[0];
       // const reader = new FileReader();
       // reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
       // reader.readAsDataURL(file);
-      this.__docs.controls[index].get('file_preview')?.patchValue(this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL( __ev.target.files[0])));
+      // }
       this.__docs.controls[index].get('file')?.patchValue(__ev.target.files[0]);
+
     }
     else {
       this.setFileValue(index)

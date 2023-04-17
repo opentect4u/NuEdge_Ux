@@ -10,6 +10,9 @@ import { NetworkInterceptor } from './__Interceptors/network.interceptor';
 import { SnkbarModule } from './__Core/snkbar/snkbar.module';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 /*<====== End =========>*/
+/**<== Mat Progress Bar Module ==>*/
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+/**<=== End ==> */
 
 @NgModule({
   declarations: [
@@ -21,7 +24,8 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     HttpClientModule,
     BrowserAnimationsModule,
     NgxSpinnerModule,
-    SnkbarModule
+    SnkbarModule,
+    MatProgressBarModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: NetworkInterceptor, multi: true },

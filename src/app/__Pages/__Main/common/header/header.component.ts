@@ -22,8 +22,7 @@ export class HeaderComponent implements OnInit {
     //     this.__rtDt = res;
     //   }
     // })
-    console.log(this.__top_menu);
-    
+
   }
 
   ngOnInit() {

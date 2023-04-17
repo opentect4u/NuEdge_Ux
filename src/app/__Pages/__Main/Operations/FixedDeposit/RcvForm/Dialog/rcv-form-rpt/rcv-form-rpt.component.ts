@@ -305,7 +305,7 @@ export class RcvFormRPTComponent implements OnInit {
         distinctUntilChanged(),
         switchMap((dt) =>
           dt?.length > 1
-            ? this.__dbIntr.searchTin('/ins/formreceived', dt + '&flag=C')
+            ? this.__dbIntr.searchTin('/ins/formreceived', dt)
             : []
         ),
         map((x: responseDT) => x.data)

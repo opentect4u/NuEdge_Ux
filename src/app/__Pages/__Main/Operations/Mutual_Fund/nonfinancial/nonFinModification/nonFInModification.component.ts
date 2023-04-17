@@ -25,6 +25,7 @@ import transmissionType from '../../../../../../../assets/json/TransmissionType.
 import { bank } from 'src/app/__Model/__bank';
 import { merge, Observable, of, Subscription } from 'rxjs';
 import declaration from '../../../../../../../assets/json/Declaration.json';
+import { global } from 'src/app/__Utility/globalFunc';
 @Component({
 selector: 'nonFInModification-component',
 templateUrl: './nonFInModification.component.html',
@@ -66,7 +67,7 @@ export class NonfinmodificationComponent implements OnInit {
   __kycMst: any[];
   __rnt_login_at: rnt[];
   __changeOfStatus = changeStatus;
-  allowedExtensions = ['jpg', 'png', 'jpeg'];
+  allowedExtensions = ['pdf'];
   __stateMst: any=[];
   __distMst: any=[];
   __cityMst: any=[];
@@ -187,19 +188,33 @@ constructor(
           change_status: new FormControl(''),
           new_name: new FormControl(''),
          tin_status: new FormControl('Y',[Validators.required]),
-         temp_tin_no: new FormControl('',[Validators.required]),
+         temp_tin_no: new FormControl('',
+         {
+          validators:[Validators.required],
+          asyncValidators:[this.TemporaryTINValidators()]
+
+        }),
          bu_type: new FormControl('',[Validators.required]),
          sub_brk_cd: new FormControl(''),
          sub_arn_no: new FormControl(''),
-         euin_no: new FormControl('',[Validators.required]),
+         euin_no: new FormControl('',{
+          validators:[Validators.required],
+          asyncValidators:[this.EUINValidators()]
+        }),
          client_id: new FormControl('', [Validators.required]),
-         client_name: new FormControl('', [Validators.required]),
-         client_code: new FormControl('', [Validators.required]),
+         client_name: new FormControl(''),
+         client_code: new FormControl('', {
+          validators:[Validators.required],
+          asyncValidators:[this.ClientValidators()]
+         }),
          trans_id: new FormControl('',[Validators.required]),
          folio_no: new FormControl('',{validators:[Validators.required],updateOn:'blur'}),
          plan_id: new FormControl('',[Validators.required]),
          option_id: new FormControl('',[Validators.required]),
-         scheme_name: new FormControl('',[Validators.required]),
+         scheme_name: new FormControl('',{
+          validators:[Validators.required],
+          asyncValidators:[this.SchemeValidators()]
+        }),
          scheme_id: new FormControl('',[Validators.required]),
          cancel_effective_date: new FormControl(''),
          remarks: new FormControl(''),
@@ -692,14 +707,40 @@ ngAfterViewInit(){
 
   this.__nonfinForm.controls['tin_status'].valueChanges.subscribe(res =>{
     this.__nonfinForm.controls['temp_tin_no'].setValidators(res == 'Y' ? [Validators.required] : null);
+    if(res == 'N'){this.__nonfinForm.controls['temp_tin_no'].removeAsyncValidators([this.TemporaryTINValidators()]);}
+    else{this.__nonfinForm.controls['temp_tin_no'].setAsyncValidators([this.TemporaryTINValidators()]);}
     this.__nonfinForm.controls['temp_tin_no'].updateValueAndValidity();
-
   })
   this.__nonfinForm.controls['bu_type'].valueChanges.subscribe(res =>{
-          this.__nonfinForm.controls['sub_brk_cd'].setValidators(res == 'B' ? [Validators.required] : null);
-          this.__nonfinForm.controls['sub_arn_no'].setValidators(res == 'B' ? [Validators.required] : null);
-          this.__nonfinForm.controls['sub_brk_cd'].updateValueAndValidity();
-          this.__nonfinForm.controls['sub_arn_no'].updateValueAndValidity();
+          // this.__nonfinForm.controls['sub_brk_cd'].setValidators(res == 'B' ? [Validators.required] : null);
+          // this.__nonfinForm.controls['sub_arn_no'].setValidators(res == 'B' ? [Validators.required] : null);
+          // this.__nonfinForm.controls['sub_brk_cd'].updateValueAndValidity();
+          // this.__nonfinForm.controls['sub_arn_no'].updateValueAndValidity();
+          this.__nonfinForm.controls['sub_arn_no'].setValue('', {
+            onlySelf: true,
+            emitEvent: false,
+          });
+          this.__nonfinForm.controls['euin_no'].setValue('', {
+            onlySelf: true,
+            emitEvent: false,
+          });
+          this.__nonfinForm.controls['sub_brk_cd'].setValue('', {
+            onlySelf: true,
+            emitEvent: false,
+          });
+
+          if(res == 'B'){
+            this.__nonfinForm.controls['sub_arn_no'].setValidators([Validators.required]);
+            this.__nonfinForm.controls['sub_arn_no'].setAsyncValidators([this.SubBrokerValidators()]);
+            this.__nonfinForm.controls['sub_brk_cd'].setValidators([Validators.required]);
+          }
+          else{
+            this.__nonfinForm.controls['sub_arn_no'].removeValidators([Validators.required]);
+            this.__nonfinForm.controls['sub_arn_no'].removeAsyncValidators([this.SubBrokerValidators()]);
+            this.__nonfinForm.controls['sub_brk_cd'].removeValidators([Validators.required]);
+          }
+          this.__nonfinForm.controls['sub_arn_no'].updateValueAndValidity({emitEvent:false});
+          this.__nonfinForm.controls['sub_brk_cd'].updateValueAndValidity({emitEvent:false});
   })
 
   this.__nonfinForm.controls['installment_dt'].valueChanges.subscribe(res =>{
@@ -717,7 +758,17 @@ ngAfterViewInit(){
   this.__nonfinForm.controls['warrant_amt'].setValidators(res == '17' ? [Validators.required] : null);
   this.__nonfinForm.controls['transmission_type'].setValidators(res == '19' ? [Validators.required] : null);
   this.__nonfinForm.controls['first_kyc'].setValidators(res == '20' ? [Validators.required] : null);
-  this.__nonfinForm.controls['swp_amount'].removeValidators([Validators.required]);
+  if(res == '30' || res  == '31'){
+    console.log(res);
+    this.__nonfinForm.controls['swp_amount'].setAsyncValidators(this.AmountValidators());
+    this.__nonfinForm.controls['swp_amount'].setValidators([Validators.required]);
+  }
+  else{
+    this.__nonfinForm.get('swp_amount').removeAsyncValidators(this.AmountValidators());
+    this.__nonfinForm.controls['swp_amount'].removeValidators([Validators.required]);
+    this.__nonfinForm.controls['swp_amount'].setValue('');
+  }
+
   this.__nonfinForm.controls['duration'].removeValidators([Validators.required]);
   this.__nonfinForm.controls['swp_end_date'].setValidators((res == '30' || res == '31') ? [Validators.required] : null);
   this.__nonfinForm.controls['swp_duration'].setValidators((res == '30'  || res == '31') ? [Validators.required] : null);
@@ -763,13 +814,13 @@ ngAfterViewInit(){
     this.__nonfinForm.controls['minorToMajorpan'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['kyc_status'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['stp_type'].updateValueAndValidity({emitEvent:false});
-    this.__nonfinForm.controls['swp_amount'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['duration'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['swp_end_date'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['swp_duration'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['swp_start_date'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['swp_dates'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['swp_freq'].updateValueAndValidity({emitEvent:false});
+    this.__nonfinForm.controls['swp_amount'].updateValueAndValidity({emitEvent:false});
      this.__nonfinForm.controls['swp_type'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['cancel_effective_date'].updateValueAndValidity({emitEvent:false});
     this.__nonfinForm.controls['change_contact_type'].updateValueAndValidity({emitEvent:false});
@@ -930,9 +981,9 @@ ngAfterViewInit(){
   }
 });
 //SWP frequency change
-this.__nonfinForm.controls['swp_freq'].valueChanges.subscribe(res =>{
+// this.__nonfinForm.controls['swp_freq'].valueChanges.subscribe(res =>{
 
-})
+// })
 // SWP Amount
 this.__nonfinForm.controls['swp_amount'].valueChanges.subscribe(res =>{
    this.checkAmt(res,this.__nonfinForm.controls['swp_freq'].value)
@@ -1384,30 +1435,43 @@ outsideClickforSubBrkArn(__ev){
     this.__subBrkArn.nativeElement.style.display = display_mode;
   }
 getItems(__items){
- console.log(__items);
-//  this.__nonfinForm.controls['temp_tin_no'].reset(__items.temp_tin_no,{onlySelf:true,emitEvent:false});
+ this.__nonfinForm.controls['temp_tin_no'].reset(__items.temp_tin_no,{onlySelf:true,emitEvent:false});
  this.searchResultVisibility('none');
- this.__dialogDtForClient = {id: __items.client_id,client_type: __items.client_type,client_name: __items.client_name,};
  this.__nonfinForm.patchValue({
   bu_type: __items.bu_type,
-  client_name: __items.client_name,
-  client_id: __items.client_id,
-  sub_brk_cd:(__items.sub_brk_cd),
   trans_id:__items.trans_id,
   folio_no: __items.folio_no,
-  scheme_id:__items.scheme_id ? __items.scheme_id : '',
  })
- this.getSchemeWiseFrequency(__items.scheme_id);
- this.__nonfinForm.controls['temp_tin_no'].patchValue(__items.temp_tin_no,{emitEvent:false})
- this.__nonfinForm.controls['euin_no'].patchValue((__items.euin_no + ' - ' + __items.emp_name),{emitEvent:false})
- this.__nonfinForm.controls['client_code'].patchValue(__items.client_code,{emitEvent:false})
- this.__nonfinForm.controls['sub_arn_no'].patchValue(__items.sub_arn_no,{emitEvent:false})
- this.__nonfinForm.controls['scheme_name'].patchValue(__items.scheme_name ? __items.scheme_name : '',{emitEvent:false})
+ setTimeout(() => {
+    this.__euinMst.length = 0;
+    this.__clientMst.length =0;
+    this.__schemeMst.length = 0;
+    this.__clientMst.push({client_name:__items.client_name,client_code:__items.client_code,id:__items.client_id,client_type:__items.client_type})
+    this.__euinMst.push({euin_no:__items.euin_no,emp_name:__items.emp_name});
+    this.__schemeMst.push({scheme_name:__items.scheme_name,id:__items.scheme_id})
+    this.getItemsDtls(this.__euinMst[0],'E');
+    this.getItemsDtls(this.__clientMst[0],'C');
+    this.getItemsDtls(this.__schemeMst[0],'SC');
+    if(__items.bu_type == 'B'){
+      this.__subbrkArnMst.length =0;
+      this.__subbrkArnMst.push({
+        arn_no:__items.sub_arn_no,
+        code:__items.sub_brk_cd
+      });
+      this.getItemsDtls(this.__subbrkArnMst[0],'S');
+    }
+ }, 200);
+//  this.getSchemeWiseFrequency(__items.scheme_id);
+//  this.__nonfinForm.controls['temp_tin_no'].patchValue(__items.temp_tin_no,{emitEvent:false})
+//  this.__nonfinForm.controls['euin_no'].patchValue((__items.euin_no + ' - ' + __items.emp_name),{emitEvent:false})
+//  this.__nonfinForm.controls['client_code'].patchValue(__items.client_code,{emitEvent:false})
+//  this.__nonfinForm.controls['sub_arn_no'].patchValue(__items.sub_arn_no,{emitEvent:false})
+//  this.__nonfinForm.controls['scheme_name'].patchValue(__items.scheme_name ? __items.scheme_name : '',{emitEvent:false})
 }
 getItemsDtls(__euinDtls,__type){
   switch (__type) {
     case 'S':
-      this.__nonfinForm.controls['sub_arn_no'].reset(__euinDtls.arn_no + ' - ' + __euinDtls.bro_name, { onlySelf: true, emitEvent: false });
+      this.__nonfinForm.controls['sub_arn_no'].reset(__euinDtls.arn_no, { onlySelf: true, emitEvent: false });
       this.__nonfinForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
       this.searchResultVisibilityForSubBrkArn('none');
       break;
@@ -1620,11 +1684,11 @@ getSchemeWiseFrequency(__scheme_id){
    this.swp_dates = this.__nonfinForm.controls['trans_id'].value == '30' ? JSON.parse(res[0].swp_date) : JSON.parse(res[0].stp_date);
     if(this.__nonfinForm.value.trans_id == '30'){
       this.__frequency = res[0].swp_freq_wise_amt ?
-      (JSON.parse(res[0].swp_freq_wise_amt).filter(((x: any)=> x.is_checked == true))) : [];
+      (JSON.parse(res[0].swp_freq_wise_amt).filter(((x: any)=> global.getType(x.is_checked) == true))) : [];
     }
     else{
       this.__frequency = res[0].stp_freq_wise_amt ?
-      (JSON.parse(res[0].stp_freq_wise_amt).filter(((x: any)=> x.is_checked == true))) : [];
+      (JSON.parse(res[0].stp_freq_wise_amt).filter(((x: any)=> global.getType(x.is_checked) == true))) : [];
     }
     // var date = new Date();
     // date.setDate(date.getDate()
@@ -1713,14 +1777,12 @@ setEndDT(__ev){
     this.__nonfinForm.controls['swp_end_date'].setValue(_calculateDT);
 }
 checkAmt(res,swp_freq){
-  console.log(swp_freq);
   if(res && swp_freq){
     this.__checkedAmt = Number(this.__frequency.filter((x: any) => x.id == swp_freq)[0].sip_add_min_amt);
     console.log(Number(res) >
     Number(this.__frequency.filter((x: any) => x.id == swp_freq)[0].sip_add_min_amt));
-    this.__isAmtcheck = (Number(res) >
+    this.__isAmtcheck = (Number(res) >=
     Number(this.__frequency.filter((x: any) => x.id == swp_freq)[0].sip_add_min_amt)) ? false : true;
-    console.log(this.__isAmtcheck);
   }
 }
 
@@ -1927,6 +1989,8 @@ checkIfPercentageGreater(): Observable<boolean> {
   let sum = 0;
   const ctr = this.existing_nominee.controls;
   ctr.forEach((__el: any) => {
+    console.log(__el.controls.percentage.value);
+
     sum += Number(__el.controls.percentage.value);
   });
   return of(sum > 100).pipe(delay(1000));
@@ -1936,5 +2000,120 @@ deletemergeFolio(index){
   this.merge_folio.removeAt(index);
 }
 
+checkIfTEMPTINToExist(tempTin: string): Observable<boolean> {
+  console.log(this.__temp_tinMst);
 
+  return of(this.__temp_tinMst.findIndex((x) => (x.temp_tin_no == tempTin)) != -1);
+}
+TemporaryTINValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfTEMPTINToExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { TempTINExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+checkIfEuinExists(emp_name: string): Observable<boolean> {
+  if (global.containsSpecialChars(emp_name)) {
+    return of(
+      this.__euinMst.findIndex((x) => x.euin_no == emp_name.split(' ')[0]) !=
+        -1
+    );
+  } else {
+    return of(this.__euinMst.findIndex((x) => x.euin_no == emp_name) != -1);
+  }
+}
+EUINValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfEuinExists(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          // if res is true, sip_date exists, return true
+          return res ? null : { euinExists: true };
+          // NB: Return null if there is no error
+        }
+        return null;
+      })
+    );
+  };
+}
+checkIfclientExist(cl_code: string): Observable<boolean> {
+  return of(this.__clientMst.findIndex((x) => (x.client_code == cl_code)) != -1);
+}
+ClientValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfclientExist(control.value).pipe(
+      map((res) => {
+
+        if (control.value) {
+          return res ? null : { ClientExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+
+checkIfscmExist(scm_name: string): Observable<boolean> {
+  return of(this.__schemeMst.findIndex((x) => (x.scheme_name == scm_name)) != -1);
+}
+SchemeValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfscmExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { ScmExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+checkIfSubBrokerExist(subBrk: string): Observable<boolean> {
+  return of(this.__subbrkArnMst.findIndex((x) => x.arn_no == subBrk) != -1);
+}
+SubBrokerValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfSubBrokerExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { subBrkExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+
+
+amtCheck(res,swp_freq): boolean{
+  console.log(swp_freq);
+  console.log(res);
+  if(res && swp_freq){
+    this.__checkedAmt = Number(this.__frequency.filter((x: any) => x.id == swp_freq)[0].sip_add_min_amt);
+    return  (Number(res) >=
+    Number(this.__frequency.filter((x: any) => x.id == swp_freq)[0].sip_add_min_amt)) ? false : true;
+  }
+  return false;
+}
+
+checkIfAmountLess(res): Observable<boolean> {
+   return of(this.amtCheck(res, this.__nonfinForm.controls['swp_freq'].value));
+}
+AmountValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfAmountLess(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? { AmtExists: true } : null;
+        }
+        return null;
+      })
+    );
+  };
+}
 }

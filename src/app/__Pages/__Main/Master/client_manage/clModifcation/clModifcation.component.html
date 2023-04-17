@@ -346,14 +346,11 @@
 
               </td>
               <td class="rowWidth">
-                <!-- <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image"> -->
-                <!-- <a>
-                  <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
-                </a> -->
-                <a [href]="__docs.controls[i].get('file_preview')?.value" target="__blank" *ngIf="__docs.controls[i].get('file_preview')?.value">
+                <a [href]="__docs.controls[i].get('file_preview')?.value" target="__blank"
+                *ngIf="__docs.controls[i].get('file_preview')?.value">
                   <img src="../../../../../../assets/images/pdf.png"  alt="preview Image">
                 </a>
-                <img [src]="__noImg" *ngIf="!__docs.controls[i].get('file_preview')?.value">
+                <!-- <img [src]="__noImg" *ngIf="!__docs.controls[i].get('file_preview')?.value"> -->
               </td>
               <td>
                 <ng-container *ngIf="__docs.controls[i].get('id')?.value == 0">

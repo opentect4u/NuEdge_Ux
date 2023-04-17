@@ -54,18 +54,20 @@ th {
 
 .form-control {
     /* height: 44px; */
-    border: 1px solid #b8b8b8;
-    -webkit-box-shadow:none;
+    /* border: 1px solid #b8b8b8; */
     box-shadow:none;
+    font-weight: 500!important;
+    border-radius: 0!important;
 }
 
 label {
-    color: #3a5076;
-    font-weight: 500;
-    font-size: 12px;
-    margin: 9px 0px;
-    display: flex;
-    align-items: center;
+  color: #3a5076;
+  font-weight: 700;
+  font-size: 11px;
+  /* margin: 7px 0px; */
+  margin: 10px 0px;
+    /* display: flex;
+    align-items: center; */
 }
 
 .dialog-title {
@@ -171,29 +173,42 @@ tr.mat-header-row {
 .spinner-border{
   position: absolute;
   right: 12px;
-  top: 59%;
+  top: 64%;
   display: inline-block;
   vertical-align: text-bottom;
   border: 0.15em solid currentColor;
   border-right-color: #c5202000!important;
   border-radius: 50%;
   animation: spinner-border .75s linear infinite;
-  border: 2px solid #3a5076;
+  /* border: 3px solid #3f51b5; */
+  border: 2px solid #3f51b5;
+
+    }
+    .spinner-border{
+      width: 1.5rem!important;
+    height: 1.5rem!important;
     }
 
     .breadcrumb>li {
-      font-size: 14px;
-      font-weight: 500;}
+      /* font-size: 14px;
+      font-weight: 500; */
+      font-size: 13px;
+      font-weight: 600;
+      color: gray;
+    }
 .breadcrumb > li:last-child{color: #1f4584!important;}
 .breadcrumb{
-    margin: 31px 0px 0px 0px!important;
+    /* margin: 31px 0px 0px 0px!important;
     padding: 9px 15px;
     list-style: none;
     background-color: #f6f6f6;
+    box-shadow: none; */
+    margin: 31px 0px 0px 0px!important;
+    padding: 9px 15px;
+    list-style: none;
+    background-color: #eceef0;
     box-shadow: none;
-    /* background-color: #f5f5f5;
-    /* border-radius: 4px;
-    box-shadow: -1px 1px 3px grey; */
+    border: 1px solid #eaeaea;
 }
 
 .radio1{
@@ -214,3 +229,15 @@ margin-left: 215px;
 }
 
 
+.viewIconDtls{
+  position: absolute!important;
+  right: 10px;
+  top: 36%;
+}
+.mat-progress-bar-fill::after {
+  background-color: #ff0000;
+}
+.loaderRouter{
+  height: 4px;
+  background: #fff;
+}

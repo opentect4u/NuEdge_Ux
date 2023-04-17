@@ -117,4 +117,8 @@ export class CmnDialogForDtlsViewComponent implements OnInit {
     })
   }
 
+  getExtension(filename){
+    const ext = filename.split('.');
+    return ext[ext.length -1];
+  }
 }

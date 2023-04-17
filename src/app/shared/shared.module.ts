@@ -23,6 +23,8 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { CreateClientComponent } from './create-client/create-client.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ManualUpdateEntryForMFComponent } from './manual-update-entry-for-mf/manual-update-entry-for-mf.component';
+import { MatChipsModule } from '@angular/material/chips';
 @NgModule({
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     MatSelectModule,
     A11yModule,
+    MatChipsModule,
     MatTooltipModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
@@ -50,7 +53,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ResizeColumnDirective,
     elipsisPipe,
     DeletemstComponent,
-    CreateClientComponent
+    CreateClientComponent,
+    ManualUpdateEntryForMFComponent
   ],
   exports:[
     BnkrplcPipe,
@@ -64,6 +68,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     NgMultiSelectDropDownModule,
     OverlayModule,
     MatSortModule,
+    MatChipsModule,
     DragDropModule,
     MatButtonToggleModule,
     MatCheckboxModule,

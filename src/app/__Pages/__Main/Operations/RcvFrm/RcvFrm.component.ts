@@ -81,10 +81,6 @@ export class RcvFrmComponent implements OnInit {
 
   ngOnInit() {
     this.__utility.getBreadCrumb(this.__brdCrmbs);
-
-    // console.log(this.__rtDt.snapshot.queryParamMap.get('trans_id'));
-    console.log(atob(this.__rtDt.snapshot.queryParamMap.get('type_id')));
-
     // if(this.__rtDt.snapshot.queryParamMap.get('trans_id')){
     //   this.getRvcFormMaster();
     // }
@@ -159,13 +155,10 @@ export class RcvFrmComponent implements OnInit {
    ? 'NFO_'
    : atob(this.__rtDt.snapshot.queryParamMap.get('type_id')) == '1'
    ? 'Financial_' : 'Non_Financial_';
-    console.log(atob(this.__rtDt.snapshot.queryParamMap.get('type_id')));
-
    const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.width = '80%';
     dialogConfig.id = id > 0  ? (type + id.toString()) : type+"0";
-    console.log(dialogConfig.id);
     dialogConfig.hasBackdrop = false;
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = false;
@@ -179,11 +172,9 @@ export class RcvFrmComponent implements OnInit {
       title: 'Form Recievable' + (atob(this.__rtDt.snapshot.queryParamMap.get('type_id')) == '4' ? ' - NFO' : (atob(this.__rtDt.snapshot.queryParamMap.get('type_id')) == '1' ? ' - Financial' : ' - Non Financial')),
       product_id:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')),
       trans_type_id:atob(this.__rtDt.snapshot.queryParamMap.get('type_id')),
-      temp_tin_no:this.__rtDt.snapshot.queryParamMap.get('temp_tin_no') ?
-      atob(this.__rtDt.snapshot.queryParamMap.get('temp_tin_no')) : '',
+      temp_tin_no:null,
       right:global.randomIntFromInterval(1,60)
     };
-    console.log(dialogConfig.data);
     var  dialogref;
       if(atob(this.__rtDt.snapshot.queryParamMap.get('type_id')) == '1'){
         dialogref = this.__dialog.open(RcvmodificationComponent, dialogConfig);
@@ -196,13 +187,11 @@ export class RcvFrmComponent implements OnInit {
       }
       dialogref.afterClosed().subscribe(dt => {
         if (dt) {
-          console.log(dt);
-           this.settransTypeCount(dt.trans_id);
+          //  this.settransTypeCount(dt.trans_id);
         }
       });
     }
     catch(ex){
-      console.log(ex);
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize("80%");
       this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:(type + 'RF')})
@@ -234,8 +223,6 @@ export class RcvFrmComponent implements OnInit {
 
     }
     populateDT(__items){
-      console.log(__items);
-
     // console.log(__items);
     // console.log(__items);
     //  this.__utility.navigatewithqueryparams('/main/rcvFormmodification',

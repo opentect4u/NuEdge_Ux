@@ -1,10 +1,10 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject } from '@angular/core';
+import { Component, OnInit,Inject, QueryList, ElementRef, ViewChildren, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { map, pluck } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { amc } from 'src/app/__Model/amc';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -16,12 +16,19 @@ import { RcvmodificationComponent } from '../rcvModification/rcvModification.com
 import buType from '../../../../../../assets/json/buisnessType.json';
 import { RcvformmodifyfornfoComponent } from '../rcvFormModifyForNFO/rcvFormModifyForNFO.component';
 import { RcvfrmmodificationfornonfinComponent } from '../rcvFormmodificationForNonFIn/rcvFrmModificationForNonFin.component';
+import { client } from 'src/app/__Model/__clientMst';
 @Component({
 selector: 'rcvFormRpt-component',
 templateUrl: './rcvFormRpt.component.html',
 styleUrls: ['./rcvFormRpt.component.css']
 })
 export class RcvformrptComponent implements OnInit {
+  @ViewChild('clientCd') __clientCode: ElementRef;
+  @ViewChild('searchEUIN') __searchRlt: ElementRef;
+  @ViewChild('subBrkArn') __subBrkArn: ElementRef;
+  @ViewChild('searchTempTin') __searchTempTin: ElementRef;
+
+  @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
 
   __sortAscOrDsc: any= {active:'',direction:'asc'};
     toppings = new FormControl();
@@ -44,6 +51,15 @@ export class RcvformrptComponent implements OnInit {
   __export= new MatTableDataSource<any>([]);
   __isAdd: boolean = false;
   __isVisible:boolean= true;
+  __isClientPending: boolean = false;
+  __isEuinPending: boolean = false;
+  __isSubArnPending: boolean = false;
+  __istemporaryspinner: boolean = false;
+
+  __temp_tinMst: any=[];
+  __subbrkArnMst: any=[];
+  __clientMst:client[] =[];
+  __euinMst: any=[];
   __RcvForms = new MatTableDataSource<any>([]);
   __pageNumber = new FormControl(10);
   __paginate: any= [];
@@ -75,7 +91,8 @@ export class RcvformrptComponent implements OnInit {
      inv_type: new FormControl(''),
      trans_type: new FormControl(''),
      kyc_status: new FormArray([]),
-     bu_type: new FormArray([])
+     bu_type: new FormArray([]),
+     is_all_bu_type: new FormControl(false)
   })
   __transType: any=[];
 constructor(
@@ -98,9 +115,7 @@ ngOnInit(){
   this.getRcvForm();
 }
 getTransactionType(){
-  console.log('aas');
   this.__dbIntr.api_call(0,'/showTrans','trans_type_id='+this.data.trans_type_id).pipe(pluck("data")).subscribe((res:any) => {
-    console.log(res);
     this.__transType = res;
   })
 }
@@ -149,18 +164,22 @@ onKycChange(e: any) {
 
 onbuTypeChange(e: any){
   const bu_type: FormArray = this.__rcvForms.get('bu_type') as FormArray;
-  if (e.target.checked) {
-    bu_type.push(new FormControl(e.target.value));
+  if (e.checked) {
+    bu_type.push(new FormControl(e.source.value));
   } else {
     let i: number = 0;
     bu_type.controls.forEach((item: any) => {
-      if (item.value == e.target.value) {
+      if (item.value == e.source.value) {
         bu_type.removeAt(i);
         return;
       }
       i++;
     });
   }
+  this.__rcvForms.get('is_all_bu_type').setValue(
+    bu_type.controls.length == 3 ? true : false,
+    { emitEvent: false }
+  );
 }
 
 getTransactionTypeDtls(){
@@ -168,12 +187,122 @@ getTransactionTypeDtls(){
     '/formreceivedshow',
     ('product_id='+this.data.product_id
     + '&trans_type_id='+this.data.trans_type_id)).pipe(pluck("data")).subscribe(res => {
-    console.log(res);
     this.__trans_types = res;
 })
 }
 
 ngAfterViewInit(){
+
+
+    // Temporary Tin Number
+    this.__rcvForms.controls['temp_tin_no'].valueChanges
+      .pipe(
+        tap(() => (this.__istemporaryspinner = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1
+            ? this.__dbIntr.searchTin('/formreceived', dt)
+            : []
+        ),
+        map((x: responseDT) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          this.__temp_tinMst = value;
+          this.searchResultVisibilityForTempTin('block');
+          this.__istemporaryspinner = false;
+        },
+        complete: () => console.log(''),
+        error: (err) => (this.__istemporaryspinner = false),
+      });
+
+        /**change Event of sub Broker Arn Number */
+        this.__rcvForms.controls['sub_brk_cd'].valueChanges
+        .pipe(
+          tap(() => (this.__isSubArnPending = true)),
+          debounceTime(200),
+          distinctUntilChanged(),
+          switchMap((dt) =>
+            dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
+          ),
+          map((x: responseDT) => x.data)
+        )
+        .subscribe({
+          next: (value) => {
+            this.__subbrkArnMst = value;
+            this.searchResultVisibilityForSubBrk('block');
+            this.__isSubArnPending = false;
+          },
+          complete: () => console.log(''),
+          error: (err) => {
+            this.__isSubArnPending = false;
+          },
+        });
+
+      // EUIN NUMBER SEARCH
+      this.__rcvForms.controls['euin_no'].valueChanges
+      .pipe(
+        tap(() => (this.__isEuinPending = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.__dbIntr.searchItems('/employee', dt) : []
+        ),
+        map((x: responseDT) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          this.__euinMst = value;
+          this.searchResultVisibility('block');
+          this.__isEuinPending = false;
+        },
+        complete: () => console.log(''),
+        error: (err) => {
+          this.__isEuinPending = false;
+        },
+      });
+      // End
+
+  /** Client Code Change */
+  this.__rcvForms.controls['client_code'].valueChanges
+  .pipe(
+    tap(() => (this.__isClientPending = true)),
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((dt) =>
+      dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+    ),
+    map((x: any) => x.data)
+  )
+  .subscribe({
+    next: (value) => {
+      this.__clientMst = value.data;
+      this.searchResultVisibilityForClient('block');
+      this.__isClientPending = false;
+    },
+    complete: () => {},
+    error: (err) => {
+      this.__isClientPending = false;
+    },
+  });
+
+  /** End */
+
+
+  this.__rcvForms.controls['is_all_bu_type'].valueChanges.subscribe((res) => {
+    const bu_type: FormArray = this.__rcvForms.get('bu_type') as FormArray;
+    bu_type.clear();
+    if (!res) {
+      this.uncheckAll_buType();
+    } else {
+      this.__bu_type.forEach((__el) => {
+        bu_type.push(new FormControl(__el.id));
+      });
+      this.checkAll_buType();
+    }
+  });
+
   this.__rcvForms.controls['options'].valueChanges.subscribe(res =>{
     if(res == '1'){
      this.__columns = this.__columnsForDtls;
@@ -206,7 +335,16 @@ ngAfterViewInit(){
     this.__exportedClmns = res.filter(item => !clm.includes(item))
   });
 }
-
+uncheckAll_buType() {
+  this.__buTypeChecked.forEach((element: any) => {
+    element.checked = false;
+  });
+}
+checkAll_buType() {
+  this.__buTypeChecked.forEach((element: any) => {
+    element.checked = true;
+  });
+}
 tableExport(column_name: string | null = '', sort_by: string| null | '' = 'asc'){
   const __rcvFormExport = new FormData();
   __rcvFormExport.append('trans_type_id',this.data.trans_type_id ? this.data.trans_type_id : '');
@@ -294,8 +432,6 @@ deleteRcvForm(__element,index){
   }
 }
 populateDT(__items){
-  console.log(__items);
-
 const dialogConfig = new MatDialogConfig();
 dialogConfig.autoFocus = false;
 dialogConfig.width = '80%';
@@ -309,7 +445,7 @@ try{
   dialogConfig.data = {
   flag:'RF',
   id: __items.temp_tin_no,
-  title: 'Form Recievable' + (__items.trans_type_id == '4' ? ' - NFO' :  (__items.trans_type_id == '1' ? ' - Financial' : '- Non Financial')),
+  title: 'Form Recievable ' + (__items.trans_type_id == '4' ? ' - NFO' :  (__items.trans_type_id == '1' ? ' - Financial' : '- Non Financial')) + ' ( ' +__items.temp_tin_no +  ' )' ,
   product_id:__items.product_id,
   trans_type_id:__items.trans_type_id,
   temp_tin_no:__items.temp_tin_no,
@@ -377,5 +513,72 @@ maximize(){
     this.__rcvForms.get('options').setValue('2');
     this.__sortAscOrDsc = {active: '',direction : 'asc'}
     this.submit();
+  }
+
+
+  outsideClickforSubBrkArn(__ev) {
+    if (__ev) {
+      this.searchResultVisibilityForSubBrk('none');
+    }
+  }
+
+  outsideClickforClient(__ev) {
+    if (__ev) {
+      this.searchResultVisibilityForClient('none');
+    }
+  }
+
+  outsideClick(__ev) {
+    if (__ev) {
+      this.searchResultVisibility('none');
+    }
+  }
+  outsideClickfortempTin(__ev) {
+    if (__ev) {
+      this.searchResultVisibilityForTempTin('none');
+    }
+  }
+
+
+  searchResultVisibilityForTempTin(display_mode) {
+    this.__searchTempTin.nativeElement.style.display = display_mode;
+  }
+  /** Search Result Off against Sub Broker */
+  searchResultVisibilityForSubBrk(display_mode) {
+    this.__subBrkArn.nativeElement.style.display = display_mode;
+  }
+  searchResultVisibility(display_mode) {
+    this.__searchRlt.nativeElement.style.display = display_mode;
+  }
+  searchResultVisibilityForClient(display_mode) {
+    this.__clientCode.nativeElement.style.display = display_mode;
+  }
+  getItems(__items, __mode) {
+    switch (__mode) {
+      case 'C':
+        this.__rcvForms.controls['client_code'].reset(__items.client_name, {
+          emitEvent: false,
+        });
+        this.searchResultVisibilityForClient('none');
+        break;
+        case 'E':
+            this.__rcvForms.controls['euin_no'].reset(__items.emp_name, {
+            emitEvent: false,
+        });
+        this.searchResultVisibility('none');
+        break;
+      case 'T':
+        this.__rcvForms.controls['temp_tin_no'].reset(__items.temp_tin_no, {
+          emitEvent: false,
+        });
+        this.searchResultVisibilityForTempTin('none');
+        break;
+      case 'S':
+        this.__rcvForms.controls['sub_brk_cd'].reset(__items.code, {
+          emitEvent: false,
+        });
+        this.searchResultVisibilityForSubBrk('none');
+        break;
+    }
   }
 }

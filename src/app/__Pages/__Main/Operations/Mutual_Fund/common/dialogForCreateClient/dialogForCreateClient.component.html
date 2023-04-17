@@ -11,7 +11,7 @@
 <mat-dialog-content>
   <form  [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm_" autocomplete="off" ngNativeValidate>
     <div class="row" *ngIf="this.data.cl_type != 'M' && this.data.cl_type != 'N'">
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="panNo">PAN No<span class="text-danger">*</span></label>
           <input type="text" name="pan" id="panNo"
           class="form-control"
@@ -31,14 +31,14 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="clientName">Client Name <span class="text-danger">*</span></label>
           <input type="text" name="client_name" id="clientName" class="form-control" placeholder="Enter Client Name" formControlName="client_name">
           <div class="invalid-feedback" *ngIf="__clientForm.get('client_name').invalid && (__clientForm.get('client_name').dirty || __clientForm.get('client_name').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('client_name')).errors?.required">*Please provide client name</span>
           </div>
         </div>
-        <div class="col-sm-12 my-4" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <div class="col-sm-12 my-2" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
           <label for="dob">Date Of Birth <span class="text-danger">*</span></label>
           <input type="date"
           name="dob"
@@ -54,7 +54,7 @@
       </div>
 
       <div class="row" *ngIf="this.data.cl_type == 'M'">
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="gur_pan">Gurdians PAN <span class="text-danger">*</span></label>
           <input type="text" name="gur_pan" id="gur_pan" class="form-control" placeholder="eg. XXXXX1234X" formControlName="gurdians_pan" minlength="10" maxlength="10">
           <div class="invalid-feedback" *ngIf="__clientForm.get('gurdians_pan').invalid && (__clientForm.get('gurdians_pan').dirty || __clientForm.get('gurdians_pan').touched)">
@@ -67,14 +67,14 @@
                   number must be 10 characters long</span>
           </div>
         </div>
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="gur_name">Gurdians Name <span class="text-danger">*</span></label>
           <input type="text" name="gur_name" id="gur_name" class="form-control" placeholder="Enter Gurdians Name" formControlName="gurdians_name">
           <div class="invalid-feedback" *ngIf="__clientForm.get('gurdians_name').invalid && (__clientForm.get('gurdians_name').dirty || __clientForm.get('gurdians_name').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_name')).errors?.required">*Please provide gurdians name</span>
           </div>
         </div>
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <!-- <label for="relations">Relations <span class="text-danger">*</span></label>
           <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea> -->
           <label>RelationShip</label>
@@ -93,7 +93,7 @@
 
 
       <div class="row" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="mblNumber">Mobile Number <span class="text-danger">*</span></label>
           <input (keypress)="preventNonumeric($event)" maxlength="10" minlength="10" type="text" name="mobile" id="mblNumber" class="form-control" placeholder="Enter Mobile Number" formControlName="mobile">
           <div class="invalid-feedback" *ngIf="__clientForm.get('mobile').invalid && (__clientForm.get('mobile').dirty || __clientForm.get('mobile').touched)">
@@ -104,7 +104,7 @@
 
           </div>
         </div>
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="sec_mobile">Alternative mobile number</label>
           <input maxlength="10" minlength="10" type="text" (keypress)="preventNonumeric($event)"  name="sec_mobile" id="sec_mobile" placeholder="Enter Alternative Mobile Number" class="form-control" formControlName="sec_mobile">
           <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('minlength')">*mobile number must be 10 digits</span>
@@ -114,7 +114,7 @@
         </div>
       </div>
       <div class="row" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="email">Email <span class="text-danger">*</span></label>
           <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email" formControlName="email">
           <div class="invalid-feedback" *ngIf="__clientForm.get('email').invalid && (__clientForm.get('email').dirty || __clientForm.get('email').touched)">
@@ -123,7 +123,7 @@
 
           </div>
         </div>
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="sec_email">Alternative Email</label>
           <input type="text" name="sec_email" id="sec_email"  class="form-control"   placeholder="Enter Alternative Email" formControlName="sec_email">
           <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_email')).errors?.email">*Please provide valid email</span>
@@ -131,20 +131,20 @@
         </div>
       </div>
       <div class="row" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="addr">Address Line 1 <span class="text-danger">*</span></label>
           <input placeholder="Enter Address 1" type="text" name="add_line_1" id="addr" class="form-control"  formControlName="add_line_1">
           <div class="invalid-feedback" *ngIf="__clientForm.get('add_line_1').invalid && (__clientForm.get('add_line_1').dirty || __clientForm.get('add_line_1').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('add_line_1')).errors?.required">*Please provide address line 1</span>
           </div>
         </div>
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="addr2">Address Line 2</label>
           <input type="text" placeholder="Enter Address 2" name="add_line_2" id="addr2" class="form-control"  formControlName="add_line_2">
         </div>
       </div>
       <div class="row" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="__state">State <span class="text-danger">*</span></label>
           <select name="state" id="__state" class="form-control" formControlName="state">
           <option value="">Select State</option>
@@ -154,7 +154,7 @@
             <span class="invalid-feedback" *ngIf="(__clientForm.get('state')).errors?.required">*Please provide state</span>
           </div>
         </div>
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="_dist">District <span class="text-danger">*</span></label>
           <select name="_dist" id="_dist" class="form-control" formControlName="dist">
             <option value="">Select District</option>
@@ -166,7 +166,7 @@
         </div>
       </div>
       <div class="row" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="__city">City / Village <span class="text-danger">*</span></label>
           <select name="__city" id="__city" class="form-control" formControlName="city">
             <option value="">Select City</option>
@@ -176,7 +176,7 @@
             <span class="invalid-feedback" *ngIf="(__clientForm.get('city')).errors?.required">*Please provide city or village</span>
           </div>
         </div>
-        <div class="col-sm-12 my-4">
+        <div class="col-sm-12 my-2">
           <label for="__pin">Pincode</label>
           <input name="pin" id="__pin" class="form-control" formControlName="pincode" placeholder="Enter Pincode" minlength="6" maxlength="6"/>
           <div class="invalid-feedback" *ngIf="__clientForm.get('pincode').invalid && (__clientForm.get('pincode').dirty || __clientForm.get('pincode').touched)">
@@ -191,7 +191,7 @@
         <span>Upload Documents</span>
        <hr class="line"/>
       </div>
-      <table class="my-4" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+      <table class="my-2" *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
         <thead>
           <tr>
             <th>

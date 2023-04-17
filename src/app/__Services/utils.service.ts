@@ -22,13 +22,12 @@ export class UtiliService {
   private __brdCrumbs = new BehaviorSubject<breadCrumb[]>([]);
   public readonly __brdCrumbs$ = this.__brdCrumbs.asObservable().pipe(delay(1));
   private __isvisibleMenuIcon = new BehaviorSubject<any>(null);
-  public readonly __isvisibleMenuIcon$ = this.__isvisibleMenuIcon
-    .asObservable()
-    .pipe(delay(1));
+  public readonly __isvisibleMenuIcon$ = this.__isvisibleMenuIcon.asObservable().pipe(delay(1));
 
   private __route = new BehaviorSubject<Route>(null);
   private __renderer: Renderer2;
   public readonly __route$ = this.__route.asObservable().pipe(delay(1));
+
   constructor(
     private __router: Router,
     private _snackBar: MatSnackBar,
@@ -46,8 +45,6 @@ export class UtiliService {
     }
   }
   navigatewithqueryparams(url, _params) {
-    console.log(url);
-
     this.__router.navigate([url], _params);
   }
   //Get Route Details
@@ -62,6 +59,7 @@ export class UtiliService {
   getBreadCrumb(__brcrmbs) {
     this.__brdCrumbs.next(__brcrmbs);
   }
+
   //Adding Dropdown Script
   addScript() {
     let __script = this.__renderer.createElement('script');

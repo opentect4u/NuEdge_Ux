@@ -8,7 +8,7 @@ import {
   HttpErrorResponse,
   HttpResponse
 } from '@angular/common/http';
-import {storage} from '../__Utility/storage';
+// import {storage} from '../__Utility/storage';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -66,9 +66,9 @@ export class NetworkInterceptor implements HttpInterceptor {
         return throwError(() => new Error(error.statusText));
       }),
       tap((event: any) =>{
-        if(request.method != 'GET' && request.context.get(IS_CACHE)){
-          storage.set__scmDtls(request.body?.data)
-        }
+        // if(request.method != 'GET' && request.context.get(IS_CACHE)){
+        //   storage.set__scmDtls(request.body?.data)
+        // }
       })
     )
   }

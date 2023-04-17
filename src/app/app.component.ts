@@ -1,8 +1,20 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { UtiliService } from './__Services/utils.service';
+/**<=== Routing Change Event ==>*/
+import {
+  Router,
+  // import as RouterEvent to avoid confusion with the DOM Event
+  Event as RouterEvent,
+  NavigationStart,
+  NavigationEnd,
+  NavigationCancel,
+  NavigationError,
+  ActivatedRoute
+} from '@angular/router'
+
+/**<== End ==> */
 
 export interface IBreadCrumb {
   label: string;
@@ -16,6 +28,7 @@ export interface IBreadCrumb {
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+  isLoadingOnchangeRoute: boolean = false;
   public breadcrumbs: IBreadCrumb[];
   constructor(
     private __router: Router,
@@ -25,23 +38,13 @@ export class AppComponent {
   ) {
     this.setTitle();
     // this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
-    console.log(this.__actRoute.root);
+    this.__router.events.subscribe((e : RouterEvent) => {
+      this.navigationInterceptor(e);
+    })
 
   }
 
-  ngOnInit() {
-    // this.__router.events
-    //   .pipe(
-    //     filter((event) => event instanceof NavigationEnd),
-    //     distinctUntilChanged()
-    //   )
-    //   .subscribe(() => {
-    //     console.log(this.__actRoute);
-
-    //     this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
-    //     this.__utility.getBreadCrumb(this.breadcrumbs);
-    //   });
-  }
+  ngOnInit() {}
 
   /**
    * This will return the current activated routes details
@@ -66,62 +69,24 @@ export class AppComponent {
       });
   }
 
-  /**
-   * Recursively build breadcrumb according to activated route.
-   * @param route
-   * @param url
-   * @param breadcrumbs
-   */
-  buildBreadCrumb(
-    route: ActivatedRoute,
-    url: string = '',
-    breadcrumbs: IBreadCrumb[] = []
-  ): IBreadCrumb[] {
-    let label =
-      route.routeConfig && route.routeConfig.data
-        ? route.routeConfig.data.breadcrumb
-        : '';
-    let path =
-      route.routeConfig && route.routeConfig.path ? route.routeConfig.path : '';
 
-    // If the route is dynamic route such as ':id', remove it
-    const lastRoutePart = path.split('/').pop();
-    console.log(lastRoutePart);
+  // Shows and hides the loading spinner during RouterEvent changes
+  navigationInterceptor(event: RouterEvent): void {
+    console.log(event);
 
-    const isDynamicRoute = lastRoutePart.startsWith(':');
-    if(isDynamicRoute && !!route.snapshot) {
-      console.log(lastRoutePart);
-
-      const paramName = lastRoutePart.split(':')[1];
-      console.log('paramName:' + paramName);
-      path = path.replace(lastRoutePart, route.snapshot.params[paramName]);
-      console.log('path:' + paramName);
-      label = atob(route.snapshot.params[paramName]);
+    if (event instanceof NavigationStart) {
+      this.isLoadingOnchangeRoute = true
     }
-    // if(route.snapshot){
-    //   console.log(route.snapshot.queryParamMap);
-    // }
-
-    console.log(route?.routeConfig?.path);
-
-    const nextUrl = path ? `${url}/${path}` : url;
-    const breadcrumb: IBreadCrumb = {
-      label: label,
-      url: nextUrl,
-      queryParams:  route.snapshot.queryParamMap.keys.length > 0 ? route.snapshot.queryParamMap : ''
-    };
-    // Only adding route with non-empty label
-    const newBreadcrumbs = breadcrumb.label
-      ? [...breadcrumbs, breadcrumb]
-      : [...breadcrumbs];
-    if (route.firstChild) {
-      console.log(route.firstChild);
-      console.log(newBreadcrumbs);
-      const rt = nextUrl.replace('/main', '/');
-      //If we are not on our current path yet,
-      //there will be more children to look after, to build our breadcumb
-      return this.buildBreadCrumb(route.firstChild, rt, newBreadcrumbs);
+    if (event instanceof NavigationEnd) {
+      this.isLoadingOnchangeRoute = false
     }
-    return newBreadcrumbs;
+
+    // Set loading state to false in both of the below events to hide the spinner in case a request fails
+    if (event instanceof NavigationCancel) {
+      this.isLoadingOnchangeRoute = false
+    }
+    if (event instanceof NavigationError) {
+      this.isLoadingOnchangeRoute = false
+    }
   }
 }

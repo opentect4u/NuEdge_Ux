@@ -19,6 +19,9 @@ constructor(private __http:HttpClient) {
  searchTin(__url,__searchTerm):Observable<any>{
   return this.__http.get<any>(`${environment.apiUrl + __url +'?temp_tin_no='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
+ ReportTINSearch(__url,__searchTerm):Observable<any>{
+  return this.__http.get<any>(`${environment.apiUrl + __url +'?temp_tin_no='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
+ }
 
  getpaginationData(url){
   console.log(url);

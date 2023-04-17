@@ -7,7 +7,6 @@ import { map, pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
-import { environment } from 'src/environments/environment';
 import buType from '../../../../../../../../assets/json/buisnessType.json';
 import { rnt } from 'src/app/__Model/Rnt';
 import { AckUploadForNonFinComponent } from '../ackUploadForNonFin/ackUploadForNonFin.component';

@@ -44,29 +44,126 @@
               </mat-button-toggle-group>
             </div>
           </div>
-          <div class="row my-5">
+          <div class="row my-2">
             <div class="col-sm-4">
-              <label for="tin_no">Temporary Tin Number</label>
-              <input type="text" placeholder="Enter Temporary TIN Number" name="tin_no" id="tin_no" class="form-control"
-                formControlName="temp_tin_no">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
+                  <div class="searchDiv">
+                    <label for="__temp_tin_no">Temporary TIN Number
+                    </label>
+                    <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
+                      formControlName="temp_tin_no" placeholder="Search by Temporary TIN Number">
+                    <span class="spinner-border"
+                      *ngIf="__istemporaryspinner && __rcvForms.get('temp_tin_no').value?.length > 1"></span>
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickfortempTin($event)">
+                      <div class="serachresult_client" #searchTempTin>
+                        <ul *ngIf="__temp_tinMst.length > 0">
+                          <li *ngFor="let items of __temp_tinMst" (click)="getItems(items,'T')">
+                            {{items.temp_tin_no}} | {{items.client_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__temp_tinMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Records Found
+                          </h5>
+                          <p>Temporary TIN Number Not Available</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
             <div class="col-sm-4">
-              <label for="client_code">Client Details</label>
-              <input type="text" name="client_code" id="client_code" class="form-control" formControlName="client_code"
-                placeholder="Enter Client code / Name / pan / email">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+                  <div class="searchDiv">
+                    <label for="client_code">Client Details</label>
+                    <input type="text" name="client_code" id="client_code" class="form-control" formControlName="client_code"
+                      placeholder="Enter Client code / Name / pan / email">
+                    <span class="spinner-border" *ngIf="__isClientPending && __rcvForms.get('client_code').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
+                      <div class="serachresult_client" #clientCd>
+                        <ul *ngIf="__clientMst.length > 0">
+                          <li *ngFor="let items of __clientMst" (click)="getItems(items,'C')">
+                           {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Records Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
 
             <div class="col-sm-4">
-              <label for="euin_no">EUIN</label>
+              <!-- <label for="euin_no">EUIN</label>
               <input type="text" name="euin_no" id="euin_no" class="form-control" placeholder='Enter EUIN'
-                formControlName="euin_no">
+                formControlName="euin_no"> -->
+
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+                  <div class="searchDiv">
+                    <label for="Euin">EUIN</label>
+                    <input type="search" id="Euin"
+                    class="form-control"
+                    placeholder="Serach By EUIN"
+                    formControlName="euin_no">
+                    <span class="spinner-border" *ngIf="__isEuinPending && __rcvForms.get('euin_no').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                      <div class="serachresult_client" #searchEUIN>
+                        <ul *ngIf="__euinMst.length > 0">
+                          <li *ngFor="let items of __euinMst" (click)="getItems(items,'E')">
+                           {{items.euin_no}} | {{items.emp_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Employees Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-4">
-              <label for="sub_brk_cd">Sub Broker Code</label>
+              <!-- <label for="sub_brk_cd">Sub Broker Code</label>
               <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control"
-                placeholder='Enter Sub Broker Code' formControlName="sub_brk_cd">
+                placeholder='Enter Sub Broker Code' formControlName="sub_brk_cd"> -->
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                  <div class="searchDiv">
+                    <label for="subbrkArn">Sub Broker Code</label>
+                    <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                      formControlName="sub_brk_cd">
+                    <span class="spinner-border"
+                      *ngIf="__isSubArnPending && __rcvForms.get('sub_brk_cd').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                      <div class="serachresult_client" #subBrkArn>
+                        <ul *ngIf="__subbrkArnMst.length > 0">
+                          <li *ngFor="let items of __subbrkArnMst" (click)="getItems(items,'S')">
+                            {{items.code}} | {{items.bro_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Sub Brokers Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
             </div>
 
             <div class="col-sm-4">
@@ -84,7 +181,7 @@
             </div>
           </div>
 
-          <div class="row my-5">
+          <div class="row my-2">
             <!-- <div class="col-sm-4">
               <label for="">Kyc Status: </label>
               <label *ngFor="let data of __kycStatus; let i=index" for="{{data.id}}" class="mx-3">
@@ -92,26 +189,22 @@
                 {{data.status}}
               </label>
             </div> -->
-            <div class="col-sm-8">
-              <label for="">Buisness Type: </label>
+            <div class="col-sm-8 my-auto">
+              <!-- <label for="">Buisness Type: </label>
               <label *ngFor="let bu_type of __bu_type; let i=index" for="{{bu_type.id}}" class="mx-3">
                 <input type="checkbox" id="{{bu_type.id}}" [value]="bu_type.id" (change)="onbuTypeChange($event)" />
                 {{bu_type.bu_type}}
-              </label>
+              </label> -->
+              <mat-checkbox
+              #buTypeChecked
+              color="primary"
+              [class]="'mr-3'"
+              *ngFor="let bu_type of __bu_type; let i=index"
+              [value]="bu_type.id"
+              (change)="onbuTypeChange($event)"
+              > {{bu_type.bu_type}}</mat-checkbox>
+              <mat-checkbox class="ml-3" color="primary" formControlName="is_all_bu_type"> All</mat-checkbox>
             </div>
-          </div>
-          <div class="row" >
-            <div class="col-sm-4" >
-              <!-- <ng-container *ngIf="__isAdd">
-                <label for="inv_type">Investment Type</label>
-                <select name="inv_type" id="inv_type" class="form-control" formControlName="inv_type">
-                  <option value="">Select Investment Type</option>
-                  <option value="F">Fresh</option>
-                  <option value="A">Additional</option>
-                </select>
-              </ng-container> -->
-            </div>
-            <div class="col-sm-4"></div>
             <div class="col-sm-4 my-auto">
               <button mat-raised-button color="primary" class="float-right">
                 Show

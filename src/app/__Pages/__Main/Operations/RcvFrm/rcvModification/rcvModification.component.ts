@@ -48,6 +48,7 @@ export class RcvmodificationComponent implements OnInit {
   __isEuinSpinner: boolean = false;
   __isSubBrkArnSpinner: boolean = false;
   __isschemeSpinner: boolean = false;
+  __isschemetoSpinner: boolean  =false;
 
   @ViewChild('searchResult') __searchRlt: ElementRef;
   @ViewChild('subBrkArn') __subBrkArn: ElementRef;
@@ -67,7 +68,7 @@ export class RcvmodificationComponent implements OnInit {
     { flag: 'N', name: 'Non Pan Holder', icon: 'credit_card_off' },
   ];
   __transType: any = [];
-  __clientMst: client[] = [];
+  __clientMst: any = [];
   __euinMst: any = [];
   __subbrkArnMst: any = [];
   __schemeMst: any = [];
@@ -138,18 +139,14 @@ export class RcvmodificationComponent implements OnInit {
       )
       .pipe(pluck('data'))
       .subscribe((res) => {
-        console.log(res);
         this.__trans_types = res;
       });
   }
   getTransactionType() {
-    console.log('aas');
-
     this.__dbIntr
       .api_call(0, '/showTrans', 'trans_type_id=' + this.data.trans_type_id)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
-        console.log(res);
         this.__transType = res;
       });
   }
@@ -158,53 +155,63 @@ export class RcvmodificationComponent implements OnInit {
       .api_call(0, '/formreceived', 'temp_tin_no=' + this.data.temp_tin_no)
       .pipe(pluck('data'))
       .subscribe((res) => {
-        console.log(res);
         this.__rcvForm.patchValue({
-          sub_brk_cd: res[0].sub_brk_cd,
-          bu_type: res[0].bu_type,
-          application_no: res[0].application_no,
-          trans_id: res[0].trans_id,
+          bu_type: global.getActualVal(res[0].bu_type),
+          trans_id: global.getActualVal(res[0].trans_id),
           id: res[0].id,
-          client_id: res[0].client_id,
-          client_name: res[0].client_name,
-          scheme_id: res[0].scheme_id,
-          recv_from: res[0].recv_from,
-          inv_type: res[0].inv_type,
-          kyc_status: res[0].kyc_status,
-          product_id: res[0].product_id,
+          scheme_id: global.getActualVal(res[0].scheme_id),
+          recv_from: global.getActualVal(res[0].recv_from),
+          inv_type: global.getActualVal(res[0].inv_type),
+          kyc_status: global.getActualVal(res[0].kyc_status),
+          product_id: global.getActualVal(res[0].product_id),
+          folio_no: global.getActualVal(res[0].folio_no),
+          application_no: global.getActualVal(res[0].application_no)
         });
-        console.log(res[0]);
-        this.__euinMst = [
-          { euin_no: res[0].euin_no, emp_name: res[0].emp_name },
-        ];
-        this.__rcvForm.controls['client_code'].reset(res[0].client_code, {
-          onlySelf: true,
-          emitEvent: false,
-        });
-        this.__rcvForm.controls['euin_no'].reset(
-          res[0].euin_no + ' - ' + res[0].emp_name,
-          { onlySelf: true, emitEvent: false }
-        );
-        this.__rcvForm.controls['scheme_name'].reset(res[0].scheme_name, {
-          onlySelf: true,
-          emitEvent: false,
-        });
-        this.__rcvForm.controls['sub_arn_no'].reset(res[0].sub_arn_no, {
-          onlySelf: true,
-          emitEvent: false,
-        });
-        this.__rcvForm.controls['sub_brk_cd'].reset(res[0].sub_brk_cd);
 
-        this.__dialogDtForClient = {
-          id: res[0].client_id,
-          client_type: res[0].client_type,
+        /** FOR BINDING EUIN */
+        setTimeout(() => {
+          this.__euinMst = [
+            { euin_no: res[0].euin_no, emp_name: res[0].emp_name },
+          ];
+          this.getItems(this.__euinMst[0],'E');
+
+          /** FOR BINDING Sub Broker */
+          if(this.__rcvForm.controls['bu_type'].value == 'B'){
+            this.__subbrkArnMst.push({
+              arn_no:res[0].sub_arn_no,
+              code:res[0].sub_brk_cd
+            })
+            this.getItems(this.__subbrkArnMst[0],'S')
+          }
+        /**End */
+
+         /** FOR BINDING Switch Scheme */
+         if(this.__rcvForm.controls['trans_id'].value == 3){
+           this.__schemeMstforSwitchTo.push({
+             id:res[0].scheme_id_to,
+             scheme_name:res[0].scheme_name_to
+           });
+           this.getItems(this.__schemeMstforSwitchTo[0],'ST');
+         }
+         /**End */
+        }, 200);
+
+         /** END */
+
+        /** FOR BINDING CLIENT*/
+         this.__clientMst.push({
+          client_code:res[0].client_code,
+          id:res[0].client_id,
           client_name: res[0].client_name,
-        };
-        this.__dialogDtForScheme = {
-          id: res[0].scheme_id,
-          scheme_name: res[0].scheme_name,
-        };
-        this.__clientMst.push(this.__dialogDtForClient);
+          client_type:res[0].client_type
+         })
+         this.getItems(this.__clientMst[0],'C')
+         /** END */
+
+        /** FOR BINDING SCHEME / SWITCH SCHEME */
+        this.__schemeMst.push({id:res[0].scheme_id,scheme_name:res[0].scheme_name});
+        this.getItems(this.__schemeMst[0],'SC');
+        /** END */
       });
   }
   outsideClick(__ev) {
@@ -237,12 +244,11 @@ export class RcvmodificationComponent implements OnInit {
       )
       .subscribe({
         next: (value) => {
-          console.log(value);
           this.__euinMst = value;
           this.searchResultVisibility('block');
           this.__isEuinSpinner = false;
         },
-        complete: () => console.log(''),
+        complete: () =>{},
         error: (err) => {
           this.__isEuinSpinner = false;
         },
@@ -262,13 +268,12 @@ export class RcvmodificationComponent implements OnInit {
       )
       .subscribe({
         next: (value) => {
-          console.log(value);
           this.__subbrkArnMst = value;
           this.searchResultVisibilityForSubBrkArn('block');
           this.__isSubBrkArnSpinner = false;
           this.getItems(null, 'E');
         },
-        complete: () => console.log(''),
+        complete: () => {},
         error: (err) => {
           this.__isSubBrkArnSpinner = false;
         },
@@ -296,7 +301,7 @@ export class RcvmodificationComponent implements OnInit {
           });
           this.__isClientSpinner = false;
         },
-        complete: () => console.log(''),
+        complete: () => {},
         error: (err) => {
           this.__isClientSpinner = false;
         },
@@ -328,7 +333,7 @@ export class RcvmodificationComponent implements OnInit {
           this.searchResultVisibilityForScheme('block');
           this.__isschemeSpinner = false;
         },
-        complete: () => console.log(''),
+        complete: () => {},
         error: (err) => {
           this.__isschemeSpinner = false;
         },
@@ -337,6 +342,7 @@ export class RcvmodificationComponent implements OnInit {
     //switch Scheme Search
     this.__rcvForm.controls['switch_scheme_to'].valueChanges
       .pipe(
+        tap(()=> this.__isschemetoSpinner = true),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
@@ -352,41 +358,43 @@ export class RcvmodificationComponent implements OnInit {
       .subscribe({
         next: (value) => {
           this.__dialogDtForSchemeTo = null;
-          console.log(this.__dialogDtForSchemeTo);
           this.__rcvForm.patchValue({ scheme_id_to: '' });
           this.__schemeMstforSwitchTo = value;
           this.searchResultVisibilityForSchemeSwicthTo('block');
+          this.__isschemetoSpinner = false;
         },
-        complete: () => console.log('Completed'),
-        error: (err) => console.log('Error'),
+        complete: () => {},
+        error: (err) => {this.__isschemetoSpinner = false;}
       });
 
     //On Change on buisness type
     this.__rcvForm.controls['bu_type'].valueChanges.subscribe((res) => {
-      this.__rcvForm.controls['sub_arn_no'].reset('', {
+      this.__rcvForm.controls['sub_arn_no'].setValue('', {
         onlySelf: true,
         emitEvent: false,
       });
-      this.__rcvForm.controls['euin_no'].reset('', {
+      this.__rcvForm.controls['euin_no'].setValue('', {
         onlySelf: true,
         emitEvent: false,
       });
-      this.__rcvForm.controls['sub_brk_cd'].reset('', {
+      this.__rcvForm.controls['sub_brk_cd'].setValue('', {
         onlySelf: true,
         emitEvent: false,
       });
-      this.__rcvForm.controls['sub_arn_no'].setValidators(
-        res == 'B' ? [Validators.required] : null
-      );
-      this.__rcvForm.controls['sub_arn_no'].setAsyncValidators(
-        res == 'B'
-          ? [this.SubBrokerValidators()]
-          : null
-      );
-      this.__rcvForm.controls['sub_brk_cd'].setValidators(
-        res == 'B' ? [Validators.required] : null
-      );
-      this.__rcvForm.controls['sub_arn_no'].updateValueAndValidity();
+
+      if(res == 'B'){
+        this.__rcvForm.controls['sub_arn_no'].setValidators([Validators.required]);
+        this.__rcvForm.controls['sub_arn_no'].setAsyncValidators([this.SubBrokerValidators()]);
+        this.__rcvForm.controls['sub_brk_cd'].setValidators([Validators.required]);
+      }
+      else{
+        this.__rcvForm.controls['sub_arn_no'].removeValidators([Validators.required]);
+        this.__rcvForm.controls['sub_arn_no'].removeAsyncValidators([this.SubBrokerValidators()]);
+        this.__rcvForm.controls['sub_brk_cd'].removeValidators([Validators.required]);
+      }
+      this.__rcvForm.controls['sub_arn_no'].updateValueAndValidity({emitEvent:false});
+      this.__rcvForm.controls['sub_brk_cd'].updateValueAndValidity({emitEvent:false});
+
     });
 
     this.__rcvForm.controls['inv_type'].valueChanges.subscribe((res) => {
@@ -405,13 +413,15 @@ export class RcvmodificationComponent implements OnInit {
 
     //trans_id change
     this.__rcvForm.controls['trans_id'].valueChanges.subscribe((res) => {
-      console.log(res);
       if (res == '3') {
         this.__rcvForm.controls['scheme_id_to'].setValidators([
           Validators.required,
         ]);
         this.__rcvForm.controls['switch_scheme_to'].setValidators([
           Validators.required,
+        ]);
+        this.__rcvForm.controls['switch_scheme_to'].setAsyncValidators([
+           this.SchemeToValidators()
         ]);
       } else {
         this.__rcvForm.controls['scheme_id_to'].removeValidators([
@@ -420,9 +430,10 @@ export class RcvmodificationComponent implements OnInit {
         this.__rcvForm.controls['switch_scheme_to'].removeValidators([
           Validators.required,
         ]);
+        this.__rcvForm.controls['switch_scheme_to'].removeAsyncValidators([this.SchemeToValidators()]);
       }
-      this.__rcvForm.controls['scheme_id_to'].updateValueAndValidity();
-      this.__rcvForm.controls['switch_scheme_to'].updateValueAndValidity();
+      this.__rcvForm.controls['scheme_id_to'].updateValueAndValidity({emitEvent:false});
+      this.__rcvForm.controls['switch_scheme_to'].updateValueAndValidity({emitEvent:false});
     });
   }
   searchResultVisibility(display_mode) {
@@ -441,8 +452,6 @@ export class RcvmodificationComponent implements OnInit {
     this.__scheme_swicth_to.nativeElement.style.display = display_mode;
   }
   getItems(__euinDtls, __type) {
-    console.log(__euinDtls);
-
     switch (__type) {
       case 'E':
         this.__rcvForm.controls['euin_no'].setValue(
@@ -548,18 +557,24 @@ export class RcvmodificationComponent implements OnInit {
     __rcvForm.append('scheme_id', this.__rcvForm.value.scheme_id);
     __rcvForm.append('recv_from', this.__rcvForm.value.recv_from);
     __rcvForm.append('inv_type', this.__rcvForm.value.inv_type);
-    __rcvForm.append(
-      'application_no',
-      this.__rcvForm.value.application_no
-        ? this.__rcvForm.value.application_no
-        : ''
-    );
+
+
     __rcvForm.append('kyc_status', this.__rcvForm.value.kyc_status);
     __rcvForm.append('id', this.__rcvForm.value.id);
-    __rcvForm.append(
-      'folio_no',
-      this.__rcvForm.value.folio_no ? this.__rcvForm.value.folio_no : ''
-    );
+    if(this.__rcvForm.value.inv_type == 'A'){
+      __rcvForm.append(
+        'folio_no',
+        this.__rcvForm.value.folio_no ? this.__rcvForm.value.folio_no : ''
+      );
+    }
+    else{
+      __rcvForm.append(
+        'application_no',
+        this.__rcvForm.value.application_no
+          ? this.__rcvForm.value.application_no
+          : ''
+      );
+    }
     __rcvForm.append(
       'temp_tin_no',
       this.data.temp_tin_no
@@ -608,7 +623,7 @@ export class RcvmodificationComponent implements OnInit {
         }
         // this.settransTypeCount(this.__rcvForm.value.trans_id == 1 ? 0 : (this.__rcvForm.value.trans_id == 2 ? 1 : 2));
 
-        this.__rcvForm.reset();
+        // this.__rcvForm.reset();
       });
   }
   openDialog(__type) {
@@ -642,13 +657,9 @@ export class RcvmodificationComponent implements OnInit {
     } catch (ex) {}
   }
   navigateTo(menu) {
-    console.log(menu);
-
     this.openDialogforClient(menu);
   }
   openDialogforClient(__menu) {
-    console.log(__menu);
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = true;
@@ -675,8 +686,9 @@ export class RcvmodificationComponent implements OnInit {
     try {
       const dialogref = this.__dialog.open(createClientComponent, dialogConfig);
       dialogref.afterClosed().subscribe((dt) => {
-        console.log(dt);
         if (dt) {
+          this.__clientMst.push(dt.data);
+          this.__isCldtlsEmpty = false;
           this.getItems(dt.data, 'C');
         }
       });
@@ -729,8 +741,6 @@ export class RcvmodificationComponent implements OnInit {
     };
   }
   checkIfSubBrokerExist(subBrk: string): Observable<boolean> {
-    console.log(this.__subbrkArnMst);
-
     return of(this.__subbrkArnMst.findIndex((x) => x.arn_no == subBrk) != -1);
   }
   SubBrokerValidators(): AsyncValidatorFn {
@@ -774,6 +784,22 @@ export class RcvmodificationComponent implements OnInit {
         map((res) => {
           if (control.value) {
             return res ? null : { ScmExists: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
+
+  checkIfscmToExist(scm_name: string): Observable<boolean> {
+    return of(this.__schemeMstforSwitchTo.findIndex((x) => (x.scheme_name == scm_name)) != -1);
+  }
+  SchemeToValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfscmToExist(control.value).pipe(
+        map((res) => {
+          if (control.value) {
+            return res ? null : { ScmToExists: true };
           }
           return null;
         })

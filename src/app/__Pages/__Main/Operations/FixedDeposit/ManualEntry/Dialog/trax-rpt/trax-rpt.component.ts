@@ -555,14 +555,14 @@ export class TraxRPTComponent implements OnInit {
   }
   exportPdf() {
     if (this.__insTraxForm.get('options').value == '3') {
-      this.__Rpt.printRPT('InsRPT');
+      this.__Rpt.printRPT('FDRPT');
     } else {
       this.__Rpt.downloadReport(
-        '#InsRPT',
+        '#FDRPT',
         {
-          title: 'Insurance Report',
+          title: 'FD Report',
         },
-        'Insurance Report  '
+        'FD Report'
       );
     }
   }

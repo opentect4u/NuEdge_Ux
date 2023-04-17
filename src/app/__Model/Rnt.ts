@@ -1,7 +1,7 @@
 
 /****************GET RESPONSE OF RNT MASTER FROM BACKEND IN THE FOLLOWING FORMAT***********************/
 export interface rnt {
-     id: number;
+     id: any;
      rnt_name: string;
      rnt_full_name: string;
      login_url: string;

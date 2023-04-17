@@ -60,7 +60,6 @@ export class fdTraxClm {
     {id:"tds_info",text:"TDS Information"},
     {id:"comp_login_at",text:"Company Login_ At"}
   ];
-
   public static INITIAL_COLUMNS = [
     'edit',
     'delete',
@@ -68,5 +67,5 @@ export class fdTraxClm {
     "bu_type",
     "sub_brk_cd",
     "euin_no"
-  ]
+  ];
 }

@@ -1,0 +1,748 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title">
+    <h2>Reports For FD Certificate Delivery</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <div class="card my-5">
+      <div class="card-body p-5">
+        <form [formGroup]="__insTraxForm" (ngSubmit)="searchInsurance()" autocomplete="off">
+          <div class="row">
+            <div class="col-sm-8 my-auto">
+              <mat-radio-group aria-label="Select an option" formControlName="options">
+                <mat-radio-button color="primary" value="2">Summary</mat-radio-button>
+                <mat-radio-button color="primary" value="1" class="ml-5">Detail</mat-radio-button>
+                <!-- <mat-radio-button color="primary" value="3" class="ml-5">Day Sheet</mat-radio-button> -->
+              </mat-radio-group>
+            </div>
+            <div class="col-sm-4">
+              <mat-button-toggle-group class="float-right" aria-label="Font Style" formControlName="filter_type">
+                <mat-button-toggle value="A" (click)="AdvanceFilter()">
+                  <mat-icon>filter_alt</mat-icon>Advanced Filter
+                </mat-button-toggle>
+                <mat-button-toggle value="R" (click)="refresh()">
+                  <mat-icon>sync</mat-icon>
+                </mat-button-toggle>
+
+              </mat-button-toggle-group>
+              <!-- <button mat-icon-button type="button" class="float-right" title="Reset" (click)="refresh()">
+                <mat-icon>refresh</mat-icon>
+              </button> -->
+            </div>
+          </div>
+          <ng-container *ngIf="__insTraxForm.get('options').value != '3'">
+            <div class="row">
+              <div class="col-sm-4">
+                <label for="dt_type">Date Periods</label>
+                <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+                  <option value="">Select</option>
+                  <option value="D">Day</option>
+                  <option value="W">Week</option>
+                  <option value="M">Month</option>
+                  <option value="Y">Year</option>
+                  <option value="R">Date Range</option>
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <label for="frm_dt">Start Date</label>
+                <input type="date" name="frm_dt" id="frm_dt" class="form-control" formControlName="frm_dt">
+              </div>
+              <div class="col-sm-4">
+                <label for="to_dt">End Date</label>
+                <input type="date" name="to_dt" id="to_dt" class="form-control" formControlName="to_dt">
+              </div>
+            </div>
+            <div class="row my-2">
+              <div class="col-sm-3">
+                <label for="tin_no">TIN Number</label>
+                <input type="text" name="tin_no" id="tin_no" placeholder="Enter TIN Number" class="form-control"
+                  formControlName="tin_no">
+              </div>
+              <div class="col-sm-3">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+                  <div class="searchDiv">
+                    <label for="__clntCd">Investor Details</label>
+                    <input type="search" name="__clntCd" id="__clntCd" class="form-control"
+                      formControlName="investor_code"
+                      placeholder="Search By Investor Name,Investor Code, Email, Mobile, Pan & DOB">
+                    <span class="spinner-border"
+                      *ngIf="__isClientPending && __insTraxForm.get('investor_code').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
+                      <div class="serachresult_client" #clientCd>
+                        <ul *ngIf="__clientMst.length > 0">
+                          <li *ngFor="let items of __clientMst" (click)="getItems(items,'C')">
+                            {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Records Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                  <div class="searchDiv">
+                    <label for="subbrkArn">Sub Broker Code</label>
+                    <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                      formControlName="sub_brk_cd">
+                    <span class="spinner-border"
+                      *ngIf="__isSubArnPending && __insTraxForm.get('sub_brk_cd').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility
+                      (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                      <div class="serachresult_client" #subBrkArn>
+                        <ul *ngIf="__subbrkArnMst.length > 0">
+                          <li *ngFor="let items of __subbrkArnMst" (click)="getItems(items,'S')">
+                            {{items.code}} | {{items.bro_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Sub Brokers Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+                  <div class="searchDiv">
+                    <label for="Euin">Employee</label>
+                    <input type="search" id="Euin" class="form-control" placeholder="Serach By Employee"
+                      formControlName="euin_no">
+                    <span class="spinner-border"
+                      *ngIf="__isEuinPending && __insTraxForm.get('euin_no').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                      <div class="serachresult_client" #searchEUIN>
+                        <ul *ngIf="__euinMst.length > 0">
+                          <li *ngFor="let items of __euinMst" (click)="getItems(items,'E')">
+                            {{items.euin_no}} | {{items.emp_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Employees Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4 my-auto">
+                <mat-checkbox color="primary"
+                #buTypeChecked
+                [id]="bu_type.id"
+                class="mr-3"
+                *ngFor="let bu_type of __bu_type;let i=index"
+                [value]="bu_type.id"
+                (change)="onbuTypeChange($event)">
+                  {{bu_type.bu_type}}</mat-checkbox>
+                <mat-checkbox class="ml-3" color="primary" formControlName="is_all_bu_type"> All</mat-checkbox>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="__insTraxForm.get('options').value == '3'">
+            <div class="row my-5">
+              <div class="col-sm-12">
+                <mat-radio-group aria-label="Select an option" formControlName="date_status">
+                  <mat-radio-button color="primary" value="T">Today</mat-radio-button>
+                  <mat-radio-button color="primary" value="D" class="ml-5">Date Range</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-5">
+                <mat-radio-group aria-label="Select an option" color="primary" formControlName="login_status">
+                  <mat-radio-button color="primary" value="N">Not Logged</mat-radio-button>
+                  <mat-radio-button color="primary" value="L" class="ml-5">Logged</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+            <div class="row  my-5" *ngIf="__insTraxForm.get('date_status').value == 'D'">
+              <div class="col-sm-3">
+                <label>Start Date</label>
+                <input type="date" class="form-control" formControlName="start_date">
+              </div>
+              <div class="col-sm-3">
+                <label>End Date</label>
+                <input type="date" class="form-control" formControlName="end_date">
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="__insTraxForm.get('filter_type').value == 'A'">
+                 <div class="row">
+
+                  <div class="col-sm-4">
+                    <label for="comp_type_id">Company Type</label>
+                    <ng-multiselect-dropdown #multiSelect
+                    id="comp_type_id"
+                    [placeholder]="'Select Company Type'"
+                    [settings]="__comp_type_setting"
+                    [data]="__compTypeMst"
+                    formControlName="comp_type_id">
+                  </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-sm-4">
+                    <label for="company_id">Company</label>
+                    <ng-multiselect-dropdown #multiSelect
+                    id="company_id"
+                    [placeholder]="'Select Company'"
+                    [settings]="__comp_setting"
+                    [data]="__compMst"
+                    formControlName="company_id">
+                  </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-sm-4">
+                    <label for="product_id">Scheme</label>
+                    <ng-multiselect-dropdown #multiSelect
+                    id="scheme_id"
+                    [placeholder]="'Select Scheme'"
+                    [settings]="__scm_setting"
+                    [data]="__scmMst"
+                    formControlName="scheme_id">
+                  </ng-multiselect-dropdown>
+                  </div>
+                 </div>
+          </ng-container>
+          <div class="row mt-3">
+            <div class="col-sm-12">
+              <button mat-raised-button color="primary" class="float-right">
+                Show
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="mat-elevation-z3">
+      <div class="example_container_header">
+        <div class="transTypeCount"></div>
+
+        <div class="btnGrp d-flex">
+          <mat-form-field appearance="fill">
+            <mat-label>Select Columns</mat-label>
+            <mat-select [formControl]="toppings" multiple>
+              <mat-option *ngFor="let topping of toppingList" [value]="topping.id">
+                {{topping.text}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>system_update_alt</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'InsuranceReport'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+      <div class="example-container">
+        <table mat-table [dataSource]="__insTrax" matSort (matSortChange)="sortData($event)" class="table_Custome">
+          <ng-container matColumnDef="sl_no">
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="tin_no">
+            <th mat-sort-header="tin_no" mat-header-cell *matHeaderCellDef>TIN Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no ? element.tin_no : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="bu_type">
+            <th mat-sort-header="bu_type" mat-header-cell *matHeaderCellDef>Buisness Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{(element.bu_type == 'D' ? 'B2C - Direct' : (element.bu_type == 'I' ? 'B2C - Indirect' : 'B2B'))}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sub_brk_cd">
+            <th mat-sort-header="sub_brk_cd" mat-header-cell *matHeaderCellDef>Sub Broker Code</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.sub_brk_cd ? element.sub_brk_cd : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="euin_no">
+            <th mat-sort-header="euin_no" mat-header-cell *matHeaderCellDef>Employee</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.emp_name ? element.emp_name : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fd_bu_type">
+            <th mat-sort-header="fd_bu_type" mat-header-cell *matHeaderCellDef>Fixed Deposit Buisness Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.fd_bu_type == 'F' ? 'Fresh' : 'Renewal'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="company_type_name">
+            <th mat-sort-header="company_type_name" mat-header-cell *matHeaderCellDef>Company Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.comp_type_name ? element.comp_type_name : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="scheme_name">
+            <th mat-sort-header="scheme_name" mat-header-cell *matHeaderCellDef>Scheme</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.scheme_name ? element.scheme_name : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="investor_name">
+            <th mat-sort-header="investor_name" mat-header-cell *matHeaderCellDef>Investor Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.investor_name ? element.investor_name : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="investor_pan">
+            <th mat-sort-header="investor_pan" mat-header-cell *matHeaderCellDef>Investor PAN</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.investor_pan ? element.investor_pan : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="kyc_status">
+            <th mat-sort-header="kyc_status" mat-header-cell *matHeaderCellDef>KYC Status</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.kyc_status == 'Y' ? 'With KYC' : 'Without KYC'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="option">
+            <th mat-sort-header="option" mat-header-cell *matHeaderCellDef>Option</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.option == 'N' ? 'Non Cumulative' : 'Cumulative'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sub_option">
+            <th mat-sort-header="sub_option" mat-header-cell *matHeaderCellDef>Sub Option</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{getSub_option(element.sub_option)}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="tenure_type">
+            <th mat-sort-header="tenure_type" mat-header-cell *matHeaderCellDef>Tenure Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.tenure_type == 'M' ? "Monthly" : 'Yearly'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tenure">
+            <th mat-sort-header="tenure" mat-header-cell *matHeaderCellDef>Tenure</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.tenure ? element.tenure : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="comp_full_name">
+            <th mat-sort-header="comp_full_name" mat-header-cell *matHeaderCellDef>Company Full Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.comp_full_name ? element.comp_full_name : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="comp_short_name">
+            <th mat-sort-header="comp_short_name" mat-header-cell *matHeaderCellDef>Company Short Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_short_name ? element.comp_short_name : 'N/A'}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="interest_rate">
+            <th mat-sort-header="interest_rate" mat-header-cell *matHeaderCellDef>Interest Rate(%)</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.interest_rate ? element.interest_rate : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="maturity_instruction">
+            <th mat-sort-header="maturity_instruction" mat-header-cell *matHeaderCellDef>Maturity Instruction</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.maturity_instruction == 'P' ? 'Autopay on maturity' : 'Auto renewal on maturity'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-sort-header="amount" mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.amount ? element.amount : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="mode_of_transaction">
+            <th mat-sort-header="mode_of_transaction" mat-header-cell *matHeaderCellDef>Transaction Mode</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.mode_of_transaction == 'O' ? 'OFFLINE' : 'ONLINE'}}
+            </td>
+          </ng-container>
+
+
+
+
+          <ng-container matColumnDef="acc_no">
+            <th mat-sort-header="acc_no" mat-header-cell *matHeaderCellDef>Account Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.acc_no ? element.acc_no : 'N/A'}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="chq_bank">
+            <th mat-sort-header="chq_bank" mat-header-cell *matHeaderCellDef>Bank</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.bank_name ? element.bank_name : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="chq_no">
+            <th mat-sort-header="chq_no" mat-header-cell *matHeaderCellDef>Cheque Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.chq_no ? element.chq_no : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="payment_ref_no">
+            <th mat-sort-header="payment_ref_no" mat-header-cell *matHeaderCellDef>Payment Reference Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.payment_ref_no ? element.payment_ref_no : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="entry_date">
+            <th mat-sort-header="entry_date" mat-header-cell *matHeaderCellDef>Entry Date</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'YYYY-MM-dd'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="certificate_delivery_opt">
+            <th mat-sort-header="certificate_delivery_opt" mat-header-cell *matHeaderCellDef>Certificate Delivery Option</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.certificate_delivery_opt == 'E' ? 'EFDR' : (element.certificate_delivery_opt == 'H' ? 'Hand Delivery' : 'Postal Delivery')}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tds_info">
+            <th mat-sort-header="tds_info" mat-header-cell *matHeaderCellDef>TDS Information</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{getTDSInfo(element.tds_info_id)}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="comp_login_at">
+            <th mat-sort-header="comp_login_at" mat-header-cell *matHeaderCellDef>Login At</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_login_name ? element.comp_login_name : 'N/A'}}</td>
+          </ng-container>
+
+
+                 <!-- Buisness Type-->
+                 <ng-container matColumnDef="collected_from_comp">
+                  <th mat-header-cell *matHeaderCellDef>Collected From Company</th>
+                  <td mat-cell *matCellDef="let element">
+                    <ng-container
+                    *ngIf="element.certificate_delivery_opt == 'H';
+                    else notAvailablecollected_from_comp;"
+                    >
+                      <button mat-icon-button (click)="populateDT(element)">
+                        <mat-icon class="edit_icon">{{element.cert_delivery_flag != 'P' ? 'visibility' : 'edit'}}</mat-icon>
+                      </button>
+                    </ng-container>
+                    <ng-template #notAvailablecollected_from_comp>
+                      <span>N/A</span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+                <!-- Buisness Type-->
+                <ng-container matColumnDef="delivery_by">
+                  <th mat-header-cell *matHeaderCellDef>Delivery By</th>
+                  <td mat-cell *matCellDef="let element">
+                    <ng-container
+                    *ngIf="element.certificate_delivery_opt != 'E';
+                    else not_available_delivery_by;">
+                      <button mat-icon-button (click)="populateDT(element)"
+                      [disabled]="element.cert_delivery_flag == 'P' && element.certificate_delivery_opt == 'H'">
+                        <mat-icon class="edit_icon">
+                          <!-- edit -->
+                          {{(element.cert_delivery_flag == 'C' || element.cert_delivery_flag == 'B')
+                          ? 'visibility' : 'edit'}}
+                        </mat-icon>
+                      </button>
+                    </ng-container>
+                    <ng-template #not_available_delivery_by>
+                      <span>N/A</span>
+                    </ng-template>
+
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="received_by">
+                  <th mat-header-cell *matHeaderCellDef>Received By</th>
+                  <td mat-cell *matCellDef="let element">
+                    <ng-container
+                    *ngIf="element.certificate_delivery_opt != 'E';
+                    else not_available_received_by;">
+                      <button
+                      mat-icon-button
+                      [disabled]="(element.cert_delivery_flag == 'P' || element.cert_delivery_flag == 'A')"
+                      (click)="populateDT(element)">
+                        <mat-icon class="edit_icon">
+                          {{element.cert_delivery_flag == 'C' ? 'visibility' : 'edit'}}
+                        </mat-icon>
+                      </button>
+                    </ng-container>
+                    <ng-template #not_available_received_by>
+                      <span>N/A</span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="__columns;sticky:true"></tr>
+          <tr mat-row tabIndex="999" *matRowDef="let row; columns: __columns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="__columns.length" class="text-center">No FD History Found
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="paginator">
+        <div class="itemsPerPage">
+          <label>Items Per Page :&nbsp; </label>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
+              10
+            </mat-button-toggle>
+            <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
+              50
+            </mat-button-toggle>
+            <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
+              100
+            </mat-button-toggle>
+            <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+              All
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <div class="paginatorContainer">
+          <mat-button-toggle-group *ngFor="let paginate of __paginate">
+            <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+              <label>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+                <span
+                  *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
+              </label>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+
+
+
+      </div>
+      <div id="FDC" style="display:none">
+
+        <table mat-table [dataSource]="__exportTrax" class="table_Custome" matTableExporter
+          #exporter="matTableExporter">
+          <ng-container matColumnDef="sl_no">
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="tin_no">
+            <th mat-header-cell *matHeaderCellDef>TIN Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no ? element.tin_no : "N/A"}}</td>
+          </ng-container>
+          <ng-container matColumnDef="bu_type">
+            <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{(element.bu_type == 'D' ? 'B2C - Direct' : (element.bu_type == 'I' ? 'B2C - Indirect' : 'B2B'))}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sub_brk_cd">
+            <th mat-header-cell *matHeaderCellDef>Sub Broker Code</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.sub_brk_cd ? element.sub_brk_cd : "N/A"}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="euin_no">
+            <th mat-header-cell *matHeaderCellDef>Employee</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.emp_name ? element.emp_name : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fd_bu_type">
+            <th mat-header-cell *matHeaderCellDef>Fixed Deposit Buisness Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.fd_bu_type == 'F' ? 'Fresh' : 'Renewal'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="company_type_name">
+            <th mat-header-cell *matHeaderCellDef>Company Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.comp_type_name ? element.comp_type_name : "N/A"}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="scheme_name">
+            <th mat-header-cell *matHeaderCellDef>Scheme</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.scheme_name ? element.scheme_name : "N/A"}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="investor_name">
+            <th mat-header-cell *matHeaderCellDef>Investor Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.investor_name ? element.investor_name : "N/A"}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="investor_pan">
+            <th mat-header-cell *matHeaderCellDef>Investor PAN</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.investor_pan ? element.investor_pan : "N/A"}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="kyc_status">
+            <th mat-header-cell *matHeaderCellDef>KYC Status</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.kyc_status == 'Y' ? 'With KYC' : 'Without KYC'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="option">
+            <th mat-header-cell *matHeaderCellDef>Option</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.option == 'N' ? 'Non Cumulative' : 'Cumulative'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sub_option">
+            <th mat-header-cell *matHeaderCellDef>Sub Option</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{getSub_option(element.sub_option)}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tenure_type">
+            <th mat-header-cell *matHeaderCellDef>Tenure Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.tenure_type == 'M'? "Monthly" : "Yearly"}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tenure">
+            <th mat-header-cell *matHeaderCellDef>Tenure</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.tenure ? element.tenure : "N/A"}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="comp_full_name">
+            <th mat-header-cell *matHeaderCellDef>Company Full Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.comp_full_name ? element.comp_full_name : "N/A"}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="comp_short_name">
+            <th mat-header-cell *matHeaderCellDef>Company Short Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.comp_short_name ? element.comp_short_name : "N/A"}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="interest_rate">
+            <th mat-header-cell *matHeaderCellDef>Interest Rate(%)</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.interest_rate ? element.interest_rate : "N/A"}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="maturity_instruction">
+            <th mat-header-cell *matHeaderCellDef>Maturity Instruction</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.maturity_instruction == 'P' ? 'Autopay on maturity' : 'Auto renewal on maturity'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.amount ? element.amount : "N/A"}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="mode_of_transaction">
+            <th mat-header-cell *matHeaderCellDef>Transaction Mode</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.mode_of_transaction == 'O' ? 'OFFLINE' : 'ONLINE'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acc_no">
+            <th mat-header-cell *matHeaderCellDef>Account Number</th>
+            <td mat-cell *matCellDef="let element;">{{element.acc_no ? element.acc_no : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="payment_ref_no">
+            <th mat-header-cell *matHeaderCellDef>Payment Reference Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.payment_ref_no ? element.payment_ref_no : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="chq_bank">
+            <th mat-header-cell *matHeaderCellDef>Bank</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.bank_name ? element.bank_name : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="chq_no">
+            <th mat-header-cell *matHeaderCellDef>Cheque Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.chq_no ? element.chq_no : 'N/A'}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="entry_date">
+            <th mat-header-cell *matHeaderCellDef>Entry Date</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'YYYY-MM-dd'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="certificate_delivery_opt">
+            <th mat-header-cell *matHeaderCellDef>Certificate Delivery Option</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.certificate_delivery_opt == 'E' ? 'EFDR' : (element.certificate_delivery_opt == 'H' ? 'Hand Delivery' : 'Postal Delivery')}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tds_info">
+            <th mat-header-cell *matHeaderCellDef>TDS Information</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{getTDSInfo(element.tds_info_id)}}</td>
+          </ng-container>
+          <ng-container matColumnDef="comp_login_at">
+            <th mat-header-cell *matHeaderCellDef>Login At</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.comp_login_name ? element.comp_login_name : 'N/A'}}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="__exportedClmns;sticky:true"></tr>
+          <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No FD History Found
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-dialog-content>
+</div>

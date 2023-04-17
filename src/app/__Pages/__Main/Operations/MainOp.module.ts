@@ -91,6 +91,10 @@ const routes: Routes = [
       {
         path:'fixedeposit',
         loadChildren:()=> import('./FixedDeposit/fixed-deposit.module').then(m => m.FixedDepositModule)
+      },
+      {
+        path:'manualupdate',
+        loadChildren:()=> import('./Mutual_Fund/ManualUpdate/manual-update.module').then(m => m.ManualUpdateModule)
       }
     ],
   },

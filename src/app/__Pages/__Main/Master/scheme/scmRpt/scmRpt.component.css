@@ -76,3 +76,11 @@ mat-row, mat-header-row, mat-footer-row, th.mat-header-cell, td.mat-cell, td.mat
 ::ng-deep .mat-form-field-wrapper{
   padding:0px!important;
 }
+
+.dates::after{
+  content:','
+}
+.dates:last-child::after{
+  content:'';
+
+}
