@@ -40,7 +40,7 @@
     </div>
     </div>
     <ng-container>
-      <div class="row my-5">
+      <div class="row my-2">
         <div class="col-sm-5">
           <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'A')">
             <div class="searchDiv">
@@ -107,7 +107,7 @@
         </div>
 
       </div>
-      <div class="row mt-5" *ngIf="__detalsSummaryForm.get('options').value == '1'">
+      <div class="row my-2" *ngIf="__detalsSummaryForm.get('options').value == '1'">
         <div class="col-sm-12">
           <mat-checkbox formControlName="l1" color="primary">Level-1(Operation)</mat-checkbox>
           <mat-checkbox formControlName="l2" class="ml-3" color="primary">Level-2 (Operation Head)</mat-checkbox>
@@ -196,14 +196,27 @@
        <ng-container matColumnDef="gstin">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="gstin">GSTIN</th>
         <td mat-cell *matCellDef="let element">
-          <p>{{element.gstin}}</p>
+          <p>{{element.gstin ? element.gstin : 'N/A'}}</p>
         </td>
       </ng-container>
 
       <!-- Sl No. -->
       <ng-container matColumnDef="sl_no">
-        <th mat-header-cell *matHeaderCellDef>Sl No</th>
-        <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+        <th mat-header-cell *matHeaderCellDef>SL No.</th>
+        <td mat-cell *matCellDef="let element;let i = index">
+          {{ i + 1}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="logo">
+        <th mat-header-cell *matHeaderCellDef>Logo</th>
+        <td mat-cell *matCellDef="let element;let i = index">
+          <ng-container *ngIf="element.logo;else notAvailable">
+                <img [src]="amcLogoUrl+element.logo" alt="Logo Of AMC" width="50"/>
+          </ng-container>
+          <ng-template #notAvailable>
+              <span>N/A</span>
+          </ng-template>
+        </td>
       </ng-container>
 
       <!--Temporary TIN No.-->
@@ -211,10 +224,10 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header="amc_name">AMC Full Name</th>
         <td mat-cell *matCellDef="let element">
           <!-- <a (click)="showCorrospondingScheme(element)" class="hoverableText">
-            {{element.amc_name}}
+            {{element.amc_name ? element.amc_name : 'N/A'}}
           </a> -->
           <p>
-            {{element.amc_name}}
+            {{element.amc_name ? element.amc_name : 'N/A'}}
           </p>
         </td>
       </ng-container>
@@ -224,7 +237,7 @@
        <ng-container matColumnDef="amc_short_name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="amc_short_name">AMC Short Name</th>
         <td mat-cell *matCellDef="let element">
-          <p>{{element.amc_short_name}}</p>
+          <p>{{element.amc_short_name ? element.amc_short_name : 'N/A'}}</p>
         </td>
       </ng-container>
 
@@ -235,7 +248,7 @@
       <ng-container matColumnDef="rnt_name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="rnt_name">R&T</th>
         <td mat-cell *matCellDef="let element">
-          <p class="text-wrap">{{element.rnt_name}}</p>
+          <p class="text-wrap">{{element.rnt_name ? element.rnt_name : 'N/A'}}</p>
         </td>
       </ng-container>
 
@@ -244,21 +257,21 @@
       <ng-container matColumnDef="cus_care_whatsapp_no">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="cus_care_whatsapp_no">Customer Care WhatsApp Number</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.cus_care_whatsapp_no}}</p>
+           <p class="text-wrap">{{element.cus_care_whatsapp_no ? element.cus_care_whatsapp_no : 'N/A'}}</p>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="distributor_care_no">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="distributor_care_no">Distributor Care Number</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.distributor_care_no}}</p>
+           <p class="text-wrap">{{element.distributor_care_no ? element.distributor_care_no : 'N/A'}}</p>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="distributor_care_email">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="distributor_care_email">Distributor Care Email</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.distributor_care_email}}</p>
+           <p class="text-wrap">{{element.distributor_care_email ? element.distributor_care_email : 'N/A'}}</p>
         </td>
       </ng-container>
 
@@ -266,30 +279,26 @@
        <ng-container matColumnDef="login_url">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="login_url">Login URL</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.login_url}}</p>
+           <p class="text-wrap">{{element.login_url ? element.login_url : 'N/A'}}</p>
         </td>
       </ng-container>
        <!-- For Detailed -->
        <ng-container matColumnDef="login_id">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="login_id">Login ID</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.login_id}}</p>
+           <p class="text-wrap">{{element.login_id ? element.login_id : 'N/A'}}</p>
         </td>
       </ng-container> <!-- For Detailed -->
       <ng-container matColumnDef="login_pass">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="login_pass">Login Password</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.login_pass}}</p>
+           <p class="text-wrap">{{element.login_pass ? element.login_pass : 'N/A'}}</p>
         </td>
       </ng-container>
 
-
-
-
-
       <!-- For Detailed -->
       <ng-container matColumnDef="website">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="website">Web Site</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="website">Website</th>
         <td mat-cell *matCellDef="let element">
            <!-- <p class="text-wrap">{{element.website}}</p> -->
            <a [attr.href]="'//' + element.website"  target="_blank">{{element.website}}</a>
@@ -298,56 +307,56 @@
       <ng-container matColumnDef="cust_care_number">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="cust_care_number">Customer Care Number</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.cus_care_no}}</p>
+           <p class="text-wrap">{{element.cus_care_no ? element.cus_care_no : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="cust_care_email">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="cust_care_email">Customer Care Email</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.cus_care_email}}</p>
+           <p class="text-wrap">{{element.cus_care_email ? element.cus_care_email : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="head_ofc_contact_per">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="head_ofc_contact_per">Head Office Contact Person</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.head_ofc_contact_per}}</p>
+           <p class="text-wrap">{{element.head_ofc_contact_per ? element.head_ofc_contact_per : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef='head_contact_per_mob'>
         <th mat-header-cell *matHeaderCellDef mat-sort-header='head_contact_per_mob'>Head Office Contact Person Mobile</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.head_contact_per_mob}}</p>
+           <p class="text-wrap">{{element.head_contact_per_mob ? element.head_contact_per_mob : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="head_contact_per_email">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="head_contact_per_email">Head Office Contact Person Email</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.head_contact_per_email ? element.head_contact_per_email : ''}}</p>
+           <p class="text-wrap">{{element.head_contact_per_email ? element.head_contact_per_email : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="head_ofc_addr">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="head_ofc_addr">Head Office Address</th>
         <td mat-cell *matCellDef="let element">
-         <p title="{{element.head_ofc_addr}}">{{element.head_ofc_addr ? (element.head_ofc_addr | ellipsis:25) : ''}}</p>
+         <p title="{{element.head_ofc_addr}}">{{element.head_ofc_addr ? (element.head_ofc_addr | ellipsis:25) : 'N/A'}}</p>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="local_ofc_contact_per">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="local_ofc_contact_per">Local Office Contact Person</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.local_ofc_contact_per}}</p>
+           <p class="text-wrap">{{element.local_ofc_contact_per ? element.local_ofc_contact_per : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef='local_contact_per_mob'>
         <th mat-header-cell *matHeaderCellDef mat-sort-header='local_contact_per_mob'>Local Office Contact Person Mobile</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.local_contact_per_mob}}</p>
+           <p class="text-wrap">{{element.local_contact_per_mob ? element.local_contact_per_mob : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="local_contact_per_email">
         <th mat-header-cell *matHeaderCellDef mat-sort-header="local_contact_per_email">Local Office Contact Person Email</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.local_contact_per_email ? element.local_contact_per_email : ''}}</p>
+           <p class="text-wrap">{{element.local_contact_per_email ? element.local_contact_per_email : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="local_ofc_addr">
@@ -360,19 +369,19 @@
       <ng-container matColumnDef="l1_name">
         <th mat-sort-header="l1_name" mat-header-cell *matHeaderCellDef>Level1 Name</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l1_name}}</p>
+           <p class="text-wrap">{{element.l1_name ? element.l1_name : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="l1_contact_no">
         <th mat-sort-header="l1_contact_no" mat-header-cell *matHeaderCellDef>Level1 Contact</th>
         <td mat-cell *matCellDef="let element">
-         <p>{{element.l1_contact_no}}</p>
+         <p>{{element.l1_contact_no ? element.l1_contact_no : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="l1_email">
         <th mat-sort-header="l1_email" mat-header-cell *matHeaderCellDef>Level1 Email</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l1_email}}</p>
+           <p class="text-wrap">{{element.l1_email ? element.l1_email : 'N/A'}}</p>
         </td>
       </ng-container>
 
@@ -380,95 +389,95 @@
       <ng-container matColumnDef="l2_name">
         <th mat-sort-header="l2_name" mat-header-cell *matHeaderCellDef>Level2 Name</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l2_name}}</p>
+           <p class="text-wrap">{{element.l2_name ? element.l2_name : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="l2_contact_no">
         <th mat-sort-header="l2_contact_no" mat-header-cell *matHeaderCellDef>Level2 Contact</th>
         <td mat-cell *matCellDef="let element">
-             <p class="text-wrap">{{element.l2_contact_no}}</p>
+             <p class="text-wrap">{{element.l2_contact_no ? element.l2_contact_no : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="l2_email">
         <th mat-sort-header="l2_email" mat-header-cell *matHeaderCellDef>Level2 Email</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l2_email}}</p>
+           <p class="text-wrap">{{element.l2_email ? element.l2_email : 'N/A'}}</p>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="l3_name">
         <th mat-sort-header="l3_name" mat-header-cell *matHeaderCellDef>Level3 Name</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l3_name}}</p>
+           <p class="text-wrap">{{element.l3_name ? element.l3_name : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="l3_contact_no">
         <th mat-sort-header="l3_contact_no" mat-header-cell *matHeaderCellDef>Level3 Contact</th>
         <td mat-cell *matCellDef="let element">
-    <p class="text-wrap">{{element.l3_contact_no}}</p>
+    <p class="text-wrap">{{element.l3_contact_no ? element.l3_contact_no : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="l3_email">
         <th mat-sort-header="l3_email" mat-header-cell *matHeaderCellDef>Level3 Email</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l3_email}}</p>
+           <p class="text-wrap">{{element.l3_email ? element.l3_email : 'N/A'}}</p>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="l4_name">
         <th mat-sort-header="l4_name" mat-header-cell *matHeaderCellDef>Level4 Name</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l4_name}}</p>
+           <p class="text-wrap">{{element.l4_name ? element.l4_name : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="l4_contact_no">
         <th mat-sort-header="l4_contact_no" mat-header-cell *matHeaderCellDef>Level4 Contact</th>
         <td mat-cell *matCellDef="let element">
-    <p class="text-wrap">{{element.l4_contact_no}}</p>
+    <p class="text-wrap">{{element.l4_contact_no ? element.l4_contact_no : 'N/A'}}</p>
         </td>
       </ng-container>
       <ng-container matColumnDef="l4_email">
         <th mat-sort-header="l4_email" mat-header-cell *matHeaderCellDef>Level4 Email</th>
         <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l4_email}}</p>
+           <p class="text-wrap">{{element.l4_email ? element.l4_email : 'N/A'}}</p>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="l5_name">
         <th mat-sort-header="l5_name" mat-header-cell *matHeaderCellDef>Level5 Name</th>
         <td mat-cell *matCellDef="let element">
-           {{element.l5_name!= 'null' ? element.l5_name : ''}}
+           {{element.l5_name!= 'null' ? element.l5_name : 'N/A'}}
         </td>
       </ng-container>
       <ng-container matColumnDef="l5_contact_no">
         <th mat-sort-header="l5_contact_no" mat-header-cell *matHeaderCellDef>Level5 Contact</th>
         <td mat-cell *matCellDef="let element">
-           {{element.l5_contact_no!= 'null'  ? element.l5_contact_no : ''}}
+           {{element.l5_contact_no!= 'null'  ? element.l5_contact_no : 'N/A'}}
         </td>
       </ng-container>
       <ng-container matColumnDef="l5_email">
         <th mat-sort-header="l5_email" mat-header-cell *matHeaderCellDef>Level5 Email</th>
         <td mat-cell *matCellDef="let element">
-           {{element.l5_email!= 'null'  ? element.l5_email : ''}}
+           {{element.l5_email!= 'null'  ? element.l5_email : 'N/A'}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="l6_name">
         <th mat-sort-header="l6_name" mat-header-cell *matHeaderCellDef>Level6 Name</th>
         <td mat-cell *matCellDef="let element">
-           {{element.l6_name!= 'null'  ? element.l6_name : ''}}
+           {{element.l6_name!= 'null'  ? element.l6_name : 'N/A'}}
         </td>
       </ng-container>
       <ng-container matColumnDef="l6_contact_no">
         <th mat-sort-header="l6_contact_no" mat-header-cell *matHeaderCellDef>Level6 Contact</th>
         <td mat-cell *matCellDef="let element">
-           {{element.l6_contact_no!= 'null'  ? element.l6_contact_no : ''}}
+           {{element.l6_contact_no!= 'null'  ? element.l6_contact_no : 'N/A'}}
         </td>
       </ng-container>
       <ng-container matColumnDef="l6_email">
         <th mat-sort-header="l6_email" mat-header-cell *matHeaderCellDef>Level6 Email</th>
         <td mat-cell *matCellDef="let element">
-           {{element.l6_email!= 'null'  ? element.l6_email : ''}}
+           {{element.l6_email!= 'null'  ? element.l6_email : 'N/A'}}
         </td>
       </ng-container>
 
@@ -478,7 +487,7 @@
       <tr mat-header-row *matHeaderRowDef="__columns;sticky: true"></tr>
       <tr mat-row tabindex="999" *matRowDef="let row; columns: __columns;"></tr>
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" [attr.colspan]="__columns.length" class="text-center">No Amc History found</td>
+        <td class="mat-cell" [attr.colspan]="__columns.length" class="text-center">No AMC History found</td>
       </tr>
     </table>
   </div>
@@ -532,16 +541,23 @@
 
 
     <!-- Sl No. -->
-    <ng-container matColumnDef="sl_no" >
+    <!-- <ng-container matColumnDef="sl_no" >
       <th mat-header-cell *matHeaderCellDef>Sl No</th>
       <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+    </ng-container> -->
+
+    <ng-container matColumnDef="sl_no">
+      <th mat-header-cell *matHeaderCellDef>SL No.</th>
+      <td mat-cell *matCellDef="let element;let i = index">
+          {{i + 1}}
+      </td>
     </ng-container>
 
     <!--Temporary TIN No.-->
     <ng-container matColumnDef="amc_name" >
       <th mat-header-cell *matHeaderCellDef>AMC Name</th>
       <td mat-cell *matCellDef="let element">
-        <p>{{element.amc_name}}</p>
+        <p>{{element.amc_name ? element.amc_name : 'N/A'}}</p>
       </td>
     </ng-container>
 
@@ -549,7 +565,7 @@
     <ng-container matColumnDef="amc_short_name">
       <th mat-header-cell *matHeaderCellDef >AMC Short Name</th>
       <td mat-cell *matCellDef="let element">
-        <p>{{element.amc_short_name}}</p>
+        <p>{{element.amc_short_name ? element.amc_short_name : 'N/A'}}</p>
       </td>
     </ng-container>
 
@@ -557,7 +573,7 @@
     <ng-container matColumnDef="gstin">
       <th mat-header-cell *matHeaderCellDef>GSTIN</th>
       <td mat-cell *matCellDef="let element">
-        <p>{{element.gstin}}</p>
+        <p>{{element.gstin ? element.gstin : 'N/A'}}</p>
       </td>
     </ng-container>
 
@@ -565,7 +581,7 @@
     <ng-container matColumnDef="rnt_name" >
       <th mat-header-cell *matHeaderCellDef>R&T</th>
       <td mat-cell *matCellDef="let element">
-        <p>{{element.rnt_name}}</p>
+        <p>{{element.rnt_name ? element.rnt_name : 'N/A'}}</p>
       </td>
     </ng-container>
 
@@ -573,7 +589,7 @@
 
     <!-- For Detailed -->
     <ng-container matColumnDef="website">
-      <th mat-header-cell *matHeaderCellDef>Web Site</th>
+      <th mat-header-cell *matHeaderCellDef>Website</th>
       <td mat-cell *matCellDef="let element">
          <p>{{element.website}}</p>
       </td>
@@ -581,13 +597,13 @@
     <ng-container matColumnDef="cust_care_number">
       <th mat-header-cell *matHeaderCellDef>Customer Care Number</th>
       <td mat-cell *matCellDef="let element">
-         <p>{{element.cus_care_no}}</p>
+         <p>{{element.cus_care_no ? element.cus_care_no : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="cust_care_email">
       <th mat-header-cell *matHeaderCellDef>Customer Care Email</th>
       <td mat-cell *matCellDef="let element">
-         <p>{{element.cus_care_email}}</p>
+         <p>{{element.cus_care_email ? element.cus_care_email : 'N/A'}}</p>
       </td>
     </ng-container>
 
@@ -595,14 +611,14 @@
     <ng-container matColumnDef="distributor_care_no">
       <th mat-header-cell *matHeaderCellDef>Distributor Care Number</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.distributor_care_no}}</p>
+         <p class="text-wrap">{{element.distributor_care_no ? element.distributor_care_no : 'N/A'}}</p>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="distributor_care_email">
       <th mat-header-cell *matHeaderCellDef>Distributor Care Email</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.distributor_care_email}}</p>
+         <p class="text-wrap">{{element.distributor_care_email ? element.distributor_care_email : 'N/A'}}</p>
       </td>
     </ng-container>
 
@@ -611,51 +627,51 @@
     <ng-container matColumnDef="head_ofc_contact_per">
       <th mat-header-cell *matHeaderCellDef>Head Office Contact Person</th>
       <td mat-cell *matCellDef="let element">
-         <p>{{element.head_ofc_contact_per}}</p>
+         <p>{{element.head_ofc_contact_per ? element.head_ofc_contact_per : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef='head_contact_per_mob'>
       <th mat-header-cell *matHeaderCellDef>Head Office Contact Person Mobile</th>
       <td mat-cell *matCellDef="let element">
-         <p >{{element.head_contact_per_mob}}</p>
+         <p >{{element.head_contact_per_mob ? element.head_contact_per_mob : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="head_contact_per_email">
       <th mat-header-cell *matHeaderCellDef>Head Office Contact Person Email</th>
       <td mat-cell *matCellDef="let element">
-         <p>{{element.head_contact_per_email}}</p>
+         <p>{{element.head_contact_per_email ? element.head_contact_per_email : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="head_ofc_addr">
       <th mat-header-cell *matHeaderCellDef>Head Office Address</th>
       <td mat-cell *matCellDef="let element">
-       <p [title]="element.head_ofc_addr">{{element.head_ofc_addr}}</p>
+       <p [title]="element.head_ofc_addr">{{element.head_ofc_addr ? element.head_ofc_addr : 'N/A'}}</p>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="local_ofc_contact_per">
       <th mat-header-cell *matHeaderCellDef>Local Office Contact Person</th>
       <td mat-cell *matCellDef="let element">
-         {{element.local_ofc_contact_per}}
+         {{element.local_ofc_contact_per ? element.local_ofc_contact_per : 'N/A'}}
       </td>
     </ng-container>
     <ng-container matColumnDef='local_contact_per_mob'>
       <th mat-header-cell *matHeaderCellDef>Local Office Contact Person Mobile</th>
       <td mat-cell *matCellDef="let element">
-         {{element.local_contact_per_mob}}
+         {{element.local_contact_per_mob ? element.local_contact_per_mob : 'N/A'}}
       </td>
     </ng-container>
     <ng-container matColumnDef="local_contact_per_email">
       <th mat-header-cell *matHeaderCellDef>Local Office Contact Person Email</th>
       <td mat-cell *matCellDef="let element">
-         {{element.local_contact_per_email}}
+         {{element.local_contact_per_email ? element.local_contact_per_email : 'N/A'}}
       </td>
     </ng-container>
     <ng-container matColumnDef="local_ofc_addr">
       <th mat-header-cell *matHeaderCellDef>Local Office Address</th>
       <td mat-cell *matCellDef="let element">
          <p [title]="element.head_ofc_addr">
-          {{element.local_ofc_addr}}
+          {{element.local_ofc_addr ? element.local_ofc_addr : 'N/A'}}
          </p>
       </td>
     </ng-container>
@@ -664,46 +680,46 @@
     <ng-container matColumnDef="cus_care_whatsapp_no">
       <th mat-header-cell *matHeaderCellDef >Customer Care WhatsApp Number</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.cus_care_whatsapp_no}}</p>
+         <p class="text-wrap">{{element.cus_care_whatsapp_no ? element.cus_care_whatsapp_no : 'N/A'}}</p>
       </td>
     </ng-container>
      <!-- For Detailed -->
      <ng-container matColumnDef="login_url">
       <th mat-header-cell *matHeaderCellDef>Login URL</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.login_url}}</p>
+         <p class="text-wrap">{{element.login_url ? element.login_url : 'N/A'}}</p>
       </td>
     </ng-container>
      <!-- For Detailed -->
      <ng-container matColumnDef="login_id">
       <th mat-header-cell *matHeaderCellDef>Login ID</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.login_id}}</p>
+         <p class="text-wrap">{{element.login_id ? element.login_id : 'N/A'}}</p>
       </td>
     </ng-container> <!-- For Detailed -->
     <ng-container matColumnDef="login_pass">
       <th mat-header-cell *matHeaderCellDef>Login Password</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.login_pass}}</p>
+         <p class="text-wrap">{{element.login_pass ? element.login_pass : 'N/A'}}</p>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="l1_name">
       <th mat-header-cell *matHeaderCellDef>Level1 Name</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.l1_name}}</p>
+         <p class="text-wrap">{{element.l1_name ? element.l1_name : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="l1_contact_no">
       <th mat-header-cell *matHeaderCellDef>Level1 Contact</th>
       <td mat-cell *matCellDef="let element">
-       <p>{{element.l1_contact_no}}</p>
+       <p>{{element.l1_contact_no ? element.l1_contact_no : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="l1_email">
       <th mat-header-cell *matHeaderCellDef>Level1 Email</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.l1_email}}</p>
+         <p class="text-wrap">{{element.l1_email ? element.l1_email : 'N/A'}}</p>
       </td>
     </ng-container>
 
@@ -711,95 +727,95 @@
     <ng-container matColumnDef="l2_name">
       <th mat-header-cell *matHeaderCellDef>Level2 Name</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.l2_name}}</p>
+         <p class="text-wrap">{{element.l2_name ? element.l2_name : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="l2_contact_no">
       <th mat-header-cell *matHeaderCellDef>Level2 Contact</th>
       <td mat-cell *matCellDef="let element">
-           <p class="text-wrap">{{element.l2_contact_no}}</p>
+           <p class="text-wrap">{{element.l2_contact_no ? element.l2_contact_no : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="l2_email">
       <th mat-header-cell *matHeaderCellDef>Level2 Email</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.l2_email}}</p>
+         <p class="text-wrap">{{element.l2_email ? element.l2_email : 'N/A'}}</p>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="l3_name">
       <th mat-header-cell *matHeaderCellDef>Level3 Name</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.l3_name}}</p>
+         <p class="text-wrap">{{element.l3_name ? element.l3_name : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="l3_contact_no">
       <th mat-header-cell *matHeaderCellDef>Level3 Contact</th>
       <td mat-cell *matCellDef="let element">
-  <p class="text-wrap">{{element.l3_contact_no}}</p>
+  <p class="text-wrap">{{element.l3_contact_no ? element.l3_contact_no : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="l3_email">
       <th mat-header-cell *matHeaderCellDef>Level3 Email</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.l3_email}}</p>
+         <p class="text-wrap">{{element.l3_email ? element.l3_email : 'N/A'}}</p>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="l4_name">
       <th mat-header-cell *matHeaderCellDef>Level4 Name</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.l4_name}}</p>
+         <p class="text-wrap">{{element.l4_name ? element.l4_name : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="l4_contact_no">
       <th mat-header-cell *matHeaderCellDef>Level4 Contact</th>
       <td mat-cell *matCellDef="let element">
-  <p class="text-wrap">{{element.l4_contact_no}}</p>
+  <p class="text-wrap">{{element.l4_contact_no ? element.l4_contact_no : 'N/A'}}</p>
       </td>
     </ng-container>
     <ng-container matColumnDef="l4_email">
       <th mat-header-cell *matHeaderCellDef>Level4 Email</th>
       <td mat-cell *matCellDef="let element">
-         <p class="text-wrap">{{element.l4_email}}</p>
+         <p class="text-wrap">{{element.l4_email ? element.l4_email : 'N/A'}}</p>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="l5_name">
       <th mat-header-cell *matHeaderCellDef>Level5 Name</th>
       <td mat-cell *matCellDef="let element">
-         {{element.l5_name!= 'null' ? element.l5_name : ''}}
+         {{element.l5_name!= 'null' ? element.l5_name : 'N/A'}}
       </td>
     </ng-container>
     <ng-container matColumnDef="l5_contact_no">
       <th mat-header-cell *matHeaderCellDef>Level5 Contact</th>
       <td mat-cell *matCellDef="let element">
-         {{element.l5_contact_no!= 'null'  ? element.l5_contact_no : ''}}
+         {{element.l5_contact_no!= 'null'  ? element.l5_contact_no : 'N/A'}}
       </td>
     </ng-container>
     <ng-container matColumnDef="l5_email">
       <th mat-header-cell *matHeaderCellDef>Level5 Email</th>
       <td mat-cell *matCellDef="let element">
-         {{element.l5_email!= 'null'  ? element.l5_email : ''}}
+         {{element.l5_email!= 'null'  ? element.l5_email : 'N/A'}}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="l6_name">
       <th mat-header-cell *matHeaderCellDef>Level6 Name</th>
       <td mat-cell *matCellDef="let element">
-         {{element.l6_name!= 'null'  ? element.l6_name : ''}}
+         {{element.l6_name!= 'null'  ? element.l6_name : 'N/A'}}
       </td>
     </ng-container>
     <ng-container matColumnDef="l6_contact_no">
       <th mat-header-cell *matHeaderCellDef>Level6 Contact</th>
       <td mat-cell *matCellDef="let element">
-         {{element.l6_contact_no!= 'null'  ? element.l6_contact_no : ''}}
+         {{element.l6_contact_no!= 'null'  ? element.l6_contact_no : 'N/A'}}
       </td>
     </ng-container>
     <ng-container matColumnDef="l6_email">
       <th mat-header-cell *matHeaderCellDef>Level6 Email</th>
       <td mat-cell *matCellDef="let element">
-         {{element.l6_email!= 'null'  ? element.l6_email : ''}}
+         {{element.l6_email!= 'null'  ? element.l6_email : 'N/A'}}
       </td>
     </ng-container>
 
@@ -816,7 +832,7 @@
     <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
     <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Amc History Found</td>
+      <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No AMC History Found</td>
     </tr>
   </table>
 

@@ -105,7 +105,7 @@
     "icon": "fa fa-user-o",
     "value": 0,
     "img": "",
-    "url": "",
+    "url": "/main/product",
     "class": "iconSec iconCol_10",
     "sub_menu": []
   },
@@ -211,6 +211,20 @@
         "menu_name":"SIP Type",
         "has_submenu":"N",
         "url":"/main/master/productwisemenu/sipType",
+        "icon": "stars"
+      },
+      {
+        "id":42,
+        "menu_name":"SWP Type",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/swpType",
+        "icon": "stars"
+      },
+      {
+        "id":43,
+        "menu_name":"STP Type",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/stpType",
         "icon": "stars"
       }
 

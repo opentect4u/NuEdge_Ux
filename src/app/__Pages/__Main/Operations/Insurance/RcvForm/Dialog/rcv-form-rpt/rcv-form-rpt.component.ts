@@ -281,6 +281,14 @@ export class RcvFormRPTComponent implements OnInit {
       this.__rcvForms.controls['end_dt'].reset(
         res && res != 'R' ? dates.getTodayDate() : ''
       );
+      if( res && res != 'R'){
+        this.__rcvForms.controls['start_dt'].disable();
+        this.__rcvForms.controls['end_dt'].disable();
+      }
+      else{
+        this.__rcvForms.controls['start_dt'].enable();
+        this.__rcvForms.controls['end_dt'].enable();
+      }
     });
     this.__rcvForms.controls['proposer_code'].valueChanges
       .pipe(

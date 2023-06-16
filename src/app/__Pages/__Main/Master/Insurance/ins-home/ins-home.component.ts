@@ -39,7 +39,7 @@ export class InsHomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.setBreadCrumbs();
+    // this.setBreadCrumbs();
   }
   setBreadCrumbs(){
     this.__utility.getBreadCrumb(this.__brdCrmbs);

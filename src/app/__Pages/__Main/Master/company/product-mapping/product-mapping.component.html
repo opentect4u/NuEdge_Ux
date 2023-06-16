@@ -1,0 +1,20 @@
+<core-tab [Tab]="subTab"
+[customClass]="'customTabs'"
+(GetTabDtls)="onTabChange($event)"
+[index]="tabindex"></core-tab>
+<div class="container_fluid mb-2 w-100">
+<ng-container *ngIf="tabindex==0;else other">
+      <product-mapping-entry
+      [cmpDtlsMst]="cmpDtlsMst"
+      [setProductMapping]="productmappingDtlsForForm"
+      (modifyProductMappingArray)="modifyProductMappingArray($event)"
+      (resetFrmDt)="reset($event)"
+      ></product-mapping-entry>
+</ng-container>
+<ng-template #other>
+      <product-mapping-report
+      (setFrmDt)="setFormDT($event)"
+      [productMstDtls]="productMstDtls">
+    </product-mapping-report>
+</ng-template>
+</div>

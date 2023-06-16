@@ -41,7 +41,7 @@ constructor(
 }
 
 ngOnInit(){this.getEmailTemplateMst();}
-  
+
 getEmailTemplateMst(column_name: string | null = '',sort_by: string | null| '' = 'asc'){
  const __fb = new FormData();
  __fb.append('paginate',this.__pageNumber.value);
@@ -154,7 +154,7 @@ updateRow(row_obj){
   );
 }
 getval(__paginate) {
-  this.__pageNumber.setValue(__paginate.toString());
+   this.__pageNumber.setValue(__paginate.toString());
   this.filter();
 }
 getPaginate(__paginate) {

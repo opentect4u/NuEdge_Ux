@@ -1,0 +1,45 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >{{data.title}}</h2>
+      <div class="btnIcon">
+        <button mat-icon-button title="Minimize"  (click)="minimize()" >
+          <mat-icon >remove</mat-icon>
+        </button>
+        <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+          <mat-icon>check_box_outline_blank </mat-icon>
+        </button>
+
+        <button mat-icon-button title="Close"  [mat-dialog-close]="">
+          <mat-icon >close</mat-icon>
+        </button>
+    </div>
+    </div>
+    <mat-dialog-content>
+     <form [formGroup]="stpForm" (ngSubmit)="submitSwpType()" [id]="'__STPForm_'+data.id">
+      <div class="row my-3">
+        <div class="col-sm-12">
+          <label form="stp_type_name">STP Type</label>
+          <input type="text"
+          name="stp_type_name"
+          id="stp_type_name"
+          placeholder="Enter STP Type"
+          class="form-control"
+          formControlName="stp_type_name">
+          <div class="invalid-feedback" *ngIf="stpForm.get('stp_type_name').invalid && (stpForm.get('stp_type_name').dirty || stpForm.get('stp_type_name').touched)">
+            <span class="invalid-feedback" *ngIf="(stpForm.get('stp_type_name')).errors?.required">*Please provide STP type</span>
+          </div>
+        </div>
+      </div>
+
+     </form>
+
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+      <button class="btn addBtn"   [attr.form]="'__STPForm_'+data.id" [disabled]="this.stpForm.invalid">Submit</button>
+    </mat-dialog-actions>
+    <br clear="all">
+</div>

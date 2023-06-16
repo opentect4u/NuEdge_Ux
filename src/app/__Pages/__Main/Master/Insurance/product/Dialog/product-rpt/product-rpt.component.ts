@@ -192,7 +192,7 @@ export class ProductRPTComponent implements OnInit {
       flag: 'P',
       id: __el.id,
       title: 'Delete '  + __el.product_name,
-      api_name:'/productDelete'
+      api_name:'/ins/productDelete'
     };
     const dialogref = this.__dialog.open(
       DeletemstComponent,
@@ -214,7 +214,7 @@ export class ProductRPTComponent implements OnInit {
    this.openDialog(__el,__el.id)
   }
   getval(__paginate){
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     this.getproductMst(
       this.__sortColumnsAscOrDsc.active,
       this.__sortColumnsAscOrDsc.direction

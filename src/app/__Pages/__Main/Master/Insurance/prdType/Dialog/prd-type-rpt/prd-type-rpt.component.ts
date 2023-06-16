@@ -167,7 +167,7 @@ export class PrdTypeRPTComponent implements OnInit {
   }
 
   getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     this.getSubcatMst(
       this.__sortAscOrDsc.active,
       this.__sortAscOrDsc.direction
@@ -202,7 +202,7 @@ export class PrdTypeRPTComponent implements OnInit {
     dialogConfig.data = {
       flag: 'PRDTYPE',
       id: __id,
-      items: prdType,
+      Product_type: prdType,
       title: __id == 0 ? 'Add Product Type' : 'Update Product Type',
       right: global.randomIntFromInterval(1, 60),
     };
@@ -220,6 +220,7 @@ export class PrdTypeRPTComponent implements OnInit {
         }
       });
     } catch (ex) {
+       console.log(ex);
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('40%');
       this.__utility.getmenuIconVisible({

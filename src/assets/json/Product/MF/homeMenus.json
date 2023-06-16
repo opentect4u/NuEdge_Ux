@@ -1,0 +1,555 @@
+[
+  {
+    "id":1,
+    "accessibility":[],
+    "title":"MIS Report",
+    "url":"/main/product/mf/mis",
+    "icon": "fa fa-user-o",
+    "sub_menu":[]
+  },
+  {
+    "id":2,
+    "accessibility":[],
+    "title":"Portfolio Report",
+    "url":"/main/product/mf/portfolio",
+    "icon": "fa fa-user-o",
+    "sub_menu":[
+      {
+        "id":1,
+        "accessibility":[],
+        "title":"Live MF Portfolio",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":2,
+        "accessibility":[],
+        "title":"P&L Valuation Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":3,
+        "accessibility":[],
+        "title":"Between Date XIRR",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":4,
+        "accessibility":[],
+        "title":"Realised Fund XIRR",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":5,
+        "accessibility":[],
+        "title":"Folio Master",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":6,
+        "accessibility":[],
+        "title":"Realised Capital Gain",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":7,
+        "accessibility":[],
+        "title":"Notional Capital Gain",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":8,
+        "accessibility":[],
+        "title":"Dividend Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+
+      {
+        "id":9,
+        "accessibility":[],
+        "title":"Combined Portfolio Valuation",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":10,
+        "accessibility":[],
+        "title":"Recent Transaction",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":11,
+        "accessibility":[],
+        "title":"Gold Tracker",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":12,
+        "accessibility":[],
+        "title":"FY Wise Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":13,
+        "accessibility":[],
+        "title":"Wealth Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":14,
+        "accessibility":[],
+        "title":"Load Free Unit Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      }
+    ]
+  },
+  {
+    "id":3,
+    "accessibility":[],
+    "title":"SIP Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "sub_menu":[]
+  },
+  {
+    "id":4,
+    "accessibility":[],
+    "title":"SWP Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "sub_menu":[]
+  },
+  {
+    "id":5,
+    "accessibility":[],
+    "title":"STP Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "sub_menu":[]
+  },
+  {
+    "id":6,
+    "accessibility":[],
+    "title":"TAX Package",
+    "url":"/main/product/mf/taxpackage",
+    "icon": "fa fa-user-o",
+    "sub_menu":[
+      {
+        "id":1,
+        "accessibility":[],
+        "title":"FY Wise Transaction Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":2,
+        "accessibility":[],
+        "title":"ELSS Transaction Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":3,
+        "accessibility":[],
+        "title":"ELSS SOA",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":4,
+        "accessibility":[],
+        "title":"Capital Gain Loss Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":5,
+        "accessibility":[],
+        "title":"Dividend Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":6,
+        "accessibility":[],
+        "title":"TDS Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":7,
+        "accessibility":[],
+        "title":"Form 15G/15H Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o"
+      },
+      {
+        "id":8,
+        "accessibility":[],
+        "title":"Combined Portfolio Report",
+        "url":"/main/product/mf/taxpackage/combineportfolio",
+        "icon": "fa fa-user-o"
+      }
+    ]
+  },
+  {
+    "id":7,
+    "accessibility":[],
+    "title":"KYC Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "sub_menu":[]
+  },
+  {
+    "id":8,
+    "accessibility":[],
+    "title":"Business Opportunity Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "sub_menu":[]
+  },
+  {
+    "id":9,
+    "accessibility":[],
+    "title":"Business insight Report",
+    "url":"/main/product/mf/buinsidetype",
+    "icon": "fa fa-user-o",
+    "sub_menu":[
+      {
+        "id":1,
+        "accessibility":[],
+        "title":"Maturity Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":2,
+        "accessibility":[],
+        "title":"Renewal Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":3,
+        "accessibility":[],
+        "title":"Due Diligence Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      }
+    ]
+  },
+  {
+    "id":10,
+    "accessibility":[],
+    "title":"Research",
+    "url":"/main/product/mf/research",
+    "icon": "fa fa-user-o",
+    "sub_menu":[
+      {
+        "id":1,
+        "accessibility":[],
+        "title":"SIP Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":2,
+        "accessibility":[],
+        "title":"STP Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":3,
+        "accessibility":[],
+        "title":"SWP Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":4,
+        "accessibility":[],
+        "title":"Lum Sum Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":5,
+        "accessibility":[],
+        "title":"Dividend History",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":6,
+        "accessibility":[],
+        "title":"Compare Fund",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":7,
+        "accessibility":[],
+        "title":"Fact Sheet",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":8,
+        "accessibility":[],
+        "title":"Calculator",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":9,
+        "accessibility":[],
+        "title":"Calculator",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":10,
+        "accessibility":[],
+        "title":"MF Scheme Portfolio",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":11,
+        "accessibility":[],
+        "title":"SIP Delay Cost",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":12,
+        "accessibility":[],
+        "title":"Planner",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":13,
+        "accessibility":[],
+        "title":"Equity Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":14,
+        "accessibility":[],
+        "title":"PMS Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":15,
+        "accessibility":[],
+        "title":"AIF Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":16,
+        "accessibility":[],
+        "title":"NPS Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":17,
+        "accessibility":[],
+        "title":"NPS Performance",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":18,
+        "accessibility":[],
+        "title":"Nav Finder",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":19,
+        "accessibility":[],
+        "title":"Scheme ISIN Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      }
+    ]
+  },
+  {
+    "id":11,
+    "accessibility":[],
+    "title":"Financial Planning",
+    "url":"/main/product/mf/finPlan",
+    "icon": "fa fa-user-o",
+    "sub_menu":[
+      {
+        "id":1,
+        "accessibility":[],
+        "title":"Risk Profiler",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":2,
+        "accessibility":[],
+        "title":"Risk Profiler Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":3,
+        "accessibility":[],
+        "title":"Planner",
+        "url":"/main/product/mf/finPlan/planner",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      }
+    ]
+  },
+  {
+    "id":12,
+    "accessibility":[],
+    "title":"Analytical Tool",
+    "url":"/main/product/mf/analyticaltool",
+    "icon": "fa fa-user-o",
+    "sub_menu":[
+      {
+        "id":1,
+        "accessibility":[],
+        "title":"Portfolio Analysis Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":2,
+        "accessibility":[],
+        "title":"Load Free Unit Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":3,
+        "accessibility":[],
+        "title":"Client Categorization",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":4,
+        "accessibility":[],
+        "title":"Customer Profiling",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":5,
+        "accessibility":[],
+        "title":"IT Statistical Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":6,
+        "accessibility":[],
+        "title":"Long Statistical Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":7,
+        "accessibility":[],
+        "title":"SIP Opportunity Loss",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":8,
+        "accessibility":[],
+        "title":"Lum Sum Opportunity Loss",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":9,
+        "accessibility":[],
+        "title":"Business Opportunity Loss",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      },
+      {
+        "id":10,
+        "accessibility":[],
+        "title":"Business MIS",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "sub_menu":[]
+      }
+    ]
+  },
+  {
+    "id":13,
+    "accessibility":[],
+    "title":"SOA Download",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "sub_menu":[]
+  },
+  {
+    "id":14,
+    "accessibility":[],
+    "title":"Portfolio Rebalance",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "sub_menu":[]
+  }
+]

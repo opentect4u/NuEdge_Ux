@@ -34,7 +34,7 @@ export class ClntMstDashboardComponent implements OnInit {
   queryParams:''
  }
 ]
-  __menu:submenu[] = menu;
+  // __menu:submenu[] = menu;
   constructor(private __utility: UtiliService) { }
 
   ngOnInit() {

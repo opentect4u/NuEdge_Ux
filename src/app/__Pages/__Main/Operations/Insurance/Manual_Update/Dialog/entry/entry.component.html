@@ -155,7 +155,7 @@
               id="policy_copy_scan"
               class="form-control"
               formControlName="file">
-              <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+              <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
               <div class="invalid-feedback"
               *ngIf=" __manualUpdateForm.get('file').invalid && ( __manualUpdateForm.get('file').dirty ||  __manualUpdateForm.get('file').touched)">
               <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get('file').errors?.required">*Please
@@ -165,7 +165,7 @@
               <span class="invalid-feedback" *ngIf="__manualUpdateForm.get('file').errors?.fileSizeValidator">*File size
                 must
                 not exceed than
-                2MB.</span>
+                10MB.</span>
             </div>
             </div>
             <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">

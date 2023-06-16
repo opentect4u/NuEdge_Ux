@@ -1,0 +1,23 @@
+[
+  {
+    "id":1,
+    "accessibility":[],
+    "title":"Mutual Fund",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o"
+  },
+  {
+    "id":2,
+    "accessibility":[],
+    "title":"Fixed Deposit",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o"
+  },
+  {
+    "id":3,
+    "accessibility":[],
+    "title":"Insurance",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o"
+  }
+]

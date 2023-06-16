@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "menu_name": "KYC Trax",
+    "title": "KYC Trax",
+    "has_submenu": "N",
+    "url": "/main/operations/dashboard/manualEntr/kycTrax",
+    "flag": "K",
+    "icon": "fa fa-user-o",
+    "sub_menu": []
+  },
+  {
+    "id": 2,
+    "menu_name": "MF Trax",
+    "title": "MF Trax",
+    "has_submenu": "N",
+    "flag": "M",
+    "url": "/main/operations/dashboard/manualEntr/mfTrax",
+    "icon": "fa fa-user-o",
+    "sub_menu": []
+  },
+  {
+    "id": 3,
+    "menu_name": "Acknowledgement Trax",
+    "title": "Acknowledgement Trax",
+    "has_submenu": "N",
+    "url": "/main/operations/dashboard/manualEntr/acknowldgement",
+    "flag": "A",
+    "icon": "fa fa-user-o",
+    "sub_menu": []
+  },
+  {
+    "id": 4,
+    "menu_name": "Manual Update",
+    "title": "Manual Update",
+    "has_submenu": "N",
+    "url": "/main/operations/dashboard/manualEntr/manualupdate",
+    "flag": "U",
+    "icon": "fa fa-user-o",
+    "sub_menu": []
+  }
+]

@@ -1,0 +1,21 @@
+<div class="row flexSec">
+  <div class="col-sm-7">
+    <shared-upload-csv
+    [leftHeaderTitle]="'Upload State'"
+    [columns]="tableColumns"
+    [api_name]="'/stateimport'"
+    [flag]="'GS'"
+    [dataSource]="tableData"
+    [countryMst]="countryMst"
+    [file_name]="'Sample State'"
+    [displayedColumns]="displayedColumns"></shared-upload-csv>
+  </div>
+  <div class="col-sm-5">
+    <shared-mst-dtls
+    [btnTitle]="'View All State'"
+    [headerTitle]="'Recent State'"
+    [flag]="'GS'"
+    (populate)="populateDT($event)" (viewAll)="viewAll()"
+    [dataSource]="state.data"></shared-mst-dtls>
+  </div>
+</div>

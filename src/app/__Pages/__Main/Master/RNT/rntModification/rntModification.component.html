@@ -54,7 +54,7 @@
         </div>
 
         <div class="col-sm-12 my-2">
-          <label for="web_site">Web Site </label>
+          <label for="web_site">Website </label>
           <input type="text" name="web_site" id="web_site" class="form-control" placeholder="Enter Website"
             formControlName="web_site">
         </div>
@@ -62,25 +62,21 @@
         <div class="col-sm-12 my-2">
           <label for="cus_care_whatsapp_no">Customer Care WhatsApp Number</label>
           <input (keypress)="preventNonumeric($event)" type="text" name="cus_care_whatsapp_no" id="cus_care_whatsapp_no"
-            class="form-control" minlength="10" maxlength="10" placeholder="Enter Customer Care WhatsApp Number" formControlName="cus_care_whatsapp_no">
+            class="form-control" placeholder="Enter Customer Care WhatsApp Number" formControlName="cus_care_whatsapp_no">
             <div class="invalid-feedback" *ngIf="__rntForm.get('cus_care_whatsapp_no').invalid && (__rntForm.get('cus_care_whatsapp_no').dirty || __rntForm.get('cus_care_whatsapp_no').touched)">
               <span class="invalid-feedback" *ngIf="(__rntForm.get('cus_care_whatsapp_no')).hasError('pattern')">*Digits allow only</span>
-              <span class="invalid-feedback" *ngIf="(__rntForm.get('cus_care_whatsapp_no')).hasError('minlength')">*mobile number
+              <!-- <span class="invalid-feedback" *ngIf="(__rntForm.get('cus_care_whatsapp_no')).hasError('minlength')">*mobile number
                 must be 10 digits</span>
                 <span class="invalid-feedback" *ngIf="(__rntForm.get('cus_care_whatsapp_no')).hasError('maxlength')">*mobile number
-                  must be 10 digits</span>
+                  must be 10 digits</span> -->
             </div>
         </div>
         <div class="col-sm-12 my-2">
           <label for="cust_care_no">Customer Care Number</label>
-          <input minlength="10" maxlength="10" (keypress)="preventNonumeric($event)" type="text" name="cust_care_no" id="cust_care_no"
+          <input (keypress)="preventNonumeric($event)" type="text" name="cust_care_no" id="cust_care_no"
             class="form-control" placeholder="Enter Customer Care Number" formControlName="cust_care_no">
             <div class="invalid-feedback" *ngIf="__rntForm.get('cust_care_no').invalid && (__rntForm.get('cust_care_no').dirty || __rntForm.get('cust_care_no').touched)">
               <span class="invalid-feedback" *ngIf="(__rntForm.get('cust_care_no')).hasError('pattern')">*Digits allow only</span>
-              <span class="invalid-feedback" *ngIf="(__rntForm.get('cust_care_no')).hasError('minlength')">*mobile number
-                must be 10 digits</span>
-                <span class="invalid-feedback" *ngIf="(__rntForm.get('cust_care_no')).hasError('maxlength')">*mobile number
-                  must be 10 digits</span>
             </div>
         </div>
         <div class="col-sm-12 my-2">
@@ -97,14 +93,9 @@
 
         <div class="col-sm-12">
           <label for="distributor_care_no">Distributor Care Number </label>
-          <input (keypress)="preventNonumeric($event)" maxlength="10"
-          minlength="10" type="text" name="distributor_care_no" id="distributor_care_no" class="form-control" placeholder="Enter Distributor Care Number"  formControlName="distributor_care_no">
+          <input (keypress)="preventNonumeric($event)" type="text" name="distributor_care_no" id="distributor_care_no" class="form-control" placeholder="Enter Distributor Care Number"  formControlName="distributor_care_no">
           <div class="invalid-feedback" *ngIf="__rntForm.get('distributor_care_no').invalid && (__rntForm.get('distributor_care_no').dirty || __rntForm.get('distributor_care_no').touched)">
             <span class="invalid-feedback" *ngIf="(__rntForm.get('distributor_care_no')).hasError('pattern')">*Digits allow only</span>
-            <span class="invalid-feedback" *ngIf="(__rntForm.get('distributor_care_no')).hasError('minlength')">*mobile number
-              must be 10 digits</span>
-              <span class="invalid-feedback" *ngIf="(__rntForm.get('distributor_care_no')).hasError('maxlength')">*mobile number
-                must be 10 digits</span>
           </div>
         </div>
         <div class="col-sm-12 my-2">
@@ -131,14 +122,9 @@
         <div class="col-sm-12 my-2">
           <label for="head_contact_per_mob">Contact Person Mobile</label>
         <input
-        minlength="10" maxlength="10"
          type="text" (keypress)="preventNonumeric($event)" name="head_contact_per_mob" id="head_contact_per_mob" formControlName="head_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
         <div class="invalid-feedback" *ngIf="__rntForm.get('head_contact_per_mob').invalid && (__rntForm.get('head_contact_per_mob').dirty || __rntForm.get('head_contact_per_mob').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('head_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
-          <span class="invalid-feedback" *ngIf="(__rntForm.get('head_contact_per_mob')).hasError('minlength')">*mobile number
-            must be 10 digits</span>
-            <span class="invalid-feedback" *ngIf="(__rntForm.get('head_contact_per_mob')).hasError('maxlength')">*mobile number
-              must be 10 digits</span>
         </div>
       </div>
         <div class="col-sm-12 my-2">
@@ -149,8 +135,8 @@
         </div>
       </div>
       <div class="col-sm-12 my-2">
-        <label for="ofc_add">Address</label>
-        <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="head_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
+        <label for="head_ofc_add">Address</label>
+        <textarea name="ofc_add" id="head_ofc_add" cols="30" rows="5" formControlName="head_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
         <div class="invalid-feedback" *ngIf="__rntForm.get('head_ofc_addr').invalid && (__rntForm.get('head_ofc_addr').dirty || __rntForm.get('head_ofc_addr').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('head_ofc_addr')).errors?.required">*Please provide office address</span>
         </div>
@@ -168,14 +154,13 @@
         <div class="col-sm-12 my-2">
           <label for="local_contact_per_mob">Contact Person Mobile</label>
         <input
-        minlength="10" maxlength="10"
          (keypress)="preventNonumeric($event)" type="text" name="local_contact_per_mob" id="local_contact_per_mob" formControlName="local_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
         <div class="invalid-feedback" *ngIf="__rntForm.get('local_contact_per_mob').invalid && (__rntForm.get('local_contact_per_mob').dirty || __rntForm.get('local_contact_per_mob').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('local_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
-          <span class="invalid-feedback" *ngIf="(__rntForm.get('local_contact_per_mob')).hasError('minlength')">*mobile number
+          <!-- <span class="invalid-feedback" *ngIf="(__rntForm.get('local_contact_per_mob')).hasError('minlength')">*mobile number
             must be 10 digits</span>
             <span class="invalid-feedback" *ngIf="(__rntForm.get('local_contact_per_mob')).hasError('maxlength')">*mobile number
-              must be 10 digits</span>
+              must be 10 digits</span> -->
         </div>
       </div>
         <div class="col-sm-12 my-2">
@@ -186,8 +171,8 @@
         </div>
         </div>
       <div class="col-sm-12 my-2">
-        <label for="ofc_add">Address</label>
-        <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="local_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
+        <label for="local_ofc_add">Address</label>
+        <textarea name="ofc_add" id="local_ofc_add" cols="30" rows="5" formControlName="local_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
         <div class="invalid-feedback" *ngIf="__rntForm.get('local_ofc_addr').invalid && (__rntForm.get('local_ofc_addr').dirty || __rntForm.get('local_ofc_addr').touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get('local_ofc_addr')).errors?.required">*Please provide office address</span>
         </div>
@@ -245,10 +230,10 @@
           <tr *ngFor="let item of sec_qusAns.controls; let i = index;">
             <ng-container [formGroupName]="i">
               <td class="rowWidth">
-                <input type="text" placeholder="Enter Security Question" name="sec_qus" id="sec_qus" class="form-control" formControlName="sec_qus">
+                <input type="text" placeholder="Enter Security Question" name="sec_qus" id="sec_qus_{{i}}" class="form-control" formControlName="sec_qus">
               </td>
               <td class="rowWidth">
-                <input type="text" placeholder="Enter Security Answer" name="sec_ans" id="sec_ans" class="form-control" formControlName="sec_ans">
+                <input type="text" placeholder="Enter Security Answer" name="sec_ans" id="sec_ans_{{i}}" class="form-control" formControlName="sec_ans">
               </td>
               <td class="rowWidth">
                 <button color="accent" mat-icon-button type="button" *ngIf="i > 0">
@@ -271,38 +256,33 @@
        </div>
       <div class="row" >
         <div class="col-sm-12">
-          <label for="name">Name</label>
+          <label for="l1_name">Name</label>
           <input type="text"
            name="name"
-            id="name"
+            id="l1_name"
             class="form-control"
             placeholder="Enter Name"
             formControlName="name">
         </div>
         <div class="col-sm-12">
-          <label for="contact">Contact</label>
+          <label for="l1_contact">Contact</label>
           <input type="text"
            name="contact"
-           maxlength ="10"
-           minlength ="10"
-          id="contact"
+
+          id="l1_contact"
           class="form-control"
           placeholder="Enter Contact"
           (keypress)="preventNonumeric($event)"
           formControlName="contact">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_1','contact']).invalid && (__rntForm.get(['level_1','contact']).dirty || __rntForm.get(['level_1','contact']).touched)">
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_1','contact'])).hasError('minlength')">*mobile number
-            must be 10 digits</span>
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_1','contact'])).hasError('maxlength')">*mobile number
-            must be 10 digits</span>
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_1','contact'])).hasError('pattern')">*allow only
             digits</span>
           </div>
         </div>
         <div class="col-sm-12">
-          <label for="email">Email</label>
-          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <label for="l1_email">Email</label>
+          <input type="text" name="email" id="l1_email" class="form-control" placeholder="Enter Email Id" formControlName="email">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_1','email']).invalid && (__rntForm.get(['level_1','email']).dirty || __rntForm.get(['level_1','email']).touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_1','email'])).errors?.email">*Please provide valid email</span>
@@ -319,38 +299,32 @@
        </div>
       <div class="row" >
         <div class="col-sm-12">
-          <label for="name">Name</label>
+          <label for="l2_name">Name</label>
           <input type="text"
            name="name"
-            id="name"
+            id="l2_name"
             class="form-control"
             placeholder="Enter Name"
             formControlName="name">
         </div>
         <div class="col-sm-12">
-          <label for="contact">Contact</label>
+          <label for="l2_contact">Contact</label>
           <input type="text"
            name="contact"
-           maxlength ="10"
-           minlength ="10"
-          id="contact"
+          id="l2_contact"
           class="form-control"
           placeholder="Enter Contact"
           (keypress)="preventNonumeric($event)"
           formControlName="contact">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_2','contact']).invalid && (__rntForm.get(['level_2','contact']).dirty || __rntForm.get(['level_2','contact']).touched)">
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_2','contact'])).hasError('minlength')">*mobile number
-            must be 10 digits</span>
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_2','contact'])).hasError('maxlength')">*mobile number
-            must be 10 digits</span>
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_2','contact'])).hasError('pattern')">*allow only
             digits</span>
           </div>
         </div>
         <div class="col-sm-12">
-          <label for="email">Email</label>
-          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <label for="l2_email">Email</label>
+          <input type="text" name="email" id="l2_email" class="form-control" placeholder="Enter Email Id" formControlName="email">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_2','email']).invalid && (__rntForm.get(['level_2','email']).dirty || __rntForm.get(['level_2','email']).touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_2','email'])).errors?.email">*Please provide valid email</span>
@@ -367,39 +341,37 @@
        </div>
       <div class="row" >
         <div class="col-sm-12">
-          <label for="name">Name</label>
+          <mat-checkbox color="primary" formControlName="is_same"> Same As Local Office</mat-checkbox>
+        </div>
+
+        <div class="col-sm-12">
+          <label for="l3_name">Name</label>
           <input type="text"
            name="name"
 
-            id="name"
+            id="l3_name"
             class="form-control"
             placeholder="Enter Name"
             formControlName="name">
         </div>
         <div class="col-sm-12">
-          <label for="contact">Contact</label>
+          <label for="l3_contact">Contact</label>
           <input type="text"
            name="contact"
-           maxlength ="10"
-           minlength ="10"
-          id="contact"
+          id="l3_contact"
           class="form-control"
           placeholder="Enter Contact"
           (keypress)="preventNonumeric($event)"
           formControlName="contact">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_3','contact']).invalid && (__rntForm.get(['level_3','contact']).dirty || __rntForm.get(['level_3','contact']).touched)">
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_3','contact'])).hasError('minlength')">*mobile number
-            must be 10 digits</span>
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_3','contact'])).hasError('maxlength')">*mobile number
-            must be 10 digits</span>
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_3','contact'])).hasError('pattern')">*allow only
             digits</span>
           </div>
         </div>
         <div class="col-sm-12">
-          <label for="email">Email</label>
-          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <label for="l3_email">Email</label>
+          <input type="text" name="email" id="l3_email" class="form-control" placeholder="Enter Email Id" formControlName="email">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_3','email']).invalid && (__rntForm.get(['level_3','email']).dirty || __rntForm.get(['level_3','email']).touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_3','email'])).errors?.email">*Please provide valid email</span>
@@ -415,42 +387,34 @@
         <hr class="line"/>
        </div>
       <div class="row" >
+
         <div class="col-sm-12">
-          <mat-checkbox color="primary" formControlName="is_same"> Same As Local Office</mat-checkbox>
-        </div>
-        <div class="col-sm-12">
-          <label for="name">Name</label>
+          <label for="l4_name">Name</label>
           <input type="text"
            name="name"
-            id="name"
+            id="l4_name"
             class="form-control"
             placeholder="Enter Name"
             formControlName="name">
         </div>
         <div class="col-sm-12">
-          <label for="contact">Contact</label>
+          <label for="l4_contact">Contact</label>
           <input type="text"
            name="contact"
-           maxlength ="10"
-           minlength ="10"
-          id="contact"
+          id="l4_contact"
           class="form-control"
           placeholder="Enter Contact"
           (keypress)="preventNonumeric($event)"
           formControlName="contact">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_4','contact']).invalid && (__rntForm.get(['level_4','contact']).dirty || __rntForm.get(['level_4','contact']).touched)">
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_4','contact'])).hasError('minlength')">*mobile number
-            must be 10 digits</span>
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_4','contact'])).hasError('maxlength')">*mobile number
-            must be 10 digits</span>
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_4','contact'])).hasError('pattern')">*allow only
             digits</span>
           </div>
         </div>
         <div class="col-sm-12">
-          <label for="email">Email</label>
-          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <label for="l4_email">Email</label>
+          <input type="text" name="email" id="l4_email" class="form-control" placeholder="Enter Email Id" formControlName="email">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_4','email']).invalid && (__rntForm.get(['level_4','email']).dirty || __rntForm.get(['level_4','email']).touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_4','email'])).errors?.email">*Please provide valid email</span>
@@ -467,38 +431,32 @@
       </div>
       <div class="row" >
         <div class="col-sm-12">
-          <label for="name">Name</label>
+          <label for="l5_name">Name</label>
           <input type="text"
            name="name"
-            id="name"
+            id="l5_name"
             class="form-control"
             placeholder="Enter Name"
             formControlName="name">
         </div>
         <div class="col-sm-12">
-          <label for="contact">Contact</label>
+          <label for="l5_contact">Contact</label>
           <input type="text"
            name="contact"
-           maxlength ="10"
-           minlength ="10"
-          id="contact"
+          id="l5_contact"
           class="form-control"
           placeholder="Enter Contact"
           (keypress)="preventNonumeric($event)"
           formControlName="contact">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_5','contact']).invalid && (__rntForm.get(['level_5','contact']).dirty || __rntForm.get(['level_5','contact']).touched)">
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_5','contact'])).hasError('minlength')">*mobile number
-            must be 10 digits</span>
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_5','contact'])).hasError('maxlength')">*mobile number
-            must be 10 digits</span>
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_5','contact'])).hasError('pattern')">*allow only
             digits</span>
           </div>
         </div>
         <div class="col-sm-12">
-          <label for="email">Email</label>
-          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <label for="l5_email">Email</label>
+          <input type="text" name="email" id="l5_email" class="form-control" placeholder="Enter Email Id" formControlName="email">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_5','email']).invalid && (__rntForm.get(['level_5','email']).dirty || __rntForm.get(['level_5','email']).touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_5','email'])).errors?.email">*Please provide valid email</span>
@@ -515,38 +473,32 @@
       </div>
       <div class="row mb-2">
         <div class="col-sm-12">
-          <label for="name">Name</label>
+          <label for="l6_name">Name</label>
           <input type="text"
            name="name"
-            id="name"
+            id="l6_name"
             class="form-control"
             placeholder="Enter Name"
             formControlName="name">
         </div>
         <div class="col-sm-12">
-          <label for="contact">Contact</label>
+          <label for="l6_contact">Contact</label>
           <input type="text"
            name="contact"
-           maxlength ="10"
-           minlength ="10"
-          id="contact"
+          id="l6_contact"
           class="form-control"
           placeholder="Enter Contact"
           (keypress)="preventNonumeric($event)"
           formControlName="contact">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_6','contact']).invalid && (__rntForm.get(['level_6','contact']).dirty || __rntForm.get(['level_6','contact']).touched)">
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_6','contact'])).hasError('minlength')">*mobile number
-            must be 10 digits</span>
-          <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_6','contact'])).hasError('maxlength')">*mobile number
-            must be 10 digits</span>
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_6','contact'])).hasError('pattern')">*allow only
             digits</span>
           </div>
         </div>
         <div class="col-sm-12">
-          <label for="email">Email</label>
-          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email Id" formControlName="email">
+          <label for="l6_email">Email</label>
+          <input type="text" name="email" id="l6_email" class="form-control" placeholder="Enter Email Id" formControlName="email">
           <div class="invalid-feedback"
           *ngIf="__rntForm.get(['level_6','email']).invalid && (__rntForm.get(['level_6','email']).dirty || __rntForm.get(['level_6','email']).touched)">
           <span class="invalid-feedback" *ngIf="(__rntForm.get(['level_6','email'])).errors?.email">*Please provide valid email</span>
@@ -554,6 +506,36 @@
         </div>
       </div>
      </ng-container>
+
+      <div class="row">
+        <div class="col-sm-12">
+           <label for="rnt_logo">Upload Logo</label>
+           <div class="p-inputgroup">
+           <input type="file" name="rnt_logo" id="rnt_logo" class="form-control" (change)="getFile($event)" formControlName="rnt_logo_upload" accept="jpeg,png,jpg">
+           <a type="button"
+
+           pButton icon="pi pi-eye" styleClass="p-button-warn p-button-lg" *ngIf="__rntForm.get('rnt_logo_preview')?.value"></a>
+            <p-image #tooltip="matTooltip"
+            matTooltip="View Image" src="{{__rntForm.get('rnt_logo_preview')?.value}}" *ngIf="__rntForm.get('rnt_logo_preview')?.value"  alt="Image" width="0" [preview]="__rntForm.get('rnt_logo_preview')?.value" ></p-image>
+            <a type="button"
+            pButton icon="pi pi-times"
+            #tooltip="matTooltip"
+            matTooltip="Clear"
+            (click)="clearImage()"
+            *ngIf="__rntForm.get('rnt_logo_preview')?.value"
+            styleClass="p-button-danger p-button-lg"></a>
+          </div>
+           <mat-hint class="mt-2"><p class="m-0">Allowed format: PNG,JPG,JPEG (size upto: 10MB)</p></mat-hint>
+           <div class="invalid-feedback"
+          *ngIf=" __rntForm.get('rnt_logo_upload').invalid && ( __rntForm.get('rnt_logo_upload').dirty ||  __rntForm.get('rnt_logo_upload').touched)">
+          <span class="invalid-feedback" *ngIf="__rntForm.get('rnt_logo_upload').errors?.inValidExt">*Invalid
+            file extension.</span>
+          <span class="invalid-feedback"
+            *ngIf="__rntForm.get('rnt_logo_upload').errors?.fileSizeValidator">*File size must not exceed than
+            10MB.</span>
+         </div>
+        </div>
+      </div>
 
     </form>
   </mat-dialog-content>

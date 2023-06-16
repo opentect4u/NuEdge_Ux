@@ -1,0 +1,50 @@
+<div mat-dialog-title class="dialog-title">
+  <h2>{{data.title}}</h2>
+  <div class="btnIcon">
+    <button mat-icon-button><mat-icon>share</mat-icon></button>
+
+    <button mat-icon-button [mat-dialog-close]="">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <ng-container *ngIf="data.data.length > 0; else noDocs">
+    <div class="row my-5">
+      <!-- <div class="col-sm-3" *ngFor="let item of data.data">
+      </div> -->
+      <div class="col-lg-4 col-xl-3" *ngFor="let item of data.data">
+        <div class="file-man-box">
+          <!-- <a href="" class="file-close">
+          <i class="fa fa-times-circle"></i>
+        </a> -->
+    <a mat-icon-button class="file-close"><mat-icon>share</mat-icon></a>
+
+            <div class="file-img-box">
+              <a target="__blank" [href]="url+item.client_id+'/'+item.doc_name">
+                <img  src="../../../assets/images/pdf.png" alt="icon">
+              </a>
+            </div>
+
+            <div class="file-man-title">
+                <h5 class="mb-0 text-overflow text-center">{{item.doc_type_name}}</h5>
+                <!-- <a target="__blank" mat-icon-button [href]="url+item.client_id+'/'+item.doc_name" class="file-download">
+                  <mat-icon>visibility</mat-icon>
+                </a> -->
+            </div>
+        </div>
+    </div>
+     </div>
+  </ng-container>
+  <ng-template #noDocs>
+      <div class="card my-5">
+        <div class="card-body text-center">
+              <img src="../../../assets/images/no_docs.png" alt="No Document">
+              <h4>{{data.no_data_found_msg}}</h4>
+
+        </div>
+      </div>
+  </ng-template>
+
+</mat-dialog-content>

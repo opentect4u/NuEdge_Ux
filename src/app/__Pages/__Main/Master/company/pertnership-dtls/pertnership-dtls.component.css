@@ -1,0 +1,26 @@
+td,
+th {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  width: 25%;
+  font-size: 11px!important;
+}
+th {
+   text-align: center!important;
+}
+td,
+/* th:first-child,td, */
+th:last-child{
+  width:2%;
+}
+
+.input-group>span{
+  position: absolute;
+  right: 5px;
+  top: 7px;
+  z-index: 10;
+}
+
+.was-validated .form-control:invalid, .form-control.is-invalid{
+  background-image:none!important;
+}

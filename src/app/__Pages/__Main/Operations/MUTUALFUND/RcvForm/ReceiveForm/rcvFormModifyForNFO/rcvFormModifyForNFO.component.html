@@ -1,0 +1,294 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+        <form [formGroup]="__rcvForm" (ngSubmit)="recieveForm()" [attr.id]="'__rcvForm' + data.id" ngNativeValidate autocomplete="off">
+          <!-- Buisness Type -->
+          <div class="row">
+            <div class="col-sm-12 my-2">
+              <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
+              <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
+                <option value=""> Select Buisness Type</option>
+                <option *ngFor="let __bu_type of __buisness_type" value="{{__bu_type.id}}">{{__bu_type.bu_type}}</option>
+              </select>
+              <div class="invalid-feedback"
+                *ngIf="__rcvForm.get('bu_type').invalid && (__rcvForm.get('bu_type').dirty || __rcvForm.get('bu_type').touched)">
+                <span class="invalid-feedback" *ngIf="(__rcvForm.get('bu_type')).errors?.required">*Please provide buisness
+                  type</span>
+              </div>
+            </div>
+            <div class="col-sm-12 my-2" *ngIf="__rcvForm.get('bu_type').value == 'B'">
+            <!-- //ARN -->
+
+
+            <app-core-srch
+            [label] = "'Sub Broker ARN'"
+            [placeholder]="'Serach By Sub Broker ARN'"
+            [isPending]="__isSubBrkArnSpinner"
+            [listItems] = "__subbrkArnMst"
+            [flag] = "'S'"
+            [isRequired]="true"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [propertiesToShow] = "['arn_no','bro_name']"
+            formControlName="sub_arn_no"
+            [isExists]="__rcvForm.get('sub_arn_no').errors?.subBrkExists"
+            [displayMode]="displayMode_forSub_arn_no"
+            (setDisplayMode)="displayMode_forSub_arn_no = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            [isClientExistMsg]="'Sub Broker does not exists'"
+            ></app-core-srch>
+            </div>
+            <div class="col-sm-12 my-2" *ngIf="__rcvForm.get('bu_type').value == 'B'">
+              <!-- Sub broker code -->
+              <label for="subbrkCD">Sub Broker Code<span class="text-danger">*</span></label>
+              <input type="search" id="subbrkCD" class="form-control" placeholder="Sub Broker Code" formControlName="sub_brk_cd" readonly>
+            </div>
+            <div class="col-sm-12 my-2" *ngIf="__rcvForm.get('bu_type').value != ''">
+              <app-core-srch
+              [label] = "'EUIN'"
+              [placeholder]="'Search By EUIN Number'"
+              [isPending]="__isEuinPending"
+              [listItems] = "__euinMst"
+              [flag] = "'E'"
+              [isRequired]="true"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['euin_no','emp_name']"
+              formControlName="euin_no"
+              [isExists]="__rcvForm.get('euin_no').errors?.euinExists"
+              [displayMode]="displayMode_forEuin"
+              (setDisplayMode)="displayMode_forEuin = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              [isClientExistMsg]="'EUIN does not exists'"
+              ></app-core-srch>
+              <div class="invalid-feedback"
+                *ngIf="__rcvForm.get('euin_no').invalid && (__rcvForm.get('euin_no').dirty || __rcvForm.get('euin_no').touched)">
+                <span class="invalid-feedback" *ngIf="(__rcvForm.get('euin_no')).errors?.required">*Please provide EUIN number</span>
+              </div>
+            </div>
+          </div>
+          <!-- End -->
+
+          <!-- Client Dtls -->
+          <div class="row">
+            <div class="my-2" [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-10':__isCldtlsEmpty}">
+
+
+              <app-core-srch
+              [label] = "'Client Code'"
+              [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+              [isPending]="__isClientPending"
+              [listItems] = "__clientMst"
+              [flag] = "'C'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'To create a new client .Please click on Create Client'"
+              [propertiesToShow] = "['client_code','pan','client_name']"
+              formControlName="client_code"
+              [isExists]="__rcvForm.get('client_code').errors?.ClientExists"
+              [displayMode]="displayMode_forClient"
+              (setDisplayMode)="displayMode_forClient = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              [isClientExistMsg]="'Client does not exists'"
+              ></app-core-srch>
+            </div>
+            <div class="col-sm-2 clientCode" *ngIf="__isCldtlsEmpty && __rcvForm.get('client_code').value" >
+              <core-btn-with-menu
+              [menuListItem]="__clTypeMenu"
+              [BtnTitle]="'Create Client'"
+              [hasMenu]="true"
+              (sendItem)="navigateTo($event)"
+              ></core-btn-with-menu>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="my-2" class="col-sm-12" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
+              <label for="__clName">Client Name</label>
+                  <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true">
+                  <button (click)="openDialog('C')"
+                  color="primary"
+                  class="viewIconDtls"
+                  *ngIf="this.__dialogDtForClient"
+                  mat-icon-button type="button"
+                  aria-label="Example icon button with a eye icon"
+                  title="View Client Details">
+                  <mat-icon>remove_red_eye</mat-icon></button>
+                </div>
+            <!-- <div class="col-sm-4 clientCode" *ngIf="__dialogDtForClient && __rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
+              <button (click)="openDialog('C')" color="primary" *ngIf="this.__dialogDtForClient"   mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Client Details">
+                <mat-icon>remove_red_eye</mat-icon>
+                View Details
+              </button>
+            </div> -->
+
+          </div>
+          <!-- End -->
+          <!-- Transaction Type & Scheme-->
+          <div class="row">
+            <div class="col-sm-12 my-2">
+              <label for="FrmType">Transaction<span class="text-danger">*</span></label>
+              <select name="frmType" class="form-control" id="FrmType" formControlName="trans_id">
+                <option value="">Select Transaction</option>
+                <option *ngFor="let __formType of __transType" value="{{__formType.id}}">{{__formType.trns_name}}</option>
+              </select>
+              <div class="invalid-feedback"
+                *ngIf="__rcvForm.get('trans_id').invalid && (__rcvForm.get('trans_id').dirty || __rcvForm.get('trans_id').touched)">
+                <span class="invalid-feedback" *ngIf="(__rcvForm.get('trans_id')).errors?.required">*Please provide form
+                  type</span>
+              </div>
+            </div>
+            <div class="my-2" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-8':__dialogDtForScheme}">
+              <app-core-srch
+              [label] = "(__rcvForm.get('trans_id').value == '6') ? 'Switch Scheme From' : ( __rcvForm.get('trans_id').value == '35' ? 'Initial Scheme Name' : 'Scheme Name')"
+              [placeholder]="'Search By Scheme Name'"
+              [isPending]="__isSchemePending"
+              [listItems] = "__schemeMst"
+              [flag] = "'SC'"
+              [propertiesToShow] = "['scheme_name']"
+              formControlName="scheme_name"
+              [isRequired]="true"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [isExists]="__rcvForm.get('scheme_name').errors?.ScmExists"
+              [displayMode]="displayMode_forScm"
+              (setDisplayMode)="displayMode_forScm = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              [isClientExistMsg]="'Scheme does not exists'"
+              ></app-core-srch>
+              <div class=invalid-feedback *ngIf="__isEntryDTGreater">* Entry Date Expired for this scheme</div>
+            </div>
+            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForScheme">
+              <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
+                <mat-icon>remove_red_eye</mat-icon>
+                View Details
+              </button>
+            </div>
+          </div>
+          <!-- End -->
+
+          <ng-container *ngIf="__rcvForm.get('trans_id').value == '6' || __rcvForm.get('trans_id').value == '35'">
+          <div class="row ">
+            <div [ngClass]="{'col-sm-12': !__dialogDtForSchemeTo,'col-sm-8':__dialogDtForSchemeTo}" class="my-2">
+              <app-core-srch
+              [label] = "'Switch Scheme To'"
+              [placeholder]="'Search By Scheme Name'"
+              [isPending]="__isschemetoSpinner"
+              [listItems] = "__schemeMstforSwitchTo"
+              [flag] = "'ST'"
+              [isRequired]="true"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['scheme_name']"
+              formControlName="switch_scheme_to"
+              [isExists]="__rcvForm.get('switch_scheme_to').errors?.ScmToExists"
+              [displayMode]="displayMode_forScmTo"
+              (setDisplayMode)="displayMode_forScmTo = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              [isClientExistMsg]="'Scheme does not exists'"
+              ></app-core-srch>
+            </div>
+            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForSchemeTo">
+              <button color="primary" *ngIf="this.__dialogDtForSchemeTo" (click)="openDialog('ST')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
+                <mat-icon>remove_red_eye</mat-icon>
+                View Details
+              </button>
+            </div>
+          </div>
+          </ng-container>
+
+          <!-- Receive From & Investment Type & Application Number -->
+          <div class="row">
+            <div class="col-sm-12 my-2">
+              <label for="frmrcv">Receive From</label>
+              <input type="text" name="frmrcv" id="frmrcv" class="form-control" placeholder="Enter Receive From" formControlName="recv_from">
+              <div class="invalid-feedback"
+              *ngIf="__rcvForm.get('recv_from').invalid && (__rcvForm.get('recv_from').dirty || __rcvForm.get('recv_from').touched)">
+              <span class="invalid-feedback" *ngIf="(__rcvForm.get('recv_from')).errors?.required">*Please provide receive from</span>
+            </div>
+            </div>
+            <div class="col-sm-12 my-2">
+              <label for="inv_type">Investment Type</label>
+              <select name="inv_type" class="form-control" id="inv_type" formControlName="inv_type">
+                <option value="">Select Investment Type</option>
+                <option value="F">Fresh</option>
+                <option value="A">Additional</option>
+              </select>
+              <div class="invalid-feedback"
+              *ngIf="__rcvForm.get('inv_type').invalid && (__rcvForm.get('inv_type').dirty || __rcvForm.get('inv_type').touched)">
+              <span class="invalid-feedback" *ngIf="(__rcvForm.get('inv_type')).errors?.required">*Please provide investment type</span>
+            </div>
+            </div>
+            <ng-container *ngIf="__rcvForm.get('inv_type').value == 'F'">
+              <div class="col-sm-12 my-2">
+                <label for="application_no">
+                  Application Number
+                </label>
+                <input type="text"
+                name="application_no"
+                id="application_no"
+                class="form-control"
+                formControlName="application_no"
+                placeholder="Enter Application Number">
+              </div>
+            </ng-container>
+            <ng-container *ngIf="__rcvForm.get('inv_type').value == 'A'">
+              <div class="col-sm-12 my-2">
+                <label for="folio_number">
+                  Folio Number <span class="text-danger">*</span>
+                </label>
+                <input type="text"
+                name="folio_number"
+                id="folio_number"
+                class="form-control"
+                formControlName="folio_no"
+                placeholder="Enter Folio Number">
+              </div>
+            </ng-container>
+
+          </div>
+          <!-- End -->
+          <div class="row my-2">
+            <div class="col-sm-6">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="kyc_status">
+                <mat-radio-button value="Y">With KYC</mat-radio-button>
+                <mat-radio-button value="N" class="ml-3">Without KYC</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-sm-6">
+
+            </div>
+          </div>
+          <!-- <div class="row ">
+            <div class="col-sm-12 my-1 ">
+              <button class="btn addBtn  ml-2" form="__rcvForm" [disabled]="this.__rcvForm.invalid">
+               Submit
+              </button>
+            </div>
+          </div> -->
+        </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn"   [attr.form]="'__rcvForm' + data.id" [disabled]="this.__rcvForm.invalid || __isEntryDTGreater">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+  </div>

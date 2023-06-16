@@ -1,0 +1,195 @@
+[
+  {
+      "id":1,
+      "accessibility":[],
+      "title":"MF Trax",
+      "url":"/main/product/mf",
+      "icon": "fa fa-user-o",
+      "has_submenu":[]
+  },
+  {
+    "id":2,
+    "accessibility":[],
+    "title":"Transaction Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":3,
+    "accessibility":[],
+    "title":"AUM Report",
+    "url":"/main/product/mf/mis/aum",
+    "icon": "fa fa-user-o",
+    "has_submenu":[
+      {
+        "id":1,
+        "accessibility":[],
+        "title":"AUM By Fund House",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":2,
+        "accessibility":[],
+        "title":"AUM By Scheme",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":3,
+        "accessibility":[],
+        "title":"AUM By Client",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":4,
+        "accessibility":[],
+        "title":"AUM By Asset Allocation",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":5,
+        "accessibility":[],
+        "title":"AUM By Family",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":6,
+        "accessibility":[],
+        "title":"AUM By Registered",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":7,
+        "accessibility":[],
+        "title":"AUM By Branch",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":8,
+        "accessibility":[],
+        "title":"AUM By Employee",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":9,
+        "accessibility":[],
+        "title":"AUM By Sub Broker",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":10,
+        "accessibility":[],
+        "title":"AUM By Segment",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":11,
+        "accessibility":[],
+        "title":"AUM Growth Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":12,
+        "accessibility":[],
+        "title":"Top Client AUM Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":13,
+        "accessibility":[],
+        "title":"City Wise AUM Report",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      }
+    ]
+  },
+  {
+    "id":4,
+    "accessibility":[],
+    "title":"Business Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":5,
+    "accessibility":[],
+    "title":"Rejection Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":6,
+    "accessibility":[],
+    "title":"Change Of Broker",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":7,
+    "accessibility":[],
+    "title":"Collection Summary Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":8,
+    "accessibility":[],
+    "title":"Monthly MIS Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":9,
+    "accessibility":[],
+    "title":"Investor Redemption Payout Despatch Details",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":10,
+    "accessibility":[],
+    "title":"Return Undelivered Payout Insturment Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":11,
+    "accessibility":[],
+    "title":"Invalid EUIN Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  }
+]

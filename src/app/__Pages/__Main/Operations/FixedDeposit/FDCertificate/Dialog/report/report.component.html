@@ -434,7 +434,7 @@
           </ng-container>
           <ng-container matColumnDef="entry_date">
             <th mat-sort-header="entry_date" mat-header-cell *matHeaderCellDef>Entry Date</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'YYYY-MM-dd'}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
           </ng-container>
           <ng-container matColumnDef="certificate_delivery_opt">
             <th mat-sort-header="certificate_delivery_opt" mat-header-cell *matHeaderCellDef>Certificate Delivery Option</th>
@@ -717,7 +717,7 @@
 
           <ng-container matColumnDef="entry_date">
             <th mat-header-cell *matHeaderCellDef>Entry Date</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'YYYY-MM-dd'}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
           </ng-container>
           <ng-container matColumnDef="certificate_delivery_opt">
             <th mat-header-cell *matHeaderCellDef>Certificate Delivery Option</th>

@@ -55,8 +55,8 @@ constructor(
 exportPdf(){
   this.__Rpt.downloadReport('#subcategory',
   {
-    title: 'SubCategory '
-  }, 'SubCategory')
+    title: 'Sub Category '
+  }, 'Sub Category')
 }
 
 ngOnInit(){
@@ -209,7 +209,7 @@ searchResultVisibility(display_mode,__type){
 
 }
 getval(__paginate) {
-  this.__pageNumber.setValue(__paginate.toString());
+   this.__pageNumber.setValue(__paginate.toString());
   this.getSubcatMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
 }
 getPaginate(__paginate) {
@@ -242,7 +242,7 @@ openDialog(__subcategory: subcat | null = null, __subcatId: number) {
     flag: 'S',
     id: __subcatId,
     items: __subcategory,
-    title: __subcatId == 0 ? 'Add SubCategory' : 'Update SubCategory',
+    title: __subcatId == 0 ? 'Add Sub Category' : 'Update Sub Category',
     right: global.randomIntFromInterval(1, 60),
   };
   dialogConfig.id = __subcatId > 0 ? __subcatId.toString() : '0';

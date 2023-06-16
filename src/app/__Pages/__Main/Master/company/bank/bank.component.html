@@ -1,0 +1,191 @@
+
+<core-tab [Tab]="TabMenu" [customClass]="'customTabs'" (GetTabDtls)="onTabChange($event)"></core-tab>
+<div class="container_fluid mb-2 w-100">
+<form [formGroup]="bank" (ngSubmit)="submitBnk()">
+  <div class="row my-3">
+    <div class="col-sm-12">
+      <table>
+        <thead>
+          <tr>
+            <!-- <td>Company <span class="text-danger">*</span></td> -->
+            <td>Account No.  <span class="text-danger">*</span></td>
+            <td>Bank <span class="text-danger">*</span></td>
+            <td>IFSC <span class="text-danger">*</span></td>
+            <td>MICR <span class="text-danger">*</span></td>
+            <td colspan="2">Branch <span class="text-danger">*</span></td>
+            <td>
+              Upload Cheque <span class="text-danger">*</span>
+      <mat-hint><label>Allowed format :</label> <strong>PDF</strong></mat-hint>
+
+            </td>
+            <td>
+              <p-button icon="pi pi-plus" (click)="addBank()" type="button" styleClass="p-button-primary"></p-button>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4"></td>
+            <td>Name <span class="text-danger">*</span></td>
+            <td>Address <span class="text-danger">*</span></td>
+            <td></td>
+            <td></td>
+
+          </tr>
+        </thead>
+        <tbody formArrayName="bnkDtls">
+          <tr *ngFor="let bank of bknDtls.controls;let i=index">
+            <ng-container [formGroupName]="i">
+              <td>
+                <input placeholder="Enter Account Number" type="text" name="acc_no" id="acc_no" class="form-control" formControlName="acc_no">
+                <div class="invalid-feedback" *ngIf="bknDtls.controls[i].get('acc_no').invalid && (bknDtls.controls[i].get('acc_no').dirty || bknDtls.controls[i].get('acc_no').touched)">
+                  <span class="invalid-feedback" *ngIf="(bknDtls.controls[i].get('acc_no')).errors?.required">*Please provide account number</span>
+                </div>
+
+              </td>
+              <td>
+                <input placeholder="Enter Bank Name" type="text" name="bank_name" id="bank_name" class="form-control" formControlName="bank_name">
+                <div class="invalid-feedback" *ngIf="bknDtls.controls[i].get('bank_name').invalid && (bknDtls.controls[i].get('bank_name').dirty || bknDtls.controls[i].get('bank_name').touched)">
+                  <span class="invalid-feedback" *ngIf="(bknDtls.controls[i].get('bank_name')).errors?.required">*Please provide bank</span>
+                </div>
+              </td>
+              <td>
+                <input placeholder="Enter IFSC" type="text" name="ifsc" id="ifsc" class="form-control" formControlName="ifsc">
+                <div class="invalid-feedback" *ngIf="bknDtls.controls[i].get('ifsc').invalid && (bknDtls.controls[i].get('ifsc').dirty || bknDtls.controls[i].get('ifsc').touched)">
+                  <span class="invalid-feedback" *ngIf="(bknDtls.controls[i].get('ifsc')).errors?.required">*Please provide IFSC</span>
+                </div>
+              </td>
+              <td>
+                <input placeholder="Enter MICR" type="text" name="micr" id="micr" class="form-control" formControlName="micr">
+                <div class="invalid-feedback" *ngIf="bknDtls.controls[i].get('micr').invalid && (bknDtls.controls[i].get('micr').dirty || bknDtls.controls[i].get('micr').touched)">
+                  <span class="invalid-feedback" *ngIf="(bknDtls.controls[i].get('micr')).errors?.required">*Please provide MICR</span>
+                </div>
+              </td>
+              <td>
+                <input  placeholder="Enter Branch Name" type="text" name="branch_name" id="branch_name" class="form-control" formControlName="branch_name">
+                <div class="invalid-feedback" *ngIf="bknDtls.controls[i].get('branch_name').invalid && (bknDtls.controls[i].get('branch_name').dirty || bknDtls.controls[i].get('branch_name').touched)">
+                  <span class="invalid-feedback" *ngIf="(bknDtls.controls[i].get('branch_name')).errors?.required">*Please provide branch name</span>
+                </div>
+              </td>
+              <td>
+                <textarea  formControlName="branch_add"  cols="30"></textarea>
+                <div class="invalid-feedback" *ngIf="bknDtls.controls[i].get('branch_add').invalid && (bknDtls.controls[i].get('branch_add').dirty || bknDtls.controls[i].get('branch_add').touched)">
+                  <span class="invalid-feedback" *ngIf="(bknDtls.controls[i].get('branch_add')).errors?.required">*Please provide branch address</span>
+                </div>
+              </td>
+              <td>
+                <input type="file" name="file" id="file" class="form-control" formControlName="file" (change)="getFile($event,i)">
+
+                <a [href]="bknDtls.controls[i].get('chq_preview')?.value" target="__blank" *ngIf="bknDtls.controls[i].get('chq_preview')?.value">
+                  <img src="../../../../../../assets/images/pdf.png" height="50" width="50"  alt="preview PDF">
+                </a>
+
+              </td>
+              <td>
+                <p-button icon="pi pi-trash"
+              *ngIf="i > 0"
+              (click)="removeBank(i)"
+              type="button"
+              styleClass="p-button-danger">
+            </p-button>
+              </td>
+            </ng-container>
+
+          </tr>
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td colspan="8">
+              <p-button type="submit"
+              label="Save"
+              icon="pi pi-save"
+              iconPos="right"
+              class="float-right"
+              [disabled]="bank.invalid"
+              styleClass="p-button-lg p-button-primary">
+              </p-button>
+              <p-button type="button"
+              label="Reset"
+              icon="pi pi-refresh"
+              iconPos="right"
+              class="float-right mx-3"
+              (click)="reset()"
+              styleClass="p-button-lg p-button-danger">
+              </p-button>
+            </td>
+          </tr>
+        </tfoot>
+
+      </table>
+    </div>
+  </div>
+</form>
+<p-table [value]="bankMstDtls"
+ [columns]="columns"
+ [resizableColumns]="true"
+  [paginator]="true"
+  [rows]="5"
+  [showCurrentPageReport]="true"
+  selectionMode="multiple"
+  columnResizeMode="expand"
+  [scrollable]="true"
+  scrollHeight="250px"
+  class="mt-3"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+  [tableStyle]="{ 'min-width': '100rem' }">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 15rem">
+            {{ col.header }}
+            <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'upload_chq'" [field]="col.field">
+            </p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-bank let-columns="columns">
+        <tr tabindex="999">
+          <td *ngFor="let col of columns" >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'edit'" >
+                <p-button icon="pi pi-pencil" (click)="populateDT(bank)"
+                styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'cm_profile_name'" >
+                <span
+                #tooltip="matTooltip"
+                matTooltip="{{bank[col.field]}}">
+                {{ bank['type_of_comp'] == 4 ? (bank['establishment_name'] ? bank['establishment_name'] : 'N/A') : (bank[col.field] ? bank[col.field] : 'N/A')}}
+              </span>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'upload_chq'" >
+                <ng-container *ngIf="bank[col.field];else noPdf">
+                  <a [href]="chq_url + bank[col.field]" target="__blank" *ngIf="chq_url + bank[col.field]">
+                    <img src="../../../../../../assets/images/pdf.png" height="50" width="50"  alt="preview PDF">
+                  </a>
+                </ng-container>
+                <ng-template #noPdf>
+                    <span> N/A</span>
+
+                </ng-template>
+
+              </ng-container>
+              <ng-container *ngSwitchDefault >
+                <span
+                #tooltip="matTooltip"
+                matTooltip="{{bank[col.field]}}">
+                {{ bank[col.field] ? bank[col.field] : 'N/A' }}
+              </span>
+              </ng-container>
+              </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+             No records found
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+</div>

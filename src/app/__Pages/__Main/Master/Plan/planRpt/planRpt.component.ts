@@ -117,7 +117,7 @@ export class PlanrptComponent implements OnInit {
     }
   }
   getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     this.getPlanMst(
       this.__sortColumnsAscOrDsc.active,
       this.__sortColumnsAscOrDsc.direction

@@ -50,7 +50,7 @@
         <div class="col-sm-12 my-5" *ngIf="!this.data.isViewMode">
           <label for="ack_file">Upload Acknowledgement <span class="text-danger">*</span></label>
           <input (change)="getFile($event)"  type="file" name="ack_file" id="ack_file" class="form-control" formControlName="ack_file">
-           <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 2MB)</p></mat-hint>
+           <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
           <div class="invalid-feedback"
           *ngIf=" __ackUpload.get('ack_file').invalid && ( __ackUpload.get('ack_file').dirty ||  __ackUpload.get('ack_file').touched)">
           <span class="invalid-feedback" *ngIf=" __ackUpload.get('ack_file').errors?.required">*Please
@@ -59,7 +59,7 @@
             file extension.</span>
           <span class="invalid-feedback"
             *ngIf="__ackUpload.get('ack_file').errors?.fileSizeValidator">*File size must not exceed than
-            2MB.</span>
+            10MB.</span>
         </div>
         </div>
         <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">

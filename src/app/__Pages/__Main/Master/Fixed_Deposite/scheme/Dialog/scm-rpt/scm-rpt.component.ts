@@ -186,7 +186,7 @@ export class ScmRptComponent implements OnInit {
    this.openDialog(__el,__el.id)
   }
   getval(__paginate){
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     this.getScmMst(
       this.__sortColumnsAscOrDsc.active,
       this.__sortColumnsAscOrDsc.direction

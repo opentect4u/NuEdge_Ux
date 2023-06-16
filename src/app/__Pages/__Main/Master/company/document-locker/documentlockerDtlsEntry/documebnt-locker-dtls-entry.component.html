@@ -1,0 +1,110 @@
+<form [formGroup]="documentFrm" (ngSubmit)="submitDocument()">
+
+  <div class="row my-2">
+    <div class="col-sm-12">
+      <table>
+        <thead>
+          <tr>
+            <!-- <th>Company <span class="text-danger">*</span></th> -->
+            <th>Document Name <span class="text-danger">*</span></th>
+            <th>Document Number <span class="text-danger">*</span></th>
+            <th>Valid From <span class="text-danger">*</span></th>
+            <th>Valid To <span class="text-danger">*</span></th>
+            <th>
+               Document <span class="text-danger">*</span>
+               <br/>
+               <label>Allowed format:pdf</label>
+            </th>
+            <th>Document View</th>
+            <th>
+              <button mat-icon-button type="button" (click)="addItems()"><mat-icon>add</mat-icon></button>
+            </th>
+          </tr>
+        </thead>
+        <tbody formArrayName="document">
+          <tr *ngFor="let item of document.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td><input type="text" placeholder="Enter Document Name" name="doc_name" id="doc_name"
+                  class="form-control" formControlName="doc_name">
+                  <div class="invalid-feedback"
+                  *ngIf=" document.controls[i].get('doc_name').invalid && ( document.controls[i].get('doc_name').dirty ||  document.controls[i].get('doc_name').touched)">
+                  <span class="invalid-feedback" *ngIf=" document.controls[i].get('doc_name').errors?.required">*Please
+                    provide document name</span>
+                </div>
+                </td>
+              <td><input type="text" placeholder="Enter Document Number" name="doc_no" id="doc_no"
+                  class="form-control" formControlName="doc_no">
+                  <div class="invalid-feedback"
+                  *ngIf=" document.controls[i].get('doc_no').invalid && ( document.controls[i].get('doc_no').dirty ||  document.controls[i].get('doc_no').touched)">
+                  <span class="invalid-feedback" *ngIf=" document.controls[i].get('doc_no').errors?.required">*Please
+                    provide document number</span>
+                </div>
+                </td>
+              <td>
+                <input type="date" name="valid_from" id="valid_from" class="form-control" formControlName="valid_from">
+                <div class="invalid-feedback"
+                  *ngIf=" document.controls[i].get('valid_from').invalid && ( document.controls[i].get('valid_from').dirty ||  document.controls[i].get('valid_from').touched)">
+                  <span class="invalid-feedback" *ngIf=" document.controls[i].get('valid_from').errors?.required">*Please
+                    provide document valid from</span>
+                </div>
+              </td>
+              <td>
+                <input type="date" name="valid_to" id="valid_to" class="form-control" formControlName="valid_to">
+                <div class="invalid-feedback"
+                *ngIf=" document.controls[i].get('valid_to').invalid && ( document.controls[i].get('valid_to').dirty ||  document.controls[i].get('valid_to').touched)">
+                <span class="invalid-feedback" *ngIf=" document.controls[i].get('valid_to').errors?.required">*Please
+                  provide document valid to</span>
+              </div>
+              </td>
+              <td>
+                <input type="file" (change)="getFile($event,i)" accept="pdf" name="doc" id="doc" class="form-control" formControlName="doc">
+                <div class="invalid-feedback"
+                *ngIf=" document.controls[i].get('doc').invalid && ( document.controls[i].get('doc').dirty ||  document.controls[i].get('doc').touched)">
+                <span class="invalid-feedback" *ngIf=" document.controls[i].get('doc').errors?.required">*Please
+                  provide file</span>
+                <span class="invalid-feedback" *ngIf="document.controls[i].get('doc').errors?.inValidExt">*Invalid
+                  file extension.</span>
+                <span class="invalid-feedback"
+                  *ngIf="document.controls[i].get('doc').errors?.fileSizeValidator">*File size must not exceed than
+                  10MB.</span>
+              </div>
+
+              </td>
+
+              <td>
+                <a [href]="document.controls[i].get('file_preview')?.value" target="__blank" *ngIf="document.controls[i].get('file_preview')?.value">
+                  <img src="../../../../../../assets/images/pdf.png"  alt="preview Image">
+                </a>
+              </td>
+              <td>
+                <button mat-icon-button color="warn" *ngIf="i > 0" type="button" (click)="removeAt(i)"><mat-icon>delete</mat-icon></button>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="8">
+                <p-button type="submit"
+                label="Save"
+                icon="pi pi-save"
+                iconPos="right"
+                [disabled]="documentFrm.invalid"
+                class="float-right"
+                styleClass="p-button-lg p-button-primary">
+                </p-button>
+                <p-button type="button"
+                label="Reset"
+                icon="pi pi-refresh"
+                iconPos="right"
+                (click)="reset()"
+                class="float-right mx-3"
+                styleClass="p-button-lg p-button-danger">
+                </p-button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</form>

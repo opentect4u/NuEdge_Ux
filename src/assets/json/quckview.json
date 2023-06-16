@@ -1,0 +1,32 @@
+[
+  {
+    "id":1,
+    "icon":"chevron_right",
+    "item":"Employee Daily Performance Report",
+    "score":0
+  },
+  {
+    "id":2,
+    "icon":"chevron_right",
+    "item":"TAT FAILURE ",
+    "score":0
+  },
+  {
+    "id":3,
+    "icon":"chevron_right",
+    "item":"Day Sales",
+    "score":0
+  },
+  {
+    "id":4,
+    "icon":"chevron_right",
+    "item":"Support Ticket Log",
+    "score":0
+  },
+  {
+    "id":5,
+    "icon":"chevron_right",
+    "item":"Broker's Sales",
+    "score":0
+  }
+]

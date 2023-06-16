@@ -125,7 +125,7 @@ export class RptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     this.getRntMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
   }
   getPaginate(__paginate) {

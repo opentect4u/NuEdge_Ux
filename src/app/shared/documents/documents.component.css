@@ -1,0 +1,89 @@
+h4{
+  font-size: 17px;
+  font-weight: 400;
+  color: gray;
+  margin: 19px 9px;
+}
+.card-body{padding:7px;}
+.card-body>img{
+  height: 108px;
+  opacity: .8;
+}
+.imgContainer{display: flex;justify-content: space-between;align-items: center;}
+.imgContainer>img{height: 50px;}
+.card{border-radius:5px;}
+
+
+
+/** File Manager Css*/
+
+.file-man-box {
+  padding: 20px;
+  /* border: 1px solid #e3eaef; */
+  border: 1px solid #bcbcbc;
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 20px
+}
+
+.file-man-box .file-close {
+  /* color: #3a5076;
+  position: absolute;
+  line-height: 24px;
+  font-size: 24px;
+  right: 10px;
+  top: 10px; */
+  /* visibility: hidden */
+  color: #3a5076;
+  position: absolute;
+  font-size: 24px;
+  right: 0px;
+  top: 0px;
+}
+
+.file-man-box .file-img-box {
+  line-height: 120px;
+  text-align: center
+}
+
+.file-man-box .file-img-box img {
+  height: 103px;
+  opacity: .9;
+}
+
+.file-man-box .file-download {
+  font-size: 32px;
+  color: #98a6ad;
+  position: absolute;
+  right: 10px
+}
+
+.file-man-box .file-download:hover {
+  color: #313a46
+}
+
+.file-man-box .file-man-title {
+  /* padding-right: 25px; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-man-box:hover {
+  -webkit-box-shadow: 0 0 24px 0 rgba(0, 0, 0, .06), 0 1px 0 0 rgba(0, 0, 0, .02);
+  box-shadow: 0 0 24px 0 rgba(0, 0, 0, .06), 0 1px 0 0 rgba(0, 0, 0, .02)
+}
+
+/* .file-man-box:hover .file-close {
+
+} */
+.text-overflow {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+h5 {
+  font-size: 15px;
+}

@@ -60,7 +60,7 @@ export class ClietCdDaasboardComponent implements OnInit {
     },
     {
       parent_id: 4,
-      menu_name: 'Upload Csv',
+      menu_name: 'Upload CSV',
       has_submenu: 'N',
       url: 'main/master/clUploadCsv',
       icon: '',

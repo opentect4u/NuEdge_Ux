@@ -1,19 +1,31 @@
 [
-    {
-        "id":1,
-        "sub_menu":[
-            {
-              "id": 1,
-              "menu_name":"Financial"
-            },
-            {
-                "id": 3,
-                "menu_name":"Non Financial"
-            },
-            {
-                "id": 4,
-                "menu_name":"NFO"
-            }
-        ]
-    }
+  {
+    "id": 1,
+    "sub_menu": [
+      {
+        "id": 1,
+        "menu_name": "Financial",
+        "title": "Financial",
+        "icon": "fa fa-user-o",
+        "url": "/main/operations/dashboard/formRcv",
+        "flag": "F"
+      },
+      {
+        "id": 3,
+        "menu_name": "Non Financial",
+        "title": "Non Financial",
+        "icon": "fa fa-user-o",
+        "url": "/main/operations/dashboard/formRcv",
+        "flag": "N"
+      },
+      {
+        "id": 4,
+        "menu_name": "NFO",
+        "title": "NFO",
+        "icon": "fa fa-user-o",
+        "url": "/main/operations/dashboard/formRcv",
+        "flag": "O"
+      }
+    ]
+  }
 ]

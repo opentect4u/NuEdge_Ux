@@ -1,0 +1,21 @@
+<div class="row flexSec">
+  <div class="col-sm-7">
+    <shared-upload-csv
+    [leftHeaderTitle]="'Upload Pincode'"
+    [columns]="tableColumns"
+    [api_name]="'/pincodeimport'"
+    [flag]="'GP'"
+    [dataSource]="tableData"
+    [countryMst]="countryMst"
+    [file_name]="'Sample Pincode'"
+    [displayedColumns]="displayedColumns"></shared-upload-csv>
+  </div>
+  <div class="col-sm-5">
+    <shared-mst-dtls
+    [btnTitle]="'View All Pincode'"
+    [headerTitle]="'Recent Pincode'"
+    [flag]="'GP'"
+    (populate)="populateDT($event)" (viewAll)="viewAll()"
+    [dataSource]="pincodeMst.data"></shared-mst-dtls>
+  </div>
+</div>

@@ -1,0 +1,253 @@
+<form [formGroup]="__kycFilterForm" (ngSubmit)="submit()" autocomplete="off">
+  <div class="row" *ngIf="isDatePeriod">
+    <div class="col-sm-8 my-auto">
+      <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+        <mat-radio-button value="2">Summary</mat-radio-button>
+        <mat-radio-button value="1" class="mx-5">Detail</mat-radio-button>
+        <mat-radio-button value="3" *ngIf="isDaySheet">Day Sheet</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="col-sm-4 my-auto" >
+      <mat-button-toggle-group #group="matButtonToggleGroup" class="float-right">
+        <mat-button-toggle value="left" aria-label="Text align left"
+        (click)="__isAdd=!__isAdd;"
+        *ngIf="this.__kycFilterForm.get('options').value != '3'"
+        >
+          <mat-icon>filter_alt</mat-icon>
+          Advance Filter
+        </mat-button-toggle>
+        <mat-button-toggle value="center" aria-label="Text align center" (click)="reset()">
+          <mat-icon>restart_alt</mat-icon>
+        </mat-button-toggle>
+
+      </mat-button-toggle-group>
+    </div>
+  </div>
+  <ng-container *ngIf="__kycFilterForm.get('options').value!= '3'">
+
+
+    <div class="row my-2">
+      <div class="col-sm-4" *ngIf="isDatePeriod">
+        <label for="dt_type">Date Periods</label>
+         <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+             <option value="">Select</option>
+             <option value="D">Today</option>
+             <option value="W">This Week</option>
+             <option value="M">This Month</option>
+             <option value="Y">This Year</option>
+             <option value="R">Date Range</option>
+         </select>
+      </div>
+      <div [class]="isDatePeriod ? 'col-sm-4' : 'col-sm-6'">
+        <label for="frm_dt">Start Date</label>
+        <input type="date"
+        name="frm_dt"
+        id="frm_dt"
+        class="form-control" formControlName="frm_dt">
+      </div>
+      <div [class]="isDatePeriod ? 'col-sm-4' : 'col-sm-6'">
+        <label for="to_dt">End Date</label>
+        <input type="date" name="to_dt"
+        id="to_dt"
+        class="form-control" formControlName="to_dt">
+      </div>
+    </div>
+
+  <div class="row">
+    <div class="col-sm-4">
+        <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforTin($event)">
+          <div class="searchDiv">
+            <label for="tin_no">TIN Number
+            </label>
+            <input type="search" name="tin_no" id="tin_no" class="form-control"
+              formControlName="tin_no" placeholder="Search by TIN Number">
+            <span class="spinner-border"
+              *ngIf="__isTinspinner && __kycFilterForm.get('tin_no').value?.length > 1"></span>
+            <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforTin($event)">
+              <div class="serachresult_client" #searchTin>
+                <ul *ngIf="tinMst.length > 0">
+                  <li *ngFor="let items of tinMst" (click)="getItems(items,'T')">
+                    {{items.tin_no}} | {{items.client_name}}
+                  </li>
+                </ul>
+                <div class="noDataFound" *ngIf="tinMst.length == 0">
+                  <h5 class="text-center">
+                    Sorry!! No Records Found
+                  </h5>
+                  <p>TIN Number Not Available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+          <div class="searchDiv">
+            <label for="client_code">Client Details</label>
+            <input type="text" name="client_code" id="client_code" class="form-control" formControlName="client_code"
+              placeholder="Enter Client code / Name / PAN / email">
+            <span class="spinner-border" *ngIf="__isClientPending && __kycFilterForm.get('client_code').value?.length > 1"></span>
+
+            <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
+              <div class="serachresult_client" #clientCd>
+                <ul *ngIf="__clientMst.length > 0">
+                  <li *ngFor="let items of __clientMst" (click)="getItems(items,'C')">
+                   {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                  </li>
+                </ul>
+                <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                  <h5 class="text-center">
+                    Sorry!! No Records Found
+                  </h5>
+                  <p>If your result match,they will appear here</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+        <div class="searchDiv">
+          <label for="subbrkArn">Sub Broker Code</label>
+          <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+            formControlName="sub_brk_cd">
+          <span class="spinner-border"
+            *ngIf="__isSubArnPending && __kycFilterForm.get('sub_brk_cd').value?.length > 1"></span>
+
+          <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
+            <div class="serachresult_client" #subBrkArn>
+              <ul *ngIf="__subbrkArnMst.length > 0">
+                <li *ngFor="let items of __subbrkArnMst" (click)="getItems(items,'S')">
+                  {{items.code}} | {{items.bro_name}}
+                </li>
+              </ul>
+              <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                <h5 class="text-center">
+                  Sorry!! No Sub Brokers Found
+                </h5>
+                <p>If your result match,they will appear here</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row  my-2">
+    <div class="col-sm-4">
+        <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+          <div class="searchDiv">
+            <label for="Euin">EUIN</label>
+            <input type="search" id="Euin"
+            class="form-control"
+            placeholder="Serach By EUIN"
+            formControlName="euin_no">
+            <span class="spinner-border" *ngIf="__isEuinPending && __kycFilterForm.get('euin_no').value?.length > 1"></span>
+
+            <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+              <div class="serachresult_client" #searchEUIN>
+                <ul *ngIf="__euinMst.length > 0">
+                  <li *ngFor="let items of __euinMst" (click)="getItems(items,'E')">
+                   {{items.euin_no}} | {{items.emp_name}}
+                  </li>
+                </ul>
+                <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                  <h5 class="text-center">
+                    Sorry!! No Employees Found
+                  </h5>
+                  <p>If your result match,they will appear here</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+      <label for="brn_cd">Branch</label>
+      <input type="text" name="brn_cd" id="brn_cd" class="form-control" formControlName="brn_cd"
+        placeholder="Enter Branch">
+    </div>
+    <div class="col-sm-4 d-flex align-start flex-column">
+      <label>Business Type</label>
+      <div>
+        <mat-checkbox
+        #buTypeChecked
+        color="primary"
+        [class]="'mr-2'"
+        *ngFor="let bu_type of __bu_type; let i=index"
+        [value]="bu_type.id"
+        (change)="onbuTypeChange($event)"
+        > {{bu_type.bu_type}}</mat-checkbox>
+        <mat-checkbox color="primary" formControlName="is_all_bu_type"> All</mat-checkbox>
+      </div>
+
+    </div>
+  </div>
+  <div class="row my-2" *ngIf="__isAdd">
+    <div class="col-sm-4">
+      <label for="kyc_login">KYC Login</label>
+      <select name="kyc_login" id="kyc_login" formControlName="kyc_login" class="form-control">
+        <option value="">Select KYC Login</option>
+        <option value="{{__item.id}}" *ngFor="let __item of __kycLoginType">{{__item.value}}</option>
+       </select>
+    </div>
+    <div class="col-sm-4">
+      <label for="subcat">KYC Login At</label>
+       <ng-multiselect-dropdown #multiSelect
+                id="kyc_login_at"
+                [placeholder]="'Select'"
+                [settings]="settings"
+                [data]="__kycLoginAt"
+                formControlName="kyc_login_at">
+              </ng-multiselect-dropdown>
+    </div>
+
+  </div>
+</ng-container>
+<ng-container *ngIf="__kycFilterForm.get('options').value == '3'">
+  <div class="row my-2">
+    <div class="col-sm-6">
+      <mat-radio-group aria-label="Select an option" color="primary" formControlName="date_status">
+        <mat-radio-button value="T">Today</mat-radio-button>
+        <mat-radio-button value="D" class="mx-5">Date Range</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+  <ng-container *ngIf="__kycFilterForm.get('date_status').value== 'D'">
+    <div class="row my-2">
+      <div class="col-sm-4">
+        <label for="start_date">Start Date</label>
+        <input type="date" [min]="getminDate()" [max]="getTodayDate()" name="start_date" id="start_date" class="form-control" formControlName="start_date">
+      </div>
+       <!-- <div class="col-sm-1"></div> -->
+      <div class="col-sm-4">
+        <label for="end_date">End Date</label>
+        <input type="date" [min]="getminDate()" [max]="getTodayDate()" name="end_date" id="end_date" class="form-control" formControlName="end_date">
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="row my-2">
+    <div class="col-sm-4">
+      <!-- <label>Login Status: &nbsp; &nbsp;</label> -->
+      <mat-radio-group aria-label="Select an option" color="primary" formControlName="login_status">
+        <mat-radio-button value="N">Not Logged</mat-radio-button>
+        <mat-radio-button value="L" class="mx-5">Logged</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+
+</ng-container>
+  <div class="row">
+    <div class="col-sm-12">
+      <button mat-raised-button color="primary" class="float-right">
+        Show
+      </button>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,32 @@
+[
+  {
+    "id":1,
+    "title":"Manual Entry",
+    "flag":"M",
+    "url":"",
+    "icon": "fa fa-user-o"
+  },
+  {
+    "id":2,
+    "title":"Report",
+    "flag":"R",
+    "url":"",
+    "icon": "fa fa-user-o"
+  },
+  {
+    "title": "Acknowledgement",
+    "id": 3,
+    "icon": "fa fa-user-o",
+    "flag": "A",
+    "url":""
+
+  },
+  {
+    "title": "Manual Update",
+    "id": 4,
+    "icon": "fa fa-user-o",
+    "flag": "U",
+    "url":""
+
+  }
+]

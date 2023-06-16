@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { pluck } from 'rxjs/operators';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { fdComp } from 'src/app/__Model/fdCmp';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
-import { fileValidators } from 'src/app/__Utility/fileValidators';
 
 @Component({
   selector: 'app-upload-csv',
@@ -42,7 +39,7 @@ export class UploadCsvComponent implements OnInit {
       queryParams:''
     },
     {
-      label:"Upload Csv",
+      label:"Upload CSV",
       url:'/main/master/fixedeposit/uploadcsv',
       hasQueryParams:false,
       queryParams:''
@@ -378,17 +375,8 @@ tableData = new MatTableDataSource([
       "Level-6 Name": ""
   }
 ]);
-allowedExtensions = ['csv', 'xlsx'];
 __cmpMst = new MatTableDataSource<fdComp>([]);
 __CmpTypeMst : any=[];
-__cmpForm = new FormGroup({
-  ins_type_id: new FormControl('',[Validators.required]),
-  rntFile: new FormControl('', [
-    Validators.required,
-    fileValidators.fileExtensionValidator(this.allowedExtensions),
-  ]),
-  file: new FormControl(''),
-})
 constructor(
   private __dbIntr: DbIntrService,
   public __rtDt: ActivatedRoute,
@@ -414,102 +402,6 @@ getCmpType(){
     this.__CmpTypeMst = res;
  })
 }
-getFiles(__ev) {
-  this.__cmpForm
-    .get('rntFile')
-    .setValidators([
-      Validators.required,
-      fileValidators.fileSizeValidator(__ev.files),
-      fileValidators.fileExtensionValidator(this.allowedExtensions),
-    ]);
-  this.__cmpForm
-    .get('file')
-    ?.patchValue(
-      this.__cmpForm.get('rntFile').status == 'VALID' ? __ev.files[0] : ''
-    );
-  // this.onFileDropped(__ev);
-}
-uploadRnt() {
-  if (this.__cmpForm.invalid) {
-    this.__utility.showSnackbar(
-      'Please recheck the form again & resubmit',
-      0
-    );
-    return;
-  }
-  const __cmpForm = new FormData();
-  __cmpForm.append('file', this.__cmpForm.get('file').value);
-  __cmpForm.append('ins_type_id', this.__cmpForm.get('ins_type_id').value);
-
-  this.__dbIntr
-    .api_call(1, '/fd/companyimport', __cmpForm)
-    .subscribe((res: responseDT) => {
-      this.__utility.showSnackbar(
-        res.suc == 1
-          ? 'File Uploadation Successfull'
-          : 'Something went wrong! please try again later',
-        res.suc
-      );
-      if (res.suc == 1) {
-        this.deleteFiles();
-      }
-    });
-}
-onFileDropped(__ev) {
-  this.__cmpForm.get('file').patchValue('');
-  this.__cmpForm.controls.rntFile.setErrors({
-    checkRequire: __ev.files.length > 0 ? false : true,
-  });
-  this.__cmpForm.controls.rntFile.setErrors({
-    checkSize: !fileValidators.fileSizeValidatorcopy(__ev.files),
-  });
-  fileValidators
-    .fileExtensionValidatorcopy(this.allowedExtensions, __ev.files)
-    .then((res) => {
-      this.__cmpForm.get('rntFile').setErrors({ checkExt: !res });
-      console.log(this.__cmpForm.get('rntFile').errors.checkExt);
-      if (res) {
-        if (
-          __ev.files.length > 0 &&
-          fileValidators.fileSizeValidatorcopy(__ev.files)
-        ) {
-          this.__cmpForm.get('file').patchValue(__ev.files[0]);
-          this.__cmpForm.get('rntFile').clearValidators();
-          this.__cmpForm.get('rntFile').updateValueAndValidity();
-        }
-      }
-    });
-}
-/**
- * format bytes
- * @param bytes (File size in bytes)
- * @param decimals (Decimals point)
- */
-formatBytes(bytes: any, decimals: any = 2) {
-  if (bytes === 0) {
-    return '0 Bytes';
-  }
-  const k = 1024;
-  const dm = decimals <= 0 ? 0 : decimals || 2;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}
-deleteFiles() {
-  // this.__cmpForm.reset();
-this.__cmpForm.patchValue({
-  file:'',
-  rntFile:'',
-  ins_type_id:''
-})
-  this.__cmpForm
-    .get('rntFile')
-    .setValidators([
-      Validators.required,
-      fileValidators.fileExtensionValidator(this.allowedExtensions),
-    ]);
-  this.__cmpForm.get('rntFile').updateValueAndValidity();
-}
 populateDT(__el: fdComp){
   this.__utility.navigatewithqueryparams(
     '/main/master/fixedeposit/company',
@@ -517,5 +409,8 @@ populateDT(__el: fdComp){
       id: btoa(__el.id.toString())
        } }
   );
+}
+viewAll(){
+  this.__utility.navigate('/main/master/fixedeposit/company');
 }
 }

@@ -20,14 +20,19 @@ constructor(private __http:HttpClient) {
   return this.__http.get<any>(`${environment.apiUrl + __url +'?temp_tin_no='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
  ReportTINSearch(__url,__searchTerm):Observable<any>{
-  return this.__http.get<any>(`${environment.apiUrl + __url +'?temp_tin_no='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
+  return this.__http.get<any>(`${environment.apiUrl + __url +'?tin_no='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
 
  getpaginationData(url){
-  console.log(url);
-
   return this.__http.get<any>(url, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
+
+  callApiOnChange(api_name,dt){
+    var __data = dt ? '?' + dt : '';
+  return this.__http.get<any>(`${environment.apiUrl + api_name + __data}`,{ context: new HttpContext().set(BYPASS_LOG,  true) })
+
+
+  }
 
  api_call(__flag: number,__url:string, __dt: any,__bypass_log: any | undefined = false){
   if(__flag > 0){

@@ -7,6 +7,7 @@ const routes = [
   {
     path:'',
     component:FixdepositeComponent,
+    data:{breadcrumb:'Fixed Deposit'},
     children:[
       {
         path:'',
@@ -14,27 +15,19 @@ const routes = [
       },
       {
         path:'companytype',
-        loadChildren:()=> import('./compType/company-type.module').then(m => m.CompanyTypeModule)
+        loadChildren:()=> import('./compType/company-type.module').then(m => m.CompanyTypeModule),
+        data:{breadcrumb:'Company Type'},
+
       },
       {
         path:'company',
-        loadChildren:() => import('./comp/company.module').then(m => m.CompanyModule)
+        loadChildren:() => import('./comp/company.module').then(m => m.CompanyModule),
+        data:{breadcrumb:'Company'},
       },
       {
         path:'scheme',
-        loadChildren:() => import('./scheme/scheme.module').then(m => m.SchemeModule)
-      },
-      {
-        path:'uploadcsv',
-        loadChildren:()=> import('./comp/upload-csv/upload-csv.module').then(m => m.UploadCSVModule)
-      },
-      {
-        path:'uploadcsvforcompanytype',
-        loadChildren:()=>import('./compType/upload-csv/upload-csv.module').then(m => m.UploadCsvModule)
-      },
-      {
-        path:'uploadscheme',
-        loadChildren:()=> import('./scheme/upload-csv/upload-csv.module').then(m => m.UploadCsvModule)
+        loadChildren:() => import('./scheme/scheme.module').then(m => m.SchemeModule),
+        data:{breadcrumb:'Scheme'},
       }
     ]
   }

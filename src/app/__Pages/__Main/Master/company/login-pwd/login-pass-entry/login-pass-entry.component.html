@@ -1,0 +1,113 @@
+
+
+<form [formGroup]="loginPass" (ngSubmit)="submitLoginPassword()">
+  <!-- <div class="row">
+    <div class="col-sm-4">
+        <label for="loginPassMst">Login & Password</label>
+        <select class="form-control" formControlName="id" id="loginPassMst">
+          <option [value]="0">Select</option>
+          <option [value]="items.id" *ngFor="let items of loginPasswordLockerMst">{{items.login_id}}</option>
+        </select>
+    </div>
+  </div> -->
+<div class="row">
+<div class="col-sm-3">
+      <label for="product_id">Product <span class="text-danger">*</span></label>
+     <select class="form-control" formControlName="product_id">
+      <option value="">Select Product</option>
+      <option [value]="item.id" *ngFor="let item of product">{{item.product_name}}</option>
+     </select>
+     <div class="invalid-feedback" *ngIf="loginPass.get('product_id').invalid && (loginPass.get('product_id').dirty || loginPass.get('product_id').touched)">
+      <span class="invalid-feedback" *ngIf="(loginPass.get('product_id')).errors?.required">*Please provide product</span>
+    </div>
+</div>
+<div class="col-sm-3">
+  <label for="login_url">Login URL <span class="text-danger">*</span></label>
+ <input type="text" placeholder="Enter Login URL" name="login_url" id="login_url" class="form-control" formControlName="login_url">
+ <div class="invalid-feedback" *ngIf="loginPass.get('login_url').invalid && (loginPass.get('login_url').dirty || loginPass.get('login_url').touched)">
+  <span class="invalid-feedback" *ngIf="(loginPass.get('login_url')).errors?.required">*Please provide login URL</span>
+</div>
+</div>
+<div class="col-sm-3">
+<label for="login_id">Login ID <span class="text-danger">*</span></label>
+<input type="text" placeholder="Enter Login ID" name="login_id" id="login_id" class="form-control" formControlName="login_id">
+<div class="invalid-feedback" *ngIf="loginPass.get('login_id').invalid && (loginPass.get('login_id').dirty || loginPass.get('login_id').touched)">
+<span class="invalid-feedback" *ngIf="(loginPass.get('login_id')).errors?.required">*Please provide login ID</span>
+</div>
+</div>
+<div class="col-sm-3">
+<label for="password">Password <span class="text-danger">*</span></label>
+<input type="text" placeholder="Enter Password" name="password" id="password" class="form-control" formControlName="password">
+<div class="invalid-feedback" *ngIf="loginPass.get('password').invalid && (loginPass.get('password').dirty || loginPass.get('password').touched)">
+<span class="invalid-feedback" *ngIf="(loginPass.get('password')).errors?.required">*Please provide password</span>
+</div>
+</div>
+</div>
+
+<div class="row my-2">
+<div class="col-sm-12">
+   <table>
+    <thead>
+      <tr>
+        <td>
+          <label>Sl No.</label>
+        </td>
+        <td>
+          <label>Security Question</label></td>
+        <td>
+          <label>Security Answer</label>
+        </td>
+        <td>
+          <p-button icon="pi pi-plus"
+          (click)="addQuesAns()"
+          type="button"
+          styleClass="p-button-primary">
+        </p-button>
+        </td>
+      </tr>
+    </thead>
+    <tbody formArrayName="sec_ques">
+      <tr *ngFor="let secQues of sec_ques.controls;let i = index">
+        <ng-container [formGroupName]="i">
+          <td>{{i+1}}</td>
+          <td><input type="text" name="ques" id="ques" placeholder="Enter Security Question" class="form-control" formControlName="sec_ques"></td>
+          <td><input type="text" name="ans" id="ans" placeholder="Enter Security Answer" class="form-control" formControlName="sec_ans"></td>
+          <td>
+            <p-button icon="pi pi-trash"
+            *ngIf="i > 0"
+            (click)="removeQuesAns(i)"
+            type="button"
+            styleClass="p-button-danger">
+          </p-button>
+          </td>
+        </ng-container>
+
+      </tr>
+    </tbody>
+   </table>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 float-right">
+  <p-button type="submit"
+  [label]="'Save'"
+  icon="pi pi-save"
+  iconPos="right"
+  [disabled]="loginPass.invalid"
+  class="float-right"
+  styleClass="p-button-lg p-button-primary">
+  </p-button>
+  <p-button type="button"
+  label="Reset"
+  icon="pi pi-refresh"
+  iconPos="right"
+  class="mx-3"
+  (click)="reset()"
+  class="float-right mx-2"
+  styleClass="p-button-lg p-button-danger">
+  </p-button>
+</div>
+</div>
+
+
+</form>

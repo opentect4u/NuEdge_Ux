@@ -10,6 +10,7 @@ export class RPTService {
 constructor() { }
 
 downloadReport(__tblName,dt,_doc_name){
+  console.log(__tblName)
   let pdf = new jsPDF('l', 'pt', 'letter');
   pdf.setFontSize(10);
   // pdf.text(dt.date, 35, 30);

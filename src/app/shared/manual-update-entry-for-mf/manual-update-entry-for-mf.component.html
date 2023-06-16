@@ -24,7 +24,8 @@
     <form [formGroup]="__manualUpdateForm" [attr.id]="this.data.tin_no" (ngSubmit)="submitManualUpdate()">
       <div class="row">
         <div class="col-sm-12">
-          <label for="trns_status"> Transaction Status
+          <label for="trns_status">
+            {{data.mode == 'K' ? 'KYC ' : 'Transaction '}} Status
             <span class="text-danger">*</span>
           </label>
           <select name="trns_status"
@@ -36,65 +37,111 @@
         </select>
 
         <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('manual_trans_status').invalid && (__manualUpdateForm.get('manual_trans_status').dirty || __manualUpdateForm.get('manual_trans_status').touched)">
-          <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('manual_trans_status')).errors?.required">*Please provide transaction status</span>
+          <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('manual_trans_status')).errors?.required">
+            *Please provide {{data.mode == 'K' ? 'kyc ' : 'transaction '}} status
+          </span>
         </div>
         </div>
         <ng-container formGroupName="process" *ngIf="__manualUpdateForm.value.manual_trans_status == 'P'">
           <div class="col-sm-12 my-2">
-            <label for="logged_in">Date
+            <label for="process_date">Date
             <span class="text-danger">*</span>
             </label>
             <input type="date"
-            name="logged_in"
-            id="logged_in"
+            name="process_date"
+            id="process_date"
             class="form-control"
-            formControlName="logged_in">
-            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','logged_in']).invalid && (__manualUpdateForm.get(['process','logged_in']).dirty || __manualUpdateForm.get(['process','logged_in']).touched)">
-              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','logged_in'])).errors?.required">*Please provide date</span>
+            formControlName="process_date">
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','process_date']).invalid && (__manualUpdateForm.get(['process','process_date']).dirty || __manualUpdateForm.get(['process','process_date']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','process_date'])).errors?.required">*Please provide date</span>
             </div>
           </div>
-          <div class="col-sm-12 my-2">
-            <label for="fdr_no">FDR No
+          <div class="col-sm-12 my-2" *ngIf="data?.mode != 'K'">
+            <label for="fdr_no">Folio No
             <span class="text-danger">*</span>
             </label>
             <input type="text"
-            name="fdr_no"
-            placeholder="Enter FDR No"
-            id="fdr_no"
+            name="folio_no"
+            placeholder="Enter Folio No"
+            id="folio_no"
             class="form-control"
-            formControlName="fdr_no">
-            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','fdr_no']).invalid && (__manualUpdateForm.get(['process','fdr_no']).dirty || __manualUpdateForm.get(['process','fdr_no']).touched)">
-              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','fdr_no'])).errors?.required">*Please provide fdr no</span>
+            formControlName="folio_no">
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','folio_no']).invalid && (__manualUpdateForm.get(['process','folio_no']).dirty || __manualUpdateForm.get(['process','folio_no']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','folio_no'])).errors?.required">*Please provide folio no</span>
+            </div>
+          </div>
+          <div class="col-sm-12 my-2" *ngIf="data?.mode == 'K'">
+            <label for="fdr_no">CKYC No
+            <span class="text-danger">*</span>
+            </label>
+            <input type="text"
+            name="ckyc_no"
+            placeholder="Enter CKYC No"
+            id="ckyc_no"
+            class="form-control"
+            formControlName="ckyc_no">
+            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','ckyc_no']).invalid && (__manualUpdateForm.get(['process','ckyc_no']).dirty || __manualUpdateForm.get(['process','ckyc_no']).touched)">
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','ckyc_no'])).errors?.required">*Please provide CKYC No</span>
             </div>
           </div>
           <div class="col-sm-12 my-2" *ngIf="!this.data.isViewMode">
-            <label for="fdr_scan"> Upload FDR Scan</label>
+            <ng-container *ngIf="this.data.mode == 'K';else MutualFund">
+              <label for="upload_scan"> Upload Scan</label>
+              <input type="file"
+              (change)="getFIle($event.target,'K')"
+                accept=".pdf"
+              name="upload_scan"
+              id="upload_scan"
+              class="form-control"
+              formControlName="upload_scan">
+              <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
+              <div class="invalid-feedback"
+                *ngIf=" __manualUpdateForm.get(['process','upload_scan']).invalid && ( __manualUpdateForm.get(['process','upload_scan']).dirty ||  __manualUpdateForm.get(['process','upload_scan']).touched)">
+                <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['process','upload_scan']).errors?.required">*Please
+                  provide file</span>
+                <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','upload_scan']).errors?.inValidExt">*Invalid
+                  file extension.</span>
+                <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','upload_scan']).errors?.fileSizeValidator">*File size
+                  must
+                  not exceed than
+                  10MB.</span>
+              </div>
+            </ng-container>
+            <ng-template #MutualFund>
+            <label for="upload_soa"> Upload SOA <span class="text-danger">*</span></label>
             <input type="file"
-            (change)="getFIle($event.target)"
+            (change)="getFIle($event.target,'M')"
               accept=".pdf"
-            name="fdr_scan"
-            id="fdr_scan"
+            name="upload_soa"
+            id="upload_soa"
             class="form-control"
-            formControlName="fdr_scan">
-            <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+            formControlName="upload_soa">
+            <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
             <div class="invalid-feedback"
-              *ngIf=" __manualUpdateForm.get(['process','fdr_scan']).invalid && ( __manualUpdateForm.get(['process','fdr_scan']).dirty ||  __manualUpdateForm.get(['process','fdr_scan']).touched)">
-              <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['process','fdr_scan']).errors?.required">*Please
+              *ngIf=" __manualUpdateForm.get(['process','upload_soa']).invalid && ( __manualUpdateForm.get(['process','upload_soa']).dirty ||  __manualUpdateForm.get(['process','upload_soa']).touched)">
+              <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['process','upload_soa']).errors?.required">*Please
                 provide file</span>
-              <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','fdr_scan']).errors?.inValidExt">*Invalid
+              <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','upload_soa']).errors?.inValidExt">*Invalid
                 file extension.</span>
-              <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','fdr_scan']).errors?.fileSizeValidator">*File size
+              <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','upload_soa']).errors?.fileSizeValidator">*File size
                 must
                 not exceed than
-                2MB.</span>
+                10MB.</span>
             </div>
+
+          </ng-template>
           </div>
           <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">
-            <label  for="">FDR Scan Copy</label>
+            <label  for="">
+              {{this.data?.mode == 'K' ? '' : 'FDR ' }}Scan Copy
+            </label>
             <br/>
             <div class="file-man-box">
               <div class="file_img-box">
-               <a target="__blank" [attr.href]="this.__manualUpdateForm.get(['process','file']).value">
+               <a target="__blank" [attr.href]="
+               this.data.mode == 'K' ? this.__manualUpdateForm.get(['process','file_scan']).value
+               : this.__manualUpdateForm.get(['process','file']).value
+               ">
                 <img   height="37" src="../../../../../../../../assets/images/pdf.png" alt="Pdf View"></a>
               </div>
             </div>
@@ -105,7 +152,10 @@
         || __manualUpdateForm.value.manual_trans_status == 'N'"
         >
            <div class="col-sm-12">
-            <label for="contact_to_comp">Contact To Company <span class="text-danger">*</span></label>
+            <label for="contact_to_comp">
+              Contact To  {{ this.data.mode == 'K' ? ' AMC-R&T ' : ' Company '}}
+
+              <span class="text-danger">*</span></label>
             <select
             class="form-control"
             formControlName="contact_to_comp"
@@ -116,7 +166,7 @@
              <option value="N">No</option>
             </select>
             <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_to_comp').invalid && (__manualUpdateForm.get('contact_to_comp').dirty || __manualUpdateForm.get('contact_to_comp').touched)">
-              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_to_comp')).errors?.required">*Please provide contact to company</span>
+              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_to_comp')).errors?.required">*Please provide contact to {{ this.data.mode == 'K' ? ' AMC-R&T ' : ' company '}}</span>
             </div>
            </div>
            <ng-container *ngIf="__manualUpdateForm.value.contact_to_comp == 'Y'">
@@ -141,6 +191,7 @@
               type="text"
               class="form-control"
               formControlName="contact_per_name"
+              placeholder="Enter Name"
               name="contact_per_name"
               id="contact_per_name">
               <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_per_name').invalid && (__manualUpdateForm.get('contact_per_name').dirty || __manualUpdateForm.get('contact_per_name').touched)">
@@ -154,12 +205,12 @@
               type="text"
               class="form-control"
               formControlName="contact_per_email"
+              placeholder="Enter Email"
               name="contact_per_email"
               id="contact_per_email">
               <div class="invalid-feedback" *ngIf="__manualUpdateForm.get('contact_per_email').invalid && (__manualUpdateForm.get('contact_per_email').dirty || __manualUpdateForm.get('contact_per_email').touched)">
                 <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_email')).errors?.required">*Please provide email</span>
                 <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get('contact_per_email')).errors?.email">*Please provide valid email</span>
-
               </div>
              </div>
              </ng-container>
@@ -202,7 +253,9 @@
           </div>
           </div>
           <div class="col-sm-12" *ngIf="!this.data.isViewMode">
-            <label for="reject_memo">Upload Rejected Memo <span class="text-danger">*</span></label>
+            <label for="reject_memo">Upload Rejected Memo
+              <span class="text-danger" *ngIf="this.data.mode!= 'K'">*</span>
+            </label>
             <input
             type="file"
             name="reject_memo"
@@ -210,7 +263,7 @@
             (change)="getFIleForMemo($event.target)"
             class="form-control"
             formControlName="reject_memo">
-            <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+            <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
             <div class="invalid-feedback"
             *ngIf=" __manualUpdateForm.get(['rejected','reject_memo']).invalid && ( __manualUpdateForm.get(['rejected','reject_memo']).dirty ||  __manualUpdateForm.get(['rejected','reject_memo']).touched)">
             <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['rejected','reject_memo']).errors?.required">*Please
@@ -220,7 +273,7 @@
             <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['rejected','reject_memo']).errors?.fileSizeValidator">*File size
               must
               not exceed than
-              2MB.</span>
+              10MB.</span>
           </div>
           </div>
           <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">

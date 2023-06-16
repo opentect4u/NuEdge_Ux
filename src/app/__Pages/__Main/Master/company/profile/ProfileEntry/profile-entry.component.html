@@ -1,0 +1,297 @@
+<!-- <div class="container_fluid mb-2 w-100"> -->
+
+<form [formGroup]="profileFrm" (ngSubmit)="submitProfile()">
+  <!-- <div class="row">
+    <div class="col-sm-3">
+         <label for="cmp_dtls">Company Details</label>
+         <select name="cmp_dtls" id="cmp_dtls" class="form-control" formControlName="comp_details_id">
+            <option value="">Select</option>
+            <option value="{{cmpdtls.id}}" *ngFor="let cmpdtls of cmpDtlsMst">{{cmpdtls.type_of_comp == 4 ? cmpdtls.proprietor_name : cmpdtls.name}}</option>
+         </select>
+    </div>
+  </div> -->
+  <div class="row">
+    <div [class]="'col-sm-3'">
+      <label for="comp_type_id">Type Of Company <span class="text-danger">*</span></label>
+      <select name="comp_type_id" id="comp_type_id" formControlName="comp_type_id" class="form-control">
+      <option value="">Select</option>
+      <option [value]="companyType.id" *ngFor="let companyType of comp_type">{{companyType.type}}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="profileFrm.get('comp_type_id').invalid && (profileFrm.get('comp_type_id').dirty || profileFrm.get('comp_type_id').touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('comp_type_id')).errors?.required">*Please provide company type</span>
+      </div>
+    </div>
+
+    <ng-container formGroupName="proprietor_ship_firm" *ngIf="profileFrm.value.comp_type_id == 4">
+          <div class="col-sm-3">
+                <label for="establishment_name">Establishment Name <span class="text-danger">*</span></label>
+                <input type="text" placeholder="Enter Establishment Name" name="establishment_name" id="establishment_name" class="form-control" formControlName="establishment_name">
+                <div class="invalid-feedback" *ngIf="profileFrm.get(['proprietor_ship_firm','establishment_name']).invalid && (profileFrm.get(['proprietor_ship_firm','establishment_name']).dirty || profileFrm.get(['proprietor_ship_firm','establishment_name']).touched)">
+                  <span class="invalid-feedback" *ngIf="(profileFrm.get(['proprietor_ship_firm','establishment_name'])).errors?.required">*Please provide establishment name</span>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <label for="proprietor_name">Proprietor Name <span class="text-danger">*</span></label>
+                <input type="text" placeholder="Enter Proprietor Name"  name="proprietor_name" id="proprietor_name" class="form-control" formControlName="proprietor_name">
+                <div class="invalid-feedback" *ngIf="profileFrm.get(['proprietor_ship_firm','proprietor_name']).invalid && (profileFrm.get(['proprietor_ship_firm','proprietor_name']).dirty || profileFrm.get(['proprietor_ship_firm','proprietor_name']).touched)">
+                  <span class="invalid-feedback"
+                  *ngIf="(profileFrm.get(['proprietor_ship_firm','proprietor_name'])).errors?.required">
+                  *Please provide proprietor name
+                </span>
+                </div>
+              </div>
+    </ng-container>
+
+
+    <div  [class]="'col-sm-3'"  *ngIf="profileFrm.value.comp_type_id != 4">
+      <label for="name">Name <span class="text-danger" >*</span></label>
+      <input type="text" name="name" id="name" formControlName="name" placeholder="Enter Name" class="form-control">
+      <div class="invalid-feedback" *ngIf="profileFrm.get('name').invalid && (profileFrm.get('name').dirty || profileFrm.get('name').touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('name')).errors?.required">*Please provide name</span>
+      </div>
+    </div>
+    <div class="col-sm-3" *ngIf="this.profileFrm.value.comp_type_id == 1
+    || this.profileFrm.value.comp_type_id == 2">
+      <label for="cin_no">CIN No. <span class="text-danger">*</span></label>
+      <input type="text" name="cin_no" placeholder="Enter CIN Number"  id="cin_no" formControlName="cin_no" class="form-control">
+      <div class="invalid-feedback" *ngIf="profileFrm.get('cin_no').invalid && (profileFrm.get('cin_no').dirty || profileFrm.get('cin_no').touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('cin_no')).errors?.required">*Please provide CIN no</span>
+      </div>
+    </div>
+    <div  [class]="'col-sm-3'"  *ngIf="profileFrm.value.comp_type_id != 4">
+      <label for="date_of_incorporation">Date Of Incorporation <span class="text-danger">*</span></label>
+      <input type="date"   name="date_of_incorporation" id="date_of_incorporation" formControlName="date_of_incorporation" class="form-control">
+      <div class="invalid-feedback" *ngIf="profileFrm.get('date_of_incorporation').invalid && (profileFrm.get('date_of_incorporation').dirty || profileFrm.get('date_of_incorporation').touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('date_of_incorporation')).errors?.required">*Please provide date of incorporation</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="pan_no">PAN <span class="text-danger">*</span></label>
+      <input type="text"  placeholder="e.g. AAAAA1234L"  minlength="10" maxlength="10"  name="pan" id="pan_no" formControlName="pan_no" class="form-control">
+      <div class="invalid-feedback" *ngIf="profileFrm.get('pan_no').invalid && (profileFrm.get('pan_no').dirty || profileFrm.get('pan_no').touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('pan_no')).errors?.required">*Please provide PAN</span>
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('pan_no')).errors?.pattern">*Please provide valid PAN
+          number</span>
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('pan_no')).hasError('minlength')">*PAN
+          number must be 10 characters long</span>
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('pan_no')).hasError('maxlength')">*PAN
+          number must be 10 characters long</span>
+
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="gst_no">GSTIN </label>
+      <input type="text" placeholder="Enter GSTIN" name="gst_no" id="gst_no" formControlName="gst_no" class="form-control">
+
+    </div>
+    <div class="col-sm-3">
+      <label for="contact_no">Contact No <span class="text-danger"  *ngIf="profileFrm.value.comp_type_id != 4">*</span></label>
+      <input type="text" placeholder="Enter Contact Number" name="contact_no" id="contact_no" formControlName="contact_no" class="form-control">
+      <div class="invalid-feedback" *ngIf="profileFrm.get('contact_no').invalid && (profileFrm.get('contact_no').dirty || profileFrm.get('contact_no').touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('contact_no')).errors?.required">*Please provide contact number</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="email">Email <span class="text-danger"  *ngIf="profileFrm.value.comp_type_id != 4">*</span></label>
+      <input type="email" placeholder="Enter Email" name="email" id="email" formControlName="email" class="form-control">
+      <div class="invalid-feedback" *ngIf="profileFrm.get('email').invalid && (profileFrm.get('email').dirty || profileFrm.get('email').touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('email')).errors?.required">*Please provide email</span>
+        <span class="invalid-feedback" *ngIf="(profileFrm.get('email')).errors?.email">*Please provide valid email</span>
+      </div>
+    </div>
+  </div>
+   <ng-container  formGroupName="reg_address">
+  <div class="row">
+    <div class="col-sm-3">
+      <label for="add_line1">Address-1<span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Address-1" name="add_line1" id="add_line1" formControlName="add_line1" class="form-control">
+      <div class="invalid-feedback" *ngIf="profileFrm.get(['reg_address','add_line1']).invalid && (profileFrm.get(['reg_address','add_line1']).dirty || profileFrm.get(['reg_address','add_line1']).touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get(['reg_address','add_line1'])).errors?.required">*Please provide address</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="add_line2">Address-2</label>
+      <input type="text" placeholder="Enter Address-2" name="add_line2" id="add_line2" formControlName="add_line2" class="form-control">
+      <div class="invalid-feedback" *ngIf="profileFrm.get(['reg_address','add_line2']).invalid && (profileFrm.get(['reg_address','add_line2']).dirty || profileFrm.get(['reg_address','add_line2']).touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get(['reg_address','add_line2'])).errors?.required">*Please provide address</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'Country'"
+      [flag]="'C'"
+      [id]="'country_id'"
+      [items]="country"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="country_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="profileFrm.get(['reg_address','country_id']).invalid && (profileFrm.get(['reg_address','country_id']).dirty || profileFrm.get(['reg_address','country_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get(['reg_address','country_id'])).errors?.required">*Please provide country</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'State'"
+      [flag]="'S'"
+      [id]="'state_id'"
+      [items]="state"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="state_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="profileFrm.get(['reg_address','state_id']).invalid && (profileFrm.get(['reg_address','state_id']).dirty || profileFrm.get(['reg_address','state_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get(['reg_address','state_id'])).errors?.required">*Please provide state</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'District'"
+      [id]="'dist_id'"
+      [flag]="'D'"
+      [items]="district"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="dist_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="profileFrm.get(['reg_address','dist_id']).invalid && (profileFrm.get(['reg_address','dist_id']).dirty || profileFrm.get(['reg_address','dist_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get(['reg_address','dist_id'])).errors?.required">*Please provide district</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'City'"
+      [id]="'city_id'"
+      [flag]="'CY'"
+      [items]="city"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="city_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="profileFrm.get(['reg_address','city_id']).invalid && (profileFrm.get(['reg_address','city_id']).dirty || profileFrm.get(['reg_address','city_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get(['reg_address','city_id'])).errors?.required">*Please provide city</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="pincode">Pincode<span class="text-danger">*</span></label>
+      <select name="pincode" id="pincode" class="form-control" formControlName="pincode">
+        <option value="">Select</option>
+        <option [value]="pincode.id" *ngFor="let pincode of pincodeMst">{{pincode.pincode}}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="profileFrm.get(['reg_address','pincode']).invalid && (profileFrm.get(['reg_address','pincode']).dirty || profileFrm.get(['reg_address','pincode']).touched)">
+        <span class="invalid-feedback" *ngIf="(profileFrm.get(['reg_address','pincode'])).errors?.required">*Please provide pincode</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="website">Website</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">www</span>
+        <input pInputText type="text" placeholder="Enter Website" formControlName="website" name="website" id="website" />
+    </div>
+    </div>
+  </div>
+  </ng-container>
+  <div class="row">
+
+    <div class="col-sm-3">
+      <label for="fb_url">Facebook URL</label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <img src="../../../../../../assets/images/Social_media/facebook.png" height="20" width="20"/>
+        </span>
+        <input pInputText type="text" placeholder="Enter Facebook URL" formControlName="fb_url" name="fb_url" id="fb_url" />
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="linkedIn_url">LinkedIn URL</label>
+
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <img src="../../../../../../assets/images/Social_media/linkedin.png" height="20" width="20"/>
+        </span>
+        <input pInputText type="text" placeholder="Enter LinkedIn URL" formControlName="linkedIn_url" name="linkedIn_url" id="linkedIn_url"/>
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="twitter_url">Twitter URL </label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <img src="../../../../../../assets/images/Social_media/twitter.png" height="20" width="20"/>
+        </span>
+        <input pInputText type="text" placeholder="Enter Twitter URL" formControlName="twitter_url" name="twitter_url" id="twitter_url"/>
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="instagram_url"> Instagram URL </label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <img src="../../../../../../assets/images/Social_media/instagram.png" height="20" width="20"/>
+        </span>
+        <input pInputText type="text" placeholder="Enter Instagram URL" formControlName="instagram_url" name="instagram_url" id="instagram_url"/>
+    </div>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-sm-3">
+      <label for="blog_url"> Blog URL </label>
+      <div class="p-inputgroup">
+        <span class="p-inputgroup-addon">
+          <img src="../../../../../../assets/images/Social_media/blogger.png" height="20" width="20"/>
+        </span>
+        <input pInputText type="text" placeholder="Enter Blog URL" formControlName="blog_url" name="blog_url" id="blog_url"/>
+    </div>
+    </div>
+
+    <div class="col-sm-3">
+      <label for="logo">Upload Logo <span class="text-danger" *ngIf="profileFrm.value.comp_type_id!= 4">*</span></label>
+      <input type="file" formControlName="logo" name="logo" id="logo" class="form-control" (change)="getFile($event)">
+      <!-- <mat-hint>Allowed Format: JPEG, PNG OR JPG</mat-hint> -->
+      <label>Allowed format : </label><small> JPEG, PNG OR JPG</small>
+      <div class="invalid-feedback"
+                *ngIf=" profileFrm.get('logo').invalid && ( profileFrm.get('logo').dirty ||  profileFrm.get('logo').touched)">
+                <!-- <span class="invalid-feedback" *ngIf=" profileFrm.get('logo').errors?.required">*Please
+                  provide file</span> -->
+                <span class="invalid-feedback" *ngIf="profileFrm.get('logo').errors?.inValidExt">*Invalid
+                  file extension.</span>
+                <span class="invalid-feedback"
+                  *ngIf="profileFrm.get('logo').errors?.fileSizeValidator">*File size must not exceed than
+                  10MB.</span>
+              </div>
+    </div>
+    <div class="col-sm-3 d-flex align-items-center" *ngIf=" this.profileFrm.value.file_preview">
+      <!-- <img src="{{this.profileFrm.value.file_preview}}" alt="preview File" height="100" width="100"> -->
+      <p-image
+      [src]="this.profileFrm.value.file_preview"
+      [preview]="true"
+      [alt]="profileFrm.value.name"
+      width="100">
+        <ng-template pTemplate="indicator">
+            <i class="pi pi-eye"></i>
+        </ng-template>
+    </p-image>
+    </div>
+    <div class="col-sm-3 d-flex align-items-center">
+      <mat-checkbox formControlName="comp_default" color="primary">Set as Default</mat-checkbox>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 d-flex align-items-center justify-content-end">
+
+      <p-button type="button"
+      label="Reset"
+      icon="pi pi-refresh"
+      iconPos="right"
+      class="mx-3"
+      (click)="reset()"
+      styleClass="p-button-lg p-button-danger">
+      </p-button>
+      <p-button type="submit"
+      [label]="this.profileFrm.value.comp_details_id ? 'Update' : 'Save'"
+      icon="pi pi-save"
+      iconPos="right"
+      [disabled]="profileFrm.invalid"
+      styleClass="p-button-lg p-button-primary">
+      </p-button>
+    </div>
+  </div>
+</form>
+<!-- </div> -->

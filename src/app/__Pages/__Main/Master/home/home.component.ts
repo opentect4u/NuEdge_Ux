@@ -24,10 +24,10 @@ export class HomeComponent implements OnInit {
                                 queryParams:''
                               },
                               {
-                                label:atob(this.__actdt.snapshot.queryParamMap.get('id')) == '1' ? "Mutual Fund" : "Others",
+                                label:"Mutual Fund",
                                 url:'/main/master/productwisemenu/home',
                                 hasQueryParams:true,
-                                queryParams:{id:this.__actdt.snapshot.queryParamMap.get('id')}
+                                queryParams:''
                               }
                             ]
   constructor(private __utility:UtiliService,private __actdt: ActivatedRoute) {
@@ -39,10 +39,8 @@ export class HomeComponent implements OnInit {
     this.setBreadCrumb();
   }
   navigate(__items){
-        // this.__utility.navigate(__items.url);
-        console.log(__items.url);
-
-        this.__utility.navigatewithqueryparams(__items.url,{queryParams:{product_id:this.__actdt.snapshot.queryParamMap.get('id')}})
+        this.__utility.navigate(__items.url);
+        // this.__utility.navigatewithqueryparams(__items.url,{queryParams:{product_id:this.__actdt.snapshot.queryParamMap.get('id')}})
   }
   setBreadCrumb(){
     this.__utility.getBreadCrumb(this.__brdCrmbs);

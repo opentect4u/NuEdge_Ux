@@ -1,0 +1,48 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{headerTitle}}</mat-card-title>
+    <button mat-button align="end" color="primary" (click)="viewAllDtls()">{{btnTitle}}
+      <mat-icon>north_east</mat-icon>
+    </button>
+
+  </mat-card-header>
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+    <ng-container *ngIf="dataSource.length > 0; else noData">
+      <mat-list role="list">
+        <mat-list-item role="listitem" *ngFor="let item of dataSource;let i = index">
+          <div>
+            <!-- <span>{{i + 1}}.</span> -->
+            <a mat-button
+
+            (click)="showCorrospondingDtls(item)"> {{flag == 'R' ? item.rnt_name :
+              (flag == 'C' ? (item.cat_name | ellipsis: 25) :
+              (flag == 'O' ? (item.opt_name | ellipsis: 25) :
+              (flag == 'B' ? (item.bank_name | ellipsis: 25) :
+              (flag == 'D' ? (item.doc_type | ellipsis: 25) :
+              (flag == 'CL' ? (item.client_name | ellipsis: 25) :
+              (flag == 'CT' ? (item.comp_type | ellipsis: 25) :
+              (flag == 'A' ? (item.amc_name | ellipsis: 25) :
+              (flag == 'S' ? (item.subcategory_name | ellipsis: 25) :
+              ((flag == 'SC' || flag == 'FS') ? (item.scheme_name | ellipsis: 25) :
+              ((flag == 'FC' || flag == 'IC') ? (item.comp_short_name | ellipsis: 25) :
+              (flag == 'IPT' ? (item.product_type | ellipsis: 25) :
+              (flag == 'IP' ? (item.product_name | ellipsis: 25) :
+              ((flag == 'G' || flag == 'GS' || flag == 'GD' || flag == 'GC') ? (item.name | ellipsis: 25) :
+              ((flag == 'GP') ? (item.pincode) : (item.plan_name | ellipsis: 25)))))))))))))))}}</a>
+          </div>
+
+          <button mat-icon-button (click)="populateDT(item)" align="end">
+            <mat-icon class="edit_icon">edit</mat-icon>
+          </button>
+          <mat-divider></mat-divider>
+        </mat-list-item>
+      </mat-list>
+    </ng-container>
+    <ng-template #noData>
+      <shared-no-data [alertMsgTitle]="'Sorry!! No Record Available'"></shared-no-data>
+    </ng-template>
+
+  </mat-card-content>
+</mat-card>

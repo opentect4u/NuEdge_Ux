@@ -26,7 +26,7 @@ export class DaySheetComponent implements OnInit {
       header: 'Entry Date',
       cell: (element: Record<string, any>) => `${element['entry_date']}`,
       isDate:true
-      
+
     },
     {
       columnDef: 'form type',
@@ -40,7 +40,7 @@ export class DaySheetComponent implements OnInit {
     },
     {
       columnDef: 'amc',
-      header: 'Amc',
+      header: 'AMC',
       cell: (element: Record<string, any>) => `${element['amc_name']}`
     },
     {

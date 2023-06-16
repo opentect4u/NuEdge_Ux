@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -9,7 +8,6 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { scheme } from 'src/app/__Model/__schemeMst';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
-import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { amc } from 'src/app/__Model/amc';
 import { category } from 'src/app/__Model/__category';
@@ -20,7 +18,7 @@ import { subcat } from 'src/app/__Model/__subcategory';
   styleUrls: ['./uploadScm.component.css']
 })
 export class UploadScmComponent implements OnInit {
-
+  __prod_id=btoa('1');
   __colcat: string[] = ['id','cat_name'];
   __colAmc: string[] = ['id','amc_short_name'];
   __colsubCate: string[] = ['id','cat_name','subcat_name']
@@ -40,22 +38,22 @@ export class UploadScmComponent implements OnInit {
       queryParams:''
     },
     {
-      label:atob(this.__route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      label:"Mutual Fund",
       url:'/main/master/productwisemenu/home',
       hasQueryParams:true,
-      queryParams:{id:this.__route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     },
     {
       label:"Scheme",
       url:'/main/master/productwisemenu/scheme',
       hasQueryParams:true,
-      queryParams:{product_id:this.__route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     },
     {
       label:"Scheme Upload",
       url:'/main/master/productwisemenu/scheme/uploadScm',
       hasQueryParams:true,
-      queryParams:{product_id:this.__route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     }
 ]
   displayedColumns: Array<string> = [];
@@ -119,27 +117,9 @@ export class UploadScmComponent implements OnInit {
       isDate: true
     },
     {
-      columnDef: 'Special SIP',
-      header: 'Special SIP',
-      cell: (element: Record<string, any>) => `${element['Special SIP']}`,
-      isDate: true
-    },
-    {
       columnDef: 'SIP Date',
       header: 'SIP Date',
       cell: (element: Record<string, any>) => `${element['SIP Date']}`,
-      isDate: true
-    },
-    {
-      columnDef: 'SWP Date',
-      header: 'SWP Date',
-      cell: (element: Record<string, any>) => `${element['SWP Date']}`,
-      isDate: true
-    },
-    {
-      columnDef: 'STP Date',
-      header: 'STP Date',
-      cell: (element: Record<string, any>) => `${element['STP Date']}`,
       isDate: true
     },
     {
@@ -226,7 +206,19 @@ export class UploadScmComponent implements OnInit {
       cell: (element: Record<string, any>) => `${element['Anually SIP Additional Minimum Amount']}`,
       isDate: true
     },
+    {
+      columnDef: 'Special SIP',
+      header: 'Special SIP',
+      cell: (element: Record<string, any>) => `${element['Special SIP']}`,
+      isDate: true
+    },
 
+    {
+      columnDef: 'SWP Date',
+      header: 'SWP Date',
+      cell: (element: Record<string, any>) => `${element['SWP Date']}`,
+      isDate: true
+    },
 
     {
       columnDef: 'Daily SWP Amount',
@@ -270,7 +262,18 @@ export class UploadScmComponent implements OnInit {
       cell: (element: Record<string, any>) => `${element['Anually SWP Amount']}`,
       isDate: true
     },
-
+    {
+      columnDef: 'Special SWP',
+      header: 'Special SWP',
+      cell: (element: Record<string, any>) => `${element['Special SWP']}`,
+      isDate: true
+    },
+    {
+      columnDef: 'STP Date',
+      header: 'STP Date',
+      cell: (element: Record<string, any>) => `${element['STP Date']}`,
+      isDate: true
+    },
 
     {
       columnDef: 'Daily STP Amount',
@@ -314,6 +317,24 @@ export class UploadScmComponent implements OnInit {
       cell: (element: Record<string, any>) => `${element['Anually STP Amount']}`,
       isDate: true
     },
+    {
+      columnDef: 'Special STP',
+      header: 'Special STP',
+      cell: (element: Record<string, any>) => `${element['Special STP']}`,
+      isDate: true
+    },
+    {
+      columnDef: 'STEP UP Minimum Amount',
+      header: 'STEP UP Minimum Amount',
+      cell: (element: Record<string, any>) => `${element['STEP UP Minimum Amount']}`,
+      isDate: true
+    },
+    {
+      columnDef: 'STEP UP Minimum Percentage',
+      header: 'STEP UP Minimum Percentage',
+      cell: (element: Record<string, any>) => `${element['STEP UP Minimum Percentage']}`,
+      isDate: true
+    },
   ];
 
    __dataTbleForNFO = [
@@ -323,16 +344,13 @@ export class UploadScmComponent implements OnInit {
         "amc__short_name":"XXXX",
         "Scheme":"Others1",
         "Id":2,
-        "NFO Start Date":'2023-02-27',
-        "NFO End Date":'2023-02-27',
-        "NFO Reopen Date":'2023-02-27',
-        'Entry Date':'2023-02-27',
+        "NFO Start Date":'27-02-2023',
+        "NFO End Date":'27-02-2023',
+        "NFO Reopen Date":'27-02-2023',
+        'Entry Date':'27-02-2023',
         "PIP Fresh Minimum Amount":2000,
         "PIP Additional Minimum Amount":4000,
-        'Special SIP':"",
         "SIP Date":'1,2,3',
-        "STP Date":'1,2,3',
-        "SWP Date":'1,2,3',
         "Daily SIP Fresh Minimum Amount":"2000",
         "Daily SIP Additional Minimum Amount": "2000",
         "Weekly SIP Fresh Minimum Amount":"2000",
@@ -347,6 +365,8 @@ export class UploadScmComponent implements OnInit {
         "Semi Anually SIP Additional Minimum Amount": "2000",
         "Anually SIP Fresh Minimum Amount":"2000",
         "Anually SIP Additional Minimum Amount": "2000",
+        'Special SIP':"",
+        "SWP Date":'1,2,3',
         "Daily SWP Amount":"2000",
         "Weekly SWP Amount":"2000",
         "Fortnightly SWP Amount":"2000",
@@ -354,6 +374,8 @@ export class UploadScmComponent implements OnInit {
         "Quarterly SWP Amount":"2000",
         "Semi Anually SWP Amount":"2000",
         "Anually SWP Amount":"2000",
+        'Special SWP':"",
+        "STP Date":'1,2,3',
         "Daily STP Amount":"2000",
         "Weekly STP Amount":"2000",
         "Fortnightly STP Amount":"2000",
@@ -361,7 +383,9 @@ export class UploadScmComponent implements OnInit {
         "Quarterly STP Amount":"2000",
         "Semi Anually STP Amount":"2000",
         "Anually STP Amount":"2000",
-
+        'Special STP':"",
+        "STEP UP Minimum Amount":"",
+        "STEP UP Minimum Percentage":"",
     }
    ];
    __dataTbleForOngoing = [
@@ -373,10 +397,7 @@ export class UploadScmComponent implements OnInit {
       "Id":2,
       "PIP Fresh Minimum Amount":2000,
       "PIP Additional Minimum Amount":4000,
-      'Special SIP':"",
       "SIP Date":'1,2,3',
-      "STP Date":'1,2,3',
-      "SWP Date":'1,2,3',
       "Daily SIP Fresh Minimum Amount":"2000",
       "Daily SIP Additional Minimum Amount": "2000",
       "Weekly SIP Fresh Minimum Amount":"2000",
@@ -391,6 +412,8 @@ export class UploadScmComponent implements OnInit {
       "Semi Anually SIP Additional Minimum Amount": "2000",
       "Anually SIP Fresh Minimum Amount":"2000",
       "Anually SIP Additional Minimum Amount": "2000",
+      'Special SIP':"",
+      "SWP Date":'1,2,3',
       "Daily SWP Amount":"2000",
       "Weekly SWP Amount":"2000",
       "Fortnightly SWP Amount":"2000",
@@ -398,6 +421,8 @@ export class UploadScmComponent implements OnInit {
       "Quarterly SWP Amount":"2000",
       "Semi Anually SWP Amount":"2000",
       "Anually SWP Amount":"2000",
+      'Special SWP':"",
+      "STP Date":'1,2,3',
       "Daily STP Amount":"2000",
       "Weekly STP Amount":"2000",
       "Fortnightly STP Amount":"2000",
@@ -405,18 +430,12 @@ export class UploadScmComponent implements OnInit {
       "Quarterly STP Amount":"2000",
       "Semi Anually STP Amount":"2000",
       "Anually STP Amount":"2000",
+      'Special STP':"",
+      "STEP UP Minimum Amount":"",
+      "STEP UP Minimum Percentage":"",
     }
    ]
   tableData = new MatTableDataSource<any>(this.__dataTbleForNFO);
-  allowedExtensions = ['csv', 'xlsx'];
-  __uploadRnt = new FormGroup({
-    // cat_id: new FormControl('',[Validators.required]),
-    // amc_id: new FormControl('',[Validators.required]),
-    // subcat_id: new FormControl('',[Validators.required]),
-    rntFile: new FormControl('', [Validators.required, fileValidators.fileExtensionValidator(this.allowedExtensions)]),
-    file: new FormControl(''),
-    scheme_type: new FormControl('N',[Validators.required])
-  })
   __columns: string[] = ['sl_no', 'scm_name', 'edit'];
   __selectRNT = new MatTableDataSource<scheme>([]);
   constructor(
@@ -426,133 +445,52 @@ export class UploadScmComponent implements OnInit {
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
+    // this.__utility.getBreadCrumb(this.__brdCrmbs);
     this.getCategory();
     this.getAmc();
     this.getSubcategory();
   }
 
   private getCategory(){
-    this.__dbIntr.api_call(0, '/catUsingPro', 'product_id=' + (atob(this.__route.snapshot.queryParamMap.get('product_id')))).pipe(map((x: responseDT) => x.data)).subscribe((res: category[]) => {
+    this.__dbIntr.api_call(0, '/catUsingPro', 'product_id=1').pipe(map((x: responseDT) => x.data)).subscribe((res: category[]) => {
      this.__catMaster = new MatTableDataSource(res);
    })
   }
 
   private getAmc(){
-    this.__dbIntr.api_call(0,'/amc','product_id='+ + (atob(this.__route.snapshot.queryParamMap.get('product_id')))).pipe(map((x: responseDT) => x.data)).subscribe((res: amc[]) => {
+    this.__dbIntr.api_call(0,'/amc','product_id=1').pipe(map((x: responseDT) => x.data)).subscribe((res: amc[]) => {
       this.__amcMaster = new MatTableDataSource(res);
     })
   }
 private getSubcategory(){
-  this.__dbIntr.api_call(0,'/subcategory','product_id='+ + (atob(this.__route.snapshot.queryParamMap.get('product_id')))).pipe(map((x: responseDT) => x.data)).subscribe((res: subcat[]) => {
-    console.log(res);
-
+  this.__dbIntr.api_call(0,'/subcategory','product_id=1').pipe(map((x: responseDT) => x.data)).subscribe((res: subcat[]) => {
     this.__subcatMaster = new MatTableDataSource(res);
   })
 }
 
-
-  ngAfterViewInit(){
-      this.__uploadRnt.controls['scheme_type'].valueChanges.subscribe(res =>{
-           const columnsforNFO = ['NFO Start Date','NFO End Date','NFO Reopen Date','Entry Date']
-           this.tableData = new MatTableDataSource(res == 'N' ? this.__dataTbleForNFO : this.__dataTbleForOngoing);
-            if(res == 'O'){
-              this.displayedColumns = this.displayedColumns.filter((x) => !columnsforNFO.includes(x));
-            }
-            else{
-              this.displayedColumns.splice(4,0,...columnsforNFO)
-            }
-          })
-  }
   previewlatestCategoryEntry() {
     this.__dbIntr.api_call(0, '/scheme', null).pipe(pluck('data')).subscribe((res: scheme[]) => {
-      this.__selectRNT = new MatTableDataSource(res);
-      this.__selectRNT.paginator = this.paginator;
+      this.__selectRNT = new MatTableDataSource(res.splice(0,5));
     })
   }
   populateDT(__items: scheme) {
-    // this.__utility.navigate('/main/master/cateModify', btoa(__items.id.toString()));
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/scheme',
     {queryParams: {id:btoa(__items.id.toString()),flag:btoa(__items.scheme_type)}});
   }
-  getFiles(__ev) {
-      this.__uploadRnt.get('rntFile').setValidators([Validators.required, fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)]);
-      this.__uploadRnt.get('file')?.patchValue(this.__uploadRnt.get('rntFile').status == 'VALID' ? __ev.files[0] : '');
-      // this.onFileDropped(__ev);
-  }
-  uploadRnt() {
 
-    if(this.__uploadRnt.invalid){
-      this.__utility.showSnackbar("Please recheck the form again & resubmit",0);
-      return
-    }
-    const __uploadRnt = new FormData();
-    __uploadRnt.append('file', this.__uploadRnt.get('file').value);
-    // __uploadRnt.append("amc_id", this.__uploadRnt.value.amc_id);
-    // __uploadRnt.append("category_id", this.__uploadRnt.value.cat_id);
-    // __uploadRnt.append("subcategory_id", this.__uploadRnt.value.subcat_id);
-    __uploadRnt.append('scheme_type', this.__uploadRnt.value.scheme_type);
-    __uploadRnt.append('product_id', this.__route.snapshot.queryParamMap.get('product_id'));
-    this.__dbIntr.api_call(1, '/schemeimport', __uploadRnt).subscribe((res: any) => {
-      this.__utility.showSnackbar(res.suc == 1 ? 'File Uploadation Successfull' : res.msg, res.suc);
-      if (res.suc == 1) {
-        this.deleteFiles();
-      }
-    })
-  }
-  onFileDropped(__ev){
-    this.__uploadRnt.get('file').patchValue('');
-    this.__uploadRnt.controls.rntFile.setErrors({
-      checkRequire: __ev.files.length > 0 ? false : true,
-    });
-    this.__uploadRnt.controls.rntFile.setErrors({
-      checkSize: !fileValidators.fileSizeValidatorcopy(__ev.files),
-    });
-    fileValidators
-      .fileExtensionValidatorcopy(this.allowedExtensions, __ev.files)
-      .then((res) => {
-        this.__uploadRnt.get('rntFile').setErrors({ checkExt: !res });
-        console.log(this.__uploadRnt.get('rntFile').errors.checkExt);
-        if (res) {
-          if (
-            __ev.files.length > 0 &&
-            fileValidators.fileSizeValidatorcopy(__ev.files)
-          ) {
-            this.__uploadRnt.get('file').patchValue(__ev.files[0]);
-            this.__uploadRnt.get('rntFile').clearValidators();
-            this.__uploadRnt.get('rntFile').updateValueAndValidity();
-          }
-        }
-      });
-  }
-/**
-   * format bytes
-   * @param bytes (File size in bytes)
-   * @param decimals (Decimals point)
-   */
-formatBytes(bytes:any, decimals: any = 2) {
-  if (bytes === 0) {
-    return '0 Bytes';
-  }
-  const k = 1024;
-  const dm = decimals <= 0 ? 0 : decimals || 2;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+viewAll(){
+  this.__utility.navigate('/main/master/productwisemenu/scheme');
+  // this.__utility.navigatewithqueryparams('/main/master/productwisemenu/scheme',
+  // {queryParams: {product_id:this.__route.snapshot.queryParamMap.get('product_id')}});
 }
-deleteFiles(){
-  // this.__uploadRnt.reset({emitEvent:false});
-  this.__uploadRnt
-    .get('rntFile')
-    .setValidators([
-      Validators.required,
-      fileValidators.fileExtensionValidator(this.allowedExtensions),
-    ]);
-  this.__uploadRnt.get('rntFile').updateValueAndValidity();
-  this.__uploadRnt.patchValue({
-    rntFile: '',
-    file: ''
-  })
+setSchemeType(scmType){
+  const columnsforNFO = ['NFO Start Date','NFO End Date','NFO Reopen Date','Entry Date']
+  this.tableData = new MatTableDataSource(scmType == 'N' ? this.__dataTbleForNFO : this.__dataTbleForOngoing);
+   if(scmType == 'O'){
+     this.displayedColumns = this.displayedColumns.filter((x) => !columnsforNFO.includes(x));
+   }
+   else{
+     this.displayedColumns.splice(4,0,...columnsforNFO)
+   }
 }
-
 }

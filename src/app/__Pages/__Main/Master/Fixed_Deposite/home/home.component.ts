@@ -44,7 +44,6 @@ export class HomeComponent implements OnInit {
   }
   navigate(__el){
     this.__utility.navigate(__el.url);
-    // this.__utility.navigatewithqueryparams(__el.url,{queryParams:{product_id:this.__actdt.snapshot.queryParamMap.get('id')}})
   }
 
 }

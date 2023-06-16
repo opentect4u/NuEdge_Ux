@@ -6,4 +6,3 @@ export interface Column {
     url?: string;
     isDate?:boolean
   }
-  

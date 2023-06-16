@@ -23,13 +23,38 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
     manual_trans_status: new FormControl(this.data.data.form_status == 'M' ?  this.data.data.manual_trans_status : '',[Validators.required]),
     process: new FormGroup({
       process_date: new FormControl(this.data.data.form_status == 'M' ?  this.data.data.process_date : ''),
-       folio_no: new FormControl(global.getActualVal(this.data.data.folio_no)),
+       folio_no: new FormControl(this.data.data.form_status == 'M' ?  global.getActualVal(this.data.data.folio_no) : ''),
+       ckyc_no: new FormControl(''),
        upload_soa: new FormControl('', [
         fileValidators.fileExtensionValidator(this.allowedExtensions),
         ]),
-      //  filePreview: new FormControl(this.data.data.data.data.form_status == 'M' ? `${environment.manual_update_formUrl_for_ins + this.data.data.data.data.policy_copy_scan}` : ''),
         fdr_copy_scan: new FormControl(''),
-        file: new FormControl(this.data.data.form_status == 'M' ? `${environment.manual_update_formUrl_for_fd + this.data.data.upload_soa}` : ''),
+        file: new FormControl(
+          this.data.data.form_status == 'M'
+          ? `${(this.data.data.manual_trans_status == 'P' ?
+               (environment.soa_copy_url+this.data.data.upload_soa)
+               : this.data.data.manual_trans_status == 'R' ?
+               (environment.reject_memo+this.data.data.reject_memo)
+               : ''
+               )}`
+               : ''),
+
+
+          upload_scan: new FormControl('', [
+            fileValidators.fileExtensionValidator(this.allowedExtensions),
+            ]),
+            kyc_scan_copy: new FormControl(''),
+            file_scan: new FormControl(
+              this.data.data.form_status == 'M'
+              ? `${(this.data.data.manual_trans_status == 'P' ?
+                   (environment.kyc_scan_copy+this.data.data.upload_scan)
+                   : this.data.data.manual_trans_status == 'R' ?
+                   (environment.kyc_reject_memo+this.data.data.reject_memo)
+                   : ''
+                   )}`
+                   : ''
+
+            ),
     }),
     contact_to_comp: new FormControl(this.data.data.form_status == 'M' ? this.data.data.contact_to_comp : ''),
     contact_via: new FormControl(this.data.data.form_status == 'M' ? this.data.data.contact_via : ''),
@@ -41,7 +66,9 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
         fileValidators.fileExtensionValidator(this.allowedExtensions),
         ]),
       reject_memo_scan: new FormControl(''),
-      reject_memo_file: new FormControl(this.data.data.form_status == 'M' ? `${environment.manual_update_formUrl_for_fd + this.data.data.reject_memo}` : ''),
+      reject_memo_file: new FormControl(this.data.data.form_status == 'M'
+      ? `${(this.data?.mode == 'K' ? environment.kyc_reject_memo : environment.reject_memo) + this.data.data.reject_memo}`
+      : ''),
       reject_reason_id: new FormControl(this.data.data.form_status == 'M' ? this.data.data.reject_reason_id : '')
     }),
     pending: new FormGroup({
@@ -60,6 +87,8 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
 
   ngOnInit(): void {
     this.getRejectReason();
+    console.log(this.data);
+
   }
 
   disabledFields(){
@@ -90,20 +119,26 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
 
   ngAfterViewInit(){
     this.__manualUpdateForm.controls['manual_trans_status'].valueChanges.subscribe(res =>{
-       this.__manualUpdateForm.get(['process','folio_no']).setValidators(res == 'P' ? [Validators.required] : null);
+       this.__manualUpdateForm.get(['process','folio_no']).setValidators((res == 'P' && this.data?.mode != 'K') ? [Validators.required] : null);
+       this.__manualUpdateForm.get(['process','ckyc_no']).setValidators((res == 'P' && this.data?.mode == 'K') ? [Validators.required] : null);
+
        this.__manualUpdateForm.get(['process','process_date']).setValidators(res == 'P' ? [Validators.required] : null);
-       this.__manualUpdateForm.get(['process','upload_soa']).setValidators(res == 'P' ? [fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
+       this.__manualUpdateForm.get(['process','upload_soa']).setValidators((res == 'P'  && this.data?.mode != 'K') ? [fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
+       this.__manualUpdateForm.get(['process','upload_scan']).setValidators((res == 'P'  && this.data?.mode == 'K') ? [fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
+
+
        this.__manualUpdateForm.get('contact_to_comp').setValidators((res == 'N' || res == 'R') ? [Validators.required] : null);
-       this.__manualUpdateForm.get(['rejected','reject_memo']).setValidators(res == 'R' ? [ fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
+       this.__manualUpdateForm.get(['rejected','reject_memo']).setValidators((res == 'R' && this.data?.mode != 'K') ? [ fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
        this.__manualUpdateForm.get(['pending','pending_reason']).setValidators(res == 'N' ? [Validators.required] : null);
 
        this.__manualUpdateForm.get(['pending','pending_reason']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['rejected','reject_memo']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get('contact_to_comp').updateValueAndValidity({emitEvent:true});
        this.__manualUpdateForm.get(['process','folio_no']).updateValueAndValidity({emitEvent:false});
+       this.__manualUpdateForm.get(['process','ckyc_no']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['process','process_date']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['process','upload_soa']).updateValueAndValidity({emitEvent:false});
-
+       this.__manualUpdateForm.get(['process','upload_scan']).updateValueAndValidity({emitEvent:false});
     })
 
     this.__manualUpdateForm.controls['contact_to_comp'].valueChanges.subscribe(res =>{
@@ -136,7 +171,8 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
     this.dialogRef.updateSize("60%");
     this.__isVisible = !this.__isVisible;
   }
-  getFIle(__ev) {
+  getFIle(__ev,mode) {
+    if(mode == 'M'){
     this.__manualUpdateForm
       .get(['process','upload_soa'])
       .setValidators([
@@ -158,12 +194,39 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
       this.__manualUpdateForm.get(['process','fdr_copy_scan']).patchValue('');
     }
   }
+  else{
+    this.__manualUpdateForm
+    .get(['process','upload_scan'])
+    .setValidators([
+      Validators.required,
+      fileValidators.fileExtensionValidator(this.allowedExtensions),
+      fileValidators.fileSizeValidator(__ev.files),
+    ]);
+  this.__manualUpdateForm.get(['process','upload_scan']).updateValueAndValidity();
+  if (
+    this.__manualUpdateForm.get(['process','upload_scan']).status == 'VALID' &&
+    __ev.files.length > 0
+  ) {
+    const reader = new FileReader();
+    reader.onload = (e) => this.__manualUpdateForm.get(['process','file_scan']).patchValue(reader.result);
+    reader.readAsDataURL(__ev.files[0]);
+    this.__manualUpdateForm.get(['process','kyc_scan_copy']).patchValue(__ev.files[0]);
+  } else {
+    this.__manualUpdateForm.get(['process','file_scan']).patchValue('');
+    this.__manualUpdateForm.get(['process','kyc_scan_copy']).patchValue('');
+  }
+  }
+  }
 
 
   getFIleForMemo(__ev) {
     this.__manualUpdateForm
       .get(['rejected','reject_memo'])
-      .setValidators([
+      .setValidators(
+        this.data.mode == 'K' ? [
+          fileValidators.fileExtensionValidator(this.allowedExtensions),
+          fileValidators.fileSizeValidator(__ev.files)
+        ] : [
         Validators.required,
         fileValidators.fileExtensionValidator(this.allowedExtensions),
         fileValidators.fileSizeValidator(__ev.files),
@@ -195,8 +258,14 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
     __fb.append('manual_update_remarks',this.__manualUpdateForm.value.manual_update_remarks);
     if(this.__manualUpdateForm.value.manual_trans_status == 'P'){
     __fb.append('process_date',this.__manualUpdateForm.get(['process','process_date']).value);
-    __fb.append('folio_no',this.__manualUpdateForm.get(['process','folio_no']).value);
+    if(this.data?.mode != 'K'){
+      __fb.append('folio_no',this.__manualUpdateForm.get(['process','folio_no']).value);
     __fb.append('upload_soa',this.__manualUpdateForm.get(['process','fdr_copy_scan']).value);
+    }
+    else{
+      __fb.append('ckyc_no',this.__manualUpdateForm.get(['process','ckyc_no']).value);
+    __fb.append('upload_scan',this.__manualUpdateForm.get(['process','kyc_scan_copy']).value);
+    }
     }
     else{
         if(this.__manualUpdateForm.value.manual_trans_status == 'R'){
@@ -218,7 +287,7 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
          }
       }
     }
-    this.__dbIntr.api_call(1,'/manualUpdate',__fb).subscribe((res: any) =>{
+    this.__dbIntr.api_call(1,(this.data?.mode == 'K'  ? '/kycManualUpdate' : '/manualUpdate'),__fb).subscribe((res: any) =>{
 
        this.__utility.showSnackbar(res.suc == 1 ? 'Form Submitted Successfully' : res.msg,res.suc);
        if(res.suc == 1){

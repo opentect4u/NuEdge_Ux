@@ -153,7 +153,7 @@ export class CatrptComponent implements OnInit {
     }
   }
   getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     this.getcatMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
   }
 

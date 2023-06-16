@@ -31,7 +31,7 @@ const routes: Routes = [
             (m) => m.UploadOptionModule
           ),
         data: {
-          breadcrumb: null,
+          breadcrumb: 'Upload Option',
           parentId: 4,
           id: 39,
           title: 'NuEdge - Option Uploadation',

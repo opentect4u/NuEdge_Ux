@@ -1,0 +1,23 @@
+[
+  {
+    "id":1,
+    "title":"Manual Entry",
+    "flag":"M",
+    "url":"",
+    "icon": "fa fa-user-o"
+  },
+  {
+    "id":2,
+    "title":"Upload CSV",
+    "flag":"U",
+    "url":"",
+    "icon": "fa fa-user-o"
+  },
+  {
+    "id":3,
+    "title":"Report",
+    "flag":"R",
+    "url":"",
+    "icon": "fa fa-user-o"
+  }
+]

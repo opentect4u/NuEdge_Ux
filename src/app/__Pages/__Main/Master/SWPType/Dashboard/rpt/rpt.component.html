@@ -1,0 +1,163 @@
+
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >SWP Type Reports</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+  </div>
+<mat-dialog-content>
+
+      <div class="card my-5">
+         <div class="card-body p-5">
+
+           <form [formGroup]="__SwpType" (ngSubmit)="submit()" autocomplete="off">
+            <div class="row">
+              <div class="col-sm-5">
+                <label for="swp_type">SWP Type</label>
+                <input type="text"
+                placeholder="Enter SWP Type"
+                name="swp_type"
+                id="swp_type"
+                class="form-control"
+                formControlName="swp_type_name">
+              </div>
+              <div class="col-sm-5"></div>
+              <div class="col-sm-2 d-flex justify-content-end align-items-end">
+                <button mat-raised-button  color="primary">
+                  Show
+                </button>
+              </div>
+            </div>
+
+           </form>
+          </div>
+        </div>
+
+      <div class="card ">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5>SWP Type Details</h5>
+          <button color="primary" mat-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            Export as <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item >
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SWPType'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+        <div class="card-body p-2">
+          <table mat-table [dataSource]="__selecSwpType" class="table_Custome" matSort (matSortChange)="sortData($event)">
+            <!-- Sl No. -->
+            <ng-container matColumnDef="sl_no">
+              <th mat-header-cell *matHeaderCellDef>Sl No</th>
+              <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+            </ng-container>
+
+
+
+            <!--Temporary TIN No.-->
+            <ng-container matColumnDef="swp_type_name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="swp_type_name">SWP Type</th>
+              <td mat-cell *matCellDef="let element">{{element.swp_type_name}}</td>
+            </ng-container>
+
+
+            <!-- Buisness Type-->
+            <ng-container matColumnDef="edit">
+              <th mat-header-cell *matHeaderCellDef>Edit</th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button (click)="populateDT(element)">
+                  <mat-icon class="edit_icon">edit</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="__columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="__columns.length"  class="text-center">No SWP History Found</td>
+            </tr>
+          </table>
+          </div>
+          <div class="card-footer">
+            <div class="paginator">
+              <div class="itemsPerPage">
+                <label>Items Per Page :&nbsp; </label>
+                <mat-button-toggle-group #group="matButtonToggleGroup">
+                  <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
+                    10
+                  </mat-button-toggle>
+                  <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
+                    50
+                  </mat-button-toggle>
+                  <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
+                    100
+                  </mat-button-toggle>
+                  <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+                    All
+                  </mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+
+              <div class="paginatorContainer">
+
+                <mat-button-toggle-group *ngFor="let paginate of __paginate">
+                  <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+                    <label>
+                      <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+                      <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+                      <span
+                        *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
+                    </label>
+                  </mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+
+
+
+
+            </div>
+          </div>
+        </div>
+
+        <table id="swp_type" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+
+
+          <ng-container matColumnDef="sl_no">
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+          </ng-container>
+
+          <!--Temporary TIN No.-->
+          <ng-container matColumnDef="swp_type_name">
+            <th mat-header-cell *matHeaderCellDef>SWP Type</th>
+            <td mat-cell *matCellDef="let element">{{element.swp_type_name}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
+          <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell"  [attr.colspan]="__exportedClmns.length" class="text-center">No SWP Type History Found</td>
+          </tr>
+        </table>
+
+</mat-dialog-content>
+</div>

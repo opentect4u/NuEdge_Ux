@@ -1,0 +1,267 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title">
+    <h2 [title]="data.title">{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="__rcvFormForNonFin" (ngSubmit)="recieveForm()" [attr.id]="data.title + data.id" ngNativeValidate
+      autocomplete="off">
+      <div class="row">
+        <div class="col-sm-12 my-2">
+          <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
+          <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
+            <option value=""> Select Buisness Type</option>
+            <option *ngFor="let __bu_type of __buisness_type" value="{{__bu_type.id}}">{{__bu_type.bu_type}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__rcvFormForNonFin.get('bu_type').invalid && (__rcvFormForNonFin.get('bu_type').dirty || __rcvFormForNonFin.get('bu_type').touched)">
+            <span class="invalid-feedback" *ngIf="(__rcvFormForNonFin.get('bu_type')).errors?.required">*Please provide
+              buisness
+              type</span>
+          </div>
+        </div>
+        <ng-container *ngIf="__rcvFormForNonFin.get('bu_type').value == 'B'">
+          <div class="col-sm-12 my-2">
+            <!-- //ARN -->
+
+            <app-core-srch
+            [label] = "'Sub Broker ARN'"
+            [placeholder]="'Serach By Sub Broker ARN'"
+            [isPending]="__issubBrkArnVisible"
+            [listItems] = "__subbrkArnMst"
+            [flag] = "'S'"
+            [isRequired]="true"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [propertiesToShow] = "['arn_no','bro_name']"
+            formControlName="sub_arn_no"
+            [isExists]="__rcvFormForNonFin.get('sub_arn_no').errors?.subBrkExists"
+            [displayMode]="displayMode_forSub_arn_no"
+            (setDisplayMode)="displayMode_forSub_arn_no = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            [isClientExistMsg]="'Sub Broker does not exists'"
+            ></app-core-srch>
+          </div>
+          <div class="col-sm-12 my-2">
+            <label for="subbrkCD">Sub Broker Code<span class="text-danger">*</span></label>
+            <input type="search" id="subbrkCD" class="form-control" placeholder="Sub Broker Code"
+              formControlName="sub_brk_cd" readonly>
+          </div>
+        </ng-container>
+
+        <div class="col-sm-12 my-2" *ngIf="__rcvFormForNonFin.get('bu_type').value != ''">
+          <app-core-srch
+          [label] = "'EUIN'"
+          [placeholder]="'Search By EUIN Number'"
+          [isPending]="__isEuinNumberVisible"
+          [listItems] = "__euinMst"
+          [flag] = "'E'"
+          [isRequired]="true"
+          [noDataFoundTitle]="'Sorry!! No Records Found'"
+          [noDataFoundSubTitle]="'If your result match,they will appear here'"
+          [propertiesToShow] = "['euin_no','emp_name']"
+          formControlName="euin_no"
+          [isExists]="__rcvFormForNonFin.get('euin_no').errors?.euinExists"
+          [displayMode]="displayMode_forEuin"
+          (setDisplayMode)="displayMode_forEuin = $event"
+          (selectedItems)="getSelectedItemsFromParent($event)"
+          [isClientExistMsg]="'EUIN does not exists'"
+          ></app-core-srch>
+          <div class="invalid-feedback"
+            *ngIf="__rcvFormForNonFin.get('euin_no').invalid && (__rcvFormForNonFin.get('euin_no').dirty || __rcvFormForNonFin.get('euin_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__rcvFormForNonFin.get('euin_no')).errors?.required">*Please provide
+              EUIN number</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="my-2" [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-10':__isCldtlsEmpty}">
+          <app-core-srch
+              [label] = "'Client Code'"
+              [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+              [isPending]="__isclientVisible"
+              [listItems] = "__clientMst"
+              [flag] = "'C'"
+              [isRequired]="true"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'To create a new client .Please click on Create Client'"
+              [propertiesToShow] = "['client_code','pan','client_name']"
+              formControlName="client_code"
+              [isExists]="__rcvFormForNonFin.get('client_code').errors?.ClientExists"
+              [displayMode]="displayMode_forClient"
+              (setDisplayMode)="displayMode_forClient = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              [isClientExistMsg]="'Client does not exists'"
+              ></app-core-srch>
+        </div>
+        <div class="col-sm-2 clientCode" *ngIf="__isCldtlsEmpty && __rcvFormForNonFin.get('client_code').value">
+          <core-btn-with-menu
+          [menuListItem]="__clTypeMenu"
+          [BtnTitle]="'Create Client'"
+          [hasMenu]="true"
+          (sendItem)="navigateTo($event)"
+          ></core-btn-with-menu>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="my-2" class="col-sm-12"
+          *ngIf="__rcvFormForNonFin.get('client_code').value && __rcvFormForNonFin.get('client_name').value">
+          <label for="__clName">Client Name</label>
+          <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
+            formControlName="client_name" [attr.disabled]="true">
+            <button
+            (click)="openDialog('C')"
+            class="viewIconDtls"
+            color="primary"
+            *ngIf="this.__dialogDtForClient" mat-icon-button type="button"
+            aria-label="Example icon button with a eye icon" title="View Client Details">
+            <mat-icon>remove_red_eye</mat-icon>
+          </button>
+        </div>
+        <!-- <div class="col-sm-4 clientCode"
+          *ngIf="__dialogDtForClient && __rcvFormForNonFin.get('client_code').value && __rcvFormForNonFin.get('client_name').value">
+          <button (click)="openDialog('C')" color="primary" *ngIf="this.__dialogDtForClient" mat-button type="button"
+            aria-label="Example icon button with a eye icon" title="View Client Details">
+            <mat-icon>remove_red_eye</mat-icon>
+            View Details
+          </button>
+        </div> -->
+
+      </div>
+      <div class="row">
+        <div class="col-sm-12 my-2">
+          <label for="FrmType">Transaction<span class="text-danger">*</span></label>
+          <select name="frmType" class="form-control" id="FrmType" formControlName="trans_id">
+            <option value="">Select Transaction</option>
+            <option *ngFor="let __formType of __transType" value="{{__formType.id}}">
+              {{__formType.trns_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__rcvFormForNonFin.get('trans_id').invalid && (__rcvFormForNonFin.get('trans_id').dirty || __rcvFormForNonFin.get('trans_id').touched)">
+            <span class="invalid-feedback" *ngIf="(__rcvFormForNonFin.get('trans_id')).errors?.required">*Please provide
+              form
+              type</span>
+          </div>
+        </div>
+
+      </div>
+      <ng-container *ngIf="__rcvFormForNonFin.get('trans_id').value != '12'
+           && __rcvFormForNonFin.get('trans_id').value != '13'">
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="folio_no">Folio Number <span class="text-danger">*</span></label>
+            <input type="text" placeholder="Enter Folio Number" name="folio_number" id="folio_no" class="form-control"
+              formControlName="folio_number">
+            <div class="invalid-feedback"
+              *ngIf="__rcvFormForNonFin.get('folio_number').invalid && (__rcvFormForNonFin.get('folio_number').dirty || __rcvFormForNonFin.get('folio_number').touched)">
+              <span class="invalid-feedback" *ngIf="(__rcvFormForNonFin.get('folio_number')).errors?.required">*Please
+                provide folio number</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="my-2" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-8':__dialogDtForScheme}">
+            <app-core-srch
+              [label] = "'Scheme Name'"
+              [placeholder]="'Search By Scheme Name'"
+              [isPending]="__isschemeVisible"
+              [listItems] = "__schemeMst"
+              [flag] = "'SC'"
+              [isRequired]="true"
+              [propertiesToShow] = "['scheme_name']"
+              formControlName="scheme_name"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [isExists]="__rcvFormForNonFin.get('scheme_name').errors?.ScmExists"
+              [displayMode]="displayMode_forScm"
+              (setDisplayMode)="displayMode_forScm = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              [isClientExistMsg]="'Scheme does not exists'"
+              ></app-core-srch>
+          </div>
+          <div class="col-sm-4 clientCode" *ngIf="__dialogDtForScheme">
+            <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')" mat-button type="button"
+              aria-label="Example icon button with a eye icon" title="View Scheme Details">
+              <mat-icon>remove_red_eye</mat-icon>
+              View Details
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- KYC Modification Type -->
+      <ng-container *ngIf="__rcvFormForNonFin.get('trans_id').value == '12'">
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="kyc_modification">KYC Modification Type <span class="text-danger">*</span></label>
+            <select class="form-control" formControlName="kyc_modification" name="kyc_modification"
+              id="kyc_modification">
+              <option value="">Select</option>
+              <option [value]="modify_type.id" *ngFor="let modify_type of __kycModification">
+                {{modify_type.name}}</option>
+            </select>
+
+            <div class="invalid-feedback"
+              *ngIf="__rcvFormForNonFin.get('kyc_modification').invalid && (__rcvFormForNonFin.get('kyc_modification').dirty || __rcvFormForNonFin.get('kyc_modification').touched)">
+              <span class="invalid-feedback"
+                *ngIf="(__rcvFormForNonFin.get('kyc_modification')).errors?.required">*Please provide KYC modification
+                type</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+
+      <!-- KYC Fresh -->
+      <ng-container *ngIf="__rcvFormForNonFin.get('trans_id').value == '13'">
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="existing_kyc_status">Existing KYC Status <span class="text-danger">*</span></label>
+            <select class="form-control" formControlName="existing_kyc_status" name="existing_kyc_status"
+              id="existing_kyc_status">
+              <option value="">Select</option>
+              <option [value]="kyc_fresh.id" *ngFor="let kyc_fresh of __kycFresh">{{kyc_fresh.name}}</option>
+            </select>
+            <div class="invalid-feedback"
+              *ngIf="__rcvFormForNonFin.get('existing_kyc_status').invalid && (__rcvFormForNonFin.get('existing_kyc_status').dirty || __rcvFormForNonFin.get('existing_kyc_status').touched)">
+              <span class="invalid-feedback"
+                *ngIf="(__rcvFormForNonFin.get('existing_kyc_status')).errors?.required">*Please provide KYC
+                fresh</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="row">
+        <div class="col-sm-12 my-2">
+          <label for="recv_from">Receive From</label>
+          <input type="text" name="recv_from" placeholder="Enter Receive From" id="recv_from" class="form-control"
+            formControlName="recv_from">
+        </div>
+      </div>
+
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn" [attr.form]="data.title  + data.id"
+      [disabled]="this.__rcvFormForNonFin.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+</div>

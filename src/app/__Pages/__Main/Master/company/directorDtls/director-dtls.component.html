@@ -1,0 +1,18 @@
+  <core-tab [Tab]="TabMenu"  [customClass]="'customTabs'" (GetTabDtls)="onTabChange($event)" [index]="tabindex"></core-tab>
+  <div class="container_fluid mb-2 w-100">
+
+  <ng-container *ngIf="tabindex==0;else other">
+    <app-director-dtls-entry
+    [cmpDtlsMst]="cmpDtlsMst"
+    [country]="country"
+    (getReset)="reset()"
+    (getDirectorDtls)="sendModifiedDirectorToParent($event)"
+    [setFormDt]="getPerticularDtls"
+    ></app-director-dtls-entry>
+  </ng-container>
+  <ng-template #other>
+    <app-director-dtls-rpt
+    [directorMst]="directorMst"
+    (selectIndex)="getTabIndexdata($event)"></app-director-dtls-rpt>
+  </ng-template>
+</div>

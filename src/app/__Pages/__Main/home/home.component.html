@@ -3,23 +3,23 @@
 
 
 <div class="row flexSec">
-  <home-menuTiles [__items]="__topValues" [__flag]="'TV'" class="homeMenuTiles"></home-menuTiles>
+  <home-menuTiles [__items]="__topValues" [__flag]="'TV'" class="homeMenuTiles"></home-menuTiles>  <!--- showing top bar values --->
 </div>
 
 <div class="row flexSec">
    <div class="col-sm-6">
     <div class="row">
-      <home-menuTiles [__items]="__menu" [__flag]="'BM'"></home-menuTiles>
+      <home-menuTiles [__items]="__menu" [__flag]="'BM'"></home-menuTiles><!--- showing main Menu Details i.e: Admin, Human Resources etc --->
     </div>
   </div>
 
   <div class="col-sm-6">
     <div class="row">
       <div class="col-sm-6">
-        <common-view [__listItems]="__quickView" [__flag]="'Q'"></common-view>
+        <common-view [__listItems]="__quickView" [__flag]="'Q'"></common-view> <!--- showing Quick View --->
       </div>
       <div class="col-sm-6">
-        <common-view [__listItems]="__employeeScores" [__flag]="'E'"></common-view>
+        <common-view [__listItems]="__employeeScores" [__flag]="'E'"></common-view> <!--- showing Employee scores --->
       </div>
       <div class="col-sm-12 progressMainSec">
         <div class="flexSec">

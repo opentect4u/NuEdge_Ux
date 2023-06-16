@@ -1,0 +1,43 @@
+[
+
+  {
+    "title":"Country",
+    "id":1,
+    "url":"/main/master/geographic/country",
+    "icon": "fa fa-user-o"
+  },
+  {
+    "title":"State",
+    "id":2,
+    "url":"/main/master/geographic/state",
+    "icon": "fa fa-user-o"
+  } , {
+    "title":"District",
+    "id":3,
+    "url":"/main/master/geographic/district",
+    "icon": "fa fa-user-o"
+  }, {
+    "title":"City",
+    "id":4,
+    "url":"/main/master/geographic/city",
+    "icon": "fa fa-user-o"
+  }
+  , {
+    "title":"City Type",
+    "id":5,
+    "url":"/main/master/geographic/cityType",
+    "icon": "fa fa-user-o"
+  }
+  , {
+    "title":"Pincode",
+    "id":6,
+    "url":"/main/master/geographic/pincode",
+    "icon": "fa fa-user-o"
+  }
+  , {
+    "title":"Report",
+    "id":7,
+    "url":"",
+    "icon": "fa fa-user-o"
+  }
+]

@@ -17,7 +17,7 @@ export class DragDirective {
   // Dragover listener
   @HostListener('dragover', ['$event']) onDragOver(evt: any) {
     // console.log(evt);
-
+    
     evt.preventDefault();
     evt.stopPropagation();
     this.fileOver = true;

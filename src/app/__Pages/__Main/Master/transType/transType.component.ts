@@ -28,20 +28,18 @@ export class TransTypeComponent implements OnInit {
       queryParams:''
     },
     {
-      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      label:"Mutual Fund",
       url:'/main/master/productwisemenu/home',
       hasQueryParams:true,
-      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     },
     {
       label:"Transaction Type",
       url:'/main/master/productwisemenu/trnsType',
       hasQueryParams:true,
-      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     }
 ]
-  __pageNumber = new FormControl(10);
-  __paginate: any = [];
   __menu = [
     {
       parent_id: 4,
@@ -71,7 +69,6 @@ export class TransTypeComponent implements OnInit {
       flag: 'R',
     },
   ];
-  __selectTrnstype:any=[];
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
@@ -82,18 +79,8 @@ export class TransTypeComponent implements OnInit {
   ngOnInit(): void {
     this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
-  getSearchItem(__ev) {
-    this.__selectTrnstype.length = 0;
-    if (__ev.flag == 'A') {
-      this.openDialog(__ev.id, '');
-    }
-    else {
-      this.__selectTrnstype.push(__ev.item);
-    }
-  }
-  populateDT(__items) {
-    this.openDialog(__items.id, __items);
-  }
+
+
   openDialog(id, __items) {
     const dialogConfig = new MatDialogConfig();
   dialogConfig.autoFocus = false;
@@ -108,22 +95,14 @@ export class TransTypeComponent implements OnInit {
     id: id,
     title: id == 0 ? 'Add Transaction Type' : 'Update Transaction Type',
     items: __items,
-    product_id: atob(this.route.snapshot.queryParamMap.get('prodcut_id'))
+    product_id: '1'
   };
   try{
     const dialogref = this.__dialog.open(TrnstypeModificationComponent, dialogConfig);
     dialogref.afterClosed().subscribe(dt => {
-      if (dt?.id > 0) {
-          //  this.updateRow(dt.data);
-      }
-      else{
-        // this.addRow(dt.data);
-      }
     });
   }
   catch(ex){
-    console.log(ex);
-
     const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
     dialogRef.updateSize('50%');
     this.__utility.getmenuIconVisible({
@@ -142,7 +121,7 @@ export class TransTypeComponent implements OnInit {
         this.__utility.navigate(__menu.url);
         break;
       case 'R':
-        this.openDialogForReports(atob(this.route.snapshot.queryParamMap.get('product_id')))
+        this.openDialogForReports('1')
         break;
       default:
         break;

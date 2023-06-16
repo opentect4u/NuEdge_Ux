@@ -23,11 +23,11 @@
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="dob">
       </div>
       <div class="col-sm-12 my-3" *ngIf="this.data.dt.client_type == 'P'">
-        <label>Pan Number</label>
+        <label>PAN NO.</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="pan">
       </div>
       <div class="col-sm-12 my-3" *ngIf="this.data.dt.client_type == 'M'">
-        <label>Gurdialns Pan Number</label>
+        <label>Gurdians PAN Number</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="gurdians_pan">
       </div>
       <div class="col-sm-12 my-3"  *ngIf="this.data.dt.client_type == 'M'">
@@ -37,13 +37,10 @@
       <div class="col-sm-12 my-3"  *ngIf="this.data.dt.client_type == 'M'">
         <!-- <label>Relations</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="relations"> -->
-        <label>RelationShip</label>
+        <label>Relationship</label>
         <select class="form-control" formControlName="relations" [attr.disabled]="true">
-          <option value="">Select RelationShip</option>
-          <option value="S">Son</option>
-          <option value="D">Daughter</option>
-          <option value="F">Father</option>
-          <option value="M">Mother</option>
+          <option value="">Select Relationship</option>
+          <option [value]="rel.id" *ngFor="let rel of __relation">{{rel.relation}}</option>
         </select>
       </div>
       <div class="col-sm-12 my-3">
@@ -86,7 +83,7 @@
                 Document type <span class="text-danger">*</span>
               </th>
               <th class="text-center">
-                Thumbnail
+                Document View
               </th>
             </tr>
           </thead>
@@ -112,7 +109,7 @@
                 Document type <span class="text-danger">*</span>
               </th>
               <th class="text-center">
-                Thumbnail
+                Document View
               </th>
             </tr>
           </tfoot>

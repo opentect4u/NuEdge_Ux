@@ -2,17 +2,28 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CompanyComponent } from './company.component';
 import { RouterModule, Routes } from '@angular/router';
-import { RptComponent } from './Dialog/rpt/rpt.component';
-import { CrudComponent } from './Dialog/crud/crud.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 
-const routes: Routes = [{path:'',component:CompanyComponent}]
+const routes: Routes = [
+  {
+     path:'',
+     component:CompanyComponent,
+    children:[
+       {
+        path:'',
+        loadChildren:()=> import('./home/home.module').then(m => m.HomeModule)
+       },
+       {
+        path:'uploadCompany',
+        loadChildren:()=> import('./upload-csv/upload-csv.module').then(m => m.UploadCSVModule),
+        data:{breadcrumb:'Upload Company'}
+       }
+    ]
+    }]
 
 @NgModule({
   declarations: [
-    CompanyComponent,
-    RptComponent,
-    CrudComponent
+    CompanyComponent
   ],
   imports: [
     CommonModule,

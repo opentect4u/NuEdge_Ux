@@ -1,0 +1,152 @@
+
+<core-tab [Tab]="TabMenu"
+[customClass]="'customTabs'"
+(GetTabDtls)="onTabChange($event)"></core-tab>
+<div class="container_fluid mb-2 w-100">
+
+<form [formGroup]="license" (ngSubmit)="submitLicenceDtls()" class="mb-3">
+  <div class="row my-2">
+    <div class="col-sm-2">
+      <label for="product_id">Product <span class="text-danger">*</span></label>
+      <select class="form-control" formControlName="product_id" name="product_id" id="product_id">
+            <option value="">Select</option>
+            <option  [value]="item.id" *ngFor="let item of product">{{item.product_name}}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="license.get('product_id').invalid && (license.get('product_id').dirty || license.get('product_id').touched)">
+        <span class="invalid-feedback" *ngIf="(license.get('product_id')).errors?.required">*Please provide product</span>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <label for="licence_no">Licence No <span class="text-danger">*</span></label>
+     <input type="text" placeholder="Enter Licence No" name="licence_no" id="licence_no" class="form-control" formControlName="licence_no">
+     <div class="invalid-feedback" *ngIf="license.get('licence_no').invalid && (license.get('licence_no').dirty || license.get('licence_no').touched)">
+      <span class="invalid-feedback" *ngIf="(license.get('licence_no')).errors?.required">*Please provide licence no</span>
+    </div>
+    </div>
+    <div class="col-sm-2">
+      <label for="valid_from">Valid From <span class="text-danger">*</span></label>
+      <input type="date" name="valid_from" id="valid_from" class="form-control" formControlName="valid_from">
+      <div class="invalid-feedback" *ngIf="license.get('valid_from').invalid && (license.get('valid_from').dirty || license.get('valid_from').touched)">
+       <span class="invalid-feedback" *ngIf="(license.get('valid_from')).errors?.required">*Please provide valid from</span>
+     </div>
+    </div>
+    <div class="col-sm-2">
+      <label for="valid_to">Valid To <span class="text-danger">*</span></label>
+      <input type="date" name="valid_to" id="valid_to" class="form-control" formControlName="valid_to">
+      <div class="invalid-feedback" *ngIf="license.get('valid_to').invalid && (license.get('valid_to').dirty || license.get('valid_to').touched)">
+       <span class="invalid-feedback" *ngIf="(license.get('valid_to')).errors?.required">*Please provide valid to</span>
+     </div>
+    </div>
+    <div class="col-sm-4">
+      <label for="file">Upload Copy <span class="text-danger">*</span></label>
+      <div class="p-inputgroup">
+        <input class="form-control" type="file" class="form-control" accept="pdf" (change)="getFile($event)" formControlName="file"/>
+        <a [href]="license.get('file_preview')?.value" target="__blank" type="button" pButton icon="pi pi-eye" styleClass="p-button-warn"
+        *ngIf="license.value.file_preview"
+        ></a>
+      </div>
+      <mat-hint><label>Allowed format :</label> <strong>PDF</strong></mat-hint>
+
+      <div class="invalid-feedback"
+      *ngIf=" license.get('file').invalid && ( license.get('file').dirty ||  license.get('file').touched)">
+      <span class="invalid-feedback" *ngIf="license.get('file').errors?.required">*Please
+        provide file</span>
+      <span class="invalid-feedback" *ngIf="license.get('file').errors?.inValidExt">*Invalid
+        file extension.</span>
+      <span class="invalid-feedback"
+        *ngIf="license.get('file').errors?.fileSizeValidator">*File size must not exceed than
+        10MB.</span>
+    </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 d-flex align-items-center justify-content-end">
+                <p-button type="button"
+                label="Reset"
+                icon="pi pi-refresh"
+                iconPos="right"
+                (click)="reset()"
+                class="mx-3"
+                styleClass="p-button-lg p-button-danger">
+                </p-button>
+                <p-button type="submit"
+                label="Save"
+                icon="pi pi-save"
+                iconPos="right"
+                [disabled]="license.invalid"
+                styleClass="p-button-lg p-button-primary">
+                </p-button>
+    </div>
+  </div>
+
+</form>
+
+
+<p-table [value]="licenseMst"
+ [columns]="columns"
+ [resizableColumns]="true"
+  [paginator]="true"
+  [rows]="5"
+  [showCurrentPageReport]="true"
+  selectionMode="multiple"
+  columnResizeMode="expand"
+  [scrollable]="true"
+  scrollHeight="250px"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+  [tableStyle]="{ 'min-width': '100rem'}">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 15rem">
+            {{ col.header }}
+            <p-sortIcon *ngIf="col.field!= 'edit' && col.field != 'upload_file'" [field]="col.field">
+            </p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-finance let-columns="columns">
+        <tr tabindex="999">
+          <td *ngFor="let col of columns" >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'edit'">
+                <p-button icon="pi pi-pencil" (click)="populateDT(finance)"
+                styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="col.field == 'upload_file'" >
+                <ng-container *ngIf="finance[col.field];else noPdf">
+                      <a target="__blank" [href]="url + finance[col.field]">
+                        <img width="50" height="50" src="../../../../../../../assets/images/pdf.png" [alt]="finance['name'] + 'document'">
+                      </a>
+                </ng-container>
+                <ng-template #noPdf>
+                    N/A
+                </ng-template>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'valid_from' || col.field == 'valid_to'" >
+                  <span
+                  #tooltip="matTooltip"
+                  matTooltip="{{finance[col.field]}}">
+                  {{ finance[col.field] ? (finance[col.field] | date: 'dd-MM-YYYY') : 'N/A' }}
+                </span>
+                </ng-container>
+              <ng-container *ngSwitchDefault >
+                <span
+                #tooltip="matTooltip"
+                matTooltip="{{finance[col.field]}}">
+                {{ finance[col.field] ? finance[col.field] : 'N/A' }}
+              </span>
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+             No records found
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+</div>

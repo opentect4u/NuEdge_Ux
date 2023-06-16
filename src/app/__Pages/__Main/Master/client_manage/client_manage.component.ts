@@ -12,8 +12,8 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
-import { ClientRptComponent } from './clientRpt/clientRpt.component';
-import { ClModifcationComponent } from './clModifcation/clModifcation.component';
+import { ClientRptComponent } from '../Operations/cl-mst/client/addNew/client_manage/home/clientRpt/clientRpt.component';
+import { ClModifcationComponent } from '../Operations/cl-mst/client/addNew/client_manage/home/clModifcation/clModifcation.component';
 
 @Component({
   selector: 'master-client_manage',
@@ -142,7 +142,9 @@ export class Client_manageComponent implements OnInit {
       icon: '',
       id: 35,
       flag: 'U',
-      isvisible: atob(this.__RtDT.snapshot.queryParamMap.get('flag')) == 'E' ? false : true
+      isvisible: false
+
+      // isvisible: atob(this.__RtDT.snapshot.queryParamMap.get('flag')) == 'E' ? false : true
     },
     {
       parent_id: 4,
@@ -154,18 +156,6 @@ export class Client_manageComponent implements OnInit {
       flag: 'A',
       isvisible: false
     },
-  ];
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  __columns: string[] = [
-    'sl_no',
-    'cl_code',
-    'cl_name',
-    'cl_type',
-    'pan',
-    'mobile',
-    'edit',
-    'delete',
   ];
   __selectClients = new MatTableDataSource<client>([]);
   constructor(
@@ -203,44 +193,11 @@ export class Client_manageComponent implements OnInit {
         }
       });
   }
-  getSearchItem(__ev) {
-    if (__ev.flag == 'A') {
-    } else if (__ev.flag == 'F') {
-      this.setPaginator([__ev.item]);
-    } else {
-      this.getClientMaster(
-        atob(this.__RtDT.snapshot.queryParamMap.get('flag'))
-      );
-      this.updateDataTable();
-    }
-  }
   populateDT(__items: client) {
     this.openDialog(__items, __items.id, __items.client_type);
     //  this.__utility.navigatewithqueryparams('/main/master/clModify',{queryParams:{flag:btoa(__items.client_type),id:btoa(__items.id.toString())}})
   }
 
-  private getClientMaster(__clType: string, __paginate: string | null = '10') {
-    this.__dbIntr
-      .api_call(
-        0,
-        '/client',
-        'client_type=' + __clType + '&paginate=' + __paginate
-      )
-      .pipe(map((x: responseDT) => x.data))
-      .subscribe((res: any) => {
-        console.log(res);
-
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
-  }
-  private setPaginator(__res) {
-    this.__selectClients = new MatTableDataSource(__res);
-    this.__selectClients.paginator = this.paginator;
-  }
-  private updateDataTable() {
-    this.__selectClients._updateChangeSubscription();
-  }
   navigate(__menu) {
     switch (__menu.flag) {
       case 'M':this.openDialog(null,0,atob(this.__RtDT.snapshot.queryParamMap.get('flag')));break;
@@ -308,7 +265,7 @@ export class Client_manageComponent implements OnInit {
       right: global.randomIntFromInterval(1, 60),
       cl_type: __clType,
     };
-    dialogConfig.id = __clid > 0 ? __clid.toString() : '0';
+    dialogConfig.id = (__clid > 0 ? __clid.toString() : '0') + '_' + __clType;
     try {
       const dialogref = this.__dialog.open(
         ClModifcationComponent,
@@ -345,31 +302,6 @@ export class Client_manageComponent implements OnInit {
         isVisible: false,
         flag: 'CL',
       });
-    }
-  }
-  updateRow(row_obj: client) {}
-  getval(__paginate) {
-    this.__pageNumber.setValue(__paginate);
-    //  this.getPLANMaster(__paginate);
-    this.getClientMaster(
-      atob(this.__RtDT.snapshot.queryParamMap.get('flag')),
-      __paginate
-    );
-  }
-  getPaginate(__paginate) {
-    if (__paginate.url) {
-      this.__dbIntr
-        .getpaginationData(
-          __paginate.url +
-            ('&paginate=' + this.__pageNumber.value) +
-            ('&client_type=' +
-              atob(this.__RtDT.snapshot.queryParamMap.get('flag')))
-        )
-        .pipe(map((x: any) => x.data))
-        .subscribe((res: any) => {
-          this.setPaginator(res.data);
-          this.__paginate = res.links;
-        });
     }
   }
 }

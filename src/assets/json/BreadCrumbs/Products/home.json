@@ -1,0 +1,14 @@
+[
+  {
+    "label":"Home",
+    "url":"/main",
+    "hasQueryParams":false,
+    "queryParams":""
+  },
+  {
+    "label":"Product Dashboard",
+    "url":"/main/product",
+    "hasQueryParams":false,
+    "queryParams":""
+  }
+]

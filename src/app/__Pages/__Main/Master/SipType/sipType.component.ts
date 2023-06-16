@@ -28,16 +28,16 @@ export class SiptypeComponent implements OnInit {
       queryParams:''
     },
     {
-      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      label:"Mutual Fund",
       url:'/main/master/productwisemenu/home',
       hasQueryParams:true,
-      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     },
     {
       label:"SIP Type",
       url:'/main/master/productwisemenu/sipType',
       hasQueryParams:true,
-      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     }
 ]
   __pageNumber = new FormControl(10);
@@ -105,9 +105,9 @@ export class SiptypeComponent implements OnInit {
     dialogConfig.data = {
       flag:'SIP',
        id: id,
-       title: id == 0 ? 'Add Sip Type' : 'Update Sip Type',
+       title: id == 0 ? 'Add SIP Type' : 'Update SIP Type',
       items: __items,
-      product_id: atob(this.route.snapshot.queryParamMap.get('prodcut_id'))
+      product_id: '1'
     };
     dialogConfig.id = id > 0 ? id.toString() : '0';
     try {
@@ -116,14 +116,6 @@ export class SiptypeComponent implements OnInit {
         dialogConfig
       );
       dialogref.afterClosed().subscribe((dt) => {
-        if (dt) {
-          if (dt?.id > 0) {
-            // this.updateRow(dt.data);
-          } else {
-            // this.__selectPLN.data.unshift(dt.data);
-            // this.__selectPLN._updateChangeSubscription();
-          }
-        }
       });
     } catch (ex) {
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
@@ -145,7 +137,7 @@ export class SiptypeComponent implements OnInit {
         this.__utility.navigate(__menu.url);
         break;
       case 'R':
-        this.openDialogForReports(atob(this.route.snapshot.queryParamMap.get('product_id')))
+        this.openDialogForReports('1')
         break;
       default:
         break;

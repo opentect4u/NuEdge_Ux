@@ -1,0 +1,24 @@
+<div class="paginator">
+  <div class="itemsPerPage">
+    <label>Items Per Page :&nbsp; </label>
+    <mat-button-toggle-group #group="matButtonToggleGroup">
+      <mat-button-toggle [value]="item" *ngFor="let item of ['10','50','100','A']" (click)="getval(item)">
+        {{item == 'A' ? 'All' : item}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+
+
+  <div class="paginatorContainer">
+    <mat-button-toggle-group *ngFor="let paginate of __paginate">
+      <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+        <label>
+          <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+          <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+          <span *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+        </label>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</div>

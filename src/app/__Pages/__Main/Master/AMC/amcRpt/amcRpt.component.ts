@@ -14,6 +14,7 @@ import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { AmcModificationComponent } from '../amcModification/amcModification.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'amc-amcRpt',
@@ -21,6 +22,8 @@ import { AmcModificationComponent } from '../amcModification/amcModification.com
   styleUrls: ['./amcRpt.component.css'],
 })
 export class AmcrptComponent implements OnInit {
+
+  amcLogoUrl = environment.amc_logo_url;
   __sortColumnsAscOrDsc: any= {active: '',direction:'asc'};
   @ViewChild('searchAmc') __searchAmc: ElementRef;
   @ViewChild('searchRnt') __searchRnt: ElementRef;
@@ -29,11 +32,12 @@ export class AmcrptComponent implements OnInit {
     {id:'edit',text:'Edit'},
     {id:'delete',text:'Delete'},
     {id:'sl_no',text:'Sl No'},
+    {id:'logo',text:'Logo'},
     {id:'amc_name',text:'AMC Full Name'},
     {id:'amc_short_name',text:'AMC Short Name'},
     {id:'rnt_name',text:'R&T'},
     {id:"gstin",text:"GSTIN"},
-    {id:'website',text:'Web Site'},
+    {id:'website',text:'Web Szite'},
     {id:'cus_care_whatsapp_no',text:'Customer Care WhatsApp Number'},
     {id:'distributor_care_no',text:'Distributor Care Number'},
     {id:'distributor_care_email',text:'Distributor Care Email'},
@@ -80,6 +84,7 @@ export class AmcrptComponent implements OnInit {
     'edit',
     'delete',
     'sl_no',
+    'logo',
     'amc_name',
     'amc_short_name',
     'rnt_name'];
@@ -87,6 +92,7 @@ export class AmcrptComponent implements OnInit {
     'edit',
     'delete',
     'sl_no',
+    'logo',
     'amc_name',
     'amc_short_name',
     'rnt_name',
@@ -153,7 +159,9 @@ export class AmcrptComponent implements OnInit {
        l5: new FormControl(''),
        l6: new FormControl(''),
   })
-  constructor(private __acRt: ActivatedRoute,
+  constructor(
+
+    private __acRt: ActivatedRoute,
     private __Rpt: RPTService,
     private __dialog: MatDialog,
     private __utility: UtiliService,
@@ -180,7 +188,7 @@ export class AmcrptComponent implements OnInit {
      this.__dbIntr.api_call(1,'/amcDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
       this.__paginate = res.links;
       this.setPaginator(res.data);
-       this.showColumns();
+       this.showColumns(this.__detalsSummaryForm.value.options);
        this.tableExport(column_name,sort_by);
      })
 
@@ -262,7 +270,8 @@ export class AmcrptComponent implements OnInit {
         if(res == '1'){
           this.__columns = this.__columnsForDetails;
           this.toppings.setValue(this.__columns);
-          this.__exportedClmns = ['sl_no','amc_name',
+          this.__exportedClmns = ['sl_no',
+          'amc_name',
           'amc_short_name',
           'rnt_name',
           'gstin',
@@ -311,11 +320,11 @@ export class AmcrptComponent implements OnInit {
         ]
         }
         else{
-          this.showColumns();
+          this.showColumns(res);
         }
       })
       this.toppings.valueChanges.subscribe((res) => {
-        const clm = ['edit','delete']
+        const clm = ['edit','delete','logo']
         this.__columns = res;
         this.__exportedClmns = res.filter(item => !clm.includes(item))
       });
@@ -437,6 +446,7 @@ export class AmcrptComponent implements OnInit {
         value.amc_short_name =row_obj.amc_short_name;
         value.distributor_care_email  = row_obj.distributor_care_email;
         value.distributor_care_no  = row_obj.distributor_care_no;
+        value.logo = row_obj.logo
       }
       return true;
     });
@@ -518,19 +528,16 @@ export class AmcrptComponent implements OnInit {
     })
   }
 
-  showColumns(){
-    console.log(this.__detalsSummaryForm.value.options );
-
-    if( this.__detalsSummaryForm.value.options == '1'){
-      console.log('sasa');
-
+  showColumns(res){
+    console.log(res);
+    if(res == '1'){
       if(this.__detalsSummaryForm.value.l1
        || this.__detalsSummaryForm.value.l2
        || this.__detalsSummaryForm.value.l3
        || this.__detalsSummaryForm.value.l4
        || this.__detalsSummaryForm.value.l5
        || this.__detalsSummaryForm.value.l6){
-         var columnDt =  [ 'edit','delete','sl_no','amc_name','amc_short_name','rnt_name','gstin'];
+         var columnDt =  [ 'edit','delete','sl_no','logo','amc_name','amc_short_name','rnt_name','gstin'];
          this.__exportedClmns = ['sl_no','amc_name','rnt_name'];
          if(this.__detalsSummaryForm.value.l1){
            columnDt = [...columnDt,'l1_name','l1_email','l1_contact_no'];
@@ -561,12 +568,19 @@ export class AmcrptComponent implements OnInit {
          this.toppings.setValue(this.__columns);
        }
        else{
-        //  this.__columns = this.__columnsForsummary;
         this.__columns = this.__columnsForDetails;
-        const clm = ['edit','delete']
+        const clm = ['edit','delete','logo']
          this.toppings.setValue(this.__columns);
          this.__exportedClmns = this.__columns.filter(item => !clm.includes(item))
        }
+     }
+     else{
+
+
+      this.__columns = this.__columnsForsummary;
+      const clm = ['edit','delete','logo']
+       this.toppings.setValue(this.__columns);
+       this.__exportedClmns = this.__columns.filter(item => !clm.includes(item))
      }
   }
 
@@ -641,7 +655,7 @@ export class AmcrptComponent implements OnInit {
        l5: '',
        l6: '',
     });
-    this.showColumns();
+    this.showColumns('2');
     this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
   }
   sortData(sort: any) {

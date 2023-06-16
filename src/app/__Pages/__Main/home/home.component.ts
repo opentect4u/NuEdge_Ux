@@ -10,21 +10,26 @@ import EmployeeScores from '../../../../assets/json/EmployeeScores.json';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+
+  /*** Holding left card menus i.e: Human resources,Admin etc */
   __menu:menuBodyList[] = menu;
+  /*** End */
+  /** For Holding data of Quick view In home page */
   __quickView:view[] = QuickView;
+  /*** End */
+  /** For Holding data of Employee scores in home Page */
   __employeeScores:view[] = EmployeeScores;
+  /*** End */
+
+  /*** For Showing Top Card Value */
   __topValues:any = [
     {title:"title-1",value:999,class_name:"blue_Gredient"},
     {title:"title-2",value:9999,class_name:"seeGreen_Gredient"},
     {title:"title-3",value:9999,class_name:"red_Gredient"},
     {title:"title-3",value:9999,class_name:"yellow_Gredient"}
   ]
-  constructor() {
-    console.log(this.__menu);
-    
-   }
-
-  ngOnInit() {
-  }
+  /*** End */
+  constructor() {}
+  ngOnInit() {}
 
 }

@@ -1,0 +1,49 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >{{data.title}}</h2>
+      <div class="btnIcon">
+        <button mat-icon-button title="Minimize"  (click)="minimize()" >
+          <mat-icon >remove</mat-icon>
+        </button>
+        <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+          <mat-icon>check_box_outline_blank </mat-icon>
+        </button>
+
+        <button mat-icon-button title="Close"  [mat-dialog-close]="">
+          <mat-icon >close</mat-icon>
+        </button>
+    </div>
+    </div>
+    <mat-dialog-content>
+      <form  [formGroup]="__stateForm" (ngSubmit)="submit()" autocomplete="off" id="__stateForm_{{data.id}}" ngNativeValidate>
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="country_id">Country <span class="text-danger">*</span></label>
+            <select class="form-control" id="country_id" formControlName="country_id">
+              <option value="">Select</option>
+              <option [value]="country.id" *ngFor="let country of countryMst">{{country.name}}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="__stateForm.get('country_id').invalid && (__stateForm.get('country_id').dirty || __stateForm.get('country_id').touched)">
+              <span class="invalid-feedback" *ngIf="(__stateForm.get('country_id')).errors?.required">*Please provide country</span>
+            </div>
+          </div>
+
+          <div class="col-sm-12 mb-2">
+            <label for="name">State <span class="text-danger">*</span></label>
+              <input type="text" name="name" id="name" class="form-control" formControlName="name" placeholder="Enter State">
+            <div class="invalid-feedback" *ngIf="__stateForm.get('name').invalid && (__stateForm.get('name').dirty || __stateForm.get('name').touched)">
+              <span class="invalid-feedback" *ngIf="(__stateForm.get('name')).errors?.required">*Please provide state</span>
+            </div>
+          </div>
+        </div>
+    </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+      <button class="btn addBtn"   [attr.form]="'__stateForm_'+data.id" [disabled]="__stateForm.invalid">Submit</button>
+    </mat-dialog-actions>
+    <br clear="all">
+</div>

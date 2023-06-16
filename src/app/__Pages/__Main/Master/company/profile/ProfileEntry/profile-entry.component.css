@@ -1,0 +1,7 @@
+::ng-deep .p-component{
+  font-size: 14px!important;
+    font-weight: 500!important;
+}
+::ng-deep .p-component-overlay{
+  z-index:999999!important;
+}

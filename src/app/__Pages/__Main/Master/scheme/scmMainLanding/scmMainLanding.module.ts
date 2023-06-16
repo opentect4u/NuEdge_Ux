@@ -28,7 +28,7 @@ const routes: Routes = [
             (m) => m.UploadScmModule
           ),
         data: {
-          breadcrumb: null,
+          breadcrumb: 'Upload Scheme',
           parentId: 4,
           id: 31,
           title: 'NuEdge - Scheme Uploadation',
@@ -37,19 +37,17 @@ const routes: Routes = [
         },
       },
       {
-        path: 'scmType',
-        loadChildren: () =>
-          import('../../scheme/scmType/scmType.module').then(
-            (m) => m.ScmTypeModule
-          ),
-        data: {
+        path:'isin',
+        loadChildren: ()=> import('../../ISIN/isin.module').then(m => m.IsinModule),
+        data:{
+          breadcrumb: 'ISIN',
           parentId: 4,
           id: 32,
-          title: 'NuEdge - Choose Scheme Type',
-          pageTitle: 'Scheme Type',
+          title: 'NuEdge - ISIN',
+          pageTitle: 'ISIN Master',
           has_menubar: 'Y',
-        },
-      },
+        }
+      }
     ],
   },
 ];

@@ -76,7 +76,7 @@
             id="fdr_scan"
             class="form-control"
             formControlName="fdr_scan">
-            <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+            <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
             <div class="invalid-feedback"
               *ngIf=" __manualUpdateForm.get(['process','fdr_scan']).invalid && ( __manualUpdateForm.get(['process','fdr_scan']).dirty ||  __manualUpdateForm.get(['process','fdr_scan']).touched)">
               <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['process','fdr_scan']).errors?.required">*Please
@@ -86,7 +86,7 @@
               <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','fdr_scan']).errors?.fileSizeValidator">*File size
                 must
                 not exceed than
-                2MB.</span>
+                10MB.</span>
             </div>
           </div>
           <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">
@@ -213,7 +213,7 @@
             (change)="getFIleForMemo($event.target)"
             class="form-control"
             formControlName="reject_memo">
-            <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+            <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
             <div class="invalid-feedback"
             *ngIf=" __manualUpdateForm.get(['rejected','reject_memo']).invalid && ( __manualUpdateForm.get(['rejected','reject_memo']).dirty ||  __manualUpdateForm.get(['rejected','reject_memo']).touched)">
             <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['rejected','reject_memo']).errors?.required">*Please
@@ -223,7 +223,7 @@
             <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['rejected','reject_memo']).errors?.fileSizeValidator">*File size
               must
               not exceed than
-              2MB.</span>
+              10MB.</span>
           </div>
           </div>
           <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">

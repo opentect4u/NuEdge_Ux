@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Menu",
+    "icon": "menu",
+    "url": "",
+    "flag": "F"
+  },
+  {
+    "id": 2,
+    "title": "Grid View",
+    "icon": "grid_view",
+    "url": "",
+    "flag": "F"
+  },
+  {
+    "id": 3,
+    "title": "List view",
+    "icon": "view_list",
+    "url": "",
+    "flag": "F"
+  },
+  {
+    "id": 4,
+    "title": "More",
+    "icon": "more_vert",
+    "url": "",
+    "flag": "F"
+  }
+]

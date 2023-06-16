@@ -1,0 +1,10 @@
+<div class="col-sm-3" *ngFor="let item of items" (click)="openModalOrNavigate(item)">
+  <div class="smallBox" >
+   <div class="smallBoxIconSec">
+    <div class="iconSec iconCol_1">
+      <i [class]="item.icon" aria-hidden="true"></i>
+    </div>
+  </div>
+  <h2>{{item.title}}</h2>
+</div>
+</div>

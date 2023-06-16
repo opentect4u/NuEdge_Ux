@@ -1,0 +1,41 @@
+[
+  {
+    "id":1,
+    "title":"Menu",
+    "icon":"menu",
+    "url":"",
+    "flag":"H"
+  },
+  {
+    "id":2,
+    "title":"Home",
+    "icon":"house",
+    "url":"main/home",
+    "flag":"H"
+
+  },
+  {
+    "id":3,
+    "title":"Email",
+    "icon":"drafts",
+    "url":"",
+    "flag":"H"
+
+  },
+  {
+    "id":4,
+    "title":"Document Locker",
+    "icon":"folder",
+    "url":"/main/admin/documentlocker",
+    "flag":"H"
+
+  },
+  {
+    "id":5,
+    "title":"Search",
+    "icon":"search",
+    "url":"",
+    "flag":"H"
+
+  }
+]

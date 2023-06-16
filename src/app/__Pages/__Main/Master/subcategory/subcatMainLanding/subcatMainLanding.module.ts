@@ -32,7 +32,7 @@ const routes: Routes = [
           ),
         data: {
           parentId: 4,
-          breadcrumb: null,
+          breadcrumb: 'Upload Sub Category',
           id: 24,
           title: 'NuEdge - Sub-Category Modification',
           pageTitle: 'Sub-Category Addtion / Updation',

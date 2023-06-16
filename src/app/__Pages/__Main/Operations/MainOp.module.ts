@@ -23,23 +23,16 @@ const routes: Routes = [
         },
       },
       {
-        path: 'mfdashboard/:id',
+        path: 'dashboard',
         loadChildren: () =>
-          import('./MFDashboard/MFDashboard.module').then(
-            (m) => m.MFDashboardModule
-          ),
-        data: {
-          parentId: 5,
-          id: 2,
-          title: 'NuEdge - Mutual Fund Dashboard',
-          pageTitle: '',
-          has_member: 'Y',
-        },
+          import('./MUTUALFUND/main.module').then((m) => m.MainModule),
       },
       {
-          path:'reports',
-          loadChildren:()=>
-          import('./daySheetRPT/daySheetRpt.module').then(m => m.DaysheetrptModule)
+        path: 'reports',
+        loadChildren: () =>
+          import('./daySheetRPT/daySheetRpt.module').then(
+            (m) => m.DaysheetrptModule
+          ),
       },
       {
         path: 'manualEntr',
@@ -68,34 +61,23 @@ const routes: Routes = [
         },
       },
       {
-        path: 'mfTraxEntry',
-        loadChildren: () =>
-          import('./Mutual_Fund/mfTrax.module').then((m) => m.MfTraxModule),
-        data: { id: 5, title: '', pageTitle: '', has_menu: 'Y' },
-      },
-      {
         path: '',
         redirectTo: 'ophome',
         pathMatch: 'full',
       },
-      {
-        path:'acknowledgement',
-        loadChildren:()=>import('../Operations/Mutual_Fund/AcknowlegeMent/ackMain.module').then(m => m.AckmainModule),
-        data:{breadcrumb:'Acknowledgement'}
-      },
       // Insurance
       {
-        path:'insurance',
-        loadChildren:()=> import('./Insurance/ins-main.module').then(m => m.InsMainModule)
+        path: 'insurance',
+        loadChildren: () =>
+          import('./Insurance/ins-main.module').then((m) => m.InsMainModule),
       },
       {
-        path:'fixedeposit',
-        loadChildren:()=> import('./FixedDeposit/fixed-deposit.module').then(m => m.FixedDepositModule)
+        path: 'fixedeposit',
+        loadChildren: () =>
+          import('./FixedDeposit/fixed-deposit.module').then(
+            (m) => m.FixedDepositModule
+          ),
       },
-      {
-        path:'manualupdate',
-        loadChildren:()=> import('./Mutual_Fund/ManualUpdate/manual-update.module').then(m => m.ManualUpdateModule)
-      }
     ],
   },
 ];

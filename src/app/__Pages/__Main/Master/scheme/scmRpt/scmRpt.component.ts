@@ -182,6 +182,16 @@ export class ScmRptComponent implements OnInit {
           (value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt);
           (value.ava_special_sip = row_obj.ava_special_sip);
           (value.special_sip_name = row_obj.special_sip_name);
+          (value.ava_special_swp = row_obj.ava_special_swp);
+          (value.special_swp_name = row_obj.special_swp_name);
+          (value.ava_special_stp = row_obj.ava_special_stp);
+          (value.special_stp_name = row_obj.special_stp_name);
+          (value.nfo_entry_date = row_obj.nfo_entry_date);
+          // (value.growth_isin = row_obj.growth_isin);
+          // (value.idcw_payout_isin = row_obj.idcw_payout_isin);
+          // (value.idcw_reinvestment_isin = row_obj.idcw_reinvestment_isin);
+          (value.step_up_min_amt = row_obj.step_up_min_amt);
+          (value.step_up_min_per = row_obj.step_up_min_per);
 
         }
         return true;
@@ -213,6 +223,17 @@ export class ScmRptComponent implements OnInit {
           (value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt);
           (value.ava_special_sip = row_obj.ava_special_sip);
           (value.special_sip_name = row_obj.special_sip_name);
+          (value.ava_special_swp = row_obj.ava_special_swp);
+          (value.special_swp_name = row_obj.special_swp_name);
+          (value.ava_special_stp = row_obj.ava_special_stp);
+          (value.special_stp_name = row_obj.special_stp_name);
+          (value.nfo_entry_date = row_obj.nfo_entry_date);
+          // (value.growth_isin = row_obj.growth_isin);
+          // (value.idcw_payout_isin = row_obj.idcw_payout_isin);
+          // (value.idcw_reinvestment_isin = row_obj.idcw_reinvestment_isin);
+          (value.step_up_min_amt = row_obj.step_up_min_amt);
+          (value.step_up_min_per = row_obj.step_up_min_per);
+
         }
         return true;
       }
@@ -362,7 +383,7 @@ export class ScmRptComponent implements OnInit {
     }
   }
   getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     this.submit();
   }
   setPaginator(__res){

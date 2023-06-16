@@ -19,3 +19,13 @@ td {
 .rowWidth {
     width: 30% !important;
 }
+.pertnerColumn{
+  width: 20%!important;
+  font-size: 11px!important;
+  text-align: center!important;
+}
+tr>th>h4{
+  font-size: 15px;
+  font-weight: 500;
+  padding: 9px;
+}

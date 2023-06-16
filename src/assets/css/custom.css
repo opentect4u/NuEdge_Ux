@@ -225,8 +225,8 @@ table {
 
 
 .mat-icon-button {
-  height: 50px !important;
-  width: 50px !important;
+  /* height: 50px !important;
+  width: 50px !important; */
 }
 
 .cardSec {
@@ -401,10 +401,10 @@ table {
   height: auto;
   padding: 4rem;
   text-align: center;
-  border: dashed 2px #1f4584a1;
+  border: dashed 2px #1f4584;
   position: relative;
   margin: 0 auto;
-  background: #2534880f;
+  background: #25348817;
   border-radius: 5px;
 }
 
@@ -420,12 +420,19 @@ table {
 
 
 .paginator {
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 25px;
   border-top: 1px solid #c5c5c5;
-  background: #fff
+  background: #fff */
+  display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* padding: 6px 18px; */
+    padding: 10px 18px;
+    border-top: 1px solid #c5c5c5;
+    background: #fff;
 }
 
 .paginator ul {
@@ -443,9 +450,26 @@ table {
 
 .paginator ul li a {
   padding: 12px;
-  background: gray;
-  margin-right: 5px;
+  /* margin-right: -1px; */
+  margin-right: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor:pointer;
 }
+
+.paginator ul li a.paginateNumber{
+  border-radius: 50%!important;
+  padding: 8px 12px;
+  color: #007bff;
+
+}
+.paginator ul li a.paginateNumber:hover{
+  cursor: pointer;
+  background: #53a6ff4f;
+  color: blue;
+}
+
+
 
 .clearIcon {
   position: absolute;
@@ -486,6 +510,9 @@ table {
 .serachresult_client ul li {
   padding: 3px 15px;
   border-bottom: 1px solid #ebebeb;
+ /** MAY BE REMOVE LATER**/
+  line-height: 14px;
+  /*** END ***/
 }
 
 .serachresult_client ul li:hover {
@@ -555,3 +582,153 @@ mat-hint p{
   text-align: center;
   vertical-align: bottom;
 }
+
+
+.previewImg {
+  border: 1px solid #ddd; /* Gray border */
+  border-radius: 4px;  /* Rounded border */
+  padding: 5px; /* Some padding */
+  width: 100px; /* Set a small width */
+}
+.noteMsg{
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f4584;
+}
+
+.activeIconINBtn{
+  transform: rotate(180deg);
+  transition: .1s ease-in-out;
+}
+.inActivebtnIcon{
+  transform: rotate(360deg);
+  transition: .1s ease-in-out;
+}
+
+input[name="pan"]{
+  /* text-transform: uppercase; */
+}
+.btn-danger {
+  color: #fff!important;
+  background-color: #d9534f!important;
+  line-height: 23px;
+  padding: 6px 20px;
+  border-radius: 0px;
+}
+
+.checkboxes{
+  border: 1px solid #d7d7d7;
+  padding: 0px 6px;
+  background: #ed860614;
+  border-radius: 3px;
+}
+
+.mega_menu{
+  width: 900px;
+    height: 260px;
+    box-sizing: border-box;
+    border: solid 1px #c1c1c1;
+    color: rgba(0, 0, 0, 0.87);
+    text-align: center;
+    background: #fff;
+    position: absolute;
+    z-index: 99999;
+    transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    right: 84px;
+    top:0;
+}
+
+.mega_menu_container_header{
+  height: 42px;
+  padding: 5px;
+  width: 100%;
+  background: #eaeaea;
+  border-bottom: 1px solid #c3c3c3;
+  z-index: 9999;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.mega_menu_container_body{
+  height: calc(100% - 50px);
+  text-align: justify;
+  padding: 0px 13px;
+  overflow: auto;
+  /* margin: 42px 0px 0px 0px; */
+}
+
+.mega_menu:active {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.drag-handle {
+  /* position: absolute;
+  top: 10px;
+  right: 10px; */
+  color: #ccc;
+  cursor: move;
+  /* width: 24px;
+  height: 24px; */
+}
+
+/* Material icon Css */
+.material-icons{
+  font-size: 18px!important;
+}
+/* End */
+/* **Paginator Active class */
+.activePaginator{
+   background: #007bff!important;
+  color: #fff!important;
+}
+/*** End*/
+.TabImg{
+  object-fit: contain;
+  /* height: 27px; */
+  height: 22px;
+  margin-right: 6px;
+}
+.prevNext{
+  color: blue;
+}
+.prevNext:hover{
+   cursor: pointer;
+}
+.transTypeCount>h4{
+  font-size: 13px;
+  font-weight: 500;
+  color: #3f51b5;
+}
+
+textarea{
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 11px;
+  line-height: 1.428571429;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #d7d7d7;
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075)
+}
+
+textarea:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+}
+
+/***PrimeNg Input***/
+.p-inputgroup > .p-component,
+.p-inputgroup > .p-element,
+.p-inputgroup > .p-inputwrapper > .p-component > .p-inputtext,
+.p-inputgroup > .p-float-label > .p-component {
+  font-size: 11px!important;
+  font-weight: 700!important;
+}
+/*** End*/

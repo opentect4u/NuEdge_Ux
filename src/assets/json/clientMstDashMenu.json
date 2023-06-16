@@ -2,23 +2,30 @@
     {
         "id": 41,
         "menu_name": "Create Client Code",
+         "title": "Create Client Code",
         "has_submenu": "N",
-        "url": "/main/master/clOption",
+        "url": "/main/master/mstOperations/clntMst/clOption",
+        "icon": "fa fa-user-o",
         "sub_menu": [
         ]
     },
     {
         "id": 18,
         "menu_name": "Document Master",
+         "title": "Document Master",
         "has_submenu": "N",
-        "url": "/main/master/docs",
+        "url": "/main/master/mstOperations/clntMst/docs",
+        "icon": "fa fa-user-o",
+
         "sub_menu": []
     },
     {
         "id": 29,
         "menu_name": "Reports",
+         "title": "Reports",
         "has_submenu": "N",
         "url": "",
+        "icon": "fa fa-user-o",
         "sub_menu": []
     }
 ]

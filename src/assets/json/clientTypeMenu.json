@@ -1,0 +1,20 @@
+[
+  {
+    "flag":"M",
+    "isDisabled":false,
+    "title":"Minor",
+    "icon": "person_pin"
+  },
+  {
+    "flag":"P",
+    "isDisabled":false,
+    "title":"PAN Holder",
+    "icon": "credit_card"
+  },
+  {
+    "flag":"N",
+    "isDisabled":false,
+    "title":"Non PAN Holder",
+    "icon": "credit_card_off"
+  }
+]

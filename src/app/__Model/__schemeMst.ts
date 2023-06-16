@@ -12,6 +12,7 @@ export interface scheme {
     scheme_type?:string
     nfo_start_dt?:string
   nfo_end_dt?:string
+  nfo_entry_date?:string
   nfo_reopen_dt?:string
   pip_fresh_min_amt?:string
   sip_fresh_min_amt?:string
@@ -28,4 +29,16 @@ export interface scheme {
   swp_freq_wise_amt?:any
   ava_special_sip?: any;
   special_sip_name?: string;
+
+  ava_special_swp?:any
+  special_swp_name?:string
+  ava_special_stp?:any
+  special_stp_name?:string
+  // growth_isin?:string;
+  // idcw_payout_isin?:string;
+  // idcw_reinvestment_isin?:string;
+
+  step_up_min_amt?:string;
+  step_up_min_per?:string;
+
   }

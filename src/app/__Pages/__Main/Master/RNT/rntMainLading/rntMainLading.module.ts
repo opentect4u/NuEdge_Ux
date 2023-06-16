@@ -9,7 +9,6 @@ const routes: Routes = [
     component: RntMainLadingComponent,
     data: { breadcrumb: 'R&T' },
     children: [
-      // { path: '', redirectTo: '', pathMatch: 'full' },
       {
         path: '',
         loadChildren: () =>
@@ -23,20 +22,6 @@ const routes: Routes = [
           has_menubar: 'Y',
         },
       },
-      // {
-      //   path: 'rntDashboard',
-      //   loadChildren: () =>
-      //     import('../../RNT/rntDashboard/rntDashboard.module').then(
-      //       (m) => m.RntDashboardModule
-      //     ),
-      //   data: {
-      //     parentId: 4,
-      //     id: 14,
-      //     title: 'NuEdge - R&T Dashboard',
-      //     pageTitle: 'R&T Dashboard',
-      //     has_menubar: 'Y',
-      //   },
-      // },
       {
         path: 'rntUpload',
         loadChildren: () =>
@@ -44,7 +29,7 @@ const routes: Routes = [
             (m) => m.UploadCsvModule
           ),
         data: {
-          breadcrumb: null,
+          breadcrumb: 'Upload R&T',
           parentId: 4,
           id: 15,
           title: 'NuEdge - R&T Uploadation',
@@ -52,21 +37,6 @@ const routes: Routes = [
           has_menubar: 'Y',
         },
       },
-
-      // {
-      //   path: 'rntmodify',
-      //   loadChildren: () =>
-      //     import('../../RNT/rntModify/rntModify.module').then(
-      //       (m) => m.RntModifyModule
-      //     ),
-      //   data: {
-      //     parentId: 4,
-      //     id: 3,
-      //     title: 'NuEdge - R&T',
-      //     pageTitle: 'R&T Master',
-      //     has_menubar: 'Y',
-      //   },
-      // },
     ],
   },
 ];

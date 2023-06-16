@@ -1,0 +1,52 @@
+.container_circleProgress{
+    width: 100%;
+    position: absolute;
+    /* bottom: 9px; */
+    bottom: 33px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.circular-progress{
+    /* height: 80px;
+    width: 80px; */
+        height: 55px;
+    width: 55px;
+    /* background: conic-gradient(#7d2ae8 3.6deg,#ededed 0deg); */
+    background: conic-gradient(#ededed 3.6deg,#ededed 0deg);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+  .circular-progress::before{
+    content: "";
+    position: absolute;
+    /* height: 70px;
+    width: 70px; */
+    height: 49px;
+    width: 49px;
+    background-color: #fff;
+    border-radius: 50%;
+  }
+  .value-container{
+    position: relative;
+    /* font-size: 18px; */
+    font-size: 13px;
+    font-weight: 600;
+    color: #2f54a2;
+  }
+  .searchText{
+    display: block;
+    width: 35%;
+    height: 35px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    text-indent: 12px;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    padding-right: 36px;
+    transition: all .2s ease-in-out;
+    background: #f8f8f8;
+    border: 1px solid #E4E4E4;
+  }

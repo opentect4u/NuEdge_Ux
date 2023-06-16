@@ -128,7 +128,7 @@ export class SiptyperptComponent implements OnInit {
     }
   }
   getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     // this.getTrnsTypeMst(this.__pageNumber.value);
     this.submit();
   }

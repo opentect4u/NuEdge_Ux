@@ -1,0 +1,16 @@
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: center!important;
+  padding: 8px;
+  width: 12.5%;
+  font-size: 11px!important;
+}
+
+td {
+    vertical-align: middle !important;
+}
+
+td:last-child{
+  width:5%;
+}

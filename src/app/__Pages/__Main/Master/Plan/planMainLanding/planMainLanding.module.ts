@@ -30,7 +30,7 @@ const routes: Routes = [
           ),
         data: {
           parentId: 4,
-          breadcrumb: null,
+          breadcrumb: 'Upload Plan',
           id: 35,
           title: 'NuEdge - Plan Uploadation',
           pageTitle: 'Plan Upload',

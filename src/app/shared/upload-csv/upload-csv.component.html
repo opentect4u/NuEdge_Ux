@@ -1,0 +1,356 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <h4>{{leftHeaderTitle}}</h4>
+    <ng-container *ngIf="flag == 'FS'">
+      <!-- -->
+      <button  mat-flat-button [matMenuTriggerFor]="menuFS">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
+      <mat-menu #menuFS="matMenu"  xPosition="before">
+        <button  mat-menu-item
+        (click)="export_comp_type.exportTable('xlsx',{fileName:'SampleCompanyType'})">
+        <mat-icon>download</mat-icon>Download Company Type
+      </button>
+
+        <button mat-menu-item
+          (click)="export_comp.exportTable('xlsx',{fileName:'SampleCompany'})">
+          <mat-icon>download</mat-icon>Download Company
+        </button>
+        <button mat-menu-item  (click)="exporter.exportTable('xlsx',{fileName:file_name})"><mat-icon>download</mat-icon>Download Sample</button>
+      </mat-menu>
+
+    </ng-container>
+    <ng-container *ngIf="flag == 'SC'">
+      <button mat-button [matMenuTriggerFor]="menuSC">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
+        <mat-menu #menuSC="matMenu"  xPosition="before">
+          <button mat-menu-item (click)="exporter2.exportTable('xlsx',{fileName:'SampleAMC'})">
+            <mat-icon>download</mat-icon>Download AMC
+          </button>
+          <button mat-menu-item
+            (click)="exporter1.exportTable('xlsx',{fileName:'SampleCategory'})">
+            <mat-icon>download</mat-icon>Download Category
+          </button>
+          <button  mat-menu-item
+          (click)="exporter3.exportTable('xlsx',{fileName:'SampleSubCategory'})">
+          <mat-icon>download</mat-icon>Download Sub Category
+        </button>
+          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SWPType'})">
+            <mat-icon>download</mat-icon> Export Excel
+          </button>
+
+          <button mat-menu-item  (click)="exporter.exportTable('xlsx',{fileName:file_name})"><mat-icon>download</mat-icon>Download Sample</button>
+        </mat-menu>
+    </ng-container>
+
+   <ng-container  *ngIf="flag != 'SC' && flag != 'FS'">
+    <button  color="primary" (click)="exporter.exportTable('xlsx',{fileName:file_name})"
+    mat-button><mat-icon>download</mat-icon>Download Sample</button>
+   </ng-container>
+
+
+  </div>
+  <div class="card-body px-5 py-3">
+    <form [formGroup]="__upload" (ngSubmit)="uploadRnt()" id="rnt_upload">
+      <div class="row">
+        <div class="col-sm-12 my-2" *ngIf="flag == 'A'">
+          <label for="rnt_id">R&T <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="rnt_id">
+            <option value="">Select</option>
+            <option *ngFor="let rnt of RntMst" [value]="rnt.id">{{rnt.rnt_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf=" __upload.get('rnt_id').invalid && ( __upload.get('rnt_id').dirty ||  __upload.get('rnt_id').touched)">
+            <span class="invalid-feedback" *ngIf=" __upload.get('rnt_id').errors?.required">*Please
+              provide R&T</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2" *ngIf="flag == 'S'">
+          <label for="cat_id">Category <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="cat_id">
+            <option value="">Select</option>
+            <option *ngFor="let cat of CatMst" [value]="cat.id">{{cat.cat_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf=" __upload.get('cat_id').invalid && ( __upload.get('cat_id').dirty ||  __upload.get('cat_id').touched)">
+            <span class="invalid-feedback" *ngIf=" __upload.get('cat_id').errors?.required">*Please
+              provide category</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2" *ngIf="flag == 'SC'">
+          <mat-radio-group aria-label="Select an option" color="primary" formControlName="scheme_type">
+            <mat-radio-button value="O">Ongoing Scheme</mat-radio-button>
+            <mat-radio-button value="N" class="ml-5">NFO</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="col-sm-12 my-2" *ngIf="flag == 'FC' || flag == 'IC' || flag == 'IPT' || flag == 'IP'">
+          <label class="form-label" for="ins_type_id">
+            {{flag == 'FC' ? 'Type Of Company' : 'Type Of Insurance'}}
+            <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="ins_type_id">
+            <option value="">Select</option>
+            <option *ngFor="let insType of companyTypeMst" [value]="insType.id">
+              {{flag == 'FC' ? insType.comp_type : insType.type}}
+            </option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__upload.get('ins_type_id').invalid && (__upload.get('ins_type_id').dirty || __upload.get('ins_type_id').touched)">
+            <span class="invalid-feedback" *ngIf="(__upload.get('ins_type_id')).errors?.required">
+              *Please provide {{flag == 'FC' ? ' company ' : ' insurance '}} type
+            </span>
+          </div>
+        </div>
+
+        <div class="col-sm-12 my-2" *ngIf="flag == 'IP'">
+          <label class="form-label">Company <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="company_id">
+            <option value="">Select</option>
+            <option *ngFor="let comp of compMst" [value]="comp.id">{{comp.comp_short_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf=" __upload.get('company_id').invalid && ( __upload.get('company_id').dirty ||  __upload.get('company_id').touched)">
+          <span class="invalid-feedback" *ngIf=" __upload.get('company_id').errors?.required">*Please provide
+            company</span>
+            </div>
+        </div>
+        <div class="col-sm-12 my-2" *ngIf="flag == 'GS' || flag == 'GD' || flag == 'GC' || flag == 'GP'">
+           <label for="country_id">Country <span class="text-danger">*</span></label>
+           <select name="country_id" id="country_id" class="form-control" formControlName="country_id">
+                <option value="">Select</option>
+                <option [value]="country.id" *ngFor="let country of countryMst">{{country.name}}</option>
+           </select>
+           <div class="invalid-feedback"
+            *ngIf="__upload.get('country_id').invalid && (__upload.get('country_id').dirty || __upload.get('country_id').touched)">
+            <span class="invalid-feedback" *ngIf="(__upload.get('country_id')).errors?.required">
+              *Please provide country
+            </span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2" *ngIf="flag == 'GD' || flag == 'GC' || flag == 'GP'">
+          <label for="state_id">State <span class="text-danger">*</span></label>
+          <select name="state_id" id="state_id" class="form-control" formControlName="state_id">
+               <option value="">Select</option>
+               <option [value]="state.id" *ngFor="let state of stateMst">{{state.name}}</option>
+          </select>
+          <div class="invalid-feedback"
+           *ngIf="__upload.get('state_id').invalid && (__upload.get('state_id').dirty || __upload.get('state_id').touched)">
+           <span class="invalid-feedback" *ngIf="(__upload.get('state_id')).errors?.required">
+             *Please provide state
+           </span>
+         </div>
+       </div>
+       <div class="col-sm-12 my-2" *ngIf="flag == 'GC' || flag == 'GP'">
+        <label for="district_id">District <span class="text-danger">*</span></label>
+        <select name="district_id" id="district_id" class="form-control" formControlName="district_id">
+             <option value="">Select</option>
+             <option [value]="district.id" *ngFor="let district of districtMst">{{district.name}}</option>
+        </select>
+        <div class="invalid-feedback"
+         *ngIf="__upload.get('district_id').invalid && (__upload.get('district_id').dirty || __upload.get('district_id').touched)">
+         <span class="invalid-feedback" *ngIf="(__upload.get('district_id')).errors?.required">
+           *Please provide district
+         </span>
+       </div>
+       </div>
+
+       <div class="col-sm-12 my-2" *ngIf="flag == 'GP'">
+        <label for="city_id">City <span class="text-danger">*</span></label>
+        <select name="city_id" id="city_id" class="form-control" formControlName="city_id">
+             <option value="">Select</option>
+             <option [value]="city.id" *ngFor="let city of cityMst">{{city.name}}</option>
+        </select>
+        <div class="invalid-feedback"
+         *ngIf="__upload.get('city_id').invalid && (__upload.get('city_id').dirty || __upload.get('city_id').touched)">
+         <span class="invalid-feedback" *ngIf="(__upload.get('city_id')).errors?.required">
+           *Please provide city
+         </span>
+       </div>
+       </div>
+
+
+
+        <div class="col-sm-12">
+          <div class="container_zone" appDragDrop (fileDropped)="onFileDropped($event)">
+            <img src="../../../../../../assets/images/____upload.png" alt="Upload Images" height="63" width="63">
+            <input type="file" accept=".csv,.xlsx" max="1" min="1" #fileDropRef name="upload_file" id="fileDropRef"
+              accept=".csv,.xlsx" class="form-control" (change)="getFiles($event.target)" formControlName="rntFile">
+            <h3>Drag and drop files here</h3>
+            <h3>or</h3>
+            <label for="fileDropRef" class="label">Browse files</label>
+          </div>
+          <p class="my-4"><strong>Note:</strong><span class="noteMsg"> Format allowed: CSV,XLSX ( Maximum Size Upto 10MB
+              )</span></p>
+          <div class="invalid-feedback"
+            *ngIf=" __upload.get('rntFile').invalid && ( __upload.get('rntFile').dirty ||  __upload.get('rntFile').touched)">
+            <span class="invalid-feedback" *ngIf=" __upload.get('rntFile').errors?.required">*Please
+              provide file</span>
+            <span class="invalid-feedback" *ngIf=" __upload.get('rntFile').errors?.inValidExt">*Please
+              provide valid file format</span>
+            <span class="invalid-feedback" *ngIf="__upload.get('rntFile').errors?.fileSizeValidator">*File size
+              must not exceed than
+              10MB.</span>
+          </div>
+          <span class="invalid-feedback" *ngIf=" __upload.get('rntFile').errors?.checkRequire">*Please provide
+            file</span>
+          <span class="invalid-feedback" *ngIf=" __upload.get('rntFile').errors?.checkExt">*Please provide valid
+            file format</span>
+          <span class="invalid-feedback" *ngIf="__upload.get('rntFile').errors?.checkSize">*File size must not
+            exceed than 10MB.</span>
+
+          <div class="files-list my-3" *ngIf="this.__upload.get('file').value">
+            <div class="single-file">
+              <div class="file-icon" style="width: 50px">
+                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 58 58"
+                  style="enable-background:new 0 0 58 58;" xml:space="preserve">
+                  <polygon style="fill:#EDEADA;" points="51.5,14 37.5,0 6.5,0 6.5,58 51.5,58 " />
+                  <g>
+                    <path style="fill:#CEC9AE;"
+                      d="M16.5,23h25c0.552,0,1-0.447,1-1s-0.448-1-1-1h-25c-0.552,0-1,0.447-1,1S15.948,23,16.5,23z" />
+                    <path style="fill:#CEC9AE;"
+                      d="M16.5,15h10c0.552,0,1-0.447,1-1s-0.448-1-1-1h-10c-0.552,0-1,0.447-1,1S15.948,15,16.5,15z" />
+                    <path style="fill:#CEC9AE;"
+                      d="M41.5,29h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,29,41.5,29z" />
+                    <path style="fill:#CEC9AE;"
+                      d="M41.5,37h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,37,41.5,37z" />
+                    <path style="fill:#CEC9AE;"
+                      d="M41.5,45h-25c-0.552,0-1,0.447-1,1s0.448,1,1,1h25c0.552,0,1-0.447,1-1S42.052,45,41.5,45z" />
+                  </g>
+                  <polygon style="fill:#CEC9AE;" points="37.5,0 37.5,14 51.5,14 " />
+                </svg>
+              </div>
+              <div class="info">
+                <h4 class="name">
+                  {{ this.__upload.get('file').value?.name}}
+                </h4>
+                <p class="size">
+                  {{ formatBytes(this.__upload.get('file').value?.size) }}
+                </p>
+              </div>
+
+              <div class="delete" (click)="deleteFiles()">
+                <mat-icon>
+                  delete_forever
+                </mat-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer float-right">
+    <button class="btn addBtn" [attr.form]="'rnt_upload'" [disabled]="this.__upload.invalid">Upload</button>
+
+  </div>
+</div>
+<table mat-table hidden [dataSource]="dataSource" matTableExporter class="mat-elevation-z8"
+  #exporter="matTableExporter">
+  <ng-container *ngFor="let disCol of columns let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
+    <th mat-header-cell *matHeaderCellDef>
+      <span>{{ disCol.header }}</span>
+    </th>
+
+    <td mat-cell *matCellDef="let element">
+      <span>
+        {{ disCol.cell(element) }}
+      </span>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<table mat-table hidden [dataSource]="CatMst" matTableExporter #exporter1="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+  <ng-container matColumnDef="cat_name">
+    <th mat-header-cell *matHeaderCellDef>Category</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.cat_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__colcat"></tr>
+  <tr mat-row *matRowDef="let row; columns: __colcat;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="2">No data found</td>
+  </tr>
+</table>
+
+<table mat-table hidden [dataSource]="amcMaster" matTableExporter #exporter2="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="amc_short_name">
+    <th mat-header-cell *matHeaderCellDef>AMC Short Name</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.amc_short_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__colAmc"></tr>
+  <tr mat-row *matRowDef="let row; columns: __colAmc;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="2">No data found</td>
+  </tr>
+</table>
+
+
+<table mat-table hidden [dataSource]="subcatMaster" matTableExporter #exporter3="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+  <ng-container matColumnDef="cat_name">
+    <th mat-header-cell *matHeaderCellDef>Category</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.cat_name}}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="subcat_name">
+    <th mat-header-cell *matHeaderCellDef>Sub Category
+    <th>
+    <td mat-cell *matCellDef="let element">
+      {{element.subcategory_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__colsubCate"></tr>
+  <tr mat-row *matRowDef="let row; columns: __colsubCate;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="3">No data found</td>
+  </tr>
+</table>
+
+
+
+<mat-table hidden class="mat-elevation-z8" [dataSource]="tableData_forcomp_type" matTableExporter
+  #export_comp_type="matTableExporter">
+  <ng-container *ngFor="let disCol of tableColumns_forcomp_type let colIndex = index;"
+    matColumnDef="{{disCol.columnDef}}">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ disCol.header }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <span>
+        {{ disCol.cell(element) }}
+      </span>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns__forcomp_type"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns__forcomp_type;"></tr>
+</mat-table>
+<mat-table hidden class="mat-elevation-z8" [dataSource]="tableData_forcomp" matTableExporter
+  #export_comp="matTableExporter">
+  <ng-container *ngFor="let disCol of tableColumns_forcomp let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ disCol.header }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <span>
+        {{ disCol.cell(element) }}
+      </span>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns_forComp"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns_forComp;"></tr>
+</mat-table>

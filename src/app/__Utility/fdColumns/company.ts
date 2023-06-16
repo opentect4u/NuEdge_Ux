@@ -54,7 +54,7 @@ export class fdcmpMstClm {
     { id: 'comp_type', text: 'Company Type' },
     { id: 'comp_full_name', text: 'Company Full name' },
     { id: 'comp_short_name', text: 'Company Short Name' },
-    { id: 'website', text: 'Web Site' },
+    { id: 'website', text: 'Website' },
     { id: 'cus_care_whatsApp_no', text: 'Customer Care WhatsApp Number' },
     { id: 'cus_care_no', text: 'Customer Care Number' },
     { id: 'cus_care_email', text: 'Customer Care Email' },

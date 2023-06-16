@@ -1,0 +1,715 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title">
+    <h2>{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+
+  <mat-dialog-content>
+
+
+
+    <form [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm_{{data.id}}" autocomplete="off"
+      ngNativeValidate>
+      <div class="row" *ngIf="this.data.cl_type != 'M' && this.data.cl_type != 'N'">
+        <div class="col-sm-12 my-2">
+          <label for="panNo">PAN <span class="text-danger">*</span></label>
+          <input type="text" name="pan" id="panNo" class="form-control" placeholder="eg. XXXXX1234X"
+            formControlName="pan" minlength="10" maxlength="10" (change)="checkPanExistornot($event)">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('pan').invalid && (__clientForm.get('pan').dirty || __clientForm.get('pan').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).errors?.required">*Please provide PAN
+              number</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).errors?.pattern">*Please provide valid PAN
+              number</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).hasError('minlength')">*PAN
+              number must be 10 characters long</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).hasError('maxlength')">*PAN
+              number must be 10 characters long</span>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="((this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'P' || this.data.cl_type == 'M' || this.data.cl_type == 'N')">
+        <div class="row" >
+          <div class="col-sm-12">
+            <label for="cl_type">Client Type <span class="text-danger">*</span></label>
+            <select class="form-control" formControlName="client_type">
+               <option value="">Select Client type</option>
+               <option [value]="type.id" *ngFor="let type of __clTypeMst">
+                {{type.id}}. {{type.type_name}}
+              </option>
+            </select>
+            <div class="invalid-feedback"
+              *ngIf="__clientForm.get('client_type').invalid && (__clientForm.get('client_type').dirty || __clientForm.get('client_type').touched)">
+              <span class="invalid-feedback" *ngIf="(__clientForm.get('client_type')).errors?.required">*Please provide
+               client type</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div class="row">
+        <div class="col-sm-12 my-2">
+          <label for="clientName">
+            {{__clientForm.get('client_type').value == 7 ? 'Proprietorship Name'
+            : (__clientForm.get('client_type').value == 8 ? ' HUF Name' :
+            (__clientForm.get('client_type').value == 14 ? 'Firm Name' :
+            ((__clientForm.get('client_type').value == 10
+            || __clientForm.get('client_type').value == 11
+            || __clientForm.get('client_type').value == 12
+            || __clientForm.get('client_type').value == 13
+            || __clientForm.get('client_type').value == 15
+            || __clientForm.get('client_type').value == 16
+            || __clientForm.get('client_type').value == 17
+            || __clientForm.get('client_type').value == 18
+            || __clientForm.get('client_type').value == 9
+            || __clientForm.get('client_type').value == 23
+            || __clientForm.get('client_type').value == 21
+            || __clientForm.get('client_type').value == 22
+            || __clientForm.get('client_type').value == 24
+            || __clientForm.get('client_type').value == 25
+            || __clientForm.get('client_type').value == 26
+            || __clientForm.get('client_type').value == 28
+            || __clientForm.get('client_type').value == 20
+            || __clientForm.get('client_type').value == 29
+            || __clientForm.get('client_type').value == 27
+            || __clientForm.get('client_type').value == 19) ? 'Establishment' : 'Client Name')
+            ))}}
+
+            <span class="text-danger">*</span></label>
+          <input type="text" name="client_name" id="clientName" class="form-control"
+          placeholder="Enter{{__clientForm.get('client_type').value == 7 ? ' Proprietorship ':(__clientForm.get('client_type').value == 8 ? ' HUF ':(__clientForm.get('client_type').value == 14 ? ' Firm ' : ((
+            __clientForm.get('client_type').value == 10
+            || __clientForm.get('client_type').value == 11
+            || __clientForm.get('client_type').value == 12
+            || __clientForm.get('client_type').value == 13
+            || __clientForm.get('client_type').value == 15
+            || __clientForm.get('client_type').value == 16
+            || __clientForm.get('client_type').value == 17
+            || __clientForm.get('client_type').value == 18
+            || __clientForm.get('client_type').value == 9
+            || __clientForm.get('client_type').value == 23
+            || __clientForm.get('client_type').value == 21
+            || __clientForm.get('client_type').value == 22
+            || __clientForm.get('client_type').value == 24
+            || __clientForm.get('client_type').value == 25
+            || __clientForm.get('client_type').value == 26
+            || __clientForm.get('client_type').value == 28
+            || __clientForm.get('client_type').value == 20
+            || __clientForm.get('client_type').value == 29
+            || __clientForm.get('client_type').value == 27
+            || __clientForm.get('client_type').value == 19) ? ' Establishment ' : ' Client ')))}}Name"
+            formControlName="client_name">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('client_name').invalid && (__clientForm.get('client_name').dirty || __clientForm.get('client_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('client_name')).errors?.required">*Please provide
+              {{__clientForm.get('client_type').value == 7 ? ' proprietorship '
+              : (__clientForm.get('client_type').value == 8 ? ' HUF '
+              : (__clientForm.get('client_type').value == 14 ? 'firm ' :
+              ((__clientForm.get('client_type').value == 10
+              || __clientForm.get('client_type').value == 11
+              || __clientForm.get('client_type').value == 12
+              || __clientForm.get('client_type').value == 13
+              || __clientForm.get('client_type').value == 15
+              || __clientForm.get('client_type').value == 16
+              || __clientForm.get('client_type').value == 17
+              || __clientForm.get('client_type').value == 18
+              || __clientForm.get('client_type').value == 9
+              || __clientForm.get('client_type').value == 23
+              || __clientForm.get('client_type').value == 21
+              || __clientForm.get('client_type').value == 22
+              || __clientForm.get('client_type').value == 24
+              || __clientForm.get('client_type').value == 25
+              || __clientForm.get('client_type').value == 26
+              || __clientForm.get('client_type').value == 28
+              || __clientForm.get('client_type').value == 20
+              || __clientForm.get('client_type').value == 29
+              || __clientForm.get('client_type').value == 27
+              || __clientForm.get('client_type').value == 19) ? ' establishment ' : ' client ')
+              ))}} name</span>
+          </div>
+        </div>
+
+        <!-- If Client Type Pertnership Firm (14)-->
+         <ng-container *ngIf="__clientForm.get('client_type').value == 14">
+             <div class="col-sm-12 my-2">
+              <table>
+                <thead>
+                  <tr>
+                    <th colspan="6">
+                      <h4 class="text-center">
+                        Pertner Details
+                      </h4>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="pertnerColumn">Name</th>
+                    <th class="pertnerColumn">Date Of Birth</th>
+                    <th class="pertnerColumn">PAN</th>
+                    <th class="pertnerColumn">Mobile</th>
+                    <th class="pertnerColumn">Email</th>
+                    <th class="pertnerColumn">
+                      <button mat-icon-button type="button">
+                        <mat-icon (click)="addPertner()">add</mat-icon>
+                      </button>
+                    </th>
+
+                  </tr>
+                </thead>
+                <tbody formArrayName="pertner_dtls">
+                  <tr *ngFor="let item of pertner_dtls.controls; let i = index;">
+                  <ng-container [formGroupName]="i">
+                        <td class="pertnerColumn">
+                          <input type="text" class="form-control" placeholder="Enter Name" name="pertner_name{{i}}" id="name{{i}}" formControlName="name">
+                        </td>
+                        <td class="pertnerColumn">
+                          <input type="date" class="form-control"  name="pertner_dob{{i}}" id="dob{{i}}" formControlName="dob">
+                        </td>
+                        <td class="pertnerColumn">
+                          <input type="text" minlength="10" maxlength="10"  placeholder="Enter PAN"  class="form-control" name="pertner_pan{{i}}" id="pan{{i}}" formControlName="pan">
+                          <div class="invalid-feedback"
+                          *ngIf="pertner_dtls.controls[i].get('pan').invalid && (pertner_dtls.controls[i].get('pan').dirty || pertner_dtls.controls[i].get('pan').touched)">
+                          <span class="invalid-feedback" *ngIf="(pertner_dtls.controls[i].get('pan')).errors?.pattern">*Please provide valid PAN
+                            number</span>
+                          <span class="invalid-feedback" *ngIf="(pertner_dtls.controls[i].get('pan')).hasError('minlength')">*PAN
+                            number must be 10 characters long</span>
+                          <span class="invalid-feedback" *ngIf="(pertner_dtls.controls[i].get('pan')).hasError('maxlength')">*PAN
+                            number must be 10 characters long</span>
+                        </div>
+
+                        </td>
+                        <td class="pertnerColumn">
+                          <input type="text" (keypress)="preventNonumeric($event)" maxlength="10" minlength="10" placeholder="Enter Mobile"  class="form-control" name="pertner_mobile{{i}}" id="mobile{{i}}" formControlName="mobile">
+                          <div class="invalid-feedback"
+                          *ngIf="pertner_dtls.controls[i].get('mobile').invalid && (pertner_dtls.controls[i].get('mobile').dirty || pertner_dtls.controls[i].get('mobile').touched)">
+                          <span class="invalid-feedback" *ngIf="(pertner_dtls.controls[i].get('mobile')).hasError('minlength')">*mobile number
+                            must be 10 digits</span>
+                          <span class="invalid-feedback" *ngIf="(pertner_dtls.controls[i].get('mobile')).hasError('maxlength')">*mobile number
+                            must be 10 digits</span>
+                          <span class="invalid-feedback" *ngIf="(pertner_dtls.controls[i].get('mobile')).hasError('pattern')">*allow only
+                            digits</span>
+
+                        </div>
+
+                        </td>
+                        <td class="pertnerColumn">
+                          <input type="email" placeholder="Enter Email"  class="form-control" name="pertner_email{{i}}" id="email{{i}}" formControlName="email">
+                          <div class="invalid-feedback"
+                          *ngIf="pertner_dtls.controls[i].get('email').invalid && (pertner_dtls.controls[i].get('email').dirty || pertner_dtls.controls[i].get('email').touched)">
+                          <span class="invalid-feedback" *ngIf="(pertner_dtls.controls[i].get('email')).errors?.email">*Please provide valid
+                            email</span>
+                        </div>
+                        </td>
+                        <td  class="pertnerColumn">
+                          <button *ngIf="i > 0" mat-icon-button type="button" color="accent">
+                            <mat-icon (click)="deletePertner(i)">delete</mat-icon>
+                          </button>
+                        </td>
+                  </ng-container>
+                </tr>
+                </tbody>
+              </table>
+
+             </div>
+         </ng-container>
+         <!-- End -->
+
+        <!-- If Client Type Sole proprietor (7) -->
+        <ng-container *ngIf="__clientForm.get('client_type').value == 7">
+          <div class="col-sm-12 my-2" >
+            <label for="proprietor_name">
+              Proprietor Name
+              <span class="text-danger">*</span></label>
+            <input type="text" name="proprietor_name" id="proprietor_name" class="form-control" placeholder="Enter Proprietor Name"
+              formControlName="proprietor_name">
+            <div class="invalid-feedback"
+              *ngIf="__clientForm.get('proprietor_name').invalid && (__clientForm.get('proprietor_name').dirty || __clientForm.get('proprietor_name').touched)">
+              <span class="invalid-feedback" *ngIf="(__clientForm.get('proprietor_name')).errors?.required">*Please provide
+                proprietor name</span>
+            </div>
+          </div>
+        </ng-container >
+        <!-- End -->
+
+        <!--  -->
+        <ng-container  *ngIf="__clientForm.get('client_type').value == 7
+        ||__clientForm.get('client_type').value == 10
+        || __clientForm.get('client_type').value == 11
+        || __clientForm.get('client_type').value == 12
+        || __clientForm.get('client_type').value == 13
+        || __clientForm.get('client_type').value == 15
+        || __clientForm.get('client_type').value == 16
+        || __clientForm.get('client_type').value == 17
+        || __clientForm.get('client_type').value == 18
+        || __clientForm.get('client_type').value == 9
+        || __clientForm.get('client_type').value == 23
+        || __clientForm.get('client_type').value == 21
+        || __clientForm.get('client_type').value == 22
+        || __clientForm.get('client_type').value == 24
+        || __clientForm.get('client_type').value == 25
+        || __clientForm.get('client_type').value == 26
+        || __clientForm.get('client_type').value == 28
+        || __clientForm.get('client_type').value == 20
+        || __clientForm.get('client_type').value == 29
+        || __clientForm.get('client_type').value == 27
+        || __clientForm.get('client_type').value == 19">
+          <div class="col-sm-12 my-2" >
+            <label for="date_of_incorporation">
+              Date Of Incorporation
+              <span class="text-danger">*</span></label>
+            <input type="date" name="date_of_incorporation" id="date_of_incorporation" class="form-control"
+              formControlName="date_of_incorporation">
+            <div class="invalid-feedback"
+              *ngIf="__clientForm.get('date_of_incorporation').invalid && (__clientForm.get('date_of_incorporation').dirty || __clientForm.get('date_of_incorporation').touched)">
+              <span class="invalid-feedback" *ngIf="(__clientForm.get('date_of_incorporation')).errors?.required">*Please provide
+               date of incorporation</span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="__clientForm.get('client_type').value == 10
+        || __clientForm.get('client_type').value == 11
+        || __clientForm.get('client_type').value == 12
+        || __clientForm.get('client_type').value == 13
+        || __clientForm.get('client_type').value == 15
+        || __clientForm.get('client_type').value == 16
+        || __clientForm.get('client_type').value == 17
+        || __clientForm.get('client_type').value == 18
+        || __clientForm.get('client_type').value == 9
+        || __clientForm.get('client_type').value == 23
+        || __clientForm.get('client_type').value == 21
+        || __clientForm.get('client_type').value == 22
+        || __clientForm.get('client_type').value == 24
+        || __clientForm.get('client_type').value == 25
+        || __clientForm.get('client_type').value == 26
+        || __clientForm.get('client_type').value == 28
+        || __clientForm.get('client_type').value == 20
+        || __clientForm.get('client_type').value == 29
+        || __clientForm.get('client_type').value == 27
+        || __clientForm.get('client_type').value == 19
+        ">
+          <div class="col-sm-12 my-2" >
+            <label for="identification_number">
+              Identification Number
+              <span class="text-danger">*</span></label>
+            <input type="text" name="identification_number" placeholder="Enter Identification Number" id="identification_number" class="form-control"
+              formControlName="identification_number">
+            <div class="invalid-feedback"
+              *ngIf="__clientForm.get('identification_number').invalid && (__clientForm.get('identification_number').dirty || __clientForm.get('identification_number').touched)">
+              <span class="invalid-feedback" *ngIf="(__clientForm.get('identification_number')).errors?.required">*Please provide
+               identification number</span>
+            </div>
+          </div>
+
+        </ng-container>
+
+        <!-- If Client Type HUF (8) -->
+        <ng-container *ngIf="__clientForm.get('client_type').value == 8">
+          <div class="col-sm-12 my-2">
+            <label for="kartaName">Karta Name
+              <span class="text-danger">*</span></label>
+            <input type="text" name="karta_name" id="kartaName" class="form-control" placeholder="Enter Karta Name"
+              formControlName="karta_name">
+            <div class="invalid-feedback"
+              *ngIf="__clientForm.get('karta_name').invalid && (__clientForm.get('karta_name').dirty || __clientForm.get('karta_name').touched)">
+              <span class="invalid-feedback" *ngIf="(__clientForm.get('karta_name')).errors?.required">*Please provide
+               karta name</span>
+            </div>
+          </div>
+          <div class="col-sm-12 my-2">
+            <label for="inc_date">Incorporation Date
+              <span class="text-danger">*</span></label>
+            <input type="date" name="inc_date" id="inc_date" class="form-control"
+              formControlName="inc_date">
+            <div class="invalid-feedback"
+              *ngIf="__clientForm.get('inc_date').invalid && (__clientForm.get('inc_date').dirty || __clientForm.get('inc_date').touched)">
+              <span class="invalid-feedback" *ngIf="(__clientForm.get('inc_date')).errors?.required">*Please provide
+               incorporation date</span>
+            </div>
+          </div>
+        </ng-container>
+        <!-- End -->
+
+        <ng-container *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+          <div class="col-sm-12 my-2"
+          *ngIf="__clientForm.get('client_type').value == 7
+          ||__clientForm.get('client_type').value == 2
+          ||__clientForm.get('client_type').value == 5
+          ||__clientForm.get('client_type').value == 6
+          || __clientForm.get('client_type').value == 8
+          || __clientForm.get('client_type').value == 1
+          || __clientForm.get('client_type').value == 3
+          || __clientForm.get('client_type').value == 4
+          || __clientForm.get('client_type').value == 14
+
+          ">
+          <label for="dob">
+            {{__clientForm.get('client_type').value == 14 ? 'Date Of Incorporation ' : 'Date Of Birth '}}
+            {{__clientForm.get('client_type').value == 7 ? ' Of Proprietor'
+            : (__clientForm.get('client_type').value == 8 ? ' Of Karta' : '')}}
+            <span class="text-danger">*</span></label>
+          <input type="date" name="dob" id="dob" class="form-control" [max]="__maxDt" formControlName="dob">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('dob').invalid && (__clientForm.get('dob').dirty || __clientForm.get('dob').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('dob')).errors?.required">*Please provide date of
+              {{__clientForm.get('client_type').value == 14 ? 'incorporation' : 'birth'}}</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-auto"
+        *ngIf="__clientForm.get('client_type').value == 7
+        ||__clientForm.get('client_type').value == 2
+        ||__clientForm.get('client_type').value == 5
+        ||__clientForm.get('client_type').value == 6
+        || __clientForm.get('client_type').value == 8
+        || __clientForm.get('client_type').value == 1
+        || __clientForm.get('client_type').value == 3
+        || __clientForm.get('client_type').value == 4">
+          <mat-checkbox formControlName="same_as_above" color="primary">Same As Above</mat-checkbox>
+        </div>
+
+        <div class="col-sm-12 my-2"
+        *ngIf="__clientForm.get('client_type').value == 7
+        ||__clientForm.get('client_type').value == 2
+        ||__clientForm.get('client_type').value == 5
+        ||__clientForm.get('client_type').value == 6
+        || __clientForm.get('client_type').value == 8
+        || __clientForm.get('client_type').value == 1
+        || __clientForm.get('client_type').value == 3
+        || __clientForm.get('client_type').value == 4" >
+          <label for="dob_actual">Actual Date Of Birth</label>
+          <input type="date" name="dob_actual" id="dob_actual" class="form-control" [max]="__maxDt"
+            formControlName="dob_actual">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('dob_actual').invalid && (__clientForm.get('dob_actual').dirty || __clientForm.get('dob_actual').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('dob_actual')).errors?.required">*Please provide
+              actual date of birth</span>
+          </div>
+        </div>
+        </ng-container>
+
+        <ng-container *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'N'||this.data.cl_type == 'P' ">
+          <div class="col-sm-12" *ngIf="__clientForm.get('client_type').value == 1
+        || __clientForm.get('client_type').value == 3
+        || __clientForm.get('client_type').value == 30
+        || __clientForm.get('client_type').value == 4">
+          <label for="mar_status">Marital Status <span class="text-danger">*</span></label>
+          <select name="mar_status" id="mar_status" class="form-control" formControlName="mar_status">
+            <option value="">Select</option>
+            <option [value]="status.id" *ngFor="let status of MaritialStatus">{{status.status}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('mar_status').invalid && (__clientForm.get('mar_status').dirty || __clientForm.get('mar_status').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('mar_status')).errors?.required">*Please provide
+              marital status</span>
+          </div>
+        </div>
+          <div class="col-sm-12 my-2"
+          *ngIf="
+           __clientForm.get('client_type').value == 7
+          || __clientForm.get('client_type').value == 8
+          || ((__clientForm.get('client_type').value == 1
+          ||__clientForm.get('client_type').value == 30
+          || __clientForm.get('client_type').value == 3
+          || __clientForm.get('client_type').value == 4)
+          && __clientForm.get('mar_status').value == 'M')" >
+            <label for="anniversary_date">
+              Anniversary Date {{__clientForm.get('client_type').value == 7 ? ' Of Proprietor '
+              : (__clientForm.get('client_type').value == 8 ? 'Of Karta' : '')}}
+            </label>
+            <input type="date" name="anniversary_date" id="anniversary_date" class="form-control" [max]="__maxDt"
+              formControlName="anniversary_date">
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="row" *ngIf="this.data.cl_type == 'M'">
+        <div class="col-sm-12 my-2">
+          <label for="gur_pan">Gurdians PAN <span class="text-danger">*</span></label>
+          <input type="text" name="gur_pan" id="gur_pan" class="form-control" placeholder="eg. XXXXX1234X"
+            formControlName="gurdians_pan" minlength="10" maxlength="10">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('gurdians_pan').invalid && (__clientForm.get('gurdians_pan').dirty || __clientForm.get('gurdians_pan').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).errors?.required">*Please provide
+              PAN number</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).errors?.pattern">*Please provide
+              valid PAN
+              number</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).hasError('minlength')">*PAN
+              number must be 10 characters long</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).hasError('maxlength')">*PAN
+              number must be 10 characters long</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="gur_name">Gurdians Name <span class="text-danger">*</span></label>
+          <input type="text" name="gur_name" id="gur_name" class="form-control" placeholder="Enter Gurdians Name"
+            formControlName="gurdians_name">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('gurdians_name').invalid && (__clientForm.get('gurdians_name').dirty || __clientForm.get('gurdians_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_name')).errors?.required">*Please provide
+              gurdians name</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="relations">
+            {{this.data.cl_type =='M' ? 'Relationship With Minor' : 'Relationship'}}
+            <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="relations">
+            <option value="">Select {{this.data.cl_type =='M' ? ' Relationship With Minor' : ' Relationship'}}</option>
+            <option [value]="rel.id" *ngFor="let rel of __relation">{{rel.relation}}</option>
+          </select>
+          <!-- <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea> -->
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('relations').invalid && (__clientForm.get('relations').dirty || __clientForm.get('relations').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('relations')).errors?.required">*Please provide
+              {{this.data.cl_type =='M' ? 'relationship with minor' : 'relationship'}}</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row"
+        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <div class="col-sm-12 my-2">
+          <label for="mblNumber">Mobile Number <span class="text-danger">*</span></label>
+          <input (keypress)="preventNonumeric($event)" maxlength="10" minlength="10" type="text" name="mobile"
+            id="mblNumber" class="form-control" placeholder="Enter Mobile Number" formControlName="mobile">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('mobile').invalid && (__clientForm.get('mobile').dirty || __clientForm.get('mobile').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).errors?.required">*Please provide mobile
+              number</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('maxlength')">*mobile number
+              must be 10 digits</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('mobile')).hasError('pattern')">*allow only
+              digits</span>
+
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="sec_mobile">Alternative Mobile Number</label>
+          <input maxlength="10" minlength="10" type="text" (keypress)="preventNonumeric($event)" name="sec_mobile"
+            id="sec_mobile" placeholder="Enter Alternative Mobile Number" class="form-control"
+            formControlName="sec_mobile">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('minlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('maxlength')">*mobile number
+            must be 10 digits</span>
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('pattern')">*allow only
+            digits</span>
+
+        </div>
+      </div>
+      <div class="row"
+        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <div class="col-sm-12 my-2">
+          <label for="email">Email <span class="text-danger">*</span></label>
+          <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email"
+            formControlName="email">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('email').invalid && (__clientForm.get('email').dirty || __clientForm.get('email').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('email')).errors?.required">*Please provide
+              email</span>
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('email')).errors?.email">*Please provide valid
+              email</span>
+
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="sec_email">Alternative Email</label>
+          <input type="text" name="sec_email" id="sec_email" class="form-control" placeholder="Enter Alternative Email"
+            formControlName="sec_email">
+          <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_email')).errors?.email">*Please provide valid
+            email</span>
+
+        </div>
+      </div>
+      <div class="row"
+        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <div class="col-sm-12 my-2">
+          <label for="addr">Address Line 1 <span class="text-danger">*</span></label>
+          <input placeholder="Enter Address 1" type="text" name="add_line_1" id="addr" class="form-control"
+            formControlName="add_line_1">
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('add_line_1').invalid && (__clientForm.get('add_line_1').dirty || __clientForm.get('add_line_1').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('add_line_1')).errors?.required">*Please provide
+              address line 1</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="addr2">Address Line 2</label>
+          <input type="text" placeholder="Enter Address 2" name="add_line_2" id="addr2" class="form-control"
+            formControlName="add_line_2">
+        </div>
+      </div>
+       <div class="row"  *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <div class="col-sm-12">
+            <label for="country">Country <span class="text-danger">*</span></label>
+            <select
+            class="form-control"
+            formControlName="country"
+            name="country" id="country">
+            <option value="">Select</option>
+            <option  [value]="country.id" *ngFor="let country of countryMst">{{country.name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('country').invalid && (__clientForm.get('country').dirty || __clientForm.get('country').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('country')).errors?.required">
+              *Please provide country</span>
+          </div>
+        </div>
+       </div>
+      <div class="row"
+        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <div class="col-sm-12 my-2">
+          <label for="__state">State <span class="text-danger">*</span></label>
+          <select name="state" id="__state" class="form-control" formControlName="state">
+            <option value="">Select State</option>
+            <option *ngFor="let __states of __stateMaster" value="{{__states.id}}">{{__states.name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('state').invalid && (__clientForm.get('state').dirty || __clientForm.get('state').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('state')).errors?.required">*Please provide
+              state</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="_dist">District <span class="text-danger">*</span></label>
+          <select name="_dist" id="_dist" class="form-control" formControlName="dist">
+            <option value="">Select District</option>
+            <option *ngFor="let __dist of __district" value="{{__dist.id}}">{{__dist.name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('dist').invalid && (__clientForm.get('dist').dirty || __clientForm.get('dist').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('dist')).errors?.required">*Please provide
+              district</span>
+          </div>
+        </div>
+      </div>
+      <div class="row"
+        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <div class="col-sm-12 my-2">
+          <label for="__city">City / Village <span class="text-danger">*</span></label>
+          <select name="__city" id="__city" class="form-control" formControlName="city">
+            <option value="">Select City</option>
+            <option *ngFor="let city of __city" value="{{city.id}}">{{city.name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('city').invalid && (__clientForm.get('city').dirty || __clientForm.get('city').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('city')).errors?.required">*Please provide city or
+              village</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="__pin">Pincode</label>
+            <select name="__pin" id="pin" class="form-control" formControlName="pincode">
+              <option value="">Select</option>
+              <option [value]="pincode.id" *ngFor="let pincode of pincodeMst">{{pincode.pincode}}</option>
+            </select>
+          <div class="invalid-feedback"
+            *ngIf="__clientForm.get('pincode').invalid && (__clientForm.get('pincode').dirty || __clientForm.get('pincode').touched)">
+            <span class="invalid-feedback" *ngIf="(__clientForm.get('pincode')).errors?.required">*Please provide
+              pincode</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"
+        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <span>Upload Documents</span>
+        <hr class="line" />
+      </div>
+      <table class="my-2"
+        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <thead>
+          <tr>
+            <th>
+              Document type
+            </th>
+            <th>
+              Document
+              <p class="my-1"><label>Allowed format : </label><small> Pdf</small></p>
+              <p class="m-0"><label>File Size:</label> <small> 10MB (max)</small></p>
+            </th>
+            <th>
+              Document View
+            </th>
+            <th>
+              <button mat-icon-button type="button">
+                <mat-icon (click)="addItem()">add</mat-icon>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody formArrayName="doc_dtls">
+          <tr *ngFor="let item of __docs.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td class="rowWidth">
+                <select name="_doc_type" id="_doc_type" formControlName="doc_type_id" class="form-control">
+                  <option value="">Select document type</option>
+                  <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}
+                  </option>
+                </select>
+
+                <div class="invalid-feedback"
+                  *ngIf=" __docs.controls[i].get('doc_type_id').invalid && ( __docs.controls[i].get('doc_type_id').dirty ||  __docs.controls[i].get('doc_type_id').touched)">
+                  <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_type_id').errors?.required">*Please
+                    provide document type</span>
+                </div>
+              </td>
+              <td class="rowWidth">
+                <input type="file" accept=".pdf" name="docFile" id="docFile" class="form-control"
+                  formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)">
+                <!-- <input type="file" accept=".jpg,.jpeg,.png" name="docFile" id="docFile" class="form-control"
+                  formControlName="doc_name" (change)="getFiles($event,i,__docs.controls[i].get('doc_type_id')?.value)"> -->
+                <div class="invalid-feedback"
+                  *ngIf=" __docs.controls[i].get('doc_name').invalid && ( __docs.controls[i].get('doc_name').dirty ||  __docs.controls[i].get('doc_name').touched)">
+                  <span class="invalid-feedback" *ngIf=" __docs.controls[i].get('doc_name').errors?.required">*Please
+                    provide file</span>
+                  <span class="invalid-feedback" *ngIf="__docs.controls[i].get('doc_name').errors?.inValidExt">*Invalid
+                    file extension.</span>
+                  <span class="invalid-feedback"
+                    *ngIf="__docs.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
+                    10MB.</span>
+                </div>
+
+              </td>
+              <td class="rowWidth">
+                <a [href]="__docs.controls[i].get('file_preview')?.value" target="__blank"
+                *ngIf="__docs.controls[i].get('file_preview')?.value">
+                  <img src="../../../../../../assets/images/pdf.png"  alt="preview Image">
+                </a>
+                <!-- <img [src]="__noImg" *ngIf="!__docs.controls[i].get('file_preview')?.value"> -->
+              </td>
+              <td>
+                <ng-container *ngIf="__docs.controls[i].get('id')?.value == 0">
+                  <button mat-icon-button type="button" *ngIf="i > 0">
+                    <mat-icon class="delete_icon" (click)="removeDocument(i)">delete</mat-icon>
+                  </button>
+                </ng-container>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn" [attr.form]="'__clientForm_'+data.id" [disabled]="__clientForm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+</div>

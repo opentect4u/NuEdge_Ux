@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Acknowledgement Entry",
+    "id": 1,
+    "icon": "fa fa-user-o",
+    "flag": "A"
+  },
+  {
+    "title": "Reports",
+    "id": 2,
+    "icon": "fa fa-user-o",
+    "flag": "R"
+  }
+]

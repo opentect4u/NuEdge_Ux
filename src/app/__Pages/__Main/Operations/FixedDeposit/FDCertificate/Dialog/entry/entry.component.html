@@ -113,7 +113,7 @@
                   id="file"
                   class="form-control"
                   formControlName="file">
-                  <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+                  <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
                  </div>
                  <ng-container *ngIf="data.data.cert_delivery_flag == 'B' || data.data.cert_delivery_flag == 'C'">
                   <div class="col-sm-4 my-2" >
@@ -155,7 +155,7 @@
                 id="ack_file"
                 class="form-control"
                 formControlName="ack_file">
-                <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+                <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
               </div>
               <ng-container *ngIf="data.data.cert_delivery_flag == 'C'">
                 <div class="col-sm-4 my-2">
@@ -215,7 +215,7 @@
                  id="file"
                  class="form-control"
                  formControlName="file">
-                <mat-hint><label>Allowed format: PDF (size upto 2MB)</label></mat-hint>
+                <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
                 </div>
                 <div class="col-sm-4 my-2" *ngIf="data.data.cert_delivery_flag != 'P'">
                   <label  for="">POD Scan</label>

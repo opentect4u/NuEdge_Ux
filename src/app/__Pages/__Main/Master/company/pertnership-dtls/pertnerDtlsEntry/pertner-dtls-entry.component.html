@@ -1,0 +1,196 @@
+<form [formGroup]="pertnershipDtls" (ngSubmit)="submitPertnershipDtls()" autocomplete="off">
+  <!-- <div class="row">
+    <div class="col-sm-3">
+      <label for="pertner_id">Pertnership Details</label>
+      <select name="pertner_id" id="pertner_id" formControlName="id" class="form-control">
+        <option [value]="0">Select</option>
+        <option [value]="pertner.id" *ngFor="let pertner of pertnershipMstDtls">{{pertner.name}}</option>
+      </select>
+    </div>
+  </div> -->
+  <div class="row">
+    <div class="col-sm-3">
+      <label for="cm_profile_id">Comapny <span class="text-danger">*</span></label>
+      <select
+      name="cm_profile_id"
+      id="cm_profile_id"
+      class="form-control"
+      formControlName="cm_profile_id">
+      <option value="">Select</option>
+      <option value="{{cmpdtls.id}}"
+      [hidden]="cmpdtls.type_of_comp != 3"
+      *ngFor="let cmpdtls of cmpDtlsMst">{{cmpdtls.name}}
+      </option>
+      </select>
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get('cm_profile_id').invalid && (pertnershipDtls.get('cm_profile_id').dirty || pertnershipDtls.get('cm_profile_id').touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('cm_profile_id')).errors?.required">*Please provide company</span>
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="name">Pertner Name <span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Name" name="name" id="name" class="form-control " formControlName="name">
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get('name').invalid && (pertnershipDtls.get('name').dirty || pertnershipDtls.get('name').touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('name')).errors?.required">*Please provide pertner name</span>
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="dob">DOB <span class="text-danger">*</span></label>
+      <input type="date" name="dob" id="dob" class="form-control" formControlName="dob">
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get('dob').invalid && (pertnershipDtls.get('dob').dirty || pertnershipDtls.get('dob').touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('dob')).errors?.required">*Please provide date of birth</span>
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="pan">PAN <span class="text-danger">*</span></label>
+      <input type="text"   minlength="10" maxlength="10" placeholder="e.g AAAAA1234L" name="pan" id="pan" class="form-control" formControlName="pan">
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get('pan').invalid && (pertnershipDtls.get('pan').dirty || pertnershipDtls.get('pan').touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('pan')).errors?.required">*Please provide PAN
+        number</span>
+      <!-- <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('pan')).errors?.pattern">*Please provide valid PAN
+        number</span> -->
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('pan')).hasError('minlength')">*PAN
+        number must be 10 characters long</span>
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('pan')).hasError('maxlength')">*PAN
+        number must be 10 characters long</span>
+    </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3">
+      <label for="mob">Mobile <span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Mobile Number" name="mob" id="mob" class="form-control" formControlName="mob">
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get('mob').invalid && (pertnershipDtls.get('mob').dirty || pertnershipDtls.get('mob').touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('mob')).errors?.required">*Please provide mobile number</span>
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="email">Email <span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Email" name="email" id="email" class="form-control" formControlName="email">
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get('email').invalid && (pertnershipDtls.get('email').dirty || pertnershipDtls.get('email').touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('email')).errors?.required">*Please provide email</span>
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('email')).errors?.email">*Please provide valid email</span>
+    </div>
+    </div>
+
+    <div class="col-sm-3">
+      <label for="percentage">Percentage <span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Percentage" name="percentage" id="percentage" class="form-control" formControlName="percentage">
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get('percentage').invalid && (pertnershipDtls.get('percentage').dirty || pertnershipDtls.get('percentage').touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get('percentage')).errors?.required">*Please provide percentage</span>
+    </div>
+    </div>
+  </div>
+  <ng-container [formGroupName]="'address'">
+
+  <div class="row" >
+    <div class="col-sm-3">
+      <label for="add_1">Address-1 <span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Address" name="add_" id="add_1" class="form-control" formControlName="add_1">
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get(['address','add_1']).invalid && (pertnershipDtls.get(['address','add_1']).dirty || pertnershipDtls.get(['address','add_1']).touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get(['address','add_1'])).errors?.required">*Please provide address</span>
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="add_2">Address-2</label>
+      <input type="text" placeholder="Enter Address" name="add_" id="add_2" class="form-control" formControlName="add_2">
+    </div>
+    <div class="col-sm-3">
+        <common-core-dropdown
+        [label]="'Country'"
+        [flag]="'C'"
+        [id]="'country_id'"
+        [items]="country"
+        (getselectedItem)="getselectedItem($event)"
+        formControlName="country_id">
+      </common-core-dropdown>
+      <div class="invalid-feedback"
+      *ngIf="pertnershipDtls.get(['address','country_id']).invalid && (pertnershipDtls.get(['address','country_id']).dirty || pertnershipDtls.get(['address','country_id']).touched)">
+      <span class="invalid-feedback" *ngIf="(pertnershipDtls.get(['address','country_id'])).errors?.required">*Please provide country</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'State'"
+      [flag]="'S'"
+      [id]="'state_id'"
+      [items]="state"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="state_id">
+    </common-core-dropdown>
+    <div class="invalid-feedback"
+    *ngIf="pertnershipDtls.get(['address','state_id']).invalid && (pertnershipDtls.get(['address','state_id']).dirty || pertnershipDtls.get(['address','state_id']).touched)">
+    <span class="invalid-feedback" *ngIf="(pertnershipDtls.get(['address','state_id'])).errors?.required">*Please provide state</span>
+    </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'District'"
+      [id]="'dist_id'"
+      [flag]="'D'"
+      [items]="district"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="dist_id">
+    </common-core-dropdown>
+    <div class="invalid-feedback"
+    *ngIf="pertnershipDtls.get(['address','dist_id']).invalid && (pertnershipDtls.get(['address','dist_id']).dirty || pertnershipDtls.get(['address','dist_id']).touched)">
+    <span class="invalid-feedback" *ngIf="(pertnershipDtls.get(['address','dist_id'])).errors?.required">*Please provide district</span>
+    </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'City'"
+      [id]="'city_id'"
+      [flag]="'CY'"
+      [items]="city"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="city_id">
+    </common-core-dropdown>
+    <div class="invalid-feedback"
+  *ngIf="pertnershipDtls.get(['address','city_id']).invalid && (pertnershipDtls.get(['address','city_id']).dirty || pertnershipDtls.get(['address','city_id']).touched)">
+  <span class="invalid-feedback" *ngIf="(pertnershipDtls.get(['address','city_id'])).errors?.required">*Please provide city</span>
+  </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="pincode">Pincode<span class="text-danger">*</span></label>
+      <select name="pincode" id="pincode" class="form-control" formControlName="pincode">
+        <option value="">Select</option>
+        <option [value]="pincode.id" *ngFor="let pincode of pincodeMst">{{pincode.pincode}}</option>
+      </select>
+      <div class="invalid-feedback"
+    *ngIf="pertnershipDtls.get(['address','pincode']).invalid && (pertnershipDtls.get(['address','pincode']).dirty || pertnershipDtls.get(['address','pincode']).touched)">
+    <span class="invalid-feedback" *ngIf="(pertnershipDtls.get(['address','pincode'])).errors?.required">*Please provide pincode</span>
+    </div>
+    </div>
+    <div class="col-sm-3 d-flex justify-content-end align-items-end">
+      <p-button type="button"
+      label="Reset"
+      icon="pi pi-refresh"
+      iconPos="right"
+      class="float-right mx-3"
+      (click)="reset()"
+      styleClass="p-button-lg p-button-danger">
+      </p-button>
+      <p-button type="submit"
+      label="Save"
+      icon="pi pi-save"
+      iconPos="right"
+      class="float-right"
+      [disabled]="pertnershipDtls.invalid"
+      styleClass="p-button-lg p-button-primary">
+      </p-button>
+    </div>
+
+  </div>
+
+</ng-container>
+</form>

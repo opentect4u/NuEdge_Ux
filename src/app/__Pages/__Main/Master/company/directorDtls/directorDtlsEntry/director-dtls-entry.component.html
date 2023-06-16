@@ -1,0 +1,180 @@
+
+<form [formGroup]="directorDtlsFrm" (ngSubmit)="submitDirectorDetails()">
+  <div class="row">
+     <div class="col-sm-4">
+      <label for="comp_profile_id">Company <span class="text-danger">*</span></label>
+      <select name="comp_profile_id" id="comp_profile_id" class="form-control" formControlName="comp_profile_id">
+         <option value="">Select</option>
+         <option [hidden]="cmpdtls.type_of_comp == 4 || cmpdtls.type_of_comp == 3" value="{{cmpdtls.id}}" *ngFor="let cmpdtls of cmpDtlsMst">{{cmpdtls.name}}</option>
+      </select>
+     </div>
+    <div class="col-sm-4">
+      <label for="name">Director Name <span class="text-danger">*</span></label>
+      <input type="text" name="name" id="name" formControlName="name" placeholder="Enter Name" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get('name').invalid && (directorDtlsFrm.get('name').dirty || directorDtlsFrm.get('name').touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('name')).errors?.required">*Please provide name</span>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <label for="dob">DOB <span class="text-danger">*</span></label>
+      <input type="date"  name="dob" id="dob" formControlName="dob" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get('dob').invalid && (directorDtlsFrm.get('dob').dirty || directorDtlsFrm.get('dob').touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('dob')).errors?.required">*Please provide date of birth</span>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <label for="pan_no">PAN <span class="text-danger">*</span></label>
+      <input type="text"  placeholder="Enter PAN Number"  name="pan_no" id="pan_no" formControlName="pan_no" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get('pan_no').invalid && (directorDtlsFrm.get('pan_no').dirty || directorDtlsFrm.get('pan_no').touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('pan_no')).errors?.required">*Please provide PAN</span>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <label for="contact_no">Contact No <span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Contact Number" name="contact_no" id="contact_no" formControlName="contact_no" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get('contact_no').invalid && (directorDtlsFrm.get('contact_no').dirty || directorDtlsFrm.get('contact_no').touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('contact_no')).errors?.required">*Please provide contact number</span>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <label for="email">Email <span class="text-danger">*</span></label>
+      <input type="email" placeholder="Enter Email" name="email" id="email" formControlName="email" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get('email').invalid && (directorDtlsFrm.get('email').dirty || directorDtlsFrm.get('email').touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('email')).errors?.required">*Please provide email</span>
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('email')).errors?.email">*Please provide valid email</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <label for="din_no">DIN No <span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter DIN Number" name="din_no" id="din_no" formControlName="din_no" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get('din_no').invalid && (directorDtlsFrm.get('din_no').dirty || directorDtlsFrm.get('din_no').touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('din_no')).errors?.required">*Please provide DIN No</span>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <label for="valid_frm">Valid From <span class="text-danger">*</span></label>
+      <input type="date" formControlName="valid_frm" name="valid_frm" id="valid_frm" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get('valid_frm').invalid && (directorDtlsFrm.get('valid_frm').dirty || directorDtlsFrm.get('valid_frm').touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('valid_frm')).errors?.required">*Please provide valid from</span>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <label for="valid_to">Valid To <span class="text-danger">*</span></label>
+      <input type="date" formControlName="valid_to" name="valid_to" id="valid_to" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get('valid_to').invalid && (directorDtlsFrm.get('valid_to').dirty || directorDtlsFrm.get('valid_to').touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get('valid_to')).errors?.required">*Please provide valid to</span>
+      </div>
+    </div>
+  </div>
+   <ng-container  formGroupName="address">
+  <div class="row">
+    <div class="col-sm-3">
+      <label for="add_line1">Address-1<span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Address-1" name="add_line1" id="add_line1" formControlName="add_line1" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get(['address','add_line1']).invalid && (directorDtlsFrm.get(['address','add_line1']).dirty || directorDtlsFrm.get(['address','add_line1']).touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get(['address','add_line1'])).errors?.required">*Please provide address</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="add_line2">Address-2</label>
+      <input type="text" placeholder="Enter Address-2" name="add_line2" id="add_line2" formControlName="add_line2" class="form-control">
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get(['address','add_line2']).invalid && (directorDtlsFrm.get(['address','add_line2']).dirty || directorDtlsFrm.get(['address','add_line2']).touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get(['address','add_line2'])).errors?.required">*Please provide address</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'Country'"
+      [flag]="'C'"
+      [id]="'country_id'"
+      [items]="country"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="country_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get(['address','country_id']).invalid && (directorDtlsFrm.get(['address','country_id']).dirty || directorDtlsFrm.get(['address','country_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get(['address','country_id'])).errors?.required">*Please provide country</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'State'"
+      [flag]="'S'"
+      [id]="'state_id'"
+      [items]="state"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="state_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get(['address','state_id']).invalid && (directorDtlsFrm.get(['address','state_id']).dirty || directorDtlsFrm.get(['address','state_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get(['address','state_id'])).errors?.required">*Please provide state</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+
+    <div class="col-sm-3">
+      <common-core-dropdown
+        [label]="'District'"
+        [id]="'dist_id'"
+        [flag]="'D'"
+        [items]="district"
+        (getselectedItem)="getselectedItem($event)"
+        formControlName="dist_id">
+      </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get(['address','dist_id']).invalid && (directorDtlsFrm.get(['address','dist_id']).dirty || directorDtlsFrm.get(['address','dist_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get(['address','dist_id'])).errors?.required">*Please provide district</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'City'"
+      [id]="'city_id'"
+      [flag]="'CY'"
+      [items]="city"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="city_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get(['address','city_id']).invalid && (directorDtlsFrm.get(['address','city_id']).dirty || directorDtlsFrm.get(['address','city_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get(['address','city_id'])).errors?.required">*Please provide city</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="pincode">Pincode<span class="text-danger">*</span></label>
+      <select name="pincode" id="pincode" class="form-control" formControlName="pincode">
+        <option value="">Select</option>
+        <option [value]="pincode.id" *ngFor="let pincode of pincodeMst">{{pincode.pincode}}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="directorDtlsFrm.get(['address','pincode']).invalid && (directorDtlsFrm.get(['address','pincode']).dirty || directorDtlsFrm.get(['address','pincode']).touched)">
+        <span class="invalid-feedback" *ngIf="(directorDtlsFrm.get(['address','pincode'])).errors?.required">*Please provide pincode</span>
+      </div>
+    </div>
+    <div class="col-sm-3 d-flex align-items-end justify-content-end">
+      <!-- <button class="btn btn-danger mx-3"  type="button" (click)="reset()">Reset</button>
+
+      <button class="btn addBtn" [disabled]="directorDtlsFrm.invalid"  type="submit">Save</button> -->
+
+      <p-button type="button"
+      label="Reset"
+      icon="pi pi-refresh"
+      iconPos="right"
+      class="mx-3"
+      (click)="reset()"
+      styleClass="p-button-lg p-button-danger">
+      </p-button>
+      <p-button type="submit"
+      label="Save"
+      icon="pi pi-save"
+      iconPos="right"
+      [disabled]="directorDtlsFrm.invalid"
+      styleClass="p-button-lg p-button-primary">
+      </p-button>
+    </div>
+  </div>
+  </ng-container>
+</form>
+

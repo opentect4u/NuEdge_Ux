@@ -2,13 +2,13 @@
   <div class="col-sm-7 p-0">
     <div class="cardSec m-1">
       <div class="card_header">
-        <h3>{{this._clId > 0 ? 'Update' : 'Add'}} {{__cl_type == 'E' ? 'Existing' : __cl_type == 'M' ? 'Minor' : __cl_type == 'P'? 'Pan Holder' : 'Non-Pan Holder'}}</h3>
+        <h3>{{this._clId > 0 ? 'Update' : 'Add'}} {{__cl_type == 'E' ? 'Existing' : __cl_type == 'M' ? 'Minor' : __cl_type == 'P'? 'PAN Holder' : 'Non PAN Holder'}}</h3>
       </div>
       <div class="card_body" #scrollTobottom>
         <form  [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm" autocomplete="off" ngNativeValidate>
         <div class="row" *ngIf="__cl_type != 'M' && __cl_type != 'N'">
             <div class="col-sm-12 my-4">
-              <label for="panNo">Pan No <span class="text-danger">*</span></label>
+              <label for="panNo">PAN No <span class="text-danger">*</span></label>
               <input type="text" name="pan" id="panNo"
               class="form-control"
               placeholder="eg. XXXXX1234X"
@@ -16,12 +16,12 @@
               (change)="checkPanExistornot($event)"
               >
               <div class="invalid-feedback" *ngIf="__clientForm.get('pan').invalid && (__clientForm.get('pan').dirty || __clientForm.get('pan').touched)">
-                <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).errors?.required">*Please provide pan number</span>
-                <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).errors?.pattern">*Please provide valid pan
-                  Number</span>
-                  <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).hasError('minlength')">*pan
-                    Number Must Be 10 Characters Long</span>
-                    <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).hasError('maxlength')">*pan
+                <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).errors?.required">*Please provide PAN number</span>
+                <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).errors?.pattern">*Please provide valid PAN
+                  number</span>
+                  <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).hasError('minlength')">*PAN
+                    number Must Be 10 Characters Long</span>
+                    <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).hasError('maxlength')">*PAN
                       number must be 10 characters long</span>
               </div>
             </div>
@@ -51,15 +51,15 @@
 
           <div class="row" *ngIf="__cl_type == 'M'">
             <div class="col-sm-12 my-4">
-              <label for="gur_pan">Gurdians Pan <span class="text-danger">*</span></label>
+              <label for="gur_pan">Gurdians PAN <span class="text-danger">*</span></label>
               <input type="text" name="gur_pan" id="gur_pan" class="form-control" placeholder="eg. XXXXX1234X" formControlName="gurdians_pan" minlength="10" maxlength="10">
               <div class="invalid-feedback" *ngIf="__clientForm.get('gurdians_pan').invalid && (__clientForm.get('gurdians_pan').dirty || __clientForm.get('gurdians_pan').touched)">
-                <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).errors?.required">*Please provide pan number</span>
-                <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).errors?.pattern">*Please provide valid pan
-                  Number</span>
-                  <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).hasError('minlength')">*pan
-                    Number Must Be 10 Characters Long</span>
-                    <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).hasError('maxlength')">*pan
+                <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).errors?.required">*Please provide PAN number</span>
+                <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).errors?.pattern">*Please provide valid PAN
+                  number</span>
+                  <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).hasError('minlength')">*PAN
+                    number Must Be 10 Characters Long</span>
+                    <span class="invalid-feedback" *ngIf="(__clientForm.get('gurdians_pan')).hasError('maxlength')">*PAN
                       number must be 10 characters long</span>
               </div>
             </div>
@@ -74,7 +74,7 @@
               <label for="relations">Relations <span class="text-danger">*</span></label>
               <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea>
               <div class="invalid-feedback" *ngIf="__clientForm.get('relations').invalid && (__clientForm.get('relations').dirty || __clientForm.get('relations').touched)">
-                <span class="invalid-feedback" *ngIf="(__clientForm.get('relations')).errors?.required">*Please provide relations</span>
+                <span class="invalid-feedback" *ngIf="(__clientForm.get('relations')).errors?.required">*Please provide relationship</span>
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@
               </div>
             </div>
             <div class="col-sm-12 my-4">
-              <label for="sec_mobile">Alternative mobile number</label>
+              <label for="sec_mobile">Alternative Mobile Number</label>
               <input maxlength="10" minlength="10" type="text" (keypress)="preventNonumeric($event)"  name="sec_mobile" id="sec_mobile" placeholder="Enter Alternative Mobile Number" class="form-control" formControlName="sec_mobile">
               <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('minlength')">*mobile number must be 10 digits</span>
               <span class="invalid-feedback" *ngIf="(__clientForm.get('sec_mobile')).hasError('maxlength')">*mobile number must be 10 digits</span>
@@ -188,10 +188,10 @@
                 <th>
                   Document
                   <p class="my-1"><label>Allowed format : </label><small> JPG,PNG,JPEG</small></p>
-                  <p class="m-0"><label>File Size:</label> <small> 2MB (max)</small></p>
+                  <p class="m-0"><label>File Size:</label> <small> 10MB (max)</small></p>
                 </th>
                 <th>
-                  Thumbnail
+                  Document View
                 </th>
                 <th>
                   <button mat-icon-button type="button">
@@ -227,7 +227,7 @@
                         file extension.</span>
                       <span class="invalid-feedback"
                         *ngIf="__docs.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
-                        2MB.</span>
+                        10MB.</span>
                     </div>
 
                   </td>
@@ -244,7 +244,7 @@
                 </ng-container>
               </tr>
             </tbody>
-            <tfoot>
+            <!-- <tfoot>
               <tr>
                 <th>
                   Document type <span class="text-danger">*</span>
@@ -252,10 +252,10 @@
                 <th>
                   Document <span class="text-danger">*</span>
                   <p class="my-1"><label>Allowed format : </label><small> JPG,PNG,JPEG</small></p>
-                  <p class="m-0"><label>File Size:</label> <small> 2MB (max)</small></p>
+                  <p class="m-0"><label>File Size:</label> <small> 10MB (max)</small></p>
                 </th>
                 <th>
-                  Thumbnail
+                  Document View
                 </th>
                 <th>
                   <button mat-icon-button type="button">
@@ -263,7 +263,7 @@
                   </button>
                 </th>
               </tr>
-            </tfoot>
+            </tfoot> -->
           </table>
 
            <div class="row">

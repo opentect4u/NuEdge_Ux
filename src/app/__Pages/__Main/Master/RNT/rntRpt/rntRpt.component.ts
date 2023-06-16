@@ -1,5 +1,4 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
 import {
   Component,
   OnInit,
@@ -8,7 +7,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatOption } from '@angular/material/core';
 import {
   MatDialog,
   MatDialogConfig,
@@ -17,20 +15,20 @@ import {
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {
-  debounceTime,
-  distinctUntilChanged,
   map,
-  switchMap,
-  tap,
+  pluck
 } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { rnt } from 'src/app/__Model/Rnt';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { RntModificationComponent } from '../rntModification/rntModification.component';
+import { rntClmns } from 'src/app/__Utility/Master/rntClmns';
+import { sort } from 'src/app/__Model/sort';
+import { LazyLoadEvent } from 'primeng/api';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'Rnt-rntRpt',
@@ -38,172 +36,27 @@ import { RntModificationComponent } from '../rntModification/rntModification.com
   styleUrls: ['./rntRpt.component.css'],
 })
 export class RntrptComponent implements OnInit {
-  __l1_bg_color:string = '#8bb6c03d';
-  __l2_bg_color:string = '#28a74538';
-  __l3_bg_color:string = '#f4433642';
-  __l4_bg_color:string = '#8bb6c09c';
-  __l5_bg_color:string = '#8bb6c09c';
-  __l6_bg_color:string = '#8bb6c09c';
-
-
-
-  settings = {
-    singleSelection: false,
-    idField: 'id',
-    textField: 'text',
-    enableCheckAll: true,
-    selectAllText: 'Select All',
-    unSelectAllText: 'Deselect All',
-    allowSearchFilter: true,
-    limitSelection: -1,
-    clearSearchFilter: true,
-    maxHeight: 197,
-    itemsShowLimit: 3,
-    searchPlaceholderText: 'Search Columns',
-    noDataAvailablePlaceholderText: 'No recors found',
-    closeDropDownOnSelection: false,
-    showSelectedItemsAtTop: false,
-    defaultOpen: false,
-  };
-
+  url = environment.commonURL + 'rnt-logo/';
+  sort = new sort();
+  isOpenMegaMenu: boolean = false;
+  settingsforRNT = this.__utility.settingsfroMultiselectDropdown("id","rnt_name","Search R&T",4);
   __sortAscOrDsc: any= {active:'',direction:'asc'};
-  toppings = new FormControl();
-  toppingList: any = [
-    { id: 'edit', text: 'Edit' },
-    { id: 'delete', text: 'Delete' },
-    { id: 'sl_no', text: 'Sl No' },
-    { id: 'rnt_name', text: 'R&T Short name'},
-    { id: 'rnt_full_name', text: 'R&T Full Name'},
-    { id: 'website', text: 'Web Site' },
-    { id: 'cus_care_whatsApp_no', text: 'Customer Care WhatsApp Number' },
-    { id: 'cus_care_no', text: 'Customer Care Number' },
-    { id: 'cus_care_email', text: 'Customer Care Email' },
-    { id: 'distributor_care_email', text: 'Distributor Care Email' },
-    { id: 'distributor_care_no', text: 'Distributor Care Number' },
-    { id: 'head_ofc_contact_per', text: 'Head Office Contact Person' },
-    {id: 'head_contact_per_mobile',text: 'Head Office Contact Person Mobile',},
-    { id: 'head_contact_per_email', text: 'Head Office Contact Person Email' },
-    { id: 'head_ofc_addr', text: 'Head Office Contact Person Address' },
-    { id: 'local_ofc_contact_per', text: 'Local Office Contact Person' },
-    {
-      id: 'local_contact_per_mobile',
-      text: 'Local Office Contact Person Mobile',
-    },
-    {
-      id: 'local_contact_per_email',
-      text: 'Local Office Contact Person Email',
-    },
-    {
-      id: 'local_ofc_addr',
-      text: 'Local Office Contact Person Address',
-    },
-    { id: 'login_url', text: 'Login URL'},
-    { id: 'login_id', text: 'Login ID'},
-    { id: 'login_pass', text: 'Login Password'},
-    {id:'l1_name',text:'Level-1 Name'},
-    {id:'l1_email',text:'Level-1 Email'},
-    {id:'l1_contact_no',text:'Level-1 Contact Number'},
-    {id:'l2_name',text:'Level-2 Name'},
-    {id:'l2_email',text:'Level-2 email'},
-    {id:'l2_contact_no',text:'Level-2 Contact Number'},
-    {id:'l3_name',text:'Level-3 Name'},
-    {id:'l3_email',text:'Level-3 Email'},
-    {id:'l3_contact_no',text:'Level-3 Contact Number'},
-    {id:'l4_name',text:'Level-4 Name'},
-    {id:'l4_email',text:'Level-4 Email'},
-    {id:'l4_contact_no',text:'Level-4 Contact Number'},
-    {id:'l5_name',text:'Level-5 Name'},
-    {id:'l5_email',text:'Level-5 Email'},
-    {id:'l5_contact_no',text:'Level-5 Contact Number'},
-    {id:'l6_name',text:'Level-6 Name'},
-    {id:'l6_email',text:'Level-6 Email'},
-    {id:'l6_contact_no',text:'Level-6 Contact Number'},
-  ];
-
+  columnsMst = rntClmns.DETAILS;
+  SelectedClms: any=[];
   __isrntspinner: boolean = false;
-  __rntMst: rnt[] = [];
-  @ViewChild('searchRnt') __searchRnt: ElementRef;
-
   __paginate: any = [];
   __pageNumber = new FormControl(10);
-  __columns: string[] = [];
+  __columns: any = [];
   __export = new MatTableDataSource<rnt>([]);
-  __exportedClmns: string[] = [
-    'sl_no',
-    'rnt_name',
-    'rnt_full_name',
-    'website',
-    'cus_care_whatsApp_no',
-    'cus_care_no',
-    'cus_care_email',
-  ];
-  __columnsForsummary: string[] = [
-    'edit',
-    'delete',
-    'sl_no',
-    'rnt_name',
-    'rnt_full_name',
-    'website',
-    'cus_care_whatsApp_no',
-    'cus_care_no',
-    'cus_care_email',
-  ];
-  __columnsForDetails: string[] = [
-    'edit',
-    'delete',
-    'sl_no',
-    'rnt_name',
-    'rnt_full_name',
-    'website',
-    'cus_care_whatsApp_no',
-    'cus_care_no',
-    'cus_care_email',
-    'distributor_care_email',
-    'distributor_care_no',
-    'head_ofc_contact_per',
-    'head_contact_per_mobile',
-    'head_contact_per_email',
-    'head_ofc_addr',
-    'local_ofc_contact_per',
-    'local_contact_per_mobile',
-    'local_contact_per_email',
-    'local_ofc_addr',
-    'login_url',
-    'login_id',
-    'login_pass',
-
-    'l1_name',
-    'l1_email',
-    'l1_contact_no',
-
-    'l2_name',
-    'l2_email',
-    'l2_contact_no',
-
-    'l3_name',
-    'l3_email',
-    'l3_contact_no',
-
-    'l4_name',
-    'l4_email',
-    'l4_contact_no',
-
-    'l5_name',
-    'l5_email',
-    'l5_contact_no',
-
-    'l6_name',
-    'l6_email',
-    'l6_contact_no',
-  ];
+  __exportedClmns: string[] = [];
   __isVisible: boolean = true;
   __rntSearchForm = new FormGroup({
     options: new FormControl('2'),
-    rnt_name: new FormControl(''),
-    rnt_id: new FormControl(''),
+    rnt_id: new FormControl([]),
     contact_person: new FormControl(''),
   });
   __selectRNT = new MatTableDataSource<rnt>([]);
+  __rntMstForDrpDown: rnt[]=[];
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
@@ -212,128 +65,37 @@ export class RntrptComponent implements OnInit {
     private __Rpt: RPTService,
     public dialogRef: MatDialogRef<RntrptComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    @Inject(DOCUMENT) private document: any
   ) {}
 
   ngOnInit() {
-    this.__columns = this.__columnsForsummary;
-    this.toppings.setValue(this.__columns);
-    this.getRntMst();
+    this.getRntMstForDrpDown();
+    this.setColumnsforRNT(this.__rntSearchForm.value.options)
   }
 
+  setColumnsforRNT(res){
+         const clmsToRemove = ['edit','delete','logo'];
+         const columns = res == '2' ? rntClmns.SUMMARY : rntClmns.DETAILS;
+         this.__columns =columns;
+         this.SelectedClms = this.__columns.map((x) => x.field);
+         this.__exportedClmns = columns.map(({field,header}) =>field).filter(x => !clmsToRemove.includes(x));
+  }
+
+  getRntMstForDrpDown(){
+    this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck("data")).subscribe((res: rnt[]) =>{
+      this.__rntMstForDrpDown = res;
+    })
+  }
   ngAfterViewInit() {
-    this.__rntSearchForm.controls['rnt_name'].valueChanges
-      .pipe(
-        tap(() => (this.__isrntspinner = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/rnt', dt) : []
-        ),
-        map((x: responseDT) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.__rntSearchForm.get('rnt_id').setValue('');
-          this.__rntMst = value;
-          this.searchResultVisibility('block', 'R');
-          this.__isrntspinner = false;
-        },
-        error: (err) => this.__isrntspinner = false,
-      });
     this.__rntSearchForm.controls['options'].valueChanges.subscribe((res) => {
-      if (res == '1') {
-        this.__columns = this.__columnsForDetails;
-        this.toppings.setValue(this.__columns);
-
-        this.__exportedClmns = [
-          'sl_no',
-          'rnt_name',
-          'rnt_full_name',
-          'website',
-         'cus_care_whatsApp_no',
-          'cus_care_no',
-          'cus_care_email',
-          'distributor_care_email',
-          'distributor_care_no',
-          'head_ofc_contact_per',
-          'head_contact_per_mobile',
-          'head_contact_per_email',
-          'head_ofc_addr',
-          'local_ofc_contact_per',
-          'local_contact_per_mobile',
-          'local_contact_per_email',
-          'local_ofc_addr',
-          'login_url',
-          'login_id',
-          'login_pass',
-          'l1_name',
-          'l1_email',
-          'l1_contact_no',
-
-          'l2_name',
-          'l2_email',
-          'l2_contact_no',
-
-          'l3_name',
-          'l3_email',
-          'l3_contact_no',
-
-          'l4_name',
-          'l4_email',
-          'l4_contact_no',
-
-          'l5_name',
-          'l5_email',
-          'l5_contact_no',
-
-          'l6_name',
-          'l6_email',
-          'l6_contact_no',
-        ];
-      } else {
-        this.__columns = this.__columnsForsummary;
-        this.toppings.setValue(this.__columns);
-        this.__exportedClmns = [
-          'sl_no',
-          'rnt_name',
-          'rnt_full_name',
-          'website',
-          'cus_care_whatsApp_no',
-          'cus_care_no',
-          'cus_care_email',
-        ];
-      }
-    });
-
-    this.toppings.valueChanges.subscribe((res) => {
-      // console.log(res);
-
-      this.setColumns(res);
+      this.setColumnsforRNT(res);
     });
   }
   setColumns(res){
-    const clm = ['edit', 'delete'];
+    const clm = ['edit', 'delete','logo'];
     this.__columns = res;
     this.__exportedClmns = res.filter((item) => !clm.includes(item));
   }
-  outsideClick(__ev, __mode) {
-    if (__ev) {
-      this.searchResultVisibility('none', __mode);
-    }
-  }
-  searchResultVisibility(display_mode, __mode) {
-    this.__searchRnt.nativeElement.style.display = display_mode;
-  }
 
-  getItems(__rnt, __type) {
-        this.__rntSearchForm.controls['rnt_id'].setValue(__rnt.id);
-        this.__rntSearchForm.controls['rnt_name'].reset(__rnt.rnt_name, {
-          onlySelf: true,
-          emitEvent: false,
-        });
-        this.searchResultVisibility('none', 'R');
-  }
   private setPaginator(__res) {
     this.__selectRNT = new MatTableDataSource(__res);
   }
@@ -359,8 +121,8 @@ export class RntrptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
-    this.getRntMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
+     this.__pageNumber.setValue(__paginate.toString());
+    this.getRntMst();
   }
   getPaginate(__paginate) {
     if (__paginate.url) {
@@ -368,11 +130,10 @@ export class RntrptComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          +  ('&rnt_id = ' + this.__rntSearchForm.value.rnt_id ? this.__rntSearchForm.value.rnt_id : '')
+          +  ('&rnt_id = ' + JSON.stringify(this.__rntSearchForm.value.rnt_id.map(item => {return item["id"]})))
           +  ('&contact_person=' + this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person : '')
-          +  ('&column_name=' + this.__sortAscOrDsc.active ? this.__sortAscOrDsc.active : '')
-          +  ('&sort_by=' + this.__sortAscOrDsc.direction ? this.__sortAscOrDsc.direction : 'asc')
-
+          +  ('&field=' + global.getActualVal(this.sort.field) ? this.sort.field : '')
+          +  ('&order=' + global.getActualVal(this.sort.order) ? this.sort.order : '1')
           )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -425,6 +186,7 @@ export class RntrptComponent implements OnInit {
         value.l6_name = row_obj.l6_name;
         value.l6_email = row_obj.l6_email;
         value.l6_contact_no = row_obj.l6_contact_no;
+        value.logo =  row_obj.logo
       }
       return true;
     });
@@ -471,60 +233,36 @@ export class RntrptComponent implements OnInit {
         value.l6_name = row_obj.l6_name;
         value.l6_email = row_obj.l6_email;
         value.l6_contact_no = row_obj.l6_contact_no;
+        value.logo = row_obj.logo
       }
       return true;
     });
-    // console.log( this.__export.data);
-
   }
   submit() {this.getRntMst();}
-  getRntMst(column_name: string | null = null, sort_by: string | null = null) {
-    console.log(sort_by);
-
-    const __amcSearch = new FormData();
-    __amcSearch.append(
+  getRntMst() {
+    const __rntSearch = new FormData();
+    __rntSearch.append(
       'rnt_id',
-      this.__rntSearchForm.value.rnt_id ? this.__rntSearchForm.value.rnt_id : ''
+      JSON.stringify(this.__rntSearchForm.value.rnt_id.map(item => {return item["id"]}))
     );
-    __amcSearch.append(
-      'contact_person',
-      this.__rntSearchForm.value.contact_person
-        ? this.__rntSearchForm.value.contact_person
-        : ''
-    );
-    __amcSearch.append('paginate', this.__pageNumber.value);
-    __amcSearch.append('column_name', (column_name ? column_name : ''));
-    __amcSearch.append('sort_by', (sort_by ? sort_by : 'asc'));
+    __rntSearch.append('contact_person',this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person: '');
+    __rntSearch.append('paginate', this.__pageNumber.value);
+    __rntSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __rntSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
     this.__dbIntr
-      .api_call(1, '/rntDetailSearch', __amcSearch)
+      .api_call(1, '/rntDetailSearch', __rntSearch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
         this.__paginate = res.links;
         this.setPaginator(res.data);
-        this.tableExport(column_name, sort_by);
+        this.tableExport(__rntSearch);
       });
   }
 
-  tableExport(
-    column_name: string | null = null,
-    sort_by: string | null = null
-  ) {
-    console.log(column_name);
-    console.log(sort_by);
-    const __amcExport = new FormData();
-    __amcExport.append(
-      'rnt_id',
-      this.__rntSearchForm.value.rnt_id ? this.__rntSearchForm.value.rnt_id : ''
-    );
-    __amcExport.append(
-      'contact_person',
-      this.__rntSearchForm.value.contact_person
-    );
-    __amcExport.append('column_name', (column_name ? column_name : ''));
-    __amcExport.append('sort_by', (sort_by ? sort_by : 'asc'));
-
+  tableExport(__rntExport: FormData) {
+    __rntExport.delete('paginate');
     this.__dbIntr
-      .api_call(1, '/rntExport', __amcExport)
+      .api_call(1, '/rntExport', __rntExport)
       .pipe(map((x: any) => x.data))
       .subscribe((res: rnt[]) => {
         this.__export = new MatTableDataSource(res);
@@ -595,21 +333,14 @@ export class RntrptComponent implements OnInit {
   reset() {
     this.__rntSearchForm.patchValue({
       options: '2',
-      rnt_name: '',
-      rnt_id: '',
+      rnt_id: [],
       contact_person: '',
     });
-    this.getRntMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
+    this.sort = new sort();
+    this.getRntMst();
 
-  }
-  sortData(sort: any) {
-    console.log(sort);
-
-    this.__sortAscOrDsc  = sort;
-    this.getRntMst(sort.active, sort.direction == '' ? 'asc' : sort.direction);
   }
   delete(__el,index){
-    console.log(__el);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       flag: 'R',
@@ -637,5 +368,17 @@ export class RntrptComponent implements OnInit {
     this.dialogRef.close();
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/amc',{queryParams:{product_id:btoa(this.data.product_id),id:btoa(__rnt.id)}});
   }
-
+  getSelectedColumns(columns){
+    const clm = ['edit', 'delete'];
+    this.__columns = columns.map(({ field, header }) => ({field, header}));
+    this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
+  }
+  customSort(ev:LazyLoadEvent){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+     this.getRntMst();
+  }
+  openURL(url){
+    window.open('//' + url,'__blank');
+  }
 }

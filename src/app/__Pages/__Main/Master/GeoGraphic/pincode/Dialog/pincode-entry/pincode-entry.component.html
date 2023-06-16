@@ -1,0 +1,95 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >{{data.title}}</h2>
+      <div class="btnIcon">
+        <button mat-icon-button title="Minimize"  (click)="minimize()" >
+          <mat-icon >remove</mat-icon>
+        </button>
+        <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+          <mat-icon>check_box_outline_blank </mat-icon>
+        </button>
+
+        <button mat-icon-button title="Close"  [mat-dialog-close]="">
+          <mat-icon >close</mat-icon>
+        </button>
+    </div>
+    </div>
+    <mat-dialog-content>
+      <form  [formGroup]="__pincodeForm" (ngSubmit)="submit()" autocomplete="off" id="__pincodeForm_{{data.id}}" ngNativeValidate>
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="country_id">Country <span class="text-danger">*</span></label>
+            <select class="form-control" id="country_id" formControlName="country_id">
+              <option value="">Select</option>
+              <option [value]="country.id" *ngFor="let country of countryMst">{{country.name}}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="__pincodeForm.get('country_id').invalid && (__pincodeForm.get('country_id').dirty || __pincodeForm.get('country_id').touched)">
+              <span class="invalid-feedback" *ngIf="(__pincodeForm.get('country_id')).errors?.required">*Please provide country</span>
+            </div>
+          </div>
+
+          <div class="col-sm-12 my-2">
+            <label for="state_id">State <span class="text-danger">*</span></label>
+            <select class="form-control" id="state_id" formControlName="state_id">
+              <option value="">Select</option>
+              <option [value]="state.id" *ngFor="let state of stateMst">{{state.name}}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="__pincodeForm.get('state_id').invalid && (__pincodeForm.get('state_id').dirty || __pincodeForm.get('state_id').touched)">
+              <span class="invalid-feedback" *ngIf="(__pincodeForm.get('state_id')).errors?.required">*Please provide state</span>
+            </div>
+          </div>
+
+          <div class="col-sm-12">
+            <label for="district_id">District <span class="text-danger">*</span></label>
+            <select class="form-control" id="district_id" formControlName="district_id">
+              <option value="">Select</option>
+              <option [value]="district.id" *ngFor="let district of districtMst">{{district.name}}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="__pincodeForm.get('district_id').invalid && (__pincodeForm.get('district_id').dirty || __pincodeForm.get('district_id').touched)">
+              <span class="invalid-feedback" *ngIf="(__pincodeForm.get('district_id')).errors?.required">*Please provide district</span>
+            </div>
+          </div>
+          <div class="col-sm-12 my-2">
+            <label for="city_id">City <span class="text-danger">*</span></label>
+            <select class="form-control" id="city_id" formControlName="city_id">
+              <option value="">Select</option>
+              <option [value]="city.id" *ngFor="let city of cityMst">{{city.name}}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="__pincodeForm.get('city_id').invalid && (__pincodeForm.get('city_id').dirty || __pincodeForm.get('city_id').touched)">
+              <span class="invalid-feedback" *ngIf="(__pincodeForm.get('city_id')).errors?.required">*Please provide city</span>
+            </div>
+          </div>
+
+
+          <div class="col-sm-12">
+            <label for="pincode">Pincode <span class="text-danger">*</span></label>
+              <input type="text" name="pincode" id="pincode" class="form-control" formControlName="pincode" placeholder="Enter Pincode">
+            <div class="invalid-feedback" *ngIf="__pincodeForm.get('pincode').invalid && (__pincodeForm.get('pincode').dirty || __pincodeForm.get('pincode').touched)">
+              <span class="invalid-feedback" *ngIf="(__pincodeForm.get('pincode')).errors?.required">*Please provide pincode</span>
+              <span class="invalid-feedback" *ngIf="(__pincodeForm.get('pincode')).errors?.minlength">*Pincode must be 6 digit</span>
+              <span class="invalid-feedback" *ngIf="(__pincodeForm.get('pincode')).errors?.maxlength">*Pincode must be 6 digit</span>
+            </div>
+          </div>
+
+          <div class="col-sm-12 my-2">
+            <label for="city_type_id">City Type <span class="text-danger">*</span></label>
+            <select class="form-control" id="city_type_id" formControlName="city_type_id">
+              <option value="">Select</option>
+              <option [value]="cityType.id" *ngFor="let cityType of cityTypeMst">{{cityType.name}}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="__pincodeForm.get('city_type_id').invalid && (__pincodeForm.get('city_type_id').dirty || __pincodeForm.get('city_type_id').touched)">
+              <span class="invalid-feedback" *ngIf="(__pincodeForm.get('city_type_id')).errors?.required">*Please provide city type</span>
+            </div>
+          </div>
+        </div>
+    </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+      <button class="btn addBtn"   [attr.form]="'__pincodeForm_'+data.id" [disabled]="__pincodeForm.invalid">Submit</button>
+    </mat-dialog-actions>
+    <br clear="all">
+</div>

@@ -1,0 +1,11 @@
+<mat-tab-group (selectedTabChange)="onTabChanged($event)"  [selectedIndex]="index" [class]="customClass">
+  <mat-tab *ngFor="let tab of Tab" >
+    <ng-template mat-tab-label>
+      <ng-container *ngIf="tab.img_src">
+        <img class="TabImg" [src]="tab.img_src" alt="{{tab.tab_name}}">
+      </ng-container>
+      {{tab.tab_name}}
+      <!-- | uppercase -->
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,21 @@
+.container_body{
+  /* height: 300px; */
+  background: #fff;
+  /* overflow: auto; */
+  position: relative;
+  height: 358px;
+    max-height: 500px;
+}
+.example_container_header{
+  width: 100%;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;;
+  padding: 6px 20px;
+  border-bottom: 1px solid #cfcfcf;
+  box-shadow: inset 0 -1px 0 0 transparent;
+  background: #5454541f;
+
+}
+/* .container_body_for_page */

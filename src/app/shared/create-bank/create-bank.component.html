@@ -1,0 +1,59 @@
+
+<div  >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form  [formGroup]="__bankForm" (ngSubmit)="submit()" [id]="data.formName"  autocomplete="off" ngNativeValidate>
+      <div class="row">
+        <div class="col-sm-12 my-2">
+          <label for="ifsCode">IFSC <span class="text-danger">*</span></label>
+          <input type="text" name="ifs_code" id="ifsCode" class="form-control" placeholder="Enter IFSC" formControlName="ifs_code">
+
+          <div class="invalid-feedback" *ngIf="__bankForm.get('ifs_code').invalid && (__bankForm.get('ifs_code').dirty || __bankForm.get('ifs_code').touched)">
+            <span class="invalid-feedback" *ngIf="(__bankForm.get('ifs_code')).errors?.required">*Please provide IFSC</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="bankName">Bank <span class="text-danger">*</span></label>
+          <input type="text" name="bank_name" id="bankName" class="form-control" placeholder="Enter Bank" formControlName="bank_name">
+          <div class="invalid-feedback" *ngIf="__bankForm.get('bank_name').invalid && (__bankForm.get('bank_name').dirty || __bankForm.get('bank_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__bankForm.get('bank_name')).errors?.required">*Please provide bank</span>
+          </div>
+        </div>
+
+        <div class="col-sm-12 my-2">
+          <label for="branch_name">Branch Name <span class="text-danger">*</span></label>
+          <input type="text" name="bank_name" id="branch_name" class="form-control" placeholder="Enter Branch Name" formControlName="branch_name">
+          <div class="invalid-feedback" *ngIf="__bankForm.get('branch_name').invalid && (__bankForm.get('branch_name').dirty || __bankForm.get('branch_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__bankForm.get('branch_name')).errors?.required">*Please provide branch name</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="micr_code">MICR Code <span class="text-danger">*</span></label>
+          <input type="text" name="branch_name" id="micr_code" class="form-control" placeholder="Enter MICR Code" formControlName="micr_code">
+          <div class="invalid-feedback" *ngIf="__bankForm.get('micr_code').invalid && (__bankForm.get('micr_code').dirty || __bankForm.get('micr_code').touched)">
+            <span class="invalid-feedback" *ngIf="(__bankForm.get('micr_code')).errors?.required">*Please provide micr code</span>
+          </div>
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="branch_addr">Branch Address <span class="text-danger">*</span></label>
+              <textarea rows="5" cols="12" class="form-control" name="bank_name" id="branch_addr" class="form-control" placeholder="Enter Branch Address" formControlName="branch_addr"></textarea>
+          <div class="invalid-feedback" *ngIf="__bankForm.get('branch_addr').invalid && (__bankForm.get('branch_addr').dirty || __bankForm.get('branch_addr').touched)">
+            <span class="invalid-feedback" *ngIf="(__bankForm.get('branch_addr')).errors?.required">*Please provide branch address</span>
+          </div>
+        </div>
+      </div>
+  </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn"  [attr.form]="data.formName" [disabled]="this.__bankForm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+</div>

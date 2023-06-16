@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-sm-12 my-3">
               <label for="rntName" class="mb-3">R&T Name <span class="text-danger">*</span></label>
-              <input type="text" name="rnt_name" id="rntName" class="form-control" placeholder="Enter R&T Name"
+              <input type="text" name="rnt_name" id="rntName" class="form-control" placeholder="Enter RNT Name"
                 formControlName="rnt_name">
               <div class="invalid-feedback"
                 *ngIf="__rntForm.get('rnt_name').invalid && (__rntForm.get('rnt_name').dirty || __rntForm.get('rnt_name').touched)">
@@ -19,7 +19,7 @@
             </div>
 
             <div class="col-sm-12 my-3">
-              <label for="web_site">Web Site </label>
+              <label for="web_site">Website </label>
               <input type="text" name="web_site" id="web_site" class="form-control" placeholder="Enter Website"
                 formControlName="web_site">
             </div>
@@ -80,7 +80,7 @@
         <table mat-table [dataSource]="__selectRNT">
           <!-- Sl No. -->
           <ng-container matColumnDef="sl_no">
-            <th mat-header-cell *matHeaderCellDef>Sl No</th>
+            <th mat-header-cell *matHeaderCellDef>Sl no.</th>
             <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
           </ng-container>
 

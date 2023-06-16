@@ -8,21 +8,6 @@ templateUrl: './PrdTypeMstDashboard.component.html',
 styleUrls: ['./PrdTypeMstDashboard.component.css']
 })
 export class PrdtypemstdashboardComponent implements OnInit {
-
-  __brdCrmbs: breadCrumb[] = [{
-                                 label:"Home",
-                                 url:'/main',
-                                 hasQueryParams:false,
-                                 queryParams:''
-                              },
-                              {
-                                label:"Master",
-                                 url:'/main/master/products',
-                                 hasQueryParams:false,
-                                 queryParams:''
-                              }
-                            ]
-
   __menu = [
     {
         "id": 1,
@@ -70,6 +55,20 @@ export class PrdtypemstdashboardComponent implements OnInit {
       "flag":'N',
       "url":"/main/master/emailTemplate",
       "icon":"mail"
+    },
+    {
+      "id":12,
+      "menu_name":"Geographical Master",
+      "flag":'N',
+      "url":"/main/master/geographic",
+      "icon":"mail"
+    },
+    {
+      "id":13,
+      "menu_name":"Company",
+      "flag":'N',
+      "url":"/main/master/company",
+      "icon":"mail"
     }
 ]
 
@@ -80,15 +79,13 @@ constructor(
 }
 
 ngOnInit(){
-  this.__utility.getBreadCrumb(this.__brdCrmbs);
 }
 navigate(__items){
-  // this.__utility.navigate(__items.url,btoa(__items.id));
-  if(__items.flag == 'Y'){
-    this.__utility.navigatewithqueryparams(__items.url,{queryParams:{id:btoa(__items.id)}})
-  }
-  else{
+  // if(__items.flag == 'Y'){
+  //   this.__utility.navigatewithqueryparams(__items.url,{queryParams:{id:btoa(__items.id)}})
+  // }
+  // else{
     this.__utility.navigate(__items.url,null)
-  }
+  // }
 }
 }

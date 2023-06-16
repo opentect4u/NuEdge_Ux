@@ -1,0 +1,21 @@
+<ng-container *ngIf="hasMenu;else withoutMenu">
+  <button type="button" mat-button color="primary" [matMenuTriggerFor]="menu" #t="matMenuTrigger">
+    {{BtnTitle}}
+    <mat-icon *ngIf="hasMenu"
+      [ngClass]="{'activeIconINBtn':t.menuOpen,'inActivebtnIcon':!t.menuOpen}">arrow_drop_down</mat-icon>
+  </button>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item *ngFor="let item of menuListItem" (click)="getItems(item)">
+      <mat-icon>{{item.icon}}</mat-icon>
+      <span>{{item.title}}</span>
+    </button>
+  </mat-menu>
+</ng-container>
+
+<ng-template #withoutMenu>
+  <button type="button" mat-button color="primary" (click)="sendEvent()">
+    <mat-icon>add</mat-icon>
+    {{BtnTitle}}
+  </button>
+</ng-template>

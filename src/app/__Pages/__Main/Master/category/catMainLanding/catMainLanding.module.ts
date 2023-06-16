@@ -31,7 +31,7 @@ const routes: Routes = [
             (m) => m.CatUploadModule
           ),
         data: {
-          breadcrumb: null,
+          breadcrumb: 'Upload Category',
           parentId: 4,
           id: 21,
           title: 'NuEdge - Category Uploadation',

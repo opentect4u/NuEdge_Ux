@@ -1,0 +1,23 @@
+<!-- cdkDragBoundary=".container_body" cdkDrag -->
+<div class="mega_menu" *ngIf="isOpenMegaMenu" >
+  <div class="mega_menu_container_header">
+    <!-- <mat-icon class="drag-handle">drag_indicator</mat-icon> -->
+      <button mat-icon-button #tooltip="matTooltip" (click)="hideMenu()" matTooltip="Close"><mat-icon>close</mat-icon></button>
+  </div>
+   <div class="mega_menu_container_body">
+    <form [formGroup]="clmFrm">
+      <mat-checkbox  color="primary" class="mr-4" formControlName="is_all"> All</mat-checkbox>
+      <ng-container formArrayName="clmItems">
+        <ng-container *ngFor="let column of clmItems.controls; let i = index">
+          <ng-container [formGroupName]="i">
+            <mat-checkbox class="mr-4" formControlName="isChecked" color="primary">
+              {{clmItems.value[i].name}}
+            </mat-checkbox>
+          </ng-container>
+        </ng-container>
+
+      </ng-container>
+    </form>
+
+   </div>
+</div>

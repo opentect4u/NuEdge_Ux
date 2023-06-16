@@ -30,25 +30,11 @@ const routes: Routes = [
         path:'operations',
         loadChildren:()=> import('./Operations/MainOp.module').then(m => m.MainOpModule),
         data:{id:5,title: "NuEdge - Operation Dashboard", pageTitle: "Operation Dashboard" }
-      }   ,{
-        path: 'kyc',
-        loadChildren: () => import('./Kyc/kyc.module').then(m => m.KycModule),
-        data: { id: 6, title: "NuEdge - Kyc", pageTitle: "Kyc", has_menubar: 'Y' }
-      },
+      } ,
       {
-        path: 'rcvForm',
-        loadChildren: () => import('../__Main/Operations/RcvFrm/RcvFrm.module').then(m => m.RcvFrmModule),
-        data: { id: 19, title: "NuEdge - Operation Recieve Form", pageTitle: "Recieve Form" }
-      },
-      {
-        path:'rcvFormmodification',
-        loadChildren:()=> import('../__Main/Operations/RcvFrm/rcvFormModification/rcvFormModification.module').then(m => m.RcvFormModificationModule),
-        data:{id:52,title:"NuEdge - Operation Form Recievable", pageTitle:"Recievable Form"}
-      },
-      {
-        path:'rcvDashboard',
-        loadChildren:()=> import('../__Main/Operations/RcvFrm/rcvDashboard/rcvDashboard.module').then(m => m.RcvDashboardModule),
-        data:{id:53,title:"NuEdge - Operation Form Recievable Dashboard", pageTitle:"Recievable Form dashboard"}
+         path:'product',
+         loadChildren:()=> import('../__Main/Products/product.module').then(m => m.ProductModule),
+         data:{id:10,title:"NuEdge - Product", pageTitle:"Product"}
       },
       {
         path: '',

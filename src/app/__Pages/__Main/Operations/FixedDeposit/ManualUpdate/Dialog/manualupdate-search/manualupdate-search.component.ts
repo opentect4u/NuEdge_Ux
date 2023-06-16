@@ -248,7 +248,7 @@ export class ManualupdateSearchComponent implements OnInit {
       return dates.getTodayDate();
     }
     getval(__paginate) {
-      this.__pageNumber = __paginate.toString();
+       this.__pageNumber.setValue(__paginate.toString());
       this.searchInsurance();
     }
     getPaginate(__paginate: any | null = null) {

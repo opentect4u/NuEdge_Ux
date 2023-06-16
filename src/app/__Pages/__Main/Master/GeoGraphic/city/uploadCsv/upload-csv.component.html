@@ -1,0 +1,18 @@
+<div class="row flexSec">
+  <div class="col-sm-7">
+    <shared-upload-csv
+    [leftHeaderTitle]="'Upload City'"
+    [columns]="tableColumns"
+    [api_name]="'/cityimport'"
+    [flag]="'GC'"
+    [dataSource]="tableData"
+    [file_name]="'Sample City'"
+    [countryMst]="countryMst"
+    [displayedColumns]="displayedColumns"></shared-upload-csv>
+  </div>
+  <div class="col-sm-5">
+    <shared-mst-dtls [btnTitle]="'View All City'" [headerTitle]="'Recent City'" [flag]="'GC'"
+      (populate)="populateDT($event)" (viewAll)="viewAll()"
+      [dataSource]="cityMst.data"></shared-mst-dtls>
+  </div>
+</div>

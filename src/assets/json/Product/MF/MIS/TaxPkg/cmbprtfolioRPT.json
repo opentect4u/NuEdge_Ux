@@ -1,0 +1,50 @@
+[
+  {
+    "id":1,
+    "accessibility":[],
+    "title":"Upload File",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":2,
+    "accessibility":[],
+    "title":"FY Wise Transaction Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":3,
+    "accessibility":[],
+    "title":"ELSS Transaction Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":4,
+    "accessibility":[],
+    "title":"Capital Gain Loss Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":5,
+    "accessibility":[],
+    "title":"Dividend Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":6,
+    "accessibility":[],
+    "title":"TDS Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  }
+]

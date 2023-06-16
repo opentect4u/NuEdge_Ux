@@ -11,6 +11,7 @@ import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { BnkModificationComponent } from '../bnkModification/bnkModification.component';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 
 @Component({
 selector: 'bnkRpt-component',
@@ -177,7 +178,7 @@ getPaginate(__paginate) {
   if (__paginate.url) {
     this.__dbIntr
       .getpaginationData(
-        __paginate.url 
+        __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
         + ('&bnk_name=' + this.__catForm.value.bnk_name ? this.__catForm.value.bnk_name : '')
         + ('&micr_code=' + this.__catForm.value.micr_code ? this.__catForm.value.micr_code : '')
@@ -191,7 +192,7 @@ getPaginate(__paginate) {
   }
 }
 getval(__paginate) {
-  this.__pageNumber.setValue(__paginate.toString());
+   this.__pageNumber.setValue(__paginate.toString());
   // this.getBankmaster(this.__pageNumber.value);
   this.submit();
 }
@@ -321,9 +322,9 @@ searchResultVisibility(display_mode,__mode) {
   }
 }
 getItems(__amc,__type){
-  console.log(__type);
+  console.log(__amc);
  switch(__type){
-  case 'M': this.__catForm.controls['micr_code'].reset(__amc.micr_code,{ onlySelf: true,emitEvent: false})
+  case 'M': this.__catForm.controls['micr_code'].reset(__amc.bank_name,{ onlySelf: true,emitEvent: false})
               this.searchResultVisibility('none','M');
               break;
   case 'I':
@@ -336,5 +337,31 @@ getItems(__amc,__type){
 sortData(sort){
   this.__sortAscOrDsc =sort;
   this.submit();
+}
+delete(element,index){
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.autoFocus = false;
+  dialogConfig.role = "alertdialog";
+  dialogConfig.data = {
+    flag: 'B',
+    id: element.id,
+    title: 'Delete '  + element.bank_name,
+    api_name:'/depositbankDelete'
+  };
+  const dialogref = this.__dialog.open(
+    DeletemstComponent,
+    dialogConfig
+  );
+  dialogref.afterClosed().subscribe((dt) => {
+    if(dt){
+      if(dt.suc == 1){
+        this.__selectPLN.data.splice(index,1);
+        this.__selectPLN._updateChangeSubscription();
+        this.__export.data.splice(this.__export.data.findIndex((x: any) => x.id == element.id),1);
+        this.__export._updateChangeSubscription();
+      }
+    }
+
+  })
 }
 }

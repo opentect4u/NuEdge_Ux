@@ -1,0 +1,82 @@
+[
+  {
+    "id":1,
+    "accessibility":[],
+    "title":"Educational Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":2,
+    "accessibility":[],
+    "title":"Marriage Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":3,
+    "accessibility":[],
+    "title":"Retirement Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":4,
+    "accessibility":[],
+    "title":"Life Insurance Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":5,
+    "accessibility":[],
+    "title":"Medical Insurance Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":6,
+    "accessibility":[],
+    "title":"House Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":7,
+    "accessibility":[],
+    "title":"Car Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":8,
+    "accessibility":[],
+    "title":"Vacation Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":9,
+    "accessibility":[],
+    "title":"Comprehensive Financial Planning",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  },
+  {
+    "id":10,
+    "accessibility":[],
+    "title":"Comprehensive Financial Planning Report",
+    "url":"/main/product/mf",
+    "icon": "fa fa-user-o",
+    "has_submenu":[]
+  }
+]

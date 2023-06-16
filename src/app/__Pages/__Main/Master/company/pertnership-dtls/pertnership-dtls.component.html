@@ -1,0 +1,14 @@
+<core-tab [Tab]="subTab" [customClass]="'customTabs'" (GetTabDtls)="onTabChange($event)" [index]="tabindex">
+</core-tab>
+<div class="container_fluid mb-2 w-100">
+
+  <ng-container *ngIf="tabindex == 0;else report">
+    <pertner-dtls-entry [pertnerShipDT]="pertnerShipDT"
+    (getReset)="reset($event)"
+    [country]="country" (setpertnershipDtls)="sendDetailsToParent($event)"
+    [cmpDtlsMst]="cmpDtlsMst"></pertner-dtls-entry>
+  </ng-container>
+  <ng-template #report>
+    <pertner-dtls-rpt (setPertnerDormDtls)="setPertnerDormDtls($event)" [pertnershipMstDtls]="pertnershipMstDtls"></pertner-dtls-rpt>
+  </ng-template>
+</div>

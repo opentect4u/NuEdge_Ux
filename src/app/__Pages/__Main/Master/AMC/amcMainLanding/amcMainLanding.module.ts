@@ -7,7 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: AmcMainLandingComponent,
-    data: { breadcrumb: 'Amc' },
+    data: { breadcrumb: 'AMC' },
     children: [
       {
         path: '',
@@ -29,6 +29,7 @@ const routes: Routes = [
           ),
         data: {
           parentId: 4,
+          breadcrumb: 'Upload AMC',
           id: 18,
           title: 'NuEdge - AMC Uploadation',
           pageTitle: 'AMC Uploadation',

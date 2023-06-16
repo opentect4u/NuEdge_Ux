@@ -72,17 +72,30 @@ const routes: Routes = [
             (m) => m.ScmMainLandingModule
           ),
       },
+      /** Transaction type */
       {
         path:'trnsType',
-        loadChildren:() => import('../transType/transType.module').then(m => m.TransTypeModule),
+        loadChildren:() => import('../transType/home/home.module').then(m => m.HomeModule),
       },
+      /** End */
+      /** Transaction*/
       {
         path:'trns',
-        loadChildren:()=> import('../transaction/transaction.module').then(m => m.TransactionModule)
+        loadChildren:()=> import('../transaction/transaction.module').then(m => m.TransactionModule),
       },
+      /** End */
+
       {
         path:'sipType',
         loadChildren:()=> import('../SipType/sipType.module').then(m => m.SiptypeModule)
+      },
+      {
+        path:'swpType',
+        loadChildren:()=> import('../SWPType/swp-type.module').then(m => m.SwpTypeModule)
+      },
+      {
+        path:'stpType',
+        loadChildren:()=> import('../STPType/stp-type.module').then(m => m.StpTypeModule)
       }
     ],
   },

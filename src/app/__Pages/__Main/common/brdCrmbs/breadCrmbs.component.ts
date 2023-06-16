@@ -16,14 +16,14 @@ export class BreadcrmbsComponent implements OnInit {
 constructor(
   private __utility: UtiliService
 ) {
-    this.__utility.__brdCrumbs$.pipe(skip(1)).subscribe(res => {
+    this.__utility.__latestBrdCrmbs$.pipe(skip(1)).subscribe(res =>{
       if(res.length > 0){
         this.breadcrumbs = res;
-      }
+        console.log(this.breadcrumbs);
 
+      }
     })
 }
-
 ngOnInit(){
 }
 getDtls(__brdCrumbs){

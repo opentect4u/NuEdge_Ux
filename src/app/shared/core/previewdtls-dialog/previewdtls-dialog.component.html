@@ -1,0 +1,475 @@
+<div mat-dialog-title class="dialog-title" >
+  <h2>{{data.title}} {{data.type == 'C' ? ("(" + this.__frmDtls.get('client_type').value + ")") : ''}}</h2>
+  <div class="btnIcon">
+    <button (click)="makeBankEditableorDisabled()" *ngIf="data.flag == 'B' || data.flag == 'NB' || data.flag == 'OB'" mat-icon-button>
+      <mat-icon>{{isEditable ? 'visibility' :  'edit'}}</mat-icon>
+    </button>
+    <button mat-icon-button [mat-dialog-close]="">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="__frmDtls" id="fmdtls" (ngSubmit)="Update()">
+    <div class="row" *ngIf="data.flag == 'C' || data.flag == 'ESC' || data.flag == 'NTC' || data.flag == 'NSC' || data.flag == 'ETC' || data.flag == 'C1' || data.flag == 'FC' || data.flag == 'TC'">
+      <!-- Pan No -->
+      <div class="col-sm-12 my-2" *ngIf="this.data.dt.client_type == 'P'">
+        <label>PAN No</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="pan">
+      </div>
+      <!-- End -->
+      <!-- Client Type -->
+      <div class="col-sm-12 my-2">
+        <label>Client Type</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="client_type_name">
+      </div>
+      <!-- End -->
+      <!-- Client Code -->
+      <div class="col-sm-12 my-2">
+        <label>Client Code</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="client_code">
+      </div>
+      <!-- End -->
+      <!-- Client -->
+      <div class="col-sm-12 my-2">
+        <label>
+          {{__frmDtls.get('client_type_id').value == 7 ? 'Proprietorship Name'
+            : (__frmDtls.get('client_type_id').value == 8 ? ' HUF Name' :
+            (__frmDtls.get('client_type_id').value == 14 ? 'Firm Name' :
+            ((__frmDtls.get('client_type_id').value == 10
+            || __frmDtls.get('client_type_id').value == 11
+            || __frmDtls.get('client_type_id').value == 12
+            || __frmDtls.get('client_type_id').value == 13
+            || __frmDtls.get('client_type_id').value == 15
+            || __frmDtls.get('client_type_id').value == 16
+            || __frmDtls.get('client_type_id').value == 17
+            || __frmDtls.get('client_type_id').value == 18
+            || __frmDtls.get('client_type_id').value == 9
+            || __frmDtls.get('client_type_id').value == 23
+            || __frmDtls.get('client_type_id').value == 21
+            || __frmDtls.get('client_type_id').value == 22
+            || __frmDtls.get('client_type_id').value == 24
+            || __frmDtls.get('client_type_id').value == 25
+            || __frmDtls.get('client_type_id').value == 26
+            || __frmDtls.get('client_type_id').value == 28
+            || __frmDtls.get('client_type_id').value == 20
+            || __frmDtls.get('client_type_id').value == 29
+            || __frmDtls.get('client_type_id').value == 30
+            || __frmDtls.get('client_type_id').value == 27
+            || __frmDtls.get('client_type_id').value == 19) ? 'Establishment' : 'Client Name')
+            ))}}
+        </label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="client_name">
+      </div>
+      <!-- END -->
+
+
+            <!-- If Client Type Pertnership Firm (14)-->
+            <ng-container *ngIf="__frmDtls.get('client_type_id').value == 14">
+              <div class="col-sm-12 my-2">
+               <table>
+                 <thead>
+                   <tr>
+                     <th colspan="6">
+                       <h4 class="text-center">
+                         Pertner Details
+                       </h4>
+                     </th>
+                   </tr>
+                   <tr>
+                     <th class="pertnerColumn">Name</th>
+                     <th class="pertnerColumn">Date Of Birth</th>
+                     <th class="pertnerColumn">PAN</th>
+                     <th class="pertnerColumn">Mobile</th>
+                     <th class="pertnerColumn">Email</th>
+
+                   </tr>
+                 </thead>
+                 <tbody formArrayName="pertner_dtls">
+                   <tr *ngFor="let item of pertner_dtls.controls; let i = index;">
+                   <ng-container [formGroupName]="i">
+                         <td class="pertnerColumn">
+                           <input type="text" [attr.disabled]="true" class="form-control" placeholder="Enter Name" name="pertner_name{{i}}" id="name{{i}}" formControlName="name">
+                         </td>
+                         <td class="pertnerColumn">
+                           <input type="date" [attr.disabled]="true" class="form-control"  name="pertner_dob{{i}}" id="dob{{i}}" formControlName="dob">
+                         </td>
+                         <td class="pertnerColumn">
+                           <input type="text" [attr.disabled]="true"  placeholder="PAN"  class="form-control" name="pertner_pan{{i}}" id="pan{{i}}" formControlName="pan">
+                         </td>
+                         <td class="pertnerColumn">
+                           <input type="text" [attr.disabled]="true"  placeholder="Mobile"  class="form-control" name="pertner_mobile{{i}}" id="mobile{{i}}" formControlName="mobile">
+                         </td>
+                         <td class="pertnerColumn">
+                           <input type="email"  [attr.disabled]="true" placeholder="Email"  class="form-control" name="pertner_email{{i}}" id="email{{i}}" formControlName="email">
+                         </td>
+                   </ng-container>
+                 </tr>
+                 </tbody>
+               </table>
+
+              </div>
+          </ng-container>
+          <!-- End -->
+
+        <!-- If Client Type Sole proprietor (7) -->
+      <ng-container *ngIf="__frmDtls.get('client_type_id').value == 7">
+        <div class="col-sm-12 my-2" >
+          <label for="proprietor_name">
+            Proprietor Name
+            <span class="text-danger">*</span></label>
+          <input type="text" name="proprietor_name"
+          id="proprietor_name"
+          class="form-control"
+          placeholder="Proprietor Name"
+          formControlName="proprietor_name">
+        </div>
+      </ng-container >
+      <!-- End -->
+
+      <!-- Date Of Incorporation -->
+      <ng-container  *ngIf="__frmDtls.get('client_type_id').value == 7
+      ||__frmDtls.get('client_type_id').value == 10
+      || __frmDtls.get('client_type_id').value == 11
+      || __frmDtls.get('client_type_id').value == 12
+      || __frmDtls.get('client_type_id').value == 13
+      || __frmDtls.get('client_type_id').value == 15
+      || __frmDtls.get('client_type_id').value == 16
+      || __frmDtls.get('client_type_id').value == 17
+      || __frmDtls.get('client_type_id').value == 18
+      || __frmDtls.get('client_type_id').value == 9
+      || __frmDtls.get('client_type_id').value == 23
+      || __frmDtls.get('client_type_id').value == 21
+      || __frmDtls.get('client_type_id').value == 22
+      || __frmDtls.get('client_type_id').value == 24
+      || __frmDtls.get('client_type_id').value == 25
+      || __frmDtls.get('client_type_id').value == 26
+      || __frmDtls.get('client_type_id').value == 28
+      || __frmDtls.get('client_type_id').value == 20
+      || __frmDtls.get('client_type_id').value == 29
+      || __frmDtls.get('client_type_id').value == 30
+      || __frmDtls.get('client_type_id').value == 27
+      || __frmDtls.get('client_type_id').value == 19">
+        <div class="col-sm-12 my-2" >
+          <label for="date_of_incorporation">
+            Date Of Incorporation</label>
+          <input type="date" [attr.disabled]="true" name="date_of_incorporation" id="date_of_incorporation" class="form-control"
+            formControlName="date_of_incorporation">
+        </div>
+      </ng-container>
+      <!-- End -->
+
+      <!-- Identification Number -->
+      <ng-container *ngIf="__frmDtls.get('client_type_id').value == 10
+      || __frmDtls.get('client_type_id').value == 11
+      || __frmDtls.get('client_type_id').value == 12
+      || __frmDtls.get('client_type_id').value == 13
+      || __frmDtls.get('client_type_id').value == 15
+      || __frmDtls.get('client_type_id').value == 16
+      || __frmDtls.get('client_type_id').value == 17
+      || __frmDtls.get('client_type_id').value == 18
+      || __frmDtls.get('client_type_id').value == 9
+      || __frmDtls.get('client_type_id').value == 23
+      || __frmDtls.get('client_type_id').value == 21
+      || __frmDtls.get('client_type_id').value == 22
+      || __frmDtls.get('client_type_id').value == 24
+      || __frmDtls.get('client_type_id').value == 25
+      || __frmDtls.get('client_type_id').value == 26
+      || __frmDtls.get('client_type_id').value == 28
+      || __frmDtls.get('client_type_id').value == 20
+      || __frmDtls.get('client_type_id').value == 29
+      || __frmDtls.get('client_type_id').value == 30
+      || __frmDtls.get('client_type_id').value == 27
+      || __frmDtls.get('client_type_id').value == 19
+      ">
+        <div class="col-sm-12 my-2" >
+          <label for="identification_number">
+            Identification Number</label>
+          <input type="text"
+          name="identification_number"
+          placeholder="Enter Identification Number"
+          id="identification_number"
+          [attr.disabled]="true"
+          class="form-control"
+            formControlName="identification_number">
+        </div>
+
+      </ng-container>
+      <!-- End -->
+
+
+      <!-- Karta Name & Incorporation Date-->
+      <ng-container *ngIf="__frmDtls.get('client_type_id').value == 8">
+        <div class="col-sm-12 my-2">
+          <label for="kartaName">Karta Name</label>
+          <input type="text"
+          name="karta_name" [attr.disabled]="true" id="kartaName" class="form-control" placeholder="Enter Karta Name"
+            formControlName="karta_name">
+        </div>
+        <div class="col-sm-12 my-2">
+          <label for="inc_date">Incorporation Date</label>
+          <input type="text" [attr.disabled]="true" name="inc_date" id="inc_date" class="form-control"
+            formControlName="inc_date">
+        </div>
+      </ng-container>
+      <!-- End -->
+
+
+
+      <!-- DOB & ACTUAL DATE OF BIRTH-->
+      <ng-container *ngIf="__frmDtls.get('client_type_id').value == 7
+      ||__frmDtls.get('client_type_id').value == 2
+      ||__frmDtls.get('client_type_id').value == 5
+      ||__frmDtls.get('client_type_id').value == 6
+      || __frmDtls.get('client_type_id').value == 8
+      || __frmDtls.get('client_type_id').value == 1
+      || __frmDtls.get('client_type_id').value == 3
+      || __frmDtls.get('client_type_id').value == 4
+      ||__frmDtls.get('client_type_id').value == 14
+      ">
+      <!-- DOB -->
+      <div class="col-sm-12 my-2">
+        <label>
+          {{__frmDtls.get('client_type_id').value == 14 ? 'Date Of Incorporation ' : 'Date Of Birth '}}
+          {{__frmDtls.get('client_type_id').value == 7 ? ' Of Proprietor'
+          : (__frmDtls.get('client_type_id').value == 8 ? ' Of Karta' : '')}}
+        </label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="dob">
+      </div>
+    </ng-container>
+
+      <!-- End -->
+      <!-- Actual Date Of birth -->
+      <ng-container *ngIf="__frmDtls.get('client_type_id').value == 7
+      ||__frmDtls.get('client_type_id').value == 2
+      ||__frmDtls.get('client_type_id').value == 5
+      ||__frmDtls.get('client_type_id').value == 6
+      || __frmDtls.get('client_type_id').value == 8
+      || __frmDtls.get('client_type_id').value == 1
+      || __frmDtls.get('client_type_id').value == 3
+      || __frmDtls.get('client_type_id').value == 4">
+      <div class="col-sm-12 my-2">
+        <label>Actual date Of Birth</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="dob_actual">
+      </div>
+      <!-- End -->
+      </ng-container>
+      <!-- END -->
+      <!-- Maritial Status  & Anniversary Date-->
+      <ng-container  *ngIf="this.data.dt.client_type != 'M'">
+      <!-- Maritial Status-->
+        <div class="col-sm-12" *ngIf="__frmDtls.get('client_type_id').value == 1
+        || __frmDtls.get('client_type_id').value == 3
+        || __frmDtls.get('client_type_id').value == 4">
+        <label>Maritial Status</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="mar_status">
+        </div>
+        <!-- End -->
+        <!-- Anniversary Date -->
+        <div class="col-sm-12 my-2"
+        *ngIf="
+         __frmDtls.get('client_type_id').value == 7
+        || __frmDtls.get('client_type_id').value == 8
+        || ((__frmDtls.get('client_type_id').value == 1
+        || __frmDtls.get('client_type_id').value == 3
+        || __frmDtls.get('client_type_id').value == 4)
+        && __frmDtls.get('mar_status').value == 'M')" >
+          <label for="anniversary_date">
+            Anniversary Date {{__frmDtls.get('client_type_id').value == 7 ? ' Of Proprietor '
+            : (__frmDtls.get('client_type_id').value == 8 ? 'Of Karta' : '')}}
+          </label>
+          <input type="text" [attr.disabled]="true" name="anniversary_date" id="anniversary_date" class="form-control"
+            formControlName="anniversary_date">
+        </div>
+        <!-- End -->
+      </ng-container>
+      <!-- End -->
+
+
+
+      <div class="col-sm-12 my-2" *ngIf="this.data.dt.client_type == 'M'">
+        <label>Gurdians PAN Number</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="gurdians_pan">
+      </div>
+      <div class="col-sm-12 my-2"  *ngIf="this.data.dt.client_type == 'M'">
+        <label>Gurdialns Name</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="gurdians_name">
+      </div>
+      <div class="col-sm-12 my-2"  *ngIf="this.data.dt.client_type == 'M'">
+        <label>Relationship</label>
+        <select class="form-control" formControlName="relations" [attr.disabled]="true">
+          <option value="">Select Relationship</option>
+          <option [value]="rel.id" *ngFor="let rel of __relation">{{rel.relation}}</option>
+        </select>
+      </div>
+
+      <div class="col-sm-12 my-2">
+        <label>Mobile</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="mobile">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Alternative Mobile</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="sec_mobile">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Email</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="email">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Alternative Email</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="sec_email">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Address 1</label>
+        <textarea class="form-control" [attr.disabled]="true" cols="30" rows="5" formControlName="add_line_1"></textarea>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Address 2</label>
+        <textarea class="form-control" [attr.disabled]="true" cols="30" rows="5" formControlName="add_line_2"></textarea>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Country</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="country">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>State</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="state">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>District</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="dist">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>City</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="city">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Pincode</label>
+        <input type="text" class="form-control" [attr.disabled]="true" formControlName="pincode">
+      </div>
+      <div class="col-sm-12">
+        <table class="my-4">
+          <thead>
+            <tr>
+              <th class="text-center">
+                Document type
+              </th>
+              <th class="text-center">
+                Document View
+              </th>
+            </tr>
+          </thead>
+          <tbody formArrayName="doc_dtls">
+            <tr *ngFor="let item of __docs.controls; let i = index;">
+              <ng-container [formGroupName]="i">
+                <td class="rowWidth text-center">
+                  <select name="_doc_type" id="_doc_type" formControlName="doc_type_id" class="form-control" [attr.disabled]="true">
+                    <option value="">Select document type</option>
+                    <option value="{{__docType.id}}" *ngFor="let __docType of __docTypeMaster"> {{__docType.doc_type}}
+                    </option>
+                  </select>
+                </td>
+                <td class="rowWidth text-center">
+                  <ng-container *ngIf="getExtension(__docs.controls[i].get('file_preview')?.value) == 'pdf';else image">
+                  <a [href]="__docs.controls[i].get('file_preview')?.value" target="__blank">
+                    <img src="../../../../../../assets/images/pdf.png"  alt="preview Image">
+                  </a>
+                  </ng-container>
+                  <ng-template #image>
+                       <img [src]="__docs.controls[i].get('file_preview')?.value || __noImg" alt="preview Image">
+                  </ng-template>
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row" *ngIf="data.flag == 'S' || data.flag == 'ST' || data.flag == 'NST'">
+      <div class="col-sm-12 my-2">
+        <label>AMC</label>
+         <input type="text" class="form-control" formControlName="amc" [attr.disabled]="true">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Category</label>
+         <input type="text" class="form-control" formControlName="cat" [attr.disabled]="true">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Sub Category</label>
+         <input type="text" class="form-control" formControlName="sub_cat" [attr.disabled]="true">
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>R&T</label>
+         <input type="text" class="form-control" formControlName="rnt" [attr.disabled]="true">
+      </div>
+
+    </div>
+    <div class="row" *ngIf="data.flag == 'B' || data.flag == 'NB' || data.flag == 'OB'">
+
+      <div class="col-sm-12 my-2">
+        <label>IFSC <span class="text-danger" *ngIf="isEditable">*</span></label>
+         <input
+         type="text"
+         class="form-control"
+         formControlName="ifs_code"
+         >
+         <div class="invalid-feedback" *ngIf="__frmDtls.get('ifs_code').invalid && (__frmDtls.get('ifs_code').dirty || __frmDtls.get('ifs_code').touched)">
+          <span class="invalid-feedback" *ngIf="(__frmDtls.get('ifs_code')).errors?.required">*Please provide IFSC</span>
+        </div>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Bank  <span class="text-danger" *ngIf="isEditable">*</span></label>
+         <input
+         type="text"
+         class="form-control"
+         formControlName="bank_name"
+         >
+         <div class="invalid-feedback" *ngIf="__frmDtls.get('bank_name').invalid && (__frmDtls.get('bank_name').dirty || __frmDtls.get('bank_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__frmDtls.get('bank_name')).errors?.required">*Please provide Bank</span>
+        </div>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>MICR Code  <span class="text-danger" *ngIf="isEditable">*</span></label>
+         <input
+         type="text"
+         class="form-control"
+         formControlName="micr_code"
+         >
+         <div class="invalid-feedback" *ngIf="__frmDtls.get('micr_code').invalid && (__frmDtls.get('micr_code').dirty || __frmDtls.get('micr_code').touched)">
+          <span class="invalid-feedback" *ngIf="(__frmDtls.get('micr_code')).errors?.required">*Please provide MICR</span>
+        </div>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Branch  <span class="text-danger" *ngIf="isEditable">*</span></label>
+         <input
+         type="text"
+         class="form-control"
+         formControlName="branch_name"
+         >
+         <div class="invalid-feedback" *ngIf="__frmDtls.get('branch_name').invalid && (__frmDtls.get('branch_name').dirty || __frmDtls.get('branch_name').touched)">
+          <span class="invalid-feedback" *ngIf="(__frmDtls.get('branch_name')).errors?.required">*Please provide Branch</span>
+        </div>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label>Branch Address  <span class="text-danger" *ngIf="isEditable">*</span></label>
+        <textarea
+        name="brnh_addr"
+        id="brnh_addr"
+        cols="30"
+        rows="5"
+        class="form-control"
+        formControlName="branch_addr"
+        ></textarea>
+        <div class="invalid-feedback" *ngIf="__frmDtls.get('branch_addr').invalid && (__frmDtls.get('branch_addr').dirty || __frmDtls.get('branch_addr').touched)">
+          <span class="invalid-feedback" *ngIf="(__frmDtls.get('branch_addr')).errors?.required">*Please provide Branch Address</span>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="isEditable" align="end" class="popupBoxSubmitSec">
+  <button class="btn addBtn" [attr.form]="'fmdtls'" [disabled]="__frmDtls.invalid">Update</button>
+</mat-dialog-actions>
+<br clear="all">
+

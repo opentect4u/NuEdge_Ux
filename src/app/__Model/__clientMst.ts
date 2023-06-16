@@ -28,4 +28,12 @@ export interface client {
     anniversary_date?: string,
     dob_actual?: string;
     client_type_mode?: string;
+
+    proprietor_name?:string;
+    date_of_incorporation?:string;
+    karta_name?:string;
+    inc_date?:string;
+    pertner_dtls?:any;
+    identification_number?:string;
+    country?:any;
   }

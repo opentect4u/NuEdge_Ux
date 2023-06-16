@@ -1,0 +1,30 @@
+<core-tab
+[customClass]="'customTabs'"
+[Tab]="companyTabMenu"
+(GetTabDtls)="onCompanyTabChange($event)">
+</core-tab>
+<div class="container_fluid mb-2 w-100">
+<core-tab
+[customClass]="'lastTabs'"
+[Tab]="subTab"
+(GetTabDtls)="onTabChange($event)"
+[index]="tabindex">
+</core-tab>
+<div class="container_fluid mb-2 w-100">
+  <ng-container *ngIf="tabindex==0;else Report">
+        <login-pass-entry
+        (modifyArray)="ModifyLoginPasswordMst($event)"
+        [product]="product"
+        [cmp_profile_id]="cmp_profile_id"
+        (setreset)="reset($event)"
+         [setParticularFormDt]="particularLoginPasswordDetails"
+        ></login-pass-entry>
+  </ng-container>
+  <ng-template #Report>
+         <login-pass-rpt
+         (sendParticularRowData)="setFormDt($event)"
+         [loginPasswordLockerMst]="loginPasswordLockerMst"
+         ></login-pass-rpt>
+  </ng-template>
+</div>
+</div>

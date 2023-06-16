@@ -23,16 +23,6 @@
 <mat-dialog-content>
   <form  [formGroup]="__scmForm" (ngSubmit)="submit()" id="__scmForm_{{data.id}}"  autocomplete="off" ngNativeValidate>
     <div class="row">
-      <!-- <div class="col-sm-12 my-2">
-        <label for="prdName">Product <span class="text-danger">*</span></label>
-        <select class="form-control" formControlName="product_id" id="prdName">
-          <option value="">Select Product</option>
-         <option *ngFor="let __prd of __ProductMaster" value="{{__prd.id}}">{{__prd.product_name}}</option>
-        </select>
-        <div class="invalid-feedback" *ngIf="__scmForm.get('product_id').invalid && (__scmForm.get('product_id').dirty || __scmForm.get('product_id').touched)">
-          <span class="invalid-feedback" *ngIf="(__scmForm.get('product_id')).errors?.required">*Please provide Product</span>
-        </div>
-      </div> -->
       <div class="col-sm-12 my-2">
         <label for="amcName">AMC <span class="text-danger">*</span></label>
         <select class="form-control" formControlName="amc_id" id="amcName">
@@ -109,19 +99,7 @@
         </div>
       </div>
 
-     <div class="col-sm-12 my-2">
-          <label for="sip_date">SIP Date <span class="text-danger">*</span></label>
-          <ng-multiselect-dropdown #multiSelect
-          id="sip_date"
-          [placeholder]="'Select SIP Dates'"
-          [settings]="settings"
-          [data]="__dates"
-          formControlName="sip_date">
-        </ng-multiselect-dropdown>
-        <div class="invalid-feedback" *ngIf="__scmForm.get('sip_date').invalid && (__scmForm.get('sip_date').dirty || __scmForm.get('sip_date').touched)">
-          <span class="invalid-feedback" *ngIf="(__scmForm.get('sip_date')).errors?.required">*Please provide sip date</span>
-        </div>
-     </div>
+
 
       <div class="col-sm-12 my-2">
         <label for="pip_fresh_min_amt">PIP Fresh Min Amount <span class="text-danger">*</span></label>
@@ -142,6 +120,24 @@
         </div>
       </div>
     </div>
+
+    <div class="col-sm-12 my-2">
+      <label for="sip_date">SIP Date
+        <span class="text-danger">*</span>
+        <mat-checkbox class="mx-3" color="primary" formControlName="same_as_sip_dates">Same As</mat-checkbox>
+      </label>
+      <ng-multiselect-dropdown #multiSelect
+      id="sip_date"
+      [placeholder]="'Select SIP Dates'"
+      [settings]="settings"
+      [data]="__dates"
+      formControlName="sip_date">
+    </ng-multiselect-dropdown>
+    <div class="invalid-feedback" *ngIf="__scmForm.get('sip_date').invalid && (__scmForm.get('sip_date').dirty || __scmForm.get('sip_date').touched)">
+      <span class="invalid-feedback" *ngIf="(__scmForm.get('sip_date')).errors?.required">*Please provide sip date</span>
+    </div>
+ </div>
+
     <!-- SIP Frequency Wise Amount -->
     <div class="row">
       <div class="col-sm-12">
@@ -247,7 +243,7 @@
         placeholder="Enter Special SIP Name"
         formControlName="special_sip_name">
         <div class="invalid-feedback" *ngIf="__scmForm.get('special_sip_name').invalid && (__scmForm.get('special_sip_name').dirty || __scmForm.get('special_sip_name').touched)">
-          <span class="invalid-feedback" *ngIf="(__scmForm.get('special_sip_name')).errors?.required">*Please provide special sip</span>
+          <span class="invalid-feedback" *ngIf="(__scmForm.get('special_sip_name')).errors?.required">*Please provide special SIP</span>
         </div>
       </div>
      </div>
@@ -255,7 +251,10 @@
     <!-- SWP frequency Wise Amount -->
     <div class="row my-2">
       <div class="col-sm-12">
-        <label for="swp_date">SWP Date <span class="text-danger">*</span></label>
+        <label for="swp_date">SWP Date
+          <span class="text-danger">*</span>
+          <mat-checkbox class="mx-5" color="primary" formControlName="same_as_swp_dates">Same As</mat-checkbox>
+        </label>
         <ng-multiselect-dropdown #multiSelectFrSWP
         id="swp_date"
         [placeholder]="'Select SWP Dates'"
@@ -344,11 +343,31 @@
         </tbody>
       </table>
       </div>
+      <div class="col-sm-12 my-2">
+          <mat-checkbox color="primary" formControlName="ava_special_swp">Available Special SWP</mat-checkbox>
+      </div>
+      <div class="col-sm-12">
+          <label for="special_swp_name">Special SWP Name <span class="text-danger" *ngIf="__scmForm.controls['ava_special_swp'].value">*</span></label>
+          <input
+          type="text"
+          name="special_swp_name"
+          id="special_swp_name"
+          class="form-control"
+          placeholder="Enter Special SWP Name"
+          formControlName="special_swp_name">
+          <div class="invalid-feedback" *ngIf="__scmForm.get('special_swp_name').invalid && (__scmForm.get('special_swp_name').dirty || __scmForm.get('special_swp_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__scmForm.get('special_swp_name')).errors?.required">*Please provide special SWP</span>
+          </div>
+      </div>
+
     </div>
     <!-- STP Frequency Wise Amount -->
     <div class="row my-2">
       <div class="col-sm-12">
-        <label for="stp_date">STP Date <span class="text-danger">*</span></label>
+        <label for="stp_date">STP Date
+          <span class="text-danger">*</span>
+          <mat-checkbox class="mx-5" color="primary" formControlName="same_as_stp_dates">Same As</mat-checkbox>
+        </label>
         <ng-multiselect-dropdown #multiSelectFrSWP
         id="stp_date"
         [placeholder]="'Select STP Dates'"
@@ -402,22 +421,6 @@
                 {{stp_frequency.controls[i].get('freq_name').value}}
                 <span class="text-danger" *ngIf="stp_frequency.controls[i].get('is_checked').value">(*)</span>
               </td>
-              <!-- <td >
-                <input type="text"
-                name="sip_fresh_min_amt{{i + 1}}"
-                id="sip_fresh_min_amt{{i}}"
-                class="form-control"
-                placeholder="Enter Sip Fresh Minimum Amount"
-                formControlName="sip_fresh_min_amt"
-                (keypress)="preventNonumeric($event,i)"
-                 >
-                 <div class="invalid-feedback"
-                 *ngIf="stp_frequency.controls[i].get('sip_fresh_min_amt').invalid && (stp_frequency.controls[i].get('sip_fresh_min_amt').dirty || stp_frequency.controls[i].get('sip_fresh_min_amt').touched)">
-                  <span class="invalid-feedback" *ngIf="(stp_frequency.controls[i].get('sip_fresh_min_amt')).errors?.required">*Please provide mandatory field</span>
-                  <span class="invalid-feedback" *ngIf="(stp_frequency.controls[i].get('sip_fresh_min_amt')).hasError('pattern')">*Only digits allow </span>
-
-                </div>
-              </td> -->
               <td >
                 <input type="text"
                 name="stp_add_min_amt{{i + 1}}"
@@ -437,7 +440,290 @@
         </tbody>
       </table>
       </div>
+
+      <div class="col-sm-12 my-2">
+        <mat-checkbox color="primary" formControlName="ava_special_stp">Available Special STP</mat-checkbox>
+      </div>
+      <div class="col-sm-12">
+          <label for="special_sip_name">Special STP Name <span class="text-danger" *ngIf="__scmForm.controls['ava_special_stp'].value">*</span></label>
+          <input
+          type="text"
+          name="special_stp_name"
+          id="special_stp_name"
+          class="form-control"
+          placeholder="Enter Special STP Name"
+          formControlName="special_stp_name">
+          <div class="invalid-feedback" *ngIf="__scmForm.get('special_stp_name').invalid && (__scmForm.get('special_stp_name').dirty || __scmForm.get('special_stp_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__scmForm.get('special_stp_name')).errors?.required">*Please provide special STP</span>
+          </div>
+      </div>
     </div>
+
+    <!-- STEP UP AMOUNT & PERCENTAGE -->
+    <div class="row">
+      <div class="col-sm-12">
+        <label for="step_up_min_amt">STEP UP Minimum Amount</label>
+        <input type="text" name="step_up_min_amt" placeholder="Enter STEP UP Minimum Amount" id="step_up_min_amt" class="form-control" formControlName="step_up_min_amt">
+      </div>
+      <div class="col-sm-12">
+        <label for="step_up_min_per">STEP UP Minimum Percentage</label>
+        <input type="text" name="step_up_min_per" placeholder="Enter STEP UP Minimum Percentage" id="step_up_min_per" class="form-control" formControlName="step_up_min_per">
+      </div>
+    </div>
+
+    <ng-container *ngIf="this.data.scheme_type == 'N'">
+      <div class="row">
+        <div class="col-sm-12">
+           <label for="nfo_one_pager_upload">NFO One Pager Upload</label>
+           <input type="file"
+           name="nfo_one_pager_upload"
+           id="nfo_one_pager_upload"
+           class="form-control"
+           (change)="getFile($event.target,'O')"
+           formControlName="nfo_one_pager_upload">
+           <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+          <div class="invalid-feedback"
+          *ngIf=" __scmForm.get('nfo_one_pager_upload').invalid && ( __scmForm.get('nfo_one_pager_upload').dirty ||  __scmForm.get('nfo_one_pager_upload').touched)">
+          <span class="invalid-feedback" *ngIf="__scmForm.get('nfo_one_pager_upload').errors?.inValidExt">*Invalid
+            file extension.</span>
+          <span class="invalid-feedback"
+            *ngIf="__scmForm.get('nfo_one_pager_upload').errors?.fileSizeValidator">*File size must not exceed than
+            10MB.</span>
+         </div>
+
+        </div>
+        <div class="col-sm-12">
+          <label for="nfo_kim_key_memorandom">NFO-Key Information Memorandum (KIM)</label>
+          <input
+          type="file"
+          name="nfo_kim_key_memorandom"
+          id="nfo_kim_key_memorandom"
+          class="form-control"
+          formControlName="nfo_kim_key_memorandom"
+          (change)="getFile($event.target,'K')"
+          >
+          <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+          <div class="invalid-feedback"
+          *ngIf=" __scmForm.get('nfo_kim_key_memorandom').invalid && ( __scmForm.get('nfo_kim_key_memorandom').dirty ||  __scmForm.get('nfo_kim_key_memorandom').touched)">
+          <span class="invalid-feedback" *ngIf="__scmForm.get('nfo_kim_key_memorandom').errors?.inValidExt">*Invalid
+            file extension.</span>
+          <span class="invalid-feedback"
+            *ngIf="__scmForm.get('nfo_kim_key_memorandom').errors?.fileSizeValidator">*File size must not exceed than
+            10MB.</span>
+         </div>
+       </div>
+       <div class="col-sm-12">
+        <label for="nfo_ppt">NFO PPT</label>
+        <input
+        type="file"
+        name="nfo_ppt"
+        id="nfo_ppt"
+        class="form-control"
+        (change)="getFile($event.target,'P')"
+        formControlName="nfo_ppt"
+        >
+        <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+        <div class="invalid-feedback"
+        *ngIf=" __scmForm.get('nfo_ppt').invalid && ( __scmForm.get('nfo_ppt').dirty ||  __scmForm.get('nfo_ppt').touched)">
+        <span class="invalid-feedback" *ngIf="__scmForm.get('nfo_ppt').errors?.inValidExt">*Invalid
+          file extension.</span>
+        <span class="invalid-feedback"
+          *ngIf="__scmForm.get('nfo_ppt').errors?.fileSizeValidator">*File size must not exceed than
+          10MB.</span>
+       </div>
+     </div>
+      </div>
+
+      <div class="divider">
+        <span>NFO Application Form</span>
+        <hr class="line"/>
+       </div>
+
+      <div class="row">
+          <div class="col-sm-12">
+           <label for="common_application_form">Common Application Form</label>
+           <input
+           type="file"
+           name="common_application_form"
+           class="form-control"
+           (change)="getFile($event.target,'C')"
+           formControlName="common_application_form"
+           id="common_application_form">
+           <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+           <div class="invalid-feedback"
+           *ngIf=" __scmForm.get('common_application_form').invalid && ( __scmForm.get('common_application_form').dirty ||  __scmForm.get('common_application_form').touched)">
+           <span class="invalid-feedback" *ngIf="__scmForm.get('common_application_form').errors?.inValidExt">*Invalid
+             file extension.</span>
+           <span class="invalid-feedback"
+             *ngIf="__scmForm.get('common_application_form').errors?.fileSizeValidator">*File size must not exceed than
+             10MB.</span>
+          </div>
+
+          </div>
+          <div class="col-sm-12">
+            <label for="sip_reg_form">SIP Registration Form</label>
+            <input
+            type="file"
+            name="sip_reg_form"
+            class="form-control"
+            (change)="getFile($event.target,'I')"
+            formControlName="sip_reg_form"
+            id="sip_reg_form">
+            <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+            <div class="invalid-feedback"
+            *ngIf=" __scmForm.get('sip_reg_form').invalid && ( __scmForm.get('sip_reg_form').dirty ||  __scmForm.get('sip_reg_form').touched)">
+            <span class="invalid-feedback" *ngIf="__scmForm.get('sip_reg_form').errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback"
+              *ngIf="__scmForm.get('sip_reg_form').errors?.fileSizeValidator">*File size must not exceed than
+              10MB.</span>
+           </div>
+
+          </div>
+          <div class="col-sm-12">
+            <label for="swp_reg_form">SWP Registration Form</label>
+            <input
+            type="file"
+            name="swp_reg_form"
+            class="form-control"
+            (change)="getFile($event.target,'W')"
+            formControlName="swp_reg_form"
+            id="swp_reg_form">
+            <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+            <div class="invalid-feedback"
+            *ngIf=" __scmForm.get('swp_reg_form').invalid && ( __scmForm.get('swp_reg_form').dirty ||  __scmForm.get('swp_reg_form').touched)">
+            <span class="invalid-feedback" *ngIf="__scmForm.get('swp_reg_form').errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback"
+              *ngIf="__scmForm.get('swp_reg_form').errors?.fileSizeValidator">*File size must not exceed than
+              10MB.</span>
+           </div>
+
+          </div>
+          <div class="col-sm-12">
+            <label for="stp_reg_form">STP Registration Form</label>
+            <input
+            type="file"
+            name="stp_reg_form"
+            class="form-control"
+            (change)="getFile($event.target,'T')"
+            formControlName="stp_reg_form"
+            id="stp_reg_form">
+            <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+            <div class="invalid-feedback"
+            *ngIf=" __scmForm.get('stp_reg_form').invalid && ( __scmForm.get('stp_reg_form').dirty ||  __scmForm.get('stp_reg_form').touched)">
+            <span class="invalid-feedback" *ngIf="__scmForm.get('stp_reg_form').errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback"
+              *ngIf="__scmForm.get('stp_reg_form').errors?.fileSizeValidator">*File size must not exceed than
+              10MB.</span>
+           </div>
+
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <table class="my-4">
+            <thead>
+              <tr>
+                 <th class="text-center" colspan="4">
+                  Other Form
+                  </th>
+                </tr>
+              </thead>
+            <thead>
+              <tr>
+                <th>
+                  Document Name
+                </th>
+                <th>
+                  Document
+                  <p class="my-1"><label>Allowed format : </label><small> PDF</small></p>
+                  <p class="m-0"><label>File Size:</label> <small> 10MB (max)</small></p>
+                </th>
+                <th>
+                  Document View
+                </th>
+                <th>
+                  <button mat-icon-button type="button">
+                    <mat-icon (click)="addItem()">add</mat-icon>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody formArrayName="others">
+              <tr *ngFor="let item of others.controls; let i = index;">
+                <ng-container [formGroupName]="i">
+                  <td class="rowWidth">
+                    <input type="text" name="Name" placeholder="Enter Document Name" id="Name" class="form-control" formControlName="form_name">
+                  </td>
+                  <td class="rowWidth">
+                    <input type="file" accept=".pdf" name="docFile" id="docFile" class="form-control"
+                      formControlName="doc_name"
+                      (change)="getOtherFiles($event,i,others.controls[i].get('doc_type_id')?.value)">
+                    <div class="invalid-feedback"
+                      *ngIf=" others.controls[i].get('doc_name').invalid && ( others.controls[i].get('doc_name').dirty ||  others.controls[i].get('doc_name').touched)">
+                      <span class="invalid-feedback" *ngIf="others.controls[i].get('doc_name').errors?.inValidExt">*Invalid
+                        file extension.</span>
+                      <span class="invalid-feedback"
+                        *ngIf="others.controls[i].get('doc_name').errors?.fileSizeValidator">*File size must not exceed than
+                        10MB.</span>
+                    </div>
+
+                  </td>
+                  <td class="rowWidth">
+                    <a [href]="others.controls[i].get('file_preview')?.value" target="__blank" *ngIf="others.controls[i].get('file_preview')?.value">
+                      <img src="../../../../../../assets/images/pdf.png"  alt="preview Image">
+                    </a>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="others.controls[i].get('id')?.value == 0">
+                      <button mat-icon-button type="button" *ngIf="i > 0">
+                        <mat-icon class="delete_icon" (click)="removeDocument(i)">delete</mat-icon>
+                      </button>
+                    </ng-container>
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </ng-container>
+
+     <!-- <div class="row">
+      <div class="col-sm-12">
+        <label for="growth_isin">Growth ISIN </label>
+        <input
+        type="text"
+        name="growth_isin"
+        id="growth_isin"
+        class="form-control"
+        placeholder="Enter Growth ISIN"
+        formControlName="growth_isin">
+      </div>
+      <div class="col-sm-12">
+        <label for="idcw_payout_isin">IDCW Payout ISIN </label>
+        <input
+        type="text"
+        name="idcw_payout_isin"
+        id="idcw_payout_isin"
+        class="form-control"
+        placeholder="Enter IDCW Payout ISIN"
+        formControlName="idcw_payout_isin">
+      </div>
+      <div class="col-sm-12">
+        <label for="idcw_reinvestment_isin">IDCW Reinvestment ISIN</label>
+        <input
+        type="text"
+        name="idcw_reinvestment_isin"
+        id="idcw_reinvestment_isin"
+        class="form-control"
+        placeholder="Enter IDCW Reinvestment ISIN"
+        formControlName="idcw_reinvestment_isin">
+      </div>
+     </div> -->
 
 </form>
 </mat-dialog-content>

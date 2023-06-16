@@ -1,0 +1,480 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2>{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+      <button mat-icon-button (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <div class="card my-5">
+      <div class="card-body p-5">
+        <form [formGroup]="__ackForm" (ngSubmit)="submitAck()" autocomplete="off">
+            <div class="row">
+              <div class="col-sm-6">
+                  <label for="start_dt">Start Date</label>
+                  <input type="date"  id="start_dt" name="start_dt" formControlName="start_date" class="form-control">
+              </div>
+              <!-- <div class="col-sm-1"></div> -->
+              <div class="col-sm-6">
+                <label for="end_dt">End Date</label>
+                <input type="date" id="end_dt" name="end_dt" formControlName="end_date" class="form-control">
+            </div>
+            </div>
+
+            <div class="row my-2">
+              <div class="col-sm-4">
+                  <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforTin($event)">
+                    <div class="searchDiv">
+                      <label for="tin_no">TIN Number
+                      </label>
+                      <input type="search" name="tin_no" id="tin_no" class="form-control"
+                        formControlName="tin_no" placeholder="Search by TIN Number">
+                      <span class="spinner-border"
+                        *ngIf="__isTinspinner && __ackForm.get('tin_no').value?.length > 1"></span>
+                      <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforTin($event)">
+                        <div class="serachresult_client" #searchTin>
+                          <ul *ngIf="tinMst.length > 0">
+                            <li *ngFor="let items of tinMst" (click)="getItems(items,'T')">
+                              {{items.tin_no}} | {{items.client_name}}
+                            </li>
+                          </ul>
+                          <div class="noDataFound" *ngIf="tinMst.length == 0">
+                            <h5 class="text-center">
+                              Sorry!! No Records Found
+                            </h5>
+                            <p>TIN Number Not Available</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="col-sm-4">
+                  <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
+                    <div class="searchDiv">
+                      <label for="client_code">Client Details</label>
+                      <input type="text" name="client_code" id="client_code" class="form-control" formControlName="client_code"
+                        placeholder="Enter Client code / Name / PAN / email">
+                      <span class="spinner-border" *ngIf="__isClientPending && __ackForm.get('client_code').value?.length > 1"></span>
+
+                      <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
+                        <div class="serachresult_client" #clientCd>
+                          <ul *ngIf="__clientMst.length > 0">
+                            <li *ngFor="let items of __clientMst" (click)="getItems(items,'C')">
+                             {{items.client_code}} | {{items.pan}} | {{items.client_name}}
+                            </li>
+                          </ul>
+                          <div class="noDataFound" *ngIf="__clientMst.length == 0">
+                            <h5 class="text-center">
+                              Sorry!! No Records Found
+                            </h5>
+                            <p>If your result match,they will appear here</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                  <div class="searchDiv">
+                    <label for="subbrkArn">Sub Broker Code</label>
+                    <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                      formControlName="sub_brk_cd">
+                    <span class="spinner-border"
+                      *ngIf="__isSubArnPending && __ackForm.get('sub_brk_cd').value?.length > 1"></span>
+
+                    <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
+                      <div class="serachresult_client" #subBrkArn>
+                        <ul *ngIf="__subbrkArnMst.length > 0">
+                          <li *ngFor="let items of __subbrkArnMst" (click)="getItems(items,'S')">
+                            {{items.code}} | {{items.bro_name}}
+                          </li>
+                        </ul>
+                        <div class="noDataFound" *ngIf="__subbrkArnMst.length == 0">
+                          <h5 class="text-center">
+                            Sorry!! No Sub Brokers Found
+                          </h5>
+                          <p>If your result match,they will appear here</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                  <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickForAMC($event)">
+                    <div class="searchDiv">
+                      <label for="amc_name">AMC Name</label>
+                      <input type="search" id="amc_name"
+                      class="form-control"
+                      placeholder="Serach By AMC"
+                      formControlName="amc_name">
+                      <span class="spinner-border" *ngIf="__isAmcPending && __ackForm.get('amc_name').value?.length > 1"></span>
+
+                      <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickForAMC($event)">
+                        <div class="serachresult_client" #searchAMC>
+                          <ul *ngIf="amcMst.length > 0">
+                            <li *ngFor="let items of amcMst" (click)="getItems(items,'A')">
+                             {{items.amc_name}}
+                            </li>
+                          </ul>
+                          <div class="noDataFound" *ngIf="amcMst.length == 0">
+                            <h5 class="text-center">
+                              Sorry!! No AMC Found
+                            </h5>
+                            <p>If your result match,they will appear here</p>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="col-sm-4">
+                  <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
+                    <div class="searchDiv">
+                      <label for="Euin">EUIN</label>
+                      <input type="search" id="Euin"
+                      class="form-control"
+                      placeholder="Serach By EUIN"
+                      formControlName="euin_no">
+                      <span class="spinner-border" *ngIf="__isEuinPending && __ackForm.get('euin_no').value?.length > 1"></span>
+
+                      <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
+                        <div class="serachresult_client" #searchEUIN>
+                          <ul *ngIf="__euinMst.length > 0">
+                            <li *ngFor="let items of __euinMst" (click)="getItems(items,'E')">
+                             {{items.euin_no}} | {{items.emp_name}}
+                            </li>
+                          </ul>
+                          <div class="noDataFound" *ngIf="__euinMst.length == 0">
+                            <h5 class="text-center">
+                              Sorry!! No Employees Found
+                            </h5>
+                            <p>If your result match,they will appear here</p>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="col-sm-4">
+                <label for="brn_cd">Branch</label>
+                <input type="text" name="brn_cd" id="brn_cd" class="form-control" formControlName="brn_cd"
+                  placeholder="Enter Branch">
+              </div>
+            </div>
+            <div class="row my-2">
+              <div class="col-sm-4 my-auto">
+                <mat-checkbox
+                #buTypeChecked
+                color="primary"
+                [class]="'mr-3'"
+                *ngFor="let bu_type of __bu_type; let i=index"
+                [value]="bu_type.id"
+                (change)="onbuTypeChange($event)"
+                > {{bu_type.bu_type}}</mat-checkbox>
+                <mat-checkbox color="primary" formControlName="is_all_bu_type"> All</mat-checkbox>
+              </div>
+              <div class="col-sm-4 my-auto">
+                <mat-checkbox
+                #rntChecked
+                color="primary"
+                [class]="'mr-3'"
+                *ngFor="let rnt of __rnt; let i=index"
+                [value]="rnt.id"
+                (change)="onrntTypeChange($event)"
+                > {{rnt.rnt_name}}</mat-checkbox>
+                <mat-checkbox  color="primary" formControlName="is_all_rnt"> All</mat-checkbox>
+              </div>
+              <div class="col-sm-4 my-auto">
+                <button mat-raised-button color="primary" class="float-right">Show</button>
+              </div>
+            </div>
+
+        </form>
+      </div>
+    </div>
+    <div class="mat-elevation-z3">
+      <div class="example_container_header">
+        <!-- <div class="transTypeCount">
+          <mat-chip-list class="example-chip" cdkDropList cdkDropListOrientation="horizontal">
+            <mat-chip class="example-box" cdkDrag color="primary" *ngFor="let trnsType of __trans_types">
+              {{trnsType.name}} : {{trnsType.count}}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+
+
+
+        <div class="btnGrp d-flex">
+            <mat-form-field appearance="fill">
+              <mat-label>Select Columns</mat-label>
+              <mat-select [formControl]="toppings" multiple>
+                <mat-option
+                *ngFor="let topping of toppingList"
+                [value]="topping.id">
+                {{topping.text}}
+              </mat-option>
+              </mat-select>
+            </mat-form-field>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>system_update_alt</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'FinancialReport'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div> -->
+      </div>
+      <div class="example-container">
+        <table mat-table [dataSource]="__ackMst" class="table_Custome">
+          <ng-container matColumnDef="sl_no">
+            <th mat-header-cell *matHeaderCellDef>Sl No.</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="temp_tin_no">
+            <th mat-header-cell *matHeaderCellDef>TIN Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no}}</td>
+          </ng-container>
+          <ng-container matColumnDef="bu_type">
+            <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{(element.bu_type == 'D' ? 'B2C - Direct' : (element.bu_type == 'I' ? 'B2C - Indirect' : 'B2B'))}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="arn_no">
+            <th mat-header-cell *matHeaderCellDef>ARN No</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.arn_no}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="rnt_name">
+            <th mat-header-cell *matHeaderCellDef>R&T</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.rnt_name ? element.rnt_name : ''}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="euin_no">
+            <th mat-header-cell *matHeaderCellDef>EUIN</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.euin_no}}
+            </td>
+          </ng-container>
+          <!-- <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.amount}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="chq">
+            <th mat-header-cell *matHeaderCellDef>Cheque</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.chq_no}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="bank">
+            <th mat-header-cell *matHeaderCellDef>Bank</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.chq_bank}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="inv_type">
+            <th mat-header-cell *matHeaderCellDef>Investment Type</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.inv_type == 'F' ? 'Fresh' : "Additional"}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="apl_no">
+            <th mat-header-cell *matHeaderCellDef>Application Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.apl_no}}
+            </td>
+          </ng-container> -->
+
+          <!-- <ng-container matColumnDef="mode_of_holding">
+            <th mat-header-cell *matHeaderCellDef>Mode Of Holding</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.mode_of_holding == 'S' ? 'Single' : element.mode_of_holding == 'J' ? 'Joint' : 'Anyone Or Survivor'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="plan">
+            <th mat-header-cell *matHeaderCellDef>Plan</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.plan}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="option">
+            <th mat-header-cell *matHeaderCellDef>Option</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.option}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fol_no">
+            <th mat-header-cell *matHeaderCellDef>Folio Number</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.fol_no}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="kyc_status">
+            <th mat-header-cell *matHeaderCellDef>KYC Status</th>
+            <td mat-cell *matCellDef="let element;let i = index">
+              {{element.kyc_status}}
+            </td>
+          </ng-container> -->
+
+          <!-- <ng-container matColumnDef="first_client_name">
+            <th mat-header-cell *matHeaderCellDef>Client Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.first_client_name}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="first_client_code">
+            <th mat-header-cell *matHeaderCellDef>Client Code</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.first_client_code}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="first_client_pan">
+            <th mat-header-cell *matHeaderCellDef>Client Pan</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.first_client_pan}}</td>
+          </ng-container> -->
+
+          <!-- <ng-container matColumnDef="second_client_name">
+            <th mat-header-cell *matHeaderCellDef>Second Client Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.second_client_name ? element.second_client_name : ''}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="second_client_code">
+            <th mat-header-cell *matHeaderCellDef>Second Client Code</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.second_client_code ? element.second_client_code : ''}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="second_client_pan">
+            <th mat-header-cell *matHeaderCellDef>Second Client Pan</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.second_client_pan ? element.second_client_pan : ''}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="third_client_name">
+            <th mat-header-cell *matHeaderCellDef>Third Client Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.third_client_name ? element.third_client_name : ''}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="third_client_code">
+            <th mat-header-cell *matHeaderCellDef>Third Client Code</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.third_client_code ? element.third_client_code : ''}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="third_client_pan">
+            <th mat-header-cell *matHeaderCellDef>Third Client Pan</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.third_client_pan ? element.third_client_pan : ''}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="transaction">
+            <th mat-header-cell *matHeaderCellDef>Transaction</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.trans_name}}</td>
+          </ng-container>
+          <ng-container matColumnDef="scheme_name">
+            <th mat-header-cell *matHeaderCellDef>Scheme Name</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.scheme_name}}</td>
+          </ng-container> -->
+
+
+          <!-- Buisness Type-->
+          <ng-container matColumnDef="edit" sticky>
+            <th mat-header-cell *matHeaderCellDef>Edit</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button  (click)="populateDT(element)">
+                <mat-icon class="edit_icon">{{element.form_status == 'A' ? 'edit' : 'visibility'}}</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Buisness Type-->
+          <!-- <ng-container matColumnDef="delete" [stickyEnd]="true">
+            <th mat-header-cell *matHeaderCellDef>Delete</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button>
+                <mat-icon class="delete_icon">delete</mat-icon>
+              </button>
+            </td>
+          </ng-container> -->
+
+          <tr mat-header-row *matHeaderRowDef="__columns;sticky:true"></tr>
+          <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="__columns.length" class="text-center">No Acknowledgement History Found
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="paginator">
+        <div class="itemsPerPage">
+          <label>Items Per Page :&nbsp; </label>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
+              10
+            </mat-button-toggle>
+            <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
+              50
+            </mat-button-toggle>
+            <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
+              100
+            </mat-button-toggle>
+            <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
+              All
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        <div class="paginatorContainer">
+          <mat-button-toggle-group *ngFor="let paginate of __paginate">
+            <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+              <label>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+                <span
+                  *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
+              </label>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+
+
+
+      </div>
+    </div>
+  </mat-dialog-content>
+  </div>

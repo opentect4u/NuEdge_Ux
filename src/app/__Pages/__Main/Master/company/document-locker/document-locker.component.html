@@ -1,0 +1,13 @@
+<!-- <div class="container_fluid my-2 w-100"> -->
+  <core-tab [Tab]="TabMenu" [customClass]="'customTabs'" (GetTabDtls)="onTabChange($event)" [index]="tabindex"></core-tab>
+   <app-documebnt-locker-dtls-entry
+   [comp_id]="comp_id"
+   [companyDtls]="companyDtls"
+   [documentDtls]="documentDtls"
+   (documentModify)="documentModification($event)"
+   ></app-documebnt-locker-dtls-entry>
+  <app-document-locker-dtls-rpt
+  (selectIndex)="getRowData($event)"
+  [docDtls]="docDtls"
+  ></app-document-locker-dtls-rpt>
+<!-- </div> -->

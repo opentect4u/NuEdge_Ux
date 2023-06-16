@@ -1,0 +1,21 @@
+<div class="row flexSec">
+  <div class="col-sm-7">
+    <shared-upload-csv
+    [leftHeaderTitle]="'Upload District'"
+    [columns]="tableColumns"
+    [api_name]="'/districtimport'"
+    [flag]="'GD'"
+    [dataSource]="tableData"
+    [file_name]="'Sample District'"
+    [countryMst]="countryMst"
+    [displayedColumns]="displayedColumns"></shared-upload-csv>
+  </div>
+  <div class="col-sm-5">
+    <shared-mst-dtls
+    [btnTitle]="'View All District'"
+    [headerTitle]="'Recent District'"
+    [flag]="'GD'"
+    (populate)="populateDT($event)" (viewAll)="viewAll()"
+    [dataSource]="district.data"></shared-mst-dtls>
+  </div>
+</div>

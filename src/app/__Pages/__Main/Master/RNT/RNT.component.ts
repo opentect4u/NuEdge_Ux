@@ -1,11 +1,8 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { rnt } from 'src/app/__Model/Rnt';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -18,31 +15,6 @@ import { RntrptComponent } from './rntRpt/rntRpt.component';
   styleUrls: ['./RNT.component.css'],
 })
 export class RNTComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-                              label:"Home",
-                              url:'/main',
-                              hasQueryParams:false,
-                              queryParams:''
-                              },
-                              {
-                                label:"Master",
-                                url:'/main/master/products',
-                                hasQueryParams:false,
-                                queryParams:''
-                              },
-                              {
-                                label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
-                                url:'/main/master/productwisemenu/home',
-                                hasQueryParams:true,
-                                queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
-                              },
-                              {
-                                label:"R&T",
-                                url:'/main/master/productwisemenu/rnt',
-                                hasQueryParams:false,
-                                queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
-                              }
-  ]
   __menu = [
     {
       parent_id: 4,
@@ -72,10 +44,6 @@ export class RNTComponent implements OnInit {
       flag: 'R',
     },
   ];
-  __paginate: any = [];
-  __pageNumber = new FormControl(10);
-  __columns: string[] = ['sl_no', 'rnt_name', 'cus_care_no', 'edit', 'delete'];
-  __selectRNT = new MatTableDataSource<rnt>([]);
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
@@ -88,13 +56,9 @@ export class RNTComponent implements OnInit {
     if (this.__rtDt.snapshot.queryParamMap.get('id')) {
       this.getParticularRNt(atob(this.__rtDt.snapshot.queryParamMap.get('id')));
     }
-    // this.getRNTmaster();
-    this.setBreadCrumb();
-  }
-  setBreadCrumb(){
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
 
+  /****** For Preview Selected RNT Details from Upload RNT Page inside Dialog Box*/
   getParticularRNt(__id) {
     this.__dbIntr
       .api_call(0, '/rnt', 'id=' + __id)
@@ -105,38 +69,19 @@ export class RNTComponent implements OnInit {
         }
       });
   }
+  /*** End */
 
-  getSearchItem(__ev) {
-    if (__ev.flag == 'A') {
-    } else if (__ev.flag == 'F') {
-      this.setPaginator([__ev.item]);
-    } else {
-      this.getRNTmaster();
-    }
-  }
-  populateDT(__items: rnt) {
-    console.log(__items);
-    // this.__utility.navigatewithqueryparams('/main/master/rntmodify',{queryParams:{id:btoa(__items.id.toString())}})
-    this.openDialog(__items, __items.id);
-  }
 
-  private getRNTmaster(__paginate: string | null = '10') {
-    this.__dbIntr
-      .api_call(0, '/rnt', 'paginate=' + __paginate)
-      .pipe(map((x: any) => x.data))
-      .subscribe((res: any) => {
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
-  }
-  private setPaginator(__res) {
-    this.__selectRNT = new MatTableDataSource(__res);
-  }
+
+   /**** Navigate with rnt id to AMC Page and  preview that AMC inside AMC Report */
   showCorrospondingAMC(__rntDtls) {
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/amc', {
       queryParams: { id: btoa(__rntDtls.id.toString()) },
     });
   }
+  /** End */
+
+  /*** Open R&T Modification Modal  for modifying and addition*/
   openDialog(__rnt: rnt | null = null, __rntId: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -144,14 +89,13 @@ export class RNTComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.hasBackdrop = false;
     dialogConfig.width = '60%';
-    // dialogConfig.height = "100%";
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data = {
       flag: 'R',
       id: __rntId,
       __rnt: __rnt,
       title: __rntId == 0 ? 'Add R&T' : 'Update R&T',
-      product_id:this.__rtDt.snapshot.queryParamMap.get('product_id') ? atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) : '',
+      product_id:'1',
       right: this.randomIntFromInterval(1, 60),
     };
      console.log(__rntId);
@@ -163,13 +107,7 @@ export class RNTComponent implements OnInit {
         dialogConfig
       );
       dialogref.afterClosed().subscribe((dt) => {
-        if (dt) {
-          if (dt?.id > 0) {
-            this.updateRow(dt.data);
-          } else {
-            this.addRow(dt.data);
-          }
-        }
+
       });
     } catch (ex) {
       console.log(ex);
@@ -182,70 +120,35 @@ export class RNTComponent implements OnInit {
       });
     }
   }
+  /*** End */
 
+
+  /***
+   * generating random number from 1 to 60; based on it
+   * dialog box will be positioned after minimized or
+   * maximized
+   * */
   randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
+  /*** End */
 
-  private updateRow(row_obj: rnt) {
-    this.__selectRNT.data = this.__selectRNT.data.filter((value: rnt, key) => {
-      if (value.id == row_obj.id) {
-        value.rnt_name = row_obj.rnt_name;
-        value.website = row_obj.website;
-        value.ofc_addr = row_obj.ofc_addr;
-        value.cus_care_no = row_obj.cus_care_no;
-        value.cus_care_email = row_obj.cus_care_email;
-        value.id = row_obj.id;
-        value.head_ofc_contact_per = row_obj.head_ofc_contact_per
-        value.head_contact_per_mob = row_obj.head_contact_per_mob
-        value.head_contact_per_email = row_obj.head_contact_per_email
-        value.head_ofc_addr = row_obj.head_ofc_addr
 
-        value.local_ofc_contact_per = row_obj.local_ofc_contact_per
-        value.local_contact_per_mob = row_obj.local_contact_per_mob
-        value.local_contact_per_email = row_obj.local_contact_per_email
-        value.local_ofc_addr = row_obj.local_ofc_addr
-      }
-      return true;
-    });
-  }
-  private addRow(row_obj: rnt) {
-    this.__selectRNT.data.unshift(row_obj);
-    this.__selectRNT._updateChangeSubscription();
-  }
+  /*** after click on each card this function will trigger;
+   * this function is responsible for opening modal for modification or report
+   * and Navigating to Upload R&T Page
+   * */
   navigate(__menu) {
     switch (__menu.flag) {
-      case 'M':
-        this.openDialog(null, 0);
-        break;
-      case 'U':
-        // this.__utility.navigate(__menu.url);
-        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}})
-        break;
-        case 'R':
-               this.openDialogForReport()
-          break;
-      default:
-        break;
+      case 'M':this.openDialog(null, 0);break;
+      case 'U':this.__utility.navigate(__menu.url);break;
+      case 'R':this.openDialogForReport();break;
+      default:break;
     }
   }
-  getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
-    this.getRNTmaster(this.__pageNumber.value);
-  }
-  getPaginate(__paginate) {
-    if (__paginate.url) {
-      this.__dbIntr
-        .getpaginationData(
-          __paginate.url + ('&paginate=' + this.__pageNumber.value)
-        )
-        .pipe(map((x: any) => x.data))
-        .subscribe((res: any) => {
-          this.setPaginator(res.data);
-          this.__paginate = res.links;
-        });
-    }
-  }
+  /**** End */
+
+    /*** Open R&T Report*/
   openDialogForReport(__rnt_id: string | null = null,amc_id: string | null = null){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -259,7 +162,7 @@ export class RNTComponent implements OnInit {
     dialogConfig.id = "A",
     dialogConfig.data = {
       rnt_id:__rnt_id,
-      product_id:this.__rtDt.snapshot.queryParamMap.get('product_id') ? atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) : '',
+      product_id: '1' ,/** For Mutual Fund */
     }
     try {
       const dialogref = this.__dialog.open(
@@ -274,6 +177,6 @@ export class RNTComponent implements OnInit {
         rnt_id:__rnt_id
       });
     }
-
   }
+  /*** End ***/
 }

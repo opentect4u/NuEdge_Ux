@@ -8,6 +8,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { ScmCrudComponent } from './Dialog/scm-crud/scm-crud.component';
 import { ScmRptComponent } from './Dialog/scm-rpt/scm-rpt.component';
+import { pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'app-scheme',
@@ -68,15 +69,14 @@ __menu = [
 
   ngOnInit(): void {
     this.setBrdCrmbs();
-    // if(this.rtDt.snapshot.queryParamMap.get('id')){
-    //   this.previewParticularcompany(atob(this.rtDt.snapshot.queryParamMap.get('id')))
-    // }
+    if(this.rtDt.snapshot.queryParamMap.get('id')){
+      this.previewParticularcompany(atob(this.rtDt.snapshot.queryParamMap.get('id')))
+    }
   }
-  previewParticularcompany(cmpId){
-  //   this.__dbIntr.api_call(0,'/ins/company','id='+cmpId).pipe(pluck("data")).subscribe(res =>{
-  //     console.log(res);
-  //    this.openDialog(res[0],res[0].id)
-  //  })
+  previewParticularcompany(id){
+    this.__dbIntr.api_call(0,'/fd/scheme','id='+id).pipe(pluck("data")).subscribe(res =>{
+     this.openDialog(res[0],res[0].id)
+   })
   }
 
   navigate(__el){
@@ -98,7 +98,7 @@ __menu = [
   setBrdCrmbs(){
     this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
-  openDialog(__cmp ,__id){
+  openDialog(__scheme ,__id){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -109,7 +109,7 @@ __menu = [
     dialogConfig.data = {
       flag: 'SCM',
       id: __id,
-      cmp: __cmp,
+      scheme: __scheme,
       title: __id == 0 ? 'Add Scheme' : 'Update Scheme',
       right: global.randomIntFromInterval(1,60),
     };

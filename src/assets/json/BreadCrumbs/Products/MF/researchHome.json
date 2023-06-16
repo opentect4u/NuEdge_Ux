@@ -1,0 +1,26 @@
+[
+  {
+    "label":"Home",
+    "url":"/main",
+    "hasQueryParams":false,
+    "queryParams":""
+  },
+  {
+    "label":"Product Dashboard",
+    "url":"/main/product",
+    "hasQueryParams":false,
+    "queryParams":""
+  },
+  {
+    "label":"Mutual Fund",
+    "url":"/main/product/mf",
+    "hasQueryParams":false,
+    "queryParams":""
+  },
+  {
+    "label":"Research",
+    "url":"/main/product/mf/research",
+    "hasQueryParams":false,
+    "queryParams":""
+  }
+]

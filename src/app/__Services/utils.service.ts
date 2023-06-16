@@ -21,6 +21,10 @@ import { global } from '../__Utility/globalFunc';
 export class UtiliService {
   private __brdCrumbs = new BehaviorSubject<breadCrumb[]>([]);
   public readonly __brdCrumbs$ = this.__brdCrumbs.asObservable().pipe(delay(1));
+
+  private __latestBrdCrmbs = new BehaviorSubject<breadCrumb[]>([]);
+  public readonly __latestBrdCrmbs$ = this.__latestBrdCrmbs.asObservable().pipe(delay(1));
+
   private __isvisibleMenuIcon = new BehaviorSubject<any>(null);
   public readonly __isvisibleMenuIcon$ = this.__isvisibleMenuIcon.asObservable().pipe(delay(1));
 
@@ -60,6 +64,10 @@ export class UtiliService {
     this.__brdCrumbs.next(__brcrmbs);
   }
 
+  getLatestBrdCrmbs(__brdCrmbs){
+    this.__latestBrdCrmbs.next(__brdCrmbs);
+
+  }
   //Adding Dropdown Script
   addScript() {
     let __script = this.__renderer.createElement('script');
@@ -85,9 +93,7 @@ export class UtiliService {
     });
   }
 
-  public settingsfroMultiselectDropdown(__id, __text, __placeholder) {
-    console.log(__id + '' + __text);
-
+  public settingsfroMultiselectDropdown(__id, __text, __placeholder,limit:number | undefined  = 2) {
     let settings = {
       singleSelection: false,
       idField: __id,
@@ -99,7 +105,7 @@ export class UtiliService {
       limitSelection: -1,
       clearSearchFilter: true,
       maxHeight: 197,
-      itemsShowLimit: 31,
+      itemsShowLimit: limit,
       searchPlaceholderText: __placeholder,
       noDataAvailablePlaceholderText: 'No recors found',
       closeDropDownOnSelection: false,

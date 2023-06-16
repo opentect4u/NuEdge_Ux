@@ -33,20 +33,19 @@ export class CategoryComponent implements OnInit {
       queryParams:''
     },
     {
-      label:atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      label: "Mutual Fund",
       url:'/main/master/productwisemenu/home',
       hasQueryParams:true,
-      queryParams:{id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     },
     {
       label:"Category",
       url:'/main/master/productwisemenu/category',
       hasQueryParams:true,
-      queryParams:{product_id:this.__rtDt.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     }
 ]
-  __pageNumber = new FormControl(10);
-  __paginate: any = [];
+
   __menu = [
     {
       parent_id: 4,
@@ -76,8 +75,6 @@ export class CategoryComponent implements OnInit {
       flag: 'R',
     },
   ];
-  __columns: string[] = ['sl_no', 'cat_name', 'edit', 'delete'];
-  __selectCategory = new MatTableDataSource<category>([]);
   constructor(
     private __rtDt: ActivatedRoute,
     private overlay: Overlay,
@@ -90,20 +87,10 @@ export class CategoryComponent implements OnInit {
     if (this.__rtDt.snapshot.queryParamMap.get('id')) {
       this.getParticularCategory();
     }
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
+    // this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
-  getSearchItem(__ev) {
-    if (__ev.flag == 'A') {
-    } else if (__ev.flag == 'F') {
-      this.setPaginator([__ev.item]);
-    } else {
-      this.getCategorymaster();
-    }
-  }
-  populateDT(__items: category) {
-    // this.__utility.navigatewithqueryparams('/main/master/catModify',{queryParams:{id:btoa(__items.id.toString())}})
-    this.openDialog(__items, __items.id);
-  }
+
+
 
   getParticularCategory() {
     this.__dbIntr
@@ -120,19 +107,6 @@ export class CategoryComponent implements OnInit {
       });
   }
 
-  private getCategorymaster(__paginate: string | null = '10') {
-    this.__dbIntr
-      .api_call(0, '/category', 'paginate=' + __paginate)
-      .pipe(map((x: responseDT) => x.data))
-      .subscribe((res: any) => {
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
-  }
-
-  private setPaginator(__res) {
-    this.__selectCategory = new MatTableDataSource(__res);
-  }
   openDialog(__category: category | null = null, __catId: number) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -146,7 +120,7 @@ export class CategoryComponent implements OnInit {
       id: __catId,
       items: __category,
       title: __catId == 0 ? 'Add Category' : 'Update Category',
-      product_id:this.__rtDt.snapshot.queryParamMap.get('product_id') ? atob(this.__rtDt.snapshot.queryParamMap.get('product_id')) : '',
+      product_id:'1',
       right: global.randomIntFromInterval(1, 60),
     };
     dialogConfig.id = __catId > 0 ? __catId.toString() : '0';
@@ -155,16 +129,7 @@ export class CategoryComponent implements OnInit {
         CategoryModificationComponent,
         dialogConfig
       );
-      dialogref.afterClosed().subscribe((dt) => {
-        if (dt) {
-          if (dt?.id > 0) {
-            this.updateRow(dt.data);
-          } else {
-            this.__selectCategory.data.unshift(dt.data);
-            this.__selectCategory._updateChangeSubscription();
-          }
-        }
-      });
+      dialogref.afterClosed().subscribe((dt) => {});
     } catch (ex) {
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('40%');
@@ -175,26 +140,16 @@ export class CategoryComponent implements OnInit {
       });
     }
   }
-  private updateRow(row_obj: category) {
-    this.__selectCategory.data = this.__selectCategory.data.filter(
-      (value: category, key) => {
-        if (value.id == row_obj.id) {
-          value.cat_name = row_obj.cat_name;
-          value.product_id = row_obj.product_id;
-        }
-        return true;
-      }
-    );
-  }
   navigate(__menu) {
     switch (__menu.flag) {
       case 'M':
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')}});
+        this.__utility.navigate(__menu.url);
+      // this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')}});
         break;
-      case 'R':this.openDialogForReports(this.__rtDt.snapshot.queryParamMap.get('product_id'));break;
+      case 'R':this.openDialogForReports(btoa('1'));break;
       default:
         break;
     }
@@ -226,30 +181,5 @@ export class CategoryComponent implements OnInit {
       });
     }
 
-  }
-  getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
-    this.getCategorymaster(this.__pageNumber.value);
-  }
-  getPaginate(__paginate) {
-    if (__paginate.url) {
-      this.__dbIntr
-        .getpaginationData(
-          __paginate.url + ('&paginate=' + this.__pageNumber.value)
-        )
-        .pipe(map((x: any) => x.data))
-        .subscribe((res: any) => {
-          this.setPaginator(res.data);
-          this.__paginate = res.links;
-        });
-    }
-  }
-  showCorrospondingAMC(__items) {
-    this.__utility.navigatewithqueryparams(
-      'main/master/productwisemenu/subcategory',
-      {
-        queryParams: { id: btoa(__items.id.toString()) },
-      }
-    );
   }
 }

@@ -1,0 +1,24 @@
+
+
+<core-tab
+[Tab]="subTab"
+(GetTabDtls)="onTabChange($event)"
+[customClass]="'customTabs'"
+[index]="tabIndex"></core-tab>
+<div class="container_fluid mb-2 w-100">
+<ng-container *ngIf="tabIndex == 0;else Report">
+        <share-holder-entry
+        [formDT]="formDT"
+        [country]="country"
+        (setReset)="reset($event)"
+        [shareHolderMst]="shareHolderMst"
+        (sendsavedsharedholderDtls)="submitsavedsharedholderDtls($event)"
+        [cmpDtlsMst]="cmpDtlsMst"></share-holder-entry>
+  </ng-container>
+  <ng-template #Report>
+         <share-holder-rpt
+         (sendSelectedRowDt)="populateDT($event)"
+         [shareHolderMst]="shareHolderMst"
+         ></share-holder-rpt>
+  </ng-template>
+  </div>

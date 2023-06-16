@@ -1,0 +1,14 @@
+ <core-tab [Tab]="TabMenu" [customClass]="'customTabs'" (GetTabDtls)="onTabChange($event)" [index]="tabindex"></core-tab>
+  <div class="container_fluid mb-2 w-100">
+  <ng-container *ngIf="tabindex==0;else other">
+        <app-profile-entry
+        [setFormDt]="getPerticularCmp"
+        (getReset)="reset()"
+        [country]="country"
+        [comp_type]="comp_type"
+        (getAddCompany)="setComp($event)"></app-profile-entry>
+  </ng-container>
+  <ng-template #other>
+         <app-profile-rpt [cmpMst]="cmpDtlsMst" (selectIndex)="getTabIndexdata($event)"></app-profile-rpt>
+  </ng-template>
+</div>

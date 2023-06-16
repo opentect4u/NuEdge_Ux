@@ -33,16 +33,16 @@ export class OptionComponent implements OnInit {
       queryParams:''
     },
     {
-      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      label:"Mutual Fund",
       url:'/main/master/productwisemenu/home',
       hasQueryParams:true,
-      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     },
     {
       label:"Option",
       url:'/main/master/productwisemenu/option',
       hasQueryParams:true,
-      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     }
 ]
   __pageNumber = new FormControl(10);
@@ -76,11 +76,6 @@ export class OptionComponent implements OnInit {
       flag: 'R',
     },
   ];
-
-  __columns: string[] = ['sl_no', 'opt_name', 'edit', 'delete'];
-  __selectOPT = new MatTableDataSource<option>([]);
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
   constructor(
     private __utility: UtiliService,
     private __dbIntr: DbIntrService,
@@ -90,7 +85,7 @@ export class OptionComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     // this.getOptionMaster();
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
+    // this.__utility.getBreadCrumb(this.__brdCrmbs);
     if (this.route.snapshot.queryParamMap.get('id')) {
       this.getParticularOption();
     }
@@ -110,37 +105,7 @@ export class OptionComponent implements OnInit {
         }
       });
   }
-  getSearchItem(__ev) {
-    if (__ev.flag == 'A') {
-    } else if (__ev.flag == 'F') {
-      this.setPaginator([__ev.item]);
-    } else {
-      this.getOptionMaster();
-    }
-  }
-  populateDT(__items: option) {
-    // this.__utility.navigatewithqueryparams('/main/master/optionModify',{queryParams:{id: btoa(__items.id.toString())}})
-    this.openDialog(__items, __items.id);
-  }
 
-  private getOptionMaster(
-    __params: string | null = null,
-    __paginate: string | null = '10'
-  ) {
-    this.__dbIntr
-      .api_call(0, '/option', 'paginate=' + __paginate)
-      .pipe(map((x: responseDT) => x.data))
-      .subscribe((res: any) => {
-        console.log(res);
-
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
-  }
-  private setPaginator(__res) {
-    this.__selectOPT = new MatTableDataSource(__res);
-    this.__selectOPT.paginator = this.paginator;
-  }
   openDialog(__opt: option | null = null, __optId: number) {
     console.log(__opt);
     const dialogConfig = new MatDialogConfig();
@@ -163,16 +128,7 @@ export class OptionComponent implements OnInit {
         OptionModificationComponent,
         dialogConfig
       );
-      dialogref.afterClosed().subscribe((dt) => {
-        if (dt) {
-          if (dt?.id > 0) {
-            this.updateRow(dt.data);
-          } else {
-            this.__selectOPT.data.unshift(dt.data);
-            this.__selectOPT._updateChangeSubscription();
-          }
-        }
-      });
+      dialogref.afterClosed().subscribe((dt) => {});
     } catch (ex) {
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('40%');
@@ -183,29 +139,18 @@ export class OptionComponent implements OnInit {
       });
     }
   }
-  updateRow(row_obj: option) {
-    console.log(row_obj);
 
-    this.__selectOPT.data = this.__selectOPT.data.filter(
-      (value: option, key) => {
-        if (value.id == row_obj.id) {
-          (value.id = row_obj.id), (value.opt_name = row_obj.opt_name);
-        }
-        return true;
-      }
-    );
-  }
   navigate(__menu) {
     switch (__menu.flag) {
       case 'M':
         this.openDialog(null, 0);
         break;
       case 'U':
-        // this.__utility.navigate(__menu.url);
-        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}})
+        this.__utility.navigate(__menu.url);
+        // this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}})
         break;
         case 'R':
-          this.openDialogForReports(atob(this.route.snapshot.queryParamMap.get('product_id')));
+          this.openDialogForReports('1');
           break;
       default:
         break;
@@ -239,23 +184,6 @@ export class OptionComponent implements OnInit {
         flag:'O',
         id:__prdId
       });
-    }
-  }
-  getval(__paginate) {
-    this.__pageNumber.setValue(__paginate);
-    this.getOptionMaster('',__paginate);
-  }
-  getPaginate(__paginate) {
-    if (__paginate.url) {
-      this.__dbIntr
-        .getpaginationData(
-          __paginate.url + ('&paginate=' + this.__pageNumber.value)
-        )
-        .pipe(map((x: any) => x.data))
-        .subscribe((res: any) => {
-          this.setPaginator(res.data);
-          this.__paginate = res.links;
-        });
     }
   }
 }

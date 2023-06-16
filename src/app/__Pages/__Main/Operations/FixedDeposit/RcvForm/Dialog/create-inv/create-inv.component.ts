@@ -10,12 +10,14 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { environment } from 'src/environments/environment';
+import relation from '../../../../../../../../assets/json/Master/relationShip.json';
 @Component({
   selector: 'app-create-inv',
   templateUrl: './create-inv.component.html',
   styleUrls: ['./create-inv.component.css']
 })
 export class CreateInvComponent implements OnInit {
+  __relation = relation;
   __isVisible:boolean =false;
   _clId: number = 0;
   __district: any = [];

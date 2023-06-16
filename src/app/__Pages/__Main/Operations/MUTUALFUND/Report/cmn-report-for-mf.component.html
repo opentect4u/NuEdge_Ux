@@ -1,0 +1,48 @@
+ <div class="row mt-2">
+  <div class="col-sm-12">
+      <core-tab [Tab]="trnsType" (GetTabDtls)="TabDetails($event)"></core-tab>
+      <p-card>
+        <core-tab [Tab]="trnsMst" [customClass]="'customTabs'" (GetTabDtls)="SubTabDetails($event)"></core-tab>
+       <div class="container_fluid border-0 p-0">
+          <ng-container *ngIf="trnsTypeId == 1">
+              <report-financial-rpt
+              [AMCMst]="amcMst"
+              [RntMst]="rntMst"
+              [settingsforDropdown_foramc]="settingsforDropdown_foramc"
+              [settingsforDropdown_forscheme]="settingsforDropdown_forscheme"
+              [settingsforDropdown_forbrnch]="settingsforDropdown_forbrnch"
+              [settingsforBuTypeDropdown]="settingsforBuTypeDropdown"
+              [settingsforBuTypeDropdown]="settingsforBuTypeDropdown"
+              [settingsforRMDropdown]="settingsforRMDropdown"
+              [settingsforSubBrkDropdown]="settingsforSubBrkDropdown"
+              [settingsforEuinDropdown]="settingsforEuinDropdown"
+              [selectBtn]="selectBtn"
+              [trnsTypeId]="trnsTypeId"
+              [__pageNumber]="__pageNumber"
+              [itemsPerPage]="itemsPerPage"
+              (sendFinancialFilteredDt)="getFinancialDt($event)"
+              (viewDocument)="DocumentView($event)"
+              [transaction]="transaction"
+              [Title]="headerTitle"
+              [financialMst]="MstDt"
+              ></report-financial-rpt>
+          </ng-container>
+
+          <ng-container *ngIf="trnsTypeId == 3">
+            <app-non-financial-rpt
+            [transaction]="transaction"
+            [trnsTypeId]="trnsTypeId"
+            (sendNonFinancialFilteredDt)="getFinancialDt($event)"
+            [nonfinancialMst]="MstDt"
+            [Title]="headerTitle"
+            >
+
+            </app-non-financial-rpt>
+          </ng-container>
+
+          <ng-container *ngIf="trnsTypeId == 4"></ng-container>
+
+        </div>
+    </p-card>
+  </div>
+</div>

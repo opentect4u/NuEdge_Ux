@@ -1,5 +1,5 @@
 [
-  
+
     {
         "id": 2,
         "menu_name": "Form Recievable",
@@ -106,7 +106,7 @@
                 "url": "/main/master/rntDashboard",
                 "icon":"",
                 "id":14
-                
+
             },
             {
                 "parent_id": 4,
@@ -126,7 +126,7 @@
             },
             {
                 "parent_id": 4,
-                "menu_name": "SubCategory",
+                "menu_name": "Sub Category",
                 "has_submenu": "N",
                 "url": "/main/master/subcategory",
                 "icon":"",

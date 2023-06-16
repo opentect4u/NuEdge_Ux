@@ -1,0 +1,285 @@
+
+<ng-template #Submit_resetBtn>
+  <p-button type="button"
+  label="Reset"
+  icon="pi pi-refresh"
+  iconPos="right"
+  class="mx-3"
+  (click)="reset()"
+  styleClass="p-button-lg p-button-danger">
+  </p-button>
+  <p-button type="submit"
+        [label]="'Save'"
+        icon="pi pi-save"
+        iconPos="right"
+        [disabled]="sharedFrm.invalid"
+        styleClass="p-button-lg p-button-primary">
+        </p-button>
+</ng-template>
+<form [formGroup]="sharedFrm" (ngSubmit)="submitSharedHolders()">
+  <div class="row">
+    <div class="col-sm-12 d-flex justify-content-start align-items-end">
+      <mat-radio-group aria-label="Select an option" formControlName="shareholders_type" color="primary">
+        <mat-radio-button value="E">Existing Shareholders</mat-radio-button>
+        <mat-radio-button value="T" class="mx-3">Share Transfer</mat-radio-button>
+        <!-- <mat-radio-button value="P">Present Shareholders</mat-radio-button> -->
+      </mat-radio-group>
+    </div>
+  </div>
+<div class="row">
+  <ng-container formGroupName="share_transfer" *ngIf="sharedFrm.value.shareholders_type == 'T'">
+    <div class="col-sm-3">
+      <label for="trans_form">Transfer From <span class="text-danger">*</span></label>
+      <select name="trans_form" id="trans_form" class="form-control" formControlName="trans_form">
+       <option value="">Select</option>
+       <option
+       [value]="holder.id"
+       *ngFor="let holder of shareHolderMst">{{holder.name}}</option>
+      </select>
+   </div>
+  </ng-container>
+
+  <div [class]="sharedFrm.value.shareholders_type == 'T' ? 'col-sm-3' : 'col-sm-4'">
+    <label for="comp_profile_id">Company <span class="text-danger">*</span></label>
+    <select name="comp_profile_id" id="comp_profile_id" class="form-control" formControlName="comp_profile_id">
+       <option value="">Select</option>
+       <option  value="{{cmpdtls.id}}" *ngFor="let cmpdtls of cmpDtlsMst">{{cmpdtls.type_of_comp == 4 ? cmpdtls.proprietor_name : cmpdtls.name}}</option>
+    </select>
+   </div>
+  <div [class]="sharedFrm.value.shareholders_type == 'T' ? 'col-sm-3' : 'col-sm-4'">
+    <label for="name">Shareholder Name <span class="text-danger">*</span></label>
+    <input placeholder="Enter Name" type="text" name="name" id="name" class="form-control" formControlName="name">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('name').invalid && (sharedFrm.get('name').dirty || sharedFrm.get('name').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('name')).errors?.required">*Please provide shareholder name</span>
+    </div>
+  </div>
+  <div [class]="sharedFrm.value.shareholders_type == 'T' ? 'col-sm-3' : 'col-sm-4'">
+    <label for="dob">DOB <span class="text-danger">*</span></label>
+    <input type="date" name="dob" id="dob" class="form-control" formControlName="dob">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('dob').invalid && (sharedFrm.get('dob').dirty || sharedFrm.get('dob').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('dob')).errors?.required">*Please provide date of birth</span>
+    </div>
+  </div>
+</div>
+<div class="row">
+      <div class="col-sm-4">
+        <label for="pan">PAN <span class="text-danger">*</span></label>
+        <input type="text" placeholder="e.g AAAAA1234L" name="pan" id="pan" class="form-control" formControlName="pan">
+        <div class="invalid-feedback" *ngIf="sharedFrm.get('pan').invalid && (sharedFrm.get('pan').dirty || sharedFrm.get('pan').touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get('pan')).errors?.required">*Please provide PAN</span>
+      </div>
+      </div>
+      <div class="col-sm-4">
+        <label for="mobile">Mobile <span class="text-danger">*</span></label>
+        <input type="text" placeholder="Enter Mobile Number" name="mobile" id="mobile" class="form-control" formControlName="mobile">
+        <div class="invalid-feedback" *ngIf="sharedFrm.get('mobile').invalid && (sharedFrm.get('mobile').dirty || sharedFrm.get('mobile').touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get('mobile')).errors?.required">*Please provide mobile number</span>
+      </div>
+      </div>
+      <div class="col-sm-4">
+        <label for="email">Email <span class="text-danger">*</span></label>
+        <input type="text" placeholder="Enter Email" name="email" id="email" class="form-control" formControlName="email">
+        <div class="invalid-feedback" *ngIf="sharedFrm.get('email').invalid && (sharedFrm.get('email').dirty || sharedFrm.get('email').touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get('email')).errors?.required">*Please provide email</span>
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get('email')).errors?.email">*Please provide valid email</span>
+      </div>
+      </div>
+</div>
+ <ng-container formGroupName="address">
+  <div class="row">
+    <div class="col-sm-3">
+      <label for="add_line1">Address-1<span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Address-1" name="add_line1" id="add_line1" formControlName="add_line1" class="form-control">
+      <div class="invalid-feedback" *ngIf="sharedFrm.get(['address','add_line1']).invalid && (sharedFrm.get(['address','add_line1']).dirty || sharedFrm.get(['address','add_line1']).touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get(['address','add_line1'])).errors?.required">*Please provide address</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="add_line2">Address-2</label>
+      <input type="text" placeholder="Enter Address-2" name="add_line2" id="add_line2" formControlName="add_line2" class="form-control">
+      <div class="invalid-feedback" *ngIf="sharedFrm.get(['address','add_line2']).invalid && (sharedFrm.get(['address','add_line2']).dirty || sharedFrm.get(['address','add_line2']).touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get(['address','add_line2'])).errors?.required">*Please provide address</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'Country'"
+      [flag]="'C'"
+      [id]="'country_id'"
+      [items]="country"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="country_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="sharedFrm.get(['address','country_id']).invalid && (sharedFrm.get(['address','country_id']).dirty || sharedFrm.get(['address','country_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get(['address','country_id'])).errors?.required">*Please provide country</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'State'"
+      [flag]="'S'"
+      [id]="'state_id'"
+      [items]="state"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="state_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="sharedFrm.get(['address','state_id']).invalid && (sharedFrm.get(['address','state_id']).dirty || sharedFrm.get(['address','state_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get(['address','state_id'])).errors?.required">*Please provide state</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'District'"
+      [id]="'dist_id'"
+      [flag]="'D'"
+      [items]="district"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="dist_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="sharedFrm.get(['address','dist_id']).invalid && (sharedFrm.get(['address','dist_id']).dirty || sharedFrm.get(['address','dist_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get(['address','dist_id'])).errors?.required">*Please provide district</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <common-core-dropdown
+      [label]="'City'"
+      [id]="'city_id'"
+      [flag]="'CY'"
+      [items]="city"
+      (getselectedItem)="getselectedItem($event)"
+      formControlName="city_id">
+    </common-core-dropdown>
+      <div class="invalid-feedback" *ngIf="sharedFrm.get(['address','city_id']).invalid && (sharedFrm.get(['address','city_id']).dirty || sharedFrm.get(['address','city_id']).touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get(['address','city_id'])).errors?.required">*Please provide city</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="pincode">Pincode<span class="text-danger">*</span></label>
+      <select name="pincode" id="pincode" class="form-control" formControlName="pincode">
+        <option value="">Select</option>
+        <option [value]="pincode.id" *ngFor="let pincode of pincodeMst">{{pincode.pincode}}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="sharedFrm.get(['address','pincode']).invalid && (sharedFrm.get(['address','pincode']).dirty || sharedFrm.get(['address','pincode']).touched)">
+        <span class="invalid-feedback" *ngIf="(sharedFrm.get(['address','pincode'])).errors?.required">*Please provide pincode</span>
+      </div>
+    </div>
+  </div>
+
+ </ng-container>
+ <div class="row">
+  <div class="col-sm-3">
+    <label for="percentage">Percentage <span class="text-danger">*</span></label>
+    <input type="text" placeholder="Enter Percentage(%)" name="percentage" id="percentage" class="form-control" formControlName="percentage">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('percentage').invalid && (sharedFrm.get('percentage').dirty || sharedFrm.get('percentage').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('percentage')).errors?.required">*Please provide percentage</span>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <label for="certificate_no">Certificate Number <span class="text-danger">*</span></label>
+    <input type="text" placeholder="Enter Certificate Number" name="certificate_no" id="certificate_no" class="form-control" formControlName="certificate_no">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('certificate_no').invalid && (sharedFrm.get('certificate_no').dirty || sharedFrm.get('certificate_no').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('certificate_no')).errors?.required">*Please provide certificate number</span>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <label for="date">Date <span class="text-danger">*</span></label>
+    <input type="date" name="date" id="date" class="form-control" formControlName="date">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('date').invalid && (sharedFrm.get('date').dirty || sharedFrm.get('date').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('date')).errors?.required">*Please provide date</span>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <label for="share_no">Number Of Share <span class="text-danger">*</span> </label>
+    <input type="text" placeholder="Enter Number Of Share" name="share_no" id="share_no" class="form-control" formControlName="share_no">
+    <mat-hint *ngIf="sharedFrm.value.shareholders_type == 'T' && __no_of_shared_remaining > 0">
+      <strong class="sharedNo text-success">Number of share remaining {{__no_of_shared_remaining}}</strong>
+    </mat-hint>
+
+
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('share_no').invalid && (sharedFrm.get('share_no').dirty || sharedFrm.get('share_no').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('share_no')).errors?.required">*Please provide number of share</span>
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('share_no')).errors?.shareHolderExceed">*Share number must not exceed than {{__no_of_shared_remaining}}</span>
+
+    </div>
+  </div>
+ </div>
+ <div class="row">
+  <div class="col-sm-3">
+    <label for="registered_folio">Registered Folio <span class="text-danger">*</span></label>
+    <input type="text" placeholder="Enter Registered Folio" name="registered_folio" id="registered_folio" class="form-control" formControlName="registered_folio">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('registered_folio').invalid && (sharedFrm.get('registered_folio').dirty || sharedFrm.get('registered_folio').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('registered_folio')).errors?.required">*Please provide registered folio</span>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <label for="distinctive_from">Distinctive Number From <span class="text-danger">*</span></label>
+    <input type="text" placeholder="Enter Distinctive Number From" name="distinctive_from" id="distinctive_from" class="form-control" formControlName="distinctive_from">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('distinctive_from').invalid && (sharedFrm.get('distinctive_from').dirty || sharedFrm.get('distinctive_from').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('distinctive_from')).errors?.required">*Please provide distinctive number from</span>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <label for="distinctive_to">Distinctive Number To <span class="text-danger">*</span></label>
+    <input type="text" placeholder="Enter Distinctive Number To " name="distinctive_to" id="distinctive_to" class="form-control" formControlName="distinctive_to">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('distinctive_to').invalid && (sharedFrm.get('distinctive_to').dirty || sharedFrm.get('distinctive_to').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('distinctive_to')).errors?.required">*Please provide distinctive number to</span>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <label for="nominee_name">Nominee name <span class="text-danger">*</span></label>
+    <input type="text" placeholder="Enter Nominee Name" name="nominee_name" id="nominee_name" class="form-control" formControlName="nominee_name">
+    <div class="invalid-feedback" *ngIf="sharedFrm.get('nominee_name').invalid && (sharedFrm.get('nominee_name').dirty || sharedFrm.get('nominee_name').touched)">
+      <span class="invalid-feedback" *ngIf="(sharedFrm.get('nominee_name')).errors?.required">*Please provide nominee name</span>
+    </div>
+  </div>
+ </div>
+  <div class="row"  *ngIf="sharedFrm.value.shareholders_type == 'E'">
+    <div class="col-sm-12 my-2 d-flex justify-content-end align-items-center">
+      <ng-container
+      [ngTemplateOutlet]="Submit_resetBtn"
+     >
+    </ng-container>
+
+    </div>
+  </div>
+
+
+ <!-- For Share Transfer -->
+ <ng-container formGroupName="share_transfer" *ngIf="sharedFrm.value.shareholders_type == 'T'">
+ <div class="row">
+  <div class="col-sm-3">
+    <label for="file">Upload Scan Copy <span class="text-danger">*</span></label>
+
+    <div class="p-inputgroup">
+      <input type="file" name="file" id="file" class="form-control" formControlName="upload_scan" (change)="getFile($event)">
+      <a [href]="sharedFrm.get(['share_transfer','file_preview'])?.value" target="__blank" type="button" pButton icon="pi pi-eye" styleClass="p-button-warn"
+      *ngIf="sharedFrm.get(['share_transfer','file_preview'])?.value"
+      ></a>
+    </div>
+    <mat-hint><label>Allowed format :</label> <strong>PDF</strong></mat-hint>
+    <div class="invalid-feedback"
+    *ngIf=" sharedFrm.get(['share_transfer','upload_scan']).invalid && ( sharedFrm.get(['share_transfer','upload_scan']).dirty ||  sharedFrm.get(['share_transfer','upload_scan']).touched)">
+    <span class="invalid-feedback" *ngIf="sharedFrm.get(['share_transfer','upload_scan']).errors?.required">*Please
+      provide file</span>
+    <span class="invalid-feedback" *ngIf="sharedFrm.get(['share_transfer','upload_scan']).errors?.inValidExt">*Invalid
+      file extension.</span>
+    <span class="invalid-feedback"
+      *ngIf="sharedFrm.get(['share_transfer','upload_scan']).errors?.fileSizeValidator">*File size must not exceed than
+      10MB.</span>
+  </div>
+  </div>
+  <div class="col-sm-3">
+    <label for="remarks">Remarks</label>
+    <textarea name="remarks" id="remarks" cols="30"  formControlName="remarks" placeholder="Enter Remarks"></textarea>
+  </div>
+  <div class="col-sm-6 d-flex justify-content-end align-items-center">
+    <ng-container [ngTemplateOutlet]="Submit_resetBtn"></ng-container>
+  </div>
+ </div>
+
+</ng-container>
+ <!-- End -->
+</form>

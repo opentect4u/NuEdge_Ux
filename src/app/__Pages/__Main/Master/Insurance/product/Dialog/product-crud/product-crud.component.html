@@ -23,7 +23,7 @@
   <mat-dialog-content>
     <form [formGroup]="__prdForm" [attr.id]="'__insPrdForm_'+ data.id" (ngSubmit)="submitProduct()">
       <div class="row">
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label class="form-label" for="ins_type_id">Type Of Insurance <span class="text-danger">*</span></label>
           <select class="form-control" id="ins_type_id" name="ins_type_id" formControlName = "ins_type_id">
             <option value="">Select</option>
@@ -47,7 +47,7 @@
             </span>
         </div>
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 my-2">
           <label class="form-label" for="product_type_id">Product Type<span class="text-danger">*</span></label>
           <select class="form-control" id="product_type_id" name="product_type_id"  formControlName="product_type_id">
             <option value="">Select</option>
@@ -59,7 +59,7 @@
             </span>
         </div>
         </div>
-        <div class="col-sm-12 my-3">
+        <div class="col-sm-12 mb-2">
           <label class="form-label" for="product_name">Product Name<span class="text-danger">*</span></label>
            <input type="text" class="form-control" placeholder="Enter Product Name" formControlName="product_name" id="product_name" name="product_name"/>
           <div class="invalid-feedback"

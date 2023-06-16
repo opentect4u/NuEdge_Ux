@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { BnkrplcPipe } from '../__Pipes/bnkrplc.pipe';
 import { ClOutsideClickDirective } from '../__Directives/clOutsideClick.directive';
 import { elipsisPipe } from '../__Pipes/elipsis.pipe';
-import { ResizeColumnDirective } from '../__Directives/resize-column.directive';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -25,6 +24,29 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ManualUpdateEntryForMFComponent } from './manual-update-entry-for-mf/manual-update-entry-for-mf.component';
 import { MatChipsModule } from '@angular/material/chips';
+import { CreateBankComponent } from './create-bank/create-bank.component';
+import { MenuItemComponent } from './core/menu-item/menu-item.component';
+import {MatCardModule} from '@angular/material/card';
+import {MatListModule} from '@angular/material/list';
+import { NoDataComponent } from './no-data/no-data.component';
+import { UploadCsvComponent } from './upload-csv/upload-csv.component';
+import { DragDropDirective } from '../__Directives/DragDrop.directive';
+import { MstDtlsComponent } from './mst-dtls/mst-dtls.component';
+import { RelationshipPipe } from '../__Pipes/relationship.pipe';
+import { DocumentsComponent } from './documents/documents.component';
+import { PreviewdtlsDialogComponent } from './core/previewdtls-dialog/previewdtls-dialog.component';
+import { SrchComponent } from './core/srch/srch.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import { RptFilterComponent } from './core/Acknowledgement/rptFilter/rpt-filter.component';
+import { PreviewDocumentComponent } from './core/preview-document/preview-document.component';
+import {MatBadgeModule} from '@angular/material/badge';
+import { BtnWithMenuComponent } from './core/btnWithMenu/btn-with-menu.component';
+import { MfAckEntryComponent } from './core/Acknowledgement/MutualFundAcknowledgement/mf-ack-entry/mf-ack-entry.component';
+import { MegaMenuForColumnComponent } from './core/mega-menu-for-column/mega-menu-for-column.component';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
+import { CardModule } from 'primeng/card';
 @NgModule({
   imports: [
     CommonModule,
@@ -45,22 +67,45 @@ import { MatChipsModule } from '@angular/material/chips';
     A11yModule,
     MatChipsModule,
     MatTooltipModule,
-    NgMultiSelectDropDownModule.forRoot()
+    MatCardModule,
+    MatListModule,
+    MatTabsModule,
+    NgMultiSelectDropDownModule.forRoot(),
+    MatBadgeModule,
+    TableModule,
+    ButtonModule,
+    CardModule,
+    CalendarModule
   ],
   declarations: [
     BnkrplcPipe,
+    RelationshipPipe,
     ClOutsideClickDirective,
-    ResizeColumnDirective,
     elipsisPipe,
+    RptFilterComponent,
     DeletemstComponent,
     CreateClientComponent,
-    ManualUpdateEntryForMFComponent
+    ManualUpdateEntryForMFComponent,
+    CreateBankComponent,
+    MenuItemComponent,
+    NoDataComponent,
+    UploadCsvComponent,
+    DragDropDirective,
+    MstDtlsComponent,
+    DocumentsComponent,
+    PreviewdtlsDialogComponent,
+    SrchComponent,
+    PreviewDocumentComponent,
+    BtnWithMenuComponent,
+    MfAckEntryComponent,
+    MegaMenuForColumnComponent
   ],
   exports:[
     BnkrplcPipe,
+    RelationshipPipe,
+    MatCardModule,
     ClOutsideClickDirective,
     elipsisPipe,
-    ResizeColumnDirective,
     A11yModule,
     MatDialogModule,
     MatTableModule,
@@ -75,9 +120,26 @@ import { MatChipsModule } from '@angular/material/chips';
     MatTableExporterModule,
     MatTooltipModule,
     MatRadioModule,
+    MatListModule,
     MatMenuModule,
     MatIconModule,
     MatButtonModule,
-    MatSelectModule]
+    MatSelectModule,
+    MenuItemComponent,
+    NoDataComponent,
+    UploadCsvComponent,
+    RptFilterComponent,
+    MstDtlsComponent,
+    BtnWithMenuComponent,
+    MfAckEntryComponent,
+    SrchComponent,
+    MatTabsModule,
+    MatBadgeModule,
+    MegaMenuForColumnComponent,
+    TableModule,
+    ButtonModule,
+    CardModule,
+    CalendarModule
+  ]
 })
 export class SharedModule { }

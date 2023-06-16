@@ -1,0 +1,500 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title">
+    <h2>Form Receivable Reports for {{this.data.trans_type_id == '1'
+                                       ? ' Financial' : (this.data.trans_type_id == '4' ? 'NFO' : 'Non Financial')}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <div class="card my-5">
+      <div class="card-body p-5">
+        <form [formGroup]="__rcvForms" (ngSubmit)="submit()" autocomplete="off">
+          <div class="row">
+            <div class="col-sm-6 my-auto">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+                <mat-radio-button value="2">Summary</mat-radio-button>
+                <mat-radio-button value="1" class="ml-5">Detail</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-sm-6">
+              <mat-button-toggle-group #group="matButtonToggleGroup" class="float-right" formControlName="advFilt_reset">
+                <mat-button-toggle value="A" aria-label="Text align center">
+                  <mat-icon>filter_alt</mat-icon>
+                  Advance Filter
+                </mat-button-toggle>
+                <mat-button-toggle  value="R" aria-label="Text align center">
+                  <mat-icon>restart_alt</mat-icon>
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+          </div>
+
+          <div class="row my-2">
+            <div class="col-sm-4">
+              <label for="dt_type">Date Periods</label>
+               <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+                   <option value="">Select</option>
+                   <option value="D">Today</option>
+                   <option value="W">This Week</option>
+                   <option value="M">This Month</option>
+                   <option value="Y">This Year</option>
+                   <option value="R">Date Range</option>
+               </select>
+            </div>
+            <div class="col-sm-4">
+              <label for="start_dt">Start Date</label>
+              <input type="date"
+              name="start_dt"
+              id="start_dt"
+              class="form-control" formControlName="start_dt">
+            </div>
+            <div class="col-sm-4">
+              <label for="end_dt">End Date</label>
+              <input type="date" name="end_dt"
+              id="end_dt"
+              class="form-control" formControlName="end_dt">
+            </div>
+          </div>
+
+          <div class="row ">
+            <div class="col-sm-4">
+                <app-core-srch
+                [label] = "'Temporary TIN Number'"
+                [placeholder]="'Serach By Temporary TIN Number'"
+                [isPending]="__istemporaryspinner"
+                [listItems] = "__temp_tinMst"
+                [flag] = "'T'"
+                [noDataFoundTitle]="'Sorry!! No Records Found'"
+                [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                [propertiesToShow] = "['temp_tin_no','client_name']"
+                formControlName="temp_tin_no"
+                [displayMode]="displayMode_forTemp_Tin"
+                (setDisplayMode)="displayMode_forTemp_Tin = $event"
+                (selectedItems)="getSelectedItemsFromParent($event)"
+                ></app-core-srch>
+
+              </div>
+            <div class="col-sm-4">
+              <app-core-srch
+              [label] = "'Client Details'"
+              [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+              [isPending]="__isClientPending"
+              [listItems] = "__clientMst"
+              [flag] = "'C'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['client_code','pan','client_name']"
+              formControlName="client_code"
+              [displayMode]="displayMode_forClient"
+              (setDisplayMode)="displayMode_forClient = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              ></app-core-srch>
+            </div>
+            <div class="col-sm-4">
+            <label for="trans_type">Transaction</label>
+            <select name="trans_type" id="trans_type" class="form-control" formControlName="trans_type">
+              <option value="">Select Transaction</option>
+              <option [value]="trnsType.id" *ngFor="let trnsType of __transType">{{trnsType.trns_name}}</option>
+            </select>
+            </div>
+          </div>
+          <div class="row ">
+            <div class="col-sm-4">
+              <label for="recv_from">Receive From</label>
+              <input type="text" name="recv_from" id="recv_from" class="form-control" placeholder='Enter Receive From'
+                formControlName="recv_from">
+            </div>
+          </div>
+          <div class="row my-2" *ngIf="__isAdd">
+            <div class="col-sm-3">
+              <label for="branch">Branch</label>
+              <ng-multiselect-dropdown #multiSelect
+              id="branch"
+              [placeholder]="'Select Branch'"
+              [settings]="settingsForbrnch"
+              [data]="__brnchMst"
+              formControlName="branch">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="bu_type">Business Type</label>
+              <ng-multiselect-dropdown #multiSelect
+              id="bu_type"
+              [placeholder]="'Select Business Type'"
+              [settings]="settingsForbuType"
+              [data]="__bu_type"
+              formControlName="bu_type">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="rm_name">Relationship Manager</label>
+              <ng-multiselect-dropdown #multiSelect
+              id="rm_name"
+              [placeholder]="'Select Relationship Manager'"
+              [settings]="settingsForRM"
+              [data]="__rmMst"
+              formControlName="rm_name">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="sub_brk_cd">Sub Broker Code</label>
+              <ng-multiselect-dropdown #multiSelect
+              id="sub_brk_cd"
+              [placeholder]="'Select Sub Broker Code'"
+              [settings]="settingsForsubCode"
+              [data]="__subbrkArnMst"
+              formControlName="sub_brk_cd">
+            </ng-multiselect-dropdown>
+            </div>
+          </div>
+          <div class="row"  *ngIf="__isAdd">
+            <div class="col-sm-3">
+              <label for="euin_no">EUIN</label>
+              <ng-multiselect-dropdown #multiSelect
+              id="euin_no"
+              [placeholder]="'Select EUIN'"
+              [settings]="settingsForEUIN"
+              [data]="__euinMst"
+              formControlName="euin_no">
+            </ng-multiselect-dropdown>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-sm-12">
+              <button mat-raised-button color="primary" class="float-right">
+                Show
+              </button>
+            </div>
+          </div>
+
+          <!-- <div class="row my-5"> -->
+
+          <!-- </div> -->
+        </form>
+      </div>
+
+    </div>
+
+    <div class="mat-elevation-z3">
+      <div class="example_container_header">
+        <div class="transTypeCount">
+          <mat-chip-list *ngIf="this.data.trans_type_id != '3'" class="example-chip" cdkDropList cdkDropListOrientation="horizontal">
+            <mat-chip class="example-box" cdkDrag color="primary" *ngFor="let trnsType of __trans_types">
+              {{trnsType.name}} : {{trnsType.count}}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+        <div class="btnGrp d-flex">
+          <mat-form-field appearance="fill">
+            <mat-label>Select Columns</mat-label>
+            <mat-select [formControl]="toppings" multiple>
+              <mat-option
+              *ngFor="let topping of toppingList"
+              [value]="topping.id">
+              {{topping.text}}
+            </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>system_update_alt</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Receieve Form'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+
+      </div>
+      <div class="example-container">
+        <table mat-table [dataSource]="__RcvForms" class="table_Custome" matSort (matSortChange)="sortData($event)">
+          <ng-container matColumnDef="sl_no">
+            <th mat-header-cell *matHeaderCellDef>Sl No</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="rcv_datetime">
+            <th mat-sort-header="rcv_datetime" mat-header-cell *matHeaderCellDef>Recieved Date Time</th>
+            <td mat-cell *matCellDef="let element">{{element.rec_datetime | date:'dd-MM-YYYY h:mma'}}</td>
+          </ng-container>
+
+
+
+          <ng-container matColumnDef="temp_tin_no">
+            <th mat-sort-header="temp_tin_no" mat-header-cell *matHeaderCellDef>Temporary TIN No.</th>
+            <td mat-cell *matCellDef="let element">{{element.temp_tin_no ? element.temp_tin_no : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="apl_no">
+            <th mat-sort-header="apl_no" mat-header-cell *matHeaderCellDef>Application No.</th>
+            <td mat-cell *matCellDef="let element">{{element.application_no ? element.application_no : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="sub_brk_cd">
+            <th mat-sort-header="sub_brk_cd" mat-header-cell *matHeaderCellDef>Sub Broker Code.</th>
+            <td mat-cell *matCellDef="let element">{{element.sub_brk_cd ? element.sub_brk_cd : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fol_no">
+            <th mat-sort-header="fol_no" mat-header-cell *matHeaderCellDef>Folio No.</th>
+            <td mat-cell *matCellDef="let element">{{element.folio_number ? element.folio_number : 'N/A'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="trans_type">
+            <th mat-sort-header="trans_type" mat-header-cell *matHeaderCellDef>Transaction Type</th>
+            <td mat-cell *matCellDef="let element">{{element.trans_name}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="remarks">
+            <th mat-sort-header="remarks" mat-header-cell *matHeaderCellDef>Remarks</th>
+            <td mat-cell *matCellDef="let element">
+              <!-- {{element.remarks ? element.remarks : 'N/A'}} -->
+              <ng-container *ngIf="element.remarks;else noRemarks">
+                <button
+                mat-icon-button
+                #tooltip="matTooltip"
+                [matTooltip]="element.remarks"
+                aria-label="Example icon button with a vertical three dot icon"
+                ><mat-icon>info</mat-icon></button>
+              </ng-container>
+              <ng-template #noRemarks>
+              <span>N/A</span>
+              </ng-template>
+
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="arn_no">
+            <th mat-sort-header="arn_no" mat-header-cell *matHeaderCellDef>ARN</th>
+            <td mat-cell *matCellDef="let element">{{element.arn_no ? element.arn_no : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="euin_no">
+            <th mat-sort-header="euin_no" mat-header-cell *matHeaderCellDef>EUIN</th>
+            <td mat-cell *matCellDef="let element">{{element.euin_no ? element.euin_no : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="client_name">
+            <th mat-sort-header="client_name" mat-header-cell *matHeaderCellDef>First Holder Name</th>
+            <td mat-cell *matCellDef="let element">{{element.client_name ? element.client_name : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="client_code">
+            <th mat-sort-header="client_code" mat-header-cell *matHeaderCellDef>First Holder Code</th>
+            <td mat-cell *matCellDef="let element">{{element.client_code ? element.client_code : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="bu_type">
+            <th mat-sort-header="bu_type" mat-header-cell *matHeaderCellDef>Buisness Type</th>
+            <td mat-cell *matCellDef="let element">{{element.bu_type == 'D' ? 'B2C - Direct' : element.bu_type == 'I' ?
+              'B2C -Indirect' : 'B2B'}}
+              <!-- ({{element.trans_name}}) -->
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="branch_name">
+            <th mat-sort-header="branch_name" mat-header-cell *matHeaderCellDef>Branch Name</th>
+            <td mat-cell *matCellDef="let element">{{element.branch_name ? element.branch_name : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="recv_from">
+            <th mat-sort-header="recv_from" mat-header-cell *matHeaderCellDef>Receive From</th>
+            <td mat-cell *matCellDef="let element">{{element.recv_from ? element.recv_from : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="entry_dt">
+            <th mat-sort-header="entry_dt"  mat-header-cell *matHeaderCellDef>Entry Date</th>
+            <td mat-cell *matCellDef="let element">{{element.entry_date ? (element.entry_date | date: 'dd-MM-YYYY') : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="folio_no">
+            <th mat-sort-header="folio_no"  mat-header-cell *matHeaderCellDef>Folio Number</th>
+            <td mat-cell *matCellDef="let element">{{element.folio_no ? element.folio_no : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="edit">
+            <th mat-header-cell *matHeaderCellDef>Edit</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button (click)="populateDT(element)">
+                <mat-icon class="edit_icon">edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef>Delete</th>
+            <td mat-cell *matCellDef="let element,let i = index">
+              <button mat-icon-button (click)="deleteRcvForm(element,i)">
+                <mat-icon class="delete_icon">delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="__columns;sticky:true"></tr>
+          <tr mat-row tabindex="999" *matRowDef="let row; columns: __columns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="__columns.length" class="text-center">No form receivable history found
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="paginator">
+        <div class="itemsPerPage">
+          <label>Items Per Page :&nbsp; </label>
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle value="10" aria-label="Text align left" (click)="getval('10')">
+              10
+            </mat-button-toggle>
+            <mat-button-toggle value="50" aria-label="Text align center" (click)="getval('50')">
+              50
+            </mat-button-toggle>
+            <mat-button-toggle value="100" aria-label="Text align right" (click)="getval('100')">
+              100
+            </mat-button-toggle>
+            <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
+              All
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+
+
+        <div class="paginatorContainer">
+          <mat-button-toggle-group *ngFor="let paginate of __paginate">
+            <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
+              <label>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
+                <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
+                <span
+                  *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
+
+              </label>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+
+      <table id="rcvForm" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+
+        <ng-container matColumnDef="sl_no">
+          <th mat-header-cell *matHeaderCellDef>S No.</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="rcv_datetime">
+          <th mat-header-cell *matHeaderCellDef>Recieved Date Time</th>
+          <td mat-cell *matCellDef="let element">{{element.rec_datetime | date:'dd-MM-YYYY h:mma'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="recv_from">
+          <th mat-header-cell *matHeaderCellDef>Receive From</th>
+          <td mat-cell *matCellDef="let element">{{element.recv_from ? element.recv_from : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="entry_dt">
+          <th mat-header-cell *matHeaderCellDef>Entry Date</th>
+          <td mat-cell *matCellDef="let element">{{element.entry_date ? (element.entry_date | date: 'dd-MM-YYYY') : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="temp_tin_no">
+          <th mat-header-cell *matHeaderCellDef>Temporary TIN No.</th>
+          <td mat-cell *matCellDef="let element">{{element.temp_tin_no ? element.temp_tin_no : 'N/A'}}</td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="folio_no">
+          <th  mat-header-cell *matHeaderCellDef>Folio Number</th>
+          <td mat-cell *matCellDef="let element">{{element.folio_no ? element.folio_no : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bu_type">
+          <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+          <td mat-cell *matCellDef="let element">{{element.bu_type == 'D' ? 'B2C - Direct' : element.bu_type == 'I' ?
+            'B2C -Indirect' : 'B2B'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="trans_type">
+          <th mat-header-cell *matHeaderCellDef>Transaction Type</th>
+          <td mat-cell *matCellDef="let element">{{element.trans_name}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="branch_name">
+          <th mat-header-cell *matHeaderCellDef>Branch Name</th>
+          <td mat-cell *matCellDef="let element">{{element.branch_name ? element.branch_name : 'N/A'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef>Remarks</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.remarks ? element.remarks : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="arn_no">
+          <th mat-header-cell *matHeaderCellDef>ARN</th>
+          <td mat-cell *matCellDef="let element">{{element.arn_no ? element.arn_no : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="sub_brk_cd">
+          <th mat-header-cell *matHeaderCellDef>Sub Broker Code.</th>
+          <td mat-cell *matCellDef="let element">{{element.sub_brk_cd ? element.sub_brk_cd : 'N/A'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="euin_no">
+          <th mat-header-cell *matHeaderCellDef>EUIN</th>
+          <td mat-cell *matCellDef="let element">{{element.euin_no ? element.euin_no : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="client_name">
+          <th mat-header-cell *matHeaderCellDef>First Holder Name</th>
+          <td mat-cell *matCellDef="let element">{{element.client_name ? element.client_name : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="client_code">
+          <th mat-header-cell *matHeaderCellDef>First Holder Code</th>
+          <td mat-cell *matCellDef="let element">{{element.client_code ? element.client_code : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="apl_no">
+          <th mat-header-cell *matHeaderCellDef>Application No.</th>
+          <td mat-cell *matCellDef="let element">{{element.application_no ? element.application_no : 'N/A'}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
+        <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No form receivable history
+            found</td>
+        </tr>
+      </table>
+    </div>
+  </mat-dialog-content>
+</div>

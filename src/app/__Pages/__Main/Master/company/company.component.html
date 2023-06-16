@@ -1,0 +1,132 @@
+<!-- ***********************   Company Master Html Page  ***************
+     *  all tabs and child component are renderd here
+     Note:  we used Angular materia tab (v12) (link: https://v12.material.angular.io/components/tabs/overview)
+ -->
+      <div class="row mt-5">
+        <div class="col-sm-12">
+          <p-card>
+
+          <!-- Make the Tab Section Common -->
+          <core-tab [Tab]="TabMenu"
+          (GetTabDtls)="TabDetails($event)"></core-tab>
+          <div class="container_fluid mb-2 w-100">
+          <!-- Content Of The Tab  -->
+          <ng-container [ngSwitch]="true">
+            <!-- Profile Section -->
+            <ng-container *ngSwitchCase="index == 0">
+             <app-profile
+             [country]="countryMst"
+             [comp_type]="company_type"
+             [cmpDtlsMst]="cmpDtls"
+             (getAddCompany)="getAddCompany($event)"
+             >
+           </app-profile>
+         </ng-container>
+           <!-- End -->
+
+           <!-- Director Details -->
+           <ng-container *ngSwitchCase="index == 2"><app-director-dtls
+             [country]="countryMst"
+             [cmpDtlsMst]="cmpDtls"
+             [directorMst]="directorDtls"
+             (getDirectorDtls)="getDirectorDtls($event)"
+             ></app-director-dtls></ng-container>
+           <!-- End -->
+
+            <!-- Shared Holder Details -->
+            <ng-container *ngSwitchCase="index == 4">
+             <app-share-holder
+             [subTab]="SubTabMenu"
+             [cmpDtlsMst]="cmpDtls"
+             [shareHolderMst]="sharedHolderMst"
+             (sendsavedsharedholderDtls)="getsharedDtls($event)"
+             [country]="countryMst"></app-share-holder>
+           </ng-container>
+            <!-- End -->
+
+
+            <!-- Document Locker Details
+            [docDtls]="documentLockerMst"
+
+            -->
+            <ng-container
+            *ngSwitchCase="index == 5"
+            >
+            <app-document-locker
+            [companyDtls]="cmpDtls"
+            ></app-document-locker>
+           </ng-container>
+            <!-- End -->
+
+            <!-- Login & Password Locker
+               [product]="productMst"
+               [loginPasswordLockerMst]="loginPasswordLocker"
+               -->
+             <ng-container *ngSwitchCase="index == 9">
+               <app-login-pwd
+               [subTab]="SubTabMenu"
+               [cmpDtlsMst]="cmpDtls"
+               >
+               </app-login-pwd>
+             </ng-container>
+            <!-- End -->
+
+            <!-- Licesnse Details [licenseMst]="licenseDtls" [product]="productMst"-->
+            <ng-container *ngSwitchCase="index == 8">
+              <app-license-dtls
+              [cmpDtlsMst]="cmpDtls"
+              ></app-license-dtls>
+            </ng-container>
+            <!-- End -->
+
+
+               <!-- Bank Details
+                       [bankMstDtls]="bankMst"-->
+             <ng-container *ngSwitchCase="index == 6">
+               <app-bank
+               [cmpDtlsMst]="cmpDtls"
+               ></app-bank>
+             </ng-container>
+            <!-- End -->
+
+            <!-- Pertnership Details -->
+            <ng-container *ngSwitchCase="index == 3">
+             <app-pertnership-dtls
+             [subTab]="SubTabMenu"
+             [country]="countryMst"
+             [cmpDtlsMst]="cmpDtls"
+             (setpertnershipDtls)="setpertnershipDtls($event)"
+             [pertnershipMstDtls]="pertnershipMst">
+           </app-pertnership-dtls>
+             </ng-container>
+            <!-- End -->
+
+             <!-- Product Mapping -->
+             <ng-container *ngSwitchCase="index == 7">
+               <app-product-mapping
+               [subTab]="SubTabMenu"
+               [cmpDtlsMst]="cmpDtls"
+               [productMstDtls]="productMst"
+               >
+             </app-product-mapping>
+               </ng-container>
+              <!-- End -->
+
+              <!-- Temporary Profile -->
+              <ng-container *ngSwitchCase="index == 1">
+                <app-temporary-profile
+                [cmpDtls]="cmpDtls"
+                [temporaryMstDtls]="temporaryMst"
+                (setTemporaryDtls)="getTemporaryDtls($event)"
+                >
+                </app-temporary-profile>
+              </ng-container>
+              <!-- End -->
+
+         </ng-container>
+         <!-- End -->
+         </div>
+        </p-card>
+        </div>
+      </div>
+

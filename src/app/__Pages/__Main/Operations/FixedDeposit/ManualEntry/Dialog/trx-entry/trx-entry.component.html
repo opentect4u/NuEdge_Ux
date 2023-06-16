@@ -266,7 +266,7 @@
               Invstor Details
               <span class="text-danger">*</span></label>
             <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="investor_code"
-              placeholder="Search By Investor Name,Investor Code, Email, Mobile, Pan & DOB">
+              placeholder="Search By Investor Name,Investor Code, Email, Mobile, PAN & DOB">
             <span class="spinner-border"
               *ngIf="__isClientPending && __fdTrax.get('investor_code').value?.length > 1"></span>
 
@@ -342,14 +342,14 @@
         <div class="invalid-feedback"
           *ngIf="__fdTrax.get('inv_kyc').invalid && (__fdTrax.get('inv_kyc').dirty || __fdTrax.get('inv_kyc').touched)">
           <span class="invalid-feedback" *ngIf="(__fdTrax.get('inv_kyc')).errors?.required">*Please provide
-            investor Kyc Status</span>
+            investor KYC status</span>
         </div>
       </div>
        <div class="col-sm-12 my-2">
         <label for="existing_mode_of_holding">Existing Mode of Holding <span class="text-danger">*</span></label>
         <select class="form-control" id="existing_mode_of_holding" formControlName="existing_mode_of_holding">
           <option value="">Select</option>
-          <option value="A">Any Or Survivor</option>
+          <option value="A">Anyone Or Survivor</option>
           <option value="J">Joint</option>
           <option value="S">Single</option>
         </select>
@@ -403,7 +403,7 @@
                             Investor Details
                           </label>
                           <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="investor_code"
-                            placeholder="Search By Investor Name,Investor Code, Email, Mobile, Pan & DOB">
+                            placeholder="Search By Investor Name,Investor Code, Email, Mobile, PAN & DOB">
                           <span class="spinner-border"
                             *ngIf="__isFirstClientPending && __fdTrax.get(['first_inv_dtls','investor_code']).value?.length > 1"></span>
 
@@ -447,16 +447,16 @@
                       class="form-control"
                       formControlName="investor_pan">
                       <div class="invalid-feedback" *ngIf="__fdTrax.get(['first_inv_dtls','investor_pan']).invalid && (__fdTrax.get(['first_inv_dtls','investor_pan']).dirty || __fdTrax.get(['first_inv_dtls','investor_pan']).touched)">
-                        <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).errors?.pattern">*Please provide valid pan
-                          Number</span>
-                          <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).hasError('minlength')">*pan
-                            Number Must Be 10 Characters Long</span>
-                            <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).hasError('maxlength')">*pan
+                        <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).errors?.pattern">*Please provide valid PAN
+                          number</span>
+                          <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).hasError('minlength')">*PAN
+                            number must be 10 characters long</span>
+                            <span class="invalid-feedback" *ngIf="(__fdTrax.get(['first_inv_dtls','investor_pan'])).hasError('maxlength')">*PAN
                               number must be 10 characters long</span>
                       </div>
                     </div>
                     <div class="col-sm-12 my-2">
-                      <label for="first_dob">DOB <span class="text-danger">*</span></label>
+                      <label for="first_dob">Date Of Birth <span class="text-danger">*</span></label>
                       <input type="date"
                       name="first_dob"
                       id="first_dob"
@@ -535,7 +535,7 @@
                          Investor Details
                        </label>
                        <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="investor_code"
-                         placeholder="Search By Investor Name,Investor Code, Email, Mobile, Pan & DOB">
+                         placeholder="Search By Investor Name,Investor Code, Email, Mobile, PAN & DOB">
                        <span class="spinner-border"
                          *ngIf="__isSecClientPending && __fdTrax.get(['sec_inv_dtls','investor_code']).value?.length > 1"></span>
 
@@ -583,16 +583,16 @@
                    class="form-control"
                    formControlName="investor_pan">
                    <div class="invalid-feedback" *ngIf="__fdTrax.get(['sec_inv_dtls','investor_pan']).invalid && (__fdTrax.get(['sec_inv_dtls','investor_pan']).dirty || __fdTrax.get(['sec_inv_dtls','investor_pan']).touched)">
-                    <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).errors?.pattern">*Please provide valid pan
-                      Number</span>
-                      <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).hasError('minlength')">*pan
-                        Number Must Be 10 Characters Long</span>
-                        <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).hasError('maxlength')">*pan
+                    <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).errors?.pattern">*Please provide valid PAN
+                      number</span>
+                      <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).hasError('minlength')">*PAN
+                        number must be 10 characters long</span>
+                        <span class="invalid-feedback" *ngIf="(__fdTrax.get(['sec_inv_dtls','investor_pan'])).hasError('maxlength')">*PAN
                           number must be 10 characters long</span>
                   </div>
                  </div>
                  <div class="col-sm-12 my-2">
-                  <label for="sec_dob">DOB
+                  <label for="sec_dob">Date Of Birth
                     <span class="text-danger">*</span>
                   </label>
                   <input type="date"
@@ -900,7 +900,7 @@
         <label>Upload Scan Application Form <span class="text-danger">*</span></label>
         <input type="file" name="file" id="file" formControlName="file" class="form-control"
           (change)="getFIle($event.target)" accept=".pdf">
-         <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 2MB)</p></mat-hint>
+         <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
         <div class="invalid-feedback"
           *ngIf=" __fdTrax.get('file').invalid && ( __fdTrax.get('file').dirty ||  __fdTrax.get('file').touched)">
           <span class="invalid-feedback" *ngIf=" __fdTrax.get('file').errors?.required">*Please
@@ -910,7 +910,7 @@
           <span class="invalid-feedback" *ngIf="__fdTrax.get('file').errors?.fileSizeValidator">*File size
             must
             not exceed than
-            2MB.</span>
+            10MB.</span>
         </div>
       </div>
     </div>

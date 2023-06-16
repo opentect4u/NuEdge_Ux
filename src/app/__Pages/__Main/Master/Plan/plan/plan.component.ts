@@ -32,20 +32,18 @@ export class PlanComponent implements OnInit {
       queryParams:''
     },
     {
-      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      label:"Mutual Fund",
       url:'/main/master/productwisemenu/home',
       hasQueryParams:true,
-      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     },
     {
       label:"Plan",
       url:'/main/master/productwisemenu/plan',
       hasQueryParams:true,
-      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     }
 ]
-  __pageNumber = new FormControl(10);
-  __paginate: any = [];
   __menu = [
     {
       parent_id: 4,
@@ -76,9 +74,6 @@ export class PlanComponent implements OnInit {
     },
   ];
 
-  __columns: string[] = ['sl_no', 'plan_name', 'edit', 'delete'];
-  __selectPLN = new MatTableDataSource<plan>([]);
-
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
@@ -106,37 +101,7 @@ export class PlanComponent implements OnInit {
         }
       });
   }
-  getSearchItem(__ev) {
-    if (__ev.flag == 'A') {
-    } else if (__ev.flag == 'F') {
-      this.setPaginator([__ev.item]);
-    } else {
-      this.getPLANMaster();
-    }
-  }
-  populateDT(__items: plan) {
-    // this.__utility.navigatewithqueryparams('/main/master/plnModify',{queryParams:{id: btoa(__items.id.toString())}})
-    this.openDialog(__items, __items.id);
-  }
 
-  private getPLANMaster(
-    __params: string | null = '',
-    __paginate: string | null = '10'
-  ) {
-    console.log(__params);
-
-    this.__dbIntr
-      .api_call(0, '/plan', 'paginate=' + __paginate)
-      .pipe(map((x: responseDT) => x.data))
-      .subscribe((res: any) => {
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
-  }
-  private setPaginator(__res) {
-    this.__selectPLN = new MatTableDataSource(__res);
-    // this.__selectPLN.paginator = this.paginator;
-  }
 
   openDialog(__pln: plan | null = null, __plnId: number) {
     const dialogConfig = new MatDialogConfig();
@@ -160,14 +125,6 @@ export class PlanComponent implements OnInit {
         dialogConfig
       );
       dialogref.afterClosed().subscribe((dt) => {
-        if (dt) {
-          if (dt?.id > 0) {
-            this.updateRow(dt.data);
-          } else {
-            this.__selectPLN.data.unshift(dt.data);
-            this.__selectPLN._updateChangeSubscription();
-          }
-        }
       });
     } catch (ex) {
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
@@ -180,25 +137,17 @@ export class PlanComponent implements OnInit {
       });
     }
   }
-  updateRow(row_obj) {
-    this.__selectPLN.data = this.__selectPLN.data.filter((value: plan, key) => {
-      if (value.id == row_obj.id) {
-        (value.id = row_obj.id), (value.plan_name = row_obj.plan_name);
-      }
-      return true;
-    });
-  }
   navigate(__menu) {
     switch (__menu.flag) {
       case 'M':
         this.openDialog(null, 0);
         break;
       case 'U':
-        // this.__utility.navigate(__menu.url);
-        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}})
+        this.__utility.navigate(__menu.url);
+        // this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}})
         break;
       case 'R':
-        this.openDialogForReports(atob(this.route.snapshot.queryParamMap.get('product_id')))
+        this.openDialogForReports('1')
         break;
       default:
         break;
@@ -229,25 +178,6 @@ export class PlanComponent implements OnInit {
       this.__utility.getmenuIconVisible({
         product_id:__prdId
       });
-    }
-  }
-  getval(__paginate) {
-   console.log(__paginate);
-
-    this.__pageNumber.setValue(__paginate);
-    this.getPLANMaster('',__paginate);
-  }
-  getPaginate(__paginate) {
-    if (__paginate.url) {
-      this.__dbIntr
-        .getpaginationData(
-          __paginate.url + ('&paginate=' + this.__pageNumber.value)
-        )
-        .pipe(map((x: any) => x.data))
-        .subscribe((res: any) => {
-          this.setPaginator(res.data);
-          this.__paginate = res.links;
-        });
     }
   }
 }

@@ -6,6 +6,7 @@ import { docType } from 'src/app/__Model/__docTypeMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { environment } from 'src/environments/environment';
+import relation from '../../../../../../../../assets/json/Master/relationShip.json';
 @Component({
   selector: 'app-dialog-dtls',
   templateUrl: './dialog-dtls.component.html',
@@ -13,6 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class DialogDtlsComponent implements OnInit {
   __docTypeMaster:docType[] =[];
+  __relation = relation;
   __noImg: string = '../../../../../../assets/images/noimg.png';
    __frmDtls =new FormGroup({
        client_code: new FormControl(''),

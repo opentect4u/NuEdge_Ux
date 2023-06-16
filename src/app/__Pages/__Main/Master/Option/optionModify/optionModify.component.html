@@ -38,15 +38,15 @@
     <div class="card_body">
       <mat-paginator hidden [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users" [showFirstLastButtons]="true"></mat-paginator>
       <table mat-table [dataSource]="__selectOpt">
-
+       
         <ng-container matColumnDef="sl_no">
-          <th mat-header-cell *matHeaderCellDef>Sl o.</th>
+          <th mat-header-cell *matHeaderCellDef>Sl no.</th>
           <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
         </ng-container>
 
 
 
-
+       
         <ng-container matColumnDef="opt_name">
           <th mat-header-cell *matHeaderCellDef>Option</th>
           <td mat-cell *matCellDef="let element">
@@ -55,7 +55,7 @@
         </ng-container>
 
 
-
+     
         <ng-container matColumnDef="edit">
           <th mat-header-cell *matHeaderCellDef>Edit</th>
           <td mat-cell *matCellDef="let element">
@@ -78,7 +78,7 @@
         <tr mat-header-row *matHeaderRowDef="__columns"></tr>
         <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4" class="text-center">No data found</td>
+          <td class="mat-cell" colspan="4">No data found</td>
         </tr>
       </table>
     </div>

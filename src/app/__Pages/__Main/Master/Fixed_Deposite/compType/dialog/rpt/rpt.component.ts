@@ -168,7 +168,7 @@ export class RptComponent implements OnInit {
     });
   }
   getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
+     this.__pageNumber.setValue(__paginate.toString());
     this.getCompanyTypeMst(
       this.__sortAscOrDsc.active,
       this.__sortAscOrDsc.direction

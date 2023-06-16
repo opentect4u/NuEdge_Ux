@@ -1,0 +1,16 @@
+::ng-deep .customTabs .mat-tab-list .mat-tab-labels .mat-tab-label-active{
+  background: #0b4bf1;
+  color: #e5e5e5!important;
+}
+::ng-deep .customTabs .mat-ink-bar {
+  background-color: #f1820b!important;
+}
+
+
+::ng-deep .lastTabs .mat-tab-list .mat-tab-labels .mat-tab-label-active{
+  background: #0bd3f1;
+  color: #464252!important;
+}
+::ng-deep .lastTabs .mat-ink-bar {
+  background-color: #efff00!important;
+}

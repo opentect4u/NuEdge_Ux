@@ -1,0 +1,14 @@
+[
+  {
+    "isDisabled": false,
+    "flag": "P",
+    "icon": "print",
+    "title": "Print"
+  },
+  {
+    "isDisabled": false,
+    "flag": "S",
+    "icon": "bookmark_added",
+    "title": "Submit Online"
+  }
+]

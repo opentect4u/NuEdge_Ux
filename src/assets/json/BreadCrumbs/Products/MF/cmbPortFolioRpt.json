@@ -1,0 +1,32 @@
+[
+  {
+    "label":"Home",
+    "url":"/main",
+    "hasQueryParams":false,
+    "queryParams":""
+  },
+  {
+    "label":"Product Dashboard",
+    "url":"/main/product",
+    "hasQueryParams":false,
+    "queryParams":""
+  },
+  {
+    "label":"Mutual Fund",
+    "url":"/main/product/mf",
+    "hasQueryParams":false,
+    "queryParams":""
+  },
+  {
+    "label":"Tax Package",
+    "url":"/main/product/mf/taxpackage",
+    "hasQueryParams":false,
+    "queryParams":""
+  },
+  {
+    "label":"Combine Portfolio Report",
+    "url":"/main/product/mf/taxpackage/",
+    "hasQueryParams":false,
+    "queryParams":""
+  }
+]

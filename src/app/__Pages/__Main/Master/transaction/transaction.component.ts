@@ -29,20 +29,19 @@ export class TransactionComponent implements OnInit {
       queryParams:''
     },
     {
-      label:atob(this.route.snapshot.queryParamMap.get('product_id')) == '1' ?  "Mutual Fund" : "Others",
+      label:"Mutual Fund",
       url:'/main/master/productwisemenu/home',
       hasQueryParams:true,
-      queryParams:{id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     },
     {
       label:"Transaction",
       url:'/main/master/productwisemenu/trns',
       hasQueryParams:true,
-      queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}
+      queryParams:''
     }
 ]
-  __pageNumber = new FormControl(10);
-  __paginate: any = [];
+
   __menu = [
     {
       parent_id: 4,
@@ -81,20 +80,9 @@ export class TransactionComponent implements OnInit {
     private __dialog: MatDialog
     ) { }
   ngOnInit(): void {
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
+    // this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
-  getSearchItem(__ev) {
-    this.__selectTrns.length = 0;
-    if (__ev.flag == 'A') {
-      this.openDialog(__ev.id, '');
-    }
-    else {
-      this.__selectTrns.push(__ev.item);
-    }
-  }
-  populateDT(__items) {
-    this.openDialog(__items.id, __items);
-  }
+
   openDialog(id, __items) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -110,18 +98,11 @@ export class TransactionComponent implements OnInit {
       id: id,
       title: id == 0 ? 'Add Transaction' : 'Update Transaction',
       items: __items,
-      product_id:atob(this.route.snapshot.queryParamMap.get('product_id'))
+      product_id:'1'
     };
     try{
       const dialogref = this.__dialog.open(TrnsModificationComponent, dialogConfig);
-      dialogref.afterClosed().subscribe(dt => {
-        if (dt?.id > 0) {
-            //  this.updateRow(dt.data);
-        }
-        else{
-          // this.addRow(dt.data);
-        }
-      });
+      dialogref.afterClosed().subscribe(dt => {});
     }
     catch(ex){
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
@@ -144,7 +125,7 @@ export class TransactionComponent implements OnInit {
         this.__utility.navigate(__menu.url);
         break;
       case 'R':
-        this.openDialogForReports(atob(this.route.snapshot.queryParamMap.get('product_id')))
+        this.openDialogForReports('1')
         break;
       default:
         break;

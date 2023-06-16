@@ -8,7 +8,9 @@ import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
+import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { global } from 'src/app/__Utility/globalFunc';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-amcModification',
@@ -19,6 +21,7 @@ export class AmcModificationComponent implements OnInit {
   __isVisible:boolean= false;
   __RntMaster: rnt[] = [];
   __ProductMaster: product[] = [];
+  allowedExtensions = ['png','jpg','jpeg'];
   __amcForm = new FormGroup({
     rnt_id: new FormControl(this.data.id > 0 ? (this.data.amc.rnt_id ? this.data.amc.rnt_id : '') : '', [Validators.required]),
 
@@ -26,55 +29,58 @@ export class AmcModificationComponent implements OnInit {
     login_pass: new FormControl(this.data.id > 0 ? this.data.amc.login_pass : ''),
     login_id: new FormControl(this.data.id > 0 ? this.data.amc.login_id : ''),
     head_ofc_contact_per: new FormControl(this.data.id > 0 ? this.data.amc.head_ofc_contact_per : ''),
-    head_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.amc.head_contact_per_mob : '',[Validators.pattern("^[0-9]*$"),Validators.minLength(10),Validators.maxLength(10)]),
+    head_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.amc.head_contact_per_mob : '',[Validators.pattern("^[0-9]*$")]),
     head_contact_per_email: new FormControl(this.data.id > 0 ? this.data.amc.head_contact_per_email : '',[Validators.email]),
     head_ofc_addr: new FormControl(this.data.id > 0 ? this.data.amc.head_ofc_addr : ''),
     is_same: new FormControl(false),
     local_ofc_contact_per: new FormControl(this.data.id > 0 ? this.data.amc.local_ofc_contact_per : ''),
-    local_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.amc.local_contact_per_mob : '',[Validators.pattern("^[0-9]*$"),Validators.minLength(10),Validators.maxLength(10)]),
+    local_contact_per_mob: new FormControl(this.data.id > 0 ? this.data.amc.local_contact_per_mob : '',[Validators.pattern("^[0-9]*$")]),
     local_contact_per_email: new FormControl(this.data.id > 0 ? this.data.amc.local_contact_per_email : '',[Validators.email]),
     local_ofc_addr: new FormControl(this.data.id > 0 ? this.data.amc.local_ofc_addr : ''),
-    cus_care_whatsapp_no: new FormControl(this.data.id > 0 ? this.data.amc.cus_car_whatsapp_no : '',[Validators.pattern("^[0-9]*$"),Validators.minLength(10),Validators.maxLength(10)]),
+    cus_care_whatsapp_no: new FormControl(this.data.id > 0 ? this.data.amc.cus_car_whatsapp_no : '',[Validators.pattern("^[0-9]*$")]),
     sec_qusAns: new FormArray([]),
     amc_name: new FormControl(this.data.id > 0 ? (this.data.amc.amc_name ? this.data.amc.amc_name : '') : '', [Validators.required]),
     amc_short_name: new FormControl(this.data.id > 0 ? (this.data.amc.amc_short_name ? this.data.amc.amc_short_name : '') : '',[Validators.required]),
     ofc_address: new FormControl(this.data.id > 0 ? (this.data.amc.ofc_addr ? this.data.amc.ofc_addr : '') : ''),
-    cust_care_no: new FormControl(this.data.id > 0 ? (this.data.amc.cus_care_no ? this.data.amc.cus_care_no : '') : '', [Validators.pattern("^[0-9]*$"),Validators.minLength(10),Validators.maxLength(10)]),
+    cust_care_no: new FormControl(this.data.id > 0 ? (this.data.amc.cus_care_no ? this.data.amc.cus_care_no : '') : '', [Validators.pattern("^[0-9]*$")]),
     cust_care_email: new FormControl(this.data.id > 0 ? (this.data.amc.cus_care_email ? this.data.amc.cus_care_email : '') : '', [Validators.email]),
     web_site: new FormControl(this.data.id > 0 ? (this.data.amc.website  ? this.data.amc.website  : ''): ''),
     l1_name: new FormControl(this.data.id > 0 ? (this.data.amc.l1_name!="null"  ? this.data.amc.l1_name  : ''): ''),
     l1_email: new FormControl(this.data.id > 0 ? (this.data.amc.l1_email!="null" ? this.data.amc.l1_email : '') : '', [Validators.email]),
     l1_contact_no: new FormControl(this.data.id > 0 ? (this.data.amc.l1_contact_no> 0 ? this.data.amc.l1_contact_no : '') : '',
-    [Validators.pattern("^[0-9]*$"),Validators.minLength(10), Validators.maxLength(10)]
+    [Validators.pattern("^[0-9]*$")]
     ),
     l2_name: new FormControl(this.data.id > 0 ? (this.data.amc.l2_name!="null"  ? this.data.amc.l2_name  : ''): ''),
     l2_email: new FormControl(this.data.id > 0 ? (this.data.amc.l2_email!="null" ? this.data.amc.l2_email : '') : '', [Validators.email]),
     l2_contact_no: new FormControl(this.data.id > 0 ? (this.data.amc.l2_contact_no> 0 ? this.data.amc.l2_contact_no : '') : '',
-    [Validators.pattern("^[0-9]*$"),Validators.minLength(10), Validators.maxLength(10)]),
+    [Validators.pattern("^[0-9]*$")]),
     l3_name: new FormControl(this.data.id > 0 ? (this.data.amc.l3_name!="null"  ? this.data.amc.l3_name  : ''): ''),
     l3_email: new FormControl(this.data.id > 0 ? (this.data.amc.l3_email!="null" ? this.data.amc.l3_email : '') : '', [Validators.email]),
     l3_contact_no: new FormControl(this.data.id > 0 ? (this.data.amc.l3_contact_no> 0 ? this.data.amc.l3_contact_no : '') : '',
-    [Validators.pattern("^[0-9]*$"),Validators.minLength(10), Validators.maxLength(10)]
+    [Validators.pattern("^[0-9]*$")]
     ),
     l4_name: new FormControl(this.data.id > 0 ? (this.data.amc.l4_name!="null"  ? this.data.amc.l4_name  : ''): ''),
     l4_email: new FormControl(this.data.id > 0 ? (this.data.amc.l4_email!="null" ? this.data.amc.l4_email : '') : '', [Validators.email]),
     l4_contact_no: new FormControl(this.data.id > 0 ? (this.data.amc.l4_contact_no> 0 ? this.data.amc.l4_contact_no : '') : '',
-    [Validators.pattern("^[0-9]*$"),Validators.minLength(10), Validators.maxLength(10)]
+    [Validators.pattern("^[0-9]*$")]
     ),
     l5_name: new FormControl(this.data.id > 0 ? (this.data.amc.l5_name!="null"  ? this.data.amc.l5_name  : ''): ''),
     l5_email: new FormControl(this.data.id > 0 ? (this.data.amc.l5_email!="null" ? this.data.amc.l5_email : '') : '',[Validators.email]),
     l5_contact_no: new FormControl(this.data.id > 0 ? (this.data.amc.l5_contact_no> 0 ? this.data.amc.l5_contact_no : '') : '',
-    [Validators.pattern("^[0-9]*$"),Validators.minLength(10), Validators.maxLength(10)]
+    [Validators.pattern("^[0-9]*$")]
     ),
     l6_name: new FormControl(this.data.id > 0 ? (this.data.amc.l6_name!="null"  ? this.data.amc.l6_name  : ''): ''),
     l6_email: new FormControl(this.data.id > 0 ? (this.data.amc.l6_email!="null" ? this.data.amc.l6_email : '') : '',[Validators.email]),
     l6_contact_no: new FormControl(this.data.id > 0 ? (this.data.amc.l6_contact_no> 0 ? this.data.amc.l6_contact_no : '') : '',
-    [Validators.pattern("^[0-9]*$"),Validators.minLength(10), Validators.maxLength(10)]
+    [Validators.pattern("^[0-9]*$")]
     ),
     id: new FormControl(this.data.id),
     gstin:new FormControl(this.data.id > 0 ? this.data.amc.gstin : '',[Validators.required]),
     distributor_care_email: new FormControl(this.data.id > 0 ? this.data.amc.distributor_care_email : '',[Validators.email]),
-    distributor_care_no: new FormControl(this.data.id > 0 ? this.data.amc.distributor_care_no : '',[Validators.pattern("^[0-9]*$"),Validators.minLength(10), Validators.maxLength(10)]),
+    distributor_care_no: new FormControl(this.data.id > 0 ? this.data.amc.distributor_care_no : '',[Validators.pattern("^[0-9]*$")]),
+    logo: new FormControl('',[fileValidators.fileExtensionValidator(this.allowedExtensions)]),
+    logo_file: new FormControl(''),
+    logo_preview_file: new FormControl(this.data.id > 0 ? `${environment.amc_logo_url+this.data.amc.logo}` : ''),
 
   })
   constructor(
@@ -93,9 +99,9 @@ export class AmcModificationComponent implements OnInit {
   }
   ngAfterViewInit(){
     this.__amcForm.controls['is_same'].valueChanges.subscribe(res =>{
-          this.__amcForm.controls['l4_name'].setValue(res ? global.getActualVal(this.__amcForm.controls['local_ofc_contact_per'].value) : '');
-          this.__amcForm.controls['l4_contact_no'].setValue(res ? global.getActualVal(this.__amcForm.controls['local_contact_per_mob'].value) : '');
-          this.__amcForm.controls['l4_email'].setValue(res ? global.getActualVal(this.__amcForm.controls['local_contact_per_email'].value) : '');
+          this.__amcForm.controls['l3_name'].setValue(res ? global.getActualVal(this.__amcForm.controls['local_ofc_contact_per'].value) : '');
+          this.__amcForm.controls['l3_contact_no'].setValue(res ? global.getActualVal(this.__amcForm.controls['local_contact_per_mob'].value) : '');
+          this.__amcForm.controls['l3_email'].setValue(res ? global.getActualVal(this.__amcForm.controls['local_contact_per_email'].value) : '');
     })
   }
   get sec_qusAns(): FormArray {
@@ -160,6 +166,7 @@ export class AmcModificationComponent implements OnInit {
       return;
     }
     const __amc = new FormData();
+    __amc.append('logo',this.__amcForm.value.logo_file ? this.__amcForm.value.logo_file : '');
     __amc.append("amc_name", this.__amcForm.value.amc_name);
     __amc.append("amc_short_name", this.__amcForm.value.amc_short_name);
     __amc.append("product_id", this.data.product_id);
@@ -227,5 +234,21 @@ export class AmcModificationComponent implements OnInit {
   }
   removeSecurityQuesAns(index){
     this.sec_qusAns.removeAt(index);
+  }
+  getFile(__ev){
+    this.__amcForm.controls['logo'].setValidators([fileValidators.fileSizeValidator(__ev.files), fileValidators.fileExtensionValidator(this.allowedExtensions)])
+    this.__amcForm.controls['logo'].updateValueAndValidity();
+    if (this.__amcForm.controls['logo'].status == 'VALID' && __ev.files.length > 0) {
+      this.__amcForm.controls['logo_file'].setValue(__ev.files[0]);
+      const file = __ev.files[0];
+      const reader = new FileReader();
+      reader.onload = e => this.__amcForm.controls['logo_preview_file'].patchValue(reader.result);
+      reader.readAsDataURL(file);
+    }
+    else {
+      this.__amcForm.controls['logo_file'].setValue('');
+      this.__amcForm.controls['logo_preview_file'].patchValue('');
+    }
+
   }
 }

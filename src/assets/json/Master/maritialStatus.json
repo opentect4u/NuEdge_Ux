@@ -1,0 +1,6 @@
+[
+  {"id":"S", "status":"Single"},
+  {"id":"W", "status":"Widow"},
+  {"id":"M", "status":"Married"}
+
+]

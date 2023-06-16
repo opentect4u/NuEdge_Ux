@@ -11,12 +11,18 @@ import { dates } from 'src/app/__Utility/disabledt';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { global } from 'src/app/__Utility/globalFunc';
 import { environment } from 'src/environments/environment';
+import relation from '../../../../../../assets/json/Master/relationShip.json';
+import maritialStatus from '../../../../../../assets/json/Master/maritialStatus.json';
 @Component({
   selector: 'app-clModifcation',
   templateUrl: './clModifcation.component.html',
   styleUrls: ['./clModifcation.component.css']
 })
 export class ClModifcationComponent implements OnInit {
+  countryMst:any =[];
+  pincodeMst: any=[];
+  MaritialStatus = maritialStatus
+  __relation = relation;
   __clTypeMst: any=[];
   __isVisible:boolean =false;
   _clId: number = 0;
@@ -30,16 +36,17 @@ export class ClModifcationComponent implements OnInit {
   __maxDt = dates.disabeldDates();
   __stateMaster: any = [];
   __clientForm = new FormGroup({
-    anniversary_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.anniversary_date) : '',this.data.cl_type == 'P' || this.data.cl_type == 'N' ? [Validators.required]:[]),
+    mar_status: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items?.mar_status) : ''),
+    anniversary_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.anniversary_date) : ''),
     client_name: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.client_name) : '', [Validators.required]),
-    dob: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.dob) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    dob: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.dob) : ''),
     pan: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.pan) : '', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]
     ),
-    dob_actual: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pan) : '',this.data.cl_type == 'E' ? [] : [Validators.required]),
+    dob_actual: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dob_actual) : ''),
     mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.mobile) : '',
       this.data.cl_type == 'E' ? [] : [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]
     ),
-    same_as_above: new FormControl(''),
+    same_as_above: new FormControl(this.data.id > 0 ?  (this.data.items.dob == this.data.items.dob_actual) : false),
     sec_mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_mobile) : '', this.data.cl_type == 'E' ? [] : [Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]),
     email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.email) : '', this.data.cl_type == 'E' ? [] : [Validators.email]),
     sec_email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_email) : '', this.data.cl_type == 'E' ? [] : [Validators.email]),
@@ -48,13 +55,20 @@ export class ClModifcationComponent implements OnInit {
     state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    pincode: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pincode) : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
+    pincode: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pincode) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     id: new FormControl(this.data.id),
-    gurdians_pan: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.gurdians_pan) : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
-    gurdians_name: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.gurdians_name) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
-    relations: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.relations)  : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    gurdians_pan: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.guardians_pan) : '', this.data.cl_type == 'E' ? [] : [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
+    gurdians_name: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.guardians_name) : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
+    relations: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.relation)  : '', this.data.cl_type == 'E' ? [] : [Validators.required]),
     doc_dtls: new FormArray([]),
-    client_type: new FormControl(this.data.cl_type == 'P' ?  global.getActualVal(this.data.items?.client_type_mode) : '',this.data.cl_type == 'P' ? [Validators.required] : [])
+    client_type: new FormControl((this.data.cl_type == 'P' || this.data.cl_type == 'M' || this.data.cl_type == 'N') ?  global.getActualVal(this.data.items?.client_type_mode) : '',(this.data.cl_type == 'P' || this.data.cl_type == 'M' || this.data.cl_type == 'N') ? [Validators.required] : []),
+    proprietor_name: new FormControl(global.getActualVal(this.data.items?.proprietor_name)),
+    date_of_incorporation: new FormControl(global.getActualVal(this.data.items?.date_of_incorporation)),
+    karta_name: new FormControl(global.getActualVal(this.data.items?.karta_name)),
+    inc_date: new FormControl(global.getActualVal(this.data.items?.inc_date)),
+    pertner_dtls: new FormArray([]),
+    identification_number: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.identification_number)  : ''),
+    country: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.country_id)  : '',(this.data.cl_type == 'P' || this.data.cl_type == 'M' || this.data.cl_type == 'N') ? [Validators.required] : [])
   })
   constructor(
     private sanitizer: DomSanitizer,
@@ -76,7 +90,7 @@ export class ClModifcationComponent implements OnInit {
 
     this.getClientType();
     this.setfrmCtrlValidatior();
-    this.getStateMaster();
+    this.getCountryMaster();
     this.getDocumnetTypeMaster();
     if(this.data.id > 0 ){
       this.getDistrict_city();
@@ -88,14 +102,38 @@ export class ClModifcationComponent implements OnInit {
       else{
         this.addItem();
       }
+
+        this.getPertnerDtls(this.data.items.pertner_details);
     }
     else{
       this.addItem();
+      if(this.data.cl_type == 'P' || this.data.cl_type == 'N' || this.data.cl_type == 'E')
+      this.addPertner();
     }
 
   }
+
+  getPertnerDtls(pertner_details){
+    if(this.data.cl_type == 'P' || this.data.cl_type == 'N' || this.data.cl_type == 'E')
+    {
+    if(pertner_details.length > 0){
+      pertner_details.forEach(element =>{
+        this.pertner_dtls.push(this.setPertner(element));
+        })
+    }
+    else{
+      this.addPertner();
+    }
+  }
+
+  }
+  getCountryMaster(){
+    this.__dbIntr.api_call(0,'/country',null).pipe(pluck('data')).subscribe(res =>{
+      this.countryMst = res;
+    })
+  }
   getClientType(){
-    this.__dbIntr.api_call(0,'/clientType',null).pipe(pluck("data")).subscribe(res =>{
+    this.__dbIntr.api_call(0,'/clientType','flag=' + (this.data.cl_type == 'M' ? this.data.cl_type : 'P')).pipe(pluck("data")).subscribe(res =>{
     this.__clTypeMst = res;
     })
   }
@@ -103,10 +141,18 @@ export class ClModifcationComponent implements OnInit {
     if(this.data.id > 0 && this.data.client_type != 'E'){
       this.getDistrict(this.data.items.state);
       this.getCity(this.data.items.dist);
+      this.getStateMaster(this.data.items.country_id);
+      this.getPinCode(this.data.items.city)
     }
   }
 
   ngAfterViewInit() {
+
+  /** Trigger on Change on Country  */
+  this.__clientForm.get('country').valueChanges.subscribe(res =>{
+           this.getStateMaster(res);
+  })
+
     /** Trigger on Change on State */
     this.__clientForm.get('state').valueChanges.subscribe(res => {
       console.log(res);
@@ -128,10 +174,71 @@ export class ClModifcationComponent implements OnInit {
       }
     })
     /**End */
+
+    /** Trigger On Change on City */
+    this.__clientForm.get('city').valueChanges.subscribe(res =>{
+      if (this.data.client_type == 'E' && this.data.id == 0) {
+        //Nothing to deal with
+      }
+      else {
+         this.getPinCode(res);
+      }
+    })
+    /* End */
+
     this.__clientForm.get('same_as_above').valueChanges.subscribe(res => {
         this.__clientForm.controls['dob_actual'].setValue(res ? this.__clientForm.value.dob : '');
     })
 
+    /** Client Type Change */
+    this.__clientForm.get('client_type').valueChanges.subscribe(res =>{
+      this.__clientForm.get('proprietor_name').setValidators(res == 7 ? [Validators.required] : null);
+      this.__clientForm.get('dob').setValidators((res == 2 || res == 5 || res == 6 || res == 7 || res == 1 || res == 3 || res == 4 || res == 14) ?  [Validators.required] : null);
+      // this.__clientForm.get('dob_actual').setValidators(res == 7 ?  [Validators.required] : null);
+      this.__clientForm.get('karta_name').setValidators(res == 8 ? [Validators.required] : null);
+      this.__clientForm.get('inc_date').setValidators(res == 8 ? [Validators.required] : null);
+      // this.__clientForm.get('dob_actual').updateValueAndValidity();
+      this.__clientForm.get('mar_status').setValidators((res == 1 || res == 3 || res == 4) ? [Validators.required] : null)
+      this.__clientForm.get('dob').updateValueAndValidity();
+      this.__clientForm.get('proprietor_name').updateValueAndValidity();
+      this.__clientForm.get('inc_date').updateValueAndValidity();
+      this.__clientForm.get('karta_name').updateValueAndValidity();
+      this.__clientForm.get('identification_number').setValidators((
+        res == 10|| res == 11|| res == 12|| res == 13
+        || res == 15|| res == 16|| res == 17|| res == 18|| res == 9|| res == 23|| res == 21
+        || res == 22|| res == 24|| res == 25|| res == 26|| res == 28|| res == 20|| res == 29
+        || res == 30|| res == 27|| res == 19) ? [Validators.required] : null);
+      this.__clientForm.get('date_of_incorporation').setValidators((res == 10|| res == 11|| res == 12|| res == 13
+        || res == 15|| res == 16|| res == 17|| res == 18|| res == 9|| res == 23|| res == 21
+        || res == 22|| res == 24|| res == 25|| res == 26|| res == 28|| res == 20|| res == 29
+        || res == 30|| res == 27|| res == 19) ? [Validators.required] : null);
+      this.__clientForm.get('date_of_incorporation').updateValueAndValidity();
+      this.__clientForm.get('identification_number').updateValueAndValidity();
+      this.__clientForm.get('mar_status').updateValueAndValidity();
+    })
+    /** End */
+
+
+  }
+
+  get pertner_dtls(): FormArray{
+    return this.__clientForm.get('pertner_dtls') as FormArray;
+  }
+  addPertner(){
+    this.pertner_dtls.push(this.setPertner(null));
+  }
+  setPertner(pertnerDtls){
+
+
+    return new FormGroup({
+        id:new FormControl(global.getActualVal(pertnerDtls) ? pertnerDtls.id : 0),
+        name: new FormControl(global.getActualVal(pertnerDtls) ?  pertnerDtls.name : ''),
+        mobile: new FormControl(global.getActualVal(pertnerDtls) ?  pertnerDtls.mobile : '',[Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]),
+        email:new FormControl(global.getActualVal(pertnerDtls) ?  pertnerDtls.email : '',[Validators.email]),
+        dob:new FormControl(global.getActualVal(pertnerDtls) ?  pertnerDtls.dob : ''),
+        pan:new FormControl(global.getActualVal(pertnerDtls) ?  pertnerDtls.pan : '',[Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
+
+    })
 
   }
   getDocumnetTypeMaster() {
@@ -139,8 +246,8 @@ export class ClModifcationComponent implements OnInit {
       this.__docTypeMaster = res;
     })
   }
-  getStateMaster() {
-    this.__dbIntr.api_call(0, '/states', null).pipe(map((x: responseDT) => x.data)).subscribe(res => {
+  getStateMaster(country_id) {
+    this.__dbIntr.api_call(0, '/states', 'country_id='+ country_id).pipe(map((x: responseDT) => x.data)).subscribe(res => {
       this.__stateMaster = res;
     })
   }
@@ -160,18 +267,21 @@ export class ClModifcationComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit(){
-    console.log(this.__clientForm.value);
 
     if (this.__clientForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
       return;
     }
     const __client = new FormData();
-    __client.append("dob_actual", this.__clientForm.value.dob_actual);
-    __client.append("anniversary_date", this.__clientForm.value.anniversary_date);
-    __client.append("client_name", this.__clientForm.value.client_name);
-    __client.append("dob", this.__clientForm.value.dob);
-    __client.append("pan", this.__clientForm.value.pan);
+
+    if(this.data.cl_type == 'P'){
+      __client.append("pan", this.__clientForm.value.pan);
+    }
+    else if(this.data.cl_type == 'M'){
+      __client.append("relation", this.__clientForm.value.relations ? this.__clientForm.value.relations : '');
+      __client.append("guardians_pan", this.__clientForm.value.gurdians_pan ? this.__clientForm.value.gurdians_pan : '');
+      __client.append("guardians_name", this.__clientForm.value.gurdians_name ? this.__clientForm.value.gurdians_name : '');
+    }
     __client.append("mobile", this.__clientForm.value.mobile);
     __client.append("sec_mobile", this.__clientForm.value.sec_mobile);
     __client.append("email", this.__clientForm.value.email);
@@ -182,12 +292,11 @@ export class ClModifcationComponent implements OnInit {
     __client.append("dist", this.__clientForm.value.dist);
     __client.append("state", this.__clientForm.value.state);
     __client.append("pincode", this.__clientForm.value.pincode);
-    __client.append("guardians_pan", this.__clientForm.value.gurdians_pan ? this.__clientForm.value.gurdians_pan : '');
-    __client.append("guardians_name", this.__clientForm.value.gurdians_name ? this.__clientForm.value.gurdians_name : '');
-    __client.append("relation", this.__clientForm.value.relations ? this.__clientForm.value.relations : '');
+    __client.append("country_id", this.__clientForm.value.country);
+
     __client.append("id", this.__clientForm.value.id);
     __client.append("client_type", this.data.cl_type);
-        if(this.data.cl_type == 'P'){
+        if(this.data.cl_type == 'P'  || this.data.cl_type == 'M' ||  this.data.cl_type == 'N'){
           __client.append("client_type_mode", this.__clientForm.value.client_type);
         }
     for (let i = 0; i < this.__clientForm.value.doc_dtls.length; i++) {
@@ -197,11 +306,84 @@ export class ClModifcationComponent implements OnInit {
         __client.append("row_id[]", this.__clientForm.value.doc_dtls[i].id);
       }
     }
+
+    if(this.__clientForm.value.client_type == 14){
+      /** If Client Type is Pertnership Form */
+      __client.append("client_name", this.__clientForm.value.client_name); /** Firm Name */
+      __client.append("pertner_details", JSON.stringify(this.__clientForm.value.pertner_dtls));
+      __client.append("dob", this.__clientForm.value.dob);
+    }
+    else if(this.__clientForm.get('client_type').value == 7
+    ){
+      /** If Client Type is Sole Proprietor */
+    __client.append("date_of_incorporation", this.__clientForm.value.date_of_incorporation);
+    __client.append("proprietor_name", this.__clientForm.value.proprietor_name); /** Proprietor Name */
+    __client.append("client_name", this.__clientForm.value.client_name); /** Proprietor ship Name */
+    __client.append("dob", this.__clientForm.value.dob);
+    __client.append("dob_actual", this.__clientForm.value.dob_actual);
+    __client.append("anniversary_date", this.__clientForm.value.anniversary_date);
+
+    }
+    else if(this.__clientForm.get('client_type').value == 10
+    || this.__clientForm.get('client_type').value == 11
+    || this.__clientForm.get('client_type').value == 12
+    || this.__clientForm.get('client_type').value == 13
+    || this.__clientForm.get('client_type').value == 15
+    || this.__clientForm.get('client_type').value == 16
+    || this.__clientForm.get('client_type').value == 17
+    || this.__clientForm.get('client_type').value == 18
+    || this.__clientForm.get('client_type').value == 9
+    || this.__clientForm.get('client_type').value == 23
+    || this.__clientForm.get('client_type').value == 21
+    || this.__clientForm.get('client_type').value == 22
+    || this.__clientForm.get('client_type').value == 24
+    || this.__clientForm.get('client_type').value == 25
+    || this.__clientForm.get('client_type').value == 26
+    || this.__clientForm.get('client_type').value == 28
+    || this.__clientForm.get('client_type').value == 20
+    || this.__clientForm.get('client_type').value == 29
+    || this.__clientForm.get('client_type').value == 30
+    || this.__clientForm.get('client_type').value == 27
+    || this.__clientForm.get('client_type').value == 19
+    ){
+    __client.append("client_name", this.__clientForm.value.client_name); /** Establishment Name */
+    __client.append("date_of_incorporation", this.__clientForm.value.date_of_incorporation);
+    __client.append("identification_number", this.__clientForm.value.identification_number);
+    }
+    else if(this.__clientForm.get('client_type').value == 8){
+      /** IF CLIENT TYPE IS  HUF (8)*/
+    __client.append("karta_name", this.__clientForm.value.karta_name);
+    __client.append("inc_date", this.__clientForm.value.inc_date);
+    __client.append("client_name", this.__clientForm.value.client_name); /** HUF Name */
+    __client.append("dob", this.__clientForm.value.dob);
+    __client.append("dob_actual", this.__clientForm.value.dob_actual);
+    __client.append("anniversary_date", this.__clientForm.value.anniversary_date);
+    }
+    else if(this.__clientForm.get('client_type').value == 1
+    || this.__clientForm.get('client_type').value == 3
+    || this.__clientForm.get('client_type').value == 4){
+      /** If Cleint Type is NRI(non-repartiable - 4),NRI(Repartiable - 3),Residential Inidividual(1) */
+      __client.append("client_name", this.__clientForm.value.client_name);
+      __client.append("dob", this.__clientForm.value.dob);
+      __client.append("dob_actual", this.__clientForm.value.dob_actual);
+      __client.append("anniversary_date", this.__clientForm.value.anniversary_date);
+      __client.append("maritial_status", this.__clientForm.value.mar_status);
+    }
+    else if(this.__clientForm.get('client_type').value == 2
+    ||this.__clientForm.get('client_type').value == 5
+    ||this.__clientForm.get('client_type').value == 6){
+      /** If Cleint Type is NRI-Minor(non-repartiable - 6),NRI-Minor(Repartiable - 5),Residential Minor(2) */
+      __client.append("client_name", this.__clientForm.value.client_name);
+      __client.append("dob", this.__clientForm.value.dob);
+      __client.append("dob_actual", this.__clientForm.value.dob_actual);
+    }
+
+
     this.__dbIntr.api_call(1, '/clientAddEdit', __client).subscribe((res: any) => {
       if (res.suc == 1) {
           if (this.data.cl_type == 'E' && this.data.id > 0) {this.dialogRef.close({id : this.data.id,cl_type:this.data.cl_type});}
           else {this.dialogRef.close({id:this.data.id,data:res.data});}
-          this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Client updated successfully' : 'Client added successfully') : 'Something went wrong! please try again later', res.suc);
+          this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Client updated successfully' : 'Client added successfully') : res.msg, res.suc);
       }
     })
   }
@@ -216,13 +398,18 @@ export class ClModifcationComponent implements OnInit {
     dates.numberOnly(__ev)
   }
   getDistrict(__state_id) {
-    this.__dbIntr.api_call(0, '/districts', 'state_id=' + __state_id).pipe(map((x: responseDT) => x.data)).subscribe(res => {
+    this.__dbIntr.api_call(0, '/districts', 'state_id=' + __state_id).pipe(pluck("data")).subscribe(res => {
       this.__district = res;
     })
   }
   getCity(__district_id) {
-    this.__dbIntr.api_call(0, '/city', 'district_id=' + __district_id).pipe(map((x: responseDT) => x.data)).subscribe(res => {
+    this.__dbIntr.api_call(0, '/city', 'district_id=' + __district_id).pipe(pluck("data")).subscribe(res => {
       this.__city = res;
+    })
+  }
+  getPinCode(city_id){
+    this.__dbIntr.api_call(0, '/pincode', 'city_id=' + city_id).pipe(pluck("data")).subscribe(res => {
+      this.pincodeMst = res;
     })
   }
   addItem(): void {
@@ -319,10 +506,15 @@ export class ClModifcationComponent implements OnInit {
               validators: [Validators.required]
             }
             ,
+            {
+              name: "country",
+              validators: [Validators.required]
+            }
+            ,
 
             {
               name: "pincode",
-              validators: [Validators.required, Validators.minLength(6), Validators.maxLength(6)]
+              validators: [Validators.required]
             },
             {
               name: "dob",
@@ -354,5 +546,8 @@ export class ClModifcationComponent implements OnInit {
       this.__clientForm.get(element).updateValueAndValidity();
     });
   }
+  deletePertner(index){
+    this.pertner_dtls.removeAt(index);
 
+  }
 }

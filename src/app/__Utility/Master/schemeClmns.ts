@@ -98,7 +98,7 @@ export class schemeClmns{
     {id: "sl_no",text:"Sl No"},
     {id: "scheme_name",text:"Scheme"},
     {id: "scheme_type",text:"Scheme Type"},
-    {id: "amc_name",text:"Amc"},
+    {id: "amc_name",text:"AMC"},
     {id: "cat_name",text:"Category"},
     {id: "subcate_name",text:"Sub Category"},
     {id: "nfo_start_dt",text:"NFO Start Date"},

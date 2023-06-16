@@ -28,8 +28,8 @@ export interface rnt {
     local_contact_per_email: any
     local_ofc_addr: any
 
-    distributor_care_no?:string;
-    distributor_care_email?:string;
+    distributor_care_no?:any;
+    distributor_care_email?:any;
 
     l1_contact_no?: number
     l1_email?: string
@@ -48,6 +48,7 @@ export interface rnt {
     l5_name?: string
     l6_contact_no?: number
     l6_email?: string
-    l6_name?: string
+    l6_name?: string,
+    logo?:string
 }
 /****************END***********************/

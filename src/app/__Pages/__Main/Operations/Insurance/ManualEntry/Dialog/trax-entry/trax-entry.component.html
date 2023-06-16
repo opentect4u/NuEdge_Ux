@@ -211,7 +211,7 @@
                 Proposer Details
                 <span class="text-danger">*</span></label>
               <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="proposer_code"
-                placeholder="Search By Proposer Name,Proposer Code, Email, Mobile, Pan & DOB">
+                placeholder="Search By Proposer Name,Proposer Code, Email, Mobile, PAN & DOB">
               <span class="spinner-border"
                 *ngIf="__isClientPending && __insTrax.get('proposer_code').value?.length > 1"></span>
 
@@ -291,7 +291,7 @@
                           <label for="insured_person_code">Code</label>
                           <input type="search" name="insured_person_code" id="insured_person_code" class="form-control"
                             formControlName="insured_person_code"
-                            placeholder="Search By Proposer Name,Proposer Code, Email, Mobile, Pan & DOB">
+                            placeholder="Search By Proposer Name,Proposer Code, Email, Mobile, PAN & DOB">
                           <span class="spinner-border"
                             *ngIf="__isInsuredPersonExist && __insTrax.get(['insured_person','insured_person_code']).value?.length > 1"></span>
 
@@ -346,14 +346,14 @@
                       </div>
                     </div>
                     <div class="col-sm-12 my-5">
-                      <label>DOB <span class="text-danger">*</span></label>
+                      <label>Date Of Birth <span class="text-danger">*</span></label>
                       <input type="date" class="form-control" name="ins_person_dob" id="ins_person_dob"
-                        formControlName="insured_person_dob" placeholder="Insured Person DOB">
+                        formControlName="insured_person_dob" placeholder="Insured Person Date Of Birth">
                       <div class="invalid-feedback"
                         *ngIf=" __insTrax.get(['insured_person','insured_person_dob']).invalid && ( __insTrax.get(['insured_person','insured_person_dob']).dirty ||  __insTrax.get(['insured_person','insured_person_dob']).touched)">
                         <span class="invalid-feedback"
                           *ngIf="( __insTrax.get(['insured_person','insured_person_dob'])).errors?.required">*Please
-                          provide dob
+                          provide date of birth
                         </span>
                       </div>
                     </div>
@@ -714,7 +714,7 @@
           <label>Upload Scan Application Form <span class="text-danger">*</span></label>
           <input type="file" name="file" id="file" formControlName="file" class="form-control"
             (change)="getFIle($event.target)" accept=".pdf">
-           <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 2MB)</p></mat-hint>
+           <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
           <div class="invalid-feedback"
             *ngIf=" __insTrax.get('file').invalid && ( __insTrax.get('file').dirty ||  __insTrax.get('file').touched)">
             <span class="invalid-feedback" *ngIf=" __insTrax.get('file').errors?.required">*Please
@@ -724,7 +724,7 @@
             <span class="invalid-feedback" *ngIf="__insTrax.get('file').errors?.fileSizeValidator">*File size
               must
               not exceed than
-              2MB.</span>
+              10MB.</span>
           </div>
           <!-- <ng-container *ngIf="this.__insTrax.get('filePreview').value">
             <br clear="all" />

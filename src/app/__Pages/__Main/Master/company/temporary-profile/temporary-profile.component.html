@@ -1,0 +1,153 @@
+<form [formGroup]="temporaryForm" (ngSubmit)="submit()">
+  <div class="row">
+    <div class="col-sm-3">
+      <label for="cm_profile_id">Company <span class="text-danger">*</span></label>
+      <select name="cm_profile_id" id="cm_profile_id" class="form-control" formControlName="cm_profile_id">
+        <option value="">Select</option>
+        <option [value]="company.id" *ngFor="let company of cmpDtls">
+          {{company.type_of_comp == 4 ? company.establishment_name : company.name}}
+        </option>
+      </select>
+      <div class="invalid-feedback" *ngIf="temporaryForm.get('cm_profile_id').invalid && (temporaryForm.get('cm_profile_id').dirty || temporaryForm.get('cm_profile_id').touched)">
+        <span class="invalid-feedback" *ngIf="(temporaryForm.get('cm_profile_id')).errors?.required">*Please provide company</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="upload_logo">Upload Logo <span class="text-danger">*</span></label>
+      <div class="p-inputgroup">
+      <input type="file" accept="jpg,jpeg,png" (change)="getFile($event)" name="upload_logo" id="upload_logo" class="form-control" formControlName="upload_logo">
+          <a [href]="temporaryForm.get('file_preview')?.value" target="__blank" type="button" pButton icon="pi pi-eye" styleClass="p-button-warn"
+          *ngIf="temporaryForm.value.file_preview"
+          ></a>
+          <!-- <a type="button"
+
+          pButton icon="pi pi-eye" styleClass="p-button-warn p-button-lg" *ngIf="temporaryForm.get('file_preview')?.value"></a>
+           <p-image #tooltip="matTooltip"
+           matTooltip="View Image" src="{{temporaryForm.get('file_preview')?.value}}"
+           *ngIf="temporaryForm.get('file_preview')?.value"
+           alt="Image" width="0" [preview]="temporaryForm.get('file_preview')?.value" ></p-image> -->
+          </div>
+
+          <label>Allowed format : </label><small> JPEG, PNG OR JPG</small>
+          <div class="invalid-feedback"
+                    *ngIf=" temporaryForm.get('upload_logo').invalid && ( temporaryForm.get('upload_logo').dirty ||  temporaryForm.get('upload_logo').touched)">
+                    <!-- <span class="invalid-feedback" *ngIf=" temporaryForm.get('upload_logo').errors?.required">*Please
+                      provide file</span> -->
+                    <span class="invalid-feedback" *ngIf="temporaryForm.get('upload_logo').errors?.inValidExt">*Invalid
+                      file extension.</span>
+                    <span class="invalid-feedback"
+                      *ngIf="temporaryForm.get('upload_logo').errors?.fileSizeValidator">*File size must not exceed than
+                      10MB.</span>
+                  </div>
+
+        </div>
+    <div class="col-sm-3">
+      <label for="date">Displayed From <span class="text-danger">*</span></label>
+      <input type="date" name="date" id="date" class="form-control" formControlName="from_dt">
+      <div class="invalid-feedback" *ngIf="temporaryForm.get('from_dt').invalid && (temporaryForm.get('from_dt').dirty || temporaryForm.get('from_dt').touched)">
+        <span class="invalid-feedback" *ngIf="(temporaryForm.get('from_dt')).errors?.required">*Please provide from date</span>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <label for="date">Displayed To <span class="text-danger">*</span></label>
+      <input type="date" name="date" id="date" class="form-control" formControlName="to_dt">
+      <div class="invalid-feedback" *ngIf="temporaryForm.get('to_dt').invalid && (temporaryForm.get('to_dt').dirty || temporaryForm.get('to_dt').touched)">
+        <span class="invalid-feedback" *ngIf="(temporaryForm.get('to_dt')).errors?.required">*Please provide to date</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <p-button type="submit"
+      [label]="'Save'"
+      icon="pi pi-save"
+      iconPos="right"
+      [disabled]="temporaryForm.invalid"
+      class="float-right"
+      styleClass="p-button-lg p-button-primary">
+      </p-button>
+      <p-button type="button"
+      label="Reset"
+      icon="pi pi-refresh"
+      iconPos="right"
+      class="mx-3"
+      (click)="reset()"
+      class="float-right mx-2"
+      styleClass="p-button-lg p-button-danger">
+      </p-button>
+    </div>
+  </div>
+</form>
+
+<div class="card my-2">
+  <div class="card-header">
+    <h4>Temporary Profile Details</h4>
+  <!-- [rowsPerPageOptions]="[10, 25, 50]" -->
+
+  </div>
+  <div class="card-body">
+ <p-table #dt [value]="temporaryMstDtls"
+ [columns]="columns"
+ [resizableColumns]="true"
+  [paginator]="true"
+  [rows]="5"
+  [showCurrentPageReport]="true"
+  selectionMode="multiple"
+  columnResizeMode="expand"
+  [scrollable]="true"
+  scrollHeight="250px"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+  [tableStyle]="{ 'min-width': '100rem' }">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 20rem">
+            {{ col.header }}
+            <p-sortIcon *ngIf="col.field!= 'upload_logo'" [field]="col.field">
+            </p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-finance let-columns="columns">
+        <tr tabindex="999">
+          <td *ngFor="let col of columns" >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'name'">
+                {{ finance['type_of_comp'] == 4 ? finance['establishment_name'] : finance['name']}}
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'upload_logo'">
+                <p-image
+                [src]="logo_url + finance[col.field]"
+                [preview]="false"
+                [alt]="finance['type_of_comp'] == 4 ? finance['establishment_name'] : finance['name']"
+                width="50">
+                  <ng-template pTemplate="indicator">
+                      <i class="pi pi-eye"></i>
+                  </ng-template>
+              </p-image>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'edit'">
+                <p-button icon="pi pi-pencil" (click)="populateDT(finance)"
+                styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'delete'">
+                <p-button icon="pi pi-trash"
+                styleClass="p-button-rounded p-button-danger"></p-button>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                {{ finance[col.field] ? finance[col.field] : 'N/A' }}
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+             No records found
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  </div>
+</div>

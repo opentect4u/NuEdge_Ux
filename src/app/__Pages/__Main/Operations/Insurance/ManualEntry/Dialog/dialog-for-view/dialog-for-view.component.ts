@@ -6,12 +6,14 @@ import { docType } from 'src/app/__Model/__docTypeMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { environment } from 'src/environments/environment';
+import relation from '../../../../../../../../assets/json/Master/relationShip.json';
 @Component({
   selector: 'app-dialog-for-view',
   templateUrl: './dialog-for-view.component.html',
   styleUrls: ['./dialog-for-view.component.css']
 })
 export class DialogForViewComponent implements OnInit {
+  __relation = relation;
   __docTypeMaster:docType[] =[];
   __noImg: string = '../../../../../../assets/images/noimg.png';
    __frmDtls =new FormGroup({

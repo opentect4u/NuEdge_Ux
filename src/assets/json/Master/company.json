@@ -1,0 +1,92 @@
+[
+  {
+    "id":1,
+    "tab_name":"Profile",
+    "flag":"P",
+    "icon":"account_circle",
+    "img":"",
+    "content":"app-profile",
+    "img_src":"../../../../../assets/images/documentLocker.png"
+  },
+  {
+    "id":2,
+    "tab_name":"Temporary Profile",
+    "flag":"T",
+    "icon":"account_circle",
+    "img":"",
+    "content":"app-profile",
+    "img_src":"../../../../../assets/images/documentLocker.png"
+  },
+  {
+    "id":3,
+    "tab_name":"Director Details",
+    "flag":"D",
+    "icon":"manage_acounts",
+    "img":"",
+    "content":"app-director-dtls",
+    "img_src":"../../../../../assets/images/admin.png"
+  },
+  {
+    "id":4,
+    "tab_name":"Pertnership Details",
+    "flag":"PF",
+    "icon":"info",
+    "img":"",
+    "content":"<app-profile></app-profile>",
+    "img_src":"../../../../../assets/images/documentLocker.png"
+  },
+  {
+    "id":5,
+    "tab_name":"Shared Holder",
+    "flag":"S",
+    "icon":"folder_shared",
+    "img":"",
+    "content":"<app-profile></app-profile>",
+    "img_src":"../../../../../assets/images/documentLocker.png"
+  },
+  {
+    "id":6,
+    "tab_name":"Document Locker",
+    "flag":"DL",
+    "icon":"folder_open",
+    "img":"",
+    "content":"<app-profile></app-profile>",
+    "img_src":"../../../../../assets/images/documentLocker.png"
+  },
+  {
+    "id":7,
+    "tab_name":"Bank",
+    "flag":"B",
+    "icon":"account_balance",
+    "img":"",
+    "content":"<app-profile></app-profile>",
+    "img_src":"../../../../../assets/images/bank.png"
+  },
+  {
+    "id":8,
+    "tab_name":"Product Mapping",
+    "flag":"PM",
+    "icon":"category",
+    "img":"",
+    "content":"<app-profile></app-profile>",
+    "img_src":"../../../../../assets/images/product_mapping.png"
+  },
+  {
+    "id":9,
+    "tab_name":"License Details",
+    "flag":"L",
+    "icon":"stars",
+    "img":"",
+    "content":"<app-profile></app-profile>",
+    "img_src":"../../../../../assets/images/documentLocker.png"
+  },
+  {
+    "id":10,
+    "tab_name":"Login & Password Locker",
+    "flag":"LP",
+    "icon":"lock",
+    "img":"",
+    "content":"<app-profile></app-profile>",
+    "img_src":"../../../../../assets/images/loginPass.png"
+  }
+]

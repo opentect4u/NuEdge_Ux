@@ -1,0 +1,39 @@
+<form [formGroup]="product_mapping" (ngSubmit)="submitProduct()" >
+
+  <div class="row my-2">
+    <div class="col-sm-4">
+      <label for="cm_profile_id">Company <span class="text-danger">*</span></label>
+      <select name="cm_profile_id" id="cm_profile_id" class="form-control" formControlName="cm_profile_id">
+        <option value="">Select</option>
+        <option [value]="company.id" *ngFor="let company of cmpDtlsMst">{{company.type_of_comp == 4 ? company.proprietor_name : company.name}}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="product_mapping.get('cm_profile_id').invalid && (product_mapping.get('cm_profile_id').dirty || product_mapping.get('cm_profile_id').touched)">
+        <span class="invalid-feedback" *ngIf="(product_mapping.get('cm_profile_id')).errors?.required">*Please provide company</span>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <label for="product_name">Product <span class="text-danger">*</span></label>
+      <input type="text" placeholder="Enter Product" name="product_name" id="product_name" class="form-control" formControlName="product_name">
+      <div class="invalid-feedback" *ngIf="product_mapping.get('product_name').invalid && (product_mapping.get('product_name').dirty || product_mapping.get('product_name').touched)">
+        <span class="invalid-feedback" *ngIf="(product_mapping.get('product_name')).errors?.required">*Please provide product</span>
+      </div>
+    </div>
+    <div class="col-sm-4 d-flex justify-content-end align-items-end">
+      <p-button type="button"
+      label="Reset"
+      icon="pi pi-refresh"
+      iconPos="right"
+      class="mx-3"
+      (click)="reset()"
+      styleClass="p-button-lg p-button-danger">
+      </p-button>
+      <p-button type="submit"
+      [label]="'Save'"
+      icon="pi pi-save"
+      iconPos="right"
+      [disabled]="product_mapping.invalid"
+      styleClass="p-button-lg p-button-primary">
+      </p-button>
+  </div>
+  </div>
+</form>

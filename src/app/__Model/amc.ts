@@ -1,6 +1,7 @@
 
 /****************GET RESPONSE OF AMC MASTER FROM BACKEND IN THE FOLLOWING FORMAT***********************/
 export interface amc {
+  logo: string
   amc_name: string
   created_at: string
   created_by: number

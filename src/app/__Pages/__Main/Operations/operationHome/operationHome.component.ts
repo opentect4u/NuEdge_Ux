@@ -32,9 +32,11 @@ export class OperationHomeComponent implements OnInit {
     this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   navigate(__items){
-    switch(__items.flag){
-      case 'M':this.__utility.navigate(__items.url,btoa(__items.id));break;
-      default:this.__utility.navigate(__items.url);break;
-    }
+    this.__utility.navigate(__items.url)
+
+    // switch(__items.flag){
+    //   case 'M':this.__utility.navigate(__items.url,btoa(__items.id));break;
+    //   default:this.__utility.navigate(__items.url);break;
+    // }
   }
 }

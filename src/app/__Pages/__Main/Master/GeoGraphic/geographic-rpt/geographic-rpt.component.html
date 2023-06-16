@@ -1,0 +1,291 @@
+
+<!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle -->
+
+<div  >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >Geographic Reports</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+
+     <div class="card mb-2">
+      <div class="card-body px-4">
+        <form [formGroup]="geographicForm" (ngSubmit)="submitgeographical()">
+        <div class="row my-2">
+          <div class="col-sm-3">
+            <label for="country_id">Country</label>
+            <ng-multiselect-dropdown
+            id="country_id"
+            #country
+            [placeholder]="'Select Country'"
+            [settings]="settings_country"
+            [data]="__countryMst"
+            formControlName="country_id">
+          </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="state_id">State</label>
+            <ng-multiselect-dropdown
+            id="state_id"
+            [placeholder]="'Select State'"
+            [settings]="settings_state"
+            [data]="__stateMst"
+            formControlName="state_id">
+          </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="district_id">District</label>
+            <ng-multiselect-dropdown
+            id="district_id"
+            [placeholder]="'Select District'"
+            [settings]="settings_dist"
+            [data]="__districtMst"
+            formControlName="district_id">
+          </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="dist_id">City</label>
+            <ng-multiselect-dropdown
+            id="city_id"
+            [placeholder]="'Select City'"
+            [settings]="settings_city"
+            [data]="__cityMst"
+            formControlName="city_id">
+          </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="row my-2">
+          <div class="col-sm-3">
+              <app-core-srch
+              [label] = "'Pincode'"
+              [placeholder]="'Search By Pincode'"
+              [isPending]="__isPincodePending"
+              [listItems] = "__pincodeMst"
+              [flag] = "'P'"
+              [isRequired]="true"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['pincode']"
+              formControlName="pincode"
+              [displayMode]="displayMode_forClient"
+              (setDisplayMode)="displayMode_forClient = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              ></app-core-srch>
+          </div>
+          <div class="col-sm-5 d-flex flex-column justify-content-end align-items-start">
+
+            <div class="checkboxes d-flex flex-row align-items-center">
+              <label for="rnt_ofc" class="mx-2">City Type: </label>
+              <div>
+                <ng-container formArrayName="city_type_id">
+                  <ng-container *ngFor="let items of city_type_id.controls;let i=index">
+                    <ng-container [formGroupName]="i">
+                      <mat-checkbox class="mr-3" formControlName="isChecked" color="primary">
+                        {{city_type_id.controls[i].get('city_type_name').value}}
+                      </mat-checkbox>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <mat-checkbox  formControlName="is_all" color="primary">All</mat-checkbox>
+              </div>
+              </div>
+
+          </div>
+          <div class="col-sm-4 d-flex justify-content-end align-items-end">
+            <p-button class="mx-3" (click)="reset()" type="button" label="Reset" icon="pi pi-refresh" iconPos="right" styleClass="p-button-danger p-button-lg"></p-button>
+
+            <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+          </div>
+        </div>
+      </form>
+      </div>
+     </div>
+
+     <div class="card border-1 rounded-top">
+      <div class="example_container_header">
+        <div class="transTypeCount">
+        </div>
+        <div class="btnGrp d-flex">
+          <button mat-icon-button (click)="isOpenMegaMenu = !isOpenMegaMenu" color="primary" class="colmSelect"
+            #tooltip="matTooltip" matTooltip="Column Selector">
+            <mat-icon>splitscreen_right</mat-icon>
+          </button>
+          <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" #tooltip="matTooltip"
+            matTooltip="Export">
+            <mat-icon>system_update_alt</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'GeographicalReport'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+
+      </div>
+      <div class="container_body">
+          <!-- PrimeNg Table with column resize, column sorting etc  [reorderableColumns]="true" pReorderableColumn-->
+          <p-table
+          (onLazyLoad)="customSort($event)" [customSort]="true"
+          sortMode="single"
+          [lazy]="true"
+          #dt [value]="geographicMst" [columns]="__columns" [resizableColumns]="true"
+            selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
+            scrollHeight="200px"
+            [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': '120rem' }">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 10rem">
+                  {{ col.header }}
+                  <p-sortIcon  [field]="col.field">
+                  </p-sortIcon>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-geography let-columns="columns" let-i="rowIndex">
+              <tr tabindex="999">
+                <td *ngFor="let col of columns" style="width: 10rem">
+                  <ng-container *ngIf="col.field == 'sl_no';else rest">
+                    {{i + 1}}
+                  </ng-container>
+                  <ng-template #rest>
+                    {{ geography[col.field] ? geography[col.field] : 'N/A' }}
+                  </ng-template>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+              <tr>
+                <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                   No records found
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <!-- End -->
+
+
+           <!-- Paginator with item per page -->
+           <div class="paginator">
+            <div class="itemsPerPage">
+              <label>Items Per Page :&nbsp; </label>
+              <mat-button-toggle-group #group="matButtonToggleGroup">
+                <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(10)">
+                  10
+                </mat-button-toggle>
+                <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(50)">
+                  50
+                </mat-button-toggle>
+                <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(100)">
+                  100
+                </mat-button-toggle>
+                <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
+                  All
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+
+            <div class="paginatorContainer">
+              <ul>
+                <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                  <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                    *ngIf="(paginate.label | bnkrplc) == 'P'">
+                    <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                      keyboard_double_arrow_left</mat-icon>
+                  </a>
+                  <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                    *ngIf="(paginate.label | bnkrplc) == 'N'">
+                    <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                      keyboard_double_arrow_right</mat-icon>
+                  </a>
+                  <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                    *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                    {{paginate.label}}
+                  </a>
+                </li>
+              </ul>
+
+
+            </div>
+
+          </div>
+          <!-- End -->
+          <!-- Meage Menu For Check box -->
+          <core-mega-menu-for-column [isOpenMegaMenu]="isOpenMegaMenu" [ColumnList]="clmList"
+            [selectedClmns]="selectedClms" (hideMegamenu)="isOpenMegaMenu = $event"
+            (getSelectedColumns)="getSelectedColumns($event)">
+          </core-mega-menu-for-column>
+          <!-- End -->
+
+
+          <!-- Export -->
+          <!-- <div  style="display:none"> -->
+            <table mat-table hidden id="GeoGraphicRPT" [dataSource]="export" matTableExporter #exporter="matTableExporter">
+
+              <ng-container matColumnDef="sl_no">
+                <th mat-header-cell *matHeaderCellDef>Sl No</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+              </ng-container>
+              <ng-container matColumnDef="country_name">
+                <th mat-header-cell *matHeaderCellDef>Country</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{element.country_name ? element.country_name : ''}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="states_name">
+                <th mat-header-cell *matHeaderCellDef>State</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{element.states_name ? element.states_name : ''}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="district_name">
+                <th mat-header-cell *matHeaderCellDef>District</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{element.district_name ? element.district_name : ''}}</td>
+              </ng-container>
+              <ng-container matColumnDef="city_name">
+                <th mat-header-cell *matHeaderCellDef>City</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{element.city_name ? element.city_name : ''}}</td>
+              </ng-container>
+              <ng-container matColumnDef="city_type_name">
+                <th mat-header-cell *matHeaderCellDef>City Type</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{element.city_type_name ? element.city_type_name : ''}}</td>
+              </ng-container>
+              <ng-container matColumnDef="pincode">
+                <th mat-header-cell *matHeaderCellDef>Pincode</th>
+                <td mat-cell *matCellDef="let element;let i = index">{{element.pincode ? element.pincode : ''}}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="exportClms"></tr>
+              <tr mat-row *matRowDef="let row; columns: exportClms;"></tr>
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" [attr.colspan]="exportClms.length" class="text-center">No Record
+                  Found</td>
+              </tr>
+            </table>
+          <!-- End -->
+          <!-- </div> -->
+          <!-- End -->
+
+      </div>
+
+
+      </div>
+
+  </mat-dialog-content>
+  </div>
