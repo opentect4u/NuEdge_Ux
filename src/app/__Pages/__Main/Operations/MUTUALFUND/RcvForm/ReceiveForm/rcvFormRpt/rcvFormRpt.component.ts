@@ -363,7 +363,7 @@ export class RcvformrptComponent implements OnInit {
      /** End */
 
     /** Client Code Change */
-    this.__rcvForms.controls['client_code'].valueChanges
+    this.__rcvForms.controls['client_name'].valueChanges
       .pipe(
         tap(() => (this.__isClientPending = true)),
         debounceTime(200),

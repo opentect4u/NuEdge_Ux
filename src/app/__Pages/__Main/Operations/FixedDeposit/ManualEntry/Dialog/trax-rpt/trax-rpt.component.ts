@@ -720,8 +720,8 @@ export class TraxRPTComponent implements OnInit {
       });
     }
     else{
-      this.__insTraxForm.controls['scheme_id'].setValue([], {emitEvent: false,});
-      this.__scmMst.length = 0;
+      this.__insTraxForm.controls['company_id'].setValue([], {emitEvent: true});
+      this.__compMst.length = 0;
     }
 
   }
@@ -736,7 +736,7 @@ export class TraxRPTComponent implements OnInit {
   getSchemeMst(__comp_id) {
     if (__comp_id.length > 0) {
       this.__dbIntr
-        .api_call(1, '/fd/schemeDetails', 'arr_company_id='+ JSON.stringify(__comp_id.map(item => {return item['id']})))
+        .api_call(0, '/fd/schemeDetails', 'arr_company_id='+ JSON.stringify(__comp_id.map(item => {return item['id']})))
         .pipe(pluck('data'))
         .subscribe(res => {
           this.__scmMst = res;
