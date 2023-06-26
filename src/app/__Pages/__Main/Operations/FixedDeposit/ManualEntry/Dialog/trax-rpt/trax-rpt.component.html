@@ -19,7 +19,7 @@
     </div>
 
   </div>
-  <mat-dialog-content>
+  <!-- <mat-dialog-content>
     <div class="card my-5">
       <div class="card-body p-5">
         <form [formGroup]="__insTraxForm" (ngSubmit)="searchInsurance()" autocomplete="off">
@@ -41,9 +41,6 @@
                 </mat-button-toggle>
 
               </mat-button-toggle-group>
-              <!-- <button mat-icon-button type="button" class="float-right" title="Reset" (click)="refresh()">
-                <mat-icon>refresh</mat-icon>
-              </button> -->
             </div>
           </div>
           <ng-container *ngIf="__insTraxForm.get('options').value != '3'">
@@ -276,18 +273,6 @@
         </div>
       </div>
       <div class="example-container">
-
-
-
-
-
-
-
-
-
-
-
-
         <table mat-table [dataSource]="__insTrax" matSort (matSortChange)="sortData($event)" class="table_Custome">
           <ng-container matColumnDef="sl_no">
             <th mat-header-cell *matHeaderCellDef>Sl No</th>
@@ -466,7 +451,6 @@
           </ng-container>
 
 
-          <!-- Buisness Type-->
           <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>Edit</th>
             <td mat-cell *matCellDef="let element">
@@ -476,7 +460,6 @@
             </td>
           </ng-container>
 
-          <!-- Buisness Type-->
           <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef>Delete</th>
             <td mat-cell *matCellDef="let element">
@@ -716,5 +699,119 @@
         </table>
       </div>
     </div>
-  </mat-dialog-content>
+  </mat-dialog-content> -->
+
+ <mat-dialog-content class="customDialog">
+        <div class="card p-3 border-1">
+        <form [formGroup]="__insTraxForm" (ngSubmit)="searchInsurance()" autocomplete="off">
+
+          <div class="row">
+            <div class="col-sm-6 d-flex justify-content-start align-items-center">
+              <mat-radio-group aria-label="Select an option" formControlName="options">
+                <mat-radio-button color="primary" value="2">Summary</mat-radio-button>
+                <mat-radio-button color="primary" value="1" class="ml-5">Detail</mat-radio-button>
+                <mat-radio-button color="primary" value="3" class="ml-5">Day Sheet</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div class="col-sm-6 d-flex justify-content-end align-items-center">
+              <p-selectButton
+              [options]="selectBtn"
+              formControlName="btnType"
+              optionValue="value"
+              styleClass="p-button-lg"
+              (onOptionClick)="onItemClick($event)"
+              optionLabel="icon">
+                <ng-template let-item>
+                    <i [class]="item.icon"  [matTooltip]="item.label"></i>
+                </ng-template>
+            </p-selectButton>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="dt_type">Date Periods</label>
+              <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+                  <option value="">Select</option>
+                  <option value="D">Today</option>
+                  <option value="W">This Week</option>
+                  <option value="M">This Month</option>
+                  <option value="Y">This Year</option>
+                  <option value="R">Date Range</option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <label for="date_range">Date (From - To)</label>
+                      <p-calendar
+                      dateFormat="dd/mm/yy"
+                      placeholder="Select Date Range"
+                      formControlName="date_range"
+                      selectionMode="range"
+                      [readonlyInput]="true"
+                      id="date_range"
+                      [showIcon]="true"
+                      [hideOnDateTimeSelect]="true"
+                      (onClose)="close($event)"
+                      [showButtonBar]="true">
+                      </p-calendar>
+            </div>
+            <div class="col-sm-3">
+              <app-core-srch
+              [label] = "'TIN'"
+              [placeholder]="'Search By TIN'"
+              [isPending]="__istemporaryspinner"
+              [listItems] = "__tinMst"
+              [flag] = "'T'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['tin_no','investor_name']"
+              formControlName="tin_no"
+              [displayMode]="displayMode_forTemp_Tin"
+              (setDisplayMode)="displayMode_forTemp_Tin = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              ></app-core-srch>
+            </div>
+            <div class="col-sm-3">
+              <app-core-srch
+              [label] = "'Client Details'"
+              [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+              [isPending]="__isClientPending"
+              [listItems] = "__clientMst"
+              [flag] = "'C'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['client_code','pan','client_name']"
+              formControlName="investor_name"
+              [displayMode]="displayMode_forClient"
+              (setDisplayMode)="displayMode_forClient = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              ></app-core-srch>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="comp_type_id">Company Type</label>
+              <ng-multiselect-dropdown
+              id="comp_type_id"
+              [placeholder]="'Select Company Type'"
+              [settings]="__comp_type_setting"
+              [data]="__compTypeMst"
+              formControlName="comp_type_id">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="company_id">Company</label>
+              <ng-multiselect-dropdown
+              id="company_id"
+              [placeholder]="'Select Company'"
+              [settings]="__comp_setting"
+              [data]="__compMst"
+              formControlName="company_id">
+            </ng-multiselect-dropdown>
+            </div>
+          </div>
+          </form>
+
+        </div>
+ </mat-dialog-content>
 </div>

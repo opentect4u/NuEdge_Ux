@@ -110,6 +110,7 @@ export class RcvformrptComponent implements OnInit {
     btnType:new FormControl('R'),
     options: new FormControl('2'),
     client_code: new FormControl(''),
+    client_name: new FormControl(''),
     recv_from: new FormControl(''),
     sub_brk_cd: new FormControl([],{updateOn:'blur'}),
     euin_no: new FormControl([]),
@@ -602,6 +603,7 @@ export class RcvformrptComponent implements OnInit {
       bu_type:[],
       date_range:''
     });
+    this.__rcvForms.get('client_name').setValue('', { emitEvent: false });
     this.__rcvForms.get('client_code').setValue('', { emitEvent: false });
     this.__rcvForms.get('temp_tin_no').setValue('', { emitEvent: false });
     this.submit();
@@ -616,9 +618,10 @@ export class RcvformrptComponent implements OnInit {
   getItems(__items, __mode) {
     switch (__mode) {
       case 'C':
-        this.__rcvForms.controls['client_code'].reset(__items.client_name, {
+        this.__rcvForms.controls['client_name'].reset(__items.client_name, {
           emitEvent: false,
         });
+        this.__rcvForms.controls['client_code'].reset(__items.id, {emitEvent: false});
         this.searchResultVisibilityForClient('none');
         break;
       case 'T':

@@ -38,8 +38,15 @@ import { client } from 'src/app/__Model/__clientMst';
 import { TrxEntryComponent } from '../trx-entry/trx-entry.component';
 import { fdComp } from 'src/app/__Model/fdCmp';
 import subOpt from '../../../../../../../../assets/json/subOption.json';
-import tdsInfo from '../../../../../../../../assets/json/TDSInfo.json'
-
+import tdsInfo from '../../../../../../../../assets/json/TDSInfo.json';
+import filterOpt from '../../../../../../../../assets/json/filterOption.json';
+import { sort } from 'src/app/__Model/sort';
+import itemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 
 
 @Component({
@@ -48,6 +55,13 @@ import tdsInfo from '../../../../../../../../assets/json/TDSInfo.json'
   styleUrls: ['./trax-rpt.component.css']
 })
 export class TraxRPTComponent implements OnInit {
+
+
+
+  sort = new sort();
+  itemsPerPage:selectBtn[] = itemsPerPage;
+  selectBtn:selectBtn[] = filterOpt
+
   __comp_setting = this.__utility.settingsfroMultiselectDropdown(
     'id',
     'comp_short_name',
@@ -76,10 +90,12 @@ export class TraxRPTComponent implements OnInit {
   @ViewChild('searchEUIN') __searchRlt: ElementRef;
   @ViewChild('subBrkArn',{static:true}) __subBrkArn: ElementRef;
   @ViewChild('clientCd') __clientCode: ElementRef;
-
+  displayMode_forTemp_Tin:string;
+  displayMode_forClient:string;
   __isSubArnPending: boolean = false;
   __isEuinPending: boolean = false;
   __isClientPending: boolean = false;
+  __istemporaryspinner:boolean = false;
   divToPrint: any;
   WindowObject: any;
   __mode_of_premium = modeOfPremium;
@@ -90,6 +106,7 @@ export class TraxRPTComponent implements OnInit {
   __compMst: fdComp[] = [];
   __compTypeMst: any = [];
   __scmMst: any = [];
+  __tinMst:any=[];
   __insTrax = new MatTableDataSource<any>([]);
   __exportTrax = new MatTableDataSource<any>([]);
 
@@ -101,12 +118,15 @@ export class TraxRPTComponent implements OnInit {
   __isVisible: boolean = false;
   __insTraxMst = new MatTableDataSource<any>([]);
   __insTraxForm = new FormGroup({
+    btnType:new FormControl('R'),
+    date_range: new FormControl(''),
     options: new FormControl('2'),
     sub_brk_cd: new FormControl(''),
     tin_no: new FormControl(''),
     insured_bu_type: new FormArray([]),
     brn_cd: new FormControl(''),
     investor_code: new FormControl(''),
+    investor_name: new FormControl(''),
     euin_no: new FormControl(''),
     bu_type: new FormArray([]),
     date_status: new FormControl('T'),
@@ -116,8 +136,8 @@ export class TraxRPTComponent implements OnInit {
     frm_dt: new FormControl(''),
     to_dt: new FormControl(''),
     dt_type: new FormControl(''),
-    company_id: new FormControl([]),
-    comp_type_id: new FormControl([]),
+    company_id: new FormControl([],{updateOn:'blur'}),
+    comp_type_id: new FormControl([],{updateOn:'blur'}),
     scheme_id: new FormControl([]),
     filter_type: new FormControl(''),
     is_all_bu_type: new FormControl(false)
@@ -150,6 +170,7 @@ export class TraxRPTComponent implements OnInit {
   ngOnInit(): void {
     this.getFDMstRPT();
     this.setColumns(this.__insTraxForm.value.options);
+    this.getCompanyTypeMst();
   }
   getFDMstRPT(
     column_name: string | null | undefined = '',
@@ -248,23 +269,60 @@ export class TraxRPTComponent implements OnInit {
       }
     );
 
-
-
     this.__insTraxForm.controls['dt_type'].valueChanges.subscribe((res) => {
-      this.__insTraxForm.controls['frm_dt'].setValue(
+      this.__insTraxForm.controls['date_range'].reset(
+        res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+      );
+      this.__insTraxForm.controls['frm_dt'].reset(
         res && res != 'R' ? dates.calculateDT(res) : ''
       );
-      this.__insTraxForm.controls['to_dt'].setValue(
+      this.__insTraxForm.controls['to_dt'].reset(
         res && res != 'R' ? dates.getTodayDate() : ''
       );
       if (res && res != 'R') {
-        this.__insTraxForm.controls['frm_dt'].disable();
-        this.__insTraxForm.controls['to_dt'].disable();
+        this.__insTraxForm.controls['date_range'].disable();
       } else {
-        this.__insTraxForm.controls['frm_dt'].enable();
-        this.__insTraxForm.controls['to_dt'].enable();
+        this.__insTraxForm.controls['date_range'].enable();
       }
     });
+
+    this.__insTraxForm.controls['tin_no'].valueChanges
+    .pipe(
+      tap(() => (this.__istemporaryspinner = true)),
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((dt) =>
+        dt?.length > 1 ? this.__dbIntr.searchItems('/fd/fdTraxShow', dt) : []
+      ),
+      map((x: responseDT) => x.data)
+    )
+    .subscribe({
+      next: (value) => {
+        this.__tinMst = value;
+        this.searchResultVisibilityForTin('block');
+        this.__istemporaryspinner = false;
+      },
+      complete: () => console.log(''),
+      error: (err) => {
+        this.__istemporaryspinner = false;
+      },
+    });
+
+    // this.__insTraxForm.controls['dt_type'].valueChanges.subscribe((res) => {
+    //   this.__insTraxForm.controls['frm_dt'].setValue(
+    //     res && res != 'R' ? dates.calculateDT(res) : ''
+    //   );
+    //   this.__insTraxForm.controls['to_dt'].setValue(
+    //     res && res != 'R' ? dates.getTodayDate() : ''
+    //   );
+    //   if (res && res != 'R') {
+    //     this.__insTraxForm.controls['frm_dt'].disable();
+    //     this.__insTraxForm.controls['to_dt'].disable();
+    //   } else {
+    //     this.__insTraxForm.controls['frm_dt'].enable();
+    //     this.__insTraxForm.controls['to_dt'].enable();
+    //   }
+    // });
 
     this.__insTraxForm.controls['date_status'].valueChanges.subscribe((res) => {
       this.__insTraxForm.controls['start_date'].setValue(
@@ -332,7 +390,7 @@ export class TraxRPTComponent implements OnInit {
         },
       });
 
-    this.__insTraxForm.controls['investor_code'].valueChanges
+    this.__insTraxForm.controls['investor_name'].valueChanges
       .pipe(
         tap(() => (this.__isClientPending = true)),
         debounceTime(200),
@@ -357,16 +415,29 @@ export class TraxRPTComponent implements OnInit {
     /*** Product Type Change */
     this.__insTraxForm.controls['comp_type_id'].valueChanges.subscribe(
       (res) => {
-        this.getSchemeMst(this.__insTraxForm.get('company_id').value, res);
+        // this.getSchemeMst(this.__insTraxForm.get('company_id').value, res);
+        this.getCompanyMst(res);
       }
     );
     /*** END */
 
     /*** Comapny Change */
     this.__insTraxForm.controls['company_id'].valueChanges.subscribe((res) => {
-      this.getSchemeMst(res, this.__insTraxForm.get('comp_type_id').value);
+      this.getSchemeMst(res);
     });
     /*** END */
+  }
+
+  getCompanyAgainstCompanyTypeId(cmp_type_ids){
+
+    if(cmp_type_ids.length > 0){
+
+    }
+    else{
+
+    }
+
+
   }
 
   outsideClick(__ev) {
@@ -377,6 +448,9 @@ export class TraxRPTComponent implements OnInit {
   }
   searchResultVisibility(display_mode) {
     this.__searchRlt.nativeElement.style.display = display_mode;
+  }
+  searchResultVisibilityForTin(display_mode) {
+    this.displayMode_forTemp_Tin = display_mode;
   }
   searchInsurance() {
     this.getFDMstRPT(
@@ -601,32 +675,29 @@ export class TraxRPTComponent implements OnInit {
   }
 
   getItems(__items, __mode) {
-    console.log(__items);
     switch (__mode) {
       case 'C':
-        this.__insTraxForm.controls['investor_code'].reset(
-          __items.client_name,
-          { emitEvent: false }
-        );
+        this.__insTraxForm.controls['investor_name'].reset(__items.client_name,{ emitEvent: false });
+        this.__insTraxForm.controls['investor_code'].reset(__items.id,{ emitEvent: false });
         this.searchResultVisibilityForClient('none');
         break;
-      case 'E':
-        this.__insTraxForm.controls['euin_no'].reset(__items.emp_name, {
+      // case 'E':
+      //   this.__insTraxForm.controls['euin_no'].reset(__items.emp_name, {
 
-          emitEvent: false,
-        });
-        this.searchResultVisibility('none');
-        break;
+      //     emitEvent: false,
+      //   });
+      //   this.searchResultVisibility('none');
+      //   break;
       case 'T':
-        // this.__insTraxForm.controls['temp_tin_no'].reset(__items.temp_tin_no,{ onlySelf: true, emitEvent: false });
-        // this.searchResultVisibilityForTempTin('none');
+        this.__insTraxForm.controls['tin_no'].reset(__items.tin_no,{ onlySelf: true, emitEvent: false });
+        this.searchResultVisibilityForTin('none');
         break;
-      case 'S':
-        this.__insTraxForm.controls['sub_brk_cd'].reset(__items.code, {
-          emitEvent: false,
-        });
-        this.searchResultVisibilityForSubBrk('none');
-        break;
+      // case 'S':
+      //   this.__insTraxForm.controls['sub_brk_cd'].reset(__items.code, {
+      //     emitEvent: false,
+      //   });
+      //   this.searchResultVisibilityForSubBrk('none');
+      //   break;
     }
   }
   outsideClickforClient(__ev) {
@@ -635,19 +706,24 @@ export class TraxRPTComponent implements OnInit {
     }
   }
   searchResultVisibilityForClient(display_mode) {
-    this.__clientCode.nativeElement.style.display = display_mode;
+    this.displayMode_forClient = display_mode;
   }
   AdvanceFilter() {
-    this.getCompanyMst();
-    this.getCompanyTypeMst();
   }
-  getCompanyMst() {
-    this.__dbIntr
-      .api_call(0, '/fd/company', null)
+  getCompanyMst(arr_cmp_type_ids) {
+    if(arr_cmp_type_ids.length > 0){
+      this.__dbIntr
+      .api_call(0, '/fd/company', 'arr_cmp_type_id='+JSON.stringify(arr_cmp_type_ids.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: fdComp[]) => {
         this.__compMst = res;
       });
+    }
+    else{
+      this.__insTraxForm.controls['scheme_id'].setValue([], {emitEvent: false,});
+      this.__scmMst.length = 0;
+    }
+
   }
   getCompanyTypeMst() {
     this.__dbIntr
@@ -657,30 +733,17 @@ export class TraxRPTComponent implements OnInit {
         this.__compTypeMst = res;
       });
   }
-  getSchemeMst(__comp_id, __prod_type_id) {
-    console.log(__comp_id);
-
-    if (__comp_id.length > 0 && __prod_type_id.length > 0) {
-
-      const __fd = new FormData();
-      __fd.append(
-        'company_id',
-        JSON.stringify(this.__insTraxForm.controls['company_id'].value)
-      );
-      __fd.append(
-        'comp_type_id',
-        JSON.stringify(this.__insTraxForm.controls['comp_type_id'].value)
-      );
+  getSchemeMst(__comp_id) {
+    if (__comp_id.length > 0) {
       this.__dbIntr
-        .api_call(1, '/fd/schemeDetails', __fd)
+        .api_call(1, '/fd/schemeDetails', 'arr_company_id='+ JSON.stringify(__comp_id.map(item => {return item['id']})))
         .pipe(pluck('data'))
         .subscribe(res => {
           this.__scmMst = res;
         });
     } else {
-      this.__insTraxForm.controls['scheme_id'].setValue([], {
-        emitEvent: false,
-      });
+      this.__insTraxForm.controls['scheme_id'].setValue([], {emitEvent: false,});
+      this.__scmMst.length = 0;
     }
   }
   getSub_option(__subOpt){
@@ -689,5 +752,21 @@ export class TraxRPTComponent implements OnInit {
   getTDSInfo(__id){
     return tdsInfo.filter(x => x.id == __id)[0]?.name
   }
-
+  onItemClick(ev){
+    if(ev.option.value == 'A'){
+      //Advance Filter
+    }
+    else{
+      //Report
+    }
+  }
+  close(ev){
+    this.__insTraxForm.patchValue({
+      frm_dt: this.__insTraxForm.getRawValue().date_range ? dates.getDateAfterChoose(this.__insTraxForm.getRawValue().date_range[0]) : '',
+      to_dt: this.__insTraxForm.getRawValue().date_range ? (global.getActualVal(this.__insTraxForm.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.__insTraxForm.getRawValue().date_range[1]) : '') : ''
+    });
+  }
+  getSelectedItemsFromParent(ev){
+    this.getItems(ev.item, ev.flag);
+  }
 }

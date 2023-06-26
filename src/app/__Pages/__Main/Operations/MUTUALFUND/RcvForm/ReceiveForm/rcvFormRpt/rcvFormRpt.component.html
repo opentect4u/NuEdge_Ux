@@ -110,7 +110,7 @@
             [noDataFoundTitle]="'Sorry!! No Records Found'"
             [noDataFoundSubTitle]="'If your result match,they will appear here'"
             [propertiesToShow] = "['client_code','pan','client_name']"
-            formControlName="client_code"
+            formControlName="client_name"
             [displayMode]="displayMode_forClient"
             (setDisplayMode)="displayMode_forClient = $event"
             (selectedItems)="getSelectedItemsFromParent($event)"
@@ -204,7 +204,7 @@
     <div class="card border-1 rounded-top mt-2">
       <div class="example_container_header">
         <div class="transTypeCount">
-          <mat-chip-list
+          <!-- <mat-chip-list
           *ngIf="this.data.trans_type_id != '3'">
             <mat-chip class="example-box"
             matBadgeSize="small"
@@ -212,7 +212,7 @@
             color="primary" *ngFor="let trnsType of __trans_types">
               {{trnsType.name}}
             </mat-chip>
-          </mat-chip-list>
+          </mat-chip-list> -->
           </div>
           <div class="btnGrp">
             <!-- (click)="isOpenMegaMenu = !isOpenMegaMenu" -->
