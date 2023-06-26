@@ -4,7 +4,6 @@ import { CountryHomeComponent } from './country-home.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { CountryEntryComponent } from '../Dialog/country-entry/country-entry.component';
-import { CountryRPTComponent } from '../Dialog/country-rpt/country-rpt.component';
 
 const routes: Routes = [{path:'',component:CountryHomeComponent}]
 
@@ -12,7 +11,6 @@ const routes: Routes = [{path:'',component:CountryHomeComponent}]
   declarations: [
     CountryHomeComponent,
     CountryEntryComponent,
-    CountryRPTComponent
   ],
   imports: [
     CommonModule,

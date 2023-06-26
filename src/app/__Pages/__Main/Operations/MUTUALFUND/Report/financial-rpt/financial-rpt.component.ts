@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
@@ -65,7 +65,6 @@ export class FinancialRPTComponent implements OnInit {
   private _trns_id: number;
   @Input() Title:string;
   @Input() __pageNumber;
-  @Input() SchemeMst: scheme[] = [];
   @Input() AMCMst: amc[] = [];
   @Input() settingsforDropdown_foramc;
   @Input() settingsforDropdown_forscheme;
@@ -87,6 +86,8 @@ export class FinancialRPTComponent implements OnInit {
   __columns:column[] =[];
   SelectedClms:string[] = [];
   @Input() set transaction(trans_id: number){
+    console.log(trans_id);
+
     this._trns_id = trans_id;
     this.setColumns(this.transFrm.value.option,this.trnsTypeId,trans_id);
     if(trans_id){
@@ -141,7 +142,7 @@ export class FinancialRPTComponent implements OnInit {
       ); /***** Function call for getting scheme against */
     });
 
-    /** Event Trigger after change Client*/
+
    /*** Temporary Tin Number */
    this.transFrm.controls['tin_no'].valueChanges
    .pipe(
@@ -165,7 +166,7 @@ export class FinancialRPTComponent implements OnInit {
 
     /*** End */
 
-     /*** Client Details Change*/
+         /** Event Trigger after change Client*/
    this.transFrm.controls['client_dtls'].valueChanges
    .pipe(
      tap(() => (this.__isClientPending = true)),
@@ -257,56 +258,63 @@ export class FinancialRPTComponent implements OnInit {
   }
   /** End */
   submitFinReport(){
-       const finFrmDT = new FormData();
-       finFrmDT.append('paginate',this.__pageNumber);
-       finFrmDT.append('option', this.transFrm.value.option);
-       finFrmDT.append('trans_id', this.transaction.toString());
-       finFrmDT.append('trans_type_id' ,this.trnsTypeId.toString());
-       finFrmDT.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-       finFrmDT.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-         finFrmDT.append('from_date',global.getActualVal(this.transFrm.getRawValue().frm_dt));
-         finFrmDT.append(
-           'to_date',global.getActualVal(this.transFrm.getRawValue().to_dt));
+    const finFrmDT = new FormData();
+    finFrmDT.append('paginate',this.__pageNumber);
+    finFrmDT.append('option', this.transFrm.value.option);
+    finFrmDT.append('trans_id', this.transaction.toString());
+    finFrmDT.append('trans_type_id' ,this.trnsTypeId.toString());
+    finFrmDT.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    finFrmDT.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+      finFrmDT.append('from_date',global.getActualVal(this.transFrm.getRawValue().frm_dt));
+      finFrmDT.append(
+        'to_date',global.getActualVal(this.transFrm.getRawValue().to_dt));
 
-         finFrmDT.append(
-           'client_code',
-           this.transFrm.value.client_code
-             ? this.transFrm.value.client_code
-             : ''
-         );
-         finFrmDT.append(
-           'sub_brk_cd',
-           this.transFrm.value.sub_brk_cd ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['id']})) : ''
-         );
-         finFrmDT.append(
-           'tin_no',
-           this.transFrm.value.tin_no ? this.transFrm.value.tin_no : ''
-         );
-         finFrmDT.append(
-           'amc_name',
-           this.transFrm.value.amc_id ? JSON.stringify(this.transFrm.value.amc_id.map(item => {return item["id"]})) : '[]'
-         );
-         finFrmDT.append(
-           'scheme_name',
-           this.transFrm.value.scheme_id ? JSON.stringify(this.transFrm.value.scheme_id.map(item => {return item["id"]})) : '[]'
-         );
-         finFrmDT.append(
-           'euin_no',
-           this.transFrm.value.euin_no ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['id']})) : '[]'
-         );
-         finFrmDT.append(
-           'brn_cd',
-           this.transFrm.value.brn_cd ? JSON.stringify(this.transFrm.value.brn_cd.map(item => {return item['id']})) : '[]'
-         );
-         finFrmDT.append('rnt_name',
-         JSON.stringify(this.rnt_id.value.filter(x=> x.isChecked).map(item => {return item['id']}))
-         );
-         finFrmDT.append(
-           'bu_type',
-           this.transFrm.value.bu_type ?
-           JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']})): '[]'
-         );
+      finFrmDT.append(
+        'client_code',
+        this.transFrm.value.client_code
+          ? this.transFrm.value.client_code
+          : ''
+      );
+      finFrmDT.append('rnt_name',
+      JSON.stringify(this.rnt_id.value.filter(x=> x.isChecked).map(item => {return item['id']}))
+      );
 
+      finFrmDT.append(
+        'tin_no',
+        this.transFrm.value.tin_no ? this.transFrm.value.tin_no : ''
+      );
+      finFrmDT.append(
+        'amc_name',
+        this.transFrm.value.amc_id ? JSON.stringify(this.transFrm.value.amc_id.map(item => {return item["id"]})) : '[]'
+      );
+      finFrmDT.append(
+        'scheme_name',
+        this.transFrm.value.scheme_id ? JSON.stringify(this.transFrm.value.scheme_id.map(item => {return item["id"]})) : '[]'
+      );
+      if(this.transFrm.value.btnType == 'A'){
+       finFrmDT.append(
+         'sub_brk_cd',
+         this.transFrm.value.sub_brk_cd ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['id']})) : ''
+       );
+      finFrmDT.append(
+        'euin_no',
+        this.transFrm.value.euin_no ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['id']})) : '[]'
+      );
+      finFrmDT.append(
+        'brn_cd',
+        this.transFrm.value.brn_cd ? JSON.stringify(this.transFrm.value.brn_cd.map(item => {return item['id']})) : '[]'
+      );
+      finFrmDT.append(
+       'rm_id',
+      JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['id']}))
+      )
+
+      finFrmDT.append(
+        'bu_type',
+        this.transFrm.value.bu_type ?
+        JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']})): '[]'
+      );
+     }
     this.sendFinancialFilteredDt.emit(finFrmDT);
   }
   onItemClick(ev){
@@ -380,61 +388,64 @@ export class FinancialRPTComponent implements OnInit {
     this.submitFinReport();
   }
   getPaginate(__paginate){
-      if (__paginate.url) {
-        this.dbIntr
-          .getpaginationData(
-            __paginate.url +
-              ('&paginate=' + this.__pageNumber) +
-              ('&option=' + this.transFrm.value.option) +
-              ('&trans_type_id=' + this.trnsTypeId) +
-              ('&trans_id=' + this.transaction) +
-               '&client_code=' +
-                  (this.transFrm.value.client_code
-                    ? this.transFrm.value.client_code
-                    : '') +
-                  ('&sub_brk_cd=' +
-                    (this.transFrm.value.sub_brk_cd
-                      ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['id']}))
-                      : '')) +
-                  ('&tin_no=' +
-                    (this.transFrm.value.tin_no
-                      ? this.transFrm.value.tin_no
-                      : '')) +
-                  ('&amc_name=' +
-                    (this.transFrm.value.amc_id
-                      ? JSON.stringify(this.transFrm.value.amc_id.map(item => {return item['id']}))
-                      : '[]')) +
-                  ('&scheme_name=' +
-                    (this.transFrm.value.scheme_id
-                      ? JSON.stringify(this.transFrm.value.scheme_id.map(item => {return item['id']}))
-                      : '')) +
-                  ('&euin_no=' +
-                    (this.transFrm.value.euin_no
-                      ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['id']}))
-                      : '[]')) +
-                  ('&brn_cd=' +
-                    (this.transFrm.value.brn_cd
-                      ? JSON.stringify(this.transFrm.value.brn_cd.map(item => {return item['id']}))
-                      : '[]')) +
+    if (__paginate.url) {
+      this.dbIntr
+        .getpaginationData(
+          __paginate.url +
+            ('&paginate=' + this.__pageNumber) +
+            ('&option=' + this.transFrm.value.option) +
+            ('&trans_type_id=' + this.trnsTypeId) +
+            ('&trans_id=' + this.transaction) +
+             '&client_code=' +
+                (this.transFrm.value.client_code
+                  ? this.transFrm.value.client_code
+                  : '') +
                   ('&rnt_name=' +
-                    (this.transFrm.value.rnt_id.length > 0
-                      ? JSON.stringify(this.transFrm.value.rnt_id)
-                      : '')) +
-                  ('&bu_type=' +
-                    (this.transFrm.value.bu_type
-                      ? JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']}))
-                      : '[]')) +
-                  ('&from_date=' +
-                    global.getActualVal(this.transFrm.getRawValue().frm_dt)) +
-                  ('&to_date=' + global.getActualVal(this.transFrm.getRawValue().to_dt))
+                  (this.transFrm.value.rnt_id.length > 0
+                    ? JSON.stringify(this.transFrm.value.rnt_id)
+                    : '')) +
+                ('&tin_no=' +
+                  (this.transFrm.value.tin_no
+                    ? this.transFrm.value.tin_no
+                    : '')) +
+                ('&amc_name=' +
+                  (this.transFrm.value.amc_id
+                    ? JSON.stringify(this.transFrm.value.amc_id.map(item => {return item['id']}))
+                    : '[]')) +
+                ('&scheme_name=' +
+                  (this.transFrm.value.scheme_id
+                    ? JSON.stringify(this.transFrm.value.scheme_id.map(item => {return item['id']}))
+                    : '')) +
+                ('&from_date=' +
+                  global.getActualVal(this.transFrm.getRawValue().frm_dt)) +
+                ('&to_date=' + global.getActualVal(this.transFrm.getRawValue().to_dt))
+                + (this.transFrm.value.btnType == 'A' ? (('&euin_no=' +
+                  (this.transFrm.value.euin_no
+                    ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['id']}))
+                    : '[]')) +
+                ('&sub_brk_cd=' +
+                  (this.transFrm.value.sub_brk_cd
+                    ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['id']}))
+                    : '[]')) +
+                ('&brn_cd=' +
+                  (this.transFrm.value.brn_cd
+                    ? JSON.stringify(this.transFrm.value.brn_cd.map(item => {return item['id']}))
+                    : '[]')) +
 
-          )
-          .pipe(map((x: any) => x.data))
-          .subscribe((res: any) => {
-            this.finMst = res.data;
-            this.__paginate = res.links;
-          });
-      }
+                    ('&rm_id='+
+                    JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['id']}))
+                  )+
+                ('&bu_type=' +
+                  (this.transFrm.value.bu_type
+                    ? JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']}))
+                    : '[]')))  : '')
+        )
+        .pipe(map((x: any) => x.data))
+        .subscribe((res: any) => {
+          this.finMst = res.data;
+          this.__paginate = res.links;
+        });
+    }
     }
     SelectedColumns(column){
       const clm = ['edit'];

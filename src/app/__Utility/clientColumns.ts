@@ -1,3 +1,5 @@
+import { column } from "../__Model/tblClmns";
+
 export class clientColumns {
   public static EXISTING_CLIENT = [
     'edit',
@@ -6,6 +8,121 @@ export class clientColumns {
     'client_type',
     'client_name',
     'pan',
+  ];
+
+  public static Existing_Client=[
+    { field: 'edit', header: 'Edit' },
+    { field: 'delete', header: 'Delete' },
+    { field: 'sl_no', header: 'Sl No' },
+    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_name', header: 'Client Name' },
+    { field: 'pan', header: 'PAN' }
+  ]
+
+  /** PAN HOLDER COLUMNS */
+  public static initial_column_for_pan = [
+    { field: 'edit', header: 'Edit' },
+    { field: 'delete', header: 'Delete' },
+    { field: 'sl_no', header: 'Sl No' },
+    { field: 'client_code', header: 'Client Code' },
+    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_name', header: 'Client Name' },
+    { field: 'pan', header: 'PAN' },
+    { field: 'mobile', header: 'Mobile' },
+    { field: 'email', header: 'Email' },
+    { field: 'upload_details', header: 'Document' }
+  ]
+
+  public static pan_holder_client = [
+    { field: 'edit', header: 'Edit' },
+    { field: 'delete', header: 'Delete' },
+    { field: 'sl_no', header: 'Sl No' },
+    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_code', header: 'Client Code' },
+    { field: 'client_name', header: 'Client Name' },
+    { field: 'pan', header: 'PAN' },
+    { field: 'dob', header: 'Date Of Birth' },
+    { field: 'dob_actual', header: 'Actual Date Of Birth' },
+    { field:"maritial_status",header: 'Maritial Status'},
+    { field:"anniversary_date",header: 'Anniversary Date'},
+    { field: 'mobile', header: 'Mobile' },
+    { field: 'sec_mobile', header: 'Alternative Mobile' },
+    { field: 'email', header: 'Email' },
+    { field: 'sec_email', header: 'Alternative Email' },
+    { field: 'add_line_1', header: 'Address-1' },
+    { field: 'add_line_2', header: 'Address-2' },
+    { field: 'state', header: 'State' },
+    { field: 'dist', header: 'District' },
+    { field: 'city', header: 'City' },
+    { field: 'pincode', header: 'Picode' },
+    { field: 'upload_details',header:'Document'}
+  ];
+
+  public static initial_column_for_minor=[
+    { field: 'edit', header: 'Edit' },
+    { field: 'delete', header: 'Delete' },
+    { field: 'sl_no', header: 'Sl No' },
+    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_name', header: 'Client Name' },
+    { field: 'dob', header: 'Date Of Birth' },
+    { field: 'guardians_name', header: 'Gurdians Name' },
+    { field: 'guardians_pan', header: 'Gurdians PAN' },
+    { field: 'relation', header: 'Relation' },
+    { field: 'mobile', header: 'Mobile' },
+    { field: 'email', header: 'Email' },
+    { field: 'upload_details', header: 'Document' },
+  ]
+  public static Minor_Client:column[] = [
+    { field: 'edit', header: 'Edit' },
+    { field: 'delete', header: 'Delete' },
+    { field: 'sl_no', header: 'Sl No' },
+    { field: 'client_code', header: 'Client Code' },
+    { field: 'client_name', header: 'Client Name' },
+    { field: 'dob', header: 'Date Of Birth' },
+    { field: 'dob_actual', header: 'Actual Date Of Birth' },
+    { field: 'guardians_pan', header: 'Gurdians PAN' },
+    { field: 'guardians_name', header: 'Gurdians Name' },
+    { field: 'relation', header: 'Relation' },
+    { field: 'mobile', header: 'Mobile' },
+    { field: 'sec_mobile', header: 'Alternative Mobile' },
+    { field: 'email', header: 'Email' },
+    { field: 'sec_email', header: 'Alternative Email' },
+    { field: 'add_line_1', header: 'Address-1' },
+    { field: 'add_line_2', header: 'Address-2' },
+    { field: 'state', header: 'State' },
+    { field: 'dist', header: 'District' },
+    { field: 'city', header: 'City' },
+    { field: 'pincode', header: 'Picode' },
+    { field: 'upload_details',header:'Upload Details'}
+  ]
+  /** END */
+
+  public static column_selector = [
+    { field: 'edit', header: 'Edit' },
+    { field: 'delete', header: 'Delete' },
+    { field: 'sl_no', header: 'Sl No' },
+    { field: 'client_code', header: 'Client Code' },
+    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_name', header: 'Client Name' },
+    { field: 'pan', header: 'PAN' },
+    { field: 'dob', header: 'Date Of Birth' },
+    { field:"maritial_status",header: 'Maritial Status'},
+    { field:"anniversary_date",header: 'Anniversary Date'},
+    { field: 'dob_actual', header: 'Actual Date Of Birth' },
+    { field: 'guardians_pan', header: 'Gurdians PAN' },
+    { field: 'guardians_name', header: 'Gurdians Name' },
+    { field: 'relation', header: 'Relation' },
+    { field: 'mobile', header: 'Mobile' },
+    { field: 'sec_mobile', header: 'Alternative Mobile' },
+    { field: 'email', header: 'Email' },
+    { field: 'sec_email', header: 'Alternative Email' },
+    { field: 'add_line_1', header: 'Address-1' },
+    { field: 'add_line_2', header: 'Address-2' },
+    { field: 'state', header: 'State' },
+    { field: 'dist', header: 'District' },
+    { field: 'city', header: 'City' },
+    { field: 'pincode', header: 'Picode' },
+    { field: 'upload_details',header:'Document'}
   ];
 
 
@@ -165,7 +282,7 @@ export class clientColumns {
     'pincode',
     'upload_details'
   ];
-  /** END */
+
 
 
   /** TABLE DATA FOR UPLOAD CSV */

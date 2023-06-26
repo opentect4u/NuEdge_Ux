@@ -10,12 +10,15 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { LazyLoadEvent } from 'primeng/api';
 import { MatTableDataSource } from '@angular/material/table';
 import { RPTService } from 'src/app/__Services/RPT.service';
+import itemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+
 @Component({
   selector: 'app-geographic-rpt',
   templateUrl: './geographic-rpt.component.html',
   styleUrls: ['./geographic-rpt.component.css']
 })
 export class GeographicRPTComponent implements OnInit {
+  itemsPerPage=itemsPerPage
  sort = new sort();
   isOpenMegaMenu: boolean =false;
   __isPincodePending:boolean =false;
@@ -232,9 +235,10 @@ export class GeographicRPTComponent implements OnInit {
     })
 
   }
-  getval(ev){
-      this.__pageNumber.setValue(ev);
-      this.submitgeographical();
+
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.id);
+    this.submitgeographical();
   }
   getPaginate(paginate){
     if (paginate.url) {

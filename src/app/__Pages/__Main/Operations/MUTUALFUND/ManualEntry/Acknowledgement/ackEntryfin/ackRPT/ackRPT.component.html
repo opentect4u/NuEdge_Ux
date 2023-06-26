@@ -1,4 +1,5 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+<!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle -->
+<div >
   <div mat-dialog-title class="dialog-title">
     <h2>Acknowledgement Reports for {{this.data.trans_type_id == '1' ? 'Financial' : 'NFO'}}</h2>
     <div class="btnIcon">
@@ -20,8 +21,411 @@
 
   </div>
 
-  <mat-dialog-content>
-    <div class="card my-5">
+  <mat-dialog-content class="customDialog">
+    <ng-template #SearchBtn>
+      <p-button
+      type="submit"
+      label="Show"
+      icon="pi pi-eye"
+      iconPos="right"
+      styleClass="p-button-lg"></p-button>
+    </ng-template>
+    <core-tab [Tab]="__transType" (GetTabDtls)="TabDetails($event)"></core-tab>
+    <div class="card p-3 border-1">
+      <form [formGroup]="__ackForm" (ngSubmit)="submit()" autocomplete="off">
+      <div class="row">
+        <div class="col-sm-6">
+          <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+            <mat-radio-button value="2">Summary</mat-radio-button>
+            <mat-radio-button value="1" class="mx-5">Detail</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="col-sm-6 d-flex  justify-content-end align-items-center">
+          <p-selectButton
+          [options]="selectBtn"
+          formControlName="btnType"
+          optionValue="value"
+          styleClass="p-button-lg"
+          (onOptionClick)="onItemClick($event)"
+          optionLabel="icon">
+            <ng-template let-item>
+                <i [class]="item.icon"  [matTooltip]="item.label"></i>
+            </ng-template>
+        </p-selectButton>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="dt_type">Date Periods</label>
+          <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+              <option value="">Select</option>
+              <option value="D">Today</option>
+              <option value="W">This Week</option>
+              <option value="M">This Month</option>
+              <option value="Y">This Year</option>
+              <option value="R">Date Range</option>
+          </select>
+        </div>
+        <div class="col-sm-3">
+          <label for="drm_dt">Date Range (From - To)</label>
+          <p-calendar
+          dateFormat="dd/mm/yy"
+          placeholder="Select Date Range"
+          formControlName="date_range"
+          selectionMode="range"
+          [readonlyInput]="true"
+          [showIcon]="true"
+          [hideOnDateTimeSelect]="true"
+          (onClose)="close($event)"
+          [showButtonBar]="true">
+          </p-calendar>
+        </div>
+        <div class="col-sm-3">
+          <app-core-srch
+                [label] = "'TIN Number'"
+                [placeholder]="'Search By TIN Number'"
+                [isPending]="__isTinspinner"
+                [listItems] = "tinMst"
+                [flag] = "'T'"
+                [noDataFoundTitle]="'Sorry!! No Records Found'"
+                [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                [propertiesToShow] = "['tin_no']"
+                formControlName="tin_no"
+                [displayMode]="displayMode_forTemp_Tin"
+                (setDisplayMode)="displayMode_forTemp_Tin = $event"
+                (selectedItems)="getSelectedItemsFromParent($event)"
+                ></app-core-srch>
+        </div>
+        <div class="col-sm-3">
+          <app-core-srch
+          [label] = "'Client Details'"
+          [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+          [isPending]="__isClientPending"
+          [listItems] = "__clientMst"
+          [flag] = "'C'"
+          [noDataFoundTitle]="'Sorry!! No Records Found'"
+          [noDataFoundSubTitle]="'If your result match,they will appear here'"
+          [propertiesToShow] = "['client_code','pan','client_name']"
+          formControlName="client_name"
+          [displayMode]="displayMode_forClient"
+          (setDisplayMode)="displayMode_forClient = $event"
+          (selectedItems)="getSelectedItemsFromParent($event)"
+          ></app-core-srch>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="amc_id">AMC</label>
+          <ng-multiselect-dropdown #multiSelect
+          id="amc_id"
+          [placeholder]="'Select AMC'"
+          [settings]="settingsforDropdown_foramc"
+          [data]="amcMst" formControlName="amc_id">
+        </ng-multiselect-dropdown>
+        </div>
+        <div class="col-sm-3">
+          <label for="scheme_name">Scheme</label>
+        <ng-multiselect-dropdown #multiSelect
+          id="scheme_name"
+          [placeholder]="'Select Scheme'"
+          [settings]="settingsforDropdown_forscheme"
+          [data]="schemeMst"
+          formControlName="scheme_id">
+        </ng-multiselect-dropdown>
+        </div>
+        <div [class]="'col-sm-6 mt-2 d-flex flex-column justify-content-end align-items-start'">
+          <div class="checkboxes d-flex flex-row align-items-center w-100">
+            <label class="mx-2">R&T: </label>
+            <div >
+              <ng-container formArrayName="rnt_id">
+                <ng-container *ngFor="let rnt of rnt_id.controls;let i= index">
+                  <ng-container [formGroupName]="i">
+                  <mat-checkbox  color="primary"
+                  [class]="'mr-2'"
+                    formControlName="isChecked"> {{rnt_id.controls[i].get('name').value}}</mat-checkbox>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <mat-checkbox color="primary" formControlName="is_all"> All</mat-checkbox>
+            </div>
+          </div>
+      </div>
+
+      </div>
+      <div class="row my-1">
+        <div class="col-sm-4 d-flex  align-items-end">
+          <div class="checkboxes d-flex flex-row align-items-center w-100">
+             <label>Logged Status:&nbsp;</label>
+            <div>
+              <ng-container formArrayName="logged_status">
+                <ng-container *ngFor="let ack of logged_status.controls;let i= index">
+                  <ng-container [formGroupName]="i">
+                  <mat-checkbox  color="primary" [class]="'mr-2'"
+                    formControlName="isChecked"> {{logged_status.controls[i].get('name').value}}</mat-checkbox>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <mat-checkbox color="primary" formControlName="is_all_status"> All</mat-checkbox>
+            </div>
+          </div>
+         </div>
+         <ng-container *ngIf="__ackForm.value.btnType == 'A'">
+          <div class="col-sm-4">
+            <label for="brn_cd">Branch</label>
+            <ng-multiselect-dropdown #multiSelect
+              id="brn_cd"
+              [placeholder]="'Select Branch'"
+              [settings]="settingsforDropdown_forbrnch"
+              [data]="brnchMst"
+              formControlName="brn_cd">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-4">
+            <label for="bu_type">Business Type</label>
+            <ng-multiselect-dropdown id="bu_type"
+            [placeholder]="'Select Business Type'"
+              [settings]="settingsforBuTypeDropdown"
+              id="bu_type"
+              [data]="__bu_type"
+              formControlName="bu_type">
+            </ng-multiselect-dropdown>
+          </div>
+
+         </ng-container>
+         <div class="col-sm-8 d-flex  align-items-end justify-content-end" *ngIf="__ackForm.value.btnType != 'A'">
+          <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+         </div>
+      </div>
+      <ng-container *ngIf="__ackForm.value.btnType == 'A'">
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="rm_id">Relationship Manager</label>
+            <ng-multiselect-dropdown  id="rm_id" [placeholder]="'Select Relationship Manager'"
+              [settings]="settingsforRMDropdown" [data]="__RmMst" formControlName="rm_id">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+              <label for="sub_brk_cd">Sub Broker</label>
+              <ng-multiselect-dropdown  id="sub_brk_cd" [placeholder]="'Select Sub Broker'"
+                [settings]="settingsforSubBrkDropdown" [data]="__subbrkArnMst" formControlName="sub_brk_cd">
+              </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="euin_no">EUIN</label>
+            <ng-multiselect-dropdown #multiSelect
+            id="euin_no" [placeholder]="'Select Employee'"
+              [settings]="settingsforEuinDropdown" [data]="__euinMst"
+              formControlName="euin_no">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3 d-flex justify-content-end align-items-center">
+            <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+          </div>
+        </div>
+
+      </ng-container>
+     </form>
+    </div>
+    <div class="card border-1 my-2">
+      <div class="example_container_header">
+        <div class="transTypeCount"></div>
+        <div class="btnGrp d-flex">
+          <p-button type="button" icon="pi pi-server"
+            #tooltip="matTooltip"
+            (click)="isOpenMegaMenu=!isOpenMegaMenu"
+            [matTooltipPosition]="'before'"
+            matTooltip="Column Selector"
+            styleClass="p-button-primary p-button-lg p-button-outlined mr-2">
+            </p-button>
+
+            <p-button icon="pi pi-file-export"
+            [matMenuTriggerFor]="menu"
+            [matTooltipPosition]="'after'"
+            #tooltip="matTooltip"
+            matTooltip="Export"
+            styleClass="p-button-primary p-button-lg p-button-outlined">
+            </p-button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <!-- (click)="exporter.exportTable('xlsx',{fileName:'NonFinancialReport'})" -->
+            <button mat-menu-item >
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+
+      </div>
+      <div class="container_body">
+           <!-- PrimeNg Table with column resize,
+            column sorting etc  [reorderableColumns]="true"
+            pReorderableColumn-->
+          <p-table
+          #dt
+          (onLazyLoad)="customSort($event)"
+          [customSort]="true"
+            sortMode="single"
+            [lazy]="true"
+          [value]="__financMst.data"
+          [columns]="__columns" [resizableColumns]="true"
+            selectionMode="multiple"
+            columnResizeMode="expand" [scrollable]="true"
+            scrollHeight="358px"
+            [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': __ackForm.value.options == '2' ? '120rem' : '200rem' }">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': __ackForm.value.options == '2' ? '10rem' : '17rem'}">
+                  {{ col.header }}
+                  <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
+                  </p-sortIcon>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-finance let-columns="columns">
+              <tr tabindex="999">
+
+                <td *ngFor="let col of columns">
+                  <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="col.field == 'edit'">
+                      <p-button [icon]="finance['form_status'] == 'P' ? 'pi pi-pencil' : 'pip pi-edit'" (click)="populateDT(finance)"
+                        styleClass="p-button-rounded p-button-primary">
+                      </p-button>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
+                      <p-button icon="pi pi-eye" (click)="DocumentView(finance)"
+                        styleClass="p-button-rounded p-button-success"></p-button>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'bu_type'">
+                      <span #tooltip="matTooltip"
+                      [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
+                        {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
+                     <span
+                     #tooltip="matTooltip"
+                     [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')">
+                     {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')}}
+                    </span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'inv_type'">
+                      <span
+                      #tooltip="matTooltip"
+                      [matTooltip]="finance[col.field] == 'F' ? 'Fresh' : 'Additional'">
+                      {{ finance[col.field] == 'F' ? 'Fresh' : 'Additional'}}
+                    </span>
+                    </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'switch_amt'">
+                    <ng-container *ngIf="finance['switch_by'] == 'A';else Unit">
+                      {{finance['switch_amt'] ? (finance['switch_amt'] | currency: 'INR') : 'N/A'}}
+                    </ng-container>
+                    <ng-template #Unit>
+                      {{finance['switch_unit'] ? finance['switch_unit'] : 'N/A'}}
+                    </ng-template>
+                    </ng-container>
+
+
+                    <ng-container
+                      *ngSwitchCase="col.field == 'first_client_kyc_status' || col.field == 'second_client_kyc_status' || col.field == 'third_client_kyc_status'">
+                      {{ finance[col.field] ? (finance[col.field] == 'Y' ? 'With KYC' : 'Without KYC') : 'N/A'}}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'remarks'">
+                      <ng-container *ngIf="finance[col.field];else noRemarks">
+                        <p-button #tooltip="matTooltip" [matTooltip]="finance[col.field]" icon="pi pi-info-circle"
+                          styleClass="p-button-rounded p-button-success">
+                        </p-button>
+                      </ng-container>
+                      <ng-template #noRemarks>
+                        N/A
+                      </ng-template>
+
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'rcv_datetime'">
+                      <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'switch_amt'">
+                        <ng-container *ngIf="finance['switch_by'] == 'A';else Unit">
+                          {{finance['switch_amt'] ? (finance['switch_amt'] | currency: 'INR') : 'N/A'}}
+                        </ng-container>
+                        <ng-template #Unit>
+                          {{finance['switch_unit'] ? finance['switch_unit'] : 'N/A'}}
+                        </ng-template>
+                        </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
+                        <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="col.field == 'entry_date'
+                        || col.field == 'sip_date'
+                        || col.field == 'sip_end_date'
+                        || col.field == 'sip_end_date'
+                        || col.field == 'rnt_login_dt'">
+                          <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                          </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <span #tooltip="matTooltip" [matTooltip]="finance[col.field]">
+                        {{ finance[col.field] ? finance[col.field] : 'N/A' }}
+                      </span>
+                    </ng-container>
+
+
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+              <tr>
+                <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                   No Records Found
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <!-- End -->
+          <div class="paginator">
+            <div class="itemsPerPage d-flex">
+                <label class="mr-3">Items per page: </label>
+                <p-selectButton
+                [options]="itemsPerPage"
+                [formControl]="__pageNumber"
+                optionLabel="label" optionValue="value"
+                (onOptionClick)="onselectItem($event)"
+                ></p-selectButton>
+              </div>
+              <div  class="paginatorContainer">
+                <ul>
+                  <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'P'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_left</mat-icon>
+                    </a>
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'N'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_right</mat-icon>
+                    </a>
+                    <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                      *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                      {{paginate.label}}
+                    </a>
+                  </li>
+                </ul>
+
+
+              </div>
+              </div>
+                        <!-- Meage Menu For Check box -->
+          <core-mega-menu-for-column [isOpenMegaMenu]="isOpenMegaMenu" [ColumnList]="clmList"
+            [selectedClmns]="SelectedClms" (hideMegamenu)="isOpenMegaMenu = $event"
+            (getSelectedColumns)="getSelectedColumns($event)">
+          </core-mega-menu-for-column>
+          <!-- End -->
+
+      </div>
+    </div>
+    <!-- <div class="card my-5">
       <div class="card-body p-5">
 
         <form [formGroup]="__rcvForms" (ngSubmit)="submit()" autocomplete="off">
@@ -30,7 +434,6 @@
               <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
                 <mat-radio-button value="2">Summary</mat-radio-button>
                 <mat-radio-button value="1" class="mx-5">Detail</mat-radio-button>
-                <!-- <mat-radio-button value="3" class="radio1">Day Sheet</mat-radio-button> -->
               </mat-radio-group>
             </div>
             <div class="col-sm-4 my-auto" >
@@ -84,9 +487,6 @@
 
           <div class="row ">
             <div class="col-sm-4">
-              <!-- <label for="tin_no">Tin Number</label>
-              <input type="text" placeholder="Enter TIN Number" name="tin_no" id="tin_no" class="form-control"
-                formControlName="tin_no"> -->
                 <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforTin($event)">
                   <div class="searchDiv">
                     <label for="tin_no">TIN Number
@@ -106,7 +506,7 @@
                           <h5 class="text-center">
                             Sorry!! No Records Found
                           </h5>
-                          <p>TIN Number Not Available</p>
+                          <p>If your result match,they will appear here</p>
                         </div>
                       </div>
                     </div>
@@ -141,13 +541,10 @@
 
               </div>
             <div class="col-sm-4">
-              <!-- <label for="sub_brk_cd">Sub Broker Code</label>
-              <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control" formControlName="sub_brk_cd"
-                placeholder="Enter Sub Broker Code"> -->
                 <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
                   <div class="searchDiv">
                     <label for="subbrkArn">Sub Broker Code</label>
-                    <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                    <input type="search" id="subbrkArn" class="form-control" placeholder="Search By Sub Broker Code"
                       formControlName="sub_brk_cd">
                     <span class="spinner-border"
                       *ngIf="__isSubArnPending && __rcvForms.get('sub_brk_cd').value?.length > 1"></span>
@@ -179,7 +576,7 @@
                   <label for="amc_name">AMC Name</label>
                   <input type="search" id="amc_name"
                   class="form-control"
-                  placeholder="Serach By AMC"
+                  placeholder="Search By AMC"
                   formControlName="amc_name">
                   <span class="spinner-border" *ngIf="__isAmcPending && __rcvForms.get('amc_name').value?.length > 1"></span>
 
@@ -216,7 +613,7 @@
                   <label for="Euin">EUIN</label>
                   <input type="search" id="Euin"
                   class="form-control"
-                  placeholder="Serach By EUIN"
+                  placeholder="Search By EUIN"
                   formControlName="euin_no">
                   <span class="spinner-border" *ngIf="__isEuinPending && __rcvForms.get('euin_no').value?.length > 1"></span>
 
@@ -355,7 +752,7 @@
           </ng-container>
 
           <ng-container matColumnDef="temp_tin_no">
-            <th mat-sort-header="temp_tin_no" mat-header-cell *matHeaderCellDef>Temporary TIN Number</th>
+            <th mat-sort-header="temp_tin_no" mat-header-cell *matHeaderCellDef>Temporary TIN</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.temp_tin_no}}</td>
           </ng-container>
           <ng-container matColumnDef="bu_type">
@@ -377,8 +774,8 @@
               {{(element.rnt_name ? element.rnt_name : 'N/A')}}
             </td>
           </ng-container>
-          <ng-container matColumnDef="rnt_login_cut_off">
-            <th mat-sort-header="rnt_login_cut_off" mat-header-cell *matHeaderCellDef>Login Cut Off</th>
+          <ng-container matColumnDef="rnt_login_cutt_off">
+            <th mat-sort-header="rnt_login_cutt_off" mat-header-cell *matHeaderCellDef>Login Cut Off</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.rnt_login_cutt_off ? element.rnt_login_cutt_off : 'N/A'}}
             </td>
@@ -517,9 +914,6 @@
             <th mat-sort-header="scheme_name" mat-header-cell *matHeaderCellDef>Scheme Name</th>
             <td mat-cell *matCellDef="let element;let i = index">{{element.scheme_name ? element.scheme_name : 'N/A'}}</td>
           </ng-container>
-
-
-          <!-- Buisness Type-->
           <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>Edit</th>
             <td mat-cell *matCellDef="let element">
@@ -584,7 +978,7 @@
         </ng-container>
 
         <ng-container matColumnDef="temp_tin_no">
-          <th mat-header-cell *matHeaderCellDef>Temporary TIN Number</th>
+          <th mat-header-cell *matHeaderCellDef>Temporary TIN</th>
           <td mat-cell *matCellDef="let element;let i = index">{{element.temp_tin_no}}</td>
         </ng-container>
         <ng-container matColumnDef="bu_type">
@@ -606,7 +1000,7 @@
             {{(element.rnt_name ? element.rnt_name : 'N/A')}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="rnt_login_cut_off">
+        <ng-container matColumnDef="rnt_login_cutt_off">
           <th mat-header-cell *matHeaderCellDef>Login Cut Off</th>
           <td mat-cell *matCellDef="let element;let i = index">
             {{element.rnt_login_cutt_off ? element.rnt_login_cutt_off : 'N/A'}}
@@ -624,21 +1018,6 @@
             {{element.euin_no ? element.euin_no : 'N/A'}}
           </td>
         </ng-container>
-        <!-- <ng-container matColumnDef="rcv_datetime">
-          <th mat-header-cell *matHeaderCellDef>Receive DateTime</th>
-          <td mat-cell *matCellDef="let element;let i = index">
-            {{element.rcv_datetime ? element.rcv_datetime : "N/A"}}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="recv_from">
-          <th mat-header-cell *matHeaderCellDef>Receive From</th>
-          <td mat-cell *matCellDef="let element;let i = index">
-            {{element.recv_from ? element.recv_from : 'N/A'}}
-          </td>
-        </ng-container> -->
-
-
         <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef>Amount</th>
           <td mat-cell *matCellDef="let element;let i = index">
@@ -773,10 +1152,6 @@
         </tr>
       </table>
       </div>
-
-
-
-
-    </div>
+    </div> -->
   </mat-dialog-content>
 </div>

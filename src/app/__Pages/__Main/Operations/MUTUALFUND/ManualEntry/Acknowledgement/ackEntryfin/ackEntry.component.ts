@@ -59,7 +59,7 @@ export class AckentryComponent implements OnInit {
       trans_type_id: trans_type_id,
       id: __temp_tin_no ? __temp_tin_no : 'ACK-' + trans_type_id,
       title:
-        'Acknowledgement Entry For ' +
+        'Acknowledgement Entry Report For ' +
         (trans_type_id == '1'
           ? 'Financial'
           : trans_type_id == '4'

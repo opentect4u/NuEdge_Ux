@@ -1,6 +1,6 @@
 
-<div class="loaderRouter">
-  <mat-progress-bar mode="indeterminate" *ngIf="isLoadingOnchangeRoute"></mat-progress-bar>
+<div class="loaderRouter" *ngIf="isLoadingOnchangeRoute">
+  <mat-progress-bar mode="indeterminate" ></mat-progress-bar>
 </div>
 <router-outlet></router-outlet>
 <ngx-spinner
@@ -8,6 +8,5 @@
   size="medium"
   color="#fff"
   type="ball-clip-rotate"
->
-  <p class="text-light">Loading...</p>
+><p class="text-light">Loading...</p>
 </ngx-spinner>

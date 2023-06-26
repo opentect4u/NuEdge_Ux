@@ -5,24 +5,25 @@ import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angu
 import { MatTableDataSource } from '@angular/material/table';
 import {map} from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
-import { plan } from 'src/app/__Model/plan';
-import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
-import { trnsType } from 'src/app/__Model/__transTypeMst';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { TrnsModificationComponent } from '../trnsModification/trnsModification.component';
+import { column } from 'src/app/__Model/tblClmns';
+import { transClmns } from 'src/app/__Utility/Master/trans';
+import { sort } from 'src/app/__Model/sort';
 // import { TrnstypeModificationComponent } from '../trnstypeModification/trnstypeModification.component';
-
+import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
 @Component({
 selector: 'trnsRpt-component',
 templateUrl: './trnsRpt.component.html',
 styleUrls: ['./trnsRpt.component.css']
 })
 export class TrnsrptComponent implements OnInit {
-  __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
+  itemsPerPage = ItemsPerPage
+  sort =new sort();
   __trns_type: any=[];
   __trnsType = new FormGroup({
     trns_name: new FormControl(''),
@@ -30,7 +31,7 @@ export class TrnsrptComponent implements OnInit {
   })
   __export =  new MatTableDataSource<any>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit','sl_no','trns_type', 'trns_name'];
+  __columns: column[] = transClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'trns_type','trns_name'];
   __paginate: any= [];
   __selecttrnsType = new MatTableDataSource<any>([]);
@@ -47,24 +48,21 @@ constructor(
 }
 
 ngOnInit(){
-  // this.getTrnsMst();
-  // this.tableExport();
   this.getTransactionTypeMst();
-  this.getTransMst();
 }
 
-getTransMst(column_name: string | null = '',sort_by: string | null | '' = 'asc'){
+getTransMst(){
   const __tranSearch = new FormData();
   __tranSearch.append('paginate',this.__pageNumber.value);
   __tranSearch.append('product_id',this.data.product_id);
-  __tranSearch.append('column_name',column_name);
-  __tranSearch.append('sort_by',sort_by);
+  __tranSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+  __tranSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
   __tranSearch.append('trns_name',this.__trnsType.value.trns_name ? this.__trnsType.value.trns_name : '');
   __tranSearch.append('trns_type_id',this.__trnsType.value.trans_type_id ? this.__trnsType.value.trans_type_id : '');
    this.__dbIntr.api_call(1,'/transctionSearch',__tranSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);
-     this.tableExport(column_name,sort_by);
+     this.tableExport(__tranSearch);
    })
 }
 
@@ -76,14 +74,8 @@ getTransactionTypeMst(){
   });
 }
 
-tableExport(column_name: string | null = '',sort_by: string | null | '' = 'asc'){
-  const __trnsExport = new FormData();
-  __trnsExport.append('paginate',this.__pageNumber.value);
-  __trnsExport.append('product_id',this.data.product_id);
-  __trnsExport.append('column_name',column_name);
-  __trnsExport.append('sort_by',sort_by);
-  __trnsExport.append('trns_name',this.__trnsType.value.trns_name ? this.__trnsType.value.trns_name : '');
-  __trnsExport.append('trns_type_id',this.__trnsType.value.trans_type_id ? this.__trnsType.value.trans_type_id : '');
+tableExport(__trnsExport){
+  __trnsExport.delete('paginate');
   this.__dbIntr.api_call(1,'/transctionExport',__trnsExport).pipe(map((x: any) => x.data)).subscribe((res: any[]) =>{
     this.__export = new MatTableDataSource(res);
   })
@@ -99,7 +91,6 @@ getTrnsMst(__paginate: string | null = '10'){
 
 private setPaginator(__res) {
   this.__selecttrnsType = new MatTableDataSource(__res);
-  // this.__selecttrnsType.paginator = this.paginator;
 }
 getPaginate(__paginate) {
   if (__paginate.url) {
@@ -110,8 +101,8 @@ getPaginate(__paginate) {
         + ('&trns_name='+this.__trnsType.value.trns_name)
         + ('&trns_type_id='+this.__trnsType.value.trans_type_id)
         + ('&product_id='+this.data.product_id)
-        + ('&column_name='+this.__sortColumnsAscOrDsc.active)
-        + ('&sort_by='+this.__sortColumnsAscOrDsc.direction)
+        +('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+        ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -120,13 +111,7 @@ getPaginate(__paginate) {
       });
   }
 }
-getval(__paginate) {
-   this.__pageNumber.setValue(__paginate.toString());
-  this.submit();
-}
-
 populateDT(__items: any) {
-  // this.__utility.navigatewithqueryparams('/main/master/catModify',{queryParams:{id:btoa(__items.id.toString())}})
   this.openDialog(__items.id, __items);
 }
 openDialog(id, __items) {
@@ -196,7 +181,7 @@ exportPdf(){
   }, 'Transaction')
 }
 submit(){
-   this.getTransMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
+   this.getTransMst();
 }
 private updateRow(row_obj: any) {
   this.__selecttrnsType.data = this.__selecttrnsType.data.filter(
@@ -224,10 +209,6 @@ addRow(row_obj){
   this.__export._updateChangeSubscription();
   this.__selecttrnsType._updateChangeSubscription();
 }
-sortData(sort){
-  this.__sortColumnsAscOrDsc =sort;
-  this.submit();
-}
 delete(__el,index){
   const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -253,5 +234,14 @@ delete(__el,index){
       }
 
     })
+}
+customSort(ev){
+  this.sort.field = ev.sortField;
+  this.sort.order = ev.sortOrder;
+  this.submit();
+}
+onselectItem(ev){
+  this.__pageNumber.setValue(ev.option.value);
+  this.submit();
 }
 }

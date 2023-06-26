@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NonfinrptComponent } from './Dialog/nonfinRPT/nonFinRPT.component';
 import { NonfinmodificationComponent } from './Dialog/nonFinModification/nonFInModification.component';
+import { TabModule } from 'src/app/__Core/tab/tab.module';
 
 const routes: Routes = [{ path: '', component: NonFinComponent }];
 
@@ -13,7 +14,8 @@ const routes: Routes = [{ path: '', component: NonFinComponent }];
     NonFinComponent,
     NonfinrptComponent,
     NonfinmodificationComponent,
+
   ],
-  imports: [CommonModule, RouterModule.forChild(routes), SharedModule],
+  imports: [CommonModule, RouterModule.forChild(routes), SharedModule,TabModule],
 })
 export class NonFinModule {}

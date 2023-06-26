@@ -19,21 +19,23 @@ import {
 } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { category } from 'src/app/__Model/__category';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { CategoryModificationComponent } from '../categoryModification/categoryModification.component';
-
+import { column } from 'src/app/__Model/tblClmns';
+import { categoryClmn} from 'src/app/__Utility/Master/categoryClmns';
+import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
 @Component({
   selector: 'Category-catRpt',
   templateUrl: './catRpt.component.html',
   styleUrls: ['./catRpt.component.css'],
 })
 export class CatrptComponent implements OnInit {
-  __sortAscOrDsc: any = { active: '', direction: 'asc' };
-  @ViewChild('searchcat') __searchCat: ElementRef;
+  itemsPerPage = ItemsPerPage;
+  sort = new sort();
   __iscatspinner: boolean = false;
   __catMst: category[] = [];
   __catForm = new FormGroup({
@@ -43,8 +45,8 @@ export class CatrptComponent implements OnInit {
   });
   __export = new MatTableDataSource<category>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit','delete','sl_no', 'cat_name' ];
-  __exportedClmns: string[] = ['sl_no', 'cat_name'];
+  __columns: column[] = categoryClmn.COLUMN;
+  __exportedClmns: string[] = ['sl_no','cat_name'];
   __paginate: any = [];
   __selectCategory = new MatTableDataSource<category>([]);
   __isVisible: boolean = true;
@@ -59,60 +61,26 @@ export class CatrptComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getcatMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
   }
 
-  getcatMst(column_name: string | null = null, sort_by: string | null = null) {
+  getcatMst() {
     const __catExport = new FormData();
     __catExport.append('cat_name', this.__catForm.value.cat_name);
     __catExport.append('paginate', this.__pageNumber.value);
-    __catExport.append('column_name', column_name ? column_name : '');
-    __catExport.append('sort_by', sort_by ? sort_by : 'asc');
+    __catExport.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __catExport.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
     this.__dbIntr
       .api_call(1, '/categoryDetailSearch', __catExport)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
         this.__paginate = res.links;
         this.setPaginator(res.data);
-        this.tableExport(column_name,sort_by);
+        this.tableExport(__catExport);
       });
   }
 
-  // ngAfterViewInit(){
-  //   this.__catForm.controls['cat_name'].valueChanges
-  //       .pipe(
-  //         tap(() => this.__iscatspinner = true),
-  //         debounceTime(200),
-  //         distinctUntilChanged(),
-  //         switchMap((dt) =>
-  //           dt?.length > 1
-  //             ? this.__dbIntr.searchItems(
-  //               '/category',
-  //               dt)
-  //             : []
-  //         ),
-  //         map((x: responseDT) => x.data),
-  //       )
-  //       .subscribe({
-  //         next: (value) => {
-  //           this.__catMst = value;
-  //           this.searchResultVisibility('block','A')
-  //           this.__iscatspinner = false;
-  //         },
-  //         complete: () => console.log(''),
-  //         error: (err) => console.log(),
-  //       });
-  // }
-  tableExport(column_name: string | null = null , sort_by: string | null = null) {
-    const __catExport = new FormData();
-    __catExport.append(
-      'cat_name',
-      this.__catForm.value.cat_name ? this.__catForm.value.cat_name : ''
-    );
-    __catExport.append('column_name', column_name ? column_name : '');
-    __catExport.append('sort_by', sort_by ? sort_by : 'asc');
-    // __catExport.append('cat_id',this.__catForm.value.cat_id ? this.__catForm.value.cat_id : '');
-
+  tableExport(__catExport) {
+    __catExport.delete('paginate');
     this.__dbIntr
       .api_call(1, '/categoryExport', __catExport)
       .pipe(map((x: any) => x.data))
@@ -120,18 +88,7 @@ export class CatrptComponent implements OnInit {
         this.__export = new MatTableDataSource(res);
       });
   }
-  // searchResultVisibility(display_mode,__type){
-  //    this.__searchCat.nativeElement.style.display = display_mode;
-  // }
-  private getCategorymaster(__paginate: string | null = '10') {
-    this.__dbIntr
-      .api_call(0, '/category', 'paginate=' + __paginate)
-      .pipe(map((x: responseDT) => x.data))
-      .subscribe((res: any) => {
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
-  }
+
   setPaginator(__res) {
     this.__selectCategory = new MatTableDataSource(__res);
   }
@@ -142,8 +99,8 @@ export class CatrptComponent implements OnInit {
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
             +('&cat_name=' + this.__catForm.value.cat_name)
-            +('&column_name=' + this.__sortAscOrDsc.active)
-            +('&sort_by=' + this.__sortAscOrDsc.direction)
+            +('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -152,17 +109,11 @@ export class CatrptComponent implements OnInit {
         });
     }
   }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.getcatMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
-  }
 
   populateDT(__items: category) {
     this.openDialog(__items, __items.id);
   }
-  showCorrospondingAMC(__items) {
-    console.log(this.data.product_id);
-
+  showCorrospondingSubCategory(__items) {
     this.dialogRef.close();
     this.__utility.navigatewithqueryparams(
       'main/master/productwisemenu/subcategory',
@@ -269,28 +220,7 @@ export class CatrptComponent implements OnInit {
   submit() {
    this.getcatMst();
   }
-  // outsideClick(__ev,mode){
-  //   if(__ev){
-  //     this.searchResultVisibility('none',mode)
-  //  }
-  // }
-  // getItems(__items,__type){
-  //   switch(__type){
-  //    case 'A':  break;
-  //    case 'C':   this.__catForm.controls['cat_id'].setValue(__items.id)
-  //                this.__catForm.controls['cat_name'].reset(__items.rnt_name,{ onlySelf: true,emitEvent: false})
-  //                this.searchResultVisibility('none','C');
-  //                break;
-  //    default: break;
-  //   }
-  // }
-  // showColumns(){
 
-  // }
-  sortData(sort){
-    this.__sortAscOrDsc =sort;
-    this.getcatMst(sort.active,sort.direction ? sort.direction : 'asc');
-  }
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -316,5 +246,14 @@ export class CatrptComponent implements OnInit {
       }
 
     })
+  }
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    this.submit();
+  }
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.value);
+    this.submit();
   }
 }

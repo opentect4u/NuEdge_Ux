@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { pluck } from 'rxjs/operators';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { insProduct } from 'src/app/__Model/insproduct';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';

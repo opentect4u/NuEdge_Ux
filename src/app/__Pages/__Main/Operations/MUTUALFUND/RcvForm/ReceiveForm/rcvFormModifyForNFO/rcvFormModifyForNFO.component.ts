@@ -465,10 +465,10 @@ recieveForm(){
  }
   this.__dbIntr.api_call(1,this.data.temp_tin_no ? '/formreceivedEdit' : '/formreceivedAdd',__rcvForm).subscribe((res: any) =>{
     if(this.data.temp_tin_no){
-      this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN number ' + res.data.temp_tin_no + ' has been updated successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
+      this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN ' + res.data.temp_tin_no + ' has been updated successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
     }
     else{
-    this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN number ' + res.data.temp_tin_no + ' has been received successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
+    this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN ' + res.data.temp_tin_no + ' has been received successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
      this.dialogRef.close({trans_id: this.__rcvForm.value.trans_id == 1 ? 0 : (this.__rcvForm.value.trans_id == 2 ? 1 : 2)})
     }
     // this.settransTypeCount(this.__rcvForm.value.trans_id == 1 ? 0 : (this.__rcvForm.value.trans_id == 2 ? 1 : 2));

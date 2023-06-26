@@ -10,29 +10,44 @@ import buType from '../../../../../../../../../../assets/json/buisnessType.json'
 import { KyModificationComponent } from '../kyModification/kyModification.component';
 import { kycClm } from 'src/app/__Model/ClmSelector/kycClm';
 import { global } from 'src/app/__Utility/globalFunc';
+import { column } from 'src/app/__Model/tblClmns';
+import itemsPerPage from '../../../../../../../../../../assets/json/itemsPerPage.json';
+import popupMenu from '../../../../../../../../../../assets/json/Master/daySheetOpt.json'
+import { RPTService } from 'src/app/__Services/RPT.service';
+import { sort } from 'src/app/__Model/sort';
+import { environment } from 'src/environments/environment';
+import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
+import { DomSanitizer } from '@angular/platform-browser';
 
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
 selector: 'kycRPT-component',
 templateUrl: './kycRPT.component.html',
 styleUrls: ['./kycRPT.component.css']
 })
 export class KycrptComponent implements OnInit {
-
+  itemsPerPage:selectBtn[] = itemsPerPage;
+  isOpenMegaMenu:boolean = false;
   __getKycFormData: any;
   __sortAscOrDsc = {active: '',direction:'asc'};
+  sort = new sort();
   divToPrint: any;
   WindowObject: any;
-  toppings = new FormControl();
-  toppingList: any =  kycClm.clmSelector.filter((x: any) => !['ack_form_view','mu_frm_view'].includes(x.id));
+  daysheetpopupMenu = popupMenu;
+  selectKYC: any =[];
   __exportedClmns: string[] =[];
-  __columnsForsummary: string[] = [];
-  __columnsForDetails: string[] = [];
   __isVisible:boolean= true;
   __kycRpt = new MatTableDataSource<any>([]);
   __export = new MatTableDataSource<any>([]);
   __paginate: any = [];
   __pageNumber = new FormControl(10);
-  __columns: string[] = [];
+  __columns: column[] = [];
+  selectedColmn:string[] =[];
+   ClmList:column[] =(kycClm.Details.filter(x => !['ack_form_view','mu_frm_view'].includes(x.field)));
   __isAdd: boolean = false;
   __bu_type = buType;
 
@@ -41,27 +56,23 @@ constructor(
   private __dbIntr: DbIntrService,
   private __dialog: MatDialog,
   public dialogRef: MatDialogRef<KycrptComponent>,
-  @Inject(MAT_DIALOG_DATA) public data: any
+  @Inject(MAT_DIALOG_DATA) public data: any,
+  private sanitizer: DomSanitizer,
+  private __Rpt: RPTService
 ) {
 }
 ngOnInit(){
   this.setColumns(2);
 }
 setColumns(res){
-  const clmToRemoved = ['edit','app_form_view','ack_form_view',,'mu_frm_view','delete'];
-  this.__columns = res == 1 ? (kycClm.details.filter((x: any) => !['ack_form_view','mu_frm_view'].includes(x))) : (kycClm.summary.filter((x: any) => !['ack_form_view','mu_frm_view'].includes(x)));
-  this.__exportedClmns = this.__columns.filter(x => !clmToRemoved.includes(x));
-  this.toppings.setValue(this.__columns);
 
-}
+  this.__getKycFormData = typeof(res) == 'object' ? res : '';
+  console.log(this.__getKycFormData);
 
-ngAfterViewInit() {
-
-  this.toppings.valueChanges.subscribe((res) => {
-    const clm = ['edit','app_form_view','ack_form_view','mu_frm_view','delete']
-    this.__columns = res;
-    this.__exportedClmns = res.filter(item => !clm.includes(item))
-  });
+    const clmToRemoved = ['edit','app_form_view','ack_form_view','mu_frm_view','delete'];
+    this.__columns = res.options == 1 ? (kycClm.Details.filter(x => !['ack_form_view','mu_frm_view'].includes(x.field))) : (kycClm.Summary_copy.filter((x: any) => !['ack_form_view','mu_frm_view'].includes(x.field)));
+    this.selectedColmn =  this.__columns.map(item => {return item['field']});
+    this.__exportedClmns = this.__columns.filter(x => !clmToRemoved.includes(x.field)).map(item => {return item['field']});
 }
 
 minimize(){
@@ -95,12 +106,12 @@ getPaginate(__paginate){
         __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
         + ('&option='+  this.__getKycFormData.options)
-        + ('&sort_by=' + this.__sortAscOrDsc.direction)
-        + ('&column_name=' + this.__sortAscOrDsc.active)
+        +  ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+        +  ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
         +  (this.__getKycFormData.options != '3'
         ?  (('&client_code=' + (this.__getKycFormData.client_code ? this.__getKycFormData.client_code : ''))
         + ( '&sub_brk_cd=' + (this.__getKycFormData.sub_brk_cd ? this.__getKycFormData.sub_brk_cd : ''))
-        + ('&bu_type=' + (this.__getKycFormData.bu_type.length > 0 ? JSON.stringify(this.__getKycFormData.bu_type): ''))
+        // + ('&bu_type=' + (this.__getKycFormData.bu_type.length > 0 ? JSON.stringify(this.__getKycFormData.bu_type): ''))
         + ('&login_at=' + this.__getKycFormData.kyc_login_at)
         + ('&login_type=' + this.__getKycFormData.kyc_login)
         +('&from_date='+global.getActualVal(this.__getKycFormData.frm_dt))
@@ -139,47 +150,47 @@ getTodayDate(){
 
 exportPdf(){
   // if(this.__kycForm.get('options').value == '3'){
-    this.divToPrint = document.getElementById('KycRPT');
-    console.log(this.divToPrint.innerHTML);
-    this.WindowObject = window.open('', 'Print-Window');
-    this.WindowObject.document.open();
-    this.WindowObject.document.writeln('<!DOCTYPE html>');
-    this.WindowObject.document.writeln('<html><head><title></title><style type="text/css">');
-    this.WindowObject.document.writeln('@media print { .center { text-align: center;}' +
-            '                                         .inline { display: inline; }' +
-            '                                         .underline { text-decoration: underline; }' +
-            '                                         .left { margin-left: 315px;} ' +
-            '                                         .right { margin-right: 375px; display: inline; }' +
-            '                                          table { border-collapse: collapse; font-size: 10px;}' +
-            '                                          th, td { border: 1px solid black; border-collapse: collapse; padding: 6px;}' +
-            '                                           th, td { }' +
-            '                                         .border { border: 1px solid black; } ' +
-            '                                         .bottom { bottom: 5px; width: 100%; position: fixed; } '+
-            '                                           footer { position: fixed; bottom: 0;text-align: center; }' +
-            '                                         td.dashed-line { border-top: 1px dashed gray; } } </style>');
-      this.WindowObject.document.writeln('</head><body onload="window.print()">');
-      this.WindowObject.document.writeln('<center><img src="/assets/images/logo.jpg" alt="">'+
-      '<h3>NuEdge Corporate Pvt. Ltd</h3>'+
-      '<h5> Day Sheet Report</h5></center>');
-      this.WindowObject.document.writeln(this.divToPrint.innerHTML);
-      console.log( this.WindowObject);
+    // this.divToPrint = document.getElementById('KycRPT');
+    // console.log(this.divToPrint.innerHTML);
+    // this.WindowObject = window.open('', 'Print-Window');
+    // this.WindowObject.document.open();
+    // this.WindowObject.document.writeln('<!DOCTYPE html>');
+    // this.WindowObject.document.writeln('<html><head><title></title><style type="text/css">');
+    // this.WindowObject.document.writeln('@media print { .center { text-align: center;}' +
+    //         '                                         .inline { display: inline; }' +
+    //         '                                         .underline { text-decoration: underline; }' +
+    //         '                                         .left { margin-left: 315px;} ' +
+    //         '                                         .right { margin-right: 375px; display: inline; }' +
+    //         '                                          table { border-collapse: collapse; font-size: 10px;}' +
+    //         '                                          th, td { border: 1px solid black; border-collapse: collapse; padding: 6px;}' +
+    //         '                                           th, td { }' +
+    //         '                                         .border { border: 1px solid black; } ' +
+    //         '                                         .bottom { bottom: 5px; width: 100%; position: fixed; } '+
+    //         '                                           footer { position: fixed; bottom: 0;text-align: center; }' +
+    //         '                                         td.dashed-line { border-top: 1px dashed gray; } } </style>');
+    //   this.WindowObject.document.writeln('</head><body onload="window.print()">');
+    //   this.WindowObject.document.writeln('<center><img src="/assets/images/logo.jpg" alt="">'+
+    //   '<h3>NuEdge Corporate Pvt. Ltd</h3>'+
+    //   '<h5> Day Sheet Report</h5></center>');
+    //   this.WindowObject.document.writeln(this.divToPrint.innerHTML);
+    //   console.log( this.WindowObject);
 
-      this.WindowObject.document.writeln('<footer><small>This is an electronically generated report, hence does not require any signature</small></footer>');
-      this.WindowObject.document.writeln('</body></html>');
-      this.WindowObject.document.close();
-    setTimeout(() => {
-      console.log("CLose");
-      this.WindowObject.close();
-    }, 100);
+    //   this.WindowObject.document.writeln('<footer><small>This is an electronically generated report, hence does not require any signature</small></footer>');
+    //   this.WindowObject.document.writeln('</body></html>');
+    //   this.WindowObject.document.close();
+    // setTimeout(() => {
+    //   console.log("CLose");
+    //   this.WindowObject.close();
+    // }, 100);
   // }
   // else{
-  //   this.__Rpt.downloadReport(
-  //     '#KycRPT',
-  //     {
-  //       title: 'KYC Report',
-  //     },
-  //     'KYC Report  '
-  //   );
+    this.__Rpt.downloadReport(
+      '#KycRPT',
+      {
+        title: 'KYC Report',
+      },
+      'KYC Report  '
+    );
   // }
 }
 populateDT(__items,mode) {
@@ -235,21 +246,24 @@ openDialog(id: string | null = null, __items,mode) {
 
 }
 reset(__ev){
-  this.__sortAscOrDsc = {active:'',direction:'asc'};
+  // this.__sortAscOrDsc = {active:'',direction:'asc'};
+  this.sort = new sort();
+  this.__pageNumber.setValue(10);
   this.getKycRpt(__ev);
 }
-sortData(sort){
-  this.__sortAscOrDsc =sort;
-  this.getKycRpt(this.__getKycFormData);
-}
+
 getKycRpt(kycFormDt){
 this.__getKycFormData = kycFormDt;
+console.log(this.__getKycFormData);
+
 const __kyc = new FormData();
   __kyc.append('paginate',this.__pageNumber.value);
   __kyc.append('option', kycFormDt.options);
-  __kyc.append('column_name',this.__sortAscOrDsc.active);
-  __kyc.append('sort_by',this.__sortAscOrDsc.direction);
+  __kyc.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+  __kyc.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
   if( kycFormDt.options != '3'){
+
+    __kyc.append('login_status_id',JSON.stringify(kycFormDt.ack_logged_status.filter(item => item.isChecked).map(res => {return res['id']})));
     __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
     __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
     __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
@@ -270,12 +284,12 @@ const __kyc = new FormData();
     'sub_brk_cd',
     kycFormDt.sub_brk_cd ? kycFormDt.sub_brk_cd : ''
   );
-  __kyc.append(
-    'bu_type',
-    kycFormDt.bu_type.length > 0
-      ? JSON.stringify(kycFormDt.bu_type)
-      : ''
-  );
+  // __kyc.append(
+  //   'bu_type',
+  //   kycFormDt.bu_type.length > 0
+  //     ? JSON.stringify(kycFormDt.bu_type)
+  //     : ''
+  // );
   __kyc.append(
     'branch',global.getActualVal(kycFormDt.brn_cd));
 }
@@ -296,8 +310,8 @@ showItemPerpage(kycFormDt){
   const __kyc = new FormData();
   __kyc.append('paginate',this.__pageNumber.value);
   __kyc.append('option', kycFormDt.options);
-  __kyc.append('column_name',this.__sortAscOrDsc.active);
-  __kyc.append('sort_by',this.__sortAscOrDsc.direction);
+  __kyc.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+  __kyc.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
   if( kycFormDt.options != '3'){
     __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
     __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
@@ -339,5 +353,79 @@ else{
       this.__kycRpt = new MatTableDataSource(res.data);
       this.__paginate = res.links;
   })
+}
+customSort(ev){
+    this.sort.order =ev.sortOrder;
+    this.sort.field =ev.sortField;
+    if(ev.sort_field){
+      this.getKycRpt(this.__getKycFormData);
+    }
+
+}
+onselectItem(ev){
+   this.__pageNumber.setValue(ev.option.value);
+   this.showItemPerpage(this.__getKycFormData)
+}
+getSelectedColumns(columns){
+      const clm = ['edit', 'app_form_view'];
+       this.__columns = columns.map(({ field, header }) => ({field, header}));
+       this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
+}
+openMenu(event){
+  console.log(this.selectKYC);
+  if(event.flag == 'P'){
+   let WindowObject ;
+   const divToPrint = document.getElementById('KycRPT');
+   console.log(divToPrint.innerHTML);
+  WindowObject = window.open('', 'Print-Window');
+  WindowObject.document.open();
+  WindowObject.document.writeln('<!DOCTYPE html>');
+  WindowObject.document.writeln('<html><head><title></title><style type="text/css">');
+  WindowObject.document.writeln('@media print { .center { text-align: center;}' +
+  '                                          table {margin: auto}' +
+  '                                         .inline { display: inline; }' +
+  '                                         .underline { text-decoration: underline; }' +
+  '                                         .left { margin-left: 315px;} ' +
+  '                                         .right { margin-right: 375px; display: inline; }' +
+  '                                          table { border-collapse: collapse; font-size: 10px;}' +
+  '                                          th, td { border: 1px solid black; border-collapse: collapse; padding: 6px;}' +
+  '                                           th, td { width:12.2% }' +
+  '                                         .border { border: 1px solid black; } ' +
+  '                                         .bottom { bottom: 5px; width: 100%; position: fixed; } ' +
+  '                                           footer { position: fixed; bottom: 0;text-align: center; }' +
+  '                                         td.dashed-line { border-top: 1px dashed gray; } } </style>');
+    WindowObject.document.writeln('</head><body onload="window.print()">');
+    WindowObject.document.writeln('<center><img src="/assets/images/logo.jpg" alt="">'+
+     '<h3>NuEdge Corporate Pvt. Ltd</h3>'+
+     '<h5> Day Sheet Report</h5></center>');
+    WindowObject.document.writeln(divToPrint.innerHTML);
+     console.log(WindowObject);
+
+    WindowObject.document.writeln('<footer><small>This is an electronically generated report, hence does not require any signature</small></footer>');
+    WindowObject.document.writeln('</body></html>');
+    WindowObject.document.close();
+   setTimeout(() => {
+     console.log("CLose");
+    WindowObject.close();
+   }, 100);
+  }
+  else{
+
+  }
+}
+DocView(element,mode){
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.autoFocus = false;
+  dialogConfig.closeOnNavigation = true;
+  dialogConfig.width = '80%';
+  dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+  dialogConfig.data = {
+    flag: 'ACKDOC',
+    title: mode == 'K' ? 'Uploaded KYC' : 'Uploaded Acknowledgement',
+    data: element,
+    copy_url:`${environment.kyc_formUrl + element.scaned_form}`,
+    src: mode == 'K' ? this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.kyc_formUrl + element.scaned_form}`) : this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.kyc_ack_form_url + element.ack_copy_scan}`)
+  };
+  const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
 }
 }

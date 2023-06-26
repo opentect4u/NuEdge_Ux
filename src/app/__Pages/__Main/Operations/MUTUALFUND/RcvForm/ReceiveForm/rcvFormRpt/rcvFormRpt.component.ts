@@ -35,12 +35,24 @@ import { client } from 'src/app/__Model/__clientMst';
 import { dates } from 'src/app/__Utility/disabledt';
 import { mfRcvClmns } from 'src/app/__Utility/MFColumns/rcvClmns';
 import { DeletercvComponent } from '../deletercv/deletercv.component';
+import { column } from 'src/app/__Model/tblClmns';
+import { sort } from 'src/app/__Model/sort';
+import itemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
   selector: 'rcvFormRpt-component',
   templateUrl: './rcvFormRpt.component.html',
   styleUrls: ['./rcvFormRpt.component.css'],
 })
 export class RcvformrptComponent implements OnInit {
+  sort = new sort();
+  itemsPerPage:selectBtn[] = itemsPerPage;
+  selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
+  isOpenMegaMenu:boolean =false;
   settingsForEUIN = this.__utility.settingsfroMultiselectDropdown(
     'euin_no',
     'emp_name',
@@ -74,16 +86,15 @@ export class RcvformrptComponent implements OnInit {
 
   displayMode_forClient: string;
   displayMode_forTemp_Tin: string;
-  __sortAscOrDsc: any = { active: '', direction: 'asc' };
-  toppings = new FormControl();
-  toppingList: any = mfRcvClmns.CLOUMN_SELECTOR;
+
+  columnMst:column[]=mfRcvClmns.COLUMN_SELECTOR;
+  columns: column[] =[];
+  SelectedClms:string[] =[];
   __bu_type = buType;
   __export = new MatTableDataSource<any>([]);
-  __isAdd: boolean = false;
   __isVisible: boolean = true;
   __isClientPending: boolean = false;
   __istemporaryspinner: boolean = false;
-  __isAdv: boolean = false;
   __temp_tinMst: any = [];
   __subbrkArnMst: any = [];
   __brnchMst: any =[];
@@ -91,11 +102,12 @@ export class RcvformrptComponent implements OnInit {
   __clientMst: client[] = [];
   __euinMst: any = [];
   __RcvForms = new MatTableDataSource<any>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __paginate: any = [];
   __columns: string[] = [];
   __exportedClmns: string[] = [];
   __rcvForms = new FormGroup({
+    btnType:new FormControl('R'),
     options: new FormControl('2'),
     client_code: new FormControl(''),
     recv_from: new FormControl(''),
@@ -111,6 +123,7 @@ export class RcvformrptComponent implements OnInit {
     advFilt_reset: new FormControl(''),
     rm_name: new FormControl([],{updateOn:'blur'}),
     branch: new FormControl([],{updateOn:'blur'}),
+    date_range: new FormControl('')
   });
   __transType: any = [];
   constructor(
@@ -125,19 +138,15 @@ export class RcvformrptComponent implements OnInit {
   __trans_types: any;
   ngOnInit() {
     this.getTransactionTypeDtls();
-    this.setColumns('2');
+    this.setColumns(2);
     this.getTransactionType();
-    this.getRcvForm();
   }
 
   setColumns(options) {
     const clmnsToRemove = ['edit', 'delete'];
-    this.__columns =
-      options == '2' ? mfRcvClmns.INITIAL_CLMNS : mfRcvClmns.DETAIL_CLMNS;
-    this.__exportedClmns = this.__columns.filter(
-      (x) => !clmnsToRemove.includes(x)
-    );
-    this.toppings.setValue(this.__columns);
+    this.columns = options == 2 ? mfRcvClmns.SUMMARY : mfRcvClmns.COLUMN_SELECTOR;
+    this.__exportedClmns = this.columns.filter(x => !clmnsToRemove.includes(x.field)).map(item => {return item['field']});
+    this.SelectedClms =  this.columns.map(item => {return item['field']});
   }
   getTransactionType() {
     this.__dbIntr
@@ -147,13 +156,10 @@ export class RcvformrptComponent implements OnInit {
         this.__transType = res;
       });
   }
-
-  getRcvForm(
-    column_name: string | null = '',
-    sort_by: string | null | '' = 'asc'
-  ) {
+  getRcvForm() {
     const __rcvFormSearch = new FormData();
     __rcvFormSearch.append('paginate', this.__pageNumber.value);
+    __rcvFormSearch.append('option', this.__rcvForms.value.options);
     __rcvFormSearch.append(
       'trans_type_id',
       this.data.trans_type_id ? this.data.trans_type_id : ''
@@ -171,31 +177,36 @@ export class RcvformrptComponent implements OnInit {
       this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : ''
     );
     __rcvFormSearch.append(
-      'sub_brk_cd',
-      this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : ''
-    );
-    __rcvFormSearch.append(
-      'euin_no',
-      this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : ''
-    );
-    __rcvFormSearch.append(
       'temp_tin_no',
       this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : ''
-    );
-    __rcvFormSearch.append(
-      'inv_type',
-      this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : ''
     );
     __rcvFormSearch.append(
       'trans_type',
       this.__rcvForms.value.trans_type ? this.__rcvForms.value.trans_type : ''
     );
-    __rcvFormSearch.append(
-      'bu_type',
-      JSON.stringify(this.__rcvForms.value.bu_type)
-    );
-    __rcvFormSearch.append('column_name', column_name);
-    __rcvFormSearch.append('sort_by', sort_by);
+    if(this.__rcvForms.value.advFilt_reset == 'A'){
+      __rcvFormSearch.append(
+        'euin_no',
+         JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]}))
+       );
+      __rcvFormSearch.append(
+        'brn_cd',
+        JSON.stringify(this.__rcvForms.value.branch.map(item => {return item["id"]}))
+      );
+      __rcvFormSearch.append(
+        'bu_type',
+        JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]}))
+      );
+      __rcvFormSearch.append(
+        'rm_id',
+        JSON.stringify(this.__rcvForms.value.rm_name.map(item => {return item["id"]}))
+      );
+      __rcvFormSearch.append(
+        'sub_brk_cd',JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]}))
+      );
+    }
+    __rcvFormSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __rcvFormSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
     __rcvFormSearch.append('from_date', this.__rcvForms.getRawValue().start_dt);
     __rcvFormSearch.append('to_date', this.__rcvForms.getRawValue().end_dt);
     this.__dbIntr
@@ -205,7 +216,7 @@ export class RcvformrptComponent implements OnInit {
         this.__paginate = res.links;
         this.__RcvForms = new MatTableDataSource(res.data);
         this.__RcvForms._updateChangeSubscription();
-        this.tableExport(column_name, sort_by);
+        this.tableExport(__rcvFormSearch);
       });
   }
 
@@ -283,6 +294,9 @@ export class RcvformrptComponent implements OnInit {
 
   ngAfterViewInit() {
     this.__rcvForms.controls['dt_type'].valueChanges.subscribe((res) => {
+      this.__rcvForms.controls['date_range'].reset(
+        res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+      );
       this.__rcvForms.controls['start_dt'].reset(
         res && res != 'R' ? dates.calculateDT(res) : ''
       );
@@ -290,23 +304,9 @@ export class RcvformrptComponent implements OnInit {
         res && res != 'R' ? dates.getTodayDate() : ''
       );
       if (res && res != 'R') {
-        this.__rcvForms.controls['start_dt'].disable();
-        this.__rcvForms.controls['end_dt'].disable();
+        this.__rcvForms.controls['date_range'].disable();
       } else {
-        this.__rcvForms.controls['start_dt'].enable();
-        this.__rcvForms.controls['end_dt'].enable();
-      }
-    });
-
-    this.__rcvForms.controls['advFilt_reset'].valueChanges.subscribe((res) => {
-      console.log(res);
-      if (res == 'R') {
-        this.reset();
-      } else {
-        this.__isAdd = !this.__isAdd;
-        if(this.__isAdd){
-            this.getBranch();
-        }
+        this.__rcvForms.controls['date_range'].enable();
       }
     });
 
@@ -389,62 +389,12 @@ export class RcvformrptComponent implements OnInit {
     this.__rcvForms.controls['options'].valueChanges.subscribe((res) => {
       this.setColumns(res);
     });
-    this.toppings.valueChanges.subscribe((res) => {
-      const clm = ['edit', 'delete'];
-      this.__columns = res;
-      this.__exportedClmns = res.filter((item) => !clm.includes(item));
-    });
   }
 
   tableExport(
-    column_name: string | null = '',
-    sort_by: string | null | '' = 'asc'
+    __rcvFormExport
   ) {
-    const __rcvFormExport = new FormData();
-    __rcvFormExport.append(
-      'trans_type_id',
-      this.data.trans_type_id ? this.data.trans_type_id : ''
-    );
-    __rcvFormExport.append(
-      'product_id',
-      this.data.product_id ? this.data.product_id : ''
-    );
-    __rcvFormExport.append(
-      'client_code',
-      this.__rcvForms.value.client_code ? this.__rcvForms.value.client_code : ''
-    );
-    __rcvFormExport.append(
-      'recv_from',
-      this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : ''
-    );
-    __rcvFormExport.append(
-      'sub_brk_cd',
-      this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : ''
-    );
-    __rcvFormExport.append(
-      'euin_no',
-      this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : ''
-    );
-    __rcvFormExport.append(
-      'temp_tin_no',
-      this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : ''
-    );
-    __rcvFormExport.append(
-      'inv_type',
-      this.__rcvForms.value.inv_type ? this.__rcvForms.value.inv_type : ''
-    );
-    __rcvFormExport.append(
-      'trans_type',
-      this.__rcvForms.value.trans_type ? this.__rcvForms.value.trans_type : ''
-    );
-    __rcvFormExport.append(
-      'bu_type',
-      JSON.stringify(this.__rcvForms.value.bu_type)
-    );
-    __rcvFormExport.append('column_name', column_name);
-    __rcvFormExport.append('sort_by', sort_by);
-    __rcvFormExport.append('from_date', this.__rcvForms.getRawValue().start_dt);
-    __rcvFormExport.append('to_date', this.__rcvForms.getRawValue().end_dt);
+    __rcvFormExport.delete('paginate');
     this.__dbIntr
       .api_call(1, '/formreceivedExport', __rcvFormExport)
       .pipe(map((x: any) => x.data))
@@ -453,38 +403,18 @@ export class RcvformrptComponent implements OnInit {
         this.__export._updateChangeSubscription();
       });
   }
-  getRvcFormMaster(__paginate: string | null = '10') {
-    this.__dbIntr
-      .api_call(
-        0,
-        '/formreceived',
-        'paginate=' +
-          __paginate +
-          ('&trans_type_id=' +
-            this.data.trans_type_id +
-            (this.data.type_id ? '&trans_id=' + this.data.type_id : ''))
-      )
-      .pipe(map((x: any) => x.data))
-      .subscribe((res: any) => {
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
-  }
-  getval(__itemsPerPage) {
-    this.__pageNumber.setValue(__itemsPerPage);
+  onselectItem(__itemsPerPage) {
+    // this.__pageNumber.setValue(__itemsPerPage.option.value);
     this.submit();
   }
   getPaginate(__paginate) {
-    console.log('ssss');
-    console.log(this.__sortAscOrDsc.active);
-
-    if (__paginate.url) {
+       if (__paginate.url) {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&sort_by=' + this.__sortAscOrDsc.direction) +
-            ('&column_name=' + this.__sortAscOrDsc.active) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
             ('&trans_type_id=' +
               (this.data.trans_type_id ? this.data.trans_type_id : '')) +
             ('&product_id=' +
@@ -497,18 +427,22 @@ export class RcvformrptComponent implements OnInit {
               (this.__rcvForms.value.recv_from
                 ? this.__rcvForms.value.recv_from
                 : '')) +
+            ('&rm_id='+
+                JSON.stringify(this.__rcvForms.value.rm_name.map(item => {return item["id"]}))) +
             ('&sub_brk_cd=' +
               (this.__rcvForms.value.sub_brk_cd
-                ? this.__rcvForms.value.sub_brk_cd
-                : '')) +
+                ? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]}))
+                : '[]')) +
             ('&euin_no=' +
               (this.__rcvForms.value.euin_no
-                ? this.__rcvForms.value.euin_no
-                : '')) +
+                ? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]}))
+                : '[]')) +
             ('&temp_tin_no=' +
               (this.__rcvForms.value.temp_tin_no
                 ? this.__rcvForms.value.temp_tin_no
                 : '')) +
+                ('&brn_cd='+
+                JSON.stringify(this.__rcvForms.value.branch.map(item => {return item["id"]})))+
             ('&inv_type=' +
               (this.__rcvForms.value.inv_type
                 ? this.__rcvForms.value.inv_type
@@ -517,7 +451,8 @@ export class RcvformrptComponent implements OnInit {
               (this.__rcvForms.value.trans_type
                 ? this.__rcvForms.value.trans_type
                 : '')) +
-            ('&bu_type=' + JSON.stringify(this.__rcvForms.value.bu_type)) +
+
+            ('&bu_type=' + JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]}))) +
             ('&from_date=' +
               global.getActualVal(this.__rcvForms.getRawValue().start_dt)) +
             ('&to_date=' +
@@ -537,8 +472,6 @@ export class RcvformrptComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
-    // dialogConfig.disableClose = true;
-    // dialogConfig.hasBackdrop = false;
     dialogConfig.width = '40%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data = {
@@ -650,14 +583,10 @@ export class RcvformrptComponent implements OnInit {
   }
 
   submit() {
-    this.getRcvForm(this.__sortAscOrDsc.active, this.__sortAscOrDsc.direction);
+    this.getRcvForm();
   }
-  sortData(sort) {
-    this.__sortAscOrDsc = sort;
-    this.getRcvForm(this.__sortAscOrDsc.active, this.__sortAscOrDsc.direction);
-  }
+
   reset() {
-    this.__isAdd = false;
     this.__rcvForms.patchValue({
       start_dt: '',
       end_dt: '',
@@ -670,12 +599,11 @@ export class RcvformrptComponent implements OnInit {
       sub_brk_cd:[],
       branch:[],
       rm_name:[],
-      bu_type:[]
+      bu_type:[],
+      date_range:''
     });
-    this.__isAdd = false;
     this.__rcvForms.get('client_code').setValue('', { emitEvent: false });
     this.__rcvForms.get('temp_tin_no').setValue('', { emitEvent: false });
-    this.__sortAscOrDsc = { active: '', direction: 'asc' };
     this.submit();
   }
 
@@ -704,4 +632,29 @@ export class RcvformrptComponent implements OnInit {
   getSelectedItemsFromParent(event) {
     this.getItems(event.item, event.flag);
   }
+    onItemClick(res){
+      if(res.option.value == 'A'){
+        this.getBranch();
+       }
+       else{
+         this.reset();
+       }
+    }
+
+  close(ev){
+    this.__rcvForms.patchValue({
+      start_dt: this.__rcvForms.getRawValue().date_range ? dates.getDateAfterChoose(this.__rcvForms.getRawValue().date_range[0]) : '',
+      end_dt: this.__rcvForms.getRawValue().date_range ? (global.getActualVal(this.__rcvForms.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.__rcvForms.getRawValue().date_range[1]) : '') : ''
+    });
+}
+customSort(ev){
+  this.sort.field = ev.sortField;
+  this.sort.order = ev.sortOrder;
+  this.getRcvForm();
+}
+getSelectedColumns(columns){
+  const clm = ['edit','delete'];
+  this.columns = columns.map(({ field, header }) => ({field, header})).filter(x => !clm.includes(x));
+  this.__exportedClmns = this.columns.filter(item => !clm.includes(item.field)).map(x => {return x['field']});
+}
 }

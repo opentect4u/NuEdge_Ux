@@ -1,5 +1,11 @@
 <common-header></common-header>
-<div class="container-fluid mainContainerSec" __MenuShow>
-  <main-brdCrmbs [hidden]="__rtDt?.id == 3"></main-brdCrmbs>
-  <router-outlet></router-outlet>
+<main-brdCrmbs [hidden]="__rtDt?.id == 3"></main-brdCrmbs>
+<div [class]="__rtDt?.id == 3 ? 'home_pannel' : 'main-pannel'">
+  <div class="container-fluid mainContainerSec" __MenuShow>
+    <router-outlet></router-outlet>
+  </div>
 </div>
+<p-scrollTop target="window" styleClass="custom-scrolltop"
+[threshold]="100"
+icon="pi pi-arrow-up"></p-scrollTop>
+

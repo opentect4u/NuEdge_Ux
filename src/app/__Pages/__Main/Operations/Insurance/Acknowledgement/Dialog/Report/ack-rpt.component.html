@@ -118,7 +118,7 @@
                 <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
                   <div class="searchDiv">
                     <label for="subbrkArn">Sub Broker Code</label>
-                    <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                    <input type="search" id="subbrkArn" class="form-control" placeholder="Search By Sub Broker Code"
                       formControlName="sub_brk_cd">
                     <span class="spinner-border"
                       *ngIf="__isSubArnPending && __insTraxForm.get('sub_brk_cd').value?.length > 1"></span>
@@ -147,7 +147,7 @@
                 <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
                   <div class="searchDiv">
                     <label for="Euin">Employee</label>
-                    <input type="search" id="Euin" class="form-control" placeholder="Serach By Employee"
+                    <input type="search" id="Euin" class="form-control" placeholder="Search By Employee"
                       formControlName="euin_no">
                     <span class="spinner-border"
                       *ngIf="__isEuinPending && __insTraxForm.get('euin_no').value?.length > 1"></span>

@@ -1,4 +1,5 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+<!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle -->
+<div>
   <div mat-dialog-title class="dialog-title">
     <h2>Form Receivable Reports For Fixed Deposit</h2>
     <div class="btnIcon">
@@ -19,7 +20,7 @@
     </div>
 
   </div>
-  <mat-dialog-content>
+  <!-- <mat-dialog-content>
     <div class="card my-5">
       <div class="card-body p-5">
         <form [formGroup]="__rcvForms" (ngSubmit)="submit()" autocomplete="off">
@@ -68,10 +69,10 @@
             <div class="col-sm-4">
               <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
                 <div class="searchDiv">
-                  <label for="__temp_tin_no">Temporary TIN Number
+                  <label for="__temp_tin_no">Temporary TIN
                   </label>
                   <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
-                    formControlName="temp_tin_no" placeholder="Search by Temporary TIN Number">
+                    formControlName="temp_tin_no" placeholder="Search by Temporary TIN">
                   <span class="spinner-border"
                     *ngIf="__istemporaryspinner && __rcvForms.get('temp_tin_no').value?.length > 1"></span>
                   <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickfortempTin($event)">
@@ -85,7 +86,7 @@
                         <h5 class="text-center">
                           Sorry!! No Records Found
                         </h5>
-                        <p>Temporary TIN Number Not Available</p>
+                        <p>Temporary TIN Not Available</p>
                       </div>
                     </div>
                   </div>
@@ -98,7 +99,7 @@
                   <label for="Euin">Employee</label>
                   <input type="search" id="Euin"
                   class="form-control"
-                  placeholder="Serach By Employee"
+                  placeholder="Search By Employee"
                   formControlName="euin_no">
                   <span class="spinner-border" *ngIf="__isEuinPending && __rcvForms.get('euin_no').value?.length > 1"></span>
 
@@ -158,7 +159,7 @@
                 <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforSubBrkArn($event)">
                   <div class="searchDiv">
                     <label for="subbrkArn">Sub Broker Code</label>
-                    <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                    <input type="search" id="subbrkArn" class="form-control" placeholder="Search By Sub Broker Code"
                       formControlName="sub_brk_cd">
                     <span class="spinner-border"
                       *ngIf="__isSubArnPending && __rcvForms.get('sub_brk_cd').value?.length > 1"></span>
@@ -257,7 +258,7 @@
           </ng-container>
 
           <ng-container matColumnDef="temp_tin_no">
-            <th mat-sort-header="temp_tin_no" mat-header-cell *matHeaderCellDef>Temporary TIN No.</th>
+            <th mat-sort-header="temp_tin_no" mat-header-cell *matHeaderCellDef>Temporary TIN</th>
             <td mat-cell *matCellDef="let element">{{element.temp_tin_no ? element.temp_tin_no : 'N/A'}}</td>
           </ng-container>
 
@@ -387,7 +388,7 @@
         </ng-container>
 
         <ng-container matColumnDef="temp_tin_no">
-          <th mat-header-cell *matHeaderCellDef>Temporary TIN No.</th>
+          <th mat-header-cell *matHeaderCellDef>Temporary TIN</th>
           <td mat-cell *matCellDef="let element">{{element.temp_tin_no ? element.temp_tin_no : 'N/A'}}</td>
         </ng-container>
 
@@ -439,5 +440,418 @@
         </tr>
       </table>
     </div>
+  </mat-dialog-content> -->
+
+  <mat-dialog-content class="customDialog">
+     <div class="card p-3 border-1 mb-2">
+      <ng-template #SearchBtn>
+        <p-button
+        type="submit"
+        label="Show"
+        icon="pi pi-eye"
+        iconPos="right"
+        styleClass="p-button-lg"></p-button>
+      </ng-template>
+      <form [formGroup]="__rcvForms" (ngSubmit)="recvForm()">
+                <div class="row">
+                  <div class="col-sm-6 d-flex justify-content-start align-items-center">
+                    <mat-radio-group aria-label="Select an option" color="primary" formControlName="option">
+                      <mat-radio-button value="2">Summary</mat-radio-button>
+                      <mat-radio-button value="1" class="ml-5">Detail</mat-radio-button>
+                    </mat-radio-group>
+                  </div>
+                  <div class="col-sm-6 d-flex justify-content-end align-items-center">
+                    <p-selectButton
+                    [options]="selectBtn"
+                    optionValue="value"
+                    formControlName="btn_type"
+                    styleClass="p-button-lg"
+                    (onOptionClick)="onItemClick($event)"
+                    optionLabel="icon">
+                      <ng-template let-item>
+                          <i [class]="item.icon"  [matTooltip]="item.label"></i>
+                      </ng-template>
+                  </p-selectButton>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <label for="date_periods">Date Periods</label>
+                  <select class="form-control" formControlName="date_periods" name="date_periods" id="date_periods">
+                      <option value="">Select</option>
+                      <option value="D">Today</option>
+                      <option value="W">This Week</option>
+                      <option value="M">This Month</option>
+                      <option value="Y">This Year</option>
+                      <option value="R">Date Range</option>
+                  </select>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="date_range">Date (From - To)</label>
+                      <p-calendar
+                      dateFormat="dd/mm/yy"
+                      placeholder="Select Date Range"
+                      formControlName="date_range"
+                      selectionMode="range"
+                      [readonlyInput]="true"
+                      id="date_range"
+                      [showIcon]="true"
+                      [hideOnDateTimeSelect]="true"
+                      (onClose)="close($event)"
+                      [showButtonBar]="true">
+                      </p-calendar>
+                  </div>
+                  <div class="col-sm-3">
+                    <app-core-srch
+                    [label] = "'Temporary TIN'"
+                    [placeholder]="'Search By Temporary TIN'"
+                    [isPending]="__istemporaryspinner"
+                    [listItems] = "__temp_tinMst"
+                    [flag] = "'T'"
+                    [noDataFoundTitle]="'Sorry!! No Records Found'"
+                    [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                    [propertiesToShow] = "['temp_tin_no','client_name']"
+                    formControlName="temp_tin"
+                    [displayMode]="displayMode_forTemp_Tin"
+                    (setDisplayMode)="displayMode_forTemp_Tin = $event"
+                    (selectedItems)="getSelectedItemsFromParent($event)"
+                    ></app-core-srch>
+                  </div>
+                  <div class="col-sm-3">
+                    <app-core-srch
+                    [label] = "'Client Details'"
+                    [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+                    [isPending]="__isClientPending"
+                    [listItems] = "__clientMst"
+                    [flag] = "'C'"
+                    [noDataFoundTitle]="'Sorry!! No Records Found'"
+                    [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                    [propertiesToShow] = "['client_code','pan','client_name']"
+                    formControlName="client_name"
+                    [displayMode]="displayMode_forClient"
+                    (setDisplayMode)="displayMode_forClient = $event"
+                    (selectedItems)="getSelectedItemsFromParent($event)"
+                    ></app-core-srch>
+                  </div>
+
+                </div>
+                 <div class="row">
+                  <div class="col-sm-3">
+                      <label for="trns_type">Transaction Type</label>
+                      <ng-multiselect-dropdown #multiSelect
+                      id="trns_type"
+                      [placeholder]="'Select Transaction Type'"
+                      [settings]="settingsFortrnsType"
+                      [data]="__transType"
+                      formControlName="trns_type">
+                    </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="recv_frm">Receive From</label>
+                    <input type="text" placeholder="Enter Receive From" name="recv_frm" id="recv_frm"
+                    class="form-control" formControlName="recv_frm">
+                  </div>
+                  <ng-container *ngIf="__rcvForms.value.btn_type == 'A';else noAdv">
+                    <div class="col-sm-3">
+                      <label for="branch">Branch</label>
+                      <ng-multiselect-dropdown #multiSelect
+                      id="branch"
+                      [placeholder]="'Select Branch'"
+                      [settings]="settingsForbrnch"
+                      [data]="__brnchMst"
+                      formControlName="brn_cd">
+                    </ng-multiselect-dropdown>
+                    </div>
+                    <div class="col-sm-3">
+                      <label for="bu_type">Business Type</label>
+                        <ng-multiselect-dropdown #multiSelect
+                        id="bu_type"
+                        [placeholder]="'Select Business Type'"
+                        [settings]="settingsForbuType"
+                        [data]="__bu_type"
+                        formControlName="bu_type">
+                      </ng-multiselect-dropdown>
+                    </div>
+                  </ng-container>
+                 <ng-template #noAdv>
+                    <div class="col-sm-6 d-flex justify-content-end align-items-end">
+                      <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                    </div>
+
+                 </ng-template>
+                 </div>
+                 <ng-container *ngIf="__rcvForms.value.btn_type == 'A'">
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <label for="rm_id">Relationship Manager</label>
+                        <ng-multiselect-dropdown #multiSelect
+                        id="rm_id"
+                        [placeholder]="'Select Relationship Manager'"
+                        [settings]="settingsForbuType"
+                        [data]="__rmMst"
+                        formControlName="rm_id">
+                      </ng-multiselect-dropdown>
+                      </div>
+                      <div class="col-sm-3">
+                        <label for="sub_brk_cd">Sub Broker Code</label>
+                        <ng-multiselect-dropdown #multiSelect
+                        id="sub_brk_cd"
+                        [placeholder]="'Select Sub Broker Code'"
+                        [settings]="settingsForsubCode"
+                        [data]="__subbrkArnMst"
+                        formControlName="sub_brk_cd">
+                      </ng-multiselect-dropdown>
+                      </div>
+                      <div class="col-sm-3">
+                        <label for="euin_no">Employee</label>
+                        <ng-multiselect-dropdown #multiSelect
+                        id="euin_no"
+                        [placeholder]="'Select Employee'"
+                        [settings]="settingsForEUIN"
+                        [data]="__euinMst"
+                        formControlName="euin_no">
+                      </ng-multiselect-dropdown>
+                      </div>
+                      <div class="col-sm-3
+                      d-flex flex-column justify-content-end align-items-end">
+                        <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                      </div>
+                    </div>
+                 </ng-container>
+
+      </form>
+
+     </div>
+     <div class="card border-1">
+      <div class="example_container_header">
+        <div class="transTypeCount"></div>
+          <div class="btnGrp">
+            <p-button type="button" icon="pi pi-server"
+            #tooltip="matTooltip"
+            [matTooltipPosition]="'before'"
+            (click)="isOpenMegaMenu = !isOpenMegaMenu"
+            matTooltip="Column Selector"
+            styleClass="p-button-primary p-button-lg p-button-outlined mr-2">
+            </p-button>
+            <p-button icon="pi pi-file-export"
+            [matMenuTriggerFor]="menu"
+            [matTooltipPosition]="'after'"
+            #tooltip="matTooltip"
+            matTooltip="Export"
+            styleClass="p-button-primary p-button-lg p-button-outlined">
+            </p-button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="exportPdf()">
+                <mat-icon>download</mat-icon> Export Pdf
+              </button>
+              <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Receieve Form'})">
+                <mat-icon>download</mat-icon> Export Excel
+              </button>
+            </mat-menu>
+         </div>
+         </div>
+         <div class="container_body">
+          <p-table
+          (onLazyLoad)="customSort($event)"
+            [customSort]="true"
+              sortMode="single"
+              [lazy]="true"
+          [value]="__RcvForms.data"
+        [columns]="__columns" [resizableColumns]="true"
+      selectionMode="multiple"
+      columnResizeMode="expand" [scrollable]="true"
+      scrollHeight="358px"
+      [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+      [tableStyle]="{ 'min-width': '120rem' }">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field"
+          [ngStyle]="{'width': __rcvForms.value.options == 2 ? '12rem' : '17rem'}">
+            {{ col.header }}
+            <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
+            </p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rcvFormDT let-columns="columns" let-i="rowIndex">
+        <tr tabindex="999">
+          <td *ngFor="let col of columns">
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'bu_type'">
+                <span #tooltip="matTooltip"
+                [matTooltip]="rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
+                  {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'rec_datetime'">
+                <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'entry_date'">
+                  <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                  </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'edit'">
+                  <p-button icon="pi pi-pencil" (click)="populateDT(rcvFormDT)"
+                    styleClass="p-button-rounded p-button-primary">
+                  </p-button>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'delete'">
+                  <p-button icon="pi pi-trash" (click)="deleteRcvForm(rcvFormDT,i)"
+                    styleClass="p-button-rounded p-button-danger"></p-button>
+                </ng-container>
+              <ng-container *ngSwitchDefault>
+                <span #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
+                  {{ rcvFormDT[col.field] ? rcvFormDT[col.field] : 'N/A' }}
+                </span>
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+             No Records Found
+          </td>
+        </tr>
+      </ng-template>
+         </p-table>
+
+         <!-- Paginator with item per page -->
+         <div class="paginator">
+          <div class="itemsPerPage d-flex">
+              <label class="mr-3">Items per page: </label>
+              <p-selectButton
+              [options]="itemsPerPage"
+              [formControl]="__pageNumber"
+              optionLabel="label" optionValue="value"
+              (onOptionClick)="onselectItem($event)"
+              ></p-selectButton>
+            </div>
+
+          <div  class="paginatorContainer">
+            <ul>
+              <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                  *ngIf="(paginate.label | bnkrplc) == 'P'">
+                  <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                    keyboard_double_arrow_left</mat-icon>
+                </a>
+                <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                  *ngIf="(paginate.label | bnkrplc) == 'N'">
+                  <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                    keyboard_double_arrow_right</mat-icon>
+                </a>
+                <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                  *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                  {{paginate.label}}
+                </a>
+              </li>
+            </ul>
+
+
+          </div>
+
+        </div>
+        <!-- End -->
+         <!-- Meage Menu For Check box -->
+         <core-mega-menu-for-column [isOpenMegaMenu]="isOpenMegaMenu" [ColumnList]="columnMst"
+         [selectedClmns]="SelectedClms" (hideMegamenu)="isOpenMegaMenu = $event"
+         (getSelectedColumns)="getSelectedColumns($event)">
+         </core-mega-menu-for-column>
+         <!-- End -->
+         </div>
+         <table id="rcvForm" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+
+          <ng-container matColumnDef="sl_no">
+            <th mat-header-cell *matHeaderCellDef>S No.</th>
+            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="rec_datetime">
+            <th mat-header-cell *matHeaderCellDef>Recieved Date Time</th>
+            <td mat-cell *matCellDef="let element">{{element.rec_datetime | date:'dd/MM/YYYY h:mma'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="recv_from">
+            <th mat-header-cell *matHeaderCellDef>Receive From</th>
+            <td mat-cell *matCellDef="let element">{{element.recv_from ? element.recv_from : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="temp_tin_no">
+            <th mat-header-cell *matHeaderCellDef>Temporary TIN</th>
+            <td mat-cell *matCellDef="let element">{{element.temp_tin_no ? element.temp_tin_no : 'N/A'}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="bu_type">
+            <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+            <td mat-cell *matCellDef="let element">{{element.bu_type == 'D' ? 'B2C - Direct' : element.bu_type == 'I' ?
+              'B2C -Indirect' : 'B2B'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="sub_brk_cd">
+            <th mat-header-cell *matHeaderCellDef>Sub Broker Code</th>
+            <td mat-cell *matCellDef="let element">{{element.sub_brk_cd ? element.sub_brk_cd : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="trans_name">
+            <th mat-header-cell *matHeaderCellDef>Transaction Type</th>
+            <td mat-cell *matCellDef="let element">{{element.trans_name ? element.trans_name : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="remarks">
+            <th mat-header-cell *matHeaderCellDef>Remarks</th>
+            <td mat-cell *matCellDef="let element">{{element.remarks ? element.remarks : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="entry_date">
+            <th mat-header-cell *matHeaderCellDef>Entry Date</th>
+            <td mat-cell *matCellDef="let element">{{element.entry_date ? (element.entry_date | date:'dd-MM-YYYY') : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="branch_name">
+            <th mat-header-cell *matHeaderCellDef>Branch</th>
+            <td mat-cell *matCellDef="let element">{{element.branch_name ? element.branch_name : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="rm_name">
+            <th mat-header-cell *matHeaderCellDef>RM Name</th>
+            <td mat-cell *matCellDef="let element">{{element.rm_name ? element.rm_name : 'N/A'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="investor_name">
+            <th mat-header-cell *matHeaderCellDef>First Holder Name</th>
+            <td mat-cell *matCellDef="let element">{{element.investor_name ? element.investor_name : 'N/A'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="investor_code">
+            <th mat-header-cell *matHeaderCellDef>First Holder Code</th>
+            <td mat-cell *matCellDef="let element">{{element.investor_code ? element.investor_code : 'N/A'}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="emp_name">
+            <th mat-header-cell *matHeaderCellDef>Employee</th>
+            <td mat-cell *matCellDef="let element">{{element.emp_name ? element.emp_name : 'N/A'}}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="scheme_name">
+            <th mat-header-cell *matHeaderCellDef>Scheme</th>
+            <td mat-cell *matCellDef="let element">{{element.scheme_name ? element.scheme_name : 'N/A'}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
+          <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No form receivable history
+              found</td>
+          </tr>
+        </table>
+     </div>
   </mat-dialog-content>
 </div>

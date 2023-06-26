@@ -480,8 +480,13 @@ label.inputWraper span.p-viewer i {
   width: 100%;
   /* background: rgb(251, 251, 251); */
   /* background: linear-gradient(180deg, rgba(251, 251, 251, 1) 0%, rgba(228, 228, 228, 1) 100%); */
-  background: rgb(236 238 240);/* Suman Mitra change this on 28/01/2023*/
-  border-bottom: #fff solid 1px;
+  /* Suman Mitra change this on 28/01/2023*/
+    /* background: rgb(236 238 240);
+    border-bottom: #fff solid 1px; */
+    /* End */
+    background: rgb(255 255 255);
+    border-bottom: #d5d5d5 solid 1px;
+
 }
 
 .topSec_2 {
@@ -656,10 +661,10 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .topRightSec ul li {
-  font-size: 22px;
-  color: #444444;
-  padding: 0 16px;
-  float: left;
+     /* font-size: 22px; */
+    /* color: #444444; */
+    padding: 0px 10px;
+    float: left;
 }
 
 .topRightSec ul li a {
@@ -1030,7 +1035,7 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 
 .mainContainerSec {
   flex: 1 0 auto;
-  padding-top: 100px;
+  /* padding-top: 100px; */
 }
 
 .mainContainerSecNoMenu {

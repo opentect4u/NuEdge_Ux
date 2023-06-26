@@ -1,8 +1,5 @@
-<ol class="breadcrumb">
+<ol class="breadcrumb topSec">
   <li *ngFor="let breadcrumb of breadcrumbs" (click)="getDtls(breadcrumb)">
-    <!-- <span [routerLink]="breadcrumb.url" routerLinkActive="router-link-active">
-      {{ breadcrumb.label }}
-    </span> -->
     <span [routerLink]="breadcrumb.url" [queryParams]="breadcrumb.queryParams" routerLinkActive="router-link-active">
       {{ breadcrumb.label }}
     </span>

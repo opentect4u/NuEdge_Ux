@@ -30,7 +30,9 @@ export class MegaMenuForColumnComponent implements OnInit,AfterContentChecked {
       this.getSelectedColumns.emit(res.filter((x: any) => x.isChecked));
     })
     this.clmFrm.controls['is_all'].valueChanges.subscribe(res =>{
-            this.clmItems.controls.forEach(el =>{el.get('isChecked').setValue(res,{emitEvent:false});})
+            this.clmItems.controls.forEach(el =>{el.get('isChecked').setValue(res,{emitEvent:false})});
+           this.getSelectedColumns.emit(this.clmItems.value.filter((x: any) => x.isChecked));
+
     })
   }
   ngAfterContentChecked(): void {
@@ -40,6 +42,8 @@ export class MegaMenuForColumnComponent implements OnInit,AfterContentChecked {
     return this.clmFrm.controls.clmItems as FormArray;
   }
   addcheckColumn(selectedColumns){
+    console.log(selectedColumns);
+
     this.ColumnList.forEach((el) =>{
       this.clmItems.push(this.setClmCtrl(
         selectedColumns.includes(el.field),

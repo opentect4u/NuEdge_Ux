@@ -29,6 +29,7 @@ import { rntClmns } from 'src/app/__Utility/Master/rntClmns';
 import { sort } from 'src/app/__Model/sort';
 import { LazyLoadEvent } from 'primeng/api';
 import { environment } from 'src/environments/environment';
+import itemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
 
 @Component({
   selector: 'Rnt-rntRpt',
@@ -36,6 +37,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./rntRpt.component.css'],
 })
 export class RntrptComponent implements OnInit {
+  itemsPerPage=itemsPerPage;
   url = environment.commonURL + 'rnt-logo/';
   sort = new sort();
   isOpenMegaMenu: boolean = false;
@@ -120,8 +122,8 @@ export class RntrptComponent implements OnInit {
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.id);
     this.getRntMst();
   }
   getPaginate(__paginate) {

@@ -5,6 +5,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AckentryComponent } from './ackEntry.component';
 import { AckrptComponent } from './ackRPT/ackRPT.component';
 import { ManualentrforackfinComponent } from './manualEntrForAckFin/manualEntrforAckFin.component';
+import { TabModule } from 'src/app/__Core/tab/tab.module';
 const routes: Routes = [
   {
     path: '',
@@ -18,7 +19,7 @@ const routes: Routes = [
     AckrptComponent,
     AckentryComponent,
   ],
-  imports: [CommonModule, RouterModule.forChild(routes), SharedModule],
+  imports: [CommonModule, RouterModule.forChild(routes), SharedModule,TabModule],
   providers: [],
 })
 export class AckentryModule {}

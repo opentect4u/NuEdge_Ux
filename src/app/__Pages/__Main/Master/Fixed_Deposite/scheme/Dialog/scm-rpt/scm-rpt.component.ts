@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, ElementRef, Inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
@@ -12,6 +12,11 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { ScmCrudComponent } from '../scm-crud/scm-crud.component';
+import { column } from 'src/app/__Model/tblClmns';
+import { SchemeClmns } from 'src/app/__Utility/Master/FixedDepositClmn';
+import { sort } from 'src/app/__Model/sort';
+import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 
 @Component({
   selector: 'app-scm-rpt',
@@ -21,7 +26,6 @@ import { ScmCrudComponent } from '../scm-crud/scm-crud.component';
 export class ScmRptComponent implements OnInit {
   @ViewChild('prdName') __prdName: ElementRef;
   __isScmVisisble: boolean = false;
-  @ViewChildren("insTypeChecked") private __insTypeChecked: QueryList<ElementRef>;
   __settings_compType = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type');
   __settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Companies');
   __prdSearchForm = new FormGroup({
@@ -29,8 +33,14 @@ export class ScmRptComponent implements OnInit {
     company_id: new FormControl([]),
     comp_type_id: new FormControl([])
   });
-  __exportedClmns: string[] = ['sl_no','comp_type','comp_full_name','comp_short_name','scheme_name'];
-  __columns: string[] = ['edit','delete','sl_no','comp_type','comp_full_name','comp_short_name','scheme_name']
+  // __exportedClmns: string[] = ['sl_no','comp_type','comp_full_name','comp_short_name','scheme_name'];
+  // __columns: string[] = ['edit','delete','sl_no','comp_type','comp_full_name','comp_short_name','scheme_name']
+
+  __exportedClmns: string[] =  SchemeClmns.Column.filter(res => (res.field!='edit' && res.field!='delete')).map(item => {return item['field']});
+  __columns: column[] = SchemeClmns.Column;
+  sort =new sort();
+  itemsPerPage = ItemsPerPage;
+
   __isVisible : boolean = true;
   __selectScmMst = new MatTableDataSource<any>([]);
   __exportScmMst = new MatTableDataSource<any>([])
@@ -53,30 +63,18 @@ export class ScmRptComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getcompanyTypeMst();
-    setTimeout(()=>{
+    // setTimeout(()=>{
       this.getScmMst();
-    },500)
+    // },500)
   }
   getcompanyTypeMst(){
    this.__dbIntr.api_call(0,'/fd/companyType',null).pipe(pluck("data")).subscribe((res) =>{
     this.__cmpTypeMst = res;
    })
   }
-  getcompanyMst(res: string | null = ''){
+  getcompanyMst(){
     this.__dbIntr.api_call(0,'/fd/company',null).pipe(pluck("data")).subscribe((res: fdComp[]) =>{
       this.__companyMst = res;
-      if(this.data.company_id){
-      //  this.__prdSearchForm.patchValue({
-      //   company_id:this.__companyMst.filter((x: any) => x.id == Number(this.data.company_id)).map((x: insComp) =>
-      //   ({
-      //     id:x.id,
-      //     comp_short_name:x.comp_short_name
-      //   })
-      //   )
-      //  });
-       console.log( this.__prdSearchForm.value.company_id);
-
-      }
     })
   }
   ngAfterViewInit(){
@@ -124,15 +122,15 @@ export class ScmRptComponent implements OnInit {
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
-  getScmMst(column_name: string | null = '', sort_by: string | null = 'asc'){
+  getScmMst(){
     const __fb = new FormData();
     console.log(JSON.stringify(this.__prdSearchForm.value.company_id));
     __fb.append('scheme_name',global.getActualVal(this.__prdSearchForm.value.scheme_name));
     __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id));
     __fb.append('comp_type_id',JSON.stringify(this.__prdSearchForm.value.comp_type_id));
     __fb.append('paginate', this.__pageNumber.value);
-    __fb.append('column_name', column_name);
-    __fb.append('sort_by', sort_by);
+    __fb.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __fb.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
      this.__dbIntr.api_call(1,'/fd/schemeDetailSearch',__fb).pipe(pluck("data")).subscribe((res: any) =>{
         this.__selectScmMst = new MatTableDataSource(res.data);
         this.__paginate = res.links;
@@ -147,50 +145,39 @@ export class ScmRptComponent implements OnInit {
     });
   }
   searchProduct(){
-    this.getScmMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
+    this.getScmMst();
   }
   exportPdf(){
 
   }
-  sortData(__ev){
-    this.__sortColumnsAscOrDsc =__ev;
-    this.getScmMst(__ev.active,__ev.direction);
-  }
   delete(__el:fdScm,index: number){
-    // const dialogConfig = new MatDialogConfig();
-    // dialogConfig.autoFocus = false;
-    // dialogConfig.role = "alertdialog";
-    // dialogConfig.data = {
-    //   flag: 'S-FD',
-    //   id: __el.id,
-    //   title: 'Delete '  + __el.scheme_name,
-    //   api_name:'/productDelete'
-    // };
-    // const dialogref = this.__dialog.open(
-    //   DeletemstComponent,
-    //   dialogConfig
-    // );
-    // dialogref.afterClosed().subscribe((dt) => {
-    //   if(dt){
-    //     if(dt.suc == 1){
-    //       this.__selectScmMst.data.splice(index,1);
-    //       this.__selectScmMst._updateChangeSubscription();
-    //       this.__exportScmMst.data.splice(this.__exportScmMst.data.findIndex((x: any) => x.id == __el.id),1);
-    //       this.__exportScmMst._updateChangeSubscription();
-    //     }
-    //   }
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'S-FD',
+      id: __el.id,
+      title: 'Delete '  + __el.scheme_name,
+      api_name:'/fd/schemeDelete'
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.__selectScmMst.data.splice(index,1);
+          this.__selectScmMst._updateChangeSubscription();
+          this.__exportScmMst.data.splice(this.__exportScmMst.data.findIndex((x: any) => x.id == __el.id),1);
+          this.__exportScmMst._updateChangeSubscription();
+        }
+      }
 
-    // })
+    })
   }
   populateDT(__el: fdScm){
    this.openDialog(__el,__el.id)
-  }
-  getval(__paginate){
-     this.__pageNumber.setValue(__paginate.toString());
-    this.getScmMst(
-      this.__sortColumnsAscOrDsc.active,
-      this.__sortColumnsAscOrDsc.direction
-    );
   }
   getPaginate(__paginate){
     if (__paginate.url) {
@@ -200,9 +187,9 @@ export class ScmRptComponent implements OnInit {
             ('&paginate=' + this.__pageNumber.value) +
             ('&scheme_name=' + global.getActualVal(this.__prdSearchForm.value.scheme_name)) +
             ('&comp_type_id=' +  JSON.stringify(this.__prdSearchForm.value.comp_type_id)) +
-            ('&company_id=' +  JSON.stringify(this.__prdSearchForm.value.company_id)) +
-            ('&sort_by=' + this.__sortColumnsAscOrDsc.direction) +
-            ('&column_name=' + this.__sortColumnsAscOrDsc.active)
+            ('&company_id=' +  JSON.stringify(this.__prdSearchForm.value.company_id))
+            +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -295,8 +282,6 @@ export class ScmRptComponent implements OnInit {
 
     outsideClick(__ev){
       if(__ev){
-        console.log(__ev);
-
         this.searchResultVisibility('none');
       }
     }
@@ -315,5 +300,15 @@ export class ScmRptComponent implements OnInit {
        this.getItems(null,'P');
        this.searchProduct();
     }
-
+    customSort(ev){
+      this.sort.field =ev.sortField;
+      this.sort.order =ev.sortOrder;
+      if(ev.sortField){
+        this.getScmMst();
+      }
+    }
+    onselectItem(ev){
+      this.__pageNumber.setValue(ev.option.value);
+      this.getScmMst();
+    }
 }

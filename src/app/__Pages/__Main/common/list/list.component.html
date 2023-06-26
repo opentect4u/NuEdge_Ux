@@ -1,15 +1,16 @@
 <ul [ngClass]="__classUL">
   <li *ngFor="let items of __items" [ngClass]="{'thumbnailLi' : items.flag == 'P','searchBox':items.flag == 'S'}">
-    <a *ngIf="items.flag == 'N'" (click)="getItems(items)"><i [class]="items.icon" aria-hidden="true"></i></a>
+    <!-- <a *ngIf="items.flag == 'N'" (click)="getItems(items)">
+      <mat-icon class="material-icons-outlined"> {{items.icon}}</mat-icon>
+    </a> -->
+    <button mat-icon-button color="primary" *ngIf="items.flag == 'N'" (click)="getItems(items)">
+      <mat-icon class="material-icons-outlined"> {{items.icon}}</mat-icon>
+    </button>
     <a *ngIf="items.flag == 'P'" class="dropbtn loginThumb" (click)="openProfileMenu()">NC</a>
     <div id="myDropdown" class="dropdown-content" #profileDRP *ngIf="items.flag == 'P'">
       <a><i class="fa fa-user-o" aria-hidden="true"></i> My Profile</a>
       <a><i class="fa fa-unlock-alt" aria-hidden="true"></i> Change Password</a>
       <a [routerLink]="['/']"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
     </div>
-    <!-- <div class="serachBoxTop" #searchInput *ngIf="items.flag == 'S'">
-      <label class="field"><input type="search" value=""></label><label class="button"><input type="submit"
-          value="Search"></label>
-    </div> -->
   </li>
 </ul>

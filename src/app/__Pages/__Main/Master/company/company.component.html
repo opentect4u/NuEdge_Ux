@@ -2,14 +2,15 @@
      *  all tabs and child component are renderd here
      Note:  we used Angular materia tab (v12) (link: https://v12.material.angular.io/components/tabs/overview)
  -->
-      <div class="row mt-5">
-        <div class="col-sm-12">
-          <p-card>
+      <div class="row flexSec">
+        <div class="col-sm-12 mb-3">
 
           <!-- Make the Tab Section Common -->
           <core-tab [Tab]="TabMenu"
           (GetTabDtls)="TabDetails($event)"></core-tab>
-          <div class="container_fluid mb-2 w-100">
+          <p-card styleClass="rounded-bottom">
+
+          <!-- <div class="container_fluid mb-2 w-100"> -->
           <!-- Content Of The Tab  -->
           <ng-container [ngSwitch]="true">
             <!-- Profile Section -->
@@ -125,7 +126,7 @@
 
          </ng-container>
          <!-- End -->
-         </div>
+         <!-- </div> -->
         </p-card>
         </div>
       </div>

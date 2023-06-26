@@ -10,29 +10,30 @@ import {
 import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
-import { plan } from 'src/app/__Model/plan';
-import { category } from 'src/app/__Model/__category';
-import { responseDT } from 'src/app/__Model/__responseDT';
-import { trnsType } from 'src/app/__Model/__transTypeMst';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { SiptypemodificationComponent } from '../sipTypeModification/sipTypeModification.component';
-
+import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
+import { responseDT } from 'src/app/__Model/__responseDT';
+import { column } from 'src/app/__Model/tblClmns';
+import { sipTypeClmns } from 'src/app/__Utility/Master/trans';
 @Component({
   selector: 'sipTypeRpt-component',
   templateUrl: './sipTypeRpt.component.html',
   styleUrls: ['./sipTypeRpt.component.css'],
 })
 export class SiptyperptComponent implements OnInit {
-  __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
+  itemsPerPage=ItemsPerPage;
+  sort=new sort();
   __trnsType = new FormGroup({
     sip_type_name: new FormControl(''),
   });
   __export = new MatTableDataSource<any>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit', 'sl_no', 'sip_type_name'];
+  __columns: column[] = sipTypeClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'sip_type_name'];
   __paginate: any = [];
   __selecttrnsType = new MatTableDataSource<any>([]);
@@ -47,48 +48,28 @@ export class SiptyperptComponent implements OnInit {
     private __utility: UtiliService
   ) {}
 
-  ngOnInit() {
-    this.getSIPTypeMst();
-  }
+  ngOnInit() {}
 
-  getSIPTypeMst(
-    column_name: string | null = '',
-    sort_by: string | null | '' = 'asc'
-  ) {
+  getSIPTypeMst() {
     const __SIPTypeSearch = new FormData();
-    __SIPTypeSearch.append(
-      'sip_type_name',
-      this.__trnsType.value.sip_type_name
-    );
+    __SIPTypeSearch.append('sip_type_name',this.__trnsType.value.sip_type_name);
     __SIPTypeSearch.append('paginate', this.__pageNumber.value);
-    __SIPTypeSearch.append('column_name', column_name);
-    __SIPTypeSearch.append('sort_by', sort_by);
-    // __SIPTypeSearch.append('product_id',this.data.product_id);
+    __SIPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __SIPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
     this.__dbIntr
       .api_call(1, '/sipTypeSearch', __SIPTypeSearch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
         this.__paginate = res.links;
         this.setPaginator(res.data);
-        this.tableExport(column_name, sort_by);
+        this.tableExport(__SIPTypeSearch);
       });
   }
 
   tableExport(
-    column_name: string | null = '',
-    sort_by: string | null | '' = 'asc'
+    __SIPTypeExport
   ) {
-    const __SIPTypeExport = new FormData();
-    // __SIPTypeExport.append('product_id',this.data.product_id);
-    __SIPTypeExport.append('paginate', this.__pageNumber.value);
-    __SIPTypeExport.append('column_name', column_name);
-    __SIPTypeExport.append('sort_by', sort_by);
-    __SIPTypeExport.append(
-      'sip_type_name',
-      this.__trnsType.value.sip_type_name
-        ? this.__trnsType.value.sip_type_name
-        : ''
-    );
+    __SIPTypeExport.delete('paginate');
     this.__dbIntr
       .api_call(1, '/sipTypeExport', __SIPTypeExport)
       .pipe(map((x: any) => x.data))
@@ -108,7 +89,6 @@ export class SiptyperptComponent implements OnInit {
 
   private setPaginator(__res) {
     this.__selecttrnsType = new MatTableDataSource(__res);
-    // this.__selecttrnsType.paginator = this.paginator;
   }
   getPaginate(__paginate) {
     if (__paginate.url) {
@@ -117,8 +97,8 @@ export class SiptyperptComponent implements OnInit {
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
             ('&sip_type_name=' + this.__trnsType.value.sip_type_name) +
-            ('&column_name=' + this.__sortColumnsAscOrDsc.active) +
-            ('&sort_by=' + this.__sortColumnsAscOrDsc.direction)
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -127,14 +107,7 @@ export class SiptyperptComponent implements OnInit {
         });
     }
   }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    // this.getTrnsTypeMst(this.__pageNumber.value);
-    this.submit();
-  }
-
   populateDT(__items: any) {
-    // this.__utility.navigatewithqueryparams('/main/master/catModify',{queryParams:{id:btoa(__items.id.toString())}})
     this.openDialog(__items.id, __items);
   }
   openDialog(id, __items) {
@@ -212,10 +185,7 @@ export class SiptyperptComponent implements OnInit {
     );
   }
   submit() {
-    this.getSIPTypeMst(
-      this.__sortColumnsAscOrDsc.active,
-      this.__sortColumnsAscOrDsc.direction ? this.__sortColumnsAscOrDsc.direction : 'asc'
-    );
+    this.getSIPTypeMst();
   }
   private updateRow(row_obj: any) {
     this.__selecttrnsType.data = this.__selecttrnsType.data.filter(
@@ -238,10 +208,6 @@ export class SiptyperptComponent implements OnInit {
     this.__export.data.unshift(row_obj);
     this.__export._updateChangeSubscription();
     this.__selecttrnsType._updateChangeSubscription();
-  }
-  sortData(sort) {
-    this.__sortColumnsAscOrDsc = sort;
-    this.submit();
   }
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
@@ -268,5 +234,14 @@ export class SiptyperptComponent implements OnInit {
         }
 
       })
+  }
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    this.submit();
+  }
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.value);
+    this.submit();
   }
 }

@@ -13,19 +13,28 @@ import { AckEntryComponent } from '../ack-entry/ack-entry.component';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
-
+import { column } from 'src/app/__Model/tblClmns';
+import itemsPerPage from '../../../../../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
   selector: 'app-ack-entry-rpt',
   templateUrl: './ack-entry-rpt.component.html',
   styleUrls: ['./ack-entry-rpt.component.css']
 })
 export class AckEntryRptComponent implements OnInit {
+  itemsPerPage:selectBtn[] = itemsPerPage;
+  sort = new sort();
   __isVisible: boolean = true;
   __ackRpt = new MatTableDataSource<any>([]);
   __paginate: any = [];
   __pageNumber = new FormControl(10);
   __getAckFormData: any;
-  __columns: string[] = [];
+  __columns: column[] = [];
   __sortAscOrDsc = {active: '',direction:'asc'};
 
   constructor(
@@ -62,43 +71,20 @@ export class AckEntryRptComponent implements OnInit {
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
-  getManualRpt(event){
-    this.__getAckFormData = event;
+  getManualRpt(kycFormDt){
+    this.__getAckFormData = kycFormDt;
     const __kycAck = new FormData();
-      __kycAck.append('paginate',this.__pageNumber.value);
-      // __kycAck.append('option', event.options);
-      __kycAck.append('column_name',this.__sortAscOrDsc.active);
-      __kycAck.append('sort_by',this.__sortAscOrDsc.direction);
-        __kycAck.append('from_date',global.getActualVal(event.frm_dt));
-        __kycAck.append('to_date',global.getActualVal(event.to_dt));
-        __kycAck.append('login_at',global.getActualVal(event.kyc_login_at) ? JSON.stringify(event.kyc_login_at) : '');
-        __kycAck.append('login_type',global.getActualVal(event.kyc_login));
-      __kycAck.append(
-        'client_code',
-        event.client_code ? event.client_code : ''
-      );
-      __kycAck.append(
-        'tin_no',
-        event.tin_no ? event.tin_no : ''
-      );
-      __kycAck.append(
-        'euin_no',
-        event.euin_no ? event.tin_no : ''
-      );
-      __kycAck.append(
-        'sub_brk_cd',
-        event.sub_brk_cd ? event.sub_brk_cd : ''
-      );
-      __kycAck.append(
-        'bu_type',
-        event.bu_type.length > 0
-          ? JSON.stringify(event.bu_type)
-          : ''
-      );
-      __kycAck.append(
-        'branch',global.getActualVal(event.brn_cd));
-
-
+    __kycAck.append('paginate',this.__pageNumber.value);
+    __kycAck.append('option', kycFormDt.options);
+    __kycAck.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __kycAck.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    __kycAck.append('login_status_id',JSON.stringify(kycFormDt.ack_logged_status.filter(item => item.isChecked).map(res => {return res['id']})));
+    __kycAck.append('from_date',global.getActualVal(kycFormDt.frm_dt));
+    __kycAck.append('to_date',global.getActualVal(kycFormDt.to_dt));
+    __kycAck.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
+    __kycAck.append('login_type',global.getActualVal(kycFormDt.kyc_login));
+    __kycAck.append('client_code',kycFormDt.client_code ? kycFormDt.client_code : '');
+    __kycAck.append('tin_no',kycFormDt.tin_no ? kycFormDt.tin_no : '');
       this.__dbIntr.api_call(1,'/kycAckDetailSearch',__kycAck).pipe(pluck("data")).subscribe((res: any) =>{
           this.__ackRpt = new MatTableDataSource(res.data);
           this.__paginate = res.links;
@@ -106,7 +92,8 @@ export class AckEntryRptComponent implements OnInit {
 
   }
   setColumns(event){
-    this.__columns = kycClm.summary.filter((x: any) => !['mu_frm_view'].includes(x));
+    // this.__columns = kycClm.summary.filter((x: any) => !['mu_frm_view'].includes(x));
+    this.__columns = kycClm.Summary_copy.filter((x: any) => !['mu_frm_view'].includes(x.field));
   }
   populateDT(element,mode){
     const dialogConfig = new MatDialogConfig();
@@ -171,45 +158,14 @@ export class AckEntryRptComponent implements OnInit {
   const __kyc = new FormData();
   __kyc.append('paginate',this.__pageNumber.value);
   __kyc.append('option', kycFormDt.options);
-  __kyc.append('column_name',this.__sortAscOrDsc.active);
-  __kyc.append('sort_by',this.__sortAscOrDsc.direction);
-  if( kycFormDt.options != '3'){
-    __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
-    __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
-    __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
-    __kyc.append('login_type',global.getActualVal(kycFormDt.kyc_login));
-  __kyc.append(
-    'client_code',
-    kycFormDt.client_code ? kycFormDt.client_code : ''
-  );
-  __kyc.append(
-    'tin_no',
-    kycFormDt.tin_no ? kycFormDt.tin_no : ''
-  );
-  __kyc.append(
-    'euin_no',
-    kycFormDt.euin_no ? kycFormDt.tin_no : ''
-  );
-  __kyc.append(
-    'sub_brk_cd',
-    kycFormDt.sub_brk_cd ? kycFormDt.sub_brk_cd : ''
-  );
-  __kyc.append(
-    'bu_type',
-    kycFormDt.bu_type.length > 0
-      ? JSON.stringify(kycFormDt.bu_type)
-      : ''
-  );
-  __kyc.append(
-    'branch',global.getActualVal(kycFormDt.brn_cd));
-}
-else{
-  __kyc.append('login_status',kycFormDt.login_status);
-  __kyc.append('date_status',kycFormDt.date_status);
-  __kyc.append('start_date',kycFormDt.start_date);
-  __kyc.append('end_date',kycFormDt.end_date);
-}
-
+  __kyc.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+  __kyc.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+  __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
+  __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
+  __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
+  __kyc.append('login_type',global.getActualVal(kycFormDt.kyc_login));
+  __kyc.append('client_code',kycFormDt.client_code ? kycFormDt.client_code : '');
+  __kyc.append('tin_no',kycFormDt.tin_no ? kycFormDt.tin_no : '');
   this.__dbIntr.api_call(1,'/kycAckDetailSearch',__kyc).pipe(pluck("data")).subscribe((res: any) =>{
       this.__ackRpt = new MatTableDataSource(res.data);
       this.__paginate = res.links;
@@ -222,27 +178,16 @@ getPaginate(__paginate){
         __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
         + ('&option='+  this.__getAckFormData.options)
-        + ('&sort_by=' + this.__sortAscOrDsc.direction)
-        + ('&column_name=' + this.__sortAscOrDsc.active)
-        +  (this.__getAckFormData.options != '3'
-        ?  (('&client_code=' + (this.__getAckFormData.client_code ? this.__getAckFormData.client_code : ''))
-        + ( '&sub_brk_cd=' + (this.__getAckFormData.sub_brk_cd ? this.__getAckFormData.sub_brk_cd : ''))
-        + ('&bu_type=' + (this.__getAckFormData.bu_type.length > 0 ? JSON.stringify(this.__getAckFormData.bu_type): ''))
+        +  ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+        +  ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
+        + (('&client_code=' + (this.__getAckFormData.client_code ? this.__getAckFormData.client_code : ''))
         + ('&login_at=' + this.__getAckFormData.kyc_login_at)
         + ('&login_type=' + this.__getAckFormData.kyc_login)
         +('&from_date='+global.getActualVal(this.__getAckFormData.frm_dt))
         +('&to_date='+global.getActualVal(this.__getAckFormData.to_dt))
         +('&tin_no='+global.getActualVal(this.__getAckFormData.tin_no))
-        +('&euin_no='+global.getActualVal(this.__getAckFormData.euin_no))
-        +('&branch='+global.getActualVal(this.__getAckFormData.brn_cd)))
-        : (
-        + ('&login_status=' + this.__getAckFormData.login_status)
-        + ('&date_status=' + this.__getAckFormData.date_status)
-        + ('&start_date=' + this.__getAckFormData.start_date)
-        + ('&end_date=' + this.__getAckFormData.end_date)
+        +('&login_status_id='+JSON.stringify(this.__getAckFormData.ack_logged_status.filter(item => item.isChecked).map(res => {return res['id']})))
         )
-        )
-
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -264,4 +209,16 @@ getPaginate(__paginate){
       return true;
     });
   }
+  customSort(ev){
+    this.sort.order = ev.sortOrder;
+    this.sort.field = ev.sortField;
+    if(ev.sortField){
+     this.getManualRpt(this.__getAckFormData);
+    }
+
+  }
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.value);
+    this.showItemPerpage(this.__getAckFormData)
+ }
 }

@@ -9,6 +9,10 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { ComptypeCrudComponent } from '../comptype-crud/comptype-crud.component';
+import { companytypeClmns } from 'src/app/__Utility/Master/FixedDepositClmn';
+import { column } from 'src/app/__Model/tblClmns';
+import { sort } from 'src/app/__Model/sort';
+import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
 
 @Component({
   selector: 'app-rpt',
@@ -16,19 +20,19 @@ import { ComptypeCrudComponent } from '../comptype-crud/comptype-crud.component'
   styleUrls: ['./rpt.component.css']
 })
 export class RptComponent implements OnInit {
+  itemsPerPage = ItemsPerPage;
   __paginate: any = [];
   __cmp_settings = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type');
-
   __searchForm = new FormGroup({
       company_type:new FormControl([])
   })
-  __sortAscOrDsc: any = { active: '', direction: 'asc' };
   __pageNumber = new FormControl(10);
   __cmpTypeMst: any = [];
   __CmpType = new MatTableDataSource<any>([]);
   __CmpTypeExport = new MatTableDataSource<any>([]);
-  __columns = ['sl_no','comp_type','edit'];
-  __exportedClmns = ['sl_no','comp_type'];
+  __columns:column[] = companytypeClmns.Column;
+  __exportedClmns:string[] = companytypeClmns.Column.filter(res => res.field!='edit').map(item => {return item['field']});
+  sort= new sort();
    __isVisible: boolean = true;
   constructor(
     private overlay: Overlay,
@@ -41,10 +45,7 @@ export class RptComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getCompanyTypeMst(
-      this.__sortAscOrDsc.active,
-      this.__sortAscOrDsc.direction
-    );
+    this.getCompanyTypeMst();
     this.getCompanyTypeMasterForDropdown();
   }
 
@@ -54,16 +55,14 @@ export class RptComponent implements OnInit {
     })
   }
 
-  getCompanyTypeMst(
-    column_name: string | null = null,
-    sort_by: string | null = null
-  ){
-    const __fd = new FormData();
-    __fd.append('comp_type',this.__searchForm.value.comapny_type ? JSON.stringify(this.__searchForm.value.comapny_type) : "[]");
-    __fd.append('paginate',this.__pageNumber.value);
-    __fd.append('sort_by',sort_by);
-    __fd.append('column_name',column_name);
+  getCompanyTypeMst(){
 
+    const __fd = new FormData();
+    __fd.append('comp_type',
+    this.__searchForm.value.company_type ? JSON.stringify(this.__searchForm.value.company_type) : "[]");
+    __fd.append('paginate',this.__pageNumber.value);
+    __fd.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __fd.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
     this.__dbIntr.api_call(1,'/fd/companyTypeDetailSearch',__fd).pipe(pluck("data")).subscribe((res: any) =>{
       this.__paginate = res.links;
       this.setPaginator(res.data);
@@ -104,7 +103,6 @@ export class RptComponent implements OnInit {
   }
   populateDT(__el){
     this.openDialog(__el, __el.id);
-
   }
 
   openDialog(cmpType: any, __id: number) {
@@ -166,23 +164,28 @@ export class RptComponent implements OnInit {
       }
       return true;
     });
+    this.__cmpTypeMst = this.__cmpTypeMst.filter((value: any,key) =>{
+           if(value.id == row_obj.id){
+            value.id = row_obj.id;
+            value.comp_type = row_obj.comp_type;
+           }
+      return true;
+
+    })
   }
   getval(__paginate) {
      this.__pageNumber.setValue(__paginate.toString());
-    this.getCompanyTypeMst(
-      this.__sortAscOrDsc.active,
-      this.__sortAscOrDsc.direction
-    );
+    this.getCompanyTypeMst();
   }
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber.value) +
-            ('&com_type=' + this.__searchForm.value.company_type ? JSON.stringify(this.__searchForm.value.company_type) : "[]") +
-            ('&column_name=' + this.__sortAscOrDsc.active) +
-            ('&sort_by=' + this.__sortAscOrDsc.sort_by)
+             ('&paginate=' + this.__pageNumber.value)
+            +('&com_type=' + this.__searchForm.value.company_type ? JSON.stringify(this.__searchForm.value.company_type) : "[]") +
+            +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -191,30 +194,30 @@ export class RptComponent implements OnInit {
         });
     }
   }
-  exportPdf(){
 
+  exportPdf(){
+ //Export Function
   }
   searchCompanyType(){
-    this.getCompanyTypeMst(
-      this.__sortAscOrDsc.active,
-      this.__sortAscOrDsc.direction
-    );
-  }
-  sortData(sort) {
-    this.__sortAscOrDsc = sort;
-    this.getCompanyTypeMst(
-      sort.active,
-      sort.direction != '' ? sort.direction : 'asc'
-    );
+    this.getCompanyTypeMst();
   }
   refreshOrAdvanceFlt(){
      this.__searchForm.patchValue({
       company_type:[]
      });
-     this.__sortAscOrDsc = {active:'',direction:'asc'};
-     this.getCompanyTypeMst(
-      this.__sortAscOrDsc.active,
-      this.__sortAscOrDsc.direction
-    );
+    this.sort = new sort();
+    this.__pageNumber.setValue(10);
+     this.getCompanyTypeMst();
+  }
+  customSort(ev){
+    this.sort.field =ev.sortField;
+    this.sort.order =ev.sortOrder;
+    if(ev.sortField){
+      this.getCompanyTypeMst();
+    }
+  }
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.value);
+    this.getCompanyTypeMst();
   }
 }

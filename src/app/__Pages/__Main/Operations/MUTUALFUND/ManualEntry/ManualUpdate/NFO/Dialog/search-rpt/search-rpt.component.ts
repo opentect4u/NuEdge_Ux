@@ -4,9 +4,9 @@ import {
   OnInit,
   Inject,
   ElementRef,
+  ViewChild,
   QueryList,
   ViewChildren,
-  ViewChild,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -25,7 +25,6 @@ import {
   tap,
 } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
-
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
@@ -35,70 +34,108 @@ import { ManualUpdateEntryForMFComponent } from 'src/app/shared/manual-update-en
 import { client } from 'src/app/__Model/__clientMst';
 import { amc } from 'src/app/__Model/amc';
 import { responseDT } from 'src/app/__Model/__responseDT';
+import { scheme } from 'src/app/__Model/__schemeMst';
+import updateStatus from '../../../../../../../../../../assets/json/updateStatus.json';
+import { sort } from 'src/app/__Model/sort';
+import { environment } from 'src/environments/environment';
+import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { column } from 'src/app/__Model/tblClmns';
+import ItemsPerPage from '../../../../../../../../../../assets/json/itemsPerPage.json';
+import { MfackClmns } from 'src/app/__Utility/MFColumns/ack';
 @Component({
   selector: 'app-search-rpt',
   templateUrl: './search-rpt.component.html',
   styleUrls: ['./search-rpt.component.css'],
 })
 export class SearchRPTComponent implements OnInit {
-  @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
-  @ViewChildren('trnsTypeChecked')
-  private __trnsTypeChecked: QueryList<ElementRef>;
-  @ViewChildren('rntChecked') private __rntChecked: QueryList<ElementRef>;
+  itemsPerPage = ItemsPerPage;
+  __columns:column[] = []
+  sort = new sort();
+  transaction_id: number;
+  __ackForm = new FormGroup({
+    is_all: new FormControl(false),
+    is_all_status: new FormControl(false),
+    update_status_id: new FormArray([]),
+    tin_no: new FormControl(''),
+    client_code: new FormControl(''),
+    client_name: new FormControl(''),
+    date_range: new FormControl(''),
+    dt_type: new FormControl(''),
+    frm_dt: new FormControl(''),
+    to_dt: new FormControl(''),
+    rnt_id: new FormArray([]),
+    amc_id: new FormControl([],{updateOn:'blur'}),
+    brn_cd: new FormControl([]),
+    rm_id: new FormControl([]),
+    bu_type: new FormControl([]),
+    sub_brk_cd: new FormControl([]),
+    euin_no: new FormControl([]),
+    options: new FormControl('2'),
+    btnType: new FormControl('R'),
+    scheme_id:new FormControl([])
+})
+settingsforDropdown_foramc = this.__utility.settingsfroMultiselectDropdown('id','amc_name','Search AMC',1);
+settingsforDropdown_forscheme = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
+  // @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
+  // @ViewChildren('trnsTypeChecked')
+  // private __trnsTypeChecked: QueryList<ElementRef>;
+  // @ViewChildren('rntChecked') private __rntChecked: QueryList<ElementRef>;
 
-  @ViewChild('searchTin') __searchTin: ElementRef;
-  @ViewChild('clientCd') __clientCode: ElementRef;
-  @ViewChild('searchEUIN') __searchRlt: ElementRef;
-  @ViewChild('subBrkArn') __subBrkArn: ElementRef;
-  @ViewChild('searchAMC') __AmcSearch: ElementRef;
-
+  // @ViewChild('searchTin') __searchTin: ElementRef;
+  // @ViewChild('clientCd') __clientCode: ElementRef;
+  // @ViewChild('searchEUIN') __searchRlt: ElementRef;
+  // @ViewChild('subBrkArn') __subBrkArn: ElementRef;
+  // @ViewChild('searchAMC') __AmcSearch: ElementRef;
+  displayMode_forTemp_Tin:string;
+  displayMode_forClient:string;
   __isTinspinner: boolean = false;
   __isClientPending: boolean = false;
-  __isSubArnPending: boolean = false;
-  __isEuinPending: boolean = false;
-  __isAmcPending: boolean = false;
+  // __isSubArnPending: boolean = false;
+  // __isEuinPending: boolean = false;
+  // __isAmcPending: boolean = false;
 
   tinMst: any = [];
   __clientMst: client[] = [];
-  __subbrkArnMst: any = [];
-  __euinMst: any = [];
+  // __subbrkArnMst: any = [];
+  // __euinMst: any = [];
   amcMst: amc[] = [];
-
+  schemeMst:scheme[] = [];
   __transType: any = [];
-  __bu_type = buType;
-  __rnt: rnt[];
+  // __bu_type = buType;
+  // __rnt: rnt[];
 
   __paginate: any = [];
-  __pageNumber = new FormControl(10);
-  __ackForm = new FormGroup({
-    is_all_bu_type: new FormControl(false),
-    is_all_trns_type: new FormControl(false),
-    is_all_rnt: new FormControl(false),
-    start_date: new FormControl(dates.getTodayDate()),
-    end_date: new FormControl(dates.getTodayDate()),
-    sub_brk_cd: new FormControl(''),
-    tin_no: new FormControl(''),
-    trans_type: new FormArray([]),
-    client_code: new FormControl(''),
-    amc_name: new FormControl(''),
-    inv_type: new FormControl(''),
-    euin_no: new FormControl(''),
-    brn_cd: new FormControl(''),
-    bu_type: new FormArray([]),
-    rnt_name: new FormArray([]),
-  });
-  __columns: string[] = [
-    'edit',
-    'sl_no',
-    'temp_tin_no',
-    'rnt_name',
-    'bu_type',
-    'arn_no',
-    'euin_no',
-    'first_client_name',
-    'first_client_code',
-    'first_client_pan',
-  ];
+  __pageNumber = new FormControl('10');
+  // __ackForm = new FormGroup({
+  //   is_all_bu_type: new FormControl(false),
+  //   is_all_trns_type: new FormControl(false),
+  //   is_all_rnt: new FormControl(false),
+  //   start_date: new FormControl(dates.getTodayDate()),
+  //   end_date: new FormControl(dates.getTodayDate()),
+  //   sub_brk_cd: new FormControl(''),
+  //   tin_no: new FormControl(''),
+  //   trans_type: new FormArray([]),
+  //   client_code: new FormControl(''),
+  //   amc_name: new FormControl(''),
+  //   inv_type: new FormControl(''),
+  //   euin_no: new FormControl(''),
+  //   brn_cd: new FormControl(''),
+  //   bu_type: new FormArray([]),
+  //   rnt_name: new FormArray([]),
+  // });
+  // __columns: string[] = [
+  //   'edit',
+  //   'sl_no',
+  //   'temp_tin_no',
+  //   'rnt_name',
+  //   'bu_type',
+  //   'arn_no',
+  //   'euin_no',
+  //   'first_client_name',
+  //   'first_client_code',
+  //   'first_client_pan',
+  // ];
   __ackMst = new MatTableDataSource<any>([]);
   constructor(
     public dialogRef: MatDialogRef<SearchRPTComponent>,
@@ -106,29 +143,42 @@ export class SearchRPTComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog,
-    private overlay: Overlay
+    private overlay: Overlay,
+    private sanitizer: DomSanitizer
   ) {}
   __isVisible: boolean = true;
   ngOnInit() {
-    this.submitAck();
-    this.getRnt();
+  //   this.submitAck();
+    this.getRntMst();
     this.getTransactionType();
+    this.getupdateStatus();
+    this.getAmcMst();
   }
-  getRnt() {
-    this.__dbIntr
-      .api_call(0, '/rnt', null)
-      .pipe(pluck('data'))
-      .subscribe((res: rnt[]) => {
-        this.__rnt = res;
-      });
-  }
+  // getRnt() {
+  //   this.__dbIntr
+  //     .api_call(0, '/rnt', null)
+  //     .pipe(pluck('data'))
+  //     .subscribe((res: rnt[]) => {
+  //       this.__rnt = res;
+  //     });
+  // }
   getTransactionType() {
     this.__dbIntr
-      .api_call(0, '/showTrans', 'trans_type_id=' + this.data.trans_type_id)
+      .api_call(0, '/transction', ('product_id=' +this.data.product_id +'&trans_type_id=' + this.data.trans_type_id))
       .pipe(pluck('data'))
       .subscribe((res: any) => {
-        this.__transType = res;
+        this.__transType =res.map(({id,trns_name}) => ({
+          id,
+          tab_name:trns_name,
+          img_src:id == 1 ? '../../../../../assets/images/pip.png'
+          : (id == 2 ? '../../../../../assets/images/sip.png'
+          : '../../../../../assets/images/switch.png')}));
       });
+  }
+  TabDetails(ev){
+    this.transaction_id = ev.tabDtls.id;
+    this.submitAck();
+    this.setColumns(this.transaction_id,this.__ackForm.value.options)
   }
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
@@ -151,81 +201,148 @@ export class SearchRPTComponent implements OnInit {
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
-
+  get rnt_id():FormArray{
+    return this.__ackForm.get('rnt_id') as FormArray;
+   }
+   get update_status_id(): FormArray{
+    return this.__ackForm.get('update_status_id') as FormArray
+   }
+  getupdateStatus(){
+    updateStatus.forEach(el =>{
+    this.update_status_id.push(this.addUpdateStatusForm(el));
+    })
+  }
+  addUpdateStatusForm(loggedStatus){
+    return new FormGroup({
+      id:new FormControl(loggedStatus ? loggedStatus?.id : 0),
+      name:new FormControl(loggedStatus ? loggedStatus?.name : 0),
+      value:new FormControl(loggedStatus ? loggedStatus.value : ''),
+      isChecked:new FormControl(false),
+    })
+  }
+  getAmcMst(){
+    this.__dbIntr.api_call(0,'/amc',null).pipe(pluck("data")).subscribe((res: amc[]) =>{
+      this.amcMst = res;
+    })
+  }
   ngAfterViewInit() {
-    // AMC SEARCH
-    this.__ackForm.controls['amc_name'].valueChanges
-      .pipe(
-        tap(() => (this.__isAmcPending = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/amc', dt) : []
-        ),
-        map((x: responseDT) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.amcMst = value;
-          this.searchResultVisibilityForAMC('block');
-          this.__isAmcPending = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => {
-          this.__isAmcPending = false;
-        },
-      });
-    // End
+    this.__ackForm.controls['dt_type'].valueChanges.subscribe((res) => {
+      this.__ackForm.controls['date_range'].reset(
+         res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+       );
+       this.__ackForm.controls['frm_dt'].reset(
+         res && res != 'R' ? ((dates.calculateDT(res))) : ''
+       );
+       this.__ackForm.controls['to_dt'].reset(
+         res && res != 'R' ? dates.getTodayDate() : ''
+       );
 
-    // EUIN NUMBER SEARCH
-    this.__ackForm.controls['euin_no'].valueChanges
-      .pipe(
-        tap(() => (this.__isEuinPending = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/employee', dt) : []
-        ),
-        map((x: responseDT) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.__euinMst = value;
-          this.searchResultVisibility('block');
-          this.__isEuinPending = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => {
-          this.__isEuinPending = false;
-        },
-      });
-    // End
+       if (res && res != 'R') {
+         this.__ackForm.controls['date_range'].disable();
+       } else {
+         this.__ackForm.controls['date_range'].enable();
+       }
+     });
+       /** Change event occur when all rnt checkbox has been changed  */
+       this.__ackForm.controls['is_all'].valueChanges.subscribe(res =>{
+         this.rnt_id.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+       })
+       /** End */
 
-    /**change Event of sub Broker Arn Number */
-    this.__ackForm.controls['sub_brk_cd'].valueChanges
-      .pipe(
-        tap(() => (this.__isSubArnPending = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
-        ),
-        map((x: responseDT) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.__subbrkArnMst = value;
-          this.searchResultVisibilityForSubBrk('block');
-          this.__isSubArnPending = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => {
-          this.__isSubArnPending = false;
-        },
-      });
+       /** Change event inside the formArray */
+       this.rnt_id.valueChanges.subscribe(res =>{
+       this.__ackForm.controls['is_all'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+       })
+       /*** End */
 
-    /** Client Code Change */
-    this.__ackForm.controls['client_code'].valueChanges
+
+       /** Change event occur when all rnt checkbox has been changed  */
+       this.__ackForm.controls['is_all_status'].valueChanges.subscribe(res =>{
+         this.update_status_id.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+       })
+       /** End */
+
+       /** Change event inside the formArray */
+       this.update_status_id.valueChanges.subscribe(res =>{
+       this.__ackForm.controls['is_all_status'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+       })
+       /*** End */
+       this.__ackForm.controls['amc_id'].valueChanges.subscribe((res) => {
+        this.getAMCwiseScheme(res);
+     })
+  //   // AMC SEARCH
+  //   this.__ackForm.controls['amc_name'].valueChanges
+  //     .pipe(
+  //       tap(() => (this.__isAmcPending = true)),
+  //       debounceTime(200),
+  //       distinctUntilChanged(),
+  //       switchMap((dt) =>
+  //         dt?.length > 1 ? this.__dbIntr.searchItems('/amc', dt) : []
+  //       ),
+  //       map((x: responseDT) => x.data)
+  //     )
+  //     .subscribe({
+  //       next: (value) => {
+  //         this.amcMst = value;
+  //         this.searchResultVisibilityForAMC('block');
+  //         this.__isAmcPending = false;
+  //       },
+  //       complete: () => console.log(''),
+  //       error: (err) => {
+  //         this.__isAmcPending = false;
+  //       },
+  //     });
+  //   // End
+
+  //   // EUIN NUMBER SEARCH
+  //   this.__ackForm.controls['euin_no'].valueChanges
+  //     .pipe(
+  //       tap(() => (this.__isEuinPending = true)),
+  //       debounceTime(200),
+  //       distinctUntilChanged(),
+  //       switchMap((dt) =>
+  //         dt?.length > 1 ? this.__dbIntr.searchItems('/employee', dt) : []
+  //       ),
+  //       map((x: responseDT) => x.data)
+  //     )
+  //     .subscribe({
+  //       next: (value) => {
+  //         this.__euinMst = value;
+  //         this.searchResultVisibility('block');
+  //         this.__isEuinPending = false;
+  //       },
+  //       complete: () => console.log(''),
+  //       error: (err) => {
+  //         this.__isEuinPending = false;
+  //       },
+  //     });
+  //   // End
+
+  //   /**change Event of sub Broker Arn Number */
+  //   this.__ackForm.controls['sub_brk_cd'].valueChanges
+  //     .pipe(
+  //       tap(() => (this.__isSubArnPending = true)),
+  //       debounceTime(200),
+  //       distinctUntilChanged(),
+  //       switchMap((dt) =>
+  //         dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
+  //       ),
+  //       map((x: responseDT) => x.data)
+  //     )
+  //     .subscribe({
+  //       next: (value) => {
+  //         this.__subbrkArnMst = value;
+  //         this.searchResultVisibilityForSubBrk('block');
+  //         this.__isSubArnPending = false;
+  //       },
+  //       complete: () => console.log(''),
+  //       error: (err) => {
+  //         this.__isSubArnPending = false;
+  //       },
+  //     });
+
+  //   /** Client Code Change */
+    this.__ackForm.controls['client_name'].valueChanges
       .pipe(
         tap(() => (this.__isClientPending = true)),
         debounceTime(200),
@@ -247,9 +364,9 @@ export class SearchRPTComponent implements OnInit {
         },
       });
 
-    /** End */
+  //   /** End */
 
-    // Tin Number Search
+  //   // Tin Number Search
     this.__ackForm.controls['tin_no'].valueChanges
       .pipe(
         tap(() => (this.__isTinspinner = true)),
@@ -270,135 +387,77 @@ export class SearchRPTComponent implements OnInit {
         error: (err) => (this.__isTinspinner = false),
       });
 
-    this.__ackForm.controls['is_all_bu_type'].valueChanges.subscribe((res) => {
-      const bu_type: FormArray = this.__ackForm.get('bu_type') as FormArray;
-      bu_type.clear();
-      if (!res) {
-        this.uncheckAll_buType();
-      } else {
-        this.__bu_type.forEach((__el) => {
-          bu_type.push(new FormControl(__el.id));
-        });
-        this.checkAll_buType();
-      }
-    });
+  }
+  private getAMCwiseScheme(amc_ids){
+    this.__dbIntr.api_call(0,'/scheme','arr_amc_id='+JSON.stringify(amc_ids.map(item => {return item['id']}))).pipe(pluck("data")).subscribe((res:scheme[]) =>{
+      this.schemeMst = res;
+    })
+   }
+  getRntMst(){
+    this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck("data")).subscribe((res:rnt[]) =>{
+      res.forEach(el =>{
+           this.rnt_id.push(this.addRntForm(el));
+      })
+    })
+  }
+  addRntForm(rnt:rnt){
+    return new FormGroup({
+      id:new FormControl(rnt ? rnt?.id : 0),
+      name:new FormControl(rnt ? rnt.rnt_name : ''),
+      isChecked: new FormControl(false)
+    })
+  }
+  // uncheckAll_buType() {
+  //   this.__buTypeChecked.forEach((element: any) => {
+  //     element.checked = false;
+  //   });
+  // }
+  // checkAll_buType() {
+  //   this.__buTypeChecked.forEach((element: any) => {
+  //     element.checked = true;
+  //   });
+  // }
 
-    this.__ackForm.controls['is_all_trns_type'].valueChanges.subscribe(
-      (res) => {
-        const trns_type: FormArray = this.__ackForm.get(
-          'trans_type'
-        ) as FormArray;
-        trns_type.clear();
-        if (!res) {
-          this.uncheckAll_trnsType();
-        } else {
-          this.__transType.forEach((__el) => {
-            trns_type.push(new FormControl(__el.id));
-          });
-          this.checkAll_trnsType();
-        }
-      }
-    );
+  // uncheckAll_trnsType() {
+  //   this.__trnsTypeChecked.forEach((element: any) => {
+  //     element.checked = false;
+  //   });
+  // }
+  // checkAll_trnsType() {
+  //   this.__trnsTypeChecked.forEach((element: any) => {
+  //     element.checked = true;
+  //   });
+  // }
 
-    this.__ackForm.controls['is_all_rnt'].valueChanges.subscribe((res) => {
-      const rntName: FormArray = this.__ackForm.get('rnt_name') as FormArray;
-      rntName.clear();
-      if (!res) {
-        this.uncheckAll_rnt();
-      } else {
-        this.__rnt.forEach((__el) => {
-          rntName.push(new FormControl(__el.id));
-        });
-        this.checkAll_rnt();
-      }
-    });
-  }
-
-  uncheckAll_buType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAll_buType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = true;
-    });
-  }
-
-  uncheckAll_trnsType() {
-    this.__trnsTypeChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAll_trnsType() {
-    this.__trnsTypeChecked.forEach((element: any) => {
-      element.checked = true;
-    });
-  }
-
-  uncheckAll_rnt() {
-    this.__rntChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAll_rnt() {
-    this.__rntChecked.forEach((element: any) => {
-      element.checked = true;
-    });
-  }
-
+  // uncheckAll_rnt() {
+  //   this.__rntChecked.forEach((element: any) => {
+  //     element.checked = false;
+  //   });
+  // }
+  // checkAll_rnt() {
+  //   this.__rntChecked.forEach((element: any) => {
+  //     element.checked = true;
+  //   });
+  // }
   submitAck() {
-    const __ack = new FormData();
-    __ack.append('start_date', this.__ackForm.value.start_date);
-    __ack.append('end_date', this.__ackForm.value.end_date);
-    __ack.append('trans_type_id', this.data.trans_type_id);
-    __ack.append('paginate', this.__pageNumber.value);
-
-    __ack.append(
-      'sub_brk_cd',
-      this.__ackForm.value.sub_brk_cd ? this.__ackForm.value.sub_brk_cd : ''
-    );
-    __ack.append(
-      'trans_type',
-      this.__ackForm.value.trans_type.length > 0
-        ? JSON.stringify(this.__ackForm.value.trans_type)
-        : ''
-    );
-    __ack.append(
-      'tin_no',
-      this.__ackForm.value.tin_no ? this.__ackForm.value.tin_no : ''
-    );
-    __ack.append(
-      'amc_name',
-      this.__ackForm.value.amc_name ? this.__ackForm.value.amc_name : ''
-    );
-    __ack.append(
-      'inv_type',
-      this.__ackForm.value.inv_type ? this.__ackForm.value.inv_type : ''
-    );
-    __ack.append(
-      'euin_no',
-      this.__ackForm.value.euin_no ? this.__ackForm.value.euin_no : ''
-    );
-    __ack.append(
-      'brn_cd',
-      this.__ackForm.value.brn_cd ? this.__ackForm.value.brn_cd : ''
-    );
-    __ack.append(
-      'rnt_name',
-      this.__ackForm.value.rnt_name.length > 0
-        ? JSON.stringify(this.__ackForm.value.rnt_name)
-        : ''
-    );
-    __ack.append(
-      'bu_type',
-      this.__ackForm.value.bu_type.length > 0
-        ? JSON.stringify(this.__ackForm.value.bu_type)
-        : ''
-    );
+    const __mfTrax = new FormData();
+    __mfTrax.append('paginate', this.__pageNumber.value);
+    __mfTrax.append('option', this.__ackForm.value.options);
+    __mfTrax.append('trans_id',this.transaction_id.toString());
+    __mfTrax.append('trans_type_id' ,this.data.trans_type_id);
+    __mfTrax.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __mfTrax.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    __mfTrax.append('update_status_id',JSON.stringify(this.update_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})));
+    __mfTrax.append('from_date',this.__ackForm.getRawValue().frm_dt? this.__ackForm.getRawValue().frm_dt: '');
+    __mfTrax.append('to_date',this.__ackForm.getRawValue().to_dt? this.__ackForm.getRawValue().to_dt: '');
+    __mfTrax.append('client_code',this.__ackForm.value.client_code? this.__ackForm.value.client_code: '');
+    __mfTrax.append('tin_no',this.__ackForm.value.tin_no ? this.__ackForm.value.tin_no : '');
+    __mfTrax.append('amc_name',this.__ackForm.value.amc_id ? JSON.stringify(this.__ackForm.value.amc_id.map(item => {return item["id"]})) : '[]');
+    __mfTrax.append('scheme_name',this.__ackForm.value.scheme_id ? JSON.stringify(this.__ackForm.value.scheme_id.map(item => {return item["id"]})) : '[]');
+   __mfTrax.append('rnt_name',JSON.stringify(this.rnt_id.value.filter(x=> x.isChecked).map(item => {return item['id']})));
 
     this.__dbIntr
-      .api_call(1, '/manualUpdateDetailSearch', __ack)
+      .api_call(1, '/manualUpdateDetailSearch', __mfTrax)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         this.setPaginator(res.data);
@@ -444,6 +503,43 @@ export class SearchRPTComponent implements OnInit {
       });
     }
   }
+  // getval(__paginate) {
+  //   this.__pageNumber.setValue(__paginate.toString());
+  //   this.getPaginate();
+  // }
+  getPaginate(__paginate: any | null = null) {
+    if (__paginate) {
+      this.__dbIntr
+          .getpaginationData(
+            __paginate.url +
+              ('&paginate=' + this.__pageNumber.value) +
+              ('&option=' + this.__ackForm.value.options) +
+              ('&trans_type_id=' + this.data.trans_type_id) +
+              ('&trans_id=' + this.transaction_id.toString()) +
+              ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
+              ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1')) +
+              ('&client_code=' + (this.__ackForm.value.client_code ? this.__ackForm.value.client_code : '')) +
+              ('&tin_no=' + (this.__ackForm.value.tin_no? this.__ackForm.value.tin_no : '')) +
+              ('&amc_name=' + (this.__ackForm.value.amc_id ? JSON.stringify(this.__ackForm.value.amc_id.map(item => {return item["id"]})) : '[]')) +
+              ('&rnt_name=' + (this.__ackForm.value.rnt_id ? JSON.stringify(this.__ackForm.value.rnt_id.filter(x=> x.isChecked).map(item => {return item["id"]})) : '[]'))
+              +('&update_status_id='+JSON.stringify(this.update_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})))
+              + ('&from_date=' +global.getActualVal(this.__ackForm.getRawValue().frm_dt)) +
+              ('&to_date=' +global.getActualVal(this.__ackForm.getRawValue().to_dt)) +
+              ('&scheme_name='+JSON.stringify(this.__ackForm.value.scheme_id.map(item => {return item["id"]})))
+
+            )
+        .pipe(map((x: any) => x.data))
+        .subscribe((res: any) => {
+          this.__ackMst = new MatTableDataSource(res.data);
+          this.__paginate = res.links;
+        });
+    } else {
+    }
+  }
+  setPaginator(res) {
+    this.__ackMst = new MatTableDataSource(res);
+    this.__paginate = res.links;
+  }
   updateRow(row_obj) {
     this.__ackMst.data = this.__ackMst.data.filter((value: any, key) => {
       if (value.tin_no == row_obj.tin_no) {
@@ -465,184 +561,199 @@ export class SearchRPTComponent implements OnInit {
       return true;
     });
   }
-  getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
-    this.getPaginate();
-  }
-  getPaginate(__paginate: any | null = null) {
-    if (__paginate.url) {
-      this.__dbIntr
-        .getpaginationData(
-          __paginate.url + ('&paginate=' + this.__pageNumber.value)
-        )
-        .pipe(map((x: any) => x.data))
-        .subscribe((res: any) => {
-          this.setPaginator(res);
-        });
-    } else {
-      // this.__dbIntr
-      //   .api_call(0, '/mfTraxShow', 'paginate=' + this.__pageNumber)
-      //   .pipe(map((x: any) => x.data))
-      //   .subscribe((res: any) => {
-      //     this.setPaginator(res);
-      //   });
-    }
-  }
-  setPaginator(res) {
-    this.__ackMst = new MatTableDataSource(res);
-    this.__paginate = res.links;
-  }
+  // finalSubmitAck() {
+  //   const __finalSubmit = new FormData();
+  //   __finalSubmit.append('trans_type_id', this.data.trans_type_id);
+  //   this.__dbIntr
+  //     .api_call(1, '/ackFinalSubmit', __finalSubmit)
+  //     .subscribe((res: any) => {
+  //       this.__utility.showSnackbar(res.msg, res.suc);
+  //     });
+  // }
+  // onbuTypeChange(e: any) {
+  //   const bu_type: FormArray = this.__ackForm.get('bu_type') as FormArray;
+  //   if (e.checked) {
+  //     bu_type.push(new FormControl(e.source.value));
+  //   } else {
+  //     let i: number = 0;
+  //     bu_type.controls.forEach((item: any) => {
+  //       if (item.value == e.source.value) {
+  //         bu_type.removeAt(i);
+  //         return;
+  //       }
+  //       i++;
+  //     });
+  //   }
+  //   this.__ackForm
+  //     .get('is_all_bu_type')
+  //     .setValue(bu_type.controls.length == 3 ? true : false, {
+  //       emitEvent: false,
+  //     });
+  // }
+  // onrntTypeChange(e: any) {
+  //   const rnt_name: FormArray = this.__ackForm.get('rnt_name') as FormArray;
+  //   if (e.checked) {
+  //     rnt_name.push(new FormControl(e.source.value));
+  //   } else {
+  //     let i: number = 0;
+  //     rnt_name.controls.forEach((item: any) => {
+  //       if (item.value == e.source.value) {
+  //         rnt_name.removeAt(i);
+  //         return;
+  //       }
+  //       i++;
+  //     });
+  //   }
+  //   this.__ackForm
+  //     .get('is_all_rnt')
+  //     .setValue(rnt_name.controls.length == 3 ? true : false, {
+  //       emitEvent: false,
+  //     });
+  // }
 
-  finalSubmitAck() {
-    const __finalSubmit = new FormData();
-    __finalSubmit.append('trans_type_id', this.data.trans_type_id);
-    this.__dbIntr
-      .api_call(1, '/ackFinalSubmit', __finalSubmit)
-      .subscribe((res: any) => {
-        this.__utility.showSnackbar(res.msg, res.suc);
-      });
-  }
-  onbuTypeChange(e: any) {
-    const bu_type: FormArray = this.__ackForm.get('bu_type') as FormArray;
-    if (e.checked) {
-      bu_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      bu_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          bu_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__ackForm
-      .get('is_all_bu_type')
-      .setValue(bu_type.controls.length == 3 ? true : false, {
-        emitEvent: false,
-      });
-  }
-  onrntTypeChange(e: any) {
-    const rnt_name: FormArray = this.__ackForm.get('rnt_name') as FormArray;
-    if (e.checked) {
-      rnt_name.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      rnt_name.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          rnt_name.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__ackForm
-      .get('is_all_rnt')
-      .setValue(rnt_name.controls.length == 3 ? true : false, {
-        emitEvent: false,
-      });
-  }
+  // ontrnsTypeChange(e: any) {
+  //   const trans_type: FormArray = this.__ackForm.get('trans_type') as FormArray;
+  //   if (e.checked) {
+  //     trans_type.push(new FormControl(e.source.value));
+  //   } else {
+  //     let i: number = 0;
+  //     trans_type.controls.forEach((item: any) => {
+  //       if (item.value == e.source.value) {
+  //         trans_type.removeAt(i);
+  //         return;
+  //       }
+  //       i++;
+  //     });
+  //   }
+  //   this.__ackForm
+  //     .get('is_all_trns_type')
+  //     .setValue(trans_type.controls.length == 3 ? true : false, {
+  //       emitEvent: false,
+  //     });
+  // }
+  // getTodayDate() {
+  //   return dates.getTodayDate();
+  // }
+  // getMinDate() {
+  //   return dates.getminDate();
+  // }
 
-  ontrnsTypeChange(e: any) {
-    const trans_type: FormArray = this.__ackForm.get('trans_type') as FormArray;
-    if (e.checked) {
-      trans_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      trans_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          trans_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__ackForm
-      .get('is_all_trns_type')
-      .setValue(trans_type.controls.length == 3 ? true : false, {
-        emitEvent: false,
-      });
-  }
-  getTodayDate() {
-    return dates.getTodayDate();
-  }
-  getMinDate() {
-    return dates.getminDate();
-  }
-  outsideClickforTin(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForTin('none');
-    }
-  }
+  // outsideClickforTin(__ev) {
+  //   if (__ev) {
+  //     this.searchResultVisibilityForTin('none');
+  //   }
+  // }
 
-  outsideClickforClient(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForClient('none');
-    }
-  }
-  outsideClickforSubBrkArn(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForSubBrk('none');
-    }
-  }
-  outsideClick(__ev) {
-    if (__ev) {
-      this.searchResultVisibility('none');
-    }
-  }
-  outsideClickForAMC(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForAMC('none');
-    }
-  }
-  searchResultVisibility(display_mode) {
-    this.__searchRlt.nativeElement.style.display = display_mode;
-  }
-  /** Search Result Off against Sub Broker */
-  searchResultVisibilityForSubBrk(display_mode) {
-    this.__subBrkArn.nativeElement.style.display = display_mode;
-  }
+  // outsideClickforSubBrkArn(__ev) {
+  //   if (__ev) {
+  //     this.searchResultVisibilityForSubBrk('none');
+  //   }
+  // }
+  // outsideClick(__ev) {
+  //   if (__ev) {
+  //     this.searchResultVisibility('none');
+  //   }
+  // }
+  // outsideClickForAMC(__ev) {
+  //   if (__ev) {
+  //     this.searchResultVisibilityForAMC('none');
+  //   }
+  // }
+  // searchResultVisibility(display_mode) {
+  //   this.__searchRlt.nativeElement.style.display = display_mode;
+  // }
+  // /** Search Result Off against Sub Broker */
+  // searchResultVisibilityForSubBrk(display_mode) {
+  //   this.__subBrkArn.nativeElement.style.display = display_mode;
+  // }
   searchResultVisibilityForClient(display_mode) {
-    this.__clientCode.nativeElement.style.display = display_mode;
+    this.displayMode_forClient = display_mode;
   }
   searchResultVisibilityForTin(display_mode) {
-    this.__searchTin.nativeElement.style.display = display_mode;
+    this.displayMode_forTemp_Tin = display_mode;
   }
-  searchResultVisibilityForAMC(display_mode) {
-    this.__AmcSearch.nativeElement.style.display = display_mode;
-  }
+  // searchResultVisibilityForAMC(display_mode) {
+  //   this.__AmcSearch.nativeElement.style.display = display_mode;
+  // }
   getItems(__items, __mode) {
     switch (__mode) {
-      case 'A':
-        this.__ackForm.controls['amc_name'].reset(__items.amc_name, {
-          emitEvent: false,
-        });
-        this.searchResultVisibilityForAMC('none');
-        break;
+      // case 'A':
+      //   this.__ackForm.controls['amc_name'].reset(__items.amc_name, {
+      //     emitEvent: false,
+      //   });
+      //   this.searchResultVisibilityForAMC('none');
+      //   break;
       case 'C':
-        this.__ackForm.controls['client_code'].reset(__items.client_name, {
+        this.__ackForm.controls['client_name'].reset(__items.client_name, {
           emitEvent: false,
         });
+        this.__ackForm.controls['client_code'].reset(__items.id);
         this.searchResultVisibilityForClient('none');
         break;
-      case 'E':
-        this.__ackForm.controls['euin_no'].reset(__items.emp_name, {
-          emitEvent: false,
-        });
-        this.searchResultVisibility('none');
-        break;
+      // case 'E':
+      //   this.__ackForm.controls['euin_no'].reset(__items.emp_name, {
+      //     emitEvent: false,
+      //   });
+      //   this.searchResultVisibility('none');
+      //   break;
       case 'T':
         this.__ackForm.controls['tin_no'].reset(__items.tin_no, {
           emitEvent: false,
         });
         this.searchResultVisibilityForTin('none');
         break;
-      case 'S':
-        this.__ackForm.controls['sub_brk_cd'].reset(__items.code, {
-          emitEvent: false,
-        });
-        this.searchResultVisibilityForSubBrk('none');
-        break;
+      // case 'S':
+      //   this.__ackForm.controls['sub_brk_cd'].reset(__items.code, {
+      //     emitEvent: false,
+      //   });
+      //   this.searchResultVisibilityForSubBrk('none');
+      //   break;
     }
+  }
+  close(ev){
+    this.__ackForm.patchValue({
+     frm_dt: this.__ackForm.getRawValue().date_range ? dates.getDateAfterChoose(this.__ackForm.getRawValue().date_range[0]) : '',
+     to_dt: this.__ackForm.getRawValue().date_range ? (global.getActualVal(this.__ackForm.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.__ackForm.getRawValue().date_range[1]) : '') : ''
+    });
+  }
+  getSelectedItemsFromParent(res){
+    this.getItems(res.item,res.flag)
+  }
+  customSort(ev){
+    this.sort.order = ev.sortOrder;
+    this.sort.field = ev.sortField;
+    if(ev.sortField){
+     this.submitAck();
+    }
+   }
+   DocumentView(element){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = true;
+    dialogConfig.width = '80%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      title: 'Uploaded Scan Copy',
+      data: element,
+      copy_url:`${environment.app_formUrl + element.app_form_scan}`,
+      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.app_formUrl + element.app_form_scan}`)
+    };
+    const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
+  }
+  onselectItem(__itemsPerPage) {
+    this.submitAck();
+  }
+  setColumns(trans_id,option){
+  //   var clmn;
+  //   const clmnToRmv = ['edit','app_frm_view']
+  //   switch(trans_id.toString()){
+  //     case '1' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Pip); break;
+  //     case '2' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Sip); break;
+  //     case '3' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Switch); break;
+  //   }
+  //  this.clmList = clmn;
+   this.__columns =  MfackClmns.Summary;
+  //  this.SelectedClms = this.__columns.map(x => x.field);
+  //  this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});
   }
 }

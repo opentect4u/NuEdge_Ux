@@ -7,7 +7,6 @@ import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { FinancialRPTComponent } from './financial-rpt/financial-rpt.component';
 import { NonFinancialRPTComponent } from './non-financial-rpt/non-financial-rpt.component';
 import { NfoRPTComponent } from './nfo-rpt/nfo-rpt.component';
-import { SelectButtonModule } from 'primeng/selectbutton';
 const routes: Routes = [{path:'',component:CmnReportForMFComponent,data: { breadcrumb: 'Report'}}]
 
 @NgModule({
@@ -21,7 +20,6 @@ const routes: Routes = [{path:'',component:CmnReportForMFComponent,data: { bread
     CommonModule,
     SharedModule,
     TabModule,
-    SelectButtonModule,
     RouterModule.forChild(routes)
   ]
 })

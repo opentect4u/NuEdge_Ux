@@ -20,7 +20,7 @@
 
   </div>
 
-  <mat-dialog-content>
+  <mat-dialog-content class="customDialog">
     <div class="card">
       <div class="card-body p-5">
         <form [formGroup]="__rntSearchForm" (ngSubmit)="submit()" autoComplete="off">
@@ -61,27 +61,33 @@
         </form>
       </div>
     </div>
-    <div class="card border-1 rounded-top">
+    <div class="card my-2 border-1 rounded-top">
       <div class="example_container_header">
         <div></div>
         <div class="btnGrp d-flex">
-          <button mat-icon-button (click)="isOpenMegaMenu = !isOpenMegaMenu" color="primary" class="colmSelect"
-          #tooltip="matTooltip" matTooltip="Column Selector">
-          <mat-icon>splitscreen_right</mat-icon>
-        </button>
-        <button mat-icon-button [matMenuTriggerFor]="menu" color="primary" #tooltip="matTooltip"
-              matTooltip="Export">
-              <mat-icon>system_update_alt</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="exportPdf()">
-                <mat-icon>download</mat-icon> Export Pdf
-              </button>
-              <!-- (click)="exporter.exportTable('xlsx',{fileName:'FinancialReport'})" -->
-              <button mat-menu-item >
-                <mat-icon>download</mat-icon> Export Excel
-              </button>
-            </mat-menu>
+            <p-button type="button" icon="pi pi-server"
+          #tooltip="matTooltip"
+          [matTooltipPosition]="'before'"
+          (click)="isOpenMegaMenu = !isOpenMegaMenu"
+          matTooltip="Column Selector"
+          styleClass="p-button-primary p-button-lg p-button-outlined mr-2">
+          </p-button>
+
+          <p-button icon="pi pi-file-export"
+          [matMenuTriggerFor]="menu"
+          [matTooltipPosition]="'after'"
+          #tooltip="matTooltip"
+          matTooltip="Export"
+          styleClass="p-button-primary p-button-lg p-button-outlined">
+          </p-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="exportPdf()">
+            <mat-icon>download</mat-icon> Export Pdf
+          </button>
+          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'R&TReport'})">
+            <mat-icon>download</mat-icon> Export Excel
+          </button>
+        </mat-menu>
         </div>
 
       </div>
@@ -184,22 +190,13 @@
         </div>
         <!-- Paginator with item per page -->
         <div class="paginator">
-          <div class="itemsPerPage">
-            <label>Items Per Page :&nbsp; </label>
-            <mat-button-toggle-group #group="matButtonToggleGroup">
-              <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(10)">
-                10
-              </mat-button-toggle>
-              <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(50)">
-                50
-              </mat-button-toggle>
-              <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(100)">
-                100
-              </mat-button-toggle>
-              <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
-                All
-              </mat-button-toggle>
-            </mat-button-toggle-group>
+          <div class="itemsPerPage d-flex">
+            <label class="mr-3">Items per page: </label>
+            <p-selectButton
+            [options]="itemsPerPage"
+            optionLabel="label" optionValue="value"
+            (onOptionClick)="onselectItem($event)"
+            ></p-selectButton>
           </div>
 
           <div class="paginatorContainer">

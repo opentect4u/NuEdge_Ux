@@ -1,10 +1,10 @@
 export class nonFinClms {
   public static SUMMARY_COPY = [
-    { field: 'edit', header: 'Action' },
-    { field: 'app_frm_view', header: 'Document' },
-    { field: 'branch_name', header: 'Branch' },
+    { field: 'edit', header: 'Edit' },
+    { field: 'app_frm_view', header: 'DOC View' },
     { field: 'entry_date', header: 'Entry Date' },
-    { field: 'tin_no', header: 'TIN No' },
+    { field: 'tin_no', header: 'TIN' },
+    { field: 'branch_name', header: 'Branch' },
     { field: 'sub_brk_cd', header: 'Sub Broker Code' },
     { field: 'euin_no', header: 'EUIN' },
     { field: 'first_client_name', header: 'First Holder Name' },
@@ -12,34 +12,33 @@ export class nonFinClms {
     { field: 'first_client_pan', header: 'First Holder PAN' },
     { field: 'trans_name', header: 'Transction Type' },
     { field: 'scheme_name', header: 'Scheme' },
-    { field: 'application_no', header: 'Application No' },
     { field: 'folio_no', header: 'Folio No' },
-    { field: 'amount', header: 'Amount' },
-    { field: 'rnt_name', header: 'Form Submitted At' }
+    { field: 'rnt_name', header: 'Form Submitted At' },
+    { field: 'remarks', header: 'Remarks' }
   ];
 
-  /**** ADDRESS CHANGE */
-  public static DETAILS_ADDRESSCHANGE = [
+  /**** ADDRESS CHANGE (DONE)*/
+  public static AC = [
     { field: 'new_address', header: 'New Address'}
   ];
   /** END */
 
-  /*** CHANGE MODE OF HOLDING */
-  public static DETAILS_MOH = [
+  /*** CHANGE MODE OF HOLDING (DONE)*/
+  public static CMOH = [
     { field: 'existing_mode_of_holding', header: 'Existing Mode of Holding'},
     { field: 'new_mode_of_holding', header: 'New Mode of Holding'}
   ];
   /*** END */
 
-  /**** NAME CHANGE */
-  public static DETAILS_NAME_CHANGE = [
+  /**** CHANGE OF NAME (DONE)*/
+  public static CON = [
     { field: 'reason_for_change', header: 'Reason For Change'},
     { field: 'new_name', header: 'New Name'}
   ];
    /***END */
 
-  /***** CORE BANKING UPDATION */
-  public static DETAILS_CORE_BNK_UPDATION = [
+  /***** CORE BANKING UPDATION (DONE)*/
+  public static CBU = [
     { field: 'acc_no', header: 'Account No'},
     { field: 'bank_name', header: 'Bank'},
     { field: 'ifsc', header: 'IFSC'},
@@ -48,8 +47,8 @@ export class nonFinClms {
   ];
   /**** END */
 
-  /**** CHANGE OF BANK */
-  public static DETAILS_COB = [
+  /**** CHANGE OF BANK (DONE) */
+  public static COBK = [
     { field: 'existing_bank_acc_no', header: 'Existing Bank Account No'},
     { field: 'existing_bank_name', header: 'Existing Bank'},
     { field: 'existing_ifsc', header: 'Existing IFSC'},
@@ -63,27 +62,27 @@ export class nonFinClms {
   ];
   /**** END */
 
-  /*** FOLIO CONSOLIDATION MERGE */
+  /*** FOLIO CONSOLIDATION MERGE (DONE)*/
   public static FCM = [
     {field:'targeted_folio',header:'Targeted Folio'},
     {field:'source_folio',header:'Source Folio'}
   ]
   /*** END */
 
-  /***CHANGE OF BROKER */
+  /***CHANGE OF BROKER (DONE)*/
   public static COB =[
     {field:'new_broker_code',header:'New Sub Broker Code'}
   ]
   /**** END */
 
-  /** NOMINEE CHANGE OR ADDITION */
+  /** NOMINEE CHANGE OR ADDITION (DONE)*/
   public static NA_OR_NC = [
       {field:'new_nominee_name',header:'New Nominee Name'},
       {field:'percentage',header:'Percentage'}
   ]
   /** END */
 
-   /** SWP REGISTRATION */
+   /** SWP REGISTRATION (DONE)*/
    public static SWPR = [
     {field:'swp_type_name',header:'SWP Type'},
     {field:'swp_frequency',header:'SWP Frequency'},
@@ -94,7 +93,7 @@ export class nonFinClms {
 ]
 /** END */
 
-   /** Transmission */
+   /** Transmission (DONE)*/
    public static TRANSMISSION = [
     {field:'transmission_type',header:'Transmission Type'},
     {field:'claiment_name',header:'Claiment Name'},
@@ -103,21 +102,21 @@ export class nonFinClms {
 ]
 /** END */
 
-   /** Redemption */
+   /** Redemption (DONE)*/
    public static REDEMPTION = [
     {field:'redemption_type',header:'Redemption Type'},
     {field:'redemption_amount',header:'Amount/Unit'}
     ]
     /** END */
 
-  /** Cancelation */
+  /** Cancelation (DONE)*/
   public static CANCELATION = [
     {field:'cancelation_effective_date',header:'Cancelation Effective Date'},
     {field:'amount',header:'Amount'}
     ]
     /** END */
 
-    /** PAUSE */
+    /** PAUSE (DONE)*/
     public static PAUSE = [
     {field:'duration',header:'Duration'},
     {field:'pause_start_date',header:'Pause Start Date'},
@@ -126,7 +125,7 @@ export class nonFinClms {
     ]
     /** END */
 
-    /** STP REGISTRATION */
+    /** STP REGISTRATION (DONE)*/
     public static STP_REGISTRATION = [
       {field:'stp_type',header:'STP Type'},
       {field:'stp_frequency',header:'STP Frequency'},
@@ -138,7 +137,7 @@ export class nonFinClms {
       ]
       /** END */
 
-  /**CHANGE OF CONTACT DETAILS */
+  /**CHANGE OF CONTACT DETAILS (DONE)*/
   public static COCD =[
     {field:'new_email',header:'New Email'},
     {field:'new_mobile',header:'New Mobile'}
@@ -148,13 +147,13 @@ export class nonFinClms {
 
 
   public static COLUMN_SELECTOR=[
-    { field: 'edit', header: 'Action' },
-    { field: 'app_frm_view', header: 'Document' },
-    { field: 'branch_name', header: 'Branch' },
+    { field: 'edit', header: 'Edit' },
+    { field: 'app_frm_view', header: 'DOC View' },
     { field: 'entry_date', header: 'Entry Date' },
-    { field: 'tin_no', header: 'TIN No' },
-    { field: 'Business Type', header: 'bu_type' },
-    { field: 'arn_no', header: 'ARN No'},
+    { field: 'tin_no', header: 'TIN' },
+    { field: 'bu_type', header: 'Business Type' },
+    { field: 'branch_name', header: 'Branch' },
+    { field: 'arn_no', header: 'RM Name'},
     { field: 'sub_brk_cd', header: 'Sub Broker Code'},
     { field: 'euin_no', header: 'EUIN' },
     { field: 'first_client_name', header: 'First Holder Name' },
@@ -164,9 +163,10 @@ export class nonFinClms {
     { field: 'scheme_name', header: 'Scheme'},
     { field: 'plan_name', header: 'Plan' },
     { field: 'opt_name', header: 'Option' },
-    { field: 'application_no', header: 'Application No' },
     { field: 'folio_no', header: 'Folio No' },
     { field: 'amount', header: 'Amount' },
-    { field: 'rnt_name', header: 'Form Submitted At'}
+    { field: 'rnt_name', header: 'Form Submitted At'},
+    { field: 'remarks', header: 'Remarks'},
+
   ]
 }

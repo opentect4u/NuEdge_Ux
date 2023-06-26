@@ -4,16 +4,17 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import {map} from 'rxjs/operators';
-import { plan } from 'src/app/__Model/plan';
-import { category } from 'src/app/__Model/__category';
 import { docType } from 'src/app/__Model/__docTypeMst';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { DocsModificationComponent } from '../docsModification/docsModification.component';
-
+import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
+import { column } from 'src/app/__Model/tblClmns';
+import { docTypeClmns } from 'src/app/__Utility/Master/docTypeClmns';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 
 @Component({
 selector: 'docTypeRpt-component',
@@ -21,14 +22,15 @@ templateUrl: './docTypeRpt.component.html',
 styleUrls: ['./docTypeRpt.component.css']
 })
 export class DoctyperptComponent implements OnInit {
-  __sortAscOrDsc = {active: '',direction:'asc'};
+  itemsPerPage=ItemsPerPage;
+  sort=new sort();
   __catForm = new FormGroup({
     doc_type: new FormControl(''),
      options:new FormControl('2')
   })
   __export =  new MatTableDataSource<docType>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit','sl_no', 'doc_type', 'delete'];
+  __columns: column[] = docTypeClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'doc_type'];
   __paginate: any= [];
   __selectdocType = new MatTableDataSource<docType>([]);
@@ -45,27 +47,23 @@ constructor(
 }
 
 ngOnInit(){
-  this.getDocumnetTypeMst();
 }
 
- getDocumnetTypeMst(column_name: string | null = '',sort_by: string | null | ''='asc'){
+ getDocumnetTypeMst(){
   const __docTypeSearch = new FormData();
   __docTypeSearch.append('doc_type',this.__catForm.value.doc_type ? this.__catForm.value.doc_type : '');
   __docTypeSearch.append('paginate',this.__pageNumber.value);
-  __docTypeSearch.append('column_name',column_name);
-  __docTypeSearch.append('sort_by',sort_by);
+  __docTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+  __docTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
    this.__dbIntr.api_call(1,'/documenttypeDetailSearch',__docTypeSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);
-     this.tableExport(column_name,sort_by);
+     this.tableExport(__docTypeSearch);
    })
  }
 
-tableExport(column_name: string | null = '',sort_by: string | null | ''='asc'){
-  const __docTypeExport = new FormData();
-  __docTypeExport.append('column_name',column_name);
-  __docTypeExport.append('sort_by',sort_by);
-  __docTypeExport.append('doc_type',this.__catForm.value.doc_type ? this.__catForm.value.doc_type : '');
+tableExport(__docTypeExport){
+  __docTypeExport.delete('paginate');
   this.__dbIntr.api_call(1,'/documenttypeExport',__docTypeExport).pipe(map((x: any) => x.data)).subscribe((res: docType[]) =>{
      console.log(res);
     this.__export = new MatTableDataSource(res);
@@ -81,8 +79,8 @@ getPaginate(__paginate) {
         __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
         + ('&doc_type=' + this.__catForm.value.doc_type)
-        + ('&column_name=' + this.__sortAscOrDsc.active)
-        + ('&sort_by=' + this.__sortAscOrDsc.direction)
+        + ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : ''))
+        + ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -91,21 +89,8 @@ getPaginate(__paginate) {
       });
   }
 }
-getval(__paginate) {
-   this.__pageNumber.setValue(__paginate.toString());
-  this.submit();
-}
-
 populateDT(__items: docType) {
   this.openDialog(__items.doc_type, __items.id);
-}
-showCorrospondingAMC(__items) {
-  this.__utility.navigatewithqueryparams(
-    'main/master/productwisemenu/subcategory',
-    {
-      queryParams: { id: btoa(__items.id.toString()) },
-    }
-  );
 }
 openDialog(__category: string | null = null, __catId: number) {
   const dialogConfig = new MatDialogConfig();
@@ -193,12 +178,42 @@ exportPdf(){
   }, 'DocumentType')
 }
 submit(){
- this.getDocumnetTypeMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction);
+ this.getDocumnetTypeMst();
 }
 
-sortData(sort){
-  this.__sortAscOrDsc = sort;
+customSort(ev){
+  this.sort.field = ev.sortField;
+  this.sort.order = ev.sortOrder;
   this.submit();
 }
+onselectItem(ev){
+  this.__pageNumber.setValue(ev.option.value);
+  this.submit();
+}
+delete(docType,index){
+  const dialogConfig = new MatDialogConfig();
+      dialogConfig.autoFocus = false;
+      dialogConfig.role = "alertdialog";
+      dialogConfig.data = {
+        flag: 'DT',
+        id: docType.id,
+        title: 'Delete '  + docType.doc_type,
+        api_name:'/documenttypeDelete'
+      };
+      const dialogref = this.__dialog.open(
+        DeletemstComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe((dt) => {
+        if(dt){
+          if(dt.suc == 1){
+            this.__selectdocType.data.splice(index,1);
+            this.__selectdocType._updateChangeSubscription();
+            this.__export.data.splice(this.__export.data.findIndex((x: any) => x.id == docType.id),1);
+            this.__export._updateChangeSubscription();
+          }
+        }
 
+      })
+}
 }

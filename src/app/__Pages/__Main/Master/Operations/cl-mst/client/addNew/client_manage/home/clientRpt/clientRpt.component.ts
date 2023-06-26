@@ -11,7 +11,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { client } from 'src/app/__Model/__clientMst';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -21,13 +20,25 @@ import { clientColumns } from 'src/app/__Utility/clientColumns';
 import cityType from '../../../../../../../../../../../assets/json/Master/cityType.json';
 import month from '../../../../../../../../../../../assets/json/Master/month.json';
 import { DocumentsComponent } from 'src/app/shared/documents/documents.component';
+import itemsPerPage from '../../../../../../../../../../../assets/json/itemsPerPage.json';
+import { column } from 'src/app/__Model/tblClmns';
+import { sort } from 'src/app/__Model/sort';
+
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
   selector: 'app-clientRpt',
   templateUrl: './clientRpt.component.html',
   styleUrls: ['./clientRpt.component.css'],
 })
 export class ClientRptComponent implements OnInit {
+  selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
+  itemsPerPage:selectBtn[] = itemsPerPage;
   @ViewChild('clientCd') __clientCode: ElementRef;
+  sort = new sort();
 
   __isClientPending: boolean = false;
   __clientMst: any=[];
@@ -37,8 +48,9 @@ export class ClientRptComponent implements OnInit {
   distOptForMultiselectDropDown = this.__utility.settingsfroMultiselectDropdown('id','name','Select District')
    stateOptForMultiselectDropDown = this.__utility.settingsfroMultiselectDropdown('id','name','Select State')
   __sortAscOrDsc: any= {active: '',direction:'asc'};
-  toppings = new FormControl();
-  toppingList: any =[];
+
+  ClmnList: column[] =[];
+  selectedClmns:string[] =[];
   __isVisible: boolean = true;
   __paginate: any = [];
   __pageNumber = new FormControl(10);
@@ -48,7 +60,7 @@ export class ClientRptComponent implements OnInit {
   __distMst: any=[];
   __cityMst: any=[];
   __exportedClmns: string[] = [];
-  __columns: string[] = [];
+  __columns: column[] = [];
   __clientForm = new FormGroup({
     dob: new FormControl(''),
     state: new FormControl([],{updateOn:'blur'}),
@@ -72,34 +84,35 @@ export class ClientRptComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.setColumns('2');
-    this.getClientRPTMst();
+    this.setColumns(2);
+    // this.getClientRPTMst();
     this.getState();
 
   }
 
    setColumns(res){
     const __columnToRemove =  ['edit','delete','upload_details','client_type'];
-
-    /** For Getting  All Columns of particular client Type*/
     const columns = this.data.client_type == 'M' ?
-    clientColumns.MINOR_CLIENT.filter(x => !['client_type'].includes(x)) :
-    (this.data.client_type == 'N' ? clientColumns.NON_PAN_HOLDER_CLIENT.filter(x => !['client_type'].includes(x))
-    : (this.data.client_type == 'E'
-    ? clientColumns.EXISTING_CLIENT : clientColumns.PAN_HOLDER_CLIENT.filter(x => !['client_type'].includes(x))));
-
-
-    /** check whether the selected option is summary (2) or detail (1) */
-    this.__columns = res == '2'
-    ?  (this.data.client_type == 'E' ? clientColumns.INITIAL_COLUMNS.filter((x: any) => x!= 'client_code')
-    : (this.data.client_type == 'N' ? clientColumns.INITIAL_COLUMNS_FOR_NON_PAN
-    : (this.data.client_type == 'P' ?  clientColumns.INITIAL_COLUMNS_FOR_PAN : clientColumns.INITIAL_COLUMNS_FOR_MINOR))
-    ) : columns;
-
-    this.toppingList = clientColumns.COLUMN_SELECTOR.filter((x: any) => columns.includes(x.id));
-    this.toppings.setValue(this.__columns);
-    this.__exportedClmns = this.__columns.filter((x: any) => !__columnToRemove.includes(x));
-   }
+    clientColumns.Minor_Client
+    : (this.data.client_type == 'E' ? clientColumns.Existing_Client
+    :(this.data.client_type == 'N'
+      ? clientColumns.pan_holder_client.filter(x => !['pan'].includes(x.field))
+      :  clientColumns.pan_holder_client));
+     if(res == 2){
+      this.__columns =this.data.client_type == 'M' ?
+      clientColumns.initial_column_for_minor
+      : (this.data.client_type == 'E'
+      ? clientColumns.Existing_Client
+      :(this.data.client_type == 'N'
+      ? clientColumns.initial_column_for_pan.filter(x => !['pan'].includes(x.field))
+      : clientColumns.initial_column_for_pan));
+     }
+     else{
+      this.__columns =columns;
+     }
+    this.ClmnList = clientColumns.column_selector.filter((x: any) => columns.map((item) => {return item['field']}).includes(x.field));
+    this.__exportedClmns = this.__columns.map((item) => {return item['field']}).filter((x: any) => !__columnToRemove.includes(x));
+  }
 
   getState(){
     this.__dbIntr.api_call(0,'/states',null).pipe(pluck("data")).subscribe(res =>{
@@ -132,11 +145,6 @@ export class ClientRptComponent implements OnInit {
     this.__clientForm.controls['options'].valueChanges.subscribe((res) => {
       this.setColumns(res);
     });
-    this.toppings.valueChanges.subscribe(res =>{
-      const clm = ['edit','delete','upload_details']
-      this.__columns = res;
-      this.__exportedClmns = res.filter(item => !clm.includes(item))
-    })
     this.__clientForm.controls['state'].valueChanges.subscribe(res =>{
         if(res){
           this.getdistrict(res)
@@ -186,14 +194,12 @@ export class ClientRptComponent implements OnInit {
           + ('&anniversary_date=' +  this.__clientForm.value.anniversary_date)
           + ('&client_code=' +  this.__clientForm.value.client_code)
           + ('&dob=' +  this.__clientForm.value.dob)
-          + ('&mobile=' +  this.__clientForm.value.mobile)
-          + ('&email=' +  this.__clientForm.value.mobile)
           + ('&state=' +  JSON.stringify(this.__clientForm.value.state))
           + ('&dist=' +  JSON.stringify(this.__clientForm.value.dist))
           + ('&city=' +  JSON.stringify(this.__clientForm.value.city))
-           + ('&client_type=' +this.data.client_type)
-          + ('&column_name=' +  this.__sortAscOrDsc.active)
-          + ('&sort_by=' +  this.__sortAscOrDsc.direction)
+          + ('&client_type=' +this.data.client_type)
+          + ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+          + ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
           + ('&city_type=' +  this.__clientForm.value.city_type)
           + ('&pincode=' +   this.__clientForm.value.pincode)
         )
@@ -203,25 +209,6 @@ export class ClientRptComponent implements OnInit {
           this.__paginate = res.links;
         });
     }
-  }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.submit();
-  }
-  getClientMaster(__paginate: string | null = '10') {
-    this.__dbIntr
-      .api_call(
-        0,
-        '/client',
-        'client_type=' + this.data.client_type + '&paginate=' + __paginate
-      )
-      .pipe(map((x: responseDT) => x.data))
-      .subscribe((res: any) => {
-        console.log(res);
-
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
   }
   setPaginator(__res) {
     this.__selectClient = new MatTableDataSource(__res);
@@ -258,8 +245,7 @@ export class ClientRptComponent implements OnInit {
     );
   }
 
-
-  getClientRPTMst(column_name: string | null ='', sort_by:string | null | '' = 'asc'){
+  getClientRPTMst(){
       const __client = new FormData();
       __client.append('anniversary_date_month',this.__clientForm.value.anniversary_date);
       __client.append('birth_date_month', this.__clientForm.value.dob);
@@ -270,8 +256,8 @@ export class ClientRptComponent implements OnInit {
       __client.append('city_type', this.__clientForm.value.city_type);
       __client.append('pincode', this.__clientForm.value.pincode);
       __client.append('paginate', this.__pageNumber.value);
-      __client.append('column_name',column_name);
-      __client.append('sort_by', sort_by ? sort_by : 'asc');
+      __client.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+      __client.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
       __client.append('client_type',this.data.client_type);
       this.__dbIntr.api_call(1,'/clientDetailSearch',__client).pipe(pluck("data")).subscribe((res: any) =>{
         this.setPaginator(res.data);
@@ -281,10 +267,9 @@ export class ClientRptComponent implements OnInit {
   }
 
   submit() {
-     this.getClientRPTMst(this.__sortAscOrDsc.active,this.__sortAscOrDsc.direction)
+     this.getClientRPTMst()
   }
   refreshOrAdvanceFlt() {
-    // this.getClientMaster();
     this.__clientForm.patchValue({
       pan: '',
       name: '',
@@ -296,7 +281,8 @@ export class ClientRptComponent implements OnInit {
       options: '2',
       advanceFlt: '',
     })
-    this.__sortAscOrDsc = {active:'',direction:'asc'};
+    this.__pageNumber.setValue(10);
+    this.sort = new sort();
     this.submit();
   }
   populateDT(__items) {
@@ -444,10 +430,7 @@ export class ClientRptComponent implements OnInit {
         value.country = row_obj.country;
       })
   }
-  sortData(sort){
-    this.__sortAscOrDsc = sort;
-    this.submit();
-  }
+
   deleteClient(__el,index){
     console.log(__el.id);
 
@@ -506,5 +489,23 @@ export class ClientRptComponent implements OnInit {
       DocumentsComponent,
       dialogConfig
     );
+  }
+  onItemClick(ev){
+   console.log(ev);
+   if(ev.option.value == 'A'){
+
+   }
+   else{
+    this.refreshOrAdvanceFlt();
+   }
+  }
+  onselectItem(__itemsPerPage) {
+    this.__pageNumber.setValue(__itemsPerPage.option.value);
+    this.submit();
+  }
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    this.submit();
   }
 }

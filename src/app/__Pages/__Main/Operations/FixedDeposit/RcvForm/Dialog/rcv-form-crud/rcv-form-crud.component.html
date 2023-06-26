@@ -52,7 +52,7 @@
                   *ngIf="__rcvForm.get('sub_arn_no').errors?.empExists">
                   error</mat-icon>&nbsp;
                     Sub Broker Code<span class="text-danger">*</span></label>
-                  <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code" formControlName="sub_arn_no">
+                  <input type="search" id="subbrkArn" class="form-control" placeholder="Search By Sub Broker Code" formControlName="sub_arn_no">
                   <span class="spinner-border" *ngIf="__isSubArnPending && __rcvForm.get('sub_arn_no').value?.length > 1"></span>
 
                   <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforSubBrkArn($event)">
@@ -98,7 +98,7 @@
                   error</mat-icon> &nbsp;Employee Details<span class="text-danger"> *</span></label>
                 <input type="search" id="Euin"
                 class="form-control"
-                placeholder="Serach By Employee Details"
+                placeholder="Search By Employee Details"
                 formControlName="euin_no">
                 <span class="spinner-border" *ngIf="__isEuinPending && __rcvForm.get('euin_no').value?.length > 1"></span>
 

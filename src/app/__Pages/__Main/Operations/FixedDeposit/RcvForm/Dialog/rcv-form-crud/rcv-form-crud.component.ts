@@ -284,11 +284,11 @@ export class RcvFormCrudComponent implements OnInit {
 
     this.__dbIntr.api_call(1,this.data.temp_tin_no ? '/fd/formreceivedEdit' : '/fd/formreceivedAdd',__rcvForm).subscribe((res: any) =>{
       if(this.data.temp_tin_no){
-        this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN number ' + res.data.temp_tin_no + ' has been updated successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
+        this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN ' + res.data.temp_tin_no + ' has been updated successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
         this.dialogRef.close({temp_tin_no: res.data.temp_tin_no,data:res.data});
       }
       else{
-      this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN number ' + res.data.temp_tin_no + ' has been received successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
+      this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN ' + res.data.temp_tin_no + ' has been received successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
       this.dialogRef.close({temp_tin_no: null,data:res.data});
       }
       // this.__rcvForm.reset();

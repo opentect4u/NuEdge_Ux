@@ -47,6 +47,8 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
+import { SelectButtonModule } from 'primeng/selectbutton';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -75,7 +77,8 @@ import { CardModule } from 'primeng/card';
     TableModule,
     ButtonModule,
     CardModule,
-    CalendarModule
+    CalendarModule,
+    SelectButtonModule
   ],
   declarations: [
     BnkrplcPipe,
@@ -139,7 +142,8 @@ import { CardModule } from 'primeng/card';
     TableModule,
     ButtonModule,
     CardModule,
-    CalendarModule
+    CalendarModule,
+    SelectButtonModule
   ]
 })
 export class SharedModule { }

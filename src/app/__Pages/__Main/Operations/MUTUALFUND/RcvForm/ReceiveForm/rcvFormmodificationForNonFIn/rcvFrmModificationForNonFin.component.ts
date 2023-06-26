@@ -441,7 +441,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
         if (this.data.temp_tin_no) {
           this.__utility.showSnackbar(
             res.suc == 1
-              ? 'Form with temporary TIN number ' +
+              ? 'Form with temporary TIN  ' +
                   res.data.temp_tin_no +
                   ' has been updated successfully'
               : 'Something went wrong! Plase try again later ',
@@ -450,7 +450,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
         } else {
           this.__utility.showSnackbar(
             res.suc == 1
-              ? 'Form with temporary TIN number ' +
+              ? 'Form with temporary TIN  ' +
                   res.data.temp_tin_no +
                   ' has been received successfully'
               : 'Something went wrong! Plase try again later ',

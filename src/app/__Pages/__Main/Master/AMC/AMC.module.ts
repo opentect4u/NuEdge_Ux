@@ -8,12 +8,14 @@ import { AmcrptComponent } from './amcRpt/amcRpt.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReplaceAMCComponent } from './replace-amc/replace-amc.component';
 import { MergeAmcComponent } from './merge-amc/merge-amc.component';
+import { ImageModule } from 'primeng/image';
 const routes: Routes =[{path:'',component:AMCComponent}]
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
+    ImageModule
   ],
   declarations: [
     AMCComponent,

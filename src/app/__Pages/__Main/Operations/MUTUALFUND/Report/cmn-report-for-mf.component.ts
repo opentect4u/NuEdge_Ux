@@ -22,12 +22,13 @@ type selectBtn ={
 })
 export class CmnReportForMFComponent implements OnInit {
   headerTitle: string;
+  tabIndex:number = 0;
   __pageNumber = 10;
   itemsPerPage:selectBtn[] = itemsPerPage;
    trnsType: any = []; /** Holding Transaction Type i.e FINANCIAL,NON FINANCIAL,NFO */
    trnsMst: any= []; /** Holding Transaction i.e PIP,SIP,SWITCH .depends upon transaction Type */
    trnsTypeId:number;/*** Holding selected transaction Type tab, for hide /show the particular div */
-   transaction:number;/*** Holding selected transactiontab */
+   transaction:any;/*** Holding selected transactiontab */
    amcMst: amc[] = []; /**Holding AMC Master Data */
    rntMst:rnt[] = [] /*** Holding R&T Master Data */
    MstDt: any = [];/*** Holdng Financial Master Data */
@@ -72,6 +73,8 @@ export class CmnReportForMFComponent implements OnInit {
 
   /*** event occur whenever the main tab has been changed*/
   TabDetails(ev){
+    this.transaction = ''
+    this.trnsMst.length = 0;
     this.getTransactionAgainstParticularTransactionType(ev.tabDtls?.product_id,ev.tabDtls?.id);
     this.trnsTypeId = ev.tabDtls?.id;
   }
@@ -113,10 +116,12 @@ export class CmnReportForMFComponent implements OnInit {
   SubTabDetails(ev){
     console.log(ev);
      this.headerTitle =ev.tabDtls?.tab_name;
-    this.transaction = ev.tabDtls?.id
+    this.transaction = ev.tabDtls ? ev.tabDtls?.id : '';
+    console.log(this.transaction);
+
   }
   /*** End */
-  getFinancialDt(ev){
+  getMstDt(ev){
     this.dbIntr.api_call(1,'/mfTraxDetailSearch',ev).pipe(pluck("data")).subscribe((res: any) =>{
      this.MstDt = res;
     })

@@ -924,7 +924,7 @@ export class TraxEntryComponent implements OnInit {
   searchResultVisibilityForInsuredPerson(display_mode) {
     this.__insuredCd.nativeElement.style.display = display_mode;
   }
-  /**Serach Result Off against Proposer Code */
+  /**Search Result Off against Proposer Code */
   searchResultVisibilityForClient(display_mode) {
     this.__clientCode.nativeElement.style.display = display_mode;
   }

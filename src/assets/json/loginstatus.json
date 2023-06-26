@@ -1,0 +1,17 @@
+[
+  {
+    "id":1,
+    "value":"L",
+    "name":"Logged"
+  },
+  {
+    "id":2,
+    "value":"P",
+    "name":"Pending"
+  },
+  {
+    "id":3,
+    "value":"R",
+    "name":"Rejected"
+  }
+]

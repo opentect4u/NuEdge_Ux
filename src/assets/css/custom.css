@@ -617,9 +617,10 @@ input[name="pan"]{
 }
 
 .checkboxes{
-  border: 1px solid #d7d7d7;
+  border: 1px solid #3f5077;
   padding: 0px 6px;
-  background: #ed860614;
+  /* background: #ed860614; */
+  background:#3f507726;
   border-radius: 3px;
 }
 
@@ -676,7 +677,7 @@ input[name="pan"]{
 
 /* Material icon Css */
 .material-icons{
-  font-size: 18px!important;
+  /* font-size: 18px!important; */
 }
 /* End */
 /* **Paginator Active class */
@@ -732,3 +733,11 @@ textarea:focus {
   font-weight: 700!important;
 }
 /*** End*/
+.main-pannel{
+  margin-top: 97px;
+  height: calc(100vh - 97px);
+}
+.home_pannel{
+  margin-top: 35px;
+  height: calc(100vh - 35px);
+}

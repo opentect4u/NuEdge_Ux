@@ -1,10 +1,10 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit ,Inject, ElementRef, ViewChild} from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { amc } from 'src/app/__Model/amc';
 import { rnt } from 'src/app/__Model/Rnt';
@@ -15,63 +15,30 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { AmcModificationComponent } from '../amcModification/amcModification.component';
 import { environment } from 'src/environments/environment';
+import { amcClmns } from 'src/app/__Utility/Master/amcClmns';
+import { sort } from 'src/app/__Model/sort';
+import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { column } from 'src/app/__Model/tblClmns';
 
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
   selector: 'amc-amcRpt',
   templateUrl: './amcRpt.component.html',
   styleUrls: ['./amcRpt.component.css'],
 })
 export class AmcrptComponent implements OnInit {
-
+  selectBtn:selectBtn[] = [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
+  settings = this.__utility.settingsfroMultiselectDropdown('id','amc_short_name','Search AMC');
+  itemsPerPage = ItemsPerPage;
   amcLogoUrl = environment.amc_logo_url;
+  sort=new sort();
+
   __sortColumnsAscOrDsc: any= {active: '',direction:'asc'};
-  @ViewChild('searchAmc') __searchAmc: ElementRef;
-  @ViewChild('searchRnt') __searchRnt: ElementRef;
-  toppings = new FormControl();
-  toppingList: any = [
-    {id:'edit',text:'Edit'},
-    {id:'delete',text:'Delete'},
-    {id:'sl_no',text:'Sl No'},
-    {id:'logo',text:'Logo'},
-    {id:'amc_name',text:'AMC Full Name'},
-    {id:'amc_short_name',text:'AMC Short Name'},
-    {id:'rnt_name',text:'R&T'},
-    {id:"gstin",text:"GSTIN"},
-    {id:'website',text:'Web Szite'},
-    {id:'cus_care_whatsapp_no',text:'Customer Care WhatsApp Number'},
-    {id:'distributor_care_no',text:'Distributor Care Number'},
-    {id:'distributor_care_email',text:'Distributor Care Email'},
-    {id:'cust_care_email',text:'Customer Care Email'},
-    {id:'head_ofc_contact_per',text:'Head Contact Person Name'},
-    {id:'head_contact_per_mob',text:'Head Contact Person Mobile'},
-    {id:'head_contact_per_email',text:'Head Contact Person Email'},
-    {id:'head_ofc_addr',text:'Head Office Address'},
-    {id:'local_ofc_contact_per',text:'Local Contact Person Name'},
-    {id:'local_contact_per_mob',text:'Local Contact Person Mobile'},
-    {id:'local_contact_per_email',text:'Local Contact Person Email'},
-    {id:'local_ofc_addr',text:'Local Office Address'},
-    {id:'login_url',text:'Login URL'},
-    {id:'login_id',text:'Login ID'},
-    {id:'login_pass',text:'Login Password'},
-    {id:'l1_name',text:'Level-1 Name'},
-    {id:'l1_email',text:'Level-1 Email'},
-    {id:'l1_contact_no',text:'Level-1 Contact Number'},
-    {id:'l2_name',text:'Level-2 Name'},
-    {id:'l2_email',text:'Level-2 email'},
-    {id:'l2_contact_no',text:'Level-2 Contact Number'},
-    {id:'l3_name',text:'Level-3 Name'},
-    {id:'l3_email',text:'Level-3 Email'},
-    {id:'l3_contact_no',text:'Level-3 Contact Number'},
-    {id:'l4_name',text:'Level-4 Name'},
-    {id:'l4_email',text:'Level-4 Email'},
-    {id:'l4_contact_no',text:'Level-4 Contact Number'},
-    {id:'l5_name',text:'Level-5 Name'},
-    {id:'l5_email',text:'Level-5 Email'},
-    {id:'l5_contact_no',text:'Level-5 Contact Number'},
-    {id:'l6_name',text:'Level-6 Name'},
-    {id:'l6_email',text:'Level-6 Email'},
-    {id:'l6_contact_no',text:'Level-6 Contact Number'},
-];
+
   __isamcspinner: boolean =false;
   __isrntspinner: boolean =false;
   __isshowSearchBtn: boolean =false;
@@ -80,84 +47,16 @@ export class AmcrptComponent implements OnInit {
   __rntMst: rnt[] = [];
   __export= new MatTableDataSource<amc>([]);
   __exportedClmns: string[] =[ 'sl_no','amc_name','amc_short_name','rnt_name'];
-  __columnsForsummary: string[] = [
-    'edit',
-    'delete',
-    'sl_no',
-    'logo',
-    'amc_name',
-    'amc_short_name',
-    'rnt_name'];
-  __columnsForDetails: string[] = [
-    'edit',
-    'delete',
-    'sl_no',
-    'logo',
-    'amc_name',
-    'amc_short_name',
-    'rnt_name',
-    'gstin',
-    'website',
-    'cus_care_whatsapp_no',
-    'cust_care_number',
-    'cust_care_email',
-    'distributor_care_no',
-    'distributor_care_email',
-    'head_ofc_contact_per',
-    'head_contact_per_mob',
-    'head_contact_per_email',
-    'head_ofc_addr',
-    'local_ofc_contact_per',
-    'local_contact_per_mob',
-    'local_contact_per_email',
-    'local_ofc_addr',
-    'login_url',
-    'login_id',
-    'login_pass',
-    'l1_name',
-    'l1_email',
-    'l1_contact_no',
-
-    'l2_name',
-    'l2_email',
-    'l2_contact_no',
-
-    'l3_name',
-    'l3_email',
-    'l3_contact_no',
-
-    'l4_name',
-    'l4_email',
-    'l4_contact_no',
-
-    'l5_name',
-    'l5_email',
-    'l5_contact_no',
-
-    'l6_name',
-    'l6_email',
-    'l6_contact_no',
-
-
-];
-
-    __columns: string[];
+  __columns:column[] =[];
   __selectAMC = new MatTableDataSource<amc>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __detalsSummaryForm = new FormGroup({
+       btnType: new FormControl('R'),
        options: new FormControl('2'),
-       rnt_name: new FormControl(''),
-       amc_name: new FormControl(''),
-       rnt_id: new FormControl(this.data.rnt_id ? this.data.rnt_id :  ''),
-       amc_id: new FormControl(''),
-       contact_per: new FormControl(''),
-       gst_in: new FormControl(''),
-       l1: new FormControl(''),
-       l2: new FormControl(''),
-       l3: new FormControl(''),
-       l4: new FormControl(''),
-       l5: new FormControl(''),
-       l6: new FormControl(''),
+       rnt_id: new FormArray([]),
+       amc_id: new FormControl([]),
+       is_all:new FormControl(false),
+       level: new FormArray([])
   })
   constructor(
 
@@ -171,42 +70,68 @@ export class AmcrptComponent implements OnInit {
      private __dbIntr: DbIntrService) {}
      __paginate: any=[];
   ngOnInit() {
-    this.__columns =  this.__columnsForsummary;
-    this.toppings.setValue(this.__columns);
-    this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
+    this.getRntMst();
+    this.getAMCMasterForDropDown();
+    this.addLevelsCheckBox(amcClmns.LEVELS);
+    this.showColumns(2);
+    this.getAmcMst();
+  }
+  getRntMst(){
+    this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck('data')).subscribe((res:rnt[]) =>{
+          res.forEach((el:rnt) =>{this.rnt_id.push(this.setRNTForm(el))})
+    })
+  }
+  get rnt_id():FormArray{
+      return this.__detalsSummaryForm.get('rnt_id') as FormArray;
+  }
+  addLevelsCheckBox(levels){
+    levels.forEach(el =>{
+      this.level.push(this.setlevelFormControl(el))
+    })
+  }
+  get level(): FormArray{
+    return this.__detalsSummaryForm.get('level') as FormArray
+  }
+  setlevelFormControl(level):FormGroup{
+    return new FormGroup({
+      isChecked: new FormControl(false),
+      id: new FormControl(level? level.id : 0),
+      name: new FormControl(level? level.value : ''),
+      sub_menu:new FormControl(level? level.submenu : '')
+  })
+  }
+  setRNTForm(rnt):FormGroup{
+    return new FormGroup({
+      id:new FormControl(rnt ? rnt?.id : 0),
+      name:new FormControl(rnt ? rnt?.rnt_name : ''),
+      isChecked:new FormControl(Number(this.data.rnt_id) == rnt.rnt_id ? true : false)
+    })
   }
 
-   getAmcMst(column_name: string | null = null, sort_by: string | null = null){
+   getAmcMst(){
     const __amcSearch = new FormData();
     __amcSearch.append('paginate',this.__pageNumber.value);
-    __amcSearch.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? this.__detalsSummaryForm.value.rnt_id : '');
-    __amcSearch.append('amc_id',this.__detalsSummaryForm.value.amc_id ? this.__detalsSummaryForm.value.amc_id : '');
+    __amcSearch.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? JSON.stringify(this.__detalsSummaryForm.value.rnt_id.filter(x => x.isChecked).map(item => {return item['id']})) : '[]');
+    __amcSearch.append('amc_id',this.__detalsSummaryForm.value.amc_id ? JSON.stringify(this.__detalsSummaryForm.value.amc_id.map(item => {return item['id']})) : '[]');
    __amcSearch.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
    __amcSearch.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
-   __amcSearch.append('column_name',column_name ? column_name : '');
-   __amcSearch.append('sort_by',sort_by ? sort_by : 'asc');
+   __amcSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __amcSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
      this.__dbIntr.api_call(1,'/amcDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
       this.__paginate = res.links;
       this.setPaginator(res.data);
-       this.showColumns(this.__detalsSummaryForm.value.options);
-       this.tableExport(column_name,sort_by);
+       this.tableExport(__amcSearch);
      })
 
    }
 
 
-  private getAMCMaster(
-    __params: string | null = null,
-    __paginate: string | null = '10'
-  ) {
-    console.log(__params);
-
+  private getAMCMasterForDropDown() {
     this.__dbIntr
-      .api_call(0, '/amc', 'paginate=' + __paginate + __params)
+      .api_call(0, '/amc', null)
       .pipe(map((x: responseDT) => x.data))
-      .subscribe((res: any) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
+      .subscribe((res: amc[]) => {
+        this.__amcMst = res;
       });
   }
   private setPaginator(__res) {
@@ -218,121 +143,25 @@ export class AmcrptComponent implements OnInit {
   }
 
   ngAfterViewInit(){
-    this.__detalsSummaryForm.controls['amc_name'].valueChanges
-      .pipe(
-        tap(() => this.__isamcspinner = true),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1
-            ? this.__dbIntr.searchItems(
-              '/amc',
-              dt)
-            : []
-        ),
-        map((x: responseDT) => x.data),
-      )
-      .subscribe({
-        next: (value) => {
-          this.__amcMst = value;
-          this.searchResultVisibility('block','A')
-          this.__isamcspinner = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => console.log(),
-      });
+    /** Change event occur when all rnt checkbox has been changed  */
+    this.__detalsSummaryForm.controls['is_all'].valueChanges.subscribe(res =>{
+      this.rnt_id.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+    })
+    /** End */
 
-      this.__detalsSummaryForm.controls['rnt_name'].valueChanges
-      .pipe(
-        tap(() => this.__isrntspinner = true),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1
-            ? this.__dbIntr.searchItems(
-              '/rnt',
-              dt)
-            : []
-        ),
-        map((x: responseDT) => x.data),
-      )
-      .subscribe({
-        next: (value) => {
-          this.__rntMst = value;
-          this.searchResultVisibility('block','R')
-          this.__isrntspinner = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => console.log(),
-      });
+    /** Change event inside the formArray */
+    this.rnt_id.valueChanges.subscribe(res =>{
+    this.__detalsSummaryForm.controls['is_all'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+    })
+    /*** End */
 
       this.__detalsSummaryForm.controls['options'].valueChanges.subscribe(res =>{
-        if(res == '1'){
-          this.__columns = this.__columnsForDetails;
-          this.toppings.setValue(this.__columns);
-          this.__exportedClmns = ['sl_no',
-          'amc_name',
-          'amc_short_name',
-          'rnt_name',
-          'gstin',
-          'website',
-          'cus_care_whatsapp_no',
-          'cust_care_number',
-          'cust_care_email',
-          'head_ofc_contact_per',
-          'head_contact_per_mob',
-          'head_contact_per_email',
-          'head_ofc_addr',
-          'local_ofc_contact_per',
-          'local_contact_per_mob',
-          'local_contact_per_email',
-          'local_ofc_addr',
-          'login_url',
-          'login_id',
-          'login_pass',
-          'l1_name',
-          'l1_email',
-          'l1_contact_no',
-
-          'l2_name',
-          'l2_email',
-          'l2_contact_no',
-
-          'l3_name',
-          'l3_email',
-          'l3_contact_no',
-
-          'l4_name',
-          'l4_email',
-          'l4_contact_no',
-
-          'l4_name',
-          'l4_email',
-          'l4_contact_no',
-
-          'l5_name',
-          'l5_email',
-          'l5_contact_no',
-
-          'l6_name',
-          'l6_email',
-          'l6_contact_no'
-        ]
-        }
-        else{
-          this.showColumns(res);
-        }
+       this.showColumns(res);
       })
-      this.toppings.valueChanges.subscribe((res) => {
-        const clm = ['edit','delete','logo']
-        this.__columns = res;
-        this.__exportedClmns = res.filter(item => !clm.includes(item))
-      });
+
   }
 
   openDialog(__amc: amc,__amcId){
-    console.log(this.data.id);
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -374,22 +203,17 @@ export class AmcrptComponent implements OnInit {
       });
     }
   }
-  getval(__itemsPerPage){
-    this.__pageNumber.setValue(__itemsPerPage);
-    this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
-  }
+
   getPaginate(__paginate){
     if (__paginate.url) {
       this.__dbIntr
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          + ('&rnt_id=' + this.__detalsSummaryForm.value.rnt_id)
-          + ('&amc_id=' + this.__detalsSummaryForm.value.amc_id)
-          + ('&gstin=' + this.__detalsSummaryForm.value.gst_in)
-          + ('&contact_person=' + this.__detalsSummaryForm.value.contact_per)
-          + ('&column_name=' + this.__sortColumnsAscOrDsc.active)
-          + ('&sort_by=' + this.__sortColumnsAscOrDsc.direction)
+          + ('&rnt_id=' + (JSON.stringify(this.__detalsSummaryForm.value.rnt_id.filter(x => x.isChecked).map(item => {return item['id']}))))
+          + ('&amc_id=' + (JSON.stringify(this.__detalsSummaryForm.value.amc_id.map(item => {return item['id']}))))
+          +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+          +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -513,75 +337,19 @@ export class AmcrptComponent implements OnInit {
     this.__selectAMC.data.unshift(row_obj);
     this.__selectAMC._updateChangeSubscription();
   }
-  submit(){this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);}
+  submit(){this.getAmcMst();this.setColumnsAfterSubmit();}
 
-  tableExport(column_name: string | null = null, sort_by: string | null = null){
-    const __amcExport = new FormData();
-    __amcExport.append('rnt_id',this.__detalsSummaryForm.value.rnt_id!='null' ? this.__detalsSummaryForm.value.rnt_id : '');
-    __amcExport.append('amc_id',this.__detalsSummaryForm.value.amc_id!='null' ? this.__detalsSummaryForm.value.amc_id : '');
-   __amcExport.append('gstin',this.__detalsSummaryForm.value.gst_in!='null' ? this.__detalsSummaryForm.value.gst_in : '');
-   __amcExport.append('contact_person',this.__detalsSummaryForm.value.contact_per!='null' ? this.__detalsSummaryForm.value.contact_per : '');
-   __amcExport.append('column_name',column_name ? column_name : '');
-   __amcExport.append('sort_by',sort_by ? sort_by : 'asc');
+  tableExport(__amcExport){
    this.__dbIntr.api_call(1,'/amcExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
       this.__export = new MatTableDataSource(res);
     })
   }
 
   showColumns(res){
-    console.log(res);
-    if(res == '1'){
-      if(this.__detalsSummaryForm.value.l1
-       || this.__detalsSummaryForm.value.l2
-       || this.__detalsSummaryForm.value.l3
-       || this.__detalsSummaryForm.value.l4
-       || this.__detalsSummaryForm.value.l5
-       || this.__detalsSummaryForm.value.l6){
-         var columnDt =  [ 'edit','delete','sl_no','logo','amc_name','amc_short_name','rnt_name','gstin'];
-         this.__exportedClmns = ['sl_no','amc_name','rnt_name'];
-         if(this.__detalsSummaryForm.value.l1){
-           columnDt = [...columnDt,'l1_name','l1_email','l1_contact_no'];
-          this.__exportedClmns = [ ...this.__exportedClmns ,'l1_name','l1_email','l1_contact_no'];
-         }
-         if(this.__detalsSummaryForm.value.l2){
-           columnDt = [...columnDt,'l2_name','l2_email','l2_contact_no'];
-          this.__exportedClmns = [ ...this.__exportedClmns ,'l2_name','l2_email','l2_contact_no'];
-         }
-         if(this.__detalsSummaryForm.value.l3){
-           columnDt = [...columnDt,'l3_name','l3_email','l3_contact_no'];
-          this.__exportedClmns = [ ...this.__exportedClmns ,'l3_name','l3_email','l3_contact_no'];
-         }
-         if(this.__detalsSummaryForm.value.l4){
-           columnDt = [...columnDt,'l4_name','l4_email','l4_contact_no'];
-          this.__exportedClmns = [ ...this.__exportedClmns ,'l4_name','l4_email','l4_contact_no'];
-         }
-         if(this.__detalsSummaryForm.value.l5){
-           columnDt = [...columnDt,'l5_name','l5_email','l5_contact_no'];
-          this.__exportedClmns = [ ...this.__exportedClmns ,'l5_name','l5_email','l5_contact_no'];
-         }
-         if(this.__detalsSummaryForm.value.l6){
-           columnDt = [...columnDt,'l6_name','l6_email','l6_contact_no'];
-          this.__exportedClmns = [ ...this.__exportedClmns ,'l6_name','l6_email','l6_contact_no'];
-         }
-        //  columnDt = [...columnDt,];
-         this.__columns = columnDt;
-         this.toppings.setValue(this.__columns);
-       }
-       else{
-        this.__columns = this.__columnsForDetails;
-        const clm = ['edit','delete','logo']
-         this.toppings.setValue(this.__columns);
-         this.__exportedClmns = this.__columns.filter(item => !clm.includes(item))
-       }
-     }
-     else{
-
-
-      this.__columns = this.__columnsForsummary;
-      const clm = ['edit','delete','logo']
-       this.toppings.setValue(this.__columns);
-       this.__exportedClmns = this.__columns.filter(item => !clm.includes(item))
-     }
+    const __columnToRemove =  ['edit','delete','logo'];
+    this.__columns = [];
+      this.__columns = Number(res) == 2 ? amcClmns.Summary  : amcClmns.Details;
+      this.__exportedClmns = this.__columns.map(res => {return res['field']}).filter(item => !__columnToRemove.includes(item));
   }
 
   fullScreen(){
@@ -602,68 +370,24 @@ export class AmcrptComponent implements OnInit {
     this.dialogRef.updatePosition({top:'0px'});
     this.__isVisible = !this.__isVisible;
   }
-  getItems(__amc,__type){
-    console.log(__type);
-
-   switch(__type){
-    case 'A':  this.__detalsSummaryForm.controls['amc_id'].setValue(__amc.id)
-                this.__detalsSummaryForm.controls['amc_name'].reset(__amc.amc_name,{ onlySelf: true,emitEvent: false})
-                this.searchResultVisibility('none','A');
-                break;
-    case 'R':   this.__detalsSummaryForm.controls['rnt_id'].setValue(__amc.id)
-                this.__detalsSummaryForm.controls['rnt_name'].reset(__amc.rnt_name,{ onlySelf: true,emitEvent: false})
-                this.searchResultVisibility('none','R');
-                break;
-    default: break;
-   }
-  }
-  outsideClick(__ev,__mode){
-    if(__ev){
-       this.searchResultVisibility('none',__mode)
-    }
-  }
-  searchResultVisibility(display_mode,__mode) {
-    switch(__mode){
-      case 'A':
-    this.__searchAmc.nativeElement.style.display = display_mode;
-     break;
-     case 'R':
-      this.__searchRnt.nativeElement.style.display = display_mode;
-       break;
-    }
-  }
   exportPdf(){
-    this.__Rpt.downloadReport('#daySheetRpt',
+    this.__Rpt.downloadReport('#amcRPT',
     {
       title: 'AMC '
     }, 'AMC')
   }
   refreshOrAdvanceFlt(){
-    this.__detalsSummaryForm.reset('');
     this.__detalsSummaryForm.patchValue({
       options:'2',
-      rnt_name: '',
-       amc_name: '',
-       rnt_id: this.data.rnt_id ? this.data.rnt_id :  '',
-       amc_id: '',
-       contact_per: '',
-       gst_in: '',
-       l1: '',
-       l2: '',
-       l3: '',
-       l4: '',
-       l5: '',
-       l6: '',
-    });
-    this.showColumns('2');
-    this.getAmcMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
+      amc_id: []
+    })
+    this.__detalsSummaryForm.get('is_all').setValue(false);
+    this.level.controls.map(item => {item.get('isChecked').setValue(false)});
+    this.__pageNumber.setValue('10');
+    this.sort= new sort();
+    this.getAmcMst();
   }
-  sortData(sort: any) {
-    this.__sortColumnsAscOrDsc = sort;
-    this.getAmcMst(sort.active, sort.direction == '' ? 'asc' : sort.direction);
-     console.log(this.__detalsSummaryForm.value.options);
 
-  }
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -700,4 +424,42 @@ export class AmcrptComponent implements OnInit {
     // )
 
   }
+  onItemClick(ev){
+    this.refreshOrAdvanceFlt()
+  }
+  onselectItem(ev){
+    console.log(this.__pageNumber.value);
+
+    // this.__pageNumber.setValue(ev.option.value);
+    this.getAmcMst();
+  }
+  customSort(ev){
+    this.sort.order = ev.sortOrder;
+    this.sort.field = ev.sortField;
+    if(ev.sortField){
+    this.getAmcMst();
+    }
+  }
+  openURL(URL){
+    window.open(URL,'_blank')
+  }
+  setColumnsAfterSubmit(){
+    const clm = ['edit', 'delete','logo'];
+    this.level.value.forEach(el => {
+             el.sub_menu.forEach(element => {
+                      if(el.isChecked){
+                        if(this.__columns.findIndex(x => x.field == element.field) == -1){
+                          this.__columns.push(element);
+                        }
+                      }
+                      else{
+                        if(this.__columns.findIndex(x => x.field == element.field) != -1){
+                          this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
+                        }
+                      }
+
+             });
+    });
+    this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
+}
 }

@@ -604,7 +604,7 @@ export class TrxEntryComponent implements OnInit {
       this.searchResultVisibilityForClient('none');
     }
   }
-  /**Serach Result Off against Proposer Code */
+  /**Search Result Off against Proposer Code */
   searchResultVisibilityForClient(display_mode) {
     this.__clientCode.nativeElement.style.display = display_mode;
   }

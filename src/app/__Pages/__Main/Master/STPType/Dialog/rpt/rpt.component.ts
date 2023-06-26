@@ -8,20 +8,25 @@ import { RPTService } from 'src/app/__Services/RPT.service';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { ManualEntrComponent } from '../manual-entr/manual-entr.component';
-
+import ItemsPerPage from '../../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
+import { global } from 'src/app/__Utility/globalFunc';
+import { stpTypeClmns } from 'src/app/__Utility/Master/trans';
+import { column } from 'src/app/__Model/tblClmns';
 @Component({
   selector: 'app-rpt',
   templateUrl: './rpt.component.html',
   styleUrls: ['./rpt.component.css']
 })
 export class RPTComponent implements OnInit {
-  __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
+  itemsPerPage=ItemsPerPage;
+  sort=new sort();
   __StpType = new FormGroup({
     stp_type_name: new FormControl(''),
   });
   __export = new MatTableDataSource<any>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit', 'sl_no', 'stp_type_name'];
+  __columns: column[] = stpTypeClmns.COLUMN
   __exportedClmns: string[] = ['sl_no', 'stp_type_name'];
   __paginate: any = [];
   __selecStpType = new MatTableDataSource<any>([]);
@@ -35,7 +40,7 @@ export class RPTComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private utility: UtiliService
   ) { }
-  ngOnInit(): void {this.getSTPTypeMst();}
+  ngOnInit(): void {}
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
@@ -58,17 +63,14 @@ export class RPTComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit(){
-     this.getSTPTypeMst(
-      this.__sortColumnsAscOrDsc.active,
-      this.__sortColumnsAscOrDsc.direction ? this.__sortColumnsAscOrDsc.direction : 'asc'
-     )
+     this.getSTPTypeMst()
   }
-  getSTPTypeMst(column_name: string | null = '',sort_by: string | null | '' = 'asc') {
+  getSTPTypeMst() {
     const __STPTypeSearch = new FormData();
     __STPTypeSearch.append('stp_type_name',this.__StpType.value.stp_type_name);
     __STPTypeSearch.append('paginate', this.__pageNumber.value);
-    __STPTypeSearch.append('column_name', column_name);
-    __STPTypeSearch.append('sort_by', sort_by);
+    __STPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __STPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
     this.__dbIntr
       .api_call(1, '/stpTypeSearch', __STPTypeSearch)
       .pipe(map((x: any) => x.data))
@@ -91,10 +93,7 @@ export class RPTComponent implements OnInit {
      this.__selecStpType = new MatTableDataSource(res.data);
      this.__paginate = res.links;
   }
-  sortData(sort) {
-    this.__sortColumnsAscOrDsc = sort;
-    this.submit();
-  }
+
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -102,19 +101,14 @@ export class RPTComponent implements OnInit {
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
             ('&stp_type_name=' + this.__StpType.value.stp_type_name) +
-            ('&column_name=' + this.__sortColumnsAscOrDsc.active) +
-            ('&sort_by=' + this.__sortColumnsAscOrDsc.direction)
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
           this.setPaginator(res);
-          // this.__paginate = res.links;
         });
     }
-  }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.submit();
   }
   populateDT(el){
     const dialogConfig = new MatDialogConfig();
@@ -169,5 +163,14 @@ export class RPTComponent implements OnInit {
         }
         return true;
       });
+  }
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    this.submit();
+  }
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.value);
+    this.submit();
   }
 }

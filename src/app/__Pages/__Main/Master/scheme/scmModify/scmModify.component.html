@@ -37,7 +37,7 @@
                 <span class="invalid-feedback" *ngIf="(__scmForm.get('category_id')).errors?.required">*Please provide category</span>
               </div>
             </div>
-      
+
             <div class="col-sm-12 my-4">
               <label for="subCatName">Sub Category <span class="text-danger">*</span></label>
               <select class="form-control" formControlName="subcategory_id" id="subCatName">
@@ -118,7 +118,7 @@
                 {{this.__scmId > 0 ? 'Update' : 'Submit'}}
               </button>
               <button class="btn  resetBtn" (click)="reset()" type="reset">RESET</button>
-              
+
             </div>
           </div>
       </form>
@@ -144,7 +144,7 @@
 
 
 
-          <!--Temporary TIN No.-->
+          <!--Temporary TIN.-->
           <ng-container matColumnDef="scm_name">
             <th mat-header-cell *matHeaderCellDef>Scheme</th>
             <td mat-cell *matCellDef="let element">

@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { RPTComponent } from './Dialog/rpt/rpt.component';
 import { SearchRPTComponent } from './Dialog/search-rpt/search-rpt.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TabModule } from 'src/app/__Core/tab/tab.module';
 
 const routes: Routes=[{path:'',component:FinancialComponent}]
 
@@ -17,7 +18,8 @@ const routes: Routes=[{path:'',component:FinancialComponent}]
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
+    TabModule
   ]
 })
 export class FinancialModule { }

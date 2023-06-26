@@ -1,3 +1,5 @@
+import { column } from "../__Model/tblClmns";
+
 export class global{
 
     public static randomIntFromInterval(min, max) {
@@ -20,6 +22,14 @@ export class global{
 
    public static concatURL(pathURL,fileName){
     return `${pathURL + fileName}`;
+   }
+
+   /*** For Getting Full Column List for NonFinancial for different Transaction */
+   public static getColumnsAfterMerge = (columns,columnsTobeAdd):column[] =>{
+    return  Array.from([...columns,...columnsTobeAdd]
+      .reduce((m, o) => m.set(o.field, o), new Map)
+      .values()
+       );
    }
 
 }

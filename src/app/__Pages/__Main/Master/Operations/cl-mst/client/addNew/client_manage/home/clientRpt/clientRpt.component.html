@@ -1,4 +1,4 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+<div>
   <div mat-dialog-title class="dialog-title">
     <h2>Client Reports for {{this.data.client_type == 'P' ? 'PAN Holder' : (this.data.client_type == 'N' ? 'NON PAN Holder' : (this.data.client_type == 'M' ? 'Minor' : 'Existing'))}}</h2>
     <div class="btnIcon">
@@ -17,9 +17,12 @@
     </div>
 
   </div>
-  <mat-dialog-content>
-    <div class="card my-5">
-      <div class="card-body p-5">
+  <mat-dialog-content  class="customDialog">
+
+    <div class="card p-3 border-1 mb-2">
+      <ng-template #SearchBtn>
+        <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+      </ng-template>
         <form [formGroup]="__clientForm" (ngSubmit)="submit()" autocomplete="off">
           <div class="row ">
             <div class="col-sm-6 my-auto" >
@@ -28,16 +31,18 @@
                 <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
               </mat-radio-group>
             </div>
-            <div class="col-sm-6 ">
-              <mat-button-toggle-group class="float-right" aria-label="Font Style" formControlName="advanceFlt">
-                <mat-button-toggle value="A">
-                  <mat-icon>filter_alt</mat-icon>Advanced Filter
-                </mat-button-toggle>
-                <mat-button-toggle value="R" (click)="refreshOrAdvanceFlt()">
-                  <mat-icon>sync</mat-icon>
-                </mat-button-toggle>
-
-              </mat-button-toggle-group>
+            <div class="col-sm-6 d-flex justify-content-end align-items-center">
+              <p-selectButton
+              [options]="selectBtn"
+              formControlName="advanceFlt"
+              optionValue="value"
+              styleClass="p-button-lg"
+              (onOptionClick)="onItemClick($event)"
+              optionLabel="icon">
+                <ng-template let-item>
+                    <i [class]="item.icon"  [matTooltip]="item.label"></i>
+                </ng-template>
+            </p-selectButton>
             </div>
           </div>
 
@@ -85,14 +90,14 @@
                     <option [value]="month.id" *ngFor="let month of Month">{{month.month}}</option>
                   </select>
               </div>
+              <div class="col-sm-3 d-flex align-items-end justify-content-end" *ngIf="(__clientForm.get('advanceFlt').value != 'A')">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
             </div>
-            <div class="row my-2" *ngIf="__clientForm.get('advanceFlt').value == 'A'">
+            <ng-container  *ngIf="__clientForm.get('advanceFlt').value == 'A'">
+            <div class="row my-2">
               <div class="col-sm-4">
                 <label for="cat_id">State </label>
-                 <!-- <select class="form-control" formControlName="state">
-                   <option value="">Select State</option>
-                   <option [value]="state.id" *ngFor="let state of __stateMst">{{state.name}}</option>
-                 </select> -->
                  <ng-multiselect-dropdown #multiSelect
                 id="state"
                 [placeholder]="'Select'"
@@ -103,11 +108,6 @@
               </div>
               <div class="col-sm-4">
                 <label for="dist">District </label>
-                <!-- <select class="form-control" id="dist" formControlName="dist">
-                  <option value="">Select District</option>
-                  <option [value]="district.id" *ngFor="let district of __distMst">{{district.name}}</option>
-
-                </select> -->
                 <ng-multiselect-dropdown #multiSelect
                 id="dist"
                 [placeholder]="'Select'"
@@ -118,11 +118,6 @@
               </div>
               <div class="col-sm-4">
                 <label for="city">City </label>
-                <!-- <select class="form-control" id="city" formControlName="city">
-                  <option value="">Select City</option>
-                  <option [value]="city.id" *ngFor="let city of __cityMst">{{city.name}}</option>
-                </select> -->
-
                 <ng-multiselect-dropdown #multiSelect
                 id="city"
                 [placeholder]="'Select'"
@@ -134,7 +129,6 @@
 
             </div>
             <div class="row">
-              <ng-container  *ngIf="__clientForm.get('advanceFlt').value == 'A'">
                 <div class="col-sm-4">
                   <label for="pincode">Pincode </label>
                   <input type="text" placeholder="Enter Pincode" name="pincode" id="pincode" class="form-control"
@@ -147,21 +141,281 @@
                     <option [value]="cityType.id" *ngFor="let cityType of city_type">{{cityType.city_type}}</option>
                    </select>
                 </div>
+                <div class="col-sm-4 d-flex align-items-end justify-content-end" >
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                </div>
+            </div>
+            </ng-container>
+        </form>
+    </div>
+    <div class="card border-1 rounded-top">
+      <div class="example_container_header">
+        <div class="transTypeCount">
+        </div>
+        <div class="btnGrp d-flex">
+            <!--
+            (click)="isOpenMegaMenu = !isOpenMegaMenu"
+
+             -->
+          <p-button type="button" icon="pi pi-server"
+            #tooltip="matTooltip"
+            [matTooltipPosition]="'before'"
+            matTooltip="Column Selector"
+            styleClass="p-button-primary p-button-lg p-button-outlined mr-2">
+            </p-button>
+
+            <p-button icon="pi pi-file-export"
+            [matMenuTriggerFor]="menu"
+            [matTooltipPosition]="'after'"
+            #tooltip="matTooltip"
+            matTooltip="Export"
+            styleClass="p-button-primary p-button-lg p-button-outlined">
+            </p-button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item  (click)="exporter.exportTable('xlsx',{fileName:'Client Report'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+
+      </div>
+      <div class="container_body">
+        <p-table
+        #dt
+        (onLazyLoad)="customSort($event)"
+        [customSort]="true"
+          sortMode="single"
+          [lazy]="true"
+        [value]="__selectClient.data"
+        [columns]="__columns" [resizableColumns]="true"
+          selectionMode="multiple"
+          columnResizeMode="expand" [scrollable]="true"
+          scrollHeight="300px"
+          [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+          [tableStyle]="{ 'min-width': '120rem' }">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 10rem">
+                {{ col.header }}
+                <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'upload_details' && col.field!= 'delete'" [field]="col.field">
+                </p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-client let-columns="columns" let-i="rowIndex">
+            <tr tabindex="999">
+              <td *ngFor="let col of columns" style="width: 10rem">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                    {{i+1}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'edit'">
+                    <p-button icon="pi pi-pencil" (click)="populateDT(client)"
+                      styleClass="p-button-rounded p-button-primary">
+                    </p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'delete'">
+                    <p-button icon="pi pi-trash" (click)="deleteClient(client,i)"
+                      styleClass="p-button-rounded p-button-danger">
+                    </p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'upload_details'">
+                    <p-button icon="pi pi-eye" (click)="PreviewDocs(client)"
+                      styleClass="p-button-rounded p-button-success"></p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_actual' || col.field == 'anniversary_date'">
+                    <span #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-YYYY')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'relation'">
+                      <ng-container *ngIf="client[col.field];else noRelationship">
+                        <span #tooltip="matTooltip"
+                         [matTooltip]="(client[col.field] | relationship)">
+                          {{(client[col.field] | relationship)}}</span>
+                      </ng-container>
+                      <ng-template #noRelationship>
+                          N/A
+                      </ng-template>
+
+                      </ng-container>
+
+
+                  <ng-container *ngSwitchDefault>
+                    <span #tooltip="matTooltip" [matTooltip]="client[col.field]">
+                      {{ client[col.field] ? client[col.field] : 'N/A' }}
+                    </span>
+                  </ng-container>
+
+
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                 No Records Found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+           <!-- Paginator with item per page -->
+           <div class="paginator">
+            <div class="itemsPerPage d-flex">
+                <label class="mr-3">Items per page: </label>
+                <p-selectButton
+                [options]="itemsPerPage"
+                optionLabel="label" optionValue="value"
+                (onOptionClick)="onselectItem($event)"
+                ></p-selectButton>
+              </div>
+
+            <div  class="paginatorContainer">
+              <ul>
+                <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                  <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                    *ngIf="(paginate.label | bnkrplc) == 'P'">
+                    <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                      keyboard_double_arrow_left</mat-icon>
+                  </a>
+                  <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                    *ngIf="(paginate.label | bnkrplc) == 'N'">
+                    <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                      keyboard_double_arrow_right</mat-icon>
+                  </a>
+                  <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                    *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                    {{paginate.label}}
+                  </a>
+                </li>
+              </ul>
+
+
+            </div>
+
+          </div>
+          <!-- End -->
+      </div>
+      </div>
+
+
+      <table id="client" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+
+        <ng-container matColumnDef="sl_no">
+          <th mat-header-cell *matHeaderCellDef>Sl No</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="type_name">
+          <th mat-header-cell *matHeaderCellDef>Client Type</th>
+          <td mat-cell *matCellDef="let element">{{element.type_name ? element.type_name : 'N/A'}}</td>
+        </ng-container>
+
+          <ng-container matColumnDef="client_code">
+            <th mat-header-cell *matHeaderCellDef>Client Code</th>
+            <td mat-cell *matCellDef="let element">{{element.client_code ? element.client_code : 'N/A'}}</td>
+          </ng-container>
+
+        <ng-container matColumnDef="client_name">
+          <th mat-header-cell *matHeaderCellDef>Client Name</th>
+          <td mat-cell *matCellDef="let element">{{element.client_name ? element.client_name : 'N/A'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="client_type">
+          <th mat-header-cell *matHeaderCellDef>Client Type</th>
+          <td mat-cell *matCellDef="let element">{{element.client_type == 'P' ? 'PAN Holder' : (element.client_type == 'N' ? 'Non PAN Holder' : 'Existing')}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="pan">
+          <th mat-header-cell *matHeaderCellDef>PAN</th>
+          <td mat-cell *matCellDef="let element">{{element.pan ? element.pan : 'N/A'}}</td>
+        </ng-container>
+
+         <ng-container matColumnDef="dob">
+          <th mat-header-cell *matHeaderCellDef>
+            {{data.client_type == 'P' ? 'DOB As Per Pan' : 'Date Of Birth'}}
+          </th>
+          <td mat-cell *matCellDef="let element">{{element.dob ? (element.dob | date: 'dd-MM-YYYY') : 'N/A'}}</td>
+        </ng-container>
+          <ng-container matColumnDef="dob_actual">
+            <th mat-header-cell *matHeaderCellDef>Actual Date Of Birth</th>
+            <td mat-cell *matCellDef="let element">{{element.dob_actual ? (element.dob_actual | date:'dd-MM-YYYY') : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="mobile">
+            <th mat-header-cell *matHeaderCellDef>Mobile</th>
+            <td mat-cell *matCellDef="let element">{{element.mobile ? element.mobile  : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="sec_mobile">
+            <th mat-header-cell *matHeaderCellDef>Alternative Mobile</th>
+            <td mat-cell *matCellDef="let element">{{element.sec_mobile ? element.sec_mobile : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="sec_email">
+            <th mat-header-cell *matHeaderCellDef>Alternative Email</th>
+            <td mat-cell *matCellDef="let element">{{element.sec_email ? element.sec_email : 'N/A'}}</td>
+          </ng-container>
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let element">{{element.email ? element.email : 'N/A'}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="guardians_pan">
+              <th mat-header-cell *matHeaderCellDef>Gurdian PAN</th>
+              <td mat-cell *matCellDef="let element">{{element.guardians_pan ? element.guardians_pan : 'N/A'}}</td>
+            </ng-container>
+            <ng-container matColumnDef="guardians_name">
+              <th mat-header-cell *matHeaderCellDef>Gurdian Name</th>
+              <td mat-cell *matCellDef="let element">{{element.guardians_name ? element.guardians_name : 'N/A'}}</td>
+            </ng-container>
+              <ng-container matColumnDef="relation">
+                <th mat-header-cell *matHeaderCellDef>Relationship</th>
+                <td mat-cell *matCellDef="let element">{{element.relation ? (element.relation | relationship ) : 'N/A'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="maritial_status">
+                <th mat-header-cell *matHeaderCellDef>Maritial Status</th>
+                <td mat-cell *matCellDef="let element">{{element.maritial_status ? element.maritial_status : 'N/A'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="anniversary_date">
+                <th mat-header-cell *matHeaderCellDef>Anniversary Date</th>
+                <td mat-cell *matCellDef="let element">{{element.anniversary_date ? (element.anniversary_date | date:'dd-MM-YYYY') : 'N/A'}}</td>
               </ng-container>
 
-              <div
-              [class]="__clientForm.get('advanceFlt').value == 'A' ?
-              'd-flex align-items-end justify-content-end col-sm-4'
-              : 'd-flex justify-content-end col-sm-12'">
-                <button mat-raised-button color="primary">
-                  Show
-                </button>
-              </div>
-            </div>
-        </form>
-      </div>
-    </div>
-    <div class="mat-elevation-z3">
+              <ng-container matColumnDef="add_line_1">
+                <th mat-header-cell *matHeaderCellDef>Address-1</th>
+                <td mat-cell *matCellDef="let element">{{element.add_line_1 ? element.add_line_1 : 'N/A'}}</td>
+              </ng-container>
+                <ng-container matColumnDef="add_line_2">
+                  <th mat-header-cell *matHeaderCellDef>Address-2</th>
+                  <td mat-cell *matCellDef="let element">{{element.add_line_2 ? element.add_line_2 : 'N/A'}}</td>
+                </ng-container>
+              <ng-container matColumnDef="state">
+                <th mat-header-cell *matHeaderCellDef>State</th>
+                <td mat-cell *matCellDef="let element">{{element.state_name ? element.state_name : 'N/A'}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="dist">
+                <th mat-header-cell *matHeaderCellDef>District</th>
+                <td mat-cell *matCellDef="let element">{{element.district_name ? element.district_name : 'N/A'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="city">
+                <th mat-header-cell *matHeaderCellDef>City</th>
+                <td mat-cell *matCellDef="let element">{{element.city_name ? element.city_name : 'N/A'}}</td>
+              </ng-container>
+                <ng-container matColumnDef="pincode">
+                  <th mat-header-cell *matHeaderCellDef>Pincode</th>
+                  <td mat-cell *matCellDef="let element">{{element.pincode ? element.pincode : 'N/A'}}</td>
+                </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
+    <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Client History Found</td>
+    </tr>
+  </table>
+    <!-- <div class="mat-elevation-z3">
       <div class="example_container_header">
         <div class="btnGrp d-flex">
 
@@ -191,7 +445,6 @@
       </div>
       <div class="example-container">
         <table mat-table [dataSource]="__selectClient" class="table_Custome" matSort (matSortChange)="sortData($event)">
-            <!-- Sl No. -->
             <ng-container matColumnDef="sl_no">
               <th mat-header-cell *matHeaderCellDef>Sl No</th>
               <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
@@ -295,7 +548,6 @@
                     </ng-container>
 
 
-            <!-- Buisness Type-->
             <ng-container matColumnDef="edit">
               <th mat-header-cell *matHeaderCellDef>Edit</th>
               <td mat-cell *matCellDef="let element">
@@ -305,7 +557,6 @@
               </td>
             </ng-container>
 
-              <!-- Recieve Date Time -->
               <ng-container matColumnDef="upload_details" >
                 <th mat-sort-header="upload_details"  mat-header-cell *matHeaderCellDef>Upload Details</th>
                 <td mat-cell *matCellDef="let element">
@@ -315,7 +566,6 @@
                 </td>
               </ng-container>
 
-            <!-- Buisness Type-->
             <ng-container matColumnDef="delete" >
               <th mat-header-cell *matHeaderCellDef>Delete</th>
               <td mat-cell *matCellDef="let element;let i = index">
@@ -372,7 +622,6 @@
 
       <table id="client" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
 
-            <!-- Sl No. -->
             <ng-container matColumnDef="sl_no">
               <th mat-header-cell *matHeaderCellDef>Sl No</th>
               <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
@@ -484,6 +733,6 @@
           <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Client History Found</td>
         </tr>
       </table>
-    </div>
+    </div> -->
   </mat-dialog-content>
 </div>

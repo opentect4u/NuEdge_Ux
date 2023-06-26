@@ -8,7 +8,6 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatTableExporterModule } from 'mat-table-exporter';
 import { map } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { option } from 'src/app/__Model/option';
@@ -18,13 +17,18 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { OptionModificationComponent } from '../optionModification/optionModification.component';
 import * as XLSX from 'xlsx';
+import { sort } from 'src/app/__Model/sort';
+import ItemPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { column } from 'src/app/__Model/tblClmns';
+import { optClmns } from 'src/app/__Utility/Master/optionClmns';
 @Component({
   selector: 'optRpt-component',
   templateUrl: './optRpt.component.html',
   styleUrls: ['./optRpt.component.css'],
 })
 export class OptrptComponent implements OnInit {
-  __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
+  itemsPerPage= ItemPerPage
+  sort = new sort();
   __iscatspinner: boolean = false;
   __catForm = new FormGroup({
     option: new FormControl(''),
@@ -32,7 +36,7 @@ export class OptrptComponent implements OnInit {
   });
   __export = new MatTableDataSource<option>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit','delete', 'sl_no', 'opt_name'];
+  __columns: column[] = optClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'opt_name'];
   __paginate: any = [];
   __selectOption = new MatTableDataSource<option>([]);
@@ -47,38 +51,27 @@ export class OptrptComponent implements OnInit {
     private __utility: UtiliService
   ) {}
 
-  ngOnInit() {
-    this.getoptionMst();
-  }
-  getoptionMst(
-    column_name: string | null = '',
-    sort_by: string | null | '' = 'asc'
-  ) {
+  ngOnInit() {}
+  getoptionMst() {
     const __optionSrch = new FormData();
     __optionSrch.append('option', this.__catForm.value.option);
     __optionSrch.append('paginate', this.__pageNumber.value);
-    __optionSrch.append('column_name', column_name);
-    __optionSrch.append('sort_by', sort_by);
+    __optionSrch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __optionSrch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
     this.__dbIntr
       .api_call(1, '/optionDetailSearch', __optionSrch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
         this.__paginate = res.links;
         this.setPaginator(res.data);
-        this.tableExport(column_name, sort_by);
+        this.tableExport(__optionSrch);
       });
   }
 
-  tableExport(column_name: string | null = '', sort_by: string | null = 'asc') {
-    const __optExport = new FormData();
-    __optExport.append(
-      'opt_name',
-      this.__catForm.value.option ? this.__catForm.value.option : ''
-    );
-    __optExport.append('column_name', column_name);
-    __optExport.append('sort_by', sort_by);
+  tableExport(__optionSrch) {
+    __optionSrch.delete('paginate');
     this.__dbIntr
-      .api_call(1, '/optionExport', __optExport)
+      .api_call(1, '/optionExport', __optionSrch)
       .pipe(map((x: any) => x.data))
       .subscribe((res: option[]) => {
         this.__export = new MatTableDataSource(res);
@@ -95,8 +88,8 @@ export class OptrptComponent implements OnInit {
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
             ('&option=' + this.__catForm.value.option) +
-            ('&column_name=' + this.__sortColumnsAscOrDsc.active) +
-            ('&sort_by=' + this.__sortColumnsAscOrDsc.direction)
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -104,13 +97,6 @@ export class OptrptComponent implements OnInit {
           this.__paginate = res.links;
         });
     }
-  }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.getoptionMst(
-      this.__sortColumnsAscOrDsc.active,
-      this.__sortColumnsAscOrDsc.direction
-    );
   }
 
   populateDT(__items: option) {
@@ -207,15 +193,7 @@ export class OptrptComponent implements OnInit {
     );
   }
   submit() {
-    this.getoptionMst(
-      this.__sortColumnsAscOrDsc.active,
-      this.__sortColumnsAscOrDsc.direction
-    );
-  }
-
-  sortData(sort) {
-    this.__sortColumnsAscOrDsc = sort;
-    this.submit();
+    this.getoptionMst();
   }
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
@@ -251,5 +229,13 @@ export class OptrptComponent implements OnInit {
     });
     XLSX.writeFile(wb, `option.xlsx`,{cellStyles:true});
   }
-
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    this.submit();
+  }
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.value);
+    this.submit();
+  }
 }

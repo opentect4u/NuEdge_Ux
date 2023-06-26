@@ -40,11 +40,11 @@
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickfortempTin($event)">
               <div class="searchDiv">
                 <label for="__temp_tin_no">
-                  Temporary TIN Number
+                  Temporary TIN
                   <span class="text-danger">*</span>
                 </label>
                 <input type="search" name="__temp_tin_no" id="__temp_tin_no" class="form-control"
-                  formControlName="temp_tin_no" placeholder="Search by Temporary TIN Number">
+                  formControlName="temp_tin_no" placeholder="Search by Temporary TIN">
                 <span class="spinner-border"
                   *ngIf="__istemporaryspinner && __fdTrax.get('temp_tin_no').value?.length > 1"></span>
                 <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickfortempTin($event)">
@@ -58,7 +58,7 @@
                       <h5 class="text-center">
                         Sorry!! No Records Found
                       </h5>
-                      <p>Temporary TIN Number Not Available</p>
+                      <p>Temporary TIN Not Available</p>
                     </div>
                   </div>
                 </div>
@@ -106,7 +106,7 @@
                   *ngIf="__fdTrax.get('sub_brk_cd').errors?.subBrkExists">
                   error</mat-icon>
                   Sub Broker Code<span class="text-danger">*</span></label>
-                <input type="search" id="subbrkArn" class="form-control" placeholder="Serach By Sub Broker Code"
+                <input type="search" id="subbrkArn" class="form-control" placeholder="Search By Sub Broker Code"
                   formControlName="sub_brk_cd">
                 <span class="spinner-border"
                   *ngIf="__isSubArnPending && __fdTrax.get('sub_brk_cd').value?.length > 1"></span>
@@ -145,7 +145,7 @@
                   *ngIf="__fdTrax.get('euin_no').errors?.empExists">
                   error</mat-icon>
                   Employee Details<span class="text-danger">*</span></label>
-                <input type="search" id="Euin" class="form-control" placeholder="Serach By Employee Details"
+                <input type="search" id="Euin" class="form-control" placeholder="Search By Employee Details"
                   formControlName="euin_no">
                 <span class="spinner-border"
                   *ngIf="__isEuinPending && __fdTrax.get('euin_no').value?.length > 1"></span>

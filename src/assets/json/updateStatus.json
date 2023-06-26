@@ -1,0 +1,17 @@
+[
+        {
+          "id":1,
+          "value":"P",
+          "name":"Procees"
+        },
+        {
+          "id":2,
+          "value":"R",
+          "name":"Rejected"
+        },
+        {
+          "id":3,
+          "value":"PE",
+          "name":"Pending"
+        }
+]

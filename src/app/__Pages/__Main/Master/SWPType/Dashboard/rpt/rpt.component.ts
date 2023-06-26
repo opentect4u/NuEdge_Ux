@@ -8,20 +8,26 @@ import { RPTService } from 'src/app/__Services/RPT.service';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { ManualEntryComponent } from '../manual-entry/manual-entry.component';
-
+import ItemsPerPage from '../../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
+import { global } from 'src/app/__Utility/globalFunc';
+import { column } from 'src/app/__Model/tblClmns';
+import { swpTypeClmns } from 'src/app/__Utility/Master/trans';
 @Component({
   selector: 'app-rpt',
   templateUrl: './rpt.component.html',
   styleUrls: ['./rpt.component.css']
 })
 export class RptComponent implements OnInit {
+  itemsPerPage=ItemsPerPage;
+  sort=new sort();
   __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
   __SwpType = new FormGroup({
     swp_type_name: new FormControl(''),
   });
   __export = new MatTableDataSource<any>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit', 'sl_no', 'swp_type_name'];
+  __columns: column[] = swpTypeClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'swp_type_name'];
   __paginate: any = [];
   __selecSwpType = new MatTableDataSource<any>([]);
@@ -35,7 +41,7 @@ export class RptComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private __utility: UtiliService
   ) { }
-  ngOnInit(): void {this.getSWPTypeMst();}
+  ngOnInit(): void {}
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
@@ -67,8 +73,8 @@ export class RptComponent implements OnInit {
     const __SWPTypeSearch = new FormData();
     __SWPTypeSearch.append('swp_type_name',this.__SwpType.value.swp_type_name);
     __SWPTypeSearch.append('paginate', this.__pageNumber.value);
-    __SWPTypeSearch.append('column_name', column_name);
-    __SWPTypeSearch.append('sort_by', sort_by);
+    __SWPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __SWPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
     this.__dbIntr
       .api_call(1, '/swpTypeSearch', __SWPTypeSearch)
       .pipe(map((x: any) => x.data))
@@ -91,10 +97,6 @@ export class RptComponent implements OnInit {
      this.__selecSwpType = new MatTableDataSource(res.data);
      this.__paginate = res.links;
   }
-  sortData(sort) {
-    this.__sortColumnsAscOrDsc = sort;
-    this.submit();
-  }
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -102,21 +104,15 @@ export class RptComponent implements OnInit {
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
             ('&swp_type_name=' + this.__SwpType.value.swp_type_name) +
-            ('&column_name=' + this.__sortColumnsAscOrDsc.active) +
-            ('&sort_by=' + this.__sortColumnsAscOrDsc.direction)
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
           this.setPaginator(res);
-          // this.__paginate = res.links;
         });
     }
   }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.submit();
-  }
-
   updateRow(row_obj){
 
     this.__selecSwpType.data = this.__selecSwpType.data.filter((value , key) => {
@@ -169,5 +165,14 @@ populateDT(el){
         flag: 'SWP',
       });
     }
+}
+customSort(ev){
+  this.sort.field = ev.sortField;
+  this.sort.order = ev.sortOrder;
+  this.submit();
+}
+onselectItem(ev){
+  this.__pageNumber.setValue(ev.option.value);
+  this.submit();
 }
 }

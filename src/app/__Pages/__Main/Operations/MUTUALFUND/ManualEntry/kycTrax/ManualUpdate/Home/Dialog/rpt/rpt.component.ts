@@ -14,21 +14,28 @@ import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/p
 import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ManualUpdateEntryForMFComponent } from 'src/app/shared/manual-update-entry-for-mf/manual-update-entry-for-mf.component';
+import { column } from 'src/app/__Model/tblClmns';
+import ItemsPerPage from '../../../../../../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
 @Component({
   selector: 'app-rpt',
   templateUrl: './rpt.component.html',
   styleUrls: ['./rpt.component.css']
 })
 export class RPTComponent implements OnInit {
+  sort = new sort();
+  itemsPerPage = ItemsPerPage;
   __isVisible: boolean = true;
   __ackRpt = new MatTableDataSource<any>([]);
   __export = new MatTableDataSource<any>([]);
   __paginate: any = [];
-  __pageNumber = new FormControl(10);
-  __columns: string[] = [];
+  __pageNumber = new FormControl('10');
+  __columns: column[] = [];
   __exportedClmns: string[] =[];
-  clmSelector = new FormControl();
-  clmHolder = kycClm.clmSelector;
+  selectedClmns:string[] =[];
+  ClmnList:column[] =kycClm.Details;
+    // clmSelector = new FormControl();
+  // clmHolder = kycClm.clmSelector;
   __getAckFormData: any;
   __sortAscOrDsc = {active: '',direction:'asc'};
   constructor(
@@ -43,7 +50,7 @@ export class RPTComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.setColumns(2);
+    this.setColumns({options:"2"});
   }
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
@@ -69,17 +76,25 @@ export class RPTComponent implements OnInit {
 
 
   reset(__ev){
-    this.__sortAscOrDsc = {active:'',direction:'asc'};
+    console.log(__ev);
+    this.__pageNumber.setValue('10');
+    this.sort = new sort();
     this.getAckRpt(__ev);
+    // this.__sortAscOrDsc = {active:'',direction:'asc'};
+    // this.getAckRpt(__ev);
   }
   setColumns(event){
-    console.log(event);
+    // console.log(event);
     const clmToRemoved = ['edit','app_form_view','ack_form_view','mu_frm_view','delete'];
-    this.__columns = event == '1' ? kycClm.details : kycClm.summary;
-    this.__exportedClmns = this.__columns.filter(x => !clmToRemoved.includes(x));
-    console.log(this.__columns);
-    console.log(this.__exportedClmns);
-    this.clmSelector.setValue(this.__columns);
+    // this.__columns = event == '1' ? kycClm.details : kycClm.summary;
+    // this.__exportedClmns = this.__columns.filter(x => !clmToRemoved.includes(x));
+    // console.log(this.__columns);
+    // console.log(this.__exportedClmns);
+    // this.clmSelector.setValue(this.__columns);
+
+    this.__columns = event.options == "1" ? kycClm.Details : kycClm.Summary_copy;
+    this.selectedClmns = this.__columns.map(item => item.field);
+    this.__exportedClmns = this.__columns.filter(item => !clmToRemoved.includes(item.field)).map(x => {return x['field']});
   }
 
   getAckRpt(kycFormDt){
@@ -87,13 +102,15 @@ export class RPTComponent implements OnInit {
     const __kycAck = new FormData();
       __kycAck.append('paginate',this.__pageNumber.value);
       __kycAck.append('option', kycFormDt.options);
-      __kycAck.append('column_name',this.__sortAscOrDsc.active);
-      __kycAck.append('sort_by',this.__sortAscOrDsc.direction);
+      __kycAck.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+      __kycAck.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
       if( kycFormDt.options != '3'){
         __kycAck.append('from_date',global.getActualVal(kycFormDt.frm_dt));
         __kycAck.append('to_date',global.getActualVal(kycFormDt.to_dt));
         __kycAck.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
         __kycAck.append('login_type',global.getActualVal(kycFormDt.kyc_login));
+        __kycAck.append('update_status_id',JSON.stringify(kycFormDt.update_status_id.filter(item => item.isChecked).map(res => {return res['id']})));
+
       __kycAck.append(
         'client_code',
         kycFormDt.client_code ? kycFormDt.client_code : ''
@@ -110,12 +127,12 @@ export class RPTComponent implements OnInit {
         'sub_brk_cd',
         kycFormDt.sub_brk_cd ? kycFormDt.sub_brk_cd : ''
       );
-      __kycAck.append(
-        'bu_type',
-        kycFormDt.bu_type.length > 0
-          ? JSON.stringify(kycFormDt.bu_type)
-          : ''
-      );
+      // __kycAck.append(
+      //   'bu_type',
+      //   kycFormDt.bu_type.length > 0
+      //     ? JSON.stringify(kycFormDt.bu_type)
+      //     : ''
+      // );
       __kycAck.append(
         'branch',global.getActualVal(kycFormDt.brn_cd));
     }
@@ -140,11 +157,11 @@ export class RPTComponent implements OnInit {
     }
     ngAfterViewInit() {
 
-      this.clmSelector.valueChanges.subscribe((res) => {
-        const clm = ['edit','app_form_view','ack_form_view','mu_frm_view','delete']
-        this.__columns = res;
-        this.__exportedClmns = res.filter(item => !clm.includes(item))
-      });
+      // this.clmSelector.valueChanges.subscribe((res) => {
+      //   const clm = ['edit','app_form_view','ack_form_view','mu_frm_view','delete']
+      //   this.__columns = res;
+      //   this.__exportedClmns = res.filter(item => !clm.includes(item))
+      // });
     }
     sortData(sort){
       this.__sortAscOrDsc =sort;
@@ -158,9 +175,10 @@ export class RPTComponent implements OnInit {
     const __kyc = new FormData();
     __kyc.append('paginate',this.__pageNumber.value);
     __kyc.append('option', kycFormDt.options);
-    __kyc.append('column_name',this.__sortAscOrDsc.active);
-    __kyc.append('sort_by',this.__sortAscOrDsc.direction);
+    __kyc.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __kyc.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
     if( kycFormDt.options != '3'){
+      __kyc.append('update_status_id',JSON.stringify(kycFormDt.update_status_id.filter(item => item.isChecked).map(res => {return res['id']})));
       __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
       __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
       __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
@@ -181,12 +199,12 @@ export class RPTComponent implements OnInit {
       'sub_brk_cd',
       kycFormDt.sub_brk_cd ? kycFormDt.sub_brk_cd : ''
     );
-    __kyc.append(
-      'bu_type',
-      kycFormDt.bu_type.length > 0
-        ? JSON.stringify(kycFormDt.bu_type)
-        : ''
-    );
+    // __kyc.append(
+    //   'bu_type',
+    //   kycFormDt.bu_type.length > 0
+    //     ? JSON.stringify(kycFormDt.bu_type)
+    //     : ''
+    // );
     __kyc.append(
       'branch',global.getActualVal(kycFormDt.brn_cd));
   }
@@ -209,12 +227,11 @@ export class RPTComponent implements OnInit {
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
           + ('&option='+  this.__getAckFormData.options)
-          + ('&sort_by=' + this.__sortAscOrDsc.direction)
-          + ('&column_name=' + this.__sortAscOrDsc.active)
-          +  (this.__getAckFormData.options != '3'
-          ?  (('&client_code=' + (this.__getAckFormData.client_code ? this.__getAckFormData.client_code : ''))
+          + ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+          + ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1')) +
+          + (this.__getAckFormData.options != '3'
+          ? (('&client_code=' + (this.__getAckFormData.client_code ? this.__getAckFormData.client_code : ''))
           + ( '&sub_brk_cd=' + (this.__getAckFormData.sub_brk_cd ? this.__getAckFormData.sub_brk_cd : ''))
-          + ('&bu_type=' + (this.__getAckFormData.bu_type.length > 0 ? JSON.stringify(this.__getAckFormData.bu_type): ''))
           + ('&login_at=' + this.__getAckFormData.kyc_login_at)
           + ('&login_type=' + this.__getAckFormData.kyc_login)
           +('&from_date='+global.getActualVal(this.__getAckFormData.frm_dt))
@@ -222,6 +239,7 @@ export class RPTComponent implements OnInit {
           +('&tin_no='+global.getActualVal(this.__getAckFormData.tin_no))
           +('&euin_no='+global.getActualVal(this.__getAckFormData.euin_no))
           +('&branch='+global.getActualVal(this.__getAckFormData.brn_cd)))
+          +('&update_status_id='+JSON.stringify(this.__getAckFormData.update_status_id.filter(item => item.isChecked).map(res => {return res['id']})))
           : (
           + ('&login_status=' + this.__getAckFormData.login_status)
           + ('&date_status=' + this.__getAckFormData.date_status)
@@ -343,5 +361,15 @@ export class RPTComponent implements OnInit {
         `${environment.kyc_ack_form_url + element.ack_copy_scan}`))
     };
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
+  }
+  customSort(ev){
+    this.sort.order = ev.sortOrder;
+    this.sort.field = ev.sortField;
+    if(ev.sortField){
+      this.getAckRpt(this.__getAckFormData);
+    }
+  }
+  onselectItem(ev){
+    this.getAckRpt(this.__getAckFormData);
   }
 }

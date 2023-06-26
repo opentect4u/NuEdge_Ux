@@ -1,0 +1,10 @@
+[
+  {
+    "id":"F",
+    "bu_type":"Fresh"
+  },
+  {
+    "id":"R",
+    "bu_type":"Renewal"
+  }
+]

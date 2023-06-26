@@ -19,18 +19,9 @@
     </div>
 
   </div>
-<mat-dialog-content>
-  <div class="card my-5">
-    <div class="card-body p-5">
+<mat-dialog-content class="customDialog">
+  <div class="card p-3 border-1">
   <form [formGroup]="__trnsType" (ngSubmit)="submit()" autocomplete="off">
-    <!-- <div class="row ">
-      <div class="col-sm-6 my-auto">
-          <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
-            <mat-radio-button value="2">Summary</mat-radio-button>
-            <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
-          </mat-radio-group>
-      </div>
-    </div> -->
     <ng-container>
       <div class="row ">
         <div class="col-sm-5">
@@ -42,156 +33,145 @@
            class="form-control"
            formControlName="sip_type_name">
         </div>
-        <div class="col-sm-7 my-auto">
-          <button mat-raised-button  color="primary" class="float-right">
-            Show
-          </button>
-      </div>
-      </div>
-      <!-- <div class="row">
-        <div class="col-sm-7">
-            <button mat-raised-button  color="primary" class="float-right">
-              Show
-            </button>
+        <div class="col-sm-7 d-flex justify-content-end align-items-end">
+          <p-button
+          type="submit"
+          label="Show"
+          icon="pi pi-eye"
+          iconPos="right"
+          styleClass="p-button-lg"></p-button>
         </div>
-      </div> -->
+      </div>
     </ng-container>
 
   </form>
-  </div>
 </div>
-<div class="mat-elevation-z3">
+<div class="card border-1 rounded-top mt-2">
+
   <div class="example_container_header">
+    <div class="transTypeCount">
+      <h4></h4>
+    </div>
     <div class="btnGrp">
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-        <mat-icon>system_update_alt</mat-icon>
-      </button>
+      <p-button icon="pi pi-file-export"
+      [matMenuTriggerFor]="menu"
+      [matTooltipPosition]="'after'"
+      #tooltip="matTooltip"
+      matTooltip="Export"
+      styleClass="p-button-primary p-button-lg p-button-outlined">
+      </p-button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="exportPdf()">
           <mat-icon>download</mat-icon> Export Pdf
         </button>
-        <button mat-menu-item  (click)="exporter.exportTable('xlsx',{fileName:'SIP Type'})">
+        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SIP Type Report'})">
           <mat-icon>download</mat-icon> Export Excel
         </button>
       </mat-menu>
-      <!-- <button class="float-right" color="primary" type="button" mat-button (click)="exportPdf()">
-        <mat-icon>download</mat-icon> Export Pdf
-      </button>
-      <button class="float-right" color="primary" type="button" mat-button
-        (click)="exporter.exportTable('xlsx',{fileName:'SIP Type'})">
-        <mat-icon>download</mat-icon> Export Excel
-      </button> -->
+      </div>
     </div>
+    <div class="container_body">
+      <p-table
+      (onLazyLoad)="customSort($event)"
+        [customSort]="true"
+          sortMode="single"
+          [lazy]="true"
+      [value]="__selecttrnsType.data"
+      [columns]="__columns" [resizableColumns]="true"
+        selectionMode="multiple"
+        columnResizeMode="expand" [scrollable]="true"
+        scrollHeight="358px"
+        [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+        [tableStyle]="{ 'min-width': '100rem' }">
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 25rem">
+              {{ col.header }}
+              <p-sortIcon *ngIf="col.field!= 'edit'" [field]="col.field">
+              </p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-sipType let-columns="columns" let-i="rowIndex">
+          <tr tabindex="999">
+            <td *ngFor="let col of columns">
+              <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="col.field == 'edit'">
+                  <p-button icon="pi pi-pencil" (click)="populateDT(sipType)"
+                    styleClass="p-button-rounded p-button-primary"></p-button>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  <span #tooltip="matTooltip" [matTooltip]="sipType[col.field]">
+                    {{ sipType[col.field] ? sipType[col.field] : 'N/A' }}
+                  </span>
+                </ng-container>
 
-  </div>
-  <div class="example-container">
-    <table mat-table [dataSource]="__selecttrnsType" class="table_Custome" matSort (matSortChange)="sortData($event)">
-      <!-- Sl No. -->
-      <ng-container matColumnDef="sl_no">
-        <th mat-header-cell *matHeaderCellDef>Sl No</th>
-        <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
-      </ng-container>
+
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+               No Records Found
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
 
 
+      <div class="paginator">
+        <div class="itemsPerPage d-flex">
+          <label class="mr-3">Items per page: </label>
+          <p-selectButton
+          [options]="itemsPerPage"
+           optionLabel="label" optionValue="value"
+           (onOptionClick)="onselectItem($event)"
+           ></p-selectButton>
+        </div>
+        <div  class="paginatorContainer">
+          <ul>
+            <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+              <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                *ngIf="(paginate.label | bnkrplc) == 'P'">
+                <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                  keyboard_double_arrow_left</mat-icon>
+              </a>
+              <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                *ngIf="(paginate.label | bnkrplc) == 'N'">
+                <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                  keyboard_double_arrow_right</mat-icon>
+              </a>
+              <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                {{paginate.label}}
+              </a>
+            </li>
+          </ul>
+          </div>
 
-      <!--Temporary TIN No.-->
-      <ng-container matColumnDef="sip_type_name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header="sip_type_name">SIP Type</th>
-        <td mat-cell *matCellDef="let element">{{element.sip_type_name}}</td>
-      </ng-container>
-
-
-      <!-- Buisness Type-->
-      <ng-container matColumnDef="edit">
-        <th mat-header-cell *matHeaderCellDef>Edit</th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-icon-button (click)="populateDT(element)">
-            <mat-icon class="edit_icon">edit</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <!-- Buisness Type-->
-      <!-- <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>Delete</th>
-        <td mat-cell *matCellDef="let element;let i = index">
-          <button mat-icon-button (click)="delete(element,i)">
-            <mat-icon class="delete_icon">delete</mat-icon>
-          </button>
-        </td>
-      </ng-container> -->
-
-      <tr mat-header-row *matHeaderRowDef="__columns"></tr>
-      <tr mat-row *matRowDef="let row; columns: __columns;"></tr>
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" [attr.colspan]="__columns.length"  class="text-center">No SIP History Found</td>
-      </tr>
-    </table>
-</div>
-  <div class="paginator">
-    <div class="itemsPerPage">
-      <label>Items Per Page :&nbsp; </label>
-      <mat-button-toggle-group #group="matButtonToggleGroup">
-        <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(group.value)">
-          10
-        </mat-button-toggle>
-        <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(group.value)">
-          50
-        </mat-button-toggle>
-        <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(group.value)">
-          100
-        </mat-button-toggle>
-        <mat-button-toggle value="A" aria-label="Text align right" (click)="getval(group.value)">
-          All
-        </mat-button-toggle>
-      </mat-button-toggle-group>
+      </div>
     </div>
-
-    <div class="paginatorContainer">
-      <mat-button-toggle-group *ngFor="let paginate of __paginate">
-        <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
-          <label>
-            <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
-            <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
-            <span
-              *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
-
-          </label>
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-
-
-
-
-  </div>
-
-  <table id="SipType"
-  style="display:none" mat-table
-  [dataSource]="__export"
-  matTableExporter
-  #exporter="matTableExporter">
-
-
-  <ng-container matColumnDef="sl_no">
-    <th mat-header-cell *matHeaderCellDef>Sl No</th>
-    <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
-  </ng-container>
-
-
-      <!--Temporary TIN No.-->
-      <ng-container matColumnDef="sip_type_name">
-        <th mat-header-cell *matHeaderCellDef>SIP Type</th>
-        <td mat-cell *matCellDef="let element">{{element.sip_type_name}}</td>
-      </ng-container>
-
-
+    <table id="SipType"
+    style="display:none" mat-table
+    [dataSource]="__export"
+    matTableExporter
+    #exporter="matTableExporter">
+    <ng-container matColumnDef="sl_no">
+      <th mat-header-cell *matHeaderCellDef>Sl No</th>
+      <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+    </ng-container>
+    <ng-container matColumnDef="sip_type_name">
+          <th mat-header-cell *matHeaderCellDef>SIP Type</th>
+          <td mat-cell *matCellDef="let element">{{element.sip_type_name}}</td>
+    </ng-container>
     <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
     <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No SIP History Found</td>
+      <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Records Found</td>
     </tr>
-  </table>
+    </table>
 </div>
 </mat-dialog-content>
 </div>

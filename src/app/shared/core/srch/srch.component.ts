@@ -55,7 +55,9 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
   }
   /** show or hide the result */
   displaySearchReult(display_mode){
-    if(display_mode){
+    console.log(this.search);
+
+    if(display_mode && this.search){
       this.search.nativeElement.style.display = display_mode;
     }
   }

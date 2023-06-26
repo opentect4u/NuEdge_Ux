@@ -8,15 +8,24 @@ import { dates } from 'src/app/__Utility/disabledt';
 import buType from '../../../../../assets/json/buisnessType.json';
 import kycLoginType from '../../../../../assets/json/kycloginType.json';
 import { UtiliService } from 'src/app/__Services/utils.service';
-
+import { global } from 'src/app/__Utility/globalFunc';
+import loggedStatus from '../../../../../assets/json/loginstatus.json';
+import updateStatus from '../../../../../assets/json/updateStatus.json';
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
   selector: 'kyc-rpt-filter',
   templateUrl: './rpt-filter.component.html',
   styleUrls: ['./rpt-filter.component.css']
 })
 export class RptFilterComponent implements OnInit {
+  UpdateStatus = updateStatus;
+  __logggedInStatus =loggedStatus;
   settings = this.__utility.settingsfroMultiselectDropdown('id','rnt_name','Search');
-
+  selectBtn:selectBtn[] = [];
   @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
   @ViewChild('searchTin') __searchTin: ElementRef;
   @ViewChild('clientCd') __clientCode: ElementRef;
@@ -41,17 +50,21 @@ __kycLoginAt: any=[];
   @Output() getKycMst = new EventEmitter<any>();
   @Output() resetKycMst = new EventEmitter<any>();
   @Output() setClms = new EventEmitter<any>();
-
+  @Input() RPTFor:string;
   __isAdd: boolean =false;
   __kycFilterForm = new FormGroup({
+    is_all: new FormControl(false),
+    is_all_mu: new FormControl(false),
     is_all_bu_type: new FormControl(false),
     options: new FormControl('2'),
+    btnType: new FormControl('R'),
+    date_range: new FormControl(''),
     sub_brk_cd: new FormControl(''),
     tin_no: new FormControl(''),
     client_code: new FormControl(''),
     euin_no: new FormControl(''),
     brn_cd: new FormControl(''),
-    bu_type: new FormArray([]),
+    // bu_type: new FormArray([]),
     date_status: new FormControl('T'),
     start_date: new FormControl(this.getTodayDate()),
     end_date: new FormControl(this.getTodayDate()),
@@ -61,12 +74,47 @@ __kycLoginAt: any=[];
     to_dt: new FormControl(''),
     kyc_login_at: new FormControl(''),
     kyc_login:new FormControl(''),
+    ack_logged_status: new FormArray([]),
+    update_status_id: new FormArray([])
   });
+
 
   constructor(private __dbIntr: DbIntrService,private __utility: UtiliService) { }
 
+  get ack_logged_status(): FormArray{
+    return this.__kycFilterForm.get('ack_logged_status') as FormArray;
+  }
+  get update_status_id():FormArray{
+    return this.__kycFilterForm.get('update_status_id') as FormArray;
+  }
   ngOnInit(): void {
     this.submit();
+    this.addLoggedStatus();
+    this.addUpdateStatus();
+    this.setBtn();
+  }
+
+  setBtn(){
+    // this.selectBtn = (this.RPTFor == 'M' || this.RPTFor == 'A') ? [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
+    // : [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
+    this.selectBtn = [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }];
+  }
+
+ addUpdateStatus(){
+  if(this.RPTFor == 'M'){
+   this.UpdateStatus.forEach(el =>{
+    this.update_status_id.push(this.setLoggedStatusFormData(el));
+   })
+  }
+ }
+
+  addLoggedStatus(){
+    if(this.RPTFor == 'A'){
+      this.__logggedInStatus.forEach(el =>{
+        this.ack_logged_status.push(this.setLoggedStatusFormData(el));
+    })
+    }
+
   }
   ngOnChanges(simple: SimpleChanges){
     console.log(simple);
@@ -79,8 +127,19 @@ __kycLoginAt: any=[];
         to_dt: this.getTodayDate(),
        })
     }
-
   }
+  setLoggedStatusFormData(loggedStatus){
+   return new FormGroup({
+    id:new FormControl(loggedStatus ? loggedStatus.id : 0),
+    name:new FormControl(loggedStatus ? loggedStatus.name : 0),
+    value:new FormControl(loggedStatus ? loggedStatus.value : ''),
+    isChecked:new FormControl(false)
+   })
+  }
+  getMinDate() {
+      return new Date(dates.getminDate());
+  }
+
   getKycLoginAtMaster(kyc_login){
 
     this.__dbIntr.api_call(0, kyc_login == 'A' ? '/amc' : '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe(res => {
@@ -107,11 +166,25 @@ __kycLoginAt: any=[];
     }
 }
   ngAfterViewInit(){
-
+    this.__kycFilterForm.controls['dt_type'].valueChanges.subscribe((res) => {
+      this.__kycFilterForm.controls['date_range'].reset(
+        res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+      );
+      this.__kycFilterForm.controls['frm_dt'].reset(
+        res && res != 'R' ? dates.calculateDT(res) : ''
+      );
+      this.__kycFilterForm.controls['to_dt'].reset(
+        res && res != 'R' ? dates.getTodayDate() : ''
+      );
+      if (res && res != 'R') {
+        this.__kycFilterForm.controls['date_range'].disable();
+      } else {
+        this.__kycFilterForm.controls['date_range'].enable();
+      }
+    });
 
     this.__kycFilterForm.controls['options'].valueChanges.subscribe((res) => {
-      // this.setColumns(res);
-      this.setClms.emit(res);
+      this.setClms.emit(this.__kycFilterForm.getRawValue());
   });
 
     this.__kycFilterForm.get('kyc_login').valueChanges.subscribe(res => {
@@ -125,26 +198,6 @@ __kycLoginAt: any=[];
         default: break;
       }
     })
-
-
-    this.__kycFilterForm.controls['dt_type'].valueChanges.subscribe((res) => {
-      this.__kycFilterForm.controls['frm_dt'].reset(
-        res && res != 'R' ? dates.calculateDT(res) : ''
-      );
-      this.__kycFilterForm.controls['to_dt'].reset(
-        res && res != 'R' ? dates.getTodayDate() : ''
-      );
-      if( res && res != 'R'){
-        this.__kycFilterForm.controls['frm_dt'].disable();
-        this.__kycFilterForm.controls['to_dt'].disable();
-      }
-      else{
-        this.__kycFilterForm.controls['frm_dt'].enable();
-        this.__kycFilterForm.controls['to_dt'].enable();
-      }
-
-    });
-
     // EUIN NUMBER SEARCH
       this.__kycFilterForm.controls['euin_no'].valueChanges
       .pipe(
@@ -242,18 +295,41 @@ __kycLoginAt: any=[];
        error: (err) => (this.__isTinspinner = false),
      });
 
-    this.__kycFilterForm.controls['is_all_bu_type'].valueChanges.subscribe((res) => {
-      const bu_type: FormArray = this.__kycFilterForm.get('bu_type') as FormArray;
-      bu_type.clear();
-      if (!res) {
-        this.uncheckAll_buType();
-      } else {
-        this.__bu_type.forEach((__el) => {
-          bu_type.push(new FormControl(__el.id));
-        });
-        this.checkAll_buType();
-      }
-    });
+    // this.__kycFilterForm.controls['is_all_bu_type'].valueChanges.subscribe((res) => {
+    //   const bu_type: FormArray = this.__kycFilterForm.get('bu_type') as FormArray;
+    //   bu_type.clear();
+    //   if (!res) {
+    //     this.uncheckAll_buType();
+    //   } else {
+    //     this.__bu_type.forEach((__el) => {
+    //       bu_type.push(new FormControl(__el.id));
+    //     });
+    //     this.checkAll_buType();
+    //   }
+    // });
+        /** Change event occur when all rnt checkbox has been changed  */
+        this.__kycFilterForm.controls['is_all'].valueChanges.subscribe(res =>{
+          this.ack_logged_status.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+        })
+        /** End */
+
+        /** Change event inside the formArray */
+        this.ack_logged_status.valueChanges.subscribe(res =>{
+        this.__kycFilterForm.controls['is_all'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+        })
+        /*** End */
+
+        /** Change event occur when all rnt checkbox has been changed  */
+        this.__kycFilterForm.controls['is_all_mu'].valueChanges.subscribe(res =>{
+          this.update_status_id.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+        })
+        /** End */
+
+        /** Change event inside the formArray */
+        this.update_status_id.valueChanges.subscribe(res =>{
+        this.__kycFilterForm.controls['is_all_mu'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+        })
+        /*** End */
   }
   getTodayDate(){
     return dates.getTodayDate();
@@ -262,24 +338,34 @@ __kycLoginAt: any=[];
    this.getKycMst.emit(this.__kycFilterForm.value);
   }
   reset(){
-    this.__kycFilterForm.reset();
     this.__kycFilterForm.get('options').setValue('2');
     this.__kycFilterForm.patchValue({
       start_date:this.getTodayDate(),
-      end_date: this.getTodayDate()
+      end_date: this.getTodayDate(),
+      date_range:'',
+      sub_brk_cd:'',
+      tin_no:'',
+      client_code:'',
+      date_status:'T',
+      login_status:'N',
+      kyc_login_at:'',
+      kyc_login:'',
     });
+    this.__kycFilterForm.get('is_all').setValue(false);
+    this.__kycFilterForm.get('is_all_mu').setValue(false);
+
     this.resetKycMst.emit(this.__kycFilterForm.value);
   }
-  uncheckAll_buType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAll_buType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = true;
-    });
-  }
+  // uncheckAll_buType() {
+  //   this.__buTypeChecked.forEach((element: any) => {
+  //     element.checked = false;
+  //   });
+  // }
+  // checkAll_buType() {
+  //   this.__buTypeChecked.forEach((element: any) => {
+  //     element.checked = true;
+  //   });
+  // }
   /* For TIN Result Hide */
   outsideClickforTin(__ev) {
     if (__ev) {
@@ -352,26 +438,42 @@ __kycLoginAt: any=[];
         break;
     }
   }
-  onbuTypeChange(e: any){
-    const bu_type: FormArray = this.__kycFilterForm.get('bu_type') as FormArray;
-    if (e.checked) {
-      bu_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      bu_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          bu_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__kycFilterForm.get('is_all_bu_type').setValue(
-      bu_type.controls.length == 3 ? true : false,
-      { emitEvent: false }
-    );
-  }
+  // onbuTypeChange(e: any){
+  //   const bu_type: FormArray = this.__kycFilterForm.get('bu_type') as FormArray;
+  //   if (e.checked) {
+  //     bu_type.push(new FormControl(e.source.value));
+  //   } else {
+  //     let i: number = 0;
+  //     bu_type.controls.forEach((item: any) => {
+  //       if (item.value == e.source.value) {
+  //         bu_type.removeAt(i);
+  //         return;
+  //       }
+  //       i++;
+  //     });
+  //   }
+  //   this.__kycFilterForm.get('is_all_bu_type').setValue(
+  //     bu_type.controls.length == 3 ? true : false,
+  //     { emitEvent: false }
+  //   );
+  // }
   getminDate(){
     return dates.getminDate();
   }
+  onItemClick(ev){
+    if(ev.option.value == 'A'){
+      //Advance Filter
+      this.__isAdd=!this.__isAdd;
+    }
+    else{
+      //Reset
+      this.reset();
+    }
+  }
+  close(ev){
+    this.__kycFilterForm.patchValue({
+      frm_dt: this.__kycFilterForm.getRawValue().date_range ? dates.getDateAfterChoose(this.__kycFilterForm.getRawValue().date_range[0]) : '',
+      to_dt: this.__kycFilterForm.getRawValue().date_range ? (global.getActualVal(this.__kycFilterForm.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.__kycFilterForm.getRawValue().date_range[1]) : '') : ''
+    });
+}
 }

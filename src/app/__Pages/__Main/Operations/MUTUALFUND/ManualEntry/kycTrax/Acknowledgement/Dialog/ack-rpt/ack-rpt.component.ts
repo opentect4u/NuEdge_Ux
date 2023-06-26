@@ -13,24 +13,34 @@ import { AckEntryComponent } from '../ack-entry/ack-entry.component';
 import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
+import { column } from 'src/app/__Model/tblClmns';
+import { sort } from 'src/app/__Model/sort';
+import itemsPerPage from '../../../../../../../../../../assets/json/itemsPerPage.json';
 
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
   selector: 'app-ack-rpt',
   templateUrl: './ack-rpt.component.html',
   styleUrls: ['./ack-rpt.component.css']
 })
 export class AckRptComponent implements OnInit {
+  itemsPerPage:selectBtn[] = itemsPerPage;
+  isOpenMegaMenu:boolean = false;
+  sort =new sort();
   __isVisible: boolean = true;
   __ackRpt = new MatTableDataSource<any>([]);
   __export = new MatTableDataSource<any>([]);
   __paginate: any = [];
   __pageNumber = new FormControl(10);
-  __columns: string[] = [];
+  __columns: column[] = [];
   __exportedClmns: string[] =[];
-  clmSelector = new FormControl();
-  clmHolder = kycClm.clmSelector.filter((x: any) => !['mu_frm_view'].includes(x));
+  selectedColmn:string[] =[];
+  ClmList:column[] = kycClm.Details.filter((x: any) => !['mu_frm_view'].includes(x));
   __getAckFormData: any;
-  __sortAscOrDsc = {active: '',direction:'asc'};
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
@@ -69,15 +79,14 @@ export class AckRptComponent implements OnInit {
 
 
   reset(__ev){
-    this.__sortAscOrDsc = {active:'',direction:'asc'};
+    this.sort = new sort();
     this.getAckRpt(__ev);
   }
-  setColumns(event){
-    console.log(event);
+  setColumns(res){
     const clmToRemoved = ['edit','app_form_view','ack_form_view','mu_frm_view','delete'];
-    this.__columns = event == 1 ? kycClm.details.filter((x: any) => !['mu_frm_view'].includes(x)) : kycClm.summary.filter((x: any) => !['mu_frm_view'].includes(x));
-    this.__exportedClmns = this.__columns.filter(x => !clmToRemoved.includes(x));
-    this.clmSelector.setValue(this.__columns);
+    this.__columns = res.options == 1 ? (kycClm.Details.filter(x => !['mu_frm_view'].includes(x.field))) : (kycClm.Summary_copy.filter((x: any) => !['mu_frm_view'].includes(x.field)));
+    this.selectedColmn =  this.__columns.map(item => {return item['field']});
+    this.__exportedClmns = this.__columns.filter(x => !clmToRemoved.includes(x.field)).map(item => {return item['field']});
   }
 
   getAckRpt(kycFormDt){
@@ -85,9 +94,10 @@ export class AckRptComponent implements OnInit {
     const __kycAck = new FormData();
       __kycAck.append('paginate',this.__pageNumber.value);
       __kycAck.append('option', kycFormDt.options);
-      __kycAck.append('column_name',this.__sortAscOrDsc.active);
-      __kycAck.append('sort_by',this.__sortAscOrDsc.direction);
+      __kycAck.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+      __kycAck.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
       if( kycFormDt.options != '3'){
+        __kycAck.append('login_status_id',JSON.stringify(kycFormDt.ack_logged_status.filter(item => item.isChecked).map(res => {return res['id']})));
         __kycAck.append('from_date',global.getActualVal(kycFormDt.frm_dt));
         __kycAck.append('to_date',global.getActualVal(kycFormDt.to_dt));
         __kycAck.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
@@ -108,12 +118,12 @@ export class AckRptComponent implements OnInit {
         'sub_brk_cd',
         kycFormDt.sub_brk_cd ? kycFormDt.sub_brk_cd : ''
       );
-      __kycAck.append(
-        'bu_type',
-        kycFormDt.bu_type.length > 0
-          ? JSON.stringify(kycFormDt.bu_type)
-          : ''
-      );
+      // __kycAck.append(
+      //   'bu_type',
+      //   kycFormDt.bu_type.length > 0
+      //     ? JSON.stringify(kycFormDt.bu_type)
+      //     : ''
+      // );
       __kycAck.append(
         'branch',global.getActualVal(kycFormDt.brn_cd));
     }
@@ -136,29 +146,15 @@ export class AckRptComponent implements OnInit {
         this.__export = new MatTableDataSource(res);
       })
     }
-    ngAfterViewInit() {
 
-      this.clmSelector.valueChanges.subscribe((res) => {
-        const clm = ['edit','app_form_view','ack_form_view',,'mu_frm_view','delete']
-        this.__columns = res;
-        this.__exportedClmns = res.filter(item => !clm.includes(item))
-      });
-    }
-    sortData(sort){
-      this.__sortAscOrDsc =sort;
-      this.getAckRpt(this.__getAckFormData);
-    }
-    getval(__paginate) {
-      this.__pageNumber.setValue(__paginate.toString());
-     this.showItemPerpage(this.__getAckFormData)
-   }
    showItemPerpage(kycFormDt){
     const __kyc = new FormData();
     __kyc.append('paginate',this.__pageNumber.value);
     __kyc.append('option', kycFormDt.options);
-    __kyc.append('column_name',this.__sortAscOrDsc.active);
-    __kyc.append('sort_by',this.__sortAscOrDsc.direction);
+    __kyc.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __kyc.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
     if( kycFormDt.options != '3'){
+       __kyc.append('login_status_id',JSON.stringify(kycFormDt.ack_logged_status.filter(item => item.isChecked).map(res => {return res['id']})));
       __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
       __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
       __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
@@ -179,12 +175,12 @@ export class AckRptComponent implements OnInit {
       'sub_brk_cd',
       kycFormDt.sub_brk_cd ? kycFormDt.sub_brk_cd : ''
     );
-    __kyc.append(
-      'bu_type',
-      kycFormDt.bu_type.length > 0
-        ? JSON.stringify(kycFormDt.bu_type)
-        : ''
-    );
+    // __kyc.append(
+    //   'bu_type',
+    //   kycFormDt.bu_type.length > 0
+    //     ? JSON.stringify(kycFormDt.bu_type)
+    //     : ''
+    // );
     __kyc.append(
       'branch',global.getActualVal(kycFormDt.brn_cd));
   }
@@ -207,12 +203,12 @@ export class AckRptComponent implements OnInit {
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
           + ('&option='+  this.__getAckFormData.options)
-          + ('&sort_by=' + this.__sortAscOrDsc.direction)
-          + ('&column_name=' + this.__sortAscOrDsc.active)
+          +  ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+          +  ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
           +  (this.__getAckFormData.options != '3'
           ?  (('&client_code=' + (this.__getAckFormData.client_code ? this.__getAckFormData.client_code : ''))
           + ( '&sub_brk_cd=' + (this.__getAckFormData.sub_brk_cd ? this.__getAckFormData.sub_brk_cd : ''))
-          + ('&bu_type=' + (this.__getAckFormData.bu_type.length > 0 ? JSON.stringify(this.__getAckFormData.bu_type): ''))
+          // + ('&bu_type=' + (this.__getAckFormData.bu_type.length > 0 ? JSON.stringify(this.__getAckFormData.bu_type): ''))
           + ('&login_at=' + this.__getAckFormData.kyc_login_at)
           + ('&login_type=' + this.__getAckFormData.kyc_login)
           +('&from_date='+global.getActualVal(this.__getAckFormData.frm_dt))
@@ -220,6 +216,7 @@ export class AckRptComponent implements OnInit {
           +('&tin_no='+global.getActualVal(this.__getAckFormData.tin_no))
           +('&euin_no='+global.getActualVal(this.__getAckFormData.euin_no))
           +('&branch='+global.getActualVal(this.__getAckFormData.brn_cd)))
+          +('&login_status_id='+JSON.stringify(this.__getAckFormData.ack_logged_status.filter(item => item.isChecked).map(res => {return res['id']})))
           : (
           + ('&login_status=' + this.__getAckFormData.login_status)
           + ('&date_status=' + this.__getAckFormData.date_status)
@@ -315,4 +312,21 @@ export class AckRptComponent implements OnInit {
     };
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
   }
+  customSort(ev){
+   this.sort.order = ev.sortOrder;
+   this.sort.field = ev.sortField;
+   if(ev.sortField){
+    this.getAckRpt(this.__getAckFormData);
+   }
+
+  }
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.value);
+    this.showItemPerpage(this.__getAckFormData)
+ }
+ getSelectedColumns(columns){
+  const clm = ['edit', 'app_form_view','ack_form_view'];
+  this.__columns = columns.map(({ field, header }) => ({field, header}));
+  this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
+ }
 }

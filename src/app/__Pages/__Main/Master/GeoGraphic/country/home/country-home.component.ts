@@ -8,7 +8,6 @@ import { CountryEntryComponent } from '../Dialog/country-entry/country-entry.com
 import { ActivatedRoute } from '@angular/router';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { pluck } from 'rxjs/operators';
-import { CountryRPTComponent } from '../Dialog/country-rpt/country-rpt.component';
 @Component({
   selector: 'app-country-home',
   templateUrl: './country-home.component.html',
@@ -85,32 +84,6 @@ export class CountryHomeComponent implements OnInit {
       });
     }
   }
-  opendialogForReport(){
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = false;
-    dialogConfig.closeOnNavigation = false;
-    dialogConfig.disableClose = true;
-    dialogConfig.hasBackdrop = false;
-    dialogConfig.width = '90%';
-    dialogConfig.height = '100%';
-    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
-    dialogConfig.panelClass = "fullscreen-dialog"
-    dialogConfig.id = "GC",
-    dialogConfig.data = {
-       flag:'GC'
-    }
-    try {
-      const dialogref = this.__dialog.open(
-        CountryRPTComponent,
-        dialogConfig
-      );
-    } catch (ex) {
-      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
-      dialogRef.addPanelClass('mat_dialog');
-      this.__utility.getmenuIconVisible({
-       flag:'GC'
-      });
-    }
-  }
+  opendialogForReport(){}
 
 }

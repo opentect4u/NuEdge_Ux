@@ -34,101 +34,117 @@ import { dates } from 'src/app/__Utility/disabledt';
 import { global } from 'src/app/__Utility/globalFunc';
 import buType from '../../../../../../../../assets/json/buisnessType.json';
 import { RcvFormCrudComponent } from '../rcv-form-crud/rcv-form-crud.component';
+import filterOpt from '../../../../../../../../assets/json/filterOption.json';
+import { sort } from 'src/app/__Model/sort';
+import itemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
+import { fdRcvFrmClmns } from 'src/app/__Utility/fdColumns/rcvFrms';
+
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
   selector: 'app-rcv-form-rpt',
   templateUrl: './rcv-form-rpt.component.html',
   styleUrls: ['./rcv-form-rpt.component.css']
 })
 export class RcvFormRPTComponent implements OnInit {
-  @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
-  @ViewChild('searchEUIN') __searchRlt: ElementRef;
-  @ViewChild('searchTempTin') __searchTempTin: ElementRef;
-  @ViewChild('subBrkArn') __subBrkArn: ElementRef;
+  isOpenMegaMenu:boolean =false;
+  settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Employee',3);
+  settingsForbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',3 );
+  settingsForbuType = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',3);
+  settingsForRM = this.__utility.settingsfroMultiselectDropdown('id','manager_name','Search Relationship Manager',3);
+  settingsForsubCode = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',3);
+  settingsFortrnsType = this.__utility.settingsfroMultiselectDropdown('id','trans_name','Search Transaction Type',1)
+  // @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
+  // @ViewChild('searchEUIN') __searchRlt: ElementRef;
+  // @ViewChild('searchTempTin') __searchTempTin: ElementRef;
+  // @ViewChild('subBrkArn') __subBrkArn: ElementRef;
 
-  @ViewChild('clientCd') __clientCode: ElementRef;
+  // @ViewChild('clientCd') __clientCode: ElementRef;
   __isClientPending: boolean = false;
-  __isEuinPending: boolean = false;
+  // __isEuinPending: boolean = false;
   __istemporaryspinner: boolean = false;
-  __isSubArnPending: boolean = false;
-
+  // __isSubArnPending: boolean = false;
+  displayMode_forTemp_Tin:string;
+  displayMode_forClient:string;
   __clientMst: client[] = [];
   __euinMst: any = [];
   __temp_tinMst: any = [];
   __subbrkArnMst: any = [];
 
-  __sortAscOrDsc: any = { active: '', direction: 'asc' };
-  toppings = new FormControl();
-  toppingList: any = [
-    { id: 'edit', text: 'Edit' },
-    { id: 'delete', text: 'Delete' },
-    { id: 'sl_no', text: 'Sl No' },
-    { id: 'temp_tin_no', text: 'Temporary Tin Number' },
-    { id: 'bu_type', text: 'Buisness type' },
-    { id: 'sub_brk_cd', text: 'Sub Broker Code' },
-    { id: 'euin_no', text: 'Employee' },
-    {id:'fd_bu_type', text:'FD Buisness Type'},
-    { id: 'company_name', text: 'Company' },
-    { id: 'scheme_name', text: 'Scheme' },
-    { id: 'investor_name', text: 'Investor' },
-    { id: 'rcv_datetime', text: 'Receive DateTime' },
-    { id: 'recv_from', text: 'Reaceive From' },
-  ];
-  __bu_type = buType;
-  __kycStatus: any = [
-    { id: 'Y', status: 'With KYC' },
-    { id: 'N', status: 'Without KYC' },
-  ];
+  // __sortAscOrDsc: any = { active: '', direction: 'asc' };
+  // toppings = new FormControl();
+  // toppingList: any = [
+  //   { id: 'edit', text: 'Edit' },
+  //   { id: 'delete', text: 'Delete' },
+  //   { id: 'sl_no', text: 'Sl No' },
+  //   { id: 'temp_tin_no', text: 'Temporary Tin' },
+  //   { id: 'bu_type', text: 'Buisness type' },
+  //   { id: 'sub_brk_cd', text: 'Sub Broker Code' },
+  //   { id: 'euin_no', text: 'Employee' },
+  //   {id:'fd_bu_type', text:'FD Buisness Type'},
+  //   { id: 'company_name', text: 'Company' },
+  //   { id: 'scheme_name', text: 'Scheme' },
+  //   { id: 'investor_name', text: 'Investor' },
+  //   { id: 'rcv_datetime', text: 'Receive DateTime' },
+  //   { id: 'recv_from', text: 'Reaceive From' },
+  // ];
+  __bu_type:any =[];
+  // __kycStatus: any = [
+  //   { id: 'Y', status: 'With KYC' },
+  //   { id: 'N', status: 'Without KYC' },
+  // ];
   __export = new MatTableDataSource<any>([]);
-  __isAdd: boolean = false;
+  // __isAdd: boolean = false;
   __isVisible: boolean = true;
   __RcvForms = new MatTableDataSource<any>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __paginate: any = [];
-  __columns: string[] = [];
-  __exportedClmns: string[] = [
-    'sl_no',
-    'temp_tin_no',
-    'bu_type',
-    'rcv_datetime',
-  ];
-  __columnsForSummary: string[] = [
-    'edit',
-    'delete',
-    'sl_no',
-    'temp_tin_no',
-    'bu_type',
-    'rcv_datetime',
-  ];
-  __columnsForDtls: string[] = [
-    'edit',
-    'delete',
-    'sl_no',
-    'temp_tin_no',
-    'bu_type',
-    'sub_brk_cd',
-    'euin_no',
-    'fd_bu_type',
-    'company_name',
-    'scheme_name',
-    'investor_name',
-    'rcv_datetime',
-    'recv_from',
-  ];
-  __rcvForms = new FormGroup({
-    options: new FormControl('2'),
-    investor_code: new FormControl(''),
-    recv_from: new FormControl(''),
-    sub_brk_cd: new FormControl(''),
-    euin_no: new FormControl(''),
-    temp_tin_no: new FormControl(''),
-    bu_type: new FormArray([]),
-    dt_type: new FormControl(''),
-    start_dt: new FormControl(''),
-    end_dt: new FormControl(''),
-    is_all_bu_type: new FormControl(false),
-  });
-  __insTypeMst: any = [];
+  __columns: any= [];
+  __exportedClmns: string[] = []
+  columnMst:any = fdRcvFrmClmns.Detail_column;
+  SelectedClms:string[] =[];
+  // __rcvForms = new FormGroup({
+  //   options: new FormControl('2'),
+  //   investor_code: new FormControl(''),
+  //   recv_from: new FormControl(''),
+  //   sub_brk_cd: new FormControl(''),
+  //   euin_no: new FormControl(''),
+  //   temp_tin_no: new FormControl(''),
+  //   bu_type: new FormArray([]),
+  //   dt_type: new FormControl(''),
+  //   start_dt: new FormControl(''),
+  //   end_dt: new FormControl(''),
+  //   is_all_bu_type: new FormControl(false),
+  // });
+  // __insTypeMst: any = [];
   __transType: any = [];
+  __brnchMst: any =[];
+  __rmMst: any =[];
+  sort = new sort();
+  itemsPerPage:selectBtn[] = itemsPerPage;
+  selectBtn:selectBtn[] = filterOpt
+  __rcvForms = new FormGroup({
+    option: new FormControl('2'),
+    btn_type: new FormControl('R'),
+    date_periods: new FormControl(''),
+    date_range: new FormControl(''),
+    frm_dt: new FormControl(''),
+    to_dt: new FormControl(''),
+    temp_tin: new FormControl(''),
+    client_name:new FormControl(''),
+    client_code: new FormControl(''),
+    trns_type: new FormControl([]),
+    recv_frm: new FormControl(''),
+    brn_cd: new FormControl([]),
+    bu_type: new FormControl([]),
+    rm_id: new FormControl([]),
+    sub_brk_cd: new FormControl([]),
+    emp_name: new FormControl([]),
+    euin_no: new FormControl([])
+  })
   constructor(
     private __Rpt: RPTService,
     private __dialog: MatDialog,
@@ -138,131 +154,195 @@ export class RcvFormRPTComponent implements OnInit {
     private overlay: Overlay,
     private __dbIntr: DbIntrService
   ) {}
-  __trans_types: any;
+  // __trans_types: any;
   ngOnInit() {
-    this.__columns = this.__columnsForSummary;
-    this.toppings.setValue(this.__columns);
-    this.getRcvForm();
+    this.setColumns(2);
   }
+  setColumns(res){
+    console.log(res);
+    const clmnsToRemove=['edit','delete'];
+    this.__columns = fdRcvFrmClmns.Detail_column.filter(item => item.isVisible.includes(Number(res)));
+    this.__exportedClmns = this.__columns.filter(item => !clmnsToRemove.includes(item.field)).map(item => item.field);
+    this.SelectedClms = this.__columns.map(item => item.field);
+    console.log(this.__exportedClmns);
+    console.log(this.SelectedClms);
+    console.log(this.__columns);
 
-  getRcvForm(
-    column_name: string | null = '',
-    sort_by: string | null | '' = 'asc'
-  ) {
-    const __rcvFormSearch = new FormData();
-    __rcvFormSearch.append('paginate', this.__pageNumber.value);
-    __rcvFormSearch.append(
-      'investor_code',
-      this.__rcvForms.value.investor_code
-        ? this.__rcvForms.value.investor_code
-        : ''
-    );
-    __rcvFormSearch.append(
-      'recv_from',
-      this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : ''
-    );
-    __rcvFormSearch.append(
-      'sub_brk_cd',
-      this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : ''
-    );
-    __rcvFormSearch.append(
-      'euin_no',
-      this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : ''
-    );
-    __rcvFormSearch.append(
-      'bu_type',
-      JSON.stringify(this.__rcvForms.value.bu_type)
-    );
-    __rcvFormSearch.append(
-      'temp_tin_no',
-      this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : ''
-    );
-    __rcvFormSearch.append('column_name', column_name);
-    __rcvFormSearch.append('sort_by', sort_by ? sort_by : 'asc');
-    __rcvFormSearch.append(
-      'start_date',
-      this.__rcvForms.getRawValue().start_dt
-    );
-    __rcvFormSearch.append('end_date', this.__rcvForms.getRawValue().end_dt);
-    this.__dbIntr
-      .api_call(1, '/fd/formreceivedDetailSearch', __rcvFormSearch)
+  }
+  getBranch(){
+    this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{
+        this.__brnchMst = res;
+    })
+  }
+  recvForm(){
+  const __fdForm = new FormData();
+  __fdForm.append('paginate',this.__pageNumber.value);
+  __fdForm.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+  __fdForm.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+  __fdForm.append('from_date', global.getActualVal(this.__rcvForms.getRawValue().frm_dt));
+  __fdForm.append('to_date', global.getActualVal(this.__rcvForms.getRawValue().to_dt));
+  __fdForm.append('investor_code',global.getActualVal(this.__rcvForms.value.client_code));
+  __fdForm.append('temp_tin_no',global.getActualVal(this.__rcvForms.value.temp_tin_no));
+  __fdForm.append('trans_type', JSON.stringify(this.__rcvForms.value.trns_type.map(item => {return item['id']})));
+  __fdForm.append('recv_from',global.getActualVal(this.__rcvForms.value.recv_from));
+  if(this.__rcvForms.value.btn_type == 'A'){
+    __fdForm.append('euin_no',JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]})));
+    __fdForm.append('brn_cd',JSON.stringify(this.__rcvForms.value.branch.map(item => {return item["id"]})));
+    __fdForm.append('bu_type',JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]})));
+    __fdForm.append('rm_id',JSON.stringify(this.__rcvForms.value.rm_name.map(item => {return item["id"]})));
+    __fdForm.append('sub_brk_cd',JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]})));
+  }
+    this.__dbIntr.api_call(1, '/fd/formreceivedDetailSearch', __fdForm)
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
         this.__paginate = res.links;
         this.__RcvForms = new MatTableDataSource(res.data);
-        this.__RcvForms._updateChangeSubscription();
-        this.tableExport(column_name, sort_by, __rcvFormSearch);
+        this.tableExport(__fdForm);
       });
   }
+  onItemClick(ev){
+    if(ev.option.value == 'A'){
+      //Advance Filter
+      this.getBranch();
+    }
+    else{
+      //Reset
+    }
+
+  }
+  reset(){
+  this.__rcvForms.patchValue({
+    frm_dt: '',
+     to_dt: '',
+     date_periods: '',
+    options: '2',
+    recv_from: '',
+    trans_type: '',
+    euin_no:[],
+    sub_brk_cd:[],
+    branch:[],
+    rm_id:[],
+    bu_type:[],
+    date_range:''
+  });
+  this.__rcvForms.get('client_code').setValue('');
+  this.__rcvForms.get('client_name').setValue('', { emitEvent: false });
+  this.__rcvForms.get('temp_tin_no').setValue('', { emitEvent: false });
+  this.sort = new sort();
+  this.__pageNumber.setValue('10');
+  this.recvForm();
+}
+  close(ev){
+    this.__rcvForms.patchValue({
+      frm_dt: this.__rcvForms.getRawValue().date_range ? dates.getDateAfterChoose(this.__rcvForms.getRawValue().date_range[0]) : '',
+      to_dt: this.__rcvForms.getRawValue().date_range ? (global.getActualVal(this.__rcvForms.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.__rcvForms.getRawValue().date_range[1]) : '') : ''
+    });
+}
+  // getRcvForm(
+  //   column_name: string | null = '',
+  //   sort_by: string | null | '' = 'asc'
+  // ) {
+  //   const __rcvFormSearch = new FormData();
+  //   __rcvFormSearch.append('paginate', this.__pageNumber.value);
+  //   __rcvFormSearch.append(
+  //     'investor_code',
+  //     this.__rcvForms.value.investor_code
+  //       ? this.__rcvForms.value.investor_code
+  //       : ''
+  //   );
+  //   __rcvFormSearch.append(
+  //     'recv_from',
+  //     this.__rcvForms.value.recv_from ? this.__rcvForms.value.recv_from : ''
+  //   );
+  //   __rcvFormSearch.append(
+  //     'sub_brk_cd',
+  //     this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : ''
+  //   );
+  //   __rcvFormSearch.append(
+  //     'euin_no',
+  //     this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : ''
+  //   );
+  //   __rcvFormSearch.append(
+  //     'bu_type',
+  //     JSON.stringify(this.__rcvForms.value.bu_type)
+  //   );
+  //   __rcvFormSearch.append(
+  //     'temp_tin_no',
+  //     this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : ''
+  //   );
+  //   __rcvFormSearch.append('column_name', column_name);
+  //   __rcvFormSearch.append('sort_by', sort_by ? sort_by : 'asc');
+  //   __rcvFormSearch.append(
+  //     'start_date',
+  //     this.__rcvForms.getRawValue().start_dt
+  //   );
+  //   __rcvFormSearch.append('end_date', this.__rcvForms.getRawValue().end_dt);
+  //   this.__dbIntr
+  //     .api_call(1, '/fd/formreceivedDetailSearch', __rcvFormSearch)
+  //     .pipe(map((x: any) => x.data))
+  //     .subscribe((res: any) => {
+  //       this.__paginate = res.links;
+  //       this.__RcvForms = new MatTableDataSource(res.data);
+  //       this.__RcvForms._updateChangeSubscription();
+  //       this.tableExport(column_name, sort_by, __rcvFormSearch);
+  //     });
+  // }
 
 
 
   ngAfterViewInit() {
-    this.__rcvForms.controls['options'].valueChanges.subscribe((res) => {
-      if (res == '1') {
-        this.__columns = this.__columnsForDtls;
-        this.toppings.setValue(this.__columnsForDtls);
-        this.__exportedClmns = [
-          'sl_no',
-          'temp_tin_no',
-          'bu_type',
-          'sub_brk_cd',
-          'euin_no',
-          'fd_bu_type',
-          'company_name',
-          'scheme_name',
-          'investor_name',
-          'rcv_datetime',
-          'recv_from',
-        ];
-      } else {
-        this.__columns = this.__columnsForSummary;
-        this.toppings.setValue(this.__columnsForSummary);
-        this.__exportedClmns = [
-          'sl_no',
-          'temp_tin_no',
-          'bu_type',
-          'rcv_datetime',
-        ];
-      }
-    });
-    this.toppings.valueChanges.subscribe((res) => {
-      const clm = ['edit', 'delete'];
-      this.__columns = res;
-      this.__exportedClmns = res.filter((item) => !clm.includes(item));
+    this.__rcvForms.controls['option'].valueChanges.subscribe((res) => {
+      this.setColumns(res)
     });
 
 
-    this.__rcvForms.controls['is_all_bu_type'].valueChanges.subscribe((res) => {
-      const bu_type: FormArray = this.__rcvForms.get('bu_type') as FormArray;
-      bu_type.clear();
-      if (!res) {
-        this.uncheckAll_buType();
-      } else {
-        this.__bu_type.forEach((__el) => {
-          bu_type.push(new FormControl(__el.id));
-        });
-        this.checkAll_buType();
-      }
-    });
-    this.__rcvForms.controls['dt_type'].valueChanges.subscribe((res) => {
-      this.__rcvForms.controls['start_dt'].reset(
-        res && res != 'R' ? dates.calculateDT(res) : ''
-      );
-      this.__rcvForms.controls['end_dt'].reset(
-        res && res != 'R' ? dates.getTodayDate() : ''
-      );
-      if( res && res != 'R'){
-        this.__rcvForms.controls['start_dt'].disable();
-        this.__rcvForms.controls['end_dt'].disable();
-      }
-      else{
-        this.__rcvForms.controls['start_dt'].enable();
-        this.__rcvForms.controls['end_dt'].enable();
-      }
+  //   this.__rcvForms.controls['is_all_bu_type'].valueChanges.subscribe((res) => {
+  //     const bu_type: FormArray = this.__rcvForms.get('bu_type') as FormArray;
+  //     bu_type.clear();
+  //     if (!res) {
+  //       this.uncheckAll_buType();
+  //     } else {
+  //       this.__bu_type.forEach((__el) => {
+  //         bu_type.push(new FormControl(__el.id));
+  //       });
+  //       this.checkAll_buType();
+  //     }
+  //   });
+  //   this.__rcvForms.controls['dt_type'].valueChanges.subscribe((res) => {
+  //     this.__rcvForms.controls['start_dt'].reset(
+  //       res && res != 'R' ? dates.calculateDT(res) : ''
+  //     );
+  //     this.__rcvForms.controls['end_dt'].reset(
+  //       res && res != 'R' ? dates.getTodayDate() : ''
+  //     );
+  //     if( res && res != 'R'){
+  //       this.__rcvForms.controls['start_dt'].disable();
+  //       this.__rcvForms.controls['end_dt'].disable();
+  //     }
+  //     else{
+  //       this.__rcvForms.controls['start_dt'].enable();
+  //       this.__rcvForms.controls['end_dt'].enable();
+  //     }
 
-    });
-    this.__rcvForms.controls['investor_code'].valueChanges
+  //   });
+  this.__rcvForms.controls['date_periods'].valueChanges.subscribe((res) => {
+    this.__rcvForms.controls['date_range'].reset(
+      res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+    );
+    this.__rcvForms.controls['frm_dt'].reset(
+      res && res != 'R' ? dates.calculateDT(res) : ''
+    );
+    this.__rcvForms.controls['to_dt'].reset(
+      res && res != 'R' ? dates.getTodayDate() : ''
+    );
+    if (res && res != 'R') {
+      this.__rcvForms.controls['date_range'].disable();
+    } else {
+      this.__rcvForms.controls['date_range'].enable();
+    }
+  });
+
+    this.__rcvForms.controls['client_name'].valueChanges
       .pipe(
         tap(() => (this.__isClientPending = true)),
         debounceTime(200),
@@ -283,38 +363,38 @@ export class RcvFormRPTComponent implements OnInit {
           this.__isClientPending = false;
         },
       });
-    // EUIN NUMBER SEARCH
-    this.__rcvForms.controls['euin_no'].valueChanges
-      .pipe(
-        tap(() => (this.__isEuinPending = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/employee', dt) : []
-        ),
-        map((x: responseDT) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.__euinMst = value;
-          this.searchResultVisibility('block');
-          this.__isEuinPending = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => {
-          this.__isEuinPending = false;
-        },
-      });
+  //   // EUIN NUMBER SEARCH
+  //   this.__rcvForms.controls['euin_no'].valueChanges
+  //     .pipe(
+  //       tap(() => (this.__isEuinPending = true)),
+  //       debounceTime(200),
+  //       distinctUntilChanged(),
+  //       switchMap((dt) =>
+  //         dt?.length > 1 ? this.__dbIntr.searchItems('/employee', dt) : []
+  //       ),
+  //       map((x: responseDT) => x.data)
+  //     )
+  //     .subscribe({
+  //       next: (value) => {
+  //         this.__euinMst = value;
+  //         this.searchResultVisibility('block');
+  //         this.__isEuinPending = false;
+  //       },
+  //       complete: () => console.log(''),
+  //       error: (err) => {
+  //         this.__isEuinPending = false;
+  //       },
+  //     });
 
-    // Temporary Tin Number
-    this.__rcvForms.controls['temp_tin_no'].valueChanges
+  //   // Temporary Tin Number
+    this.__rcvForms.controls['temp_tin'].valueChanges
       .pipe(
         tap(() => (this.__istemporaryspinner = true)),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
           dt?.length > 1
-            ? this.__dbIntr.searchTin('/ins/formreceived', dt)
+            ? this.__dbIntr.searchTin('/fd/formreceived', dt)
             : []
         ),
         map((x: responseDT) => x.data)
@@ -329,97 +409,127 @@ export class RcvFormRPTComponent implements OnInit {
         error: (err) => (this.__istemporaryspinner = false),
       });
 
-    /**change Event of sub Broker Arn Number */
-    this.__rcvForms.controls['sub_brk_cd'].valueChanges
-      .pipe(
-        tap(() => (this.__isSubArnPending = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
-        ),
-        map((x: responseDT) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.__subbrkArnMst = value;
-          this.searchResultVisibilityForSubBrk('block');
-          this.__isSubArnPending = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => {
-          this.__isSubArnPending = false;
-        },
-      });
+  //   /**change Event of sub Broker Arn Number */
+  //   this.__rcvForms.controls['sub_brk_cd'].valueChanges
+  //     .pipe(
+  //       tap(() => (this.__isSubArnPending = true)),
+  //       debounceTime(200),
+  //       distinctUntilChanged(),
+  //       switchMap((dt) =>
+  //         dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
+  //       ),
+  //       map((x: responseDT) => x.data)
+  //     )
+  //     .subscribe({
+  //       next: (value) => {
+  //         this.__subbrkArnMst = value;
+  //         this.searchResultVisibilityForSubBrk('block');
+  //         this.__isSubArnPending = false;
+  //       },
+  //       complete: () => console.log(''),
+  //       error: (err) => {
+  //         this.__isSubArnPending = false;
+  //       },
+  //     });
   }
 
 
-  uncheckAll_buType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAll_buType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = true;
-    });
-  }
-  tableExport(
-    column_name: string | null = '',
-    sort_by: string | null | '' = 'asc',
-    __frmData
-  ) {
+  // uncheckAll_buType() {
+  //   this.__buTypeChecked.forEach((element: any) => {
+  //     element.checked = false;
+  //   });
+  // }
+  // checkAll_buType() {
+  //   this.__buTypeChecked.forEach((element: any) => {
+  //     element.checked = true;
+  //   });
+  // }
+  tableExport(__frmData) {
     __frmData.delete('paginate');
     this.__dbIntr
       .api_call(1, '/fd/formreceivedExport', __frmData)
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
         this.__export = new MatTableDataSource(res);
-        this.__export._updateChangeSubscription();
       });
   }
 
-  getval(__itemsPerPage) {
-    this.__pageNumber.setValue(__itemsPerPage);
-    this.submit();
-  }
+  // getval(__itemsPerPage) {
+  //   this.__pageNumber.setValue(__itemsPerPage);
+  //   this.submit();
+  // }
   getPaginate(__paginate) {
-    if (__paginate.url) {
+    if(__paginate.url){
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&sort_by=' + this.__sortAscOrDsc.direction) +
-            ('&ins_type_id=' +
-              JSON.stringify(this.__rcvForms.value.ins_type_id)) +
-            ('&start_date=' +
-              global.getActualVal(this.__rcvForms.getRawValue().start_dt)) +
-            ('&end_date=' +
-              global.getActualVal(this.__rcvForms.value.getRawValue().end_dt)) +
-            ('&column_name=' + this.__sortAscOrDsc.active) +
-            ('&investor_code=' + this.__rcvForms.value.investor_code
-              ? this.__rcvForms.value.investor_code
-              : '') +
-            ('&recv_from=' + this.__rcvForms.value.recv_from
-              ? this.__rcvForms.value.recv_from
-              : '') +
-            ('&sub_brk_cd=' + this.__rcvForms.value.sub_brk_cd
-              ? this.__rcvForms.value.sub_brk_cd
-              : '') +
-            ('&euin_no=' + this.__rcvForms.value.euin_no
-              ? this.__rcvForms.value.euin_no
-              : '') +
-            ('&temp_tin_no=' + this.__rcvForms.value.temp_tin_no
-              ? this.__rcvForms.value.temp_tin_no
-              : '') +
-            ('&bu_type=' + JSON.stringify(this.__rcvForms.value.bu_type))
-        )
-        .pipe(map((x: any) => x.data))
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+            ('&client_code=' +(this.__rcvForms.value.client_code? this.__rcvForms.value.client_code: '')) +
+            ('&recv_from=' +(this.__rcvForms.value.recv_from? this.__rcvForms.value.recv_from: '')) +
+            ('&from_date=' + global.getActualVal(this.__rcvForms.getRawValue().frm_dt)) +
+            ('&to_date=' + global.getActualVal(this.__rcvForms.getRawValue().to_dt)) +
+            ('&temp_tin_no=' +(this.__rcvForms.value.temp_tin_no? this.__rcvForms.value.temp_tin_no: '')) +
+            ('&trans_type=' + JSON.stringify(this.__rcvForms.value.trns_type.map(item => {return item['id']}))) +
+            (this.__rcvForms.value.btn_type == 'A' ?
+            ('&rm_id='+JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["id"]}))) +
+            ('&sub_brk_cd=' +(this.__rcvForms.value.sub_brk_cd? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]})): '[]')) +
+            ('&euin_no=' +(this.__rcvForms.value.euin_no? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]})): '[]')) +
+            ('&brn_cd='+JSON.stringify(this.__rcvForms.value.brn_cd.map(item => {return item["id"]})))+
+            ('&bu_type=' + JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]}))) : ''
+            )
+        ) .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
           this.setPaginator(res.data);
           this.__paginate = res.links;
         });
     }
+
+    // if (__paginate.url) {
+    //   this.__dbIntr
+    //     .getpaginationData(
+    //       __paginate.url +
+    //         ('&paginate=' + this.__pageNumber.value) +
+    //         ('&sort_by=' + this.__sortAscOrDsc.direction) +
+    //         ('&ins_type_id=' +
+    //           JSON.stringify(this.__rcvForms.value.ins_type_id)) +
+    //         ('&start_date=' +
+    //           global.getActualVal(this.__rcvForms.getRawValue().start_dt)) +
+    //         ('&end_date=' +
+    //           global.getActualVal(this.__rcvForms.value.getRawValue().end_dt)) +
+    //         ('&column_name=' + this.__sortAscOrDsc.active) +
+    //         ('&investor_code=' + this.__rcvForms.value.investor_code
+    //           ? this.__rcvForms.value.investor_code
+    //           : '') +
+    //         ('&recv_from=' + this.__rcvForms.value.recv_from
+    //           ? this.__rcvForms.value.recv_from
+    //           : '') +
+    //         ('&sub_brk_cd=' + this.__rcvForms.value.sub_brk_cd
+    //           ? this.__rcvForms.value.sub_brk_cd
+    //           : '') +
+    //         ('&euin_no=' + this.__rcvForms.value.euin_no
+    //           ? this.__rcvForms.value.euin_no
+    //           : '') +
+    //         ('&temp_tin_no=' + this.__rcvForms.value.temp_tin_no
+    //           ? this.__rcvForms.value.temp_tin_no
+    //           : '') +
+    //         ('&bu_type=' + JSON.stringify(this.__rcvForms.value.bu_type))
+    //     )
+    //     .pipe(map((x: any) => x.data))
+    //     .subscribe((res: any) => {
+    //       this.setPaginator(res.data);
+    //       this.__paginate = res.links;
+    //     });
+    // }
+  }
+  getSelectedColumns(columns){
+    const clm = ['edit','delete'];
+    this.__columns = columns.map(({ field, header }) => ({field, header})).filter(x => !clm.includes(x));
+    this.__exportedClmns = this.__columns.filter(item => !clm.includes(item.field)).map(x => {return x['field']});
+  }
+  onselectItem(ev){
+    this.recvForm();
   }
   private setPaginator(__res) {
     this.__RcvForms = new MatTableDataSource(__res);
@@ -580,111 +690,115 @@ export class RcvFormRPTComponent implements OnInit {
       'Receive Form'
     );
   }
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    this.recvForm();
+  }
+  // submit() {
+  //   this.getRcvForm(this.__sortAscOrDsc.active, this.__sortAscOrDsc.direction);
+  // }
+  // sortData(sort) {
+  //   this.__sortAscOrDsc = sort;
+  //   this.getRcvForm(this.__sortAscOrDsc.active, this.__sortAscOrDsc.direction);
+  // }
+  // reset() {
+  //   this.__rcvForms.reset({ emitEvent: false });
+  //   this.__isAdd = false;
+  //   this.__rcvForms.get('options').setValue('2');
+  //   this.__rcvForms.patchValue({
+  //     start_dt: '',
+  //     end_dt: '',
+  //     dt_type: '',
+  //     is_all_bu_type:false
+  //   });
+  //   (<FormArray>this.__rcvForms.get('bu_type')).clear();
+  //   this.uncheckAll_buType();
+  //   this.__sortAscOrDsc = { active: '', direction: 'asc' };
+  //   this.submit();
+  // }
 
-  submit() {
-    this.getRcvForm(this.__sortAscOrDsc.active, this.__sortAscOrDsc.direction);
-  }
-  sortData(sort) {
-    this.__sortAscOrDsc = sort;
-    this.getRcvForm(this.__sortAscOrDsc.active, this.__sortAscOrDsc.direction);
-  }
-  reset() {
-    this.__rcvForms.reset({ emitEvent: false });
-    this.__isAdd = false;
-    this.__rcvForms.get('options').setValue('2');
-    this.__rcvForms.patchValue({
-      start_dt: '',
-      end_dt: '',
-      dt_type: '',
-      is_all_bu_type:false
-    });
-    (<FormArray>this.__rcvForms.get('bu_type')).clear();
-    this.uncheckAll_buType();
-    this.__sortAscOrDsc = { active: '', direction: 'asc' };
-    this.submit();
-  }
+  // onbuTypeChange(e: any) {
+  //   const bu_type: FormArray = this.__rcvForms.get('bu_type') as FormArray;
+  //   if (e.checked) {
+  //     bu_type.push(new FormControl(e.source.value));
+  //   } else {
+  //     let i: number = 0;
+  //     bu_type.controls.forEach((item: any) => {
+  //       if (item.value == e.source.value) {
+  //         bu_type.removeAt(i);
+  //         return;
+  //       }
+  //       i++;
+  //     });
+  //   }
+  //   this.__rcvForms.get('is_all_bu_type').setValue(
+  //     bu_type.controls.length == 3 ? true : false,
+  //     { emitEvent: false }
+  //   );
+  // }
 
-  onbuTypeChange(e: any) {
-    const bu_type: FormArray = this.__rcvForms.get('bu_type') as FormArray;
-    if (e.checked) {
-      bu_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      bu_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          bu_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__rcvForms.get('is_all_bu_type').setValue(
-      bu_type.controls.length == 3 ? true : false,
-      { emitEvent: false }
-    );
-  }
+  // outsideClickforSubBrkArn(__ev) {
+  //   if (__ev) {
+  //     this.searchResultVisibilityForSubBrk('none');
+  //   }
+  // }
 
-  outsideClickforSubBrkArn(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForSubBrk('none');
-    }
-  }
-
-  outsideClick(__ev) {
-    if (__ev) {
-      this.searchResultVisibility('none');
-    }
-  }
-  outsideClickfortempTin(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForTempTin('none');
-    }
-  }
-  /** Search Result Off against Sub Broker */
-  searchResultVisibilityForSubBrk(display_mode) {
-    this.__subBrkArn.nativeElement.style.display = display_mode;
-  }
+  // outsideClick(__ev) {
+  //   if (__ev) {
+  //     this.searchResultVisibility('none');
+  //   }
+  // }
+  // outsideClickfortempTin(__ev) {
+  //   if (__ev) {
+  //     this.searchResultVisibilityForTempTin('none');
+  //   }
+  // }
+  // /** Search Result Off against Sub Broker */
+  // searchResultVisibilityForSubBrk(display_mode) {
+  //   this.__subBrkArn.nativeElement.style.display = display_mode;
+  // }
   searchResultVisibilityForTempTin(display_mode) {
-    this.__searchTempTin.nativeElement.style.display = display_mode;
+    this.displayMode_forTemp_Tin= display_mode;
   }
-  searchResultVisibility(display_mode) {
-    this.__searchRlt.nativeElement.style.display = display_mode;
-  }
-  outsideClickforClient(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForClient('none');
-    }
-  }
+  // searchResultVisibility(display_mode) {
+  //   this.__searchRlt.nativeElement.style.display = display_mode;
+  // }
   searchResultVisibilityForClient(display_mode) {
-    this.__clientCode.nativeElement.style.display = display_mode;
+    this.displayMode_forClient = display_mode;
   }
   getItems(__items, __mode) {
     switch (__mode) {
       case 'C':
-        this.__rcvForms.controls['investor_code'].reset(__items.client_name, {
+        this.__rcvForms.controls['client_name'].reset(__items.client_name, {
+          emitEvent: false,
+        });
+        this.__rcvForms.controls['client_code'].reset(__items.id, {
           emitEvent: false,
         });
         this.searchResultVisibilityForClient('none');
         break;
-      case 'E':
-        this.__rcvForms.controls['euin_no'].reset(__items.emp_name, {
-          emitEvent: false,
-        });
-        this.searchResultVisibility('none');
-        break;
+      // case 'E':
+      //   this.__rcvForms.controls['euin_no'].reset(__items.emp_name, {
+      //     emitEvent: false,
+      //   });
+      //   this.searchResultVisibility('none');
+      //   break;
       case 'T':
         this.__rcvForms.controls['temp_tin_no'].reset(__items.temp_tin_no, {
           emitEvent: false,
         });
         this.searchResultVisibilityForTempTin('none');
         break;
-      case 'S':
-        this.__rcvForms.controls['sub_brk_cd'].reset(__items.code, {
-          emitEvent: false,
-        });
-        this.searchResultVisibilityForSubBrk('none');
-        break;
+      // case 'S':
+      //   this.__rcvForms.controls['sub_brk_cd'].reset(__items.code, {
+      //     emitEvent: false,
+      //   });
+      //   this.searchResultVisibilityForSubBrk('none');
+      //   break;
     }
   }
-
+  getSelectedItemsFromParent(ev){
+    this.getItems(ev.item, ev.flag);
+  }
 }

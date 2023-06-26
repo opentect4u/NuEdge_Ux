@@ -11,21 +11,22 @@ import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { plan } from 'src/app/__Model/plan';
-import { category } from 'src/app/__Model/__category';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { PlanModificationComponent } from '../planModification/planModification.component';
-
+import { column } from 'src/app/__Model/tblClmns';
+import { planClms } from 'src/app/__Utility/Master/planClms';
+import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
 @Component({
   selector: 'planRpt-component',
   templateUrl: './planRpt.component.html',
   styleUrls: ['./planRpt.component.css'],
 })
 export class PlanrptComponent implements OnInit {
-  __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
+   itemsPerPage=ItemsPerPage;
   __iscatspinner: boolean = false;
   __catForm = new FormGroup({
     plan_name: new FormControl(''),
@@ -33,8 +34,9 @@ export class PlanrptComponent implements OnInit {
   });
   __export = new MatTableDataSource<plan>([]);
   __pageNumber = new FormControl(10);
-  __columns: string[] = ['edit', 'delete', 'sl_no', 'plan_name'];
-  __exportedClmns: string[] = ['sl_no', 'plan_name'];
+  sort=new sort();
+    __columns:column[]=[];
+  __exportedClmns:string[] =[];
   __paginate: any = [];
   __selectPLN = new MatTableDataSource<plan>([]);
   __isVisible: boolean = true;
@@ -49,35 +51,32 @@ export class PlanrptComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.getPlanmaster();
-    // this.tableExport();
-    this.getPlanMst();
+    this.setColumns();
+  }
+  setColumns(){
+   const  clmToRemove:string[] = ['edit','delete'];
+   this.__columns = planClms.COLUMN;
+   this.__exportedClmns = planClms.COLUMN.filter(res => !clmToRemove.includes(res.field)).map(item => {return item['field']})
   }
 
-  getPlanMst(column_name: string | null = '', sort_by: string | null = 'asc') {
+  getPlanMst() {
     const __planExport = new FormData();
     __planExport.append('plan_name', this.__catForm.value.plan_name);
     __planExport.append('paginate', this.__pageNumber.value);
-    __planExport.append('column_name', column_name);
-    __planExport.append('sort_by', sort_by);
+    __planExport.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __planExport.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
     this.__dbIntr
       .api_call(1, '/planDetailSearch', __planExport)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
         this.__paginate = res.links;
         this.setPaginator(res.data);
-        this.tableExport(column_name, sort_by);
+        this.tableExport(__planExport);
       });
   }
 
-  tableExport(column_name: string | null = '', sort_by: string | null = 'asc') {
-    const __planExport = new FormData();
-    __planExport.append(
-      'plan_name',
-      this.__catForm.value.plan_name ? this.__catForm.value.plan_name : ''
-    );
-    __planExport.append('column_name', column_name);
-    __planExport.append('sort_by', sort_by);
+  tableExport(__planExport) {
+    __planExport.delete('paginate');
     this.__dbIntr
       .api_call(1, '/planExport', __planExport)
       .pipe(map((x: any) => x.data))
@@ -86,18 +85,8 @@ export class PlanrptComponent implements OnInit {
       });
   }
 
-  private getPlanmaster(__paginate: string | null = '10') {
-    this.__dbIntr
-      .api_call(0, '/plan', 'paginate=' + __paginate)
-      .pipe(map((x: responseDT) => x.data))
-      .subscribe((res: any) => {
-        this.setPaginator(res.data);
-        this.__paginate = res.links;
-      });
-  }
   private setPaginator(__res) {
     this.__selectPLN = new MatTableDataSource(__res);
-    // this.__selectPLN.paginator = this.paginator;
   }
   getPaginate(__paginate) {
     if (__paginate.url) {
@@ -106,8 +95,8 @@ export class PlanrptComponent implements OnInit {
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
             ('&plan_name=' + this.__catForm.value.plan_name) +
-            ('&column_name=' + this.__sortColumnsAscOrDsc.active) +
-            ('&sort_by=' + +this.__sortColumnsAscOrDsc.direction)
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -116,25 +105,8 @@ export class PlanrptComponent implements OnInit {
         });
     }
   }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.getPlanMst(
-      this.__sortColumnsAscOrDsc.active,
-      this.__sortColumnsAscOrDsc.direction
-    );
-  }
-
   populateDT(__items: plan) {
-    // this.__utility.navigatewithqueryparams('/main/master/catModify',{queryParams:{id:btoa(__items.id.toString())}})
     this.openDialog(__items, __items.id);
-  }
-  showCorrospondingAMC(__items) {
-    this.__utility.navigatewithqueryparams(
-      'main/master/productwisemenu/subcategory',
-      {
-        queryParams: { id: btoa(__items.id.toString()) },
-      }
-    );
   }
   openDialog(__category: plan | null = null, __catId: number) {
     const dialogConfig = new MatDialogConfig();
@@ -226,15 +198,9 @@ export class PlanrptComponent implements OnInit {
     );
   }
   submit() {
-    this.getPlanMst(
-      this.__sortColumnsAscOrDsc.active,
-      this.__sortColumnsAscOrDsc.direction
-    );
+    this.getPlanMst();
   }
-  sortData(sort) {
-    this.__sortColumnsAscOrDsc = sort;
-    this.getPlanMst(sort.active, sort.direction ? sort.direction : 'asc');
-  }
+
   delete(__el,index){
     const dialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = false;
@@ -260,5 +226,14 @@ export class PlanrptComponent implements OnInit {
         }
 
       })
+  }
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    this.submit();
+  }
+  onselectItem(ev){
+    this.__pageNumber.setValue(ev.option.value);
+    this.submit();
   }
 }

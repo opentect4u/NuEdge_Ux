@@ -1,30 +1,11 @@
 export class mfFinClmns {
-
-  public static  SUMMARY = [
-       'edit',
-       'app_frm_view',
-       'branch_name',
-       'entry_date',
-       'tin_no',
-        'sub_brk_cd',
-        'euin_no',
-        'first_client_name',
-        'first_client_code',
-        'first_client_pan',
-        'trans_type',
-        'scheme_name',
-        'apl_no',
-        'fol_no',
-        'amount',
-        'form_submitted_at'
-   ]
    public static  SUMMARY_COPY = [
 
-    {field:'edit',header:'Action'},
-       {field:'app_frm_view',header:'Document'},
-       {field:'branch_name',header:'Branch'},
+    {field:'edit',header:'Edit'},
+       {field:'app_frm_view',header:'DOC View'},
        {field:'entry_date',header:'Entry Date'},
-       {field:'tin_no',header:'TIN No'},
+       {field:'tin_no',header:'TIN'},
+       {field:'branch_name',header:'Branch'},
         {field:'sub_brk_cd',header:'Sub Broker Code'},
         {field:'euin_no',header:'EUIN'},
         {field:'first_client_name',header:'First Holder Name'},
@@ -40,11 +21,11 @@ export class mfFinClmns {
 
    public static  SUMMARY_COPY_SIP = [
 
-    {field:'edit',header:'Action'},
-       {field:'app_frm_view',header:'Document'},
-       {field:'branch_name',header:'Branch'},
+    {field:'edit',header:'Edit'},
+       {field:'app_frm_view',header:'DOC View'},
        {field:'entry_date',header:'Entry Date'},
-       {field:'tin_no',header:'TIN No'},
+       {field:'tin_no',header:'TIN'},
+       {field:'branch_name',header:'Branch'},
         {field:'sub_brk_cd',header:'Sub Broker Code'},
         {field:'euin_no',header:'EUIN'},
         {field:'first_client_name',header:'First Holder Name'},
@@ -63,13 +44,13 @@ export class mfFinClmns {
 
    public static  DETAILS_FOR_PIP_COLUMNS_COPY =
    [
-      {field:'edit',header:'Action'},
-      {field:'app_frm_view',header:'Document'},
+      {field:'edit',header:'Edit'},
+      {field:'app_frm_view',header:'DOC View'},
+      {field:'entry_date',header:'Entry Date'},
+      {field:'tin_no',header:'TIN'},
+      {field:'bu_type',header:'Business Type'},
        {field:'branch_name',header:'Branch'},
-       {field:'entry_date',header:'Entry Date'},
-       {field:'tin_no',header:'TIN No'},
-       {field:'bu_type',header:'Business Type'},
-       {field:'arn_no',header:'ARN No'},
+       {field:'arn_no',header:'RM Name'},
         {field:'sub_brk_cd',header:'Sub Broker Code'},
         {field:'euin_no',header:'EUIN'},
         {field:'first_client_name',header:'First Holder Name'},
@@ -101,13 +82,13 @@ export class mfFinClmns {
 
    public static  DETAILS_FOR_SIP_COLUMNS_COPY =
    [
-      {field:'edit',header:'Action'},
-      {field:'app_frm_view',header:'Document'},
+      {field:'edit',header:'Edit'},
+      {field:'app_frm_view',header:'DOC View'},
+      {field:'entry_date',header:'Entry Date'},
+      {field:'tin_no',header:'TIN'},
+      {field:'bu_type',header:'Business Type'},
        {field:'branch_name',header:'Branch'},
-       {field:'entry_date',header:'Entry Date'},
-       {field:'tin_no',header:'TIN No'},
-       {field:'bu_type',header:'Business Type'},
-       {field:'arn_no',header:'ARN No'},
+       {field:'arn_no',header:'RM Name'},
         {field:'sub_brk_cd',header:'Sub Broker Code'},
         {field:'euin_no',header:'EUIN'},
         {field:'first_client_name',header:'First Holder Name'},
@@ -144,54 +125,16 @@ export class mfFinClmns {
    ]
 
 
-   public static  DETAILS_FOR_PIP_COLUMNS =
-   [
-      'edit',
-      'app_frm_view',
-       'branch_name',
-       'entry_date',
-       'tin_no',
-       'bu_type',
-       'arn_no',
-        'sub_brk_cd',
-        'euin_no',
-        'first_client_name',
-        'first_client_code',
-        'first_client_pan',
-        'first_client_kyc_status',
-        'mode_of_holding',
-        'second_client_name',
-        'second_client_code',
-        'second_client_pan',
-        'second_client_kyc_status',
-        'third_client_name',
-        'third_client_code',
-        'third_client_pan',
-        'third_client_kyc_status',
-        'trans_type',
-        'scheme_name',
-        'plan_name',
-        'opt_name',
-        'amount',
-        'chq_no',
-        'bank',
-        'inv_type',
-        'apl_no',
-        'fol_no',
-        'form_submitted_at',
-        'remarks'
-   ]
-
 
    public static  DETAILS_FOR_SWITCH_COLUMNS_COPY =
    [
-    {field:'edit',header:'Action'},
-    {field:'app_frm_view',header:'Document'},
+    {field:'edit',header:'Edit'},
+    {field:'app_frm_view',header:'DOC View'},
+    {field:'entry_date',header:'Entry Date'},
+    {field:'tin_no',header:'TIN'},
+    {field:'bu_type',header:'Business Type'},
        {field:'branch_name',header:'Branch'},
-       {field:'entry_date',header:'Entry Date'},
-       {field:'tin_no',header:'TIN No'},
-       {field:'bu_type',header:'Business Type'},
-       {field:'arn_no',header:'ARN No'},
+       {field:'arn_no',header:'RM Name'},
         {field:'sub_brk_cd',header:'SubBroker Code'},
         {field:'euin_no',header:'EUIN'},
         {field:'first_client_name',header:'First Holder Name'},
@@ -222,53 +165,15 @@ export class mfFinClmns {
         {field:'remarks',header:'Remarks'}
    ]
 
-   public static  DETAILS_FOR_SWITCH_COLUMNS =
-   [
-    'edit',
-    'app_frm_view',
-       'branch_name',
-       'entry_date',
-       'tin_no',
-       'bu_type',
-       'arn_no',
-        'sub_brk_cd',
-        'euin_no',
-        'first_client_name',
-        'first_client_code',
-        'first_client_pan',
-        'first_client_kyc_status',
-        'mode_of_holding',
-        'second_client_name',
-        'second_client_code',
-        'second_client_pan',
-        'second_client_kyc_status',
-        'third_client_name',
-        'third_client_code',
-        'third_client_pan',
-        'third_client_kyc_status',
-        'trans_type',
-        'scheme_name',
-        'plan_name',
-        'opt_name',
-        'scheme_name_to',
-        'amount',
-        'chq_no',
-        'bank',
-        'inv_type',
-        'apl_no',
-        'fol_no',
-        'form_submitted_at',
-        'remarks'
-   ]
    public static COLUMN_SELECTOR=
     [
-      {field:'edit',header:'Action'},
-      {field:'app_frm_view',header:'Document'},
+      {field:'edit',header:'Edit'},
+      {field:'app_frm_view',header:'DOC View'},
+      {field:'entry_date',header:'Entry Date'},
+      {field:'tin_no',header:'TIN'},
+      {field:'bu_type',header:'Business Type'},
       {field:'branch_name',header:'Branch Name'},
-       {field:'entry_date',header:'Entry Date'},
-       {field:'tin_no',header:'TIN No.'},
-       {field:'bu_type',header:'Business Type'},
-       {field:'arn_no',header:'ARN No'},
+       {field:'arn_no',header:'RM Name'},
         {field:'sub_brk_cd',header:'Sub Broker Code'},
         {field:'euin_no',header:'EUIN'},
         {field:'first_client_name',header:'First Holder Name'},
@@ -288,7 +193,7 @@ export class mfFinClmns {
         {field:'scheme_name',header:'Scheme name'},
         {field:'plan_name',header:'Plan'},
         {field:'opt_name',header:'Option'},
-        {field:'scheme_name_to',header:'Scheme name (To Scheme)'},
+        {field:'scheme_name_to',header:'Scheme Name (To Scheme)'},
         {field:'amount',header:'Amount'},
         {field:'chq_no',header:'Cheque No.'},
         {field:'bank',header:'Bank'},
@@ -304,4 +209,8 @@ export class mfFinClmns {
         {field:'rnt_name',header:'Form Submitted At'},
         {field:'remarks',header:'Remarks'}
     ];
+
+
+
+
 }

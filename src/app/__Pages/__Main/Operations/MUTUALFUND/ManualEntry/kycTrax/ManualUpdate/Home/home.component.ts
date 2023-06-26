@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit {
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data = {
       flag: 'KYCMU',
-      title:'Manual Update Report'
+      title:'Manual Entry Report'
     };
     dialogConfig.id = 'KYCMU';
     try {

@@ -69,7 +69,7 @@
                     </p>
                     <!-- <app-progress [progress]="file?.progress"></app-progress> -->
                   </div>
-        
+
                   <!-- Delete Icon -->
                   <div class="delete" (click)="deleteFiles()">
                     <mat-icon>
@@ -83,7 +83,7 @@
           <div class="row">
             <div class="col-sm-12">
               <button class="btn addBtn"  [disabled]="this.__uploadRnt.invalid">Upload</button>
-            </div>  
+            </div>
           </div>
         </form>
 
@@ -105,7 +105,7 @@
               <th mat-header-cell *matHeaderCellDef>Sl no.</th>
               <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
             </ng-container>
-            <!--Temporary TIN No.-->
+            <!--Temporary TIN.-->
             <ng-container matColumnDef="client_name">
               <th mat-header-cell *matHeaderCellDef>Client Name</th>
               <td mat-cell *matCellDef="let element">
@@ -152,7 +152,7 @@
     </th>
 
     <td mat-cell *matCellDef="let element">
-      <span > 
+      <span >
         {{ disCol.cell(element) }}
       </span>
     </td>

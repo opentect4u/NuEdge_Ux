@@ -1,3 +1,5 @@
+import { column } from "src/app/__Model/tblClmns";
+
 export class schemeClmns{
   public static COLUMNFORNFODETAILS = [
     'edit',
@@ -46,6 +48,7 @@ export class schemeClmns{
     'semi_anually_stp_amt',
     'anually_stp_amt'
   ];
+
   public static COLUMNFORONGOINGDETAILS = [
     'edit',
     'delete',
@@ -139,4 +142,56 @@ export class schemeClmns{
     {id:'semi_anually_stp_amt',text:'Semi Anually STP Amount'},
     {id:'anually_stp_amt',text:'Anually STP Amount'},
   ];
+  public static column_selector=[
+    {field: "edit",header:"Edit"},
+    {field: "delete",header:"Delete"},
+    {field: "scheme_name",header:"Scheme"},
+    {field: "scheme_type",header:"Scheme Type"},
+    {field: "amc_name",header:"AMC"},
+    {field: "cat_name",header:"Category"},
+    {field: "subcate_name",header:"Sub Category"},
+    {field: "nfo_start_dt",header:"NFO Start Date"},
+    {field: "nfo_end_dt",header:"NFO End Date"},
+    {field: "nfo_reopen_dt",header:"NFO Reopen Date"},
+     {field:'sip_date',header:'SIP Dates'},
+    {field: "pip_fresh_min_amt",header:"Fresh Amount (PIP)"},
+    {field: "pip_add_min_amt",header:"Additional Amount (PIP)"},
+    {field:"special_sip_name",header:'Special SIP'},
+    {field:"swp_date",header:'SWP Dates'},
+    {field:'stp_date',header:'STP Dates'},
+    {field:'daily_sip_fresh_min_amt',header:'Daily SIP Fresh Minimum Amount'},
+    {field:'daily_sip_add_min_amt',header:'Daily SIP Additional Minimum Amount'},
+    {field:'weekly_sip_fresh_min_amt',header:'Weekly SIP Fresh Minimum Amount'},
+    {field:'weekly_sip_add_min_amt',header:'Weekly SIP Additional Minimum Amount'},
+    {field:'fortnightly_sip_fresh_min_amt',header:'Fortnightly SIP Fresh Minimum Amount'},
+    {field:'fortnightly_sip_add_min_amt',header:'Fortnightly SIP Additional Minimum Amount'},
+    {field:'monthly_sip_fresh_min_amt',header:'Monthly SIP Fresh Minimum Amount'},
+    {field:'monthly_sip_add_min_amt',header:'Monthly SIP Additional Minimum Amount'},
+    {field:'quarterly_sip_fresh_min_amt',header:'Quarterly SIP Fresh Minimum Amount'},
+    {field:'quarterly_sip_add_min_amt',header:'Quarterly SIP Additional Minimum Amount'},
+    {field:'semi_anually_sip_fresh_min_amt',header:'Semi Anually SIP Fresh Minimum Amount'},
+    {field:'semi_anually_sip_add_min_amt',header:'Semi Anually SIP Additional Minimum Amount'},
+    {field:'anually_sip_fresh_min_amt',header:'Anually SIP Fresh Minimum Amount'},
+    {field:'anually_sip_add_min_amt',header:'Anually SIP Additional Minimum Amount'},
+    {field:'daily_swp_amt',header:'Daily SWP Amount'},
+    {field:'weekly_swp_amt',header:'Weekly SWP Amount'},
+    {field:'fortnightly_swp_amt',header:'Fortnightly SWP Amount'},
+    {field:'monthly_swp_amt',header:'Monthly SWP Amount'},
+    {field:'quarterly_swp_amt',header:'Quarterly SWP Amount'},
+    {field:'semi_anually_swp_amt',header:'Semi Anually SWP Amount'},
+    {field:'anually_swp_amt',header:'Anually SWP Amount'},
+    {field:'daily_stp_amt',header:'Daily STP Amount'},
+    {field:'weekly_stp_amt',header:'Weekly STP Amount'},
+    {field:'fortnightly_stp_amt',header:'Fortnightly STP Amount'},
+    {field:'monthly_stp_amt',header:'Monthly STP Amount'},
+    {field:'quarterly_stp_amt',header:'Quarterly STP Amount'},
+    {field:'semi_anually_stp_amt',header:'Semi Anually STP Amount'},
+    {field:'anually_stp_amt',header:'Anually STP Amount'}
+  ]
+  public static Summary:column[] = [
+    {field: "edit",header:"Edit"},
+    {field: "delete",header:"Delete"},
+    {field: "scheme_name",header:"Scheme"},
+    {field: "scheme_type",header:"Scheme Type"}
+  ]
 }

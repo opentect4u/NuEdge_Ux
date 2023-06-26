@@ -15,18 +15,28 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { ScmModificationComponent } from '../scmModification/scmModification.component';
 import {schemeClmns} from '../../../../../__Utility/Master/schemeClmns';
+import itemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { column } from 'src/app/__Model/tblClmns';
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 @Component({
   selector: 'app-scmRpt',
   templateUrl: './scmRpt.component.html',
   styleUrls: ['./scmRpt.component.css']
 })
 export class ScmRptComponent implements OnInit {
-
+  isOpenMegaMenu:boolean = false;
+  isLoading:boolean =false;
+  selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
+  itemsPerPage:selectBtn[] = itemsPerPage;
   __sortAscOrDsc: any = {active: '',direction:'asc'};
   @ViewChild('searchcat') __searchCat : ElementRef;
   @ViewChild('searchsubcat') searchsubcat : ElementRef;
-  toppings = new FormControl();
-  toppingList: any = [];
+  // toppings = new FormControl();
+  // toppingList: any = [];
   __scmForm = new FormGroup({
     scheme_status: new FormControl('O'),
     amc_name: new FormControl(''),
@@ -36,18 +46,20 @@ export class ScmRptComponent implements OnInit {
     subcat_name: new FormControl(''),
     subcat_id: new FormControl(''),
     options: new FormControl('2'),
-    advanceFlt: new FormControl('')
+    advanceFlt: new FormControl('R'),
   });
   __isVisible: boolean =true;
   __paginate: any=[];
-  __pageNumber= new FormControl(10);
+  __pageNumber= new FormControl('10');
   __selectScm = new MatTableDataSource<scheme>([]);
   __exportedClmns: string [] = []
-  __columns: string[] = [];
+  __columns: column[] = [];
+   ClmnList:column[] = [];
+   SelectedClms:string[] =[];
   __catMst: category[] =[];
   __subcatMst: subcat[]=[];
-  __columnsForsummary: string[] = [];
-  __columnsForDetails: string[] = [];
+  // __columnsForsummary: string[] = [];
+  // __columnsForDetails: string[] = [];
   __export = new MatTableDataSource<scheme>([]);
   __iscatspinner: boolean =false;
   __issubcatspinner: boolean =false;
@@ -62,8 +74,6 @@ export class ScmRptComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.__columns = this.__columnsForsummary;
-    // this.toppings.setValue(this.__columns);
     this.getSchemeMst();
     this.setColumns(this.__scmForm.value.scheme_status,this.__scmForm.value.options)
   }
@@ -71,18 +81,32 @@ export class ScmRptComponent implements OnInit {
 
   setColumns(scm_status,option){
     const clmnsTobeRemoved = ['edit','delete'];
-    const ClmsTobeAdded = ['nfo_start_dt','nfo_end_dt','nfo_reopen_dt'];
-    if(option == '1'){
-      this.__columns = scm_status == 'N' ? schemeClmns.COLUMNFORNFODETAILS : schemeClmns.COLUMNFORONGOINGDETAILS;
-      this.__exportedClmns = this.__columns.filter((x: any) => !clmnsTobeRemoved.includes(x));
+    const Clms = ['nfo_start_dt','nfo_end_dt','nfo_reopen_dt'];
+    this.ClmnList = scm_status == 'N' ? schemeClmns.column_selector
+    : schemeClmns.column_selector.filter(item => !Clms.includes(item.field))
+    if(option == 2){
+      this.__columns = schemeClmns.Summary;
+      console.log(this.__columns);
+
     }
     else{
-      this.__columns = schemeClmns.COLUMN_SUMMARY;
-      this.__exportedClmns = schemeClmns.COLUMN_SUMMARY.filter((x: any) => !clmnsTobeRemoved.includes(x));
+      this.__columns = this.ClmnList;
     }
-    this.toppingList = scm_status == 'N' ? schemeClmns.COLUMN_SELECTOR :
-    (schemeClmns.COLUMN_SELECTOR.filter(x => !ClmsTobeAdded.includes(x.id)));
-    this.toppings.setValue(this.__columns);
+    this.SelectedClms = this.__columns.map((x) => x.field);;
+    this.__exportedClmns = this.__columns.filter((x: any) => !clmnsTobeRemoved.includes(x.field)).map(item => {return item['field']});
+    // const clmnsTobeRemoved = ['edit','delete'];
+    // const ClmsTobeAdded = ['nfo_start_dt','nfo_end_dt','nfo_reopen_dt'];
+    // if(option == '1'){
+    //   this.__columns = scm_status == 'N' ? schemeClmns.COLUMNFORNFODETAILS : schemeClmns.COLUMNFORONGOINGDETAILS;
+    //   this.__exportedClmns = this.__columns.filter((x: any) => !clmnsTobeRemoved.includes(x));
+    // }
+    // else{
+    //   this.__columns = schemeClmns.COLUMN_SUMMARY;
+    //   this.__exportedClmns = schemeClmns.COLUMN_SUMMARY.filter((x: any) => !clmnsTobeRemoved.includes(x));
+    // }
+    // this.toppingList = scm_status == 'N' ? schemeClmns.COLUMN_SELECTOR :
+    // (schemeClmns.COLUMN_SELECTOR.filter(x => !ClmsTobeAdded.includes(x.id)));
+    // this.toppings.setValue(this.__columns);
   }
 
   getSchemeMst(column_name: string | null  = '',sort_by: string | null = 'asc'){
@@ -256,11 +280,11 @@ export class ScmRptComponent implements OnInit {
       //   this.__exportedClmns = ['sl_no','scheme_name','scheme_type'];
       //  }
     })
-    this.toppings.valueChanges.subscribe((res) => {
-      const clm = ['edit','delete']
-      this.__columns = res;
-      this.__exportedClmns = res.filter(item => !clm.includes(item))
-    });
+    // this.toppings.valueChanges.subscribe((res) => {
+    //   const clm = ['edit','delete']
+    //   this.__columns = res;
+    //   this.__exportedClmns = res.filter(item => !clm.includes(item))
+    // });
 
     this.__scmForm.controls['scheme_status'].valueChanges.subscribe(res =>{
         this.setColumns(res,this.__scmForm.get('options').value);
@@ -363,6 +387,7 @@ export class ScmRptComponent implements OnInit {
   }
   getPaginate(__paginate) {
     if (__paginate.url) {
+      this.isLoading =!this.isLoading;
       this.__dbIntr
         .getpaginationData(
           __paginate.url
@@ -379,6 +404,10 @@ export class ScmRptComponent implements OnInit {
         .subscribe((res: any) => {
           this.setPaginator(res.data);
           this.__paginate = res.links;
+          this.isLoading =!this.isLoading;
+        },
+        error=>{
+          this.isLoading =!this.isLoading;
         });
     }
   }
@@ -481,4 +510,16 @@ export class ScmRptComponent implements OnInit {
  convertSIPDates(__sipDt){
   //  return JSON.parse(__sipDt);
  }
+ onItemClick(ev){
+   this.refreshOrAdvanceFlt();
+ }
+ customSort(ev){}
+ onselectItem(ev){
+  this.getSchemeMst();
+}
+getSelectedColumns(columns){
+  const clm = ['edit', 'delete'];
+  this.__columns = columns.map(({ field, header }) => ({field, header}));
+  this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map(item => {return item['field']});
+}
 }

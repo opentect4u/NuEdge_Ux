@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BreadcrmbsComponent } from './common/brdCrmbs/breadCrmbs.component';
+import { ScrollTopModule } from 'primeng/scrolltop';
 const routes: Routes = [
   {
     path: '',
@@ -52,14 +53,15 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     MatMenuModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    ScrollTopModule
   ],
   declarations: [
     MainComponent,
     HeaderComponent,
     ListComponent,
     BreadcrmbsComponent,
-    MenuDropdownDirective,
+    MenuDropdownDirective
   ],
 })
 export class MainModule {

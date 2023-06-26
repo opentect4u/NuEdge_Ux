@@ -36,8 +36,6 @@ export class SubcateModificationComponent implements OnInit {
   ngOnInit() {this.getCategoryMaster();this.disabledFormControl();}
   disabledFormControl(){
     if(this.data.id > 0){
-      console.log(this.data.id);
-
       this.__subcatForm.controls['category_id'].disable({onlySelf:true,emitEvent:false});
     }
   }
@@ -48,14 +46,14 @@ export class SubcateModificationComponent implements OnInit {
     }
     const __subcat = new FormData();
     __subcat.append("subcategory_name",this.__subcatForm.value.subcategory_name);
-    __subcat.append("category_id",this.__subcatForm.value.category_id);
+    __subcat.append("category_id",this.__subcatForm.getRawValue().category_id);
     __subcat.append("id",this.__subcatForm.value.id);
     this.__dbIntr.api_call(1, '/subcategoryAddEdit', __subcat).subscribe((res: any) => {
       if (res.suc == 1) {
         this.dialogRef.close({ id: this.data.id, data: res.data });
         this.reset();
       }
-      this.__utility.showSnackbar(res.suc == 1 ? (this.data.id == 1 ? 'Subcategory updated successfully' : 'Subcategory added successfully') : 'Something went wrong! please try again later', res.suc);
+      this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Subcategory updated successfully' : 'Subcategory added successfully') : res.msg, res.suc);
     })
   }
   getCategoryMaster() {

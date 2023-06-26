@@ -44,7 +44,14 @@ import { environment } from 'src/environments/environment';
 import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import popupMenu from '../../../../../../../../../../../assets/json/Master/daySheetOpt.json'
+import { sort } from 'src/app/__Model/sort';
+import itemsPerPage from '../../../../../../../../../../../assets/json/itemsPerPage.json';
 
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
 
 @Component({
   selector: 'finRPT-component',
@@ -52,6 +59,9 @@ import popupMenu from '../../../../../../../../../../../assets/json/Master/daySh
   styleUrls: ['./finRPT.component.css'],
 })
 export class FinrptComponent implements OnInit {
+  selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
+  itemsPerPage:selectBtn[] = itemsPerPage;
+
   daysheetpopupMenu = popupMenu;
   settingsforAMCDropdown = this.__utility.settingsfroMultiselectDropdown('id','amc_short_name','Search AMC',1);
   settingsforSchemeDropdown = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
@@ -61,10 +71,8 @@ export class FinrptComponent implements OnInit {
   settingsforSubBrkDropdown = this.__utility.settingsfroMultiselectDropdown('id','sub_brk_cd','Search Sub Broker',1);
   settingsforEuinDropdown = this.__utility.settingsfroMultiselectDropdown('id','emp_name','Search Employee',1);
    isOpenMegaMenu = false;
-  @ViewChildren('rntChecked') private __rntChecked: QueryList<ElementRef>;
   @ViewChild('searchTin') __searchTin: ElementRef;
   @ViewChild('clientCd') __clientCode: ElementRef;
-
   __isTinspinner: boolean = false;
   __isClientPending: boolean = false;
   selectRNT: any;
@@ -76,7 +84,7 @@ export class FinrptComponent implements OnInit {
   __schemeMst: scheme[] = [];
   __branchMst: any = [];
   __RmMst: any = [];
-  __sortAscOrDsc: any = { active: '', direction: 'asc' };
+  sort = new sort();
   WindowObject: any;
   divToPrint: any;
   SelectedClms: any= [];
@@ -85,11 +93,13 @@ export class FinrptComponent implements OnInit {
   __subCat: subcat[];
   __bu_type: any = [];
   __rcvForms = new FormGroup({
+    date_range: new FormControl(''),
+    btnType: new FormControl('R'),
     is_all_rnt: new FormControl(false),
     options: new FormControl('2'),
     sub_brk_cd: new FormControl([]),
     tin_no: new FormControl(''),
-    trans_type: new FormArray([]),
+    client_name: new FormControl(''),
     client_code: new FormControl(''),
     amc_name: new FormControl([],{updateOn:'blur'}),
     scheme_name: new FormControl([],{updateOn:'blur'}),
@@ -107,12 +117,10 @@ export class FinrptComponent implements OnInit {
     to_dt: new FormControl(''),
     trans_id: new FormControl('')
   });
-  __rnt: rnt[];
   amcMst: amc[] = [];
-  __isAdd: boolean = false;
   __isVisible: boolean = true;
   __paginate: any = [];
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __export = new MatTableDataSource<any>([]);
   __exportedClmns: any = [];
   __financMst = new MatTableDataSource<any>([]);
@@ -130,32 +138,34 @@ export class FinrptComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {}
 
-  uncheckAll_rnt() {
-    this.__rntChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAll_rnt() {
-    this.__rntChecked.forEach((element: any) => {
-      element.checked = true;
-    });
+  get rnt_name(): FormArray{
+    return this.__rcvForms.get('rnt_name') as FormArray;
   }
 
+  /** Return formgroup inside formArray */
+  setRntForm(rnt: rnt) {
+    return new FormGroup({
+      id: new FormControl(rnt ? rnt?.id : ''),
+      name: new FormControl(rnt ? rnt?.rnt_name : ''),
+      isChecked: new FormControl(false),
+    });
+  }
+  /** End */
   ngAfterViewInit() {
     this.__rcvForms.controls['dt_type'].valueChanges.subscribe((res) => {
-
-      this.__rcvForms.controls['frm_dt'].reset(
+      this.__rcvForms.controls['date_range'].reset(
         res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+      );
+      this.__rcvForms.controls['frm_dt'].reset(
+        res && res != 'R' ? dates.calculateDT(res) : ''
       );
       this.__rcvForms.controls['to_dt'].reset(
         res && res != 'R' ? dates.getTodayDate() : ''
       );
       if (res && res != 'R') {
-        this.__rcvForms.controls['frm_dt'].disable();
-        this.__rcvForms.controls['to_dt'].disable();
+        this.__rcvForms.controls['date_range'].disable();
       } else {
-        this.__rcvForms.controls['frm_dt'].enable();
-        this.__rcvForms.controls['to_dt'].enable();
+        this.__rcvForms.controls['date_range'].enable();
       }
     });
 
@@ -172,7 +182,7 @@ export class FinrptComponent implements OnInit {
 
 
     /** Client Code Change */
-    this.__rcvForms.controls['client_code'].valueChanges
+    this.__rcvForms.controls['client_name'].valueChanges
       .pipe(
         tap(() => (this.__isClientPending = true)),
         debounceTime(200),
@@ -217,18 +227,17 @@ export class FinrptComponent implements OnInit {
         error: (err) => (this.__isTinspinner = false),
       });
 
-    this.__rcvForms.controls['is_all_rnt'].valueChanges.subscribe((res) => {
-      const rntName: FormArray = this.__rcvForms.get('rnt_name') as FormArray;
-      rntName.clear();
-      if (!res) {
-        this.uncheckAll_rnt();
-      } else {
-        this.__rnt.forEach((__el) => {
-          rntName.push(new FormControl(__el.id));
-        });
-        this.checkAll_rnt();
-      }
-    });
+        /** Change event occur when all rnt checkbox has been changed  */
+        this.__rcvForms.controls['is_all_rnt'].valueChanges.subscribe(res =>{
+          this.rnt_name.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+        })
+        /** End */
+
+        /** Change event inside the formArray */
+        this.rnt_name.valueChanges.subscribe(res =>{
+        this.__rcvForms.controls['is_all_rnt'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+        })
+        /*** End */
 
     this.__rcvForms.controls['date_status'].valueChanges.subscribe((res) => {
       if (res == 'T') {
@@ -291,7 +300,6 @@ export class FinrptComponent implements OnInit {
     : (trans_id == 2 ?
       mfFinClmns.COLUMN_SELECTOR.filter(x => !clmToRemoveForSIP.includes(x.field))
     : mfFinClmns.COLUMN_SELECTOR.filter(x => !clmToRemoveForPIP.includes(x.field)))
-    console.log(this.clmList)
     if(options == 2){
       this.__columns = trans_id == 2 ? mfFinClmns.SUMMARY_COPY_SIP
       : mfFinClmns.SUMMARY_COPY;
@@ -321,8 +329,8 @@ export class FinrptComponent implements OnInit {
     );
 
     __mfTrax.append('trans_type_id' ,this.data.trans_type_id);
-    __mfTrax.append('column_name', column_name);
-    __mfTrax.append('sort_by', sort_by);
+    __mfTrax.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __mfTrax.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
     if (this.__rcvForms.get('options').value != '3') {
       __mfTrax.append(
         'from_date',
@@ -345,16 +353,6 @@ export class FinrptComponent implements OnInit {
           : ''
       );
       __mfTrax.append(
-        'sub_brk_cd',
-        this.__rcvForms.value.sub_brk_cd ? this.__rcvForms.value.sub_brk_cd : ''
-      );
-      __mfTrax.append(
-        'trans_type',
-        this.__rcvForms.value.trans_type.length > 0
-          ? JSON.stringify(this.__rcvForms.value.trans_type)
-          : ''
-      );
-      __mfTrax.append(
         'tin_no',
         this.__rcvForms.value.tin_no ? this.__rcvForms.value.tin_no : ''
       );
@@ -366,26 +364,35 @@ export class FinrptComponent implements OnInit {
         'scheme_name',
         this.__rcvForms.value.scheme_name ? JSON.stringify(this.__rcvForms.value.scheme_name.map(item => {return item["id"]})) : '[]'
       );
+ __mfTrax.append(
+        'rnt_name',
+      JSON.stringify(this.rnt_name.value.filter(x=> x.isChecked).map(item => {return item['id']}))
+      );
+
+      if(this.__rcvForms.value.btnType == 'A'){
+
+      __mfTrax.append(
+        'sub_brk_cd',
+        this.__rcvForms.value.sub_brk_cd ? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]})) : '[]'
+      );
       __mfTrax.append(
         'euin_no',
-        this.__rcvForms.value.euin_no ? this.__rcvForms.value.euin_no : '[]'
+        this.__rcvForms.value.euin_no ? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]})) : '[]'
       );
       __mfTrax.append(
         'brn_cd',
-        this.__rcvForms.value.brn_cd ? this.__rcvForms.value.brn_cd : '[]'
+        this.__rcvForms.value.brn_cd ? JSON.stringify(this.__rcvForms.value.brn_cd.map(item => {return item["id"]})) : '[]'
       );
-      __mfTrax.append(
-        'rnt_name',
-        this.__rcvForms.value.rnt_name.length > 0
-          ? JSON.stringify(this.__rcvForms.value.rnt_name)
-          : ''
-      );
+       __mfTrax.append('rm_id',
+       this.__rcvForms.value.rm_name ? JSON.stringify(this.__rcvForms.value.rm_name.map(item => {return item["id"]})) : '[]')
+
       __mfTrax.append(
         'bu_type',
         this.__rcvForms.value.bu_type
-          ? JSON.stringify(this.__rcvForms.value.bu_type)
+          ? JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]}))
           : '[]'
       );
+    }
     } else {
       __mfTrax.append('login_status', this.__rcvForms.value.login_status);
       __mfTrax.append('date_status', this.__rcvForms.value.date_status);
@@ -406,7 +413,9 @@ export class FinrptComponent implements OnInit {
       .api_call(0, '/rnt', null)
       .pipe(pluck('data'))
       .subscribe((res: rnt[]) => {
-        this.__rnt = res;
+        res.forEach((el: rnt) => {
+          this.rnt_name.push(this.setRntForm(el));
+        });
       });
   }
 
@@ -458,10 +467,6 @@ export class FinrptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
 
-  getval(__paginate) {
-    this.__pageNumber.setValue(__paginate.toString());
-    this.submit();
-  }
   getPaginate(__paginate: any | null = null) {
     if (__paginate.url) {
       this.__dbIntr
@@ -470,21 +475,17 @@ export class FinrptComponent implements OnInit {
             ('&paginate=' + this.__pageNumber.value) +
             ('&option=' + this.__rcvForms.value.options) +
             ('&trans_type_id=' + this.data.trans_type_id) +
-            ('&column_name=' + this.__sortAscOrDsc.active) +
-            ('&sort_by=' + this.__sortAscOrDsc.direction) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1')) +
             ('&trans_id=' + this.__rcvForms.value.trans_id) +
             (this.__rcvForms.get('options').value != '3'
               ? '&client_code=' +
                 (this.__rcvForms.value.client_code
                   ? this.__rcvForms.value.client_code
                   : '') +
-                ('&sub_brk_cd=' +
-                  (this.__rcvForms.value.sub_brk_cd
-                    ? this.__rcvForms.value.sub_brk_cd
-                    : '')) +
-                ('&trans_type=' +
-                  (this.__rcvForms.value.trans_type.length > 0
-                    ? JSON.stringify(this.__rcvForms.value.trans_type)
+                  ('&rnt_name=' +
+                  (this.__rcvForms.value.rnt_name.length > 0
+                    ? JSON.stringify(this.rnt_name.value.filter(x=> x.isChecked).map(item => {return item['id']}))
                     : '')) +
                 ('&tin_no=' +
                   (this.__rcvForms.value.tin_no
@@ -492,28 +493,36 @@ export class FinrptComponent implements OnInit {
                     : '')) +
                 ('&amc_name=' +
                   (this.__rcvForms.value.amc_name
-                    ? this.__rcvForms.value.amc_name
+                    ? JSON.stringify(this.__rcvForms.value.amc_name.map(item => {return item["id"]}))
                     : '')) +
                 ('&scheme_name=' +
                   (this.__rcvForms.value.scheme_name
-                    ? this.__rcvForms.value.scheme_name
+                    ? JSON.stringify(this.__rcvForms.value.scheme_name.map(item => {return item["id"]}))
                     : '')) +
+                (this.__rcvForms.value.btnType == 'A' ?
+                ('&sub_brk_cd=' +
+                  (this.__rcvForms.value.sub_brk_cd
+                    ? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]}))
+                    : '')) +
+                (
+                  '&rm_id='+
+                  (this.__rcvForms.value.rm_id
+                    ? JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["id"]}))
+                    : '[]')
+                ) +
                 ('&euin_no=' +
                   (this.__rcvForms.value.euin_no
-                    ? this.__rcvForms.value.euin_no
+                    ? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]}))
                     : '[]')) +
                 ('&brn_cd=' +
                   (this.__rcvForms.value.brn_cd
-                    ? this.__rcvForms.value.brn_cd
+                    ? JSON.stringify(this.__rcvForms.value.brn_cd.map(item => {return item["id"]}))
                     : '[]')) +
-                ('&rnt_name' +
-                  (this.__rcvForms.value.rnt_name.length > 0
-                    ? JSON.stringify(this.__rcvForms.value.rnt_name)
-                    : '')) +
+
                 ('&bu_type' +
                   (this.__rcvForms.value.bu_type
-                    ? JSON.stringify(this.__rcvForms.value.bu_type)
-                    : '[]')) +
+                    ? JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]}))
+                    : '[]')) : '') +
                 ('&from_date=' +
                   (this.__rcvForms.value.options != '3'
                     ? global.getActualVal(this.__rcvForms.getRawValue().frm_dt)
@@ -582,7 +591,7 @@ export class FinrptComponent implements OnInit {
     }
   }
   submit() {
-    this.getFinRPT(this.__sortAscOrDsc.active, this.__sortAscOrDsc.direction);
+    this.getFinRPT();
   }
   exportPdf() {
       this.__Rpt.downloadReport(
@@ -593,49 +602,21 @@ export class FinrptComponent implements OnInit {
         'Financial Report  '
       );
   }
-  onrntTypeChange(e: any) {
-    const rnt_name: FormArray = this.__rcvForms.get('rnt_name') as FormArray;
-    if (e.checked) {
-      rnt_name.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      rnt_name.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          rnt_name.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__rcvForms
-      .get('is_all_rnt')
-      .setValue(rnt_name.controls.length == this.__rnt.length ? true : false, {
-        emitEvent: false,
-      });
-  }
   getminDate() {
     return dates.getminDate();
   }
   getTodayDate() {
     return dates.getTodayDate();
   }
-  sortData(sort) {
-    this.__sortAscOrDsc = sort;
-    this.submit();
-  }
+
   reset() {
     this.__rcvForms.patchValue({
       is_all_rnt: false,
     options: '2',
-    sub_brk_cd: [],
     tin_no: '',
     client_code: '',
-    amc_name: [],
     scheme_name: [],
-    euin_no: [],
-    brn_cd: [],
-    bu_type: [],
-    rm_name: [],
+    date_range:'',
     date_status: 'T',
     start_date: this.getTodayDate(),
     end_date: this.getTodayDate(),
@@ -644,8 +625,11 @@ export class FinrptComponent implements OnInit {
     frm_dt: '',
     to_dt: '',
     })
-    this.__isAdd = false;
-    this.__sortAscOrDsc = { active: '', direction: 'asc' };
+    this.sort = new sort();
+    this.__rcvForms.get('is_all_rnt').setValue(false);
+    this.__rcvForms.get('amc_name').setValue([],{emitEvent:false});
+    this.__schemeMst.length = 0;
+    this.__pageNumber.setValue('10');
     this.submit();
   }
   outsideClickforTin(__ev) {
@@ -668,9 +652,10 @@ export class FinrptComponent implements OnInit {
   getItems(__items, __mode) {
     switch (__mode) {
       case 'C':
-        this.__rcvForms.controls['client_code'].reset(__items.client_name, {
+        this.__rcvForms.controls['client_name'].reset(__items.client_name, {
           emitEvent: false,
         });
+        this.__rcvForms.controls['client_code'].reset(__items.id);
         this.searchResultVisibilityForClient('none');
         break;
       case 'T':
@@ -687,18 +672,6 @@ export class FinrptComponent implements OnInit {
     });
     this.submit();
     this.setColumns(this.__rcvForms.controls['options'].value,this.__rcvForms.controls['trans_id'].value);
-
-  }
-  AdvanceFilter(){
-    this.__isAdd=!this.__isAdd;
-    this.__rcvForms.patchValue({
-      brnc_cd:[],
-      bu_type:[],
-      rm_name:[],
-      sub_brk_cd:[],
-      euin_no:[]
-    });
-   this.getBranchMst();
   }
 
   getBranchMst(){
@@ -709,6 +682,7 @@ export class FinrptComponent implements OnInit {
   getSelectedColumns(columns){
        const clm = ['edit', 'app_frm_view'];
        this.__columns = columns.map(({ field, header }) => ({field, header}));
+       this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
       //  this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
   }
   DocumentView(element){
@@ -726,7 +700,6 @@ export class FinrptComponent implements OnInit {
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
   }
   submitDaysheetReport(){
-    console.log(this.selectRNT);
 
   }
   openMenu(event){
@@ -771,5 +744,36 @@ export class FinrptComponent implements OnInit {
       }, 100);
    }
   }
-
+  close(ev){
+    this.__rcvForms.patchValue({
+      frm_dt: this.__rcvForms.getRawValue().date_range ? dates.getDateAfterChoose(this.__rcvForms.getRawValue().date_range[0]) : '',
+      to_dt: this.__rcvForms.getRawValue().date_range ? (global.getActualVal(this.__rcvForms.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.__rcvForms.getRawValue().date_range[1]) : '') : ''
+    });
+}
+  onItemClick(ev){
+    if(ev.option.value == 'A'){
+      this.__rcvForms.patchValue({
+        brnc_cd:[],
+        bu_type:[],
+        rm_name:[],
+        sub_brk_cd:[],
+        euin_no:[]
+      });
+     this.getBranchMst();
+    }
+    else{
+    this.reset();
+    }
+  }
+  onselectItem(__itemsPerPage) {
+    // this.__pageNumber.setValue(__itemsPerPage.option.value);
+    this.submit();
+  }
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    if(ev.sortField){
+    this.submit();
+    }
+  }
 }

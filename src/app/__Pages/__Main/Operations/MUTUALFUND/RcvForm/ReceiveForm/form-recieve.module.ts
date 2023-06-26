@@ -9,6 +9,7 @@ import { RcvformmodifyfornfoComponent } from './rcvFormModifyForNFO/rcvFormModif
 import { RcvfrmmodificationfornonfinComponent } from './rcvFormmodificationForNonFIn/rcvFrmModificationForNonFin.component';
 import { DeletercvComponent } from './deletercv/deletercv.component';
 
+
  const routes: Routes = [{path:'',component:FormRecieveComponent}]
 
 @NgModule({

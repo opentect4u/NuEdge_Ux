@@ -46,7 +46,7 @@ export class NonfinancialComponent implements OnInit {
       (dialogConfig.data = {
         product_id: '1',
         trans_type_id: '3',
-        title: 'Non Financial Report',
+        title: 'Manual Update Report For Non Financial',
       });
     try {
       const dialogref = this.__dialog.open(RPTComponent, dialogConfig);

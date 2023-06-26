@@ -14,6 +14,10 @@ import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { ProductCrudComponent } from '../product-crud/product-crud.component';
+import { column } from 'src/app/__Model/tblClmns';
+import { productClmns } from 'src/app/__Utility/Master/isnClmns';
+import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
+import { sort } from 'src/app/__Model/sort';
 
 @Component({
   selector: 'app-product-rpt',
@@ -21,7 +25,10 @@ import { ProductCrudComponent } from '../product-crud/product-crud.component';
   styleUrls: ['./product-rpt.component.css']
 })
 export class ProductRPTComponent implements OnInit {
+  itemsPerPage = ItemsPerPage;
+
   @ViewChild('prdName') __prdName: ElementRef;
+  sort=new sort();
   __isProductnameVisisble: boolean = false;
   @ViewChildren("insTypeChecked") private __insTypeChecked: QueryList<ElementRef>;
   __settings_productType = this.__utility.settingsfroMultiselectDropdown('id','product_type','Search Product Type');
@@ -33,9 +40,10 @@ export class ProductRPTComponent implements OnInit {
     is_all: new FormControl(false),
     product_type_id: new FormControl([])
   });
-  __exportedClmns: string[] = ['sl_no','ins_type_name','comp_full_name','comp_short_name','product_type','product_name'];
-  __columns: string[] = ['edit','delete','sl_no','ins_type_name','comp_full_name','comp_short_name','product_type','product_name']
+  __exportedClmns: string[] = productClmns.Columns.filter(item => (item.field!='edit' && item.field!='delete')).map(res => {return res['field']})
+  __columns: column[] = productClmns.Columns
   __isVisible : boolean = true;
+
   __selectPrdMst = new MatTableDataSource<insProduct>([]);
   __exportPrdMst = new MatTableDataSource<insProduct>([])
   __pageNumber = new FormControl(10);
@@ -55,13 +63,23 @@ export class ProductRPTComponent implements OnInit {
   ) {
     this.getcompanyMst();
   }
-  __insTypeMst: any= [];
+  // __insTypeMst: any= [];
   ngOnInit(): void {
     this.getInsTypeMst();
     this.getproductTypeMst();
     setTimeout(()=>{
       this.getproductMst();
     },500)
+  }
+  get ins_type_id(): FormArray{
+    return this.__prdSearchForm.get('ins_type_id') as FormArray;
+  }
+  setinsTypeFormControl(ins_type){
+    return new FormGroup({
+      id:new FormControl(ins_type ? ins_type.id : ''),
+      type: new FormControl(ins_type ? ins_type.type : ''),
+      isChecked: new FormControl(false)
+    })
   }
   getproductTypeMst(){
    this.__dbIntr.api_call(0,'/ins/productType',null).pipe(pluck("data")).subscribe((res: insPrdType[]) =>{
@@ -86,19 +104,17 @@ export class ProductRPTComponent implements OnInit {
     })
   }
   ngAfterViewInit(){
-    this.__prdSearchForm.controls['is_all'].valueChanges.subscribe(res =>{
-      const ins_type: FormArray = this.__prdSearchForm.get('ins_type_id') as FormArray;
-      ins_type.clear();
-      if(!res){
-        this.uncheckAll();
-      }
-      else{
-        this.__insTypeMst.forEach(__el =>{
-          ins_type.push(new FormControl(__el.id));
-        })
-        this.checkAll();
-      }
-    })
+ /** Change event occur when all Insurance Type checkbox has been changed  */
+ this.__prdSearchForm.controls['is_all'].valueChanges.subscribe(res =>{
+  this.ins_type_id.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+})
+/** End */
+
+/** Change event inside the formArray */
+this.ins_type_id.valueChanges.subscribe(res =>{
+this.__prdSearchForm.controls['is_all'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+})
+/*** End */
 
      // Product NAME SEARCH
   this.__prdSearchForm.controls['product_name'].valueChanges.
@@ -124,10 +140,8 @@ export class ProductRPTComponent implements OnInit {
   })
   }
   getInsTypeMst(){
-    this.__dbIntr.api_call(0,'/ins/type',null).pipe(pluck("data")).subscribe(res =>{
-      console.log(res);
-
-      this.__insTypeMst = res;
+    this.__dbIntr.api_call(0,'/ins/type',null).pipe(pluck("data")).subscribe((res: any) =>{
+        res.forEach(el => {this.ins_type_id.push(this.setinsTypeFormControl(el))});
     })
   }
   fullScreen() {
@@ -151,16 +165,16 @@ export class ProductRPTComponent implements OnInit {
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
   }
-  getproductMst(column_name: string | null = '', sort_by: string | null = 'asc'){
+  getproductMst(){
     const __fb = new FormData();
     console.log(JSON.stringify(this.__prdSearchForm.value.company_id));
     __fb.append('product_name',global.getActualVal(this.__prdSearchForm.value.product_name));
     __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id));
-    __fb.append('ins_type_id',JSON.stringify(this.__prdSearchForm.value.ins_type_id));
+    __fb.append('ins_type_id',JSON.stringify(this.__prdSearchForm.value.ins_type_id.filter(el => el.isChecked).map(item => {return item['id']})));
     __fb.append('paginate', this.__pageNumber.value);
     __fb.append('product_type_id',JSON.stringify(this.__prdSearchForm.value.product_type_id))
-    __fb.append('column_name', column_name);
-    __fb.append('sort_by', sort_by);
+    __fb.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __fb.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
      this.__dbIntr.api_call(1,'/ins/productDetailSearch',__fb).pipe(pluck("data")).subscribe((res: any) =>{
         this.__selectPrdMst = new MatTableDataSource(res.data);
         this.__paginate = res.links;
@@ -175,14 +189,10 @@ export class ProductRPTComponent implements OnInit {
     });
   }
   searchProduct(){
-    this.getproductMst(this.__sortColumnsAscOrDsc.active,this.__sortColumnsAscOrDsc.direction);
+    this.getproductMst();
   }
   exportPdf(){
 
-  }
-  sortData(__ev){
-    this.__sortColumnsAscOrDsc =__ev;
-    this.getproductMst(__ev.active,__ev.direction);
   }
   delete(__el:insProduct,index: number){
     const dialogConfig = new MatDialogConfig();
@@ -213,25 +223,18 @@ export class ProductRPTComponent implements OnInit {
   populateDT(__el: insProduct){
    this.openDialog(__el,__el.id)
   }
-  getval(__paginate){
-     this.__pageNumber.setValue(__paginate.toString());
-    this.getproductMst(
-      this.__sortColumnsAscOrDsc.active,
-      this.__sortColumnsAscOrDsc.direction
-    );
-  }
   getPaginate(__paginate){
     if (__paginate.url) {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber.value) +
-            ('&product_name=' + global.getActualVal(this.__prdSearchForm.value.product_name)) +
-            ('&ins_type_id=' +  JSON.stringify(this.__prdSearchForm.value.ins_type_id)) +
-            ('&company_id=' +  JSON.stringify(this.__prdSearchForm.value.company_id)) +
-            ('&sort_by=' + this.__sortColumnsAscOrDsc.direction) +
-            ('&column_name=' + this.__sortColumnsAscOrDsc.active) +
-            ('&product_type_id='+ JSON.stringify(this.__prdSearchForm.value.product_type_id))
+            ('&paginate=' + (this.__pageNumber.value)) +
+            ('&product_name=' + (global.getActualVal(this.__prdSearchForm.value.product_name))) +
+            ('&ins_type_id=' +  (JSON.stringify(this.__prdSearchForm.value.ins_type_id.filter(el => el.isChecked).map(item => {return item['id']})))) +
+            ('&company_id=' +  (JSON.stringify(this.__prdSearchForm.value.company_id))) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
+            ('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1')) +
+            ('&product_type_id='+ (JSON.stringify(this.__prdSearchForm.value.product_type_id)))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -323,37 +326,8 @@ export class ProductRPTComponent implements OnInit {
   resetValues(){
     this.__prdSearchForm.reset();
   }
-
-  onInsTypeChange(e){
-    const ins_type: FormArray = this.__prdSearchForm.get('ins_type_id') as FormArray;
-    if (e.checked) {
-      ins_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      ins_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          ins_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__prdSearchForm.get('is_all').setValue(ins_type.controls.length == 3 ?  true : false,{emitEvent: false})
-    }
-    uncheckAll(){
-      this.__insTypeChecked.forEach((element:any) => {
-        element.checked = false;
-      });
-    }
-    checkAll(){
-        this.__insTypeChecked.forEach((element:any) => {
-          element.checked = true;
-        });
-    }
     outsideClick(__ev){
       if(__ev){
-        console.log(__ev);
-
         this.searchResultVisibility('none');
       }
     }
@@ -371,8 +345,20 @@ export class ProductRPTComponent implements OnInit {
         product_type_id: []
       });
        this.getItems(null,'P');
-       (<FormArray>this.__prdSearchForm.get('ins_type_id')).clear();
-       this.uncheckAll();
+       this.__prdSearchForm.get('is_all').setValue(false);
+       this.sort= new sort;
+      this.__pageNumber.setValue(10);
        this.searchProduct();
+    }
+    customSort(ev){
+        this.sort.field =ev.sortField;
+        this.sort.order =ev.sortOrder;
+        if(ev.sortField){
+          this.getproductMst();
+        }
+    }
+    onselectItem(ev){
+      this.__pageNumber.setValue(ev.option.value);
+      this.getproductMst();
     }
 }

@@ -72,7 +72,7 @@
           </div>
           <div class="col-sm-12 my-2" *ngIf="data?.mode == 'K'">
             <label for="fdr_no">CKYC No
-            <span class="text-danger">*</span>
+
             </label>
             <input type="text"
             name="ckyc_no"
@@ -80,9 +80,6 @@
             id="ckyc_no"
             class="form-control"
             formControlName="ckyc_no">
-            <div class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','ckyc_no']).invalid && (__manualUpdateForm.get(['process','ckyc_no']).dirty || __manualUpdateForm.get(['process','ckyc_no']).touched)">
-              <span class="invalid-feedback" *ngIf="(__manualUpdateForm.get(['process','ckyc_no'])).errors?.required">*Please provide CKYC No</span>
-            </div>
           </div>
           <div class="col-sm-12 my-2" *ngIf="!this.data.isViewMode">
             <ng-container *ngIf="this.data.mode == 'K';else MutualFund">

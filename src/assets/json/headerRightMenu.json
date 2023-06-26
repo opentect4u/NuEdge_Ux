@@ -1,5 +1,5 @@
 [
-    
+
     {
         "id":1,
         "icon":"fa fa-search searchBtn",
@@ -10,7 +10,7 @@
     },
     {
         "id":2,
-        "icon":"fa fa-cog",
+        "icon":"settings",
         "img":"",
         "title":"",
         "flag":"N",
@@ -18,7 +18,7 @@
     },
     {
         "id":3,
-        "icon":"fa fa-bell",
+        "icon":"notifications",
         "img":"",
         "title":"",
         "flag":"N",

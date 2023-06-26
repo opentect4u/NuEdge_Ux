@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ManualEntryForNonFinComponent } from './manualEntryForNonFin/manualEntryForNonFin.component';
 import { AckRPTForNonFinComponent } from './ackRPTForNonFin/ackRPTForNonFin.component';
+import { TabModule } from 'src/app/__Core/tab/tab.module';
 const routes: Routes = [
   {
     path: '',
@@ -13,7 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(routes), SharedModule],
+  imports: [CommonModule, RouterModule.forChild(routes), SharedModule,TabModule],
   declarations: [
     AckEntryNonFinComponent,
     AckRPTForNonFinComponent,

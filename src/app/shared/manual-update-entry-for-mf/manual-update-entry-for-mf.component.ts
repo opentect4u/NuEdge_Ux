@@ -120,7 +120,7 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
   ngAfterViewInit(){
     this.__manualUpdateForm.controls['manual_trans_status'].valueChanges.subscribe(res =>{
        this.__manualUpdateForm.get(['process','folio_no']).setValidators((res == 'P' && this.data?.mode != 'K') ? [Validators.required] : null);
-       this.__manualUpdateForm.get(['process','ckyc_no']).setValidators((res == 'P' && this.data?.mode == 'K') ? [Validators.required] : null);
+      //  this.__manualUpdateForm.get(['process','ckyc_no']).setValidators((res == 'P' && this.data?.mode == 'K') ? [Validators.required] : null);
 
        this.__manualUpdateForm.get(['process','process_date']).setValidators(res == 'P' ? [Validators.required] : null);
        this.__manualUpdateForm.get(['process','upload_soa']).setValidators((res == 'P'  && this.data?.mode != 'K') ? [fileValidators.fileExtensionValidator(this.allowedExtensions),Validators.required] : null);
@@ -135,7 +135,7 @@ export class ManualUpdateEntryForMFComponent implements OnInit {
        this.__manualUpdateForm.get(['rejected','reject_memo']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get('contact_to_comp').updateValueAndValidity({emitEvent:true});
        this.__manualUpdateForm.get(['process','folio_no']).updateValueAndValidity({emitEvent:false});
-       this.__manualUpdateForm.get(['process','ckyc_no']).updateValueAndValidity({emitEvent:false});
+      //  this.__manualUpdateForm.get(['process','ckyc_no']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['process','process_date']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['process','upload_soa']).updateValueAndValidity({emitEvent:false});
        this.__manualUpdateForm.get(['process','upload_scan']).updateValueAndValidity({emitEvent:false});
