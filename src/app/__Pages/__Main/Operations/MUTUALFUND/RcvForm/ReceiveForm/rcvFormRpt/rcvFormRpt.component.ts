@@ -182,7 +182,7 @@ export class RcvformrptComponent implements OnInit {
       this.__rcvForms.value.temp_tin_no ? this.__rcvForms.value.temp_tin_no : ''
     );
     __rcvFormSearch.append(
-      'trans_type',
+      'trans_id',
       this.__rcvForms.value.trans_type ? this.__rcvForms.value.trans_type : ''
     );
     if(this.__rcvForms.value.advFilt_reset == 'A'){
