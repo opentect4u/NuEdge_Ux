@@ -519,7 +519,7 @@ export class RPTComponent implements OnInit {
   tableExport(__mfTrax: FormData) {
     __mfTrax.delete('paginate');
     this.__dbIntr
-      .api_call(1, '/mfTraxExport', __mfTrax)
+      .api_call(1, '/manualUpdateExport', __mfTrax)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         this.__export = new MatTableDataSource(res);

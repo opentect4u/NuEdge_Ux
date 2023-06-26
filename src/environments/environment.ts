@@ -39,11 +39,12 @@ export const environment = {
   // kyc_reject_memo: "https://opentech4u.co.in/nuedge_api/public/kyc-reject-memo/",
   // /******************END KYC****************/
 
-  // app_formUrl_ins:"https://opentech4u.co.in/nuedge_api/public/ins-application-form/",
   // ack_formUrl_for_ins:"https://opentech4u.co.in/nuedge_api/public/ins-acknowledgement-copy/",
   // manual_update_formUrl_for_ins:"https://opentech4u.co.in/nuedge_api/public/ins-policy-copy/",
   // manual_update_formUrl_for_fd:"https://opentech4u.co.in/nuedge_api/public/fd-policy-copy/",
   // ins_app_form_url: "https://opentech4u.co.in/nuedge_api/public/ins-application-form/",
+
+  // app_formUrl_fd:"https://opentech4u.co.in/nuedge_api/public/fd-application-form/",
   // ack_formUrl_for_fd:"https://opentech4u.co.in/nuedge_api/public/fd-acknowledgement-copy/",
   // cert_delivery_cu_pod:"https://opentech4u.co.in/nuedge_api/public/fd-pod-copy/",
   // cert_delivery_recv_ack:"https://opentech4u.co.in/nuedge_api/public/fd-received-ack/",
@@ -81,14 +82,20 @@ export const environment = {
   kyc_reject_memo: "http//192.168.1.5/nuedge/public/kyc-reject-memo/",
   /******************END KYC****************/
 
-  app_formUrl_ins:"http://192.168.1.5/nuedge/public/ins-application-form/",
+
+  //******************************* Start Insurance************************************/
+  ins_app_form_url: "http://192.168.1.5/nuedge/public/ins-application-form/",
   ack_formUrl_for_ins:"http://192.168.1.5/nuedge/public/ins-acknowledgement-copy/",
   manual_update_formUrl_for_ins:"http://192.168.1.5/nuedge/public/ins-policy-copy/",
   manual_update_formUrl_for_fd:"http://192.168.1.5/nuedge/public/fd-policy-copy/",
-  ins_app_form_url: "http://192.168.1.5/nuedge/public/ins-application-form/",
+    /******************************End Insurance******************************************************** */
+//******************************* Start Fd************************************/
+  app_formUrl_fd:"http://192.168.1.5/nuedge/public/fd-application-form/",
   ack_formUrl_for_fd:"http://192.168.1.5/nuedge/public/fd-acknowledgement-copy/",
   cert_delivery_cu_pod:"http://192.168.1.5/nuedge/public/fd-pod-copy/",
   cert_delivery_recv_ack:"http://192.168.1.5/nuedge/public/fd-received-ack/",
+  /********************************* End Fd**************************************/
+
 
   //******************************* Start MUTUAL FUND************************************/
   app_formUrl:"http://192.168.1.5/nuedge/public/application-form/",
