@@ -81,7 +81,7 @@ export class AckEntryRptComponent implements OnInit {
     __kycAck.append('login_status_id',JSON.stringify(kycFormDt.ack_logged_status.filter(item => item.isChecked).map(res => {return res['id']})));
     __kycAck.append('from_date',global.getActualVal(kycFormDt.frm_dt));
     __kycAck.append('to_date',global.getActualVal(kycFormDt.to_dt));
-    __kycAck.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
+    __kycAck.append('login_at',JSON.stringify(kycFormDt.kyc_login_at.map(item => {return item['id']})));
     __kycAck.append('login_type',global.getActualVal(kycFormDt.kyc_login));
     __kycAck.append('client_code',kycFormDt.client_code ? kycFormDt.client_code : '');
     __kycAck.append('tin_no',kycFormDt.tin_no ? kycFormDt.tin_no : '');
@@ -162,7 +162,7 @@ export class AckEntryRptComponent implements OnInit {
   __kyc.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
   __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
   __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
-  __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
+  __kyc.append('login_at',JSON.stringify(kycFormDt.kyc_login_at.map(item => {return item['id']})));
   __kyc.append('login_type',global.getActualVal(kycFormDt.kyc_login));
   __kyc.append('client_code',kycFormDt.client_code ? kycFormDt.client_code : '');
   __kyc.append('tin_no',kycFormDt.tin_no ? kycFormDt.tin_no : '');
@@ -181,7 +181,7 @@ getPaginate(__paginate){
         +  ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
         +  ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
         + (('&client_code=' + (this.__getAckFormData.client_code ? this.__getAckFormData.client_code : ''))
-        + ('&login_at=' + this.__getAckFormData.kyc_login_at)
+        + ('&login_at=' +  JSON.stringify(this.__getAckFormData.kyc_login_at.map(item => {return item['id']})))
         + ('&login_type=' + this.__getAckFormData.kyc_login)
         +('&from_date='+global.getActualVal(this.__getAckFormData.frm_dt))
         +('&to_date='+global.getActualVal(this.__getAckFormData.to_dt))

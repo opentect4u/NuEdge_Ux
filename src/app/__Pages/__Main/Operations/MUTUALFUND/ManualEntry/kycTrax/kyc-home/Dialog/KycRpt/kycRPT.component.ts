@@ -254,8 +254,6 @@ reset(__ev){
 
 getKycRpt(kycFormDt){
 this.__getKycFormData = kycFormDt;
-console.log(this.__getKycFormData);
-
 const __kyc = new FormData();
   __kyc.append('paginate',this.__pageNumber.value);
   __kyc.append('option', kycFormDt.options);
@@ -266,7 +264,7 @@ const __kyc = new FormData();
     __kyc.append('login_status_id',JSON.stringify(kycFormDt.ack_logged_status.filter(item => item.isChecked).map(res => {return res['id']})));
     __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
     __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
-    __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
+    __kyc.append('login_at',JSON.stringify(kycFormDt.kyc_login_at.map(item => {return item['id']})));
     __kyc.append('login_type',global.getActualVal(kycFormDt.kyc_login));
   __kyc.append(
     'client_code',
@@ -315,7 +313,7 @@ showItemPerpage(kycFormDt){
   if( kycFormDt.options != '3'){
     __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
     __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
-    __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
+    __kyc.append('login_at',JSON.stringify(kycFormDt.kyc_login_at.map(item => {return item['id']})));
     __kyc.append('login_type',global.getActualVal(kycFormDt.kyc_login));
   __kyc.append(
     'client_code',

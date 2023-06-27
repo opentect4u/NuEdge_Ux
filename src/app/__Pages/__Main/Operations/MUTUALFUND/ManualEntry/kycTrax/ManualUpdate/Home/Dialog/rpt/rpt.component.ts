@@ -107,7 +107,7 @@ export class RPTComponent implements OnInit {
       if( kycFormDt.options != '3'){
         __kycAck.append('from_date',global.getActualVal(kycFormDt.frm_dt));
         __kycAck.append('to_date',global.getActualVal(kycFormDt.to_dt));
-        __kycAck.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
+        __kycAck.append('login_at' ,JSON.stringify(this.__getAckFormData.kyc_login_at.map(item => {return item['id']})));
         __kycAck.append('login_type',global.getActualVal(kycFormDt.kyc_login));
         __kycAck.append('update_status_id',JSON.stringify(kycFormDt.update_status_id.filter(item => item.isChecked).map(res => {return res['id']})));
 
@@ -181,7 +181,7 @@ export class RPTComponent implements OnInit {
       __kyc.append('update_status_id',JSON.stringify(kycFormDt.update_status_id.filter(item => item.isChecked).map(res => {return res['id']})));
       __kyc.append('from_date',global.getActualVal(kycFormDt.frm_dt));
       __kyc.append('to_date',global.getActualVal(kycFormDt.to_dt));
-      __kyc.append('login_at',global.getActualVal(kycFormDt.kyc_login_at) ? JSON.stringify(kycFormDt.kyc_login_at) : '');
+      __kyc.append('login_at' ,JSON.stringify(this.__getAckFormData.kyc_login_at.map(item => {return item['id']})));
       __kyc.append('login_type',global.getActualVal(kycFormDt.kyc_login));
     __kyc.append(
       'client_code',
@@ -232,7 +232,7 @@ export class RPTComponent implements OnInit {
           + (this.__getAckFormData.options != '3'
           ? (('&client_code=' + (this.__getAckFormData.client_code ? this.__getAckFormData.client_code : ''))
           + ( '&sub_brk_cd=' + (this.__getAckFormData.sub_brk_cd ? this.__getAckFormData.sub_brk_cd : ''))
-          + ('&login_at=' + this.__getAckFormData.kyc_login_at)
+          + ('&login_at=' +  JSON.stringify(this.__getAckFormData.kyc_login_at.map(item => {return item['id']})))
           + ('&login_type=' + this.__getAckFormData.kyc_login)
           +('&from_date='+global.getActualVal(this.__getAckFormData.frm_dt))
           +('&to_date='+global.getActualVal(this.__getAckFormData.to_dt))

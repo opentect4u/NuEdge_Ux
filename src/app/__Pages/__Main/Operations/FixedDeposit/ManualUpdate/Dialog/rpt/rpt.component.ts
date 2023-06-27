@@ -8,7 +8,7 @@ import {
   QueryList,
   ViewChild,
 } from '@angular/core';
-import { FormArray, FormControl, FormControlName, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
   MatDialog,
   MatDialogConfig,
@@ -34,13 +34,15 @@ import buType from '../../../../../../../../assets/json/buisnessType.json';
 import modeOfPremium from '../../../../../../../../assets/json/Master/modeofPremium.json';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { client } from 'src/app/__Model/__clientMst';
+import updateStatus from '../../../../../../../../assets/json/updateStatus.json';
 
 import { fdComp } from 'src/app/__Model/fdCmp';
 import subOpt from '../../../../../../../../assets/json/subOption.json';
-import tdsInfo from '../../../../../../../../assets/json/TDSInfo.json';
-import filterOpt from '../../../../../../../../assets/json/filterOption.json';
+import tdsInfo from '../../../../../../../../assets/json/TDSInfo.json'
 import { sort } from 'src/app/__Model/sort';
 import itemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
+import filterOpt from '../../../../../../../../assets/json/filterOption.json';
+import { column } from 'src/app/__Model/tblClmns';
 import { environment } from 'src/environments/environment';
 import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -60,9 +62,21 @@ export class RPTComponent implements OnInit {
   sort = new sort();
   itemsPerPage:selectBtn[] = itemsPerPage;
   selectBtn:selectBtn[] = filterOpt
-  __comp_setting = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company');
-  __comp_type_setting = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type');
-  __scm_setting = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme');
+  __comp_setting = this.__utility.settingsfroMultiselectDropdown(
+    'id',
+    'comp_short_name',
+    'Search Company'
+  );
+  __comp_type_setting = this.__utility.settingsfroMultiselectDropdown(
+    'id',
+    'comp_type',
+    'Search Company Type'
+  );
+  __scm_setting = this.__utility.settingsfroMultiselectDropdown(
+    'id',
+    'scheme_name',
+    'Search Scheme'
+  );
   settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Employee',3);
   settingsForbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',3 );
   settingsForbuType = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',3);
@@ -72,64 +86,59 @@ export class RPTComponent implements OnInit {
     { id: 'F', insuredbu_type: 'Fresh' },
     { id: 'R', insuredbu_type: 'Renewal' },
   ];
-
-  displayMode_forTemp_Tin:string;
-  displayMode_forClient:string;
-  __isSubArnPending: boolean = false;
-  __isEuinPending: boolean = false;
   __isClientPending: boolean = false;
-  __istemporaryspinner:boolean = false;
   divToPrint: any;
   WindowObject: any;
   __mode_of_premium = modeOfPremium;
-  __columns: any[] = [];
-  clmList: any= fdTraxClm.Columns.filter(item => !['edit','comp_login_cutt_off','comp_login_dt'].includes(item.field))
-  __exportedClmns: string[] = [];
-  SelectedClms: string[]=[];
+  __columns: column[] = [];
+  __exportedClmns: string[];
+  clmList: any= fdTraxClm.Columns.filter(item => !['edit','comp_login_cutt_off','comp_login_dt'].includes(item.field));
+   SelectedClms:string[]= [];
   __euinMst: any = [];
   __subbrkArnMst: any = [];
   __clientMst: client[] = [];
   __compMst: fdComp[] = [];
   __compTypeMst: any = [];
   __scmMst: any = [];
-  __tinMst:any=[];
-  __brnchMst:any =[];
-  __rmMst:any =[];
+  __tinMst: any =[];
+  __brnchMst:any = [];
+  displayMode_forTemp_Tin:string;
+  displayMode_forClient:string;
+  __istemporaryspinner:boolean = false;
   __insTrax = new MatTableDataSource<any>([]);
   __exportTrax = new MatTableDataSource<any>([]);
+
+
   __sortAscOrDsc: any = { active: '', direction: 'asc' };
   __pageNumber = new FormControl('10');
   __paginate: any = [];
-  __bu_type:any =[];
+  __bu_type: any=[];
+  __rmMst: any=[];
   __isVisible: boolean = false;
   __insTraxMst = new MatTableDataSource<any>([]);
   __insTraxForm = new FormGroup({
-    btnType:new FormControl('R'),
-    date_range: new FormControl(''),
+    btn_type:new FormControl('R'),
     options: new FormControl('2'),
     sub_brk_cd: new FormControl([]),
-    rm_id:new FormControl([]),
     tin_no: new FormControl(''),
+    insured_bu_type: new FormArray([]),
     brn_cd: new FormControl([]),
     investor_code: new FormControl(''),
     investor_name: new FormControl(''),
     euin_no: new FormControl([]),
     bu_type: new FormControl([]),
-    date_status: new FormControl('T'),
-    start_date: new FormControl(this.getTodayDate()),
-    end_date: new FormControl(this.getTodayDate()),
-    login_status: new FormControl('N'),
+    rm_id: new FormControl([]),
     frm_dt: new FormControl(''),
     to_dt: new FormControl(''),
     dt_type: new FormControl(''),
+    date_range: new FormControl(''),
     company_id: new FormControl([],{updateOn:'blur'}),
     comp_type_id: new FormControl([],{updateOn:'blur'}),
     scheme_id: new FormControl([]),
     filter_type: new FormControl(''),
-    is_all_bu_type: new FormControl(false)
+    update_status_id: new FormArray([]),
+    is_all: new FormControl(false)
   });
-  // toppings = new FormControl();
-  // toppingList = fdTraxClm.COLUMN_SELECTOR;
   constructor(
     private __Rpt: RPTService,
     private __dialog: MatDialog,
@@ -147,39 +156,53 @@ export class RPTComponent implements OnInit {
     this.__exportedClmns = this.__columns.filter(x => !clmToRemove.includes(x.field)).map(item => {return item['field']})
     this.SelectedClms = this.__columns.map(item => {return item['field']});
   }
-
+   get update_status_id(): FormArray{
+      return this.__insTraxForm.get('update_status_id') as FormArray;
+   }
   ngOnInit(): void {
     this.getFDMstRPT();
-    this.setColumns(2);
+    this.setColumns(this.__insTraxForm.value.options);
     this.getCompanyTypeMst();
+    this.getLoggedinStatus();
+  }
+
+  getLoggedinStatus(){
+    updateStatus.forEach(el =>{
+    this.update_status_id.push(this.addLoggedStatusForm(el));
+    })
+  }
+  addLoggedStatusForm(updateSt){
+    return new FormGroup({
+      id:new FormControl(updateSt ? updateSt?.id : 0),
+      name:new FormControl(updateSt ? updateSt?.name : 0),
+      value:new FormControl(updateSt ? updateSt.value : ''),
+      isChecked:new FormControl(false),
+    })
   }
   getFDMstRPT() {
     const __fd = new FormData();
-      __fd.append('paginate', this.__pageNumber.value);
-      if(this.__insTraxForm.value.options == 2 || this.__insTraxForm.value.options == 1){
-        __fd.append('from_date',global.getActualVal(this.__insTraxForm.getRawValue().frm_dt));
-        __fd.append('to_date',global.getActualVal(this.__insTraxForm.getRawValue().to_dt));
-        __fd.append('tin_no',global.getActualVal(this.__insTraxForm.value.tin_no));
-        __fd.append('investor_code',global.getActualVal(this.__insTraxForm.value.investor_code));
-        __fd.append('company_id', JSON.stringify(this.__insTraxForm.value.company_id.map(item => {return item['id']})));
-        __fd.append('comp_type_id',JSON.stringify(this.__insTraxForm.value.comp_type_id.map(item => {return item['id']})));
-        __fd.append('scheme_id', JSON.stringify(this.__insTraxForm.value.scheme_id.map(item => {return item['id']})));
-        if(this.__insTraxForm.value.btnType == 'A'){
-        __fd.append('brn_cd', JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})));
-        __fd.append('bu_type', JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item['id']})));
-        __fd.append('rm_id', JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['id']})));
-        __fd.append('sub_brk_cd', JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['id']})));
-        __fd.append('euin_no', JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['id']})));
-        }
+    __fd.append('paginate', this.__pageNumber.value);
+    __fd.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __fd.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    if(this.__insTraxForm.value.options == 2 || this.__insTraxForm.value.options == 1){
+      __fd.append('from_date',global.getActualVal(this.__insTraxForm.getRawValue().frm_dt));
+      __fd.append('to_date',global.getActualVal(this.__insTraxForm.getRawValue().to_dt));
+      __fd.append('tin_no',global.getActualVal(this.__insTraxForm.value.tin_no));
+      __fd.append('investor_code',global.getActualVal(this.__insTraxForm.value.investor_code));
+      __fd.append('company_id', JSON.stringify(this.__insTraxForm.value.company_id.map(item => {return item['id']})));
+      __fd.append('comp_type_id',JSON.stringify(this.__insTraxForm.value.comp_type_id.map(item => {return item['id']})));
+      __fd.append('scheme_id', JSON.stringify(this.__insTraxForm.value.scheme_id.map(item => {return item['id']})));
+      __fd.append('update_status_id', JSON.stringify(this.update_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})));
+      if(this.__insTraxForm.value.btnType == 'A'){
+      __fd.append('brn_cd', JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})));
+      __fd.append('bu_type', JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item['id']})));
+      __fd.append('rm_id', JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['id']})));
+      __fd.append('sub_brk_cd', JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['id']})));
+      __fd.append('euin_no', JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['id']})));
       }
-      else{
-        __fd.append('login_status', this.__insTraxForm.value.login_status);
-      __fd.append('date_status', this.__insTraxForm.value.date_status);
-      __fd.append('start_date', this.__insTraxForm.value.start_date);
-      __fd.append('end_date', this.__insTraxForm.value.end_date);
-      }
+    }
     this.__dbIntr
-      .api_call(1, '/fd/fdTraxDetailSearch', __fd)
+      .api_call(1, '/fd/ackDetailSearch', __fd)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         this.__insTrax = new MatTableDataSource(res.data);
@@ -190,7 +213,7 @@ export class RPTComponent implements OnInit {
   tableExport(formData: FormData) {
     formData.delete('paginate');
     this.__dbIntr
-      .api_call(1, '/fd/fdTraxExport', formData)
+      .api_call(1, '/fd/ackExport', formData)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         this.__exportTrax = new MatTableDataSource(res);
@@ -198,6 +221,38 @@ export class RPTComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+     /** Change event occur when all rnt checkbox has been changed  */
+     this.__insTraxForm.controls['is_all'].valueChanges.subscribe(res =>{
+      this.update_status_id.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+    })
+    /** End */
+
+    /** Change event inside the formArray */
+    this.update_status_id.valueChanges.subscribe(res =>{
+    this.__insTraxForm.controls['is_all'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+    })
+    /*** End */
+    this.__insTraxForm.controls['tin_no'].valueChanges.pipe(
+      tap(() => (this.__istemporaryspinner = true)),
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((dt) =>
+        dt?.length > 1 ? this.__dbIntr.searchItems('/fd/fdTraxShow', dt) : []
+      ),
+      map((x: responseDT) => x.data)
+    )
+    .subscribe({
+      next: (value) => {
+        this.__tinMst = value;
+        this.searchResultVisibilityForTempTin('block');
+        this.__istemporaryspinner = false;
+      },
+      complete: () => console.log(''),
+      error: (err) => {
+        this.__istemporaryspinner = false;
+      },
+    });
+
     this.__insTraxForm.controls['dt_type'].valueChanges.subscribe((res) => {
       this.__insTraxForm.controls['date_range'].reset(
         res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
@@ -215,40 +270,11 @@ export class RPTComponent implements OnInit {
       }
     });
 
-    this.__insTraxForm.controls['tin_no'].valueChanges
-    .pipe(
-      tap(() => (this.__istemporaryspinner = true)),
-      debounceTime(200),
-      distinctUntilChanged(),
-      switchMap((dt) =>
-        dt?.length > 1 ? this.__dbIntr.searchItems('/fd/fdTraxShow', dt) : []
-      ),
-      map((x: responseDT) => x.data)
-    )
-    .subscribe({
-      next: (value) => {
-        this.__tinMst = value;
-        this.searchResultVisibilityForTin('block');
-        this.__istemporaryspinner = false;
-      },
-      complete: () => console.log(''),
-      error: (err) => {
-        this.__istemporaryspinner = false;
-      },
-    });
-
-    this.__insTraxForm.controls['date_status'].valueChanges.subscribe((res) => {
-      this.__insTraxForm.controls['start_date'].setValue(
-        res == 'T' ? this.getTodayDate() : ''
-      );
-      this.__insTraxForm.controls['end_date'].setValue(
-        res == 'T' ? this.getTodayDate() : ''
-      );
-    });
     this.__insTraxForm.controls['options'].valueChanges.subscribe((res) => {
-      this.setColumns(res);
+        this.setColumns(res);
     });
-
+    // EUIN NUMBER SEARCH
+    /**change Event of sub Broker Arn Number */
 
     this.__insTraxForm.controls['investor_name'].valueChanges
       .pipe(
@@ -281,21 +307,15 @@ export class RPTComponent implements OnInit {
     );
     /*** END */
 
-    /*** Comapny Change */
+    // /*** Comapny Change */
     this.__insTraxForm.controls['company_id'].valueChanges.subscribe((res) => {
       this.getSchemeMst(res);
     });
-    /*** END */
+    // /*** END */
   }
-
-  searchResultVisibilityForTin(display_mode) {
-    this.displayMode_forTemp_Tin = display_mode;
-  }
-  searchFD() {
+  searchInsurance() {
     this.getFDMstRPT();
   }
-
-
 
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
@@ -321,198 +341,82 @@ export class RPTComponent implements OnInit {
   getTodayDate() {
     return dates.getTodayDate();
   }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.searchFD();
-  }
   getPaginate(__paginate: any | null = null) {
     if(__paginate.url){
-       this.__dbIntr
-        .getpaginationData(
-          __paginate.url +
-            ('&paginate=' + this.__pageNumber.value) +
-            ('&option=' + this.__insTraxForm.value.options) +
+      this.__dbIntr
+       .getpaginationData(
+         __paginate.url +
+           ('&paginate=' + this.__pageNumber.value) +
+           ('&option=' + this.__insTraxForm.value.options) +
+          (
+          ('&update_status_id=' + (JSON.stringify(this.update_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})))) +
+           ('&from_date=' + global.getActualVal(this.__insTraxForm.getRawValue().frm_dt)) +
+           ('&to_date=' + global.getActualVal(this.__insTraxForm.getRawValue().to_dt)) +
+           ('&tin_no=' + global.getActualVal(this.__insTraxForm.value.tin_no)) +
+           ('&investor_code=' + global.getActualVal(this.__insTraxForm.value.investor_code)) +
+           ('&company_id=' + (JSON.stringify(this.__insTraxForm.value.company_id.map(item => {return item['id']})))) +
+           ('&comp_type_id=' + (JSON.stringify(this.__insTraxForm.value.comp_type_id.map(item => {return item['id']})))) +
+           ('&scheme_id=' + (JSON.stringify(this.__insTraxForm.value.scheme_id.map(item => {return item['id']}))))
+            +
             (
-              this.__insTraxForm.value.options != 3 ?
-            (
-            ('&from_date=' + global.getActualVal(this.__insTraxForm.getRawValue().frm_dt)) +
-            ('&to_date=' + global.getActualVal(this.__insTraxForm.getRawValue().to_dt)) +
-            ('&tin_no=' + global.getActualVal(this.__insTraxForm.value.tin_no)) +
-            ('&investor_code=' + global.getActualVal(this.__insTraxForm.value.investor_code)) +
-            ('&company_id=' + (JSON.stringify(this.__insTraxForm.value.company_id.map(item => {return item['id']})))) +
-            ('&comp_type_id=' + (JSON.stringify(this.__insTraxForm.value.comp_type_id.map(item => {return item['id']})))) +
-            ('&scheme_id=' + (JSON.stringify(this.__insTraxForm.value.scheme_id.map(item => {return item['id']}))))
-             +
+             this.__insTraxForm.value.btnType == 'A' ?
              (
-              this.__insTraxForm.value.btnType == 'A' ?
-              (
-                ('&brn_cd=' + (JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})))) +
-                ('&rm_id=' + (JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['id']})))) +
-                ('&sub_brk_cd=' + (JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['id']})))) +
-                ('&euin_no=' + (JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['id']}))))
-              )
-              :
-              ''
-            ))
-            :
-            (
-            ('&login_status=' + (this.__insTraxForm.value.login_status)) +
-            ('&date_status=' + (this.__insTraxForm.value.date_status)) +
-            ('&start_date=' + (this.__insTraxForm.value.start_date)) +
-            ('&end_date=' + (this.__insTraxForm.value.end_date))
-            )
-        ))
-        .pipe(map((x: any) => x.data))
-        .subscribe((res: any) => {
-          this.__insTrax = new MatTableDataSource(res.data);
-          this.__paginate = res.links;
-        });
-    }
-  }
-  onbuTypeChange(e: any) {
-    const bu_type: FormArray = this.__insTraxForm.get('bu_type') as FormArray;
-    if (e.checked) {
-      bu_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      bu_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          bu_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__insTraxForm.get('is_all_bu_type').setValue(
-      bu_type.controls.length == 3 ? true : false,
-      {emitEvent:false}
-    );
-
-  }
-  sortData(__ev) {
-    this.__sortAscOrDsc = __ev;
-    this.searchFD();
+               ('&brn_cd=' + (JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})))) +
+               ('&rm_id=' + (JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['id']})))) +
+               ('&sub_brk_cd=' + (JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['id']})))) +
+               ('&euin_no=' + (JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['id']}))))
+             )
+             :
+             ''
+           )))
+       .pipe(map((x: any) => x.data))
+       .subscribe((res: any) => {
+         this.__insTrax = new MatTableDataSource(res.data);
+         this.__paginate = res.links;
+       });
+   }
   }
   getModeOfPremium(premium) {
     return premium
       ? this.__mode_of_premium.filter((x: any) => (x.id = premium))[0].name
       : '';
   }
-  populateDT(__items) {
-    const dialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = false;
-      dialogConfig.closeOnNavigation = false;
-      dialogConfig.disableClose = true;
-      dialogConfig.hasBackdrop = false;
-      dialogConfig.width = '50%';
-      dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
-      dialogConfig.data = {
-        flag: 'MU_' + (__items.tin_no ? __items.tin_no.toString() : '0'),
-        isViewMode: __items.form_status == 'A' ? false : true,
-        tin: __items.tin_no,
-        tin_no: __items.tin_no,
-        title: 'Manual Update',
-        right: global.randomIntFromInterval(1, 60),
-        data:__items
-      };
-      dialogConfig.id = 'FDMU_' + (__items.tin_no ? __items.tin_no.toString() : '0');
-      try {
-        const dialogref = this.__dialog.open(
-          EntryComponent,
-          dialogConfig
-        );
-        dialogref.afterClosed().subscribe((dt) => {
-          if (dt) {
-              this.updateRow(dt.data);
-          }
-        });
-      } catch (ex) {
-        const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
-        dialogRef.updateSize('40%');
-        this.__utility.getmenuIconVisible({
-          id: Number(dialogConfig.id),
-          isVisible: false,
-          flag: 'MU_' + (__items.tin_no ? __items.tin_no.toString() : '0'),
-        });
-      }
-  }
-  updateRow(row_obj){
-    console.log(row_obj);
-    this.__insTrax.data = this.__insTrax.data.filter((value: any, key) => {
-      if (value.tin_no == row_obj.tin_no) {
-       value.manual_update_remarks =  row_obj.manual_update_remarks;
-       value.pending_reason =  row_obj.pending_reason;
-       value.reject_reason_id =  row_obj.reject_reason_id;
-       value.contact_per_email =  row_obj.contact_per_email;
-      value.contact_per_phone =  row_obj.contact_per_phone;
-      value.contact_per_name =  row_obj.contact_per_name;
-      value.contact_via =  row_obj.contact_via;
-      value.contact_to_comp =  row_obj.contact_to_comp;
-      value.fdr_no =  row_obj.fdr_no;
-      value.logged_in =  row_obj.logged_in;
-      value.manual_trans_status =  row_obj.manual_trans_status;
-      value.reject_memo = row_obj.reject_memo;
-      value.fdr_scan = row_obj.fdr_scan;
-      value.form_status = row_obj.form_status;
-      }
-      return true;
-    });
-    this.__exportTrax.data = this.__exportTrax.data.filter((value: any, key) => {
-      if (value.tin_no == row_obj.tin_no) {
-       value.manual_update_remarks =  row_obj.manual_update_remarks;
-       value.pending_reason =  row_obj.pending_reason;
-       value.reject_reason_id =  row_obj.reject_reason_id;
-       value.contact_per_email =  row_obj.contact_per_email;
-      value.contact_per_phone =  row_obj.contact_per_phone;
-      value.contact_per_name =  row_obj.contact_per_name;
-      value.contact_via =  row_obj.contact_via;
-      value.contact_to_comp =  row_obj.contact_to_comp;
-      value.fdr_no =  row_obj.fdr_no;
-      value.logged_in =  row_obj.logged_in;
-      value.manual_trans_status =  row_obj.manual_trans_status;
-      value.reject_memo = row_obj.reject_memo;
-      value.fdr_scan = row_obj.fdr_scan;
-      value.form_status = row_obj.form_status;
-      }
-      return true;
-    });
 
-   }
   exportPdf() {
     if (this.__insTraxForm.get('options').value == '3') {
-      this.__Rpt.printRPT('FDRPT');
+      this.__Rpt.printRPT('InsRPT');
     } else {
       this.__Rpt.downloadReport(
-        '#FDRPT',
+        '#InsRPT',
         {
-          title: 'FD Report',
+          title: 'Insurance Report',
         },
-        'FD Report'
+        'Insurance Report  '
       );
     }
   }
-
 
   refresh() {
     // this.__insTraxForm.reset({ emitEvent: false });
     this.__insTraxForm.patchValue({
       options: '2',
+      start_date: this.getTodayDate(),
+      end_date: this.getTodayDate(),
+      date_status: 'T',
       dt_type: '',
-      date_range:'',
-      frm_dt:'',
-      to_dt:''
+      login_status: 'N',
     });
     this.__insTraxForm.controls['company_id'].reset([],{emitEvent: false});
     this.__insTraxForm.controls['comp_type_id'].reset([],{emitEvent: false});
     this.__insTraxForm.controls['scheme_id'].reset([],{emitEvent: false});
-    this.__insTraxForm.get('bu_type').reset([],{emitEvent: false});
-    this.__insTraxForm.controls['investor_code'].reset('', {emitEvent: false});
-    this.__insTraxForm.controls['investor_name'].reset('', {emitEvent: false});
-    this.__insTraxForm.controls['sub_brk_cd'].reset([], { emitEvent: false });
-    this.__insTraxForm.controls['euin_no'].reset([], { emitEvent: false });
-    this.sort = new sort();
-    this.__pageNumber.setValue('10');
-    this.searchFD();
+    (<FormArray>this.__insTraxForm.get('bu_type')).clear();
+    this.__insTraxForm.controls['investor_code'].reset('', {
+      emitEvent: false,
+    });
+    this.__insTraxForm.controls['sub_brk_cd'].reset('', { emitEvent: false });
+    this.__insTraxForm.controls['euin_no'].reset('', { emitEvent: false });
+    this.__sortAscOrDsc = { active: '', direction: 'asc' };
+    this.searchInsurance();
   }
 
   getItems(__items, __mode) {
@@ -522,49 +426,26 @@ export class RPTComponent implements OnInit {
         this.__insTraxForm.controls['investor_code'].reset(__items.id,{ emitEvent: false });
         this.searchResultVisibilityForClient('none');
         break;
-      // case 'E':
-      //   this.__insTraxForm.controls['euin_no'].reset(__items.emp_name, {
-
-      //     emitEvent: false,
-      //   });
-      //   this.searchResultVisibility('none');
-      //   break;
       case 'T':
         this.__insTraxForm.controls['tin_no'].reset(__items.tin_no,{ onlySelf: true, emitEvent: false });
-        this.searchResultVisibilityForTin('none');
+        this.searchResultVisibilityForTempTin('none');
         break;
-      // case 'S':
-      //   this.__insTraxForm.controls['sub_brk_cd'].reset(__items.code, {
-      //     emitEvent: false,
-      //   });
-      //   this.searchResultVisibilityForSubBrk('none');
-      //   break;
     }
   }
-  outsideClickforClient(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForClient('none');
-    }
+
+  searchResultVisibilityForTempTin(display_mode){
+    this.displayMode_forTemp_Tin = display_mode;
   }
   searchResultVisibilityForClient(display_mode) {
     this.displayMode_forClient = display_mode;
   }
-  AdvanceFilter() {
-  }
-  getCompanyMst(arr_cmp_type_ids) {
-    if(arr_cmp_type_ids.length > 0){
-      this.__dbIntr
-      .api_call(0, '/fd/company', 'arr_cmp_type_id='+JSON.stringify(arr_cmp_type_ids.map(item => {return item['id']})))
+  getCompanyMst(arr_comp_type_id) {
+    this.__dbIntr
+      .api_call(0, '/fd/company', 'arr_cmp_type_id='+JSON.stringify(arr_comp_type_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: fdComp[]) => {
         this.__compMst = res;
       });
-    }
-    else{
-      this.__insTraxForm.controls['company_id'].setValue([], {emitEvent: true});
-      this.__compMst.length = 0;
-    }
-
   }
   getCompanyTypeMst() {
     this.__dbIntr
@@ -593,20 +474,21 @@ export class RPTComponent implements OnInit {
   getTDSInfo(__id){
     return tdsInfo.filter(x => x.id == __id)[0]?.name
   }
-  onItemClick(ev){
-    if(ev.option.value == 'A'){
-      this.getBranchMst();
-    }
-    else{
-      //Report
-    }
-  }
-  getBranchMst(){
+   onItemClick(ev){
+     if(ev.option.value == 'A'){
+      //Advance
+      this.getBranchMst()
+     }
+     else{
+      //Reset
+     }
+   }
+   getBranchMst(){
     this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{
-      this.__brnchMst = res;
+        this.__brnchMst = res
     })
   }
-  close(ev){
+   close(ev){
     this.__insTraxForm.patchValue({
       frm_dt: this.__insTraxForm.getRawValue().date_range ? dates.getDateAfterChoose(this.__insTraxForm.getRawValue().date_range[0]) : '',
       to_dt: this.__insTraxForm.getRawValue().date_range ? (global.getActualVal(this.__insTraxForm.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.__insTraxForm.getRawValue().date_range[1]) : '') : ''
@@ -616,11 +498,11 @@ export class RPTComponent implements OnInit {
     this.getItems(ev.item, ev.flag);
   }
   customSort(ev){
-      this.sort.field =ev.sortField;
-      this.sort.order =ev.sortOrder;
-      if(ev.sortField){
-        this.getFDMstRPT();
-      }
+    this.sort.field =ev.sortField;
+    this.sort.order =ev.sortOrder;
+    if(ev.sortField){
+      this.getFDMstRPT();
+    }
 
   }
   DocumentView(element){

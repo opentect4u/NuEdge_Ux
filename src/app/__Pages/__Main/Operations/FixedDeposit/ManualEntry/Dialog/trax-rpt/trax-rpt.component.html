@@ -1018,7 +1018,7 @@
                       {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'P' ? 'Auto Pay On Maturity' : 'Auto Renew On Maturity') : 'N/A'}}
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'mode_of_payment'">
-                        {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'N' ? 'Online' : 'Offile') : 'N/A'}}
+                        {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'N' ? 'Online' : 'Offline') : 'N/A'}}
                         </ng-container>
 
                         <ng-container *ngSwitchCase="col.field == 'certificate_delivery_opt'">
