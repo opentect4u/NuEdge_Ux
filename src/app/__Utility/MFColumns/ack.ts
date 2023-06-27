@@ -1,17 +1,31 @@
 import { column } from 'src/app/__Model/tblClmns';
 export class MfackClmns {
-  public static Summary: column[] = [
-    { field: 'edit', header: 'Edit' },
-    { field: 'app_frm_view', header: 'DOC View' },
-    { field: 'entry_date', header: 'Entry Date' },
-    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' },
-    { field: 'rnt_login_dt', header: 'Login Date' },
-    { field: 'tin_no', header: 'TIN' },
-    { field: 'first_client_name', header: 'First Holder Name' },
-    { field: 'scheme_name', header: 'Scheme' },
-    { field: 'branch_name', header: 'Branch' }
-  ];
+  public static Summary_common =
+  [
+    {field:'edit',header:'Edit'},
+    {field:'app_frm_view',header:'DOC View'},
+    {field:'entry_date',header:'Entry Date'},
+    {field:'tin_no',header:'TIN'},
+    {field:'branch_name',header:'Branch'},
+     {field:'sub_brk_cd',header:'Sub Broker Code'},
+     {field:'euin_no',header:'EUIN'},
+     {field:'first_client_name',header:'First Holder Name'},
+     {field:'first_client_code',header:'First Holder Code'},
+     {field:'first_client_pan',header:'First Holder PAN'},
+     {field:'trans_name',header:'Transction Type'},
+     {field:'scheme_name',header:'Scheme'},
+     {field:'application_no',header:'Application No'},
+     {field:'folio_no',header:'Folio No'},
+     {field:'amount',header:'Amount'},
+  ]
 
+  public static Summary_Sip=[
+    {field:'sip_amount',header:'SIP Amount'},
+    {field:'rnt_name',header:'Form Submitted At'}
+  ]
+  public static Summary_Pip_Switch=[
+    {field:'rnt_name',header:'Form Submitted At'}
+  ]
   public static Deatils: column[] = [
     { field: 'edit', header: 'Edit' },
     { field: 'app_frm_view', header: 'DOC View' },

@@ -74,6 +74,8 @@ export class fdTraxClm {
         {field:'edit',header:'Edit',isVisible:[1,2]},
         {field:'app_form_scan',header:'DOC View',isVisible:[1,2]},
         {field:'entry_date',header:'Entry Date',isVisible:[1,2,3]},
+        {field:'comp_login_cutt_off',header:'Login Cut Off',isVisible:[1,2]},
+        {field:'comp_login_dt',header:'Login Date',isVisible:[1,2]},
         {field:'tin_no',header:'TIN',isVisible:[1,2,3]},
         {field:'bu_type',header:'Business Type',isVisible:[1,2,3]},
         {field:'branch_name',header:'Branch',isVisible:[1,2,3]},

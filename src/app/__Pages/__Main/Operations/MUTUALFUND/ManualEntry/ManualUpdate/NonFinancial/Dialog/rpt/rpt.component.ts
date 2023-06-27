@@ -1383,7 +1383,8 @@ export class RPTComponent implements OnInit {
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
-          this.setPaginator(res);
+          this.__financMst = new MatTableDataSource(res.data);
+          this.__paginate = res.links;
         });
     } else {}
   }

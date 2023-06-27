@@ -91,7 +91,7 @@ export class TraxRPTComponent implements OnInit {
   WindowObject: any;
   __mode_of_premium = modeOfPremium;
   __columns: any[] = [];
-  clmList: any= fdTraxClm.Columns;
+  clmList: any= fdTraxClm.Columns.filter(item => !['comp_login_cutt_off','comp_login_dt'].includes(item.field))
   __exportedClmns: string[] = [];
   SelectedClms: string[]=[];
   __euinMst: any = [];
@@ -152,7 +152,7 @@ export class TraxRPTComponent implements OnInit {
   setColumns(options) {
 
     const clmToRemove = ['edit','app_form_scan'];
-    this.__columns = fdTraxClm.Columns.filter(item => item.isVisible.includes(Number(options)));
+    this.__columns = fdTraxClm.Columns.filter(item => item.isVisible.includes(Number(options))).filter(item => !['comp_login_cutt_off','comp_login_dt'].includes(item.field))
     console.log(this.__columns)
     this.__exportedClmns = this.__columns.filter(x => !clmToRemove.includes(x.field)).map(item => {return item['field']})
     this.SelectedClms = this.__columns.map(item => {return item['field']});
@@ -393,71 +393,10 @@ export class TraxRPTComponent implements OnInit {
         ))
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
-          this.__insTrax = new MatTableDataSource(res);
+          this.__insTrax = new MatTableDataSource(res.data);
+          this.__paginate = res.links;
         });
     }
-
-    // if (__paginate) {
-    //   this.__dbIntr
-    //     .getpaginationData(
-    //       __paginate.url +
-    //         ('&paginate=' + this.__pageNumber) +
-    //         ('&option=' + this.__insTraxForm.value.options) +
-    //         +('&company_id=' + this.__insTraxForm.value.filter_type == 'A'
-    //         ? JSON.stringify(this.__insTraxForm.value.company_id)
-    //         : '[]')
-    //         +('&comp_type_id=' + this.__insTraxForm.value.filter_type == 'A'
-    //         ? JSON.stringify(this.__insTraxForm.value.comp_type_id)
-    //         : '[]')
-    //         +('&scheme_id=' + this.__insTraxForm.value.filter_type == 'A'
-    //         ? JSON.stringify(this.__insTraxForm.value.scheme_id)
-    //         : '[]')
-    //         +
-    //         ('&column_name=' + this.__sortAscOrDsc.active
-    //           ? this.__sortAscOrDsc.active
-    //           : '') +
-    //         ('&sort_by=' + this.__sortAscOrDsc.direction
-    //           ? this.__sortAscOrDsc.direction
-    //           : '') +
-    //         ('&tin_no=' + this.__insTraxForm.value.options == '3'
-    //           ? ''
-    //           : global.getActualVal(this.__insTraxForm.value.tin_no)) +
-    //         ('&euin_no=' + this.__insTraxForm.value.options == '3'
-    //           ? ''
-    //           : global.getActualVal(this.__insTraxForm.value.euin_no)) +
-    //         ('&bu_type' + this.__insTraxForm.value.options == '3'
-    //           ? '[]'
-    //           : this.__insTraxForm.value.bu_type.length > 0
-    //           ? JSON.stringify(this.__insTraxForm.value.bu_type)
-    //           : '') +
-    //         ('&date_status=' + this.__insTraxForm.value.options == '3'
-    //           ? global.getActualVal(this.__insTraxForm.value.date_status)
-    //           : '') +
-    //         ('&start_date=' + this.__insTraxForm.value.options == '3'
-    //           ? global.getActualVal(this.__insTraxForm.value.start_date)
-    //           : '') +
-    //         ('&end_date=' + this.__insTraxForm.value.options == '3'
-    //           ? global.getActualVal(this.__insTraxForm.value.end_date)
-    //           : '') +
-    //         ('&login_status=' + this.__insTraxForm.value.options == '3'
-    //           ? global.getActualVal(this.__insTraxForm.value.login_status)
-    //           : '') +
-    //         ('&investor_name=' + this.__insTraxForm.value.options == '3'
-    //           ? ''
-    //           : global.getActualVal(this.__insTraxForm.value.investor_code)) +
-    //         ('&from_date=' + this.__insTraxForm.value.options == '3'
-    //           ? ''
-    //           : global.getActualVal(this.__insTraxForm.getRawValue().frm_dt)) +
-    //         ('&to_date=' + this.__insTraxForm.value.options == '3'
-    //           ? ''
-    //           : global.getActualVal(this.__insTraxForm.getRawValue().to_dt))
-    //     )
-    //     .pipe(map((x: any) => x.data))
-    //     .subscribe((res: any) => {
-    //       this.__insTrax = new MatTableDataSource(res);
-    //     });
-    // } else {
-    // }
   }
   onbuTypeChange(e: any) {
     const bu_type: FormArray = this.__insTraxForm.get('bu_type') as FormArray;

@@ -749,7 +749,8 @@ settingsforDropdown_forscheme = this.__utility.settingsfroMultiselectDropdown('i
   //     case '3' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Switch); break;
   //   }
   //  this.clmList = clmn;
-   this.__columns =  MfackClmns.Summary;
+   this.__columns =  trans_id == 2  ? global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Sip)
+   : global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Pip_Switch)
   //  this.SelectedClms = this.__columns.map(x => x.field);
   //  this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});
   }

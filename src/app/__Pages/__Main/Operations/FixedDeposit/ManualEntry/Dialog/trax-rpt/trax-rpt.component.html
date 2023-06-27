@@ -817,6 +817,16 @@
               formControlName="company_id">
             </ng-multiselect-dropdown>
             </div>
+            <div class="col-sm-3">
+              <label for="product_id">Scheme</label>
+              <ng-multiselect-dropdown #multiSelect
+              id="scheme_id"
+              [placeholder]="'Select Scheme'"
+              [settings]="__scm_setting"
+              [data]="__scmMst"
+              formControlName="scheme_id">
+            </ng-multiselect-dropdown>
+            </div>
             <ng-container *ngIf="__insTraxForm.value.btnType == 'A';else noAdv">
               <div class="col-sm-3">
                 <label for="branch">Branch</label>
@@ -828,6 +838,16 @@
                 formControlName="brn_cd">
               </ng-multiselect-dropdown>
               </div>
+            </ng-container>
+            <ng-template #noAdv>
+              <div class="col-sm-3 d-flex justify-content-end align-items-end">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+            </ng-template>
+
+          </div>
+          <ng-container *ngIf="__insTraxForm.value.btnType == 'A'">
+            <div class="row">
               <div class="col-sm-3">
                 <label for="bu_type">Business Type</label>
                   <ng-multiselect-dropdown #multiSelect
@@ -838,16 +858,6 @@
                   formControlName="bu_type">
                 </ng-multiselect-dropdown>
               </div>
-            </ng-container>
-            <ng-template #noAdv>
-              <div class="col-sm-6 d-flex justify-content-end align-items-end">
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-              </div>
-            </ng-template>
-
-          </div>
-          <ng-container *ngIf="__insTraxForm.value.btnType == 'A'">
-            <div class="row">
               <div class="col-sm-3">
                 <label for="rm_id">Relationship Manager</label>
                 <ng-multiselect-dropdown #multiSelect
@@ -878,7 +888,9 @@
                 formControlName="euin_no">
               </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-3
+            </div>
+            <div class="row">
+              <div class="col-sm-12
               d-flex flex-column justify-content-end align-items-end">
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
@@ -1112,6 +1124,13 @@
                       {{element.branch_name ? element.branch_name : 'N/A'}}
                     </td>
                   </ng-container>
+                  <ng-container matColumnDef="mode_of_holding">
+                    <th mat-header-cell *matHeaderCellDef>Mode Of Holding</th>
+                    <td mat-cell *matCellDef="let element;let i = index">
+                      {{element.mode_of_holding ? (element.mode_of_holding == 'S' ? 'Survivor' : 'Anyone or survivor') : 'N/A'}}
+                    </td>
+                  </ng-container>
+
                   <ng-container matColumnDef="rm_name">
                     <th mat-header-cell *matHeaderCellDef>RM Name</th>
                     <td mat-cell *matCellDef="let element;let i = index">
@@ -1309,7 +1328,7 @@
                     <td mat-cell *matCellDef="let element;let i = index">{{element.payment_ref_no ? element.payment_ref_no : 'N/A'}}</td>
                   </ng-container>
 
-                  <ng-container matColumnDef="chq_bank">
+                  <ng-container matColumnDef="bank_name">
                     <th mat-header-cell *matHeaderCellDef>Bank</th>
                     <td mat-cell *matCellDef="let element;let i = index">{{element.bank_name ? element.bank_name : 'N/A'}}</td>
                   </ng-container>
@@ -1330,7 +1349,7 @@
                       {{element.certificate_delivery_opt == 'E' ? 'EFDR' : (element.certificate_delivery_opt == 'H' ? 'Hand Delivery' : 'Postal Delivery')}}
                     </td>
                   </ng-container>
-                  <ng-container matColumnDef="tds_info">
+                  <ng-container matColumnDef="tds_info_name">
                     <th mat-header-cell *matHeaderCellDef>TDS</th>
                     <td mat-cell *matCellDef="let element;let i = index">{{getTDSInfo(element.tds_info_id)}}</td>
                   </ng-container>

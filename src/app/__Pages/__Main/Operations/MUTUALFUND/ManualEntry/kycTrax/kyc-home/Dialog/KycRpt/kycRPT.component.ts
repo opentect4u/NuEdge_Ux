@@ -112,7 +112,7 @@ getPaginate(__paginate){
         ?  (('&client_code=' + (this.__getKycFormData.client_code ? this.__getKycFormData.client_code : ''))
         + ( '&sub_brk_cd=' + (this.__getKycFormData.sub_brk_cd ? this.__getKycFormData.sub_brk_cd : ''))
         // + ('&bu_type=' + (this.__getKycFormData.bu_type.length > 0 ? JSON.stringify(this.__getKycFormData.bu_type): ''))
-        + ('&login_at=' + this.__getKycFormData.kyc_login_at)
+        + ('&login_at=' + this.__getKycFormData.kyc_login_at.map(item => {return item['id']}))
         + ('&login_type=' + this.__getKycFormData.kyc_login)
         +('&from_date='+global.getActualVal(this.__getKycFormData.frm_dt))
         +('&to_date='+global.getActualVal(this.__getKycFormData.to_dt))

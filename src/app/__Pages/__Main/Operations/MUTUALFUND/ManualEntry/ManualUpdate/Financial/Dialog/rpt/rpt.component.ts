@@ -583,7 +583,8 @@ export class RPTComponent implements OnInit {
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
-          this.setPaginator(res);
+          this.__financMst = new MatTableDataSource(res.data);
+          this.__paginate = res.links;
         });
     }
   }
@@ -886,10 +887,20 @@ export class RPTComponent implements OnInit {
       case '2' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Sip); break;
       case '3' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Switch); break;
     }
-   this.clmList = clmn;
-   this.__columns = option == '2' ? MfackClmns.Summary : this.clmList;
+   this.clmList = clmn.filter(item => item.field!='edit')
+   if(option == 2){
+        this.__columns = (trans_id == 5) ? global.getColumnsAfterMerge(MfackClmns.Summary_common.filter(item => item.field!='edit') ,MfackClmns.Summary_Sip)
+        : global.getColumnsAfterMerge(MfackClmns.Summary_common.filter(item => item.field!='edit') ,MfackClmns.Summary_Pip_Switch)
+   }
+   else{
+    this.__columns = this.clmList;
+   }
+  //  this.__columns = option == '2' ? MfackClmns.Summary.filter(item => item.field!='edit') : this.clmList;
    this.SelectedClms = this.__columns.map(x => x.field);
    this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});
+  //  this.__columns = option == '2' ? MfackClmns.Summary : this.clmList;
+  //  this.SelectedClms = this.__columns.map(x => x.field);
+  //  this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});
   }
   TabDetails(ev){
     this.transaction_id = ev.tabDtls.id;

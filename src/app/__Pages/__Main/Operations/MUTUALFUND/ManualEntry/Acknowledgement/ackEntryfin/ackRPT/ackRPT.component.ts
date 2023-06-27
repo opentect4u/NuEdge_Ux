@@ -181,13 +181,17 @@ export class AckrptComponent implements OnInit {
         case '3' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Switch); break;
         case '35' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_nfoCombo); break;
       }
-     this.clmList = clmn;
-     console.log(clmn);
-
-     this.__columns = option == '2' ? MfackClmns.Summary : this.clmList;
+     this.clmList = clmn.filter(item => item.field!='edit')
+     if(option == 2){
+          this.__columns = (trans_id == 2 || trans_id == 5) ? global.getColumnsAfterMerge(MfackClmns.Summary_common.filter(item => item.field!='edit') ,MfackClmns.Summary_Sip)
+          : global.getColumnsAfterMerge(MfackClmns.Summary_common.filter(item => item.field!='edit') ,MfackClmns.Summary_Pip_Switch)
+     }
+     else{
+      this.__columns = this.clmList;
+     }
+    //  this.__columns = option == '2' ? MfackClmns.Summary.filter(item => item.field!='edit') : this.clmList;
      this.SelectedClms = this.__columns.map(x => x.field);
      this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});
-      console.log(this.__exportedClmns);
 
     }
     getSelectedColumns(column){

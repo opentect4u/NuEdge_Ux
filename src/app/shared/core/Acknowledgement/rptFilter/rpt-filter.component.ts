@@ -62,6 +62,7 @@ __kycLoginAt: any=[];
     sub_brk_cd: new FormControl(''),
     tin_no: new FormControl(''),
     client_code: new FormControl(''),
+    client_name: new FormControl(''),
     euin_no: new FormControl(''),
     brn_cd: new FormControl(''),
     // bu_type: new FormArray([]),
@@ -248,7 +249,7 @@ __kycLoginAt: any=[];
 
 
           /** Client Code Change */
-          this.__kycFilterForm.controls['client_code'].valueChanges
+          this.__kycFilterForm.controls['client_name'].valueChanges
           .pipe(
             tap(() => (this.__isClientPending = true)),
             debounceTime(200),
@@ -413,7 +414,10 @@ __kycLoginAt: any=[];
   getItems(__items, __mode) {
     switch (__mode) {
       case 'C':
-        this.__kycFilterForm.controls['client_code'].reset(__items.client_name, {
+        this.__kycFilterForm.controls['client_code'].reset(__items.id, {
+          emitEvent: false,
+        });
+        this.__kycFilterForm.controls['client_name'].reset(__items.client_name, {
           emitEvent: false,
         });
         this.searchResultVisibilityForClient('none');

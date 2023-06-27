@@ -154,9 +154,9 @@ export class ManualentrforackfinComponent implements OnInit {
     this.getAMCMst();
      this.getLoggedinStatus();
   }
-  setColumn(){
-    this.__columns = MfackClmns.Summary;
-    console.log(this.__columns);
+  setColumn(trans_id){
+    this.__columns =  (trans_id == 2 || trans_id == 5)  ? global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Sip)
+   : global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Pip_Switch)
 
   }
   getLoggedinStatus(){
@@ -723,7 +723,7 @@ export class ManualentrforackfinComponent implements OnInit {
     this.transaction_id = ev.tabDtls.id;
     // this.setColumns(this.transaction_id,this.__ackForm.value.options);
     this.getAckRpt();
-    this.setColumn();
+    this.setColumn(this.transaction_id);
    }
    close(ev){
     this.__ackForm.patchValue({

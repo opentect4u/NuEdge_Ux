@@ -84,10 +84,10 @@
       <div  [class]="'col-sm-3'">
         <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
           <div class="searchDiv">
-            <label for="client_code">Client Details</label>
-            <input type="text" name="client_code" id="client_code" class="form-control" formControlName="client_code"
+            <label for="client_name">Client Details</label>
+            <input type="text" name="client_name" id="client_name" class="form-control" formControlName="client_name"
               placeholder="Enter Client code / Name / PAN / email">
-            <span class="spinner-border" *ngIf="__isClientPending && __kycFilterForm.get('client_code').value?.length > 1"></span>
+            <span class="spinner-border" *ngIf="__isClientPending && __kycFilterForm.get('client_name').value?.length > 1"></span>
 
             <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClickforClient($event)">
               <div class="serachresult_client" #clientCd>
