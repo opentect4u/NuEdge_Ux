@@ -253,6 +253,8 @@ reset(__ev){
 }
 
 getKycRpt(kycFormDt){
+  console.log(kycFormDt);
+
 this.__getKycFormData = kycFormDt;
 const __kyc = new FormData();
   __kyc.append('paginate',this.__pageNumber.value);

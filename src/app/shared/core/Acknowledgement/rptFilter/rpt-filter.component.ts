@@ -73,7 +73,7 @@ __kycLoginAt: any=[];
     dt_type:new FormControl(''),
     frm_dt: new FormControl(''),
     to_dt: new FormControl(''),
-    kyc_login_at: new FormControl(''),
+    kyc_login_at: new FormControl([]),
     kyc_login:new FormControl(''),
     ack_logged_status: new FormArray([]),
     update_status_id: new FormArray([])

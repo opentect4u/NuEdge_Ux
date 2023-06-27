@@ -202,7 +202,7 @@ export class RPTComponent implements OnInit {
       }
     }
     this.__dbIntr
-      .api_call(1, '/fd/ackDetailSearch', __fd)
+      .api_call(1, '/fd/manualUpdateDetailSearch', __fd)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         this.__insTrax = new MatTableDataSource(res.data);
@@ -213,7 +213,7 @@ export class RPTComponent implements OnInit {
   tableExport(formData: FormData) {
     formData.delete('paginate');
     this.__dbIntr
-      .api_call(1, '/fd/ackExport', formData)
+      .api_call(1, '/fd/manualUpdateExport', formData)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         this.__exportTrax = new MatTableDataSource(res);
