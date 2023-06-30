@@ -7,7 +7,11 @@ import { EntryComponent } from './Dialog/entry/entry.component';
 import { RPTComponent } from './Dialog/rpt/rpt.component';
 import { ManualupdateSearchComponent } from './Dialog/manualupdate-search/manualupdate-search.component';
 
-const routes: Routes = [{path:'',component:ManualUpdateComponent}]
+const routes: Routes = [{
+  path:'',
+  component:ManualUpdateComponent,
+  data:{breadcrumb:'Manual Update'}
+}]
 
 @NgModule({
   declarations: [

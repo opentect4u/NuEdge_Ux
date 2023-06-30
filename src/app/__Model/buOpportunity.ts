@@ -1,0 +1,20 @@
+export class buOpportunity{
+  rec_datetime?:string;
+ temp_tin_no:string;
+ bu_type:string;
+ arn_no?:string;
+ sub_arn_no?:string;
+ euin_no:string;
+ sub_brk_cd?:string;
+ ins_type_id:string;
+ client_id:string;
+ same_as_above?:string;
+ insured_person_id?:string;
+ comp_id:string;
+ product_type_id:string;
+ product_id:string;
+ sum_insured:string;
+ renewal_dt:string;
+ upload_scan?:string;
+ remarks?:string;
+}

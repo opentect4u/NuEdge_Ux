@@ -13,32 +13,6 @@ import { TraxRPTComponent } from './Dialog/trax-rpt/trax-rpt.component';
   styleUrls: ['./fd-trax.component.css']
 })
 export class FdTraxComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Operation",
-      url:'/main/operations/ophome',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Fixed Deposit",
-      url:'/main/operations/fixedeposit',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"FD Trax",
-      url:'/main/operations/fixedeposit/fdtrax',
-      hasQueryParams:true,
-      queryParams:''
-    }
-  ];
-
   __menu = [
     {
       "parent_id": 4,
@@ -67,10 +41,6 @@ export class FdTraxComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.setBreadCrumbs();
-  }
-  setBreadCrumbs(){
-    this.__utility.getBreadCrumb(this.__brdCrmbs)
   }
   openTrax(__el){
     console.log(__el);

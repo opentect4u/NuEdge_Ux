@@ -1,6 +1,6 @@
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
   <div mat-dialog-title class="dialog-title">
-    <h2>Acknowledgement Entry For Insurance</h2>
+    <h2>Acknowledgement Entry Report For Insurance</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()">
         <mat-icon>remove</mat-icon>
@@ -19,8 +19,8 @@
     </div>
 
   </div>
-  <mat-dialog-content>
-    <div class="card my-5">
+  <mat-dialog-content class="customDialog">
+    <!-- <div class="card my-5">
       <div class="card-body p-5">
         <form [formGroup] = "__insTraxForm" (ngSubmit)="searchInsurance()" autocomplete="off">
           <div class="row">
@@ -363,7 +363,6 @@
           </ng-container>
 
 
-          <!-- Buisness Type-->
           <ng-container matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>Edit</th>
             <td mat-cell *matCellDef="let element">
@@ -373,7 +372,6 @@
             </td>
           </ng-container>
 
-          <!-- Buisness Type-->
           <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef>Delete</th>
             <td mat-cell *matCellDef="let element">
@@ -430,6 +428,410 @@
 
 
 
+      </div>
+    </div> -->
+
+    <div class="card p-3 border-1 mb-1">
+      <ng-template #SearchBtn>
+        <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+      </ng-template>
+      <form [formGroup]="__insTraxForm" (ngSubmit)="searchInsurance()" autocomplete="off">
+
+        <!-- <div class="row">
+          <div class="col-sm-8 d-flex justify-content-start align-items-center">
+            <mat-radio-group aria-label="Select an option" formControlName="options">
+              <mat-radio-button color="primary" value="2">Summary</mat-radio-button>
+              <mat-radio-button color="primary" value="1" class="ml-5">Detail</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div class="col-sm-4 d-flex justify-content-end align-items-center">
+            <p-selectButton
+            [options]="selectBtn"
+            formControlName="btn_type"
+            optionValue="value"
+            styleClass="p-button-lg"
+            (onOptionClick)="onItemClick($event)"
+            optionLabel="icon">
+              <ng-template let-item>
+                  <i [class]="item.icon"  [matTooltip]="item.label"></i>
+              </ng-template>
+          </p-selectButton>
+          </div>
+
+        </div> -->
+
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="dt_type">Date Periods</label>
+              <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+                  <option value="">Select</option>
+                  <option value="D">Today</option>
+                  <option value="W">This Week</option>
+                  <option value="M">This Month</option>
+                  <option value="Y">This Year</option>
+                  <option value="R">Date Range</option>
+              </select>
+          </div>
+          <div class="col-sm-3">
+            <label for="date_range">Date (From - To)</label>
+            <p-calendar
+            dateFormat="dd/mm/yy"
+            placeholder="Select Date Range"
+            formControlName="date_range"
+            selectionMode="range"
+            [readonlyInput]="true"
+            id="date_range"
+            [showIcon]="true"
+            [hideOnDateTimeSelect]="true"
+            (onClose)="close($event)"
+            [showButtonBar]="true">
+            </p-calendar>
+          </div>
+          <div class="col-sm-3">
+            <app-core-srch
+              [label] = "'TIN'"
+              [placeholder]="'Search By TIN'"
+              [isPending]="__istemporaryspinner"
+              [listItems] = "__tinMst"
+              [flag] = "'T'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['tin_no','investor_name']"
+              formControlName="tin_no"
+              [displayMode]="displayMode_forTemp_Tin"
+              (setDisplayMode)="displayMode_forTemp_Tin = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              ></app-core-srch>
+          </div>
+          <div class="col-sm-3">
+            <app-core-srch
+              [label] = "'Proposer Details'"
+              [placeholder]="'Search By Name, Code, Email, Mobile, PAN & DOB'"
+              [isPending]="__isClientPending"
+              [listItems] = "__clientMst"
+              [flag] = "'C'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['client_code','pan','client_name']"
+              formControlName="proposer_name"
+              [displayMode]="displayMode_forClient"
+              (setDisplayMode)="displayMode_forClient = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              ></app-core-srch>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="ins_type_id">Type Of Insurance</label>
+            <ng-multiselect-dropdown
+            id="ins_type_id"
+            [placeholder]="'Select Type Of Insurance'"
+            [settings]="__insType_setting"
+            [data]="__insType"
+            formControlName="ins_type_id">
+          </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="company_id">Company</label>
+            <ng-multiselect-dropdown
+            id="company_id"
+            [placeholder]="'Select Company'"
+            [settings]="__comp_setting"
+            [data]="__compMst"
+            formControlName="company_id">
+          </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="product_type_id">Product Type</label>
+            <ng-multiselect-dropdown #multiSelect
+            id="product_type_id"
+            [placeholder]="'Select Product Type'"
+            [settings]="__prod_type_setting"
+            [data]="__prodTypeMst"
+            formControlName="product_type_id">
+          </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="product_id">Product</label>
+            <ng-multiselect-dropdown #multiSelect
+            id="product_id"
+            [placeholder]="'Select Product'"
+            [settings]="__prod_setting"
+            [data]="__prdMst"
+            formControlName="product_id">
+          </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="row mt-1">
+          <div class="col-sm-4 d-flex align-items-end justify-content-start">
+            <div class="checkboxes d-flex flex-row align-items-center w-100">
+              <label class="mx-2">Insurance business Type : </label>
+              <div >
+                <ng-container formArrayName="insured_bu_type">
+                  <ng-container *ngFor="let ins_bu_type of insured_bu_type.controls;let i= index">
+                    <ng-container [formGroupName]="i">
+                    <mat-checkbox  color="primary"
+                    [class]="'mr-2'"
+                      formControlName="isChecked"> {{insured_bu_type.controls[i].get('name').value}}</mat-checkbox>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <mat-checkbox color="primary" formControlName="is_all"> All</mat-checkbox>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4 d-flex  align-items-end">
+            <div class="checkboxes d-flex flex-row align-items-center w-100">
+               <label>Logged Status:&nbsp;</label>
+              <div>
+                <ng-container formArrayName="logged_status_id">
+                  <ng-container *ngFor="let ack of logged_status_id.controls;let i= index">
+                    <ng-container [formGroupName]="i">
+                    <mat-checkbox  color="primary" [class]="'mr-2'"
+                      formControlName="isChecked"> {{logged_status_id.controls[i].get('name').value}}</mat-checkbox>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <mat-checkbox color="primary" formControlName="is_all_status"> All</mat-checkbox>
+              </div>
+            </div>
+           </div>
+          <ng-container *ngIf="__insTraxForm.value.btn_type == 'A';else noAdv">
+              <div class="col-sm-4">
+                <label for="brn_cd">Branch</label>
+                <ng-multiselect-dropdown #multiSelect
+                id="brn_cd" [placeholder]="'Select Branch'"
+                  [settings]="settingsForbrnch"
+                  [data]="__brnchMst" formControlName="brn_cd">
+                </ng-multiselect-dropdown>
+              </div>
+          </ng-container>
+           <ng-template #noAdv>
+              <div class="col-sm-4 d-flex align-items-end justify-content-end">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+           </ng-template>
+        </div>
+        <ng-container *ngIf="__insTraxForm.value.btn_type == 'A'">
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="bu_type">Business Type</label>
+              <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+                [settings]="settingsForbuType"
+                [data]="__bu_type"
+                formControlName="bu_type">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="rm_id">Relationship Manager</label>
+              <ng-multiselect-dropdown #multiSelect id="rm_id" [placeholder]="'Select Relationship Manager'"
+                [settings]="settingsForRM"
+                [data]="__RmMst" formControlName="rm_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="sub_brk_cd">Sub Broker</label>
+              <ng-multiselect-dropdown #multiSelect id="sub_brk_cd" [placeholder]="'Select Sub Broker'"
+                [settings]="settingsForsubCode"
+                [data]="__subbrkArnMst"
+                formControlName="sub_brk_cd">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="euin_no">EUIN</label>
+              <ng-multiselect-dropdown #multiSelect
+              id="euin_no" [placeholder]="'Select Employee'"
+                [settings]="settingsForEUIN"
+                [data]="__euinMst" formControlName="euin_no">
+              </ng-multiselect-dropdown>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
+              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+            </div>
+          </div>
+        </ng-container>
+        </form>
+    </div>
+
+    <div class="card border-1">
+      <div class="example_container_header">
+        <div class="transTypeCount"></div>
+        <div class="btnGrp d-flex"></div>
+      </div>
+      <div class="container_body">
+        <!-- PrimeNg Table with column resize,
+            column sorting etc  [reorderableColumns]="true"
+            pReorderableColumn-->
+            <p-table
+            #dt
+            (onLazyLoad)="customSort($event)"
+            [customSort]="true"
+              sortMode="single"
+              [lazy]="true"
+            [value]="__insTrax.data"
+            [columns]="__columns" [resizableColumns]="true"
+              selectionMode="multiple"
+              columnResizeMode="expand" [scrollable]="true"
+              scrollHeight="358px"
+              [autoLayout]="true" [responsive]="true" styleClass="p-datatable-md p-datatable-gridlines"
+              [tableStyle]="{ 'min-width': __insTraxForm.value.options != '1' ? '120rem' : '200rem' }">
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+
+                  <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': __insTraxForm.value.options != '1' ? '15rem' : '17rem'}">
+                    {{ col.header }}
+                    <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'ins_application_form'" [field]="col.field">
+                    </p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-finance let-columns="columns">
+                <tr tabindex="999">
+                  <td *ngFor="let col of columns">
+                    <ng-container [ngSwitch]="true">
+                      <ng-container *ngSwitchCase="col.field == 'edit'">
+                        <p-button (click)="populateDT(finance)" [icon]="finance['form_status'] == 'P' ? 'pi pi-pencil' : 'pi pi-eye'"
+                          styleClass="p-button-rounded p-button-success"></p-button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'ins_application_form'">
+                        <p-button icon="pi pi-eye" (click)="DocumentView(finance)"
+                          styleClass="p-button-rounded p-button-success"></p-button>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'bu_type'">
+                        <span #tooltip="matTooltip"
+                        [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
+                          {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
+                       <span
+                       #tooltip="matTooltip"
+                       [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')">
+                       {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')}}
+                      </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'inv_type'">
+                        <span
+                        #tooltip="matTooltip"
+                        [matTooltip]="finance[col.field] == 'F' ? 'Fresh' : 'Additional'">
+                        {{ finance[col.field] == 'F' ? 'Fresh' : 'Additional'}}
+                      </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'insure_bu_type'">
+                        <span
+                        #tooltip="matTooltip"
+                        [matTooltip]="finance[col.field] == 'F' ? 'Fresh' : 'Renewal'">
+                        {{ finance[col.field] == 'F' ? 'Fresh' : 'Renewal'}}
+                      </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'mode_of_payment'">
+                          <span
+                          #tooltip="matTooltip"
+                          [matTooltip]="finance[col.field] ? (finance[col.field] == 'O' ? 'OFFLINE' : (finance[col.field] == 'N'
+                          ? 'ONLINE' : 'CASH')) : 'N/A'"
+                          >
+                          {{finance[col.field] ? (finance[col.field] == 'O' ? 'OFFLINE' : (finance[col.field] == 'N'
+                          ? 'ONLINE' : 'CASH')) : 'N/A'}}
+                          </span>
+
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="col.field == 'mode_of_premium'">
+                        <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | modeOfPre)">
+                         {{finance[col.field] | modeOfPre}}
+                        </span>
+                      </ng-container>
+                      <ng-container
+                        *ngSwitchCase="col.field == 'first_client_kyc_status' || col.field == 'second_client_kyc_status' || col.field == 'third_client_kyc_status'">
+                        {{ finance[col.field] ? (finance[col.field] == 'Y' ? 'With KYC' : 'Without KYC') : 'N/A'}}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'remarks'">
+                        <ng-container *ngIf="finance[col.field];else noRemarks">
+                          <p-button #tooltip="matTooltip" [matTooltip]="finance[col.field]" icon="pi pi-info-circle"
+                            styleClass="p-button-rounded p-button-success">
+                          </p-button>
+                        </ng-container>
+                        <ng-template #noRemarks>
+                          N/A
+                        </ng-template>
+
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'rcv_datetime' || col.field == 'comp_login_cutt_off'">
+                        <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
+                          <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</span>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="col.field == 'entry_date' || col.field == 'comp_login_dt'">
+                            <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                            </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <span #tooltip="matTooltip" [matTooltip]="finance[col.field]">
+                          {{ finance[col.field] ? finance[col.field] : 'N/A' }}
+                        </span>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage" let-columns>
+                <tr>
+                  <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                     No Records Found
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+            <!-- End -->
+
+             <!-- Paginator with item per page -->
+             <div class="paginator">
+              <div class="itemsPerPage d-flex">
+                  <label class="mr-3">Items per page: </label>
+                  <p-selectButton
+                  [options]="itemsPerPage"
+                  [formControl]="__pageNumber"
+                  optionLabel="label" optionValue="value"
+                  (onOptionClick)="onselectItem($event)"
+                  ></p-selectButton>
+                </div>
+                <div class="btnGrp">
+                  <p-button
+                  type="button"
+                  label="Final Submit"
+                  icon="pi pi-save"
+                  iconPos="right"
+                  class="float-right"
+                  styleClass="p-button-lg"></p-button>
+                </div>
+
+              <div  class="paginatorContainer">
+                <ul>
+                  <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'P'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_left</mat-icon>
+                    </a>
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'N'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_right</mat-icon>
+                    </a>
+                    <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                      *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                      {{paginate.label}}
+                    </a>
+                  </li>
+                </ul>
+
+
+              </div>
+
+            </div>
+            <!-- End -->
       </div>
     </div>
   </mat-dialog-content>

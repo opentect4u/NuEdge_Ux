@@ -7,10 +7,11 @@ import { RouterModule, Routes } from '@angular/router';
   {
     path:'',
     component:FixedDepositComponent,
+    data:{breadcrumb:'Fixed Deposit'},
     children:[
       {
              path:'',
-             loadChildren:()=>import('./fixdeposit-home/fixdeposit-home.module').then(m => m.FixdepositHomeModule)
+             loadChildren:()=>import('./fixdeposit-home/fixdeposit-home.module').then(m => m.FixdepositHomeModule),
       },
       {
         path:'rcvForm',

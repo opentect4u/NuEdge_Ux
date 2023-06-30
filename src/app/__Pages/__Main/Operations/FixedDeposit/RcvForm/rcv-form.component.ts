@@ -13,32 +13,6 @@ import { RcvFormRPTComponent } from './Dialog/rcv-form-rpt/rcv-form-rpt.componen
   styleUrls: ['./rcv-form.component.css']
 })
 export class RcvFormComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Operation",
-      url:'/main/operations/ophome',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Fixed Deposit",
-      url:'/main/operations/fixedeposit',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Form Receivable",
-      url:'/main/operations/fixedeposit/rcvForm',
-      hasQueryParams:true,
-      queryParams:''
-    }
-  ];
-
   __menu = [
     {
       "parent_id": 4,
@@ -66,10 +40,6 @@ export class RcvFormComponent implements OnInit {
     private overlay: Overlay) { }
 
   ngOnInit(): void {
-    // this.setBreadCrumbs();
-  }
-  setBreadCrumbs(){
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   openRcvForm(__el){
     console.log(__el);

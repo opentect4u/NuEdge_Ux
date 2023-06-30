@@ -8,7 +8,11 @@ import { RcvFormCrudComponent } from './Dialog/rcv-form-crud/rcv-form-crud.compo
 import { CreateInvComponent } from './Dialog/create-inv/create-inv.component';
 import { DialogDtlsComponent } from './Dialog/dialog-dtls/dialog-dtls.component';
 
- const routes: Routes = [{path:'',component:RcvFormComponent}]
+ const routes: Routes = [{
+  path:'',
+  component:RcvFormComponent,
+  data:{breadcrumb:'Form Receivable'}
+}]
 
 @NgModule({
   declarations: [

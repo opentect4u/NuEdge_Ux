@@ -1,0 +1,304 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" >
+    <h2 [title]="data.title">{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+   <mat-dialog-content>
+    <form [formGroup]="renewal_bu_oportunity" (ngSubmit)="submitRenewal()"
+    autocomplete="off" [attr.id]="'__REN_INS' + data?.tin_no">
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="bu_type">Business Type <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="bu_type">
+            <option value="">Select</option>
+            <option [value]="buType.id" *ngFor="let buType of __buType">{{buType.bu_type}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="renewal_bu_oportunity.get('bu_type').invalid && (renewal_bu_oportunity.get('bu_type').dirty || renewal_bu_oportunity.get('bu_type').touched)">
+            <span class="invalid-feedback" *ngIf="(renewal_bu_oportunity.get('bu_type')).errors?.required">*Please provide business type</span>
+          </div>
+        </div>
+        <div class="col-sm-12" *ngIf="renewal_bu_oportunity.value.bu_type == 'B'">
+          <app-core-srch
+           [label] = "'Sub Broker Code'"
+           [placeholder]="'Search By Sub Broker Code'"
+           [isPending]="__isSubArnNoSpinner"
+           [listItems] = "__subArnMst"
+           [flag] = "'S'"
+           [isRequired]="true"
+           [noDataFoundTitle]="'Sorry!! No Records Found'"
+           [noDataFoundSubTitle]="'If your result match,they will appear here'"
+           [propertiesToShow] = "['arn_no','bro_name']"
+           formControlName="sub_arn_no"
+           [isExists]="renewal_bu_oportunity.get('sub_arn_no').errors?.subBrkExists"
+           [displayMode]="displayMode_for_emp"
+           (setDisplayMode)="displayMode_for_emp = $event"
+           (selectedItems)="getSelectedItemsFromParent($event)"
+           [isClientExistMsg]="'Sub Broker does not exists'"
+           ></app-core-srch>
+       </div>
+      <div class="col-sm-12">
+             <app-core-srch
+              [label] = "'Employee Details'"
+              [placeholder]="'Search By Employee Name'"
+              [isPending]="__isEmpSpinner"
+              [listItems] = "__empMst"
+              [flag] = "'E'"
+              [isRequired]="true"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['emp_name','euin_no']"
+              formControlName="euin_no"
+              [isExists]="renewal_bu_oportunity.get('euin_no').errors?.empExists"
+              [displayMode]="displayMode_for_emp"
+              (setDisplayMode)="displayMode_for_emp = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              [isClientExistMsg]="'Employee does not exists'"
+              ></app-core-srch>
+      </div>
+     <div class="col-sm-12">
+      <label class="form-label">Type Of Insurance <span class="text-danger">*</span></label>
+      <select class="form-control" formControlName="ins_type_id">
+        <option value="">Select</option>
+        <option [value]="insType.id" *ngFor="let insType of __insTypeMst">{{insType.type}}</option>
+      </select>
+      <div class="invalid-feedback"
+        *ngIf="renewal_bu_oportunity.get('ins_type_id').invalid && (renewal_bu_oportunity.get('ins_type_id').dirty || renewal_bu_oportunity.get('ins_type_id').touched)">
+        <span class="invalid-feedback" *ngIf="(renewal_bu_oportunity.get('ins_type_id')).errors?.required">*Please provide
+          insurance
+          type</span>
+      </div>
+     </div>
+
+     <div [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-9':__isCldtlsEmpty}">
+      <app-core-srch
+       [label] = "'Proposer Details'"
+       [placeholder]="'Search By Name, Code, Email, Mobile, PAN & DOB'"
+       [isPending]="__isProposerPending"
+       [listItems] = "__clientMst"
+       [flag] = "'C'"
+       [isRequired]="true"
+       [isExists]="renewal_bu_oportunity.get('proposer_code').errors?.ClientExists"
+       [noDataFoundTitle]="'Sorry!! No Records Found'"
+       [noDataFoundSubTitle]="'If your result match,they will appear here'"
+       [propertiesToShow] = "['client_code','pan','client_name']"
+       formControlName="proposer_code"
+       [displayMode]="displayMode_for_proposer"
+       (setDisplayMode)="displayMode_for_proposer = $event"
+       (selectedItems)="getSelectedItemsFromParent($event)"
+       [isClientExistMsg]="'Client does not exists'"
+       ></app-core-srch>
+     </div>
+     <div class="col-sm-3 clientCode" *ngIf="__isCldtlsEmpty && renewal_bu_oportunity.get('proposer_code').value">
+      <core-btn-with-menu
+      [menuListItem]="__clTypeMenu"
+      [BtnTitle]="'Create Proposer'"
+      [hasMenu]="true"
+      (sendItem)="navigateTo($event)"
+      ></core-btn-with-menu>
+    </div>
+    </div>
+    <div class="row">
+      <!-- <div  class="col-sm-12" *ngIf="renewal_bu_oportunity.get('proposer_code').value && renewal_bu_oportunity.get('proposer_name').value">
+        <label for="proposer_name">Proposer Name</label>
+        <input type="text" name="proposer_name" id="proposer_name" class="form-control" placeholder="Client Name" formControlName="proposer_name" [attr.disabled]="true">
+            <button
+            color="primary"
+            class="viewIconDtls"
+            *ngIf="this.singleProposerDtls"
+              mat-icon-button type="button"
+              aria-label="Example icon button with a eye icon"
+              title="View Proposer Details">
+              <mat-icon>remove_red_eye</mat-icon>
+            </button>
+          </div> -->
+          <div  class="col-sm-12" *ngIf="renewal_bu_oportunity.get('proposer_code').value && renewal_bu_oportunity.get('proposer_name').value">
+          <label for="proposer_name">Proposer Name</label>
+          <div class="p-inputgroup">
+            <input pInputText  name="proposer_name" id="proposer_name" class="form-control" placeholder="Proposer Name" formControlName="proposer_name" [attr.disabled]="true"/>
+            <!-- <span class="p-inputgroup-addon">
+              <i class="pi pi-eye"></i>
+          </span> -->
+          <button type="button" pButton icon="pi pi-eye" styleClass="p-button-warn" (click)="openDialog('C')"></button>
+        </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+          <mat-checkbox color="primary" formControlName="same_as_above">Same As Above</mat-checkbox>
+        </div>
+        <div class="col-sm-12">
+          <table>
+            <thead>
+              <tr>
+                <td class="text-center">Insured Person Details</td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                  <td>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <app-core-srch
+                        [label] = "'Insured Person Details'"
+                        [placeholder]="'Search By Name, Code, Email, Mobile, PAN & DOB'"
+                        [isPending]="__isProposerPending"
+                        [listItems] = "__insuredPersonMst"
+                        [flag] = "'I'"
+                        [isRequired]="true"
+                        [noDataFoundTitle]="'Sorry!! No Records Found'"
+                        [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                        [propertiesToShow] = "['client_code','pan','client_name']"
+                        formControlName="ins_person_code"
+                        [displayMode]="displayMode_for_ins_person"
+                        (setDisplayMode)="displayMode_for_ins_person = $event"
+                        (selectedItems)="getSelectedItemsFromParent($event)"
+                        ></app-core-srch>
+                      </div>
+                      <div class="col-sm-12">
+                        <label for="ins_person_name">Name <span class="text-danger">*</span></label>
+                          <input type="text" #insure_person name="ins_person_name" id="ins_person_name" class="form-control" placeholder="Enter Name" formControlName="ins_person_name">
+                      </div>
+                      <div class="col-sm-12">
+                        <label for="ins_person_pan">PAN </label>
+                          <input type="text" name="ins_person_pan"
+                          minlength="10" maxlength="10"
+                          id="ins_person_pan" class="form-control"
+                          placeholder="AAAAA1123L" formControlName="ins_person_pan">
+                          <div class="invalid-feedback"
+                          *ngIf=" renewal_bu_oportunity.get('ins_person_pan').invalid && ( renewal_bu_oportunity.get('ins_person_pan').dirty ||  renewal_bu_oportunity.get('ins_person_pan').touched)">
+                          <span class="invalid-feedback"
+                            *ngIf="( renewal_bu_oportunity.get('ins_person_pan')).errors?.pattern">*Please
+                            provide valid pan
+                            Number</span>
+                          <span class="invalid-feedback"
+                            *ngIf="( renewal_bu_oportunity.get('ins_person_pan')).hasError('minlength')">*pan
+                            number must be 10 characters long</span>
+                          <span class="invalid-feedback"
+                            *ngIf="( renewal_bu_oportunity.get('ins_person_pan')).hasError('maxlength')">*pan
+                            number must be 10 characters long</span>
+                        </div>
+                      </div>
+                      <div class="col-sm-12">
+                        <label for="ins_person_dob">DOB <span class="text-danger">*</span></label>
+                        <input type="date" name="ins_person_dob" id="ins_person_dob" class="form-control"  formControlName="ins_person_dob">
+                        <div class="invalid-feedback"
+                        *ngIf="renewal_bu_oportunity.get('ins_person_dob').invalid && (renewal_bu_oportunity.get('ins_person_dob').dirty || renewal_bu_oportunity.get('ins_person_dob').touched)">
+                        <span class="invalid-feedback" *ngIf="(renewal_bu_oportunity.get('ins_person_dob')).errors?.required">*Please provide dob</span>
+                      </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <core-btn-with-menu
+                    [menuListItem]="__clTypeMenu"
+                    [BtnTitle]="'Create Insured Person'"
+                    [hasMenu]="true"
+                    (sendItem)="createInsured($event)"
+                    ></core-btn-with-menu>
+                    <button color="primary" mat-button class="ml-3" type="button" (click)="existingClient()">
+                      <mat-icon>add</mat-icon>&nbsp; Existing
+                    </button>
+                  </td>
+                 </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <label class="form-label" for="comp_id">Company Name <span class="text-danger">*</span></label>
+        <select class="form-control" id="company_name" name="company_name" formControlName="comp_id">
+          <option value="">Select</option>
+          <option *ngFor="let cmpMst of __cmpMst" [value]="cmpMst.id">{{cmpMst.comp_short_name}}</option>
+        </select>
+        <div class="invalid-feedback"
+          *ngIf="renewal_bu_oportunity.get('comp_id').invalid && (renewal_bu_oportunity.get('comp_id').dirty || renewal_bu_oportunity.get('comp_id').touched)">
+          <span class="invalid-feedback" *ngIf="(renewal_bu_oportunity.get('comp_id')).errors?.required">*Please provide
+            company
+          </span>
+        </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <label class="form-label" for="product_type_id">Product Type <span class="text-danger">*</span></label>
+        <select class="form-control" id="product_type_id" name="product_type_id" formControlName="product_type_id">
+          <option value="">Select</option>
+          <option *ngFor="let prdType of __prdTypeMst" [value]="prdType.id">{{prdType.product_type}}</option>
+        </select>
+        <div class="invalid-feedback"
+          *ngIf="renewal_bu_oportunity.get('product_type_id').invalid && (renewal_bu_oportunity.get('product_type_id').dirty || renewal_bu_oportunity.get('product_type_id').touched)">
+          <span class="invalid-feedback" *ngIf="(renewal_bu_oportunity.get('product_type_id')).errors?.required">*Please provide
+            product type
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <label class="form-label" for="product_id">Product <span class="text-danger">*</span></label>
+        <select class="form-control" id="product_id" name="product_id" formControlName="product_id">
+          <option value="">Select</option>
+          <option *ngFor="let prd of __prdMst" [value]="prd.id">{{prd.product_name}}</option>
+        </select>
+        <div class="invalid-feedback"
+          *ngIf="renewal_bu_oportunity.get('product_id').invalid && (renewal_bu_oportunity.get('product_id').dirty || renewal_bu_oportunity.get('product_id').touched)">
+          <span class="invalid-feedback" *ngIf="(renewal_bu_oportunity.get('product_id')).errors?.required">*Please provide
+            product
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <label for="sum_insured">Sum Insured <span class="text-danger">*</span></label>
+        <input type="text" name="sum_insure" placeholder="Enter Sum Insured" id="sum_insure" class="form-control" formControlName="sum_insured">
+        <div class="invalid-feedback" *ngIf="renewal_bu_oportunity.get('sum_insured').invalid && (renewal_bu_oportunity.get('sum_insured').dirty || renewal_bu_oportunity.get('sum_insured').touched)">
+          <span class="invalid-feedback" *ngIf="(renewal_bu_oportunity.get('sum_insured')).errors?.required">*Please provide sum insured</span>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <label for="renewal_dt">Renewal Date <span class="text-danger">*</span></label>
+        <input type="date" name="renewal_dt" id="renewal_dt" class="form-control" formControlName="renewal_dt">
+        <div class="invalid-feedback" *ngIf="renewal_bu_oportunity.get('renewal_dt').invalid && (renewal_bu_oportunity.get('renewal_dt').dirty || renewal_bu_oportunity.get('renewal_dt').touched)">
+          <span class="invalid-feedback" *ngIf="(renewal_bu_oportunity.get('renewal_dt')).errors?.required">*Please provide renewal date</span>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <label for="upload_scan">Upload Scan Copy <span class="text-danger">*</span></label>
+        <input type="file" (change)="getFile($event.target)" name="upload_scan" id="upload_scan" class="form-control" formControlName="upload_scan">
+        <mat-hint ><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+
+      </div>
+      <div class="col-sm-12 mb-2">
+        <label for="remarks">Remarks <span class="text-danger">*</span></label>
+        <!-- <input type="text" name="remarks" id="remarks" class="form-control" formControlName="remarks"> -->
+        <textarea name="remarks" id="remarks" class="form-control" formControlName="remarks" cols="30" rows="10"></textarea>
+      </div>
+    </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn" [attr.form]="'__REN_INS' + data?.tin_no" [disabled]="renewal_bu_oportunity.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+  </div>

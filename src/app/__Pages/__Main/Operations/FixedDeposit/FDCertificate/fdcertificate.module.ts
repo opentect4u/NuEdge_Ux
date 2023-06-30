@@ -7,7 +7,11 @@ import { EntryComponent } from './Dialog/entry/entry.component';
 import { SearchRPTComponent } from './Dialog/search-rpt/search-rpt.component';
 import { ReportComponent } from './Dialog/report/report.component';
 
- const routes: Routes = [{path:'',component:FDCertificateComponent}]
+ const routes: Routes = [{
+  path:'',
+  component:FDCertificateComponent,
+  data:{breadcrumb:'FD Ceritficate Delivery'}
+}]
 
 @NgModule({
   declarations: [

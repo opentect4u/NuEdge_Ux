@@ -11,7 +11,7 @@ constructor() { }
 
 downloadReport(__tblName,dt,_doc_name){
   console.log(__tblName)
-  let pdf = new jsPDF('l', 'pt', 'letter');
+  let pdf = new jsPDF('l', 'pt', [3000,792]);
   pdf.setFontSize(10);
   // pdf.text(dt.date, 35, 30);
   var width = pdf.internal.pageSize.getWidth();
@@ -34,10 +34,11 @@ downloadReport(__tblName,dt,_doc_name){
     theme: 'grid',
     // tableWidth: (width / 2) + 230,
     styles: {
-      cellWidth: 100,
+      cellWidth: 80,
       fontSize:8,
       fillColor: '#fff', textColor: "black", halign: "center", valign: "middle",
       lineColor: "black", lineWidth: 0.79,
+
     },
   },
   );
@@ -52,18 +53,19 @@ printRPT(__id){
  WindowObject.document.open();
  WindowObject.document.writeln('<!DOCTYPE html>');
  WindowObject.document.writeln('<html><head><title></title><style type="text/css">');
- WindowObject.document.writeln('@media print { .center { text-align: center;}' +
-          '                                         .inline { display: inline; }' +
-          '                                         .underline { text-decoration: underline; }' +
-          '                                         .left { margin-left: 315px;} ' +
-          '                                         .right { margin-right: 375px; display: inline; }' +
-          '                                          table { border-collapse: collapse; font-size: 10px;}' +
-          '                                          th, td { border: 1px solid black; border-collapse: collapse; padding: 6px;}' +
-          '                                           th, td { }' +
-          '                                         .border { border: 1px solid black; } ' +
-          '                                         .bottom { bottom: 5px; width: 100%; position: fixed; } '+
-          '                                           footer { position: fixed; bottom: 0;text-align: center; }' +
-          '                                         td.dashed-line { border-top: 1px dashed gray; } } </style>');
+ WindowObject.document.writeln( '@media print { .center { text-align: center;}' +
+ '                                         .inline { display: inline; }' +
+ '                                         .underline { text-decoration: underline; }' +
+ '                                         .left { margin-left: 315px;} ' +
+ '                                         .right { margin-right: 375px; display: inline; }' +
+ '                                          table { border-collapse: collapse; font-size: 10px;}' +
+ '                                          th, td { border: 1px solid black; border-collapse: collapse; padding: 6px;}' +
+ '                                           th, td { }' +
+ '                                         .border { border: 1px solid black; } ' +
+ '                                         .bottom { bottom: 5px; width: 100%; position: fixed; } ' +
+ '                                           footer { position: fixed; bottom: 0;text-align: center; }' +
+ '                                         td.dashed-line { border-top: 1px dashed gray; } } </style>'
+);
    WindowObject.document.writeln('</head><body onload="window.print()">');
    WindowObject.document.writeln('<center><img src="/assets/images/logo.jpg" alt="">'+
     '<h3>NuEdge Corporate Pvt. Ltd</h3>'+

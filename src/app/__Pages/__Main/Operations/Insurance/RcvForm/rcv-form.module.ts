@@ -8,7 +8,11 @@ import { DialogDtlsComponent } from './Dialog/dialog-dtls/dialog-dtls.component'
 import { CreateProposerComponent } from './Dialog/create-proposer/create-proposer.component';
 import { RcvFormRPTComponent } from './Dialog/rcv-form-rpt/rcv-form-rpt.component';
 
- const routes: Routes = [{path:'',component:RcvFormComponent}]
+ const routes: Routes = [{
+  path:'',
+  component:RcvFormComponent,
+  data:{breadcrumb:'Form Recievable'}
+}]
 
 @NgModule({
   declarations: [

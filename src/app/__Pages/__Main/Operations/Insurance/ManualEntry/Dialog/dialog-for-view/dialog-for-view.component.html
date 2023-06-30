@@ -10,31 +10,31 @@
 <mat-dialog-content>
   <form [formGroup]="__frmDtls">
     <div class="row" *ngIf="data.flag == 'C' || data.flag == 'ESC' || data.flag == 'NTC' || data.flag == 'NSC' || data.flag == 'ETC' || data.flag == 'C1' || data.flag == 'FC' || data.flag == 'TC'">
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Client Code</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="client_code">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Client Name</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="client_name">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Date Of Birth</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="dob">
       </div>
-      <div class="col-sm-12 my-3" *ngIf="this.data.dt.client_type == 'P'">
+      <div class="col-sm-12" *ngIf="this.data.dt.client_type == 'P'">
         <label>PAN NO.</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="pan">
       </div>
-      <div class="col-sm-12 my-3" *ngIf="this.data.dt.client_type == 'M'">
+      <div class="col-sm-12" *ngIf="this.data.dt.client_type == 'M'">
         <label>Gurdians PAN Number</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="gurdians_pan">
       </div>
-      <div class="col-sm-12 my-3"  *ngIf="this.data.dt.client_type == 'M'">
+      <div class="col-sm-12"  *ngIf="this.data.dt.client_type == 'M'">
         <label>Gurdialns Name</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="gurdians_name">
       </div>
-      <div class="col-sm-12 my-3"  *ngIf="this.data.dt.client_type == 'M'">
+      <div class="col-sm-12"  *ngIf="this.data.dt.client_type == 'M'">
         <!-- <label>Relations</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="relations"> -->
         <label>Relationship</label>
@@ -43,35 +43,35 @@
           <option [value]="rel.id" *ngFor="let rel of __relation">{{rel.relation}}</option>
         </select>
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Email</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="email">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Mobile</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="mobile">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Address 1</label>
         <textarea class="form-control"  cols="30" rows="5" formControlName="add_line_1" [attr.disabled]="true"></textarea>
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Address 2</label>
         <textarea class="form-control"  cols="30" rows="5" formControlName="add_line_2" [attr.disabled]="true"></textarea>
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>State</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="state">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>District</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="dist">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>City</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="city">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Pincode</label>
         <input type="text" class="form-control" [attr.disabled]="true" formControlName="pincode">
       </div>
@@ -117,38 +117,38 @@
       </div>
     </div>
     <div class="row" *ngIf="data.flag == 'S' || data.flag == 'ST'">
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>AMC</label>
          <input type="text" class="form-control" formControlName="amc" [attr.disabled]="true">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Category</label>
          <input type="text" class="form-control" formControlName="cat" [attr.disabled]="true">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Sub Category</label>
          <input type="text" class="form-control" formControlName="sub_cat" [attr.disabled]="true">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>R&T</label>
          <input type="text" class="form-control" formControlName="rnt" [attr.disabled]="true">
       </div>
 
     </div>
     <div class="row" *ngIf="data.flag == 'B' || data.flag == 'NB' || data.flag == 'OB'">
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Ifs Code</label>
          <input type="text" class="form-control" formControlName="ifs_code" [attr.disabled]="true">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>MICR Code</label>
          <input type="text" class="form-control" formControlName="micr_code" [attr.disabled]="true">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Branch</label>
          <input type="text" class="form-control" formControlName="branch_name" [attr.disabled]="true">
       </div>
-      <div class="col-sm-12 my-3">
+      <div class="col-sm-12">
         <label>Branch Address</label>
         <textarea name="brnh_addr" id="brnh_addr" cols="30" rows="5" class="form-control" formControlName="branch_addr" [attr.disabled]="true"></textarea>
       </div>

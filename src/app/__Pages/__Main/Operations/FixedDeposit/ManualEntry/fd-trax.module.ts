@@ -8,7 +8,12 @@ import { TraxRPTComponent } from './Dialog/trax-rpt/trax-rpt.component';
 import { CreateInvComponent } from './Dialog/create-inv/create-inv.component';
 import { DialogDtlsComponent } from './Dialog/dialog-dtls/dialog-dtls.component';
 
- const routes: Routes = [{path:'',component:FdTraxComponent}]
+ const routes: Routes = [{
+  path:'',
+  component:FdTraxComponent,
+  data:{breadcrumb:'FD Trax'},
+
+}]
 
 @NgModule({
   declarations: [

@@ -13,31 +13,6 @@ import { AckRPTComponent } from './Dialog/Report/ack-rpt.component';
   styleUrls: ['./ack-home.component.css']
 })
 export class AckHomeComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Operation",
-      url:'/main/operations/ophome',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Insurance",
-      url:'/main/operations/insurance',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Acknowledgement Trax",
-      url:'/main/operations/insurance/ack',
-      hasQueryParams:true,
-      queryParams:''
-    }
-  ];
   __menu: any = [
     {
      id: 1,
@@ -61,10 +36,6 @@ export class AckHomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.setBreadCrumbs();
-  }
-  setBreadCrumbs(){
-    this.__utility.getBreadCrumb(this.__brdCrmbs)
   }
   openDialog(__items){
     switch(__items.flag){

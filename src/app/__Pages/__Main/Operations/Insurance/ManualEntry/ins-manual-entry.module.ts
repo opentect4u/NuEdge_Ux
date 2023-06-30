@@ -7,7 +7,10 @@ import { TraxEntryComponent } from './Dialog/trax-entry/trax-entry.component';
 import { InsTraxRPTComponent } from './Dialog/ins-trax-rpt/ins-trax-rpt.component';
 import { DialogForViewComponent } from './Dialog/dialog-for-view/dialog-for-view.component';
 
- const routes: Routes = [{path:'',component:InsMaualEntryComponent}]
+ const routes: Routes = [{
+  path:'',
+  component:InsMaualEntryComponent
+}]
 
 @NgModule({
   declarations: [

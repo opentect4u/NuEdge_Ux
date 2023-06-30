@@ -1,7 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { InsTraxRPTComponent } from './Dialog/ins-trax-rpt/ins-trax-rpt.component';
@@ -13,31 +12,6 @@ import { TraxEntryComponent } from './Dialog/trax-entry/trax-entry.component';
   styleUrls: ['./ins-maual-entry.component.css']
 })
 export class InsMaualEntryComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Operation",
-      url:'/main/operations/ophome',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Insurance",
-      url:'/main/operations/insurance',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Trax",
-      url:'/main/operations/insurance/trax',
-      hasQueryParams:true,
-      queryParams:''
-    }
-  ];
 
   __menu = [
     {
@@ -65,7 +39,7 @@ export class InsMaualEntryComponent implements OnInit {
       "url": "",
       "icon":"",
       "id":16,
-      "flag":"R"
+      "flag":"O"
       },
 
   ];
@@ -75,12 +49,8 @@ export class InsMaualEntryComponent implements OnInit {
     private overlay: Overlay
   ) { }
 
-  ngOnInit(): void {
-    this.setBreadCrumbs();
-  }
-  setBreadCrumbs(){
-    this.__utility.getBreadCrumb(this.__brdCrmbs)
-  }
+  ngOnInit(): void {}
+
   openTrax(__el){
     console.log(__el);
     switch(__el.flag){
@@ -90,6 +60,8 @@ export class InsMaualEntryComponent implements OnInit {
       case "M":
       this.openDialog(null,0);
       break;
+      case "O":
+          this.__utility.navigate('main/operations/insurance/trax/renewalBuOportunity')
 
     }
   }

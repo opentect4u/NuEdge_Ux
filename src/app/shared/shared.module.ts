@@ -48,6 +48,7 @@ import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { modeOfPrePipe } from '../__Pipes/modeOfPremium.pipe';
 
 @NgModule({
   imports: [
@@ -81,6 +82,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     SelectButtonModule
   ],
   declarations: [
+    modeOfPrePipe,
     BnkrplcPipe,
     RelationshipPipe,
     ClOutsideClickDirective,
@@ -104,6 +106,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     MegaMenuForColumnComponent
   ],
   exports:[
+    modeOfPrePipe,
     BnkrplcPipe,
     RelationshipPipe,
     MatCardModule,

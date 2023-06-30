@@ -3,10 +3,6 @@ import {
   Component,
   OnInit,
   Inject,
-  ViewChildren,
-  ElementRef,
-  QueryList,
-  ViewChild,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -38,78 +34,89 @@ import { client } from 'src/app/__Model/__clientMst';
 import { insComp } from 'src/app/__Model/insComp';
 import { insPrdType } from 'src/app/__Model/insPrdType';
 import { insProduct } from 'src/app/__Model/insproduct';
+import filterOpt from '../../../../../../../../assets/json/filterOption.json';
+import { sort } from 'src/app/__Model/sort';
+import itemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
+import insuranceBuType from '../../../../../../../../assets/json/insuranceBuType.json';
+import popupMenu from '../../../../../../../../assets/json/Master/daySheetOpt.json'
+import { environment } from 'src/environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
+import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
+type selectBtn ={
+  label:string,
+  value:string,
+  icon:string
+}
+
 @Component({
   selector: 'app-ins-trax-rpt',
   templateUrl: './ins-trax-rpt.component.html',
   styleUrls: ['./ins-trax-rpt.component.css'],
 })
 export class InsTraxRPTComponent implements OnInit {
-  __comp_setting = this.__utility.settingsfroMultiselectDropdown(
-    'id',
-    'comp_short_name',
-    'Search Company'
-  );
-  __prod_type_setting = this.__utility.settingsfroMultiselectDropdown(
-    'id',
-    'product_type',
-    'Search Product Type'
-  );
-  __prod_setting = this.__utility.settingsfroMultiselectDropdown(
-    'id',
-    'product_name',
-    'Search Product'
-  );
-
-  __insuredbu_type = [
-    { id: 'F', insuredbu_type: 'Fresh' },
-    { id: 'R', insuredbu_type: 'Renewal' },
-  ];
-  @ViewChildren('insTypeChecked')
-  private __insTypeChecked: QueryList<ElementRef>;
-  @ViewChildren('insbuTypeChecked')
-  private __insbuTypeChecked: QueryList<ElementRef>;
-  @ViewChildren('buTypeChecked')
-  private __buTypeChecked: QueryList<ElementRef>;
-
-  @ViewChild('searchEUIN') __searchRlt: ElementRef;
-  @ViewChild('subBrkArn') __subBrkArn: ElementRef;
-  @ViewChild('clientCd') __clientCode: ElementRef;
-
+  reportDtForDaySheet:any;
+  isOpenMegaMenu:boolean = false;
+  printableClm:any=[];
+  daysheetpopupMenu = popupMenu;
+  __insType_setting = this.__utility.settingsfroMultiselectDropdown('id','type','Search Type Of Insurance',2);
+  __comp_type_setting = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type',2);
+  __scm_setting = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',2);
+  settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Employee',2);
+  settingsForbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',2);
+  settingsForbuType = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',2);
+  settingsForRM = this.__utility.settingsfroMultiselectDropdown('id','manager_name','Search Relationship Manager',2);
+  settingsForsubCode = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',2);
+  __comp_setting = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company',2);
+  __prod_type_setting = this.__utility.settingsfroMultiselectDropdown('id','product_type','Search Product Type',2);
+  __prod_setting = this.__utility.settingsfroMultiselectDropdown('id','product_name','Search Product',2);
+  sort = new sort();
+  itemsPerPage:selectBtn[] = itemsPerPage;
+  selectBtn:selectBtn[] = filterOpt;
   __isSubArnPending: boolean = false;
   __isEuinPending: boolean = false;
   __isClientPending: boolean = false;
+  __istemporaryspinner:boolean = false;
   divToPrint: any;
   WindowObject: any;
   __mode_of_premium = modeOfPremium;
-  __columns: string[] = [];
+  __columns: any = [];
+  ClmnList: any= insTraxClm.Columns.filter(item => !['comp_login_cutt_off','comp_login_dt'].includes(item.field));
+  SelectedClms:string[] =[];
   __euinMst: any = [];
   __subbrkArnMst: any = [];
   __clientMst: client[] = [];
   __compMst: insComp[] = [];
   __prodTypeMst: insPrdType[] = [];
   __prdMst: insProduct[] = [];
+  __brnchMst: any =[];
+  __tinMst:any=[];
+  __compTypeMst:any=[]
+  __RmMst: any=[];
   __insTrax = new MatTableDataSource<any>([]);
   __exportTrax = new MatTableDataSource<any>([]);
-
   __exportedClmns: string[];
+  displayMode_forTemp_Tin:string;
+  displayMode_forClient:string;
+
   __sortAscOrDsc: any = { active: '', direction: 'asc' };
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __paginate: any = [];
   __insType: any = [];
-  __bu_type = buType;
+  __bu_type: any=[];
   __isVisible: boolean = false;
   __insTraxMst = new MatTableDataSource<any>([]);
   __insTraxForm = new FormGroup({
     is_all: new FormControl(false),
     options: new FormControl('2'),
-    sub_brk_cd: new FormControl(''),
+    sub_brk_cd: new FormControl([]),
     tin_no: new FormControl(''),
-    ins_type_id: new FormArray([]),
+    ins_type_id: new FormControl([],{updateOn:'blur'}),
     insured_bu_type: new FormArray([]),
-    brn_cd: new FormControl(''),
+    brn_cd: new FormControl([]),
     proposer_code: new FormControl(''),
-    euin_no: new FormControl(''),
-    bu_type: new FormArray([]),
+    proposer_name: new FormControl(''),
+    euin_no: new FormControl([]),
+    bu_type: new FormControl([]),
     date_status: new FormControl('T'),
     start_date: new FormControl(this.getTodayDate()),
     end_date: new FormControl(this.getTodayDate()),
@@ -118,14 +125,15 @@ export class InsTraxRPTComponent implements OnInit {
     to_dt: new FormControl(''),
     dt_type: new FormControl(''),
     is_all_ins_bu_type: new FormControl(false),
-    company_id: new FormControl([]),
-    product_type_id: new FormControl([]),
+    company_id: new FormControl([],{updateOn:'blur'}),
+    product_type_id: new FormControl([],{updateOn:'blur'}),
     product_id: new FormControl([]),
     filter_type: new FormControl(''),
-    is_all_bu_type: new FormControl(false)
+    is_all_bu_type: new FormControl(false),
+    btn_type: new FormControl('R'),
+    date_range: new FormControl(''),
+    rm_id: new FormControl([])
   });
-  toppings = new FormControl();
-  toppingList = insTraxClm.COLUMN_SELECTOR;
   constructor(
     private __Rpt: RPTService,
     private __dialog: MatDialog,
@@ -133,96 +141,68 @@ export class InsTraxRPTComponent implements OnInit {
     public dialogRef: MatDialogRef<InsTraxRPTComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private overlay: Overlay,
-    private __dbIntr: DbIntrService
+    private __dbIntr: DbIntrService,
+    private sanitizer: DomSanitizer
   ) {}
 
   setColumns(options) {
-    const actions = ['edit', 'delete'];
-    if (options == '1') {
-      this.__columns = insTraxClm.COLUMNFORDETAILS;
-    } else if (options == '2') {
-      this.__columns = insTraxClm.INITIAL_COLUMNS;
+    const clmnToRemove = ['edit','ins_application_form'];
+    this.__columns = this.ClmnList.filter(item => item.isVisible.includes(Number(options)))
+    this.__exportedClmns = this.__columns.filter(item => !clmnToRemove.includes(item.field)).map(item => {return item['field']});
+    this.SelectedClms = this.__columns.map(item => item.field);
+    this.printableClm = this.ClmnList.filter(item => item.isVisible.includes(3))
     }
-    this.toppings.setValue(this.__columns);
-    this.__exportedClmns = this.__columns.filter(
-      (x: any) => !actions.includes(x)
-    );
-    console.log(this.__exportedClmns);
-    console.log(this.__columns);
+
+  get insured_bu_type(): FormArray{
+     return this.__insTraxForm.get('insured_bu_type') as FormArray;
   }
 
   ngOnInit(): void {
     this.getInsuranceType();
     this.getInsMstRPT();
-    this.setColumns(this.__insTraxForm.value.options);
+    this.setColumns(2);
+    this.addInsuranceBuType();
   }
-  getInsMstRPT(
-    column_name: string | null | undefined = '',
-    sort_by: string | null | undefined = 'asc'
-  ) {
+  addInsuranceBuType(){
+      insuranceBuType.forEach(el =>{
+        this.insured_bu_type.push(this.setInsuranceBuType(el));
+      })
+  }
+  setInsuranceBuType(ins_bu_type){
+    return new FormGroup({
+      id:new FormControl(ins_bu_type ? ins_bu_type?.id : ''),
+      name: new FormControl(ins_bu_type ? ins_bu_type?.bu_type : ''),
+      isChecked:new FormControl(false)
+    })
+  }
+  getInsMstRPT() {
     const __fd = new FormData();
-    __fd.append('company_id', this.__insTraxForm.get('filter_type').value == 'A' ? JSON.stringify(this.__insTraxForm.value.company_id) : '[]');
-    __fd.append('product_type_id',this.__insTraxForm.get('filter_type').value == 'A' ?  JSON.stringify(this.__insTraxForm.value.product_type_id) : '[]');
-    __fd.append('product_id', this.__insTraxForm.get('filter_type').value == 'A' ? JSON.stringify(this.__insTraxForm.value.product_id) : '[]');
-
-    __fd.append('bu_type', JSON.stringify(this.__insTraxForm.value.bu_type));
-    __fd.append('column_name', column_name ? column_name : '');
-    __fd.append('sort_by', sort_by ? sort_by : '');
     __fd.append('paginate', this.__pageNumber.value);
-    __fd.append(
-      'option',
-      global.getActualVal(this.__insTraxForm.value.options)
-    );
-    if (this.__insTraxForm.value.options == '3') {
-      __fd.append(
-        'login_status',
-        global.getActualVal(this.__insTraxForm.value.login_status)
-      );
-      __fd.append(
-        'date_status',
-        global.getActualVal(this.__insTraxForm.value.date_status)
-      );
-      __fd.append(
-        'start_date',
-        global.getActualVal(this.__insTraxForm.value.start_date)
-      );
-      __fd.append(
-        'end_date',
-        global.getActualVal(this.__insTraxForm.value.end_date)
-      );
-    } else {
-      __fd.append(
-        'sub_brk_cd',
-        global.getActualVal(this.__insTraxForm.value.sub_brk_cd)
-      );
-      __fd.append(
-        'tin_no',
-        global.getActualVal(this.__insTraxForm.value.tin_no)
-      );
-      __fd.append(
-        'ins_type_id',
-        JSON.stringify(this.__insTraxForm.value.ins_type_id)
-      );
-      __fd.append(
-        'insured_bu_type',
-        JSON.stringify(this.__insTraxForm.value.insured_bu_type)
-      );
-      __fd.append(
-        'proposer_name',
-        global.getActualVal(this.__insTraxForm.value.proposer_code)
-      );
-      __fd.append(
-        'euin_no',
-        global.getActualVal(this.__insTraxForm.value.euin_no)
-      );
-      __fd.append(
-        'from_date',
-        global.getActualVal(this.__insTraxForm.getRawValue().frm_dt)
-      );
-      __fd.append(
-        'to_date',
-        global.getActualVal(this.__insTraxForm.getRawValue().to_dt)
-      );
+    __fd.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
+    __fd.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    if(this.__insTraxForm.value.options != 3){
+      __fd.append('from_date',global.getActualVal(this.__insTraxForm.getRawValue().frm_dt));
+      __fd.append('to_date',global.getActualVal(this.__insTraxForm.getRawValue().to_dt));
+      __fd.append('tin_no',global.getActualVal(this.__insTraxForm.value.tin_no));
+      __fd.append('proposer_code',global.getActualVal(this.__insTraxForm.value.proposer_code));
+      __fd.append('ins_type_id',JSON.stringify(this.__insTraxForm.value.ins_type_id.map(item => item.id)));
+      __fd.append('insured_bu_type',JSON.stringify(this.__insTraxForm.value.insured_bu_type.filter(item => item.isChecked).map(item => item.id)));
+      __fd.append('company_id', JSON.stringify(this.__insTraxForm.value.company_id.map(item => item.id)));
+      __fd.append('product_type_id',JSON.stringify(this.__insTraxForm.value.product_type_id.map(item => item.id)));
+      __fd.append('product_id', JSON.stringify(this.__insTraxForm.value.product_id.map(item => item.id)));
+      if(this.__insTraxForm.value.btn_type == 'A'){
+        __fd.append('brn_cd', JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})));
+        __fd.append('bu_type', JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item['id']})));
+        __fd.append('rm_id', JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['id']})));
+        __fd.append('sub_brk_cd', JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['id']})));
+        __fd.append('euin_no', JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['id']})));
+      }
+    }
+    else{
+      __fd.append('login_status', this.__insTraxForm.value.login_status);
+      __fd.append('date_status', this.__insTraxForm.value.date_status);
+      __fd.append('start_date', this.__insTraxForm.value.start_date);
+      __fd.append('end_date', this.__insTraxForm.value.end_date);
     }
     this.__dbIntr
       .api_call(1, '/ins/insTraxDetailSearch', __fd)
@@ -251,70 +231,33 @@ export class InsTraxRPTComponent implements OnInit {
       });
   }
   ngAfterViewInit() {
-    this.__insTraxForm.controls['is_all'].valueChanges.subscribe((res) => {
-      const ins_type: FormArray = this.__insTraxForm.get(
-        'ins_type_id'
-      ) as FormArray;
-      ins_type.clear();
-      if (!res) {
-        this.uncheckAll();
-      } else {
-        this.__insType.forEach((__el) => {
-          ins_type.push(new FormControl(__el.id));
-        });
-        this.checkAll();
-      }
-    });
 
-    this.__insTraxForm.controls['is_all_ins_bu_type'].valueChanges.subscribe(
-      (res) => {
-        const ins_type: FormArray = this.__insTraxForm.get(
-          'insured_bu_type'
-        ) as FormArray;
-        ins_type.clear();
-        if (!res) {
-          this.uncheckAllForInsBuType();
-        } else {
-          this.__insuredbu_type.forEach((__el) => {
-            ins_type.push(new FormControl(__el.id));
-          });
-          this.checkAllForInsBuType();
-        }
-      }
-    );
+     /** Change event occur when all rnt checkbox has been changed  */
+     this.__insTraxForm.controls['is_all'].valueChanges.subscribe(res =>{
+      this.insured_bu_type.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+    })
+    /** End */
 
-    this.__insTraxForm.controls['is_all_bu_type'].valueChanges.subscribe(
-      (res) => {
-        const bu_type: FormArray = this.__insTraxForm.get(
-          'bu_type'
-        ) as FormArray;
-        bu_type.clear();
-        if (!res) {
-          this.uncheckAllForBuType();
-        } else {
-          this.__bu_type.forEach((__el) => {
-            bu_type.push(new FormControl(__el.id));
-          });
-          this.checkAllForBuType();
-        }
-      }
-    );
-
-
+    /** Change event inside the formArray */
+    this.insured_bu_type.valueChanges.subscribe(res =>{
+    this.__insTraxForm.controls['is_all'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+    })
+    /*** End */
 
     this.__insTraxForm.controls['dt_type'].valueChanges.subscribe((res) => {
-      this.__insTraxForm.controls['frm_dt'].setValue(
+      this.__insTraxForm.controls['date_range'].reset(
+        res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+      );
+      this.__insTraxForm.controls['frm_dt'].reset(
         res && res != 'R' ? dates.calculateDT(res) : ''
       );
-      this.__insTraxForm.controls['to_dt'].setValue(
+      this.__insTraxForm.controls['to_dt'].reset(
         res && res != 'R' ? dates.getTodayDate() : ''
       );
       if (res && res != 'R') {
-        this.__insTraxForm.controls['frm_dt'].disable();
-        this.__insTraxForm.controls['to_dt'].disable();
+        this.__insTraxForm.controls['date_range'].disable();
       } else {
-        this.__insTraxForm.controls['frm_dt'].enable();
-        this.__insTraxForm.controls['to_dt'].enable();
+        this.__insTraxForm.controls['date_range'].enable();
       }
     });
 
@@ -327,64 +270,42 @@ export class InsTraxRPTComponent implements OnInit {
       );
     });
     this.__insTraxForm.controls['options'].valueChanges.subscribe((res) => {
-      if (res != '3') {
         this.setColumns(res);
+    });
+    this.__insTraxForm.controls['ins_type_id'].valueChanges.subscribe(res =>{
+      if(res.length > 0){
+        this.getCompanyMst(res);
       }
-    });
-    this.toppings.valueChanges.subscribe((res) => {
-      const clm = ['edit', 'delete'];
-      this.__columns = res;
-      this.__exportedClmns = res.filter((item) => !clm.includes(item));
-    });
+      else{
+        this.__compMst.length = 0;
 
-    // EUIN NUMBER SEARCH
-    this.__insTraxForm.controls['euin_no'].valueChanges
+      }
+    })
+
+
+    this.__insTraxForm.controls['tin_no'].valueChanges
       .pipe(
-        tap(() => (this.__isEuinPending = true)),
+        tap(() => (this.__istemporaryspinner = true)),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/employee', dt) : []
+          dt?.length > 1 ? this.__dbIntr.searchItems('/ins/insTraxShow', dt) : []
         ),
         map((x: responseDT) => x.data)
       )
       .subscribe({
         next: (value) => {
-          console.log(value);
-          this.__euinMst = value;
+          this.__tinMst = value;
           this.searchResultVisibility('block');
-          this.__isEuinPending = false;
+          this.__istemporaryspinner = false;
         },
         complete: () => console.log(''),
         error: (err) => {
-          this.__isEuinPending = false;
+          this.__istemporaryspinner = false;
         },
       });
 
-    /**change Event of sub Broker Arn Number */
-    this.__insTraxForm.controls['sub_brk_cd'].valueChanges
-      .pipe(
-        tap(() => (this.__isSubArnPending = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/showsubbroker', dt) : []
-        ),
-        map((x: responseDT) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.__subbrkArnMst = value;
-          this.searchResultVisibilityForSubBrk('block');
-          this.__isSubArnPending = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => {
-          this.__isSubArnPending = false;
-        },
-      });
-
-    this.__insTraxForm.controls['proposer_code'].valueChanges
+    this.__insTraxForm.controls['proposer_name'].valueChanges
       .pipe(
         tap(() => (this.__isClientPending = true)),
         debounceTime(200),
@@ -399,6 +320,7 @@ export class InsTraxRPTComponent implements OnInit {
           this.__clientMst = value.data;
           this.searchResultVisibilityForClient('block');
           this.__isClientPending = false;
+          this.__insTraxForm.controls['proposer_code'].reset('',{ emitEvent: false });
         },
         complete: () => console.log(''),
         error: (err) => {
@@ -409,63 +331,33 @@ export class InsTraxRPTComponent implements OnInit {
     /*** Product Type Change */
     this.__insTraxForm.controls['product_type_id'].valueChanges.subscribe(
       (res) => {
-        this.getProductMst(this.__insTraxForm.get('company_id').value, res);
+        if(res.length > 0){
+          this.getProductMst(res);
+        }
+        else{
+          this.__prdMst.length = 0;
+        }
       }
     );
     /*** END */
 
     /*** Comapny Change */
     this.__insTraxForm.controls['company_id'].valueChanges.subscribe((res) => {
-      this.getProductMst(res, this.__insTraxForm.get('product_type_id').value);
+      if(res.length > 0){
+        this.getProductTypeMst(res);
+      }
+      else{
+        this.__prodTypeMst.length = 0;
+      }
     });
     /*** END */
   }
 
-  outsideClick(__ev) {
-    if (__ev) {
-      this.__isEuinPending = false;
-      this.searchResultVisibility('none');
-    }
-  }
   searchResultVisibility(display_mode) {
-    this.__searchRlt.nativeElement.style.display = display_mode;
+    this.displayMode_forTemp_Tin = display_mode;
   }
   searchInsurance() {
-    this.getInsMstRPT(
-      this.__sortAscOrDsc.active,
-      this.__sortAscOrDsc.direction
-    );
-  }
-  uncheckAllForInsBuType() {
-    this.__insbuTypeChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAllForInsBuType() {
-    this.__insbuTypeChecked.forEach((element: any) => {
-      element.checked = true;
-    });
-  }
-
-  uncheckAllForBuType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAllForBuType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = true;
-    });
-  }
-  uncheckAll() {
-    this.__insTypeChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAll() {
-    this.__insTypeChecked.forEach((element: any) => {
-      element.checked = true;
-    });
+    this.getInsMstRPT();
   }
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
@@ -491,102 +383,43 @@ export class InsTraxRPTComponent implements OnInit {
   getTodayDate() {
     return dates.getTodayDate();
   }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.searchInsurance();
-  }
   getPaginate(__paginate: any | null = null) {
-    if (__paginate) {
+    if (__paginate.url) {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber) +
+            ('&paginate=' + this.__pageNumber.value) +
             ('&option=' + this.__insTraxForm.value.options) +
-            +('&company_id=' + this.__insTraxForm.value.filter_type == 'A'
-            ? JSON.stringify(this.__insTraxForm.value.company_id)
-            : '[]')
-            +('&product_type_id=' + this.__insTraxForm.value.filter_type == 'A'
-            ? JSON.stringify(this.__insTraxForm.value.product_type_id)
-            : '[]')
-            +('&product_id=' + this.__insTraxForm.value.filter_type == 'A'
-            ? JSON.stringify(this.__insTraxForm.value.product_id)
-            : '[]')
-            +
-            ('&ins_type_id=' + this.__insTraxForm.value.options == '3'
-              ? ''
-              : JSON.stringify(this.__insTraxForm.value.ins_type_id)) +
-            ('&column_name=' + this.__sortAscOrDsc.active
-              ? this.__sortAscOrDsc.active
-              : '') +
-            ('&sort_by=' + this.__sortAscOrDsc.direction
-              ? this.__sortAscOrDsc.direction
-              : '') +
-            ('&tin_no=' + this.__insTraxForm.value.options == '3'
-              ? ''
-              : global.getActualVal(this.__insTraxForm.value.tin_no)) +
-            ('&euin_no=' + this.__insTraxForm.value.options == '3'
-              ? ''
-              : global.getActualVal(this.__insTraxForm.value.euin_no)) +
-            ('&bu_type' + this.__insTraxForm.value.options == '3'
-              ? '[]'
-              : this.__insTraxForm.value.bu_type.length > 0
-              ? JSON.stringify(this.__insTraxForm.value.bu_type)
-              : '') +
-            ('&date_status=' + this.__insTraxForm.value.options == '3'
-              ? global.getActualVal(this.__insTraxForm.value.date_status)
-              : '') +
-            ('&start_date=' + this.__insTraxForm.value.options == '3'
-              ? global.getActualVal(this.__insTraxForm.value.start_date)
-              : '') +
-            ('&end_date=' + this.__insTraxForm.value.options == '3'
-              ? global.getActualVal(this.__insTraxForm.value.end_date)
-              : '') +
-            ('&login_status=' + this.__insTraxForm.value.options == '3'
-              ? global.getActualVal(this.__insTraxForm.value.login_status)
-              : '') +
-            ('&proposer_name=' + this.__insTraxForm.value.options == '3'
-              ? ''
-              : global.getActualVal(this.__insTraxForm.value.proposer_code)) +
-            ('&insured_bu_type=' + this.__insTraxForm.value.options == '3'
-              ? ''
-              : JSON.stringify(this.__insTraxForm.value.insured_bu_type)) +
-            ('&from_date=' + this.__insTraxForm.value.options == '3'
-              ? ''
-              : global.getActualVal(this.__insTraxForm.getRawValue().frm_dt)) +
-            ('&to_date=' + this.__insTraxForm.value.options == '3'
-              ? ''
-              : global.getActualVal(this.__insTraxForm.getRawValue().to_dt))
-        )
-        .pipe(map((x: any) => x.data))
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1')) +
+            ('&trans_id=' + this.__insTraxForm.value.trans_id) +
+            (this.__insTraxForm.get('options').value != '3'
+              ?
+                '&proposer_code=' +(this.__insTraxForm.value.proposer_code? this.__insTraxForm.value.proposer_code: '') +
+                ('&product_id=' +  JSON.stringify(this.__insTraxForm.value.product_id.map(item => item.id))) +
+                ('&product_type_id=' + JSON.stringify(this.__insTraxForm.value.product_type_id.map(item => item.id)))+
+                ('&company_id=' + JSON.stringify(this.__insTraxForm.value.company_id.map(item => {return item['id']}))) +
+                ('&tin_no=' +(this.__insTraxForm.value.tin_no? this.__insTraxForm.value.tin_no: '')) +
+                ('&ins_type_id=' + JSON.stringify(this.__insTraxForm.value.ins_type_id.map(item => item.id))) +
+                ('&insured_bu_type=' + JSON.stringify(this.__insTraxForm.value.insured_bu_type.filter(item => item.isChecked).map(item => item.id))) +
+                (this.__insTraxForm.value.btnType == 'A' ?
+                ('&sub_brk_cd=' + JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item["id"]}))) +
+                ('&rm_id='+JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item["id"]})))
+                +('&euin_no=' + JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item["id"]}))) +
+                ('&brn_cd=' +JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item["id"]}))) +
+                ('&bu_type' +JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item["id"]}))) : '') +
+                ('&from_date=' +global.getActualVal(this.__insTraxForm.getRawValue().frm_dt)) +
+                ('&to_date=' +global.getActualVal(this.__insTraxForm.getRawValue().to_dt))
+              : '&login_status=' +
+                this.__insTraxForm.value.login_status +
+                ('&date_status=' + this.__insTraxForm.value.date_status) +
+                ('&start_date=' + this.__insTraxForm.value.start_date) +
+                ('&end_date=' + this.__insTraxForm.value.end_date))
+        ).pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
           this.__insTrax = new MatTableDataSource(res);
         });
-    } else {
-    }
-  }
-  onbuTypeChange(e: any) {
-    const bu_type: FormArray = this.__insTraxForm.get('bu_type') as FormArray;
-    if (e.checked) {
-      bu_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      bu_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          bu_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__insTraxForm.get('is_all_bu_type').setValue(
-      bu_type.controls.length == 3 ? true : false,
-      {emitEvent:false}
-    );
-
-  }
-  sortData(__ev) {
-    this.__sortAscOrDsc = __ev;
-    this.searchInsurance();
+      }
   }
   getModeOfPremium(premium) {
     return premium
@@ -594,8 +427,6 @@ export class InsTraxRPTComponent implements OnInit {
       : '';
   }
   populateDT(__el) {
-    console.log(__el);
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.width = '80%';
@@ -630,9 +461,6 @@ export class InsTraxRPTComponent implements OnInit {
     }
   }
   exportPdf() {
-    if (this.__insTraxForm.get('options').value == '3') {
-      this.__Rpt.printRPT('InsRPT');
-    } else {
       this.__Rpt.downloadReport(
         '#InsRPT',
         {
@@ -640,18 +468,8 @@ export class InsTraxRPTComponent implements OnInit {
         },
         'Insurance Report  '
       );
-    }
   }
 
-  outsideClickforSubBrkArn(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForSubBrk('none');
-    }
-  }
-  /** Search Result Off against Sub Broker */
-  searchResultVisibilityForSubBrk(display_mode) {
-    this.__subBrkArn.nativeElement.style.display = display_mode;
-  }
   refresh() {
     // this.__insTraxForm.reset({ emitEvent: false });
     this.__insTraxForm.patchValue({
@@ -675,138 +493,111 @@ export class InsTraxRPTComponent implements OnInit {
     });
     this.__insTraxForm.controls['sub_brk_cd'].reset('', { emitEvent: false });
     this.__insTraxForm.controls['euin_no'].reset('', { emitEvent: false });
-    this.uncheckAll();
-    this.uncheckAllForInsBuType();
-    this.uncheckAllForBuType();
     this.__sortAscOrDsc = { active: '', direction: 'asc' };
     this.searchInsurance();
   }
-  onInsTypeChange(e) {
-    const ins_type: FormArray = this.__insTraxForm.get(
-      'ins_type_id'
-    ) as FormArray;
-    if (e.checked) {
-      ins_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      ins_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          ins_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__insTraxForm
-      .get('is_all')
-      .setValue(ins_type.controls.length == 3 ? true : false, {
-        emitEvent: false,
-      });
-  }
-  onInsBuTypeChange(e) {
-    const ins_bu_type: FormArray = this.__insTraxForm.get(
-      'insured_bu_type'
-    ) as FormArray;
-    if (e.checked) {
-      ins_bu_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      ins_bu_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          ins_bu_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__insTraxForm
-      .get('is_all_ins_bu_type')
-      .setValue(ins_bu_type.controls.length == 2 ? true : false, {
-        emitEvent: false,
-      });
-  }
-
   getItems(__items, __mode) {
-    console.log(__items);
     switch (__mode) {
       case 'C':
-        this.__insTraxForm.controls['proposer_code'].reset(
-          __items.client_name,
-          { emitEvent: false }
-        );
+        this.__insTraxForm.controls['proposer_code'].reset(__items.id,{ emitEvent: false });
+        this.__insTraxForm.controls['proposer_name'].reset(__items.client_name,{ emitEvent: false });
         this.searchResultVisibilityForClient('none');
         break;
-      case 'E':
-        this.__insTraxForm.controls['euin_no'].reset(__items.emp_name, {
-
-          emitEvent: false,
-        });
+      case 'T':
+        this.__insTraxForm.controls['tin_no'].reset(__items.tin_no,{ onlySelf: true, emitEvent: false });
         this.searchResultVisibility('none');
         break;
-      case 'T':
-        // this.__insTraxForm.controls['temp_tin_no'].reset(__items.temp_tin_no,{ onlySelf: true, emitEvent: false });
-        // this.searchResultVisibilityForTempTin('none');
-        break;
-      case 'S':
-        this.__insTraxForm.controls['sub_brk_cd'].reset(__items.code, {
-          emitEvent: false,
-        });
-        this.searchResultVisibilityForSubBrk('none');
-        break;
-    }
-  }
-  outsideClickforClient(__ev) {
-    if (__ev) {
-      this.searchResultVisibilityForClient('none');
     }
   }
   searchResultVisibilityForClient(display_mode) {
-    this.__clientCode.nativeElement.style.display = display_mode;
+    this.displayMode_forClient = display_mode;
   }
-  AdvanceFilter() {
-    this.getCompanyMst();
-    this.getProductTypeMst();
-  }
-  getCompanyMst() {
+  getCompanyMst(arr_ins_type_id) {
     this.__dbIntr
-      .api_call(0, '/ins/company', null)
+      .api_call(0, '/ins/company', 'arr_ins_type_id='+JSON.stringify(arr_ins_type_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: insComp[]) => {
         this.__compMst = res;
       });
   }
-  getProductTypeMst() {
+  getProductTypeMst(arr_comp_id) {
     this.__dbIntr
-      .api_call(0, '/ins/productType', null)
+      .api_call(0, '/ins/productType', 'arr_comp_id='+ JSON.stringify(arr_comp_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: insPrdType[]) => {
         this.__prodTypeMst = res;
       });
   }
-  getProductMst(__comp_id, __prod_type_id) {
-    console.log(__comp_id);
-
-    if (__comp_id.length > 0 && __prod_type_id.length > 0) {
-
-      const __fd = new FormData();
-      __fd.append(
-        'company_id',
-        JSON.stringify(this.__insTraxForm.controls['company_id'].value)
-      );
-      __fd.append(
-        'product_type_id',
-        JSON.stringify(this.__insTraxForm.controls['product_type_id'].value)
-      );
-      this.__dbIntr
-        .api_call(1, '/ins/productDetails', __fd)
+  getProductMst(arr_prod_type_id) {
+       this.__dbIntr
+        .api_call(1, '/ins/productDetails', 'arr_prod_type_id=' + JSON.stringify(arr_prod_type_id.map(item => {return item['id']})))
         .pipe(pluck('data'))
         .subscribe((res: insProduct[]) => {
           this.__prdMst = res;
         });
-    } else {
-      this.__insTraxForm.controls['product_id'].setValue([], {
-        emitEvent: false,
-      });
+  }
+  onItemClick(ev){
+    if(ev.option.value == 'A'){
+      this.getBranchMst();
+    }
+    else{
+      //Report
     }
   }
+  getBranchMst(){
+    this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{
+       this.__brnchMst = res;
+    })
+  }
+  close(ev){
+    this.__insTraxForm.patchValue({
+      frm_dt: this.__insTraxForm.getRawValue().date_range ? dates.getDateAfterChoose(this.__insTraxForm.getRawValue().date_range[0]) : '',
+      to_dt: this.__insTraxForm.getRawValue().date_range ? (global.getActualVal(this.__insTraxForm.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.__insTraxForm.getRawValue().date_range[1]) : '') : ''
+    });
+  }
+  getSelectedItemsFromParent(ev){
+    this.getItems(ev.item, ev.flag);
+  }
+  getCompanyTypeMst(arr_ins_type_id) {
+    this.__dbIntr
+      .api_call(0, '/ins/companyType', '&arr_ins_type_id='+JSON.stringify(arr_ins_type_id.map(item => {return item['id']})))
+      .pipe(pluck('data'))
+      .subscribe(res => {
+        this.__compTypeMst = res;
+      });
+  }
+  customSort(ev){
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    if(ev.sortField){
+    this.getInsMstRPT();
+    }
+  }
+  onselectItem(ev){
+    this.getInsMstRPT();
+  }
+  getSelectedColumns(columns){
+    const clm =  ['edit','ins_application_form'];
+    this.__columns = columns.map(({ field, header }) => ({field, header}));
+    this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
+  }
+  openMenu(event){
+    if(event.flag == 'P'){
+      this.__Rpt.printRPT('InsRPTForPRINT');
+    }
+   }
+   DocumentView(element){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = true;
+    dialogConfig.width = '80%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      title: 'Uploaded Scan Copy',
+      data: element,
+      copy_url:`${environment.ins_app_form_url + element.ins_application_form}`,
+      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.ins_app_form_url + element.app_form_scan}`)
+    };
+    const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
+   }
 }

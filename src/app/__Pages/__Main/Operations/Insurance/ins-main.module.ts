@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path:'',
     component:InsMainComponent,
+    data:{breadcrumb:'Insurance'},
     children:[
       {
         path:'',
@@ -18,7 +19,7 @@ const routes: Routes = [
       },
       {
         path:'trax',
-        loadChildren:()=> import('./ManualEntry/ins-manual-entry.module').then(m => m.InsManualEntryModule)
+        loadChildren:()=> import('./ManualEntry/Main/main.module').then(m => m.MainModule)
       },
       {
         path:'ack',

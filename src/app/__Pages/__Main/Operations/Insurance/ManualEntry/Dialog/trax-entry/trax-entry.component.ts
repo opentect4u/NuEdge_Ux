@@ -1060,6 +1060,7 @@ export class TraxEntryComponent implements OnInit {
   }
   navigateTo(menu) {
     // this.openDialogforClient(menu);
+    this.createClient(menu,'C')
   }
   openDialog(__type) {
     const dialogConfig = new MatDialogConfig();

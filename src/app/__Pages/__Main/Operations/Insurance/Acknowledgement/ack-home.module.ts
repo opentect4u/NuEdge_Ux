@@ -7,7 +7,11 @@ import { AckSearchRPTComponent } from './Dialog/Entry/ack-search-rpt/ack-search-
 import { AckEntryComponent } from './Dialog/Entry/ack-entry/ack-entry.component';
 import { AckRPTComponent } from './Dialog/Report/ack-rpt.component';
 
-const routes: Routes = [{path:'',component:AckHomeComponent}]
+const routes: Routes = [{
+  path:'',
+  component:AckHomeComponent,
+  data:{breadcrumb:'Acknowledgement Trax'}
+}]
 
 @NgModule({
   declarations: [

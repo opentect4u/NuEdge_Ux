@@ -7,7 +7,11 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { AckSearchRPTComponent } from './Dialog/ack-search-rpt/ack-search-rpt.component';
 
-const routes: Routes = [{path:'',component:AckComponent}]
+const routes: Routes = [{
+  path:'',
+  component:AckComponent,
+  data:{breadcrumb:'Acknowledgement Trax'}
+}]
 
 @NgModule({
   declarations: [
