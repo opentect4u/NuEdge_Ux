@@ -18,6 +18,53 @@
 
   </div>
    <mat-dialog-content class="customDialog">
-
+     <div class="card p-3 border-1">
+       <form [formGroup]="__bu_oportunity_frm">
+         <div class="row">
+          <div class="col-sm-3">
+            <label for="dt_type">Date Periods</label>
+            <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+                <option value="">Select</option>
+                <option value="D">Today</option>
+                <option value="W">This Week</option>
+                <option value="M">This Month</option>
+                <option value="Y">This Year</option>
+                <option value="R">Date Range</option>
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <label for="dt_range">Date (From - To)</label>
+            <p-calendar
+            dateFormat="dd/mm/yy"
+            placeholder="Select Date Range"
+            formControlName="dt_range"
+            selectionMode="range"
+            [readonlyInput]="true"
+            id="dt_range"
+            [showIcon]="true"
+            [hideOnDateTimeSelect]="true"
+            (onClose)="close($event)"
+            [showButtonBar]="true">
+            </p-calendar>
+          </div>
+          <div class="col-sm-3">
+            <app-core-srch
+            [label] = "'TIN'"
+            [placeholder]="'Search By TIN'"
+            [isPending]="__istemporaryspinner"
+            [listItems] = "__tinMst"
+            [flag] = "'T'"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [propertiesToShow] = "['tin_no','client_name']"
+            formControlName="tin_no"
+            [displayMode]="displayMode_forTemp_Tin"
+            (setDisplayMode)="displayMode_forTemp_Tin = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            ></app-core-srch>
+          </div>
+         </div>
+       </form>
+     </div>
    </mat-dialog-content>
 </div>

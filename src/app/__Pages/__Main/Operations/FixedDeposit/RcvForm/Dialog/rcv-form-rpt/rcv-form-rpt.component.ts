@@ -133,7 +133,7 @@ export class RcvFormRPTComponent implements OnInit {
     date_range: new FormControl(''),
     frm_dt: new FormControl(''),
     to_dt: new FormControl(''),
-    temp_tin: new FormControl(''),
+    temp_tin_no: new FormControl(''),
     client_name:new FormControl(''),
     client_code: new FormControl(''),
     trns_type: new FormControl([]),
@@ -387,7 +387,7 @@ export class RcvFormRPTComponent implements OnInit {
   //     });
 
   //   // Temporary Tin Number
-    this.__rcvForms.controls['temp_tin'].valueChanges
+    this.__rcvForms.controls['temp_tin_no'].valueChanges
       .pipe(
         tap(() => (this.__istemporaryspinner = true)),
         debounceTime(200),
