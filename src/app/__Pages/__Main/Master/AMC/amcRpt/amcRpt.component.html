@@ -47,44 +47,27 @@
     </div>
     <ng-container>
       <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
           <label for="amc_id">AMC</label>
-          <ng-multiselect-dropdown #multiSelect
+          <ng-multiselect-dropdown
                 id="amc_id"
                 [placeholder]="'Select AMC'"
                 [settings]="settings"
                 [data]="__amcMst"
                 formControlName="amc_id">
               </ng-multiselect-dropdown>
-
         </div>
-        <div class="col-sm-8 d-flex  align-items-end">
-          <!-- <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'R')">
-            <div class="searchDiv">
-              <label for="rnt_name">R&T
-              </label>
-              <input type="search" name="rnt_name" id="rnt_name" class="form-control"
-                formControlName="rnt_name" placeholder="Search by R&T">
-                <span class="spinner-border" *ngIf="__isrntspinner && __detalsSummaryForm.get('rnt_name').value?.length > 1"></span>
-              <div class="processMain_2" __searchResVisibility
-                (appOutsideClick)="outsideClick($event,'R')">
-                <div class="serachresult_client" #searchRnt>
-                  <ul *ngIf="__rntMst.length > 0">
-                    <li *ngFor="let items of __rntMst" (click)="getItems(items,'R')">
-                      {{items.rnt_name}}
-                    </li>
-                  </ul>
-                  <div class="noDataFound" *ngIf="__rntMst.length == 0">
-                    <h5 class="text-center">
-                      Sorry!! No Records Found
-                    </h5>
-                    <p>R&T Not Available</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
-
+        <div class="col-sm-3">
+          <label for="level">Levels</label>
+          <ng-multiselect-dropdown
+          id="level"
+          [placeholder]="'Select Levels'"
+          [settings]="settings_for_Levels"
+          [data]="__levels"
+          formControlName="level">
+        </ng-multiselect-dropdown>
+        </div>
+        <div class="col-sm-6 d-flex  align-items-end">
           <div class="checkboxes d-flex flex-row align-items-center w-100">
             <label>R&T: &nbsp;</label>
             <div >
@@ -98,12 +81,11 @@
           </ng-container>
           <mat-checkbox color="primary" class="mr-3" formControlName="is_all">All</mat-checkbox>
           </div></div>
-
         </div>
       </div>
       <div class="row my-2">
         <div class="col-sm-11">
-          <div class="checkboxes d-flex flex-row align-items-center w-100">
+          <!-- <div class="checkboxes d-flex flex-row align-items-center w-100">
             <div >
           <ng-container formArrayName="level">
             <ng-container *ngFor="let level of level.controls; let i = index">
@@ -112,7 +94,7 @@
                  </ng-container>
             </ng-container>
           </ng-container>
-          </div></div>
+          </div></div> -->
         </div>
         <div class="col-sm-1">
           <p-button type="submit"

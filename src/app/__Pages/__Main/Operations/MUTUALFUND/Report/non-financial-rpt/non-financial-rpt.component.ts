@@ -344,7 +344,7 @@ reset(){
   this.transFrm.get('tin_no').setValue('',{emitEvent:false});
   this.transFrm.get('is_all_rnt').setValue(false);
   this.sort = new sort();
-  this.__pageNumber = 10;
+  this.__pageNumber = '10';
   this.submitNonFinReport();
 }
 close(ev){
@@ -419,7 +419,7 @@ SelectedColumns(column){
   this.__columns = column.map(({ field, header }) => ({field, header})).filter(x => !clm.includes(x))
 }
 onselectItem(ev){
-  this.__pageNumber = ev.option.value;
+  // this.__pageNumber = ev.option.value;
   this.submitNonFinReport();
 }
 getPaginate(__paginate){

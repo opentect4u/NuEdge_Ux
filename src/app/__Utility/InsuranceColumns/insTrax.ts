@@ -1,3 +1,5 @@
+import { column } from "src/app/__Model/tblClmns";
+
 export class insTraxClm {
   public static COLUMNFORDETAILS = [
     'edit',
@@ -116,5 +118,30 @@ export class insTraxClm {
     {field:"policy_term",header: 'Policy Term',isVisible:[1]},
     {field:"comp_login_at",header: 'Login At',isVisible:[1,2,3]},
     {field:"remarks",header: 'Remarks',isVisible:[1]}
+  ]
+
+
+  public static renewal_Columns:column[]= [
+    {field:"edit",header: 'Edit'},
+    {field:'upload_file',header:'DOC View'},
+    {field:'temp_tin_no',header:'Temporary TIN'},
+    {field:"bu_type",header: 'business Type'},
+    {field:'branch_name',header:'Branch'},
+    {field:'rm_name',header:'RM Name'},
+    {field:"sub_brk_cd",header: 'Sub Broker Code'},
+    {field:"emp_name",header: 'Employee'},
+    {field:'proposer_name',header:'Proposer Name'},
+    {field:'proposer_code',header:'Proposer Code'},
+    {field:'proposer_pan',header:'Proposer PAN'},
+    {field:'ins_type',header:'Type Of Insurance'},
+    {field:'insured_person_name',header:'Insured Person Name'},
+    {field:'insured_person_code',header:'Insured Person Code'},
+    {field:'insured_person_pan',header:'Insured Person PAN'},
+    {field:'comp_short_name',header:'Company'},
+    {field:'product_type',header:'Product Type'},
+    {field:'product_name',header:'Product Name'},
+    {field:'sum_insured',header:'Sum Insured'},
+    {field:'renewal_date',header:'Renewal Date'},
+    {field:'remarks',header:'Remarks'}
   ]
 }

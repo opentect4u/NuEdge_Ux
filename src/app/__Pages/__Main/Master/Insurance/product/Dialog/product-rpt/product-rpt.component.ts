@@ -26,19 +26,21 @@ import { sort } from 'src/app/__Model/sort';
 })
 export class ProductRPTComponent implements OnInit {
   itemsPerPage = ItemsPerPage;
-
-  @ViewChild('prdName') __prdName: ElementRef;
+  __isAllSpinner:boolean = false;
+  SearchAllMst:any=[];
+  // displayMode_forSearch:string;
   sort=new sort();
-  __isProductnameVisisble: boolean = false;
-  @ViewChildren("insTypeChecked") private __insTypeChecked: QueryList<ElementRef>;
+  __settings_prod = this.__utility.settingsfroMultiselectDropdown('id','product_name','Search Product');
+  __settings_ins = this.__utility.settingsfroMultiselectDropdown('id','type','Search Type Of Insurance');
   __settings_productType = this.__utility.settingsfroMultiselectDropdown('id','product_type','Search Product Type');
   __settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Companies');
   __prdSearchForm = new FormGroup({
-    ins_type_id: new FormArray([]),
-    product_name: new FormControl(''),
-    company_id: new FormControl([]),
-    is_all: new FormControl(false),
-    product_type_id: new FormControl([])
+    ins_type_id: new FormControl([],{updateOn:'blur'}),
+    product_name: new FormControl([]),
+    company_id: new FormControl([],{updateOn:'blur'}),
+    product_type_id: new FormControl([],{updateOn:'blur'}),
+    search_all: new FormControl(''),
+    // search_all_id: new FormControl('')
   });
   __exportedClmns: string[] = productClmns.Columns.filter(item => (item.field!='edit' && item.field!='delete')).map(res => {return res['field']})
   __columns: column[] = productClmns.Columns
@@ -52,6 +54,7 @@ export class ProductRPTComponent implements OnInit {
   __companyMst: insComp[] = [];
   __prdTypeMst: insPrdType[] = [];
   __productMst: insProduct[]= [];
+  __insTypeMst: any=[];
   constructor(
     private __Rpt: RPTService,
     public dialogRef: MatDialogRef<ProductRPTComponent>,
@@ -61,87 +64,101 @@ export class ProductRPTComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private __utility: UtiliService
   ) {
-    this.getcompanyMst();
   }
-  // __insTypeMst: any= [];
   ngOnInit(): void {
     this.getInsTypeMst();
-    this.getproductTypeMst();
-    setTimeout(()=>{
-      this.getproductMst();
-    },500)
+    this.getproductMst();
   }
-  get ins_type_id(): FormArray{
-    return this.__prdSearchForm.get('ins_type_id') as FormArray;
-  }
-  setinsTypeFormControl(ins_type){
-    return new FormGroup({
-      id:new FormControl(ins_type ? ins_type.id : ''),
-      type: new FormControl(ins_type ? ins_type.type : ''),
-      isChecked: new FormControl(false)
-    })
-  }
-  getproductTypeMst(){
-   this.__dbIntr.api_call(0,'/ins/productType',null).pipe(pluck("data")).subscribe((res: insPrdType[]) =>{
-    this.__prdTypeMst = res;
-   })
-  }
-  getcompanyMst(res: string | null = ''){
-    this.__dbIntr.api_call(0,'/ins/company',null).pipe(pluck("data")).subscribe((res: insComp[]) =>{
-      this.__companyMst = res;
-      if(this.data.company_id){
-       this.__prdSearchForm.patchValue({
-        company_id:this.__companyMst.filter((x: any) => x.id == Number(this.data.company_id)).map((x: insComp) =>
-        ({
-          id:x.id,
-          comp_short_name:x.comp_short_name
-        })
-        )
-       });
-       console.log( this.__prdSearchForm.value.company_id);
 
-      }
-    })
+  getproductTypeMst(arr_comp_ids){
+    if(arr_comp_ids.length > 0){
+   this.__dbIntr.api_call(0,'/ins/productType','arr_comp_id='+JSON.stringify(arr_comp_ids.map(item => item.id))).pipe(pluck("data")).subscribe((res: insPrdType[]) =>{
+    this.__prdTypeMst = res;
+   })}
+   else{
+    this.__prdTypeMst.length = 0;
+    this.__prdSearchForm.controls['product_type_id'].setValue([],{emitEvent:true});
+   }
+  }
+  getcompanyMst(arr_ins_type_ids){
+    if(arr_ins_type_ids.length > 0){
+    this.__dbIntr.api_call(0,'/ins/company','arr_ins_type_id='+JSON.stringify(arr_ins_type_ids.map(item => item.id)))
+    .pipe(pluck("data")).subscribe((res: insComp[]) =>{
+      this.__companyMst = res;
+      // if(this.data.company_id){
+      //  this.__prdSearchForm.patchValue({
+      //   company_id:this.__companyMst.filter((x: any) => x.id == Number(this.data.company_id)).map((x: insComp) =>
+      //   ({
+      //     id:x.id,
+      //     comp_short_name:x.comp_short_name
+      //   })
+      //   )
+      //  });
+      //  console.log( this.__prdSearchForm.value.company_id);
+
+      // }
+    })}
+    else{
+      this.__companyMst.length = 0;
+      this.__prdSearchForm.controls['company_id'].setValue([],{emitEvent:true});
+    }
   }
   ngAfterViewInit(){
- /** Change event occur when all Insurance Type checkbox has been changed  */
- this.__prdSearchForm.controls['is_all'].valueChanges.subscribe(res =>{
-  this.ins_type_id.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
-})
-/** End */
 
-/** Change event inside the formArray */
-this.ins_type_id.valueChanges.subscribe(res =>{
-this.__prdSearchForm.controls['is_all'].setValue(res.every(item => item.isChecked),{emitEvent:false});
-})
-/*** End */
+    // this.__prdSearchForm.controls['search_all'].valueChanges
+    // .pipe(
+    //   tap(() => this.__isAllSpinner = true),
+    //   debounceTime(200),
+    //   distinctUntilChanged(),
+    //   switchMap((dt) =>
+    //     dt?.length > 1
+    //       ? this.__dbIntr.searchItems(
+    //         '/searchAll',
+    //         dt)
+    //       : []
+    //   ),
+    //   map((x: responseDT) => x.data),
+    // )
+    // .subscribe({
+    //   next: (value) => {
+    //     this.__prdSearchForm.controls['search_all_id'].setValue('')
+    //     this.SearchAllMst = value;
+    //     this.searchResultVisibility('block')
+    //     this.__isAllSpinner = false;
+    //   },
+    //   complete: () => console.log(''),
+    //   error: (err) => console.log(),
+    // });
 
-     // Product NAME SEARCH
-  this.__prdSearchForm.controls['product_name'].valueChanges.
-  pipe(
-    tap(()=> this.__isProductnameVisisble = true),
-    debounceTime(200),
-    distinctUntilChanged(),
-    switchMap(dt => dt?.length > 1 ?
-      this.__dbIntr.searchItems('/ins/product', dt )
-      : []),
-    map((x: responseDT) => x.data)
-  ).subscribe({
-    next: (value) => {
-      console.log(value);
-      this.__productMst = value
-      this.searchResultVisibility('block');
-      this.__isProductnameVisisble = false;
-    },
-    complete: () => console.log(''),
-    error: (err) => {
-      this.__isProductnameVisisble = false;
-    }
+  this.__prdSearchForm.controls['ins_type_id'].valueChanges.subscribe(res =>{
+    this.getcompanyMst(res);
+  })
+  this.__prdSearchForm.controls['company_id'].valueChanges.subscribe(res =>{
+    this.getproductTypeMst(res);
+  })
+
+  this.__prdSearchForm.controls['product_type_id'].valueChanges.subscribe(res =>{
+    this.getProductMst(res);
   })
   }
+  getProductMst(arr_prod_type_ids){
+    if(arr_prod_type_ids.length > 0){
+      this.__dbIntr.api_call(0,'/ins/product','arr_product_type_id='+ JSON.stringify(arr_prod_type_ids.map(item => item.id)))
+      .pipe(pluck("data")).subscribe((res:insProduct[]) =>{
+          this.__productMst = res;
+      })
+      }
+      else{
+        this.__productMst.length = 0;
+        this.__prdSearchForm.controls['product_name'].setValue([]);
+      }
+  }
+  // searchResultVisibility(display_mode){
+  //   this.displayMode_forSearch = display_mode;
+  // }
   getInsTypeMst(){
     this.__dbIntr.api_call(0,'/ins/type',null).pipe(pluck("data")).subscribe((res: any) =>{
-        res.forEach(el => {this.ins_type_id.push(this.setinsTypeFormControl(el))});
+         this.__insTypeMst = res;
     })
   }
   fullScreen() {
@@ -168,11 +185,13 @@ this.__prdSearchForm.controls['is_all'].setValue(res.every(item => item.isChecke
   getproductMst(){
     const __fb = new FormData();
     console.log(JSON.stringify(this.__prdSearchForm.value.company_id));
-    __fb.append('product_name',global.getActualVal(this.__prdSearchForm.value.product_name));
-    __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id));
-    __fb.append('ins_type_id',JSON.stringify(this.__prdSearchForm.value.ins_type_id.filter(el => el.isChecked).map(item => {return item['id']})));
+    __fb.append('product_name',JSON.stringify(this.__prdSearchForm.value.product_name.map(item => item.id)));
+    __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id.map(item => item.id)));
+    __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id.map(item => item.id)));
+    __fb.append('search_all',global.getActualVal(this.__prdSearchForm.value.search_all));
+    __fb.append('ins_type_id',JSON.stringify(this.__prdSearchForm.value.ins_type_id.map(item => {return item['id']})));
     __fb.append('paginate', this.__pageNumber.value);
-    __fb.append('product_type_id',JSON.stringify(this.__prdSearchForm.value.product_type_id))
+    __fb.append('product_type_id',JSON.stringify(this.__prdSearchForm.value.product_type_id.map(item => item.id)))
     __fb.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
     __fb.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
      this.__dbIntr.api_call(1,'/ins/productDetailSearch',__fb).pipe(pluck("data")).subscribe((res: any) =>{
@@ -229,12 +248,13 @@ this.__prdSearchForm.controls['is_all'].setValue(res.every(item => item.isChecke
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + (this.__pageNumber.value)) +
-            ('&product_name=' + (global.getActualVal(this.__prdSearchForm.value.product_name))) +
-            ('&ins_type_id=' +  (JSON.stringify(this.__prdSearchForm.value.ins_type_id.filter(el => el.isChecked).map(item => {return item['id']})))) +
-            ('&company_id=' +  (JSON.stringify(this.__prdSearchForm.value.company_id))) +
+            ('&search_all='+global.getActualVal(this.__prdSearchForm.value.search_all))+
+            ('&product_name=' + (JSON.stringify(this.__prdSearchForm.value.product_name.map(item => {return item['id']})))) +
+            ('&ins_type_id=' +  (JSON.stringify(this.__prdSearchForm.value.ins_type_id.map(item => {return item['id']})))) +
+            ('&company_id=' +  (JSON.stringify(this.__prdSearchForm.value.company_id.map(item => item.id)))) +
             ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
             ('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1')) +
-            ('&product_type_id='+ (JSON.stringify(this.__prdSearchForm.value.product_type_id)))
+            ('&product_type_id='+ (JSON.stringify(this.__prdSearchForm.value.product_type_id.map(item => item.id))))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -323,31 +343,11 @@ this.__prdSearchForm.controls['is_all'].setValue(res.every(item => item.isChecke
     });
 
   }
-  resetValues(){
-    this.__prdSearchForm.reset();
-  }
-    outsideClick(__ev){
-      if(__ev){
-        this.searchResultVisibility('none');
-      }
-    }
-    searchResultVisibility(display_mode){
-      this.__prdName.nativeElement.style.display = display_mode;
-    }
-    getItems(__items: insProduct,__mode){
-      this.__prdSearchForm.controls['product_name'].reset(__items ? __items.product_name : '',{emitEvent: false});
-      this.searchResultVisibility('none');
-    }
+
     reset(){
-      this.__prdSearchForm.patchValue({
-        company_id: [],
-        is_all: false,
-        product_type_id: []
-      });
-       this.getItems(null,'P');
-       this.__prdSearchForm.get('is_all').setValue(false);
+      this.__prdSearchForm.controls['ins_type_id'].setValue([],{emitEvent:true});
        this.sort= new sort;
-      this.__pageNumber.setValue(10);
+      this.__pageNumber.setValue('10');
        this.searchProduct();
     }
     customSort(ev){
@@ -358,7 +358,9 @@ this.__prdSearchForm.controls['is_all'].setValue(res.every(item => item.isChecke
         }
     }
     onselectItem(ev){
-      this.__pageNumber.setValue(ev.option.value);
       this.getproductMst();
+    }
+    getSelectedItemsFromParent(ev){
+
     }
 }

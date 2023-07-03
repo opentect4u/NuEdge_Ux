@@ -1,0 +1,153 @@
+
+<div class="card p-3 border-1">
+<kyc-rpt-filter [mode]="'R'"
+    [RPTFor]="'K'"
+    [isDatePeriod]="true"
+    [isDaySheet]="false"
+    (getKycMst)="getKycRpt($event)"
+    (resetKycMst)="reset($event)" (setClms)="setColumns($event)"></kyc-rpt-filter>
+  </div>
+  <div class="card border-1 rounded-top mt-2">
+    <div class="example_container_header">
+      <div class="transTypeCount"></div>
+        <div class="btnGrp">
+          <!-- (click)="isOpenMegaMenu = !isOpenMegaMenu" -->
+          <p-button type="button" icon="pi pi-server"
+          #tooltip="matTooltip"
+          (click)="isOpenMegaMenu = !isOpenMegaMenu"
+          [matTooltipPosition]="'before'"
+          matTooltip="Column Selector"
+          styleClass="p-button-primary p-button-lg p-button-outlined mr-2">
+          </p-button>
+       </div>
+       </div>
+      <div class="container_body">
+
+               <!-- PrimeNg Table with column resize,
+              column sorting etc  [reorderableColumns]="true"
+              pReorderableColumn-->
+              <p-table
+              #dt
+              (onLazyLoad)="customSort($event)"
+              [customSort]="true"
+                sortMode="single"
+                [lazy]="true"
+              [value]="__kycMst"
+              [columns]="__columns" [resizableColumns]="true"
+                selectionMode="multiple"
+                columnResizeMode="expand" [scrollable]="true"
+                scrollHeight="300px"
+                [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+                [tableStyle]="{ 'min-width': this.__getKycFormData.options == '2' ? '150rem' :  '200rem' }">
+                <ng-template pTemplate="header" let-columns>
+                  <tr>
+
+                    <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.swidth]="this.__getKycFormData.options == '2' ? '15rem' :  '20rem'">
+                      {{ col.header }}
+                      <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete'" [field]="col.field">
+                      </p-sortIcon>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-kyc let-columns="columns">
+                  <tr tabindex="999">
+
+                    <td *ngFor="let col of columns">
+                      <ng-container [ngSwitch]="true">
+                        <!-- <ng-container *ngSwitchCase="col.field == 'edit'">
+                          <p-button icon="pi pi-pencil" (click)="populateDT(kyc,'E')"
+                            styleClass="p-button-rounded p-button-primary">
+                          </p-button>
+                        </ng-container> -->
+                        <ng-container *ngSwitchCase="col.field == 'kyc_type'">
+                         <span #tooltip="matTooltip" [matTooltip]="kyc[col.field] == 'F' ? 'KYC Fresh' : 'KYC Modification'">
+                          {{kyc[col.field] == 'F' ? 'KYC Fresh' : 'KYC Modification'}}</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="col.field == 'login_at'">
+                         <span #tooltip="matTooltip" [matTooltip]="kyc['kyc_login_type'] == 'A' ? kyc['amc_short_name'] : kyc['rnt_name']">
+                          {{kyc['kyc_login_type'] == 'A' ? kyc['amc_short_name'] : kyc['rnt_name']}}
+                         </span>
+                         </ng-container>
+                        <ng-container *ngSwitchCase="col.field == 'app_form_view'">
+                          <p-button icon="pi pi-eye" (click)="DocView(kyc,'K')"
+                            styleClass="p-button-rounded p-button-success"></p-button>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="col.field == 'bu_type'">
+                          <span #tooltip="matTooltip"
+                          [matTooltip]="kyc[col.field] == 'D' ? 'B2C - Direct' : (kyc[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
+                            {{ kyc[col.field] == 'D' ? 'B2C - Direct' : (kyc[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="col.field == 'entry_dt'">
+                          <span #tooltip="matTooltip" [matTooltip]="(kyc[col.field] | date:'dd-MM-YYYY')">{{ kyc[col.field] ? (kyc[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                          </ng-container>
+                        <ng-container *ngSwitchDefault>
+                          <span #tooltip="matTooltip" [matTooltip]="kyc[col.field]">
+                            {{ kyc[col.field] ? kyc[col.field] : 'N/A' }}
+                          </span>
+                        </ng-container>
+
+
+                      </ng-container>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                  <tr>
+                    <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                       No Records Found
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              <!-- End -->
+
+
+               <!-- Paginator with item per page -->
+            <div class="paginator">
+              <div class="itemsPerPage d-flex">
+                  <label class="mr-3">Items per page: </label>
+                  <p-selectButton
+                  [options]="itemsPerPage"
+                  [(ngModel)]="__pageNumber"
+                  optionLabel="label" optionValue="value"
+                  (onOptionClick)="onselectItem($event)"
+                  ></p-selectButton>
+                </div>
+
+
+              <div  class="paginatorContainer">
+                <ul>
+                  <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'P'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_left</mat-icon>
+                    </a>
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'N'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_right</mat-icon>
+                    </a>
+                    <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                      *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                      {{paginate.label}}
+                    </a>
+                  </li>
+                </ul>
+
+
+              </div>
+              <!-- </div> -->
+            </div>
+            <!-- End -->
+          <!-- Meage Menu For Check box -->
+          <core-mega-menu-for-column [isOpenMegaMenu]="isOpenMegaMenu"
+          [ColumnList]="ClmList"
+          [selectedClmns]="selectedColmn" (hideMegamenu)="isOpenMegaMenu = $event"
+          (getSelectedColumns)="getSelectedColumns($event)">
+        </core-mega-menu-for-column>
+    <!-- End -->
+
+      </div>
+    </div>

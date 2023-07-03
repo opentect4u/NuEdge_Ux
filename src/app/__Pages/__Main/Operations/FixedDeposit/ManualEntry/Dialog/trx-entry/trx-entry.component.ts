@@ -18,6 +18,7 @@ import TDSInfo from '../../../../../../../../assets/json/TDSInfo.json';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { CreateInvComponent } from '../create-inv/create-inv.component';
 import { DialogDtlsComponent } from '../dialog-dtls/dialog-dtls.component';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-trx-entry',
   templateUrl: './trx-entry.component.html',
@@ -103,7 +104,11 @@ export class TrxEntryComponent implements OnInit {
      option: new FormControl('',[Validators.required]),
      sub_option: new FormControl('',[Validators.required]),
      tenure_type: new FormControl('',[Validators.required]),
-     tenure: new FormControl('',[Validators.required,Validators.pattern("^[0-9]*$")]),
+     tenure: new FormControl('',{
+      validators:[Validators.required,Validators.pattern("^[0-9]*$")],
+      updateOn:'blur'
+    }),
+     maturity_dt: new FormControl('',[Validators.required]),
      int_rate: new FormControl('',[Validators.required,Validators.pattern("^[0-9]*$")]),
      mat_instr: new FormControl('',[Validators.required]),
      amount: new FormControl('',[Validators.required,Validators.pattern("^[0-9]*$")]),
@@ -157,7 +162,8 @@ export class TrxEntryComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog,
-    private overlay: Overlay
+    private overlay: Overlay,
+    private datePipe:DatePipe
   ) { }
 
   ngOnInit(): void {
@@ -253,7 +259,24 @@ export class TrxEntryComponent implements OnInit {
 
 
   }
+  setMaturityDt(tenure_type,tenure){
+    if(tenure_type && tenure){
+      this.__fdTrax.controls['maturity_dt'].setValue(this.datePipe.transform(dates.getMonthAndYear(tenure_type,Number(tenure)),'YYYY-MM'))
+    }
+    else{
+      this.__fdTrax.controls['maturity_dt'].setValue('')
+    }
+  }
   ngAfterViewInit(){
+    this.__fdTrax.controls['tenure_type'].valueChanges.subscribe(res =>{
+      this.setMaturityDt(res,this.__fdTrax.controls['tenure'].value);
+
+    })
+
+    this.__fdTrax.controls['tenure'].valueChanges.subscribe(res =>{
+      this.setMaturityDt(this.__fdTrax.controls['tenure_type'].value,res);
+
+    })
 
     this.__fdTrax.controls['existing_mode_of_holding'].valueChanges.subscribe(res =>{
             this.__fdTrax.get(['first_inv_dtls','investor_code']).setValidators(res == 'A' || res == 'J' ? [Validators.required] : null);
@@ -576,6 +599,7 @@ export class TrxEntryComponent implements OnInit {
   });
 
   }
+
 
 /** Second Investor Search Bar hide show */
   outsideClickforSecInvestor(__ev){
@@ -928,6 +952,7 @@ submitFdTrax(){
     __fd.append('sub_option',this.__fdTrax.getRawValue().sub_option);
     __fd.append('tenure_type',this.__fdTrax.value.tenure_type);
     __fd.append('tenure',this.__fdTrax.value.tenure);
+    __fd.append('maturity_dt',this.__fdTrax.value.maturity_dt);
     __fd.append('interest_rate',this.__fdTrax.value.int_rate);
     __fd.append('maturity_instruction',this.__fdTrax.value.mat_instr);
     __fd.append('amount',this.__fdTrax.value.amount);

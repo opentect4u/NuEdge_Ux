@@ -1,0 +1,37 @@
+            <!-- Paginator with item per page -->
+            <div class="paginator">
+              <div class="itemsPerPage d-flex">
+                  <label class="mr-3">Items per page: </label>
+                  <p-selectButton
+                  [options]="itemsPerPage"
+                  [formControl]="__pageNumber"
+                  optionLabel="label" optionValue="value"
+                  (onOptionClick)="onselectItem($event)"
+                  ></p-selectButton>
+                </div>
+
+              <div  class="paginatorContainer">
+                <ul>
+                  <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'P'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_left</mat-icon>
+                    </a>
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'N'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_right</mat-icon>
+                    </a>
+                    <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                      *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                      {{paginate.label}}
+                    </a>
+                  </li>
+                </ul>
+
+
+              </div>
+
+            </div>
+            <!-- End -->

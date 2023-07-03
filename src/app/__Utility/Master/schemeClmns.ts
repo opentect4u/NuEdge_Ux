@@ -195,3 +195,16 @@ export class schemeClmns{
     {field: "scheme_type",header:"Scheme Type"}
   ]
 }
+
+export class ISINClmns{
+ public static Columns:column[] = [
+  // {field:'edit',header:'Edit'},
+  {field:'amc_short_name',header:'AMC'},
+  {field:'cat_name',header:'Category'},
+  {field:'subcategory_name',header:'Subcategory'},
+  {field:'scheme_name',header:'Scheme'},
+  {field:'plan_name',header:'Plan'},
+  {field:'opt_name',header:'Option'},
+  {field:'isin',header:'ISIN'}
+ ]
+}

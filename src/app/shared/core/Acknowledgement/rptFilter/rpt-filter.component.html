@@ -159,7 +159,7 @@
       </div>
      </div>
     <div
-    [class]="!isDaySheet ? 'col-sm-2 d-flex align-items-end justify-content-end' : 'col-sm-6 d-flex align-items-end justify-content-end'"
+    [class]="!isDaySheet ? (RPTFor == 'A' || RPTFor == 'M' ?  'col-sm-2 d-flex align-items-end justify-content-end' : 'col-sm-6 d-flex align-items-end justify-content-end') : 'col-sm-6 d-flex align-items-end justify-content-end'"
     *ngIf="(__kycFilterForm.get('btnType').value != 'A')">
       <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
     </div>

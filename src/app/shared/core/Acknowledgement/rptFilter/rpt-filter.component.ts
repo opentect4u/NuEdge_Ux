@@ -145,7 +145,7 @@ __kycLoginAt: any=[];
 
     this.__dbIntr.api_call(0, kyc_login == 'A' ? '/amc' : '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe(res => {
        this.__kycLoginAt.length = 0;
-       this.__kycFilterForm.get('kyc_login_at').setValue('');
+       this.__kycFilterForm.get('kyc_login_at').setValue([]);
       this.setKycLoginAtAccordingToKycLogin(kyc_login,res);
       this.settings = this.__utility.settingsfroMultiselectDropdown('id',(kyc_login == 'A' ? 'amc_short_name' : 'rnt_name'),'Search');
 
@@ -349,7 +349,7 @@ __kycLoginAt: any=[];
       client_code:'',
       date_status:'T',
       login_status:'N',
-      kyc_login_at:'',
+      kyc_login_at:[],
       kyc_login:'',
     });
     this.__kycFilterForm.get('is_all').setValue(false);

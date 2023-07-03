@@ -596,7 +596,7 @@ export class InsTraxRPTComponent implements OnInit {
       title: 'Uploaded Scan Copy',
       data: element,
       copy_url:`${environment.ins_app_form_url + element.ins_application_form}`,
-      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.ins_app_form_url + element.app_form_scan}`)
+      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.ins_app_form_url + element.ins_application_form}`)
     };
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
    }

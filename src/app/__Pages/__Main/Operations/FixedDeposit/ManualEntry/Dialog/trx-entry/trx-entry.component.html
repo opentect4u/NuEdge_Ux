@@ -672,6 +672,7 @@
         <label for="tenure_type">Tenure Type <span class="text-danger">*</span></label>
         <select class="form-control" formControlName="tenure_type" id="tenure_type">
           <option value="">Select</option>
+          <option value="D">Day</option>
           <option value="M">Month</option>
           <option value="Y">Year</option>
         </select>
@@ -695,6 +696,19 @@
         <span class="invalid-feedback" *ngIf="(__fdTrax.get('tenure')).errors?.required">*Please provide
           tenure</span>
           <span class="invalid-feedback" *ngIf="(__fdTrax.get('tenure')).hasError('pattern')">*allow only digits</span>
+      </div>
+      </div>
+      <div class="col-sm-12 my-2">
+        <label for="maturity_dt">Maturity Date <span class="text-danger">*</span></label>
+         <input type="month"
+         name="maturity_dt"
+         id="maturity_dt"
+         class="form-control"
+         formControlName="maturity_dt">
+        <div class="invalid-feedback"
+        *ngIf="__fdTrax.get('maturity_dt').invalid && (__fdTrax.get('maturity_dt').dirty || __fdTrax.get('maturity_dt').touched)">
+        <span class="invalid-feedback" *ngIf="(__fdTrax.get('maturity_dt')).errors?.required">*Please provide
+          maturity date</span>
       </div>
       </div>
     </div>

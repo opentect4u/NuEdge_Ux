@@ -1,4 +1,5 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+<!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle  -->
+<div>
   <div mat-dialog-title class="dialog-title">
     <h2 >Company Reports</h2>
     <div class="btnIcon">
@@ -48,8 +49,18 @@
         </div>
           <div class="row mb-2">
             <div class="col-sm-3">
+              <label for="ins_type">Type Of Insurance</label>
+                    <ng-multiselect-dropdown
+                    id="ins_type"
+                    [placeholder]="'Select Type Of Insurance'"
+                    [settings]="settings_ins"
+                    [data]="__insType"
+                    formControlName="ins_type">
+                  </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
                   <label for="comp_name">Company</label>
-                    <ng-multiselect-dropdown #multiSelect
+                    <ng-multiselect-dropdown
                     id="comp_name"
                     [placeholder]="'Select Companies'"
                     [settings]="settings"
@@ -57,31 +68,28 @@
                     formControlName="comp_name">
                   </ng-multiselect-dropdown>
             </div>
+
             <div class="col-sm-3">
               <label for="contact_person">Contact Person</label>
               <input type="text" name="contact_person" id="contact_person" placeholder="Contact Person" class="form-control" formControlName="contact_person">
             </div>
-            <div class="col-sm-6 d-flex align-items-end">
-              <div class="checkboxes d-flex flex-row align-items-center w-100">
-                <label>Insurance Type: &nbsp;</label>
-                <div>
-              <ng-container formArrayName="ins_type">
-                <ng-container *ngFor="let ins_typeDtls of ins_type.controls; let i = index">
-                     <ng-container [formGroupName]="i">
-                      <mat-checkbox color="primary" class="mr-3" formControlName="isChecked">{{ins_typeDtls.get('type').value}}</mat-checkbox>
-                     </ng-container>
-                </ng-container>
-              </ng-container>
-              <mat-checkbox class="ml-3" color="primary" formControlName="is_all"> All</mat-checkbox>
-
-              </div></div>
-            </div>
+            <div class="col-sm-3">
+              <label for="level">Levels</label>
+                <ng-multiselect-dropdown
+                id="level"
+                [placeholder]="'Select Levels'"
+                [settings]="settings_for_Levels"
+                [data]="__levels"
+                formControlName="level">
+              </ng-multiselect-dropdown>
+        </div>
 
           </div>
           <div class="row">
             <div class="col-sm-11">
-              <div class="checkboxes d-flex flex-row align-items-center w-100">
-                <div>
+              <!-- <div class="checkboxes d-flex flex-row align-items-center w-100">
+            <div>
+
               <ng-container formArrayName="levels">
                 <ng-container *ngFor="let level of levels.controls; let i = index">
                      <ng-container [formGroupName]="i">
@@ -90,7 +98,7 @@
                 </ng-container>
 
               </ng-container>
-              </div></div>
+              </div></div> -->
             </div>
             <div class="col-sm-1 d-flex justify-content-end">
               <p-button type="submit"
@@ -145,10 +153,10 @@
         selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
         scrollHeight="300px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '100rem' }">
+        [tableStyle]="{ 'min-width': __rntSearchForm.value.options == '2' ? '120rem' : '200rem' }">
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="'16rem'">
+            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="__rntSearchForm.value.options == '2' ? '15rem' : '25rem'">
               {{ col.header }}
               <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
               </p-sortIcon>
@@ -201,6 +209,7 @@
             <label class="mr-3">Items per page: </label>
             <p-selectButton
             [options]="itemsPerPage"
+            [formControl]="__pageNumber"
             optionLabel="label" optionValue="value"
             (onOptionClick)="onselectItem($event)"
             ></p-selectButton>

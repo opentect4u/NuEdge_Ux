@@ -9,7 +9,6 @@ export class compClmns{
   public static Column_Selector =[
     { field: 'edit', header: 'Edit' },
     { field: 'delete', header: 'Delete' },
-    { field: 'sl_no', header: 'Sl No' },
     { field: 'ins_type', header: 'Insurance Type' },
     { field: 'comp_full_name', header: 'Company Full name' },
     { field: 'comp_short_name', header: 'Company Short Name' },

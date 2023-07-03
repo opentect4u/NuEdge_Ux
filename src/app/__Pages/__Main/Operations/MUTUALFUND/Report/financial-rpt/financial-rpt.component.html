@@ -310,6 +310,7 @@
           <p-selectButton
           [options]="itemsPerPage"
            optionLabel="label" optionValue="value"
+           [(ngModel)]="__pageNumber"
            (onOptionClick)="onselectItem($event)"
            ></p-selectButton>
         </div>

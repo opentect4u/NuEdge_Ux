@@ -31,63 +31,31 @@ export class CmpRPTComponent implements OnInit {
   itemsPerPage = ItemsPerPage;
   sort = new sort();
   selectBtn:selectBtn[] = [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
-  settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company');
+  settings_ins = this.__utility.settingsfroMultiselectDropdown('id','type','Search Type Of Insurance',1);
+  settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company',2);
+  settings_for_Levels = this.__utility.settingsfroMultiselectDropdown('id','value','Search Levels',2);
+
   __companyMst : insComp[] = [];
-  __levels = cmpMstClm.LEVELS;
+  __levels = compClmns.LEVELS;
   __isrntspinner: boolean = false;
   __paginate: any = [];
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   ClmnList:column[] = compClmns.Column_Selector;
   __columns: column[] = [];
   __exportedClmns: string[] = []
   SelectedClms:string[] =[];
-  // __columns: string[] = [];
+  __insType:any=[];
   __export = new MatTableDataSource<insComp>([]);
-  // __exportedClmns: string[] = []
-  // __columnsForsummary: string[] = [
-  //   'edit',
-  //   'delete',
-  //   'sl_no',
-  //   'ins_type',
-  //   'comp_full_name',
-  //   'comp_short_name',
-  //   'website',
-  //   'cus_care_whatsApp_no',
-  //   'cus_care_no',
-  //   'cus_care_email',
-  // ];
-  // __columnsForDetails: string[] = [
-  //   'edit',
-  //   'delete',
-  //   'sl_no',
-  //   'ins_type',
-  //   'comp_full_name',
-  //   'comp_short_name',
-  //   'website',
-  //   'cus_care_whatsApp_no',
-  //   'cus_care_no',
-  //   'cus_care_email',
-  //   'head_ofc_contact_per',
-  //   'head_contact_per_mobile',
-  //   'head_contact_per_email',
-  //   'head_ofc_addr',
-  //   'local_ofc_contact_per',
-  //   'local_contact_per_mobile',
-  //   'local_contact_per_email',
-  //   'local_ofc_addr',
-  //   'login_url',
-  //   'login_id',
-  //   'login_pass',
-  // ];
   __isVisible: boolean = true;
   __rntSearchForm = new FormGroup({
-    btnType: new FormControl(''),
-    ins_type: new FormArray([]),
+    btnType: new FormControl('R'),
+    ins_type: new FormControl([],{updateOn:'blur'}),
     options: new FormControl('2'),
-    comp_name: new FormControl(''),
+    comp_name: new FormControl([]),
     contact_person: new FormControl(''),
     is_all: new FormControl(false),
-    levels: new FormArray([])
+    // levels: new FormArray([]),
+    level:new FormControl([])
   });
   __selectRNT = new MatTableDataSource<insComp>([]);
   constructor(
@@ -105,20 +73,16 @@ export class CmpRPTComponent implements OnInit {
     this.setColumns(2);
     this.getRntMst();
     this.getInstTypeMSt();
-    this.getComponyMst();
-    this.addLevelsCheckBox(compClmns.LEVELS);
+    // this.addLevelsCheckBox(compClmns.LEVELS);
   }
-  addLevelsCheckBox(levels){
-    levels.forEach(el =>{
-      this.levels.push(this.setFormControl(el))
-    })
-  }
-  get levels(): FormArray{
-    return this.__rntSearchForm.get('levels') as FormArray
-  }
-  get ins_type(): FormArray{
-    return this.__rntSearchForm.get('ins_type') as FormArray;
-  }
+  // addLevelsCheckBox(levels){
+  //   levels.forEach(el =>{
+  //     this.levels.push(this.setFormControl(el))
+  //   })
+  // }
+  // get levels(): FormArray{
+  //   return this.__rntSearchForm.get('levels') as FormArray
+  // }
   setFormControl(level){
     return new FormGroup({
         isChecked: new FormControl(false),
@@ -127,49 +91,39 @@ export class CmpRPTComponent implements OnInit {
         sub_menu:new FormControl(level? level.submenu : '')
     })
   }
-  setInsuranceType(insTypeDtls){
-    return new FormGroup({
-      isChecked: new FormControl(false),
-      id: new FormControl(insTypeDtls? insTypeDtls.id : 0),
-      type: new FormControl(insTypeDtls? insTypeDtls.type : ''),
-  })
-
-
-  }
   setColumns(res){
       const __columnToRemove =  ['edit','delete'];
       this.__columns = Number(res) == 2 ? compClmns.Summary  : compClmns.Column_Selector;
         this.SelectedClms = this.__columns.map((x) => x.field);
       this.__exportedClmns = this.__columns.map(res => {return res['field']}).filter(item => !__columnToRemove.includes(item));
   }
-  getComponyMst(){
-    this.__dbIntr.api_call(0,'/ins/company',null).pipe(pluck("data")).subscribe((res: insComp[]) =>{
+  getComponyMst(arr_ins_type_id){
+    if(arr_ins_type_id.length > 0){
+    this.__dbIntr.api_call(0,'/ins/company','ins_type_id=' +JSON.stringify(arr_ins_type_id.map(item => item.id)))
+    .pipe(pluck("data")).subscribe((res: insComp[]) =>{
       this.__companyMst = res;
    })
   }
+  else{
+    this.__companyMst.length =0;
+     this.__rntSearchForm.controls['comp_name'].setValue([]);
+  }
+  }
   getInstTypeMSt(){
     this.__dbIntr.api_call(0,'/ins/type',null).pipe(pluck("data")).subscribe((res: any) =>{
-      res.forEach(el => {this.ins_type.push(this.setInsuranceType(el))});
+      console.log(res);
+
+      this.__insType = res;
    })
   }
 
   ngAfterViewInit() {
     this.__rntSearchForm.controls['options'].valueChanges.subscribe((res) => {
-      this.setColumns(res == '2' ? cmpMstClm.INITIAL_COLUMNS : cmpMstClm.COLUMNFORDETAILS);
+      this.setColumns(res);
     });
-
-  /** Change event occur when all Insurance Type checkbox has been changed  */
-  this.__rntSearchForm.controls['is_all'].valueChanges.subscribe(res =>{
-    this.ins_type.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
-  })
-  /** End */
-
-  /** Change event inside the formArray */
-  this.ins_type.valueChanges.subscribe(res =>{
-  this.__rntSearchForm.controls['is_all'].setValue(res.every(item => item.isChecked),{emitEvent:false});
-  })
-  /*** End */
-
+    this.__rntSearchForm.controls['ins_type'].valueChanges.subscribe((res) => {
+      this.getComponyMst(res);
+    })
 
   }
 
@@ -204,11 +158,11 @@ export class CmpRPTComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          +  ('&comp_name=' + (this.__rntSearchForm.value.comp_name ? JSON.stringify(this.__rntSearchForm.value.comp_name) : '[]'))
+          +  ('&comp_name=' + (JSON.stringify(this.__rntSearchForm.value.comp_name.map(item => item.id))))
           +  ('&contact_person=' + (this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person : ''))
           +  ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
           +  ('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
-          +  ('&ins_type_id=' + (this.__rntSearchForm.value.ins_type ? JSON.stringify(this.__rntSearchForm.value.ins_type.filter(item => item.isChecked).map(res => {return res['id']})) : '[]')))
+          +  ('&ins_type_id=' + (JSON.stringify(this.__rntSearchForm.value.ins_type.map(res => {return res['id']})))))
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
           this.setPaginator(res.data);
@@ -314,21 +268,43 @@ export class CmpRPTComponent implements OnInit {
   }
   getColumnsAfterSubmit(){
     const clm = ['edit', 'delete'];
-    //do operation with columns
-    this.levels.value.forEach(el => {
-             el.sub_menu.forEach(element => {
-                      if(el.isChecked){
-                        if(this.__columns.findIndex(x => x.field == element.field) == -1){
-                          this.__columns.push(element);
-                        }
-                      }
-                      else{
-                        if(this.__columns.findIndex(x => x.field == element.field) != -1){
-                          this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
-                        }
-                      }
-             });
-    });
+    const colmn = this.__levels.filter(x => this.__rntSearchForm.value.level.map(item => item.id).includes(x.id))
+    // colmn.forEach(el => {
+    //   console.log(el);
+    //   el.submenu.forEach(element => {
+    //     if(this.__columns.findIndex(x => x.field == element.field) == -1){
+    //                     this.__columns.push(element);
+    //     }
+    //   });
+    // })
+    this.__levels.forEach(el =>{
+          el.submenu.forEach(element=>{
+             if(colmn.findIndex(x => x.id == el.id)!=-1){
+              if(this.__columns.findIndex(x => x.field == element.field) == -1){
+                this.__columns.push(element);
+              }
+             }
+             else{
+              if(this.__columns.findIndex(x => x.field == element.field) != -1){
+              this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
+                }
+             }
+          })
+    })
+    // this.levels.value.forEach(el => {
+    //          el.sub_menu.forEach(element => {
+    //                   if(el.isChecked){
+    //                     if(this.__columns.findIndex(x => x.field == element.field) == -1){
+    //                       this.__columns.push(element);
+    //                     }
+    //                   }
+    //                   else{
+    //                     if(this.__columns.findIndex(x => x.field == element.field) != -1){
+    //                       this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
+    //                     }
+    //                   }
+    //          });
+    // });
     this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
     this.SelectedClms = this.__columns.map((x) => x.field);
   }
@@ -337,9 +313,7 @@ export class CmpRPTComponent implements OnInit {
   getRntMst(column_name: string | null = null, sort_by: string | null = null) {
     const __insComp = new FormData();
     __insComp.append(
-      'comp_name',
-      this.__rntSearchForm.value.comp_name ? JSON.stringify(this.__rntSearchForm.value.comp_name) : '[]'
-    );
+      'comp_name',JSON.stringify(this.__rntSearchForm.value.comp_name.map(item => item.id)));
     __insComp.append(
       'contact_person',
       this.__rntSearchForm.value.contact_person
@@ -349,8 +323,7 @@ export class CmpRPTComponent implements OnInit {
     __insComp.append('paginate', this.__pageNumber.value);
     __insComp.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
     __insComp.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __insComp.append('ins_type_id', this.__rntSearchForm.value.ins_type ? JSON.stringify(this.__rntSearchForm.value.ins_type.filter(item => item.isChecked).map(res => {return res['id']})) : '[]');
-
+    __insComp.append('ins_type_id',JSON.stringify(this.__rntSearchForm.value.ins_type.map(res => {return res['id']})));
     this.__dbIntr
       .api_call(1, '/ins/companyDetailSearch', __insComp)
       .pipe(map((x: any) => x.data))
@@ -364,7 +337,7 @@ export class CmpRPTComponent implements OnInit {
   tableExport(
     insTypeExport
   ) {
-
+    insTypeExport.delete('paginate');
     this.__dbIntr
       .api_call(1, '/ins/companyExport', insTypeExport)
       .pipe(map((x: any) => x.data))
@@ -437,16 +410,15 @@ export class CmpRPTComponent implements OnInit {
   reset() {
     this.__rntSearchForm.patchValue({
       options: '2',
-      comp_name: '',
-      comp_id: '',
       contact_person: '',
+      level:[]
     });
     this.sort= new sort;
-    this.levels.controls.map(el => el.get('isChecked').setValue(false));
+    this.__rntSearchForm.controls['ins_type'].setValue([],{emitEvent:true});
+    // this.levels.controls.map(el => el.get('isChecked').setValue(false));
     this.__rntSearchForm.get('is_all').setValue(false);
-   this.__pageNumber.setValue(10);
+   this.__pageNumber.setValue('10');
    this.getRntMst();
-
   }
 
   delete(__el,index){

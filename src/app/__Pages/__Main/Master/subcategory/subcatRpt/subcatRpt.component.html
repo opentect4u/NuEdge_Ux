@@ -26,7 +26,15 @@
         <ng-container>
           <div class="row my-3">
             <div class="col-sm-4">
-              <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'C')">
+              <label for="amc_id">Category</label>
+              <ng-multiselect-dropdown
+                    id="cat_name"
+                    [placeholder]="'Select Category'"
+                    [settings]="settings"
+                    [data]="__catMst"
+                    formControlName="cat_name">
+                  </ng-multiselect-dropdown>
+              <!-- <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'C')">
                 <div class="searchDiv">
                   <label for="cat_name">Category
                   </label>
@@ -50,7 +58,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
             <div class="col-sm-4">
               <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'S')">
@@ -182,6 +190,7 @@
               <label class="mr-3">Items per page: </label>
               <p-selectButton
               [options]="itemsPerPage"
+              [formControl]="__pageNumber"
                optionLabel="label" optionValue="value"
                (onOptionClick)="onselectItem($event)"
                ></p-selectButton>

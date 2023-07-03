@@ -49,6 +49,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { modeOfPrePipe } from '../__Pipes/modeOfPremium.pipe';
+import { PaginateComponent } from './core/paginate/paginate.component';
 
 @NgModule({
   imports: [
@@ -103,7 +104,8 @@ import { modeOfPrePipe } from '../__Pipes/modeOfPremium.pipe';
     PreviewDocumentComponent,
     BtnWithMenuComponent,
     MfAckEntryComponent,
-    MegaMenuForColumnComponent
+    MegaMenuForColumnComponent,
+    PaginateComponent
   ],
   exports:[
     modeOfPrePipe,
@@ -138,6 +140,7 @@ import { modeOfPrePipe } from '../__Pipes/modeOfPremium.pipe';
     MstDtlsComponent,
     BtnWithMenuComponent,
     MfAckEntryComponent,
+    PaginateComponent,
     SrchComponent,
     MatTabsModule,
     MatBadgeModule,

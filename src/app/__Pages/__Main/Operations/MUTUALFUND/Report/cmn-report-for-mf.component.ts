@@ -23,7 +23,7 @@ type selectBtn ={
 export class CmnReportForMFComponent implements OnInit {
   headerTitle: string;
   tabIndex:number = 0;
-  __pageNumber = 10;
+  __pageNumber = '10';
   itemsPerPage:selectBtn[] = itemsPerPage;
    trnsType: any = []; /** Holding Transaction Type i.e FINANCIAL,NON FINANCIAL,NFO */
    trnsMst: any= []; /** Holding Transaction i.e PIP,SIP,SWITCH .depends upon transaction Type */

@@ -32,33 +32,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-5">
-        <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'I')">
-          <div class="searchDiv">
-            <label for="ifsc">IFSC
-            </label>
-            <input type="search" name="ifsc" id="ifsc" class="form-control"
-              formControlName="ifsc" placeholder="Search By IFSC">
-              <span class="spinner-border" *ngIf="__isifsspinner && __catForm.get('ifsc').value?.length > 1"></span>
-             <div class="processMain_2" __searchResVisibility
-              (appOutsideClick)="outsideClick($event,'I')">
-              <div class="serachresult_client" #searchIfs>
-                <ul *ngIf="__bnkMstforIfs.length > 0">
-                  <li *ngFor="let items of __bnkMstforIfs" (click)="getItems(items,'I')">
-                    {{items.ifs_code}}
-                  </li>
-                </ul>
-                <div class="noDataFound" *ngIf="__bnkMstforIfs.length == 0">
-                  <h5 class="text-center">
-                    Sorry!! No Records Found
-                  </h5>
-                  <p class="text-wrap">IFSC Not Available</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div class="col-sm-5">
         <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'M')">
           <div class="searchDiv">
@@ -85,6 +59,35 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="col-sm-5">
+        <label for="bnk_addr">Bank Address</label>
+        <input type="text" name="bnk_addr" id="bnk_addr" class="form-control" formControlName="bnk_addr">
+        <!-- <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'I')">
+          <div class="searchDiv">
+            <label for="ifsc">IFSC
+            </label>
+            <input type="search" name="ifsc" id="ifsc" class="form-control"
+              formControlName="ifsc" placeholder="Search By IFSC">
+              <span class="spinner-border" *ngIf="__isifsspinner && __catForm.get('ifsc').value?.length > 1"></span>
+             <div class="processMain_2" __searchResVisibility
+              (appOutsideClick)="outsideClick($event,'I')">
+              <div class="serachresult_client" #searchIfs>
+                <ul *ngIf="__bnkMstforIfs.length > 0">
+                  <li *ngFor="let items of __bnkMstforIfs" (click)="getItems(items,'I')">
+                    {{items.ifs_code}}
+                  </li>
+                </ul>
+                <div class="noDataFound" *ngIf="__bnkMstforIfs.length == 0">
+                  <h5 class="text-center">
+                    Sorry!! No Records Found
+                  </h5>
+                  <p class="text-wrap">IFSC Not Available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
       </div>
       <div class="col-sm-2 d-flex justify-content-end align-items-end">
         <p-button

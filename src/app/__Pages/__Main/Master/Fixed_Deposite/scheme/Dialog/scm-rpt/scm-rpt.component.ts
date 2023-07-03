@@ -1,9 +1,9 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, ElementRef, Inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, Inject, OnInit} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, pluck, switchMap, tap} from 'rxjs/operators';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { fdComp } from 'src/app/__Model/fdCmp';
 import { fdScm } from 'src/app/__Model/fdScm';
@@ -24,18 +24,19 @@ import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component
   styleUrls: ['./scm-rpt.component.css']
 })
 export class ScmRptComponent implements OnInit {
-  @ViewChild('prdName') __prdName: ElementRef;
-  __isScmVisisble: boolean = false;
+  // __isAllSpinner: boolean = false;
+  // displayMode_forSearch:string;
+  __settings_scm = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme');
   __settings_compType = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type');
   __settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Companies');
   __prdSearchForm = new FormGroup({
-    scheme_name: new FormControl(''),
-    company_id: new FormControl([]),
-    comp_type_id: new FormControl([])
+    scheme_name: new FormControl([]),
+    company_id: new FormControl([],{updateOn:'blur'}),
+    comp_type_id: new FormControl([],{updateOn:'blur'}),
+    search_all:new FormControl(''),
+    // search_all_id: new FormControl('')
   });
-  // __exportedClmns: string[] = ['sl_no','comp_type','comp_full_name','comp_short_name','scheme_name'];
-  // __columns: string[] = ['edit','delete','sl_no','comp_type','comp_full_name','comp_short_name','scheme_name']
-
+  // SearchAllMst:any=[];
   __exportedClmns: string[] =  SchemeClmns.Column.filter(res => (res.field!='edit' && res.field!='delete')).map(item => {return item['field']});
   __columns: column[] = SchemeClmns.Column;
   sort =new sort();
@@ -44,7 +45,7 @@ export class ScmRptComponent implements OnInit {
   __isVisible : boolean = true;
   __selectScmMst = new MatTableDataSource<any>([]);
   __exportScmMst = new MatTableDataSource<any>([])
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __paginate: any = [];
   __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
   __companyMst: fdComp[] = [];
@@ -59,46 +60,77 @@ export class ScmRptComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private __utility: UtiliService
   ) {
-    this.getcompanyMst();
   }
   ngOnInit(): void {
     this.getcompanyTypeMst();
-    // setTimeout(()=>{
-      this.getScmMst();
-    // },500)
+    this.getScmMst();
   }
   getcompanyTypeMst(){
-   this.__dbIntr.api_call(0,'/fd/companyType',null).pipe(pluck("data")).subscribe((res) =>{
+   this.__dbIntr.api_call(0,'/fd/companyType',null)
+   .pipe(pluck("data"))
+   .subscribe((res) =>{
     this.__cmpTypeMst = res;
    })
   }
-  getcompanyMst(){
-    this.__dbIntr.api_call(0,'/fd/company',null).pipe(pluck("data")).subscribe((res: fdComp[]) =>{
+  getcompanyMst(arr_comp_type_ids){
+    if(arr_comp_type_ids.length > 0){
+    this.__dbIntr.api_call(0,'/fd/company',JSON.stringify(arr_comp_type_ids.map(item => item.id))).pipe(pluck("data")).subscribe((res: fdComp[]) =>{
       this.__companyMst = res;
     })
+    }
+    else{
+      this.__prdSearchForm.controls['company_id'].setValue([],{emitEvent:true});
+      this.__companyMst.length = 0;
+    }
   }
   ngAfterViewInit(){
-     // Product NAME SEARCH
-  this.__prdSearchForm.controls['scheme_name'].valueChanges.
-  pipe(
-    tap(()=> this.__isScmVisisble = true),
-    debounceTime(200),
-    distinctUntilChanged(),
-    switchMap(dt => dt?.length > 1 ?
-      this.__dbIntr.searchItems('/fd/scheme', dt )
-      : []),
-    map((x: responseDT) => x.data)
-  ).subscribe({
-    next: (value) => {
-      this.__scmMst = value
-      this.searchResultVisibility('block');
-      this.__isScmVisisble = false;
-    },
-    complete: () => console.log(''),
-    error: (err) => {
-      this.__isScmVisisble = false;
+       this.__prdSearchForm.controls['comp_type_id'].valueChanges.subscribe(res =>{
+         this.getcompanyMst(res);
+       })
+      this.__prdSearchForm.controls['company_id'].valueChanges.subscribe(res =>{
+          this.getSchemeAgainstCompany(res);
+      })
+      // this.__prdSearchForm.controls['search_all'].valueChanges
+      // .pipe(
+      //   tap(() => this.__isAllSpinner = true),
+      //   debounceTime(200),
+      //   distinctUntilChanged(),
+      //   switchMap((dt) =>
+      //     dt?.length > 1
+      //       ? this.__dbIntr.searchItems(
+      //         '/searchAll',
+      //         dt)
+      //       : []
+      //   ),
+      //   map((x: responseDT) => x.data),
+      // )
+      // .subscribe({
+      //   next: (value) => {
+      //     this.__prdSearchForm.controls['search_all_id'].setValue('')
+      //     this.SearchAllMst = value;
+      //     this.searchResultVisibility('block')
+      //     this.__isAllSpinner = false;
+      //   },
+      //   complete: () => console.log(''),
+      //   error: (err) => console.log(),
+      // });
+  }
+  // searchResultVisibility(display_mode){
+  //   this.displayMode_forSearch = display_mode;
+  // }
+  getSchemeAgainstCompany(arr_comp_ids){
+    if(arr_comp_ids.length > 0){
+      this.__dbIntr.api_call(0,'/fd/scheme','arr_comp_id='+JSON.stringify(arr_comp_ids.map(item => item.id)))
+      .pipe(pluck("data")).subscribe((res:fdScm[]) =>{
+            this.__scmMst = res;
+      })
     }
-  })
+    else{
+      this.__prdSearchForm.controls['scheme_name'].setValue([]);
+      this.__scmMst.length = 0;
+    }
+
+
   }
 
   fullScreen() {
@@ -125,9 +157,10 @@ export class ScmRptComponent implements OnInit {
   getScmMst(){
     const __fb = new FormData();
     console.log(JSON.stringify(this.__prdSearchForm.value.company_id));
-    __fb.append('scheme_name',global.getActualVal(this.__prdSearchForm.value.scheme_name));
-    __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id));
-    __fb.append('comp_type_id',JSON.stringify(this.__prdSearchForm.value.comp_type_id));
+    __fb.append('scheme_name',JSON.stringify(this.__prdSearchForm.value.scheme_name.map(item=> item.id)));
+    __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id.map(item=> item.id)));
+    __fb.append('comp_type_id',JSON.stringify(this.__prdSearchForm.value.comp_type_id.map(item=> item.id)));
+    __fb.append('search_all', (global.getActualVal(this.__prdSearchForm.value.search_all) ? this.__prdSearchForm.value.search_all : ''));
     __fb.append('paginate', this.__pageNumber.value);
     __fb.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
     __fb.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
@@ -185,9 +218,10 @@ export class ScmRptComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&scheme_name=' + global.getActualVal(this.__prdSearchForm.value.scheme_name)) +
-            ('&comp_type_id=' +  JSON.stringify(this.__prdSearchForm.value.comp_type_id)) +
-            ('&company_id=' +  JSON.stringify(this.__prdSearchForm.value.company_id))
+            ('&search_all=' + (global.getActualVal(this.__prdSearchForm.value.search_all) ? this.__prdSearchForm.value.search_all : '')) +
+            ('&scheme_name=' + JSON.stringify(this.__prdSearchForm.value.scheme_name.map(item=> item.id))) +
+            ('&comp_type_id=' +  JSON.stringify(this.__prdSearchForm.value.comp_type_id.map(item=> item.id))) +
+            ('&company_id=' +  JSON.stringify(this.__prdSearchForm.value.company_id.map(item=> item.id)))
             +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
             +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
         )
@@ -256,7 +290,6 @@ export class ScmRptComponent implements OnInit {
         value.comp_type_id = row_obj.comp_type_id;
         value.comp_type = row_obj.comp_type;
         value.scheme_name = row_obj.scheme_name;
-
       }
       return true;
     });
@@ -270,35 +303,18 @@ export class ScmRptComponent implements OnInit {
         value.comp_type_id = row_obj.comp_type_id;
         value.comp_type = row_obj.comp_type;
         value.scheme_name = row_obj.scheme_name;
-
       }
       return true;
     });
 
   }
-  resetValues(){
-    this.__prdSearchForm.reset();
-  }
-
-    outsideClick(__ev){
-      if(__ev){
-        this.searchResultVisibility('none');
-      }
-    }
-    searchResultVisibility(display_mode){
-      this.__prdName.nativeElement.style.display = display_mode;
-    }
-    getItems(__items: fdScm,__mode){
-      this.__prdSearchForm.controls['scheme_name'].reset(__items ? __items.scheme_name : '',{emitEvent: false});
-      this.searchResultVisibility('none');
-    }
     reset(){
-      this.__prdSearchForm.patchValue({
-        company_id: [],
-        product_type_id: []
-      });
-       this.getItems(null,'P');
-       this.searchProduct();
+      this.__prdSearchForm.controls['comp_type_id'].reset([],{emitEvent:true});
+      this.__prdSearchForm.controls['search_all'].setValue('',{emitEvent:false});
+      // this.__prdSearchForm.controls['search_all_id'].setValue('',{emitEvent:false});
+      this.__pageNumber.setValue('10');
+      this.sort =new sort();
+      this.getScmMst();
     }
     customSort(ev){
       this.sort.field =ev.sortField;
@@ -311,4 +327,9 @@ export class ScmRptComponent implements OnInit {
       this.__pageNumber.setValue(ev.option.value);
       this.getScmMst();
     }
+    // getSelectedItemsFromParent(ev){
+    // //  this.__prdSearchForm.controls['search_all'].setValue(
+    // //    ev.item
+    // //    )
+    // }
 }

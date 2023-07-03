@@ -30,6 +30,14 @@
               [financialMst]="MstDt"
               ></report-financial-rpt>
           </ng-container>
+          <ng-container *ngIf="trnsTypeId == 2">
+                <report-kyc-rpt
+                [transaction]="transaction"
+                [selectBtn]="selectBtn"
+              [__pageNumber]="__pageNumber"
+                [itemsPerPage]="itemsPerPage"
+                [trnsTypeId]="trnsTypeId"></report-kyc-rpt>
+          </ng-container>
 
           <ng-container *ngIf="trnsTypeId == 3">
             <app-non-financial-rpt
@@ -80,7 +88,6 @@
               [Title]="headerTitle"
               [financialMst]="MstDt"
               >
-
             </report-nfo-rpt>
           </ng-container>
 

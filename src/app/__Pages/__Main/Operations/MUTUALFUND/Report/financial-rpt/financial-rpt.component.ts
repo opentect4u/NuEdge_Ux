@@ -344,7 +344,7 @@ export class FinancialRPTComponent implements OnInit {
     this.transFrm.get('tin_no').setValue('',{emitEvent:false});
     this.transFrm.get('is_all_rnt').setValue(false);
     this.sort = new sort();
-    this.__pageNumber = 10;
+    this.__pageNumber = '10';
     this.submitFinReport();
   }
 
@@ -384,7 +384,7 @@ export class FinancialRPTComponent implements OnInit {
     this.viewDocument.emit(ev);
   }
   onselectItem(ev){
-    this.__pageNumber = ev.option.value;
+    // this.__pageNumber = ev.option.value;
     this.submitFinReport();
   }
   getPaginate(__paginate){

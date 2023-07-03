@@ -21,9 +21,19 @@
     <div class="card p-3 border-1">
         <form [formGroup]="__prdSearchForm" (ngSubmit)="searchProduct()" autocomplete="off">
             <div class="row">
-              <div class="col-sm-4">
+              <div class="col-sm-3">
+                <label class="form-label">Type Of Insurance</label>
+                <ng-multiselect-dropdown
+                id="ins_type_id"
+                [placeholder]="'Select Type Of Insurance'"
+                [settings]="__settings_ins"
+                [data]="__insTypeMst"
+                formControlName="ins_type_id">
+              </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
                  <label class="form-label">Company</label>
-                <ng-multiselect-dropdown #multiSelect
+                <ng-multiselect-dropdown
                 id="company_id"
                 [placeholder]="'Select Companies'"
                 [settings]="__settings"
@@ -31,9 +41,9 @@
                 formControlName="company_id">
               </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-4">
+              <div class="col-sm-3">
                 <label class="form-label">Product Type</label>
-                <ng-multiselect-dropdown #multiSelect
+                <ng-multiselect-dropdown
                 id="product_type_id"
                 [placeholder]="'Select Product Type'"
                 [settings]="__settings_productType"
@@ -41,53 +51,38 @@
                 formControlName="product_type_id">
               </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-4">
-            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
-                <div class="searchDiv">
-                  <label for="Prd">Product</label>
-                   <input type="text"
-                   class="form-control"
-                   id="Prd"
-                   formControlName="product_name"
-                   placeholder="Search By Product Name">
-                  <span class="spinner-border" *ngIf="__isProductnameVisisble && __prdSearchForm.get('product_name').value?.length > 1"></span>
-                  <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
-                    <div class="serachresult_client" #prdName>
-                      <ul *ngIf="__productMst.length > 0">
-                        <li *ngFor="let items of __productMst" (click)="getItems(items,'P')">
-                         {{items.product_name}}
-                        </li>
-                      </ul>
-                      <div class="noDataFound" *ngIf="__productMst.length == 0">
-                        <h5 class="text-center">
-                          Sorry!! No Records Found
-                        </h5>
-                        <p>If your result match, they will appear here</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div class="col-sm-3">
+                <label class="form-label">Product</label>
+                <ng-multiselect-dropdown
+                id="product_name"
+                [placeholder]="'Select Product'"
+                [settings]="__settings_prod"
+                [data]="__productMst"
+                formControlName="product_name">
+              </ng-multiselect-dropdown>
               </div>
 
             </div>
-            <div class="row mt-4">
-              <div class="col-sm-6">
-                <div class="checkboxes d-flex flex-row align-items-center w-100">
-                  <label>Insurance Type:&nbsp;</label>
-                <div>
-                <ng-container formArrayName="ins_type_id">
-                  <ng-container *ngFor="let ins_typeDtls of ins_type_id.controls; let i = index">
-                       <ng-container [formGroupName]="i">
-                        <mat-checkbox color="primary" class="mr-3" formControlName="isChecked">{{ins_typeDtls.get('type').value}}</mat-checkbox>
-                       </ng-container>
-                  </ng-container>
-                </ng-container>
-                <mat-checkbox class="ml-3" color="primary" formControlName="is_all"> All</mat-checkbox>
-
-                </div></div>
+            <div class="row">
+              <div class="col-sm-3">
+                <!-- <app-core-srch
+              [label] = "'Search'"
+              [placeholder]="'Search By Company Type,Company,Scheme'"
+              [isPending]="__isAllSpinner"
+              [listItems] = "SearchAllMst"
+              [flag] = "'S'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['type','product_name','product_type','comp_short_name']"
+              formControlName="search_all"
+              [displayMode]="displayMode_forSearch"
+              (setDisplayMode)="displayMode_forSearch = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              ></app-core-srch> -->
+              <label for="search_all">Search By Company Type,Company,Scheme</label>
+              <input type="text" name="search_all" id="search_all" class="form-control" formControlName="search_all">
               </div>
-              <div class="col-sm-6 my-auto">
+              <div class="col-sm-9 d-flex justify-content-end align-items-end">
                 <p-button type="button" (click)="reset()" label="Reset" icon="pi pi-refresh"
                 iconPos="right" styleClass="p-button-lg p-button-danger"
                 class="mx-3 float-right"></p-button>
@@ -183,6 +178,7 @@
                   <label class="mr-3">Items per page: </label>
                   <p-selectButton
                   [options]="itemsPerPage"
+                  [formControl]="__pageNumber"
                   optionLabel="label" optionValue="value"
                   (onOptionClick)="onselectItem($event)"
                   ></p-selectButton>

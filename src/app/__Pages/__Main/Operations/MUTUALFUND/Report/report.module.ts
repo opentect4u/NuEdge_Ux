@@ -7,6 +7,8 @@ import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { FinancialRPTComponent } from './financial-rpt/financial-rpt.component';
 import { NonFinancialRPTComponent } from './non-financial-rpt/non-financial-rpt.component';
 import { NfoRPTComponent } from './nfo-rpt/nfo-rpt.component';
+import { KycRptComponent } from './kyc-rpt/kyc-rpt.component';
+import { FormsModule } from '@angular/forms';
 const routes: Routes = [{path:'',component:CmnReportForMFComponent,data: { breadcrumb: 'Report'}}]
 
 @NgModule({
@@ -14,10 +16,12 @@ const routes: Routes = [{path:'',component:CmnReportForMFComponent,data: { bread
     CmnReportForMFComponent,
     FinancialRPTComponent,
     NonFinancialRPTComponent,
-    NfoRPTComponent
+    NfoRPTComponent,
+    KycRptComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
     SharedModule,
     TabModule,
     RouterModule.forChild(routes)

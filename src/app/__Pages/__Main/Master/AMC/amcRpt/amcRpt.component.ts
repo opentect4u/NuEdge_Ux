@@ -33,12 +33,14 @@ type selectBtn ={
 export class AmcrptComponent implements OnInit {
   selectBtn:selectBtn[] = [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
   settings = this.__utility.settingsfroMultiselectDropdown('id','amc_short_name','Search AMC');
+  settings_for_Levels = this.__utility.settingsfroMultiselectDropdown('id','value','Search Levels',2);
+
   itemsPerPage = ItemsPerPage;
   amcLogoUrl = environment.amc_logo_url;
   sort=new sort();
 
   __sortColumnsAscOrDsc: any= {active: '',direction:'asc'};
-
+  __levels = amcClmns.LEVELS;
   __isamcspinner: boolean =false;
   __isrntspinner: boolean =false;
   __isshowSearchBtn: boolean =false;
@@ -56,7 +58,8 @@ export class AmcrptComponent implements OnInit {
        rnt_id: new FormArray([]),
        amc_id: new FormControl([]),
        is_all:new FormControl(false),
-       level: new FormArray([])
+      //  level: new FormArray([]),
+       level:new FormControl([])
   })
   constructor(
 
@@ -72,7 +75,7 @@ export class AmcrptComponent implements OnInit {
   ngOnInit() {
     this.getRntMst();
     this.getAMCMasterForDropDown();
-    this.addLevelsCheckBox(amcClmns.LEVELS);
+    // this.addLevelsCheckBox(amcClmns.LEVELS);
     this.showColumns(2);
     this.getAmcMst();
   }
@@ -84,22 +87,22 @@ export class AmcrptComponent implements OnInit {
   get rnt_id():FormArray{
       return this.__detalsSummaryForm.get('rnt_id') as FormArray;
   }
-  addLevelsCheckBox(levels){
-    levels.forEach(el =>{
-      this.level.push(this.setlevelFormControl(el))
-    })
-  }
-  get level(): FormArray{
-    return this.__detalsSummaryForm.get('level') as FormArray
-  }
-  setlevelFormControl(level):FormGroup{
-    return new FormGroup({
-      isChecked: new FormControl(false),
-      id: new FormControl(level? level.id : 0),
-      name: new FormControl(level? level.value : ''),
-      sub_menu:new FormControl(level? level.submenu : '')
-  })
-  }
+  // addLevelsCheckBox(levels){
+  //   levels.forEach(el =>{
+  //     this.level.push(this.setlevelFormControl(el))
+  //   })
+  // }
+  // get level(): FormArray{
+  //   return this.__detalsSummaryForm.get('level') as FormArray
+  // }
+  // setlevelFormControl(level):FormGroup{
+  //   return new FormGroup({
+  //     isChecked: new FormControl(false),
+  //     id: new FormControl(level? level.id : 0),
+  //     name: new FormControl(level? level.value : ''),
+  //     sub_menu:new FormControl(level? level.submenu : '')
+  // })
+  // }
   setRNTForm(rnt):FormGroup{
     return new FormGroup({
       id:new FormControl(rnt ? rnt?.id : 0),
@@ -379,10 +382,12 @@ export class AmcrptComponent implements OnInit {
   refreshOrAdvanceFlt(){
     this.__detalsSummaryForm.patchValue({
       options:'2',
-      amc_id: []
+      amc_id: [],
+      level:[]
     })
     this.__detalsSummaryForm.get('is_all').setValue(false);
-    this.level.controls.map(item => {item.get('isChecked').setValue(false)});
+    // this.level.controls.map(item => {item.get('isChecked').setValue(false)});
+
     this.__pageNumber.setValue('10');
     this.sort= new sort();
     this.getAmcMst();
@@ -445,21 +450,36 @@ export class AmcrptComponent implements OnInit {
   }
   setColumnsAfterSubmit(){
     const clm = ['edit', 'delete','logo'];
-    this.level.value.forEach(el => {
-             el.sub_menu.forEach(element => {
-                      if(el.isChecked){
-                        if(this.__columns.findIndex(x => x.field == element.field) == -1){
-                          this.__columns.push(element);
-                        }
-                      }
-                      else{
-                        if(this.__columns.findIndex(x => x.field == element.field) != -1){
-                          this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
-                        }
-                      }
+    const colmn = this.__levels.filter(x => this.__detalsSummaryForm.value.level.map(item => item.id).includes(x.id))
+    this.__levels.forEach(el =>{
+      el.submenu.forEach(element=>{
+         if(colmn.findIndex(x => x.id == el.id)!=-1){
+          if(this.__columns.findIndex(x => x.field == element.field) == -1){
+            this.__columns.push(element);
+          }
+         }
+         else{
+          if(this.__columns.findIndex(x => x.field == element.field) != -1){
+          this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
+            }
+         }
+      })
+})
+    // this.level.value.forEach(el => {
+    //          el.sub_menu.forEach(element => {
+    //                   if(el.isChecked){
+    //                     if(this.__columns.findIndex(x => x.field == element.field) == -1){
+    //                       this.__columns.push(element);
+    //                     }
+    //                   }
+    //                   else{
+    //                     if(this.__columns.findIndex(x => x.field == element.field) != -1){
+    //                       this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
+    //                     }
+    //                   }
 
-             });
-    });
+    //          });
+    // });
     this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
 }
 }

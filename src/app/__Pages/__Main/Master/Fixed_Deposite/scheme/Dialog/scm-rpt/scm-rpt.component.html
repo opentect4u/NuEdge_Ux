@@ -1,4 +1,5 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+<!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle -->
+<div >
   <div mat-dialog-title class="dialog-title">
     <h2>Scheme Reports</h2>
     <div class="btnIcon">
@@ -235,7 +236,7 @@
       <div class="card p-3 border-1">
         <form [formGroup]="__prdSearchForm" (ngSubmit)="searchProduct()" autocomplete="off">
           <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <label class="form-label">Company Type</label>
               <ng-multiselect-dropdown #multiSelect
               id="comp_type_id"
@@ -245,7 +246,7 @@
               formControlName="comp_type_id">
             </ng-multiselect-dropdown>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                <label class="form-label">Company</label>
               <ng-multiselect-dropdown #multiSelect
               id="company_id"
@@ -255,39 +256,38 @@
               formControlName="company_id">
             </ng-multiselect-dropdown>
             </div>
-            <div class="col-sm-4">
-          <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
-              <div class="searchDiv">
-                <label for="scheme_name">Scheme</label>
-                 <input type="text"
-                 class="form-control"
-                 id="scheme_name"
-                 formControlName="scheme_name"
-                 placeholder="Search By Scheme Name">
-                <span class="spinner-border" *ngIf="__isScmVisisble && __prdSearchForm.get('scheme_name').value?.length > 1"></span>
-                <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
-                  <div class="serachresult_client" #prdName>
-                    <ul *ngIf="__scmMst.length > 0">
-                      <li *ngFor="let items of __scmMst" (click)="getItems(items,'P')">
-                       {{items.scheme_name}}
-                      </li>
-                    </ul>
-                    <div class="noDataFound" *ngIf="__scmMst.length == 0">
-                      <h5 class="text-center">
-                        Sorry!! No Records Found
-                      </h5>
-                      <p>If your result match, they will appear here</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div class="col-sm-3">
+              <label class="form-label">Scheme</label>
+              <ng-multiselect-dropdown #multiSelect
+              id="scheme_name"
+              [placeholder]="'Select Scheme'"
+              [settings]="__settings_scm"
+              [data]="__scmMst"
+              formControlName="scheme_name">
+            </ng-multiselect-dropdown>
             </div>
+            <div class="col-sm-3">
+              <label for="search_all">Search By Company Type,Company,Scheme</label>
+              <input type="text" name="search_all" id="search_all" class="form-control" formControlName="search_all">
+              <!-- <app-core-srch
+              [label] = "'Search'"
+              [placeholder]="'Search By Company Type,Company,Scheme'"
+              [isPending]="__isAllSpinner"
+              [listItems] = "SearchAllMst"
+              [flag] = "'S'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['scheme_name','comp_type','comp_short_name']"
+              formControlName="search_all"
+              [displayMode]="displayMode_forSearch"
+              (setDisplayMode)="displayMode_forSearch = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              ></app-core-srch> -->
             </div>
 
           </div>
-          <div class="row mt-4">
-            <div class="col-sm-6"></div>
-            <div class="col-sm-6 d-flex align-items-end justify-content-end">
+          <div class="row mt-2">
+            <div class="col-sm-12 d-flex align-items-end justify-content-end">
               <p-button type="button" (click)="reset()" label="Reset" icon="pi pi-refresh"
               iconPos="right" styleClass="p-button-lg p-button-danger"
               class="mx-3">
@@ -383,6 +383,7 @@
               <p-selectButton
               [options]="itemsPerPage"
               optionLabel="label" optionValue="value"
+              [formControl]="__pageNumber"
               (onOptionClick)="onselectItem($event)"
               ></p-selectButton>
             </div>

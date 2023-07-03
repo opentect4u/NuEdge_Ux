@@ -357,7 +357,7 @@ else{
 customSort(ev){
     this.sort.order =ev.sortOrder;
     this.sort.field =ev.sortField;
-    if(ev.sort_field){
+    if(ev.sortField){
       this.getKycRpt(this.__getKycFormData);
     }
 

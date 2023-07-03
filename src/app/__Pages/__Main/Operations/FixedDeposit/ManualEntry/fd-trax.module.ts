@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule ,DatePipe} from '@angular/common';
 import { FdTraxComponent } from './fd-trax.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -27,6 +27,7 @@ import { DialogDtlsComponent } from './Dialog/dialog-dtls/dialog-dtls.component'
     CommonModule,
     RouterModule.forChild(routes),
     SharedModule
-  ]
+  ],
+  providers:[DatePipe]
 })
 export class FdTraxModule { }

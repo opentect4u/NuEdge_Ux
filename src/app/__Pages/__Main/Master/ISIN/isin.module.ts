@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IsinComponent } from './isin.component';
 import { RouterModule, Routes } from '@angular/router';
+import { IsinRptComponent } from './Dialog/isin-rpt/isin-rpt.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
  const routes: Routes = [
   {
@@ -32,11 +34,13 @@ import { RouterModule, Routes } from '@angular/router';
 @NgModule({
   declarations: [
     IsinComponent,
+    IsinRptComponent,
 
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    SharedModule
   ]
 })
 export class IsinModule { }

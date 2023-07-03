@@ -18,6 +18,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   map,
+  pluck,
   switchMap,
   tap,
 } from 'rxjs/operators';
@@ -40,9 +41,10 @@ import { subcatClmns } from 'src/app/__Utility/Master/subcatClmns';
   styleUrls: ['./subcatRpt.component.css'],
 })
 export class SubcatrptComponent implements OnInit {
+  settings = this.__utility.settingsfroMultiselectDropdown('id','cat_name','Search Category');
   itemsPerPage = ItepPerPage;
   sort = new sort();
-  @ViewChild('searchcat') __searchCat: ElementRef;
+  // @ViewChild('searchcat') __searchCat: ElementRef;
   @ViewChild('searchsubcat') searchsubcat: ElementRef;
   __export = new MatTableDataSource<subcat>([]);
   __catMst: category[] = [];
@@ -55,12 +57,12 @@ export class SubcatrptComponent implements OnInit {
     subcat_id: new FormControl(
       this.data.sub_cat_id ? this.data.sub_cat_id : ''
     ),
-    cat_name: new FormControl(''),
-    cat_id: new FormControl(this.data.cat_id ? this.data.cat_id : ''),
+    cat_name: new FormControl([]),
+    // cat_id: new FormControl(this.data.cat_id ? this.data.cat_id : ''),
     options: new FormControl('2'),
   });
   __selectSubCategory = new MatTableDataSource<subcat>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __paginate: any = [];
   __exportedClmns: string[] = ['sl_no', 'cat_name', 'subcategory_name'];
   __columns: column[] = subcatClmns.COLUMN;
@@ -72,7 +74,9 @@ export class SubcatrptComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private overlay: Overlay,
     private __dbIntr: DbIntrService
-  ) {}
+  ) {
+    this.getCategoryMst();
+  }
   exportPdf() {
     this.__Rpt.downloadReport(
       '#subcategory',
@@ -83,13 +87,14 @@ export class SubcatrptComponent implements OnInit {
     );
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   getSubcatMst() {
     const __amcSearch = new FormData();
     __amcSearch.append(
       'cat_id',
-      global.getActualVal(this.__subcatForm.value.cat_id)
+      JSON.stringify(this.__subcatForm.value.cat_name.map(item => item.id))
     );
     __amcSearch.append(
       'subcat_id',
@@ -128,27 +133,43 @@ export class SubcatrptComponent implements OnInit {
   private setPaginator(__res) {
     this.__selectSubCategory = new MatTableDataSource(__res);
   }
+
+  getCategoryMst(){
+     this.__dbIntr.api_call(0,'/category',null).pipe(pluck("data")).subscribe((res:category[]) =>{
+      this.__catMst = res;
+      if(this.data.cat_id){
+        this.setCategoryControl(this.__catMst.filter(item => item.id == Number(this.data.cat_id)));
+      }
+      this.submit();
+     })
+  }
+  setCategoryControl(catDtls){
+    this.__subcatForm.patchValue({
+      cat_name:catDtls.map(({id,cat_name}) => ({id,cat_name}))
+    })
+  }
+
   ngAfterViewInit() {
-    this.__subcatForm.controls['cat_name'].valueChanges
-      .pipe(
-        tap(() => (this.__iscatspinner = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/category', dt) : []
-        ),
-        map((x: responseDT) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.__subcatForm.controls['cat_id'].setValue('');
-          this.__catMst = value;
-          this.searchResultVisibility('block', 'C');
-          this.__iscatspinner = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => console.log(),
-      });
+    // this.__subcatForm.controls['cat_name'].valueChanges
+    //   .pipe(
+    //     tap(() => (this.__iscatspinner = true)),
+    //     debounceTime(200),
+    //     distinctUntilChanged(),
+    //     switchMap((dt) =>
+    //       dt?.length > 1 ? this.__dbIntr.searchItems('/category', dt) : []
+    //     ),
+    //     map((x: responseDT) => x.data)
+    //   )
+    //   .subscribe({
+    //     next: (value) => {
+    //       this.__subcatForm.controls['cat_id'].setValue('');
+    //       this.__catMst = value;
+    //       this.searchResultVisibility('block', 'C');
+    //       this.__iscatspinner = false;
+    //     },
+    //     complete: () => console.log(''),
+    //     error: (err) => console.log(),
+    //   });
 
     this.__subcatForm.controls['subcat_name'].valueChanges
       .pipe(
@@ -201,8 +222,6 @@ export class SubcatrptComponent implements OnInit {
     }
   }
   getItems(__items, __type) {
-    console.log(__type);
-
     switch (__type) {
       case 'S':
         this.__subcatForm.controls['subcat_id'].setValue(__items.id);
@@ -212,14 +231,14 @@ export class SubcatrptComponent implements OnInit {
         );
         this.searchResultVisibility('none', 'S');
         break;
-      case 'C':
-        this.__subcatForm.controls['cat_id'].setValue(__items.id);
-        this.__subcatForm.controls['cat_name'].reset(__items.cat_name, {
-          onlySelf: true,
-          emitEvent: false,
-        });
-        this.searchResultVisibility('none', 'C');
-        break;
+      // case 'C':
+      //   this.__subcatForm.controls['cat_id'].setValue(__items.id);
+      //   this.__subcatForm.controls['cat_name'].reset(__items.cat_name, {
+      //     onlySelf: true,
+      //     emitEvent: false,
+      //   });
+      //   this.searchResultVisibility('none', 'C');
+        // break;
       default:
         break;
     }
@@ -238,9 +257,9 @@ export class SubcatrptComponent implements OnInit {
       case 'S':
         this.searchsubcat.nativeElement.style.display = display_mode;
         break;
-      case 'C':
-        this.__searchCat.nativeElement.style.display = display_mode;
-        break;
+      // case 'C':
+      //   this.__searchCat.nativeElement.style.display = display_mode;
+      //   break;
       default:
         break;
     }
@@ -252,12 +271,10 @@ export class SubcatrptComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&cat_id=' + this.__subcatForm.value.cat_id) +
+            ('&cat_id=' + JSON.stringify(this.__subcatForm.value.cat_name.map(item => item.id))) +
             ('&subcat_id=' + this.__subcatForm.value.subcat_id) +
-            ('&order=' +
-              (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
-            ('&field=' +
-              (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            ('&order=' +(global.getActualVal(this.sort.order) ? this.sort.order : '')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -331,13 +348,14 @@ export class SubcatrptComponent implements OnInit {
     });
   }
   refreshOrAdvanceFlt() {
-    this.__subcatForm.get('cat_name').setValue('',{emitEvent:false});
+    // this.__subcatForm.get('cat_name').setValue('',{emitEvent:false});
     this.__subcatForm.get('subcat_name').setValue('',{emitEvent:false});
     this.__subcatForm.patchValue({
       options: '2',
-      cat_id:'',
+      cat_name:[],
       subcat_id:''
     });
+    this.__pageNumber.setValue('10');
     this.sort = new sort();
     this.getSubcatMst();
   }
@@ -369,10 +387,11 @@ export class SubcatrptComponent implements OnInit {
   customSort(ev) {
     this.sort.field = ev.sortField;
     this.sort.order = ev.sortOrder;
-    this.submit();
+    if(ev.sortField){
+    this.submit();}
   }
   onselectItem(ev) {
-    this.__pageNumber.setValue(ev.option.value);
+    // this.__pageNumber.setValue(ev.option.value);
     this.submit();
   }
 }
