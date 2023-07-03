@@ -220,12 +220,12 @@ export class IsinRptComponent implements OnInit {
     __fd.append('cat_id',JSON.stringify(this.__isinFrm.value.cat_id.map(item => item.id)));
     __fd.append('sub_cat_id',JSON.stringify(this.__isinFrm.value.sub_cat_id.map(item => item.id)));
     __fd.append('scheme_id',JSON.stringify(this.__isinFrm.value.scheme_id.map(item => item.id)));
-    __fd.append('alt_scheme_id',global.getActualVal(this.__isinFrm.value.alt_scheme_id));
+    __fd.append('search_scheme_id',global.getActualVal(this.__isinFrm.value.alt_scheme_id));
     if(this.__isinFrm.value.btn_type == 'A'){
       __fd.append('plan_id',JSON.stringify(this.__isinFrm.value.plan_id.map(item => item.id)));
       __fd.append('opt_id',JSON.stringify(this.__isinFrm.value.opt_id.map(item => item.id)));
     }
-    this.__dbIntr.api_call(1,'/schemeISIN',__fd).pipe(pluck("data")).subscribe((res: any) =>{
+    this.__dbIntr.api_call(1,'/schemeISINDetailSearch',__fd).pipe(pluck("data")).subscribe((res: any) =>{
        this.__isinMst = res.data;
        this.__paginate = res.links;
       //  this.ExportTable(__fd);
@@ -254,7 +254,7 @@ export class IsinRptComponent implements OnInit {
           + ('&cat_id='+ this.__isinFrm.value.cat_id.map(item => item.id))
           + ('&amc_id='+ this.__isinFrm.value.amc_id.map(item => item.id))
           + ('&sub_cat_id='+ this.__isinFrm.value.sub_cat_id.map(item => item.id))
-          + ('&alt_scheme_id=' + global.getActualVal(this.__isinFrm.value.alt_scheme_id))
+          + ('&search_scheme_id=' + global.getActualVal(this.__isinFrm.value.alt_scheme_id))
           + (
             this.__isinFrm.value.btn_type == 'A' ?
             ('&plan_id=' + this.__isinFrm.value.plan_id.map(item => item.id)) +

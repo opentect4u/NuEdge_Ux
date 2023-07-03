@@ -12,7 +12,7 @@ export class fdRcvFrmClmns{
     {field:'emp_name',header:'Employee',isVisible:[1,2]},
     {field:'investor_name',header:'First Holder Name',isVisible:[1,2]},
     {field:'investor_code',header:'First Holder Code',isVisible:[1]},
-    {field:'trans_name',header:'Transaction Type',isVisible:[1]},
+    {field:'fd_bu_type',header:'FD Business Type',isVisible:[1]},
     {field:'scheme_name',header:'Scheme Name',isVisible:[1,2]},
     {field:'rec_datetime',header:'Receive Date Time',isVisible:[1,2]},
     {field:'recv_from',header:'Receive From',isVisible:[1,2]},

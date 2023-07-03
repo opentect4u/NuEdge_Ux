@@ -38,7 +38,8 @@ import filterOpt from '../../../../../../../../assets/json/filterOption.json';
 import { sort } from 'src/app/__Model/sort';
 import itemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
 import { fdRcvFrmClmns } from 'src/app/__Utility/fdColumns/rcvFrms';
-
+import insuredBuType from '../../../../../../../../assets/json/insuranceBuType.json';
+import { DatePipe } from '@angular/common';
 type selectBtn ={
   label:string,
   value:string,
@@ -56,7 +57,7 @@ export class RcvFormRPTComponent implements OnInit {
   settingsForbuType = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',3);
   settingsForRM = this.__utility.settingsfroMultiselectDropdown('id','manager_name','Search Relationship Manager',3);
   settingsForsubCode = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',3);
-  settingsFortrnsType = this.__utility.settingsfroMultiselectDropdown('id','trans_name','Search Transaction Type',1)
+  settingsForfdbutype = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search FD Business Type',2)
   // @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
   // @ViewChild('searchEUIN') __searchRlt: ElementRef;
   // @ViewChild('searchTempTin') __searchTempTin: ElementRef;
@@ -120,7 +121,7 @@ export class RcvFormRPTComponent implements OnInit {
   //   is_all_bu_type: new FormControl(false),
   // });
   // __insTypeMst: any = [];
-  __transType: any = [];
+  __fdBuType: any = insuredBuType;
   __brnchMst: any =[];
   __rmMst: any =[];
   sort = new sort();
@@ -136,7 +137,7 @@ export class RcvFormRPTComponent implements OnInit {
     temp_tin_no: new FormControl(''),
     client_name:new FormControl(''),
     client_code: new FormControl(''),
-    trns_type: new FormControl([]),
+    fd_bu_type: new FormControl([]),
     recv_frm: new FormControl(''),
     brn_cd: new FormControl([]),
     bu_type: new FormControl([]),
@@ -152,7 +153,8 @@ export class RcvFormRPTComponent implements OnInit {
     public dialogRef: MatDialogRef<RcvFormRPTComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private overlay: Overlay,
-    private __dbIntr: DbIntrService
+    private __dbIntr: DbIntrService,
+    private dtPipe:DatePipe
   ) {}
   // __trans_types: any;
   ngOnInit() {
@@ -183,13 +185,13 @@ export class RcvFormRPTComponent implements OnInit {
   __fdForm.append('to_date', global.getActualVal(this.__rcvForms.getRawValue().to_dt));
   __fdForm.append('investor_code',global.getActualVal(this.__rcvForms.value.client_code));
   __fdForm.append('temp_tin_no',global.getActualVal(this.__rcvForms.value.temp_tin_no));
-  __fdForm.append('trans_type', JSON.stringify(this.__rcvForms.value.trns_type.map(item => {return item['id']})));
+  __fdForm.append('fd_bu_type', JSON.stringify(this.__rcvForms.value.fd_bu_type.map(item => {return item['id']})));
   __fdForm.append('recv_from',global.getActualVal(this.__rcvForms.value.recv_from));
   if(this.__rcvForms.value.btn_type == 'A'){
     __fdForm.append('euin_no',JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]})));
-    __fdForm.append('brn_cd',JSON.stringify(this.__rcvForms.value.branch.map(item => {return item["id"]})));
+    __fdForm.append('brn_cd',JSON.stringify(this.__rcvForms.value.brn_cd.map(item => {return item["id"]})));
     __fdForm.append('bu_type',JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]})));
-    __fdForm.append('rm_id',JSON.stringify(this.__rcvForms.value.rm_name.map(item => {return item["id"]})));
+    __fdForm.append('rm_id',JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["id"]})));
     __fdForm.append('sub_brk_cd',JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]})));
   }
     this.__dbIntr.api_call(1, '/fd/formreceivedDetailSearch', __fdForm)
@@ -207,6 +209,7 @@ export class RcvFormRPTComponent implements OnInit {
     }
     else{
       //Reset
+      this.reset();
     }
 
   }
@@ -217,10 +220,10 @@ export class RcvFormRPTComponent implements OnInit {
      date_periods: '',
     options: '2',
     recv_from: '',
-    trans_type: '',
+    fd_bu_type: [],
     euin_no:[],
     sub_brk_cd:[],
-    branch:[],
+    brn_cd:[],
     rm_id:[],
     bu_type:[],
     date_range:''
@@ -357,6 +360,7 @@ export class RcvFormRPTComponent implements OnInit {
           this.__clientMst = value.data;
           this.searchResultVisibilityForClient('block');
           this.__isClientPending = false;
+          this.__rcvForms.controls['client_code'].reset('');
         },
         complete: () => console.log(''),
         error: (err) => {
@@ -471,7 +475,7 @@ export class RcvFormRPTComponent implements OnInit {
             ('&from_date=' + global.getActualVal(this.__rcvForms.getRawValue().frm_dt)) +
             ('&to_date=' + global.getActualVal(this.__rcvForms.getRawValue().to_dt)) +
             ('&temp_tin_no=' +(this.__rcvForms.value.temp_tin_no? this.__rcvForms.value.temp_tin_no: '')) +
-            ('&trans_type=' + JSON.stringify(this.__rcvForms.value.trns_type.map(item => {return item['id']}))) +
+            ('&fd_bu_type=' + JSON.stringify(this.__rcvForms.value.fd_bu_type.map(item => {return item['id']}))) +
             (this.__rcvForms.value.btn_type == 'A' ?
             ('&rm_id='+JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["id"]}))) +
             ('&sub_brk_cd=' +(this.__rcvForms.value.sub_brk_cd? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]})): '[]')) +
@@ -631,13 +635,18 @@ export class RcvFormRPTComponent implements OnInit {
   }
 
   updateRow(row_obj) {
+    console.log(row_obj);
+
     this.__RcvForms.data = this.__RcvForms.data.filter((value: any, key) => {
       if (value.temp_tin_no == row_obj.temp_tin_no) {
         value.arn_no = row_obj.arn_no;
         value.branch_code = row_obj.branch_code;
+        value.branch_name = row_obj.branch_name;
         value.bu_type = row_obj.bu_type;
+        value.entry_date = this.dtPipe.transform(row_obj.entry_date,'dd-MM-YYYY');
         value.dob = row_obj.dob;
         value.euin_no = row_obj.euin_no;
+        value.emp_name = row_obj.emp_name;
         value.comp_id = row_obj.comp_id;
         value.company_short_name = row_obj.company_short_name;
         value.company_full_name = row_obj.company_full_name;
@@ -654,14 +663,18 @@ export class RcvFormRPTComponent implements OnInit {
         value.sub_brk_cd = row_obj.sub_brk_cd;
         value.temp_tin_no = row_obj.temp_tin_no;
       }
+      return true;
     });
     this.__export.data = this.__export.data.filter((value: any, key) => {
       if (value.temp_tin_no == row_obj.temp_tin_no) {
         value.arn_no = row_obj.arn_no;
         value.branch_code = row_obj.branch_code;
+        value.branch_name = row_obj.branch_name;
         value.bu_type = row_obj.bu_type;
+        value.entry_date = this.dtPipe.transform(row_obj.entry_date,'dd-MM-YYYY');
         value.dob = row_obj.dob;
         value.euin_no = row_obj.euin_no;
+        value.emp_name = row_obj.emp_name;
         value.comp_id = row_obj.comp_id;
         value.company_short_name = row_obj.company_short_name;
         value.company_full_name = row_obj.company_full_name;
@@ -678,6 +691,8 @@ export class RcvFormRPTComponent implements OnInit {
         value.sub_brk_cd = row_obj.sub_brk_cd;
         value.temp_tin_no = row_obj.temp_tin_no;
       }
+      return true;
+
     });
   }
 

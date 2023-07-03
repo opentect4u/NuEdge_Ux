@@ -26,6 +26,6 @@ import { DialogDtlsComponent } from './Dialog/dialog-dtls/dialog-dtls.component'
     CommonModule,
     RouterModule.forChild(routes),
     SharedModule
-  ]
+  ],
 })
 export class RcvFormModule { }

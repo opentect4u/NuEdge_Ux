@@ -537,13 +537,13 @@
                 </div>
                  <div class="row">
                   <div class="col-sm-3">
-                      <label for="trns_type">Transaction Type</label>
+                      <label for="fd_bu_type">FD Business Type</label>
                       <ng-multiselect-dropdown #multiSelect
-                      id="trns_type"
-                      [placeholder]="'Select Transaction Type'"
-                      [settings]="settingsFortrnsType"
-                      [data]="__transType"
-                      formControlName="trns_type">
+                      id="fd_bu_type"
+                      [placeholder]="'Select FD Business Type'"
+                      [settings]="settingsForfdbutype"
+                      [data]="__fdBuType"
+                      formControlName="fd_bu_type">
                     </ng-multiselect-dropdown>
                   </div>
                   <div class="col-sm-3">
@@ -682,6 +682,13 @@
                 [matTooltip]="rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
                   {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
               </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'fd_bu_type'">
+                <span #tooltip="matTooltip"
+                [matTooltip]="rcvFormDT[col.field] == 'F' ? 'Fresh' : 'Renewal'">
+                {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'F' ? 'Fresh' : 'Renewal') : 'N/A'}}
+                </span>
+              </ng-container>
+
               <ng-container *ngSwitchCase="col.field == 'rec_datetime'">
                 <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
                 </ng-container>
@@ -843,6 +850,10 @@
           <ng-container matColumnDef="scheme_name">
             <th mat-header-cell *matHeaderCellDef>Scheme</th>
             <td mat-cell *matCellDef="let element">{{element.scheme_name ? element.scheme_name : 'N/A'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="fd_bu_type">
+            <th mat-header-cell *matHeaderCellDef>FD Business Type</th>
+            <td mat-cell *matCellDef="let element">{{element.fd_bu_type == 'F' ? 'Fresh' : 'Renewal'}}</td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { BnkrplcPipe } from '../__Pipes/bnkrplc.pipe';
 import { ClOutsideClickDirective } from '../__Directives/clOutsideClick.directive';
 import { elipsisPipe } from '../__Pipes/elipsis.pipe';
@@ -150,6 +150,7 @@ import { PaginateComponent } from './core/paginate/paginate.component';
     CardModule,
     CalendarModule,
     SelectButtonModule
-  ]
+  ],
+  providers:[DatePipe]
 })
 export class SharedModule { }

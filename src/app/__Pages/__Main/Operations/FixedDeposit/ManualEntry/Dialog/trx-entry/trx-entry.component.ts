@@ -899,6 +899,7 @@ setFormControl(formcontrlname, __val) {
   this.__fdTrax.get(formcontrlname).patchValue(__val);
 }
 submitFdTrax(){
+
  const __fd =new FormData();
 
     __fd.append('tin_status',this.__fdTrax.value.tin_status);
@@ -952,7 +953,7 @@ submitFdTrax(){
     __fd.append('sub_option',this.__fdTrax.getRawValue().sub_option);
     __fd.append('tenure_type',this.__fdTrax.value.tenure_type);
     __fd.append('tenure',this.__fdTrax.value.tenure);
-    __fd.append('maturity_dt',this.__fdTrax.value.maturity_dt);
+    __fd.append('maturity_date',global.getActualVal(this.__fdTrax.value.maturity_dt) ? (this.__fdTrax.value.maturity_dt + '-01') : '');
     __fd.append('interest_rate',this.__fdTrax.value.int_rate);
     __fd.append('maturity_instruction',this.__fdTrax.value.mat_instr);
     __fd.append('amount',this.__fdTrax.value.amount);

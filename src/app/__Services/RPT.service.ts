@@ -48,7 +48,7 @@ downloadReport(__tblName,dt,_doc_name){
 printRPT(__id){
   let WindowObject ;
   const divToPrint = document.getElementById(__id);
-  console.log(divToPrint.innerHTML);
+  // console.log(divToPrint.innerHTML);
  WindowObject = window.open('', 'Print-Window');
  WindowObject.document.open();
  WindowObject.document.writeln('<!DOCTYPE html>');

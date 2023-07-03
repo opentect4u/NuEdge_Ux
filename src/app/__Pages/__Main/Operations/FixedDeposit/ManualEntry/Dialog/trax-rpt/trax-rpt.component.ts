@@ -34,6 +34,7 @@ import buType from '../../../../../../../../assets/json/buisnessType.json';
 import modeOfPremium from '../../../../../../../../assets/json/Master/modeofPremium.json';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { client } from 'src/app/__Model/__clientMst';
+import popupMenu from '../../../../../../../../assets/json/Master/daySheetOpt.json'
 
 import { TrxEntryComponent } from '../trx-entry/trx-entry.component';
 import { fdComp } from 'src/app/__Model/fdCmp';
@@ -59,6 +60,7 @@ type selectBtn ={
 })
 export class TraxRPTComponent implements OnInit {
   isOpenMegaMenu:boolean = false;
+  daysheetpopupMenu = popupMenu;
   sort = new sort();
   itemsPerPage:selectBtn[] = itemsPerPage;
   selectBtn:selectBtn[] = filterOpt
@@ -166,6 +168,8 @@ export class TraxRPTComponent implements OnInit {
   getFDMstRPT() {
     const __fd = new FormData();
       __fd.append('paginate', this.__pageNumber.value);
+      __fd.append('option', this.__insTraxForm.value.options);
+
       if(this.__insTraxForm.value.options == 2 || this.__insTraxForm.value.options == 1){
         __fd.append('from_date',global.getActualVal(this.__insTraxForm.getRawValue().frm_dt));
         __fd.append('to_date',global.getActualVal(this.__insTraxForm.getRawValue().to_dt));
@@ -640,4 +644,9 @@ export class TraxRPTComponent implements OnInit {
     this.__columns = columns.map(({ field, header }) => ({field, header}));
     this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
   }
+  openMenu(event){
+    if(event.flag == 'P'){
+      this.__Rpt.printRPT('FDRPT');
+    }
+   }
 }

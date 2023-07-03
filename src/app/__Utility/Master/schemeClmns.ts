@@ -205,6 +205,6 @@ export class ISINClmns{
   {field:'scheme_name',header:'Scheme'},
   {field:'plan_name',header:'Plan'},
   {field:'opt_name',header:'Option'},
-  {field:'isin',header:'ISIN'}
+  {field:'isin_no',header:'ISIN'}
  ]
 }

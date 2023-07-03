@@ -177,7 +177,9 @@ export class SubcatrptComponent implements OnInit {
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/subcategory', dt) : []
+          dt?.length > 1 ? this.__dbIntr.searchItems('/subcategory',
+          (dt + '&arr_cat_id='+ JSON.stringify(this.__subcatForm.value.cat_name.map(item => item.id)))
+          ) : []
         ),
         map((x: responseDT) => x.data)
       )

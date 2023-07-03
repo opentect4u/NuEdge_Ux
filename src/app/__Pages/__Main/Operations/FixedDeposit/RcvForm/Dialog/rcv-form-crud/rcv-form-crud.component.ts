@@ -81,17 +81,22 @@ export class RcvFormCrudComponent implements OnInit {
   }
   setRcvFormDtls(){
     this.__dbIntr.api_call(0,'/fd/formreceived','temp_tin_no='+ this.data.temp_tin_no).pipe(pluck("data")).subscribe(res =>{
-      console.log(res);
       this.__rcvForm.patchValue({
           bu_type:res[0].bu_type ,
-          id:res[0].id ,
+          id:res[0].id,
           investor_id:res[0].investor_id ,
           investor_name:res[0].investor_name,
-          company_id:res[0].comp_id,
           recv_from:res[0].recv_from ,
-          scheme_id: res[0].scheme_id,
-          fd_bu_type_id: res[0].fd_bu_type
+          fd_bu_type_id: res[0].fd_bu_type,
+          company_id:res[0].comp_id,
+          scheme_id:res[0].scheme_id
       })
+      // this.__rcvForm.controls['company_id'].setValue(res[0].comp_id,{emitEvent:true});
+
+      // setTimeout(() => {
+      //   this.__rcvForm.controls['scheme_id'].setValue(res[0].scheme_id);
+      // }, 500);
+
       this.__dialogDtForClient = {id:res[0].investor_id,
          client_type:res[0].investor_type,
         client_name:res[0].investor_name,
@@ -203,7 +208,8 @@ export class RcvFormCrudComponent implements OnInit {
   })
 
   this.__rcvForm.controls['company_id'].valueChanges.subscribe(res =>{
-    console.log(res);
+    console.log('Company_id:' + res);
+
     if(res){
      this.getSchemeMst(res);
     }
@@ -268,9 +274,9 @@ export class RcvFormCrudComponent implements OnInit {
     __rcvForm.append("bu_type",this.__rcvForm.value.bu_type);
     __rcvForm.append("euin_no",this.__rcvForm.value.euin_no.split(' ')[0]);
     __rcvForm.append("investor_id",this.__rcvForm.value.investor_id);
-    __rcvForm.append("recv_from",this.__rcvForm.value.recv_from);
-    __rcvForm.append('company_id',this.__rcvForm.value.company_id);
-    __rcvForm.append('scheme_id',this.__rcvForm.value.scheme_id);
+    __rcvForm.append("recv_from",global.getActualVal(this.__rcvForm.value.recv_from));
+    __rcvForm.append('company_id',global.getActualVal(this.__rcvForm.value.company_id));
+    __rcvForm.append('scheme_id',global.getActualVal(this.__rcvForm.value.scheme_id));
     __rcvForm.append('temp_tin_no',this.data ? this.data.temp_tin_no : '');
     __rcvForm.append('fd_bu_type',this.data ? this.__rcvForm.value.fd_bu_type_id : '');
 
@@ -289,7 +295,7 @@ export class RcvFormCrudComponent implements OnInit {
       }
       else{
       this.__utility.showSnackbar(res.suc == 1 ? 'Form with temporary TIN ' + res.data.temp_tin_no + ' has been received successfully'  : 'Something went wrong! Plase try again later ' , res.suc)
-      this.dialogRef.close({temp_tin_no: null,data:res.data});
+      this.dialogRef.close({temp_tin_no: this.data.temp_tin_no,data:res.data});
       }
       // this.__rcvForm.reset();
     })

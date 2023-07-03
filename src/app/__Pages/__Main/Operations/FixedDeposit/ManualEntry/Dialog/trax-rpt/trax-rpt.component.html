@@ -1,4 +1,5 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+<!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle -->
+<div>
   <div mat-dialog-title class="dialog-title">
     <h2>Reports For FD Trax</h2>
     <div class="btnIcon">
@@ -735,6 +736,8 @@
             </p-selectButton>
             </div>
           </div>
+
+          <ng-container *ngIf="__insTraxForm.value.options != 3">
           <div class="row">
             <div class="col-sm-3">
               <label for="dt_type">Date Periods</label>
@@ -889,7 +892,7 @@
               </ng-multiselect-dropdown>
               </div>
             </div>
-            <div class="row">
+            <div class="row my-2">
               <div class="col-sm-12
               d-flex flex-column justify-content-end align-items-end">
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
@@ -897,14 +900,26 @@
             </div>
 
           </ng-container>
+        </ng-container>
+
 
           <ng-container *ngIf="__insTraxForm.value.options == 3">
-            <div class="row my-5">
+            <div class="row">
               <div class="col-sm-12">
                 <mat-radio-group aria-label="Select an option" formControlName="date_status">
                   <mat-radio-button color="primary" value="T">Today</mat-radio-button>
                   <mat-radio-button color="primary" value="D" class="ml-5">Date Range</mat-radio-button>
                 </mat-radio-group>
+              </div>
+            </div>
+            <div class="row" *ngIf="__insTraxForm.get('date_status').value == 'D'">
+              <div class="col-sm-3">
+                <label>Start Date</label>
+                <input type="date" class="form-control" formControlName="start_date">
+              </div>
+              <div class="col-sm-3">
+                <label>End Date</label>
+                <input type="date" class="form-control" formControlName="end_date">
               </div>
             </div>
 
@@ -915,17 +930,12 @@
                   <mat-radio-button color="primary" value="L" class="ml-5">Logged</mat-radio-button>
                 </mat-radio-group>
               </div>
-            </div>
-            <div class="row  my-5" *ngIf="__insTraxForm.get('date_status').value == 'D'">
-              <div class="col-sm-3">
-                <label>Start Date</label>
-                <input type="date" class="form-control" formControlName="start_date">
-              </div>
-              <div class="col-sm-3">
-                <label>End Date</label>
-                <input type="date" class="form-control" formControlName="end_date">
+              <div class="col-sm-7
+              d-flex flex-column justify-content-end align-items-end">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
             </div>
+
           </ng-container>
           </form>
 
@@ -1030,6 +1040,9 @@
                 <ng-container *ngSwitchCase="col.field == 'amount'">
                   {{rcvFormDT[col.field] ? (rcvFormDT[col.field] | currency:'INR') : 'N/A'}}
                 </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'maturity_date'">
+                  {{rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'YYYY-MM' | date:'fullDate') : 'N/A'}}
+                </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'app_form_scan'">
                       <p-button icon="pi pi-eye" (click)="DocumentView(rcvFormDT)"
                         styleClass="p-button-rounded p-button-primary"></p-button>
@@ -1069,6 +1082,15 @@
                     (onOptionClick)="onselectItem($event)"
                     ></p-selectButton>
                   </div>
+
+                  <div class="btnPopup" *ngIf="__insTraxForm.get('options').value == '3'">
+                    <core-btn-with-menu
+                    [menuListItem]="daysheetpopupMenu"
+                    [BtnTitle]="'Submit'"
+                    [hasMenu]="true"
+                    (sendItem)="openMenu($event)"
+                    ></core-btn-with-menu>
+                   </div>
 
                 <div  class="paginatorContainer">
                   <ul>
@@ -1285,7 +1307,7 @@
                   <ng-container matColumnDef="maturity_date">
                     <th mat-header-cell *matHeaderCellDef>Maturity Date</th>
                     <td mat-cell *matCellDef="let element;let i = index">
-                      {{element.maturity_date ? (element.maturity_date | date: 'dd-MM-YYYY') : 'N/A'}}
+                      {{element.maturity_date ? (element.maturity_date | date: 'YYYY-MM') : 'N/A'}}
                     </td>
                   </ng-container>
 
