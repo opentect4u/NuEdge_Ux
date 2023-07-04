@@ -237,7 +237,7 @@ export class RPTComponent implements OnInit {
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((dt) =>
-        dt?.length > 1 ? this.__dbIntr.searchItems('/fd/fdTraxShow', dt) : []
+        dt?.length > 1 ? this.__dbIntr.ReportTINSearch('/fd/fdTraxShow', dt) : []
       ),
       map((x: responseDT) => x.data)
     )

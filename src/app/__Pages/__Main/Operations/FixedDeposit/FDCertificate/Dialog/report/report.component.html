@@ -1,4 +1,7 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+<!--
+   cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle
+ -->
+<div>
   <div mat-dialog-title class="dialog-title">
     <h2>Reports For FD Certificate Delivery</h2>
     <div class="btnIcon">
@@ -19,7 +22,7 @@
     </div>
 
   </div>
-  <mat-dialog-content>
+  <!-- <mat-dialog-content>
     <div class="card my-5">
       <div class="card-body p-5">
         <form [formGroup]="__insTraxForm" (ngSubmit)="searchInsurance()" autocomplete="off">
@@ -28,7 +31,6 @@
               <mat-radio-group aria-label="Select an option" formControlName="options">
                 <mat-radio-button color="primary" value="2">Summary</mat-radio-button>
                 <mat-radio-button color="primary" value="1" class="ml-5">Detail</mat-radio-button>
-                <!-- <mat-radio-button color="primary" value="3" class="ml-5">Day Sheet</mat-radio-button> -->
               </mat-radio-group>
             </div>
             <div class="col-sm-4">
@@ -41,9 +43,7 @@
                 </mat-button-toggle>
 
               </mat-button-toggle-group>
-              <!-- <button mat-icon-button type="button" class="float-right" title="Reset" (click)="refresh()">
-                <mat-icon>refresh</mat-icon>
-              </button> -->
+
             </div>
           </div>
           <ng-container *ngIf="__insTraxForm.get('options').value != '3'">
@@ -209,7 +209,7 @@
 
                   <div class="col-sm-4">
                     <label for="comp_type_id">Company Type</label>
-                    <ng-multiselect-dropdown #multiSelect
+                    <ng-multiselect-dropdown
                     id="comp_type_id"
                     [placeholder]="'Select Company Type'"
                     [settings]="__comp_type_setting"
@@ -219,7 +219,7 @@
                   </div>
                   <div class="col-sm-4">
                     <label for="company_id">Company</label>
-                    <ng-multiselect-dropdown #multiSelect
+                    <ng-multiselect-dropdown
                     id="company_id"
                     [placeholder]="'Select Company'"
                     [settings]="__comp_setting"
@@ -229,7 +229,7 @@
                   </div>
                   <div class="col-sm-4">
                     <label for="product_id">Scheme</label>
-                    <ng-multiselect-dropdown #multiSelect
+                    <ng-multiselect-dropdown
                     id="scheme_id"
                     [placeholder]="'Select Scheme'"
                     [settings]="__scm_setting"
@@ -453,8 +453,6 @@
             <td mat-cell *matCellDef="let element;let i = index">{{element.comp_login_name ? element.comp_login_name : 'N/A'}}</td>
           </ng-container>
 
-
-                 <!-- Buisness Type-->
                  <ng-container matColumnDef="collected_from_comp">
                   <th mat-header-cell *matHeaderCellDef>Collected From Company</th>
                   <td mat-cell *matCellDef="let element">
@@ -471,7 +469,6 @@
                     </ng-template>
                   </td>
                 </ng-container>
-                <!-- Buisness Type-->
                 <ng-container matColumnDef="delivery_by">
                   <th mat-header-cell *matHeaderCellDef>Delivery By</th>
                   <td mat-cell *matCellDef="let element">
@@ -481,7 +478,6 @@
                       <button mat-icon-button (click)="populateDT(element)"
                       [disabled]="element.cert_delivery_flag == 'P' && element.certificate_delivery_opt == 'H'">
                         <mat-icon class="edit_icon">
-                          <!-- edit -->
                           {{(element.cert_delivery_flag == 'C' || element.cert_delivery_flag == 'B')
                           ? 'visibility' : 'edit'}}
                         </mat-icon>
@@ -744,5 +740,572 @@
         </table>
       </div>
     </div>
+  </mat-dialog-content> -->
+
+  <mat-dialog-content class="customDialog">
+    <div class="card p-3 border-1">
+      <ng-template #SearchBtn>
+        <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+      </ng-template>
+      <form [formGroup]="__insTraxForm" (ngSubmit)="searchInsurance()" autocomplete="off">
+        <div class="row">
+          <div class="col-sm-8 d-flex justify-content-start align-items-center">
+            <mat-radio-group aria-label="Select an option" formControlName="options">
+              <mat-radio-button color="primary" value="2">Summary</mat-radio-button>
+              <mat-radio-button color="primary" value="1" class="ml-5">Detail</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div class="col-sm-4 d-flex justify-content-end align-items-center">
+            <p-selectButton [options]="selectBtn" formControlName="btn_type" optionValue="value"
+              styleClass="p-button-lg" (onOptionClick)="onItemClick($event)" optionLabel="icon">
+              <ng-template let-item>
+                <i [class]="item.icon" [matTooltip]="item.label"></i>
+              </ng-template>
+            </p-selectButton>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="dt_type">Date Periods</label>
+            <select class="form-control" formControlName="dt_type" name="dt_type" id="dt_type">
+              <option value="">Select</option>
+              <option value="D">Today</option>
+              <option value="W">This Week</option>
+              <option value="M">This Month</option>
+              <option value="Y">This Year</option>
+              <option value="R">Date Range</option>
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <label for="date_range">Date (From - To)</label>
+            <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range" formControlName="date_range"
+              selectionMode="range" [readonlyInput]="true" id="date_range" [showIcon]="true"
+              [hideOnDateTimeSelect]="true" (onClose)="close($event)" [showButtonBar]="true">
+            </p-calendar>
+          </div>
+          <div class="col-sm-3">
+            <app-core-srch [label]="'TIN'" [placeholder]="'Search By TIN'" [isPending]="__istemporaryspinner"
+              [listItems]="__tinMst" [flag]="'T'" [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow]="['tin_no','investor_name']" formControlName="tin_no"
+              [displayMode]="displayMode_forTemp_Tin" (setDisplayMode)="displayMode_forTemp_Tin = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"></app-core-srch>
+          </div>
+          <div class="col-sm-3">
+            <app-core-srch [label]="'Client Details'"
+              [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+              [isPending]="__isClientPending" [listItems]="__clientMst" [flag]="'C'"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow]="['client_code','pan','client_name']" formControlName="investor_name"
+              [displayMode]="displayMode_forClient" (setDisplayMode)="displayMode_forClient = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"></app-core-srch>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="comp_type_id">Company Type</label>
+            <ng-multiselect-dropdown id="comp_type_id" [placeholder]="'Select Company Type'"
+              [settings]="__comp_type_setting" [data]="__compTypeMst" formControlName="comp_type_id">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="company_id">Company</label>
+            <ng-multiselect-dropdown id="company_id" [placeholder]="'Select Company'" [settings]="__comp_setting"
+              [data]="__compMst" formControlName="company_id">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="scheme_id">Scheme</label>
+            <ng-multiselect-dropdown id="scheme_id" [placeholder]="'Select Scheme'" [settings]="__scm_setting"
+              [data]="__scmMst" formControlName="scheme_id">
+            </ng-multiselect-dropdown>
+          </div>
+          <ng-container *ngIf="__insTraxForm.value.btn_type == 'A';else noAdv">
+            <div class="col-sm-3">
+              <label for="branch">Branch</label>
+              <ng-multiselect-dropdown id="branch" [placeholder]="'Select Branch'" [settings]="settingsForbrnch"
+                [data]="__brnchMst" formControlName="brn_cd">
+              </ng-multiselect-dropdown>
+            </div>
+          </ng-container>
+          <ng-template #noAdv>
+            <div class="col-sm-3 d-flex flex-column justify-content-end align-items-end">
+              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+            </div>
+          </ng-template>
+        </div>
+        <ng-container *ngIf="__insTraxForm.value.btn_type == 'A'">
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="bu_type">Business Type</label>
+              <ng-multiselect-dropdown id="bu_type" [placeholder]="'Select Business Type'"
+                [settings]="settingsForbuType" [data]="__bu_type" formControlName="bu_type">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="rm_id">Relationship Manager</label>
+              <ng-multiselect-dropdown id="rm_id" [placeholder]="'Select Relationship Manager'"
+                [settings]="settingsForbuType" [data]="__rmMst" formControlName="rm_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="sub_brk_cd">Sub Broker Code</label>
+              <ng-multiselect-dropdown id="sub_brk_cd" [placeholder]="'Select Sub Broker Code'"
+                [settings]="settingsForsubCode" [data]="__subbrkArnMst" formControlName="sub_brk_cd">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="euin_no">Employee</label>
+              <ng-multiselect-dropdown id="euin_no" [placeholder]="'Select Employee'" [settings]="settingsForEUIN"
+                [data]="__euinMst" formControlName="euin_no">
+              </ng-multiselect-dropdown>
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col-sm-12 d-flex flex-column justify-content-end align-items-end">
+              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+            </div>
+          </div>
+        </ng-container>
+
+      </form>
+    </div>
+
+    <div class="card border-1 mt-1">
+      <div class="example_container_header">
+        <div class="transTypeCount"></div>
+        <!-- (click)="isOpenMegaMenu = !isOpenMegaMenu" -->
+
+        <div class="btnGrp">
+          <p-button type="button" (click)="isOpenMegaMenu = !isOpenMegaMenu"  icon="pi pi-server" #tooltip="matTooltip" [matTooltipPosition]="'before'"
+            matTooltip="Column Selector" styleClass="p-button-primary p-button-lg p-button-outlined mr-2">
+          </p-button>
+          <p-button icon="pi pi-file-export" [matMenuTriggerFor]="menu" [matTooltipPosition]="'after'"
+            #tooltip="matTooltip" matTooltip="Export" styleClass="p-button-primary p-button-lg p-button-outlined">
+          </p-button>
+          <mat-menu #menu="matMenu">
+            <!-- (click)="exportPdf()" -->
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <!-- (click)="exporter.exportTable('xlsx',{fileName:'FDManualUpdateReport'})" -->
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'FDCertificateDeliveryReport'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+      <div class="container_body">
+        <p-table (onLazyLoad)="customSort($event)" [customSort]="true" sortMode="single" [lazy]="true"
+          [value]="__insTrax.data" [columns]="__columns" [resizableColumns]="true" selectionMode="multiple"
+          columnResizeMode="expand" [scrollable]="true" scrollHeight="358px" [autoLayout]="true" [responsive]="true"
+          styleClass="p-datatable-gridlines" [tableStyle]="{ 'min-width': '120rem' }">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field"
+                [ngStyle]="{'width': __insTraxForm.value.options == 2 ? '15rem' : '17rem'}">
+                {{ col.header }}
+                <p-sortIcon *ngIf="
+                col.field!= 'delete'
+                && col.field!='app_form_scan'
+                && col.field!='collected_from_comp'
+                && col.field!='delivery_by'
+                && col.field!='received_by'"
+                [field]="col.field">
+                </p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rcvFormDT let-columns="columns" let-i="rowIndex">
+            <tr tabindex="999">
+              <td *ngFor="let col of columns">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'bu_type'">
+                    <span #tooltip="matTooltip"
+                      [matTooltip]="rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
+                      {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect'
+                      : 'B2B')}}</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'rec_datetime'">
+                    <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{
+                      rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'entry_date'">
+                    <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY')">{{
+                      rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'investment_type'">
+                    <ng-container *ngIf="rcvFormDT['investment_type'];else noModeOfHolding">
+                      {{rcvFormDT[col.field] == 'F' ? 'Fresh' : 'Renewal'}}
+                    </ng-container>
+                    <ng-template #noModeOfHolding>N/A</ng-template>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'option' || col.field == 'sub_option'">
+                    {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'C' ? 'Cumulative' : 'Non Cumulative') : 'N/A'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'tenure_type'">
+                    {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'M' ? 'Monthly' : 'Yearly') : 'N/A'}}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'maturity_instruction'">
+                    {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'P' ? 'Auto Pay On Maturity' : 'Auto Renew On Maturity') : 'N/A'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'mode_of_payment'">
+                    {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'N' ? 'Online' : 'Offline') : 'N/A'}}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'certificate_delivery_opt'">
+                    {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'E' ? 'EFDR' : (rcvFormDT[col.field] == 'H' ?
+                    'Hand Delivery' : 'Postal Delivery')) : 'N/A'}}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'interest_rate'">
+                    {{rcvFormDT[col.field] ? ((rcvFormDT[col.field] / 100) | percent) : 'N/A'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'amount'">
+                    {{rcvFormDT[col.field] ? (rcvFormDT[col.field] | currency:'INR') : 'N/A'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'app_form_scan'">
+
+                    <p-button icon="pi pi-eye"  (click)="DocumentView(rcvFormDT)"
+                      styleClass="p-button-rounded p-button-primary"></p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
+                    <ng-container *ngIf="rcvFormDT['mode_of_holding'];else noModeOfHolding">
+                      {{rcvFormDT[col.field] == 'S' ? 'Survivor' : 'Anyone or survivor'}}
+                    </ng-container>
+                    <ng-template #noModeOfHolding>N/A</ng-template>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
+                      {{ rcvFormDT[col.field] ? rcvFormDT[col.field] : 'N/A' }}
+                    </span>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                No Records Found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <!-- For Paginate and Show Item Per page -->
+        <shared-paginate [__paginate]="__paginate"
+        [btn_type]="__insTraxForm.value.btn_type"
+        (itemPerpageShow)="onSelectItem($event)"
+        (PaginateFn)="getPaginate($event)"
+        ></shared-paginate>
+        <!-- End -->
+
+        <!-- Meage Menu For Check box -->
+        <core-mega-menu-for-column [isOpenMegaMenu]="isOpenMegaMenu" [ColumnList]="clmList"
+        [selectedClmns]="SelectedClms" (hideMegamenu)="isOpenMegaMenu = $event"
+        (getSelectedColumns)="getSelectedColumns($event)">
+        </core-mega-menu-for-column>
+        <!-- End -->
+
+        <div id="FDC" style="display:none">
+        <table mat-table [dataSource]="__exportTrax" class="table_Custome" matTableExporter
+        #exporter="matTableExporter">
+        <ng-container matColumnDef="tin_no">
+          <th mat-header-cell *matHeaderCellDef>TIN</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no ? element.tin_no : "N/A"}}</td>
+        </ng-container>
+        <ng-container matColumnDef="bu_type">
+          <th mat-header-cell *matHeaderCellDef>Buisness Type</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{(element.bu_type == 'D' ? 'B2C - Direct' : (element.bu_type == 'I' ? 'B2C - Indirect' : 'B2B'))}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="branch_name">
+          <th mat-header-cell *matHeaderCellDef>Branch</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.branch_name ? element.branch_name : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="mode_of_holding">
+          <th mat-header-cell *matHeaderCellDef>Mode Of Holding</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.mode_of_holding ? (element.mode_of_holding == 'S' ? 'Survivor' : 'Anyone or survivor') : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="rm_name">
+          <th mat-header-cell *matHeaderCellDef>RM Name</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.rm_name ? element.rm_name : 'N/A'}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="sub_brk_cd">
+          <th mat-header-cell *matHeaderCellDef>Sub Broker Code</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.sub_brk_cd ? element.sub_brk_cd : "N/A"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="emp_name">
+          <th mat-header-cell *matHeaderCellDef>Employee</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.emp_name ? element.emp_name : 'N/A'}}
+          </td>
+        </ng-container>
+
+
+         <!-- First Holder -->
+        <ng-container matColumnDef="investor_name">
+          <th mat-header-cell *matHeaderCellDef>First Holder Name</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_name ? element.investor_name : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="investor_code">
+          <th mat-header-cell *matHeaderCellDef>First Holder Code</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_code ? element.investor_code : "N/A"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="investor_pan">
+          <th mat-header-cell *matHeaderCellDef>First Holder PAN</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_pan ? element.investor_pan : "N/A"}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="investor_kyc_status">
+          <th mat-header-cell *matHeaderCellDef>First Holder KYC Status</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_kyc_status == 'Y' ? 'With KYC' : 'Without KYC'}}
+          </td>
+        </ng-container>
+          <!-- End -->
+
+
+         <!-- Second Holder -->
+        <ng-container matColumnDef="investor_name_2">
+          <th mat-header-cell *matHeaderCellDef>Second Holder Name</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_name_2 ? element.investor_name_2 : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="investor_code_2">
+          <th mat-header-cell *matHeaderCellDef>Second Holder Code</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_code_2 ? element.investor_code_2 : "N/A"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="investor_pan_2">
+          <th mat-header-cell *matHeaderCellDef>Second Holder PAN</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_pan_2 ? element.investor_pan_2 : "N/A"}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="investor_kyc_status_2">
+          <th mat-header-cell *matHeaderCellDef>Second Holder KYC Status</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_kyc_status_2 == 'Y' ? 'With KYC' : 'Without KYC'}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="investor_name_3">
+          <th mat-header-cell *matHeaderCellDef>Third Holder Name</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_name_3 ? element.investor_name_3 : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="investor_code_3">
+          <th mat-header-cell *matHeaderCellDef>Third Holder Code</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_code_3 ? element.investor_code_3 : "N/A"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="investor_pan_3">
+          <th mat-header-cell *matHeaderCellDef>Third Holder PAN</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_pan_3 ? element.investor_pan_3 : "N/A"}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="investor_kyc_status_3">
+          <th mat-header-cell *matHeaderCellDef>Third Holder KYC Status</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.investor_kyc_status_3 == 'Y' ? 'With KYC' : 'Without KYC'}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="company_type_name">
+          <th mat-header-cell *matHeaderCellDef>Company Type</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.comp_type_name ? element.comp_type_name : "N/A"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="scheme_name">
+          <th mat-header-cell *matHeaderCellDef>Scheme</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.scheme_name ? element.scheme_name : "N/A"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="investment_type">
+          <th mat-header-cell *matHeaderCellDef>Investment Type</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{ element.scheme_name ? (element.scheme_name  == 'F' ? 'Fresh' : 'Renewal') : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="option">
+          <th mat-header-cell *matHeaderCellDef>Option</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.option == 'N' ? 'Non Cumulative' : 'Cumulative'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sub_option">
+          <th mat-header-cell *matHeaderCellDef>Sub Option</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.sub_option ? (element.sub_option == 'C' ? 'Cumulative' : 'Non Cumulative') : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="tenure_type">
+          <th mat-header-cell *matHeaderCellDef>Tenure Type</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.tenure_type == 'M'? "Monthly" : "Yearly"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="maturity_date">
+          <th mat-header-cell *matHeaderCellDef>Maturity Date</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.maturity_date ? (element.maturity_date | date: 'dd-MM-YYYY') : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="interest_rate">
+          <th mat-header-cell *matHeaderCellDef>Tenure Interest Rate</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.interest_rate ? ((element.interest_rate / 100) | percent) : "N/A"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="comp_short_name">
+          <th mat-header-cell *matHeaderCellDef>Company</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{element.comp_short_name ? element.comp_short_name : "N/A"}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="maturity_instruction">
+          <th mat-header-cell *matHeaderCellDef>Maturity Instruction</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{element.maturity_instruction == 'P' ? 'Autopay on maturity' : 'Auto renewal on maturity'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Amount</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{element.amount ? (element.amount | currency:'INR') : "N/A"}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="mode_of_payment">
+          <th mat-header-cell *matHeaderCellDef>Transaction Mode</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.mode_of_payment == 'O' ? 'OFFLINE' : 'ONLINE'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acc_no">
+          <th mat-header-cell *matHeaderCellDef>Account No</th>
+          <td mat-cell *matCellDef="let element;">{{element.acc_no ? element.acc_no : 'N/A'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="payment_ref_no">
+          <th mat-header-cell *matHeaderCellDef>Payment Reference Number</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{element.payment_ref_no ? element.payment_ref_no : 'N/A'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="bank_name">
+          <th mat-header-cell *matHeaderCellDef>Bank</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{element.bank_name ? element.bank_name : 'N/A'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="chq_no">
+          <th mat-header-cell *matHeaderCellDef>Cheque Number</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.chq_no ? element.chq_no : 'N/A'}}</td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="entry_date">
+          <th mat-header-cell *matHeaderCellDef>Entry Date</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="certificate_delivery_opt">
+          <th mat-header-cell *matHeaderCellDef>Certificate Delivery Option</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.certificate_delivery_opt == 'E' ? 'EFDR' : (element.certificate_delivery_opt == 'H' ? 'Hand Delivery' : 'Postal Delivery')}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="tds_info_name">
+          <th mat-header-cell *matHeaderCellDef>TDS</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.tds_info_id | tdsInfo}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="application_no">
+          <th mat-header-cell *matHeaderCellDef>Application No</th>
+        <td mat-cell *matCellDef="let element;let i = index">{{element.application_no ? element.application_no : 'N/A'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fdr_no">
+          <th mat-header-cell *matHeaderCellDef>FDR No</th>
+        <td mat-cell *matCellDef="let element;let i = index">{{element.fdr_no ? element.fdr_no : 'N/A'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="comp_login_name">
+          <th mat-header-cell *matHeaderCellDef>Login At</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.comp_login_name ? element.comp_login_name : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef>Remarks</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.remarks ? element.remarks : 'N/A'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="comp_login_cutt_off">
+          <th  mat-header-cell *matHeaderCellDef>Login Cut Off</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.comp_login_cutt_off ? (element.comp_login_cutt_off | date:'dd-MM-YYYY') : 'N/A'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="comp_login_dt">
+          <th  mat-header-cell *matHeaderCellDef>Login Date</th>
+          <td mat-cell *matCellDef="let element;let i = index">
+            {{element.rnt_login_dt ? (element.rnt_login_dt | date:'dd-MM-YYYY') : 'N/A'}}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="__exportedClmns;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Records Found
+          </td>
+        </tr>
+      </table>
+      </div>
+
+
+
+      </div>
+      </div>
   </mat-dialog-content>
 </div>

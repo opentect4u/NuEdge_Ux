@@ -788,7 +788,7 @@ export class ManualupdateSearchComponent implements OnInit {
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/ins/insTraxShow', dt) : []
+          dt?.length > 1 ? this.__dbIntr.ReportTINSearch('/ins/insTraxShow', dt) : []
         ),
         map((x: responseDT) => x.data)
       )

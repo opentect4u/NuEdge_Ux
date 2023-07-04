@@ -117,6 +117,5 @@ export class fdTraxClm {
         {field:'tds_info_name',header:'TDS',isVisible:[1]},
         {field:'comp_login_name',header:'Login At',isVisible:[1,2,3]},
         {field:'remarks',header:'remarks',isVisible:[1]}
-
       ]
 }

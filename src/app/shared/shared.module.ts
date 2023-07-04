@@ -50,6 +50,7 @@ import { CardModule } from 'primeng/card';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { modeOfPrePipe } from '../__Pipes/modeOfPremium.pipe';
 import { PaginateComponent } from './core/paginate/paginate.component';
+import { TdsInfoPipe } from '../__Pipes/tdsInfo.pipe';
 
 @NgModule({
   imports: [
@@ -85,6 +86,7 @@ import { PaginateComponent } from './core/paginate/paginate.component';
   declarations: [
     modeOfPrePipe,
     BnkrplcPipe,
+    TdsInfoPipe,
     RelationshipPipe,
     ClOutsideClickDirective,
     elipsisPipe,
@@ -110,6 +112,7 @@ import { PaginateComponent } from './core/paginate/paginate.component';
   exports:[
     modeOfPrePipe,
     BnkrplcPipe,
+    TdsInfoPipe,
     RelationshipPipe,
     MatCardModule,
     ClOutsideClickDirective,
