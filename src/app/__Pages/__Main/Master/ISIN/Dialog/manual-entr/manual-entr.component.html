@@ -21,11 +21,11 @@
   </div>
 
 <mat-dialog-content >
-    <div class="card my-5">
+    <div class="card">
       <div class="card-header">
         <h4>Search ISIN</h4>
       </div>
-      <div class="card-body p-5">
+      <div class="card-body">
         <form [formGroup]="isinForm" (ngSubmit)="populateScheme()">
           <div class="row">
             <div class="col-sm-5">
@@ -53,7 +53,11 @@
               </select>
             </div>
             <div class="col-sm-2  d-flex justify-content-end align-items-end">
-              <button mat-raised-button color="primary" type="submit">Show</button>
+              <!-- <button mat-raised-button color="primary" type="submit">Show</button> -->
+              <p-button type="Show"
+              label="Show" icon="pi pi-eye"
+              iconPos="right"
+              styleClass="p-button-lg"></p-button>
             </div>
           </div>
          </form>
@@ -64,7 +68,7 @@
       <div class="card-header">
         <h4>{{!data.isViewMode ? 'Create' : 'View'}} ISIN</h4>
       </div>
-      <div class="card-body  p-5">
+      <div class="card-body ">
         <form [formGroup]="isinForm" (ngSubmit)="submitISIN()">
         <div class="row">
           <div class="col-sm-12 my-2">

@@ -301,7 +301,7 @@ export class RPTComponent implements OnInit {
     /*** Product Type Change */
     this.__insTraxForm.controls['comp_type_id'].valueChanges.subscribe(
       (res) => {
-        // this.getSchemeMst(this.__insTraxForm.get('company_id').value, res);
+        this.getSchemeMst(this.__insTraxForm.get('company_id').value, res);
         this.getCompanyMst(res);
       }
     );
@@ -309,7 +309,7 @@ export class RPTComponent implements OnInit {
 
     // /*** Comapny Change */
     this.__insTraxForm.controls['company_id'].valueChanges.subscribe((res) => {
-      this.getSchemeMst(res);
+      this.getSchemeMst(res,this.__insTraxForm.get('comp_type_id').value);
     });
     // /*** END */
   }
@@ -455,10 +455,14 @@ export class RPTComponent implements OnInit {
         this.__compTypeMst = res;
       });
   }
-  getSchemeMst(__comp_id) {
+  getSchemeMst(__comp_id,arr_comp_type_id) {
+
     if (__comp_id.length > 0) {
       this.__dbIntr
-        .api_call(0, '/fd/schemeDetails', 'arr_company_id='+ JSON.stringify(__comp_id.map(item => {return item['id']})))
+        .api_call(0, '/fd/scheme',
+        'arr_company_id='+ JSON.stringify(__comp_id.map(item => {return item['id']}))
+        + '&arr_comp_type_id=' + JSON.stringify(arr_comp_type_id.map(item => {return item['id']}))
+        )
         .pipe(pluck('data'))
         .subscribe(res => {
           this.__scmMst = res;
