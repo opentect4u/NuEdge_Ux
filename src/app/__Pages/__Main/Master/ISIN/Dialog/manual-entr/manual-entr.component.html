@@ -25,9 +25,9 @@
       <div class="card-header">
         <h4>Search ISIN</h4>
       </div>
-      <div class="card-body">
+      <div class="card-body px-3">
         <form [formGroup]="isinForm" (ngSubmit)="populateScheme()">
-          <div class="row">
+          <div class="row mb-2">
             <div class="col-sm-5">
               <label>AMC <span class="text-danger">*</span></label>
                   <select
@@ -45,9 +45,13 @@
                 name="scheme_id"
                 id="scheme_id"
                 class="form-control"
-                formControlName="scheme_id">
+                formControlName="scheme_id"
+                [compareWith]="compareWith"
+
+                >
                 <option value="">Select</option>
-                <option [ngValue]="scmItems" *ngFor="let scmItems of schemeMst">
+                <option [ngValue]="scmItems"
+                *ngFor="let scmItems of schemeMst">
                   {{scmItems.scheme_name}}
                 </option>
               </select>
@@ -64,14 +68,14 @@
       </div>
     </div>
 
-    <div class="card" *ngIf="isin_dtls.controls.length > 0">
+    <div class="card mt-2" *ngIf="isin_dtls.controls.length > 0">
       <div class="card-header">
-        <h4>{{!data.isViewMode ? 'Create' : 'View'}} ISIN</h4>
+        <h4>{{!data ? 'Create' : 'View'}} ISIN</h4>
       </div>
       <div class="card-body ">
-        <form [formGroup]="isinForm" (ngSubmit)="submitISIN()">
+        <form [formGroup]="isinForm" autocomplete="off" (ngSubmit)="submitISIN()">
         <div class="row">
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <table >
               <thead>
                 <tr>
@@ -124,9 +128,14 @@
               </tbody>
             </table>
           </div>
-          <div class="col-sm-12" *ngIf="!data.isViewMode">
-            <button  class="btn addBtn" type="submit"
-            [disabled]="this.isinForm.invalid">Submit</button>
+          <div class="col-sm-12 py-3 d-flex justify-content-end align-items-center" *ngIf="!data.isViewMode">
+            <!-- <button  class="btn addBtn" type="submit"
+            [disabled]="this.isinForm.invalid">Submit</button> -->
+            <p-button type="submit"
+            label="Save" icon="pi pi-save"
+            iconPos="right"
+            class="mr-2"
+            styleClass="p-button-lg"></p-button>
           </div>
         </div>
 

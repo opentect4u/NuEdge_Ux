@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit,Inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -18,6 +18,8 @@ import { option } from 'src/app/__Model/option';
 import { column } from 'src/app/__Model/tblClmns';
 import { ISINClmns } from 'src/app/__Utility/Master/schemeClmns';
 import { global } from 'src/app/__Utility/globalFunc';
+import { ManualEntrComponent } from '../manual-entr/manual-entr.component';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 type selectBtn ={
   label:string,
   value:string,
@@ -290,7 +292,84 @@ export class IsinRptComponent implements OnInit {
 
   }
   populateDT(isin){
-    console.log(isin);
-
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '100%';
+    dialogConfig.height = '100%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.panelClass = "fullscreen-dialog"
+    dialogConfig.id = "ISIN_" + isin.id,
+    dialogConfig.data = {
+      flag:"ISIN",
+      title:"ISIN Entry",
+      id:isin.id,
+      isViewMode:false,
+      isinDtls: isin
+    }
+    try {
+      const dialogref = this.__dialog.open(
+        ManualEntrComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe(res =>{
+        if(res){
+          this.updateRow(res.data)
+        }
+      })
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+      this.__utility.getmenuIconVisible({
+        flag:"ISIN"
+      });
+    }
   }
+  updateRow(row_obj){
+     row_obj.forEach(el =>{
+        if(this.__isinMst.findIndex(item => item.id == el.id) != -1){
+           this.__isinMst = this.__isinMst.filter((value,key) =>{
+                   if(value.id == el.id){
+                      value.isin_no = el.isin_no;
+                      value.amc_short_name = el.amc_short_name;
+                      value.amc_short_name = el.amc_short_name;
+                      value.cat_name = el.cat_name;
+                      value.subcategory_name = el.subcategory_name;
+                      value.scheme_name = el.scheme_name;
+                      value.plan_name = el.plan_name;
+                      value.opt_name = el.opt_name;
+                      value.plan_id = el.plan_id;
+                      value.option_id = el.option_id;
+                      value.amc_id = el.amc_id
+                   }
+                   return true;
+           })
+        }
+        else{
+          this.__isinMst.push(el)
+        }
+
+     })
+  }
+  deleteISIN(el,index){
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.autoFocus = false;
+      dialogConfig.role = 'alertdialog';
+      dialogConfig.data = {
+        flag: 'I',
+        id: el.id,
+        title: 'Delete '  + (el.isin_no ? el.isin_no : ''),
+        api_name:'/schemeISINDelete'
+      };
+      const dialogref = this.__dialog.open(DeletemstComponent, dialogConfig);
+      dialogref.afterClosed().subscribe((dt) => {
+        if (dt) {
+          if (dt.suc == 1) {
+            this.__isinMst.splice(index, 1);
+          }
+        }
+      });
+    }
 }

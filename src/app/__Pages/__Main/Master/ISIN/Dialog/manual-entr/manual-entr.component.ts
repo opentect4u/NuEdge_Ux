@@ -39,6 +39,22 @@ export class ManualEntrComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAMCMst();
+    console.log(this.data.isinDtls);
+
+    this.setISINFormDetailsForCorrospondingId(this.data.isinDtls);
+
+  }
+  setISINFormDetailsForCorrospondingId(dt){
+
+    if(dt){
+      setTimeout(() => {
+              this.isinForm.patchValue({
+              amc_id:dt.amc_id,
+              scheme_id:{id:dt.scheme_id,scheme_name:dt.scheme_name}
+            })
+            this.populateDTFromReport(dt);
+      }, 100);
+    }
 
   }
   getPlan(){
@@ -135,7 +151,6 @@ export class ManualEntrComponent implements OnInit {
        ))
      }
     })
-
   }
   addControls(){
     this.isin_dtls.push(this.setISIN(
@@ -147,12 +162,25 @@ export class ManualEntrComponent implements OnInit {
       ''
       ))
   }
+  populateDTFromReport(el){
+    this.isin_dtls.clear();
+    this.getPlan();
+    this.getOption();
+    this.__scmDtls = this.isinForm.controls['scheme_id'].value ? this.isinForm.controls['scheme_id'].value  : '';
+    this.isin_dtls.push(this.setISIN(
+      el.id,
+      el.scheme_id,
+      el.scheme_name,
+      el.plan_id,
+      el.option_id,
+      el.isin_no));
+  }
   submitISIN(){
     const fd = new FormData();
     fd.append('isin_dtls',JSON.stringify(this.isin_dtls.value))
     this.__dbIntr.api_call(1,'/schemeISINAddEdit',fd).subscribe((res: any) =>{
-        this.dialogRef.close();
-        this.__utility.showSnackbar(res.suc == 1 ? 'ISIN submitted successfully' : res.msg ,res.suc);
+        this.dialogRef.close({data:res.data});
+        this.__utility.showSnackbar(res.suc == 1 ? 'ISIN saved successfully' : res.msg ,res.suc);
     })
   }
   removeAt(index,row_id,isin_no){
@@ -186,6 +214,11 @@ export class ManualEntrComponent implements OnInit {
 
   RemoveControls(index){
     this.isin_dtls.removeAt(index);
-
+  }
+  compareWith(existing, toCheckAgainst) {
+    if (!toCheckAgainst) {
+      return false;
+    }
+    return existing.id === toCheckAgainst.id;
   }
 }
