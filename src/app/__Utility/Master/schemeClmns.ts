@@ -198,7 +198,8 @@ export class schemeClmns{
 
 export class ISINClmns{
  public static Columns:column[] = [
-  // {field:'edit',header:'Edit'},
+  {field:'edit',header:'Edit'},
+  {field:'delete',header:'Delete'},
   {field:'amc_short_name',header:'AMC'},
   {field:'cat_name',header:'Category'},
   {field:'subcategory_name',header:'Subcategory'},

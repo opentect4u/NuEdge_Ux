@@ -161,14 +161,24 @@
           </th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-rcvFormDT let-columns="columns" let-i="rowIndex">
+      <ng-template pTemplate="body" let-isin let-columns="columns" let-i="rowIndex">
         <tr tabindex="999">
           <td *ngFor="let col of columns">
             <ng-container [ngSwitch]="true">
 
+              <ng-container *ngSwitchCase="col.field == 'edit'">
+                <p-button icon="pi pi-pencil" (click)="populateDT(isin)"
+                  styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'delete'">
+                <p-button icon="pi pi-trash"
+                  styleClass="p-button-rounded p-button-danger"></p-button>
+              </ng-container>
+
+
               <ng-container *ngSwitchDefault>
-                <span #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
-                  {{ rcvFormDT[col.field] ? rcvFormDT[col.field] : 'N/A' }}
+                <span #tooltip="matTooltip" [matTooltip]="isin[col.field]">
+                  {{ isin[col.field] ? isin[col.field] : 'N/A' }}
                 </span>
               </ng-container>
             </ng-container>

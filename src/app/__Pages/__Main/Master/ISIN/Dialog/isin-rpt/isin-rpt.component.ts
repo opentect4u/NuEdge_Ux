@@ -81,19 +81,28 @@ export class IsinRptComponent implements OnInit {
   ngAfterViewInit(){
     this.__isinFrm.controls['amc_id'].valueChanges.subscribe(res =>{
       this.getcategoryAgainstAmc(res);
+      this.getSubcategoryAgainstCategory(this.__isinFrm.controls['cat_id'].value,res);
+      this.getSchemeAgainstSubCategory(this.__isinFrm.controls['sub_cat_id'].value,
+      this.__isinFrm.controls['cat_id'].value,
+      res);
     })
     this.__isinFrm.controls['cat_id'].valueChanges.subscribe(res =>{
-      this.getSubcategoryAgainstCategory(res);
+      this.getSubcategoryAgainstCategory(res,this.__isinFrm.controls['amc_id'].value);
+      this.getSchemeAgainstSubCategory(this.__isinFrm.controls['sub_cat_id'].value,
+      res,
+      this.__isinFrm.controls['amc_id'].value
+      )
     })
     this.__isinFrm.controls['sub_cat_id'].valueChanges.subscribe(res =>{
-      this.getSchemeAgainstSubCategory(res);
+      this.getSchemeAgainstSubCategory(res,this.__isinFrm.controls['cat_id'].value,this.__isinFrm.controls['amc_id'].value);
     })
+    // + '&arr_amc_id='+JSON.stringify(this.__isinFrm.value.amc_id.map(item => item.id))
     this.__isinFrm.controls['alt_scheme_name'].valueChanges.pipe(
       tap(() => (this.__isSchemeSpinner = true)),
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((dt) =>
-        dt?.length > 1 ? this.__dbIntr.searchItems('/scheme', dt + '&arr_amc_id='+JSON.stringify(this.__isinFrm.value.amc_id.map(item => item.id))) : []
+        dt?.length > 1 ? this.__dbIntr.searchItems('/scheme', dt) : []
       ),
       map((x: any) => x.data)
     ).subscribe({
@@ -127,9 +136,12 @@ export class IsinRptComponent implements OnInit {
            this.__isinFrm.controls['cat_id'].reset([],{emitEvent:true});
       }
   }
-  getSubcategoryAgainstCategory(arr_cat_ids){
-    if(arr_cat_ids.length > 0){
-      this.__dbIntr.api_call(0,'/subcategory','arr_cat_id='+JSON.stringify(arr_cat_ids.map(item => item.id)))
+  getSubcategoryAgainstCategory(arr_cat_ids,arr_amc_ids){
+    if(arr_cat_ids.length > 0 && arr_amc_ids.length > 0){
+      this.__dbIntr.api_call(0,'/subcategory',
+      'arr_cat_id='+JSON.stringify(arr_cat_ids.map(item => item.id))
+      +'&arr_amc_id='+JSON.stringify(arr_amc_ids.map(item => item.id))
+      )
       .pipe(pluck("data")).subscribe((res:subcat[]) =>{
         this.subCatMst = res;
      })
@@ -139,9 +151,13 @@ export class IsinRptComponent implements OnInit {
         this.__isinFrm.controls['sub_cat_id'].reset([],{emitEvent:true});
       }
   }
-  getSchemeAgainstSubCategory(arr_subcat_ids){
-    if(arr_subcat_ids.length > 0){
-      this.__dbIntr.api_call(0,'/scheme','arr_subcat_id='+JSON.stringify(arr_subcat_ids.map(item => item.id)))
+  getSchemeAgainstSubCategory(arr_subcat_ids,arr_cat_ids,arr_amc_ids){
+    if(arr_subcat_ids.length > 0 && arr_cat_ids.length > 0 && arr_amc_ids.length > 0){
+      this.__dbIntr.api_call(0,'/scheme',
+      'arr_subcat_id='+JSON.stringify(arr_subcat_ids.map(item => item.id))
+      +'&arr_cat_id='+JSON.stringify(arr_cat_ids.map(item => item.id))
+      +'&arr_amc_id='+JSON.stringify(arr_amc_ids.map(item => item.id))
+      )
       .pipe(pluck("data")).subscribe((res:scheme[]) =>{
         this.schemeMst = res;
      })
@@ -271,6 +287,10 @@ export class IsinRptComponent implements OnInit {
         error=>{
         });
     }
+
+  }
+  populateDT(isin){
+    console.log(isin);
 
   }
 }
