@@ -470,32 +470,6 @@ export class InsTraxRPTComponent implements OnInit {
       );
   }
 
-  refresh() {
-    // this.__insTraxForm.reset({ emitEvent: false });
-    this.__insTraxForm.patchValue({
-      options: '2',
-      start_date: this.getTodayDate(),
-      end_date: this.getTodayDate(),
-      date_status: 'T',
-      dt_type: '',
-      login_status: 'N',
-      is_all:false,
-      is_all_ins_bu_type: false
-    });
-    this.__insTraxForm.controls['company_id'].reset([],{emitEvent: false});
-    this.__insTraxForm.controls['product_type_id'].reset([],{emitEvent: false});
-    this.__insTraxForm.controls['product_id'].reset([],{emitEvent: false});
-    (<FormArray>this.__insTraxForm.get('ins_type_id')).clear();
-    (<FormArray>this.__insTraxForm.get('insured_bu_type')).clear();
-    (<FormArray>this.__insTraxForm.get('bu_type')).clear();
-    this.__insTraxForm.controls['proposer_code'].reset('', {
-      emitEvent: false,
-    });
-    this.__insTraxForm.controls['sub_brk_cd'].reset('', { emitEvent: false });
-    this.__insTraxForm.controls['euin_no'].reset('', { emitEvent: false });
-    this.__sortAscOrDsc = { active: '', direction: 'asc' };
-    this.searchInsurance();
-  }
   getItems(__items, __mode) {
     switch (__mode) {
       case 'C':
@@ -546,9 +520,13 @@ export class InsTraxRPTComponent implements OnInit {
     }
   }
   reset(){
-    // this.__insTraxForm.patchValue({
-
-    // })
+    this.__insTraxForm.patchValue({
+          dt_type:'',
+          date_range:'',
+          proposer_code: '',
+          proposer_name: '',
+    })
+    this.__insTraxForm.controls['tin_no'].setValue('',{emitEvent:false})
   }
   getBranchMst(){
     this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{

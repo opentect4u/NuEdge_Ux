@@ -424,7 +424,9 @@ export class EntryComponent implements OnInit {
   }
   submitRenewal(){
      let res = this.renewal_bu_oportunity.value;
-     res['euin_no']=this.renewal_bu_oportunity.value.euin_no.split('-')[1];
+     console.log(this.renewal_bu_oportunity.value.euin_no);
+
+     res['euin_no']= global.containsSpecialChars(this.renewal_bu_oportunity.value.euin_no) ? this.renewal_bu_oportunity.value.euin_no.split('-')[1] : this.renewal_bu_oportunity.value.euin_no
      this.__dbIntr.api_call(1,'/ins/businessOpportunityAddEdit',this.convertFormData(res)).subscribe((res: any) =>{
       if (res.suc == 1) {
         // this.dialogRef.close({ data: res.data });

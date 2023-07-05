@@ -462,7 +462,7 @@ export class ManualentrforackfinComponent implements OnInit {
     __ack.append('trans_type_id' ,this.data.trans_type_id);
     __ack.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
     __ack.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __ack.append('login_status_id',this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']}));
+    __ack.append('ack_status',JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']})));
     __ack.append('from_date',this.__ackForm.getRawValue().frm_dt? this.__ackForm.getRawValue().frm_dt: '');
     __ack.append('to_date',this.__ackForm.getRawValue().to_dt? this.__ackForm.getRawValue().to_dt: '');
     __ack.append('client_code',this.__ackForm.value.client_code? this.__ackForm.value.client_code: '');
@@ -557,7 +557,7 @@ export class ManualentrforackfinComponent implements OnInit {
             ('&amc_name=' + (this.__ackForm.value.amc_id ? JSON.stringify(this.__ackForm.value.amc_id.map(item => {return item["id"]})) : '[]')) +
             // ('&euin_no=' +(this.__ackForm.value.euin_no ? JSON.stringify(this.__ackForm.value.euin_no.map(item => {return item["id"]})) : '[]')) +
             // ('&brn_cd=' + (this.__ackForm.value.brn_cd ? JSON.stringify(this.__ackForm.value.brn_cd.map(item => {return item["id"]})) : '[]')) +
-            ('&login_status_id=' + JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']}))) +
+            ('&ack_status=' + JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']}))) +
 
             ('&rnt_name=' + (this.__ackForm.value.rnt_id ? JSON.stringify(this.__ackForm.value.rnt_id.filter(x=> x.isChecked).map(item => {return item["id"]})) : '[]'))
             // ('&bu_type' + (this.__ackForm.value.bu_type ? JSON.stringify(this.__ackForm.value.bu_type.map(item => {return item["id"]})) : '[]')) +

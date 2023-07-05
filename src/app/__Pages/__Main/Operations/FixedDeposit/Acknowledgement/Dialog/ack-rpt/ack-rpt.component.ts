@@ -122,7 +122,6 @@ export class AckRPTComponent implements OnInit {
     options: new FormControl('2'),
     sub_brk_cd: new FormControl([]),
     tin_no: new FormControl(''),
-    insured_bu_type: new FormArray([]),
     brn_cd: new FormControl([]),
     investor_code: new FormControl(''),
     investor_name: new FormControl(''),
@@ -193,7 +192,7 @@ export class AckRPTComponent implements OnInit {
       __fd.append('company_id', JSON.stringify(this.__insTraxForm.value.company_id.map(item => {return item['id']})));
       __fd.append('comp_type_id',JSON.stringify(this.__insTraxForm.value.comp_type_id.map(item => {return item['id']})));
       __fd.append('scheme_id', JSON.stringify(this.__insTraxForm.value.scheme_id.map(item => {return item['id']})));
-      __fd.append('login_status_id', JSON.stringify(this.login_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})));
+      __fd.append('ack_status', JSON.stringify(this.login_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})));
       if(this.__insTraxForm.value.btnType == 'A'){
       __fd.append('brn_cd', JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})));
       __fd.append('bu_type', JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item['id']})));
@@ -350,7 +349,7 @@ export class AckRPTComponent implements OnInit {
            ('&paginate=' + this.__pageNumber.value) +
            ('&option=' + this.__insTraxForm.value.options) +
           (
-          ('&login_status_id=' + (JSON.stringify(this.login_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})))) +
+          ('&ack_status=' + (JSON.stringify(this.login_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})))) +
            ('&from_date=' + global.getActualVal(this.__insTraxForm.getRawValue().frm_dt)) +
            ('&to_date=' + global.getActualVal(this.__insTraxForm.getRawValue().to_dt)) +
            ('&tin_no=' + global.getActualVal(this.__insTraxForm.value.tin_no)) +
@@ -478,12 +477,19 @@ export class AckRPTComponent implements OnInit {
     this.displayMode_forClient = display_mode;
   }
   getCompanyMst(arr_comp_type_id) {
-    this.__dbIntr
+    if(arr_comp_type_id.length > 0){
+      this.__dbIntr
       .api_call(0, '/fd/company', 'arr_cmp_type_id='+JSON.stringify(arr_comp_type_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: fdComp[]) => {
         this.__compMst = res;
       });
+    }
+    else{
+      this.__insTraxForm.controls['company_id'].setValue([], {emitEvent: true});
+      this.__compMst.length =0;
+    }
+
   }
   getCompanyTypeMst() {
     this.__dbIntr
@@ -537,7 +543,28 @@ export class AckRPTComponent implements OnInit {
      }
      else{
       //Reset
+      this.reset();
      }
+   }
+   reset(){
+    this. __insTraxForm.patchValue({
+      options:'2',
+      sub_brk_cd: [],
+      brn_cd: [],
+      euin_no: [],
+      bu_type: [],
+      rm_id: [],
+      frm_dt:'',
+      to_dt:'',
+      dt_type: '',
+      date_range: '',
+      investor_code:''
+    });
+    this.__insTraxForm.get('tin_no').reset('',{emitEvent:false});
+    this.__insTraxForm.get('investor_name').reset('',{emitEvent:false});
+    this.__insTraxForm.get('comp_type_id').reset([],{emitEvent:true});
+    this.__insTraxForm.get('is_all').reset(false,{emitEvent:true});
+    this.searchInsurance();
    }
    getBranchMst(){
     this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{

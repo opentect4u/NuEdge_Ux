@@ -189,7 +189,7 @@ export class AckSearchRPTComponent implements OnInit {
       __fd.append('company_id', JSON.stringify(this.__insTraxForm.value.company_id.map(item => {return item['id']})));
       __fd.append('comp_type_id',JSON.stringify(this.__insTraxForm.value.comp_type_id.map(item => {return item['id']})));
       __fd.append('scheme_id', JSON.stringify(this.__insTraxForm.value.scheme_id.map(item => {return item['id']})));
-      __fd.append('login_status_id', JSON.stringify(this.login_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})));
+      __fd.append('ack_status', JSON.stringify(this.login_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})));
       if(this.__insTraxForm.value.btnType == 'A'){
       __fd.append('brn_cd', JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})));
       __fd.append('bu_type', JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item['id']})));
@@ -342,7 +342,7 @@ export class AckSearchRPTComponent implements OnInit {
            ('&paginate=' + this.__pageNumber.value) +
            ('&option=' + this.__insTraxForm.value.options) +
           (
-          ('&login_status_id=' + (JSON.stringify(this.login_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})))) +
+          ('&ack_status=' + (JSON.stringify(this.login_status_id.value.filter(item => item.isChecked).map(res => {return res['id']})))) +
            ('&from_date=' + global.getActualVal(this.__insTraxForm.getRawValue().frm_dt)) +
            ('&to_date=' + global.getActualVal(this.__insTraxForm.getRawValue().to_dt)) +
            ('&tin_no=' + global.getActualVal(this.__insTraxForm.value.tin_no)) +

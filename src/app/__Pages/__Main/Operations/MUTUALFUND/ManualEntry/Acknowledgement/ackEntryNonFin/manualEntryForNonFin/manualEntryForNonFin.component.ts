@@ -390,7 +390,7 @@ export class ManualEntryForNonFinComponent implements OnInit {
     __ack.append('trans_type_id' ,this.data.trans_type_id);
     __ack.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
     __ack.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __ack.append('login_status_id',JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']})));
+    __ack.append('ack_status',JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']})));
     __ack.append('from_date',this.__ackForm.getRawValue().start_date? this.__ackForm.getRawValue().start_date: '');
     __ack.append('to_date',this.__ackForm.getRawValue().end_date? this.__ackForm.getRawValue().end_date: '');
     __ack.append('client_code',this.__ackForm.value.client_code? this.__ackForm.value.client_code: '');
@@ -485,7 +485,7 @@ export class ManualEntryForNonFinComponent implements OnInit {
               (this.__ackForm.value.client_code
                 ? this.__ackForm.value.client_code
                 : '') +
-                ('&login_status_id=' + (JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']}))))
+                ('&ack_status=' + (JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']}))))
                 +
                 ('&rnt_name=' +
                 (this.__ackForm.value.rnt_name.length > 0

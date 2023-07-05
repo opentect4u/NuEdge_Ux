@@ -440,12 +440,18 @@ export class RPTComponent implements OnInit {
     this.displayMode_forClient = display_mode;
   }
   getCompanyMst(arr_comp_type_id) {
+    if(arr_comp_type_id.length > 0){
     this.__dbIntr
       .api_call(0, '/fd/company', 'arr_cmp_type_id='+JSON.stringify(arr_comp_type_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: fdComp[]) => {
         this.__compMst = res;
       });
+    }
+    else{
+      this.__insTraxForm.controls['company_id'].setValue([], {emitEvent: true});
+      this.__compMst.length =0;
+    }
   }
   getCompanyTypeMst() {
     this.__dbIntr
@@ -485,7 +491,28 @@ export class RPTComponent implements OnInit {
      }
      else{
       //Reset
+      this.reset();
      }
+   }
+   reset(){
+    this. __insTraxForm.patchValue({
+      options:'2',
+      sub_brk_cd: [],
+      brn_cd: [],
+      euin_no: [],
+      bu_type: [],
+      rm_id: [],
+      frm_dt:'',
+      to_dt:'',
+      dt_type: '',
+      date_range: '',
+      investor_code:''
+    });
+    this.__insTraxForm.get('tin_no').reset('',{emitEvent:false});
+    this.__insTraxForm.get('investor_name').reset('',{emitEvent:false});
+    this.__insTraxForm.get('comp_type_id').reset([],{emitEvent:true});
+    this.__insTraxForm.get('is_all').reset(false,{emitEvent:true});
+    this.searchInsurance();
    }
    getBranchMst(){
     this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{

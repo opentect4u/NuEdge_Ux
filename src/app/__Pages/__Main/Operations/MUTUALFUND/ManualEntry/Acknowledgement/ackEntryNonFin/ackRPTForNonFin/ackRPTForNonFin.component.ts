@@ -428,7 +428,7 @@ export class AckRPTForNonFinComponent implements OnInit {
                 (this.__rcvForms.value.client_code
                   ? this.__rcvForms.value.client_code
                   : '') +
-                  ((('&login_status_id=' + (JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']}))))))
+                  ((('&ack_status=' + (JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']}))))))
                   + ('&rnt_name=' +
                   (this.__rcvForms.value.rnt_name.length > 0
                     ? JSON.stringify(this.rnt_name.value.filter(x=> x.isChecked).map(item => {return item['id']}))
@@ -560,7 +560,7 @@ export class AckRPTForNonFinComponent implements OnInit {
     __mfTrax.append('trans_type_id' ,this.data.trans_type_id);
     __mfTrax.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
     __mfTrax.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __mfTrax.append('login_status_id',JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']})));
+    __mfTrax.append('ack_status',JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']})));
     __mfTrax.append('from_date',this.__rcvForms.getRawValue().frm_dt? this.__rcvForms.getRawValue().frm_dt: '');
     __mfTrax.append('to_date',this.__rcvForms.getRawValue().to_dt? this.__rcvForms.getRawValue().to_dt: '');
     __mfTrax.append('client_code',this.__rcvForms.value.client_code? this.__rcvForms.value.client_code: '');
