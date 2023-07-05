@@ -1,16 +1,16 @@
 [
         {
-          "id":1,
+          "id":"M",
           "value":"P",
           "name":"Procees"
         },
         {
-          "id":2,
+          "id":"R",
           "value":"R",
           "name":"Rejected"
         },
         {
-          "id":3,
+          "id":"P",
           "value":"PE",
           "name":"Pending"
         }

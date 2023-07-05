@@ -1,16 +1,16 @@
 [
   {
-    "id":1,
+    "id":"A",
     "value":"L",
     "name":"Logged"
   },
   {
-    "id":2,
+    "id":"P",
     "value":"P",
     "name":"Pending"
   },
   {
-    "id":3,
+    "id":"R",
     "value":"R",
     "name":"Rejected"
   }

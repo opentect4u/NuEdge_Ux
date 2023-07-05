@@ -542,7 +542,13 @@ export class InsTraxRPTComponent implements OnInit {
     }
     else{
       //Report
+      this.reset();
     }
+  }
+  reset(){
+    // this.__insTraxForm.patchValue({
+
+    // })
   }
   getBranchMst(){
     this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{

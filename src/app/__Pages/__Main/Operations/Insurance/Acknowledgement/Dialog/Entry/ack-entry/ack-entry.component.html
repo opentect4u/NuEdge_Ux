@@ -23,7 +23,7 @@
   <mat-dialog-content>
     <form [formGroup]="__ackUpload" (ngSubmit)="UploadAcknowledgement()" [id]="'__ack_'+data.tin_no">
       <div class="row">
-        <div class="col-sm-12 my-5" >
+        <div class="col-sm-12" >
           <label for="comp_login_dt">Login Date <span class="text-danger">*</span></label>
           <input
           [max]="getcurrenctDatetime()"
@@ -47,7 +47,7 @@
           class="form-control"
           formControlName="comp_login_time">
         </div>
-        <div class="col-sm-12 my-5" *ngIf="!this.data.isViewMode">
+        <div class="col-sm-12" *ngIf="!this.data.isViewMode">
           <label for="ack_file">Upload Acknowledgement <span class="text-danger">*</span></label>
           <input (change)="getFile($event)"  type="file" name="ack_file" id="ack_file" class="form-control" formControlName="ack_file">
            <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
@@ -62,7 +62,7 @@
             10MB.</span>
         </div>
         </div>
-        <div class="col-lg-4 my-5" *ngIf="this.data.isViewMode">
+        <div class="col-lg-4" *ngIf="this.data.isViewMode">
           <label *ngIf="this.__ackUpload.get('file').value" for="">Acknowledgement Copy</label>
           <br/>
           <div class="file-man-box" *ngIf="this.__ackUpload.get('file').value">

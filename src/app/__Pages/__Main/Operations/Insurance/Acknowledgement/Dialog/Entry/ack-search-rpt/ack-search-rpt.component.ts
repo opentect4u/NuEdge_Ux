@@ -180,7 +180,7 @@ export class AckSearchRPTComponent implements OnInit {
       __fd.append('tin_no',global.getActualVal(this.__insTraxForm.value.tin_no));
       __fd.append('proposer_code',global.getActualVal(this.__insTraxForm.value.proposer_code));
       __fd.append('ins_type_id',JSON.stringify(this.__insTraxForm.value.ins_type_id.map(item => item.id)));
-      __fd.append('insured_bu_type',JSON.stringify(this.__insTraxForm.value.insured_bu_type.map(item => item.id)));
+      __fd.append('insured_bu_type',JSON.stringify(this.__insTraxForm.value.insured_bu_type.filter(item => item.isChecked).map(item => item.id)));
       __fd.append('company_id', JSON.stringify(this.__insTraxForm.value.company_id.map(item => item.id)));
       __fd.append('product_type_id',JSON.stringify(this.__insTraxForm.value.product_type_id.map(item => item.id)));
       __fd.append('product_id', JSON.stringify(this.__insTraxForm.value.product_id.map(item => item.id)));
@@ -436,7 +436,7 @@ export class AckSearchRPTComponent implements OnInit {
             ('&company_id=' + JSON.stringify(this.__insTraxForm.value.company_id.map(item => {return item['id']}))) +
             ('&tin_no=' +(this.__insTraxForm.value.tin_no? this.__insTraxForm.value.tin_no: '')) +
             ('&ins_type_id=' + JSON.stringify(this.__insTraxForm.value.ins_type_id.map(item => item.id))) +
-            ('&insured_bu_type=' + JSON.stringify(this.__insTraxForm.value.insured_bu_type.map(item => item.id))) +
+            ('&insured_bu_type=' + JSON.stringify(this.__insTraxForm.value.insured_bu_type.filter(item => item.isChecked).map(item => item.id))) +
             (this.__insTraxForm.value.btnType == 'A' ?
             ('&sub_brk_cd=' + JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item["id"]}))) +
             ('&rm_id='+JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item["id"]})))

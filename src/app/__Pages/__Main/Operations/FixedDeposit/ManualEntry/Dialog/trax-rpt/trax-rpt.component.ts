@@ -318,18 +318,6 @@ export class TraxRPTComponent implements OnInit {
     this.getFDMstRPT();
   }
 
-
-  uncheckAllForBuType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = false;
-    });
-  }
-  checkAllForBuType() {
-    this.__buTypeChecked.forEach((element: any) => {
-      element.checked = true;
-    });
-  }
-
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
@@ -401,26 +389,6 @@ export class TraxRPTComponent implements OnInit {
           this.__paginate = res.links;
         });
     }
-  }
-  onbuTypeChange(e: any) {
-    const bu_type: FormArray = this.__insTraxForm.get('bu_type') as FormArray;
-    if (e.checked) {
-      bu_type.push(new FormControl(e.source.value));
-    } else {
-      let i: number = 0;
-      bu_type.controls.forEach((item: any) => {
-        if (item.value == e.source.value) {
-          bu_type.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-    this.__insTraxForm.get('is_all_bu_type').setValue(
-      bu_type.controls.length == 3 ? true : false,
-      {emitEvent:false}
-    );
-
   }
   sortData(__ev) {
     this.__sortAscOrDsc = __ev;
@@ -509,7 +477,6 @@ export class TraxRPTComponent implements OnInit {
     });
     this.__insTraxForm.controls['sub_brk_cd'].reset('', { emitEvent: false });
     this.__insTraxForm.controls['euin_no'].reset('', { emitEvent: false });
-    this.uncheckAllForBuType();
     this.__sortAscOrDsc = { active: '', direction: 'asc' };
     this.searchFD();
   }
@@ -600,8 +567,27 @@ export class TraxRPTComponent implements OnInit {
       this.getBranchMst();
     }
     else{
-      //Report
+      this.reset();
     }
+  }
+  reset(){
+    this.__insTraxForm.patchValue({
+      date_range:'',
+      options:'2',
+      rm_id:[],
+      brn_cd:[],
+      euin_no:[],
+      bu_type:[],
+      date_status:'T',
+      start_date:this.getTodayDate(),
+      end_date:this.getTodayDate(),
+      login_status:'N',
+      frm_dt:'',
+      to_dt:'',
+      dt_type:'',
+    });
+    this.__insTraxForm.get('comp_type_id').reset([],{emitEvent:true});
+    this.searchFD();
   }
   getBranchMst(){
     this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{
