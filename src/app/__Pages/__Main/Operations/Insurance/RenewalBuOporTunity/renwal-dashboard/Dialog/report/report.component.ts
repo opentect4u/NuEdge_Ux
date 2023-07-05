@@ -406,4 +406,7 @@ export class ReportComponent implements OnInit {
         });
       }
   }
+  SubmitRenewal(){
+     this.getRenewalBuOpportunity();
+  }
 }

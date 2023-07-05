@@ -22,7 +22,7 @@
       <ng-template #SearchBtn>
         <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
       </ng-template>
-       <form [formGroup]="__bu_oportunity_frm" autocomplete="off">
+       <form [formGroup]="__bu_oportunity_frm" autocomplete="off" (ngSubmit)="SubmitRenewal()">
         <div class="row">
           <div class="col-sm-12 d-flex align-items-end justify-content-end">
             <p-selectButton
