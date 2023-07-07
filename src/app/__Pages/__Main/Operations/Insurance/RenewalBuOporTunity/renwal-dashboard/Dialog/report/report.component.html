@@ -318,10 +318,10 @@
                         <span #tooltip="matTooltip" [matTooltip]="(renewal_bu[col.field] | date:'dd-MM-YYYY hh:mma')">{{ renewal_bu[col.field] ? (renewal_bu[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
                         </ng-container>
 
-                        <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
+                        <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount' || col.field == 'sum_insured'">
                           <span #tooltip="matTooltip" [matTooltip]="(renewal_bu[col.field] | currency:'INR')">{{ renewal_bu[col.field] ? (renewal_bu[col.field] | currency:'INR') : 'N/A' }}</span>
                           </ng-container>
-                          <ng-container *ngSwitchCase="col.field == 'entry_date'">
+                          <ng-container *ngSwitchCase="col.field == 'entry_date' || col.field == 'renewal_dt'">
                             <span #tooltip="matTooltip" [matTooltip]="(renewal_bu[col.field] | date:'dd-MM-YYYY')">{{ renewal_bu[col.field] ? (renewal_bu[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
                             </ng-container>
                       <ng-container *ngSwitchDefault>

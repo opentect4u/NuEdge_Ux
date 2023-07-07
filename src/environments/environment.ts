@@ -90,7 +90,7 @@ export const environment = {
   ins_app_form_url: url + "public/ins-application-form/",
   ack_formUrl_for_ins:url + "public/ins-acknowledgement-copy/",
   manual_update_formUrl_for_ins:url + "public/ins-policy-copy/",
-  renwal_bu_frm_url:url + "public/renewal-application-form/",
+  renwal_bu_frm_url:url + "public/ins-business-opp/",
     /******************************End Insurance******************************************************** */
 //******************************* Start Fd************************************/
   app_formUrl_fd:url + "public/fd-application-form/",

@@ -587,6 +587,8 @@ export class TraxRPTComponent implements OnInit {
       dt_type:'',
     });
     this.__insTraxForm.get('comp_type_id').reset([],{emitEvent:true});
+    this.__pageNumber.setValue('10');
+    this.sort =new sort();
     this.searchFD();
   }
   getBranchMst(){

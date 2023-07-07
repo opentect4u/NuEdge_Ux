@@ -543,10 +543,19 @@ export class InsTraxRPTComponent implements OnInit {
           dt_type:'',
           date_range:'',
           proposer_code: '',
-          proposer_name: ''
+          brn_cd:[],
+          bu_type:[],
+          rm_id:[],
+          sub_brk_cd:[],
+          euin_no:[]
     })
     this.__insTraxForm.controls['tin_no'].setValue('',{emitEvent:false});
-    this.__insTraxForm.controls['ins_type_id'].reset([],{emitEvent:false})
+    this.__insTraxForm.controls['ins_type_id'].reset([],{emitEvent:true})
+    this.__insTraxForm.controls['proposer_name'].reset('',{emitEvent:false});
+    this.__insTraxForm.controls['is_all'].setValue(false,{emitEvent:true});
+    this.__pageNumber.setValue('10');
+    this.sort =new sort();
+    this.searchInsurance();
   }
   getBranchMst(){
     this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{

@@ -273,13 +273,13 @@ export class AckRPTComponent implements OnInit {
         this.setColumns(res);
     });
     this.__insTraxForm.controls['ins_type_id'].valueChanges.subscribe(res =>{
-      if(res.length > 0){
-        this.getCompanyMst(res);
-      }
-      else{
-        this.__compMst.length = 0;
-
-      }
+      this.getCompanyMst(res);
+      this.getProductTypeMst(res);
+      this.getProductMst(
+       res,
+       this.__insTraxForm.value.company_id,
+       this.__insTraxForm.value.product_type_id
+      )
     })
 
 
@@ -328,27 +328,23 @@ export class AckRPTComponent implements OnInit {
         },
       });
 
-    /*** Product Type Change */
-    this.__insTraxForm.controls['product_type_id'].valueChanges.subscribe(
-      (res) => {
-        if(res.length > 0){
-          this.getProductMst(res);
-        }
-        else{
-          this.__prdMst.length = 0;
-        }
-      }
-    );
+      /*** Product Type Change */
+      this.__insTraxForm.controls['product_type_id'].valueChanges.subscribe((res) => {
+        this.getProductMst(
+          this.__insTraxForm.value.ins_type_id,
+          this.__insTraxForm.value.company_id,
+          res
+          );
+      });
     /*** END */
 
     /*** Comapny Change */
     this.__insTraxForm.controls['company_id'].valueChanges.subscribe((res) => {
-      if(res.length > 0){
-        this.getProductTypeMst(res);
-      }
-      else{
-        this.__prodTypeMst.length = 0;
-      }
+      this.getProductMst(
+        this.__insTraxForm.value.ins_type_id,
+        res,
+        this.__insTraxForm.value.product_type_id
+      );
     });
     /*** END */
   }
@@ -424,33 +420,6 @@ export class AckRPTComponent implements OnInit {
         'Insurance Acknowledgement Report  '
       );
   }
-
-  refresh() {
-    // this.__insTraxForm.reset({ emitEvent: false });
-    this.__insTraxForm.patchValue({
-      options: '2',
-      start_date: this.getTodayDate(),
-      end_date: this.getTodayDate(),
-      date_status: 'T',
-      dt_type: '',
-      login_status: 'N',
-      is_all:false,
-      is_all_ins_bu_type: false
-    });
-    this.__insTraxForm.controls['company_id'].reset([],{emitEvent: false});
-    this.__insTraxForm.controls['product_type_id'].reset([],{emitEvent: false});
-    this.__insTraxForm.controls['product_id'].reset([],{emitEvent: false});
-    (<FormArray>this.__insTraxForm.get('ins_type_id')).clear();
-    (<FormArray>this.__insTraxForm.get('insured_bu_type')).clear();
-    (<FormArray>this.__insTraxForm.get('bu_type')).clear();
-    this.__insTraxForm.controls['proposer_code'].reset('', {
-      emitEvent: false,
-    });
-    this.__insTraxForm.controls['sub_brk_cd'].reset('', { emitEvent: false });
-    this.__insTraxForm.controls['euin_no'].reset('', { emitEvent: false });
-    this.__sortAscOrDsc = { active: '', direction: 'asc' };
-    this.searchInsurance();
-  }
   getItems(__items, __mode) {
     switch (__mode) {
       case 'C':
@@ -468,28 +437,49 @@ export class AckRPTComponent implements OnInit {
     this.displayMode_forClient = display_mode;
   }
   getCompanyMst(arr_ins_type_id) {
+    if(arr_ins_type_id.length > 0){
     this.__dbIntr
       .api_call(0, '/ins/company', 'arr_ins_type_id='+JSON.stringify(arr_ins_type_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: insComp[]) => {
         this.__compMst = res;
-      });
+      });}
+      else{
+        this.__compMst.length =0;
+        this.__insTraxForm.controls['company_id'].reset([],{emitEvent:false})
+      }
   }
-  getProductTypeMst(arr_comp_id) {
+  getProductTypeMst(arr_ins_type_id) {
+    if(arr_ins_type_id.length > 0){
     this.__dbIntr
-      .api_call(0, '/ins/productType', 'arr_comp_id='+ JSON.stringify(arr_comp_id.map(item => {return item['id']})))
+      .api_call(0, '/ins/productType', 'arr_ins_type_id='+ JSON.stringify(arr_ins_type_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: insPrdType[]) => {
         this.__prodTypeMst = res;
       });
+    }
+    else{
+      this.__prodTypeMst.length = 0;
+        this.__insTraxForm.controls['product_type_id'].reset([],{emitEvent:true})
+    }
   }
-  getProductMst(arr_prod_type_id) {
+  getProductMst(arr_ins_type_id,arr_comp_id,arr_prod_type_id) {
+    if(arr_prod_type_id.length > 0){
        this.__dbIntr
-        .api_call(1, '/ins/productDetails', 'arr_prod_type_id=' + JSON.stringify(arr_prod_type_id.map(item => {return item['id']})))
+        .api_call(0, '/ins/product',
+        'arr_ins_type_id=' + JSON.stringify(arr_ins_type_id.map(item => {return item['id']}))
+        +'&arr_comp_id=' + JSON.stringify(arr_comp_id.map(item => {return item['id']}))
+        +'&arr_prod_type_id=' + JSON.stringify(arr_prod_type_id.map(item => {return item['id']}))
+        )
         .pipe(pluck('data'))
         .subscribe((res: insProduct[]) => {
           this.__prdMst = res;
         });
+      }
+      else{
+        this.__prdMst.length = 0;
+        this.__insTraxForm.controls['product_id'].setValue([]);
+      }
   }
   onItemClick(ev){
     if(ev.option.value == 'A'){
@@ -497,7 +487,28 @@ export class AckRPTComponent implements OnInit {
     }
     else{
       //Report
+      this.reset();
     }
+  }
+  reset(){
+    this.__insTraxForm.patchValue({
+          dt_type:'',
+          date_range:'',
+          proposer_code: '',
+          brn_cd:[],
+          bu_type:[],
+          rm_id:[],
+          sub_brk_cd:[],
+          euin_no:[]
+    })
+    this.__insTraxForm.controls['tin_no'].setValue('',{emitEvent:false});
+    this.__insTraxForm.controls['ins_type_id'].reset([],{emitEvent:true})
+    this.__insTraxForm.controls['proposer_name'].reset('',{emitEvent:false});
+    this.__insTraxForm.controls['is_all'].setValue(false,{emitEvent:true});
+    this.__insTraxForm.controls['is_all_status'].setValue(false,{emitEvent:true});
+    this.__pageNumber.setValue('10');
+    this.sort =new sort();
+    this.searchInsurance();
   }
   getBranchMst(){
     this.__dbIntr.api_call(0,'/branch',null).pipe(pluck("data")).subscribe(res =>{

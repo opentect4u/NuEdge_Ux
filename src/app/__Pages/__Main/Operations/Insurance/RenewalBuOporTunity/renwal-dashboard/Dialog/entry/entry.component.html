@@ -285,13 +285,33 @@
       </div>
       <div class="col-sm-12">
         <label for="upload_scan">Upload Scan Copy <span class="text-danger">*</span></label>
-        <input type="file" (change)="getFile($event.target)" name="upload_scan" id="upload_scan" class="form-control" formControlName="upload_scan">
+        <!-- <input type="file" (change)="getFile($event.target)" name="upload_scan" id="upload_scan" class="form-control" formControlName="upload_scan"> -->
+
+        <div class="p-inputgroup">
+          <input type="file"  pInputText  (change)="getFile($event.target)" name="upload_scan" id="upload_scan" class="form-control" formControlName="upload_scan">
+          <button
+          *ngIf="this.renewal_bu_oportunity.value.preview_file"
+          type="button"
+          icon="pi pi-eye"
+          (click)="openPDF()"
+          pButton label="View"></button>
+        </div>
         <mat-hint ><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
 
+        <div class="invalid-feedback"
+            *ngIf=" renewal_bu_oportunity.get('upload_scan').invalid && ( renewal_bu_oportunity.get('upload_scan').dirty ||  renewal_bu_oportunity.get('upload_scan').touched)">
+            <span class="invalid-feedback" *ngIf=" renewal_bu_oportunity.get('upload_scan').errors?.required">*Please
+              provide file</span>
+            <span class="invalid-feedback" *ngIf="renewal_bu_oportunity.get('upload_scan').errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback" *ngIf="renewal_bu_oportunity.get('upload_scan').errors?.fileSizeValidator">*File size
+              must
+              not exceed than
+              10MB.</span>
+          </div>
       </div>
       <div class="col-sm-12 mb-2">
-        <label for="remarks">Remarks <span class="text-danger">*</span></label>
-        <!-- <input type="text" name="remarks" id="remarks" class="form-control" formControlName="remarks"> -->
+        <label for="remarks">Remarks</label>
         <textarea name="remarks" id="remarks" class="form-control" formControlName="remarks" cols="30" rows="10"></textarea>
       </div>
     </div>

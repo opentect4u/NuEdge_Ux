@@ -824,9 +824,10 @@
           </div>
           <ng-container *ngIf="__traxForm.get('sip_duration').value == 'M'">
             <div class="col-sm-12 my-2">
+              <!-- (change)="setStartDT($event)" -->
               <label for="duration">Duration <span class="text-danger">*</span></label>
-              <input type="text" placeholder="Enter Duration" name="sip_stardurationt_date" id="duration" class="form-control"
-                formControlName="duration" (change)="setStartDT($event)">
+              <input type="text" placeholder="Enter Duration" name="duration" id="duration" class="form-control"
+                formControlName="duration" >
                 <div class="invalid-feedback"
                 *ngIf="__traxForm.get('duration').invalid && (__traxForm.get('duration').dirty || __traxForm.get('duration').touched)">
                 <span class="invalid-feedback" *ngIf="(__traxForm.get('duration')).errors?.required">*Please provide
@@ -1043,8 +1044,24 @@
       <div class="row my-2">
         <div class="col-sm-12 ">
           <label for="file">Upload Scan Application Form <span class="text-danger">*</span></label>
-          <input type="file" name="file" id="file" formControlName="file" class="form-control"
-            (change)="getFIle($event.target)" accept=".pdf">
+
+          <div class="p-inputgroup">
+            <input type="file"  pInputText
+            (change)="getFIle($event.target)"
+            accept=".pdf"
+            name="upload_scan" id="upload_scan"
+            class="form-control"
+            formControlName="file">
+            <button
+            *ngIf="this.__traxForm.value.filePreview"
+            type="button"
+            icon="pi pi-eye"
+            (click)="openPDF()"
+            pButton label="View"></button>
+          </div>
+
+          <!-- <input type="file" name="file" id="file" formControlName="file" class="form-control" -->
+            <!-- (change)="getFIle($event.target)" accept=".pdf"> -->
             <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
             <div class="invalid-feedback"
             *ngIf=" __traxForm.get('file').invalid && ( __traxForm.get('file').dirty ||  __traxForm.get('file').touched)">

@@ -24,6 +24,7 @@ import { insTraxClm } from 'src/app/__Utility/InsuranceColumns/insTrax';
 import { environment } from 'src/environments/environment';
 import itemsPerPage from '../../../../../../../../../assets/json/itemsPerPage.json';
 import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
+import { EntryComponent } from '../entry/entry.component';
 type selectBtn ={
   label:string,
   value:string,
@@ -70,7 +71,7 @@ export class ReportComponent implements OnInit {
   __subbrkArnMst:any=[];
   __euinMst:any=[];
   __paginate:any=[];
-  renewal_buMst = new MatTableDataSource<buOpportunity[]>([])
+  renewal_buMst = new MatTableDataSource<buOpportunity>([])
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
@@ -173,37 +174,34 @@ export class ReportComponent implements OnInit {
 
     /** Changes in Insurance Type  */
       this.__bu_oportunity_frm.controls['ins_type_id'].valueChanges.subscribe(res =>{
-        if(res.length > 0){
-          this.getCompanyAgainstInsurancetype(res);
-        }
-        else{
-           this.__bu_oportunity_frm.controls['company_id'].setValue([],{emitEvent:true});
-           this.__compMst.length = 0;
-        }
+        this.getCompanyMst(res);
+        this.getProductTypeMst(res);
+        this.getProductMst(
+         res,
+         this.__bu_oportunity_frm.value.company_id,
+         this.__bu_oportunity_frm.value.product_type_id
+        )
       })
+
       /** End */
 
     /** Changes in Company  */
       this.__bu_oportunity_frm.controls['company_id'].valueChanges.subscribe(res =>{
-        if(res.length > 0){
-          this.getProductTypeMst(res);
-        }
-        else{
-           this.__bu_oportunity_frm.controls['product_type_id'].setValue([],{emitEvent:true});
-           this.__prodTypeMst.length = 0;
-        }
+        this.getProductMst(
+          this.__bu_oportunity_frm.value.ins_type_id,
+          res,
+          this.__bu_oportunity_frm.value.product_type_id
+        );
       })
       /** End */
 
     /** Changes in product Type  */
       this.__bu_oportunity_frm.controls['product_type_id'].valueChanges.subscribe(res =>{
-        if(res.length > 0){
-          this.getProductMst(res);
-        }
-        else{
-           this.__bu_oportunity_frm.controls['product_id'].setValue([],{emitEvent:true});
-           this.__prdMst.length = 0;
-        }
+        this.getProductMst(
+          this.__bu_oportunity_frm.value.ins_type_id,
+          this.__bu_oportunity_frm.value.company_id,
+          res
+          );
       })
       /** End */
   }
@@ -233,29 +231,52 @@ export class ReportComponent implements OnInit {
     this.__insType = res;
     })
   }
-  getCompanyAgainstInsurancetype(ins_type_ids){
+  getCompanyMst(arr_ins_type_id) {
+    if(arr_ins_type_id.length > 0){
     this.__dbIntr
-      .api_call(0, '/ins/company', 'arr_ins_type_id='+JSON.stringify(ins_type_ids.map(item => {return item['id']})))
+      .api_call(0, '/ins/company', 'arr_ins_type_id='+JSON.stringify(arr_ins_type_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: insComp[]) => {
         this.__compMst = res;
-      });
+      });}
+      else{
+        this.__compMst.length =0;
+        this.__bu_oportunity_frm.controls['company_id'].reset([],{emitEvent:false})
+      }
   }
-  getProductTypeMst(arr_company_id) {
+  getProductTypeMst(arr_ins_type_id) {
+    if(arr_ins_type_id.length > 0){
     this.__dbIntr
-      .api_call(0, '/ins/productType', 'arr_company_id='+ JSON.stringify(arr_company_id.map(item => {return item['id']})))
+      .api_call(0, '/ins/productType', 'arr_ins_type_id='+ JSON.stringify(arr_ins_type_id.map(item => {return item['id']})))
       .pipe(pluck('data'))
       .subscribe((res: insPrdType[]) => {
         this.__prodTypeMst = res;
       });
+    }
+    else{
+      this.__prodTypeMst.length = 0;
+        this.__bu_oportunity_frm.controls['product_type_id'].reset([],{emitEvent:true})
+    }
   }
-  getProductMst(arr_product_type_id) {
+  getProductMst(arr_ins_type_id,arr_comp_id,arr_prod_type_id) {
+    console.log(arr_ins_type_id);
+
+    if(arr_prod_type_id.length > 0){
        this.__dbIntr
-        .api_call(0, '/ins/productDetails', 'arr_product_type_id=' + JSON.stringify(arr_product_type_id.map(item => {return item['id']})))
+        .api_call(0, '/ins/product',
+        'arr_ins_type_id=' + JSON.stringify(arr_ins_type_id.map(item => {return item['id']}))
+        +'&arr_comp_id=' + JSON.stringify(arr_comp_id.map(item => {return item['id']}))
+        +'&arr_prod_type_id=' + JSON.stringify(arr_prod_type_id.map(item => {return item['id']}))
+        )
         .pipe(pluck('data'))
         .subscribe((res: insProduct[]) => {
           this.__prdMst = res;
         });
+      }
+      else{
+        this.__prdMst.length = 0;
+        this.__bu_oportunity_frm.controls['product_id'].setValue([]);
+      }
   }
   close(ev){
     this.__bu_oportunity_frm.patchValue({
@@ -310,7 +331,11 @@ export class ReportComponent implements OnInit {
       to_date:'',
       renewal_month:'',
       renewal_year:'',
-      proposer_code:''
+      proposer_code:'',
+      brn_cd:[],
+      rm_id:[],
+      euin_no:[],
+      sub_brk_cd:[]
     });
     this.__bu_oportunity_frm.controls['temp_tin_no'].setValue('',{emitEvent:false});
     this.__bu_oportunity_frm.controls['proposer_name'].setValue('',{emitEvent:false});
@@ -357,7 +382,80 @@ export class ReportComponent implements OnInit {
     }
   }
   populateDT(renewalItem){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.width = '60%';
+    dialogConfig.id =renewalItem.temp_tin_no
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    try{
+      dialogConfig.data = {
+      flag:'RBO',
+      data:renewalItem,
+      id: 0,
+      title: 'Renewal Buisness opportunity Entry',
+      product_id:'3',
+      temp_tin_no:renewalItem.temp_tin_no,
+      right:global.randomIntFromInterval(1,60)
+    };
+      var  dialogref = this.__dialog.open(EntryComponent, dialogConfig);
+      dialogref.afterClosed().subscribe(dt => {
+        if(dt){
+          this.updateRow(dt.data)
+        }
+      });
+    }
+    catch(ex){
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.updateSize("80%");
+      this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:'RBO'})
+    }
+  }
 
+  updateRow(row_obj){
+   this.renewal_buMst.data = this.renewal_buMst.data.filter(
+    ( value: buOpportunity , key) => {
+                if(value.temp_tin_no == row_obj.temp_tin_no){
+                 value.arn_no=row_obj.arn_no
+                 value.branch_code = row_obj.branch_code
+                 value.branch_name = row_obj.branch_name
+                 value.bu_type =  row_obj.bu_type
+                 value.comp_full_name = row_obj.comp_full_name
+                  value.comp_id = row_obj.comp_id;
+                  value.comp_short_name = row_obj.comp_short_name;
+                  value.emp_name =row_obj.emp_name;
+                  value.euin_no = row_obj.euin_no;
+                  value.ins_type = row_obj.ins_type;
+                  value.ins_type_id = row_obj.ins_type_id;
+                  value.insured_person_code = row_obj.insured_person_code;
+                  value.insured_person_dob = row_obj.insured_person_dob
+                  value.insured_person_id = row_obj.insured_person_id;
+                  value.insured_person_name = row_obj.insured_person_name;
+                  value.insured_person_pan = row_obj.insured_person_pan;
+                  value.product_id = row_obj.product_id;
+                  value.product_name = row_obj.product_name;
+                  value.product_type = row_obj.product_type;
+                  value.product_type_id = row_obj.product_type_id;
+                  value.proposer_code = row_obj.proposer_code;
+                  value.proposer_dob = row_obj.proposer_dob;
+                  value.proposer_id = row_obj.proposer_id;
+                  value.proposer_name = row_obj.proposer_name;
+                  value.proposer_pan = row_obj.proposer_pan;
+                  value.remarks = row_obj.remarks;
+                  value.renewal_dt = row_obj.renewal_dt;
+                  value.rm_name = row_obj.rm_name;
+                  value.same_as_above = row_obj.same_as_above;
+                  value.sub_arn_no = row_obj.sub_arn_no;
+                  value.sub_brk_cd = row_obj.sub_brk_cd;
+                  value.sum_insured = row_obj.sum_insured;
+                  value.temp_tin_no = row_obj.temp_tin_no;
+                  value.upload_file = row_obj.upload_file;
+                }
+                return true;
+   })
   }
   DocumentView(element){
     const dialogConfig = new MatDialogConfig();

@@ -66,10 +66,10 @@ export class FinrptComponent implements OnInit {
   settingsforAMCDropdown = this.__utility.settingsfroMultiselectDropdown('id','amc_short_name','Search AMC',1);
   settingsforSchemeDropdown = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
   settingsforBrnchDropdown = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
-  settingsforBuTypeDropdown = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',1);
-  settingsforRMDropdown = this.__utility.settingsfroMultiselectDropdown('id','rm_name','Search Relationship Manager',1);
-  settingsforSubBrkDropdown = this.__utility.settingsfroMultiselectDropdown('id','sub_brk_cd','Search Sub Broker',1);
-  settingsforEuinDropdown = this.__utility.settingsfroMultiselectDropdown('id','emp_name','Search Employee',1);
+  settingsforBuTypeDropdown = this.__utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',1);
+  settingsforRMDropdown = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',1);
+  settingsforSubBrkDropdown = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',1);
+  settingsforEuinDropdown = this.__utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
    isOpenMegaMenu = false;
   @ViewChild('searchTin') __searchTin: ElementRef;
   @ViewChild('clientCd') __clientCode: ElementRef;
@@ -97,7 +97,7 @@ export class FinrptComponent implements OnInit {
     btnType: new FormControl('R'),
     is_all_rnt: new FormControl(false),
     options: new FormControl('2'),
-    sub_brk_cd: new FormControl([]),
+    sub_brk_cd: new FormControl([],{updateOn:'blur'}),
     tin_no: new FormControl(''),
     client_name: new FormControl(''),
     client_code: new FormControl(''),
@@ -256,19 +256,101 @@ export class FinrptComponent implements OnInit {
       this.getBusinessTypeMst(res)
     })
     this.__rcvForms.controls['bu_type'].valueChanges.subscribe(res =>{
+      this.disabledSubBroker(res);
+       this.getRelationShipManagerMst(res,this.__rcvForms.value.brn_cd);
+    })
+    this.__rcvForms.controls['rm_name'].valueChanges.subscribe(res =>{
+      if(this.__rcvForms.value.bu_type.findIndex(item => item.bu_code == 'B') != -1){
+               this.getSubBrokerMst(res);
+      }
+      else{
+      this.__euinMst.length = 0;
+        this.__euinMst = res;
+      }
+   })
+   this.__rcvForms.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
+    // if(res.length > 0){
+      this.setEuinDropdown(res,this.__rcvForms.value.rm_name);
+    // }
+   })
+  }
+  setEuinDropdown(sub_brk_cd,rm){
+    // this.__euinMst.length = 0;
+    console.log(sub_brk_cd);
 
+   this.__euinMst = rm.filter(item => !this.__subbrkArnMst.map(item=> {return item['emp_euin_no']}).includes(item.euin_no));
+   if(sub_brk_cd.length > 0){
+    sub_brk_cd.forEach(element => {
+           if(this.__subbrkArnMst.findIndex((el) => element.code == el.code) != -1){
+              this.__euinMst.push(
+                {
+                  euin_no:this.__subbrkArnMst[this.__subbrkArnMst.findIndex((el) => element.code == el.code)].euin_no,
+                  emp_name:''
+                }
+                );
+           }
+    });
+   }
+   else{
+     this.__euinMst = this.__euinMst.filter(item => !this.__subbrkArnMst.map(item => {return item['euin_no']}).includes(item.euin_no))
+   }
+  }
+  disabledSubBroker(bu_type_ids){
+    if(bu_type_ids.findIndex(item => item.bu_code == 'B') != -1){
+      this.__rcvForms.controls['sub_brk_cd'].enable();
+    }
+    else{
+      this.__rcvForms.controls['sub_brk_cd'].disable();
+    }
+
+  }
+  getSubBrokerMst(arr_euin_no){
+    if(arr_euin_no.length > 0){
+    this.__dbIntr.api_call(0,'/subbroker',
+    'arr_euin_no='+ JSON.stringify(arr_euin_no.map(item => {return item['euin_no']})))
+    .pipe(pluck("data")).subscribe((res: any) =>{
+      this.__subbrkArnMst = res.map(({code,bro_name,emp_euin_no,euin_no}) => ({
+      code,
+      emp_euin_no,
+      euin_no,
+      bro_name:bro_name +'-'+code
+      })
+      );
     })
   }
+  else{
+    this.__subbrkArnMst.length =0;
+    this.__rcvForms.controls['sub_brk_cd'].setValue([]);
+  }
+
+  }
   getBusinessTypeMst(brn_cd){
+    if(brn_cd.length > 0){
     this.__dbIntr
     .api_call(0,'/businessType','arr_branch_id='+JSON.stringify(brn_cd.map(item => {return item['id']})))
     .pipe(pluck("data")).subscribe(res =>{
             this.__bu_type = res;
     })
   }
-  getRelationShipManagerMst(bu_type_id){
-    // this.__dbIntr.api_call(0,'/relationShipManager','arr_bu_type_id='+ JSON.stringify())
-
+  else{
+    this.__rcvForms.controls['bu_type'].reset([],{emitEvent:true});
+    this.__bu_type.length = 0;
+  }
+  }
+  getRelationShipManagerMst(bu_type_id,arr_branch_id){
+    if(bu_type_id.length > 0 && arr_branch_id.length > 0){
+    this.__dbIntr.api_call(0,'/employee',
+    'arr_bu_type_id='+ JSON.stringify(bu_type_id.map(item => {return item['bu_code']}))
+    +'&arr_branch_id=' + JSON.stringify(arr_branch_id.map(item  => {return item['id']}))
+    ).pipe(pluck("data"))
+    .subscribe(res =>{
+         this.__RmMst = res;
+    })
+  }
+  else{
+    this.__RmMst.length =0;
+    this.__rcvForms.controls['rm_name'].reset([]);
+  }
   }
   ngOnInit() {
     this.getTransactionTypeDtls();
@@ -373,23 +455,23 @@ export class FinrptComponent implements OnInit {
 
       __mfTrax.append(
         'sub_brk_cd',
-        this.__rcvForms.value.sub_brk_cd ? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]})) : '[]'
+        this.__rcvForms.value.sub_brk_cd ? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["code"]})) : '[]'
       );
       __mfTrax.append(
         'euin_no',
-        this.__rcvForms.value.euin_no ? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]})) : '[]'
+        this.__rcvForms.value.euin_no ? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["euin_no"]})) : '[]'
       );
       __mfTrax.append(
         'brn_cd',
         this.__rcvForms.value.brn_cd ? JSON.stringify(this.__rcvForms.value.brn_cd.map(item => {return item["id"]})) : '[]'
       );
        __mfTrax.append('rm_id',
-       this.__rcvForms.value.rm_name ? JSON.stringify(this.__rcvForms.value.rm_name.map(item => {return item["id"]})) : '[]')
+       this.__rcvForms.value.rm_name ? JSON.stringify(this.__rcvForms.value.rm_name.map(item => {return item["euin_no"]})) : '[]')
 
       __mfTrax.append(
         'bu_type',
         this.__rcvForms.value.bu_type
-          ? JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]}))
+          ? JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["bu_code"]}))
           : '[]'
       );
     }
@@ -502,17 +584,17 @@ export class FinrptComponent implements OnInit {
                 (this.__rcvForms.value.btnType == 'A' ?
                 ('&sub_brk_cd=' +
                   (this.__rcvForms.value.sub_brk_cd
-                    ? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]}))
+                    ? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["code"]}))
                     : '')) +
                 (
                   '&rm_id='+
                   (this.__rcvForms.value.rm_id
-                    ? JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["id"]}))
+                    ? JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["euin_no"]}))
                     : '[]')
                 ) +
                 ('&euin_no=' +
                   (this.__rcvForms.value.euin_no
-                    ? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]}))
+                    ? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["euin_no"]}))
                     : '[]')) +
                 ('&brn_cd=' +
                   (this.__rcvForms.value.brn_cd
@@ -521,7 +603,7 @@ export class FinrptComponent implements OnInit {
 
                 ('&bu_type' +
                   (this.__rcvForms.value.bu_type
-                    ? JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]}))
+                    ? JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["bu_code"]}))
                     : '[]')) : '') +
                 ('&from_date=' +
                   (this.__rcvForms.value.options != '3'
@@ -610,6 +692,10 @@ export class FinrptComponent implements OnInit {
   }
 
   reset() {
+    this.__RmMst.length = 0;
+    this.__subbrkArnMst.length = 0;
+    this.__euinMst.length = 0;
+    this.__bu_type.length = 0;
     this.__rcvForms.patchValue({
       is_all_rnt: false,
     options: '2',
@@ -627,6 +713,11 @@ export class FinrptComponent implements OnInit {
     })
     this.sort = new sort();
     this.__rcvForms.get('is_all_rnt').setValue(false);
+    this.__rcvForms.get('brn_cd').reset([],{emitEvent:false});
+    this.__rcvForms.get('bu_type').reset([],{emitEvent:false});
+    this.__rcvForms.get('rm_name').reset([],{emitEvent:false});
+    this.__rcvForms.get('sub_brk_cd').reset([],{emitEvent:false});
+    this.__rcvForms.get('euin_no').reset([],{emitEvent:false});
     this.__rcvForms.get('amc_name').setValue([],{emitEvent:false});
     this.__schemeMst.length = 0;
     this.__pageNumber.setValue('10');
@@ -752,13 +843,6 @@ export class FinrptComponent implements OnInit {
 }
   onItemClick(ev){
     if(ev.option.value == 'A'){
-      this.__rcvForms.patchValue({
-        brnc_cd:[],
-        bu_type:[],
-        rm_name:[],
-        sub_brk_cd:[],
-        euin_no:[]
-      });
      this.getBranchMst();
     }
     else{

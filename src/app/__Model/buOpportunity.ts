@@ -1,6 +1,24 @@
 export class buOpportunity{
   rec_datetime?:string;
  temp_tin_no:string;
+ branch_code?:string;
+ branch_name?:string;
+ comp_full_name:string;
+ comp_short_name:string;
+ insured_person_code:string;
+ insured_person_dob:string;
+ insured_person_name:string;
+ insured_person_pan:string;
+ ins_type:string;
+ product_name:string;
+ product_type:string;
+ proposer_code:string;
+ proposer_dob:string;
+ proposer_id:string;
+ proposer_name:string;
+ rm_name:string;
+ proposer_pan:string;
+ emp_name:string;
  bu_type:string;
  arn_no?:string;
  sub_arn_no?:string;
@@ -17,4 +35,5 @@ export class buOpportunity{
  renewal_dt:string;
  upload_scan?:string;
  remarks?:string;
+ upload_file:string;
 }

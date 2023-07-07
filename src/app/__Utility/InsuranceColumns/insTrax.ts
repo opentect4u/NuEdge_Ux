@@ -141,7 +141,7 @@ export class insTraxClm {
     {field:'product_type',header:'Product Type'},
     {field:'product_name',header:'Product Name'},
     {field:'sum_insured',header:'Sum Insured'},
-    {field:'renewal_date',header:'Renewal Date'},
+    {field:'renewal_dt',header:'Renewal Date'},
     {field:'remarks',header:'Remarks'}
   ]
 }

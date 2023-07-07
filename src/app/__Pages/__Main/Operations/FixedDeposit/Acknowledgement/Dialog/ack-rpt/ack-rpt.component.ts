@@ -564,6 +564,8 @@ export class AckRPTComponent implements OnInit {
     this.__insTraxForm.get('investor_name').reset('',{emitEvent:false});
     this.__insTraxForm.get('comp_type_id').reset([],{emitEvent:true});
     this.__insTraxForm.get('is_all').reset(false,{emitEvent:true});
+    this.__pageNumber.setValue('10');
+    this.sort =new sort();
     this.searchInsurance();
    }
    getBranchMst(){

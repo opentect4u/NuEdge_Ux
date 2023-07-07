@@ -51,6 +51,7 @@ import { CreateBankComponent } from 'src/app/shared/create-bank/create-bank.comp
 import { CreateClientComponent } from 'src/app/shared/create-client/create-client.component';
 import { PreviewdtlsDialogComponent } from 'src/app/shared/core/previewdtls-dialog/previewdtls-dialog.component';
 import clientType from '../../../../../../../../../../../assets/json/clientTypeMenu.json';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'finModification-component',
@@ -211,7 +212,6 @@ export class FinmodificationComponent implements OnInit {
     filePreview: new FormControl(''),
     app_form_scan: new FormControl(''),
     file: new FormControl('', [
-      Validators.required,
       fileValidators.fileExtensionValidator(this.allowedExtensions),
     ]),
     remarks: new FormControl(''),
@@ -243,7 +243,7 @@ export class FinmodificationComponent implements OnInit {
     sip_type: new FormControl(''),
     sip_frequency: new FormControl(''),
     sip_duration: new FormControl(''),
-    duration: new FormControl(''),
+    duration: new FormControl('',{updateOn:'blur'}),
     period: new FormControl(''),
     sip_start_date: new FormControl(''),
     sip_end_date: new FormControl(''),
@@ -251,10 +251,8 @@ export class FinmodificationComponent implements OnInit {
     switch_amt: new FormControl(''),
     switch_scheme_to: new FormControl(''),
     scheme_id_to: new FormControl(''),
-
     switch_by: new FormControl(''),
     unit: new FormControl(''),
-    all_unit: new FormControl(''),
     Switch_amt: new FormControl(''),
     option_to: new FormControl(''),
     plan_to: new FormControl(''),
@@ -276,29 +274,28 @@ export class FinmodificationComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.getnumberofdaystobeadded();
+
     this.getrntMst();
     this.getOptionMst();
     this.getPlanMst();
-    this.getnumberofdaystobeadded();
     this.getTransactionType();
     if (this.data.data) {
       this.setFInancialData(this.data.data);
     }
   }
   setFInancialData(__res) {
-    // console.log(__res);
-    // setTimeout(() => {
-    // this.__temp_tinMst.push(__res);
-    // this.getItems(__res);
-    // }, 200);
+    console.log(__res);
+    setTimeout(() => {
+      this.__temp_tinMst.push(__res);
+      this.getItems(__res);
+    }, 200);
   }
   getnumberofdaystobeadded() {
     this.__dbIntr
       .api_call(0, '/mdparams', null)
       .pipe(pluck('data'))
       .subscribe((res) => {
-        console.log(res);
-
         this.__noofdaystobeAdded = res;
       });
   }
@@ -337,6 +334,13 @@ export class FinmodificationComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+
+   //Duration Change
+   this.__traxForm.get('duration').valueChanges.subscribe(res=>{
+    this.setEndDate(res);
+   })
+
+
     //Second Kyc_status Change
     this.__traxForm.get('second_kyc_status').valueChanges.subscribe((res) => {
       this.__secondkycMst = res == 'Y' ? KycMst : withoutKycMst;
@@ -792,9 +796,9 @@ export class FinmodificationComponent implements OnInit {
     );
 
     //Change in Durations
-    this.__traxForm.controls['duration'].valueChanges.subscribe((res) => {
-      this.setSipEndDate();
-    });
+    // this.__traxForm.controls['duration'].valueChanges.subscribe((res) => {
+    //   this.setSipEndDate();
+    // });
     //Period in Durations
     this.__traxForm.controls['period'].valueChanges.subscribe((res) => {
       this.setSipEndDate();
@@ -906,7 +910,6 @@ export class FinmodificationComponent implements OnInit {
 
     //Kyc_status Change
     this.__traxForm.get('kyc_status').valueChanges.subscribe((res) => {
-      console.log(res);
       this.__kycMst = res == 'Y' ? KycMst : withoutKycMst;
     });
 
@@ -1120,8 +1123,8 @@ export class FinmodificationComponent implements OnInit {
     }
   }
   setSipEndDate() {
-    console.log(this.__traxForm.controls['period'].value);
-    debugger;
+    // console.log(this.__traxForm.controls['period'].value);
+    // debugger;
     if (
       this.__traxForm.controls['period'].value &&
       this.__traxForm.controls['duration'].value
@@ -1177,11 +1180,33 @@ export class FinmodificationComponent implements OnInit {
     this.searchResultVisibility('none');
     this.__traxForm.patchValue({
       bu_type: __items.bu_type,
-      application_no: __items.application_no,
-      folio_number: __items.folio_no,
       inv_type: __items.inv_type,
-      trans_id: __items.trans_id,
-      kyc_status: __items.kyc_status,
+      application_no:
+        __items.inv_type == 'F'
+          ? global.getActualVal(__items.application_no)
+          : '',
+      folio_number:
+        (__items.inv_type == 'A' || __items.trans_id == 3) ? global.getActualVal(__items.folio_no) : '',
+      trans_id: global.getActualVal(__items.trans_id),
+      kyc_status: global.getActualVal(__items.kyc_status),
+      mode_of_holding: __items?.mode_of_holding,
+      plan: global.getActualVal(__items?.plan_id),
+      option: global.getActualVal(__items?.option_id),
+      amount: global.getActualVal(__items?.amount),
+      chq_no: global.getActualVal(__items?.chq_no),
+      rnt_login_at: global.getActualVal(__items?.rnt_login_at),
+      remarks: global.getActualVal(__items?.remarks),
+      filePreview: __items?.app_form_scan
+        ? `${environment.app_formUrl + __items.app_form_scan}`
+        : '',
+      file: '',
+      app_form_scan: '',
+      first_kyc:__items?.first_kyc,
+       option_to:__items.trans_id == 3 ? __items?.option_id_to : '',
+       plan_to:__items.trans_id == 3 ? __items?.plan_id_to : '',
+       switch_by:__items.trans_id == 3 ? __items?.switch_by : '',
+       switch_amt:__items.trans_id == 3 ? __items?.amount : '',
+       unit:__items.trans_id == 3 ? __items?.unit : '',
     });
 
     setTimeout(() => {
@@ -1189,30 +1214,42 @@ export class FinmodificationComponent implements OnInit {
       this.__clientMst.length = 0;
       this.__schemeMst.length = 0;
       this.__schemeMstforSwitchTo.length = 0;
+      this.__bnkMst.length = 0;
       this.__clientMst.push({
-        client_code: __items.client_code,
-        id: __items.client_id,
-        client_name: __items.client_name,
-        client_type: __items.client_type,
+        client_code: __items.first_client_code,
+        id: __items.first_client_id,
+        client_name: __items.first_client_name,
+        client_type: __items.first_client_type,
       });
       this.__euinMst.push({
         euin_no: __items.euin_no,
         emp_name: __items.emp_name,
       });
+
       this.__schemeMst.push({
         id: __items.scheme_id,
         scheme_name: __items.scheme_name,
         amc_id: __items.amc_id,
       });
+
       this.__schemeMstforSwitchTo.push({
         id: __items.scheme_id_to,
         scheme_name: __items.scheme_name_to,
       });
 
+      this.__bnkMst.push({
+        micr_code: __items?.micr_code,
+        bank_name: __items?.bank_name,
+        ifs_code: __items?.ifs_code,
+        branch_name: __items?.chq_branch_name,
+        id: __items?.chq_bank,
+        branch_addr: __items?.chq_branch_addr,
+      });
       this.getItemsDtls(this.__euinMst[0], 'E'); // EUIN Binding
       this.__isCldtlsEmpty = this.__clientMst.length > 0 ? false : true;
       this.getItemsDtls(this.__clientMst[0], 'C'); // CLIENT Binding
       this.getItemsDtls(this.__schemeMst[0], 'SC'); // Scheme Binding
+      this.getItemsDtls(this.__bnkMst[0], 'B');
       if (__items.bu_type == 'B') {
         this.__subbrkArnMst.push({
           arn_no: __items.sub_arn_no,
@@ -1223,13 +1260,50 @@ export class FinmodificationComponent implements OnInit {
       if (__items.trans_id == 3) {
         this.getItemsDtls(this.__schemeMstforSwitchTo[0], 'ST'); // Scheme To Binding for switch only
       }
+      this.setSIPFormControlWhileEdit(__items);
     }, 200);
+  }
+  setSIPFormControlWhileEdit(__items){
+    setTimeout(() => {
+      if(__items.trans_id == 2){
+        this.__traxForm.patchValue({
+          sip_type: __items?.trans_id == 2 ? global.getActualVal(__items?.sip_type) : '',
+          sip_frequency:
+            __items?.trans_id == 2
+              ? global.getActualVal(__items?.sip_swp_stp_frequency)
+              : '',
+          sip_date:
+            __items?.trans_id == 2
+              ? global.getActualVal(__items?.sip_swp_stp_inst_date)
+              : '',
+          sip_start_date:
+            __items?.trans_id == 2
+              ?global.getActualVal(__items?.sip_swp_stp_start_date)
+              : '',
+
+          sip_duration:
+            __items?.trans_id == 2
+              ? global.getActualVal(__items?.sip_swp_stp_duration_type)
+              : '',
+          duration:
+              __items?.trans_id == 2
+                ? global.getActualVal(__items?.sip_swp_stp_duration)
+                : '',
+                sip_end_date:
+                __items?.trans_id == 2
+                  ? global.getActualVal(__items?.sip_swp_stp_end_date)
+                  : '',
+        })
+      }
+    }, 500);
   }
   getschemwisedt(__scheme_id) {
     this.__dbIntr
       .api_call(0, '/scheme', 'scheme_id=' + __scheme_id)
       .pipe(pluck('data'))
       .subscribe((res) => {
+        console.log(res);
+
         this.__sipfreq = res[0].sip_freq_wise_amt
           ? JSON.parse(res[0].sip_freq_wise_amt).filter(
               (x: any) => global.getType(x.is_checked) == true
@@ -1256,13 +1330,17 @@ export class FinmodificationComponent implements OnInit {
   }
 
   setSipDateAgainstScheme(__dt) {
+    console.log(__dt);
+
     if (this.__traxForm.get('trans_id').value == '2') {
       this.__sipDT = JSON.parse(__dt);
+      console.log(this.__sipDT);
+
       // this.__traxForm.get('sip_date').setValue(JSON.parse(__dt));
     }
   }
   setStartDateBySIPdate(res) {
-    console.log(res);
+    console.log(this.__noofdaystobeAdded);
 
     var date = new Date();
     var dt = new Date();
@@ -1332,8 +1410,6 @@ export class FinmodificationComponent implements OnInit {
         break;
 
       case 'B':
-         console.log(__euinDtls);
-
         this.__dialogDtForBnk = __euinDtls;
         this.__traxForm.controls['chq_bank'].reset(__euinDtls.micr_code, {
           onlySelf: true,
@@ -1342,7 +1418,9 @@ export class FinmodificationComponent implements OnInit {
         this.__traxForm.controls['bank_name'].setValue(__euinDtls.bank_name);
         this.__traxForm.controls['bank_id'].setValue(__euinDtls.id);
         this.__traxForm.controls['ifsc'].setValue(__euinDtls.ifs_code);
-        this.__traxForm.controls['branch_name'].setValue(__euinDtls.branch_name);
+        this.__traxForm.controls['branch_name'].setValue(
+          __euinDtls.branch_name
+        );
 
         this.searchResultVisibilityForBnk('none');
         break;
@@ -1371,8 +1449,6 @@ export class FinmodificationComponent implements OnInit {
   }
 
   getFIle(__ev) {
-    console.log(__ev);
-
     this.__traxForm
       .get('file')
       .setValidators([
@@ -1443,9 +1519,7 @@ export class FinmodificationComponent implements OnInit {
       fb.append('first_client_id', this.__traxForm.value.client_id);
       fb.append(
         'first_kyc',
-        this.__traxForm.value.kyc_status == 'Y'
-          ? this.__traxForm.value.first_kyc
-          : ''
+        global.getActualVal(this.__traxForm.value.first_kyc)
       );
 
       if (this.__traxForm.value.mode_of_holding != 'S') {
@@ -1518,7 +1592,18 @@ export class FinmodificationComponent implements OnInit {
           ? this.__traxForm.value.switch_amt
           : this.__traxForm.value.amount
       );
-      fb.append('folio_no', this.__traxForm.value.folio_number);
+      fb.append(
+        'folio_no',
+        (this.__traxForm.value.inv_type == 'A' || this.__traxForm.value.trans_id == 3)
+          ? this.__traxForm.value.folio_number
+          : ''
+      );
+      fb.append(
+        'application_no',
+        this.__traxForm.value.inv_type == 'F'
+          ? this.__traxForm.value.application_no
+          : ''
+      );
       fb.append('trans_id', this.__traxForm.value.trans_id);
       fb.append(
         'chq_no',
@@ -1548,21 +1633,18 @@ export class FinmodificationComponent implements OnInit {
       if (this.__traxForm.value.trans_id == '2') {
         fb.append('sip_start_date', this.__traxForm.value.sip_start_date);
         fb.append('sip_end_date', this.__traxForm.value.sip_end_date);
-        fb.append('sip_duration', this.__traxForm.value.sip_duration);
-        fb.append('duration', this.__traxForm.value.duration);
+        fb.append('sip_duration_type', this.__traxForm.value.sip_duration);
+        fb.append('sip_duration', this.__traxForm.value.duration);
         fb.append('period', this.__traxForm.value.period);
         fb.append('sip_frequency', this.__traxForm.value.sip_frequency);
+        fb.append('sip_date', this.__traxForm.value.sip_date);
+
       } else if (this.__traxForm.value.trans_id == '3') {
         fb.append('option_to', this.__traxForm.value.option_to);
         fb.append('plan_to', this.__traxForm.value.plan_to);
         fb.append('scheme_id_to', this.__traxForm.value.scheme_id_to);
         fb.append('switch_by', this.__traxForm.value.switch_by);
-        fb.append(
-          'unit',
-          this.__traxForm.value.switch_by == 'U'
-            ? this.__traxForm.value.unit
-            : this.__traxForm.value.all_unit
-        );
+        fb.append('unit',global.getActualVal(this.__traxForm.getRawValue().unit));
       }
 
       if (this.__traxForm.value.bu_type == '2') {
@@ -1680,14 +1762,14 @@ export class FinmodificationComponent implements OnInit {
         PreviewdtlsDialogComponent,
         dialogConfig
       );
-      dialogref.afterClosed().subscribe(res =>{
-        if(res){
-          if(__type == 'B'){
+      dialogref.afterClosed().subscribe((res) => {
+        if (res) {
+          if (__type == 'B') {
             this.__bnkMst.push(res.data);
             this.getItemsDtls(res.data, 'B');
           }
         }
-      })
+      });
     } catch (ex) {}
   }
   openDialogForAdditionalApplicant(__type) {
@@ -1785,8 +1867,6 @@ export class FinmodificationComponent implements OnInit {
     console.log(items);
   }
   setStartDT(__ev) {
-    console.log(__ev);
-
     this.setEndDate(__ev.target.value);
   }
   setEndDate(__dt) {
@@ -1825,10 +1905,17 @@ export class FinmodificationComponent implements OnInit {
       default:
         break;
     }
+    console.log(_calculateDT);
     this.__traxForm.controls['sip_end_date'].setValue(_calculateDT);
+    console.log(this.__traxForm.value.sip_end_date);
+
   }
   checkIfDatesExists(sip_date: string): Observable<boolean> {
-    return of(this.__sipDT.some((ele) => ele.date === sip_date)).pipe(
+    console.log(this.__sipDT);
+    console.log(sip_date);
+
+
+    return of(this.__sipDT.some((ele) => Number(ele.date) == Number(sip_date))).pipe(
       delay(1000)
     );
   }
@@ -2110,5 +2197,8 @@ export class FinmodificationComponent implements OnInit {
   }
   getSelectedItemsFromParentForSecondOrThirdClient(event) {
     this.getadditionalApplicant(event.item, event.flag);
+  }
+  openPDF() {
+    window.open(this.__traxForm.value.filePreview, '_blank');
   }
 }
