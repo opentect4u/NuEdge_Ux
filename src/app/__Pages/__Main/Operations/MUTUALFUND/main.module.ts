@@ -23,6 +23,10 @@ import { RouterModule, Routes } from '@angular/router';
     {
       path:'report',
       loadChildren:()=> import('./Report/report.module').then(m => m.ReportModule)
+    },
+    {
+      path:'onlineprocess',
+      loadChildren:()=> import('./online-process/online-process.module').then(m => m.OnlineProcessModule)
     }
   ]
 }]

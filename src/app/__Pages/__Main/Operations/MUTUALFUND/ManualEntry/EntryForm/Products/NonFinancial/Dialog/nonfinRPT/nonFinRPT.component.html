@@ -320,10 +320,10 @@
                       <p-button icon="pi pi-eye" (click)="DocumentView(finance)"
                         styleClass="p-button-rounded p-button-success"></p-button>
                     </ng-container>
-                    <ng-container *ngSwitchCase="col.field == 'edit'">
+                    <!-- <ng-container *ngSwitchCase="col.field == 'edit'">
                       <p-button icon="pi pi-pencil" (click)="populateDT(finance)"
                         styleClass="p-button-rounded p-button-success"></p-button>
-                    </ng-container>
+                    </ng-container> -->
                     <ng-container *ngSwitchCase="col.field == 'bu_type'">
                       <span #tooltip="matTooltip"
                       [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">

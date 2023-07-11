@@ -24,7 +24,7 @@
         "menu_name": "Reports",
          "title": "Reports",
         "has_submenu": "N",
-        "url": "",
+        "url": "/main/master/mstOperations/clntMst/report",
         "icon": "fa fa-user-o",
         "sub_menu": []
     }

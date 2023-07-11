@@ -52,7 +52,7 @@
                     <div class="searchDiv">
                       <label for="__clntCd">Client Details</label>
                       <input type="search" name="__clntCd" id="__clntCd" class="form-control"
-                        formControlName="client_code"
+                        formControlName="client_name"
                         [placeholder]="'Search By Client Name,Client Code, Email, Mobile,' + (data.client_type == 'N' ? '' : 'PAN &') +' DOB'">
                       <span class="spinner-border"
                         *ngIf="__isClientPending && __clientForm.get('client_code').value?.length > 1"></span>
@@ -153,12 +153,10 @@
         <div class="transTypeCount">
         </div>
         <div class="btnGrp d-flex">
-            <!--
-            (click)="isOpenMegaMenu = !isOpenMegaMenu"
-
-             -->
           <p-button type="button" icon="pi pi-server"
             #tooltip="matTooltip"
+            *ngIf="data.client_type!='E'"
+            (click)="isOpenMegaMenu = !isOpenMegaMenu"
             [matTooltipPosition]="'before'"
             matTooltip="Column Selector"
             styleClass="p-button-primary p-button-lg p-button-outlined mr-2">
@@ -268,6 +266,7 @@
                 <label class="mr-3">Items per page: </label>
                 <p-selectButton
                 [options]="itemsPerPage"
+                [formControl]="__pageNumber"
                 optionLabel="label" optionValue="value"
                 (onOptionClick)="onselectItem($event)"
                 ></p-selectButton>
@@ -298,6 +297,12 @@
 
           </div>
           <!-- End -->
+           <!-- Meage Menu For Check box -->
+        <core-mega-menu-for-column [isOpenMegaMenu]="isOpenMegaMenu" [ColumnList]="ClmnList"
+        [selectedClmns]="SelectedClms" (hideMegamenu)="isOpenMegaMenu = $event"
+        (getSelectedColumns)="getSelectedColumns($event)">
+      </core-mega-menu-for-column>
+      <!-- End -->
       </div>
       </div>
 
@@ -390,16 +395,16 @@
                   <th mat-header-cell *matHeaderCellDef>Address-2</th>
                   <td mat-cell *matCellDef="let element">{{element.add_line_2 ? element.add_line_2 : 'N/A'}}</td>
                 </ng-container>
-              <ng-container matColumnDef="state">
+              <ng-container matColumnDef="state_name">
                 <th mat-header-cell *matHeaderCellDef>State</th>
                 <td mat-cell *matCellDef="let element">{{element.state_name ? element.state_name : 'N/A'}}</td>
               </ng-container>
 
-              <ng-container matColumnDef="dist">
+              <ng-container matColumnDef="district_name">
                 <th mat-header-cell *matHeaderCellDef>District</th>
                 <td mat-cell *matCellDef="let element">{{element.district_name ? element.district_name : 'N/A'}}</td>
               </ng-container>
-              <ng-container matColumnDef="city">
+              <ng-container matColumnDef="city_name">
                 <th mat-header-cell *matHeaderCellDef>City</th>
                 <td mat-cell *matCellDef="let element">{{element.city_name ? element.city_name : 'N/A'}}</td>
               </ng-container>

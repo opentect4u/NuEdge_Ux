@@ -75,8 +75,10 @@
         </select>
       </div>
       <div class="col-sm-3">
-        <label for="drm_dt">Date Range (From - To)</label>
+        <label for="frm_dt">Date Range (From - To)</label>
         <p-calendar
+        id="frm_dt"
+        name="frm_dt"
         dateFormat="dd/mm/yy"
         placeholder="Select Date Range"
         formControlName="date_range"
@@ -548,10 +550,10 @@
             {{element.chq_no ? element.chq_no : 'N/A'}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="bank">
+        <ng-container matColumnDef="bank_name">
           <th mat-header-cell *matHeaderCellDef>Bank</th>
           <td mat-cell *matCellDef="let element;let i = index">
-            {{element.bank ? element.bank : 'N/A'}}
+            {{element.bank_name ? element.bank_name : 'N/A'}}
           </td>
         </ng-container>
 

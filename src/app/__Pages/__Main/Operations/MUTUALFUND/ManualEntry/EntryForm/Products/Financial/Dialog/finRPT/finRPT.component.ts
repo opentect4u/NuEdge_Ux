@@ -197,6 +197,7 @@ export class FinrptComponent implements OnInit {
           this.__clientMst = value.data;
           this.searchResultVisibilityForClient('block');
           this.__isClientPending = false;
+          this.__rcvForms.controls['client_code'].setValue('');
         },
         complete: () => {},
         error: (err) => {
@@ -697,7 +698,6 @@ export class FinrptComponent implements OnInit {
     this.__euinMst.length = 0;
     this.__bu_type.length = 0;
     this.__rcvForms.patchValue({
-      is_all_rnt: false,
     options: '2',
     tin_no: '',
     client_code: '',
@@ -745,8 +745,9 @@ export class FinrptComponent implements OnInit {
       case 'C':
         this.__rcvForms.controls['client_name'].reset(__items.client_name, {
           emitEvent: false,
+          onlySelf:true
         });
-        this.__rcvForms.controls['client_code'].reset(__items.id);
+        this.__rcvForms.controls['client_code'].setValue(__items.id);
         this.searchResultVisibilityForClient('none');
         break;
       case 'T':

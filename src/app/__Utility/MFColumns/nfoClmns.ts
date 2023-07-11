@@ -59,7 +59,7 @@ public static COLUMN_SELECTOR=[
     {field:'third_client_code',header:'Third Holder Code'},
     {field:'third_client_pan',header:'Third Holder PAN'},
     {field:'third_client_kyc_status',header:'Third Holder KYC Status'},
-    {field:'trans_name',header:'TransEdit Type'}
+    {field:'trans_name',header:'Transaction Type'}
 ]
 public static DETAILS_PIP=[
   {field:'scheme_name',header:'Scheme'},
@@ -70,7 +70,7 @@ public static DETAILS_PIP=[
   {field:'opt_name',header:'Option'},
   {field:'amount',header:'Amount'},
   {field:'chq_no',header:'Cheque No'},
-  {field:'bank',header:'Bank'},
+  {field:'bank_name',header:'Bank'},
   {field:'rnt_name',header:'Form Submitted At'},
   {field:'remarks',header:'Remarks'}
 ]
@@ -89,7 +89,7 @@ public static DETAILS_SIP=[
   {field:'sip_amount',header:'SIP Amount'},
   {field:'amount',header:'Amount'},
   {field:'chq_no',header:'Cheque No'},
-  {field:'bank',header:'Bank'},
+  {field:'bank_name',header:'Bank'},
   {field:'rnt_name',header:'Form Submitted At'},
   {field:'remarks',header:'Remarks'}
 ]
@@ -114,7 +114,7 @@ public static DETAILS_NFOCOMBO=[
   {field:'opt_name',header:'Option'},
   {field:'amount',header:'Amount'},
   {field:'chq_no',header:'Cheque No'},
-  {field:'bank',header:'Bank'},
+  {field:'bank_name',header:'Bank'},
   {field:'scheme_name_to',header:'Scheme Name (To Scheme)'},
   {field:'switch_amt',header:'Switch Amount / Unit'},
   {field:'rnt_name',header:'Form Submitted At'},

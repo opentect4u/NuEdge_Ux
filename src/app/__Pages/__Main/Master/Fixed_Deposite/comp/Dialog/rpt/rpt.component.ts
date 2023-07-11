@@ -32,6 +32,8 @@ export class RptComponent implements OnInit {
   isOpenMegaMenu:boolean = false;
   settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company');
   cmp_typesettings = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type');
+  settings_for_Levels = this.__utility.settingsfroMultiselectDropdown('id','value','Search Levels',2);
+
   itemsPerPage = ItemsPerPage;
   sort = new sort();
   __companyMst : fdComp[] = [];
@@ -42,7 +44,7 @@ export class RptComponent implements OnInit {
   SelectedClms:string[] =[];
 
   // __columns
-  __levels = fdcmpMstClm.LEVELS;
+  __levels = compClmns.LEVELS;
   __isrntspinner: boolean = false;
   __paginate: any = [];
   __pageNumber = new FormControl(10);
@@ -50,11 +52,12 @@ export class RptComponent implements OnInit {
   __export = new MatTableDataSource<fdComp>([]);
   __isVisible: boolean = true;
   __rntSearchForm = new FormGroup({
+    btnType:new FormControl('R'),
     comp_type: new FormControl([]),
     options: new FormControl('2'),
     comp_name: new FormControl(''),
     contact_person: new FormControl(''),
-    levels: new FormArray([])
+    levels: new FormControl([])
   });
   __selectRNT = new MatTableDataSource<fdComp>([]);
   constructor(
@@ -73,16 +76,16 @@ export class RptComponent implements OnInit {
     this.getRntMst();
     this.getComponyMst();
     this.getCompanyTypeMst();
-    this.addLevelsCheckBox(compClmns.LEVELS);
+    // this.addLevelsCheckBox(compClmns.LEVELS);
   }
-  addLevelsCheckBox(levels){
-    levels.forEach(el =>{
-      this.levels.push(this.setFormControl(el))
-    })
-  }
-  get levels(): FormArray{
-    return this.__rntSearchForm.get('levels') as FormArray
-  }
+  // addLevelsCheckBox(levels){
+  //   levels.forEach(el =>{
+  //     this.levels.push(this.setFormControl(el))
+  //   })
+  // }
+  // get levels(): FormArray{
+  //   return this.__rntSearchForm.get('levels') as FormArray
+  // }
 
   setFormControl(level){
     return new FormGroup({
@@ -373,11 +376,12 @@ export class RptComponent implements OnInit {
       comp_name: [],
       comp_type: [],
       contact_person: '',
+      levels:[]
     });
     this.sort= new sort;
-     this.levels.controls.map(el => el.get('isChecked').setValue(false));
+    //  this.levels.controls.map(el => el.get('isChecked').setValue(false));
     this.__pageNumber.setValue(10);
-    this.getRntMst();
+    this.submit();
   }
 
   delete(__el,index){
@@ -446,25 +450,47 @@ export class RptComponent implements OnInit {
     }
     setColumnsAfterSubmit(){
 
-        const clm = ['edit', 'delete'];
+        // const clm = ['edit', 'delete'];
         //do operation with columns
-        this.levels.value.forEach(el => {
-                 el.sub_menu.forEach(element => {
-                          if(el.isChecked){
-                            if(this.__columns.findIndex(x => x.field == element.field) == -1){
-                              this.__columns.push(element);
-                            }
-                          }
-                          else{
-                            if(this.__columns.findIndex(x => x.field == element.field) != -1){
-                              this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
-                            }
-                          }
+        // this.levels.value.forEach(el => {
+        //          el.sub_menu.forEach(element => {
+        //                   if(el.isChecked){
+        //                     if(this.__columns.findIndex(x => x.field == element.field) == -1){
+        //                       this.__columns.push(element);
+        //                     }
+        //                   }
+        //                   else{
+        //                     if(this.__columns.findIndex(x => x.field == element.field) != -1){
+        //                       this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
+        //                     }
+        //                   }
 
-                 });
-        });
-        this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
-        this.SelectedClms = this.__columns.map((x) => x.field);
+        //          });
+        // });
+        // this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
+        // this.SelectedClms = this.__columns.map((x) => x.field);
+
+        const clm = ['edit', 'delete'];
+        const colmn = this.__levels.filter(x => this.__rntSearchForm.value.levels.map(item => item.id).includes(x.id))
+        this.__levels.forEach(el =>{
+          el.submenu.forEach(element=>{
+            if(colmn.findIndex(x => x.id == el.id)!=-1){
+              if(this.__columns.findIndex(x => x.field == element.field) == -1){
+                this.__columns.push(element);
+              }
+            }
+            else{
+              if(this.__columns.findIndex(x => x.field == element.field) != -1){
+              this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
+                }
+            }
+          })
+        })
+         this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
+        // this.SelectedClms = this.__columns.map((x) => x.field);
+
+
+
 
     }
     onItemClick(ev){

@@ -24,7 +24,7 @@
         <form [formGroup]="__rcvForm" (ngSubmit)="recieveForm()" [attr.id]="'__rcvForm_Fin' + data.id" ngNativeValidate autocomplete="off">
           <!-- Buisness Type -->
           <div class="row">
-            <div class="col-sm-12 my-2">
+            <div class="col-sm-12 my-1">
               <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
               <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
                 <option value=""> Select Buisness Type</option>
@@ -36,7 +36,7 @@
                   type</span>
               </div>
             </div>
-            <div class="col-sm-12 my-2" *ngIf="__rcvForm.get('bu_type').value == 'B'">
+            <div class="col-sm-12 my-1" *ngIf="__rcvForm.get('bu_type').value == 'B'">
             <!-- //ARN -->
             <app-core-srch
             [label] = "'Sub Broker ARN'"
@@ -57,12 +57,12 @@
             ></app-core-srch>
 
           </div>
-            <div class="col-sm-12 my-2" *ngIf="__rcvForm.get('bu_type').value == 'B'">
+            <div class="col-sm-12 my-1" *ngIf="__rcvForm.get('bu_type').value == 'B'">
               <!-- Sub broker code -->
               <label for="subbrkCD">Sub Broker Code<span class="text-danger">*</span></label>
               <input type="text" id="subbrkCD" class="form-control" placeholder="Sub Broker Code" formControlName="sub_brk_cd" readonly>
             </div>
-            <div class="col-sm-12 my-2" *ngIf="__rcvForm.get('bu_type').value != ''">
+            <div class="col-sm-12 my-1" *ngIf="__rcvForm.get('bu_type').value != ''">
               <app-core-srch
               [label] = "'EUIN'"
               [placeholder]="'Search By EUIN Number'"
@@ -90,7 +90,7 @@
 
           <!-- Client Dtls -->
           <div class="row">
-            <div class="my-2" [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-9':__isCldtlsEmpty}">
+            <div class="my-1" [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-9':__isCldtlsEmpty}">
               <app-core-srch
               [label] = "'Client Code'"
               [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
@@ -120,9 +120,9 @@
           </div>
 
           <div class="row">
-            <div class="my-2" class="col-sm-12" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
+            <div class="my-1" class="col-sm-12" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
               <label for="__clName">Client Name</label>
-                  <input type="text" name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true">
+                  <!-- <input type="text" name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true">
                   <button (click)="openDialog('C')"
                   color="primary"
                   class="viewIconDtls"
@@ -131,7 +131,12 @@
                     aria-label="Example icon button with a eye icon"
                     title="View Client Details">
                     <mat-icon>remove_red_eye</mat-icon>
-                  </button>
+                  </button> -->
+
+                  <div class="p-inputgroup">
+                    <input type="text" pInputText name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true" />
+                    <button type="button" label="View" pButton icon="pi pi-eye" styleClass="p-button-warn" (click)="openDialog('C')"></button>
+                </div>
                 </div>
             <!-- <div class="col-sm-4 clientCode" *ngIf="__dialogDtForClient && __rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
 
@@ -141,7 +146,7 @@
           <!-- End -->
           <!-- Transaction Type & Scheme-->
           <div class="row">
-            <div class="col-sm-12 my-2">
+            <div class="col-sm-12 my-1">
               <label for="FrmType">Transaction<span class="text-danger">*</span></label>
               <select name="frmType" class="form-control" id="FrmType" formControlName="trans_id">
                 <option value="">Select Transaction</option>
@@ -153,7 +158,7 @@
                   type</span>
               </div>
             </div>
-            <div class="my-2" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-8':__dialogDtForScheme}">
+            <div class="my-1" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-9':__dialogDtForScheme}">
               <app-core-srch
               [label] = "__rcvForm.get('trans_id').value == '3' ? 'Switch Scheme From' : 'Scheme Name'"
               [placeholder]="'Search By Scheme Name'"
@@ -172,7 +177,7 @@
               [isClientExistMsg]="'Scheme does not exists'"
               ></app-core-srch>
             </div>
-            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForScheme">
+            <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
               <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
                 <mat-icon>remove_red_eye</mat-icon>
                 View Details
@@ -183,7 +188,7 @@
 
           <ng-container *ngIf="__rcvForm.get('trans_id').value == '3'">
           <div class="row ">
-            <div [ngClass]="{'col-sm-12': !__dialogDtForSchemeTo,'col-sm-8':__dialogDtForSchemeTo}" class="my-2">
+            <div [ngClass]="{'col-sm-12': !__dialogDtForSchemeTo,'col-sm-8':__dialogDtForSchemeTo}" class="my-1">
               <app-core-srch
               [label] = "'Switch Scheme To'"
               [placeholder]="'Search By Scheme Name'"
@@ -215,7 +220,7 @@
 
           <!-- Receive From & Investment Type & Application Number -->
           <div class="row">
-            <div class="col-sm-12 my-2">
+            <div class="col-sm-12 my-1">
               <label for="frmrcv">Receive From</label>
               <input type="text" name="frmrcv" id="frmrcv" class="form-control" placeholder="Enter Receive From" formControlName="recv_from">
               <!-- <div class="invalid-feedback"
@@ -223,7 +228,7 @@
               <span class="invalid-feedback" *ngIf="(__rcvForm.get('recv_from')).errors?.required">*Please provide receive from</span>
             </div> -->
             </div>
-            <div class="col-sm-12 my-2">
+            <div class="col-sm-12 my-1">
               <label for="inv_type">Investment Type</label>
               <select name="inv_type" class="form-control" id="inv_type" formControlName="inv_type">
                 <option value="">Select Investment Type</option>
@@ -236,7 +241,7 @@
             </div>
             </div>
             <ng-container *ngIf="__rcvForm.get('inv_type').value == 'F'">
-              <div class="col-sm-12 my-2">
+              <div class="col-sm-12 my-1">
                 <label for="application_no">
                   Application Number
                 </label>
@@ -249,7 +254,7 @@
               </div>
             </ng-container>
             <ng-container *ngIf="__rcvForm.get('inv_type').value == 'A'">
-              <div class="col-sm-12 my-2">
+              <div class="col-sm-12 my-1">
                 <label for="folio_number">
                   Folio Number <span class="text-danger">*</span>
                 </label>
@@ -268,7 +273,7 @@
 
           </div>
           <!-- End -->
-          <div class="row my-2">
+          <div class="row my-1">
             <div class="col-sm-6">
               <mat-radio-group aria-label="Select an option" color="primary" formControlName="kyc_status">
                 <mat-radio-button value="Y">With KYC</mat-radio-button>

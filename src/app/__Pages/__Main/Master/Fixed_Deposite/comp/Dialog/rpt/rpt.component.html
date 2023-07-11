@@ -47,7 +47,7 @@
           </div>
         </div>
           <div class="row my-3">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <label for="comp_type">Company Type</label>
                 <ng-multiselect-dropdown #multiSelect
                 id="comp_type"
@@ -57,7 +57,7 @@
                 formControlName="comp_type">
               </ng-multiselect-dropdown>
         </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                   <label for="comp_name">Company</label>
                     <ng-multiselect-dropdown #multiSelect
                     id="comp_name"
@@ -67,16 +67,27 @@
                     formControlName="comp_name">
                   </ng-multiselect-dropdown>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <label for="contact_person">Contact Person</label>
               <input type="text" name="contact_person" id="contact_person" placeholder="Contact Person" class="form-control" formControlName="contact_person">
             </div>
 
+            <div class="col-sm-3">
+              <label for="level">Levels</label>
+              <ng-multiselect-dropdown
+              id="level"
+              [placeholder]="'Select Levels'"
+              [settings]="settings_for_Levels"
+              [data]="__levels"
+              formControlName="levels">
+            </ng-multiselect-dropdown>
+            </div>
+
           </div>
           <div class="row">
-            <div class="col-sm-11">
-              <div class="checkboxes d-flex flex-row align-items-center w-100">
-                <div >
+            <!-- <div class="col-sm-11"> -->
+              <!-- <div class="checkboxes d-flex flex-row align-items-center w-100"> -->
+                <!-- <div >
               <ng-container formArrayName="levels">
                 <ng-container *ngFor="let level of levels.controls; let i = index">
                      <ng-container [formGroupName]="i">
@@ -85,9 +96,11 @@
                 </ng-container>
 
               </ng-container>
-              </div></div>
-            </div>
-            <div class="col-sm-1">
+              </div> -->
+
+            <!-- </div> -->
+            <!-- </div> -->
+            <div class="col-sm-12 d-flex justify-content-end align-items-center">
               <p-button type="submit"
               label="Show" icon="pi pi-eye"
               iconPos="right"

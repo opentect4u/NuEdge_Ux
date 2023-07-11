@@ -69,11 +69,12 @@ export class NforptComponent implements OnInit {
   settingsforDropdown_foramc = this.utility.settingsfroMultiselectDropdown('id','amc_name','Search AMC',1);
   settingsforDropdown_forscheme = this.utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
   settingsforDropdown_forbrnch = this.utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
-  settingsforBuTypeDropdown = this.utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',1);
- settingsforRMDropdown = this.utility.settingsfroMultiselectDropdown('id','rm_name','Search Relationship Manager',1);
- settingsforSubBrkDropdown = this.utility.settingsfroMultiselectDropdown('id','sub_brk_cd','Search Sub Broker',1);
- settingsforEuinDropdown = this.utility.settingsfroMultiselectDropdown('id','emp_name','Search Employee',1);
-/** Filter Criteria */
+  settingsforBuTypeDropdown = this.utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',3);
+ settingsforRMDropdown = this.utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',1);
+ settingsforSubBrkDropdown = this.utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',1);
+ settingsforEuinDropdown = this.utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
+
+ /** Filter Criteria */
 transFrm = new FormGroup({
   date_status: new FormControl('T'),
   start_date: new FormControl(this.getTodayDate()),
@@ -90,10 +91,10 @@ transFrm = new FormGroup({
   scheme_id: new FormControl([]),
   rnt_id: new FormArray([]),
   is_all_rnt: new FormControl(false),
-  brn_cd: new FormControl([]),
-  bu_type: new FormControl([]),
-  rm_name: new FormControl([]),
-  sub_brk_cd: new FormControl([]),
+  brn_cd: new FormControl([],{updateOn:'blur'}),
+  bu_type: new FormControl([],{updateOn:'blur'}),
+  rm_name: new FormControl([],{updateOn:'blur'}),
+  sub_brk_cd: new FormControl([],{updateOn:'blur'}),
   euin_no: new FormControl([]),
   frm_dt: new FormControl(''),
   to_dt: new FormControl('')
@@ -229,8 +230,107 @@ __exportedClmns: string[] = [];
       this.setColumns(res,this.data.trans_type_id,this.transaction);
    })
    /*** End */
+
+   this.transFrm.controls['brn_cd'].valueChanges.subscribe(res =>{
+    this.getBusinessTypeMst(res)
+  })
+  this.transFrm.controls['bu_type'].valueChanges.subscribe(res =>{
+    this.disabledSubBroker(res);
+     this.getRelationShipManagerMst(res,this.transFrm.value.brn_cd);
+  })
+  this.transFrm.controls['rm_name'].valueChanges.subscribe(res =>{
+    if(this.transFrm.value.bu_type.findIndex(item => item.bu_code == 'B') != -1){
+             this.getSubBrokerMst(res);
+    }
+    else{
+    this.__euinMst.length = 0;
+      this.__euinMst = res;
+    }
+ })
+ this.transFrm.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
+  // if(res.length > 0){
+    this.setEuinDropdown(res,this.transFrm.value.rm_name);
+  // }
+ })
+  }
+  setEuinDropdown(sub_brk_cd,rm){
+    // this.__euinMst.length = 0;
+    console.log(sub_brk_cd);
+
+   this.__euinMst = rm.filter(item => !this.__subbrkArnMst.map(item=> {return item['emp_euin_no']}).includes(item.euin_no));
+   if(sub_brk_cd.length > 0){
+    sub_brk_cd.forEach(element => {
+           if(this.__subbrkArnMst.findIndex((el) => element.code == el.code) != -1){
+              this.__euinMst.push(
+                {
+                  euin_no:this.__subbrkArnMst[this.__subbrkArnMst.findIndex((el) => element.code == el.code)].euin_no,
+                  emp_name:''
+                }
+                );
+           }
+    });
+   }
+   else{
+     this.__euinMst = this.__euinMst.filter(item => !this.__subbrkArnMst.map(item => {return item['euin_no']}).includes(item.euin_no))
+   }
+  }
+  disabledSubBroker(bu_type_ids){
+    if(bu_type_ids.findIndex(item => item.bu_code == 'B') != -1){
+      this.transFrm.controls['sub_brk_cd'].enable();
+    }
+    else{
+      this.transFrm.controls['sub_brk_cd'].disable();
+    }
+
+  }
+  getSubBrokerMst(arr_euin_no){
+    if(arr_euin_no.length > 0){
+    this.__dbIntr.api_call(0,'/subbroker',
+    'arr_euin_no='+ JSON.stringify(arr_euin_no.map(item => {return item['euin_no']})))
+    .pipe(pluck("data")).subscribe((res: any) =>{
+      this.__subbrkArnMst = res.map(({code,bro_name,emp_euin_no,euin_no}) => ({
+      code,
+      emp_euin_no,
+      euin_no,
+      bro_name:bro_name +'-'+code
+      })
+      );
+    })
+  }
+  else{
+    this.__subbrkArnMst.length =0;
+    this.transFrm.controls['sub_brk_cd'].setValue([]);
   }
 
+  }
+  getBusinessTypeMst(brn_cd){
+    if(brn_cd.length > 0){
+    this.__dbIntr
+    .api_call(0,'/businessType','arr_branch_id='+JSON.stringify(brn_cd.map(item => {return item['id']})))
+    .pipe(pluck("data")).subscribe(res =>{
+            this.__bu_type = res;
+    })
+  }
+  else{
+    this.transFrm.controls['bu_type'].reset([],{emitEvent:true});
+    this.__bu_type.length = 0;
+  }
+  }
+  getRelationShipManagerMst(bu_type_id,arr_branch_id){
+    if(bu_type_id.length > 0 && arr_branch_id.length > 0){
+    this.__dbIntr.api_call(0,'/employee',
+    'arr_bu_type_id='+ JSON.stringify(bu_type_id.map(item => {return item['bu_code']}))
+    +'&arr_branch_id=' + JSON.stringify(arr_branch_id.map(item  => {return item['id']}))
+    ).pipe(pluck("data"))
+    .subscribe(res =>{
+         this.__RmMst = res;
+    })
+  }
+  else{
+    this.__RmMst.length =0;
+    this.transFrm.controls['rm_name'].reset([]);
+  }
+  }
   /** Function to call api for getting Scheme Master Data  against selected amc*/
   getSchemeagainstAMC(amc_id) {
     this.__dbIntr
@@ -304,7 +404,6 @@ __exportedClmns: string[] = [];
 
   setColumns(option,trans_type_id,trns_id){
     const clm = ['edit','app_frm_view'];
-
     var columnsMst;
     switch(trns_id){
       case 4: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR,nfoClmns.DETAILS_PIP);break;
@@ -312,16 +411,18 @@ __exportedClmns: string[] = [];
       case 6: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR,nfoClmns.DETAILS_SWITCH);break;
       case 35: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR,nfoClmns.DETAILS_NFOCOMBO);break;
     }
-    this.columns = columnsMst
+    this.columns = columnsMst;
     if(option == 2){
       this.__columns = trns_id == 5 ? nfoClmns.SUMMARY_COPY_SIP : nfoClmns.SUMMARY_COPY;
     }
     else if(option == 3){
-      this.__columns = trns_id == 5 ? nfoClmns.SUMMARY_COPY_SIP.filter(res => !clm.includes(res.field)) : nfoClmns.SUMMARY_COPY.filter(res => !clm.includes(res.field));
+      this.__columns = trns_id == 5 ?
+      nfoClmns.SUMMARY_COPY_SIP.filter(res => !clm.includes(res.field))
+      : nfoClmns.SUMMARY_COPY.filter(res => !clm.includes(res.field));
       this.printPdfClm = this.__columns;
     }
     else{
-      this.__columns =this.columns;
+      this.__columns =columnsMst;
     }
     this.SelectedClms = this.__columns.map((x) => x.field);
     this.__exportedClmns = this.__columns.map(item => {return item['field']}).filter(res => !clm.includes(res));
@@ -389,11 +490,11 @@ __exportedClmns: string[] = [];
          if(this.transFrm.value.btnType == 'A'){
           NFODT.append(
             'sub_brk_cd',
-            this.transFrm.value.sub_brk_cd ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['id']})) : ''
+            this.transFrm.value.sub_brk_cd ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['code']})) : ''
           );
          NFODT.append(
            'euin_no',
-           this.transFrm.value.euin_no ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['id']})) : '[]'
+           this.transFrm.value.euin_no ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['euin_no']})) : '[]'
          );
          NFODT.append(
            'brn_cd',
@@ -401,13 +502,13 @@ __exportedClmns: string[] = [];
          );
          NFODT.append(
           'rm_id',
-         JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['id']}))
+         JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['euin_no']}))
          )
 
          NFODT.append(
            'bu_type',
            this.transFrm.value.bu_type ?
-           JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']})): '[]'
+           JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['bu_code']})): '[]'
          );
         }
        }
@@ -540,11 +641,11 @@ getPaginate(__paginate){
               ('&to_date=' + global.getActualVal(this.transFrm.getRawValue().to_dt))
               + (this.transFrm.value.btnType == 'A' ? (('&euin_no=' +
                 (this.transFrm.value.euin_no
-                  ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['id']}))
+                  ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['euin_no']}))
                   : '[]')) +
               ('&sub_brk_cd=' +
                 (this.transFrm.value.sub_brk_cd
-                  ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['id']}))
+                  ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['code']}))
                   : '[]')) +
               ('&brn_cd=' +
                 (this.transFrm.value.brn_cd
@@ -552,11 +653,11 @@ getPaginate(__paginate){
                   : '[]')) +
 
                   ('&rm_id='+
-                  JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['id']}))
+                  JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['euin_no']}))
                 )+
               ('&bu_type=' +
                 (this.transFrm.value.bu_type
-                  ? JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']}))
+                  ? JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['bu_code']}))
                   : '[]')))  : '')) :
                   (
                      ('&login_status='+ this.transFrm.value.login_status)
@@ -578,18 +679,23 @@ getPaginate(__paginate){
      this.__exportedClmns = column.map(item => {return item['field']}).filter(res => (res!='edit' && res!='app_frm_view'))
   }
   reset(){
+    this.__RmMst.length = 0;
+    this.__subbrkArnMst.length = 0;
+    this.__euinMst.length = 0;
+    this.__bu_type.length = 0;
     this.transFrm.patchValue({
+      options: '2',
+      tin_no: '',
+      client_code: '',
+      scheme_name: [],
       date_range:'',
-      sub_brk_cd:[],
-      option:'2',
-      client_code:'',
-
-      scheme_name:[],
-      euin_no:[],
-      brn_cd:[],
-      bu_type:[],
-      frm_dt:'',
-      to_dt:''
+      date_status: 'T',
+      start_date: this.getTodayDate(),
+      end_date: this.getTodayDate(),
+      login_status: 'N',
+      dt_type: '',
+      frm_dt: '',
+      to_dt: '',
     });
     this.transFrm.get('amc_id').setValue([],{emitEvent:false});
     this.schemeMst.length = 0;
@@ -597,6 +703,11 @@ getPaginate(__paginate){
     this.transFrm.get('client_dtls').setValue('',{emitEvent:false});
     this.transFrm.get('tin_no').setValue('',{emitEvent:false});
     this.transFrm.get('is_all_rnt').setValue(false);
+    this.transFrm.get('brn_cd').reset([],{emitEvent:false});
+    this.transFrm.get('bu_type').reset([],{emitEvent:false});
+    this.transFrm.get('rm_name').reset([],{emitEvent:false});
+    this.transFrm.get('sub_brk_cd').reset([],{emitEvent:false});
+    this.transFrm.get('euin_no').reset([],{emitEvent:false});
     this.sort = new sort();
     this.__pageNumber.setValue('10');
     this.submitNFOReport();

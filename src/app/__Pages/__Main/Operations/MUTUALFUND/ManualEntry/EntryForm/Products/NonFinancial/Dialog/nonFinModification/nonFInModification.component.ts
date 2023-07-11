@@ -58,6 +58,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { PreviewdtlsDialogComponent } from 'src/app/shared/core/previewdtls-dialog/previewdtls-dialog.component';
 import { CreateClientComponent } from 'src/app/shared/create-client/create-client.component';
 import clientType from '../../../../../../../../../../../assets/json/clientTypeMenu.json';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -112,9 +113,11 @@ export class NonfinmodificationComponent implements OnInit {
   __changeOfStatus = changeStatus;
   allowedExtensions = ['pdf'];
   __stateMst: any = [];
+  __countryMst:any=[];
   __distMst: any = [];
   __cityMst: any = [];
   __oldBnkMst: any = [];
+  __pincodeMst:any=[];
   __buisness_type = buisnessType;
 
   @ViewChild('searchbnk') __searchbnk: ElementRef;
@@ -224,6 +227,7 @@ export class NonfinmodificationComponent implements OnInit {
     redemp_amount: new FormControl(''),
     dist: new FormControl(''),
     state: new FormControl(''),
+    country_id:new FormControl(''),
     city: new FormControl(''),
     pincode: new FormControl(''),
     reason_for_change: new FormControl(''),
@@ -264,7 +268,7 @@ export class NonfinmodificationComponent implements OnInit {
     cancel_effective_date: new FormControl(''),
     remarks: new FormControl(''),
     rnt_login_at: new FormControl('', [Validators.required]),
-    filePreview: new FormControl(''),
+    filePreview: new FormControl(this.data.data ? `${environment.app_formUrl + this.data.data.app_form_scan}` : ''),
     app_form_scan: new FormControl(''),
     nominee_opt_out: new FormControl(''),
     file: new FormControl('', [
@@ -385,11 +389,11 @@ export class NonfinmodificationComponent implements OnInit {
     this.new_nominee.push(this.createNominee(), { emitEvent: false });
   }
 
-  createNominee(): FormGroup {
+  createNominee<T extends {id:number,nominee_name:string,percentage:number}>(nomineeDtls:T | null = null): FormGroup {
     return new FormGroup({
-      id: new FormControl(0),
-      nominee_name: new FormControl(''),
-      percentage: new FormControl('', {
+      id: new FormControl(nomineeDtls? nomineeDtls.id : 0),
+      nominee_name: new FormControl(nomineeDtls? nomineeDtls.nominee_name : ''),
+      percentage: new FormControl(nomineeDtls? nomineeDtls.percentage : '', {
         validators: [Validators.maxLength(3), Validators.pattern('^[0-9]*$')],
         asyncValidators: this.checkPercentageValidators(),
         updateOn: 'blur',
@@ -1008,6 +1012,10 @@ export class NonfinmodificationComponent implements OnInit {
       this.__nonfinForm.controls['state'].setValidators(
         res == '22' ? [Validators.required] : null
       );
+      this.__nonfinForm.controls['country_id'].setValidators(
+        res == '22' ? [Validators.required] : null
+      );
+
       this.__nonfinForm.controls['dist'].setValidators(
         res == '22' ? [Validators.required] : null
       );
@@ -1017,10 +1025,7 @@ export class NonfinmodificationComponent implements OnInit {
       this.__nonfinForm.controls['pincode'].setValidators(
         res == '22'
           ? [
-              Validators.required,
-              Validators.minLength(6),
-              Validators.maxLength(6),
-              Validators.pattern('^[0-9]*$'),
+              Validators.required
             ]
           : null
       );
@@ -1138,6 +1143,9 @@ export class NonfinmodificationComponent implements OnInit {
       this.__nonfinForm.controls['state'].updateValueAndValidity({
         emitEvent: false,
       });
+      this.__nonfinForm.controls['country_id'].updateValueAndValidity({
+        emitEvent: false,
+      });
       this.__nonfinForm.controls['dist'].updateValueAndValidity({
         emitEvent: false,
       });
@@ -1196,7 +1204,7 @@ export class NonfinmodificationComponent implements OnInit {
           res
         );
       } else if (res == '22') {
-        this.getState();
+        this.getCountry();
       } else if (res == '30' || res == '31') {
         this.getSwpType(this.__nonfinForm.controls['trans_id'].value);
         // this.getSchemeWiseFrequency(this.__nonfinForm.controls['scheme_id'].value)
@@ -1331,6 +1339,12 @@ export class NonfinmodificationComponent implements OnInit {
       error: (err) => (this.__isschemeSpinner_to = false),
     });
 
+    this.__nonfinForm.controls['country_id'].valueChanges.subscribe(res =>{
+      if(res && this.__nonfinForm.controls['trans_id'].value == '22'){
+        this.getState(res);
+      }
+    })
+
     this.__nonfinForm.controls['state'].valueChanges.subscribe((res) => {
       if (res && this.__nonfinForm.controls['trans_id'].value == '22') {
         this.getDistrict(res);
@@ -1339,6 +1353,11 @@ export class NonfinmodificationComponent implements OnInit {
     this.__nonfinForm.controls['dist'].valueChanges.subscribe((res) => {
       if (res && this.__nonfinForm.controls['trans_id'].value == '22') {
         this.getCity(res);
+      }
+    });
+    this.__nonfinForm.controls['city'].valueChanges.subscribe((res) => {
+      if (res && this.__nonfinForm.controls['trans_id'].value == '22') {
+        this.getPincode(res);
       }
     });
     this.__nonfinForm.controls['redemp_type'].valueChanges.subscribe((res) => {
@@ -1565,9 +1584,18 @@ export class NonfinmodificationComponent implements OnInit {
     }
   }
 
-  getState() {
+ getCountry(){
+  this.__dbIntr
+      .api_call(0, '/country', null)
+      .pipe(pluck('data'))
+      .subscribe((res) => {
+        this.__countryMst = res;
+      });
+ }
+
+  getState(country_id) {
     this.__dbIntr
-      .api_call(0, '/states', null)
+      .api_call(0, '/states', '&country_id=' + country_id)
       .pipe(pluck('data'))
       .subscribe((res) => {
         this.__stateMst = res;
@@ -1588,6 +1616,15 @@ export class NonfinmodificationComponent implements OnInit {
       .subscribe((res) => {
         this.__cityMst = res;
       });
+  }
+  getPincode(city_id){
+    this.__dbIntr
+    .api_call(0, '/pincode', 'city_id=' + city_id)
+    .pipe(pluck('data'))
+    .subscribe((res) => {
+      this.__pincodeMst = res;
+    });
+
   }
   calculatecancellationeffectivedt(inst_dt, __trans_id) {
     if (inst_dt) {
@@ -1766,6 +1803,7 @@ export class NonfinmodificationComponent implements OnInit {
       );
     } else if (this.__nonfinForm.value.trans_id == '22') {
       fb.append('state', this.__nonfinForm.value.state);
+      fb.append('country', this.__nonfinForm.value.country_id);
       fb.append('city', this.__nonfinForm.value.city);
       fb.append('dist', this.__nonfinForm.value.dist);
       fb.append('pincode', this.__nonfinForm.value.pincode);
@@ -1777,7 +1815,7 @@ export class NonfinmodificationComponent implements OnInit {
     } else if (this.__nonfinForm.value.trans_id == '24') {
       fb.append(
         'change_status',
-        this.__nonfinForm.controls['change_status'].value.client_type_id
+        this.__nonfinForm.controls['change_status'].value
       );
     } else if (this.__nonfinForm.value.trans_id == '25') {
       fb.append('nominee_opt_out', this.__nonfinForm.value.nominee_opt_out);
@@ -2062,20 +2100,29 @@ export class NonfinmodificationComponent implements OnInit {
       emitEvent: false,
     });
     this.searchResultVisibility('none');
+
     this.__nonfinForm.patchValue({
       bu_type: __items.bu_type,
-      trans_id: __items.trans_id,
       folio_no: __items.folio_no,
+      plan_id:global.getActualVal(__items.plan_id),
+      option_id:global.getActualVal(__items.plan_id),
+      rnt_login_at:global.getActualVal(__items.rnt_login_at),
+      remarks:global.getActualVal(__items.remarks)
     });
     setTimeout(() => {
+      if(__items.app_form_scan){
+        this.__nonfinForm.get('file').removeValidators([Validators.required]);
+      }
+      this.__nonfinForm.get('file').updateValueAndValidity();
+      this.__nonfinForm.controls['trans_id'].setValue(__items.trans_id,{emitEvent:true});
       this.__euinMst.length = 0;
       this.__clientMst.length = 0;
       this.__schemeMst.length = 0;
       this.__clientMst.push({
-        client_name: __items.client_name,
-        client_code: __items.client_code,
-        id: __items.client_id,
-        client_type: __items.client_type,
+        client_name: __items.first_client_name,
+        client_code: __items.first_client_code,
+        id: __items.first_client_id,
+        client_type: __items.first_client_type,
       });
       this.__euinMst.push({
         euin_no: __items.euin_no,
@@ -2096,14 +2143,83 @@ export class NonfinmodificationComponent implements OnInit {
         });
         this.getItemsDtls(this.__subbrkArnMst[0], 'S');
       }
+      this.setFormAgainstTransactionId(__items);
     }, 200);
-    //  this.getSchemeWiseFrequency(__items.scheme_id);
-    //  this.__nonfinForm.controls['temp_tin_no'].patchValue(__items.temp_tin_no,{emitEvent:false})
-    //  this.__nonfinForm.controls['euin_no'].patchValue((__items.euin_no + ' - ' + __items.emp_name),{emitEvent:false})
-    //  this.__nonfinForm.controls['client_code'].patchValue(__items.client_code,{emitEvent:false})
-    //  this.__nonfinForm.controls['sub_arn_no'].patchValue(__items.sub_arn_no,{emitEvent:false})
-    //  this.__nonfinForm.controls['scheme_name'].patchValue(__items.scheme_name ? __items.scheme_name : '',{emitEvent:false})
   }
+
+
+   setFormAgainstTransactionId(items){
+    console.log(items.trans_id);
+
+    switch(items.trans_id){
+      case 22:    this.__nonfinForm.patchValue({
+                  country_id:global.getActualVal(items.first_client_country_id),
+                  add_line_1:global.getActualVal(items.first_client_add_line_1),
+                  add_line_2:global.getActualVal(items.first_client_add_line_2),
+                  state:global.getActualVal(items.first_client_state_id),
+                  dist:global.getActualVal(items.first_client_district_id),
+                  city:global.getActualVal(items.first_client_city_id),
+                  pincode:global.getActualVal(items.first_client_pincode)
+                })
+                break;
+
+        case 32 : this.__nonfinForm.patchValue({
+                    change_existing_mode_of_holding:global.getActualVal(items.mode_of_holding),
+                    change_new_mode_of_holding:global.getActualVal(items.change_new_mode_of_holding)
+                  });
+                  break;
+
+      case 23 :   this.__nonfinForm.patchValue({
+                    new_name:global.getActualVal(items.first_client_name),
+                    reason_for_change:global.getActualVal(items.reason_for_change)
+                  });
+                  break;
+       case 28:  this.__nonfinForm.patchValue({
+                  folio_pan:global.getActualVal(items.first_client_pan)
+                  });
+                 break;
+      case 18:  this.__nonfinForm.patchValue({
+                  change_contact_type:global.getActualVal(items.change_contact_type),
+                  email:(items.change_contact_type == 'E' || items.change_contact_type == 'B') ? global.getActualVal(items.first_client_email) : '',
+                  mobile:(items.change_contact_type == 'M' || items.change_contact_type == 'B') ? global.getActualVal(items.first_client_mob) : '',
+                  email_dec:global.getActualVal(items.email_declaration_flag),
+                  mob_dec:global.getActualVal(items.mob_declaration_flag)
+                  });
+                 break;
+      case 24:
+                console.log(items.change_status_id);
+                this.__nonfinForm.patchValue({
+                change_status:global.getActualVal(items.change_status_id)
+                });
+                break;
+      case 20:  this.__nonfinForm.patchValue({
+                  minorToMajorpan:global.getActualVal(items.first_client_pan),
+                  kyc_status:global.getActualVal(items.kyc_status),
+                  first_kyc:global.getActualVal(items.first_kyc)
+                });
+                break;
+      case 25: this.__nonfinForm.patchValue({
+                  nominee_opt_out:global.getActualVal(items.nominee_opt_out),
+               })
+               break;
+      case 11:
+      case 21:
+              if(JSON.parse(items.new_nominee).length > 0){
+                this.new_nominee.clear();
+              JSON.parse(items.new_nominee).forEach(element => {
+                    this.new_nominee.push(this.createNominee(element));
+              });}
+              break;
+
+      default:break;
+    }
+
+    console.log(this.__nonfinForm);
+
+
+   }
+
+
   getItemsDtls(__euinDtls, __type) {
     switch (__type) {
       case 'S':
@@ -2920,5 +3036,9 @@ export class NonfinmodificationComponent implements OnInit {
 
   getSelectedItemsFromParent(event) {
     this.getItemsDtls(event.item, event.flag);
+  }
+  openPDF(){
+    window.open(this.__nonfinForm.value.filePreview, '_blank');
+
   }
 }

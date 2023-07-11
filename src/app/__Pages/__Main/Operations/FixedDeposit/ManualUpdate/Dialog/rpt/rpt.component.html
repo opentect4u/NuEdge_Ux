@@ -205,7 +205,7 @@
 
                   <div class="col-sm-4">
                     <label for="comp_type_id">Company Type</label>
-                    <ng-multiselect-dropdown #multiSelect
+                    <ng-multiselect-dropdown
                     id="comp_type_id"
                     [placeholder]="'Select Company Type'"
                     [settings]="__comp_type_setting"
@@ -215,7 +215,7 @@
                   </div>
                   <div class="col-sm-4">
                     <label for="company_id">Company</label>
-                    <ng-multiselect-dropdown #multiSelect
+                    <ng-multiselect-dropdown
                     id="company_id"
                     [placeholder]="'Select Company'"
                     [settings]="__comp_setting"
@@ -225,7 +225,7 @@
                   </div>
                   <div class="col-sm-4">
                     <label for="product_id">Scheme</label>
-                    <ng-multiselect-dropdown #multiSelect
+                    <ng-multiselect-dropdown
                     id="scheme_id"
                     [placeholder]="'Select Scheme'"
                     [settings]="__scm_setting"
@@ -795,7 +795,7 @@
         <div class="row">
           <div class="col-sm-4">
             <label for="comp_type_id">Company Type</label>
-            <ng-multiselect-dropdown #multiSelect
+            <ng-multiselect-dropdown
             id="comp_type_id"
             [placeholder]="'Select Company Type'"
             [settings]="__comp_type_setting"
@@ -805,7 +805,7 @@
           </div>
           <div class="col-sm-4">
             <label for="company_id">Company</label>
-            <ng-multiselect-dropdown #multiSelect
+            <ng-multiselect-dropdown
             id="company_id"
             [placeholder]="'Select Company'"
             [settings]="__comp_setting"
@@ -815,7 +815,7 @@
           </div>
           <div class="col-sm-4">
             <label for="scheme_id">Scheme</label>
-            <ng-multiselect-dropdown #multiSelect
+            <ng-multiselect-dropdown
             id="scheme_id"
             [placeholder]="'Select Scheme'"
             [settings]="__scm_setting"
@@ -845,7 +845,7 @@
           <ng-container *ngIf="__insTraxForm.value.btn_type == 'A';else noAdv">
           <div class="col-sm-4">
             <label for="branch">Branch</label>
-            <ng-multiselect-dropdown #multiSelect
+            <ng-multiselect-dropdown
             id="branch"
             [placeholder]="'Select Branch'"
             [settings]="settingsForbrnch"
@@ -855,7 +855,7 @@
           </div>
           <div class="col-sm-4">
             <label for="bu_type">Business Type</label>
-                <ng-multiselect-dropdown #multiSelect
+                <ng-multiselect-dropdown
                 id="bu_type"
                 [placeholder]="'Select Business Type'"
                 [settings]="settingsForbuType"
@@ -874,17 +874,17 @@
           <div class="row">
             <div class="col-sm-4">
               <label for="rm_id">Relationship Manager</label>
-              <ng-multiselect-dropdown #multiSelect
+              <ng-multiselect-dropdown
               id="rm_id"
               [placeholder]="'Select Relationship Manager'"
-              [settings]="settingsForbuType"
+              [settings]="settingsForRM"
               [data]="__rmMst"
               formControlName="rm_id">
             </ng-multiselect-dropdown>
             </div>
             <div class="col-sm-4">
               <label for="sub_brk_cd">Sub Broker Code</label>
-              <ng-multiselect-dropdown #multiSelect
+              <ng-multiselect-dropdown
               id="sub_brk_cd"
               [placeholder]="'Select Sub Broker Code'"
               [settings]="settingsForsubCode"
@@ -894,7 +894,7 @@
             </div>
             <div class="col-sm-4">
               <label for="euin_no">Employee</label>
-              <ng-multiselect-dropdown #multiSelect
+              <ng-multiselect-dropdown
               id="euin_no"
               [placeholder]="'Select Employee'"
               [settings]="settingsForEUIN"

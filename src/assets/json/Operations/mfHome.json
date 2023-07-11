@@ -21,12 +21,22 @@
     "sub_menu": []
    } ,
    {
-    "id": 2,
+    "id": 3,
     "menu_name": "Report",
      "title": "Report",
     "has_submenu": "N",
     "url": "/main/operations/dashboard/report",
     "flag":"R",
+    "icon": "fa fa-user-o",
+    "sub_menu": []
+   },
+   {
+    "id": 4,
+    "menu_name": "Report",
+     "title": "Online Process",
+    "has_submenu": "N",
+    "url": "/main/operations/dashboard/onlineprocess",
+    "flag":"O",
     "icon": "fa fa-user-o",
     "sub_menu": []
    }

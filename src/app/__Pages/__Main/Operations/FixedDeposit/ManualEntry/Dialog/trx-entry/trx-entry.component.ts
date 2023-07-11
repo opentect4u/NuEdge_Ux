@@ -19,6 +19,9 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { CreateInvComponent } from '../create-inv/create-inv.component';
 import { DialogDtlsComponent } from '../dialog-dtls/dialog-dtls.component';
 import { DatePipe } from '@angular/common';
+import { CreateBankComponent } from 'src/app/shared/create-bank/create-bank.component';
+import { PreviewdtlsDialogComponent } from 'src/app/shared/core/previewdtls-dialog/previewdtls-dialog.component';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-trx-entry',
   templateUrl: './trx-entry.component.html',
@@ -116,6 +119,8 @@ export class TrxEntryComponent implements OnInit {
      chq_bank: new FormControl(''),
      micr_code: new FormControl(''),
      bank_name: new FormControl(''),
+     ifs_code: new FormControl(''),
+     branch_name: new FormControl(''),
      acc_no: new FormControl(''),
      payment_ref_no: new FormControl(''),
      chq_no: new FormControl('', [
@@ -128,7 +133,9 @@ export class TrxEntryComponent implements OnInit {
     login_at: new FormControl('',[Validators.required]),
     remarks: new FormControl(''),
     ack_filePreview: new FormControl(''),
-    filePreview: new FormControl(''),
+    filePreview: new FormControl(
+      this.data.data ? `${environment.app_formUrl + this.data.data.app_form_scan}` : ''
+    ),
     app_form_scan: new FormControl(''),
     file: new FormControl('', [
       Validators.required,
@@ -169,8 +176,17 @@ export class TrxEntryComponent implements OnInit {
   ngOnInit(): void {
     this.getCompanyTypeMst();
     this.getLoginMst();
+    setTimeout(() => {
+      if(this.data.data){
+       this.setFdForm(this.data.data);
+      }
+    }, 200);
   }
 
+  setFdForm(res){
+    this.__temp_tinMst.push(res);
+     this.getItems(res,'T');
+  }
 
 
   getLoginMst(){
@@ -608,7 +624,9 @@ export class TrxEntryComponent implements OnInit {
     }
   }
   searchResultVisibilityForSecClient(display_mode){
-  this.__secInv.nativeElement.style.display = display_mode;
+    if( this.__secInv){
+    this.__secInv.nativeElement.style.display = display_mode;
+  }
   }
 
 /** First Investor Search Bar hide show */
@@ -618,7 +636,9 @@ export class TrxEntryComponent implements OnInit {
     }
   }
   searchResultVisibilityForFirstClient(display_mode){
-  this.__firstInv.nativeElement.style.display = display_mode;
+    if(this.__firstInv){
+      this.__firstInv.nativeElement.style.display = display_mode;
+    }
 
   }
 
@@ -704,6 +724,8 @@ export class TrxEntryComponent implements OnInit {
          break;
 
         case 'B':
+          console.log(__el);
+
           this.__dialogDtForBnk = __el;
           this.__fdTrax.controls['micr_code'].reset(__el.micr_code, {
             onlySelf: true,
@@ -712,6 +734,8 @@ export class TrxEntryComponent implements OnInit {
           this.__fdTrax.patchValue({
             bank_name: __el.bank_name,
             chq_bank: __el.id,
+            branch_name:__el.branch_name,
+            ifs_code:__el.ifs_code
           });
           this.searchResultVisibilityForBank('none');
           break;
@@ -726,7 +750,26 @@ export class TrxEntryComponent implements OnInit {
     comp_id: __el.comp_id,
     scheme_id:__el.scheme_id,
     inv_type_id: __el.fd_bu_type,
-    application_no:__el.application_no
+    application_no:__el.application_no,
+    kyc_status:global.getActualVal(__el.kyc_status),
+    inv_kyc:global.getActualVal(__el.first_kyc),
+    existing_mode_of_holding:global.getActualVal(__el.mode_of_holding),
+    option:global.getActualVal(__el.option),
+    sub_option:global.getActualVal(__el.sub_option),
+    tenure_type:global.getActualVal(__el.tenure_type),
+    tenure:global.getActualVal(__el.tenure),
+    int_rate:global.getActualVal(__el.interest_rate),
+    mat_instr:global.getActualVal(__el.maturity_instruction),
+    amount:global.getActualVal(__el.amount),
+    trns_mode:global.getActualVal(__el.mode_of_payment),
+    certificate_delivery_opt:global.getActualVal(__el.certificate_delivery_opt),
+    tds_info:global.getActualVal(__el.tds_info_id),
+    login_at: global.getActualVal(__el.comp_login_at),
+    remarks:global.getActualVal(__el.remarks),
+    acc_no:global.getActualVal(__el.acc_no),
+    chq_no:__el.mode_of_payment == 'O' ? global.getActualVal(__el.chq_no) : '',
+    payment_ref_no:__el.mode_of_payment == 'N' ? global.getActualVal(__el.payment_ref_no) : ''
+
    })
    this.__euinMst.push({euin_no:__el.euin_no,emp_name:__el.emp_name});
    this.getItems({euin_no:__el.euin_no,emp_name:__el.emp_name},'E');
@@ -743,6 +786,25 @@ export class TrxEntryComponent implements OnInit {
     },
     'C');
 
+    this.getItems({
+      micr_code: __el?.micr_code,
+      bank_name: __el?.bank_name,
+      ifs_code: __el?.ifs_code,
+      branch_name: __el?.chq_branch_name,
+      id: __el?.chq_bank,
+      branch_addr: __el?.chq_branch_addr
+    },
+    'B'
+    );
+
+    if(this.data.data.app_form_scan){
+  this.__fdTrax.get('file').removeValidators([Validators.required]);
+    }
+    else{
+      this.__fdTrax.get('file').addValidators([Validators.required]);
+    }
+    this.__fdTrax.get('file').updateValueAndValidity();
+
     this.__isCldtlsEmpty = false;
     if(__el.bu_type == 'B'){
       this.__subbrkArnMst.push({code:__el.sub_arn_no});
@@ -752,6 +814,8 @@ export class TrxEntryComponent implements OnInit {
         },
         'S');
     }
+    console.log(this.__fdTrax);
+
 
   }
   /** OutSide Click of Temporary TIN Number */
@@ -846,9 +910,17 @@ openDialog(__type) {
   };
   try {
     const dialogref = this.__dialog.open(
-      DialogDtlsComponent,
+      PreviewdtlsDialogComponent,
       dialogConfig
     );
+    dialogref.afterClosed().subscribe((res) => {
+      if (res) {
+        if (__type == 'B') {
+          this.__bnkMst.push(res.data);
+          this.getItems(res.data, 'B');
+        }
+      }
+    });
   } catch (ex) { }
 }
 checkIfclientExist(cl_code: string): Observable<boolean> {
@@ -874,7 +946,8 @@ outsideClickforbank(__ev) {
 }
  /**Search Result Off against Bank */
  searchResultVisibilityForBank(display_mode) {
-  this.__searchbnk.nativeElement.style.display = display_mode;
+  if(this.__searchbnk){
+  this.__searchbnk.nativeElement.style.display = display_mode;}
 }
 getFIle(__ev) {
   this.__fdTrax
@@ -1016,5 +1089,27 @@ submitFdTrax(){
          var __el = this.renderer.selectRootElement('#'+__mode);
         __el.focus();
     }
-
+    openDialogForCreateBnk(id) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.autoFocus = false;
+      dialogConfig.closeOnNavigation = true;
+      dialogConfig.width = '40%';
+      dialogConfig.data = {
+        id: id,
+        flag: 'B-FD',
+        formName: 'B-FD',
+        title: id == 0 ? 'Add Bank' : 'Update Bank',
+        right: global.randomIntFromInterval(1, 60),
+      };
+      const dialogref = this.__dialog.open(CreateBankComponent, dialogConfig);
+      dialogref.afterClosed().subscribe((dt) => {
+        if (dt) {
+          this.__bnkMst.push(dt.data);
+          this.getItems(dt.data, 'B');
+        }
+      });
+    }
+    openPDF(){
+    window.open(this.__fdTrax.value.filePreview, '_blank');
+    }
 }

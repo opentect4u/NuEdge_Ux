@@ -1,0 +1,27 @@
+[
+  {
+    "id":1,
+    "type":"E",
+    "tab_name":"Existing",
+    "img_src":"../../../assets/images/existing.png"
+  },
+
+  {
+    "id":2,
+    "type":"M",
+    "tab_name":"Minor",
+    "img_src":"../../../assets/images/minor.png"
+  },
+  {
+    "id":3,
+    "type":"P",
+    "tab_name":"PAN Holder",
+    "img_src":"../../../assets/images/panHolder.png"
+  },
+  {
+    "id":4,
+    "type":"N",
+    "tab_name":"Non PAN Holder",
+    "img_src":"../../../assets/images/nonpanHolder.png"
+  }
+]

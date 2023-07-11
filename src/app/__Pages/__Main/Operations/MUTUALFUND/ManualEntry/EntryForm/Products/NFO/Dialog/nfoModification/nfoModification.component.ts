@@ -50,6 +50,7 @@ import { CreateBankComponent } from 'src/app/shared/create-bank/create-bank.comp
 import { PreviewdtlsDialogComponent } from 'src/app/shared/core/previewdtls-dialog/previewdtls-dialog.component';
 import { CreateClientComponent } from 'src/app/shared/create-client/create-client.component';
 import clientType from '../../../../../../../../../../../assets/json/clientTypeMenu.json';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'nfoModification-component',
@@ -176,8 +177,8 @@ export class NfomodificationComponent implements OnInit {
       asyncValidators: [this.TemporaryTINValidators()],
     }),
     bu_type: new FormControl('', [Validators.required]),
-    sub_brk_cd: new FormControl('', [Validators.required]),
-    sub_arn_no: new FormControl('', [Validators.required]),
+    sub_brk_cd: new FormControl(''),
+    sub_arn_no: new FormControl(''),
     euin_no: new FormControl('', {
       validators: [Validators.required],
       asyncValidators: [this.EUINValidators()],
@@ -213,18 +214,22 @@ export class NfomodificationComponent implements OnInit {
       validators: [Validators.required],
       asyncValidators: [this.MICRValidators()],
     }),
-    ack_filePreview: new FormControl(''),
-    filePreview: new FormControl(''),
+    filePreview: new FormControl(this.data.nfoData ? `${environment.app_formUrl + this.data.nfoData.app_form_scan}` : ''),
     app_form_scan: new FormControl(''),
-    file: new FormControl('', [
+    file: new FormControl('',
+    [
       Validators.required,
       fileValidators.fileExtensionValidator(this.allowedExtensions),
-    ]),
+    ]
+
+    ),
     remarks: new FormControl(''),
     trans_id: new FormControl('', [Validators.required]),
     form_scan_status: new FormControl(''),
     bank_id: new FormControl('', [Validators.required]),
     bank_name: new FormControl(''),
+    branch_name:new FormControl(''),
+    ifsc:new FormControl(''),
     mode_of_holding: new FormControl('', [Validators.required]),
 
     second_client_name: new FormControl(''),
@@ -303,12 +308,16 @@ export class NfomodificationComponent implements OnInit {
     this.getPlanMst();
     this.getTransactionType();
     this.getnumberofdaystobeadded();
-    if(this.data.nfoData){
-      this.setNFOForm(this.data.nfoData);
-    }
+    setTimeout(() => {
+      if(this.data.nfoData){
+        this.setNFOForm(this.data.nfoData);
+      }
+    }, 200);
   }
   setNFOForm(res){
-    console.log(res);
+    this.__temp_tinMst.length = 0;
+    this.__temp_tinMst.push(res)
+    this.getItems(res);
   }
   getnumberofdaystobeadded() {
     this.__dbIntr
@@ -904,7 +913,9 @@ export class NfomodificationComponent implements OnInit {
     //Change in Durations
     this.__traxForm.controls['duration'].valueChanges.subscribe((res) => {
       // this.setSipEndDate();
+      if(res){
       this.setStartDT(res);
+    }
     });
     //Period in Durations
     // this.__traxForm.controls['period'].valueChanges.subscribe(res => {
@@ -1263,25 +1274,46 @@ export class NfomodificationComponent implements OnInit {
       .get('temp_tin_no')
       .reset(__items.temp_tin_no, { onlySelf: true, emitEvent: false });
     this.searchResultVisibility('none');
+    this.__traxForm.get('trans_id').reset(__items.trans_id,{emitEvent:true});
     this.__traxForm.patchValue({
       bu_type: __items.bu_type,
-      trans_id: __items.trans_id,
       inv_type: __items.inv_type,
-      application_no: __items.inv_type == 'F' ? __items.application_no : '',
-      folio_number: __items.inv_type == 'A' ? __items.folio_no : '',
-      kyc_status: __items.kyc_status,
+      application_no: __items.inv_type == 'F' ? global.getActualVal(__items.application_no) : '',
+      folio_number: (__items.inv_type == 'A' || __items.trans_id == 6) ? global.getActualVal(__items.folio_no) : '',
+      mode_of_holding:__items.mode_of_holding ? global.getActualVal(__items.mode_of_holding) : '',
+      plan:global.getActualVal(__items.plan_id),
+      option:global.getActualVal(__items.option_id),
+      chq_no:global.getActualVal(__items.chq_no),
+      first_kyc:global.getActualVal(__items.first_kyc),
+      rnt_login_at:global.getActualVal(__items.rnt_login_at),
+      remarks:global.getActualVal(__items.remarks),
+      amount:global.getActualVal(__items.amount),
+      switch_by:__items.trans_id == 6 ? global.getActualVal(__items.switch_by) : '',
+      unit:__items.trans_id == 6 ? global.getActualVal(__items.unit) : '',
+      switch_amt:__items.trans_id == 6 ? global.getActualVal(__items.amount) : '',
+      plan_to:__items.trans_id == 6 ? global.getActualVal(__items.plan_id_to) : '',
+      option_to:__items.trans_id == 6 ? global.getActualVal(__items.option_id_to) : ''
     });
     setTimeout(() => {
+      if(__items.app_form_scan){
+        this.__traxForm.get('file').removeValidators([Validators.required]);
+      }
+      else{
+        this.__traxForm.get('file').addValidators([Validators.required]);
+      }
+      this.__traxForm.get('file').updateValueAndValidity();
+      this.__traxForm.get('kyc_status').setValue(global.getActualVal(__items.kyc_status));
       this.__euinMst.length = 0;
       this.__clientMst.length = 0;
       this.__schemeMst.length = 0;
       this.__schemeMstforSwitchTo.length = 0;
       this.__schemeMstforSwitchTo.length = 0;
+      this.__bnkMst.length = 0;
       this.__clientMst.push({
-        client_code: __items.client_code,
-        id: __items.client_id,
-        client_name: __items.client_name,
-        client_type: __items.client_type,
+        client_code:global.getActualVal( __items.first_client_code),
+        id:global.getActualVal( __items.first_client_id),
+        client_name:global.getActualVal( __items.first_client_name),
+        client_type:global.getActualVal( __items.first_client_type),
       });
       this.__euinMst.push({
         euin_no: __items.euin_no,
@@ -1298,7 +1330,16 @@ export class NfomodificationComponent implements OnInit {
         scheme_name: __items.scheme_name_to,
       });
 
+      this.__bnkMst.push({
+        micr_code:global.getActualVal(__items.micr_code),
+        bank_name:global.getActualVal(__items.bank_name),
+        ifs_code:global.getActualVal(__items.ifs_code),
+        branch_name:global.getActualVal(__items.chq_branch_name),
+        id:global.getActualVal(__items.chq_bank),
+        branch_addr:global.getActualVal(__items.chq_branch_addr)
+      });
       this.getItemsDtls(this.__euinMst[0], 'E'); // EUIN Binding
+
       this.__isCldtlsEmpty = this.__clientMst.length > 0 ? false : true;
       this.getItemsDtls(this.__clientMst[0], 'C'); // CLIENT Binding
       this.getItemsDtls(this.__schemeMst[0], 'SC'); // Scheme Binding
@@ -1321,7 +1362,46 @@ export class NfomodificationComponent implements OnInit {
         this.getItemsDtls(this.__schemeMstforSwitchTo[0], 'NST');
         this.__isNfoSchemeSwitchTo = false;
       }
+      console.log(this.__traxForm);
+      this.getItemsDtls(this.__bnkMst[0], 'B');
+     this.__isMicrSpinner = false;
+      this.setSIPFormControlWhileEdit(__items);
     }, 200);
+  }
+
+  setSIPFormControlWhileEdit(__items){
+    setTimeout(() => {
+      if(__items.trans_id == 5){
+        this.__traxForm.patchValue({
+          sip_type: __items?.trans_id == 5 ? global.getActualVal(__items?.sip_type) : '',
+          sip_frequency:
+            __items?.trans_id == 5
+              ? global.getActualVal(__items?.sip_swp_stp_frequency)
+              : '',
+          sip_date:
+            __items?.trans_id == 5
+              ? global.getActualVal(__items?.sip_swp_stp_inst_date)
+              : '',
+          sip_start_date:
+            __items?.trans_id == 5
+              ?global.getActualVal(__items?.sip_swp_stp_start_date)
+              : '',
+
+          sip_duration:
+            __items?.trans_id == 5
+              ? global.getActualVal(__items?.sip_swp_stp_duration_type)
+              : '',
+          duration:
+              __items?.trans_id == 5
+                ? global.getActualVal(__items?.sip_swp_stp_duration)
+                : '',
+                sip_end_date:
+                __items?.trans_id == 5
+                  ? global.getActualVal(__items?.sip_swp_stp_end_date)
+                  : '',
+        })
+      }
+    }, 500);
   }
   getschemwisedt(__scheme_id) {
     this.__dbIntr
@@ -1426,6 +1506,8 @@ export class NfomodificationComponent implements OnInit {
         break;
 
       case 'SC':
+        console.log(__euinDtls);
+
         this.__isEntryDTGreater = __euinDtls.nfo_entry_date;
         this.__dialogDtForScheme = __euinDtls;
         this.__traxForm.controls['scheme_name'].reset(__euinDtls.scheme_name, {
@@ -1439,13 +1521,12 @@ export class NfomodificationComponent implements OnInit {
 
       case 'B':
         this.__dialogDtForBnk = __euinDtls;
-        this.__traxForm.controls['chq_bank'].reset(__euinDtls.micr_code, {
-          onlySelf: true,
-          emitEvent: false,
-        });
-        this.__traxForm.controls['bank_name'].setValue(__euinDtls.bank_name);
-        this.__traxForm.controls['bank_id'].setValue(__euinDtls.id);
+        this.__traxForm.controls['chq_bank'].setValue(__euinDtls.micr_code, {emitEvent: false});
         this.searchResultVisibilityForBnk('none');
+        this.__traxForm.controls['bank_name'].setValue(__euinDtls.bank_name);
+        this.__traxForm.controls['ifsc'].setValue(__euinDtls.ifs_code);
+        this.__traxForm.controls['branch_name'].setValue(__euinDtls.branch_name);
+        this.__traxForm.controls['bank_id'].setValue(__euinDtls.id);
         break;
 
       case 'ST':
@@ -1643,7 +1724,7 @@ export class NfomodificationComponent implements OnInit {
         ? this.__traxForm.get(['nfo_combo', 'switch_amount']).value
         : this.__traxForm.value.amount
     );
-    fb.append('folio_no', this.__traxForm.value.folio_number);
+    fb.append('folio_no', (this.__traxForm.value.trans_id == '6' || this.__traxForm.value.inv_type == 'A') ?  global.getActualVal(this.__traxForm.value.folio_number) : '');
     fb.append('trans_id', this.__traxForm.value.trans_id);
     fb.append(
       'chq_no',
@@ -1659,6 +1740,9 @@ export class NfomodificationComponent implements OnInit {
     fb.append('plan', this.__traxForm.value.plan);
     fb.append('option', this.__traxForm.value.option);
     fb.append('inv_type', this.__traxForm.value.inv_type);
+    fb.append('application_no', (this.__traxForm.value.inv_type == 'F' ? this.__traxForm.value.application_no : ''));
+
+
     fb.append('mode_of_holding', this.__traxForm.value.mode_of_holding);
     fb.append(
       'euin_no',
@@ -1669,9 +1753,10 @@ export class NfomodificationComponent implements OnInit {
     if (this.__traxForm.value.trans_id == '5') {
       fb.append('sip_start_date', this.__traxForm.value.sip_start_date);
       fb.append('sip_end_date', this.__traxForm.value.sip_end_date);
-      fb.append('sip_duration', this.__traxForm.value.sip_duration);
+      fb.append('sip_duration_type', this.__traxForm.value.sip_duration);
       fb.append('duration', this.__traxForm.value.duration);
-      fb.append('period', this.__traxForm.value.period);
+      fb.append('sip_date', this.__traxForm.value.sip_date);
+      // fb.append('period', this.__traxForm.value.period);
       fb.append('sip_frequency', this.__traxForm.value.sip_frequency);
     } else if (this.__traxForm.value.trans_id == '6') {
       fb.append('option_to', this.__traxForm.value.option_to);
@@ -1989,12 +2074,14 @@ export class NfomodificationComponent implements OnInit {
   }
 
   checkIfEntryDategreater(): Observable<boolean> {
-    console.log(
-      this.__isEntryDTGreater > new Date().toISOString().substring(0, 10)
-    );
+    // console.log(
+    //   this.__isEntryDTGreater > new Date().toISOString().substring(0, 10)
+    // );
+    if(this.__traxForm.value.trans_id == 6){
     return of(
       this.__isEntryDTGreater > new Date().toISOString().substring(0, 10)
-    );
+    );}
+    return of(true);
   }
   EntryDateExpiredValidators(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
@@ -2336,5 +2423,8 @@ export class NfomodificationComponent implements OnInit {
 
   getSelectedItemsFromParent(event) {
     this.getItemsDtls(event.item, event.flag);
+  }
+  openPDF(){
+    window.open(this.__traxForm.get('filePreview').value,'__blank')
   }
 }

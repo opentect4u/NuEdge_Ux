@@ -114,7 +114,6 @@
                         formControlName="client_name" placeholder="Enter Client code / Name / PAN / email">
                       <span class="spinner-border"
                         *ngIf="__isClientPending && __rcvForms.get('client_name').value?.length > 1"></span>
-
                       <div class="processMain_2" __searchResVisibility
                         (appOutsideClick)="outsideClickforClient($event)">
                         <div class="serachresult_client" #clientCd>
@@ -579,7 +578,7 @@
                   {{element.chq_no ? element.chq_no : 'N/A'}}
                 </td>
               </ng-container>
-              <ng-container matColumnDef="bank">
+              <ng-container matColumnDef="bank_name">
                 <th mat-header-cell *matHeaderCellDef>Bank</th>
                 <td mat-cell *matCellDef="let element;let i = index">
                   {{element.bank_name ? element.bank_name : 'N/A'}}

@@ -263,7 +263,7 @@
                 matTooltip="Proposer does not exists"
                 *ngIf="__fdTrax.get('investor_code').errors?.ClientExists">
                 error</mat-icon>
-              Invstor Details
+              Investor Details
               <span class="text-danger">*</span></label>
             <input type="search" name="__clntCd" id="__clntCd" class="form-control" formControlName="investor_code"
               placeholder="Search By Investor Name,Investor Code, Email, Mobile, PAN & DOB">
@@ -780,7 +780,7 @@
       </div>
       <ng-container
       *ngIf="__fdTrax.get('trns_mode').value == 'O' || __fdTrax.get('trns_mode').value == 'N'">
-      <div [ngClass]="{'col-sm-12':!__dialogDtForBnk,'col-sm-8': __dialogDtForBnk}">
+      <div [ngClass]="{'col-sm-12':__dialogDtForBnk,'col-sm-8': !__dialogDtForBnk}">
         <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforbank($event)">
           <div class="searchDiv">
             <label for="__clntCd">MICR Code
@@ -809,12 +809,32 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-4 clientCode" *ngIf="__dialogDtForBnk && __fdTrax.get('micr_code').value">
-        <button (click)="openDialog('B')" color="primary" mat-button type="button"
-          aria-label="Example icon button with a eye icon" title="View Bank Details">
-          <mat-icon>remove_red_eye</mat-icon>
-          View Details
-        </button>
+      <div class="col-sm-4 clientCode" *ngIf="!__dialogDtForBnk && __fdTrax.get('micr_code').value">
+        <core-btn-with-menu
+        [BtnTitle]="'Create Bank'"
+        [hasMenu]="false"
+        (btnItem)="openDialogForCreateBnk(0)"
+        [flag]="'B'"
+      ></core-btn-with-menu>
+      </div>
+      <div class="col-sm-12">
+        <label for="bnk_name">Bank</label>
+        <div class="p-inputgroup">
+          <input type="text"  pInputText name="bnk_name" id="bnk_name"
+          class="form-control" placeholder="Bank Name"
+          formControlName="bank_name" [attr.disabled]="true" />
+          <button type="button" label="View" pButton icon="pi pi-eye"
+           styleClass="p-button-warn" (click)="openDialog('B')"></button>
+      </div>
+    </div>
+
+      <div class="col-sm-12">
+        <label for="ifsc">IFSC</label>
+        <input type="text"  name="ifsc" id="ifsc" formControlName="ifs_code" class="form-control" [attr.disabled]="true"/>
+     </div>
+      <div class="col-sm-12">
+        <label for="branch_name">Branch</label>
+        <input type="text"  name="branch_name" id="branch_name" formControlName="branch_name" class="form-control" [attr.disabled]="true"/>
       </div>
       <div class="col-sm-12 my-2">
         <label for="acc_no">
@@ -911,9 +931,23 @@
 
     <div class="row">
       <div class="col-sm-12 my-3">
-        <label>Upload Scan Application Form <span class="text-danger">*</span></label>
-        <input type="file" name="file" id="file" formControlName="file" class="form-control"
-          (change)="getFIle($event.target)" accept=".pdf">
+        <label for="upload_scan">Upload Scan Application Form <span class="text-danger">*</span></label>
+        <!-- <input type="file" name="file" id="file" formControlName="file" class="form-control"
+          (change)="getFIle($event.target)" accept=".pdf"> -->
+          <div class="p-inputgroup">
+            <input type="file"  pInputText
+            (change)="getFIle($event.target)"
+            accept=".pdf"
+            name="upload_scan" id="upload_scan"
+            class="form-control"
+            formControlName="file">
+            <button
+            *ngIf="this.__fdTrax.value.filePreview"
+            type="button"
+            icon="pi pi-eye"
+            (click)="openPDF()"
+            pButton label="View"></button>
+          </div>
          <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
         <div class="invalid-feedback"
           *ngIf=" __fdTrax.get('file').invalid && ( __fdTrax.get('file').dirty ||  __fdTrax.get('file').touched)">
@@ -965,6 +999,7 @@
 <!-- [disabled]="this.__fdTrax.invalid" -->
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
   <button class="btn addBtn" [attr.form]="'__TRAX_FD__'+ this.data.tin_no"
+  [disabled]="__fdTrax.invalid"
    >Submit</button>
 </mat-dialog-actions>
 <br clear="all">

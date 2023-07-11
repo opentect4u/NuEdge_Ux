@@ -67,11 +67,13 @@ export class TraxRPTComponent implements OnInit {
   __comp_setting = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company');
   __comp_type_setting = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type');
   __scm_setting = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme');
-  settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Employee',3);
+  settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',3);
   settingsForbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',3 );
-  settingsForbuType = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',3);
-  settingsForRM = this.__utility.settingsfroMultiselectDropdown('id','manager_name','Search Relationship Manager',3);
+  settingsForbuType = this.__utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',3);
+  settingsForRM = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',3);
   settingsForsubCode = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',3);
+
+
   __insuredbu_type = [
     { id: 'F', insuredbu_type: 'Fresh' },
     { id: 'R', insuredbu_type: 'Renewal' },
@@ -117,14 +119,14 @@ export class TraxRPTComponent implements OnInit {
     btnType:new FormControl('R'),
     date_range: new FormControl(''),
     options: new FormControl('2'),
-    sub_brk_cd: new FormControl([]),
-    rm_id:new FormControl([]),
+    sub_brk_cd: new FormControl([],{updateOn:'blur'}),
+    rm_id:new FormControl([],{updateOn:'blur'}),
     tin_no: new FormControl(''),
-    brn_cd: new FormControl([]),
+    brn_cd: new FormControl([],{updateOn:'blur'}),
     investor_code: new FormControl(''),
     investor_name: new FormControl(''),
     euin_no: new FormControl([]),
-    bu_type: new FormControl([]),
+    bu_type: new FormControl([],{updateOn:'blur'}),
     date_status: new FormControl('T'),
     start_date: new FormControl(this.getTodayDate()),
     end_date: new FormControl(this.getTodayDate()),
@@ -180,10 +182,10 @@ export class TraxRPTComponent implements OnInit {
         __fd.append('scheme_id', JSON.stringify(this.__insTraxForm.value.scheme_id.map(item => {return item['id']})));
         if(this.__insTraxForm.value.btnType == 'A'){
         __fd.append('brn_cd', JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})));
-        __fd.append('bu_type', JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item['id']})));
-        __fd.append('rm_id', JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['id']})));
-        __fd.append('sub_brk_cd', JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['id']})));
-        __fd.append('euin_no', JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['id']})));
+        __fd.append('bu_type', JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item['bu_code']})));
+        __fd.append('rm_id', JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['euin_no']})));
+        __fd.append('sub_brk_cd', JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['code']})));
+        __fd.append('euin_no', JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['euin_no']})));
         }
       }
       else{
@@ -279,6 +281,7 @@ export class TraxRPTComponent implements OnInit {
           this.__clientMst = value.data;
           this.searchResultVisibilityForClient('block');
           this.__isClientPending = false;
+          this.__insTraxForm.get('investor_code').setValue('');
         },
         complete: () => console.log(''),
         error: (err) => {
@@ -300,8 +303,106 @@ export class TraxRPTComponent implements OnInit {
       this.getSchemeMst(res,this.__insTraxForm.get('comp_type_id').value);
     });
     /*** END */
+
+    this.__insTraxForm.controls['brn_cd'].valueChanges.subscribe(res =>{
+      this.getBusinessTypeMst(res)
+    })
+    this.__insTraxForm.controls['bu_type'].valueChanges.subscribe(res =>{
+      this.disabledSubBroker(res);
+       this.getRelationShipManagerMst(res,this.__insTraxForm.value.brn_cd);
+    })
+    this.__insTraxForm.controls['rm_id'].valueChanges.subscribe(res =>{
+      if(this.__insTraxForm.value.bu_type.findIndex(item => item.bu_code == 'B') != -1){
+               this.getSubBrokerMst(res);
+      }
+      else{
+      this.__euinMst.length = 0;
+        this.__euinMst = res;
+      }
+   })
+   this.__insTraxForm.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
+    // if(res.length > 0){
+      this.setEuinDropdown(res,this.__insTraxForm.value.rm_id);
+    // }
+   })
+  }
+  setEuinDropdown(sub_brk_cd,rm){
+   this.__euinMst = rm.filter(item => !this.__subbrkArnMst.map(item=> {return item['emp_euin_no']}).includes(item.euin_no));
+   if(sub_brk_cd.length > 0){
+    sub_brk_cd.forEach(element => {
+           if(this.__subbrkArnMst.findIndex((el) => element.code == el.code) != -1){
+              this.__euinMst.push(
+                {
+                  euin_no:this.__subbrkArnMst[this.__subbrkArnMst.findIndex((el) => element.code == el.code)].euin_no,
+                  emp_name:''
+                }
+                );
+           }
+    });
+   }
+   else{
+     this.__euinMst = this.__euinMst.filter(item => !this.__subbrkArnMst.map(item => {return item['euin_no']}).includes(item.euin_no))
+   }
+  }
+  disabledSubBroker(bu_type_ids){
+    if(bu_type_ids.findIndex(item => item.bu_code == 'B') != -1){
+      this.__insTraxForm.controls['sub_brk_cd'].enable();
+    }
+    else{
+      this.__insTraxForm.controls['sub_brk_cd'].disable();
+    }
+
+  }
+  getSubBrokerMst(arr_euin_no){
+    if(arr_euin_no.length > 0){
+    this.__dbIntr.api_call(0,'/subbroker',
+    'arr_euin_no='+ JSON.stringify(arr_euin_no.map(item => {return item['euin_no']})))
+    .pipe(pluck("data")).subscribe((res: any) =>{
+      this.__subbrkArnMst = res.map(({code,bro_name,emp_euin_no,euin_no}) => ({
+      code,
+      emp_euin_no,
+      euin_no,
+      bro_name:bro_name +'-'+code
+      })
+      );
+    })
+  }
+  else{
+    this.__subbrkArnMst.length =0;
+    this.__insTraxForm.controls['sub_brk_cd'].setValue([]);
   }
 
+  }
+  getBusinessTypeMst(brn_cd){
+    if(brn_cd.length > 0){
+    this.__dbIntr
+    .api_call(0,'/businessType','arr_branch_id='+JSON.stringify(brn_cd.map(item => {return item['id']})))
+    .pipe(pluck("data")).subscribe(res =>{
+            this.__bu_type = res;
+    })
+  }
+  else{
+    this.__insTraxForm.controls['bu_type'].reset([],{emitEvent:true});
+    this.__bu_type.length = 0;
+  }
+  }
+  getRelationShipManagerMst(bu_type_id,arr_branch_id){
+    if(bu_type_id.length > 0 && arr_branch_id.length > 0){
+    this.__dbIntr.api_call(0,'/employee',
+    'arr_bu_type_id='+ JSON.stringify(bu_type_id.map(item => {return item['bu_code']}))
+    +'&arr_branch_id=' + JSON.stringify(arr_branch_id.map(item  => {return item['id']}))
+    ).pipe(pluck("data"))
+    .subscribe(res =>{
+         this.__rmMst = res;
+         console.log(this.__rmMst);
+
+    })
+  }
+  else{
+    this.__rmMst.length =0;
+    this.__insTraxForm.controls['rm_id'].reset([]);
+  }
+  }
   outsideClick(__ev) {
     if (__ev) {
       this.__isEuinPending = false;
@@ -368,9 +469,10 @@ export class TraxRPTComponent implements OnInit {
               this.__insTraxForm.value.btnType == 'A' ?
               (
                 ('&brn_cd=' + (JSON.stringify(this.__insTraxForm.value.brn_cd.map(item => {return item['id']})))) +
-                ('&rm_id=' + (JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['id']})))) +
-                ('&sub_brk_cd=' + (JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['id']})))) +
-                ('&euin_no=' + (JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['id']}))))
+                ('&rm_id=' + (JSON.stringify(this.__insTraxForm.value.rm_id.map(item => {return item['euin_no']})))) +
+                ('&sub_brk_cd=' + (JSON.stringify(this.__insTraxForm.value.sub_brk_cd.map(item => {return item['code']})))) +
+                ('&euin_no=' + (JSON.stringify(this.__insTraxForm.value.euin_no.map(item => {return item['euin_no']})))) +
+                ('&bu_type=' + (JSON.stringify(this.__insTraxForm.value.bu_type.map(item => {return item['bu_code']}))))
               )
               :
               ''
@@ -400,8 +502,6 @@ export class TraxRPTComponent implements OnInit {
       : '';
   }
   populateDT(__el) {
-    console.log(__el);
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.width = '80%';
@@ -458,29 +558,6 @@ export class TraxRPTComponent implements OnInit {
   searchResultVisibilityForSubBrk(display_mode) {
     this.__subBrkArn.nativeElement.style.display = display_mode;
   }
-  refresh() {
-    // this.__insTraxForm.reset({ emitEvent: false });
-    this.__insTraxForm.patchValue({
-      options: '2',
-      start_date: this.getTodayDate(),
-      end_date: this.getTodayDate(),
-      date_status: 'T',
-      dt_type: '',
-      login_status: 'N',
-    });
-    this.__insTraxForm.controls['company_id'].reset([],{emitEvent: false});
-    this.__insTraxForm.controls['comp_type_id'].reset([],{emitEvent: false});
-    this.__insTraxForm.controls['scheme_id'].reset([],{emitEvent: false});
-    (<FormArray>this.__insTraxForm.get('bu_type')).clear();
-    this.__insTraxForm.controls['investor_code'].reset('', {
-      emitEvent: false,
-    });
-    this.__insTraxForm.controls['sub_brk_cd'].reset('', { emitEvent: false });
-    this.__insTraxForm.controls['euin_no'].reset('', { emitEvent: false });
-    this.__sortAscOrDsc = { active: '', direction: 'asc' };
-    this.searchFD();
-  }
-
   getItems(__items, __mode) {
     switch (__mode) {
       case 'C':
@@ -571,13 +648,13 @@ export class TraxRPTComponent implements OnInit {
     }
   }
   reset(){
+    this.__rmMst.length = 0;
+    this.__subbrkArnMst.length = 0;
+    this.__euinMst.length = 0;
+    this.__bu_type.length = 0;
     this.__insTraxForm.patchValue({
       date_range:'',
       options:'2',
-      rm_id:[],
-      brn_cd:[],
-      euin_no:[],
-      bu_type:[],
       date_status:'T',
       start_date:this.getTodayDate(),
       end_date:this.getTodayDate(),
@@ -585,7 +662,15 @@ export class TraxRPTComponent implements OnInit {
       frm_dt:'',
       to_dt:'',
       dt_type:'',
+      tin_no:'',
+      investor_name:'',
+      investor_code:''
     });
+    this.__insTraxForm.get('rm_id').reset([],{emitEvent:false});
+    this.__insTraxForm.get('brn_cd').reset([],{emitEvent:false});
+    this.__insTraxForm.get('euin_no').reset([],{emitEvent:false});
+    this.__insTraxForm.get('bu_type').reset([],{emitEvent:false});
+    this.__insTraxForm.get('sub_brk_cd').reset([],{emitEvent:false});
     this.__insTraxForm.get('comp_type_id').reset([],{emitEvent:true});
     this.__pageNumber.setValue('10');
     this.sort =new sort();

@@ -107,10 +107,12 @@ export class UtiliService {
       maxHeight: 197,
       itemsShowLimit: limit,
       searchPlaceholderText: __placeholder,
-      noDataAvailablePlaceholderText: 'No recors found',
+      noDataAvailablePlaceholderText: 'No records found',
       closeDropDownOnSelection: false,
       showSelectedItemsAtTop: false,
       defaultOpen: false,
+      lazyLoading: true,
+      tagToBody: true
     };
     return settings;
   }

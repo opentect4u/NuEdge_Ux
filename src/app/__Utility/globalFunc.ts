@@ -32,4 +32,15 @@ export class global{
        );
    }
 
+   public static getFrequencywiseAmt(freq_wiseAmt,freq_mode:string,periods:string){
+    var freqdt;
+    switch(freq_mode){
+      case 'F':freqdt = JSON.parse(freq_wiseAmt).filter(x => this.getType(x.is_checked) && (x.id == periods))[0]?.sip_fresh_min_amt;
+               break;
+      default:freqdt = JSON.parse(freq_wiseAmt).filter(x => this.getType(x.is_checked) && (x.id == periods))[0]?.sip_add_min_amt;
+            break;
+    }
+     return freqdt ? ('₹' + freqdt) : 'N/A'
+   }
+
 }

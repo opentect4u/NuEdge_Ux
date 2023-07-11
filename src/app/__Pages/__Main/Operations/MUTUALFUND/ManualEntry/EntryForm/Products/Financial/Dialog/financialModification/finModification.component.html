@@ -161,12 +161,12 @@
         <div class="row my-2">
           <div class="col-sm-12">
             <label for="__clName">Client Name</label>
-            <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
-              formControlName="client_name" [attr.disabled]="true">
-              <button (click)="openDialog('C')" color="primary" class="viewIconDtls" mat-icon-button type="button"
-              aria-label="Example icon button with a eye icon" title="View Client Details">
-              <mat-icon>remove_red_eye</mat-icon>
-            </button>
+            <div class="p-inputgroup">
+              <input type="text"  pInputText name="__clName" id="__clName"
+              class="form-control" placeholder="Client Name"
+              formControlName="client_name" [attr.disabled]="true" />
+              <button type="button" label="View" pButton icon="pi pi-eye" styleClass="p-button-warn" (click)="openDialog('C')"></button>
+          </div>
           </div>
         </div>
       </ng-container>
@@ -950,12 +950,19 @@
         <div class="row" *ngIf="__traxForm.get('chq_bank').value && this.__dialogDtForBnk">
           <div class="col-sm-12">
             <label for="bnk_name">Bank</label>
-            <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control" [attr.disabled]="true"/>
+            <div class="p-inputgroup">
+              <input type="text"  pInputText name="bnk_name" id="bnk_name"
+              class="form-control" placeholder="Bank Name"
+              formControlName="bank_name" [attr.disabled]="true" />
+              <button type="button" label="View" pButton icon="pi pi-eye"
+               styleClass="p-button-warn" (click)="openDialog('B')"></button>
+          </div>
+            <!-- <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control" [attr.disabled]="true"/>
             <button (click)="openDialog('B')" color="primary" class="viewIconDtls" mat-icon-button type="button"
             aria-label="Example icon button with a eye icon" #tooltip="matTooltip"
             matTooltip="View Bank Details">
             <mat-icon>remove_red_eye</mat-icon>
-          </button>
+          </button> -->
           </div>
           <div class="col-sm-12">
              <label for="ifsc">IFSC</label>

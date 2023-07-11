@@ -159,8 +159,8 @@
       </div>
       <ng-container *ngIf="__nonfinForm.get('client_code').value && __nonfinForm.get('client_name').value">
         <div class="row  my-2">
-          <div class="col-sm-12">
-            <label for="__clName">Client Name</label>
+          <!-- <div class="col-sm-12"> -->
+            <!-- <label for="__clName">Client Name</label>
             <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
               formControlName="client_name" [attr.disabled]="true">
               <button (click)="openDialog('C')"
@@ -171,7 +171,16 @@
               type="button"
               aria-label="Example icon button with a eye icon" title="View Client Details">
               <mat-icon>remove_red_eye</mat-icon>
-            </button>
+            </button> -->
+            <div class="col-sm-12">
+              <label for="__clName">Client Name</label>
+              <div class="p-inputgroup">
+                <input type="text"  pInputText name="__clName" id="__clName"
+                class="form-control" placeholder="Client Name"
+                formControlName="client_name" [attr.disabled]="true" />
+                <button type="button" label="View" pButton icon="pi pi-eye"
+                 styleClass="p-button-warn" (click)="openDialog('C')"></button>
+            </div>
           </div>
         </div>
       </ng-container>
@@ -592,6 +601,20 @@
         </div>
 
         <div class="row  my-2">
+         <div class="col-sm-12">
+            <label for="country_id">Country</label>
+            <select class="form-control" formControlName="country_id" id="country_id">
+              <option value="">Select</option>
+              <option [value]="country.id" *ngFor="let country of __countryMst">{{country.name}}</option>
+              <div class="invalid-feedback"
+                *ngIf="__nonfinForm.get('country_id').invalid && (__nonfinForm.get('country_id').dirty || __nonfinForm.get('country_id').touched)">
+                <span class="invalid-feedback" *ngIf="(__nonfinForm.get('country_id')).errors?.required">*Please provide
+                  country</span>
+              </div>
+            </select>
+         </div>
+
+
           <div class="col-sm-12">
             <label for="state">State <span class="text-danger">*</span></label>
             <select class="form-control" formControlName="state" id="state">
@@ -639,8 +662,17 @@
         <div class="row">
           <div class="col-sm-12">
             <label for="pincode">Pincode <span class="text-danger">*</span></label>
-            <input type="text" name="pincode" placeholder="Enter Pincode" (keypress)="preventNonumeric($event)"
-              maxlength="6" minlength="6" id="pincode" class="form-control" formControlName="pincode">
+            <!-- <input type="text" name="pincode" placeholder="Enter Pincode" (keypress)="preventNonumeric($event)"
+              maxlength="6" minlength="6" id="pincode" class="form-control" formControlName="pincode"> -->
+              <select class="form-control" formControlName="pincode" id="state">
+                <option value="">Select</option>
+                <option [value]="pincode.id" *ngFor="let pincode of __pincodeMst">{{pincode.pincode}}</option>
+                <div class="invalid-feedback"
+                  *ngIf="__nonfinForm.get('pincode').invalid && (__nonfinForm.get('pincode').dirty || __nonfinForm.get('pincode').touched)">
+                  <span class="invalid-feedback" *ngIf="(__nonfinForm.get('pincode')).errors?.required">*Please provide
+                    pincode</span>
+                </div>
+              </select>
             <div class="invalid-feedback"
               *ngIf="__nonfinForm.get('pincode').invalid && (__nonfinForm.get('pincode').dirty || __nonfinForm.get('pincode').touched)">
               <span class="invalid-feedback" *ngIf="(__nonfinForm.get('pincode')).errors?.required">*Please provide
@@ -697,7 +729,7 @@
             <label for="change_status">Change Status</label>
             <select class="form-control" formControlName="change_status" id="change_status">
               <option value="">Select</option>
-              <option [ngValue]="statusChange" *ngFor="let statusChange of __changeOfStatus">{{statusChange.name}}
+              <option [ngValue]="statusChange.id" *ngFor="let statusChange of __changeOfStatus">{{statusChange.name}}
               </option>
             </select>
             <div class="invalid-feedback"
@@ -2089,8 +2121,26 @@
       <div class="row  my-2">
         <div class="col-sm-12 ">
           <label for="file">Upload Scan Application Form <span class="text-danger">*</span></label>
-          <input type="file" name="file" id="file" formControlName="file" class="form-control"
-            (change)="getFIle($event.target)" accept=".pdf">
+          <!-- <input type="file" name="file" id="file" formControlName="file" class="form-control"
+            (change)="getFIle($event.target)" accept=".pdf"> -->
+
+            <div class="p-inputgroup">
+              <input type="file"  pInputText
+              (change)="getFIle($event.target)"
+              accept=".pdf"
+              name="upload_scan" id="upload_scan"
+              class="form-control"
+              formControlName="file">
+              <button
+              *ngIf="this.__nonfinForm.value.filePreview"
+              type="button"
+              icon="pi pi-eye"
+              (click)="openPDF()"
+              pButton label="View"></button>
+            </div>
+
+
+
             <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
 
           <div class="invalid-feedback"

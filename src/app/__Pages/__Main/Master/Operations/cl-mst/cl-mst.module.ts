@@ -41,6 +41,11 @@ const route: Routes =[
         },
       },
       {
+        path:'report',
+        loadChildren:()=> import('./client-cmn-rpt/client-cmn-rpt.module').then(m => m.ClientCmnRptModule),
+        data:{breadcrumb:'Reports'}
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

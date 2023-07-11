@@ -124,7 +124,9 @@
           <div class="row">
             <div class="my-2" class="col-sm-12" *ngIf="__rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
               <label for="__clName">Client Name</label>
-                  <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true">
+                  <!-- <input type="search"
+                    name="__clName" id="__clName" class="form-control"
+                    placeholder="Client Name" formControlName="client_name" [attr.disabled]="true">
                   <button (click)="openDialog('C')"
                   color="primary"
                   class="viewIconDtls"
@@ -132,7 +134,13 @@
                   mat-icon-button type="button"
                   aria-label="Example icon button with a eye icon"
                   title="View Client Details">
-                  <mat-icon>remove_red_eye</mat-icon></button>
+                  <mat-icon>remove_red_eye</mat-icon></button> -->
+                  <div class="p-inputgroup">
+                    <input type="text"  pInputText name="__clName" id="__clName"
+                    class="form-control" placeholder="Client Name"
+                    formControlName="client_name" [attr.disabled]="true" />
+                    <button type="button" label="View" pButton icon="pi pi-eye" styleClass="p-button-warn" (click)="openDialog('C')"></button>
+                </div>
                 </div>
             <!-- <div class="col-sm-4 clientCode" *ngIf="__dialogDtForClient && __rcvForm.get('client_code').value && __rcvForm.get('client_name').value">
               <button (click)="openDialog('C')" color="primary" *ngIf="this.__dialogDtForClient"   mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Client Details">
@@ -157,7 +165,7 @@
                   type</span>
               </div>
             </div>
-            <div class="my-2" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-8':__dialogDtForScheme}">
+            <div class="my-2" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-9':__dialogDtForScheme}">
               <app-core-srch
               [label] = "(__rcvForm.get('trans_id').value == '6') ? 'Switch Scheme From' : ( __rcvForm.get('trans_id').value == '35' ? 'Initial Scheme Name' : 'Scheme Name')"
               [placeholder]="'Search By Scheme Name'"
@@ -177,7 +185,7 @@
               ></app-core-srch>
               <div class=invalid-feedback *ngIf="__isEntryDTGreater">* Entry Date Expired for this scheme</div>
             </div>
-            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForScheme">
+            <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
               <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
                 <mat-icon>remove_red_eye</mat-icon>
                 View Details
@@ -188,7 +196,7 @@
 
           <ng-container *ngIf="__rcvForm.get('trans_id').value == '6' || __rcvForm.get('trans_id').value == '35'">
           <div class="row ">
-            <div [ngClass]="{'col-sm-12': !__dialogDtForSchemeTo,'col-sm-8':__dialogDtForSchemeTo}" class="my-2">
+            <div [ngClass]="{'col-sm-12': !__dialogDtForSchemeTo,'col-sm-9':__dialogDtForSchemeTo}" class="my-2">
               <app-core-srch
               [label] = "'Switch Scheme To'"
               [placeholder]="'Search By Scheme Name'"
@@ -207,7 +215,7 @@
               [isClientExistMsg]="'Scheme does not exists'"
               ></app-core-srch>
             </div>
-            <div class="col-sm-4 clientCode" *ngIf="__dialogDtForSchemeTo">
+            <div class="col-sm-3 clientCode" *ngIf="__dialogDtForSchemeTo">
               <button color="primary" *ngIf="this.__dialogDtForSchemeTo" (click)="openDialog('ST')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
                 <mat-icon>remove_red_eye</mat-icon>
                 View Details

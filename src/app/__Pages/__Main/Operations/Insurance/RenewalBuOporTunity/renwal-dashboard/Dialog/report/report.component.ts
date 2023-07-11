@@ -42,10 +42,10 @@ export class ReportComponent implements OnInit {
   __insType_setting = this.__utility.settingsfroMultiselectDropdown('id','type','Search Type Of Insurance',2);
   __comp_type_setting = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type',2);
   __scm_setting = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',2);
-  settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Employee',2);
+  settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',2);
   settingsForbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',2);
-  settingsForbuType = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',2);
-  settingsForRM = this.__utility.settingsfroMultiselectDropdown('id','manager_name','Search Relationship Manager',2);
+  settingsForbuType = this.__utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',2);
+  settingsForRM = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',2);
   settingsForsubCode = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',2);
   __comp_setting = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Company',2);
   __prod_type_setting = this.__utility.settingsfroMultiselectDropdown('id','product_type','Search Product Type',2);
@@ -97,10 +97,10 @@ export class ReportComponent implements OnInit {
     product_id: new FormControl([]),
     renewal_month: new FormControl(''),
     renewal_year: new FormControl(''),
-    brn_cd: new FormControl([]),
-    bu_type: new FormControl([]),
-    rm_id: new FormControl([]),
-    sub_brk_cd: new FormControl([]),
+    brn_cd: new FormControl([],{updateOn:'blur'}),
+    bu_type: new FormControl([],{updateOn:'blur'}),
+    rm_id: new FormControl([],{updateOn:'blur'}),
+    sub_brk_cd: new FormControl([],{updateOn:'blur'}),
     euin_no: new FormControl([])
 
  })
@@ -204,7 +204,105 @@ export class ReportComponent implements OnInit {
           );
       })
       /** End */
-  }
+      this.__bu_oportunity_frm.controls['brn_cd'].valueChanges.subscribe(res =>{
+        this.getBusinessTypeMst(res)
+      })
+      this.__bu_oportunity_frm.controls['bu_type'].valueChanges.subscribe(res =>{
+        this.disabledSubBroker(res);
+         this.getRelationShipManagerMst(res,this.__bu_oportunity_frm.value.brn_cd);
+      })
+      this.__bu_oportunity_frm.controls['rm_id'].valueChanges.subscribe(res =>{
+        if(this.__bu_oportunity_frm.value.bu_type.findIndex(item => item.bu_code == 'B') != -1){
+                 this.getSubBrokerMst(res);
+        }
+        else{
+        this.__euinMst.length = 0;
+          this.__euinMst = res;
+        }
+     })
+     this.__bu_oportunity_frm.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
+      // if(res.length > 0){
+        this.setEuinDropdown(res,this.__bu_oportunity_frm.value.rm_id);
+      // }
+     })
+    }
+    setEuinDropdown(sub_brk_cd,rm){
+      this.__euinMst = rm.filter(item => !this.__subbrkArnMst.map(item=> {return item['emp_euin_no']}).includes(item.euin_no));
+      if(sub_brk_cd.length > 0){
+       sub_brk_cd.forEach(element => {
+              if(this.__subbrkArnMst.findIndex((el) => element.code == el.code) != -1){
+                 this.__euinMst.push(
+                   {
+                     euin_no:this.__subbrkArnMst[this.__subbrkArnMst.findIndex((el) => element.code == el.code)].euin_no,
+                     emp_name:''
+                   }
+                   );
+              }
+       });
+      }
+      else{
+        this.__euinMst = this.__euinMst.filter(item => !this.__subbrkArnMst.map(item => {return item['euin_no']}).includes(item.euin_no))
+      }
+     }
+     disabledSubBroker(bu_type_ids){
+       if(bu_type_ids.findIndex(item => item.bu_code == 'B') != -1){
+         this.__bu_oportunity_frm.controls['sub_brk_cd'].enable();
+       }
+       else{
+         this.__bu_oportunity_frm.controls['sub_brk_cd'].disable();
+       }
+
+     }
+     getSubBrokerMst(arr_euin_no){
+       if(arr_euin_no.length > 0){
+       this.__dbIntr.api_call(0,'/subbroker',
+       'arr_euin_no='+ JSON.stringify(arr_euin_no.map(item => {return item['euin_no']})))
+       .pipe(pluck("data")).subscribe((res: any) =>{
+         this.__subbrkArnMst = res.map(({code,bro_name,emp_euin_no,euin_no}) => ({
+         code,
+         emp_euin_no,
+         euin_no,
+         bro_name:bro_name +'-'+code
+         })
+         );
+       })
+     }
+     else{
+       this.__subbrkArnMst.length =0;
+       this.__bu_oportunity_frm.controls['sub_brk_cd'].setValue([]);
+     }
+
+     }
+     getBusinessTypeMst(brn_cd){
+       if(brn_cd.length > 0){
+       this.__dbIntr
+       .api_call(0,'/businessType','arr_branch_id='+JSON.stringify(brn_cd.map(item => {return item['id']})))
+       .pipe(pluck("data")).subscribe(res =>{
+               this.__bu_type = res;
+       })
+     }
+     else{
+       this.__bu_oportunity_frm.controls['bu_type'].reset([],{emitEvent:true});
+       this.__bu_type.length = 0;
+     }
+     }
+     getRelationShipManagerMst(bu_type_id,arr_branch_id){
+       if(bu_type_id.length > 0 && arr_branch_id.length > 0){
+       this.__dbIntr.api_call(0,'/employee',
+       'arr_bu_type_id='+ JSON.stringify(bu_type_id.map(item => {return item['bu_code']}))
+       +'&arr_branch_id=' + JSON.stringify(arr_branch_id.map(item  => {return item['id']}))
+       ).pipe(pluck("data"))
+       .subscribe(res =>{
+            this.__RmMst = res;
+            console.log(this.__RmMst);
+
+       })
+     }
+     else{
+       this.__RmMst.length =0;
+       this.__bu_oportunity_frm.controls['rm_id'].reset([]);
+     }
+     }
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
@@ -324,6 +422,10 @@ export class ReportComponent implements OnInit {
     }
   }
   reset(){
+    this.__RmMst.length = 0;
+    this.__subbrkArnMst.length = 0;
+    this.__euinMst.length = 0;
+    this.__bu_type.length = 0;
     this.__bu_oportunity_frm.patchValue({
       dt_range:'',
       dt_type:'',
@@ -331,12 +433,13 @@ export class ReportComponent implements OnInit {
       to_date:'',
       renewal_month:'',
       renewal_year:'',
-      proposer_code:'',
-      brn_cd:[],
-      rm_id:[],
-      euin_no:[],
-      sub_brk_cd:[]
+      proposer_code:''
     });
+    this.__bu_oportunity_frm.controls['brn_cd'].setValue([],{emitEvent:false});
+    this.__bu_oportunity_frm.controls['rm_id'].setValue([],{emitEvent:false});
+    this.__bu_oportunity_frm.controls['euin_no'].setValue([],{emitEvent:false});
+    this.__bu_oportunity_frm.controls['sub_brk_cd'].setValue([],{emitEvent:false});
+    this.__bu_oportunity_frm.controls['bu_type'].setValue([],{emitEvent:false});
     this.__bu_oportunity_frm.controls['temp_tin_no'].setValue('',{emitEvent:false});
     this.__bu_oportunity_frm.controls['proposer_name'].setValue('',{emitEvent:false});
     this.__bu_oportunity_frm.controls['ins_type_id'].reset([],{emitEvent:true});
@@ -363,10 +466,10 @@ export class ReportComponent implements OnInit {
           __fd.append('product_id', JSON.stringify(this.__bu_oportunity_frm.value.product_id.map(item => item.id)));
           if(this.__bu_oportunity_frm.value.btn_type == 'A'){
             __fd.append('brn_cd', JSON.stringify(this.__bu_oportunity_frm.value.brn_cd.map(item => {return item['id']})));
-            __fd.append('bu_type', JSON.stringify(this.__bu_oportunity_frm.value.bu_type.map(item => {return item['id']})));
-            __fd.append('rm_id', JSON.stringify(this.__bu_oportunity_frm.value.rm_id.map(item => {return item['id']})));
-            __fd.append('sub_brk_cd', JSON.stringify(this.__bu_oportunity_frm.value.sub_brk_cd.map(item => {return item['id']})));
-            __fd.append('euin_no', JSON.stringify(this.__bu_oportunity_frm.value.euin_no.map(item => {return item['id']})));
+            __fd.append('bu_type', JSON.stringify(this.__bu_oportunity_frm.value.bu_type.map(item => {return item['bu_code']})));
+            __fd.append('rm_id', JSON.stringify(this.__bu_oportunity_frm.value.rm_id.map(item => {return item['euin_no']})));
+            __fd.append('sub_brk_cd', JSON.stringify(this.__bu_oportunity_frm.value.sub_brk_cd.map(item => {return item['code']})));
+            __fd.append('euin_no', JSON.stringify(this.__bu_oportunity_frm.value.euin_no.map(item => {return item['euin_no']})));
           }
           this.__dbIntr.api_call(1,'/ins/businessOpportunityDetailSearch',__fd).pipe(pluck("data"))
           .subscribe((res: any) =>{
@@ -491,11 +594,11 @@ export class ReportComponent implements OnInit {
                 ('&renewal_month=' + global.getActualVal(this.__bu_oportunity_frm.value.renewal_month)) +
                 ('&renewal_year=' + global.getActualVal(this.__bu_oportunity_frm.value.renewal_year)) +
                 (this.__bu_oportunity_frm.value.btn_type == 'A' ?
-                ('&sub_brk_cd=' + JSON.stringify(this.__bu_oportunity_frm.value.sub_brk_cd.map(item => {return item["id"]}))) +
-                ('&rm_id='+JSON.stringify(this.__bu_oportunity_frm.value.rm_id.map(item => {return item["id"]})))
-                +('&euin_no=' + JSON.stringify(this.__bu_oportunity_frm.value.euin_no.map(item => {return item["id"]}))) +
+                ('&sub_brk_cd=' + JSON.stringify(this.__bu_oportunity_frm.value.sub_brk_cd.map(item => {return item["code"]}))) +
+                ('&rm_id='+JSON.stringify(this.__bu_oportunity_frm.value.rm_id.map(item => {return item["euin_no"]})))
+                +('&euin_no=' + JSON.stringify(this.__bu_oportunity_frm.value.euin_no.map(item => {return item["euin_no"]}))) +
                 ('&brn_cd=' +JSON.stringify(this.__bu_oportunity_frm.value.brn_cd.map(item => {return item["id"]}))) +
-                ('&bu_type' +JSON.stringify(this.__bu_oportunity_frm.value.bu_type.map(item => {return item["id"]}))) : '') +
+                ('&bu_type' +JSON.stringify(this.__bu_oportunity_frm.value.bu_type.map(item => {return item["bu_code"]}))) : '') +
                 ('&from_date=' +global.getActualVal(this.__bu_oportunity_frm.getRawValue().from_date)) +
                 ('&to_date=' +global.getActualVal(this.__bu_oportunity_frm.getRawValue().to_date))
         ).pipe(map((x: any) => x.data))

@@ -25,12 +25,12 @@
         <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
       </ng-template>
       <form [formGroup]="__insTraxForm" (ngSubmit)="searchInsurance()" autocomplete="off">
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-sm-8 d-flex justify-content-start align-items-center">
-            <!-- <mat-radio-group aria-label="Select an option" formControlName="options">
+            <mat-radio-group aria-label="Select an option" formControlName="options">
               <mat-radio-button color="primary" value="2">Summary</mat-radio-button>
               <mat-radio-button color="primary" value="1" class="ml-5">Detail</mat-radio-button>
-            </mat-radio-group> -->
+            </mat-radio-group>
           </div>
           <div class="col-sm-4 d-flex justify-content-end align-items-center">
             <p-selectButton [options]="selectBtn" formControlName="btn_type" optionValue="value"
@@ -40,7 +40,7 @@
               </ng-template>
             </p-selectButton>
           </div>
-        </div>
+        </div> -->
         <div class="row">
           <div class="col-sm-3">
             <label for="dt_type">Date Periods</label>

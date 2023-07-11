@@ -1,0 +1,17 @@
+<div class="row flexSec">
+  <div class="col-sm-7">
+    <shared-upload-csv
+      [leftHeaderTitle]="'Upload MF Trax'"
+      [api_name]="'/uploadTransDetails'"
+      [prod_id]="'1'"
+      [flag]="'MFT'"
+      >
+    </shared-upload-csv>
+  </div>
+  <div class="col-sm-5">
+    <shared-mst-dtls [flag]="'MFT'" [btnTitle]="'View All Trax'"
+    [headerTitle]="'Recent Trax'"
+    ></shared-mst-dtls>
+  </div>
+</div>
+

@@ -162,12 +162,20 @@
         <div class="row my-2">
           <div class="col-sm-12">
             <label for="__clName">Client Name</label>
-            <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
+            <!-- <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
               formControlName="client_name" [attr.disabled]="true">
               <button (click)="openDialog('C')" class="viewIconDtls" color="primary" mat-icon-button type="button"
               aria-label="Example icon button with a eye icon" title="View Client Details">
               <mat-icon>remove_red_eye</mat-icon>
-            </button>
+            </button> -->
+            <div class="p-inputgroup">
+              <input type="text"  pInputText name="__clName"
+              id="__clName" class="form-control"
+               placeholder="Client Name"
+              formControlName="client_name" [attr.disabled]="true" />
+              <button type="button" label="View" pButton icon="pi pi-eye"
+               styleClass="p-button-warn" (click)="openDialog('C')"></button>
+          </div>
           </div>
 
 
@@ -821,7 +829,7 @@
           <ng-container *ngIf="__traxForm.get('sip_duration').value == 'M'">
             <div class="col-sm-12 my-2">
               <label for="duration">Duration</label>
-              <input type="text" placeholder="Enter Duration" name="sip_stardurationt_date" id="duration" class="form-control"
+              <input type="text" placeholder="Enter Duration" name="duration" id="duration" class="form-control"
                 formControlName="duration"
                 >
             </div>
@@ -947,12 +955,34 @@
           <div class="row my-2" >
             <div class="col-sm-12">
               <label for="bnk_name">Bank</label>
-              <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control" [attr.disabled]="true"/>
+              <div class="p-inputgroup">
+                <input type="text"  pInputText name="bnk_name"
+                id="bnk_name" class="form-control"
+                 placeholder="Bank Name"
+                formControlName="bank_name" [attr.disabled]="true" />
+                <button type="button" label="View" pButton icon="pi pi-eye"
+                 styleClass="p-button-warn" (click)="openDialog('B')"></button>
+            </div>
+              <!-- <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control" [attr.disabled]="true"/>
 
               <button (click)="openDialog('B')" class="viewIconDtls" color="primary" mat-icon-button type="button"
               aria-label="Example icon button with a eye icon" title="View Bank Details">
               <mat-icon>remove_red_eye</mat-icon>
-            </button>
+            </button> -->
+            </div>
+            <div class="col-sm-12">
+              <label for="ifsc">IFSC</label>
+              <input type="text"  pInputText name="ifsc"
+              id="ifsc" class="form-control"
+               placeholder="IFSC"
+              formControlName="ifsc" [attr.disabled]="true" />
+            </div>
+            <div class="col-sm-12">
+              <label for="branch_name">Branch</label>
+              <input type="text"  pInputText name="branch_name"
+              id="branch_name" class="form-control"
+               placeholder="branch_name"
+              formControlName="branch_name" [attr.disabled]="true" />
             </div>
           </div>
         </ng-container>
@@ -1153,8 +1183,26 @@
       <div class="row my-2">
         <div class="col-sm-12 ">
           <label for="file">Upload Scan Application Form <span class="text-danger">*</span></label>
-          <input type="file" name="file" id="file" formControlName="file" class="form-control"
-            (change)="getFIle($event.target)" accept=".pdf">
+          <!-- <input type="file" name="file" id="file" formControlName="file" class="form-control"
+            (change)="getFIle($event.target)" accept=".pdf"> -->
+
+            <div class="p-inputgroup">
+              <input type="file"  pInputText
+              (change)="getFIle($event.target)"
+              accept=".pdf"
+              name="file" id="file"
+              class="form-control"
+              formControlName="file">
+              <button
+              *ngIf="this.__traxForm.value.filePreview"
+              type="button"
+              icon="pi pi-eye"
+              (click)="openPDF()"
+              pButton label="View"></button>
+            </div>
+
+
+
             <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
 
           <div class="invalid-feedback"

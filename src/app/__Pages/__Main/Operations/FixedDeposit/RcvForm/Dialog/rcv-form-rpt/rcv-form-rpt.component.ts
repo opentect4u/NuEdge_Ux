@@ -52,11 +52,11 @@ type selectBtn ={
 })
 export class RcvFormRPTComponent implements OnInit {
   isOpenMegaMenu:boolean =false;
-  settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Employee',3);
-  settingsForbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',3 );
-  settingsForbuType = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',3);
-  settingsForRM = this.__utility.settingsfroMultiselectDropdown('id','manager_name','Search Relationship Manager',3);
-  settingsForsubCode = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',3);
+  settingsForEUIN = this.__utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',2);
+  settingsForbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',2);
+  settingsForbuType = this.__utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',3);
+  settingsForRM = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',1);
+  settingsForsubCode = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',1);
   settingsForfdbutype = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search FD Business Type',2)
   // @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
   // @ViewChild('searchEUIN') __searchRlt: ElementRef;
@@ -139,10 +139,10 @@ export class RcvFormRPTComponent implements OnInit {
     client_code: new FormControl(''),
     fd_bu_type: new FormControl([]),
     recv_frm: new FormControl(''),
-    brn_cd: new FormControl([]),
-    bu_type: new FormControl([]),
-    rm_id: new FormControl([]),
-    sub_brk_cd: new FormControl([]),
+    brn_cd: new FormControl([],{updateOn:'blur'}),
+    bu_type: new FormControl([],{updateOn:'blur'}),
+    rm_id: new FormControl([],{updateOn:'blur'}),
+    sub_brk_cd: new FormControl([],{updateOn:'blur'}),
     emp_name: new FormControl([]),
     euin_no: new FormControl([])
   })
@@ -188,11 +188,11 @@ export class RcvFormRPTComponent implements OnInit {
   __fdForm.append('fd_bu_type', JSON.stringify(this.__rcvForms.value.fd_bu_type.map(item => {return item['id']})));
   __fdForm.append('recv_from',global.getActualVal(this.__rcvForms.value.recv_from));
   if(this.__rcvForms.value.btn_type == 'A'){
-    __fdForm.append('euin_no',JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]})));
+    __fdForm.append('euin_no',JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["euin_no"]})));
     __fdForm.append('brn_cd',JSON.stringify(this.__rcvForms.value.brn_cd.map(item => {return item["id"]})));
-    __fdForm.append('bu_type',JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]})));
-    __fdForm.append('rm_id',JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["id"]})));
-    __fdForm.append('sub_brk_cd',JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]})));
+    __fdForm.append('bu_type',JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["bu_code"]})));
+    __fdForm.append('rm_id',JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["euin_no"]})));
+    __fdForm.append('sub_brk_cd',JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["code"]})));
   }
     this.__dbIntr.api_call(1, '/fd/formreceivedDetailSearch', __fdForm)
       .pipe(map((x: any) => x.data))
@@ -214,6 +214,10 @@ export class RcvFormRPTComponent implements OnInit {
 
   }
   reset(){
+    this.__rmMst.length = 0;
+    this.__subbrkArnMst.length = 0;
+    this.__euinMst.length = 0;
+    this.__bu_type.length = 0;
   this.__rcvForms.patchValue({
     frm_dt: '',
      to_dt: '',
@@ -221,13 +225,13 @@ export class RcvFormRPTComponent implements OnInit {
     options: '2',
     recv_from: '',
     fd_bu_type: [],
-    euin_no:[],
-    sub_brk_cd:[],
-    brn_cd:[],
-    rm_id:[],
-    bu_type:[],
     date_range:''
   });
+  this.__rcvForms.get('euin_no').setValue([],{emitEvent:false});
+  this.__rcvForms.get('sub_brk_cd').setValue([],{emitEvent:false});
+  this.__rcvForms.get('brn_cd').setValue([],{emitEvent:false});
+  this.__rcvForms.get('rm_id').setValue([],{emitEvent:false});
+  this.__rcvForms.get('bu_type').setValue([],{emitEvent:false});
   this.__rcvForms.get('client_code').setValue('');
   this.__rcvForms.get('client_name').setValue('', { emitEvent: false });
   this.__rcvForms.get('temp_tin_no').setValue('', { emitEvent: false });
@@ -435,7 +439,105 @@ export class RcvFormRPTComponent implements OnInit {
   //         this.__isSubArnPending = false;
   //       },
   //     });
+  this.__rcvForms.controls['brn_cd'].valueChanges.subscribe(res =>{
+    this.getBusinessTypeMst(res)
+  })
+  this.__rcvForms.controls['bu_type'].valueChanges.subscribe(res =>{
+    this.disabledSubBroker(res);
+     this.getRelationShipManagerMst(res,this.__rcvForms.value.brn_cd);
+  })
+  this.__rcvForms.controls['rm_id'].valueChanges.subscribe(res =>{
+    if(this.__rcvForms.value.bu_type.findIndex(item => item.bu_code == 'B') != -1){
+             this.getSubBrokerMst(res);
+    }
+    else{
+    this.__euinMst.length = 0;
+      this.__euinMst = res;
+    }
+ })
+ this.__rcvForms.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
+  // if(res.length > 0){
+    this.setEuinDropdown(res,this.__rcvForms.value.rm_id);
+  // }
+ })
+}
+setEuinDropdown(sub_brk_cd,rm){
+ this.__euinMst = rm.filter(item => !this.__subbrkArnMst.map(item=> {return item['emp_euin_no']}).includes(item.euin_no));
+ if(sub_brk_cd.length > 0){
+  sub_brk_cd.forEach(element => {
+         if(this.__subbrkArnMst.findIndex((el) => element.code == el.code) != -1){
+            this.__euinMst.push(
+              {
+                euin_no:this.__subbrkArnMst[this.__subbrkArnMst.findIndex((el) => element.code == el.code)].euin_no,
+                emp_name:''
+              }
+              );
+         }
+  });
+ }
+ else{
+   this.__euinMst = this.__euinMst.filter(item => !this.__subbrkArnMst.map(item => {return item['euin_no']}).includes(item.euin_no))
+ }
+}
+disabledSubBroker(bu_type_ids){
+  if(bu_type_ids.findIndex(item => item.bu_code == 'B') != -1){
+    this.__rcvForms.controls['sub_brk_cd'].enable();
   }
+  else{
+    this.__rcvForms.controls['sub_brk_cd'].disable();
+  }
+
+}
+getSubBrokerMst(arr_euin_no){
+  if(arr_euin_no.length > 0){
+  this.__dbIntr.api_call(0,'/subbroker',
+  'arr_euin_no='+ JSON.stringify(arr_euin_no.map(item => {return item['euin_no']})))
+  .pipe(pluck("data")).subscribe((res: any) =>{
+    this.__subbrkArnMst = res.map(({code,bro_name,emp_euin_no,euin_no}) => ({
+    code,
+    emp_euin_no,
+    euin_no,
+    bro_name:bro_name +'-'+code
+    })
+    );
+  })
+}
+else{
+  this.__subbrkArnMst.length =0;
+  this.__rcvForms.controls['sub_brk_cd'].setValue([]);
+}
+
+}
+getBusinessTypeMst(brn_cd){
+  if(brn_cd.length > 0){
+  this.__dbIntr
+  .api_call(0,'/businessType','arr_branch_id='+JSON.stringify(brn_cd.map(item => {return item['id']})))
+  .pipe(pluck("data")).subscribe(res =>{
+          this.__bu_type = res;
+  })
+}
+else{
+  this.__rcvForms.controls['bu_type'].reset([],{emitEvent:true});
+  this.__bu_type.length = 0;
+}
+}
+getRelationShipManagerMst(bu_type_id,arr_branch_id){
+  if(bu_type_id.length > 0 && arr_branch_id.length > 0){
+  this.__dbIntr.api_call(0,'/employee',
+  'arr_bu_type_id='+ JSON.stringify(bu_type_id.map(item => {return item['bu_code']}))
+  +'&arr_branch_id=' + JSON.stringify(arr_branch_id.map(item  => {return item['id']}))
+  ).pipe(pluck("data"))
+  .subscribe(res =>{
+       this.__rmMst = res;
+       console.log(this.__rmMst);
+
+  })
+}
+else{
+  this.__rmMst.length =0;
+  this.__rcvForms.controls['rm_id'].reset([]);
+}
+}
 
 
   // uncheckAll_buType() {
@@ -477,11 +579,11 @@ export class RcvFormRPTComponent implements OnInit {
             ('&temp_tin_no=' +(this.__rcvForms.value.temp_tin_no? this.__rcvForms.value.temp_tin_no: '')) +
             ('&fd_bu_type=' + JSON.stringify(this.__rcvForms.value.fd_bu_type.map(item => {return item['id']}))) +
             (this.__rcvForms.value.btn_type == 'A' ?
-            ('&rm_id='+JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["id"]}))) +
-            ('&sub_brk_cd=' +(this.__rcvForms.value.sub_brk_cd? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["id"]})): '[]')) +
-            ('&euin_no=' +(this.__rcvForms.value.euin_no? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["id"]})): '[]')) +
+            ('&rm_id='+JSON.stringify(this.__rcvForms.value.rm_id.map(item => {return item["euin_no"]}))) +
+            ('&sub_brk_cd=' +(this.__rcvForms.value.sub_brk_cd? JSON.stringify(this.__rcvForms.value.sub_brk_cd.map(item => {return item["code"]})): '[]')) +
+            ('&euin_no=' +(this.__rcvForms.value.euin_no? JSON.stringify(this.__rcvForms.value.euin_no.map(item => {return item["euin_no"]})): '[]')) +
             ('&brn_cd='+JSON.stringify(this.__rcvForms.value.brn_cd.map(item => {return item["id"]})))+
-            ('&bu_type=' + JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["id"]}))) : ''
+            ('&bu_type=' + JSON.stringify(this.__rcvForms.value.bu_type.map(item => {return item["bu_code"]}))) : '[]'
             )
         ) .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {

@@ -1,22 +1,6 @@
 import { column } from "../tblClmns";
 
 export class kycClm {
-  public static summary = [
-    'edit',
-    'sl_no',
-    'app_form_view',
-    'ack_form_view',
-    'mu_frm_view',
-    'branch',
-    'tin_no',
-    'bu_type',
-    'sub_brk_cd',
-    'client_name',
-    'client_code',
-    'pan',
-    'kyc_type'
-  ];
-
   public static Summary_copy:column[] = [
     {field:'edit',header:'Edit'},
     {field:'app_form_view',header:'DOC View'},
@@ -52,26 +36,6 @@ export class kycClm {
     {field:'login_at',header:'KYC Login At'}
   ]
 
-  public static details = [
-    'edit',
-    'sl_no',
-    'app_form_view',
-    'ack_form_view',
-    'mu_frm_view',
-    'branch',
-    'entry_dt',
-    'tin_no',
-    'bu_type',
-    'arn_no',
-    'sub_brk_arn',
-    'sub_brk_cd',
-    'euin_no',
-    'client_name',
-    'client_code',
-    'pan',
-    'kyc_type',
-    'login_at'
-  ];
   public static clmSelector =[
     {id:'edit',text:'Edit'},
     {id:'sl_no',text:'Sl No.'},

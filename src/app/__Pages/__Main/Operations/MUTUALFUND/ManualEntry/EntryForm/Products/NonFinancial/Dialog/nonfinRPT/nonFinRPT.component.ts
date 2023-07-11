@@ -87,14 +87,22 @@ export class NonfinrptComponent implements OnInit {
   displayMode_forClient:string;
   nonFinDT:any=[];
   exportDT= new MatTableDataSource([]);
-  __pageNumber = new FormControl('10')
+  __pageNumber = new FormControl('10');
+
   settingsforDropdown_foramc = this.utility.settingsfroMultiselectDropdown('id','amc_name','Search AMC',1);
-   settingsforDropdown_forscheme = this.utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
-   settingsforDropdown_forbrnch = this.utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
-   settingsforBuTypeDropdown = this.utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',1);
-  settingsforRMDropdown = this.utility.settingsfroMultiselectDropdown('id','rm_name','Search Relationship Manager',1);
-  settingsforSubBrkDropdown = this.utility.settingsfroMultiselectDropdown('id','sub_brk_cd','Search Sub Broker',1);
-  settingsforEuinDropdown = this.utility.settingsfroMultiselectDropdown('id','emp_name','Search Employee',1);
+  settingsforDropdown_forscheme = this.utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
+  settingsforDropdown_forbrnch = this.utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
+  settingsforBuTypeDropdown = this.utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',3);
+ settingsforRMDropdown = this.utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',1);
+ settingsforSubBrkDropdown = this.utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',1);
+ settingsforEuinDropdown = this.utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
+  // settingsforDropdown_foramc = this.utility.settingsfroMultiselectDropdown('id','amc_name','Search AMC',1);
+  //  settingsforDropdown_forscheme = this.utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
+  //  settingsforDropdown_forbrnch = this.utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
+  //  settingsforBuTypeDropdown = this.utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',1);
+  // settingsforRMDropdown = this.utility.settingsfroMultiselectDropdown('id','rm_name','Search Relationship Manager',1);
+  // settingsforSubBrkDropdown = this.utility.settingsfroMultiselectDropdown('id','sub_brk_cd','Search Sub Broker',1);
+  // settingsforEuinDropdown = this.utility.settingsfroMultiselectDropdown('id','emp_name','Search Employee',1);
   sort = new sort();
   /** Filter Criteria */
   transFrm = new FormGroup({
@@ -113,10 +121,10 @@ export class NonfinrptComponent implements OnInit {
     scheme_id: new FormControl([]),
     rnt_id: new FormArray([]),
     is_all_rnt: new FormControl(false),
-    brn_cd: new FormControl([]),
-    bu_type: new FormControl([]),
-    rm_name: new FormControl([]),
-    sub_brk_cd: new FormControl([]),
+    brn_cd: new FormControl([], { updateOn: 'blur' }),
+    bu_type: new FormControl([], { updateOn: 'blur' }),
+    rm_name: new FormControl([], { updateOn: 'blur' }),
+    sub_brk_cd: new FormControl([], { updateOn: 'blur' }),
     euin_no: new FormControl([]),
     frm_dt: new FormControl(''),
     to_dt: new FormControl('')
@@ -249,11 +257,11 @@ submitNonFinReport(){
     if(this.transFrm.value.btnType == 'A'){
      finFrmDT.append(
        'sub_brk_cd',
-       this.transFrm.value.sub_brk_cd ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['id']})) : ''
+       this.transFrm.value.sub_brk_cd ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['code']})) : ''
      );
     finFrmDT.append(
       'euin_no',
-      this.transFrm.value.euin_no ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['id']})) : '[]'
+      this.transFrm.value.euin_no ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['euin_no']})) : '[]'
     );
     finFrmDT.append(
       'brn_cd',
@@ -261,13 +269,13 @@ submitNonFinReport(){
     );
     finFrmDT.append(
      'rm_id',
-    JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['id']}))
+    JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['euin_no']}))
     )
 
     finFrmDT.append(
       'bu_type',
       this.transFrm.value.bu_type ?
-      JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']})): '[]'
+      JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['bu_code']})): '[]'
     );
    }}
    else{
@@ -297,17 +305,23 @@ submitNonFinReport(){
      }
   }
   reset(){
+    this.__RmMst.length = 0;
+    this.__subbrkArnMst.length = 0;
+    this.__euinMst.length = 0;
+    this.__bu_type.length = 0;
     this.transFrm.patchValue({
+      options: '2',
+      tin_no: '',
+      client_code: '',
+      scheme_name: [],
       date_range:'',
-      sub_brk_cd:[],
-      option:'2',
-      client_code:'',
-      scheme_name:[],
-      euin_no:[],
-      brn_cd:[],
-      bu_type:[],
-      frm_dt:'',
-      to_dt:''
+      date_status: 'T',
+      start_date: this.getTodayDate(),
+      end_date: this.getTodayDate(),
+      login_status: 'N',
+      dt_type: '',
+      frm_dt: '',
+      to_dt: '',
     });
     this.transFrm.get('amc_id').setValue([],{emitEvent:false});
     this.schemeMst.length = 0;
@@ -315,6 +329,11 @@ submitNonFinReport(){
     this.transFrm.get('client_dtls').setValue('',{emitEvent:false});
     this.transFrm.get('tin_no').setValue('',{emitEvent:false});
     this.transFrm.get('is_all_rnt').setValue(false);
+    this.transFrm.get('brn_cd').reset([],{emitEvent:false});
+    this.transFrm.get('bu_type').reset([],{emitEvent:false});
+    this.transFrm.get('rm_name').reset([],{emitEvent:false});
+    this.transFrm.get('sub_brk_cd').reset([],{emitEvent:false});
+    this.transFrm.get('euin_no').reset([],{emitEvent:false});
     this.sort = new sort();
     this.__pageNumber.setValue('10');
     this.submitNonFinReport();
@@ -452,6 +471,102 @@ submitNonFinReport(){
       this.setColumns(res,this.data.trans_type_id,this.transaction_id);
    })
    /*** End */
+
+   this.transFrm.controls['brn_cd'].valueChanges.subscribe(res =>{
+    this.getBusinessTypeMst(res)
+  })
+  this.transFrm.controls['bu_type'].valueChanges.subscribe(res =>{
+    this.disabledSubBroker(res);
+     this.getRelationShipManagerMst(res,this.transFrm.value.brn_cd);
+  })
+  this.transFrm.controls['rm_name'].valueChanges.subscribe(res =>{
+    if(this.transFrm.value.bu_type.findIndex(item => item.bu_code == 'B') != -1){
+             this.getSubBrokerMst(res);
+    }
+    else{
+    this.__euinMst.length = 0;
+      this.__euinMst = res;
+    }
+ })
+ this.transFrm.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
+    this.setEuinDropdown(res,this.transFrm.value.rm_name);
+ })
+  }
+
+  setEuinDropdown(sub_brk_cd,rm){
+   this.__euinMst = rm.filter(item => !this.__subbrkArnMst.map(item=> {return item['emp_euin_no']}).includes(item.euin_no));
+   if(sub_brk_cd.length > 0){
+    sub_brk_cd.forEach(element => {
+           if(this.__subbrkArnMst.findIndex((el) => element.code == el.code) != -1){
+              this.__euinMst.push(
+                {
+                  euin_no:this.__subbrkArnMst[this.__subbrkArnMst.findIndex((el) => element.code == el.code)].euin_no,
+                  emp_name:''
+                }
+                );
+           }
+    });
+   }
+   else{
+     this.__euinMst = this.__euinMst.filter(item => !this.__subbrkArnMst.map(item => {return item['euin_no']}).includes(item.euin_no))
+   }
+  }
+  disabledSubBroker(bu_type_ids){
+    if(bu_type_ids.findIndex(item => item.bu_code == 'B') != -1){
+      this.transFrm.controls['sub_brk_cd'].enable();
+    }
+    else{
+      this.transFrm.controls['sub_brk_cd'].disable();
+    }
+
+  }
+  getSubBrokerMst(arr_euin_no){
+    if(arr_euin_no.length > 0){
+    this.__dbIntr.api_call(0,'/subbroker',
+    'arr_euin_no='+ JSON.stringify(arr_euin_no.map(item => {return item['euin_no']})))
+    .pipe(pluck("data")).subscribe((res: any) =>{
+      this.__subbrkArnMst = res.map(({code,bro_name,emp_euin_no,euin_no}) => ({
+      code,
+      emp_euin_no,
+      euin_no,
+      bro_name:bro_name +'-'+code
+      })
+      );
+    })
+  }
+  else{
+    this.__subbrkArnMst.length =0;
+    this.transFrm.controls['sub_brk_cd'].setValue([]);
+  }
+
+  }
+  getBusinessTypeMst(brn_cd){
+    if(brn_cd.length > 0){
+    this.__dbIntr
+    .api_call(0,'/businessType','arr_branch_id='+JSON.stringify(brn_cd.map(item => {return item['id']})))
+    .pipe(pluck("data")).subscribe(res =>{
+            this.__bu_type = res;
+    })
+  }
+  else{
+    this.transFrm.controls['bu_type'].reset([],{emitEvent:true});
+    this.__bu_type.length = 0;
+  }
+  }
+  getRelationShipManagerMst(bu_type_id,arr_branch_id){
+    if(bu_type_id.length > 0 && arr_branch_id.length > 0){
+    this.__dbIntr.api_call(0,'/employee',
+    'arr_bu_type_id='+ JSON.stringify(bu_type_id.map(item => {return item['bu_code']}))
+    +'&arr_branch_id=' + JSON.stringify(arr_branch_id.map(item  => {return item['id']}))
+    ).pipe(pluck("data"))
+    .subscribe(res =>{
+         this.__RmMst = res;
+    })
+  }
+  else{
+    this.__RmMst.length =0;
+    this.transFrm.controls['rm_name'].reset([]);
+  }
   }
   setColumns(option,trans_type_id,trns_id){
     const clm = ['edit','app_frm_view'];
@@ -601,11 +716,11 @@ submitNonFinReport(){
                 ('&to_date=' + global.getActualVal(this.transFrm.getRawValue().to_dt))
                 + (this.transFrm.value.btnType == 'A' ? (('&euin_no=' +
                   (this.transFrm.value.euin_no
-                    ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['id']}))
+                    ? JSON.stringify(this.transFrm.value.euin_no.map(item => {return item['euin_no']}))
                     : '[]')) +
                 ('&sub_brk_cd=' +
                   (this.transFrm.value.sub_brk_cd
-                    ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['id']}))
+                    ? JSON.stringify(this.transFrm.value.sub_brk_cd.map(item => {return item['code']}))
                     : '[]')) +
                 ('&brn_cd=' +
                   (this.transFrm.value.brn_cd
@@ -613,11 +728,11 @@ submitNonFinReport(){
                     : '[]')) +
 
                     ('&rm_id='+
-                    JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['id']}))
+                    JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['euin_no']}))
                   )+
                 ('&bu_type=' +
                   (this.transFrm.value.bu_type
-                    ? JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']}))
+                    ? JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['bu_code']}))
                     : '[]')))  : '')) :
                     (
                        ('&login_status='+ this.transFrm.value.login_status)

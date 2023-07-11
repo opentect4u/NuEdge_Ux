@@ -332,7 +332,7 @@ export class ManualentrforackfinComponent implements OnInit {
   //     });
 
   //   /** Client Code Change */
-    this.__ackForm.controls['client_code'].valueChanges
+    this.__ackForm.controls['client_name'].valueChanges
       .pipe(
         tap(() => (this.__isClientPending = true)),
         debounceTime(200),
@@ -347,6 +347,7 @@ export class ManualentrforackfinComponent implements OnInit {
           this.__clientMst = value.data;
           this.searchResultVisibilityForClient('block');
           this.__isClientPending = false;
+          this.__ackForm.controls['client_code'].setValue('');
         },
         complete: () => {},
         error: (err) => {

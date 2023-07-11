@@ -2,11 +2,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import {
   Component,
   OnInit,
-  Inject,
-  ElementRef,
-  QueryList,
-  ViewChildren,
-  ViewChild,
+  Inject
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -25,20 +21,16 @@ import {
   tap,
 } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
-import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
-import { subcat } from 'src/app/__Model/__subcategory';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { dates } from 'src/app/__Utility/disabledt';
-import buType from '../../../../../../../../../../assets/json/buisnessType.json';
 import { global } from 'src/app/__Utility/globalFunc';
 import { ManualUpdateEntryForMFComponent } from 'src/app/shared/manual-update-entry-for-mf/manual-update-entry-for-mf.component';
 import { client } from 'src/app/__Model/__clientMst';
 import { amc } from 'src/app/__Model/amc';
 import { scheme } from 'src/app/__Model/__schemeMst';
-
 import updateStatus from '../../../../../../../../../../assets/json/updateStatus.json';
 import { MfackClmns } from 'src/app/__Utility/MFColumns/ack';
 import { column } from 'src/app/__Model/tblClmns';
@@ -65,10 +57,10 @@ export class RPTComponent implements OnInit {
   settingsforDropdown_foramc = this.__utility.settingsfroMultiselectDropdown('id','amc_name','Search AMC',1);
   settingsforDropdown_forscheme = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
   settingsforDropdown_forbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
-  settingsforBuTypeDropdown = this.__utility.settingsfroMultiselectDropdown('id','bu_type','Search Business Type',1);
- settingsforRMDropdown = this.__utility.settingsfroMultiselectDropdown('id','rm_name','Search Relationship Manager',1);
- settingsforSubBrkDropdown = this.__utility.settingsfroMultiselectDropdown('id','sub_brk_cd','Search Sub Broker',1);
- settingsforEuinDropdown = this.__utility.settingsfroMultiselectDropdown('id','emp_name','Search Employee',1);
+  settingsforBuTypeDropdown = this.__utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',3);
+ settingsforRMDropdown = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',1);
+ settingsforSubBrkDropdown = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',1);
+ settingsforEuinDropdown = this.__utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
   selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
   transaction_id:number;
   __ackForm = new FormGroup({
@@ -84,10 +76,10 @@ export class RPTComponent implements OnInit {
     to_dt: new FormControl(''),
     rnt_id: new FormArray([]),
     amc_id: new FormControl([],{updateOn:'blur'}),
-    brn_cd: new FormControl([]),
-    rm_id: new FormControl([]),
-    bu_type: new FormControl([]),
-    sub_brk_cd: new FormControl([]),
+    brn_cd: new FormControl([],{updateOn:'blur'}),
+    rm_id: new FormControl([],{updateOn:'blur'}),
+    bu_type: new FormControl([],{updateOn:'blur'}),
+    sub_brk_cd: new FormControl([],{updateOn:'blur'}),
     euin_no: new FormControl([]),
     options: new FormControl('2'),
     btnType: new FormControl('R'),
@@ -96,9 +88,6 @@ export class RPTComponent implements OnInit {
 
   __isTinspinner: boolean = false;
   __isClientPending: boolean = false;
-  // __isSubArnPending: boolean = false;
-  // __isEuinPending: boolean = false;
-  // __isAmcPending: boolean = false;
   displayMode_forTemp_Tin:string;
   displayMode_forClient:string;
   tinMst: any = [];
@@ -114,122 +103,12 @@ export class RPTComponent implements OnInit {
   clmList:column[] =[]
   __columns:column[] =[];
   SelectedClms:string[] =[];
-  // __sortAscOrDsc: any = { active: '', direction: 'asc' };
-  // WindowObject: any;
-  // divToPrint: any;
-  // toppings = new FormControl();
-  // toppingList: any = [
-  //   { id: 'edit', text: 'Edit' },
-  //   { id: 'sl_no', text: 'Sl No.' },
-  //   { id: 'temp_tin_no', text: 'TIN Number' },
-  //   { id: 'rnt_name', text: 'R&T' },
-  //   { id: 'bu_type', text: 'Buisness Type' },
-  //   { id: 'arn_no', text: 'ARN Number' },
-  //   { id: 'euin_no', text: 'EUIN' },
-  //   { id: 'first_client_name', text: 'First Client Name' },
-  //   { id: 'first_client_code', text: 'First Client Code' },
-  //   { id: 'first_client_pan', text: 'First Client Pan' },
-  //   { id: 'mode_of_holding', text: 'Mode Of Holding' },
-  //   { id: 'second_client_name', text: 'Second Client Name' },
-  //   { id: 'second_client_code', text: 'Second Client Code' },
-  //   { id: 'second_client_pan', text: 'Second Client Pan' },
-  //   { id: 'third_client_name', text: 'Third Client Name' },
-  //   { id: 'third_client_code', text: 'Third Client Code' },
-  //   { id: 'third_client_pan', text: 'Third Client Pan' },
-  //   { id: 'transaction', text: 'Transaction' },
-  //   { id: 'scheme_name', text: 'Scheme Name' },
-  //   { id: 'plan', text: 'Plan' },
-  //   { id: 'option', text: 'Option' },
-  //   { id: 'amount', text: 'Amount' },
-  //   { id: 'chq', text: 'Chqeue Number' },
-  //   { id: 'bank', text: 'Bank' },
-  //   { id: 'inv_type', text: 'Investment Type' },
-  //   { id: 'apl_no', text: 'Application Number' },
-  //   { id: 'fol_no', text: 'Folio Number' },
-  //   { id: 'kyc_status', text: 'KYC Status' },
-  //   { id: 'delete', text: 'Delete' },
-  // ];
-
-  // __category: category[];
-  // __subCat: subcat[];
-  // __bu_type = buType;
-  // __rcvForms = new FormGroup({
-  //   is_all_bu_type: new FormControl(false),
-  //   is_all_trns_type: new FormControl(false),
-  //   is_all_rnt: new FormControl(false),
-  //   options: new FormControl('2'),
-  //   sub_brk_cd: new FormControl(''),
-  //   tin_no: new FormControl(''),
-  //   trans_type: new FormArray([]),
-  //   client_code: new FormControl(''),
-  //   amc_name: new FormControl(''),
-  //   inv_type: new FormControl(''),
-  //   euin_no: new FormControl(''),
-  //   brn_cd: new FormControl(''),
-  //   bu_type: new FormArray([]),
-  //   rnt_name: new FormArray([]),
-  //   cat_id: new FormControl(''),
-  //   subcat_id: new FormControl(''),
-  //   date_status: new FormControl('T'),
-  //   start_date: new FormControl(this.getTodayDate()),
-  //   end_date: new FormControl(this.getTodayDate()),
-  //   login_status: new FormControl('N'),
-  //   dt_type: new FormControl(''),
-  //   start_dt: new FormControl(''),
-  //   end_dt: new FormControl(''),
-  // });
-  // __rnt: rnt[];
-  // __isAdd: boolean = false;
   __isVisible: boolean = true;
   __paginate: any = [];
   __pageNumber = new FormControl('10');
   __export = new MatTableDataSource<any>([]);
   __exportedClmns: string[] = [];
   __financMst = new MatTableDataSource<any>([]);
-  // __columns = [];
-  // __trans_types: any;
-  // __columnsForSummary: string[] = [
-  //   'edit',
-  //   'sl_no',
-  //   'temp_tin_no',
-  //   'rnt_name',
-  //   'bu_type',
-  //   'transaction',
-  //   'scheme_name',
-  //   'delete',
-  // ];
-
-  // __columnsForDtls: string[] = [
-  //   'edit',
-  //   'sl_no',
-  //   'temp_tin_no',
-  //   'rnt_name',
-  //   'bu_type',
-  //   'arn_no',
-  //   'euin_no',
-  //   'first_client_name',
-  //   'first_client_code',
-  //   'first_client_pan',
-  //   'mode_of_holding',
-  //   'second_client_name',
-  //   'second_client_code',
-  //   'second_client_pan',
-  //   'third_client_name',
-  //   'third_client_code',
-  //   'third_client_pan',
-  //   'transaction',
-  //   'scheme_name',
-  //   'plan',
-  //   'option',
-  //   'amount',
-  //   'chq',
-  //   'bank',
-  //   'inv_type',
-  //   'apl_no',
-  //   'fol_no',
-  //   'kyc_status',
-  //   'delete',
-  // ];
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
@@ -304,6 +183,7 @@ export class RPTComponent implements OnInit {
           this.__clientMst = value.data;
           this.searchResultVisibilityForClient('block');
           this.__isClientPending = false;
+          this.__ackForm.controls['client_code'].setValue('');
         },
         complete: () => {},
         error: (err) => {
@@ -336,7 +216,107 @@ export class RPTComponent implements OnInit {
       this.__ackForm.controls['options'].valueChanges.subscribe((res) => {
         this.setColumns(this.transaction_id,res);
     });
-  }
+    this.__ackForm.controls['brn_cd'].valueChanges.subscribe(res =>{
+      this.getBusinessTypeMst(res)
+    })
+    this.__ackForm.controls['bu_type'].valueChanges.subscribe(res =>{
+      this.disabledSubBroker(res);
+       this.getRelationShipManagerMst(res,this.__ackForm.value.brn_cd);
+    })
+    this.__ackForm.controls['rm_id'].valueChanges.subscribe(res =>{
+      if(this.__ackForm.value.bu_type.findIndex(item => item.bu_code == 'B') != -1){
+               this.getSubBrokerMst(res);
+      }
+      else{
+      this.__euinMst.length = 0;
+        this.__euinMst = res;
+      }
+   })
+   this.__ackForm.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
+    // if(res.length > 0){
+      this.setEuinDropdown(res,this.__ackForm.value.rm_id);
+    // }
+   })
+    }
+
+    setEuinDropdown(sub_brk_cd,rm){
+      // this.__euinMst.length = 0;
+      console.log(sub_brk_cd);
+
+     this.__euinMst = rm.filter(item => !this.__subbrkArnMst.map(item=> {return item['emp_euin_no']}).includes(item.euin_no));
+     if(sub_brk_cd.length > 0){
+      sub_brk_cd.forEach(element => {
+             if(this.__subbrkArnMst.findIndex((el) => element.code == el.code) != -1){
+                this.__euinMst.push(
+                  {
+                    euin_no:this.__subbrkArnMst[this.__subbrkArnMst.findIndex((el) => element.code == el.code)].euin_no,
+                    emp_name:''
+                  }
+                  );
+             }
+      });
+     }
+     else{
+       this.__euinMst = this.__euinMst.filter(item => !this.__subbrkArnMst.map(item => {return item['euin_no']}).includes(item.euin_no))
+     }
+    }
+    disabledSubBroker(bu_type_ids){
+      if(bu_type_ids.findIndex(item => item.bu_code == 'B') != -1){
+        this.__ackForm.controls['sub_brk_cd'].enable();
+      }
+      else{
+        this.__ackForm.controls['sub_brk_cd'].disable();
+      }
+
+    }
+    getSubBrokerMst(arr_euin_no){
+      if(arr_euin_no.length > 0){
+      this.__dbIntr.api_call(0,'/subbroker',
+      'arr_euin_no='+ JSON.stringify(arr_euin_no.map(item => {return item['euin_no']})))
+      .pipe(pluck("data")).subscribe((res: any) =>{
+        this.__subbrkArnMst = res.map(({code,bro_name,emp_euin_no,euin_no}) => ({
+        code,
+        emp_euin_no,
+        euin_no,
+        bro_name:bro_name +'-'+code
+        })
+        );
+      })
+    }
+    else{
+      this.__subbrkArnMst.length =0;
+      this.__ackForm.controls['sub_brk_cd'].setValue([]);
+    }
+
+    }
+    getBusinessTypeMst(brn_cd){
+      if(brn_cd.length > 0){
+      this.__dbIntr
+      .api_call(0,'/businessType','arr_branch_id='+JSON.stringify(brn_cd.map(item => {return item['id']})))
+      .pipe(pluck("data")).subscribe(res =>{
+              this.__bu_type = res;
+      })
+    }
+    else{
+      this.__ackForm.controls['bu_type'].reset([],{emitEvent:true});
+      this.__bu_type.length = 0;
+    }
+    }
+    getRelationShipManagerMst(bu_type_id,arr_branch_id){
+      if(bu_type_id.length > 0 && arr_branch_id.length > 0){
+      this.__dbIntr.api_call(0,'/employee',
+      'arr_bu_type_id='+ JSON.stringify(bu_type_id.map(item => {return item['bu_code']}))
+      +'&arr_branch_id=' + JSON.stringify(arr_branch_id.map(item  => {return item['id']}))
+      ).pipe(pluck("data"))
+      .subscribe(res =>{
+           this.__RmMst = res;
+      })
+    }
+    else{
+      this.__RmMst.length =0;
+      this.__ackForm.controls['rm_id'].reset([]);
+    }
+    }
   __transType: any = [];
   ngOnInit() {
   this.getTransactionType();
@@ -442,11 +422,11 @@ export class RPTComponent implements OnInit {
     __mfTrax.append('scheme_name',this.__ackForm.value.scheme_id ? JSON.stringify(this.__ackForm.value.scheme_id.map(item => {return item["id"]})) : '[]');
    __mfTrax.append('rnt_name',JSON.stringify(this.rnt_id.value.filter(x=> x.isChecked).map(item => {return item['id']})));
       if(this.__ackForm.value.btnType == 'A'){
-      __mfTrax.append('sub_brk_cd',this.__ackForm.value.sub_brk_cd ? JSON.stringify(this.__ackForm.value.sub_brk_cd.map(item => {return item["id"]})) : '[]');
-      __mfTrax.append('euin_no',this.__ackForm.value.euin_no ? JSON.stringify(this.__ackForm.value.euin_no.map(item => {return item["id"]})) : '[]');
+      __mfTrax.append('sub_brk_cd',this.__ackForm.value.sub_brk_cd ? JSON.stringify(this.__ackForm.value.sub_brk_cd.map(item => {return item["code"]})) : '[]');
+      __mfTrax.append('euin_no',this.__ackForm.value.euin_no ? JSON.stringify(this.__ackForm.value.euin_no.map(item => {return item["euin_no"]})) : '[]');
       __mfTrax.append('brn_cd',this.__ackForm.value.brn_cd ? JSON.stringify(this.__ackForm.value.brn_cd.map(item => {return item["id"]})) : '[]');
-       __mfTrax.append('rm_id',this.__ackForm.value.rm_id ? JSON.stringify(this.__ackForm.value.rm_id.map(item => {return item["id"]})) : '[]')
-      __mfTrax.append('bu_type',this.__ackForm.value.bu_type? JSON.stringify(this.__ackForm.value.bu_type.map(item => {return item["id"]})): '[]');
+       __mfTrax.append('rm_id',this.__ackForm.value.rm_id ? JSON.stringify(this.__ackForm.value.rm_id.map(item => {return item["euin_no"]})) : '[]')
+      __mfTrax.append('bu_type',this.__ackForm.value.bu_type? JSON.stringify(this.__ackForm.value.bu_type.map(item => {return item["bu_code"]})): '[]');
     }
     this.__dbIntr
       .api_call(1, '/manualUpdateDetailSearch', __mfTrax)
@@ -573,11 +553,11 @@ export class RPTComponent implements OnInit {
             ('&to_date=' +(global.getActualVal(this.__ackForm.getRawValue().to_dt)))
             +('&scheme_name='+this.__ackForm.value.scheme_id ? JSON.stringify(this.__ackForm.value.scheme_id.map(item => {return item["id"]})) : '[]')
             + (this.__ackForm.value.btnType == 'A' ?
-            (('&sub_brk_cd=' + (this.__ackForm.value.sub_brk_cd ? this.__ackForm.value.sub_brk_cd : ''))
-              +('&euin_no=' +(this.__ackForm.value.euin_no ? JSON.stringify(this.__ackForm.value.euin_no.map(item => {return item["id"]})) : '[]'))
+            (('&sub_brk_cd=' +(this.__ackForm.value.sub_brk_cd ? JSON.stringify(this.__ackForm.value.sub_brk_cd.map(item => {return item["code"]})) : '[]'))
+              +('&euin_no=' +(this.__ackForm.value.euin_no ? JSON.stringify(this.__ackForm.value.euin_no.map(item => {return item["euin_no"]})) : '[]'))
               +('&brn_cd=' + (this.__ackForm.value.brn_cd ? JSON.stringify(this.__ackForm.value.brn_cd.map(item => {return item["id"]})) : '[]'))
-              +('&bu_type=' + (this.__ackForm.value.bu_type ? JSON.stringify(this.__ackForm.value.bu_type.map(item => {return item["id"]})) : '[]'))
-              +('&rm_id=' + (this.__ackForm.value.rn_id ? JSON.stringify(this.__ackForm.value.rn_id.map(item => {return item["id"]})) : '[]'))
+              +('&bu_type=' + (this.__ackForm.value.bu_type ? JSON.stringify(this.__ackForm.value.bu_type.map(item => {return item["bu_code"]})) : '[]'))
+              +('&rm_id=' + (this.__ackForm.value.rm_id ? JSON.stringify(this.__ackForm.value.rm_id.map(item => {return item["euin_no"]})) : '[]'))
             )
             : '')
         )
@@ -918,6 +898,10 @@ export class RPTComponent implements OnInit {
     }
    }
    reset(){
+    this.__RmMst.length = 0;
+    this.__subbrkArnMst.length = 0;
+    this.__euinMst.length = 0;
+    this.__bu_type.length = 0;
     this.__ackForm.patchValue({
       client_code:'',
       date_range:'',
@@ -925,11 +909,6 @@ export class RPTComponent implements OnInit {
       frm_dt:'',
       to_dt:'',
       scheme_id:[],
-      brn_cd:[],
-      rm_id: [],
-      bu_type: [],
-      sub_brk_cd: [],
-      euin_no: [],
       options:'2'
     })
     this.__ackForm.get('amc_id').setValue([],{emitEvent:false});
@@ -937,6 +916,11 @@ export class RPTComponent implements OnInit {
     this.__ackForm.get('is_all_status').setValue(false,{emitEvent:true});
     this.__ackForm.get('tin_no').reset('',{emitEvent:false});
     this.__ackForm.get('client_name').reset('',{emitEvent:false});
+    this.__ackForm.get('brn_cd').reset([],{emitEvent:false});
+    this.__ackForm.get('rm_id').reset([],{emitEvent:false});
+    this.__ackForm.get('bu_type').reset([],{emitEvent:false});
+    this.__ackForm.get('sub_brk_cd').reset([],{emitEvent:false});
+    this.__ackForm.get('euin_no').reset([],{emitEvent:false});
     this.schemeMst.length = 0;
     this.sort = new sort();
     this.__pageNumber.setValue('10');

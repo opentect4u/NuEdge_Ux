@@ -122,7 +122,7 @@
         <div class="my-2" class="col-sm-12"
           *ngIf="__rcvFormForNonFin.get('client_code').value && __rcvFormForNonFin.get('client_name').value">
           <label for="__clName">Client Name</label>
-          <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
+          <!-- <input type="search" name="__clName" id="__clName" class="form-control" placeholder="Client Name"
             formControlName="client_name" [attr.disabled]="true">
             <button
             (click)="openDialog('C')"
@@ -131,7 +131,12 @@
             *ngIf="this.__dialogDtForClient" mat-icon-button type="button"
             aria-label="Example icon button with a eye icon" title="View Client Details">
             <mat-icon>remove_red_eye</mat-icon>
-          </button>
+          </button> -->
+
+          <div class="p-inputgroup">
+            <input type="text"  pInputText name="__clName" id="__clName" class="form-control" placeholder="Client Name" formControlName="client_name" [attr.disabled]="true" />
+            <button type="button" label="View" pButton icon="pi pi-eye" styleClass="p-button-warn" (click)="openDialog('C')"></button>
+        </div>
         </div>
         <!-- <div class="col-sm-4 clientCode"
           *ngIf="__dialogDtForClient && __rcvFormForNonFin.get('client_code').value && __rcvFormForNonFin.get('client_name').value">
@@ -175,7 +180,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="my-2" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-8':__dialogDtForScheme}">
+          <div class="my-2" [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-9':__dialogDtForScheme}">
             <app-core-srch
               [label] = "'Scheme Name'"
               [placeholder]="'Search By Scheme Name'"
@@ -194,7 +199,7 @@
               [isClientExistMsg]="'Scheme does not exists'"
               ></app-core-srch>
           </div>
-          <div class="col-sm-4 clientCode" *ngIf="__dialogDtForScheme">
+          <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
             <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')" mat-button type="button"
               aria-label="Example icon button with a eye icon" title="View Scheme Details">
               <mat-icon>remove_red_eye</mat-icon>

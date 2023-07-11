@@ -39,6 +39,8 @@ import { environment } from 'src/environments/environment';
 import buisnessType from '../../../../../../../../assets/json/buisnessType.json';
 import mdOfPre from '../../../../../../../../assets/json/Master/modeofPremium.json';
 import { DialogForViewComponent } from '../dialog-for-view/dialog-for-view.component';
+import { CreateBankComponent } from 'src/app/shared/create-bank/create-bank.component';
+import { PreviewdtlsDialogComponent } from 'src/app/shared/core/previewdtls-dialog/previewdtls-dialog.component';
 @Component({
   selector: 'app-trax-entry',
   templateUrl: './trax-entry.component.html',
@@ -74,7 +76,7 @@ export class TraxEntryComponent implements OnInit {
     { flag: 'N', name: 'Non Pan Holder', icon: 'credit_card_off' },
   ];
 
-  __dialogDtForBnk: any;
+  __dialogDtForBnk: any | undefined = null;
   __dialogDtForClient: any;
 
   __isVisible: boolean = true;
@@ -110,7 +112,7 @@ export class TraxEntryComponent implements OnInit {
     proposer_code: new FormControl('',
     {
       validators:[Validators.required],
-      asyncValidators:[this.__utility.ClientValidators(this.__clientMst)]
+      asyncValidators:[this.ClientValidators()]
     }
     ),
     proposal_no: new FormControl(''),
@@ -121,8 +123,13 @@ export class TraxEntryComponent implements OnInit {
       updateOn: 'blur',
     }),
     chq_bank: new FormControl(''),
-    micr_code: new FormControl(''),
+    micr_code: new FormControl('',
+    {
+      asyncValidators:[this.MICRValidators()]
+    }),
     bank_name: new FormControl(''),
+    ifs_code: new FormControl(''),
+    branch_name: new FormControl(''),
     acc_no: new FormControl(''),
     payment_ref_no: new FormControl(''),
     comp_login_at: new FormControl('', [Validators.required]),
@@ -155,7 +162,9 @@ export class TraxEntryComponent implements OnInit {
     policy_term: new FormControl('', {validators:[Validators.required],updateOn:'blur'}),
     policy_pre_pay_term: new FormControl('', [Validators.required]),
     ack_filePreview: new FormControl(''),
-    filePreview: new FormControl(''),
+    filePreview: new FormControl(
+      this.data.data ? `${environment.ins_app_form_url + this.data.data.ins_application_form}` : ''
+    ),
     app_form_scan: new FormControl(''),
     file: new FormControl('', [
       Validators.required,
@@ -231,6 +240,14 @@ export class TraxEntryComponent implements OnInit {
       pan:this.data.data.proposer_pan,
       dob:this.data.data.proposer_dob
     })
+    this.__bnkMst.push({
+      micr_code: this.data.data?.micr_code,
+      bank_name: this.data.data?.bank_name,
+      ifs_code: this.data.data?.ifs_code,
+      branch_name: this.data.data?.chq_branch_name,
+      id: this.data.data?.chq_bank,
+      branch_addr: this.data.data?.chq_branch_addr,
+    });
       this.getItems(
         {
           client_code:this.data.data.proposer_code,
@@ -1016,6 +1033,8 @@ export class TraxEntryComponent implements OnInit {
         this.__insTrax.patchValue({
           bank_name: __el.bank_name,
           chq_bank: __el.id,
+          ifs_code: __el.ifs_code,
+          branch_name: __el.branch_name
         });
         this.searchResultVisibilityForBank('none');
         break;
@@ -1081,9 +1100,17 @@ export class TraxEntryComponent implements OnInit {
     };
     try {
       const dialogref = this.__dialog.open(
-        DialogForViewComponent,
+        PreviewdtlsDialogComponent,
         dialogConfig
       );
+      dialogref.afterClosed().subscribe((res) => {
+        if (res) {
+          if (__type == 'B') {
+            this.__bnkMst.push(res.data);
+            this.getItems(res.data, 'B');
+          }
+        }
+      });
     } catch (ex) { }
   }
   preventNonumeric(__ev) {
@@ -1173,4 +1200,68 @@ return (control: AbstractControl): Observable<ValidationErrors | null> => {
   );
 };
 }
+
+checkIfclientExist(cl_code: string): Observable<boolean> {
+  return of(this.__clientMst.findIndex((x) => x.client_code == cl_code) != -1);
+}
+ClientValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfclientExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { ClientExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+openDialogForCreateBnk(id) {
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.autoFocus = false;
+  dialogConfig.closeOnNavigation = true;
+  dialogConfig.width = '40%';
+  dialogConfig.data = {
+    id: id,
+    flag: 'B-FD',
+    formName: 'B-FD',
+    title: id == 0 ? 'Add Bank' : 'Update Bank',
+    right: global.randomIntFromInterval(1, 60),
+  };
+  const dialogref = this.__dialog.open(CreateBankComponent, dialogConfig);
+  dialogref.afterClosed().subscribe((dt) => {
+    if (dt) {
+      this.__bnkMst.push(dt.data);
+      this.getItems(dt.data, 'B');
+    }
+  });
+}
+
+checkIfMICRExist(micrDtls: string): Observable<boolean> {
+  return of(
+    this.__bnkMst.findIndex(
+      (x) =>
+        x.micr_code == micrDtls ||
+        x.bank_name == micrDtls ||
+        x.ifs_code == micrDtls
+    ) != -1
+  );
+}
+MICRValidators(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return this.checkIfMICRExist(control.value).pipe(
+      map((res) => {
+        if (control.value) {
+          return res ? null : { MicrExists: true };
+        }
+        return null;
+      })
+    );
+  };
+}
+
+  openPDF() {
+    window.open(this.__insTrax.value.filePreview, '_blank');
+  }
+
 }

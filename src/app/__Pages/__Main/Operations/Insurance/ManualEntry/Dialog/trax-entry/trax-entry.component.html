@@ -581,9 +581,15 @@
       <ng-container
         *ngIf="__insTrax.get('mode_of_payment').value == 'O' || __insTrax.get('mode_of_payment').value == 'N'">
         <div class="row">
-          <div [ngClass]="{'col-sm-12':!__dialogDtForBnk,'col-sm-8': __dialogDtForBnk}">
+          <div [class]="__insTrax.get('micr_code').errors?.MicrExists ? 'col-sm-10' : 'col-sm-12'">
             <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforbank($event)">
               <div class="searchDiv">
+                <mat-icon
+                class="errorIcon"
+                #tooltip="matTooltip"
+                [matTooltip]="'Bank does not exist'"
+                *ngIf="__insTrax.get('micr_code').errors?.MicrExists">
+                error</mat-icon>
                 <label for="__clntCd">MICR Code
                   <span class="text-danger" *ngIf="__insTrax.get('mode_of_payment').value == 'O'">*</span>
                 </label>
@@ -610,20 +616,36 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-4 clientCode" *ngIf="__dialogDtForBnk && __insTrax.get('micr_code').value">
-            <button (click)="openDialog('B')" color="primary" mat-button type="button"
-              aria-label="Example icon button with a eye icon" title="View Bank Details">
-              <mat-icon>remove_red_eye</mat-icon>
-              View Details
-            </button>
+          <div class="col-sm-2 clientCode" *ngIf="__insTrax.get('micr_code').errors?.MicrExists">
+            <core-btn-with-menu
+            [BtnTitle]="'Create Bank'"
+            [hasMenu]="false"
+            (btnItem)="openDialogForCreateBnk(0)"
+            [flag]="'B'"
+          ></core-btn-with-menu>
           </div>
         </div>
 
-        <div class="row mt-5" *ngIf="__insTrax.get('micr_code').value && this.__dialogDtForBnk">
+        <div class="row my-1" *ngIf="__insTrax.get('micr_code').value && this.__dialogDtForBnk">
           <div class="col-sm-12">
             <label for="bnk_name">Bank</label>
-            <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control"
-              [attr.disabled]="true" />
+            <div class="p-inputgroup">
+              <input type="text"  pInputText name="bnk_name" id="bnk_name"
+              class="form-control" placeholder="Bank Name"
+              formControlName="bank_name" [attr.disabled]="true" />
+              <button type="button" label="View" pButton icon="pi pi-eye"
+               styleClass="p-button-warn" (click)="openDialog('B')"></button>
+            <!-- <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control"
+              [attr.disabled]="true" /> -->
+          </div>
+          </div>
+          <div class="col-sm-12">
+            <label for="ifsc">IFSC</label>
+            <input type="text"  name="ifsc" id="ifsc" formControlName="ifs_code" class="form-control" [attr.disabled]="true"/>
+         </div>
+          <div class="col-sm-12">
+            <label for="branch_name">Branch</label>
+            <input type="text"  name="branch_name" id="branch_name" formControlName="branch_name" class="form-control" [attr.disabled]="true"/>
           </div>
         </div>
         <div class="row my-1">
@@ -711,9 +733,23 @@
       </div>
       <div class="row my-1">
         <div class="col-sm-12">
-          <label>Upload Scan Application Form <span class="text-danger">*</span></label>
-          <input type="file" name="file" id="file" formControlName="file" class="form-control"
-            (change)="getFIle($event.target)" accept=".pdf">
+          <label for="upload_scan">Upload Scan Application Form <span class="text-danger">*</span></label>
+          <!-- <input type="file" name="file" id="file" formControlName="file" class="form-control"
+            (change)="getFIle($event.target)" accept=".pdf"> -->
+            <div class="p-inputgroup">
+              <input type="file"  pInputText
+              (change)="getFIle($event.target)"
+              accept=".pdf"
+              name="upload_scan" id="upload_scan"
+              class="form-control"
+              formControlName="file">
+              <button
+              *ngIf="this.__insTrax.value.filePreview"
+              type="button"
+              icon="pi pi-eye"
+              (click)="openPDF()"
+              pButton label="View"></button>
+            </div>
            <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
           <div class="invalid-feedback"
             *ngIf=" __insTrax.get('file').invalid && ( __insTrax.get('file').dirty ||  __insTrax.get('file').touched)">

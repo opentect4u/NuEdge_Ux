@@ -121,11 +121,48 @@ export class ScmRptComponent implements OnInit {
     __scmExport.append('subcat_id',this.__scmForm.value.subcat_id ? this.__scmForm.value.subcat_id : '');
     this.__dbIntr.api_call(1,'/schemeDetailSearch',__scmExport)
     .pipe(
-      map((x: any) => x.data)
+      map((x: any) => x.data),
+      map(x => {
+       this.__paginate = x.links;
+        return x.data.map(item =>{
+          const object = { ...item };
+          object.sip_date = JSON.parse(item.sip_date);
+          object.stp_date = JSON.parse(item.stp_date);
+          object.swp_date = JSON.parse(item.swp_date);
+          object.daily_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','D');
+          object.daily_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','D'),
+          object.weekly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','W');
+          object.weekly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','W'),
+          object.fortnightly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','F');
+          object.fortnightly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','F'),
+          object.monthly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','M');
+          object.monthly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','M'),
+          object.quarterly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','Q');
+          object.quarterly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','Q');
+          object.semi_anually_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','S');
+          object.semi_anually_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','S');
+          object.anually_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','A');
+          object.anually_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','A');
+          object.daily_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','D');
+          object.weekly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','W');
+          object.fortnightly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','F');
+          object.monthly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','M');
+          object.quarterly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','Q');
+          object.semi_anually_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','S');
+          object.anually_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','A');
+          object.daily_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','D');
+          object.weekly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','W');
+          object.fortnightly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','F');
+          object.monthly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','M');
+          object.quarterly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','Q');
+          object.semi_anually_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','S');
+          object.anually_swp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','A');
+          return object;
+        })
+      })
       ).subscribe(res => {
-      this.__paginate =res.links;
-      this.setPaginator(res.data);
-      this.tableExport(column_name,sort_by);
+      this.setPaginator(res);
+      // this.tableExport();
      })
   }
 
@@ -369,8 +406,48 @@ export class ScmRptComponent implements OnInit {
     __scmExport.append('cat_id',this.__scmForm.value.cat_id ? this.__scmForm.value.cat_id : '');
     __scmExport.append('amc_name',this.__scmForm.value.amc_name ? this.__scmForm.value.amc_name : '');
     __scmExport.append('subcat_id',this.__scmForm.value.subcat_id ? this.__scmForm.value.subcat_id : '');
-    this.__dbIntr.api_call(1,'/schemeExport',__scmExport).pipe(map((x: any) => x.data)).subscribe((res: scheme[]) =>{
-       console.log(res);
+    this.__dbIntr.api_call(1,'/schemeExport',__scmExport).
+    pipe(
+      map((x: any) => x.data),
+      map(x => {
+         return x.map(item =>{
+           const object = { ...item };
+           object.sip_date = JSON.parse(item.sip_date);
+           object.stp_date = JSON.parse(item.stp_date);
+           object.swp_date = JSON.parse(item.swp_date);
+           object.daily_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','D');
+           object.daily_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','D'),
+           object.weekly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','W');
+           object.weekly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','W'),
+           object.fortnightly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','F');
+           object.fortnightly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','F'),
+           object.monthly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','M');
+           object.monthly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','M'),
+           object.quarterly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','Q');
+           object.quarterly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','Q');
+           object.semi_anually_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','S');
+           object.semi_anually_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','S');
+           object.anually_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','A');
+           object.anually_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','A');
+           object.daily_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','D');
+           object.weekly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','W');
+           object.fortnightly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','F');
+           object.monthly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','M');
+           object.quarterly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','Q');
+           object.semi_anually_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','S');
+           object.anually_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','A');
+           object.daily_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','D');
+           object.weekly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','W');
+           object.fortnightly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','F');
+           object.monthly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','M');
+           object.quarterly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','Q');
+           object.semi_anually_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','S');
+           object.anually_swp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','A');
+           return object;
+         })
+       })
+      )
+    .subscribe((res: scheme[]) =>{
       this.__export = new MatTableDataSource(res);
     })
   }
@@ -400,10 +477,50 @@ export class ScmRptComponent implements OnInit {
           + ('&sort_by='+ this.__sortAscOrDsc.direction)
           + ('&scheme_type=' + this.__scmForm.value.scheme_status)
         )
-        .pipe(map((x: any) => x.data))
+        .pipe(
+          map((x: any) => x.data),
+          map(x => {
+            this.__paginate = x.links;
+             return x.data.map(item =>{
+               const object = { ...item };
+               object.sip_date = JSON.parse(item.sip_date);
+               object.stp_date = JSON.parse(item.stp_date);
+               object.swp_date = JSON.parse(item.swp_date);
+               object.daily_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','D');
+               object.daily_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','D'),
+               object.weekly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','W');
+               object.weekly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','W'),
+               object.fortnightly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','F');
+               object.fortnightly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','F'),
+               object.monthly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','M');
+               object.monthly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','M'),
+               object.quarterly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','Q');
+               object.quarterly_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','Q');
+               object.semi_anually_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','S');
+               object.semi_anually_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','S');
+               object.anually_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','A');
+               object.anually_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','A');
+               object.daily_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','D');
+               object.weekly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','W');
+               object.fortnightly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','F');
+               object.monthly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','M');
+               object.quarterly_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','Q');
+               object.semi_anually_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','S');
+               object.anually_swp_amt = global.getFrequencywiseAmt(item.swp_freq_wise_amt,'F','A');
+               object.daily_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','D');
+               object.weekly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','W');
+               object.fortnightly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','F');
+               object.monthly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','M');
+               object.quarterly_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','Q');
+               object.semi_anually_stp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','S');
+               object.anually_swp_amt = global.getFrequencywiseAmt(item.stp_freq_wise_amt,'F','A');
+               return object;
+             })
+           })
+          )
         .subscribe((res: any) => {
-          this.setPaginator(res.data);
-          this.__paginate = res.links;
+          this.setPaginator(res);
+          // this.__paginate = res.links;
           this.isLoading =!this.isLoading;
         },
         error=>{

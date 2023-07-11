@@ -132,6 +132,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
         client_code: this.data.data.client_code,
         id:this.data.data.client_id
       })
+
       this.getItems(this.__clientMst[0],'C');
      /** END */
 
@@ -157,7 +158,8 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
         )
       }
       /** END */
-
+      /** Scheme Binding */
+      this.__schemeMst.push({scheme_name:this.data.data.scheme_name,id:this.data.data.scheme_id})
       this.getItems(
         {
           scheme_name: this.data.data.scheme_name,

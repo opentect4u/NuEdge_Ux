@@ -179,10 +179,10 @@
           selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
           scrollHeight="300px"
           [autoLayout]="true" [responsive]="true" styleClass="p-datatable-striped p-datatable-gridlines"
-          [tableStyle]="{ 'min-width': '100rem' }">
+          [tableStyle]="{ 'min-width': __scmForm.value.options == '2' ? '100rem' : '400rem' }">
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="'16rem'">
+              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="__scmForm.value.options == '1' ? '30rem' : '16rem'">
                 {{ col.header }}
                 <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
                 </p-sortIcon>
@@ -215,26 +215,24 @@
                     {{scheme[col.field] ? (scheme[col.field] == 'O' ? 'Ongoing Scheme' : 'NFO') : 'N/A' }}
                   </ng-container>
 
-                  <ng-container *ngSwitchCase="col.field == 'sip_date'">
-                    <!-- <span class="dates" *ngFor="let SipDt of (scheme[col.field] | dates:scheme[col.field])"> -->
-                      <!-- {{SipDt}},
-                   </span> -->
-                   <p-button icon="pi pi-eye"
-                   styleClass="p-button-rounded p-button-primary">
-                 </p-button>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'stp_date'">
+                  <!-- <ng-container *ngSwitchCase="col.field == 'sip_date'">
                     <span class="dates" *ngFor="let SipDt of (scheme[col.field] | dates:scheme[col.field])">
                       {{SipDt}},
                    </span>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'swp_date'">
-                    <span class="dates" *ngFor="let SipDt of (scheme[col.field] | dates:scheme[col.field])">
-                      {{SipDt}},
-                   </span>
-                  </ng-container>
 
-                  <ng-container *ngSwitchCase="col.field == 'daily_sip_fresh_min_amt'">
+                  </ng-container> -->
+                  <ng-container *ngSwitchCase="col.field == 'sip_date' || col.field == 'stp_date' || col.field == 'swp_date'">
+                    <span class="dates" *ngFor="let SipDt of scheme[col.field]">
+                      {{SipDt.date}},
+                   </span>
+                  </ng-container>
+                  <!-- <ng-container *ngSwitchCase="col.field == 'swp_date'">
+                    <span class="dates" *ngFor="let SipDt of (scheme[col.field] | dates:scheme[col.field])">
+                      {{SipDt}},
+                   </span>
+                  </ng-container> -->
+
+                  <!-- <ng-container *ngSwitchCase="col.field == 'daily_sip_fresh_min_amt'">
                     {{scheme['sip_freq_wise_amt'] ? (scheme['sip_freq_wise_amt'] | freqWiseamt: 1 : 'D' : 'F') : 'N/A'}}
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'daily_sip_add_min_amt'">
@@ -320,7 +318,7 @@
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'anually_stp_amt'">
                     {{scheme['stp_freq_wise_amt'] ? (scheme['stp_freq_wise_amt'] | freqWiseamt: 2 : 'A') : 'N/A'}}
-                  </ng-container>
+                  </ng-container> -->
                   <ng-container *ngSwitchDefault>
                     <span   matTooltip="{{scheme[col.field]}}">
                       {{ scheme[col.field] ? scheme[col.field] : 'N/A' }}
@@ -453,7 +451,7 @@
         <ng-container matColumnDef="sip_date">
           <th  mat-header-cell *matHeaderCellDef>SIP Dates</th>
           <td mat-cell *matCellDef="let element">
-            <span class="dates" *ngFor="let SipDt of (element.sip_date | dates:element.sip_date)">
+            <span class="dates" *ngFor="let SipDt of element.sip_date">
               {{SipDt}}
            </span>
           </td>
@@ -462,7 +460,7 @@
         <ng-container matColumnDef="swp_date">
           <th  mat-header-cell *matHeaderCellDef>SWP Dates</th>
           <td mat-cell *matCellDef="let element">
-            <span class="dates" *ngFor="let SipDt of (element.sip_date | dates:element.swp_date)">
+            <span class="dates" *ngFor="let SipDt of element.sip_date">
               {{SipDt}}
            </span>
           </td>
@@ -472,7 +470,7 @@
         <ng-container matColumnDef="stp_date">
           <th  mat-header-cell *matHeaderCellDef>STP Dates</th>
           <td mat-cell *matCellDef="let element">
-            <span class="dates" *ngFor="let SipDt of (element.sip_date | dates:element.stp_date)">
+            <span class="dates" *ngFor="let SipDt of element.sip_date">
               {{SipDt}}
            </span>
           </td>
@@ -482,14 +480,14 @@
          <ng-container matColumnDef="daily_sip_fresh_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Daily SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'D' : 'F') : 'N/A'}}
+            {{element.daily_sip_fresh_min_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="daily_sip_add_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Daily SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'D' : 'A') : 'N/A'}}
+            {{element.daily_sip_add_min_amt}}
           </td>
         </ng-container>
 
@@ -497,170 +495,170 @@
         <ng-container matColumnDef="weekly_sip_fresh_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Weekly SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'W' : 'F') : 'N/A'}}
+            {{element.weekly_sip_fresh_min_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="weekly_sip_add_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Weekly SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'W' : 'A') : 'N/A'}}
+            {{element.weekly_sip_add_min_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="fortnightly_sip_fresh_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Fortnightly SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'F' : 'F') : 'N/A'}}
+            {{element.fortnightly_sip_fresh_min_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="fortnightly_sip_add_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Fortnightly SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'F' : 'A') : 'N/A'}}
+            {{element.fortnightly_sip_add_min_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="monthly_sip_fresh_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Monthly SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'M' : 'F') : 'N/A'}}
+            {{element.monthly_sip_fresh_min_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="monthly_sip_add_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Monthly SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'M' : 'A') : 'N/A'}}
+            {{element.monthly_sip_add_min_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="quarterly_sip_fresh_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Quarterly SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'Q' : 'F') : 'N/A'}}
+            {{element.quarterly_sip_fresh_min_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="quarterly_sip_add_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Quarterly SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'Q' : 'A') : 'N/A'}}
+            {{element.quarterly_sip_add_min_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="semi_anually_sip_fresh_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Semi Anually SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'S' : 'F') : 'N/A'}}
+            {{element.semi_anually_sip_fresh_min_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="semi_anually_sip_add_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Semi Anually SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'S' : 'A') : 'N/A'}}
+            {{element.semi_anually_sip_add_min_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="anually_sip_fresh_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Anually SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'A' : 'F') : 'N/A'}}
+            {{element.anually_sip_fresh_min_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="anually_sip_add_min_amt">
           <th  mat-header-cell *matHeaderCellDef>Anually SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.sip_freq_wise_amt ? (element.sip_freq_wise_amt | freqWiseamt: 1 : 'A' : 'A') : 'N/A'}}
+            {{element.anually_sip_add_min_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="daily_swp_amt">
           <th  mat-header-cell *matHeaderCellDef>Daily SWP Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.swp_freq_wise_amt ? (element.swp_freq_wise_amt | freqWiseamt: 2: 'D') : 'N/A'}}
+            {{element.daily_swp_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="weekly_swp_amt">
           <th  mat-header-cell *matHeaderCellDef>Weekly SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.swp_freq_wise_amt ? (element.swp_freq_wise_amt | freqWiseamt: 2 : 'W') : 'N/A'}}
+            {{element.weekly_swp_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="fortnightly_swp_amt">
           <th  mat-header-cell *matHeaderCellDef>Fortnightly SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.swp_freq_wise_amt ? (element.swp_freq_wise_amt | freqWiseamt: 2 : 'F') : 'N/A'}}
+            {{element.fortnightly_swp_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="monthly_swp_amt">
           <th  mat-header-cell *matHeaderCellDef>Monthly SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.swp_freq_wise_amt ? (element.swp_freq_wise_amt | freqWiseamt: 2 : 'M') : 'N/A'}}
+            {{element.monthly_swp_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="quarterly_swp_amt">
           <th  mat-header-cell *matHeaderCellDef>Quarterly SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.swp_freq_wise_amt ? (element.swp_freq_wise_amt | freqWiseamt: 2 : 'Q') : 'N/A'}}
+            {{element.quarterly_swp_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="semi_anually_swp_amt">
           <th  mat-header-cell *matHeaderCellDef>Semi Anually SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.swp_freq_wise_amt ? (element.swp_freq_wise_amt | freqWiseamt: 2 : 'S') : 'N/A'}}
+            {{element.semi_anually_swp_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="anually_swp_amt">
           <th  mat-header-cell *matHeaderCellDef>Anually SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.swp_freq_wise_amt ? (element.swp_freq_wise_amt | freqWiseamt: 2 : 'A') : 'N/A'}}
+            {{element.anually_swp_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="daily_stp_amt">
           <th  mat-header-cell *matHeaderCellDef>Daily STP Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.stp_freq_wise_amt ? (element.stp_freq_wise_amt | freqWiseamt: 2: 'D') : 'N/A' }}
+            {{element.daily_stp_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="weekly_stp_amt">
           <th  mat-header-cell *matHeaderCellDef>Weekly STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.stp_freq_wise_amt ? (element.stp_freq_wise_amt | freqWiseamt: 2 : 'W') : 'N/A'}}
+            {{element.weekly_stp_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="fortnightly_stp_amt">
           <th  mat-header-cell *matHeaderCellDef>Fortnightly STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.stp_freq_wise_amt ? (element.stp_freq_wise_amt | freqWiseamt: 2 : 'F') : 'N/A'}}
+            {{element.fortnightly_stp_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="monthly_stp_amt">
           <th  mat-header-cell *matHeaderCellDef>Monthly STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.stp_freq_wise_amt ? (element.stp_freq_wise_amt | freqWiseamt: 2 : 'M') : 'N/A'}}
+            {{element.monthly_stp_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="quarterly_stp_amt">
           <th  mat-header-cell *matHeaderCellDef>Quarterly STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.stp_freq_wise_amt ? (element.stp_freq_wise_amt | freqWiseamt: 2 : 'Q') : 'N/A'}}
+            {{element.quarterly_stp_amt}}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="semi_anually_stp_amt">
           <th  mat-header-cell *matHeaderCellDef>Semi Anually STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.stp_freq_wise_amt ? (element.stp_freq_wise_amt | freqWiseamt: 2 : 'S') : 'N/A'}}
+            {{element.semi_anually_stp_amt}}
           </td>
         </ng-container>
         <ng-container matColumnDef="anually_stp_amt">
           <th  mat-header-cell *matHeaderCellDef>Anually STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.stp_freq_wise_amt ? (element.stp_freq_wise_amt | freqWiseamt: 2 : 'A') : 'N/A'}}
+            {{element.anually_stp_amt}}
           </td>
         </ng-container>
 
