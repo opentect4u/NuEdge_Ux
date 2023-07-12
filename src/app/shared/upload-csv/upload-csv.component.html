@@ -40,7 +40,7 @@
         </mat-menu>
     </ng-container>
 
-   <ng-container  *ngIf="flag != 'SC' && flag != 'FS'">
+   <ng-container  *ngIf="flag != 'SC' && flag != 'FS' && flag != 'MFT'">
     <button  color="primary" (click)="exporter.exportTable('xlsx',{fileName:file_name})"
     mat-button><mat-icon>download</mat-icon>Download Sample</button>
    </ng-container>

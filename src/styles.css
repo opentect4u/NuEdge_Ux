@@ -541,3 +541,13 @@ mat-card {
 .p-button.p-button-lg {
   padding: 8px 16px!important;
 }
+.p-panel .p-panel-header {
+  border: 1px solid #dee2e6;
+  padding: 11px 1.25rem;
+  background: #1f4584;
+  color: #ffffff;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}

@@ -1,0 +1,167 @@
+<div class="row flexSec pt-4">
+  <div class="col-sm-10 col-sm-offset-1">
+    <p-panel >
+      <ng-template pTemplate="header">
+         <span class="font-semibold text-xl">Search Report</span>
+        </ng-template>
+
+
+        <form [formGroup]="trxFrm"
+        id="trxFrm"
+        autocomplete="off"
+        >
+          <div class="row g-3 align-items-center">
+            <div class="col-md-1">
+              <label class="col-form-label col-form-label-lg m-0">Date:</label>
+            </div>
+            <div class="col-md-5">
+              <p-calendar
+              dateFormat="dd-mm-yy"
+              dataType="string"
+              formControlName="date"
+              [showIcon]="true"></p-calendar>
+            </div>
+            <div class="col-md-1">
+              <label class="col-form-label col-form-label-lg m-0">Folio:</label>
+            </div>
+            <div class="col-md-5">
+                <input  formControlName="folio_no"
+                placeholder="Enter Folio Number"
+                id="float-input" type="text" class="rounded form-control form-control-lg"
+                pInputText>
+            </div>
+          </div>
+        </form>
+
+
+      <ng-template pTemplate="footer">
+        <p-button
+        label="Show"
+        icon="pi pi-eye"
+        iconPos="left"
+        styleClass="p-button-lg"
+        (click)="searchReport()"
+        ></p-button>
+      </ng-template>
+   </p-panel>
+  </div>
+</div>
+<div class="row my-3">
+  <div class="col-sm-12">
+      <p-card>
+        <ng-template pTemplate="header"
+        class="cardHeader d-flex align-items-center justify-content-between">
+          <span >
+            Transaction Details
+            <span *ngIf="this.trxFrm.value.folio_no">for Folio No -
+              {{folio_no}}</span>
+          </span>
+
+          <div class="btnGrp">
+            <button type="button"
+            pButton pRipple
+            (click)="refresh()"
+            #tooltip="matTooltip"
+            matTooltip="Reset"
+            icon="pi pi-refresh"
+            class="p-button-primary mr-2"
+           >
+            </button>
+            <button type="button"
+            pButton pRipple
+            (click)="exportExl()"
+            #tooltip="matTooltip"
+            matTooltip="Export Excel"
+            icon="pi pi-file-excel"
+            class="p-button-primary mr-2"
+          >
+           </button>
+            <button type="button"
+            pButton pRipple
+            #tooltip="matTooltip"
+            (click)="printPdf()"
+            matTooltip="Print Pdf"
+            icon="pi pi-print"
+            class="p-button-primary mr-2">
+            </button>
+          </div>
+      </ng-template>
+      <p-table
+        id="trxDt"
+        [value]="trnsMst.data"
+        [responsive]="true"
+        [rowHover]="true"
+        styleClass="p-datatable-gridlines"
+        [autoLayout]="true"
+        [scrollable]="true"
+        scrollDirection="horizontal"
+        >
+          <ng-template pTemplate="header">
+              <tr>
+                  <th pSortableColumn="folio_no">Folio No <p-sortIcon field="folio_no"></p-sortIcon></th>
+                  <th pSortableColumn="trans_no">Trxn No <p-sortIcon field="trans_no"></p-sortIcon></th>
+                  <th pSortableColumn="trans_mode">Trxn Mode <p-sortIcon field="trans_mode"></p-sortIcon></th>
+                  <th pSortableColumn="trans_status">Trxn Status <p-sortIcon field="trans_status"></p-sortIcon></th>
+                  <th pSortableColumn="user_trans_no">User Trxn No <p-sortIcon field="user_trans_no"></p-sortIcon></th>
+                  <th pSortableColumn="trad_date">Trad Date <p-sortIcon field="trad_date"></p-sortIcon></th>
+                  <th pSortableColumn="post_date">Post Date <p-sortIcon field="post_date"></p-sortIcon></th>
+                  <th pSortableColumn="pur_price">Pur Price <p-sortIcon field="pur_price"></p-sortIcon></th>
+                  <th pSortableColumn="units">Units <p-sortIcon field="units"></p-sortIcon></th>
+                  <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon></th>
+                  <th pSortableColumn="rec_date">Rep Date <p-sortIcon field="rec_date"></p-sortIcon></th>
+                  <th  pSortableColumn="trans_sub_type">Trxn Sub Type <p-sortIcon field="trans_sub_type"></p-sortIcon></th>
+                  <th  pSortableColumn="trans_nature">Trxn Nature <p-sortIcon field="trans_nature"></p-sortIcon></th>
+                  <th  pSortableColumn="t_15h">T_15H <p-sortIcon field="t_15h"></p-sortIcon></th>
+                  <th  pSortableColumn="micr_code">MICR <p-sortIcon field="micr_code"></p-sortIcon></th>
+                  <th  pSortableColumn="remarks">Remarks <p-sortIcon field="remarks"></p-sortIcon></th>
+                  <th  pSortableColumn="sw_flag">Sw Flag <p-sortIcon field="sw_flag"></p-sortIcon></th>
+                  <th  pSortableColumn="old_folio">Old Folio <p-sortIcon field="old_folio"></p-sortIcon></th>
+                  <th  pSortableColumn="seq_no">Seq No <p-sortIcon field="seq_no"></p-sortIcon></th>
+                  <th pSortableColumn="reinvest_flag">ReInv Flag <p-sortIcon field="reinvest_flag"></p-sortIcon></th>
+                  <th pSortableColumn="stt">STT <p-sortIcon field="stt"></p-sortIcon></th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-trxn>
+              <tr>
+                  <td>{{trxn.folio_no ? trxn.folio_no : 'N/A'}}</td>
+                  <td>{{trxn.trans_no ? trxn.trans_no : 'N/A'}}</td>
+                  <td>{{trxn.trans_mode ? trxn.trans_mode : 'N/A'}}</td>
+                  <td>{{trxn.trans_status ? trxn.trans_status : 'N/A'}}</td>
+                  <td>{{trxn.user_trans_no ? trxn.user_trans_no : 'N/A'}}</td>
+                  <td>{{trxn.trad_date ? (trxn.trad_date | date:'dd-MM-YYYY') : 'N/A'}}</td>
+                  <td>{{trxn.post_date ? (trxn.post_date | date:'dd-MM-YYYY') : 'N/A'}}</td>
+                  <td>{{trxn.pur_price ? (trxn.pur_price | currency:'INR') : 'N/A'}}</td>
+                  <td>{{trxn.units ? trxn.units : 'N/A'}}</td>
+                  <td>{{trxn.amount ? (trxn.amount | currency:'INR') : 'N/A'}}</td>
+                  <td>{{trxn.rec_date ? (trxn.rec_date| date:'dd-MM-YYYY') : 'N/A'}}</td>
+                  <td>{{trxn.trans_sub_type ? trxn.trans_sub_type: 'N/A'}}</td>
+                  <td>{{trxn.trans_nature ? trxn.trans_nature : 'N/A'}}</td>
+                  <td>{{trxn.te_15h ? trxn.te_15h : 'N/A'}}</td>
+                  <td>{{trxn.micr_code ? trxn.micr_code : 'N/A'}}</td>
+                  <td>{{trxn.remarks ? trxn.remarks : 'N/A'}}</td>
+                  <td>{{trxn.sw_flag ? trxn.sw_flag : 'N/A'}}</td>
+                  <td>{{trxn.old_folio ? trxn.old_folio : 'N/A'}}</td>
+                  <td>{{trxn.seq_no ? trxn.seq_no : 'N/A'}}</td>
+                  <td>{{trxn.reinvest_flag ? trxn.reinvest_flag : 'N/A'}}</td>
+                  <td>{{trxn.stt ? trxn.stt : 'N/A'}}</td>
+              </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage" let-trxn>
+            <tr>
+              <td [attr.colspan]="21">
+                 No Records Found
+              </td>
+            </tr>
+          </ng-template>
+      </p-table>
+      <ng-template pTemplate="footer">
+        <div class="flex align-items-center justify-content-between">
+          In total there are {{trnsMst.data ? trnsMst.data.length : 0 }} Transactions.
+      </div>
+    </ng-template>
+      </p-card>
+  </div>
+</div>
+
+

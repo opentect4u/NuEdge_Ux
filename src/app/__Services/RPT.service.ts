@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Injectable ,Inject} from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -7,13 +8,13 @@ import autoTable from 'jspdf-autotable';
 })
 export class RPTService {
 
-constructor() { }
+constructor(
+  @Inject(DOCUMENT) private doc: Document
+) { }
 
 downloadReport(__tblName,dt,_doc_name){
-  console.log(__tblName)
   let pdf = new jsPDF('l', 'pt', [3000,792]);
   pdf.setFontSize(10);
-  // pdf.text(dt.date, 35, 30);
   var width = pdf.internal.pageSize.getWidth();
   pdf.addImage("../../assets/images/logo.jpg", "JPG", ((width / 2) - 68), 40, 140, 50);
   pdf.setFont("times", "normal");
@@ -49,11 +50,11 @@ printRPT(__id){
   let WindowObject ;
   const divToPrint = document.getElementById(__id);
   // console.log(divToPrint.innerHTML);
- WindowObject = window.open('', 'Print-Window');
+ WindowObject = window.open('','Print-Window');
  WindowObject.document.open();
  WindowObject.document.writeln('<!DOCTYPE html>');
  WindowObject.document.writeln('<html><head><title></title><style type="text/css">');
- WindowObject.document.writeln( '@media print { .center { text-align: center;}' +
+ WindowObject.document.writeln(   '@media print { .center { text-align: center;}' +
  '                                         .inline { display: inline; }' +
  '                                         .underline { text-decoration: underline; }' +
  '                                         .left { margin-left: 315px;} ' +
@@ -80,6 +81,32 @@ printRPT(__id){
     console.log("CLose");
    WindowObject.close();
   }, 100);
+}
+
+exportExl(__dt,excelHeaders){
+  console.log(__dt);
+
+  import("xlsx").then(xlsx => {
+    const worksheet = xlsx.utils.json_to_sheet(__dt,{skipHeader:true}); // Data
+    // const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    // const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+    xlsx.utils.sheet_add_json(worksheet,__dt,{skipHeader:true,origin:'A2'});
+
+    xlsx.utils.sheet_add_aoa(worksheet,excelHeaders);
+    const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+    // this.saveAsExcelFile(excelBuffer, "sales");
+    let EXCEL_TYPE =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const data: Blob = new Blob([excelBuffer], {
+      type: EXCEL_TYPE
+    });
+    var blobURL = window.URL.createObjectURL(data);
+    let link: HTMLElement = this.doc.createElement('a'); // create Element
+     link.setAttribute('href',blobURL);
+     link.click();
+});
+
 }
 
 }

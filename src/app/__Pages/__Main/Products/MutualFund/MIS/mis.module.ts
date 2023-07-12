@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MisComponent } from './mis.component';
 import { RouterModule, Routes } from '@angular/router';
 
+
  const routes: Routes = [{
     path:'',
     component:MisComponent,
@@ -11,6 +12,10 @@ import { RouterModule, Routes } from '@angular/router';
       {
         path:'home',
         loadChildren:()=> import('./home/home.module').then(m => m.HomeModule)
+      },
+      {
+       path:'mftrax',
+       loadChildren:()=> import('./MFTrax/mf-trx-home/mf-trx-home.module').then(m=> m.MfTrxHomeModule)
       },
       {
         path:'aum',
