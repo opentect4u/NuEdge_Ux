@@ -80,11 +80,11 @@
     "id": 5,
     "title": "Operations",
     "mat_icon": "file_open",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "operation.png",
     "url": "/main/operations/ophome",
-    "class": "iconSec iconCol_8",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -102,22 +102,22 @@
     "id": 10,
     "title": "Products",
     "mat_icon": "category",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "product.png",
     "url": "/main/product",
-    "class": "iconSec iconCol_10",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
     "id": 11,
     "title": "Reports",
     "mat_icon": "history",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
     "img": "",
-    "url": "",
-    "class": "iconSec iconCol_11",
+    "url": "reports.png",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -135,11 +135,11 @@
     "id": 4,
     "title": "Master",
     "mat_icon": "dataset",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "master.png",
     "url": "/main/master/products",
-    "class": "iconSec iconCol_12",
+    "class": "iconSec",
     "sub_menu": [
       {
         "id": 14,
@@ -229,5 +229,16 @@
       }
 
     ]
+  },
+  {
+    "id": 14,
+    "title": "Mail Back",
+    "mat_icon": "group",
+    "icon": "",
+    "value": 0,
+    "img": "mailBack.png",
+    "url": "/main/mailback",
+    "class": "iconSec",
+    "sub_menu": []
   }
 ]

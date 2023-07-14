@@ -61,6 +61,7 @@ export class amcClmns {
      {field:'edit',header:'Edit'},
      {field:'delete',header:'Delete'},
      {field:'logo',header:'Logo'},
+     {field:'amc_code',header:'AMC Code'},
      {field:'amc_name',header:'AMC Full Name'},
      {field:'amc_short_name',header:'AMC Short Name'},
      {field:'rnt_name',header:'R&T'}
@@ -70,6 +71,7 @@ export class amcClmns {
     {field:'delete',header:'Delete'},
     {field:'sl_no',header:'Sl No'},
     {field:'logo',header:'Logo'},
+    {field:'amc_code',header:'AMC Code'},
     {field:'amc_name',header:'AMC Full Name'},
     {field:'amc_short_name',header:'AMC Short Name'},
     {field:'rnt_name',header:'R&T'},

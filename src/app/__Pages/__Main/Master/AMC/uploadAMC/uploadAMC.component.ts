@@ -17,7 +17,11 @@ export class UploadAMCComponent implements OnInit {
   __rntMst: rnt[] = [];
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
-
+    {
+      columnDef: 'amc_code',
+      header: 'AMC Code',
+      cell: (element: Record<string, any>) => `${element['amc_code']}`,
+    },
     {
       columnDef: 'AMC Full Name',
       header: 'AMC Full Name',
@@ -288,6 +292,7 @@ export class UploadAMCComponent implements OnInit {
   ];
   tableData = new MatTableDataSource([
     {
+      "amc_code":"001",
       "AMC Full Name": 'HDFC Mutual Fund',
       "AMC Short Name":"HMF",
       "created_at": '2023-02-01T06:07:38.000000Z',

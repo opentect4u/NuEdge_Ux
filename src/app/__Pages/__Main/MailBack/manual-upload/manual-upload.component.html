@@ -1,0 +1,72 @@
+
+<div class="row flexSec">
+  <div class="col-sm-10 col-sm-offset-1">
+    <core-tab [Tab]="TabMenu" [customClass]="'customTabs'"
+    (GetTabDtls)="onTabChange($event)" [index]="tabindex">
+    </core-tab>
+    <div class="card">
+       <div class="card-body p-4">
+      <form [formGroup]="manualUpldFrm" (ngSubmit)="uploadFile()">
+           <div class="row">
+             <div class="col-sm-1 my-auto  text-center">
+              <label for="file_type">File Type <span class="text-danger">*</span></label>
+             </div>
+             <div class="col-sm-3 my-auto ">
+              <select name="file_type_id" formControlName="file_type_id" class="form-control" id="file_type">
+                <option value="">Select File Type</option>
+               <option [value]="fileType.id" *ngFor="let fileType of fileTypeMst" >{{fileType.name}}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="manualUpldFrm.get('file_type_id').invalid && (manualUpldFrm.get('file_type_id').dirty || manualUpldFrm.get('file_type_id').touched)">
+                <span class="invalid-feedback" *ngIf="(manualUpldFrm.get('file_type_id')).errors?.required">*Please provide file type</span>
+              </div>
+            </div>
+            <div class="col-sm-1 my-auto   text-center">
+              <label for="file_id">File Name<span class="text-danger">*</span></label>
+             </div>
+             <div class="col-sm-3 my-auto">
+              <select name="file_id" formControlName="file_id" id="file_id" class="form-control">
+                <option value="">Select File Name</option>
+               <option *ngFor="let file of fileMst" [value]="file.id">{{file.name}}</option>
+
+              </select>
+              <div class="invalid-feedback" *ngIf="manualUpldFrm.get('file_id').invalid && (manualUpldFrm.get('file_id').dirty || manualUpldFrm.get('file_id').touched)">
+                <span class="invalid-feedback" *ngIf="(manualUpldFrm.get('file_id')).errors?.required">*Please provide file name</span>
+              </div>
+            </div>
+
+            <div class="col-sm-1 p-0 my-auto  text-center">
+              <label for="upload_file">Upload File <span class="text-danger">*</span></label>
+             </div>
+             <div class="col-sm-3 my-auto">
+              <div class="input-group">
+                <input type="file" (change)="getFile($event)" class="form-control" id="upload_file"/>
+                <div
+                class="invalid-feedback"
+                *ngIf="manualUpldFrm.get('file').invalid && (manualUpldFrm.get('file').dirty || manualUpldFrm.get('file').touched)">
+                  <span class="invalid-feedback" *ngIf="(manualUpldFrm.get('file')).errors?.required">*Please choose file</span>
+                </div>
+              </div>
+            </div>
+          </div>
+      </form>
+    </div>
+    <div class="card-footer">
+
+      <label>
+        <i class="pi pi-info-circle"></i>
+      NOTE: Allowed Format: CSV
+      </label>
+      <p-button type="submit"
+      label="Save"
+      icon="pi pi-save"
+      iconPos="right"
+      class="float-right"
+      [disabled]="manualUpldFrm.invalid"
+      styleClass="p-button-lg p-button-primary">
+      </p-button>
+    </div>
+    </div>
+
+    </div>
+
+</div>

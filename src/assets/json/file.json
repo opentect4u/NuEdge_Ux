@@ -1,0 +1,17 @@
+[
+  {
+    "id":1,
+    "name":"WBR2",
+    "parent_id":1
+  },
+  {
+    "id":2,
+    "name":"WBR2A",
+    "parent_id":1
+  },
+  {
+    "id":3,
+    "name":"MFSD201",
+    "parent_id":2
+  }
+]

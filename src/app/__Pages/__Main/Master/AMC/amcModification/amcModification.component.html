@@ -23,8 +23,17 @@
   <mat-dialog-content>
     <form  [formGroup]="__amcForm" (ngSubmit)="submit()" autocomplete="off" id="__amcForm_{{data.id}}" ngNativeValidate>
       <div class="row">
+        <div class="col-sm-12">
+          <label for="amc_code">AMC Code <span class="text-danger">*</span></label>
+          <input type="text" name="amc_name" id="amc_code" class="form-control"
+          placeholder="Enter AMC Code"
+          formControlName="amc_code">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('amc_code').invalid && (__amcForm.get('amc_code').dirty || __amcForm.get('amc_code').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_code')).errors?.required">*Please provide AMC code</span>
+          </div>
+        </div>
 
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="amcName">AMC Full Name <span class="text-danger">*</span></label>
           <input type="text" name="amc_name" id="amcName" class="form-control" placeholder="Enter AMC Name" formControlName="amc_name">
           <div class="invalid-feedback" *ngIf="__amcForm.get('amc_name').invalid && (__amcForm.get('amc_name').dirty || __amcForm.get('amc_name').touched)">
@@ -32,14 +41,14 @@
           </div>
         </div>
 
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="amcshortName">AMC Short Name</label>
           <input type="text" name="amc_short_name" id="amcshortName" class="form-control" placeholder="Enter AMC Name" formControlName="amc_short_name">
           <div class="invalid-feedback" *ngIf="__amcForm.get('amc_short_name').invalid && (__amcForm.get('amc_short_name').dirty || __amcForm.get('amc_short_name').touched)">
             <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_short_name')).errors?.required">*Please provide AMC short name</span>
           </div>
          </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="rntName">R&T <span class="text-danger">*</span></label>
           <select class="form-control " formControlName="rnt_id" id="rntName">
             <option value="">Select R&T</option>
@@ -49,7 +58,7 @@
             <span class="invalid-feedback" *ngIf="(__amcForm.get('rnt_id')).errors?.required">*Please provide R&T</span>
           </div>
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="gstin">GSTIN <span class="text-danger">*</span></label>
           <input type="text" name="gstin" id="gstin" class="form-control" placeholder="Enter GSTIN" formControlName="gstin">
           <div class="invalid-feedback" *ngIf="__amcForm.get('gstin').invalid && (__amcForm.get('gstin').dirty || __amcForm.get('gstin').touched)">
@@ -57,7 +66,7 @@
           </div>
         </div>
 
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="web_site">Website</label>
           <input type="text" name="web_site" id="web_site" class="form-control" placeholder="Enter Website" formControlName="web_site">
         </div>
@@ -65,7 +74,7 @@
         </div>
         <div class="row">
 
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="cus_care_whatsapp_no">
               Customer Care WhatsApp Number
             </label>
@@ -81,7 +90,7 @@
                   must be 10 digits</span> -->
             </div>
           </div>
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="cust_care_no">Customer Care Number</label>
             <input (keypress)="preventNonumeric($event)" type="text" name="cust_care_no" id="cust_care_no" class="form-control" placeholder="Enter Customer Care Number"  formControlName="cust_care_no">
             <div class="invalid-feedback" *ngIf="__amcForm.get('cust_care_no').invalid && (__amcForm.get('cust_care_no').dirty || __amcForm.get('cust_care_no').touched)">
@@ -89,7 +98,7 @@
 
             </div>
           </div>
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="cust_care_email" >Customer Care Email </label>
             <input (keypress)="preventNonumeric($event)" type="email" name="cust_care_email" id="cust_care_email" class="form-control" placeholder="Enter Customer Care Email"  formControlName="cust_care_email">
             <div class="invalid-feedback" *ngIf="__amcForm.get('cust_care_email').invalid && (__amcForm.get('cust_care_email').dirty || __amcForm.get('cust_care_email').touched)">
@@ -106,7 +115,7 @@
               <span class="invalid-feedback" *ngIf="(__amcForm.get('distributor_care_no')).hasError('pattern')">*Digits allow only</span>
             </div>
           </div>
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="distributor_care_email" >Distributor Care Email </label>
             <input (keypress)="preventNonumeric($event)" type="email" name="distributor_care_email" id="distributor_care_email" class="form-control" placeholder="Enter Distributor Care Email"  formControlName="distributor_care_email">
             <div class="invalid-feedback" *ngIf="__amcForm.get('distributor_care_email').invalid && (__amcForm.get('distributor_care_email').dirty || __amcForm.get('distributor_care_email').touched)">
@@ -120,14 +129,14 @@
           <hr class="line"/>
          </div>
         <div class="row">
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="head_ofc_cotact_per">Contact Person</label>
           <input type="text"
           name="head_ofc_cotact_per"
           id="head_ofc_cotact_per"
           formControlName="head_ofc_contact_per" class="form-control" placeholder="Enter Contact Person">
           </div>
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="head_contact_per_mob">Contact Person Mobile</label>
           <input type="text"
           name="head_contact_per_mob"
@@ -140,14 +149,14 @@
                 must be 10 digits</span> -->
           </div>
         </div>
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="head_contact_per_email">Contact Person Email</label>
           <input type="text" name="head_contact_per_email" id="head_contact_per_email" formControlName="head_contact_per_email" class="form-control" placeholder="Enter Contact Person Email">
           <div class="invalid-feedback" *ngIf="__amcForm.get('head_contact_per_email').invalid && (__amcForm.get('head_contact_per_email').dirty || __amcForm.get('head_contact_per_email').touched)">
             <span class="invalid-feedback" *ngIf="(__amcForm.get('head_contact_per_email').errors?.email)">*Please provide valid email</span>
           </div>
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="ofc_add">Address</label>
           <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="head_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
           <!-- <div class="invalid-feedback" *ngIf="__amcForm.get('head_ofc_addr').invalid && (__amcForm.get('head_ofc_addr').dirty || __amcForm.get('head_ofc_addr').touched)">
@@ -160,11 +169,11 @@
           <hr class="line"/>
          </div>
         <div class="row">
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="local_ofc_contact_per">Contact Person</label>
           <input type="text" name="local_ofc_contact_per" id="local_ofc_contact_per" formControlName="local_ofc_contact_per" class="form-control" placeholder="Enter Contact Person">
           </div>
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="local_contact_per_mob">Contact Person Mobile</label>
           <input
           (keypress)="preventNonumeric($event)" type="text" name="local_contact_per_mob" id="local_contact_per_mob" formControlName="local_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
@@ -176,14 +185,14 @@
                 must be 10 digits</span> -->
           </div>
         </div>
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="local_contact_per_email">Contact Person Email</label>
           <input type="text" name="local_contact_per_email" id="local_contact_per_email" formControlName="local_contact_per_email" class="form-control" placeholder="Enter Contact Person Email">
           <div class="invalid-feedback" *ngIf="__amcForm.get('local_contact_per_email').invalid && (__amcForm.get('local_contact_per_email').dirty || __amcForm.get('local_contact_per_email').touched)">
             <span class="invalid-feedback" *ngIf="(__amcForm.get('local_contact_per_email').errors?.email)">*Please provide valid email</span>
           </div>
           </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="ofc_add">Address</label>
           <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="local_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
           <!-- <div class="invalid-feedback" *ngIf="__amcForm.get('local_ofc_addr').invalid && (__amcForm.get('local_ofc_addr').dirty || __amcForm.get('local_ofc_addr').touched)">
@@ -193,19 +202,19 @@
         </div>
 
         <div class="row">
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="login_url" class="mb-3">Login URL </label>
             <input type="text" name="login_url" id="login_url" class="form-control" placeholder="Enter Login URL"
               formControlName="login_url">
           </div>
 
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="login_id" class="mb-3">Login ID </label>
             <input type="text" name="login_id" id="login_id" class="form-control" placeholder="Enter Login ID"
               formControlName="login_id">
           </div>
 
-          <div class="col-sm-12 my-2">
+          <div class="col-sm-12">
             <label for="login_pass" class="mb-3">Login Password </label>
             <input type="text" name="login_pass" id="login_pass" class="form-control" placeholder="Enter Login Password"
               formControlName="login_pass">
@@ -260,12 +269,12 @@
         <hr class="line"/>
        </div>
       <div class="row">
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l1_name">Name</label>
           <input type="text" name="l1_name" id="l1_name" class="form-control" placeholder="Enter Name" formControlName="l1_name">
         </div>
 
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l1_contact_no">Contact</label>
           <input type="text"
            name="l1_contact_no"
@@ -282,7 +291,7 @@
           </div>
         </div>
 
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l1_email">Email</label>
           <input type="text" name="l1_email" id="l1_email" class="form-control" placeholder="Enter Email Id" formControlName="l1_email">
           <div class="invalid-feedback"
@@ -298,12 +307,12 @@
         <hr class="line"/>
        </div>
       <div class="row">
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l2_name">Name</label>
           <input type="text" name="l2_name" id="l2_name" class="form-control" placeholder="Enter Name" formControlName="l2_name">
         </div>
 
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l2_contact_no">Contact</label>
           <input type="text"  name="l2_contact_no" id="l2_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l2_contact_no">
 
@@ -315,7 +324,7 @@
 
         </div>
 
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l2_email">Email</label>
           <input type="text" name="l2_email" id="l2_email" class="form-control" placeholder="Enter Email Id" formControlName="l2_email">
           <div class="invalid-feedback"
@@ -334,11 +343,11 @@
         <div class="col-sm-12">
           <mat-checkbox color="primary"  formControlName="is_same"> Same As Local Office</mat-checkbox>
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l3_name">Name</label>
           <input type="text" name="l3_name" id="l3_name" class="form-control" placeholder="Enter Name" formControlName="l3_name">
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l3_contact_no">Contact</label>
           <input type="text"  name="l3_contact_no" id="l3_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l3_contact_no">
           <div class="invalid-feedback"
@@ -347,7 +356,7 @@
               digits</span>
           </div>
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l3_email">Email</label>
           <input type="text" name="l3_email" id="l3_email" class="form-control" placeholder="Enter Email Id" formControlName="l3_email">
           <div class="invalid-feedback"
@@ -363,11 +372,11 @@
         <hr class="line"/>
        </div>
       <div class="row">
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l4_name">Name</label>
           <input type="text" name="l4_name" id="l4_name" class="form-control" placeholder="Enter Name" formControlName="l4_name">
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l4_contact_no">Contact</label>
           <input type="text"  name="l4_contact_no" id="l4_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l4_contact_no">
           <div class="invalid-feedback"
@@ -376,7 +385,7 @@
             digits</span>
         </div>
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l4_email">Email</label>
           <input type="text" name="l4_email" id="l4_email" class="form-control" placeholder="Enter Email Id" formControlName="l4_email">
           <div class="invalid-feedback"
@@ -393,11 +402,11 @@
         <hr class="line"/>
        </div>
       <div class="row">
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l5_name">Name</label>
           <input type="text"  name="l5_name" id="l5_name" class="form-control" placeholder="Enter Name" formControlName="l5_name">
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l5_contact_no">Contact</label>
           <input type="text"  name="l5_contact_no" id="l5_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l5_contact_no">
           <div class="invalid-feedback"
@@ -406,7 +415,7 @@
             digits</span>
         </div>
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l5_email">Email</label>
           <input type="text" name="l5_email" id="l5_email" class="form-control" placeholder="Enter Email Id" formControlName="l5_email">
           <div class="invalid-feedback"
@@ -421,11 +430,11 @@
        <hr class="line"/>
       </div>
       <div class="row">
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l6_name">Name</label>
           <input type="text" name="l6_name" id="l6_name" class="form-control" placeholder="Enter Name" formControlName="l6_name">
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l6_contact_no">Contact</label>
           <input type="text" name="l6_contact_no" id="l6_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l6_contact_no">
             <div class="invalid-feedback"
@@ -434,7 +443,7 @@
               digits</span>
           </div>
         </div>
-        <div class="col-sm-12 my-2">
+        <div class="col-sm-12">
           <label for="l6_email">Email</label>
           <input type="text" name="l6_email" id="l6_email" class="form-control" placeholder="Enter Email Id" formControlName="l6_email">
           <div class="invalid-feedback"

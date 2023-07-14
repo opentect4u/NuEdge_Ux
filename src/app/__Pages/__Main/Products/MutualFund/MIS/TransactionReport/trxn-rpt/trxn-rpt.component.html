@@ -1,0 +1,56 @@
+<div class="row flexSec">
+  <div class="col-sm-12">
+    <p-table
+    id="trxDt"
+    [value]="trxnRpt"
+    [responsive]="true"
+    [rowHover]="true"
+    styleClass="p-datatable-gridlines"
+    [autoLayout]="true"
+    [columns]="column"
+    [scrollable]="true"
+    [tableStyle]="{ 'min-width': '250rem' }"
+    scrollDirection="horizontal"
+    >
+      <ng-template pTemplate="header">
+          <tr>
+              <th  *ngFor="let col of column"  [pSortableColumn]="col.field" [style.width]="'10rem'">
+                {{ col.header }}
+                <p-sortIcon [field]="col.field">
+                </p-sortIcon>
+              </th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-trxn let-columns="columns"  let-i="rowIndex">
+        <tr tabindex="999">
+          <td *ngFor="let col of column">
+            <ng-container [ngSwitch]="true">
+             <ng-container *ngSwitchCase="col.field == 'trad_date'">
+                <span>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+             </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'amount'">
+              <span>{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</span>
+           </ng-container>
+              <ng-container *ngSwitchDefault>
+                <span>{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</span>
+              </ng-container>
+            </ng-container>
+          </td>
+          </tr>
+        </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-trxn>
+        <tr>
+          <td [attr.colspan]="21">
+             No Records Found
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  <ng-template pTemplate="footer">
+    <div class="flex align-items-center justify-content-between">
+      In total there are {{trxnRpt ? trxnRpt.length : 0 }} Transactions.
+  </div>
+</ng-template>
+  </div>
+</div>

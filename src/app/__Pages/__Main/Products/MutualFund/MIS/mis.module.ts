@@ -18,6 +18,10 @@ import { RouterModule, Routes } from '@angular/router';
        loadChildren:()=> import('./MFTrax/mf-trx-home/mf-trx-home.module').then(m=> m.MfTrxHomeModule)
       },
       {
+       path:'transaction',
+       loadChildren:()=> import('./TransactionReport/trxn-rpt/trxn-rpt.module').then(m => m.TrxnRptModule)
+      },
+      {
         path:'aum',
         loadChildren:()=> import('./AUMReport/aum.module').then(aum => aum.AumModule)
       },

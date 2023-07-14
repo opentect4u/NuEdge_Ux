@@ -266,9 +266,16 @@
       </ng-container>
 
       <ng-container matColumnDef="amc_name" >
-        <th mat-header-cell *matHeaderCellDef>AMC Name</th>
+        <th mat-header-cell *matHeaderCellDef>AMC Full Name</th>
         <td mat-cell *matCellDef="let element">
           <p>{{element.amc_name ? element.amc_name : 'N/A'}}</p>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amc_code" >
+        <th mat-header-cell *matHeaderCellDef>AMC Code</th>
+        <td mat-cell *matCellDef="let element">
+          <p>{{element.amc_code ? element.amc_code : 'N/A'}}</p>
         </td>
       </ng-container>
 

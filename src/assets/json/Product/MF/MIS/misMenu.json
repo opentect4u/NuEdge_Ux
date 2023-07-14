@@ -11,7 +11,7 @@
     "id":2,
     "accessibility":[],
     "title":"Transaction Report",
-    "url":"/main/product/mf",
+    "url":"/main/product/mf/mis/transaction",
     "icon": "fa fa-user-o",
     "has_submenu":[]
   },

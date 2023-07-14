@@ -1,0 +1,25 @@
+[
+  {
+    "id":1,
+    "menu_name":"Auto Uploaded Report",
+    "title":"Auto Upload",
+    "img":"autoUpload.png",
+    "flag":"A",
+    "has_submenu": "N",
+    "url": "",
+    "icon": "",
+    "sub_menu": []
+  },
+  {
+    "id":2,
+    "menu_name":"Manual Upload",
+    "title":"Manual Upload",
+    "img":"manualUpload.png",
+    "flag":"M",
+    "has_submenu": "N",
+    "url": "/main/mailback/manualupload",
+    "icon": "",
+    "sub_menu": []
+  }
+]
+

@@ -24,7 +24,7 @@ export class AmcModificationComponent implements OnInit {
   allowedExtensions = ['png','jpg','jpeg'];
   __amcForm = new FormGroup({
     rnt_id: new FormControl(this.data.id > 0 ? (this.data.amc.rnt_id ? this.data.amc.rnt_id : '') : '', [Validators.required]),
-
+    amc_code:new FormControl(this.data.id > 0 ? this.data.amc.amc_code : '',[Validators.required]),
     login_url: new FormControl(this.data.id > 0 ? this.data.amc.login_url : ''),
     login_pass: new FormControl(this.data.id > 0 ? this.data.amc.login_pass : ''),
     login_id: new FormControl(this.data.id > 0 ? this.data.amc.login_id : ''),
@@ -166,6 +166,7 @@ export class AmcModificationComponent implements OnInit {
       return;
     }
     const __amc = new FormData();
+    __amc.append('amc_code',global.getActualVal(this.__amcForm.value.logo_file));
     __amc.append('logo',this.__amcForm.value.logo_file ? this.__amcForm.value.logo_file : '');
     __amc.append("amc_name", this.__amcForm.value.amc_name);
     __amc.append("amc_short_name", this.__amcForm.value.amc_short_name);

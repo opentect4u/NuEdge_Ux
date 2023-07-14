@@ -273,13 +273,15 @@ export class AmcrptComponent implements OnInit {
         value.amc_short_name =row_obj.amc_short_name;
         value.distributor_care_email  = row_obj.distributor_care_email;
         value.distributor_care_no  = row_obj.distributor_care_no;
-        value.logo = row_obj.logo
+        value.logo = row_obj.logo;
+        value.amc_code = row_obj.amc_code
       }
       return true;
     });
 
     this.__export.data = this.__export.data.filter((value: amc, key) => {
       if (value.id == row_obj.id) {
+        value.amc_code = row_obj.amc_code;
         value.amc_short_name =row_obj.amc_short_name;
         value.login_id = row_obj.login_id;
         value.login_url = row_obj.login_url;

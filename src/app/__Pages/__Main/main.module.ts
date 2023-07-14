@@ -20,7 +20,11 @@ const routes: Routes = [
         path: 'home',
         loadChildren: () => import('../__Main/home/home.module').then(m => m.HomeModule),
         data: { id: 3, title: "NuEdge - Home", pageTitle: "", has_menubar: 'Y' }
-
+      },
+      {
+        path:'mailback',
+        loadChildren:()=> import('./MailBack/mailback.module').then(m => m.MailbackModule),
+        data: { id: 14, title: "NuEdge - MailBack", pageTitle: "", has_menubar: 'Y'}
       },
       {
         path:'master',

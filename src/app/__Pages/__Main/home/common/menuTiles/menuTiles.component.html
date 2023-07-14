@@ -2,7 +2,12 @@
     <div [class]="__flag == 'BM' ? 'smallBox' : 'topValueBox ' + items.class_name " (click)="navigate(items)">
      <div class="smallBoxIconSec" *ngIf="__flag == 'BM'">
       <div [class]="items.class">
-        <i [class]="items.icon" aria-hidden="true"></i>
+        <ng-container *ngIf="items.icon;else img">
+          <i [class]="items.icon" aria-hidden="true"></i>
+        </ng-container>
+        <ng-template #img>
+        <img [src]="'../../../../../../assets/images/' + items.img" [class]="items.icon" [alt]="items.title">
+        </ng-template>
       </div>
     </div>
     <h2 *ngIf="__flag == 'BM'">{{items.title}}</h2>
