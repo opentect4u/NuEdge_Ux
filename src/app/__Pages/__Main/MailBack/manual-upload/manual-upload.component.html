@@ -6,7 +6,7 @@
     </core-tab>
     <div class="card">
        <div class="card-body p-4">
-      <form [formGroup]="manualUpldFrm" (ngSubmit)="uploadFile()">
+      <form [formGroup]="manualUpldFrm" id="mailBck">
            <div class="row">
              <div class="col-sm-1 my-auto  text-center">
               <label for="file_type">File Type <span class="text-danger">*</span></label>
@@ -51,16 +51,17 @@
       </form>
     </div>
     <div class="card-footer">
-
       <label>
         <i class="pi pi-info-circle"></i>
       NOTE: Allowed Format: CSV
       </label>
-      <p-button type="submit"
-      label="Save"
-      icon="pi pi-save"
+      <p-button
+      type="button"
+      label="Upload"
+      icon="pi pi-upload"
       iconPos="right"
       class="float-right"
+      (click)="uploadFile()"
       [disabled]="manualUpldFrm.invalid"
       styleClass="p-button-lg p-button-primary">
       </p-button>

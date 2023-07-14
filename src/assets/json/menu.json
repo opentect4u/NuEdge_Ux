@@ -3,11 +3,11 @@
     "id": 0,
     "title": "Human Resources",
     "mat_icon": "group",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "hr.png",
     "url": "",
-    "class": "iconSec iconCol_1",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -36,11 +36,11 @@
     "id": 0,
     "title": "Customer Service",
     "mat_icon": "support_agent",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "customerService.png",
     "url": "",
-    "class": "iconSec iconCol_4",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -58,11 +58,11 @@
     "id": 0,
     "title": "Sales",
     "mat_icon": "person",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "sales.png",
     "url": "",
-    "class": "iconSec iconCol_6",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -115,8 +115,8 @@
     "mat_icon": "history",
     "icon": "",
     "value": 0,
-    "img": "",
-    "url": "reports.png",
+    "img": "reports.png",
+    "url": "",
     "class": "iconSec",
     "sub_menu": []
   },
