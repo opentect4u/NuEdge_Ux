@@ -436,16 +436,21 @@ table {
 }
 
 .paginator ul {
-  list-style: none;
+  /* list-style: none; */
+  display: flex;
+  align-items: center;
 }
 
 .paginator ul li {
   display: block;
   float: left;
+
 }
 
 .paginator .paginatorContainer mat-icon {
-  vertical-align: inherit;
+  /* vertical-align: inherit; */
+    vertical-align: bottom;
+
 }
 
 .paginator ul li a {
@@ -458,7 +463,8 @@ table {
 }
 
 .paginator ul li a.paginateNumber{
-  border-radius: 50%!important;
+  /* border-radius: 50%!important; */
+  border-radius: 24%!important;
   padding: 8px 12px;
   color: #007bff;
 

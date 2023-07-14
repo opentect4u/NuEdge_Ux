@@ -76,6 +76,10 @@ export const environment = {
   apiUrl:url + "api/v1",
   clientdocUrl:url + "public/client-doc/",
 
+  /*************MAIL BACK LINK MANUAL UPLOAD**********/
+  manualUpload: url + "public/mailback/manual/",
+  /*************END******************************** */
+
   /*************COMPANY START **********************/
   company_logo_url: url + "public/company/",
   /*************END ***************************** */

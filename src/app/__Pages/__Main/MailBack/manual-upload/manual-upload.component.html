@@ -39,12 +39,19 @@
              </div>
              <div class="col-sm-3 my-auto">
               <div class="input-group">
-                <input type="file" (change)="getFile($event)" class="form-control" id="upload_file"/>
-                <div
-                class="invalid-feedback"
-                *ngIf="manualUpldFrm.get('file').invalid && (manualUpldFrm.get('file').dirty || manualUpldFrm.get('file').touched)">
-                  <span class="invalid-feedback" *ngIf="(manualUpldFrm.get('file')).errors?.required">*Please choose file</span>
-                </div>
+                <input type="file"
+                (change)="getFile($event)"
+                class="form-control"
+                id="upload_file"
+                formControlName="file"
+                />
+                <div class="invalid-feedback"
+                *ngIf=" manualUpldFrm.get('file').invalid && ( manualUpldFrm.get('file').dirty ||  manualUpldFrm.get('file').touched)">
+                <span class="invalid-feedback" *ngIf=" manualUpldFrm.get('file').errors?.required">*Please
+                  provide file</span>
+                <span class="invalid-feedback" *ngIf=" manualUpldFrm.get('file').errors?.inValidExt">*Please
+                  provide valid file format</span>
+              </div>
               </div>
             </div>
           </div>
@@ -52,7 +59,7 @@
     </div>
     <div class="card-footer">
       <label>
-        <i class="pi pi-info-circle"></i>
+        <i class="pi pi-info-circle" style="font-size: 1.5rem"></i>
       NOTE: Allowed Format: CSV
       </label>
       <p-button
@@ -67,7 +74,98 @@
       </p-button>
     </div>
     </div>
+    <div class="card my-3">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <label class="m-0">
+              <i class="pi pi-database mr-2" style="font-size:2rem"></i>
+              File Details</label>
+        </div>
+      </div>
+      <div class="card-body">
+        <p-table
+        id="trxDt"
+        [value]="FileMstData"
+        [responsive]="true"
+        [rowHover]="true"
+        styleClass="p-datatable-striped"
+        [autoLayout]="true"
+        scrollHeight="350px"
+        [scrollable]="true"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th  *ngFor="let col of columns"
+              [pSortableColumn]="col.field"
+              >
+                {{ col.header }}
+                <p-sortIcon [field]="col.field" *ngIf="col.field!= 'upload_file'">
+                </p-sortIcon>
+              </th>
+          </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-file>
+            <tr tabindex="999">
+              <td *ngFor="let col of columns">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'file_type_id'">
+                     <b>{{(file[col.field] | fileType:fileTypeMst)}}
+                    </b>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'file_name'">
+                    <b>{{(file['file_id'] | fileType:fileMst)}}
+                   </b>
+                 </ng-container>
+                 <ng-container *ngSwitchCase="col.field == 'process_date'">
+                  <b>{{file[col.field] ? (file[col.field] | date:'dd-MM-YYYY h:mma') : 'N/A'}}
+                 </b>
+               </ng-container>
 
+                 <ng-container *ngSwitchCase="col.field == 'upload_file'">
+                  <a
+                  [matTooltipPosition]="'after'"
+                  #tooltip="matTooltip"
+                  matTooltip="Download"
+                   href="{{file[col.field]}}"
+                   download="file[col.field]"
+                   styleClass="p-button-rounded p-button-danger p-button-text"
+                  >
+                  <i class="pi pi-download" style="font-size:2rem"></i>
+                </a>
+                 </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span>{{ file[col.field] ? file[col.field]  : 'N/A'}}
+                   </span>
+                 </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage" let-file>
+            <tr [style.height]="'350px'">
+              <td [attr.colspan]="5">
+                 <h4>No Records Found</h4>
+              </td>
+            </tr>
+          </ng-template>
+      </p-table>
+        <!-- For Paginate and Show Item Per page -->
+        <shared-paginate [__paginate]="paginate"
+        (itemPerpageShow)="onSelectItem($event)"
+        (PaginateFn)="getPaginate($event)"
+        ></shared-paginate>
+        <!-- End -->
+      </div>
+      <div class="card-footer">
+        In Total There Are {{FileMstData.length}} Files Are Uploaded
+      </div>
     </div>
+    </div>
+    <!-- <div class="col-sm-12  my-3">
+
+    </div> -->
 
 </div>
+<!--  -->
+
