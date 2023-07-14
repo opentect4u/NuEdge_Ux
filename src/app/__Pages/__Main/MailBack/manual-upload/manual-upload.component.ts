@@ -109,9 +109,7 @@ export class ManualUploadComponent implements OnInit {
       )
       .subscribe((res: any) => {
         this.utility.showSnackbar(res.suc == 1 ? 'Upload Successfull' : res.msg,res.suc);
-         this.updateRow(res.data.map(item => {
-          return {...item,upload_file:`${environment.manualUpload + item.upload_file}`}
-         }));
+         this.updateRow({...res.data,upload_file:`${environment.manualUpload + res.data.upload_file}`});
       });
   };
 
