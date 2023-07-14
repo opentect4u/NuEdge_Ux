@@ -75,7 +75,7 @@ export class ManualEntrComponent implements OnInit {
   get isin_dtls(): FormArray {
     return this.isinForm.get('isin_dtls') as FormArray;
   }
-  setISIN(id,scheme_id,scheme_name,plan_id,opt_id,isin_name){
+  setISIN(id,scheme_id,scheme_name,plan_id,opt_id,isin_name,product_code){
     return new FormGroup({
       row_id:new FormControl(id ? id : 0),
       scheme_id: new FormControl({value: scheme_id ? scheme_id : '',disabled:this.data.isViewMode},[Validators.required]),
@@ -83,6 +83,7 @@ export class ManualEntrComponent implements OnInit {
       option_id: new FormControl({value:opt_id ? opt_id : '',disabled:this.data.isViewMode},[Validators.required]),
       plan_id: new FormControl({value:plan_id ? plan_id : '',disabled:this.data.isViewMode},[Validators.required]),
       isin_no: new FormControl({value:isin_name ? isin_name : '',disabled:this.data.isViewMode},[Validators.required]),
+      product_code: new FormControl({value:product_code ? product_code : '',disabled:this.data.isViewMode},[Validators.required])
     })
 
   }
@@ -137,7 +138,9 @@ export class ManualEntrComponent implements OnInit {
               el.scheme_name,
               el.plan_id,
               el.option_id,
-              el.isin_no))
+              el.isin_no,
+              el?.product_code
+              ))
           })
      }
      else{
@@ -145,6 +148,7 @@ export class ManualEntrComponent implements OnInit {
        0,
        this.__scmDtls?.id,
        this.__scmDtls?.scheme_name,
+       '',
        '',
        '',
        ''
@@ -157,6 +161,7 @@ export class ManualEntrComponent implements OnInit {
       0,
       this.__scmDtls?.id,
       this.__scmDtls?.scheme_name,
+      '',
       '',
       '',
       ''
@@ -173,7 +178,11 @@ export class ManualEntrComponent implements OnInit {
       el.scheme_name,
       el.plan_id,
       el.option_id,
-      el.isin_no));
+      el.isin_no,
+      el.product_code
+      ));
+      console.log(this.isin_dtls);
+
   }
   submitISIN(){
     const fd = new FormData();

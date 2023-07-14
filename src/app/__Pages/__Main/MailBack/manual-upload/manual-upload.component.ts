@@ -101,6 +101,9 @@ export class ManualUploadComponent implements OnInit {
    * Submit data on server
    */
   uploadFile = () => {
+    if(this.manualUpldFrm.invalid){
+    return;
+    }
     this.dbIntr
       .api_call(
         1,
@@ -108,6 +111,12 @@ export class ManualUploadComponent implements OnInit {
         this.utility.convertFormData(this.manualUpldFrm.value)
       )
       .subscribe((res: any) => {
+        this.manualUpldFrm.patchValue({
+          file_type_id: '',
+          file_id: '',
+          upload_file: '',
+          file: '',
+        })
         this.utility.showSnackbar(res.suc == 1 ? 'Upload Successfull' : res.msg,res.suc);
          this.updateRow({...res.data,upload_file:`${environment.manualUpload + res.data.upload_file}`});
       });
@@ -125,7 +134,7 @@ export class ManualUploadComponent implements OnInit {
     // }
   }
 
-  getFileMstDT = (rnt_id: number, itemsPerPage: number | null = 10) => {
+  getFileMstDT = (rnt_id: number, itemsPerPage: number | string | null = 10) => {
     this.dbIntr
       .api_call(
         0,
@@ -151,7 +160,7 @@ export class ManualUploadComponent implements OnInit {
       });
   };
   onSelectItem = (ev) => {
-    this.getFileMstDT(this.manualUpldFrm.value.rnt_id, Number(ev));
+    this.getFileMstDT(this.manualUpldFrm.value.rnt_id, ev);
     this.__pageNumber = ev;
   };
   getPaginate = (paginate) => {

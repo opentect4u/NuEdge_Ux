@@ -1,15 +1,15 @@
 <div class="col-sm-3" *ngFor="let item of items" (click)="openModalOrNavigate(item)">
-  <div class="smallBox" >
-   <div class="smallBoxIconSec">
-    <div class="iconSec ">
-      <ng-container *ngIf="item.icon;else img">
-        <i [class]="item.icon + ' iconCol_1'" aria-hidden="true"></i>
-      </ng-container>
-      <ng-template #img>
-        <img [src]="'../../../../assets/images/'+ item.img" [alt]="item.title">
-      </ng-template>
+  <div class="smallBox">
+    <div class="smallBoxIconSec">
+      <div [class]="item.icon ? 'iconSec iconCol_1' : 'iconSec'">
+        <ng-container *ngIf="item.icon;else img">
+          <i [class]="item.icon" aria-hidden="true"></i>
+        </ng-container>
+        <ng-template #img>
+          <img [src]="'../../../../assets/images/'+ item.img" [alt]="item.title">
+        </ng-template>
+      </div>
     </div>
+    <h2>{{item.title}}</h2>
   </div>
-  <h2>{{item.title}}</h2>
-</div>
 </div>

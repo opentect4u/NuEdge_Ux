@@ -220,8 +220,10 @@ export class IsinRptComponent implements OnInit {
     this.displayMode_forScheme = display_mode
   }
   getSelectedItemsFromParent(ev){
-    this.__isinFrm.controls['alt_scheme_id'].setValue(ev.id);
-    this.__isinFrm.controls['alt_scheme_name'].reset(ev.scheme_name,{emitEvent:false});
+    console.log(ev);
+
+    this.__isinFrm.controls['alt_scheme_id'].setValue(ev.item.id);
+    this.__isinFrm.controls['alt_scheme_name'].reset(ev.item.scheme_name,{emitEvent:false});
     this.searchSchemeVisibility('none');
   }
   customSort(ev){
@@ -342,7 +344,8 @@ export class IsinRptComponent implements OnInit {
                       value.opt_name = el.opt_name;
                       value.plan_id = el.plan_id;
                       value.option_id = el.option_id;
-                      value.amc_id = el.amc_id
+                      value.amc_id = el.amc_id;
+                      value.product_code = el.product_code;
                    }
                    return true;
            })

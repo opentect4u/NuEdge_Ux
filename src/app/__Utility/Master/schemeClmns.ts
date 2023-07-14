@@ -206,6 +206,8 @@ export class ISINClmns{
   {field:'scheme_name',header:'Scheme'},
   {field:'plan_name',header:'Plan'},
   {field:'opt_name',header:'Option'},
-  {field:'isin_no',header:'ISIN'}
+  {field:'isin_no',header:'ISIN'},
+  {field:'product_code',header:'Product Code'}
+
  ]
 }
