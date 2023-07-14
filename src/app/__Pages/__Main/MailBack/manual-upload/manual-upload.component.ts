@@ -115,14 +115,14 @@ export class ManualUploadComponent implements OnInit {
 
   updateRow = (row_obj) =>{
     console.log(row_obj);
-    if(this.FileMstData.length != Number(this.__pageNumber)){
+    // if(this.FileMstData.length != Number(this.__pageNumber)){
         // this.FileMstData.push(row_obj);
         this.FileMstData.splice(-1,1);
         this.FileMstData.unshift(row_obj);
-    }
-    else if(this.FileMstData.length == Number(this.__pageNumber)){
-      // Nothing to deal with
-    }
+    // }
+    // else if(this.FileMstData.length == Number(this.__pageNumber)){
+    //   // Nothing to deal with
+    // }
   }
 
   getFileMstDT = (rnt_id: number, itemsPerPage: number | null = 10) => {
