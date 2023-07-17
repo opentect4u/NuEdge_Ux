@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BreadcrmbsComponent } from './common/brdCrmbs/breadCrmbs.component';
 import { ScrollTopModule } from 'primeng/scrolltop';
+import { SidebarModule } from 'primeng/sidebar';
 const routes: Routes = [
   {
     path: '',
@@ -58,7 +59,8 @@ const routes: Routes = [
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
-    ScrollTopModule
+    ScrollTopModule,
+    SidebarModule
   ],
   declarations: [
     MainComponent,

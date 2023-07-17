@@ -30,9 +30,6 @@
           <div class="invalid-feedback"
             *ngIf="__rntForm.get('rnt_full_name').invalid && (__rntForm.get('rnt_full_name').dirty || __rntForm.get('rnt_full_name').touched)">
             <span class="invalid-feedback" *ngIf="(__rntForm.get('rnt_full_name')).errors?.required">
-              <mat-icon class="text-danger">
-                error
-              </mat-icon>
               *Please provide R&T
               full name</span>
           </div>

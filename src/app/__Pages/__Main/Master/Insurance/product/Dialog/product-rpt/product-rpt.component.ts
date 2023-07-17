@@ -48,7 +48,7 @@ export class ProductRPTComponent implements OnInit {
 
   __selectPrdMst = new MatTableDataSource<insProduct>([]);
   __exportPrdMst = new MatTableDataSource<insProduct>([])
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __paginate: any = [];
   __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
   __companyMst: insComp[] = [];

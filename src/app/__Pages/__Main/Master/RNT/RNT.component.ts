@@ -8,42 +8,43 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { RntModificationComponent } from './rntModification/rntModification.component';
 import { RntrptComponent } from './rntRpt/rntRpt.component';
-
+import menu from '../../../../../assets/json/Master/commonMenuMst.json';
 @Component({
   selector: 'master-RNT',
   templateUrl: './RNT.component.html',
   styleUrls: ['./RNT.component.css'],
 })
 export class RNTComponent implements OnInit {
-  __menu = [
-    {
-      parent_id: 4,
-      menu_name: 'Manual Entry',
-      has_submenu: 'N',
-      url: '/main/master/rntmodify',
-      icon: '',
-      id: 3,
-      flag: 'M',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Upload CSV',
-      has_submenu: 'N',
-      url: 'main/master/productwisemenu/rnt/rntUpload',
-      icon: '',
-      id: 15,
-      flag: 'U',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Reports',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 0,
-      flag: 'R',
-    },
-  ];
+  // __menu = [
+  //   {
+  //     parent_id: 4,
+  //     menu_name: 'Manual Entry',
+  //     has_submenu: 'N',
+  //     url: '/main/master/rntmodify',
+  //     icon: '',
+  //     id: 3,
+  //     flag: 'M',
+  //   },
+  //   {
+  //     parent_id: 4,
+  //     menu_name: 'Upload CSV',
+  //     has_submenu: 'N',
+  //     url: 'main/master/productwisemenu/rnt/rntUpload',
+  //     icon: '',
+  //     id: 15,
+  //     flag: 'U',
+  //   },
+  //   {
+  //     parent_id: 4,
+  //     menu_name: 'Reports',
+  //     has_submenu: 'N',
+  //     url: '',
+  //     icon: '',
+  //     id: 0,
+  //     flag: 'R',
+  //   },
+  // ];
+  __menu = menu;
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
@@ -138,10 +139,10 @@ export class RNTComponent implements OnInit {
    * this function is responsible for opening modal for modification or report
    * and Navigating to Upload R&T Page
    * */
-  navigate(__menu) {
+  getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':this.openDialog(null, 0);break;
-      case 'U':this.__utility.navigate(__menu.url);break;
+      case 'U':this.__utility.navigate('main/master/productwisemenu/rnt/rntUpload');break;
       case 'R':this.openDialogForReport();break;
       default:break;
     }
@@ -179,4 +180,5 @@ export class RNTComponent implements OnInit {
     }
   }
   /*** End ***/
+
 }

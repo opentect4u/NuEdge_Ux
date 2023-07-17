@@ -14,22 +14,22 @@
     "id": 0,
     "title": "Admin",
     "mat_icon": "admin_panel_settings",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "admin.png",
     "url": "",
-    "class": "iconSec iconCol_2",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
     "id": 0,
     "title": "Account & Finance",
     "mat_icon": "account_balance",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "account_Finance.png",
     "url": "",
-    "class": "iconSec iconCol_3",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -47,11 +47,11 @@
     "id": 0,
     "title": "Online",
     "mat_icon": "online_prediction",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "online.png",
     "url": "",
-    "class": "iconSec iconCol_5",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -69,11 +69,11 @@
     "id": 7,
     "title": "Marketing",
     "mat_icon": "real_estate_agent",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "marketing.png",
     "url": "",
-    "class": "iconSec iconCol_7",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -91,11 +91,11 @@
     "id": 9,
     "title": "Research",
     "mat_icon": "biotech",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "research.png",
     "url": "",
-    "class": "iconSec iconCol_9",
+    "class": "iconSec",
     "sub_menu": []
   },
   {
@@ -124,11 +124,11 @@
     "id": 12,
     "title": "Asset Management",
     "mat_icon": "web_asset",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "value": 0,
-    "img": "",
+    "img": "assetMgmt.png",
     "url": "",
-    "class": "iconSec iconCol_12",
+    "class": "iconSec",
     "sub_menu": []
   },
   {

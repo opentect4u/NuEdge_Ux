@@ -129,6 +129,7 @@
         <div class="itemsPerPage d-flex">
           <label class="mr-3">Items per page: </label>
           <p-selectButton
+          [formControl]="__pageNumber"
           [options]="itemsPerPage"
            optionLabel="label" optionValue="value"
            (onOptionClick)="onselectItem($event)"

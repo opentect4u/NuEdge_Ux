@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
+import menu from '../../../../../../assets/json/Master/commonMenuMst.json';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { TrxEntryComponent } from './Dialog/trx-entry/trx-entry.component';
@@ -13,27 +13,7 @@ import { TraxRPTComponent } from './Dialog/trax-rpt/trax-rpt.component';
   styleUrls: ['./fd-trax.component.css']
 })
 export class FdTraxComponent implements OnInit {
-  __menu = [
-    {
-      "parent_id": 4,
-      "menu_name": "Manual Entry",
-      "has_submenu": "N",
-      "url": "",
-      "icon":"",
-      "id":16,
-      "flag":"M"
-    },
-    {
-    "parent_id": 4,
-    "menu_name": "Reports",
-    "has_submenu": "N",
-    "url": "",
-    "icon":"",
-    "id":16,
-    "flag":"R"
-    }
-
-  ];
+  __menu = menu.filter(item => item.flag != 'U');
   constructor(
     private __utility: UtiliService,
     private __dialog: MatDialog,
@@ -42,8 +22,7 @@ export class FdTraxComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  openTrax(__el){
-    console.log(__el);
+  getItems = (__el) => {
     switch(__el.flag){
       case "R":
       this.openDIalogForRPT();
@@ -51,7 +30,6 @@ export class FdTraxComponent implements OnInit {
       case "M":
       this.openDialog(null,0);
       break;
-
     }
   }
   openDIalogForRPT(){

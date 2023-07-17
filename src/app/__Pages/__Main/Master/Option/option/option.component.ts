@@ -1,81 +1,22 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { map, pluck } from 'rxjs/operators';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
+import { pluck } from 'rxjs/operators';
 import { option } from 'src/app/__Model/option';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { OptionModificationComponent } from '../optionModification/optionModification.component';
 import { OptrptComponent } from '../optRpt/optRpt.component';
+import menu from '../../../../../../assets/json/Master/commonMenuMst.json';
 @Component({
   selector: 'app-option',
   templateUrl: './option.component.html',
   styleUrls: ['./option.component.css'],
 })
 export class OptionComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Option",
-      url:'/main/master/productwisemenu/option',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
-  __pageNumber = new FormControl(10);
-  __paginate: any = [];
-  __menu = [
-    {
-      parent_id: 4,
-      menu_name: 'Manual Entry',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 40,
-      flag: 'M',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Upload CSV',
-      has_submenu: 'N',
-      url: '/main/master/productwisemenu/option/uploadOption',
-      icon: '',
-      id: 39,
-      flag: 'U',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Reports',
-      has_submenu: 'N',
-      url: '/main/master/productwisemenu/option/uploadOption',
-      icon: '',
-      id: 0,
-      flag: 'R',
-    },
-  ];
+  __menu = menu
   constructor(
     private __utility: UtiliService,
     private __dbIntr: DbIntrService,
@@ -84,8 +25,6 @@ export class OptionComponent implements OnInit {
     private overlay: Overlay
   ) {}
   ngOnInit(): void {
-    // this.getOptionMaster();
-    // this.__utility.getBreadCrumb(this.__brdCrmbs);
     if (this.route.snapshot.queryParamMap.get('id')) {
       this.getParticularOption();
     }
@@ -140,14 +79,13 @@ export class OptionComponent implements OnInit {
     }
   }
 
-  navigate(__menu) {
+  getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__menu.url);
-        // this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}})
+        this.__utility.navigate('/main/master/productwisemenu/option/uploadOption');
         break;
         case 'R':
           this.openDialogForReports('1');

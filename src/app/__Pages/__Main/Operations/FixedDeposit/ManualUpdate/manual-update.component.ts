@@ -5,50 +5,15 @@ import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { ManualupdateSearchComponent } from './Dialog/manualupdate-search/manualupdate-search.component';
 import { RPTComponent } from './Dialog/rpt/rpt.component';
-
+import menu from '../../../../../../assets/json/Master/commonMenuMst.json';
+import { submenu } from 'src/app/__Model/submenu';
 @Component({
   selector: 'app-manual-update',
   templateUrl: './manual-update.component.html',
   styleUrls: ['./manual-update.component.css']
 })
 export class ManualUpdateComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Operation",
-      url:'/main/operations/ophome',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Fixed Deposit",
-      url:'/main/operations/fixedeposit',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Manual Update",
-      url:'/main/operations/fixedeposit/manualupdate',
-      hasQueryParams:false,
-      queryParams:''
-    }
-];
-__menu: any = [
-  {
-   id: 1,
-   menu_name: "Manual Entry",
-   flag:'M'
-  },
-  {
-     id: 2,
-     menu_name: "Report",
-     flag:'R'
-   },
-]
+__menu: submenu[] = menu.filter(item => item.flag != 'U')
   constructor(
     private __utility: UtiliService,
     private __dialog: MatDialog,
@@ -56,13 +21,8 @@ __menu: any = [
   ) { }
 
   ngOnInit(): void {
-    this.setBrdCrmbs();
   }
-  setBrdCrmbs(){
-      this.__utility.getBreadCrumb(this.__brdCrmbs);
-  }
-  navigate(__el){
-    console.log(__el);
+  getItems(__el){
     switch(__el.flag){
       case 'M':
         this.openDialogForManualEntry();

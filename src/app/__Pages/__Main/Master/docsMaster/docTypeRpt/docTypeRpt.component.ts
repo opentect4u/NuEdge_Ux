@@ -29,7 +29,7 @@ export class DoctyperptComponent implements OnInit {
      options:new FormControl('2')
   })
   __export =  new MatTableDataSource<docType>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: column[] = docTypeClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'doc_type'];
   __paginate: any= [];
@@ -187,7 +187,6 @@ customSort(ev){
   this.submit();
 }
 onselectItem(ev){
-  this.__pageNumber.setValue(ev.option.value);
   this.submit();
 }
 delete(docType,index){

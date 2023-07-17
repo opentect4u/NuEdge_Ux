@@ -1,4 +1,4 @@
-<div class="row flexSec">
+<!-- <div class="row flexSec">
   <div class="col-sm-2" *ngFor="let items of __menu" (click)="openFdCertificate(items)">
     <div class="smallBox">
       <div class="smallBoxIconSec">
@@ -10,4 +10,11 @@
     </div>
   </div>
 
+</div> -->
+<div class="row flexSec">
+  <div class="col-sm-8">
+    <div class="row">
+      <shared-menu-item [items]="__menu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
+    </div>
+  </div>
 </div>

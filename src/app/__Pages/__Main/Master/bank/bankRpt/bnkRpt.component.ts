@@ -38,7 +38,7 @@ export class BnkrptComponent implements OnInit {
     bnk_addr:new FormControl('')
   })
   __export =  new MatTableDataSource<bank>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: column[] =[];
 
   __exportedClmns: string[]
@@ -340,7 +340,6 @@ customSort(ev){
   this.submit();
 }
 onselectItem(ev){
-  this.__pageNumber.setValue(ev.option.value);
   this.submit();
 }
 }

@@ -7,8 +7,9 @@
     "has_submenu": "N",
     "url": "/main/operations/dashboard/formRcv",
      "flag":"F",
-    "icon": "fa fa-user-o",
-    "sub_menu": []
+    "icon": "",
+    "sub_menu": [],
+    "img":"formRcv.png"
    },
    {
     "id": 2,
@@ -17,8 +18,9 @@
     "has_submenu": "N",
     "flag":"M",
     "url": "/main/operations/dashboard/manualEntr",
-    "icon": "fa fa-user-o",
-    "sub_menu": []
+    "icon": "",
+    "sub_menu": [],
+    "img":"manualEntry.png"
    } ,
    {
     "id": 3,
@@ -27,17 +29,19 @@
     "has_submenu": "N",
     "url": "/main/operations/dashboard/report",
     "flag":"R",
-    "icon": "fa fa-user-o",
-    "sub_menu": []
+    "icon": "",
+    "sub_menu": [],
+    "img":"reports.png"
    },
    {
     "id": 4,
-    "menu_name": "Report",
+    "menu_name": "Online Process",
      "title": "Online Process",
     "has_submenu": "N",
     "url": "/main/operations/dashboard/onlineprocess",
     "flag":"O",
-    "icon": "fa fa-user-o",
-    "sub_menu": []
+    "icon": "",
+    "sub_menu": [],
+    "img":"onlineProcess.png"
    }
 ]

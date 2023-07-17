@@ -6,8 +6,8 @@ import { DebugElement } from '@angular/core';
 import { CmnTbleComponent } from './cmnTble.component';
 
 describe('CmnTbleComponent', () => {
-  let component: CmnTbleComponent;
-  let fixture: ComponentFixture<CmnTbleComponent>;
+  let component: any;
+  let fixture: ComponentFixture<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

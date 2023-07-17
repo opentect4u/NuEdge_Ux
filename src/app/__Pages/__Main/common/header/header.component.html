@@ -6,7 +6,7 @@
             [routerLink]="['/main/']" /></div>
       </div>
       <div class="topRightSec">
-        <core-list [__items]="__rightHeaderMenu" [__flag]="'RL'" [__classUL]=""></core-list>
+        <core-list (clickItems)="openSidePannel($event)" [__items]="__rightHeaderMenu" [__flag]="'RL'" [__classUL]=""></core-list>
       </div>
     </div>
   </div>
@@ -35,3 +35,9 @@
     </div>
   </div> -->
 </div>
+<p-sidebar [(visible)]="sidebarVisible"
+appendTo="body"
+position="right"
+styleClass="p-sidebar-md">
+ <h3>Notifications</h3>
+</p-sidebar>

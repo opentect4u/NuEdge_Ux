@@ -12,7 +12,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { DocsModificationComponent } from './docsModification/docsModification.component';
 import { DoctyperptComponent } from './docTypeRpt/docTypeRpt.component';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
+import menu from '../../../../../assets/json/Master/commonMenuMst.json';
 
 @Component({
   selector: 'master-docsMaster',
@@ -20,32 +20,12 @@ import { breadCrumb } from 'src/app/__Model/brdCrmb';
   styleUrls: ['./docsMaster.component.css']
 })
 export class DocsMasterComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Document Type",
-      url:'/main/master/docType',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
+  __menu = menu;
 
-  __pageNumber= new FormControl(10);
-  __paginate:any=[];
-  __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "","icon":"","id":48,"flag":"M"},
-  {"parent_id": 4,"menu_name": "Upload CSV","has_submenu": "N","url": "main/master/docType/uploadDocTypeCsv","icon":"","id":49,"flag":"U"},
-  {"parent_id": 4,"menu_name": "Reports","has_submenu": "N","url": "","icon":"","id":49,"flag":"R"}
- ]
+//   [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "","icon":"","id":48,"flag":"M"},
+//   {"parent_id": 4,"menu_name": "Upload CSV","has_submenu": "N","url": "main/master/docType/uploadDocTypeCsv","icon":"","id":49,"flag":"U"},
+//   {"parent_id": 4,"menu_name": "Reports","has_submenu": "N","url": "","icon":"","id":49,"flag":"R"}
+//  ]
   @ViewChild(MatPaginator) paginator: MatPaginator;
   constructor(private __dialog: MatDialog,
     private __rtDT: ActivatedRoute,
@@ -53,11 +33,9 @@ export class DocsMasterComponent implements OnInit {
     private __utility: UtiliService,
     private overlay: Overlay) { }
   ngOnInit() {
-    // this.__utility.getBreadCrumb(this.__brdCrmbs);
     if(this.__rtDT.snapshot.queryParamMap.get('id')){
       this.getParticularDocument();
     }
-
   }
   getParticularDocument(){
     this.__dbIntr.api_call(0,'/documenttype','id='+atob(this.__rtDT.snapshot.queryParamMap.get('id'))).pipe(pluck("data")).subscribe((res: any) =>{
@@ -92,10 +70,10 @@ export class DocsMasterComponent implements OnInit {
       this.__utility.getmenuIconVisible({id:Number(dialogConfig.id),isVisible:false,flag:"D"})
     }
   }
-  navigate(items){
+  getItems = (items) => {
      switch(items.flag){
       case "M":this.openDialog(0);break;
-      case "U":this.__utility.navigate(items.url);break;
+      case "U":this.__utility.navigate('main/master/docType/uploadDocTypeCsv');break;
       case "R":this.openDialogForReports('1');break;
       default: break;
 

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+// import 'jasmine';
 import { TrxnRptComponent } from './trxn-rpt.component';
 
 describe('TrxnRptComponent', () => {
@@ -8,9 +8,8 @@ describe('TrxnRptComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TrxnRptComponent ]
-    })
-    .compileComponents();
+      declarations: [TrxnRptComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

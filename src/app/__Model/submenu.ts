@@ -1,6 +1,9 @@
 export interface submenu{
     id: number,
-    menu_name:string
-    has_submenu:string
-    url:string
+    title?:string | null,
+    menu_name?:string | null,
+    has_submenu?:string
+    url:string,
+    img?:string | null,
+    icon?:string | null
 }

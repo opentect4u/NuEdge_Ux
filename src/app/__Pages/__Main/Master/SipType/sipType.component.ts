@@ -1,98 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
-import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { Overlay } from '@angular/cdk/overlay';
 import { SiptypemodificationComponent } from './sipTypeModification/sipTypeModification.component';
 import { SiptyperptComponent } from './sipTypeRpt/sipTypeRpt.component';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
-
+import menu from '../../../../../assets/json/Master/commonMenuMst.json';
 @Component({
 selector: 'sipType-component',
 templateUrl: './sipType.component.html',
 styleUrls: ['./sipType.component.css']
 })
 export class SiptypeComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"SIP Type",
-      url:'/main/master/productwisemenu/sipType',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
-  __pageNumber = new FormControl(10);
-  __paginate: any = [];
-  __menu = [
-    {
-      parent_id: 4,
-      menu_name: 'Manual Entry',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 36,
-      flag: 'M',
-    },
-    // {
-    //   parent_id: 4,
-    //   menu_name: 'Upload CSV',
-    //   has_submenu: 'N',
-    //   url: '',
-    //   icon: '',
-    //   id: 35,
-    //   flag: 'U',
-    // },
-    {
-      parent_id: 4,
-      menu_name: 'Reports',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 0,
-      flag: 'R',
-    },
-  ];
-  __selectTrnstype:any=[];
+  __menu = menu.filter(item => item.flag != 'U');
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
-    private __dbIntr: DbIntrService,
-    private route: ActivatedRoute,
     private __dialog: MatDialog
     ) { }
   ngOnInit(): void {
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
-  }
-  getSearchItem(__ev) {
-    this.__selectTrnstype.length = 0;
-    if (__ev.flag == 'A') {
-      this.openDialog(__ev.id, '');
-    }
-    else {
-      this.__selectTrnstype.push(__ev.item);
-    }
-  }
-  populateDT(__items) {
-    this.openDialog(__items.id, __items);
   }
   openDialog(id, __items) {
     const dialogConfig = new MatDialogConfig();
@@ -128,13 +53,10 @@ export class SiptypeComponent implements OnInit {
       });
     }
   }
-  navigate(__menu) {
+  getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
         this.openDialog(0,null);
-        break;
-      case 'U':
-        this.__utility.navigate(__menu.url);
         break;
       case 'R':
         this.openDialogForReports('1')

@@ -3,7 +3,6 @@ import {HttpClient, HttpContext, HttpHeaders} from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { BYPASS_LOG,IS_CACHE } from '../__Interceptors/network.interceptor';
-// import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -34,11 +33,17 @@ constructor(private __http:HttpClient) {
 
   }
 
- api_call(__flag: number,__url:string, __dt: any,__bypass_log: any | undefined = false){
+ api_call(__flag: number,
+  __url:string,
+   __dt: any,
+  __bypass_log: any | undefined = false
+  ){
   if(__flag > 0){
-    console.log(__bypass_log);
-
-        return this.__http.post(`${environment.apiUrl + __url}`,__dt,{context: new HttpContext().set(IS_CACHE,  __bypass_log) });
+        return this.__http.post(`${environment.apiUrl + __url}`,
+        __dt,
+        {
+          context: new HttpContext().set(IS_CACHE,  __bypass_log)
+        });
   }
   else{
        var __data = __dt ? '?' + __dt : '';

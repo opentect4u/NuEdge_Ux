@@ -127,8 +127,10 @@ export class RntModificationComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.data.__rnt);
-    this.addSecurityQuesAns(this.data.id > 0 ? (this.data.__rnt.security_qus_ans ? JSON.parse(this.data.__rnt.security_qus_ans) : []) : []);
+    this.addSecurityQuesAns(this.data.id > 0 ?
+      (this.data.__rnt.security_qus_ans
+        ? JSON.parse(this.data.__rnt.security_qus_ans) : [])
+        : []);
   }
   ngAfterViewInit(){
     this.__rntForm.get(['level_3','is_same']).valueChanges.subscribe(res =>{
@@ -219,24 +221,27 @@ export class RntModificationComponent implements OnInit {
   get sec_qusAns(): FormArray {
     return this.__rntForm.get("sec_qusAns") as FormArray;
   }
-  addSecurityQuesAns(secQusAns : any | undefined | null = []): void {
-    console.log(secQusAns);
+  addSecurityQuesAns(secQusAns : {id:number,sec_qus:string | null,sec_ans:string | null}[] | undefined | null = []): void {
+      if(secQusAns.length == 0){
+        this.sec_qusAns.push(this.SecurityQuesAns());
+      }
+      else{
+        secQusAns.forEach(el =>{
+           this.sec_qusAns.push(this.SecurityQuesAns(el.id,el.sec_qus,el.sec_ans));
+        })
+      }
 
-    if(secQusAns.length == 0){
-      this.sec_qusAns.push(this.SecurityQuesAns());
-    }
-    else{
-      secQusAns.forEach(el =>{
-         this.sec_qusAns.push(this.SecurityQuesAns(el.id,el.sec_qus,el.sec_ans));
-      })
-    }
     try {
-      this.__ScrollContainer.nativeElement.scrollTop = this.__ScrollContainer.nativeElement.scrollHeight;
-  } catch(err) { }
+      if(this.__ScrollContainer){
+      this.__ScrollContainer.nativeElement.scrollTop = this.__ScrollContainer.nativeElement.scrollHeight;}
+  } catch(err) {
+    console.log('error' + err)
+   }
   }
   SecurityQuesAns(id: number | null = 0,
     sec_qus:string | null = '',
     sec_ans: string | null = '') : FormGroup{
+      console.log("ID:"+ id);
     return new FormGroup({
       id: new FormControl(id),
       sec_qus: new FormControl(sec_qus),

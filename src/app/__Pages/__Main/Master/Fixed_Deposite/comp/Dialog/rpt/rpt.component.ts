@@ -47,7 +47,7 @@ export class RptComponent implements OnInit {
   __levels = compClmns.LEVELS;
   __isrntspinner: boolean = false;
   __paginate: any = [];
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   // __columns: string[] = [];
   __export = new MatTableDataSource<fdComp>([]);
   __isVisible: boolean = true;
@@ -143,10 +143,6 @@ export class RptComponent implements OnInit {
     this.dialogRef.addPanelClass('full_screen');
     this.dialogRef.updatePosition({ top: '0px' });
     this.__isVisible = !this.__isVisible;
-  }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.getRntMst();
   }
   getPaginate(__paginate) {
     if (__paginate.url) {
@@ -380,7 +376,7 @@ export class RptComponent implements OnInit {
     });
     this.sort= new sort;
     //  this.levels.controls.map(el => el.get('isChecked').setValue(false));
-    this.__pageNumber.setValue(10);
+    this.__pageNumber.setValue('10');
     this.submit();
   }
 
@@ -440,7 +436,6 @@ export class RptComponent implements OnInit {
 
     }
     onselectItem(ev){
-      this.__pageNumber.setValue(ev.option.value);
       this.getRntMst();
     }
     getSelectedColumns(column){

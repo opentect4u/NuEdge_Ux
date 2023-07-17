@@ -8,29 +8,39 @@ declare  global{
 
 interface TrxnRpt{
      id:number;
-     folio_no:string | null,
-     trans_no:string | null,
-     trans_mode:string | null,
-     trans_status:string | null,
-     user_trans_no:string | null,
-     trad_date:Date | null,
-     post_date:Date | null,
-     pur_price:number | null,
-     units:number | null,
-     amount:number | null,
-     rec_date:Date | null,
-     trans_sub_type:string | null,
-     trans_nature:string | null,
-     te_15h:string | null,
-     micr_code:string | null,
-     remarks:string | null,
-     sw_flag:string | null,
-     old_folio:string | null,
-     seq_no:string | null,
-     reinvest_flag:string | null,
-     stt:string | null,
-     updated_at?:string | null,
-     created_at?:string | null
+      arn_no:string | null
+      sub_brk_cd:string | null
+      euin_no:string | null
+      first_client_name:string | null
+      first_client_pan:string | null
+      amc_code:string | null
+      folio_no:string | null
+      product_code:string | null
+      trans_no:string | null
+      trans_mode:string | null
+      trans_status:string | null
+      user_trans_no:string | null
+      trans_date:string | null
+      post_date:string | null
+      pur_price:string | null
+      units:string | null
+      amount:string | null
+      rec_date:string | null
+      trans_type:string | null
+      trans_sub_type:string | null
+      trans_nature:string | null
+      te_15h:string | null
+      micr_code:string | null
+      remarks:string | null
+      sw_flag:string | null
+      old_folio:string | null
+      seq_no:string | null
+      reinvest_flag:string | null
+      stt:string | null
+      stamp_duty:string | null
+      tds:string | null
+      acc_no:string | null
+      bank_name:string | null
    }
 }
 

@@ -26,7 +26,7 @@ export class RptComponent implements OnInit {
     swp_type_name: new FormControl(''),
   });
   __export = new MatTableDataSource<any>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: column[] = swpTypeClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'swp_type_name'];
   __paginate: any = [];
@@ -172,7 +172,6 @@ customSort(ev){
   this.submit();
 }
 onselectItem(ev){
-  this.__pageNumber.setValue(ev.option.value);
   this.submit();
 }
 }

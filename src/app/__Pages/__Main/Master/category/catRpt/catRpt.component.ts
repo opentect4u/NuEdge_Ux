@@ -44,7 +44,7 @@ export class CatrptComponent implements OnInit {
     options: new FormControl('2'),
   });
   __export = new MatTableDataSource<category>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: column[] = categoryClmn.COLUMN;
   __exportedClmns: string[] = ['sl_no','cat_name'];
   __paginate: any = [];
@@ -253,7 +253,7 @@ export class CatrptComponent implements OnInit {
     this.submit();
   }
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.value);
+    // this.__pageNumber.setValue(ev.option.value);
     this.submit();
   }
 }

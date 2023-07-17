@@ -22,7 +22,7 @@
      <form [formGroup]="swpForm" (ngSubmit)="submitSwpType()" [id]="'__SWPForm_'+data.id">
       <div class="row my-3">
         <div class="col-sm-12">
-          <label form="swp_type_name">SWP Type</label>
+          <label form="swp_type_name">SWP Type <span class="text-danger">*</span></label>
           <input type="text"
           name="swp_type_name"
           id="swp_type_name"

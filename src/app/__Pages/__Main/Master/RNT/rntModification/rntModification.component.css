@@ -27,9 +27,9 @@ input[type="file"]{
   border-radius:0px!important;
 }
 
-::ng-deep .p-component-overlay{
+/* ::ng-deep .p-component-overlay{
   z-index:999999!important;
-}
+} */
 ::ng-deep .p-image-preview-indicator{
   left: -13px!important;
     top: 8px!important;

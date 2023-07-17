@@ -470,10 +470,7 @@ mat-card {
     width: 26px!important;
     font-size: 21px!important;
 }
-.mat-tab-label-container{
-  /* background: #545454!important; */
-  /* border-bottom: 1px solid #cfcfcf; */
-}
+
 .mat-tab-body-content {
   overflow: visible!important;
 }
@@ -494,7 +491,7 @@ mat-card {
   border-width: 0 0 1px 0;
   font-weight: 600;
   color: #495057;
-  background: #545454;
+  background: #222f3f;
   transition: box-shadow 0.2s;
   font-size: 11px!important;
   font-weight: 400;
@@ -550,4 +547,13 @@ mat-card {
   border-top-left-radius: 6px;
   font-size: 13px;
   font-weight: 500;
+}
+
+.p-scrolltop.p-link {
+  /* background: rgba(0, 0, 0, 0.7); */
+  padding: 20px;
+  background: #222f3f;
+}
+.p-scrolltop.p-link:hover {
+  background: #222f3f
 }

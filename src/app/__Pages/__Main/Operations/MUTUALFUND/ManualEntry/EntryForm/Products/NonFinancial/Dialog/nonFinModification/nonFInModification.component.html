@@ -193,7 +193,7 @@
           <select name="trans_id" id="trans_id" formControlName="trans_id" class="form-control">
             <option value=""> Select Transaction</option>
             <option *ngFor="let __transType of __transType" value="{{__transType.id}}">
-              {{__transType.trns_name}} {{__transType.id}}
+              {{__transType.trns_name}}
             </option>
           </select>
           <div class="invalid-feedback"
@@ -488,7 +488,7 @@
 
         <div class="row">
           <div class="col-sm-12">
-            <label for="installment_amt">Amount</label>
+            <label for="installment_amt">Amount<span class="text-danger">*</span></label>
             <input type="text" placeholder="Enter Amount" name="installment_amt" id="installment_amt"
               class="form-control" formControlName="installment_amt">
             <div class="invalid-feedback"
@@ -880,6 +880,14 @@
         <div class="row"  *ngIf="__dialogForExistingBank && __nonfinForm.get('oldbnk_micr').value">
           <div class="col-sm-12">
             <label for="bnk_name">Bank</label>
+            <div class="p-inputgroup">
+              <input type="text"  pInputText name="bnk_name" id="bnk_name"
+              class="form-control" placeholder="Bank Name"
+              formControlName="oldbnk_name" [attr.disabled]="true" />
+              <button type="button" label="View" pButton icon="pi pi-eye"
+               styleClass="p-button-warn" (click)="openDialog('OB')"></button>
+          </div>
+            <!-- <label for="bnk_name">Bank</label>
             <input type="text" name="bnk_name" [attr.disabled]="true" id="bnk_name" placeholder="Bank Name" formControlName="oldbnk_name"
               class="form-control" />
               <button (click)="openDialog('OB')"
@@ -890,7 +898,19 @@
               type="button"
                 aria-label="Example icon button with a eye icon" title="View Bank Details">
                 <mat-icon>remove_red_eye</mat-icon>
-              </button>
+              </button> -->
+          </div>
+          <div class="col-sm-12">
+            <label for="oldbnk_ifsc">IFSC</label>
+            <input type="text"  pInputText name="oldbnk_ifsc" id="oldbnk_ifsc"
+            class="form-control" placeholder="IFSC"
+            formControlName="oldbnk_ifsc" [attr.disabled]="true" />
+          </div>
+          <div class="col-sm-12">
+            <label for="oldbnk_branch">Branch</label>
+            <input type="text"  pInputText name="oldbnk_branch" id="oldbnk_branch"
+            class="form-control" placeholder="Branch Name"
+            formControlName="oldbnk_branch" [attr.disabled]="true" />
           </div>
         </div>
       </ng-container>
@@ -944,20 +964,25 @@
         <div class="row" *ngIf="__nonfinForm.get('newbnk_name').value && this.__dialogFornewBank">
           <div class="col-sm-12">
             <label for="newbnk_name">Bank</label>
-            <input type="text"
-            name="newbnk_name"
-            id="newbnk_name"
-            formControlName="newbnk_name"
-            class="form-control"
-            [attr.disabled]="true" />
-            <button (click)="openDialog('NB')"
-            color="primary"
-            class="viewIconDtls"
-            mat-icon-button type="button"
-            aria-label="Example icon button with a eye icon" #tooltip="matTooltip"
-            matTooltip="View Bank Details">
-            <mat-icon>remove_red_eye</mat-icon>
-          </button>
+            <div class="p-inputgroup">
+              <input type="text"  pInputText name="newbnk_name" id="newbnk_name"
+              class="form-control" placeholder="Bank Name"
+              formControlName="newbnk_name" [attr.disabled]="true" />
+              <button type="button" label="View" pButton icon="pi pi-eye"
+               styleClass="p-button-warn" (click)="openDialog('NB')"></button>
+          </div>
+          </div>
+          <div class="col-sm-12">
+            <label for="newbnk_ifsc">IFSC</label>
+            <input type="text"  pInputText name="newbnk_ifsc" id="newbnk_ifsc"
+            class="form-control" placeholder="IFSC"
+            formControlName="newbnk_ifsc" [attr.disabled]="true" />
+          </div>
+          <div class="col-sm-12">
+            <label for="newbnk_branch">Branch</label>
+            <input type="text"  pInputText name="newbnk_branch" id="newbnk_branch"
+            class="form-control" placeholder="Branch Name"
+            formControlName="newbnk_branch" [attr.disabled]="true" />
           </div>
         </div>
       </ng-container>
@@ -1119,7 +1144,8 @@
         <div class="row">
           <div class="col-sm-12">
             <label for="minorToMajorpan">PAN</label>
-            <input type="text" minlength="10" maxlength="10" placeholder="Enter PAN Number" name="minorToMajorpan"
+            <input type="text" minlength="10" maxlength="10"
+            placeholder="e.g AAAAA1234A" name="minorToMajorpan"
               id="minorToMajorpan" class="form-control" formControlName="minorToMajorpan">
             <div class="invalid-feedback"
               *ngIf="__nonfinForm.get('minorToMajorpan').invalid && (__nonfinForm.get('minorToMajorpan').dirty || __nonfinForm.get('minorToMajorpan').touched)">

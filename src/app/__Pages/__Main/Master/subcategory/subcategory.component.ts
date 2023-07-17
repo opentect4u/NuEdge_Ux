@@ -3,74 +3,21 @@ import { Component, OnInit} from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { pluck } from 'rxjs/operators';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { subcat } from 'src/app/__Model/__subcategory';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { SubcateModificationComponent } from './subcateModification/subcateModification.component';
 import { SubcatrptComponent } from './subcatRpt/subcatRpt.component';
-
+import menu from '../../../../../assets/json/Master/commonMenuMst.json';
 @Component({
   selector: 'app-subcategory',
   templateUrl: './subcategory.component.html',
   styleUrls: ['./subcategory.component.css'],
 })
 export class SubcategoryComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Sub Category",
-      url:'/main/master/productwisemenu/subcategory',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
-  __menu = [
-    {
-      parent_id: 4,
-      menu_name: 'Manual Entry',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 23,
-      flag: 'M',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Upload CSV',
-      has_submenu: 'N',
-      url: '/main/master/productwisemenu/subcategory/uploadSubcat',
-      icon: '',
-      id: 24,
-      flag: 'U',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Reports',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 0,
-      flag: 'R',
-    },
-  ];
+
+  __menu =menu
 
   constructor(
     private __dialog: MatDialog,
@@ -81,12 +28,11 @@ export class SubcategoryComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     if(this.route.snapshot.queryParamMap.get('id')){
-       this.navigate({flag:'R'});//Showing Reports of sub category for the corrosponding category
+       this.getItems({flag:'R'});//Showing Reports of sub category for the corrosponding category
     }
     else if(this.route.snapshot.queryParamMap.get('sub_cat_id')){
          this.getParticularSubcategory();
     }
-    // this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
 
   getParticularSubcategory() {
@@ -137,14 +83,14 @@ export class SubcategoryComponent implements OnInit {
       });
     }
   }
-  navigate(__menu) {
+  getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__menu.url);
-        this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}});
+        this.__utility.navigate('main/master/productwisemenu/subcategory/uploadSubcat');
+        // this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id:this.route.snapshot.queryParamMap.get('product_id')}});
         break;
         case 'R':
           this.openDialogForReports(

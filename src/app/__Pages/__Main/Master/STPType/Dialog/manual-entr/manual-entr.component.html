@@ -22,7 +22,7 @@
      <form [formGroup]="stpForm" (ngSubmit)="submitSwpType()" [id]="'__STPForm_'+data.id">
       <div class="row my-3">
         <div class="col-sm-12">
-          <label form="stp_type_name">STP Type</label>
+          <label form="stp_type_name">STP Type <span class="text-danger">*</span></label>
           <input type="text"
           name="stp_type_name"
           id="stp_type_name"

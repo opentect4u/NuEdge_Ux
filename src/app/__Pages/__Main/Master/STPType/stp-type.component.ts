@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import menu from '../../../../../assets/json/Master/commonMenuMst.json';
 import { ManualEntrComponent } from './Dialog/manual-entr/manual-entr.component';
@@ -14,43 +12,13 @@ import { RPTComponent } from './Dialog/rpt/rpt.component';
 })
 export class StpTypeComponent implements OnInit {
   menus = menu.filter((x) => x.flag != 'U');
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"STP Type",
-      url:'/main/master/productwisemenu/stpType',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
   constructor(
-    private route:ActivatedRoute,
     private utility: UtiliService,
     private overlay: Overlay,
     private __dialog: MatDialog
     ) { }
 
   ngOnInit(): void {
-    // this.getBreadCrumbs();
-  }
-  getBreadCrumbs(){
-    this.utility.getBreadCrumb(this.__brdCrmbs)
   }
   getItems(item){
     switch(item.flag){

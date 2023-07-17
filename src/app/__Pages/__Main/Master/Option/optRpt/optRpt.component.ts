@@ -35,7 +35,7 @@ export class OptrptComponent implements OnInit {
     options: new FormControl('2'),
   });
   __export = new MatTableDataSource<option>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: column[] = optClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'opt_name'];
   __paginate: any = [];
@@ -235,7 +235,6 @@ export class OptrptComponent implements OnInit {
     this.submit();
   }
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.value);
     this.submit();
   }
 }

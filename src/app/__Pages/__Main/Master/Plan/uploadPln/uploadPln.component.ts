@@ -18,37 +18,6 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
   styleUrls: ['./uploadPln.component.css'],
 })
 export class UploadPlnComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Plan",
-      url:'/main/master/productwisemenu/plan',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Upload Plan",
-      url:'/main/master/productwisemenu/plan/uploadPln',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
   displayedColumns: Array<string> = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tableColumns: Array<Column> = [
@@ -75,7 +44,6 @@ export class UploadPlnComponent implements OnInit {
 
   ngOnInit() {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestRntEntry() {
     this.__dbIntr

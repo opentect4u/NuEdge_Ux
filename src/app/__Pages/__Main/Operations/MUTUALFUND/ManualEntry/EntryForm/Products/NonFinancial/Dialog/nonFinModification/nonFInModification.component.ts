@@ -206,12 +206,16 @@ export class NonfinmodificationComponent implements OnInit {
     change_new_mode_of_holding: new FormControl(''),
     newbnk_micr: new FormControl(''),
     newbnk_name: new FormControl(''),
+    newbnk_ifsc:new FormControl(''),
+    newbnk_branch:new FormControl(''),
     newbnk_id: new FormControl(''),
     newbnk_accNo: new FormControl(''),
     oldbnk_micr: new FormControl(''),
     oldbnk_name: new FormControl(''),
     oldbnk_id: new FormControl(''),
     oldbnk_accNo: new FormControl(''),
+    oldbnk_ifsc:new FormControl(''),
+    oldbnk_branch:new FormControl(''),
     duration: new FormControl(''),
     swp_amount: new FormControl(''),
     swp_end_date: new FormControl(''),
@@ -472,6 +476,8 @@ export class NonfinmodificationComponent implements OnInit {
       .subscribe((res) => {
         console.log(res);
         this.__noofdaystobeAdded = res;
+        console.log(this.__noofdaystobeAdded);
+
       });
   }
   getPlnMst() {
@@ -1669,14 +1675,10 @@ export class NonfinmodificationComponent implements OnInit {
       }
       if (Number(dt.getDate()) > Number(inst_dt)) {
         date.setMonth(date.getMonth() + 2);
-        console.log(date);
       } else {
         date.setMonth(date.getMonth() + 1);
-        console.log(date);
       }
       date.setDate(inst_dt);
-      console.log(date);
-
       this.__nonfinForm.controls['cancel_effective_date'].setValue(
         date.toISOString().substring(0, 10)
       );
@@ -2247,6 +2249,10 @@ export class NonfinmodificationComponent implements OnInit {
         this.__nonfinForm.controls['newbnk_name'].setValue(
           __euinDtls.bank_name
         );
+        this.__nonfinForm.patchValue({
+          newbnk_ifsc:__euinDtls.ifs_code,
+          newbnk_branch:__euinDtls.branch_name
+        })
         this.__nonfinForm.controls['newbnk_id'].setValue(__euinDtls.id);
         this.searchResultVisibilityForBnk('none');
         break;
@@ -2300,6 +2306,10 @@ export class NonfinmodificationComponent implements OnInit {
         this.__nonfinForm.controls['oldbnk_name'].setValue(
           __euinDtls.bank_name
         );
+        this.__nonfinForm.patchValue({
+          oldbnk_ifsc:__euinDtls.ifs_code,
+          oldbnk_branch:__euinDtls.branch_name
+        })
         this.__nonfinForm.controls['oldbnk_id'].setValue(__euinDtls.id);
         this.searchResultVisibilityForExtBnk('none');
         break;

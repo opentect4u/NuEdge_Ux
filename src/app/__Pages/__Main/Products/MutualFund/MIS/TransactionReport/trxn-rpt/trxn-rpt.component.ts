@@ -21,8 +21,6 @@ export class TrxnRptComponent implements OnInit {
         this.dbIntr.api_call(1,'/showTransDetails',null)
         .pipe(pluck("data"))
         .subscribe((res:TrxnRpt[]) =>{
-          console.log(res);
-
             this.trxnRpt = res;
         })
   }

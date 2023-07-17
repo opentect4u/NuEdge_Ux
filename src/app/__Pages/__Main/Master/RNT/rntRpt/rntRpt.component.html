@@ -103,10 +103,10 @@
         selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
         scrollHeight="260px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '120rem' }">
+        [tableStyle]="{ 'min-width': __rntSearchForm.value.options == 2 ? '150rem': '250rem' }">
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="(col.field== 'edit' || col.field== 'delete') ? '3rem' : '12rem'">
+            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="(__rntSearchForm.value.options == 2) ? '12rem' : '18rem'">
               {{ col.header }}
               <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete' &&  col.field!= 'logo'" [field]="col.field">
               </p-sortIcon>
@@ -194,6 +194,7 @@
             <label class="mr-3">Items per page: </label>
             <p-selectButton
             [options]="itemsPerPage"
+            [formControl]="__pageNumber"
             optionLabel="label" optionValue="value"
             (onOptionClick)="onselectItem($event)"
             ></p-selectButton>

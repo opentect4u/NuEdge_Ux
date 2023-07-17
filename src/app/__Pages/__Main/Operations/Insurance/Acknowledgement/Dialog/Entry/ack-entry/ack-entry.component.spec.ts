@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AckEntryComponent } from './ack-entry.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 describe('AckEntryComponent', () => {
   let component: AckEntryComponent;
@@ -8,7 +9,8 @@ describe('AckEntryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AckEntryComponent ]
+      declarations: [ AckEntryComponent ],
+      imports:[SharedModule]
     })
     .compileComponents();
   });

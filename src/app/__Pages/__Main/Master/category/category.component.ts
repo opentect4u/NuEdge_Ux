@@ -1,80 +1,22 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { map, pluck } from 'rxjs/operators';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
-import { category } from 'src/app/__Model/__category';
-import { responseDT } from 'src/app/__Model/__responseDT';
+import { pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { CategoryModificationComponent } from './categoryModification/categoryModification.component';
 import { CatrptComponent } from './catRpt/catRpt.component';
-
+import menu from '../../../../../assets/json/Master/commonMenuMst.json';
+import { category } from 'src/app/__Model/__category';
 @Component({
   selector: 'master-category',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.css'],
 })
 export class CategoryComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label: "Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Category",
-      url:'/main/master/productwisemenu/category',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
-
-  __menu = [
-    {
-      parent_id: 4,
-      menu_name: 'Manual Entry',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 20,
-      flag: 'M',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Upload CSV',
-      has_submenu: 'N',
-      url: 'main/master/productwisemenu/category/uploadcategory',
-      icon: '',
-      id: 21,
-      flag: 'U',
-    },
-     {
-      parent_id: 4,
-      menu_name: 'Reports',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 0,
-      flag: 'R',
-    },
-  ];
+  __menu  = menu;
   constructor(
     private __rtDt: ActivatedRoute,
     private overlay: Overlay,
@@ -87,7 +29,6 @@ export class CategoryComponent implements OnInit {
     if (this.__rtDt.snapshot.queryParamMap.get('id')) {
       this.getParticularCategory();
     }
-    // this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
 
 
@@ -140,20 +81,21 @@ export class CategoryComponent implements OnInit {
       });
     }
   }
-  navigate(__menu) {
+  getItems = (__menu) => {
     switch (__menu.flag) {
       case 'M':
         this.openDialog(null, 0);
         break;
       case 'U':
-        this.__utility.navigate(__menu.url);
-      // this.__utility.navigatewithqueryparams(__menu.url,{queryParams:{product_id: this.__rtDt.snapshot.queryParamMap.get('product_id')}});
+        this.__utility.navigate('main/master/productwisemenu/category/uploadcategory');
         break;
       case 'R':this.openDialogForReports(btoa('1'));break;
       default:
         break;
     }
   }
+
+
   openDialogForReports(__prodid: string | null = null){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;

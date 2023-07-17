@@ -32,7 +32,7 @@ export class SiptyperptComponent implements OnInit {
     sip_type_name: new FormControl(''),
   });
   __export = new MatTableDataSource<any>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: column[] = sipTypeClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'sip_type_name'];
   __paginate: any = [];
@@ -241,7 +241,6 @@ export class SiptyperptComponent implements OnInit {
     this.submit();
   }
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.value);
     this.submit();
   }
 }

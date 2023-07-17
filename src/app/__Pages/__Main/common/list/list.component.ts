@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class ListComponent implements OnInit {
   @Input() __items: any;
   @Input() __classUL;
   @Input() __flag;
+  @Output() clickItems:EventEmitter<object> = new EventEmitter();
   constructor(private __utils: UtiliService) { }
 
   ngOnInit() {
@@ -20,9 +21,11 @@ export class ListComponent implements OnInit {
   openProfileMenu() { this.__profileDrpDown.nativeElement.classList.toggle("show"); }
   getItems(__items) {
     if (__items.flag == 'N') {
-      if (__items.url != '') {
-        this.__utils.navigate(__items.url);
-      }
+      this.clickItems.emit(__items)
+      // if (__items.url != '') {
+      //   this.__utils.navigate(__items.url);
+      // }
+
     }
     else {
       this.__searchInput.nativeElement.classList.toggle('mystyle');

@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
+import menu from '../../../../../../assets/json/Master/commonMenuMst.json';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { RcvFormCrudComponent } from './Dialog/rcv-form-crud/rcv-form-crud.component';
@@ -13,26 +13,27 @@ import { RcvFormRPTComponent } from './Dialog/rcv-form-rpt/rcv-form-rpt.componen
   styleUrls: ['./rcv-form.component.css']
 })
 export class RcvFormComponent implements OnInit {
-  __menu = [
-    {
-      "parent_id": 4,
-      "menu_name": "Manual Entry",
-      "has_submenu": "N",
-      "url": "",
-      "icon":"",
-      "id":16,
-      "flag":"M"
-    },
-    {
-    "parent_id": 4,
-    "menu_name": "Reports",
-    "has_submenu": "N",
-    "url": "",
-    "icon":"",
-    "id":16,
-    "flag":"R"
-    },
-  ];
+  __menu = menu.filter(item => item.flag!='U')
+  // [
+  //   {
+  //     "parent_id": 4,
+  //     "menu_name": "Manual Entry",
+  //     "has_submenu": "N",
+  //     "url": "",
+  //     "icon":"",
+  //     "id":16,
+  //     "flag":"M"
+  //   },
+  //   {
+  //   "parent_id": 4,
+  //   "menu_name": "Reports",
+  //   "has_submenu": "N",
+  //   "url": "",
+  //   "icon":"",
+  //   "id":16,
+  //   "flag":"R"
+  //   },
+  // ];
 
   constructor(
     private __dialog: MatDialog,
@@ -41,7 +42,7 @@ export class RcvFormComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  openRcvForm(__el){
+  getItems = (__el) => {
     console.log(__el);
     switch(__el.flag){
       case "R": this.openDIalogForRPT();break;

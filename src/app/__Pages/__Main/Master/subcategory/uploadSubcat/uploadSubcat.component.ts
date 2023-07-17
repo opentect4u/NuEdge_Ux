@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { pluck } from 'rxjs/operators';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { category } from 'src/app/__Model/__category';
 import { subcat } from 'src/app/__Model/__subcategory';
@@ -14,38 +13,6 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./uploadSubcat.component.css'],
 })
 export class UploadSubcatComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Sub Category",
-      url:'/main/master/productwisemenu/subcategory',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Sub Category Upload",
-      url:'/main/master/productwisemenu/subcategory/uploadSubcat',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
-
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {

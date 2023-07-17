@@ -1,8 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
-import { submenu } from 'src/app/__Model/submenu';
+import menu from '../../../../../../assets/json/Master/commonMenuMst.json';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { AckSearchRPTComponent } from './Dialog/Entry/ack-search-rpt/ack-search-rpt.component';
 import { AckRPTComponent } from './Dialog/Report/ack-rpt.component';
@@ -13,22 +12,7 @@ import { AckRPTComponent } from './Dialog/Report/ack-rpt.component';
   styleUrls: ['./ack-home.component.css']
 })
 export class AckHomeComponent implements OnInit {
-  __menu: any = [
-    {
-     id: 1,
-     menu_name: "Acknowledgement Entry",
-     has_submenu: "N",
-     flag:'A'
-    },
-    {
-       id: 2,
-       menu_name: "Report",
-       has_submenu: "N",
-       url:"",
-       flag:'R'
-     },
- ]
-
+  __menu = menu.filter(item => item.flag != 'U');
   constructor(
     private __dialog: MatDialog,
     private __utility: UtiliService,
@@ -37,7 +21,7 @@ export class AckHomeComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  openDialog(__items){
+  getItems = (__items) => {
     switch(__items.flag){
       case 'A': this.opendialogForAckEntry();break;
       case 'R': this.openDialogForRPT();break;

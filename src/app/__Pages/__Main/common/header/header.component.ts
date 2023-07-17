@@ -10,6 +10,7 @@ import menus from '../../../../../assets/json/menu.json';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  sidebarVisible;
   __rtDt: any;
   __rightHeaderMenu: menuList[] = rightHeaderMenu;
   // __top_menu: any[] = topmenu;
@@ -33,4 +34,10 @@ export class HeaderComponent implements OnInit {
   //     this.__utility.navigate(__items.url);
   //   }
   // }
+  openSidePannel(items){
+    console.log(items);
+     if(items.id == 3){
+      this.sidebarVisible = true;
+     }
+  }
 }

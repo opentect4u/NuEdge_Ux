@@ -15,39 +15,12 @@ import { RptComponent } from './rpt/rpt.component';
 })
 export class DashboardComponent implements OnInit {
   menus = menu.filter((x) => x.flag != 'U');
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"SWP Type",
-      url:'/main/master/productwisemenu/swpType',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
+
   constructor(
     private overlay: Overlay,
     private __utility: UtiliService,
-    private __dbIntr: DbIntrService,
-    private route: ActivatedRoute,
     private __dialog: MatDialog
   ) {
-   __utility.getBreadCrumb(this.__brdCrmbs);
   }
 
   ngOnInit(): void {}

@@ -26,7 +26,7 @@ export class RptComponent implements OnInit {
   __searchForm = new FormGroup({
       company_type:new FormControl([])
   })
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __cmpTypeMst: any = [];
   __CmpType = new MatTableDataSource<any>([]);
   __CmpTypeExport = new MatTableDataSource<any>([]);
@@ -173,10 +173,6 @@ export class RptComponent implements OnInit {
 
     })
   }
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.getCompanyTypeMst();
-  }
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -206,7 +202,7 @@ export class RptComponent implements OnInit {
       company_type:[]
      });
     this.sort = new sort();
-    this.__pageNumber.setValue(10);
+    this.__pageNumber.setValue('10');
      this.getCompanyTypeMst();
   }
   customSort(ev){
@@ -217,7 +213,6 @@ export class RptComponent implements OnInit {
     }
   }
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.value);
     this.getCompanyTypeMst();
   }
 }

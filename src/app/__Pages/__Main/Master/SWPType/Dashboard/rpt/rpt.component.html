@@ -125,6 +125,7 @@
                 <label class="mr-3">Items per page: </label>
                 <p-selectButton
                 [options]="itemsPerPage"
+                [formControl]="__pageNumber"
                  optionLabel="label" optionValue="value"
                  (onOptionClick)="onselectItem($event)"
                  ></p-selectButton>

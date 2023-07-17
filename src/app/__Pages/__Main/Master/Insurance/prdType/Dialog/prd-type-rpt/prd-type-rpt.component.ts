@@ -40,7 +40,7 @@ export class PrdTypeRPTComponent implements OnInit {
     ins_type: new FormControl([],{updateOn:'blur'}),
   });
   __prdTypeMst = new MatTableDataSource<insPrdType>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __paginate: any = [];
   __exportedClmns: string[] = productTypeClmns.Columns.filter(item => (item.field!='edit' && item.field!='delete')).map(res => {return res['field']})
   __columns: column[] = productTypeClmns.Columns
@@ -151,10 +151,6 @@ export class PrdTypeRPTComponent implements OnInit {
       });
   }
 
-  getval(__paginate) {
-     this.__pageNumber.setValue(__paginate.toString());
-    this.getProductTypeMst();
-  }
   getPaginate(__paginate) {
     if (__paginate.url) {
       this.__dbIntr
@@ -240,7 +236,9 @@ export class PrdTypeRPTComponent implements OnInit {
       options: '2',
       product_type:[]
     });
-    this.__prdType.get(' ins_type').setValue([],{emitEvent:false});
+    this.__prdType.get('ins_type').setValue([],{emitEvent:false});
+    this.sort = new sort();
+    this.__pageNumber.setValue('10');
     this.getProductTypeMst();
   }
 
@@ -277,7 +275,6 @@ export class PrdTypeRPTComponent implements OnInit {
     }
   }
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.value);
     this.getProductTypeMst();
   }
 }

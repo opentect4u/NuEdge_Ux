@@ -2,13 +2,15 @@
   {
     "title": "Acknowledgement Entry",
     "id": 1,
-    "icon": "fa fa-user-o",
-    "flag": "A"
+    "icon": "",
+    "flag": "A",
+    "img":"ackEntry.png"
   },
   {
     "title": "Reports",
     "id": 2,
-    "icon": "fa fa-user-o",
-    "flag": "R"
+    "icon": "",
+    "flag": "R",
+    "img":"reports.png"
   }
 ]

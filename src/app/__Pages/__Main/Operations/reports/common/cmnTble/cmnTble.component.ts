@@ -7,7 +7,7 @@ import { Column } from 'src/app/__Model/column';
   templateUrl: './cmnTble.component.html',
   styleUrls: ['./cmnTble.component.css']
 })
-export class CmnTbleComponent<T> implements OnInit {
+export class CmnTbleComponent<T extends any> implements OnInit {
   @Input()
   tableColumns: Array<Column> = [];
   @Input()
@@ -21,16 +21,12 @@ export class CmnTbleComponent<T> implements OnInit {
 
   ngOnInit(): void {
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
-    // this.dataSource = new MatTableDataSource(this.tableData);
     console.log(this.displayedColumns);
-    // console.log(this.tableData);
-
-    
   }
   exportasPDF(){
     this.__isExportasPdf.emit(true);
   }
-  ngOnChanges(changes: SimpleChanges){    
+  ngOnChanges(changes: SimpleChanges){
     console.log(changes.tableData.currentValue);
     this.dataSource = new MatTableDataSource(changes.tableData.currentValue);
 

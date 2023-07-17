@@ -1,64 +1,19 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { RcvFormCrudComponent } from './Dialog/rcv-form-crud/rcv-form-crud.component';
 import { RcvFormRPTComponent } from './Dialog/rcv-form-rpt/rcv-form-rpt.component';
-
+import menu from '../../../../../../assets/json/Master/commonMenuMst.json';
 @Component({
   selector: 'app-rcv-form',
   templateUrl: './rcv-form.component.html',
   styleUrls: ['./rcv-form.component.css']
 })
 export class RcvFormComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Operation",
-      url:'/main/operations/ophome',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Insurance",
-      url:'/main/operations/insurance',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Form Receivable",
-      url:'/main/operations/insurance/rcvForm',
-      hasQueryParams:true,
-      queryParams:''
-    }
-  ];
+  __menu =  menu.filter(item => item.flag != 'U');
 
-  __menu = [
-    {
-      "parent_id": 4,
-      "menu_name": "Manual Entry",
-      "has_submenu": "N",
-      "url": "",
-      "icon":"",
-      "id":16,
-      "flag":"M"
-    },
-    {
-    "parent_id": 4,
-    "menu_name": "Reports",
-    "has_submenu": "N",
-    "url": "",
-    "icon":"",
-    "id":16,
-    "flag":"R"
-    },
-  ];
 
   constructor(
     private __dialog: MatDialog,
@@ -66,12 +21,8 @@ export class RcvFormComponent implements OnInit {
     private overlay: Overlay) { }
 
   ngOnInit(): void {
-    this.setBreadCrumbs();
   }
-  setBreadCrumbs(){
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
-  }
-  openRcvForm(__el){
+  getItems = (__el) =>{
     console.log(__el);
     switch(__el.flag){
       case "R": this.openDIalogForRPT();break;

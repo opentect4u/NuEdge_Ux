@@ -1,48 +1,26 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { map, pluck } from 'rxjs/operators';
+import { pluck } from 'rxjs/operators';
 import { bank } from 'src/app/__Model/__bank';
-import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { BnkrptComponent } from './bankRpt/bnkRpt.component';
 import { BnkModificationComponent } from './bnkModification/bnkModification.component';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
+import menu from '../../../../../assets/json/Master/commonMenuMst.json';
 @Component({
   selector: 'master-bank',
   templateUrl: './bank.component.html',
   styleUrls: ['./bank.component.css']
 })
 export class BankComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Bank",
-      url:'/main/master/bank',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
-  __pageNumber= new FormControl(10);
-  __paginate:any=[];
-  __menu = [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "","icon":"","id":26,"flag":"M"},
-             {"parent_id": 4,"menu_name": "Upload CSV","has_submenu": "N","url": "main/master/bank/uploadbnk","icon":"","id":27,"flag":"U"},
-             {"parent_id": 4,"menu_name": "Reports","has_submenu": "N","url": "","icon":"","id":27,"flag":"R"}]
+  __menu = menu;
+
+  // [{"parent_id": 4,"menu_name": "Manual Entry","has_submenu": "N","url": "","icon":"","id":26,"flag":"M"},
+  //            {"parent_id": 4,"menu_name": "Upload CSV","has_submenu": "N","url": "main/master/bank/uploadbnk","icon":"","id":27,"flag":"U"},
+  //            {"parent_id": 4,"menu_name": "Reports","has_submenu": "N","url": "","icon":"","id":27,"flag":"R"}]
 
   constructor(
     private overlay:Overlay,
@@ -93,10 +71,10 @@ export class BankComponent implements OnInit {
     }
 
   }
-  navigate(__menu){
+  getItems =(__menu) => {
     switch(__menu.flag){
       case 'M' :this.openDialog(null,0); break;
-      case 'U' :this.__utility.navigate(__menu.url); break;
+      case 'U' :this.__utility.navigate('main/master/bank/uploadbnk'); break;
       case 'R' :this.openDialogForReports('1'); break;
        default:break;
     }

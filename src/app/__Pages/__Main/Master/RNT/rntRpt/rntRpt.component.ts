@@ -47,7 +47,7 @@ export class RntrptComponent implements OnInit {
   SelectedClms: any=[];
   __isrntspinner: boolean = false;
   __paginate: any = [];
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: any = [];
   __export = new MatTableDataSource<rnt>([]);
   __exportedClmns: string[] = [];
@@ -123,7 +123,7 @@ export class RntrptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.id);
+    // this.__pageNumber.setValue(ev.option.id);
     this.getRntMst();
   }
   getPaginate(__paginate) {

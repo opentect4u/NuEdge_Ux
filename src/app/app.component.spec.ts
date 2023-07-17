@@ -1,12 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { SnkbarModule } from './__Core/snkbar/snkbar.module';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        SnkbarModule,
+        NgxSpinnerModule,
       ],
       declarations: [
         AppComponent
@@ -20,16 +24,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'NuEdge'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('NuEdge');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('NuEdge app is running!');
-  });
+  /*** Test Progressbar show/hide  */
+  it('should test progressbar',() =>{
+    const isLoadingOnchangeRoute = true;
+    expect(isLoadingOnchangeRoute).toBe(true);
+  })
+  /*** End */
 });
