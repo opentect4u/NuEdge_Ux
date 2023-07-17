@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { map, pluck } from 'rxjs/operators';
+import { catchError, map, pluck } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import fileMenu from '../../../../../assets/json/file.json';
@@ -11,6 +11,8 @@ import { uploadManual } from 'src/app/__Utility/MailBack/upload';
 import { column } from 'src/app/__Model/tblClmns';
 import { manualUpload } from 'src/app/__Model/MailBack/manualUpload';
 import { environment } from 'src/environments/environment';
+import { HttpEventType } from '@angular/common/http';
+import { throwError } from 'rxjs';
 @Component({
   selector: 'app-manual-upload',
   templateUrl: './manual-upload.component.html',
@@ -104,22 +106,46 @@ export class ManualUploadComponent implements OnInit {
     if(this.manualUpldFrm.invalid){
     return;
     }
-    this.dbIntr
-      .api_call(
+    let progress = 0;
+    this.dbIntr.api_call(
         1,
         '/mailbackProcess',
         this.utility.convertFormData(this.manualUpldFrm.value)
-      )
-      .subscribe((res: any) => {
-        this.manualUpldFrm.patchValue({
-          file_type_id: '',
-          file_id: '',
-          upload_file: '',
-          file: '',
-        })
-        this.utility.showSnackbar(res.suc == 1 ? 'Upload Successfull' : res.msg,res.suc);
-         this.updateRow({...res.data,upload_file:`${environment.manualUpload + res.data.upload_file}`});
-      });
+    )
+    .pipe(
+      map((event: any) => {
+        if (event.type == HttpEventType.UploadProgress) {
+          progress = Math.round((100 / event.total) * event.loaded);
+        } else if (event.type == HttpEventType.Response) {
+          progress = null;
+        }
+        console.log(event);
+        console.log(HttpEventType);
+        console.log('Progress:' + progress);
+      }),
+      catchError((err: any) => {
+      progress = null;
+        console.log(err.message);
+        return throwError(err.message);
+      })
+    )
+    .toPromise();
+    // this.dbIntr
+    //   .api_call(
+    //     1,
+    //     '/mailbackProcess',
+    //     this.utility.convertFormData(this.manualUpldFrm.value)
+    //   )
+    //   .subscribe((res: any) => {
+    //     this.manualUpldFrm.patchValue({
+    //       file_type_id: '',
+    //       file_id: '',
+    //       upload_file: '',
+    //       file: '',
+    //     })
+    //     this.utility.showSnackbar(res.suc == 1 ? 'Upload Successfull' : res.msg,res.suc);
+    //      this.updateRow({...res.data,upload_file:`${environment.manualUpload + res.data.upload_file}`});
+    //   });
   };
 
   updateRow = (row_obj) =>{
