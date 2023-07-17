@@ -1,6 +1,8 @@
+import { HttpEventType } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { pluck } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { catchError, map, pluck } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
 import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
@@ -220,19 +222,39 @@ export class UploadCsvComponent implements OnInit {
       __upload.append('city_id', this.__upload.get('city_id').value);
     }
     __upload.append('file', this.__upload.get('file').value);
-    this.__dbIntr
-      .api_call(1, this.api_name, __upload)
-      .subscribe((res: responseDT) => {
-        this.__utility.showSnackbar(
-          res.suc == 1
-            ? 'File Uploadation Successfull'
-            : 'Something went wrong! please try again later',
-          res.suc
-        );
-        if (res.suc == 1) {
-          this.reset();
+    // this.__dbIntr
+    //   .api_call(1, this.api_name, __upload)
+    //   .subscribe((res: responseDT) => {
+    //     this.__utility.showSnackbar(
+    //       res.suc == 1
+    //         ? 'File Uploadation Successfull'
+    //         : 'Something went wrong! please try again later',
+    //       res.suc
+    //     );
+    //     if (res.suc == 1) {
+    //       this.reset();
+    //     }
+    //   });
+    let progress = 0;
+    this.__dbIntr.api_call(1,this.api_name,__upload)
+    .pipe(
+      map((event: any) => {
+        if (event.type == HttpEventType.UploadProgress) {
+          progress = Math.round((100 / event.total) * event.loaded);
+        } else if (event.type == HttpEventType.Response) {
+          progress = null;
         }
-      });
+        console.log(event);
+        console.log(HttpEventType);
+        console.log('Progress:' + progress);
+      }),
+      catchError((err: any) => {
+      progress = null;
+        console.log(err.message);
+        return throwError(err.message);
+      })
+    )
+    .toPromise();
   }
   onFileDropped(__ev) {
     this.__upload.get('file').patchValue('');
