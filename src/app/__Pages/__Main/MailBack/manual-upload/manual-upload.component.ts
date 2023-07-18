@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { catchError, map, pluck } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import fileMenu from '../../../../../assets/json/file.json';
@@ -11,8 +11,21 @@ import { uploadManual } from 'src/app/__Utility/MailBack/upload';
 import { column } from 'src/app/__Model/tblClmns';
 import { manualUpload } from 'src/app/__Model/MailBack/manualUpload';
 import { environment } from 'src/environments/environment';
-import { HttpEventType } from '@angular/common/http';
-import { throwError } from 'rxjs';
+
+ export interface rec_response{
+     start_count:number;
+     end_count:number;
+     row_id?:number;
+     upload_file_name:string | null,
+     file_type_id:number;
+     file_id: number;
+     rnt_id:number;
+     file?:string | null;
+     upload_file?:string | null;
+     total_count?:number;
+ }
+
+
 @Component({
   selector: 'app-manual-upload',
   templateUrl: './manual-upload.component.html',
@@ -106,47 +119,37 @@ export class ManualUploadComponent implements OnInit {
     if(this.manualUpldFrm.invalid){
     return;
     }
-    let progress = 0;
-    this.dbIntr.api_call(
-        1,
-        '/mailbackProcess',
-        this.utility.convertFormData(this.manualUpldFrm.value)
+    let start_count = 1;
+    let end_count = 500;
+    const dt:rec_response = {...this.manualUpldFrm.value,end_count:end_count,start_count:start_count}
+    this.reccursiveUpload(dt)
+  }
+
+  reccursiveUpload = (dt:rec_response) =>{
+  // if(dt.total_count == dt.end_count){
+    this.dbIntr
+    .api_call(
+      1,
+      '/mailbackProcess',
+      this.utility.convertFormData(dt)
     )
-    .pipe(
-      map((event: any) => {
-        if (event.type == HttpEventType.UploadProgress) {
-          progress = Math.round((100 / event.total) * event.loaded);
-        } else if (event.type == HttpEventType.Response) {
-          progress = null;
-        }
-        console.log(event);
-        console.log(HttpEventType);
-        console.log('Progress:' + progress);
-      }),
-      catchError((err: any) => {
-      progress = null;
-        console.log(err.message);
-        return throwError(err.message);
-      })
-    )
-    .toPromise();
-    // this.dbIntr
-    //   .api_call(
-    //     1,
-    //     '/mailbackProcess',
-    //     this.utility.convertFormData(this.manualUpldFrm.value)
-    //   )
-    //   .subscribe((res: any) => {
-    //     this.manualUpldFrm.patchValue({
-    //       file_type_id: '',
-    //       file_id: '',
-    //       upload_file: '',
-    //       file: '',
-    //     })
-    //     this.utility.showSnackbar(res.suc == 1 ? 'Upload Successfull' : res.msg,res.suc);
-    //      this.updateRow({...res.data,upload_file:`${environment.manualUpload + res.data.upload_file}`});
-    //   });
-  };
+    .pipe(pluck("data"))
+    .subscribe((res: any) => {
+      if(res.total_count == dt.end_count){return;}
+        dt.upload_file_name = res?.upload_file_name;
+        dt.file = '';
+        dt.upload_file= '';
+        dt.row_id = res?.row_id;
+        dt.start_count = Number(dt.end_count) + 1;
+        dt.end_count = ((Number(res.end_count) + 500) > Number(res.total_count))
+        ? Number(res.total_count) : (Number(res.end_count) + 500);
+        dt.total_count = res.total_count;
+        console.log(dt);
+
+        this.reccursiveUpload(dt);
+    });
+    // }
+  }
 
   updateRow = (row_obj) =>{
     console.log(row_obj);

@@ -36,14 +36,16 @@ constructor(private __http:HttpClient) {
  api_call(__flag: number,
   __url:string,
    __dt: any,
-  __bypass_log: any | undefined = false
+  __bypass_log: any | undefined = false,
+  rptProgress:boolean | undefined = false
+
   ){
   if(__flag > 0){
         return this.__http.post(`${environment.apiUrl + __url}`,
         __dt,
         {
           context: new HttpContext().set(IS_CACHE,  __bypass_log),
-          reportProgress: true
+          reportProgress: rptProgress
         });
   }
   else{
