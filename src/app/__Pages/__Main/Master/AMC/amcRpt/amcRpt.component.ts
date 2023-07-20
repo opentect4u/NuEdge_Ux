@@ -378,8 +378,13 @@ export class AmcrptComponent implements OnInit {
   exportPdf(){
     this.__Rpt.downloadReport('#amcRPT',
     {
-      title: 'AMC '
-    }, 'AMC')
+      title: 'AMC - '+ new Date().toLocaleDateString()
+    },
+    'AMC',
+    'l',
+      this.__detalsSummaryForm.value.options == 1 ? [3500,792] : [],
+      this.__exportedClmns.length
+    )
   }
   refreshOrAdvanceFlt(){
     this.__detalsSummaryForm.patchValue({

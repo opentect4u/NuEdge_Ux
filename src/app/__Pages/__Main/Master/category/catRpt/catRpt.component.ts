@@ -212,9 +212,10 @@ export class CatrptComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#category',
       {
-        title: 'Category ',
+        title: 'Category- '+ new Date().toLocaleDateString(),
       },
-      'Category'
+      'Category',
+      'p'
     );
   }
   submit() {

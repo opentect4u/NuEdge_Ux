@@ -83,7 +83,10 @@
                   <tr>
                     <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 25rem">
                       {{ col.header }}
-                      <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
+                      <p-sortIcon *ngIf="col.field!= 'edit'
+                      && col.field!= 'delete'
+                      && col.field!= 'sl_no'"
+                      [field]="col.field">
                       </p-sortIcon>
                     </th>
                   </tr>
@@ -99,6 +102,10 @@
                         <ng-container *ngSwitchCase="col.field == 'delete'">
                           <p-button icon="pi pi-trash" (click)="delete(finance,i)"
                             styleClass="p-button-rounded p-button-danger"></p-button>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                         {{i + 1}}
                         </ng-container>
 
                         <ng-container *ngSwitchDefault>

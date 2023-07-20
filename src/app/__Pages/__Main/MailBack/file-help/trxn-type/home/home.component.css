@@ -1,0 +1,25 @@
+
+tr{
+  min-height: 40px;
+}
+:host ::ng-deep .p-datatable  .p-sortable-column-icon{
+  color: #ffffff;
+}
+:host ::ng-deep .p-datatable .p-sortable-column:not(.p-highlight):hover
+.p-sortable-column-icon{
+  color: #ffffff;
+}
+:host ::ng-deep
+.p-datatable .p-sortable-column:not(.p-highlight):hover,
+.p-datatable .p-sortable-column.p-highlight
+{
+  background-color: black!important;
+  color:#fff!important;
+}
+
+tr.editRow{
+  background-color: #1f458426!important;
+}
+tr.editRow>td{
+  border:none!important;
+}

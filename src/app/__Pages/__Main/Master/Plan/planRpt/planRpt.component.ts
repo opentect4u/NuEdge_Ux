@@ -192,9 +192,10 @@ export class PlanrptComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#plan',
       {
-        title: 'Plan ',
+        title: 'Plan - '+ new Date().toLocaleDateString(),
       },
-      'Plan'
+      'Plan',
+      'p'
     );
   }
   submit() {

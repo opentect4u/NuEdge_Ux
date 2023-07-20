@@ -81,9 +81,10 @@ export class SubcatrptComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#subcategory',
       {
-        title: 'Sub Category ',
+        title: 'Sub-Category - ' + new Date().toLocaleDateString(),
       },
-      'Sub Category'
+      'Sub Category',
+      'p'
     );
   }
 

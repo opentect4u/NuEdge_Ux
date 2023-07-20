@@ -177,8 +177,8 @@ maximize(){
 exportPdf(){
   this.__Rpt.downloadReport('#trns',
   {
-    title: 'Transaction'
-  }, 'Transaction')
+    title: 'Transaction - ' + new Date().toLocaleDateString()
+  }, 'Transaction','portrait')
 }
 submit(){
    this.getTransMst();

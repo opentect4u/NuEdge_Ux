@@ -187,9 +187,10 @@ export class OptrptComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#Option',
       {
-        title: 'Option ',
+        title: 'Option - '+ new Date().toLocaleDateString(),
       },
-      'Option'
+      'Option',
+      'p'
     );
   }
   submit() {

@@ -550,10 +550,35 @@ mat-card {
 }
 
 .p-scrolltop.p-link {
-  /* background: rgba(0, 0, 0, 0.7); */
   padding: 20px;
   background: #222f3f;
 }
 .p-scrolltop.p-link:hover {
   background: #222f3f
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #222f3f!important;
+  border-color: #EFF6FF!important;
+  color: #ffffff!important;
+  font-size: 11px!important;
+  font-weight: 700!important;
+  border-radius: 20%!important;
+}
+.p-paginator {
+  justify-content: end!important;
+}
+.p-paginator .p-paginator-current{
+  font-size: 14px!important;
+  font-weight: 700!important;
+}
+.p-paginator .p-paginator-pages .p-paginator-page{
+  font-size: 11px!important;
+  font-weight: 700!important;
+  /* background-color: #222f3f33!important; */
+   border-radius: 20%!important ;
+}
+
+.p-dropdown-label{
+  font-weight: 700!important;
 }

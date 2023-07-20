@@ -10,12 +10,16 @@ const routes:Routes = [
     data:{breadcrumb:'Mail Back'},
     children:[
       {
-        path:'home',
-        loadChildren:()=> import('./mail-back-home/mail-back-home.module').then(m => m.MailBackHomeModule)
+          path:'home',
+          loadChildren:()=> import('./mail-back-home/mail-back-home.module').then(m => m.MailBackHomeModule)
       },
       {
           path:'manualupload',
           loadChildren:()=>import('./manual-upload/manual-upload.module').then(m => m.ManualUploadModule)
+      },
+      {
+          path:'filehelp',
+          loadChildren:()=>import('./file-help/file-help.module').then(m => m.FileHelpModule)
       },
       {
         path:'',

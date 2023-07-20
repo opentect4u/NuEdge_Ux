@@ -173,4 +173,14 @@ export class RPTComponent implements OnInit {
     this.__pageNumber.setValue(ev.option.value);
     this.submit();
   }
+  exportPdf() {
+    this.__Rpt.downloadReport(
+      '#stpType',
+      {
+        title: 'STP Type - ' + new Date().toLocaleDateString(),
+      },
+      'STP Type',
+      'p'
+    );
+  }
 }

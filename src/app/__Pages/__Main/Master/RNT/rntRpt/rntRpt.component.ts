@@ -274,9 +274,12 @@ export class RntrptComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#rnt_rpt',
       {
-        title: 'R&T ',
+        title: 'R&T -' + new Date().toLocaleDateString(),
       },
-      'R&T'
+      'R&T',
+      'l',
+      this.__rntSearchForm.value.options == 1 ? [3000,792] : [],
+      this.__exportedClmns.length
     );
   }
   populateDT(__items: rnt) {

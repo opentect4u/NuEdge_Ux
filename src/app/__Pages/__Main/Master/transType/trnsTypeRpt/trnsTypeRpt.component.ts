@@ -169,10 +169,10 @@ maximize(){
 }
 
 exportPdf(){
-  this.__Rpt.downloadReport('#trns_type',
+  this.__Rpt.downloadReport('#trxn_type',
   {
-    title: 'Transaction type '
-  }, 'Transaction type')
+    title: 'Transaction type - ' + new Date().toLocaleDateString()
+  }, 'Transaction type','portrait')
 }
 submit(){
   this.gettransTypeMst();

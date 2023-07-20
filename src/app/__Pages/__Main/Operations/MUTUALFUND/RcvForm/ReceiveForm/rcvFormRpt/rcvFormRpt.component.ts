@@ -574,13 +574,27 @@ export class RcvformrptComponent implements OnInit {
   }
 
   exportPdf() {
+    // this.__Rpt.downloadReport(
+    //   '#rcvForm',
+    //   {
+    //     title: 'Receive Form ',
+    //   },
+    //   'Receive Form'
+    // );
     this.__Rpt.downloadReport(
       '#rcvForm',
       {
-        title: 'Receive Form ',
+        title: 'Receive Form - ' + new Date().toLocaleDateString(),
       },
-      'Receive Form'
+      'Receive Form',
+      'l',
+      [],
+      this.__exportedClmns.length
     );
+
+    // 'l',
+    //   this.__detalsSummaryForm.value.options == 1 ? [3500,792] : [],
+    //   this.__exportedClmns.length
   }
 
   submit() {

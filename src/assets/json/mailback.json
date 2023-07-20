@@ -20,6 +20,17 @@
     "url": "/main/mailback/manualupload",
     "icon": "",
     "sub_menu": []
+  },
+  {
+    "id":3,
+    "menu_name":"File Help",
+    "title":"File Help",
+    "img":"fileHelp.jpeg",
+    "flag":"M",
+    "has_submenu": "N",
+    "url": "/main/mailback/filehelp",
+    "icon": "",
+    "sub_menu": []
   }
 ]
 

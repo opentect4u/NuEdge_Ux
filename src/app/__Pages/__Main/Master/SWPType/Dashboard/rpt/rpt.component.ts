@@ -174,4 +174,14 @@ customSort(ev){
 onselectItem(ev){
   this.submit();
 }
+exportPdf(){
+  this.__Rpt.downloadReport(
+    '#swpType',
+    {
+      title: 'SWP Type - ' + new Date().toLocaleDateString(),
+    },
+    'SWP Type',
+    'p'
+  );
+}
 }

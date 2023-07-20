@@ -12,8 +12,14 @@ constructor(
   @Inject(DOCUMENT) private doc: Document
 ) { }
 
-downloadReport(__tblName,dt,_doc_name){
-  let pdf = new jsPDF('l', 'pt', [3000,792]);
+downloadReport(__tblName,dt,
+  _doc_name,
+  pdf_orientantion?: "p" | "portrait" | "l" | "landscape",
+  page_width:number[] | undefined =[],
+  divide_by:number | undefined = 7
+  ){
+  let pdf = page_width.length == 0 ?  new jsPDF(pdf_orientantion ? pdf_orientantion : 'p', 'pt')
+  : new jsPDF(pdf_orientantion ? pdf_orientantion : 'l', 'pt',page_width);
   pdf.setFontSize(10);
   var width = pdf.internal.pageSize.getWidth();
   pdf.addImage("../../assets/images/logo.jpg", "JPG", ((width / 2) - 68), 40, 140, 50);
@@ -21,25 +27,32 @@ downloadReport(__tblName,dt,_doc_name){
   pdf.setFontSize(12);
   pdf.text("NuEdge Corporate Private Limited", width / 2, 115, { align: "center" });
   pdf.setFontSize(10);
-  pdf.text("AMC - 21/01/2023", width / 2, 135, { align: "center" });
+  pdf.text(dt.title, width / 2, 135, { align: "center" });
+  let pageWidth = pdf.internal.pageSize.getWidth();
+  let wantedTableWidth = 100;
+   let margin = ((pageWidth  - wantedTableWidth) / divide_by);
   autoTable(pdf, {
    useCss:false,
     html:__tblName,
     startY: 170,
+    margin: {left: margin, right: margin},
     headStyles: {
-      fillColor: '#fff', textColor: "black", halign: "center", valign: "middle",
-      lineColor: "black", lineWidth:0.79,
-      fontSize:10
+      fillColor: '#fff', textColor: "#555", halign: "center", valign: "middle",
+      lineColor: "#d7d7d7", lineWidth:0.79,
+      fontSize:7,
+      fontStyle:'bold',
+      cellWidth: "auto"
+
     },
     showHead:'everyPage',
     theme: 'grid',
     // tableWidth: (width / 2) + 230,
     styles: {
-      cellWidth: 80,
+      // cellWidth: "auto",
       fontSize:8,
-      fillColor: '#fff', textColor: "black", halign: "center", valign: "middle",
-      lineColor: "black", lineWidth: 0.79,
-
+      fillColor: '#fff', textColor: "#555", halign: "center", valign: "middle",
+      lineColor: "#d7d7d7", lineWidth: 0.79,
+      fontStyle:'normal'
     },
   },
   );

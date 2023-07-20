@@ -179,9 +179,10 @@ export class SiptyperptComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#SipType',
       {
-        title: 'SIP type ',
+        title: 'SIP Type - ' + new Date().toLocaleDateString(),
       },
-      'SIP type'
+      'SIP Type',
+      'p'
     );
   }
   submit() {

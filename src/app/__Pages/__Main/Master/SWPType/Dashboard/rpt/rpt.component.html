@@ -60,7 +60,7 @@
             styleClass="p-button-primary p-button-lg p-button-outlined">
             </p-button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item>
+              <button mat-menu-item (click)="exportPdf()">
                 <mat-icon>download</mat-icon> Export Pdf
               </button>
               <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SWP Type Report'})">
@@ -155,7 +155,7 @@
           </div>
       </div>
 
-        <table id="swp_type" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+        <table id="swpType" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
 
 
           <ng-container matColumnDef="sl_no">
