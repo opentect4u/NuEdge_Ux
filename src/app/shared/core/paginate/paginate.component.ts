@@ -10,6 +10,8 @@ export class PaginateComponent implements OnInit {
   itemsPerPage = ItemsPerPage;
   @Input() __paginate:any = [];
   @Input() set btn_type(value){
+    console.log(value);
+
     if(value == 'R'){
        this.__pageNumber.setValue('10');
     }

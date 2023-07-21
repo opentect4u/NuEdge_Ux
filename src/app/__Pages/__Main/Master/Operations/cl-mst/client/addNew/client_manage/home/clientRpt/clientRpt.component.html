@@ -90,13 +90,7 @@
                     <option [value]="month.id" *ngFor="let month of Month">{{month.month}}</option>
                   </select>
               </div>
-              <div class="col-sm-3 d-flex align-items-end justify-content-end" *ngIf="(__clientForm.get('advanceFlt').value != 'A')">
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-              </div>
-            </div>
-            <ng-container  *ngIf="__clientForm.get('advanceFlt').value == 'A'">
-            <div class="row my-2">
-              <div class="col-sm-4">
+              <div class="col-sm-3" *ngIf="(__clientForm.get('advanceFlt').value == 'A')">
                 <label for="cat_id">State </label>
                  <ng-multiselect-dropdown #multiSelect
                 id="state"
@@ -106,7 +100,14 @@
                 formControlName="state">
               </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-4">
+              <div class="col-sm-3 d-flex align-items-end justify-content-end" *ngIf="(__clientForm.get('advanceFlt').value != 'A')">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+            </div>
+            <ng-container  *ngIf="__clientForm.get('advanceFlt').value == 'A'">
+            <div class="row my-2">
+
+              <div class="col-sm-3">
                 <label for="dist">District </label>
                 <ng-multiselect-dropdown #multiSelect
                 id="dist"
@@ -116,7 +117,7 @@
                 formControlName="dist">
               </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-4">
+              <div class="col-sm-3">
                 <label for="city">City </label>
                 <ng-multiselect-dropdown #multiSelect
                 id="city"
@@ -126,22 +127,22 @@
                 formControlName="city">
                 </ng-multiselect-dropdown>
               </div>
+              <div class="col-sm-3">
+                <label for="pincode">Pincode </label>
+                <input type="text" placeholder="Enter Pincode" name="pincode" id="pincode" class="form-control"
+                  formControlName="pincode">
+              </div>
+              <div class="col-sm-3">
+                <label for="city_type">City Type </label>
+                 <select name="city_type" class="form-control" id="city_type" formControlName="city_type">
+                  <option value="">Select</option>
+                  <option [value]="cityType.id" *ngFor="let cityType of city_type">{{cityType.city_type}}</option>
+                 </select>
+              </div>
 
             </div>
             <div class="row">
-                <div class="col-sm-4">
-                  <label for="pincode">Pincode </label>
-                  <input type="text" placeholder="Enter Pincode" name="pincode" id="pincode" class="form-control"
-                    formControlName="pincode">
-                </div>
-                <div class="col-sm-4">
-                  <label for="city_type">City Type </label>
-                   <select name="city_type" class="form-control" id="city_type" formControlName="city_type">
-                    <option value="">Select</option>
-                    <option [value]="cityType.id" *ngFor="let cityType of city_type">{{cityType.city_type}}</option>
-                   </select>
-                </div>
-                <div class="col-sm-4 d-flex align-items-end justify-content-end" >
+                <div class="col-sm-12 d-flex align-items-end justify-content-end" >
                   <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
                 </div>
             </div>
@@ -193,10 +194,12 @@
           columnResizeMode="expand" [scrollable]="true"
           scrollHeight="300px"
           [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-          [tableStyle]="{ 'min-width': '120rem' }">
+          [tableStyle]="{ 'min-width': __clientForm.value.options == 2 ? '120rem'  : '150rem'}">
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 10rem">
+              <th  *ngFor="let col of columns" pResizableColumn
+              [pSortableColumn]="col.field"
+              [style.width]="__clientForm.value.options == 2 ? '10rem' : '15rem'">
                 {{ col.header }}
                 <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'upload_details' && col.field!= 'delete'" [field]="col.field">
                 </p-sortIcon>
@@ -222,16 +225,16 @@
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'upload_details'">
                     <p-button icon="pi pi-eye" (click)="PreviewDocs(client)"
-                      styleClass="p-button-rounded p-button-success"></p-button>
+                      styleClass="p-button-rounded p-button-primary"></p-button>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_actual' || col.field == 'anniversary_date'">
-                    <span #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-YYYY')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                    <b #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-YYYY')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'relation'">
                       <ng-container *ngIf="client[col.field];else noRelationship">
-                        <span #tooltip="matTooltip"
+                        <b #tooltip="matTooltip"
                          [matTooltip]="(client[col.field] | relationship)">
-                          {{(client[col.field] | relationship)}}</span>
+                          {{(client[col.field] | relationship)}}</b>
                       </ng-container>
                       <ng-template #noRelationship>
                           N/A
@@ -241,9 +244,9 @@
 
 
                   <ng-container *ngSwitchDefault>
-                    <span #tooltip="matTooltip" [matTooltip]="client[col.field]">
+                    <b #tooltip="matTooltip" [matTooltip]="client[col.field]">
                       {{ client[col.field] ? client[col.field] : 'N/A' }}
-                    </span>
+                    </b>
                   </ng-container>
 
 

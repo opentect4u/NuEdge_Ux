@@ -39,7 +39,9 @@
             <label for="k_divident_flag">Divident Flag</label>
              <input type="text" placeholder="Enter Divident Flag" name="k_divident_flag" id="k_divident_flag" class="form-control" formControlName="k_divident_flag">
           </div>
-          <div class="col-sm-9 d-flex justify-content-end align-items-end">
+          <div [class]="rntTrxnType.value.rnt_id ?
+           'col-sm-9 d-flex justify-content-end align-items-end'
+           : 'col-sm-12 mt-2 d-flex justify-content-end align-items-end'">
             <p-button
             type="submit"
             [label]="this.rntTrxnType.value.id > 0 ? 'Update' : 'Save'"

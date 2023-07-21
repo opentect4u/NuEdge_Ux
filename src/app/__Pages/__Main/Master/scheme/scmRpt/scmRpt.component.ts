@@ -126,9 +126,9 @@ export class ScmRptComponent implements OnInit {
        this.__paginate = x.links;
         return x.data.map(item =>{
           const object = { ...item };
-          object.sip_date = JSON.parse(item.sip_date);
-          object.stp_date = JSON.parse(item.stp_date);
-          object.swp_date = JSON.parse(item.swp_date);
+          // object.sip_date = JSON.parse(item.sip_date);
+          // object.stp_date = JSON.parse(item.stp_date);
+          // object.swp_date = JSON.parse(item.swp_date);
           object.daily_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','D');
           object.daily_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','D'),
           object.weekly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','W');
@@ -174,6 +174,7 @@ export class ScmRptComponent implements OnInit {
     __scmId: number,
     __scmType: string
   ) {
+    console.log(__scheme)
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -207,6 +208,7 @@ export class ScmRptComponent implements OnInit {
         }
       });
     } catch (ex) {
+      console.log(ex)
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('60%');
       this.__utility.getmenuIconVisible({
@@ -248,11 +250,9 @@ export class ScmRptComponent implements OnInit {
           (value.ava_special_stp = row_obj.ava_special_stp);
           (value.special_stp_name = row_obj.special_stp_name);
           (value.nfo_entry_date = row_obj.nfo_entry_date);
-          // (value.growth_isin = row_obj.growth_isin);
-          // (value.idcw_payout_isin = row_obj.idcw_payout_isin);
-          // (value.idcw_reinvestment_isin = row_obj.idcw_reinvestment_isin);
           (value.step_up_min_amt = row_obj.step_up_min_amt);
           (value.step_up_min_per = row_obj.step_up_min_per);
+          (value.benchmark = row_obj.benchmark);
 
         }
         return true;
@@ -289,12 +289,9 @@ export class ScmRptComponent implements OnInit {
           (value.ava_special_stp = row_obj.ava_special_stp);
           (value.special_stp_name = row_obj.special_stp_name);
           (value.nfo_entry_date = row_obj.nfo_entry_date);
-          // (value.growth_isin = row_obj.growth_isin);
-          // (value.idcw_payout_isin = row_obj.idcw_payout_isin);
-          // (value.idcw_reinvestment_isin = row_obj.idcw_reinvestment_isin);
           (value.step_up_min_amt = row_obj.step_up_min_amt);
           (value.step_up_min_per = row_obj.step_up_min_per);
-
+          (value.benchmark = row_obj.benchmark);
         }
         return true;
       }
@@ -412,9 +409,9 @@ export class ScmRptComponent implements OnInit {
       map(x => {
          return x.map(item =>{
            const object = { ...item };
-           object.sip_date = JSON.parse(item.sip_date);
-           object.stp_date = JSON.parse(item.stp_date);
-           object.swp_date = JSON.parse(item.swp_date);
+          //  object.sip_date = JSON.parse(item.sip_date);
+          //  object.stp_date = JSON.parse(item.stp_date);
+          //  object.swp_date = JSON.parse(item.swp_date);
            object.daily_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','D');
            object.daily_sip_add_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'A','D'),
            object.weekly_sip_fresh_min_amt = global.getFrequencywiseAmt(item.sip_freq_wise_amt,'F','W');

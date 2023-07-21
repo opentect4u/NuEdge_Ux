@@ -6,12 +6,14 @@ import { Observable, of } from 'rxjs';
 })
 export class DateArrayPipe implements PipeTransform {
 
-  transform(value: string, args?: any): Observable<any> {
+  transform(value: string, args?: any):any{
 
     if(value){
-       return of(JSON.parse(value).map(x=> x.date));
+      console.log(value)
+      console.log(JSON.parse(value).map(x=> x.date))
+       return JSON.parse(value).map(x=> x.date);
     }
-    return of([]);
+    return [];
 
   }
 }

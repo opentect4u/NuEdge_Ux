@@ -200,13 +200,13 @@
                       styleClass="p-button-rounded p-button-success"></p-button>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_actual' || col.field == 'anniversary_date'">
-                    <span #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-YYYY')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                    <b #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-YYYY')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'relation'">
                       <ng-container *ngIf="client[col.field];else noRelationship">
-                        <span #tooltip="matTooltip"
+                        <b #tooltip="matTooltip"
                          [matTooltip]="(client[col.field] | relationship)">
-                          {{(client[col.field] | relationship)}}</span>
+                          {{(client[col.field] | relationship)}}</b>
                       </ng-container>
                       <ng-template #noRelationship>
                           N/A
@@ -216,9 +216,9 @@
 
 
                   <ng-container *ngSwitchDefault>
-                    <span #tooltip="matTooltip" [matTooltip]="client[col.field]">
+                    <b #tooltip="matTooltip" [matTooltip]="client[col.field]">
                       {{ client[col.field] ? client[col.field] : 'N/A' }}
-                    </span>
+                    </b>
                   </ng-container>
 
 

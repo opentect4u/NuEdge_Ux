@@ -3,6 +3,7 @@
       "id":1,
       "accessibility":[],
       "title":"MF Trax",
+      "tooltip":"MF Trax",
       "url":"/main/product/mf/mis/mftrax",
       "icon": "fa fa-user-o",
       "has_submenu":[]
@@ -11,6 +12,7 @@
     "id":2,
     "accessibility":[],
     "title":"Transaction Report",
+    "tooltip":"Transaction Report",
     "url":"/main/product/mf/mis/transaction",
     "icon": "fa fa-user-o",
     "has_submenu":[]
@@ -19,6 +21,7 @@
     "id":3,
     "accessibility":[],
     "title":"AUM Report",
+    "tooltip":"AUM Report",
     "url":"/main/product/mf/mis/aum",
     "icon": "fa fa-user-o",
     "has_submenu":[
@@ -26,6 +29,7 @@
         "id":1,
         "accessibility":[],
         "title":"AUM By Fund House",
+        "tooltip":"AUM By Fund House",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -34,6 +38,7 @@
         "id":2,
         "accessibility":[],
         "title":"AUM By Scheme",
+        "tooltip":"AUM By Scheme",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -42,6 +47,7 @@
         "id":3,
         "accessibility":[],
         "title":"AUM By Client",
+        "tooltip":"AUM By Client",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -50,6 +56,7 @@
         "id":4,
         "accessibility":[],
         "title":"AUM By Asset Allocation",
+        "tooltip":"AUM By Asset Allocation",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -58,6 +65,7 @@
         "id":5,
         "accessibility":[],
         "title":"AUM By Family",
+        "tooltip":"AUM By Family",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -66,6 +74,7 @@
         "id":6,
         "accessibility":[],
         "title":"AUM By Registered",
+        "tooltip":"AUM By Registered",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -74,6 +83,7 @@
         "id":7,
         "accessibility":[],
         "title":"AUM By Branch",
+        "tooltip":"AUM By Branch",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -82,6 +92,7 @@
         "id":8,
         "accessibility":[],
         "title":"AUM By Employee",
+        "tooltip":"AUM By Employee",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -90,6 +101,7 @@
         "id":9,
         "accessibility":[],
         "title":"AUM By Sub Broker",
+        "tooltip":"AUM By Sub Broker",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -98,6 +110,7 @@
         "id":10,
         "accessibility":[],
         "title":"AUM By Segment",
+        "tooltip":"AUM By Segment",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -106,6 +119,7 @@
         "id":11,
         "accessibility":[],
         "title":"AUM Growth Report",
+        "tooltip":"AUM Growth Report",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -114,6 +128,7 @@
         "id":12,
         "accessibility":[],
         "title":"Top Client AUM Report",
+        "tooltip":"Top Client AUM Report",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -122,6 +137,7 @@
         "id":13,
         "accessibility":[],
         "title":"City Wise AUM Report",
+        "tooltip":"City Wise AUM Report",
         "url":"/main/product/mf",
         "icon": "fa fa-user-o",
         "has_submenu":[]
@@ -132,6 +148,7 @@
     "id":4,
     "accessibility":[],
     "title":"Business Planning",
+    "tooltip":"Business Planning",
     "url":"/main/product/mf",
     "icon": "fa fa-user-o",
     "has_submenu":[]
@@ -140,6 +157,7 @@
     "id":5,
     "accessibility":[],
     "title":"Rejection Report",
+    "tooltip":"Rejection Report",
     "url":"/main/product/mf",
     "icon": "fa fa-user-o",
     "has_submenu":[]
@@ -148,6 +166,7 @@
     "id":6,
     "accessibility":[],
     "title":"Change Of Broker",
+    "tooltip":"Change Of Broker",
     "url":"/main/product/mf",
     "icon": "fa fa-user-o",
     "has_submenu":[]
@@ -156,6 +175,7 @@
     "id":7,
     "accessibility":[],
     "title":"Collection Summary Report",
+    "tooltip":"Collection Summary Report",
     "url":"/main/product/mf",
     "icon": "fa fa-user-o",
     "has_submenu":[]
@@ -164,6 +184,7 @@
     "id":8,
     "accessibility":[],
     "title":"Monthly MIS Report",
+    "tooltip":"Monthly MIS Report",
     "url":"/main/product/mf",
     "icon": "fa fa-user-o",
     "has_submenu":[]
@@ -172,6 +193,7 @@
     "id":9,
     "accessibility":[],
     "title":"Investor Redemption Payout Despatch Details",
+    "tooltip":"Investor Redemption Payout Despatch Details",
     "url":"/main/product/mf",
     "icon": "fa fa-user-o",
     "has_submenu":[]
@@ -179,7 +201,8 @@
   {
     "id":10,
     "accessibility":[],
-    "title":"Return Undelivered Payout Insturment Report",
+    "title":"Return Undelivered Payout Instrument Report",
+    "tooltip":"Return Undelivered Payout Insturment Report",
     "url":"/main/product/mf",
     "icon": "fa fa-user-o",
     "has_submenu":[]
@@ -188,6 +211,7 @@
     "id":11,
     "accessibility":[],
     "title":"Invalid EUIN Report",
+    "tooltip":"Invalid EUIN Report",
     "url":"/main/product/mf",
     "icon": "fa fa-user-o",
     "has_submenu":[]

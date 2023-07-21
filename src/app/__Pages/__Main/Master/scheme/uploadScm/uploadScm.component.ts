@@ -25,37 +25,6 @@ export class UploadScmComponent implements OnInit {
   __amcMaster =  new MatTableDataSource<amc>([]);
   __catMaster =  new MatTableDataSource<category>([]);
   __subcatMaster = new MatTableDataSource<subcat>([]);
-   __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Mutual Fund",
-      url:'/main/master/productwisemenu/home',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Scheme",
-      url:'/main/master/productwisemenu/scheme',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Scheme Upload",
-      url:'/main/master/productwisemenu/scheme/uploadScm',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
   displayedColumns: Array<string> = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   tableColumns: Array<Column> = [

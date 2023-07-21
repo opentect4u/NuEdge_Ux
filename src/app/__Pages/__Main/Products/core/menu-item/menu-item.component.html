@@ -1,5 +1,5 @@
 <div class="col-sm-3" *ngFor="let item of items" [routerLink]="item.url">
-  <div class="smallBox" >
+  <div class="smallBox"  matTooltip="{{item.title}}">
    <div class="smallBoxIconSec">
     <div [class]="item.icon ? 'iconSec iconCol_1' : 'iconSec'">
       <ng-container *ngIf="item.icon;else img">
@@ -10,6 +10,7 @@
       </ng-template>
     </div>
   </div>
-  <h2>{{item.title}}</h2>
+  <h2
+  >{{item.title | ellipsis:11}}</h2>
 </div>
 </div>

@@ -202,6 +202,7 @@ export class IsinRptComponent implements OnInit {
     this.__isinFrm.controls['alt_scheme_id'].setValue('');
     this.__isinFrm.controls['alt_scheme_name'].setValue('',{emitEvent:false});
     this.pageNumber = '10';
+    this.__isinFrm.get('btn_type').setValue('R');
     this.sort = new sort();
     this.getISINMst();
 

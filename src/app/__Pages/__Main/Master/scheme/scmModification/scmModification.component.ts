@@ -57,6 +57,7 @@ export class ScmModificationComponent implements OnInit {
   };
 
   __scmForm = new FormGroup({
+    benchmark: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.benchmark) : ''),
     same_as_sip_dates: new FormControl(false),
     same_as_stp_dates: new FormControl(false),
     same_as_swp_dates: new FormControl(false),
@@ -734,10 +735,14 @@ export class ScmModificationComponent implements OnInit {
     __scm.append('sip_date', JSON.stringify(this.__scmForm.value.sip_date));
     __scm.append('swp_date', JSON.stringify(this.__scmForm.value.swp_date));
     __scm.append('stp_date', JSON.stringify(this.__scmForm.value.stp_date));
-    __scm.append('gstin_no', this.__scmForm.value.gstin_no);
+    __scm.append('gstin_no', global.getActualVal(this.__scmForm.value.gstin_no));
     __scm.append(
       'nfo_entry_date',
       this.data.scheme_type == 'N' ? this.__scmForm.value.nfo_entry_date : ''
+    );
+    __scm.append(
+      'benchmark',
+      global.getActualVal(this.__scmForm.value.benchmark)
     );
     this.__dbIntr
       .api_call(1, '/schemeAddEdit', __scm, true)

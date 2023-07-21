@@ -39,8 +39,21 @@
           <button mat-menu-item  (click)="exporter.exportTable('xlsx',{fileName:file_name})"><mat-icon>download</mat-icon>Download Sample</button>
         </mat-menu>
     </ng-container>
+    <ng-container *ngIf="flag == 'IS'">
+      <button mat-button [matMenuTriggerFor]="menuSC">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
+        <mat-menu #menuSC="matMenu"  xPosition="before">
+          <button mat-menu-item (click)="exportOpt.exportTable('xlsx',{fileName:'SampleOption'})">
+            <mat-icon>download</mat-icon>Download Option
+          </button>
+          <button mat-menu-item
+            (click)="exportPln.exportTable('xlsx',{fileName:'SamplePlan'})">
+            <mat-icon>download</mat-icon>Download Plan
+          </button>
+        <button mat-menu-item  (click)="exporter.exportTable('xlsx',{fileName:file_name})"><mat-icon>download</mat-icon>Download Sample</button>
+        </mat-menu>
+    </ng-container>
 
-   <ng-container  *ngIf="flag != 'SC' && flag != 'FS' && flag != 'MFT'">
+   <ng-container  *ngIf="flag != 'SC' && flag != 'FS' && flag != 'MFT' && flag != 'IS'">
     <button  color="primary" (click)="exporter.exportTable('xlsx',{fileName:file_name})"
     mat-button><mat-icon>download</mat-icon>Download Sample</button>
    </ng-container>
@@ -97,7 +110,6 @@
             </span>
           </div>
         </div>
-
         <div class="col-sm-12 my-2" *ngIf="flag == 'IP'">
           <label class="form-label">Company <span class="text-danger">*</span></label>
           <select class="form-control" formControlName="company_id">
@@ -149,7 +161,6 @@
          </span>
        </div>
        </div>
-
        <div class="col-sm-12 my-2" *ngIf="flag == 'GP'">
         <label for="city_id">City <span class="text-danger">*</span></label>
         <select name="city_id" id="city_id" class="form-control" formControlName="city_id">
@@ -163,9 +174,21 @@
          </span>
        </div>
        </div>
-
-
-
+       <div class="col-sm-12 my-2" *ngIf="flag == 'IS'">
+           <label for="amc_id">AMC <span class="text-danger">*</span></label>
+           <select name="amc_id" id="amc_id" class="form-control" formControlName="amc_id">
+            <option value="">Select</option>
+            <option value="{{amc.id}}" *ngFor="let amc of amcMaster">{{amc.amc_short_name}}</option>
+           </select>
+           <a mat-button class="float-right"
+           (click)="isAmcScelected()"
+           >Download Scheme</a>
+           <div class="invalid-feedback"
+           *ngIf=" __upload.get('amc_id').invalid && ( __upload.get('amc_id').dirty ||  __upload.get('amc_id').touched)">
+           <span class="invalid-feedback" *ngIf=" __upload.get('amc_id').errors?.required">*Please
+             provide AMC</span>
+         </div>
+       </div>
         <div class="col-sm-12">
           <div class="container_zone" appDragDrop (fileDropped)="onFileDropped($event)">
             <img src="../../../../../../assets/images/____upload.png" alt="Upload Images" height="63" width="63">
@@ -241,9 +264,12 @@
 
   </div>
 </div>
+
+
 <table mat-table hidden [dataSource]="dataSource" matTableExporter class="mat-elevation-z8"
   #exporter="matTableExporter">
-  <ng-container *ngFor="let disCol of columns let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
+  <ng-container *ngFor="let disCol of columns let colIndex = index;"
+  matColumnDef="{{disCol.columnDef}}">
     <th mat-header-cell *matHeaderCellDef>
       <span>{{ disCol.header }}</span>
     </th>
@@ -258,7 +284,11 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<table mat-table hidden [dataSource]="CatMst" matTableExporter #exporter1="matTableExporter">
+
+<!-- Category Table -->
+<table mat-table hidden [dataSource]="CatMst"
+matTableExporter
+#exporter1="matTableExporter">
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>Id</th>
     <td mat-cell *matCellDef="let element">{{element.id}}</td>
@@ -275,6 +305,7 @@
     <td class="mat-cell" colspan="2">No data found</td>
   </tr>
 </table>
+<!-- End -->
 
 <table mat-table hidden [dataSource]="amcMaster" matTableExporter #exporter2="matTableExporter">
   <ng-container matColumnDef="id">
@@ -295,7 +326,7 @@
   </tr>
 </table>
 
-
+<!-- Sub Category Table -->
 <table mat-table hidden [dataSource]="subcatMaster" matTableExporter #exporter3="matTableExporter">
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>Id</th>
@@ -320,9 +351,9 @@
     <td class="mat-cell" colspan="3">No data found</td>
   </tr>
 </table>
+<!-- End -->
 
-
-
+<!-- Table for Company Type -->
 <mat-table hidden class="mat-elevation-z8" [dataSource]="tableData_forcomp_type" matTableExporter
   #export_comp_type="matTableExporter">
   <ng-container *ngFor="let disCol of tableColumns_forcomp_type let colIndex = index;"
@@ -339,6 +370,8 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns__forcomp_type"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns__forcomp_type;"></tr>
 </mat-table>
+<!-- End -->
+<!-- Table for Company -->
 <mat-table hidden class="mat-elevation-z8" [dataSource]="tableData_forcomp" matTableExporter
   #export_comp="matTableExporter">
   <ng-container *ngFor="let disCol of tableColumns_forcomp let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
@@ -354,3 +387,72 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns_forComp"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns_forComp;"></tr>
 </mat-table>
+<!-- End -->
+<!-- Plan -->
+<table mat-table hidden [dataSource]="plnMst"
+matTableExporter
+#exportPln="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+  <ng-container matColumnDef="plan_name">
+    <th mat-header-cell *matHeaderCellDef>Plan</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.plan_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__plncol"></tr>
+  <tr mat-row *matRowDef="let row; columns: __plncol;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="2">No data found</td>
+  </tr>
+</table>
+<!-- End -->
+
+<!-- Option -->
+<table mat-table hidden [dataSource]="optionMst"
+matTableExporter
+#exportOpt="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+  <ng-container matColumnDef="opt_name">
+    <th mat-header-cell *matHeaderCellDef>Option</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.opt_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__optcol"></tr>
+  <tr mat-row *matRowDef="let row; columns: __optcol;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="2">No data found</td>
+  </tr>
+</table>
+<!-- End -->
+
+<!-- Scheme -->
+<table id="scmTble" mat-table hidden [dataSource]="schemeMst"
+matTableExporter
+#exportScm="matTableExporter">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{element.id}}</td>
+  </ng-container>
+  <ng-container matColumnDef="scheme_name">
+    <th mat-header-cell *matHeaderCellDef>Scheme</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.scheme_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="__schemecol"></tr>
+  <tr mat-row *matRowDef="let row; columns: __schemecol;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="2">No data found</td>
+  </tr>
+</table>
+<!-- End -->
+
+
+

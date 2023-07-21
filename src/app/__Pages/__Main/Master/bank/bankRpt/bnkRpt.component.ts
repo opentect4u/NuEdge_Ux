@@ -272,8 +272,13 @@ maximize(){
 exportPdf(){
   this.__Rpt.downloadReport('#bnk',
   {
-    title: 'Bank '
-  }, 'Bank')
+    title: 'Bank - '+ new Date().toLocaleDateString()
+  },
+  'Bank',
+  this.__catForm.value.options == 1 ? 'landscape' : 'p',
+   []
+  )
+  // this.__catForm.value.options == 1 ?  [600,792] : []
 }
 submit(){
    this.getBankMst();

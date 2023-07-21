@@ -17,11 +17,7 @@ export class UploadAMCComponent implements OnInit {
   __rntMst: rnt[] = [];
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
-    {
-      columnDef: 'amc_code',
-      header: 'AMC Code',
-      cell: (element: Record<string, any>) => `${element['amc_code']}`,
-    },
+
     {
       columnDef: 'AMC Full Name',
       header: 'AMC Full Name',
@@ -289,10 +285,15 @@ export class UploadAMCComponent implements OnInit {
       header: 'Level-6 Email',
       cell: (element: Record<string, any>) => `${element['Level-6 Email']}`,
     },
+    {
+      columnDef: 'amc_code',
+      header: 'AMC Code',
+      cell: (element: Record<string, any>) => `${element['amc_code']}`,
+    }
   ];
   tableData = new MatTableDataSource([
     {
-      "amc_code":"001",
+
       "AMC Full Name": 'HDFC Mutual Fund',
       "AMC Short Name":"HMF",
       "created_at": '2023-02-01T06:07:38.000000Z',
@@ -352,6 +353,7 @@ export class UploadAMCComponent implements OnInit {
       "security_answer_6": "",
       "security_question_7": "",
       "security_answer_7": "",
+      "amc_code":"001",
     },
   ]);
   __columns: string[] = ['sl_no', 'amc_name', 'edit'];

@@ -67,7 +67,7 @@
           formControlName="level">
         </ng-multiselect-dropdown>
         </div>
-        <div class="col-sm-6 d-flex  align-items-end">
+        <div class="col-sm-5 d-flex  align-items-end">
           <div class="checkboxes d-flex flex-row align-items-center w-100">
             <label>R&T: &nbsp;</label>
             <div >
@@ -82,19 +82,16 @@
           <mat-checkbox color="primary" class="mr-3" formControlName="is_all">All</mat-checkbox>
           </div></div>
         </div>
+        <div class="col-sm-1 d-flex justify-content-end align-items-end">
+          <p-button type="submit"
+          label="Show" icon="pi pi-eye"
+          iconPos="right"
+          class="float-right"
+          styleClass="p-button-lg"></p-button>
+        </div>
       </div>
-      <div class="row my-2">
+      <!-- <div class="row my-2">
         <div class="col-sm-11">
-          <!-- <div class="checkboxes d-flex flex-row align-items-center w-100">
-            <div >
-          <ng-container formArrayName="level">
-            <ng-container *ngFor="let level of level.controls; let i = index">
-                 <ng-container [formGroupName]="i">
-                  <mat-checkbox color="primary" class="mr-3" formControlName="isChecked">{{level.get('name').value}}</mat-checkbox>
-                 </ng-container>
-            </ng-container>
-          </ng-container>
-          </div></div> -->
         </div>
         <div class="col-sm-1">
           <p-button type="submit"
@@ -103,7 +100,7 @@
           class="float-right"
           styleClass="p-button-lg"></p-button>
         </div>
-      </div>
+      </div> -->
     </ng-container>
 
   </form>
@@ -139,7 +136,7 @@
       [columns]="__columns"
       [resizableColumns]="true"
       selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
-      scrollHeight="300px"
+      scrollHeight="335px"
       [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
       [tableStyle]="{ 'min-width': '100rem' }">
       <ng-template pTemplate="header" let-columns>

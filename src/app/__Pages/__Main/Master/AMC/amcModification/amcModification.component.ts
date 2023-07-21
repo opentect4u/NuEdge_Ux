@@ -166,7 +166,7 @@ export class AmcModificationComponent implements OnInit {
       return;
     }
     const __amc = new FormData();
-    __amc.append('amc_code',global.getActualVal(this.__amcForm.value.logo_file));
+    __amc.append('amc_code',global.getActualVal(this.__amcForm.value.amc_code));
     __amc.append('logo',this.__amcForm.value.logo_file ? this.__amcForm.value.logo_file : '');
     __amc.append("amc_name", this.__amcForm.value.amc_name);
     __amc.append("amc_short_name", this.__amcForm.value.amc_short_name);

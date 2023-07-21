@@ -68,7 +68,7 @@ export class ClientRptComponent implements OnInit {
     dist: new FormControl([]),
     city: new FormControl([]),
     options: new FormControl('2'),
-    advanceFlt: new FormControl(''),
+    advanceFlt: new FormControl('R'),
     pincode: new FormControl(''),
     city_type: new FormControl(''),
     client_code: new FormControl(''),
@@ -149,7 +149,7 @@ export class ClientRptComponent implements OnInit {
       this.setColumns(res);
     });
     this.__clientForm.controls['state'].valueChanges.subscribe(res =>{
-        if(res){
+        if(res.length > 0){
           this.getdistrict(res)
         }
         else{
@@ -158,7 +158,7 @@ export class ClientRptComponent implements OnInit {
         }
     })
     this.__clientForm.controls['dist'].valueChanges.subscribe(res =>{
-      if(res){
+      if(res.length > 0){
         this.getcity(res)
       }
       else{
@@ -244,9 +244,15 @@ export class ClientRptComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#client',
       {
-        title: 'Client',
+        title: (this.data.client_type == 'M' ? 'Minor ' : (this.data.client_type == 'E' ? 'Existing '
+        : (this.data.client_type == 'P' ? 'PAN Holder ' : 'Non PAN Holder ')))
+        + 'Report - '+ new Date().toLocaleDateString(),
       },
-      'Client'
+      (this.data.client_type == 'M' ? 'Minor' : (this.data.client_type == 'E' ? 'Existing '
+        : (this.data.client_type == 'P' ? 'PAN Holder ' : 'Non PAN Holder '))),
+        this.data.client_type == 'E' ? 'portrait' : 'landscape',
+      this.__clientForm.value.options == 2 ? [] : [1200,792],
+      this.__exportedClmns.length
     );
   }
 
@@ -500,7 +506,7 @@ export class ClientRptComponent implements OnInit {
     );
   }
   onItemClick(ev){
-   console.log(ev);
+  //  console.log(ev);
    if(ev.option.value == 'A'){
 
    }

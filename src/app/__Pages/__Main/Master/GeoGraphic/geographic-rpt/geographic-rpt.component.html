@@ -171,9 +171,9 @@
             <ng-template pTemplate="body" let-geography let-columns="columns" let-i="rowIndex">
               <tr tabindex="999">
                 <td *ngFor="let col of columns" style="width: 10rem">
-                 <span>
+                 <b>
                     {{ geography[col.field] ? geography[col.field] : 'N/A' }}
-                 </span>
+                 </b>
                 </td>
               </tr>
             </ng-template>
@@ -190,27 +190,11 @@
 
            <!-- Paginator with item per page -->
            <div class="paginator">
-            <!-- <div class="itemsPerPage">
-              <label>Items Per Page :&nbsp; </label>
-              <mat-button-toggle-group #group="matButtonToggleGroup">
-                <mat-button-toggle value="10" aria-label="Text align left" (click)="getval(10)">
-                  10
-                </mat-button-toggle>
-                <mat-button-toggle value="50" aria-label="Text align center" (click)="getval(50)">
-                  50
-                </mat-button-toggle>
-                <mat-button-toggle value="100" aria-label="Text align right" (click)="getval(100)">
-                  100
-                </mat-button-toggle>
-                <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
-                  All
-                </mat-button-toggle>
-              </mat-button-toggle-group>
-            </div> -->
             <div class="itemsPerPage d-flex">
               <label class="mr-3">Items per page: </label>
               <p-selectButton
               [options]="itemsPerPage"
+              [formControl]="__pageNumber"
               optionLabel="label" optionValue="value"
               (onOptionClick)="onselectItem($event)"
               ></p-selectButton>

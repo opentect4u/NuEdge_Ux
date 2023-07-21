@@ -32,7 +32,7 @@ export class GeographicRPTComponent implements OnInit {
   displayMode_forClient:string;
   geographicMst:any=[];
   __paginate: any=[];
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
 
    clmList = geographicClms.COLUMNS
   __columns = geographicClms.COLUMNS;
@@ -237,7 +237,6 @@ export class GeographicRPTComponent implements OnInit {
   }
 
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.id);
     this.submitgeographical();
   }
   getPaginate(paginate){
@@ -285,9 +284,10 @@ export class GeographicRPTComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#GeoGraphicRPT',
       {
-        title: 'Geographical Report',
+        title: 'Geographical Report - ' + new Date().toLocaleDateString(),
       },
-      'Geographical Report '
+      'Geographical Report',
+      'p'
     );
   }
 }

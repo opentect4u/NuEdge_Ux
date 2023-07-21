@@ -62,7 +62,7 @@
       </div>
       <div class="col-sm-5">
         <label for="bnk_addr">Bank Address</label>
-        <input type="text" name="bnk_addr" id="bnk_addr" class="form-control" formControlName="bnk_addr">
+        <input type="text" name="bnk_addr" placeholder="Enter Bank Address" id="bnk_addr" class="form-control" formControlName="bnk_addr">
         <!-- <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event,'I')">
           <div class="searchDiv">
             <label for="ifsc">IFSC
@@ -164,9 +164,9 @@
                   </ng-container>
 
                   <ng-container *ngSwitchDefault>
-                    <span #tooltip="matTooltip" [matTooltip]="bank[col.field]">
+                    <b #tooltip="matTooltip" [matTooltip]="bank[col.field]">
                       {{ bank[col.field] ? bank[col.field] : 'N/A' }}
-                    </span>
+                    </b>
                   </ng-container>
 
 

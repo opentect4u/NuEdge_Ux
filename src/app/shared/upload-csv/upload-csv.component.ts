@@ -1,16 +1,20 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatTableDataSource } from '@angular/material/table';
 import { pluck } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
 import { category } from 'src/app/__Model/__category';
 import { responseDT } from 'src/app/__Model/__responseDT';
+import { scheme } from 'src/app/__Model/__schemeMst';
 import { subcat } from 'src/app/__Model/__subcategory';
 import { amc } from 'src/app/__Model/amc';
 import { insComp } from 'src/app/__Model/insComp';
+import { option } from 'src/app/__Model/option';
+import { plan } from 'src/app/__Model/plan';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
-
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'shared-upload-csv',
@@ -42,12 +46,20 @@ export class UploadCsvComponent implements OnInit {
   @Input() displayedColumns__forcomp_type: any =[]
   @Input() tableColumns_forcomp_type: any =[]
 
+  @Input() optionMst = new MatTableDataSource<option>([]);
+  @Input()  __optcol: string[]= [];
+  @Input() plnMst = new MatTableDataSource<plan>([]);
+  @Input()  __plncol: string[]= [];
+  @Input() schemeMst= new MatTableDataSource<scheme>([]);
+  @Input()  __schemecol: string[]= [];
+
   @Input() tableData_forcomp: any =[]
   @Input() tableColumns_forcomp: any =[]
   @Input() displayedColumns_forComp: any =[]
   @Input() countryMst: any=[];
   @Output() setSchemeType = new EventEmitter<string>();
   @Output() setCompanyMst = new EventEmitter<string>();
+  @Output() getschemeMst = new EventEmitter<number>();
 
   stateMst: any =[];
   districtMst: any =[];
@@ -57,6 +69,7 @@ export class UploadCsvComponent implements OnInit {
 
   constructor(private __dbIntr: DbIntrService,private __utility: UtiliService) { }
   __upload = new FormGroup({
+    amc_id: new FormControl(''),
     scheme_type: new FormControl('N'),
     country_id: new FormControl(''),
     company_id: new FormControl(''),
@@ -97,12 +110,12 @@ export class UploadCsvComponent implements OnInit {
                this.__upload.controls['country_id'].setValidators([Validators.required]);
                this.__upload.controls['state_id'].setValidators([Validators.required]);
                this.__upload.controls['city_id'].setValidators([Validators.required]);break;
+    // case 'IS': this.__upload.controls['amc_id'].setValidators([Validators.required]); break;
   }
   }
 
   ngAfterViewInit(){
     this.__upload.controls['scheme_type'].valueChanges.subscribe(res =>{
-      console.log(res);
         this.setSchemeType.emit(res);
     })
 
@@ -129,6 +142,11 @@ export class UploadCsvComponent implements OnInit {
         if(this.flag == 'GP'){
            this.getCityMst(this.__upload.controls['country_id'].value,this.__upload.controls['state_id'].value,res);
         }
+      })
+      this.__upload.controls['amc_id'].valueChanges.subscribe(res =>{
+               if(this.flag == 'IS'){
+                this.getschemeMst.emit(res);
+               }
       })
   }
   getStateMst(country_id){
@@ -219,6 +237,9 @@ export class UploadCsvComponent implements OnInit {
       __upload.append('district_id', this.__upload.get('district_id').value);
       __upload.append('city_id', this.__upload.get('city_id').value);
     }
+    else if(this.flag == 'IS'){
+      __upload.append('amc_id', this.__upload.get('amc_id').value);
+    }
     __upload.append('file', this.__upload.get('file').value);
     this.__dbIntr
       .api_call(1, this.api_name, __upload)
@@ -293,5 +314,14 @@ export class UploadCsvComponent implements OnInit {
       fileValidators.fileExtensionValidator(this.allowedExtensions),
     ]);
     this.__upload.get('rntFile').updateValueAndValidity();
+  }
+  isAmcScelected = () =>{
+     if(this.__upload.value.amc_id){
+      global.exportTableToExcel("scmTble",'Scheme');
+     }
+     else{
+         this.__utility.showSnackbar('Please Select AMC first',0);
+     }
+
   }
 }

@@ -574,27 +574,20 @@ export class RcvformrptComponent implements OnInit {
   }
 
   exportPdf() {
-    // this.__Rpt.downloadReport(
-    //   '#rcvForm',
-    //   {
-    //     title: 'Receive Form ',
-    //   },
-    //   'Receive Form'
-    // );
     this.__Rpt.downloadReport(
       '#rcvForm',
       {
-        title: 'Receive Form - ' + new Date().toLocaleDateString(),
+        title: ((this.data.trans_type_id == 1 ? 'Financial '
+        : (this.data.trans_type_id == 4 ? 'Financial ' : 'Non Financial '))
+        + 'Form Receivable - ' + new Date().toLocaleDateString()),
       },
-      'Receive Form',
+      ((this.data.trans_type_id == 1 ? 'Financial '
+        : (this.data.trans_type_id == 4 ? 'Financial ' : 'Non Financial '))
+        + 'Form Receivable'),
       'l',
-      [],
+      this.__rcvForms.value.options == 2 ? [] : [1000,792],
       this.__exportedClmns.length
     );
-
-    // 'l',
-    //   this.__detalsSummaryForm.value.options == 1 ? [3500,792] : [],
-    //   this.__exportedClmns.length
   }
 
   submit() {

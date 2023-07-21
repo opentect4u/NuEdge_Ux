@@ -221,9 +221,11 @@
                    </span>
 
                   </ng-container> -->
-                  <ng-container *ngSwitchCase="col.field == 'sip_date' || col.field == 'stp_date' || col.field == 'swp_date'">
-                    <span class="dates" *ngFor="let SipDt of scheme[col.field]">
-                      {{SipDt.date}},
+                  <ng-container *ngSwitchCase="col.field == 'sip_date'
+                  || col.field == 'stp_date'
+                  || col.field == 'swp_date'">
+                    <span class="dates" *ngFor="let SipDt of (scheme[col.field] | dates:scheme[col.field])">
+                      {{SipDt}},
                    </span>
                   </ng-container>
                   <!-- <ng-container *ngSwitchCase="col.field == 'swp_date'">
@@ -422,6 +424,11 @@
           <td mat-cell *matCellDef="let element">{{element.nfo_end_dt ? element.nfo_end_dt : 'N/A'}}</td>
         </ng-container>
 
+        <ng-container matColumnDef="benchmark">
+          <th mat-header-cell *matHeaderCellDef>Benchmark</th>
+          <td mat-cell *matCellDef="let element">{{element.benchmark ? element.benchmark : 'N/A'}}</td>
+        </ng-container>
+
         <ng-container matColumnDef="nfo_reopen_dt">
           <th mat-header-cell *matHeaderCellDef>NFO Reopen Date</th>
           <td mat-cell *matCellDef="let element">{{element.nfo_reopen_dt ? element.nfo_reopen_dt : "N/A"}}</td>
@@ -451,7 +458,7 @@
         <ng-container matColumnDef="sip_date">
           <th  mat-header-cell *matHeaderCellDef>SIP Dates</th>
           <td mat-cell *matCellDef="let element">
-            <span class="dates" *ngFor="let SipDt of element.sip_date">
+            <span class="dates" *ngFor="let SipDt of (element.sip_date | date: element.sip_date )">
               {{SipDt}}
            </span>
           </td>
@@ -460,8 +467,8 @@
         <ng-container matColumnDef="swp_date">
           <th  mat-header-cell *matHeaderCellDef>SWP Dates</th>
           <td mat-cell *matCellDef="let element">
-            <span class="dates" *ngFor="let SipDt of element.sip_date">
-              {{SipDt}}
+            <span class="dates" *ngFor="let SwpDt of (element.swp_date | date: element.swp_date )">
+              {{SwpDt}}
            </span>
           </td>
         </ng-container>
@@ -470,8 +477,8 @@
         <ng-container matColumnDef="stp_date">
           <th  mat-header-cell *matHeaderCellDef>STP Dates</th>
           <td mat-cell *matCellDef="let element">
-            <span class="dates" *ngFor="let SipDt of element.sip_date">
-              {{SipDt}}
+            <span class="dates" *ngFor="let StpDt of (element.stp_date | date:element.stp_date)">
+              {{StpDt}}
            </span>
           </td>
         </ng-container>

@@ -142,7 +142,7 @@ export class schemeClmns{
     {id:'semi_anually_stp_amt',text:'Semi Anually STP Amount'},
     {id:'anually_stp_amt',text:'Anually STP Amount'},
   ];
-  public static column_selector=[
+  public static column_selector:column[]=[
     {field: "edit",header:"Edit"},
     {field: "delete",header:"Delete"},
     {field: "scheme_name",header:"Scheme"},
@@ -186,7 +186,8 @@ export class schemeClmns{
     {field:'monthly_stp_amt',header:'Monthly STP Amount'},
     {field:'quarterly_stp_amt',header:'Quarterly STP Amount'},
     {field:'semi_anually_stp_amt',header:'Semi Anually STP Amount'},
-    {field:'anually_stp_amt',header:'Anually STP Amount'}
+    {field:'anually_stp_amt',header:'Anually STP Amount'},
+    {field:'benchmark',header:'Benchmark'}
   ]
   public static Summary:column[] = [
     {field: "edit",header:"Edit"},

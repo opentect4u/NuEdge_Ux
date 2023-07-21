@@ -1,3 +1,4 @@
+
 export class storage{
   static get  get_scmDtls(){
     return JSON.parse(localStorage.getItem('__scmDtls'));

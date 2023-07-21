@@ -22,7 +22,7 @@ export interface scheme {
   gstin_no?:string,
   sip_freq_wise_amt?: any,
   sip_date?:any
-
+  benchmark?:string,
   stp_date?:any;
   stp_freq_wise_amt?:any;
   swp_date?:any;

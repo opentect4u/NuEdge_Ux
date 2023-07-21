@@ -292,12 +292,28 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   }
 
   exportPdf = () => {
+    // this.__Rpt.downloadReport(
+    //   '#client',
+    //   {
+    //     title: 'Client Report - '+ new Date().toLocaleDateString(),
+    //   },
+    //   'Client',
+    //   'l',
+    //   this.clientFrm.value.options == 1 ? [] : [3000,792],
+    //   this.__exportedClmns.length
+    // );
     this.__Rpt.downloadReport(
       '#client',
       {
-        title: 'Client',
+        title: (this.clientFrm.get('client_type').value == 'M' ? 'Minor ' : (this.clientFrm.get('client_type').value == 'E' ? 'Existing '
+        : (this.clientFrm.get('client_type').value == 'P' ? 'PAN Holder ' : 'Non PAN Holder ')))
+        + 'Report - '+ new Date().toLocaleDateString(),
       },
-      'Client'
+      (this.clientFrm.get('client_type').value == 'M' ? 'Minor' : (this.clientFrm.get('client_type').value == 'E' ? 'Existing '
+        : (this.clientFrm.get('client_type').value == 'P' ? 'PAN Holder ' : 'Non PAN Holder '))),
+        this.clientFrm.get('client_type').value == 'E' ? 'portrait' : 'landscape',
+      this.clientFrm.value.options == 2 ? [] : [1200,792],
+      this.__exportedClmns.length
     );
   }
   PreviewDocs = (client) => {

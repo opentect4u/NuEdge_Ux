@@ -1,4 +1,5 @@
 import { column } from "../__Model/tblClmns";
+import * as XLSX from "xlsx";
 
 export class global{
 
@@ -42,5 +43,22 @@ export class global{
     }
      return freqdt ? ('₹' + freqdt) : 'N/A'
    }
+   private static  getFileName = (name: string) => {
+    let timeSpan = new Date().toISOString();
+    let sheetName = name || "Sample";
+    let fileName = `${sheetName}-${timeSpan}`;
+    return {
+      sheetName,
+      fileName
+    };
+  };
 
+   static exportTableToExcel(tableId: string, name?: string) {
+    let { sheetName, fileName } = this.getFileName(name);
+    let targetTableElm = document.getElementById(tableId);
+    let wb = XLSX.utils.table_to_book(targetTableElm, <XLSX.Table2SheetOpts>{
+      sheet: sheetName
+    });
+    XLSX.writeFile(wb, `${fileName}.xlsx`);
+  }
 }

@@ -17,7 +17,8 @@
     [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Scheme'" [headerTitle]="'Recent Scheme'" [flag]="'SC'"
+    <shared-mst-dtls [btnTitle]="'View All Scheme'"
+    [headerTitle]="'Recent Scheme'" [flag]="'SC'"
       (populate)="populateDT($event)"
       (viewAll)="viewAll()"
       [dataSource]="__selectRNT.data"></shared-mst-dtls>
