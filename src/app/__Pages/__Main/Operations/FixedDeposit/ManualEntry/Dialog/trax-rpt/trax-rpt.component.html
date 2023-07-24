@@ -996,15 +996,15 @@
               <td *ngFor="let col of columns">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'bu_type'">
-                    <span #tooltip="matTooltip"
+                    <b #tooltip="matTooltip"
                     [matTooltip]="rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
-                      {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
+                      {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</b>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'rec_datetime'">
-                    <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                    <b #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</b>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'entry_date'">
-                      <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                      <b #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                       </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'edit'">
                       <p-button icon="pi pi-pencil" (click)="populateDT(rcvFormDT)"
@@ -1054,9 +1054,9 @@
                     <ng-template #noModeOfHolding>N/A</ng-template>
                    </ng-container>
                   <ng-container *ngSwitchDefault>
-                    <span #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
+                    <b #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
                       {{ rcvFormDT[col.field] ? rcvFormDT[col.field] : 'N/A' }}
-                    </span>
+                    </b>
                   </ng-container>
                 </ng-container>
               </td>
@@ -1126,9 +1126,9 @@
                 <!-- End -->
               </div>
 
-              <div id="FDRPT" style="display:none">
+              <!-- <div id="FDRPT" style="display:none"> -->
 
-                <table mat-table [dataSource]="__exportTrax" matTableExporter #exporter="matTableExporter">
+                <table id="FDRPT" hidden mat-table [dataSource]="__exportTrax" matTableExporter #exporter="matTableExporter">
                   <ng-container matColumnDef="tin_no">
                     <th mat-header-cell *matHeaderCellDef>TIN</th>
                     <td mat-cell *matCellDef="let element;let i = index">{{element.tin_no ? element.tin_no : "N/A"}}</td>
@@ -1406,7 +1406,7 @@
                     </td>
                   </tr>
                 </table>
-              </div>
+              <!-- </div> -->
         </div>
  </mat-dialog-content>
 </div>

@@ -325,23 +325,23 @@
                         styleClass="p-button-rounded p-button-success"></p-button>
                     </ng-container> -->
                     <ng-container *ngSwitchCase="col.field == 'bu_type'">
-                      <span #tooltip="matTooltip"
+                      <b #tooltip="matTooltip"
                       [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
-                        {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
+                        {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</b>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
-                     <span
+                     <b
                      #tooltip="matTooltip"
                      [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')">
                      {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')}}
-                    </span>
+                    </b>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'inv_type'">
-                      <span
+                      <b
                       #tooltip="matTooltip"
                       [matTooltip]="finance[col.field] == 'F' ? 'Fresh' : 'Additional'">
                       {{ finance[col.field] == 'F' ? 'Fresh' : 'Additional'}}
-                    </span>
+                    </b>
                     </ng-container>
 
                     <ng-container
@@ -360,22 +360,22 @@
 
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'rcv_datetime'">
-                      <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                      <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</b>
                       </ng-container>
 
                       <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
-                        <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</span>
+                        <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</b>
                         </ng-container>
                         <ng-container *ngSwitchCase="col.field == 'entry_date'
                         || col.field == 'sip_date'
                         || col.field == 'sip_end_date'
                         || col.field == 'sip_end_date'">
-                          <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                          <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                           </ng-container>
                     <ng-container *ngSwitchDefault>
-                      <span #tooltip="matTooltip" [matTooltip]="finance[col.field]">
+                      <b #tooltip="matTooltip" [matTooltip]="finance[col.field]">
                         {{ finance[col.field] ? finance[col.field] : 'N/A' }}
-                      </span>
+                      </b>
                     </ng-container>
 
 
@@ -552,10 +552,10 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="arn_no">
-            <th mat-header-cell *matHeaderCellDef>ARN No</th>
+          <ng-container matColumnDef="rm_name">
+            <th mat-header-cell *matHeaderCellDef>RM Name</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.arn_no ? element.arn_no : 'N/A'}}
+              {{element.rm_name ? element.rm_name : 'N/A'}}
             </td>
           </ng-container>
           <ng-container matColumnDef="remarks">
@@ -587,7 +587,7 @@
           <ng-container matColumnDef="rcv_datetime">
             <th mat-header-cell *matHeaderCellDef>Receive DateTime</th>
             <td mat-cell *matCellDef="let element;let i = index">
-              {{element.rcv_datetime}}
+              {{element.rcv_datetime ? element.rcv_datetime : 'N/A'}}
             </td>
           </ng-container>
 
@@ -618,7 +618,7 @@
             </td>
           </ng-container>
           <ng-container matColumnDef="apl_no">
-            <th mat-header-cell *matHeaderCellDef>Application Number</th>
+            <th mat-header-cell *matHeaderCellDef>Application No</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.apl_no ? element.apl_no : 'N/A'}}
             </td>
@@ -644,7 +644,7 @@
           </ng-container>
 
           <ng-container matColumnDef="folio_no">
-            <th mat-header-cell *matHeaderCellDef>Folio Number</th>
+            <th mat-header-cell *matHeaderCellDef>Folio No</th>
             <td mat-cell *matCellDef="let element;let i = index">
               {{element.folio_no ? element.folio_no : 'N/A'}}
             </td>

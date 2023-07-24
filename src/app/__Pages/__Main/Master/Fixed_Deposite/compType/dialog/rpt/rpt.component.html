@@ -1,6 +1,6 @@
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
   <div mat-dialog-title class="dialog-title">
-    <h2 >Company Reports</h2>
+    <h2 >Company Type Reports</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize"  (click)="minimize()" >
         <mat-icon >remove</mat-icon>
@@ -294,7 +294,7 @@
               <!-- End -->
 
               <!-- For Exporting -->
-              <table id="comp_rpt"
+              <table id="comp_type_rpt"
               style="display:none" mat-table
               [dataSource]="__CmpTypeExport"
               matTableExporter

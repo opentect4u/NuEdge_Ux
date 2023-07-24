@@ -181,7 +181,13 @@ export class ScmRptComponent implements OnInit {
     this.getScmMst();
   }
   exportPdf(){
-
+    this.__Rpt.downloadReport(
+      '#fdScm',
+      {
+        title: 'FD Scheme- ' + new Date().toLocaleDateString(),
+      },
+      'FDScheme'
+    );
   }
   delete(__el:fdScm,index: number){
     const dialogConfig = new MatDialogConfig();

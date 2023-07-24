@@ -719,11 +719,14 @@ getPaginate(__paginate){
   }
   exportPdf(){
     this.__Rpt.downloadReport(
-      '#__NFORPT__',
+      '#__nfoRPT',
       {
-        title: 'NFO Report',
+        title: 'NFO Report - ' + new Date().toLocaleDateString(),
       },
-      'NFO Report'
+      'NFO Report',
+      'l',
+      this.transFrm.value.option == 1 ?  [1500,792] : [950,792],
+      this.__exportedClmns.length
     );
   }
 

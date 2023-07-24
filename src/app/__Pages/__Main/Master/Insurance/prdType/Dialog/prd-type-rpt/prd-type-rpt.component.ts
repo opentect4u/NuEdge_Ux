@@ -57,11 +57,11 @@ export class PrdTypeRPTComponent implements OnInit {
   ) {}
   exportPdf() {
     this.__Rpt.downloadReport(
-      '#Product Type',
+      '#ins_prd_type',
       {
-        title: 'Product Type ',
+        title: 'Insurance Product Type - '+ new Date().toLocaleDateString(),
       },
-      'Product Type'
+      'ProductType'
     );
   }
 

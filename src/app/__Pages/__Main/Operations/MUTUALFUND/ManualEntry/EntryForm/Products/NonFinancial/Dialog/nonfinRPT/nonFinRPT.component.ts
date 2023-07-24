@@ -752,9 +752,12 @@ submitNonFinReport(){
     this.__Rpt.downloadReport(
       '#__nonfinRPT',
       {
-        title: 'Non Financial Report',
+        title: 'Non Financial Report - ' + new Date().toLocaleDateString(),
       },
-      'Non Financial Report  '
+      'Non Financial Report',
+      'l',
+      this.transFrm.value.options == 1 ? [1000,792] : [],
+      this.__exportedClmns.length
     );
   }
   openMenu(ev){

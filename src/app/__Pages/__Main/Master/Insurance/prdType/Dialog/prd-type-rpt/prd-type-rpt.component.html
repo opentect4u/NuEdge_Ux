@@ -99,7 +99,7 @@
         [columns]="__columns"
         [resizableColumns]="true"
         selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
-        scrollHeight="300px"
+        scrollHeight="360px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
         [tableStyle]="{ 'min-width': '100rem' }">
         <ng-template pTemplate="header" let-columns>
@@ -183,7 +183,7 @@
       </div>
 
       </div>
-      <table id="subcategory" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
+      <table id="ins_prd_type" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
         <ng-container matColumnDef="ins_type">
           <th mat-header-cell *matHeaderCellDef>Insurance Type</th>
           <td mat-cell *matCellDef="let element">{{element.ins_type}}</td>

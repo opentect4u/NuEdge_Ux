@@ -678,22 +678,22 @@
           <td *ngFor="let col of columns">
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'bu_type'">
-                <span #tooltip="matTooltip"
+                <b #tooltip="matTooltip"
                 [matTooltip]="rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
-                  {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
+                  {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</b>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'fd_bu_type'">
-                <span #tooltip="matTooltip"
+                <b #tooltip="matTooltip"
                 [matTooltip]="rcvFormDT[col.field] == 'F' ? 'Fresh' : 'Renewal'">
                 {{rcvFormDT[col.field] ? (rcvFormDT[col.field] == 'F' ? 'Fresh' : 'Renewal') : 'N/A'}}
-                </span>
+                </b>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'rec_datetime'">
-                <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                <b #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</b>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'entry_date'">
-                  <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                  <b #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                   </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'edit'">
                   <p-button icon="pi pi-pencil" (click)="populateDT(rcvFormDT)"
@@ -705,9 +705,9 @@
                     styleClass="p-button-rounded p-button-danger"></p-button>
                 </ng-container>
               <ng-container *ngSwitchDefault>
-                <span #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
+                <b #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
                   {{ rcvFormDT[col.field] ? rcvFormDT[col.field] : 'N/A' }}
-                </span>
+                </b>
               </ng-container>
             </ng-container>
           </td>

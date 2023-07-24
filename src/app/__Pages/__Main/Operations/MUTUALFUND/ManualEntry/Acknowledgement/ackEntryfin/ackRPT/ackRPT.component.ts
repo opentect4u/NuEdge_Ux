@@ -931,11 +931,14 @@ export class AckrptComponent implements OnInit {
     //   }, 100);
     // } else {
       this.__Rpt.downloadReport(
-        '#__finRPT',
+        '#__ackfinRPT',
         {
-          title: 'Financial Report',
+          title: 'Acknowledgement Reports For' + (this.data.trans_type_id == '1' ? ' Financial' : ' NFO') + ' - ' + new Date().toLocaleDateString(),
         },
-        'Financial Report'
+        'Acknowledgement Reports',
+        'l',
+        this.__ackForm.value.options == 1 ?  [1500,792] : [950,792],
+        this.__exportedClmns.length
       );
     // }
   }

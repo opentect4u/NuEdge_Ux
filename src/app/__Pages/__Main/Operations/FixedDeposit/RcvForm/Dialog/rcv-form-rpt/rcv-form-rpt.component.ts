@@ -802,9 +802,12 @@ else{
     this.__Rpt.downloadReport(
       '#rcvForm',
       {
-        title: 'Receive Form ',
+        title: 'Form Receivable Report For FD - ' + new Date().toLocaleDateString(),
       },
-      'Receive Form'
+      new Date().getTime(),
+      this.__rcvForms.value.options == 2 ? 'portrait' : 'landscape',
+      this.__rcvForms.value.options == 2 ? [792,792] : [1000,792],
+      this.__exportedClmns.length
     );
   }
   customSort(ev){

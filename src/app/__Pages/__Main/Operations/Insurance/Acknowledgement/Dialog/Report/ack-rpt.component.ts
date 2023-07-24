@@ -513,9 +513,12 @@ export class AckRPTComponent implements OnInit {
       this.__Rpt.downloadReport(
         '#InsAckRPT',
         {
-          title: 'Insurance Acknowledgement Report',
+          title: 'Acknowledgment Report For Insurance - '+new Date().toLocaleDateString(),
         },
-        'Insurance Acknowledgement Report  '
+        new Date().getTime(),
+        'l',
+        this.__insTraxForm.value.options == 1 ?  [1800,792] : [900,792],
+        this.__exportedClmns.length
       );
   }
   getItems(__items, __mode) {

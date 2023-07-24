@@ -179,7 +179,7 @@ export class RptComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
              ('&paginate=' + this.__pageNumber.value)
-            +('&com_type=' + this.__searchForm.value.company_type ? JSON.stringify(this.__searchForm.value.company_type) : "[]") +
+            +('&com_type=' + JSON.stringify(this.__searchForm.value.company_type.map(item => item.id)))
             +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
             +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
         )
@@ -193,6 +193,13 @@ export class RptComponent implements OnInit {
 
   exportPdf(){
  //Export Function
+ this.__Rpt.downloadReport(
+  '#comp_type_rpt',
+  {
+    title: 'Company Type- ' + new Date().toLocaleDateString(),
+  },
+  'Company Type'
+);
   }
   searchCompanyType(){
     this.getCompanyTypeMst();

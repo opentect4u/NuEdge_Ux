@@ -524,6 +524,7 @@ export class FinrptComponent implements OnInit {
       .api_call(1, '/mfTraxExport', __mfTrax)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
+        console.log(res)
         this.__export = new MatTableDataSource(res);
       });
   }
@@ -680,9 +681,12 @@ export class FinrptComponent implements OnInit {
       this.__Rpt.downloadReport(
         '#__finRPT',
         {
-          title: 'Financial Report',
+          title: 'Financial Report - ' + new Date().toLocaleDateString(),
         },
-        'Financial Report  '
+        'Financial Report',
+        'l',
+        this.__rcvForms.value.options == 1 ?  [1500,792] : [950,792],
+        this.__exportedClmns.length
       );
   }
   getminDate() {

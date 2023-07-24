@@ -692,9 +692,12 @@ export class AckRPTForNonFinComponent implements OnInit {
       this.__Rpt.downloadReport(
         '#AckRPT',
         {
-          title: 'NonFinancialAcknowledgementReport',
+          title: 'Acknowledgement Report For NonFinancial - ' + new Date().toLocaleDateString(),
         },
-        'NonFinancialAcknowledgementReport  '
+        'NonFinancialAcknowledgementReport',
+        'l',
+        this.__rcvForms.value.options == 1 ?  [1500,792] : [950,792],
+        this.__exportedClmns.length
       );
   }
 

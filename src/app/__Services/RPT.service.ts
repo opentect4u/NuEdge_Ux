@@ -39,11 +39,12 @@ downloadReport(__tblName,dt,
     headStyles: {
       fillColor: '#fff', textColor: "#555", halign: "center", valign: "middle",
       lineColor: "#d7d7d7", lineWidth:0.79,
-      fontSize:7,
+      fontSize:8,
       fontStyle:'bold',
-      cellWidth: "auto"
+      cellWidth: "auto",
 
     },
+    alternateRowStyles: {fillColor : [231, 215, 252]},
     showHead:'everyPage',
     theme: 'grid',
     // tableWidth: (width / 2) + 230,
@@ -52,7 +53,7 @@ downloadReport(__tblName,dt,
       fontSize:8,
       fillColor: '#fff', textColor: "#555", halign: "center", valign: "middle",
       lineColor: "#d7d7d7", lineWidth: 0.79,
-      fontStyle:'normal'
+      fontStyle:'bold'
     },
   },
   );

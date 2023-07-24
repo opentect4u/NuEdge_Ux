@@ -559,9 +559,12 @@ export class InsTraxRPTComponent implements OnInit {
       this.__Rpt.downloadReport(
         '#InsRPT',
         {
-          title: 'Insurance Report',
+          title: 'Insurance Entry Report - '+new Date().toLocaleDateString(),
         },
-        'Insurance Report  '
+        new Date().getTime(),
+        'l',
+        this.__insTraxForm.value.options == 1 ?  [1800,792] : [900,792],
+        this.__exportedClmns.length
       );
   }
 

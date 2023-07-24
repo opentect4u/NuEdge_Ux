@@ -111,7 +111,7 @@ export class UploadProductComponent implements OnInit {
       .api_call(0, '/ins/product', null)
       .pipe(map((x: responseDT) => x.data))
       .subscribe((res: insProduct[]) => {
-        this.__prdMst = new MatTableDataSource(res);
+        this.__prdMst = new MatTableDataSource(res.splice(0,5));
       });
   }
   populateDT(__el: insProduct) {

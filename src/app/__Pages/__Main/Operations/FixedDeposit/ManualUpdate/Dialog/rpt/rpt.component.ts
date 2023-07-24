@@ -482,17 +482,20 @@ export class RPTComponent implements OnInit {
   }
 
   exportPdf() {
-    if (this.__insTraxForm.get('options').value == '3') {
-      this.__Rpt.printRPT('InsRPT');
-    } else {
+    // if (this.__insTraxForm.get('options').value == '3') {
+    //   this.__Rpt.printRPT('InsRPT');
+    // } else {
       this.__Rpt.downloadReport(
-        '#InsRPT',
+        '#MURPT',
         {
-          title: 'Insurance Report',
+          title: 'Manual Update Report For Insurance - ' + new Date().toLocaleDateString(),
         },
-        'Insurance Report  '
+        new Date().getTime(),
+        'landscape',
+        this.__insTraxForm.value.options == 1 ? [2500,792] : [1000,792],
+        this.__exportedClmns.length
       );
-    }
+    // }
   }
 
   refresh() {

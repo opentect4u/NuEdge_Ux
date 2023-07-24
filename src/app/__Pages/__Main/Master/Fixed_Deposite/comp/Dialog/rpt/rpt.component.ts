@@ -55,7 +55,7 @@ export class RptComponent implements OnInit {
     btnType:new FormControl('R'),
     comp_type: new FormControl([]),
     options: new FormControl('2'),
-    comp_name: new FormControl(''),
+    comp_name: new FormControl([]),
     contact_person: new FormControl(''),
     levels: new FormControl([])
   });
@@ -150,11 +150,11 @@ export class RptComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          +  ('&comp_name = ' + this.__rntSearchForm.value.comp_name ? JSON.stringify(this.__rntSearchForm.value.comp_name) : '')
+          +  ('&comp_name = ' + JSON.stringify(this.__rntSearchForm.value.comp_name.map(item => item.id)))
           +  ('&contact_person=' + this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person : '')
           +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
           +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
-          +  ('&comp_type=' + JSON.stringify(this.__rntSearchForm.value.comp_type))
+          +  ('&comp_type=' + JSON.stringify(this.__rntSearchForm.value.comp_type.map(item => item.id)))
           )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -264,10 +264,12 @@ export class RptComponent implements OnInit {
   }
 
   getRntMst() {
+    console.log(this.__rntSearchForm.value.comp_name);
+
     const __amcSearch = new FormData();
     __amcSearch.append(
       'comp_name',
-      this.__rntSearchForm.value.comp_name ? JSON.stringify(this.__rntSearchForm.value.comp_name) : ''
+      JSON.stringify(this.__rntSearchForm.value.comp_name.map(item => item.id))
     );
     __amcSearch.append(
       'contact_person',
@@ -278,7 +280,7 @@ export class RptComponent implements OnInit {
     __amcSearch.append('paginate', this.__pageNumber.value);
     __amcSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
     __amcSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __amcSearch.append('comp_type', JSON.stringify(this.__rntSearchForm.value.comp_type));
+    __amcSearch.append('comp_type', JSON.stringify(this.__rntSearchForm.value.comp_type.map(item => item.id)));
 
 
     this.__dbIntr
@@ -308,9 +310,12 @@ export class RptComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#comp_rpt',
       {
-        title: 'Company',
+        title: 'Company - ' + new Date().toLocaleDateString(),
       },
-      'Company'
+      'Company',
+      this.__rntSearchForm.value.options == 2 ? "portrait" : "landscape",
+      this.__rntSearchForm.value.options == 2 ? [] : [2800,792],
+      this.__exportedClmns.length
     );
   }
   populateDT(__items: fdComp) {

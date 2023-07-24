@@ -101,7 +101,7 @@
         [columns]="__columns"
         [resizableColumns]="true"
         selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
-        scrollHeight="260px"
+        scrollHeight="320px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
         [tableStyle]="{ 'min-width': __rntSearchForm.value.options == 2 ? '150rem': '250rem' }">
         <ng-template pTemplate="header" let-columns>
@@ -169,9 +169,9 @@
                   <ng-template #nologo>N/A</ng-template>
                </ng-container>
                 <ng-container *ngSwitchDefault>
-                  <span   matTooltip="{{finance[col.field]}}">
+                  <b   matTooltip="{{finance[col.field]}}">
                     {{ finance[col.field] ? finance[col.field] : 'N/A' }}
-                  </span>
+                  </b>
                 </ng-container>
 
 

@@ -30,10 +30,10 @@ export class ProductRPTComponent implements OnInit {
   SearchAllMst:any=[];
   // displayMode_forSearch:string;
   sort=new sort();
-  __settings_prod = this.__utility.settingsfroMultiselectDropdown('id','product_name','Search Product');
-  __settings_ins = this.__utility.settingsfroMultiselectDropdown('id','type','Search Type Of Insurance');
-  __settings_productType = this.__utility.settingsfroMultiselectDropdown('id','product_type','Search Product Type');
-  __settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Companies');
+  __settings_prod = this.__utility.settingsfroMultiselectDropdown('id','product_name','Search Product',1);
+  __settings_ins = this.__utility.settingsfroMultiselectDropdown('id','type','Search Type Of Insurance',1);
+  __settings_productType = this.__utility.settingsfroMultiselectDropdown('id','product_type','Search Product Type',1);
+  __settings = this.__utility.settingsfroMultiselectDropdown('id','comp_short_name','Search Companies',1);
   __prdSearchForm = new FormGroup({
     ins_type_id: new FormControl([],{updateOn:'blur'}),
     product_name: new FormControl([]),
@@ -70,15 +70,24 @@ export class ProductRPTComponent implements OnInit {
     this.getproductMst();
   }
 
-  getproductTypeMst(arr_comp_ids){
-    if(arr_comp_ids.length > 0){
-   this.__dbIntr.api_call(0,'/ins/productType','arr_comp_id='+JSON.stringify(arr_comp_ids.map(item => item.id))).pipe(pluck("data")).subscribe((res: insPrdType[]) =>{
+  getproductTypeMst(arr_ins_type_id){
+       if(arr_ins_type_id.length > 0){
+   this.__dbIntr.api_call(0,'/ins/productType','arr_ins_type_id='+JSON.stringify(arr_ins_type_id.map(item => item.id))).pipe(pluck("data")).subscribe((res: insPrdType[]) =>{
     this.__prdTypeMst = res;
    })}
    else{
     this.__prdTypeMst.length = 0;
     this.__prdSearchForm.controls['product_type_id'].setValue([],{emitEvent:true});
    }
+
+  //   if(arr_comp_ids.length > 0){
+  //  this.__dbIntr.api_call(0,'/ins/productType','arr_comp_id='+JSON.stringify(arr_comp_ids.map(item => item.id))).pipe(pluck("data")).subscribe((res: insPrdType[]) =>{
+  //   this.__prdTypeMst = res;
+  //  })}
+  //  else{
+  //   this.__prdTypeMst.length = 0;
+  //   this.__prdSearchForm.controls['product_type_id'].setValue([],{emitEvent:true});
+  //  }
   }
   getcompanyMst(arr_ins_type_ids){
     if(arr_ins_type_ids.length > 0){
@@ -132,10 +141,11 @@ export class ProductRPTComponent implements OnInit {
 
   this.__prdSearchForm.controls['ins_type_id'].valueChanges.subscribe(res =>{
     this.getcompanyMst(res);
-  })
-  this.__prdSearchForm.controls['company_id'].valueChanges.subscribe(res =>{
     this.getproductTypeMst(res);
   })
+  // this.__prdSearchForm.controls['company_id'].valueChanges.subscribe(res =>{
+  //   this.getproductTypeMst(res);
+  // })
 
   this.__prdSearchForm.controls['product_type_id'].valueChanges.subscribe(res =>{
     this.getProductMst(res);
@@ -187,7 +197,6 @@ export class ProductRPTComponent implements OnInit {
     console.log(JSON.stringify(this.__prdSearchForm.value.company_id));
     __fb.append('product_name',JSON.stringify(this.__prdSearchForm.value.product_name.map(item => item.id)));
     __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id.map(item => item.id)));
-    __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id.map(item => item.id)));
     __fb.append('search_all',global.getActualVal(this.__prdSearchForm.value.search_all));
     __fb.append('ins_type_id',JSON.stringify(this.__prdSearchForm.value.ins_type_id.map(item => {return item['id']})));
     __fb.append('paginate', this.__pageNumber.value);
@@ -211,7 +220,13 @@ export class ProductRPTComponent implements OnInit {
     this.getproductMst();
   }
   exportPdf(){
-
+    this.__Rpt.downloadReport(
+      '#insProd',
+      {
+        title: 'Insurance Product - '+ new Date().toLocaleDateString(),
+      },
+      'InsProduct'
+    );
   }
   delete(__el:insProduct,index: number){
     const dialogConfig = new MatDialogConfig();

@@ -663,9 +663,12 @@ export class RPTComponent implements OnInit {
       this.__Rpt.downloadReport(
         '#__finRPT',
         {
-          title: 'Financial Report',
+          title: 'Manual Update Report For Financial- ' + new Date().toLocaleDateString(),
         },
-        'Financial Report  '
+        'ManualUpdateReport',
+        'l',
+        this.__ackForm.value.options == 1 ?  [1500,792] : [950,792],
+        this.__exportedClmns.length
       );
     // }
   }

@@ -542,12 +542,17 @@ export class RcvFormRPTComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#rcvForm',
       {
-        title: 'Receive Form ',
+        title: 'Form Receivable Report For Insurance - ' + new Date().toLocaleDateString(),
       },
-      'Receive Form'
+      new Date().getTime(),
+      'l',
+      this.__rcvForms.value.options == 2 ? [900,792] : [1200,792],
+      this.__exportedClmns.length
     );
   }
-
+  // 'l',
+  // this.__rcvForms.value.options == 2 ? [] : [1000,792],
+  // this.__exportedClmns.length
   submit() {
     this.getRcvForm();
   }

@@ -99,7 +99,7 @@ export class CmpRPTComponent implements OnInit {
   }
   getComponyMst(arr_ins_type_id){
     if(arr_ins_type_id.length > 0){
-    this.__dbIntr.api_call(0,'/ins/company','ins_type_id=' +JSON.stringify(arr_ins_type_id.map(item => item.id)))
+    this.__dbIntr.api_call(0,'/ins/company','arr_ins_type_id=' +JSON.stringify(arr_ins_type_id.map(item => item.id)))
     .pipe(pluck("data")).subscribe((res: insComp[]) =>{
       this.__companyMst = res;
    })
@@ -349,9 +349,12 @@ export class CmpRPTComponent implements OnInit {
     this.__Rpt.downloadReport(
       '#comp_rpt',
       {
-        title: 'Company',
+        title: 'Insurance Company - ' + new Date().toLocaleDateString(),
       },
-      'Company'
+      'InsCompany',
+      this.__rntSearchForm.value.options == 2 ? 'portrait' : "landscape",
+      this.__rntSearchForm.value.options == 2 ? [] : [3000,792],
+      this.__exportedClmns.length
     );
   }
   populateDT(__items: insComp) {

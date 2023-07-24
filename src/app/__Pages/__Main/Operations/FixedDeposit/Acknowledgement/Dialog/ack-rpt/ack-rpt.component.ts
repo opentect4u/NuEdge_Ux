@@ -519,17 +519,20 @@ export class AckRPTComponent implements OnInit {
     }
   }
   exportPdf() {
-    if (this.__insTraxForm.get('options').value == '3') {
-      this.__Rpt.printRPT('InsRPT');
-    } else {
+    // if (this.__insTraxForm.get('options').value == '3') {
+    //   this.__Rpt.printRPT('InsRPT');
+    // } else {
       this.__Rpt.downloadReport(
-        '#InsRPT',
+        '#ACKRPT',
         {
-          title: 'Insurance Report',
+          title: 'Acknowledgement Report For FD - ' + new Date().toLocaleDateString(),
         },
-        'Insurance Report  '
+        new Date().getTime(),
+        'landscape',
+        this.__insTraxForm.value.options == 1 ? [2500,792] : [1300,792],
+        this.__exportedClmns.length
       );
-    }
+    // }
   }
 
   refresh() {

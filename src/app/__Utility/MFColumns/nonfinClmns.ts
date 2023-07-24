@@ -153,7 +153,7 @@ export class nonFinClms {
     { field: 'tin_no', header: 'TIN' },
     { field: 'bu_type', header: 'Business Type' },
     { field: 'branch_name', header: 'Branch' },
-    { field: 'arn_no', header: 'RM Name'},
+    { field: 'rm_name', header: 'RM Name'},
     { field: 'sub_brk_cd', header: 'Sub Broker Code'},
     { field: 'euin_no', header: 'EUIN' },
     { field: 'first_client_name', header: 'First Holder Name' },

@@ -79,7 +79,7 @@
               (setDisplayMode)="displayMode_forSearch = $event"
               (selectedItems)="getSelectedItemsFromParent($event)"
               ></app-core-srch> -->
-              <label for="search_all">Search By Company Type,Company,Scheme</label>
+              <label for="search_all">Search By Company ,Product Type,Product</label>
               <input type="text" name="search_all" id="search_all" class="form-control" formControlName="search_all">
               </div>
               <div class="col-sm-9 d-flex justify-content-end align-items-end">
@@ -155,9 +155,9 @@
                       </p-button>
                     </ng-container>
                     <ng-container *ngSwitchDefault>
-                      <span  matTooltip="{{scheme[col.field]}}">
+                      <b  matTooltip="{{scheme[col.field]}}">
                         {{ scheme[col.field] ? scheme[col.field] : 'N/A' }}
-                      </span>
+                      </b>
                     </ng-container>
                   </ng-container>
                 </td>
@@ -211,7 +211,7 @@
               <!-- End -->
           </div>
       </div>
-      <table id="plan" hidden mat-table [dataSource]="__exportPrdMst" matTableExporter #exporter="matTableExporter">
+      <table id="insProd" hidden mat-table [dataSource]="__exportPrdMst" matTableExporter #exporter="matTableExporter">
 
 
         <ng-container matColumnDef="sl_no">

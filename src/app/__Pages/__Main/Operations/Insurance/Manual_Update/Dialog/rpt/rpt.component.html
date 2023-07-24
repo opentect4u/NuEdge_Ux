@@ -1102,8 +1102,7 @@
     </div>
 
         <!-- Export As PDF & Export As Excel -->
-        <div  style="display:none">
-          <table mat-table id="InsAckRPT" [dataSource]="__exportTrax" class="table_Custome" matTableExporter
+          <table  hidden mat-table id="InsMuRPT" [dataSource]="__exportTrax" class="table_Custome" matTableExporter
             #exporter="matTableExporter">
             <ng-container matColumnDef="entry_date">
               <th mat-header-cell *matHeaderCellDef>Entry Date</th>
@@ -1314,7 +1313,6 @@
               </td>
             </tr>
           </table>
-        </div>
 
 
 

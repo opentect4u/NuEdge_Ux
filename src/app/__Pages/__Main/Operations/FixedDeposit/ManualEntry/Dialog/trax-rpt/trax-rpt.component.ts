@@ -536,17 +536,20 @@ export class TraxRPTComponent implements OnInit {
     }
   }
   exportPdf() {
-    if (this.__insTraxForm.get('options').value == '3') {
-      this.__Rpt.printRPT('FDRPT');
-    } else {
+    // if (this.__insTraxForm.get('options').value == '3') {
+    //   this.__Rpt.printRPT('FDRPT');
+    // } else {
       this.__Rpt.downloadReport(
         '#FDRPT',
         {
-          title: 'FD Report',
+          title: 'FD Entry Report - ' + new Date().toLocaleDateString(),
         },
-        'FD Report'
+        new Date().getTime(),
+        'landscape',
+        this.__insTraxForm.value.options == 1 ? [2500,792] : [1000,792],
+        this.__exportedClmns.length
       );
-    }
+    // }
   }
 
   outsideClickforSubBrkArn(__ev) {

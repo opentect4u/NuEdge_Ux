@@ -263,7 +263,7 @@ export class IsinRptComponent implements OnInit {
   }
   onSelectItem(itemPerpage){
      this.pageNumber = itemPerpage;
-     this.getISINMst();
+     this.getISINMst()
   }
   getPaginate(__paginate){
     if (__paginate.url) {
@@ -271,15 +271,15 @@ export class IsinRptComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.pageNumber)
-          + ('&scheme_id='+ this.__isinFrm.value.scheme_id.map(item => item.id))
-          + ('&cat_id='+ this.__isinFrm.value.cat_id.map(item => item.id))
-          + ('&amc_id='+ this.__isinFrm.value.amc_id.map(item => item.id))
-          + ('&sub_cat_id='+ this.__isinFrm.value.sub_cat_id.map(item => item.id))
+          + ('&scheme_id='+  JSON.stringify(this.__isinFrm.value.scheme_id.map(item => item.id)))
+          + ('&cat_id='+ JSON.stringify(this.__isinFrm.value.cat_id.map(item => item.id)))
+          + ('&amc_id='+ JSON.stringify(this.__isinFrm.value.amc_id.map(item => item.id)))
+          + ('&sub_cat_id='+  JSON.stringify(this.__isinFrm.value.sub_cat_id.map(item => item.id)))
           + ('&search_scheme_id=' + global.getActualVal(this.__isinFrm.value.alt_scheme_id))
           + (
             this.__isinFrm.value.btn_type == 'A' ?
-            ('&plan_id=' + this.__isinFrm.value.plan_id.map(item => item.id)) +
-            ('&opt_id=' + this.__isinFrm.value.opt_id.map(item => item.id))
+            ('&plan_id=' + JSON.stringify(this.__isinFrm.value.plan_id.map(item => item.id))) +
+            ('&opt_id=' + JSON.stringify(this.__isinFrm.value.opt_id.map(item => item.id)))
             :
             ''
           )

@@ -1087,11 +1087,14 @@ setEuinDropdown(sub_brk_cd,rm){
   }
   exportPdf() {
       this.__Rpt.downloadReport(
-        '#InsAckRPT',
+        '#InsMuRPT',
         {
-          title: 'Insurance Acknowledgement Report',
+          title: 'Manual Update  Report For Insurance - '+new Date().toLocaleDateString(),
         },
-        'Insurance Acknowledgement Report  '
+        new Date().getTime(),
+        'l',
+        this.__insTraxForm.value.options == 1 ?  [1800,792] : [900,792],
+        this.__exportedClmns.length
       );
   }
 

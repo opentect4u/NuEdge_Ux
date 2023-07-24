@@ -65,8 +65,8 @@ export class productClmns{
     {field:'ins_type_name',header:'Insurance Type'},
     {field:'comp_full_name',header:'Company Full Name'},
     {field:'comp_short_name',header:'Company Short Name'},
-    {field:'product_type',header:'Company Short Name'},
-    {field:'product_name',header:'Company Short Name'}
+    {field:'product_type',header:'Product Type'},
+    {field:'product_name',header:'Product'}
   ];
 }
 export class productTypeClmns{

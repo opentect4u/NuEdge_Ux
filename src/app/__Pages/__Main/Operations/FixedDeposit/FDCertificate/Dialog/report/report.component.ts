@@ -581,9 +581,12 @@ export class ReportComponent implements OnInit {
       this.__Rpt.downloadReport(
         '#FDC',
         {
-          title: 'FD Certificate Delivery Report',
+          title: 'FD Certificate Delivery Report - '+ new Date().toLocaleDateString(),
         },
-        'FD Certificate Delivery Report'
+        new Date().getTime(),
+        'landscape',
+        this.__insTraxForm.value.options == 1 ? [2500,792] : [1000,792],
+        this.__exportedClmns.length
       );
   }
 

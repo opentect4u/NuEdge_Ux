@@ -488,7 +488,7 @@ mat-card {
   text-align: center!important;
   padding: 1rem 1rem;
   border: 1px solid #6a6a6a;
-  border-width: 0 0 1px 0;
+  border-width: 0px!important;
   font-weight: 600;
   color: #495057;
   background: #222f3f;
@@ -582,3 +582,33 @@ mat-card {
 .p-dropdown-label{
   font-weight: 700!important;
 }
+
+.p-datatable  .p-sortable-column-icon{
+  color: #ffffff;
+}
+.p-datatable .p-sortable-column:not(.p-highlight):hover
+.p-sortable-column-icon{
+  color: #ffffff;
+}
+
+.p-datatable .p-sortable-column:not(.p-highlight):hover,
+.p-datatable .p-sortable-column.p-highlight
+{
+  background-color: black!important;
+  color:#fff!important;
+}
+
+/* .p-datatable  .p-sortable-column-icon{
+  color: #ffffff;
+}
+:host ::ng-deep .p-datatable .p-sortable-column:not(.p-highlight):hover
+.p-sortable-column-icon{
+  color: #ffffff;
+}
+:host ::ng-deep
+.p-datatable .p-sortable-column:not(.p-highlight):hover,
+.p-datatable .p-sortable-column.p-highlight
+{
+  background-color: black!important;
+  color:#fff!important;
+} */
