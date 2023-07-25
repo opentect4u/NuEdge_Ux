@@ -2,7 +2,7 @@
   <div class="col-sm-12">
 
 
-    <div class="card mb-5">
+    <div class="card">
       <div class="card-header p-3 d-flex justify-content-between">
          <b  class="m-0 d-flex align-items-center">
            <mat-icon class="mr-2">
@@ -39,8 +39,8 @@
                 <label for="date_range">Date Range (From - To)</label>
                 <p-calendar
                 #dateRng
-                [maxDate]="calculateDates('T')"
-                [minDate]="calculateDates('P')"
+                [maxDate]="maxDate"
+                [minDate]="minDate"
                 dateFormat="dd/mm/yy"
                 placeholder="Select Date Range"
                 formControlName="date_range"
@@ -191,12 +191,14 @@
     </div>
 
 
-    <!-- <div class="card my-3">
+    <div class="card my-3" #tableCard>
+      <div class="card-header py-1 px-3 d-flex justify-content-between">
+        <b class="m-0 d-flex align-items-center"><i class="pi pi-database mr-1" style="font-size:2rem"></i>Reports</b>
 
-      <div class="card-header">
-        <b class="m-0 d-flex align-items-center">
-          <i class="pi pi-database mr-1" style="font-size:2rem"></i>
-          Reports</b>
+        <button mat-icon-button [matTooltip]="'Close Report'" (click)="hideCard('none')">
+          <mat-icon>close</mat-icon>
+        </button>
+
       </div>
       <div class="card-body">
         <p-table
@@ -206,14 +208,14 @@
         [rowHover]="true"
         styleClass="p-datatable-striped"
         [autoLayout]="true"
-        [columns]="column"
         [scrollable]="true"
+        [columns]="column"
         [tableStyle]="{ 'min-width': '250rem' }"
-        scrollDirection="horizontal"
         >
           <ng-template pTemplate="header">
               <tr>
-                  <th  *ngFor="let col of column"  [pSortableColumn]="col.field" [style.width]="'10rem'">
+                  <th  *ngFor="let col of column" [pSortableColumn]="col.field"
+                   [style.width]="'18rem'">
                     {{ col.header }}
                     <p-sortIcon [field]="col.field">
                     </p-sortIcon>
@@ -224,6 +226,9 @@
             <tr tabindex="999">
               <td *ngFor="let col of column">
                 <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                    <b>{{i + 1}}</b>
+                 </ng-container>
                  <ng-container *ngSwitchCase="col.field == 'trans_date'">
                     <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                  </ng-container>
@@ -238,19 +243,36 @@
               </tr>
             </ng-template>
 
-          <ng-template pTemplate="emptymessage" let-trxn>
+          <ng-template pTemplate="emptymessage" let-columns>
             <tr>
-              <td [attr.colspan]="21">
+              <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
                  No Records Found
               </td>
             </tr>
           </ng-template>
+          <ng-template pTemplate="footer" *ngIf="misTrxnRpt.value.client_name">
+            <tr>
+              <td  *ngFor="let col of column">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                    <label>Total</label>
+                 </ng-container>
+                 <ng-container *ngSwitchCase="col.field == 'amount'">
+                  <label>{{total_net_amt | currency: 'INR'}}</label>
+               </ng-container>
+                  </ng-container>
+              </td>
+           </tr>
+           <tr>
+            <th  *ngFor="let col of column"
+             [style.width]="'18rem'">
+              {{ col.header }}
+
+            </th>
+        </tr>
+          </ng-template>
       </p-table>
-      <ng-template pTemplate="footer">
-        <div class="flex align-items-center justify-content-between">
-          In total there are {{trxnRpt ? trxnRpt.length : 0 }} Transactions.
-      </div>
-    </ng-template>
+
       </div>
       <div class="card-footer">
         <label>
@@ -258,7 +280,7 @@
         </label>
       </div>
 
-    </div> -->
+    </div>
 
   </div>
 </div>

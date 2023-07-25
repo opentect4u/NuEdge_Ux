@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   debounceTime,
@@ -31,6 +31,9 @@ import { dates } from 'src/app/__Utility/disabledt';
 })
 export class TrxnRptComponent implements OnInit {
 
+  @ViewChild('tableCard') tableCard:ElementRef
+
+  total_net_amt:number;
 
   /**
    * For Holding Max Date And Min Date form Prime Ng Calendar
@@ -249,7 +252,10 @@ export class TrxnRptComponent implements OnInit {
   ngOnInit(): void {
     this.getAmcMst();
     this.getTrxnTypeMst();
+    this.maxDate= this.calculateDates('T');
+    this.minDate= this.calculateDates('P');
   }
+
 
   calculateDates  =  (mode:string):Date =>{
     let dt = new Date();
@@ -274,10 +280,10 @@ export class TrxnRptComponent implements OnInit {
   };
 
   ngAfterViewInit() {
-
+    this.hideCard('none');
 
    /**
-    *
+    *  Event Trigger on change on Date Periods
     */
    this.misTrxnRpt.controls['date_periods'].valueChanges.subscribe((res) => {
     this.misTrxnRpt.controls['date_range'].reset(
@@ -394,16 +400,6 @@ export class TrxnRptComponent implements OnInit {
       this.setEuinDropdown(res, this.misTrxnRpt.value.rm_id);
     });
   }
-
-  getTrxnRptMst = () => {
-    this.dbIntr
-      .api_call(1, '/showTransDetails', null)
-      .pipe(pluck('data'))
-      .subscribe((res: TrxnRpt[]) => {
-        this.trxnRpt = res;
-      });
-  };
-
   /**
    *  call API for get transaction according to search result
    */
@@ -429,9 +425,20 @@ export class TrxnRptComponent implements OnInit {
 
     this.dbIntr
       .api_call(1, '/showTransDetails', TrxnDt)
-      .pipe(pluck('data'))
+      .pipe(
+        pluck('data'),
+        tap((item:TrxnRpt[]) => {
+          let amt =0;
+          item.map( item => {
+            amt+=Number(item.amount);
+            this.total_net_amt  =amt;
+          })
+        })
+        )
       .subscribe((res: TrxnRpt[]) => {
+       this.hideCard('block');
         this.trxnRpt = res;
+
       });
   };
 
@@ -741,5 +748,9 @@ export class TrxnRptComponent implements OnInit {
       this.__RmMst = [];
       this.misTrxnRpt.controls['rm_id'].setValue([],{emitEvent:true});
     }
+  }
+
+  hideCard = (display_mode) =>{
+   this.tableCard.nativeElement.style.display = display_mode;
   }
 }

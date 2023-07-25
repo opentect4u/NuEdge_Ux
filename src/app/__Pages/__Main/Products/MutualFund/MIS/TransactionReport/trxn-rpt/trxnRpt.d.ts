@@ -7,7 +7,10 @@
 declare  global{
 
 interface TrxnRpt{
-     id:number;
+     id:number
+     bu_type:string | null
+     branch:string | null
+     rm_name:string | null
       arn_no:string | null
       sub_brk_cd:string | null
       euin_no:string | null
@@ -41,6 +44,7 @@ interface TrxnRpt{
       tds:string | null
       acc_no:string | null
       bank_name:string | null
+      gross_amount:string|null
    }
 }
 
