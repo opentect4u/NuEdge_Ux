@@ -612,3 +612,7 @@ mat-card {
   background-color: black!important;
   color:#fff!important;
 } */
+
+.dropdown-list{
+  overflow: hidden!important;
+}

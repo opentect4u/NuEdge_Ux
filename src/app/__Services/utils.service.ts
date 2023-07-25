@@ -93,7 +93,7 @@ export class UtiliService {
     });
   }
 
-  public settingsfroMultiselectDropdown(__id, __text, __placeholder,limit:number | undefined  = 2) {
+  public settingsfroMultiselectDropdown(__id, __text, __placeholder,limit:number | undefined  = 2,max_hieght:number | undefined = 197) {
     let settings = {
       singleSelection: false,
       idField: __id,
@@ -104,7 +104,7 @@ export class UtiliService {
       allowSearchFilter: true,
       limitSelection: -1,
       clearSearchFilter: true,
-      maxHeight: 197,
+      maxHeight: max_hieght,
       itemsShowLimit: limit,
       searchPlaceholderText: __placeholder,
       noDataAvailablePlaceholderText: 'No records found',
@@ -186,5 +186,15 @@ export class UtiliService {
     Object.keys(obj).forEach((key) => formData.append(key, (obj[key] ? obj[key] : '')));
     console.log(formData);
     return formData;
+  }
+
+  /**
+   * map id from array and get array of string
+   * @param arr
+   * @param key
+   * @returns
+   */
+  mapIdfromArray = (arr,key) =>{
+     return JSON.stringify(arr.map(item => {return item[key]}))
   }
 }

@@ -51,6 +51,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { modeOfPrePipe } from '../__Pipes/modeOfPremium.pipe';
 import { PaginateComponent } from './core/paginate/paginate.component';
 import { TdsInfoPipe } from '../__Pipes/tdsInfo.pipe';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -58,6 +59,7 @@ import { TdsInfoPipe } from '../__Pipes/tdsInfo.pipe';
     MatDialogModule,
     MatTableModule,
     ReactiveFormsModule,
+    FormsModule,
     OverlayModule,
     MatSortModule,
     DragDropModule,
@@ -126,6 +128,7 @@ import { TdsInfoPipe } from '../__Pipes/tdsInfo.pipe';
     MatSortModule,
     MatChipsModule,
     DragDropModule,
+    FormsModule,
     MatButtonToggleModule,
     MatCheckboxModule,
     MatTableExporterModule,
