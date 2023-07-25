@@ -1,0 +1,22 @@
+[
+  {
+    "id":"D",
+    "periods":"Today"
+  },
+  {
+    "id":"W",
+    "periods":"This Week"
+  },
+  {
+    "id":"M",
+    "periods":"This Month"
+  },
+  {
+    "id":"Y",
+    "periods":"This Year"
+  },
+  {
+    "id":"R",
+    "periods":"Date Range"
+  }
+]

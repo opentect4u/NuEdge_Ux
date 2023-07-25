@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
       has_submenu: 'N',
       url: '',
       icon: '',
+      img:"manualEntry.png",
       id: 36,
       flag: 'M',
       isvisible: atob(this.__RtDT.snapshot.paramMap.get("id")) == 'E' ? true : false
@@ -33,6 +34,7 @@ export class HomeComponent implements OnInit {
       has_submenu: 'N',
       url: '',
       icon: '',
+      img:'reports.png',
       id: 0,
       flag: 'R',
       isvisible: false
@@ -44,6 +46,7 @@ export class HomeComponent implements OnInit {
       has_submenu: 'N',
       url: (atob(this.__RtDT.snapshot.paramMap.get('id')) =='E' ? '/main/master/mstOperations/clntMst/clOption/clientmaster/' : '/main/master/mstOperations/clntMst/clOption/addnew/clientmaster/')+this.__RtDT.snapshot.paramMap.get('id') +'/clUploadCsv',
       icon: '',
+      img:"manualUpload.png",
       id: 35,
       flag: 'U',
       isvisible: false
@@ -54,6 +57,7 @@ export class HomeComponent implements OnInit {
       has_submenu: 'N',
       url: '',
       icon: '',
+      img:"autoUpload.png",
       id: 35,
       flag: 'A',
       isvisible: false

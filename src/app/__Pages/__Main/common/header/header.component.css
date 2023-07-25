@@ -15,3 +15,9 @@
 ::ng-deep .p-component-overlay{
   z-index: 9999!important;
 }
+
+span{
+  font-size: 20px;
+  font-weight: 500;
+  color: #767676;
+}

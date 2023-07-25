@@ -1,11 +1,77 @@
 <div class="row flexSec">
   <div class="col-sm-12">
-    <div class="card mb-3">
+
+
+    <div class="card">
+      <div class="card-header p-3">
+         <b  class="m-0 d-flex align-items-center">
+           <mat-icon class="mr-2">
+            search
+           </mat-icon>
+           Search Transaction Report
+         </b>
+      </div>
+      <div class="card-body">
+      <form [formGroup]="misTrxnRpt" (ngSubmit)="searchTrxnReport()">
+          <div class="row">
+              <div class="col-sm-3">
+                   <label for="date_periods">Periods</label>
+                   <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
+                    <option value="">Select</option>
+                    <option [value]="periods.id"  *ngFor="let periods of periods_type">{{periods.periods}}</option>
+                   </select>
+              </div>
+              <div class="col-sm-3">
+                <label for="date_range">Date Range (From - To)</label>
+                <p-calendar
+                dateFormat="dd/mm/yy"
+                placeholder="Select Date Range"
+                formControlName="date_range"
+                selectionMode="range"
+                [readonlyInput]="true"
+                [showIcon]="true"
+                [hideOnDateTimeSelect]="true"
+                [showButtonBar]="true">
+                </p-calendar>
+           </div>
+           <div class="col-sm-3">
+            <app-core-srch
+            [label] = "'Client Details'"
+            [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+            [isPending]="__isClientPending"
+            [listItems] = "__clientMst"
+            [flag] = "'C'"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [propertiesToShow] = "['client_code','pan','client_name']"
+            formControlName="client_name"
+            [displayMode]="displayMode_forClient"
+            (setDisplayMode)="displayMode_forClient = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            ></app-core-srch>
+           </div>
+           <div class="col-sm-3">
+            <label for="amc_id">AMC</label>
+            <ng-multiselect-dropdown
+             [id]="'amc_id'"
+             [placeholder]="'Select AMC'"
+            [settings]="settingsforAMCDropdown"
+            [data]="amcMst"
+            formControlName="amc_id">
+          </ng-multiselect-dropdown>
+           </div>
+          </div>
+      </form>
+      </div>
+    </div>
+
+
+    <!-- <div class="card my-3">
 
       <div class="card-header">
-        <label class="m-0 d-flex align-items-center">
+        <b class="m-0 d-flex align-items-center">
           <i class="pi pi-database mr-1" style="font-size:2rem"></i>
-          Reports</label>
+          Reports</b>
       </div>
       <div class="card-body">
         <p-table
@@ -67,7 +133,7 @@
         </label>
       </div>
 
-    </div>
+    </div> -->
 
   </div>
 </div>

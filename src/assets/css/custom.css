@@ -747,3 +747,28 @@ textarea:focus {
   margin-top: 35px;
   height: calc(100vh - 35px);
 }
+/*Notification CSS*/
+/* .Notification{
+  height: 100vh;
+  position: relative;
+  width: 100%;
+
+} */
+.Notification>.no__notification{
+  position: absolute;
+  top: 50%;
+  width: calc(100% - 25px);
+  text-align: center;
+  transform: translate(0, -50%);
+
+}
+.no__notification>p>b{
+  font-size: 14px;
+    font-weight: 500;
+    color: #5d5d5d;
+}
+/** End*/
+/**Prime Ng Sidepanel CSS**/
+.p-sidebar-content{
+ height: 100%!important;
+}

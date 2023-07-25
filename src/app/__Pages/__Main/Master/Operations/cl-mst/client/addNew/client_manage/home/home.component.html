@@ -2,8 +2,11 @@
   <div class="col-sm-2" *ngFor="let items of __menu" (click)="navigate(items)" [hidden]="items.isvisible">
     <div class="smallBox">
       <div class="smallBoxIconSec">
-        <div class="iconCol_12 iconSec">
+        <!-- <div class="iconCol_12 iconSec">
           <i class="fa fa-user-o" aria-hidden="true"></i>
+        </div> -->
+        <div class="iconSec">
+          <img [src]="'../../../../../../../../../../assets/images/' + items.img" alt="{{items.menu_name}}">
         </div>
       </div>
       <h2>{{items.menu_name}}</h2>

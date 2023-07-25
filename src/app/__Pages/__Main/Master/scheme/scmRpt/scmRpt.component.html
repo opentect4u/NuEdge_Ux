@@ -59,22 +59,108 @@
             </div>
           </div>
             <div class="row">
-              <div class="col-sm-4">
-                <label for="amc_name">AMC </label>
-                <input type="text" placeholder="Enter AMC" name="amc_name" id="amc_name" class="form-control"
+              <div class="col-sm-3">
+                  <label for="amc_name">AMC </label>
+                  <ng-multiselect-dropdown
+                  id="amc_name"
+                  [placeholder]="'Select AMC'"
+                  [settings]="settings"
+                  [data]="__amcMst"
                   formControlName="amc_name">
+                </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-4">
-                <label for="scm_name">Scheme </label>
-                <input type="text" placeholder="Scheme Name" name="scm_name" id="scm_name" class="form-control"
-                  formControlName="scheme_name">
+              <div class="col-sm-3">
+                <label for="cat_id">Category </label>
+                  <ng-multiselect-dropdown
+                  id="cat_id"
+                  [placeholder]="'Select Category'"
+                  [settings]="settingsForcat"
+                  [data]="__catMst"
+                  formControlName="cat_id">
+                </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-4 d-flex justify-content-end align-items-end" *ngIf="__scmForm.get('advanceFlt').value != 'A'">
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              <div class="col-sm-3">
+                <label for="subcat_id">Sub-Category </label>
+                  <ng-multiselect-dropdown
+                  id="subcat_id"
+                  [placeholder]="'Select Sub-Category'"
+                  [settings]="settingsForsubcat"
+                  [data]="__subcatMst"
+                  formControlName="subcat_id">
+                </ng-multiselect-dropdown>
               </div>
-
+              <div class="col-sm-3">
+                <label for="scheme_id">Scheme </label>
+                  <ng-multiselect-dropdown
+                  id="scheme_id"
+                  [placeholder]="'Select Scheme'"
+                  [settings]="settingsForScm"
+                  [data]="schemeMst"
+                  formControlName="scheme_id">
+                </ng-multiselect-dropdown>
+              </div>
             </div>
-            <ng-container  *ngIf="__scmForm.get('advanceFlt').value == 'A'">
+            <div class="row">
+               <div class="col-sm-3">
+                <app-core-srch
+                [label] = "'Scheme'"
+                [placeholder]="'Search By Scheme'"
+                [isPending]="__isSchemeSpinner"
+                [listItems] = "searchedSchemeMst"
+                [flag] = "'S'"
+                [noDataFoundTitle]="'Sorry!! No Records Found'"
+                [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                [propertiesToShow] = "['scheme_name']"
+                formControlName="alt_scheme_name"
+                [displayMode]="displayMode_forScheme"
+                (setDisplayMode)="displayMode_forScheme = $event"
+                (selectedItems)="getSelectedItemsFromParent($event)"
+                ></app-core-srch>
+               </div>
+               <ng-container *ngIf="__scmForm.value.advanceFlt == 'A';else normalFilt">
+                <div class="col-sm-3">
+                  <label for="trxn_type">Trxn Type</label>
+                  <ng-multiselect-dropdown
+                  id="trxn_type"
+                  [placeholder]="'Select Trxn Type'"
+                  [settings]="settings_for_trxn_type"
+                  [data]="__trxnType"
+                  formControlName="trxn_type">
+                </ng-multiselect-dropdown>
+                </div>
+                <div class="col-sm-3">
+                  <label for="amt_rng">Amount Range</label>
+                   <input type="text"
+                   name="amt_rng"
+                   placeholder="Enter Amount Range"
+                   id="amt_rng"
+                   class="form-control"
+                   formControlName="amt_rng"
+                   >
+                 </div>
+                <div class="col-sm-3">
+                  <label for="freq">Frequency</label>
+                  <ng-multiselect-dropdown
+                  id="freq"
+                  [placeholder]="'Select Frequency'"
+                  [settings]="settings_for_freq"
+                  [data]="__freq"
+                  formControlName="freq">
+                </ng-multiselect-dropdown>
+                 </div>
+               </ng-container>
+               <ng-template #normalFilt>
+                <div class="col-sm-9 d-flex justify-content-end align-items-end">
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                </div>
+               </ng-template>
+            </div>
+            <div class="row mt-1" *ngIf="__scmForm.get('advanceFlt').value == 'A'">
+              <div class="col-sm-12 d-flex justify-content-end align-items-end">
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                </div>
+            </div>
+            <!-- <ng-container  *ngIf="__scmForm.get('advanceFlt').value == 'A'">
             <div class="row">
               <div class="col-sm-4">
                 <div class="progressMainSec"  appClOutsideClick (appOutsideClick)="outsideClick($event,'C')">
@@ -134,7 +220,7 @@
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
             </div>
-          </ng-container>
+          </ng-container> -->
         </form>
     </div>
     <div class="card border-1 rounded-top mt-2">
@@ -403,9 +489,9 @@
           <th mat-header-cell *matHeaderCellDef>Scheme Type</th>
           <td mat-cell *matCellDef="let element">{{element.scheme_type == 'O' ? 'Ongoing Scheme' : 'NFO'}}</td>
         </ng-container>
-        <ng-container matColumnDef="amc_name">
+        <ng-container matColumnDef="amc_short_name">
           <th mat-header-cell *matHeaderCellDef>AMC</th>
-          <td mat-cell *matCellDef="let element">{{element.amc_name ? element.amc_name : 'N/A'}}</td>
+          <td mat-cell *matCellDef="let element">{{element.amc_short_name ? element.amc_short_name : 'N/A'}}</td>
         </ng-container>
         <ng-container matColumnDef="cat_name">
           <th mat-header-cell *matHeaderCellDef>Category</th>

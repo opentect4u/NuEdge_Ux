@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "trxn_type": "SIP"
+  },
+  {
+    "id": 2,
+    "trxn_type": "STP"
+  },
+  {
+    "id": 3,
+    "trxn_type": "SWP"
+  }
+]

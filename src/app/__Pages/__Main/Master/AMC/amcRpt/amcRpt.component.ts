@@ -77,32 +77,30 @@ export class AmcrptComponent implements OnInit {
     this.getAMCMasterForDropDown();
     // this.addLevelsCheckBox(amcClmns.LEVELS);
     this.showColumns(2);
-    this.getAmcMst();
+    console.log(this.data);
+    setTimeout(() => {
+      this.getAmcMst();
+    }, 500);
+
+  }
+  setRntCheckBox = (rntId) =>{
+            if(rntId){
+              this.rnt_id.controls.map(item =>
+                {
+                  return item.get('isChecked').setValue((Number(item.value.id) == Number(rntId)),{emitEvent:false})
+              });
+            }
   }
   getRntMst(){
     this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck('data')).subscribe((res:rnt[]) =>{
-          res.forEach((el:rnt) =>{this.rnt_id.push(this.setRNTForm(el))})
+          res.forEach((el:rnt) =>{this.rnt_id.push(this.setRNTForm(el))});
+         this.setRntCheckBox(this.data.rnt_id);
     })
   }
   get rnt_id():FormArray{
       return this.__detalsSummaryForm.get('rnt_id') as FormArray;
   }
-  // addLevelsCheckBox(levels){
-  //   levels.forEach(el =>{
-  //     this.level.push(this.setlevelFormControl(el))
-  //   })
-  // }
-  // get level(): FormArray{
-  //   return this.__detalsSummaryForm.get('level') as FormArray
-  // }
-  // setlevelFormControl(level):FormGroup{
-  //   return new FormGroup({
-  //     isChecked: new FormControl(false),
-  //     id: new FormControl(level? level.id : 0),
-  //     name: new FormControl(level? level.value : ''),
-  //     sub_menu:new FormControl(level? level.submenu : '')
-  // })
-  // }
+
   setRNTForm(rnt):FormGroup{
     return new FormGroup({
       id:new FormControl(rnt ? rnt?.id : 0),

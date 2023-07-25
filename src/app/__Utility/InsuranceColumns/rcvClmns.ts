@@ -14,7 +14,7 @@ export class insRcvFrmClmns{
     {field:'proposer_code',header:'Proposer Code',isVisible:[1]},
     {field:'ins_type_name',header:'Insurance Type',isVisible:[1]},
     {field:'insure_bu_type',header:'Insurance Business Type',isVisible:[1]},
-    {field:'company_name',header:'Company Name',isVisible:[1,2]},
+    {field:'comp_short_name',header:'Company Name',isVisible:[1,2]},
     {field:'rec_datetime',header:'Receive Date Time',isVisible:[1,2]},
     {field:'recv_from',header:'Receive From',isVisible:[1,2]},
     {field:'remarks',header:'Remarks',isVisible:[1]}
