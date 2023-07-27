@@ -499,7 +499,9 @@ table {
   border: 1px solid #d1d1d1;
   z-index: 1000;
   background: #fff;
-  box-shadow: 0px 3px 9px 0px grey;
+  /* box-shadow: 0px 3px 9px 0px grey; */
+  box-shadow: 0px 3px 12px 0px #bababa;
+  margin-top: 1px;
 }
 
 .serachresult_client ul {

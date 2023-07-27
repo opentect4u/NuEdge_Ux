@@ -1,6 +1,55 @@
 [
   {
     "id":1,
-    "name":"Transaction File (CSV With Header)"
+    "name":"Transaction File (CSV With Header)",
+     "sub_menu":[
+      {
+        "id":1,
+        "name":"WBR2",
+        "parent_id":1
+      },
+      {
+        "id":2,
+        "name":"WBR2A",
+        "parent_id":1
+      },
+      {
+        "id":3,
+        "name":"MFSD201",
+        "parent_id":2
+      }
+     ]
+  },
+  {
+    "id":2,
+    "name":"SIP / STP Report",
+    "sub_menu":[
+      {
+        "id":4,
+        "name":"WBR49",
+        "parent_id":1
+      },
+      {
+        "id":5,
+        "name":"MFSD243",
+        "parent_id":2
+      }
+     ]
+  },
+  {
+    "id":3,
+    "name":"Folio Master",
+    "sub_menu":[
+      {
+        "id":5,
+        "name":"WBR9",
+        "parent_id":1
+      },
+      {
+        "id":6,
+        "name":"MFSD211",
+        "parent_id":2
+      }
+     ]
   }
 ]

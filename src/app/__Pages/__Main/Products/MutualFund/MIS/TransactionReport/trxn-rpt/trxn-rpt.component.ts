@@ -23,6 +23,9 @@ import { global } from 'src/app/__Utility/globalFunc';
 import filterOpt from '../../../../../../../../assets/json/filterOption.json';
 import { Calendar } from 'primeng/calendar';
 import { dates } from 'src/app/__Utility/disabledt';
+import { totalAmt } from 'src/app/__Model/TotalAmt';
+
+
 
 @Component({
   selector: 'app-trxn-rpt',
@@ -33,7 +36,15 @@ export class TrxnRptComponent implements OnInit {
 
   @ViewChild('tableCard') tableCard:ElementRef
 
-  total_net_amt:number;
+
+  /**
+   * For Display Total Amount
+   */
+    total:totalAmt;
+
+  /**
+   * For Display Total
+   */
 
   /**
    * For Holding Max Date And Min Date form Prime Ng Calendar
@@ -79,7 +90,7 @@ export class TrxnRptComponent implements OnInit {
   /**
    * Hold column for transaction table
    */
-  column: column[] = trxnClm.column;
+  column: column[] = trxnClm.column.filter((item:column) => (item.field!='scheme_link' && item.field!='isin_link' ));
 
   /**
    * Holding AMC Master Data
@@ -428,11 +439,19 @@ export class TrxnRptComponent implements OnInit {
       .pipe(
         pluck('data'),
         tap((item:TrxnRpt[]) => {
-          let amt =0;
-          item.map( item => {
-            amt+=Number(item.amount);
-            this.total_net_amt  =amt;
-          })
+            let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
+            item.map( item => {
+              net_amt+=Number(item.amount);
+              gross_amt+=Number(item.gross_amount ? item.gross_amount : 0);
+              tds+=Number(item.tds ? item.tds : 0);
+              stamp_duity+=Number(item.stamp_duty);
+                this.total = {
+                      net_amt:net_amt,
+                      stamp_duity:stamp_duity,
+                      tds:tds,
+                      gross_amt:gross_amt
+                };
+            });
         })
         )
       .subscribe((res: TrxnRpt[]) => {
@@ -606,7 +625,7 @@ export class TrxnRptComponent implements OnInit {
       });
   };
   /**
-   * Event Trigger for Advacne Filter / Normal Filter
+   * Event Trigger for Advacne Filter / Reset
    * @param ev
    */
   onItemClick = (ev) => {
@@ -619,13 +638,15 @@ export class TrxnRptComponent implements OnInit {
           folio_no:'',
           trxn_type_id:[],
           date_range:'',
-          date_periods:''
+          date_periods:'',
+          client_id:'',
+          pan_no:''
          });
          this.misTrxnRpt.get('brn_cd').setValue([],{emitEvent:true});
          this.__subbrkArnMst = [];
          this.misTrxnRpt.controls['sub_brk_cd'].setValue([]);
          this.misTrxnRpt.controls['euin_no'].setValue([]);
-
+         this.misTrxnRpt.controls['client_name'].setValue('',{emitEvent:false});
     }
   };
 

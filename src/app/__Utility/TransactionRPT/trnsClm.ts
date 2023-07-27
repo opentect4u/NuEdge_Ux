@@ -27,7 +27,9 @@ export class trxnClm{
    {field:'bank_name',header:'Bank'},
    {field:'stt',header:'STT'},
    {field:'trans_mode',header:'Transaction Mode'},
-   {field:'remarks',header:'Remarks'}
+   {field:'remarks',header:'Remarks'},
+   {field:'scheme_link',header:'Scheme Link'},
+   {field:'isin_link',header:'ISIN Link'}
  ]
 }
 

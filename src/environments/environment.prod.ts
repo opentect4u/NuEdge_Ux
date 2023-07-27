@@ -17,7 +17,7 @@ export const environment = {
   kyc_formUrl:url + "public/kyc-form/",
   kyc_ack_form_url: url + "public/kyc-acknowledgement-copy/",
   kyc_scan_copy: url + "public/kyc-scan-copy/",
-  kyc_reject_memo: "http//192.168.1.5/nuedge/public/kyc-reject-memo/",
+  kyc_reject_memo: url + "public/kyc-reject-memo/",
   /******************END KYC****************/
 
 
@@ -41,7 +41,7 @@ export const environment = {
   app_formUrl:url + "public/application-form/",
   ack_formUrl:url + "public/acknowledgement-copy/",
   soa_copy_url:url + "public/soa-copy/",
-  reject_memo: "http//192.168.1.5/nuedge/public/reject-memo/",
+  reject_memo: url + "public/reject-memo/",
   /********************************* End MUTUAL FUND **************************************/
   amc_logo_url:url + "public/amc-logo/",
   scheme_upload_forms:url + "public/application-forms/",

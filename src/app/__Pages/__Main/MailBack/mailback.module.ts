@@ -22,6 +22,10 @@ const routes:Routes = [
           loadChildren:()=>import('./file-help/file-help.module').then(m => m.FileHelpModule)
       },
       {
+          path:'mailbackmismatch',
+          loadChildren:()=>import('./mailback-mismatch/mailback-mismatch.module').then(m => m.MailbackMismatchModule)
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

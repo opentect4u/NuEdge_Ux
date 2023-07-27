@@ -45,6 +45,9 @@ interface TrxnRpt{
       acc_no:string | null
       bank_name:string | null
       gross_amount:string|null
+      scheme_name:string | null
+      plan_name:string | null
+      option_name:string | null
    }
 }
 

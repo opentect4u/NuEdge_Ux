@@ -12,19 +12,30 @@ import { column } from 'src/app/__Model/tblClmns';
 import { manualUpload } from 'src/app/__Model/MailBack/manualUpload';
 import { environment } from 'src/environments/environment';
 
- export interface rec_response{
-     start_count:number;
-     end_count:number;
-     row_id?:number;
-     upload_file_name:string | null,
-     file_type_id:number;
-     file_id: number;
-     rnt_id:number;
-     file?:string | null;
-     upload_file?:string | null;
-     total_count?:number;
- }
+export interface rec_response {
+  start_count: number;
+  end_count: number;
+  row_id?: number;
+  upload_file_name: string | null;
+  file_type_id: number;
+  file_id: number;
+  rnt_id: number;
+  file?: string | null;
+  upload_file?: string | null;
+  total_count?: number;
+}
 
+export class file {
+  id: number;
+  name: string;
+  parent_id: number;
+}
+
+export class fileType {
+  id: number;
+  name: string;
+  sub_menu: file[];
+}
 
 @Component({
   selector: 'app-manual-upload',
@@ -32,8 +43,13 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./manual-upload.component.css'],
 })
 export class ManualUploadComponent implements OnInit {
+  /**
+   *  set Validation of extension
+   */
   allowedExtensions: string[] = ['csv'];
+
   __pageNumber: string | number = '10';
+
   manualUpldFrm = new FormGroup({
     file_type_id: new FormControl('', [Validators.required]),
     file_id: new FormControl('', [Validators.required]),
@@ -57,15 +73,18 @@ export class ManualUploadComponent implements OnInit {
   TabMenu: any = [];
 
   /**
-   * Holding file dropdown value comming from json file (/assets/json/file.json)
+   * Holding file dropdown value comming from json file (/assets/json/fileType.json)
    */
-  fileMst: { id: number; name: string; parent_id: number }[];
+  fileMst: file[] = [];
 
   /**
    * Holding file type dropdown value comming from json file (/assets/json/fileType.json)
    */
-  fileTypeMst: { id: number; name: string }[] = fileTypeMenu;
+  fileTypeMst: fileType[] = fileTypeMenu;
 
+  /**
+   * holding index number of currently active Tab
+   */
   tabindex: number = 0;
 
   /**
@@ -78,6 +97,15 @@ export class ManualUploadComponent implements OnInit {
   ngOnInit(): void {
     this.getrntMst();
   }
+
+  ngAfterViewInit() {
+    this.manualUpldFrm.controls['file_type_id'].valueChanges.subscribe(
+      (res) => {
+        this.fileMst = this.getFileMst(res);
+      }
+    );
+  }
+
   /**
    * Getting R&T details from backend API and sent this to the tab section
    */
@@ -98,8 +126,21 @@ export class ManualUploadComponent implements OnInit {
    */
   onTabChange = (ev) => {
     this.manualUpldFrm.get('rnt_id').setValue(ev.tabDtls.id);
-    this.fileMst = fileMenu.filter((item) => item.parent_id == ev.tabDtls.id);
+    this.fileMst = this.getFileMst(this.manualUpldFrm.value.file_type_id);
     this.getFileMstDT(ev.tabDtls.id);
+  };
+
+  /**
+   * get File master Data According to R&T and selected File Type (Location: /assets/json/fileType.json)
+   * @param file_type_id
+   */
+  getFileMst = (file_type_id: number) => {
+    return file_type_id
+      ? fileTypeMenu
+          .filter((item) => item.id == Number(file_type_id))
+          .map((item) => item.sub_menu)[0]
+          .filter((item) => item.parent_id == this.manualUpldFrm.value.rnt_id)
+      : [];
   };
 
   /**
@@ -116,54 +157,61 @@ export class ManualUploadComponent implements OnInit {
    * Submit data on server
    */
   uploadFile = () => {
-    if(this.manualUpldFrm.invalid){
-    return;
+    if (this.manualUpldFrm.invalid) {
+      return;
     }
     let start_count = 1;
     let end_count = 500;
-    const dt:rec_response = {...this.manualUpldFrm.value,end_count:end_count,start_count:start_count}
-    this.reccursiveUpload(dt)
-  }
+    const dt: rec_response = {
+      ...this.manualUpldFrm.value,
+      end_count: end_count,
+      start_count: start_count,
+    };
+    this.reccursiveUpload(dt);
+  };
 
-  reccursiveUpload = (dt:rec_response) =>{
-  // if(dt.total_count == dt.end_count){
+  reccursiveUpload = (dt: rec_response) => {
+    // if(dt.total_count == dt.end_count){
     this.dbIntr
-    .api_call(
-      1,
-      '/mailbackProcess',
-      this.utility.convertFormData(dt)
-    )
-    .pipe(pluck("data"))
-    .subscribe((res: any) => {
-      if(res.total_count == dt.end_count){return;}
+      .api_call(1, '/mailbackProcess', this.utility.convertFormData(dt))
+      .pipe(pluck('data'))
+      .subscribe((res: any) => {
+        if (res.total_count == dt.end_count) {
+          return;
+        }
         dt.upload_file_name = res?.upload_file_name;
         dt.file = '';
-        dt.upload_file= '';
+        dt.upload_file = '';
         dt.row_id = res?.row_id;
         dt.start_count = Number(dt.end_count) + 1;
-        dt.end_count = ((Number(res.end_count) + 500) > Number(res.total_count))
-        ? Number(res.total_count) : (Number(res.end_count) + 500);
+        dt.end_count =
+          Number(res.end_count) + 500 > Number(res.total_count)
+            ? Number(res.total_count)
+            : Number(res.end_count) + 500;
         dt.total_count = res.total_count;
         console.log(dt);
 
         this.reccursiveUpload(dt);
-    });
+      });
     // }
-  }
+  };
 
-  updateRow = (row_obj) =>{
+  updateRow = (row_obj) => {
     console.log(row_obj);
     // if(this.FileMstData.length != Number(this.__pageNumber)){
-        // this.FileMstData.push(row_obj);
-        this.FileMstData.splice(-1,1);
-        this.FileMstData.unshift(row_obj);
+    // this.FileMstData.push(row_obj);
+    this.FileMstData.splice(-1, 1);
+    this.FileMstData.unshift(row_obj);
     // }
     // else if(this.FileMstData.length == Number(this.__pageNumber)){
     //   // Nothing to deal with
     // }
-  }
+  };
 
-  getFileMstDT = (rnt_id: number, itemsPerPage: number | string | null = 10) => {
+  getFileMstDT = (
+    rnt_id: number,
+    itemsPerPage: number | string | null = 10
+  ) => {
     this.dbIntr
       .api_call(
         0,

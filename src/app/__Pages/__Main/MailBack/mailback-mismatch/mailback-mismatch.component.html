@@ -1,0 +1,16 @@
+<div class="row flexSec">
+  <div class="col-sm-12 mb-3">
+
+    <!-- Make the Tab Section Common -->
+    <core-tab [Tab]="TabMenu"
+    (GetTabDtls)="TabDetails($event)"></core-tab>
+    <div class="card">
+      <div class="card-body py-2">
+        <ng-container *ngIf="index == 0">
+          <mailBack-trxn-rpt-without-scm [trxnRptWithOutScm]="trxnTypeRpt"></mailBack-trxn-rpt-without-scm>
+        </ng-container>
+      </div>
+    </div>
+
+    </div>
+  </div>

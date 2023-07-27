@@ -1,5 +1,18 @@
-tr{
-  min-height: 37px;
+:host ::ng-deep .p-datatable-tbody>tr{
+  min-height: 33px;
+}
+
+:host ::ng-deep .p-datatable-scrollable>
+.p-datatable-wrapper>.p-datatable-table>
+.p-datatable-tfoot>tr{
+ min-height: 33px;
+}
+:host ::ng-deep .p-datatable-scrollable>
+.p-datatable-wrapper>.p-datatable-table>
+.p-datatable-tfoot>tr>td{
+  background-color: #222f3f;
+  color: #fff;
+  font-size: 13px!important;
 }
 th,td{
   width:12rem;
@@ -24,3 +37,6 @@ th,td{
   text-align: center!important;
 }
 
+:host ::ng-deep .p-datatable-footer{
+  background-color: red!important;
+}
