@@ -424,8 +424,8 @@ export class TrxnRptComponent implements OnInit {
     TrxnDt.append('sub_cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_cat_id, 'id'));
     TrxnDt.append('pan_no',global.getActualVal(this.misTrxnRpt.value.pan_no));
     TrxnDt.append('scheme_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.scheme_id, 'id'));
-    TrxnDt.append('trans_type_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_type_id,'trans_type'));
-    TrxnDt.append('trans_sub_type_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_sub_type_id,'trans_sub_type'));
+    TrxnDt.append('trans_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_type_id,'trans_type'));
+    TrxnDt.append('trans_sub_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_sub_type_id,'trans_sub_type'));
     if (this.btn_type == 'A') {
       TrxnDt.append('euin_no',this.utility.mapIdfromArray(this.misTrxnRpt.value.euin_no, 'euin_no'));
       TrxnDt.append('brn_cd',this.utility.mapIdfromArray(this.misTrxnRpt.value.brn_cd, 'id'));
@@ -600,7 +600,7 @@ export class TrxnRptComponent implements OnInit {
       .api_call(
         0,
         '/rntTransTypeSubtypeShow',
-        'arr_trans_type_id=' + this.utility.mapIdfromArray(trxnType, 'id')
+        'arr_trans_type=' + this.utility.mapIdfromArray(trxnType, 'trans_type')
       )
       .pipe(pluck('data'))
       .subscribe((res: rntTrxnType[]) => {
