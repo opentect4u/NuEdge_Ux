@@ -57,7 +57,7 @@ export class ManualUploadComponent implements OnInit {
     rnt_id: new FormControl('', [Validators.required]),
     file: new FormControl('', [
       Validators.required,
-      fileValidators.fileExtensionValidator(this.allowedExtensions),
+      // fileValidators.fileExtensionValidator(this.allowedExtensions),
     ]),
   });
   constructor(private dbIntr: DbIntrService, private utility: UtiliService) {}
