@@ -11,7 +11,8 @@ import { RouterModule, Routes } from '@angular/router';
     children:[
       {
         path:'home',
-        loadChildren:()=> import('./home/home.module').then(portHome => portHome.HomeModule)
+        loadChildren:()=> import('./home/home.module').then(portHome => portHome.HomeModule),
+        data:{title:' Portfolio Report',pageTitle:'Portfolio Report'}
       },
       {
         path:'',

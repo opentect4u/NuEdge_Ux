@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { UtiliService } from './__Services/utils.service';
 /**<=== Routing Change Event ==>*/
@@ -34,12 +34,14 @@ export class AppComponent {
     private __router: Router,
     private __actRoute: ActivatedRoute,
     private __title: Title,
-    private __utility: UtiliService
+    private __utility: UtiliService,
+    private meta:Meta
   ) {
     this.setTitle();
     // this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
     this.__router.events.subscribe((e : RouterEvent) => {
       this.navigationInterceptor(e);
+      this.__utility.cancelPendingRequests(); // Cancel all Pending request on route change
     })
 
   }
@@ -73,7 +75,11 @@ export class AppComponent {
         var rt = this.getChild(this.__actRoute);
         rt.data.subscribe((data) => {
           this.__utility.getRoute(data);
-          this.__title.setTitle(data.title);
+          this.__title.setTitle(data?.data ? data.data.title : data.title);
+          this.meta.addTags([
+              {name:'description',content:data?.data ? data.data.title : data.title},
+              {name:'author',content:data?.data ? data.data.pageTitle : data.pageTitle}
+          ])
         });
       });
   }

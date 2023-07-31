@@ -11,11 +11,12 @@ import { RouterModule, Routes } from '@angular/router';
     children:[
       {
         path:'home',
-        loadChildren:()=> import('./home/home.module').then(m => m.HomeModule)
+        loadChildren:()=> import('./home/home.module').then(m => m.HomeModule),
+        data:{title: "NuEdge - MIS", pageTitle: "MIS"}
       },
       {
        path:'mftrax',
-       loadChildren:()=> import('./MFTrax/mf-trx-home/mf-trx-home.module').then(m=> m.MfTrxHomeModule)
+       loadChildren:()=> import('./MFTrax/mf-trx-home/mf-trx-home.module').then(m=> m.MfTrxHomeModule),
       },
       {
        path:'transaction',

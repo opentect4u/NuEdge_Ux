@@ -8,7 +8,10 @@
         ></shared-upload-csv>
     </div>
     <div class="col-sm-5">
-      <shared-mst-dtls [btnTitle]="'View All Company'" [headerTitle]="'Recent Company'" [flag]="'IC'"
+      <shared-mst-dtls [btnTitle]="'View All Company'"
+      [headerTitle]="'Recent Company'"
+      [flag]="'IC'"
+      [props]="'comp_short_name'"
         (populate)="populateDT($event)" (viewAll)="viewAll()"
         [dataSource]="__cmpMst.data"></shared-mst-dtls>
     </div>

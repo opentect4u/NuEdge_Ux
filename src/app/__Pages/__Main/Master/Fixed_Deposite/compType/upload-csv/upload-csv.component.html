@@ -4,7 +4,9 @@
       [dataSource]="tableData" [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Company Type'" [headerTitle]="'Recent Company Type'" [flag]="'CT'"
+    <shared-mst-dtls [btnTitle]="'View All Company Type'"
+    [headerTitle]="'Recent Company Type'" [flag]="'CT'"
+    [props]="'comp_type'"
       (populate)="populateDT($event)"
       (viewAll)="viewAll()"
       [dataSource]="__selectCompType.data"></shared-mst-dtls>

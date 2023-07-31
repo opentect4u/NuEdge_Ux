@@ -53,7 +53,7 @@ styleClass="p-datatable-striped"
           <b>{{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A'}}</b>
        </ng-container>
        <ng-container *ngSwitchCase="col.field == 'tds'">
-        <b>{{ trxn[col.field] ? trxn[col.field] : 0}}</b>
+        <b>{{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}</b>
      </ng-container>
      <ng-container *ngSwitchDefault>
       <b>{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>

@@ -10,7 +10,8 @@ const routes: Routes = [{
   children:[
     {
       path:'home',
-      loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule)
+      loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule),
+      data:{title:"NuEdge - AUM Report",pageTitle:"AUM Report"}
     },
     {
       path:'',

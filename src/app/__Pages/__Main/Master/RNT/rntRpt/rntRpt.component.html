@@ -22,7 +22,7 @@
 
   <mat-dialog-content class="customDialog">
     <div class="card">
-      <div class="card-body p-5">
+      <div class="card-body px-3 py-2">
         <form [formGroup]="__rntSearchForm" (ngSubmit)="submit()" autoComplete="off">
         <div class="row ">
           <div class="col-sm-8 my-auto">
@@ -33,7 +33,7 @@
           </div>
         </div>
           <div class="row">
-            <div class="col-sm-5">
+            <div class="col-sm-4">
               <label for="rnt_id">R&T</label>
               <ng-multiselect-dropdown #multiSelect
               id="rnt_id"
@@ -44,11 +44,11 @@
             </ng-multiselect-dropdown>
 
             </div>
-            <div class="col-sm-5">
+            <div class="col-sm-4">
               <label for="contact_person">Contact Person</label>
               <input type="text"  name="contact_person" id="contact_person" placeholder="Contact Person" class="form-control" formControlName="contact_person">
             </div>
-            <div class="col-sm-2 d-flex align-items-end justify-content-end">
+            <div class="col-sm-4 d-flex align-items-end justify-content-end">
               <p-button type="button" (click)="reset()" label="Reset" icon="pi pi-refresh"
               iconPos="right" styleClass="p-button-lg p-button-danger"
               class="mx-3"></p-button>
@@ -102,11 +102,13 @@
         [resizableColumns]="true"
         selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
         scrollHeight="320px"
-        [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+        [autoLayout]="true"
+        [responsive]="true"
+        styleClass="p-datatable-gridlines"
         [tableStyle]="{ 'min-width': __rntSearchForm.value.options == 2 ? '150rem': '250rem' }">
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="(__rntSearchForm.value.options == 2) ? '12rem' : '18rem'">
+            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="(__rntSearchForm.value.options == 2) ? '12rem' : '22rem'">
               {{ col.header }}
               <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete' &&  col.field!= 'logo'" [field]="col.field">
               </p-sortIcon>

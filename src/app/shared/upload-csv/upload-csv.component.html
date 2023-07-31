@@ -1,9 +1,9 @@
-<div class="card">
+<div class="card rounded">
   <div class="card-header d-flex align-items-center justify-content-between">
     <h4>{{leftHeaderTitle}}</h4>
     <ng-container *ngIf="flag == 'FS'">
       <!-- -->
-      <button  mat-flat-button [matMenuTriggerFor]="menuFS">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
+      <button color="primary"  mat-flat-button [matMenuTriggerFor]="menuFS">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
       <mat-menu #menuFS="matMenu"  xPosition="before">
         <button  mat-menu-item
         (click)="export_comp_type.exportTable('xlsx',{fileName:'SampleCompanyType'})">
@@ -19,7 +19,7 @@
 
     </ng-container>
     <ng-container *ngIf="flag == 'SC'">
-      <button mat-button [matMenuTriggerFor]="menuSC">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
+      <button color="primary" mat-button [matMenuTriggerFor]="menuSC">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
         <mat-menu #menuSC="matMenu"  xPosition="before">
           <button mat-menu-item (click)="exporter2.exportTable('xlsx',{fileName:'SampleAMC'})">
             <mat-icon>download</mat-icon>Download AMC
@@ -40,7 +40,7 @@
         </mat-menu>
     </ng-container>
     <ng-container *ngIf="flag == 'IS'">
-      <button mat-button [matMenuTriggerFor]="menuSC">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
+      <button color="primary" mat-button [matMenuTriggerFor]="menuSC">Donwload<mat-icon>arrow_drop_down</mat-icon></button>
         <mat-menu #menuSC="matMenu"  xPosition="before">
           <button mat-menu-item (click)="exportOpt.exportTable('xlsx',{fileName:'SampleOption'})">
             <mat-icon>download</mat-icon>Download Option

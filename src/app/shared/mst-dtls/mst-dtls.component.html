@@ -15,8 +15,9 @@
           <div>
             <!-- <span>{{i + 1}}.</span> -->
             <a mat-button
-
-            (click)="showCorrospondingDtls(item)"> {{flag == 'R' ? item.rnt_name :
+            matTooltip="{{item[props]}}"
+            (click)="showCorrospondingDtls(item)">
+            <!-- {{flag == 'R' ? item.rnt_name :
               (flag == 'C' ? (item.cat_name | ellipsis: 25) :
               (flag == 'O' ? (item.opt_name | ellipsis: 25) :
               (flag == 'B' ? (item.bank_name | ellipsis: 25) :
@@ -32,7 +33,10 @@
               ((flag == 'G' || flag == 'GS' || flag == 'GD' || flag == 'GC') ? (item.name | ellipsis: 25) :
               ((flag == 'GP') ? (item.pincode) :
               (flag == 'IS' ? ((item.isin_no ) + ' ('+(item.product_code) +')') :  (item.plan_name | ellipsis: 25))
-              ))))))))))))))}}</a>
+              ))))))))))))))}} -->
+              {{(item[props] | ellipsis: 25)}}
+            </a>
+
           </div>
 
           <button mat-icon-button (click)="populateDT(item)" align="end">

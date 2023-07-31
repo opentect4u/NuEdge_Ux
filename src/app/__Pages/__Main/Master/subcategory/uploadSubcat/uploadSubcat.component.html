@@ -11,6 +11,7 @@
   <div class="col-sm-5">
     <shared-mst-dtls [btnTitle]="'View All Sub Category'"
     [headerTitle]="'Recent Sub Category'" [flag]="'S'"
+    [props]="'subcategory_name'"
       (populate)="populateDT($event)"
       (viewAll)="viewAll()"
       [dataSource]="__selectRNT.data"></shared-mst-dtls>

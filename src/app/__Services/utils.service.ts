@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { IBreadCrumb } from '../app.component';
 import { SnkbarComponent } from '../__Core/snkbar/snkbar.component';
@@ -19,6 +19,9 @@ import { global } from '../__Utility/globalFunc';
   providedIn: 'root',
 })
 export class UtiliService {
+
+  private cancelPendingRequests$ = new Subject<void>()
+
   private __brdCrumbs = new BehaviorSubject<breadCrumb[]>([]);
   public readonly __brdCrumbs$ = this.__brdCrumbs.asObservable().pipe(delay(1));
 
@@ -196,5 +199,14 @@ export class UtiliService {
    */
   mapIdfromArray = (arr,key) =>{
      return JSON.stringify(arr.map(item => {return item[key]}))
+  }
+
+
+  public cancelPendingRequests = () => {
+    this.cancelPendingRequests$.next()
+  }
+
+  public onCancelPendingRequests = () =>{
+    return this.cancelPendingRequests$.asObservable()
   }
 }

@@ -11,11 +11,12 @@ import { RouterModule, Routes } from '@angular/router';
     children:[
       {
         path:'home',
-        loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule)
+        loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule),
+        data:{title:' Tax Package',pageTitle:'Tax Package'}
       },
       {
         path:'combineportfolio',
-        loadChildren:()=> import('./CmbPortFolioRPT/cmb-port-folio-rpt.module').then(m => m.CmbPortFolioRptModule)
+        loadChildren:()=> import('./CmbPortFolioRPT/cmb-port-folio-rpt.module').then(m => m.CmbPortFolioRptModule),
       },
       {
         path:'',

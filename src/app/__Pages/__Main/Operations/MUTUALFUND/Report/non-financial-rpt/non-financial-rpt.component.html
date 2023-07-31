@@ -216,10 +216,10 @@
         columnResizeMode="expand" [scrollable]="true"
         scrollHeight="358px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '120rem' }">
+        [tableStyle]="{ 'min-width': '180rem' }">
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 10rem">
+            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 20rem">
               {{ col.header }}
               <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
               </p-sortIcon>

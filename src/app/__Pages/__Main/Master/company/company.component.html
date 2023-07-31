@@ -16,6 +16,7 @@
             <!-- Profile Section -->
             <ng-container *ngSwitchCase="index == 0">
              <app-profile
+             [TabMenu]="SubTabMenu"
              [country]="countryMst"
              [comp_type]="company_type"
              [cmpDtlsMst]="cmpDtls"
@@ -27,6 +28,7 @@
 
            <!-- Director Details -->
            <ng-container *ngSwitchCase="index == 2"><app-director-dtls
+            [TabMenu]="SubTabMenu"
              [country]="countryMst"
              [cmpDtlsMst]="cmpDtls"
              [directorMst]="directorDtls"

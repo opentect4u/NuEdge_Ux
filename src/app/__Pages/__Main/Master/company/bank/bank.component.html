@@ -151,11 +151,11 @@
                 styleClass="p-button-rounded p-button-primary"></p-button>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'cm_profile_name'" >
-                <span
+                <b
                 #tooltip="matTooltip"
                 matTooltip="{{bank[col.field]}}">
                 {{ bank['type_of_comp'] == 4 ? (bank['establishment_name'] ? bank['establishment_name'] : 'N/A') : (bank[col.field] ? bank[col.field] : 'N/A')}}
-              </span>
+              </b>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'upload_chq'" >
                 <ng-container *ngIf="bank[col.field];else noPdf">
@@ -164,17 +164,16 @@
                   </a>
                 </ng-container>
                 <ng-template #noPdf>
-                    <span> N/A</span>
-
+                    <b> N/A</b>
                 </ng-template>
 
               </ng-container>
               <ng-container *ngSwitchDefault >
-                <span
+                <b
                 #tooltip="matTooltip"
                 matTooltip="{{bank[col.field]}}">
                 {{ bank[col.field] ? bank[col.field] : 'N/A' }}
-              </span>
+              </b>
               </ng-container>
               </ng-container>
           </td>

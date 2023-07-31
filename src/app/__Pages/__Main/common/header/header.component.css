@@ -10,10 +10,12 @@
 .headerMenu:hover{cursor: pointer;background: #e7e7e7;transition: .3s all;}
 .headerMenu mat-icon{font-size: 21px;text-align: center;}
 ::ng-deep .p-sidebar{
-    z-index: 99999!important;
+    /* z-index: 99999!important; */
+    z-index: 9999999!important;
 }
 ::ng-deep .p-component-overlay{
-  z-index: 9999!important;
+  /* z-index: 9999!important; */
+  z-index: 99999!important;
 }
 
 span{

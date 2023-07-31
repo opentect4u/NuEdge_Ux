@@ -296,7 +296,7 @@
             <ng-template pTemplate="header" let-columns>
               <tr>
                 <th style="width: 4rem" *ngIf="transFrm.value.option == 3"></th>
-                <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': transFrm.value.options != '1' ? '12rem' : '17rem'}">
+                <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': transFrm.value.options != '1' ? '20rem' : '25rem'}">
                   {{ col.header }}
                   <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
                   </p-sortIcon>

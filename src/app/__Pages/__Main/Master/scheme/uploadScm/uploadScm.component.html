@@ -19,6 +19,7 @@
   <div class="col-sm-5">
     <shared-mst-dtls [btnTitle]="'View All Scheme'"
     [headerTitle]="'Recent Scheme'" [flag]="'SC'"
+    [props]="'scheme_name'"
       (populate)="populateDT($event)"
       (viewAll)="viewAll()"
       [dataSource]="__selectRNT.data"></shared-mst-dtls>

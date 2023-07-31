@@ -5,7 +5,9 @@
       [dataSource]="tableData" [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Document Type'" [headerTitle]="'Recent Document Type'" [flag]="'D'"
+    <shared-mst-dtls [btnTitle]="'View All Document Type'"
+     [headerTitle]="'Recent Document Type'" [flag]="'D'"
+     [props]="'doc_type'"
       (populate)="populateDT($event)"
       (viewAll)="viewAll()"
       [dataSource]="__selectRNT.data"></shared-mst-dtls>

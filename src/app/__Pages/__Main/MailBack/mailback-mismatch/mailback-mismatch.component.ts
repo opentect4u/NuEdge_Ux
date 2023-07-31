@@ -36,7 +36,7 @@ export class MailbackMismatchComponent implements OnInit {
    */
   getTrxnRpt = () => {
     this.dbIntr
-      .api_call(0, '/showTransDetails', 'trans_type_id=[]&trans_sub_type_id=[]')
+      .api_call(0, '/showTransDetails', 'trans_type=[]&trans_sub_type=[]')
       .pipe(
         pluck('data'),
         map((item: TrxnRpt[]) => {

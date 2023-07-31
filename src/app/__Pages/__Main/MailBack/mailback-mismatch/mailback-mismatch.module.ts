@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: '',
     component: MailbackMismatchComponent,
-    data: { breadcrumb: 'Mailback Mismatch' },
+    data: { breadcrumb: 'Mailback Mismatch',title:' Mailback Mismatch',pageTitle:'Mailback Mismatch'},
   },
 ];
 

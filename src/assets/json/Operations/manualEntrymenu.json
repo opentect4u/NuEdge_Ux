@@ -6,8 +6,9 @@
     "has_submenu": "N",
     "url": "/main/operations/dashboard/manualEntr/kycTrax",
     "flag": "K",
-    "icon": "fa fa-user-o",
-    "sub_menu": []
+    "icon": "",
+    "sub_menu": [],
+    "img":"/product_mf/kyc_report.png"
   },
   {
     "id": 2,
@@ -16,8 +17,9 @@
     "has_submenu": "N",
     "flag": "M",
     "url": "/main/operations/dashboard/manualEntr/mfTrax",
-    "icon": "fa fa-user-o",
-    "sub_menu": []
+    "icon": "",
+    "sub_menu": [],
+    "img":"/manualEntry.png"
   },
   {
     "id": 3,
@@ -26,8 +28,9 @@
     "has_submenu": "N",
     "url": "/main/operations/dashboard/manualEntr/acknowldgement",
     "flag": "A",
-    "icon": "fa fa-user-o",
-    "sub_menu": []
+    "icon": "",
+    "sub_menu": [],
+    "img":"/ackEntry.png"
   },
   {
     "id": 4,
@@ -36,7 +39,8 @@
     "has_submenu": "N",
     "url": "/main/operations/dashboard/manualEntr/manualupdate",
     "flag": "U",
-    "icon": "fa fa-user-o",
-    "sub_menu": []
+    "icon": "",
+    "sub_menu": [],
+    "img":"/manualUpdate.png"
   }
 ]

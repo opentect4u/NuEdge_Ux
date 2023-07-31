@@ -7,15 +7,18 @@ import { Routes, RouterModule } from '@angular/router';
   {
    path:'',
    component:FinPlanComponent,
-   data:{breadcrumb:'Financial Planning'},
+   data:{breadcrumb:'Financial Planning',title: "NuEdge - Financial Planning", pageTitle: "Financial Planning"},
+
    children:[
     {
       path:'home',
-      loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule)
+      loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule),
+      data:{title: "NuEdge - Financial Planning", pageTitle: "Financial Planning"},
     },
     {
       path:'planner',
-      loadChildren:()=> import('./Planner/planner.module').then(m => m.PlannerModule)
+      loadChildren:()=> import('./Planner/planner.module').then(m => m.PlannerModule),
+      data:{title: "NuEdge - Planner", pageTitle: "Financial Planner"}
     },
     {
       path:'',

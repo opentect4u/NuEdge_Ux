@@ -49,8 +49,8 @@
       </div>
     </div>
     <div class="col-sm-3">
-      <label for="date">Displayed To <span class="text-danger">*</span></label>
-      <input type="date" name="date" id="date" class="form-control" formControlName="to_dt">
+      <label for="to_dt">Displayed To <span class="text-danger">*</span></label>
+      <input type="date" name="to_dt" id="to_dt" class="form-control" formControlName="to_dt">
       <div class="invalid-feedback" *ngIf="temporaryForm.get('to_dt').invalid && (temporaryForm.get('to_dt').dirty || temporaryForm.get('to_dt').touched)">
         <span class="invalid-feedback" *ngIf="(temporaryForm.get('to_dt')).errors?.required">*Please provide to date</span>
       </div>

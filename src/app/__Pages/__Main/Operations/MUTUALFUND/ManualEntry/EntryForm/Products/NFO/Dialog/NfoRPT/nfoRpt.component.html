@@ -308,7 +308,7 @@
         <th  *ngFor="let col of columns"
         pResizableColumn
         [pSortableColumn]="col.field"
-        [ngStyle]="{'width': transFrm.value.option != '1' ? '12rem' : '17rem'}"
+        [ngStyle]="{'width': transFrm.value.option != '1' ? '20rem' : '25rem'}"
         >
           {{ col.header }}
           <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">

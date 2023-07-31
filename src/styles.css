@@ -1,11 +1,9 @@
 @import '~primeng/resources/primeng.min.css';
 /* @import '~primeng/resources/themes/bootstrap4-light-blue/theme.css'; */
 @import '~primeng/resources/themes/lara-light-blue/theme.css';
+/* @import '~primeng/resources/themes/luna-blue/theme.css'; */
 @import '~primeicons/primeicons.css';
 
-.card_2 {
-  margin: 15px 0px;
-}
 
 td,
 th {
@@ -21,22 +19,6 @@ th {
   line-height: 38px !important;
 }
 
-/*
-::-webkit-scrollbar {
-    width: 5px;
-}
-
-*::-webkit-scrollbar-track {
-    border-radius: 0px;
-    -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 95%);
-
-}
-
-*::-webkit-scrollbar-thumb {
-    border-radius: 0px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-} */
-
 
 .fullscreen-dialog {
   max-width: 100% !important;
@@ -51,32 +33,29 @@ th {
   margin: 0px !important;
   padding: 0 14px;
   max-height: 80vh !important;
-  background: #3a50760d !important;
+  /* background: #3a50760d !important; */
+  background: #ff98000d !important;
 }
 
 .mat-dialog-actions {
-  padding: 11px 23px !important;
+  /* padding: 11px 23px !important; */
+  padding: 2px 23px !important;
   border-top: 1px solid #cecece;
-  background: #e7e7e7ba;
+  /* background: #e7e7e7ba; */
+  background: #fffaf2;
 
 }
 
 .form-control {
-  /* height: 44px; */
-  /* border: 1px solid #b8b8b8; */
   box-shadow: none;
   font-weight: 500 !important;
-  /* border-radius: 0 !important; */
 }
 
 label {
   color: #3a5076;
   font-weight: 700;
   font-size: 11px;
-  /* margin: 7px 0px; */
   margin: 10px 0px;
-  /* display: flex;
-    align-items: center; */
 }
 
 .dialog-title {
@@ -86,7 +65,8 @@ label {
   border-bottom: 1px solid #d6d6d6;
   padding: 2px 28px;
   margin: 0px !important;
-  background: #3a5076;
+  /* background: #3a5076; */
+  background: #ff9800;
   color: #fff;
   font-size: 18px;
 }
@@ -103,8 +83,6 @@ button:focus {
   outline: none !important
 }
 
-/* .mat-menu-item:hover:not([disabled]),
-.mat-menu-item-highlighted:not([disabled]) {background: rgb(31 69 132) !important;color: #fff !important;} */
 .active {
   background: rgb(31 69 132) !important;
   color: #fff !important;
@@ -243,8 +221,8 @@ tr.mat-header-row {
   font-weight: 600;
   color: gray; */
   font-size: 11px;
-    font-weight: 500;
-    color: #787878;
+  font-weight: 500;
+  color: #787878;
 }
 
 .breadcrumb>li:last-child {
@@ -252,24 +230,18 @@ tr.mat-header-row {
 }
 
 .breadcrumb {
-  /* margin: 12px 0px 0px 0px !important;
-    padding: 5px 15px;
-    list-style: none;
-    background-color: #eceef0;
-    box-shadow: none;
-    border: 1px solid #c0c0c0; */
-    margin: 58px 0px 0px 0px !important;
-    padding: 8px 15px;
-    list-style: none;
-    background-color: #ffffff;
-    box-shadow: none;
-    border-bottom: 1px solid #d3d3d3;
-    border-radius: 0px!important;
+  margin: 58px 0px 0px 0px !important;
+  padding: 8px 15px;
+  list-style: none;
+  background-color: #ffffff;
+  box-shadow: none;
+  border-bottom: 1px solid #d3d3d3;
+  border-radius: 0px !important;
 }
-.customDialog{
-  /* max-height: 90vh !important; */
+
+.customDialog {
   max-height: 90vh !important;
-  min-height: 90vh!important;
+  min-height: 90vh !important;
 }
 
 .mat-sort-header-container {
@@ -293,15 +265,15 @@ tr.mat-header-row {
 
 .loaderRouter {
   height: 2px;
-  /* background: #fff; */
   background: #eceef0;
   position: absolute;
   top: 0;
   width: 100%;
   z-index: 999999;
 }
+
 .mat-progress-bar {
-  height: 2px!important;
+  height: 2px !important;
 }
 
 .pagination>.active>a,
@@ -384,7 +356,7 @@ mat-card {
 }
 
 .card-header {
-  padding: 11px 1.25rem;
+  padding: 6px 1.25rem;
 }
 
 /***** NG-Multiselect Dropdown Css**/
@@ -413,131 +385,123 @@ mat-card {
 }
 
 .dropdown-list li {
-  font-size: 11px!important;
-  font-weight: 500!important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
 }
 
-.multiselect-item-checkbox input[type=checkbox] + div{
-  color: #3a5076!important;
+.multiselect-item-checkbox input[type=checkbox]+div {
+  color: #3a5076 !important;
 }
 
 /***** End **/
 
 /* Mat Tab*/
- .mat-tab-label{
-  /* background: #545454;
-  min-width: 60px;
-  height: 41px!important;
-  opacity: 1!important;
-  font-weight: 400;
-  font-size: 11px;
-  border-right: 1px solid #a1a1a1!important;
-  color:#fff!important; */
-  /* background: #545454; */
+.mat-tab-label {
   background: #c0c0c0;
-  /* min-width: 120px!important; */
-  height: 40px!important;
-  opacity: 1!important;
-  /* font-size: 13px; */
+  height: 40px !important;
+  opacity: 1 !important;
   font-size: 11px;
-  /* border-right: 2px solid #dcdcdc!important; */
-  border-right:0px!important;
-  color: #424242!important;
-  /* min-width: 90px!important; */
+  border-right: 0px !important;
+  color: #424242 !important;
 }
-/* .mat-tab-group.mat-primary .mat-ink-bar{
-  background-color: #1f4584!important;
-  height: 3px;
-  bottom: 0px!important;
-} */
-.mat-tab-nav-bar, .mat-tab-header {
-  border: none!important;
+
+.mat-tab-nav-bar,
+.mat-tab-header {
+  border: none !important;
 }
+
 .mat-tab-header-pagination {
-  background: #1f4584!important;
+  background: #1f4584 !important;
 }
-.mat-tab-label-active{
-  /* background: #1f4584; */
-  /* background: #28a745; */
+
+.mat-tab-label-active {
   background: #f1820b;
   border-right: 1px solid #fff;
-  /* color: #1f4584!important; */
-  color: #fff!important;
-  font-weight: 600!important;
+  color: #fff !important;
+  font-weight: 600 !important;
 }
-.mat-tab-label>.mat-tab-label-content>.mat-icon{
-  height: 22px!important;
-    width: 26px!important;
-    font-size: 21px!important;
+
+.mat-tab-label>.mat-tab-label-content>.mat-icon {
+  height: 22px !important;
+  width: 26px !important;
+  font-size: 21px !important;
 }
 
 .mat-tab-body-content {
-  overflow: visible!important;
+  overflow: visible !important;
 }
 
-.mat-tab-body.mat-tab-body-active{
-   overflow-y: visible!important;
+.mat-tab-body.mat-tab-body-active {
+  overflow-y: visible !important;
 }
+
 .mat-tab-header-pagination {
-  background: #c0c0c0!important;
+  background: #c0c0c0 !important;
 }
+
 /* End */
 
 /*** Prime NG Data table**/
-.p-datatable .p-datatable-thead > tr > th {
-  text-align: center!important;
+.p-datatable .p-datatable-thead>tr>th {
+  text-align: center !important;
   padding: 1rem 1rem;
   border: 1px solid #6a6a6a;
-  border-width: 0px!important;
+  border-width: 0px !important;
   font-weight: 600;
   color: #495057;
   background: #222f3f;
   transition: box-shadow 0.2s;
-  font-size: 14px!important;
+  font-size: 14px !important;
   font-weight: 400;
   color: #fff;
 }
 
-.p-datatable .p-datatable-tbody > tr > td {
-    text-align: center!important;
-    border: 1px solid #ededed!important;
-    border-width: 0.2px!important;
-    padding: 2px 1rem!important;
-    font-size: 11px!important;
-    font-weight: 500;
+.p-datatable .p-datatable-tbody>tr>td {
+  text-align: center !important;
+  border: 1px solid #ededed !important;
+  border-width: 0.2px !important;
+  padding: 2px 1rem !important;
+  font-size: 11px !important;
+  font-weight: 500;
 }
 
 .p-datatable-scrollable .p-datatable-thead>tr>th,
 .p-datatable-scrollable .p-datatable-tbody>tr>td,
-.p-datatable-scrollable .p-datatable-tfoot>tr>td{
+.p-datatable-scrollable .p-datatable-tfoot>tr>td {
   justify-content: center;
 
 }
+
 /* End */
-/* FOr Material Checkbox Style */
-.mat-checkbox-layout{
-  margin:6px 0px!important;
+/* For Material Checkbox Style */
+.mat-checkbox-layout {
+  margin: 6px 0px !important;
 }
+
 /* End */
 /**** For Calendar **/
-.p-calendar{
-  min-width: 100%!important;
+.p-calendar {
+  min-width: 100% !important;
 }
+
 .p-calendar .p-inputtext {
-  font-size: 10px!important;
-  font-weight: 700!important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
 }
+
 /**** End **/
 
-.container_fluid{
+.container_fluid {
   border: 1px solid #d3d3d3;
   padding: 13px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+
 .p-button.p-button-lg {
-  padding: 8px 16px!important;
+  padding: 8px 16px !important;
 }
+
 .p-panel .p-panel-header {
   border: 1px solid #dee2e6;
   padding: 11px 1.25rem;
@@ -553,67 +517,56 @@ mat-card {
   padding: 20px;
   background: #222f3f;
 }
+
 .p-scrolltop.p-link:hover {
   background: #222f3f
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  background: #222f3f!important;
-  border-color: #EFF6FF!important;
-  color: #ffffff!important;
-  font-size: 11px!important;
-  font-weight: 700!important;
-  border-radius: 20%!important;
+  background: #222f3f !important;
+  border-color: #EFF6FF !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  border-radius: 20% !important;
 }
+
 .p-paginator {
-  justify-content: end!important;
-}
-.p-paginator .p-paginator-current{
-  font-size: 14px!important;
-  font-weight: 700!important;
-}
-.p-paginator .p-paginator-pages .p-paginator-page{
-  font-size: 11px!important;
-  font-weight: 700!important;
-  /* background-color: #222f3f33!important; */
-   border-radius: 20%!important ;
+  justify-content: end !important;
 }
 
-.p-dropdown-label{
-  font-weight: 700!important;
+.p-paginator .p-paginator-current {
+  font-size: 14px !important;
+  font-weight: 700 !important;
 }
 
-.p-datatable  .p-sortable-column-icon{
+.p-paginator .p-paginator-pages .p-paginator-page {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  border-radius: 20% !important;
+}
+
+.p-dropdown-label {
+  font-weight: 700 !important;
+}
+
+.p-datatable .p-sortable-column-icon {
   color: #ffffff;
 }
-.p-datatable .p-sortable-column:not(.p-highlight):hover
-.p-sortable-column-icon{
+
+.p-datatable .p-sortable-column:not(.p-highlight):hover .p-sortable-column-icon {
   color: #ffffff;
 }
 
 .p-datatable .p-sortable-column:not(.p-highlight):hover,
-.p-datatable .p-sortable-column.p-highlight
-{
-  background-color: black!important;
-  color:#fff!important;
+.p-datatable .p-sortable-column.p-highlight {
+  background-color: black !important;
+  color: #fff !important;
 }
 
-/* .p-datatable  .p-sortable-column-icon{
-  color: #ffffff;
+.dropdown-list {
+  overflow: hidden !important;
 }
-:host ::ng-deep .p-datatable .p-sortable-column:not(.p-highlight):hover
-.p-sortable-column-icon{
-  color: #ffffff;
+.p-component{
+  font-family: 'Montserrat', sans-serif!important;
 }
-:host ::ng-deep
-.p-datatable .p-sortable-column:not(.p-highlight):hover,
-.p-datatable .p-sortable-column.p-highlight
-{
-  background-color: black!important;
-  color:#fff!important;
-} */
-
-.dropdown-list{
-  overflow: hidden!important;
-}
-

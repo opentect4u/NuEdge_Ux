@@ -9,7 +9,8 @@ export class ProfileComponent{
   tabindex: number =0;
 
   /** Holdeing sub tab menu content */
-  TabMenu = menu.filter(x => x.flag!='U').map(({id, title, flag}) => ({tab_name:title,img_src:'',id,flag}))
+  @Input() TabMenu:any =[];
+  // TabMenu = menu.filter(x => x.flag!='U').map(({id, title, flag,img}) => ({tab_name:title,img_src:('../../../../../assets/images/'+img),id,flag}))
   /**** End */
   @Input() country: any = []; /** Holding Country */
   @Input() comp_type: any= []; /** Holding type of company */

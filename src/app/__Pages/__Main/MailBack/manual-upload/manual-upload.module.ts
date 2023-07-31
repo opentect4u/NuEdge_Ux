@@ -6,7 +6,10 @@ import { PanelModule } from 'primeng/panel';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { fileTypePipe } from 'src/app/__Pipes/fileType.pipe';
- const routes:Routes = [{path:'',component:ManualUploadComponent,data:{breadcrumb:'Manual Upload'}}]
+ const routes:Routes = [{
+  path:'',
+  component:ManualUploadComponent,
+  data:{breadcrumb:'Manual Upload',title:' Manual Upload',pageTitle:'Manual Upload'}}]
 
 @NgModule({
   declarations: [

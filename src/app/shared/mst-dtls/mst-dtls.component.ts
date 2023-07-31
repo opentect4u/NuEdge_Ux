@@ -14,6 +14,11 @@ export class MstDtlsComponent implements OnInit {
    @Input() btnTitle: string;
    @Input() dataSource: any=[];
    @Input() flag: string;
+
+   /**
+    * Holding which properties needs to be shown
+    */
+   @Input() props:string;
   constructor() { }
 
   ngOnInit(): void {

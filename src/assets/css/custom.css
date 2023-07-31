@@ -69,7 +69,8 @@
   border: 0px;
   outline: 0;
   /* background: #5687e6; */
-  background: #2b377b;
+  /* background: #2b377b; */
+  background: #ff9800;
   color: #f8f8f8;
   /* padding: 8px 13px; */
   line-height: 17px;
@@ -523,6 +524,9 @@ table {
   /*** END ***/
 }
 
+/* .serachresult_client ul.keyNavigateHover li{
+  background-color: #1f458424!important;
+} */
 .serachresult_client ul li:hover {
   background-color: #1f458424;
   cursor: pointer;

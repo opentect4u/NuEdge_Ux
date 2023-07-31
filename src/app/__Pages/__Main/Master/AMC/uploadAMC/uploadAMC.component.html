@@ -10,8 +10,11 @@
     </shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All AMC'" [headerTitle]="'Recent AMC'" [flag]="'A'"
-      (populate)="populateDT($event)" (viewAll)="viewAll()"
+    <shared-mst-dtls [btnTitle]="'View All AMC'"
+    [headerTitle]="'Recent AMC'" [flag]="'A'"
+      (populate)="populateDT($event)"
+      [props]="'amc_short_name'"
+      (viewAll)="viewAll()"
       [dataSource]="__selectRNT.data"></shared-mst-dtls>
   </div>
 </div>

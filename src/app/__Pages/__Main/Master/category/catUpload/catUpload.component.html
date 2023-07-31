@@ -11,7 +11,9 @@
     [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Category'" [headerTitle]="'Recent Category'" [flag]="'C'"
+    <shared-mst-dtls [btnTitle]="'View All Category'"
+    [props]="'cat_name'"
+    [headerTitle]="'Recent Category'" [flag]="'C'"
       (populate)="populateDT($event)" (showCorrospondingDetails)="showCorrospondingsubCategory($event)" (viewAll)="viewAll()"
       [dataSource]="__selectRNT.data"></shared-mst-dtls>
   </div>

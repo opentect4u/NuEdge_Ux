@@ -17,7 +17,7 @@ import subTab from '../../../../../assets/json/Master/commonMenuMst.json';
 })
 export class CompanyComponent implements OnInit {
  /** Holdeing sub tab menu content */
- SubTabMenu = subTab.filter(x => x.flag!='U').map(({id, title, flag}) => ({tab_name:title,img_src:'',id,flag}))
+ SubTabMenu = subTab.filter(x => x.flag!='U').map(({id, title, flag,img}) => ({tab_name:title,img_src:('../../../../../assets/images/'+img),id,flag}))
  /**** End */
 
   index: number | undefined = 0;

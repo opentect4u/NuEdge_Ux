@@ -438,9 +438,6 @@ export class AmcrptComponent implements OnInit {
     this.refreshOrAdvanceFlt()
   }
   onselectItem(ev){
-    console.log(this.__pageNumber.value);
-
-    // this.__pageNumber.setValue(ev.option.value);
     this.getAmcMst();
   }
   customSort(ev){
@@ -470,21 +467,6 @@ export class AmcrptComponent implements OnInit {
          }
       })
 })
-    // this.level.value.forEach(el => {
-    //          el.sub_menu.forEach(element => {
-    //                   if(el.isChecked){
-    //                     if(this.__columns.findIndex(x => x.field == element.field) == -1){
-    //                       this.__columns.push(element);
-    //                     }
-    //                   }
-    //                   else{
-    //                     if(this.__columns.findIndex(x => x.field == element.field) != -1){
-    //                       this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
-    //                     }
-    //                   }
-
-    //          });
-    // });
     this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
 }
 }

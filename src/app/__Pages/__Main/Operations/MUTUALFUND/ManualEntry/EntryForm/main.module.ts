@@ -14,6 +14,7 @@ const routes: Routes = [
         path: '',
         loadChildren: () =>
           import('./Home/home.module').then((m) => m.HomeModule),
+          data:{title:'  MF Trax',pageTitle:'MF Trax'}
       },
       {
         path: 'financial/:trans_type_id',

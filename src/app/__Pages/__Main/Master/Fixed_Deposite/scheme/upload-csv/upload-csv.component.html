@@ -19,7 +19,9 @@
     ></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Scheme'" [headerTitle]="'Recent Scheme'" [flag]="'FS'"
+    <shared-mst-dtls [btnTitle]="'View All Scheme'"
+    [headerTitle]="'Recent Scheme'" [flag]="'FS'"
+    [props]="'scheme_name'"
       (populate)="populateDT($event)"  (viewAll)="viewAll()"
       [dataSource]="__selectScm.data"></shared-mst-dtls>
   </div>

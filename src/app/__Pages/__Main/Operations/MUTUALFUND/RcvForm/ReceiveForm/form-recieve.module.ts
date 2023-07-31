@@ -10,7 +10,10 @@ import { RcvfrmmodificationfornonfinComponent } from './rcvFormmodificationForNo
 import { DeletercvComponent } from './deletercv/deletercv.component';
 
 
- const routes: Routes = [{path:'',component:FormRecieveComponent}]
+ const routes: Routes = [{
+  path:'',
+ component:FormRecieveComponent
+}]
 
 @NgModule({
   declarations: [

@@ -267,7 +267,7 @@
               [tableStyle]="{ 'min-width': __ackForm.value.options == '2' ? '120rem' : '200rem' }">
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': __ackForm.value.options == '2' ? '10rem' : '17rem'}">
+                  <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': __ackForm.value.options == '2' ? '20rem' : '25rem'}">
                     {{ col.header }}
                     <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
                     </p-sortIcon>
@@ -289,23 +289,23 @@
                           styleClass="p-button-rounded p-button-primary p-button-sm"></p-button>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'bu_type'">
-                        <span #tooltip="matTooltip"
+                        <b #tooltip="matTooltip"
                         [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
-                          {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
+                          {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</b>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
-                       <span
+                       <b
                        #tooltip="matTooltip"
                        [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')">
                        {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')}}
-                      </span>
+                      </b>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'inv_type'">
-                        <span
+                        <b
                         #tooltip="matTooltip"
                         [matTooltip]="finance[col.field] == 'F' ? 'Fresh' : 'Additional'">
                         {{ finance[col.field] == 'F' ? 'Fresh' : 'Additional'}}
-                      </span>
+                      </b>
                       </ng-container>
 
                       <ng-container
@@ -324,7 +324,7 @@
 
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'rcv_datetime'">
-                        <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                        <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</b>
                         </ng-container>
 
                         <ng-container *ngSwitchCase="col.field == 'switch_amt'">
@@ -337,7 +337,7 @@
                           </ng-container>
 
                         <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
-                          <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</span>
+                          <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</b>
                           </ng-container>
                           <ng-container *ngSwitchCase="col.field == 'entry_date'
                           || col.field == 'sip_date'
@@ -345,12 +345,12 @@
                           || col.field == 'sip_end_date'
                           || col.field == 'rnt_login_dt'
                           || col.field == 'rnt_login_cutt_off'">
-                            <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                            <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                             </ng-container>
                       <ng-container *ngSwitchDefault>
-                        <span #tooltip="matTooltip" [matTooltip]="finance[col.field]">
+                        <b #tooltip="matTooltip" [matTooltip]="finance[col.field]">
                           {{ finance[col.field] ? finance[col.field] : 'N/A' }}
-                        </span>
+                        </b>
                       </ng-container>
 
 

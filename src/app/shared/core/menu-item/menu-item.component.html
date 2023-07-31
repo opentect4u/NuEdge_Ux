@@ -1,4 +1,4 @@
-<div class="col-sm-3" *ngFor="let item of items" (click)="openModalOrNavigate(item)">
+<div [ngClass]="{'col-sm-2':colSize,'col-sm-3':!colSize}" *ngFor="let item of items" (click)="openModalOrNavigate(item)">
     <div class="smallBox">
       <div class="smallBoxIconSec">
         <div [class]="item.icon ? 'iconSec iconCol_1' : 'iconSec'">

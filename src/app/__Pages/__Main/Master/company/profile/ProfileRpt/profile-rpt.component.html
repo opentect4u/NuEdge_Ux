@@ -49,19 +49,19 @@
                 styleClass="p-button-rounded p-button-primary"></p-button>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'name'">
-                     <span
+                     <b
                      #tooltip="matTooltip"
                      matTooltip="{{finance['type_of_comp'] == 4 ? finance['establishment_name'] : finance['name']}}"
                      >
                       {{finance['type_of_comp'] == 4 ? finance['establishment_name'] : finance['name']}}
-                     </span>
+                     </b>
               </ng-container>
               <ng-container *ngSwitchDefault >
-                <span
+                <b
                 #tooltip="matTooltip"
                 matTooltip="{{finance[col.field]}}">
                 {{ finance[col.field] ? finance[col.field] : 'N/A' }}
-              </span>
+              </b>
               </ng-container>
             </ng-container>
           </td>

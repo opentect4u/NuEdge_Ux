@@ -24,6 +24,7 @@ import filterOpt from '../../../../../../../../assets/json/filterOption.json';
 import { Calendar } from 'primeng/calendar';
 import { dates } from 'src/app/__Utility/disabledt';
 import { totalAmt } from 'src/app/__Model/TotalAmt';
+import { Table } from 'primeng/table';
 
 
 
@@ -35,7 +36,7 @@ import { totalAmt } from 'src/app/__Model/TotalAmt';
 export class TrxnRptComponent implements OnInit {
 
   @ViewChild('tableCard') tableCard:ElementRef
-
+  @ViewChild('primeTbl') primeTbl :Table
 
   /**
    * For Display Total Amount
@@ -415,10 +416,13 @@ export class TrxnRptComponent implements OnInit {
    *  call API for get transaction according to search result
    */
   searchTrxnReport = () => {
+    this.total = new totalAmt();
+    this.primeTbl.clear();
+    this.trxnRpt.length = 0;
     const TrxnDt = new FormData();
     TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
     TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
-    TrxnDt.append('client_id',global.getActualVal(this.misTrxnRpt.value.client_id));
+    // TrxnDt.append('client_id',global.getActualVal(this.misTrxnRpt.value.client_id));
     TrxnDt.append('amc_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.amc_id, 'id'));
     TrxnDt.append('cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.cat_id, 'id'));
     TrxnDt.append('sub_cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_cat_id, 'id'));
@@ -574,7 +578,7 @@ export class TrxnRptComponent implements OnInit {
           '/scheme',
           'arr_cat_id=' +
             this.utility.mapIdfromArray(cat_id, 'id') +
-            '&arr_sub_cat_id=' +
+            '&arr_subcat_id=' +
             this.utility.mapIdfromArray(sub_cat_id, 'id') +
             '&arr_amc_id=' +
             this.utility.mapIdfromArray(amc_id, 'id')

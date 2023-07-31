@@ -10,7 +10,9 @@
     [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Country'" [headerTitle]="'Recent Country'" [flag]="'G'"
+    <shared-mst-dtls [btnTitle]="'View All Country'"
+    [props]="'name'"
+    [headerTitle]="'Recent Country'" [flag]="'G'"
       (populate)="populateDT($event)" (viewAll)="viewAll()"
       [dataSource]="countryMst.data"></shared-mst-dtls>
   </div>

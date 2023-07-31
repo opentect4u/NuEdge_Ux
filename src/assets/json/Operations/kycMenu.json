@@ -4,29 +4,31 @@
     "title":"Manual Entry",
     "flag":"M",
     "url":"",
-    "icon": "fa fa-user-o"
+    "icon": "",
+    "img":"/manualEntry.png"
   },
   {
     "id":2,
     "title":"Report",
     "flag":"R",
     "url":"",
-    "icon": "fa fa-user-o"
+    "icon": "",
+    "img":"/reports.png"
   },
   {
     "title": "Acknowledgement",
     "id": 3,
-    "icon": "fa fa-user-o",
     "flag": "A",
-    "url":""
-
+    "url":"",
+    "icon": "",
+    "img":"/ackEntry.png"
   },
   {
     "title": "Manual Update",
     "id": 4,
-    "icon": "fa fa-user-o",
     "flag": "U",
-    "url":""
-
+    "url":"",
+    "icon": "",
+    "img":"/manualUpdate.png"
   }
 ]

@@ -1,13 +1,7 @@
-
 <div class="row flexSec">
-  <div class="col-sm-2" *ngFor="let items of __menu" (click)="navigate(items)">
-    <div class="smallBox">
-     <div class="smallBoxIconSec">
-      <div class="iconCol_12 iconSec">
-        <i class="fa fa-user-o" aria-hidden="true"></i>
-      </div>
+  <div class="col-sm-12">
+    <div class="row">
+      <shared-menu-item [items]="__menu" [colSize]="'col-sm-2'" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
     </div>
-    <h2>{{items.menu_name}}</h2>
   </div>
-</div>
 </div>

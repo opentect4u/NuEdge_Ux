@@ -52,6 +52,7 @@ import { modeOfPrePipe } from '../__Pipes/modeOfPremium.pipe';
 import { PaginateComponent } from './core/paginate/paginate.component';
 import { TdsInfoPipe } from '../__Pipes/tdsInfo.pipe';
 import { FormsModule } from '@angular/forms';
+import { ListItemComponent } from './core/list-item/list-item.component';
 
 @NgModule({
   imports: [
@@ -109,7 +110,8 @@ import { FormsModule } from '@angular/forms';
     BtnWithMenuComponent,
     MfAckEntryComponent,
     MegaMenuForColumnComponent,
-    PaginateComponent
+    PaginateComponent,
+    ListItemComponent
   ],
   exports:[
     modeOfPrePipe,

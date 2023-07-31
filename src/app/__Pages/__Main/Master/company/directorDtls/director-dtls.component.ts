@@ -9,7 +9,8 @@ import menu from '../../../../../../assets/json/Master/commonMenuMst.json';
 export class DirectorDtlsComponent implements OnInit {
   tabindex: number =0;
   public getPerticularDtls;
-  TabMenu = menu.filter(x => x.flag!='U').map(({id, title, flag}) => ({tab_name:title,img_src:'',id,flag}))
+  @Input() TabMenu: any = [];
+  // TabMenu = menu.filter(x => x.flag!='U').map(({id, title, flag,img}) => ({tab_name:title,img_src:('../../../../../assets/images/'+img),id,flag}))
   ngOnInit(): void {
   }
   @Input() country: any = [];

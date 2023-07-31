@@ -11,11 +11,13 @@ const routes:Routes=[
     children:[
       {
         path:'dashboard',
-        loadChildren:()=> import('./Dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadChildren:()=> import('./Dashboard/dashboard.module').then(m => m.DashboardModule),
+        data:{title: "NuEdge - MF", pageTitle: "MF"}
       },
       {
         path:'mis',
-        loadChildren:()=> import('./MIS/mis.module').then(m => m.MisModule)
+        loadChildren:()=> import('./MIS/mis.module').then(m => m.MisModule),
+
       },
       {
         path:'portfolio',

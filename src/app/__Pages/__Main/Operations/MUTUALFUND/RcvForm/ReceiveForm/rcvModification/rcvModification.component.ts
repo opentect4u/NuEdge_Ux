@@ -22,6 +22,7 @@ import {
 } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   map,
@@ -467,8 +468,6 @@ export class RcvmodificationComponent implements OnInit {
         break;
 
       case 'C':
-        console.log(__euinDtls);
-
         this.__dialogDtForClient = __euinDtls;
         this.__rcvForm.controls['client_code'].reset(__euinDtls.client_code, {
           onlySelf: true,
@@ -478,8 +477,6 @@ export class RcvmodificationComponent implements OnInit {
           client_name: __euinDtls.client_name,
           client_id: __euinDtls.id,
         });
-        console.log( this.__rcvForm.value);
-
         this.searchResultVisibilityForClient('none');
         break;
 
@@ -760,8 +757,6 @@ export class RcvmodificationComponent implements OnInit {
   }
 
   checkIfscmExist(scm_name: string): Observable<boolean> {
-    console.log(this.__schemeMst);
-
     return of(this.__schemeMst.findIndex((x) => (x.scheme_name == scm_name)) != -1);
   }
   SchemeValidators(): AsyncValidatorFn {
@@ -793,7 +788,6 @@ export class RcvmodificationComponent implements OnInit {
     };
   }
   getSelectedItemsFromParent(event){
-    console.log(event.item);
     this.getItems(event.item,event.flag);
   }
 }

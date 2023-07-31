@@ -11,7 +11,10 @@
       [dataSource]="tableData" [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Product'" [headerTitle]="'Recent Product'" [flag]="'IP'"
+    <shared-mst-dtls [btnTitle]="'View All Product'"
+    [headerTitle]="'Recent Product'"
+    [flag]="'IP'"
+    [props]="'product_name'"
       (populate)="populateDT($event)" (viewAll)="viewAll()"
       [dataSource]="__prdMst.data"></shared-mst-dtls>
   </div>

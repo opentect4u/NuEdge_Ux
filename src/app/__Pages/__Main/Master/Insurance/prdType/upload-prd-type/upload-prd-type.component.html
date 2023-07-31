@@ -5,7 +5,9 @@
       [companyTypeMst]="instTypeMst" [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Product Type'" [headerTitle]="'Recent Product Type'" [flag]="'IPT'"
+    <shared-mst-dtls [btnTitle]="'View All Product Type'"
+    [headerTitle]="'Recent Product Type'" [flag]="'IPT'"
+    [props]="'product_type'"
       (populate)="populateDT($event)" (viewAll)="viewAll()" [dataSource]="__productTypeMst.data"></shared-mst-dtls>
   </div>
 </div>

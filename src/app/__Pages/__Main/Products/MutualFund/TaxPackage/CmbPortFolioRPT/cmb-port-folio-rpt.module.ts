@@ -10,7 +10,8 @@ import { RouterModule, Routes } from '@angular/router';
   children:[
     {
       path:'home',
-      loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule)
+      loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule),
+      data:{title:' Combined Portfolio Report',pageTitle:'Combined Portfolio Report'}
     },
     {
       path:'',

@@ -51,7 +51,10 @@
                 </p-calendar>
            </div>
            <div class="col-sm-3">
-            <app-core-srch
+            <label for="pan_no">Investor PAN / Name</label>
+             <input type="text" placeholder="Enter Investor PAN / Name"
+             name="pan_no" id="pan_no" class="form-control" formControlName="pan_no">
+            <!-- <app-core-srch
             [label] = "'Client Details'"
             [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
             [isPending]="__isClientPending"
@@ -64,7 +67,7 @@
             [displayMode]="displayMode_forClient"
             (setDisplayMode)="displayMode_forClient = $event"
             (selectedItems)="getSelectedItemsFromParent($event)"
-            ></app-core-srch>
+            ></app-core-srch> -->
            </div>
            <div class="col-sm-3">
             <label for="amc_id">AMC</label>
@@ -200,20 +203,27 @@
       </div>
       <div class="card-body">
         <p-table
+        #primeTbl
         id="trxDt"
         [value]="trxnRpt"
+        [lazy]="true"
+        [lazyLoadOnInit]="true"
         [responsive]="true"
         [rowHover]="true"
         styleClass="p-datatable-striped"
         [autoLayout]="true"
         [scrollable]="true"
+        [resizableColumns]="true"
+        columnResizeMode="expand"
+        appendTo="body"
         [columns]="column"
-        [tableStyle]="{ 'min-width': '250rem' }"
+        [tableStyle]="{ 'min-width': '400rem' }"
         >
           <ng-template pTemplate="header">
               <tr>
-                  <th  *ngFor="let col of column" [pSortableColumn]="col.field"
-                   [style.width]="'18rem'">
+                  <th pResizableColumn *ngFor="let col of column" [pSortableColumn]="col.field"
+                    [style.width]="col.field == 'scheme_name' ? '34rem' : '25rem'"
+                  >
                     {{ col.header }}
                     <p-sortIcon [field]="col.field">
                     </p-sortIcon>
@@ -231,16 +241,18 @@
                     <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                  </ng-container>
                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                  <b>{{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A'}}</b>
+                  <b matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + trxn['option_name']) : ''}}">{{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A'}}</b>
                </ng-container>
                <ng-container *ngSwitchCase="col.field == 'tds'">
-                <b>{{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}</b>
+                <b  matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
+                  {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
+                </b>
              </ng-container>
                  <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'pur_price'">
-                  <b>{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</b>
+                  <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</b>
                </ng-container>
                   <ng-container *ngSwitchDefault>
-                    <b>{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
+                    <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
                   </ng-container>
                 </ng-container>
               </td>
@@ -254,9 +266,8 @@
               </td>
             </tr>
           </ng-template>
-          <!-- *ngIf="misTrxnRpt.value.client_name" -->
-          <ng-template pTemplate="footer" *ngIf="misTrxnRpt.value.client_name">
-            <tr>
+          <ng-template pTemplate="footer">
+            <tr  *ngIf="misTrxnRpt.value.pan_no">
               <td  *ngFor="let col of column">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">

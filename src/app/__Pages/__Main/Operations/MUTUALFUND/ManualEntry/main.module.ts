@@ -13,6 +13,7 @@ const routes: Routes = [
         path: '',
         loadChildren: () =>
           import('./Home/home.module').then((m) => m.HomeModule),
+          data:{title:' Manual Entry',pageTitle:'Manual Entry'}
       },
       {
         path: 'mfTrax',

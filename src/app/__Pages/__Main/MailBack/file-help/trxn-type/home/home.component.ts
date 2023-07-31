@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
       )
       .subscribe((res: any) => {
         this.util.showSnackbar(
-          res.suc == 1 ? 'Transaction Type'+ (this.rntTrxnType.value.id > 0 ? 'Updated' : 'Saved') +  'Successfully' : res.msg,
+          res.suc == 1 ? 'Transaction Type'+ (this.rntTrxnType.value.id > 0 ? ' Updated ' : ' Saved ') +  'Successfully' : res.msg,
           res.suc
         );
         if (res.suc == 1) {

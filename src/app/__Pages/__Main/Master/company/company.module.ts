@@ -32,7 +32,7 @@ import { LoginPassRPTComponent } from './login-pwd/login-pass-rpt/login-pass-rpt
 import { LoginPassEntryComponent } from './login-pwd/login-pass-entry/login-pass-entry.component';
 import { ShareHolderRPTComponent } from './share-holder/share-holder-rpt/share-holder-rpt.component';
 import { ShareHolderEntryComponent } from './share-holder/share-holder-entry/share-holder-entry.component';
- const routes: Routes = [{path:'',component:CompanyComponent}]
+ const routes: Routes = [{path:'',component:CompanyComponent,data:{title:"NuEdge - Company",pageTitle:'Company'}}]
 
 @NgModule({
   declarations: [

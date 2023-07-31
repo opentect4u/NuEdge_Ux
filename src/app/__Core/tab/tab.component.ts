@@ -17,6 +17,9 @@ export class TabComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      console.log(this.Tab)
+    }, 500);
   }
   onTabChanged(event:MatTabChangeEvent){
     this.GetTabDtls.emit({index:event.index,tabDtls:this.Tab[event.index]});

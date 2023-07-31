@@ -5,7 +5,9 @@
       [dataSource]="tableData" [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Option'" [headerTitle]="'Recent Option'" [flag]="'O'"
+    <shared-mst-dtls [btnTitle]="'View All Option'"
+    [props]="'opt_name'"
+    [headerTitle]="'Recent Option'" [flag]="'O'"
       (populate)="populateDT($event)"
       (viewAll)="viewAll()"
       [dataSource]="__selectOpt.data"></shared-mst-dtls>

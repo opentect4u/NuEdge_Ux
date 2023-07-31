@@ -9,7 +9,9 @@ import { NonFinancialRPTComponent } from './non-financial-rpt/non-financial-rpt.
 import { NfoRPTComponent } from './nfo-rpt/nfo-rpt.component';
 import { KycRptComponent } from './kyc-rpt/kyc-rpt.component';
 import { FormsModule } from '@angular/forms';
-const routes: Routes = [{path:'',component:CmnReportForMFComponent,data: { breadcrumb: 'Report'}}]
+const routes: Routes = [{path:'',
+component:CmnReportForMFComponent,
+data: { breadcrumb: 'Report',title:'Mutual Fund Report',pageTitle:'Mutual Fund Report'}}]
 
 @NgModule({
   declarations: [

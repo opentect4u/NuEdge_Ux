@@ -132,16 +132,19 @@
       [customSort]="true"
         sortMode="single"
         [lazy]="true"
+        [lazyLoadOnInit]="true"
       [value]="__selectAMC.data"
       [columns]="__columns"
       [resizableColumns]="true"
       selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
       scrollHeight="335px"
-      [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-      [tableStyle]="{ 'min-width': '100rem' }">
+      [autoLayout]="true"
+      [responsive]="true"
+      styleClass="p-datatable-gridlines"
+      [tableStyle]="{ 'min-width': __detalsSummaryForm.value.options == 2 ? '100rem' : '150rem' }">
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="'16rem'">
+          <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="__detalsSummaryForm.value.options == 2 ? '16rem' : '25rem'">
             {{ col.header }}
             <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete' && col.field!= 'logo'" [field]="col.field">
             </p-sortIcon>
@@ -193,9 +196,9 @@
                 <ng-template #nologo>N/A</ng-template>
              </ng-container>
               <ng-container *ngSwitchDefault>
-                <span   matTooltip="{{amc[col.field]}}">
+                <b   matTooltip="{{amc[col.field]}}">
                   {{ amc[col.field] ? amc[col.field] : 'N/A' }}
-                </span>
+                </b>
               </ng-container>
 
 

@@ -9,11 +9,15 @@ import { RcvFrmResolver } from 'src/app/__Core/Resolver/rcv-frm.resolver';
 
   path:'',
   component:MainComponent,
-  data:{breadcrumb:' Form Receivable'},
+  data:{breadcrumb:'Form Receivable'},
   children:[
     {
       path:'',
-      loadChildren:()=> import('./home/home.module').then(m => m.HomeModule)
+      loadChildren:()=> import('./home/home.module').then(m => m.HomeModule),
+      data: {
+        title: 'NuEdge - MF Form Receivable',
+        pageTitle: 'MF Form Receivable',
+      }
     },
     {
       path:':type_id',

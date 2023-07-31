@@ -4,40 +4,48 @@
     "title":"Country",
     "id":1,
     "url":"/main/master/geographic/country",
-    "icon": "fa fa-user-o"
+    "icon": "",
+    "img":"/GeoGraphicalMst/country.png"
   },
   {
     "title":"State",
     "id":2,
     "url":"/main/master/geographic/state",
-    "icon": "fa fa-user-o"
+    "icon": "",
+    "img":"/GeoGraphicalMst/state.png"
   } , {
     "title":"District",
     "id":3,
     "url":"/main/master/geographic/district",
-    "icon": "fa fa-user-o"
+    "icon": "",
+    "img":"/GeoGraphicalMst/district.png"
   }, {
     "title":"City",
     "id":4,
     "url":"/main/master/geographic/city",
-    "icon": "fa fa-user-o"
+    "icon": "",
+    "img":"/GeoGraphicalMst/city.png"
   }
   , {
     "title":"City Type",
     "id":5,
     "url":"/main/master/geographic/cityType",
-    "icon": "fa fa-user-o"
+    "icon": "fa fa-user-o",
+    "img":""
   }
   , {
     "title":"Pincode",
     "id":6,
     "url":"/main/master/geographic/pincode",
-    "icon": "fa fa-user-o"
+    "icon": "fa fa-user-o",
+    "img":""
+
   }
   , {
     "title":"Report",
     "id":7,
     "url":"",
-    "icon": "fa fa-user-o"
+    "icon": "",
+    "img":"/reports.png"
   }
 ]

@@ -1,0 +1,85 @@
+  [
+    {
+        "id": 1,
+        "menu_name":"Mutual Fund",
+        "title":"Mutual Fund",
+        "flag":"Y",
+        "url":"/main/master/productwisemenu/home",
+        "icon": "",
+        "img":"/mutualFund.png"
+    },
+    {
+        "id": 2,
+        "menu_name":"Fixed Deposit",
+        "title":"Fixed Deposit",
+        "flag":"N",
+        "url":"/main/master/fixedeposit",
+        "icon": "",
+        "img":"/fixedDeposit.png"
+    },
+    {
+        "id": 3,
+        "menu_name":"Insurance",
+        "title":"Insurance",
+        "flag":"Y",
+        "url":"/main/master/insurance",
+        "icon": "",
+        "img":"/insurance.png"
+    },
+
+    {
+      "id": 25,
+      "menu_name": "Bank",
+      "title": "Bank",
+      "flag": "N",
+      "url": "/main/master/bank",
+      "icon": "",
+      "img":"/bank.png"
+    },
+    {
+      "id": 9,
+      "menu_name": "Document Type",
+      "title": "Document Type",
+      "flag": "N",
+      "url": "/main/master/docType",
+      "icon": "",
+      "img":"/documentLocker.png"
+    },
+    {
+      "id": 10,
+      "menu_name": "Operations",
+      "title": "Operations",
+      "flag": "N",
+      "url": "/main/master/mstOperations",
+      "icon": "",
+      "img":"/operation.png"
+
+    },
+    {
+      "id":11,
+      "menu_name":"Email Template",
+      "title":"Email Template",
+      "flag":"N",
+      "url":"/main/master/emailTemplate",
+      "icon":"",
+      "img":"/emailTemplate.png"
+    },
+    {
+      "id":12,
+      "menu_name":"Geographical Master",
+      "title":"Geographical Master",
+      "flag":"N",
+      "url":"/main/master/geographic",
+      "icon":"",
+      "img":"/geographical.png"
+    },
+    {
+      "id":13,
+      "menu_name":"Company",
+      "title":"Company",
+      "flag":"N",
+      "url":"/main/master/company",
+      "icon":"",
+      "img":"/company.png"
+    }
+]

@@ -10,7 +10,7 @@ import {
 } from '@angular/common/http';
 // import {storage} from '../__Utility/storage';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, finalize, tap } from 'rxjs/operators';
+import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UtiliService } from '../__Services/utils.service';
 export const BYPASS_LOG = new HttpContextToken(() => false);
@@ -29,6 +29,7 @@ export class NetworkInterceptor implements HttpInterceptor {
     this.__spinner.show();
     this.totalRequests++;
     return next.handle(request).pipe(
+      takeUntil(this.__utility.onCancelPendingRequests()),
       finalize(() => {
         this.requestsCompleted++;
         if (this.requestsCompleted === this.totalRequests) {

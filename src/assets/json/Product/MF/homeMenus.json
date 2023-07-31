@@ -4,71 +4,80 @@
     "accessibility":[],
     "title":"MIS Report",
     "url":"/main/product/mf/mis",
-    "icon": "fa fa-user-o",
-    "sub_menu":[]
+    "icon": "",
+    "sub_menu":[],
+    "img":"/product_mf/mis_rpt.png"
   },
   {
     "id":2,
     "accessibility":[],
     "title":"Portfolio Report",
     "url":"/main/product/mf/portfolio",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "sub_menu":[
       {
         "id":1,
         "accessibility":[],
         "title":"Live MF Portfolio",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png"
       },
       {
         "id":2,
         "accessibility":[],
         "title":"P&L Valuation Report",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/plValuation.png"
       },
       {
         "id":3,
         "accessibility":[],
         "title":"Between Date XIRR",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/between_date_xirr.png"
       },
       {
         "id":4,
         "accessibility":[],
         "title":"Realised Fund XIRR",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/realiseFund.png"
       },
       {
         "id":5,
         "accessibility":[],
         "title":"Folio Master",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/folio_master.png"
       },
       {
         "id":6,
         "accessibility":[],
         "title":"Realised Capital Gain",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/realisedCapitalGain.png"
       },
       {
         "id":7,
         "accessibility":[],
         "title":"Notional Capital Gain",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/nationalCapitalGain.png"
       },
       {
         "id":8,
         "accessibility":[],
         "title":"Dividend Report",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/mf_divident.png"
       },
 
       {
@@ -76,75 +85,85 @@
         "accessibility":[],
         "title":"Combined Portfolio Valuation",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/combined_portfolio.png"
       },
       {
         "id":10,
         "accessibility":[],
         "title":"Recent Transaction",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/recent_transaction.png"
       },
       {
         "id":11,
         "accessibility":[],
         "title":"Gold Tracker",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/gold_tracker.png"
       },
       {
         "id":12,
         "accessibility":[],
         "title":"FY Wise Report",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/fy_wise.png"
       },
       {
         "id":13,
         "accessibility":[],
         "title":"Wealth Report",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/wealthRpt.png"
       },
       {
         "id":14,
         "accessibility":[],
         "title":"Load Free Unit Report",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o"
+        "icon": "",
+        "img":"/PortFolio/load_freeIcon.png"
       }
-    ]
+    ],
+    "img":"/reports.png"
   },
   {
     "id":3,
     "accessibility":[],
     "title":"SIP Report",
     "url":"/main/product/mf",
-    "icon": "fa fa-user-o",
-    "sub_menu":[]
+    "icon": "",
+    "sub_menu":[],
+    "img":"/reports.png"
   },
   {
     "id":4,
     "accessibility":[],
     "title":"SWP Report",
     "url":"/main/product/mf",
-    "icon": "fa fa-user-o",
-    "sub_menu":[]
+    "icon": "",
+    "sub_menu":[],
+    "img":"/reports.png"
   },
   {
     "id":5,
     "accessibility":[],
     "title":"STP Report",
     "url":"/main/product/mf",
-    "icon": "fa fa-user-o",
-    "sub_menu":[]
+    "icon": "",
+    "sub_menu":[],
+    "img":"/reports.png"
   },
   {
     "id":6,
     "accessibility":[],
     "title":"TAX Package",
     "url":"/main/product/mf/taxpackage",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "sub_menu":[
       {
         "id":1,
@@ -202,30 +221,33 @@
         "url":"/main/product/mf/taxpackage/combineportfolio",
         "icon": "fa fa-user-o"
       }
-    ]
+    ],
+    "img":"/product_mf/taxes_package.png"
   },
   {
     "id":7,
     "accessibility":[],
     "title":"KYC Report",
     "url":"/main/product/mf",
-    "icon": "fa fa-user-o",
-    "sub_menu":[]
+    "icon": "",
+    "sub_menu":[],
+    "img":"/product_mf/kyc_report.png"
   },
   {
     "id":8,
     "accessibility":[],
     "title":"Business Opportunity Report",
     "url":"/main/product/mf",
-    "icon": "fa fa-user-o",
-    "sub_menu":[]
+    "icon": "",
+    "sub_menu":[],
+    "img":"/product_mf/business_opportunity_report.png"
   },
   {
     "id":9,
     "accessibility":[],
     "title":"Business insight Report",
     "url":"/main/product/mf/buinsidetype",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "sub_menu":[
       {
         "id":1,
@@ -251,14 +273,15 @@
         "icon": "fa fa-user-o",
         "sub_menu":[]
       }
-    ]
+    ],
+    "img":"/product_mf/bu_insight.png"
   },
   {
     "id":10,
     "accessibility":[],
     "title":"Research",
     "url":"/main/product/mf/research",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "sub_menu":[
       {
         "id":1,
@@ -412,47 +435,52 @@
         "icon": "fa fa-user-o",
         "sub_menu":[]
       }
-    ]
+    ],
+    "img":"/research.png"
   },
   {
     "id":11,
     "accessibility":[],
     "title":"Financial Planning",
     "url":"/main/product/mf/finPlan",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "sub_menu":[
       {
         "id":1,
         "accessibility":[],
         "title":"Risk Profiler",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o",
-        "sub_menu":[]
+        "icon": "",
+        "sub_menu":[],
+        "img":"/FinPlanning/riskProfiler.png"
       },
       {
         "id":2,
         "accessibility":[],
         "title":"Risk Profiler Report",
         "url":"/main/product/mf",
-        "icon": "fa fa-user-o",
-        "sub_menu":[]
+        "icon": "",
+        "sub_menu":[],
+        "img":"/reports.png"
       },
       {
         "id":3,
         "accessibility":[],
         "title":"Planner",
         "url":"/main/product/mf/finPlan/planner",
-        "icon": "fa fa-user-o",
-        "sub_menu":[]
+        "icon": "",
+        "sub_menu":[],
+        "img":"/FinPlanning/planner.png"
       }
-    ]
+    ],
+    "img":"/product_mf/financial_planning.png"
   },
   {
     "id":12,
     "accessibility":[],
     "title":"Analytical Tool",
     "url":"/main/product/mf/analyticaltool",
-    "icon": "fa fa-user-o",
+    "icon": "",
     "sub_menu":[
       {
         "id":1,
@@ -534,22 +562,26 @@
         "icon": "fa fa-user-o",
         "sub_menu":[]
       }
-    ]
+    ],
+    "img":"/product_mf/analytics_tool.png"
   },
   {
     "id":13,
     "accessibility":[],
     "title":"SOA Download",
     "url":"/main/product/mf",
-    "icon": "fa fa-user-o",
-    "sub_menu":[]
+    "icon": "",
+    "sub_menu":[],
+    "img":"/product_mf/soa_download.png"
   },
   {
     "id":14,
     "accessibility":[],
     "title":"Portfolio Rebalance",
     "url":"/main/product/mf",
-    "icon": "fa fa-user-o",
-    "sub_menu":[]
+    "icon": "",
+    "sub_menu":[],
+    "img":"/product_mf/portfolio_rebalance.png"
+
   }
 ]

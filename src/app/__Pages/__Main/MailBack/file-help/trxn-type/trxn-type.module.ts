@@ -12,6 +12,7 @@ const routes: Routes = [
         path: '',
         loadChildren: () =>
           import('./home/home.module').then((m) => m.HomeModule),
+          data:{title:' R&T Trxn Type',pageTitle:'R&T Trxn Type'}
       },
     ],
   },

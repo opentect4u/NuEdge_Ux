@@ -3,14 +3,21 @@
   <mat-progress-bar mode="indeterminate" ></mat-progress-bar>
 </div>
 <router-outlet></router-outlet>
-<ngx-spinner
+<!-- <ngx-spinner
   bdColor="rgb(163 163 163 / 38%)"
   size="medium"
   color="#1f4481"
   type="line-scale-pulse-out-rapid"
 ><p class="spinnerTxt">Please Wait...</p>
+</ngx-spinner> -->
+<ngx-spinner
+  bdColor="rgb(163 163 163 / 38%)"
+  size="medium"
+  template="<img src='../assets/images/loader.gif' width='50'  height='50'/>"
+  color="#1f4481"
+><p class="spinnerTxt">Please Wait...</p>
 </ngx-spinner>
 <!-- size="medium"
   color="#fff"
   type="ball-clip-rotate" -->
-  <!-- template="<img src='../assets/images/logo_spin.png'/>" -->
+  <!-- template="<img src='../assets/images/loader.gif'/>" -->

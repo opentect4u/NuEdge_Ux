@@ -14,9 +14,9 @@
   color: #fff;
   font-size: 13px!important;
 }
-th,td{
-  width:12rem;
-}
+/* th,td{
+  width:33rem;
+} */
 :host ::ng-deep .p-datatable  .p-sortable-column-icon{
   color: #ffffff;
 }

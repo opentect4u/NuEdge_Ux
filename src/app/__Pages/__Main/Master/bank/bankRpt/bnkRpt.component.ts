@@ -74,6 +74,7 @@ setColumns(res){
 }
 
  getBankMst(column_name: string | null = '',sort_by: string | null | '' ='asc'){
+
   const __bnkSearch = new FormData();
 
   __bnkSearch.append('bnk_addr',this.__catForm.value.bnk_addr ? this.__catForm.value.bnk_addr : '');
@@ -84,6 +85,7 @@ setColumns(res){
   __bnkSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
   __bnkSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
    this.__dbIntr.api_call(1,'/depositbankDetailSearch',__bnkSearch).pipe(map((x: any) => x.data)).subscribe(res => {
+    // this.setColumns(this.__catForm.value.options);
     this.__paginate =res.links;
     this.setPaginator(res.data);
      this.tableExport(__bnkSearch);

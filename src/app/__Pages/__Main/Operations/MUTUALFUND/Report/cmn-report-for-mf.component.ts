@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { pluck } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
 import { amc } from 'src/app/__Model/amc';
@@ -20,7 +20,7 @@ type selectBtn ={
   templateUrl: './cmn-report-for-mf.component.html',
   styleUrls: ['./cmn-report-for-mf.component.css']
 })
-export class CmnReportForMFComponent implements OnInit {
+export class CmnReportForMFComponent implements OnInit,OnDestroy {
   headerTitle: string;
   tabIndex:number = 0;
   __pageNumber = '10';
@@ -143,4 +143,9 @@ export class CmnReportForMFComponent implements OnInit {
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
    }
   /*** End */
+  ngOnDestroy(){
+    let controller = new AbortController();
+    controller.abort();
+  }
+
 }

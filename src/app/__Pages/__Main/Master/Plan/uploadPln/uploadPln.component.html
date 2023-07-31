@@ -6,7 +6,9 @@
       [dataSource]="tableData" [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All Plan'" [headerTitle]="'Recent Plan'" [flag]="'P'"
+    <shared-mst-dtls [btnTitle]="'View All Plan'"
+    [props]="'plan_name'"
+    [headerTitle]="'Recent Plan'" [flag]="'P'"
       (populate)="populateDT($event)"
       (viewAll)="viewAll()"
       [dataSource]="__selectRNT.data"></shared-mst-dtls>

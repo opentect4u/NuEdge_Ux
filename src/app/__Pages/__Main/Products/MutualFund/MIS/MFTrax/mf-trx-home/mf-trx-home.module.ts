@@ -11,7 +11,8 @@ import { RouterModule, Routes } from '@angular/router';
     children:[
        {
         path:'report',
-        loadChildren:()=>import('../trx-rpt/trx-rpt.module').then(m => m.TrxRptModule)
+        loadChildren:()=>import('../trx-rpt/trx-rpt.module').then(m => m.TrxRptModule),
+        data:{title: "NuEdge - MF Trax", pageTitle: "MF Trax"}
        },
        {
         path:'',

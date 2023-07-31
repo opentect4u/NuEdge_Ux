@@ -11,7 +11,9 @@
     [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All City'" [headerTitle]="'Recent City'" [flag]="'GC'"
+    <shared-mst-dtls [btnTitle]="'View All City'"
+    [props]="'name'"
+    [headerTitle]="'Recent City'" [flag]="'GC'"
       (populate)="populateDT($event)" (viewAll)="viewAll()"
       [dataSource]="cityMst.data"></shared-mst-dtls>
   </div>

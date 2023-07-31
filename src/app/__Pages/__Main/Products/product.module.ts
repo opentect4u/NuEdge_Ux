@@ -10,11 +10,12 @@ import { RouterModule, Routes } from '@angular/router';
     children:[
       {
         path:'',
-        loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule)
+        loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule),
+        data:{title: "NuEdge - Products", pageTitle: "Products"}
       },
       {
         path:'mf',
-        loadChildren:()=> import('./MutualFund/mf-landing.module').then(m=> m.MfLandingModule)
+        loadChildren:()=> import('./MutualFund/mf-landing.module').then(m=> m.MfLandingModule),
       }
     ]
   }]

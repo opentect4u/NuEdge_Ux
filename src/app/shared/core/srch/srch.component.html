@@ -14,6 +14,7 @@
     [name]="label"
     [id]="label"
     class="form-control"
+    (keydown)="onKeyUp($event)"
     [formControl]="$any(ngControl.control)"
     [placeholder]="placeholder">
     <span class="spinner-border"
@@ -24,12 +25,13 @@
     (appOutsideClick)="outsideClickforClient($event)">
       <div class="serachresult_client" #searchList>
         <ul *ngIf="listItems.length > 0">
-          <li *ngFor="let items of listItems" (click)="getItems(items)">
-           <!-- {{items.client_code}} | {{items.pan}} | {{items.client_name}} -->
-           <span *ngFor = "let props of propertiesToShow">
-            {{items[props]}}
-           </span>
-          </li>
+          <core-list-item *ngFor="let items of listItems" (click)="getItems(items)" [items]="items">
+            <li>
+              <span *ngFor = "let props of propertiesToShow">
+                {{items[props]}}
+               </span>
+            </li>
+            </core-list-item>
         </ul>
         <div class="noDataFound" *ngIf="listItems.length == 0">
           <shared-no-data
@@ -37,10 +39,6 @@
           [alertMsgTitle]="noDataFoundTitle"
           [alertMsgSubTitle]="noDataFoundSubTitle"
           ></shared-no-data>
-          <!-- <h5 class="text-center">
-            Sorry!! No Records Found
-          </h5>
-          <p>To create a new client .Please click on Create Client</p> -->
         </div>
       </div>
     </div>

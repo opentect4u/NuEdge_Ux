@@ -86,8 +86,6 @@ export class FinancialRPTComponent implements OnInit {
   __columns:column[] =[];
   SelectedClms:string[] = [];
   @Input() set transaction(trans_id: number){
-    console.log(trans_id);
-
     this._trns_id = trans_id;
     this.setColumns(this.transFrm.value.option,this.trnsTypeId,trans_id);
     if(trans_id){

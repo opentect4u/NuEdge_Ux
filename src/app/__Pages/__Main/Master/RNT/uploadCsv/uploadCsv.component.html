@@ -16,7 +16,9 @@
   <!-- End -->
   <!-- Hold the UI for View Latest R&T -->
   <div class="col-sm-5">
-    <shared-mst-dtls [btnTitle]="'View All R&T'" [headerTitle]="'Recent R&T'" [flag]="'R'"
+    <shared-mst-dtls [btnTitle]="'View All R&T'"
+    [headerTitle]="'Recent R&T'" [flag]="'R'"
+    [props]="'rnt_name'"
       (populate)="populateDT($event)" (showCorrospondingDetails)="showCorrospondingAMC($event)" (viewAll)="viewAll()"
       [dataSource]="__selectRNT.data"></shared-mst-dtls>
   </div>
