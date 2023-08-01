@@ -4,6 +4,50 @@
 /* tesy */
 .spinnerTxt{
   font-weight: 500;
-    font-size: 20px;
-    color:#1f4481;
+  font-size: 16px;
+  color: #ffffff;
+  /* margin: 30px 0px 0px 0px; */
+}
+
+
+:host ::ng-deep .wrapper {
+  width: 152px;
+  height: 152px;
+  background-image: url('../assets/images/loader.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 32%;
+}
+
+:host ::ng-deep  .loader {
+  border: 3px solid #070980;
+  border-radius: 50%;
+  width: 49px;
+  height: 49px;
+  animation: fill linear 3s;
+  position: absolute;
+  left: 34%;
+  top: 34%;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fill {
+  0% {
+    clip-path: polygon(50% 0%, 50% 50%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+  }
+  12.5% {
+    clip-path: polygon(50% 0%, 50% 50%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%);
+  }
+  37.5% {
+    clip-path: polygon(50% 0%, 50% 50%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 0%);
+  }
+  62.5% {
+    clip-path: polygon(50% 0%, 50% 50%, 0% 100%, 0% 100%, 0% 100%, 100% 100%, 100% 0%);
+  }
+  87.5% {
+    clip-path: polygon(50% 0%, 50% 50%, 0% 0%, 0% 0%, 0% 100%, 100% 100%, 100% 0%);
+  }
+  100% {
+    clip-path: polygon(50% 0%, 50% 50%, 50% 0%, 0% 0%, 0% 100%, 100% 100%, 100% 0%);
+  }
 }

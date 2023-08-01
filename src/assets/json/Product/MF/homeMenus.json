@@ -135,27 +135,255 @@
     "id":3,
     "accessibility":[],
     "title":"SIP Report",
-    "url":"/main/product/mf",
+    "url":"/main/product/mf/sipreport",
     "icon": "",
-    "sub_menu":[],
-    "img":"/reports.png"
+    "img":"/reports.png",
+    "sub_menu":[
+      {
+        "id":1,
+         "url":"",
+        "title":"Live SIP",
+        "flag":"L",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      },
+      {
+        "id":2,
+         "url":"",
+        "title":"Registered SIP",
+        "flag":"R",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[
+          {
+            "id":1,
+            "title":"To Be Registered",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          },
+          {
+            "id":2,
+            "title":"Un Registered",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          }
+        ]
+      },
+      {
+        "id":3,
+         "url":"",
+        "title":"Terminate SIP",
+        "flag":"T",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      },
+      {
+        "id":4,
+         "url":"",
+        "title":"Matured SIP",
+        "flag":"M",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[
+          {
+            "id":1,
+            "title":"Matured SIP",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          },
+          {
+            "id":2,
+            "title":"To Be Matured SIP",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          }
+        ]
+      },
+      {
+        "id":5,
+         "url":"",
+        "title":"Pause SIP",
+        "flag":"P",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      }
+    ]
   },
   {
     "id":4,
     "accessibility":[],
     "title":"SWP Report",
-    "url":"/main/product/mf",
+    "url":"/main/product/mf/swpreport",
     "icon": "",
-    "sub_menu":[],
-    "img":"/reports.png"
+    "img":"/reports.png",
+    "sub_menu":[
+      {
+        "id":1,
+         "url":"",
+        "title":"Live SWP",
+        "flag":"L",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      },
+      {
+        "id":2,
+         "url":"",
+        "title":"Registered SWP",
+        "flag":"R",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[
+          {
+            "id":1,
+            "title":"To Be Registered",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          },
+          {
+            "id":2,
+            "title":"Un Registered",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          }
+        ]
+      },
+      {
+        "id":3,
+         "url":"",
+        "title":"Terminate SWP",
+        "flag":"T",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      },
+      {
+        "id":4,
+         "url":"",
+        "title":"Matured SWP",
+        "flag":"M",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[
+          {
+            "id":1,
+            "title":"Matured SWP",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          },
+          {
+            "id":2,
+            "title":"To Be Matured SWP",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          }
+        ]
+      },
+      {
+        "id":5,
+         "url":"",
+        "title":"Pause SWP",
+        "flag":"P",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      }
+    ]
   },
   {
     "id":5,
     "accessibility":[],
     "title":"STP Report",
-    "url":"/main/product/mf",
+    "url":"/main/product/mf/stpreport",
     "icon": "",
-    "sub_menu":[],
+    "sub_menu":[
+      {
+        "id":1,
+         "url":"",
+        "title":"Live STP",
+        "flag":"L",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      },
+      {
+        "id":2,
+         "url":"",
+        "title":"Registered STP",
+        "flag":"R",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[
+          {
+            "id":1,
+            "title":"To Be Registered",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          },
+          {
+            "id":2,
+            "title":"Un Registered",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          }
+        ]
+      },
+      {
+        "id":3,
+         "url":"",
+        "title":"Terminate STP",
+        "flag":"T",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      },
+      {
+        "id":4,
+         "url":"",
+        "title":"Matured STP",
+        "flag":"M",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[
+          {
+            "id":1,
+            "title":"Matured STP",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          },
+          {
+            "id":2,
+            "title":"To Be Matured STP",
+            "url":"/main/product/mf",
+            "icon": "",
+            "img":"/PortFolio/liveMfPortFolio.png"
+          }
+        ]
+      },
+      {
+        "id":5,
+         "url":"",
+        "title":"Pause STP",
+        "flag":"P",
+        "icon": "",
+        "img":"/PortFolio/liveMfPortFolio.png",
+        "sub_menu":[]
+      }
+    ],
     "img":"/reports.png"
   },
   {

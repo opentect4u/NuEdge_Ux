@@ -1,0 +1,30 @@
+<div class="row flexSec">
+  <div class="col-sm-12 mb-3">
+
+    <!-- Make the Tab Section Common -->
+    <core-tab [Tab]="TabMenu"
+    (GetTabDtls)="TabDetails($event)"
+    [index]="tabindex"></core-tab>
+    <div class="card p-3">
+      <ng-container [ngSwitch]="true">
+        <ng-container *ngIf="tabindex == 0">
+          <live-sip></live-sip>
+        </ng-container>
+        <ng-container *ngIf="tabindex == 1">
+          <registered-sip [sub_tab]="sub_tab_menu"></registered-sip>
+        </ng-container>
+        <ng-container *ngIf="tabindex == 2">
+          <terminate-sip></terminate-sip>
+        </ng-container>
+        <ng-container *ngIf="tabindex == 3">
+          <matured-sip  [sub_tab]="sub_tab_menu"></matured-sip>
+        </ng-container>
+        <ng-container *ngIf="tabindex == 4">
+          <pause-sip></pause-sip>
+        </ng-container>
+        </ng-container>
+    </div>
+
+
+  </div>
+  </div>

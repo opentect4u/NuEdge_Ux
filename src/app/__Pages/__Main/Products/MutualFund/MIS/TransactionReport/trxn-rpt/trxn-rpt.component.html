@@ -51,9 +51,16 @@
                 </p-calendar>
            </div>
            <div class="col-sm-3">
-            <label for="pan_no">Investor PAN / Name</label>
-             <input type="text" placeholder="Enter Investor PAN / Name"
-             name="pan_no" id="pan_no" class="form-control" formControlName="pan_no">
+            <label for="pan_no">Investor</label>
+            <ng-multiselect-dropdown
+               [id]="'pan_no'"
+               [placeholder]="'Select Client'"
+              [settings]="settingsforClient"
+              [data]="clientMst"
+              formControlName="pan_no">
+            </ng-multiselect-dropdown>
+             <!-- <input type="text" placeholder="Enter Investor PAN / Name"
+             name="pan_no" id="pan_no" class="form-control" formControlName="pan_no"> -->
             <!-- <app-core-srch
             [label] = "'Client Details'"
             [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
@@ -217,6 +224,11 @@
         columnResizeMode="expand"
         appendTo="body"
         [columns]="column"
+        [paginator]="true"
+        [totalRecords]="trxnRpt.length"
+        [pageLinks]="3"
+        [rowsPerPageOptions]="[10,50,100]"
+        [rows]="10"
         [tableStyle]="{ 'min-width': '400rem' }"
         >
           <ng-template pTemplate="header">
@@ -237,6 +249,16 @@
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
                     <b>{{i + 1}}</b>
                  </ng-container>
+
+                 <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+                  <b>{{ trxn[col.field] && trxn[col.field]!=' ' ? trxn[col.field] : 'N/A' }}</b>
+               </ng-container>
+
+               <ng-container *ngSwitchCase="col.field == 'first_client_name'">
+                <b>{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</b>
+             </ng-container>
+
+
                  <ng-container *ngSwitchCase="col.field == 'trans_date'">
                     <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                  </ng-container>
@@ -293,9 +315,9 @@
 
       </div>
       <div class="card-footer">
-        <label>
+        <b>
           In Total There Are {{trxnRpt.length}} Transaction
-        </label>
+        </b>
       </div>
 
     </div>

@@ -1,0 +1,74 @@
+
+<div class="card">
+  <div class="card-header">
+    <b class="m-0 d-flex align-items-center">
+      <i class="pi pi-database mr-1" style="font-size:2rem"></i>Terminate STP Reports</b>
+  </div>
+  <div class="card-body">
+    <p-table
+    #primeTbl
+    id="trxDt"
+    [value]="live_stp_rpt"
+    [lazy]="true"
+    [lazyLoadOnInit]="true"
+    [responsive]="true"
+    [rowHover]="true"
+    styleClass="p-datatable-striped"
+    [autoLayout]="true"
+    [scrollable]="true"
+    [resizableColumns]="true"
+    columnResizeMode="expand"
+    appendTo="body"
+    [columns]="column"
+    [tableStyle]="{ 'min-width': '400rem' }"
+    >
+      <ng-template pTemplate="header">
+          <tr>
+              <th pResizableColumn *ngFor="let col of column" [pSortableColumn]="col.field"
+                [style.width]="col.field == 'scheme_name' ? '34rem' : '25rem'"
+              >
+                {{ col.header }}
+                <p-sortIcon [field]="col.field">
+                </p-sortIcon>
+              </th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-trxn let-columns="columns"  let-i="rowIndex">
+        <tr tabindex="999">
+          <td *ngFor="let col of column">
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <b>{{i + 1}}</b>
+             </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'start_date' || col.field == 'end_date' || col.field == 'reg_date'">
+                <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+             </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'product_code'">
+              <b matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
+           </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'amount'">
+              <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</b>
+           </ng-container>
+              <ng-container *ngSwitchDefault>
+                <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
+              </ng-container>
+            </ng-container>
+          </td>
+          </tr>
+        </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+             No Records Found
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  </div>
+  <div class="card-footer">
+    <b>
+      In Total There Are {{live_stp_rpt.length}} Terminate STP
+    </b>
+  </div>
+</div>

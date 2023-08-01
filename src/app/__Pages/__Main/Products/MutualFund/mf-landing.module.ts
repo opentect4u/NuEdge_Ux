@@ -43,6 +43,19 @@ const routes:Routes=[
           path:'research',
           loadChildren:()=> import('./Research/research.module').then(m => m.ResearchModule)
       },
+      {
+           path:'sipreport',
+           loadChildren:()=>import('./SIP/sip-main.module').then(m => m.SipMainModule)
+      },
+      {
+        path:'swpreport',
+        loadChildren:()=>import('./SWP/swp-main.module').then(m => m.SwpMainModule)
+      },
+      {
+           path:'stpreport',
+          loadChildren:()=>import('./STP/stp-main.module').then(m => m.StpMainModule)
+
+      },
       {path:'',redirectTo:'dashboard',pathMatch:'full'}
     ]
   }]

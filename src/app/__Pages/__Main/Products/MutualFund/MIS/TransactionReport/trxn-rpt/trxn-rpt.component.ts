@@ -148,6 +148,9 @@ export class TrxnRptComponent implements OnInit {
    */
   __euinMst: any = [];
 
+
+  clientMst:any = [];
+
   /**
    * Constructor
    * @param dbIntr
@@ -155,6 +158,17 @@ export class TrxnRptComponent implements OnInit {
    */
 
   constructor(private dbIntr: DbIntrService, private utility: UtiliService) {}
+
+
+  /**
+   * Setting of multiselect dropdown
+   */
+  settingsforClient = this.utility.settingsfroMultiselectDropdown(
+    'first_client_pan',
+    'first_client_name',
+    'Search Client',
+    1
+  );
 
   /**
    * Setting of multiselect dropdown
@@ -255,19 +269,28 @@ export class TrxnRptComponent implements OnInit {
     euin_no: new FormControl([]),
     folio_no: new FormControl(''),
     client_id: new FormControl(''),
-    pan_no:new FormControl(''),
+    pan_no:new FormControl([]),
     client_name: new FormControl(''),
     trxn_type_id: new FormControl([], { updateOn: 'blur' }),
     trxn_sub_type_id: new FormControl([], { updateOn: 'blur' }),
   });
 
   ngOnInit(): void {
+    this.getClientMst();
     this.getAmcMst();
     this.getTrxnTypeMst();
     this.maxDate= this.calculateDates('T');
     this.minDate= this.calculateDates('P');
   }
 
+  /**
+   * Get Client Master Data
+   */
+  getClientMst = () =>{
+       this.dbIntr.api_call(0,'/searchClient',null).pipe(pluck("data")).subscribe(res =>{
+        this.clientMst = res;
+       })
+  }
 
   calculateDates  =  (mode:string):Date =>{
     let dt = new Date();
@@ -275,7 +298,6 @@ export class TrxnRptComponent implements OnInit {
       case 'T' : break;
       case 'P' : dt.setFullYear(dt.getFullYear() - 1)
     }
-    console.log(new Date(dt.toISOString().split('T')[0]));
     return new Date(dt.toISOString().split('T')[0]);
   }
 
@@ -311,29 +333,29 @@ export class TrxnRptComponent implements OnInit {
     /**
      *  event trigger on Client Details Search Dropdown
      */
-    this.misTrxnRpt.controls['client_name'].valueChanges
-      .pipe(
-        tap(() => (this.__isClientPending = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((dt) =>
-          dt?.length > 1 ? this.dbIntr.searchItems('/client', dt) : []
-        ),
-        map((x: any) => x.data)
-      )
-      .subscribe({
-        next: (value: { data: client[] }) => {
-          this.__clientMst = value.data;
-          this.searchResultVisibilityForClient('block');
-          this.__isClientPending = false;
-          this.misTrxnRpt.get('client_id').reset('');
-          this.misTrxnRpt.get('pan_no').reset('');
-        },
-        complete: () => {},
-        error: (err) => {
-          this.__isClientPending = false;
-        },
-      });
+    // this.misTrxnRpt.controls['client_name'].valueChanges
+    //   .pipe(
+    //     tap(() => (this.__isClientPending = true)),
+    //     debounceTime(200),
+    //     distinctUntilChanged(),
+    //     switchMap((dt) =>
+    //       dt?.length > 1 ? this.dbIntr.searchItems('/client', dt) : []
+    //     ),
+    //     map((x: any) => x.data)
+    //   )
+    //   .subscribe({
+    //     next: (value: { data: client[] }) => {
+    //       this.__clientMst = value.data;
+    //       this.searchResultVisibilityForClient('block');
+    //       this.__isClientPending = false;
+    //       this.misTrxnRpt.get('client_id').reset('');
+    //       this.misTrxnRpt.get('pan_no').reset([]);
+    //     },
+    //     complete: () => {},
+    //     error: (err) => {
+    //       this.__isClientPending = false;
+    //     },
+    //   });
 
     /**
      * Event Trigger after change amc
@@ -426,7 +448,7 @@ export class TrxnRptComponent implements OnInit {
     TrxnDt.append('amc_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.amc_id, 'id'));
     TrxnDt.append('cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.cat_id, 'id'));
     TrxnDt.append('sub_cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_cat_id, 'id'));
-    TrxnDt.append('pan_no',global.getActualVal(this.misTrxnRpt.value.pan_no));
+    TrxnDt.append('pan_no',this.utility.mapIdfromArray(this.misTrxnRpt.value.pan_no,'first_client_pan'));
     TrxnDt.append('scheme_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.scheme_id, 'id'));
     TrxnDt.append('trans_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_type_id,'trans_type'));
     TrxnDt.append('trans_sub_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_sub_type_id,'trans_sub_type'));
@@ -469,15 +491,15 @@ export class TrxnRptComponent implements OnInit {
    * event trigger after select particular result from search list
    * @param searchRlt
    */
-  getSelectedItemsFromParent = <T extends client>(searchRlt: {
-    flag: string;
-    item: T;
-  }) => {
-    this.misTrxnRpt.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
-    this.misTrxnRpt.get('client_id').reset(searchRlt.item.id);
-    this.misTrxnRpt.get('pan_no').reset(searchRlt.item.pan);
-    this.searchResultVisibilityForClient('none');
-  };
+  // getSelectedItemsFromParent = <T extends client>(searchRlt: {
+  //   flag: string;
+  //   item: T;
+  // }) => {
+  //   this.misTrxnRpt.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
+  //   this.misTrxnRpt.get('client_id').reset(searchRlt.item.id);
+  //   this.misTrxnRpt.get('pan_no').reset(searchRlt.item.pan);
+  //   this.searchResultVisibilityForClient('none');
+  // };
 
   /**
    *  evnt trigger on search particular client & after select client
@@ -644,7 +666,7 @@ export class TrxnRptComponent implements OnInit {
           date_range:'',
           date_periods:'',
           client_id:'',
-          pan_no:''
+          pan_no:[]
          });
          this.misTrxnRpt.get('brn_cd').setValue([],{emitEvent:true});
          this.__subbrkArnMst = [];
