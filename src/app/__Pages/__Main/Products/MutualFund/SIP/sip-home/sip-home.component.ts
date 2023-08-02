@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import menu from '../../../../../../../assets/json/Product/MF/homeMenus.json';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { pluck } from 'rxjs/operators';
+import { amc } from 'src/app/__Model/amc';
 export interface ITab{
   tab_name:string,
   id:number,
@@ -15,6 +18,17 @@ export interface ITab{
 
 export class SipHomeComponent implements OnInit {
 
+
+   /**
+    * holding Amc master data
+    */
+   amcMst:amc[] = [];
+
+   /**
+   * For holding client those are  present only in transaction.
+   */
+   clientMst:any=[];
+
   sub_tab_menu:ITab[] = [];
 
   /**
@@ -28,9 +42,9 @@ export class SipHomeComponent implements OnInit {
   TabMenu:Partial<ITab[]> = (menu.filter(item => item.id == 3)[0].sub_menu)
   .map((item) => ({tab_name:item.title,img_src:('../../../../../assets/images/'+item.img),id:item.id,flag:item.flag}))
 
-  constructor() {}
+  constructor(private dbIntr:DbIntrService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {this.getAmcMst();this.getClientMst();}
 
   /**
    * Event fired at the time of change tab
@@ -38,9 +52,7 @@ export class SipHomeComponent implements OnInit {
    */
   TabDetails = <T extends {index:number,tabDtls:{tab_name:string,id:number,img_src:string,flag:string}}>(data:T) : void => {
     this.tabindex =data.index;
-    console.log(data);
     this.getSubTab(data.tabDtls.flag);
-
   }
 
   /**
@@ -52,4 +64,25 @@ export class SipHomeComponent implements OnInit {
     this.sub_tab_menu = (dt as any[]).filter(item => item.flag == flag)[0].sub_menu
     .map((item) => ({tab_name:item.title,img_src:('../../../../../assets/images/'+item.img),id:item.id,flag:item.flag}));
   }
+
+  /**
+   * Get AMC Master Data from Backend API
+   */
+  getAmcMst = () => {
+    this.dbIntr
+      .api_call(0, '/amc', null)
+      .pipe(pluck('data'))
+      .subscribe((res: amc[]) => {
+        this.amcMst = res;
+      });
+  };
+
+   /**
+   * Get Client Master Data
+   */
+   getClientMst = () =>{
+    this.dbIntr.api_call(0,'/searchClient',null).pipe(pluck("data")).subscribe(res =>{
+     this.clientMst = res;
+    })
+   }
 }

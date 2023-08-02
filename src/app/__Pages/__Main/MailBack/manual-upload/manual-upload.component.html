@@ -99,7 +99,8 @@
               [pSortableColumn]="col.field"
               >
                 {{ col.header }}
-                <p-sortIcon [field]="col.field" *ngIf="col.field!= 'upload_file'">
+                <p-sortIcon [field]="col.field"
+                *ngIf="col.field!= 'upload_file'">
                 </p-sortIcon>
               </th>
           </tr>
@@ -109,16 +110,13 @@
               <td *ngFor="let col of columns">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'file_type_id'">
-                     <b>{{(file[col.field] | fileType:fileTypeMst)}}
-                    </b>
+                     <b>{{(file[col.field] | fileType:fileTypeMst)}}</b>
                   </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'file_name'">
-                    <b>{{(file['file_id'] | fileType:fileMst)}}
-                   </b>
+                  <ng-container *ngSwitchCase="col.field == 'file_id'">
+                    <b>{{file[col.field] | mailBckfile:file['file_type_id']}}</b>
                  </ng-container>
                  <ng-container *ngSwitchCase="col.field == 'process_date'">
-                  <b>{{file[col.field] ? (file[col.field] | date:'dd-MM-YYYY h:mma') : 'N/A'}}
-                 </b>
+                  <b>{{file[col.field] ? (file[col.field] | date:'dd-MM-YYYY h:mma') : 'N/A'}}</b>
                </ng-container>
 
                  <ng-container *ngSwitchCase="col.field == 'upload_file'">

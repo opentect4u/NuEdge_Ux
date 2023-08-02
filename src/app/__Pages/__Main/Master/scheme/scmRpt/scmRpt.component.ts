@@ -627,7 +627,11 @@ export class ScmRptComponent implements OnInit {
 
     this.__scmForm.controls['alt_scheme_name'].valueChanges
       .pipe(
-        tap(() => (this.__isSchemeSpinner = true)),
+
+        tap(() => (
+          this.__isSchemeSpinner = true,
+          this.__scmForm.controls['alt_scheme_id'].setValue('')
+          )),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>

@@ -53,6 +53,7 @@ import { PaginateComponent } from './core/paginate/paginate.component';
 import { TdsInfoPipe } from '../__Pipes/tdsInfo.pipe';
 import { FormsModule } from '@angular/forms';
 import { ListItemComponent } from './core/list-item/list-item.component';
+import { MailBckfilePipe } from '../__Pipes/mail-bckfile.pipe';
 
 @NgModule({
   imports: [
@@ -87,6 +88,7 @@ import { ListItemComponent } from './core/list-item/list-item.component';
     SelectButtonModule
   ],
   declarations: [
+    MailBckfilePipe,
     modeOfPrePipe,
     BnkrplcPipe,
     TdsInfoPipe,
@@ -114,6 +116,7 @@ import { ListItemComponent } from './core/list-item/list-item.component';
     ListItemComponent
   ],
   exports:[
+    MailBckfilePipe,
     modeOfPrePipe,
     BnkrplcPipe,
     TdsInfoPipe,
