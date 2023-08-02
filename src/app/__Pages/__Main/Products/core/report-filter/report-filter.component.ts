@@ -10,6 +10,7 @@ import filterOpt from '../../../../../../assets/json/filterOption.json';
 import periods from '../../../../../../assets/json/datePeriods.json';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { pluck } from 'rxjs/operators';
+import { dates } from 'src/app/__Utility/disabledt';
 
 @Component({
   selector: 'core-report-filter',
@@ -134,7 +135,7 @@ export class ReportFilterComponent implements OnInit {
   /**
    * For Holding Sub-Category Master Data
   */
-  @Input() subCatMst:subcat[] = [];
+  subcatMst:subcat[] = [];
 
  /**
    * For Holding Scheme Master Data
@@ -154,22 +155,22 @@ export class ReportFilterComponent implements OnInit {
   /**
    * Holding Branch Master Data
    */
-  @Input() branchMst: any = [];
+  branchMst: any = [];
 
   /**
    * Holding Buisness type
    */
-  @Input() bu_type: any = [];
+  bu_type: any = [];
 
   /**
    * Holding Relationship Manager
    */
-  @Input() RmMst: any = [];
+  RmMst: any = [];
 
   /**
    * Holding Sub Broker Master Data
    */
-  @Input() subbrkArnMst: any = [];
+  subbrkArnMst: any = [];
 
   /**
    * Holding Sub Broker Master Data
@@ -228,13 +229,6 @@ export class ReportFilterComponent implements OnInit {
     this.minDate= this.calculateDates('P');
   }
 
-  /** Event triggered after click on reset/advance filter
-   * @param ev
-   */
-  onItemClick = (ev) =>{
-     console.log(ev)
-  }
-
   /**
    * Event trigger after form submit
    */
@@ -251,5 +245,374 @@ export class ReportFilterComponent implements OnInit {
     return new Date(dt.toISOString().split('T')[0]);
   }
 
+
+  /**
+   * Event Trigger for Advacne Filter / Reset
+   * @param ev
+   */
+  onItemClick = (ev) => {
+    if (ev.option.value == 'A') {
+      this.getBranchMst();
+    } else {
+         this.Rpt.patchValue({
+          amc_id:[],
+          folio_no:'',
+          trxn_type_id:[],
+          date_range:'',
+          date_periods:'',
+          client_id:'',
+          pan_no:[]
+         });
+         this.Rpt.get('brn_cd').setValue([],{emitEvent:true});
+         this.subbrkArnMst = [];
+         this.Rpt.controls['sub_brk_cd'].setValue([]);
+         this.Rpt.controls['euin_no'].setValue([]);
+         this.Rpt.controls['client_name'].setValue('',{emitEvent:false});
+    }
+  }
+
+ /**
+  * Get Branch Master Data
+ */
+  getBranchMst = () => {
+    this.dbIntr
+      .api_call(0, '/branch', null)
+      .pipe(pluck('data'))
+      .subscribe((res) => {
+        this.branchMst = res;
+      });
+  };
+
+
+  ngAfterViewInit(){
+    this.Rpt.controls['date_periods'].valueChanges.subscribe((res) => {
+      this.Rpt.controls['date_range'].reset(
+        res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+      );
+      if (res && res != 'R') {
+        this.Rpt.controls['date_range'].disable();
+      } else {
+        this.Rpt.controls['date_range'].enable();
+      }
+    });
+
+      /**
+       * Event Trigger after change amc
+       */
+      this.Rpt.controls['amc_id'].valueChanges.subscribe((res) => {
+        this.getCategoryMst(res);
+        this.getSubcategoryMst(res, this.Rpt.value.cat_id);
+        this.getSchemeMst(
+          res,
+          this.Rpt.value.cat_id,
+          this.Rpt.value.sub_cat_id
+        );
+      });
+      /**
+       * Event Trigger after change category
+       */
+      this.Rpt.controls['cat_id'].valueChanges.subscribe((res) => {
+        this.getSubcategoryMst(this.Rpt.value.amc_id, res);
+        this.getSchemeMst(
+          this.Rpt.value.amc_id,
+          res,
+          this.Rpt.value.sub_cat_id
+        );
+      });
+      /**
+       * Event Trigger after change subcategory
+       */
+      this.Rpt.controls['sub_cat_id'].valueChanges.subscribe((res) => {
+        this.getSchemeMst(
+          this.Rpt.value.amc_id,
+          this.Rpt.value.cat_id,
+          res
+        );
+      });
+
+      /**
+       * Event Trigger after change Transaction Type
+       */
+      this.Rpt.controls['trxn_type_id'].valueChanges.subscribe((res) => {
+        this.getTrxnSubTypeMst(res);
+      });
+      /**
+       * Event Trigger after change Branch
+       */
+      this.Rpt.controls['brn_cd'].valueChanges.subscribe((res) => {
+        this.getBusinessTypeMst(res);
+      });
+
+      /**
+       * Event Trigger after Business Type
+       */
+      this.Rpt.controls['bu_type_id'].valueChanges.subscribe((res) => {
+        this.disabledSubBroker(res);
+        this.getRelationShipManagerMst(res, this.Rpt.value.brn_cd);
+      });
+
+      /**
+       * Event Trigger after Rlationship Manager
+       */
+      this.Rpt.controls['rm_id'].valueChanges.subscribe((res) => {
+        if (
+          this.Rpt.value.bu_type_id.findIndex(
+            (item) => item.bu_code == 'B'
+          ) != -1
+        ) {
+          this.getSubBrokerMst(res);
+        } else {
+          this.euinMst=[];
+          this.euinMst = res;
+        }
+      });
+      /**
+       * Event Trigger after Rlationship Manager
+       */
+      this.Rpt.controls['sub_brk_cd'].valueChanges.subscribe((res) => {
+        this.setEuinDropdown(res, this.Rpt.value.rm_id);
+      });
+  }
+
+
+  /**
+   * get Category Master Data according to AMC
+   * @param amc_id
+   */
+  getCategoryMst = <T extends { id: number; amc_short_name: string }[]>(
+    amc_id: T
+  ) => {
+    if (amc_id.length > 0) {
+      this.dbIntr
+        .api_call(
+          0,
+          '/category',
+          'arr_amc_id=' + this.utility.mapIdfromArray(amc_id, 'id')
+        )
+        .pipe(pluck('data'))
+        .subscribe((res: category[]) => {
+          this.catMst = res;
+        });
+    } else {
+      this.catMst = [];
+      this.Rpt.get('cat_id').reset([], { emitEvent: true });
+    }
+  };
+
+  /**
+   * get Sub-Category Master Data according to AMC,Category
+   * @param amc_id
+   * @param cat_id
+   */
+
+  getSubcategoryMst = <
+    T extends { id: number; amc_short_name: string }[],
+    C extends category[]
+  >(
+    amc_id: T,
+    cat_id: C
+  ) => {
+    if (cat_id.length > 0 && amc_id.length > 0) {
+      this.dbIntr
+        .api_call(
+          0,
+          '/subcategory',
+          'arr_cat_id=' +
+            this.utility.mapIdfromArray(cat_id, 'id') +
+            '&arr_amc_id=' +
+            this.utility.mapIdfromArray(amc_id, 'id')
+        )
+        .pipe(pluck('data'))
+        .subscribe((res: subcat[]) => {
+          this.subcatMst = res;
+        });
+    } else {
+      this.subcatMst = [];
+      this.Rpt.get('sub_cat_id').reset([], { emitEvent: true });
+    }
+  };
+
+  /**
+   * get Scheme Master Data according to AMC,Category,Subcategory
+   * @param amc_id
+   * @param cat_id
+   */
+
+  getSchemeMst = <
+    T extends { id: number; amc_short_name: string }[],
+    C extends category[],
+    S extends subcat[]
+  >(
+    amc_id: T,
+    cat_id: C,
+    sub_cat_id: S
+  ) => {
+    if (cat_id.length > 0 && amc_id.length > 0 && sub_cat_id.length > 0) {
+      this.dbIntr
+        .api_call(
+          0,
+          '/scheme',
+          'arr_cat_id=' +
+            this.utility.mapIdfromArray(cat_id, 'id') +
+            '&arr_subcat_id=' +
+            this.utility.mapIdfromArray(sub_cat_id, 'id') +
+            '&arr_amc_id=' +
+            this.utility.mapIdfromArray(amc_id, 'id')
+        )
+        .pipe(pluck('data'))
+        .subscribe((res: scheme[]) => {
+          this.schemeMst = res;
+        });
+    } else {
+      this.schemeMst = [];
+      this.Rpt.get('scheme_id').reset([]);
+    }
+  };
+
+  /**
+   * get Transaction sub type master data after change transaction type
+   * @param trxnType
+   */
+
+  getTrxnSubTypeMst = <T extends rntTrxnType[]>(trxnType: T) => {
+    if(trxnType.length > 0){
+    this.dbIntr
+      .api_call(
+        0,
+        '/rntTransTypeSubtypeShow',
+        'arr_trans_type=' + this.utility.mapIdfromArray(trxnType, 'trans_type')
+      )
+      .pipe(pluck('data'))
+      .subscribe((res: rntTrxnType[]) => {
+        this.trxnSubTypeMst = res;
+      });
+    }
+    else{
+      this.trxnSubTypeMst = [];
+      this.Rpt.get('trxn_sub_type_id').setValue([]);
+    }
+  };
+
+
+  setEuinDropdown = (sub_brk_cd, rm) => {
+    this.euinMst = rm.filter(
+      (item) =>
+        !this.subbrkArnMst
+          .map((item) => {
+            return item['emp_euin_no'];
+          })
+          .includes(item.euin_no)
+    );
+    if (sub_brk_cd.length > 0) {
+      sub_brk_cd.forEach((element) => {
+        if (
+          this.subbrkArnMst.findIndex((el) => element.code == el.code) != -1
+        ) {
+          this.euinMst.push({
+            euin_no:
+              this.subbrkArnMst[
+                this.subbrkArnMst.findIndex((el) => element.code == el.code)
+              ].euin_no,
+            emp_name: '',
+          });
+        }
+      });
+    } else {
+      this.euinMst = this.euinMst.filter(
+        (item) =>
+          !this.subbrkArnMst
+            .map((item) => {
+              return item['euin_no'];
+            })
+            .includes(item.euin_no)
+      );
+    }
+  };
+  disabledSubBroker(bu_type_ids) {
+    if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
+      this.Rpt.controls['sub_brk_cd'].enable();
+    } else {
+      this.Rpt.controls['sub_brk_cd'].disable();
+    }
+  }
+  getSubBrokerMst(arr_euin_no) {
+    if (arr_euin_no.length > 0) {
+      this.dbIntr
+        .api_call(
+          0,
+          '/subbroker',
+          'arr_euin_no=' +
+            JSON.stringify(
+              arr_euin_no.map((item) => {
+                return item['euin_no'];
+              })
+            )
+        )
+        .pipe(pluck('data'))
+        .subscribe((res: any) => {
+          this.subbrkArnMst = res.map(
+            ({ code, bro_name, emp_euin_no, euin_no }) => ({
+              code,
+              emp_euin_no,
+              euin_no,
+              bro_name: bro_name + '-' + code,
+            })
+          );
+        });
+    } else {
+      this.subbrkArnMst = [];
+      this.Rpt.controls['sub_brk_cd'].setValue([]);
+    }
+  }
+  getBusinessTypeMst(brn_cd) {
+    if (brn_cd.length > 0) {
+      this.dbIntr
+        .api_call(
+          0,
+          '/businessType',
+          'arr_branch_id=' +
+            JSON.stringify(
+              brn_cd.map((item) => {
+                return item['id'];
+              })
+            )
+        )
+        .pipe(pluck('data'))
+        .subscribe((res) => {
+          this.bu_type = res;
+        });
+    } else {
+      this.Rpt.controls['bu_type_id'].setValue([], { emitEvent: true });
+      this.bu_type = [];
+    }
+  }
+  getRelationShipManagerMst(bu_type_id, arr_branch_id) {
+    if (bu_type_id.length > 0 && arr_branch_id.length > 0) {
+      this.dbIntr
+        .api_call(
+          0,
+          '/employee',
+          'arr_bu_type_id=' +
+            JSON.stringify(
+              bu_type_id.map((item) => {
+                return item['bu_code'];
+              })
+            ) +
+            '&arr_branch_id=' +
+            JSON.stringify(
+              arr_branch_id.map((item) => {
+                return item['id'];
+              })
+            )
+        )
+        .pipe(pluck('data'))
+        .subscribe((res) => {
+          this.RmMst = res;
+        });
+    } else {
+      this.RmMst = [];
+      this.Rpt.controls['rm_id'].setValue([],{emitEvent:true});
+    }
+  }
 
 }

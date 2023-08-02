@@ -17,11 +17,9 @@ export interface ITab{
 })
 
 export class SipHomeComponent implements OnInit {
-
-
-   /**
-    * holding Amc master data
-    */
+  /**
+  * holding Amc master data
+  */
    amcMst:amc[] = [];
 
    /**

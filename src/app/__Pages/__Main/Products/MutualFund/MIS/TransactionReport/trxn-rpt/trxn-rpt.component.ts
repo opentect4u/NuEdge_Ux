@@ -331,33 +331,6 @@ export class TrxnRptComponent implements OnInit {
   });
 
     /**
-     *  event trigger on Client Details Search Dropdown
-     */
-    // this.misTrxnRpt.controls['client_name'].valueChanges
-    //   .pipe(
-    //     tap(() => (this.__isClientPending = true)),
-    //     debounceTime(200),
-    //     distinctUntilChanged(),
-    //     switchMap((dt) =>
-    //       dt?.length > 1 ? this.dbIntr.searchItems('/client', dt) : []
-    //     ),
-    //     map((x: any) => x.data)
-    //   )
-    //   .subscribe({
-    //     next: (value: { data: client[] }) => {
-    //       this.__clientMst = value.data;
-    //       this.searchResultVisibilityForClient('block');
-    //       this.__isClientPending = false;
-    //       this.misTrxnRpt.get('client_id').reset('');
-    //       this.misTrxnRpt.get('pan_no').reset([]);
-    //     },
-    //     complete: () => {},
-    //     error: (err) => {
-    //       this.__isClientPending = false;
-    //     },
-    //   });
-
-    /**
      * Event Trigger after change amc
      */
     this.misTrxnRpt.controls['amc_id'].valueChanges.subscribe((res) => {
@@ -641,7 +614,6 @@ export class TrxnRptComponent implements OnInit {
   /**
    * Get Branch Master Data
    */
-
   getBranchMst = () => {
     this.dbIntr
       .api_call(0, '/branch', null)

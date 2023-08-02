@@ -150,7 +150,7 @@ export class ScmRptComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getSchemeMst();
+    // this.getSchemeMst();
     this.setColumns(
       this.__scmForm.value.scheme_status,
       this.__scmForm.value.options
@@ -1170,7 +1170,11 @@ export class ScmRptComponent implements OnInit {
   onItemClick(ev) {
     this.refreshOrAdvanceFlt();
   }
-  customSort(ev) {}
+  customSort(ev) {
+    this.sort.field = ev.sortField;
+    this.sort.order = ev.sortOrder;
+    this.getSchemeMst();
+  }
   onselectItem(ev) {
     this.getSchemeMst();
   }
