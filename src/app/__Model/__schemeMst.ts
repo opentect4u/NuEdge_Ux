@@ -29,16 +29,40 @@ export interface scheme {
   swp_freq_wise_amt?:any
   ava_special_sip?: any;
   special_sip_name?: string;
-
   ava_special_swp?:any
   special_swp_name?:string
   ava_special_stp?:any
   special_stp_name?:string
-  // growth_isin?:string;
-  // idcw_payout_isin?:string;
-  // idcw_reinvestment_isin?:string;
-
   step_up_min_amt?:string;
   step_up_min_per?:string;
-
+  A_sip_min_A_amount?:string | null;
+  A_sip_min_F_amount?:string | null;
+  A_stp_min_amount?:string | null;
+  A_swp_min_amount?:string | null;
+  D_sip_min_A_amount?:string | null;
+  D_sip_min_F_amount?:string | null;
+  D_stp_min_amount?:string | null;
+  D_swp_min_amount?:string | null;
+  F_sip_min_A_amount?:string | null;
+  F_sip_min_F_amount?:string | null;
+  F_stp_min_amount?:string | null;
+  F_swp_min_amount?:string | null;
+  M_sip_min_A_amount?:string | null;
+  M_sip_min_F_amount?:string | null;
+  M_stp_min_amount?:string | null;
+  M_swp_min_amount?:string | null;
+  Q_sip_min_A_amount?:string | null;
+  Q_sip_min_F_amount?:string | null;
+  Q_stp_min_amount?:string | null;
+  Q_swp_min_amount?:string | null;
+  S_sip_min_A_amount?:string | null;
+  S_sip_min_F_amount?:string | null;
+  S_stp_min_amount?:string | null;
+  S_swp_min_amount?:string | null;
+  W_sip_min_A_amount?:string | null;
+  W_sip_min_F_amount?:string | null;
+  W_stp_min_amount?:string | null;
+  W_swp_min_amount?:string | null;
   }
+
+

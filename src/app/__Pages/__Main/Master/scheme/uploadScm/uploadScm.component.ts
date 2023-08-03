@@ -304,6 +304,12 @@ export class UploadScmComponent implements OnInit {
       cell: (element: Record<string, any>) => `${element['STEP UP Minimum Percentage']}`,
       isDate: true
     },
+    {
+      columnDef: 'bench_mark',
+      header: 'Benchmark',
+      cell: (element: Record<string, any>) => `${element['bench_mark']}`,
+      isDate: true
+    },
   ];
 
    __dataTbleForNFO = [
@@ -355,6 +361,7 @@ export class UploadScmComponent implements OnInit {
         'Special STP':"",
         "STEP UP Minimum Amount":"",
         "STEP UP Minimum Percentage":"",
+        "bench_mark":""
     }
    ];
    __dataTbleForOngoing = [
@@ -402,6 +409,7 @@ export class UploadScmComponent implements OnInit {
       'Special STP':"",
       "STEP UP Minimum Amount":"",
       "STEP UP Minimum Percentage":"",
+      "bench_mark":""
     }
    ]
   tableData = new MatTableDataSource<any>(this.__dataTbleForNFO);

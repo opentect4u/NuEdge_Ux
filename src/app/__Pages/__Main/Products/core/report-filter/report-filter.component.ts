@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { category } from 'src/app/__Model/__category';
@@ -23,6 +23,11 @@ export class ReportFilterComponent implements OnInit {
    * For Displaying title in card header
   */
   @Input() title:string | null = '';
+
+      /**
+   * Holding Transaction Type  Master Data
+   */
+    @Input() trxnTypeMst: rntTrxnType[] = [];
 
   /**
    * Setting of multiselect dropdown
@@ -142,10 +147,6 @@ export class ReportFilterComponent implements OnInit {
   */
    @Input() schemeMst:scheme[] = [];
 
-   /**
-   * Holding Transaction Type  Master Data
-   */
-   @Input() trxnTypeMst: rntTrxnType[] = [];
 
   /**
    * Holding Transaction Sub-Type  Master Data
@@ -199,6 +200,8 @@ export class ReportFilterComponent implements OnInit {
     minDate: Date;
     maxDate:Date;
 
+   @Output() getsearchValues = new EventEmitter<any>();
+
   /**
    * Form Field for search Transaction
    */
@@ -227,13 +230,14 @@ export class ReportFilterComponent implements OnInit {
   ngOnInit(): void {
     this.maxDate= this.calculateDates('T');
     this.minDate= this.calculateDates('P');
+    this.searchReport();
   }
 
   /**
    * Event trigger after form submit
    */
   searchReport = () =>{
-
+       this.getsearchValues.emit(this.Rpt.value);
   }
 
   calculateDates  =  (mode:string):Date =>{

@@ -3,6 +3,7 @@ import menu from '../../../../../../../assets/json/Product/MF/homeMenus.json';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { pluck } from 'rxjs/operators';
 import { amc } from 'src/app/__Model/amc';
+import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 export interface ITab{
   tab_name:string,
   id:number,
@@ -17,6 +18,11 @@ export interface ITab{
 })
 
 export class SipHomeComponent implements OnInit {
+
+ /**
+   * Holding Transaction Type  Master Data
+   */
+    trxnTypeMst: rntTrxnType[] = [];
   /**
   * holding Amc master data
   */
@@ -42,7 +48,7 @@ export class SipHomeComponent implements OnInit {
 
   constructor(private dbIntr:DbIntrService) {}
 
-  ngOnInit(): void {this.getAmcMst();this.getClientMst();}
+  ngOnInit(): void {this.getAmcMst();this.getClientMst();this.getTrxnTypeMst();}
 
   /**
    * Event fired at the time of change tab
@@ -83,4 +89,16 @@ export class SipHomeComponent implements OnInit {
      this.clientMst = res;
     })
    }
+
+   /**
+   * Cal API for getting Transaction Type Master Data
+   */
+  getTrxnTypeMst = () => {
+    this.dbIntr
+      .api_call(0, '/rntTransTypeSubtypeShow', null)
+      .pipe(pluck('data'))
+      .subscribe((res: rntTrxnType[]) => {
+        this.trxnTypeMst = res;
+      });
+  };
 }

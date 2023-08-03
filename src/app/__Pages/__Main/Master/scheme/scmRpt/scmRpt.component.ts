@@ -133,7 +133,7 @@ export class ScmRptComponent implements OnInit {
   __catMst: category[] = [];
   __subcatMst: subcat[] = [];
   schemeMst: scheme[] = [];
-  searchedSchemeMst: scheme[] = [];
+  searchedSchemeMst: Partial<scheme[]> = [];
   // __columnsForsummary: string[] = [];
   // __columnsForDetails: string[] = [];
   __export = new MatTableDataSource<scheme>([]);
@@ -305,154 +305,12 @@ export class ScmRptComponent implements OnInit {
     this.__dbIntr
       .api_call(1, '/schemeDetailSearch', __scmExport)
       .pipe(
-        map((x: any) => x.data),
-        map((x) => {
-          this.__paginate = x.links;
-          return x.data.map((item) => {
-            const object = { ...item };
-            object.daily_sip_fresh_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'F',
-              'D'
-            );
-            (object.daily_sip_add_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'A',
-              'D'
-            )),
-              (object.weekly_sip_fresh_min_amt = global.getFrequencywiseAmt(
-                item.sip_freq_wise_amt,
-                'F',
-                'W'
-              ));
-            (object.weekly_sip_add_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'A',
-              'W'
-            )),
-              (object.fortnightly_sip_fresh_min_amt =
-                global.getFrequencywiseAmt(item.sip_freq_wise_amt, 'F', 'F'));
-            (object.fortnightly_sip_add_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'A',
-              'F'
-            )),
-              (object.monthly_sip_fresh_min_amt = global.getFrequencywiseAmt(
-                item.sip_freq_wise_amt,
-                'F',
-                'M'
-              ));
-            (object.monthly_sip_add_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'A',
-              'M'
-            )),
-              (object.quarterly_sip_fresh_min_amt = global.getFrequencywiseAmt(
-                item.sip_freq_wise_amt,
-                'F',
-                'Q'
-              ));
-            object.quarterly_sip_add_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'A',
-              'Q'
-            );
-            object.semi_anually_sip_fresh_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'F',
-              'S'
-            );
-            object.semi_anually_sip_add_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'A',
-              'S'
-            );
-            object.anually_sip_fresh_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'F',
-              'A'
-            );
-            object.anually_sip_add_min_amt = global.getFrequencywiseAmt(
-              item.sip_freq_wise_amt,
-              'A',
-              'A'
-            );
-            object.daily_swp_amt = global.getFrequencywiseAmt(
-              item.swp_freq_wise_amt,
-              'F',
-              'D'
-            );
-            object.weekly_swp_amt = global.getFrequencywiseAmt(
-              item.swp_freq_wise_amt,
-              'F',
-              'W'
-            );
-            object.fortnightly_swp_amt = global.getFrequencywiseAmt(
-              item.swp_freq_wise_amt,
-              'F',
-              'F'
-            );
-            object.monthly_swp_amt = global.getFrequencywiseAmt(
-              item.swp_freq_wise_amt,
-              'F',
-              'M'
-            );
-            object.quarterly_swp_amt = global.getFrequencywiseAmt(
-              item.swp_freq_wise_amt,
-              'F',
-              'Q'
-            );
-            object.semi_anually_swp_amt = global.getFrequencywiseAmt(
-              item.swp_freq_wise_amt,
-              'F',
-              'S'
-            );
-            object.anually_swp_amt = global.getFrequencywiseAmt(
-              item.swp_freq_wise_amt,
-              'F',
-              'A'
-            );
-            object.daily_stp_amt = global.getFrequencywiseAmt(
-              item.stp_freq_wise_amt,
-              'F',
-              'D'
-            );
-            object.weekly_stp_amt = global.getFrequencywiseAmt(
-              item.stp_freq_wise_amt,
-              'F',
-              'W'
-            );
-            object.fortnightly_stp_amt = global.getFrequencywiseAmt(
-              item.stp_freq_wise_amt,
-              'F',
-              'F'
-            );
-            object.monthly_stp_amt = global.getFrequencywiseAmt(
-              item.stp_freq_wise_amt,
-              'F',
-              'M'
-            );
-            object.quarterly_stp_amt = global.getFrequencywiseAmt(
-              item.stp_freq_wise_amt,
-              'F',
-              'Q'
-            );
-            object.semi_anually_stp_amt = global.getFrequencywiseAmt(
-              item.stp_freq_wise_amt,
-              'F',
-              'S'
-            );
-            object.anually_swp_amt = global.getFrequencywiseAmt(
-              item.stp_freq_wise_amt,
-              'F',
-              'A'
-            );
-            return object;
-          });
-        })
+        map((x: any) => x.data)
       )
-      .subscribe((res) => {
-        this.setPaginator(res);
+      .subscribe((res: any) => {
+        console.log(res)
+        this.setPaginator(res.data);
+        this.__paginate = res.links
         // this.tableExport();
       });
   }

@@ -393,19 +393,26 @@ export class ScmModificationComponent implements OnInit {
   }
   setFrequencyAmt(freq_dtls) {
     console.log(freq_dtls);
+    this.__scmForm.get('is_selectall').setValue(
+      freq_dtls.every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
+    )
     freq_dtls.forEach((freqDtls) => {
-      console.log(freqDtls);
       this.addFrequency(freqDtls);
     });
   }
   setSwpfrequencyAmt(freq_dtls) {
-    console.log(freq_dtls);
-
+    this.__scmForm.get('is_selectall_for_swp').setValue(
+      freq_dtls.every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
+    );
     freq_dtls.forEach((freqDtls) => {
       this.addSwpFrequency(freqDtls);
     });
   }
   setStpFrequency(freq_dtls) {
+    console.log(freq_dtls);
+    this.__scmForm.get('is_selectall_for_stp').setValue(
+      freq_dtls.every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
+    );
     freq_dtls.forEach((freqDtls) => {
       this.addStpFrequency(freqDtls);
     });
@@ -448,8 +455,6 @@ export class ScmModificationComponent implements OnInit {
 
     this.__scmForm.controls['is_selectall_for_swp'].valueChanges.subscribe(
       (res) => {
-        console.log(res);
-
         this.swp_frequency.controls.map((value, index) => {
           value.get('is_checked').patchValue(res, { emitEvent: false });
           this.setSwpFormControldependOnCheckbox(index, res);
@@ -620,6 +625,9 @@ export class ScmModificationComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit() {
+
+
+
     //  console.log(this.__scmForm.value.frequency);
     if (this.__scmForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
@@ -723,15 +731,9 @@ export class ScmModificationComponent implements OnInit {
     __scm.append('nfo_reopen_dt', this.__scmForm.value.nfo_reopen_dt);
     __scm.append('pip_fresh_min_amt', this.__scmForm.value.pip_fresh_min_amt);
     __scm.append('pip_add_min_amt', this.__scmForm.value.pip_add_min_amt);
-    __scm.append('frequency', JSON.stringify(this.__scmForm.value.frequency));
-    __scm.append(
-      'swp_freq_wise_amt',
-      JSON.stringify(this.__scmForm.value.swp_frequency)
-    );
-    __scm.append(
-      'stp_freq_wise_amt',
-      JSON.stringify(this.__scmForm.value.stp_frequency)
-    );
+    __scm.append('frequency', JSON.stringify(this.__scmForm.value.frequency.map(item => {return {...item,is_checked:item.is_checked.toString()}})));
+    __scm.append('swp_freq_wise_amt',JSON.stringify(this.__scmForm.value.swp_frequency.map(item => {return {...item,is_checked:item.is_checked.toString()}})));
+    __scm.append('stp_freq_wise_amt',JSON.stringify(this.__scmForm.value.stp_frequency.map(item => {return {...item,is_checked:item.is_checked.toString()}})));
     __scm.append('sip_date', JSON.stringify(this.__scmForm.value.sip_date));
     __scm.append('swp_date', JSON.stringify(this.__scmForm.value.swp_date));
     __scm.append('stp_date', JSON.stringify(this.__scmForm.value.stp_date));
@@ -791,23 +793,23 @@ export class ScmModificationComponent implements OnInit {
       id: new FormControl(_freDtls.id),
       freq_name: new FormControl(_freDtls.freq_name),
       is_checked: new FormControl(global.getType(_freDtls.is_checked)),
-      sip_fresh_min_amt: new FormControl(_freDtls.sip_fresh_min_amt, [
+      sip_fresh_min_amt: new FormControl(global.getType(_freDtls.is_checked) ? _freDtls.sip_fresh_min_amt : '', [
         Validators.pattern('^[0-9]*$'),
       ]),
-      sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt, [
+      sip_add_min_amt: new FormControl(global.getType(_freDtls.is_checked) ? _freDtls.sip_add_min_amt : '', [
         Validators.pattern('^[0-9]*$'),
       ]),
     });
   }
 
   createFrequencyforSWP_STP(_freDtls): FormGroup {
-    console.log(_freDtls);
+    // console.log(global.getType(_freDtls.is_checked));
 
     return new FormGroup({
       id: new FormControl(_freDtls.id),
       freq_name: new FormControl(_freDtls.freq_name),
       is_checked: new FormControl(global.getType(_freDtls.is_checked)),
-      sip_add_min_amt: new FormControl(_freDtls.sip_add_min_amt, [
+      sip_add_min_amt: new FormControl(global.getType(_freDtls.is_checked) ? _freDtls.sip_add_min_amt : '', [
         Validators.pattern('^[0-9]*$'),
       ]),
     });

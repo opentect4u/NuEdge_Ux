@@ -7,8 +7,8 @@ import { PauseSwpComponent } from '../pause-swp/pause-swp.component';
 import { LiveSwpComponent } from '../live-swp/live-swp.component';
 import { TerminateSwpComponent } from '../terminate-swp/terminate-swp.component';
 import { MatureSwpComponent } from '../mature-swp/mature-swp.component';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
+import { CoreModule } from '../../../core/core.module';
 
 const routes:Routes = [{ path:'',component:SwpHomeComponent,data:{title:'SWP Report',pageTitle:'SWP Report'}}]
 
@@ -25,7 +25,7 @@ const routes:Routes = [{ path:'',component:SwpHomeComponent,data:{title:'SWP Rep
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    SharedModule,
+    CoreModule,
     TabModule
   ]
 })

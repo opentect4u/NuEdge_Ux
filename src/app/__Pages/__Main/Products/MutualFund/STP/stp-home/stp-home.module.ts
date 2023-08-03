@@ -7,8 +7,8 @@ import { TerminateStpComponent } from '../terminate-stp/terminate-stp.component'
 import { MaturedStpComponent } from '../matured-stp/matured-stp.component';
 import { PauseStpComponent } from '../pause-stp/pause-stp.component';
 import { RegisteredStpComponent } from '../registered-stp/registered-stp.component';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
+import { CoreModule } from '../../../core/core.module';
 
 const routes:Routes = [{ path:'',component:StpHomeComponent,data:{title:'STP Report',pageTitle:'STP Report'}}]
 
@@ -24,7 +24,7 @@ const routes:Routes = [{ path:'',component:StpHomeComponent,data:{title:'STP Rep
   ],
   imports: [
     CommonModule,
-    SharedModule,
+    CoreModule,
     TabModule,
     RouterModule.forChild(routes)
   ]

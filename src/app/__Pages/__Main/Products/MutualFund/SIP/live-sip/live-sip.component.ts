@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { IliveSip } from './live_sip.interface';
 import { amc } from 'src/app/__Model/amc';
+import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 
 @Component({
   selector: 'live-sip',
@@ -12,6 +13,12 @@ export class LiveSIPComponent implements OnInit {
 
 
  __title:string = 'Search Live SIP Report';
+
+
+    /**
+   * Holding Transaction Type  Master Data
+   */
+  @Input() trxnTypeMst: rntTrxnType[] = [];
 
  /**
   * For Holding AMC Master Data
@@ -40,8 +47,10 @@ export class LiveSIPComponent implements OnInit {
 
   /**
    * Get Sip Report result
+   * @param ev
    */
-  searchSipReport = () =>{
+  searchSipReport = (ev) =>{
+   console.log(ev);
 
   }
 

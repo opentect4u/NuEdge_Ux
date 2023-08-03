@@ -14,11 +14,11 @@ export class global{
       return specialChars.test(str);
     }
 
-   public static getType(__str){
+   public static getType(__str : string  | boolean | null = false){
    if(typeof(__str) == 'string'){
      return __str == 'true' ? true : false;
    }
-    return __str;
+    return __str ? __str : false;
    }
 
    public static concatURL(pathURL,fileName){

@@ -8,7 +8,7 @@
     <div class="card p-3">
       <ng-container [ngSwitch]="true">
         <ng-container *ngIf="tabindex == 0">
-          <live-swp></live-swp>
+          <live-swp [amc]="amcMst" [client]="clientMst" [trxnTypeMst]="trxnTypeMst"></live-swp>
         </ng-container>
         <ng-container *ngIf="tabindex == 1">
           <registered-swp [sub_tab]="sub_tab_menu"></registered-swp>

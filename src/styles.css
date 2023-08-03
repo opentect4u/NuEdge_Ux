@@ -56,6 +56,7 @@ label {
   font-weight: 700;
   font-size: 11px;
   margin: 10px 0px;
+  font-family: 'Montserrat'!important;
 }
 
 .dialog-title {
@@ -397,11 +398,11 @@ mat-card {
 
 /* Mat Tab*/
 .mat-tab-label {
-  background: #c0c0c0;
+  background: #c0c0c066;
   height: 40px !important;
   opacity: 1 !important;
   font-size: 11px;
-  border-right: 0px !important;
+  border: 1px solid #b0b0b01f!important;
   color: #424242 !important;
 }
 

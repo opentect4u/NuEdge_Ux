@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import menu from '../../../../../../../assets/json/Product/MF/homeMenus.json';
+import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
+import { amc } from 'src/app/__Model/amc';
 
 export interface ITab{
   tab_name:string,
@@ -13,6 +15,21 @@ export interface ITab{
   styleUrls: ['./swp-home.component.css']
 })
 export class SwpHomeComponent implements OnInit {
+
+  /**
+   * Holding Transaction Type  Master Data
+   */
+  trxnTypeMst: rntTrxnType[] = [];
+  /**
+   * holding Amc master data
+   */
+  amcMst: amc[] = [];
+
+  /**
+   * For holding client those are  present only in transaction.
+   */
+  clientMst: any = [];
+
 
   sub_tab_menu:ITab[] = [];
 

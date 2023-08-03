@@ -6,7 +6,7 @@ import { ScmRptComponent } from '../Dialog/scm-rpt/scm-rpt.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 
- const routes: Routes = [{path:'',component:HomeComponent}]
+ const routes: Routes = [{path:'',component:HomeComponent,data:{title:'FD - Scheme',pageTitle:'Fd - Scheme'}}]
 
 @NgModule({
   declarations: [

@@ -268,7 +268,7 @@
           [tableStyle]="{ 'min-width': __scmForm.value.options == '2' ? '100rem' : '400rem' }">
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="__scmForm.value.options == '1' ? '30rem' : '16rem'">
+              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="__scmForm.value.options == '1' ? '40rem' : '16rem'">
                 {{ col.header }}
                 <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
                 </p-sortIcon>
@@ -570,188 +570,188 @@
         </ng-container>
 
 
-         <ng-container matColumnDef="daily_sip_fresh_min_amt">
+         <ng-container matColumnDef="D_sip_min_F_amount">
           <th  mat-header-cell *matHeaderCellDef>Daily SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.daily_sip_fresh_min_amt}}
+            {{element.D_sip_min_F_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="daily_sip_add_min_amt">
+        <ng-container matColumnDef="D_sip_min_A_amount">
           <th  mat-header-cell *matHeaderCellDef>Daily SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.daily_sip_add_min_amt}}
+            {{element.D_sip_min_A_amount}}
           </td>
         </ng-container>
 
 
-        <ng-container matColumnDef="weekly_sip_fresh_min_amt">
+        <ng-container matColumnDef="W_sip_min_F_amount">
           <th  mat-header-cell *matHeaderCellDef>Weekly SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.weekly_sip_fresh_min_amt}}
+            {{element.W_sip_min_F_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="weekly_sip_add_min_amt">
+        <ng-container matColumnDef="W_sip_min_A_amount">
           <th  mat-header-cell *matHeaderCellDef>Weekly SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.weekly_sip_add_min_amt}}
+            {{element.W_sip_min_A_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="fortnightly_sip_fresh_min_amt">
+        <ng-container matColumnDef="F_sip_min_F_amount">
           <th  mat-header-cell *matHeaderCellDef>Fortnightly SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.fortnightly_sip_fresh_min_amt}}
+            {{element.F_sip_min_F_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="fortnightly_sip_add_min_amt">
+        <ng-container matColumnDef="F_sip_min_A_amount">
           <th  mat-header-cell *matHeaderCellDef>Fortnightly SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.fortnightly_sip_add_min_amt}}
+            {{element.F_sip_min_A_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="monthly_sip_fresh_min_amt">
+        <ng-container matColumnDef="M_sip_min_F_amount">
           <th  mat-header-cell *matHeaderCellDef>Monthly SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.monthly_sip_fresh_min_amt}}
+            {{element.M_sip_min_F_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="monthly_sip_add_min_amt">
+        <ng-container matColumnDef="M_sip_min_A_amount">
           <th  mat-header-cell *matHeaderCellDef>Monthly SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.monthly_sip_add_min_amt}}
+            {{element.M_sip_min_A_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="quarterly_sip_fresh_min_amt">
+        <ng-container matColumnDef="Q_sip_min_F_amount">
           <th  mat-header-cell *matHeaderCellDef>Quarterly SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.quarterly_sip_fresh_min_amt}}
+            {{element.Q_sip_min_F_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="quarterly_sip_add_min_amt">
+        <ng-container matColumnDef="Q_sip_min_A_amount">
           <th  mat-header-cell *matHeaderCellDef>Quarterly SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.quarterly_sip_add_min_amt}}
+            {{element.Q_sip_min_A_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="semi_anually_sip_fresh_min_amt">
+        <ng-container matColumnDef="S_sip_min_F_amount">
           <th  mat-header-cell *matHeaderCellDef>Semi Anually SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.semi_anually_sip_fresh_min_amt}}
+            {{element.S_sip_min_F_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="semi_anually_sip_add_min_amt">
+        <ng-container matColumnDef="S_sip_min_A_amount">
           <th  mat-header-cell *matHeaderCellDef>Semi Anually SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.semi_anually_sip_add_min_amt}}
+            {{element.S_sip_min_A_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="anually_sip_fresh_min_amt">
+        <ng-container matColumnDef="A_sip_min_F_amount">
           <th  mat-header-cell *matHeaderCellDef>Anually SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.anually_sip_fresh_min_amt}}
+            {{element.A_sip_min_F_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="anually_sip_add_min_amt">
+        <ng-container matColumnDef="A_sip_min_A_amount">
           <th  mat-header-cell *matHeaderCellDef>Anually SIP Additional Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.anually_sip_add_min_amt}}
+            {{element.A_sip_min_A_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="daily_swp_amt">
+        <ng-container matColumnDef="D_swp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Daily SWP Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.daily_swp_amt}}
+            {{element.D_swp_min_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="weekly_swp_amt">
+        <ng-container matColumnDef="W_swp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Weekly SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.weekly_swp_amt}}
+            {{element.W_swp_min_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="fortnightly_swp_amt">
+        <ng-container matColumnDef="F_swp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Fortnightly SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.fortnightly_swp_amt}}
+            {{element.F_swp_min_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="monthly_swp_amt">
+        <ng-container matColumnDef="M_swp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Monthly SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.monthly_swp_amt}}
+            {{element.M_swp_min_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="quarterly_swp_amt">
+        <ng-container matColumnDef="Q_swp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Quarterly SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.quarterly_swp_amt}}
+            {{element.Q_swp_min_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="semi_anually_swp_amt">
+        <ng-container matColumnDef="S_swp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Semi Anually SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.semi_anually_swp_amt}}
+            {{element.S_swp_min_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="anually_swp_amt">
+        <ng-container matColumnDef="A_swp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Anually SWP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.anually_swp_amt}}
+            {{element.A_swp_min_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="daily_stp_amt">
+        <ng-container matColumnDef="D_stp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Daily STP Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.daily_stp_amt}}
+            {{element.D_stp_min_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="weekly_stp_amt">
+        <ng-container matColumnDef="W_stp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Weekly STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.weekly_stp_amt}}
+            {{element.W_stp_min_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="fortnightly_stp_amt">
+        <ng-container matColumnDef="F_stp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Fortnightly STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.fortnightly_stp_amt}}
+            {{element.F_stp_min_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="monthly_stp_amt">
+        <ng-container matColumnDef="M_stp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Monthly STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.monthly_stp_amt}}
+            {{element.M_stp_min_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="quarterly_stp_amt">
+        <ng-container matColumnDef="Q_stp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Quarterly STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.quarterly_stp_amt}}
+            {{element.Q_stp_min_amount}}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="semi_anually_stp_amt">
+        <ng-container matColumnDef="S_stp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Semi Anually STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.semi_anually_stp_amt}}
+            {{element.S_stp_min_amount}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="anually_stp_amt">
+        <ng-container matColumnDef="A_stp_min_amount">
           <th  mat-header-cell *matHeaderCellDef>Anually STP  Amount</th>
           <td mat-cell *matCellDef="let element">
-            {{element.anually_stp_amt}}
+            {{element.A_stp_min_amount}}
           </td>
         </ng-container>
 
