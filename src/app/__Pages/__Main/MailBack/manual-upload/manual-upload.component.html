@@ -124,11 +124,10 @@
                   [matTooltipPosition]="'after'"
                   #tooltip="matTooltip"
                   matTooltip="Download"
-                   href="{{file[col.field]}}"
-                   target="__blank"
-                   download="file[col.field]"
+                  (click)="downloadFile(file[col.field])"
                    styleClass="p-button-rounded p-button-danger p-button-text"
                   >
+
                   <i class="pi pi-download" style="font-size:2rem"></i>
                 </a>
                  </ng-container>

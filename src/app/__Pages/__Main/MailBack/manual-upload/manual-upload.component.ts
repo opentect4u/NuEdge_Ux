@@ -272,4 +272,12 @@ export class ManualUploadComponent implements OnInit {
         });
     }
   };
+
+  downloadFile = async (url) =>{
+
+    // let blob = await fetch(url).then(r => r.blob());
+    // console.log(blob);
+    // const blob = new Blob([data], { type: 'text/csv' });
+    // const url1= window.URL.createObjectURL(blob);
+  }
 }

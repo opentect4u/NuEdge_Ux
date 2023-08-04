@@ -731,9 +731,10 @@ export class ScmModificationComponent implements OnInit {
     __scm.append('nfo_reopen_dt', this.__scmForm.value.nfo_reopen_dt);
     __scm.append('pip_fresh_min_amt', this.__scmForm.value.pip_fresh_min_amt);
     __scm.append('pip_add_min_amt', this.__scmForm.value.pip_add_min_amt);
-    __scm.append('frequency', JSON.stringify(this.__scmForm.value.frequency.map(item => {return {...item,is_checked:item.is_checked.toString()}})));
-    __scm.append('swp_freq_wise_amt',JSON.stringify(this.__scmForm.value.swp_frequency.map(item => {return {...item,is_checked:item.is_checked.toString()}})));
-    __scm.append('stp_freq_wise_amt',JSON.stringify(this.__scmForm.value.stp_frequency.map(item => {return {...item,is_checked:item.is_checked.toString()}})));
+    __scm.append('frequency', JSON.stringify(this.__scmForm.value.frequency.map(item => {return {...item,is_checked:item.is_checked.toString(),
+      sip_add_min_amt:item.sip_add_min_amt ? item.sip_add_min_amt.toString() : '',sip_fresh_min_amt:item.sip_fresh_min_amt ? item.sip_fresh_min_amt.toString() : ''}})));
+    __scm.append('swp_freq_wise_amt',JSON.stringify(this.__scmForm.value.swp_frequency.map(item => {return {...item,is_checked:item.is_checked.toString(),sip_add_min_amt:item.sip_add_min_amt ? item.sip_add_min_amt.toString(): ''}})));
+    __scm.append('stp_freq_wise_amt',JSON.stringify(this.__scmForm.value.stp_frequency.map(item => {return {...item,is_checked:item.is_checked.toString(),sip_add_min_amt:item.sip_add_min_amt ? item.sip_add_min_amt.toString(): ''}})));
     __scm.append('sip_date', JSON.stringify(this.__scmForm.value.sip_date));
     __scm.append('swp_date', JSON.stringify(this.__scmForm.value.swp_date));
     __scm.append('stp_date', JSON.stringify(this.__scmForm.value.stp_date));
