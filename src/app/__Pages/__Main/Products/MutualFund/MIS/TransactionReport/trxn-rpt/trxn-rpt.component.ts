@@ -412,7 +412,7 @@ export class TrxnRptComponent implements OnInit {
    */
   searchTrxnReport = () => {
     this.total = new totalAmt();
-    this.primeTbl.clear();
+    this.primeTbl.reset();
     this.trxnRpt.length = 0;
     const TrxnDt = new FormData();
     TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
