@@ -8,8 +8,8 @@ body {
   font-family: 'Montserrat', sans-serif!important;
   font-size: 14px;
   color: #444444;
-  /* background: #f2f4f6; */
-  background: #fffaf2;
+  background: #f2f4f6;
+  /* background: #fffaf2; */
   margin: 0;
   padding: 0;
   line-height: normal;
@@ -903,8 +903,8 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .boxMid .titleSec {
-  /* background: #1f4584; */
-  background: #ff9800;
+  background: #1f4584;
+  /* background: #ff9800; */
   padding: 9px 15px;
 }
 
@@ -951,13 +951,13 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .boxMid .bodyPart ul li:nth-child(odd) {
-  /* background: #ffffff url("../images/arrow.png") no-repeat 96% center; */
-  background:  #fffaf2 url("../images/arrow.png") no-repeat 96% center;
+  background: #ffffff url("../images/arrow.png") no-repeat 96% center;
+  /* background:  #fffaf2 url("../images/arrow.png") no-repeat 96% center; */
 }
 
 .boxMid .bodyPart ul li:nth-child(even) {
- /* background: #f5f5f5 url("../images/arrow.png") no-repeat 96% center; */
- background:  #fffaf2 url("../images/arrow.png") no-repeat 96% center;
+ background: #f5f5f5 url("../images/arrow.png") no-repeat 96% center;
+ /* background:  #fffaf2 url("../images/arrow.png") no-repeat 96% center; */
 
 }
 
@@ -984,8 +984,8 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .boxMid_2 .titleSec {
-  /* background: #1f4584; */
-  background: #ff9800;
+  background: #1f4584;
+  /* background: #ff9800; */
   padding: 9px 15px;
 }
 
@@ -1029,13 +1029,11 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .boxMid_2 .bodyPart ul li:nth-child(odd) {
-  /* background: #ffffff; */
-  background: #fffaf2;
+  background: #ffffff;
 }
 
 .boxMid_2 .bodyPart ul li:nth-child(even) {
-  /* background: #f5f5f5; */
-  background: #fffaf2;
+  background: #f5f5f5;
 
 }
 

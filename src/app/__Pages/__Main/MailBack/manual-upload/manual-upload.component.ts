@@ -177,7 +177,11 @@ export class ManualUploadComponent implements OnInit {
       .pipe(pluck('data'))
       .subscribe((res: any) => {
         if (res.total_count == dt.end_count) {
-          this.utility.showSnackbar(res.suc == 1 ? 'File Uploaded Successfully' : res.msg,res.suc)
+          this.utility.showSnackbar('File Successfully Uploaded',1);
+          // this.utility.showSnackbar(res.suc == 1 ? 'File Uploaded Successfully' : res.msg,res.suc);
+          if(res.suc == 1){
+            this.updateRow(res.upload_data);
+          }
           return;
         }
         dt.upload_file_name = res?.upload_file_name;
