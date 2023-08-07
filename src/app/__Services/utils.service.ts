@@ -209,4 +209,8 @@ export class UtiliService {
   public onCancelPendingRequests = () =>{
     return this.cancelPendingRequests$.asObservable()
   }
+
+  getColumns = (columns) =>{
+    return columns.map(item => {return item.field});
+  }
 }

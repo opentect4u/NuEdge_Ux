@@ -201,4 +201,13 @@ export class HomeComponent implements OnInit {
   reset = () =>{
      this.populateTrxnTypeinForm(null);
   }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.pTableRef.filterGlobal(value,'contains')
+  }
+
+  getColumns = () =>{
+    return this.util.getColumns(this.columns);
+  }
 }

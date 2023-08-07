@@ -32,6 +32,7 @@ import { Table } from 'primeng/table';
   selector: 'app-trxn-rpt',
   templateUrl: './trxn-rpt.component.html',
   styleUrls: ['./trxn-rpt.component.css'],
+
 })
 export class TrxnRptComponent implements OnInit {
 
@@ -314,7 +315,8 @@ export class TrxnRptComponent implements OnInit {
   };
 
   ngAfterViewInit() {
-    this.hideCard('none');
+    // this.hideCard('none');
+    // this.primeTbl.tableHeaderViewChild.nativeElement.style.position = 'sticky!important';
 
    /**
     *  Event Trigger on change on Date Periods
@@ -770,6 +772,19 @@ export class TrxnRptComponent implements OnInit {
   }
 
   hideCard = (display_mode) =>{
-   this.tableCard.nativeElement.style.display = display_mode;
+  //  this.tableCard.nativeElement.style.display = display_mode;
+  }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
+
+  getColumns = () =>{
+    return this.utility.getColumns(this.column);
+  }
+
+  onPageChange = (ev) => {
+     console.log(ev);
   }
 }
