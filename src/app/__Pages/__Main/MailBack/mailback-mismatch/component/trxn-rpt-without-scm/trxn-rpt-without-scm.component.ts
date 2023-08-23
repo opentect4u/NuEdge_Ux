@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { column } from 'src/app/__Model/tblClmns';
+import { UtiliService } from 'src/app/__Services/utils.service';
 import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
 
 @Component({
@@ -19,9 +20,11 @@ export class TrxnRptWithoutScmComponent implements OnInit {
    */
   TrxnClm:column[] = trxnClm.column;
 
-  constructor() { }
+  constructor(private utility:UtiliService) { }
 
   ngOnInit(): void {
   }
-
+  getColumns = () =>{
+    return this.utility.getColumns(this.TrxnClm);
+  }
 }

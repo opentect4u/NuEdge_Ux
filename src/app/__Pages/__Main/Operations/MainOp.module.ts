@@ -78,6 +78,10 @@ const routes: Routes = [
             (m) => m.FixedDepositModule
           ),
       },
+      {
+        path:'benchmark',
+        loadChildren:()=> import('./Benchmark/benchmark.module').then(m=>m.BenchmarkModule)
+      }
     ],
   },
 ];

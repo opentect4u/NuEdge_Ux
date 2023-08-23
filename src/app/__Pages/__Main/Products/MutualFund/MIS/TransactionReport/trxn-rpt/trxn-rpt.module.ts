@@ -9,8 +9,7 @@ const routes: Routes = [{ path: '', component: TrxnRptComponent ,data:{breadcrum
 
 @NgModule({
   declarations: [
-    TrxnRptComponent
-  ],
+    TrxnRptComponent  ],
   imports: [CommonModule,SharedModule, RouterModule.forChild(routes)]
 })
 export class TrxnRptModule {}

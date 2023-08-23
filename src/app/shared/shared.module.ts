@@ -54,6 +54,7 @@ import { TdsInfoPipe } from '../__Pipes/tdsInfo.pipe';
 import { FormsModule } from '@angular/forms';
 import { ListItemComponent } from './core/list-item/list-item.component';
 import { MailBckfilePipe } from '../__Pipes/mail-bckfile.pipe';
+import { ScrollDirective } from '../__Directives/scroll.directive';
 
 @NgModule({
   imports: [
@@ -93,6 +94,7 @@ import { MailBckfilePipe } from '../__Pipes/mail-bckfile.pipe';
     BnkrplcPipe,
     TdsInfoPipe,
     RelationshipPipe,
+    ScrollDirective,
     ClOutsideClickDirective,
     elipsisPipe,
     RptFilterComponent,
@@ -122,6 +124,7 @@ import { MailBckfilePipe } from '../__Pipes/mail-bckfile.pipe';
     TdsInfoPipe,
     RelationshipPipe,
     MatCardModule,
+    ScrollDirective,
     ClOutsideClickDirective,
     elipsisPipe,
     A11yModule,

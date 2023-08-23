@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import menu from '../../../../../assets/json/Master/menu.json';
 @Component({
@@ -14,11 +13,6 @@ constructor(
   private __utility: UtiliService
 ) {
 }
-
-
-
-
-
 
 ngOnInit(){
   console.log(this.__menu)

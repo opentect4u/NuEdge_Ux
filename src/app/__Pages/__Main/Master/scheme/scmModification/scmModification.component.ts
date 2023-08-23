@@ -22,12 +22,14 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 import { scheme } from 'src/app/__Model/__schemeMst';
+// import { Ibenchmark } from '../../benchmark/benchmark.component';
 @Component({
   selector: 'app-scmModification',
   templateUrl: './scmModification.component.html',
   styleUrls: ['./scmModification.component.css'],
 })
 export class ScmModificationComponent implements OnInit {
+  // __benchmark:Ibenchmark[] = [];
   __scmDtls: scheme[] = [];
   __getPrevScmDT = storage.get_scmDtls ? storage.get_scmDtls : '';
   __dates = dateslist;
@@ -474,9 +476,15 @@ export class ScmModificationComponent implements OnInit {
 
     /*--------------Trigger when Category changes---------------*/
     this.__scmForm.controls['category_id'].valueChanges.subscribe((res) => {
-      console.log(res);
       this.getsubcatMasterbyproductId(res);
+      // this.getbenchmark(res,this.__scmForm.value.subcategory_id);
     });
+    /*--------------End---------------*/
+
+     /*--------------Trigger when Sub Category changes---------------*/
+    //  this.__scmForm.controls['subcategory_id'].valueChanges.subscribe((res) => {
+    //   this.getbenchmark(this.__scmForm.value.category_id,res);
+    // });
     /*--------------End---------------*/
 
     // Available Special SIP
@@ -1059,4 +1067,16 @@ export class ScmModificationComponent implements OnInit {
       this.others.controls[index].get('form_upload')?.reset();
     }
   }
+
+  // getbenchmark = (cat_id:number,sub_cat_id:number) => {
+  //     this.__dbIntr.api_call(
+  //       0,
+  //       '/benchmark',
+  //       'category_id='+cat_id+'&subcat_id='+sub_cat_id)
+  //     .pipe(pluck('data'))
+  //     .subscribe((res:Ibenchmark[]) =>{
+  //        this.__benchmark = res;
+  //     })
+  // }
+
 }

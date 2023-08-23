@@ -74,7 +74,7 @@
               [isPending]="__isClientPending" [listItems]="__clientMst" [flag]="'C'"
               [noDataFoundTitle]="'Sorry!! No Records Found'"
               [noDataFoundSubTitle]="'If your result match,they will appear here'"
-              [propertiesToShow]="['client_code','pan','client_name']" formControlName="investor_name"
+              [propertiesToShow]="['client_name','client_code','pan']" formControlName="investor_name"
               [displayMode]="displayMode_forClient" (setDisplayMode)="displayMode_forClient = $event"
               (selectedItems)="getSelectedItemsFromParent($event)"></app-core-srch>
           </div>

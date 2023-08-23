@@ -48,6 +48,11 @@ interface TrxnRpt{
       scheme_name:string | null
       plan_name:string | null
       option_name:string | null
+      tot_amount:string | null
+      tot_stamp_duty:string | null
+      tot_tds:string | null
+      trxn_code:string | null
+      tot_gross_amount:string | null
    }
 }
 

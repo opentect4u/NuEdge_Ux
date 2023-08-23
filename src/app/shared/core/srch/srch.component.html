@@ -11,6 +11,7 @@
       <span *ngIf="isRequired" class="text-danger">*</span>
     </label>
     <input type="text"
+    #srch
     [name]="label"
     [id]="label"
     class="form-control"
@@ -23,13 +24,22 @@
     <div class="processMain_2"
     __searchResVisibility
     (appOutsideClick)="outsideClickforClient($event)">
-      <div class="serachresult_client" #searchList>
+      <div class="serachresult_client" #searchList srchScroll (reachEnd)="scrollEnd($event)">
         <ul *ngIf="listItems.length > 0">
           <core-list-item *ngFor="let items of listItems" (click)="getItems(items)" [items]="items">
             <li>
-              <span *ngFor = "let props of propertiesToShow">
-                {{items[props]}}
-               </span>
+
+                <span *ngFor = "let props of propertiesToShow;let i=index">
+                  <!-- <ng-container *ngIf="flag == 'C';else others">
+                    <span *ngIf="i>0">[</span>
+                    {{items[props]}}
+                    <span *ngIf="i>0">]</span>
+                     </ng-container>
+                    <ng-template #others> -->
+                      {{items[props]}}
+                  <!-- </ng-template> -->
+                 </span>
+
             </li>
             </core-list-item>
         </ul>

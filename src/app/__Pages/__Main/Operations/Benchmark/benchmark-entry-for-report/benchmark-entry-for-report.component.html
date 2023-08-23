@@ -1,0 +1,66 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="benchmarkRptFrm" [attr.id]="'benchmarkFrm_'+data.id">
+       <div class="row">
+        <div class="col-sm-12">
+          <label for="ex_id">Exchange</label>
+          <select class="form-control" id="ex_id" name="ex_id" formControlName="ex_id">
+            <option value="">Select</option>
+            <option [value]="item.id" *ngFor="let item of exchangeMstDt">{{item.ex_name}}</option>
+          </select>
+        </div>
+        <div class="col-sm-12">
+          <label for="benchmark">Benchmark</label>
+          <select class="form-control" id="benchmark" name="benchmark" formControlName="benchmark">
+            <option value="">Select</option>
+            <option [value]="item.id" *ngFor="let item of benchmark">{{item.benchmark}}</option>
+          </select>
+        </div>
+        <div class="col-sm-12">
+          <label for="date">Date</label>
+         <input type="date" name="date" id="date" class="form-control" formControlName="date">
+        </div>
+        <div class="col-sm-12">
+          <label for="open">Open</label>
+         <input type="text" placeholder="Enter Open" name="open" id="open" class="form-control" formControlName="open">
+        </div>
+        <div class="col-sm-12">
+          <label for="high">High</label>
+         <input type="text" name="high" placeholder="Enter High" id="high" class="form-control" formControlName="high">
+        </div>
+        <div class="col-sm-12">
+          <label for="low">Low</label>
+         <input type="text" name="low" placeholder="Enter Low" id="low" class="form-control" formControlName="low">
+        </div>
+        <div class="col-sm-12 mb-2">
+          <label for="close">Close</label>
+         <input type="text" name="close" placeholder="Enter Close" id="close" class="form-control" formControlName="close">
+        </div>
+       </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn"   [attr.form]="'benchmarkFrm_'+data.id" [disabled]="benchmarkRptFrm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+  </div>

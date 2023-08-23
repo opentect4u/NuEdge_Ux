@@ -33,6 +33,8 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
   @Input()  noDataFoundTitle: string; /** No data found message Title */
   @Input()  noDataFoundSubTitle: string; /** No data found message SubTitle */
 
+  @Output() scrollToEnd = new EventEmitter<unknown>();
+
   constructor(@Self() public ngControl:NgControl) {
       ngControl.valueAccessor = this;
   }
@@ -81,5 +83,10 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
     } else if(event.keyCode === DOWN_ARROW || event.keyCode === UP_ARROW) {
       this.keyManager.onKeydown(event);
     }
+  }
+
+  scrollEnd = (event) =>{
+    console.log(event);
+    this.scrollToEnd.emit(event);
   }
 }

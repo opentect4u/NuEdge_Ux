@@ -2,7 +2,40 @@
   {
     "id":1,
     "tab_name":"Transaction File",
-    "img_src":"",
-    "flag":"T"
+    "img_src":"transaction_file.png",
+    "flag":"T",
+    "sub_menu":
+      [
+        {
+          "id":1,
+          "tab_name":"AMC",
+          "img_src":"",
+          "flag":"A"
+        },
+        {
+          "id":2,
+          "tab_name":"Scheme",
+          "img_src":"",
+          "flag":"S"
+        },
+        {
+          "id":3,
+          "tab_name":"Plan",
+          "img_src":"",
+          "flag":"P"
+        },
+        {
+          "id":4,
+          "tab_name":"Option",
+          "img_src":"",
+          "flag":"O"
+        },
+        {
+          "id":5,
+          "tab_name":"Bussiness Type",
+          "img_src":"",
+          "flag":"B"
+        }
+      ]
   }
 ]

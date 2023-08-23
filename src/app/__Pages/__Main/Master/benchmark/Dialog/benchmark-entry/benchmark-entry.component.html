@@ -1,0 +1,102 @@
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form autocomplete="off" [formGroup]="benchmarkForm" [attr.id]="'benchmarkFrm_'+data.id" (ngSubmit)="save_Benchmark()">
+      <div class="row">
+      <div class="col-sm-12 col-md-12 col-12">
+          <label for="ex_id">Exchange <span class="text-danger">*</span></label>
+          <select id="ex_id"
+           name="ex_id"
+           class="form-control"
+           formControlName="ex_id">
+           <option value="">Select</option>
+           <option [value]="item.id" *ngFor="let item of excg_dt">{{item.ex_name}}</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('ex_id').invalid && (benchmarkForm.get('ex_id').dirty || benchmarkForm.get('ex_id').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('ex_id')).errors?.required">*Please provide exchange</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="benchmark">Benchmark <span class="text-danger">*</span></label>
+          <input type="text" id="benchmark"
+           name="benchmark"
+           class="form-control"
+           placeholder="Enter Benchmark"
+           formControlName="benchmark"/>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('benchmark').invalid && (benchmarkForm.get('benchmark').dirty || benchmarkForm.get('benchmark').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('benchmark')).errors?.required">*Please provide benchmark</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="category_id">Category <span class="text-danger">*</span></label>
+           <select id="category_id"
+            name="category_id"
+            class="form-control"
+            formControlName="category_id">
+            <option value="">Select</option>
+           <option [value]="item.id" *ngFor="let item of cat_mst">{{item.cat_name}}</option>
+           </select>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('category_id').invalid && (benchmarkForm.get('category_id').dirty || benchmarkForm.get('category_id').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('category_id')).errors?.required">*Please provide category</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="subcat_id">Sub Category <span class="text-danger">*</span></label>
+           <select id="subcat_id"
+            name="subcat_id"
+            class="form-control"
+            formControlName="subcat_id">
+            <option value="">Select</option>
+           <option [value]="item.id" *ngFor="let item of sub_cat_mst_dt">{{item.subcategory_name}}</option>
+           </select>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('subcat_id').invalid && (benchmarkForm.get('subcat_id').dirty || benchmarkForm.get('subcat_id').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('subcat_id')).errors?.required">*Please provide sub category</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="launch_date">Launch Date <span class="text-danger">*</span></label>
+          <input type="date" id="launch_date"
+           name="launch_date"
+           class="form-control"
+           formControlName="launch_date"/>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('launch_date').invalid && (benchmarkForm.get('launch_date').dirty || benchmarkForm.get('launch_date').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('launch_date')).errors?.required">*Please provide launch date</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-12 mb-2">
+          <label for="launch_price">Launch Price <span class="text-danger">*</span></label>
+          <input type="text" id="launch_price"
+           name="launch_price"
+           class="form-control"
+           placeholder="Enter Launch Price"
+           formControlName="launch_price"/>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('launch_price').invalid && (benchmarkForm.get('launch_price').dirty || benchmarkForm.get('launch_price').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('launch_price')).errors?.required">*Please provide launch price</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn"   [attr.form]="'benchmarkFrm_'+data.id" [disabled]="benchmarkForm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+  </div>

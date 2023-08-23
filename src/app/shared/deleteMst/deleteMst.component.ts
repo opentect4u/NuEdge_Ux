@@ -22,11 +22,11 @@ ngOnInit(){
 
 }
 delete(){
-  const __fb = new FormData();
-  __fb.append('id',this.data.id);
-  this.__dbIntr.api_call(1,this.data.api_name,__fb).subscribe((res: any) =>{
-      this.dialogRef.close({suc: res.suc,id:this.data.id});
-      this.util.showSnackbar(res.suc == 1 ? 'Deletion Successfull' : res.msg,res.suc);
-  })
+    const __fb = new FormData();
+    __fb.append('id',this.data.id);
+    this.__dbIntr.api_call(1,this.data.api_name,__fb).subscribe((res: any) =>{
+        this.dialogRef.close({suc: res.suc,id:this.data.id});
+        this.util.showSnackbar(res.suc == 1 ? 'Deletion Successfull' : res.msg,res.suc);
+    })
 }
 }

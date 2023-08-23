@@ -1,0 +1,140 @@
+
+
+<div class="row flexSec">
+  <div class="col-sm-10 col-sm-offset-1">
+   <div class="card">
+      <div class="card-header">
+        <b  class="m-0 d-flex align-items-center">
+          <mat-icon class="mr-2">
+           search
+          </mat-icon>
+          Search Scheme Benchmark Report
+        </b>
+      </div>
+      <div class="card-body p-3">
+        <form [formGroup]="scmbenchmarkFrm" autocomplete="off" (ngSubmit)="getschemebenchmarkReport()">
+
+           <div class="row">
+            <div class="col-sm-3">
+              <label for="date_periods">Periods</label>
+              <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
+               <option value="">Select</option>
+               <option [value]="periods.id"  *ngFor="let periods of periods_type">{{periods.periods}}</option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <label for="date_range">Date Range (From - To)</label>
+              <p-calendar
+              #dateRng
+              [maxDate]="maxDate"
+              [minDate]="minDate"
+              dateFormat="dd/mm/yy"
+              placeholder="Select Date Range"
+              formControlName="date_range"
+              selectionMode="range"
+              [readonlyInput]="true"
+              [id]="'date_range'"
+              [showIcon]="true"
+              [hideOnDateTimeSelect]="true"
+              [showButtonBar]="true">
+              </p-calendar>
+            </div>
+            <div class="col-sm-3">
+                <label for="ex_id">Exchange</label>
+                <select class="form-control" id="ex_id" name="ex_id" formControlName="ex_id">
+                  <option value="">Select</option>
+                  <option [value]="item.id" *ngFor="let item of exchangeMstDt">{{item.ex_name}}</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+              <label for="benchmark">Benchmark</label>
+              <select class="form-control" id="benchmark" name="benchmark" formControlName="benchmark">
+                <option value="">Select</option>
+                <option [value]="item.id" *ngFor="let item of benchmark">{{item.benchmark}}</option>
+              </select>
+            </div>
+            <div class="col-sm-12 mt-2">
+              <p-button label="Serach" type="submit" icon="pi pi-search" iconPos="left" class="float-right"></p-button>
+            </div>
+           </div>
+
+        </form>
+      </div>
+   </div>
+   <div class="card my-3">
+    <div class="card-header p-0">
+      <div class="card-header sticky-header py-1 px-3 d-flex justify-content-between">
+        <b class="m-0 d-flex align-items-center">
+          <i class="pi pi-database mr-1" style="font-size:2rem"></i>Reports</b>
+
+        <div class="flex w-25">
+          <span class="ml-auto">
+              <input id="search" class="form-control rounded" type="text"
+              (input)="filterGlobal($event)"
+              placeholder="Search"
+               />
+          </span>
+      </div>
+
+      </div>
+    </div>
+    <div class="card-body">
+      <p-table
+      #primeTbl
+      id="trxDt"
+      [value]="scmbrnchMstDt"
+      [responsive]="true"
+      [rowHover]="true"
+      styleClass="p-datatable-striped p-datatable-sm"
+      responsiveLayout="scroll"
+      [scrollable]="true"
+      [columns]="column"
+      [paginator]="true"
+      [autoLayout]="true"
+      [totalRecords]="scmbrnchMstDt.length"
+      [pageLinks]="3"
+      [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      [globalFilterFields]="getColumns()"
+      [tableStyle]="{ 'min-width': '100rem' }"
+      >
+        <ng-template pTemplate="header">
+            <tr >
+                <th  *ngFor="let col of column"
+                [pSortableColumn]="col.field"
+                [style.max-width]="col.width"
+                >
+                  {{ col.header }}
+                  <p-sortIcon [field]="col.field">
+                  </p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-scmBenchmark  let-i="rowIndex">
+          <tr tabindex="999">
+            <td *ngFor="let col of column"
+            [style.max-width]="col.width"
+            >
+              {{scmBenchmark[col.field]}}
+            </td>
+            </tr>
+          </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+               <h5>No Records Found</h5>
+            </td>
+          </tr>
+        </ng-template>
+    </p-table>
+    </div>
+    <div class="card-footer">
+      <b>In There Total {{scmbrnchMstDt.length}} Rows</b>
+    </div>
+
+   </div>
+  </div>
+</div>

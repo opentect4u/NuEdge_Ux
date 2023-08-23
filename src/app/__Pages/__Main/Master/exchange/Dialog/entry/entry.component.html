@@ -1,0 +1,41 @@
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="exchangeFrm" (ngSubmit)="save_Exchange()" [attr.id]="'exchangeFrm_'+data.id">
+       <div class="form-group">
+         <label for="ex_name">Exchange <span class="text-danger">*</span></label>
+         <input type="text" name="ex_name"
+         id="ex_name"
+         formControlName="ex_name"
+         class="form-control"
+         placeholder="Enter Exchange">
+         <div class="invalid-feedback" *ngIf="exchangeFrm.get('ex_name').invalid && (exchangeFrm.get('ex_name').dirty || exchangeFrm.get('ex_name').touched)">
+          <span class="invalid-feedback" *ngIf="(exchangeFrm.get('ex_name')).errors?.required">*Please provide exchange</span>
+        </div>
+       </div>
+    </form>
+
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn"   [attr.form]="'exchangeFrm_'+data.id" [disabled]="exchangeFrm.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all">
+  </div>

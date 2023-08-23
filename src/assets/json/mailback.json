@@ -42,6 +42,17 @@
     "url": "/main/mailback/mailbackmismatch",
     "icon": "",
     "sub_menu": []
+  },
+  {
+    "id":5,
+    "menu_name":"Delete Transaction",
+    "title":"Delete Transaction",
+    "img":"",
+    "flag":"D",
+    "has_submenu": "N",
+    "url": "/main/mailback/deleteTrxn",
+    "icon": "fa fa-user-o",
+    "sub_menu": []
   }
 ]
 

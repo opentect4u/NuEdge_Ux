@@ -184,10 +184,8 @@ export class UtiliService {
     };
   }
   convertFormData(obj) {
-    console.log(obj)
     const formData = new FormData();
     Object.keys(obj).forEach((key) => formData.append(key, (obj[key] ? obj[key] : '')));
-    console.log(formData);
     return formData;
   }
 

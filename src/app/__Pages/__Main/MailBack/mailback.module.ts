@@ -26,6 +26,10 @@ const routes:Routes = [
           loadChildren:()=>import('./mailback-mismatch/mailback-mismatch.module').then(m => m.MailbackMismatchModule)
       },
       {
+          path:'deleteTrxn',
+          loadChildren:()=>import('./deletetrxn/deletetrxn.module').then(m => m.DeletetrxnModule)
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

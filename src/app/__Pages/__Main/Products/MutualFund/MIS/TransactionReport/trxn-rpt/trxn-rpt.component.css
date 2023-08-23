@@ -1,5 +1,5 @@
 :host ::ng-deep .p-datatable-tbody>tr{
-  min-height: 20px;
+  min-height: 35px;
 }
 
 :host ::ng-deep .p-datatable-scrollable>
@@ -36,4 +36,13 @@
   font-size: 15px!important;
   text-align: center!important;
 }
+
+/* .sticky-header{
+  position: sticky;
+  top:99px;
+  z-index:90;
+  background: #ffff;
+} */
+
+
 

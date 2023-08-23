@@ -13,7 +13,6 @@ export class MailbackhomeComponent implements OnInit {
 
   ngOnInit(): void {}
   getItems(items) {
-    console.log(items);
     this.utility.navigate(items.url);
   }
 }

@@ -91,4 +91,22 @@ export class dates {
     }
     return dt;
   }
+
+  private static modifyDt(date:Date,mode:string,numberTo:number){
+        switch(mode){
+          case 'Y':
+                  date.setFullYear(date.getFullYear() + 1)
+        }
+        return date;
+  }
+
+  public static calculateDates  =  (mode:string):Date =>{
+    let dt = new Date();
+    switch(mode){
+      case 'T' : break;
+      case 'P' : dt.setFullYear(dt.getFullYear() - 1)
+    }
+    return new Date(dt.toISOString().split('T')[0]);
+  }
+
 }

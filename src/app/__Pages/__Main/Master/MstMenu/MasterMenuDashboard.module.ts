@@ -96,6 +96,14 @@ const routes: Routes = [
       {
         path:'stpType',
         loadChildren:()=> import('../STPType/stp-type.module').then(m => m.StpTypeModule)
+      },
+      {
+        path:'exchange',
+        loadChildren:()=> import('../exchange/exchange.module').then(m => m.ExchangeModule)
+      },
+      {
+        path:'benchmark',
+        loadChildren:()=> import('../benchmark/benchmark.module').then(m => m.BenchmarkModule)
       }
     ],
   },

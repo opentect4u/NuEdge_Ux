@@ -25,6 +25,8 @@ import { Calendar } from 'primeng/calendar';
 import { dates } from 'src/app/__Utility/disabledt';
 import { totalAmt } from 'src/app/__Model/TotalAmt';
 import { Table } from 'primeng/table';
+import { Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 
 
@@ -36,8 +38,15 @@ import { Table } from 'primeng/table';
 })
 export class TrxnRptComponent implements OnInit {
 
+  rows:number = 10;
+
+  first:number = 0;
+
   @ViewChild('tableCard') tableCard:ElementRef
-  @ViewChild('primeTbl') primeTbl :Table
+  @ViewChild('primeTbl') primeTbl :Table;
+
+  /** Paginate : for holding how many result tobe fetched */
+   paginate:number = 1;
 
   /**
    * For Display Total Amount
@@ -87,7 +96,7 @@ export class TrxnRptComponent implements OnInit {
   /**
    * Hold transaction details after search
    */
-  trxnRpt: TrxnRpt[] = [];
+  trxnRpt: Partial<TrxnRpt[]> = [];
 
   /**
    * Hold column for transaction table
@@ -158,7 +167,9 @@ export class TrxnRptComponent implements OnInit {
    * @param utility
    */
 
-  constructor(private dbIntr: DbIntrService, private utility: UtiliService) {}
+  constructor(private dbIntr: DbIntrService, private utility: UtiliService,
+    @Inject(DOCUMENT) private document: Document
+    ) {}
 
 
   /**
@@ -167,7 +178,7 @@ export class TrxnRptComponent implements OnInit {
   settingsforClient = this.utility.settingsfroMultiselectDropdown(
     'first_client_pan',
     'first_client_name',
-    'Search Client',
+    'Search Investor',
     1
   );
 
@@ -259,6 +270,7 @@ export class TrxnRptComponent implements OnInit {
   misTrxnRpt = new FormGroup({
     date_periods: new FormControl(''),
     date_range: new FormControl(''),
+    view_type:new FormControl(''),
     amc_id: new FormControl([], { updateOn: 'blur' }),
     cat_id: new FormControl([], { updateOn: 'blur' }),
     sub_cat_id: new FormControl([], { updateOn: 'blur' }),
@@ -269,38 +281,59 @@ export class TrxnRptComponent implements OnInit {
     sub_brk_cd: new FormControl([], { updateOn: 'blur' }),
     euin_no: new FormControl([]),
     folio_no: new FormControl(''),
-    client_id: new FormControl(''),
-    pan_no:new FormControl([]),
+    // client_id: new FormControl(''),
+    pan_no:new FormControl(''),
     client_name: new FormControl(''),
     trxn_type_id: new FormControl([], { updateOn: 'blur' }),
     trxn_sub_type_id: new FormControl([], { updateOn: 'blur' }),
   });
 
   ngOnInit(): void {
-    this.getClientMst();
+    setTimeout(() => {
+    this.misTrxnRpt.get('date_periods').setValue('M',{emitEvent:true});
+    this.searchTrxnReport();
+    }, 500);
     this.getAmcMst();
     this.getTrxnTypeMst();
-    this.maxDate= this.calculateDates('T');
-    this.minDate= this.calculateDates('P');
+    this.maxDate= dates.calculateDates('T');
+    this.minDate= dates.calculateDates('P');
   }
+
+
 
   /**
    * Get Client Master Data
    */
-  getClientMst = () =>{
-       this.dbIntr.api_call(0,'/searchClient',null).pipe(pluck("data")).subscribe(res =>{
-        this.clientMst = res;
+  getClientMst = (view_type:string,paginate:number | undefined = 1) =>{
+    if(view_type){
+      this.dbIntr.api_call(0,
+        '/searchClient',
+       'view_type='+view_type
+       +'&page='+paginate
+       ).pipe(pluck("data")).subscribe((res: any) =>{
+        console.log(res);
+        // this.__clientMst= res.data;
+        /** 1st Way of concat two array*/
+        // Array.prototype.push.apply( this.__clientMst, res.data);
+        /** END */
+        /** 2nd Way of concat two array*/
+        this.__clientMst.push(...res.data);
+        /**End */
+        this.searchResultVisibilityForClient('block');
+        this.document.getElementById('Investor').focus();
        })
+    }
+
   }
 
-  calculateDates  =  (mode:string):Date =>{
-    let dt = new Date();
-    switch(mode){
-      case 'T' : break;
-      case 'P' : dt.setFullYear(dt.getFullYear() - 1)
-    }
-    return new Date(dt.toISOString().split('T')[0]);
-  }
+  // calculateDates  =  (mode:string):Date =>{
+  //   let dt = new Date();
+  //   switch(mode){
+  //     case 'T' : break;
+  //     case 'P' : dt.setFullYear(dt.getFullYear() - 1)
+  //   }
+  //   return new Date(dt.toISOString().split('T')[0]);
+  // }
 
   /**
    * Cal API for getting Transaction Type Master Data
@@ -322,9 +355,17 @@ export class TrxnRptComponent implements OnInit {
     *  Event Trigger on change on Date Periods
     */
    this.misTrxnRpt.controls['date_periods'].valueChanges.subscribe((res) => {
-    this.misTrxnRpt.controls['date_range'].reset(
-      res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
-    );
+    if(res){
+      this.misTrxnRpt.controls['date_range'].reset(
+        res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+      );
+    }
+    else{
+      this.misTrxnRpt.controls['date_range'].setValue('');
+      this.misTrxnRpt.controls['date_range'].disable();
+      return;
+    }
+
     if (res && res != 'R') {
       this.misTrxnRpt.controls['date_range'].disable();
     } else {
@@ -408,14 +449,81 @@ export class TrxnRptComponent implements OnInit {
     this.misTrxnRpt.controls['sub_brk_cd'].valueChanges.subscribe((res) => {
       this.setEuinDropdown(res, this.misTrxnRpt.value.rm_id);
     });
+
+      /** Investor Change */
+      this.misTrxnRpt.controls['client_name'].valueChanges
+      .pipe(
+        tap(()=> this.misTrxnRpt.get('pan_no').setValue('')),
+        tap(() => (this.__isClientPending = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.dbIntr.searchItems('/searchClient',
+          dt+'&view_type='+this.misTrxnRpt.value.view_type
+          ) : []
+
+        ),
+        map((x: any) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          console.log(value);
+          this.__clientMst = value;
+          this.searchResultVisibilityForClient('block');
+          this.__isClientPending = false;
+        },
+        complete: () => {},
+        error: (err) => {
+          this.__isClientPending = false;
+        },
+      });
+
+      /** End */
+
+      /**view_type Change*/
+      this.misTrxnRpt.controls['view_type'].valueChanges.subscribe(res =>{
+            if(res){
+              this.paginate = 1;
+              this.__clientMst = [];
+              this.misTrxnRpt.get('client_name').reset('',{emitEvent:false});
+              this.misTrxnRpt.get('pan_no').reset('');
+              this.getClientMst(res,this.paginate);
+            }
+      })
+      /**End */
+
   }
   /**
    *  call API for get transaction according to search result
    */
   searchTrxnReport = () => {
+    if(this.misTrxnRpt.value.date_periods == 'Y'
+    || this.misTrxnRpt.value.date_periods == 'R'
+    || this.misTrxnRpt.value.date_periods == ''){
+           if(this.misTrxnRpt.value.pan_no
+            || this.misTrxnRpt.value.folio_no
+            || this.misTrxnRpt.value.amc_id.length > 0
+            || this.misTrxnRpt.value.trxn_type_id.length > 0
+            )
+           {
+              // this.fetchTransaction();
+              console.log('ssa')
+           }
+           else{
+            this.utility.showSnackbar('Please select one or more filter criteria',2)
+            return;
+           }
+    }
+    // this.primeTbl.clear();
+    this.fetchTransaction();
+  };
+
+  /**
+   * Final Call To API After Search
+   */
+  fetchTransaction = () =>{
     this.total = new totalAmt();
-    this.primeTbl.reset();
-    this.trxnRpt.length = 0;
+    console.log(this.primeTbl.rows);
     const TrxnDt = new FormData();
     TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
     TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
@@ -423,7 +531,7 @@ export class TrxnRptComponent implements OnInit {
     TrxnDt.append('amc_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.amc_id, 'id'));
     TrxnDt.append('cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.cat_id, 'id'));
     TrxnDt.append('sub_cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_cat_id, 'id'));
-    TrxnDt.append('pan_no',this.utility.mapIdfromArray(this.misTrxnRpt.value.pan_no,'first_client_pan'));
+    TrxnDt.append('pan_no',this.misTrxnRpt.value.pan_no);
     TrxnDt.append('scheme_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.scheme_id, 'id'));
     TrxnDt.append('trans_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_type_id,'trans_type'));
     TrxnDt.append('trans_sub_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_sub_type_id,'trans_sub_type'));
@@ -434,7 +542,9 @@ export class TrxnRptComponent implements OnInit {
       TrxnDt.append('bu_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.bu_type_id, 'bu_code'));
       TrxnDt.append('sub_brk_cd',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_brk_cd, 'code'));
     }
-
+     let count = 0;
+     count = this.trxnRpt.length;
+    this.trxnRpt.length = 0;
     this.dbIntr
       .api_call(1, '/showTransDetails', TrxnDt)
       .pipe(
@@ -442,10 +552,10 @@ export class TrxnRptComponent implements OnInit {
         tap((item:TrxnRpt[]) => {
             let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
             item.map( item => {
-              net_amt+=Number(item.amount);
-              gross_amt+=Number(item.gross_amount ? item.gross_amount : 0);
-              tds+=Number(item.tds ? item.tds : 0);
-              stamp_duity+=Number(item.stamp_duty);
+              net_amt+=Number(item.trxn_code == 'R' ? (item.tot_amount ? item.tot_amount : 0) : (item.amount ? item.amount : 0));
+              gross_amt+=Number(item.trxn_code == 'R' ? (item.tot_gross_amount ? item.tot_gross_amount : 0) :  (item.gross_amount ? item.gross_amount : 0));
+              tds+=Number(item.trxn_code == 'R' ? (item.tot_tds ? item.tot_tds : 0):(item.tds ? item.tds : 0));
+              stamp_duity+=Number(item.trxn_code == 'R' ? (item.tot_stamp_duty ? item.tot_stamp_duty : 0) : (item.stamp_duty ? item.stamp_duty : 0));
                 this.total = {
                       net_amt:net_amt,
                       stamp_duity:stamp_duity,
@@ -456,31 +566,37 @@ export class TrxnRptComponent implements OnInit {
         })
         )
       .subscribe((res: TrxnRpt[]) => {
-       this.hideCard('block');
+        console.log(res);
         this.trxnRpt = res;
+        // this.primeTbl._rows = count >= this.primeTbl.rows ?  res.length : this.primeTbl.rows;
+        this.primeTbl._rows = 10;
+
+        if(res.length == 0){
+          this.utility.showSnackbar('No transactions are available on this periods',2);
+        }
 
       });
-  };
+  }
 
   /**
    * event trigger after select particular result from search list
    * @param searchRlt
    */
-  // getSelectedItemsFromParent = <T extends client>(searchRlt: {
-  //   flag: string;
-  //   item: T;
-  // }) => {
-  //   this.misTrxnRpt.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
-  //   this.misTrxnRpt.get('client_id').reset(searchRlt.item.id);
-  //   this.misTrxnRpt.get('pan_no').reset(searchRlt.item.pan);
-  //   this.searchResultVisibilityForClient('none');
-  // };
+  getSelectedItemsFromParent = (searchRlt: {
+    flag: string;
+    item: any;
+  }) => {
+    this.misTrxnRpt.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
+    this.misTrxnRpt.get('pan_no').reset(searchRlt.item.first_client_pan);
+    this.searchResultVisibilityForClient('none');
+  };
 
   /**
    *  evnt trigger on search particular client & after select client
    * @param display_mode
    */
   searchResultVisibilityForClient = (display_mode: string) => {
+    console.log(display_mode);
     this.displayMode_forClient = display_mode;
   };
 
@@ -503,6 +619,7 @@ export class TrxnRptComponent implements OnInit {
   getCategoryMst = <T extends { id: number; amc_short_name: string }[]>(
     amc_id: T
   ) => {
+    console.log(amc_id)
     if (amc_id.length > 0) {
       this.dbIntr
         .api_call(
@@ -629,7 +746,6 @@ export class TrxnRptComponent implements OnInit {
    * @param ev
    */
   onItemClick = (ev) => {
-    console.log(ev);
     if (ev.option.value == 'A') {
       this.getBranchMst();
     } else {
@@ -638,15 +754,17 @@ export class TrxnRptComponent implements OnInit {
           folio_no:'',
           trxn_type_id:[],
           date_range:'',
-          date_periods:'',
-          client_id:'',
-          pan_no:[]
+          date_periods:'M',
+          view_type:'',
+          pan_no:''
          });
+         this.paginate = 1;
          this.misTrxnRpt.get('brn_cd').setValue([],{emitEvent:true});
          this.__subbrkArnMst = [];
          this.misTrxnRpt.controls['sub_brk_cd'].setValue([]);
          this.misTrxnRpt.controls['euin_no'].setValue([]);
          this.misTrxnRpt.controls['client_name'].setValue('',{emitEvent:false});
+         this.searchTrxnReport();
     }
   };
 
@@ -783,8 +901,40 @@ export class TrxnRptComponent implements OnInit {
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
+  loadInvestorOnScrollToEnd = (ev) =>{
+    console.log(this.misTrxnRpt.value.client_name);
+    if(this.misTrxnRpt.value.client_name == ''){
+      // console.log('adasd')
+      this.paginate+=1;
+    this.getClientMst(this.misTrxnRpt.value.view_type,this.paginate);
+    }
+  }
+  onAmcDeSelect = (ev) =>{
+   this.misTrxnRpt.get('amc_id').setValue(this.misTrxnRpt.value.amc_id.filter(item => item.id != ev.id));
+  }
+  onCatDeSelect = (ev) =>{
+    this.misTrxnRpt.get('cat_id').setValue(this.misTrxnRpt.value.cat_id.filter(item => item.id != ev.id));
+  }
+  onSubCatDeSelect = (ev) =>{
+    this.misTrxnRpt.get('sub_cat_id').setValue(this.misTrxnRpt.value.sub_cat_id.filter(item => item.id != ev.id));
+  }
+  onTrxnTypeDeSelect = (ev) =>{
+    this.misTrxnRpt.get('trxn_type_id').setValue(this.misTrxnRpt.value.trxn_type_id.filter(item => item.id != ev.id));
+  }
+  onbuTypeDeSelect = (ev) =>{
+    this.misTrxnRpt.get('bu_type_id').setValue(this.misTrxnRpt.value.bu_type_id.filter(item => item.bu_code != ev.bu_code));
+  }
+  onbrnCdDeSelect = (ev) =>{
+    this.misTrxnRpt.get('brn_cd').setValue(this.misTrxnRpt.value.brn_cd.filter(item => item.id != ev.id));
+  }
+  onRmDeSelect = (ev) =>{
+    this.misTrxnRpt.get('rm_id').setValue(this.misTrxnRpt.value.rm_id.filter(item => item.euin_no != ev.euin_no));
+  }
+  onSubBrkDeSelect = (ev) =>{
+    this.misTrxnRpt.get('sub_brk_cd').setValue(this.misTrxnRpt.value.sub_brk_cd.filter(item => item.code != ev.code));
 
-  onPageChange = (ev) => {
-     console.log(ev);
+  }
+  changePage = (ev) =>{
+      console.log(ev);
   }
 }
