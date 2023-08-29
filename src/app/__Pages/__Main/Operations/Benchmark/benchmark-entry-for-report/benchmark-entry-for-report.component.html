@@ -20,41 +20,62 @@
     </div>
   </div>
   <mat-dialog-content>
-    <form [formGroup]="benchmarkRptFrm" [attr.id]="'benchmarkFrm_'+data.id">
+    <form [formGroup]="benchmarkRptFrm" [attr.id]="'benchmarkFrm_'+data.id" (ngSubmit)="submitBenchmark()">
        <div class="row">
         <div class="col-sm-12">
-          <label for="ex_id">Exchange</label>
+          <label for="ex_id">Exchange <span class="text-danger">*</span></label>
           <select class="form-control" id="ex_id" name="ex_id" formControlName="ex_id">
             <option value="">Select</option>
             <option [value]="item.id" *ngFor="let item of exchangeMstDt">{{item.ex_name}}</option>
           </select>
+          <div class="invalid-feedback" *ngIf="benchmarkRptFrm.get('ex_id').invalid && (benchmarkRptFrm.get('ex_id').dirty || benchmarkRptFrm.get('ex_id').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkRptFrm.get('ex_id')).errors?.required">*Please provide exchange</span>
+          </div>
         </div>
         <div class="col-sm-12">
-          <label for="benchmark">Benchmark</label>
+          <label for="benchmark">Benchmark <span class="text-danger">*</span></label>
           <select class="form-control" id="benchmark" name="benchmark" formControlName="benchmark">
             <option value="">Select</option>
             <option [value]="item.id" *ngFor="let item of benchmark">{{item.benchmark}}</option>
           </select>
+          <div class="invalid-feedback" *ngIf="benchmarkRptFrm.get('benchmark').invalid && (benchmarkRptFrm.get('benchmark').dirty || benchmarkRptFrm.get('benchmark').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkRptFrm.get('benchmark')).errors?.required">*Please provide benchmark</span>
+          </div>
         </div>
         <div class="col-sm-12">
-          <label for="date">Date</label>
+          <label for="date">Date <span class="text-danger">*</span></label>
          <input type="date" name="date" id="date" class="form-control" formControlName="date">
+         <div class="invalid-feedback" *ngIf="benchmarkRptFrm.get('date').invalid && (benchmarkRptFrm.get('date').dirty || benchmarkRptFrm.get('date').touched)">
+          <span class="invalid-feedback" *ngIf="(benchmarkRptFrm.get('date')).errors?.required">*Please provide date</span>
+        </div>
         </div>
         <div class="col-sm-12">
-          <label for="open">Open</label>
-         <input type="text" placeholder="Enter Open" name="open" id="open" class="form-control" formControlName="open">
+          <label for="open">Open <span class="text-danger">*</span></label>
+         <input type="text" placeholder="Enter Open Price" name="open" id="open" class="form-control" formControlName="open">
+         <div class="invalid-feedback" *ngIf="benchmarkRptFrm.get('open').invalid && (benchmarkRptFrm.get('open').dirty || benchmarkRptFrm.get('open').touched)">
+          <span class="invalid-feedback" *ngIf="(benchmarkRptFrm.get('open')).errors?.required">*Please provide open price</span>
+        </div>
         </div>
         <div class="col-sm-12">
-          <label for="high">High</label>
-         <input type="text" name="high" placeholder="Enter High" id="high" class="form-control" formControlName="high">
+          <label for="high">High <span class="text-danger">*</span></label>
+         <input type="text" name="high" placeholder="Enter High Price" id="high" class="form-control" formControlName="high">
+         <div class="invalid-feedback" *ngIf="benchmarkRptFrm.get('high').invalid && (benchmarkRptFrm.get('high').dirty || benchmarkRptFrm.get('high').touched)">
+          <span class="invalid-feedback" *ngIf="(benchmarkRptFrm.get('high')).errors?.required">*Please provide high price</span>
+        </div>
         </div>
         <div class="col-sm-12">
-          <label for="low">Low</label>
-         <input type="text" name="low" placeholder="Enter Low" id="low" class="form-control" formControlName="low">
+          <label for="low">Low <span class="text-danger">*</span></label>
+         <input type="text" name="low" placeholder="Enter Low Price" id="low" class="form-control" formControlName="low">
+         <div class="invalid-feedback" *ngIf="benchmarkRptFrm.get('low').invalid && (benchmarkRptFrm.get('low').dirty || benchmarkRptFrm.get('low').touched)">
+          <span class="invalid-feedback" *ngIf="(benchmarkRptFrm.get('low')).errors?.required">*Please provide low price</span>
+        </div>
         </div>
         <div class="col-sm-12 mb-2">
-          <label for="close">Close</label>
-         <input type="text" name="close" placeholder="Enter Close" id="close" class="form-control" formControlName="close">
+          <label for="close">Close <span class="text-danger">*</span></label>
+         <input type="text" name="close" placeholder="Enter Close Price" id="close" class="form-control" formControlName="close">
+         <div class="invalid-feedback" *ngIf="benchmarkRptFrm.get('close').invalid && (benchmarkRptFrm.get('close').dirty || benchmarkRptFrm.get('close').touched)">
+          <span class="invalid-feedback" *ngIf="(benchmarkRptFrm.get('close')).errors?.required">*Please provide close price</span>
+        </div>
         </div>
        </div>
     </form>

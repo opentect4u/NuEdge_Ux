@@ -695,18 +695,18 @@
     <div class="row mb-2">
       <div class="col-sm-12">
         <label for="benchmark">Benchmark</label>
-        <input type="text" name="benchmark" id="benchmark"
+        <!-- <input type="text" name="benchmark" id="benchmark"
         class="form-control"
         placeholder="Enter Benchmark"
-        formControlName="benchmark">
-        <!-- <select class="form-control"
+        formControlName="benchmark"> -->
+        <select class="form-control"
         id="benchmark"
         name="benchmark"
         formControlName="benchmark"
         >
       <option value="">Select</option>
-      <option [value]="" *ngFor="let benchmark of __benchmark">{{benchmark.benchmark}}</option>
-      </select> -->
+      <option [value]="benchmark.id" *ngFor="let benchmark of __benchmark">{{benchmark.benchmark}}</option>
+      </select>
       </div>
     </div>
 

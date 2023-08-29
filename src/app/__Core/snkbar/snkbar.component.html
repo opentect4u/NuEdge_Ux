@@ -1,9 +1,11 @@
 <div>
         <button mat-icon-button align="start">
-            <mat-icon [class]="data?.suc == 1 ? 'text-success' : 'text-danger'">{{ data?.icon }}</mat-icon>  
+            <mat-icon [class]="!data.is_warning ? (data?.suc == 1 ? 'text-success' : 'text-danger') : 'text-warning'">
+              {{ data?.icon }}
+            </mat-icon>
         </button>
         <span class="text-white">{{data?.message}}</span>
-        <button mat-icon-button class="float-right" (click)="__snkRef?.dismiss()">
+        <button *ngIf="!data.is_warning" mat-icon-button class="float-right" (click)="__snkRef?.dismiss()">
             <mat-icon>close</mat-icon>
           </button>
 </div>

@@ -1,0 +1,193 @@
+<div >
+  <div mat-dialog-title class="dialog-title">
+    <h2>Benchmark Reports</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close"  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+
+  </div>
+  <mat-dialog-content class="customDialog">
+    <p-card header="Search Benchmark" class="mt-3">
+      <form [formGroup]="benchmarkfilterForm" (ngSubmit)="getBenchmarkMstDt()">
+       <div class="row">
+        <div class="col-sm-3">
+          <label for="ex_id">Exchange</label>
+          <ng-multiselect-dropdown #multiSelect id="ex_id" [placeholder]="'Select Business Type'"
+          (onDeSelect)="onexDeSelect($event)"
+            [settings]="settingsforExDropdown"
+            [data]="exchange" formControlName="ex_id">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="col-sm-3">
+          <label for="category_id">Category</label>
+          <ng-multiselect-dropdown #multiSelect id="category_id" [placeholder]="'Select Category'"
+          (onDeSelect)="oncatDeSelect($event)"
+            [settings]="settingsforCatDropdown"
+            [data]="category" formControlName="category_id">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="col-sm-3">
+          <label for="subcategory_id">Sub Category</label>
+          <ng-multiselect-dropdown #multiSelect id="subcategory_id"
+          [placeholder]="'Select Sub Category'"
+          (onDeSelect)="onsubcatDeSelect($event)"
+            [settings]="settingsforSubCatDropdown"
+            [data]="subcategory" formControlName="subcategory_id">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="col-sm-3">
+          <label for="benchmark_id">Benchmark</label>
+          <ng-multiselect-dropdown #multiSelect id="benchmark_id"
+          [placeholder]="'Select Benchmark'"
+          (onDeSelect)="onbenchmarkDeSelect($event)"
+            [settings]="settingsforbenchmarkDropdown"
+            [data]="benchmark" formControlName="benchmark_id">
+          </ng-multiselect-dropdown>
+        </div>
+       </div>
+       <div class="row mt-4">
+        <div class="col-sm-12 d-flex justify-content-end align-item-center">
+          <p-button type="submit"
+          label="Show"
+          icon="pi pi-eye"
+          iconPos="right"
+          styleClass="p-button-lg"></p-button>
+        </div>
+       </div>
+      </form>
+
+    </p-card>
+    <p-card>
+      <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>In there are total {{benchmarkMstDt.length}} benchmark</h5>
+        <div class="btngrp">
+          <p-button [matTooltip]="'Export as Pdf'" styleClass="p-button-lg" icon="pi pi-file-pdf" ></p-button>
+          <p-button [matTooltip]="'Export as Excel'" styleClass="p-button-lg ml-3" icon="pi pi-file-excel"></p-button>
+        </div>
+
+      </div> -->
+      <div class=" px-3 mb-3 d-flex justify-content-between align-items-center">
+        <div class="transTypeCount">
+          <h4>In there are total {{benchmarkMstDt.length}} benchmark</h4>
+        </div>
+        <div class="btnGrp">
+          <p-button icon="pi pi-file-export"
+          [matMenuTriggerFor]="menu"
+          [matTooltipPosition]="'after'"
+          #tooltip="matTooltip"
+          matTooltip="Export"
+          styleClass="p-button-primary p-button-lg p-button-outlined">
+          </p-button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item >
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+          </div>
+        </div>
+      <p-table
+      #primeTbl
+      (onSort)="customSort($event)"
+      [lazy]="true"
+      id="benchmarkDt"
+      [value]="benchmarkMstDt"
+      [responsive]="true"
+      [rowHover]="true"
+      styleClass="p-datatable-striped p-datatable-lg"
+      responsiveLayout="scroll"
+      [scrollable]="true"
+      [customSort]="true"
+        sortMode="single"
+      [columns]="column"
+      [paginator]="false"
+      columnResizeMode="expand"
+      [scrollHeight]="benchmarkMstDt.length > 5 ? '250px' : ''"
+      [autoLayout]="true"
+      [resizableColumns]="true"
+      [totalRecords]="benchmarkMstDt.length"
+      [pageLinks]="3"
+      [paginatorPosition]="'top'"
+      [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rows]="10"
+      [showCurrentPageReport]="false"
+      [globalFilterFields]="getColumns()"
+      [tableStyle]="{ 'min-width': '100rem' }"
+      >
+        <ng-template pTemplate="header">
+            <tr >
+                <th  *ngFor="let col of column"
+                [pSortableColumn]="col.field !='edit' ? col.field : ''"
+                [style.min-width]="(col.field != 'edit' && col.field != 'sl_no') ? col.width : ''"
+                pResizableColumn
+                >
+                  {{ col.header }}
+                  <p-sortIcon *ngIf="col.field !='edit'" [field]="col.field">
+                  </p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-benchmark  let-i="rowIndex">
+          <tr tabindex="999">
+            <td *ngFor="let col of column"
+            [style.min-width]="(col.field != 'edit' && col.field != 'sl_no') ? col.width : ''"
+            >
+              <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                  <b>{{i + 1}}</b>
+               </ng-container>
+                <ng-container *ngSwitchDefault>
+                  <b [matTooltip]="benchmark[col.field]">{{ benchmark[col.field] ? benchmark[col.field] : 'N/A' }}</b>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'edit'">
+                  <p-button icon="pi pi-pencil" (click)="populateDT(benchmark)"
+                    styleClass="p-button-rounded p-button-primary"></p-button>
+                </ng-container>
+                <!-- <ng-container *ngSwitchCase="col.field == 'delete'">
+                  <p-button icon="pi pi-trash" (click)="delete(finance,i)"
+                    styleClass="p-button-rounded p-button-danger"></p-button>
+                </ng-container> -->
+              </ng-container>
+            </td>
+            </tr>
+          </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+               <h5>No Records Found</h5>
+            </td>
+          </tr>
+        </ng-template>
+    </p-table>
+
+   <!-- Paginator -->
+      <div class="container-fluid p-0">
+        <shared-paginate
+        [__paginate]="pagination"
+        (itemPerpageShow)="onSelectItem($event)"
+        (PaginateFn)="getPaginate($event)"
+        ></shared-paginate>
+      </div>
+   <!-- End -->
+
+    </p-card>
+  </mat-dialog-content>
+  </div>

@@ -5,11 +5,11 @@ import {
   AsyncValidatorFn,
   ValidationErrors,
 } from '@angular/forms';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatSnackBar} from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
-import { IBreadCrumb } from '../app.component';
+// import { IBreadCrumb } from '../app.component';
 import { SnkbarComponent } from '../__Core/snkbar/snkbar.component';
 import { breadCrumb } from '../__Model/brdCrmb';
 import { Route } from '../__Model/route';
@@ -85,13 +85,14 @@ export class UtiliService {
     }
   }
 
-  showSnackbar(__msg, _suc) {
+  showSnackbar(__msg, _suc,iswarning:boolean | undefined = false) {
     this._snackBar.openFromComponent(SnkbarComponent, {
       duration: 4000,
       data: {
         message: __msg,
-        icon: _suc == 1 ? 'check_circle_outline' : 'error_outline',
+        icon: !iswarning ? (_suc == 1 ? 'check_circle_outline' : 'error_outline') : 'warning',
         suc: _suc,
+        is_warning:iswarning
       },
     });
   }

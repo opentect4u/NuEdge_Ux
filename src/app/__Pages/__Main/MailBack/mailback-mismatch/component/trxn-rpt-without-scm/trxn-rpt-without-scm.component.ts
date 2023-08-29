@@ -10,6 +10,9 @@ import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
 })
 export class TrxnRptWithoutScmComponent implements OnInit {
 
+
+  @Input() mismatch_flag:string;
+
   /**
    * Holding Transaction Report which has empty scheme
    */
@@ -18,7 +21,9 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   /**
    * Hold the Column for Transaction Report
    */
-  TrxnClm:column[] = trxnClm.column;
+  // TrxnClm:column[] = trxnClm.column;
+  @Input() TrxnClm:column[] = [];
+
 
   constructor(private utility:UtiliService) { }
 

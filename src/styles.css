@@ -4,7 +4,7 @@
 /* @import '~primeng/resources/themes/luna-blue/theme.css'; */
 @import '~primeicons/primeicons.css';
 
-
+@import './assets/css/datePicker.css';
 td,
 th {
   text-align: left !important;
@@ -584,4 +584,8 @@ mat-card {
 
 .form-control:focus{
   border-width: 2px;
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-icon {
+  color: #ffffff!important;
 }

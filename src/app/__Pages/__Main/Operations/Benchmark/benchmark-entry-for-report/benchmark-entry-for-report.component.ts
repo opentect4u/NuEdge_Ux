@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { pluck, skip } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { Iexchange } from '../../../Master/exchange/exchange.component';
 import { Ibenchmark } from '../../../Master/benchmark/benchmark.component';
+import { IschemeBenchmark } from '../../../Products/MutualFund/ScmBenchMarkRpt/scm-bench-mark-rpt.component';
 
 @Component({
   selector: 'app-benchmark-entry-for-report',
@@ -23,13 +24,14 @@ export class BenchmarkEntryForReportComponent implements OnInit {
 
 
   benchmarkRptFrm = new FormGroup({
-    ex_id: new FormControl(''),
-    benchmark:new FormControl(''),
-    date: new FormControl(''),
-    open:new FormControl(''),
-    high:new FormControl(''),
-    low:new FormControl(''),
-    close: new FormControl('')
+    ex_id: new FormControl('',[Validators.required]),
+    benchmark:new FormControl('',[Validators.required]),
+    date: new FormControl('',[Validators.required]),
+    open:new FormControl('',[Validators.required]),
+    high:new FormControl('',[Validators.required]),
+    low:new FormControl('',[Validators.required]),
+    close: new FormControl('',[Validators.required]),
+    id: new FormControl('0')
   })
 
   constructor(
@@ -94,6 +96,17 @@ export class BenchmarkEntryForReportComponent implements OnInit {
 
   getBenchmark = () =>{
     console.log(this.benchmarkRptFrm.value)
+  }
+
+  submitBenchmark = () =>{
+    this.__dbIntr.api_call(1,'/benchmarkSchemeAddEdit',this.__utility.convertFormData(this.benchmarkRptFrm.value))
+    .subscribe((res:any) =>{
+       console.log(res.data);
+       this.__utility.showSnackbar(res.suc == 1 ? 'Scheme benchmark submitted successfully' : res.msg,res.suc)
+        if(res.suc == 1 ){
+          this.dialogRef.close(res.data);
+        }
+      })
   }
 
 }

@@ -2,10 +2,12 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   debounceTime,
+  delay,
   distinctUntilChanged,
   map,
   pluck,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs/operators';
 import { column } from 'src/app/__Model/tblClmns';
@@ -27,6 +29,7 @@ import { totalAmt } from 'src/app/__Model/TotalAmt';
 import { Table } from 'primeng/table';
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { Observable, Subscription, from, of } from 'rxjs';
 
 
 
@@ -41,6 +44,8 @@ export class TrxnRptComponent implements OnInit {
   rows:number = 10;
 
   first:number = 0;
+
+  subscribe:Subscription;
 
   @ViewChild('tableCard') tableCard:ElementRef
   @ViewChild('primeTbl') primeTbl :Table;
@@ -101,7 +106,7 @@ export class TrxnRptComponent implements OnInit {
   /**
    * Hold column for transaction table
    */
-  column: column[] = trxnClm.column.filter((item:column) => (item.field!='scheme_link' && item.field!='isin_link' ));
+  column: column[] = trxnClm.column.filter((item:column) => (item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt'));
 
   /**
    * Holding AMC Master Data
@@ -295,8 +300,8 @@ export class TrxnRptComponent implements OnInit {
     }, 500);
     this.getAmcMst();
     this.getTrxnTypeMst();
-    this.maxDate= dates.calculateDates('T');
-    this.minDate= dates.calculateDates('P');
+    // this.maxDate= dates.calculateDates('T');
+    // this.minDate= dates.calculateDates('P');
   }
 
 
@@ -372,6 +377,16 @@ export class TrxnRptComponent implements OnInit {
       this.misTrxnRpt.controls['date_range'].enable();
     }
   });
+
+
+  this.misTrxnRpt.controls['date_range'].valueChanges.subscribe((res) => {
+    if(res){
+        this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
+      }
+      else{
+        this.maxDate = dates.calculateDates('T');
+      }
+  })
 
     /**
      * Event Trigger after change amc
@@ -498,21 +513,27 @@ export class TrxnRptComponent implements OnInit {
    */
   searchTrxnReport = () => {
     if(this.misTrxnRpt.value.date_periods == 'Y'
-    || this.misTrxnRpt.value.date_periods == 'R'
+    // || this.misTrxnRpt.value.date_periods == 'R'
     || this.misTrxnRpt.value.date_periods == ''){
            if(this.misTrxnRpt.value.pan_no
             || this.misTrxnRpt.value.folio_no
             || this.misTrxnRpt.value.amc_id.length > 0
             || this.misTrxnRpt.value.trxn_type_id.length > 0
             )
-           {
-              // this.fetchTransaction();
-              console.log('ssa')
-           }
+           {}
            else{
             this.utility.showSnackbar('Please select one or more filter criteria',2)
             return;
            }
+    }
+    else if(this.misTrxnRpt.value.date_periods == 'R'){
+          if(this.misTrxnRpt.value.date_range[0]
+          && this.misTrxnRpt.value.date_range[1]){}
+          else if(!this.misTrxnRpt.value.date_range[0]
+          || !this.misTrxnRpt.value.date_range[1]){
+            this.utility.showSnackbar('Please provide valid date range',2)
+            return;
+          }
     }
     // this.primeTbl.clear();
     this.fetchTransaction();
@@ -544,7 +565,7 @@ export class TrxnRptComponent implements OnInit {
     }
      let count = 0;
      count = this.trxnRpt.length;
-    this.trxnRpt.length = 0;
+    this.trxnRpt = [];
     this.dbIntr
       .api_call(1, '/showTransDetails', TrxnDt)
       .pipe(
@@ -552,11 +573,16 @@ export class TrxnRptComponent implements OnInit {
         tap((item:TrxnRpt[]) => {
             let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
             item.map( item => {
-              net_amt+=Number(item.trxn_code == 'R' ? (item.tot_amount ? item.tot_amount : 0) : (item.amount ? item.amount : 0));
-              gross_amt+=Number(item.trxn_code == 'R' ? (item.tot_gross_amount ? item.tot_gross_amount : 0) :  (item.gross_amount ? item.gross_amount : 0));
-              tds+=Number(item.trxn_code == 'R' ? (item.tot_tds ? item.tot_tds : 0):(item.tds ? item.tds : 0));
-              stamp_duity+=Number(item.trxn_code == 'R' ? (item.tot_stamp_duty ? item.tot_stamp_duty : 0) : (item.stamp_duty ? item.stamp_duty : 0));
-                this.total = {
+              // net_amt+=Number(item.trxn_code == 'R' ? (item.tot_amount ? item.tot_amount : 0) : (item.amount ? item.amount : 0));
+              // gross_amt+=Number(item.trxn_code == 'R' ? (item.tot_gross_amount ? item.tot_gross_amount : 0) :  (item.gross_amount ? item.gross_amount : 0));
+              // tds+=Number(item.trxn_code == 'R' ? (item.tot_tds ? item.tot_tds : 0):(item.tds ? item.tds : 0));
+              // stamp_duity+=Number(item.trxn_code == 'R' ? (item.tot_stamp_duty ? item.tot_stamp_duty : 0) : (item.stamp_duty ? item.stamp_duty : 0));
+
+              net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
+              gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
+              tds+=Number(item.tot_tds ? item.tot_tds : 0);
+              stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
+              this.total = {
                       net_amt:net_amt,
                       stamp_duity:stamp_duity,
                       tds:tds,
@@ -566,16 +592,28 @@ export class TrxnRptComponent implements OnInit {
         })
         )
       .subscribe((res: TrxnRpt[]) => {
-        console.log(res);
-        this.trxnRpt = res;
+        // console.log(res);
+        // this.trxnRpt = res;
         // this.primeTbl._rows = count >= this.primeTbl.rows ?  res.length : this.primeTbl.rows;
-        this.primeTbl._rows = 10;
+        // this.primeTbl._rows = 10;
 
         if(res.length == 0){
-          this.utility.showSnackbar('No transactions are available on this periods',2);
+          this.utility.showSnackbar('No transactions are available on this periods',2,true);
+          return;
         }
 
+       this.subscribe = from(res).pipe(
+        delay(2),
+       ).subscribe(res =>{
+          console.log(res);
+          this.streamTrxn(res);
+        });
       });
+  }
+
+
+  streamTrxn = (trxnRow:TrxnRpt) =>{
+   this.trxnRpt.push(trxnRow);
   }
 
   /**

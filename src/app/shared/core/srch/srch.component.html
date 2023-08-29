@@ -30,14 +30,14 @@
             <li>
 
                 <span *ngFor = "let props of propertiesToShow;let i=index">
-                  <!-- <ng-container *ngIf="flag == 'C';else others">
+                  <ng-container *ngIf="flag == 'C';else others">
                     <span *ngIf="i>0">[</span>
                     {{items[props]}}
                     <span *ngIf="i>0">]</span>
                      </ng-container>
-                    <ng-template #others> -->
+                    <ng-template #others>
                       {{items[props]}}
-                  <!-- </ng-template> -->
+                  </ng-template>
                  </span>
 
             </li>

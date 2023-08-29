@@ -4,6 +4,7 @@ import { BenchmarkComponent } from './benchmark.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { BenchmarkEntryComponent } from './Dialog/benchmark-entry/benchmark-entry.component';
+import { BenchmarkReportComponent } from './Dialog/benchmark-report/benchmark-report.component';
 
 const routes:Routes = [{path:'',component:BenchmarkComponent,data:{breadcrumb:'Benchmark',title:'Benchmark',pageTitle:'Benchmark'}}]
 
@@ -11,7 +12,8 @@ const routes:Routes = [{path:'',component:BenchmarkComponent,data:{breadcrumb:'B
 @NgModule({
   declarations: [
     BenchmarkComponent,
-    BenchmarkEntryComponent
+    BenchmarkEntryComponent,
+    BenchmarkReportComponent
   ],
   imports: [
     CommonModule,

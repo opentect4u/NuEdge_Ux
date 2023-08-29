@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { map, pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import tabs from '../../../../../assets/json/MailBack/mailbackMismatchTab.json';
+import { column } from 'src/app/__Model/tblClmns';
+import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
 
 export interface ITab{
     id:number,
@@ -25,6 +27,13 @@ export interface IsubTab{
   styleUrls: ['./mailback-mismatch.component.css'],
 })
 export class MailbackMismatchComponent implements OnInit {
+
+  mismatch_flag:string = 'A';
+
+
+
+  TrxnClm:column[] = trxnClm.column.filter(item=> !['option_name','plan_name','scheme_link','isin_link','plan_opt','divident_opt'].includes(item.field));
+
   /**
    * Holding Transaction Report which has empty scheme
    */
@@ -55,7 +64,7 @@ export class MailbackMismatchComponent implements OnInit {
   constructor(private dbIntr: DbIntrService) {}
 
   ngOnInit(): void {
-    // this.getTrxnRpt('A');
+    this.getTrxnRpt('A');
   }
 
   /**
@@ -64,20 +73,21 @@ export class MailbackMismatchComponent implements OnInit {
    *  need to show those transaction which has no scheme /AMC/Plan/Option/Bussiness Type
    */
   getTrxnRpt = (flag:string) => {
-    console.log(flag);
-    // this.dbIntr
-    //   .api_call(0, '/showTransDetails', 'mismatch_flag='+flag)
-    //   .pipe(
-    //     pluck('data'),
-    //     map((item: TrxnRpt[]) => {
-    //       return item.filter(
-    //         (x: TrxnRpt) => x.scheme_name == '' || x.scheme_name == null
-    //       );
-    //     })
-    //   )
-    //   .subscribe((res: TrxnRpt[]) => {
-    //     this.trxnTypeRpt = res;
-    //   });
+    this.mismatch_flag = flag;
+    this.dbIntr
+      .api_call(0, '/mailbackMismatch', 'mismatch_flag='+flag)
+      .pipe(
+        pluck('data'),
+        // map((item: TrxnRpt[]) => {
+        //   return item.filter(
+        //     (x: TrxnRpt) => x.scheme_name == '' || x.scheme_name == null
+        //   );
+        // })
+      )
+      .subscribe((res: TrxnRpt[]) => {
+        console.log(res);
+        this.trxnTypeRpt = res;
+      });
   };
 
   /**
@@ -87,16 +97,37 @@ export class MailbackMismatchComponent implements OnInit {
    */
 
   changeTabDtls = <T extends {index:number,tabDtls:IsubTab}>(TabDtls:T,mode:string) => {
+    this.trxnTypeRpt = [];
+    let __mode = '';
     switch(mode){
       case 'P':
         this.index = TabDtls.index;
         this.getTrxnRpt(this.TabMenu[(this.index + 1)].sub_menu[0].flag);
+        __mode = this.TabMenu[(this.index + 1)].sub_menu[0].flag;
         break;
       case 'C':
         this.sub_index = TabDtls.index;
         this.getTrxnRpt(TabDtls.tabDtls.flag);
+        __mode = TabDtls.tabDtls.flag;
         break;
       default:break;
+    }
+    this.column_manage(__mode);
+  }
+
+  column_manage = (flag:string) =>{
+    const clm_divident:string[] = ['scheme_link','isin_link','plan_opt'];
+    const clm:string[] = ['divident_opt','scheme_link','isin_link','option_name','plan_name','plan_opt'];
+    const scm_clm:string[] = ['scheme_link','isin_link','divident_opt',];
+    const opt_clm:string[] = ['option_name','plan_name','plan_opt','divident_opt']
+    switch(flag){
+      case 'A':
+      case 'B': this.TrxnClm = trxnClm.column.filter(item => !clm.includes(item.field));break;
+      case 'S': this.TrxnClm = trxnClm.column.filter(item => !opt_clm.includes(item.field));break;
+      case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field));break;
+      default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;
+
+
     }
   }
 

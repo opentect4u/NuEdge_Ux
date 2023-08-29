@@ -810,5 +810,14 @@
     "icon": "",
     "sub_menu":[],
     "img":"/product_mf/portfolio_rebalance.png"
+  },
+  {
+    "id":15,
+    "accessibility":[],
+    "title":"Scheme Benchmark Report",
+    "url":"/main/product/mf/scmbenchmarkrpt",
+    "icon": "",
+    "sub_menu":[],
+    "img":"/product_mf/benchmark.png"
   }
 ]

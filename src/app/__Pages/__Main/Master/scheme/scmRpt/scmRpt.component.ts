@@ -371,6 +371,7 @@ export class ScmRptComponent implements OnInit {
     this.__selectScm.data = this.__selectScm.data.filter(
       (value: scheme, key) => {
         if (value.id == row_obj.id) {
+          console.log(row_obj);
           (value.product_id = row_obj.product_id),
             (value.amc_id = row_obj.amc_id),
             (value.category_id = row_obj.category_id),
@@ -402,6 +403,7 @@ export class ScmRptComponent implements OnInit {
           value.step_up_min_amt = row_obj.step_up_min_amt;
           value.step_up_min_per = row_obj.step_up_min_per;
           value.benchmark = row_obj.benchmark;
+          value.benchmark_id = row_obj.benchmark_id;
           value.A_sip_min_A_amount = row_obj.A_sip_min_A_amount;
           value.A_sip_min_F_amount = row_obj.A_sip_min_F_amount;
           value.A_stp_min_amount = row_obj.A_stp_min_amount;
@@ -467,6 +469,7 @@ export class ScmRptComponent implements OnInit {
         value.step_up_min_amt = row_obj.step_up_min_amt;
         value.step_up_min_per = row_obj.step_up_min_per;
         value.benchmark = row_obj.benchmark;
+        value.benchmark_id = row_obj.benchmark_id;
         value.A_sip_min_A_amount = row_obj.A_sip_min_A_amount;
           value.A_sip_min_F_amount = row_obj.A_sip_min_F_amount;
           value.A_stp_min_amount = row_obj.A_stp_min_amount;

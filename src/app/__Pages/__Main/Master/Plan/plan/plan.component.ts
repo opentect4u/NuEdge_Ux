@@ -137,7 +137,8 @@ export class PlanComponent implements OnInit {
     dialogConfig.panelClass = "fullscreen-dialog"
     dialogConfig.id = "P",
     dialogConfig.data = {
-      product_id:__prdId
+      product_id:__prdId,
+      right: global.randomIntFromInterval(1, 60),
     }
     try {
       const dialogref = this.__dialog.open(

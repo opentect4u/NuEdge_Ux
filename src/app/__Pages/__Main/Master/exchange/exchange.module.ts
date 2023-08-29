@@ -4,6 +4,7 @@ import { ExchangeComponent } from './exchange.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { EntryComponent } from './Dialog/entry/entry.component';
+import { ExchangeReportComponent } from './Dialog/Report/exchange-report.component';
 
  const routes:Routes = [{path:'',component:ExchangeComponent,data:{breadcrumb:'Exchange',title:'Exchange',pageTitle:'Exchange'}}]
 
@@ -15,7 +16,8 @@ import { EntryComponent } from './Dialog/entry/entry.component';
   ],
   declarations: [
     ExchangeComponent,
-    EntryComponent
+    EntryComponent,
+    ExchangeReportComponent
   ],
 })
 export class ExchangeModule { }

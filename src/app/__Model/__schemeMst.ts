@@ -23,6 +23,7 @@ export interface scheme {
   sip_freq_wise_amt?: any,
   sip_date?:any
   benchmark?:string,
+  benchmark_id?:number,
   stp_date?:any;
   stp_freq_wise_amt?:any;
   swp_date?:any;

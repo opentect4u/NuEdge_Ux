@@ -101,7 +101,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           <th  *ngFor="let col of TrxnClm"
           [pSortableColumn]="col.field"
           [style.max-width]="col.width"
-          [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
+          [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '16rem'"
 
           >
             {{ col.header }}
@@ -114,7 +114,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     <tr tabindex="999">
       <td *ngFor="let col of TrxnClm"
       [style.max-width]="col.width"
-      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
+      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '16rem'"
       >
         <ng-container [ngSwitch]="true">
           <ng-container *ngSwitchCase="col.field == 'sl_no'">
@@ -125,40 +125,57 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           <b>{{(trxn[col.field] && trxn[col.field]!=' ' && (trxn[col.field] | uppercase)!='NOT PROVID' && trxn[col.field] != '0')  ? trxn[col.field] : 'N/A' }}</b>
        </ng-container>
 
-       <ng-container *ngSwitchCase="col.field == 'first_client_name'">
-        <b>{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</b>
-     </ng-container>
+          <ng-container *ngSwitchCase="col.field == 'first_client_name'">
+            <b>{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</b>
+        </ng-container>
 
 
          <ng-container *ngSwitchCase="col.field == 'trans_date'">
             <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
          </ng-container>
+       <!-- Scheme Logic -->
          <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-          <b matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + trxn['option_name']) : ''}}">{{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A'}}</b>
+          <ng-container *ngIf="mismatch_flag == 'S';else other">
+          <b [matTooltip]="trxn['product_code']">{{trxn['product_code'] ? trxn['product_code']  : 'N/A'}}</b>
+        </ng-container>
+          <ng-template #other>
+           <b [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
+          </ng-template>
        </ng-container>
-         <ng-container *ngSwitchCase="col.field == 'pur_price'">
+       <!-- End -->
+       <!-- AMC Logic -->
+       <ng-container *ngSwitchCase="col.field == 'amc_name'">
+        <ng-container *ngIf="mismatch_flag == 'A';else other">
+          <b [matTooltip]="trxn['amc_code']">{{trxn['amc_code'] ? trxn['amc_code']  : 'N/A'}}</b>
+          </ng-container>
+          <ng-template #other>
+           <b [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</b>
+          </ng-template>
+       </ng-container>
+       <!-- End -->
+         <!-- <ng-container *ngSwitchCase="col.field == 'pur_price'">
           <b [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
-       </ng-container>
+       </ng-container> -->
 
-       <ng-container *ngSwitchCase="col.field == 'gross_amount'">
+       <!-- <ng-container *ngSwitchCase="col.field == 'gross_amount'">
         <b [matTooltip]="trxn['trxn_code'] == 'R' ? (trxn['tot_gross_amount']? (trxn['tot_gross_amount']  | number:'1.2-2'): '0' ) : (trxn[col.field]  ? (trxn[col.field]  | number:'1.2-2'): '0' )">
           {{trxn['trxn_code'] == 'R' ? (trxn['tot_gross_amount'] ? (trxn['tot_gross_amount'] | number:'1.2-2'): '0') : (trxn[col.field] ? (trxn[col.field]  | number:'1.2-2') : '0') }}
         </b>
-     </ng-container>
+     </ng-container> -->
 
 
 
 
        <!-- Net Amount Logic -->
-        <ng-container *ngSwitchCase="col.field == 'amount'">
+        <!-- <ng-container *ngSwitchCase="col.field == 'amount'">
           <b [matTooltip]="trxn['trxn_code'] == 'R' ? (trxn['tot_amount'] ? trxn['tot_amount'] : 0) : (trxn[col.field] ? trxn[col.field] : 0)">
             {{trxn['trxn_code'] == 'R' ? (trxn['tot_amount'] ? trxn['tot_amount'] : 0) : (trxn[col.field] ? trxn[col.field] : 0) }}
           </b>
-      </ng-container>
+      </ng-container> -->
       <!-- End -->
 
        <!-- TDS Logic -->
-      <ng-container *ngSwitchCase="col.field == 'tds'">
+      <!-- <ng-container *ngSwitchCase="col.field == 'tds'">
         <b [matTooltip]="trxn['trxn_code'] == 'R' ?
         (trxn['tot_tds'] ? trxn['tot_tds'] : 0)
         : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)">
@@ -166,11 +183,11 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
            (trxn['tot_tds'] ? trxn['tot_tds'] : 0)
            : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)}}
         </b>
-     </ng-container>
+     </ng-container> -->
      <!-- End -->
 
      <!-- Stamp Duty Logic -->
-          <ng-container *ngSwitchCase="col.field == 'stamp_duty'">
+          <!-- <ng-container *ngSwitchCase="col.field == 'stamp_duty'">
               <b [matTooltip]="trxn['trxn_code'] == 'R' ?
               (trxn['tot_stamp_duty'] ? trxn['tot_stamp_duty'] : 0)
               : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)">
@@ -178,8 +195,36 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 (trxn['tot_stamp_duty'] ? trxn['tot_stamp_duty'] : 0)
                 : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)}}
               </b>
-        </ng-container>
+        </ng-container> -->
      <!-- End -->
+
+     <!-- Remarks Logic -->
+     <ng-container *ngSwitchCase="col.field == 'remarks'">
+      <b [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30): 'N/A'}}</b>
+     </ng-container>
+     <!-- End -->
+     <!-- Divident Option Logic -->
+       <ng-container *ngSwitchCase="col.field == 'divident_opt'">
+
+          <ng-container *ngIf="trxn['rnt_id'] == 1;else kfIntech">
+            <b>{{trxn['reinvest_flag'] ? (
+              trxn['reinvest_flag']  == 'Z' ?
+              'Growth' :(trxn['reinvest_flag']  == 'Y' ? 'Divident Reinvest' : 'Divident Payout')
+              ) : (
+                'N/A'
+              )}}</b>
+          </ng-container>
+          <ng-template #kfIntech>
+            <b>{{trxn['divident_option'] ? (
+              trxn['divident_option']  == 'G' ?
+              'Growth' :(trxn['divident_option']  == 'R' ? 'Divident Reinvest' : 'Divident Payout')
+              ) : (
+                'N/A'
+              )}}</b>
+          </ng-template>
+
+       </ng-container>
+      <!-- End -->
 
         <ng-container *ngSwitchCase="col.field == 'scheme_link'">
           <p-button label="Add Scheme"
@@ -196,6 +241,16 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           styleClass="p-button-link">
           </p-button>
         </ng-container>
+
+        <ng-container *ngSwitchCase="col.field == 'plan_opt'">
+          <p-button
+          [routerLink]="['/main/master/productwisemenu/scheme/isin']"
+          label="Add Plan & Option"
+          icon="pi pi-plus"
+          styleClass="p-button-link">
+          </p-button>
+        </ng-container>
+
           <ng-container *ngSwitchDefault>
             <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
           </ng-container>

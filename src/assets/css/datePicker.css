@@ -1,0 +1,46 @@
+
+.p-datepicker table td>span.p-highlight {
+  color: #ffffff;
+  background: #2a8bf4;
+}
+
+.p-datepicker table td>span {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  transition: box-shadow .2s;
+  border: 1px solid #0000;
+  font-size: 11px!important;
+  font-weight: 500;
+    padding: 4px!important;
+}
+.p-datepicker:not(.p-datepicker-inline) .p-datepicker-header {
+  background: #007bff;
+
+}
+p-datepicker .p-datepicker-header {
+  padding: .5rem;
+  color: #fff!important;
+  background: #fff;
+  font-weight: 600!important;
+  margin: 0;
+  border-bottom: 1px solid #dee2e6;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+}
+
+/* .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-year, .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month{
+  color: #fff!important;
+} */
+.p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-year, .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month{
+  color: #fff!important;
+  font-weight: 600!important;
+  margin: 0;
+  font-size: 15px!important;
+}
+
+.p-datepicker table td.p-datepicker-today > span{
+  color: #2a8bf4;
+  background: #ffffff;
+  padding: 4px;
+}

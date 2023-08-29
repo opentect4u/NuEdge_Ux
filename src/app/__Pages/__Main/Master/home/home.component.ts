@@ -17,7 +17,18 @@ export class HomeComponent implements OnInit {
    }
   ngOnInit() {}
   navigate(__items){
-        this.__utility.navigate(__items.url);
+        console.log(__items);
+       switch(__items.id){
+        case 46:
+        case 47:
+        case 48:
+        this.__utility.navigate(__items.url,btoa(__items.id));
+        break;
+        default:
+          this.__utility.navigate(__items.url);
+          break;
+       }
+        // this.__utility.navigate(__items.url);
         // this.__utility.navigatewithqueryparams(__items.url,{queryParams:{product_id:this.__actdt.snapshot.queryParamMap.get('id')}})
   }
 }

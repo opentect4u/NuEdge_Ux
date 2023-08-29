@@ -1,0 +1,101 @@
+<!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle -->
+
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title">
+    <h2>Exchange Reports</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+  </div>
+  <mat-dialog-content  class="p-5 customDialog d-flex justify-content-center align-item-center">
+    <p-card
+    header="Exchange Details Report">
+
+    <p-table
+    #primeTbl
+    id="excDt"
+    [value]="exchangeMstData"
+    [responsive]="true"
+    [rowHover]="true"
+    styleClass="p-datatable-striped p-datatable-lg"
+    responsiveLayout="scroll"
+    [scrollable]="true"
+    [columns]="column"
+    [paginator]="true"
+    columnResizeMode="expand"
+    (onSort)="customSort($event)"
+      [lazy]="true"
+      id="branchDt"
+    scrollHeight="200px"
+    [autoLayout]="true"
+    [totalRecords]="exchangeMstData.length"
+    [pageLinks]="3"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [globalFilterFields]="getColumns()"
+    [tableStyle]="{ 'min-width': '100rem' }"
+    >
+      <ng-template pTemplate="header">
+          <tr >
+              <th  *ngFor="let col of column"
+              [pSortableColumn]="col.field !='edit' ? col.field : ''"
+              [style.max-width]="col.width"
+              pResizableColumn
+              >
+                {{ col.header }}
+                <p-sortIcon *ngIf="col.field !='edit'" [field]="col.field">
+                </p-sortIcon>
+              </th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-exchange  let-i="rowIndex">
+        <tr tabindex="999">
+          <td *ngFor="let col of column"
+          [style.max-width]="col.width"
+          >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <b>{{i + 1}}</b>
+             </ng-container>
+              <ng-container *ngSwitchDefault>
+                <b [matTooltip]="exchange[col.field]">{{ exchange[col.field] ? exchange[col.field] : 'N/A' }}</b>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'edit'">
+                <p-button icon="pi pi-pencil" (click)="populateDT(exchange)"
+                  styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+              <!-- <ng-container *ngSwitchCase="col.field == 'delete'">
+                <p-button icon="pi pi-trash" (click)="delete(finance,i)"
+                  styleClass="p-button-rounded p-button-danger"></p-button>
+              </ng-container> -->
+            </ng-container>
+          </td>
+          </tr>
+        </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+             <h5>No Records Found</h5>
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+</p-card>
+  </mat-dialog-content>
+  </div>

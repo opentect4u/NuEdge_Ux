@@ -54,7 +54,7 @@ export class NetworkInterceptor implements HttpInterceptor {
                 // console.log(`${error.statusText}`, 'Route Error');
                 this.__utility.showSnackbar("404!! Url Not Found",0);
                 break;
-              case 503: // Server error
+              case 500: // Server error
                 this.__utility.showSnackbar("500!! Internal Server error",0);
                 break;
                 case 400: // bad request

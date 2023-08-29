@@ -226,6 +226,20 @@
         "has_submenu":"N",
         "url":"/main/master/productwisemenu/stpType",
         "icon": "stars"
+      },
+      {
+        "id":44,
+        "menu_name":"Exchange",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/exchange",
+        "icon": "stars"
+      },
+      {
+        "id":45,
+        "menu_name":"Benchmark",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/benchmark",
+        "icon": "stars"
       }
     ]
   },

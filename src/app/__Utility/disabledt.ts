@@ -109,4 +109,16 @@ export class dates {
     return new Date(dt.toISOString().split('T')[0]);
   }
 
+  public static calculatMaximumDates = (mode:string,calculat_number:number,date:Date) =>{
+        switch(mode){
+          case 'R':
+                date.setMonth(date.getMonth() + 6);
+                return date;
+                break;
+          default:break;
+        }
+        // return dates.calculateDates('T');
+        return null;
+  }
+
 }

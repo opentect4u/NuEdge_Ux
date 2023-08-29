@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { pluck } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import periods from '../../../../../../assets/json/datePeriods.json';
@@ -55,6 +55,7 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       this.scmbenchmarkFrm
         .get('date_periods')
         .setValue('M', { emitEvent: true });
+        this.getschemebenchmarkReport();
     }, 500);
     this.maxDate = dates.calculateDates('T');
     this.minDate = dates.calculateDates('P');
@@ -92,17 +93,24 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
   }
 
   getschemebenchmarkReport = () => {
-    console.log(this.date_range.inputFieldValue);
-    // const formdata = new FormData();
-    // formdata.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
-    // formdata.append('ex_id',global.getActualVal(this.scmbenchmarkFrm.value.ex_id));
-    // formdata.append('benchmark',global.getActualVal(this.scmbenchmarkFrm.value.benchmark));
+    console.log(this.date_range);
+    const formdata = new FormData();
+    formdata.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
+    formdata.append('ex_id',global.getActualVal(this.scmbenchmarkFrm.value.ex_id));
+    formdata.append('benchmark',global.getActualVal(this.scmbenchmarkFrm.value.benchmark));
 
-    //  this.dbIntr.api_call(1,'/schemebenchmarkReport',formdata)
-    //  .pipe(pluck("data"))
-    //  .subscribe((res:Partial<IschemeBenchmark>[])=>{
-    //   this.scmbrnchMstDt = res;
-    //  })
+     this.dbIntr.api_call(1,'/benchmarkSchemeDetailSearch',formdata)
+     .pipe(
+      pluck("data"),
+       map((item:{links:any[],data:Partial<IschemeBenchmark>[]})=>{
+        console.log(item);
+        this.scmbrnchMstDt = item.data;
+       })
+      )
+     .subscribe((res)=>{
+      console.log(res);
+      // this.scmbrnchMstDt = res;
+     })
   };
 
   getExhangeDt = () => {
@@ -191,7 +199,7 @@ export interface Ischemebenchmarkdtls {
 export interface IschemeBenchmark {
   id: number;
   date: Date;
-  ex_name: string;
+  exchange_name: string;
   benchmark: string;
   open: string;
   high: string;
@@ -203,14 +211,16 @@ export interface IschemeBenchmark {
 
 export class schemeBenchmarkcolumn {
   public static column: Partial<column[]> = [
+    { field: 'sl_no', header: 'Sl No', width: '4rem' },
     { field: 'date', header: 'Date', width: '20rem' },
-    { field: 'ex_name', header: 'Exchange', width: '20rem' },
+    { field: 'exchange_name', header: 'Exchange', width: '20rem' },
     { field: 'benchmark', header: 'Symbol', width: '20rem' },
     { field: 'open', header: 'Open', width: '20rem' },
-    { field: 'high', header: 'Hight', width: '20rem' },
+    { field: 'high', header: 'High', width: '20rem' },
     { field: 'low', header: 'Low', width: '20rem' },
-    { field: 'change', header: 'Change', width: '20rem' },
-    { field: 'prev', header: '% of change from prv', width: '20rem' },
+    { field: 'close', header: 'Close', width: '20rem' },
+    // { field: 'change', header: 'Change', width: '20rem' },
+    // { field: 'prev', header: '% of change from prv', width: '20rem' },
   ];
 }
 

@@ -46,24 +46,6 @@ export class AMCComponent implements OnInit {
       icon: '',
       id: 17,
       flag: 'R',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Replace AMC',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 17,
-      flag: 'RA',
-    },
-    {
-      parent_id: 4,
-      menu_name: 'Merge AMC',
-      has_submenu: 'N',
-      url: '',
-      icon: '',
-      id: 17,
-      flag: 'MA',
     }
   ];
   constructor(

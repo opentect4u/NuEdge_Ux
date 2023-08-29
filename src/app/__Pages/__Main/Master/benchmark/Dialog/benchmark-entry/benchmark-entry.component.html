@@ -34,17 +34,7 @@
             <span class="invalid-feedback" *ngIf="(benchmarkForm.get('ex_id')).errors?.required">*Please provide exchange</span>
           </div>
         </div>
-        <div class="col-sm-12 col-md-12 col-12">
-          <label for="benchmark">Benchmark <span class="text-danger">*</span></label>
-          <input type="text" id="benchmark"
-           name="benchmark"
-           class="form-control"
-           placeholder="Enter Benchmark"
-           formControlName="benchmark"/>
-          <div class="invalid-feedback" *ngIf="benchmarkForm.get('benchmark').invalid && (benchmarkForm.get('benchmark').dirty || benchmarkForm.get('benchmark').touched)">
-            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('benchmark')).errors?.required">*Please provide benchmark</span>
-          </div>
-        </div>
+
         <div class="col-sm-12 col-md-12 col-12">
           <label for="category_id">Category <span class="text-danger">*</span></label>
            <select id="category_id"
@@ -69,6 +59,17 @@
            </select>
           <div class="invalid-feedback" *ngIf="benchmarkForm.get('subcat_id').invalid && (benchmarkForm.get('subcat_id').dirty || benchmarkForm.get('subcat_id').touched)">
             <span class="invalid-feedback" *ngIf="(benchmarkForm.get('subcat_id')).errors?.required">*Please provide sub category</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="benchmark">Benchmark <span class="text-danger">*</span></label>
+          <input type="text" id="benchmark"
+           name="benchmark"
+           class="form-control"
+           placeholder="Enter Benchmark"
+           formControlName="benchmark"/>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('benchmark').invalid && (benchmarkForm.get('benchmark').dirty || benchmarkForm.get('benchmark').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('benchmark')).errors?.required">*Please provide benchmark</span>
           </div>
         </div>
         <div class="col-sm-12 col-md-12 col-12">

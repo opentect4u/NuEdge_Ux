@@ -60,7 +60,7 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
      */
      if(this.data.benchmark){
       setTimeout(() => {
-      this.benchmarkForm.get('category_id').setValue(1,{emitEvent:true});
+      this.benchmarkForm.get('category_id').setValue(this.data.benchmark.category_id,{emitEvent:true});
       }, 200);
      }
      /** END */
@@ -95,7 +95,7 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
   save_Benchmark = () => {
     this.__dbIntr.api_call(1,'/benchmarkAddEdit',this.__utility.convertFormData(this.benchmarkForm.value))
     .subscribe((res:any) =>{
-      this.__utility.showSnackbar(res.suc == 1 ?  'benchmark'+ (res.data.id > 0 ? 'updated' : 'submitted')+'successfully' : res.msg,res.suc);
+      this.__utility.showSnackbar(res.suc == 1 ?  'benchmark'+ (Number(this.benchmarkForm.value.id) > 0 ? ' updated ' : ' added ')+'successfully' : res.msg,res.suc);
       if(res.suc == 1){
         this.dialogRef.close(res.data);
       }

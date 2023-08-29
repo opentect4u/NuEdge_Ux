@@ -8,14 +8,18 @@
     ></core-tab>
 
     <p-card styleClass="rounded-bottom border-noround">
-      <!-- <core-tab [Tab]="subTab"
+      <core-tab [Tab]="subTab"
       (GetTabDtls)="changeTabDtls($event,'C')"
       [customClass]="'customTabs'"
       [index]="sub_index"
-      ></core-tab> -->
+      ></core-tab>
       <div class="card">
         <div class="card-body p-1">
-          <mailBack-trxn-rpt-without-scm [trxnRptWithOutScm]="trxnTypeRpt"></mailBack-trxn-rpt-without-scm>
+          <mailBack-trxn-rpt-without-scm
+          [trxnRptWithOutScm]="trxnTypeRpt"
+          [mismatch_flag]="mismatch_flag"
+          [TrxnClm]="TrxnClm"
+          ></mailBack-trxn-rpt-without-scm>
         </div>
         </div>
     </p-card>

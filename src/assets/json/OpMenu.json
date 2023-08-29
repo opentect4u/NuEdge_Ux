@@ -25,5 +25,14 @@
         "flag":"I",
         "icon":"",
         "img":"insurance.png"
-    }
+    },
+    {
+      "id": 4,
+      "title":"Benchmark",
+      "has_submenu":"N",
+      "url":"/main/operations/benchmark",
+      "flag":"B",
+      "icon":"",
+      "img":"product_mf/benchmark.png"
+  }
 ]

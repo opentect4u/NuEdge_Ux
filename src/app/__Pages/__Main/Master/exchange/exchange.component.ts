@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 import { EntryComponent } from './Dialog/entry/entry.component';
 import { global } from 'src/app/__Utility/globalFunc';
+import { ExchangeReportComponent } from './Dialog/Report/exchange-report.component';
 
 
 @Component({
@@ -75,17 +76,46 @@ export class ExchangeComponent implements OnInit,IDialog {
         //   '/main/master/productwisemenu/scheme/isin/uploadIsin')
         break;
       case 'R':
+        this.openDialogForReports();break;
       // this.opendialogForRPT();break;
     }
   };
 
-
+  openDialogForReports(id:string | null = ''){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '80%';
+    dialogConfig.height = '80%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.panelClass = "fullscreen-dialog"
+    dialogConfig.id = "BENCH",
+    dialogConfig.data = {
+      exchange_id:id,
+      right: global.randomIntFromInterval(1, 60),
+    }
+    try {
+      const dialogref = this.__dialog.open(
+        ExchangeReportComponent,
+        dialogConfig
+      );
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+      this.utility.getmenuIconVisible({
+        exchange_id:id
+      });
+    }
+  }
 }
 
 export declare interface IDialog{
 
   openEntryDialog(exhange:Iexchange,id:number):void;
 
+  openDialogForReports(id:string | null):void;
 }
 
 

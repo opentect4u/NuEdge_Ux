@@ -20,21 +20,21 @@
         },
         {
           "id":3,
-          "tab_name":"Plan",
+          "tab_name":"Plan & Option",
           "img_src":"",
-          "flag":"P"
-        },
-        {
-          "id":4,
-          "tab_name":"Option",
-          "img_src":"",
-          "flag":"O"
+          "flag":"P/O"
         },
         {
           "id":5,
           "tab_name":"Bussiness Type",
           "img_src":"",
           "flag":"B"
+        },
+        {
+          "id":6,
+          "tab_name":"Dividend Option",
+          "img_src":"",
+          "flag":"D"
         }
       ]
   }

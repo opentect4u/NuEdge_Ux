@@ -93,6 +93,7 @@
       [autoLayout]="true"
       [totalRecords]="scmbrnchMstDt.length"
       [pageLinks]="3"
+
       [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       [rows]="10"
@@ -117,7 +118,19 @@
             <td *ngFor="let col of column"
             [style.max-width]="col.width"
             >
-              {{scmBenchmark[col.field]}}
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <b>{{i + 1}}</b>
+             </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'date'">
+                <b>{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</b>
+             </ng-container>
+             <ng-container *ngSwitchDefault>
+              <b [matTooltip]="scmBenchmark[col.field]">
+                {{ scmBenchmark[col.field] ? scmBenchmark[col.field] : 'N/A' }}
+              </b>
+            </ng-container>
+             </ng-container>
             </td>
             </tr>
           </ng-template>

@@ -267,15 +267,6 @@
         >
           <ng-template pTemplate="header">
               <tr >
-        <!-- [tableStyle]="{ 'min-width': '400rem' }" -->
-
-                <!-- pResizableColumn
-                columnResizeMode="expand"
-              [resizableColumns]="true"
-               [style.width]="col.field == 'scheme_name' ? '34rem' : '12rem'"
-               [style]="col.field == 'sl_no' ? 'max-width:8rem' : ''"
-                [style]="col.field == 'sl_no' ? 'max-width:8rem' : ''"
-                -->
                   <th  *ngFor="let col of column"
                   [pSortableColumn]="col.field"
                   [style.max-width]="col.width"
@@ -297,10 +288,7 @@
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
                     <b>
-                      <!-- {{i + 1}} -->
-
-                      {{trxn['tot_rows']}}
-
+                      {{i + 1}}
                     </b>
                  </ng-container>
 
@@ -319,35 +307,41 @@
                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                   <b matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + trxn['option_name']) : ''}}">{{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A'}}</b>
                </ng-container>
+               <ng-container *ngSwitchCase="col.field == 'tot_tds'">
+                <b matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
+                  {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
+                </b>
+               </ng-container>
                <!-- <ng-container *ngSwitchCase="col.field == 'tds'">
                 <b  matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
                   {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
                 </b>
              </ng-container> -->
 
-                 <ng-container *ngSwitchCase="col.field == 'pur_price'">
+                 <!-- <ng-container *ngSwitchCase="col.field == 'pur_price'">
                   <b [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
-               </ng-container>
+               </ng-container> -->
 
-               <ng-container *ngSwitchCase="col.field == 'gross_amount'">
+               <!-- <ng-container *ngSwitchCase="col.field == 'gross_amount'">
+
                 <b [matTooltip]="trxn['trxn_code'] == 'R' ? (trxn['tot_gross_amount']? (trxn['tot_gross_amount']  | number:'1.2-2'): '0' ) : (trxn[col.field]  ? (trxn[col.field]  | number:'1.2-2'): '0' )">
                   {{trxn['trxn_code'] == 'R' ? (trxn['tot_gross_amount'] ? (trxn['tot_gross_amount'] | number:'1.2-2'): '0') : (trxn[col.field] ? (trxn[col.field]  | number:'1.2-2') : '0') }}
                 </b>
-             </ng-container>
+             </ng-container> -->
 
 
 
 
                <!-- Net Amount Logic -->
-                <ng-container *ngSwitchCase="col.field == 'amount'">
+                <!-- <ng-container *ngSwitchCase="col.field == 'amount'">
                   <b [matTooltip]="trxn['trxn_code'] == 'R' ? (trxn['tot_amount'] ? trxn['tot_amount'] : 0) : (trxn[col.field] ? trxn[col.field] : 0)">
                     {{trxn['trxn_code'] == 'R' ? (trxn['tot_amount'] ? trxn['tot_amount'] : 0) : (trxn[col.field] ? trxn[col.field] : 0) }}
                   </b>
-              </ng-container>
+              </ng-container> -->
               <!-- End -->
 
                <!-- TDS Logic -->
-              <ng-container *ngSwitchCase="col.field == 'tds'">
+              <!-- <ng-container *ngSwitchCase="col.field == 'tds'">
                 <b [matTooltip]="trxn['trxn_code'] == 'R' ?
                 (trxn['tot_tds'] ? trxn['tot_tds'] : 0)
                 : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)">
@@ -355,11 +349,11 @@
                    (trxn['tot_tds'] ? trxn['tot_tds'] : 0)
                    : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)}}
                 </b>
-             </ng-container>
+             </ng-container> -->
              <!-- End -->
 
              <!-- Stamp Duty Logic -->
-                  <ng-container *ngSwitchCase="col.field == 'stamp_duty'">
+                  <!-- <ng-container *ngSwitchCase="col.field == 'stamp_duty'">
                       <b [matTooltip]="trxn['trxn_code'] == 'R' ?
                       (trxn['tot_stamp_duty'] ? trxn['tot_stamp_duty'] : 0)
                       : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)">
@@ -367,7 +361,7 @@
                         (trxn['tot_stamp_duty'] ? trxn['tot_stamp_duty'] : 0)
                         : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)}}
                       </b>
-                </ng-container>
+                </ng-container> -->
              <!-- End -->
              <ng-container *ngSwitchCase="col.field == 'remarks'">
                 <b [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30): 'N/A'}}</b>
@@ -396,16 +390,16 @@
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
                    Total
                  </ng-container>
-                 <ng-container *ngSwitchCase="col.field == 'amount'">
+                 <ng-container *ngSwitchCase="col.field == 'tot_amount'">
                  {{total?.net_amt | number:'1.2-2'}}
                   </ng-container>
-                   <ng-container *ngSwitchCase="col.field == 'gross_amount'">
+                   <ng-container *ngSwitchCase="col.field == 'tot_gross_amount'">
                    {{total?.gross_amt | number:'1.2-2'}}
                    </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'tds'">
+                  <ng-container *ngSwitchCase="col.field == 'tot_tds'">
                    {{total?.tds | number:'1.2-2'}}
                 </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'stamp_duty'">
+                <ng-container *ngSwitchCase="col.field == 'tot_stamp_duty'">
                {{total?.stamp_duity | number:'1.2-2'}}
               </ng-container>
                   </ng-container>

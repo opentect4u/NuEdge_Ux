@@ -42,7 +42,7 @@ export class BenchmarkComponent implements OnInit {
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data = {
       flag: 'BENCH',
-      title: 'Add Benchmark',
+      title: 'Add Scheme Benchmark',
       right: global.randomIntFromInterval(1, 60),
     };
     dialogConfig.id = '0';

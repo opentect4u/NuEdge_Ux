@@ -55,7 +55,7 @@ export class EntryComponent implements OnInit,IDialogsize {
     this.__dbIntr.api_call(1,'/exchangeAddEdit',this.__utility.convertFormData(this.exchangeFrm.value))
     .subscribe((res:any) =>{
         this.__utility.showSnackbar(
-          (res.suc == 1 ? 'Exchange' + (res.data.id > 0 ? ' updated ' : ' added ') +  'successfully' : res.msg)
+          (res.suc == 1 ? 'Exchange' + (Number(this.exchangeFrm.value.id) > 0 ? ' updated ' : ' added ') +  'successfully' : res.msg)
         ,res.suc);
         if(res.suc  == 1){
           this.dialogRef.close(res.data)

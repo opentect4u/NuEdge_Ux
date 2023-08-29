@@ -104,6 +104,10 @@ const routes: Routes = [
       {
         path:'benchmark',
         loadChildren:()=> import('../benchmark/benchmark.module').then(m => m.BenchmarkModule)
+      },
+      {
+        path:'type',
+        loadChildren:()=> import('../Merge_Rplc_Acq/merge-rplc-acq.module').then(m => m.MergeRplcAcqModule)
       }
     ],
   },
