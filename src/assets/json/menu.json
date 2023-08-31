@@ -240,6 +240,28 @@
         "has_submenu":"N",
         "url":"/main/master/productwisemenu/benchmark",
         "icon": "stars"
+      },
+      {
+        "id":46,
+        "menu_name":"Merge",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/mrgRplcAcq",
+        "icon": "stars"
+      },
+      {
+        "id":47,
+        "menu_name":"Replace",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/mrgRplcAcq",
+        "icon": "stars"
+      },
+
+      {
+        "id":48,
+        "menu_name":"Acquisition",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/mrgRplcAcq",
+        "icon": "stars"
       }
     ]
   },

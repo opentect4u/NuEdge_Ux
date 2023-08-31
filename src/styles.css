@@ -5,6 +5,10 @@
 @import '~primeicons/primeicons.css';
 
 @import './assets/css/datePicker.css';
+/*****angular material Tab****/
+@import './assets/css/tab_material.css';
+/** End */
+
 td,
 th {
   text-align: left !important;

@@ -1,1 +1,7 @@
-<p>home works!</p>
+<div class="row flexSec">
+  <div class="col-sm-8">
+    <div class="row">
+      <shared-menu-item [items]="menu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
+    </div>
+  </div>
+</div>

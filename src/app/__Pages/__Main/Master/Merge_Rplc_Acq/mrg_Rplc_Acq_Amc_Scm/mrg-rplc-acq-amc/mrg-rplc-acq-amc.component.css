@@ -1,0 +1,22 @@
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: center!important;
+  padding: 8px;
+  width: 40%;
+}
+td,
+th:last-child {
+width: 10%;
+
+}
+
+td img {
+  height: 102px;
+  width: 144px;
+  object-fit: contain;
+}
+
+td {
+  vertical-align: middle !important;
+}

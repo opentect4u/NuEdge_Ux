@@ -8,7 +8,8 @@ export interface amc {
   created_by: number
   id: number
   product_id: number
-  rnt_id: number
+  rnt_id: number,
+  rnt_name?:string,
   updated_at: string
   updated_by: any
   sip_start_date: Date;

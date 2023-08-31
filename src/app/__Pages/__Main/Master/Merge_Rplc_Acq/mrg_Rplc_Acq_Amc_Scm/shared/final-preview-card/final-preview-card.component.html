@@ -1,0 +1,33 @@
+<div class="row">
+  <!-- <div class="col-sm-4 p-2">
+    <p-card header="{{Title}}">
+      <ng-container *ngIf="Items.length > 0;else noresult">
+        <p-scrollPanel [style]="{ width: '100%', height: '250px' }">
+          <mat-list>
+            <mat-list-item *ngFor="let item of Items">
+              <div mat-line>{{flag == 'A' ? item.amc_short_name : item.scheme_name}} <b>({{flag == 'A' ? item.amc_code : item.product_code}})</b></div>
+              <div mat-line *ngIf="flag == 'A'"> {{item.rnt_name}} </div>
+            </mat-list-item>
+            </mat-list>
+        </p-scrollPanel>
+      </ng-container>
+      <ng-template #noresult>
+          <h5 class="text-center mt-5">No Result Found</h5>
+          <p class="text-center m-0">Please Select AMC From Step-1.</p>
+      </ng-template>
+    </p-card>
+  </div> -->
+
+  <div class="col-sm-6 p-2">
+     <p-card header="{{Title}}">
+      <p-scrollPanel [style]="{ width: '100%', height: '250px' }">
+        <ng-content select="[disabled_frm]"></ng-content>
+      </p-scrollPanel>
+     </p-card>
+  </div>
+  <div class="col-sm-6  p-2">
+    <p-card>
+    <ng-content select="[effective_dt]"></ng-content>
+    </p-card>
+  </div>
+</div>

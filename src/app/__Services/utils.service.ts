@@ -97,9 +97,13 @@ export class UtiliService {
     });
   }
 
-  public settingsfroMultiselectDropdown(__id, __text, __placeholder,limit:number | undefined  = 2,max_hieght:number | undefined = 197) {
+  public settingsfroMultiselectDropdown(__id, __text,
+     __placeholder,limit:number | undefined  = 2,
+     max_hieght:number | undefined = 197,
+     is_single_selection:boolean | undefined = false
+     ) {
     let settings = {
-      singleSelection: false,
+      singleSelection: is_single_selection,
       idField: __id,
       textField: __text,
       enableCheckAll: true,

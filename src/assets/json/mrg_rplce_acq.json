@@ -1,0 +1,18 @@
+[
+  {
+    "id":1,
+    "title":"AMC",
+    "img":"",
+    "icon":"fa fa-user-o",
+    "url":"/main/master/productwisemenu/mrgRplcAcq",
+    "flag":"A"
+  },
+  {
+    "id":2,
+    "title":"Scheme",
+    "img":"",
+    "icon":"fa fa-user-o",
+    "url":"/main/master/productwisemenu/mrgRplcAcq",
+    "flag":"S"
+  }
+]
