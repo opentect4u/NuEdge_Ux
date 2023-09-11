@@ -3,7 +3,7 @@ import { Component, OnInit,Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
-import { Ibenchmark, benchmarkClmns } from '../../benchmark.component';
+// import { Ibenchmark, benchmarkClmns } from '../../benchmark.component';
 import { map, pluck } from 'rxjs/operators';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Iexchange } from '../../../exchange/exchange.component';
@@ -13,6 +13,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { BenchmarkEntryComponent } from '../benchmark-entry/benchmark-entry.component';
 import { global } from 'src/app/__Utility/globalFunc';
 import { sort } from 'src/app/__Model/sort';
+import { Ibenchmark, benchmarkClmns } from '../../home/home.component';
 
 @Component({
   selector: 'app-benchmark-report',
@@ -245,6 +246,8 @@ export class BenchmarkReportComponent implements OnInit {
   }
 
   updateRow = (item:Ibenchmark) =>{
+    // if(this.)
+    console.log(item);
   this.benchmarkMstDt = this.benchmarkMstDt.map(el =>
     el.id == item.id ? item : el
   );

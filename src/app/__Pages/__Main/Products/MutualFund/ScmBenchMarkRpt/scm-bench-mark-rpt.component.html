@@ -16,45 +16,80 @@
 
            <div class="row">
             <div class="col-sm-3">
-              <label for="date_periods">Periods</label>
-              <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
-               <option value="">Select</option>
-               <option [value]="periods.id"  *ngFor="let periods of periods_type">{{periods.periods}}</option>
-              </select>
-            </div>
-            <div class="col-sm-3">
-              <label for="date_range">Date Range (From - To)</label>
-              <p-calendar
-              #dateRng
-              [maxDate]="maxDate"
-              [minDate]="minDate"
-              dateFormat="dd/mm/yy"
-              placeholder="Select Date Range"
-              formControlName="date_range"
-              selectionMode="range"
-              [readonlyInput]="true"
-              [id]="'date_range'"
-              [showIcon]="true"
-              [hideOnDateTimeSelect]="true"
-              [showButtonBar]="true">
-              </p-calendar>
-            </div>
-            <div class="col-sm-3">
-                <label for="ex_id">Exchange</label>
+                <label for="ex_id">Exchange <span class="text-danger">*</span></label>
                 <select class="form-control" id="ex_id" name="ex_id" formControlName="ex_id">
                   <option value="">Select</option>
                   <option [value]="item.id" *ngFor="let item of exchangeMstDt">{{item.ex_name}}</option>
                 </select>
             </div>
             <div class="col-sm-3">
-              <label for="benchmark">Benchmark</label>
-              <select class="form-control" id="benchmark" name="benchmark" formControlName="benchmark">
+              <label for="benchmark">Benchmark <span class="text-danger">*</span></label>
+              <!-- <select class="form-control" id="benchmark" name="benchmark" formControlName="benchmark">
                 <option value="">Select</option>
+                <option value="A" *ngIf="benchmark.length > 0">Select All</option>
                 <option [value]="item.id" *ngFor="let item of benchmark">{{item.benchmark}}</option>
+              </select> -->
+              <ng-multiselect-dropdown
+               [id]="'benchmark'"
+               [placeholder]="'Select Benchmark'"
+              [settings]="settings"
+              [data]="benchmark"
+              formControlName="benchmark">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="date_periods">Periods <span class="text-danger">*</span></label>
+              <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
+               <option value="">Select</option>
+               <option [value]="periods.id"  *ngFor="let periods of periods_type">{{periods.periods}}</option>
               </select>
             </div>
+            <ng-container *ngIf="(scmbenchmarkFrm.getRawValue().date_periods == 'D'
+            || scmbenchmarkFrm.getRawValue().date_periods == '');else month_year">
+              <div class="col-sm-3">
+                <label for="date_range">Date Range (From - To) <span class="text-danger">*</span></label>
+                <p-calendar
+                #dateRng
+                [maxDate]="maxDate"
+                [minDate]="minDate"
+                dateFormat="dd/mm/yy"
+                placeholder="Select Date Range"
+                formControlName="date_range"
+                selectionMode="range"
+                [readonlyInput]="true"
+                [id]="'date_range'"
+                [showIcon]="true"
+                (onSelect)="setEndDate()"
+                [hideOnDateTimeSelect]="true"
+                [showButtonBar]="true">
+                </p-calendar>
+              </div>
+            </ng-container>
+            <ng-template #month_year>
+              <div class="col-sm-3">
+              <label for="date_range">
+                {{scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'Select Year' : 'Select Month & Years'}} <span class="text-danger">*</span>
+              </label>
+              <p-calendar
+              #MYCalendar
+              [view]="scmbenchmarkFrm.getRawValue().date_periods == 'Y'  ? 'year' : 'month'"
+              [dateFormat]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'yy' : 'mm-yy'"
+              [readonlyInput]="true"
+              inputId="pickmonth"
+              formControlName="month"
+              [showButtonBar]="true"
+              [placeholder]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'YYYY' : 'MM-YYYY'">
+            </p-calendar>
+             </div>
+            </ng-template>
+
+
+
+
             <div class="col-sm-12 mt-2">
-              <p-button label="Serach" type="submit" icon="pi pi-search" iconPos="left" class="float-right"></p-button>
+              <p-button label="Serach"
+              [disabled]="scmbenchmarkFrm.invalid"
+              type="submit" icon="pi pi-search" iconPos="left" class="float-right"></p-button>
             </div>
            </div>
 

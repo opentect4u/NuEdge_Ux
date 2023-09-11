@@ -1,647 +1,751 @@
+ <div class="mb-4">
+    <ng-content></ng-content>
+    <p-card header="Selected AMC" styleClass="my-4" *ngIf="stepper_index > 0">
+      <shared-tbl [column]="show_dtls_clm" [parent_id]="parent_id" [flag]="flag" [is_selectable]="false"
+        [is_btn_show]="false" [data]="final_preview_dt" (view_dtls)="ViewDetails($event)"></shared-tbl>
+    </p-card>
+    <mat-horizontal-stepper linear #stepper (selectionChange)="onStepChange($event)">
+      <mat-step [stepControl]="search_amc">
+        <ng-template matStepLabel>
+          <p class="m-0">Step 1</p>
+          <p class="m-0">Select AMC{{parent_id == '46' ? '/s' : ''}} to {{parent_id == '46' ? 'merge' : (parent_id ==
+            '47' ? 'replace' : 'acquisition')}}</p>
+        </ng-template>
+        <!-- <ng-template #other> -->
+        <form [formGroup]="search_amc" (ngSubmit)="populateAMC()" autocomplete="off">
 
-<div class="mb-4">
-  <ng-content></ng-content>
-  <p-card header="Selected AMC" styleClass="my-4" *ngIf="stepper_index > 0">
-    <shared-tbl
-    [column]="show_dtls_clm"
-    [is_selectable]="false"
-    [is_btn_show]="false"
-    [data]="final_preview_dt"
-    (view_dtls)="ViewDetails($event)"
-    ></shared-tbl>
-  </p-card>
-  <mat-horizontal-stepper linear #stepper (selectionChange)="onStepChange($event)">
-    <mat-step [stepControl]="search_amc" >
-      <ng-template matStepLabel>
-        <p class="m-0">Step 1</p>
-        <p class="m-0">Select Amc/s to merged</p>
-      </ng-template>
-      <form [formGroup]="search_amc" (ngSubmit)="populateAMC()" autocomplete="off">
+          <div class="row">
+            <div class="col-sm-5">
+              <app-core-srch [label]="'AMC'" [placeholder]="'Search By AMC'" [isPending]="__isAmcSpinner"
+                [listItems]="amcMstDt" [flag]="'A'" [noDataFoundTitle]="'Sorry!! No Records Found'"
+                [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                [propertiesToShow]="['amc_short_name']" formControlName="amc_name" [displayMode]="displayMode_for_amc"
+                (setDisplayMode)="displayMode_for_amc = $event" (selectedItems)="getSelectedItemsFromParent($event)"
+                [isClientExistMsg]="'AMC does not exists'"></app-core-srch>
+            </div>
+            <div class="col-sm-7 d-flex justify-content-end align-items-end">
+              <button pButton pRipple type="submit" label="Populate AMC" class="p-button-primary"></button>
 
-        <div class="row">
-          <div class="col-sm-5">
-            <app-core-srch [label]="'AMC'" [placeholder]="'Search By AMC'" [isPending]="__isAmcSpinner"
-              [listItems]="amcMstDt" [flag]="'A'" [noDataFoundTitle]="'Sorry!! No Records Found'"
-              [noDataFoundSubTitle]="'If your result match,they will appear here'"
-              [propertiesToShow]="['amc_short_name']" formControlName="amc_name" [displayMode]="displayMode_for_amc"
-              (setDisplayMode)="displayMode_for_amc = $event" (selectedItems)="getSelectedItemsFromParent($event)"
-              [isClientExistMsg]="'Sub Broker does not exists'"></app-core-srch>
+            </div>
           </div>
-          <div class="col-sm-7 d-flex justify-content-end align-items-end">
-            <button pButton pRipple type="submit" label="Populate AMC" class="p-button-primary"></button>
 
-          </div>
-        </div>
-
-      </form>
-      <hr />
-      <shared-tbl [column]="amcClm" [data]="amcTblDT" [SelectedData]="amcTblDT"
-        (sendSelectedData)="setFinalPreviewList($event)"
-        (onCheckboxSelection)="setFinalSelectedAMC($event)"
-        ></shared-tbl>
-
-    </mat-step>
-    <mat-step [stepControl]="amcFrm">
-      <ng-template matStepLabel>
-        <p class="m-0">Step 2</p>
-        <p class="m-0">New AMC to be merged</p>
-      </ng-template>
-      <ng-container [ngTemplateOutlet]="amcForm"
-        [ngTemplateOutletContext]="{is_disabled:false,isFile:false,btnTxt:'Next',step:2,disabledBtn:amcFrm.valid}"></ng-container>
-    </mat-step>
-    <mat-step [attr.disabled]="amcFrm.invalid">
-      <ng-template matStepLabel>
-        <p class="m-0">Step 3</p>
-        <p class="m-0">Final Preview & Submit</p>
-      </ng-template>
-
-      <final-preview-card [flag]="flag" [Items]="final_preview_dt" [Title]="'New AMC to be merged'">
-        <ng-container effective_dt>
-          <ng-container *ngIf="final_preview_dt.length >= 2;else other">
-            <form [formGroup]="amcFrm" (ngSubmit)="mergeAMC(3)">
-              <div class="row">
-                <div class="col-sm-8">
-                  <label for="effective_date">Effective Date</label>
-                  <input type="date" name="effective_date" id="effective_date" class="form-control"
-                    [value]="amcFrm.value.effective_date" formControlName="effective_date">
-                </div>
-                <div class="col-sm-4 d-flex justify-content-end align-items-end">
-                  <p-button type="button" label="Previous" iconPos="left" (click)="stepper.previous()"
-                    class="p-button-primary p-button-lg mr-2" icon="pi pi-arrow-left">
-                  </p-button>
-
-                  <p-button type="submit" [disabled]="amcFrm.invalid" label="Save" class="p-button-primary p-button-lg">
-                  </p-button>
-                </div>
+        </form>
+        <hr />
+        <shared-tbl [column]="amcClm" [data]="amcTblDT"
+         [SelectedData]="parent_id == '46' ? amcTblDT : this.amc_dtls"
+          [parent_id]="parent_id"  [flag]="flag" (sendSelectedData)="setFinalPreviewList($event)"
+          (onCheckboxSelection)="setFinalSelectedAMC($event)"></shared-tbl>
+        <!-- </ng-template> -->
+      </mat-step>
+      <mat-step [stepControl]="amcFrm">
+        <ng-template matStepLabel>
+          <p class="m-0">Step 2</p>
+          <p class="m-0">
+            AMC to be {{parent_id == '46' ? 'merged' : (parent_id == '47' ? 'replaced' : 'acquisition')}} with
+          </p>
+        </ng-template>
+        <ng-container *ngIf="parent_id == '48';else other">
+          <form [formGroup]="acq_srch_frm"
+          autocomplete="off"
+          (ngSubmit)="acquisition()">
+            <div class="row mb-2">
+              <div class="col-sm-5">
+                <app-core-srch [label]="'AMC'" [placeholder]="'Search By AMC'" [isPending]="acq_amc_spinner"
+                  [listItems]="acq_amc_mst" [flag]="'A'" [noDataFoundTitle]="'Sorry!! No Records Found'"
+                  [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                  [propertiesToShow]="['amc_short_name']" formControlName="amc_name"
+                  [displayMode]="displayMode_for_acq_amc"
+                  (setDisplayMode)="displayMode_for_acq_amc = $event"
+                  (selectedItems)="getSelectedItemsFromParentFor_acq_amc($event)"
+                  [isClientExistMsg]="'AMC does not exists'"></app-core-srch>
               </div>
-            </form>
-          </ng-container>
-          <ng-template #other>
-            <alert-ctrl
-            [severity]="'warning'"
-            [detail]="'Please select atleast two AMC in step-1'"
-            >
-            <!-- <p-button type="button" label="Go To Step-1" iconPos="left"
-            (click)="stepper.previous();stepper.previous();"
-            class="p-button-text p-button-warning" >
-          </p-button> -->
-          <button mat-button color="primary" (click)="stepper.previous();stepper.previous();">Go To Step-1</button>
-            </alert-ctrl>
-          </ng-template >
-
+              <div class="col-sm-7 d-flex justify-content-end align-items-end">
+                <button pButton pRipple type="submit"
+                label="Populate AMC" class="p-button-primary"></button>
+              </div>
+            </div>
+          </form>
+          <hr/>
+          <shared-tbl [column]="amcClm" [data]="amcTblDT_foracq"
+          [SelectedData]="acq_amc_dtls"
+          [parent_id]="parent_id"
+          [flag]="flag"
+          (sendSelectedData)="setFinalPreviewListFor_acqAMC($event)"
+          (onCheckboxSelection)="setFinalSelectedAMCFor_acqAMC($event)">
+        </shared-tbl>
         </ng-container>
-        <ng-container disabled_frm>
+        <ng-template #other>
           <ng-container [ngTemplateOutlet]="amcForm"
-            [ngTemplateOutletContext]="{is_disabled:true,isFile:true,btnTxt:'Submit',
-            step:3,disabledBtn:amcFrm.valid}">
-          </ng-container>
+          [ngTemplateOutletContext]="{is_disabled:false,isFile:false,btnTxt:'Next',step:2,disabledBtn:amcFrm.valid}">
         </ng-container>
+        </ng-template>
 
-      </final-preview-card>
-    </mat-step>
-  </mat-horizontal-stepper>
-</div>
+      </mat-step>
+      <mat-step [attr.disabled]="amcFrm.invalid">
+        <ng-template matStepLabel>
+          <p class="m-0">Step 3</p>
+          <p class="m-0">Final Preview & Submit</p>
+        </ng-template>
 
+        <final-preview-card [flag]="flag"
+        [Items]="final_preview_dt"
+        [parent_id]="parent_id"
+          [Title]="FINAL_PREVIEW_CARD_TITLE">
+          <ng-container effective_dt>
+            <!-- else other -->
+            <ng-container *ngIf="parent_id == '46';else other_type">
+              <ng-container *ngIf="final_preview_dt.length >= 2;else error_multi">
+                <ng-container [ngTemplateOutlet]="effective_dt"></ng-container>
+              </ng-container>
+              <ng-template #error_multi>
+                <ng-container [ngTemplateOutlet]="alertCtrl"></ng-container>
+              </ng-template>
+            </ng-container>
+            <ng-template #other_type>
+               <ng-container [ngSwitch]="parent_id">
+                <ng-container *ngSwitchCase="'47'">
+                  <ng-container
+                  *ngIf="final_preview_dt.length >= 1;else error_single">
+                   <ng-container [ngTemplateOutlet]="effective_dt"></ng-container>
+                 </ng-container>
+                 <ng-template #error_single>
+                   <ng-container [ngTemplateOutlet]="alertCtrl"></ng-container>
+                 </ng-template>
+                </ng-container>
+                <ng-container *ngSwitchCase="'48'">
+                  <ng-container
+                  *ngIf="(final_preview_dt.length == 1 && final_preview_acq_amc.length == 1);else error_single">
+                   <ng-container [ngTemplateOutlet]="effective_dt">
+                   </ng-container>
+                 </ng-container>
+                 <ng-template #error_single>
+                   <ng-container [ngTemplateOutlet]="alertCtrl"></ng-container>
+                 </ng-template>
+                </ng-container>
+               </ng-container>
 
-<ng-template #amcForm let-disabledBtn="disabledBtn" let-disabled="is_disabled" let-step="step" let-isFile="isFile"
-  let-isbtnText="btnTxt">
-  <form [formGroup]="amcFrm" [attr.id]="'AMCMRGE'" (ngSubmit)="mergeAMC(step)" autocomplete="off">
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="amc_code">AMC Code <span class="text-danger">*</span></label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="amc_code" id="amc_code"
-          placeholder="Enter AMC Code" class="form-control rounded" [value]="amcFrm.value.amc_code"
-          formControlName="amc_code">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('amc_code').invalid && (amcFrm.get('amc_code').dirty || amcFrm.get('amc_code').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('amc_code')).errors?.required">*Please provide AMC
-            code</span>
-        </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label [attr.disabled]="disabled  ? '' : null" for="amc_full_name">AMC Full Name <span
-            class="text-danger">*</span></label>
-        <input type="text" name="amc_full_name" placeholder="Enter AMC Full Name" id="amc_full_name"
-          [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.amc_full_name" class="form-control rounded"
-          formControlName="amc_full_name">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('amc_full_name').invalid && (amcFrm.get('amc_full_name').dirty || amcFrm.get('amc_full_name').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('amc_full_name')).errors?.required">*Please provide AMC full
-            name</span>
-        </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="amc_short_name">AMC Short Name <span class="text-danger">*</span></label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="amc_short_name" id="amc_short_name"
-          placeholder="Enter AMC Short Name" [value]="amcFrm.value.amc_short_name" class="form-control rounded"
-          formControlName="amc_short_name">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('amc_short_name').invalid && (amcFrm.get('amc_short_name').dirty || amcFrm.get('amc_short_name').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('amc_short_name')).errors?.required">*Please provide AMC
-            short name</span>
-        </div>
-      </div>
+             </ng-template>
 
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="rnt_id">R&T <span class="text-danger">*</span></label>
-        <select [value]="amcFrm.value.rnt_id" [attr.disabled]="disabled  ? '' : null" class="form-control"
-          formControlName="rnt_id" id="rnt_id">
-          <option value="">Select R&T</option>
-          <option *ngFor="let __rnts of __RntMaster" value="{{__rnts.id}}">
-            {{__rnts.rnt_name}}
-          </option>
-        </select>
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('rnt_id').invalid && (amcFrm.get('rnt_id').dirty || amcFrm.get('rnt_id').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('rnt_id')).errors?.required">*Please provide R&T</span>
-        </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="gst_in">GSTIN <span class="text-danger">*</span></label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="gst_in" id="gst_in"
-          [value]="amcFrm.value.gst_in" placeholder="Enter GSTIN" class="form-control rounded" formControlName="gst_in">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('gst_in').invalid && (amcFrm.get('gst_in').dirty || amcFrm.get('gst_in').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('gst_in')).errors?.required">*Please provide GSTIN</span>
-        </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="website">Website</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="website" id="website"
-          [value]="amcFrm.value.website" placeholder="Enter Website" class="form-control rounded"
-          formControlName="website">
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="cus_care_whatsapp_no">Customer Care WhatsApp Number</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="cus_care_whatsapp_no" id="cus_care_whatsapp_no"
-          (keypress)="preventNonumeric($event)" [value]="amcFrm.value.cus_care_whatsapp_no"
-          placeholder="Enter Customer Care Whatsapp Number" class="form-control rounded"
-          formControlName="cus_care_whatsapp_no">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('cus_care_whatsapp_no').invalid && (amcFrm.get('cus_care_whatsapp_no').dirty || amcFrm.get('cus_care_whatsapp_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('cus_care_whatsapp_no')).hasError('pattern')">*Digits allow
-            only</span>
-        </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="cus_care_no">Customer Care Number</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="cus_care_no" id="cus_care_no"
-          (keypress)="preventNonumeric($event)" [value]="amcFrm.value.cus_care_no"
-          placeholder="Enter Customer Care Number" class="form-control rounded" formControlName="cus_care_no">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('cus_care_no').invalid && (amcFrm.get('cus_care_no').dirty || amcFrm.get('cus_care_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('cus_care_no')).hasError('pattern')">*Digits allow
-            only</span>
-        </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="cus_care_email">Customer Care Email</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="cus_care_email" id="cus_care_email"
-          [value]="amcFrm.value.cus_care_email" placeholder="Enter Customer Care Email" class="form-control rounded"
-          formControlName="cus_care_email">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('cus_care_email').invalid && (amcFrm.get('cus_care_email').dirty || amcFrm.get('cus_care_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('cus_care_email').errors?.email)">*Please provide valid
-            email</span>
-        </div>
-      </div>
+          </ng-container>
 
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="distributor_care_no">Distributor Care Number</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="distributor_care_no"
-          (keypress)="preventNonumeric($event)" [value]="amcFrm.value.distributor_care_no" id="distributor_care_no"
-          placeholder="Enter Distributor Care Number" class="form-control rounded"
-          formControlName="distributor_care_no">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('distributor_care_no').invalid && (amcFrm.get('distributor_care_no').dirty || amcFrm.get('distributor_care_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('distributor_care_no').hasError('pattern'))">*Digits allow
-            only</span>
+          <ng-container disabled_frm>
+            <ng-container *ngIf="parent_id == '48';else mrg_rplc">
+              <shared-tbl [column]="show_dtls_clm"
+              [parent_id]="parent_id"
+              [flag]="flag"
+              [table_min_width]="'80rem'"
+              [is_selectable]="false"
+              [is_btn_show]="false"
+              [data]="final_preview_acq_amc"
+              (view_dtls)="ViewDetails($event)"></shared-tbl>
+            </ng-container>
+            <ng-template #mrg_rplc>
+              <ng-container [ngTemplateOutlet]="amcForm"
+              [ngTemplateOutletContext]="{is_disabled:true,isFile:true,btnTxt:'Submit',
+              step:3,disabledBtn:amcFrm.valid}">
+              </ng-container>
+            </ng-template>
+
+          </ng-container>
+
+        </final-preview-card>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </div>
+
+  <!-- Form Resuseable -->
+  <ng-template #amcForm let-disabledBtn="disabledBtn" let-disabled="is_disabled" let-step="step" let-isFile="isFile"
+    let-isbtnText="btnTxt">
+    <form [formGroup]="amcFrm" [attr.id]="'AMCMRGE'" (ngSubmit)="mergeAMC(step)" autocomplete="off">
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="amc_code">AMC Code <span class="text-danger">*</span></label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="amc_code" id="amc_code"
+            [placeholder]="!disabled ? 'Enter AMC Code' : ''" class="form-control rounded" [value]="amcFrm.value.amc_code"
+            formControlName="amc_code">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('amc_code').invalid && (amcFrm.get('amc_code').dirty || amcFrm.get('amc_code').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('amc_code')).errors?.required">*Please provide AMC
+              code</span>
+          </div>
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label [attr.disabled]="disabled  ? '' : null" for="amc_full_name">AMC Full Name <span
+              class="text-danger">*</span></label>
+          <input type="text" name="amc_full_name" [placeholder]="!disabled ? 'Enter AMC Full Name' : ''" id="amc_full_name"
+            [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.amc_full_name" class="form-control rounded"
+            formControlName="amc_full_name">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('amc_full_name').invalid && (amcFrm.get('amc_full_name').dirty || amcFrm.get('amc_full_name').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('amc_full_name')).errors?.required">*Please provide AMC
+              full
+              name</span>
+          </div>
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="amc_short_name">AMC Short Name <span class="text-danger">*</span></label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="amc_short_name" id="amc_short_name"
+            [placeholder]="!disabled ? 'Enter AMC Short Name' : ''" [value]="amcFrm.value.amc_short_name" class="form-control rounded"
+            formControlName="amc_short_name">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('amc_short_name').invalid && (amcFrm.get('amc_short_name').dirty || amcFrm.get('amc_short_name').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('amc_short_name')).errors?.required">*Please provide AMC
+              short name</span>
+          </div>
+        </div>
+
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="rnt_id">R&T <span class="text-danger">*</span></label>
+          <select [value]="amcFrm.value.rnt_id" [attr.disabled]="disabled  ? '' : null" class="form-control"
+            formControlName="rnt_id" id="rnt_id">
+            <option value="">Select R&T</option>
+            <option *ngFor="let __rnts of __RntMaster" value="{{__rnts.id}}">
+              {{__rnts.rnt_name}}
+            </option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('rnt_id').invalid && (amcFrm.get('rnt_id').dirty || amcFrm.get('rnt_id').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('rnt_id')).errors?.required">*Please provide R&T</span>
+          </div>
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="gst_in">GSTIN <span class="text-danger">*</span></label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="gst_in" id="gst_in"
+            [value]="amcFrm.value.gst_in" [placeholder]="!disabled ? 'Enter GSTIN' : ''" class="form-control rounded"
+            formControlName="gst_in">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('gst_in').invalid && (amcFrm.get('gst_in').dirty || amcFrm.get('gst_in').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('gst_in')).errors?.required">*Please provide GSTIN</span>
+          </div>
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="website">Website</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="website" id="website"
+            [value]="amcFrm.value.website" [placeholder]="!disabled ? 'Enter Website' : ''" class="form-control rounded"
+            formControlName="website">
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="cus_care_whatsapp_no">Customer Care WhatsApp Number</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="cus_care_whatsapp_no"
+            id="cus_care_whatsapp_no" (keypress)="preventNonumeric($event)" [value]="amcFrm.value.cus_care_whatsapp_no"
+            [placeholder]="!disabled ? 'Enter Customer Care Whatsapp Number' : ''" class="form-control rounded"
+            formControlName="cus_care_whatsapp_no">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('cus_care_whatsapp_no').invalid && (amcFrm.get('cus_care_whatsapp_no').dirty || amcFrm.get('cus_care_whatsapp_no').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('cus_care_whatsapp_no')).hasError('pattern')">*Digits
+              allow
+              only</span>
+          </div>
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="cus_care_no">Customer Care Number</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="cus_care_no" id="cus_care_no"
+            (keypress)="preventNonumeric($event)" [value]="amcFrm.value.cus_care_no"
+            [placeholder]="!disabled ? 'Enter Customer Care Number' : ''" class="form-control rounded" formControlName="cus_care_no">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('cus_care_no').invalid && (amcFrm.get('cus_care_no').dirty || amcFrm.get('cus_care_no').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('cus_care_no')).hasError('pattern')">*Digits allow
+              only</span>
+          </div>
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="cus_care_email">Customer Care Email</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="cus_care_email" id="cus_care_email"
+            [value]="amcFrm.value.cus_care_email" [placeholder]="!disabled ? 'Enter Customer Care Email' : ''" class="form-control rounded"
+            formControlName="cus_care_email">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('cus_care_email').invalid && (amcFrm.get('cus_care_email').dirty || amcFrm.get('cus_care_email').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('cus_care_email').errors?.email)">*Please provide valid
+              email</span>
+          </div>
+        </div>
+
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="distributor_care_no">Distributor Care Number</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="distributor_care_no"
+            (keypress)="preventNonumeric($event)" [value]="amcFrm.value.distributor_care_no" id="distributor_care_no"
+            [placeholder]="!disabled ? 'Enter Distributor Care Number' : ''" class="form-control rounded"
+            formControlName="distributor_care_no">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('distributor_care_no').invalid && (amcFrm.get('distributor_care_no').dirty || amcFrm.get('distributor_care_no').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('distributor_care_no').hasError('pattern'))">*Digits allow
+              only</span>
+          </div>
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="distributor_care_email">Distributor Care Email</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="distributor_care_email"
+            [value]="amcFrm.value.distributor_care_email" id="distributor_care_email"
+            [placeholder]="!disabled ? 'Enter Distributor Care Email' : ''" class="form-control rounded"
+            formControlName="distributor_care_email">
+          <div class="invalid-feedback"
+            *ngIf="amcFrm.get('distributor_care_email').invalid && (amcFrm.get('distributor_care_email').dirty || amcFrm.get('distributor_care_email').touched)">
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('distributor_care_email').errors?.email)">*Please provide
+              valid email</span>
+          </div>
         </div>
       </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="distributor_care_email">Distributor Care Email</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="distributor_care_email"
-          [value]="amcFrm.value.distributor_care_email" id="distributor_care_email"
-          placeholder="Enter Distributor Care Email" class="form-control rounded"
-          formControlName="distributor_care_email">
-        <div class="invalid-feedback"
-          *ngIf="amcFrm.get('distributor_care_email').invalid && (amcFrm.get('distributor_care_email').dirty || amcFrm.get('distributor_care_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('distributor_care_email').errors?.email)">*Please provide
-            valid email</span>
+      <div class="divider">
+        <span>Head Office</span>
+        <hr class="line" />
+      </div>
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="head_ofc_cotact_per">Contact Person</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="head_ofc_cotact_per" id="head_ofc_cotact_per"
+            [value]="amcFrm.value.head_ofc_cotact_per" formControlName="head_ofc_contact_per" class="form-control"
+            [placeholder]="!disabled ? 'Enter Contact Person' : ''">
         </div>
-      </div>
-    </div>
-    <div class="divider">
-      <span>Head Office</span>
-      <hr class="line" />
-    </div>
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="head_ofc_cotact_per">Contact Person</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="head_ofc_cotact_per" id="head_ofc_cotact_per"
-          [value]="amcFrm.value.head_ofc_cotact_per" formControlName="head_ofc_contact_per" class="form-control"
-          placeholder="Enter Contact Person">
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="head_contact_per_mob">Contact Person Mobile</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="head_contact_per_mob"
-          (keypress)="preventNonumeric($event)" [value]="amcFrm.value.head_contact_per_mob" id="head_contact_per_mob"
-          formControlName="head_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('head_contact_per_mob').invalid
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="head_contact_per_mob">Contact Person Mobile</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="head_contact_per_mob"
+            (keypress)="preventNonumeric($event)" [value]="amcFrm.value.head_contact_per_mob" id="head_contact_per_mob"
+            formControlName="head_contact_per_mob" class="form-control"
+            [placeholder]="!disabled ? 'Enter Contact Person Mobile' : ''">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('head_contact_per_mob').invalid
               && (amcFrm.get('head_contact_per_mob').dirty
               || amcFrm.get('head_contact_per_mob').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('head_contact_per_mob').hasError('pattern'))">
-            *Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('head_contact_per_mob').hasError('pattern'))">
+              *Digits allow only</span>
+          </div>
         </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="head_contact_per_email">Contact Person Email</label>
-        <input [value]="amcFrm.value.head_contact_per_email" [attr.disabled]="disabled  ? '' : null" type="text"
-          name="head_contact_per_email" id="head_contact_per_email" formControlName="head_contact_per_email"
-          class="form-control" placeholder="Enter Contact Person Email">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('head_contact_per_email').invalid
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="head_contact_per_email">Contact Person Email</label>
+          <input [value]="amcFrm.value.head_contact_per_email" [attr.disabled]="disabled  ? '' : null" type="text"
+            name="head_contact_per_email" id="head_contact_per_email" formControlName="head_contact_per_email"
+            class="form-control" [placeholder]="!disabled ? 'Enter Contact Person Email' : ''">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('head_contact_per_email').invalid
               && (amcFrm.get('head_contact_per_email').dirty
               || amcFrm.get('head_contact_per_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('head_contact_per_email').errors?.email)">
-            *Please provide valid email</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('head_contact_per_email').errors?.email)">
+              *Please provide valid email</span>
+          </div>
         </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="ofc_add">Address</label>
-        <textarea [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.head_ofc_addr" name="ofc_add"
-          id="ofc_add" cols="30" rows="5" formControlName="head_ofc_addr" class="form-control"
-          placeholder="Enter Address"></textarea>
-      </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="ofc_add">Address</label>
+          <textarea [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.head_ofc_addr" name="ofc_add"
+            id="ofc_add" cols="30" rows="5" formControlName="head_ofc_addr" class="form-control"
+            [placeholder]="!disabled ? 'Enter Address' : ''"></textarea>
+        </div>
 
-    </div>
-    <div class="divider">
-      <span>Local Office</span>
-      <hr class="line" />
-    </div>
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="local_ofc_cotact_per">Contact Person</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="local_ofc_cotact_per" id="local_ofc_cotact_per"
-          [value]="amcFrm.value.local_ofc_cotact_per" formControlName="local_ofc_contact_per" class="form-control"
-          placeholder="Enter Contact Person">
       </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="local_contact_per_mob">Contact Person Mobile</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="local_contact_per_mob"
-          [value]="amcFrm.value.local_contact_per_mob" id="local_contact_per_mob"
-          formControlName="local_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('local_contact_per_mob').invalid
+      <div class="divider">
+        <span>Local Office</span>
+        <hr class="line" />
+      </div>
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="local_ofc_cotact_per">Contact Person</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="local_ofc_cotact_per"
+            id="local_ofc_cotact_per" [value]="amcFrm.value.local_ofc_cotact_per"
+            formControlName="local_ofc_contact_per" class="form-control" [placeholder]="!disabled ? 'Enter Contact Person' : ''">
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="local_contact_per_mob">Contact Person Mobile</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="local_contact_per_mob"
+            [value]="amcFrm.value.local_contact_per_mob" id="local_contact_per_mob"
+            formControlName="local_contact_per_mob" class="form-control" [placeholder]="!disabled ? 'Enter Contact Person Mobile' : ''">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('local_contact_per_mob').invalid
               && (amcFrm.get('local_contact_per_mob').dirty
               || amcFrm.get('local_contact_per_mob').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('local_contact_per_mob').hasError('pattern'))">
-            *Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('local_contact_per_mob').hasError('pattern'))">
+              *Digits allow only</span>
+          </div>
         </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="local_contact_per_email">Contact Person Email</label>
-        <input [value]="amcFrm.value.local_contact_per_email" [attr.disabled]="disabled  ? '' : null" type="text"
-          name="local_contact_per_email" id="local_contact_per_email" formControlName="local_contact_per_email"
-          class="form-control" placeholder="Enter Contact Person Email">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('local_contact_per_email').invalid
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="local_contact_per_email">Contact Person Email</label>
+          <input [value]="amcFrm.value.local_contact_per_email" [attr.disabled]="disabled  ? '' : null" type="text"
+            name="local_contact_per_email" id="local_contact_per_email" formControlName="local_contact_per_email"
+            class="form-control" [placeholder]="!disabled ? 'Enter Contact Person Email' : ''">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('local_contact_per_email').invalid
               && (amcFrm.get('local_contact_per_email').dirty
               || amcFrm.get('local_contact_per_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('local_contact_per_email').errors?.email)">
-            *Please provide valid email</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('local_contact_per_email').errors?.email)">
+              *Please provide valid email</span>
+          </div>
+        </div>
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="local_ofc_add">Address</label>
+          <textarea [value]="amcFrm.value.local_ofc_addr"
+          [attr.disabled]="disabled  ? '' : null"
+           name="local_ofc_add" id="local_ofc_add" cols="30" rows="5"
+            formControlName="local_ofc_addr" class="form-control" [placeholder]="!disabled ? 'Enter Address' : ''"></textarea>
+        </div>
+
+      </div>
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="login_url" class="mb-3">Login URL </label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="login_url" id="login_url"
+            class="form-control" [placeholder]="!disabled ? 'Enter Login URL' : ''" formControlName="login_url"
+            [value]="amcFrm.value.login_url">
+        </div>
+
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="login_id" class="mb-3">Login ID </label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="login_id" id="login_id" class="form-control"
+          [placeholder]="!disabled ? 'Enter Login ID' : ''" formControlName="login_id" [value]="amcFrm.value.login_id">
+        </div>
+
+        <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
+          <label for="login_pass" class="mb-3">Login Password </label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="login_pass" id="login_pass"
+            class="form-control" [placeholder]="!disabled ? 'Enter Login Password' : ''" formControlName="login_pass"
+            [value]="amcFrm.value.login_pass">
         </div>
       </div>
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="local_ofc_add">Address</label>
-        <textarea [value]="amcFrm.value.local_ofc_addr" name="local_ofc_add" id="local_ofc_add" cols="30" rows="5"
-          formControlName="local_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
-      </div>
-
-    </div>
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="login_url" class="mb-3">Login URL </label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="login_url" id="login_url" class="form-control"
-          placeholder="Enter Login URL" formControlName="login_url" [value]="amcFrm.value.login_url">
-      </div>
-
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="login_id" class="mb-3">Login ID </label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="login_id" id="login_id" class="form-control"
-          placeholder="Enter Login ID" formControlName="login_id" [value]="amcFrm.value.login_id">
-      </div>
-
-      <div [class]="!disabled ? 'col-sm-3' : 'col-sm-12'">
-        <label for="login_pass" class="mb-3">Login Password </label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="login_pass" id="login_pass"
-          class="form-control" placeholder="Enter Login Password" formControlName="login_pass"
-          [value]="amcFrm.value.login_pass">
-      </div>
-    </div>
 
 
-    <div class="row">
-      <div class="col-sm-12">
+      <div class="row">
+        <div class="col-sm-12">
 
-        <table class="my-2">
-          <thead>
-            <tr>
-              <th>
-                Security Question
-              </th>
-              <th>
-                Security Answer
-              </th>
-              <th *ngIf="!disabled">
-                <button mat-icon-button type="button">
-                  <mat-icon (click)="addSecurityQuesAns()">add</mat-icon>
-                </button>
-              </th>
-            </tr>
-          </thead>
-          <tbody formArrayName="sec_qusAns">
-            <tr *ngFor="let item of sec_qusAns.controls; let i = index;">
-              <ng-container [formGroupName]="i">
-                <td class="rowWidth">
-                  <input [value]="item.value.sec_qus" [attr.disabled]="disabled  ? '' : null" type="text"
-                    placeholder="Enter Security Question" name="sec_qus" id="sec_qus" class="form-control"
-                    formControlName="sec_qus">
-                </td>
-                <td class="rowWidth">
-                  <input [value]="item.value.sec_ans" [attr.disabled]="disabled  ? '' : null" type="text"
-                    placeholder="Enter Security Answer" name="sec_ans" id="sec_ans" class="form-control"
-                    formControlName="sec_ans">
-                </td>
-                <td class="rowWidth" *ngIf="!disabled">
-                  <button mat-icon-button type="button" *ngIf="i > 0">
-                    <mat-icon (click)="removeSecurityQuesAns(i)">delete</mat-icon>
+          <table class="my-2">
+            <thead>
+              <tr>
+                <th>
+                  Security Question
+                </th>
+                <th>
+                  Security Answer
+                </th>
+                <th *ngIf="!disabled">
+                  <button mat-icon-button type="button">
+                    <mat-icon (click)="addSecurityQuesAns()">add</mat-icon>
                   </button>
-                </td>
+                </th>
+              </tr>
+            </thead>
+            <tbody formArrayName="sec_qusAns">
+              <tr *ngFor="let item of sec_qusAns.controls; let i = index;">
+                <ng-container [formGroupName]="i">
+                  <td class="rowWidth">
+                    <input [value]="item.value.sec_qus" [attr.disabled]="disabled  ? '' : null" type="text"
+                    [placeholder]="!disabled ? 'Enter Security Question' : ''" name="sec_qus" id="sec_qus" class="form-control"
+                      formControlName="sec_qus">
+                  </td>
+                  <td class="rowWidth">
+                    <input [value]="item.value.sec_ans" [attr.disabled]="disabled  ? '' : null" type="text"
+                    [placeholder]="!disabled ? 'Enter Security Answer' : ''" name="sec_ans" id="sec_ans" class="form-control"
+                      formControlName="sec_ans">
+                  </td>
+                  <td class="rowWidth" *ngIf="!disabled">
+                    <button mat-icon-button type="button" *ngIf="i > 0">
+                      <mat-icon (click)="removeSecurityQuesAns(i)">delete</mat-icon>
+                    </button>
+                  </td>
 
-              </ng-container>
-            </tr>
-          </tbody>
-        </table>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
 
+        </div>
       </div>
-    </div>
 
 
-    <div class="divider">
-      <span>Lavel-1(Operation)</span>
-      <hr class="line" />
-    </div>
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l1_name">Name</label>
-        <input [value]="amcFrm.value.l1_name" [attr.disabled]="disabled  ? '' : null" type="text" name="l1_name"
-          id="l1_name" class="form-control" placeholder="Enter Name" formControlName="l1_name">
+      <div class="divider">
+        <span>Lavel-1(Operation)</span>
+        <hr class="line" />
       </div>
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l1_name">Name</label>
+          <input [value]="amcFrm.value.l1_name" [attr.disabled]="disabled  ? '' : null" type="text" name="l1_name"
+            id="l1_name" class="form-control" [placeholder]="!disabled ? 'Enter Name' : ''" formControlName="l1_name">
+        </div>
 
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l1_contact_no">Contact</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" name="l1_contact_no" id="l1_contact_no"
-          class="form-control" [value]="amcFrm.value.l1_contact_no" placeholder="Enter Contact"
-          formControlName="l1_contact_no">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l1_contact_no').invalid
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l1_contact_no">Contact</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" name="l1_contact_no" id="l1_contact_no"
+            class="form-control" [value]="amcFrm.value.l1_contact_no" [placeholder]="!disabled ? 'Enter Contact' : ''"
+            formControlName="l1_contact_no">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l1_contact_no').invalid
                   && (amcFrm.get('l1_contact_no').dirty
                   || amcFrm.get('l1_contact_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l1_contact_no').hasError('pattern'))">
-            *Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l1_contact_no').hasError('pattern'))">
+              *Digits allow only</span>
+          </div>
         </div>
-      </div>
 
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l1_email">Email</label>
-        <input [value]="amcFrm.value.l1_email" [attr.disabled]="disabled  ? '' : null" type="text" name="l1_email"
-          id="l1_email" class="form-control" placeholder="Enter Email Id" formControlName="l1_email">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l1_email').invalid
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l1_email">Email</label>
+          <input [value]="amcFrm.value.l1_email" [attr.disabled]="disabled  ? '' : null" type="text" name="l1_email"
+            id="l1_email" class="form-control" [placeholder]="!disabled ? 'Enter Email Id' : ''" formControlName="l1_email">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l1_email').invalid
                 && (amcFrm.get('l1_email').dirty
                 || amcFrm.get('l1_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l1_email').errors?.email)">
-            *Please provide valid email</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l1_email').errors?.email)">
+              *Please provide valid email</span>
+          </div>
         </div>
       </div>
-    </div>
 
 
-    <div class="divider">
-      <span>Lavel-2(Operation Head)</span>
-      <hr class="line" />
-    </div>
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l2_name">Name</label>
-        <input [value]="amcFrm.value.l2_name" [attr.disabled]="disabled  ? '' : null" type="text" name="l2_name"
-          id="l2_name" class="form-control" placeholder="Enter Name" formControlName="l2_name">
+      <div class="divider">
+        <span>Lavel-2(Operation Head)</span>
+        <hr class="line" />
       </div>
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l2_name">Name</label>
+          <input [value]="amcFrm.value.l2_name" [attr.disabled]="disabled  ? '' : null" type="text" name="l2_name"
+            id="l2_name" class="form-control" [placeholder]="!disabled ? 'Enter Name' : ''" formControlName="l2_name">
+        </div>
 
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l2_contact_no">Contact</label>
-        <input [value]="amcFrm.value.l2_contact_no" [attr.disabled]="disabled  ? '' : null" type="text"
-          name="l2_contact_no" id="l2_contact_no" class="form-control" placeholder="Enter Contact"
-          formControlName="l2_contact_no">
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l2_contact_no">Contact</label>
+          <input [value]="amcFrm.value.l2_contact_no" [attr.disabled]="disabled  ? '' : null" type="text"
+            name="l2_contact_no" id="l2_contact_no" class="form-control" [placeholder]="!disabled ?  'Enter Contact' : ''"
+            formControlName="l2_contact_no">
 
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l2_contact_no').invalid
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l2_contact_no').invalid
                 && (amcFrm.get('l2_contact_no').dirty
                 || amcFrm.get('l2_contact_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l2_contact_no').hasError('pattern'))">
-            *Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l2_contact_no').hasError('pattern'))">
+              *Digits allow only</span>
+          </div>
+
         </div>
 
-      </div>
-
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l2_email">Email</label>
-        <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l2_email" type="text" name="l2_email"
-          id="l2_email" class="form-control" placeholder="Enter Email Id" formControlName="l2_email">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l2_email').invalid
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l2_email">Email</label>
+          <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l2_email" type="text" name="l2_email"
+            id="l2_email" class="form-control" [placeholder]="!disabled ? 'Enter Email Id' : ''" formControlName="l2_email">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l2_email').invalid
                 && (amcFrm.get('l2_email').dirty
                 || amcFrm.get('l2_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l2_email').errors?.email)">
-            *Please provide valid email</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l2_email').errors?.email)">
+              *Please provide valid email</span>
+          </div>
         </div>
+
       </div>
 
-    </div>
-
-    <div class="divider">
-      <span>Lavel-3(RM - Sales)</span>
-      <hr class="line" />
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <mat-checkbox color="primary" [attr.disabled]="disabled  ? '' : null" [checked]="amcFrm.value.is_same" formControlName="is_same"> Same As Local Office</mat-checkbox>
+      <div class="divider">
+        <span>Lavel-3(RM - Sales)</span>
+        <hr class="line" />
       </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l3_name">Name</label>
-        <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l3_name" type="text" name="l3_name"
-          id="l3_name" class="form-control" placeholder="Enter Name" formControlName="l3_name">
-      </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l3_contact_no">Contact</label>
-        <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l3_contact_no" type="text"
-          name="l3_contact_no" id="l3_contact_no" class="form-control" placeholder="Enter Contact"
-          formControlName="l3_contact_no">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l3_contact_no').invalid
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-checkbox color="primary" [attr.disabled]="disabled  ? '' : null" [checked]="amcFrm.value.is_same"
+            formControlName="is_same"> Same As Local Office</mat-checkbox>
+        </div>
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l3_name">Name</label>
+          <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l3_name" type="text" name="l3_name"
+            id="l3_name" class="form-control" [placeholder]="!disabled ? 'Enter Name' : ''" formControlName="l3_name">
+        </div>
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l3_contact_no">Contact</label>
+          <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l3_contact_no" type="text"
+            name="l3_contact_no" id="l3_contact_no" class="form-control" [placeholder]="!disabled ?  'Enter Contact' : ''"
+            formControlName="l3_contact_no">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l3_contact_no').invalid
                 && (amcFrm.get('l3_contact_no').dirty
                 || amcFrm.get('l3_contact_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l3_contact_no').hasError('pattern'))">
-            *Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l3_contact_no').hasError('pattern'))">
+              *Digits allow only</span>
+          </div>
         </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l3_email">Email</label>
-        <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l3_email" type="text" name="l3_email"
-          id="l3_email" class="form-control" placeholder="Enter Email Id" formControlName="l3_email">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l3_email').invalid
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l3_email">Email</label>
+          <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l3_email" type="text" name="l3_email"
+            id="l3_email" class="form-control" [placeholder]="!disabled ? 'Enter Email Id' : ''" formControlName="l3_email">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l3_email').invalid
                 && (amcFrm.get('l3_email').dirty
                 || amcFrm.get('l3_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l3_email').errors?.email)">
-            *Please provide valid email</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l3_email').errors?.email)">
+              *Please provide valid email</span>
+          </div>
         </div>
       </div>
-    </div>
 
 
-    <div class="divider">
-      <span>Lavel-4(Area Manager/Regional Manager)</span>
-      <hr class="line" />
-    </div>
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l4_name">Name</label>
-        <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l4_name" type="text" name="l4_name"
-          id="l4_name" class="form-control" placeholder="Enter Name" formControlName="l4_name">
+      <div class="divider">
+        <span>Lavel-4(Area Manager/Regional Manager)</span>
+        <hr class="line" />
       </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l4_contact_no">Contact</label>
-        <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l4_contact_no" type="text"
-          name="l4_contact_no" id="l4_contact_no" class="form-control" placeholder="Enter Contact"
-          formControlName="l4_contact_no">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l4_contact_no').invalid
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l4_name">Name</label>
+          <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l4_name" type="text" name="l4_name"
+            id="l4_name" class="form-control" [placeholder]="!disabled ? 'Enter Name' : ''" formControlName="l4_name">
+        </div>
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l4_contact_no">Contact</label>
+          <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l4_contact_no" type="text"
+            name="l4_contact_no" id="l4_contact_no" class="form-control" [placeholder]="!disabled ?  'Enter Contact' : ''"
+            formControlName="l4_contact_no">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l4_contact_no').invalid
                 && (amcFrm.get('l4_contact_no').dirty
                 || amcFrm.get('l4_contact_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l4_contact_no').hasError('pattern'))">
-            *Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l4_contact_no').hasError('pattern'))">
+              *Digits allow only</span>
+          </div>
         </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l4_email">Email</label>
-        <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l4_email" type="text" name="l4_email"
-          id="l4_email" class="form-control" placeholder="Enter Email Id" formControlName="l4_email">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l4_email').invalid
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l4_email">Email</label>
+          <input [attr.disabled]="disabled  ? '' : null" [value]="amcFrm.value.l4_email" type="text" name="l4_email"
+            id="l4_email" class="form-control" [placeholder]="!disabled ? 'Enter Email Id' : ''" formControlName="l4_email">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l4_email').invalid
                 && (amcFrm.get('l4_email').dirty
                 || amcFrm.get('l4_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l4_email').errors?.email)">
-            *Please provide valid email</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l4_email').errors?.email)">
+              *Please provide valid email</span>
+          </div>
         </div>
       </div>
-    </div>
 
 
 
-    <div class="divider">
-      <span>Lavel-5(Zonal Manager/State Head)</span>
-      <hr class="line" />
-    </div>
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l5_name">Name</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l5_name" name="l5_name"
-          id="l5_name" class="form-control" placeholder="Enter Name" formControlName="l5_name">
+      <div class="divider">
+        <span>Lavel-5(Zonal Manager/State Head)</span>
+        <hr class="line" />
       </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l5_contact_no">Contact</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l5_contact_no"
-          name="l5_contact_no" id="l5_contact_no" class="form-control" placeholder="Enter Contact"
-          formControlName="l5_contact_no">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l5_contact_no').invalid
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l5_name">Name</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l5_name" name="l5_name"
+            id="l5_name" class="form-control" [placeholder]="!disabled ? 'Enter Name' : ''" formControlName="l5_name">
+        </div>
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l5_contact_no">Contact</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l5_contact_no"
+            name="l5_contact_no" id="l5_contact_no" class="form-control" [placeholder]="!disabled ?  'Enter Contact' : ''"
+            formControlName="l5_contact_no">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l5_contact_no').invalid
                 && (amcFrm.get('l5_contact_no').dirty
                 || amcFrm.get('l5_contact_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l5_contact_no').hasError('pattern'))">
-            *Digits allow only</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l5_contact_no').hasError('pattern'))">
+              *Digits allow only</span>
+          </div>
         </div>
-      </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l5_email">Email</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l5_email" name="l5_email"
-          id="l5_email" class="form-control" placeholder="Enter Email Id" formControlName="l5_email">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l5_email').invalid
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l5_email">Email</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l5_email" name="l5_email"
+            id="l5_email" class="form-control" [placeholder]="!disabled ? 'Enter Email Id' : ''" formControlName="l5_email">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l5_email').invalid
                 && (amcFrm.get('l5_email').dirty
                 || amcFrm.get('l5_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l5_email').errors?.email)">
-            *Please provide valid email</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l5_email').errors?.email)">
+              *Please provide valid email</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="divider">
-      <span>Lavel-6(National Sales Head/Product Head)</span>
-      <hr class="line" />
-    </div>
-    <div class="row">
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l6_name">Name</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l6_name" name="l6_name"
-          id="l6_name" class="form-control" placeholder="Enter Name" formControlName="l6_name">
+      <div class="divider">
+        <span>Lavel-6(National Sales Head/Product Head)</span>
+        <hr class="line" />
       </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l6_contact_no">Contact</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l6_contact_no"
-          name="l6_contact_no" id="l6_contact_no" class="form-control" placeholder="Enter Contact"
-          formControlName="l6_contact_no">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l6_contact_no').invalid
+      <div class="row">
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l6_name">Name</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l6_name" name="l6_name"
+            id="l6_name" class="form-control" [placeholder]="!disabled ? 'Enter Name' : ''" formControlName="l6_name">
+        </div>
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l6_contact_no">Contact</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l6_contact_no"
+            name="l6_contact_no" id="l6_contact_no" class="form-control" [placeholder]="!disabled ?  'Enter Contact' : ''"
+            formControlName="l6_contact_no">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l6_contact_no').invalid
                 && (amcFrm.get('l6_contact_no').dirty
                 || amcFrm.get('l6_contact_no').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l6_contact_no').hasError('pattern'))">
-            *Digits allow only</span>
-        </div>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l6_contact_no').hasError('pattern'))">
+              *Digits allow only</span>
+          </div>
 
-      </div>
-      <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
-        <label for="l6_email">Email</label>
-        <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l6_email" name="l6_email"
-          id="l6_email" class="form-control" placeholder="Enter Email Id" formControlName="l6_email">
-        <div class="invalid-feedback" *ngIf="amcFrm.get('l6_email').invalid
+        </div>
+        <div [class]="!disabled ? 'col-sm-4' : 'col-sm-12'">
+          <label for="l6_email">Email</label>
+          <input [attr.disabled]="disabled  ? '' : null" type="text" [value]="amcFrm.value.l6_email" name="l6_email"
+            id="l6_email" class="form-control" [placeholder]="!disabled ? 'Enter Email Id' : ''" formControlName="l6_email">
+          <div class="invalid-feedback" *ngIf="amcFrm.get('l6_email').invalid
                 && (amcFrm.get('l6_email').dirty
                 || amcFrm.get('l6_email').touched)">
-          <span class="invalid-feedback" *ngIf="(amcFrm.get('l6_email').errors?.email)">
-            *Please provide valid email</span>
+            <span class="invalid-feedback" *ngIf="(amcFrm.get('l6_email').errors?.email)">
+              *Please provide valid email</span>
+          </div>
         </div>
       </div>
-    </div>
 
 
-    <div class="row">
-      <div class="col-sm-4" *ngIf="!disabled">
-        <label for="logo">Upload Logo</label>
-        <input (change)="getFile($event.target)" type="file" name="logo" id="logo" class="form-control"
-          formControlName="logo">
-        <mat-hint class="mt-2">
-          <p class="m-0">Allowed format: PNG,JPG,JPEG (size upto: 10MB)</p>
-        </mat-hint>
-        <div class="invalid-feedback"
-          *ngIf=" amcFrm.get('logo').invalid && ( amcFrm.get('logo').dirty ||  amcFrm.get('logo').touched)">
-          <span class="invalid-feedback" *ngIf="amcFrm.get('logo').errors?.inValidExt">*Invalid
-            file extension.</span>
-          <span class="invalid-feedback" *ngIf="amcFrm.get('logo').errors?.fileSizeValidator">*File size must not exceed
-            than
-            10MB.</span>
+      <div class="row my-1">
+        <div class="col-sm-4" *ngIf="!disabled">
+          <label for="logo">Upload Logo</label>
+          <input (change)="getFile($event.target)" type="file" name="logo" id="logo" class="form-control"
+            formControlName="logo">
+          <mat-hint class="mt-2">
+            <p class="m-0">Allowed format: PNG,JPG,JPEG (size upto: 10MB)</p>
+          </mat-hint>
+          <div class="invalid-feedback"
+            *ngIf=" amcFrm.get('logo').invalid && ( amcFrm.get('logo').dirty ||  amcFrm.get('logo').touched)">
+            <span class="invalid-feedback" *ngIf="amcFrm.get('logo').errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback" *ngIf="amcFrm.get('logo').errors?.fileSizeValidator">*File size must not
+              exceed
+              than
+              10MB.</span>
+          </div>
+          <a *ngIf="this.amcFrm.controls['logo_preview_file'].value">
+            <img class="previewImg" [src]="amcFrm.controls['logo_preview_file'].value" alt="AMC Logo">
+          </a>
+
         </div>
-        <a *ngIf="this.amcFrm.controls['logo_preview_file'].value">
-          <img class="previewImg" [src]="amcFrm.controls['logo_preview_file'].value" alt="AMC Logo">
-        </a>
+        <div *ngIf="step == 2" class="col-sm-8 d-flex justify-content-end align-items-center">
+          <p-button type="button" label="Previous" iconPos="left" (click)="stepper.previous()"
+            class="p-button-primary p-button-lg mr-2" icon="pi pi-arrow-left">
+          </p-button>
 
+          <p-button type="submit" [label]="isbtnText" [disabled]="!disabledBtn" iconPos="right"
+            class="p-button-primary p-button-lg" [icon]="!disabled ? 'pi pi-arrow-right' : ''">
+          </p-button>
+        </div>
       </div>
-      <div *ngIf="step == 2" class="col-sm-8 d-flex justify-content-end align-items-end">
-        <p-button type="button" label="Previous" iconPos="left" (click)="stepper.previous()"
-          class="p-button-primary p-button-lg mr-2" icon="pi pi-arrow-left">
-        </p-button>
+      <!-- -->
+    </form>
+  </ng-template>
+  <!-- End -->
 
-        <p-button type="submit" [label]="isbtnText" [disabled]="!disabledBtn" iconPos="right"
-          class="p-button-primary p-button-lg" [icon]="!disabled ? 'pi pi-arrow-right' : ''">
-        </p-button>
+  <!-- Effective Date Reuseable -->
+  <ng-template #effective_dt>
+    <form [formGroup]="amcFrm" (ngSubmit)="mergeAMC(3)">
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="effective_date">Effective Date</label>
+          <input type="date" name="effective_date" id="effective_date" class="form-control"
+            [value]="amcFrm.value.effective_date" formControlName="effective_date">
+        </div>
+        <div class="col-sm-4 d-flex justify-content-end align-items-end">
+          <p-button type="button" label="Previous" iconPos="left" (click)="stepper.previous()"
+            class="p-button-primary p-button-lg mr-2" icon="pi pi-arrow-left">
+          </p-button>
+
+          <p-button type="submit" [disabled]="amcFrm.invalid" label="Save" class="p-button-primary p-button-lg">
+          </p-button>
+        </div>
       </div>
+    </form>
+  </ng-template>
+  <!-- End -->
+
+  <!-- Alert Controller Reuseability -->
+  <ng-template #alertCtrl>
+    <alert-ctrl [severity]="'warning'" [detail]="ALERT_MSG">
+      <button mat-button color="primary" (click)="stepper.previous();stepper.previous();">Go To Step-1</button>
+    </alert-ctrl>
+  </ng-template>
+  <!-- End -->
+<!-- </ng-template> -->
+
+
+<ng-template #liner let-txt="txt">
+  <div class="main__line__container_header">
+    <div class="main__line__container">
+      <div class="main__line__container__title">
+          {{txt}}
+      </div>
+      <span class="main__line__container__line"></span>
     </div>
-    <!-- -->
-  </form>
-</ng-template>
+   </div>
+ </ng-template>

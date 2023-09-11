@@ -30,16 +30,19 @@ export class MrgRplcAcqHomeComponent implements OnInit {
     /**
      * Holding settings for AMC Multiselect Dropdown
      */
-    settings:any;
+    settings;
 
     /**
      *  Form For search AMC / Scheme
      */
      searchFrm_Amc_Scm = new FormGroup({
-       amc_id:new FormControl(),
-       cat_id: new FormControl([]),
-       sub_cat_id:new FormControl([]),
-       amc_name:new FormControl('')
+       amc_id:new FormControl(
+        atob(this.route.snapshot.params.flag) == 'A' ? '' : [],
+        {updateOn:atob(this.route.snapshot.params.flag) == 'A' ? 'change' : 'blur'}
+        ),
+       cat_id: new FormControl([],{updateOn:'blur'}),
+       sub_cat_id:new FormControl([],{updateOn:'blur'}),
+       amc_name:new FormControl(''),
      })
 
 
@@ -55,26 +58,33 @@ export class MrgRplcAcqHomeComponent implements OnInit {
     /** Get Parent Component route Access for getting the parent Id*/
     route.parent.parent.data.subscribe(res =>{
       this.parent_id = res.data.id;
+      if(atob(route.snapshot.params.flag)  == 'S'){
       this.settings = this.__utility.settingsfroMultiselectDropdown(
         'id',
         'amc_short_name',
         'Search AMC',
         1,
         139,
-        res.data.id == '44' ? false : true
+        // res.data.id == '44' ? false : true
+        true
       );
+    }
     })
     /************************End************************************/
   }
 
   ngOnInit(): void {
-    // this.getAmsMst();
+    if(this.flag == 'S'){
+      this.getAmsMst();
+    }
   }
 
-  // getAmsMst = () =>{
-  //     this.dbIntr.api_call(0,'/amc',null).pipe(pluck("data")).subscribe((res: amc[]) =>{
-  //       this.amcMst = res;
-  //     })
-  // }
+  getAmsMst = () =>{
+      this.dbIntr.api_call(0,'/amc',null).pipe(pluck("data")).subscribe((res: amc[]) =>{
+        this.amcMst = res;
+      })
+  }
 
 }
+
+

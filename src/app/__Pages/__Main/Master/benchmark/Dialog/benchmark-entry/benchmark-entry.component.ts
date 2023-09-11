@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Ibenchmark } from '../../benchmark.component';
+// import { Ibenchmark } from '../../benchmark.component';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -12,6 +12,9 @@ import { subcat } from 'src/app/__Model/__subcategory';
 import { category } from 'src/app/__Model/__category';
 import { pluck, skip } from 'rxjs/operators';
 import { Iexchange } from '../../../exchange/exchange.component';
+import { Ibenchmark } from '../../home/home.component';
+// import { Ibenchmark } from '../../home/home.component';
+// import { Ibenchmark } from '../../home/home.component';
 
 @Component({
   selector: 'app-benchmark-entry',
@@ -19,6 +22,29 @@ import { Iexchange } from '../../../exchange/exchange.component';
   styleUrls: ['./benchmark-entry.component.css'],
 })
 export class BenchmarkEntryComponent implements OnInit, IDialogsize {
+
+
+  // settings_category = this.__utility.settingsfroMultiselectDropdown(
+  //   'id',
+  //   'cat_name',
+  //   'Search Category',
+  //   2,
+  //   140,
+  //   true
+  // );
+
+  settings_subcate = this.__utility.settingsfroMultiselectDropdown(
+    'id',
+    'subcategory_name',
+    'Search Sub Category',
+    2,
+    140,
+    this.data.id > 0 ? true : false
+  );
+
+
+
+
   sub_cat_mst_dt: subcat[] = [];
 
   cat_mst: category[] = [];
@@ -30,7 +56,10 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
     ex_id: new FormControl(this.data.benchmark ? this.data.benchmark.ex_id : '',[Validators.required]),
     benchmark: new FormControl(this.data.benchmark ? this.data.benchmark.benchmark : '',[Validators.required]),
     category_id: new FormControl('',[Validators.required]),
-    subcat_id: new FormControl(this.data.benchmark ? this.data.benchmark.subcat_id : '',[Validators.required]),
+    // category_id: new FormControl([],{validators:[Validators.required],updateOn:'blur'}),
+    // subcat_id: new FormControl(this.data.benchmark ? this.data.benchmark.subcat_id : [],[Validators.required]),
+
+    subcat_id: new FormControl([],[Validators.required]),
     launch_date: new FormControl(this.data.benchmark ? this.data.benchmark.launch_date : '',[Validators.required]),
     launch_price: new FormControl(this.data.benchmark ? this.data.benchmark.launch_price : '',[Validators.required]),
   });
@@ -52,15 +81,22 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
   }
 
   ngOnInit(): void {
-    console.log(this.data);
     this.getCategoryMst();
     this.getExchange();
     /**
      * For Fire Event on change value of category
      */
+    console.log(this.data.benchmark);
      if(this.data.benchmark){
       setTimeout(() => {
-      this.benchmarkForm.get('category_id').setValue(this.data.benchmark.category_id,{emitEvent:true});
+      this.benchmarkForm.get('category_id').setValue(this.data.benchmark.category_id,
+        {emitEvent:true});
+
+        this.benchmarkForm.get('subcat_id').setValue([{
+          id:this.data.benchmark.subcat_id,
+          subcategory_name:this.data.benchmark.subcategory_name
+        }],
+          {emitEvent:true});
       }, 200);
      }
      /** END */
@@ -68,6 +104,7 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
 
   ngAfterViewInit(): void {
     this.benchmarkForm.controls['category_id'].valueChanges.subscribe((res) => {
+      this.benchmarkForm.controls['subcat_id'].setValue([]);
       if (res) {
         this.getsubCategoryMst(res);
       } else {
@@ -93,7 +130,15 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
   };
 
   save_Benchmark = () => {
-    this.__dbIntr.api_call(1,'/benchmarkAddEdit',this.__utility.convertFormData(this.benchmarkForm.value))
+    // console.log(this.benchmarkForm.value)
+
+    let dt = Object.assign({}, this.benchmarkForm.value,
+      {
+         subcat_id:this.__utility.mapIdfromArray(this.benchmarkForm.value.subcat_id,
+          'id')
+      });
+    this.__dbIntr.api_call(1,'/benchmarkAddEdit',
+    this.__utility.convertFormData(dt))
     .subscribe((res:any) =>{
       this.__utility.showSnackbar(res.suc == 1 ?  'benchmark'+ (Number(this.benchmarkForm.value.id) > 0 ? ' updated ' : ' added ')+'successfully' : res.msg,res.suc);
       if(res.suc == 1){
@@ -118,8 +163,17 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
         pluck('data'),
         )
       .subscribe((res: subcat[]) => {
+
         this.sub_cat_mst_dt = res;
       });
+    // this.__dbIntr
+    // .api_call(0, '/subcatUsingPro', 'arr_category_id=' + this.__utility.mapIdfromArray(cat_id,'id'))
+    // .pipe(
+    //   pluck('data'),
+    //   )
+    // .subscribe((res: subcat[]) => {
+    //   this.sub_cat_mst_dt = res;
+    // });
   };
 
   getExchange = () => {
@@ -130,6 +184,16 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
         this.excg_dt = res;
       });
   };
+
+  // onDeSelect = (ev) =>{
+  //   this.benchmarkForm.get('category_id').setValue(
+  //    this.benchmarkForm.value.amc_id.filter(item => item.id != ev.id),
+  //    {
+  //     emitEvent:true
+  //    }
+  //   );
+
+  // }
 }
 
 export declare interface IDialogsize {
@@ -190,6 +254,8 @@ export declare interface IDialogsize {
    * to get all subcategory master data according to selected category
    */
   getsubCategoryMst(cat_id: number): void;
+  // getsubCategoryMst(cat_id:category[]): void;
+
 }
 
 export default interface IDialogData {

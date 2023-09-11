@@ -100,7 +100,8 @@ export class UtiliService {
   public settingsfroMultiselectDropdown(__id, __text,
      __placeholder,limit:number | undefined  = 2,
      max_hieght:number | undefined = 197,
-     is_single_selection:boolean | undefined = false
+     is_single_selection:boolean | undefined = false,
+     is_disabled:boolean | undefined = false
      ) {
     let settings = {
       singleSelection: is_single_selection,
@@ -120,7 +121,8 @@ export class UtiliService {
       showSelectedItemsAtTop: false,
       defaultOpen: false,
       lazyLoading: true,
-      tagToBody: true
+      tagToBody: true,
+      disabled:is_disabled
     };
     return settings;
   }

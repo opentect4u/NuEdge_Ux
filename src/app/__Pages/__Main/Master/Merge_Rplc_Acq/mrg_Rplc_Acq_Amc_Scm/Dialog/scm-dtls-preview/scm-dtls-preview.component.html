@@ -1,0 +1,325 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2>View {{data.items.scheme_name}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+
+
+      <button mat-icon-button [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+
+    <form [formGroup]="scheme_form">
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="amc_name">AMC</label>
+          <input type="text" name="amc_name" id="amc_name" class="form-control" formControlName="amc_name">
+        </div>
+        <div class="col-sm-12">
+          <label for="category_name">Category</label>
+          <input type="text" name="category_name" id="category_name" class="form-control" formControlName="category_name">
+        </div>
+        <div class="col-sm-12">
+          <label for="subcategory_name">Sub Category</label>
+          <input type="text" name="subcategory_name" id="subcategory_name" class="form-control" formControlName="subcategory_name">
+        </div>
+        <div class="col-sm-12">
+          <label for="scheme_name">Scheme</label>
+          <input type="text" name="scheme_name" id="scheme_name" class="form-control" formControlName="scheme_name">
+        </div>
+        <div class="col-sm-12">
+          <label for="pip_fresh_min_amt">PIP Fresh Minimum Amount</label>
+          <input type="text" name="pip_fresh_min_amt" id="pip_fresh_min_amt" class="form-control"
+            formControlName="pip_fresh_min_amt">
+        </div>
+        <div class="col-sm-12">
+          <label for="pip_add_min_amt">PIP Additional Minimum Amount</label>
+          <input type="text" name="pip_add_min_amt" id="pip_add_min_amt" class="form-control"
+            formControlName="pip_add_min_amt">
+        </div>
+        <div class="col-sm-12">
+          <label for="SIP_DATE">SIP date</label>
+          <ng-multiselect-dropdown
+          #dates_inp
+          [attr.id]="'SIP_DATE'"
+          [placeholder]="'Select SIP Dates'"
+          [settings]="data.date_settings"
+          [data]="data.dates"
+          formControlName="sip_date">
+          </ng-multiselect-dropdown>
+          </div>
+
+
+          <div class="col-sm-12">
+            <table class="my-2">
+              <thead>
+                <tr>
+                  <th>
+                    <p class="m-0">
+                      <!-- <mat-checkbox color="primary"
+
+
+                      formControlName="is_selectall"></mat-checkbox> -->
+                    </p>
+                  </th>
+                  <th>
+                    Frequency
+                  </th>
+                  <th>
+                    SIP Fresh Minimum Amount
+                  </th>
+                  <th>
+                    SIP Additional Minimum Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody formArrayName="sip_freq_wise_amt">
+                <tr *ngFor="let item of sip_freq_wise_amt.controls; let i = index;">
+                  <ng-container [formGroupName]="i">
+                    <td >
+                      <p class="m-0"><mat-checkbox
+                        color="primary"
+                        formControlName="is_checked"
+                        ></mat-checkbox></p>
+                    </td>
+                    <td>
+                      {{sip_freq_wise_amt.controls[i].get('freq_name').value}}
+                    </td>
+                    <td >
+                      <input type="text"
+                      name="sip_fresh_min_amt{{i + 1}}"
+                      id="sip_fresh_min_amt{{i}}"
+                      class="form-control"
+                      formControlName="sip_fresh_min_amt"
+                       >
+                    </td>
+                    <td >
+                      <input type="text"
+                      name="sip_add_min_amt{{i + 1}}"
+                      id="sip_add_min_amt{{i}}"
+                      class="form-control"
+                      formControlName="sip_add_min_amt"
+                       >
+                    </td>
+
+                  </ng-container>
+                </tr>
+              </tbody>
+            </table>
+         </div>
+
+
+          <div class="col-sm-12">
+            <label for="special_sip_name" class="m-0">
+              <mat-checkbox color="primary"
+              formControlName="ava_special_sip">
+                Special SIP</mat-checkbox>
+            </label>
+            <input type="text"
+             name="special_sip_name" id="special_sip_name"
+            class="form-control" formControlName="special_sip_name"/>
+          </div>
+
+
+          <div class="col-sm-12">
+            <label for="SWP_DATE">SWP date</label>
+            <ng-multiselect-dropdown
+            [attr.id]="'SWP_DATE'"
+            #dates_inp
+            [placeholder]="'Select SWP Dates'"
+            [settings]="data.date_settings"
+            [data]="data.dates"
+            formControlName="swp_date">
+            </ng-multiselect-dropdown>
+            </div>
+
+
+            <div class="col-sm-12">
+              <table class="my-2">
+                <thead>
+                  <!-- <tr>
+                    <th colspan="4" class="text-center p-5">
+                            Set SWP Amount with frequency
+
+                    </th>
+                  </tr> -->
+                  <tr>
+                    <th>
+                      <!-- <p class="m-0">
+                        <mat-checkbox color="primary"
+                        [checked]="scheme_frm.value.is_selectall_for_swp"
+                        [disabled]="step == 1 ? false : true"
+                        formControlName="is_selectall_for_swp"
+                        ></mat-checkbox>
+                      </p> -->
+                    </th>
+                    <th>
+                      Frequency
+                    </th>
+                    <th>
+                      <!-- SWP Fresh Minimum Amount -->
+                      SWP Amount
+                    </th>
+                    <!-- <th>
+                      SWP Additional Minimum Amount
+                    </th> -->
+                  </tr>
+                </thead>
+                <tbody formArrayName="swp_freq_wise_amt">
+                  <tr *ngFor="let item of swp_freq_wise_amt.controls; let i = index;">
+                    <ng-container [formGroupName]="i">
+                      <td >
+                        <p class="m-0"><mat-checkbox
+                          color="primary"
+                          formControlName="is_checked"
+                          ></mat-checkbox></p>
+                      </td>
+                      <td>
+                        {{swp_freq_wise_amt.controls[i].get('freq_name').value}}
+                      </td>
+                      <td >
+                        <input type="text"
+                        name="swp_add_min_amt{{i + 1}}"
+                        id="swp_add_min_amt{{i}}"
+                        class="form-control"
+                        formControlName="sip_add_min_amt"
+                         >
+                      </td>
+
+                    </ng-container>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+
+            <div class="col-sm-12">
+              <label for="special_swp_name" class="m-0">
+                <mat-checkbox color="primary"
+                formControlName="ava_special_swp">
+                  Special SWP</mat-checkbox>
+              </label>
+              <input type="text"
+               name="special_swp_name" id="special_swp_name"
+              class="form-control" formControlName="special_swp_name"/>
+            </div>
+
+
+
+
+            <div class="col-sm-12">
+              <label for="STP_DATE">STP date</label>
+              <ng-multiselect-dropdown
+              #dates_inp
+              [attr.id]="'STP_DATE'"
+              [placeholder]="'Select STP Dates'"
+              [settings]="data.date_settings"
+              [data]="data.dates"
+              formControlName="stp_date">
+              </ng-multiselect-dropdown>
+              </div>
+
+              <div class="col-sm-12">
+                <table class="my-2">
+                <thead>
+                  <!-- <tr>
+                    <th colspan="4" class="text-center p-5">
+                            Set STP Amount with frequency
+
+                    </th>
+                  </tr> -->
+                  <tr>
+                    <th>
+                    </th>
+                    <th>
+                      Frequency
+                    </th>
+                    <th>
+                      STP  Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="stp_freq_wise_amt">
+                  <tr *ngFor="let item of stp_freq_wise_amt.controls; let i = index;">
+                    <ng-container [formGroupName]="i">
+                      <td >
+                        <p class="m-0"><mat-checkbox
+                          color="primary"
+                          formControlName="is_checked"
+                          ></mat-checkbox></p>
+                      </td>
+                      <td>
+                        {{stp_freq_wise_amt.controls[i].get('freq_name').value}}
+                      </td>
+                      <td >
+                        <input type="text"
+                        name="stp_add_min_amt{{i + 1}}"
+                        id="stp_add_min_amt{{i}}"
+                        class="form-control"
+                        formControlName="sip_add_min_amt"
+                         >
+                      </td>
+
+                    </ng-container>
+                  </tr>
+                </tbody>
+              </table>
+              </div>
+
+
+
+
+              <div class="col-sm-12">
+                <label for="special_stp_name" class="m-0">
+                  <mat-checkbox color="primary"
+                  formControlName="ava_special_swp">
+                    Special STP</mat-checkbox>
+                </label>
+                <input type="text"
+                 name="special_stp_name" id="special_stp_name"
+                class="form-control" formControlName="special_stp_name"/>
+              </div>
+
+
+
+        <div class="col-sm-12">
+          <label for="step_up_min_amt">STEP UP Minimum Amount</label>
+          <input type="text" name="step_up_min_amt" id="step_up_min_amt" class="form-control"
+            formControlName="step_up_min_amt">
+        </div>
+        <div class="col-sm-12">
+          <label for="step_up_min_per">STEP UP Minimum Percentage</label>
+          <input type="text" name="step_up_min_per" id="step_up_min_per" class="form-control"
+            formControlName="step_up_min_per">
+        </div>
+
+        <div class="col-sm-12">
+          <label for="benchmark">Benchmark</label>
+          <input type="text" name="benchmark" id="benchmark" class="form-control"
+            formControlName="benchmark">
+        </div>
+        <div class="col-sm-12">
+          <label for="benchmark">Benchmark</label>
+          <input type="text" name="benchmark" id="benchmark" class="form-control" formControlName="benchmark">
+        </div>
+
+      </div>
+    </form>
+
+  </mat-dialog-content>
+
+</div>

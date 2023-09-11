@@ -13,7 +13,7 @@ export class trxnClm{
    {field:'scheme_name',header:'Scheme',width:"28rem"},
    {field:'plan_name',header:'Plan',width:'14rem'},
    {field:'option_name',header:'Option',width:'14rem'},
-   {field:'divident_opt',header:'Divident Option',width:'14rem'},
+   {field:'divident_opt',header:'IDCW Option',width:'14rem'},
    {field:'cat_name',header:'Category',width:"11rem"},
    {field:'subcat_name',header:'Sub-Category',width:"21rem"},
    {field:'folio_no',header:'Folio',width:"11rem"},
@@ -34,7 +34,7 @@ export class trxnClm{
    {field:'scheme_link',header:'Scheme Link',width:"16rem"},
    {field:'isin_link',header:'ISIN Link',width:"16rem"},
    {field:'plan_opt',header:'Plan Option Link',width:"16rem"},
-
+   {field:'lock_trxn',header:'Lock Status',width:"7rem"}
  ]
 }
 

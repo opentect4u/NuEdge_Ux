@@ -17,3 +17,9 @@
   :host ::ng-deep .p-datatable-tbody>tr{
     min-height: 33px;
   }
+
+  :host ::ng-deep #trxDt .p-datatable-header {
+        display: flex;
+        justify-content:flex-end;
+      }
+

@@ -106,7 +106,7 @@ export class TrxnRptComponent implements OnInit {
   /**
    * Hold column for transaction table
    */
-  column: column[] = trxnClm.column.filter((item:column) => (item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt'));
+  column: column[] = trxnClm.column.filter((item:column) => (item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn'));
 
   /**
    * Holding AMC Master Data
@@ -573,11 +573,6 @@ export class TrxnRptComponent implements OnInit {
         tap((item:TrxnRpt[]) => {
             let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
             item.map( item => {
-              // net_amt+=Number(item.trxn_code == 'R' ? (item.tot_amount ? item.tot_amount : 0) : (item.amount ? item.amount : 0));
-              // gross_amt+=Number(item.trxn_code == 'R' ? (item.tot_gross_amount ? item.tot_gross_amount : 0) :  (item.gross_amount ? item.gross_amount : 0));
-              // tds+=Number(item.trxn_code == 'R' ? (item.tot_tds ? item.tot_tds : 0):(item.tds ? item.tds : 0));
-              // stamp_duity+=Number(item.trxn_code == 'R' ? (item.tot_stamp_duty ? item.tot_stamp_duty : 0) : (item.stamp_duty ? item.stamp_duty : 0));
-
               net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
               gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
               tds+=Number(item.tot_tds ? item.tot_tds : 0);
@@ -596,7 +591,10 @@ export class TrxnRptComponent implements OnInit {
         // this.trxnRpt = res;
         // this.primeTbl._rows = count >= this.primeTbl.rows ?  res.length : this.primeTbl.rows;
         // this.primeTbl._rows = 10;
-
+        // this.subscribe.unsubscribe();
+        if(this.subscribe){
+          this.subscribe.unsubscribe();
+        }
         if(res.length == 0){
           this.utility.showSnackbar('No transactions are available on this periods',2,true);
           return;
@@ -605,7 +603,6 @@ export class TrxnRptComponent implements OnInit {
        this.subscribe = from(res).pipe(
         delay(2),
        ).subscribe(res =>{
-          console.log(res);
           this.streamTrxn(res);
         });
       });
@@ -613,6 +610,7 @@ export class TrxnRptComponent implements OnInit {
 
 
   streamTrxn = (trxnRow:TrxnRpt) =>{
+    console.log(trxnRow);
    this.trxnRpt.push(trxnRow);
   }
 

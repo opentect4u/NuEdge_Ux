@@ -778,3 +778,64 @@ textarea:focus {
 .p-sidebar-content{
  height: 100%!important;
 }
+
+/*** Horizontal Line Css****/
+
+.main__line__container{
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+}
+
+.main__line__container__header{
+  flex: 1 1 100%;
+  padding-bottom: 2rem;
+}
+.main__line__container__title{
+  position: relative;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  padding-left: 1rem;
+  padding-right: 0.75rem;
+  color: #fff;
+  background-color: #1f4584;
+  align-items: center;
+  font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  box-shadow: #cecece 1px 4px 0px;
+}
+
+.main__line__container__title:after{
+  position: absolute;
+  z-index: 1;
+  content: "";
+  right: -33px;
+  border-width: 17px;
+  border-color: transparent transparent transparent #1f4584;
+  border-style: solid;
+  filter: drop-shadow(1px 4px 0px #cecece);
+}
+
+.main__line__container__line{
+  position: relative;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  flex: 1 1;
+  height: 2px;
+  background-color: #1f4584;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-right: 5px;
+}
+.main__line__container__line:after{
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  content: "";
+  top: -3px;
+  right: 0px;
+  background-color: #1f4584;
+}
+
+
+/*** End ***/

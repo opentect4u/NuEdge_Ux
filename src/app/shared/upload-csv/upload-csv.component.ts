@@ -11,6 +11,9 @@ import { amc } from 'src/app/__Model/amc';
 import { insComp } from 'src/app/__Model/insComp';
 import { option } from 'src/app/__Model/option';
 import { plan } from 'src/app/__Model/plan';
+import { Ibenchmark } from 'src/app/__Pages/__Main/Master/benchmark/home/home.component';
+// import { Ibenchmark } from 'src/app/__Pages/__Main/Master/benchmark/benchmark.component';
+import { Iexchange } from 'src/app/__Pages/__Main/Master/exchange/exchange.component';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
@@ -39,6 +42,7 @@ export class UploadCsvComponent implements OnInit {
   @Input() __colAmc:string[] =[];
   @Input() subcatMaster: subcat[] =[];
   @Input() __colsubCate: string[] =[];
+
   @Input() companyTypeMst: any =[];
   @Input() compMst: insComp[] =[];
 
@@ -53,6 +57,8 @@ export class UploadCsvComponent implements OnInit {
   @Input() schemeMst= new MatTableDataSource<scheme>([]);
   @Input()  __schemecol: string[]= [];
 
+  @Input() exchange:Iexchange[] = [];
+
   @Input() tableData_forcomp: any =[]
   @Input() tableColumns_forcomp: any =[]
   @Input() displayedColumns_forComp: any =[]
@@ -61,11 +67,16 @@ export class UploadCsvComponent implements OnInit {
   @Output() setCompanyMst = new EventEmitter<string>();
   @Output() getschemeMst = new EventEmitter<number>();
 
+
+
   stateMst: any =[];
   districtMst: any =[];
   cityMst: any =[];
-
+  benchmarkMst = new MatTableDataSource<Ibenchmark>([]);
+  benchmarkClm:string[] = ['sl_no','ex_name','benchmark']
   allowedExtensions = ['csv', 'xlsx'];
+
+  exchangeClm:string[]= ['sl_no','ex_name'];
 
   constructor(private __dbIntr: DbIntrService,private __utility: UtiliService) { }
   __upload = new FormGroup({
@@ -84,6 +95,7 @@ export class UploadCsvComponent implements OnInit {
       fileValidators.fileExtensionValidator(this.allowedExtensions),
     ]),
     file: new FormControl(''),
+    ex_id: new FormControl('')
   });
 
   ngOnInit(): void {
@@ -148,6 +160,10 @@ export class UploadCsvComponent implements OnInit {
                 this.getschemeMst.emit(res);
                }
       })
+
+      this.__upload.controls['ex_id'].valueChanges.subscribe(res =>{
+             this.getBenchmark(res);
+      })
   }
   getStateMst(country_id){
     if(country_id){
@@ -173,6 +189,16 @@ export class UploadCsvComponent implements OnInit {
           this.cityMst = res;
       })
       }
+  }
+
+  getBenchmark = (ex_id:number) =>{
+    if(ex_id){
+      this.__dbIntr.api_call(0,'/benchmark','ex_id='+ex_id).pipe(pluck('data'))
+      .subscribe((res:Ibenchmark[]) =>{
+        console.log(res);
+           this.benchmarkMst = new MatTableDataSource(res);
+      })
+    }
   }
 
   getFiles(__ev) {
@@ -315,13 +341,14 @@ export class UploadCsvComponent implements OnInit {
     ]);
     this.__upload.get('rntFile').updateValueAndValidity();
   }
-  isAmcScelected = () =>{
-     if(this.__upload.value.amc_id){
-      global.exportTableToExcel("scmTble",'Scheme');
+  isAmcScelected = (table_id:string,exl_name:string,dt_corosponding_to:string) =>{
+     if((this.__upload.value.amc_id && this.flag == 'A') || (this.__upload.value.ex_id && this.flag == 'SBU')){
+      global.exportTableToExcel(table_id,exl_name);
      }
      else{
-         this.__utility.showSnackbar('Please Select AMC first',0);
+         this.__utility.showSnackbar(`Please Select ${dt_corosponding_to}`,0);
      }
 
   }
+
 }

@@ -29,7 +29,7 @@
               <div class="col-sm-3">
                    <label for="date_periods">Periods</label>
                    <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
-                    <option value="">Select</option>
+                    <option value="">Select All</option>
                     <option [value]="periods.id"  *ngFor="let periods of periods_type">{{periods.periods}}</option>
                    </select>
               </div>
@@ -280,7 +280,7 @@
               </tr>
           </ng-template>
           <ng-template pTemplate="body" let-trxn  let-i="rowIndex">
-            <tr tabindex="999">
+            <tr tabindex="999" [ngStyle]="{'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
               <td *ngFor="let col of column"
               [style.max-width]="col.width"
               [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"

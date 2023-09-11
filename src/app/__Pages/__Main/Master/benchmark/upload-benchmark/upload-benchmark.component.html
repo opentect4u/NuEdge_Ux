@@ -1,0 +1,21 @@
+<div class="row flexSec">
+  <!-- [CatMst]="category"
+  [__colcat]="['id','cat_name']" -->
+  <div class="col-sm-7">
+    <shared-upload-csv [leftHeaderTitle]="'Upload Benchmark'"
+    [flag]="'BENCH'" [file_name]="'Sample Benchmark'"
+    [columns]="tableColumns" [api_name]="'/benchmarkImport'"
+    [subcatMaster]="subcategory"
+    [exchange]="exchange"
+    [__colsubCate]="['id','cat_name','subcat_name']"
+      [dataSource]="tableData" [displayedColumns]="displayedColumns"></shared-upload-csv>
+  </div>
+  <div class="col-sm-5">
+    <shared-mst-dtls [btnTitle]="'View All Benchmark'"
+    [props]="'benchmark'"
+    [headerTitle]="'Recent Benchmark'" [flag]="'BENCH'"
+      (populate)="populateDT($event)"
+      (viewAll)="viewAll()"
+      [dataSource]="benchmark"></shared-mst-dtls>
+  </div>
+</div>

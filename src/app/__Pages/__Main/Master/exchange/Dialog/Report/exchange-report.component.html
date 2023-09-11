@@ -36,8 +36,6 @@
     [columns]="column"
     [paginator]="true"
     columnResizeMode="expand"
-    (onSort)="customSort($event)"
-      [lazy]="true"
       id="branchDt"
     scrollHeight="200px"
     [autoLayout]="true"
@@ -53,12 +51,12 @@
       <ng-template pTemplate="header">
           <tr >
               <th  *ngFor="let col of column"
-              [pSortableColumn]="col.field !='edit' ? col.field : ''"
+              [pSortableColumn]="col.field !='delete' ? col.field : ''"
               [style.max-width]="col.width"
               pResizableColumn
               >
                 {{ col.header }}
-                <p-sortIcon *ngIf="col.field !='edit'" [field]="col.field">
+                <p-sortIcon *ngIf="col.field !='edit' && col.field !='delete'" [field]="col.field">
                 </p-sortIcon>
               </th>
           </tr>
@@ -79,10 +77,10 @@
                 <p-button icon="pi pi-pencil" (click)="populateDT(exchange)"
                   styleClass="p-button-rounded p-button-primary"></p-button>
               </ng-container>
-              <!-- <ng-container *ngSwitchCase="col.field == 'delete'">
-                <p-button icon="pi pi-trash" (click)="delete(finance,i)"
+              <ng-container *ngSwitchCase="col.field == 'delete'">
+                <p-button icon="pi pi-trash" (click)="delete(exchange,i)"
                   styleClass="p-button-rounded p-button-danger"></p-button>
-              </ng-container> -->
+              </ng-container>
             </ng-container>
           </td>
           </tr>

@@ -35,32 +35,7 @@
           </div>
         </div>
 
-        <div class="col-sm-12 col-md-12 col-12">
-          <label for="category_id">Category <span class="text-danger">*</span></label>
-           <select id="category_id"
-            name="category_id"
-            class="form-control"
-            formControlName="category_id">
-            <option value="">Select</option>
-           <option [value]="item.id" *ngFor="let item of cat_mst">{{item.cat_name}}</option>
-           </select>
-          <div class="invalid-feedback" *ngIf="benchmarkForm.get('category_id').invalid && (benchmarkForm.get('category_id').dirty || benchmarkForm.get('category_id').touched)">
-            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('category_id')).errors?.required">*Please provide category</span>
-          </div>
-        </div>
-        <div class="col-sm-12 col-md-12 col-12">
-          <label for="subcat_id">Sub Category <span class="text-danger">*</span></label>
-           <select id="subcat_id"
-            name="subcat_id"
-            class="form-control"
-            formControlName="subcat_id">
-            <option value="">Select</option>
-           <option [value]="item.id" *ngFor="let item of sub_cat_mst_dt">{{item.subcategory_name}}</option>
-           </select>
-          <div class="invalid-feedback" *ngIf="benchmarkForm.get('subcat_id').invalid && (benchmarkForm.get('subcat_id').dirty || benchmarkForm.get('subcat_id').touched)">
-            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('subcat_id')).errors?.required">*Please provide sub category</span>
-          </div>
-        </div>
+
         <div class="col-sm-12 col-md-12 col-12">
           <label for="benchmark">Benchmark <span class="text-danger">*</span></label>
           <input type="text" id="benchmark"
@@ -93,6 +68,63 @@
             <span class="invalid-feedback" *ngIf="(benchmarkForm.get('launch_price')).errors?.required">*Please provide launch price</span>
           </div>
         </div>
+
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="category_id">Category <span class="text-danger">*</span></label>
+           <select id="category_id"
+            name="category_id"
+            class="form-control"
+            formControlName="category_id">
+            <option value="">Select</option>
+           <option [value]="item.id" *ngFor="let item of cat_mst">{{item.cat_name}}</option>
+           </select>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('category_id').invalid && (benchmarkForm.get('category_id').dirty || benchmarkForm.get('category_id').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('category_id')).errors?.required">*Please provide category</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="subcat_id">Sub Category <span class="text-danger">*</span></label>
+          <ng-multiselect-dropdown
+          #dates_inp
+          id="subcat_id"
+          [placeholder]="'Select Sub Category'"
+          [settings]="settings_subcate"
+          [data]="sub_cat_mst_dt"
+          formControlName="subcat_id">
+        </ng-multiselect-dropdown>
+         <div class="invalid-feedback" *ngIf="benchmarkForm.get('subcat_id').invalid && (benchmarkForm.get('subcat_id').dirty || benchmarkForm.get('subcat_id').touched)">
+           <span class="invalid-feedback" *ngIf="(benchmarkForm.get('subcat_id')).errors?.required">*Please provide sub category</span>
+         </div>
+        </div>
+
+        <!-- <div class="col-sm-12 col-md-12 col-12">
+          <label for="category_id">Category <span class="text-danger">*</span></label>
+           <ng-multiselect-dropdown
+           id="category_id"
+           [placeholder]="'Select Category'"
+           [settings]="settings_category"
+           (onDeSelect)="onDeSelect($event)"
+           [data]="cat_mst"
+           formControlName="category_id">
+         </ng-multiselect-dropdown>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('category_id').invalid && (benchmarkForm.get('category_id').dirty || benchmarkForm.get('category_id').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('category_id')).errors?.required">*Please provide category</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="subcat_id">Sub Category <span class="text-danger">*</span></label>
+           <ng-multiselect-dropdown
+           #dates_inp
+           id="subcat_id"
+           [placeholder]="'Select Sub Category'"
+           [settings]="settings_subcate"
+           [data]="sub_cat_mst_dt"
+           formControlName="subcat_id">
+         </ng-multiselect-dropdown>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('subcat_id').invalid && (benchmarkForm.get('subcat_id').dirty || benchmarkForm.get('subcat_id').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('subcat_id')).errors?.required">*Please provide sub category</span>
+          </div>
+        </div> -->
       </div>
     </form>
   </mat-dialog-content>

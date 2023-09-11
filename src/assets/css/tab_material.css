@@ -35,6 +35,7 @@ color: #1f4584!important;
   border-bottom-right-radius: 10px; */
   max-height: 340px;
   overflow:auto!important;
+  min-height: 260px;
 }
 
 .mat-stepper-horizontal, .mat-stepper-vertical{

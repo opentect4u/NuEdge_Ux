@@ -121,6 +121,9 @@ export class SchemeComponent implements OnInit {
         atob(this.__rtDt.snapshot.queryParamMap.get('amc_id'))
         )
     }
+    if(this.__rtDt.snapshot.queryParamMap.get('scheme_type')){
+      this.openDialog(null, 0, atob(this.__rtDt.snapshot.queryParamMap.get('scheme_type')));
+    }
   }
   getParticularScheme() {
     this.__dbIntr

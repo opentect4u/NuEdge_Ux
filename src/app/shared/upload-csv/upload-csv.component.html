@@ -18,27 +18,38 @@
       </mat-menu>
 
     </ng-container>
-    <ng-container *ngIf="flag == 'SC'">
+    <ng-container *ngIf="flag == 'SC' || flag == 'BENCH'">
       <button color="primary" mat-button [matMenuTriggerFor]="menuSC">Download<mat-icon>arrow_drop_down</mat-icon></button>
         <mat-menu #menuSC="matMenu"  xPosition="before">
-          <button mat-menu-item (click)="exporter2.exportTable('xlsx',{fileName:'SampleAMC'})">
+          <button *ngIf="flag == 'SC'" mat-menu-item (click)="exporter2.exportTable('xlsx',{fileName:'SampleAMC'})">
             <mat-icon>download</mat-icon>Download AMC
           </button>
+
+          <button *ngIf="flag == 'BENCH'"  mat-menu-item
+          (click)="exportEX.exportTable('xlsx',{fileName:'Exchange'})">
+            <mat-icon>download</mat-icon> Download Exchange
+          </button>
+
           <button mat-menu-item
+          *ngIf="flag != 'BENCH'"
             (click)="exporter1.exportTable('xlsx',{fileName:'SampleCategory'})">
             <mat-icon>download</mat-icon>Download Category
           </button>
           <button  mat-menu-item
+          [matTooltip]="flag == 'BENCH' ? 'Download Category & Sub Category' : ''"
           (click)="exporter3.exportTable('xlsx',{fileName:'SampleSubCategory'})">
-          <mat-icon>download</mat-icon>Download Sub Category
+          <mat-icon>download</mat-icon>
+          {{flag == 'BENCH' ? 'Download Category & Sub Category' : 'Download Sub Category'}}
         </button>
-          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SWPType'})">
+          <button *ngIf="flag == 'SC'"  mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SWPType'})">
             <mat-icon>download</mat-icon> Export Excel
           </button>
 
           <button mat-menu-item  (click)="exporter.exportTable('xlsx',{fileName:file_name})"><mat-icon>download</mat-icon>Download Sample</button>
         </mat-menu>
     </ng-container>
+
+
     <ng-container *ngIf="flag == 'IS'">
       <button color="primary" mat-button [matMenuTriggerFor]="menuSC">Download<mat-icon>arrow_drop_down</mat-icon></button>
         <mat-menu #menuSC="matMenu"  xPosition="before">
@@ -53,7 +64,7 @@
         </mat-menu>
     </ng-container>
 
-   <ng-container  *ngIf="flag != 'SC' && flag != 'FS' && flag != 'MFT' && flag != 'IS'">
+   <ng-container  *ngIf="flag != 'SC' && flag != 'FS' && flag != 'MFT' && flag != 'IS' && flag != 'BENCH'">
     <button  color="primary" (click)="exporter.exportTable('xlsx',{fileName:file_name})"
     mat-button><mat-icon>download</mat-icon>Download Sample</button>
    </ng-container>
@@ -181,7 +192,7 @@
             <option value="{{amc.id}}" *ngFor="let amc of amcMaster">{{amc.amc_short_name}}</option>
            </select>
            <a mat-button class="float-right"
-           (click)="isAmcScelected()"
+           (click)="isAmcScelected('scmTble','Scheme','AMC')"
            >Download Scheme</a>
            <div class="invalid-feedback"
            *ngIf=" __upload.get('amc_id').invalid && ( __upload.get('amc_id').dirty ||  __upload.get('amc_id').touched)">
@@ -189,6 +200,18 @@
              provide AMC</span>
          </div>
        </div>
+
+       <div class="col-sm-12 my-2" *ngIf="flag=='SBU'">
+        <label for="ex_id">Exchange</label>
+        <select class="form-control" id="ex_id" formControlName="ex_id">
+          <option value="">Select</option>
+          <option  [value]="exDtls.id" *ngFor="let exDtls of exchange">{{exDtls.ex_name}}</option>
+        </select>
+        <a mat-button class="float-right"
+        (click)="isAmcScelected('benchmarkTBL','Benchmark','Exchange')"
+        >Download Benchmark</a>
+       </div>
+
         <div class="col-sm-12">
           <div class="container_zone" appDragDrop (fileDropped)="onFileDropped($event)">
             <img src="../../../../../../assets/images/____upload.png" alt="Upload Images" height="63" width="63">
@@ -453,6 +476,60 @@ matTableExporter
   </tr>
 </table>
 <!-- End -->
+
+
+<!-- Benchmark -->
+<table id="benchmarkTBL" mat-table hidden [dataSource]="benchmarkMst"
+matTableExporter
+#exportScm="matTableExporter">
+  <ng-container matColumnDef="sl_no">
+    <th mat-header-cell *matHeaderCellDef>Sl No</th>
+    <td mat-cell *matCellDef="let element;let i=index">{{i + 1}}</td>
+  </ng-container>
+  <ng-container matColumnDef="ex_name">
+    <th mat-header-cell *matHeaderCellDef>Exchange</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.ex_name}}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="benchmark">
+    <th mat-header-cell *matHeaderCellDef>Benchmark</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.benchmark}}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="benchmarkClm"></tr>
+  <tr mat-row *matRowDef="let row; columns: benchmarkClm;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="3">No data found</td>
+  </tr>
+</table>
+<!-- End -->
+
+
+<!-- Exchange -->
+<table id="exchangeTBL" mat-table hidden [dataSource]="exchange"
+matTableExporter
+#exportEX="matTableExporter">
+  <ng-container matColumnDef="sl_no">
+    <th mat-header-cell *matHeaderCellDef>Sl No</th>
+    <td mat-cell *matCellDef="let element;let i=index">{{i + 1}}</td>
+  </ng-container>
+  <ng-container matColumnDef="ex_name">
+    <th mat-header-cell *matHeaderCellDef>Exchange</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.ex_name}}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="exchangeClm"></tr>
+  <tr mat-row *matRowDef="let row; columns: exchangeClm;"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="3">No data found</td>
+  </tr>
+</table>
+<!-- End -->
+
 
 
 

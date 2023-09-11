@@ -5,8 +5,9 @@ import { pluck, skip } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { Iexchange } from '../../../Master/exchange/exchange.component';
-import { Ibenchmark } from '../../../Master/benchmark/benchmark.component';
+// import { Ibenchmark } from '../../../Master/benchmark/benchmark.component';
 import { IschemeBenchmark } from '../../../Products/MutualFund/ScmBenchMarkRpt/scm-bench-mark-rpt.component';
+import { Ibenchmark } from '../../../Master/benchmark/home/home.component';
 
 @Component({
   selector: 'app-benchmark-entry-for-report',

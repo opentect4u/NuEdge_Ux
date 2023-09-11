@@ -1,43 +1,32 @@
-<!--
 
-<div class="row flexSec">
-  <div class="col-sm-12 col-12">
-    <p-card
-    [header]="(parent_id == '44' ? 'Merge' : (parent_id == '45' ? 'Replace' : 'Acquisition')) +' '+(flag == 'A' ? 'AMC' : 'scheme')"
-    >
-    <ng-container *ngIf="flag == 'A';else scheme">
-      <mrg-rplc-acq-amc
-      [parent_id]="parent_id"
-      [amcMstDt]="amcMst"
-      [settings]="settings"
-      [search_amc]="searchFrm_Amc_Scm"
-      ></mrg-rplc-acq-amc>
-    </ng-container>
-    <ng-template #scheme>
-      <mrg-rplc-acq-scm
-      [parent_id]="parent_id"
-      [amcMstDt]="amcMst"
-      [settings]="settings"
-      [search_scm]="searchFrm_Amc_Scm"
-      ></mrg-rplc-acq-scm>
-    </ng-template>
-  </p-card>
-  </div>
-</div>
- -->
 
  <div class="row flexSec">
   <div class="col-sm-12 col-12">
-
+  <ng-container *ngIf="flag == 'A';else scheme">
   <mrg-rplc-acq-amc
   [parent_id]="parent_id"
   [search_amc]="searchFrm_Amc_Scm"
-  [flag]="flag"
-  >
-  <h4 class="mb-3">
-    {{(parent_id == '46' ? 'Merge' : (parent_id == '47' ? 'Replace' : 'Acquisition')) +' '+(flag == 'A' ? 'AMC' : 'scheme')}}
-  </h4>
+  [flag]="flag">
+  <ng-container [ngTemplateOutlet]="title"></ng-container>
   </mrg-rplc-acq-amc>
+  </ng-container>
+  <ng-template #scheme>
+    <mrg-rplc-acq-scm
+    [settings]="settings"
+    [search_scm]="searchFrm_Amc_Scm"
+    [search_scm_for_acq]="searchFrm_Amc_Scm"
+    [parent_id]="parent_id"
+    [flag]="flag"
+    [amcMstDt] = "amcMst"
+    >
+      <ng-container [ngTemplateOutlet]="title"></ng-container>
+    </mrg-rplc-acq-scm>
+  </ng-template>
  </div>
 
 </div>
+<ng-template #title>
+  <h4 class="mb-3">
+    {{(flag == 'A' ? 'AMC' : 'Scheme') +' '+ (parent_id == '46' ? 'Merge ' : (parent_id == '47' ? 'Replace ' : 'Acquisition '))}}
+  </h4>
+</ng-template>

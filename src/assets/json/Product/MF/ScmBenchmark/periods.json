@@ -1,0 +1,26 @@
+[
+  {
+    "id":"D",
+    "periods":"Daily"
+  },
+  {
+    "id":"W",
+    "periods":"Weekly"
+  },
+  {
+    "id":"F",
+    "periods":"Fortnightly"
+  },
+  {
+    "id":"M",
+    "periods":"Monthly"
+  },
+  {
+    "id":"H",
+    "periods":"Half Yearly"
+  },
+  {
+    "id":"Y",
+    "periods":"Yearly"
+  }
+]

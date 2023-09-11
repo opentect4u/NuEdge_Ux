@@ -14,6 +14,8 @@ export class FinalPreviewCardComponent implements OnInit {
    */
   @Input() Title:string;
 
+  @Input() parent_id:string;
+
 
   @Input() flag:string;
 

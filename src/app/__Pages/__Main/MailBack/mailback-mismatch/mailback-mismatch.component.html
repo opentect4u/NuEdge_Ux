@@ -19,6 +19,7 @@
           [trxnRptWithOutScm]="trxnTypeRpt"
           [mismatch_flag]="mismatch_flag"
           [TrxnClm]="TrxnClm"
+          (changeStatusOfTrxn)="setTrxnFromChild($event)"
           ></mailBack-trxn-rpt-without-scm>
         </div>
         </div>

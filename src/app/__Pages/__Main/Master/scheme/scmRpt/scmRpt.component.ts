@@ -180,7 +180,7 @@ export class ScmRptComponent implements OnInit {
           this.__catMst = res;
         });
     } else {
-      console.log('asdasddasdads')
+      // console.log('asdasddasdads')
       this.__scmForm.controls['cat_id'].reset([], { emitEvent: true });
       this.__catMst = [];
     }

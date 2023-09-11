@@ -126,9 +126,11 @@ export class MailbackMismatchComponent implements OnInit {
       case 'S': this.TrxnClm = trxnClm.column.filter(item => !opt_clm.includes(item.field));break;
       case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field));break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;
-
-
     }
+  }
+  setTrxnFromChild = (el) =>{
+    console.log(el);
+    this.trxnTypeRpt = el;
   }
 
 }

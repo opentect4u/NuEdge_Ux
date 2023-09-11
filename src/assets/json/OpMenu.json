@@ -28,7 +28,7 @@
     },
     {
       "id": 4,
-      "title":"Benchmark",
+      "title":"Scheme Benchmark",
       "has_submenu":"N",
       "url":"/main/operations/benchmark",
       "flag":"B",

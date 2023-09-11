@@ -15,6 +15,7 @@ import { FinalPreviewCardComponent } from './shared/final-preview-card/final-pre
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { AmcDtlsPreviewComponent } from './Dialog/amc-dtls-preview/amc-dtls-preview.component';
 import { AlertCtrlModule } from 'src/app/__Core/alert-ctrl/alert-ctrl.module';
+import { ScmDtlsPreviewComponent } from './Dialog/scm-dtls-preview/scm-dtls-preview.component';
 const routes: Routes = [{path:'',component:MrgRplcAcqHomeComponent}]
 
 @NgModule({
@@ -24,7 +25,8 @@ const routes: Routes = [{path:'',component:MrgRplcAcqHomeComponent}]
     MrgRplcAcqScmComponent,
     SharedTblComponent,
     FinalPreviewCardComponent,
-    AmcDtlsPreviewComponent
+    AmcDtlsPreviewComponent,
+    ScmDtlsPreviewComponent
   ],
   imports: [
     CommonModule,

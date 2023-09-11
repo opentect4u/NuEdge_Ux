@@ -8,6 +8,7 @@ import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
 import { EntryComponent } from '../entry/entry.component';
 import { sort } from 'src/app/__Model/sort';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 
 @Component({
   selector: 'app-exchange-report',
@@ -145,6 +146,30 @@ export class ExchangeReportComponent implements OnInit {
     this.sort = ev;
     this.getExchangeReport();
   }
+
+   delete = (exchange:Iexchange,index:number) =>{
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'EX',
+      id: exchange.id,
+      title: 'Delete '  + exchange.ex_name,
+      api_name:'/exchangeDelete'
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.exchangeMstData.splice(index,1);
+        }
+      }
+
+    })
+   }
 }
 
 
@@ -155,6 +180,6 @@ export class ExClm{
       {field:'sl_no',header:'Sl No',width:'10rem'},
       {field:'ex_name',header:'Exchange',width:'83rem'},
       {field:'edit',header:'Edit',width:'7rem'},
-      // {field:'delete',header:'Delete'}
+      {field:'delete',header:'Delete',width:'7rem'}
     ]
 }

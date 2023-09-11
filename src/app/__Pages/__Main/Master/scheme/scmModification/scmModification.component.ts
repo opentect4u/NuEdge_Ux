@@ -22,7 +22,8 @@ import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 import { scheme } from 'src/app/__Model/__schemeMst';
-import { Ibenchmark } from '../../benchmark/benchmark.component';
+import { Ibenchmark } from '../../benchmark/home/home.component';
+// import { Ibenchmark } from '../../benchmark/benchmark.component';
 @Component({
   selector: 'app-scmModification',
   templateUrl: './scmModification.component.html',
@@ -395,7 +396,6 @@ export class ScmModificationComponent implements OnInit {
     this.others.removeAt(__index);
   }
   setFrequencyAmt(freq_dtls) {
-    console.log(freq_dtls);
     this.__scmForm.get('is_selectall').setValue(
       freq_dtls.every((bool) => global.getType(bool.is_checked)),{emitEvent:false}
     )

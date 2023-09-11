@@ -1,13 +1,15 @@
 export interface scheme {
     created_at?: string
     created_by?: number
-    id: number
+    id?: number
     updated_at?: string
     updated_by?: any
     category_id?: number
     subcategory_id?: number
     product_id?: number
-    amc_id?: number
+    amc_id?: number,
+    cat_name?:string;
+    subcate_name?:string;
     scheme_name?:string
     scheme_type?:string
     nfo_start_dt?:string

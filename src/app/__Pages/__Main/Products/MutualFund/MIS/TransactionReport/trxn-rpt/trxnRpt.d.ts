@@ -52,7 +52,8 @@ interface TrxnRpt{
       tot_stamp_duty:string | null
       tot_tds:string | null
       trxn_code:string | null
-      tot_gross_amount:string | null
+      tot_gross_amount:string | null,
+      lock_status:string | null
    }
 }
 

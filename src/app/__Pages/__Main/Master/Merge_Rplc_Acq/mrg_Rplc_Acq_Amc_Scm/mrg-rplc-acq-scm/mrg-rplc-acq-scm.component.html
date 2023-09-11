@@ -1,0 +1,766 @@
+<div class="mb-4">
+  <ng-content></ng-content>
+
+  <p-card header="Selected Schemes" styleClass="my-4" *ngIf="stepper_index > 0">
+    <shared-tbl
+    [column]="column_scheme"
+    [parent_id]="parent_id"
+    [flag]="flag"
+    [is_selectable]="false"
+      [is_btn_show]="false"
+       [data]="selected_scheme"
+       (view_dtls)="ViewDetails($event)"></shared-tbl>
+  </p-card>
+
+  <mat-horizontal-stepper linear #stepper (selectionChange)="onStepChange($event)">
+      <mat-step [stepControl]="search_scm">
+      <ng-template matStepLabel>
+        <p class="m-0">Step 1</p>
+        <p class="m-0">Select Scheme{{parent_id == '46' ? '/s' : ''}} to {{parent_id == '46' ? 'merge' : (parent_id == '47' ? 'replace' : 'acquisition')}}</p>
+      </ng-template>
+      <ng-container [ngTemplateOutlet]="search_frm"></ng-container>
+      </mat-step>
+      <!-- parent_id == '48' ? search_scm_for_acq : scheme_frm  -->
+      <mat-step [stepControl]="parent_id == '48' ? search_scm_for_acq : scheme_frm">
+        <ng-template matStepLabel>
+          <p class="m-0">Step 2</p>
+          <p class="m-0">
+            Scheme to be {{parent_id == '46' ? 'merged' : (parent_id == '47' ? 'replaced' : 'acquisition')}} with
+          </p>
+        </ng-template>
+        <ng-container *ngIf="parent_id == '48' ;else mrge_rplc">
+          <form [formGroup]="search_scm_for_acq" (ngSubmit)="schemePropulate_forStep2()">
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="amc_id">AMC</label>
+                <ng-multiselect-dropdown
+                id="amc_id"
+                [placeholder]="'Select AMC'"
+                [settings]="settings"
+                [data]="amcMstDt"
+                (onDeSelect)="onAmcDeSelect_step2($event)"
+                formControlName="amc_id">
+              </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="cat_id">Category</label>
+                <ng-multiselect-dropdown
+                id="cat_id"
+                [placeholder]="'Select Category'"
+                [settings]="cat_settings"
+                (onDeSelect)="onCatDeSelect_step2($event)"
+                [data]="category_mst_step2"
+                formControlName="cat_id">
+              </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="sub_cat_id">Subcategory</label>
+                <ng-multiselect-dropdown
+                id="sub_cat_id"
+                [placeholder]="'Select Subcategory'"
+                [settings]="subcat_settings"
+                [data]="subcategory_mst_step2"
+                formControlName="sub_cat_id">
+              </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3 d-flex justify-content-end align-items-end">
+                <button pButton pRipple type="submit" label="Populate Scheme" class="p-button-primary">
+                </button>
+              </div>
+            </div>
+          </form>
+          <hr />
+          <shared-tbl [column]="column" [data]="scheme_mst_step2"
+            [parent_id]="parent_id"  [flag]="flag"
+            (sendSelectedData)="setFinalPreviewList_step2($event)"
+            (onCheckboxSelection)="setFinalSelectedScheme_step2($event)"></shared-tbl>
+        </ng-container>
+        <ng-template #mrge_rplc>
+          <ng-container
+          [ngTemplateOutlet]="schemeFrm"
+          [ngTemplateOutletContext]="{step:stepper_index}"
+          ></ng-container>
+        </ng-template>
+
+        </mat-step>
+        <!-- scheme_frm -->
+      <mat-step [stepControl]="">
+        <ng-template matStepLabel>
+          <p class="m-0">Step 3</p>
+          <p class="m-0">Final Preview & Submit</p>
+        </ng-template>
+        <final-preview-card [flag]="flag"
+          [parent_id]="parent_id"
+          [Title]="FINAL_PREVIEW_CARD_TITLE">
+
+          <ng-container effective_dt>
+            <ng-container *ngIf="this.parent_id == '46';else acq_rplc">
+                   <ng-container *ngIf="this.selected_scheme.length > 1;else alert">
+                    <ng-container [ngTemplateOutlet]="effectiveDt"></ng-container>
+                   </ng-container>
+                   <ng-template #alert>
+                    <ng-container [ngTemplateOutlet]="alertCtrl"></ng-container>
+                   </ng-template>
+            </ng-container>
+            <ng-template #acq_rplc>
+              <ng-container *ngIf="this.parent_id == '47';else acq">
+                <ng-container *ngIf="this.selected_scheme.length > 0;else alert">
+                  <ng-container [ngTemplateOutlet]="effectiveDt"></ng-container>
+                </ng-container>
+                <ng-template #alert>
+                  <ng-container [ngTemplateOutlet]="alertCtrl"></ng-container>
+                 </ng-template>
+              </ng-container>
+              <ng-template #acq>
+                <ng-container *ngIf="(this.selected_scheme.length > 0 && this.selected_scheme_step2.length > 0);else alert">
+                  <ng-container [ngTemplateOutlet]="effectiveDt"></ng-container>
+                </ng-container>
+                <ng-template #alert>
+                  <ng-container [ngTemplateOutlet]="alertCtrl"></ng-container>
+                 </ng-template>
+              </ng-template>
+
+            </ng-template>
+          </ng-container>
+          <ng-container disabled_frm>
+
+              <ng-container *ngIf="parent_id == '48';else Form">
+                <shared-tbl
+                [column]="column_scheme"
+                [parent_id]="parent_id"
+                [flag]="flag"
+                [table_min_width]="'120rem'"
+                [is_selectable]="false"
+                  [is_btn_show]="false"
+                   [data]="selected_scheme_step2"
+                   (view_dtls)="ViewDetails($event)"></shared-tbl>
+
+              </ng-container>
+              <ng-template #Form>
+                <ng-container
+                [ngTemplateOutlet]="schemeFrm"
+                [ngTemplateOutletContext]="{step:2}"
+                ></ng-container>
+              </ng-template>
+          </ng-container>
+
+        </final-preview-card>
+        </mat-step>
+  </mat-horizontal-stepper>
+</div>
+
+<ng-template #search_frm>
+  <form [formGroup]="search_scm" (ngSubmit)="schemePropulate()">
+    <div class="row">
+      <div class="col-sm-3">
+        <label for="amc_id">AMC</label>
+        <ng-multiselect-dropdown
+        id="amc_id"
+        [placeholder]="'Select AMC'"
+        [settings]="settings"
+        [data]="amcMstDt"
+        (onDeSelect)="onAmcDeSelect($event)"
+        formControlName="amc_id">
+      </ng-multiselect-dropdown>
+      </div>
+      <div class="col-sm-3">
+        <label for="cat_id">Category</label>
+        <ng-multiselect-dropdown
+        id="cat_id"
+        [placeholder]="'Select Category'"
+        [settings]="cat_settings"
+        (onDeSelect)="onCatDeSelect($event)"
+        [data]="category_mst"
+        formControlName="cat_id">
+      </ng-multiselect-dropdown>
+      </div>
+      <div class="col-sm-3">
+        <label for="sub_cat_id">Subcategory</label>
+        <ng-multiselect-dropdown
+        id="sub_cat_id"
+        [placeholder]="'Select Subcategory'"
+        [settings]="subcat_settings"
+        [data]="subcategory_mst"
+        formControlName="sub_cat_id">
+      </ng-multiselect-dropdown>
+      </div>
+      <div class="col-sm-3 d-flex justify-content-end align-items-end">
+        <button pButton pRipple type="submit" label="Populate Scheme" class="p-button-primary">
+        </button>
+      </div>
+    </div>
+  </form>
+  <hr />
+  <shared-tbl [column]="column" [data]="scheme_mst"
+    [parent_id]="parent_id"  [flag]="flag"
+    (sendSelectedData)="setFinalPreviewList($event)"
+    (onCheckboxSelection)="setFinalSelectedScheme($event)"></shared-tbl>
+</ng-template>
+
+
+
+<ng-template #schemeFrm let-step="step">
+  <form [formGroup]="scheme_frm" (ngSubmit)="stepper.next()">
+    <div class="row">
+      <!-- AMC Dropdown -->
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="amcName">AMC <span class="text-danger" *ngIf="step == 1">*</span></label>
+        <select
+        [value]="scheme_frm.value.amc_id"
+        [attr.disabled]="step == 1 ? null : ''" class="form-control" formControlName="amc_id" id="amcName">
+          <option value="">Select AMC</option>
+         <option *ngFor="let __amc of amcMstDt" value="{{__amc.id}}">{{__amc.amc_short_name}}</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="scheme_frm.get('amc_id').invalid && (scheme_frm.get('amc_id').dirty || scheme_frm.get('amc_id').touched)">
+          <span class="invalid-feedback" *ngIf="(scheme_frm.get('amc_id')).errors?.required">*Please provide AMC</span>
+        </div>
+      </div>
+      <!-- End -->
+
+      <!-- Category -->
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="catName">Category <span class="text-danger" *ngIf="step == 1">*</span></label>
+        <select
+        [value]="scheme_frm.value.category_id"
+        [attr.disabled]="step == 1 ? null : ''"
+        class="form-control" formControlName="category_id" id="catName">
+          <option value="">Select Category</option>
+         <option *ngFor="let __cats of categoryMst" value="{{__cats.id}}">{{__cats.cat_name}}</option>
+        </select>
+       <div class="invalid-feedback" *ngIf="scheme_frm.get('category_id').invalid && (scheme_frm.get('category_id').dirty || scheme_frm.get('category_id').touched)">
+         <span class="invalid-feedback" *ngIf="(scheme_frm.get('category_id')).errors?.required">*Please provide category</span>
+       </div>
+      </div>
+      <!-- End -->
+
+      <!-- Sub category -->
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="sub_cat_id">Sub category <span class="text-danger" *ngIf="step == 1">*</span></label>
+        <select
+        [value]="scheme_frm.value.subcategory_id"
+        [attr.disabled]="step == 1 ? null : ''"
+        class="form-control" formControlName="subcategory_id" id="sub_cat_id">
+          <option value="">Select Sub category</option>
+         <option *ngFor="let __cats of subcategoryMst"
+         value="{{__cats.id}}">{{__cats.subcategory_name}}</option>
+        </select>
+       <div class="invalid-feedback" *ngIf="scheme_frm.get('subcategory_id').invalid && (scheme_frm.get('subcategory_id').dirty || scheme_frm.get('subcategory_id').touched)">
+         <span class="invalid-feedback" *ngIf="(scheme_frm.get('subcategory_id')).errors?.required">*Please provide subcategory</span>
+       </div>
+      </div>
+      <!-- End -->
+
+
+      <!-- Scheme -->
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="scheme_name">Scheme <span class="text-danger" *ngIf="step == 1">*</span></label>
+        <input type="text"
+        [value]="scheme_frm.value.scheme_name"
+        [attr.disabled]="step == 1 ? null : ''"
+         name="scheme_name" id="scheme_name"
+        class="form-control" formControlName="scheme_name"
+        [placeholder]="step == 1 ? 'Enter Scheme Name' : ''"/>
+       <div class="invalid-feedback" *ngIf="scheme_frm.get('scheme_name').invalid && (scheme_frm.get('scheme_name').dirty || scheme_frm.get('scheme_name').touched)">
+         <span class="invalid-feedback" *ngIf="(scheme_frm.get('scheme_name')).errors?.required">*Please provide scheme</span>
+       </div>
+      </div>
+      <!-- End -->
+
+      <!-- PIP Fresh Min Amount -->
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="pip_fresh_min_amt">PIP Fresh Min Amount  <span class="text-danger" *ngIf="step == 1">*</span></label>
+        <input type="text"
+        [value]="scheme_frm.value.pip_fresh_min_amt"
+        [attr.disabled]="step == 1 ? null : ''"
+         name="pip_fresh_min_amt" id="pip_fresh_min_amt"
+        class="form-control" formControlName="pip_fresh_min_amt"
+        [placeholder]="step == 1 ? 'Enter PIP Fresh Minimum Amount' : ''"/>
+       <div class="invalid-feedback" *ngIf="scheme_frm.get('pip_fresh_min_amt').invalid && (scheme_frm.get('pip_fresh_min_amt').dirty || scheme_frm.get('pip_fresh_min_amt').touched)">
+         <span class="invalid-feedback" *ngIf="(scheme_frm.get('pip_fresh_min_amt')).errors?.required">*Please provide PIP fresh minimium amount</span>
+       </div>
+      </div>
+      <!-- End -->
+
+      <!-- PIP Additional Min Amount -->
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="pip_add_min_amt">PIP Additional Min Amount  <span class="text-danger" *ngIf="step == 1">*</span></label>
+        <input type="text"
+        [value]="scheme_frm.value.pip_add_min_amt"
+        [attr.disabled]="step == 1 ? null : ''"
+         name="pip_add_min_amt" id="pip_add_min_amt"
+        class="form-control" formControlName="pip_add_min_amt"
+        [placeholder]="step == 1 ? 'Enter PIP Fresh Minimum Amount' : ''"/>
+       <div class="invalid-feedback" *ngIf="scheme_frm.get('pip_add_min_amt').invalid && (scheme_frm.get('pip_add_min_amt').dirty || scheme_frm.get('pip_add_min_amt').touched)">
+         <span class="invalid-feedback" *ngIf="(scheme_frm.get('pip_add_min_amt')).errors?.required">*Please provide PIP additional minimium amount</span>
+       </div>
+      </div>
+      <!-- End -->
+
+
+      <!-- SIP Date -->
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="sip_date" class="m-0">SIP Date
+          <!-- [disabled]="step == 1 ? false : true"
+
+
+          -->
+
+          <span class="text-danger">*</span>
+          <mat-checkbox class="mx-3" color="primary"
+          #checkbox
+          id="same_as_sip_Dates"
+          [checked]="scheme_frm.value.same_as_sip_dates"
+          formControlName="same_as_sip_dates">Same As</mat-checkbox>
+        </label>
+        <ng-multiselect-dropdown
+        #dates_inp
+        id="sip_date"
+
+        [(ngModel)]="scheme_frm.value.sip_date"
+        [placeholder]="'Select SIP Dates'"
+        [settings]="date_settings"
+        [data]="dates"
+        formControlName="sip_date">
+      </ng-multiselect-dropdown>
+      <div class="invalid-feedback" *ngIf="scheme_frm.get('sip_date').invalid && (scheme_frm.get('sip_date').dirty || scheme_frm.get('sip_date').touched)">
+        <span class="invalid-feedback" *ngIf="(scheme_frm.get('sip_date')).errors?.required">*Please provide sip date</span>
+      </div>
+      </div>
+      <!-- End -->
+
+      <div class="col-sm-12">
+        <table class="my-2">
+          <thead>
+            <tr>
+              <th colspan="4" class="text-center p-5">
+                      Set SIP Amount (Fresh & Additional) with frequency
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <p class="m-0">
+                  <mat-checkbox color="primary"
+                  [checked]="scheme_frm.value.is_selectall"
+                  #checkbox
+                  id="is_selectall"
+                  formControlName="is_selectall"></mat-checkbox>
+                </p>
+              </th>
+              <th>
+                Frequency
+              </th>
+              <th>
+                SIP Fresh Minimum Amount
+              </th>
+              <th>
+                SIP Additional Minimum Amount
+              </th>
+            </tr>
+          </thead>
+          <tbody formArrayName="sip_freq_wise_amt">
+            <tr *ngFor="let item of sip_freq_wise_amt.controls; let i = index;">
+              <ng-container [formGroupName]="i">
+                <td >
+                  <p class="m-0"><mat-checkbox
+                    color="primary"
+                    [checked]="sip_freq_wise_amt.controls[i].get('is_checked').value"
+                    #checkbox
+                    id="is_checked_sip{{i}}"
+                    formControlName="is_checked"
+                    (change)="getCheckboxVal(i,$event.checked,'1')"
+                    ></mat-checkbox></p>
+                </td>
+                <td>
+                  {{sip_freq_wise_amt.controls[i].get('freq_name').value}}
+                  <span class="text-danger"
+                  *ngIf="step == 1 && sip_freq_wise_amt.controls[i].get('is_checked').value">
+                  (*)</span>
+                </td>
+                <td >
+                  <input type="text"
+                  name="sip_fresh_min_amt{{i + 1}}"
+                  id="sip_fresh_min_amt{{i}}"
+                  class="form-control"
+                  [value]="sip_freq_wise_amt.controls[i].get('sip_fresh_min_amt').value"
+                  [attr.disabled]="step == 1 ? null : ''"
+                  placeholder="Enter Sip Fresh Minimum Amount"
+                  formControlName="sip_fresh_min_amt"
+                  (keypress)="preventNonumeric($event,i)"
+                   >
+                   <div class="invalid-feedback"
+                   *ngIf="sip_freq_wise_amt.controls[i].get('sip_fresh_min_amt').invalid && (sip_freq_wise_amt.controls[i].get('sip_fresh_min_amt').dirty || sip_freq_wise_amt.controls[i].get('sip_fresh_min_amt').touched)">
+                    <span class="invalid-feedback" *ngIf="(sip_freq_wise_amt.controls[i].get('sip_fresh_min_amt')).errors?.required">*Please provide mandatory field</span>
+                    <span class="invalid-feedback" *ngIf="(sip_freq_wise_amt.controls[i].get('sip_fresh_min_amt')).hasError('pattern')">*Only digits allow </span>
+
+                  </div>
+                </td>
+                <td >
+                  <input type="text"
+                  name="sip_add_min_amt{{i + 1}}"
+                  id="sip_add_min_amt{{i}}"
+                  class="form-control"
+                  [value]="sip_freq_wise_amt.controls[i].get('sip_add_min_amt').value"
+                  [attr.disabled]="step == 1 ? null : ''"
+                  placeholder="Enter Sip Additional Minimum Amount"
+                  formControlName="sip_add_min_amt"
+                   >
+                   <div class="invalid-feedback" *ngIf="sip_freq_wise_amt.controls[i].get('sip_add_min_amt').invalid && (sip_freq_wise_amt.controls[i].get('sip_add_min_amt').dirty || sip_freq_wise_amt.controls[i].get('sip_add_min_amt').touched)">
+                    <span class="invalid-feedback" *ngIf="(sip_freq_wise_amt.controls[i].get('sip_add_min_amt')).errors?.required">*Please provide mandatory field</span>
+                    <span class="invalid-feedback" *ngIf="(sip_freq_wise_amt.controls[i].get('sip_add_min_amt')).hasError('pattern')">*Only digits allow </span>
+                  </div>
+                </td>
+
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+
+       <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="special_sip_name" class="m-0">
+          <!-- Special SIP
+          <span class="text-danger" *ngIf="step == 1">*</span> -->
+          <mat-checkbox color="primary"
+          [checked]="scheme_frm.value.ava_special_sip"
+          #checkbox
+          id="ava_special_sip"
+          formControlName="ava_special_sip">
+            Special SIP
+            <span class="text-danger"
+            *ngIf="step == 1 && scheme_frm.controls['ava_special_sip'].value">*</span>
+          </mat-checkbox>
+        </label>
+        <input type="text"
+        [value]="scheme_frm.value.special_sip_name"
+        [attr.disabled]="step == 1 ? null : ''"
+         name="special_sip_name" id="special_sip_name"
+        class="form-control" formControlName="special_sip_name"
+        [placeholder]="step == 1 ? 'Enter Special SIP' : ''"/>
+       <div class="invalid-feedback" *ngIf="scheme_frm.get('special_sip_name').invalid && (scheme_frm.get('special_sip_name').dirty || scheme_frm.get('special_sip_name').touched)">
+         <span class="invalid-feedback" *ngIf="(scheme_frm.get('special_sip_name')).errors?.required">*Please provide special sip name</span>
+       </div>
+      </div>
+
+
+    <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="swp_date" class="m-0">SWP Date
+          <span class="text-danger">*</span>
+          <mat-checkbox class="mx-3" color="primary"
+          #checkbox
+          id="same_as_swp_dates"
+          [checked]="scheme_frm.value.same_as_swp_dates"
+          formControlName="same_as_swp_dates">Same As</mat-checkbox>
+        </label>
+        <ng-multiselect-dropdown
+         #dates_inp
+        id="swp_date"
+        [placeholder]="'Select SWP Dates'"
+        [settings]="date_settings"
+        [(ngModel)]="scheme_frm.value.swp_date"
+        [data]="dates"
+        formControlName="swp_date">
+      </ng-multiselect-dropdown>
+      <div class="invalid-feedback" *ngIf="scheme_frm.get('swp_date').invalid && (scheme_frm.get('swp_date').dirty || scheme_frm.get('swp_date').touched)">
+        <span class="invalid-feedback" *ngIf="(scheme_frm.get('swp_date')).errors?.required">*Please provide swp date</span>
+      </div>
+      </div>
+      <div class="col-sm-12">
+        <table class="my-2">
+          <thead>
+            <tr>
+              <th colspan="4" class="text-center p-5">
+                      <!-- Set SWP Amount (Fresh & Additional) with frequency -->
+                      Set SWP Amount with frequency
+
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <p class="m-0">
+                  <mat-checkbox color="primary"
+                  [checked]="scheme_frm.value.is_selectall_for_swp"
+                  #checkbox
+                  id="is_selectall_for_swp"
+                  formControlName="is_selectall_for_swp"
+                  ></mat-checkbox>
+                </p>
+              </th>
+              <th>
+                Frequency
+              </th>
+              <th>
+                <!-- SWP Fresh Minimum Amount -->
+                SWP Amount
+              </th>
+              <!-- <th>
+                SWP Additional Minimum Amount
+              </th> -->
+            </tr>
+          </thead>
+          <tbody formArrayName="swp_freq_wise_amt">
+            <tr *ngFor="let item of swp_freq_wise_amt.controls; let i = index;">
+              <ng-container [formGroupName]="i">
+                <td >
+                  <p class="m-0"><mat-checkbox
+                    color="primary"
+                    [checked]="swp_freq_wise_amt.controls[i].get('is_checked').value"
+                    #checkbox
+                    id="is_checked_swp{{i}}"
+                    formControlName="is_checked"
+                    (change)="getCheckboxVal(i,$event.checked,'2')"
+                    ></mat-checkbox></p>
+                </td>
+                <td>
+                  {{swp_freq_wise_amt.controls[i].get('freq_name').value}}
+                  <span class="text-danger"
+                   *ngIf="step == 1 && swp_freq_wise_amt.controls[i].get('is_checked').value">(*)</span>
+                </td>
+                <td >
+                  <input type="text"
+                  name="swp_add_min_amt{{i + 1}}"
+                  id="swp_add_min_amt{{i}}"
+                  class="form-control"
+                  [value]="swp_freq_wise_amt.controls[i].get('sip_add_min_amt').value"
+                  [attr.disabled]="step == 1 ? null : ''"
+                  placeholder="Enter SWP Amount"
+                  formControlName="sip_add_min_amt"
+                   >
+                   <div class="invalid-feedback" *ngIf="swp_freq_wise_amt.controls[i].get('sip_add_min_amt').invalid && (swp_freq_wise_amt.controls[i].get('sip_add_min_amt').dirty || swp_freq_wise_amt.controls[i].get('sip_add_min_amt').touched)">
+                    <span class="invalid-feedback" *ngIf="(swp_freq_wise_amt.controls[i].get('sip_add_min_amt')).errors?.required">*Please provide mandatory field</span>
+                    <span class="invalid-feedback" *ngIf="(swp_freq_wise_amt.controls[i].get('sip_add_min_amt')).hasError('pattern')">*Only digits allow </span>
+                  </div>
+                </td>
+
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+       <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+         <label for="special_swp_name" class="m-0">
+          <mat-checkbox color="primary"
+          [checked]="scheme_frm.controls['ava_special_swp'].value"
+          #checkbox
+          id="ava_special_swp"
+          formControlName="ava_special_swp">
+            Special SWP
+            <span class="text-danger"
+            *ngIf="step == 1 && scheme_frm.controls['ava_special_swp'].value">*</span>
+          </mat-checkbox>
+        </label>
+        <input type="text"
+        [value]="scheme_frm.value.special_swp_name"
+        [attr.disabled]="step == 1 ? null : ''"
+         name="special_swp_name" id="special_swp_name"
+        class="form-control" formControlName="special_swp_name"
+        [placeholder]="step == 1 ? 'Enter Special SWP' : ''"/>
+       <div class="invalid-feedback" *ngIf="scheme_frm.get('special_swp_name').invalid && (scheme_frm.get('special_swp_name').dirty || scheme_frm.get('special_swp_name').touched)">
+         <span class="invalid-feedback" *ngIf="(scheme_frm.get('special_swp_name')).errors?.required">*Please provide special swp name</span>
+       </div>
+      </div>
+
+
+
+
+
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="stp_date" class="m-0">STP Date
+          <span class="text-danger">*</span>
+          <mat-checkbox class="mx-3" color="primary"
+          #checkbox
+          id="same_as_stp_dates"
+          [checked]="scheme_frm.value.same_as_stp_dates"
+          formControlName="same_as_stp_dates">Same As</mat-checkbox>
+        </label>
+        <ng-multiselect-dropdown
+         #dates_inp
+        id="stp_date"
+
+        [placeholder]="'Select STP Dates'"
+        [settings]="date_settings"
+        [(ngModel)]="scheme_frm.value.stp_date"
+        [data]="dates"
+        formControlName="stp_date">
+      </ng-multiselect-dropdown>
+      <div class="invalid-feedback" *ngIf="scheme_frm.get('stp_date').invalid && (scheme_frm.get('stp_date').dirty || scheme_frm.get('stp_date').touched)">
+        <span class="invalid-feedback" *ngIf="(scheme_frm.get('stp_date')).errors?.required">*Please provide stp date</span>
+      </div>
+      </div>
+
+
+      <div class="col-sm-12">
+        <table class="my-2">
+        <thead>
+          <tr>
+            <th colspan="4" class="text-center p-5">
+                    <!-- Set STP Amount (Fresh & Additional) with frequency -->
+                    Set STP Amount with frequency
+
+            </th>
+          </tr>
+          <tr>
+            <th>
+              <p class="m-0">
+                <mat-checkbox color="primary"
+                [checked]="scheme_frm.value.is_selectall_for_stp"
+                #checkbox
+                id="is_selectall_for_stp"
+                formControlName="is_selectall_for_stp"></mat-checkbox>
+              </p>
+            </th>
+            <th>
+              Frequency
+            </th>
+            <th>
+              <!-- STP Fresh Minimum Amount -->
+              STP  Amount
+            </th>
+            <!-- <th>
+              STP Additional Minimum Amount
+            </th> -->
+          </tr>
+        </thead>
+        <tbody formArrayName="stp_freq_wise_amt">
+          <tr *ngFor="let item of stp_freq_wise_amt.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td >
+                <p class="m-0"><mat-checkbox
+                  color="primary"
+                  [checked]="stp_freq_wise_amt.controls[i].get('is_checked').value"
+                  #checkbox
+                  id="is_checked_stp{{i}}"
+                  formControlName="is_checked"
+                  (change)="getCheckboxVal(i,$event.checked,'3')"
+                  ></mat-checkbox></p>
+              </td>
+              <td>
+                {{stp_freq_wise_amt.controls[i].get('freq_name').value}}
+                <span class="text-danger" *ngIf="step == 1 && stp_freq_wise_amt.controls[i].get('is_checked').value">(*)</span>
+              </td>
+              <td >
+                <input type="text"
+                name="stp_add_min_amt{{i + 1}}"
+                id="stp_add_min_amt{{i}}"
+                class="form-control"
+                [value]="stp_freq_wise_amt.controls[i].get('sip_add_min_amt').value"
+                [attr.disabled]="step == 1 ? null : ''"
+                placeholder="Enter STP Amount"
+                formControlName="sip_add_min_amt"
+                 >
+                 <div class="invalid-feedback" *ngIf="stp_freq_wise_amt.controls[i].get('sip_add_min_amt').invalid && (stp_freq_wise_amt.controls[i].get('sip_add_min_amt').dirty || stp_freq_wise_amt.controls[i].get('sip_add_min_amt').touched)">
+                  <span class="invalid-feedback" *ngIf="(stp_freq_wise_amt.controls[i].get('sip_add_min_amt')).errors?.required">*Please provide mandatory field</span>
+                  <span class="invalid-feedback" *ngIf="(stp_freq_wise_amt.controls[i].get('sip_add_min_amt')).hasError('pattern')">*Only digits allow </span>
+                </div>
+              </td>
+
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+         <label for="special_stp_name" class="m-0">
+          <mat-checkbox color="primary"
+          [checked]="scheme_frm.value.ava_special_stp"
+          #checkbox
+          id="ava_special_stp"
+          formControlName="ava_special_stp">
+            Special STP
+            <span class="text-danger" *ngIf="step == 1 && scheme_frm.controls['ava_special_stp'].value">*</span>
+          </mat-checkbox>
+        </label>
+        <input type="text"
+        [value]="scheme_frm.value.special_stp_name"
+        [attr.disabled]="step == 1 ? null : ''"
+         name="special_stp_name" id="special_stp_name"
+        class="form-control" formControlName="special_stp_name"
+        [placeholder]="step == 1 ? 'Enter Special STP' : ''"/>
+       <div class="invalid-feedback" *ngIf="scheme_frm.get('special_stp_name').invalid && (scheme_frm.get('special_stp_name').dirty || scheme_frm.get('special_stp_name').touched)">
+         <span class="invalid-feedback" *ngIf="(scheme_frm.get('special_stp_name')).errors?.required">*Please provide special stp name</span>
+       </div>
+      </div>
+
+
+      <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+        <label for="step_up_min_amt">STEP UP Minimum Amount</label>
+       <input type="text"
+       [value]="scheme_frm.value.step_up_min_amt"
+       [attr.disabled]="step == 1 ? null : ''"
+        name="step_up_min_amt" id="step_up_min_amt"
+       class="form-control" formControlName="step_up_min_amt"
+       [placeholder]="step == 1 ? 'Enter  STEP UP Minimum Amount' : ''"/>
+     </div>
+
+     <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12'">
+      <label for="step_up_min_per">STEP UP Minimum Percentage</label>
+     <input type="text"
+     [value]="scheme_frm.value.step_up_min_per"
+     [attr.disabled]="step == 1 ? null : ''"
+      name="step_up_min_per" id="step_up_min_per"
+     class="form-control" formControlName="step_up_min_per"
+     [placeholder]="step == 1 ? 'Enter STEP UP Minimum Percentage' : ''"/>
+   </div>
+
+   <div [class]="step == 1 ? 'col-sm-3' : 'col-sm-12 mb-2'">
+    <label for="benchmark">Benchmark</label>
+    <select class="form-control"
+    id="benchmark"
+    name="benchmark"
+    [value]="scheme_frm.value.benchmark"
+    [attr.disabled]="step == 1 ? null : ''"
+    formControlName="benchmark"
+    >
+  <option value="">Select</option>
+  <option [value]="benchmark.id" *ngFor="let benchmark of __benchmark">{{benchmark.benchmark}}</option>
+  </select>
+  </div>
+  <div *ngIf="step == 1" class="col-sm-12 row__sticky p-2 d-flex justify-content-end align-items-end">
+    <p-button type="button" label="Previous" iconPos="left"
+    (click)="stepper.previous()"
+      class="p-button-primary p-button-lg mr-2" icon="pi pi-arrow-left">
+    </p-button>
+
+    <p-button type="submit" iconPos="right"
+      label="Next"
+      [disabled]="scheme_frm.invalid"
+      class="p-button-primary p-button-lg" icon="pi pi-arrow-right">
+    </p-button>
+  </div>
+</div>
+  </form>
+</ng-template>
+
+<!-- Effective Date Reuseable -->
+<ng-template #effectiveDt>
+  <form [formGroup]="scheme_frm" (ngSubmit)="SubmitEffectiveDate()">
+    <div class="row">
+      <div class="col-sm-8">
+        <label for="effective_date">Effective Date</label>
+        <input type="date" name="effective_date" id="effective_date" class="form-control"
+          [value]="scheme_frm.value.effective_date" formControlName="effective_date">
+      </div>
+      <div class="col-sm-4 d-flex justify-content-end align-items-end">
+        <p-button type="button" label="Previous" iconPos="left" (click)="stepper.previous()"
+          class="p-button-primary p-button-lg mr-2" icon="pi pi-arrow-left">
+        </p-button>
+        <!-- -->
+        <p-button type="submit"
+        [disabled]="scheme_frm.invalid"
+        label="Save" class="p-button-primary p-button-lg">
+        </p-button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+<!-- End -->
+
+<ng-template #alertCtrl>
+  <alert-ctrl [severity]="'warning'" [detail]="ALERT_MSG">
+    <button *ngIf="parent_id != '48'" mat-button color="primary" (click)="stepper.previous();stepper.previous();">Go To Step-1</button>
+  </alert-ctrl>
+</ng-template>

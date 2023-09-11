@@ -32,7 +32,7 @@ export class UploadPlnComponent implements OnInit {
       "Plan": 'XXXXXXXX',
     },
   ]);
-  __columns: string[] = ['sl_no', 'rnt_name', 'edit'];
+  // __columns: string[] = ['sl_no', 'rnt_name', 'edit'];
   __selectRNT = new MatTableDataSource<plan>([]);
   constructor(
     private __dbIntr: DbIntrService,
