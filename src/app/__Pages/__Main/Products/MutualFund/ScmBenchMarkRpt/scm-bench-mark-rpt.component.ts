@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { map, pluck } from 'rxjs/operators';
+import { concatMap, delay, map, pluck } from 'rxjs/operators';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 // import periods from '../../../../../../assets/json/datePeriods.json';
@@ -14,6 +14,8 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { Ibenchmark } from '../../../Master/benchmark/home/home.component';
 import periods from '../../../../../../assets/json/Product/MF/ScmBenchmark/periods.json';
 import { DatePipe } from '@angular/common';
+import { from } from 'rxjs';
+import { LazyLoadEvent } from 'primeng/api';
 @Component({
   selector: 'app-scm-bench-mark-rpt',
   templateUrl: './scm-bench-mark-rpt.component.html',
@@ -47,6 +49,8 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
   periods_type: Iperiods[] = periods;
 
   scmbrnchMstDt: Partial<IschemeBenchmark>[] = [];
+
+  lazyScm:Partial<IschemeBenchmark>[] = [];
 
   column: column[] = schemeBenchmarkcolumn.column;
 
@@ -180,21 +184,35 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
        this.dbIntr.api_call(1,'/benchmarkSchemeDetailSearch',formdata)
        .pipe(
         pluck("data"),
-         map((item:Partial<IschemeBenchmark>[])=>{
-          // console.log(item);
+        map((item:Partial<IschemeBenchmark>[])=>{
           this.scmbrnchMstDt = item;
+          // this.populateNav(item);
          })
+
         )
        .subscribe((res)=>{console.log(res);})
     }
     else{
       this.utility.showSnackbar('Please select either Exchange or benchmark',2);
     }
-
   };
 
-  populateNav = () =>{
-
+  populateNav = (res:Partial<IschemeBenchmark>[]) =>{
+    from(res)
+    .pipe(delay(1000))
+    .subscribe(res =>{
+      console.log(res);
+      this.scmbrnchMstDt.push(res);
+    })
+  }
+  loadSchemeData = (event: LazyLoadEvent) =>{
+    console.log(event);
+    // setTimeout(() => {
+    //   if (this.lazyScm) {
+    //     this.scmbrnchMstDt = this.lazyScm.slice(event.first, (event.first + event.rows));
+    //     // this.loading = false;
+    //   }
+    // }, 1000);
   }
 
   getExhangeDt = () => {
@@ -306,6 +324,7 @@ export class schemeBenchmarkcolumn {
     { field: 'change', header: 'Change', width: '20rem' },
     { field: 'prev', header: '% of change from prv', width: '20rem' },
   ];
+
 }
 
 export interface Iperiods {

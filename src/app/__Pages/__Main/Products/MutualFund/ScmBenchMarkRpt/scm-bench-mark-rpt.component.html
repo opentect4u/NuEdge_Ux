@@ -134,7 +134,8 @@
       [autoLayout]="true"
       [totalRecords]="scmbrnchMstDt.length"
       [pageLinks]="3"
-
+      [lazy]="true"
+      (onLazyLoad)="loadSchemeData($event)"
       [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       [rows]="10"
@@ -154,7 +155,7 @@
                 </th>
             </tr>
         </ng-template>
-        <!-- <ng-template pTemplate="body" let-scmBenchmark  let-i="rowIndex">
+        <ng-template pTemplate="body" let-scmBenchmark  let-i="rowIndex">
           <tr tabindex="999">
             <td *ngFor="let col of column"
             [style.max-width]="col.width"
@@ -174,9 +175,9 @@
              </ng-container>
             </td>
             </tr>
-          </ng-template> -->
+          </ng-template>
 
-          <ng-template pTemplate="body">
+          <!-- <ng-template pTemplate="body">
             <tr
             *ngFor="
               let scmBenchmark of scmbrnchMstDt | lazyLoad;
@@ -202,7 +203,7 @@
           </td>
           </tr>
 
-          </ng-template>
+          </ng-template> -->
 
         <ng-template pTemplate="emptymessage" let-columns>
           <tr>

@@ -33,6 +33,7 @@ export class LazyLoadPipe implements PipeTransform {
       }, interval);
     }
     if (items && items?.length) {
+      console.log(items);
       console.log('counter', this.loadRows);
       return items.slice(0, this.loadRows);
     }
