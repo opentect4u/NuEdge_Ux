@@ -81,4 +81,15 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       }
     )
   }
+
+  navigateISIN = () =>{
+    this.utility.navigatewithqueryparams(
+      '/main/master/productwisemenu/scheme/isin',
+      {
+        queryParams:{
+          isin_status:btoa('O')
+        }
+      }
+    )
+  }
 }

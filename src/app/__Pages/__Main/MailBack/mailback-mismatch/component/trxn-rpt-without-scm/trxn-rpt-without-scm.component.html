@@ -175,8 +175,10 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           </p-button>
         </ng-container>
         <ng-container *ngSwitchCase="col.field == 'isin_link'">
+          <!-- [routerLink]="['/main/master/productwisemenu/scheme/isin']" -->
+
           <p-button
-          [routerLink]="['/main/master/productwisemenu/scheme/isin']"
+          (click)="navigateISIN()"
           label="Add Scheme ISIN & Code"
           icon="pi pi-plus"
           styleClass="p-button-link">

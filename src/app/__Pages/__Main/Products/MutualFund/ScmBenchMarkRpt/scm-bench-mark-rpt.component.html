@@ -5,10 +5,10 @@
    <div class="card">
       <div class="card-header">
         <b  class="m-0 d-flex align-items-center">
-          <mat-icon class="mr-2">
+          <!-- <mat-icon class="mr-2">
            search
-          </mat-icon>
-          Search Scheme Benchmark Report
+          </mat-icon> -->
+          Scheme Benchmark Report
         </b>
       </div>
       <div class="card-body p-3">
@@ -37,15 +37,17 @@
               formControlName="benchmark">
             </ng-multiselect-dropdown>
             </div>
-            <div class="col-sm-3">
+            <div [class]="scmbenchmarkFrm.getRawValue().date_periods!= '' ? 'col-sm-3' : 'col-sm-6'">
               <label for="date_periods">Periods <span class="text-danger">*</span></label>
               <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
                <option value="">Select</option>
                <option [value]="periods.id"  *ngFor="let periods of periods_type">{{periods.periods}}</option>
               </select>
             </div>
-            <ng-container *ngIf="(scmbenchmarkFrm.getRawValue().date_periods == 'D'
-            || scmbenchmarkFrm.getRawValue().date_periods == '');else month_year">
+            <ng-container *ngIf="(
+              scmbenchmarkFrm.getRawValue().date_periods == 'D'
+            );else month_year">
+
               <div class="col-sm-3">
                 <label for="date_range">Date Range (From - To) <span class="text-danger">*</span></label>
                 <p-calendar
@@ -66,21 +68,25 @@
               </div>
             </ng-container>
             <ng-template #month_year>
+              <ng-container
+              *ngIf="scmbenchmarkFrm.getRawValue().date_periods != ''">
               <div class="col-sm-3">
               <label for="date_range">
-                {{scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'Select Year' : 'Select Month & Years'}} <span class="text-danger">*</span>
+                {{scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'Year' : 'Month & Years'}} <span class="text-danger">*</span>
               </label>
               <p-calendar
               #MYCalendar
               [view]="scmbenchmarkFrm.getRawValue().date_periods == 'Y'  ? 'year' : 'month'"
-              [dateFormat]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'yy' : 'mm-yy'"
+              [dateFormat]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'yy' : 'mm/yy'"
               [readonlyInput]="true"
               inputId="pickmonth"
+              selectionMode="range"
               formControlName="month"
               [showButtonBar]="true"
-              [placeholder]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'YYYY' : 'MM-YYYY'">
+              [placeholder]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'YYYY - YYYY' : 'MM-YYYY - MM-YYYY'">
             </p-calendar>
              </div>
+            </ng-container>
             </ng-template>
 
 
@@ -124,7 +130,7 @@
       responsiveLayout="scroll"
       [scrollable]="true"
       [columns]="column"
-      [paginator]="true"
+      [paginator]="false"
       [autoLayout]="true"
       [totalRecords]="scmbrnchMstDt.length"
       [pageLinks]="3"
@@ -148,26 +154,54 @@
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-scmBenchmark  let-i="rowIndex">
+        <!-- <ng-template pTemplate="body" let-scmBenchmark  let-i="rowIndex">
           <tr tabindex="999">
             <td *ngFor="let col of column"
             [style.max-width]="col.width"
             >
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                <b>{{i + 1}}</b>
+                <p>{{i + 1}}</p>
              </ng-container>
               <ng-container *ngSwitchCase="col.field == 'date'">
-                <b>{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</b>
+                <p>{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
              </ng-container>
              <ng-container *ngSwitchDefault>
-              <b [matTooltip]="scmBenchmark[col.field]">
+              <p [matTooltip]="scmBenchmark[col.field]">
                 {{ scmBenchmark[col.field] ? scmBenchmark[col.field] : 'N/A' }}
-              </b>
+              </p>
             </ng-container>
              </ng-container>
             </td>
             </tr>
+          </ng-template> -->
+
+          <ng-template pTemplate="body">
+            <tr
+            *ngFor="
+              let scmBenchmark of scmbrnchMstDt | lazyLoad;
+              let i = index
+            "
+          >
+          <td *ngFor="let col of column"
+          [style.max-width]="col.width"
+          >
+          <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="col.field == 'sl_no'">
+              <p>{{i + 1}}</p>
+           </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'date'">
+              <p>{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+           </ng-container>
+           <ng-container *ngSwitchDefault>
+            <p [matTooltip]="scmBenchmark[col.field]">
+              {{ scmBenchmark[col.field] ? scmBenchmark[col.field] : 'N/A' }}
+            </p>
+          </ng-container>
+           </ng-container>
+          </td>
+          </tr>
+
           </ng-template>
 
         <ng-template pTemplate="emptymessage" let-columns>

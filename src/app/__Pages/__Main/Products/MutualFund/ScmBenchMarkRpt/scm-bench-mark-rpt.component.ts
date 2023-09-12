@@ -13,6 +13,7 @@ import { Calendar } from 'primeng/calendar';
 import { global } from 'src/app/__Utility/globalFunc';
 import { Ibenchmark } from '../../../Master/benchmark/home/home.component';
 import periods from '../../../../../../assets/json/Product/MF/ScmBenchmark/periods.json';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-scm-bench-mark-rpt',
   templateUrl: './scm-bench-mark-rpt.component.html',
@@ -57,7 +58,10 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     'Search benchmark'
   );
 
-  constructor(private dbIntr: DbIntrService,private utility:UtiliService) {}
+  constructor(
+    private datePipe:DatePipe,
+    private dbIntr: DbIntrService,
+    private utility:UtiliService) {}
 
   ngOnInit(): void {
     this.getExhangeDt();
@@ -82,14 +86,20 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     })
 
      this.scmbenchmarkFrm.controls['benchmark'].valueChanges.subscribe(res =>{
-       if(res.length == this.benchmark.length){
-        this.scmbenchmarkFrm.get('date_periods').setValue('D');
-        this.scmbenchmarkFrm.get('date_periods').disable();
-        this.scmbenchmarkFrm.controls['date_range'].setValue('');
-       }
-       else{
-          this.scmbenchmarkFrm.get('date_periods').enable();
-       }
+
+
+      // if(res.length == this.benchmark.length){
+      //   this.scmbenchmarkFrm.get('date_periods').setValue('D');
+      //   this.scmbenchmarkFrm.get('date_periods').disable();
+      //   this.scmbenchmarkFrm.controls['date_range'].setValue('');
+      //  }
+
+      //  else{
+      //     this.scmbenchmarkFrm.get('date_periods').enable();
+      //  }
+
+      this.periods_type = this.getPeriodsBasedonBenchmarkSelection(res.length);
+
      })
 
     //  this.scmbenchmarkFrm.controls['date_range']
@@ -138,29 +148,41 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
 
   }
 
+  getPeriodsBasedonBenchmarkSelection = (benchmark_length:number) => {
+          if(benchmark_length > 1){
+            if(benchmark_length!=this.benchmark.length){
+              const flags=['D','F','W'];
+              if(this.scmbenchmarkFrm.getRawValue().date_periods == 'D'){
+                this.scmbenchmarkFrm.get('date_periods').setValue('');
+              }
+              return periods.filter(item=> !flags.includes(item.id));
+            }
+          }
+          return periods;
+
+  }
+
   getschemebenchmarkReport = () => {
     if(this.scmbenchmarkFrm.value.benchmark || this.scmbenchmarkFrm.value.ex_id){
       const formdata = new FormData();
       formdata.append('ex_id',global.getActualVal(this.scmbenchmarkFrm.value.ex_id));
-      // formdata.append('benchmark',global.getActualVal(this.scmbenchmarkFrm.value.benchmark));
       formdata.append('benchmark',this.utility.mapIdfromArray(this.scmbenchmarkFrm.value.benchmark,'id'));
+
       if(this.scmbenchmarkFrm.value.date_periods == 'D'){
-        formdata.append('date_range',
+            formdata.append('date_range',
         global.getActualVal(this.date_range.inputFieldValue));
       }
       else{
-        if(this.scmbenchmarkFrm.value.date_periods == 'M'){
-        formdata.append('month',global.getActualVal(this.scmbenchmarkFrm.value.month) ?(this.scmbenchmarkFrm.value.month.getMonth() + 1) : '');
-        }
-       formdata.append('year',global.getActualVal(this.scmbenchmarkFrm.value.month) ? (this.scmbenchmarkFrm.value.month.getFullYear()) : '');
+        let date_format =`${this.datePipe.transform(this.scmbenchmarkFrm.value.month[0],(this.scmbenchmarkFrm.value.date_periods == 'M' ? 'MM/YYYY' : 'YYYY'))}- ${this.datePipe.transform(this.scmbenchmarkFrm.value.month[1],(this.scmbenchmarkFrm.value.date_periods == 'M' ? 'MM/YYYY' : 'YYYY'))}`
+        formdata.append('date_range',
+        global.getActualVal(date_format));
       }
-      console.log(this.scmbenchmarkFrm.value.month.getMonth() + 1);
        this.dbIntr.api_call(1,'/benchmarkSchemeDetailSearch',formdata)
        .pipe(
         pluck("data"),
-         map((item:{links:any[],data:Partial<IschemeBenchmark>[]})=>{
-          console.log(item);
-          this.scmbrnchMstDt = item.data;
+         map((item:Partial<IschemeBenchmark>[])=>{
+          // console.log(item);
+          this.scmbrnchMstDt = item;
          })
         )
        .subscribe((res)=>{console.log(res);})
@@ -170,6 +192,10 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     }
 
   };
+
+  populateNav = () =>{
+
+  }
 
   getExhangeDt = () => {
     this.dbIntr

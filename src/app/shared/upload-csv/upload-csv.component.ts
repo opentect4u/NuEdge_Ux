@@ -14,6 +14,7 @@ import { plan } from 'src/app/__Model/plan';
 import { Ibenchmark } from 'src/app/__Pages/__Main/Master/benchmark/home/home.component';
 // import { Ibenchmark } from 'src/app/__Pages/__Main/Master/benchmark/benchmark.component';
 import { Iexchange } from 'src/app/__Pages/__Main/Master/exchange/exchange.component';
+import { IuploadFile } from 'src/app/__Pages/__Main/Operations/Benchmark/upload-scheme-benchmark/upload-scheme-benchmark.component';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
@@ -66,7 +67,7 @@ export class UploadCsvComponent implements OnInit {
   @Output() setSchemeType = new EventEmitter<string>();
   @Output() setCompanyMst = new EventEmitter<string>();
   @Output() getschemeMst = new EventEmitter<number>();
-
+  @Output() schemeBenchmarkUpload = new EventEmitter<IuploadFile>();
 
 
   stateMst: any =[];
@@ -95,7 +96,7 @@ export class UploadCsvComponent implements OnInit {
       fileValidators.fileExtensionValidator(this.allowedExtensions),
     ]),
     file: new FormControl(''),
-    ex_id: new FormControl('')
+    // ex_id: new FormControl('')
   });
 
   ngOnInit(): void {
@@ -161,9 +162,9 @@ export class UploadCsvComponent implements OnInit {
                }
       })
 
-      this.__upload.controls['ex_id'].valueChanges.subscribe(res =>{
-             this.getBenchmark(res);
-      })
+      // this.__upload.controls['ex_id'].valueChanges.subscribe(res =>{
+      //        this.getBenchmark(res);
+      // })
   }
   getStateMst(country_id){
     if(country_id){
@@ -191,15 +192,15 @@ export class UploadCsvComponent implements OnInit {
       }
   }
 
-  getBenchmark = (ex_id:number) =>{
-    if(ex_id){
-      this.__dbIntr.api_call(0,'/benchmark','ex_id='+ex_id).pipe(pluck('data'))
-      .subscribe((res:Ibenchmark[]) =>{
-        console.log(res);
-           this.benchmarkMst = new MatTableDataSource(res);
-      })
-    }
-  }
+  // getBenchmark = (ex_id:number) =>{
+  //   if(ex_id){
+  //     this.__dbIntr.api_call(0,'/benchmark','ex_id='+ex_id).pipe(pluck('data'))
+  //     .subscribe((res:Ibenchmark[]) =>{
+  //       console.log(res);
+  //          this.benchmarkMst = new MatTableDataSource(res);
+  //     })
+  //   }
+  // }
 
   getFiles(__ev) {
     this.__upload
@@ -265,6 +266,17 @@ export class UploadCsvComponent implements OnInit {
     }
     else if(this.flag == 'IS'){
       __upload.append('amc_id', this.__upload.get('amc_id').value);
+    }
+    else if(this.flag == 'SBU'){
+      this.schemeBenchmarkUpload.emit(
+        {
+          start_count:1,
+          end_count:500,
+          file:this.__upload.get('file').value,
+          total_count:0
+        }
+      );
+      return;
     }
     __upload.append('file', this.__upload.get('file').value);
     this.__dbIntr

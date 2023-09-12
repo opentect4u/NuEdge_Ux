@@ -651,7 +651,7 @@
         "id":18,
         "accessibility":[],
         "title":"Nav Finder",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/research/navFinder",
         "icon": "fa fa-user-o",
         "sub_menu":[]
       },

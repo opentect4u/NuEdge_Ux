@@ -28,9 +28,16 @@ export class BenchmarkEntryForReportComponent implements OnInit {
     ex_id: new FormControl('',[Validators.required]),
     benchmark:new FormControl('',[Validators.required]),
     date: new FormControl('',[Validators.required]),
-    open:new FormControl('',[Validators.required]),
-    high:new FormControl('',[Validators.required]),
-    low:new FormControl('',[Validators.required]),
+    open:new FormControl(''
+    //, [Validators.required]
+    ),
+    high:new FormControl(''
+
+    //    ,[Validators.required]
+    ),
+    low:new FormControl(''
+    // ,[Validators.required]
+    ),
     close: new FormControl('',[Validators.required]),
     id: new FormControl('0')
   })

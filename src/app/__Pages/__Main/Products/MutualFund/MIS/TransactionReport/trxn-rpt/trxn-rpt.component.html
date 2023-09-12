@@ -312,57 +312,6 @@
                   {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
                 </b>
                </ng-container>
-               <!-- <ng-container *ngSwitchCase="col.field == 'tds'">
-                <b  matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
-                  {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
-                </b>
-             </ng-container> -->
-
-                 <!-- <ng-container *ngSwitchCase="col.field == 'pur_price'">
-                  <b [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
-               </ng-container> -->
-
-               <!-- <ng-container *ngSwitchCase="col.field == 'gross_amount'">
-
-                <b [matTooltip]="trxn['trxn_code'] == 'R' ? (trxn['tot_gross_amount']? (trxn['tot_gross_amount']  | number:'1.2-2'): '0' ) : (trxn[col.field]  ? (trxn[col.field]  | number:'1.2-2'): '0' )">
-                  {{trxn['trxn_code'] == 'R' ? (trxn['tot_gross_amount'] ? (trxn['tot_gross_amount'] | number:'1.2-2'): '0') : (trxn[col.field] ? (trxn[col.field]  | number:'1.2-2') : '0') }}
-                </b>
-             </ng-container> -->
-
-
-
-
-               <!-- Net Amount Logic -->
-                <!-- <ng-container *ngSwitchCase="col.field == 'amount'">
-                  <b [matTooltip]="trxn['trxn_code'] == 'R' ? (trxn['tot_amount'] ? trxn['tot_amount'] : 0) : (trxn[col.field] ? trxn[col.field] : 0)">
-                    {{trxn['trxn_code'] == 'R' ? (trxn['tot_amount'] ? trxn['tot_amount'] : 0) : (trxn[col.field] ? trxn[col.field] : 0) }}
-                  </b>
-              </ng-container> -->
-              <!-- End -->
-
-               <!-- TDS Logic -->
-              <!-- <ng-container *ngSwitchCase="col.field == 'tds'">
-                <b [matTooltip]="trxn['trxn_code'] == 'R' ?
-                (trxn['tot_tds'] ? trxn['tot_tds'] : 0)
-                : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)">
-                   {{trxn['trxn_code'] == 'R' ?
-                   (trxn['tot_tds'] ? trxn['tot_tds'] : 0)
-                   : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)}}
-                </b>
-             </ng-container> -->
-             <!-- End -->
-
-             <!-- Stamp Duty Logic -->
-                  <!-- <ng-container *ngSwitchCase="col.field == 'stamp_duty'">
-                      <b [matTooltip]="trxn['trxn_code'] == 'R' ?
-                      (trxn['tot_stamp_duty'] ? trxn['tot_stamp_duty'] : 0)
-                      : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)">
-                        {{trxn['trxn_code'] == 'R' ?
-                        (trxn['tot_stamp_duty'] ? trxn['tot_stamp_duty'] : 0)
-                        : (trxn[col.field] && trxn[col.field] != ' ' ? trxn[col.field] : 0)}}
-                      </b>
-                </ng-container> -->
-             <!-- End -->
              <ng-container *ngSwitchCase="col.field == 'remarks'">
                 <b [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30): 'N/A'}}</b>
              </ng-container>

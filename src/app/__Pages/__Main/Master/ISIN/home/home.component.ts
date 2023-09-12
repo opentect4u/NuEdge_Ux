@@ -21,6 +21,9 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    if(this.__rtDt.snapshot.queryParamMap.get('isin_status')){
+      this.getItems(this.menu[0]);
+    }
   }
   getItems(items){
     console.log(items);

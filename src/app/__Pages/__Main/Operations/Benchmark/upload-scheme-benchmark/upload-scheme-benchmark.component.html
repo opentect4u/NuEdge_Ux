@@ -1,16 +1,18 @@
 <div class="row flexSec">
   <div class="col-sm-8 col-sm-offset-2">
     <shared-upload-csv
+    (schemeBenchmarkUpload)="uploadSchemeBenchmark($event)"
     [leftHeaderTitle]="'Upload Scheme benchmark'"
     [flag]="'SBU'" [file_name]="'Sample Scheme Benchmark'"
     [api_name]="'/benchmarkSchemeimport'"
     [columns]="tableColumns"
-    [exchange]="exchangeMst"
     [dataSource]="scheme_benchmark"
     [displayedColumns]="displayedColumns"
    ></shared-upload-csv>
   </div>
   <!-- <div class="col-sm-5"> -->
+    <!-- [exchange]="exchangeMst" -->
+
     <!-- <shared-mst-dtls [btnTitle]="'View All Plan'"
     [props]="'benchmark'"
     [headerTitle]="'Recent Plan'" [flag]="'P'"

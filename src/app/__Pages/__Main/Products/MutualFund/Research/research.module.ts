@@ -12,7 +12,12 @@ import { RouterModule, Routes } from '@angular/router';
     {
     path:'home',
     loadChildren:()=> import('./Home/home.module').then(m => m.HomeModule),
-    data:{title:' Research',pageTitle:'Research'}
+    data:{title:'Research',pageTitle:'Research'}
+    },
+    {
+     path:'navFinder',
+     loadChildren:()=> import('./nav-finder/nav-finder.module').then(m => m.NavFinderModule),
+     data:{breadcrumb:'Nav Finder',title:'Research- Nav Finder',pageTitle:'Nav Finder'}
     },
     {
     path:'',
