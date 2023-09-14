@@ -109,22 +109,26 @@
             <tr tabindex="999">
               <td *ngFor="let col of columns">
                 <ng-container [ngSwitch]="true">
-                  <ng-container *ngSwitchCase="col.field == 'file_type_id'">
+                  <!-- <ng-container *ngSwitchCase="col.field == 'file_type_id'">
                      <b>{{(file[col.field] | fileType:fileTypeMst)}}</b>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'file_id'">
                     <b>{{file[col.field] | mailBckfile:file['file_type_id']}}</b>
-                 </ng-container>
+                 </ng-container> -->
                  <ng-container *ngSwitchCase="col.field == 'process_date'">
                   <b>{{file[col.field] ? (file[col.field] | date:'dd-MM-YYYY h:mma') : 'N/A'}}</b>
                </ng-container>
 
                  <ng-container *ngSwitchCase="col.field == 'upload_file'">
+                  <!-- (click)="downloadFile(file[col.field])" -->
+
                   <a
                   [matTooltipPosition]="'after'"
                   #tooltip="matTooltip"
                   matTooltip="Download"
-                  (click)="downloadFile(file[col.field])"
+                  [href]="file[col.field]"
+                  target="_blank"
+                  download
                    styleClass="p-button-rounded p-button-danger p-button-text"
                   >
 

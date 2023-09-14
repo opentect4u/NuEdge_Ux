@@ -171,13 +171,14 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       const formdata = new FormData();
       formdata.append('ex_id',global.getActualVal(this.scmbenchmarkFrm.value.ex_id));
       formdata.append('benchmark',this.utility.mapIdfromArray(this.scmbenchmarkFrm.value.benchmark,'id'));
+      formdata.append('periods',this.scmbenchmarkFrm.getRawValue().date_periods);
 
       if(this.scmbenchmarkFrm.value.date_periods == 'D'){
             formdata.append('date_range',
         global.getActualVal(this.date_range.inputFieldValue));
       }
       else{
-        let date_format =`${this.datePipe.transform(this.scmbenchmarkFrm.value.month[0],(this.scmbenchmarkFrm.value.date_periods == 'M' ? 'MM/YYYY' : 'YYYY'))}- ${this.datePipe.transform(this.scmbenchmarkFrm.value.month[1],(this.scmbenchmarkFrm.value.date_periods == 'M' ? 'MM/YYYY' : 'YYYY'))}`
+        let date_format =`${this.datePipe.transform(this.scmbenchmarkFrm.getRawValue().month[0],(this.scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MM/YYYY' : 'YYYY'))}- ${this.datePipe.transform(this.scmbenchmarkFrm.value.month[1],(this.scmbenchmarkFrm.value.date_periods == 'M' ? 'MM/YYYY' : 'YYYY'))}`
         formdata.append('date_range',
         global.getActualVal(date_format));
       }
@@ -307,8 +308,8 @@ export interface IschemeBenchmark {
   high: string;
   low: string;
   close: string;
-  change: string;
-  prev: string;
+  change_price: string;
+  change_percentage: string;
 }
 
 export class schemeBenchmarkcolumn {
@@ -321,10 +322,9 @@ export class schemeBenchmarkcolumn {
     { field: 'high', header: 'High', width: '20rem' },
     { field: 'low', header: 'Low', width: '20rem' },
     { field: 'close', header: 'Close', width: '20rem' },
-    { field: 'change', header: 'Change', width: '20rem' },
-    { field: 'prev', header: '% of change from prv', width: '20rem' },
+    { field: 'change_price', header: 'Change', width: '20rem' },
+    { field: 'change_percentage', header: '% of change from prv', width: '20rem' },
   ];
-
 }
 
 export interface Iperiods {

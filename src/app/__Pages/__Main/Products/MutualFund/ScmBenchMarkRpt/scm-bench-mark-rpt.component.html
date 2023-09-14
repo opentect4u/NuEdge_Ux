@@ -104,10 +104,10 @@
    </div>
    <div class="card my-3">
     <div class="card-header p-0">
-      <div class="card-header sticky-header py-1 px-3 d-flex justify-content-between">
+      <div class="card-header sticky-header py-1 px-3 d-flex flex-column">
+        <div class="w-100 d-flex justify-content-between align-items-center">
         <b class="m-0 d-flex align-items-center">
           <i class="pi pi-database mr-1" style="font-size:2rem"></i>Reports</b>
-
         <div class="flex w-25">
           <span class="ml-auto">
               <input id="search" class="form-control rounded" type="text"
@@ -115,11 +115,25 @@
               placeholder="Search"
                />
           </span>
-      </div>
+        </div>
+       </div>
+        <small *ngIf="scmbrnchMstDt.length > 0">
+          Period :
+          <ng-container *ngIf="scmbenchmarkFrm.getRawValue().date_periods == 'D';else other">
+                 {{scmbenchmarkFrm.getRawValue().date_range[0] | date:'dd-MMM-YYYY'}} -  {{scmbenchmarkFrm.getRawValue().date_range[1] | date:'dd-MMM-YYYY'}}
+          </ng-container>
+          <ng-template #other>
+                 {{scmbenchmarkFrm.getRawValue().month[0] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}} -  {{scmbenchmarkFrm.getRawValue().month[1] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : ''}}
+          </ng-template>
+        </small>
 
       </div>
     </div>
     <div class="card-body">
+      <!-- [lazy]="true"
+      (onLazyLoad)="loadSchemeData($event)"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+    -->
       <p-table
       #primeTbl
       id="trxDt"
@@ -130,13 +144,12 @@
       responsiveLayout="scroll"
       [scrollable]="true"
       [columns]="column"
-      [paginator]="false"
+      [paginator]="true"
       [autoLayout]="true"
       [totalRecords]="scmbrnchMstDt.length"
       [pageLinks]="3"
-      [lazy]="true"
-      (onLazyLoad)="loadSchemeData($event)"
-      [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+
+      [rowsPerPageOptions]="[10,200,500]"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       [rows]="10"
       [showCurrentPageReport]="true"
@@ -146,12 +159,13 @@
         <ng-template pTemplate="header">
             <tr >
                 <th  *ngFor="let col of column"
-                [pSortableColumn]="col.field"
                 [style.max-width]="col.width"
                 >
                   {{ col.header }}
-                  <p-sortIcon [field]="col.field">
-                  </p-sortIcon>
+                  <!-- <p-sortIcon [field]="col.field">
+                [pSortableColumn]="col.field"
+
+                  </p-sortIcon> -->
                 </th>
             </tr>
         </ng-template>
@@ -162,13 +176,33 @@
             >
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                <p>{{i + 1}}</p>
+                <p class="m-0">{{i + 1}}</p>
              </ng-container>
               <ng-container *ngSwitchCase="col.field == 'date'">
-                <p>{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+                <p class="m-0">{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
              </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'change_price'">
+              <p
+              class='m-0 d-flex align-items-center'>
+                {{scmBenchmark[col.field]}}
+                <mat-icon
+                [ngClass]="{
+                  'text-danger':scmBenchmark[col.field].includes('-'),
+                  'text-success':!scmBenchmark[col.field].includes('-')
+                }">
+                  {{scmBenchmark[col.field].includes('-') ? 'arrow_drop_down' : 'arrow_drop_up'}}
+                </mat-icon>
+              </p>
+           </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'change_percentage'">
+                <p class="m-0">
+                  {{scmBenchmark.change_percentage?.toString().includes('-') ?
+                  scmBenchmark.change_percentage?.replace('-','')
+                  : scmBenchmark.change_percentage}}%
+                </p>
+           </ng-container>
              <ng-container *ngSwitchDefault>
-              <p [matTooltip]="scmBenchmark[col.field]">
+              <p class="m-0" [matTooltip]="scmBenchmark[col.field]">
                 {{ scmBenchmark[col.field] ? scmBenchmark[col.field] : 'N/A' }}
               </p>
             </ng-container>

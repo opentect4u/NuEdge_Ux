@@ -6,17 +6,20 @@
       {
         "id":1,
         "name":"WBR2",
-        "parent_id":1
+        "parent_id":1,
+        "rnt_id":1
       },
       {
         "id":2,
         "name":"WBR2A",
-        "parent_id":1
+        "parent_id":1,
+        "rnt_id":1
       },
       {
         "id":3,
         "name":"MFSD201",
-        "parent_id":2
+        "parent_id":2,
+        "rnt_id":2
       }
      ]
   },
@@ -27,12 +30,14 @@
       {
         "id":4,
         "name":"WBR49",
-        "parent_id":1
+        "parent_id":1,
+        "rnt_id":1
       },
       {
         "id":5,
         "name":"MFSD243",
-        "parent_id":2
+        "parent_id":2,
+        "rnt_id":2
       }
      ]
   },
@@ -43,12 +48,14 @@
       {
         "id":5,
         "name":"WBR9C",
-        "parent_id":1
+        "parent_id":1,
+        "rnt_id":1
       },
       {
         "id":6,
         "name":"MFSD240",
-        "parent_id":2
+        "parent_id":2,
+        "rnt_id":2
       }
      ]
   }

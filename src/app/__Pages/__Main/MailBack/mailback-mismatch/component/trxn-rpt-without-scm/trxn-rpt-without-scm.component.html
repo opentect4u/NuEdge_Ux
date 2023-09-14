@@ -148,7 +148,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           <ng-container *ngIf="trxn['rnt_id'] == 1;else kfIntech">
             <b>{{trxn['reinvest_flag'] ? (
               trxn['reinvest_flag']  == 'Z' ?
-              'Growth' :(trxn['reinvest_flag']  == 'Y' ? 'IDCW Reinvest' : 'IDCW Payout')
+              'Growth' :(trxn['reinvest_flag']  == 'Y' ? 'IDCW Reinvestment' : 'IDCW Payout')
               ) : (
                 'N/A'
               )}}</b>
@@ -156,7 +156,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           <ng-template #kfIntech>
             <b>{{trxn['divident_option'] ? (
               trxn['divident_option']  == 'G' ?
-              'Growth' :(trxn['divident_option']  == 'R' ? 'IDCW Reinvest' : 'IDCW Payout')
+              'Growth' :(trxn['divident_option']  == 'R' ? 'IDCW Reinvestment' : 'IDCW Payout')
               ) : (
                 'N/A'
               )}}</b>

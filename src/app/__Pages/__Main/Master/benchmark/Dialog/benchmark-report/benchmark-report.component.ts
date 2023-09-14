@@ -300,4 +300,8 @@ export class BenchmarkReportComponent implements OnInit {
   exportPdf = () =>{
 
   }
+
+  // delete = (benchmark:) =>{
+
+  // }
 }

@@ -11,8 +11,10 @@
           <p class="m-0">Select AMC{{parent_id == '46' ? '/s' : ''}} to {{parent_id == '46' ? 'merge' : (parent_id ==
             '47' ? 'replace' : 'acquisition')}}</p>
         </ng-template>
-        <!-- <ng-template #other> -->
-        <form [formGroup]="search_amc" (ngSubmit)="populateAMC()" autocomplete="off">
+        <!-- <ng-template #other>
+          (ngSubmit)="populateAMC()"
+          -->
+        <form [formGroup]="search_amc"  autocomplete="off">
 
           <div class="row">
             <div class="col-sm-5">
@@ -23,10 +25,10 @@
                 (setDisplayMode)="displayMode_for_amc = $event" (selectedItems)="getSelectedItemsFromParent($event)"
                 [isClientExistMsg]="'AMC does not exists'"></app-core-srch>
             </div>
-            <div class="col-sm-7 d-flex justify-content-end align-items-end">
+            <!-- <div class="col-sm-7 d-flex justify-content-end align-items-end">
               <button pButton pRipple type="submit" label="Populate AMC" class="p-button-primary"></button>
 
-            </div>
+            </div> -->
           </div>
 
         </form>
@@ -41,13 +43,14 @@
         <ng-template matStepLabel>
           <p class="m-0">Step 2</p>
           <p class="m-0">
-            AMC to be {{parent_id == '46' ? 'merged' : (parent_id == '47' ? 'replaced' : 'acquisition')}} with
+            AMC to  {{parent_id == '46' ? 'merge' : (parent_id == '47' ? 'replace' : 'acquisition')}} with
           </p>
         </ng-template>
         <ng-container *ngIf="parent_id == '48';else other">
+          <!-- (ngSubmit)="acquisition()" -->
           <form [formGroup]="acq_srch_frm"
           autocomplete="off"
-          (ngSubmit)="acquisition()">
+         >
             <div class="row mb-2">
               <div class="col-sm-5">
                 <app-core-srch [label]="'AMC'" [placeholder]="'Search By AMC'" [isPending]="acq_amc_spinner"
@@ -59,10 +62,10 @@
                   (selectedItems)="getSelectedItemsFromParentFor_acq_amc($event)"
                   [isClientExistMsg]="'AMC does not exists'"></app-core-srch>
               </div>
-              <div class="col-sm-7 d-flex justify-content-end align-items-end">
+              <!-- <div class="col-sm-7 d-flex justify-content-end align-items-end">
                 <button pButton pRipple type="submit"
                 label="Populate AMC" class="p-button-primary"></button>
-              </div>
+              </div> -->
             </div>
           </form>
           <hr/>

@@ -25,7 +25,7 @@
         <ng-template matStepLabel>
           <p class="m-0">Step 2</p>
           <p class="m-0">
-            Scheme to be {{parent_id == '46' ? 'merged' : (parent_id == '47' ? 'replaced' : 'acquisition')}} with
+            Scheme to {{parent_id == '46' ? 'merge' : (parent_id == '47' ? 'replace' : 'acquisition')}} with
           </p>
         </ng-template>
         <ng-container *ngIf="parent_id == '48' ;else mrge_rplc">
@@ -64,7 +64,11 @@
               </ng-multiselect-dropdown>
               </div>
               <div class="col-sm-3 d-flex justify-content-end align-items-end">
-                <button pButton pRipple type="submit" label="Populate Scheme" class="p-button-primary">
+                <button pButton pRipple type="submit"
+                label="Search"
+                icon="pi pi-search"
+                iconPos="left"
+                class="p-button-primary">
                 </button>
               </div>
             </div>
@@ -185,8 +189,14 @@
       </ng-multiselect-dropdown>
       </div>
       <div class="col-sm-3 d-flex justify-content-end align-items-end">
-        <button pButton pRipple type="submit" label="Populate Scheme" class="p-button-primary">
-        </button>
+        <!-- <button pButton pRipple type="submit" label="Populate Scheme" class="p-button-primary">
+        </button> -->
+        <button pButton pRipple type="submit"
+                label="Search"
+                icon="pi pi-search"
+                iconPos="left"
+                class="p-button-primary">
+                </button>
       </div>
     </div>
   </form>

@@ -305,7 +305,11 @@
                     <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                  </ng-container>
                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                  <b matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + trxn['option_name']) : ''}}">{{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A'}}</b>
+                  <b matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name'])) : ''}}">
+                    {{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' +
+                    (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name']))
+                    : 'N/A'
+                  }}</b>
                </ng-container>
                <ng-container *ngSwitchCase="col.field == 'tot_tds'">
                 <b matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">

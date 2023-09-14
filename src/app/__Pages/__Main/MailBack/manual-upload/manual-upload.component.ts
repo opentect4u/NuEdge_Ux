@@ -18,6 +18,8 @@ export interface rec_response {
   row_id?: number;
   upload_file_name: string | null;
   file_type_id: number;
+  // file_type_name:string | null;
+  // file_name:string | null;
   file_id: number;
   rnt_id: number;
   file?: string | null;
@@ -29,6 +31,7 @@ export class file {
   id: number;
   name: string;
   parent_id: number;
+  rnt_id:number;
 }
 
 export class fileType {
@@ -54,7 +57,7 @@ export class ManualUploadComponent implements OnInit {
     file_type_id: new FormControl('', [Validators.required]),
     file_id: new FormControl('', [Validators.required]),
     upload_file: new FormControl(''),
-    rnt_id: new FormControl('', [Validators.required]),
+    rnt_id: new FormControl(1, [Validators.required]),
     file: new FormControl('', [
       Validators.required,
       // fileValidators.fileExtensionValidator(this.allowedExtensions),
@@ -80,7 +83,9 @@ export class ManualUploadComponent implements OnInit {
   /**
    * Holding file type dropdown value comming from json file (/assets/json/fileType.json)
    */
-  fileTypeMst: fileType[] = fileTypeMenu;
+  // fileTypeMst: Partial<fileType>[] = fileTypeMenu;
+  fileTypeMst: fileType[] = [];
+
 
   /**
    * holding index number of currently active Tab
@@ -95,13 +100,15 @@ export class ManualUploadComponent implements OnInit {
   paginate: any = [];
 
   ngOnInit(): void {
+    this.getmailBackFileType();
     this.getrntMst();
   }
 
   ngAfterViewInit() {
     this.manualUpldFrm.controls['file_type_id'].valueChanges.subscribe(
       (res) => {
-        this.fileMst = this.getFileMst(res);
+        // this.fileMst = this.getFileMst(res);
+        this.getmailbackFileName(this.manualUpldFrm.value.rnt_id,res);
       }
     );
   }
@@ -121,12 +128,33 @@ export class ManualUploadComponent implements OnInit {
       });
   };
 
+  /** */
+  getmailBackFileType = () =>{
+
+    this.dbIntr.api_call(0,'/mailbackFileType',null)
+    .pipe(pluck('data'))
+    .subscribe((res:fileType[]) =>{
+      this.fileTypeMst = res;
+    })
+  }
+
+  getmailbackFileName = (rnt_id:number,file_type_id:number) =>{
+    this.dbIntr.api_call(0,'/mailbackFileName',
+    'rnt_id='+rnt_id
+    + '&file_type_id='+file_type_id)
+    .pipe(pluck('data'))
+    .subscribe((res: any) =>{
+        this.fileMst = res.map(({id,rnt_id,name}) => ({rnt_id,id,name,parent_id:rnt_id}));
+    })
+  }
+
   /**
    * Event fired after tab change and set the selected tab id inside the form
    */
   onTabChange = (ev) => {
     this.manualUpldFrm.get('rnt_id').setValue(ev.tabDtls.id);
-    this.fileMst = this.getFileMst(this.manualUpldFrm.value.file_type_id);
+    // this.fileMst = this.getFileMst(this.manualUpldFrm.value.file_type_id);
+    this.getmailbackFileName(ev.tabDtls.id,this.manualUpldFrm.value.file_type_id);
     this.getFileMstDT(ev.tabDtls.id);
   };
 
@@ -268,7 +296,7 @@ export class ManualUploadComponent implements OnInit {
         .subscribe((res) => {
           // Nothing to deal with in here
           // as i take the data and modify the data before subscribe
-          console.log(this.FileMstData);
+          // console.log(this.FileMstData);
         });
     }
   };

@@ -283,6 +283,7 @@ export class MrgRplcAcqAmcComponent implements OnInit {
       //   this.final_preview_dt.length = 0;
       //   this.final_preview_dt.push(ev.item)
       // }
+      this.populateAMC();
     }
 
     getSelectedItemsFromParentFor_acq_amc = <T extends {flag:string,item:amc}> (ev:T) =>{
@@ -294,6 +295,7 @@ export class MrgRplcAcqAmcComponent implements OnInit {
       // this.amcTblDT_foracq = [...this.amcTblDT_foracq,ev.item];
       // this.final_preview_acq_amc.length = 0;
       // this.final_preview_acq_amc.push(ev.item)
+      this.acquisition();
     }
 
     ngAfterViewInit(){
