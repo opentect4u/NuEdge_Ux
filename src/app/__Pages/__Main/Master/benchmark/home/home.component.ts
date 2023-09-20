@@ -135,7 +135,8 @@ export declare interface Ibenchmark{
      exchange_name:string;
      subcat_id:number;
      launch_date:Date;
-     launch_price:string;
+     base_value:string;
+     base_date:Date;
 }
 
 export class benchmarkClmns{
@@ -145,10 +146,11 @@ export class benchmarkClmns{
       // {field:'delete',header:'Delete',width:'6rem'},
       {field:'sl_no',header:'Sl No',width:'10rem'},
       {field:'exchange_name',header:'Exchange',width:'10rem'},
-      {field:'category_name',header:'Category',width:'16rem'},
-      {field:'subcategory_name',header:'Sub Category',width:'30rem'},
       {field:'benchmark',header:'Benchmark',width:'25rem'},
       {field:'launch_date',header:'Launch Date',width:'16rem'},
-      {field:'launch_price',header:'Launch Price',width:'16rem'}
+      {field:'base_date',header:'Base Date',width:'16rem'},
+      {field:'base_value',header:'Base Value',width:'16rem'},
+      {field:'category_name',header:'Category',width:'16rem'},
+      {field:'subcategory_name',header:'Sub Category',width:'30rem'},
     ]
 }

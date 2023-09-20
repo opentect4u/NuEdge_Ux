@@ -37,5 +37,26 @@
           "flag":"D"
         }
       ]
+  },
+  {
+    "id":2,
+    "tab_name":"NAV File",
+    "img_src":"net_asset.png",
+    "flag":"N",
+    "sub_menu":
+      [
+        {
+          "id":1,
+          "tab_name":"AMC",
+          "img_src":"",
+          "flag":"A"
+        },
+        {
+          "id":2,
+          "tab_name":"Scheme",
+          "img_src":"",
+          "flag":"S"
+        }
+      ]
   }
 ]

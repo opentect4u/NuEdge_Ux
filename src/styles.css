@@ -233,6 +233,12 @@ tr.mat-header-row {
   color: #787878;
 }
 
+.breadcrumb>li>a {
+  font-size: 11px;
+  font-weight: 500;
+  color: #787878!important;
+}
+
 .breadcrumb>li:last-child {
   color: #1f4584 !important;
 }
@@ -387,6 +393,9 @@ mat-card {
   background: #3a5076 !important;
 }
 
+.multiselect-dropdown .dropdown-btn .selected-item-container .selected-item > a {
+ display:none!important;
+}
 .multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret::before {
   border-width: 6px 6px 0 !important;
   border-color: #3a5076 transparent !important;
@@ -457,7 +466,8 @@ mat-card {
   border-width: 0px !important;
   font-weight: 600;
   color: #495057;
-  background: #222f3f;
+  /* background: #222f3f; */
+  background: #10486b;
   transition: box-shadow 0.2s;
   /* font-size: 14px !important; */
   font-size: 11px !important;
@@ -579,7 +589,8 @@ mat-card {
 
 .p-datatable .p-sortable-column:not(.p-highlight):hover,
 .p-datatable .p-sortable-column.p-highlight {
-  background-color: black !important;
+  /* background-color: black !important; */
+  background-color: #f1820b !important;
   color: #fff !important;
 }
 
@@ -617,6 +628,9 @@ mat-card {
   color:gray!important;
 }
 
+.p-datepicker{
+  z-index: 1000000!important;
+}
 
 
 

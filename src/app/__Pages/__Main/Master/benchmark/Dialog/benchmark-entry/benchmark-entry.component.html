@@ -57,17 +57,30 @@
             <span class="invalid-feedback" *ngIf="(benchmarkForm.get('launch_date')).errors?.required">*Please provide launch date</span>
           </div>
         </div>
-        <div class="col-sm-12 col-md-12 col-12 mb-2">
-          <label for="launch_price">Launch Price <span class="text-danger">*</span></label>
-          <input type="text" id="launch_price"
-           name="launch_price"
+
+        <div class="col-sm-12 col-md-12 col-12">
+          <label for="base_date">Base Date <span class="text-danger">*</span></label>
+          <input type="date" id="base_date"
+           name="base_date"
            class="form-control"
-           placeholder="Enter Launch Price"
-           formControlName="launch_price"/>
-          <div class="invalid-feedback" *ngIf="benchmarkForm.get('launch_price').invalid && (benchmarkForm.get('launch_price').dirty || benchmarkForm.get('launch_price').touched)">
-            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('launch_price')).errors?.required">*Please provide launch price</span>
+           formControlName="base_date"/>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('base_date').invalid && (benchmarkForm.get('base_date').dirty || benchmarkForm.get('base_date').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('base_date')).errors?.required">*Please provide base date</span>
           </div>
         </div>
+
+        <div class="col-sm-12 col-md-12 col-12 mb-2">
+          <label for="base_value">Base Value <span class="text-danger">*</span></label>
+          <input type="text" id="base_value"
+           name="base_value"
+           class="form-control"
+           placeholder="Enter Base Value"
+           formControlName="base_value"/>
+          <div class="invalid-feedback" *ngIf="benchmarkForm.get('base_value').invalid && (benchmarkForm.get('base_value').dirty || benchmarkForm.get('base_value').touched)">
+            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('base_value')).errors?.required">*Please provide base value</span>
+          </div>
+        </div>
+
 
         <div class="col-sm-12 col-md-12 col-12">
           <label for="category_id">Category <span class="text-danger">*</span></label>

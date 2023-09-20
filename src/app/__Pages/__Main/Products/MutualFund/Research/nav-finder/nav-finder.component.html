@@ -2,16 +2,124 @@
   <div class="col-sm-10 col-sm-offset-1">
     <div class="card">
       <div class="card-header">
-        <h4>Search Nav</h4>
+        <h4 clas="p-2">Search Nav</h4>
       </div>
-       <div class="card-body">
-            <form [formGroup]="searchNavForm">
+       <div class="card-body p-3">
+            <form [formGroup]="searchNavForm" (ngSubmit)="searchNav()">
               <div class="row">
                 <div class="col-sm-3">
-                  <label for="date_periods">
-                    Date Periods
-                  </label>
+                  <mat-radio-group color="primary" aria-label="Select an option" formControlName="plan_type">
+                    <mat-radio-button value="D">Direct</mat-radio-button>
+                    <mat-radio-button value="R" class="ml-3">Regular</mat-radio-button>
+                  </mat-radio-group>
                 </div>
+              </div>
+              <div class="row">
+
+              <div class="col-sm-4">
+                <label for="amc_id">AMC</label>
+                    <ng-multiselect-dropdown
+                    #amcDrpdown
+                    [attr.id]="'amc_id'"
+                    [placeholder]="'Select AMC'"
+                    [settings]="amc_settings"
+                    (onDeSelect)="deSelect($event,'A')"
+                    [data]="amc_dtls"
+                    formControlName="amc_id">
+                  </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-4">
+                <label for="cat_id">Category</label>
+                    <ng-multiselect-dropdown
+                    [attr.id]="'cat_id'"
+                    [placeholder]="'Select Category'"
+                    [settings]="cat_settings"
+                    (onDeSelect)="deSelect($event,'C')"
+                    [data]="cat_dtls"
+                    formControlName="cat_id">
+                  </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-4">
+                <label for="subcat_id">Sub Category</label>
+                    <ng-multiselect-dropdown
+                    [attr.id]="'subcat_id'"
+                    [placeholder]="'Select Sub Category'"
+                    [settings]="subcat_settings"
+                    (onDeSelect)="deSelect($event,'S')"
+                    [data]="subcat_dtls"
+                    formControlName="subcat_id">
+                  </ng-multiselect-dropdown>
+              </div>
+
+
+                <!-- <div class="col-sm-3">
+                  <label for="date_periods">Date Periods</label>
+                  <select name="date_periods" id="date_periods" class="form-control" formControlName="date_periods">
+                      <option value="">Select</option>
+                      <option [value]="date.id" *ngFor="let date of period">{{date.periods}}</option>
+                  </select>
+                </div>
+                <div class="col-sm-3">
+                  <label for="date_range">Date Range (From - To) <span class="text-danger">*</span></label>
+                  <p-calendar
+                  #dateRng
+                  dateFormat="dd/mm/yy"
+                  placeholder="Select Date Range"
+                  formControlName="date_range"
+                  selectionMode="range"
+                  [readonlyInput]="true"
+                  inputId="'date_range'"
+                  [showIcon]="true"
+                  [hideOnDateTimeSelect]="true"
+                  [showButtonBar]="true">
+                  </p-calendar>
+                </div> -->
+              </div>
+              <div class="row">
+                  <div class="col-sm-4">
+                    <label for="scheme_id">Scheme</label>
+                        <ng-multiselect-dropdown
+                        [attr.id]="'scheme_id'"
+                        [placeholder]="'Select Scheme'"
+                        [settings]="scheme_settings"
+                        (onDeSelect)="deSelect($event,'SC')"
+                        [data]="scheme_dtls"
+                        formControlName="scheme_id">
+                      </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-sm-4">
+                    <label for="date_periods">Date Periods</label>
+                    <select name="date_periods" id="date_periods" class="form-control" formControlName="date_periods">
+                        <option value="">Select</option>
+                        <option [value]="date.id" *ngFor="let date of period">{{date.periods}}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4">
+                    <label for="date_range">
+                      {{searchNavForm.value.date_periods == 'Y' ? 'Year(From - To)' : (searchNavForm.value.date_periods == 'M' ? 'Month (From - To)'  : 'Date Range (From - To)')}}
+
+                      <!-- <span class="text-danger">*</span> -->
+                    </label>
+                    <p-calendar
+                    #dateRng
+                    [view]="searchNavForm.value.date_periods == 'Y'  ? 'year' : (searchNavForm.value.date_periods == 'M' ? 'month' : 'date')"
+                    [dateFormat]="searchNavForm.value.date_periods == 'Y'  ? 'yy' : (searchNavForm.value.date_periods == 'M' ? 'mm/yy' : 'dd/mm/yy')"
+                    [appendTo]="'body'"
+                    [placeholder]="searchNavForm.value.date_periods == 'Y' ? 'YYYY - YYYY' : (searchNavForm.value.date_periods == 'M' ? 'MM/YYYY - MM/YYYY' : 'DD/MM/YYYY - DD/MM/YYYY')"
+                    formControlName="date_range"
+                    selectionMode="range"
+                    [readonlyInput]="true"
+                    inputId="'date_range'"
+                    [showIcon]="true"
+                    [hideOnDateTimeSelect]="true"
+                    [showButtonBar]="true">
+                    </p-calendar>
+                  </div>
+              </div>
+              <div class="row mt-1">
+                  <div class="col-sm-12 d-flex justify-content-end align-items-end">
+                    <p-button label="Search" icon="pi pi-search" iconPos="left" type="submit"></p-button>
+                  </div>
               </div>
             </form>
        </div>
@@ -19,8 +127,22 @@
   </div>
   <div class="col-sm-10 col-sm-offset-1 my-3">
      <div class="card">
-      <div class="card-header">
-        There are in total 0 nav
+      <!-- <div class="card-header">
+        There are in total {{navDt.length}} nav
+      </div> -->
+
+      <div class="card-header sticky-header py-1 px-3 d-flex justify-content-between">
+        <b class="m-0 d-flex align-items-center"><i class="pi pi-database mr-1" style="font-size:2rem"></i>NAV Reports</b>
+
+        <div class="flex w-25">
+          <span class="ml-auto">
+              <input id="search" class="form-control rounded" type="text"
+              (input)="filterGlobal($event)"
+              placeholder="search"
+               />
+          </span>
+      </div>
+
       </div>
       <div class="card-body">
         <!-- [autoLayout]="true" -->
@@ -71,6 +193,17 @@
                   {{i + 1}}
                 </b>
              </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'nav_date'">
+              <b [matTooltip]="nav[col.field] ? (nav[col.field] | date:'dd-MM-YYYY') : ''">
+                 {{nav[col.field] ? (nav[col.field] | date:'dd-MM-YYYY') : 'N/A' }}
+              </b>
+           </ng-container>
+
+             <ng-container *ngSwitchCase="col.field == 'amc_short_name'">
+              <b [matTooltip]="nav['amc_name'] ? nav['amc_name'] : (nav['amc_short_name'] ? nav['amc_short_name'] : '') ">
+                 {{nav['amc_name'] ? nav['amc_name'] : (nav['amc_short_name'] ? nav['amc_short_name'] : 'N/A') }}
+              </b>
+           </ng-container>
               <ng-container *ngSwitchDefault>
                 <b [matTooltip]="nav[col.field]">{{ nav[col.field] ? nav[col.field] : 'N/A' }}</b>
               </ng-container>

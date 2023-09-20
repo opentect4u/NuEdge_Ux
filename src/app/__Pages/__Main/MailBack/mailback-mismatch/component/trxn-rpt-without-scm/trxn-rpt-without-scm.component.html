@@ -17,7 +17,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
 [rows]="10"
 [showCurrentPageReport]="true"
 [globalFilterFields]="getColumns()"
-[tableStyle]="{ 'min-width': '350rem' }"
+[tableStyle]="{ 'min-width': tblminWidth }"
 >
   <ng-template pTemplate="caption">
     <div class="w-25">
@@ -43,6 +43,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             [field]="col.field" *ngIf="(col.field != 'isin_link'
             && col.field != 'scheme_link'
             && col.field != 'lock_trxn'
+            && col.field != 'amc_link'
             )">
             </p-sortIcon>
           </th>
@@ -165,7 +166,18 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
        </ng-container>
       <!-- End -->
 
-        <ng-container *ngSwitchCase="col.field == 'scheme_link'">
+
+      <ng-container *ngSwitchCase="col.field == 'amc_link'">
+        <!-- [routerLink]="['/main/master/productwisemenu/scheme']" -->
+
+        <p-button label="Add AMC"
+        (click)="navigateAMC()"
+        icon="pi pi-plus"
+        styleClass="p-button-link">
+        </p-button>
+      </ng-container>
+
+            <ng-container *ngSwitchCase="col.field == 'scheme_link'">
           <!-- [routerLink]="['/main/master/productwisemenu/scheme']" -->
 
           <p-button label="Add Scheme"

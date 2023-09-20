@@ -1,7 +1,7 @@
 
 
 <div class="row flexSec">
-  <div class="col-sm-10 col-sm-offset-1">
+  <div class="col-sm-12">
    <div class="card">
       <div class="card-header">
         <b  class="m-0 d-flex align-items-center">
@@ -45,7 +45,9 @@
               </select>
             </div>
             <ng-container *ngIf="(
-              scmbenchmarkFrm.getRawValue().date_periods == 'D'
+              (scmbenchmarkFrm.getRawValue().date_periods == 'D'
+              || scmbenchmarkFrm.getRawValue().date_periods == 'F'
+              || scmbenchmarkFrm.getRawValue().date_periods == 'W')
             );else month_year">
 
               <div class="col-sm-3">
@@ -79,8 +81,10 @@
               [view]="scmbenchmarkFrm.getRawValue().date_periods == 'Y'  ? 'year' : 'month'"
               [dateFormat]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'yy' : 'mm/yy'"
               [readonlyInput]="true"
+              [maxDate]="maxDate"
               inputId="pickmonth"
               selectionMode="range"
+              (onSelect)="setEndDateFormonthly_yearly()"
               formControlName="month"
               [showButtonBar]="true"
               [placeholder]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'YYYY - YYYY' : 'MM-YYYY - MM-YYYY'">
@@ -140,7 +144,7 @@
       [value]="scmbrnchMstDt"
       [responsive]="true"
       [rowHover]="true"
-      styleClass="p-datatable-striped p-datatable-sm"
+      styleClass="p-datatable-striped p-datatable-md"
       responsiveLayout="scroll"
       [scrollable]="true"
       [columns]="column"
@@ -186,6 +190,7 @@
               class='m-0 d-flex align-items-center'>
                 {{scmBenchmark[col.field]}}
                 <mat-icon
+                style="font-size:25px!important"
                 [ngClass]="{
                   'text-danger':scmBenchmark[col.field].includes('-'),
                   'text-success':!scmBenchmark[col.field].includes('-')

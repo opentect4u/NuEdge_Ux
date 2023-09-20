@@ -276,6 +276,7 @@ export class UploadCsvComponent implements OnInit {
           total_count:0
         }
       );
+      this.reset();
       return;
     }
     __upload.append('file', this.__upload.get('file').value);

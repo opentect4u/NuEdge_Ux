@@ -17,6 +17,9 @@ export class TrxnRptWithoutScmComponent implements OnInit {
 
   @Input() mismatch_flag:string;
 
+
+  @Input() tblminWidth:string | undefined = '350rem';
+
   /**
    * Holding Transaction Report which has empty scheme
    */
@@ -96,6 +99,17 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   navigate = () =>{
     this.utility.navigatewithqueryparams(
       '/main/master/productwisemenu/scheme',
+      {
+        queryParams:{
+          scheme_type:btoa('O')
+        }
+      }
+    )
+  }
+
+  navigateAMC = () =>{
+    this.utility.navigatewithqueryparams(
+      '/main/master/productwisemenu/amc',
       {
         queryParams:{
           scheme_type:btoa('O')

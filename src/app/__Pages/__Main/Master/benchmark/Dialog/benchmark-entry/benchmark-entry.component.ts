@@ -61,7 +61,8 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
 
     subcat_id: new FormControl([],[Validators.required]),
     launch_date: new FormControl(this.data.benchmark ? this.data.benchmark.launch_date : '',[Validators.required]),
-    launch_price: new FormControl(this.data.benchmark ? this.data.benchmark.launch_price : '',[Validators.required]),
+    base_value: new FormControl(this.data.benchmark ? this.data.benchmark.base_value : '',[Validators.required]),
+    base_date:new FormControl(this.data.benchmark ? this.data.benchmark.base_date : '',[Validators.required])
   });
 
   __isVisible: boolean = false;

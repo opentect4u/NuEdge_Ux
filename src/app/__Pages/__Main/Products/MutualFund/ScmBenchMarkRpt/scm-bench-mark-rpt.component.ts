@@ -34,7 +34,7 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
 
   scmbenchmarkFrm = new FormGroup({
     date_periods: new FormControl('D',[Validators.required]),
-    date_range: new FormControl(''),
+    date_range: new FormControl(''  ),
     ex_id: new FormControl('',[Validators.required]),
     benchmark: new FormControl('',[Validators.required]),
     month:new FormControl(''),
@@ -76,7 +76,8 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     //     this.getschemebenchmarkReport();
     // }, 500);
     this.maxDate = dates.calculateDates('T');
-    this.minDate = dates.calculateDates('P');
+    // this.minDate = dates.calculateDates('P');
+    console.log(this.maxDate);
   }
 
   ngAfterViewInit() {
@@ -87,6 +88,10 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       this.scmbenchmarkFrm.get('month').setValidators(res == 'D' ? null : [Validators.required]);
       this.scmbenchmarkFrm.get('date_range').updateValueAndValidity();
       this.scmbenchmarkFrm.get('month').updateValueAndValidity();
+      if(res == 'M' || res =='Y'){
+        this.maxDate =  this.maxDate = dates.calculateDates('T');
+      }
+
     })
 
      this.scmbenchmarkFrm.controls['benchmark'].valueChanges.subscribe(res =>{
@@ -102,7 +107,7 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       //     this.scmbenchmarkFrm.get('date_periods').enable();
       //  }
 
-      this.periods_type = this.getPeriodsBasedonBenchmarkSelection(res.length);
+      // this.periods_type = this.getPeriodsBasedonBenchmarkSelection(res.length);
 
      })
 
@@ -142,14 +147,36 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     });
   }
 
-  setEndDate(){
-    if(this.scmbenchmarkFrm.get('benchmark').value.length == this.benchmark.length ){
-      this.date_range.toggle();
-      this.scmbenchmarkFrm.get('date_range').setValue(
-        [this.scmbenchmarkFrm.get('date_range').value[0],new Date(this.scmbenchmarkFrm.get('date_range').value[0])]
-      )
-    }
+  setEndDateFormonthly_yearly = () =>{
+      // if(this.scmbenchmarkFrm.controls['month'].value[1]){
+      //    this.my_cal.toggle();
+      // }
+  }
 
+  setEndDate(){
+
+    if(this.benchmark.length > 0){
+      if(this.scmbenchmarkFrm.get('benchmark').value.length == this.benchmark.length ){
+        this.date_range.toggle();
+        this.scmbenchmarkFrm.get('date_range').setValue(
+          [this.scmbenchmarkFrm.get('date_range').value[0],new Date(this.scmbenchmarkFrm.get('date_range').value[0])]
+        )
+      }
+    }
+    this.setMaxDate(this.scmbenchmarkFrm.get('date_range').value[0]);
+    if(this.scmbenchmarkFrm.get('date_range').value[1]){
+        this.date_range.toggle();
+    }
+  }
+  setMaxDate = (start_date:Date) =>{
+    const  dt = new Date(start_date);
+    dt.setFullYear(start_date.getFullYear() + 1);
+    if(dt > new Date()){
+      this.maxDate = dates.calculateDates('T');
+    }
+    else{
+      this.maxDate = dt;
+    }
   }
 
   getPeriodsBasedonBenchmarkSelection = (benchmark_length:number) => {
@@ -226,16 +253,17 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
   };
 
   getBenchmarkDt = (ex_id: number) => {
+    this.scmbenchmarkFrm.controls['benchmark'].setValue([]);
     if (ex_id) {
       this.dbIntr
-        .api_call(0, '/benchmark', null)
+        .api_call(0, '/benchmark', 'ex_id='+ex_id)
         .pipe(pluck('data'))
         .subscribe((res: Ibenchmark[]) => {
           this.benchmark = res;
         });
     } else {
       this.benchmark = [];
-      this.scmbenchmarkFrm.controls['benchmark'].setValue('');
+
     }
   };
 

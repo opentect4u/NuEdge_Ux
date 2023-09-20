@@ -24,13 +24,13 @@
 .p-sortable-column-icon{
   color: #ffffff;
 }
-:host ::ng-deep
+/* :host ::ng-deep
 .p-datatable .p-sortable-column:not(.p-highlight):hover,
 .p-datatable .p-sortable-column.p-highlight
 {
   background-color: black!important;
   color:#fff!important;
-}
+} */
 .noHistoryAvailable{
   /* height: 294px!important; */
   font-size: 15px!important;
