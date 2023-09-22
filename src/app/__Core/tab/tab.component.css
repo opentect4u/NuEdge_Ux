@@ -1,5 +1,7 @@
 ::ng-deep .customTabs .mat-tab-list .mat-tab-labels .mat-tab-label-active{
-  background: #0b4bf1;
+  /* background: #0b4bf1;
+  color: #e5e5e5!important; */
+  background: #10486b;
   color: #e5e5e5!important;
 }
 ::ng-deep .customTabs .mat-ink-bar {
@@ -14,3 +16,16 @@
 ::ng-deep .lastTabs .mat-ink-bar {
   background-color: #efff00!important;
 }
+/*
+::ng-deep .mat-tab-label{
+  background: #fff;
+  border: 1px solid #e7e7e7!important;
+} */
+
+
+/* ::ng-deep .customTabs .mat-tab-list .mat-tab-labels .mat-tab-list .mat-tab-label:first-child{
+  border-top-left-radius: 10px;
+}
+::ng-deep .lastTabs .mat-tab-list .mat-tab-labels .mat-tab-label:last-child{
+  border-top-right-radius: 10px;
+} */

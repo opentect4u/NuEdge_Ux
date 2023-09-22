@@ -15,6 +15,11 @@ import { RouterModule, Routes } from '@angular/router';
         data:{title:' Portfolio Report',pageTitle:'Portfolio Report'}
       },
       {
+         path:'folio',
+         loadChildren:()=> import('./Folio/folio.module').then(m => m.FolioModule),
+         data:{title:'PortFolio - Folio Master',pageTitle:'Folio Master',breadcrumb:'Folio Master'}
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

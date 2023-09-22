@@ -58,5 +58,26 @@
           "flag":"S"
         }
       ]
+  },
+  {
+    "id":3,
+    "tab_name":"SIP/STP File",
+    "img_src":"net_asset.png",
+    "flag":"S",
+    "sub_menu":
+      [
+        {
+          "id":1,
+          "tab_name":"AMC",
+          "img_src":"",
+          "flag":"A"
+        },
+        {
+          "id":2,
+          "tab_name":"Scheme",
+          "img_src":"",
+          "flag":"S"
+        }
+      ]
   }
 ]

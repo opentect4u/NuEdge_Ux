@@ -28,7 +28,7 @@
           <div class="col-sm-3">
                <label for="date_periods">Periods</label>
                <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
-                <option value="">Select</option>
+                <option value="">Select All</option>
                 <option [value]="periods.id"  *ngFor="let periods of periods_type">{{periods.periods}}</option>
                </select>
           </div>
@@ -43,34 +43,55 @@
             formControlName="date_range"
             selectionMode="range"
             [readonlyInput]="true"
-            [id]="'date_range'"
+            (onSelect)="setEndDate()"
+            [inputId]="'date_range'"
             [showIcon]="true"
             [hideOnDateTimeSelect]="true"
             [showButtonBar]="true">
             </p-calendar>
        </div>
        <div class="col-sm-3">
-        <label for="pan_no">Investor</label>
-        <ng-multiselect-dropdown
-           [id]="'pan_no'"
-           [placeholder]="'Select Client'"
-          [settings]="settingsforClient"
-          [data]="clientMst"
-          formControlName="pan_no">
-        </ng-multiselect-dropdown>
+        <label for="view_type">View Type</label>
+        <select name="view_type"
+        id="view_type"
+        class="form-control"
+        formControlName="view_type">
+         <option value="">Select</option>
+         <option [value]="item.id" *ngFor="let item of client_type">{{item.type}}</option>
+        </select>
        </div>
-       <div class="col-sm-3">
-        <label for="amc_id">AMC</label>
-        <ng-multiselect-dropdown
-          [attr.id]="'amc_id'"
-          [placeholder]="'Select AMC'"
-          [settings]="settingsforAMCDropdown"
-          [data]="amcMst"
-          formControlName="amc_id">
-        </ng-multiselect-dropdown>
-       </div>
+
+        <div class="col-sm-3">
+          <app-core-srch
+          [label] = "'Investor'"
+          [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+          [isPending]="__isClientPending"
+          [listItems] = "__clientMst"
+          [flag] = "'C'"
+          [noDataFoundTitle]="'Sorry!! No Records Found'"
+          [noDataFoundSubTitle]="'If your result match,they will appear here'"
+          [propertiesToShow] = "['first_client_name','first_client_pan']"
+          formControlName="client_name"
+          [displayMode]="displayMode_forClient"
+          (setDisplayMode)="displayMode_forClient = $event"
+          (selectedItems)="getSelectedItemsFromParent($event)"
+          (scrollToEnd) = "loadInvestorOnScrollToEnd($event)"
+          ></app-core-srch>
+        </div>
+
+
       </div>
       <div class="row">
+        <div class="col-sm-3">
+          <label for="amc_id">AMC</label>
+          <ng-multiselect-dropdown
+            [attr.id]="'amc_id'"
+            [placeholder]="'Select AMC'"
+            [settings]="settingsforAMCDropdown"
+            [data]="amcMst"
+            formControlName="amc_id">
+          </ng-multiselect-dropdown>
+         </div>
         <div class="col-sm-3">
           <label for="cat_id">Category</label>
           <ng-multiselect-dropdown
@@ -101,6 +122,8 @@
           formControlName="scheme_id">
         </ng-multiselect-dropdown>
         </div>
+      </div>
+      <div class="row">
         <div class="col-sm-3">
           <label for="trxn_type_id">Transaction Type</label>
           <ng-multiselect-dropdown
@@ -111,9 +134,6 @@
           formControlName="trxn_type_id">
         </ng-multiselect-dropdown>
         </div>
-
-      </div>
-      <div class="row">
         <div class="col-sm-3">
           <label for="trxn_sub_type_id">Transaction Sub-Type</label>
           <ng-multiselect-dropdown
@@ -135,15 +155,9 @@
               [settings]="settingsforBrnchDropdown" [data]="branchMst" formControlName="brn_cd">
             </ng-multiselect-dropdown>
           </div>
-          <div class="col-sm-3">
-            <label for="bu_type">Business Type</label>
-            <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
-              [settings]="settingsforBuTypeDropdown" [data]="bu_type" formControlName="bu_type_id">
-            </ng-multiselect-dropdown>
-          </div>
         </ng-container>
         <ng-template #normalFilter>
-          <div class="col-sm-6 d-flex align-items-end justify-content-end">
+          <div class="col-sm-3 d-flex align-items-end justify-content-end">
             <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
           </div>
         </ng-template>
@@ -152,6 +166,12 @@
       <ng-container  *ngIf="btn_type == 'A'">
       <div class="row">
         <ng-container>
+          <div class="col-sm-3">
+            <label for="bu_type">Business Type</label>
+            <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+              [settings]="settingsforBuTypeDropdown" [data]="bu_type" formControlName="bu_type_id">
+            </ng-multiselect-dropdown>
+          </div>
           <div class="col-sm-3">
             <label for="rm_name">Relationship Manager</label>
             <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
@@ -171,10 +191,13 @@
               [settings]="settingsforEuinDropdown" [data]="euinMst" formControlName="euin_no">
             </ng-multiselect-dropdown>
           </div>
-          <div class="col-sm-3 d-flex align-items-end justify-content-end">
-            <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-          </div>
         </ng-container>
+
+      </div>
+      <div class="row">
+        <div class="col-sm-12 mt-2 d-flex align-items-end justify-content-end">
+          <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+        </div>
       </div>
     </ng-container>
   </form>

@@ -6,6 +6,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
 import { NavFinderColumns } from '../../Products/MutualFund/Research/nav-finder/nav-finder.component';
 import { Column } from 'src/app/__Model/column';
+import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 
 export interface ITab{
     id:number,
@@ -24,7 +25,8 @@ export interface IsubTab{
 
 enum API{
   'T' =  'mailbackMismatch', // For Transaction File Mismatch
-  'N' = 'mailbackMismatchNAV' // For NAV File Mismatch
+  'N' = 'mailbackMismatchNAV', // For NAV File Mismatch
+  'S'  = 'mailbackMismatchSipStp'
 }
 
 @Component({
@@ -79,6 +81,9 @@ export class MailbackMismatchComponent implements OnInit {
    *  need to show those transaction which has no scheme /AMC/Plan/Option/Bussiness Type
    */
   getTrxnRpt = (flag:string,file_flag:string) => {
+    console.log(flag);
+    console.log(file_flag);
+
     this.mismatch_flag = flag;
     this.dbIntr
       .api_call(0, `/${API[file_flag]}`, 'mismatch_flag='+flag)
@@ -99,7 +104,8 @@ export class MailbackMismatchComponent implements OnInit {
   changeTabDtls = <T extends {index:number,tabDtls:IsubTab | ITab}>(TabDtls:T,mode:string) => {
     this.trxnTypeRpt = [];
     let __mode = '';
-
+    let flag = '';
+    let file_flag = '';
     console.log(TabDtls.tabDtls);
     switch(mode){
       case 'P':
@@ -110,14 +116,20 @@ export class MailbackMismatchComponent implements OnInit {
         // this.getTrxnRpt(this.TabMenu[(this.index + 1)].sub_menu[0].flag);
         // __mode = this.TabMenu[(this.index + 1)].sub_menu[0].flag;
         this.subTab = this.TabMenu[TabDtls.index].sub_menu;
+        // this.getTrxnRpt(this.TabMenu[this.index].sub_menu[0].flag,this.TabMenu[this.index].flag);
+        flag = this.TabMenu[this.index].sub_menu[0].flag;
+        file_flag = this.TabMenu[this.index].flag;
         break;
       case 'C':
         this.sub_index = TabDtls.index;
-        this.getTrxnRpt(TabDtls.tabDtls.flag,this.TabMenu[this.index].flag);
+        // this.getTrxnRpt(TabDtls.tabDtls.flag,this.TabMenu[this.index].flag);
         __mode = TabDtls.tabDtls.flag;
+        flag = TabDtls.tabDtls.flag;
+        file_flag = this.TabMenu[this.index].flag;
         break;
       default:break;
     }
+    this.getTrxnRpt(flag,file_flag);
     this.tblWidth = this.index == 0 ? '350rem' : '150rem';
     this.column_manage(__mode);
   }
@@ -131,11 +143,16 @@ export class MailbackMismatchComponent implements OnInit {
     switch(flag){
       case 'A':
       case 'B': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))
-      :  [...NavFinderColumns.column,...NavMismatchColumnForAMCLink.column]
+      :  (this.index == 1
+      ?  [...NavFinderColumns.column,...NavMismatchColumnForAMCLink.column]
+      :  [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForAMCLink.column]
+        )
       break;
       case 'S': this.TrxnClm = this.index == 0 ?
        this.TrxnClm = trxnClm.column.filter(item => !opt_clm.includes(item.field))
-       :  [...NavFinderColumns.column,...NavMismatchColumnForSchemeLink.column];
+       :  (this.index == 1 ? [...NavFinderColumns.column,...NavMismatchColumnForSchemeLink.column]
+       :  [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForSchemeLink.column]
+        );
        break;
       case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field));break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;

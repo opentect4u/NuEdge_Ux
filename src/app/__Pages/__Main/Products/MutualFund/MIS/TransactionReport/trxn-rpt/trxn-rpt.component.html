@@ -57,23 +57,13 @@
               class="form-control"
               formControlName="view_type">
                <option value="">Select</option>
-               <option value="C">Client</option>
-               <option value="F">Family</option>
+               <!-- <option value="C">Client</option>
+               <option value="F">Family</option> -->
+               <option [value]="item.id" *ngFor="let item of client_type">{{item.type}}</option>
               </select>
             </div>
 
            <div class="col-sm-3">
-            <!-- <div class="d-flex justify-content-between align-items-center"> -->
-              <!-- <label for="pan_no">Investor</label> -->
-              <!-- <p-button label="Load Investor" styleClass="p-button-link" (click)="loadInvestor()"></p-button> -->
-            <!-- </div> -->
-            <!-- <ng-multiselect-dropdown
-               [id]="'pan_no'"
-               [placeholder]="'Select Investor'"
-              [settings]="settingsforClient"
-              [data]="clientMst"
-              formControlName="pan_no">
-            </ng-multiselect-dropdown> -->
             <app-core-srch
             [label] = "'Investor'"
             [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"

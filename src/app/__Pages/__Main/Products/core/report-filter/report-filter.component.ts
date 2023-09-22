@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild ,Inject} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { category } from 'src/app/__Model/__category';
@@ -9,8 +9,12 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import filterOpt from '../../../../../../assets/json/filterOption.json';
 import periods from '../../../../../../assets/json/datePeriods.json';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
-import { pluck } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { dates } from 'src/app/__Utility/disabledt';
+import { Calendar } from 'primeng/calendar';
+import clientType from '../../../../../../assets/json/view_type.json';
+import { client } from 'src/app/__Model/__clientMst';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'core-report-filter',
@@ -18,6 +22,15 @@ import { dates } from 'src/app/__Utility/disabledt';
   styleUrls: ['./report-filter.component.css']
 })
 export class ReportFilterComponent implements OnInit {
+
+    /**
+   * Show / hide Loader Spinner while typing inside Client Details Input Field
+   */
+    __isClientPending: boolean = false;
+
+
+  client_type= clientType;
+
 
   /**
    * For Displaying title in card header
@@ -28,6 +41,11 @@ export class ReportFilterComponent implements OnInit {
    * Holding Transaction Type  Master Data
    */
     @Input() trxnTypeMst: rntTrxnType[] = [];
+
+
+
+  /** Paginate : for holding how many result tobe fetched */
+   paginate:number = 1;
 
   /**
    * Setting of multiselect dropdown
@@ -113,6 +131,9 @@ export class ReportFilterComponent implements OnInit {
    * END
    */
 
+
+  @ViewChild('dateRng') dt_range:Calendar;
+
   /**
    * For which report this filter will work...
    * MT=> Mutual Fund Trasaction Report
@@ -126,6 +147,15 @@ export class ReportFilterComponent implements OnInit {
    * For holding client those are  present only in transaction.
    */
    @Input() clientMst:any=[];
+
+
+   __clientMst:client[] = [];
+
+
+   /**
+   * Show / hide search list dropdown after serach input match
+   */
+  displayMode_forClient: string;
 
   /**
    * For holding AMC Master Data
@@ -219,25 +249,48 @@ export class ReportFilterComponent implements OnInit {
     euin_no: new FormControl([]),
     folio_no: new FormControl(''),
     client_id: new FormControl(''),
-    pan_no:new FormControl([]),
+    pan_no:new FormControl(''),
     client_name: new FormControl(''),
     trxn_type_id: new FormControl([], { updateOn: 'blur' }),
     trxn_sub_type_id: new FormControl([], { updateOn: 'blur' }),
+    view_type:new FormControl(''),
   });
 
-  constructor(private utility:UtiliService,private dbIntr:DbIntrService) { }
+  constructor(private utility:UtiliService,private dbIntr:DbIntrService,
+    @Inject(DOCUMENT) private document: Document
+
+    ) { }
 
   ngOnInit(): void {
+    setTimeout(() => {
+    this.Rpt.get('date_periods').setValue('M',{emitEvent:true});
+    this.searchReport();
+    }, 500);
     this.maxDate= this.calculateDates('T');
     this.minDate= this.calculateDates('P');
-    this.searchReport();
   }
 
   /**
    * Event trigger after form submit
    */
   searchReport = () =>{
-       this.getsearchValues.emit(this.Rpt.value);
+    let liveSipReportFilter = Object.assign({}, this.Rpt.getRawValue(), {
+      ...this.Rpt.getRawValue(),
+     amc_id:this.utility.mapIdfromArray(this.Rpt.value.amc_id,'id'),
+     brn_cd:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.brn_id,'id') : '[]',
+     bu_type_id:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.bu_type_id,'bu_code') : '[]',
+     cat_id:this.utility.mapIdfromArray(this.Rpt.value.cat_id,'id'),
+     date_range:this.dt_range.inputFieldValue,
+     euin_no:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.euin_no,'euin_no') : '[]',
+     rm_id:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.rm_id,'euin_no') : '[]',
+     scheme_id:this.utility.mapIdfromArray(this.Rpt.value.scheme_id,'id'),
+     sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.value.sub_brk_cd,'code') : '[]',
+     sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
+     trxn_sub_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_sub_type_id,'id'),
+     trxn_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_type_id,'id')
+    })
+
+    this.getsearchValues.emit(liveSipReportFilter);
   }
 
   calculateDates  =  (mode:string):Date =>{
@@ -263,9 +316,10 @@ export class ReportFilterComponent implements OnInit {
           folio_no:'',
           trxn_type_id:[],
           date_range:'',
-          date_periods:'',
+          date_periods:'M',
           client_id:'',
-          pan_no:[]
+          pan_no:'',
+          view_type:''
          });
          this.Rpt.get('brn_cd').setValue([],{emitEvent:true});
          this.subbrkArnMst = [];
@@ -274,6 +328,25 @@ export class ReportFilterComponent implements OnInit {
          this.Rpt.controls['client_name'].setValue('',{emitEvent:false});
     }
   }
+
+  setEndDate = () =>{
+    // this.setMaxDate(this.Rpt.get('date_range').value[0]);
+  }
+
+  // setMaxDate = (start_date:Date) =>{
+  //   const  dt = new Date(start_date);
+
+  //   // if(this.Rpt.get('date_periods').value == 'M'){
+
+  //   // }
+  //   dt.setFullYear(start_date.getFullYear() + 1);
+  //   if(dt > new Date()){
+  //     this.maxDate = dates.calculateDates('T');
+  //   }
+  //   else{
+  //     this.maxDate = dt;
+  //   }
+  // }
 
  /**
   * Get Branch Master Data
@@ -289,16 +362,54 @@ export class ReportFilterComponent implements OnInit {
 
 
   ngAfterViewInit(){
+    // this.searchReport();
+
+    // this.Rpt.controls['date_periods'].valueChanges.subscribe((res) => {
+    //   this.Rpt.controls['date_range'].reset(
+    //     res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+    //   );
+    //   if (res && res != 'R') {
+    //     this.Rpt.controls['date_range'].disable();
+    //   } else {
+    //     this.Rpt.controls['date_range'].enable();
+    //   }
+    // });
+
     this.Rpt.controls['date_periods'].valueChanges.subscribe((res) => {
-      this.Rpt.controls['date_range'].reset(
-        res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
-      );
+      if(res){
+        this.Rpt.controls['date_range'].reset(
+          res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+        );
+      }
+      else{
+        this.Rpt.controls['date_range'].setValue('');
+        this.Rpt.controls['date_range'].disable();
+        return;
+      }
+
       if (res && res != 'R') {
         this.Rpt.controls['date_range'].disable();
       } else {
         this.Rpt.controls['date_range'].enable();
       }
     });
+
+
+    this.Rpt.controls['date_range'].valueChanges.subscribe((res) => {
+      if(res){
+          // this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
+        //  if(new Date(res[0]))
+            if(dates.calculatMaximumDates('R',6,new Date(res[0])) > new Date()){
+                       this.maxDate = dates.calculateDates('T');
+            }
+            else{
+              this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
+            }
+        }
+        else{
+          this.maxDate = dates.calculateDates('T');
+        }
+    })
 
       /**
        * Event Trigger after change amc
@@ -376,6 +487,50 @@ export class ReportFilterComponent implements OnInit {
       this.Rpt.controls['sub_brk_cd'].valueChanges.subscribe((res) => {
         this.setEuinDropdown(res, this.Rpt.value.rm_id);
       });
+
+
+
+       /**view_type Change*/
+       this.Rpt.controls['view_type'].valueChanges.subscribe(res =>{
+        if(res){
+          this.paginate = 1;
+          this.__clientMst = [];
+          this.Rpt.get('client_name').reset('',{emitEvent:false});
+          this.Rpt.get('pan_no').reset('');
+          this.getClientMst(res,this.paginate);
+        }
+        })
+        /**End */
+
+         /** Investor Change */
+      this.Rpt.controls['client_name'].valueChanges
+      .pipe(
+        tap(()=> this.Rpt.get('pan_no').setValue('')),
+        tap(() => (this.__isClientPending = true)),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.dbIntr.searchItems('/searchClient',
+          dt+'&view_type='+this.Rpt.value.view_type
+          ) : []
+
+        ),
+        map((x: any) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          console.log(value);
+          this.__clientMst = value;
+          this.searchResultVisibilityForClient('block');
+          this.__isClientPending = false;
+        },
+        complete: () => {},
+        error: (err) => {
+          this.__isClientPending = false;
+        },
+      });
+
+      /** End */
   }
 
 
@@ -617,6 +772,65 @@ export class ReportFilterComponent implements OnInit {
       this.RmMst = [];
       this.Rpt.controls['rm_id'].setValue([],{emitEvent:true});
     }
+  }
+
+
+    /**
+   * event trigger after select particular result from search list
+   * @param searchRlt
+   */
+    getSelectedItemsFromParent = (searchRlt: {
+      flag: string;
+      item: any;
+    }) => {
+
+      this.Rpt.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
+      this.Rpt.get('pan_no').reset(searchRlt.item.first_client_pan);
+      // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
+
+      this.searchResultVisibilityForClient('none');
+    };
+
+   /**
+   *  evnt trigger on search particular client & after select client
+   * @param display_mode
+   */
+  searchResultVisibilityForClient = (display_mode: string) => {
+    this.displayMode_forClient = display_mode;
+  };
+
+  loadInvestorOnScrollToEnd = (ev) =>{
+    console.log(this.Rpt.value.client_name);
+    if(this.Rpt.value.client_name == ''){
+      // console.log('adasd')
+      this.paginate+=1;
+    this.getClientMst(this.Rpt.value.view_type,this.paginate);
+    }
+  }
+
+  /**
+   * Get Client Master Data
+   */
+  getClientMst = (view_type:string,paginate:number | undefined = 1) =>{
+    if(view_type){
+      this.dbIntr.api_call(0,
+        '/searchClient',
+       'view_type='+view_type
+       +'&page='+paginate
+       ).pipe(pluck("data")).subscribe((res: any) =>{
+        console.log(res);
+        // this.__clientMst= res.data;
+        /** 1st Way of concat two array*/
+        // Array.prototype.push.apply( this.__clientMst, res.data);
+        /** END */
+        /** 2nd Way of concat two array*/
+        this.__clientMst.push(...res.data);
+        /**End */
+        this.searchResultVisibilityForClient('block');
+        this.document.getElementById('Investor').focus();
+       })
+    }
+
   }
 
 }

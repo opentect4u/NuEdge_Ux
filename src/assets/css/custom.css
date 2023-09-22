@@ -69,7 +69,8 @@
   border: 0px;
   outline: 0;
   /* background: #5687e6; */
-  background: #2b377b;
+  /* background: #2b377b; */
+  background: #10486b;
   /* background: #ff9800; */
   color: #f8f8f8;
   /* padding: 8px 13px; */
@@ -465,15 +466,21 @@ table {
 
 .paginator ul li a.paginateNumber{
   /* border-radius: 50%!important; */
-  border-radius: 24%!important;
+  /* border-radius: 24%!important; */
+  border-radius: 0%!important;
+
   padding: 8px 12px;
-  color: #007bff;
+  /* color: #007bff; */
 
 }
 .paginator ul li a.paginateNumber:hover{
-  cursor: pointer;
+  /* cursor: pointer;
   background: #53a6ff4f;
-  color: blue;
+  color: blue; */
+
+  cursor: pointer;
+  background: #10486b2b;
+  color: #10486b;
 }
 
 
@@ -694,8 +701,10 @@ input[name="pan"]{
 /* End */
 /* **Paginator Active class */
 .activePaginator{
-   background: #007bff!important;
-  color: #fff!important;
+   /* background: #007bff!important;
+  color: #fff!important; */
+  background: #10486b!important;
+    color: #fff!important;
 }
 /*** End*/
 .TabImg{
@@ -705,7 +714,8 @@ input[name="pan"]{
   margin-right: 6px;
 }
 .prevNext{
-  color: blue;
+  /* color: blue; */
+  color: #10486b;
 }
 .prevNext:hover{
    cursor: pointer;

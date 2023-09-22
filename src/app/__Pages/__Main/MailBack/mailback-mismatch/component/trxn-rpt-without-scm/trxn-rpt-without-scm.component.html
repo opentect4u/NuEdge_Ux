@@ -70,6 +70,20 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         </ng-container>
 
 
+
+        <!-- SIP/STP Report -->
+        <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">
+          <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+       </ng-container>
+       <ng-container *ngSwitchCase="col.field == 'product_code'">
+        <b matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
+     </ng-container>
+       <ng-container *ngSwitchCase="col.field == 'amount'">
+        <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field]) : 0 }}</b>
+     </ng-container>
+        <!-- End -->
+
+
          <ng-container *ngSwitchCase="col.field == 'trans_date'">
             <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
          </ng-container>

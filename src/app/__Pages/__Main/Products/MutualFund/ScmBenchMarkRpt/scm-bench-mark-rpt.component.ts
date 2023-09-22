@@ -25,7 +25,7 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
 
   @ViewChild('primeTbl') primeTbl: Table;
 
-  @ViewChild('MYCalendar',{static:true}) my_cal:Calendar;
+  @ViewChild('MYCalendar',{static:false}) my_cal:Calendar;
 
   /**
    *  getAccess of Prime Ng Calendar
@@ -34,7 +34,7 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
 
   scmbenchmarkFrm = new FormGroup({
     date_periods: new FormControl('D',[Validators.required]),
-    date_range: new FormControl(''  ),
+    date_range: new FormControl('',[Validators.required]),
     ex_id: new FormControl('',[Validators.required]),
     benchmark: new FormControl('',[Validators.required]),
     month:new FormControl(''),
@@ -91,25 +91,12 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       if(res == 'M' || res =='Y'){
         this.maxDate =  this.maxDate = dates.calculateDates('T');
       }
-
     })
 
-     this.scmbenchmarkFrm.controls['benchmark'].valueChanges.subscribe(res =>{
-
-
-      // if(res.length == this.benchmark.length){
-      //   this.scmbenchmarkFrm.get('date_periods').setValue('D');
-      //   this.scmbenchmarkFrm.get('date_periods').disable();
-      //   this.scmbenchmarkFrm.controls['date_range'].setValue('');
-      //  }
-
-      //  else{
-      //     this.scmbenchmarkFrm.get('date_periods').enable();
-      //  }
-
-      // this.periods_type = this.getPeriodsBasedonBenchmarkSelection(res.length);
-
-     })
+    this.scmbenchmarkFrm.controls['benchmark'].valueChanges.subscribe(res =>{
+          this.scmbenchmarkFrm.controls['date_range'].setValue('');
+          this.scmbenchmarkFrm.controls['month'].setValue('');
+    })
 
     //  this.scmbenchmarkFrm.controls['date_range']
     //  .valueChanges.subscribe(res =>{
@@ -148,19 +135,32 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
   }
 
   setEndDateFormonthly_yearly = () =>{
-      // if(this.scmbenchmarkFrm.controls['month'].value[1]){
-      //    this.my_cal.toggle();
-      // }
+    console.log(this.my_cal);
+    //
+    if(this.benchmark.length > 0){
+      if(this.scmbenchmarkFrm.get('benchmark').value.length > 1 ){
+          this.my_cal.toggle();
+          this.scmbenchmarkFrm.get('month').setValue(
+            [this.scmbenchmarkFrm.get('month').value[0],
+            new Date(this.scmbenchmarkFrm.get('month').value[0])]
+          );
+          return;
+        }
+      }
+      this.setMaxDate(this.scmbenchmarkFrm.get('month').value[0]);
+      if(this.scmbenchmarkFrm.get('month').value[1]){
+        this.my_cal.toggle();
+    }
   }
 
   setEndDate(){
-
     if(this.benchmark.length > 0){
-      if(this.scmbenchmarkFrm.get('benchmark').value.length == this.benchmark.length ){
+      if(this.scmbenchmarkFrm.get('benchmark').value.length > 1 ){
         this.date_range.toggle();
         this.scmbenchmarkFrm.get('date_range').setValue(
           [this.scmbenchmarkFrm.get('date_range').value[0],new Date(this.scmbenchmarkFrm.get('date_range').value[0])]
-        )
+        );
+        return ;
       }
     }
     this.setMaxDate(this.scmbenchmarkFrm.get('date_range').value[0]);

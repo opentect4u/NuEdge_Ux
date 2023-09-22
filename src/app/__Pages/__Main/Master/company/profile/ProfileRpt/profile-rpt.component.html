@@ -9,7 +9,7 @@
   selectionMode="multiple"
   columnResizeMode="expand"
   [scrollable]="true"
-  scrollHeight="250px"
+  [scrollHeight]="cmpMst.length > 5 ? '250px' : ''"
   class="mt-3"
   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
   [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"

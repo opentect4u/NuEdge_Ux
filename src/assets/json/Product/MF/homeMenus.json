@@ -51,7 +51,7 @@
         "id":5,
         "accessibility":[],
         "title":"Folio Master",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/portfolio/folio",
         "icon": "",
         "img":"/PortFolio/folio_master.png"
       },

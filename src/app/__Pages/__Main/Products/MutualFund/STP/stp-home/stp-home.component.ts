@@ -17,6 +17,9 @@ export interface ITab {
   styleUrls: ['./stp-home.component.css'],
 })
 export class StpHomeComponent implements OnInit {
+
+  stp_type:string = 'L';
+
   /**
    * Holding Transaction Type  Master Data
    */
@@ -69,6 +72,7 @@ export class StpHomeComponent implements OnInit {
     this.tabindex = data.index;
     console.log(data);
     this.getSubTab(data.tabDtls.flag);
+    this.stp_type = data.tabDtls.flag;
   };
 
   /**

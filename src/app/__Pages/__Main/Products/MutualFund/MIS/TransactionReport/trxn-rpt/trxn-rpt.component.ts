@@ -30,7 +30,7 @@ import { Table } from 'primeng/table';
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Observable, Subscription, from, of } from 'rxjs';
-
+import clientType from '../../../../../../../../assets/json/view_type.json';
 
 
 @Component({
@@ -49,6 +49,9 @@ export class TrxnRptComponent implements OnInit {
 
   @ViewChild('tableCard') tableCard:ElementRef
   @ViewChild('primeTbl') primeTbl :Table;
+
+
+  client_type= clientType;
 
   /** Paginate : for holding how many result tobe fetched */
    paginate:number = 1;

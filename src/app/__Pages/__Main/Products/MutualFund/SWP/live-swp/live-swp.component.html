@@ -1,5 +1,5 @@
 <core-report-filter
-(getsearchValues)="searchSipReport($event)"
+(getsearchValues)="searchSwpReport($event)"
 [title]="__title"
 [amcMst]="amc"
 [clientMst]="client"
@@ -21,16 +21,15 @@
     styleClass="p-datatable-striped"
     [autoLayout]="true"
     [scrollable]="true"
-    [resizableColumns]="true"
-    columnResizeMode="expand"
     appendTo="body"
     [columns]="column"
-    [tableStyle]="{ 'min-width': '400rem' }"
+    [tableStyle]="{ 'min-width': '330rem' }"
     >
       <ng-template pTemplate="header">
           <tr>
-              <th pResizableColumn *ngFor="let col of column" [pSortableColumn]="col.field"
-                [style.width]="col.field == 'scheme_name' ? '34rem' : '25rem'"
+              <th *ngFor="let col of column" [pSortableColumn]="col.field"
+              [style.min-width]="col.width"
+              [style.max-width]="col.width"
               >
                 {{ col.header }}
                 <p-sortIcon [field]="col.field">
@@ -40,7 +39,10 @@
       </ng-template>
       <ng-template pTemplate="body" let-trxn let-columns="columns"  let-i="rowIndex">
         <tr tabindex="999">
-          <td *ngFor="let col of column">
+          <td *ngFor="let col of column"
+          [style.min-width]="col.width"
+          [style.max-width]="col.width"
+          >
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
                 <b>{{i + 1}}</b>

@@ -16,6 +16,8 @@ export interface ITab{
 })
 export class SwpHomeComponent implements OnInit {
 
+  swp_type:string ='L';
+
   /**
    * Holding Transaction Type  Master Data
    */
@@ -54,8 +56,8 @@ export class SwpHomeComponent implements OnInit {
    */
   TabDetails = <T extends {index:number,tabDtls:{tab_name:string,id:number,img_src:string,flag:string}}>(data:T) : void => {
     this.tabindex =data.index;
-    console.log(data);
     this.getSubTab(data.tabDtls.flag);
+    this.swp_type = data.tabDtls.flag;
 
   }
 

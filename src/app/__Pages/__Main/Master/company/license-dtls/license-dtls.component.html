@@ -91,7 +91,7 @@
   selectionMode="multiple"
   columnResizeMode="expand"
   [scrollable]="true"
-  scrollHeight="250px"
+  [scrollHeight]="licenseMst.length > 5 ? '250px' : ''"
   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
   [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
   [tableStyle]="{ 'min-width': '100rem'}">

@@ -3,14 +3,19 @@ import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp
 import { IliveSwp } from '../live-swp/live_swp.interface';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { amc } from 'src/app/__Model/amc';
-
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { pluck } from 'rxjs/operators';
 @Component({
   selector: 'terminate-swp',
   templateUrl: './terminate-swp.component.html',
   styleUrls: ['./terminate-swp.component.css']
 })
 export class TerminateSwpComponent implements OnInit {
-  __title:string = 'Search Terminate STP Report';
+
+  @Input() swp_type:string;
+
+  __title:string = 'Search Terminate SWP Report';
 
   /**
  * Holding Transaction Type  Master Data
@@ -36,17 +41,27 @@ column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('TS
  */
 live_swp_rpt:Partial<IliveSwp[]> = [];
 
-constructor() { }
+constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
+
 
 ngOnInit(): void {
 }
 
-/**
-  * Get Stp Report result
-  * @param ev
-*/
-searchSipReport = (ev) =>{
-  console.log(ev);
+LiveSwpReport = (formDt) =>{
+  this.dbIntr.api_call(1,'/showSipStpDetails',
+  this.utility.convertFormData(formDt))
+  .pipe(pluck('data'))
+  .subscribe((res: IliveSwp[]) =>{
+    console.log(res);
+       this.live_swp_rpt = res;
+  })
+}
 
+/**
+   * Get Sip Report result
+   * @param ev
+   */
+searchSwpReport = (ev) =>{
+  this.LiveSwpReport({...ev,swp_type:this.swp_type});
  }
 }

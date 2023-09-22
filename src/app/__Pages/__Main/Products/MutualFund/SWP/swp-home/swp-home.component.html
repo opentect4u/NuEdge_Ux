@@ -8,13 +8,21 @@
     <div class="card p-3">
       <ng-container [ngSwitch]="true">
         <ng-container *ngIf="tabindex == 0">
-          <live-swp [amc]="amcMst" [client]="clientMst" [trxnTypeMst]="trxnTypeMst"></live-swp>
+          <live-swp
+          [amc]="amcMst"
+          [swp_type]="swp_type"
+          [client]="clientMst"
+          [trxnTypeMst]="trxnTypeMst"></live-swp>
         </ng-container>
         <ng-container *ngIf="tabindex == 1">
           <registered-swp [sub_tab]="sub_tab_menu"></registered-swp>
         </ng-container>
         <ng-container *ngIf="tabindex == 2">
-          <terminate-swp></terminate-swp>
+          <terminate-swp
+          [amc]="amcMst"
+          [swp_type]="swp_type"
+          [client]="clientMst"
+          [trxnTypeMst]="trxnTypeMst"></terminate-swp>
         </ng-container>
         <ng-container *ngIf="tabindex == 3">
           <matured-swp  [sub_tab]="sub_tab_menu"></matured-swp>

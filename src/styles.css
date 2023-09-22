@@ -70,9 +70,14 @@ label {
   border-bottom: 1px solid #d6d6d6;
   padding: 2px 28px;
   margin: 0px !important;
-  background: #3a5076;
+  /* background: #3a5076; */
+  background: #10486b;
   color: #fff;
   font-size: 18px;
+}
+
+.mat-button.mat-primary, .mat-icon-button.mat-primary, .mat-stroked-button.mat-primary{
+  color: #10486b!important;
 }
 
 .dialog-title h2 {
@@ -389,8 +394,10 @@ mat-card {
 }
 
 .multiselect-dropdown .dropdown-btn .selected-item-container .selected-item {
-  border: 1px solid #3a5076 !important;
-  background: #3a5076 !important;
+  /* border: 1px solid #3a5076 !important;
+  background: #3a5076 !important; */
+  border: 1px solid #10486b !important;
+    background: #10486b !important;
 }
 
 .multiselect-dropdown .dropdown-btn .selected-item-container .selected-item > a {
@@ -432,11 +439,22 @@ mat-card {
 }
 
 .mat-tab-label-active {
-  background: #f1820b;
+  /* background: #f1820b;
   border-right: 1px solid #fff;
   color: #fff !important;
-  font-weight: 600 !important;
+  font-weight: 600 !important; */
+
+    background: #10486b;
+    border-right: 1px solid #fff;
+    color: #fff !important;
+    font-weight: 600 !important;
 }
+
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: #f1820b;
+}
+
+
 
 .mat-tab-label>.mat-tab-label-content>.mat-icon {
   height: 22px !important;
@@ -530,8 +548,11 @@ mat-card {
 .p-button.p-button-lg {
   padding: 8px 16px !important;
 }
-
-.p-panel .p-panel-header {
+.p-button{
+background: #10486b;
+border: 1px solid #10486b;
+}
+/* .p-panel .p-panel-header {
   border: 1px solid #dee2e6;
   padding: 11px 1.25rem;
   background: #1f4584;
@@ -540,6 +561,15 @@ mat-card {
   border-top-left-radius: 6px;
   font-size: 13px;
   font-weight: 500;
+} */
+
+.p-button:enabled:hover {
+  background: #10486b;
+border: 1px solid #10486b;
+color: #ffffff;
+
+  /* background: #2563eb;
+  border-color: #2563eb; */
 }
 
 .p-scrolltop.p-link {
@@ -552,8 +582,10 @@ mat-card {
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  background: #222f3f !important;
-  border-color: #EFF6FF !important;
+  /* background: #222f3f !important;
+  border-color: #EFF6FF !important; */
+  background: #10486b !important;
+  border-color: #10486b !important;
   color: #ffffff !important;
   font-size: 11px !important;
   font-weight: 700 !important;
@@ -657,3 +689,16 @@ mat-card {
   font-size: 14px!important;
 }
 
+
+.p-button.p-button-outlined {
+  background-color: #10486b;
+  color: #ffffff;
+  border: 1px solid;
+}
+
+.p-selectbutton .p-button.p-highlight ,
+.p-selectbutton .p-button.p-highlight:hover {
+  background: #10486b;
+  border-color: #10486b;
+  color: #ffffff;
+}

@@ -3,6 +3,9 @@ import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp
 import { IliveSwp } from './live_swp.interface';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { amc } from 'src/app/__Model/amc';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'live-swp',
@@ -11,6 +14,8 @@ import { amc } from 'src/app/__Model/amc';
 })
 export class LiveSwpComponent implements OnInit {
 
+
+  @Input() swp_type:string;
 
   __title:string = 'Search Live SWP Report';
     /**
@@ -37,17 +42,27 @@ export class LiveSwpComponent implements OnInit {
   */
  live_swp_rpt:Partial<IliveSwp[]> = [];
 
- constructor() { }
+ constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
  ngOnInit(): void {
  }
+
+ LiveSwpReport = (formDt) =>{
+  this.dbIntr.api_call(1,'/showSipStpDetails',
+  this.utility.convertFormData(formDt))
+  .pipe(pluck('data'))
+  .subscribe((res: IliveSwp[]) =>{
+    console.log(res);
+       this.live_swp_rpt = res;
+  })
+}
 
 /**
    * Get Sip Report result
    * @param ev
    */
-searchSipReport = (ev) =>{
-  console.log(ev);
-
+searchSwpReport = (ev) =>{
+  // console.log(ev);
+  this.LiveSwpReport({...ev,swp_type:this.swp_type});
  }
 }

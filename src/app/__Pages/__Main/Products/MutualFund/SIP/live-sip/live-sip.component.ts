@@ -1,8 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { IliveSip } from './live_sip.interface';
 import { amc } from 'src/app/__Model/amc';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { pluck } from 'rxjs/operators';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'live-sip',
@@ -11,9 +15,12 @@ import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 })
 export class LiveSIPComponent implements OnInit {
 
+  @ViewChild('primeTbl') primeTbl: Table;
 
  __title:string = 'Search Live SIP Report';
 
+
+   @Input() sipType:string;
 
     /**
    * Holding Transaction Type  Master Data
@@ -38,11 +45,20 @@ export class LiveSIPComponent implements OnInit {
   /**
    * Hold Sip Report result
    */
-  live_sip_rpt:Partial<IliveSip[]> = [];
+  live_sip_rpt: Partial<IliveSip[]> = [];
 
-  constructor() { }
+  constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+
+  LiveSipReport = (formDt) =>{
+        this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(formDt))
+        .pipe(pluck('data'))
+        .subscribe((res: IliveSip[]) =>{
+          console.log(res);
+             this.live_sip_rpt = res;
+        })
   }
 
   /**
@@ -51,7 +67,12 @@ export class LiveSIPComponent implements OnInit {
    */
   searchSipReport = (ev) =>{
    console.log(ev);
-
+   this.LiveSipReport({...ev,sip_type:this.sipType});
   }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value, 'contains');
+  };
 
 }

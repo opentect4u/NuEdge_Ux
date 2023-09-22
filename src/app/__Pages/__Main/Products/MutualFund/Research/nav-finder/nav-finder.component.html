@@ -1,5 +1,5 @@
 <div class="row flexSec">
-  <div class="col-sm-10 col-sm-offset-1">
+  <div class="col-sm-12">
     <div class="card">
       <div class="card-header">
         <h4 clas="p-2">Search Nav</h4>
@@ -9,14 +9,15 @@
               <div class="row">
                 <div class="col-sm-3">
                   <mat-radio-group color="primary" aria-label="Select an option" formControlName="plan_type">
-                    <mat-radio-button value="D">Direct</mat-radio-button>
-                    <mat-radio-button value="R" class="ml-3">Regular</mat-radio-button>
+                    <!-- <mat-radio-button value="D">Direct</mat-radio-button>
+                    <mat-radio-button value="R" class="ml-3">Regular</mat-radio-button> -->
+                    <mat-radio-button [value]="item.id" *ngFor="let item of md_plan">{{item.plan_name}}</mat-radio-button>
                   </mat-radio-group>
                 </div>
               </div>
               <div class="row">
 
-              <div class="col-sm-4">
+              <div class="col-sm-3">
                 <label for="amc_id">AMC</label>
                     <ng-multiselect-dropdown
                     #amcDrpdown
@@ -28,7 +29,7 @@
                     formControlName="amc_id">
                   </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-4">
+              <div class="col-sm-3">
                 <label for="cat_id">Category</label>
                     <ng-multiselect-dropdown
                     [attr.id]="'cat_id'"
@@ -39,7 +40,7 @@
                     formControlName="cat_id">
                   </ng-multiselect-dropdown>
               </div>
-              <div class="col-sm-4">
+              <div class="col-sm-3">
                 <label for="subcat_id">Sub Category</label>
                     <ng-multiselect-dropdown
                     [attr.id]="'subcat_id'"
@@ -50,55 +51,31 @@
                     formControlName="subcat_id">
                   </ng-multiselect-dropdown>
               </div>
+              <div class="col-sm-3">
+                <label for="scheme_id">Scheme</label>
+                    <ng-multiselect-dropdown
+                    [attr.id]="'scheme_id'"
+                    [placeholder]="'Select Scheme'"
+                    [settings]="scheme_settings"
+                    (onDeSelect)="deSelect($event,'SC')"
+                    [data]="scheme_dtls"
+                    formControlName="scheme_id">
+                  </ng-multiselect-dropdown>
+              </div>
 
 
-                <!-- <div class="col-sm-3">
-                  <label for="date_periods">Date Periods</label>
-                  <select name="date_periods" id="date_periods" class="form-control" formControlName="date_periods">
-                      <option value="">Select</option>
-                      <option [value]="date.id" *ngFor="let date of period">{{date.periods}}</option>
-                  </select>
-                </div>
-                <div class="col-sm-3">
-                  <label for="date_range">Date Range (From - To) <span class="text-danger">*</span></label>
-                  <p-calendar
-                  #dateRng
-                  dateFormat="dd/mm/yy"
-                  placeholder="Select Date Range"
-                  formControlName="date_range"
-                  selectionMode="range"
-                  [readonlyInput]="true"
-                  inputId="'date_range'"
-                  [showIcon]="true"
-                  [hideOnDateTimeSelect]="true"
-                  [showButtonBar]="true">
-                  </p-calendar>
-                </div> -->
               </div>
               <div class="row">
-                  <div class="col-sm-4">
-                    <label for="scheme_id">Scheme</label>
-                        <ng-multiselect-dropdown
-                        [attr.id]="'scheme_id'"
-                        [placeholder]="'Select Scheme'"
-                        [settings]="scheme_settings"
-                        (onDeSelect)="deSelect($event,'SC')"
-                        [data]="scheme_dtls"
-                        formControlName="scheme_id">
-                      </ng-multiselect-dropdown>
-                  </div>
-                  <div class="col-sm-4">
+                  <div class="col-sm-3">
                     <label for="date_periods">Date Periods</label>
                     <select name="date_periods" id="date_periods" class="form-control" formControlName="date_periods">
                         <option value="">Select</option>
                         <option [value]="date.id" *ngFor="let date of period">{{date.periods}}</option>
                     </select>
                   </div>
-                  <div class="col-sm-4">
+                  <div class="col-sm-3">
                     <label for="date_range">
                       {{searchNavForm.value.date_periods == 'Y' ? 'Year(From - To)' : (searchNavForm.value.date_periods == 'M' ? 'Month (From - To)'  : 'Date Range (From - To)')}}
-
-                      <!-- <span class="text-danger">*</span> -->
                     </label>
                     <p-calendar
                     #dateRng
@@ -109,23 +86,26 @@
                     formControlName="date_range"
                     selectionMode="range"
                     [readonlyInput]="true"
+                    [maxDate]="maxDt"
                     inputId="'date_range'"
                     [showIcon]="true"
+                    (onSelect)="setEndDate()"
                     [hideOnDateTimeSelect]="true"
                     [showButtonBar]="true">
                     </p-calendar>
                   </div>
-              </div>
-              <div class="row mt-1">
-                  <div class="col-sm-12 d-flex justify-content-end align-items-end">
+                  <div class="col-sm-6 d-flex justify-content-end align-items-end">
                     <p-button label="Search" icon="pi pi-search" iconPos="left" type="submit"></p-button>
                   </div>
               </div>
+              <!-- <div class="row mt-1">
+
+              </div> -->
             </form>
        </div>
     </div>
   </div>
-  <div class="col-sm-10 col-sm-offset-1 my-3">
+  <div class="col-sm-12 my-3">
      <div class="card">
       <!-- <div class="card-header">
         There are in total {{navDt.length}} nav

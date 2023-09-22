@@ -151,10 +151,13 @@
             >
               <ng-container [ngSwitch]="true">
                 <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                  <b>{{i + 1}}</b>
+                  <span>{{i + 1}}</span>
                </ng-container>
                 <ng-container *ngSwitchDefault>
-                  <b [matTooltip]="benchmark[col.field]">{{ benchmark[col.field] ? benchmark[col.field] : 'N/A' }}</b>
+                  <span [matTooltip]="benchmark[col.field]">{{ benchmark[col.field] ? benchmark[col.field] : 'N/A' }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'launch_date' || col.field == 'base_date'">
+                        <span>{{benchmark[col.field] ? (benchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'edit'">
                   <p-button icon="pi pi-pencil" (click)="populateDT(benchmark)"

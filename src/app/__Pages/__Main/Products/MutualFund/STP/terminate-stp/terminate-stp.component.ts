@@ -3,12 +3,18 @@ import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp
 import { IliveStp } from '../live-stp/live_stp.interface';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { amc } from 'src/app/__Model/amc';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { pluck } from 'rxjs/operators';
 @Component({
   selector: 'terminate-stp',
   templateUrl: './terminate-stp.component.html',
   styleUrls: ['./terminate-stp.component.css']
 })
 export class TerminateStpComponent implements OnInit {
+
+
+  @Input() stpType:string;
 
   __title:string = 'Search Terminate STP Report';
 
@@ -37,18 +43,24 @@ column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('TS
  */
 live_stp_rpt:Partial<IliveStp[]> = [];
 
-constructor() { }
+constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
-ngOnInit(): void {
+ngOnInit(): void {}
+LiveStpReport = (formDt) =>{
+  this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(formDt))
+  .pipe(pluck('data'))
+  .subscribe((res: IliveStp[]) =>{
+    console.log(res);
+       this.live_stp_rpt = res;
+  })
 }
 
 /**
-  * Get Stp Report result
-  * @param ev
+* Get Sip Report result
+* @param ev
 */
 searchSipReport = (ev) =>{
-  console.log(ev);
-
- }
+this.LiveStpReport({...ev,stp_type:this.stpType});
+}
 
 }
