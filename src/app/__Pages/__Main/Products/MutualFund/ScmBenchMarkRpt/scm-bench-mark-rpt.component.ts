@@ -274,7 +274,6 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
 
   getColumns = () =>{
     return this.utility.getColumns(this.column);
-
   }
 }
 

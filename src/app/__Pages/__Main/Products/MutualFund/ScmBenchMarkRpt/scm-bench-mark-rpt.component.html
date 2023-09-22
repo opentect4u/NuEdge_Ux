@@ -107,7 +107,7 @@
       </div>
    </div>
    <div class="card my-3">
-    <div class="card-header p-0">
+    <!-- <div class="card-header p-0"> -->
       <div class="card-header sticky-header py-1 px-3 d-flex flex-column">
         <div class="w-100 d-flex justify-content-between align-items-center">
         <b class="m-0 d-flex align-items-center">
@@ -132,7 +132,7 @@
         </small>
 
       </div>
-    </div>
+    <!-- </div> -->
     <div class="card-body">
       <!-- [lazy]="true"
       (onLazyLoad)="loadSchemeData($event)"
@@ -166,10 +166,6 @@
                 [style.max-width]="col.width"
                 >
                   {{ col.header }}
-                  <!-- <p-sortIcon [field]="col.field">
-                [pSortableColumn]="col.field"
-
-                  </p-sortIcon> -->
                 </th>
             </tr>
         </ng-template>
@@ -215,35 +211,6 @@
             </td>
             </tr>
           </ng-template>
-
-          <!-- <ng-template pTemplate="body">
-            <tr
-            *ngFor="
-              let scmBenchmark of scmbrnchMstDt | lazyLoad;
-              let i = index
-            "
-          >
-          <td *ngFor="let col of column"
-          [style.max-width]="col.width"
-          >
-          <ng-container [ngSwitch]="true">
-            <ng-container *ngSwitchCase="col.field == 'sl_no'">
-              <p>{{i + 1}}</p>
-           </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'date'">
-              <p>{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
-           </ng-container>
-           <ng-container *ngSwitchDefault>
-            <p [matTooltip]="scmBenchmark[col.field]">
-              {{ scmBenchmark[col.field] ? scmBenchmark[col.field] : 'N/A' }}
-            </p>
-          </ng-container>
-           </ng-container>
-          </td>
-          </tr>
-
-          </ng-template> -->
-
         <ng-template pTemplate="emptymessage" let-columns>
           <tr>
             <td [attr.colSpan]="columns.length" class="noHistoryAvailable">

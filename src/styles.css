@@ -702,3 +702,12 @@ color: #ffffff;
   border-color: #10486b;
   color: #ffffff;
 }
+
+
+.p-button.p-button-link:enabled:hover .p-button-label {
+  text-decoration: none!important;
+}
+
+.p-button:enabled:hover{
+  border:none!important;
+}

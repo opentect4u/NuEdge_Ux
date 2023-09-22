@@ -139,6 +139,8 @@ export class ManualUploadComponent implements OnInit {
   }
 
   getmailbackFileName = (rnt_id:number,file_type_id:number) =>{
+    if(rnt_id && file_type_id)
+    {
     this.dbIntr.api_call(0,'/mailbackFileName',
     'rnt_id='+rnt_id
     + '&file_type_id='+file_type_id)
@@ -146,6 +148,7 @@ export class ManualUploadComponent implements OnInit {
     .subscribe((res: any) =>{
         this.fileMst = res.map(({id,rnt_id,name}) => ({rnt_id,id,name,parent_id:rnt_id}));
     })
+    }
   }
 
   /**
@@ -199,33 +202,41 @@ export class ManualUploadComponent implements OnInit {
   };
 
   reccursiveUpload = (dt: rec_response) => {
-    // if(dt.total_count == dt.end_count){
-    this.dbIntr
-      .api_call(1, '/mailbackProcess', this.utility.convertFormData(dt))
-      .pipe(pluck('data'))
-      .subscribe((res: any) => {
-        if (res.total_count == dt.end_count) {
-          this.utility.showSnackbar('File Successfully Uploaded',1);
-          // this.utility.showSnackbar(res.suc == 1 ? 'File Uploaded Successfully' : res.msg,res.suc);
-          this.updateRow(res.upload_data);
-          return;
-        }
-        dt.upload_file_name = res?.upload_file_name;
-        dt.file = '';
-        dt.upload_file = '';
-        dt.row_id = res?.row_id;
-        dt.start_count = Number(dt.end_count) + 1;
-        dt.end_count =
-          Number(res.end_count) + 500 > Number(res.total_count)
-            ? Number(res.total_count)
-            : Number(res.end_count) + 500;
-        dt.total_count = res.total_count;
-        console.log(dt);
-
-        this.reccursiveUpload(dt);
-      });
-    // }
+    this.resetForm();
+    console.log(this.manualUpldFrm.value);
+    // this.dbIntr
+    //   .api_call(1, '/mailbackProcess', this.utility.convertFormData(dt))
+    //   .pipe(pluck('data'))
+    //   .subscribe((res: any) => {
+    //     if (res.total_count == dt.end_count) {
+    //       this.utility.showSnackbar('File Successfully Uploaded',1);
+    //       // this.utility.showSnackbar(res.suc == 1 ? 'File Uploaded Successfully' : res.msg,res.suc);
+    //       this.updateRow(res.upload_data);
+    //       this.resetForm();
+    //       return;
+    //     }
+    //     dt.upload_file_name = res?.upload_file_name;
+    //     dt.file = '';
+    //     dt.upload_file = '';
+    //     dt.row_id = res?.row_id;
+    //     dt.start_count = Number(dt.end_count) + 1;
+    //     dt.end_count =
+    //       Number(res.end_count) + 500 > Number(res.total_count)
+    //         ? Number(res.total_count)
+    //         : Number(res.end_count) + 500;
+    //     dt.total_count = res.total_count;
+    //     this.reccursiveUpload(dt);
+    //   });
   };
+
+  resetForm = () =>{
+     this.manualUpldFrm.patchValue({
+      file_id:'',
+      file_type_id:'',
+      upload_file:'',
+      file:'',
+     })
+  }
 
   updateRow = (row_obj) => {
     console.log(row_obj);

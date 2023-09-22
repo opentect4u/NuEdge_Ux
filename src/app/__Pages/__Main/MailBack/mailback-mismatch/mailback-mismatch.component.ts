@@ -7,6 +7,7 @@ import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
 import { NavFinderColumns } from '../../Products/MutualFund/Research/nav-finder/nav-finder.component';
 import { Column } from 'src/app/__Model/column';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
+import { FolioColumn } from '../../Products/MutualFund/PortFolio/Folio/folio.component';
 
 export interface ITab{
     id:number,
@@ -26,7 +27,8 @@ export interface IsubTab{
 enum API{
   'T' =  'mailbackMismatch', // For Transaction File Mismatch
   'N' = 'mailbackMismatchNAV', // For NAV File Mismatch
-  'S'  = 'mailbackMismatchSipStp'
+  'S' = 'mailbackMismatchSipStp',
+  'F' = 'mailbackMismatchFolio'
 }
 
 @Component({
@@ -145,14 +147,18 @@ export class MailbackMismatchComponent implements OnInit {
       case 'B': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))
       :  (this.index == 1
       ?  [...NavFinderColumns.column,...NavMismatchColumnForAMCLink.column]
-      :  [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForAMCLink.column]
-        )
+      :  (this.index == 3
+      ? [...FolioColumn.column,...NavMismatchColumnForAMCLink.column]
+      : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForAMCLink.column]
+      ));
       break;
       case 'S': this.TrxnClm = this.index == 0 ?
        this.TrxnClm = trxnClm.column.filter(item => !opt_clm.includes(item.field))
-       :  (this.index == 1 ? [...NavFinderColumns.column,...NavMismatchColumnForSchemeLink.column]
-       :  [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForSchemeLink.column]
-        );
+       :  (this.index == 1
+       ? [...NavFinderColumns.column,...NavMismatchColumnForSchemeLink.column]
+       :  (this.index == 3 ? [...FolioColumn.column,...NavMismatchColumnForSchemeLink.column]
+        : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForSchemeLink.column]
+        ));
        break;
       case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field));break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;

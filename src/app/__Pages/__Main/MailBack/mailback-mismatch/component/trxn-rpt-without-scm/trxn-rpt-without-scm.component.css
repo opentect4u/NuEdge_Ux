@@ -23,3 +23,6 @@
         justify-content:flex-end;
       }
 
+      td{
+        word-break: break-all!important;
+      }

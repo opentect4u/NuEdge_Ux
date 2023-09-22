@@ -56,8 +56,6 @@ export class HomeComponent implements OnInit {
       .api_call(0, '/rnt', null)
       .pipe(pluck('data'))
       .subscribe((res: rnt[]) => {
-        console.log(res);
-
         this.TabMenu = res
           .sort((a, b) => a.id - b.id)
           .filter((item) => item.id == 2 || item.id == 1)
@@ -114,6 +112,7 @@ export class HomeComponent implements OnInit {
             this.pTableRef.reset();
           }
           this.populateTrxnTypeinForm(null);
+          // this.rntTrxnType.
         }
       });
   };
