@@ -16,7 +16,7 @@ export class TerminateStpComponent implements OnInit {
 
   @Input() stpType:string;
 
-  __title:string = 'Search Terminate STP Report';
+  __title:string = 'Terminate STP Report';
 
   /**
  * Holding Transaction Type  Master Data

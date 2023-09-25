@@ -16,7 +16,7 @@ import { Table } from 'primeng/table';
 export class TerminateSIPComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
-  __title: string = 'Search Terminate SIP Report';
+  __title: string = 'Terminate SIP Report';
 
   @Input() sipType: string;
 

@@ -32,6 +32,10 @@ import { DOCUMENT } from '@angular/common';
 import { Observable, Subscription, from, of } from 'rxjs';
 import clientType from '../../../../../../../../assets/json/view_type.json';
 
+ type TrxnType = {
+   reject:number;
+   process:number;
+ }
 
 @Component({
   selector: 'app-trxn-rpt',
@@ -47,9 +51,21 @@ export class TrxnRptComponent implements OnInit {
 
   subscribe:Subscription;
 
+  trxn_count:TrxnType;
+
   @ViewChild('tableCard') tableCard:ElementRef
   @ViewChild('primeTbl') primeTbl :Table;
 
+
+    /**
+     * For Showing Rejection Transaction count
+    */
+    rejection_trxn_count:number = 0;
+
+    /**
+     * For Showing Process Transaction count
+    */
+    process_trxn_count:number = 0;
 
   client_type= clientType;
 
@@ -575,7 +591,16 @@ export class TrxnRptComponent implements OnInit {
         pluck('data'),
         tap((item:TrxnRpt[]) => {
             let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
+            // this.rejection_trxn_count = item.filter(res => res.trans_sub_type.includes('Rejection')).length;
+            // this.process_trxn_count = item.filter(res => !res.trans_sub_type.includes('Rejection')).length;
+            this.trxn_count = {
+                reject:item ?  item.filter(res => res.transaction_subtype.includes('Rejection')).length : 0,
+               process:item ? item.filter(res => !res.transaction_subtype.includes('Rejection')).length : 0
+           };
+          console.log(this.trxn_count)
+
             item.map( item => {
+              // this.rejection_trxn_count = item.trans_sub_type.includes('Rejection') ?
               net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
               gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
               tds+=Number(item.tot_tds ? item.tot_tds : 0);
@@ -613,7 +638,6 @@ export class TrxnRptComponent implements OnInit {
 
 
   streamTrxn = (trxnRow:TrxnRpt) =>{
-    console.log(trxnRow);
    this.trxnRpt.push(trxnRow);
   }
 

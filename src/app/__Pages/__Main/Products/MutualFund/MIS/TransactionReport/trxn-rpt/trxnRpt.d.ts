@@ -31,6 +31,7 @@ interface TrxnRpt{
       rec_date:string | null
       trans_type:string | null
       trans_sub_type:string | null
+      transaction_subtype:string | null
       trans_nature:string | null
       te_15h:string | null
       micr_code:string | null

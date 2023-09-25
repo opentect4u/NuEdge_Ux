@@ -85,12 +85,12 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     this.scmbenchmarkFrm.controls['date_periods'].valueChanges.subscribe(res =>{
       this.scmbenchmarkFrm.controls['month'].setValue('');
       this.scmbenchmarkFrm.get('date_range').setValidators(res == 'D' ? [Validators.required] : null)
-      this.scmbenchmarkFrm.get('month').setValidators(res == 'D' ? null : [Validators.required]);
+      this.scmbenchmarkFrm.get('month').setValidators(res == 'M' ? [Validators.required] : null);
       this.scmbenchmarkFrm.get('date_range').updateValueAndValidity();
       this.scmbenchmarkFrm.get('month').updateValueAndValidity();
-      if(res == 'M' || res =='Y'){
-        this.maxDate =  this.maxDate = dates.calculateDates('T');
-      }
+      this.maxDate = dates.calculateDates('T');
+      this.minDate = null;
+
     })
 
     this.scmbenchmarkFrm.controls['benchmark'].valueChanges.subscribe(res =>{
@@ -98,11 +98,14 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
           this.scmbenchmarkFrm.controls['month'].setValue('');
     })
 
-    //  this.scmbenchmarkFrm.controls['date_range']
-    //  .valueChanges.subscribe(res =>{
-    //        console.log(res);
-
-    //  })
+     this.scmbenchmarkFrm.controls['date_range']
+     .valueChanges.subscribe(res =>{
+      console.log(res);
+           if(res == null){
+            this.maxDate =dates.calculateDates('T');
+            this.minDate = null;
+           }
+     })
 
     // this.scmbenchmarkFrm.controls['date_periods'].valueChanges.subscribe(
     //   (res) => {
@@ -136,37 +139,78 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
 
   setEndDateFormonthly_yearly = () =>{
     console.log(this.my_cal);
-    //
-    if(this.benchmark.length > 0){
-      if(this.scmbenchmarkFrm.get('benchmark').value.length > 1 ){
-          this.my_cal.toggle();
-          this.scmbenchmarkFrm.get('month').setValue(
-            [this.scmbenchmarkFrm.get('month').value[0],
-            new Date(this.scmbenchmarkFrm.get('month').value[0])]
-          );
-          return;
-        }
-      }
-      this.setMaxDate(this.scmbenchmarkFrm.get('month').value[0]);
-      if(this.scmbenchmarkFrm.get('month').value[1]){
-        this.my_cal.toggle();
+    this.minDate = null;
+    this.maxDate = dates.calculateDates('T');
+     if(this.scmbenchmarkFrm.get('benchmark').value.length == 1){
+       this.maxDate = dates.calculateDates('T');
+     }
+     else if(this.scmbenchmarkFrm.get('benchmark').value.length > 1){
+      switch(this.scmbenchmarkFrm.value.date_periods){
+       case 'D':
+       case 'F':
+       case 'M':
+       case 'W':
+         this.minDate = this.scmbenchmarkFrm.get('month').value[0];
+         this.setMaxDate(this.minDate);
+         break;
+     default:break;
+     }
+
+
+    // if(this.benchmark.length > 0){
+    //   if(this.scmbenchmarkFrm.get('benchmark').value.length > 1 ){
+    //       this.my_cal.toggle();
+    //       this.scmbenchmarkFrm.get('month').setValue(
+    //         [this.scmbenchmarkFrm.get('month').value[0],
+    //         new Date(this.scmbenchmarkFrm.get('month').value[0])]
+    //       );
+    //       return;
+    //     }
+    //   }
+    //   this.setMaxDate(this.scmbenchmarkFrm.get('month').value[0]);
+    //   if(this.scmbenchmarkFrm.get('month').value[1]){
+    //     this.my_cal.toggle();
+    // }
     }
   }
 
   setEndDate(){
-    if(this.benchmark.length > 0){
-      if(this.scmbenchmarkFrm.get('benchmark').value.length > 1 ){
-        this.date_range.toggle();
-        this.scmbenchmarkFrm.get('date_range').setValue(
-          [this.scmbenchmarkFrm.get('date_range').value[0],new Date(this.scmbenchmarkFrm.get('date_range').value[0])]
-        );
-        return ;
-      }
+    // this.setMaxDate(this.scmbenchmarkFrm.get('date_range').value[0]);
+   this.minDate = null;
+   this.maxDate = dates.calculateDates('T');
+    if(this.scmbenchmarkFrm.get('benchmark').value.length == 1){
+      this.maxDate = dates.calculateDates('T');
     }
-    this.setMaxDate(this.scmbenchmarkFrm.get('date_range').value[0]);
-    if(this.scmbenchmarkFrm.get('date_range').value[1]){
-        this.date_range.toggle();
+    else if(this.scmbenchmarkFrm.get('benchmark').value.length > 1){
+     switch(this.scmbenchmarkFrm.value.date_periods){
+      case 'D':
+      case 'F':
+      case 'M':
+      case 'W':
+        this.minDate = this.scmbenchmarkFrm.get('date_range').value[0];
+        this.setMaxDate(this.minDate);
+        break;
+    default:break;
     }
+    }
+
+
+
+    // if(this.benchmark.length > 0){
+    //   if(this.scmbenchmarkFrm.get('benchmark').value.length > 1 ){
+    //     this.date_range.toggle();
+    //     this.scmbenchmarkFrm.get('date_range').setValue(
+    //       [this.scmbenchmarkFrm.get('date_range').value[0],new Date(this.scmbenchmarkFrm.get('date_range').value[0])]
+    //     );
+    //     return ;
+    //   }
+    //   else if(this.scmbenchmarkFrm.get('benchmark').value.length == 1){
+
+    //   }
+    // }
+    // if(this.scmbenchmarkFrm.get('date_range').value[1]){
+    //     this.date_range.toggle();
+    // }
   }
   setMaxDate = (start_date:Date) =>{
     const  dt = new Date(start_date);
@@ -175,6 +219,7 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       this.maxDate = dates.calculateDates('T');
     }
     else{
+      console.log(start_date)
       this.maxDate = dt;
     }
   }
@@ -194,6 +239,20 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
   }
 
   getschemebenchmarkReport = () => {
+
+     if(this.scmbenchmarkFrm.getRawValue().date_periods == 'M'
+     || this.scmbenchmarkFrm.getRawValue().date_periods == 'Y'){
+         if(!this.scmbenchmarkFrm.getRawValue().month){
+          this.utility.showSnackbar('Please Select Valid Date Range',2);
+          return;
+         }
+     }
+     else{
+      if(!this.scmbenchmarkFrm.getRawValue().date_range){
+        this.utility.showSnackbar('Please Select Valid Date Range',2);
+        return;
+       }
+     }
     if(this.scmbenchmarkFrm.value.benchmark || this.scmbenchmarkFrm.value.ex_id){
       const formdata = new FormData();
       formdata.append('ex_id',global.getActualVal(this.scmbenchmarkFrm.value.ex_id));

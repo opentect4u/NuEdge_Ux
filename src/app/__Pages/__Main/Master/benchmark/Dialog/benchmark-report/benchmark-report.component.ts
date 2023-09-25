@@ -14,6 +14,7 @@ import { BenchmarkEntryComponent } from '../benchmark-entry/benchmark-entry.comp
 import { global } from 'src/app/__Utility/globalFunc';
 import { sort } from 'src/app/__Model/sort';
 import { Ibenchmark, benchmarkClmns } from '../../home/home.component';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 
 @Component({
   selector: 'app-benchmark-report',
@@ -301,7 +302,26 @@ export class BenchmarkReportComponent implements OnInit {
 
   }
 
-  // delete = (benchmark:) =>{
-
-  // }
+  delete = (benchmark:Ibenchmark,index:number) =>{
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'C',
+      id: benchmark.id,
+      title: 'Delete '  + benchmark.benchmark,
+      api_name:'/benchmarkDelete'
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.benchmarkMstDt.splice(index,1);
+        }
+      }
+    })
+  }
 }

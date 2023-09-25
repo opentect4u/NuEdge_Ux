@@ -3,10 +3,10 @@
     <div class="card">
       <div class="card-header p-3 d-flex justify-content-between">
          <b  class="m-0 d-flex align-items-center">
-           <mat-icon class="mr-2">
+           <!-- <mat-icon class="mr-2">
             search
-           </mat-icon>
-           Search Transaction Report
+           </mat-icon> -->
+          Transaction Report
          </b>
          <p-selectButton
             [(ngModel)]="btn_type"
@@ -218,14 +218,23 @@
 
 
     <div class="card my-3" #tableCard>
-      <div class="card-header sticky-header py-1 px-3 d-flex justify-content-between">
-        <b class="m-0 d-flex align-items-center"><i class="pi pi-database mr-1" style="font-size:2rem"></i>Reports</b>
+      <div class="card-header sticky-header py-1 px-3 d-flex align-items-center justify-content-between">
+        <span class="m-0 d-flex align-items-center">
+          <i class="pi pi-database mr-1" style="font-size:2rem">
+          </i>
+          Reports
+
+        </span>
+        <span>
+          <span>Process Transaction: {{trxn_count?.process}}</span>&nbsp; &nbsp;
+          <span class="text-danger">Reject Transaction: {{trxn_count?.reject}}</span>
+        </span>
 
         <div class="flex w-25">
           <span class="ml-auto">
               <input id="search" class="form-control rounded" type="text"
               (input)="filterGlobal($event)"
-              placeholder="search"
+              placeholder="Search"
                />
           </span>
       </div>

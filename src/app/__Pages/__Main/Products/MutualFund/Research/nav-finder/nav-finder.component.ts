@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { pluck } from 'rxjs/operators';
 import { category } from 'src/app/__Model/__category';
 import { scheme } from 'src/app/__Model/__schemeMst';
@@ -11,12 +11,12 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import periods from '../../../../../../../assets/json/Product/MF/ScmBenchmark/periods.json';
 import { MultiSelectComponent } from 'ng-multiselect-dropdown';
 import { tempProfile } from 'src/app/__Utility/Master/Company/tempProfile';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, DatePipe } from '@angular/common';
 import { Calendar } from 'primeng/calendar';
 import { Table } from 'primeng/table';
 import { dates } from 'src/app/__Utility/disabledt';
 import { plan } from 'src/app/__Model/plan';
-
+import navFinderType from '../../../../../../../assets/json/Product/MF/Reasearch/navfinderType.json';
 @Component({
   selector: 'app-nav-finder',
   templateUrl: './nav-finder.component.html',
@@ -35,6 +35,9 @@ export class NavFinderComponent implements OnInit, Nav {
     date_range: new FormControl(''),
     plan_type: new FormControl(),
   });
+
+
+  navTab = navFinderType;
 
   amc_settings = this.utility.settingsfroMultiselectDropdown(
     'id',
@@ -79,17 +82,23 @@ export class NavFinderComponent implements OnInit, Nav {
 
   md_plan:plan[] = [];
 
+  nav_type_flag:string = navFinderType[0].flag;
+
   period: { id: string; periods: string }[] = periods;
 
   constructor(
     private utility: UtiliService,
     private dbIntr: DbIntrService,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
-    this.getAmcMst();
     this.getPlan();
+    this.getAmcMst();
+    setTimeout(() => {
+      this.getNav();
+    }, 500);
   }
 
   getNavDt(): void {}
@@ -99,6 +108,7 @@ export class NavFinderComponent implements OnInit, Nav {
 
 
   ngAfterViewInit() {
+
     /*** AMC Event Change */
     this.searchNavForm.controls['amc_id'].valueChanges.subscribe((res) => {
       this.getCategoryMst(res);
@@ -252,7 +262,27 @@ export class NavFinderComponent implements OnInit, Nav {
   }
 
   searchNav = () => {
-    console.log(this.date_range.inputFieldValue);
+   if(this.nav_type_flag  == 'H'){
+     if(this.searchNavForm.invalid){
+      this.utility.showSnackbar('Validation Error!!',2);
+      return;
+     }
+     if(this.searchNavForm.value.amc_id.length > 0){
+          //  if(this.searchNavForm.value.cat_id.length == 0){
+          //   return;
+          //  }
+          //  else if(this.searchNavForm.value.subcat_id.length == 0){
+          //   return;
+          //  }
+          //  else if(this.searchNavForm.value.scheme_id.length == 0){
+          //   return;
+          //  }
+     }
+    }
+     this.getNav();
+  };
+
+  getNav = () =>{
     let dt = Object.assign({}, this.searchNavForm.getRawValue(), {
       amc_id: this.utility.mapIdfromArray(
         this.searchNavForm.getRawValue().amc_id,
@@ -270,37 +300,85 @@ export class NavFinderComponent implements OnInit, Nav {
         this.searchNavForm.getRawValue().scheme_id,
         'id'
       ),
-      date_range: this.date_range.inputFieldValue,
+      date_periods: this.nav_type_flag == 'L' ? 'D' : this.searchNavForm.value.date_periods,
+      date_range:this.nav_type_flag == 'L' ? this.getPreviousDate() :  this.date_range.inputFieldValue
     });
-    console.log(dt);
     this.dbIntr
       .api_call(1, '/showNAVDetails', this.utility.convertFormData(dt))
       .pipe(pluck('data'))
       .subscribe((res: nav[]) => {
-        console.log(res);
         this.navDt = res;
       });
-  };
+  }
+
+
+  getPreviousDate():string{
+      let dt = new Date();
+      let datePipe = new DatePipe('en-US');
+      dt.setDate(dt.getDate() - 1);
+      return `${datePipe.transform(dt,'dd/MM/YYYY')} - ${datePipe.transform(dt,'dd/MM/YYYY')}`
+  }
 
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
+
+  changeTabDtls = (ev) =>{
+    this.nav_type_flag = navFinderType[ev.index].flag;
+    /**
+     * set or remove validators depending on tab choose
+     */
+    this.setValidators(this.nav_type_flag);
+    /**
+     * If Latest Nav is selected then call api by default otherwise no need to
+     * call API
+     */
+    if(this.nav_type_flag == 'L'){
+      this.getNav()
+    }
+    else{
+         this.navDt = [];
+    }
+
+  }
+
+  setValidators(flag:string){
+    this.searchNavForm.get('date_periods').setValidators(flag == 'L' ? null : [Validators.required]);
+    this.searchNavForm.get('date_range').setValidators(flag == 'L' ? null : [Validators.required]);
+
+  }
+
 }
+
+
 
 export class NavFinderColumns {
   static column: column[] = [
-    { field: 'sl_no', header: 'Sl No', width: '10rem' },
-    { field: 'amc_short_name', header: 'AMC', width: '30rem' },
+    { field: 'sl_no', header: 'Sl No', width: '5rem' },
+    { field: 'amc_short_name', header: 'AMC', width: '25rem' },
     { field: 'scheme_name', header: 'Scheme', width: '30rem' },
-    { field: 'cat_name', header: 'Category', width: '15rem' },
+    { field: 'cat_name', header: 'Category', width: '10rem' },
     { field: 'subcat_name', header: 'Sub category', width: '20rem' },
-    { field: 'nav_date', header: 'Nav Date', width: '15rem' },
-    { field: 'nav', header: 'Nav', width: '15rem' },
+    { field: 'nav_date', header: 'Nav Date', width: '10rem' },
+    { field: 'nav', header: 'Nav', width: '10rem' },
+    { field: 'change_price', header: 'Change', width: '10rem' },
+    { field: 'change_percentage', header: '% of change from prv', width: '15rem' }
   ];
 }
 
 export interface Nav {
+
+
+
+  getPreviousDate():string;
+
+  /**
+   *  Event fired after change tab
+   *  @params ev
+   */
+  changeTabDtls:(ev)=>void;
+
   /**
    *   for holding Plan Master data
    */
@@ -426,9 +504,13 @@ export interface nav {
   amc_short_name: string;
   amc_name: string;
   scheme_name: string;
+  plan_name:string;
+  option_name:string;
   cat_name: string;
   subcat_name: string;
   nav_date: Date | null;
   nav: Number;
   id: Number;
+  change_price:string;
+  change_percentage:string;
 }

@@ -17,7 +17,7 @@ export class LiveSwpComponent implements OnInit {
 
   @Input() swp_type:string;
 
-  __title:string = 'Search Live SWP Report';
+  __title:string = 'Live SWP Report';
     /**
    * Holding Transaction Type  Master Data
    */

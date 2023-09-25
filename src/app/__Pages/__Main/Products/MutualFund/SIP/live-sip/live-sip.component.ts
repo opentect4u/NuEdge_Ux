@@ -17,7 +17,7 @@ export class LiveSIPComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
 
- __title:string = 'Search Live SIP Report';
+ __title:string = 'Live SIP Report';
 
 
    @Input() sipType:string;

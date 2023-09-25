@@ -447,7 +447,7 @@ mat-card {
     background: #10486b;
     border-right: 1px solid #fff;
     color: #fff !important;
-    font-weight: 600 !important;
+    /* font-weight: 600 !important; */
 }
 
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
@@ -710,4 +710,22 @@ color: #ffffff;
 
 .p-button:enabled:hover{
   border:none!important;
+}
+
+.p-dialog-header{
+  background-color: #10486b!important;
+  color:#fff!important;
+}
+.p-dialog .p-dialog-header .p-dialog-header-icon{
+  color: #ffffff;
+}
+.pi-times::before{
+  font-size: 14px;
+}
+.bckContainer{
+  position: fixed;
+  left: 0px;
+  background-image: linear-gradient(272deg, #10486b, #fcfcfc42);
+  height: 260px;
+  width: 100vw;
 }

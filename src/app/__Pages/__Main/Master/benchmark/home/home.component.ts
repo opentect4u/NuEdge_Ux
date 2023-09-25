@@ -143,7 +143,7 @@ export class benchmarkClmns{
     static column:column[] =
     [
       {field:'edit',header:'Edit',width:'6rem'},
-      // {field:'delete',header:'Delete',width:'6rem'},
+      {field:'delete',header:'Delete',width:'6rem'},
       {field:'sl_no',header:'Sl No',width:'10rem'},
       {field:'exchange_name',header:'Exchange',width:'10rem'},
       {field:'benchmark',header:'Benchmark',width:'25rem'},

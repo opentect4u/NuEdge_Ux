@@ -37,3 +37,88 @@
 
     </div>
   </div>
+
+  <p-dialog #countModal header="Header"
+  [(visible)]="isvisible"
+  [modal]="true"
+  [style]="{ width: '70vw',height: '400px'}"
+  [draggable]="false"
+  [resizable]="false">
+  <ng-template pTemplate="header">
+    <span class="text-xl font-bold">Mismatch Files</span>
+    </ng-template>
+
+     <div class="container mt-3">
+      <table style="width:100%">
+        <thead>
+
+          <tr>
+            <td>File</td>
+            <td class="text-right">Count</td>
+          </tr>
+        </thead>
+        <tbody>
+           <tr><th class="text-center" colspan="2">Transaction File</th></tr>
+            <tr>
+              <td class="text-left">AMC</td>
+              <td class="text-right">2</td>
+            </tr>
+            <tr>
+              <td class="text-left">Scheme</td>
+              <td class="text-right">2</td>
+            </tr>
+            <tr>
+              <td class="text-left">Plan & Option</td>
+              <td class="text-right">2</td>
+            </tr>
+            <tr>
+              <td class="text-left">Bussiness Type</td>
+              <td class="text-right">2</td>
+            </tr>
+            <tr>
+              <td class="text-left">IDCW Option</td>
+              <td class="text-right">2</td>
+            </tr>
+        </tbody>
+
+        <tbody>
+          <tr><th class="text-center" colspan="2">NAV File</th></tr>
+
+          <tr>
+            <td class="text-left">AMC</td>
+            <td class="text-right">2</td>
+          </tr>
+          <tr>
+            <td class="text-left">Scheme</td>
+            <td class="text-right">2</td>
+          </tr>
+      </tbody>
+      </table>
+      </div>
+
+      <!-- <div class="container mt-3">
+        <table style="width:100%">
+          <thead>
+            <tr><th class="text-center" colspan="2">
+              NAV File
+            </th>
+            </tr>
+            <tr>
+              <td>File</td>
+              <td class="text-right">Count</td>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <td class="text-left">AMC</td>
+                <td class="text-right">2</td>
+              </tr>
+              <tr>
+                <td class="text-left">Scheme</td>
+                <td class="text-right">2</td>
+              </tr>
+          </tbody>
+        </table>
+        </div> -->
+
+</p-dialog>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { map, pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import tabs from '../../../../../assets/json/MailBack/mailbackMismatchTab.json';
@@ -8,6 +8,7 @@ import { NavFinderColumns } from '../../Products/MutualFund/Research/nav-finder/
 import { Column } from 'src/app/__Model/column';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { FolioColumn } from '../../Products/MutualFund/PortFolio/Folio/folio.component';
+import { Dialog } from 'primeng/dialog';
 
 export interface ITab{
     id:number,
@@ -37,6 +38,9 @@ enum API{
   styleUrls: ['./mailback-mismatch.component.css'],
 })
 export class MailbackMismatchComponent implements OnInit {
+
+  @ViewChild('countModal') mismatchCount:Dialog;
+  isvisible:boolean = true;
 
   mismatch_flag:string = 'A';
 

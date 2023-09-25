@@ -16,7 +16,7 @@ export class LiveStpComponent implements OnInit {
 
   @Input() stpType:string;
 
-  __title:string = 'Search Live STP Report';
+  __title:string = 'Live STP Report';
     /**
    * Holding Transaction Type  Master Data
    */

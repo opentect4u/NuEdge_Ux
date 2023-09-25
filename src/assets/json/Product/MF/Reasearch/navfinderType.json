@@ -1,0 +1,15 @@
+[
+
+  {
+    "id":1,
+    "tab_name":"Latest NAV",
+    "flag":"L",
+    "img_src":""
+  },
+  {
+    "id":2,
+    "tab_name":"Historical NAV",
+    "flag":"H",
+    "img_src":""
+  }
+]

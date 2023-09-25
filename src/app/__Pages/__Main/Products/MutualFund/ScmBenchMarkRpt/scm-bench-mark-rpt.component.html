@@ -64,7 +64,6 @@
                 [id]="'date_range'"
                 [showIcon]="true"
                 (onSelect)="setEndDate()"
-                [hideOnDateTimeSelect]="true"
                 [showButtonBar]="true">
                 </p-calendar>
               </div>
@@ -74,12 +73,12 @@
               *ngIf="scmbenchmarkFrm.getRawValue().date_periods != ''">
               <div class="col-sm-3">
               <label for="date_range">
-                {{scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'Year' : 'Month & Years'}} <span class="text-danger">*</span>
+                {{scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'Month & Years' : 'Year' }} <span class="text-danger">*</span>
               </label>
               <p-calendar
               #MYCalendar
-              [view]="scmbenchmarkFrm.getRawValue().date_periods == 'Y'  ? 'year' : 'month'"
-              [dateFormat]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'yy' : 'mm/yy'"
+              [view]="scmbenchmarkFrm.getRawValue().date_periods == 'M'  ?'month' :  'year' "
+              [dateFormat]="scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'mm/yy' :  'yy' "
               [readonlyInput]="true"
               [maxDate]="maxDate"
               inputId="pickmonth"
@@ -87,7 +86,7 @@
               (onSelect)="setEndDateFormonthly_yearly()"
               formControlName="month"
               [showButtonBar]="true"
-              [placeholder]="scmbenchmarkFrm.getRawValue().date_periods == 'Y' ? 'YYYY - YYYY' : 'MM-YYYY - MM-YYYY'">
+              [placeholder]="scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MM-YYYY - MM-YYYY' : 'YYYY - YYYY' ">
             </p-calendar>
              </div>
             </ng-container>
@@ -127,7 +126,7 @@
                  {{scmbenchmarkFrm.getRawValue().date_range[0] | date:'dd-MMM-YYYY'}} -  {{scmbenchmarkFrm.getRawValue().date_range[1] | date:'dd-MMM-YYYY'}}
           </ng-container>
           <ng-template #other>
-                 {{scmbenchmarkFrm.getRawValue().month[0] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}} -  {{scmbenchmarkFrm.getRawValue().month[1] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : ''}}
+                 {{scmbenchmarkFrm.getRawValue().month[0] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}} -  {{scmbenchmarkFrm.getRawValue().month[1] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}}
           </ng-template>
         </small>
 

@@ -15,7 +15,7 @@ export class TerminateSwpComponent implements OnInit {
 
   @Input() swp_type:string;
 
-  __title:string = 'Search Terminate SWP Report';
+  __title:string = 'Terminate SWP Report';
 
   /**
  * Holding Transaction Type  Master Data

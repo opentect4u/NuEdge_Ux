@@ -82,7 +82,7 @@ export class ManualEntrComponent implements OnInit {
       scheme_name: new FormControl({value:scheme_name ? scheme_name : '',disabled:true},[Validators.required]),
       option_id: new FormControl({value:opt_id ? opt_id : '',disabled:this.data.isViewMode},[Validators.required]),
       plan_id: new FormControl({value:plan_id ? plan_id : '',disabled:this.data.isViewMode},[Validators.required]),
-      isin_no: new FormControl({value:isin_name ? isin_name : '',disabled:this.data.isViewMode},[Validators.required]),
+      isin_no: new FormControl({value:isin_name ? isin_name : '',disabled:this.data.isViewMode}),
       product_code: new FormControl({value:product_code ? product_code : '',disabled:this.data.isViewMode},[Validators.required])
     })
 

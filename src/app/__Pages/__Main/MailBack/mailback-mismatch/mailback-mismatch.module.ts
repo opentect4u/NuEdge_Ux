@@ -6,6 +6,10 @@ import { TrxnRptWithoutScmComponent } from './component/trxn-rpt-without-scm/trx
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
 
+/*** Angular primeng dialog box module*/
+import { DialogModule } from 'primeng/dialog';
+/*** End */
+
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 const routes: Routes = [
   {
@@ -17,6 +21,11 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [MailbackMismatchComponent, TrxnRptWithoutScmComponent],
-  imports: [CommonModule,RouterModule.forChild(routes),SharedModule,TabModule,ConfirmPopupModule],
+  imports: [CommonModule,RouterModule.forChild(routes),
+    SharedModule,
+    TabModule,
+    ConfirmPopupModule,
+    DialogModule
+  ],
 })
 export class MailbackMismatchModule {}
