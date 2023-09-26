@@ -68,6 +68,8 @@ export class NavFinderComponent implements OnInit, Nav {
 
   maxDt:Date = dates.calculateDates('T');
 
+  minDt:Date = null;
+
   navClmns: column[] = NavFinderColumns.column;
 
   navDt: nav[] = [];
@@ -145,8 +147,54 @@ export class NavFinderComponent implements OnInit, Nav {
     this.searchNavForm.controls['date_periods'].valueChanges.subscribe(
       (res) => {
         this.searchNavForm.get('date_range').setValue('');
+        this.maxDt =dates.calculateDates('T');
+        this.minDt = null;
       }
     );
+
+
+    this.searchNavForm.controls['scheme_id'].valueChanges.subscribe(
+      (res) => {
+        if(this.searchNavForm.value.date_periods == 'Y' || this.searchNavForm.value.date_periods == 'H'){
+            this.minDt = null;
+            this.maxDt = dates.calculateDates('T');
+            // this.searchNavForm.get('date_periods').setValue('D');
+        }
+        else{
+        if(this.searchNavForm.value.date_range!=null){
+        if(this.searchNavForm.value.date_range[0] != null && this.searchNavForm.value.date_range[1]!= null){
+          if(res.length == 1){
+              this.minDt = null;
+              this.maxDt = dates.calculateDates('T');
+           }
+           else{
+            console.log(this.searchNavForm.value.date_range[0]);
+            let dt = new Date(this.searchNavForm.value.date_range[0]);
+            dt.setFullYear(dt.getFullYear() + 1);
+            this.minDt = this.searchNavForm.value.date_range[0];
+            this.setMaxDate(this.minDt);
+            console.log(this.searchNavForm.value.date_range[1])
+            if(this.searchNavForm.value.date_range[1] > this.maxDt){
+              this.searchNavForm.get('date_range').setValue(
+                this.searchNavForm.value.date_range[0],
+                this.maxDt
+              );
+            }
+            }
+            }
+       }
+       }
+    }
+    );
+
+
+    this.searchNavForm.controls['date_range']
+     .valueChanges.subscribe(res =>{
+           if(res == null){
+            this.maxDt =dates.calculateDates('T');
+            this.minDt = null;
+           }
+     })
   }
 
   getColumnsForFilter(): string[] {
@@ -231,34 +279,46 @@ export class NavFinderComponent implements OnInit, Nav {
     }
   };
 
-  deSelect = (ev, mode: string) => {
-    // console.log(ev);
-    // console.log(mode);
-    // // console.log(this.amcDrpdown.);
-    // switch(mode){
-    //   case 'A':
-    //     this.searchNavForm.controls['amc_id'].setValue(
-    //       this.amc_dtls.filter(el =>
-    //         this.amcDrpdown.selectedItems.map(item => item.id).includes(el.id)
-    //         )
-    //       );
-    //   break;
-    //   case 'C':
-    //   this.searchNavForm.controls['cat_id'].setValue(this.searchNavForm.value.cat_id.filter(item => item.id != ev.id))
-    //   break;
-    //   case 'S':
-    //   this.searchNavForm.controls['subcat_id'].setValue(this.searchNavForm.value.subcat_id.filter(item => item.id != ev.id))
-    //   break;
-    //   case 'S':
-    //   this.searchNavForm.controls['scheme_id'].setValue(this.searchNavForm.value.scheme_id.filter(item => item.id != ev.id))
-    //   break;
-    // }
-  };
+  deSelect = (ev, mode: string) => {};
+
+  setTodayDate():Date{
+     return dates.calculateDates('T');
+  }
 
   setEndDate  =  () =>{
+  this.minDt = null;
+  this.maxDt = this.setTodayDate();
+  console.log(this.searchNavForm.value.scheme_id.length);
+  if(this.searchNavForm.value.scheme_id.length == 1){
+    this.maxDt = this.setTodayDate();
+  }
+  else{
+    switch(this.searchNavForm.value.date_periods){
+      case 'D':
+      case 'F':
+      case 'M':
+      case 'W':
+        this.minDt = this.searchNavForm.get('date_range').value[0];
+        this.setMaxDate(this.minDt);
+        break;
+      default:break;
+
+    }
+  }
     if(this.searchNavForm.get('date_range').value[1]){
       this.date_range.toggle();
+    }
   }
+
+  setMaxDate = (start_date:Date) =>{
+    const  dt = new Date(start_date);
+    dt.setFullYear(start_date.getFullYear() + 1);
+    if(dt > new Date()){
+      this.maxDt = dates.calculateDates('T');
+    }
+    else{
+      this.maxDt = dt;
+    }
   }
 
   searchNav = () => {
@@ -266,17 +326,6 @@ export class NavFinderComponent implements OnInit, Nav {
      if(this.searchNavForm.invalid){
       this.utility.showSnackbar('Validation Error!!',2);
       return;
-     }
-     if(this.searchNavForm.value.amc_id.length > 0){
-          //  if(this.searchNavForm.value.cat_id.length == 0){
-          //   return;
-          //  }
-          //  else if(this.searchNavForm.value.subcat_id.length == 0){
-          //   return;
-          //  }
-          //  else if(this.searchNavForm.value.scheme_id.length == 0){
-          //   return;
-          //  }
      }
     }
      this.getNav();
@@ -334,6 +383,7 @@ export class NavFinderComponent implements OnInit, Nav {
      * If Latest Nav is selected then call api by default otherwise no need to
      * call API
      */
+    this.reset();
     if(this.nav_type_flag == 'L'){
       this.getNav()
     }
@@ -341,6 +391,20 @@ export class NavFinderComponent implements OnInit, Nav {
          this.navDt = [];
     }
 
+  }
+
+  reset = () =>{
+    this.searchNavForm.patchValue({
+      amc_id: [],
+      cat_id: [],
+      subcat_id: [],
+      scheme_id: [],
+      date_periods: 'D',
+      date_range: '',
+      plan_type: 1,
+    });
+    this.minDt = null;
+    this.maxDt = dates.calculateDates('T');
   }
 
   setValidators(flag:string){
@@ -388,6 +452,11 @@ export interface Nav {
    *  Maximum Date selection
    */
   maxDt: Date;
+
+ /**
+   *  Maximum Date selection
+  */
+  minDt:Date;
 
   /**
    * holding AMC details

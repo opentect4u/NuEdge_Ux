@@ -94,11 +94,19 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     })
 
     this.scmbenchmarkFrm.controls['benchmark'].valueChanges.subscribe(res =>{
-          this.scmbenchmarkFrm.controls['date_range'].setValue('');
-          this.scmbenchmarkFrm.controls['month'].setValue('');
+          this.scmbenchmarkFrm.controls['date_range'].setValue(null,{emitEvent:true});
+          this.scmbenchmarkFrm.controls['month'].setValue(null,{emitEvent:true});
     })
 
      this.scmbenchmarkFrm.controls['date_range']
+     .valueChanges.subscribe(res =>{
+      console.log(res);
+           if(res == null){
+            this.maxDate =dates.calculateDates('T');
+            this.minDate = null;
+           }
+     })
+     this.scmbenchmarkFrm.controls['month']
      .valueChanges.subscribe(res =>{
       console.log(res);
            if(res == null){
@@ -219,7 +227,6 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       this.maxDate = dates.calculateDates('T');
     }
     else{
-      console.log(start_date)
       this.maxDate = dt;
     }
   }
