@@ -1,0 +1,74 @@
+<div class="card my-3">
+  <div class="card-header d-flex justify-content-between">
+    <div class="d-flex justify-content-between align-items-center">
+    </div>
+
+      <div class="flex w-25">
+          <span class="ml-auto">
+              <input class="form-control" type="text"
+              (input)="filterGlobal($event)"
+               placeholder="Search " />
+          </span>
+      </div>
+  </div>
+  <div class="card-body">
+    <!-- scrollHeight="350px" -->
+
+    <p-table
+    #pTableRef
+    responsiveLayout="scroll"
+    [value]="trxnTypeMst"
+    [responsive]="true"
+    [rowHover]="true"
+    styleClass="p-datatable-striped"
+    [autoLayout]="true"
+    [scrollable]="true"
+    [paginator]="true"
+    [totalRecords]="trxnTypeMst.length"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [globalFilterFields]="getColumns()"
+    >
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th  *ngFor="let col of column"
+          [pSortableColumn]="col.field"
+          >
+            {{ col.header }}
+            <p-sortIcon *ngIf="col.field!='edit'" [field]="col.field">
+            </p-sortIcon>
+          </th>
+      </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-file let-index="rowIndex">
+        <tr>
+          <td *ngFor="let col of column">
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'edit'">
+                <p-button icon="pi pi-pencil" (click)="populateTrxnTypeinForm(file)"
+                  styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <b>{{ file[col.field] ? file[col.field]  : 'N/A'}}
+               </b>
+             </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-file>
+        <tr [style.height]="'309px'">
+          <td [attr.colspan]="5">
+             <h4>No Records Found</h4>
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  </div>
+  <div class="card-footer">
+    In Total There Are {{trxnTypeMst.length}} Transaction type
+  </div>
+</div>

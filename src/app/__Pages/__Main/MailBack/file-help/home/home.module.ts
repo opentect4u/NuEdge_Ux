@@ -4,12 +4,14 @@ import { HomeComponent } from './home.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
+import { FileHelpTblComponent } from './file-help-tbl/file-help-tbl.component';
 
  const routes:Routes = [{path:'',component:HomeComponent,data:{title:' File Help',pageTitle:'File Help'}}]
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
+    FileHelpTblComponent
   ],
   imports: [
     CommonModule,

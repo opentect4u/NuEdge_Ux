@@ -10,3 +10,23 @@ export class trxnTypeClmns{
                           {field:'k_divident_flag',header:'Divident Flag',isVisible:[2]}
         ]
 }
+
+export class systamaticTransClmns{
+  public static columns =[
+    {field:'edit',header:'Edit',isVisible:[1,2]},
+    {field:'rnt_name',header:'R&T',isVisible:[1,2]},
+    {field:'trans_type',header:'Trxn Type',isVisible:[1,2]},
+    {field:'trans_type_code',header:'File Trxn Type',isVisible:[1,2]},
+]
+}
+
+export class systamaticFreqClmns{
+  public static columns =[
+    {field:'edit',header:'Edit',isVisible:[1,2]},
+    {field:'rnt_name',header:'R&T',isVisible:[1,2]},
+    {field:'freq_name',header:'Frequency',isVisible:[1,2]},
+    {field:'freq_code',header:'Frequency Code',isVisible:[1,2]},
+]
+}
+
+

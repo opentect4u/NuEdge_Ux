@@ -16,8 +16,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { pluck } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
-import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
-import { trxnTypeClmns } from 'src/app/__Utility/MailBack/trxnTypeClmns';
+import { ISystematicTransaction, ISystematiceFrequency, rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
+import { systamaticFreqClmns, systamaticTransClmns, trxnTypeClmns } from 'src/app/__Utility/MailBack/trxnTypeClmns';
 import { DOCUMENT } from '@angular/common';
 import { Table } from 'primeng/table';
 
@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
   sub_tab:string; // for maintan second tab
   file_help: IFileHelpTab[] = fileHelp;
   rnt_mst_dt: Partial<ISubmenu>[] = [];
-  trxnTypeMst:rntTrxnType[] = [];
+  trxnTypeMst:any = [];
   columns: { field: string; header: string; isVisible: number[] }[] = [];
 
   @ViewChild('trxnType') trxnType:ElementRef<HTMLInputElement>;
@@ -51,6 +51,8 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     c_k_trans_type: new FormControl(''),
     c_k_trans_sub_type: new FormControl(''),
     k_divident_flag: new FormControl(''),
+    freq_name:new FormControl(''),
+    freq_code: new FormControl('')
   });
 
   constructor(private utility: UtiliService, private dbIntr: DbIntrService,
@@ -62,22 +64,22 @@ export class HomeComponent implements OnInit, IFileHelpHome {
 
   changeTabDtls(ev,flag): void {
     this.trxnTypeMst = [];
-    this.rntTrxnType.get('rnt_id').setValue(ev.tabDtls.id);
-    this.SetColumns(ev.tabDtls.id);
     this.populateTrxnTypeinForm(null);
     switch(flag){
       case 'P':
       this.file_type_tab = this.file_help.filter(item => item.id == ev.tabDtls.id)[0].flag;
+      console.log(this.file_type_tab);
       this.fileType_tab = this.file_help.filter(item => item.id == ev.tabDtls.id)[0].sub_menu;
       if(this.file_type_tab == 'S'){
         this.sub_tab = this.fileType_tab[0].flag;
         this.getSystamaticTransactionType(this.rnt_type_tab,this.sub_tab);
       }
       else{
+        this.sub_tab='';
          //call api for Transaction Report
          this.getTransactionMst(this.rnt_type_tab);
       }
-      this.setValidators();
+
       break;
       case 'R':
       this.rnt_type_tab = ev.tabDtls.id;
@@ -88,25 +90,54 @@ export class HomeComponent implements OnInit, IFileHelpHome {
       this.getSystamaticTransactionType(this.rnt_type_tab,this.sub_tab);
       break;
     }
+    this.setValidators();
+    this.rntTrxnType.get('rnt_id').setValue(this.rnt_type_tab);
+    this.SetColumns(this.rnt_type_tab);
+
 
   }
 
   submitTransactionType(): void {
-    const frmDt = Object.assign({}, this.rntTrxnType.value, {
-      k_divident_flag:
-        this.rntTrxnType.value.rnt_id == 2
-          ? this.rntTrxnType.value.k_divident_flag
-          : '',
-      c_trans_type_code:
-        this.rntTrxnType.value.rnt_id == 1
-          ? this.rntTrxnType.value.c_trans_type_code
-          : '',
-    });
+  console.log(this.sub_tab);
+    let api_name:string;
+    let formdata = new FormData();
+    if(this.file_type_tab == 'T'){
+      api_name = '/rntTransTypeSubtypeAddEdit';
+      const frmDt = Object.assign({}, this.rntTrxnType.value, {
+        k_divident_flag:
+          this.rntTrxnType.value.rnt_id == 2
+            ? this.rntTrxnType.value.k_divident_flag
+            : '',
+        c_trans_type_code:
+          this.rntTrxnType.value.rnt_id == 1
+            ? this.rntTrxnType.value.c_trans_type_code
+            : '',
+        freq_name:'',
+        freq_code:''
+      });
+    }
+    else{
+      formdata.append('rnt_id',this.rntTrxnType.value.rnt_id);
+      formdata.append('id',this.rntTrxnType.value.id);
+      if(this.sub_tab == 'F'){
+             api_name = '/rntSystematicFrequencyAddEdit';
+             formdata.append('freq_name',this.rntTrxnType.value.freq_name);
+             formdata.append('freq_code',this.rntTrxnType.value.freq_code);
+      }
+      else{
+        api_name = '/rntSystematicTransTypeAddEdit';
+        formdata.append('trans_type',this.rntTrxnType.value.trans_type);
+        formdata.append('trans_type_code',this.rntTrxnType.value.c_k_trans_type);
+      }
+    }
     this.dbIntr
       .api_call(
         1,
-        '/rntTransTypeSubtypeAddEdit',
+        api_name,
+        this.file_type_tab == 'T' ?
         this.utility.convertFormData(this.rntTrxnType.value)
+        : formdata
+
       )
       .subscribe((res: any) => {
         this.utility.showSnackbar(
@@ -133,27 +164,41 @@ export class HomeComponent implements OnInit, IFileHelpHome {
 
   setValidators = () =>{
     if(this.file_type_tab == 'T'){
-          this.rntTrxnType.get('c_trans_type_code').removeValidators([Validators.required]);
+          this.rntTrxnType.get('trans_type').setValidators([Validators.required]);
+          this.rntTrxnType.get('c_k_trans_type').removeValidators([Validators.required]);
           this.rntTrxnType.get('trans_sub_type').setValidators([Validators.required]);
+          this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
+          this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
     }
     else{
       this.rntTrxnType.get('trans_sub_type').removeValidators([Validators.required]);
       if(this.sub_tab == 'T'){
-        this.rntTrxnType.get('c_trans_type_code').setValidators([Validators.required]);
+        this.rntTrxnType.get('trans_type').setValidators([Validators.required]);
+        this.rntTrxnType.get('c_k_trans_type').setValidators([Validators.required]);
+        this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
+        this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
       }
       else{
-        this.rntTrxnType.get('c_trans_type_code').removeValidators([Validators.required]);
+        this.rntTrxnType.get('trans_type').removeValidators([Validators.required]);
+        this.rntTrxnType.get('c_k_trans_type').removeValidators([Validators.required]);
+        this.rntTrxnType.get('freq_name').setValidators([Validators.required]);
+        this.rntTrxnType.get('freq_code').setValidators([Validators.required]);
+
       }
     }
-    this.rntTrxnType.get('c_trans_type_code').updateValueAndValidity();
+    this.rntTrxnType.get('trans_type').updateValueAndValidity();
+    this.rntTrxnType.get('c_k_trans_type').updateValueAndValidity();
     this.rntTrxnType.get('trans_sub_type').updateValueAndValidity();
+    this.rntTrxnType.get('freq_name').updateValueAndValidity();
+    this.rntTrxnType.get('freq_code').updateValueAndValidity();
   }
 
   /**
    * For Update Row of Transaction Table
    * @param row_obj
    */
-  updateRow = (row_obj: rntTrxnType) => {
+  updateRow = (row_obj) => {
+     if(this.file_type_tab == 'T'){
     this.trxnTypeMst = this.trxnTypeMst.filter(
       (items: rntTrxnType, key: number) => {
         if (items.id == row_obj.id) {
@@ -169,9 +214,53 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         return true;
       }
     );
+    }
+    else{
+
+      if(this.sub_tab == 'T'){
+      this.trxnTypeMst = this.trxnTypeMst.filter(
+        (items: ISystematicTransaction, key: number) => {
+          if (items.id == row_obj.id) {
+            items.trans_type = row_obj.trans_type;
+            items.trans_type_code = row_obj.trans_type_code;
+          }
+          return true;
+        }
+      )
+      }
+      else{
+        this.trxnTypeMst = this.trxnTypeMst.filter(
+          (items: ISystematiceFrequency, key: number) => {
+            if (items.id == row_obj.id) {
+              items.freq_name = row_obj.freq_name;
+              items.freq_code = row_obj.freq_code;
+            }
+            return true;
+          }
+        )
+      }
+      // this.trxnTypeMst = this.trxnTypeMst.filter(
+      //   (items: rntTrxnType, key: number) => {
+      //     if (items.id == row_obj.id) {
+      //       items.trans_type = row_obj.trans_type;
+      //       items.trans_sub_type = row_obj.trans_sub_type;
+      //       items.c_trans_type_code =
+      //         row_obj.rnt_id == 2 ? '' : row_obj.c_trans_type_code;
+      //       items.c_k_trans_type = row_obj.c_k_trans_type;
+      //       items.c_k_trans_sub_type = row_obj.c_k_trans_sub_type;
+      //       items.k_divident_flag =
+      //         row_obj.rnt_id == 2 ? row_obj.k_divident_flag : '';
+      //     }
+      //     return true;
+      //   }
+      // );
+    }
   };
 
-  reset(): void {}
+  reset(): void {
+    this.rntTrxnType.reset();
+    this.rntTrxnType.get('rnt_id').setValue(this.rnt_type_tab);
+  }
 
   getRnt(): void {
     this.dbIntr
@@ -197,7 +286,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
 
   getSystamaticTransactionType(rnt_id:string,sub_tab_type:string){
       if(rnt_id && sub_tab_type){
-        const api_name =  sub_tab_type == 'T' ? '/' : '/';
+        const api_name =  sub_tab_type == 'T' ? '/rntSystematicTransType' : '/rntSystematicFrequency';
         this.dbIntr.api_call(0,api_name,'rnt_id=' + rnt_id)
           .pipe(pluck('data'))
           .subscribe((res:rntTrxnType[]) =>{
@@ -219,7 +308,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
    * @param trxnType
    */
 
-   populateTrxnTypeinForm = (trxnType: rntTrxnType | null) => {
+   populateTrxnTypeinForm = (trxnType) => {
     if(trxnType){
       this.dom.documentElement.scrollIntoView({behavior:'smooth',block:'start'});
       setTimeout(() => {
@@ -230,23 +319,44 @@ export class HomeComponent implements OnInit, IFileHelpHome {
      * Either Populate data on form
      * Otherwise reset data
      */
-    this.rntTrxnType.patchValue({
+    this.rntTrxnType.reset();
+    this.rntTrxnType.get('rnt_id').setValue(this.rnt_type_tab);
+    if(this.rnt_type_tab == 'T')
+    {
+      this.rntTrxnType.patchValue({
       id: trxnType ? trxnType.id : 0,
       trans_type: trxnType ? trxnType.trans_type : '',
-      trans_sub_type: trxnType ? trxnType.trans_sub_type : '',
+      trans_sub_type: trxnType ? trxnType?.trans_sub_type : '',
       c_trans_type_code: trxnType
         ? trxnType.rnt_id == 1
-          ? trxnType.c_trans_type_code
+          ? trxnType?.c_trans_type_code
           : ''
         : '',
       c_k_trans_type: trxnType ? trxnType.c_k_trans_type : '',
-      c_k_trans_sub_type: trxnType ? trxnType.c_k_trans_sub_type : '',
+      c_k_trans_sub_type: trxnType ? trxnType?.c_k_trans_sub_type : '',
       k_divident_flag: trxnType
         ? trxnType.rnt_id == 2
-          ? trxnType.k_divident_flag
+          ? trxnType?.k_divident_flag
           : ''
         : '',
     });
+  }
+  else{
+    if(this.sub_tab == 'T'){
+      this.rntTrxnType.patchValue({
+        id: trxnType ? trxnType.id : 0,
+        trans_type: trxnType ? trxnType.trans_type : '',
+        c_k_trans_type: trxnType ? trxnType.trans_type_code : '',
+      })
+    }
+    else{
+       this.rntTrxnType.patchValue({
+        id: trxnType ? trxnType.id : 0,
+        freq_name: trxnType ? trxnType.freq_name : '',
+        freq_code: trxnType ? trxnType.freq_code : '',
+      })
+    }
+  }
   };
 
 
@@ -255,9 +365,23 @@ export class HomeComponent implements OnInit, IFileHelpHome {
    * @param rnt_id
    */
     SetColumns = (rnt_id) => {
+      if(this.file_type_tab == 'T'){
       this.columns = trxnTypeClmns.columns.filter((item) =>
         item.isVisible.includes(rnt_id)
       );
+    }
+    else{
+        if(this.sub_tab == 'T'){
+          this.columns = systamaticTransClmns.columns.filter((item) =>
+          item.isVisible.includes(rnt_id)
+        );
+        }
+        else{
+          this.columns = systamaticFreqClmns.columns.filter((item) =>
+          item.isVisible.includes(rnt_id)
+        );
+        }
+    }
     };
 
 
@@ -280,7 +404,7 @@ export interface IFileHelpHome {
   /***
    *  holding transaction files data
    */
-  trxnTypeMst:rntTrxnType[];
+  trxnTypeMst:any;
 
 
   fileType_tab:Partial<ISubmenu>[];
