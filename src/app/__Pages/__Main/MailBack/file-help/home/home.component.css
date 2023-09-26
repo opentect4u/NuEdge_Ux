@@ -1,0 +1,13 @@
+::ng-deep .rnt_Tab .mat-tab-list .mat-tab-labels .mat-tab-label-active{
+  background: #f1820b57;
+  color: #10486b !important;
+  padding: 0px 5px;
+}
+::ng-deep .rnt_Tab .mat-ink-bar {
+  background-color: #f1820b!important;
+  height: 3px!important;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+  width: 87px;
+  left: 3%;
+}

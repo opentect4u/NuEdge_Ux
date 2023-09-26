@@ -16,63 +16,70 @@
     ></core-tab>
     <mat-card>
       <mat-card-content class="p-4">
-        <form [formGroup]="rntTrxnType" (ngSubmit)="submitTransactionType()">
-          <div class="row">
-          <div class="col-sm-3">
-            <label for="trans_type">Transaction Type <span class="text-danger">*</span></label>
-             <input type="text" #trxnType placeholder="Enter Transaction Type" name="trans_type" id="trans_type" class="form-control" formControlName="trans_type">
-             <div class="invalid-feedback" *ngIf="rntTrxnType.get('trans_type').invalid && (rntTrxnType.get('trans_type').dirty || rntTrxnType.get('trans_type').touched)">
-              <span class="invalid-feedback" *ngIf="(rntTrxnType.get('trans_type')).errors?.required">*Please provide transaction type</span>
-            </div>
-            </div>
-          <div class="col-sm-3">
-            <label for="trans_sub_type">Transaction Sub Type <span class="text-danger">*</span></label>
-             <input type="text" placeholder="Enter Transaction Sub Type" name="trans_sub_type" id="trans_sub_type" class="form-control" formControlName="trans_sub_type">
-             <div class="invalid-feedback" *ngIf="rntTrxnType.get('trans_sub_type').invalid && (rntTrxnType.get('trans_sub_type').dirty || rntTrxnType.get('trans_sub_type').touched)">
-              <span class="invalid-feedback" *ngIf="(rntTrxnType.get('trans_sub_type')).errors?.required">*Please provide transaction sub type</span>
-            </div>
-            </div>
-          <div class="col-sm-3" *ngIf="rntTrxnType.value.rnt_id == 1">
-            <label for="c_trans_type_code">File Transaction Type Code</label>
-             <input type="text" style="text-transform:uppercase" placeholder="Enter File Transaction Type Code" name="c_trans_type_code" id="c_trans_type_code" class="form-control" formControlName="c_trans_type_code">
-          </div>
-          <div class="col-sm-3">
-            <label for="c_k_trans_type">File Transaction Type</label>
-             <input type="text" placeholder="Enter File Transaction Type" name="c_k_trans_type" id="c_k_trans_type" class="form-control" formControlName="c_k_trans_type">
-          </div>
-
-          <!-- </div>
-          <div class="row"> -->
+        <core-tab [Tab]="rnt_mst_dt"
+        [customClass]="'rnt_Tab'"
+        (GetTabDtls)="changeTabDtls($event)"
+        ></core-tab>
+        <div class="container_fluid">
+          <form [formGroup]="rntTrxnType" (ngSubmit)="submitTransactionType()">
+            <div class="row">
             <div class="col-sm-3">
-              <label for="c_k_trans_sub_type">File Transaction Sub Type</label>
-               <input type="text" placeholder="Enter File Transaction Sub Type" name="c_k_trans_sub_type" id="c_k_trans_sub_type" class="form-control" formControlName="c_k_trans_sub_type">
+              <label for="trans_type">Transaction Type <span class="text-danger">*</span></label>
+               <input type="text" #trxnType placeholder="Enter Transaction Type" name="trans_type" id="trans_type" class="form-control" formControlName="trans_type">
+               <div class="invalid-feedback" *ngIf="rntTrxnType.get('trans_type').invalid && (rntTrxnType.get('trans_type').dirty || rntTrxnType.get('trans_type').touched)">
+                <span class="invalid-feedback" *ngIf="(rntTrxnType.get('trans_type')).errors?.required">*Please provide transaction type</span>
+              </div>
+              </div>
+            <div class="col-sm-3">
+              <label for="trans_sub_type">Transaction Sub Type <span class="text-danger">*</span></label>
+               <input type="text" placeholder="Enter Transaction Sub Type" name="trans_sub_type" id="trans_sub_type" class="form-control" formControlName="trans_sub_type">
+               <div class="invalid-feedback" *ngIf="rntTrxnType.get('trans_sub_type').invalid && (rntTrxnType.get('trans_sub_type').dirty || rntTrxnType.get('trans_sub_type').touched)">
+                <span class="invalid-feedback" *ngIf="(rntTrxnType.get('trans_sub_type')).errors?.required">*Please provide transaction sub type</span>
+              </div>
+              </div>
+            <div class="col-sm-3" *ngIf="rntTrxnType.value.rnt_id == 1">
+              <label for="c_trans_type_code">File Transaction Type Code</label>
+               <input type="text" style="text-transform:uppercase" placeholder="Enter File Transaction Type Code" name="c_trans_type_code" id="c_trans_type_code" class="form-control" formControlName="c_trans_type_code">
             </div>
-            <div class="col-sm-3" *ngIf="rntTrxnType.value.rnt_id == 2">
-              <label for="k_divident_flag">Divident Flag</label>
-               <input type="text" placeholder="Enter Divident Flag" name="k_divident_flag" id="k_divident_flag" class="form-control" formControlName="k_divident_flag">
+            <div class="col-sm-3">
+              <label for="c_k_trans_type">File Transaction Type</label>
+               <input type="text" placeholder="Enter File Transaction Type" name="c_k_trans_type" id="c_k_trans_type" class="form-control" formControlName="c_k_trans_type">
             </div>
-            <div [class]="rntTrxnType.value.rnt_id ?
-             'col-sm-9 d-flex justify-content-end align-items-end'
-             : 'col-sm-12 mt-2 d-flex justify-content-end align-items-end'">
-              <p-button
-              type="submit"
-              [label]="this.rntTrxnType.value.id > 0 ? 'Update' : 'Save'"
-              icon="pi pi-save"
-              [disabled]="this.rntTrxnType.invalid"
-              iconPos="left"
-              styleClass="p-button-lg p-button-primary mr-2">
-              </p-button>
-              <p-button
-              type="button"
-              (click)="reset()"
-              label="Reset"
-              icon="pi pi-refresh"
-              iconPos="right"
-              styleClass="p-button-lg p-button-danger">
-              </p-button>
+
+            <!-- </div>
+            <div class="row"> -->
+              <div class="col-sm-3">
+                <label for="c_k_trans_sub_type">File Transaction Sub Type</label>
+                 <input type="text" placeholder="Enter File Transaction Sub Type" name="c_k_trans_sub_type" id="c_k_trans_sub_type" class="form-control" formControlName="c_k_trans_sub_type">
+              </div>
+              <div class="col-sm-3" *ngIf="rntTrxnType.value.rnt_id == 2">
+                <label for="k_divident_flag">Divident Flag</label>
+                 <input type="text" placeholder="Enter Divident Flag" name="k_divident_flag" id="k_divident_flag" class="form-control" formControlName="k_divident_flag">
+              </div>
+              <div [class]="rntTrxnType.value.rnt_id ?
+               'col-sm-9 d-flex justify-content-end align-items-end'
+               : 'col-sm-12 mt-2 d-flex justify-content-end align-items-end'">
+                <p-button
+                type="submit"
+                [label]="this.rntTrxnType.value.id > 0 ? 'Update' : 'Save'"
+                icon="pi pi-save"
+                [disabled]="this.rntTrxnType.invalid"
+                iconPos="left"
+                styleClass="p-button-lg p-button-primary mr-2">
+                </p-button>
+                <p-button
+                type="button"
+                (click)="reset()"
+                label="Reset"
+                icon="pi pi-refresh"
+                iconPos="right"
+                styleClass="p-button-lg p-button-danger">
+                </p-button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
+
       </mat-card-content>
     </mat-card>
   </div>

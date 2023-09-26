@@ -3,22 +3,26 @@
     "id":1,
     "tab_name":"Transaction Report",
     "sub_menu":[],
+    "img_src":"",
     "flag":"T"
   },
   {
     "id":2,
     "tab_name":"Systematic Transaction Report",
     "flag":"S",
+    "img_src":"",
     "sub_menu":[
       {
          "id":1,
          "tab_name":"Transaction Report",
-         "flag":"T"
+         "flag":"T",
+         "img_src":""
       },
       {
         "id":2,
         "tab_name":"Frequency Report",
-        "flag":"F"
+        "flag":"F",
+        "img_src":""
      }
     ]
   }

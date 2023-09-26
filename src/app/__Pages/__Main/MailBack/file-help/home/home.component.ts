@@ -13,10 +13,8 @@ import { rnt } from 'src/app/__Model/Rnt';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, IFileHelpHome {
-
-
   file_help: IFileHelpTab[] = fileHelp;
-  rnt_mst_dt:rnt[] = [];
+  rnt_mst_dt: Partial<ISubmenu>[] = [];
   rntTrxnType = new FormGroup({
     rnt_id: new FormControl(''),
     id: new FormControl('0'),
@@ -28,10 +26,10 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     k_divident_flag: new FormControl(''),
   });
 
-  constructor(private utility: UtiliService,private dbIntr:DbIntrService) {}
+  constructor(private utility: UtiliService, private dbIntr: DbIntrService) {}
 
   ngOnInit(): void {
-    console.log(this.file_help);
+    // console.log(this.file_help);
     this.getRnt();
   }
 
@@ -39,16 +37,22 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     console.log(ev);
   }
 
-  submitTransactionType(): void {console.log(this.rntTrxnType.value)}
+  submitTransactionType(): void {
+    console.log(this.rntTrxnType.value);
+  }
 
   reset(): void {}
 
-  getRnt():void {
-      this.dbIntr.api_call(0,'/rnt',null)
+  getRnt(): void {
+    this.dbIntr
+      .api_call(0, '/rnt', null)
       .pipe(pluck('data'))
-      .subscribe((res: rnt[]) =>{
-      //  this.rnt_mst_dt = res.map()
-      })
+      .subscribe((res: rnt[]) => {
+        this.rnt_mst_dt = res
+          .sort((a, b) => a.id - b.id)
+          .filter((item) => item.id == 2 || item.id == 1)
+          .map(({ id, rnt_name }) => ({ tab_name: rnt_name, img_src: '', id }));
+      });
   }
 }
 
@@ -61,7 +65,7 @@ export interface IFileHelpHome {
   /**
    * Holding R&T Master Data Comming from backend
    */
-  rnt_mst_dt:rnt[];
+  rnt_mst_dt: Partial<ISubmenu>[];
 
   /**
    * Event Fired after tab changing
@@ -83,13 +87,14 @@ export interface IFileHelpHome {
   /**
    *  get R&T master data from backend
    */
-  getRnt():void;
+  getRnt(): void;
 }
 
 export interface IFileHelpTab {
   id: number;
   tab_name: string;
   flag: string;
+  img_src:string;
   sub_menu: ISubmenu[];
 }
 
@@ -97,4 +102,5 @@ export interface ISubmenu {
   id: number;
   tab_name: string;
   flag: string;
+  img_src:string;
 }
