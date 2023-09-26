@@ -12,13 +12,22 @@
 <div class="row flexSec">
   <div class="col-sm-12">
     <core-tab [Tab]="file_help"
-    (GetTabDtls)="changeTabDtls($event)"
+    (GetTabDtls)="changeTabDtls($event,'P')"
     ></core-tab>
     <mat-card>
       <mat-card-content class="p-4">
+       <ng-container *ngIf="fileType_tab.length > 0">
+        <core-tab [Tab]="fileType_tab"
+        [customClass]="'second_tab mb-3'"
+        (GetTabDtls)="changeTabDtls($event,'S')"
+        ></core-tab>
+       </ng-container>
+
+
+
         <core-tab [Tab]="rnt_mst_dt"
-        [customClass]="'rnt_Tab'"
-        (GetTabDtls)="changeTabDtls($event)"
+        [customClass]="'rnt_tab'"
+        (GetTabDtls)="changeTabDtls($event,'R')"
         ></core-tab>
         <div class="container_fluid">
           <form [formGroup]="rntTrxnType" (ngSubmit)="submitTransactionType()">
@@ -79,8 +88,89 @@
             </div>
           </form>
         </div>
-
       </mat-card-content>
     </mat-card>
+
+    <div class="card my-3">
+      <div class="card-header d-flex justify-content-between">
+        <div class="d-flex justify-content-between align-items-center">
+            <!-- <label class="m-0 d-flex align-items-center">
+              <i class="pi pi-database mr-2" style="font-size:2rem"></i>
+              R&T Trxn Type Details</label> -->
+        </div>
+
+          <div class="flex w-25">
+              <span class="ml-auto">
+                  <input class="form-control" type="text"
+                  (input)="filterGlobal($event)"
+                   placeholder="Search " />
+              </span>
+          </div>
+      </div>
+      <div class="card-body">
+        <!-- scrollHeight="350px" -->
+
+        <p-table
+        #pTableRef
+        responsiveLayout="scroll"
+        [value]="trxnTypeMst"
+        [responsive]="true"
+        [rowHover]="true"
+        styleClass="p-datatable-striped"
+        [autoLayout]="true"
+        [scrollable]="true"
+        [paginator]="true"
+        [totalRecords]="trxnTypeMst.length"
+        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        [globalFilterFields]="getColumns()"
+        >
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th  *ngFor="let col of columns"
+              [pSortableColumn]="col.field"
+              >
+                {{ col.header }}
+                <p-sortIcon *ngIf="col.field!='edit'" [field]="col.field">
+                </p-sortIcon>
+              </th>
+          </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-file let-index="rowIndex">
+            <tr
+
+            [ngClass]="{
+              'editRow' : file.id == rntTrxnType.value.id}"
+            >
+              <td *ngFor="let col of columns">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'edit'">
+                    <p-button icon="pi pi-pencil" (click)="populateTrxnTypeinForm(file)"
+                      styleClass="p-button-rounded p-button-primary"></p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <b>{{ file[col.field] ? file[col.field]  : 'N/A'}}
+                   </b>
+                 </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage" let-file>
+            <tr [style.height]="'309px'">
+              <td [attr.colspan]="5">
+                 <h4>No Records Found</h4>
+              </td>
+            </tr>
+          </ng-template>
+      </p-table>
+      </div>
+      <div class="card-footer">
+        In Total There Are {{trxnTypeMst.length}} Transaction type
+      </div>
+    </div>
   </div>
 </div>

@@ -266,7 +266,7 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
       formdata.append('benchmark',this.utility.mapIdfromArray(this.scmbenchmarkFrm.value.benchmark,'id'));
       formdata.append('periods',this.scmbenchmarkFrm.getRawValue().date_periods);
 
-      if(this.scmbenchmarkFrm.value.date_periods == 'Y' || this.scmbenchmarkFrm.value.date_periods == 'M' ){
+      if(this.scmbenchmarkFrm.value.date_periods == 'Y' || this.scmbenchmarkFrm.value.date_periods == 'M' || this.scmbenchmarkFrm.value.date_periods == 'H'){
         let date_format =`${this.datePipe.transform(this.scmbenchmarkFrm.getRawValue().month[0],(this.scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MM/YYYY' : 'YYYY'))}- ${this.datePipe.transform(this.scmbenchmarkFrm.value.month[1],(this.scmbenchmarkFrm.value.date_periods == 'M' ? 'MM/YYYY' : 'YYYY'))}`
         formdata.append('date_range',
         global.getActualVal(date_format));
