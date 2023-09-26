@@ -12,10 +12,10 @@ import { RouterModule, Routes } from '@angular/router';
       path:'',
       loadChildren:() => import('./home/home.module').then(m => m.HomeModule)
     },
-    {
-      path:'trxntype',
-      loadChildren:() => import('./trxn-type/trxn-type.module').then(m => m.TrxnTypeModule)
-    }
+    // {
+    //   path:'trxntype',
+    //   loadChildren:() => import('./trxn-type/trxn-type.module').then(m => m.TrxnTypeModule)
+    // }
   ]
 }]
 

@@ -396,7 +396,7 @@ export interface IschemeBenchmark {
   id: number;
   date: Date;
   exchange_name: string;
-  benchmark: string;
+  benchmark_name: string;
   open: string;
   high: string;
   low: string;
@@ -410,7 +410,7 @@ export class schemeBenchmarkcolumn {
     { field: 'sl_no', header: 'Sl No', width: '4rem' },
     { field: 'date', header: 'Date', width: '20rem' },
     { field: 'exchange_name', header: 'Exchange', width: '20rem' },
-    { field: 'benchmark', header: 'Symbol', width: '20rem' },
+    { field: 'benchmark_name', header: 'Symbol', width: '20rem' },
     { field: 'open', header: 'Open', width: '20rem' },
     { field: 'high', header: 'High', width: '20rem' },
     { field: 'low', header: 'Low', width: '20rem' },

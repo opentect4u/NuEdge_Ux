@@ -324,7 +324,7 @@ export class NavFinderComponent implements OnInit, Nav {
   searchNav = () => {
    if(this.nav_type_flag  == 'H'){
      if(this.searchNavForm.invalid){
-      this.utility.showSnackbar('Validation Error!!',2);
+      this.utility.showSnackbar('Please Select Valid date range and date periods',2);
       return;
      }
     }

@@ -725,7 +725,7 @@ color: #ffffff;
 .bckContainer{
   position: fixed;
   left: 0px;
-  background-image: linear-gradient(272deg, #10486b, #fcfcfc42);
+  background-image: linear-gradient(272deg, #10486b, #10486b);
   height: 260px;
   width: 100vw;
 }

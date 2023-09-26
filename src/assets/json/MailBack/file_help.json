@@ -1,0 +1,25 @@
+[
+  {
+    "id":1,
+    "tab_name":"Transaction Report",
+    "sub_menu":[],
+    "flag":"T"
+  },
+  {
+    "id":2,
+    "tab_name":"Systematic Transaction Report",
+    "flag":"S",
+    "sub_menu":[
+      {
+         "id":1,
+         "tab_name":"Transaction Report",
+         "flag":"T"
+      },
+      {
+        "id":2,
+        "tab_name":"Frequency Report",
+        "flag":"F"
+     }
+    ]
+  }
+]
