@@ -4,6 +4,7 @@
   <div class="col-sm-12">
     <core-tab [Tab]="navTab"
     (GetTabDtls)="changeTabDtls($event)"
+    [customClass]="'nav'"
     ></core-tab>
     <!-- <div class="card">
        <div class="card-body p-3"> -->
@@ -185,8 +186,8 @@
 
            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
              <span>
-              <!-- {{nav['scheme_name'] ? (nav['scheme_name'] - nav['plan_name'] - nav['option_name']) : 'N/A'}} -->
-              {{nav['scheme_name'] ? (nav['scheme_name']) : 'N/A'}}
+              {{nav['scheme_name'] ? (nav['scheme_name'] - nav['plan_name'] - nav['option_name']) : 'N/A'}}
+              <!-- {{nav['scheme_name'] ? (nav['scheme_name']) : 'N/A'}} -->
              </span>
            </ng-container>
 
