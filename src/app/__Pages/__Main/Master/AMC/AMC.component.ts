@@ -12,6 +12,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { AmcModificationComponent } from './amcModification/amcModification.component';
 import { AmcrptComponent } from './amcRpt/amcRpt.component';
+import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
 
 @Component({
   selector: 'app-AMC',
@@ -120,7 +121,8 @@ export class AMCComponent implements OnInit {
     dialogConfig.id = __amcId > 0 ? __amcId.toString() : '0';
     try {
       const dialogref = this.__dialog.open(
-        AmcModificationComponent,
+        // AmcModificationComponent,
+        AMCEntryComponent,
         dialogConfig
       );
       dialogref.afterClosed().subscribe((dt) => {

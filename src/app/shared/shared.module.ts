@@ -55,6 +55,7 @@ import { FormsModule } from '@angular/forms';
 import { ListItemComponent } from './core/list-item/list-item.component';
 import { MailBckfilePipe } from '../__Pipes/mail-bckfile.pipe';
 import { ScrollDirective } from '../__Directives/scroll.directive';
+import { AMCEntryComponent } from './amcentry/amcentry.component';
 
 @NgModule({
   imports: [
@@ -115,7 +116,8 @@ import { ScrollDirective } from '../__Directives/scroll.directive';
     MfAckEntryComponent,
     MegaMenuForColumnComponent,
     PaginateComponent,
-    ListItemComponent
+    ListItemComponent,
+    AMCEntryComponent,
   ],
   exports:[
     MailBckfilePipe,
@@ -148,6 +150,7 @@ import { ScrollDirective } from '../__Directives/scroll.directive';
     MatButtonModule,
     MatSelectModule,
     MenuItemComponent,
+    AMCEntryComponent,
     NoDataComponent,
     UploadCsvComponent,
     RptFilterComponent,

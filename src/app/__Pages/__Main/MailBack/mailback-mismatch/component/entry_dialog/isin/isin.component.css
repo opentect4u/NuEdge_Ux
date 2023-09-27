@@ -1,0 +1,24 @@
+td,
+th {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  width: 16.9%;
+  font-size: 13px!important;
+  text-align: center!important;
+  font-weight: 500;
+}
+td,
+th:last-child{
+  width:5%!important;
+}
+mat-icon-button{
+  height: 38px !important;
+  width: 38px !important;
+}
+.mat-dialog-content{
+  min-height: 88vh!important;
+}
+
+.card-header {
+  padding: 11px 1.25rem;
+}

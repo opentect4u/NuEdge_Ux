@@ -3,13 +3,18 @@ import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
 // import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { Overlay } from '@angular/cdk/overlay';
+import { IsinComponent } from '../entry_dialog/isin/isin.component';
+import { global } from 'src/app/__Utility/globalFunc';
+import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
 @Component({
   selector: 'mailBack-trxn-rpt-without-scm',
   templateUrl: './trxn-rpt-without-scm.component.html',
   styleUrls: ['./trxn-rpt-without-scm.component.css'],
-  providers:[ConfirmationService,MessageService]
+  providers:[ConfirmationService]
 })
 export class TrxnRptWithoutScmComponent implements OnInit {
 
@@ -37,8 +42,11 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   constructor(
     private utility:UtiliService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService,
-    private dbIntr:DbIntrService
+    private dbIntr:DbIntrService,
+    private overlay: Overlay,
+    private __dialog: MatDialog,
+
+
     ) { }
 
   ngOnInit(): void {
@@ -107,25 +115,93 @@ export class TrxnRptWithoutScmComponent implements OnInit {
     )
   }
 
-  navigateAMC = () =>{
-    this.utility.navigatewithqueryparams(
-      '/main/master/productwisemenu/amc',
-      {
-        queryParams:{
-          scheme_type:btoa('O')
+  openAMC = (trxn,index:number) =>{
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '60%';
+    dialogConfig.height = '100%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      flag: 'A',
+      id: 0,
+      amc: null,
+      title: 'Add AMC',
+      product_id:'1', /** For Mutual Fund */
+      right: global.randomIntFromInterval(1, 60),
+    };
+    dialogConfig.id = 'AMC_' + trxn.id;
+    try {
+      const dialogref = this.__dialog.open(
+        AMCEntryComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe((dt) => {
+        if(dt){
+          if(dt.suc == 1){
+            this.deleteTransaction(index);
+          }
         }
-      }
-    )
+      });
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+      this.utility.getmenuIconVisible({
+        id: Number(dialogConfig.id),
+        isVisible: false,
+        flag: 'A',
+      });
+    }
+
   }
 
-  navigateISIN = () =>{
-    this.utility.navigatewithqueryparams(
-      '/main/master/productwisemenu/scheme/isin',
-      {
-        queryParams:{
-          isin_status:btoa('O')
+  openISIN = (trxn,index:number) =>{
+    console.log(trxn);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '100%';
+    dialogConfig.height = '100%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.panelClass = "fullscreen-dialog"
+    dialogConfig.id = "ISIN_" + index,
+    dialogConfig.data = {
+      flag:"ISIN",
+      title:'Add ISIN',
+      id:0,
+      isViewMode:false,
+      isinDtls:trxn
+    }
+    try {
+      const dialogref = this.__dialog.open(
+        IsinComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe(res =>{
+        if(res){
+          // this.updateRow(res.data)
+          if(res.suc == 1){
+            // this.tr
+            this.deleteTransaction(index);
+          }
         }
-      }
-    )
+      })
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+      this.utility.getmenuIconVisible({
+        flag:"ISIN",
+        id: "ISIN_" + index
+      });
+    }
+
+  }
+
+  deleteTransaction = (index) =>{
+    this.trxnRptWithOutScm.splice(index,1);
   }
 }

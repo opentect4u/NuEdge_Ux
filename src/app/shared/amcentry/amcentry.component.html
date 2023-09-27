@@ -1,0 +1,484 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title" [title]="data.title">
+    <h2 >{{data.title}} {{data.id > 0 ? '(' +data.amc.amc_name+')' : ''}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize" (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore Down"  (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank</mat-icon>
+      </button>
+
+
+      <button mat-icon-button  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+  <mat-dialog-content>
+    <form  [formGroup]="__amcForm" (ngSubmit)="submit()" autocomplete="off" id="__amcForm_{{data.id}}" ngNativeValidate>
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="amc_code">AMC Code <span class="text-danger">*</span></label>
+          <input type="text" name="amc_name" id="amc_code" class="form-control"
+          placeholder="Enter AMC Code"
+          formControlName="amc_code">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('amc_code').invalid && (__amcForm.get('amc_code').dirty || __amcForm.get('amc_code').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_code')).errors?.required">*Please provide AMC code</span>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <label for="amcName">AMC Full Name <span class="text-danger">*</span></label>
+          <input type="text" name="amc_name" id="amcName" class="form-control" placeholder="Enter AMC Name" formControlName="amc_name">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('amc_name').invalid && (__amcForm.get('amc_name').dirty || __amcForm.get('amc_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_name')).errors?.required">*Please provide AMC full name</span>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <label for="amcshortName">AMC Short Name</label>
+          <input type="text" name="amc_short_name" id="amcshortName" class="form-control" placeholder="Enter AMC Name" formControlName="amc_short_name">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('amc_short_name').invalid && (__amcForm.get('amc_short_name').dirty || __amcForm.get('amc_short_name').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('amc_short_name')).errors?.required">*Please provide AMC short name</span>
+          </div>
+         </div>
+        <div class="col-sm-12">
+          <label for="rntName">R&T <span class="text-danger">*</span></label>
+          <select class="form-control " formControlName="rnt_id" id="rntName">
+            <option value="">Select R&T</option>
+            <option *ngFor="let __rnts of __RntMaster" value="{{__rnts.id}}">{{__rnts.rnt_name}}</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="__amcForm.get('rnt_id').invalid && (__amcForm.get('rnt_id').dirty || __amcForm.get('rnt_id').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('rnt_id')).errors?.required">*Please provide R&T</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="gstin">GSTIN <span class="text-danger">*</span></label>
+          <input type="text" name="gstin" id="gstin" class="form-control" placeholder="Enter GSTIN" formControlName="gstin">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('gstin').invalid && (__amcForm.get('gstin').dirty || __amcForm.get('gstin').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('gstin')).errors?.required">*Please provide GSTIN</span>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <label for="web_site">Website</label>
+          <input type="text" name="web_site" id="web_site" class="form-control" placeholder="Enter Website" formControlName="web_site">
+        </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-12">
+            <label for="cus_care_whatsapp_no">
+              Customer Care WhatsApp Number
+            </label>
+            <input (keypress)="preventNonumeric($event)"
+             type="text" name="cus_care_whatsapp_no"
+             id="cus_care_whatsapp_no" class="form-control"
+             placeholder="Enter Customer Care WhatsApp Number"  formControlName="cus_care_whatsapp_no">
+            <div class="invalid-feedback" *ngIf="__amcForm.get('cus_care_whatsapp_no').invalid && (__amcForm.get('cus_care_whatsapp_no').dirty || __amcForm.get('cus_care_whatsapp_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('cus_care_whatsapp_no')).hasError('pattern')">*Digits allow only</span>
+              <!-- <span class="invalid-feedback" *ngIf="(__amcForm.get('cus_care_whatsapp_no')).hasError('minlength')">*mobile number
+                must be 10 digits</span>
+                <span class="invalid-feedback" *ngIf="(__amcForm.get('cus_care_whatsapp_no')).hasError('maxlength')">*mobile number
+                  must be 10 digits</span> -->
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <label for="cust_care_no">Customer Care Number</label>
+            <input (keypress)="preventNonumeric($event)" type="text" name="cust_care_no" id="cust_care_no" class="form-control" placeholder="Enter Customer Care Number"  formControlName="cust_care_no">
+            <div class="invalid-feedback" *ngIf="__amcForm.get('cust_care_no').invalid && (__amcForm.get('cust_care_no').dirty || __amcForm.get('cust_care_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('cust_care_no')).hasError('pattern')">*Digits allow only</span>
+
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <label for="cust_care_email" >Customer Care Email </label>
+            <input (keypress)="preventNonumeric($event)" type="email" name="cust_care_email" id="cust_care_email" class="form-control" placeholder="Enter Customer Care Email"  formControlName="cust_care_email">
+            <div class="invalid-feedback" *ngIf="__amcForm.get('cust_care_email').invalid && (__amcForm.get('cust_care_email').dirty || __amcForm.get('cust_care_email').touched)">
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('cust_care_email').errors?.email)">*Please provide valid email</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="distributor_care_no">Distributor Care Number </label>
+            <input (keypress)="preventNonumeric($event)" type="text" name="distributor_care_no" id="distributor_care_no" class="form-control" placeholder="Enter Distributor Care Number"  formControlName="distributor_care_no">
+            <div class="invalid-feedback" *ngIf="__amcForm.get('distributor_care_no').invalid && (__amcForm.get('distributor_care_no').dirty || __amcForm.get('distributor_care_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('distributor_care_no')).hasError('pattern')">*Digits allow only</span>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <label for="distributor_care_email" >Distributor Care Email </label>
+            <input (keypress)="preventNonumeric($event)" type="email" name="distributor_care_email" id="distributor_care_email" class="form-control" placeholder="Enter Distributor Care Email"  formControlName="distributor_care_email">
+            <div class="invalid-feedback" *ngIf="__amcForm.get('distributor_care_email').invalid && (__amcForm.get('distributor_care_email').dirty || __amcForm.get('distributor_care_email').touched)">
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('distributor_care_email').errors?.email)">*Please provide valid email</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider">
+          <span>Head Office</span>
+          <hr class="line"/>
+         </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="head_ofc_cotact_per">Contact Person</label>
+          <input type="text"
+          name="head_ofc_cotact_per"
+          id="head_ofc_cotact_per"
+          formControlName="head_ofc_contact_per" class="form-control" placeholder="Enter Contact Person">
+          </div>
+          <div class="col-sm-12">
+            <label for="head_contact_per_mob">Contact Person Mobile</label>
+          <input type="text"
+          name="head_contact_per_mob"
+          id="head_contact_per_mob" formControlName="head_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('head_contact_per_mob').invalid && (__amcForm.get('head_contact_per_mob').dirty || __amcForm.get('head_contact_per_mob').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('head_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
+            <!-- <span class="invalid-feedback" *ngIf="(__amcForm.get('head_contact_per_mob')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('head_contact_per_mob')).hasError('maxlength')">*mobile number
+                must be 10 digits</span> -->
+          </div>
+        </div>
+          <div class="col-sm-12">
+            <label for="head_contact_per_email">Contact Person Email</label>
+          <input type="text" name="head_contact_per_email" id="head_contact_per_email" formControlName="head_contact_per_email" class="form-control" placeholder="Enter Contact Person Email">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('head_contact_per_email').invalid && (__amcForm.get('head_contact_per_email').dirty || __amcForm.get('head_contact_per_email').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('head_contact_per_email').errors?.email)">*Please provide valid email</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="ofc_add">Address</label>
+          <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="head_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
+          <!-- <div class="invalid-feedback" *ngIf="__amcForm.get('head_ofc_addr').invalid && (__amcForm.get('head_ofc_addr').dirty || __amcForm.get('head_ofc_addr').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('head_ofc_addr')).errors?.required">*Please provide office address</span>
+          </div> -->
+        </div>
+        </div>
+           <div class="divider">
+          <span>Local Office</span>
+          <hr class="line"/>
+         </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="local_ofc_contact_per">Contact Person</label>
+          <input type="text" name="local_ofc_contact_per" id="local_ofc_contact_per" formControlName="local_ofc_contact_per" class="form-control" placeholder="Enter Contact Person">
+          </div>
+          <div class="col-sm-12">
+            <label for="local_contact_per_mob">Contact Person Mobile</label>
+          <input
+          (keypress)="preventNonumeric($event)" type="text" name="local_contact_per_mob" id="local_contact_per_mob" formControlName="local_contact_per_mob" class="form-control" placeholder="Enter Contact Person Mobile">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('local_contact_per_mob').invalid && (__amcForm.get('local_contact_per_mob').dirty || __amcForm.get('local_contact_per_mob').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('local_contact_per_mob')).hasError('pattern')">*Digits allow only</span>
+            <!-- <span class="invalid-feedback" *ngIf="(__amcForm.get('local_contact_per_mob')).hasError('minlength')">*mobile number
+              must be 10 digits</span>
+              <span class="invalid-feedback" *ngIf="(__amcForm.get('local_contact_per_mob')).hasError('maxlength')">*mobile number
+                must be 10 digits</span> -->
+          </div>
+        </div>
+          <div class="col-sm-12">
+            <label for="local_contact_per_email">Contact Person Email</label>
+          <input type="text" name="local_contact_per_email" id="local_contact_per_email" formControlName="local_contact_per_email" class="form-control" placeholder="Enter Contact Person Email">
+          <div class="invalid-feedback" *ngIf="__amcForm.get('local_contact_per_email').invalid && (__amcForm.get('local_contact_per_email').dirty || __amcForm.get('local_contact_per_email').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('local_contact_per_email').errors?.email)">*Please provide valid email</span>
+          </div>
+          </div>
+        <div class="col-sm-12">
+          <label for="ofc_add">Address</label>
+          <textarea name="ofc_add" id="ofc_add" cols="30" rows="5" formControlName="local_ofc_addr" class="form-control" placeholder="Enter Address"></textarea>
+          <!-- <div class="invalid-feedback" *ngIf="__amcForm.get('local_ofc_addr').invalid && (__amcForm.get('local_ofc_addr').dirty || __amcForm.get('local_ofc_addr').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('local_ofc_addr')).errors?.required">*Please provide office address</span>
+          </div> -->
+        </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <label for="login_url" class="mb-3">Login URL </label>
+            <input type="text" name="login_url" id="login_url" class="form-control" placeholder="Enter Login URL"
+              formControlName="login_url">
+          </div>
+
+          <div class="col-sm-12">
+            <label for="login_id" class="mb-3">Login ID </label>
+            <input type="text" name="login_id" id="login_id" class="form-control" placeholder="Enter Login ID"
+              formControlName="login_id">
+          </div>
+
+          <div class="col-sm-12">
+            <label for="login_pass" class="mb-3">Login Password </label>
+            <input type="text" name="login_pass" id="login_pass" class="form-control" placeholder="Enter Login Password"
+              formControlName="login_pass">
+          </div>
+        </div>
+
+            <!-- Security Qustion Answer -->
+       <div class="row">
+        <div class="col-sm-12">
+
+          <table class="my-2">
+        <thead>
+          <tr>
+            <th>
+              Security Question
+            </th>
+            <th>
+              Security Answer
+            </th>
+            <th>
+              <button mat-icon-button type="button">
+                <mat-icon (click)="addSecurityQuesAns()">add</mat-icon>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody formArrayName="sec_qusAns">
+          <tr *ngFor="let item of sec_qusAns.controls; let i = index;">
+            <ng-container [formGroupName]="i">
+              <td class="rowWidth">
+                <input type="text" placeholder="Enter Security Question" name="sec_qus" id="sec_qus" class="form-control" formControlName="sec_qus">
+              </td>
+              <td class="rowWidth">
+                <input type="text" placeholder="Enter Security Answer" name="sec_ans" id="sec_ans" class="form-control" formControlName="sec_ans">
+              </td>
+              <td class="rowWidth">
+                <button mat-icon-button type="button" *ngIf="i > 0">
+                  <mat-icon (click)="removeSecurityQuesAns(i)">delete</mat-icon>
+                </button>
+              </td>
+
+            </ng-container>
+          </tr>
+              </tbody></table>
+
+        </div>
+     </div>
+
+
+      <div class="divider">
+        <span>Lavel-1(Operation)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="l1_name">Name</label>
+          <input type="text" name="l1_name" id="l1_name" class="form-control" placeholder="Enter Name" formControlName="l1_name">
+        </div>
+
+        <div class="col-sm-12">
+          <label for="l1_contact_no">Contact</label>
+          <input type="text"
+           name="l1_contact_no"
+            id="l1_contact_no"
+            class="form-control"
+            placeholder="Enter Contact"
+            (keypress)="preventNonumeric($event)"
+            formControlName="l1_contact_no">
+            <div class="invalid-feedback"
+            *ngIf="__amcForm.get('l1_contact_no').invalid && (__amcForm.get('l1_contact_no').dirty || __amcForm.get('l1_contact_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l1_contact_no')).hasError('pattern')">*allow only
+              digits</span>
+
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <label for="l1_email">Email</label>
+          <input type="text" name="l1_email" id="l1_email" class="form-control" placeholder="Enter Email Id" formControlName="l1_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l1_email').invalid && (__amcForm.get('l1_email').dirty || __amcForm.get('l1_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l1_email')).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+
+
+      <div class="divider">
+        <span>Lavel-2(Operation Head)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="l2_name">Name</label>
+          <input type="text" name="l2_name" id="l2_name" class="form-control" placeholder="Enter Name" formControlName="l2_name">
+        </div>
+
+        <div class="col-sm-12">
+          <label for="l2_contact_no">Contact</label>
+          <input type="text"  name="l2_contact_no" id="l2_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l2_contact_no">
+
+          <div class="invalid-feedback"
+            *ngIf="__amcForm.get('l2_contact_no').invalid && (__amcForm.get('l2_contact_no').dirty || __amcForm.get('l2_contact_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l2_contact_no')).hasError('pattern')">*allow only
+              digits</span>
+          </div>
+
+        </div>
+
+        <div class="col-sm-12">
+          <label for="l2_email">Email</label>
+          <input type="text" name="l2_email" id="l2_email" class="form-control" placeholder="Enter Email Id" formControlName="l2_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l2_email').invalid && (__amcForm.get('l2_email').dirty || __amcForm.get('l2_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l2_email')).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+
+      </div>
+
+      <div class="divider">
+        <span>Lavel-3(RM - Sales)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-checkbox color="primary"  formControlName="is_same"> Same As Local Office</mat-checkbox>
+        </div>
+        <div class="col-sm-12">
+          <label for="l3_name">Name</label>
+          <input type="text" name="l3_name" id="l3_name" class="form-control" placeholder="Enter Name" formControlName="l3_name">
+        </div>
+        <div class="col-sm-12">
+          <label for="l3_contact_no">Contact</label>
+          <input type="text"  name="l3_contact_no" id="l3_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l3_contact_no">
+          <div class="invalid-feedback"
+            *ngIf="__amcForm.get('l3_contact_no').invalid && (__amcForm.get('l3_contact_no').dirty || __amcForm.get('l3_contact_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l3_contact_no')).hasError('pattern')">*allow only
+              digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="l3_email">Email</label>
+          <input type="text" name="l3_email" id="l3_email" class="form-control" placeholder="Enter Email Id" formControlName="l3_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l3_email').invalid && (__amcForm.get('l3_email').dirty || __amcForm.get('l3_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l3_email')).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+
+
+      <div class="divider">
+        <span>Lavel-4(Area Manager/Regional Manager)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="l4_name">Name</label>
+          <input type="text" name="l4_name" id="l4_name" class="form-control" placeholder="Enter Name" formControlName="l4_name">
+        </div>
+        <div class="col-sm-12">
+          <label for="l4_contact_no">Contact</label>
+          <input type="text"  name="l4_contact_no" id="l4_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l4_contact_no">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l4_contact_no').invalid && (__amcForm.get('l4_contact_no').dirty || __amcForm.get('l4_contact_no').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l4_contact_no')).hasError('pattern')">*allow only
+            digits</span>
+        </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="l4_email">Email</label>
+          <input type="text" name="l4_email" id="l4_email" class="form-control" placeholder="Enter Email Id" formControlName="l4_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l4_email').invalid && (__amcForm.get('l4_email').dirty || __amcForm.get('l4_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l4_email')).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+
+
+
+      <div class="divider">
+         <span>Lavel-5(Zonal Manager/State Head)</span>
+        <hr class="line"/>
+       </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="l5_name">Name</label>
+          <input type="text"  name="l5_name" id="l5_name" class="form-control" placeholder="Enter Name" formControlName="l5_name">
+        </div>
+        <div class="col-sm-12">
+          <label for="l5_contact_no">Contact</label>
+          <input type="text"  name="l5_contact_no" id="l5_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l5_contact_no">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l5_contact_no').invalid && (__amcForm.get('l5_contact_no').dirty || __amcForm.get('l5_contact_no').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l5_contact_no')).hasError('pattern')">*allow only
+            digits</span>
+        </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="l5_email">Email</label>
+          <input type="text" name="l5_email" id="l5_email" class="form-control" placeholder="Enter Email Id" formControlName="l5_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l5_email').invalid && (__amcForm.get('l5_email').dirty || __amcForm.get('l5_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l5_email')).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+
+      <div class="divider">
+        <span>Lavel-6(National Sales Head/Product Head)</span>
+       <hr class="line"/>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label for="l6_name">Name</label>
+          <input type="text" name="l6_name" id="l6_name" class="form-control" placeholder="Enter Name" formControlName="l6_name">
+        </div>
+        <div class="col-sm-12">
+          <label for="l6_contact_no">Contact</label>
+          <input type="text" name="l6_contact_no" id="l6_contact_no" class="form-control" placeholder="Enter Contact" formControlName="l6_contact_no">
+            <div class="invalid-feedback"
+            *ngIf="__amcForm.get('l6_contact_no').invalid && (__amcForm.get('l6_contact_no').dirty || __amcForm.get('l6_contact_no').touched)">
+            <span class="invalid-feedback" *ngIf="(__amcForm.get('l6_contact_no')).hasError('pattern')">*allow only
+              digits</span>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label for="l6_email">Email</label>
+          <input type="text" name="l6_email" id="l6_email" class="form-control" placeholder="Enter Email Id" formControlName="l6_email">
+          <div class="invalid-feedback"
+          *ngIf="__amcForm.get('l6_email').invalid && (__amcForm.get('l6_email').dirty || __amcForm.get('l6_email').touched)">
+          <span class="invalid-feedback" *ngIf="(__amcForm.get('l6_email')).errors?.email">*Please provide valid email</span>
+        </div>
+        </div>
+      </div>
+
+      <div class="row my-3">
+        <div class="col-sm-12">
+          <label for="logo">Upload Logo</label>
+          <input (change)="getFile($event.target)" type="file" name="logo" id="logo" class="form-control" formControlName="logo">
+          <mat-hint class="mt-2"><p class="m-0">Allowed format: PNG,JPG,JPEG (size upto: 10MB)</p></mat-hint>
+          <div class="invalid-feedback"
+          *ngIf=" __amcForm.get('logo').invalid && ( __amcForm.get('logo').dirty ||  __amcForm.get('logo').touched)">
+          <span class="invalid-feedback" *ngIf="__amcForm.get('logo').errors?.inValidExt">*Invalid
+            file extension.</span>
+          <span class="invalid-feedback"
+            *ngIf="__amcForm.get('logo').errors?.fileSizeValidator">*File size must not exceed than
+            10MB.</span>
+         </div>
+         <a *ngIf="this.__amcForm.controls['logo_preview_file'].value">
+          <img class="previewImg" [src]="__amcForm.controls['logo_preview_file'].value" alt="AMC Logo">
+        </a>
+
+        </div>
+      </div>
+
+  </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn  ml-2" [attr.form]="'__amcForm_'+data.id" [disabled]="this.__amcForm.invalid">
+      {{this.data.id > 0 ? 'Update' : 'Submit'}}
+    </button>
+  </mat-dialog-actions>
+  <!-- <br clear="all"> -->
+</div>

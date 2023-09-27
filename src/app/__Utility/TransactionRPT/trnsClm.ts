@@ -31,6 +31,7 @@ export class trxnClm{
    {field:'stt',header:'STT',width:"6rem"},
    {field:'trans_mode',header:'Transaction Mode',width:"12rem"},
    {field:'remarks',header:'Remarks',width:"16rem"},
+   {field:'amc_link',header:'AMC Link',width:"16rem"},
    {field:'scheme_link',header:'Scheme Link',width:"16rem"},
    {field:'isin_link',header:'ISIN Link',width:"16rem"},
    {field:'plan_opt',header:'Plan Option Link',width:"16rem"},

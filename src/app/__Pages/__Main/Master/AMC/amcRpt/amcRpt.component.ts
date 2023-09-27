@@ -19,6 +19,7 @@ import { amcClmns } from 'src/app/__Utility/Master/amcClmns';
 import { sort } from 'src/app/__Model/sort';
 import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
 import { column } from 'src/app/__Model/tblClmns';
+import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
 
 type selectBtn ={
   label:string,
@@ -182,7 +183,8 @@ export class AmcrptComponent implements OnInit {
     dialogConfig.id = __amcId > 0 ? __amcId.toString() : '0';
     try {
       const dialogref = this.__dialog.open(
-        AmcModificationComponent,
+        // AmcModificationComponent,
+        AMCEntryComponent,
         dialogConfig
       );
       dialogref.afterClosed().subscribe((dt) => {

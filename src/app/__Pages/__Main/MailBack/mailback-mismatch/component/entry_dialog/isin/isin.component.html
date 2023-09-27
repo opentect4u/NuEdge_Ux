@@ -1,0 +1,157 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+  <div mat-dialog-title class="dialog-title">
+    <h2 >{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Minimize"  (click)="minimize()" >
+        <mat-icon >remove</mat-icon>
+      </button>
+      <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+        <mat-icon>check_box_outline_blank </mat-icon>
+      </button>
+
+      <button mat-icon-button title="Close"  [mat-dialog-close]="">
+        <mat-icon >close</mat-icon>
+      </button>
+    </div>
+
+  </div>
+
+<mat-dialog-content >
+    <div class="card">
+      <div class="card-header">
+        <h4>Search ISIN</h4>
+      </div>
+      <div class="card-body px-3">
+        <form [formGroup]="isinForm" (ngSubmit)="populateScheme()">
+          <div class="row mb-2">
+            <div class="col-sm-5">
+              <label>AMC <span class="text-danger">*</span></label>
+                  <select
+                    name="amc_id"
+                    id="amc_id"
+                    class="form-control"
+                    formControlName="amc_id">
+                    <option value="">Select</option>
+                    <option [value]="amcItems.id" *ngFor="let amcItems of amcMst">{{amcItems.amc_short_name}}</option>
+                  </select>
+            </div>
+            <div class="col-sm-5">
+              <label>Scheme <span class="text-danger">*</span></label>
+              <select
+                name="scheme_id"
+                id="scheme_id"
+                class="form-control"
+                formControlName="scheme_id"
+                [compareWith]="compareWith"
+
+                >
+                <option value="">Select</option>
+                <option [ngValue]="scmItems"
+                *ngFor="let scmItems of schemeMst">
+                  {{scmItems.scheme_name}}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-2  d-flex justify-content-end align-items-end">
+              <!-- <button mat-raised-button color="primary" type="submit">Show</button> -->
+              <p-button type="Show"
+              label="Show" icon="pi pi-eye"
+              iconPos="right"
+              styleClass="p-button-lg"></p-button>
+            </div>
+          </div>
+         </form>
+      </div>
+    </div>
+
+    <div class="card mt-2" *ngIf="isin_dtls.controls.length > 0">
+      <div class="card-header">
+        <h4>{{!data ? 'Create' : 'View'}} ISIN</h4>
+      </div>
+      <div class="card-body ">
+        <form [formGroup]="isinForm" autocomplete="off" (ngSubmit)="submitISIN()">
+        <div class="row">
+          <div class="col-sm-12">
+            <table >
+              <thead>
+                <tr>
+                  <th>
+                   Scheme <span *ngIf="!data.isViewMode" class="text-danger">*</span>
+                  </th>
+                  <th>
+                    Plan <span *ngIf="!data.isViewMode" class="text-danger">*</span>
+                  </th>
+                  <th>
+                    Option <span *ngIf="!data.isViewMode" class="text-danger">*</span>
+                  </th>
+                  <th>
+                   ISIN
+                   <!-- <span *ngIf="!data.isViewMode" class="text-danger">*</span> -->
+                  </th>
+                  <th>
+                    Product Code <span *ngIf="!data.isViewMode" class="text-danger">*</span>
+                   </th>
+                  <th >
+                    <button *ngIf="!data.isViewMode" type="button" mat-icon-button (click)="addControls()">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                   </th>
+                </tr>
+              </thead>
+              <tbody formArrayName="isin_dtls">
+                <tr *ngFor="let item of isin_dtls.controls; let i = index;">
+                  <ng-container [formGroupName]="i">
+                    <td ><input type="text" name="scheme_name_{{i}}" id="scheme_name_{{i}}" class="form-control" formControlName="scheme_name">
+                    </td>
+                    <td>
+                         <select name="plan_name_{{i}}" id="plan_name_{{i}}" class="form-control" formControlName="plan_id">
+                          <option value="">Select</option>
+                          <option [value]="plan.id" *ngFor="let plan of planMst">{{plan.plan_name}}</option>
+                         </select>
+                    </td>
+                    <td >
+                      <select name="option_name_{{i}}" id="option_name_{{i}}" class="form-control" formControlName="option_id">
+                        <option value="">Select</option>
+                        <option [value]="option.id" *ngFor="let option of optionMst">{{option.opt_name}}</option>
+                       </select>
+                    </td>
+                    <td >
+                      <input placeholder="Enter ISIN" type="text" name="isin_name_{{i}}" id="isin_name_{{i}}" class="form-control" formControlName="isin_no">
+                    </td>
+                    <td >
+                      <input placeholder="Enter Product Code" type="text" name="product_code_{{i}}" id="product_code_{{i}}" class="form-control" formControlName="product_code">
+                    </td>
+                    <td class="lastChild" >
+                      <button  (click)="removeAt(i,isin_dtls.controls[i].get('row_id')?.value,isin_dtls.controls[i].get('isin_no')?.value)" color="accent" type="button" mat-icon-button>
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                    </ng-container>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-sm-12 py-3 d-flex justify-content-end align-items-center" *ngIf="!data.isViewMode">
+            <!-- <button  class="btn addBtn" type="submit"
+            [disabled]="this.isinForm.invalid">Submit</button> -->
+            <p-button type="submit"
+            label="Save" icon="pi pi-save"
+            iconPos="right"
+            class="mr-2"
+            [disabled]="isin_dtls.invalid"
+            styleClass="p-button-lg"></p-button>
+          </div>
+        </div>
+
+
+      </form>
+      </div>
+    </div>
+
+
+</mat-dialog-content>
+</div>

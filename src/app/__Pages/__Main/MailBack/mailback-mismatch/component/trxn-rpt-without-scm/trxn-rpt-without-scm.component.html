@@ -185,7 +185,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         <!-- [routerLink]="['/main/master/productwisemenu/scheme']" -->
 
         <p-button label="Add AMC"
-        (click)="navigateAMC()"
+        (click)="openAMC(trxn,i)"
         icon="pi pi-plus"
         styleClass="p-button-link">
         </p-button>
@@ -204,7 +204,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           <!-- [routerLink]="['/main/master/productwisemenu/scheme/isin']" -->
 
           <p-button
-          (click)="navigateISIN()"
+          (click)="openISIN(trxn,i)"
           label="Add Scheme ISIN & Code"
           icon="pi pi-plus"
           styleClass="p-button-link">
@@ -213,7 +213,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
 
         <ng-container *ngSwitchCase="col.field == 'plan_opt'">
           <p-button
-          [routerLink]="['/main/master/productwisemenu/scheme/isin']"
+          (click)="openISIN(trxn,i)"
           label="Add Plan & Option"
           icon="pi pi-plus"
           styleClass="p-button-link">

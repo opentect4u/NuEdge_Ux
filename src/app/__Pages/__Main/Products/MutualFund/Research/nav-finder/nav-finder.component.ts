@@ -98,9 +98,9 @@ export class NavFinderComponent implements OnInit, Nav {
   ngOnInit(): void {
     this.getPlan();
     this.getAmcMst();
-    setTimeout(() => {
-      this.getNav();
-    }, 500);
+    // setTimeout(() => {
+    //   this.getNav();
+    // }, 500);
   }
 
   getNavDt(): void {}
@@ -214,6 +214,7 @@ export class NavFinderComponent implements OnInit, Nav {
     this.dbIntr.api_call(0,'/plan',null).pipe(pluck('data')).subscribe((res:plan[]) =>{
      this.md_plan = res;
      this.searchNavForm.controls['plan_type'].setValue(res.length > 0 ? res[0]?.id : res.length);
+     this.getNav();
     })
   }
 

@@ -11,6 +11,9 @@ import { DialogModule } from 'primeng/dialog';
 /*** End */
 
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { IsinComponent } from './component/entry_dialog/isin/isin.component';
+import { SchemeComponent } from './component/entry_dialog/scheme/scheme.component';
+import { AmcComponent } from './component/entry_dialog/amc/amc.component';
 const routes: Routes = [
   {
     path: '',
@@ -20,7 +23,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MailbackMismatchComponent, TrxnRptWithoutScmComponent],
+  declarations: [MailbackMismatchComponent, TrxnRptWithoutScmComponent, IsinComponent, SchemeComponent, AmcComponent],
   imports: [CommonModule,RouterModule.forChild(routes),
     SharedModule,
     TabModule,

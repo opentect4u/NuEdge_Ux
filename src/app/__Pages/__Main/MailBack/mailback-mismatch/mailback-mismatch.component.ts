@@ -141,11 +141,11 @@ export class MailbackMismatchComponent implements OnInit {
   }
 
   column_manage = (flag:string) =>{
-
-    const clm_divident:string[] = ['scheme_link','isin_link','plan_opt'];
+    console.log(flag);
+    const clm_divident:string[] = ['amc_link','scheme_link','isin_link','plan_opt'];
     const clm:string[] = ['divident_opt','scheme_link','isin_link','option_name','plan_name','plan_opt','lock_trxn'];
-    const scm_clm:string[] = ['scheme_link','isin_link','divident_opt','lock_trxn'];
-    const opt_clm:string[] = ['option_name','plan_name','plan_opt','divident_opt','lock_trxn'];
+    const scm_clm:string[] = ['amc_link','scheme_link','isin_link','divident_opt','lock_trxn'];
+    const opt_clm:string[] = ['amc_link','option_name','plan_name','plan_opt','divident_opt','lock_trxn'];
     switch(flag){
       case 'A':
       case 'B': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))
