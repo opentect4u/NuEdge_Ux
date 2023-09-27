@@ -4,6 +4,7 @@
     <!-- Make the Tab Section Common -->
     <core-tab [Tab]="TabMenu"
     (GetTabDtls)="TabDetails($event)"
+    [customClass]="'sip_stp_swp'"
     [index]="tabindex"></core-tab>
     <div class="card p-3">
       <ng-container [ngSwitch]="true">

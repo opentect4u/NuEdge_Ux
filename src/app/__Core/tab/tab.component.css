@@ -29,3 +29,24 @@
 ::ng-deep .lastTabs .mat-tab-list .mat-tab-labels .mat-tab-label:last-child{
   border-top-right-radius: 10px;
 } */
+
+::ng-deep .sip_stp_swp .mat-tab-list .mat-tab-labels .mat-tab-label-active{
+    background: #10486b12!important;
+    color: #10486b !important;
+    font-weight: 600 !important;
+}
+
+::ng-deep .sip_stp_swp .mat-ink-bar{
+  background-color: #f1820b!important;
+  border-top-left-radius: 50px!important;
+  border-top-right-radius: 50px!important;
+  height: 3px!important;
+}
+
+::ng-deep .sip_stp_swp .mat-tab-label{
+    background:transparent!important;
+    border:none!important;
+    border-top-left-radius: 10px!important;
+    border-top-right-radius: 10px!important;
+
+}

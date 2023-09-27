@@ -427,7 +427,7 @@ export class NavFinderColumns {
     { field: 'subcat_name', header: 'Sub category', width: '20rem' },
     { field: 'nav_date', header: 'Nav Date', width: '10rem' },
     { field: 'nav', header: 'Nav', width: '10rem' },
-    { field: 'change_price', header: 'Change', width: '10rem' },
+    { field: 'change_nav', header: 'Change', width: '10rem' },
     { field: 'change_percentage', header: '% of change from prv', width: '15rem' }
   ];
 }
@@ -581,6 +581,6 @@ export interface nav {
   nav_date: Date | null;
   nav: Number;
   id: Number;
-  change_price:string;
+  change_nav:string;
   change_percentage:string;
 }

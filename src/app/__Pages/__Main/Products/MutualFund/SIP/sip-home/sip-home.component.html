@@ -2,7 +2,10 @@
   <div class="col-sm-12 mb-5">
 
     <!-- Make the Tab Section Common -->
-    <core-tab [Tab]="TabMenu" (GetTabDtls)="TabDetails($event)" [index]="tabindex"></core-tab>
+    <core-tab [Tab]="TabMenu"
+    (GetTabDtls)="TabDetails($event)"
+    [customClass]="'sip_stp_swp'"
+    [index]="tabindex"></core-tab>
     <div class="card p-3">
       <ng-container [ngSwitch]="true">
         <ng-container *ngIf="tabindex == 0">
