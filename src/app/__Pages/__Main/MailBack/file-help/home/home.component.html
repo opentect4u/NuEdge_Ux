@@ -13,8 +13,9 @@
   <div class="col-sm-12">
     <core-tab [Tab]="file_help"
     (GetTabDtls)="changeTabDtls($event,'P')"
+    [customClass]="'nav'"
     ></core-tab>
-    <mat-card>
+    <mat-card class="navCard">
       <mat-card-content class="p-4">
        <ng-container *ngIf="fileType_tab.length > 0">
         <core-tab [Tab]="fileType_tab"

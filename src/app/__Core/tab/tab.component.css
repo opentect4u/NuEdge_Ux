@@ -76,9 +76,9 @@ height: 3px!important;
 }
 
 ::ng-deep .nav .mat-tab-label:first-child{
-  border-top-left-radius: 10px!important;
+  border-top-left-radius: 5px!important;
 }
 ::ng-deep .nav .mat-tab-label:last-child{
-  border-top-right-radius: 10px!important;
+  border-top-right-radius: 5px!important;
 }
 /* END */

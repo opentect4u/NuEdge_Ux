@@ -44,7 +44,7 @@
     [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
     appendTo="body"
     [columns]="column"
-    [tableStyle]="{ 'min-width': '350rem' }"
+    [tableStyle]="{ 'min-width': '390rem' }"
     >
       <ng-template pTemplate="header">
           <tr>
@@ -65,19 +65,22 @@
           [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                <b>{{i + 1}}</b>
+                <p class="m-0">{{i + 1}}</p>
              </ng-container>
-             <ng-container *ngSwitchCase="col.field == 'start_date' || col.field == 'end_date' || col.field == 'reg_date'">
-                <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+             <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date' || col.field== 'terminated_date'">
+                <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
              </ng-container>
-             <ng-container *ngSwitchCase="col.field == 'product_code'">
+             <!-- <ng-container *ngSwitchCase="col.field == 'product_code'">
               <b matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
-           </ng-container>
+           </ng-container> -->
+           <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A' }}</p>
+             </ng-container>
              <ng-container *ngSwitchCase="col.field == 'amount'">
-              <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</b>
+              <p [matTooltip]="trxn[col.field]" class="m-0">{{ trxn[col.field] ? trxn[col.field] : '0' }}</p>
            </ng-container>
               <ng-container *ngSwitchDefault>
-                <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
+                <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
               </ng-container>
             </ng-container>
           </td>
@@ -94,8 +97,8 @@
   </p-table>
   </div>
   <div class="card-footer">
-    <b>
+    <p class="m-0">
       In Total There Are {{live_sip_rpt.length}} Terminate SIP
-    </b>
+    </p>
   </div>
 </div>

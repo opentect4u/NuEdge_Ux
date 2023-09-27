@@ -118,7 +118,7 @@
       [columns]="column"
       [paginator]="false"
       columnResizeMode="expand"
-      [scrollHeight]="benchmarkMstDt.length > 5 ? '250px' : ''"
+      [scrollHeight]="benchmarkMstDt.length > 5 ? '400px' : ''"
       [autoLayout]="true"
       [resizableColumns]="true"
       [totalRecords]="benchmarkMstDt.length"
@@ -139,7 +139,7 @@
                 pResizableColumn
                 >
                   {{ col.header }}
-                  <p-sortIcon *ngIf="col.field !='edit'" [field]="col.field">
+                  <p-sortIcon *ngIf="col.field !='edit' && col.field != 'delete'" [field]="col.field">
                   </p-sortIcon>
                 </th>
             </tr>

@@ -76,9 +76,13 @@
                <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">
                   <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
                </ng-container>
-               <ng-container *ngSwitchCase="col.field == 'product_code'">
-                <b matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
+
+               <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                <b>{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A' }}</b>
              </ng-container>
+               <!-- <ng-container *ngSwitchCase="col.field == 'product_code'">
+                <b matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
+             </ng-container> -->
                <ng-container *ngSwitchCase="col.field == 'amount'">
                 <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field]) : 0 }}</b>
              </ng-container>

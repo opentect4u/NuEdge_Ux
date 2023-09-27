@@ -729,3 +729,7 @@ color: #ffffff;
   height: 260px;
   width: 100vw;
 }
+.navCard{
+  border-top-right-radius: 0px!important;
+  border-top-left-radius: 0px!important;
+}
