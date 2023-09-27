@@ -15,6 +15,8 @@ export class TerminateSwpComponent implements OnInit {
 
   @Input() swp_type:string;
 
+  @Input() report_type:string;
+
   __title:string = 'Terminate SWP Report';
 
   /**
@@ -48,8 +50,12 @@ ngOnInit(): void {
 }
 
 LiveSwpReport = (formDt) =>{
+    let dt ={
+    ...formDt,
+    report_type:this.report_type
+  }
   this.dbIntr.api_call(1,'/showSipStpDetails',
-  this.utility.convertFormData(formDt))
+  this.utility.convertFormData(dt))
   .pipe(pluck('data'))
   .subscribe((res: IliveSwp[]) =>{
     console.log(res);

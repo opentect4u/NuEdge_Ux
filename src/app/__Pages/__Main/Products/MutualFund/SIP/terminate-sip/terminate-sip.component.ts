@@ -20,6 +20,8 @@ export class TerminateSIPComponent implements OnInit {
 
   @Input() sipType: string;
 
+  @Input() report_type:string;
+
   /**
    * Holding Transaction Type  Master Data
    */
@@ -51,8 +53,12 @@ export class TerminateSIPComponent implements OnInit {
   ngOnInit(): void {}
 
   LiveSipReport = (formDt) => {
+    let dt ={
+      ...formDt,
+      report_type:this.report_type
+     }
     this.dbIntr
-      .api_call(1, '/showSipStpDetails', this.utility.convertFormData(formDt))
+      .api_call(1, '/showSipStpDetails', this.utility.convertFormData(dt))
       .pipe(pluck('data'))
       .subscribe((res: IliveSip[]) => {
         console.log(res);

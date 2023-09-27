@@ -54,8 +54,9 @@
 
 /* NAV TAB CSS */
 ::ng-deep .nav .mat-tab-list .mat-tab-labels .mat-tab-label-active{
-  background: #10486b12!important;
-  color: #fcfcfc !important;
+  background:#fff!important;
+  /* background: #10486b12!important; */
+  color: #10486b !important;
   font-weight: 600 !important;
 }
 
@@ -67,8 +68,9 @@ height: 3px!important;
 }
 
 ::ng-deep .nav .mat-tab-label{
-  background:#fff!important;
+  background: #10486b12!important;
   border:none!important;
+  color:#fff!important;
   border-top-left-radius: 10px!important;
   border-top-right-radius: 10px!important;
 }

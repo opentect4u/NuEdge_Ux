@@ -16,6 +16,8 @@ export class LiveStpComponent implements OnInit {
 
   @Input() stpType:string;
 
+  @Input() report_type:string;
+
   __title:string = 'Live STP Report';
     /**
    * Holding Transaction Type  Master Data
@@ -48,7 +50,11 @@ ngOnInit(): void {
 }
 
 LiveStpReport = (formDt) =>{
-  this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(formDt))
+  let dt ={
+    ...formDt,
+    report_type:this.report_type
+  }
+  this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
   .subscribe((res: IliveStp[]) =>{
     console.log(res);

@@ -422,13 +422,13 @@ export class NavFinderColumns {
   static column: column[] = [
     { field: 'sl_no', header: 'Sl No', width: '5rem' },
     { field: 'amc_short_name', header: 'AMC', width: '25rem' },
-    { field: 'scheme_name', header: 'Scheme', width: '30rem' },
+    { field: 'scheme_name', header: 'Scheme', width: '32rem' },
     { field: 'cat_name', header: 'Category', width: '10rem' },
     { field: 'subcat_name', header: 'Sub category', width: '20rem' },
     { field: 'nav_date', header: 'Nav Date', width: '10rem' },
     { field: 'nav', header: 'Nav', width: '10rem' },
     { field: 'change_nav', header: 'Change', width: '10rem' },
-    { field: 'change_percentage', header: '% of change from prv', width: '15rem' }
+    { field: 'change_percentage', header: '% of change from prv', width: '12rem' }
   ];
 }
 

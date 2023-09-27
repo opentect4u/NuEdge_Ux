@@ -13,16 +13,20 @@
           [amc]="amcMst"
           [stpType]="stp_type"
           [client]="clientMst"
+          [report_type]="report_type"
           [trxnTypeMst]="trxnTypeMst"></live-stp>
         </ng-container>
         <ng-container *ngIf="tabindex == 1">
-          <registered-stp [sub_tab]="sub_tab_menu"></registered-stp>
+          <registered-stp
+          [sub_tab]="sub_tab_menu"
+          ></registered-stp>
         </ng-container>
         <ng-container *ngIf="tabindex == 2">
           <terminate-stp
           [stpType]="stp_type"
           [amc]="amcMst"
           [trxnTypeMst]="trxnTypeMst"
+          [report_type]="report_type"
           ></terminate-stp>
         </ng-container>
         <ng-container *ngIf="tabindex == 3">

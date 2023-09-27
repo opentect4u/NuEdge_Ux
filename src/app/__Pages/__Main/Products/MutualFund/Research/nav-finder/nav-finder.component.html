@@ -186,15 +186,15 @@
 
            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
              <span>
-              {{nav['scheme_name'] ? (nav['scheme_name'] - nav['plan_name'] - nav['option_name']) : 'N/A'}}
+              {{nav['scheme_name'] ? (nav['scheme_name'] + '-' + nav['plan_name'] + '-' + nav['option_name']) : 'N/A'}}
               <!-- {{nav['scheme_name'] ? (nav['scheme_name']) : 'N/A'}} -->
              </span>
            </ng-container>
 
 
            <!-- Change Price & chnage Percentage -->
-           <ng-container *ngSwitchCase="col.field == 'change_price'">
-            <!-- <span
+           <ng-container *ngSwitchCase="col.field == 'change_nav'">
+            <span
             class='m-0 d-flex align-items-center'>
               {{nav[col.field]}}
               <mat-icon
@@ -205,14 +205,14 @@
               }">
                 {{nav[col.field].includes('-') ? 'arrow_drop_down' : 'arrow_drop_up'}}
               </mat-icon>
-            </span> -->
+            </span>
          </ng-container>
            <ng-container *ngSwitchCase="col.field == 'change_percentage'">
-              <!-- <span class="m-0">
+              <span class="m-0">
                 {{nav.change_percentage?.toString().includes('-') ?
                 nav.change_percentage?.replace('-','')
                 : nav.change_percentage}}%
-              </span> -->
+              </span>
          </ng-container>
            <!-- End -->
 

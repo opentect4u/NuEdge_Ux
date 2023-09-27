@@ -20,6 +20,9 @@ export class StpHomeComponent implements OnInit {
 
   stp_type:string = 'L';
 
+  report_type:string = 'SO';
+
+
   /**
    * Holding Transaction Type  Master Data
    */

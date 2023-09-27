@@ -19,6 +19,7 @@ export class LiveSIPComponent implements OnInit {
 
  __title:string = 'Live SIP Report';
 
+   @Input() report_type:string;
 
    @Input() sipType:string;
 
@@ -53,7 +54,11 @@ export class LiveSIPComponent implements OnInit {
 
 
   LiveSipReport = (formDt) =>{
-        this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(formDt))
+       let dt ={
+        ...formDt,
+        report_type:this.report_type
+       }
+        this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
         .pipe(pluck('data'))
         .subscribe((res: IliveSip[]) =>{
           console.log(res);

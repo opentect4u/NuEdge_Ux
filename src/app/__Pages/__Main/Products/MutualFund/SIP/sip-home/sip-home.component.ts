@@ -22,6 +22,8 @@ export class SipHomeComponent implements OnInit {
 
   sip_type:string = 'L';
 
+  report_type:string = 'P';
+
   /**
    * Holding Transaction Type  Master Data
    */

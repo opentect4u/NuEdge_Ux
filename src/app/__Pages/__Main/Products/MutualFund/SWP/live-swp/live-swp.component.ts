@@ -17,6 +17,8 @@ export class LiveSwpComponent implements OnInit {
 
   @Input() swp_type:string;
 
+  @Input() report_type:string;
+
   __title:string = 'Live SWP Report';
     /**
    * Holding Transaction Type  Master Data
@@ -48,8 +50,12 @@ export class LiveSwpComponent implements OnInit {
  }
 
  LiveSwpReport = (formDt) =>{
+  let dt ={
+    ...formDt,
+    report_type:this.report_type
+  }
   this.dbIntr.api_call(1,'/showSipStpDetails',
-  this.utility.convertFormData(formDt))
+  this.utility.convertFormData(dt))
   .pipe(pluck('data'))
   .subscribe((res: IliveSwp[]) =>{
     console.log(res);

@@ -18,6 +18,8 @@ export class SwpHomeComponent implements OnInit {
 
   swp_type:string ='L';
 
+  report_type:string = 'R';
+
   /**
    * Holding Transaction Type  Master Data
    */

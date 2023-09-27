@@ -16,6 +16,9 @@ export class TerminateStpComponent implements OnInit {
 
   @Input() stpType:string;
 
+  @Input() report_type:string;
+
+
   __title:string = 'Terminate STP Report';
 
   /**
@@ -47,7 +50,11 @@ constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
 ngOnInit(): void {}
 LiveStpReport = (formDt) =>{
-  this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(formDt))
+  let dt ={
+    ...formDt,
+    report_type:this.report_type
+  }
+  this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
   .subscribe((res: IliveStp[]) =>{
     console.log(res);
