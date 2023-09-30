@@ -1,10 +1,12 @@
+<div class="bckContainer"></div>
+
 <div class="row flexSec">
   <div class="col-sm-12 mb-3">
 
     <!-- Make the Tab Section Common -->
     <core-tab [Tab]="TabMenu"
     (GetTabDtls)="TabDetails($event)"
-    [customClass]="'sip_stp_swp'"
+    [customClass]="'nav'"
     [index]="tabindex"></core-tab>
     <div class="card p-3">
       <ng-container [ngSwitch]="true">

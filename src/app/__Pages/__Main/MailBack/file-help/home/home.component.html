@@ -44,14 +44,14 @@
              </ng-container>
              <ng-template #freq_rpt>
               <div class="col-sm-3">
-                <label for="trans_type">Frequency Name <span class="text-danger">*</span></label>
+                <label for="freq_name">Frequency Name <span class="text-danger">*</span></label>
                  <input type="text" #trxnType placeholder="Enter Frequency Name" name="freq_name" id="freq_name" class="form-control" formControlName="freq_name">
                  <div class="invalid-feedback" *ngIf="rntTrxnType.get('freq_name').invalid && (rntTrxnType.get('freq_name').dirty || rntTrxnType.get('freq_name').touched)">
                   <span class="invalid-feedback" *ngIf="(rntTrxnType.get('freq_name')).errors?.required">*Please provide frequency name</span>
                 </div>
                 </div>
                 <div class="col-sm-3">
-                  <label for="trans_type">Frequency Code <span class="text-danger">*</span></label>
+                  <label for="freq_code">Frequency Code <span class="text-danger">*</span></label>
                    <input type="text" #trxnType placeholder="Enter Frequency Code" name="freq_code" id="freq_code" class="form-control" formControlName="freq_code">
                    <div class="invalid-feedback" *ngIf="rntTrxnType.get('freq_code').invalid && (rntTrxnType.get('freq_code').dirty || rntTrxnType.get('freq_code').touched)">
                     <span class="invalid-feedback" *ngIf="(rntTrxnType.get('freq_code')).errors?.required">*Please provide frequency code</span>
@@ -80,7 +80,7 @@
               <!-- End -->
 
             <div class="col-sm-3" *ngIf="this.sub_tab!= 'F'">
-              <label for="c_k_trans_type">File Transaction Type<span *ngIf="this.sub_tab == 'T'" class="text-danger">*</span></label>
+              <label for="c_k_trans_type">File Transaction Type <span *ngIf="this.sub_tab == 'T'" class="text-danger">*</span></label>
                <input type="text" placeholder="Enter File Transaction Type" name="c_k_trans_type" id="c_k_trans_type" class="form-control" formControlName="c_k_trans_type">
                <div class="invalid-feedback" *ngIf="rntTrxnType.get('c_k_trans_type').invalid && (rntTrxnType.get('c_k_trans_type').dirty || rntTrxnType.get('c_k_trans_type').touched)">
                 <span class="invalid-feedback" *ngIf="(rntTrxnType.get('c_k_trans_type')).errors?.required">*Please provide file transaction type</span>

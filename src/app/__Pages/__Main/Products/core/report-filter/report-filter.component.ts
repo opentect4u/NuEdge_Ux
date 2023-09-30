@@ -15,6 +15,14 @@ import { Calendar } from 'primeng/calendar';
 import clientType from '../../../../../../assets/json/view_type.json';
 import { client } from 'src/app/__Model/__clientMst';
 import { DOCUMENT } from '@angular/common';
+import MonthDT from '../../../../../../assets/json/Master/month.json';
+import { global } from 'src/app/__Utility/globalFunc';
+
+enum sip_stp_swp_type {
+    'P'='/sipType',
+    'R' ='/swpType',
+    'SO' ='/stpType'
+}
 
 @Component({
   selector: 'core-report-filter',
@@ -23,13 +31,29 @@ import { DOCUMENT } from '@angular/common';
 })
 export class ReportFilterComponent implements OnInit {
 
+
+   month:{id:number,month:string}[] = MonthDT;
+
+   year:number[] = [];
+
+   @Input() set Reset(value){
+   if(value == 'Y'){
+    this.btn_type = 'R';
+    this.reset();
+   }
+   }
+
+   /**
+    * Differenciate between report type
+    */
+   @Input() type:string;
+
     /**
    * Show / hide Loader Spinner while typing inside Client Details Input Field
    */
     __isClientPending: boolean = false;
 
-
-  client_type= clientType;
+    client_type= clientType;
 
 
   /**
@@ -43,9 +67,20 @@ export class ReportFilterComponent implements OnInit {
     @Input() trxnTypeMst: rntTrxnType[] = [];
 
 
+    /**
+    * For Checking whether the report is for SIP/STP/SWP
+    */
+    @Input() report_type:string;
 
-  /** Paginate : for holding how many result tobe fetched */
-   paginate:number = 1;
+
+    /**
+     * Foe Getting SIP / STP / SWP Type
+     */
+
+
+
+    /** Paginate : for holding how many result tobe fetched */
+    paginate:number = 1;
 
   /**
    * Setting of multiselect dropdown
@@ -142,6 +177,13 @@ export class ReportFilterComponent implements OnInit {
    */
   @Input() flag:string;
 
+  /**
+   * hold sip/stp/swp type master data
+   */
+  @Input() sip_stp_swp_type_mst:any = [];
+
+  @Input() sub_type:string;
+
 
   /**
    * For holding client those are  present only in transaction.
@@ -236,8 +278,10 @@ export class ReportFilterComponent implements OnInit {
    * Form Field for search Transaction
    */
   Rpt = new FormGroup({
-    date_periods: new FormControl(''),
-    date_range: new FormControl(''),
+    // date_periods: new FormControl(''),
+    // date_range: new FormControl(''),
+    month:new FormControl(''),
+    year:new FormControl(''),
     amc_id: new FormControl([], { updateOn: 'blur' }),
     cat_id: new FormControl([], { updateOn: 'blur' }),
     sub_cat_id: new FormControl([], { updateOn: 'blur' }),
@@ -262,25 +306,49 @@ export class ReportFilterComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    setTimeout(() => {
-    this.Rpt.get('date_periods').setValue('M',{emitEvent:true});
-    this.searchReport();
-    }, 500);
+    if(this.sub_type != 'RR' && this.sub_type != 'MT'){
+      this.Rpt.get('month').disable();
+      this.Rpt.get('year').disable();
+      this.year = [];
+    }
+    else{
+      this.Rpt.get('month').enable();
+      this.Rpt.get('year').enable();
+      this.getYears();
+    }
+
+    this.getSip_stp_swp_type(this.report_type);
     this.maxDate= this.calculateDates('T');
     this.minDate= this.calculateDates('P');
+    this.searchReport();
+  }
+
+  getYears(){
+    let years:number[] = []
+    const start_year = 1980;
+    const dt = new Date();
+    const year = dt.setFullYear(dt.getFullYear() + 76);
+    for(let i = start_year ; i >= year;i++){
+      this.year.push(i);
+    }
+  }
+
+  getSip_stp_swp_type = (report_type:string) =>{
+    console.log(sip_stp_swp_type[report_type]);
+
   }
 
   /**
    * Event trigger after form submit
    */
   searchReport = () =>{
-    let liveSipReportFilter = Object.assign({}, this.Rpt.getRawValue(), {
-      ...this.Rpt.getRawValue(),
+    let liveSipReportFilter = Object.assign({}, this.Rpt.value, {
+      ...this.Rpt.value,
      amc_id:this.utility.mapIdfromArray(this.Rpt.value.amc_id,'id'),
      brn_cd:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.brn_id,'id') : '[]',
      bu_type_id:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.bu_type_id,'bu_code') : '[]',
      cat_id:this.utility.mapIdfromArray(this.Rpt.value.cat_id,'id'),
-     date_range:this.dt_range.inputFieldValue,
+    //  date_range:this.dt_range.inputFieldValue,
      euin_no:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.euin_no,'euin_no') : '[]',
      rm_id:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.rm_id,'euin_no') : '[]',
      scheme_id:this.utility.mapIdfromArray(this.Rpt.value.scheme_id,'id'),
@@ -311,27 +379,34 @@ export class ReportFilterComponent implements OnInit {
     if (ev.option.value == 'A') {
       this.getBranchMst();
     } else {
-         this.Rpt.patchValue({
-          amc_id:[],
-          folio_no:'',
-          trxn_type_id:[],
-          date_range:'',
-          date_periods:'M',
-          client_id:'',
-          pan_no:'',
-          view_type:''
-         });
-         this.Rpt.get('brn_cd').setValue([],{emitEvent:true});
-         this.subbrkArnMst = [];
-         this.Rpt.controls['sub_brk_cd'].setValue([]);
-         this.Rpt.controls['euin_no'].setValue([]);
-         this.Rpt.controls['client_name'].setValue('',{emitEvent:false});
+         this.reset();
     }
   }
 
-  setEndDate = () =>{
-    // this.setMaxDate(this.Rpt.get('date_range').value[0]);
+  reset(){
+    this.Rpt.patchValue({
+      amc_id:[],
+      folio_no:'',
+      trxn_type_id:[],
+      // date_range:'',
+      // date_periods:'M',
+      month:'',
+      year:'',
+      client_id:'',
+      pan_no:'',
+      view_type:''
+     });
+     this.Rpt.get('brn_cd').setValue([],{emitEvent:true});
+     this.subbrkArnMst = [];
+     this.Rpt.controls['sub_brk_cd'].setValue([]);
+     this.Rpt.controls['euin_no'].setValue([]);
+     this.Rpt.controls['client_name'].setValue('',{emitEvent:false});
+     this.searchReport();
   }
+
+  // setEndDate = () =>{
+  //   // this.setMaxDate(this.Rpt.get('date_range').value[0]);
+  // }
 
   // setMaxDate = (start_date:Date) =>{
   //   const  dt = new Date(start_date);
@@ -375,41 +450,41 @@ export class ReportFilterComponent implements OnInit {
     //   }
     // });
 
-    this.Rpt.controls['date_periods'].valueChanges.subscribe((res) => {
-      if(res){
-        this.Rpt.controls['date_range'].reset(
-          res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
-        );
-      }
-      else{
-        this.Rpt.controls['date_range'].setValue('');
-        this.Rpt.controls['date_range'].disable();
-        return;
-      }
+    // this.Rpt.controls['date_periods'].valueChanges.subscribe((res) => {
+    //   if(res){
+    //     this.Rpt.controls['date_range'].reset(
+    //       res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+    //     );
+    //   }
+    //   else{
+    //     this.Rpt.controls['date_range'].setValue('');
+    //     this.Rpt.controls['date_range'].disable();
+    //     return;
+    //   }
 
-      if (res && res != 'R') {
-        this.Rpt.controls['date_range'].disable();
-      } else {
-        this.Rpt.controls['date_range'].enable();
-      }
-    });
+    //   if (res && res != 'R') {
+    //     this.Rpt.controls['date_range'].disable();
+    //   } else {
+    //     this.Rpt.controls['date_range'].enable();
+    //   }
+    // });
 
 
-    this.Rpt.controls['date_range'].valueChanges.subscribe((res) => {
-      if(res){
-          // this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
-        //  if(new Date(res[0]))
-            if(dates.calculatMaximumDates('R',6,new Date(res[0])) > new Date()){
-                       this.maxDate = dates.calculateDates('T');
-            }
-            else{
-              this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
-            }
-        }
-        else{
-          this.maxDate = dates.calculateDates('T');
-        }
-    })
+    // this.Rpt.controls['date_range'].valueChanges.subscribe((res) => {
+    //   if(res){
+    //       // this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
+    //     //  if(new Date(res[0]))
+    //         if(dates.calculatMaximumDates('R',6,new Date(res[0])) > new Date()){
+    //                    this.maxDate = dates.calculateDates('T');
+    //         }
+    //         else{
+    //           this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
+    //         }
+    //     }
+    //     else{
+    //       this.maxDate = dates.calculateDates('T');
+    //     }
+    // })
 
       /**
        * Event Trigger after change amc

@@ -358,9 +358,9 @@ export class UploadCsvComponent implements OnInit {
     private __utility: UtiliService,
     public  __rtDt: ActivatedRoute
   ) {
-    this.previewlatestRntEntry();/*** Function call to get the latest R&T from backend */
   }
   ngOnInit() {
+    this.previewlatestRntEntry();/*** Function call to get the latest R&T from backend */
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   }
   /*** Function Defination to get the latest R&T from backend */

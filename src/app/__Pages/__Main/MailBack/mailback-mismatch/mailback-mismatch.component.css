@@ -1,4 +1,16 @@
-tr,td,th{
-  border: 1px solid #e1e1e1;
-  padding: 5px;
+
+/* .container{
+  padding: 0px;
+} */
+.container .container_header{
+  height: 40px;
+  /* border-bottom:1px solid #e3e3e3; */
+}
+
+::ng-deep .p-dialog .p-dialog-content{
+  padding: 0 0 2rem 0!important;
+}
+
+::ng-deep .p-datatable.p-datatable-lg .p-datatable-header{
+  padding:2px!important;
 }

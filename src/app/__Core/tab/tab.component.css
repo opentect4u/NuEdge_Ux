@@ -30,7 +30,7 @@
   border-top-right-radius: 10px;
 } */
 
-/* FOR SIP TP SWP */
+/* FOR SIP STP SWP */
 ::ng-deep .sip_stp_swp .mat-tab-list .mat-tab-labels .mat-tab-label-active{
     background: #10486b12!important;
     color: #10486b !important;
@@ -53,18 +53,31 @@
 /* END */
 
 /* NAV TAB CSS */
-::ng-deep .nav .mat-tab-list .mat-tab-labels .mat-tab-label-active{
+/* ::ng-deep .nav .mat-tab-list .mat-tab-labels .mat-tab-label-active{
   background:#fff!important;
-  /* background: #10486b12!important; */
+  color: #10486b !important;
+  font-weight: 600 !important;
+} */
+
+::ng-deep .nav .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  background: #fff!important;
   color: #10486b !important;
   font-weight: 600 !important;
 }
 
-::ng-deep .nav .mat-ink-bar{
+
+/* ::ng-deep .nav .mat-ink-bar{
 background-color: #f1820b!important;
 border-top-left-radius: 50px!important;
 border-top-right-radius: 50px!important;
 height: 3px!important;
+} */
+
+::ng-deep .nav .mat-ink-bar {
+  background-color: #f1820b!important;
+  border-top-left-radius: 50px!important;
+  border-top-right-radius: 50px!important;
+  height: 3px!important;
 }
 
 ::ng-deep .nav .mat-tab-label{
@@ -82,3 +95,96 @@ height: 3px!important;
   border-top-right-radius: 5px!important;
 }
 /* END */
+
+
+
+
+/*** File Help **/
+/* ::ng-deep .second_tab .mat-tab-list .mat-tab-labels .mat-tab-label-active{
+  background: #f1820b21!important;
+  color: #f1820b !important;
+  padding: 0px 5px;
+  font-weight: 600;
+  transition: font-weight all .1s;
+} */
+
+
+::ng-deep .second_tab .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  background: #f1820b!important;
+  color: #ffffff !important;
+  padding: 0px 5px;
+  font-weight: 500;
+  transition: font-weight all .1s;
+  /* font-size: 13px; */
+}
+
+/*
+::ng-deep .second_tab .mat-ink-bar {
+  background-color: #f1820b!important;
+  height: 3px!important;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+} */
+
+::ng-deep .second_tab .mat-ink-bar {
+  background-color: #0256c6!important;
+  height: 3px!important;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+}
+
+::ng-deep .second_tab .mat-tab-list .mat-tab-label{
+  background: #fff!important;
+  color:black!important;
+  border:none!important;
+  border-top-left-radius: 10px!important;
+  border-top-right-radius: 10px!important;
+}
+::ng-deep .second_tab .mat-tab-list .mat-tab-labels{
+   border-bottom: 1px solid #ccc;
+}
+
+
+/* ::ng-deep .rnt_tab .mat-tab-list .mat-tab-labels .mat-tab-label-active{
+  background: #10486b2b!important;
+  color: #10486b !important;
+  padding: 0px 5px;
+  font-weight: 600;
+  transition: font-weight all .1s;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+} */
+
+
+::ng-deep .rnt_tab .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  background: #0256c6!important;
+  color: #ffffff !important;
+  padding: 0px 5px;
+  /* font-weight: 600; */
+  transition: font-weight all .1s;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+
+/* ::ng-deep .rnt_tab .mat-ink-bar {
+  background-color: #10486b!important;
+  height: 3px!important;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+} */
+::ng-deep .rnt_tab .mat-ink-bar {
+  background-color: #f1820b!important;
+  height: 3px!important;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+}
+
+
+::ng-deep .rnt_tab .mat-tab-list .mat-tab-label{
+  background: #fff!important;
+  color:black!important;
+  border:none!important;
+}
+
+/***END***/

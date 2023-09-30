@@ -13,6 +13,9 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { IsinComponent } from './component/entry_dialog/isin/isin.component';
 import { SchemeComponent } from './component/entry_dialog/scheme/scheme.component';
+/***** Mat Badge  module */
+import {MatBadgeModule} from '@angular/material/badge';
+/******End ***************/
 const routes: Routes = [
   {
     path: '',
@@ -27,7 +30,8 @@ const routes: Routes = [
     SharedModule,
     TabModule,
     ConfirmPopupModule,
-    DialogModule
+    DialogModule,
+    MatBadgeModule
   ],
 })
 export class MailbackMismatchModule {}

@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { IliveSip } from '../live-sip/live_sip.interface';
-import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { amc } from 'src/app/__Model/amc';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -22,10 +21,7 @@ export class TerminateSIPComponent implements OnInit {
 
   @Input() report_type:string;
 
-  /**
-   * Holding Transaction Type  Master Data
-   */
-  @Input() trxnTypeMst: rntTrxnType[] = [];
+  @Input()  sip_stp_swp_type_mst:any = [];
 
   /**
    * For Holding AMC Master Data

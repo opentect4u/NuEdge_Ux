@@ -2,7 +2,6 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { IliveSip } from './live_sip.interface';
 import { amc } from 'src/app/__Model/amc';
-import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { pluck } from 'rxjs/operators';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -17,16 +16,14 @@ export class LiveSIPComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
 
- __title:string = 'Live SIP Report';
+ __title:string = 'Live SIP';
 
    @Input() report_type:string;
 
    @Input() sipType:string;
 
-    /**
-   * Holding Transaction Type  Master Data
-   */
-  @Input() trxnTypeMst: rntTrxnType[] = [];
+   @Input() sip_stp_swp_type_mst:any = [];
+
 
  /**
   * For Holding AMC Master Data
@@ -50,7 +47,7 @@ export class LiveSIPComponent implements OnInit {
 
   constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {console.log('Report Type:' + this.sipType);}
 
 
   LiveSipReport = (formDt) =>{
@@ -61,7 +58,6 @@ export class LiveSIPComponent implements OnInit {
         this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
         .pipe(pluck('data'))
         .subscribe((res: IliveSip[]) =>{
-          console.log(res);
              this.live_sip_rpt = res;
         })
   }

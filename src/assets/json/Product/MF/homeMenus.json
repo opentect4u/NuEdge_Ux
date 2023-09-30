@@ -161,14 +161,16 @@
             "title":"To Be Registered",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"RR"
           },
           {
             "id":2,
             "title":"Un Registered",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"RU"
           }
         ]
       },
@@ -194,14 +196,16 @@
             "title":"Matured SIP",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"MM"
           },
           {
             "id":2,
             "title":"To Be Matured SIP",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"MT"
           }
         ]
       },
@@ -246,14 +250,16 @@
             "title":"To Be Registered",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"RR"
           },
           {
             "id":2,
             "title":"Un Registered",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"RU"
           }
         ]
       },
@@ -279,14 +285,16 @@
             "title":"Matured SWP",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"MM"
           },
           {
             "id":2,
             "title":"To Be Matured SWP",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"MT"
           }
         ]
       },
@@ -330,14 +338,16 @@
             "title":"To Be Registered",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"RR"
           },
           {
             "id":2,
             "title":"Un Registered",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"RU"
           }
         ]
       },
@@ -363,14 +373,16 @@
             "title":"Matured STP",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"MM"
           },
           {
             "id":2,
             "title":"To Be Matured STP",
             "url":"/main/product/mf",
             "icon": "",
-            "img":"/PortFolio/liveMfPortFolio.png"
+            "img":"/PortFolio/liveMfPortFolio.png",
+            "flag":"MT"
           }
         ]
       },

@@ -1,37 +1,47 @@
+
+<div class="bckContainer"></div>
 <div class="row flexSec">
   <div class="col-sm-12 mb-5">
 
-    <!-- Make the Tab Section Common -->
     <core-tab [Tab]="TabMenu"
     (GetTabDtls)="TabDetails($event)"
-    [customClass]="'sip_stp_swp'"
+    [customClass]="'nav'"
     [index]="tabindex"></core-tab>
-    <div class="card p-3">
-      <ng-container [ngSwitch]="true">
-        <ng-container *ngIf="tabindex == 0">
-          <live-sip [amc]="amcMst"
-          [sipType]="sip_type"
-           [client]="clientMst"
-           [report_type]="report_type"
-            [trxnTypeMst]="trxnTypeMst"></live-sip>
+    <!--<div class="card p-3">-->
+    <!--<mat-card class="cardNav">
+      <mat-card-content>-->
+        <ng-container [ngSwitch]="true">
+          <ng-container *ngIf="tabindex == 0">
+            <live-sip [amc]="amcMst"
+                      [sipType]="sip_type"
+                      [report_type]="report_type"
+                      [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"></live-sip>
+          </ng-container>
+          <ng-container *ngIf="tabindex == 1">
+            <registered-sip [report_type]="report_type"
+                            [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
+                            [sipType]="sip_type" [amc]="amcMst"
+                            [sub_tab]="sub_tab_menu"></registered-sip>
+          </ng-container>
+          <ng-container *ngIf="tabindex == 2">
+            <terminate-sip [report_type]="report_type"
+                           [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
+                           [sipType]="sip_type" [amc]="amcMst"></terminate-sip>
+          </ng-container>
+          <ng-container *ngIf="tabindex == 3">
+            <matured-sip [report_type]="report_type"
+                         [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
+                         [sipType]="sip_type" [amc]="amcMst"
+                         [sub_tab]="sub_tab_menu"></matured-sip>
+          </ng-container>
+          <ng-container *ngIf="tabindex == 4">
+            <pause-sip [report_type]="report_type"
+                       [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"></pause-sip>
+          </ng-container>
         </ng-container>
-        <ng-container *ngIf="tabindex == 1">
-          <registered-sip [sub_tab]="sub_tab_menu"></registered-sip>
-        </ng-container>
-        <ng-container *ngIf="tabindex == 2">
-          <terminate-sip
-          [report_type]="report_type"
-          [sipType]="sip_type"  [amc]="amcMst" [client]="clientMst" [trxnTypeMst]="trxnTypeMst"></terminate-sip>
-        </ng-container>
-        <ng-container *ngIf="tabindex == 3">
-          <matured-sip [sub_tab]="sub_tab_menu"></matured-sip>
-        </ng-container>
-        <ng-container *ngIf="tabindex == 4">
-          <pause-sip></pause-sip>
-        </ng-container>
-      </ng-container>
-    </div>
-
+        <!--</div>-->
+      <!--</mat-card-content>
+    </mat-card>-->
 
   </div>
 </div>

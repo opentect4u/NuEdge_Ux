@@ -1,20 +1,22 @@
+<div class="bckContainer"></div>
 <div class="row flexSec">
   <div class="col-sm-12 mb-3">
 
     <!-- Make the Tab Section Common -->
     <core-tab [Tab]="TabMenu"
     (GetTabDtls)="changeTabDtls($event,'P')"
+    [customClass]="'nav'"
     [index]="index"
     ></core-tab>
 
-    <p-card styleClass="rounded-bottom border-noround">
+    <mat-card class="navCard p-3">
       <core-tab [Tab]="subTab"
       (GetTabDtls)="changeTabDtls($event,'C')"
-      [customClass]="'customTabs'"
+      [customClass]="'second_tab'"
       [index]="sub_index"
       ></core-tab>
-      <div class="card">
-        <div class="card-body p-1">
+      <!-- <div class="card">
+        <div class="card-body p-1"> -->
           <mailBack-trxn-rpt-without-scm
           [tblminWidth]="tblWidth"
           [trxnRptWithOutScm]="trxnTypeRpt"
@@ -22,9 +24,9 @@
           [TrxnClm]="TrxnClm"
           (changeStatusOfTrxn)="setTrxnFromChild($event)"
           ></mailBack-trxn-rpt-without-scm>
-        </div>
-        </div>
-    </p-card>
+        <!-- </div>
+        </div> -->
+    </mat-card>
 
 
     <!-- <div class="card">
@@ -41,84 +43,38 @@
   <p-dialog #countModal header="Header"
   [(visible)]="isvisible"
   [modal]="true"
-  [style]="{ width: '70vw',height: '400px'}"
+  [style]="{ width: '50vw',height: '400px'}"
   [draggable]="false"
   [resizable]="false">
   <ng-template pTemplate="header">
-    <span class="text-xl font-bold">Mismatch Files</span>
+    <span class="text-lg font-bold">Mismatch Files</span>
     </ng-template>
+    <ng-container>
 
+    </ng-container>
      <div class="container mt-3">
-      <table style="width:100%">
-        <thead>
+        <div class="container_header">
+          <core-tab [Tab]="misMatchCountFile"
+          [customClass]="'second_tab'"
+          (GetTabDtls)="changeTabDtls_forMismatch_count($event)"
+          ></core-tab>
+        </div>
+        <mat-card class="navCard mat-elevation-z1">
+          <mat-card-content>
+            <ng-container *ngFor="let items of misMatchCountFile;let i = index">
+              <mat-list role="list" *ngIf="count_tab_index == i">
+                <mat-list-item role="listitem" *ngFor="let item of items.file_type;">
+                  {{item.name}}
+                  <span align="end">
+                     {{item.count}}
+                  </span>
+                  <mat-divider></mat-divider>
+                </mat-list-item>
+              </mat-list>
+            </ng-container>
+          </mat-card-content>
 
-          <tr>
-            <td>File</td>
-            <td class="text-right">Count</td>
-          </tr>
-        </thead>
-        <tbody>
-           <tr><th class="text-center" colspan="2">Transaction File</th></tr>
-            <tr>
-              <td class="text-left">AMC</td>
-              <td class="text-right">2</td>
-            </tr>
-            <tr>
-              <td class="text-left">Scheme</td>
-              <td class="text-right">2</td>
-            </tr>
-            <tr>
-              <td class="text-left">Plan & Option</td>
-              <td class="text-right">2</td>
-            </tr>
-            <tr>
-              <td class="text-left">Bussiness Type</td>
-              <td class="text-right">2</td>
-            </tr>
-            <tr>
-              <td class="text-left">IDCW Option</td>
-              <td class="text-right">2</td>
-            </tr>
-        </tbody>
-
-        <tbody>
-          <tr><th class="text-center" colspan="2">NAV File</th></tr>
-
-          <tr>
-            <td class="text-left">AMC</td>
-            <td class="text-right">2</td>
-          </tr>
-          <tr>
-            <td class="text-left">Scheme</td>
-            <td class="text-right">2</td>
-          </tr>
-      </tbody>
-      </table>
-      </div>
-
-      <!-- <div class="container mt-3">
-        <table style="width:100%">
-          <thead>
-            <tr><th class="text-center" colspan="2">
-              NAV File
-            </th>
-            </tr>
-            <tr>
-              <td>File</td>
-              <td class="text-right">Count</td>
-            </tr>
-          </thead>
-          <tbody>
-              <tr>
-                <td class="text-left">AMC</td>
-                <td class="text-right">2</td>
-              </tr>
-              <tr>
-                <td class="text-left">Scheme</td>
-                <td class="text-right">2</td>
-              </tr>
-          </tbody>
-        </table>
-        </div> -->
+        </mat-card>
+    </div>
 
 </p-dialog>

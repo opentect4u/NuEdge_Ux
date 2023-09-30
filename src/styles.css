@@ -424,7 +424,8 @@ mat-card {
   background: #c0c0c066;
   height: 40px !important;
   opacity: 1 !important;
-  font-size: 11px;
+  /* font-size: 11px; */
+  font-size: 13px;
   border: 1px solid #b0b0b01f!important;
   color: #424242 !important;
 }
@@ -707,10 +708,10 @@ color: #ffffff;
 .p-button.p-button-link:enabled:hover .p-button-label {
   text-decoration: none!important;
 }
-
+/*
 .p-button:enabled:hover{
   border:none!important;
-}
+}*/
 
 .p-dialog-header{
   background-color: #10486b!important;

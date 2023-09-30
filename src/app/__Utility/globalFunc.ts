@@ -61,4 +61,21 @@ export class global{
     });
     XLSX.writeFile(wb, `${fileName}.xlsx`);
   }
+
+  /**
+   * calcular future year and populate in dropdown in SIP/STP/SWP Report
+   */
+  public static getYears = ():Promise<number[]> =>{
+      let years:number[] = []
+      const start_year = 1980;
+      const dt = new Date();
+      const year = dt.setFullYear(dt.getFullYear() + 76);
+      for(let i = start_year ; i >= year;i++){
+        years.push(i);
+      }
+      return new  Promise((resolve, reject) => {
+          resolve(years);
+      })
+  }
+
 }

@@ -1,8 +1,13 @@
 <core-tab [Tab]="sub_tab"
-[customClass]="'customTabs'"
-(GetTabDtls)="TabDetails($event)"></core-tab>
-<div class="card">
-  <div class="card-body px-2">
-    <p>Matured SIP works</p>
-  </div>
-</div>
+(GetTabDtls)="TabDetails($event)" [customClass]="'second_tab'"></core-tab>
+    <core-report-filter
+    (getsearchValues)="searchSipReport($event)"
+    [title]="__title"
+    [amcMst]="amc"
+    [type]="sipType"
+    [Reset]="reset_data"
+    [sub_type]="sub_type"
+    [report_type]="report_type"
+    [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
+    ></core-report-filter>
+

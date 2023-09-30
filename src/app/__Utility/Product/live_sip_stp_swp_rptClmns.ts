@@ -41,5 +41,6 @@ export class live_sip_stp_swp_rpt{
       {field:'bank_name',header:'Bank',isVisible:['LS-1','TS-1'],width:"22rem"},
       {field:'acc_no',header:'Account No',isVisible:['LS-1','TS-1'],width:"15rem"},
       {field:'terminated_date',header:'Terminated Date',isVisible:['TS-1','TS-2','TS-3'],width:"12rem"},
+      {field:'remarks',header:'Remarks',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3'],width:"15rem"}
      ]
 }

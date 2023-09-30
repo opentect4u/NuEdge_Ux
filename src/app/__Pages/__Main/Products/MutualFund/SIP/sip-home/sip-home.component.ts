@@ -27,16 +27,21 @@ export class SipHomeComponent implements OnInit {
   /**
    * Holding Transaction Type  Master Data
    */
-    trxnTypeMst: rntTrxnType[] = [];
+    // trxnTypeMst: rntTrxnType[] = [];
   /**
   * holding Amc master data
   */
    amcMst:amc[] = [];
 
    /**
+    *  get SIP Type Master data
+    */
+   sip_stp_swp_type_mst:any = [];
+
+   /**
    * For holding client those are  present only in transaction.
    */
-   clientMst:any=[];
+  //  clientMst:any=[];
 
   sub_tab_menu:ITab[] = [];
 
@@ -56,7 +61,18 @@ export class SipHomeComponent implements OnInit {
   ngOnInit(): void {
     this.getAmcMst();
     // this.getClientMst();
-    this.getTrxnTypeMst();
+    // this.getTrxnTypeMst();
+    this.getSIPType();
+  }
+
+
+  /**
+   * Event for getting sip type master data
+   */
+  getSIPType(){
+    this.dbIntr.api_call(0,'/sipType',null).pipe(pluck('data')).subscribe(res =>{
+      this.sip_stp_swp_type_mst = res;
+    })
   }
 
   /**
@@ -76,6 +92,7 @@ export class SipHomeComponent implements OnInit {
   getSubTab = (flag:string) =>{
     console.log(flag);
     let dt = menu.filter(item => item.id == 3)[0].sub_menu;
+    console.log(dt);
     this.sub_tab_menu = (dt as any[]).filter(item => item.flag == flag)[0].sub_menu
     .map((item) => ({tab_name:item.title,img_src:('../../../../../assets/images/'+item.img),id:item.id,flag:item.flag}));
   }
@@ -95,21 +112,21 @@ export class SipHomeComponent implements OnInit {
    /**
    * Get Client Master Data
    */
-   getClientMst = () =>{
-    this.dbIntr.api_call(0,'/searchClient',null).pipe(pluck("data")).subscribe(res =>{
-     this.clientMst = res;
-    })
-   }
+  //  getClientMst = () =>{
+  //   this.dbIntr.api_call(0,'/searchClient',null).pipe(pluck("data")).subscribe(res =>{
+  //    this.clientMst = res;
+  //   })
+  //  }
 
    /**
    * Cal API for getting Transaction Type Master Data
    */
-  getTrxnTypeMst = () => {
-    this.dbIntr
-      .api_call(0, '/rntTransTypeSubtypeShow', null)
-      .pipe(pluck('data'))
-      .subscribe((res: rntTrxnType[]) => {
-        this.trxnTypeMst = res;
-      });
-  };
+  // getTrxnTypeMst = () => {
+  //   this.dbIntr
+  //     .api_call(0, '/rntTransTypeSubtypeShow', null)
+  //     .pipe(pluck('data'))
+  //     .subscribe((res: rntTrxnType[]) => {
+  //       this.trxnTypeMst = res;
+  //     });
+  // };
 }

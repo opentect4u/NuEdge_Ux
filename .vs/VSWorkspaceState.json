@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\__Pages",
+    "\\src\\app\\__Pages\\__Main",
+    "\\src\\app\\__Pages\\__Main\\Products",
+    "\\src\\app\\__Pages\\__Main\\Products\\core\\report-filter",
+    "\\src\\app\\__Pages\\__Main\\Products\\MutualFund",
+    "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\SIP",
+    "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\SIP\\sip-home"
+  ],
+  "SelectedNode": "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\SIP\\live-sip\\live-sip.component.html",
+  "PreviewInSolutionExplorer": false
+}

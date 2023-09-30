@@ -40,7 +40,15 @@ enum API{
 export class MailbackMismatchComponent implements OnInit {
 
   @ViewChild('countModal') mismatchCount:Dialog;
+
   isvisible:boolean = true;
+
+  count_tab_index:number = 0; /** For Holding the number of active tab in modal   */
+
+  /**
+   * Holding count for each file type
+   */
+  misMatchCountFile:IMismatchCountFile[] = [];
 
   mismatch_flag:string = 'A';
 
@@ -79,6 +87,7 @@ export class MailbackMismatchComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTrxnRpt('A','T'); //default Transaction File will be called
+    this.getmismatchFileCount();
   }
 
   /**
@@ -174,6 +183,24 @@ export class MailbackMismatchComponent implements OnInit {
     this.trxnTypeRpt = el;
   }
 
+
+  /**
+   * for displaying mailback mismatch File Count
+   */
+  getmismatchFileCount = () =>{
+      this.dbIntr.api_call(0,'/mailbackMismatchAll',null)
+      .pipe(pluck('data'))
+      .subscribe((res:IMismatchCountFile[]) =>{
+        console.log(res);
+        this.misMatchCountFile = res;
+      })
+
+  }
+
+  changeTabDtls_forMismatch_count = (ev) =>{
+    this.count_tab_index = ev.index;
+  }
+
 }
 
 export class NavMismatchColumnForAMCLink{
@@ -182,4 +209,15 @@ export class NavMismatchColumnForAMCLink{
 
 export class NavMismatchColumnForSchemeLink{
   static column:column[] = [{field:'scheme_link',header:'Scheme Link',width: '20rem'},{field:'isin_link',header:'ISIN Link',width: '20rem'}]
+ }
+
+ export interface IMismatchCountFile{
+       id:number;
+       tab_name:string;
+       file_type:IFileTypeCount[]
+ }
+
+ export interface IFileTypeCount{
+       name:string;
+       count:number;
  }
