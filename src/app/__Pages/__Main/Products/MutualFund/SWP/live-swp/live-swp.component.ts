@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { IliveSwp } from './live_swp.interface';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
@@ -6,6 +6,7 @@ import { amc } from 'src/app/__Model/amc';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'live-swp',
@@ -14,12 +15,13 @@ import { pluck } from 'rxjs/operators';
 })
 export class LiveSwpComponent implements OnInit {
 
+  @ViewChild('primeTbl') primeTbl: Table;
 
   @Input() swp_type:string;
 
   @Input() report_type:string;
 
-  __title:string = 'Live SWP Report';
+  __title:string = 'Live SWP';
     /**
    * Holding Transaction Type  Master Data
    */
@@ -43,6 +45,9 @@ export class LiveSwpComponent implements OnInit {
   * Hold Swp Report result
   */
  live_swp_rpt:Partial<IliveSwp[]> = [];
+
+
+ @Input() sip_stp_swp_type_mst =[];
 
  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
@@ -70,5 +75,10 @@ export class LiveSwpComponent implements OnInit {
 searchSwpReport = (ev) =>{
   // console.log(ev);
   this.LiveSwpReport({...ev,swp_type:this.swp_type});
+ }
+
+ filterGlobal = (ev):void =>{
+  let value = ev.target.value;
+  this.primeTbl.filterGlobal(value, 'contains');
  }
 }

@@ -44,6 +44,8 @@ export class StpHomeComponent implements OnInit {
    */
   tabindex: number = 0;
 
+  sip_stp_swp_type_mst:any = [];
+
   /**
    * getting Particular Tab Details For SIP Report
    */
@@ -58,7 +60,12 @@ export class StpHomeComponent implements OnInit {
 
     constructor(private dbIntr:DbIntrService) {}
 
-    ngOnInit(): void {this.getAmcMst();this.getClientMst();this.getTrxnTypeMst();}
+    ngOnInit(): void {
+      this.getAmcMst();
+      // this.getClientMst();
+      // this.getTrxnTypeMst();
+      this.getSWPType();
+    }
 
   /**
    * Event fired at the time of change tab
@@ -126,4 +133,13 @@ export class StpHomeComponent implements OnInit {
         this.trxnTypeMst = res;
       });
   };
+
+   /**
+   * Event for getting sip type master data
+   */
+   getSWPType(){
+    this.dbIntr.api_call(0,'/swpType',null).pipe(pluck('data')).subscribe(res =>{
+      this.sip_stp_swp_type_mst = res;
+    })
+  }
 }

@@ -1,9 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ITab } from '../sip-home/sip-home.component';
 import { amc } from 'src/app/__Model/amc';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { IliveSip } from '../live-sip/live_sip.interface';
+import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'matured-sip',
@@ -11,6 +14,9 @@ import { pluck } from 'rxjs/operators';
   styleUrls: ['./matured-sip.component.css']
 })
 export class MaturedSIPComponent implements OnInit {
+
+  @ViewChild('primeTbl') primeTbl: Table;
+
   @Input() sub_tab:ITab[] = [];
 
   sub_type:string = 'MM';
@@ -37,6 +43,14 @@ export class MaturedSIPComponent implements OnInit {
   reset_data:string = 'N';
 
   index:number = 0;
+
+  mature_sip:Partial<IliveSip>[] = []
+
+    /**
+   * Set Column for LIVE SIP REPORT
+   */
+    column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'));
+
 
   constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
@@ -72,8 +86,14 @@ export class MaturedSIPComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe(res =>{
+      .subscribe((res:Partial<IliveSip>[]) =>{
         console.log(res);
+        this.mature_sip = res;
       })
     }
+
+    filterGlobal = ($event) => {
+      let value = $event.target.value;
+      this.primeTbl.filterGlobal(value, 'contains');
+    };
 }

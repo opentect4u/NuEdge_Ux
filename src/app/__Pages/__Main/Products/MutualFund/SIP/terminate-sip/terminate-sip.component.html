@@ -10,26 +10,21 @@
 ></core-report-filter>
 
 
-<div class="card">
-  <!-- <div class="card-header">
-    <b class="m-0 d-flex align-items-center">
-      <i class="pi pi-database mr-1" style="font-size:2rem"></i>Terminate SIP Reports</b>
-  </div> -->
-  <div class="card-header sticky-header py-1 px-3 d-flex flex-column">
-    <div class="w-100 d-flex justify-content-between align-items-center">
-    <b class="m-0 d-flex align-items-center">
-      <i class="pi pi-database mr-1" style="font-size:2rem"></i>Terminate SIP Reports</b>
-    <div class="flex w-25">
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <i class="fa fa-databse"></i>
+      {{__title}} Reports
+    </mat-card-title>
+    <div class="my-auto w-25 pr-4">
       <span class="ml-auto">
-          <input id="search" class="form-control rounded" type="text"
-          (input)="filterGlobal($event)"
-          placeholder="Search"
-           />
+        <input id="search" class="form-control rounded" type="text"
+               (input)="filterGlobal($event)"
+               placeholder="Search" />
       </span>
     </div>
-   </div>
-   </div>
-  <div class="card-body">
+  </mat-card-header>
+  <mat-card-content>
     <p-table
     #primeTbl
     id="trxDt"
@@ -97,10 +92,4 @@
         </tr>
       </ng-template>
   </p-table>
-  </div>
-  <div class="card-footer">
-    <p class="m-0">
-      In Total There Are {{live_sip_rpt.length}} Terminate SIP
-    </p>
-  </div>
-</div>
+ </mat-card-content></mat-card>

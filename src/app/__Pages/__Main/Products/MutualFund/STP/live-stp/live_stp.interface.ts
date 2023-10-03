@@ -22,5 +22,6 @@ export interface IliveStp{
   amount:string|null;
   freq:string|null;
   no_of_installment:string|null;
+  duration:string | null;
   terminated_date:Date|null;
 }

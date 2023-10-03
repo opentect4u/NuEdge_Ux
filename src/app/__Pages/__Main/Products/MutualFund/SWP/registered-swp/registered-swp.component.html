@@ -1,7 +1,98 @@
 <core-tab [Tab]="sub_tab"
-(GetTabDtls)="TabDetails($event)" [customClass]="'customTabs'"></core-tab>
-<div class="card">
-  <div class="card-body px-2">
-    <p>Registered SWP works</p>
-  </div>
-</div>
+(GetTabDtls)="TabDetails($event)" [customClass]="'second_tab'"></core-tab>
+
+<core-report-filter
+(getsearchValues)="searchSwpReport($event)"
+[title]="__title"
+[amcMst]="amc"
+[type]="swp_type"
+[Reset]="reset_data"
+[sub_type]="sub_type"
+[report_type]="report_type"
+[sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
+></core-report-filter>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <i class="fa fa-databse"></i>
+      {{__title}} Reports
+    </mat-card-title>
+    <div class="my-auto w-25 pr-4">
+      <span class="ml-auto">
+        <input id="search" class="form-control rounded" type="text"
+               (input)="filterGlobal($event)"
+               placeholder="Search" />
+      </span>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <p-table
+    #primeTbl
+    id="trxDt"
+    [value]="register_swp"
+    [responsive]="true"
+    [rowHover]="true"
+    styleClass="p-datatable-striped"
+    [autoLayout]="true"
+    [scrollable]="true"
+    appendTo="body"
+    [columns]="column"
+    [paginator]="true"
+    [totalRecords]="register_swp.length"
+    [pageLinks]="3"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '350rem' }"
+    >
+      <ng-template pTemplate="header">
+          <tr>
+              <th *ngFor="let col of column" [pSortableColumn]="col.field"
+              [style.min-width]="col.width"
+              [style.max-width]="col.width"
+              >
+                {{ col.header }}
+                <p-sortIcon [field]="col.field">
+                </p-sortIcon>
+              </th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-trxn let-columns="columns"  let-i="rowIndex">
+        <tr tabindex="999">
+          <td *ngFor="let col of column"
+          [style.min-width]="col.width"
+          [style.max-width]="col.width"
+          >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <p class="m-0">{{i + 1}}</p>
+             </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">
+                <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+             </ng-container>
+
+           <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A' }}</p>
+             </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'amount'">
+              <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</p>
+           </ng-container>
+              <ng-container *ngSwitchDefault>
+                <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
+              </ng-container>
+            </ng-container>
+          </td>
+          </tr>
+        </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+             No Records Found
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+ </mat-card-content></mat-card>

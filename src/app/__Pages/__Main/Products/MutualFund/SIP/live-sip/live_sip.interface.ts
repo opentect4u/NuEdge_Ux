@@ -1,5 +1,4 @@
 export interface IliveSip{
-
       id:number | undefined;
       bu_type:string | null;
       branch:string | null;
@@ -22,8 +21,13 @@ export interface IliveSip{
       amount:string|null;
       frequency:string|null;
       no_of_installment:string|null;
+      duration:string | null
       terminated_date:Date|null;
       bank_name: string | null;
       acc_no: string | null;
+      pause_start_date:string | null;
+      pause_end_date:string | null;
 
 }
+
+

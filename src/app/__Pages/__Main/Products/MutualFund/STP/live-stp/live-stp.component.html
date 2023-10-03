@@ -1,22 +1,33 @@
 
 <core-report-filter
-(getsearchValues)="searchSipReport($event)"
+(getsearchValues)="searchStpReport($event)"
 [title]="__title"
 [amcMst]="amc"
 [clientMst]="client"
-[trxnTypeMst]="trxnTypeMst"
+[type]="stpType"
+[report_type]="report_type"
+[sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
 ></core-report-filter>
-<div class="card">
-  <div class="card-header">
-    <b class="m-0 d-flex align-items-center"><i class="pi pi-database mr-1" style="font-size:2rem"></i>Live STP Reports</b>
-  </div>
-  <div class="card-body">
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <i class="fa fa-databse"></i>
+      {{__title}} Reports
+    </mat-card-title>
+    <div class="my-auto w-25 pr-4">
+      <span class="ml-auto">
+        <input id="search" class="form-control rounded" type="text"
+               (input)="filterGlobal($event)"
+               placeholder="Search" />
+      </span>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
     <p-table
     #primeTbl
     id="trxDt"
     [value]="live_stp_rpt"
-    [lazy]="true"
-    [lazyLoadOnInit]="true"
     [responsive]="true"
     [rowHover]="true"
     styleClass="p-datatable-striped"
@@ -24,7 +35,14 @@
     [scrollable]="true"
     appendTo="body"
     [columns]="column"
-    [tableStyle]="{ 'min-width': '330rem' }"
+    [paginator]="true"
+    [totalRecords]="live_stp_rpt.length"
+    [pageLinks]="3"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '350rem' }"
     >
       <ng-template pTemplate="header">
           <tr>
@@ -46,10 +64,10 @@
           >
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                <b>{{i + 1}}</b>
+                <p class="m-0">{{i + 1}}</p>
              </ng-container>
              <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">
-                <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+                <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
              </ng-container>
              <!-- <ng-container *ngSwitchCase="col.field == 'product_code'">
               <b matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
@@ -58,10 +76,10 @@
             <p class="m-0">{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A' }}</p>
              </ng-container>
              <ng-container *ngSwitchCase="col.field == 'amount'">
-              <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</b>
+              <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</p>
            </ng-container>
               <ng-container *ngSwitchDefault>
-                <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
+                <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
               </ng-container>
             </ng-container>
           </td>
@@ -76,10 +94,4 @@
         </tr>
       </ng-template>
   </p-table>
-  </div>
-  <div class="card-footer">
-    <b>
-      In Total There Are {{live_stp_rpt.length}} Live STP
-    </b>
-  </div>
-</div>
+ </mat-card-content></mat-card>

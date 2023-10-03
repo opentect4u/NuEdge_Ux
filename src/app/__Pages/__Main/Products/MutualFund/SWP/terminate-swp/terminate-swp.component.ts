@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { IliveSwp } from '../live-swp/live_swp.interface';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
@@ -6,6 +6,7 @@ import { amc } from 'src/app/__Model/amc';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'terminate-swp',
   templateUrl: './terminate-swp.component.html',
@@ -17,7 +18,12 @@ export class TerminateSwpComponent implements OnInit {
 
   @Input() report_type:string;
 
-  __title:string = 'Terminate SWP Report';
+  __title:string = 'Terminate SWP';
+
+  @ViewChild('primeTbl') primeTbl: Table;
+
+  @Input()  sip_stp_swp_type_mst:any = [];
+
 
   /**
  * Holding Transaction Type  Master Data
@@ -70,4 +76,10 @@ LiveSwpReport = (formDt) =>{
 searchSwpReport = (ev) =>{
   this.LiveSwpReport({...ev,swp_type:this.swp_type});
  }
+
+
+ filterGlobal = ($event) => {
+  let value = $event.target.value;
+  this.primeTbl.filterGlobal(value, 'contains');
+};
 }

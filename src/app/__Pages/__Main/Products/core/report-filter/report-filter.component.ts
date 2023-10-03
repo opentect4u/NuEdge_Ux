@@ -324,11 +324,10 @@ export class ReportFilterComponent implements OnInit {
   }
 
   getYears(){
-    let years:number[] = []
     const start_year = 1980;
     const dt = new Date();
-    const year = dt.setFullYear(dt.getFullYear() + 76);
-    for(let i = start_year ; i >= year;i++){
+    const year = dt.getFullYear() + 76;
+    for(let i = start_year ; i <= year;i++){
       this.year.push(i);
     }
   }

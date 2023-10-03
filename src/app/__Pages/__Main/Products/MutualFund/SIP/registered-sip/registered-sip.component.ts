@@ -1,9 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ITab } from '../sip-home/sip-home.component';
 import { amc } from 'src/app/__Model/amc';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { IliveSip } from '../live-sip/live_sip.interface';
+import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'registered-sip',
@@ -39,6 +42,12 @@ export class RegisteredSIPComponent implements OnInit {
 
   index:number = 0;
 
+  register_sip:Partial<IliveSip>[] = [];
+
+  column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'));
+
+  @ViewChild('primeTbl') primeTbl: Table;
+
   constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
@@ -73,8 +82,13 @@ export class RegisteredSIPComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe(res =>{
-        console.log(res);
+      .subscribe((res:Partial<IliveSip>[]) =>{
+        this.register_sip = res;
       })
     }
+
+    filterGlobal = ($event) => {
+      let value = $event.target.value;
+      this.primeTbl.filterGlobal(value, 'contains');
+    };
 }

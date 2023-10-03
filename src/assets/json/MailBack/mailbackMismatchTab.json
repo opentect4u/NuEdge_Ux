@@ -61,7 +61,7 @@
   },
   {
     "id":3,
-    "tab_name":"SIP/STP File",
+    "tab_name":"SIP/STP/SWP File",
     "img_src":"net_asset.png",
     "flag":"S",
     "sub_menu":

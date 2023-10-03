@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import menu from '../../../../../../../assets/json/Product/MF/homeMenus.json';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { amc } from 'src/app/__Model/amc';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { pluck } from 'rxjs/operators';
 
 export interface ITab{
   tab_name:string,
@@ -19,6 +21,11 @@ export class SwpHomeComponent implements OnInit {
   swp_type:string ='L';
 
   report_type:string = 'R';
+
+     /**
+    *  get SWP Type Master data
+    */
+     sip_stp_swp_type_mst:any = [];
 
   /**
    * Holding Transaction Type  Master Data
@@ -48,9 +55,9 @@ export class SwpHomeComponent implements OnInit {
   TabMenu:Partial<ITab[]> = (menu.filter(item => item.id == 4)[0].sub_menu)
   .map((item) => ({tab_name:item.title,img_src:('../../../../../assets/images/'+item.img),id:item.id,flag:item.flag}))
 
-  constructor() {}
+  constructor(private dbIntr:DbIntrService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {this.getAmcMst();this.getSWPType();}
 
   /**
    * Event fired at the time of change tab
@@ -72,4 +79,26 @@ export class SwpHomeComponent implements OnInit {
     this.sub_tab_menu = (dt as any[]).filter(item => item.flag == flag)[0].sub_menu
     .map((item) => ({tab_name:item.title,img_src:('../../../../../assets/images/'+item.img),id:item.id,flag:item.flag}));
   }
+
+
+   /**
+   * Event for getting sip type master data
+   */
+   getSWPType(){
+    this.dbIntr.api_call(0,'/swpType',null).pipe(pluck('data')).subscribe(res =>{
+      this.sip_stp_swp_type_mst = res;
+    })
+  }
+
+    /**
+   * Get AMC Master Data from Backend API
+   */
+    getAmcMst = () => {
+      this.dbIntr
+        .api_call(0, '/amc', null)
+        .pipe(pluck('data'))
+        .subscribe((res: amc[]) => {
+          this.amcMst = res;
+        });
+    };
 }

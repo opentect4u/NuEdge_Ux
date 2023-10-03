@@ -80,6 +80,7 @@ export class SipHomeComponent implements OnInit {
    * @param tabDtls
    */
   TabDetails = <T extends {index:number,tabDtls:{tab_name:string,id:number,img_src:string,flag:string}}>(data:T) : void => {
+    console.log(data.tabDtls);
     this.tabindex =data.index;
     this.getSubTab(data.tabDtls.flag);
     this.sip_type = data.tabDtls.flag;

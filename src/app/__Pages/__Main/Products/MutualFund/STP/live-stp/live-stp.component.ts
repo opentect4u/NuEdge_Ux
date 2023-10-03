@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { IliveStp } from './live_stp.interface';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
@@ -6,6 +6,7 @@ import { amc } from 'src/app/__Model/amc';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'live-stp',
@@ -14,11 +15,15 @@ import { pluck } from 'rxjs/operators';
 })
 export class LiveStpComponent implements OnInit {
 
+  @ViewChild('primeTbl') primeTbl: Table;
   @Input() stpType:string;
 
   @Input() report_type:string;
 
-  __title:string = 'Live STP Report';
+  __title:string = 'Live STP';
+
+  @Input() sip_stp_swp_type_mst:any = [];
+
     /**
    * Holding Transaction Type  Master Data
    */
@@ -66,9 +71,12 @@ LiveStpReport = (formDt) =>{
 * Get Sip Report result
 * @param ev
 */
-searchSipReport = (ev) =>{
+searchStpReport = (ev) =>{
 this.LiveStpReport({...ev,stp_type:this.stpType});
 }
 
-
+filterGlobal = (ev) =>{
+  let value = ev.target.value;
+  this.primeTbl.filterGlobal(value, 'contains');
+}
 }

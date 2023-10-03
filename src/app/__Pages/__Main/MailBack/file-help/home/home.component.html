@@ -60,8 +60,8 @@
              </ng-template>
 
 
-               <!-- For only Transaction Report -->
-             <div class="col-sm-3" *ngIf="this.file_type_tab == 'T'">
+               <!-- For Transaction Report && Systamatic Transaction report (Transaction Report) -->
+             <div class="col-sm-3" *ngIf="this.sub_tab!= 'F'">
               <label for="trans_sub_type">Transaction Sub Type <span class="text-danger">*</span></label>
                <input type="text" placeholder="Enter Transaction Sub Type" name="trans_sub_type" id="trans_sub_type" class="form-control" formControlName="trans_sub_type">
                <div class="invalid-feedback" *ngIf="rntTrxnType.get('trans_sub_type').invalid && (rntTrxnType.get('trans_sub_type').dirty || rntTrxnType.get('trans_sub_type').touched)">
@@ -129,7 +129,10 @@
               <!-- END -->
 
               <ng-container  *ngIf="this.file_type_tab == 'S'">
-                <div class="col-sm-6 d-flex justify-content-end align-items-end">
+                <div
+                class="d-flex justify-content-end align-items-end"
+                [ngClass]="{'col-sm-6':this.sub_tab == 'F','col-sm-3':this.sub_tab == 'T'}"
+                >
                 <p-button
                 type="submit"
                 [label]="this.rntTrxnType.value.id > 0 ? 'Update' : 'Save'"

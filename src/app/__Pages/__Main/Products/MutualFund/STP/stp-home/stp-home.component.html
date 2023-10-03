@@ -8,31 +8,40 @@
     (GetTabDtls)="TabDetails($event)"
     [customClass]="'nav'"
     [index]="tabindex"></core-tab>
-    <div class="card p-3">
+    <div class="card p-3 border-0">
       <ng-container [ngSwitch]="true">
         <ng-container *ngIf="tabindex == 0">
           <live-stp
           [amc]="amcMst"
           [stpType]="stp_type"
           [client]="clientMst"
-          [report_type]="report_type"
-          [trxnTypeMst]="trxnTypeMst"></live-stp>
+          [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"></live-stp>
         </ng-container>
         <ng-container *ngIf="tabindex == 1">
           <registered-stp
+          [amc]="amcMst"
+          [stpType]="stp_type"
+          [report_type]="report_type"
           [sub_tab]="sub_tab_menu"
+          [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
           ></registered-stp>
         </ng-container>
         <ng-container *ngIf="tabindex == 2">
           <terminate-stp
           [stpType]="stp_type"
           [amc]="amcMst"
-          [trxnTypeMst]="trxnTypeMst"
+          [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
           [report_type]="report_type"
           ></terminate-stp>
         </ng-container>
         <ng-container *ngIf="tabindex == 3">
-          <matured-stp  [sub_tab]="sub_tab_menu"></matured-stp>
+          <matured-stp
+            [amc]="amcMst"
+            [stpType]="stp_type"
+            [report_type]="report_type"
+            [sub_tab]="sub_tab_menu"
+            [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
+          ></matured-stp>
         </ng-container>
         <ng-container *ngIf="tabindex == 4">
           <pause-stp></pause-stp>

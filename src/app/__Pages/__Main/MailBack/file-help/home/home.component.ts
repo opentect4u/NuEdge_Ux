@@ -83,7 +83,15 @@ export class HomeComponent implements OnInit, IFileHelpHome {
       break;
       case 'R':
       this.rnt_type_tab = ev.tabDtls.id;
-       this.getTransactionMst(this.rnt_type_tab);
+      if(this.file_type_tab == 'S'){
+        this.sub_tab = this.fileType_tab[0].flag;
+        this.getSystamaticTransactionType(this.rnt_type_tab,this.sub_tab);
+      }
+      else{
+        this.sub_tab='';
+         //call api for Transaction Report
+         this.getTransactionMst(this.rnt_type_tab);
+      }
       break;
       case 'S' :
       this.sub_tab = this.fileType_tab.filter(item => item.id == ev.tabDtls.id)[0].flag;
@@ -127,6 +135,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
       else{
         api_name = '/rntSystematicTransTypeAddEdit';
         formdata.append('trans_type',this.rntTrxnType.value.trans_type);
+        formdata.append('trans_sub_type',this.rntTrxnType.value.trans_sub_type);
         formdata.append('trans_type_code',this.rntTrxnType.value.c_k_trans_type);
       }
     }
@@ -153,7 +162,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
             this.updateRow(res.data);
           } else {
             this.trxnTypeMst.unshift(res.data);
-            this.pTableRef.reset();
+            // this.pTableRef.reset();
           }
           this.populateTrxnTypeinForm(null);
           // this.rntTrxnType.
@@ -171,8 +180,9 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
     }
     else{
-      this.rntTrxnType.get('trans_sub_type').removeValidators([Validators.required]);
+
       if(this.sub_tab == 'T'){
+        this.rntTrxnType.get('trans_sub_type').setValidators([Validators.required]);
         this.rntTrxnType.get('trans_type').setValidators([Validators.required]);
         this.rntTrxnType.get('c_k_trans_type').setValidators([Validators.required]);
         this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
@@ -183,6 +193,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         this.rntTrxnType.get('c_k_trans_type').removeValidators([Validators.required]);
         this.rntTrxnType.get('freq_name').setValidators([Validators.required]);
         this.rntTrxnType.get('freq_code').setValidators([Validators.required]);
+        this.rntTrxnType.get('trans_sub_type').removeValidators([Validators.required]);
 
       }
     }
@@ -223,6 +234,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           if (items.id == row_obj.id) {
             items.trans_type = row_obj.trans_type;
             items.trans_type_code = row_obj.trans_type_code;
+            items.trans_sub_type = row_obj.trans_sub_type;
           }
           return true;
         }
@@ -347,6 +359,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         id: trxnType ? trxnType.id : 0,
         trans_type: trxnType ? trxnType.trans_type : '',
         c_k_trans_type: trxnType ? trxnType.trans_type_code : '',
+        trans_sub_type: trxnType ? trxnType.trans_sub_type : '',
       })
     }
     else{

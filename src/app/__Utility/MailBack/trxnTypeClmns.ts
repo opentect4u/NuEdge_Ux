@@ -16,6 +16,7 @@ export class systamaticTransClmns{
     {field:'edit',header:'Edit',isVisible:[1,2]},
     {field:'rnt_name',header:'R&T',isVisible:[1,2]},
     {field:'trans_type',header:'Trxn Type',isVisible:[1,2]},
+    {field:'trans_sub_type',header:'Trxn Sub type',isVisible:[1,2]},
     {field:'trans_type_code',header:'File Trxn Type',isVisible:[1,2]},
 ]
 }

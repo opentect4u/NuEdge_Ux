@@ -15,6 +15,7 @@ export interface ISystematicTransaction {
   rnt_id: number;
   rnt_name: string;
   trans_type: string;
+  trans_sub_type:string;
   trans_type_code: string;
 }
 
