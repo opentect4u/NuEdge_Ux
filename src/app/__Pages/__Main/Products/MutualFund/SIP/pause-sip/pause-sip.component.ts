@@ -3,6 +3,9 @@ import { amc } from 'src/app/__Model/amc';
 import { IliveSip } from '../live-sip/live_sip.interface';
 import { Table } from 'primeng/table';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'pause-sip',
@@ -40,7 +43,7 @@ export class PauseSIPComponent implements OnInit {
 
     pause_sip:Partial<IliveSip>[] = []
 
-  constructor() { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
     console.log(this.sipType);
@@ -50,10 +53,21 @@ export class PauseSIPComponent implements OnInit {
 
 
   searchSipReport(ev){
-    console.log(ev);
-
+   this.PauseSipReport(ev);
   }
-
+  PauseSipReport = (formDt) => {
+    let dt ={
+      ...formDt,
+      report_type:this.report_type,
+      sip_type:this.sipType
+     }
+    this.dbIntr
+      .api_call(1, '/showSipStpDetails', this.utility.convertFormData(dt))
+      .pipe(pluck('data'))
+      .subscribe((res: Partial<IliveSip>[]) => {
+        this.pause_sip = res;
+      });
+  };
 
   filterGlobal = ($event) => {
     let value = $event.target.value;

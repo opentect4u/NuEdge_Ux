@@ -57,7 +57,8 @@ ngOnInit(): void {
 LiveStpReport = (formDt) =>{
   let dt ={
     ...formDt,
-    report_type:this.report_type
+    report_type:this.report_type,
+    stp_type:this.stpType
   }
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
@@ -72,7 +73,7 @@ LiveStpReport = (formDt) =>{
 * @param ev
 */
 searchStpReport = (ev) =>{
-this.LiveStpReport({...ev,stp_type:this.stpType});
+this.LiveStpReport(ev);
 }
 
 filterGlobal = (ev) =>{

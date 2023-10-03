@@ -17,7 +17,12 @@
           [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"></live-swp>
         </ng-container>
         <ng-container *ngIf="tabindex == 1">
-          <registered-swp [sub_tab]="sub_tab_menu"></registered-swp>
+          <registered-swp
+          [amc]="amcMst"
+          [swp_type]="swp_type"
+          [report_type]="report_type"
+          [sip_stp_swp_type_mst]="sip_stp_swp_type_mst"
+          [sub_tab]="sub_tab_menu"></registered-swp>
         </ng-container>
         <ng-container *ngIf="tabindex == 2">
           <terminate-swp

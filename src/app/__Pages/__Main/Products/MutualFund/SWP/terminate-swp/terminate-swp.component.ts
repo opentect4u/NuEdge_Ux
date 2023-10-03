@@ -58,7 +58,8 @@ ngOnInit(): void {
 LiveSwpReport = (formDt) =>{
     let dt ={
     ...formDt,
-    report_type:this.report_type
+    report_type:this.report_type,
+    swp_type:this.swp_type
   }
   this.dbIntr.api_call(1,'/showSipStpDetails',
   this.utility.convertFormData(dt))

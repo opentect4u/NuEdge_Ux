@@ -55,10 +55,11 @@ live_stp_rpt:Partial<IliveStp[]> = [];
 constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
 ngOnInit(): void {}
-LiveStpReport = (formDt) =>{
+terminateStpReport = (formDt) =>{
   let dt ={
     ...formDt,
-    report_type:this.report_type
+    report_type:this.report_type,
+    stp_type:this.stpType
   }
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
@@ -73,11 +74,12 @@ LiveStpReport = (formDt) =>{
 * @param ev
 */
 searchSipReport = (ev) =>{
-this.LiveStpReport({...ev,stp_type:this.stpType});
+this.terminateStpReport(ev);
 }
 
-filterGlobal =(ev) =>{
-
-}
+filterGlobal = ($event) => {
+  let value = $event.target.value;
+  this.primeTbl.filterGlobal(value, 'contains');
+};
 
 }

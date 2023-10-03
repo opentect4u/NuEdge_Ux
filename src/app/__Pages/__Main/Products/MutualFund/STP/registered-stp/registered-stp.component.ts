@@ -4,6 +4,9 @@ import { amc } from 'src/app/__Model/amc';
 import { IliveStp } from '../live-stp/live_stp.interface';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { Table } from 'primeng/table';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'registered-stp',
@@ -40,13 +43,13 @@ export class RegisteredStpComponent implements OnInit {
 
   index:number = 0;
 
-  register_sip:Partial<IliveStp>[] = [];
+  register_stp:Partial<IliveStp>[] = [];
 
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-2'));
 
   @ViewChild('primeTbl') primeTbl: Table;
 
-  constructor() { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
     this.setTitle(this.sub_tab[0].tab_name);
@@ -64,7 +67,7 @@ export class RegisteredStpComponent implements OnInit {
     }
 
     searchStpReport = (ev):void =>{
-
+         this.registertStpMasterData(ev);
     }
 
     filterGlobal = (ev) =>{
@@ -74,5 +77,19 @@ export class RegisteredStpComponent implements OnInit {
 
     setTitle = (title:string) =>{
       this.__title = title;
+    }
+
+    registertStpMasterData(form_data){
+      this.reset_data = 'N';
+      let dt = {
+        ...form_data,
+        sub_type:this.sub_type,
+        report_type:this.report_type
+      }
+      this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
+      .pipe(pluck('data'))
+      .subscribe((res:Partial<IliveStp>[]) =>{
+        this.register_stp = res;
+      })
     }
 }

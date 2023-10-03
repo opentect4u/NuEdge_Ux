@@ -4,6 +4,9 @@ import { amc } from 'src/app/__Model/amc';
 import { IliveSwp } from '../live-swp/live_swp.interface';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { Table } from 'primeng/table';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'registered-swp',
@@ -45,12 +48,14 @@ export class RegisteredSwpComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
 
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService){}
+
   ngOnInit(): void {
     this.setTitle(this.sub_tab[0].tab_name);
   }
 
   searchSwpReport = (ev) =>{
-
+    this.registertSwpMasterData(ev);
   }
    /**
    * Event fired at the time of change tab
@@ -70,4 +75,18 @@ export class RegisteredSwpComponent implements OnInit {
       let value = $event.target.value;
       this.primeTbl.filterGlobal(value, 'contains');
     };
+
+    registertSwpMasterData(form_data){
+      this.reset_data = 'N';
+      let dt = {
+        ...form_data,
+        sub_type:this.sub_type,
+        report_type:this.report_type
+      }
+      this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
+      .pipe(pluck('data'))
+      .subscribe((res:Partial<IliveSwp>[]) =>{
+        this.register_swp = res;
+      })
+    }
 }

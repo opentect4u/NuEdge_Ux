@@ -3,6 +3,9 @@ import { amc } from 'src/app/__Model/amc';
 import { IliveStp } from '../live-stp/live_stp.interface';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { Table } from 'primeng/table';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'pause-stp',
@@ -26,14 +29,27 @@ export class PauseStpComponent implements OnInit {
   pause_stp:Partial<IliveStp>[] = [];
 
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('P2'));
-  constructor() { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
   }
 
 
   searchStpReport =(ev):void =>{
+    this.PauseStpReport(ev);
+  }
 
+  PauseStpReport = (formDt) =>{
+    let dt ={
+      ...formDt,
+      report_type:this.report_type,
+      stp_type:this.stpType
+    }
+    this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
+    .pipe(pluck('data'))
+    .subscribe((res: Partial<IliveStp>[]) =>{
+         this.pause_stp = res;
+    })
   }
 
   filterGlobal = ($event) => {
