@@ -59,6 +59,10 @@ const routes:Routes=[
         path:'scmbenchmarkrpt',
         loadChildren:()=> import('./ScmBenchMarkRpt/scm-bnch-mark-rpt.module').then(m => m.ScmBnchMarkRptModule)
       },
+      {
+        path: 'invStaticRpt',
+        loadChildren: () => import('./investor-static-report/investor-static-report.module').then(m => m.InvestorStaticReportModule)
+      },
       {path:'',redirectTo:'dashboard',pathMatch:'full'}
     ]
   }]

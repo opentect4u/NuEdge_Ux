@@ -465,13 +465,50 @@
     "img":"/product_mf/taxes_package.png"
   },
   {
-    "id":7,
-    "accessibility":[],
-    "title":"KYC Report",
-    "url":"/main/product/mf",
+    "id": 7,
+    "accessibility": [],
+    "title": "Investor Static Report",
+    "url": "/main/product/mf/invStaticRpt",
     "icon": "",
-    "sub_menu":[],
-    "img":"/product_mf/kyc_report.png"
+    "sub_menu": [
+      {
+        "id": 1,
+        "url": "",
+        "title": "Folio Master",
+        "flag": "F",
+        "icon": "",
+        "img": "/PortFolio/liveMfPortFolio.png",
+        "sub_menu": []
+      },
+      {
+        "id": 2,
+        "url": "",
+        "title": "KYC Report",
+        "flag": "K",
+        "icon": "",
+        "img": "/PortFolio/liveMfPortFolio.png",
+        "sub_menu": []
+      },
+      {
+        "id": 3,
+        "url": "",
+        "title": "Nomination Report",
+        "flag": "N",
+        "icon": "",
+        "img": "/PortFolio/liveMfPortFolio.png",
+        "sub_menu": []
+      },
+      {
+        "id": 4,
+        "url": "",
+        "title": "Adhaar Pan Link Report",
+        "flag": "A",
+        "icon": "",
+        "img": "/PortFolio/liveMfPortFolio.png",
+        "sub_menu": []
+      }
+    ],
+    "img": "/product_mf/kyc_report.png"
   },
   {
     "id":8,

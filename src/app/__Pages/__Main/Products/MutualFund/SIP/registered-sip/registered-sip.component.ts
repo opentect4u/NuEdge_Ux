@@ -55,7 +55,6 @@ export class RegisteredSIPComponent implements OnInit {
   }
 
   searchSipReport(ev){
-    console.log(ev);
     this.getSipMasterData(ev);
   }
 

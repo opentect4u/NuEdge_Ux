@@ -36,11 +36,11 @@ export class ReportFilterComponent implements OnInit {
 
    year:number[] = [];
 
-   @Input() set Reset(value){
-   if(value == 'Y'){
-    this.btn_type = 'R';
-    this.reset();
-   }
+  @Input() set Reset(value) {
+    //if (value == 'Y') {
+    //  this.btn_type = 'R';
+    //  this.reset();
+    //}
    }
 
    /**
@@ -280,8 +280,8 @@ export class ReportFilterComponent implements OnInit {
   Rpt = new FormGroup({
     // date_periods: new FormControl(''),
     // date_range: new FormControl(''),
-    month:new FormControl(''),
-    year:new FormControl(''),
+    month: new FormControl((new Date().getMonth() + 1)),
+    year: new FormControl(new Date().getFullYear()),
     amc_id: new FormControl([], { updateOn: 'blur' }),
     cat_id: new FormControl([], { updateOn: 'blur' }),
     sub_cat_id: new FormControl([], { updateOn: 'blur' }),
@@ -306,20 +306,9 @@ export class ReportFilterComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    // if(this.sub_type != 'RR' && this.sub_type != 'MT'){
-    //   // this.Rpt.get('month').disable();
-    //   // this.Rpt.get('year').disable();
-    //   this.year = [];
-    // }
-    // else{
-    //   // this.Rpt.get('month').enable();
-    //   // this.Rpt.get('year').enable();
-    //   this.getYears();
-    // }
-
     this.getSip_stp_swp_type(this.report_type);
     this.maxDate= this.calculateDates('T');
-    this.minDate= this.calculateDates('P');
+    this.minDate = this.calculateDates('P');
     this.searchReport();
   }
 
@@ -342,14 +331,21 @@ export class ReportFilterComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     // changes.prop contains the old and the new value...
-    console.log(changes);
-    // if(changes.)
-    console.log(changes.hasOwnProperty('sub_type'));
     if(changes.hasOwnProperty('sub_type')){
       this.changedisabledStatus(
         changes.hasOwnProperty('sub_type'),
         changes.sub_type.currentValue
       )
+    }
+    if (changes.hasOwnProperty('Reset')) {
+      let dt = new Date();
+      if (changes.Reset.currentValue == 'Y') {
+        this.btn_type = 'R';
+        this.Rpt.get('month').setValue(dt.getMonth() + 1);
+        this.Rpt.get('year').setValue(dt.getFullYear());
+        this.reset();
+
+      }
     }
   }
 
@@ -370,7 +366,7 @@ export class ReportFilterComponent implements OnInit {
   /**
    * Event trigger after form submit
    */
-  searchReport = () =>{
+  searchReport = () => {
     let liveSipReportFilter = Object.assign({}, this.Rpt.value, {
       ...this.Rpt.value,
      amc_id:this.utility.mapIdfromArray(this.Rpt.value.amc_id,'id'),
@@ -385,8 +381,8 @@ export class ReportFilterComponent implements OnInit {
      sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
      trxn_sub_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_sub_type_id,'id'),
      trxn_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_type_id,'id'),
-     month: (this.sub_type == 'RR' || this.sub_type == 'MT') ? this.Rpt.value.month : '',
-     year: (this.sub_type == 'RR' || this.sub_type == 'MT') ? this.Rpt.value.year : ''
+      month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : this.Rpt.value.month,
+      year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : this.Rpt.value.year
     })
 
     this.getsearchValues.emit(liveSipReportFilter);
@@ -415,24 +411,28 @@ export class ReportFilterComponent implements OnInit {
   }
 
   reset(){
+      this.resetForm();
+      this.searchReport();
+  }
+  resetForm = () => {
+    console.log(`SUB TYPE: ${this.sub_type}`);
     this.Rpt.patchValue({
-      amc_id:[],
-      folio_no:'',
-      trxn_type_id:[],
+      amc_id: [],
+      folio_no: '',
+      trxn_type_id: [],
       // date_range:'',
       // date_periods:'M',
-      month:'',
-      year:'',
-      client_id:'',
-      pan_no:'',
-      view_type:''
-     });
-     this.Rpt.get('brn_cd').setValue([],{emitEvent:true});
-     this.subbrkArnMst = [];
-     this.Rpt.controls['sub_brk_cd'].setValue([]);
-     this.Rpt.controls['euin_no'].setValue([]);
-     this.Rpt.controls['client_name'].setValue('',{emitEvent:false});
-     this.searchReport();
+      //month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : new Date().getMonth(),
+      //year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' :  new Date().getFullYear(),
+      client_id: '',
+      pan_no: '',
+      view_type: ''
+    });
+    this.Rpt.get('brn_cd').setValue([], { emitEvent: true });
+    this.subbrkArnMst = [];
+    this.Rpt.controls['sub_brk_cd'].setValue([]);
+    this.Rpt.controls['euin_no'].setValue([]);
+    this.Rpt.controls['client_name'].setValue('', { emitEvent: false });
   }
 
   // setEndDate = () =>{
