@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild ,Inject} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild ,Inject, SimpleChanges} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { category } from 'src/app/__Model/__category';
@@ -306,21 +306,51 @@ export class ReportFilterComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    if(this.sub_type != 'RR' && this.sub_type != 'MT'){
-      this.Rpt.get('month').disable();
-      this.Rpt.get('year').disable();
-      this.year = [];
-    }
-    else{
-      this.Rpt.get('month').enable();
-      this.Rpt.get('year').enable();
-      this.getYears();
-    }
+    // if(this.sub_type != 'RR' && this.sub_type != 'MT'){
+    //   // this.Rpt.get('month').disable();
+    //   // this.Rpt.get('year').disable();
+    //   this.year = [];
+    // }
+    // else{
+    //   // this.Rpt.get('month').enable();
+    //   // this.Rpt.get('year').enable();
+    //   this.getYears();
+    // }
 
     this.getSip_stp_swp_type(this.report_type);
     this.maxDate= this.calculateDates('T');
     this.minDate= this.calculateDates('P');
     this.searchReport();
+  }
+
+  changedisabledStatus = (isSet:boolean,sub_type:string) =>{
+    if(isSet){
+      if(sub_type != 'RR' && sub_type != 'MT'){
+      // NO NEED TO SET ANY LOGIC
+      }
+      else{
+        this.Rpt.get('month').enable();
+        this.Rpt.get('year').enable();
+        this.getYears();
+        return;
+      }
+    }
+    this.Rpt.get('month').disable();
+    this.Rpt.get('year').disable();
+    this.year = [];
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // changes.prop contains the old and the new value...
+    console.log(changes);
+    // if(changes.)
+    console.log(changes.hasOwnProperty('sub_type'));
+    if(changes.hasOwnProperty('sub_type')){
+      this.changedisabledStatus(
+        changes.hasOwnProperty('sub_type'),
+        changes.sub_type.currentValue
+      )
+    }
   }
 
   getYears(){
@@ -354,7 +384,9 @@ export class ReportFilterComponent implements OnInit {
      sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.value.sub_brk_cd,'code') : '[]',
      sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
      trxn_sub_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_sub_type_id,'id'),
-     trxn_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_type_id,'id')
+     trxn_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_type_id,'id'),
+     month: (this.sub_type == 'RR' || this.sub_type == 'MT') ? this.Rpt.value.month : '',
+     year: (this.sub_type == 'RR' || this.sub_type == 'MT') ? this.Rpt.value.year : ''
     })
 
     this.getsearchValues.emit(liveSipReportFilter);

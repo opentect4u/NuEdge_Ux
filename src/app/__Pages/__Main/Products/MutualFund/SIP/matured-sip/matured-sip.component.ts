@@ -59,7 +59,9 @@ export class MaturedSIPComponent implements OnInit {
   }
 
   searchSipReport(ev){
-    this.getSipMasterData(ev);
+    console.log(ev);
+
+    // this.getSipMasterData(ev);
   }
 
 
@@ -82,7 +84,8 @@ export class MaturedSIPComponent implements OnInit {
       let dt = {
         ...form_data,
         sub_type:this.sub_type,
-        report_type:this.report_type
+        report_type:this.report_type,
+        sip_type:this.sipType
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
