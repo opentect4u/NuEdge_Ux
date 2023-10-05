@@ -8,7 +8,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { DbIntrService } from '../../../../../__Services/dbIntr.service';
 import filterOpt from '../../../../../../assets/json/filterOption.json';
-
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
 enum TABLE_WIDTH {
   'F' = '900rem',
@@ -21,9 +21,26 @@ enum TABLE_WIDTH {
 @Component({
   selector: 'app-investor-static-report',
   templateUrl: './investor-static-report.component.html',
-  styleUrls: ['./investor-static-report.component.css']
+  styleUrls: ['./investor-static-report.component.css'],
+  animations: [
+    trigger('bodyExpansion', [
+      state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+    trigger('formbodyExpansion', [
+      state('collapsed, void', style({ height: '0px', padding: '0px 20px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', padding: '10px 20px', visibility: 'visible', })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('230ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ])
+  ]
 })
 export class InvestorStaticReportComponent implements OnInit {
+
+
+  state: string | undefined = 'expanded';
 
   /*** Settings for Advance Filter Options */
   settingsforBrnchDropdown = this.utility.settingsfroMultiselectDropdown(
@@ -371,24 +388,26 @@ export class InvestorStaticReportComponent implements OnInit {
   }
 
   searchInvestorReport = () => {
-    let object = Object.assign({}, this.filter.value, {
-      ...this.filter.value,
-      brn_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(this.filter.value.brn_id, 'id') : '[]',
-      bu_type_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(this.filter.value.bu_type_id, 'bu_code') : '[]',
-      euin_no: this.btn_type == 'A' ? this.utility.mapIdfromArray(this.filter.value.euin_no, 'euin_no') : '[]',
-      rm_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(this.filter.value.rm_id, 'euin_no') : '[]',
-      sub_brk_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(this.filter.value.sub_brk_cd, 'code') : '[]',
-      kyc_status: (this.flag == 'K' || this.flag == 'A') ? this.filter.value.kyc_status : '',
-      nominee_status: (this.flag == 'N') ? this.filter.value.nominee_status : '',
-      adhaar_pan_link_status: (this.flag == 'A') ? this.filter.value.adhaar_pan_link_status : ''
-    })
-    this.getfolioMaster(object);
+    this.toggle();
+    this.getfolioMaster(this.filter.value);
   }
 
 
   getfolioMaster = (fb) => {
+    console.log(fb);
+    let object = Object.assign({}, fb, {
+      ...fb,
+      brn_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.brn_cd, 'id') : '[]',
+      bu_type_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.bu_type_id, 'bu_code') : '[]',
+      euin_no: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.euin_no, 'euin_no') : '[]',
+      rm_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.rm_id, 'euin_no') : '[]',
+      sub_brk_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.sub_brk_cd, 'code') : '[]',
+      kyc_status: (this.flag == 'K' || this.flag == 'A') ? fb.kyc_status : '',
+      nominee_status: (this.flag == 'N') ? fb.nominee_status : '',
+      adhaar_pan_link_status: (this.flag == 'A') ? fb.adhaar_pan_link_status : ''
+    })
     this.dbIntr
-      .api_call(1, '/showFolioDetails', this.utility.convertFormData(fb))
+      .api_call(1, '/showFolioDetails', this.utility.convertFormData(object))
       .pipe(pluck('data'))
       .subscribe(res => {
         this.report_data = res;
@@ -526,6 +545,10 @@ export class InvestorStaticReportComponent implements OnInit {
       this.__RmMst = [];
       this.filter.controls['rm_id'].setValue([], { emitEvent: true });
     }
+  }
+
+  toggle = () => {
+    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
 }
 

@@ -64,21 +64,32 @@
     "tab_name":"SIP/STP/SWP File",
     "img_src":"net_asset.png",
     "flag":"S",
-    "sub_menu":
-      [
-        {
-          "id":1,
-          "tab_name":"AMC",
-          "img_src":"",
-          "flag":"A"
-        },
-        {
-          "id":2,
-          "tab_name":"Scheme",
-          "img_src":"",
-          "flag":"S"
-        }
-      ]
+    "sub_menu": [
+      {
+        "id": 1,
+        "tab_name": "AMC",
+        "img_src": "",
+        "flag": "A"
+      },
+      {
+        "id": 2,
+        "tab_name": "Scheme",
+        "img_src": "",
+        "flag": "S"
+      },
+      {
+        "id": 3,
+        "tab_name": "Plan & Option",
+        "img_src": "",
+        "flag": "P/O"
+      },
+      {
+        "id": 5,
+        "tab_name": "Bussiness Type",
+        "img_src": "",
+        "flag": "B"
+      }
+    ]
   },
   {
     "id":4,

@@ -1,0 +1,12 @@
+.expandable-content {
+  overflow: hidden;
+}
+.rotateUp {
+  transform: rotate(180deg);
+  transition: all .3s linear;
+}
+
+.rotateDown {
+  transform: rotate(0deg);
+  transition: all .3s linear;
+}

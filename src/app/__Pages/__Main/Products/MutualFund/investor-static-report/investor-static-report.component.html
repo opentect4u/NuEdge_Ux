@@ -1,5 +1,5 @@
 <div class="bckContainer"></div>
-<div class="row flexSec">
+<div class="row pt-4">
   <div class="col-sm-12 mb-3">
 
     <!-- Make the Tab Section Common -->
@@ -9,8 +9,22 @@
     <!-- Filter -->
     <mat-card class="navCard">
       <mat-card-header class="border-bottom">
-        <mat-card-title>Filter for {{title}}</mat-card-title>
-        <div class="my-auto pr-4">
+        <mat-card-title>
+          Search {{title}}
+        </mat-card-title>
+        <div class="my-auto pr-4 d-flex align-items-center">
+
+
+          <button mat-button
+                  [matTooltip]="state == 'expanded' ? 'Collapsed Quick Links' : 'Expand Quick Links'" color="primary" (click)="toggle()" class="mx-3">
+
+            EXPAND {{state == 'collapsed' ? ' MORE' : ' LESS'}}
+
+            <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
+              keyboard_arrow_up
+            </mat-icon>
+          </button>
+
           <p-selectButton [(ngModel)]="btn_type"
                           [options]="filter_type"
                           optionValue="value"
@@ -24,13 +38,13 @@
         </div>
         
       </mat-card-header>
-      <mat-card-content class="px-3 py-3">
+      <mat-card-content  [@bodyExpansion]="state" [ngClass]="{'expandable-content': state == 'collapsed','px-3 py-3':state == 'expanded'}">
 
         <ng-template #SearchBtn>
           <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
         </ng-template>
 
-        <form [formGroup]="filter" autocomplete="off">
+        <form [formGroup]="filter" autocomplete="off" (ngSubmit)="searchInvestorReport()">
           <div class="row">
             <div class="col-sm-3">
               <label for="view_type">View By</label>
