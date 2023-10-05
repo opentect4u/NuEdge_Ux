@@ -1,1 +1,272 @@
-<p>investor-static-report works!</p>
+<div class="bckContainer"></div>
+<div class="row flexSec">
+  <div class="col-sm-12 mb-3">
+
+    <!-- Make the Tab Section Common -->
+    <core-tab [Tab]="tab_menu"
+              (GetTabDtls)="changeTabDtls($event)"
+              [customClass]="'nav'"></core-tab>
+    <!-- Filter -->
+    <mat-card class="navCard">
+      <mat-card-header class="border-bottom">
+        <mat-card-title>Filter for {{title}}</mat-card-title>
+        <div class="my-auto pr-4">
+          <p-selectButton [(ngModel)]="btn_type"
+                          [options]="filter_type"
+                          optionValue="value"
+                          styleClass="p-button-lg"
+                          (onOptionClick)="onItemClick($event)"
+                          optionLabel="icon">
+            <ng-template let-item>
+              <i [class]="item.icon" [matTooltip]="item.label"></i>
+            </ng-template>
+          </p-selectButton>
+        </div>
+        
+      </mat-card-header>
+      <mat-card-content class="px-3 py-3">
+
+        <ng-template #SearchBtn>
+          <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+        </ng-template>
+
+        <form [formGroup]="filter" autocomplete="off">
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="view_type">View By</label>
+              <select class="form-control"
+                      id="view_type" name="view_type"
+                      formControlName="view_type">
+                <option value="">Select</option>
+                <option [value]="item.id"
+                        *ngFor="let item of view_type">
+                  {{item.type}}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <app-core-srch [label]="'Investor'"
+                             [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+                             [isPending]="__isClientPending"
+                             [listItems]="__clientMst"
+                             [flag]="'C'"
+                             [noDataFoundTitle]="'Sorry!! No Records Found'"
+                             [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                             [propertiesToShow]="['first_client_name','first_client_pan']"
+                             formControlName="client_name"
+                             [displayMode]="displayMode_forClient"
+                             (setDisplayMode)="displayMode_forClient = $event"
+                             (selectedItems)="getSelectedItemsFromParent($event)"
+                             (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
+            </div>
+            <div class="col-sm-3">
+              <label for="folio_status"> Folio Status</label>
+              <select class="form-control"
+                      formControlName="folio_status"
+                      id="folio_status"
+                      name="folio_status">
+                <option value="A">Select All</option>
+                <option value="Y">Active</option>
+                <option value="N">In Active</option>
+
+              </select>
+            </div>
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="flag == 'K' || flag == 'A'">
+                <div class="col-sm-3">
+                  <label for="kyc_status"> KYC Status</label>
+                  <select class="form-control"
+                          formControlName="kyc_status"
+                          id="kyc_status"
+                          name="kyc_status">
+                    <option value="A">Select All</option>
+                    <option value="Y">KYC Verified</option>
+                    <option value="N">KYC Not Verified</option>
+
+                  </select>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="flag == 'N'">
+                <div class="col-sm-3">
+                  <label for="nominee_status"> Nominee Status</label>
+                  <select class="form-control"
+                          formControlName="nominee_status"
+                          id="nominee_status"
+                          name="nominee_status">
+                    <option value="">Select All</option>
+                    <option value="Opt-In">Opt-In</option>
+                    <option value="Opt-Out">Opt-Out</option>
+                    <option value="Pending">Opt-In / Opt-Out  Pending</option>
+                  </select>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="flag == 'A'">
+                <div class="col-sm-3">
+                  <label for="adhaar_pan_link_status"> Adhaar PAN Link Status</label>
+                  <select class="form-control"
+                          formControlName="adhaar_pan_link_status"
+                          id="adhaar_pan_link_status"
+                          name="adhaar_pan_link_status">
+                    <option value="A">Select All</option>
+                    <option value="Y">Linked</option>
+                    <option value="N">Not Linked</option>
+                  </select>
+                </div>
+              </ng-container>
+
+            </ng-container>
+
+            <!-- LOGIC FOR ADVANCE FILTER / Reset -->
+            <ng-container *ngIf="btn_type == 'R';else advanceFilter">
+              <div class="d-flex justify-content-end align-items-end"
+                   [ngClass]="{
+                   'col-sm-3':flag == 'F',
+                   'col-sm-12 my-3':(flag == 'K' || flag == 'N'),
+                   'col-sm-9':flag == 'A'}">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+
+              </div>
+            </ng-container>
+            <ng-template #advanceFilter>
+              <div class="col-sm-3">
+                <label for="brn_cd">Branch</label>
+                <ng-multiselect-dropdown #multiSelect id="brn_cd"
+                                         [placeholder]="'Select Branch'"
+                                         [settings]="settingsforBrnchDropdown"
+                                         [data]="__branchMst"
+                                         formControlName="brn_cd">
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="bu_type">Business Type</label>
+                <ng-multiselect-dropdown #multiSelect
+                                         id="bu_type"
+                                         [placeholder]="'Select Business Type'"
+                                         [settings]="settingsforBuTypeDropdown" [data]="__bu_type" formControlName="bu_type_id">
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="rm_name">Relationship Manager</label>
+                <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                                         [settings]="settingsforRMDropdown" [data]="__RmMst" formControlName="rm_id">
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="sub_brk_cd">Sub Broker</label>
+                <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                                         [settings]="settingsforSubBrkDropdown" [data]="__subbrkArnMst"
+                                         formControlName="sub_brk_cd">
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="euin_no">EUIN</label>
+                <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
+                                         [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
+                </ng-multiselect-dropdown>
+              </div>
+              <div
+                   class="d-flex justify-content-end align-items-end"
+                   [ngClass]="{'col-sm-12 mt-2':flag == 'F',
+                   'col-sm-9':(flag == 'K' || flag == 'N'),
+                   'col-sm-6':flag == 'A'}">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+            </ng-template>
+            
+        
+            <!--<div class="col-sm-3 d-flex justify-content-end align-items-end">
+              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+            </div>-->      
+          </div>
+
+        </form>
+
+      </mat-card-content>
+    </mat-card>
+    <!-- End  -->
+    <!-- Filter -->
+    <mat-card class="my-3">
+      <mat-card-header>
+        <mat-card-title>
+          {{title}} {{index == 0 ? 'Reports' : ''}}
+        </mat-card-title>
+        <div class="my-auto w-25 pr-4">
+          <span class="ml-auto">
+            <input id="search" class="form-control rounded" type="text"
+                   (input)="filterGlobal($event)"
+                   placeholder="Search" />
+          </span>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+          <p-table #primeTbl
+                   id="trxDt"
+                   [value]="report_data"
+                   [responsive]="true"
+                   [rowHover]="true"
+                   styleClass="p-datatable-striped p-datatable-lg"
+                   responsiveLayout="scroll"
+                   [scrollable]="true"
+                   [columns]="column"
+                   [paginator]="true"
+                   [autoLayout]="true"
+                   [totalRecords]="report_data.length"
+                   [pageLinks]="3"
+                   [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                   [rows]="10"
+                   [showCurrentPageReport]="true"
+                   [globalFilterFields]="getColumns()"
+                   [tableStyle]="{ 'min-width': tble_width }">
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of column"
+                    [pSortableColumn]="col.field"
+                    [style.max-width]="col.width"
+                    [style.min-width]="col.width">
+                  {{ col.header }}
+                  <p-sortIcon [field]="col.field">
+                  </p-sortIcon>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-folio_dt let-i="rowIndex">
+              <tr tabindex="999">
+                <td *ngFor="let col of column"
+                    [style.max-width]="col.width"
+                    [style.min-width]="col.width">
+                  <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                      <p class="m-0">{{i + 1}}</p>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_2nd_holder' ||  col.field == 'dob_3rd_holder' || col.field == 'guardian_dob'">
+                      <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
+                      <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] == 'SI' ? 'Single' : 'Anyone or survivor') : 'N/A'}}</p>
+                    </ng-container>
+
+                    <ng-container *ngSwitchDefault>
+                      <p class="m-0">
+                        {{ folio_dt[col.field] ? folio_dt[col.field] : 'N/A' }}
+                      </p>
+                    </ng-container>
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+              <tr>
+                <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+                  <h5>No Records Found</h5>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+      </mat-card-content>
+    </mat-card>
+    <!-- End  -->
+
+  </div></div>

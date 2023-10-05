@@ -5,12 +5,12 @@
     "\\src\\app",
     "\\src\\app\\__Pages",
     "\\src\\app\\__Pages\\__Main",
-    "\\src\\app\\__Pages\\__Main\\Products",
-    "\\src\\app\\__Pages\\__Main\\Products\\core\\report-filter",
+    "\\src\\app\\__Pages\\__Main\\Master",
+    "\\src\\app\\__Pages\\__Main\\Master\\AMC",
+    "\\src\\app\\__Pages\\__Main\\Master\\AMC\\amcModification",
     "\\src\\app\\__Pages\\__Main\\Products\\MutualFund",
-    "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\SIP",
-    "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\SIP\\sip-home"
+    "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\investor-static-report"
   ],
-  "SelectedNode": "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\SIP\\live-sip\\live-sip.component.html",
+  "SelectedNode": "\\src\\app\\__Pages\\__Main\\Master\\AMC\\amcModification\\amcModification.component.css",
   "PreviewInSolutionExplorer": false
 }

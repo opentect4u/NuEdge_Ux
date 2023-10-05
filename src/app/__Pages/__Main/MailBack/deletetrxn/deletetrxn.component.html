@@ -8,45 +8,51 @@
       </div>
       <div class="card-body p-4">
          <form (ngSubmit)="searchTransaction()" [formGroup]="searchTrxn" autocomplete="off">
-          <div class="row">
-            <div class="col-sm-4">
-              <div class="form-group">
-                <label class="form-label" for="folio_no">Folio</label>
-                <input type="text" formControlName="folio_no" class="rounded form-control" name="folio_no" id="folio_no" placeholder="Enter Folio">
+           <div class="row">
+             <div class="col-sm-4">
+               <div class="form-group">
+                 <label class="form-label" for="folio_no">Folio</label>
+                 <input type="text" formControlName="folio_no" class="rounded form-control" name="folio_no" id="folio_no" placeholder="Enter Folio">
+               </div>
              </div>
-            </div>
-            <!-- <div class="col-sm-5">
-              <div class="form-group">
-                <app-core-srch
-                [label] = "'Scheme'"
-                [placeholder]="'Search By Scheme'"
-                [isPending]="__isscmspinvisible"
-                [listItems] = "schemeMst"
-                [flag] = "'S'"
-                [noDataFoundTitle]="'Sorry!! No Records Found'"
-                [noDataFoundSubTitle]="'If your result match,they will appear here'"
-                [propertiesToShow] = "['scheme_name']"
-                formControlName="scheme_name"
-                [displayMode]="displayMode_scheme"
-                (setDisplayMode)="displayMode_scheme = $event"
-                (selectedItems)="getSelectedItemsFromParent($event)"
-                ></app-core-srch>
-              </div>
-            </div> -->
-            <div class="col-sm-8 d-flex justify-content-end align-items-end">
-              <div class="form-group">
-                <button pButton type="reset"
-                label="Reset"
-                icon="pi pi-refresh"
-                class="p-button-lg p-button-danger mr-2">
-                </button>
-              <button pButton type="submit"
-              label="Search"
-              icon="pi pi-search"
-              class="p-button-lg p-button-primary">
-          </button>
-          </div>
-            </div>
+             <div class="col-sm-4">
+               <div class="form-group">
+                 <label class="form-label" for="trans_no">Transaction No.</label>
+                 <input type="text" formControlName="trans_no" class="rounded form-control" name="trans_no" id="trans_no" placeholder="Enter Transaction Number">
+               </div>
+             </div>
+             <!-- <div class="col-sm-5">
+    <div class="form-group">
+      <app-core-srch
+      [label] = "'Scheme'"
+      [placeholder]="'Search By Scheme'"
+      [isPending]="__isscmspinvisible"
+      [listItems] = "schemeMst"
+      [flag] = "'S'"
+      [noDataFoundTitle]="'Sorry!! No Records Found'"
+      [noDataFoundSubTitle]="'If your result match,they will appear here'"
+      [propertiesToShow] = "['scheme_name']"
+      formControlName="scheme_name"
+      [displayMode]="displayMode_scheme"
+      (setDisplayMode)="displayMode_scheme = $event"
+      (selectedItems)="getSelectedItemsFromParent($event)"
+      ></app-core-srch>
+    </div>
+  </div> -->
+             <div class="col-sm-4 d-flex justify-content-end align-items-end">
+               <div class="form-group">
+                 <button pButton type="reset"
+                         label="Reset"
+                         icon="pi pi-refresh"
+                         class="p-button-lg p-button-danger mr-2">
+                 </button>
+                 <button pButton type="submit"
+                         label="Search"
+                         icon="pi pi-search"
+                         class="p-button-lg p-button-primary">
+                 </button>
+               </div>
+             </div>
            </div>
          </form>
 

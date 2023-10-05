@@ -26,7 +26,7 @@
        <div class="row">
         <div class="col-sm-3">
           <label for="ex_id">Exchange</label>
-          <ng-multiselect-dropdown #multiSelect id="ex_id" [placeholder]="'Select Business Type'"
+          <ng-multiselect-dropdown #multiSelect id="ex_id" [placeholder]="'Select Exchange'"
           (onDeSelect)="onexDeSelect($event)"
             [settings]="settingsforExDropdown"
             [data]="exchange" formControlName="ex_id">
@@ -82,7 +82,10 @@
       </div> -->
       <div class=" px-3 mb-3 d-flex justify-content-between align-items-center">
         <div class="transTypeCount">
-          <h4>In there are total {{benchmarkMstDt.length}} benchmark</h4>
+          <h4>
+            Benchmark Report
+            <!--In there are total {{benchmarkMstDt.length}} benchmark-->
+          </h4>
         </div>
         <div class="btnGrp">
           <p-button icon="pi pi-file-export"

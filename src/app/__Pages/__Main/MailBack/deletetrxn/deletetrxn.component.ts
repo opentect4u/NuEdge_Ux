@@ -64,7 +64,8 @@ export class DeletetrxnComponent implements OnInit {
   searchTrxn = new FormGroup({
     folio_no:new FormControl(''),
     scheme_name: new FormControl(''),
-    scheme_id: new FormControl('')
+    scheme_id: new FormControl(''),
+    trans_no:new FormControl('')
   })
 
   constructor(

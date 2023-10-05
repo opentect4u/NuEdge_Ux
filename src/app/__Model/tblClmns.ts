@@ -3,5 +3,6 @@ export interface column{
     header: string;
     width?:string;
     "max-width"?:string;
-    "min-width"?:string;
+  "min-width"?: string;
+    isVisible?:any
 }
