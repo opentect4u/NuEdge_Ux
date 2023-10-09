@@ -17,6 +17,7 @@ import { client } from 'src/app/__Model/__clientMst';
 import { DOCUMENT } from '@angular/common';
 import MonthDT from '../../../../../../assets/json/Master/month.json';
 import { global } from 'src/app/__Utility/globalFunc';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 enum sip_stp_swp_type {
     'P'='/sipType',
@@ -27,10 +28,25 @@ enum sip_stp_swp_type {
 @Component({
   selector: 'core-report-filter',
   templateUrl: './report-filter.component.html',
-  styleUrls: ['./report-filter.component.css']
+  styleUrls: ['./report-filter.component.css'],
+  animations: [
+    trigger('bodyExpansion', [
+      state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+    trigger('formbodyExpansion', [
+      state('collapsed, void', style({ height: '0px', padding: '0px 20px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', padding: '10px 20px', visibility: 'visible', })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('230ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ])
+  ]
 })
 export class ReportFilterComponent implements OnInit {
 
+    state: string | undefined = 'expanded';
 
    month:{id:number,month:string}[] = MonthDT;
 
@@ -938,5 +954,9 @@ export class ReportFilterComponent implements OnInit {
     }
 
   }
+  toggle() {
+    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
+  }
+
 
 }

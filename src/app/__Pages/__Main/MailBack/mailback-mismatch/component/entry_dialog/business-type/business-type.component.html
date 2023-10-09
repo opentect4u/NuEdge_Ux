@@ -1,0 +1,100 @@
+
+<div >
+  <div mat-dialog-title class="dialog-title">
+    <h2>{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    </div>
+    <mat-dialog-content class="businessTypeContent">
+      <form [formGroup]="business_form" autocomplete="off" (ngSubmit)="submitBusinessType()"  [attr.id]="'bu_type_frm'+data.id">
+        <div class="row">
+          <!-- FOR BUSINESS TYPE  -->
+          <div class="col-sm-12">
+            <label for="bu_type_id">Business Type <span class="text-danger">*</span></label>
+            <select id="bu_type_id"
+                    name="bu_type_id"
+                    formControlName="bu_type_id"
+                    class="form-control">
+              <option value="">Select</option>
+              <option [value]="buType.id" *ngFor="let buType of _bu_type">
+                {{buType.bu_type}}
+              </option>
+            </select>
+            <div class="invalid-feedback"
+                 *ngIf="business_form.get('bu_type_id').invalid && (business_form.get('bu_type_id').dirty || business_form.get('bu_type_id').touched)">
+              <span class="invalid-feedback" *ngIf="(business_form.get('bu_type_id')).errors?.required">
+                *Please provide
+                buisness
+                type
+              </span>
+            </div>
+          </div>
+          <!-- END -->
+
+
+          <!-- FOR SUB BROKER CODE -->
+          <ng-container *ngIf="business_form.get('bu_type_id').value == 'B'">
+              <div class="col-sm-12 ">
+                <app-core-srch [label]="'Sub Broker ARN'"
+                               [placeholder]="'Search By Sub Broker ARN'"
+                               [isPending]="__isSubBrkArnSpinner"
+                               [listItems]="__subbrkArnMst"
+                               [flag]="'S'"
+                               [isRequired]="true"
+                               [noDataFoundTitle]="'Sorry!! No Records Found'"
+                               [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                               [propertiesToShow]="['arn_no','bro_name']"
+                               formControlName="sub_arn_no"
+                               [displayMode]="displayMode_forSub_arn_no"
+                               (setDisplayMode)="displayMode_forSub_arn_no = $event"
+                               (selectedItems)="getSelectedItemsFromParent($event)"
+                               [isClientExistMsg]="'Sub Broker does not exists'"></app-core-srch>
+              </div>
+              <div class="col-sm-12 ">
+                <label>Sub Broker Code <span class="text-danger">*</span></label>
+                <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control"
+                       formControlName="sub_brk_cd" [attr.disabled]="true" placeholder="Sub Broker Code">
+              </div>
+          </ng-container>
+          <!-- END -->
+
+
+          <!-- FOR EUIN NO. -->
+          <div class="col-sm-12 my-3">
+            <app-core-srch [label]="'EUIN'"
+                           [placeholder]="'Search By EUIN Number'"
+                           [isPending]="isEuinPending"
+                           [listItems]="__euin_mst"
+                           [flag]="'E'"
+                           [isRequired]="true"
+                           [noDataFoundTitle]="'Sorry!! No Records Found'"
+                           [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                           [propertiesToShow]="['euin_no','emp_name']"
+                           formControlName="euin_no"
+                           [displayMode]="display_Euin"
+                           (setDisplayMode)="display_Euin = $event"
+                           (selectedItems)="getSelectedItemsFromParent($event)"
+                          ></app-core-srch>
+            <div class="invalid-feedback"
+                 *ngIf="business_form.get('euin_no').invalid && (business_form.get('euin_no').dirty || business_form.get('euin_no').touched)">
+              <span class="invalid-feedback" *ngIf="(business_form.get('euin_no')).errors?.required">
+                *Please
+                provide
+                EUIN number
+              </span>
+            </div>
+          </div>
+          <!-- END -->
+        </div>
+      </form>
+    </mat-dialog-content>
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button class="btn addBtn" type="submit"
+            [attr.form]="'bu_type_frm'+data.id"
+            [disabled]="business_form.invalid">Submit</button>
+  </mat-dialog-actions>
+  <br clear="all" />
+ </div>

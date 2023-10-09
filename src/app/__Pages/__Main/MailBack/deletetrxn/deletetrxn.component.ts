@@ -17,14 +17,33 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { deleteTrxnColumn } from 'src/app/__Utility/TransactionRPT/trnsClm';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
 @Component({
   selector: 'app-deletetrxn',
   templateUrl: './deletetrxn.component.html',
-  styleUrls: ['./deletetrxn.component.css']
+  styleUrls: ['./deletetrxn.component.css'],
+  animations: [
+    trigger('bodyExpansion', [
+      state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+    trigger('formbodyExpansion', [
+      state('collapsed, void', style({ height: '0px', padding: '0px 20px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', padding: '10px 20px', visibility: 'visible', })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('230ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ])
+  ]
 })
 export class DeletetrxnComponent implements OnInit {
 
-  @ViewChild('primeTbl') primeTbl :Table
+  @ViewChild('primeTbl') primeTbl: Table;
+
+  state: string | undefined = 'expanded';
+
 
    /**
    * Hold those transaction which will come based on search
@@ -62,7 +81,7 @@ export class DeletetrxnComponent implements OnInit {
    * Form for search transaction
    */
   searchTrxn = new FormGroup({
-    folio_no:new FormControl(''),
+    folio_no:new FormControl('10442120/81'),
     scheme_name: new FormControl(''),
     scheme_id: new FormControl(''),
     trans_no:new FormControl('')
@@ -146,12 +165,14 @@ export class DeletetrxnComponent implements OnInit {
        return;
     }
      this.dbIntr.api_call(1,'/showDeleteTransDetails',this.utility.convertFormData(this.searchTrxn.value))
-     .pipe(pluck("data")).subscribe((res:Partial<TrxnRpt[]>) =>{
-          this.trxnDT = res;
+       .pipe(pluck("data")).subscribe((res: Partial<TrxnRpt[]>) => {
+         this.trxnDT = res;
+         if (res.length > 0) {
+           this.toggle();
+         }
      })
 
   }
-
   getColumns = () =>{
     return this.utility.getColumns(this.TrxnClmns);
   }
@@ -161,36 +182,42 @@ export class DeletetrxnComponent implements OnInit {
     this.primeTbl.filterGlobal(value,'contains')
   }
   deleteSelectedRow = () =>{
-     if(this.selectedTrxn.length == 0){
-           this.utility.showSnackbar('Sorry!!No transactions are selected',2);
-           return;
-     }
-     const dialogConfig = new MatDialogConfig();
-    dialogConfig.autoFocus = false;
-    dialogConfig.closeOnNavigation = false;
-    dialogConfig.width = '30%';
-    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
-    dialogConfig.data = {
-      id:JSON.stringify(this.selectedTrxn.map(item => {return item['id']})),
-      api_name:"/DeleteTransDetails",
-      title:'Delete Transactions'
-    };
-    try {
-      const dialogref = this.__dialog.open(DeletemstComponent, dialogConfig);
-      dialogref.afterClosed().subscribe((dt) => {
-        if (dt) {
-           if(JSON.parse(dt.id).length > 0){
-             this.trxnDT = this.trxnDT.filter(item => !JSON.parse(dt.id).includes(item.id));
-             this.selectedTrxn = []
-           }
-        }
-      });
-    } catch (ex) {}
+    console.log(this.selectedTrxn.length);
+    console.log(this.trxnDT.length);
+    //  if(this.selectedTrxn.length == 0){
+    //        this.utility.showSnackbar('Sorry!!No transactions are selected',2);
+    //        return;
+    //  }
+    //  const dialogConfig = new MatDialogConfig();
+    // dialogConfig.autoFocus = false;
+    // dialogConfig.closeOnNavigation = false;
+    // dialogConfig.width = '30%';
+    // dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    // dialogConfig.data = {
+    //   id:JSON.stringify(this.selectedTrxn.map(item => {return item['id']})),
+    //   api_name:"/DeleteTransDetails",
+    //   title:'Delete Transactions'
+    // };
+    // try {
+    //   const dialogref = this.__dialog.open(DeletemstComponent, dialogConfig);
+    //   dialogref.afterClosed().subscribe((dt) => {
+    //     if (dt) {
+    //        if(JSON.parse(dt.id).length > 0){
+    //          this.trxnDT = this.trxnDT.filter(item => !JSON.parse(dt.id).includes(item.id));
+    //          this.selectedTrxn = []
+    //        }
+    //     }
+    //   });
+    // } catch (ex) {}
 
   }
 
   // deleteTrxn = () =>{
   //   this.dbIntr.api_call()
   // }
+
+  toggle = () => {
+    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
+  }
 
 }

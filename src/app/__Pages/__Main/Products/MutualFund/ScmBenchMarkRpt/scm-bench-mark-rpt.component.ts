@@ -16,14 +16,32 @@ import periods from '../../../../../../assets/json/Product/MF/ScmBenchmark/perio
 import { DatePipe } from '@angular/common';
 import { from } from 'rxjs';
 import { LazyLoadEvent } from 'primeng/api';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
 @Component({
   selector: 'app-scm-bench-mark-rpt',
   templateUrl: './scm-bench-mark-rpt.component.html',
   styleUrls: ['./scm-bench-mark-rpt.component.css'],
+  animations: [
+    trigger('bodyExpansion', [
+      state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+    trigger('formbodyExpansion', [
+      state('collapsed, void', style({ height: '0px', padding: '0px 20px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', padding: '10px 20px', visibility: 'visible', })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('230ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ])
+  ]
 })
 export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
 
   @ViewChild('primeTbl') primeTbl: Table;
+
+  state: string | undefined = 'expanded';
 
   @ViewChild('MYCalendar',{static:false}) my_cal:Calendar;
 
@@ -279,7 +297,8 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
        this.dbIntr.api_call(1,'/benchmarkSchemeDetailSearch',formdata)
        .pipe(
         pluck("data"),
-        map((item:Partial<IschemeBenchmark>[])=>{
+         map((item: Partial<IschemeBenchmark>[]) => {
+           this.toggle();
           this.scmbrnchMstDt = item;
           // this.populateNav(item);
          })
@@ -342,6 +361,10 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
+  toggle() {
+    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
+  }
+
 }
 
 export interface Ischemebenchmarkdtls {

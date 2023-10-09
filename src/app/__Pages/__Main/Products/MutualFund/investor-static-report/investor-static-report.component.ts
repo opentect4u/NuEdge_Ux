@@ -289,6 +289,9 @@ export class InvestorStaticReportComponent implements OnInit {
       this.column = res;
     })
     this.btn_type = 'R';
+    if (this.state == 'collapsed') {
+      this.toggle();
+    }
     this.resetForm();
   }
 
@@ -362,6 +365,9 @@ export class InvestorStaticReportComponent implements OnInit {
 
   onItemClick = (ev) => {
     if (ev.option.value == 'A') {
+      if (this.state == 'collapsed') {
+        this.toggle();
+      }
       this.getBranchMst();
     } else {
       this.resetForm();

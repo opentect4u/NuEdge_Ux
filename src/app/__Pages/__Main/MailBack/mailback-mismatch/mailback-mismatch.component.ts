@@ -41,9 +41,12 @@ export class MailbackMismatchComponent implements OnInit {
 
   @ViewChild('countModal') mismatchCount:Dialog;
 
-  isvisible:boolean = true;
+  isvisible: boolean = false;
 
-  count_tab_index:number = 0; /** For Holding the number of active tab in modal   */
+
+  count_tab_index: number = 0; /** For Holding the number of active tab in modal   */
+
+  form_type: string | undefined = '';
 
   /**
    * Holding count for each file type
@@ -76,7 +79,9 @@ export class MailbackMismatchComponent implements OnInit {
   /**
    * Holding Tab Menu
    */
-  TabMenu:Partial<ITab>[] = tabs.map(({id, tab_name, flag,img_src,sub_menu}) => ({tab_name:tab_name,img_src:('../../../../../assets/images/'+img_src),id,flag,sub_menu}));
+  TabMenu: Partial<ITab>[] = tabs.map(({ id, tab_name, flag, img_src, sub_menu }) => ({ tab_name: tab_name, img_src: ('../../../../../assets/images/' + img_src), id, flag, sub_menu }));
+
+
 
   /**
    * Holding Sub Tab Menu
@@ -152,18 +157,20 @@ export class MailbackMismatchComponent implements OnInit {
   column_manage = (flag:string) =>{
     console.log(flag);
     const clm_divident:string[] = ['amc_link','scheme_link','isin_link','plan_opt'];
-    const clm:string[] = ['divident_opt','scheme_link','isin_link','option_name','plan_name','plan_opt','lock_trxn'];
+    const clm: string[] = ['divident_opt', 'scheme_link', 'isin_link', 'option_name', 'plan_name', 'plan_opt', 'lock_trxn'];
     const scm_clm:string[] = ['amc_link','scheme_link','isin_link','divident_opt','lock_trxn'];
     const opt_clm:string[] = ['amc_link','option_name','plan_name','plan_opt','divident_opt','lock_trxn'];
     switch(flag){
-      case 'A':
-      case 'B': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))
-      :  (this.index == 1
-      ?  [...NavFinderColumns.column,...NavMismatchColumnForAMCLink.column]
-      :  (this.index == 3
-      ? [...FolioColumn.column,...NavMismatchColumnForAMCLink.column]
-      : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForAMCLink.column]
-      ));
+      case 'A': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))
+        : (this.index == 1
+          ? [...NavFinderColumns.column, ...NavMismatchColumnForAMCLink.column]
+          : (this.index == 3
+            ? [...FolioColumn.column, ...NavMismatchColumnForAMCLink.column]
+            : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...NavMismatchColumnForAMCLink.column]
+          ));
+        break;
+      case 'B': this.TrxnClm = this.index == 0 ? [...trxnClm.column.filter(item => !clm.includes(item.field)), ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))]
+            : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))];
       break;
       case 'S': this.TrxnClm = this.index == 0 ?
        this.TrxnClm = trxnClm.column.filter(item => !opt_clm.includes(item.field))
@@ -173,7 +180,8 @@ export class MailbackMismatchComponent implements OnInit {
         : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForSchemeLink.column]
         ));
        break;
-      case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field));break;
+      case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field)); break;
+      case 'F': this.TrxnClm = [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))]; break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;
     }
 
@@ -191,7 +199,6 @@ export class MailbackMismatchComponent implements OnInit {
       this.dbIntr.api_call(0,'/mailbackMismatchAll',null)
       .pipe(pluck('data'))
       .subscribe((res:IMismatchCountFile[]) =>{
-        console.log(res);
         this.misMatchCountFile = res;
       })
 
@@ -201,6 +208,8 @@ export class MailbackMismatchComponent implements OnInit {
     this.count_tab_index = ev.index;
   }
 
+
+
 }
 
 export class NavMismatchColumnForAMCLink{
@@ -209,7 +218,14 @@ export class NavMismatchColumnForAMCLink{
 
 export class NavMismatchColumnForSchemeLink{
   static column:column[] = [{field:'scheme_link',header:'Scheme Link',width: '20rem'},{field:'isin_link',header:'ISIN Link',width: '20rem'}]
- }
+}
+
+export class MailBackMismatchCommonColumn {
+  static column: column[] = [
+    { field: 'bu_type_link', header: 'Business Type Link', width: '20rem', isVisible: ['B'] },
+    { field: 'freq_link', header: 'Frequency Link', width: '20rem', isVisible: ['F'] }
+  ]
+}
 
  export interface IMismatchCountFile{
        id:number;

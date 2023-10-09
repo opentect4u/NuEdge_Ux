@@ -10,6 +10,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { IsinComponent } from '../entry_dialog/isin/isin.component';
 import { global } from 'src/app/__Utility/globalFunc';
 import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
+import { BusinessTypeComponent } from '../entry_dialog/business-type/business-type.component';
 @Component({
   selector: 'mailBack-trxn-rpt-without-scm',
   templateUrl: './trxn-rpt-without-scm.component.html',
@@ -18,17 +19,21 @@ import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
 })
 export class TrxnRptWithoutScmComponent implements OnInit {
 
+
   @ViewChild('primeTbl') primeTbl :Table;
 
   @Input() mismatch_flag:string;
 
 
-  @Input() tblminWidth:string | undefined = '350rem';
+  @Input() tblminWidth: string | undefined = '350rem';
 
+  form_type: string | undefined = '';
   /**
    * Holding Transaction Report which has empty scheme
    */
-  @Input() trxnRptWithOutScm:TrxnRpt[];
+  @Input() trxnRptWithOutScm: TrxnRpt[];
+
+  
 
   /**
    * Hold the Column for Transaction Report
@@ -37,6 +42,8 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   @Input() TrxnClm:column[] = [];
 
   @Output() changeStatusOfTrxn = new EventEmitter();
+
+
 
 
   constructor(
@@ -203,5 +210,47 @@ export class TrxnRptWithoutScmComponent implements OnInit {
 
   deleteTransaction = (index) =>{
     this.trxnRptWithOutScm.splice(index,1);
+  }
+
+  openModal_for_Form = (modal_type: string,trxn,index:number) => {
+    this.form_type = modal_type;
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = true;
+    dialogConfig.disableClose = false;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.width = '40%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      flag: 'B',
+      id: trxn.id,
+      transaction: trxn,
+      title: 'Add Business Type',
+      product_id: '1', /** For Mutual Fund */
+      right: global.randomIntFromInterval(1, 60),
+    };
+    dialogConfig.id = 'bu_type' + trxn.id;
+    try {
+      const dialogref = this.__dialog.open(
+        BusinessTypeComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe((dt) => {
+        if (dt) {
+          if (dt.suc == 1) {
+            this.deleteTransaction(index);
+          }
+        }
+      });
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+      this.utility.getmenuIconVisible({
+        id: Number(dialogConfig.id),
+        isVisible: false,
+        flag: 'B',
+      });
+    }
   }
 }

@@ -4,28 +4,24 @@
 
     <!-- Make the Tab Section Common -->
     <core-tab [Tab]="TabMenu"
-    (GetTabDtls)="changeTabDtls($event,'P')"
-    [customClass]="'nav'"
-    [index]="index"
-    ></core-tab>
+              (GetTabDtls)="changeTabDtls($event,'P')"
+              [customClass]="'nav'"
+              [index]="index"></core-tab>
 
     <mat-card class="navCard p-3">
       <core-tab [Tab]="subTab"
-      (GetTabDtls)="changeTabDtls($event,'C')"
-      [customClass]="'second_tab'"
-      [index]="sub_index"
-      ></core-tab>
+                (GetTabDtls)="changeTabDtls($event,'C')"
+                [customClass]="'second_tab'"
+                [index]="sub_index"></core-tab>
       <!-- <div class="card">
         <div class="card-body p-1"> -->
-          <mailBack-trxn-rpt-without-scm
-          [tblminWidth]="tblWidth"
-          [trxnRptWithOutScm]="trxnTypeRpt"
-          [mismatch_flag]="mismatch_flag"
-          [TrxnClm]="TrxnClm"
-          (changeStatusOfTrxn)="setTrxnFromChild($event)"
-          ></mailBack-trxn-rpt-without-scm>
-        <!-- </div>
-        </div> -->
+      <mailBack-trxn-rpt-without-scm [tblminWidth]="tblWidth"
+                                     [trxnRptWithOutScm]="trxnTypeRpt"
+                                     [mismatch_flag]="mismatch_flag"
+                                     [TrxnClm]="TrxnClm"
+                                     (changeStatusOfTrxn)="setTrxnFromChild($event)"></mailBack-trxn-rpt-without-scm>
+      <!-- </div>
+      </div> -->
     </mat-card>
 
 
@@ -37,44 +33,46 @@
       </div>
     </div> -->
 
-    </div>
   </div>
+</div>
 
-  <p-dialog #countModal header="Header"
-  [(visible)]="isvisible"
-  [modal]="true"
-  [style]="{ width: '50vw',height: '400px'}"
-  [draggable]="false"
-  [resizable]="false">
+
+<!-----------------------------------------------------FOR LOCK TRANSACTION MODEL------------------------------------------------------------------->
+<p-dialog #countModal header="Header"
+          [(visible)]="isvisible"
+          [modal]="true"
+          [style]="{ width: '50vw',height: '400px'}"
+          [draggable]="false"
+          [resizable]="false">
   <ng-template pTemplate="header">
     <span class="text-lg font-bold">Mismatch Files</span>
-    </ng-template>
-    <ng-container>
+  </ng-template>
+  <ng-container>
 
-    </ng-container>
-     <div class="container mt-3">
-        <div class="container_header">
-          <core-tab [Tab]="misMatchCountFile"
-          [customClass]="'second_tab'"
-          (GetTabDtls)="changeTabDtls_forMismatch_count($event)"
-          ></core-tab>
-        </div>
-        <mat-card class="navCard mat-elevation-z1">
-          <mat-card-content>
-            <ng-container *ngFor="let items of misMatchCountFile;let i = index">
-              <mat-list role="list" *ngIf="count_tab_index == i">
-                <mat-list-item role="listitem" *ngFor="let item of items.file_type;">
-                  {{item.name}}
-                  <span align="end">
-                     {{item.count}}
-                  </span>
-                  <mat-divider></mat-divider>
-                </mat-list-item>
-              </mat-list>
-            </ng-container>
-          </mat-card-content>
-
-        </mat-card>
+  </ng-container>
+  <div class="container mt-3">
+    <div class="container_header">
+      <core-tab [Tab]="misMatchCountFile"
+                [customClass]="'second_tab'"
+                (GetTabDtls)="changeTabDtls_forMismatch_count($event)"></core-tab>
     </div>
+    <mat-card class="navCard mat-elevation-z1">
+      <mat-card-content>
+        <ng-container *ngFor="let items of misMatchCountFile;let i = index">
+          <mat-list role="list" *ngIf="count_tab_index == i">
+            <mat-list-item role="listitem" *ngFor="let item of items.file_type;">
+              {{item.name}}
+              <span align="end">
+                {{item.count}}
+              </span>
+              <mat-divider></mat-divider>
+            </mat-list-item>
+          </mat-list>
+        </ng-container>
+      </mat-card-content>
+
+    </mat-card>
+  </div>
 
 </p-dialog>
+<!----------------------------------------------END-------------------------------------------------------->

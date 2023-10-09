@@ -42,11 +42,12 @@ export class trxnClm{
 export class deleteTrxnColumn{
   public static column = [
     {field:'sl_no',header:'Sl No',width:"6rem"},
+    {field:'lock_status',header:'Lock Status',width:'6rem'},
     {field:'first_client_name',header:'Investor Name',width:"16rem"},
     {field:'first_client_pan',header:'PAN',width:"9rem"},
     {field:'trans_date',header:'Transaction Date',width:"9rem"},
     {field:'amc_name',header:'AMC',width:"22rem"},
-    {field:'scheme_name',header:'Scheme',width:"28rem"},
+    {field:'scheme_name',header:'Scheme',width:"30rem"},
     {field:'cat_name',header:'Category',width:"11rem"},
     {field:'subcat_name',header:'Sub-Category',width:"21rem"},
     {field:'folio_no',header:'Folio',width:"11rem"},

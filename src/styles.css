@@ -549,9 +549,10 @@ mat-card {
 .p-button.p-button-lg {
   padding: 8px 16px !important;
 }
-.p-button{
-background: #10486b;
-border: 1px solid #10486b;
+.p-button {
+  background: #10486b;
+  border: 1px solid #10486b;
+  border: none!important;
 }
 /* .p-panel .p-panel-header {
   border: 1px solid #dee2e6;
@@ -566,7 +567,7 @@ border: 1px solid #10486b;
 
 .p-button:enabled:hover {
   background: #10486b;
-border: 1px solid #10486b;
+border: none!important;
 color: #ffffff;
 
   /* background: #2563eb;
@@ -712,14 +713,14 @@ color: #ffffff;
 .p-button:enabled:hover{
   border:none!important;
 }*/
-
+/*
 .p-dialog-header{
   background-color: #10486b!important;
   color:#fff!important;
 }
 .p-dialog .p-dialog-header .p-dialog-header-icon{
   color: #ffffff;
-}
+}*/
 .pi-times::before{
   font-size: 14px;
 }
@@ -733,4 +734,18 @@ color: #ffffff;
 .navCard{
   border-top-right-radius: 0px!important;
   border-top-left-radius: 0px!important;
+}
+
+.expandable-content {
+  overflow: hidden;
+}
+
+.rotateUp {
+  transform: rotate(180deg);
+  transition: all .3s linear;
+}
+
+.rotateDown {
+  transform: rotate(0deg);
+  transition: all .3s linear;
 }

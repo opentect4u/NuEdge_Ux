@@ -5,12 +5,12 @@
     "\\src\\app",
     "\\src\\app\\__Pages",
     "\\src\\app\\__Pages\\__Main",
-    "\\src\\app\\__Pages\\__Main\\Master",
-    "\\src\\app\\__Pages\\__Main\\Master\\AMC",
-    "\\src\\app\\__Pages\\__Main\\Master\\AMC\\amcModification",
+    "\\src\\app\\__Pages\\__Main\\Products",
+    "\\src\\app\\__Pages\\__Main\\Products\\core",
+    "\\src\\app\\__Pages\\__Main\\Products\\core\\report-filter",
     "\\src\\app\\__Pages\\__Main\\Products\\MutualFund",
-    "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\investor-static-report"
+    "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\ScmBenchMarkRpt"
   ],
-  "SelectedNode": "\\src\\app\\__Pages\\__Main\\Master\\AMC\\amcModification\\amcModification.component.css",
+  "SelectedNode": "\\src\\app\\__Pages\\__Main\\Products\\MutualFund\\ScmBenchMarkRpt\\scm-bench-mark-rpt.component.ts",
   "PreviewInSolutionExplorer": false
 }

@@ -15,7 +15,10 @@ import { IsinComponent } from './component/entry_dialog/isin/isin.component';
 import { SchemeComponent } from './component/entry_dialog/scheme/scheme.component';
 /***** Mat Badge  module */
 import {MatBadgeModule} from '@angular/material/badge';
+import { BusinessTypeComponent } from './component/entry_dialog/business-type/business-type.component';
 /******End ***************/
+
+
 const routes: Routes = [
   {
     path: '',
@@ -25,7 +28,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MailbackMismatchComponent, TrxnRptWithoutScmComponent, IsinComponent, SchemeComponent],
+  declarations: [MailbackMismatchComponent, TrxnRptWithoutScmComponent, IsinComponent, SchemeComponent, BusinessTypeComponent],
   imports: [CommonModule,RouterModule.forChild(routes),
     SharedModule,
     TabModule,
