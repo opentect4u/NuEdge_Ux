@@ -7,6 +7,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'live-stp',
@@ -33,6 +34,8 @@ export class LiveStpComponent implements OnInit {
   * For Holding AMC Master Data
   */
   @Input() amc:amc[] = [];
+
+  total_live_stp_report:number =0 ;
 
  /**
   * For holding client those are  present only in transaction.
@@ -63,8 +66,8 @@ LiveStpReport = (formDt) =>{
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
   .subscribe((res: IliveStp[]) =>{
-    console.log(res);
        this.live_stp_rpt = res;
+       this.total_live_stp_report = global.calculatAmt(res);
   })
 }
 

@@ -7,6 +7,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
+import { global } from 'src/app/__Utility/globalFunc';
 @Component({
   selector: 'terminate-swp',
   templateUrl: './terminate-swp.component.html',
@@ -34,6 +35,8 @@ export class TerminateSwpComponent implements OnInit {
 * For Holding AMC Master Data
 */
 @Input() amc:amc[] = [];
+
+total_terminate_swp_amt:number = 0
 
 /**
 * For holding client those are  present only in transaction.
@@ -65,8 +68,8 @@ LiveSwpReport = (formDt) =>{
   this.utility.convertFormData(dt))
   .pipe(pluck('data'))
   .subscribe((res: IliveSwp[]) =>{
-    console.log(res);
        this.live_swp_rpt = res;
+       this.total_terminate_swp_amt = global.calculatAmt(res);
   })
 }
 

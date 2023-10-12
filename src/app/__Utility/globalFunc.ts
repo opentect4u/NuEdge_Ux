@@ -78,4 +78,11 @@ export class global{
       })
   }
 
+  /**
+   * calculate TOTAL AMOUNT FROM ARRAY
+   */
+  public static calculatAmt(arr): number{
+    return Number(arr.map((item) => item.amount).reduce((prev,curr) => prev + curr));
+  }
+
 }

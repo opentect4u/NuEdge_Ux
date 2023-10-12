@@ -9,29 +9,18 @@
               [index]="index"></core-tab>
 
     <mat-card class="navCard p-3">
+     <mat-card-content>
       <core-tab [Tab]="subTab"
-                (GetTabDtls)="changeTabDtls($event,'C')"
-                [customClass]="'second_tab'"
-                [index]="sub_index"></core-tab>
-      <!-- <div class="card">
-        <div class="card-body p-1"> -->
+      (GetTabDtls)="changeTabDtls($event,'C')"
+      [customClass]="'second_tab'"
+      [index]="sub_index"></core-tab>
       <mailBack-trxn-rpt-without-scm [tblminWidth]="tblWidth"
-                                     [trxnRptWithOutScm]="trxnTypeRpt"
-                                     [mismatch_flag]="mismatch_flag"
-                                     [TrxnClm]="TrxnClm"
-                                     (changeStatusOfTrxn)="setTrxnFromChild($event)"></mailBack-trxn-rpt-without-scm>
-      <!-- </div>
-      </div> -->
+      [trxnRptWithOutScm]="trxnTypeRpt"
+      [mismatch_flag]="mismatch_flag"
+      [TrxnClm]="TrxnClm"
+      (changeStatusOfTrxn)="setTrxnFromChild($event)"></mailBack-trxn-rpt-without-scm>
+     </mat-card-content>
     </mat-card>
-
-
-    <!-- <div class="card">
-      <div class="card-body py-2">
-        <ng-container *ngIf="index == 0">
-          <mailBack-trxn-rpt-without-scm [trxnRptWithOutScm]="trxnTypeRpt"></mailBack-trxn-rpt-without-scm>
-        </ng-container>
-      </div>
-    </div> -->
 
   </div>
 </div>

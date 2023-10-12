@@ -11,6 +11,7 @@ import { IsinComponent } from '../entry_dialog/isin/isin.component';
 import { global } from 'src/app/__Utility/globalFunc';
 import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
 import { BusinessTypeComponent } from '../entry_dialog/business-type/business-type.component';
+import { FrequencyComponent } from '../entry_dialog/frequency/frequency.component';
 @Component({
   selector: 'mailBack-trxn-rpt-without-scm',
   templateUrl: './trxn-rpt-without-scm.component.html',
@@ -33,7 +34,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
    */
   @Input() trxnRptWithOutScm: TrxnRpt[];
 
-  
+
 
   /**
    * Hold the Column for Transaction Report
@@ -250,6 +251,46 @@ export class TrxnRptWithoutScmComponent implements OnInit {
         id: Number(dialogConfig.id),
         isVisible: false,
         flag: 'B',
+      });
+    }
+  }
+
+  addFrequency = (field,trxn,index:number) =>{
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = true;
+    dialogConfig.disableClose = false;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.width = '40%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      flag: 'F',
+      id: trxn.id,
+      transaction: trxn,
+      title: 'Add  Frequency',
+      product_id: '1', /** For Mutual Fund */
+      right: global.randomIntFromInterval(1, 60),
+    };
+    dialogConfig.id = 'freq' + trxn.id;
+    try {
+      const dialogref = this.__dialog.open(
+        FrequencyComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe((dt) => {
+        if (dt) {
+          if (dt.suc == 1) {
+            this.deleteTransaction(index);
+          }
+        }
+      });
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+      this.utility.getmenuIconVisible({
+        id: Number(dialogConfig.id),
+        isVisible: false,
+        flag: 'F',
       });
     }
   }

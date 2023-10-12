@@ -6,6 +6,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { IliveSwp } from '../live-swp/live_swp.interface';
 import { pluck } from 'rxjs/operators';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'pause-swp',
@@ -25,6 +26,8 @@ export class PauseSwpComponent implements OnInit {
   @Input() report_type:string;
 
   @Input() sip_stp_swp_type_mst = [];
+
+  total_pause_swp_amt:number = 0;
 
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('P3'));
 
@@ -56,8 +59,8 @@ export class PauseSwpComponent implements OnInit {
     this.utility.convertFormData(dt))
     .pipe(pluck('data'))
     .subscribe((res: Partial<IliveSwp>[]) =>{
-      console.log(res);
          this.pause_swp = res;
+         this.total_pause_swp_amt = global.calculatAmt(res);
     })
   }
 }

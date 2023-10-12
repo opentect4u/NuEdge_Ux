@@ -1,0 +1,50 @@
+.dialog-title>div>span{
+  font-size: 12px;
+}
+
+.dialog-title{
+  /* background: #ffffff!important;
+   */
+   background: #c2e7ff61!important;
+  color: #0b3149!important;
+  border: none!important;
+  padding: 3px 17px!important;
+}
+.mat-dialog-content{
+  background: #c2e7ff61!important;
+}
+.mat-dialog-content>p{
+  color: gray;
+  font-size: 13px;
+  font-weight: 500;
+}
+.mat-dialog-actions[align=end]{
+  border:none!important;
+  background: #c2e7ff61!important;
+}
+
+
+/* ****** CSS loader */
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/********* END*/

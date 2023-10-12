@@ -16,10 +16,4 @@ const routes: Routes = [
   ],
   declarations: [HomeComponent,ViewComponent,MenuTilesComponent]
 })
-export class HomeModule {
-  constructor(){
-    console.log('Home Module Loaded');
-
-  }
-
-}
+export class HomeModule {}

@@ -7,6 +7,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
+import { global } from 'src/app/__Utility/globalFunc';
 @Component({
   selector: 'terminate-stp',
   templateUrl: './terminate-stp.component.html',
@@ -41,6 +42,7 @@ export class TerminateStpComponent implements OnInit {
 
 @Input()  sip_stp_swp_type_mst:any = [];
 
+total_terminate_stp_amt:number = 0;
 
 /**
    * Set Column for LIVE SIP REPORT
@@ -64,8 +66,8 @@ terminateStpReport = (formDt) =>{
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
   .subscribe((res: IliveStp[]) =>{
-    console.log(res);
        this.live_stp_rpt = res;
+       this.total_terminate_stp_amt = global.calculatAmt(res);
   })
 }
 

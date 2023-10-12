@@ -7,6 +7,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'live-swp',
@@ -26,6 +27,13 @@ export class LiveSwpComponent implements OnInit {
    * Holding Transaction Type  Master Data
    */
   @Input() trxnTypeMst: rntTrxnType[] = [];
+
+
+  /**
+   * Holding Live SWP Amount
+   */
+  total_live_swp_amt:number = 0;
+
 
  /**
   * For Holding AMC Master Data
@@ -65,6 +73,7 @@ export class LiveSwpComponent implements OnInit {
   .subscribe((res: IliveSwp[]) =>{
     console.log(res);
        this.live_swp_rpt = res;
+       this.total_live_swp_amt = global.calculatAmt(res);
   })
 }
 

@@ -43,7 +43,7 @@
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="10"
     [showCurrentPageReport]="true"
-    [tableStyle]="{ 'min-width': '350rem' }"
+    [tableStyle]="{ 'min-width': '405rem' }"
     >
       <ng-template pTemplate="header">
           <tr>
@@ -92,6 +92,22 @@
              No Records Found
           </td>
         </tr>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <tr >
+          <td  *ngFor="let col of column"
+          [attr.colspan]="col.field == 'sl_no' ? 5 : ''"
+          [style.min-width]="col.field == 'sl_no' ? '40rem' : ''"
+          [style.min-width]="col.field == 'sl_no' ? '40rem' : ''">
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+               <p class="m-0 text-left">
+                SIP (TOTAL: {{live_sip_rpt.length}}) (Value: {{total_terminate_sip_amt | number : '1.2-2'}})
+               </p>
+             </ng-container>
+              </ng-container>
+          </td>
+       </tr>
       </ng-template>
   </p-table>
  </mat-card-content></mat-card>

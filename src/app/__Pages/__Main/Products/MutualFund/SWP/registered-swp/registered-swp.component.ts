@@ -7,6 +7,7 @@ import { Table } from 'primeng/table';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'registered-swp',
@@ -43,6 +44,8 @@ export class RegisteredSwpComponent implements OnInit {
   index:number = 0;
 
   register_swp:Partial<IliveSwp>[] = [];
+
+  total_registered_swp_amt:number = 0;
 
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-3'));
 
@@ -87,6 +90,7 @@ export class RegisteredSwpComponent implements OnInit {
       .pipe(pluck('data'))
       .subscribe((res:Partial<IliveSwp>[]) =>{
         this.register_swp = res;
+        this.total_registered_swp_amt = global.calculatAmt(res);
       })
     }
 }

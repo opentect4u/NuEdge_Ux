@@ -46,7 +46,7 @@ enum sip_stp_swp_type {
 })
 export class ReportFilterComponent implements OnInit {
 
-    state: string | undefined = 'expanded';
+   state: string | undefined = 'expanded';
 
    month:{id:number,month:string}[] = MonthDT;
 
@@ -360,7 +360,6 @@ export class ReportFilterComponent implements OnInit {
         this.Rpt.get('month').setValue(dt.getMonth() + 1);
         this.Rpt.get('year').setValue(dt.getFullYear());
         this.reset();
-
       }
     }
   }

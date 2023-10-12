@@ -7,6 +7,7 @@ import { pluck } from 'rxjs/operators';
 import { IliveSip } from '../live-sip/live_sip.interface';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { Table } from 'primeng/table';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'registered-sip',
@@ -22,6 +23,8 @@ export class RegisteredSIPComponent implements OnInit {
   __title:string = ''
 
   @Input() sip_stp_swp_type_mst:any = [];
+
+  total_register_sip_amt:number=0;
 
   /**
  * For Holding AMC Master Data
@@ -85,6 +88,7 @@ export class RegisteredSIPComponent implements OnInit {
       .pipe(pluck('data'))
       .subscribe((res:Partial<IliveSip>[]) =>{
         this.register_sip = res;
+        this.total_register_sip_amt = global.calculatAmt(res);
       })
     }
 

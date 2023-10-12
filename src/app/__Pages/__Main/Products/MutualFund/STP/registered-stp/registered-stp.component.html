@@ -82,7 +82,7 @@
                 <p class="m-0">{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A' }}</p>
                  </ng-container>
                  <ng-container *ngSwitchCase="col.field == 'amount'">
-                  <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | currency:'INR') : 'N/A' }}</p>
+                  <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field]  : '0' }}</p>
                </ng-container>
                   <ng-container *ngSwitchDefault>
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
@@ -98,6 +98,22 @@
                  No Records Found
               </td>
             </tr>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr >
+              <td  *ngFor="let col of column"
+              [attr.colspan]="col.field == 'sl_no' ? 5 : ''"
+              [style.min-width]="col.field == 'sl_no' ? '40rem' : ''"
+              [style.min-width]="col.field == 'sl_no' ? '40rem' : ''">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                   <p class="m-0 text-left">
+                    STP (TOTAL: {{register_stp.length}}) (Value: {{total_resgistered_stp_amt | number : '1.2-2'}})
+                   </p>
+                 </ng-container>
+                  </ng-container>
+              </td>
+           </tr>
           </ng-template>
       </p-table>
      </mat-card-content></mat-card>

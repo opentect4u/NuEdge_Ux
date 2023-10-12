@@ -6,6 +6,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'terminate-sip',
@@ -27,6 +28,11 @@ export class TerminateSIPComponent implements OnInit {
    * For Holding AMC Master Data
    */
   @Input() amc: amc[] = [];
+
+    /**
+     * hold Total Terminate SIP Amount
+     */
+    total_terminate_sip_amt:number = 0;
 
   /**
    * For holding client those are  present only in transaction.
@@ -57,8 +63,8 @@ export class TerminateSIPComponent implements OnInit {
       .api_call(1, '/showSipStpDetails', this.utility.convertFormData(dt))
       .pipe(pluck('data'))
       .subscribe((res: IliveSip[]) => {
-        console.log(res);
         this.live_sip_rpt = res;
+        this.total_terminate_sip_amt = global.calculatAmt(res);
       });
   };
 

@@ -30,6 +30,7 @@ import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Observable, Subscription, from, of } from 'rxjs';
 import clientType from '../../../../../../../../assets/json/view_type.json';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
  type TrxnType = {
    reject:number;
@@ -40,6 +41,20 @@ import clientType from '../../../../../../../../assets/json/view_type.json';
   selector: 'app-trxn-rpt',
   templateUrl: './trxn-rpt.component.html',
   styleUrls: ['./trxn-rpt.component.css'],
+  animations: [
+    trigger('bodyExpansion', [
+      state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+    trigger('formbodyExpansion', [
+      state('collapsed, void', style({ height: '0px', padding: '0px 20px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', padding: '10px 20px', visibility: 'visible', })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('230ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ])
+  ]
 
 })
 export class TrxnRptComponent implements OnInit {
@@ -54,6 +69,7 @@ export class TrxnRptComponent implements OnInit {
 
   @ViewChild('tableCard') tableCard:ElementRef
   @ViewChild('primeTbl') primeTbl :Table;
+  state: string | undefined = 'expanded';
 
 
     /**
@@ -530,6 +546,7 @@ export class TrxnRptComponent implements OnInit {
    *  call API for get transaction according to search result
    */
   searchTrxnReport = () => {
+    this.state = 'collapsed'
     if(this.misTrxnRpt.value.date_periods == 'Y'
     // || this.misTrxnRpt.value.date_periods == 'R'
     || this.misTrxnRpt.value.date_periods == ''){
@@ -998,5 +1015,9 @@ export class TrxnRptComponent implements OnInit {
   }
   changePage = (ev) =>{
       console.log(ev);
+  }
+
+  toggle() {
+    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
 }

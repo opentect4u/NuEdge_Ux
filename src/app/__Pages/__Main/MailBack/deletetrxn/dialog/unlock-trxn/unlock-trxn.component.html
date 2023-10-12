@@ -1,0 +1,30 @@
+
+
+
+<div mat-dialog-title class="dialog-title">
+
+
+  <div class="d-flex">
+    <mat-icon>lock_open_right</mat-icon>
+    <span>{{data.title}}</span>
+  </div>
+  <div class="btnIcon">
+    <button mat-icon-button [mat-dialog-close]="" [disabled]="__is_loader">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+<mat-dialog-content>
+   <p class="my-3">Are you sure you want to unlock this transaction ?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+    <button mat-button color="primary" (click)="unlockTransactions()" [disabled]="__is_loader">
+      <mat-icon>
+        {{!__is_loader ? 'check' : 'progress_activity'}}
+      </mat-icon> {{!__is_loader ? 'OK' : 'Unlocking....'}}
+    </button>
+
+</mat-dialog-actions>
+<br clear="all"/>
+
+

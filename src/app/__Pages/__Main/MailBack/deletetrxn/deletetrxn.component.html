@@ -1,22 +1,13 @@
 
 <div class="bckContainer"></div>
-<!--<div class="row flexSec">
-  <div class="col-sm-10 col-sm-offset-1">
-    <div class="card">
-      <div class="card-header py-3">
-        <h5>
-          <i class="pi pi-search"></i>&nbsp;&nbsp;
-          Search Transactions</h5>
-      </div>
-      <div class="card-body p-4">-->
 <div class="row flexSec">
   <div class="col-sm-12">
     <mat-card>
       <mat-card-header class="border-bottom">
         <mat-card-title>Delete Transaction</mat-card-title>
         <button mat-button
-                class="my-auto"
-                [matTooltip]="state == 'expanded' ? 'Collapsed Quick Links' : 'Expand Quick Links'" color="primary" (click)="toggle()" class="mx-3">
+                class="my-auto mr-4"
+                color="primary" (click)="toggle()">
 
           EXPAND {{state == 'collapsed' ? ' MORE' : ' LESS'}}
 
@@ -42,7 +33,8 @@
             </div>
             <div class="col-sm-4 d-flex justify-content-end align-items-end">
               <div class="form-group">
-                <button pButton type="reset"
+                <button pButton type="button"
+                        (click)="reset()"
                         label="Reset"
                         icon="pi pi-refresh"
                         class="p-button-lg p-button-danger mr-2">
@@ -63,15 +55,32 @@
 
 <mat-card class="my-3">
   <mat-card-header class="border-bottom">
-    <mat-card-title>Transaction Reports</mat-card-title>
+    <mat-card-title>
+      Transaction Reports&nbsp;<span>(TOTAL: {{trxnDT.length}})</span>
+      <button mat-icon-button color="warn" class="mx-4"   matTooltip="Lock Transactions: {{__lock_trxn_count}}"
+      matTooltipClass="ToolTip"
+      [matTooltipPosition]="'below'"
+      >
+        <mat-icon matBadge="{{__lock_trxn_count}}"
+        matBadgeOverlap="false" matBadgeColor="accent">lock</mat-icon>
+      </button>
+      <button mat-icon-button class="text-success"
+      matTooltip="Unlock Transactions: {{__unlock_trxn_count}}"
+      matTooltipClass="ToolTip"
+      >
+        <mat-icon matBadge="{{__unlock_trxn_count}}"
+
+        matBadgeOverlap="false" >lock_open</mat-icon>
+      </button>
+
+    </mat-card-title>
     <div class="my-auto pr-4 w-50 d-flex align-items-center flex-row-reverse">
       <button mat-button
       class="ml-2"
               *ngIf="trxnDT.length> 0"
               color="warn"
               (click)="deleteSelectedRow()">
-        <mat-icon>delete</mat-icon>
-        Delete Transactions
+        <mat-icon>delete</mat-icon>Transactions
       </button>
       <span class="ml-auto w-50">
         <input class="form-control rounded" type="text"
@@ -102,7 +111,7 @@
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th [style]="'max-width:4rem'" pFrozenColumn>
-            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            <p-tableHeaderCheckbox *ngIf="!__is_check_all_locked"></p-tableHeaderCheckbox>
           </th>
           <th *ngFor="let col of columns"
               [pSortableColumn]="col.field"
@@ -132,7 +141,8 @@
 
               <ng-container *ngSwitchCase="col.field == 'lock_status'">
                 <ng-container *ngIf="trxnDT.divi_lock_flag == 'L';else unlock">
-                  <button color="primary" mat-icon-button>
+                  <button color="primary" mat-icon-button
+                  (click)="unlockedTrxn(trxnDT,i)">
                     <mat-icon>
                       lock
                     </mat-icon>
@@ -166,36 +176,6 @@
                   {{(trxnDT[col.field] ? trxnDT[col.field] : '0') }}
                 </b>
               </ng-container>
-
-              <!-- Net Amount Logic -->
-              <!-- <ng-container *ngSwitchCase="col.field == 'amount'">
-                <b [matTooltip]="trxnDT['trxn_code'] == 'R' ? (trxnDT['tot_amount'] ? trxnDT['tot_amount'] : 0) : (trxnDT[col.field] ? trxnDT[col.field] : 0)">
-                  {{trxnDT['trxn_code'] == 'R' ? (trxnDT['tot_amount'] ? trxnDT['tot_amount'] : 0) : (trxnDT[col.field] ? trxnDT[col.field] : 0) }}
-                </b>
-            </ng-container> -->
-              <!-- End -->
-              <!-- TDS Logic -->
-              <!-- <ng-container *ngSwitchCase="col.field == 'tds'">
-               <b [matTooltip]="trxnDT['trxn_code'] == 'R' ?
-               (trxnDT['tot_tds'] ? trxnDT['tot_tds'] : 0)
-               : (trxnDT[col.field] && trxnDT[col.field] != ' ' ? trxnDT[col.field] : 0)">
-                  {{trxnDT['trxn_code'] == 'R' ?
-                  (trxnDT['tot_tds'] ? trxnDT['tot_tds'] : 0)
-                  : (trxnDT[col.field] && trxnDT[col.field] != ' ' ? trxnDT[col.field] : 0)}}
-               </b>
-            </ng-container> -->
-              <!-- End -->
-              <!-- Stamp Duty Logic -->
-              <!-- <ng-container *ngSwitchCase="col.field == 'stamp_duty'">
-                  <b [matTooltip]="trxnDT['trxn_code'] == 'R' ?
-                  (trxnDT['tot_stamp_duty'] ? trxnDT['tot_stamp_duty'] : 0)
-                  : (trxnDT[col.field] && trxnDT[col.field] != ' ' ? trxnDT[col.field] : 0)">
-                    {{trxnDT['trxn_code'] == 'R' ?
-                    (trxnDT['tot_stamp_duty'] ? trxnDT['tot_stamp_duty'] : 0)
-                    : (trxnDT[col.field] && trxnDT[col.field] != ' ' ? trxnDT[col.field] : 0)}}
-                  </b>
-            </ng-container> -->
-              <!-- End -->
               <ng-container *ngSwitchDefault>
                 <b [matTooltip]="trxnDT[col.field]">{{ trxnDT[col.field] ? trxnDT[col.field] : 'N/A' }}</b>
               </ng-container>
@@ -214,109 +194,3 @@
     </p-table>
   </mat-card-content>
 </mat-card>
-
-
-
-      <!--</div>
-    </div>-->
-
-    <!--<div class="card my-3">
-      <div class="card-header py-2 d-flex justify-content-between align-items-center">
-          <button mat-button
-          *ngIf="trxnDT.length> 0"
-          color="warn"
-          (click)="deleteSelectedRow()">
-            <mat-icon>delete</mat-icon>
-            Delete Transactions
-          </button> &nbsp;
-
-
-          <input class="form-control rounded  w-25" type="text"
-          (input)="filterGlobal($event)"
-           placeholder="Search" />
-
-      </div>
-      <div class="card-body">
-        <p-table [value]="trxnDT"
-        #primeTbl
-        [autoLayout]="true"
-        [columns]="TrxnClmns"
-        [(selection)]="selectedTrxn" dataKey="id"
-        [autoLayout]="true"
-        [scrollable]="true"
-        [paginator]="true"
-        [totalRecords]="trxnDT.length"
-        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-        [rows]="10"
-        [showCurrentPageReport]="true"
-        [globalFilterFields]="getColumns()"
-        styleClass="p-datatable-sm"
-        [tableStyle]="{ 'min-width': '300rem' }">
-          <ng-template pTemplate="header" let-columns>
-              <tr>
-                  <th [style]="'max-width:4rem'" pFrozenColumn>
-                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                  </th>
-                  <th  *ngFor="let col of columns"
-                  [pSortableColumn]="col.field"
-                  [style.max-width]="col.width"
-                  [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
-                  >{{ col.header }}<p-sortIcon *ngIf="col.field!='delete'" [field]="col.field"></p-sortIcon>
-                  </th>
-              </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-trxnDT let-i="rowIndex" class="t_head">
-              <tr>
-                  <td [style]="'max-width:4rem'" pFrozenColumn>
-                      <p-tableCheckbox [value]="trxnDT"></p-tableCheckbox>
-                  </td>
-                  <td *ngFor="let col of TrxnClmns"
-                  [style.max-width]="col.width"
-                  [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
-                  >
-                    <ng-container [ngSwitch]="true">
-                      <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                        <b>{{i + 1}}</b>
-                     </ng-container>
-                   <ng-container *ngSwitchCase="col.field == 'first_client_name'">
-                    <b>{{ trxnDT[col.field] ? (trxnDT[col.field] | titlecase) : 'N/A' }}</b>
-                 </ng-container>
-
-                     <ng-container *ngSwitchCase="col.field == 'trans_date'">
-                        <b>{{ trxnDT[col.field] ? (trxnDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
-                     </ng-container>
-                     <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                      <b matTooltip="{{trxnDT[col.field] ? (trxnDT[col.field]  + ' - ' +  trxnDT['plan_name'] + ' - ' + trxnDT['option_name']) : ''}}">{{ trxnDT[col.field] ? (trxnDT[col.field] + '-' + trxnDT['plan_name'] + '-' + trxnDT['option_name']) : 'N/A'}}</b>
-                   </ng-container>
-
-                     <ng-container *ngSwitchCase="col.field == 'pur_price'">
-                      <b [matTooltip]="trxnDT[col.field]">{{trxnDT[col.field] ? trxnDT[col.field] : 'N/A' }}</b>
-                   </ng-container>
-
-                   <ng-container *ngSwitchCase="col.field == 'gross_amount' || col.field == 'amount' || col.field == 'tds' || col.field == 'stamp_duty'">
-                    <b [matTooltip]="trxnDT[col.field] ? trxnDT[col.field]: '0'">
-                      {{(trxnDT[col.field] ? trxnDT[col.field] : '0') }}
-                    </b>
-                 </ng-container>
-                      <ng-container *ngSwitchDefault>
-                        <b [matTooltip]="trxnDT[col.field]">{{ trxnDT[col.field] ? trxnDT[col.field] : 'N/A' }}</b>
-                      </ng-container>
-                    </ng-container>
-                  </td>
-
-              </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage" let-trxnDT>
-            <tr>
-              <td [attr.colspan]="trxnDT.length">
-                 <h4>No Records Found</h4>
-              </td>
-            </tr>
-          </ng-template>
-      </p-table>
-      </div>
-      <div class="card-footer">
-        <h5>In there are total {{trxnDT.length}} transaction</h5>
-      </div>
-
-    </div>-->

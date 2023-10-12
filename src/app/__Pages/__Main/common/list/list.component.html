@@ -1,8 +1,5 @@
 <ul [ngClass]="__classUL">
   <li *ngFor="let items of __items" [ngClass]="{'thumbnailLi' : items.flag == 'P','searchBox':items.flag == 'S'}">
-    <!-- <a *ngIf="items.flag == 'N'" (click)="getItems(items)">
-      <mat-icon class="material-icons-outlined"> {{items.icon}}</mat-icon>
-    </a> -->
     <button mat-icon-button color="primary" *ngIf="items.flag == 'N'" (click)="getItems(items)">
       <mat-icon [class]="items.id == 3 ? 'material-icons-outlined shake' : 'material-icons-outlined'"> {{items.icon}}</mat-icon>
     </button>

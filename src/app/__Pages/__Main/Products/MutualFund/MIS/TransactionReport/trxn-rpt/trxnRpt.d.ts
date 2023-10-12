@@ -54,7 +54,8 @@ interface TrxnRpt{
       tot_tds:string | null
       trxn_code:string | null
       tot_gross_amount:string | null,
-      lock_status:string | null
+      lock_status:string | null,
+      divi_lock_flag: string | null
    }
 }
 

@@ -196,10 +196,11 @@ trxn['divident_option'] ? (
           <ng-container *ngSwitchCase="col.field == 'freq_link'">
 
             <p-button [label]="'Add Frequency'"
+             (click)="addFrequency(col.field,trxn,i)"
                       icon="pi pi-plus"
                       styleClass="p-button-link  link">
             </p-button>
-          </ng-container> 
+          </ng-container>
 
           <ng-container *ngSwitchCase="col.field == 'scheme_link'">
             <!-- [routerLink]="['/main/master/productwisemenu/scheme']" -->

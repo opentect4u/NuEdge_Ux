@@ -192,7 +192,7 @@ export class ManualUploadComponent implements OnInit {
       return;
     }
     let start_count = 1;
-    let end_count = 500;
+    let end_count = 300;
     const dt: rec_response = {
       ...this.manualUpldFrm.value,
       end_count: end_count,
@@ -221,9 +221,9 @@ export class ManualUploadComponent implements OnInit {
         dt.row_id = res?.row_id;
         dt.start_count = Number(dt.end_count) + 1;
         dt.end_count =
-          Number(res.end_count) + 500 > Number(res.total_count)
+          Number(res.end_count) + 300 > Number(res.total_count)
             ? Number(res.total_count)
-            : Number(res.end_count) + 500;
+            : Number(res.end_count) + 300;
         dt.total_count = res.total_count;
         this.reccursiveUpload(dt);
       });

@@ -7,6 +7,7 @@ import { Table } from 'primeng/table';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'matured-swp',
@@ -43,6 +44,9 @@ __title: string = '';
 reset_data: string = 'N';
 
 index: number = 0;
+
+total_matured_swp_amt:number = 0;
+
 
 mature_swp: Partial<IliveSwp>[] = [];
 
@@ -90,6 +94,7 @@ getMaturedSwpMasterData(form_data){
   .pipe(pluck('data'))
   .subscribe((res:Partial<IliveSwp>[]) =>{
     this.mature_swp = res;
+    this.total_matured_swp_amt = global.calculatAmt(res);
   })
 }
 

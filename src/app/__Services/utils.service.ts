@@ -218,4 +218,13 @@ export class UtiliService {
   getColumns = (columns) =>{
     return columns.map(item => {return item.field});
   }
+
+
+  // arrayCount<T>(arr: T[], predicate: (elem: T, idx: number) => boolean):Promise<number> {
+  //   return new Promise((resolve,reject) =>{
+  //     resolve(arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx) ? 1 : 0), 0)),
+  //     reject(0)
+
+  //   })
+  //   }
 }

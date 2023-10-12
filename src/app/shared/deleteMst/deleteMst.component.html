@@ -7,10 +7,13 @@
   </div>
 </div>
 <mat-dialog-content>
-  <h4 style="padding: 25px;">Are you sure you want to delete?</h4>
+  <p>Are you sure you want to delete?</p>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-  <button class="btn addBtn  ml-2" (click)="delete()"> Delete</button>
+  <!-- <button class="btn addBtn  ml-2" (click)="delete()"> Delete</button> -->
+  <button mat-button color="primary" (click)="delete()">
+    <mat-icon>check</mat-icon> OK
+  </button>
 </mat-dialog-actions>
 <br clear="all">

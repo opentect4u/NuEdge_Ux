@@ -6,6 +6,7 @@ import { Table } from 'primeng/table';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'pause-stp',
@@ -28,6 +29,8 @@ export class PauseStpComponent implements OnInit {
 
   pause_stp:Partial<IliveStp>[] = [];
 
+  total_pause_stp_amt:number = 0;
+
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('P2'));
   constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
@@ -49,6 +52,7 @@ export class PauseStpComponent implements OnInit {
     .pipe(pluck('data'))
     .subscribe((res: Partial<IliveStp>[]) =>{
          this.pause_stp = res;
+         this.total_pause_stp_amt = global.calculatAmt(res);
     })
   }
 

@@ -1,0 +1,24 @@
+.dialog-title>div>span{
+  font-size: 12px;
+}
+
+.dialog-title{
+  /* background: #ffffff!important;
+   */
+   background: #c2e7ff61!important;
+  color: #0b3149!important;
+  border: none!important;
+  padding: 3px 17px!important;
+}
+.mat-dialog-content{
+  background: #c2e7ff61!important;
+}
+.mat-dialog-content>p{
+  color: gray;
+  font-size: 13px;
+  font-weight: 500;
+}
+.mat-dialog-actions[align=end]{
+  border:none!important;
+  background: #c2e7ff61!important;
+}

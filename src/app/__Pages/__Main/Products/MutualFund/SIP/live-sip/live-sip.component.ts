@@ -6,6 +6,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { pluck } from 'rxjs/operators';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { Table } from 'primeng/table';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'live-sip',
@@ -23,6 +24,8 @@ export class LiveSIPComponent implements OnInit {
    @Input() sipType:string;
 
    @Input() sip_stp_swp_type_mst:any = [];
+
+   total_live_sip_amt:number = 0;
 
 
  /**
@@ -45,6 +48,7 @@ export class LiveSIPComponent implements OnInit {
    */
   live_sip_rpt: Partial<IliveSip[]> = [];
 
+
   constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {console.log('Report Type:' + this.sipType);}
@@ -59,6 +63,7 @@ export class LiveSIPComponent implements OnInit {
         .pipe(pluck('data'))
         .subscribe((res: IliveSip[]) =>{
              this.live_sip_rpt = res;
+             this.total_live_sip_amt = global.calculatAmt(res);
         })
   }
 

@@ -18,6 +18,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { deleteTrxnColumn } from 'src/app/__Utility/TransactionRPT/trnsClm';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { UnlockTrxnComponent } from './dialog/unlock-trxn/unlock-trxn.component';
 
 @Component({
   selector: 'app-deletetrxn',
@@ -43,6 +44,20 @@ export class DeletetrxnComponent implements OnInit {
   @ViewChild('primeTbl') primeTbl: Table;
 
   state: string | undefined = 'expanded';
+
+
+  __is_check_all_locked:boolean = false;
+
+  /**
+   * For Holding the count of Locked Transaction Count
+   */
+  __lock_trxn_count:number = 0;
+
+  /**
+   * For Holding the count of UnLocked Transaction Count
+   */
+  __unlock_trxn_count:number = 0;
+
 
 
    /**
@@ -92,6 +107,7 @@ export class DeletetrxnComponent implements OnInit {
     private utility:UtiliService,
     private overlay: Overlay,
     private __dialog:MatDialog
+
     ) { }
 
   ngOnInit(): void {}
@@ -160,64 +176,143 @@ export class DeletetrxnComponent implements OnInit {
    *  this func will fetch transaction based on search
    */
   searchTransaction = () =>{
-    if(!this.searchTrxn.value.folio_no){
-       this.utility.showSnackbar('Please provide folio',2);
+
+     if(this.searchTrxn.value.folio_no == '' && this.searchTrxn.value.trans_no == ''){
+       this.utility.showSnackbar('Please provide atleast one filter criteria',2);
        return;
-    }
+     }
+
+    this.selectedTrxn= [];
+    this.trxnDT = [];
+    // if(!this.searchTrxn.value.folio_no){
+    //    this.utility.showSnackbar('Please provide folio',2);
+    //    return;
+    // }
      this.dbIntr.api_call(1,'/showDeleteTransDetails',this.utility.convertFormData(this.searchTrxn.value))
        .pipe(pluck("data")).subscribe((res: Partial<TrxnRpt[]>) => {
          this.trxnDT = res;
+        this.checkCount_hide_selectAll(res);
          if (res.length > 0) {
            this.toggle();
          }
      })
-
   }
+
+  checkCount_hide_selectAll = (res: Partial<TrxnRpt[]>) =>{
+    this.__is_check_all_locked = res.every(item => item.divi_lock_flag == 'L');
+    this.__lock_trxn_count =  this.arrayCount(res, x => x.divi_lock_flag == 'L');
+     this.__unlock_trxn_count = this.arrayCount(res, x => x.divi_lock_flag == 'N');
+  }
+
+  /**
+   * For Counting Number of locked and unlocked transactions
+   * @param arr
+   * @param predicate
+   * @returns
+   */
+  arrayCount<T>(arr: T[], predicate: (elem: T, idx: number) => boolean) {
+    return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx) ? 1 : 0), 0)
+    }
+
+ /**
+  *  return columns for filtering
+  * @returns
+  */
   getColumns = () =>{
     return this.utility.getColumns(this.TrxnClmns);
   }
-
+  /**
+   * datatable search
+   * @param $event
+   */
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
   }
+  /**
+   * Delete Selected Transactions
+   * @returns
+   */
   deleteSelectedRow = () =>{
-    console.log(this.selectedTrxn.length);
-    console.log(this.trxnDT.length);
-    //  if(this.selectedTrxn.length == 0){
-    //        this.utility.showSnackbar('Sorry!!No transactions are selected',2);
-    //        return;
-    //  }
-    //  const dialogConfig = new MatDialogConfig();
-    // dialogConfig.autoFocus = false;
-    // dialogConfig.closeOnNavigation = false;
-    // dialogConfig.width = '30%';
-    // dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
-    // dialogConfig.data = {
-    //   id:JSON.stringify(this.selectedTrxn.map(item => {return item['id']})),
-    //   api_name:"/DeleteTransDetails",
-    //   title:'Delete Transactions'
-    // };
-    // try {
-    //   const dialogref = this.__dialog.open(DeletemstComponent, dialogConfig);
-    //   dialogref.afterClosed().subscribe((dt) => {
-    //     if (dt) {
-    //        if(JSON.parse(dt.id).length > 0){
-    //          this.trxnDT = this.trxnDT.filter(item => !JSON.parse(dt.id).includes(item.id));
-    //          this.selectedTrxn = []
-    //        }
-    //     }
-    //   });
-    // } catch (ex) {}
+     if((this.selectedTrxn.filter(item => item.divi_lock_flag != 'L').map(item => {return item['id']}).length) == 0){
+           this.utility.showSnackbar('Please select one or more transactions to delete',2);
+           return;
+     }
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.width = '30%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      id:JSON.stringify(this.selectedTrxn.filter(item => item.divi_lock_flag != 'L').map(item => {return item['id']})),
+      api_name:"/DeleteTransDetails",
+      title:'Delete Transactions'
+    };
+    try {
+      const dialogref = this.__dialog.open(DeletemstComponent, dialogConfig);
+      dialogref.afterClosed().subscribe((dt) => {
+        if (dt) {
+           if(JSON.parse(dt.id).length > 0){
+             this.trxnDT = this.trxnDT.filter(item => !JSON.parse(dt.id).includes(item.id));
+             this.selectedTrxn = []
+             this.checkCount_hide_selectAll(this.trxnDT);
+           }
+        }
+      });
+    } catch (ex) {}
 
   }
-
-  // deleteTrxn = () =>{
-  //   this.dbIntr.api_call()
-  // }
-
+  /**
+   * for show/hide Search Transaction Card
+   */
   toggle = () => {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
+  }
+
+  /**
+   * for unlocking transaction
+   * @param trxn
+   * @param index
+   */
+  unlockedTrxn = (trxn,index:number) =>{
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.width = '30%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.role = "alertdialog";
+    dialogConfig.disableClose=true;
+    dialogConfig.data = {
+      id:trxn.id,
+      api_name:"/unlockTransDetails",
+      title:'Unlock Transaction'
+    };
+    try {
+      const dialogref = this.__dialog.open(UnlockTrxnComponent, dialogConfig);
+      dialogref.afterClosed().subscribe((dt) => {
+        console.log(dt);
+        if(dt){
+          if(dt == 1){
+            this.trxnDT = this.trxnDT.filter((item,index) => {
+              if(item.id == trxn.id){
+                item.divi_lock_flag = 'N'
+              }
+              return true;
+          });
+          this.checkCount_hide_selectAll(this.trxnDT);
+          }
+        }
+      });
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+
+  reset = () =>{
+    this.searchTrxn.patchValue({
+      folio_no:'',
+      trans_no:''
+    })
   }
 
 }

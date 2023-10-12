@@ -6,6 +6,7 @@ import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'pause-sip',
@@ -27,6 +28,10 @@ export class PauseSIPComponent implements OnInit {
    */
     @Input() amc: amc[] = [];
 
+    /**
+     * hold Total Pause SIP Amount
+     */
+      total_pause_sip_amt:number = 0;
     /**
      *
      */
@@ -66,6 +71,7 @@ export class PauseSIPComponent implements OnInit {
       .pipe(pluck('data'))
       .subscribe((res: Partial<IliveSip>[]) => {
         this.pause_sip = res;
+        this.total_pause_sip_amt = global.calculatAmt(res);
       });
   };
 

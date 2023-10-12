@@ -7,6 +7,7 @@ import { Table } from 'primeng/table';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'registered-stp',
@@ -44,6 +45,8 @@ export class RegisteredStpComponent implements OnInit {
   index:number = 0;
 
   register_stp:Partial<IliveStp>[] = [];
+
+  total_resgistered_stp_amt:number = 0;
 
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-2'));
 
@@ -90,6 +93,7 @@ export class RegisteredStpComponent implements OnInit {
       .pipe(pluck('data'))
       .subscribe((res:Partial<IliveStp>[]) =>{
         this.register_stp = res;
+        this.total_resgistered_stp_amt = global.calculatAmt(res);
       })
     }
 }

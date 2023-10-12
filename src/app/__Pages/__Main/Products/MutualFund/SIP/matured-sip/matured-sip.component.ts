@@ -7,6 +7,7 @@ import { pluck } from 'rxjs/operators';
 import { IliveSip } from '../live-sip/live_sip.interface';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { Table } from 'primeng/table';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'matured-sip',
@@ -44,7 +45,9 @@ export class MaturedSIPComponent implements OnInit {
 
   index:number = 0;
 
-  mature_sip:Partial<IliveSip>[] = []
+  mature_sip:Partial<IliveSip>[] = [];
+
+  total_mature_sip_amt:number = 0;
 
     /**
    * Set Column for LIVE SIP REPORT
@@ -90,8 +93,8 @@ export class MaturedSIPComponent implements OnInit {
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
       .subscribe((res:Partial<IliveSip>[]) =>{
-        console.log(res);
         this.mature_sip = res;
+        this.total_mature_sip_amt = global.calculatAmt(res);
       })
     }
 

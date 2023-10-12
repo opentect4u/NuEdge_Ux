@@ -21,6 +21,7 @@
   :host ::ng-deep #trxDt .p-datatable-header {
         display: flex;
         justify-content:flex-end;
+        border: none!important;
       }
 
       td{
