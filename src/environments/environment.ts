@@ -1,7 +1,7 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-const url = "http://192.168.1./11/nuedge/"; // Local URL
+const url = "http://192.168.1.11/nuedge/"; // Local URL
 // const url = "http://192.168.142.228/nuedge/"; // Local URL
 
 // const url = "http://192.168.1.5/nuedge/";
