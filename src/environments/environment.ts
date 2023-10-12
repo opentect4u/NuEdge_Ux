@@ -20,7 +20,7 @@ export const environment = {
   manualUpload: url + "public/mailback/manual/",
   /*************END******************************** */
 
-  /*************COMPANY START **********************/
+  /*************COMPANY START *~*********************/
   company_logo_url: url + "public/company/",
   /*************END ***************************** */
    /*********************Start KYC *************************/
