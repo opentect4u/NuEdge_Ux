@@ -21,7 +21,7 @@ export class PincodeEntryComponent implements OnInit {
     state_id: new FormControl('', [Validators.required]),
     district_id: new FormControl('', [Validators.required]),
     city_id:new FormControl('', [Validators.required]),
-    city_type_id: new FormControl('', [Validators.required]),
+    // city_type_id: new FormControl('', [Validators.required]),
     pincode: new FormControl(this.data.id > 0 ? this.data.items.pincode : '', [Validators.required,Validators.minLength(6),Validators.maxLength(6)]),
     id: new FormControl(this.data.id)
   })
@@ -50,7 +50,7 @@ export class PincodeEntryComponent implements OnInit {
         this.__pincodeForm.controls['state_id'].setValue(this.data.items.state_id,{emitEvent:true});
         this.__pincodeForm.controls['district_id'].setValue(this.data.items.district_id,{emitEvent:true});
         this.__pincodeForm.controls['city_id'].setValue(this.data.items.city_id,{emitEvent:true});
-        this.__pincodeForm.controls['city_type_id'].setValue(this.data.items.city_type_id,{emitEvent:true});
+        // this.__pincodeForm.controls['city_type_id'].setValue(this.data.items.city_type_id,{emitEvent:true});
       }, 200);
     }
 
@@ -135,7 +135,7 @@ export class PincodeEntryComponent implements OnInit {
     pincode.append('district_id',this.__pincodeForm.value.district_id);
     pincode.append('city_id',this.__pincodeForm.value.city_id);
     pincode.append('pincode',this.__pincodeForm.value.pincode);
-    pincode.append('city_type_id',this.__pincodeForm.value.city_type_id)
+    // pincode.append('city_type_id',this.__pincodeForm.value.city_type_id)
     pincode.append('id',this.__pincodeForm.value.id);
     this.__dbIntr.api_call(1,'/pincodeAddEdit',pincode).subscribe((res: any) =>{
       if(res.suc == 1){

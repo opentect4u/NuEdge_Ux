@@ -10,6 +10,7 @@ import { DbIntrService } from '../../../../../__Services/dbIntr.service';
 import filterOpt from '../../../../../../assets/json/filterOption.json';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
+import { IStaticRpt } from './static-rpt';
 enum TABLE_WIDTH {
   'F' = '900rem',
   'K' = '350rem',
@@ -122,7 +123,7 @@ export class InvestorStaticReportComponent implements OnInit {
 
   column: column[] = [];
 
-  report_data: any = [];
+  report_data: IStaticRpt[] = [];
 
   __clientMst = [];
 
@@ -286,6 +287,7 @@ export class InvestorStaticReportComponent implements OnInit {
     this.index = ev.index;
     this.setTitle();
     this.setFlag();
+    this.report_data = [];
     this.setColumn(ev.tabDtls.flag).then((res: column[]) => {
       this.tble_width = TABLE_WIDTH[ev.tabDtls.flag];
       this.column = res;
@@ -417,7 +419,8 @@ export class InvestorStaticReportComponent implements OnInit {
     this.dbIntr
       .api_call(1, '/showFolioDetails', this.utility.convertFormData(object))
       .pipe(pluck('data'))
-      .subscribe(res => {
+      .subscribe((res:IStaticRpt[]) => {
+        console.log(res);
         this.report_data = res;
       });
   };

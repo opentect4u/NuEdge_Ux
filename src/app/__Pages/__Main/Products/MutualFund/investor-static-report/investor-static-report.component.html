@@ -241,7 +241,9 @@
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-folio_dt let-i="rowIndex">
-              <tr tabindex="999">
+              <tr tabindex="999"
+              [ngStyle]="{'background-color':folio_dt.folio_status ? '#b70a0a30' : ''}"
+              >
                 <td *ngFor="let col of column"
                     [style.max-width]="col.width"
                     [style.min-width]="col.width">
@@ -257,7 +259,6 @@
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
                       <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] == 'SI' ? 'Single' : 'Anyone or survivor') : 'N/A'}}</p>
                     </ng-container>
-
                     <ng-container *ngSwitchDefault>
                       <p class="m-0">
                         {{ folio_dt[col.field] ? folio_dt[col.field] : 'N/A' }}
