@@ -164,19 +164,6 @@ export class ReportFilterComponent implements OnInit {
     'Search Employee',
     1
   );
-  settingsforTrxnTypeDropdown = this.utility.settingsfroMultiselectDropdown(
-    'id',
-    'trans_type',
-    'Search Transaction Type',
-    1
-  );
-  settingsforTrxnSubTypeDropdown = this.utility.settingsfroMultiselectDropdown(
-    'id',
-    'trans_sub_type',
-    'Search Transaction Sub-Type',
-    1,
-    150
-  );
 
   /**
    * END
@@ -294,8 +281,6 @@ export class ReportFilterComponent implements OnInit {
    * Form Field for search Transaction
    */
   Rpt = new FormGroup({
-    // date_periods: new FormControl(''),
-    // date_range: new FormControl(''),
     month: new FormControl((new Date().getMonth() + 1)),
     year: new FormControl(new Date().getFullYear()),
     amc_id: new FormControl([], { updateOn: 'blur' }),
@@ -314,6 +299,7 @@ export class ReportFilterComponent implements OnInit {
     trxn_type_id: new FormControl([], { updateOn: 'blur' }),
     trxn_sub_type_id: new FormControl([], { updateOn: 'blur' }),
     view_type:new FormControl(''),
+    sip_stp_swp_type: new FormControl('')
   });
 
   constructor(private utility:UtiliService,private dbIntr:DbIntrService,
@@ -322,7 +308,6 @@ export class ReportFilterComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.getSip_stp_swp_type(this.report_type);
     this.maxDate= this.calculateDates('T');
     this.minDate = this.calculateDates('P');
     this.searchReport();
@@ -373,10 +358,6 @@ export class ReportFilterComponent implements OnInit {
     }
   }
 
-  getSip_stp_swp_type = (report_type:string) =>{
-    console.log(sip_stp_swp_type[report_type]);
-
-  }
 
   /**
    * Event trigger after form submit
@@ -385,7 +366,7 @@ export class ReportFilterComponent implements OnInit {
     let liveSipReportFilter = Object.assign({}, this.Rpt.value, {
       ...this.Rpt.value,
      amc_id:this.utility.mapIdfromArray(this.Rpt.value.amc_id,'id'),
-     brn_cd:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.brn_id,'id') : '[]',
+     brn_cd:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.brn_cd,'id') : '[]',
      bu_type_id:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.bu_type_id,'bu_code') : '[]',
      cat_id:this.utility.mapIdfromArray(this.Rpt.value.cat_id,'id'),
     //  date_range:this.dt_range.inputFieldValue,
@@ -394,8 +375,6 @@ export class ReportFilterComponent implements OnInit {
      scheme_id:this.utility.mapIdfromArray(this.Rpt.value.scheme_id,'id'),
      sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.value.sub_brk_cd,'code') : '[]',
      sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
-     trxn_sub_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_sub_type_id,'id'),
-     trxn_type_id:this.utility.mapIdfromArray(this.Rpt.value.trxn_type_id,'id'),
       month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : this.Rpt.value.month,
       year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : this.Rpt.value.year
     })
@@ -434,11 +413,7 @@ export class ReportFilterComponent implements OnInit {
     this.Rpt.patchValue({
       amc_id: [],
       folio_no: '',
-      trxn_type_id: [],
-      // date_range:'',
-      // date_periods:'M',
-      //month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : new Date().getMonth(),
-      //year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' :  new Date().getFullYear(),
+      sip_stp_swp_type:'',
       client_id: '',
       pan_no: '',
       view_type: ''
@@ -449,25 +424,6 @@ export class ReportFilterComponent implements OnInit {
     this.Rpt.controls['euin_no'].setValue([]);
     this.Rpt.controls['client_name'].setValue('', { emitEvent: false });
   }
-
-  // setEndDate = () =>{
-  //   // this.setMaxDate(this.Rpt.get('date_range').value[0]);
-  // }
-
-  // setMaxDate = (start_date:Date) =>{
-  //   const  dt = new Date(start_date);
-
-  //   // if(this.Rpt.get('date_periods').value == 'M'){
-
-  //   // }
-  //   dt.setFullYear(start_date.getFullYear() + 1);
-  //   if(dt > new Date()){
-  //     this.maxDate = dates.calculateDates('T');
-  //   }
-  //   else{
-  //     this.maxDate = dt;
-  //   }
-  // }
 
  /**
   * Get Branch Master Data
@@ -483,54 +439,6 @@ export class ReportFilterComponent implements OnInit {
 
 
   ngAfterViewInit(){
-    // this.searchReport();
-
-    // this.Rpt.controls['date_periods'].valueChanges.subscribe((res) => {
-    //   this.Rpt.controls['date_range'].reset(
-    //     res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
-    //   );
-    //   if (res && res != 'R') {
-    //     this.Rpt.controls['date_range'].disable();
-    //   } else {
-    //     this.Rpt.controls['date_range'].enable();
-    //   }
-    // });
-
-    // this.Rpt.controls['date_periods'].valueChanges.subscribe((res) => {
-    //   if(res){
-    //     this.Rpt.controls['date_range'].reset(
-    //       res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
-    //     );
-    //   }
-    //   else{
-    //     this.Rpt.controls['date_range'].setValue('');
-    //     this.Rpt.controls['date_range'].disable();
-    //     return;
-    //   }
-
-    //   if (res && res != 'R') {
-    //     this.Rpt.controls['date_range'].disable();
-    //   } else {
-    //     this.Rpt.controls['date_range'].enable();
-    //   }
-    // });
-
-
-    // this.Rpt.controls['date_range'].valueChanges.subscribe((res) => {
-    //   if(res){
-    //       // this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
-    //     //  if(new Date(res[0]))
-    //         if(dates.calculatMaximumDates('R',6,new Date(res[0])) > new Date()){
-    //                    this.maxDate = dates.calculateDates('T');
-    //         }
-    //         else{
-    //           this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
-    //         }
-    //     }
-    //     else{
-    //       this.maxDate = dates.calculateDates('T');
-    //     }
-    // })
 
       /**
        * Event Trigger after change amc
@@ -566,12 +474,6 @@ export class ReportFilterComponent implements OnInit {
         );
       });
 
-      /**
-       * Event Trigger after change Transaction Type
-       */
-      this.Rpt.controls['trxn_type_id'].valueChanges.subscribe((res) => {
-        this.getTrxnSubTypeMst(res);
-      });
       /**
        * Event Trigger after change Branch
        */
@@ -749,29 +651,7 @@ export class ReportFilterComponent implements OnInit {
     }
   };
 
-  /**
-   * get Transaction sub type master data after change transaction type
-   * @param trxnType
-   */
 
-  getTrxnSubTypeMst = <T extends rntTrxnType[]>(trxnType: T) => {
-    if(trxnType.length > 0){
-    this.dbIntr
-      .api_call(
-        0,
-        '/rntTransTypeSubtypeShow',
-        'arr_trans_type=' + this.utility.mapIdfromArray(trxnType, 'trans_type')
-      )
-      .pipe(pluck('data'))
-      .subscribe((res: rntTrxnType[]) => {
-        this.trxnSubTypeMst = res;
-      });
-    }
-    else{
-      this.trxnSubTypeMst = [];
-      this.Rpt.get('trxn_sub_type_id').setValue([]);
-    }
-  };
 
 
   setEuinDropdown = (sub_brk_cd, rm) => {

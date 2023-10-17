@@ -36,6 +36,8 @@
       <mat-card-content>
         <p-table #primeTbl
                  id="trxDt"
+                 [scrollable]="true" scrollHeight="450px"
+                 [virtualScroll]="true"
                  [value]="register_sip"
                  [responsive]="true"
                  [rowHover]="true"

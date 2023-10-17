@@ -35,6 +35,8 @@
     <p-table
     #primeTbl
     id="trxDt"
+    [scrollable]="true" scrollHeight="450px"
+    [virtualScroll]="true"
     [value]="live_sip_rpt"
     [responsive]="true"
     [rowHover]="true"

@@ -5,12 +5,9 @@
     <mat-card>
       <mat-card-header class="border-bottom">
         <mat-card-title>Delete Transaction</mat-card-title>
-        <button mat-button
+        <button mat-icon-button
                 class="my-auto mr-4"
                 color="primary" (click)="toggle()">
-
-          EXPAND {{state == 'collapsed' ? ' MORE' : ' LESS'}}
-
           <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
             keyboard_arrow_up
           </mat-icon>
@@ -57,12 +54,13 @@
   <mat-card-header class="border-bottom">
     <mat-card-title>
       Transaction Reports&nbsp;<span>(TOTAL: {{trxnDT.length}})</span>
-      <button mat-icon-button color="warn" class="mx-4"   matTooltip="Lock Transactions: {{__lock_trxn_count}}"
+      <button mat-icon-button
+      class="mx-4 text-danger"   matTooltip="Lock Transactions: {{__lock_trxn_count}}"
       matTooltipClass="ToolTip"
       [matTooltipPosition]="'below'"
       >
-        <mat-icon matBadge="{{__lock_trxn_count}}"
-        matBadgeOverlap="false" matBadgeColor="accent">lock</mat-icon>
+        <mat-icon class="material-icons-outlined" matBadge="{{__lock_trxn_count}}"
+        matBadgeOverlap="false" matBadgeColor="warn">lock</mat-icon>
       </button>
       <button mat-icon-button class="text-success"
       matTooltip="Unlock Transactions: {{__unlock_trxn_count}}"
@@ -73,15 +71,21 @@
         matBadgeOverlap="false" >lock_open</mat-icon>
       </button>
 
-    </mat-card-title>
-    <div class="my-auto pr-4 w-50 d-flex align-items-center flex-row-reverse">
-      <button mat-button
-      class="ml-2"
+      <button mat-icon-button
+      class="mx-4"
+      [disabled]="selectedTrxn.length == 0"
+      [matTooltip]="selectedTrxn.length > 0 ? 'Delete Selected Unlock Transactions' : 'Please Select One Or More Unlock Transactions To Delete'"
+      matTooltipClass="ToolTip"
               *ngIf="trxnDT.length> 0"
               color="warn"
               (click)="deleteSelectedRow()">
-        <mat-icon>delete</mat-icon>Transactions
+        <mat-icon
+        class="material-icons-outlined"
+        >delete</mat-icon>
       </button>
+
+    </mat-card-title>
+    <div class="my-auto pr-4 w-50 d-flex align-items-center flex-row-reverse">
       <span class="ml-auto w-50">
         <input class="form-control rounded" type="text"
                (input)="filterGlobal($event)"
@@ -141,15 +145,20 @@
 
               <ng-container *ngSwitchCase="col.field == 'lock_status'">
                 <ng-container *ngIf="trxnDT.divi_lock_flag == 'L';else unlock">
-                  <button color="primary" mat-icon-button
+                  <button  mat-icon-button
+                  class="text-danger"
                   (click)="unlockedTrxn(trxnDT,i)">
-                    <mat-icon>
+                    <mat-icon
+                    class="material-icons-outlined"
+                    >
                       lock
                     </mat-icon>
                   </button>
                 </ng-container>
                 <ng-template #unlock>
-                  <button color="primary" mat-icon-button>
+                  <button mat-icon-button
+                  class="text-success"
+                  >
                     <mat-icon>
                       lock_open
                     </mat-icon>
