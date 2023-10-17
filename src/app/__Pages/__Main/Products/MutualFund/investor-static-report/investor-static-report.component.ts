@@ -146,7 +146,8 @@ export class InvestorStaticReportComponent implements OnInit {
     bu_type_id: new FormControl([], { updateOn: 'blur' }),
     rm_id: new FormControl([], { updateOn: 'blur' }),
     sub_brk_cd: new FormControl([], { updateOn: 'blur' }),
-    euin_no: new FormControl([])
+    euin_no: new FormControl([]),
+    folio_no: new FormControl('')
   })
 
   view_type: { id: string, type: string }[] = ClientType;
@@ -171,6 +172,7 @@ export class InvestorStaticReportComponent implements OnInit {
 
   setFlag = () => {
     this.flag = this.tab_menu[this.index].flag;
+    console.log(this.flag);
   }
 
   setTab = (): Promise<ITab[]> => {
@@ -185,7 +187,7 @@ export class InvestorStaticReportComponent implements OnInit {
       ),
         reject([])
     })
-    
+
   }
 
   setColumn = (flag:string):Promise<column[]> => {

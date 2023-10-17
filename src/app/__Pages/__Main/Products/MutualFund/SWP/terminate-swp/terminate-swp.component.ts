@@ -56,6 +56,9 @@ constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
 
 ngOnInit(): void {
+  setTimeout(() => {
+    console.log(this.report_type);
+  }, 3000);
 }
 
 LiveSwpReport = (formDt) =>{

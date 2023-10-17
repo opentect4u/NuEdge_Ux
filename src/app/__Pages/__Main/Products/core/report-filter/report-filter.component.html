@@ -1,37 +1,9 @@
-<!--<div class="card my-3">
-<div class="card-header d-flex justify-content-between">
-     <b  class="m-0 d-flex align-items-center">
-    {{title}}
-     </b>
-     <p-selectButton
-        [(ngModel)]="btn_type"
-        [options]="selectBtn"
-        optionValue="value"
-        styleClass="p-button-lg"
-        (onOptionClick)="onItemClick($event)"
-        optionLabel="icon">
-          <ng-template let-item>
-              <i [class]="item.icon"  [matTooltip]="item.label"></i>
-          </ng-template>
-      </p-selectButton>
-  </div>-->
-<!--<div class="card-body my-3 px-3">-->
 <mat-card class="navCard mb-3">
   <mat-card-header class="border_bottom py-2">
     <mat-card-title>
-      <!-- {{title}} -->
     </mat-card-title>
     <div class="pr-3 my-auto d-flex  align-items-center">
-      <button mat-button
-              class="my-auto"
-               color="primary" (click)="toggle()" class="mx-3">
 
-        EXPAND {{state == 'collapsed' ? ' MORE' : ' LESS'}}
-
-        <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
-          keyboard_arrow_up
-        </mat-icon>
-      </button>
       <p-selectButton [(ngModel)]="btn_type"
                       [options]="selectBtn"
                       optionValue="value"
@@ -42,6 +14,16 @@
           <i [class]="item.icon" [matTooltip]="item.label"></i>
         </ng-template>
       </p-selectButton>
+
+      <button mat-icon-button
+      class="my-auto"
+       color="primary"
+       [matTooltip]="state == 'collapsed' ? 'EXPAND MORE' : 'EXPAND LESS'"
+       (click)="toggle()" class="mx-3">
+      <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
+        keyboard_arrow_up
+      </mat-icon>
+      </button>
     </div>
 
   </mat-card-header>
@@ -54,7 +36,6 @@
 
     <form [formGroup]="Rpt" (ngSubmit)="searchReport()" autocomplete="off">
       <div class="row">
-        <!-- Visible only for To be registered and To Be Matured -->
         <ng-container *ngIf="sub_type == 'RR' || this.sub_type == 'MT'">
           <div class="col-sm-3">
             <label for="month">Month</label>
@@ -141,7 +122,7 @@
           <select formControlname="sip_stp_swp_type" class="form-control">
             <option value="">Select {{report_type == 'P' ? 'SIP' : report_type == 'R' ? 'SWP' : 'STP'}}  Type</option>
             <option [value]="types.id" *ngFor="let types of sip_stp_swp_type_mst">
-              {{types.sip_type_name}}
+              {{report_type == 'P' ? types.sip_type_name : report_type == 'R' ? types.swp_type_name : types.stp_type_name}}
             </option>
 
           </select>
@@ -198,6 +179,3 @@
     </form>
   </mat-card-content>
 </mat-card>
-
-<!--</div>
-</div>-->

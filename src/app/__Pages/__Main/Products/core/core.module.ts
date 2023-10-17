@@ -4,10 +4,11 @@ import { MenuItemComponent } from './menu-item/menu-item.component';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReportFilterComponent } from './report-filter/report-filter.component';
+import { MerqueComponent } from './merque/merque.component';
 
 @NgModule({
-  declarations: [MenuItemComponent, ReportFilterComponent],
+  declarations: [MenuItemComponent, ReportFilterComponent, MerqueComponent],
   imports: [CommonModule, RouterModule, SharedModule],
-  exports: [MenuItemComponent,SharedModule,ReportFilterComponent],
+  exports: [MenuItemComponent,SharedModule,ReportFilterComponent,MerqueComponent],
 })
 export class CoreModule {}

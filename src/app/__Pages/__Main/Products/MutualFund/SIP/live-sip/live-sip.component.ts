@@ -19,6 +19,8 @@ export class LiveSIPComponent implements OnInit {
 
  __title:string = 'Live SIP';
 
+ pause_sip_count:number = 0;
+
    @Input() report_type:string;
 
    @Input() sipType:string;
@@ -64,6 +66,10 @@ export class LiveSIPComponent implements OnInit {
         .subscribe((res: IliveSip[]) =>{
              this.live_sip_rpt = res;
              this.total_live_sip_amt = global.calculatAmt(res);
+             console.log(
+              res.filter(item => item.pause_end_date && item.pause_start_date).length
+             );
+             this.pause_sip_count = res.filter(item => item.pause_end_date && item.pause_start_date).length;
         })
   }
 

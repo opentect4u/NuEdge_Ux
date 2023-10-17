@@ -13,18 +13,6 @@
           Search {{title}}
         </mat-card-title>
         <div class="my-auto pr-4 d-flex align-items-center">
-
-
-          <button mat-button
-                 color="primary" (click)="toggle()" class="mx-3">
-
-            EXPAND {{state == 'collapsed' ? ' MORE' : ' LESS'}}
-
-            <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
-              keyboard_arrow_up
-            </mat-icon>
-          </button>
-
           <p-selectButton [(ngModel)]="btn_type"
                           [options]="filter_type"
                           optionValue="value"
@@ -35,6 +23,13 @@
               <i [class]="item.icon" [matTooltip]="item.label"></i>
             </ng-template>
           </p-selectButton>
+
+          <button mat-icon-button
+                 color="primary" (click)="toggle()" class="mx-3">
+            <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
+              keyboard_arrow_up
+            </mat-icon>
+          </button>
         </div>
 
       </mat-card-header>
@@ -85,6 +80,12 @@
 
               </select>
             </div>
+            <div class="col-sm-3">
+              <label for="folio_no">Folio</label>
+              <input type="text" name="folio_no"
+              placeholder="Enter Folio Number"
+              id="folio_no" class="form-control" formControlName="folio_no">
+            </div>
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="flag == 'K' || flag == 'A'">
                 <div class="col-sm-3">
@@ -134,9 +135,9 @@
             <ng-container *ngIf="btn_type == 'R';else advanceFilter">
               <div class="d-flex justify-content-end align-items-end"
                    [ngClass]="{
-                   'col-sm-3':flag == 'F',
-                   'col-sm-12 my-3':(flag == 'K' || flag == 'N'),
-                   'col-sm-9':flag == 'A'}">
+                   'col-sm-12 mt-3':flag == 'F',
+                   'col-sm-9':(flag == 'K' || flag == 'N'),
+                   'col-sm-6':flag == 'A'}">
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
 
               </div>
@@ -180,17 +181,12 @@
               </div>
               <div
                    class="d-flex justify-content-end align-items-end"
-                   [ngClass]="{'col-sm-12 mt-2':flag == 'F',
-                   'col-sm-9':(flag == 'K' || flag == 'N'),
-                   'col-sm-6':flag == 'A'}">
+                   [ngClass]="{'col-sm-9':flag == 'F',
+                   'col-sm-6':(flag == 'K' || flag == 'N'),
+                   'col-sm-3':flag == 'A'}">
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
             </ng-template>
-
-
-            <!--<div class="col-sm-3 d-flex justify-content-end align-items-end">
-              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-            </div>-->
           </div>
 
         </form>

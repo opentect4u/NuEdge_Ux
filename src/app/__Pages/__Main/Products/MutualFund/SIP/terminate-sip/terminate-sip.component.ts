@@ -16,7 +16,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 export class TerminateSIPComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
-  __title: string = 'Terminate SIP Report';
+  __title: string = 'Terminate SIP';
 
   @Input() sipType: string;
 

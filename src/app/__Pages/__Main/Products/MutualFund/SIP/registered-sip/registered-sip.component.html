@@ -18,6 +18,13 @@
           <i class="fa fa-databse"></i>
           {{__title}} Reports
         </mat-card-title>
+        <div class="my-auto marque__tag">
+          <merque
+          [type]="__title"
+          [number]="register_sip.length"
+          [value]="total_register_sip_amt"
+          ></merque>
+          </div>
         <div class="my-auto w-25 pr-4">
           <span class="ml-auto">
             <input id="search" class="form-control rounded" type="text"
@@ -75,6 +82,12 @@
                   <ng-container *ngSwitchCase="col.field == 'amount'">
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field]) : 0 }}</p>
                   </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'sip_date' || col.field =='freq'">
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field].toString() | titlecase) : 'N/A' }}</p>
+                    </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+                  <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK") ? trxn[col.field] : 'N/A' }}</p>
+                  </ng-container>
                   <ng-container *ngSwitchDefault>
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
                   </ng-container>
@@ -96,22 +109,6 @@
                  No Records Found
               </td>
             </tr>
-          </ng-template>
-          <ng-template pTemplate="footer">
-            <tr >
-              <td  *ngFor="let col of column"
-              [attr.colspan]="col.field == 'sl_no' ? 5 : ''"
-              [style.min-width]="col.field == 'sl_no' ? '40rem' : ''"
-              [style.min-width]="col.field == 'sl_no' ? '40rem' : ''">
-                <ng-container [ngSwitch]="true">
-                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                   <p class="m-0 text-left">
-                    SIP (TOTAL: {{register_sip.length}}) (Value: {{total_register_sip_amt | number : '1.2-2'}})
-                   </p>
-                 </ng-container>
-                  </ng-container>
-              </td>
-           </tr>
           </ng-template>
         </p-table>
       </mat-card-content>

@@ -64,7 +64,7 @@ export class StpHomeComponent implements OnInit {
       this.getAmcMst();
       // this.getClientMst();
       // this.getTrxnTypeMst();
-      this.getSWPType();
+      this.getSTPType();
     }
 
   /**
@@ -137,8 +137,8 @@ export class StpHomeComponent implements OnInit {
    /**
    * Event for getting sip type master data
    */
-   getSWPType(){
-    this.dbIntr.api_call(0,'/swpType',null).pipe(pluck('data')).subscribe(res =>{
+   getSTPType(){
+    this.dbIntr.api_call(0,'/stpType',null).pipe(pluck('data')).subscribe(res =>{
       this.sip_stp_swp_type_mst = res;
     })
   }

@@ -20,6 +20,11 @@ export class live_sip_stp_swp_rpt{
       {field:'first_client_name',header:'Investor Name',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"18rem"},
       {field:'first_client_pan',header:'PAN',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"10rem"},
       {field:'reg_date',header:'Reg. Date',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"12rem"},
+
+      {field:'reg_no',header:'Reg. No',isVisible:['LS-1','TS-1','P','LS-2','TS-2','P2','LS-3','TS-3','P3'],width:"15rem"},
+      // {field:'stp_reg_no',header:'STP Reg. No',isVisible:['LS-2','TS-2','P2'],width:"15rem"},
+      // {field:'swp_reg_no',header:'SWP Reg. No',isVisible:['LS-3','TS-3','P3'],width:"15rem"},
+
       {field:'amc_name',header:'AMC',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"22rem"},
       {field:'cat_name',header:'Category',isVisible:['LS-1','LS-3','TS-1','TS-3','P','P3'],width:"15rem"},
       {field:'subcat_name',header:'Sub Category',isVisible:['LS-1','LS-3','TS-1','TS-3','P','P3'],width:"21rem"},
@@ -29,7 +34,7 @@ export class live_sip_stp_swp_rpt{
       {field:'to_scheme_name',header:'Transferee Scheme',isVisible:['LS-2','TS-2','P2'],width:"28rem"},
       {field:'scheme_name',header:'Scheme',isVisible:['LS-1','TS-1','LS-3','TS-3','P','P3'],width:"28rem"},
       // {field:'product_code',header:'Scheme',isVisible:['LS-1','TS-1'],width:"28rem"},
-      {field:'folio_no',header:'Folio',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"10rem"},
+      {field:'folio_no',header:'Folio',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"14rem"},
       {field:'trans_type',header:'Transaction Type',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"10rem"},
       {field:'trans_sub_type',header:'Transaction Sub Type',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"18rem"},
       {field:'from_date',header:'Start Date',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"12rem"},
@@ -45,6 +50,9 @@ export class live_sip_stp_swp_rpt{
       {field:'bank_name',header:'Bank',isVisible:['LS-1','TS-1','P'],width:"22rem"},
       {field:'acc_no',header:'Account No',isVisible:['LS-1','TS-1','P'],width:"15rem"},
       {field:'terminated_date',header:'Terminated Date',isVisible:['TS-1','TS-2','TS-3'],width:"12rem"},
+      {field:'reg_mode',header:'Reg. Mode',isVisible:['LS-1','TS-1','P','LS-2','TS-2','P2','LS-3','TS-3','P3'],width:"15rem"},
+      // {field:'stp_reg_mode',header:'STP Reg. Mode',isVisible:['LS-2','TS-2','P2'],width:"15rem"},
+      // {field:'swp_reg_mode',header:'SWP Reg. Mode',isVisible:['LS-3','TS-3','P3'],width:"15rem"},
       {field:'remarks',header:'Remarks',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"15rem"}
      ]
 }

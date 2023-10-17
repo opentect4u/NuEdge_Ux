@@ -13,6 +13,13 @@
       <i class="fa fa-databse"></i>
       {{__title}} Reports
     </mat-card-title>
+    <div class="my-auto marque__tag">
+      <merque
+      [type]="__title"
+      [number]="live_stp_rpt.length"
+      [value]="total_terminate_stp_amt"
+      ></merque>
+    </div>
     <div class="my-auto w-25 pr-4">
       <span class="ml-auto">
         <input id="search" class="form-control rounded" type="text"
@@ -65,17 +72,20 @@
                 <p class="m-0">{{i + 1}}</p>
              </ng-container>
              <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date' || col.field== 'terminated_date'">
-                <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+                <p>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
              </ng-container>
-             <!-- <ng-container *ngSwitchCase="col.field == 'product_code'">
-              <b matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
-           </ng-container> -->
            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
             <p class="m-0">{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A' }}</p>
              </ng-container>
              <ng-container *ngSwitchCase="col.field == 'amount'">
               <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field]  : '0' }}</p>
            </ng-container>
+           <ng-container *ngSwitchCase="col.field == 'stp_date' || col.field =='freq'">
+            <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field].toString() | titlecase) : 'N/A' }}</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+              <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK") ? trxn[col.field] : 'N/A' }}</p>
+              </ng-container>
               <ng-container *ngSwitchDefault>
                 <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
               </ng-container>
@@ -91,7 +101,7 @@
           </td>
         </tr>
       </ng-template>
-      <ng-template pTemplate="footer">
+      <!-- <ng-template pTemplate="footer">
         <tr >
           <td  *ngFor="let col of column"
           [attr.colspan]="col.field == 'sl_no' ? 5 : ''"
@@ -106,6 +116,6 @@
               </ng-container>
           </td>
        </tr>
-      </ng-template>
+      </ng-template> -->
   </p-table>
 </mat-card-content></mat-card>

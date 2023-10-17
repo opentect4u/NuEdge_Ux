@@ -2,230 +2,11 @@
 <div class="bckContainer"></div>
 <div class="row flexSec">
   <div class="col-sm-12">
-    <!-- <div class="card">
-      <div class="card-header p-3 d-flex justify-content-between">
-         <b  class="m-0 d-flex align-items-center">
-          Transaction Report
-         </b>
-         <p-selectButton
-            [(ngModel)]="btn_type"
-            [options]="selectBtn"
-            optionValue="value"
-            styleClass="p-button-lg"
-            (onOptionClick)="onItemClick($event)"
-            optionLabel="icon">
-              <ng-template let-item>
-                  <i [class]="item.icon"  [matTooltip]="item.label"></i>
-              </ng-template>
-          </p-selectButton>
-      </div>
-      <div class="card-body p-3">
-        <ng-template #SearchBtn>
-          <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
-        </ng-template>
-      <form [formGroup]="misTrxnRpt" (ngSubmit)="searchTrxnReport()" autocomplete="off">
-          <div class="row">
-              <div class="col-sm-3">
-                   <label for="date_periods">Periods</label>
-                   <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
-                    <option value="">Select All</option>
-                    <option [value]="periods.id"  *ngFor="let periods of periods_type">{{periods.periods}}</option>
-                   </select>
-              </div>
-              <div class="col-sm-3">
-                <label for="date_range">Date Range (From - To)</label>
-                <p-calendar
-                #dateRng
-                [maxDate]="maxDate"
-                [minDate]="minDate"
-                dateFormat="dd/mm/yy"
-                placeholder="Select Date Range"
-                formControlName="date_range"
-                selectionMode="range"
-                [readonlyInput]="true"
-                [id]="'date_range'"
-                [showIcon]="true"
-                [hideOnDateTimeSelect]="true"
-                [showButtonBar]="true">
-                </p-calendar>
-           </div>
-            <div class="col-sm-3">
-              <label for="client_type">View Type</label>
-              <select name="client_type"
-              id="client_type"
-              class="form-control"
-              formControlName="view_type">
-               <option value="">Select</option>
-               <option [value]="item.id" *ngFor="let item of client_type">{{item.type}}</option>
-              </select>
-            </div>
-
-           <div class="col-sm-3">
-            <app-core-srch
-            [label] = "'Investor'"
-            [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
-            [isPending]="__isClientPending"
-            [listItems] = "__clientMst"
-            [flag] = "'C'"
-            [noDataFoundTitle]="'Sorry!! No Records Found'"
-            [noDataFoundSubTitle]="'If your result match,they will appear here'"
-            [propertiesToShow] = "['first_client_name','first_client_pan']"
-            formControlName="client_name"
-            [displayMode]="displayMode_forClient"
-            (setDisplayMode)="displayMode_forClient = $event"
-            (selectedItems)="getSelectedItemsFromParent($event)"
-            (scrollToEnd) = "loadInvestorOnScrollToEnd($event)"
-            ></app-core-srch>
-           </div>
-
-          </div>
-          <div class="row">
-            <div class="col-sm-3">
-              <label for="amc_id">AMC</label>
-              <ng-multiselect-dropdown
-                [attr.id]="'amc_id'"
-                [placeholder]="'Select AMC'"
-                [settings]="settingsforAMCDropdown"
-                (onDeSelect)="onAmcDeSelect($event)"
-                [data]="amcMst"
-                formControlName="amc_id">
-              </ng-multiselect-dropdown>
-             </div>
-            <div class="col-sm-3">
-              <label for="cat_id">Category</label>
-              <ng-multiselect-dropdown
-               [id]="'cat_id'"
-               [placeholder]="'Select Category'"
-              [settings]="settingsforCatDropdown"
-              (onDeSelect)="onCatDeSelect($event)"
-              [data]="catMst"
-              formControlName="cat_id">
-            </ng-multiselect-dropdown>
-            </div>
-            <div class="col-sm-3">
-              <label for="sub_cat_id">Sub-Category</label>
-              <ng-multiselect-dropdown
-               [id]="'sub_cat_id'"
-               [placeholder]="'Select Sub-Category'"
-              [settings]="settingsforSubCatDropdown"
-              (onDeSelect)="onSubCatDeSelect($event)"
-              [data]="subcatMst"
-              formControlName="sub_cat_id">
-            </ng-multiselect-dropdown>
-            </div>
-            <div class="col-sm-3">
-              <label for="scheme_id">Scheme</label>
-              <ng-multiselect-dropdown
-               [id]="'scheme_id'"
-               [placeholder]="'Select Scheme'"
-              [settings]="settingsforSchemeDropdown"
-              [data]="schemeMst"
-              formControlName="scheme_id">
-            </ng-multiselect-dropdown>
-            </div>
-
-
-          </div>
-          <div class="row">
-            <div class="col-sm-3">
-              <label for="trxn_type_id">Transaction Type</label>
-              <ng-multiselect-dropdown
-               [id]="'trxn_type_id'"
-               [placeholder]="'Select Transaction Type'"
-              [settings]="settingsforTrxnTypeDropdown"
-              (onDeSelect)="onTrxnTypeDeSelect($event)"
-              [data]="trxnTypeMst"
-              formControlName="trxn_type_id">
-            </ng-multiselect-dropdown>
-            </div>
-            <div class="col-sm-3">
-              <label for="trxn_sub_type_id">Transaction Sub-Type</label>
-              <ng-multiselect-dropdown
-               [id]="'trxn_sub_type_id'"
-               [placeholder]="'Select Transaction Sub-Type'"
-              [settings]="settingsforTrxnSubTypeDropdown"
-              [data]="trxnSubTypeMst"
-              formControlName="trxn_sub_type_id">
-            </ng-multiselect-dropdown>
-            </div>
-            <div class="col-sm-3">
-              <label for="folio_no">Folio No</label>
-               <input type="text" name="folio_no" id="folio_no" class="form-control" placeholder="Enter Folio Number" formControlName="folio_no">
-            </div>
-            <ng-container *ngIf="btn_type == 'A';else normalFilter">
-              <div class="col-sm-3">
-                <label for="brn_cd">Branch</label>
-                <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
-                (onDeSelect)="onbrnCdDeSelect($event)"
-                  [settings]="settingsforBrnchDropdown" [data]="__branchMst" formControlName="brn_cd">
-                </ng-multiselect-dropdown>
-              </div>
-
-            </ng-container>
-            <ng-template #normalFilter>
-              <div class="col-sm-3 d-flex align-items-end justify-content-end">
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-              </div>
-            </ng-template>
-          </div>
-
-          <ng-container  *ngIf="btn_type == 'A'">
-          <div class="row">
-            <ng-container>
-              <div class="col-sm-3">
-                <label for="bu_type">Business Type</label>
-                <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
-                (onDeSelect)="onbuTypeDeSelect($event)"
-                  [settings]="settingsforBuTypeDropdown" [data]="__bu_type" formControlName="bu_type_id">
-                </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="rm_name">Relationship Manager</label>
-                <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
-                (onDeSelect)="onRmDeSelect($event)"
-                [settings]="settingsforRMDropdown" [data]="__RmMst" formControlName="rm_id">
-                </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="sub_brk_cd">Sub Broker</label>
-                <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
-                (onDeSelect)="onSubBrkDeSelect($event)"
-                  [settings]="settingsforSubBrkDropdown" [data]="__subbrkArnMst"
-                  formControlName="sub_brk_cd">
-                </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="euin_no">EUIN</label>
-                <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
-                  [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
-                </ng-multiselect-dropdown>
-              </div>
-
-            </ng-container>
-          </div>
-          <div class="row mt-2">
-            <div class="col-sm-12 d-flex align-items-end justify-content-end">
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-            </div>
-          </div>
-        </ng-container>
-      </form>
-      </div>
-    </div> -->
-
-    <mat-card>
+  <mat-card>
       <mat-card-header class="border-bottom">
         <mat-card-title>Transaction Report</mat-card-title>
         <div class="pr-3 my-auto d-flex align-items-center">
-          <button mat-button
-          class="my-auto"
-           color="primary" (click)="toggle()" class="mx-3">
-          EXPAND {{state == 'collapsed' ? ' MORE' : ' LESS'}}
 
-          <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
-            keyboard_arrow_up
-          </mat-icon>
-        </button>
           <p-selectButton
           [(ngModel)]="btn_type"
           [options]="selectBtn"
@@ -237,6 +18,14 @@
                 <i [class]="item.icon"  [matTooltip]="item.label"></i>
             </ng-template>
           </p-selectButton>
+          <button mat-icon-button
+          class="my-auto"
+          [matTooltip]="state == 'collapsed' ? 'EXPAND MORE' : 'EXPAND LESS'"
+           color="primary" (click)="toggle()" class="mx-3">
+          <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
+            keyboard_arrow_up
+          </mat-icon>
+        </button>
       </div>
       </mat-card-header>
       <mat-card-content [@bodyExpansion]="state" [ngClass]="{'expandable-content': state == 'collapsed','px-3 py-3':state == 'expanded'}">

@@ -85,7 +85,9 @@ export class SwpHomeComponent implements OnInit {
    * Event for getting sip type master data
    */
    getSWPType(){
-    this.dbIntr.api_call(0,'/swpType',null).pipe(pluck('data')).subscribe(res =>{
+    this.dbIntr.api_call(0,'/swpType',null).pipe(pluck('data'))
+    .subscribe(res =>{
+      console.log(res);
       this.sip_stp_swp_type_mst = res;
     })
   }

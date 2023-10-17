@@ -1,0 +1,14 @@
+<marquee scrollamount="8"  #merque behavior="scroll" direction="left" class="merque">
+  <span class="m-0"
+  onmouseover="this.parentNode.stop();" onmouseout="this.parentNode.start();"
+  >
+    TOTAL {{type | uppercase}} NUMBER: {{number}},
+    TOTAL  {{type | uppercase}} VALUE: {{value | number : '1.2-2'}}
+    <span *ngIf="trxn_sub_type == 'L'"
+    [style.color]="'#8a6d3b'"
+    >
+        , THERE ARE {{pause_trxn_type_count}} PAUSE {{trxn_type == 'P' ? 'SIP' : trxn_type == 'R' ? 'SWP' : 'STP'}}
+    </span>
+
+  </span>
+  </marquee>
