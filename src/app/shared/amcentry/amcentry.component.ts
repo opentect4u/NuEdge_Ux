@@ -223,10 +223,11 @@ export class AMCEntryComponent implements OnInit {
 
     this.__dbIntr.api_call(1, '/amcAddEdit', __amc).subscribe((res: any) => {
       if (res.suc == 1) {
-      this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'AMC updated successfully' : 'AMC added successfully') : 'Something went wrong! please try again later', res.suc);
       this.reset();
       this.dialogRef.close({ id: this.data.id, data: res.data,suc:res.suc })
     }
+    this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'AMC updated successfully' : 'AMC added successfully') : 'Something went wrong! please try again later', res.suc);
+
     })
   }
   reset(){

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -12,6 +12,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
 import { BusinessTypeComponent } from '../entry_dialog/business-type/business-type.component';
 import { FrequencyComponent } from '../entry_dialog/frequency/frequency.component';
+import { pluck } from 'rxjs/operators';
 @Component({
   selector: 'mailBack-trxn-rpt-without-scm',
   templateUrl: './trxn-rpt-without-scm.component.html',
@@ -22,7 +23,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
 
 
   @ViewChild('primeTbl') primeTbl :Table;
-
+  @ViewChild('searchFilter') filter:ElementRef;
   @Input() mismatch_flag:string;
 
 
@@ -35,16 +36,11 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   @Input() trxnRptWithOutScm: TrxnRpt[];
 
 
-
   /**
    * Hold the Column for Transaction Report
    */
   // TrxnClm:column[] = trxnClm.column;
   @Input() TrxnClm:column[] = [];
-
-  @Output() changeStatusOfTrxn = new EventEmitter();
-
-
 
 
   constructor(
@@ -75,21 +71,15 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       icon: 'pi pi-lock',
       accept: () => {
 
-        // let dt;
-        // dt = this.trxnRptWithOutScm.filter((el:TrxnRpt,i:number) =>{
-        //              if(index == i){
-        //               el.lock_status = el.lock_status != 'Y' ? 'Y': 'N';
-        //              }
-        //              return el;
-        // });
-        // console.log(dt);
-        // this.changeStatusOfTrxn.emit(dt);
-        let dt = this.lockTransaction(trxn);
-        dt.then(res =>{
-          if(res.suc == 1){
-            this.trxnRptWithOutScm.splice(index,1);
-             this.confirmationService.close();
-          }
+        this.dbIntr.api_call(1,'/mailbackMismatchLock',
+        this.utility.convertFormData(trxn)
+        )
+        .subscribe((res: any) =>{
+            if(res.suc == 1){
+              // this.filter.nativeElement.value = '';
+              this.deleteTransaction(trxn.id);
+              this.confirmationService.close();
+            }
           this.utility.showSnackbar(res.suc == 1 ? 'Transaction Locked Successfully' : res.msg,res.suc);
         })
       },
@@ -99,18 +89,19 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       }
   });
   }
-  lockTransaction = (trxn):Promise<any> =>{
-   return new Promise ((resolve,reject) =>{
-      this.dbIntr.api_call(1,'/mailbackMismatchLock',
-      this.utility.convertFormData(trxn)
-      )
-      // .pipe(pluck('data'))
-      .subscribe(res =>{
-        resolve(res);
-      })
-    })
+  // lockTransaction = (trxn):Promise<any> =>{
+  //  return new Promise ((resolve,reject) =>{
+  //     this.dbIntr.api_call(1,'/mailbackMismatchLock',
+  //     this.utility.convertFormData(trxn)
+  //     )
+  //     // .pipe(pluck('data'))
+  //     .subscribe(res =>{
+  //       resolve(res),
+  //       reject([])
+  //     })
+  //   })
 
-  }
+  // }
 
   navigate = () =>{
     this.utility.navigatewithqueryparams(
@@ -124,6 +115,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   }
 
   openAMC = (trxn,index:number) =>{
+
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -149,7 +141,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       dialogref.afterClosed().subscribe((dt) => {
         if(dt){
           if(dt.suc == 1){
-            this.deleteTransaction(index);
+            this.deleteTransaction(trxn.id);
           }
         }
       });
@@ -194,7 +186,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
           // this.updateRow(res.data)
           if(res.suc == 1){
             // this.tr
-            this.deleteTransaction(index);
+            this.deleteTransaction(trxn.id);
           }
         }
       })
@@ -209,8 +201,12 @@ export class TrxnRptWithoutScmComponent implements OnInit {
 
   }
 
-  deleteTransaction = (index) =>{
-    this.trxnRptWithOutScm.splice(index,1);
+  deleteTransaction = (id:number) =>{
+    this.trxnRptWithOutScm.splice(
+      this.trxnRptWithOutScm.findIndex(item => item.id == id),1
+    );
+    this.primeTbl.reset();
+    this.filter.nativeElement.value = '';
   }
 
   openModal_for_Form = (modal_type: string,trxn,index:number) => {
@@ -240,7 +236,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       dialogref.afterClosed().subscribe((dt) => {
         if (dt) {
           if (dt.suc == 1) {
-            this.deleteTransaction(index);
+            this.deleteTransaction(trxn.id);
           }
         }
       });
@@ -280,7 +276,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       dialogref.afterClosed().subscribe((dt) => {
         if (dt) {
           if (dt.suc == 1) {
-            this.deleteTransaction(index);
+            this.deleteTransaction(trxn.id);
           }
         }
       });

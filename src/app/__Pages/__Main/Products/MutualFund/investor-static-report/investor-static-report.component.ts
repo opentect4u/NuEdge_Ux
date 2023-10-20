@@ -12,10 +12,10 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { DOCUMENT } from '@angular/common';
 import { IStaticRpt } from './static-rpt';
 enum TABLE_WIDTH {
-  'F' = '900rem',
-  'K' = '350rem',
-  'A' = '300rem',
-  'N' = '200rem',
+  'F' = '900rem', //FOLIO
+  'K' = '350rem', // KYC
+  'A' = '300rem', // ADHAAR PAN LINK
+  'N' = '200rem', // NOMINEE
 
 }
 
@@ -148,7 +148,8 @@ export class InvestorStaticReportComponent implements OnInit {
     rm_id: new FormControl([], { updateOn: 'blur' }),
     sub_brk_cd: new FormControl([], { updateOn: 'blur' }),
     euin_no: new FormControl([]),
-    folio_no: new FormControl('')
+    folio_no: new FormControl(''),
+    investor_static_type: new FormControl('')
   })
 
   view_type: { id: string, type: string }[] = ClientType;
@@ -288,6 +289,7 @@ export class InvestorStaticReportComponent implements OnInit {
     this.setTitle();
     this.setFlag();
     this.report_data = [];
+    this.filter.get('investor_static_type').setValue(ev.tabDtls.flag);
     this.setColumn(ev.tabDtls.flag).then((res: column[]) => {
       this.tble_width = TABLE_WIDTH[ev.tabDtls.flag];
       this.column = res;

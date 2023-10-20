@@ -4,6 +4,7 @@ import { DeletetrxnComponent } from './deletetrxn.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { UnlockTrxnComponent } from './dialog/unlock-trxn/unlock-trxn.component';
+import { TabModule } from 'src/app/__Core/tab/tab.module';
 
 const routes:Routes = [{
   path:'',
@@ -12,6 +13,6 @@ const routes:Routes = [{
   }]
 @NgModule({
   declarations: [DeletetrxnComponent, UnlockTrxnComponent],
-  imports: [CommonModule,RouterModule.forChild(routes),SharedModule]
+  imports: [CommonModule,RouterModule.forChild(routes),SharedModule,TabModule]
 })
 export class DeletetrxnModule {}

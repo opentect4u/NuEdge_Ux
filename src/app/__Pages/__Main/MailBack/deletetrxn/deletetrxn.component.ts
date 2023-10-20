@@ -19,7 +19,8 @@ import { deleteTrxnColumn } from 'src/app/__Utility/TransactionRPT/trnsClm';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { UnlockTrxnComponent } from './dialog/unlock-trxn/unlock-trxn.component';
-
+import TRXN_TYPE from '../../../../../assets/json/MailBack/mailbackMismatchTab.json';
+import { IFileHelpTab } from '../file-help/home/home.component';
 @Component({
   selector: 'app-deletetrxn',
   templateUrl: './deletetrxn.component.html',
@@ -44,6 +45,14 @@ export class DeletetrxnComponent implements OnInit {
   @ViewChild('primeTbl') primeTbl: Table;
 
   state: string | undefined = 'expanded';
+
+  /**
+   * FOR TAB HOLDER
+   */
+   tab:IFileHelpTab[] = TRXN_TYPE.map(({ id, tab_name, flag, img_src, sub_menu }) => ({ tab_name: tab_name, img_src: '', id, flag, sub_menu }));
+
+
+   index:number = 0;
 
 
   __is_check_all_locked:boolean = false;
@@ -97,9 +106,8 @@ export class DeletetrxnComponent implements OnInit {
    */
   searchTrxn = new FormGroup({
     folio_no:new FormControl('10442120/81'),
-    scheme_name: new FormControl(''),
-    scheme_id: new FormControl(''),
-    trans_no:new FormControl('')
+    trans_no:new FormControl(''),
+    file_type:new FormControl(TRXN_TYPE[0].flag)
   })
 
   constructor(
@@ -110,66 +118,9 @@ export class DeletetrxnComponent implements OnInit {
 
     ) { }
 
-  ngOnInit(): void {}
-
-  // ngAfterViewInit(){
-  //   this.searchTrxn.controls['scheme_name'].valueChanges.pipe(
-  //     tap(() => (this.__isscmspinvisible = true)),
-  //     debounceTime(200),
-  //     distinctUntilChanged(),
-  //     switchMap((dt) =>
-  //       dt?.length > 1 ? this.dbIntr.ReportTINSearch('/scheme', dt) : []
-  //     ),
-  //     map((x: responseDT) => x.data)
-  //   )
-  //   .subscribe({
-  //     next: (value:scheme[]) => {
-  //       this.schemeMst = value;
-  //       this.searchResultVisibilityForScheme('block');
-  //       this.__isscmspinvisible = false;
-  //       this.searchTrxn.controls['scheme_id'].reset('');
-  //     },
-  //     complete: () => console.log(''),
-  //     error: (err) => (this.__isscmspinvisible = false),
-  //   });
-  // }
-
-
-  /**
-   * get result after click on particular item from search list
-   * @param ev
-   */
-  // getSelectedItemsFromParent = (ev) =>{
-  //     // console.log(ev);
-  //     this.getItems(ev.item,ev.flag);
-  // }
-
-  /**
-   * function for hide search list after click on outside
-   * & same function is used for  showing search list
-   * @param mode = 'none' | 'block'
-   */
-  // searchResultVisibilityForScheme = (mode) =>{
-  //   this.displayMode_scheme = mode;
-  // }
-
-  /**
-   *
-   * @param __items holds the search result
-   * @param __mode  = 'S' (for scheme field populated)
-   */
-  // getItems = (__items:scheme, __mode:string) => {
-  //   switch (__mode) {
-  //     case 'C':
-  //       this.searchTrxn.controls['scheme_name'].reset(__items.scheme_name, {
-  //         emitEvent: false,
-  //       });
-  //       this.searchTrxn.controls['scheme_id'].reset(__items.id);
-  //       this.searchResultVisibilityForScheme('none');
-  //       break;
-  //     default:break;
-  //   }
-  // }
+  ngOnInit(): void {
+    console.log(this.searchTrxn);
+  }
 
   /**
    * Event Trigger after search button click
@@ -202,6 +153,16 @@ export class DeletetrxnComponent implements OnInit {
     this.__is_check_all_locked = res.every(item => item.divi_lock_flag == 'L');
     this.__lock_trxn_count =  this.arrayCount(res, x => x.divi_lock_flag == 'L');
      this.__unlock_trxn_count = this.arrayCount(res, x => x.divi_lock_flag == 'N');
+  }
+
+  changeTabDtls = (ev) =>{
+    this.searchTrxn.get('file_type').setValue(ev.tabDtls.flag);
+    this.reset();
+    this.trxnDT = [];
+    this.selectedTrxn = [];
+    this.__is_check_all_locked = false;
+    this.__lock_trxn_count = 0;
+    this.__unlock_trxn_count = 0;
   }
 
   /**
@@ -285,7 +246,8 @@ export class DeletetrxnComponent implements OnInit {
     dialogConfig.data = {
       id:trxn.id,
       api_name:"/unlockTransDetails",
-      title:'Unlock Transaction'
+      title:`Unlock Transaction`,
+      trans_no:trxn.trans_no
     };
     try {
       const dialogref = this.__dialog.open(UnlockTrxnComponent, dialogConfig);

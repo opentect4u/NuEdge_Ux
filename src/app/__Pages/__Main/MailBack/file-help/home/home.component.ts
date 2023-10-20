@@ -56,7 +56,8 @@ export class HomeComponent implements OnInit, IFileHelpHome {
   });
 
   constructor(private utility: UtiliService, private dbIntr: DbIntrService,
-    @Inject(DOCUMENT) private dom: Document) {}
+    @Inject(DOCUMENT) private dom: Document) {
+    }
 
   ngOnInit(): void {
     this.getRnt();

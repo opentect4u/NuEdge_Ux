@@ -75,8 +75,8 @@
                       id="folio_status"
                       name="folio_status">
                 <option value="A">Select All</option>
-                <option value="Y">Active</option>
-                <option value="N">In Active</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
 
               </select>
             </div>
@@ -259,6 +259,17 @@
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
                       <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] == 'SI' ? 'Single' : 'Anyone or survivor') : 'N/A'}}</p>
                     </ng-container>
+
+
+                    <ng-container *ngSwitchCase="col.field == 'nom_optout_status'">
+                        <ng-container **ngIf="folio_dt[col.field];else nonominee__Status">
+                                <p class="m-0">{{folio_dt[col.field] == 'Y' ? 'Nominee Opt-out' : 'Nominee Opt-in'}}</p>
+                        </ng-container>
+                        <ng-template #nonominee__Status>
+                          <p class="m-0">{{ folio_dt.nom_name_1  ? 'Nominee Opt-in' : 'Opt-in/Opt-out Pending'}}</p>
+                        </ng-template>
+                    </ng-container>
+
                     <ng-container *ngSwitchDefault>
                       <p class="m-0">
                         {{ folio_dt[col.field] ? folio_dt[col.field] : 'N/A' }}

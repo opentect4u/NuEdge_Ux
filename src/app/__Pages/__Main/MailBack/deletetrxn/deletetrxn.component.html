@@ -2,7 +2,12 @@
 <div class="bckContainer"></div>
 <div class="row flexSec">
   <div class="col-sm-12">
-    <mat-card>
+        <!-- Make the Tab Section Common -->
+      <core-tab [Tab]="tab"
+        (GetTabDtls)="changeTabDtls($event)"
+        [customClass]="'nav'"
+        [index]="index"></core-tab>
+    <mat-card class="navCard">
       <mat-card-header class="border-bottom">
         <mat-card-title>Delete Transaction</mat-card-title>
         <button mat-icon-button
@@ -108,6 +113,7 @@
              [totalRecords]="trxnDT.length"
              [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
              [rows]="10"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
              [showCurrentPageReport]="true"
              [globalFilterFields]="getColumns()"
              styleClass="p-datatable-sm"
@@ -126,7 +132,13 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-trxnDT let-i="rowIndex" class="t_head">
-        <tr>
+        <tr
+        [ngStyle]="{
+          'background-color':trxnDT.divi_lock_flag == 'L' ? 'rgb(220 53 69 / 10%)' : '',
+          'color':trxnDT.divi_lock_flag == 'L' ? '#dc3545' : '',
+          'font-weight':trxnDT.divi_lock_flag == 'L' ? 900 : 500
+      }"
+        >
           <td [style]="'max-width:4rem'" pFrozenColumn>
             <ng-container *ngIf="trxnDT.divi_lock_flag == 'L';else unlock">
             <p-tableCheckbox [disabled]="true"></p-tableCheckbox>
@@ -140,7 +152,7 @@
               [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                <b>{{i + 1}}</b>
+                <p class="m-0">{{i + 1}}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'lock_status'">
@@ -166,27 +178,27 @@
                 </ng-template>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'first_client_name'">
-                <b>{{ trxnDT[col.field] ? (trxnDT[col.field] | titlecase) : 'N/A' }}</b>
+                <p class="m-0">{{ trxnDT[col.field] ? (trxnDT[col.field] | titlecase) : 'N/A' }}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'trans_date'">
-                <b>{{ trxnDT[col.field] ? (trxnDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+                <p class="m-0">{{ trxnDT[col.field] ? (trxnDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                <b matTooltip="{{trxnDT[col.field] ? (trxnDT[col.field]  + ' - ' +  trxnDT['plan_name'] + ' - ' + trxnDT['option_name']) : ''}}">{{ trxnDT[col.field] ? (trxnDT[col.field] + '-' + trxnDT['plan_name'] + '-' + trxnDT['option_name']) : 'N/A'}}</b>
+                <p class="m-0" matTooltipClass="ToolTip" matTooltip="{{trxnDT[col.field] ? (trxnDT[col.field]  + ' - ' +  trxnDT['plan_name'] + ' - ' + trxnDT['option_name']) : ''}}">{{ trxnDT[col.field] ? (trxnDT[col.field] + '-' + trxnDT['plan_name'] + '-' + trxnDT['option_name']) : 'N/A'}}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'pur_price'">
-                <b [matTooltip]="trxnDT[col.field]">{{trxnDT[col.field] ? trxnDT[col.field] : 'N/A' }}</b>
+                <p class="m-0" matTooltipClass="ToolTip" [matTooltip]="trxnDT[col.field]">{{trxnDT[col.field] ? trxnDT[col.field] : 'N/A' }}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'gross_amount' || col.field == 'amount' || col.field == 'tds' || col.field == 'stamp_duty'">
-                <b [matTooltip]="trxnDT[col.field] ? trxnDT[col.field]: '0'">
-                  {{(trxnDT[col.field] ? trxnDT[col.field] : '0') }}
-                </b>
+                <p class="m-0" matTooltipClass="ToolTip" [matTooltip]="trxnDT[col.field] ? (trxnDT[col.field] | number:'1.2-2'): '0'">
+                  {{(trxnDT[col.field] ? (trxnDT[col.field] | number:'1.2-2') : '0') }}
+                </p>
               </ng-container>
               <ng-container *ngSwitchDefault>
-                <b [matTooltip]="trxnDT[col.field]">{{ trxnDT[col.field] ? trxnDT[col.field] : 'N/A' }}</b>
+                <p class="m-0" matTooltipClass="ToolTip" [matTooltip]="trxnDT[col.field]">{{ trxnDT[col.field] ? trxnDT[col.field] : 'N/A' }}</p>
               </ng-container>
             </ng-container>
           </td>

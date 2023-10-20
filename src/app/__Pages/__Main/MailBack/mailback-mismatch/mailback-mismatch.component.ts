@@ -92,7 +92,7 @@ export class MailbackMismatchComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTrxnRpt('A','T'); //default Transaction File will be called
-    this.getmismatchFileCount();
+    // this.getmismatchFileCount();
   }
 
   /**

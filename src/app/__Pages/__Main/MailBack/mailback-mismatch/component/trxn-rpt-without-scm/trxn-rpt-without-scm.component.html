@@ -20,7 +20,9 @@
   <ng-template pTemplate="caption">
     <div class="w-25">
       <span class="ml-auto">
-        <input id="search" class="form-control rounded" type="text"
+        <input id="search" class="form-control rounded"
+        #searchFilter
+        type="text"
                (input)="filterGlobal($event)"
                placeholder="Search" />
       </span>
@@ -50,52 +52,52 @@
           [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '16rem'">
         <ng-container [ngSwitch]="true">
           <ng-container *ngSwitchCase="col.field == 'sl_no'">
-            <b>{{i + 1}}</b>
+            <p class="m-0">{{i + 1}}</p>
           </ng-container>
 
           <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-            <b>{{(trxn[col.field] && trxn[col.field]!=' ' && (trxn[col.field] | uppercase)!='NOT PROVID' && trxn[col.field] != '0')  ? trxn[col.field] : 'N/A' }}</b>
+            <p class="m-0">{{(trxn[col.field] && trxn[col.field]!=' ' && (trxn[col.field] | uppercase)!='NOT PROVID' && trxn[col.field] != '0')  ? trxn[col.field] : 'N/A' }}</p>
           </ng-container>
 
           <ng-container *ngSwitchCase="col.field == 'first_client_name'">
-            <b>{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</b>
+            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
           </ng-container>
 
 
 
           <!-- SIP/STP Report -->
           <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">
-            <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
           </ng-container>
           <ng-container *ngSwitchCase="col.field == 'product_code'">
-            <b matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
+            <p class="m-0" matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</p>
           </ng-container>
           <ng-container *ngSwitchCase="col.field == 'amount'">
-            <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field]) : 0 }}</b>
+            <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field]) : 0 }}</p>
           </ng-container>
           <!-- End -->
 
 
           <ng-container *ngSwitchCase="col.field == 'trans_date'">
-            <b>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
           </ng-container>
           <!-- Scheme Logic -->
           <ng-container *ngSwitchCase="col.field == 'scheme_name'">
             <ng-container *ngIf="mismatch_flag == 'S';else other">
-              <b [matTooltip]="trxn['product_code']">{{trxn['product_code'] ? trxn['product_code']  : 'N/A'}}</b>
+              <p class="m-0" [matTooltip]="trxn['product_code']">{{trxn['product_code'] ? trxn['product_code']  : 'N/A'}}</p>
             </ng-container>
             <ng-template #other>
-              <b [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field]  : 'N/A'}}</b>
+              <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field]  : 'N/A'}}</p>
             </ng-template>
           </ng-container>
           <!-- End -->
           <!-- AMC Logic -->
           <ng-container *ngSwitchCase="col.field == 'amc_name'">
             <ng-container *ngIf="mismatch_flag == 'A';else other">
-              <b [matTooltip]="trxn['amc_code']">{{trxn['amc_code'] ? trxn['amc_code']  : 'N/A'}}</b>
+              <p class="m-0" [matTooltip]="trxn['amc_code']">{{trxn['amc_code'] ? trxn['amc_code']  : 'N/A'}}</p>
             </ng-container>
             <ng-template #other>
-              <b [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</b>
+              <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
             </ng-template>
           </ng-container>
           <!-- End -->
@@ -138,14 +140,14 @@
           <!-- End -->
           <!-- Remarks Logic -->
           <ng-container *ngSwitchCase="col.field == 'remarks'">
-            <b [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30): 'N/A'}}</b>
+            <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30): 'N/A'}}</p>
           </ng-container>
           <!-- End -->
           <!-- Divident Option Logic -->
           <ng-container *ngSwitchCase="col.field == 'divident_opt'">
 
             <ng-container *ngIf="trxn['rnt_id'] == 1;else kfIntech">
-              <b>
+              <p class="m-0">
                 {{
 trxn['reinvest_flag'] ? (
               trxn['reinvest_flag']  == 'Z' ?
@@ -154,10 +156,10 @@ trxn['reinvest_flag'] ? (
                 'N/A'
               )
                 }}
-              </b>
+              </p>
             </ng-container>
             <ng-template #kfIntech>
-              <b>
+              <p class="m-0">
                 {{
 trxn['divident_option'] ? (
               trxn['divident_option']  == 'G' ?
@@ -166,7 +168,7 @@ trxn['divident_option'] ? (
                 'N/A'
               )
                 }}
-              </b>
+              </p>
             </ng-template>
 
           </ng-container>
@@ -237,7 +239,7 @@ trxn['divident_option'] ? (
 
           </ng-container>
           <ng-container *ngSwitchDefault>
-            <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
+            <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
           </ng-container>
         </ng-container>
       </td>
