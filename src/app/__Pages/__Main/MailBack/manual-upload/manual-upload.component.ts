@@ -191,10 +191,10 @@ export class ManualUploadComponent implements OnInit {
     if (this.manualUpldFrm.invalid) {
       return;
     }
-    // let start_count = 1;
-    // let end_count = 300;
-    let start_count = 20101;
-    let end_count = 20400;
+    let start_count = 1;
+    let end_count = 300;
+    // let start_count = 20101;
+    // let end_count = 20400;
     const dt: rec_response = {
       ...this.manualUpldFrm.value,
       end_count: end_count,

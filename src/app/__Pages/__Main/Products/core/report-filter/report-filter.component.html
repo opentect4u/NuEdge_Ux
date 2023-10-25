@@ -3,6 +3,18 @@
     <mat-card-title>
     </mat-card-title>
     <div class="pr-3 my-auto d-flex  align-items-center">
+      <button mat-icon-button
+      *ngIf="btn_type == 'A'"
+      (click)="clearAdvanceFilter()"
+      [matTooltip]="'Clear Advance Filter'"
+      class="my-auto material-symbols-outlined"
+       color="primary"
+        class="mx-3">
+      <mat-icon>
+        filter_alt_off
+      </mat-icon>
+      </button>
+
 
       <p-selectButton [(ngModel)]="btn_type"
                       [options]="selectBtn"

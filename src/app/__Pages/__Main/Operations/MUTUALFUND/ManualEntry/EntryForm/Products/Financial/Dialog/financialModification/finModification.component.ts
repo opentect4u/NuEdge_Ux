@@ -1720,7 +1720,7 @@ export class FinmodificationComponent implements OnInit {
     this.dialogRef.updateSize('30%', '55px');
     this.dialogRef.updatePosition({
       bottom: '0px',
-      right: this.data.right + 'px',
+      right: '0px',
     });
   }
   maximize() {

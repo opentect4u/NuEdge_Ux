@@ -53,8 +53,9 @@
   <mat-card-content>
     <p-table #primeTbl
              id="trxDt"
-             [scrollable]="true" scrollHeight="450px"
+             [scrollable]="true" [scrollHeight]="'370px'"
              [virtualScroll]="true"
+             [virtualRowHeight]="33"
              [value]="live_sip_rpt"
              [responsive]="true"
              [rowHover]="true"
@@ -84,7 +85,9 @@
       <ng-template pTemplate="body" let-trxn let-columns="columns" let-i="rowIndex">
         <tr tabindex="999"
         [ngStyle]="{'background-color':trxn.pause_end_date && trxn.pause_start_date ? '#fcf8e3' : '',
-          'color':trxn.pause_end_date && trxn.pause_start_date ? '#8a6d3b' : ''}"
+          'color':trxn.pause_end_date && trxn.pause_start_date ? '#8a6d3b' : '',
+          'height':'33px'
+        }"
         >
           <td *ngFor="let col of column"
               [style.max-width]="col.width"

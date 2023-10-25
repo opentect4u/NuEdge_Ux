@@ -41,6 +41,10 @@
         <p-table
         #primeTbl
         id="trxDt"
+        [scrollable]="true"
+        [scrollHeight]="'370px'"
+        [virtualScroll]="true"
+        [virtualRowHeight]="33"
         [value]="mature_stp"
         [responsive]="true"
         [rowHover]="true"
@@ -71,7 +75,7 @@
               </tr>
           </ng-template>
           <ng-template pTemplate="body" let-trxn let-columns="columns"  let-i="rowIndex">
-            <tr tabindex="999">
+            <tr tabindex="999" [ngStyle]="{'height':'33px'}">
               <td *ngFor="let col of column"
               [style.min-width]="col.width"
               [style.max-width]="col.width"
@@ -97,7 +101,7 @@
               <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK") ? trxn[col.field] : 'N/A' }}</p>
               </ng-container>
                   <ng-container *ngSwitchDefault>
-                    <b [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</b>
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
                   </ng-container>
                 </ng-container>
               </td>

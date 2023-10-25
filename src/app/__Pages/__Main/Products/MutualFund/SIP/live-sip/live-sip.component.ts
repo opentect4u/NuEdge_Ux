@@ -30,6 +30,7 @@ export class LiveSIPComponent implements OnInit {
    total_live_sip_amt:number = 0;
 
 
+
  /**
   * For Holding AMC Master Data
   */
@@ -54,6 +55,7 @@ export class LiveSIPComponent implements OnInit {
   constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {console.log('Report Type:' + this.sipType);}
+
 
 
   LiveSipReport = (formDt) =>{
@@ -86,5 +88,8 @@ export class LiveSIPComponent implements OnInit {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
+
+
+
 
 }

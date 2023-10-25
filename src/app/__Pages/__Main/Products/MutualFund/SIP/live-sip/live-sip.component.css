@@ -1,6 +1,6 @@
-:host ::ng-deep .p-datatable-tbody>tr{
+/* :host ::ng-deep .p-datatable-tbody>tr{
   min-height: 33px;
-}
+} */
 
 :host ::ng-deep .p-datatable-scrollable>
 .p-datatable-wrapper>.p-datatable-table>

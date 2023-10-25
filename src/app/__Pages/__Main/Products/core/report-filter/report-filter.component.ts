@@ -837,5 +837,13 @@ export class ReportFilterComponent implements OnInit {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
 
+  clearAdvanceFilter = () =>{
+    this.btn_type = 'R';
+    this.Rpt.get('brn_cd').setValue([], { emitEvent: true });
+    this.subbrkArnMst = [];
+    this.Rpt.controls['sub_brk_cd'].setValue([]);
+    this.Rpt.controls['euin_no'].setValue([]);
+  }
+
 
 }

@@ -34,6 +34,10 @@
     <p-table #primeTbl
              id="trxDt"
              [value]="pause_swp"
+             [scrollable]="true"
+             [scrollHeight]="'370px'"
+             [virtualScroll]="true"
+             [virtualRowHeight]="33"
              [responsive]="true"
              [rowHover]="true"
              styleClass="p-datatable-striped"
@@ -61,7 +65,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-trxn let-columns="columns" let-i="rowIndex">
-        <tr tabindex="999">
+        <tr tabindex="999"  [ngStyle]="{'height':'33px'}">
           <td *ngFor="let col of column"
               [style.max-width]="col.width"
               [style.min-width]="col.width">

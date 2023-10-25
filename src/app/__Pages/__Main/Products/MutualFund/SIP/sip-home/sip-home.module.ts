@@ -26,6 +26,6 @@ import { CoreModule } from '../../../core/core.module';
     CoreModule,
     TabModule,
     RouterModule.forChild(routes)
-  ]
+  ],
 })
 export class SipHomeModule { }

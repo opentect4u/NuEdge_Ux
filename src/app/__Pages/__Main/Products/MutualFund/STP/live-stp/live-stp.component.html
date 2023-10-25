@@ -37,6 +37,9 @@
     #primeTbl
     id="trxDt"
     [value]="live_stp_rpt"
+    [scrollable]="true" [scrollHeight]="'370px'"
+    [virtualScroll]="true"
+    [virtualRowHeight]="33"
     [responsive]="true"
     [rowHover]="true"
     styleClass="p-datatable-striped"
@@ -68,7 +71,9 @@
       <ng-template pTemplate="body" let-trxn let-columns="columns"  let-i="rowIndex">
         <tr tabindex="999"
         [ngStyle]="{'background-color':trxn.pause_end_date && trxn.pause_start_date ? '#fcf8e3' : '',
-        'color':trxn.pause_end_date && trxn.pause_start_date ? '#8a6d3b' : ''}"
+        'color':trxn.pause_end_date && trxn.pause_start_date ? '#8a6d3b' : '',
+        'height':'33px'
+      }"
         >
           <td *ngFor="let col of column"
           [style.min-width]="col.width"
