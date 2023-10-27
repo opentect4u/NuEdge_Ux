@@ -210,6 +210,7 @@ export class GeographicRPTComponent implements OnInit {
   this.geographicForm.controls['pincode'].setValue(ev.item.pincode,{emitEvent:false});
   }
   submitgeographical(){
+    console.log(this.__pageNumber.value);
     const geographic = new FormData();
     geographic.append('arr_city_type_id',JSON.stringify(this.city_type_id.value.filter(x => x.isChecked).map(item => {return item['id']})))
     geographic.append('paginate',this.__pageNumber.value);
@@ -244,9 +245,9 @@ export class GeographicRPTComponent implements OnInit {
       this.__dbIntr
         .getpaginationData(
           paginate.url +
-            ('&paginate=' + this.__pageNumber.value) +
-            ('&order=' + global.getActualVal(this.sort.order) ? 1 : this.sort.order) +
-            ('&field=' + global.getActualVal(this.sort.field)) +
+            ('&paginate=' + (this.__pageNumber.value)) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? 1 : this.sort.order)) +
+            ('&field=' + (global.getActualVal(this.sort.field))) +
             ('&arr_country_id=' + JSON.stringify(this.geographicForm.value.country_id.map(item => {return item["id"]}))) +
             ('&arr_state_id=' + JSON.stringify(this.geographicForm.value.state_id.map(item => {return item["id"]}))) +
             ('&arr_district_id=' + JSON.stringify(this.geographicForm.value.district_id.map(item => {return item["id"]}))) +
@@ -271,7 +272,7 @@ export class GeographicRPTComponent implements OnInit {
       this.geographicForm.controls['district_id'].setValue([],{emitEvent:false});
       this.geographicForm.controls['pincode'].setValue('');
       this.checkCityType(false);
-      this.__pageNumber.setValue(10);
+      this.__pageNumber.setValue('10');
       this.sort = new sort();
       this.submitgeographical();
   }
