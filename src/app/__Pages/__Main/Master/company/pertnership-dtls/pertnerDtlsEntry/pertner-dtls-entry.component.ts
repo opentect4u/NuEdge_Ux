@@ -150,7 +150,7 @@ export class PertnerDtlsEntryComponent implements OnInit {
 
   submitPertnershipDtls(){
     const pernershipDtls = new FormData();
-    pernershipDtls.append('id',this.pertnershipDtls.value.id);
+    pernershipDtls.append('id',this.pertnershipDtls.value.id ? this.pertnershipDtls.value.id : 0);
     pernershipDtls.append('cm_profile_id',this.pertnershipDtls.value.cm_profile_id);
     pernershipDtls.append('name',this.pertnershipDtls.value.name);
     pernershipDtls.append('dob',this.pertnershipDtls.value.dob);

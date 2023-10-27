@@ -42,7 +42,7 @@ export class TemporaryProfileComponent implements OnInit {
     temporaryProfile.append('from_dt',this.temporaryForm.value.from_dt);
     temporaryProfile.append('to_dt',this.temporaryForm.value.to_dt);
     temporaryProfile.append('upload_logo',this.temporaryForm.value.upload_file);
-    temporaryProfile.append('id',this.temporaryForm.value.id);
+    temporaryProfile.append('id',this.temporaryForm.value.id ? this.temporaryForm.value.id : 0);
 
     this.dbIntr.api_call(1,'/comp/tempProfileAddEdit',temporaryProfile).subscribe((res: any)=> {
               this.utility.showSnackbar(res.suc == 1 ? 'Temporray profile saved successfully' : res.msg,res.suc);

@@ -246,12 +246,9 @@ export class BenchmarkReportComponent implements OnInit {
     }
   }
 
-  updateRow = (item:Ibenchmark) =>{
-    // if(this.)
-    console.log(item);
-  this.benchmarkMstDt = this.benchmarkMstDt.map(el =>
-    el.id == item.id ? item : el
-  );
+  updateRow = (response:Ibenchmark[]) =>{
+      this.benchmarkMstDt =[...response,...this.benchmarkMstDt];
+
   }
 
   customSort = (ev) =>{

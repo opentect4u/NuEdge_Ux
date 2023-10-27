@@ -36,6 +36,10 @@ const routes: Routes = [{
     {
       path:'cityType',
       loadChildren:() => import('./cityType/city-type.module').then(cityType => cityType.CityTypeModule)
+    },
+    {
+      path:'mapCityType',
+      loadChildren:() => import('./map_city_type/map-city-type.module').then(map_city_type => map_city_type.MapCityTypeModule)
     }
 
   ]

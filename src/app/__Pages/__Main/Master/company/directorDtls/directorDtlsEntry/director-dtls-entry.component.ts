@@ -171,7 +171,7 @@ export class DirectorDtlsEntryComponent implements OnInit {
        directorDtlsFrmData.append('district_id',global.getActualVal(this.directorDtlsFrm.get(['address','dist_id']).value));
        directorDtlsFrmData.append('city_id',global.getActualVal(this.directorDtlsFrm.get(['address','city_id']).value));
        directorDtlsFrmData.append('pincode',global.getActualVal(this.directorDtlsFrm.get(['address','pincode']).value));
-       directorDtlsFrmData.append('id',global.getActualVal(this.directorDtlsFrm.value.id));
+       directorDtlsFrmData.append('id', this.directorDtlsFrm.value.id ? global.getActualVal(this.directorDtlsFrm.value.id) : 0);
 
 
        this.dbIntr.api_call(1,'/comp/directorAddEdit',directorDtlsFrmData).subscribe((res: any) =>{

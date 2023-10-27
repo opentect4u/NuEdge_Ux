@@ -50,7 +50,7 @@ export class ProductMappingEntryComponent implements OnInit {
     const product  = new FormData();
     product.append('cm_profile_id',this.product_mapping.value.cm_profile_id);
     product.append('product_name',this.product_mapping.value.product_name);
-    product.append('id',this.product_mapping.value.id);
+    product.append('id',this.product_mapping.value.id ? this.product_mapping.value.id : 0);
    this.dbIntr.api_call(1,'/comp/productAddEdit',product).subscribe((res: any) =>{
        this.utility.showSnackbar(res.suc == 1 ? 'Product saved successfully' : res.msg,res.suc);
       //  this.getProduct(res.data,this.product_mapping.value.id);

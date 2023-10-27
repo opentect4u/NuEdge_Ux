@@ -1,0 +1,16 @@
+<!-- // MAP CITY TYPE => MCT -->
+
+<div class="row flexSec">
+  <div class="col-sm-8 col-sm-offset-2">
+    <shared-upload-csv
+    (schemeBenchmarkUpload)="upload($event)"
+    [leftHeaderTitle]="'Map City Type'"
+    [flag]="'MCT'" [file_name]="'Sample'"
+    [api_name]="'/cityTypeMap'"
+    [city_type_mst]="city_type"
+    [columns]="tableColumns"
+    [dataSource]="tableData"
+    [displayedColumns]="displayedColumns"
+   ></shared-upload-csv>
+  </div>
+</div>

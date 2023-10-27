@@ -39,7 +39,13 @@
     "url":"/main/master/geographic/pincode",
     "icon": "fa fa-user-o",
     "img":""
-
+  }
+  , {
+    "title":"Map City Type",
+    "id":5,
+    "url":"/main/master/geographic/mapCityType",
+    "icon": "fa fa-user-o",
+    "img":""
   }
   , {
     "title":"Report",

@@ -228,7 +228,7 @@ export class ProfileEntryComponent implements OnInit {
    profileFrmData.append('twitter',global.getActualVal(this.profileFrm.value.twitter_url));
    profileFrmData.append('instagram',global.getActualVal(this.profileFrm.value.instagram_url));
    profileFrmData.append('blog',global.getActualVal(this.profileFrm.value.blog_url));
-   profileFrmData.append('comp_details_id',this.profileFrm.value.comp_details_id);
+   profileFrmData.append('comp_details_id',this.profileFrm.value.comp_details_id ? this.profileFrm.value.comp_details_id : 0);
 
 
    this.dbIntr.api_call(1,'/comp/profileAddEdit',profileFrmData).subscribe((res: any) =>{

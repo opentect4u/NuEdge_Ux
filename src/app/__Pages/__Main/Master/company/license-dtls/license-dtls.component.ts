@@ -104,7 +104,7 @@ export class LicenseDtlsComponent implements OnInit {
   }
   submitLicenceDtls(){
     const licence =new FormData();
-    licence.append('id', this.license.value.id);
+    licence.append('id', this.license.value.id ? this.license.value.id : 0);
     licence.append('product_id', global.getActualVal(this.license.value.product_id));
     licence.append('licence_no', global.getActualVal(this.license.value.licence_no));
     licence.append('valid_from', global.getActualVal(this.license.value.valid_from));

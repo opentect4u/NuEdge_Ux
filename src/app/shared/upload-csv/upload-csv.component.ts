@@ -11,6 +11,7 @@ import { amc } from 'src/app/__Model/amc';
 import { insComp } from 'src/app/__Model/insComp';
 import { option } from 'src/app/__Model/option';
 import { plan } from 'src/app/__Model/plan';
+import { ICityType } from 'src/app/__Pages/__Main/Master/GeoGraphic/map_city_type/map-city-type.component';
 import { Ibenchmark } from 'src/app/__Pages/__Main/Master/benchmark/home/home.component';
 // import { Ibenchmark } from 'src/app/__Pages/__Main/Master/benchmark/benchmark.component';
 import { Iexchange } from 'src/app/__Pages/__Main/Master/exchange/exchange.component';
@@ -64,6 +65,7 @@ export class UploadCsvComponent implements OnInit {
   @Input() tableColumns_forcomp: any =[]
   @Input() displayedColumns_forComp: any =[]
   @Input() countryMst: any=[];
+  @Input() city_type_mst:ICityType[] = [];
   @Output() setSchemeType = new EventEmitter<string>();
   @Output() setCompanyMst = new EventEmitter<string>();
   @Output() getschemeMst = new EventEmitter<number>();
@@ -91,6 +93,7 @@ export class UploadCsvComponent implements OnInit {
     city_id: new FormControl(''),
     rnt_id: new FormControl(''),
     ins_type_id: new FormControl(''),
+    city_type_id: new FormControl(''),
     rntFile: new FormControl('', [
       Validators.required,
       fileValidators.fileExtensionValidator(this.allowedExtensions),
@@ -124,6 +127,8 @@ export class UploadCsvComponent implements OnInit {
                this.__upload.controls['state_id'].setValidators([Validators.required]);
                this.__upload.controls['city_id'].setValidators([Validators.required]);break;
     // case 'IS': this.__upload.controls['amc_id'].setValidators([Validators.required]); break;
+    case 'MCT':this.__upload.controls['city_type_id'].setValidators([Validators.required]);break;
+
   }
   }
 
@@ -266,6 +271,9 @@ export class UploadCsvComponent implements OnInit {
     }
     else if(this.flag == 'IS'){
       __upload.append('amc_id', this.__upload.get('amc_id').value);
+    }
+    else if(this.flag == 'MCT'){
+      __upload.append('city_type_id', this.__upload.get('city_type_id').value);
     }
     else if(this.flag == 'SBU'){
       this.schemeBenchmarkUpload.emit(

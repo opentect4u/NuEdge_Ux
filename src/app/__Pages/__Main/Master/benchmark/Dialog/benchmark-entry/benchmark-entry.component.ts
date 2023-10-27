@@ -39,13 +39,14 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
     'Search Sub Category',
     2,
     140,
-    this.data.id > 0 ? true : false
   );
+  // this.data.id > 0 ? true : false
 
 
 
 
-  sub_cat_mst_dt: subcat[] = [];
+  // sub_cat_mst_dt: <subcat>[] = [];
+  sub_cat_mst_dt:(subcat & Partial<{isDisabled:boolean}>)[] = [];
 
   cat_mst: category[] = [];
 
@@ -90,14 +91,17 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
     console.log(this.data.benchmark);
      if(this.data.benchmark){
       setTimeout(() => {
-      this.benchmarkForm.get('category_id').setValue(this.data.benchmark.category_id,
-        {emitEvent:true});
-
+        this.benchmarkForm.get('category_id').disable({
+          onlySelf:true,
+          emitEvent:false
+        });
+      this.benchmarkForm.get('category_id').setValue(this.data.benchmark.category_id,{emitEvent:true});
         this.benchmarkForm.get('subcat_id').setValue([{
           id:this.data.benchmark.subcat_id,
           subcategory_name:this.data.benchmark.subcategory_name
         }],
           {emitEvent:true});
+
       }, 200);
      }
      /** END */
@@ -133,9 +137,11 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
   save_Benchmark = () => {
     // console.log(this.benchmarkForm.value)
 
-    let dt = Object.assign({}, this.benchmarkForm.value,
+    let dt = Object.assign({}, this.benchmarkForm.getRawValue(),
       {
-         subcat_id:this.__utility.mapIdfromArray(this.benchmarkForm.value.subcat_id,
+         subcat_id:this.__utility.mapIdfromArray(
+          this.benchmarkForm.value.subcat_id.filter(item => Number(item.id) != Number(this.data?.benchmark?.subcat_id))
+          ,
           'id')
       });
     this.__dbIntr.api_call(1,'/benchmarkAddEdit',
@@ -163,9 +169,19 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
       .pipe(
         pluck('data'),
         )
-      .subscribe((res: subcat[]) => {
-
-        this.sub_cat_mst_dt = res;
+      .subscribe((res:(subcat & Partial<{isDisabled:boolean}>)[]) => {
+        /***
+         * For Modifying array of Sub-Category
+         */
+          this.sub_cat_mst_dt = res.map(item =>{
+            if(this.benchmarkForm.value.id != '0' && this.benchmarkForm.value.subcat_id.length > 0){
+                    item.isDisabled  = this.benchmarkForm.value.subcat_id[0].id == Number(item.id);
+            }
+            return item;
+          });
+          /**
+           * END
+           */
       });
     // this.__dbIntr
     // .api_call(0, '/subcatUsingPro', 'arr_category_id=' + this.__utility.mapIdfromArray(cat_id,'id'))

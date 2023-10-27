@@ -47,7 +47,7 @@ export class LoginPassEntryComponent implements OnInit {
   submitLoginPassword() {
     console.log(this.loginPass);
     const loginPass = new FormData();
-    loginPass.append('id',this.loginPass.value.id);
+    loginPass.append('id',this.loginPass.value.id ? this.loginPass.value.id : 0);
     loginPass.append('product_id',this.loginPass.value.product_id);
     loginPass.append('login_url',this.loginPass.value.login_url);
     loginPass.append('login_id',this.loginPass.value.login_id);

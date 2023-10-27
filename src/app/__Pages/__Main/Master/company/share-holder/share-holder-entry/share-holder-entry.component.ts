@@ -251,7 +251,7 @@ export class ShareHolderEntryComponent implements OnInit {
     shareholders.append('district_id',this.sharedFrm.get(['address','dist_id']).value);
     shareholders.append('city_id',this.sharedFrm.get(['address','city_id']).value);
     shareholders.append('pincode',this.sharedFrm.get(['address','pincode']).value);
-    shareholders.append('id',this.sharedFrm.value.id);
+    shareholders.append('id',this.sharedFrm.value.id ? this.sharedFrm.value.id : 0);
      if(this.sharedFrm.value.shareholders_type=='T'){
       shareholders.append('remarks',this.sharedFrm.get(['share_transfer','remarks']).value);
       shareholders.append('trans_from_id',this.sharedFrm.get(['share_transfer','trans_form']).value);
