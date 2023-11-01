@@ -775,7 +775,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
       width: '10rem', isVisible: ['F', 'N']
     },
     {
-      field: 'folio_start_date',
+      field: 'folio_date',
       header: 'Folio Start Date',
       width: '10rem',
       isVisible: ['F', 'K', 'A', 'N']

@@ -20,11 +20,7 @@ export class live_sip_stp_swp_rpt{
       {field:'first_client_name',header:'Investor Name',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"18rem"},
       {field:'first_client_pan',header:'PAN',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"10rem"},
       {field:'reg_date',header:'Reg. Date',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"12rem"},
-
       {field:'reg_no',header:'Reg. No',isVisible:['LS-1','TS-1','P','LS-2','TS-2','P2','LS-3','TS-3','P3'],width:"15rem"},
-      // {field:'stp_reg_no',header:'STP Reg. No',isVisible:['LS-2','TS-2','P2'],width:"15rem"},
-      // {field:'swp_reg_no',header:'SWP Reg. No',isVisible:['LS-3','TS-3','P3'],width:"15rem"},
-
       {field:'amc_name',header:'AMC',isVisible:['LS-1','LS-2','LS-3','TS-1','TS-2','TS-3','P','P2','P3'],width:"22rem"},
       {field:'cat_name',header:'Category',isVisible:['LS-1','LS-3','TS-1','TS-3','P','P3'],width:"15rem"},
       {field:'subcat_name',header:'Sub Category',isVisible:['LS-1','LS-3','TS-1','TS-3','P','P3'],width:"21rem"},

@@ -252,9 +252,16 @@
                       <p class="m-0">{{i + 1}}</p>
                     </ng-container>
 
-                    <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_2nd_holder' ||  col.field == 'dob_3rd_holder' || col.field == 'guardian_dob'">
+                    <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_2nd_holder' ||  col.field == 'dob_3rd_holder' || col.field == 'guardian_dob' || col.field == 'folio_date'">
                       <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
                     </ng-container>
+
+                    <!-- <ng-container *ngSwitchCase="col.field == 'folio_date'">
+                      <p class="m-0">{{folio_dt[col.field] ?
+                        (folio_dt[col.field] | date:'dd-MM-YYYY')
+                        : 'N/A'}}</p>
+
+                    </ng-container> -->
 
                     <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                       <p class="m-0">{{ folio_dt[col.field] ? (folio_dt[col.field]  + '-' + folio_dt['plan_name'] + '-' + folio_dt['option_name']) : 'N/A' }}</p>
@@ -283,7 +290,7 @@
 
                     <ng-container *ngSwitchDefault>
                       <p class="m-0">
-                        {{ folio_dt[col.field] ? folio_dt[col.field] : 'N/A' }}
+                        {{ folio_dt[col.field] ? folio_dt[col.field]: 'N/A' }}
                       </p>
                     </ng-container>
                   </ng-container>
