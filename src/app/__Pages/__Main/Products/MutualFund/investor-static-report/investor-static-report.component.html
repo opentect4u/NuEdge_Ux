@@ -74,7 +74,7 @@
                       formControlName="folio_status"
                       id="folio_status"
                       name="folio_status">
-                <option value="A">Select All</option>
+                <option value="">Select All</option>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
 
@@ -94,7 +94,7 @@
                           formControlName="kyc_status"
                           id="kyc_status"
                           name="kyc_status">
-                    <option value="A">Select All</option>
+                    <option value="">Select All</option>
                     <option value="Y">KYC Verified</option>
                     <option value="N">KYC Not Verified</option>
 
@@ -108,7 +108,7 @@
                           formControlName="nominee_status"
                           id="nominee_status"
                           name="nominee_status">
-                    <option value="A">Select All</option>
+                    <option value="">Select All</option>
                     <option value="Opt-In">Opt-In</option>
                     <option value="Opt-Out">Opt-Out</option>
                     <option value="Pending">Opt-In / Opt-Out  Pending</option>
@@ -122,7 +122,7 @@
                           formControlName="adhaar_pan_link_status"
                           id="adhaar_pan_link_status"
                           name="adhaar_pan_link_status">
-                    <option value="A">Select All</option>
+                    <option value="">Select All</option>
                     <option value="Y">Linked</option>
                     <option value="N">Not Linked</option>
                   </select>
@@ -256,18 +256,29 @@
                       <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
                     </ng-container>
 
+                    <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                      <p class="m-0">{{ folio_dt[col.field] ? (folio_dt[col.field]  + '-' + folio_dt['plan_name'] + '-' + folio_dt['option_name']) : 'N/A' }}</p>
+                    </ng-container>
+
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
                       <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] == 'SI' ? 'Single' : 'Anyone or survivor') : 'N/A'}}</p>
                     </ng-container>
 
 
                     <ng-container *ngSwitchCase="col.field == 'nom_optout_status'">
-                        <ng-container **ngIf="folio_dt[col.field];else nonominee__Status">
+                        <ng-container *ngIf="folio_dt[col.field];else nonominee__Status">
                                 <p class="m-0">{{folio_dt[col.field] == 'Y' ? 'Nominee Opt-out' : 'Nominee Opt-in'}}</p>
                         </ng-container>
                         <ng-template #nonominee__Status>
                           <p class="m-0">{{ folio_dt.nom_name_1  ? 'Nominee Opt-in' : 'Opt-in/Opt-out Pending'}}</p>
                         </ng-template>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="col.field == 'rupee_bal'">
+                      <p class="m-0">
+                        {{folio_dt[col.field] ? folio_dt[col.field] : 0}}
+                      </p>
+
                     </ng-container>
 
                     <ng-container *ngSwitchDefault>

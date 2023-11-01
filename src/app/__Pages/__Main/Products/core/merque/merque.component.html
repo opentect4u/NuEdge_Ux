@@ -5,9 +5,9 @@
     TOTAL {{type | uppercase}} NUMBER: {{number}},
     TOTAL  {{type | uppercase}} VALUE: {{value | number : '1.2-2'}}
     <span *ngIf="trxn_sub_type == 'L'"
-    [style.color]="'#8a6d3b'"
+    [style.color]="'#ff5500'"
     >
-        , THERE ARE {{pause_trxn_type_count}} PAUSE {{trxn_type == 'P' ? 'SIP' : trxn_type == 'R' ? 'SWP' : 'STP'}}
+        ,TOTAL PAUSE {{trxn_type == 'P' ? 'SIP' : trxn_type == 'R' ? 'SWP' : 'STP'}} :  {{pause_trxn_type_count}}
     </span>
 
   </span>

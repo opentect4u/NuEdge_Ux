@@ -52,7 +52,7 @@
           <div class="col-sm-3">
             <label for="month">Month</label>
             <select name="month" id="month" class="form-control" formControlName="month">
-              <option value="">Select Month</option>
+              <!-- <option value="">Select Month</option> -->
               <option [value]="item.id" *ngFor="let item of month">{{item.month}}</option>
             </select>
           </div>
@@ -60,7 +60,7 @@
             <label for="year">Year</label>
             <select name="year" id="year" class="form-control"
                     formControlName="year">
-              <option value="">Select Year</option>
+              <!-- <option value="">Select Year</option> -->
               <option [value]="item" *ngFor="let item of year">{{item}}</option>
             </select>
           </div>

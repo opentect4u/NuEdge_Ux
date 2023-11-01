@@ -18,6 +18,13 @@
       <i class="fa fa-databse"></i>
       {{__title}} Reports
     </mat-card-title>
+    <div class="my-auto marque__tag">
+      <merque
+      [type]="__title"
+      [number]="register_swp.length"
+      [value]="total_registered_swp_amt"
+      ></merque>
+      </div>
     <div class="my-auto w-25 pr-4">
       <span class="ml-auto">
         <input id="search" class="form-control rounded" type="text"
@@ -49,7 +56,7 @@
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="10"
     [showCurrentPageReport]="true"
-    [tableStyle]="{ 'min-width': '350rem' }"
+    [tableStyle]="{ 'min-width': '369rem' }"
     >
       <ng-template pTemplate="header">
           <tr>
@@ -88,8 +95,8 @@
           </ng-container>
 
           <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-            <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided"  && trxn[col.field]!="BLANK") ? trxn[col.field] : 'N/A' }}</p>
-           </ng-container>
+            <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0') ? trxn[col.field] : 'N/A' }}</p>
+            </ng-container>
               <ng-container *ngSwitchDefault>
                 <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
               </ng-container>

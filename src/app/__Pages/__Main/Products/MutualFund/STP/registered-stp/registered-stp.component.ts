@@ -87,7 +87,9 @@ export class RegisteredStpComponent implements OnInit {
       let dt = {
         ...form_data,
         sub_type:this.sub_type,
-        report_type:this.report_type
+        report_type:this.report_type,
+       stp_type:this.stpType
+
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))

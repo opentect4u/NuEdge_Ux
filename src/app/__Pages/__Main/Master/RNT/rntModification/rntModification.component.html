@@ -538,9 +538,10 @@
   </mat-dialog-content>
 
   <mat-dialog-actions align="end" class="popupBoxSubmitSec">
-    <button class="btn addBtn  ml-2" [attr.form]="'__rntForm_'+ data.id" [disabled]="this.__rntForm.invalid">
+    <button class="btn addBtn  ml-2" [attr.form]="'__rntForm_'+ data.id"
+      [disabled]="this.__rntForm.invalid">
       {{this.data.id > 0 ? 'Update' : 'Submit'}}
     </button>
-  </mat-dialog-actions>
   <br clear="all">
+  </mat-dialog-actions>
 </div>

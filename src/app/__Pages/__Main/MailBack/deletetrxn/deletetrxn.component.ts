@@ -163,6 +163,9 @@ export class DeletetrxnComponent implements OnInit {
     this.__is_check_all_locked = false;
     this.__lock_trxn_count = 0;
     this.__unlock_trxn_count = 0;
+    if(this.state === 'collapsed' ){
+        this.state = 'expanded';
+    }
   }
 
   /**
@@ -242,12 +245,13 @@ export class DeletetrxnComponent implements OnInit {
     dialogConfig.width = '30%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.role = "alertdialog";
-    dialogConfig.disableClose=true;
+    dialogConfig.disableClose=false;
     dialogConfig.data = {
       id:trxn.id,
       api_name:"/unlockTransDetails",
       title:`Unlock Transaction`,
-      trans_no:trxn.trans_no
+      trans_no:trxn.trans_no,
+      file_type:this.searchTrxn.value.file_type
     };
     try {
       const dialogref = this.__dialog.open(UnlockTrxnComponent, dialogConfig);

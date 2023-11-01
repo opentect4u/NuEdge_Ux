@@ -54,7 +54,7 @@
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="10"
     [showCurrentPageReport]="true"
-    [tableStyle]="{ 'min-width': '350rem' }"
+    [tableStyle]="{ 'min-width': '369rem' }"
     >
       <ng-template pTemplate="header">
           <tr>
@@ -98,8 +98,8 @@
               <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field].toString() | titlecase) : 'N/A' }}</p>
             </ng-container>
 
-              <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-               <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided"  && trxn[col.field]!="BLANK") ? trxn[col.field] : 'N/A' }}</p>
+            <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+              <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0') ? trxn[col.field] : 'N/A' }}</p>
               </ng-container>
 
               <ng-container *ngSwitchDefault>

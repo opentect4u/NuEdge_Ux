@@ -48,7 +48,7 @@ export class ReportFilterComponent implements OnInit {
 
    state: string | undefined = 'expanded';
 
-   month:{id:number,month:string}[] = MonthDT;
+   month:{id:number,month:string}[]  = [];
 
    year:number[] = [];
 
@@ -308,6 +308,10 @@ export class ReportFilterComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.month = this.setMonthAccordingToYear(
+      this.Rpt.value.year,
+      new Date().getFullYear()
+    );
     this.maxDate= this.calculateDates('T');
     this.minDate = this.calculateDates('P');
     this.searchReport();
@@ -350,7 +354,7 @@ export class ReportFilterComponent implements OnInit {
   }
 
   getYears(){
-    const start_year = 1980;
+    const start_year = new Date().getFullYear();
     const dt = new Date();
     const year = dt.getFullYear() + 76;
     for(let i = start_year ; i <= year;i++){
@@ -437,8 +441,27 @@ export class ReportFilterComponent implements OnInit {
       });
   };
 
+   setMonthAccordingToYear(sel_year:Number,curr_year:Number){
+    if(sel_year){
+      return sel_year > curr_year ? MonthDT :   MonthDT.filter((item:{id:number,month:string}) => Number(new Date().getMonth() + 1) <= item.id);
+      }
+      else{
+        return [];
+      }
+    }
+
+
+
 
   ngAfterViewInit(){
+
+
+      /**
+       * Event Trigger after change year
+       */
+      this.Rpt.get('year').valueChanges.subscribe(res =>{
+          this.month = this.setMonthAccordingToYear(res,new Date().getFullYear())
+      })
 
       /**
        * Event Trigger after change amc

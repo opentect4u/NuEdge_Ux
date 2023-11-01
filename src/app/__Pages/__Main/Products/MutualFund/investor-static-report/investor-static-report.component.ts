@@ -384,10 +384,10 @@ export class InvestorStaticReportComponent implements OnInit {
   resetForm = () => {
     this.filter.patchValue({
       folio_no: '',
-      folio_status: 'A',
-      kyc_status: 'A',
-      nominee_status: 'A',
-      adhaar_pan_link_status: 'A',
+      folio_status: '',
+      kyc_status: '',
+      nominee_status: '',
+      adhaar_pan_link_status: '',
       view_type: '',
       pan_no: ''
     });
@@ -400,31 +400,39 @@ export class InvestorStaticReportComponent implements OnInit {
   }
 
   searchInvestorReport = () => {
-    this.toggle();
     this.getfolioMaster(this.filter.value);
   }
 
 
   getfolioMaster = (fb) => {
-    console.log(fb);
-    let object = Object.assign({}, fb, {
-      ...fb,
-      brn_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.brn_cd, 'id') : '[]',
-      bu_type_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.bu_type_id, 'bu_code') : '[]',
-      euin_no: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.euin_no, 'euin_no') : '[]',
-      rm_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.rm_id, 'euin_no') : '[]',
-      sub_brk_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.sub_brk_cd, 'code') : '[]',
-      kyc_status: (this.flag == 'K' || this.flag == 'A') ? fb.kyc_status : '',
-      nominee_status: (this.flag == 'N') ? fb.nominee_status : '',
-      adhaar_pan_link_status: (this.flag == 'A') ? fb.adhaar_pan_link_status : ''
-    })
-    this.dbIntr
-      .api_call(1, '/showFolioDetails', this.utility.convertFormData(object))
-      .pipe(pluck('data'))
-      .subscribe((res:IStaticRpt[]) => {
-        console.log(res);
-        this.report_data = res;
-      });
+    if(
+      this.filter.value.client_name != '' ||
+      this.filter.value.folio_no != ''
+    ){
+      this.toggle();
+      let object = Object.assign({}, fb, {
+        ...fb,
+        brn_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.brn_cd, 'id') : '[]',
+        bu_type_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.bu_type_id, 'bu_code') : '[]',
+        euin_no: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.euin_no, 'euin_no') : '[]',
+        rm_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.rm_id, 'euin_no') : '[]',
+        sub_brk_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.sub_brk_cd, 'code') : '[]',
+        kyc_status: (this.flag == 'K' || this.flag == 'A') ? fb.kyc_status : '',
+        nominee_status: (this.flag == 'N') ? fb.nominee_status : '',
+        adhaar_pan_link_status: (this.flag == 'A') ? fb.adhaar_pan_link_status : ''
+      })
+      this.dbIntr
+        .api_call(1, '/showFolioDetails', this.utility.convertFormData(object))
+        .pipe(pluck('data'))
+        .subscribe((res:IStaticRpt[]) => {
+          console.log(res);
+          this.report_data = res;
+        });
+    }
+    else{
+      this.utility.showSnackbar('Please either select client or enter folio no',0);
+    }
+
   };
 
   /**
@@ -582,16 +590,16 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     { field: 'brnach_name', header: 'Branch', width: '10rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'rm_name', header: 'RM', width: '16rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'sub_brk_code', header: 'Sub Broker Code', width: '16rem', isVisible: ['F', 'K', 'A', 'N'] },
-    { field: 'euin_no', header: 'Euin', width: '8rem', isVisible: ['F', 'K', 'A', 'N'] },
+    { field: 'euin_no', header: 'EUIN', width: '8rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'folio_no', header: 'Folio', width: '11rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'family', header: 'Family', width: '16rem', isVisible: ['F'] },
     { field: 'first_client_name', header: 'Investor Name', width: '16rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'cat_name', header: 'Category', width: '11rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'subcat_name', header: 'Sub Category', width: '20rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'scheme_name', header: 'Scheme', width: '28rem', isVisible: ['F', 'K', 'A', 'N'] },
-    { field: 'add_1', header: 'Address1', width: '25rem', isVisible: ['F'] },
-    { field: 'add_2', header: 'Address2', width: '25rem', isVisible: ['F'] },
-    { field: 'add_3', header: 'Address3', width: '25rem', isVisible: ['F'] },
+    { field: 'add_1', header: 'Address-1', width: '25rem', isVisible: ['F'] },
+    { field: 'add_2', header: 'Address-2', width: '25rem', isVisible: ['F'] },
+    { field: 'add_3', header: 'Address-3', width: '25rem', isVisible: ['F'] },
     { field: 'city', header: 'City', width: '15rem', isVisible: ['F'] },
     { field: 'state', header: 'State', width: '15rem', isVisible: ['F'] },
     { field: 'pincode', header: 'Pincode', width: '9rem', isVisible: ['F'] },
@@ -613,11 +621,12 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     },
     {
       field: 'occupation_des',
-      header: '1st Holder Occupassion',
+      header: '1st Holder Occupation',
       width: '15rem', isVisible: ['F']
     },
     { field: 'mobile', header: '1st Holder Phone', width: '12rem', isVisible: ['F'] },
     { field: 'email', header: '1st Holder Email', width: '15rem', isVisible: ['F'] },
+    { field: 'joint_name_1', header: '2nd Holder Name', width: '12rem', isVisible: ['F', 'K'] },
 
     { field: 'pan_2_holder', header: '2nd Holder PAN', width: '12rem', isVisible: ['F', 'K'] },
     {
@@ -633,7 +642,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     },
     {
       field: 'occupation_des_2nd',
-      header: '2nd Holder Occupassion',
+      header: '2nd Holder Occupation',
       width: '15rem', isVisible: ['F']
     },
     { field: 'mobile_2nd_holder', header: '2nd Holder Phone', width: '12rem', isVisible: ['F'] },
@@ -642,7 +651,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
       header: '2nd Holder Email',
       width: '15rem', isVisible: ['F']
     },
-
+    { field: 'joint_name_2', header: '3rd Holder Name', width: '12rem', isVisible: ['F', 'K'] },
     { field: 'pan_3_holder', header: '3rd Holder PAN', width: '12rem', isVisible: ['F', 'K'] },
     {
       field: 'ckyc_no_3rd',
@@ -657,27 +666,27 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     },
     {
       field: 'occupation_des_3rd',
-      header: '3rd Holder Occupassion',
+      header: '3rd Holder Occupation',
       width: '15rem', isVisible: ['F']
     },
     { field: 'mobile_3rd_holder', header: '3rd Holder Phone', width: '12rem', isVisible: ['F'] },
     { field: 'email_3rd_holder', header: '3rd Holder Email', width: '15rem', isVisible: ['F'] },
 
-    { field: 'guardian_name', header: 'Gurdian Name', width: '15rem', isVisible: ['F'] },
-    { field: 'guardian_pan', header: 'Gurdian PAN', width: '9rem', isVisible: ['F', 'K', 'A'] },
-    { field: 'guardian_ckyc_no', header: 'Gurdian CKYC', width: '15rem', isVisible: ['F', 'K'] },
-    { field: 'guardian_dob', header: 'Gurdian DOB', width: '10rem', isVisible: ['F'] },
-    { field: 'guardian_tax_status', header: 'Gurdian Tax', width: '15rem', isVisible: ['F'] },
+    { field: 'guardian_name', header: 'Guardian Name', width: '15rem', isVisible: ['F'] },
+    { field: 'guardian_pan', header: 'Guardian PAN', width: '9rem', isVisible: ['F', 'K', 'A'] },
+    { field: 'guardian_ckyc_no', header: 'Guardian CKYC', width: '15rem', isVisible: ['F', 'K'] },
+    { field: 'guardian_dob', header: 'Guardian DOB', width: '10rem', isVisible: ['F'] },
+    { field: 'guardian_tax_status', header: 'Guardian Tax', width: '15rem', isVisible: ['F'] },
     {
       field: 'guardian_occu_des',
-      header: 'Gurdian Occupassion',
+      header: 'Guardian Occupation',
       width: '15rem', isVisible: ['F']
     },
-    { field: 'guardian_mobile', header: 'Gurdian Phone', width: '15rem', isVisible: ['F'] },
-    { field: 'guardian_email', header: 'Gurdian Email', width: '20rem', isVisible: ['F'] },
+    { field: 'guardian_mobile', header: 'Guardian Phone', width: '15rem', isVisible: ['F'] },
+    { field: 'guardian_email', header: 'Guardian Email', width: '20rem', isVisible: ['F'] },
     {
       field: 'guardian_relation',
-      header: 'Gurdian Relation',
+      header: 'Guardian Relation',
       width: '15rem', isVisible: ['F']
     },
     {
@@ -697,7 +706,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     },
     {
       field: 'guardian_pa_link_ststus',
-      header: 'Gurdian PAN Adhaar Link',
+      header: 'Guardian PAN Adhaar Link',
       width: '15rem', isVisible: ['F', 'A']
     },
 
@@ -719,7 +728,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     },
     {
       field: 'guardian_kyc_status',
-      header: 'Gurdian KYC Status',
+      header: 'Guardian KYC Status',
       width: '15rem', isVisible: ['F', 'K', 'A']
     },
     { field: 'bank_name', header: 'Bank', width: '15rem', isVisible: ['F'] },
@@ -772,7 +781,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
       isVisible: ['F', 'K', 'A', 'N']
     },
     {
-      field: 'folio_balance',
+      field: 'rupee_bal',
       header: 'Folio Balance',
       width: '10rem',
       isVisible: ['F', 'K', 'A', 'N']
