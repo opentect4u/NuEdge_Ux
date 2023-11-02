@@ -62,8 +62,6 @@ export class MaturedSIPComponent implements OnInit {
   }
 
   searchSipReport(ev){
-    console.log(ev);
-
     this.getSipMasterData(ev);
   }
 

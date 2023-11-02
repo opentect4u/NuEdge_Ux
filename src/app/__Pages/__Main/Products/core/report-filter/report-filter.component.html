@@ -48,11 +48,14 @@
 
     <form [formGroup]="Rpt" (ngSubmit)="searchReport()" autocomplete="off">
       <div class="row">
-        <ng-container *ngIf="sub_type == 'RR' || this.sub_type == 'MT'">
+
+
+        <!-- COMMON MONTH & YEAR TEMPLATE -->
+        <ng-template #common_month_year>
           <div class="col-sm-3">
             <label for="month">Month</label>
             <select name="month" id="month" class="form-control" formControlName="month">
-              <!-- <option value="">Select Month</option> -->
+              <option value="">Select Month</option>
               <option [value]="item.id" *ngFor="let item of month">{{item.month}}</option>
             </select>
           </div>
@@ -60,11 +63,56 @@
             <label for="year">Year</label>
             <select name="year" id="year" class="form-control"
                     formControlName="year">
-              <!-- <option value="">Select Year</option> -->
+              <option value="">Select Year</option>
               <option [value]="item" *ngFor="let item of year">{{item}}</option>
             </select>
           </div>
-        </ng-container>
+        </ng-template>
+        <!-- END -->
+
+          <!-- FIELD SHOWN FOR TO BE MATURED -->
+          <ng-container *ngIf="sub_type == 'MT'">
+            <!-- SELECT DURATION -->
+            <div class="col-sm-3">
+              <label for="view_by">View By</label>
+              <select name="view_by" id="view_by" class="form-control" formControlName="view_by">
+               <option value="">Select</option>
+               <option value="M">Month</option>
+               <option value="D">Duration</option>
+             </select>
+           </div>
+           <!-- END -->
+
+           <!-- SELECT UPTO IF VIEW BY IS SELCTED AS Duration -->
+           <ng-container *ngIf="Rpt.value.view_by == 'D'">
+           <div class="col-sm-3">
+             <label for="upto">Upto</label>
+             <select name="upto" id="upto" class="form-control" formControlName="upto">
+               <option value="">Select</option>
+               <option value="1">1 Month</option>
+               <option value="2">2 Month</option>
+               <option value="3">3 Month</option>
+               <option value="4">4 Month</option>
+               <option value="5">5 Month</option>
+               <option value="6">6 Month</option>
+             </select>
+           </div>
+          </ng-container>
+          <!-- END -->
+
+          <!-- SELECT UPTO IF VIEW BY IS SELCTED AS Month -->
+          <ng-container *ngIf="Rpt.value.view_by == 'M'">
+            <ng-container [ngTemplateOutlet]="common_month_year"></ng-container>
+          </ng-container>
+          <!-- END -->
+          </ng-container>
+          <!-- END-->
+
+          <!-- FIELD SHOWN FOR TO BE REGISTERED -->
+          <ng-container *ngIf="sub_type == 'RR'">
+            <ng-container [ngTemplateOutlet]="common_month_year"></ng-container>
+          </ng-container>
+          <!-- END -->
 
         <div class="col-sm-3">
           <label for="view_type">View Type</label>
@@ -177,13 +225,19 @@
             </ng-multiselect-dropdown>
           </div>
 
-          <div [class]="(sub_type == 'RR' || this.sub_type == 'MT') ? 'col-sm-3  d-flex align-items-end justify-content-end' : 'col-sm-9 mt-2 d-flex align-items-end justify-content-end'">
+          <div class="d-flex align-items-end justify-content-end"
+          [class]="(sub_type == 'RR' || this.sub_type == 'MT') ? 'col-sm-3  ' : 'col-sm-9 mt-2'">
             <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
           </div>
 
         </ng-container>
         <ng-template #normalFilter>
-          <div [class]="(sub_type == 'RR' || this.sub_type == 'MT') ? 'col-sm-6  d-flex align-items-end justify-content-end' : 'col-sm-12 mt-2 d-flex align-items-end justify-content-end'">
+          <!-- (sub_type == 'RR' || this.sub_type == 'MT') ? 'col-sm-6' : 'col-sm-12 mt-2' -->
+          <div class=" d-flex align-items-end justify-content-end"
+          [ngClass]="{'col-sm-6':(sub_type == 'RR' ||  Rpt.value.view_by == 'D'),
+          'col-sm-3':(sub_type == 'MT' && Rpt.value.view_by == 'M'),
+          'col-sm-12 mt-2':(sub_type != 'RR' && sub_type != 'MT')
+        }">
             <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
           </div>
         </ng-template>

@@ -88,7 +88,7 @@
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field].toString() | titlecase) : 'N/A' }}</p>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-                      <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0') ? trxn[col.field] : 'N/A' }}</p>
+                      <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' ') ? trxn[col.field] : 'N/A' }}</p>
                       </ng-container>
                   <ng-container *ngSwitchDefault>
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>

@@ -281,8 +281,10 @@ export class ReportFilterComponent implements OnInit {
    * Form Field for search Transaction
    */
   Rpt = new FormGroup({
-    month: new FormControl((new Date().getMonth() + 1)),
-    year: new FormControl(new Date().getFullYear()),
+    view_by:new FormControl('M'),
+    upto:new FormControl(''),
+    month: new FormControl(''),
+    year: new FormControl(''),
     amc_id: new FormControl([], { updateOn: 'blur' }),
     cat_id: new FormControl([], { updateOn: 'blur' }),
     sub_cat_id: new FormControl([], { updateOn: 'blur' }),
@@ -308,10 +310,18 @@ export class ReportFilterComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    /***** Previous Logic */
+    // this.month = this.setMonthAccordingToYear(
+    //   this.Rpt.value.year,
+    //   new Date().getFullYear()
+    // );
+    /****** End */
+    /**** CURRENT LOGIC */
     this.month = this.setMonthAccordingToYear(
       this.Rpt.value.year,
       new Date().getFullYear()
     );
+    /******END */
     this.maxDate= this.calculateDates('T');
     this.minDate = this.calculateDates('P');
     this.searchReport();
@@ -346,9 +356,11 @@ export class ReportFilterComponent implements OnInit {
       let dt = new Date();
       if (changes.Reset.currentValue == 'Y') {
         this.btn_type = 'R';
-        this.Rpt.get('month').setValue(dt.getMonth() + 1);
-        this.Rpt.get('year').setValue(dt.getFullYear());
+        console.log('RESET FORM');
+        // this.Rpt.get('month').setValue(this.sub_type == 'MM'? ((new Date().getMonth() + 1)) : '');
+        // this.Rpt.get('year').setValue(this.sub_type == 'MM' ? new Date().getFullYear() : '');
         this.reset();
+
       }
     }
   }
@@ -367,22 +379,27 @@ export class ReportFilterComponent implements OnInit {
    * Event trigger after form submit
    */
   searchReport = () => {
+     if((this.Rpt.value.month && !this.Rpt.value.year) || (!this.Rpt.value.month && this.Rpt.value.year)){
+      this.utility.showSnackbar(`Please Select ${this.Rpt.value.month ? ' Year' : ' Month'}`,2);
+      return;
+     }
+
     let liveSipReportFilter = Object.assign({}, this.Rpt.value, {
       ...this.Rpt.value,
      amc_id:this.utility.mapIdfromArray(this.Rpt.value.amc_id,'id'),
      brn_cd:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.brn_cd,'id') : '[]',
      bu_type_id:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.bu_type_id,'bu_code') : '[]',
      cat_id:this.utility.mapIdfromArray(this.Rpt.value.cat_id,'id'),
-    //  date_range:this.dt_range.inputFieldValue,
      euin_no:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.euin_no,'euin_no') : '[]',
      rm_id:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.rm_id,'euin_no') : '[]',
      scheme_id:this.utility.mapIdfromArray(this.Rpt.value.scheme_id,'id'),
      sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.value.sub_brk_cd,'code') : '[]',
      sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
-      month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : this.Rpt.value.month,
-      year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : this.Rpt.value.year
-    })
-
+    month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.month) : (this.Rpt.value == 'M' ? global.getActualVal(this.Rpt.value.month) : '')),
+    year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.year) : (this.Rpt.value == 'M' ? global.getActualVal(this.Rpt.value.year) : '')),
+    view_by:this.sub_type == 'MT' ? global.getActualVal(this.Rpt.value.view_by) : '',
+    upto:this.sub_type == 'MT' ? (this.Rpt.value.view_by == 'D' ? global.getActualVal(this.Rpt.value.upto) : '') : '',
+    });
     this.getsearchValues.emit(liveSipReportFilter);
   }
 
@@ -420,7 +437,11 @@ export class ReportFilterComponent implements OnInit {
       sip_stp_swp_type:'',
       client_id: '',
       pan_no: '',
-      view_type: ''
+      view_type: '',
+      month: this.sub_type == 'MT' ?  (new Date().getMonth() + 1) : '',
+      view_by:'M',
+      upto:'',
+      year:this.sub_type == 'MT' ? (new Date().getFullYear()) : ''
     });
     this.Rpt.get('brn_cd').setValue([], { emitEvent: true });
     this.subbrkArnMst = [];
@@ -441,12 +462,12 @@ export class ReportFilterComponent implements OnInit {
       });
   };
 
-   setMonthAccordingToYear(sel_year:Number,curr_year:Number){
+   setMonthAccordingToYear(sel_year:Number | undefined,curr_year:Number){
     if(sel_year){
       return sel_year > curr_year ? MonthDT :   MonthDT.filter((item:{id:number,month:string}) => Number(new Date().getMonth() + 1) <= item.id);
       }
       else{
-        return [];
+        return MonthDT.filter((item:{id:number,month:string}) => Number(new Date().getMonth() + 1) <= item.id);
       }
     }
 
@@ -462,6 +483,9 @@ export class ReportFilterComponent implements OnInit {
       this.Rpt.get('year').valueChanges.subscribe(res =>{
           this.month = this.setMonthAccordingToYear(res,new Date().getFullYear())
       })
+      /***
+       * END
+       */
 
       /**
        * Event Trigger after change amc

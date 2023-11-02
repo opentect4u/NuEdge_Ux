@@ -270,7 +270,9 @@
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
                       <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] == 'SI' ? 'Single' : 'Anyone or survivor') : 'N/A'}}</p>
                     </ng-container>
-
+                    <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+                      <p class="m-0">{{ (folio_dt[col.field] && (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK" && folio_dt[col.field]!='0' && folio_dt[col.field]!= ' ') ? folio_dt[col.field] : 'N/A' }}</p>
+                      </ng-container>
 
                     <ng-container *ngSwitchCase="col.field == 'nom_optout_status'">
                         <ng-container *ngIf="folio_dt[col.field];else nonominee__Status">

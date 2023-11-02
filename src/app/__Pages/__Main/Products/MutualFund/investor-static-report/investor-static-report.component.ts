@@ -593,10 +593,10 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     { field: 'euin_no', header: 'EUIN', width: '8rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'folio_no', header: 'Folio', width: '11rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'family', header: 'Family', width: '16rem', isVisible: ['F'] },
-    { field: 'first_client_name', header: 'Investor Name', width: '16rem', isVisible: ['F', 'K', 'A', 'N'] },
+    { field: 'first_client_name', header: 'Investor Name', width: '28rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'cat_name', header: 'Category', width: '11rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'subcat_name', header: 'Sub Category', width: '20rem', isVisible: ['F', 'K', 'A', 'N'] },
-    { field: 'scheme_name', header: 'Scheme', width: '28rem', isVisible: ['F', 'K', 'A', 'N'] },
+    { field: 'scheme_name', header: 'Scheme', width: '40rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'add_1', header: 'Address-1', width: '25rem', isVisible: ['F'] },
     { field: 'add_2', header: 'Address-2', width: '25rem', isVisible: ['F'] },
     { field: 'add_3', header: 'Address-3', width: '25rem', isVisible: ['F'] },
@@ -604,7 +604,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     { field: 'state', header: 'State', width: '15rem', isVisible: ['F'] },
     { field: 'pincode', header: 'Pincode', width: '9rem', isVisible: ['F'] },
     { field: 'city_type', header: 'City Type', width: '8rem', isVisible: ['F'] },
-    { field: 'mode_of_holding', header: 'Mode Of Holding', width: '10rem', isVisible: ['F', 'K'] },
+    { field: 'mode_of_holding', header: 'Mode Of Holding', width: '15rem', isVisible: ['F', 'K'] },
     { field: 'pan', header: '1st Holder PAN', width: '12rem', isVisible: ['F', 'K', 'A'] },
     {
       field: 'ckyc_no_1st',
@@ -625,8 +625,8 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
       width: '15rem', isVisible: ['F']
     },
     { field: 'mobile', header: '1st Holder Phone', width: '12rem', isVisible: ['F'] },
-    { field: 'email', header: '1st Holder Email', width: '15rem', isVisible: ['F'] },
-    { field: 'joint_name_1', header: '2nd Holder Name', width: '12rem', isVisible: ['F', 'K'] },
+    { field: 'email', header: '1st Holder Email', width: '28rem', isVisible: ['F'] },
+    { field: 'joint_name_1', header: '2nd Holder Name', width: '28rem', isVisible: ['F', 'K'] },
 
     { field: 'pan_2_holder', header: '2nd Holder PAN', width: '12rem', isVisible: ['F', 'K'] },
     {
@@ -649,9 +649,9 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     {
       field: 'email_2nd_holder',
       header: '2nd Holder Email',
-      width: '15rem', isVisible: ['F']
+      width: '28rem', isVisible: ['F']
     },
-    { field: 'joint_name_2', header: '3rd Holder Name', width: '12rem', isVisible: ['F', 'K'] },
+    { field: 'joint_name_2', header: '3rd Holder Name', width: '28rem', isVisible: ['F', 'K'] },
     { field: 'pan_3_holder', header: '3rd Holder PAN', width: '12rem', isVisible: ['F', 'K'] },
     {
       field: 'ckyc_no_3rd',
@@ -670,9 +670,9 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
       width: '15rem', isVisible: ['F']
     },
     { field: 'mobile_3rd_holder', header: '3rd Holder Phone', width: '12rem', isVisible: ['F'] },
-    { field: 'email_3rd_holder', header: '3rd Holder Email', width: '15rem', isVisible: ['F'] },
+    { field: 'email_3rd_holder', header: '3rd Holder Email', width: '28rem', isVisible: ['F'] },
 
-    { field: 'guardian_name', header: 'Guardian Name', width: '15rem', isVisible: ['F'] },
+    { field: 'guardian_name', header: 'Guardian Name', width: '28rem', isVisible: ['F'] },
     { field: 'guardian_pan', header: 'Guardian PAN', width: '9rem', isVisible: ['F', 'K', 'A'] },
     { field: 'guardian_ckyc_no', header: 'Guardian CKYC', width: '15rem', isVisible: ['F', 'K'] },
     { field: 'guardian_dob', header: 'Guardian DOB', width: '10rem', isVisible: ['F'] },
@@ -686,7 +686,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     { field: 'guardian_email', header: 'Guardian Email', width: '20rem', isVisible: ['F'] },
     {
       field: 'guardian_relation',
-      header: 'Guardian Relation',
+      header: 'Guardian Relationship',
       width: '15rem', isVisible: ['F']
     },
     {
@@ -742,7 +742,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     //{ field: 'nom_pan_1', header: '1st Nominee PAN', width: '12rem' },
     {
       field: 'nom_relation_1',
-      header: '1st Nominee Relation',
+      header: '1st Nominee Relationship',
       width: '15rem', isVisible: ['F', 'N']
     },
     {
@@ -750,11 +750,11 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
       header: '% of 1st Nominee',
       width: '10rem', isVisible: ['F', 'N']
     },
-    { field: 'nom_name_2', header: '2nd Nominee', width: '15rem', isVisible: ['F', 'N'] },
+    { field: 'nom_name_2', header: '2nd Nominee', width: '28rem', isVisible: ['F', 'N'] },
     //{ field: 'nom_pan_2', header: '2nd Nominee PAN', width: '12rem' },
     {
       field: 'nom_relation_2',
-      header: '2nd Nominee Relation',
+      header: '2nd Nominee Relationship',
       width: '15rem', isVisible: ['F', 'N']
     },
     {
@@ -762,11 +762,11 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
       header: '% of 2nd Nominee',
       width: '10rem', isVisible: ['F', 'N']
     },
-    { field: 'nom_name_3', header: '3rd Nominee', width: '15rem', isVisible: ['F', 'N'] },
+    { field: 'nom_name_3', header: '3rd Nominee', width: '28rem', isVisible: ['F', 'N'] },
     //{ field: 'nom_pan_3', header: '3rd Nominee PAN', width: '12rem', isVisible: ['F'] },
     {
       field: 'nom_relation_3',
-      header: '3rd Nominee Relation',
+      header: '3rd Nominee Relationship',
       width: '15rem', isVisible: ['F', 'N']
     },
     {

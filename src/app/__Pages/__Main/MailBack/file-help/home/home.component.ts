@@ -69,7 +69,6 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     switch(flag){
       case 'P':
       this.file_type_tab = this.file_help.filter(item => item.id == ev.tabDtls.id)[0].flag;
-      console.log(this.file_type_tab);
       this.fileType_tab = this.file_help.filter(item => item.id == ev.tabDtls.id)[0].sub_menu;
       if(this.file_type_tab == 'S'){
         this.sub_tab = this.fileType_tab[0].flag;
@@ -80,12 +79,11 @@ export class HomeComponent implements OnInit, IFileHelpHome {
          //call api for Transaction Report
          this.getTransactionMst(this.rnt_type_tab);
       }
-
       break;
       case 'R':
       this.rnt_type_tab = ev.tabDtls.id;
       if(this.file_type_tab == 'S'){
-        this.sub_tab = this.fileType_tab[0].flag;
+        // this.sub_tab = this.fileType_tab[0].flag;
         this.getSystamaticTransactionType(this.rnt_type_tab,this.sub_tab);
       }
       else{
@@ -102,8 +100,6 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     this.setValidators();
     this.rntTrxnType.get('rnt_id').setValue(this.rnt_type_tab);
     this.SetColumns(this.rnt_type_tab);
-
-
   }
 
   submitTransactionType(): void {

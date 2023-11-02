@@ -518,7 +518,8 @@ table {
   font-size: 13px;
   list-style-type: none; */
   line-height: 30px;
-  font-weight: 700;
+  /* font-weight: 700; */
+  font-weight: 500;
   font-size: 11px;
   list-style-type: none;
 }

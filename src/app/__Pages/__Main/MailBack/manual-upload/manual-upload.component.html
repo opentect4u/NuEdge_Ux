@@ -110,19 +110,11 @@
             <tr tabindex="999">
               <td *ngFor="let col of columns">
                 <ng-container [ngSwitch]="true">
-                  <!-- <ng-container *ngSwitchCase="col.field == 'file_type_id'">
-                     <b>{{(file[col.field] | fileType:fileTypeMst)}}</b>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'file_id'">
-                    <b>{{file[col.field] | mailBckfile:file['file_type_id']}}</b>
-                 </ng-container> -->
                  <ng-container *ngSwitchCase="col.field == 'process_date'">
                   <b>{{file[col.field] ? (file[col.field] | date:'dd-MM-YYYY h:mma') : 'N/A'}}</b>
                </ng-container>
 
                  <ng-container *ngSwitchCase="col.field == 'upload_file'">
-                  <!-- (click)="downloadFile(file[col.field])" -->
-
                   <a
                   [matTooltipPosition]="'after'"
                   #tooltip="matTooltip"
@@ -153,22 +145,15 @@
             </tr>
           </ng-template>
       </p-table>
-        <!-- For Paginate and Show Item Per page -->
         <shared-paginate [__paginate]="paginate"
         (itemPerpageShow)="onSelectItem($event)"
         (PaginateFn)="getPaginate($event)"
         ></shared-paginate>
-        <!-- End -->
       </div>
       <div class="card-footer">
         In Total There Are {{FileMstData.length}} Files
       </div>
     </div>
     </div>
-    <!-- <div class="col-sm-12  my-3">
-
-    </div> -->
-
 </div>
-<!--  -->
 
