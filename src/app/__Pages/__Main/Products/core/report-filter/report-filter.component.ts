@@ -375,14 +375,39 @@ export class ReportFilterComponent implements OnInit {
   }
 
 
+  // checkYearc_month = async (month,year) =>{
+  //     if((month && !year) || (!month && year)){
+  //         await this.utility.showSnackbar(`Please Select ${this.Rpt.value.month ? ' Year' : ' Month'}`,2);
+  //         return;
+  //        }
+  // }
+
+
+
   /**
    * Event trigger after form submit
    */
   searchReport = () => {
-     if((this.Rpt.value.month && !this.Rpt.value.year) || (!this.Rpt.value.month && this.Rpt.value.year)){
-      this.utility.showSnackbar(`Please Select ${this.Rpt.value.month ? ' Year' : ' Month'}`,2);
-      return;
-     }
+    if(this.sub_type == 'RR'){
+      if((this.Rpt.value.month && !this.Rpt.value.year) || (!this.Rpt.value.month && this.Rpt.value.year)){
+        this.utility.showSnackbar(`Please Select ${this.Rpt.value.month ? ' Year' : ' Month'}`,2);
+        return;
+       }
+    }
+    else if(this.sub_type == 'MT'){
+      if(this.Rpt.value.view_by == 'M'){
+        if((this.Rpt.value.month && !this.Rpt.value.year) || (!this.Rpt.value.month && this.Rpt.value.year)){
+          this.utility.showSnackbar(`Please Select ${this.Rpt.value.month ? ' Year' : ' Month'}`,2);
+          return;
+         }
+      }
+      else{
+          if(!this.Rpt.value.upto){
+            this.utility.showSnackbar(`Please Select Upto`,2);
+             return;
+          }
+      }
+    }
 
     let liveSipReportFilter = Object.assign({}, this.Rpt.value, {
       ...this.Rpt.value,
@@ -395,8 +420,8 @@ export class ReportFilterComponent implements OnInit {
      scheme_id:this.utility.mapIdfromArray(this.Rpt.value.scheme_id,'id'),
      sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.value.sub_brk_cd,'code') : '[]',
      sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
-    month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.month) : (this.Rpt.value == 'M' ? global.getActualVal(this.Rpt.value.month) : '')),
-    year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.year) : (this.Rpt.value == 'M' ? global.getActualVal(this.Rpt.value.year) : '')),
+    month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.month) : (this.Rpt.value.view_by == 'M' ? global.getActualVal(this.Rpt.value.month) : '')),
+    year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.year) : (this.Rpt.value.view_by == 'M' ? global.getActualVal(this.Rpt.value.year) : '')),
     view_by:this.sub_type == 'MT' ? global.getActualVal(this.Rpt.value.view_by) : '',
     upto:this.sub_type == 'MT' ? (this.Rpt.value.view_by == 'D' ? global.getActualVal(this.Rpt.value.upto) : '') : '',
     });
