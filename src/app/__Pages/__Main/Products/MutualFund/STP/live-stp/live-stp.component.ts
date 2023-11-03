@@ -8,6 +8,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
+import {displayMode} from '../../../../../../Enum/displayMode';
 
 @Component({
   selector: 'live-stp',
@@ -15,6 +16,8 @@ import { global } from 'src/app/__Utility/globalFunc';
   styleUrls: ['./live-stp.component.css']
 })
 export class LiveStpComponent implements OnInit {
+
+  state:string = displayMode[1];
 
   @ViewChild('primeTbl') primeTbl: Table;
   @Input() stpType:string;
@@ -68,6 +71,7 @@ LiveStpReport = (formDt) =>{
   .subscribe((res: IliveStp[]) =>{
        this.live_stp_rpt = res;
        this.total_live_stp_report = global.calculatAmt(res);
+       this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
   })
 }
 
@@ -82,5 +86,8 @@ this.LiveStpReport(ev);
 filterGlobal = (ev) =>{
   let value = ev.target.value;
   this.primeTbl.filterGlobal(value, 'contains');
+}
+changeState = (event) =>{
+  this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
 }
 }

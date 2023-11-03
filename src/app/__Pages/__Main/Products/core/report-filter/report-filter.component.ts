@@ -18,7 +18,7 @@ import { DOCUMENT } from '@angular/common';
 import MonthDT from '../../../../../../assets/json/Master/month.json';
 import { global } from 'src/app/__Utility/globalFunc';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-
+import { displayMode } from 'src/app/Enum/displayMode';
 enum sip_stp_swp_type {
     'P'='/sipType',
     'R' ='/swpType',
@@ -46,7 +46,11 @@ enum sip_stp_swp_type {
 })
 export class ReportFilterComponent implements OnInit {
 
-   state: string | undefined = 'expanded';
+  mode = displayMode;
+
+   @Input() state: string | undefined;
+
+   @Output() changeState = new EventEmitter<string>(null);
 
    month:{id:number,month:string}[]  = [];
 
@@ -906,7 +910,8 @@ export class ReportFilterComponent implements OnInit {
 
   }
   toggle() {
-    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
+    // this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
+    this.changeState.emit(this.state);
   }
 
   clearAdvanceFilter = () =>{

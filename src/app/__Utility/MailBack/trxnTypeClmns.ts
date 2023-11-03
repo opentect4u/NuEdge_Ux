@@ -31,3 +31,12 @@ export class systamaticFreqClmns{
 }
 
 
+export class systamaticUnregisteredRemarksClmns{
+  public static columns =[
+    {field:'edit',header:'Edit',isVisible:[1,2],width:'15rem'},
+    {field:'rnt_name',header:'R&T',isVisible:[1,2],width:'25rem'},
+    {field:'remarks',header:'Remarks',isVisible:[1,2],width:''}
+]
+}
+
+

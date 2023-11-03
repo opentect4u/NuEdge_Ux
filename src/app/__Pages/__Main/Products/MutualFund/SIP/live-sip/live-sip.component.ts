@@ -7,6 +7,7 @@ import { pluck } from 'rxjs/operators';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
+import {displayMode} from '../../../../../../Enum/displayMode';
 
 @Component({
   selector: 'live-sip',
@@ -15,11 +16,14 @@ import { global } from 'src/app/__Utility/globalFunc';
 })
 export class LiveSIPComponent implements OnInit {
 
+
+  state:string = displayMode[1];
+
   @ViewChild('primeTbl') primeTbl: Table;
 
  __title:string = 'Live SIP';
 
- pause_sip_count:number = 0;
+   pause_sip_count:number = 0;
 
    @Input() report_type:string;
 
@@ -54,7 +58,7 @@ export class LiveSIPComponent implements OnInit {
 
   constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
-  ngOnInit(): void {console.log('Report Type:' + this.sipType);}
+  ngOnInit(): void {}
 
 
 
@@ -72,7 +76,10 @@ export class LiveSIPComponent implements OnInit {
               res.filter(item => item.pause_end_date && item.pause_start_date).length
              );
              this.pause_sip_count = res.filter(item => item.pause_end_date && item.pause_start_date).length;
-        })
+             this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+            });
+
+
   }
 
   /**
@@ -80,7 +87,6 @@ export class LiveSIPComponent implements OnInit {
    * @param ev
    */
   searchSipReport = (ev) =>{
-   console.log(ev);
   //  this.LiveSipReport({...ev,sip_type:this.sipType});
   }
 
@@ -89,6 +95,9 @@ export class LiveSIPComponent implements OnInit {
     this.primeTbl.filterGlobal(value, 'contains');
   };
 
+  changeState = (event) =>{
+    this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
+  }
 
 
 

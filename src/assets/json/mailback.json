@@ -1,6 +1,17 @@
 [
   {
     "id":1,
+    "menu_name":"File Upload Help",
+    "title":"File Upload Help",
+    "img":"upload_help.png",
+    "flag":"FUH",
+    "has_submenu": "N",
+    "url": "/main/mailback/upload_help",
+    "icon": "",
+    "sub_menu": []
+  },
+  {
+    "id":2,
     "menu_name":"Auto Uploaded Report",
     "title":"Auto Upload",
     "img":"autoUpload.png",
@@ -11,7 +22,7 @@
     "sub_menu": []
   },
   {
-    "id":2,
+    "id":3,
     "menu_name":"Manual Upload",
     "title":"Manual Upload",
     "img":"manualUpload.png",
@@ -22,7 +33,7 @@
     "sub_menu": []
   },
   {
-    "id":3,
+    "id":4,
     "menu_name":"File Help",
     "title":"File Help",
     "img":"fileHelp.jpeg",
@@ -33,7 +44,7 @@
     "sub_menu": []
   },
   {
-    "id":4,
+    "id":5,
     "menu_name":"Mail Back Mismatch",
     "title":"Mail Back Mismatch",
     "img":"mailbackMismatch.png",
@@ -44,7 +55,7 @@
     "sub_menu": []
   },
   {
-    "id":5,
+    "id":6,
     "menu_name":"Delete Transaction",
     "title":"Delete Transaction",
     "img":"",

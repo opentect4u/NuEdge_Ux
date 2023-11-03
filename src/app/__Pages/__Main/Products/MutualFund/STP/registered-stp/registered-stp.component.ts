@@ -8,6 +8,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
+import {displayMode} from '../../../../../../Enum/displayMode';
 
 @Component({
   selector: 'registered-stp',
@@ -16,6 +17,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 })
 export class RegisteredStpComponent implements OnInit {
 
+  state:string = displayMode[1];
   @Input() sub_tab:ITab[] = [];
 
   __title:string = ''
@@ -96,6 +98,12 @@ export class RegisteredStpComponent implements OnInit {
       .subscribe((res:Partial<IliveStp>[]) =>{
         this.register_stp = res;
         this.total_resgistered_stp_amt = global.calculatAmt(res);
+       this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+
       })
+    }
+
+    changeState = (event) =>{
+      this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
     }
 }

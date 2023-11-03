@@ -35,6 +35,8 @@
         <tr>
           <th  *ngFor="let col of column"
           [pSortableColumn]="col.field"
+          [style.max-width]="col.width"
+          [style.min-width]="col.width"
           >
             {{ col.header }}
             <p-sortIcon *ngIf="col.field!='edit'" [field]="col.field">
@@ -44,7 +46,10 @@
       </ng-template>
       <ng-template pTemplate="body" let-file let-index="rowIndex">
         <tr>
-          <td *ngFor="let col of column">
+          <td *ngFor="let col of column"
+          [style.max-width]="col.width"
+          [style.min-width]="col.width"
+          >
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'edit'">
                 <p-button icon="pi pi-pencil" (click)="populateTrxnTypeinForm(file)"

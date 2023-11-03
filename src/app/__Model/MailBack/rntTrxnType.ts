@@ -26,3 +26,12 @@ export interface ISystematiceFrequency {
   rnt_id: number;
   rnt_name: string;
 }
+
+
+export interface ISystematiceUnregisteredRemarks {
+  id: number;
+  rnt_id: number;
+  rnt_name: string;
+  remarks:string;
+}
+

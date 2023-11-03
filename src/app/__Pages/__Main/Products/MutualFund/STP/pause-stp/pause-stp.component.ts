@@ -7,13 +7,14 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
-
+import {displayMode} from '../../../../../../Enum/displayMode';
 @Component({
   selector: 'pause-stp',
   templateUrl: './pause-stp.component.html',
   styleUrls: ['./pause-stp.component.css']
 })
 export class PauseStpComponent implements OnInit {
+  state:string = displayMode[1];
 
   @ViewChild('primeTbl') primeTbl: Table;
 
@@ -53,6 +54,7 @@ export class PauseStpComponent implements OnInit {
     .subscribe((res: Partial<IliveStp>[]) =>{
          this.pause_stp = res;
          this.total_pause_stp_amt = global.calculatAmt(res);
+         this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
     })
   }
 
@@ -60,4 +62,7 @@ export class PauseStpComponent implements OnInit {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
   };
+  changeState = (event) =>{
+    this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
+  }
 }

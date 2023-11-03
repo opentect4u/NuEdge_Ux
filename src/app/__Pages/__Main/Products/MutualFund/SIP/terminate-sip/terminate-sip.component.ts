@@ -7,6 +7,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
+import { displayMode } from '../../../../../../Enum/displayMode';
 
 @Component({
   selector: 'terminate-sip',
@@ -15,6 +16,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 })
 export class TerminateSIPComponent implements OnInit {
 
+  state: string = displayMode[1];
   @ViewChild('primeTbl') primeTbl: Table;
   __title: string = 'Terminate SIP';
 
@@ -65,6 +67,7 @@ export class TerminateSIPComponent implements OnInit {
       .subscribe((res: IliveSip[]) => {
         this.live_sip_rpt = res;
         this.total_terminate_sip_amt = global.calculatAmt(res);
+        this.state = res.length > 0 ? displayMode[0] : displayMode[1];
       });
   };
 
@@ -79,5 +82,9 @@ export class TerminateSIPComponent implements OnInit {
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value, 'contains');
+  };
+
+  changeState = (event) => {
+    this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   };
 }

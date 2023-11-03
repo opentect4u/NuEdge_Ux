@@ -23,7 +23,13 @@
         "tab_name":"Frequency Report",
         "flag":"F",
         "img_src":""
-     }
+     },
+     {
+      "id":3,
+      "tab_name":"Unregistered Report",
+      "flag":"U",
+      "img_src":""
+   }
     ]
   }
 ]

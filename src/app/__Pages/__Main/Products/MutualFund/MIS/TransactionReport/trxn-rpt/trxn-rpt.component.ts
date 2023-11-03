@@ -546,7 +546,6 @@ export class TrxnRptComponent implements OnInit {
    *  call API for get transaction according to search result
    */
   searchTrxnReport = () => {
-    this.state = 'collapsed'
     if(this.misTrxnRpt.value.date_periods == 'Y'
     // || this.misTrxnRpt.value.date_periods == 'R'
     || this.misTrxnRpt.value.date_periods == ''){
@@ -571,6 +570,7 @@ export class TrxnRptComponent implements OnInit {
           }
     }
     // this.primeTbl.clear();
+
     this.fetchTransaction();
   };
 
@@ -643,6 +643,8 @@ export class TrxnRptComponent implements OnInit {
           this.utility.showSnackbar('No transactions are available on this periods',2,true);
           return;
         }
+      this.state = 'collapsed';
+
 
        this.subscribe = from(res).pipe(
         delay(2),

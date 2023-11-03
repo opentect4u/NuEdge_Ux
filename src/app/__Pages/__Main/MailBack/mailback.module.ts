@@ -30,6 +30,10 @@ const routes:Routes = [
           loadChildren:()=>import('./deletetrxn/deletetrxn.module').then(m => m.DeletetrxnModule)
       },
       {
+        path:'upload_help',
+        loadChildren:() => import('./upload_help/upload-help.module').then(upload_help => upload_help.UploadHelpModule),
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

@@ -519,6 +519,7 @@ mat-card {
   padding: 2px 1rem !important;
   font-size: 11px !important;
   font-weight: 500;
+  min-height: 33px;
 }
 
 

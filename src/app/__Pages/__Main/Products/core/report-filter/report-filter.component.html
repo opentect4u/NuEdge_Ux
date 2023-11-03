@@ -30,16 +30,16 @@
       <button mat-icon-button
       class="my-auto"
        color="primary"
-       [matTooltip]="state == 'collapsed' ? 'EXPAND MORE' : 'EXPAND LESS'"
+       [matTooltip]="state == mode[0] ? 'EXPAND MORE' : 'EXPAND LESS'"
        (click)="toggle()" class="mx-3">
-      <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
+      <mat-icon [ngClass]="{'rotateUp':state == mode[0],'rotateDown':state == 'expanded'}">
         keyboard_arrow_up
       </mat-icon>
       </button>
     </div>
 
   </mat-card-header>
-  <mat-card-content [@bodyExpansion]="state" [ngClass]="{'expandable-content': state == 'collapsed','px-3 py-3':state == 'expanded'}">
+  <mat-card-content [@bodyExpansion]="state" [ngClass]="{'expandable-content': state == mode[0],'px-3 py-3':state == 'expanded'}">
 
 
     <ng-template #SearchBtn>

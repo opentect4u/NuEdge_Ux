@@ -10,9 +10,10 @@
 :host ::ng-deep .p-datatable-scrollable>
 .p-datatable-wrapper>.p-datatable-table>
 .p-datatable-tfoot>tr>td{
-  background-color: #222f3f;
-  color: #fff;
+  background-color: #efefef;
+  color: #5a5a5a;
   font-size: 13px!important;
+  font-weight: 500;
 }
 
 

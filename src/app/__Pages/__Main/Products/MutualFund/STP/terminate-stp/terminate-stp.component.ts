@@ -8,12 +8,15 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
+import {displayMode} from '../../../../../../Enum/displayMode';
+
 @Component({
   selector: 'terminate-stp',
   templateUrl: './terminate-stp.component.html',
   styleUrls: ['./terminate-stp.component.css']
 })
 export class TerminateStpComponent implements OnInit {
+  state:string = displayMode[1];
 
   @ViewChild('primeTbl') primeTbl: Table;
 
@@ -68,6 +71,8 @@ terminateStpReport = (formDt) =>{
   .subscribe((res: IliveStp[]) =>{
        this.live_stp_rpt = res;
        this.total_terminate_stp_amt = global.calculatAmt(res);
+       this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+
   })
 }
 
@@ -83,5 +88,9 @@ filterGlobal = ($event) => {
   let value = $event.target.value;
   this.primeTbl.filterGlobal(value, 'contains');
 };
+
+changeState = (event) =>{
+  this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
+}
 
 }

@@ -8,6 +8,7 @@ import { IliveSip } from '../live-sip/live_sip.interface';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
+import { displayMode } from '../../../../../../Enum/displayMode';
 
 @Component({
   selector: 'registered-sip',
@@ -15,6 +16,8 @@ import { global } from 'src/app/__Utility/globalFunc';
   styleUrls: ['./registered-sip.component.css']
 })
 export class RegisteredSIPComponent implements OnInit {
+
+  state: string = displayMode[1];
 
   @Input() sub_tab:ITab[] = [];
 
@@ -89,11 +92,16 @@ export class RegisteredSIPComponent implements OnInit {
       .subscribe((res:Partial<IliveSip>[]) =>{
         this.register_sip = res;
         this.total_register_sip_amt = global.calculatAmt(res);
+        this.state = res.length > 0 ? displayMode[0] : displayMode[1];
       })
     }
 
     filterGlobal = ($event) => {
       let value = $event.target.value;
       this.primeTbl.filterGlobal(value, 'contains');
+    };
+
+    changeState = (event) => {
+      this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
     };
 }

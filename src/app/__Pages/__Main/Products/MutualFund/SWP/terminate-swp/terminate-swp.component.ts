@@ -8,12 +8,16 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
+import {displayMode} from '../../../../../../Enum/displayMode';
+
 @Component({
   selector: 'terminate-swp',
   templateUrl: './terminate-swp.component.html',
   styleUrls: ['./terminate-swp.component.css']
 })
 export class TerminateSwpComponent implements OnInit {
+
+  state:string = displayMode[1];
 
   @Input() swp_type:string;
 
@@ -73,6 +77,7 @@ LiveSwpReport = (formDt) =>{
   .subscribe((res: IliveSwp[]) =>{
        this.live_swp_rpt = res;
        this.total_terminate_swp_amt = global.calculatAmt(res);
+       this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
   })
 }
 
@@ -88,5 +93,8 @@ searchSwpReport = (ev) =>{
  filterGlobal = ($event) => {
   let value = $event.target.value;
   this.primeTbl.filterGlobal(value, 'contains');
-};
+  }
+changeState = (event) =>{
+  this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
+}
 }

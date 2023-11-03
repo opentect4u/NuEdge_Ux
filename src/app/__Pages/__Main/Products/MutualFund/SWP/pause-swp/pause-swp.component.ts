@@ -7,13 +7,16 @@ import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp
 import { IliveSwp } from '../live-swp/live_swp.interface';
 import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
-
+import {displayMode} from '../../../../../../Enum/displayMode';
 @Component({
   selector: 'pause-swp',
   templateUrl: './pause-swp.component.html',
   styleUrls: ['./pause-swp.component.css']
 })
 export class PauseSwpComponent implements OnInit {
+
+
+  state:string = displayMode[1];
 
   __title:string = 'Pause SWP';
 
@@ -61,6 +64,10 @@ export class PauseSwpComponent implements OnInit {
     .subscribe((res: Partial<IliveSwp>[]) =>{
          this.pause_swp = res;
          this.total_pause_swp_amt = global.calculatAmt(res);
+         this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
     })
+  }
+  changeState = (event) =>{
+    this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   }
 }

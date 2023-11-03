@@ -31,19 +31,35 @@
         (GetTabDtls)="changeTabDtls($event,'R')"
         ></core-tab>
         <div class="container_fluid">
-          <form [formGroup]="rntTrxnType" (ngSubmit)="submitTransactionType()">
+          <form [formGroup]="rntTrxnType" (ngSubmit)="submitTransactionType()" autocomplete="off">
             <div class="row">
              <ng-container *ngIf="this.sub_tab!= 'F';else freq_rpt">
-              <div class="col-sm-3">
-                <label for="trans_type">Transaction Type <span class="text-danger">*</span></label>
-                 <input type="text" #trxnType placeholder="Enter Transaction Type" name="trans_type" id="trans_type" class="form-control" formControlName="trans_type">
-                 <div class="invalid-feedback" *ngIf="rntTrxnType.get('trans_type').invalid && (rntTrxnType.get('trans_type').dirty || rntTrxnType.get('trans_type').touched)">
-                  <span class="invalid-feedback" *ngIf="(rntTrxnType.get('trans_type')).errors?.required">*Please provide transaction type</span>
+              <ng-container *ngIf="sub_tab == 'T' || file_type_tab == 'T';else remarks">
+                <div class="col-sm-3">
+                  <label for="trans_type">Transaction Type <span class="text-danger">*</span></label>
+                   <input type="text" #trxnType placeholder="Enter Transaction Type" name="trans_type" id="trans_type" class="form-control" formControlName="trans_type">
+                   <div class="invalid-feedback" *ngIf="rntTrxnType.get('trans_type').invalid && (rntTrxnType.get('trans_type').dirty || rntTrxnType.get('trans_type').touched)">
+                    <span class="invalid-feedback" *ngIf="(rntTrxnType.get('trans_type')).errors?.required">*Please provide transaction type</span>
+                  </div>
+                  </div>
+              </ng-container>
+              <ng-template #remarks>
+                <ng-container *ngIf="sub_tab == 'U'">
+                  <div class="col-sm-9">
+                  <label for="remarks">Remarks <span class="text-danger">*</span></label>
+                  <input type="text" placeholder="Enter Remarks"
+                  #trxnType
+                  name="remarks" id="remarks" class="form-control" formControlName="remarks">
+                  <div class="invalid-feedback" *ngIf="rntTrxnType.get('remarks').invalid && (rntTrxnType.get('remarks').dirty || rntTrxnType.get('remarks').touched)">
+                   <span class="invalid-feedback" *ngIf="(rntTrxnType.get('remarks')).errors?.required">*Please provide remarks</span>
+                 </div>
                 </div>
-                </div>
+                </ng-container>
+              </ng-template>
+
              </ng-container>
              <ng-template #freq_rpt>
-              <div class="col-sm-3">
+                <div class="col-sm-3">
                 <label for="freq_name">Frequency Name <span class="text-danger">*</span></label>
                  <input type="text" #trxnType placeholder="Enter Frequency Name" name="freq_name" id="freq_name" class="form-control" formControlName="freq_name">
                  <div class="invalid-feedback" *ngIf="rntTrxnType.get('freq_name').invalid && (rntTrxnType.get('freq_name').dirty || rntTrxnType.get('freq_name').touched)">
@@ -56,12 +72,10 @@
                    <div class="invalid-feedback" *ngIf="rntTrxnType.get('freq_code').invalid && (rntTrxnType.get('freq_code').dirty || rntTrxnType.get('freq_code').touched)">
                     <span class="invalid-feedback" *ngIf="(rntTrxnType.get('freq_code')).errors?.required">*Please provide frequency code</span>
                   </div>
-                  </div>
+                </div>
              </ng-template>
-
-
                <!-- For Transaction Report && Systamatic Transaction report (Transaction Report) -->
-             <div class="col-sm-3" *ngIf="this.sub_tab!= 'F'">
+             <div class="col-sm-3" *ngIf="this.sub_tab!= 'F' && sub_tab!= 'U'">
               <label for="trans_sub_type">Transaction Sub Type <span class="text-danger">*</span></label>
                <input type="text" placeholder="Enter Transaction Sub Type" name="trans_sub_type" id="trans_sub_type" class="form-control" formControlName="trans_sub_type">
                <div class="invalid-feedback" *ngIf="rntTrxnType.get('trans_sub_type').invalid && (rntTrxnType.get('trans_sub_type').dirty || rntTrxnType.get('trans_sub_type').touched)">
@@ -79,7 +93,7 @@
               </ng-container>
               <!-- End -->
 
-            <div class="col-sm-3" *ngIf="this.sub_tab!= 'F'">
+            <div class="col-sm-3" *ngIf="sub_tab!= 'F' && sub_tab!= 'U'">
               <label for="c_k_trans_type">File Transaction Type <span *ngIf="this.sub_tab == 'T'" class="text-danger">*</span></label>
                <input type="text" placeholder="Enter File Transaction Type" name="c_k_trans_type" id="c_k_trans_type" class="form-control" formControlName="c_k_trans_type">
                <div class="invalid-feedback" *ngIf="rntTrxnType.get('c_k_trans_type').invalid && (rntTrxnType.get('c_k_trans_type').dirty || rntTrxnType.get('c_k_trans_type').touched)">
@@ -128,10 +142,12 @@
               </ng-container>
               <!-- END -->
 
+              <!-- Button -->
               <ng-container  *ngIf="this.file_type_tab == 'S'">
                 <div
                 class="d-flex justify-content-end align-items-end"
-                [ngClass]="{'col-sm-6':this.sub_tab == 'F','col-sm-3':this.sub_tab == 'T'}"
+                [ngClass]="{'col-sm-6':this.sub_tab == 'F',
+                'col-sm-3':(this.sub_tab == 'T' || this.sub_tab == 'U')}"
                 >
                 <p-button
                 type="submit"
@@ -151,7 +167,7 @@
                 </p-button>
               </div>
               </ng-container>
-
+              <!-- End -->
 
             </div>
           </form>
