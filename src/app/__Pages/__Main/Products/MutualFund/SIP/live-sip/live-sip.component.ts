@@ -87,7 +87,7 @@ export class LiveSIPComponent implements OnInit {
    * @param ev
    */
   searchSipReport = (ev) =>{
-  //  this.LiveSipReport({...ev,sip_type:this.sipType});
+   this.LiveSipReport({...ev,sip_type:this.sipType});
   }
 
   filterGlobal = ($event) => {
