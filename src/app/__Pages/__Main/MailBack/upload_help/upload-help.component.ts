@@ -1,5 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,Inject, ViewChild} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { map, pluck } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { file, fileType } from '../manual-upload/manual-upload.component';
+import { rnt } from 'src/app/__Model/Rnt';
+import { column } from 'src/app/__Model/tblClmns';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { DOCUMENT } from '@angular/common';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-upload-help',
@@ -8,23 +16,220 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class UploadHelpComponent implements OnInit {
 
+  @ViewChild('pTableRef') pTableRef: Table;
+
   /*** File Upload help form */
   file_upload_help_form = new FormGroup({
-    file_type_id:new FormControl('',[Validators.required]),
-    rnt_id: new FormControl('',[Validators.required]),
-    file_name: new FormControl('',[Validators.required]),
-    file_format:new FormControl('',[Validators.required]),
-    rec_upload_freq: new FormControl('',[Validators.required])
-  })
+    id: new FormControl(0),
+    file_type_id: new FormControl('', [Validators.required]),
+    rnt_id: new FormControl('', [Validators.required]),
+    file_id: new FormControl('', [Validators.required]),
+    file_format_id: new FormControl('', [Validators.required]),
+    rec_upload_freq: new FormControl('', [Validators.required]),
+    uploaded_mode_id: new FormControl('', [Validators.required]),
+  });
 
   /**
    * For Holding master data for different type of transaction file
    */
-  trxn_file_mst_dt  = [];
+  upload_file_help_mst_dt = [];
 
-  constructor() { }
+  /** For holding different type of file */
+  fileTypeMst: fileType[] = [];
+
+  /** For holding R&T */
+  rnt_mst_dt: rnt[] = [];
+
+  /** For Holding file */
+  fileMst: file[] = [];
+
+  /*** File Upload help column */
+  file_uploaded_help_column:column[] = uploadFileHelpColumn.column;
+
+  constructor(private dbIntr: DbIntrService,
+    private utility:UtiliService,
+    @Inject(DOCUMENT) private dom: Document
+    ) {}
 
   ngOnInit(): void {
+    this.getmailBackFileType();
+    this.getrnt();
   }
 
+  ngAfterViewInit() {
+    /** Event trigger after change in rnt select dropdown */
+    this.file_upload_help_form.get('rnt_id').valueChanges.subscribe((res) => {
+      console.log(res);
+      this.getmailbackFileName(
+        res,
+        this.file_upload_help_form.value.file_type_id
+      );
+    });
+    /*** End */
+
+    this.file_upload_help_form
+      .get('file_type_id')
+      .valueChanges.subscribe((res) => {
+        console.log(res);
+        this.getmailbackFileName(this.file_upload_help_form.value.rnt_id, res);
+      });
+  }
+
+  /*** For Getting File Type master Data */
+  getmailBackFileType = () => {
+    this.dbIntr
+      .api_call(0, '/mailbackFileType', null)
+      .pipe(pluck('data'))
+      .subscribe((res: fileType[]) => {
+        this.fileTypeMst = res;
+      });
+  };
+  /**** End */
+
+  /*** For Getting R&T from master data */
+  getrnt = () => {
+    this.dbIntr
+      .api_call(0, '/rnt', null)
+      .pipe(
+        pluck('data'),
+        map((item: rnt[]) =>
+          item
+            .sort((a, b) => a.id - b.id)
+            .filter((item) => item.id == 2 || item.id == 1)
+        )
+      )
+      .subscribe((res: rnt[]) => {
+        this.rnt_mst_dt = res;
+      });
+  };
+  /*** End */
+
+  /**
+   * For Getting files against corrosponding R&T and File Type
+   * @param rnt_id
+   * @param file_type_id
+   */
+
+  getmailbackFileName = (rnt_id: number, file_type_id: number) => {
+    if (rnt_id && file_type_id) {
+      this.dbIntr
+        .api_call(
+          0,
+          '/mailbackFileName',
+          'rnt_id=' + rnt_id + '&file_type_id=' + file_type_id
+        )
+        .pipe(pluck('data'))
+        .subscribe((res: file[]) => {
+          console.log(res);
+          this.fileMst = res.map(({ id, rnt_id, name }) => ({
+            rnt_id,
+            id,
+            name,
+            parent_id: rnt_id,
+          }));
+        });
+    }
+  };
+  /*** End */
+
+  /** on page load get the file upload help master data */
+  getFileUploadHelpMasterData = () =>{
+      this.dbIntr.api_call(0,'/fileuploadHelp',null)
+      .pipe(pluck('data'))
+      .subscribe(res =>{
+        console.log(res);
+      })
+  }
+  /**** End *****/
+
+  /*** Save the form and send this data to the backend */
+  savefileUploadHelp = () => {
+    let searchRes = Object.assign({},this.file_upload_help_form.value,{
+      ...this.file_upload_help_form.value,
+      id:this.file_upload_help_form.value.id ? this.file_upload_help_form.value.id : 0
+    })
+    console.log(searchRes);
+
+  };
+  /**** END */
+
+  /*** Get Field from column for filter to be worked properly */
+  getColumns = ():string[] =>{
+    return this.utility.getColumns(this.file_uploaded_help_column);
+  }
+  /*** End */
+
+
+  /**
+   * Bind selected row with Form
+   * @param row
+   */
+  populateuploadFileHelpinForm = (row) =>{
+    if(row){
+      this.dom.documentElement.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    this.file_upload_help_form.patchValue({
+      id:row ? row.id : 0,
+      file_type_id: row ? row.file_type_id : '',
+      rnt_id: row ? row.rnt_id : '',
+      file_id:row ? row.file_id : '',
+      file_format_id: row ? row.file_format_id : '',
+      rec_upload_freq: row ? row.rec_upload_freq : '',
+      uploaded_mode_id: row ? row.uploaded_mode_id : '',
+    })
+  }
+  /***** END */
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.pTableRef.filterGlobal(value,'contains')
+  }
+}
+
+export class uploadFileHelpColumn {
+  public static column: column[] = [
+    {
+      field: 'sl_no',
+      header: 'Sl No',
+      width:'6rem'
+    },
+    {
+      field: 'file_type',
+      header: 'File Type',
+      width:''
+    },
+    {
+      field: 'rnt_name',
+      header: 'R&T',
+      width:'15rem'
+
+    },
+    {
+      field: 'file_name',
+      header: 'File Name',
+      width:''
+
+    },
+    {
+      field: 'file_format',
+      header: 'File Format',
+      width:'13rem'
+
+    },
+    {
+      field: 'uploaded_mode',
+      header: 'Uploaded Mode',
+      width:'14rem'
+
+    },
+    {
+      field: 'rec_upload_freq',
+      header: 'Recommended Uploaded Freq',
+      width:''
+    },
+    {
+      field: 'edit',
+      header: 'Edit',
+      width:'6rem'
+    },
+  ];
 }

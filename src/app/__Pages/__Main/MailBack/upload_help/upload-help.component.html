@@ -1,9 +1,187 @@
 <div class="bckContainer"></div>
-<div class="flexSec">
-  <mat-card>
-    <mat-card-header class="border-bottom">
-      <mat-card-title>File Upload Help</mat-card-title>
-    </mat-card-header>
-   </mat-card>
+<div class="row flexSec">
+  <div class="col-sm-12">
+    <mat-card>
+      <mat-card-header class="border-bottom">
+        <mat-card-title>
+          <div class="card_title">
+           File Upload Help</div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-3">
+          <form [formGroup]="file_upload_help_form" (ngSubmit)="savefileUploadHelp()">
+        <div class="row">
+            <div class="col-sm-3">
+              <label for="file_type_id">File Type <span class="text-danger">*</span></label>
+              <select name="file_type_id" formControlName="file_type_id" class="form-control" id="file_type">
+                <option value="">Select File Type</option>
+               <option [value]="fileType.id" *ngFor="let fileType of fileTypeMst" >{{fileType.name}}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="file_upload_help_form.get('file_type_id').invalid && (file_upload_help_form.get('file_type_id').dirty || file_upload_help_form.get('file_type_id').touched)">
+                <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('file_type_id')).errors?.required">*Please provide file type</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label for="rnt_id">R&T <span class="text-danger">*</span></label>
+              <select name="rnt_id" formControlName="rnt_id" class="form-control" id="file_type">
+                <option value="">Select R&T</option>
+               <option [value]="rnt.id" *ngFor="let rnt of rnt_mst_dt" >{{rnt.rnt_name}}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="file_upload_help_form.get('rnt_id').invalid && (file_upload_help_form.get('rnt_id').dirty || file_upload_help_form.get('rnt_id').touched)">
+                <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('rnt_id')).errors?.required">*Please provide R&T</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label for="file_id">File Name <span class="text-danger">*</span></label>
+              <select name="file_id" formControlName="file_id" class="form-control" id="file_type">
+                <option value="">Select File</option>
+               <option [value]="file.id" *ngFor="let file of fileMst" >{{file.name}}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="file_upload_help_form.get('file_id').invalid && (file_upload_help_form.get('file_id').dirty || file_upload_help_form.get('file_id').touched)">
+                <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('file_id')).errors?.required">*Please provide file</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label for="file_format_id">File Format <span class="text-danger">*</span></label>
+              <select name="file_format_id" formControlName="file_format_id" class="form-control" id="file_type">
+                <option value="">Select File Format</option>
+                <option value="csv">CSV</option>
+                <option value="txt">TXT</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="file_upload_help_form.get('file_format_id').invalid && (file_upload_help_form.get('file_format_id').dirty || file_upload_help_form.get('file_format_id').touched)">
+                <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('file_format_id')).errors?.required">*Please provide file format</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label for="uploaded_mode_id">Uploaded Mode <span class="text-danger">*</span></label>
+              <select name="uploaded_mode_id" formControlName="uploaded_mode_id" class="form-control" id="file_type">
+                <option value="">Select Uploaded Mode</option>
+                <option value="auto">Auto</option>
+                <option value="manual">Manual</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="file_upload_help_form.get('uploaded_mode_id').invalid && (file_upload_help_form.get('uploaded_mode_id').dirty || file_upload_help_form.get('uploaded_mode_id').touched)">
+                <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('uploaded_mode_id')).errors?.required">*Please provide uploaded mode</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label for="rec_upload_freq">Recommended Upload Frequency <span class="text-danger">*</span></label>
+              <input placeholder="Enter Recommended Upload Frequency" type="text" class="form-control" id="rec_upload_freq" name="rec_upload_freq" formControlName="rec_upload_freq"/>
+              <div class="invalid-feedback" *ngIf="file_upload_help_form.get('rec_upload_freq').invalid && (file_upload_help_form.get('rec_upload_freq').dirty || file_upload_help_form.get('rec_upload_freq').touched)">
+                <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('rec_upload_freq')).errors?.required">*Please provide recommended upload frequency</span>
+              </div>
+            </div>
+            <div class="col-sm-6 d-flex justify-content-end align-items-end">
+
+
+              <p-button
+              type="reset"
+              label="Reset"
+              icon="pi pi-refresh"
+              iconPos="right"
+              class="float-right"
+              styleClass="p-button-lg p-button-danger">
+              </p-button>
+
+              <p-button
+              type="submit"
+              label="Save"
+              icon="pi pi-save"
+              iconPos="right"
+              class="float-right"
+              [disabled]="file_upload_help_form.invalid"
+              styleClass="p-button-lg p-button-primary ml-1">
+              </p-button>
+            </div>
+           </div>
+        </form>
+    </mat-card-content>
+     </mat-card>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-sm-12">
+    <mat-card>
+      <mat-card-header class="border-bottom">
+        <mat-card-title>
+          <div class="card_title">
+            File Upload Help Report
+          </div>
+        </mat-card-title>
+        <div class="my-auto w-25 pr-4">
+          <span class="ml-auto">
+            <input id="search" class="form-control rounded" type="text"
+                   (input)="filterGlobal($event)"
+                   placeholder="Search" />
+          </span>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <p-table
+    #pTableRef
+    responsiveLayout="scroll"
+    [value]="upload_file_help_mst_dt"
+    [responsive]="true"
+    [rowHover]="true"
+    styleClass="p-datatable-striped"
+    [autoLayout]="true"
+    [scrollable]="true"
+    [paginator]="true"
+    [totalRecords]="upload_file_help_mst_dt.length"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [globalFilterFields]="getColumns()"
+    >
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th  *ngFor="let col of file_uploaded_help_column"
+          [pSortableColumn]="col.field"
+          [style.max-width]="col.width"
+          [style.min-width]="col.width"
+          >
+            {{ col.header }}
+            <p-sortIcon *ngIf="col.field!='edit'" [field]="col.field != 'edit' ? col.field : ''">
+            </p-sortIcon>
+          </th>
+      </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-file let-index="rowIndex">
+        <tr>
+          <td *ngFor="let col of file_uploaded_help_column"
+          [style.max-width]="col.width"
+          [style.min-width]="col.width"
+          >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <p class="m-0">
+                  {{index + 1}}
+                </p>
+             </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'edit'">
+                <p-button icon="pi pi-pencil" (click)="populateuploadFileHelpinForm(file)"
+                  styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <p class="m-0">{{ file[col.field] ? file[col.field]  : 'N/A'}}
+               </p>
+             </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-file>
+        <tr>
+          <td [attr.colspan]="5">
+             <h4>No Records Found</h4>
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+    </mat-card-content>
+     </mat-card>
+  </div>
 </div>
 
