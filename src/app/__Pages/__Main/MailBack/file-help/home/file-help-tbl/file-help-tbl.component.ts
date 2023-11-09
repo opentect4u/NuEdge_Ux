@@ -10,6 +10,9 @@ export class FileHelpTblComponent implements OnInit {
 
   @Input() column;
   @Input() trxnTypeMst;
+
+  @Input() title;
+
   @Output() sendSelectedRow = new EventEmitter();
 
   @ViewChild('pTableRef') pTableRef: Table;

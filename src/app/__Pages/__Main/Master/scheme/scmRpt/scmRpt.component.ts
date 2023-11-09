@@ -51,6 +51,10 @@ type selectBtn = {
   styleUrls: ['./scmRpt.component.css'],
 })
 export class ScmRptComponent implements OnInit {
+
+
+  formValue;
+
   __freq = frequency;
   __trxnType = trxnType;
   sort = new sort();
@@ -151,6 +155,7 @@ export class ScmRptComponent implements OnInit {
 
   ngOnInit() {
     // this.getSchemeMst();
+    this.formValue = this.__scmForm.value;
     this.setColumns(
       this.__scmForm.value.scheme_status,
       this.__scmForm.value.options
@@ -261,44 +266,38 @@ export class ScmRptComponent implements OnInit {
   ) {
     const __scmExport = new FormData();
     __scmExport.append('paginate', this.__pageNumber.value);
-    __scmExport.append('scheme_type', this.__scmForm.value.scheme_status);
-    __scmExport.append(
-      'field',
-      global.getActualVal(this.sort.field) ? this.sort.field : ''
-    );
-    __scmExport.append(
-      'order',
-      global.getActualVal(this.sort.order) ? this.sort.order : '1'
-    );
+    __scmExport.append('scheme_type', this.formValue?.scheme_status);
+    __scmExport.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __scmExport.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     __scmExport.append(
       'cat_id',
-      JSON.stringify(this.__scmForm.value.cat_id.map((item) => item.id))
+      JSON.stringify(this.formValue?.cat_id.map((item) => item.id))
     );
     __scmExport.append(
       'amc_id',
-      JSON.stringify(this.__scmForm.value.amc_name.map((item) => item.id))
+      JSON.stringify(this.formValue?.amc_name.map((item) => item.id))
     );
     __scmExport.append(
       'subcat_id',
-      JSON.stringify(this.__scmForm.value.subcat_id.map((item) => item.id))
+      JSON.stringify(this.formValue?.subcat_id.map((item) => item.id))
     );
     __scmExport.append(
       'scheme_id',
-      JSON.stringify(this.__scmForm.value.scheme_id.map((item) => item.id))
+      JSON.stringify(this.formValue?.scheme_id.map((item) => item.id))
     );
-    __scmExport.append('search_scheme_id',global.getActualVal(this.__scmForm.value.alt_scheme_id));
-    if(this.__scmForm.value.advanceFlt == 'A'){
+    __scmExport.append('search_scheme_id',global.getActualVal(this.formValue?.alt_scheme_id));
+    if(this.formValue?.advanceFlt == 'A'){
       __scmExport.append(
         'trans_type_id',
-        JSON.stringify(this.__scmForm.value.trxn_type.map((item) => item.id))
+        JSON.stringify(this.formValue?.trxn_type.map((item) => item.id))
       );
       __scmExport.append(
         'amount_range',
-        global.getActualVal(this.__scmForm.value.amt_rng)
+        global.getActualVal(this.formValue?.amt_rng)
       );
       __scmExport.append(
         'frequency',
-        JSON.stringify(this.__scmForm.value.freq.map((item) => item.id))
+        JSON.stringify(this.formValue?.freq.map((item) => item.id))
       );
     }
 
@@ -585,39 +584,17 @@ export class ScmRptComponent implements OnInit {
       this.__scmForm.controls['alt_scheme_name'].setValue('',{emitEvent:false});
       this.__pageNumber.setValue('10');
       this.sort = new sort();
-      this.getSchemeMst(
-        this.__sortAscOrDsc.active,
-        this.__sortAscOrDsc.direction
-      );
+     this.submit();
     }
   }
   submit() {
+    this.formValue = this.__scmForm.value;
     this.getSchemeMst(
       this.__sortAscOrDsc.active,
       this.__sortAscOrDsc.direction
     );
   }
   tableExport(__scmExport) {
-    // const __scmExport = new FormData();
-    // __scmExport.append('column_name', column_name);
-    // __scmExport.append('scheme_type', this.__scmForm.value.scheme_status);
-    // __scmExport.append('sort_by', sort_by);
-    // __scmExport.append(
-    //   'scheme_name',
-    //   this.__scmForm.value.scheme_name ? this.__scmForm.value.scheme_name : ''
-    // );
-    // __scmExport.append(
-    //   'cat_id',
-    //   this.__scmForm.value.cat_id ? this.__scmForm.value.cat_id : ''
-    // );
-    // __scmExport.append(
-    //   'amc_id',
-    //   this.__scmForm.value.amc_name ? this.__scmForm.value.amc_name : ''
-    // );
-    // __scmExport.append(
-    //   'subcat_id',
-    //   this.__scmForm.value.subcat_id ? this.__scmForm.value.subcat_id : ''
-    // );
     this.__dbIntr
       .api_call(1, '/schemeExport', __scmExport)
       .pipe(
@@ -647,28 +624,28 @@ export class ScmRptComponent implements OnInit {
             ('&paginate=' + this.__pageNumber.value) +
             ('&scheme_id=' +
               JSON.stringify(
-                this.__scmForm.value.scheme_id.map((item) => item.id)
+                this.formValue?.scheme_id.map((item) => item.id)
               )) +
-            ('&field=' + global.getActualVal(this.sort.field)) +
-            ('&order=' + global.getActualVal(this.sort.order)) +
+              ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+              ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : '')) +
             ('&cat_id=' +
               JSON.stringify(
-                this.__scmForm.value.cat_id.map((item) => item.id)
+                this.formValue?.cat_id.map((item) => item.id)
               )) +
             ('&amc_id=' +
               JSON.stringify(
-                this.__scmForm.value.amc_name.map((item) => item.id)
+                this.formValue?.amc_name.map((item) => item.id)
               )) +
             ('&subcat_id=' +
               JSON.stringify(
-                this.__scmForm.value.subcat_id.map((item) => item.id)
+                this.formValue?.subcat_id.map((item) => item.id)
               )) +
-            ('&scheme_type=' + this.__scmForm.value.scheme_status) +
+            ('&scheme_type=' + this.formValue?.scheme_status) +
             (
-              this.__scmForm.value.advanceFlt == 'A'?
-              (('&freq=' + JSON.stringify(this.__scmForm.value.freq.map(item => item.id)))
-              + ('&trans_type_id=' + JSON.stringify(this.__scmForm.value.trxn_type.map(item => item.id)))
-              + ('&amount_range=' + global.getActualVal(this.__scmForm.value.amt_rng))
+              this.formValue?.advanceFlt == 'A'?
+              (('&freq=' + JSON.stringify(this.formValue?.freq.map(item => item.id)))
+              + ('&trans_type_id=' + JSON.stringify(this.formValue?.trxn_type.map(item => item.id)))
+              + ('&amount_range=' + global.getActualVal(this.formValue?.amt_rng))
               )
               : ''
             )
@@ -843,7 +820,7 @@ export class ScmRptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -945,9 +922,11 @@ export class ScmRptComponent implements OnInit {
     this.refreshOrAdvanceFlt();
   }
   customSort(ev) {
-    this.sort.field = ev.sortField;
-    this.sort.order = ev.sortOrder;
-    this.getSchemeMst();
+    if(ev.sortField != 'edit' && ev.sortField!= 'delete'){
+      this.sort.field = ev.sortField;
+      this.sort.order = ev.sortOrder;
+      this.getSchemeMst();
+    }
   }
   onselectItem(ev) {
     this.getSchemeMst();

@@ -5,58 +5,9 @@
     <core-tab [Tab]="TabMenu" [customClass]="'nav'"
     (GetTabDtls)="onTabChange($event)" [index]="tabindex">
     </core-tab>
-    <div class="card">
+    <!-- <div class="card">
        <div class="card-body p-4">
-      <form [formGroup]="manualUpldFrm" id="mailBck">
-           <div class="row">
-             <div class="col-sm-1 my-auto  text-center">
-              <label for="file_type">File Type <span class="text-danger">*</span></label>
-             </div>
-             <div class="col-sm-3 my-auto ">
-              <select name="file_type_id" formControlName="file_type_id" class="form-control" id="file_type">
-                <option value="">Select File Type</option>
-               <option [value]="fileType.id" *ngFor="let fileType of fileTypeMst" >{{fileType.name}}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="manualUpldFrm.get('file_type_id').invalid && (manualUpldFrm.get('file_type_id').dirty || manualUpldFrm.get('file_type_id').touched)">
-                <span class="invalid-feedback" *ngIf="(manualUpldFrm.get('file_type_id')).errors?.required">*Please provide file type</span>
-              </div>
-            </div>
-            <div class="col-sm-1 my-auto   text-center">
-              <label for="file_id">File Name<span class="text-danger">*</span></label>
-             </div>
-             <div class="col-sm-3 my-auto">
-              <select name="file_id" formControlName="file_id" id="file_id" class="form-control">
-                <option value="">Select File Name</option>
-               <option *ngFor="let file of fileMst" [value]="file.id">{{file.name}}</option>
 
-              </select>
-              <div class="invalid-feedback" *ngIf="manualUpldFrm.get('file_id').invalid && (manualUpldFrm.get('file_id').dirty || manualUpldFrm.get('file_id').touched)">
-                <span class="invalid-feedback" *ngIf="(manualUpldFrm.get('file_id')).errors?.required">*Please provide file name</span>
-              </div>
-            </div>
-
-            <div class="col-sm-1 p-0 my-auto  text-center">
-              <label for="upload_file">Upload File <span class="text-danger">*</span></label>
-             </div>
-             <div class="col-sm-3 my-auto">
-              <div class="input-group">
-                <input type="file"
-                (change)="getFile($event)"
-                class="form-control"
-                id="upload_file"
-                formControlName="file"
-                />
-                <div class="invalid-feedback"
-                *ngIf=" manualUpldFrm.get('file').invalid && ( manualUpldFrm.get('file').dirty ||  manualUpldFrm.get('file').touched)">
-                <span class="invalid-feedback" *ngIf=" manualUpldFrm.get('file').errors?.required">*Please
-                  provide file</span>
-                <span class="invalid-feedback" *ngIf=" manualUpldFrm.get('file').errors?.inValidExt">*Please
-                  provide valid file format</span>
-              </div>
-              </div>
-            </div>
-          </div>
-      </form>
     </div>
     <div class="card-footer">
       <label>
@@ -74,8 +25,74 @@
       styleClass="p-button-lg p-button-primary">
       </p-button>
     </div>
-    </div>
-    <div class="card my-3">
+    </div> -->
+    <mat-card class="navCard">
+      <mat-card-content class="p-3">
+        <form [formGroup]="manualUpldFrm" id="mailBck">
+          <div class="row">
+            <div class="col-sm-1 my-auto  text-center">
+             <label for="file_type">File Type <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-sm-3 my-auto ">
+             <select name="file_type_id" formControlName="file_type_id" class="form-control" id="file_type">
+               <option value="">Select File Type</option>
+              <option [value]="fileType.id" *ngFor="let fileType of fileTypeMst" >{{fileType.name}}</option>
+             </select>
+             <div class="invalid-feedback" *ngIf="manualUpldFrm.get('file_type_id').invalid && (manualUpldFrm.get('file_type_id').dirty || manualUpldFrm.get('file_type_id').touched)">
+               <span class="invalid-feedback" *ngIf="(manualUpldFrm.get('file_type_id')).errors?.required">*Please provide file type</span>
+             </div>
+           </div>
+           <div class="col-sm-1 my-auto   text-center">
+             <label for="file_id">File Name<span class="text-danger">*</span></label>
+            </div>
+            <div class="col-sm-3 my-auto">
+             <select name="file_id" formControlName="file_id" id="file_id" class="form-control">
+               <option value="">Select File Name</option>
+              <option *ngFor="let file of fileMst" [value]="file.id">{{file.name}}</option>
+
+             </select>
+             <div class="invalid-feedback" *ngIf="manualUpldFrm.get('file_id').invalid && (manualUpldFrm.get('file_id').dirty || manualUpldFrm.get('file_id').touched)">
+               <span class="invalid-feedback" *ngIf="(manualUpldFrm.get('file_id')).errors?.required">*Please provide file name</span>
+             </div>
+           </div>
+
+           <div class="col-sm-1 p-0 my-auto  text-center">
+             <label for="upload_file">Upload File <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-sm-3 my-auto">
+             <div class="input-group">
+               <input type="file"
+               (change)="getFile($event)"
+               class="form-control"
+               id="upload_file"
+               formControlName="file"
+               />
+               <div class="invalid-feedback"
+               *ngIf=" manualUpldFrm.get('file').invalid && ( manualUpldFrm.get('file').dirty ||  manualUpldFrm.get('file').touched)">
+               <span class="invalid-feedback" *ngIf=" manualUpldFrm.get('file').errors?.required">*Please
+                 provide file</span>
+               <span class="invalid-feedback" *ngIf=" manualUpldFrm.get('file').errors?.inValidExt">*Please
+                 provide valid file format</span>
+             </div>
+             </div>
+           </div>
+         </div>
+     </form>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <p-button
+      type="button"
+      label="Upload"
+      icon="pi pi-upload"
+      iconPos="right"
+      class="float-right"
+      (click)="uploadFile()"
+      [disabled]="manualUpldFrm.invalid"
+      styleClass="p-button-lg m-3 p-button-primary">
+      </p-button>
+      </mat-card-actions>
+    </mat-card>
+    <!-- <div class="card my-3">
       <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
             <label class="m-0 d-flex align-items-center">
@@ -153,7 +170,80 @@
       <div class="card-footer">
         In Total There Are {{FileMstData.length}} Files
       </div>
-    </div>
+    </div> -->
+    <mat-card class="my-3">
+      <mat-card-header>
+        <mat-card-title>File Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+          <p-table
+          id="trxDt"
+          [value]="FileMstData"
+          [responsive]="true"
+          [rowHover]="true"
+          styleClass="p-datatable-striped"
+          [autoLayout]="true"
+          scrollHeight="350px"
+          [scrollable]="true"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th  *ngFor="let col of columns"
+                [pSortableColumn]="col.field"
+                >
+                  {{ col.header }}
+                  <p-sortIcon [field]="col.field"
+                  *ngIf="col.field!= 'upload_file'">
+                  </p-sortIcon>
+                </th>
+            </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-file>
+              <tr tabindex="999">
+                <td *ngFor="let col of columns">
+                  <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'process_date'">
+                    <p class="m-0">{{file[col.field] ? (file[col.field] | date:'dd-MM-YYYY h:mma') : 'N/A'}}</p>
+                </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'upload_file'">
+                    <a
+                    [matTooltipPosition]="'after'"
+                    #tooltip="matTooltip"
+                    matTooltip="Download"
+                    [href]="file[col.field]"
+                    target="_blank"
+                    download
+                    styleClass="p-button-rounded p-button-danger p-button-text"
+                    >
+
+                    <i class="pi pi-download" style="font-size:2rem"></i>
+                  </a>
+                  </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <span>{{ file[col.field] ? file[col.field]  : 'N/A'}}
+                    </span>
+                  </ng-container>
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage" let-file>
+              <tr [style.height]="'309px'">
+                <td [attr.colspan]="5">
+                  <h4>No Records Found</h4>
+                </td>
+              </tr>
+            </ng-template>
+        </p-table>
+          <shared-paginate [__paginate]="paginate"
+          (itemPerpageShow)="onSelectItem($event)"
+          (PaginateFn)="getPaginate($event)"
+          ></shared-paginate>
+      </mat-card-content>
+    </mat-card>
+
     </div>
 </div>
 

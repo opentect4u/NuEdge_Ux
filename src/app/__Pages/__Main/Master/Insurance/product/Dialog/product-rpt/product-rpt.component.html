@@ -1,7 +1,7 @@
 <!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle -->
 <div >
   <div mat-dialog-title class="dialog-title">
-    <h2>Product Reports</h2>
+    <h2>Product Report</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()">
         <mat-icon>remove</mat-icon>
@@ -18,94 +18,84 @@
     </div>
   </div>
   <mat-dialog-content class="customDialog">
-    <div class="card p-3 border-1">
+    <mat-card>
+      <mat-card-content class="p-3">
         <form [formGroup]="__prdSearchForm" (ngSubmit)="searchProduct()" autocomplete="off">
-            <div class="row">
-              <div class="col-sm-3">
-                <label class="form-label">Type Of Insurance</label>
-                <ng-multiselect-dropdown
-                id="ins_type_id"
-                [placeholder]="'Select Type Of Insurance'"
-                [settings]="__settings_ins"
-                [data]="__insTypeMst"
-                formControlName="ins_type_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                 <label class="form-label">Company</label>
-                <ng-multiselect-dropdown
-                id="company_id"
-                [placeholder]="'Select Companies'"
-                [settings]="__settings"
-                [data]="__companyMst"
-                formControlName="company_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label class="form-label">Product Type</label>
-                <ng-multiselect-dropdown
-                id="product_type_id"
-                [placeholder]="'Select Product Type'"
-                [settings]="__settings_productType"
-                [data]="__prdTypeMst"
-                formControlName="product_type_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label class="form-label">Product</label>
-                <ng-multiselect-dropdown
-                id="product_name"
-                [placeholder]="'Select Product'"
-                [settings]="__settings_prod"
-                [data]="__productMst"
-                formControlName="product_name">
-              </ng-multiselect-dropdown>
-              </div>
-
+          <div class="row">
+            <div class="col-sm-3">
+              <label class="form-label">Type Of Insurance</label>
+              <ng-multiselect-dropdown
+              id="ins_type_id"
+              [placeholder]="'Select Type Of Insurance'"
+              [settings]="__settings_ins"
+              [data]="__insTypeMst"
+              formControlName="ins_type_id">
+            </ng-multiselect-dropdown>
             </div>
-            <div class="row">
-              <div class="col-sm-3">
-                <!-- <app-core-srch
-              [label] = "'Search'"
-              [placeholder]="'Search By Company Type,Company,Scheme'"
-              [isPending]="__isAllSpinner"
-              [listItems] = "SearchAllMst"
-              [flag] = "'S'"
-              [noDataFoundTitle]="'Sorry!! No Records Found'"
-              [noDataFoundSubTitle]="'If your result match,they will appear here'"
-              [propertiesToShow] = "['type','product_name','product_type','comp_short_name']"
-              formControlName="search_all"
-              [displayMode]="displayMode_forSearch"
-              (setDisplayMode)="displayMode_forSearch = $event"
-              (selectedItems)="getSelectedItemsFromParent($event)"
-              ></app-core-srch> -->
-              <label for="search_all">Search By Company ,Product Type,Product</label>
-              <input type="text" name="search_all" id="search_all" class="form-control" formControlName="search_all">
-              </div>
-              <div class="col-sm-9 d-flex justify-content-end align-items-end">
-                <p-button type="button" (click)="reset()" label="Reset" icon="pi pi-refresh"
-                iconPos="right" styleClass="p-button-lg p-button-danger"
-                class="mx-3 float-right"></p-button>
-                <p-button type="submit"
-                label="Show" icon="pi pi-eye"
-                iconPos="right"
-                class="mx-3 float-right"
-                styleClass="p-button-lg"></p-button>
-              </div>
+            <div class="col-sm-3">
+               <label class="form-label">Company</label>
+              <ng-multiselect-dropdown
+              id="company_id"
+              [placeholder]="'Select Companies'"
+              [settings]="__settings"
+              [data]="__companyMst"
+              formControlName="company_id">
+            </ng-multiselect-dropdown>
             </div>
-        </form>
-      </div>
+            <div class="col-sm-3">
+              <label class="form-label">Product Type</label>
+              <ng-multiselect-dropdown
+              id="product_type_id"
+              [placeholder]="'Select Product Type'"
+              [settings]="__settings_productType"
+              [data]="__prdTypeMst"
+              formControlName="product_type_id">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label class="form-label">Product</label>
+              <ng-multiselect-dropdown
+              id="product_name"
+              [placeholder]="'Select Product'"
+              [settings]="__settings_prod"
+              [data]="__productMst"
+              formControlName="product_name">
+            </ng-multiselect-dropdown>
+            </div>
 
-      <div class="card border-1 rounded-top mt-2">
-        <div class="example_container_header">
-          <div class="transTypeCount"><h4></h4></div>
-          <div class="btnGrp">
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+            <label for="search_all">Search By Company ,Product Type,Product</label>
+            <input type="text" placeholder="Search..." name="search_all" id="search_all" class="form-control" formControlName="search_all">
+            </div>
+            <div class="col-sm-9 d-flex justify-content-end align-items-end">
+              <p-button type="button" (click)="reset()" label="Reset" icon="pi pi-refresh"
+              iconPos="right" styleClass="p-button-lg p-button-danger"
+              class="mx-3 float-right"></p-button>
+              <p-button type="submit"
+              label="Show" icon="pi pi-eye"
+              iconPos="right"
+              class="float-right"
+              styleClass="p-button-lg"></p-button>
+            </div>
+          </div>
+      </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="mt-3">
+        <mat-card-header>
+          <mat-card-title>
+            Product Report
+          </mat-card-title>
+          <div class="btnGrp my-auto">
             <p-button icon="pi pi-file-export"
             [matMenuTriggerFor]="menu"
             [matTooltipPosition]="'after'"
             #tooltip="matTooltip"
             matTooltip="Export"
-            styleClass="p-button-primary p-button-lg p-button-outlined">
+            styleClass="p-button-primary mr-3 p-button-lg p-button-outlined">
             </p-button>
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="exportPdf()">
@@ -117,100 +107,100 @@
               </button>
             </mat-menu>
             </div>
-          </div>
-          <div class="container_body">
-            <p-table #dt
-            (onLazyLoad)="customSort($event)"
-            [customSort]="true"
-              sortMode="single"
-              [lazy]="true"
-            [value]="__selectPrdMst.data"
-            [columns]="__columns"
-            [resizableColumns]="true"
-            selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
-            scrollHeight="300px"
-            [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-            [tableStyle]="{ 'min-width': '120rem' }">
-            <ng-template pTemplate="header" let-columns>
-              <tr>
-                <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width':(col.field!= 'edit' && col.field!= 'delete') ? '14rem' : '2rem'}">
-                  {{ col.header }}
-                  <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
-                  </p-sortIcon>
-                </th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-scheme let-columns="columns"  let-i="rowIndex">
-              <tr tabindex="999">
-                <td *ngFor="let col of columns" [ngStyle]="{'width':(col.field!= 'edit' && col.field!= 'delete') ? '14rem' : '2rem'}">
-                  <ng-container [ngSwitch]="true">
-                    <ng-container *ngSwitchCase="col.field == 'edit'">
-                      <p-button icon="pi pi-pencil" (click)="populateDT(scheme)"
-                        styleClass="p-button-rounded p-button-primary">
-                      </p-button>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="col.field == 'delete'">
-                      <p-button icon="pi pi-trash" (click)="delete(scheme,i)"
-                        styleClass="p-button-rounded p-button-danger">
-                      </p-button>
-                    </ng-container>
-                    <ng-container *ngSwitchDefault>
-                      <b  matTooltip="{{scheme[col.field]}}">
-                        {{ scheme[col.field] ? scheme[col.field] : 'N/A' }}
-                      </b>
-                    </ng-container>
+        </mat-card-header>
+        <mat-card-content>
+          <p-table #dt
+          (onLazyLoad)="customSort($event)"
+          [customSort]="true"
+            sortMode="single"
+            [lazy]="true"
+          [value]="__selectPrdMst.data"
+          [columns]="__columns"
+          [resizableColumns]="true"
+          selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
+          scrollHeight="250px"
+          [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+          [tableStyle]="{ 'min-width': '120rem' }">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width':(col.field!= 'edit' && col.field!= 'delete') ? '14rem' : '2rem'}">
+                {{ col.header }}
+                <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
+                </p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-scheme let-columns="columns"  let-i="rowIndex">
+            <tr tabindex="999">
+              <td *ngFor="let col of columns" [ngStyle]="{'width':(col.field!= 'edit' && col.field!= 'delete') ? '14rem' : '2rem'}">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'edit'">
+                    <p-button icon="pi pi-pencil" (click)="populateDT(scheme)"
+                      styleClass="p-button-rounded p-button-primary">
+                    </p-button>
                   </ng-container>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage" let-columns>
-              <tr>
-                <td [attr.colspan]="columns.length" class="noHistoryAvailable">
-                   No records found
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+                  <ng-container *ngSwitchCase="col.field == 'delete'">
+                    <p-button icon="pi pi-trash" (click)="delete(scheme,i)"
+                      styleClass="p-button-rounded p-button-danger">
+                    </p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <b  matTooltip="{{scheme[col.field]}}">
+                      {{ scheme[col.field] ? scheme[col.field] : 'N/A' }}
+                    </b>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                 No records found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
 
-               <!-- Paginator with item per page -->
-               <div class="paginator">
-                <div class="itemsPerPage d-flex">
-                  <label class="mr-3">Items per page: </label>
-                  <p-selectButton
-                  [options]="itemsPerPage"
-                  [formControl]="__pageNumber"
-                  optionLabel="label" optionValue="value"
-                  (onOptionClick)="onselectItem($event)"
-                  ></p-selectButton>
-                </div>
+             <!-- Paginator with item per page -->
+             <div class="paginator">
+              <div class="itemsPerPage d-flex">
+                <label class="mr-3">Items per page: </label>
+                <p-selectButton
+                [options]="itemsPerPage"
+                [formControl]="__pageNumber"
+                optionLabel="label" optionValue="value"
+                (onOptionClick)="onselectItem($event)"
+                ></p-selectButton>
+              </div>
 
-                <div class="paginatorContainer">
-                  <ul>
-                    <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
-                      <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
-                        *ngIf="(paginate.label | bnkrplc) == 'P'">
-                        <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
-                          keyboard_double_arrow_left</mat-icon>
-                      </a>
-                      <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
-                        *ngIf="(paginate.label | bnkrplc) == 'N'">
-                        <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
-                          keyboard_double_arrow_right</mat-icon>
-                      </a>
-                      <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
-                        *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
-                        {{paginate.label}}
-                      </a>
-                    </li>
-                  </ul>
+              <div class="paginatorContainer">
+                <ul>
+                  <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'P'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_left</mat-icon>
+                    </a>
+                    <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                      *ngIf="(paginate.label | bnkrplc) == 'N'">
+                      <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                        keyboard_double_arrow_right</mat-icon>
+                    </a>
+                    <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                      *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                      {{paginate.label}}
+                    </a>
+                  </li>
+                </ul>
 
-
-                </div>
 
               </div>
-              <!-- End -->
-          </div>
-      </div>
+
+            </div>
+            <!-- End -->
+        </mat-card-content>
+    </mat-card>
       <table id="insProd" hidden mat-table [dataSource]="__exportPrdMst" matTableExporter #exporter="matTableExporter">
 
 

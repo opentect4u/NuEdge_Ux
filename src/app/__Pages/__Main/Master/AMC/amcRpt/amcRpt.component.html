@@ -22,111 +22,104 @@
   </div>
 
 <mat-dialog-content class="customDialog">
- <div class="card p-3 border-1">
-    <form [formGroup]="__detalsSummaryForm" (ngSubmit)="submit()" autocomplete="off">
-    <div class="row ">
-      <div class="col-sm-6 my-auto">
-          <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
-            <mat-radio-button value="2">Summary</mat-radio-button>
-            <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
-          </mat-radio-group>
-      </div>
-      <div class="col-sm-6 d-flex justify-content-end">
-        <p-selectButton
-            [options]="selectBtn"
-            formControlName="btnType"
-            optionValue="value"
-            styleClass="p-button-lg"
-            (onOptionClick)="onItemClick($event)"
-            optionLabel="icon">
-              <ng-template let-item>
-                  <i [class]="item.icon"  [matTooltip]="item.label"></i>
-              </ng-template>
-          </p-selectButton>
-    </div>
-    </div>
-    <ng-container>
-      <div class="row">
-        <div class="col-sm-3">
-          <label for="amc_id">AMC</label>
-          <ng-multiselect-dropdown
-                id="amc_id"
-                [placeholder]="'Select AMC'"
-                [settings]="settings"
-                [data]="__amcMst"
-                formControlName="amc_id">
-              </ng-multiselect-dropdown>
+  <mat-card>
+    <mat-card-content class="p-3">
+      <form [formGroup]="__detalsSummaryForm" (ngSubmit)="submit()" autocomplete="off">
+        <div class="row ">
+          <div class="col-sm-6 my-auto">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+                <mat-radio-button value="2">Summary</mat-radio-button>
+                <mat-radio-button value="1" class="ml-3">Detail</mat-radio-button>
+              </mat-radio-group>
+          </div>
+          <div class="col-sm-6 d-flex justify-content-end">
+            <p-selectButton
+                [options]="selectBtn"
+                formControlName="btnType"
+                optionValue="value"
+                styleClass="p-button-lg"
+                (onOptionClick)="onItemClick($event)"
+                optionLabel="icon">
+                  <ng-template let-item>
+                      <i [class]="item.icon"  [matTooltip]="item.label"></i>
+                  </ng-template>
+              </p-selectButton>
         </div>
-        <div class="col-sm-3">
-          <label for="level">Levels</label>
-          <ng-multiselect-dropdown
-          id="level"
-          [placeholder]="'Select Levels'"
-          [settings]="settings_for_Levels"
-          [data]="__levels"
-          formControlName="level">
-        </ng-multiselect-dropdown>
         </div>
-        <div class="col-sm-5 d-flex  align-items-end">
-          <div class="checkboxes d-flex flex-row align-items-center w-100">
-            <label>R&T: &nbsp;</label>
-            <div >
-          <ng-container formArrayName="rnt_id">
-            <ng-container *ngFor="let rnt of rnt_id.controls; let i = index">
-                 <ng-container [formGroupName]="i">
-                  <mat-checkbox color="primary" class="mr-3" formControlName="isChecked">{{rnt.get('name').value}}</mat-checkbox>
-                 </ng-container>
-            </ng-container>
+        <ng-container>
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="amc_id">AMC</label>
+              <ng-multiselect-dropdown
+                    id="amc_id"
+                    [placeholder]="'Select AMC'"
+                    [settings]="settings"
+                    [data]="__amcMst"
+                    formControlName="amc_id">
+                  </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="level">Levels</label>
+              <ng-multiselect-dropdown
+              id="level"
+              [placeholder]="'Select Levels'"
+              [settings]="settings_for_Levels"
+              [data]="__levels"
+              formControlName="level">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-5 d-flex  align-items-end">
+              <div class="checkboxes d-flex flex-row align-items-center w-100">
+                <label>R&T: &nbsp;</label>
+                <div >
+              <ng-container formArrayName="rnt_id">
+                <ng-container *ngFor="let rnt of rnt_id.controls; let i = index">
+                     <ng-container [formGroupName]="i">
+                      <mat-checkbox color="primary" class="mr-3" formControlName="isChecked">{{rnt.get('name').value}}</mat-checkbox>
+                     </ng-container>
+                </ng-container>
 
-          </ng-container>
-          <mat-checkbox color="primary" class="mr-3" formControlName="is_all">All</mat-checkbox>
-          </div></div>
-        </div>
-        <div class="col-sm-1 d-flex justify-content-end align-items-end">
-          <p-button type="submit"
-          label="Show" icon="pi pi-eye"
-          iconPos="right"
-          class="float-right"
-          styleClass="p-button-lg"></p-button>
-        </div>
-      </div>
-      <!-- <div class="row my-2">
-        <div class="col-sm-11">
-        </div>
-        <div class="col-sm-1">
-          <p-button type="submit"
-          label="Show" icon="pi pi-eye"
-          iconPos="right"
-          class="float-right"
-          styleClass="p-button-lg"></p-button>
-        </div>
-      </div> -->
-    </ng-container>
+              </ng-container>
+              <mat-checkbox color="primary" class="mr-3" formControlName="is_all">All</mat-checkbox>
+              </div></div>
+            </div>
+            <div class="col-sm-1 d-flex justify-content-end align-items-end">
+              <p-button type="submit"
+              label="Show" icon="pi pi-eye"
+              iconPos="right"
+              class="float-right"
+              styleClass="p-button-lg"></p-button>
+            </div>
+          </div>
+        </ng-container>
 
-  </form>
-</div>
-<div class="card border-1 rounded-top mt-2">
-  <div class="example_container_header">
-    <div class="transTypeCount"><h4></h4></div>
-    <div class="btnGrp">
-      <p-button icon="pi pi-file-export"
-      [matMenuTriggerFor]="menu"
-      [matTooltipPosition]="'after'"
-      #tooltip="matTooltip"
-      matTooltip="Export"
-      styleClass="p-button-primary p-button-lg p-button-outlined">
-      </p-button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="exportPdf()">
-          <mat-icon>download</mat-icon> Export Pdf
-        </button>
-        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'AMCReport'})">
-          <mat-icon>download</mat-icon> Export Excel
-        </button>
-      </mat-menu>
-      </div>
-    </div>
-    <div class="container_body">
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="mt-3">
+    <mat-card-header>
+      <mat-card-title>
+        AMC Report
+      </mat-card-title>
+      <div class="btnGrp my-auto">
+        <p-button icon="pi pi-file-export"
+        [matMenuTriggerFor]="menu"
+        [matTooltipPosition]="'after'"
+        #tooltip="matTooltip"
+        matTooltip="Export"
+        styleClass="p-button-primary mr-3 p-button-lg p-button-outlined">
+        </p-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="exportPdf()">
+            <mat-icon>download</mat-icon> Export Pdf
+          </button>
+          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'AMCReport'})">
+            <mat-icon>download</mat-icon> Export Excel
+          </button>
+        </mat-menu>
+        </div>
+    </mat-card-header>
+    <mat-card-content>
       <p-table #dt
       (onLazyLoad)="customSort($event)"
       [customSort]="true"
@@ -137,7 +130,7 @@
       [columns]="__columns"
       [resizableColumns]="true"
       selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
-      scrollHeight="335px"
+      scrollHeight="310px"
       [autoLayout]="true"
       [responsive]="true"
       styleClass="p-datatable-gridlines"
@@ -250,10 +243,9 @@
         </div>
 
       </div>
-    </div>
-    </div>
-
-    <table id="amcRPT"
+    </mat-card-content>
+  </mat-card>
+ <table id="amcRPT"
     hidden mat-table
     [dataSource]="__export"
     matTableExporter

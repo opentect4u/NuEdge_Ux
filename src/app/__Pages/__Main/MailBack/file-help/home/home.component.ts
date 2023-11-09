@@ -16,8 +16,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { pluck } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
-import { ISystematicTransaction, ISystematiceFrequency, ISystematiceUnregisteredRemarks, rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
-import { systamaticFreqClmns, systamaticTransClmns, systamaticUnregisteredRemarksClmns, trxnTypeClmns } from 'src/app/__Utility/MailBack/trxnTypeClmns';
+import { IFolioTaxStatus, ISystematicTransaction, ISystematiceFrequency, ISystematiceUnregisteredRemarks, rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
+import { FolioTaxStatus, systamaticFreqClmns, systamaticTransClmns, systamaticUnregisteredRemarksClmns, trxnTypeClmns } from 'src/app/__Utility/MailBack/trxnTypeClmns';
 import { DOCUMENT } from '@angular/common';
 import { Table } from 'primeng/table';
 import {SystamaticfileHelp} from '../../../../../Enum/displayMode'
@@ -28,7 +28,7 @@ import {SystamaticfileHelp} from '../../../../../Enum/displayMode'
 })
 export class HomeComponent implements OnInit, IFileHelpHome {
 
-
+  title:string = 'Transaction Report';
   fileType_tab:Partial<ISubmenu>[] = [];
   file_type_tab:string = 'T';  // for maintan parent tab
   rnt_type_tab:string; // for maintan third tab
@@ -57,7 +57,11 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     k_divident_flag: new FormControl(''),
     freq_name:new FormControl(''),
     freq_code: new FormControl(''),
-    remarks: new FormControl('')
+    remarks: new FormControl(''),
+    tax_status:new FormGroup({
+         code:new FormControl(''),
+         status:new FormControl('')
+    })
   });
 
   constructor(private utility: UtiliService, private dbIntr: DbIntrService,
@@ -73,9 +77,10 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     this.populateTrxnTypeinForm(null);
     switch(flag){
       case 'P':
+      this.title = ev?.tabDtls?.tab_name;
       this.file_type_tab = this.file_help.filter(item => item.id == ev.tabDtls.id)[0].flag;
       this.fileType_tab = this.file_help.filter(item => item.id == ev.tabDtls.id)[0].sub_menu;
-      if(this.file_type_tab == 'S'){
+      if(this.file_type_tab == 'S' || this.file_type_tab == 'F'){
         this.sub_tab = this.fileType_tab[0].flag;
         this.getSystamaticTransactionType(this.rnt_type_tab,this.sub_tab);
       }
@@ -87,7 +92,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
       break;
       case 'R':
       this.rnt_type_tab = ev.tabDtls.id;
-      if(this.file_type_tab == 'S'){
+      if(this.file_type_tab == 'S' || this.file_type_tab == 'F'){
         // this.sub_tab = this.fileType_tab[0].flag;
         this.getSystamaticTransactionType(this.rnt_type_tab,this.sub_tab);
       }
@@ -114,6 +119,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     if(this.file_type_tab == 'T'){
       api_name = '/rntTransTypeSubtypeAddEdit';
       const frmDt = Object.assign({}, this.rntTrxnType.value, {
+        id:this.rntTrxnType.value.id ? this.rntTrxnType.value.id : 0,
         k_divident_flag:
           this.rntTrxnType.value.rnt_id == 2
             ? this.rntTrxnType.value.k_divident_flag
@@ -126,9 +132,9 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         freq_code:''
       });
     }
-    else{
+    else if(this.file_type_tab == 'S'){
       formdata.append('rnt_id',this.rntTrxnType.value.rnt_id);
-      formdata.append('id',this.rntTrxnType.value.id);
+      formdata.append('id',this.rntTrxnType.value.id ? this.rntTrxnType.value.id : 0);
       if(this.sub_tab == 'F'){
              api_name = '/rntSystematicFrequencyAddEdit';
              formdata.append('freq_name',this.rntTrxnType.value.freq_name);
@@ -144,6 +150,13 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         api_name = '/rntSystematicUnregisterAddEdit';
         formdata.append('remarks',this.rntTrxnType.value.remarks);
       }
+    }
+    else{
+      api_name = '/rntFolioDetailsAddEdit';
+       formdata.append('rnt_id',this.rntTrxnType.value.rnt_id);
+       formdata.append('id',this.rntTrxnType.value.id ? this.rntTrxnType.value.id : 0);
+       formdata.append('status_code',this.rntTrxnType.value.tax_status.code ? this.rntTrxnType.value.tax_status.code : '');
+       formdata.append('status',this.rntTrxnType.value.tax_status.status ? this.rntTrxnType.value.tax_status.status : '');
     }
     this.dbIntr
       .api_call(
@@ -181,6 +194,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
 
   /**** LOGIC FOR SETTING VALIDATORS  */
   setValidators = () =>{
+    /*** For Transaction Report */
     if(this.file_type_tab == 'T'){
           this.rntTrxnType.get('trans_type').setValidators([Validators.required]);
           this.rntTrxnType.get('c_k_trans_type').removeValidators([Validators.required]);
@@ -188,9 +202,13 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
           this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
           this.rntTrxnType.get('remarks').removeValidators([Validators.required]);
+          this.rntTrxnType.get(['tax_status','status']).removeValidators([Validators.required]);
+          this.rntTrxnType.get(['tax_status','code']).removeValidators([Validators.required]);
     }
-    else{
-
+    /*** End */
+    /******** Systamatic transaction Report */
+    else if(this.file_type_tab == 'S'){
+      /***** For Transaction Report */
       if(this.sub_tab == 'T'){
         this.rntTrxnType.get('trans_sub_type').setValidators([Validators.required]);
         this.rntTrxnType.get('trans_type').setValidators([Validators.required]);
@@ -198,7 +216,11 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
         this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
         this.rntTrxnType.get('remarks').removeValidators([Validators.required]);
+        this.rntTrxnType.get(['tax_status','status']).removeValidators([Validators.required]);
+        this.rntTrxnType.get(['tax_status','code']).removeValidators([Validators.required]);
       }
+      /**** End */
+      /**** Frequency Report */
       else if(this.sub_tab == 'F'){
         this.rntTrxnType.get('trans_type').removeValidators([Validators.required]);
         this.rntTrxnType.get('c_k_trans_type').removeValidators([Validators.required]);
@@ -206,7 +228,11 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         this.rntTrxnType.get('freq_code').setValidators([Validators.required]);
         this.rntTrxnType.get('trans_sub_type').removeValidators([Validators.required]);
         this.rntTrxnType.get('remarks').removeValidators([Validators.required]);
+        this.rntTrxnType.get(['tax_status','status']).removeValidators([Validators.required]);
+          this.rntTrxnType.get(['tax_status','code']).removeValidators([Validators.required]);
       }
+      /***** End */
+      /***** Unregister Report */
       else{
         this.rntTrxnType.get('trans_type').removeValidators([Validators.required]);
         this.rntTrxnType.get('c_k_trans_type').removeValidators([Validators.required]);
@@ -214,14 +240,32 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
         this.rntTrxnType.get('trans_sub_type').removeValidators([Validators.required]);
         this.rntTrxnType.get('remarks').setValidators([Validators.required]);
+        this.rntTrxnType.get(['tax_status','status']).removeValidators([Validators.required]);
+        this.rntTrxnType.get(['tax_status','code']).removeValidators([Validators.required]);
       }
+      /***** End */
     }
+    /*****End */
+    /***** Folio Report */
+    else{
+      this.rntTrxnType.get('trans_type').removeValidators([Validators.required]);
+      this.rntTrxnType.get('c_k_trans_type').removeValidators([Validators.required]);
+      this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
+      this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
+      this.rntTrxnType.get('trans_sub_type').removeValidators([Validators.required]);
+      this.rntTrxnType.get('remarks').removeValidators([Validators.required]);
+      this.rntTrxnType.get(['tax_status','status']).setValidators([Validators.required]);
+      this.rntTrxnType.get(['tax_status','code']).setValidators([Validators.required]);
+    }
+    /***** End */
     this.rntTrxnType.get('trans_type').updateValueAndValidity();
     this.rntTrxnType.get('c_k_trans_type').updateValueAndValidity();
     this.rntTrxnType.get('trans_sub_type').updateValueAndValidity();
     this.rntTrxnType.get('freq_name').updateValueAndValidity();
     this.rntTrxnType.get('freq_code').updateValueAndValidity();
     this.rntTrxnType.get('remarks').updateValueAndValidity();
+    this.rntTrxnType.get(['tax_status','status']).updateValueAndValidity();
+    this.rntTrxnType.get(['tax_status','code']).updateValueAndValidity();
   }
   /**** END */
 
@@ -271,7 +315,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           }
         )
       }
-      else{
+      else if(this.sub_tab == 'U'){
         this.trxnTypeMst = this.trxnTypeMst.filter(
           (items: ISystematiceUnregisteredRemarks, key: number) => {
             if (items.id == row_obj.id) {
@@ -281,21 +325,18 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           }
         )
       }
-      // this.trxnTypeMst = this.trxnTypeMst.filter(
-      //   (items: rntTrxnType, key: number) => {
-      //     if (items.id == row_obj.id) {
-      //       items.trans_type = row_obj.trans_type;
-      //       items.trans_sub_type = row_obj.trans_sub_type;
-      //       items.c_trans_type_code =
-      //         row_obj.rnt_id == 2 ? '' : row_obj.c_trans_type_code;
-      //       items.c_k_trans_type = row_obj.c_k_trans_type;
-      //       items.c_k_trans_sub_type = row_obj.c_k_trans_sub_type;
-      //       items.k_divident_flag =
-      //         row_obj.rnt_id == 2 ? row_obj.k_divident_flag : '';
-      //     }
-      //     return true;
-      //   }
-      // );
+      else{
+        this.trxnTypeMst = this.trxnTypeMst.filter(
+          (items: IFolioTaxStatus, key: number) => {
+            if (items.id == row_obj.id) {
+              items.status_code = row_obj.status_code;
+              items.status = row_obj.status;
+            }
+            return true;
+          }
+        )
+      }
+
     }
   };
 
@@ -328,7 +369,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
 
   getSystamaticTransactionType(rnt_id:string,sub_tab_type:string){
       if(rnt_id && sub_tab_type){
-        // console.log(SystamaticfileHelp[sub_tab_type]);
+        console.log(SystamaticfileHelp[sub_tab_type]);
         // const api_name =  sub_tab_type == 'T' ? '/rntSystematicTransType' : '/rntSystematicFrequency';
         this.dbIntr.api_call(0,`/${SystamaticfileHelp[sub_tab_type]}`,'rnt_id=' + rnt_id)
           .pipe(pluck('data'))
@@ -351,6 +392,10 @@ export class HomeComponent implements OnInit, IFileHelpHome {
    * @param trxnType
    */
 
+
+   /***
+    *  auto filled up form after click on particular edit button
+    */
    populateTrxnTypeinForm = (trxnType) => {
     if(trxnType){
       this.dom.documentElement.scrollIntoView({behavior:'smooth',block:'start'});
@@ -368,44 +413,54 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     {
       this.rntTrxnType.patchValue({
       id: trxnType ? trxnType.id : 0,
-      trans_type: trxnType ? trxnType.trans_type : '',
-      trans_sub_type: trxnType ? trxnType?.trans_sub_type : '',
+      trans_type: trxnType ? (trxnType.trans_type ? trxnType.trans_type : '') : '',
+      trans_sub_type: trxnType ? (trxnType?.trans_sub_type ? trxnType?.trans_sub_type : '') : '',
       c_trans_type_code: trxnType
         ? trxnType.rnt_id == 1
-          ? trxnType?.c_trans_type_code
+          ? (trxnType?.c_trans_type_code ? trxnType?.c_trans_type_code : '')
           : ''
         : '',
-      c_k_trans_type: trxnType ? trxnType.c_k_trans_type : '',
-      c_k_trans_sub_type: trxnType ? trxnType?.c_k_trans_sub_type : '',
+      c_k_trans_type: trxnType ? (trxnType.c_k_trans_type ? trxnType.c_k_trans_type : '') : '',
+      c_k_trans_sub_type: trxnType ? (trxnType?.c_k_trans_sub_type ? trxnType?.c_k_trans_sub_type : '') : '',
       k_divident_flag: trxnType
         ? trxnType.rnt_id == 2
-          ? trxnType?.k_divident_flag
+          ? (trxnType?.k_divident_flag ? trxnType?.k_divident_flag : '')
           : ''
         : '',
     });
   }
-  else{
+  else if(this.rnt_type_tab == 'S'){
     if(this.sub_tab == 'T'){
       this.rntTrxnType.patchValue({
         id: trxnType ? trxnType.id : 0,
-        trans_type: trxnType ? trxnType.trans_type : '',
-        c_k_trans_type: trxnType ? trxnType.trans_type_code : '',
-        trans_sub_type: trxnType ? trxnType.trans_sub_type : '',
+        trans_type: trxnType ? (trxnType.trans_type ? trxnType.trans_type : '') : '',
+        c_k_trans_type: trxnType ? (trxnType.trans_type_code ? trxnType.trans_type_code : '') : '',
+        trans_sub_type: trxnType ? (trxnType.trans_sub_type ? trxnType.trans_sub_type : '') : '',
       })
     }
     else if(this.sub_tab == 'F'){
        this.rntTrxnType.patchValue({
         id: trxnType ? trxnType.id : 0,
-        freq_name: trxnType ? trxnType.freq_name : '',
-        freq_code: trxnType ? trxnType.freq_code : '',
+        freq_name: trxnType ? (trxnType.freq_name ? trxnType.freq_name : '') : '',
+        freq_code: trxnType ? (trxnType.freq_code ? trxnType.freq_code : '') : '',
       })
     }
     else{
       this.rntTrxnType.patchValue({
         id: trxnType ? trxnType.id : 0,
-        remarks: trxnType ? trxnType.remarks : '',
+        remarks: trxnType ? (trxnType.remarks ? trxnType.remarks : '') : '',
       })
     }
+  }
+  else{
+    console.log(trxnType);
+    this.rntTrxnType.patchValue({
+      id: trxnType ? trxnType.id : 0,
+      tax_status:{
+          code: trxnType ? (trxnType.status_code ? trxnType.status_code : '') : '',
+          status: trxnType ? (trxnType.status ? trxnType.status : '') : '',
+      }
+    })
   }
   };
 
@@ -419,24 +474,29 @@ export class HomeComponent implements OnInit, IFileHelpHome {
       this.columns = trxnTypeClmns.columns.filter((item) =>
         item.isVisible.includes(rnt_id)
       );
-    }
-    else{
-        if(this.sub_tab == 'T'){
-          this.columns = systamaticTransClmns.columns.filter((item) =>
-          item.isVisible.includes(rnt_id)
-        );
-        }
-        else if(this.sub_tab == 'F'){
-          this.columns = systamaticFreqClmns.columns.filter((item) =>
-          item.isVisible.includes(rnt_id)
-        );
-        }
-        else{
-          this.columns = systamaticUnregisteredRemarksClmns.columns.filter((item) =>
-          item.isVisible.includes(rnt_id)
-        );
-        }
-    }
+      }
+      else if(this.file_type_tab == 'S'){
+          if(this.sub_tab == 'T'){
+            this.columns = systamaticTransClmns.columns.filter((item) =>
+            item.isVisible.includes(rnt_id)
+          );
+          }
+          else if(this.sub_tab == 'F'){
+            this.columns = systamaticFreqClmns.columns.filter((item) =>
+            item.isVisible.includes(rnt_id)
+          );
+          }
+          else{
+            this.columns = systamaticUnregisteredRemarksClmns.columns.filter((item) =>
+            item.isVisible.includes(rnt_id)
+          );
+          }
+      }
+      else{
+        this.columns = FolioTaxStatus.columns.filter((item) =>
+        item.isVisible.includes(rnt_id)
+      );
+      }
     };
 
 

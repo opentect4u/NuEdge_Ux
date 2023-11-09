@@ -35,6 +35,10 @@ type selectBtn ={
   styleUrls: ['./clientRpt.component.css'],
 })
 export class ClientRptComponent implements OnInit {
+
+
+  formValue;
+
   selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
   itemsPerPage:selectBtn[] = itemsPerPage;
   @ViewChild('clientCd') __clientCode: ElementRef;
@@ -89,6 +93,7 @@ export class ClientRptComponent implements OnInit {
     this.setColumns(2);
     // this.getClientRPTMst();
     this.getState();
+    this.formValue = this.__clientForm.value;
 
   }
 
@@ -169,7 +174,10 @@ export class ClientRptComponent implements OnInit {
 
   this.__clientForm.controls['client_name'].valueChanges
       .pipe(
-        tap(() => (this.__isClientPending = true)),
+        tap(() => {
+          this.__isClientPending = true;
+          this.__clientForm.controls['client_code'].setValue('');
+        }),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
@@ -195,18 +203,18 @@ export class ClientRptComponent implements OnInit {
       this.__dbIntr
         .getpaginationData(
           __paginate.url + ('&paginate=' + this.__pageNumber.value)
-          + ('&anniversary_date=' +  this.__clientForm.value.anniversary_date)
-          + ('&client_code=' +  this.__clientForm.value.client_code)
-          + ('&dob=' +  this.__clientForm.value.dob)
+          + ('&anniversary_date=' +  this.formValue?.anniversary_date ? this.formValue?.anniversary_date : '')
+          + ('&client_code=' +  this.formValue?.client_code ? this.formValue?.client_code : '')
+          + ('&birth_date_month=' +  this.formValue?.dob ? this.formValue?.dob: '')
           + ('&client_type=' +this.data.client_type)
-          + ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
-          + ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
-          +(this.__clientForm.value.advanceFlt == 'A' ?
-          ('&city_type=' +  this.__clientForm.value.city_type)
-          + ('&pincode=' +   this.__clientForm.value.pincode)
-          + ('&state=' +  JSON.stringify(this.__clientForm.value.state))
-          + ('&dist=' +  JSON.stringify(this.__clientForm.value.dist))
-          + ('&city=' +  JSON.stringify(this.__clientForm.value.city)) : '')
+          + ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+          ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
+          +(this.formValue?.advanceFlt == 'A' ?
+          ('&city_type=' +  this.formValue?.city_type ? this.formValue?.city_type : '')
+          + ('&pincode=' +   this.formValue?.pincode ? this.formValue?.pincode: '')
+          + ('&state=' +  JSON.stringify(this.formValue?.state))
+          + ('&dist=' +  JSON.stringify(this.formValue?.dist))
+          + ('&city=' +  JSON.stringify(this.formValue?.city)) : '')
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -227,7 +235,7 @@ export class ClientRptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -258,19 +266,19 @@ export class ClientRptComponent implements OnInit {
 
   getClientRPTMst(){
       const __client = new FormData();
-      __client.append('anniversary_date_month',this.__clientForm.value.anniversary_date);
-      __client.append('birth_date_month', this.__clientForm.value.dob);
-      __client.append('client_code', this.__clientForm.value.client_code);
+      __client.append('anniversary_date_month',this.formValue?.anniversary_date);
+      __client.append('birth_date_month', this.formValue?.dob);
+      __client.append('client_code', this.formValue?.client_code);
       __client.append('paginate', this.__pageNumber.value);
-      __client.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-      __client.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+      __client.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+      __client.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
       __client.append('client_type',this.data.client_type);
-      if(this.__clientForm.value.advanceFlt == 'A'){
-      __client.append('state', JSON.stringify(this.__clientForm.value.state));
-      __client.append('dist', JSON.stringify(this.__clientForm.value.dist));
-      __client.append('city', JSON.stringify(this.__clientForm.value.city));
-      __client.append('city_type', this.__clientForm.value.city_type);
-      __client.append('pincode', this.__clientForm.value.pincode);
+      if(this.formValue?.advanceFlt == 'A'){
+      __client.append('state', JSON.stringify(this.formValue?.state));
+      __client.append('dist', JSON.stringify(this.formValue?.dist));
+      __client.append('city', JSON.stringify(this.formValue?.city));
+      __client.append('city_type', this.formValue?.city_type);
+      __client.append('pincode', this.formValue?.pincode);
     }
       this.__dbIntr.api_call(1,'/clientDetailSearch',__client).pipe(pluck("data")).subscribe((res: any) =>{
         this.setPaginator(res.data);
@@ -280,10 +288,10 @@ export class ClientRptComponent implements OnInit {
   }
 
   submit() {
+    this.formValue = this.__clientForm.value;
      this.getClientRPTMst()
   }
   refreshOrAdvanceFlt() {
-
     this.__clientForm.patchValue({
       dob: '',
       mobile: '',
@@ -295,7 +303,6 @@ export class ClientRptComponent implements OnInit {
     })
     this.__clientForm.controls['client_name'].setValue([],{emitEvent:true});
   this.__clientForm.controls['state'].setValue([],{emitEvent:true});
-  // this.__clientForm.controls['city_type'].setValue([],{emitEvent:true});
     this.__pageNumber.setValue('10');
     this.sort = new sort();
     this.submit();
@@ -447,8 +454,6 @@ export class ClientRptComponent implements OnInit {
   }
 
   deleteClient(__el,index){
-    console.log(__el.id);
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.role = "alertdialog";
@@ -476,7 +481,7 @@ export class ClientRptComponent implements OnInit {
   }
   getItems(client,mode){
     this.__clientForm.controls['client_code'].reset(
-      client.client_name,
+      client.id,
       { emitEvent: false }
     );
     this.searchResultVisibilityForClient('none');
@@ -516,12 +521,14 @@ export class ClientRptComponent implements OnInit {
   }
   onselectItem(__itemsPerPage) {
     // this.__pageNumber.setValue(__itemsPerPage.option.value);
-    this.submit();
+    this.getClientRPTMst();
   }
   customSort(ev){
-    this.sort.field = ev.sortField;
-    this.sort.order = ev.sortOrder;
-    this.submit();
+    if(ev.sortField != 'edit' && ev.sortField != 'delete'){
+     this.sort.field = ev.sortField;
+      this.sort.order = ev.sortOrder;
+      this.getClientRPTMst();
+    }
   }
   getSelectedColumns = (columns)  =>{
     const clm =  ['edit','delete','upload_details'];

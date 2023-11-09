@@ -1,5 +1,5 @@
 
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+<div>
   <div mat-dialog-title class="dialog-title">
     <h2 >Transaction Reports</h2>
     <div class="btnIcon">
@@ -21,65 +21,63 @@
 
   </div>
 <mat-dialog-content class="customDialog">
-  <div class="card p-3 border-1">
-  <form [formGroup]="__trnsType" (ngSubmit)="submit()" autocomplete="off">
-    <ng-container>
-      <div class="row ">
-        <div class="col-sm-5">
-
-            <label for="trans_Type">Transaction Type</label>
-             <select class="form-control" formControlName="trans_type_id" id="trans_Type">
-               <option value="">Select Transaction Type</option>
-              <option *ngFor="let __transType of __trns_type" value="{{__transType.id}}">{{__transType.trns_type}}</option>
-             </select>
-            <div class="invalid-feedback" *ngIf="__trnsType.get('trans_type_id').invalid && (__trnsType.get('trans_type_id').dirty || __trnsType.get('trans_type_id').touched)">
-              <span class="invalid-feedback" *ngIf="(__trnsType.get('trans_type_id')).errors?.required">*Please provide transaction type</span>
+  <mat-card>
+    <mat-card-content class="p-3">
+      <form [formGroup]="__trnsType" (ngSubmit)="submit()" autocomplete="off">
+        <ng-container>
+          <div class="row ">
+            <div class="col-sm-5">
+                <label for="trans_Type">Transaction Type</label>
+                 <select class="form-control" formControlName="trans_type_id" id="trans_Type">
+                   <option value="">Select Transaction Type</option>
+                  <option *ngFor="let __transType of __trns_type" value="{{__transType.id}}">{{__transType.trns_type}}</option>
+                 </select>
+                <div class="invalid-feedback" *ngIf="__trnsType.get('trans_type_id').invalid && (__trnsType.get('trans_type_id').dirty || __trnsType.get('trans_type_id').touched)">
+                  <span class="invalid-feedback" *ngIf="(__trnsType.get('trans_type_id')).errors?.required">*Please provide transaction type</span>
+                </div>
             </div>
+            <div class="col-sm-5">
+               <label for="trns_name">Transaction</label>
+               <input type="text" placeholder="Enter Transaction" name="trns_name" id="trns_name" class="form-control" formControlName="trns_name">
+            </div>
+            <div class="col-sm-2 d-flex justify-content-end align-items-end">
+              <p-button
+                      type="submit"
+                      label="Show"
+                      icon="pi pi-eye"
+                      iconPos="right"
+                      styleClass="p-button-lg"></p-button>
+            </div>
+          </div>
+        </ng-container>
 
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="mt-2">
+    <mat-card-header>
+      <mat-card-title>
+        Transaction Report
+      </mat-card-title>
+      <div class="btnGrp my-auto">
+        <p-button icon="pi pi-file-export"
+        [matMenuTriggerFor]="menu"
+        [matTooltipPosition]="'after'"
+        #tooltip="matTooltip"
+        matTooltip="Export"
+        styleClass="p-button-primary mr-3 p-button-lg p-button-outlined">
+        </p-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="exportPdf()">
+            <mat-icon>download</mat-icon> Export Pdf
+          </button>
+          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Transaction Report'})">
+            <mat-icon>download</mat-icon> Export Excel
+          </button>
+        </mat-menu>
         </div>
-        <div class="col-sm-5">
-           <label for="trns_name">Transaction</label>
-           <input type="text" placeholder="Enter Transaction" name="trns_name" id="trns_name" class="form-control" formControlName="trns_name">
-        </div>
-        <div class="col-sm-2 d-flex justify-content-end align-items-end">
-          <p-button
-                  type="submit"
-                  label="Show"
-                  icon="pi pi-eye"
-                  iconPos="right"
-                  styleClass="p-button-lg"></p-button>
-        </div>
-      </div>
-    </ng-container>
-
-  </form>
-</div>
-
-<div class="card border-1 rounded-top mt-2">
-
-  <div class="example_container_header">
-    <div class="transTypeCount">
-      <h4></h4>
-    </div>
-    <div class="btnGrp">
-      <p-button icon="pi pi-file-export"
-      [matMenuTriggerFor]="menu"
-      [matTooltipPosition]="'after'"
-      #tooltip="matTooltip"
-      matTooltip="Export"
-      styleClass="p-button-primary p-button-lg p-button-outlined">
-      </p-button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="exportPdf()">
-          <mat-icon>download</mat-icon> Export Pdf
-        </button>
-        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Transaction Report'})">
-          <mat-icon>download</mat-icon> Export Excel
-        </button>
-      </mat-menu>
-      </div>
-    </div>
-    <div class="container_body">
+    </mat-card-header>
+    <mat-card-content>
       <p-table
       (onLazyLoad)="customSort($event)"
         [customSort]="true"
@@ -89,7 +87,7 @@
       [columns]="__columns" [resizableColumns]="true"
         selectionMode="multiple"
         columnResizeMode="expand" [scrollable]="true"
-        scrollHeight="358px"
+        scrollHeight="310px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
         [tableStyle]="{ 'min-width': '100rem' }">
         <ng-template pTemplate="header" let-columns>
@@ -134,6 +132,7 @@
         <div class="itemsPerPage d-flex">
           <label class="mr-3">Items per page: </label>
           <p-selectButton
+          [formControl]="__pageNumber"
           [options]="itemsPerPage"
            optionLabel="label" optionValue="value"
            (onOptionClick)="onselectItem($event)"
@@ -161,7 +160,8 @@
           </div>
 
       </div>
-    </div>
+    </mat-card-content>
+  </mat-card>
     <table id="trns"
   hidden mat-table
   [dataSource]="__export"
@@ -191,6 +191,5 @@
       <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Transaction History Found</td>
     </tr>
   </table>
-</div>
 </mat-dialog-content>
 </div>

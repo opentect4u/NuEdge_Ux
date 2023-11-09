@@ -712,8 +712,8 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .dropdown-content {
-  display: none;
-  position: absolute;
+   display: none;
+  /*position: absolute;
   border-radius: 3px;
   background-color: #fff;
   min-width: 210px;
@@ -722,7 +722,18 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   z-index: 1;
   right: 0;
   padding: 15px 15px;
-  top: 47px;
+  top: 47px; */
+  position: absolute;
+    border-radius: 5px;
+    background-color: #fff;
+    min-width: 300px;
+    overflow: auto;
+    box-shadow: 0px 1px 9px 1px #cbcbcb;
+    z-index: 1;
+    right: 0;
+    padding: 15px 15px;
+    top: 47px;
+    border: 1px solid #d6d6d6;
 }
 
 .dropdown-content a {
@@ -731,7 +742,7 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   text-decoration: none;
   display: block;
   font-size: 13px !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .dropdown-content a:last-child {

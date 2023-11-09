@@ -22,6 +22,10 @@ import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component
   styleUrls: ['./benchmark-report.component.css']
 })
 export class BenchmarkReportComponent implements OnInit {
+
+
+  formValue;
+
      /**
    * Setting of multiselect dropdown
    */
@@ -86,20 +90,24 @@ export class BenchmarkReportComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.formValue = this.benchmarkfilterForm.value;
     this.getexchange();
     this.getcategory();
     this.getBenchmarkMstDt();
   }
-
+  submit =() =>{
+    this.formValue = this.benchmarkfilterForm.value;
+    this.getBenchmarkMstDt();
+  }
   getBenchmarkMstDt = () =>{
     const benchmark = new FormData();
     benchmark.append('paginate',this.paginate);
-    benchmark.append('ex_id',JSON.stringify(this.benchmarkfilterForm.value.ex_id.map(el => el.id)))
-    benchmark.append('category_id',JSON.stringify(this.benchmarkfilterForm.value.category_id.map(el => el.id)))
-    benchmark.append('subcategory_id',JSON.stringify(this.benchmarkfilterForm.value.subcategory_id.map(el => el.id)))
-    benchmark.append('benchmark_id',JSON.stringify(this.benchmarkfilterForm.value.benchmark_id.map(el => el.id)))
-    benchmark.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    benchmark.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+    benchmark.append('ex_id',JSON.stringify(this.formValue.ex_id.map(el => el.id)))
+    benchmark.append('category_id',JSON.stringify(this.formValue.category_id.map(el => el.id)))
+    benchmark.append('subcategory_id',JSON.stringify(this.formValue.subcategory_id.map(el => el.id)))
+    benchmark.append('benchmark_id',JSON.stringify(this.formValue.benchmark_id.map(el => el.id)))
+    benchmark.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    benchmark.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     this.__dbIntr.api_call(1,'/benchmarkDetailSearch',benchmark)
      .pipe(pluck('data'))
      .subscribe((res: any) =>{
@@ -117,7 +125,6 @@ export class BenchmarkReportComponent implements OnInit {
     + '&arr_sub_cat_id='+this.__utility.mapIdfromArray(subcat,'id')
     ).pipe(pluck('data'))
     .subscribe((res:Ibenchmark[])=>{
-      console.log(res);
       this.benchmark = res;
     })}
     else{
@@ -163,7 +170,6 @@ export class BenchmarkReportComponent implements OnInit {
     })
   }
 
-
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
@@ -173,7 +179,7 @@ export class BenchmarkReportComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -252,8 +258,10 @@ export class BenchmarkReportComponent implements OnInit {
   }
 
   customSort = (ev) =>{
+    if(ev.sortField != 'edit' && ev.sortField!='delete'){
     this.sort = ev;
     this.getBenchmarkMstDt();
+  }
   }
   onSelectItem = (item) =>{
     this.paginate = item;
@@ -267,17 +275,15 @@ export class BenchmarkReportComponent implements OnInit {
           ('&paginate=' +
             this.paginate +
             '&ex_id=' +
-            JSON.stringify(this.benchmarkfilterForm.value.ex_id.map(el => el.id)))
+            JSON.stringify(this.formValue?.ex_id.map(el => el.id)))
             +'&category_id='+
-            JSON.stringify(this.benchmarkfilterForm.value.category_id.map(el => el.id))
+            JSON.stringify(this.formValue?.category_id.map(el => el.id))
             +'&subcategory_id='+
-            JSON.stringify(this.benchmarkfilterForm.value.subcategory_id.map(el => el.id))
+            JSON.stringify(this.formValue?.subcategory_id.map(el => el.id))
             +'&benchmark_id='+
-            JSON.stringify(this.benchmarkfilterForm.value.benchmark_id.map(el => el.id))
-            +'&field='+
-            (global.getActualVal(this.sort.field) ? this.sort.field : '')
-            +'&order'+
-            (global.getActualVal(this.sort.order) ? this.sort.order : '')
+            JSON.stringify(this.formValue?.benchmark_id.map(el => el.id))
+            + ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
       )
       .pipe(
         pluck('data'),

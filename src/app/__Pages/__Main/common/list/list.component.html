@@ -5,7 +5,10 @@
     </button>
     <a *ngIf="items.flag == 'P'" class="dropbtn loginThumb" (click)="openProfileMenu()">NC</a>
     <div id="myDropdown" class="dropdown-content" #profileDRP *ngIf="items.flag == 'P'">
-      <a><i class="fa fa-user-o" aria-hidden="true"></i> My Profile</a>
+      <a>
+        <i class="fa fa-user-o" aria-hidden="true"></i>
+
+        My Profile</a>
       <a><i class="fa fa-unlock-alt" aria-hidden="true"></i> Change Password</a>
       <a [routerLink]="['/']"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
     </div>

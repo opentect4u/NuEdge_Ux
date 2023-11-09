@@ -35,3 +35,10 @@ export interface ISystematiceUnregisteredRemarks {
   remarks:string;
 }
 
+export interface IFolioTaxStatus{
+  id: number;
+  rnt_id: number;
+  status_code: string;
+  status:string;
+}
+

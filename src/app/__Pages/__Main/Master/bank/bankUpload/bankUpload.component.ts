@@ -16,31 +16,7 @@ import { breadCrumb } from 'src/app/__Model/brdCrmb';
   styleUrls: ['./bankUpload.component.css']
 })
 export class BankUploadComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Bank",
-      url:'/main/master/bank',
-      hasQueryParams:true,
-      queryParams:''
-    },
-       {
-      label:"Bank Upload",
-      url:'/main/master/uploadbnk',
-      hasQueryParams:true,
-      queryParams:''
-    }
-]
+
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
@@ -85,11 +61,11 @@ export class BankUploadComponent implements OnInit {
   );
   __columns: string[] = ['sl_no', 'bank_name', 'edit'];
   __selectRNT = new MatTableDataSource<bank>([]);
-  constructor(private __dbIntr: DbIntrService, private __utility: UtiliService) { this.previewlatestCategoryEntry(); }
+  constructor(private __dbIntr: DbIntrService, private __utility: UtiliService) { }
 
   ngOnInit() {
+    this.previewlatestCategoryEntry();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestCategoryEntry() {
     this.__dbIntr.api_call(0, '/depositbank', null).pipe(pluck('data')).subscribe((res: bank[]) => {

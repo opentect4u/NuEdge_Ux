@@ -1,7 +1,7 @@
 
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+<div >
   <div mat-dialog-title class="dialog-title">
-    <h2 >SIP Type Reports</h2>
+    <h2 >SIP Type Report</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()">
         <mat-icon>remove</mat-icon>
@@ -20,57 +20,58 @@
 
   </div>
 <mat-dialog-content class="customDialog">
-  <div class="card p-3 border-1">
-  <form [formGroup]="__trnsType" (ngSubmit)="submit()" autocomplete="off">
-    <ng-container>
-      <div class="row ">
-        <div class="col-sm-5">
-           <label for="sip_type">SIP Type</label>
-           <input type="text"
-           placeholder="Enter SIP Type"
-           name="sip_type"
-           id="sip_type"
-           class="form-control"
-           formControlName="sip_type_name">
-        </div>
-        <div class="col-sm-7 d-flex justify-content-end align-items-end">
-          <p-button
-          type="submit"
-          label="Show"
-          icon="pi pi-eye"
-          iconPos="right"
-          styleClass="p-button-lg"></p-button>
-        </div>
-      </div>
-    </ng-container>
+  <mat-card>
+      <mat-card-content class="p-3">
+        <form [formGroup]="__trnsType" (ngSubmit)="submit()" autocomplete="off">
+          <ng-container>
+            <div class="row ">
+              <div class="col-sm-5">
+                 <label for="sip_type">SIP Type</label>
+                 <input type="text"
+                 placeholder="Enter SIP Type"
+                 name="sip_type"
+                 id="sip_type"
+                 class="form-control"
+                 formControlName="sip_type_name">
+              </div>
+              <div class="col-sm-7 d-flex justify-content-end align-items-end">
+                <p-button
+                type="submit"
+                label="Show"
+                icon="pi pi-eye"
+                iconPos="right"
+                styleClass="p-button-lg"></p-button>
+              </div>
+            </div>
+          </ng-container>
 
-  </form>
-</div>
-<div class="card border-1 rounded-top mt-2">
-
-  <div class="example_container_header">
-    <div class="transTypeCount">
-      <h4></h4>
-    </div>
-    <div class="btnGrp">
-      <p-button icon="pi pi-file-export"
-      [matMenuTriggerFor]="menu"
-      [matTooltipPosition]="'after'"
-      #tooltip="matTooltip"
-      matTooltip="Export"
-      styleClass="p-button-primary p-button-lg p-button-outlined">
-      </p-button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="exportPdf()">
-          <mat-icon>download</mat-icon> Export Pdf
-        </button>
-        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SIP Type Report'})">
-          <mat-icon>download</mat-icon> Export Excel
-        </button>
-      </mat-menu>
-      </div>
-    </div>
-    <div class="container_body">
+        </form>
+      </mat-card-content>
+   </mat-card>
+   <mat-card class="mt-3">
+     <mat-card-header>
+      <mat-card-title>
+           SIP Type Report
+      </mat-card-title>
+      <div class="btnGrp my-auto">
+        <p-button icon="pi pi-file-export"
+        [matMenuTriggerFor]="menu"
+        [matTooltipPosition]="'after'"
+        #tooltip="matTooltip"
+        matTooltip="Export"
+        styleClass="p-button-primary mr-3 p-button-lg p-button-outlined">
+        </p-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="exportPdf()">
+            <mat-icon>download</mat-icon> Export Pdf
+          </button>
+          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SIP Type Report'})">
+            <mat-icon>download</mat-icon> Export Excel
+          </button>
+        </mat-menu>
+        </div>
+     </mat-card-header>
+     <mat-card-content>
       <p-table
       (onLazyLoad)="customSort($event)"
         [customSort]="true"
@@ -119,8 +120,6 @@
           </tr>
         </ng-template>
       </p-table>
-
-
       <div class="paginator">
         <div class="itemsPerPage d-flex">
           <label class="mr-3">Items per page: </label>
@@ -151,9 +150,9 @@
             </li>
           </ul>
           </div>
-
       </div>
-    </div>
+     </mat-card-content>
+   </mat-card>
     <table id="SipType"
     style="display:none" mat-table
     [dataSource]="__export"
@@ -173,6 +172,5 @@
       <td class="mat-cell" [attr.colspan]="__exportedClmns.length" class="text-center">No Records Found</td>
     </tr>
     </table>
-</div>
 </mat-dialog-content>
 </div>

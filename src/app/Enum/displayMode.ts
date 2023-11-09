@@ -6,5 +6,6 @@ export enum  displayMode{
 export enum SystamaticfileHelp{
     T  = "rntSystematicTransType",
     F  = "rntSystematicFrequency",
-    U  = "rntSystematicUnregister"
+    U  = "rntSystematicUnregister",
+    TS = "rntFolioDetails"
 }

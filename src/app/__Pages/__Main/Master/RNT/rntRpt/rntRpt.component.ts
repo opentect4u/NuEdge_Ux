@@ -30,6 +30,7 @@ import { sort } from 'src/app/__Model/sort';
 import { LazyLoadEvent } from 'primeng/api';
 import { environment } from 'src/environments/environment';
 import itemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { column } from 'src/app/__Model/tblClmns';
 
 @Component({
   selector: 'Rnt-rntRpt',
@@ -37,6 +38,10 @@ import itemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
   styleUrls: ['./rntRpt.component.css'],
 })
 export class RntrptComponent implements OnInit {
+  /**
+   * Holding form value after submit
+   */
+  formValue;
   itemsPerPage=itemsPerPage;
   url = environment.commonURL + 'rnt-logo/';
   sort = new sort();
@@ -48,7 +53,7 @@ export class RntrptComponent implements OnInit {
   __isrntspinner: boolean = false;
   __paginate: any = [];
   __pageNumber = new FormControl('10');
-  __columns: any = [];
+  __columns: column[] = [];
   __export = new MatTableDataSource<rnt>([]);
   __exportedClmns: string[] = [];
   __isVisible: boolean = true;
@@ -70,6 +75,7 @@ export class RntrptComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.formValue = this.__rntSearchForm.value;
     this.getRntMstForDrpDown();
     this.setColumnsforRNT(this.__rntSearchForm.value.options)
   }
@@ -104,7 +110,7 @@ export class RntrptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -123,7 +129,6 @@ export class RntrptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   onselectItem(ev){
-    // this.__pageNumber.setValue(ev.option.id);
     this.getRntMst();
   }
   getPaginate(__paginate) {
@@ -132,10 +137,10 @@ export class RntrptComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          +  ('&rnt_id = ' + JSON.stringify(this.__rntSearchForm.value.rnt_id.map(item => {return item["id"]})))
-          +  ('&contact_person=' + this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person : '')
-          +  ('&field=' + global.getActualVal(this.sort.field) ? this.sort.field : '')
-          +  ('&order=' + global.getActualVal(this.sort.order) ? this.sort.order : '1')
+          +  ('&rnt_id = ' + JSON.stringify(this.formValue?.rnt_id.map(item => {return item["id"]})))
+          +  ('&contact_person=' + this.formValue?.contact_person? this.formValue?.contact_person : '') +
+          ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+          ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
           )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -240,17 +245,20 @@ export class RntrptComponent implements OnInit {
       return true;
     });
   }
-  submit() {this.getRntMst();}
+  submit() {
+    this.formValue = this.__rntSearchForm.value;
+    this.getRntMst();
+  }
   getRntMst() {
     const __rntSearch = new FormData();
     __rntSearch.append(
       'rnt_id',
-      JSON.stringify(this.__rntSearchForm.value.rnt_id.map(item => {return item["id"]}))
+      JSON.stringify(this.formValue?.rnt_id.map(item => {return item["id"]}))
     );
-    __rntSearch.append('contact_person',this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person: '');
+    __rntSearch.append('contact_person',this.formValue?.contact_person? this.formValue?.contact_person: '');
     __rntSearch.append('paginate', this.__pageNumber.value);
-    __rntSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __rntSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    __rntSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __rntSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     this.__dbIntr
       .api_call(1, '/rntDetailSearch', __rntSearch)
       .pipe(map((x: any) => x.data))
@@ -342,7 +350,8 @@ export class RntrptComponent implements OnInit {
       contact_person: '',
     });
     this.sort = new sort();
-    this.getRntMst();
+    this.submit();
+    // this.getRntMst();
 
   }
   delete(__el,index){
@@ -379,10 +388,12 @@ export class RntrptComponent implements OnInit {
     this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
   }
   customSort(ev:LazyLoadEvent){
+    if(ev.sortField != 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
     this.sort.order = ev.sortOrder;
      this.getRntMst();
   }
+}
   openURL(url){
     window.open('//' + url,'__blank');
   }

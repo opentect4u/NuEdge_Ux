@@ -21,7 +21,8 @@
   </div>
 
   <mat-dialog-content class="customDialog">
-    <div class="card p-3 border-1">
+    <mat-card>
+      <mat-card-content class="p-3">
         <form [formGroup]="__prdType" (ngSubmit)="submit()" autocomplete="off">
           <ng-container>
             <div class="row">
@@ -63,33 +64,33 @@
           </ng-container>
 
         </form>
-    </div>
-    <div class="card border-1 rounded-top mt-2">
-      <div class="example_container_header">
-        <div class="transTypeCount">
-          <h4></h4>
-        </div>
-        <div class="btnGrp">
-            <p-button icon="pi pi-file-export"
-            [matMenuTriggerFor]="menu"
-            [matTooltipPosition]="'after'"
-            #tooltip="matTooltip"
-            matTooltip="Export"
-            styleClass="p-button-primary p-button-lg p-button-outlined">
-            </p-button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="exportPdf()">
-                <mat-icon>download</mat-icon> Export Pdf
-              </button>
-              <!-- (click)="exporter.exportTable('xlsx',{fileName:'FDScheme Report'})" -->
-              <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'ProductTypeReport'})">
-                <mat-icon>download</mat-icon> Export Excel
-              </button>
-            </mat-menu>
-            </div>
+      </mat-card-content>
+    </mat-card>
 
-      </div>
-      <div class="container_body">
+    <mat-card class="mt-3">
+      <mat-card-header>
+        <mat-card-title>
+          Product Type Report
+        </mat-card-title>
+        <div class="btnGrp my-auto">
+          <p-button icon="pi pi-file-export"
+          [matMenuTriggerFor]="menu"
+          [matTooltipPosition]="'after'"
+          #tooltip="matTooltip"
+          matTooltip="Export"
+          styleClass="p-button-primary mr-3 p-button-lg p-button-outlined">
+          </p-button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'ProductTypeReport'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+          </div>
+      </mat-card-header>
+      <mat-card-content>
         <p-table #dt
         (onLazyLoad)="customSort($event)"
         [customSort]="true"
@@ -180,9 +181,9 @@
 
           </div>
           <!-- End -->
-      </div>
+      </mat-card-content>
+    </mat-card>
 
-      </div>
       <table id="ins_prd_type" hidden mat-table [dataSource]="__export" matTableExporter #exporter="matTableExporter">
         <ng-container matColumnDef="ins_type">
           <th mat-header-cell *matHeaderCellDef>Insurance Type</th>

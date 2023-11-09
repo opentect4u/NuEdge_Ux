@@ -35,7 +35,7 @@ export class PlanModificationComponent implements OnInit {
     this.__plnForm.reset();
   }
   minimize(){
-    this.dialogRef.updateSize("30%",'55px');
+    this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize(){

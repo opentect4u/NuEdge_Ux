@@ -579,7 +579,7 @@ export class TrxnRptComponent implements OnInit {
    */
   fetchTransaction = () =>{
     this.total = new totalAmt();
-    console.log(this.primeTbl.rows);
+    this.primeTbl.reset();
     const TrxnDt = new FormData();
     TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
     TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
@@ -607,16 +607,11 @@ export class TrxnRptComponent implements OnInit {
         pluck('data'),
         tap((item:TrxnRpt[]) => {
             let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
-            // this.rejection_trxn_count = item.filter(res => res.trans_sub_type.includes('Rejection')).length;
-            // this.process_trxn_count = item.filter(res => !res.trans_sub_type.includes('Rejection')).length;
             this.trxn_count = {
                 reject:item ?  item.filter(res => res.transaction_subtype.includes('Rejection')).length : 0,
                process:item ? item.filter(res => !res.transaction_subtype.includes('Rejection')).length : 0
            };
-          console.log(this.trxn_count)
-
             item.map( item => {
-              // this.rejection_trxn_count = item.trans_sub_type.includes('Rejection') ?
               net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
               gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
               tds+=Number(item.tot_tds ? item.tot_tds : 0);
@@ -631,11 +626,6 @@ export class TrxnRptComponent implements OnInit {
         })
         )
       .subscribe((res: TrxnRpt[]) => {
-        // console.log(res);
-        // this.trxnRpt = res;
-        // this.primeTbl._rows = count >= this.primeTbl.rows ?  res.length : this.primeTbl.rows;
-        // this.primeTbl._rows = 10;
-        // this.subscribe.unsubscribe();
         if(this.subscribe){
           this.subscribe.unsubscribe();
         }
@@ -644,8 +634,6 @@ export class TrxnRptComponent implements OnInit {
           return;
         }
       this.state = 'collapsed';
-
-
        this.subscribe = from(res).pipe(
         delay(2),
        ).subscribe(res =>{
@@ -655,7 +643,8 @@ export class TrxnRptComponent implements OnInit {
   }
 
 
-  streamTrxn = (trxnRow:TrxnRpt) =>{
+  streamTrxn(trxnRow:TrxnRpt){
+    console.log(trxnRow);
    this.trxnRpt.push(trxnRow);
   }
 
@@ -1022,4 +1011,23 @@ export class TrxnRptComponent implements OnInit {
   toggle() {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
+
+  // calculatTotalAmt = (trxn:TrxnRpt[]):Promise<totalAmt> =>{
+  //   let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
+  //   return new Promise((resolve,reject) =>{
+  //     trxn.map( item => {
+  //       net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
+  //       gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
+  //       tds+=Number(item.tot_tds ? item.tot_tds : 0);
+  //       stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
+  //     });
+  //     resolve({ net_amt:net_amt,
+  //       stamp_duity:stamp_duity,
+  //       tds:tds,
+  //       gross_amt:gross_amt});
+
+  //     reject(new totalAmt());
+  //   })
+
+  // }
 }

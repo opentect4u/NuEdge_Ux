@@ -26,6 +26,11 @@ import { sort } from 'src/app/__Model/sort';
   styleUrls: ['./planRpt.component.css'],
 })
 export class PlanrptComponent implements OnInit {
+  /**
+   * holding Form data after submit
+   */
+  formValue;
+
    itemsPerPage=ItemsPerPage;
   __iscatspinner: boolean = false;
   __catForm = new FormGroup({
@@ -33,7 +38,7 @@ export class PlanrptComponent implements OnInit {
     options: new FormControl('2'),
   });
   __export = new MatTableDataSource<plan>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   sort=new sort();
     __columns:column[]=[];
   __exportedClmns:string[] =[];
@@ -52,6 +57,7 @@ export class PlanrptComponent implements OnInit {
 
   ngOnInit() {
     this.setColumns();
+    this.formValue = this.__catForm.value;
   }
   setColumns(){
    const  clmToRemove:string[] = ['edit','delete'];
@@ -61,10 +67,10 @@ export class PlanrptComponent implements OnInit {
 
   getPlanMst() {
     const __planExport = new FormData();
-    __planExport.append('plan_name', this.__catForm.value.plan_name);
+    __planExport.append('plan_name', this.formValue?.plan_name);
     __planExport.append('paginate', this.__pageNumber.value);
-    __planExport.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __planExport.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+    __planExport.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __planExport.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     this.__dbIntr
       .api_call(1, '/planDetailSearch', __planExport)
       .pipe(map((x: any) => x.data))
@@ -94,9 +100,9 @@ export class PlanrptComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&plan_name=' + this.__catForm.value.plan_name) +
-            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
-            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            ('&plan_name=' + this.formValue?.plan_name) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -175,7 +181,7 @@ export class PlanrptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -199,6 +205,7 @@ export class PlanrptComponent implements OnInit {
     );
   }
   submit() {
+    this.formValue = this.__catForm.value;
     this.getPlanMst();
   }
 
@@ -229,12 +236,14 @@ export class PlanrptComponent implements OnInit {
       })
   }
   customSort(ev){
+    if(ev.sortField != 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
     this.sort.order = ev.sortOrder;
-    this.submit();
+    this.getPlanMst();
+  }
   }
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.value);
-    this.submit();
+    // this.__pageNumber.setValue(ev.option.value);
+    this.getPlanMst();
   }
 }

@@ -103,52 +103,25 @@
         </form>
       </mat-card-content>
       </mat-card>
-        <!-- </div>
-   </div> -->
-   <!--<div class="card my-3">
-      <div class="card-header sticky-header py-1 px-3 d-flex flex-column">
-        <div class="w-100 d-flex justify-content-between align-items-center">
-        <b class="m-0 d-flex align-items-center">
-          <i class="pi pi-database mr-1" style="font-size:2rem"></i>Reports</b>
-        <div class="flex w-25">
-          <span class="ml-auto">
-              <input id="search" class="form-control rounded" type="text"
-              (input)="filterGlobal($event)"
-              placeholder="Search"
-               />
-          </span>
-        </div>
-       </div>
-        <small *ngIf="scmbrnchMstDt.length > 0">
-          Period :
-          <ng-container *ngIf="scmbenchmarkFrm.getRawValue().date_periods == 'D';else other">
-                 {{scmbenchmarkFrm.getRawValue().date_range[0] | date:'dd-MMM-YYYY'}} -  {{scmbenchmarkFrm.getRawValue().date_range[1] | date:'dd-MMM-YYYY'}}
-          </ng-container>
-          <ng-template #other>
-                 {{scmbenchmarkFrm.getRawValue().month[0] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}} -  {{scmbenchmarkFrm.getRawValue().month[1] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}}
-          </ng-template>
-        </small>
-
-      </div>
-    <div class="card-body">-->
         <mat-card class="my-4">
           <mat-card-header>
             <mat-card-title>
-              <i class="pi pi-database mr-1" style="font-size:2rem"></i>Scheme Benchmark Reports
+             Scheme Benchmark Reports
               <br/>
               <span *ngIf="scmbrnchMstDt.length > 0">
                 Period :
                 <ng-container *ngIf="scmbenchmarkFrm.getRawValue().date_periods == 'D';else other">
-                  {{scmbenchmarkFrm.getRawValue().date_range[0] | date:'dd-MMM-YYYY'}} -  {{scmbenchmarkFrm.getRawValue().date_range[1] | date:'dd-MMM-YYYY'}}
+                  <ng-container *ngIf="scmbenchmarkFrm.getRawValue().date_range.length > 1">
+                    {{scmbenchmarkFrm.getRawValue().date_range[0] | date:'dd-MMM-YYYY'}} -  {{scmbenchmarkFrm.getRawValue().date_range[1] | date:'dd-MMM-YYYY'}}
+                  </ng-container>
                 </ng-container>
                 <ng-template #other>
+                  <ng-container *ngIf="scmbenchmarkFrm.getRawValue().month.length > 1">
                   {{scmbenchmarkFrm.getRawValue().month[0] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}} -  {{scmbenchmarkFrm.getRawValue().month[1] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}}
+                  </ng-container>
                 </ng-template>
               </span>
             </mat-card-title>
-            <!--<mat-card-subtitle *ngIf="scmbrnchMstDt.length > 0">
-
-            </mat-card-subtitle>-->
             <div class="my-auto w-25 pr-4">
               <span class="ml-auto">
                 <input id="search" class="form-control rounded" type="text"
@@ -239,11 +212,5 @@ scmBenchmark.change_percentage?.toString().includes('-') ?
          </p-table>
            </mat-card-content>
         </mat-card>
-    <!--</div>
-    <div class="card-footer">
-      <b>In There Total {{scmbrnchMstDt.length}} Rows</b>
-    </div>
-
-   </div>-->
   </div>
 </div>

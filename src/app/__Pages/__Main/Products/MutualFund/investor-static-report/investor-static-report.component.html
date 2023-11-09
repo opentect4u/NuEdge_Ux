@@ -242,7 +242,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-folio_dt let-i="rowIndex">
               <tr tabindex="999"
-              [ngStyle]="{'background-color':folio_dt.folio_status ? '#b70a0a30' : ''}"
+              [ngStyle]="{'background-color': folio_dt.folio_status == 'Inactive' ? '#b70a0a30' : ''}"
               >
                 <td *ngFor="let col of column"
                     [style.max-width]="col.width"
@@ -273,6 +273,20 @@
                     <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
                       <p class="m-0">{{ (folio_dt[col.field] && (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK" && folio_dt[col.field]!='0' && folio_dt[col.field]!= ' ') ? folio_dt[col.field] : 'N/A' }}</p>
                       </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'pa_link_ststus_3rd' || col.field == 'pa_link_ststus_2nd' || col.field == 'pa_link_ststus_1st' || col.field == 'guardian_pa_link_ststus'">
+                        <p class="m-0">{{ (folio_dt[col.field] &&  (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK"  && folio_dt[col.field]!= ' ') ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="col.field == 'occupation_des' || col.field == 'occupation_des_2nd'
+                      || col.field == 'occupation_des_3rd' || col.field == 'guardian_occu_des'">
+                        <p class="m-0">{{ (folio_dt[col.field] && (folio_dt[col.field] | titlecase)!="Not Available" && (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK"  && folio_dt[col.field]!= ' ') ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="col.field == 'nom_relation_1' || col.field == 'nom_relation_2'
+                      || col.field == 'nom_relation_3' || col.field == 'guardian_relation'">
+                        <p class="m-0">{{ (folio_dt[col.field] && (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK"  && folio_dt[col.field]!= ' ') ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
+                      </ng-container>
+
 
                     <ng-container *ngSwitchCase="col.field == 'nom_optout_status'">
                         <ng-container *ngIf="folio_dt[col.field];else nonominee__Status">
@@ -283,7 +297,7 @@
                         </ng-template>
                     </ng-container>
 
-                    <ng-container *ngSwitchCase="col.field == 'rupee_bal'">
+                    <ng-container *ngSwitchCase="col.field == 'folio_balance'">
                       <p class="m-0">
                         {{folio_dt[col.field] ? folio_dt[col.field] : 0}}
                       </p>

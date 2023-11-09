@@ -378,6 +378,7 @@ export class InvestorStaticReportComponent implements OnInit {
     } else {
       this.resetForm();
       //this.searchTrxnReport();
+      this.report_data = [];
     }
   }
 
@@ -405,6 +406,7 @@ export class InvestorStaticReportComponent implements OnInit {
 
 
   getfolioMaster = (fb) => {
+    this.report_data = [];
     if(
       this.filter.value.client_name != '' ||
       this.filter.value.folio_no != ''
@@ -676,7 +678,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     { field: 'guardian_pan', header: 'Guardian PAN', width: '9rem', isVisible: ['F', 'K', 'A'] },
     { field: 'guardian_ckyc_no', header: 'Guardian CKYC', width: '15rem', isVisible: ['F', 'K'] },
     { field: 'guardian_dob', header: 'Guardian DOB', width: '10rem', isVisible: ['F'] },
-    { field: 'guardian_tax_status', header: 'Guardian Tax', width: '15rem', isVisible: ['F'] },
+    { field: 'guardian_tax_status', header: 'Guardian Tax Status', width: '15rem', isVisible: ['F'] },
     {
       field: 'guardian_occu_des',
       header: 'Guardian Occupation',
@@ -691,17 +693,17 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     },
     {
       field: 'pa_link_ststus_1st',
-      header: '1st Holder PAN Adhare Link',
+      header: '1st Holder PAN Aadhaar Link',
       width: '15rem', isVisible: ['F', 'A']
     },
     {
       field: 'pa_link_ststus_2nd',
-      header: '2nd Holder PAN Adhare Link',
+      header: '2nd Holder PAN Aadhaar Link',
       width: '15rem', isVisible: ['F', 'A']
     },
     {
       field: 'pa_link_ststus_3rd',
-      header: '3rd Holder PAN Adhare Link',
+      header: '3rd Holder PAN Aadhaar Link',
       width: '15rem', isVisible: ['F', 'A']
     },
     {
@@ -781,7 +783,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
       isVisible: ['F', 'K', 'A', 'N']
     },
     {
-      field: 'rupee_bal',
+      field: 'folio_balance',
       header: 'Folio Balance',
       width: '10rem',
       isVisible: ['F', 'K', 'A', 'N']

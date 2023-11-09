@@ -15,37 +15,6 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./upload-csv.component.css']
 })
 export class UploadCsvComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:'Fixed Deposit',
-      url:'/main/master/fixedeposit',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Company Type",
-      url:'/main/master/fixedeposit/companytype',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Upload CSV",
-      url:'/main/master/fixedeposit/uploadcsvforcompanytype',
-      hasQueryParams:false,
-      queryParams:''
-    }
-]
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
     {
@@ -66,13 +35,13 @@ export class UploadCsvComponent implements OnInit {
     private __utility: UtiliService,
     public __rtDt: ActivatedRoute
   ) {
-    this.previewCompanyType();
 
   }
 
   ngOnInit() {
+    this.previewCompanyType();
+
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewCompanyType() {
     this.__dbIntr

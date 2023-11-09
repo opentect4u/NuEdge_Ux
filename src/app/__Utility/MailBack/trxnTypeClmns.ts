@@ -39,4 +39,13 @@ export class systamaticUnregisteredRemarksClmns{
 ]
 }
 
+export class FolioTaxStatus{
+  public static columns = [
+    {field:'edit',header:'Edit',isVisible:[1,2],width:'15rem'},
+    {field:'rnt_name',header:'R&T',isVisible:[1,2],width:'25rem'},
+    {field:'status',header:'Status',isVisible:[1,2],width:''},
+    {field:'status_code',header:'Code',isVisible:[1,2],width:''}
+  ]
+}
+
 

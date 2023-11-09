@@ -1,5 +1,5 @@
 
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+<div >
   <div mat-dialog-title class="dialog-title">
     <h2 >Transaction Type Reports</h2>
     <div class="btnIcon">
@@ -21,134 +21,138 @@
 
   </div>
 <mat-dialog-content class="customDialog">
-  <div class="card p-3 border-1">
-  <form [formGroup]="__trnsType" (ngSubmit)="submit()" autocomplete="off">
-    <ng-container>
-      <div class="row ">
-        <div class="col-sm-5">
-           <label for="trns_type">Transaction type</label>
-           <input type="text" placeholder="Enter Transaction Type" name="trns_type" id="trns_type" class="form-control" formControlName="trns_type">
-        </div>
-        <div class="col-sm-7 d-flex justify-content-end align-items-end">
-          <p-button
-          type="submit"
-          label="Show"
-          icon="pi pi-eye"
-          iconPos="right"
-          styleClass="p-button-lg"></p-button>
-        </div>
-      </div>
-    </ng-container>
-
-  </form>
-</div>
-<div class="card border-1 rounded-top mt-2">
-
-  <div class="example_container_header">
-    <div class="transTypeCount">
-      <h4></h4>
-    </div>
-    <div class="btnGrp">
-      <p-button icon="pi pi-file-export"
-      [matMenuTriggerFor]="menu"
-      [matTooltipPosition]="'after'"
-      #tooltip="matTooltip"
-      matTooltip="Export"
-      styleClass="p-button-primary p-button-lg p-button-outlined">
-      </p-button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="exportPdf()">
-          <mat-icon>download</mat-icon> Export Pdf
-        </button>
-        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Transaction Type Report'})">
-          <mat-icon>download</mat-icon> Export Excel
-        </button>
-      </mat-menu>
-      </div>
-    </div>
-    <div class="container_body">
-      <p-table
-      (onLazyLoad)="customSort($event)"
-        [customSort]="true"
-          sortMode="single"
-          [lazy]="true"
-      [value]="__selecttrnsType.data"
-      [columns]="__columns" [resizableColumns]="true"
-        selectionMode="multiple"
-        columnResizeMode="expand" [scrollable]="true"
-        scrollHeight="358px"
-        [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '100rem' }">
-        <ng-template pTemplate="header" let-columns>
-          <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 25rem">
-              {{ col.header }}
-              <p-sortIcon *ngIf="col.field!= 'edit'" [field]="col.field">
-              </p-sortIcon>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-transaction let-columns="columns" let-i="rowIndex">
-          <tr tabindex="999">
-            <td *ngFor="let col of columns">
-              <ng-container [ngSwitch]="true">
-                <ng-container *ngSwitchCase="col.field == 'edit'">
-                  <p-button icon="pi pi-pencil" (click)="populateDT(transaction)"
-                    styleClass="p-button-rounded p-button-primary"></p-button>
-                </ng-container>
-                <ng-container *ngSwitchDefault>
-                  <span #tooltip="matTooltip" [matTooltip]="transaction[col.field]">
-                    {{ transaction[col.field] ? transaction[col.field] : 'N/A' }}
-                  </span>
-                </ng-container>
-
-
-              </ng-container>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage" let-columns>
-          <tr>
-            <td [attr.colspan]="columns.length" class="noHistoryAvailable">
-               No Records Found
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-
-
-      <div class="paginator">
-        <div class="itemsPerPage d-flex">
-          <label class="mr-3">Items per page: </label>
-          <p-selectButton
-          [options]="itemsPerPage"
-           optionLabel="label" optionValue="value"
-           (onOptionClick)="onselectItem($event)"
-           ></p-selectButton>
-        </div>
-        <div  class="paginatorContainer">
-          <ul>
-            <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
-              <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
-                *ngIf="(paginate.label | bnkrplc) == 'P'">
-                <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
-                  keyboard_double_arrow_left</mat-icon>
-              </a>
-              <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
-                *ngIf="(paginate.label | bnkrplc) == 'N'">
-                <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
-                  keyboard_double_arrow_right</mat-icon>
-              </a>
-              <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
-                *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
-                {{paginate.label}}
-              </a>
-            </li>
-          </ul>
+  <mat-card>
+    <mat-card-content class="p-3">
+      <form [formGroup]="__trnsType" (ngSubmit)="submit()" autocomplete="off">
+        <ng-container>
+          <div class="row ">
+            <div class="col-sm-5">
+               <label for="trns_type">Transaction type</label>
+               <input type="text" placeholder="Enter Transaction Type" name="trns_type" id="trns_type" class="form-control" formControlName="trns_type">
+            </div>
+            <div class="col-sm-7 d-flex justify-content-end align-items-end">
+              <p-button
+              type="submit"
+              label="Show"
+              icon="pi pi-eye"
+              iconPos="right"
+              styleClass="p-button-lg"></p-button>
+            </div>
           </div>
+        </ng-container>
 
-      </div>
-    </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="mt-3">
+      <mat-card-header>
+        <mat-card-title>
+             Transaction Type Report
+        </mat-card-title>
+        <div class="btnGrp my-auto">
+          <p-button icon="pi pi-file-export"
+          [matMenuTriggerFor]="menu"
+          [matTooltipPosition]="'after'"
+          #tooltip="matTooltip"
+          matTooltip="Export"
+          styleClass="p-button-primary mr-3 p-button-lg p-button-outlined">
+          </p-button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="exportPdf()">
+              <mat-icon>download</mat-icon> Export Pdf
+            </button>
+            <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Transaction Type Report'})">
+              <mat-icon>download</mat-icon> Export Excel
+            </button>
+          </mat-menu>
+          </div>
+      </mat-card-header>
+      <mat-card-content>
+        <p-table
+        (onLazyLoad)="customSort($event)"
+          [customSort]="true"
+            sortMode="single"
+            [lazy]="true"
+        [value]="__selecttrnsType.data"
+        [columns]="__columns" [resizableColumns]="true"
+          selectionMode="multiple"
+          columnResizeMode="expand" [scrollable]="true"
+          scrollHeight="300px"
+          [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+          [tableStyle]="{ 'min-width': '100rem' }">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 25rem">
+                {{ col.header }}
+                <p-sortIcon *ngIf="col.field!= 'edit'" [field]="col.field">
+                </p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-transaction let-columns="columns" let-i="rowIndex">
+            <tr tabindex="999">
+              <td *ngFor="let col of columns">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'edit'">
+                    <p-button icon="pi pi-pencil" (click)="populateDT(transaction)"
+                      styleClass="p-button-rounded p-button-primary"></p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span #tooltip="matTooltip" [matTooltip]="transaction[col.field]">
+                      {{ transaction[col.field] ? transaction[col.field] : 'N/A' }}
+                    </span>
+                  </ng-container>
+
+
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                 No Records Found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+
+        <div class="paginator">
+          <div class="itemsPerPage d-flex">
+            <label class="mr-3">Items per page: </label>
+            <p-selectButton
+            [formControl]="__pageNumber"
+            [options]="itemsPerPage"
+             optionLabel="label" optionValue="value"
+             (onOptionClick)="onselectItem($event)"
+             ></p-selectButton>
+          </div>
+          <div  class="paginatorContainer">
+            <ul>
+              <li *ngFor="let paginate of __paginate" (click)="getPaginate(paginate)">
+                <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                  *ngIf="(paginate.label | bnkrplc) == 'P'">
+                  <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                    keyboard_double_arrow_left</mat-icon>
+                </a>
+                <a [attr.disabled]="!paginate.url" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''"
+                  *ngIf="(paginate.label | bnkrplc) == 'N'">
+                  <mat-icon class="prevNext" [style.cursor]="!paginate.url ? 'not-allowed!important' : ''">
+                    keyboard_double_arrow_right</mat-icon>
+                </a>
+                <a [class]="paginate.active ? 'activePaginator paginateNumber' : 'paginateNumber'"
+                  *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">
+                  {{paginate.label}}
+                </a>
+              </li>
+            </ul>
+            </div>
+
+        </div>
+      </mat-card-content>
+  </mat-card>
     <table id="trxn_type"
     hidden mat-table
     [dataSource]="__export"
@@ -172,7 +176,5 @@
         <td class="mat-cell" colspan="4" class="text-center">No Plans History Found</td>
       </tr>
     </table>
-</div>
-
 </mat-dialog-content>
 </div>

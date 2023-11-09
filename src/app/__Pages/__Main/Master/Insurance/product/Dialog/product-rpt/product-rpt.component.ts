@@ -25,6 +25,7 @@ import { sort } from 'src/app/__Model/sort';
   styleUrls: ['./product-rpt.component.css']
 })
 export class ProductRPTComponent implements OnInit {
+  formValue;
   itemsPerPage = ItemsPerPage;
   __isAllSpinner:boolean = false;
   SearchAllMst:any=[];
@@ -67,7 +68,7 @@ export class ProductRPTComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getInsTypeMst();
-    this.getproductMst();
+    this.searchProduct();
   }
 
   getproductTypeMst(arr_ins_type_id){
@@ -180,7 +181,7 @@ export class ProductRPTComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -194,15 +195,15 @@ export class ProductRPTComponent implements OnInit {
   }
   getproductMst(){
     const __fb = new FormData();
-    console.log(JSON.stringify(this.__prdSearchForm.value.company_id));
-    __fb.append('product_name',JSON.stringify(this.__prdSearchForm.value.product_name.map(item => item.id)));
-    __fb.append('company_id',JSON.stringify(this.__prdSearchForm.value.company_id.map(item => item.id)));
-    __fb.append('search_all',global.getActualVal(this.__prdSearchForm.value.search_all));
-    __fb.append('ins_type_id',JSON.stringify(this.__prdSearchForm.value.ins_type_id.map(item => {return item['id']})));
+    console.log(JSON.stringify(this.formValue?.company_id));
+    __fb.append('product_name',JSON.stringify(this.formValue?.product_name.map(item => item.id)));
+    __fb.append('company_id',JSON.stringify(this.formValue?.company_id.map(item => item.id)));
+    __fb.append('search_all',global.getActualVal(this.formValue?.search_all));
+    __fb.append('ins_type_id',JSON.stringify(this.formValue?.ins_type_id.map(item => {return item['id']})));
     __fb.append('paginate', this.__pageNumber.value);
-    __fb.append('product_type_id',JSON.stringify(this.__prdSearchForm.value.product_type_id.map(item => item.id)))
-    __fb.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __fb.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    __fb.append('product_type_id',JSON.stringify(this.formValue?.product_type_id.map(item => item.id)))
+    __fb.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''));
+    __fb.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1'));
      this.__dbIntr.api_call(1,'/ins/productDetailSearch',__fb).pipe(pluck("data")).subscribe((res: any) =>{
         this.__selectPrdMst = new MatTableDataSource(res.data);
         this.__paginate = res.links;
@@ -217,6 +218,7 @@ export class ProductRPTComponent implements OnInit {
     });
   }
   searchProduct(){
+    this.formValue = this.__prdSearchForm.value;
     this.getproductMst();
   }
   exportPdf(){
@@ -263,13 +265,13 @@ export class ProductRPTComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + (this.__pageNumber.value)) +
-            ('&search_all='+global.getActualVal(this.__prdSearchForm.value.search_all))+
-            ('&product_name=' + (JSON.stringify(this.__prdSearchForm.value.product_name.map(item => {return item['id']})))) +
-            ('&ins_type_id=' +  (JSON.stringify(this.__prdSearchForm.value.ins_type_id.map(item => {return item['id']})))) +
-            ('&company_id=' +  (JSON.stringify(this.__prdSearchForm.value.company_id.map(item => item.id)))) +
-            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
-            ('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1')) +
-            ('&product_type_id='+ (JSON.stringify(this.__prdSearchForm.value.product_type_id.map(item => item.id))))
+            ('&search_all='+global.getActualVal(this.formValue?.search_all))+
+            ('&product_name=' + (JSON.stringify(this.formValue?.product_name.map(item => {return item['id']})))) +
+            ('&ins_type_id=' +  (JSON.stringify(this.formValue?.ins_type_id.map(item => {return item['id']})))) +
+            ('&company_id=' +  (JSON.stringify(this.formValue?.company_id.map(item => item.id)))) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : '')) +
+            ('&product_type_id='+ (JSON.stringify(this.formValue?.product_type_id.map(item => item.id))))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -366,11 +368,13 @@ export class ProductRPTComponent implements OnInit {
        this.searchProduct();
     }
     customSort(ev){
+      if(ev.sortField!= 'edit' && ev.sortField != 'delete'){
         this.sort.field =ev.sortField;
         this.sort.order =ev.sortOrder;
         if(ev.sortField){
           this.getproductMst();
         }
+      }
     }
     onselectItem(ev){
       this.getproductMst();

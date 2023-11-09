@@ -69,10 +69,10 @@ export class UploadOptionComponent implements OnInit {
     private __utility: UtiliService,
     public __rtDt: ActivatedRoute
   ) {
-    this.previewlatestOptEntry();
   }
 
   ngOnInit() {
+    this.previewlatestOptEntry();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
   }

@@ -227,4 +227,23 @@ export class UtiliService {
 
   //   })
   //   }
+
+
+  screenResoluation =(actual_height:Number,actual_width:Number,
+    curr_width:Number,curr_height:Number) =>{
+
+    // if((curr_height != actual_height)
+    // || (curr_width != Number(actual_width))){
+    //   this.__router.navigate(['/']);
+    //   // clear localStorage also
+    //   // alert(`actual_width: ${actual_width} actual_height:${curr_height}`);
+    // console.log('Not ok');
+    // }
+    // else{
+    // console.log('ok');
+    //   alert(`actual_width: ${actual_width} actual_height:${actual_height}`);
+    // }
+    // alert(`curr_height: ${curr_height} curr_width:${curr_width} actual_width: ${actual_width} actual_height:${actual_height}`);
+
+  }
 }

@@ -39,10 +39,10 @@ export class UploadPlnComponent implements OnInit {
     private __utility: UtiliService,
     public __rtDt: ActivatedRoute
   ) {
-    this.previewlatestRntEntry();
   }
 
   ngOnInit() {
+    this.previewlatestRntEntry();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   }
   previewlatestRntEntry() {

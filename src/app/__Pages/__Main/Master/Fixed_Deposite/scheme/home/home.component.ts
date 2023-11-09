@@ -76,7 +76,7 @@ export class HomeComponent implements OnInit {
     } catch (ex) {
       console.log(ex);
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
-      dialogRef.updateSize('40%');
+      dialogRef.updateSize('60%');
       this.__utility.getmenuIconVisible({
         id: Number(dialogConfig.id),
         isVisible: false,

@@ -18,6 +18,7 @@ import itemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
   styleUrls: ['./geographic-rpt.component.css']
 })
 export class GeographicRPTComponent implements OnInit {
+  formValue;
   itemsPerPage=itemsPerPage
  sort = new sort();
   isOpenMegaMenu: boolean =false;
@@ -196,7 +197,7 @@ export class GeographicRPTComponent implements OnInit {
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize("40%",'55px');
+    this.dialogRef.updateSize("40%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize(){

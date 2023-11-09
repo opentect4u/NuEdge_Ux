@@ -35,10 +35,10 @@ export class UploadSubcatComponent implements OnInit {
     private __utility: UtiliService,
     public __rtDt: ActivatedRoute
   ) {
-    this.previewlatestCategoryEntry();
   }
 
   ngOnInit() {
+    this.previewlatestCategoryEntry();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
     this.getCategory();

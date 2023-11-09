@@ -418,9 +418,10 @@ export class UploadScmComponent implements OnInit {
   constructor(
     private __dbIntr: DbIntrService,
     private __utility: UtiliService,
-    public __route: ActivatedRoute) { this.previewlatestCategoryEntry(); }
+    public __route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.previewlatestCategoryEntry();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
     this.getCategory();

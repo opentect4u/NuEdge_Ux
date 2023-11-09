@@ -3,7 +3,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { map, pluck } from 'rxjs/operators';
 import { responseDT } from 'src/app/__Model/__responseDT';
-import { breadCrumb } from 'src/app/__Model/brdCrmb';
 import { Column } from 'src/app/__Model/column';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -14,37 +13,6 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./upload-csv.component.css']
 })
 export class UploadCsvComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [{
-    label:"Home",
-    url:'/main',
-    hasQueryParams:false,
-    queryParams:''
-    },
-    {
-      label:"Master",
-      url:'/main/master/products',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:'Fixed Deposit',
-      url:'/main/master/fixedeposit',
-      hasQueryParams:true,
-      queryParams:''
-    },
-    {
-      label:"Scheme",
-      url:'/main/master/fixedeposit/scheme',
-      hasQueryParams:false,
-      queryParams:''
-    },
-    {
-      label:"Upload CSV",
-      url:'/main/master/fixedeposit/uploadscheme',
-      hasQueryParams:false,
-      queryParams:''
-    }
-]
 displayedColumns: Array<string> = [];
 displayedColumns__forcomp_type: Array<string> = [];
 displayedColumns__forcomp: Array<string>= [];
@@ -107,9 +75,7 @@ constructor(
   private __utility: UtiliService,
   public __rtDt: ActivatedRoute
 ) {
-  this.previewScheme();
-  this.getCompanyType();
-  this.getCompany();
+
 }
 getCompany(){
   this.__dbIntr.api_call(0,'/fd/company',null).pipe(pluck("data")).subscribe((res: any) =>{
@@ -123,10 +89,12 @@ getCompanyType(){
 }
 
 ngOnInit() {
+  this.previewScheme();
+  this.getCompanyType();
+  this.getCompany();
   this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
   this.displayedColumns__forcomp_type = this.tableColumns_forcomp_type.map((c) => c.columnDef);
   this.displayedColumns__forcomp = this.tableColumns_forcomp.map((c) => c.columnDef);
-  this.__utility.getBreadCrumb(this.__brdCrmbs);
 }
 previewScheme() {
   this.__dbIntr

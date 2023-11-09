@@ -31,6 +31,8 @@ type selectBtn ={
   styleUrls: ['./isin-rpt.component.css']
 })
 export class IsinRptComponent implements OnInit {
+
+  formValue;
   settingsForAmc = this.__utility.settingsfroMultiselectDropdown('id','amc_short_name','Search AMC',2);
   settingsForcat = this.__utility.settingsfroMultiselectDropdown('id','cat_name','Search Category',2);
   settingsForsubcat = this.__utility.settingsfroMultiselectDropdown('id','subcategory_name','Search Subcategory',2);
@@ -77,6 +79,7 @@ export class IsinRptComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.formValue = this.__isinFrm.value;
     this.getAMCMst();
   }
 
@@ -178,7 +181,7 @@ export class IsinRptComponent implements OnInit {
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize("40%",'55px');
+    this.dialogRef.updateSize("40%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize(){
@@ -204,7 +207,7 @@ export class IsinRptComponent implements OnInit {
     this.pageNumber = '10';
     this.__isinFrm.get('btn_type').setValue('R');
     this.sort = new sort();
-    this.getISINMst();
+    this.submitISIN();
 
   }
   getOptionMst(){
@@ -235,16 +238,16 @@ export class IsinRptComponent implements OnInit {
   getISINMst(){
     const __fd = new FormData();
     __fd.append('paginate',this.pageNumber);
-    __fd.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __fd.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __fd.append('amc_id',JSON.stringify(this.__isinFrm.value.amc_id.map(item => item.id)));
-    __fd.append('cat_id',JSON.stringify(this.__isinFrm.value.cat_id.map(item => item.id)));
-    __fd.append('sub_cat_id',JSON.stringify(this.__isinFrm.value.sub_cat_id.map(item => item.id)));
-    __fd.append('scheme_id',JSON.stringify(this.__isinFrm.value.scheme_id.map(item => item.id)));
-    __fd.append('search_scheme_id',global.getActualVal(this.__isinFrm.value.alt_scheme_id));
-    if(this.__isinFrm.value.btn_type == 'A'){
-      __fd.append('plan_id',JSON.stringify(this.__isinFrm.value.plan_id.map(item => item.id)));
-      __fd.append('opt_id',JSON.stringify(this.__isinFrm.value.opt_id.map(item => item.id)));
+    __fd.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __fd.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : '1'));
+    __fd.append('amc_id',JSON.stringify(this.formValue?.amc_id.map(item => item.id)));
+    __fd.append('cat_id',JSON.stringify(this.formValue?.cat_id.map(item => item.id)));
+    __fd.append('sub_cat_id',JSON.stringify(this.formValue?.sub_cat_id.map(item => item.id)));
+    __fd.append('scheme_id',JSON.stringify(this.formValue?.scheme_id.map(item => item.id)));
+    __fd.append('search_scheme_id',global.getActualVal(this.formValue?.alt_scheme_id));
+    if(this.formValue?.btn_type == 'A'){
+      __fd.append('plan_id',JSON.stringify(this.formValue?.plan_id.map(item => item.id)));
+      __fd.append('opt_id',JSON.stringify(this.formValue?.opt_id.map(item => item.id)));
     }
     this.__dbIntr.api_call(1,'/schemeISINDetailSearch',__fd).pipe(pluck("data")).subscribe((res: any) =>{
        this.__isinMst = res.data;
@@ -259,6 +262,7 @@ export class IsinRptComponent implements OnInit {
   //   })
   // }
   submitISIN(){
+    this.formValue = this.__isinFrm.value;
     this.getISINMst();
   }
   onSelectItem(itemPerpage){
@@ -271,15 +275,17 @@ export class IsinRptComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.pageNumber)
-          + ('&scheme_id='+  JSON.stringify(this.__isinFrm.value.scheme_id.map(item => item.id)))
-          + ('&cat_id='+ JSON.stringify(this.__isinFrm.value.cat_id.map(item => item.id)))
-          + ('&amc_id='+ JSON.stringify(this.__isinFrm.value.amc_id.map(item => item.id)))
-          + ('&sub_cat_id='+  JSON.stringify(this.__isinFrm.value.sub_cat_id.map(item => item.id)))
-          + ('&search_scheme_id=' + global.getActualVal(this.__isinFrm.value.alt_scheme_id))
+          + ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+          ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
+          + ('&scheme_id='+  JSON.stringify(this.formValue?.scheme_id.map(item => item.id)))
+          + ('&cat_id='+ JSON.stringify(this.formValue?.cat_id.map(item => item.id)))
+          + ('&amc_id='+ JSON.stringify(this.formValue?.amc_id.map(item => item.id)))
+          + ('&sub_cat_id='+  JSON.stringify(this.formValue?.sub_cat_id.map(item => item.id)))
+          + ('&search_scheme_id=' + global.getActualVal(this.formValue?.alt_scheme_id))
           + (
-            this.__isinFrm.value.btn_type == 'A' ?
-            ('&plan_id=' + JSON.stringify(this.__isinFrm.value.plan_id.map(item => item.id))) +
-            ('&opt_id=' + JSON.stringify(this.__isinFrm.value.opt_id.map(item => item.id)))
+            this.formValue?.btn_type == 'A' ?
+            ('&plan_id=' + JSON.stringify(this.formValue?.plan_id.map(item => item.id))) +
+            ('&opt_id=' + JSON.stringify(this.formValue?.opt_id.map(item => item.id)))
             :
             ''
           )

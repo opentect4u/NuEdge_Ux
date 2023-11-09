@@ -1,4 +1,4 @@
-<div class="card my-3">
+<!-- <div class="card my-3">
   <div class="card-header d-flex justify-content-between">
     <div class="d-flex justify-content-between align-items-center">
     </div>
@@ -12,8 +12,6 @@
       </div>
   </div>
   <div class="card-body">
-    <!-- scrollHeight="350px" -->
-
     <p-table
     #pTableRef
     responsiveLayout="scroll"
@@ -76,4 +74,79 @@
   <div class="card-footer">
     In Total There Are {{trxnTypeMst.length}} Transaction type
   </div>
-</div>
+</div> -->
+
+<mat-card class="my-3">
+  <mat-card-header>
+    <mat-card-title>
+      {{title ? title : ''}}</mat-card-title>
+    <div class="flex w-25 my-auto mr-2">
+      <span class="ml-auto">
+          <input class="form-control" type="text"
+          (input)="filterGlobal($event)"
+           placeholder="Search " />
+      </span>
+  </div>
+  </mat-card-header>
+  <mat-card-content>
+    <p-table
+    #pTableRef
+    responsiveLayout="scroll"
+    [value]="trxnTypeMst"
+    [responsive]="true"
+    [rowHover]="true"
+    styleClass="p-datatable-striped"
+    [autoLayout]="true"
+    [scrollable]="true"
+    [paginator]="true"
+    [totalRecords]="trxnTypeMst.length"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [globalFilterFields]="getColumns()"
+    >
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th  *ngFor="let col of column"
+          [pSortableColumn]="col.field"
+          [style.max-width]="col.width"
+          [style.min-width]="col.width"
+          >
+            {{ col.header }}
+            <p-sortIcon *ngIf="col.field!='edit'" [field]="col.field">
+            </p-sortIcon>
+          </th>
+      </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-file let-index="rowIndex">
+        <tr>
+          <td *ngFor="let col of column"
+          [style.max-width]="col.width"
+          [style.min-width]="col.width"
+          >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'edit'">
+                <p-button icon="pi pi-pencil" (click)="populateTrxnTypeinForm(file)"
+                  styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <p class="m-0">{{ file[col.field] ? file[col.field]  : 'N/A'}}
+               </p>
+             </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-file>
+        <!-- [style.height]="'309px'" -->
+        <tr >
+          <td [attr.colspan]="5">
+             <h6>No Records Found</h6>
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  </mat-card-content>
+</mat-card>

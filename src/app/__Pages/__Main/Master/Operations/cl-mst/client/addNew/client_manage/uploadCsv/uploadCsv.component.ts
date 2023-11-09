@@ -20,56 +20,7 @@ import { clientColumns } from 'src/app/__Utility/clientColumns';
   styleUrls: ['./uploadCsv.component.css']
 })
 export class UploadCsvComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] =[
-    {
-      label: 'Home',
-      url: '/main',
-      hasQueryParams: false,
-      queryParams: '',
-    },
-    {
-      label: 'Master',
-      url: '/main/master/products',
-      hasQueryParams: false,
-      queryParams: '',
-    },
-    {
-      label: 'Operations',
-      url: '/main/master/mstOperations',
-      hasQueryParams: false,
-      queryParams: '',
-    },
-    {
-      label: 'Client Master',
-      url: '/main/master/clntMstHome',
-      hasQueryParams: false,
-      queryParams: '',
-    },
-    {
-      label: 'Create Client Code',
-      url: '/main/master/clOption',
-      hasQueryParams: false,
-      queryParams: '',
-    },
-    {
-      label:
-      atob(this.__rtDt.snapshot.paramMap.get('id')) == 'E' ? 'Existing'
-      : atob(this.__rtDt.snapshot.paramMap.get('id')) == 'M' ? "Minor"
-      : atob(this.__rtDt.snapshot.paramMap.get('id')) == 'P' ? 'Pan Holder' : 'Non Pan Holder',
-      url: '/main/master/clientmaster',
-      hasQueryParams: true,
-      queryParams: {flag:this.__rtDt.snapshot.paramMap.get('id')},
-    },
-    {
-      label:
-      atob(this.__rtDt.snapshot.paramMap.get('id')) == 'E' ? 'Existing Client Upload'
-      : atob(this.__rtDt.snapshot.paramMap.get('id')) == 'M' ? "Minor Client Upload"
-      : atob(this.__rtDt.snapshot.paramMap.get('id')) == 'P' ? 'Pan Holder Client Upload' : 'Non Pan Holder Client Upload',
-      url: '/main/master/clUploadCsv',
-      hasQueryParams: true,
-      queryParams: {flag:this.__rtDt.snapshot.paramMap.get('id')},
-    }
-  ]
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
@@ -193,17 +144,18 @@ export class UploadCsvComponent implements OnInit {
   constructor(
     public __rtDt: ActivatedRoute,
     private __dbIntr: DbIntrService,
-    private __utility: UtiliService) { this.previewlatestClientEntry(); }
+    private __utility: UtiliService) { }
 
   ngOnInit() {
     console.log(this.displayedColumns);
-
+    this.previewlatestClientEntry();
     // this.__utility.getBreadCrumb(this.__brdCrmbs);
     this.setColumns();
   }
   previewlatestClientEntry() {
     this.__dbIntr.api_call(0, '/client', 'client_type='+ atob(this.__rtDt.snapshot.paramMap.get('id'))).pipe(pluck('data','data')).subscribe((res: client[]) => {
       this.__selectClient = new MatTableDataSource(res.splice(0,5));
+      console.log(this.__selectClient);
 
     })
   }

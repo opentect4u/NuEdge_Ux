@@ -1,6 +1,6 @@
 
-<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title">
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane"  cdkDragBoundary=".cdk-overlay-container">
+  <div mat-dialog-title class="dialog-title" cdkDragHandle>
     <h2 >{{data.title}}</h2>
       <div class="btnIcon">
         <button mat-icon-button title="Minimize"  (click)="minimize()" >
@@ -33,9 +33,9 @@
       </div>
     </div>
 </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+</mat-dialog-content >
+<mat-dialog-actions align="end" cdkDragHandle class="popupBoxSubmitSec">
   <button class="btn addBtn"   [attr.form]="'__plnForm_'+data.id" [disabled]="this.__plnForm.invalid">Submit</button>
 </mat-dialog-actions>
-<br clear="all">
+<!-- <br clear="all"> -->
 </div>

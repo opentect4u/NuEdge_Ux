@@ -41,6 +41,8 @@ import { RPTService } from 'src/app/__Services/RPT.service';
   styleUrls: ['./client-cmn-rpt.component.css'],
 })
 export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
+
+  formvalue;
   isOpenMegaMenu:boolean = false;
   cityOptForMultiselectDropDown = this.__utility.settingsfroMultiselectDropdown(
     'id',
@@ -99,6 +101,7 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     ) {}
 
   ngOnInit(): void {
+    this.formvalue = this.clientFrm.value;
     this.getClientMstData();
     this.setColumns(2);
     this.getstate();
@@ -108,7 +111,9 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.clientFrm
       .get('client_name')
       .valueChanges.pipe(
-        tap(() => (this.isClientPending = true)),
+        tap(() => {this.isClientPending = true;
+          this.clientFrm.get('client_id').setValue('');
+        }),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
@@ -144,24 +149,25 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.displayMode_forClient = display_mode;
   };
   searchClient = () =>{
+    this.formvalue = this.clientFrm.value;
     this.getClientMstData();
   }
   getClientMstData = () => {
     const __client = new FormData();
-    __client.append('anniversary_date_month',this.clientFrm.value.doa_as_per_month);
-    __client.append('birth_date_month', this.clientFrm.value.dob_as_per_month);
-    __client.append('client_code', this.clientFrm.value.client_id);
-    if(this.clientFrm.value.btn_type == 'A'){
-    __client.append('state', this.getStringifyDT(this.clientFrm.value.state_id));
-    __client.append('dist', this.getStringifyDT(this.clientFrm.value.dist_id));
-    __client.append('city', this.getStringifyDT(this.clientFrm.value.city_id));
-    __client.append('city_type', this.clientFrm.value.city_type_id);
-    __client.append('pincode', this.clientFrm.value.pincode);
+    __client.append('anniversary_date_month',this.formvalue.doa_as_per_month ? this.formvalue.doa_as_per_month : '');
+    __client.append('birth_date_month', this.formvalue.dob_as_per_month ? this.formvalue.dob_as_per_month : '');
+    __client.append('client_code', this.formvalue.client_id ? this.formvalue.client_id : '');
+    if(this.formvalue.btn_type == 'A'){
+    __client.append('state', this.getStringifyDT(this.formvalue.state_id));
+    __client.append('dist', this.getStringifyDT(this.formvalue.dist_id));
+    __client.append('city', this.getStringifyDT(this.formvalue.city_id));
+    __client.append('city_type', this.formvalue.city_type_id ? this.formvalue.city_type_id : '');
+    __client.append('pincode', this.formvalue.pincode ? this.formvalue.pincode : '');
    }
     __client.append('paginate', this.__pageNumber.value);
-    __client.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __client.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __client.append('client_type',this.clientFrm.value.client_type);
+    __client.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __client.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
+    __client.append('client_type',this.formvalue.client_type);
        this.dbIntr.api_call(1,'/clientDetailSearch',__client)
       .pipe(pluck("data")).subscribe((res: any) =>{
          this.clientMst = res.data;
@@ -184,7 +190,7 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   TabDetails = (tabDtls) => {
     this.clientFrm.get('client_type').setValue(tabDtls.tabDtls.type);
     this.sort = new sort();
-    this.getClientMstData();
+    this.reset();
     this.setColumns(this.clientFrm.value.options);
   };
   onItemClick = (ev) => {
@@ -199,15 +205,14 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.clientFrm.patchValue({
       dob_as_per_month:'',
       doa_as_per_month:'',
-      client_type_id:'',
       pincode:'',
-      client_id:''
+      client_id:'',
     })
     this.clientFrm.get('state_id').reset([],{emitEvent:true});
     this.clientFrm.get('client_name').setValue('',{emitEvent:false});
     this.sort = new sort();
     this.__pageNumber.setValue('10');
-    this.getClientMstData();
+    this.searchClient();
   }
 
   getSelectedItemsFromParent = (items) => {
@@ -342,18 +347,18 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       this.dbIntr
         .getpaginationData(
           paginate.url + ('&paginate=' + this.__pageNumber.value)
-          + ('&anniversary_date=' +  this.clientFrm.value.anniversary_date)
-          + ('&client_code=' +  this.clientFrm.value.client_code)
-          + ('&dob=' +  this.clientFrm.value.dob)
-          + ('&client_type=' +this.clientFrm.value.client_type)
-          + ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
-          + ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
-          + ( this.clientFrm.value.btn_type == 'A' ?
-            ('&city_type=' +  this.clientFrm.value.city_type_id)
-          + ('&pincode=' +   this.clientFrm.value.pincode)
-          + ('&state=' +  this.getStringifyDT(this.clientFrm.value.state_id))
-          + ('&dist=' +  this.getStringifyDT(this.clientFrm.value.dist_id))
-          + ('&city=' +  this.getStringifyDT(this.clientFrm.value.city_id))
+          + ('&anniversary_date=' +  (this.formvalue?.anniversary_date ? this.formvalue?.anniversary_date : ''))
+          + ('&client_code=' +  (this.formvalue?.client_id ? this.formvalue?.client_id : ''))
+          + ('&dob=' +  (this.formvalue?.dob ? this.formvalue?.dob : ''))
+          + ('&client_type=' + (this.formvalue?.client_type  ? this.formvalue?.client_type : ''))
+          + ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+          ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
+          + ( this.formvalue?.btn_type == 'A' ?
+            ('&city_type=' +  (this.formvalue?.city_type_id ? this.formvalue?.city_type_id : ''))
+          + ('&pincode=' +   (this.formvalue?.pincode ? this.formvalue?.pincode : ''))
+          + ('&state=' +  this.getStringifyDT(this.formvalue?.state_id))
+          + ('&dist=' +  this.getStringifyDT(this.formvalue?.dist_id))
+          + ('&city=' +  this.getStringifyDT(this.formvalue?.city_id))
           : '')
         )
         .pipe(map((x: any) => x.data))
@@ -364,10 +369,12 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     }
   }
   customSort = (sort) =>{
+    if(sort.sortField!='edit' && sort.sortField!='delete'){
     this.sort.field = sort.sortField;
     this.sort.order = sort.sortOrder;
     if(sort.sortField){
       this.getClientMstData();
+      }
     }
   }
   getSelectedColumns = (columns)  =>{

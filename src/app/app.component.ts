@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, SimpleChanges } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { UtiliService } from './__Services/utils.service';
@@ -46,8 +46,15 @@ export class AppComponent {
 
   }
 
-  ngOnInit() {
+  // ngOnChanges(changes: SimpleChanges): void{
+  //   console.log(changes);
+  //   this.__utility.screenResoluation(window.screen.height,window.screen.width,
+  //     window.innerHeight,window.innerWidth);
+  // }
 
+  ngOnInit() {
+    this.__utility.screenResoluation(window.screen.height,window.screen.width,
+      window.innerHeight,window.innerWidth);
     this.__router.events.pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd),
       distinctUntilChanged(),
@@ -140,4 +147,12 @@ buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrum
    }
    return newBreadcrumbs;
 }
+
+@HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    /*** CHANGE DETECTION SCREEN HEIGHT AND WIDTH */
+    this.__utility.screenResoluation(window.screen.height,window.screen.width,
+        window.innerHeight,window.innerWidth);
+    /*** END */
+  }
 }

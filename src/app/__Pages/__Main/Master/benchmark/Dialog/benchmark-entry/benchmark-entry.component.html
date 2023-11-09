@@ -1,5 +1,5 @@
-<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title">
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane"  cdkDragBoundary=".cdk-overlay-container">
+  <div mat-dialog-title class="dialog-title" cdkDragHandle>
     <h2 >{{data.title}}</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()">
@@ -109,40 +109,11 @@
            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('subcat_id')).errors?.required">*Please provide sub category</span>
          </div>
         </div>
-
-        <!-- <div class="col-sm-12 col-md-12 col-12">
-          <label for="category_id">Category <span class="text-danger">*</span></label>
-           <ng-multiselect-dropdown
-           id="category_id"
-           [placeholder]="'Select Category'"
-           [settings]="settings_category"
-           (onDeSelect)="onDeSelect($event)"
-           [data]="cat_mst"
-           formControlName="category_id">
-         </ng-multiselect-dropdown>
-          <div class="invalid-feedback" *ngIf="benchmarkForm.get('category_id').invalid && (benchmarkForm.get('category_id').dirty || benchmarkForm.get('category_id').touched)">
-            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('category_id')).errors?.required">*Please provide category</span>
-          </div>
-        </div>
-        <div class="col-sm-12 col-md-12 col-12">
-          <label for="subcat_id">Sub Category <span class="text-danger">*</span></label>
-           <ng-multiselect-dropdown
-           #dates_inp
-           id="subcat_id"
-           [placeholder]="'Select Sub Category'"
-           [settings]="settings_subcate"
-           [data]="sub_cat_mst_dt"
-           formControlName="subcat_id">
-         </ng-multiselect-dropdown>
-          <div class="invalid-feedback" *ngIf="benchmarkForm.get('subcat_id').invalid && (benchmarkForm.get('subcat_id').dirty || benchmarkForm.get('subcat_id').touched)">
-            <span class="invalid-feedback" *ngIf="(benchmarkForm.get('subcat_id')).errors?.required">*Please provide sub category</span>
-          </div>
-        </div> -->
       </div>
     </form>
   </mat-dialog-content>
-  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec" cdkDragHandle>
     <button class="btn addBtn"   [attr.form]="'benchmarkFrm_'+data.id" [disabled]="benchmarkForm.invalid">Submit</button>
   </mat-dialog-actions>
-  <br clear="all">
+  <!-- <br clear="all"> -->
   </div>

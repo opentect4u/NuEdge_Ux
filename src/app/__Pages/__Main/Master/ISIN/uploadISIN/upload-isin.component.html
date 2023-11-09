@@ -1,5 +1,5 @@
 <div class="row flexSec">
-  <div class="col-sm-7">
+  <div class="col-sm-8 col-sm-offset-2">
     <shared-upload-csv [leftHeaderTitle]="'Upload ISIN'"
     [flag]="'IS'"
     [file_name]="'Sample ISIN'"
@@ -18,12 +18,5 @@
     (getschemeMst)="getAmcWisescheme($event)"
     [displayedColumns]="displayedColumns"></shared-upload-csv>
   </div>
-  <div class="col-sm-5">
-    <!-- <shared-mst-dtls [btnTitle]="'View All ISIN'"
-    [headerTitle]="'Recent ISIN'"
-    [flag]="'IS'"
-      (populate)="populateDT($event)"
-      (viewAll)="viewAll()"
-      [dataSource]="isinMst"></shared-mst-dtls> -->
-  </div>
+
 </div>

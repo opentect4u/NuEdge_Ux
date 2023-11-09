@@ -80,7 +80,7 @@
                 <p class="m-0">{{i + 1}}</p>
              </ng-container>
              <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date' || col.field== 'terminated_date'">
-                <p>{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+                <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
              </ng-container>
            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
             <p class="m-0">{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A' }}</p>

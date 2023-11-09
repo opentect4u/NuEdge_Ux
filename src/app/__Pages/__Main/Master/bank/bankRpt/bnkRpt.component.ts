@@ -22,6 +22,8 @@ templateUrl: './bnkRpt.component.html',
 styleUrls: ['./bnkRpt.component.css']
 })
 export class BnkrptComponent implements OnInit {
+
+  formValue;
   itemsPerPage=ItemsPerPage;
   sort=new sort();
   @ViewChild('searchMicr') __searchMicr: ElementRef;
@@ -58,6 +60,7 @@ constructor(
 }
 
 ngOnInit(){
+  this.formValue = this.__catForm.value;
   this.setColumns(2);
 }
 
@@ -74,18 +77,14 @@ setColumns(res){
 }
 
  getBankMst(column_name: string | null = '',sort_by: string | null | '' ='asc'){
-
   const __bnkSearch = new FormData();
-
-  __bnkSearch.append('bnk_addr',this.__catForm.value.bnk_addr ? this.__catForm.value.bnk_addr : '');
-  __bnkSearch.append('bnk_name',this.__catForm.value.bnk_name ? this.__catForm.value.bnk_name : '');
-  __bnkSearch.append('micr_code',this.__catForm.value.micr_code ? this.__catForm.value.micr_code : '');
-  // __bnkSearch.append('ifsc',this.__catForm.value.ifsc ? this.__catForm.value.ifsc : '');
+  __bnkSearch.append('bnk_addr',this.formValue?.bnk_addr ? this.formValue?.bnk_addr : '');
+  __bnkSearch.append('bnk_name',this.formValue?.bnk_name ? this.formValue?.bnk_name : '');
+  __bnkSearch.append('micr_code',this.formValue?.micr_code ? this.formValue?.micr_code : '');
   __bnkSearch.append('paginate',this.__pageNumber.value);
-  __bnkSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-  __bnkSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+  __bnkSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+  __bnkSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : '1'));
    this.__dbIntr.api_call(1,'/depositbankDetailSearch',__bnkSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-    // this.setColumns(this.__catForm.value.options);
     this.__paginate =res.links;
     this.setPaginator(res.data);
      this.tableExport(__bnkSearch);
@@ -104,7 +103,10 @@ tableExport(__bnkExport){
 ngAfterViewInit(){
   this.__catForm.controls['micr_code'].valueChanges
   .pipe(
-    tap(() => this.__ismicrspinner = true),
+    tap(() => {
+      this.__ismicrspinner = true;
+      this.__catForm.controls['bnk_name'].setValue('');
+    }),
     debounceTime(200),
     distinctUntilChanged(),
     switchMap((dt) =>
@@ -126,31 +128,6 @@ ngAfterViewInit(){
     complete: () => console.log(''),
     error: (err) => console.log(),
   });
-
-  // this.__catForm.controls['ifsc'].valueChanges
-  // .pipe(
-  //   tap(() => this.__isifsspinner = true),
-  //   debounceTime(200),
-  //   distinctUntilChanged(),
-  //   switchMap((dt) =>
-  //     dt?.length > 1
-  //       ? this.__dbIntr.searchItems(
-  //         '/depositbank',
-  //         dt)
-  //       : []
-  //   ),
-  //   map((x: responseDT) => x.data),
-  // )
-  // .subscribe({
-  //   next: (value) => {
-  //     this.__bnkMstforIfs = value;
-  //     this.searchResultVisibility('block','I')
-  //     this.__isifsspinner = false;
-  //   },
-  //   complete: () => console.log(''),
-  //   error: (err) => console.log(),
-  // });
-
   this.__catForm.controls['options'].valueChanges.subscribe(res =>{
     this.setColumns(res);
   })
@@ -164,13 +141,12 @@ getPaginate(__paginate) {
     this.__dbIntr
       .getpaginationData(
         __paginate.url
-        + ('&paginate=' + this.__pageNumber.value)
-        + ('&bnk_addr=' + this.__catForm.value.bnk_addr ? this.__catForm.value.bnk_addr : '')
-        + ('&bnk_name=' + this.__catForm.value.bnk_name ? this.__catForm.value.bnk_name : '')
-        + ('&micr_code=' + this.__catForm.value.micr_code ? this.__catForm.value.micr_code : '')
-        // + ('&ifsc=' + this.__catForm.value.ifsc ? this.__catForm.value.ifsc : '')
-        +('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : ''))
-        + ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+        + ('&paginate=' + (this.__pageNumber.value))
+        + ('&bnk_addr=' + (this.formValue?.bnk_addr ? this.formValue?.bnk_addr : ''))
+        + ('&bnk_name=' + (this.formValue?.bnk_name ? this.formValue?.bnk_name : ''))
+        + ('&micr_code=' + (this.formValue?.micr_code ? this.formValue?.micr_code : ''))
+        + ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+          ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -261,7 +237,7 @@ fullScreen(){
 minimize(){
   this.dialogRef.removePanelClass('mat_dialog');
   this.dialogRef.removePanelClass('full_screen');
-  this.dialogRef.updateSize("40%",'55px');
+  this.dialogRef.updateSize("40%",'47px');
   this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
 }
 maximize(){
@@ -283,6 +259,8 @@ exportPdf(){
   // this.__catForm.value.options == 1 ?  [600,792] : []
 }
 submit(){
+  this.formValue = this.__catForm.getRawValue();
+  console.log(this.formValue);
    this.getBankMst();
 }
 
@@ -304,7 +282,8 @@ searchResultVisibility(display_mode,__mode) {
 getItems(__amc,__type){
   console.log(__amc);
  switch(__type){
-  case 'M': this.__catForm.controls['micr_code'].reset(__amc.bank_name,{ onlySelf: true,emitEvent: false})
+  case 'M': this.__catForm.controls['bnk_name'].reset(__amc.bank_name,{ onlySelf: true,emitEvent: false});
+            this.__catForm.controls['micr_code'].reset(__amc.bank_name,{ onlySelf: true,emitEvent: false});
               this.searchResultVisibility('none','M');
               break;
   // case 'I':
@@ -342,11 +321,13 @@ delete(element,index){
   })
 }
 customSort(ev){
+  if(ev.sortField!='delete' && ev.sortField !='edit'){
   this.sort.field = ev.sortField;
   this.sort.order = ev.sortOrder;
-  this.submit();
+    this.getBankMst();
+  }
 }
 onselectItem(ev){
-  this.submit();
+  this.getBankMst();
 }
 }

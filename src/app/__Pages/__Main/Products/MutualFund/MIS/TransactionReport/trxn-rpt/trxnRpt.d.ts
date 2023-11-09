@@ -1,3 +1,4 @@
+import { totalAmt } from "src/app/__Model/TotalAmt"
 
 /**
  * Make the file a module by using export {}.

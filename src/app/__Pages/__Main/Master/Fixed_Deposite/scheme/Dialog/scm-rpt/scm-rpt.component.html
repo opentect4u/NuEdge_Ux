@@ -1,7 +1,7 @@
 <!-- cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle -->
 <div >
   <div mat-dialog-title class="dialog-title">
-    <h2>Scheme Reports</h2>
+    <h2>Scheme Report</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()">
         <mat-icon>remove</mat-icon>
@@ -18,222 +18,9 @@
     </div>
   </div>
   <mat-dialog-content class="customDialog">
-    <!-- <div class="card my-5">
-      <div class="card-body p-5">
-        <form [formGroup]="__prdSearchForm" (ngSubmit)="searchProduct()" autocomplete="off">
-            <div class="row">
-              <div class="col-sm-4">
-                <label class="form-label">Company Type</label>
-                <ng-multiselect-dropdown #multiSelect
-                id="comp_type_id"
-                [placeholder]="'Select Company Type'"
-                [settings]="__settings_compType"
-                [data]="__cmpTypeMst"
-                formControlName="comp_type_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-4">
-                 <label class="form-label">Company</label>
-                <ng-multiselect-dropdown #multiSelect
-                id="company_id"
-                [placeholder]="'Select Companies'"
-                [settings]="__settings"
-                [data]="__companyMst"
-                formControlName="company_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-4">
-            <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClick($event)">
-                <div class="searchDiv">
-                  <label for="scheme_name">Scheme</label>
-                   <input type="text"
-                   class="form-control"
-                   id="scheme_name"
-                   formControlName="scheme_name"
-                   placeholder="Search By Scheme Name">
-                  <span class="spinner-border" *ngIf="__isScmVisisble && __prdSearchForm.get('scheme_name').value?.length > 1"></span>
-                  <div class="processMain_2" __searchResVisibility (appOutsideClick)="outsideClick($event)">
-                    <div class="serachresult_client" #prdName>
-                      <ul *ngIf="__scmMst.length > 0">
-                        <li *ngFor="let items of __scmMst" (click)="getItems(items,'P')">
-                         {{items.scheme_name}}
-                        </li>
-                      </ul>
-                      <div class="noDataFound" *ngIf="__scmMst.length == 0">
-                        <h5 class="text-center">
-                          Sorry!! No Records Found
-                        </h5>
-                        <p>If your result match, they will appear here</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </div>
 
-            </div>
-            <div class="row mt-4">
-              <div class="col-sm-6"></div>
-              <div class="col-sm-6 my-auto">
-
-                <mat-button-toggle-group #group="matButtonToggleGroup" class="float-right">
-                  <mat-button-toggle value="center" aria-label="Text align center" (click)="reset()">
-                    <mat-icon>restart_alt</mat-icon>
-                  </mat-button-toggle>
-                </mat-button-toggle-group>
-                <button mat-raised-button color="primary" class="float-right mr-3">
-                  Show
-                </button>
-              </div>
-            </div>
-        </form>
-      </div>
-      </div>
-      <div class="mat-elevation-z3">
-        <div class="example_container_header">
-          <div class="btnGrp">
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-              <mat-icon>system_update_alt</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="exportPdf()">
-                <mat-icon>download</mat-icon> Export Pdf
-              </button>
-              <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Product'})">
-                <mat-icon>download</mat-icon> Export Excel
-              </button>
-            </mat-menu>
-          </div>
-
-        </div>
-        <div class="example-container">
-          <table mat-table [dataSource]="__selectScmMst" class="table_Custome" matSort (matSortChange)="sortData($event)">
-            <ng-container matColumnDef="sl_no">
-              <th mat-header-cell *matHeaderCellDef>Sl No</th>
-              <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="comp_type">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header="comp_type">Company Type</th>
-              <td mat-cell *matCellDef="let element;">{{element.comp_type}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="scheme_name">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header="scheme_name">Scheme</th>
-              <td mat-cell *matCellDef="let element">{{element.scheme_name}}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="comp_full_name">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header="comp_full_name">Company Full Name</th>
-              <td mat-cell *matCellDef="let element">{{element.comp_full_name}}</td>
-            </ng-container>
-            <ng-container matColumnDef="comp_short_name">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header="comp_short_name">Company Short Name</th>
-              <td mat-cell *matCellDef="let element">{{element.comp_short_name}}</td>
-            </ng-container>
-
-
-
-            <ng-container matColumnDef="edit">
-              <th mat-header-cell *matHeaderCellDef>Edit</th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-icon-button (click)="populateDT(element)">
-                  <mat-icon class="edit_icon">edit</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="delete">
-              <th mat-header-cell *matHeaderCellDef>Delete</th>
-              <td mat-cell *matCellDef="let element;let i = index">
-                <button mat-icon-button (click)="delete(element,i)">
-                  <mat-icon class="delete_icon">delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="__columns"></tr>
-            <tr mat-row tabindex="999" *matRowDef="let row; columns: __columns;"></tr>
-            <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" [attr.colspan]="__columns.length">No Product History found</td>
-            </tr>
-          </table>
-        </div>
-        <div class="paginator">
-          <div class="itemsPerPage">
-            <label>Items Per Page :&nbsp; </label>
-            <mat-button-toggle-group #group="matButtonToggleGroup">
-              <mat-button-toggle value="10" aria-label="Text align left" (click)="getval('10')">
-                10
-              </mat-button-toggle>
-              <mat-button-toggle value="50" aria-label="Text align center" (click)="getval('50')">
-                50
-              </mat-button-toggle>
-              <mat-button-toggle value="100" aria-label="Text align right" (click)="getval('100')">
-                100
-              </mat-button-toggle>
-              <mat-button-toggle value="A" aria-label="Text align right" (click)="getval('A')">
-                All
-              </mat-button-toggle>
-            </mat-button-toggle-group>
-          </div>
-
-          <div class="paginatorContainer">
-            <mat-button-toggle-group *ngFor="let paginate of __paginate">
-              <mat-button-toggle [value]="paginate.url" aria-label="Text align right" (click)="getPaginate(paginate)">
-                <label>
-                  <mat-icon *ngIf="(paginate.label | bnkrplc) == 'P'">first_page</mat-icon>
-                  <mat-icon *ngIf="(paginate.label | bnkrplc) == 'N'">last_page</mat-icon>
-                  <span
-                    *ngIf="(paginate.label | bnkrplc) != 'P' && (paginate.label | bnkrplc) != 'N'">{{paginate.label}}</span>
-
-                </label>
-              </mat-button-toggle>
-            </mat-button-toggle-group>
-          </div>
-
-
-
-
-        </div>
-
-        <table id="plan" hidden mat-table [dataSource]="__exportScmMst" matTableExporter #exporter="matTableExporter">
-
-
-          <ng-container matColumnDef="sl_no">
-            <th mat-header-cell *matHeaderCellDef>Sl No</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="comp_type">
-            <th mat-header-cell *matHeaderCellDef >Company Type</th>
-            <td mat-cell *matCellDef="let element">{{element.comp_type}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="scheme_name">
-            <th mat-header-cell *matHeaderCellDef>Scheme</th>
-            <td mat-cell *matCellDef="let element">{{element.scheme_name}}</td>
-          </ng-container>
-
-
-          <ng-container matColumnDef="comp_full_name">
-            <th mat-header-cell *matHeaderCellDef >Company Full Name</th>
-            <td mat-cell *matCellDef="let element">{{element.comp_full_name}}</td>
-          </ng-container>
-          <ng-container matColumnDef="comp_short_name">
-            <th mat-header-cell *matHeaderCellDef >Company Short Name</th>
-            <td mat-cell *matCellDef="let element">{{element.comp_short_name}}</td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
-          <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell"  [attr.colspan]="__exportedClmns.length" class="text-center">No Product History Found</td>
-          </tr>
-        </table>
-      </div> -->
-
-      <div class="card p-3 border-1">
+    <mat-card>
+      <mat-card-content class="p-3">
         <form [formGroup]="__prdSearchForm" (ngSubmit)="searchProduct()" autocomplete="off">
           <div class="row">
             <div class="col-sm-3">
@@ -268,21 +55,7 @@
             </div>
             <div class="col-sm-3">
               <label for="search_all">Search By Company Type,Company,Scheme</label>
-              <input type="text" name="search_all" id="search_all" class="form-control" formControlName="search_all">
-              <!-- <app-core-srch
-              [label] = "'Search'"
-              [placeholder]="'Search By Company Type,Company,Scheme'"
-              [isPending]="__isAllSpinner"
-              [listItems] = "SearchAllMst"
-              [flag] = "'S'"
-              [noDataFoundTitle]="'Sorry!! No Records Found'"
-              [noDataFoundSubTitle]="'If your result match,they will appear here'"
-              [propertiesToShow] = "['scheme_name','comp_type','comp_short_name']"
-              formControlName="search_all"
-              [displayMode]="displayMode_forSearch"
-              (setDisplayMode)="displayMode_forSearch = $event"
-              (selectedItems)="getSelectedItemsFromParent($event)"
-              ></app-core-srch> -->
+              <input type="text" name="search_all" id="search_all" placeholder="Search..." class="form-control" formControlName="search_all">
             </div>
 
           </div>
@@ -299,83 +72,82 @@
           </div>
           </div>
       </form>
-      </div>
-
-      <div class="card border-1 rounded-top mt-2">
-        <div class="example_container_header">
-          <div class="transTypeCount"><h4></h4></div>
-          <div class="btnGrp">
-            <p-button icon="pi pi-file-export"
-            [matMenuTriggerFor]="menu"
-            [matTooltipPosition]="'after'"
-            #tooltip="matTooltip"
-            matTooltip="Export"
-            styleClass="p-button-primary p-button-lg p-button-outlined">
-            </p-button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="exportPdf()">
-                <mat-icon>download</mat-icon> Export Pdf
-              </button>
-              <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'FDScheme Report'})">
-                <mat-icon>download</mat-icon> Export Excel
-              </button>
-            </mat-menu>
-            </div>
-          </div>
-          <div class="container_body">
-            <p-table #dt
-            (onLazyLoad)="customSort($event)"
-            [customSort]="true"
-              sortMode="single"
-              [lazy]="true"
-            [value]="__selectScmMst.data"
-            [columns]="__columns"
-            [resizableColumns]="true"
-            selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
-            scrollHeight="300px"
-            [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-            [tableStyle]="{ 'min-width': '100rem' }">
-            <ng-template pTemplate="header" let-columns>
-              <tr>
-                <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="'16rem'">
-                  {{ col.header }}
-                  <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
-                  </p-sortIcon>
-                </th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-scheme let-columns="columns"  let-i="rowIndex">
-              <tr tabindex="999">
-                <td *ngFor="let col of columns">
-                  <ng-container [ngSwitch]="true">
-                    <ng-container *ngSwitchCase="col.field == 'edit'">
-                      <p-button icon="pi pi-pencil" (click)="populateDT(scheme)"
-                        styleClass="p-button-rounded p-button-primary">
-                      </p-button>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="col.field == 'delete'">
-                      <p-button icon="pi pi-trash" (click)="delete(scheme,i)"
-                        styleClass="p-button-rounded p-button-danger">
-                      </p-button>
-                    </ng-container>
-                    <ng-container *ngSwitchDefault>
-                      <span  matTooltip="{{scheme[col.field]}}">
-                        {{ scheme[col.field] ? scheme[col.field] : 'N/A' }}
-                      </span>
-                    </ng-container>
+      </mat-card-content>
+    </mat-card >
+        <mat-card class="mt-3">
+            <mat-card-header>
+              <mat-card-title>Scheme Report</mat-card-title>
+              <div class="btnGrp my-auto">
+                <p-button icon="pi pi-file-export"
+                [matMenuTriggerFor]="menu"
+                [matTooltipPosition]="'after'"
+                #tooltip="matTooltip"
+                matTooltip="Export"
+                styleClass="p-button-primary mt-3 p-button-lg p-button-outlined">
+                </p-button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="exportPdf()">
+                    <mat-icon>download</mat-icon> Export Pdf
+                  </button>
+                  <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'FDScheme Report'})">
+                    <mat-icon>download</mat-icon> Export Excel
+                  </button>
+                </mat-menu>
+                </div>
+        </mat-card-header>
+        <mat-card-content>
+          <p-table #dt
+          (onLazyLoad)="customSort($event)"
+          [customSort]="true"
+            sortMode="single"
+            [lazy]="true"
+          [value]="__selectScmMst.data"
+          [columns]="__columns"
+          [resizableColumns]="true"
+          selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
+          scrollHeight="300px"
+          [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+          [tableStyle]="{ 'min-width': '100rem' }">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="'16rem'">
+                {{ col.header }}
+                <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
+                </p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-scheme let-columns="columns"  let-i="rowIndex">
+            <tr tabindex="999">
+              <td *ngFor="let col of columns">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'edit'">
+                    <p-button icon="pi pi-pencil" (click)="populateDT(scheme)"
+                      styleClass="p-button-rounded p-button-primary">
+                    </p-button>
                   </ng-container>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage" let-columns>
-              <tr>
-                <td [attr.colspan]="columns.length" class="noHistoryAvailable">
-                   No records found
-                </td>
-              </tr>
-            </ng-template>
+                  <ng-container *ngSwitchCase="col.field == 'delete'">
+                    <p-button icon="pi pi-trash" (click)="delete(scheme,i)"
+                      styleClass="p-button-rounded p-button-danger">
+                    </p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span  matTooltip="{{scheme[col.field]}}">
+                      {{ scheme[col.field] ? scheme[col.field] : 'N/A' }}
+                    </span>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+                 No records found
+              </td>
+            </tr>
+          </ng-template>
           </p-table>
-
           <!-- Paginator with item per page -->
           <div class="paginator">
             <div class="itemsPerPage d-flex">
@@ -413,9 +185,8 @@
 
           </div>
           <!-- End -->
-          </div>
-
-
+        </mat-card-content>
+       </mat-card>
           <!-- Export Table -->
           <table id="fdScm" hidden mat-table [dataSource]="__exportScmMst"
           matTableExporter #exporter="matTableExporter">
@@ -451,7 +222,7 @@
             </tr>
           </table>
           <!-- End -->
-      </div>
+
 
     </mat-dialog-content>
   </div>

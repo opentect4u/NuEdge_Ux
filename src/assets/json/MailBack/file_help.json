@@ -31,5 +31,19 @@
       "img_src":""
    }
     ]
+  },
+  {
+    "id":3,
+    "tab_name":"Folio Report",
+    "sub_menu":[
+      {
+        "id":1,
+        "tab_name":"Tax Status",
+        "flag":"TS",
+        "img_src":""
+     }
+    ],
+    "img_src":"",
+    "flag":"F"
   }
 ]

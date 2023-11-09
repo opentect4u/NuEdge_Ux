@@ -34,6 +34,10 @@ import { sort } from 'src/app/__Model/sort';
   styleUrls: ['./catRpt.component.css'],
 })
 export class CatrptComponent implements OnInit {
+
+
+  formValue;
+
   itemsPerPage = ItemsPerPage;
   sort = new sort();
   __iscatspinner: boolean = false;
@@ -61,14 +65,15 @@ export class CatrptComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.formValue = this.__catForm.value;
   }
 
   getcatMst() {
     const __catExport = new FormData();
-    __catExport.append('cat_name', this.__catForm.value.cat_name);
+    __catExport.append('cat_name', this.formValue?.cat_name);
     __catExport.append('paginate', this.__pageNumber.value);
-    __catExport.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __catExport.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+    __catExport.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''));
+    __catExport.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1'));
     this.__dbIntr
       .api_call(1, '/categoryDetailSearch', __catExport)
       .pipe(map((x: any) => x.data))
@@ -97,10 +102,10 @@ export class CatrptComponent implements OnInit {
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
-            ('&paginate=' + this.__pageNumber.value) +
-            +('&cat_name=' + this.__catForm.value.cat_name)
-            +('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
-            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            ('&paginate=' + this.__pageNumber.value)
+            +('&cat_name=' + this.formValue?.cat_name)
+            +('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -195,7 +200,7 @@ export class CatrptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -219,6 +224,7 @@ export class CatrptComponent implements OnInit {
     );
   }
   submit() {
+    this.formValue = this.__catForm.value;
    this.getcatMst();
   }
 
@@ -249,12 +255,14 @@ export class CatrptComponent implements OnInit {
     })
   }
   customSort(ev){
+    if(ev.sortField != 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
     this.sort.order = ev.sortOrder;
-    this.submit();
+    this.getcatMst();
+    }
   }
   onselectItem(ev){
     // this.__pageNumber.setValue(ev.option.value);
-    this.submit();
+    this.getcatMst();
   }
 }

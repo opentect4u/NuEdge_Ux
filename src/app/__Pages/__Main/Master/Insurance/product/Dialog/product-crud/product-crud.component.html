@@ -1,6 +1,6 @@
 
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title" [title]="data.title">
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".body">
+  <div mat-dialog-title class="dialog-title" cdkDragHandle [title]="data.title">
     <h2 >{{data.title}}</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize"  (click)="minimize()" >
@@ -21,7 +21,7 @@
 
   </div>
   <mat-dialog-content>
-    <form [formGroup]="__prdForm" [attr.id]="'__insPrdForm_'+ data.id" (ngSubmit)="submitProduct()">
+    <form [formGroup]="__prdForm" autocomplete="off" [attr.id]="'__insPrdForm_'+ data.id" (ngSubmit)="submitProduct()">
       <div class="row">
         <div class="col-sm-12 my-2">
           <label class="form-label" for="ins_type_id">Type Of Insurance <span class="text-danger">*</span></label>
@@ -72,10 +72,10 @@
 
     </form>
   </mat-dialog-content>
-  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
     <button class="btn addBtn  ml-2" [attr.form]="'__insPrdForm_'+ data.id" [disabled]="this.__prdForm.invalid">
       {{this.data.id > 0 ? 'Update' : 'Submit'}}
     </button>
   </mat-dialog-actions>
-  <br clear="all">
+  <!-- <br clear="all"> -->
 </div>

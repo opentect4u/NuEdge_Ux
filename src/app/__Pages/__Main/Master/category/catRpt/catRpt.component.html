@@ -1,6 +1,6 @@
 
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title">
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane"  >
+  <div mat-dialog-title class="dialog-title" cdkDragHandle>
     <h2 >Category Reports</h2>
     <div class="btnIcon">
       <button mat-icon-button  title="Minimize"  (click)="minimize()" >
@@ -21,53 +21,52 @@
 
   </div>
 <mat-dialog-content class="customDialog">
-<div class="card p-3 border-1">
-  <form [formGroup]="__catForm" (ngSubmit)="submit()" autocomplete="off">
-    <ng-container>
-      <div class="row">
-        <div class="col-sm-5">
-              <label for="cat_name">Category</label>
-              <input type="search" name="cat_name" id="cat_name" class="form-control"
-                formControlName="cat_name" placeholder="Enter Category">
-        </div>
-        <div class="col-sm-7 d-flex justify-content-end align-items-end">
-          <p-button
-          type="submit"
-          label="Show"
-          icon="pi pi-eye"
-          iconPos="right"
-          styleClass="p-button-lg"></p-button>
-        </div>
-      </div>
-    </ng-container>
+  <mat-card>
+      <mat-card-content class="p-3">
+        <form [formGroup]="__catForm" (ngSubmit)="submit()" autocomplete="off">
+          <ng-container>
+            <div class="row">
+              <div class="col-sm-5">
+                    <label for="cat_name">Category</label>
+                    <input type="search" name="cat_name" id="cat_name" class="form-control"
+                      formControlName="cat_name" placeholder="Enter Category">
+              </div>
+              <div class="col-sm-7 d-flex justify-content-end align-items-end">
+                <p-button
+                type="submit"
+                label="Show"
+                icon="pi pi-eye"
+                iconPos="right"
+                styleClass="p-button-lg"></p-button>
+              </div>
+            </div>
+          </ng-container>
 
-  </form>
-  </div>
-<div class="card border-1 rounded-top mt-2">
-
-  <div class="example_container_header">
-    <div class="transTypeCount">
-      <h4></h4>
-    </div>
-    <div class="btnGrp">
-      <p-button icon="pi pi-file-export"
-      [matMenuTriggerFor]="menu"
-      [matTooltipPosition]="'after'"
-      #tooltip="matTooltip"
-      matTooltip="Export"
-      styleClass="p-button-primary p-button-lg p-button-outlined">
-      </p-button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="exportPdf()">
-          <mat-icon>download</mat-icon> Export Pdf
-        </button>
-        <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Category Report'})">
-          <mat-icon>download</mat-icon> Export Excel
-        </button>
-      </mat-menu>
+        </form>
+      </mat-card-content>
+  </mat-card>
+  <mat-card class="mt-3">
+    <mat-card-header>
+      <mat-card-title>Category Report</mat-card-title>
+      <div class="btnGrp my-auto">
+        <p-button icon="pi pi-file-export"
+        [matMenuTriggerFor]="menu"
+        [matTooltipPosition]="'after'"
+        #tooltip="matTooltip"
+        matTooltip="Export"
+        styleClass="p-button-primary mr-3 p-button-lg p-button-outlined">
+        </p-button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="exportPdf()">
+            <mat-icon>download</mat-icon> Export Pdf
+          </button>
+          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'Category Report'})">
+            <mat-icon>download</mat-icon> Export Excel
+          </button>
+        </mat-menu>
       </div>
-    </div>
-    <div class="container_body">
+    </mat-card-header>
+    <mat-card-content>
       <p-table
       (onLazyLoad)="customSort($event)"
         [customSort]="true"
@@ -77,7 +76,7 @@
       [columns]="__columns" [resizableColumns]="true"
         selectionMode="multiple"
         columnResizeMode="expand" [scrollable]="true"
-        scrollHeight="358px"
+        scrollHeight="300px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
         [tableStyle]="{ 'min-width': '100rem' }">
         <ng-template pTemplate="header" let-columns>
@@ -157,32 +156,32 @@
           </div>
 
       </div>
-    </div>
-    <table id="category"
-    hidden mat-table
-    [dataSource]="__export"
-    matTableExporter
-    #exporter="matTableExporter">
+      <table id="category"
+      hidden mat-table
+      [dataSource]="__export"
+      matTableExporter
+      #exporter="matTableExporter">
 
 
-      <ng-container matColumnDef="sl_no" >
-        <th mat-header-cell *matHeaderCellDef>Sl No</th>
-        <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
-      </ng-container>
+        <ng-container matColumnDef="sl_no" >
+          <th mat-header-cell *matHeaderCellDef>Sl No</th>
+          <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="cat_name" >
-        <th mat-header-cell *matHeaderCellDef>Category</th>
-        <td mat-cell *matCellDef="let element">
-          <p>{{element.cat_name}}</p>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="cat_name" >
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let element">
+            <p>{{element.cat_name}}</p>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
-      <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4" class="text-center">No Category History Found</td>
-      </tr>
-    </table>
-    </div>
+        <tr mat-header-row *matHeaderRowDef="__exportedClmns"></tr>
+        <tr mat-row *matRowDef="let row; columns: __exportedClmns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4" class="text-center">No Category History Found</td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
 </mat-dialog-content>
 </div>

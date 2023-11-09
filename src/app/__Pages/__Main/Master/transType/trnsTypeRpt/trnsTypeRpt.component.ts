@@ -23,6 +23,9 @@ templateUrl: './trnsTypeRpt.component.html',
 styleUrls: ['./trnsTypeRpt.component.css']
 })
 export class TrnstyperptComponent implements OnInit {
+
+  formValue;
+
   itemsPerPage = ItemsPerPage
   sort =new sort();
 
@@ -31,7 +34,7 @@ export class TrnstyperptComponent implements OnInit {
     trns_type: new FormControl('')
   })
   __export =  new MatTableDataSource<any>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: column[]=trnsTypeClmns.COLUMN;
   __exportedClmns: string[] = ['sl_no', 'trns_type'];
   __paginate: any= [];
@@ -49,14 +52,16 @@ constructor(
 ) {
 }
 
-ngOnInit(){}
+ngOnInit(){
+  this.formValue = this.__trnsType.value;
+}
 gettransTypeMst(){
   const __trnsTypeSearch = new FormData();
-  __trnsTypeSearch.append('trns_type',this.__trnsType.value.trns_type);
+  __trnsTypeSearch.append('trns_type',this.formValue.trns_type);
   __trnsTypeSearch.append('paginate',this.__pageNumber.value);
   __trnsTypeSearch.append('product_id',this.data.product_id);
-  __trnsTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-  __trnsTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+  __trnsTypeSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+  __trnsTypeSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
    this.__dbIntr.api_call(1,'/transctiontypeSearch',__trnsTypeSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);
@@ -89,10 +94,10 @@ getPaginate(__paginate) {
       .getpaginationData(
         __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
-        +('&trns_type='+ this.__trnsType.value.trns_type)
-        + ('&product_id=' +this.data.product_id)
-        +('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
-        ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+        +('&trns_type='+ this.formValue?.trns_type)
+        + ('&product_id=' +this.data.product_id) +
+        ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+        ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -175,6 +180,7 @@ exportPdf(){
   }, 'Transaction type','portrait')
 }
 submit(){
+  this.formValue = this.__trnsType.value;
   this.gettransTypeMst();
 }
 private updateRow(row_obj: any) {
@@ -232,12 +238,16 @@ delete(__el,index){
     })
 }
 customSort(ev){
+  if(ev.sortField != 'edit' && ev.sortField != 'delete'){
   this.sort.field = ev.sortField;
   this.sort.order = ev.sortOrder;
-  this.submit();
+  // this.submit();
+  this.gettransTypeMst();
+  }
 }
 onselectItem(ev){
-  this.__pageNumber.setValue(ev.option.value);
-  this.submit();
+  // this.__pageNumber.setValue(ev.option.value);
+  // this.submit();
+  this.gettransTypeMst();
 }
 }

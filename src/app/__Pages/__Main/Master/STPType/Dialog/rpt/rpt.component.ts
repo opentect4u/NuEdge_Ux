@@ -19,13 +19,14 @@ import { column } from 'src/app/__Model/tblClmns';
   styleUrls: ['./rpt.component.css']
 })
 export class RPTComponent implements OnInit {
+  formValue;
   itemsPerPage=ItemsPerPage;
   sort=new sort();
   __StpType = new FormGroup({
     stp_type_name: new FormControl(''),
   });
   __export = new MatTableDataSource<any>([]);
-  __pageNumber = new FormControl(10);
+  __pageNumber = new FormControl('10');
   __columns: column[] = stpTypeClmns.COLUMN
   __exportedClmns: string[] = ['sl_no', 'stp_type_name'];
   __paginate: any = [];
@@ -40,7 +41,10 @@ export class RPTComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private utility: UtiliService
   ) { }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.formValue = this.__StpType.value;
+
+  }
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
@@ -50,7 +54,7 @@ export class RPTComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -63,14 +67,15 @@ export class RPTComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit(){
+    this.formValue = this.__StpType.value;
      this.getSTPTypeMst()
   }
   getSTPTypeMst() {
     const __STPTypeSearch = new FormData();
-    __STPTypeSearch.append('stp_type_name',this.__StpType.value.stp_type_name);
+    __STPTypeSearch.append('stp_type_name',this.formValue?.stp_type_name);
     __STPTypeSearch.append('paginate', this.__pageNumber.value);
-    __STPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __STPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+    __STPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __STPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     this.__dbIntr
       .api_call(1, '/stpTypeSearch', __STPTypeSearch)
       .pipe(map((x: any) => x.data))
@@ -100,9 +105,9 @@ export class RPTComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&stp_type_name=' + this.__StpType.value.stp_type_name) +
-            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
-            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            ('&stp_type_name=' + this.formValue?.stp_type_name) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -165,13 +170,17 @@ export class RPTComponent implements OnInit {
       });
   }
   customSort(ev){
-    this.sort.field = ev.sortField;
-    this.sort.order = ev.sortOrder;
-    this.submit();
+    if(ev.sortField !='edit'){
+      this.sort.field = ev.sortField;
+      this.sort.order = ev.sortOrder;
+      this.getSTPTypeMst();
+    }
   }
   onselectItem(ev){
-    this.__pageNumber.setValue(ev.option.value);
-    this.submit();
+    // this.__pageNumber.setValue(ev.option.value);
+    // this.submit();
+    this.getSTPTypeMst();
+
   }
   exportPdf() {
     this.__Rpt.downloadReport(

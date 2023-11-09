@@ -27,6 +27,9 @@ type selectBtn ={
   styleUrls: ['./rpt.component.css']
 })
 export class RptComponent implements OnInit {
+
+  formValue;
+
   selectBtn:selectBtn[] = [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
 
   isOpenMegaMenu:boolean = false;
@@ -73,7 +76,7 @@ export class RptComponent implements OnInit {
 
   ngOnInit() {
     this.setColumns(2);
-    this.getRntMst();
+    this.submit();
     this.getComponyMst();
     this.getCompanyTypeMst();
     // this.addLevelsCheckBox(compClmns.LEVELS);
@@ -126,7 +129,7 @@ export class RptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -150,11 +153,11 @@ export class RptComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          +  ('&comp_name = ' + JSON.stringify(this.__rntSearchForm.value.comp_name.map(item => item.id)))
-          +  ('&contact_person=' + this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person : '')
-          +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
-          +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
-          +  ('&comp_type=' + JSON.stringify(this.__rntSearchForm.value.comp_type.map(item => item.id)))
+          +  ('&comp_name = ' + JSON.stringify(this.formValue?.comp_name.map(item => item.id)))
+          +  ('&contact_person=' + this.formValue?.contact_person? this.formValue?.contact_person : '')
+          +('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
+          +  ('&comp_type=' + JSON.stringify(this.formValue?.comp_type.map(item => item.id)))
           )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -260,27 +263,26 @@ export class RptComponent implements OnInit {
 
   }
   submit() {
+    this.formValue= this.__rntSearchForm.value;
     this.getRntMst();
   }
 
   getRntMst() {
-    console.log(this.__rntSearchForm.value.comp_name);
-
     const __amcSearch = new FormData();
     __amcSearch.append(
       'comp_name',
-      JSON.stringify(this.__rntSearchForm.value.comp_name.map(item => item.id))
+      JSON.stringify(this.formValue?.comp_name.map(item => item.id))
     );
     __amcSearch.append(
       'contact_person',
-      this.__rntSearchForm.value.contact_person
-        ? this.__rntSearchForm.value.contact_person
+      this.formValue?.contact_person
+        ? this.formValue?.contact_person
         : ''
     );
     __amcSearch.append('paginate', this.__pageNumber.value);
-    __amcSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __amcSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __amcSearch.append('comp_type', JSON.stringify(this.__rntSearchForm.value.comp_type.map(item => item.id)));
+    __amcSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''));
+    __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1'));
+    __amcSearch.append('comp_type', JSON.stringify(this.formValue?.comp_type.map(item => item.id)));
 
 
     this.__dbIntr
@@ -323,8 +325,6 @@ export class RptComponent implements OnInit {
   }
 
   openDialog(__cmp: fdComp | null = null, __id: number) {
-    console.log(__cmp);
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -433,12 +433,13 @@ export class RptComponent implements OnInit {
     }
 
     customSort(ev){
-     this.sort.order=ev.sortOrder;
-     this.sort.field=ev.sortField;
-     if(ev.sortField){
-      this.getRntMst();
-     }
-
+      if(ev.sortField !='edit' && ev.sortField!='delete'){
+        this.sort.order=ev.sortOrder;
+        this.sort.field=ev.sortField;
+        if(ev.sortField){
+          this.getRntMst();
+        }
+      }
     }
     onselectItem(ev){
       this.getRntMst();

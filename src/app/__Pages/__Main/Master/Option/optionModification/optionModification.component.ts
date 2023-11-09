@@ -21,7 +21,7 @@ export class OptionModificationComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private __dbIntr: DbIntrService,
     public __dialog: MatDialog
-  ) { 
+  ) {
     this.__utility.__isvisibleMenuIcon$.pipe(skip(1)).subscribe(res =>{
       if(this.data.id == res.id && this.data.flag == res.flag){
         this.__isVisible = res.isVisible
@@ -35,7 +35,7 @@ export class OptionModificationComponent implements OnInit {
     this.__optForm.reset();
   }
   minimize(){
-    this.dialogRef.updateSize("30%",'55px');
+    this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize(){

@@ -68,17 +68,14 @@
   float: right;
   border: 0px;
   outline: 0;
-  /* background: #5687e6; */
-  /* background: #2b377b; */
   background: #10486b;
-  /* background: #ff9800; */
   color: #f8f8f8;
-  /* padding: 8px 13px; */
   line-height: 17px;
-  border-radius: 2px;
+  border-radius: 5px;
   width: 100px;
   font-weight: 500;
   padding: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .6)!important;
 }
 
 .searchInput {
@@ -460,18 +457,15 @@ table {
   /* margin-right: -1px; */
   margin-right: 6px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor:pointer;
 }
 
-.paginator ul li a.paginateNumber{
-  /* border-radius: 50%!important; */
-  /* border-radius: 24%!important; */
-  border-radius: 0%!important;
-
+.paginator ul li a.paginateNumber {
+  border-radius: 10%!important;
   padding: 8px 12px;
-  /* color: #007bff; */
-
+  border: 1px solid #d1d1d1;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }
 .paginator ul li a.paginateNumber:hover{
   /* cursor: pointer;
@@ -695,27 +689,20 @@ input[name="pan"]{
   height: 24px; */
 }
 
-/* Material icon Css */
-.material-icons{
-  /* font-size: 18px!important; */
-}
 /* End */
 /* **Paginator Active class */
 .activePaginator{
-   /* background: #007bff!important;
-  color: #fff!important; */
   background: #10486b!important;
     color: #fff!important;
+    border: none!important;
 }
 /*** End*/
 .TabImg{
   object-fit: contain;
-  /* height: 27px; */
   height: 22px;
   margin-right: 6px;
 }
 .prevNext{
-  /* color: blue; */
   color: #10486b;
 }
 .prevNext:hover{
@@ -850,3 +837,6 @@ textarea:focus {
 
 
 /*** End ***/
+.invalid-feedback{
+  width:auto!important;
+}

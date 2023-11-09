@@ -15,8 +15,8 @@ export class BnkModificationComponent implements OnInit {
     ifs_code: new FormControl(this.data.id > 0 ? this.data.items.ifs_code :'', [Validators.required]),
     bank_name: new FormControl(this.data.id > 0 ? this.data.items.bank_name :'', [Validators.required]),
     id: new FormControl(this.data.id),
-    branch_name: new FormControl(this.data.id > 0 ? this.data.items.branch_name :'',[Validators.required]), 
-    micr_code:new FormControl(this.data.id > 0 ? this.data.items.micr_code :'',[Validators.required]), 
+    branch_name: new FormControl(this.data.id > 0 ? this.data.items.branch_name :'',[Validators.required]),
+    micr_code:new FormControl(this.data.id > 0 ? this.data.items.micr_code :'',[Validators.required]),
     branch_addr:new FormControl(this.data.id > 0 ? this.data.items.branch_addr :'', [Validators.required])
   })
   constructor(
@@ -45,7 +45,7 @@ export class BnkModificationComponent implements OnInit {
     __bank.append("bank_name",this.__bankForm.value.bank_name);
     __bank.append("id",this.__bankForm.value.id);
     __bank.append("branch_name",this.__bankForm.value.branch_name);
-    __bank.append("micr_code",this.__bankForm.value.micr_code);  
+    __bank.append("micr_code",this.__bankForm.value.micr_code);
     __bank.append("branch_addr",this.__bankForm.value.branch_addr);
 
 
@@ -63,7 +63,7 @@ export class BnkModificationComponent implements OnInit {
     this.__bankForm.reset();
   }
   minimize(){
-    this.dialogRef.updateSize("30%",'55px');
+    this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize(){

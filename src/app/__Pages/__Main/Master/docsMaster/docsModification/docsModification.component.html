@@ -1,6 +1,6 @@
 
-<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
-  <div mat-dialog-title class="dialog-title">
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".body">
+  <div mat-dialog-title class="dialog-title" cdkDragHandle>
     <h2 >{{data.title}}</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()" >
@@ -16,27 +16,27 @@
       <button mat-icon-button title="Close" [mat-dialog-close]="">
         <mat-icon >close</mat-icon>
       </button>
-  
+
     </div>
-  
+
   </div>
 
 <mat-dialog-content>
   <form  [formGroup]="__docsForm" (ngSubmit)="submit()" id="__docsForm_{{data.id}}" autocomplete="off" ngNativeValidate>
-    <div class="row my-5">
+    <div class="row my-1">
       <div class="col-sm-12">
         <label for="doctype">Document Type <span class="text-danger">*</span></label>
         <input type="text" name="doc_type" id="doctype" class="form-control" placeholder="Enter Document Type" formControlName="doc_type">
         <div class="invalid-feedback" *ngIf="__docsForm.get('doc_type').invalid && (__docsForm.get('doc_type').dirty || __docsForm.get('doc_type').touched)">
           <span class="invalid-feedback" *ngIf="(__docsForm.get('doc_type')).errors?.required">*Please provide document type</span>
         </div>
-     
+
       </div>
     </div>
 </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+<mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
   <button class="btn addBtn"  [attr.form]="'__docsForm_'+data.id" [disabled]="this.__docsForm.invalid">Submit</button>
 </mat-dialog-actions>
-<br clear="all">
+<!-- <br clear="all"> -->
 </div>

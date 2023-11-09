@@ -8,15 +8,32 @@ import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { DOCUMENT } from '@angular/common';
 import { Table } from 'primeng/table';
-
+import { trigger, state, style, transition, animate } from '@angular/animations';
 @Component({
   selector: 'app-upload-help',
   templateUrl: './upload-help.component.html',
-  styleUrls: ['./upload-help.component.css']
+  styleUrls: ['./upload-help.component.css'],
+  animations: [
+    trigger('bodyExpansion', [
+      state('collapsed, void', style({ height: '0px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+    trigger('formbodyExpansion', [
+      state('collapsed, void', style({ height: '0px', padding: '0px 20px', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', padding: '10px 20px', visibility: 'visible', })),
+      transition('expanded <=> collapsed, void => collapsed',
+        animate('230ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ])
+  ]
 })
 export class UploadHelpComponent implements OnInit {
 
   @ViewChild('pTableRef') pTableRef: Table;
+
+  state: string | undefined = 'expanded';
+
 
   /*** File Upload help form */
   file_upload_help_form = new FormGroup({
@@ -182,6 +199,10 @@ export class UploadHelpComponent implements OnInit {
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.pTableRef.filterGlobal(value,'contains')
+  }
+
+  toggle() {
+    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
 }
 

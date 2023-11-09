@@ -19,6 +19,8 @@ import { swpTypeClmns } from 'src/app/__Utility/Master/trans';
   styleUrls: ['./rpt.component.css']
 })
 export class RptComponent implements OnInit {
+
+  formValue;
   itemsPerPage=ItemsPerPage;
   sort=new sort();
   __sortColumnsAscOrDsc: any = { active: '', direction: 'asc' };
@@ -41,7 +43,10 @@ export class RptComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private __utility: UtiliService
   ) { }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.formValue = this.__SwpType.value;
+
+  }
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.addPanelClass('full_screen');
@@ -51,7 +56,7 @@ export class RptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -64,6 +69,7 @@ export class RptComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit(){
+    this.formValue = this.__SwpType.value;
      this.getSWPTypeMst(
       this.__sortColumnsAscOrDsc.active,
       this.__sortColumnsAscOrDsc.direction ? this.__sortColumnsAscOrDsc.direction : 'asc'
@@ -71,10 +77,10 @@ export class RptComponent implements OnInit {
   }
   getSWPTypeMst(column_name: string | null = '',sort_by: string | null | '' = 'asc') {
     const __SWPTypeSearch = new FormData();
-    __SWPTypeSearch.append('swp_type_name',this.__SwpType.value.swp_type_name);
+    __SWPTypeSearch.append('swp_type_name',this.formValue?.swp_type_name);
     __SWPTypeSearch.append('paginate', this.__pageNumber.value);
-    __SWPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __SWPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+    __SWPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __SWPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     this.__dbIntr
       .api_call(1, '/swpTypeSearch', __SWPTypeSearch)
       .pipe(map((x: any) => x.data))
@@ -103,9 +109,9 @@ export class RptComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&swp_type_name=' + this.__SwpType.value.swp_type_name) +
-            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
-            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            ('&swp_type_name=' + this.formValue?.swp_type_name) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -167,12 +173,14 @@ populateDT(el){
     }
 }
 customSort(ev){
+  if(ev.sortField != 'edit' && ev.sortField!='delete'){
   this.sort.field = ev.sortField;
   this.sort.order = ev.sortOrder;
-  this.submit();
+  this.getSWPTypeMst();
+}
 }
 onselectItem(ev){
-  this.submit();
+  this.getSWPTypeMst();
 }
 exportPdf(){
   this.__Rpt.downloadReport(

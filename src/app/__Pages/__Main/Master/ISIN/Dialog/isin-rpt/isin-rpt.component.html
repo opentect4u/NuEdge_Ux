@@ -20,189 +20,185 @@
 
   </div>
   <mat-dialog-content class="customDialog">
-     <div class="card p-3 border-1">
-          <form [formGroup]="__isinFrm" autocomplete="off" (ngSubmit)="submitISIN()">
-            <div class="row">
-              <div class="col-sm-12 d-flex justify-content-end align-items-center">
-                <p-selectButton
-                [options]="selectBtn"
-                formControlName="btn_type"
-                optionValue="value"
-                styleClass="p-button-lg"
-                (onOptionClick)="onItemClick($event)"
-                optionLabel="icon">
-                  <ng-template let-item>
-                      <i [class]="item.icon"  [matTooltip]="item.label"></i>
-                  </ng-template>
-              </p-selectButton>
-              </div>
+    <mat-card>
+      <mat-card-content class="p-3">
+        <form [formGroup]="__isinFrm" autocomplete="off" (ngSubmit)="submitISIN()">
+          <div class="row">
+            <div class="col-sm-12 d-flex justify-content-end align-items-center">
+              <p-selectButton
+              [options]="selectBtn"
+              formControlName="btn_type"
+              optionValue="value"
+              styleClass="p-button-lg"
+              (onOptionClick)="onItemClick($event)"
+              optionLabel="icon">
+                <ng-template let-item>
+                    <i [class]="item.icon"  [matTooltip]="item.label"></i>
+                </ng-template>
+            </p-selectButton>
             </div>
-            <div class="row">
-              <div class="col-sm-3">
-                <label for="amc_id">AMC</label>
-                <ng-multiselect-dropdown
-                id="amc_id"
-                [placeholder]="'Select AMC'"
-                [settings]="settingsForAmc"
-                [data]="AmcMst"
-                formControlName="amc_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="cat_id">Category</label>
-                <ng-multiselect-dropdown
-                id="cat_id"
-                [placeholder]="'Select Category'"
-                [settings]="settingsForcat"
-                [data]="catMst"
-                formControlName="cat_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="sub_cat_id">Subcategory</label>
-                <ng-multiselect-dropdown
-                id="sub_cat_id"
-                [placeholder]="'Select Subcategory'"
-                [settings]="settingsForsubcat"
-                [data]="subCatMst"
-                formControlName="sub_cat_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="scheme_id">Scheme</label>
-                <ng-multiselect-dropdown
-                id="scheme_id"
-                [placeholder]="'Select Scheme'"
-                [settings]="settingsForScm"
-                [data]="schemeMst"
-                formControlName="scheme_id">
-              </ng-multiselect-dropdown>
-              </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="amc_id">AMC</label>
+              <ng-multiselect-dropdown
+              id="amc_id"
+              [placeholder]="'Select AMC'"
+              [settings]="settingsForAmc"
+              [data]="AmcMst"
+              formControlName="amc_id">
+            </ng-multiselect-dropdown>
             </div>
-            <div class="row">
-              <div class="col-sm-3">
-                <app-core-srch
-              [label] = "'Scheme'"
-              [placeholder]="'Search By Scheme'"
-              [isPending]="__isSchemeSpinner"
-              [listItems] = "searchedSchemeMst"
-              [flag] = "'S'"
-              [noDataFoundTitle]="'Sorry!! No Records Found'"
-              [noDataFoundSubTitle]="'If your result match,they will appear here'"
-              [propertiesToShow] = "['scheme_name']"
-              formControlName="alt_scheme_name"
-              [displayMode]="displayMode_forScheme"
-              (setDisplayMode)="displayMode_forScheme = $event"
-              (selectedItems)="getSelectedItemsFromParent($event)"
-              ></app-core-srch>
-              </div>
-              <ng-container *ngIf="__isinFrm.value.btn_type == 'A'">
+            <div class="col-sm-3">
+              <label for="cat_id">Category</label>
+              <ng-multiselect-dropdown
+              id="cat_id"
+              [placeholder]="'Select Category'"
+              [settings]="settingsForcat"
+              [data]="catMst"
+              formControlName="cat_id">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="sub_cat_id">Subcategory</label>
+              <ng-multiselect-dropdown
+              id="sub_cat_id"
+              [placeholder]="'Select Subcategory'"
+              [settings]="settingsForsubcat"
+              [data]="subCatMst"
+              formControlName="sub_cat_id">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="scheme_id">Scheme</label>
+              <ng-multiselect-dropdown
+              id="scheme_id"
+              [placeholder]="'Select Scheme'"
+              [settings]="settingsForScm"
+              [data]="schemeMst"
+              formControlName="scheme_id">
+            </ng-multiselect-dropdown>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <app-core-srch
+            [label] = "'Scheme'"
+            [placeholder]="'Search By Scheme'"
+            [isPending]="__isSchemeSpinner"
+            [listItems] = "searchedSchemeMst"
+            [flag] = "'S'"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [propertiesToShow] = "['scheme_name']"
+            formControlName="alt_scheme_name"
+            [displayMode]="displayMode_forScheme"
+            (setDisplayMode)="displayMode_forScheme = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            ></app-core-srch>
+            </div>
+            <ng-container *ngIf="__isinFrm.value.btn_type == 'A'">
 
-              <div class="col-sm-3">
-                <label for="plan_id">Plan</label>
-                <ng-multiselect-dropdown
-                id="plan_id"
-                [placeholder]="'Select Plan'"
-                [settings]="settingsForPLN"
-                [data]="planMst"
-                formControlName="plan_id">
-              </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="opt_id">Option</label>
-                <ng-multiselect-dropdown
-                id="opt_id"
-                [placeholder]="'Select Option'"
-                [settings]="settingsForOPT"
-                [data]="optionMst"
-                formControlName="opt_id">
-              </ng-multiselect-dropdown>
-              </div>
+            <div class="col-sm-3">
+              <label for="plan_id">Plan</label>
+              <ng-multiselect-dropdown
+              id="plan_id"
+              [placeholder]="'Select Plan'"
+              [settings]="settingsForPLN"
+              [data]="planMst"
+              formControlName="plan_id">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="opt_id">Option</label>
+              <ng-multiselect-dropdown
+              id="opt_id"
+              [placeholder]="'Select Option'"
+              [settings]="settingsForOPT"
+              [data]="optionMst"
+              formControlName="opt_id">
+            </ng-multiselect-dropdown>
+            </div>
+          </ng-container>
+            <div [class]="__isinFrm.value.btn_type == 'A' ? 'col-sm-3 d-flex justify-content-end align-items-end' : 'col-sm-9 d-flex justify-content-end align-items-end'">
+              <p-button
+              type="submit"
+              label="Show"
+              icon="pi pi-eye"
+              iconPos="right"
+              styleClass="p-button-lg">
+              </p-button>
+            </div>
+
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="my-3">
+      <mat-card-content>
+        <p-table
+        (onLazyLoad)="customSort($event)"
+          [customSort]="true"
+            sortMode="single"
+            [lazy]="true"
+        [value]="__isinMst"
+      [columns]="__columns" [resizableColumns]="true"
+    selectionMode="multiple"
+    columnResizeMode="expand" [scrollable]="true"
+    scrollHeight="358px"
+    [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+    [tableStyle]="{ 'min-width': '120rem' }">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field"
+        [ngStyle]="{'width': '12rem'}">
+          {{ col.header }}
+          <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
+          </p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-isin let-columns="columns" let-i="rowIndex">
+      <tr tabindex="999">
+        <td *ngFor="let col of columns">
+          <ng-container [ngSwitch]="true">
+
+            <ng-container *ngSwitchCase="col.field == 'edit'">
+              <p-button icon="pi pi-pencil" (click)="populateDT(isin)"
+                styleClass="p-button-rounded p-button-primary"></p-button>
             </ng-container>
-              <div [class]="__isinFrm.value.btn_type == 'A' ? 'col-sm-3 d-flex justify-content-end align-items-end' : 'col-sm-9 d-flex justify-content-end align-items-end'">
-                <p-button
-                type="submit"
-                label="Show"
-                icon="pi pi-eye"
-                iconPos="right"
-                styleClass="p-button-lg">
-                </p-button>
-              </div>
-
-            </div>
-          </form>
-     </div>
-     <div class="card border-1 mt-2">
-      <div class="example_container_header">
-        <div class="transTypeCount"></div>
-          <div class="btnGrp">
-         </div>
-         </div>
-         <div class="container_body">
-          <p-table
-          (onLazyLoad)="customSort($event)"
-            [customSort]="true"
-              sortMode="single"
-              [lazy]="true"
-          [value]="__isinMst"
-        [columns]="__columns" [resizableColumns]="true"
-      selectionMode="multiple"
-      columnResizeMode="expand" [scrollable]="true"
-      scrollHeight="358px"
-      [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-      [tableStyle]="{ 'min-width': '120rem' }">
-      <ng-template pTemplate="header" let-columns>
-        <tr>
-          <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field"
-          [ngStyle]="{'width': '12rem'}">
-            {{ col.header }}
-            <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
-            </p-sortIcon>
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-isin let-columns="columns" let-i="rowIndex">
-        <tr tabindex="999">
-          <td *ngFor="let col of columns">
-            <ng-container [ngSwitch]="true">
-
-              <ng-container *ngSwitchCase="col.field == 'edit'">
-                <p-button icon="pi pi-pencil" (click)="populateDT(isin)"
-                  styleClass="p-button-rounded p-button-primary"></p-button>
-              </ng-container>
-              <ng-container *ngSwitchCase="col.field == 'delete'">
-                <p-button icon="pi pi-trash"
-                (click)="deleteISIN(isin,i)"
-                  styleClass="p-button-rounded p-button-danger"></p-button>
-              </ng-container>
-
-
-              <ng-container *ngSwitchDefault>
-                <span #tooltip="matTooltip" [matTooltip]="isin[col.field]">
-                  {{ isin[col.field] ? isin[col.field] : 'N/A' }}
-                </span>
-              </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'delete'">
+              <p-button icon="pi pi-trash"
+              (click)="deleteISIN(isin,i)"
+                styleClass="p-button-rounded p-button-danger"></p-button>
             </ng-container>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage" let-columns>
-        <tr>
-          <td [attr.colspan]="columns.length" class="noHistoryAvailable">
-             No Records Found
-          </td>
-        </tr>
-      </ng-template>
-         </p-table>
-         <!-- For Paginate and Show Item Per page -->
-          <shared-paginate [__paginate]="__paginate"
-          [btn_type]="__isinFrm.value.btn_type"
-          (itemPerpageShow)="onSelectItem($event)"
-          (PaginateFn)="getPaginate($event)"
-          ></shared-paginate>
-          <!-- End -->
-        </div>
-     </div>
 
+
+            <ng-container *ngSwitchDefault>
+              <span #tooltip="matTooltip" [matTooltip]="isin[col.field]">
+                {{ isin[col.field] ? isin[col.field] : 'N/A' }}
+              </span>
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length" class="noHistoryAvailable">
+           No Records Found
+        </td>
+      </tr>
+    </ng-template>
+       </p-table>
+       <!-- For Paginate and Show Item Per page -->
+        <shared-paginate [__paginate]="__paginate"
+        [btn_type]="__isinFrm.value.btn_type"
+        (itemPerpageShow)="onSelectItem($event)"
+        (PaginateFn)="getPaginate($event)"
+        ></shared-paginate>
+        <!-- End -->
+      </mat-card-content>
+    </mat-card>
   </mat-dialog-content>
   </div>

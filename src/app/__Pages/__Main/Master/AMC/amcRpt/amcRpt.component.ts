@@ -32,8 +32,10 @@ type selectBtn ={
   styleUrls: ['./amcRpt.component.css'],
 })
 export class AmcrptComponent implements OnInit {
+  formValue;
   selectBtn:selectBtn[] = [{ label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
-  settings = this.__utility.settingsfroMultiselectDropdown('id','amc_short_name','Search AMC');
+  settings = this.__utility.settingsfroMultiselectDropdown('id',
+  'amc_short_name','Search AMC',1);
   settings_for_Levels = this.__utility.settingsfroMultiselectDropdown('id','value','Search Levels',2);
 
   itemsPerPage = ItemsPerPage;
@@ -80,6 +82,7 @@ export class AmcrptComponent implements OnInit {
     this.showColumns(2);
     console.log(this.data);
     setTimeout(() => {
+      this.formValue = this.__detalsSummaryForm.value;
       this.getAmcMst();
     }, 500);
 
@@ -113,12 +116,12 @@ export class AmcrptComponent implements OnInit {
    getAmcMst(){
     const __amcSearch = new FormData();
     __amcSearch.append('paginate',this.__pageNumber.value);
-    __amcSearch.append('rnt_id',this.__detalsSummaryForm.value.rnt_id ? JSON.stringify(this.__detalsSummaryForm.value.rnt_id.filter(x => x.isChecked).map(item => {return item['id']})) : '[]');
-    __amcSearch.append('amc_id',this.__detalsSummaryForm.value.amc_id ? JSON.stringify(this.__detalsSummaryForm.value.amc_id.map(item => {return item['id']})) : '[]');
-   __amcSearch.append('gstin',this.__detalsSummaryForm.value.gst_in ? this.__detalsSummaryForm.value.gst_in : '');
-   __amcSearch.append('contact_person',this.__detalsSummaryForm.value.contact_per ? this.__detalsSummaryForm.value.contact_per : '');
-   __amcSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __amcSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    __amcSearch.append('rnt_id',this.formValue?.rnt_id ? JSON.stringify(this.formValue?.rnt_id.filter(x => x.isChecked).map(item => {return item['id']})) : '[]');
+    __amcSearch.append('amc_id',this.formValue?.amc_id ? JSON.stringify(this.formValue?.amc_id.map(item => {return item['id']})) : '[]');
+   __amcSearch.append('gstin',this.formValue?.gst_in ? this.formValue?.gst_in : '');
+   __amcSearch.append('contact_person',this.formValue?.contact_per ? this.formValue?.contact_per : '');
+   __amcSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+   __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : '1'));
      this.__dbIntr.api_call(1,'/amcDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
       this.__paginate = res.links;
       this.setPaginator(res.data);
@@ -213,10 +216,10 @@ export class AmcrptComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          + ('&rnt_id=' + (JSON.stringify(this.__detalsSummaryForm.value.rnt_id.filter(x => x.isChecked).map(item => {return item['id']}))))
-          + ('&amc_id=' + (JSON.stringify(this.__detalsSummaryForm.value.amc_id.map(item => {return item['id']}))))
-          +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
-          +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
+          + ('&rnt_id=' + (JSON.stringify(this.formValue?.rnt_id.filter(x => x.isChecked).map(item => {return item['id']}))))
+          + ('&amc_id=' + (JSON.stringify(this.formValue?.amc_id.map(item => {return item['id']}))))
+          + ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+          ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -342,7 +345,11 @@ export class AmcrptComponent implements OnInit {
     this.__selectAMC.data.unshift(row_obj);
     this.__selectAMC._updateChangeSubscription();
   }
-  submit(){this.getAmcMst();this.setColumnsAfterSubmit();}
+  submit(){
+    this.formValue = this.__detalsSummaryForm.value;
+    this.getAmcMst();
+    this.setColumnsAfterSubmit();
+  }
 
   tableExport(__amcExport){
    this.__dbIntr.api_call(1,'/amcExport',__amcExport).pipe(map((x: any) => x.data)).subscribe((res: amc[]) =>{
@@ -366,7 +373,7 @@ export class AmcrptComponent implements OnInit {
   minimize(){
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize("40%",'55px');
+    this.dialogRef.updateSize("40%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize(){
@@ -393,10 +400,9 @@ export class AmcrptComponent implements OnInit {
       level:[]
     })
     this.__detalsSummaryForm.get('is_all').setValue(false);
-    // this.level.controls.map(item => {item.get('isChecked').setValue(false)});
-
     this.__pageNumber.setValue('10');
     this.sort= new sort();
+    this.formValue = this.__detalsSummaryForm.value;
     this.getAmcMst();
   }
 

@@ -108,7 +108,7 @@ export class AMCComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.hasBackdrop = false;
     dialogConfig.width = '60%';
-    dialogConfig.height = '100%';
+    // dialogConfig.height = '100%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data = {
       flag: 'A',

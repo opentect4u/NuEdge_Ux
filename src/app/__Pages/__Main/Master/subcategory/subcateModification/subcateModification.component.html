@@ -1,6 +1,6 @@
 
-<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title" [title]="data.title">
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane"  cdkDragBoundary=".cdk-overlay-container">
+  <div mat-dialog-title class="dialog-title" [title]="data.title" cdkDragHandle>
     <h2 >{{data.title}}</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize"  (click)="minimize()" >
@@ -23,7 +23,7 @@
 <mat-dialog-content>
   <form  [formGroup]="__subcatForm" (ngSubmit)="submit()" id="__subcatForm_{{data.id}}" autocomplete="off" ngNativeValidate>
     <div class="row">
-      <div class="col-sm-12 my-2">
+      <div class="col-sm-12">
         <label for="catName">Category <span class="text-danger">*</span></label>
          <select class="form-control" formControlName="category_id" id="catName">
            <option value="">Select Category</option>
@@ -43,8 +43,7 @@
     </div>
 </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end" class="popupBoxSubmitSec">
+<mat-dialog-actions align="end" class="popupBoxSubmitSec" cdkDragHandle>
   <button class="btn addBtn"   [attr.form]="'__subcatForm_'+data.id" [disabled]="this.__subcatForm.invalid">Submit</button>
 </mat-dialog-actions>
-<br clear="all">
 </div>

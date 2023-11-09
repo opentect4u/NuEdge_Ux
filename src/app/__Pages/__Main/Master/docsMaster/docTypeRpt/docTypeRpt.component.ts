@@ -22,6 +22,7 @@ templateUrl: './docTypeRpt.component.html',
 styleUrls: ['./docTypeRpt.component.css']
 })
 export class DoctyperptComponent implements OnInit {
+  formValue;
   itemsPerPage=ItemsPerPage;
   sort=new sort();
   __catForm = new FormGroup({
@@ -47,14 +48,15 @@ constructor(
 }
 
 ngOnInit(){
+  this.formValue = this.__catForm.value;
 }
 
  getDocumnetTypeMst(){
   const __docTypeSearch = new FormData();
-  __docTypeSearch.append('doc_type',this.__catForm.value.doc_type ? this.__catForm.value.doc_type : '');
+  __docTypeSearch.append('doc_type',this.formValue?.doc_type ? this.__catForm.value.doc_type : '');
   __docTypeSearch.append('paginate',this.__pageNumber.value);
-  __docTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-  __docTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+  __docTypeSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+  __docTypeSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : '1'));
    this.__dbIntr.api_call(1,'/documenttypeDetailSearch',__docTypeSearch).pipe(map((x: any) => x.data)).subscribe(res => {
     this.__paginate =res.links;
     this.setPaginator(res.data);
@@ -78,9 +80,9 @@ getPaginate(__paginate) {
       .getpaginationData(
         __paginate.url
         + ('&paginate=' + this.__pageNumber.value)
-        + ('&doc_type=' + this.__catForm.value.doc_type)
-        + ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : ''))
-        + ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+        + ('&doc_type=' + this.formValue?.doc_type)
+        + ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+        ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
@@ -161,7 +163,7 @@ fullScreen(){
 minimize(){
   this.dialogRef.removePanelClass('mat_dialog');
   this.dialogRef.removePanelClass('full_screen');
-  this.dialogRef.updateSize("40%",'55px');
+  this.dialogRef.updateSize("40%",'47px');
   this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
 }
 maximize(){
@@ -178,16 +180,19 @@ exportPdf(){
   }, 'DocumentType')
 }
 submit(){
+ this.formValue = this.__catForm.value;
  this.getDocumnetTypeMst();
 }
 
 customSort(ev){
+  if(ev.sortField != 'edit' && ev.sortField != 'delete'){
   this.sort.field = ev.sortField;
   this.sort.order = ev.sortOrder;
-  this.submit();
+  this.getDocumnetTypeMst();
+  }
 }
 onselectItem(ev){
-  this.submit();
+  this.getDocumnetTypeMst();
 }
 delete(docType,index){
   const dialogConfig = new MatDialogConfig();

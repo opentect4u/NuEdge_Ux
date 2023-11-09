@@ -27,6 +27,7 @@ type selectBtn ={
   styleUrls: ['./cmp-rpt.component.css']
 })
 export class CmpRPTComponent implements OnInit {
+  formValue;
   isOpenMegaMenu:boolean = false;
   itemsPerPage = ItemsPerPage;
   sort = new sort();
@@ -73,16 +74,7 @@ export class CmpRPTComponent implements OnInit {
     this.setColumns(2);
     this.getRntMst();
     this.getInstTypeMSt();
-    // this.addLevelsCheckBox(compClmns.LEVELS);
   }
-  // addLevelsCheckBox(levels){
-  //   levels.forEach(el =>{
-  //     this.levels.push(this.setFormControl(el))
-  //   })
-  // }
-  // get levels(): FormArray{
-  //   return this.__rntSearchForm.get('levels') as FormArray
-  // }
   setFormControl(level){
     return new FormGroup({
         isChecked: new FormControl(false),
@@ -134,7 +126,7 @@ export class CmpRPTComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -158,11 +150,11 @@ export class CmpRPTComponent implements OnInit {
         .getpaginationData(
           __paginate.url
           + ('&paginate=' + this.__pageNumber.value)
-          +  ('&comp_name=' + (JSON.stringify(this.__rntSearchForm.value.comp_name.map(item => item.id))))
-          +  ('&contact_person=' + (this.__rntSearchForm.value.contact_person? this.__rntSearchForm.value.contact_person : ''))
-          +  ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
-          +  ('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
-          +  ('&ins_type_id=' + (JSON.stringify(this.__rntSearchForm.value.ins_type.map(res => {return res['id']})))))
+          +  ('&comp_name=' + (JSON.stringify(this.formValue?.comp_name.map(item => item.id))))
+          +  ('&contact_person=' + (this.formValue?.contact_person? this.formValue?.contact_person : ''))
+          +('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+          ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
+          +  ('&ins_type_id=' + (JSON.stringify(this.formValue?.ins_type.map(res => {return res['id']})))))
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
           this.setPaginator(res.data);
@@ -259,24 +251,15 @@ export class CmpRPTComponent implements OnInit {
       }
       return true;
     });
-    // console.log( this.__export.data);
-
   }
   submit() {
+    this.formValue = this.__rntSearchForm.value;
     this.getRntMst();
     this.getColumnsAfterSubmit();
   }
   getColumnsAfterSubmit(){
     const clm = ['edit', 'delete'];
     const colmn = this.__levels.filter(x => this.__rntSearchForm.value.level.map(item => item.id).includes(x.id))
-    // colmn.forEach(el => {
-    //   console.log(el);
-    //   el.submenu.forEach(element => {
-    //     if(this.__columns.findIndex(x => x.field == element.field) == -1){
-    //                     this.__columns.push(element);
-    //     }
-    //   });
-    // })
     this.__levels.forEach(el =>{
           el.submenu.forEach(element=>{
              if(colmn.findIndex(x => x.id == el.id)!=-1){
@@ -291,20 +274,6 @@ export class CmpRPTComponent implements OnInit {
              }
           })
     })
-    // this.levels.value.forEach(el => {
-    //          el.sub_menu.forEach(element => {
-    //                   if(el.isChecked){
-    //                     if(this.__columns.findIndex(x => x.field == element.field) == -1){
-    //                       this.__columns.push(element);
-    //                     }
-    //                   }
-    //                   else{
-    //                     if(this.__columns.findIndex(x => x.field == element.field) != -1){
-    //                       this.__columns.splice(this.__columns.findIndex(x => x.field == element.field),1);
-    //                     }
-    //                   }
-    //          });
-    // });
     this.__exportedClmns = this.__columns.filter((x: any) => !clm.includes(x.field)).map((x: any) => x.field);
     this.SelectedClms = this.__columns.map((x) => x.field);
   }
@@ -313,17 +282,17 @@ export class CmpRPTComponent implements OnInit {
   getRntMst(column_name: string | null = null, sort_by: string | null = null) {
     const __insComp = new FormData();
     __insComp.append(
-      'comp_name',JSON.stringify(this.__rntSearchForm.value.comp_name.map(item => item.id)));
+      'comp_name',JSON.stringify(this.formValue?.comp_name.map(item => item.id)));
     __insComp.append(
       'contact_person',
-      this.__rntSearchForm.value.contact_person
-        ? this.__rntSearchForm.value.contact_person
+      this.formValue?.contact_person
+        ? this.formValue?.contact_person
         : ''
     );
     __insComp.append('paginate', this.__pageNumber.value);
-    __insComp.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __insComp.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
-    __insComp.append('ins_type_id',JSON.stringify(this.__rntSearchForm.value.ins_type.map(res => {return res['id']})));
+    __insComp.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''));
+    __insComp.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1'));
+    __insComp.append('ins_type_id',JSON.stringify(this.formValue?.ins_type.map(res => {return res['id']})));
     this.__dbIntr
       .api_call(1, '/ins/companyDetailSearch', __insComp)
       .pipe(map((x: any) => x.data))
@@ -421,7 +390,7 @@ export class CmpRPTComponent implements OnInit {
     // this.levels.controls.map(el => el.get('isChecked').setValue(false));
     this.__rntSearchForm.get('is_all').setValue(false);
    this.__pageNumber.setValue('10');
-   this.getRntMst();
+   this.submit();
   }
 
   delete(__el,index){
@@ -457,10 +426,12 @@ export class CmpRPTComponent implements OnInit {
       this.reset();
     }
     customSort(ev){
+      if(ev.sortField!= 'edit' && ev.sortField !='delete'){
       this.sort.order=ev.sortOrder;
       this.sort.field=ev.sortField;
       if(ev.sortField){
        this.getRntMst();
+       }
       }
     }
     onselectItem(ev){

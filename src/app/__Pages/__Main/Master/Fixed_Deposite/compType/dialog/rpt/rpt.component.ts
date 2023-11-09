@@ -20,6 +20,10 @@ import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json'
   styleUrls: ['./rpt.component.css']
 })
 export class RptComponent implements OnInit {
+
+
+  formValue;
+
   itemsPerPage = ItemsPerPage;
   __paginate: any = [];
   __cmp_settings = this.__utility.settingsfroMultiselectDropdown('id','comp_type','Search Company Type');
@@ -45,7 +49,7 @@ export class RptComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getCompanyTypeMst();
+    this.searchCompanyType();
     this.getCompanyTypeMasterForDropdown();
   }
 
@@ -59,10 +63,10 @@ export class RptComponent implements OnInit {
 
     const __fd = new FormData();
     __fd.append('comp_type',
-    this.__searchForm.value.company_type ? JSON.stringify(this.__searchForm.value.company_type) : "[]");
+    this.formValue?.company_type ? JSON.stringify(this.formValue?.company_type) : "[]");
     __fd.append('paginate',this.__pageNumber.value);
-    __fd.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __fd.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    __fd.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''));
+    __fd.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1'));
     this.__dbIntr.api_call(1,'/fd/companyTypeDetailSearch',__fd).pipe(pluck("data")).subscribe((res: any) =>{
       this.__paginate = res.links;
       this.setPaginator(res.data);
@@ -70,11 +74,11 @@ export class RptComponent implements OnInit {
     })
   }
   tableExport(__fd: FormData){
-    __fd.delete('paginate');
-    this.__dbIntr.api_call(1,'/fd/companyTypeExport',null).pipe(pluck("data"))
-    .subscribe((res: any) => {
-      this.__CmpTypeExport = new MatTableDataSource(res);
-    });
+    // __fd.delete('paginate');
+    // this.__dbIntr.api_call(1,'/fd/companyTypeExport',__fd).pipe(pluck("data"))
+    // .subscribe((res: any) => {
+    //   this.__CmpTypeExport = new MatTableDataSource(res);
+    // });
 
   }
   setPaginator(__dt){
@@ -83,7 +87,7 @@ export class RptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -175,13 +179,15 @@ export class RptComponent implements OnInit {
   }
   getPaginate(__paginate) {
     if (__paginate.url) {
+      // +('&com_type=' + JSON.stringify(this.formValue?.company_type.map(item => item.id)))
+
       this.__dbIntr
         .getpaginationData(
           __paginate.url +
              ('&paginate=' + this.__pageNumber.value)
-            +('&com_type=' + JSON.stringify(this.__searchForm.value.company_type.map(item => item.id)))
-            +('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
-            +('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
+             +('&com_type=' + JSON.stringify(this.formValue?.company_type))
+            +('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -202,6 +208,7 @@ export class RptComponent implements OnInit {
 );
   }
   searchCompanyType(){
+    this.formValue = this.__searchForm.value;
     this.getCompanyTypeMst();
   }
   refreshOrAdvanceFlt(){
@@ -210,13 +217,15 @@ export class RptComponent implements OnInit {
      });
     this.sort = new sort();
     this.__pageNumber.setValue('10');
-     this.getCompanyTypeMst();
+     this.searchCompanyType();
   }
   customSort(ev){
+    if(ev.sortField!='edit' && ev.sortField!='delete'){
     this.sort.field =ev.sortField;
     this.sort.order =ev.sortOrder;
     if(ev.sortField){
       this.getCompanyTypeMst();
+     }
     }
   }
   onselectItem(ev){

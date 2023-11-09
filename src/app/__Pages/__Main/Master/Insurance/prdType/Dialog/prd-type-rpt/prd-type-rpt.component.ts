@@ -27,6 +27,9 @@ import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json'
   styleUrls: ['./prd-type-rpt.component.css'],
 })
 export class PrdTypeRPTComponent implements OnInit {
+
+  formValue;
+
   sort =new sort();
   itemsPerPage = ItemsPerPage;
   @ViewChildren("insTypeChecked") private __insTypeChecked: QueryList<ElementRef>;
@@ -93,15 +96,15 @@ export class PrdTypeRPTComponent implements OnInit {
     const __prdTypeSearch = new FormData();
     __prdTypeSearch.append(
       'ins_type_id',
-      this.__prdType.value.ins_type ? JSON.stringify(this.__prdType.value.ins_type.map(item => {return item['id']})) : "[]"
+      this.formValue?.ins_type ? JSON.stringify(this.formValue?.ins_type.map(item => {return item['id']})) : "[]"
     );
     __prdTypeSearch.append(
       'product_type',
-      JSON.stringify(this.__prdType.value.product_type.map(item => {return item['id']}))
+      JSON.stringify(this.formValue?.product_type.map(item => {return item['id']}))
     );
     __prdTypeSearch.append('paginate', this.__pageNumber.value);
-    __prdTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __prdTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
+    __prdTypeSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''));
+    __prdTypeSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1'));
     this.__dbIntr
       .api_call(1, '/ins/productTypeDetailSearch', __prdTypeSearch)
       .pipe(map((x: any) => x.data))
@@ -123,7 +126,7 @@ export class PrdTypeRPTComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -136,6 +139,7 @@ export class PrdTypeRPTComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit() {
+    this.formValue = this.__prdType.value;
     this.getProductTypeMst();
   }
 
@@ -157,10 +161,10 @@ export class PrdTypeRPTComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&ins_type_id=' +  (this.__prdType.value.ins_type ? JSON.stringify(this.__prdType.value.ins_type.map(item => {return item['id']})) : '[]')) +
-            ('&product_type=' + (JSON.stringify(this.__prdType.value.product_type.map(item => {return item['id']})))) +
-           ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : '')) +
-           ('&order='+ (global.getActualVal(this.sort.order) ? this.sort.order : '1'))
+            ('&ins_type_id=' +  (this.formValue?.ins_type ? JSON.stringify(this.formValue?.ins_type.map(item => {return item['id']})) : '[]')) +
+            ('&product_type=' + (JSON.stringify(this.formValue?.product_type.map(item => {return item['id']})))) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -239,7 +243,7 @@ export class PrdTypeRPTComponent implements OnInit {
     this.__prdType.get('ins_type').setValue([],{emitEvent:false});
     this.sort = new sort();
     this.__pageNumber.setValue('10');
-    this.getProductTypeMst();
+    this.submit();
   }
 
   delete(__el, index) {
@@ -268,10 +272,12 @@ export class PrdTypeRPTComponent implements OnInit {
     });
   }
   customSort(ev){
+    if(ev.sortField !='edit' && ev.sortField !='delete'){
     this.sort.order=ev.sortOrder;
     this.sort.field=ev.sortField;
-    if(ev.sortField){
-     this.getProductTypeMst();
+     if(ev.sortField){
+       this.getProductTypeMst();
+     }
     }
   }
   onselectItem(ev){

@@ -65,7 +65,7 @@ export class SubcateModificationComponent implements OnInit {
     this.__subcatForm.reset();
   }
   minimize(){
-    this.dialogRef.updateSize("30%",'55px');
+    this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize(){

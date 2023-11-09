@@ -96,7 +96,8 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
           emitEvent:false
         });
       this.benchmarkForm.get('category_id').setValue(this.data.benchmark.category_id,{emitEvent:true});
-        this.benchmarkForm.get('subcat_id').setValue([{
+
+      this.benchmarkForm.get('subcat_id').setValue([{
           id:this.data.benchmark.subcat_id,
           subcategory_name:this.data.benchmark.subcategory_name
         }],
@@ -119,7 +120,7 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
   }
 
   minimize = () => {
-    this.dialogRef.updateSize('30%', '55px');
+    this.dialogRef.updateSize('30%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',

@@ -27,6 +27,12 @@ import { optClmns } from 'src/app/__Utility/Master/optionClmns';
   styleUrls: ['./optRpt.component.css'],
 })
 export class OptrptComponent implements OnInit {
+
+  /**
+   * Holfing form data after submit form
+   */
+  formValue;
+
   itemsPerPage= ItemPerPage
   sort = new sort();
   __iscatspinner: boolean = false;
@@ -51,13 +57,15 @@ export class OptrptComponent implements OnInit {
     private __utility: UtiliService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.formValue = this.__catForm.value;
+  }
   getoptionMst() {
     const __optionSrch = new FormData();
-    __optionSrch.append('option', this.__catForm.value.option);
+    __optionSrch.append('option', this.formValue?.option);
     __optionSrch.append('paginate', this.__pageNumber.value);
-    __optionSrch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __optionSrch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+    __optionSrch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __optionSrch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     this.__dbIntr
       .api_call(1, '/optionDetailSearch', __optionSrch)
       .pipe(map((x: any) => x.data))
@@ -87,9 +95,9 @@ export class OptrptComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&option=' + this.__catForm.value.option) +
-            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
-            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            ('&option=' + this.formValue?.option) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -194,6 +202,7 @@ export class OptrptComponent implements OnInit {
     );
   }
   submit() {
+    this.formValue = this.__catForm.value;
     this.getoptionMst();
   }
   delete(__el,index){
@@ -231,11 +240,13 @@ export class OptrptComponent implements OnInit {
     XLSX.writeFile(wb, `option.xlsx`,{cellStyles:true});
   }
   customSort(ev){
+    if(ev.sortField != 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
     this.sort.order = ev.sortOrder;
-    this.submit();
+    this.getoptionMst();
+    }
   }
   onselectItem(ev){
-    this.submit();
+    this.getoptionMst();
   }
 }

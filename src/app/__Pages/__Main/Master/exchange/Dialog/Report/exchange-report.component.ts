@@ -78,7 +78,8 @@ export class ExchangeReportComponent implements OnInit {
     //   bottom: '0px',
     //   right: this.data.right + 'px',
     // });
-    this.dialogRef.updateSize("30%",'55px');
+    // this.__isVisible = !this.__isVisible;
+    this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize() {

@@ -42,12 +42,9 @@ th {
 }
 
 .mat-dialog-actions {
-  /* padding: 11px 23px !important; */
   padding: 2px 23px !important;
   border-top: 1px solid #cecece;
-  /* background: #e7e7e7ba; */
-  background: #fffaf2;
-
+  margin-bottom:0px!important;
 }
 
 .form-control {
@@ -126,7 +123,8 @@ button:focus {
 }
 
 .mat_dialog {
-  height: 100% !important;
+  /* height: 100% !important; */
+  height: auto!important;
   width: 60% !important;
 }
 
@@ -135,7 +133,8 @@ tr.mat-header-row {
 }
 
 .full_screen {
-  height: 100% !important;
+  /* height: 100% !important; */
+  height: auto!important;
   width: 100% !important;
 }
 
@@ -258,6 +257,9 @@ tr.mat-header-row {
   box-shadow: none;
   border-bottom: 1px solid #d3d3d3;
   border-radius: 0px !important;
+  position: fixed;
+  width: 100%;
+  z-index: 8;
 }
 
 .customDialog {
@@ -805,6 +807,7 @@ color: #ffffff;
 
 .p-button-label{
   font-weight: 500!important;
+  font-size: 11px!important;
 }
 
 .p-inputtext{
@@ -816,4 +819,14 @@ color: #ffffff;
 .mat-fab.mat-primary,
 .mat-mini-fab.mat-primary{
   background-color:#10486b!important;
+}
+.p-button.p-button-outlined:enabled:hover{
+  background: rgb(16 72 107)!important;
+  color: #fff !important;
+}
+
+.p-selectbutton .p-button {
+  font-size: 12px!important;
+  box-shadow: 0px 0px 2px 0px #ffffff!important;
+  border: 1px solid #d9d9d9!important;
 }

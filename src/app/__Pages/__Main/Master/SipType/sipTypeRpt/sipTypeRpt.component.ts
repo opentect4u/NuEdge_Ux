@@ -26,6 +26,8 @@ import { sipTypeClmns } from 'src/app/__Utility/Master/trans';
   styleUrls: ['./sipTypeRpt.component.css'],
 })
 export class SiptyperptComponent implements OnInit {
+
+  formValue;
   itemsPerPage=ItemsPerPage;
   sort=new sort();
   __trnsType = new FormGroup({
@@ -48,14 +50,16 @@ export class SiptyperptComponent implements OnInit {
     private __utility: UtiliService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.formValue = this.__trnsType.value;
+  }
 
   getSIPTypeMst() {
     const __SIPTypeSearch = new FormData();
-    __SIPTypeSearch.append('sip_type_name',this.__trnsType.value.sip_type_name);
+    __SIPTypeSearch.append('sip_type_name',this.formValue?.sip_type_name);
     __SIPTypeSearch.append('paginate', this.__pageNumber.value);
-    __SIPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
-    __SIPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : ''));
+    __SIPTypeSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
+    __SIPTypeSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     this.__dbIntr
       .api_call(1, '/sipTypeSearch', __SIPTypeSearch)
       .pipe(map((x: any) => x.data))
@@ -96,9 +100,9 @@ export class SiptyperptComponent implements OnInit {
         .getpaginationData(
           __paginate.url +
             ('&paginate=' + this.__pageNumber.value) +
-            ('&sip_type_name=' + this.__trnsType.value.sip_type_name) +
-            ('&order=' + (global.getActualVal(this.sort.order) ? this.sort.order : '')) +
-            ('&field=' + (global.getActualVal(this.sort.field) ? this.sort.field : ''))
+            ('&sip_type_name=' + this.formValue?.sip_type_name) +
+            ('&order=' + (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1')) +
+            ('&field=' + (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''))
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
@@ -162,7 +166,7 @@ export class SiptyperptComponent implements OnInit {
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '47px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',
@@ -186,6 +190,7 @@ export class SiptyperptComponent implements OnInit {
     );
   }
   submit() {
+    this.formValue = this.__trnsType.value;
     this.getSIPTypeMst();
   }
   private updateRow(row_obj: any) {
@@ -237,11 +242,13 @@ export class SiptyperptComponent implements OnInit {
       })
   }
   customSort(ev){
+    if(ev.sortField!= 'edit' && ev.sortField != 'delete'){
     this.sort.field = ev.sortField;
     this.sort.order = ev.sortOrder;
-    this.submit();
+    this.getSIPTypeMst();
+  }
   }
   onselectItem(ev){
-    this.submit();
+    this.getSIPTypeMst();
   }
 }

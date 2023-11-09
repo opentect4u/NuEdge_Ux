@@ -9,6 +9,7 @@
   <div class="col-sm-5">
     <shared-mst-dtls [btnTitle]="'View All Client'" [headerTitle]="'Recent Client'" [flag]="'CL'"
       (populate)="populateDT($event)"
+      [props]="'client_name'"
       (viewAll)="viewAll()"
       [dataSource]="__selectClient.data"></shared-mst-dtls>
   </div>

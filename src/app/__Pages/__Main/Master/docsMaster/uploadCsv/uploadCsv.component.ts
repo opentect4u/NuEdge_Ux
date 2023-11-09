@@ -12,32 +12,6 @@ import { breadCrumb } from 'src/app/__Model/brdCrmb';
   styleUrls: ['./uploadCsv.component.css'],
 })
 export class UploadCsvComponent implements OnInit {
-  __brdCrmbs: breadCrumb[] = [
-    {
-      label: 'Home',
-      url: '/main',
-      hasQueryParams: false,
-      queryParams: '',
-    },
-    {
-      label: 'Master',
-      url: '/main/master/products',
-      hasQueryParams: false,
-      queryParams: '',
-    },
-    {
-      label: 'Document Type',
-      url: '/main/master/docType',
-      hasQueryParams: true,
-      queryParams: '',
-    },
-    {
-      label: 'Document Type Upload',
-      url: '/main/master/uploadDocTypeCsv',
-      hasQueryParams: true,
-      queryParams: '',
-    },
-  ];
 
   displayedColumns: Array<string> = [];
   tableColumns: Array<Column> = [
@@ -58,12 +32,11 @@ export class UploadCsvComponent implements OnInit {
     private __dbIntr: DbIntrService,
     private __utility: UtiliService
   ) {
-    this.previewlatestDocumnetType();
   }
 
   ngOnInit() {
+    this.previewlatestDocumnetType();
     this.displayedColumns = this.tableColumns.map((c) => c.columnDef);
-    this.__utility.getBreadCrumb(this.__brdCrmbs);
   }
   previewlatestDocumnetType() {
     this.__dbIntr

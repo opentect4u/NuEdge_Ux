@@ -1,6 +1,6 @@
 
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title" [title]="data.title">
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container" >
+  <div mat-dialog-title class="dialog-title" [title]="data.title" cdkDragHandle>
     <h2 >{{data.title}} {{data.id > 0 ? '(' +data.__rnt.rnt_name+')' : ''}}</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize"  (click)="minimize()" >
@@ -506,7 +506,18 @@
 
       <div class="row">
         <div class="col-sm-12">
-           <label for="rnt_logo">Upload Logo</label>
+          <div class="w-100 d-flex justify-content-between align-items-center">
+            <label for="rnt_logo">Upload Logo</label>
+            <div class="invalid-feedback d-flex justify-content-between align-items-center"
+            *ngIf=" __rntForm.get('rnt_logo_upload').invalid && ( __rntForm.get('rnt_logo_upload').dirty ||  __rntForm.get('rnt_logo_upload').touched)">
+            <!-- <mat-icon size="small">priority_high</mat-icon> -->
+            <span class="invalid-feedback" *ngIf="__rntForm.get('rnt_logo_upload').errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback"
+              *ngIf="__rntForm.get('rnt_logo_upload').errors?.fileSizeValidator">*File size must not exceed than
+              10MB.</span>
+           </div>
+          </div>
            <div class="p-inputgroup">
            <input type="file" name="rnt_logo" id="rnt_logo" class="form-control" (change)="getFile($event)" formControlName="rnt_logo_upload" accept="jpeg,png,jpg">
            <a type="button"
@@ -523,25 +534,18 @@
             styleClass="p-button-danger p-button-lg"></a>
           </div>
            <mat-hint class="mt-2"><p class="m-0">Allowed format: PNG,JPG,JPEG (size upto: 10MB)</p></mat-hint>
-           <div class="invalid-feedback"
-          *ngIf=" __rntForm.get('rnt_logo_upload').invalid && ( __rntForm.get('rnt_logo_upload').dirty ||  __rntForm.get('rnt_logo_upload').touched)">
-          <span class="invalid-feedback" *ngIf="__rntForm.get('rnt_logo_upload').errors?.inValidExt">*Invalid
-            file extension.</span>
-          <span class="invalid-feedback"
-            *ngIf="__rntForm.get('rnt_logo_upload').errors?.fileSizeValidator">*File size must not exceed than
-            10MB.</span>
-         </div>
+
         </div>
       </div>
 
     </form>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec" cdkDragHandle>
     <button class="btn addBtn  ml-2" [attr.form]="'__rntForm_'+ data.id"
       [disabled]="this.__rntForm.invalid">
       {{this.data.id > 0 ? 'Update' : 'Submit'}}
     </button>
-  <br clear="all">
+  <!-- <br clear="all"> -->
   </mat-dialog-actions>
 </div>
