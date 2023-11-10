@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MailbackComponent } from './mailback.component';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from 'src/app/__Gaurd/canActivate/auth.guard';
 
 const routes:Routes = [
   {
@@ -15,11 +16,11 @@ const routes:Routes = [
       },
       {
           path:'manualupload',
-          loadChildren:()=>import('./manual-upload/manual-upload.module').then(m => m.ManualUploadModule)
+          loadChildren:()=>import('./manual-upload/manual-upload.module').then(m => m.ManualUploadModule),
       },
       {
           path:'filehelp',
-          loadChildren:()=>import('./file-help/file-help.module').then(m => m.FileHelpModule)
+          loadChildren:()=>import('./file-help/file-help.module').then(m => m.FileHelpModule),
       },
       {
           path:'mailbackmismatch',

@@ -229,21 +229,19 @@ export class UtiliService {
   //   }
 
 
-  screenResoluation =(actual_height:Number,actual_width:Number,
-    curr_width:Number,curr_height:Number) =>{
+  screenResoluation =(actual_height:number,actual_width:number,
+    curr_height:number,curr_width:number) =>{
+    //   const availHeight = window.screen.availHeight;
+    //   const availWidth = window.screen.availWidth;
+    //   const current_height = window.innerHeight + (window.screen.height - window.screen.availHeight);
+    //   console.log(current_height);
 
-    // if((curr_height != actual_height)
-    // || (curr_width != Number(actual_width))){
+    // if((current_height != Number(availHeight))){
     //   this.__router.navigate(['/']);
-    //   // clear localStorage also
-    //   // alert(`actual_width: ${actual_width} actual_height:${curr_height}`);
     // console.log('Not ok');
     // }
     // else{
-    // console.log('ok');
-    //   alert(`actual_width: ${actual_width} actual_height:${actual_height}`);
+    //   alert(`${window.innerHeight +  (window.screen.height - window.screen.availHeight)}`)
     // }
-    // alert(`curr_height: ${curr_height} curr_width:${curr_width} actual_width: ${actual_width} actual_height:${actual_height}`);
-
   }
 }

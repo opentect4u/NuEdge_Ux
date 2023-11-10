@@ -28,6 +28,7 @@ export class MainComponent implements OnInit {
   ngOnInit() {
      this.__utility.screenResoluation(window.screen.height,window.screen.width,
       window.innerHeight,window.innerWidth);
+      console.log('Main Module Loaded');
   }
 
 

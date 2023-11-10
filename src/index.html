@@ -18,10 +18,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
 </head>
-<body class="body">
+<body class="body" oncontextmenu="return false;">
   <app-root></app-root>
   <script src="./assets/js/jquery.min.js"></script>
   <script src="./assets/js/bootstrap.min.js" type="text/javascript"></script>
 </body>
 
+<!-- Right Click Off -->
+<script>
+document.addEventListener("contextmenu",e=>e.preventDefault()),
+document.onkeydown=function(e){return 123!=e.keyCode&&((!e.ctrlKey||!e.shiftKey||73!=e.keyCode)&&((!e.ctrlKey||!e.shiftKey||74!=e.keyCode)&&((!e.ctrlKey||85!=e.keyCode)&&void 0)))};
+</script>
+<!-- End -->
 </html>

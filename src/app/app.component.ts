@@ -13,6 +13,7 @@ import {
   NavigationError,
   ActivatedRoute
 } from '@angular/router'
+import { Platform } from '@angular/cdk/platform';
 
 /**<== End ==> */
 
@@ -35,11 +36,13 @@ export class AppComponent {
     private __actRoute: ActivatedRoute,
     private __title: Title,
     private __utility: UtiliService,
-    private meta:Meta
+    private meta:Meta,
+    private platform:Platform
   ) {
     this.setTitle();
     // this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
     this.__router.events.subscribe((e : RouterEvent) => {
+      // console.log(e.url)
       this.navigationInterceptor(e);
       this.__utility.cancelPendingRequests(); // Cancel all Pending request on route change
     })
@@ -53,8 +56,13 @@ export class AppComponent {
   // }
 
   ngOnInit() {
-    this.__utility.screenResoluation(window.screen.height,window.screen.width,
-      window.innerHeight,window.innerWidth);
+  //   window.addEventListener('devtoolschange', function (e: any) {
+  //     console.log('is DevTools open?', e.detail.open);
+  // });
+
+
+    this.__utility.screenResoluation(Number(window.screen.height),Number(window.screen.width),
+    Number(window.innerHeight),Number(window.innerWidth));
     this.__router.events.pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd),
       distinctUntilChanged(),
@@ -145,6 +153,7 @@ buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrum
        //there will be more children to look after, to build our breadcumb
        return this.buildBreadCrumb(route.firstChild, nextUrl, newBreadcrumbs);
    }
+   console.log(newBreadcrumbs);
    return newBreadcrumbs;
 }
 
@@ -155,4 +164,6 @@ buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrum
         window.innerHeight,window.innerWidth);
     /*** END */
   }
+
+
 }

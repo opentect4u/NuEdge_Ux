@@ -6,6 +6,7 @@ import { PanelModule } from 'primeng/panel';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { fileTypePipe } from 'src/app/__Pipes/fileType.pipe';
+// import { AuthGuard } from 'src/app/__Gaurd/auth.guard';
  const routes:Routes = [{
   path:'',
   component:ManualUploadComponent,

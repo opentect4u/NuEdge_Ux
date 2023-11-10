@@ -12,6 +12,8 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 /*<====== End =========>*/
 /**<== Mat Progress Bar Module ==>*/
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+// import { AuthGuard } from './__Gaurd/canActivate/auth.guard';
 /**<=== End ==> */
 
 @NgModule({
@@ -24,7 +26,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     BrowserAnimationsModule,
     NgxSpinnerModule,
     SnkbarModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatDialogModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: NetworkInterceptor, multi: true },

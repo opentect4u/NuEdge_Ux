@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
@@ -14,7 +15,7 @@ export class ListComponent implements OnInit {
   @Input() __classUL;
   @Input() __flag;
   @Output() clickItems:EventEmitter<object> = new EventEmitter();
-  constructor(private __utils: UtiliService) { }
+  constructor(private __utils: UtiliService,private dialog:MatDialog) { }
 
   ngOnInit() {
   }
@@ -33,5 +34,11 @@ export class ListComponent implements OnInit {
   }
   route() {
     this.__utils.navigate('/')
+  }
+  logout = () =>{
+    localStorage.clear();
+    this.dialog.closeAll();
+    this.__utils.navigate('/');
+
   }
 }

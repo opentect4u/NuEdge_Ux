@@ -6,29 +6,41 @@ import {
   HttpInterceptor,
   HttpContextToken,
   HttpErrorResponse,
-  HttpResponse
+  HttpResponse,
+  HttpHeaders
 } from '@angular/common/http';
 // import {storage} from '../__Utility/storage';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UtiliService } from '../__Services/utils.service';
+import { AuthService } from '../__Services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
 export const BYPASS_LOG = new HttpContextToken(() => false);
 export const IS_CACHE = new HttpContextToken(() => false);
-
 @Injectable()
 export class NetworkInterceptor implements HttpInterceptor {
   totalRequests = 0;
   requestsCompleted = 0;
-  constructor(private __spinner: NgxSpinnerService,private __utility:UtiliService) {}
+  constructor(private __spinner: NgxSpinnerService,
+    private __utility:UtiliService,
+    private auth:AuthService,
+    private __dialog: MatDialog
+    ) {}
   private cache = new Map<string, any>();
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (request.context.get(BYPASS_LOG) === true){
-      return next.handle(request);
+      const auth =  request.clone({
+        headers: new HttpHeaders({
+          'Authorization': this.auth.isAuthenticated() ? `Bearer ${this.auth.isAuthenticated()}` : ''
+        })
+      });
+
+    if (auth.context.get(BYPASS_LOG) === true){
+      return next.handle(auth);
     }
     this.__spinner.show();
     this.totalRequests++;
-    return next.handle(request).pipe(
+    return next.handle(auth).pipe(
       takeUntil(this.__utility.onCancelPendingRequests()),
       finalize(() => {
         this.requestsCompleted++;
@@ -44,11 +56,13 @@ export class NetworkInterceptor implements HttpInterceptor {
           } else {
             switch (error.status) {
               case 401: // Unautorized
-                this.__utility.showSnackbar('401!! Authorization Error',0);
-                break;
+
               case 403: // Forbidden
                 // console.log(`${error.statusText}`, 'Access Error');
-                this.__utility.showSnackbar("403!! You do't have any permisssion to access",0);
+                this.__utility.showSnackbar("403!! You do't have permisssion to access",0);
+                localStorage.clear();
+                this.__dialog.closeAll();
+                this.__utility.navigate('/',null);
                 break;
               case 404: // Not found
                 // console.log(`${error.statusText}`, 'Route Error');

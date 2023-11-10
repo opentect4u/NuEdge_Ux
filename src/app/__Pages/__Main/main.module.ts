@@ -11,10 +11,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { BreadcrmbsComponent } from './common/brdCrmbs/breadCrmbs.component';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { SidebarModule } from 'primeng/sidebar';
+import { AuthGuard } from 'src/app/__Gaurd/canActivate/auth.guard';
+// import { SignInGuard } from 'src/app/__Gaurd/canActivate/sign-in.guard';
 const routes: Routes = [
   {
     path: '',
     component: MainComponent,
+    canActivate:[AuthGuard],
+    canActivateChild:[AuthGuard],
     data:{breadcrumb:'Home'},
     children: [
       {

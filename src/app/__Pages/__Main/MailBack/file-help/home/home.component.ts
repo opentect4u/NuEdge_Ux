@@ -409,7 +409,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
      */
     this.rntTrxnType.reset();
     this.rntTrxnType.get('rnt_id').setValue(this.rnt_type_tab);
-    if(this.rnt_type_tab == 'T')
+    if(this.file_type_tab == 'T')
     {
       this.rntTrxnType.patchValue({
       id: trxnType ? trxnType.id : 0,
@@ -429,7 +429,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         : '',
     });
   }
-  else if(this.rnt_type_tab == 'S'){
+  else if(this.file_type_tab == 'S'){
     if(this.sub_tab == 'T'){
       this.rntTrxnType.patchValue({
         id: trxnType ? trxnType.id : 0,
