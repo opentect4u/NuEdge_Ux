@@ -19,49 +19,115 @@
             <p>Manage Account Works</p>
         </ng-container>
         <ng-template #manage_password>
-            <h4 class="my-4">Manage Password</h4>
-              <p>
-                Strong password required. Enter 8-256 characters.
-                Combine uppercase letters, lowercase letters, numbers and symbols
-              </p>
-            <div class="row my-2">
 
-              <div class="col-sm-5 col-sm-offset-4">
+            <div class="row flexSec my-5">
+              <div class="col-sm-4 d-flex justify-content-center align-items-center flex-row">
+                  <div>
+                    <h4  class="my-4">Manage Password</h4>
+                    <ul>
+                        <li
+                        [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('^(?=.*[A-Z])')}"
+                        ><span
+                          [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('^(?=.*[A-Z])')}"
+                          >At least uppercase letter.</span></li>
+                        <li
+                        [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(?=.*[a-z])')}"
+                        class="my-3"
+                        ><span
+                          [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(?=.*[a-z])')}">At least one lowercase letter.</span></li>
+                        <li
+                        [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(.*[0-9].*)')}"
+                        >
+                          <span
+                          [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(.*[0-9].*)')}">At least one digit.</span></li>
+                        <li
+                        [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(?=.*[!@#$%^&*])')}"
+                        class="my-3"
+                        ><span
+                          [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(?=.*[!@#$%^&*])')}">At least one special character (@#!$%^&*).</span></li>
+                        <li
+                        [ngClass]="{'validate': profile.get(['manage_password','password']).value?.match('.{8,}')}"
+                        >
+                          <span [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('.{8,}')}">
+                          At least 8 characters long.
+                          </span>
+
+                        </li>
+                    </ul>
+                  </div>
+
+              </div>
+
+              <div class="col-sm-5">
                   <form [formGroup]="profile" (ngSubmit)="changePassword()">
                     <div formGroupName="manage_password">
                       <div class="form-group">
                         <label for="old_pass">Old Password <span class="text-danger">*</span></label>
-                        <input type="password"
+                        <input [type]="!isOldVisibility ? 'password' : 'text'"
                         name="old_pass"
                         id="old_pass"
                         class="form-control"
                         placeholder="Enter Old Passowrd"
                         formControlName="old_password"
+                        minlength="8"
+                        maxlength="15"
                         >
+                        <button type="button" color="primary" class="inputIconBtn" mat-icon-button (click)="isOldVisibility=!isOldVisibility">
+                          <mat-icon>{{!isOldVisibility ? 'visibility' : 'visibility_off'}}</mat-icon>
+                        </button>
+                      </div>
+                      <div class="invalid-feedback" *ngIf="profile.get(['manage_password','old_password']).invalid && (profile.get(['manage_password','old_password']).dirty || profile.get(['manage_password','old_password']).touched)">
+                        <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','old_password'])).errors?.required">*Please provide old password</span>
                       </div>
                       <div class="form-group">
                         <label for="new_pass">New Password <span class="text-danger">*</span></label>
-                        <input type="password"
+                        <input [type]="!isnewVisibility ? 'password' : 'text'"
                         name="new_pass"
                         id="new_pass"
                         class="form-control"
                         placeholder="Enter New Passowrd"
-                        formControlName="new_password"
+                        formControlName="password"
+                        minlength="8"
+                        maxlength="15"
                         >
+                        <button type="button" color="primary" class="inputIconBtn" mat-icon-button (click)="isnewVisibility=!isnewVisibility">
+                          <mat-icon>{{!isnewVisibility ? 'visibility' : 'visibility_off'}}</mat-icon>
+                        </button>
+                      </div>
+                      <div class="invalid-feedback" *ngIf="profile.get(['manage_password','password']).invalid && (profile.get(['manage_password','password']).dirty || profile.get(['manage_password','password']).touched)">
+                        <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','password'])).errors?.required">*Please provide new password</span>
+
+                        <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','password'])).errors?.pattern">
+                         * Password must contain at least one number, one uppercase and a
+                          lowercase letter and at least 8 characters. Password cannot
+                          contain whitespace</span>
                       </div>
                       <div class="form-group">
                         <label for="conf_pass">Confirm Password <span class="text-danger">*</span></label>
-                        <input type="password"
+                        <input [type]="!isconfVisibility ? 'password' : 'text'"
                         name="conf_pass"
                         id="conf_pass"
                         placeholder="Enter Confirm Passowrd"
                         class="form-control"
-                        formControlName="conf_password"
+                        formControlName="c_password"
+                        minlength="8"
+                        maxlength="15"
                         >
+                        <button type="button" color="primary" class="inputIconBtn" mat-icon-button (click)="isconfVisibility=!isconfVisibility">
+                          <mat-icon>{{!isconfVisibility ? 'visibility' : 'visibility_off'}}</mat-icon>
+                        </button>
                       </div>
+                       <div class="invalid-feedback" *ngIf="profile.get(['manage_password','c_password']).invalid && (profile.get(['manage_password','c_password']).dirty || profile.get(['manage_password','c_password']).touched)">
+                          <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','c_password'])).errors?.required">*Please provide confirm password</span>
+                          <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','c_password'])).errors?.pas_match">*Password does not match</span>
+                          <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','c_password'])).errors?.pattern">
+                            * Password must contain at least one number, one uppercase and a
+                             lowercase letter,one special character and at least 8 characters. Password cannot
+                             contain whitespace</span>
+                         </div>
                     </div>
-                    <div class="form-group float-right">
-                        <button type="submit" mat-button color="primary">Change Password</button>
+                    <div class="form-group float-right my-3">
+                        <button [disabled]="profile.invalid" type="submit" mat-button color="primary">Change Password</button>
                     </div>
                   </form>
               </div>

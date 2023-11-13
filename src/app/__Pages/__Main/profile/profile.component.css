@@ -7,3 +7,18 @@
   cursor: pointer;
   border-color:none!important;
 }
+.inputIconBtn{
+  position: absolute;
+  top: 46%;
+  right: 0;
+}
+.form-group{
+  position:relative;
+}
+.validate{
+  list-style-type: '✓'!important;
+
+}
+/* .validate:before{
+  content: '✓';
+} */

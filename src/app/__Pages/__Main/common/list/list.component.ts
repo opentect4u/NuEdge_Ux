@@ -1,6 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChange, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { pluck } from 'rxjs/operators';
 import { IUser } from 'src/app/__Model/user_dtls.model';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
@@ -29,7 +31,7 @@ export class ListComponent implements OnInit {
   @Output() clickItems:EventEmitter<object> = new EventEmitter();
   @Input() user_dtls:IUser;
   public circleColor: string;
-  constructor(private __utils: UtiliService,private dialog:MatDialog) { }
+  constructor(private __utils: UtiliService,private dialog:MatDialog,private dbIntr:DbIntrService) { }
 
   ngOnInit() {
     // if (this.user_dtls) {
@@ -53,9 +55,14 @@ export class ListComponent implements OnInit {
     this.__utils.navigate('/')
   }
   logout = () =>{
-    localStorage.clear();
-    this.dialog.closeAll();
-    this.__utils.navigate('/');
-
+    this.dbIntr.api_call(1,'/logout',null)
+    .pipe(pluck('suc'))
+    .subscribe(res =>{
+      if(res){
+      localStorage.clear();
+      this.dialog.closeAll();
+      this.route();
+    }
+    })
   }
 }

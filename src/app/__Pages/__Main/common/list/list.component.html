@@ -9,20 +9,10 @@
     </a>
     <div id="myDropdown" class="dropdown-content" #profileDRP *ngIf="items.flag == 'P'">
             <div class="dropdown-header">
-              <!-- <div></div> -->
               <div class="title text-center">
                 <span>{{user_dtls ? user_dtls?.email : ''}}</span>
                 <span>Managed By NuEdge</span>
               </div>
-              <!-- <div class="sub_title">
-                <button mat-icon-button color="primary">
-                  <mat-icon
-                  class="material-icons-outlined">
-                  close
-                </mat-icon>
-                </button>
-              </div> -->
-
             </div>
             <div class="content_body">
               <div class="content_body_avatar text_content text-center">
@@ -39,7 +29,7 @@
                 <div mat-line>Change Password</div>
                 <mat-icon mat-list-icon align="end">lock</mat-icon>
               </mat-list-option>
-              <mat-list-option   color="primary" (click)="logout()" [routerLink]="['/']">
+              <mat-list-option   color="primary" (click)="logout()">
                 <div mat-line>Sign Out</div>
                 <mat-icon mat-list-icon align="end">logout</mat-icon>
               </mat-list-option>
