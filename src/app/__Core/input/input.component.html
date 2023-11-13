@@ -3,9 +3,8 @@
 [required]="__required"
 [readonly]="__readonly"
 [placeholder]="_placeholder"
-[class.is-invalid]="control.touched && control.invalid"
 [formControl]="control" [type]="_type" [id]="_type" />
-<div *ngIf="control.invalid && (control.dirty || control.touched)">
+<div @load  *ngIf="control.invalid && (control.dirty || control.touched)">
 <div class="invalid-feedback" *ngIf="control.errors?.['required']">
   *Please Provide {{_placeholder}}
 </div>
@@ -13,3 +12,4 @@
   *Please Provide Valid Email
 </div>
 </div>
+<!-- [class.is-invalid]="control.touched && control.invalid" -->

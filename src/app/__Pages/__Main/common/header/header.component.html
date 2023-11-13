@@ -6,7 +6,12 @@
             [routerLink]="['/main/']" /></div>
       </div>
       <div class="topRightSec">
-        <core-list (clickItems)="openSidePannel($event)" [__items]="__rightHeaderMenu" [__flag]="'RL'" [__classUL]=""></core-list>
+        <core-list (clickItems)="openSidePannel($event)"
+        [__items]="__rightHeaderMenu"
+        [__flag]="'RL'"
+        [__classUL]=""
+        [user_dtls]="user_dtls"
+        ></core-list>
       </div>
     </div>
   </div>

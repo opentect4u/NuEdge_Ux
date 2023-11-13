@@ -1,10 +1,22 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, Input, Self } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 
 @Component({
   selector: 'core-input',
   templateUrl: './input.component.html',
-  styleUrls: ['./input.component.css']
+  styleUrls: ['./input.component.css'],
+  animations:[ trigger('load', [
+    transition(':enter', [
+        style({ opacity: 0 }),
+        animate(600, style({ opacity: 1 }))
+    ]),
+    transition(':leave', [
+        style({ opacity: 1 }),
+        animate(600, style({ opacity: 0 }))
+    ])
+
+])]
 })
 export class InputComponent {
   @Input() __class:string;

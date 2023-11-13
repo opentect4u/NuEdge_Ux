@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HeaderComponent } from './common/header/header.component';
 import { MenuDropdownDirective } from 'src/app/__Directives/menuDropdown.directive';
 import { ListComponent } from './common/list/list.component';
-import { MatMenuModule } from '@angular/material/menu';
+// import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BreadcrmbsComponent } from './common/brdCrmbs/breadCrmbs.component';
@@ -13,6 +13,9 @@ import { ScrollTopModule } from 'primeng/scrolltop';
 import { SidebarModule } from 'primeng/sidebar';
 import { AuthGuard } from 'src/app/__Gaurd/canActivate/auth.guard';
 // import { SignInGuard } from 'src/app/__Gaurd/canActivate/sign-in.guard';
+/******** Material List Module */
+import {MatListModule} from '@angular/material/list';
+/*********End */
 const routes: Routes = [
   {
     path: '',
@@ -47,6 +50,11 @@ const routes: Routes = [
          data:{id:10,title:"NuEdge - Product", pageTitle:"Product"}
       },
       {
+        path:'profile',
+        loadChildren:() => import('../__Main/profile/profile.module').then(m => m.ProfileModule),
+        data:{id:11,title:'NuEdge - Profile',pageTitle:'NuEdge - Profile',breadcrumb:'Profile'}
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'
@@ -60,11 +68,12 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    MatMenuModule,
+    // MatMenuModule,
     MatButtonModule,
     MatIconModule,
     ScrollTopModule,
-    SidebarModule
+    SidebarModule,
+    MatListModule
   ],
   declarations: [
     MainComponent,

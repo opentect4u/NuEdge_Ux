@@ -1,0 +1,74 @@
+<div class="flexSec row">
+  <div class="col-sm-12">
+
+    <!-- TAB  -->
+    <div class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav-item" *ngFor="let tabs of profileTab" (click)="changeTab(tabs)">
+          <a class="nav-link d-flex justify-content-between" [ngClass]="{'tab_active':active_tab == tabs.flag }">
+          <mat-icon>{{tabs.icon}}</mat-icon>&nbsp;{{tabs.name}}
+        </a>
+        </li>
+      </ul>
+    </div>
+    <!-- END -->
+
+    <!-- TAB CONTAINER -->
+      <div class="container">
+        <ng-container *ngIf="active_tab == 'A'; else manage_password">
+            <p>Manage Account Works</p>
+        </ng-container>
+        <ng-template #manage_password>
+            <h4 class="my-4">Manage Password</h4>
+              <p>
+                Strong password required. Enter 8-256 characters.
+                Combine uppercase letters, lowercase letters, numbers and symbols
+              </p>
+            <div class="row my-2">
+
+              <div class="col-sm-5 col-sm-offset-4">
+                  <form [formGroup]="profile" (ngSubmit)="changePassword()">
+                    <div formGroupName="manage_password">
+                      <div class="form-group">
+                        <label for="old_pass">Old Password <span class="text-danger">*</span></label>
+                        <input type="password"
+                        name="old_pass"
+                        id="old_pass"
+                        class="form-control"
+                        placeholder="Enter Old Passowrd"
+                        formControlName="old_password"
+                        >
+                      </div>
+                      <div class="form-group">
+                        <label for="new_pass">New Password <span class="text-danger">*</span></label>
+                        <input type="password"
+                        name="new_pass"
+                        id="new_pass"
+                        class="form-control"
+                        placeholder="Enter New Passowrd"
+                        formControlName="new_password"
+                        >
+                      </div>
+                      <div class="form-group">
+                        <label for="conf_pass">Confirm Password <span class="text-danger">*</span></label>
+                        <input type="password"
+                        name="conf_pass"
+                        id="conf_pass"
+                        placeholder="Enter Confirm Passowrd"
+                        class="form-control"
+                        formControlName="conf_password"
+                        >
+                      </div>
+                    </div>
+                    <div class="form-group float-right">
+                        <button type="submit" mat-button color="primary">Change Password</button>
+                    </div>
+                  </form>
+              </div>
+            </div>
+        </ng-template>
+      </div>
+    <!-- END -->
+
+  </div>
+</div>

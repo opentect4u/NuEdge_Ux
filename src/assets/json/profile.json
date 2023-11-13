@@ -1,0 +1,17 @@
+[
+  {
+    "id":1,
+    "name":"Manage Account",
+    "isActive":true,
+    "icon":"account_circle",
+    "flag":"A"
+  },
+  {
+    "id":2,
+    "name":"Manage Passowrd",
+    "isActive":false,
+    "icon":"lock",
+    "flag":"P"
+
+  }
+]

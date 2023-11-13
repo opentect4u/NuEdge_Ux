@@ -1,0 +1,9 @@
+.tab_active{
+  border-bottom: 2px solid #10486b;
+  color: #10486b;
+  font-weight: 600;
+}
+.nav-tabs>li>a:hover{
+  cursor: pointer;
+  border-color:none!important;
+}
