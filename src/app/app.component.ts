@@ -1,4 +1,4 @@
-import { Component, HostListener, SimpleChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { UtiliService } from './__Services/utils.service';
@@ -13,7 +13,6 @@ import {
   NavigationError,
   ActivatedRoute
 } from '@angular/router'
-import { Platform } from '@angular/cdk/platform';
 
 /**<== End ==> */
 
@@ -37,7 +36,6 @@ export class AppComponent {
     private __title: Title,
     private __utility: UtiliService,
     private meta:Meta,
-    private platform:Platform
   ) {
     this.setTitle();
     // this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
@@ -49,18 +47,7 @@ export class AppComponent {
 
   }
 
-  // ngOnChanges(changes: SimpleChanges): void{
-  //   console.log(changes);
-  //   this.__utility.screenResoluation(window.screen.height,window.screen.width,
-  //     window.innerHeight,window.innerWidth);
-  // }
-
   ngOnInit() {
-  //   window.addEventListener('devtoolschange', function (e: any) {
-  //     console.log('is DevTools open?', e.detail.open);
-  // });
-
-
     this.__utility.screenResoluation(Number(window.screen.height),Number(window.screen.width),
     Number(window.innerHeight),Number(window.innerWidth));
     this.__router.events.pipe(
@@ -156,14 +143,4 @@ buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrum
    console.log(newBreadcrumbs);
    return newBreadcrumbs;
 }
-
-@HostListener('window:resize', ['$event'])
-  onWindowResize() {
-    /*** CHANGE DETECTION SCREEN HEIGHT AND WIDTH */
-    this.__utility.screenResoluation(window.screen.height,window.screen.width,
-        window.innerHeight,window.innerWidth);
-    /*** END */
-  }
-
-
 }

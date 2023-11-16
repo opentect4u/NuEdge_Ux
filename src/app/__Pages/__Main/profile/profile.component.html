@@ -19,47 +19,48 @@
             <p>Manage Account Works</p>
         </ng-container>
         <ng-template #manage_password>
+          <div class="container">
 
-            <div class="row flexSec my-5">
-              <div class="col-sm-4 d-flex justify-content-center align-items-center flex-row">
-                  <div>
-                    <h4  class="my-4">Manage Password</h4>
-                    <ul>
-                        <li
-                        [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('^(?=.*[A-Z])')}"
-                        ><span
-                          [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('^(?=.*[A-Z])')}"
-                          >At least uppercase letter.</span></li>
-                        <li
-                        [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(?=.*[a-z])')}"
-                        class="my-3"
-                        ><span
-                          [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(?=.*[a-z])')}">At least one lowercase letter.</span></li>
-                        <li
-                        [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(.*[0-9].*)')}"
-                        >
-                          <span
-                          [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(.*[0-9].*)')}">At least one digit.</span></li>
-                        <li
-                        [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(?=.*[!@#$%^&*])')}"
-                        class="my-3"
-                        ><span
-                          [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(?=.*[!@#$%^&*])')}">At least one special character (@#!$%^&*).</span></li>
-                        <li
-                        [ngClass]="{'validate': profile.get(['manage_password','password']).value?.match('.{8,}')}"
-                        >
-                          <span [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('.{8,}')}">
-                          At least 8 characters long.
-                          </span>
 
-                        </li>
-                    </ul>
+            <div class="row flexSec">
+              <div class="col-sm-6">
+                <div class="d-flex align-items-center mt-5">
+                  <div class="icon">
+                    <mat-icon>lock</mat-icon>
                   </div>
+                  <div class="textContent ml-4">
+                    <h4>Manage Passowrd</h4>
+                    <p>Just type it twice and try not to forget it. Password must be and contain : </p>
+                  </div>
+                </div>
+                <div class="password_type">
 
+                  <ul class="text-center">
+                    <li [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('.{8,}')}">
+                      <h4>8+</h4>
+                      <span>Character</span>
+                    </li>
+                    <li  [ngClass]="{'text-success':profile.get(['manage_password','password']).value?.match('^(?=.*[A-Z])')}">
+                      <h4>AA</h4>
+                      <span>Uppercase</span>
+                    </li>
+                    <li [ngClass]="{'text-success':profile.get(['manage_password','password']).value?.match('(?=.*[a-z])')}">
+                      <h4>aa</h4>
+                      <span>Lowercase</span>
+                    </li>
+                    <li  [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(.*[0-9].*)')}">
+                      <h4>123</h4>
+                      <span>Number</span>
+                    </li>
+                    <li [ngClass]="{'text-success':profile.get(['manage_password','password']).value?.match('(?=.*[!@#$%^&*])')}">
+                      <h4>@#!$%^&*</h4>
+                      <span>Symbol</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
-
               <div class="col-sm-5">
-                  <form [formGroup]="profile" (ngSubmit)="changePassword()">
+                  <form [formGroup]="profile" (ngSubmit)="changePassword()" ngNativeValidate>
                     <div formGroupName="manage_password">
                       <div class="form-group">
                         <label for="old_pass">Old Password <span class="text-danger">*</span></label>
@@ -67,10 +68,8 @@
                         name="old_pass"
                         id="old_pass"
                         class="form-control"
-                        placeholder="Enter Old Passowrd"
+                        placeholder="Enter Old Password"
                         formControlName="old_password"
-                        minlength="8"
-                        maxlength="15"
                         >
                         <button type="button" color="primary" class="inputIconBtn" mat-icon-button (click)="isOldVisibility=!isOldVisibility">
                           <mat-icon>{{!isOldVisibility ? 'visibility' : 'visibility_off'}}</mat-icon>
@@ -85,7 +84,7 @@
                         name="new_pass"
                         id="new_pass"
                         class="form-control"
-                        placeholder="Enter New Passowrd"
+                        placeholder="Enter New Password"
                         formControlName="password"
                         minlength="8"
                         maxlength="15"
@@ -96,7 +95,6 @@
                       </div>
                       <div class="invalid-feedback" *ngIf="profile.get(['manage_password','password']).invalid && (profile.get(['manage_password','password']).dirty || profile.get(['manage_password','password']).touched)">
                         <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','password'])).errors?.required">*Please provide new password</span>
-
                         <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','password'])).errors?.pattern">
                          * Password must contain at least one number, one uppercase and a
                           lowercase letter and at least 8 characters. Password cannot
@@ -107,11 +105,9 @@
                         <input [type]="!isconfVisibility ? 'password' : 'text'"
                         name="conf_pass"
                         id="conf_pass"
-                        placeholder="Enter Confirm Passowrd"
+                        placeholder="Enter Confirm Password"
                         class="form-control"
                         formControlName="c_password"
-                        minlength="8"
-                        maxlength="15"
                         >
                         <button type="button" color="primary" class="inputIconBtn" mat-icon-button (click)="isconfVisibility=!isconfVisibility">
                           <mat-icon>{{!isconfVisibility ? 'visibility' : 'visibility_off'}}</mat-icon>
@@ -120,18 +116,61 @@
                        <div class="invalid-feedback" *ngIf="profile.get(['manage_password','c_password']).invalid && (profile.get(['manage_password','c_password']).dirty || profile.get(['manage_password','c_password']).touched)">
                           <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','c_password'])).errors?.required">*Please provide confirm password</span>
                           <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','c_password'])).errors?.pas_match">*Password does not match</span>
-                          <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','c_password'])).errors?.pattern">
+
+                          <!-- <span class="invalid-feedback" *ngIf="(profile.get(['manage_password','c_password'])).errors?.pattern">
                             * Password must contain at least one number, one uppercase and a
                              lowercase letter,one special character and at least 8 characters. Password cannot
-                             contain whitespace</span>
+                             contain whitespace</span> -->
                          </div>
+
+
                     </div>
-                    <div class="form-group float-right my-3">
-                        <button [disabled]="profile.invalid" type="submit" mat-button color="primary">Change Password</button>
+                    <div class="form-group w-100 my-3">
+                        <button class="w-100" [disabled]="profile.invalid" type="submit" mat-button color="primary">
+                        Change
+                        </button>
                     </div>
                   </form>
               </div>
+
+              <!-- <div class="col-sm-4 d-flex justify-content-center align-items-center flex-row">
+                <div>
+                  <h4  class="my-4">Manage Password</h4>
+                  <ul>
+                      <li
+                      [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('^(?=.*[A-Z])')}"
+                      ><span
+                        [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('^(?=.*[A-Z])')}"
+                        >At least uppercase letter.</span></li>
+                      <li
+                      [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(?=.*[a-z])')}"
+                      class="my-3"
+                      ><span
+                        [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(?=.*[a-z])')}">At least one lowercase letter.</span></li>
+                      <li
+                      [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(.*[0-9].*)')}"
+                      >
+                        <span
+                        [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(.*[0-9].*)')}">At least one digit.</span></li>
+                      <li
+                      [ngClass]="{'validate':profile.get(['manage_password','password']).value?.match('(?=.*[!@#$%^&*])')}"
+                      class="my-3"
+                      ><span
+                        [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('(?=.*[!@#$%^&*])')}">At least one special character (@#!$%^&*).</span></li>
+                      <li
+                      [ngClass]="{'validate': profile.get(['manage_password','password']).value?.match('.{8,}')}"
+                      >
+                        <span [ngClass]="{'text-success': profile.get(['manage_password','password']).value?.match('.{8,}')}">
+                        At least 8 characters long.
+                        </span>
+
+                      </li>
+                  </ul>
+                </div>
+
+            </div> -->
             </div>
+          </div>
         </ng-template>
       </div>
     <!-- END -->

@@ -82,4 +82,28 @@
   width: 200px;
   margin: auto;
 }
+/* .content-footer>ul>li{
+} */
+.content-footer>ul>li>a{
+  font-size: 11px!important;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-bottom:5px;
+  list-style-type: circle!important;
+
+}
+.content-footer{
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 100%;
+  transform: translate(-50%, 0);
+}
+:host ::ng-deep .mat-list-base .mat-list-item.mat-list-item-with-avatar, .mat-list-base .mat-list-option.mat-list-item-with-avatar {
+  height: 40px!important;
+}
+:host ::ng-deep .mat-list-base .mat-list-item .mat-list-text>*, .mat-list-base .mat-list-option .mat-list-text>*{
+  font-weight: 500!important;
+  font-size: 12px!important;
+}
 /**END***/

@@ -6,8 +6,18 @@
 <ngx-spinner
   bdColor="rgb(24 23 23 / 49%)"
   size="medium"
-  template='<div class="wrapper"><div class="loader"></div></div>'
+   template='
+   <div class="showbox">
+    <div class="loader">
+      <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+      </svg>
+    </div>
+    <p class="spinnerTxt">Loading...</p>
+  </div>
+   '
   color="#1f4481"
 >
-<p class="spinnerTxt">Loading...</p>
 </ngx-spinner>
+<!-- template='<div class="wrapper"><div class="loader"></div></div>' -->
+

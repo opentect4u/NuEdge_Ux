@@ -2,14 +2,13 @@
 
 
 /* tesy */
-.spinnerTxt{
+/* .spinnerTxt{
   font-weight: 500;
   font-size: 16px;
   color: #ffffff;
-  /* margin: 30px 0px 0px 0px; */
-}
+} */
 
-
+/*
 :host ::ng-deep .wrapper {
   width: 152px;
   height: 152px;
@@ -50,4 +49,97 @@
   100% {
     clip-path: polygon(50% 0%, 50% 50%, 50% 0%, 0% 0%, 0% 100%, 100% 100%, 100% 0%);
   }
+} */
+
+
+:host ::ng-deep .spinnerTxt{
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  position: absolute;
+  left: -4px;
 }
+
+/****google loader */
+:host ::ng-deep .loader {
+  position: relative;
+  /* margin: 0 auto; */
+  width: 60px;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
+
+}
+:host ::ng-deep .loader:before {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+:host ::ng-deep .circular {
+  animation: rotate 2s linear infinite;
+  height: 80%;
+  transform-origin: center center;
+  width: 80%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+:host ::ng-deep .path {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+  stroke-linecap: round;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+
+@keyframes color {
+  100%,
+  0% {
+    stroke: #d62d20;
+  }
+  40% {
+    stroke: #0057e7;
+  }
+  66% {
+    stroke: #008744;
+  }
+  80%,
+  90% {
+    stroke: #ffa700;
+  }
+}
+
+:host ::ng-deep .showbox {
+  position: absolute;
+  top: -31px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5%;
+}
+/**** END*/

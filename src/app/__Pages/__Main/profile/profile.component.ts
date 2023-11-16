@@ -23,21 +23,20 @@ export class ProfileComponent implements OnInit {
   profile = new FormGroup({
       manage_password:new FormGroup({
           old_password:new FormControl('',[Validators.required]),
-          password:new FormControl('',{validators:[
+          password:new FormControl('',{
+            validators:[
             Validators.required,
             Validators.pattern(
               /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{8}/
             )
-          ]
+          ],
+
           }
           ),
           c_password:new FormControl('',
           {
             validators: [
-              Validators.required,
-              Validators.pattern(
-                /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{8}/
-              )
+              Validators.required
             ],
             asyncValidators:this.ConfirmedValidator(),
           }
@@ -54,22 +53,26 @@ export class ProfileComponent implements OnInit {
       this.active_tab = tab.flag;
   }
   changePassword(){
-
     if(this.profile.value.manage_password.old_password === this.profile.value.manage_password.password){
             this.utility.showSnackbar('Old password and new password must not same',2);
             return;
-          }
-
-    this.dbIntr.api_call(1,'/changePassword',this.utility.convertFormData(this.profile.value.manage_password))
-    .pipe(pluck('suc')).subscribe(res =>{
-          this.utility.showSnackbar(res == 1 ? 'Your password has been changed successfully' : 'Something went worng',res);
-          if(res == 1){
-            this.profile.reset({emitEvent:false});
-            this.isOldVisibility = false;
-            this.isnewVisibility = false;
-            this.isconfVisibility  = false;
-          }
-        })
+    }
+    else if(this.profile.value.manage_password.c_password !== this.profile.value.manage_password.password){
+            this.utility.showSnackbar('Please make sure confirm password and new password are same',2);
+            return;
+    }
+    else{
+      // this.dbIntr.api_call(1,'/changePassword',this.utility.convertFormData(this.profile.value.manage_password))
+      // .pipe(pluck('suc')).subscribe(res =>{
+      //       this.utility.showSnackbar(res == 1 ? 'Your password has been changed successfully' : 'Something went worng',res);
+      //       if(res == 1){
+      //         this.profile.reset({emitEvent:false});
+      //         this.isOldVisibility = false;
+      //         this.isnewVisibility = false;
+      //         this.isconfVisibility  = false;
+      //       }
+      //     })
+    }
   }
 
   /*********CONFIRM AND OLD PASSWORD MATCHING VALIDATION***************/
