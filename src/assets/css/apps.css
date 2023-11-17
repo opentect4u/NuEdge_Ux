@@ -747,7 +747,8 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   top: 47px;
   border: 1px solid #d6d6d6;
   /* height: 400px; */
-  height: 342px;
+  /* height: 342px; */
+  height: 360px;
 }
 
 .dropdown-content a {

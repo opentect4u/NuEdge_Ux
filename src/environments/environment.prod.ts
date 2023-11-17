@@ -1,4 +1,5 @@
 const url = "http://nuedge.opentech4u.co.in/nuedge_api/"; // Live Server URL
+// const url = "https://nuedgecorporate.co.in/nuedge_api/"
 export const environment = {
   production: true,
   /****** NuEdge  Start*****/

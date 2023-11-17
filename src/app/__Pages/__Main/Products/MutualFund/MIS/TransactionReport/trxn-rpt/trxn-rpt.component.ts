@@ -31,10 +31,12 @@ import { DOCUMENT } from '@angular/common';
 import { Observable, Subscription, from, of } from 'rxjs';
 import clientType from '../../../../../../../../assets/json/view_type.json';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trxnCountAmtSummary } from './trxnAmtCountSummary';
 
  type TrxnType = {
-   reject:number;
-   process:number;
+   reject:Partial<TrxnRpt[]>;
+   process:Partial<TrxnRpt[]>;
+   total:Partial<TrxnRpt[]>
  }
 
 @Component({
@@ -59,6 +61,10 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 })
 export class TrxnRptComponent implements OnInit {
 
+  trxnAmtCountClm:column[] = trxnCountAmtSummary.columns;
+
+  transaction_amt_count_summary = [];
+
   rows:number = 10;
 
   first:number = 0;
@@ -70,6 +76,10 @@ export class TrxnRptComponent implements OnInit {
   @ViewChild('tableCard') tableCard:ElementRef
   @ViewChild('primeTbl') primeTbl :Table;
   state: string | undefined = 'expanded';
+
+  /** For Showing Total amount footer in datatable  */
+  isTotalFooterShow:boolean = false;
+  /******End */
 
 
     /**
@@ -579,6 +589,7 @@ export class TrxnRptComponent implements OnInit {
    */
   fetchTransaction = () =>{
     this.total = new totalAmt();
+    this.isTotalFooterShow = false;
     this.primeTbl.reset();
     const TrxnDt = new FormData();
     TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
@@ -606,12 +617,15 @@ export class TrxnRptComponent implements OnInit {
       .pipe(
         pluck('data'),
         tap((item:TrxnRpt[]) => {
+          this.calculateProcess_Reject(item);
             let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
-            this.trxn_count = {
-                reject:item ?  item.filter(res => res.transaction_subtype.includes('Rejection')).length : 0,
-               process:item ? item.filter(res => !res.transaction_subtype.includes('Rejection')).length : 0
-           };
-            item.map( item => {
+          this.trxn_count = {
+            reject:item.filter(res => res.transaction_subtype.includes('Rejection')),
+             process:item.filter(res => !res.transaction_subtype.includes('Rejection')),
+             total: item
+            };
+
+           item.map( item => {
               net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
               gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
               tds+=Number(item.tot_tds ? item.tot_tds : 0);
@@ -626,6 +640,7 @@ export class TrxnRptComponent implements OnInit {
         })
         )
       .subscribe((res: TrxnRpt[]) => {
+       this.isTotalFooterShow = (this.misTrxnRpt.value.folio_no != '' || this.misTrxnRpt.value.pan_no != '') ? true : false;
         if(this.subscribe){
           this.subscribe.unsubscribe();
         }
@@ -640,6 +655,25 @@ export class TrxnRptComponent implements OnInit {
           this.streamTrxn(res);
         });
       });
+  }
+
+  async calculateProcess_Reject(res:TrxnRpt[]){
+    /*** Group by Category */
+    const groupByCategory = await res.reduce((group, trxn) => {
+      const { cat_name } = trxn; /*** Destructure `cat_name` from trxn */
+      group[cat_name] = group[cat_name] ?? [];
+      console.log( group[cat_name] );
+      group[cat_name].push(trxn); /****** push the array in the particular `key` index*/
+      return group;
+    }, {});
+    /****** END */
+   Object.keys(groupByCategory).forEach((key:string,index:number) => {
+      let dt = {};
+      this.transaction_amt_count_summary.push({
+        cat_name: key, ...new trxnCountSummary(groupByCategory[key])
+      })
+    });
+    console.log(this.transaction_amt_count_summary);
   }
 
 
@@ -1011,23 +1045,129 @@ export class TrxnRptComponent implements OnInit {
   toggle() {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
+}
 
-  // calculatTotalAmt = (trxn:TrxnRpt[]):Promise<totalAmt> =>{
-  //   let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
-  //   return new Promise((resolve,reject) =>{
-  //     trxn.map( item => {
-  //       net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
-  //       gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
-  //       tds+=Number(item.tot_tds ? item.tot_tds : 0);
-  //       stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
-  //     });
-  //     resolve({ net_amt:net_amt,
-  //       stamp_duity:stamp_duity,
-  //       tds:tds,
-  //       gross_amt:gross_amt});
 
-  //     reject(new totalAmt());
-  //   })
+export class trxnCountSummary{
+  public cat_name:string;
+  public pur_amt:ItrxnType;
+  public pur_count: ItrxnType;
+  public redemp_amt:ItrxnType;
+  public redemp_count:ItrxnType;
+  public switch_in_amt:ItrxnType;
+  public switch_in_count: ItrxnType;
+  public switch_out_amt:ItrxnType;
+  public switch_out_count:ItrxnType;
+  public sip_amt:ItrxnType;
+  public sip_count:ItrxnType;
+  public stp_in_amt:ItrxnType;
+  public stp_in_count:ItrxnType;
+  public stp_out_amt:ItrxnType;
+  public stp_out_count:ItrxnType;
+  public swp_amt:ItrxnType;
+  public swp_count:ItrxnType;
+  public switch_out_merger_amt:ItrxnType;
+  public switch_out_merger_count:ItrxnType;
+  public switch_in_merger_amt:ItrxnType;
+  public switch_in_merger_count:ItrxnType;
+  public nfo_amt:ItrxnType;
+  public nfo_count:ItrxnType;
+  public divi_payout_amt:ItrxnType;
+  public divi_payout_count:ItrxnType;
+  public divi_reinv_amt:ItrxnType;
+  public divi_reinv_count:ItrxnType;
+  public other_amt:ItrxnType;
+  public other_count:ItrxnType;
 
-  // }
+  constructor(trxn:TrxnRpt[]){
+      // console.log(trxn);
+
+      /*** `PURCHASE & PURCHASE REJECTION` */
+      this.pur_count = {
+        process: trxn.filter((item: TrxnRpt) =>
+        (
+          [`fresh`,`additional`,`additional purchase`]
+          .indexOf(item.transaction_subtype.toLowerCase()) >=0 &&
+          [`fresh rejection`,`additional rejection`,`additional purchase rejection`]
+          .indexOf(item.transaction_subtype.toLowerCase()) == -1)).length,
+        reject: trxn.filter((item: TrxnRpt) =>
+        (
+          [`fresh rejection`,`additional rejection`,`additional purchase rejection`]
+          .indexOf(item.transaction_subtype.toLowerCase()) >=0 &&
+          [`fresh`,`additional`,`additional purchase`]
+          .indexOf(item.transaction_subtype.toLowerCase()) == -1)).length
+    };
+      // this.pur_count = {
+      //     process: trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('purchase') && !item.transaction_subtype.toLowerCase().includes('purchase rejection'))).length,
+      //     reject: trxn.filter((item: TrxnRpt) => (!item.transaction_subtype.toLowerCase().includes('purchase') && item.transaction_subtype.toLowerCase().includes('purchase rejection'))).length
+      // };
+      this.pur_amt = {
+        process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
+          [`fresh`,`additional`,`additional purchase`]
+          .indexOf(item.transaction_subtype.toLowerCase()) >=0 &&
+          [`fresh rejection`,`additional rejection`,`additional purchase rejection`]
+          .indexOf(item.transaction_subtype.toLowerCase()) == -1))),
+        reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
+          [`fresh rejection`,`additional rejection`,`additional purchase rejection`]
+          .indexOf(item.transaction_subtype.toLowerCase()) >=0 &&
+          [`fresh`,`additional`,`additional purchase`]
+          .indexOf(item.transaction_subtype.toLowerCase()) == -1
+          )))
+      };
+      /****** END */
+
+      /***** `SWITCH IN & SWITCH IN REJECTION` */
+      this.switch_in_count = {
+          process: trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('switch in') && !item.transaction_subtype.toLowerCase().includes('switch in rejection'))).length,
+          reject: trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('switch in') && item.transaction_subtype.toLowerCase().includes('switch in rejection'))).length
+      };
+      this.switch_in_amt = {
+        process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('switch in') && !item.transaction_subtype.toLowerCase().includes('switch in rejection')))),
+        reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('switch in') && item.transaction_subtype.toLowerCase().includes('switch in rejection'))))
+      };
+      /********END */
+      /**** Redemption & Redemption Rejection */
+      this.redemp_count = {
+        process: trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('redemption') && !item.transaction_subtype.toLowerCase().includes('redemption rejection'))).length,
+        reject: trxn.filter((item: TrxnRpt) => (!item.transaction_subtype.toLowerCase().includes('redemption') && item.transaction_subtype.toLowerCase().includes('redemption rejection'))).length
+      };
+      this.redemp_amt = {
+        process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('redemption') && !item.transaction_subtype.toLowerCase().includes('redemption rejection')))),
+        reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (!item.transaction_subtype.toLowerCase().includes('redemption') && item.transaction_subtype.toLowerCase().includes('redemption rejection'))))
+      };
+      /***** End */
+
+      /***** Switch Out & Switch Out Rejection */
+      this.switch_out_count = {
+        process: trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('switch out') && !item.transaction_subtype.toLowerCase().includes('switch out rejection'))).length,
+        reject: trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('switch out') && item.transaction_subtype.toLowerCase().includes('switch out rejection'))).length
+      };
+      this.switch_out_amt = {
+        process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('switch out') && !item.transaction_subtype.toLowerCase().includes('switch out rejection')))),
+        reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('switch out') && item.transaction_subtype.toLowerCase().includes('switch out rejection'))))
+      };
+     /**** End */
+
+      /***** Divident Reinvestmnt , Divident Reinvestmnt  Rejection */
+    this.divi_reinv_count = {
+      process: trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('dividend reinvestment') && !item.transaction_subtype.toLowerCase().includes('dividend reinvestment rejection'))).length,
+      reject: trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('dividend reinvestment') && item.transaction_subtype.toLowerCase().includes('dividend reinvestment rejection'))).length
+    };
+    this.divi_reinv_amt = {
+      process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('dividend reinvestment') && !item.transaction_subtype.toLowerCase().includes('dividend reinvestment rejection')))),
+      reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (item.transaction_subtype.toLowerCase().includes('dividend reinvestment') && item.transaction_subtype.toLowerCase().includes('dividend reinvestment rejection'))))
+    }
+    /**** End */
+
+  }
+
+  calculateAmount(trxn:TrxnRpt[]){
+    return trxn.map((item) => Number(item.tot_gross_amount)).reduce((accumulator, currentValue) => {
+      return accumulator + currentValue
+    },0);
+  }
+}
+export interface ItrxnType{
+  process:number;
+  reject:number
 }

@@ -10,6 +10,8 @@ declare  global{
 interface TrxnRpt{
      id:number
      bu_type:string | null
+     cat_name:string | null;
+     subcat_name:string | null;
      branch:string | null
      rm_name:string | null
       arn_no:string | null
@@ -64,3 +66,5 @@ interface TrxnRpt{
  * Function for getting Transaction Report data  from backend API
  */
 export function  getTrxnRptMst():void;
+
+

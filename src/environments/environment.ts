@@ -1,13 +1,14 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-const url = "http://192.168.1.11/nuedge/"; // Local URL
+// const url = "http://192.168.1.11/nuedge/"; // Local URL
 // const url = "http://192.168.1.4/nuedge/"; // Local URL
 // const url = "http://192.168.0.100/nuedge/";
 // const url = "http://192.168.1.5/nuedge/";
 // const url = "https://opentech4u.co.in/nuedge_api/"; //Server URL
 // const url = "http://localhost/nuedge/"; //Own Machine
 //  const url = "http://nuedge.opentech4u.co.in/nuedge_api/"; // Live Server URL
+const url = "https://nuedgecorporate.co.in/nuedge_api/";
 
 export const environment = {
   production: false,

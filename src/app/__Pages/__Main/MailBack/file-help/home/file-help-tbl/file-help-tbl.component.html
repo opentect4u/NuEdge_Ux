@@ -126,6 +126,11 @@
           [style.min-width]="col.width"
           >
             <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+               <p class="m-0">
+                {{index + 1}}
+               </p>
+              </ng-container>
               <ng-container *ngSwitchCase="col.field == 'edit'">
                 <p-button icon="pi pi-pencil" (click)="populateTrxnTypeinForm(file)"
                   styleClass="p-button-rounded p-button-primary"></p-button>

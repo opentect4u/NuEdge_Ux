@@ -1,5 +1,6 @@
 export class trxnTypeClmns{
         public static columns =[
+                          {field:'sl_no',header:'Sl No',isVisible:[1,2]},
                           {field:'edit',header:'Edit',isVisible:[1,2]},
                           {field:'rnt_name',header:'R&T',isVisible:[1,2]},
                           {field:'trans_type',header:'Trxn Type',isVisible:[1,2]},
@@ -13,6 +14,7 @@ export class trxnTypeClmns{
 
 export class systamaticTransClmns{
   public static columns =[
+    {field:'sl_no',header:'Sl No',isVisible:[1,2]},
     {field:'edit',header:'Edit',isVisible:[1,2]},
     {field:'rnt_name',header:'R&T',isVisible:[1,2]},
     {field:'trans_type',header:'Trxn Type',isVisible:[1,2]},
@@ -23,6 +25,7 @@ export class systamaticTransClmns{
 
 export class systamaticFreqClmns{
   public static columns =[
+    {field:'sl_no',header:'Sl No',isVisible:[1,2]},
     {field:'edit',header:'Edit',isVisible:[1,2]},
     {field:'rnt_name',header:'R&T',isVisible:[1,2]},
     {field:'freq_name',header:'Frequency',isVisible:[1,2]},
@@ -33,6 +36,7 @@ export class systamaticFreqClmns{
 
 export class systamaticUnregisteredRemarksClmns{
   public static columns =[
+    {field:'sl_no',header:'Sl No',isVisible:[1,2]},
     {field:'edit',header:'Edit',isVisible:[1,2],width:'15rem'},
     {field:'rnt_name',header:'R&T',isVisible:[1,2],width:'25rem'},
     {field:'remarks',header:'Remarks',isVisible:[1,2],width:''}
@@ -41,6 +45,7 @@ export class systamaticUnregisteredRemarksClmns{
 
 export class FolioTaxStatus{
   public static columns = [
+    {field:'sl_no',header:'Sl No',isVisible:[1,2]},
     {field:'edit',header:'Edit',isVisible:[1,2],width:'15rem'},
     {field:'rnt_name',header:'R&T',isVisible:[1,2],width:'25rem'},
     {field:'status',header:'Status',isVisible:[1,2],width:''},

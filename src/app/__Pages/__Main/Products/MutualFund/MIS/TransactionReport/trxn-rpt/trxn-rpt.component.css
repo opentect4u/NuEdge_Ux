@@ -47,3 +47,25 @@
 
 
 
+.trxnRptCount{
+  width:220px;
+}
+
+::ng-deep .mat-menu-item{
+  display: flex!important;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+}
+
+.summaryCnt{
+  flex-direction: column!important;
+}
+
+.summaryCnt>hr{
+  border-top: 1px solid #d7d7d7!important;
+  height: 0px!important;
+  width: 100%!important;
+  margin: 4px 0px!important;
+
+}
