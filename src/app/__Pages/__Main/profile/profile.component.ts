@@ -62,16 +62,16 @@ export class ProfileComponent implements OnInit {
             return;
     }
     else{
-      // this.dbIntr.api_call(1,'/changePassword',this.utility.convertFormData(this.profile.value.manage_password))
-      // .pipe(pluck('suc')).subscribe(res =>{
-      //       this.utility.showSnackbar(res == 1 ? 'Your password has been changed successfully' : 'Something went worng',res);
-      //       if(res == 1){
-      //         this.profile.reset({emitEvent:false});
-      //         this.isOldVisibility = false;
-      //         this.isnewVisibility = false;
-      //         this.isconfVisibility  = false;
-      //       }
-      //     })
+      this.dbIntr.api_call(1,'/changePassword',this.utility.convertFormData(this.profile.value.manage_password))
+      .pipe(pluck('suc')).subscribe(res =>{
+            this.utility.showSnackbar(res == 1 ? 'Your password has been changed successfully' : 'Something went worng',res);
+            if(res == 1){
+              this.profile.reset({emitEvent:false});
+              this.isOldVisibility = false;
+              this.isnewVisibility = false;
+              this.isconfVisibility  = false;
+            }
+          })
     }
   }
 

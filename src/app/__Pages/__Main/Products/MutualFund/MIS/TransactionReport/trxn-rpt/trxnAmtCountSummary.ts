@@ -283,19 +283,27 @@ export class trxnCountSummary{
      /****** NFT, REJECTION */
           this.other_count = {
             process: trxn.filter((item: TrxnRpt) => (
-              NFT.indexOf(item.transaction_subtype) == -1
-              )).length,
+              NFT.indexOf(item.transaction_subtype) >= 0
+              )).length > 0 ? 0 :trxn.filter((item: TrxnRpt) => (
+                (NFT.indexOf(item.transaction_subtype) == -1 && !item.transaction_subtype.includes('Rejection'))
+                )).length,
             reject: trxn.filter((item: TrxnRpt) => (
-              SIP_REJ.indexOf(item.transaction_subtype) == -1
-              )).length
+              (NFT.indexOf(item.transaction_subtype) >= 0)
+              )).length > 0 ? 0 : trxn.filter((item: TrxnRpt) => (
+                (NFT.indexOf(item.transaction_subtype) == -1 && item.transaction_subtype.includes('Rejection'))
+                )).length
           };
           this.other_amt = {
-            process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-              NFT.indexOf(item.transaction_subtype) == -1
-              ))),
-            reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-              SIP_REJ.indexOf(item.transaction_subtype) == -1
-              )))
+            process:  trxn.filter((item: TrxnRpt) => (
+              NFT.indexOf(item.transaction_subtype) >= 0
+              )).length > 0 ? 0 :this.calculateAmount(trxn.filter((item: TrxnRpt) => (
+                (NFT.indexOf(item.transaction_subtype) == -1 && !item.transaction_subtype.includes('Rejection'))
+                ))),
+            reject: trxn.filter((item: TrxnRpt) => (
+                (NFT.indexOf(item.transaction_subtype) >= 0)
+                )).length > 0 ? 0 : this.calculateAmount(trxn.filter((item: TrxnRpt) => (
+                  (NFT.indexOf(item.transaction_subtype) == -1 && item.transaction_subtype.includes('Rejection'))
+                  )))
           }
 
      /**** END */
@@ -325,7 +333,12 @@ export class trxnCountAmtSummaryColumn{
       {
         field:'cat_name',
         header: 'Category',
-        width:"6rem"
+        width:"12rem"
+      },
+      {
+        field:'trxn_type',
+        header: 'Trxn Type',
+        width:"10rem"
       },
       {
         field:'pur_amt',
