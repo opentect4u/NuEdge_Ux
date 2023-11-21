@@ -9,6 +9,7 @@ declare  global{
 
 interface TrxnRpt{
      id:number
+     rnt_id:number;
      bu_type:string | null
      cat_name:string | null;
      subcat_name:string | null;

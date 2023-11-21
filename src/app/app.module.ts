@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { NetworkInterceptor } from './__Interceptors/network.interceptor';
 import { SnkbarModule } from './__Core/snkbar/snkbar.module';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
 /*<====== End =========>*/
 /**<== Mat Progress Bar Module ==>*/
 import {MatProgressBarModule} from '@angular/material/progress-bar';
@@ -31,7 +31,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: NetworkInterceptor, multi: true },
-    {provide:LocationStrategy, useClass:HashLocationStrategy},
+    // {provide:LocationStrategy, useClass:HashLocationStrategy},
+    {provide:LocationStrategy, useClass:PathLocationStrategy},
+
   ],
   bootstrap: [AppComponent]
 })

@@ -975,7 +975,7 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   font-size: 15px;
   color: #444444;
   display: block;
-  background: url("../images/arrow.png") no-repeat 96% center;
+  /* background: url("../images/arrow.png") no-repeat 96% center; */
 }
 
 .boxMid .bodyPart ul li:nth-child(odd) {

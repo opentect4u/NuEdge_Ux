@@ -619,48 +619,78 @@ export class TrxnRptComponent implements OnInit {
       .api_call(1, '/showTransDetails', TrxnDt)
       .pipe(
         pluck('data'),
-        tap((item:TrxnRpt[]) => {
-            let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
-          this.trxn_count = {
-            reject:item.filter(res => res.transaction_subtype.includes('Rejection')),
-             process:item.filter(res => !res.transaction_subtype.includes('Rejection')),
-             total: item
-            };
+        // tap((item:TrxnRpt[]) => {
+        //     let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
+        //   this.trxn_count = {
+        //     reject:item.filter(res => res.transaction_subtype.includes('Rejection')),
+        //      process:item.filter(res => !res.transaction_subtype.includes('Rejection')),
+        //      total: item
+        //     };
 
-           item.map( item => {
-              net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
-              gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
-              tds+=Number(item.tot_tds ? item.tot_tds : 0);
-              stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
-              this.total = {
-                      net_amt:net_amt,
-                      stamp_duity:stamp_duity,
-                      tds:tds,
-                      gross_amt:gross_amt
-                };
-            });
-        })
+        //     item.map( item => {
+
+        //       item.tot_amount = (item.rnt_id == 2
+        //         && item.transaction_subtype.toLowerCase().includes('rejection'))
+        //         ? (item.tot_amount ?
+        //           (Number(item.tot_amount) * ((Number(item.tot_amount) > 0) ? -1 : 1)).toString()
+        //           : '0') :  item.tot_amount;
+
+        //       item.tot_gross_amount = (item.rnt_id == 2
+        //             && item.transaction_subtype.toLowerCase().includes('rejection'))
+        //             ? (item.tot_gross_amount ?
+        //               (Number(item.tot_gross_amount) * ((Number(item.tot_gross_amount) > 0) ? -1 : 1)).toString()
+        //               : '0') :  item.tot_gross_amount;
+
+        //       item.tot_tds = (item.rnt_id == 2
+        //         && item.transaction_subtype.toLowerCase().includes('rejection'))
+        //         ? (item.tot_tds ?
+        //           (Number(item.tot_tds) * ((Number(item.tot_tds) > 0) ? -1 : 1)).toString()
+        //           : '0') :  item.tot_tds;
+        //      item.tot_stamp_duty = (item.rnt_id == 2
+        //             && item.transaction_subtype.toLowerCase().includes('rejection'))
+        //             ? (item.tot_stamp_duty ?
+        //               (Number(item.tot_stamp_duty) * ((Number(item.tot_stamp_duty) > 0) ? -1 : 1)).toString()
+        //               : '0') :  item.tot_stamp_duty;
+
+        //         net_amt+= Number(item.tot_amount ? item.tot_amount : 0);
+        //         gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
+        //         tds+=Number(item.tot_tds ? item.tot_tds : 0);
+        //         stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
+        //         this.total = {
+        //                 net_amt:net_amt,
+        //                 stamp_duity:stamp_duity,
+        //                 tds:tds,
+        //                 gross_amt:gross_amt
+        //           };
+
+        //         return item;
+        //     });
+
+        //   //  item.map( item => {
+        //   //     net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
+        //   //     gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
+        //   //     tds+=Number(item.tot_tds ? item.tot_tds : 0);
+        //   //     stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
+        //   //     this.total = {
+        //   //             net_amt:net_amt,
+        //   //             stamp_duity:stamp_duity,
+        //   //             tds:tds,
+        //   //             gross_amt:gross_amt
+        //   //       };
+        //   //   });
+        // })
         )
       .subscribe((res: TrxnRpt[]) => {
         if(res.length > 0){
         this.calculateProcess_Reject(res);
       }
-        // console.log(res);
-
        this.isTotalFooterShow = (this.misTrxnRpt.value.folio_no != '' || this.misTrxnRpt.value.pan_no != '') ? true : false;
-        if(this.subscribe){
-          this.subscribe.unsubscribe();
-        }
         if(res.length == 0){
           this.utility.showSnackbar('No transactions are available on this periods',2,true);
           return;
         }
       this.state = 'collapsed';
-       this.subscribe = from(res).pipe(
-        delay(2),
-       ).subscribe(res =>{
-          this.streamTrxn(res);
-        });
+      this.trxnRpt = res;
       });
   }
 
@@ -681,12 +711,6 @@ export class TrxnRptComponent implements OnInit {
       })
     });
     // console.log(this.transaction_amt_count_summary);
-  }
-
-
-  streamTrxn(trxnRow:TrxnRpt){
-    console.log(trxnRow);
-   this.trxnRpt.push(trxnRow);
   }
 
   /**

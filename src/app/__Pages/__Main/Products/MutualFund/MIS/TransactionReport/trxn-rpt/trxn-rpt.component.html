@@ -381,12 +381,20 @@
         </div>
       </mat-card-header>
       <mat-card-content>
+        <!-- responsiveLayout="scroll" -->
+
         <p-table #primeTbl id="trxDt" [value]="trxnRpt" [responsive]="true" [rowHover]="true"
-          styleClass="p-datatable-striped p-datatable-lg" responsiveLayout="scroll" [scrollable]="true"
-          [columns]="column" [paginator]="true" [autoLayout]="true" [totalRecords]="trxnRpt.length" [pageLinks]="3"
+          styleClass="p-datatable-striped p-datatable-lg"
+          [scrollable]="true"
+           [scrollHeight]="'370px'"
+          [virtualScroll]="true"
+          [virtualRowHeight]="34"
+          [columns]="column" [paginator]="true"
+          [autoLayout]="true" [totalRecords]="trxnRpt.length" [pageLinks]="3"
           [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
-          [showCurrentPageReport]="true" [globalFilterFields]="getColumns()" [tableStyle]="{ 'min-width': '374rem' }">
+          [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
+          [tableStyle]="{ 'min-width': '374rem' }">
           <ng-template pTemplate="header">
             <tr>
               <th *ngFor="let col of column" [pSortableColumn]="col.field" [style.max-width]="col.width"
@@ -399,7 +407,9 @@
           </ng-template>
           <ng-template pTemplate="body" let-trxn let-i="rowIndex">
             <tr tabindex="999"
-              [ngStyle]="{'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
+              [ngStyle]="{
+                'height':'34px',
+                'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
               <td *ngFor="let col of column" [style.max-width]="col.width"
                 [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
                 <ng-container [ngSwitch]="true">
@@ -455,7 +465,8 @@
               </td>
             </tr>
           </ng-template>
-          <ng-template pTemplate="footer">
+
+          <!-- <ng-template pTemplate="footer">
             <tr *ngIf="isTotalFooterShow">
               <td *ngFor="let col of column"
                 [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
@@ -479,7 +490,7 @@
                 </ng-container>
               </td>
             </tr>
-          </ng-template>
+          </ng-template> -->
         </p-table>
       </mat-card-content>
     </mat-card>

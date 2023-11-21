@@ -72,3 +72,14 @@
   margin: 4px 0px!important;
 
 }
+
+.example-viewport {
+  height: 500px;
+  /* width: 200px; */
+  /* border: 1px solid black; */
+}
+
+
+.p-datatable-wrapper >  .cdk-virtual-scroll-viewport{
+  overflow-anchor: none;
+}
