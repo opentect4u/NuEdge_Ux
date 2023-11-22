@@ -37,8 +37,9 @@
     <p-table
     #primeTbl
     id="trxDt"
-    [scrollable]="true" scrollHeight="450px"
+    [scrollable]="true" scrollHeight="370px"
     [virtualScroll]="true"
+    [virtualRowHeight]="33"
     [value]="live_sip_rpt"
     [responsive]="true"
     [rowHover]="true"
@@ -69,7 +70,9 @@
           </tr>
       </ng-template>
       <ng-template pTemplate="body" let-trxn let-columns="columns"  let-i="rowIndex">
-        <tr tabindex="999">
+        <tr tabindex="999"
+        [ngStyle]="{'height':'33px'}"
+        >
           <td *ngFor="let col of column"
            [style.max-width]="col.width"
           [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
@@ -90,7 +93,12 @@
             <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field].toString() | titlecase) : 'N/A' }}</p>
             </ng-container>
             <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-              <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' ') ? trxn[col.field] : 'N/A' }}</p>
+              <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided"
+              && trxn[col.field]!="BLANK" && trxn[col.field]!='0'
+              && trxn[col.field]!= ' '
+              && (trxn[col.field] | titlecase)!="Not Provid"
+              && (trxn[col.field] | titlecase)!="Notprovided"
+              ) ? trxn[col.field] : 'N/A' }}</p>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'first_client_name' || col.field == 'bank_name'">
                 <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>

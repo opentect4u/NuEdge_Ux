@@ -9,6 +9,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { DOCUMENT } from '@angular/common';
 import { Table } from 'primeng/table';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { responseDT } from 'src/app/__Model/__responseDT';
 @Component({
   selector: 'app-upload-help',
   templateUrl: './upload-help.component.html',
@@ -161,14 +162,35 @@ export class UploadHelpComponent implements OnInit {
 
   /*** Save the form and send this data to the backend */
   savefileUploadHelp = () => {
-    let searchRes = Object.assign({},this.file_upload_help_form.value,{
+    let formData = Object.assign({},this.file_upload_help_form.value,{
       ...this.file_upload_help_form.value,
       id:this.file_upload_help_form.value.id ? this.file_upload_help_form.value.id : 0
     })
-    console.log(searchRes);
+    // console.log(searchRes);
+    this.dbIntr.api_call(1,'/file_upload_help',this.utility.convertFormData(formData))
+    .subscribe((res:responseDT) =>{
+      console.log(res);
+      if(formData.id){
+          this.modifyMasterData(res.data,formData.id);
+      }
 
+    })
   };
   /**** END */
+
+  modifyMasterData(res,id:number){
+            if(id > 0){
+              this.upload_file_help_mst_dt.unshift(res);
+            }
+            else{
+              this.upload_file_help_mst_dt = this.upload_file_help_mst_dt.filter((item,index) =>{
+                          if(item.id == res.id){
+                              item = res;
+                          }
+                          return item;
+              })
+            }
+  }
 
   /*** Get Field from column for filter to be worked properly */
   getColumns = ():string[] =>{

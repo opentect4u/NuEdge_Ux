@@ -421,7 +421,10 @@
 
                   <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
                     <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" &&
-                      trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' ') ? trxn[col.field] :
+                      trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
+                      && (trxn[col.field] | titlecase)!="Not Provid"
+                      && (trxn[col.field] | titlecase)!="Notprovided"
+                      ) ? trxn[col.field] :
                       'N/A' }}</p>
                   </ng-container>
 
@@ -465,6 +468,13 @@
               </td>
             </tr>
           </ng-template>
+          <ng-template pTemplate="loadingbody" let-columns="columns">
+            <tr style="height:34px">
+                <td *ngFor="let col of columns; let even = even">
+                    <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
+                </td>
+            </tr>
+        </ng-template>
 
           <!-- <ng-template pTemplate="footer">
             <tr *ngIf="isTotalFooterShow">

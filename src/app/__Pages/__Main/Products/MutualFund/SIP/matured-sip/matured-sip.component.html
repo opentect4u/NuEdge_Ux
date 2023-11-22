@@ -38,14 +38,14 @@
         <mat-card-content>
           <p-table #primeTbl
                    id="trxDt"
-                   [scrollable]="true" scrollHeight="450px"
+                   [scrollable]="true" scrollHeight="370px"
                    [virtualScroll]="true"
+                   [virtualRowHeight]="34"
                    [value]="mature_sip"
                    [responsive]="true"
                    [rowHover]="true"
                    styleClass="p-datatable-striped"
                    [autoLayout]="true"
-                   appendTo="body"
                    [columns]="column"
                    [paginator]="true"
                    [totalRecords]="mature_sip.length"
@@ -67,7 +67,9 @@
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-trxn let-columns="columns" let-i="rowIndex">
-              <tr tabindex="999">
+              <tr tabindex="999"
+               [ngStyle]="{'height':'34px'}"
+              >
                 <td *ngFor="let col of column"
                     [style.max-width]="col.width"
                     [style.min-width]="col.width">
@@ -90,7 +92,12 @@
                       <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field].toString() | titlecase) : 'N/A' }}</p>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-                        <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' ') ? trxn[col.field] : 'N/A' }}</p>
+                        <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided"
+                        && trxn[col.field]!="BLANK" && trxn[col.field]!='0'
+                        && trxn[col.field]!= ' '
+                        && (trxn[col.field] | titlecase)!="Not Provid"
+                        && (trxn[col.field] | titlecase)!="Notprovided"
+                        ) ? trxn[col.field] : 'N/A' }}</p>
                         </ng-container>
                         <ng-container *ngSwitchCase="col.field == 'first_client_name' || col.field == 'bank_name'">
                           <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
@@ -110,13 +117,13 @@
                 </td>
               </tr>
             </ng-template>
-            <ng-template pTemplate="emptymessage" let-columns>
-              <tr>
-                <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
-                  No Records Found
-                </td>
+            <ng-template pTemplate="loadingbody" let-columns="columns">
+              <tr style="height:34px">
+                  <td *ngFor="let col of columns; let even = even">
+                      <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
+                  </td>
               </tr>
-            </ng-template>
+          </ng-template>
           </p-table>
         </mat-card-content>
       </mat-card>

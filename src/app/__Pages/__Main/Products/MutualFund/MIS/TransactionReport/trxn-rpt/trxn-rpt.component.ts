@@ -397,7 +397,47 @@ export class TrxnRptComponent implements OnInit {
       });
   };
 
+  changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+}
+
   ngAfterViewInit() {
+
+      const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+      this.changeWheelSpeed(el, 0.99);
+
+
     // this.hideCard('none');
     // this.primeTbl.tableHeaderViewChild.nativeElement.style.position = 'sticky!important';
 
@@ -619,66 +659,66 @@ export class TrxnRptComponent implements OnInit {
       .api_call(1, '/showTransDetails', TrxnDt)
       .pipe(
         pluck('data'),
-        // tap((item:TrxnRpt[]) => {
-        //     let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
-        //   this.trxn_count = {
-        //     reject:item.filter(res => res.transaction_subtype.includes('Rejection')),
-        //      process:item.filter(res => !res.transaction_subtype.includes('Rejection')),
-        //      total: item
-        //     };
+        tap((item:TrxnRpt[]) => {
+            let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
+          this.trxn_count = {
+            reject:item.filter(res => res.transaction_subtype.includes('Rejection')),
+             process:item.filter(res => !res.transaction_subtype.includes('Rejection')),
+             total: item
+            };
 
-        //     item.map( item => {
+            // item.map( item => {
 
-        //       item.tot_amount = (item.rnt_id == 2
-        //         && item.transaction_subtype.toLowerCase().includes('rejection'))
-        //         ? (item.tot_amount ?
-        //           (Number(item.tot_amount) * ((Number(item.tot_amount) > 0) ? -1 : 1)).toString()
-        //           : '0') :  item.tot_amount;
+            //   item.tot_amount = (item.rnt_id == 2
+            //     && item.transaction_subtype.toLowerCase().includes('rejection'))
+            //     ? (item.tot_amount ?
+            //       (Number(item.tot_amount) * ((Number(item.tot_amount) > 0) ? -1 : 1)).toString()
+            //       : '0') :  item.tot_amount;
 
-        //       item.tot_gross_amount = (item.rnt_id == 2
-        //             && item.transaction_subtype.toLowerCase().includes('rejection'))
-        //             ? (item.tot_gross_amount ?
-        //               (Number(item.tot_gross_amount) * ((Number(item.tot_gross_amount) > 0) ? -1 : 1)).toString()
-        //               : '0') :  item.tot_gross_amount;
+            //   item.tot_gross_amount = (item.rnt_id == 2
+            //         && item.transaction_subtype.toLowerCase().includes('rejection'))
+            //         ? (item.tot_gross_amount ?
+            //           (Number(item.tot_gross_amount) * ((Number(item.tot_gross_amount) > 0) ? -1 : 1)).toString()
+            //           : '0') :  item.tot_gross_amount;
 
-        //       item.tot_tds = (item.rnt_id == 2
-        //         && item.transaction_subtype.toLowerCase().includes('rejection'))
-        //         ? (item.tot_tds ?
-        //           (Number(item.tot_tds) * ((Number(item.tot_tds) > 0) ? -1 : 1)).toString()
-        //           : '0') :  item.tot_tds;
-        //      item.tot_stamp_duty = (item.rnt_id == 2
-        //             && item.transaction_subtype.toLowerCase().includes('rejection'))
-        //             ? (item.tot_stamp_duty ?
-        //               (Number(item.tot_stamp_duty) * ((Number(item.tot_stamp_duty) > 0) ? -1 : 1)).toString()
-        //               : '0') :  item.tot_stamp_duty;
+            //   item.tot_tds = (item.rnt_id == 2
+            //     && item.transaction_subtype.toLowerCase().includes('rejection'))
+            //     ? (item.tot_tds ?
+            //       (Number(item.tot_tds) * ((Number(item.tot_tds) > 0) ? -1 : 1)).toString()
+            //       : '0') :  item.tot_tds;
+            //  item.tot_stamp_duty = (item.rnt_id == 2
+            //         && item.transaction_subtype.toLowerCase().includes('rejection'))
+            //         ? (item.tot_stamp_duty ?
+            //           (Number(item.tot_stamp_duty) * ((Number(item.tot_stamp_duty) > 0) ? -1 : 1)).toString()
+            //           : '0') :  item.tot_stamp_duty;
 
-        //         net_amt+= Number(item.tot_amount ? item.tot_amount : 0);
-        //         gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
-        //         tds+=Number(item.tot_tds ? item.tot_tds : 0);
-        //         stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
-        //         this.total = {
-        //                 net_amt:net_amt,
-        //                 stamp_duity:stamp_duity,
-        //                 tds:tds,
-        //                 gross_amt:gross_amt
-        //           };
+            //     // net_amt+= Number(item.tot_amount ? item.tot_amount : 0);
+            //     // gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
+            //     // tds+=Number(item.tot_tds ? item.tot_tds : 0);
+            //     // stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
+            //     // this.total = {
+            //     //         net_amt:net_amt,
+            //     //         stamp_duity:stamp_duity,
+            //     //         tds:tds,
+            //     //         gross_amt:gross_amt
+            //     //   };
 
-        //         return item;
-        //     });
+            //     return item;
+            // });
 
-        //   //  item.map( item => {
-        //   //     net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
-        //   //     gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
-        //   //     tds+=Number(item.tot_tds ? item.tot_tds : 0);
-        //   //     stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
-        //   //     this.total = {
-        //   //             net_amt:net_amt,
-        //   //             stamp_duity:stamp_duity,
-        //   //             tds:tds,
-        //   //             gross_amt:gross_amt
-        //   //       };
-        //   //   });
-        // })
+          //  item.map( item => {
+          //     net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
+          //     gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
+          //     tds+=Number(item.tot_tds ? item.tot_tds : 0);
+          //     stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
+          //     this.total = {
+          //             net_amt:net_amt,
+          //             stamp_duity:stamp_duity,
+          //             tds:tds,
+          //             gross_amt:gross_amt
+          //       };
+          //   });
+        })
         )
       .subscribe((res: TrxnRpt[]) => {
         if(res.length > 0){

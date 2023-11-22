@@ -104,4 +104,46 @@ export class RegisteredSIPComponent implements OnInit {
     changeState = (event) => {
       this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
     };
+
+    ngAfterViewInit(){
+      setTimeout(() => {
+        const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+        this.changeWheelSpeed(el, 0.99);
+      }, 500);
+     }
+
+     changeWheelSpeed(container, speedY) {
+      var scrollY = 0;
+      var handleScrollReset = function() {
+          scrollY = container.scrollTop;
+      };
+      var handleMouseWheel = function(e) {
+          e.preventDefault();
+          scrollY += speedY * e.deltaY
+          if (scrollY < 0) {
+              scrollY = 0;
+          } else {
+              var limitY = container.scrollHeight - container.clientHeight;
+              if (scrollY > limitY) {
+                  scrollY = limitY;
+              }
+          }
+          container.scrollTop = scrollY;
+      };
+
+      var removed = false;
+      container.addEventListener('mouseup', handleScrollReset, false);
+      container.addEventListener('mousedown', handleScrollReset, false);
+      container.addEventListener('mousewheel', handleMouseWheel, false);
+
+      return function() {
+          if (removed) {
+              return;
+          }
+          container.removeEventListener('mouseup', handleScrollReset, false);
+          container.removeEventListener('mousedown', handleScrollReset, false);
+          container.removeEventListener('mousewheel', handleMouseWheel, false);
+          removed = true;
+      };
+  }
 }

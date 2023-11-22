@@ -41,6 +41,7 @@
                  [scrollable]="true" scrollHeight="370px"
                  [virtualScroll]="true"
                  [value]="register_sip"
+                 [virtualRowHeight]="34"
                  [responsive]="true"
                  [rowHover]="true"
                  styleClass="p-datatable-striped"
@@ -68,7 +69,9 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-trxn let-columns="columns" let-i="rowIndex">
-            <tr tabindex="999">
+            <tr tabindex="999"
+            [ngStyle]="{'height':'34px'}"
+            >
               <td *ngFor="let col of column"
                   [style.max-width]="col.width"
                   [style.min-width]="col.width">
@@ -90,7 +93,12 @@
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field].toString() | titlecase) : 'N/A' }}</p>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-                      <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' ') ? trxn[col.field] : 'N/A' }}</p>
+                      <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided"
+                      && trxn[col.field]!="BLANK" && trxn[col.field]!='0'
+                      && trxn[col.field]!= ' '
+                      && (trxn[col.field] | titlecase)!="Not Provid"
+                      && (trxn[col.field] | titlecase)!="Notprovided"
+                      ) ? trxn[col.field] : 'N/A' }}</p>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'first_client_name' || col.field == 'bank_name'">
                         <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
@@ -109,13 +117,6 @@
             <tr>
               <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
                 No Records Found
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage" let-columns>
-            <tr>
-              <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
-                 No Records Found
               </td>
             </tr>
           </ng-template>
