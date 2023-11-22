@@ -38,7 +38,7 @@ export class UploadHelpComponent implements OnInit {
 
   /*** File Upload help form */
   file_upload_help_form = new FormGroup({
-    id: new FormControl(0),
+    id: new FormControl('0'),
     file_type_id: new FormControl('', [Validators.required]),
     rnt_id: new FormControl('', [Validators.required]),
     file_id: new FormControl('', [Validators.required]),
@@ -72,6 +72,9 @@ export class UploadHelpComponent implements OnInit {
   ngOnInit(): void {
     this.getmailBackFileType();
     this.getrnt();
+    /***************** call API for getting file upload help master data  */
+      //  this.getFileUploadHelpMasterData();
+    /****************** END */
   }
 
   ngAfterViewInit() {
@@ -162,16 +165,11 @@ export class UploadHelpComponent implements OnInit {
 
   /*** Save the form and send this data to the backend */
   savefileUploadHelp = () => {
-    let formData = Object.assign({},this.file_upload_help_form.value,{
-      ...this.file_upload_help_form.value,
-      id:this.file_upload_help_form.value.id ? this.file_upload_help_form.value.id : 0
-    })
-    // console.log(searchRes);
-    this.dbIntr.api_call(1,'/file_upload_help',this.utility.convertFormData(formData))
+    this.dbIntr.api_call(1,'/fileUploadHelpAddEdit',this.utility.convertFormData(this.file_upload_help_form.value))
     .subscribe((res:responseDT) =>{
-      console.log(res);
-      if(formData.id){
-          this.modifyMasterData(res.data,formData.id);
+      // console.log(res);
+      if(this.file_upload_help_form.value){
+          this.modifyMasterData(res.data,Number(this.file_upload_help_form.value));
       }
 
     })
@@ -190,6 +188,10 @@ export class UploadHelpComponent implements OnInit {
                           return item;
               })
             }
+  }
+
+  reset = () =>{
+      this.populateuploadFileHelpinForm(null);
   }
 
   /*** Get Field from column for filter to be worked properly */

@@ -86,12 +86,13 @@
               icon="pi pi-save"
               iconPos="right"
               class="float-right"
-              [disabled]="file_upload_help_form.invalid"
               styleClass="p-button-lg p-button-primary mr-1">
               </p-button>
+              <!-- [disabled]="file_upload_help_form.invalid" -->
 
               <p-button
-              type="reset"
+              type="button"
+              (click)="reset()"
               label="Reset"
               icon="pi pi-refresh"
               iconPos="right"

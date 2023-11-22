@@ -4,5 +4,6 @@ export interface responseDT {
     suc: number;
     data: any;
     message: string;
+    msg?:string;
 }
 /****************END***********************/
