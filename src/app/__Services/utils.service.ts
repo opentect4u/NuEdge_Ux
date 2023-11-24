@@ -96,6 +96,9 @@ export class UtiliService {
       },
     });
   }
+  closeSnackBar(){
+    this._snackBar.dismiss();
+  }
 
   public settingsfroMultiselectDropdown(__id, __text,
      __placeholder,limit:number | undefined  = 2,

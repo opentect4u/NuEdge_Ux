@@ -58,28 +58,42 @@
   align-items: center;
 }
 
-.summaryCnt{
+/* .summaryCnt{
   flex-direction: column!important;
 }
 ::ng-deep .p-datatable.p-datatable-lg .p-datatable-tbody > tr > .summaryCnt{
   padding:5px 0px!important;
+
+} */
+.summaryCnt{
+  flex-direction: column!important;
+}
+::ng-deep .p-datatable.p-datatable-lg .p-datatable-tbody > tr > .summaryCnt{
+  /* padding:5px 0px!important; */
+  padding:0px 0px!important;
+
 
 }
 .summaryCnt>hr{
   border-top: 1px solid #d7d7d7!important;
   height: 0px!important;
   width: 100%!important;
-  margin: 4px 0px!important;
+  /* margin: 4px 0px!important; */
 
 }
-
-.example-viewport {
-  height: 500px;
-  /* width: 200px; */
-  /* border: 1px solid black; */
+.summaryCnt>.process>a,
+.summaryCnt>.rejection>a{
+  text-decoration: underline;cursor:pointer
 }
-
-
-.p-datatable-wrapper >  .cdk-virtual-scroll-viewport{
-  overflow-anchor: none;
+.process{
+  background-color: #8bc34a5c;
+  font-size: 11px!important;
+  text-align: center!important;
+  padding: 12px;
+}
+.rejection{
+  background-color: rgb(233 30 30 / 31%);
+  font-size: 11px!important;
+  text-align: center!important;
+  padding: 12px;
 }

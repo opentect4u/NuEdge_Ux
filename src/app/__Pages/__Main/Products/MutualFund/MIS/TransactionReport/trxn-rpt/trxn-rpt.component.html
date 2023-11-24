@@ -173,157 +173,6 @@
       </mat-card-content>
     </mat-card>
 
-
-    <!-- <div class="card my-3" #tableCard>
-      <div class="card-header sticky-header py-1 px-3 d-flex align-items-center justify-content-between">
-        <span class="m-0 d-flex align-items-center">
-          <i class="pi pi-database mr-1" style="font-size:2rem">
-          </i>
-          Reports
-
-        </span>
-        <span>
-          <span>Process Transaction: {{trxn_count?.process}}</span>&nbsp; &nbsp;
-          <span class="text-danger">Reject Transaction: {{trxn_count?.reject}}</span>
-        </span>
-
-        <div class="flex w-25">
-          <span class="ml-auto">
-              <input id="search" class="form-control rounded" type="text"
-              (input)="filterGlobal($event)"
-              placeholder="Search"
-               />
-          </span>
-      </div>
-
-      </div>
-      <div class="card-body">
-        <p-table
-        #primeTbl
-        id="trxDt"
-        [value]="trxnRpt"
-        [responsive]="true"
-        [rowHover]="true"
-        styleClass="p-datatable-striped p-datatable-lg"
-        responsiveLayout="scroll"
-        [scrollable]="true"
-        [columns]="column"
-        [paginator]="true"
-        [autoLayout]="true"
-        [totalRecords]="trxnRpt.length"
-        [pageLinks]="3"
-        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [rows]="10"
-        [showCurrentPageReport]="true"
-        [globalFilterFields]="getColumns()"
-        [tableStyle]="{ 'min-width': '350rem' }"
-        >
-          <ng-template pTemplate="header">
-              <tr >
-                  <th  *ngFor="let col of column"
-                  [pSortableColumn]="col.field"
-                  [style.max-width]="col.width"
-                  [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
-
-                  >
-                    {{ col.header }}
-                    <p-sortIcon [field]="col.field">
-                    </p-sortIcon>
-                  </th>
-              </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-trxn  let-i="rowIndex">
-            <tr tabindex="999" [ngStyle]="{'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
-              <td *ngFor="let col of column"
-              [style.max-width]="col.width"
-              [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
-              >
-                <ng-container [ngSwitch]="true">
-                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                    <p class="m-0">
-                      {{i + 1}}
-                    </p>
-                 </ng-container>
-
-                 <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-                  <p class="m-0">{{(trxn[col.field] && trxn[col.field]!=' ' && (trxn[col.field] | uppercase)!='NOT PROVID' && trxn[col.field] != '0')  ? trxn[col.field] : 'N/A' }}</p>
-               </ng-container>
-
-               <ng-container *ngSwitchCase="col.field == 'first_client_name'">
-                <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
-             </ng-container>
-
-
-                 <ng-container *ngSwitchCase="col.field == 'trans_date'">
-                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
-                 </ng-container>
-                 <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                  <p class="m-0" matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name'])) : ''}}">
-                    {{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' +
-                    (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name']))
-                    : 'N/A'
-                  }}</p>
-               </ng-container>
-               <ng-container *ngSwitchCase="col.field == 'tot_tds'">
-                <p class="m-0" matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
-                  {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
-                </p>
-               </ng-container>
-             <ng-container *ngSwitchCase="col.field == 'remarks'">
-                <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30): 'N/A'}}</p>
-             </ng-container>
-                  <ng-container *ngSwitchDefault>
-                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
-                  </ng-container>
-                </ng-container>
-              </td>
-              </tr>
-            </ng-template>
-
-          <ng-template pTemplate="emptymessage" let-columns>
-            <tr>
-              <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
-                 <h5>No Records Found</h5>
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="footer">
-            <tr  *ngIf="misTrxnRpt.value.pan_no" >
-              <td  *ngFor="let col of column"
-              [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
-              [style.max-width]="col.width">
-                <ng-container [ngSwitch]="true">
-                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
-                   Total
-                 </ng-container>
-                 <ng-container *ngSwitchCase="col.field == 'tot_amount'">
-                 {{total?.net_amt | number:'1.2-2'}}
-                  </ng-container>
-                   <ng-container *ngSwitchCase="col.field == 'tot_gross_amount'">
-                   {{total?.gross_amt | number:'1.2-2'}}
-                   </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'tot_tds'">
-                   {{total?.tds | number:'1.2-2'}}
-                </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'tot_stamp_duty'">
-               {{total?.stamp_duity | number:'1.2-2'}}
-              </ng-container>
-                  </ng-container>
-              </td>
-           </tr>
-          </ng-template>
-      </p-table>
-
-      </div>
-      <div class="card-footer">
-        <b>
-          In Total There Are {{trxnRpt.length}} Transaction
-        </b>
-      </div>
-
-    </div> -->
-
     <!-- Transaction main report -->
     <mat-card class="card my-3">
       <mat-card-header>
@@ -346,25 +195,6 @@
               </span>
             </button>
 
-            <!-- <button mat-menu-item class="trxnRptCount" (click)="trxnRpt = [] ;trxnRpt = process_trxn">
-              <span>Process </span>
-              <span>
-                  {{process_trxn.length}}
-              </span>
-            </button>
-            <button mat-menu-item (click)="trxnRpt = [] ;trxnRpt = rejection_trxn">
-              <span class="text-danger">Reject </span>
-              <span class="text-danger">
-                {{rejection_trxn.length}}
-
-              </span>
-            </button>
-            <button mat-menu-item (click)="trxnRpt = [] ;trxnRpt = total_trxn">
-              <span
-              >Total </span>
-              <span
-              >{{total_trxn.length}} </span>
-            </button> -->
 
           </mat-menu>
 
@@ -526,14 +356,14 @@
             <tr>
               <th *ngFor="let col of trxnAmtCountClm" [style.min-width]="col.width">
                 {{ col.header }}
-                <!-- <p-sortIcon [field]="col.field">
-                      </p-sortIcon> -->
               </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-trxn let-i="rowIndex">
             <tr tabindex="999">
-              <td *ngFor="let col of trxnAmtCountClm" class="summaryCnt" [style.min-width]="col.width">
+              <td *ngFor="let col of trxnAmtCountClm"
+              [ngClass]="{'summaryCnt' :col.field != 'total_amt'}"
+               [style.min-width]="col.width">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
                     <p class="m-0">
@@ -545,34 +375,48 @@
                       {{trxn[col.field]}}
                     </p>
                   </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'total_amt'">
+                    <p class="m-0">
+                      {{trxn[col.field] ? (trxn[col.field] | number: '1.2-2') : 0}}
+                     </p>
+                  </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'trxn_type'">
-                    <p class="m-0 text-success">
+                    <td class="process w-100">
                       Process
-                    </p>
+                    </td>
                     <hr class="m-0" />
-                    <p class="m-0 text-danger">
-                      Rejection
-                    </p>
+                    <td  class="rejection w-100">
+                        Rejection
+                    </td>
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field.includes('count')">
-                    <p class="m-0 text-success">
+                    <td class="process w-100">
+                    <a class="m-0 p-3" (click)="getTransaction(
+                      col.field,trxn[col.field]['process_trxn'],col.header,trxn['cat_name']
+                      )">
                      {{trxn[col.field]?.process ? (trxn[col.field]?.process) : 0}}
-                    </p>
+                    </a>
+                    </td>
                     <hr class="m-0" />
-                    <p class="m-0 text-danger">
+                    <td  class="rejection w-100">
+                    <a class="m-0 p-3" (click)="getTransaction(col.field,trxn[col.field]['reject_trxn'],col.header,trxn['cat_name'])">
                       {{trxn[col.field]?.reject ? (trxn[col.field]?.reject) : 0}}
-                    </p>
+                    </a>
+                  </td>
                   </ng-container>
 
                   <ng-container *ngSwitchDefault>
-                    <p class="m-0 text-success">
-                       {{trxn[col.field]?.process ? (trxn[col.field]?.process | number:'1.2-2') : 0}}
-                    </p>
+                    <td class="process w-100">
+                      <p class="m-0">
+                        {{trxn[col.field]?.process ? (trxn[col.field]?.process | number:'1.2-2') : 0}}
+                     </p>
+                      </td>
                     <hr class="m-0" />
-                    <p class="m-0 text-danger">
-                     {{trxn[col.field]?.reject ? (trxn[col.field]?.reject | number:'1.2-2') : 0}}
-                    </p>
+                    <td class="rejection w-100">
+                      <p class="m-0">
+                        {{trxn[col.field]?.reject ? (trxn[col.field]?.reject | number:'1.2-2') : 0}}
+                       </p>
                   </ng-container>
                 </ng-container>
               </td>
@@ -593,3 +437,116 @@
 
   </div>
 </div>
+
+
+<p-dialog header="Header"
+[(visible)]="visible"
+[modal]="true"
+[draggable]="false"
+[resizable]="true"
+[style]="{width: '90vw'}">
+<ng-template  pTemplate="header">
+        <h5 class="m-0">{{popup_header_title?.replace('Count', '') | uppercase}} TRANSACTIONS</h5>
+
+        <input id="search" class="form-control rounded w-50" type="text" (input)="filterGlobal_secondary($event)"
+        placeholder="Search" />
+     </ng-template>
+<!-- Table -->
+<p-table #secondaryTbl id="secondary_trxDt" [value]="shwoPopup__trxn"
+[responsive]="true" [rowHover]="true"
+styleClass="p-datatable-striped p-datatable-lg"
+[scrollable]="true"
+[loading]= "isLoader"
+[loadingIcon]="'fa-spinner'"
+[columns]="column" [paginator]="true"
+[autoLayout]="true" [totalRecords]="trxnRpt.length" [pageLinks]="3"
+[rowsPerPageOptions]="[10,50,100]"
+currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+[showCurrentPageReport]="true" [globalFilterFields]="getcolumns_secondary()"
+[tableStyle]="{ 'min-width': '374rem' }">
+<ng-template pTemplate="header">
+  <tr>
+    <th *ngFor="let col of column" [pSortableColumn]="col.field" [style.max-width]="col.width"
+      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+      {{ col.header }}
+      <p-sortIcon [field]="col.field">
+      </p-sortIcon>
+    </th>
+  </tr>
+</ng-template>
+<ng-template pTemplate="body" let-trxn let-i="rowIndex">
+  <tr tabindex="999"
+    [ngStyle]="{
+      'height':'34px',
+      'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
+    <td *ngFor="let col of column" [style.max-width]="col.width"
+      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+      <ng-container [ngSwitch]="true">
+        <ng-container *ngSwitchCase="col.field == 'sl_no'">
+          <p class="m-0">
+            {{i + 1}}
+          </p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+          <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" &&
+            trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
+            && (trxn[col.field] | titlecase)!="Not Provid"
+            && (trxn[col.field] | titlecase)!="Notprovided"
+            ) ? trxn[col.field] :
+            'N/A' }}</p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.field == 'first_client_name'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="col.field == 'trans_date'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+          <p class="m-0"
+            matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name'])) : ''}}">
+            {{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' +
+            (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name']))
+            : 'N/A'
+            }}</p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'tot_tds'">
+          <p class="m-0" matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
+            {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
+          </p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'remarks'">
+          <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
+            'N/A'}}</p>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
+        </ng-container>
+      </ng-container>
+    </td>
+  </tr>
+</ng-template>
+
+<ng-template pTemplate="emptymessage" let-columns>
+  <tr>
+    <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+      <h5>No Records Found</h5>
+    </td>
+  </tr>
+</ng-template>
+<ng-template pTemplate="loadingbody" let-columns="columns">
+  <tr style="height:34px">
+      <td *ngFor="let col of columns; let even = even">
+          <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
+      </td>
+  </tr>
+</ng-template>
+</p-table>
+<!-- End -->
+</p-dialog>
+
+
+

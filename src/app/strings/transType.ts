@@ -1,8 +1,12 @@
-export const PUR_PROCESS = [`fresh`, `additional`, `additional purchase`];
+export const PUR_PROCESS = [`fresh`,
+`additional`,
+`additional purchase`];
 export const PUR_REJ = [
   `fresh rejection`,
   `additional rejection`,
   `additional purchase rejection`,
+  `fresh purchase rejection`
+
 ];
 export const REDEMP_PROCESS = [`Partial Redemption`, `Full Redemption`];
 export const REDEMP_REJ = [
@@ -39,6 +43,7 @@ export const NFT = [
   `Additional`,
   `Additional Purchase`,
   `Fresh Rejection`,
+  `Fresh Purchase Rejection`,
   `Additional Rejection`,
   `Additional Purchase Rejection`,
   `Partial Redemption`,
@@ -66,3 +71,38 @@ export const NFT = [
   `NFO`,
   `NFO Rejection`,
 ];
+export const NET_PROCESS_AMT =[
+  `SIP Purchase Installment Rejection`,
+  `SIP Purchase Installment`,
+  `Fresh`,
+  `Additional`,
+  `Additional Purchase`,
+  `Fresh Rejection`,
+  `Fresh Purchase Rejection`,
+  `Additional Rejection`,
+  `Additional Purchase Rejection`,
+  `Switch In`,
+  `Switch In Rejection`,
+  `Switch In Merger`,
+  `Switch In Merger Rejection`,
+  `STP In`,
+  `STP In Rejection`,
+  `NFO`,
+  `NFO Rejection`
+]
+export const NET_REJECTION_AMT =[
+  `Partial Redemption`,
+  `Full Redemption`,
+  `Partial Redemption Rejection`,
+  `Full Redemption Rejection`,
+  `Switch Out`,
+  `Switch Out Rejection`,
+  `Switch Out Merger`,
+  `Switch Out Merger Rejection`,
+  `STP Out`,
+  `STP Out Rejection`,
+  `SWP`,
+  `SWP Rejection`
+]
+
+// export const NFT

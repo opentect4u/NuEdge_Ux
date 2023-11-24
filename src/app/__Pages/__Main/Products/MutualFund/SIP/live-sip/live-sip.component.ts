@@ -106,17 +106,17 @@ export class LiveSIPComponent implements OnInit {
         ...formDt,
         report_type:this.report_type
        }
-        // this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
-        // .pipe(pluck('data'))
-        // .subscribe((res: IliveSip[]) =>{
-        //      this.live_sip_rpt = res;
-        //      this.total_live_sip_amt = global.calculatAmt(res);
-        //      console.log(
-        //       res.filter(item => item.pause_end_date && item.pause_start_date).length
-        //      );
-        //      this.pause_sip_count = res.filter(item => item.pause_end_date && item.pause_start_date).length;
-        //      this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
-        //     });
+        this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
+        .pipe(pluck('data'))
+        .subscribe((res: IliveSip[]) =>{
+             this.live_sip_rpt = res;
+             this.total_live_sip_amt = global.calculatAmt(res);
+             console.log(
+              res.filter(item => item.pause_end_date && item.pause_start_date).length
+             );
+             this.pause_sip_count = res.filter(item => item.pause_end_date && item.pause_start_date).length;
+             this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+            });
 
 
   }

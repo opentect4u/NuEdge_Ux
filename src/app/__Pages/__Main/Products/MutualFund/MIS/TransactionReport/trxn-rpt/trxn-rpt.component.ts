@@ -61,6 +61,13 @@ import { trxnCountAmtSummaryColumn, trxnCountSummary } from './trxnAmtCountSumma
 })
 export class TrxnRptComponent implements OnInit {
 
+  /**** showing transaction details on popup */
+  shwoPopup__trxn:TrxnRpt[]= [];
+  visible:boolean = false;
+   isLoader:boolean = false;
+   popup_header_title:string = '';
+  /*****End */
+
   transType:string = '';
 
   trxnAmtCountClm:column[] = trxnCountAmtSummaryColumn.columns;
@@ -76,6 +83,9 @@ export class TrxnRptComponent implements OnInit {
   trxn_count:TrxnType;
 
   @ViewChild('primeTbl') primeTbl :Table;
+
+  @ViewChild('secondaryTbl') secondaryTbl :Table;
+
   state: string | undefined = 'expanded';
 
   /** For Showing Total amount footer in datatable  */
@@ -361,7 +371,7 @@ export class TrxnRptComponent implements OnInit {
        'view_type='+view_type
        +'&page='+paginate
        ).pipe(pluck("data")).subscribe((res: any) =>{
-        console.log(res);
+        // console.log(res);
         // this.__clientMst= res.data;
         /** 1st Way of concat two array*/
         // Array.prototype.push.apply( this.__clientMst, res.data);
@@ -567,7 +577,7 @@ export class TrxnRptComponent implements OnInit {
       )
       .subscribe({
         next: (value) => {
-          console.log(value);
+          // console.log(value);
           this.__clientMst = value;
           this.searchResultVisibilityForClient('block');
           this.__isClientPending = false;
@@ -667,44 +677,43 @@ export class TrxnRptComponent implements OnInit {
              total: item
             };
 
-            // item.map( item => {
+            item.map( item => {
+              item.tot_amount = (item.rnt_id == 2
+                && item.transaction_subtype.toLowerCase().includes('rejection'))
+                ? (item.tot_amount ?
+                  (Number(item.tot_amount) * ((Number(item.tot_amount) > 0) ? -1 : 1)).toString()
+                  : '0') :  item.tot_amount;
 
-            //   item.tot_amount = (item.rnt_id == 2
-            //     && item.transaction_subtype.toLowerCase().includes('rejection'))
-            //     ? (item.tot_amount ?
-            //       (Number(item.tot_amount) * ((Number(item.tot_amount) > 0) ? -1 : 1)).toString()
-            //       : '0') :  item.tot_amount;
+              item.tot_gross_amount = (item.rnt_id == 2
+                    && item.transaction_subtype.toLowerCase().includes('rejection'))
+                    ? (item.tot_gross_amount ?
+                      (Number(item.tot_gross_amount) * ((Number(item.tot_gross_amount) > 0) ? -1 : 1)).toString()
+                      : '0') :  item.tot_gross_amount;
 
-            //   item.tot_gross_amount = (item.rnt_id == 2
-            //         && item.transaction_subtype.toLowerCase().includes('rejection'))
-            //         ? (item.tot_gross_amount ?
-            //           (Number(item.tot_gross_amount) * ((Number(item.tot_gross_amount) > 0) ? -1 : 1)).toString()
-            //           : '0') :  item.tot_gross_amount;
+              item.tot_tds = (item.rnt_id == 2
+                && item.transaction_subtype.toLowerCase().includes('rejection'))
+                ? (item.tot_tds ?
+                  (Number(item.tot_tds) * ((Number(item.tot_tds) > 0) ? -1 : 1)).toString()
+                  : '0') :  item.tot_tds;
+             item.tot_stamp_duty = (item.rnt_id == 2
+                    && item.transaction_subtype.toLowerCase().includes('rejection'))
+                    ? (item.tot_stamp_duty ?
+                      (Number(item.tot_stamp_duty) * ((Number(item.tot_stamp_duty) > 0) ? -1 : 1)).toString()
+                      : '0') :  item.tot_stamp_duty;
 
-            //   item.tot_tds = (item.rnt_id == 2
-            //     && item.transaction_subtype.toLowerCase().includes('rejection'))
-            //     ? (item.tot_tds ?
-            //       (Number(item.tot_tds) * ((Number(item.tot_tds) > 0) ? -1 : 1)).toString()
-            //       : '0') :  item.tot_tds;
-            //  item.tot_stamp_duty = (item.rnt_id == 2
-            //         && item.transaction_subtype.toLowerCase().includes('rejection'))
-            //         ? (item.tot_stamp_duty ?
-            //           (Number(item.tot_stamp_duty) * ((Number(item.tot_stamp_duty) > 0) ? -1 : 1)).toString()
-            //           : '0') :  item.tot_stamp_duty;
+                // net_amt+= Number(item.tot_amount ? item.tot_amount : 0);
+                // gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
+                // tds+=Number(item.tot_tds ? item.tot_tds : 0);
+                // stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
+                // this.total = {
+                //         net_amt:net_amt,
+                //         stamp_duity:stamp_duity,
+                //         tds:tds,
+                //         gross_amt:gross_amt
+                //   };
 
-            //     // net_amt+= Number(item.tot_amount ? item.tot_amount : 0);
-            //     // gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
-            //     // tds+=Number(item.tot_tds ? item.tot_tds : 0);
-            //     // stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
-            //     // this.total = {
-            //     //         net_amt:net_amt,
-            //     //         stamp_duity:stamp_duity,
-            //     //         tds:tds,
-            //     //         gross_amt:gross_amt
-            //     //   };
-
-            //     return item;
-            // });
+                return item;
+            });
 
           //  item.map( item => {
           //     net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
@@ -750,7 +759,6 @@ export class TrxnRptComponent implements OnInit {
         cat_name: key, ...new trxnCountSummary(groupByCategory[key])
       })
     });
-    // console.log(this.transaction_amt_count_summary);
   }
 
   /**
@@ -771,7 +779,7 @@ export class TrxnRptComponent implements OnInit {
    * @param display_mode
    */
   searchResultVisibilityForClient = (display_mode: string) => {
-    console.log(display_mode);
+    // console.log(display_mode);
     this.displayMode_forClient = display_mode;
   };
 
@@ -794,7 +802,7 @@ export class TrxnRptComponent implements OnInit {
   getCategoryMst = <T extends { id: number; amc_short_name: string }[]>(
     amc_id: T
   ) => {
-    console.log(amc_id)
+    // console.log(amc_id)
     if (amc_id.length > 0) {
       this.dbIntr
         .api_call(
@@ -1070,11 +1078,20 @@ export class TrxnRptComponent implements OnInit {
     this.primeTbl.filterGlobal(value,'contains')
   }
 
+  filterGlobal_secondary = ($event) =>{
+    let value = $event.target.value;
+    this.secondaryTbl.filterGlobal(value,'contains')
+  }
+
   getColumns = () =>{
     return this.utility.getColumns(this.column);
   }
+
+  getcolumns_secondary = () =>{
+    return this.utility.getColumns(this.column);
+  }
   loadInvestorOnScrollToEnd = (ev) =>{
-    console.log(this.misTrxnRpt.value.client_name);
+    // console.log(this.misTrxnRpt.value.client_name);
     if(this.misTrxnRpt.value.client_name == ''){
       // console.log('adasd')
       this.paginate+=1;
@@ -1107,10 +1124,24 @@ export class TrxnRptComponent implements OnInit {
 
   }
   changePage = (ev) =>{
-      console.log(ev);
+      // console.log(ev);
   }
 
   toggle() {
     this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
+  getTransaction = async (column:string,trxn:TrxnRpt[],header:string,category:string) =>{
+    this.utility.closeSnackBar();
+    if(trxn.length > 0){
+      this.secondaryTbl.reset();
+      this.popup_header_title =  header;
+      this.isLoader = true;
+      this.visible = true;
+      this.shwoPopup__trxn = trxn
+      this.isLoader = false;
+      }
+      else{
+        this.utility.showSnackbar(`There are no data available under ${category} in ${header.replace('Count', '') } transaction`,0,true);
+      }
+    }
 }
