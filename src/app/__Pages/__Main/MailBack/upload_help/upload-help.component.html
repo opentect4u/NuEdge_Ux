@@ -22,10 +22,11 @@
         <div class="row">
             <div class="col-sm-3">
               <label for="file_type_id">File Type <span class="text-danger">*</span></label>
-              <select name="file_type_id" formControlName="file_type_id" class="form-control" id="file_type">
+              <!-- <select name="file_type_id" formControlName="file_type_id" class="form-control" id="file_type">
                 <option value="">Select File Type</option>
                <option [value]="fileType.id" *ngFor="let fileType of fileTypeMst" >{{fileType.name}}</option>
-              </select>
+              </select> -->
+              <input type="text" placeholder="Enter File type" class="form-control" id="file_type_id" name="file_type_id"  formControlName="file_type_id"/>
               <div class="invalid-feedback" *ngIf="file_upload_help_form.get('file_type_id').invalid && (file_upload_help_form.get('file_type_id').dirty || file_upload_help_form.get('file_type_id').touched)">
                 <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('file_type_id')).errors?.required">*Please provide file type</span>
               </div>
@@ -42,10 +43,11 @@
             </div>
             <div class="col-sm-3">
               <label for="file_id">File Name <span class="text-danger">*</span></label>
-              <select name="file_id" formControlName="file_id" class="form-control" id="file_type">
+              <!-- <select name="file_id" formControlName="file_id" class="form-control" id="file_type">
                 <option value="">Select File</option>
                <option [value]="file.id" *ngFor="let file of fileMst" >{{file.name}}</option>
-              </select>
+              </select> -->
+              <input type="text" placeholder="Enter File Name" class="form-control" id="file_id" name="file_id"  formControlName="file_id"/>
               <div class="invalid-feedback" *ngIf="file_upload_help_form.get('file_id').invalid && (file_upload_help_form.get('file_id').dirty || file_upload_help_form.get('file_id').touched)">
                 <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('file_id')).errors?.required">*Please provide file</span>
               </div>
@@ -56,6 +58,8 @@
                 <option value="">Select File Format</option>
                 <option value="csv">CSV</option>
                 <option value="txt">TXT</option>
+                <option value="html">HTML</option>
+
               </select>
               <div class="invalid-feedback" *ngIf="file_upload_help_form.get('file_format_id').invalid && (file_upload_help_form.get('file_format_id').dirty || file_upload_help_form.get('file_format_id').touched)">
                 <span class="invalid-feedback" *ngIf="(file_upload_help_form.get('file_format_id')).errors?.required">*Please provide file format</span>

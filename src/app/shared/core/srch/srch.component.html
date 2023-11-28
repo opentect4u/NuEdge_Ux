@@ -24,8 +24,8 @@
     <div class="processMain_2"
     __searchResVisibility
     (appOutsideClick)="outsideClickforClient($event)">
-      <div class="serachresult_client" #searchList srchScroll (reachEnd)="scrollEnd($event)">
-        <ul *ngIf="listItems.length > 0">
+      <div class="serachresult_client"  #searchList srchScroll (reachEnd)="scrollEnd($event)">
+        <ul *ngIf="listItems.length > 0;else noData">
           <core-list-item *ngFor="let items of listItems" (click)="getItems(items)" [items]="items">
             <li>
 
@@ -43,13 +43,16 @@
             </li>
             </core-list-item>
         </ul>
-        <div class="noDataFound" *ngIf="listItems.length == 0">
+        <ng-template #noData>
+
+        <div class="noDataFound" >
           <shared-no-data
           [alertMsgSubTitle]="'Sorry!! No Records Found'"
           [alertMsgTitle]="noDataFoundTitle"
           [alertMsgSubTitle]="noDataFoundSubTitle"
           ></shared-no-data>
         </div>
+      </ng-template>
       </div>
     </div>
   </div>

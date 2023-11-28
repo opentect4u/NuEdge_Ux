@@ -1,18 +1,18 @@
-import { Highlightable, ListKeyManagerOption } from '@angular/cdk/a11y';
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { FocusableOption, Highlightable, ListKeyManagerOption } from '@angular/cdk/a11y';
+import { Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'core-list-item',
   templateUrl: './list-item.component.html',
   styleUrls: ['./list-item.component.css'],
 })
-export class ListItemComponent implements OnInit,Highlightable, ListKeyManagerOption {
+export class ListItemComponent implements Highlightable, ListKeyManagerOption,FocusableOption  {
   private _isActive: boolean = false;
   @Input() disabled: boolean = false;
   @Input() items;
 
 
-  constructor() { }
+  constructor(private element: ElementRef) { }
 
   setActiveStyles(): void {
     this._isActive = true;
@@ -23,8 +23,9 @@ export class ListItemComponent implements OnInit,Highlightable, ListKeyManagerOp
   getLabel?(): string {
      return this.items;
   }
-
-  ngOnInit(): void {}
+  focus() {
+    this.element.nativeElement.focus();
+  }
 
   @HostBinding('class.keyNavigateHover') get isActive() {
     return this._isActive;

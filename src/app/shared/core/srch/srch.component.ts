@@ -86,7 +86,6 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
   }
 
   scrollEnd = (event) =>{
-    console.log(event);
     this.scrollToEnd.emit(event);
   }
 }

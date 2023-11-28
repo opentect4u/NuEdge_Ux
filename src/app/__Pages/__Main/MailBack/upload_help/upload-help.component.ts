@@ -71,7 +71,7 @@ export class UploadHelpComponent implements OnInit {
     ) {}
 
   ngOnInit(): void {
-    this.getmailBackFileType();
+    // this.getmailBackFileType();
     this.getrnt();
     /***************** call API for getting file upload help master data  */
        this.getFileUploadHelpMasterData();
@@ -80,21 +80,21 @@ export class UploadHelpComponent implements OnInit {
 
   ngAfterViewInit() {
     /** Event trigger after change in rnt select dropdown */
-    this.file_upload_help_form.get('rnt_id').valueChanges.subscribe((res) => {
-      // console.log('rnt');
-      this.getmailbackFileName(
-        res,
-        this.file_upload_help_form.value.file_type_id
-      );
-    });
+    // this.file_upload_help_form.get('rnt_id').valueChanges.subscribe((res) => {
+    //   // console.log('rnt');
+    //   this.getmailbackFileName(
+    //     res,
+    //     this.file_upload_help_form.value.file_type_id
+    //   );
+    // });
     /*** End */
 
-    this.file_upload_help_form
-      .get('file_type_id')
-      .valueChanges.subscribe((res) => {
-        // console.log('file_type_id');
-        this.getmailbackFileName(this.file_upload_help_form.value.rnt_id, res);
-      });
+    // this.file_upload_help_form
+    //   .get('file_type_id')
+    //   .valueChanges.subscribe((res) => {
+    //     // console.log('file_type_id');
+    //     this.getmailbackFileName(this.file_upload_help_form.value.rnt_id, res);
+    //   });
   }
 
   /*** For Getting File Type master Data */
@@ -216,7 +216,7 @@ export class UploadHelpComponent implements OnInit {
    * @param row
    */
   populateuploadFileHelpinForm = (row) =>{
-    this.file_upload_help_form.reset({emitEvent:false,onlySelf:true}); // reset the form if any form field is filled up with value
+    // this.file_upload_help_form.reset({emitEvent:false,onlySelf:true}); // reset the form if any form field is filled up with value
     // Checked if the Edit button is clicked or not , if edit button is clicked then change the scroll position
     if(row){
       this.dom.documentElement.scrollIntoView({behavior:'smooth',block:'start'});
@@ -257,7 +257,7 @@ export class uploadFileHelpColumn {
       width:'6rem'
     },
     {
-      field: 'file_type_name',
+      field: 'file_type_id',
       header: 'File Type',
       width:''
     },
@@ -268,7 +268,7 @@ export class uploadFileHelpColumn {
 
     },
     {
-      field: 'file_name',
+      field: 'file_id',
       header: 'File Name',
       width:''
 
@@ -299,13 +299,13 @@ export interface IFileUploadHelp {
   created_by: number
   file_format_id: string
   file_id: number
-  file_name:string
+  // file_name:string
   file_type_id: number
   id: number
   rec_upload_freq: string
   rnt_id: number
   rnt_name:string;
-  file_type_name:string;
+  // file_type_name:string;
   updated_at: string
   updated_by: any
   uploaded_mode_id: string
