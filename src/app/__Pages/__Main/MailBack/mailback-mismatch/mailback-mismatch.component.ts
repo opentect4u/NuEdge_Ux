@@ -141,6 +141,7 @@ export class MailbackMismatchComponent implements OnInit {
         file_flag = this.TabMenu[this.index].flag;
         break;
       case 'C':
+        console.log(TabDtls);
         this.sub_index = TabDtls.index;
         // this.getTrxnRpt(TabDtls.tabDtls.flag,this.TabMenu[this.index].flag);
         __mode = TabDtls.tabDtls.flag;
@@ -149,12 +150,14 @@ export class MailbackMismatchComponent implements OnInit {
         break;
       default:break;
     }
+    console.log(__mode);
     this.getTrxnRpt(flag,file_flag);
     this.tblWidth = this.index == 0 ? '350rem' : '150rem';
     this.column_manage(__mode);
   }
 
   column_manage = (flag:string) =>{
+    console.log(this.index);
     console.log(flag);
     const clm_divident:string[] = ['amc_link','scheme_link','isin_link','plan_opt'];
     const clm: string[] = ['divident_opt', 'scheme_link', 'isin_link', 'option_name', 'plan_name', 'plan_opt', 'lock_trxn'];
@@ -183,6 +186,7 @@ export class MailbackMismatchComponent implements OnInit {
        break;
       case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field)); break;
       case 'F': this.TrxnClm = [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))]; break;
+      case 'P/O': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !scm_clm.includes(item.field)) : (this.index == 2 ? [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))] : []) ;break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;
     }
 
@@ -224,7 +228,9 @@ export class NavMismatchColumnForSchemeLink{
 export class MailBackMismatchCommonColumn {
   static column: column[] = [
     { field: 'bu_type_link', header: 'Business Type Link', width: '20rem', isVisible: ['B'] },
-    { field: 'freq_link', header: 'Frequency Link', width: '20rem', isVisible: ['F'] }
+    { field: 'freq_link', header: 'Frequency Link', width: '20rem', isVisible: ['F'] },
+    {field:'plan_opt',header:'Plan Option Link',width:"16rem", isVisible: ['P/O'] },
+
   ]
 }
 

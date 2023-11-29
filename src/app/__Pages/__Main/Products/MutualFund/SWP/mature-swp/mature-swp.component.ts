@@ -90,6 +90,7 @@ filterGlobal = (ev) =>{
 }
 
 getMaturedSwpMasterData(form_data){
+  this.mature_swp = [];
   this.reset_data = 'N';
   let dt = {
     ...form_data,

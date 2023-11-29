@@ -52,6 +52,7 @@ export class PauseSwpComponent implements OnInit {
   };
 
   PauseSwpReport = (formDt) =>{
+    this.pause_swp = [];
     console.log(formDt)
     let dt ={
       ...formDt,

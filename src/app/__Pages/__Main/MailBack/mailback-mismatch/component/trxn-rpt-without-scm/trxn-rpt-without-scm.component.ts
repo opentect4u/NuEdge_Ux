@@ -141,7 +141,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       dialogref.afterClosed().subscribe((dt) => {
         if(dt){
           if(dt.suc == 1){
-            this.deleteTransaction(trxn.id);
+            this.delete_AMC_Transaction(trxn.amc_code);
           }
         }
       });
@@ -155,6 +155,14 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       });
     }
 
+  }
+  delete_AMC_Transaction = (amc_code) =>{
+    // this.trxnRptWithOutScm.splice(
+    //   this.trxnRptWithOutScm.findIndex(item => item.id == id),1
+    // );
+    this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => item.amc_code != amc_code)
+    this.primeTbl.reset();
+    this.filter.nativeElement.value = '';
   }
 
   openISIN = (trxn,index:number) =>{
@@ -186,7 +194,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
           // this.updateRow(res.data)
           if(res.suc == 1){
             // this.tr
-            this.deleteTransaction(trxn.id);
+            this.delete_ISIN_Transaction(trxn);
           }
         }
       })
@@ -207,6 +215,17 @@ export class TrxnRptWithoutScmComponent implements OnInit {
     );
     this.primeTbl.reset();
     this.filter.nativeElement.value = '';
+  }
+
+  delete_ISIN_Transaction = (trxn) =>{
+    console.log(trxn);
+    //CAMS
+    if(trxn.rnt_id == 1){
+      this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code))
+    }
+    else{ //KFINTECH
+      this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item.isin_no != trxn.isin_no));
+    }
   }
 
   openModal_for_Form = (modal_type: string,trxn,index:number) => {

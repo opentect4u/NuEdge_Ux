@@ -58,6 +58,7 @@ export class PauseSIPComponent implements OnInit {
     this.PauseSipReport(ev);
   }
   PauseSipReport = (formDt) => {
+    this.pause_sip = [];
     let dt = {
       ...formDt,
       report_type: this.report_type,

@@ -80,6 +80,7 @@ export class RegisteredSIPComponent implements OnInit {
     }
 
     getSipMasterData(form_data){
+      this.register_sip = [];
       this.reset_data = 'N';
       let dt = {
         ...form_data,

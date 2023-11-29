@@ -61,6 +61,7 @@ constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
 ngOnInit(): void {}
 terminateStpReport = (formDt) =>{
+  this.live_stp_rpt = [];
   let dt ={
     ...formDt,
     report_type:this.report_type,

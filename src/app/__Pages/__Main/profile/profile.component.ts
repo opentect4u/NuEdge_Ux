@@ -20,6 +20,7 @@ export class ProfileComponent implements OnInit {
   isconfVisibility:boolean = false;
 
 
+
   profile = new FormGroup({
       manage_password:new FormGroup({
           old_password:new FormControl('',[Validators.required]),
@@ -45,7 +46,9 @@ export class ProfileComponent implements OnInit {
       manage_account:new FormGroup({})
   })
 
-  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
+  constructor(private dbIntr:DbIntrService,
+    private utility:UtiliService
+    ) { }
 
   ngOnInit(): void {
   }

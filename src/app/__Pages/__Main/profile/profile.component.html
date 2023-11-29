@@ -1,12 +1,12 @@
 <div class="flexSec row">
   <div class="col-sm-12">
-
     <!-- TAB  -->
     <div class="container">
       <ul class="nav nav-tabs">
         <li class="nav-item" *ngFor="let tabs of profileTab" (click)="changeTab(tabs)">
-          <a class="nav-link d-flex justify-content-between" [ngClass]="{'tab_active':active_tab == tabs.flag }">
-          <mat-icon>{{tabs.icon}}</mat-icon>&nbsp;{{tabs.name}}
+          <a class="nav-link d-flex justify-content-between align-items-center" [ngClass]="{'tab_active':active_tab == tabs.flag }">
+          <mat-icon>{{tabs.icon}}</mat-icon>
+          &nbsp;{{tabs.name}}
         </a>
         </li>
       </ul>
@@ -14,14 +14,14 @@
     <!-- END -->
 
     <!-- TAB CONTAINER -->
-      <div class="container">
+      <div class="container ">
         <ng-container *ngIf="active_tab == 'A'; else manage_password">
-            <p>Manage Account Works</p>
+            <div class="flexSec justify-content-center align-items-center">
+              <h4>Comming Soon</h4>
+            </div>
         </ng-container>
         <ng-template #manage_password>
           <div class="container">
-
-
             <div class="row flexSec">
               <div class="col-sm-6">
                 <div class="d-flex align-items-center mt-5">
@@ -126,7 +126,10 @@
 
                     </div>
                     <div class="form-group w-100 my-3">
-                        <button class="w-100" [disabled]="profile.invalid" type="submit" mat-button color="primary">
+                        <button class="w-100"
+                        [disabled]="profile.invalid"
+                        type="submit"
+                        mat-stroked-button color="primary">
                         Change
                         </button>
                     </div>

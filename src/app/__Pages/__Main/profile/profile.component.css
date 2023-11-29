@@ -1,8 +1,13 @@
 .tab_active{
-  border-bottom: 2px solid #10486b;
-  color: #10486b;
-  font-weight: 600;
-  font-size: 0px!important;
+  border-bottom: 2px solid #3670b2;
+  color: #10486b!important;
+  font-weight: 500;
+  background: #dce4ee;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.tab_active>mat-icon{
+  color: #3670b2!important;
 }
 .nav-link{
   font-size: 12px;
@@ -22,6 +27,11 @@
 .validate{
   list-style-type: '✓'!important;
 
+}
+
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus{
+  background-color:none!important;
 }
 /* .validate:before{
   content: '✓';
@@ -58,3 +68,4 @@ font-weight: 500;
   font-weight: 600;
 }
 /*End*/
+

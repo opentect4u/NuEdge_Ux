@@ -54,13 +54,13 @@ export class UploadHelpComponent implements OnInit {
   upload_file_help_mst_dt:IFileUploadHelp[] = [];
 
   /** For holding different type of file */
-  fileTypeMst: fileType[] = [];
+  // fileTypeMst: fileType[] = [];
 
   /** For holding R&T */
   rnt_mst_dt: rnt[] = [];
 
   /** For Holding file */
-  fileMst: file[] = [];
+  // fileMst: file[] = [];
 
   /*** File Upload help column */
   file_uploaded_help_column:column[] = uploadFileHelpColumn.column;
@@ -98,14 +98,14 @@ export class UploadHelpComponent implements OnInit {
   }
 
   /*** For Getting File Type master Data */
-  getmailBackFileType = () => {
-    this.dbIntr
-      .api_call(0, '/mailbackFileType', null)
-      .pipe(pluck('data'))
-      .subscribe((res: fileType[]) => {
-        this.fileTypeMst = res;
-      });
-  };
+  // getmailBackFileType = () => {
+  //   this.dbIntr
+  //     .api_call(0, '/mailbackFileType', null)
+  //     .pipe(pluck('data'))
+  //     .subscribe((res: fileType[]) => {
+  //       this.fileTypeMst = res;
+  //     });
+  // };
   /**** End */
 
   /*** For Getting R&T from master data */
@@ -132,32 +132,32 @@ export class UploadHelpComponent implements OnInit {
    * @param file_type_id
    */
 
-  getmailbackFileName = (rnt_id: number, file_type_id: number) => {
-    if (rnt_id && file_type_id) {
-      this.dbIntr
-        .api_call(
-          0,
-          '/mailbackFileName',
-          'rnt_id=' + rnt_id + '&file_type_id=' + file_type_id
-        )
-        .pipe(pluck('data'))
-        .subscribe((res: file[]) => {
-          // console.log(res);
-          this.fileMst = res.map(({ id, rnt_id, name }) => ({
-            rnt_id,
-            id,
-            name,
-            parent_id: rnt_id,
-          }));
-        });
-    }
-    else{
-      this.fileMst = [];
-      this.file_upload_help_form.patchValue({
-        file_id:''
-      })
-    }
-  };
+  // getmailbackFileName = (rnt_id: number, file_type_id: number) => {
+  //   if (rnt_id && file_type_id) {
+  //     this.dbIntr
+  //       .api_call(
+  //         0,
+  //         '/mailbackFileName',
+  //         'rnt_id=' + rnt_id + '&file_type_id=' + file_type_id
+  //       )
+  //       .pipe(pluck('data'))
+  //       .subscribe((res: file[]) => {
+  //         // console.log(res);
+  //         this.fileMst = res.map(({ id, rnt_id, name }) => ({
+  //           rnt_id,
+  //           id,
+  //           name,
+  //           parent_id: rnt_id,
+  //         }));
+  //       });
+  //   }
+  //   else{
+  //     this.fileMst = [];
+  //     this.file_upload_help_form.patchValue({
+  //       file_id:''
+  //     })
+  //   }
+  // };
   /*** End */
 
   /** on page load get the file upload help master data */
@@ -185,14 +185,23 @@ export class UploadHelpComponent implements OnInit {
               this.upload_file_help_mst_dt.unshift(res.data);
             }
             else{
-              this.upload_file_help_mst_dt = this.upload_file_help_mst_dt.filter((item,index) =>{
+              this.upload_file_help_mst_dt = this.upload_file_help_mst_dt.filter((item:IFileUploadHelp,index:number) =>{
                           if(item.id == res.data.id){
-                              item = res.data;
+                              item.file_id = res.data.file_id;
+                              item.file_type_id = res.data.file_type_id;
+                              item.rec_upload_freq = res.data.rec_upload_freq;
+                              item.file_format_id = res.data.file_format_id;
+                              item.rnt_id = res.data.rnt_id;
+                              item.rnt_name = res.data.rnt_name;
+                              item.uploaded_mode_id = res.data.uploaded_mode_id;
+                              item.updated_at = res.data.updated_at;
+                              item.updated_by = res.data.updated_by;
                           }
                           return item;
               })
             }
         this.reset();
+        // this.pTableRef.reset();
     }
       this.utility.showSnackbar(res.suc == 1 ? (id > 0 ? UPDATE_MESSAGE : ADD_MESSAGE) : ERROR_MESSAGE,res.suc);
 
@@ -216,7 +225,7 @@ export class UploadHelpComponent implements OnInit {
    * @param row
    */
   populateuploadFileHelpinForm = (row) =>{
-    // this.file_upload_help_form.reset({emitEvent:false,onlySelf:true}); // reset the form if any form field is filled up with value
+    this.file_upload_help_form.reset({emitEvent:false,onlySelf:true}); // reset the form if any form field is filled up with value
     // Checked if the Edit button is clicked or not , if edit button is clicked then change the scroll position
     if(row){
       this.dom.documentElement.scrollIntoView({behavior:'smooth',block:'start'});
@@ -298,9 +307,9 @@ export interface IFileUploadHelp {
   created_at: string
   created_by: number
   file_format_id: string
-  file_id: number
+  file_id: string
   // file_name:string
-  file_type_id: number
+  file_type_id: string
   id: number
   rec_upload_freq: string
   rnt_id: number

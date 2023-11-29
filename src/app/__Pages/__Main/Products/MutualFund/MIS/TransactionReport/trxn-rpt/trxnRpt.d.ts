@@ -59,7 +59,8 @@ interface TrxnRpt{
       trxn_code:string | null
       tot_gross_amount:string | null,
       lock_status:string | null,
-      divi_lock_flag: string | null
+      divi_lock_flag: string | null,
+      isin_no:string | null
    }
 }
 

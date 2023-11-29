@@ -94,6 +94,7 @@ export class MaturedStpComponent implements OnInit {
   }
 
   getSipMasterData(form_data){
+    this.mature_stp = [];
     this.reset_data = 'N';
     let dt = {
       ...form_data,

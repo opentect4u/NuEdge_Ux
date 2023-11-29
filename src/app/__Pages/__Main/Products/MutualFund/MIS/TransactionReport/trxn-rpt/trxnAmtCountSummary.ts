@@ -3,7 +3,7 @@ import {DIVIDEND_PAYOUT_PROCESS, DIVIDEND_PAYOUT_REJ,
   NFO_REJ, NFT, PUR_PROCESS,PUR_REJ, REDEMP_PROCESS, REDEMP_REJ, SIP_PROCESS,
   SIP_REJ, STP_IN_PROCESS, STP_IN_REJ, STP_OUT_PROCESS, STP_OUT_REJ,
   SWITCH_IN_MERGER_PROCESS, SWITCH_IN_MERGER_REJ, SWITCH_IN_PROCESS, SWITCH_IN_REJ,
-  SWITCH_OUT_MERGER_PROCESS, SWITCH_OUT_MERGER_REJ, SWITCH_OUT_PROCESS, SWITCH_OUT_REJ, SWP_PROCESS, SWP_REJ}
+  SWITCH_OUT_MERGER_PROCESS, SWITCH_OUT_MERGER_REJ, SWITCH_OUT_PROCESS, SWITCH_OUT_REJ, SWP_PROCESS, SWP_REJ, TRANSFER_IN, TRANSFER_IN_REJECTION, TRANSFER_OUT, TRANSFER_OUT_REJECTION}
   from '../../../../../../../strings/transType';
 
 
@@ -41,6 +41,10 @@ export class trxnCountSummary{
   public divi_reinv_count:Partial<ItrxnType>;
   public other_amt:Partial<ItrxnType>;
   public other_count:Partial<ItrxnType>;
+  public transfer_in_amt:Partial<ItrxnType>;
+  public transfer_in_count:Partial<ItrxnType>;
+  public transfer_out_amt:Partial<ItrxnType>;
+  public transfer_out_count:Partial<ItrxnType>;
   public total_amt: number;
   public trxn_sub_type;
   constructor(trxn:TrxnRpt[]){
@@ -349,6 +353,54 @@ export class trxnCountSummary{
 
     /**** END */
 
+
+    /************ Transfer In *********/
+
+    this.transfer_in_count = {
+      process: trxn.filter((item: TrxnRpt) => (
+        TRANSFER_IN.indexOf(item.transaction_subtype) >= 0
+      )).length,
+      reject: trxn.filter((item: TrxnRpt) => (
+        TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0
+      )).length,
+      process_trxn: trxn.filter((item: TrxnRpt) => (TRANSFER_IN.indexOf(item.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0))
+    };
+    this.transfer_in_amt = {
+      process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
+        TRANSFER_IN.indexOf(item.transaction_subtype) >= 0
+      ))),
+      reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
+        TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0
+      )))
+    }
+
+    /************* End *****************/
+
+
+     /************ Transfer Out *********/
+
+     this.transfer_out_count = {
+      process: trxn.filter((item: TrxnRpt) => (
+        TRANSFER_OUT.indexOf(item.transaction_subtype) >= 0
+      )).length,
+      reject: trxn.filter((item: TrxnRpt) => (
+        TRANSFER_OUT_REJECTION.indexOf(item.transaction_subtype) >= 0
+      )).length,
+      process_trxn: trxn.filter((item: TrxnRpt) => (TRANSFER_IN.indexOf(item.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0))
+    };
+    this.transfer_out_amt = {
+      process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
+        TRANSFER_OUT.indexOf(item.transaction_subtype) >= 0
+      ))),
+      reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
+        TRANSFER_OUT_REJECTION.indexOf(item.transaction_subtype) >= 0
+      )))
+    }
+
+    /************* End *****************/
+
     /******* TOTAL AMOUNT COUNT */
       this.total_amt= this.calculateTotAmt(trxn);
       // this.total_amt={
@@ -542,28 +594,48 @@ export class trxnCountAmtSummaryColumn{
         width:"15rem"
       },
       {
-        field:'other_amt',
-        header: 'NFT Amount',
+        field:'transfer_in_amt',
+        header: 'Trans. In Amount',
+        width:"15rem"
+      },
+      {
+        field:'transfer_in_count',
+        header: 'Trans. In Count',
+        width:"15rem"
+      },
+      {
+        field:'transfer_out_amt',
+        header: 'Trans. Out Amount',
+        width:"15rem"
+      },
+      {
+        field:'transfer_out_count',
+        header: 'Trans. Out Count',
         width:"15rem"
       },
       {
         field:'divi_payout_amt',
-        header: 'Dividend Payout Amount',
+        header: 'IDCW Payout Amount',
         width:"15rem"
       },
       {
         field:'divi_payout_count',
-        header: 'Dividend Payout Count',
+        header: 'IDCW Payout Count',
         width:"15rem"
       },
       {
         field:'divi_reinv_amt',
-        header: 'Dividend Reinv. Amount',
+        header: 'IDCW Reinv. Amount',
         width:"15rem"
       },
       {
         field:'divi_reinv_count',
-        header: 'Dividend Reinv. Count',
+        header: 'IDCW Reinv. Count',
+        width:"15rem"
+      },
+      {
+        field:'other_amt',
+        header: 'NFT Amount',
         width:"15rem"
       },
       {
@@ -575,7 +647,7 @@ export class trxnCountAmtSummaryColumn{
         field:'total_amt',
         header: 'NET Amount',
         width:"15rem"
-      },
+      }
     ]
 }
 /**** END */

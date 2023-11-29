@@ -84,6 +84,7 @@ export class MaturedSIPComponent implements OnInit {
     }
 
     getSipMasterData(form_data){
+      this.mature_sip = [];
       this.reset_data = 'N';
       let dt = {
         ...form_data,

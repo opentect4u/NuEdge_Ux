@@ -86,14 +86,13 @@
   text-decoration: underline;cursor:pointer
 }
 .process{
-  background-color: #8bc34a5c;
   font-size: 11px!important;
   text-align: center!important;
-  padding: 12px;
+  padding: 4px;
 }
 .rejection{
-  background-color: rgb(233 30 30 / 31%);
+  color: rgb(233, 30, 30);
   font-size: 11px!important;
   text-align: center!important;
-  padding: 12px;
+  padding: 4px;
 }

@@ -5,8 +5,8 @@ export const PUR_REJ = [
   `fresh rejection`,
   `additional rejection`,
   `additional purchase rejection`,
-  `fresh purchase rejection`
-
+  `fresh purchase rejection`,
+  `additional purchase pre-rejection`
 ];
 export const REDEMP_PROCESS = [`Partial Redemption`, `Full Redemption`];
 export const REDEMP_REJ = [
@@ -30,13 +30,22 @@ export const STP_IN_REJ = [`STP In Rejection`];
 export const STP_OUT_PROCESS = [`STP Out`];
 export const STP_OUT_REJ = [`STP Out Rejection`];
 export const SWP_PROCESS = [`SWP`];
-export const SWP_REJ = [`SWP Rejection`];
+export const SWP_REJ = [`SWP Rejection`,`SWP Installment Rejection`];
 export const NFO_PROCEES = [`NFO`];
-export const NFO_REJ = [`NFO Rejection`];
-export const SIP_PROCESS = [`SIP Purchase Installment`];
+export const NFO_REJ = [`NFO Rejection`,`NFO Pre-Rejection`];
+export const SIP_PROCESS = [`SIP Purchase Installment`,`SIP Purchase Installment - NFO`];
 export const SIP_REJ = [`SIP Purchase Installment Rejection`];
-
+export const TRANSFER_IN = [`Transfer In`];
+export const TRANSFER_IN_REJECTION = [`Transfer In Rejection`];
+export const TRANSFER_OUT = [`Transfer Out`];
+export const TRANSFER_OUT_REJECTION = [`Transfer Out Rejection`];
 export const NFT = [
+  `Additional Purchase Pre-Rejection`,
+  `SIP Purchase Installment - NFO`,
+  `Transfer In`,
+  `Transfer Out`,
+  `Transfer In Rejection`,
+  `Transfer Out Rejection`,
   `SIP Purchase Installment Rejection`,
   `SIP Purchase Installment`,
   `Fresh`,
@@ -68,15 +77,21 @@ export const NFT = [
   `STP Out Rejection`,
   `SWP`,
   `SWP Rejection`,
+  `SWP Installment Rejection`,
   `NFO`,
   `NFO Rejection`,
+  `NFO Pre-Rejection`
 ];
 export const NET_PROCESS_AMT =[
+  `Dividend Reinvestment`,
+  `SIP Purchase Installment - NFO`,
+  `Dividend Reinvestment Rejection`,
   `SIP Purchase Installment Rejection`,
   `SIP Purchase Installment`,
   `Fresh`,
   `Additional`,
   `Additional Purchase`,
+  `Additional Purchase Pre-Rejection`,
   `Fresh Rejection`,
   `Fresh Purchase Rejection`,
   `Additional Rejection`,
@@ -88,9 +103,12 @@ export const NET_PROCESS_AMT =[
   `STP In`,
   `STP In Rejection`,
   `NFO`,
-  `NFO Rejection`
+  `NFO Rejection`,
+  `NFO Pre-Rejection`
 ]
 export const NET_REJECTION_AMT =[
+  `Dividend Payout`,
+  `Dividend Payout Rejection`,
   `Partial Redemption`,
   `Full Redemption`,
   `Partial Redemption Rejection`,
@@ -102,7 +120,8 @@ export const NET_REJECTION_AMT =[
   `STP Out`,
   `STP Out Rejection`,
   `SWP`,
-  `SWP Rejection`
+  `SWP Rejection`,
+  `SWP Installment Rejection`
 ]
 
 // export const NFT

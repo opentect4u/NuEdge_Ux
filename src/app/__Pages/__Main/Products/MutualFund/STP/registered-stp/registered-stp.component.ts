@@ -85,6 +85,7 @@ export class RegisteredStpComponent implements OnInit {
     }
 
     registertStpMasterData(form_data){
+      this.register_stp = [];
       this.reset_data = 'N';
       let dt = {
         ...form_data,

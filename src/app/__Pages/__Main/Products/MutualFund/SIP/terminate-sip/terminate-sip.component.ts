@@ -57,6 +57,7 @@ export class TerminateSIPComponent implements OnInit {
   ngOnInit(): void {}
 
   LiveSipReport = (formDt) => {
+    this.live_sip_rpt = [];
     let dt ={
       ...formDt,
       report_type:this.report_type

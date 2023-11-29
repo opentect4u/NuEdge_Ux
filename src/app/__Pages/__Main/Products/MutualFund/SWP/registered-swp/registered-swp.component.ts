@@ -85,6 +85,7 @@ export class RegisteredSwpComponent implements OnInit {
     };
 
     registertSwpMasterData(form_data){
+      this.register_swp = [];
       this.reset_data = 'N';
       let dt = {
         ...form_data,

@@ -793,9 +793,14 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .topValueBox h3 {
-  font-size: 18px;
+  /* font-size: 18px;
   color: #fff;
   font-weight: 700;
+  margin: 0 0 31px 0px;
+  padding: 0; */
+  font-size: 15px;
+  color: #fff;
+  font-weight: 500;
   /* margin: 0 0 10px 0; */
   margin: 0 0 31px 0px;
   padding: 0;
@@ -990,10 +995,15 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .boxMid .bodyPart ul li a {
-  font-size: 15px;
+  /* font-size: 15px;
   color: #444444;
   text-decoration: none;
+  display: block; */
+  font-size: 13px;
+  color: #1f4584;
+  text-decoration: none;
   display: block;
+  font-weight: 500;
 }
 
 .boxMid .bodyPart ul li a:hover {
@@ -1066,10 +1076,15 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 }
 
 .boxMid_2 .bodyPart ul li a {
-  font-size: 15px;
+  /* font-size: 15px;
   color: #444444;
   text-decoration: none;
+  display: flex; */
+  font-size: 13px;
+  color: #1f4584;
+  text-decoration: none;
   display: flex;
+  font-weight: 500;
 }
 
 .boxMid_2 .bodyPart ul li a:hover {

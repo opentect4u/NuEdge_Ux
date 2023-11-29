@@ -66,6 +66,7 @@ ngOnInit(): void {
 }
 
 LiveSwpReport = (formDt) =>{
+  this.live_swp_rpt = [];
     let dt ={
     ...formDt,
     report_type:this.report_type,

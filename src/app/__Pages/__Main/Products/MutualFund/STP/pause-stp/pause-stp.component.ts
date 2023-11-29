@@ -44,6 +44,7 @@ export class PauseStpComponent implements OnInit {
   }
 
   PauseStpReport = (formDt) =>{
+    this.pause_stp = [];
     let dt ={
       ...formDt,
       report_type:this.report_type,
