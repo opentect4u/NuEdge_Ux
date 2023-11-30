@@ -273,12 +273,16 @@ export class InvestorStaticReportComponent implements OnInit {
 
     /**view_type Change*/
     this.filter.controls['view_type'].valueChanges.subscribe(res => {
+      this.filter.get('client_name').reset('', { emitEvent: false });
+      this.filter.get('pan_no').reset('');
       if (res) {
+        this.filter.get('client_name').enable();
         this.paginate = 1;
         this.__clientMst = [];
-        this.filter.get('client_name').reset('', { emitEvent: false });
-        this.filter.get('pan_no').reset('');
         this.getClientMst(res, this.paginate);
+      }
+      else{
+        this.filter.get('client_name').disable();
       }
     })
         /**End */

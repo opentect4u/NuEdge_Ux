@@ -2,6 +2,7 @@ export const PUR_PROCESS = [`fresh`,
 `additional`,
 `additional purchase`];
 export const PUR_REJ = [
+  `fresh pre-rejection`,
   `fresh rejection`,
   `additional rejection`,
   `additional purchase rejection`,
@@ -53,6 +54,7 @@ export const NFT = [
   `Additional Purchase`,
   `Fresh Rejection`,
   `Fresh Purchase Rejection`,
+  `Fresh Pre-Rejection`,
   `Additional Rejection`,
   `Additional Purchase Rejection`,
   `Partial Redemption`,
@@ -83,6 +85,9 @@ export const NFT = [
   `NFO Pre-Rejection`
 ];
 export const NET_PROCESS_AMT =[
+
+  `Transfer In`,
+  `Transfer In Rejection`,
   `Dividend Reinvestment`,
   `SIP Purchase Installment - NFO`,
   `Dividend Reinvestment Rejection`,
@@ -92,6 +97,7 @@ export const NET_PROCESS_AMT =[
   `Additional`,
   `Additional Purchase`,
   `Additional Purchase Pre-Rejection`,
+  `Fresh Pre-Rejection`,
   `Fresh Rejection`,
   `Fresh Purchase Rejection`,
   `Additional Rejection`,
@@ -121,7 +127,9 @@ export const NET_REJECTION_AMT =[
   `STP Out Rejection`,
   `SWP`,
   `SWP Rejection`,
-  `SWP Installment Rejection`
+  `SWP Installment Rejection`,
+  `Transfer Out`,
+  `Transfer Out Rejection`,
 ]
 
 // export const NFT

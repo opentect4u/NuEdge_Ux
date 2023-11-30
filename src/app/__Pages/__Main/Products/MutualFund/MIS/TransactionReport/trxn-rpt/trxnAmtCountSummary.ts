@@ -48,8 +48,7 @@ export class trxnCountSummary{
   public total_amt: number;
   public trxn_sub_type;
   constructor(trxn:TrxnRpt[]){
-      // console.log(trxn);
-
+    let tot_amt:number = 0;
     /*** `PURCHASE & PURCHASE REJECTION AMOUNT , COUNT` */
     this.pur_count = {
       process: trxn.filter((item: TrxnRpt) =>
@@ -72,6 +71,8 @@ export class trxnCountSummary{
           .indexOf(item.transaction_subtype.toLowerCase()) >= 0
       )))
     };
+
+    tot_amt = (this.pur_amt.process + this.pur_amt.reject);
     /****** END */
 
     /***** `SWITCH IN & SWITCH IN REJECTION` */
@@ -95,6 +96,7 @@ export class trxnCountSummary{
         SWITCH_IN_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     };
+    tot_amt += (this.switch_in_amt.process + this.switch_in_amt.reject);
     /********END */
 
     /******** SWP, REJECTION */
@@ -118,6 +120,7 @@ export class trxnCountSummary{
         SWP_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     };
+    tot_amt -= (this.swp_amt.process + this.swp_amt.reject);
     /*********END */
 
     /**** Redemption & Redemption Rejection */
@@ -131,6 +134,7 @@ export class trxnCountSummary{
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (REDEMP_PROCESS.indexOf(item.transaction_subtype) >= 0))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (REDEMP_REJ.indexOf(item.transaction_subtype) >= 0)))
     };
+    tot_amt -= (this.redemp_amt.process + this.redemp_amt.reject);
     /***** End */
 
     /***** Switch Out & Switch Out Rejection */
@@ -152,6 +156,7 @@ export class trxnCountSummary{
         SWITCH_OUT_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     };
+    tot_amt -= (this.switch_out_amt.process + this.switch_out_amt.reject);
     /**** End */
 
     /***** Divident Reinvestmnt , Divident Reinvestmnt Rejection */
@@ -173,6 +178,7 @@ export class trxnCountSummary{
         DIVIDEND_REINV_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    // tot_amt += (this.divi_reinv_amt.process + this.divi_reinv_amt.reject);
     /**** End */
 
     /***** Divident PAYOUT , Divident PAYOUT Rejection */
@@ -194,6 +200,7 @@ export class trxnCountSummary{
         DIVIDEND_PAYOUT_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    // tot_amt -= (this.divi_payout_amt.process + this.divi_payout_amt.reject);
     /**** End */
 
     /*** Switch out & In Merger, Rejection
@@ -221,7 +228,7 @@ export class trxnCountSummary{
         SWITCH_OUT_MERGER_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     }
-
+    tot_amt -= (this.switch_out_merger_amt.process + this.switch_out_merger_amt.reject);
     this.switch_in_merger_count = {
       process: trxn.filter((item: TrxnRpt) => (
         SWITCH_IN_MERGER_PROCESS.indexOf(item.transaction_subtype) >= 0
@@ -240,6 +247,7 @@ export class trxnCountSummary{
         SWITCH_IN_MERGER_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    tot_amt += (this.switch_in_merger_amt.process + this.switch_in_merger_amt.reject);
     /*** End */
 
     /******* STP IN , OUT, Rejection */
@@ -253,7 +261,6 @@ export class trxnCountSummary{
       process_trxn: trxn.filter((item: TrxnRpt) => (STP_IN_PROCESS.indexOf(item.transaction_subtype) >= 0)),
       reject_trxn:trxn.filter((item: TrxnRpt) =>(STP_IN_REJ.indexOf(item.transaction_subtype) >= 0))
     }
-
     this.stp_in_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
         STP_IN_PROCESS.indexOf(item.transaction_subtype) >= 0
@@ -262,6 +269,8 @@ export class trxnCountSummary{
         STP_IN_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    tot_amt += (this.stp_in_amt.process + this.stp_in_amt.reject);
+
     this.stp_out_count = {
       process: trxn.filter((item: TrxnRpt) => (
         STP_OUT_PROCESS.indexOf(item.transaction_subtype) >= 0
@@ -281,6 +290,7 @@ export class trxnCountSummary{
         STP_OUT_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    tot_amt -= (this.stp_out_amt.process + this.stp_out_amt.reject);
     /**** End */
 
     /*** NFO , REJECTION */
@@ -302,6 +312,7 @@ export class trxnCountSummary{
         NFO_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    tot_amt += (this.nfo_amt.process + this.nfo_amt.reject);
     /**** END */
 
     /*****  SIP , REJECTION */
@@ -323,6 +334,7 @@ export class trxnCountSummary{
         SIP_REJ.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    tot_amt += (this.sip_amt.process + this.sip_amt.reject);
     /***** END */
 
     /****** NFT, REJECTION */
@@ -374,12 +386,12 @@ export class trxnCountSummary{
         TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    tot_amt += (this.transfer_in_amt.process + this.transfer_in_amt.reject);
+
 
     /************* End *****************/
 
-
      /************ Transfer Out *********/
-
      this.transfer_out_count = {
       process: trxn.filter((item: TrxnRpt) => (
         TRANSFER_OUT.indexOf(item.transaction_subtype) >= 0
@@ -398,11 +410,14 @@ export class trxnCountSummary{
         TRANSFER_OUT_REJECTION.indexOf(item.transaction_subtype) >= 0
       )))
     }
+    tot_amt -= (this.transfer_out_amt.process + this.transfer_out_amt.reject);
 
     /************* End *****************/
 
     /******* TOTAL AMOUNT COUNT */
-      this.total_amt= this.calculateTotAmt(trxn);
+      // this.total_amt= this.calculateTotAmt(trxn);
+      this.total_amt= tot_amt;
+
       // this.total_amt={
       //   process:this.calculateAmount(trxn.filter((item: TrxnRpt) => (
       //     (NET_PROCESS_AMT.indexOf(item.transaction_subtype) > 0)

@@ -17,7 +17,8 @@
       <mailBack-trxn-rpt-without-scm
       [tblminWidth]="tblWidth"
       [trxnRptWithOutScm]="trxnTypeRpt"
-      [mismatch_flag]="mismatch_flag"
+      [sub_file_type]="mismatch_flag"
+      [file_type]="parent_mismatch_type"
       [TrxnClm]="TrxnClm"
       (changeStatusOfTrxn)="setTrxnFromChild($event)"></mailBack-trxn-rpt-without-scm>
      </mat-card-content>

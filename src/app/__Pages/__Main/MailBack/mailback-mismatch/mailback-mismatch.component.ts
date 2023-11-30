@@ -46,7 +46,7 @@ export class MailbackMismatchComponent implements OnInit {
 
   count_tab_index: number = 0; /** For Holding the number of active tab in modal   */
 
-  form_type: string | undefined = '';
+  // form_type: string | undefined = '';
 
   /**
    * Holding count for each file type
@@ -54,6 +54,8 @@ export class MailbackMismatchComponent implements OnInit {
   misMatchCountFile:IMismatchCountFile[] = [];
 
   mismatch_flag:string = 'A';
+
+  parent_mismatch_type:string;
 
   tblWidth:string | undefined;
 
@@ -101,9 +103,7 @@ export class MailbackMismatchComponent implements OnInit {
    *  need to show those transaction which has no scheme /AMC/Plan/Option/Bussiness Type
    */
   getTrxnRpt = (flag:string,file_flag:string) => {
-    console.log(flag);
-    console.log(file_flag);
-
+    this.parent_mismatch_type = file_flag;
     this.mismatch_flag = flag;
     this.dbIntr
       .api_call(0, `/${API[file_flag]}`, 'mismatch_flag='+flag)
@@ -126,7 +126,6 @@ export class MailbackMismatchComponent implements OnInit {
     let __mode = '';
     let flag = '';
     let file_flag = '';
-    console.log(TabDtls.tabDtls);
     switch(mode){
       case 'P':
         this.index = TabDtls.index;
@@ -150,7 +149,6 @@ export class MailbackMismatchComponent implements OnInit {
         break;
       default:break;
     }
-    console.log(__mode);
     this.getTrxnRpt(flag,file_flag);
     this.tblWidth = this.index == 0 ? '350rem' : '150rem';
     this.column_manage(__mode);

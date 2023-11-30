@@ -349,6 +349,7 @@ export class TrxnRptComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.misTrxnRpt.get('client_name').disable();
     setTimeout(() => {
     this.misTrxnRpt.get('date_periods').setValue('M',{emitEvent:true});
     this.searchTrxnReport();
@@ -592,12 +593,16 @@ export class TrxnRptComponent implements OnInit {
 
       /**view_type Change*/
       this.misTrxnRpt.controls['view_type'].valueChanges.subscribe(res =>{
+          this.misTrxnRpt.get('client_name').reset('',{emitEvent:false});
+          this.misTrxnRpt.get('pan_no').reset('');
             if(res){
               this.paginate = 1;
               this.__clientMst = [];
-              this.misTrxnRpt.get('client_name').reset('',{emitEvent:false});
-              this.misTrxnRpt.get('pan_no').reset('');
+              this.misTrxnRpt.get('client_name').enable();
               this.getClientMst(res,this.paginate);
+            }
+            else{
+              this.misTrxnRpt.get('client_name').disable();
             }
       })
       /**End */

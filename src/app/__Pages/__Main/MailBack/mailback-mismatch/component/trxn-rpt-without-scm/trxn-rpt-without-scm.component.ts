@@ -24,7 +24,8 @@ export class TrxnRptWithoutScmComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl :Table;
   @ViewChild('searchFilter') filter:ElementRef;
-  @Input() mismatch_flag:string;
+  @Input() sub_file_type :string;
+  @Input() file_type:string;
 
 
   @Input() tblminWidth: string | undefined = '350rem';
@@ -72,7 +73,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       accept: () => {
 
         this.dbIntr.api_call(1,'/mailbackMismatchLock',
-        this.utility.convertFormData(trxn)
+        this.utility.convertFormData({...trxn,file_type:this.file_type,sub_file_type:this.sub_file_type})
         )
         .subscribe((res: any) =>{
             if(res.suc == 1){
@@ -242,6 +243,8 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       flag: 'B',
       id: trxn.id,
       transaction: trxn,
+      file_type:this.file_type,
+      sub_file_type: this.sub_file_type,
       title: 'Add Business Type',
       product_id: '1', /** For Mutual Fund */
       right: global.randomIntFromInterval(1, 60),
@@ -255,7 +258,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       dialogref.afterClosed().subscribe((dt) => {
         if (dt) {
           if (dt.suc == 1) {
-            this.deleteTransaction(trxn.id);
+            this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item.folio_no != trxn.folio_no));
           }
         }
       });

@@ -59,8 +59,16 @@
             <p class="m-0">{{(trxn[col.field] && trxn[col.field]!=' ' && (trxn[col.field] | uppercase)!='NOT PROVID' && trxn[col.field] != '0')  ? trxn[col.field] : 'N/A' }}</p>
           </ng-container> -->
 
-          <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+          <!-- <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
             <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' ') ? trxn[col.field] : 'N/A' }}</p>
+            </ng-container> -->
+            <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+              <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" &&
+                trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
+                && (trxn[col.field] | titlecase)!="Not Provid"
+                && (trxn[col.field] | titlecase)!="Notprovided"
+                ) ? trxn[col.field] :
+                'N/A' }}</p>
             </ng-container>
 
           <ng-container *ngSwitchCase="col.field == 'first_client_name'">
@@ -87,7 +95,7 @@
           </ng-container>
           <!-- Scheme Logic -->
           <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-            <ng-container *ngIf="mismatch_flag == 'S';else other">
+            <ng-container *ngIf="sub_file_type == 'S';else other">
               <p class="m-0" [matTooltip]="trxn['product_code']">
                 {{trxn['product_code'] ? trxn['product_code']  : 'N/A'}}</p>
             </ng-container>
@@ -98,11 +106,11 @@
           <!-- End -->
           <!-- AMC Logic -->
           <ng-container *ngSwitchCase="col.field == 'amc_name'">
-            <ng-container *ngIf="mismatch_flag == 'A';else other">
+            <ng-container *ngIf="sub_file_type == 'A';else other">
               <p class="m-0" [matTooltip]="trxn['amc_code']">{{trxn['amc_code'] ? trxn['amc_code']  : 'N/A'}}</p>
             </ng-container>
             <ng-template #other>
-              <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
+              <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A'}}</p>
             </ng-template>
           </ng-container>
           <!-- End -->

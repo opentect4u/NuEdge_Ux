@@ -8,6 +8,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { global } from '../../../../../../../__Utility/globalFunc';
 import { responseDT } from '../../../../../../../__Model/__responseDT';
+import { ADD_MESSAGE, ERROR_MESSAGE } from 'src/app/strings/message';
 
 @Component({
   selector: 'app-business-type',
@@ -43,7 +44,7 @@ export class BusinessTypeComponent implements OnInit {
   __isSubBrkArnSpinner: boolean = false;
 
   /**
-   * SUB BROKER ARN MASTER DATA HOLDER 
+   * SUB BROKER ARN MASTER DATA HOLDER
    */
   __subbrkArnMst: any = [];
 
@@ -209,7 +210,7 @@ export class BusinessTypeComponent implements OnInit {
                 this.searchResultVisibilityForSubBrkArn('none');
                 break;
     }
-   
+
   }
 
   searchResultVisibilityForSubBrkArn = (display_mode: string) => {
@@ -218,19 +219,24 @@ export class BusinessTypeComponent implements OnInit {
 
   submitBusinessType = () => {
     let object = Object.assign({}, this.business_form.getRawValue(), {
-      ...this.business_form.getRawValue(),
-      euin_no: this.business_form.getRawValue().euin_no ?
+      ...this.data.transaction,
+      sub_file_type:this.data.sub_file_type,
+      file_type:this.data.file_type,
+      new_euin_no: this.business_form.getRawValue().euin_no ?
         (global.containsSpecialChars(this.business_form.getRawValue().euin_no)
           ? this.business_form.getRawValue().euin_no.split(' ')[0] : this.business_form.getRawValue().euin_no) : '',
+      new_bu_type_id:  this.business_form.getRawValue().bu_type_id,
+      new_sub_arn_no:  this.business_form.getRawValue().bu_type_id == 'B' ? global.getActualVal(this.business_form.getRawValue().sub_arn_no) : '',
+      new_sub_brk_cd:  this.business_form.getRawValue().bu_type_id == 'B' ? global.getActualVal(this.business_form.getRawValue().new_sub_brk_cd) : '',
     });
-    this.dialogRef.close(1);
-    //this.__dbIntr.api_call(1, '/businessTypeAddEdit', this.__utility.convertFormData(object))
-    //  .pipe(pluck("data"))
-    //  .subscribe((res: any) => {
-    //    if (res.suc == 1) {
-    //      this.dialogRef.close(res.suc);
-    //    }
-    //    this.__utility.showSnackbar(res.suc ? 'Business Type Added Success fully' : res.msg, res.suc);
-    //  })
+    console.log(object);
+    this.__dbIntr.api_call(1, '/mailbackMismatchLock', this.__utility.convertFormData(object))
+     .subscribe((res: any) => {
+       if (res.suc == 1) {
+         this.dialogRef.close(res);
+       }
+      this.__utility.showSnackbar(res.suc == 1 ? `Business Type ${ADD_MESSAGE}` : ERROR_MESSAGE,res.suc);
+     })
+
   }
 }
