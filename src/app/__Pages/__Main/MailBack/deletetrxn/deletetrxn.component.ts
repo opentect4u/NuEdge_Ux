@@ -261,7 +261,8 @@ export class DeletetrxnComponent implements OnInit {
           if(dt == 1){
             this.trxnDT = this.trxnDT.filter((item,index) => {
               if(item.id == trxn.id){
-                item.divi_lock_flag = 'N'
+                item.divi_lock_flag = 'N';
+                item.bu_type_lock_flag = 'N'
               }
               return true;
           });

@@ -60,7 +60,8 @@ interface TrxnRpt{
       tot_gross_amount:string | null,
       lock_status:string | null,
       divi_lock_flag: string | null,
-      isin_no:string | null
+      isin_no:string | null,
+      bu_type_lock_flag:string | null
    }
 }
 

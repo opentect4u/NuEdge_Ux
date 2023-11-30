@@ -134,13 +134,13 @@
       <ng-template pTemplate="body" let-trxnDT let-i="rowIndex" class="t_head">
         <tr
         [ngStyle]="{
-          'background-color':trxnDT.divi_lock_flag == 'L' ? 'rgb(220 53 69 / 10%)' : '',
-          'color':trxnDT.divi_lock_flag == 'L' ? '#dc3545' : '',
-          'font-weight':trxnDT.divi_lock_flag == 'L' ? 900 : 500
+          'background-color':(trxnDT.divi_lock_flag == 'L' || trxnDT.bu_type_lock_flag == 'L') ? 'rgb(220 53 69 / 10%)' : '',
+          'color':(trxnDT.divi_lock_flag == 'L' || trxnDT.bu_type_lock_flag == 'L') ? '#dc3545' : '',
+          'font-weight':(trxnDT.divi_lock_flag == 'L' || trxnDT.bu_type_lock_flag == 'L') ? 900 : 500
       }"
         >
           <td [style]="'max-width:4rem'" pFrozenColumn>
-            <ng-container *ngIf="trxnDT.divi_lock_flag == 'L';else unlock">
+            <ng-container *ngIf="(trxnDT.divi_lock_flag == 'L' || trxnDT.bu_type_lock_flag == 'L');else unlock">
             <p-tableCheckbox [disabled]="true"></p-tableCheckbox>
             </ng-container>
             <ng-template #unlock>
@@ -156,7 +156,7 @@
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'lock_status'">
-                <ng-container *ngIf="trxnDT.divi_lock_flag == 'L';else unlock">
+                <ng-container *ngIf="(trxnDT.divi_lock_flag == 'L' || trxnDT.bu_type_lock_flag == 'L');else unlock">
                   <button  mat-icon-button
                   class="text-danger"
                   (click)="unlockedTrxn(trxnDT,i)">
@@ -194,7 +194,7 @@
 
               <ng-container *ngSwitchCase="col.field == 'gross_amount' || col.field == 'amount' || col.field == 'tds' || col.field == 'stamp_duty'">
                 <p class="m-0" matTooltipClass="ToolTip" [matTooltip]="trxnDT[col.field] ? (trxnDT[col.field] | number:'1.2-2'): '0'">
-                  {{(trxnDT[col.field] ? (trxnDT[col.field] | number:'1.2-2') : '0') }}
+                  {{(trxnDT[col.field] ? (trxnDT[col.field] | number:'1.2-2').replace(',','') : '0') }}
                 </p>
               </ng-container>
               <ng-container *ngSwitchDefault>

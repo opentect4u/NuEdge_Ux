@@ -314,6 +314,7 @@ export class ReportFilterComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.Rpt.get('client_name').disable();
     /***** Previous Logic */
     // this.month = this.setMonthAccordingToYear(
     //   this.Rpt.value.year,
@@ -591,12 +592,16 @@ export class ReportFilterComponent implements OnInit {
 
        /**view_type Change*/
        this.Rpt.controls['view_type'].valueChanges.subscribe(res =>{
+        this.Rpt.get('client_name').reset('',{emitEvent:false});
+        this.Rpt.get('pan_no').reset('');
         if(res){
           this.paginate = 1;
           this.__clientMst = [];
-          this.Rpt.get('client_name').reset('',{emitEvent:false});
-          this.Rpt.get('pan_no').reset('');
           this.getClientMst(res,this.paginate);
+          this.Rpt.get('client_name').enable();
+        }
+        else{
+          this.Rpt.get('client_name').disable();
         }
         })
         /**End */

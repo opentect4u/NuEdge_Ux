@@ -27,7 +27,7 @@ export class UnlockTrxnComponent implements OnInit {
 
   unlockTransactions =() =>{
     this.toggleLoader();
-    this.dbInr.api_call(1,'/unlockTransDetails',
+    this.dbInr.api_call(1,this.data.api_name,
     this.utility.convertFormData({id:this.data.id,filte_type:this.data.file_type}),true)
     .subscribe((res: any) =>{
       this.toggleLoader();
