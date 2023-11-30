@@ -379,7 +379,7 @@
                     <p class="m-0"
                     [ngClass]="{'text-danger': trxn[col.field] < 0}"
                     >
-                      {{trxn[col.field] ? (trxn[col.field] | number: '1.2-2').replace(',','') : 0}}
+                      {{trxn[col.field] ? trxn[col.field].toFixed(2) : 0}}
                      </p>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'trxn_type'">
@@ -411,13 +411,13 @@
                   <ng-container *ngSwitchDefault>
                     <td class="process w-100">
                       <p class="m-0">
-                        {{trxn[col.field]?.process ? (trxn[col.field]?.process | number:'1.2-2').replace(',','') : 0}}
+                        {{trxn[col.field]?.process ? trxn[col.field]?.process.toFixed(2) : 0}}
                      </p>
                       </td>
                     <hr class="m-0" />
                     <td class="rejection w-100">
                       <p class="m-0">
-                        {{trxn[col.field]?.reject ? (trxn[col.field]?.reject | number:'1.2-2').replace(',','') : 0}}
+                        {{trxn[col.field]?.reject ? (trxn[col.field]?.reject.toFixed(2)) : 0}}
                        </p>
                   </ng-container>
                 </ng-container>

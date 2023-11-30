@@ -15,7 +15,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 // import { AuthGuard } from './__Gaurd/canActivate/auth.guard';
 /**<=== End ==> */
-
+// import localeFr from '@angular/common/locales/fr';
+// registerLocaleData(localeFr);
 @NgModule({
   declarations: [
     AppComponent],
@@ -33,6 +34,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     { provide: HTTP_INTERCEPTORS, useClass: NetworkInterceptor, multi: true },
     // {provide:LocationStrategy, useClass:HashLocationStrategy},
     {provide:LocationStrategy, useClass:PathLocationStrategy},
+    // { provide: LOCALE_ID, useValue: 'fr-FR'},
 
   ],
   bootstrap: [AppComponent]
