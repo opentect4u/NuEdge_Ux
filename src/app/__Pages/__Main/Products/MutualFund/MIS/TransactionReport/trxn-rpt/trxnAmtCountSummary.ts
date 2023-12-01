@@ -610,22 +610,22 @@ export class trxnCountAmtSummaryColumn{
       },
       {
         field:'transfer_in_amt',
-        header: 'Trans. In Amount',
+        header: 'Transfer In Amount',
         width:"15rem"
       },
       {
         field:'transfer_in_count',
-        header: 'Trans. In Count',
+        header: 'Transfer In Count',
         width:"15rem"
       },
       {
         field:'transfer_out_amt',
-        header: 'Trans. Out Amount',
+        header: 'Transfer Out Amount',
         width:"15rem"
       },
       {
         field:'transfer_out_count',
-        header: 'Trans. Out Count',
+        header: 'Transfer Out Count',
         width:"15rem"
       },
       {

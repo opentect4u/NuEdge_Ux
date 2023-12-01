@@ -27,6 +27,10 @@ import { RouterModule, Routes } from '@angular/router';
         loadChildren:()=> import('./AUMReport/aum.module').then(aum => aum.AumModule)
       },
       {
+        path:'monthlyMis',
+        loadChildren:()=> import('./MonthlyMIS/home.module').then(m => m.HomeModule)
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

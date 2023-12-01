@@ -26,7 +26,7 @@
         },
         {
           "id":5,
-          "tab_name":"Bussiness Type",
+          "tab_name":"Business Type",
           "img_src":"",
           "flag":"B"
         },
@@ -85,7 +85,7 @@
       },
       {
         "id": 5,
-        "tab_name": "Bussiness Type",
+        "tab_name": "Business Type",
         "img_src": "",
         "flag": "B"
       },

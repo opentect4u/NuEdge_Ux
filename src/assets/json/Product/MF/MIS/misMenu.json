@@ -185,9 +185,28 @@
     "accessibility":[],
     "title":"Monthly MIS Report",
     "tooltip":"Monthly MIS Report",
-    "url":"/main/product/mf",
+    "url":"/main/product/mf/mis/monthlyMis",
     "icon": "fa fa-user-o",
-    "has_submenu":[]
+    "has_submenu":[
+      {
+        "id":1,
+        "accessibility":[],
+        "title":"Monthly MIS",
+        "tooltip":"Monthly MIS",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      },
+      {
+        "id":2,
+        "accessibility":[],
+        "title":"Monthly MIS Trained",
+        "tooltip":"Monthly MIS",
+        "url":"/main/product/mf",
+        "icon": "fa fa-user-o",
+        "has_submenu":[]
+      }
+    ]
   },
   {
     "id":9,
