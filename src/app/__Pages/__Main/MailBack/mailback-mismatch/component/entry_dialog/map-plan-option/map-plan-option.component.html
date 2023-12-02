@@ -1,0 +1,39 @@
+
+<div >
+  <div mat-dialog-title class="dialog-title">
+    <h2>{{data.title}}</h2>
+    <div class="btnIcon">
+      <button mat-icon-button title="Close" [mat-dialog-close]="">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    </div>
+    <mat-dialog-content class="businessTypeContent">
+      <form [formGroup]="mapPlanOptionForm" [attr.id]="'plan_opt_map_frm'" (ngSubmit)="submitIsin()">
+          <div class="row">
+            <div class="col-sm-12">
+                <label for="scheme_name">Scheme</label>
+                <input type="text" name="scheme_named"
+                        id="scheme_name"
+                        formControlName="scheme_name"
+                        class="form-control">
+            </div>
+            <div class="col-sm-12 my-3">
+              <label for="isin_no">Scheme</label>
+               <select class="form-control"
+               id="isin_no"
+               formControlName="isin_no">
+              <option value="">Select ISIN</option>
+              <option value="{{isin.isin_no}}" *ngFor="let isin of isin_no_master_data">{{isin.isin_no}}</option>
+              </select>
+            </div>
+          </div>
+      </form>
+
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button color="primary" mat-button type="submit"
+            [attr.form]="'plan_opt_map_frm'+data.id"
+            [disabled]="mapPlanOptionForm.invalid">Map & Lock Trxn</button>
+    </mat-dialog-actions>
+</div>

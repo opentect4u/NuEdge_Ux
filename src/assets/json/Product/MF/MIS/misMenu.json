@@ -183,26 +183,26 @@
   {
     "id":8,
     "accessibility":[],
-    "title":"Monthly MIS Report",
-    "tooltip":"Monthly MIS Report",
+    "title":"Monthly MIS",
+    "tooltip":"Monthly MIS",
     "url":"/main/product/mf/mis/monthlyMis",
     "icon": "fa fa-user-o",
     "has_submenu":[
       {
         "id":1,
         "accessibility":[],
-        "title":"Monthly MIS",
-        "tooltip":"Monthly MIS",
-        "url":"/main/product/mf",
+        "title":"Monthly MIS Report",
+        "tooltip":"Monthly MIS Report",
+        "url":"/main/product/mf/mis/monthlyMis/report",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },
       {
         "id":2,
         "accessibility":[],
-        "title":"Monthly MIS Trained",
-        "tooltip":"Monthly MIS",
-        "url":"/main/product/mf",
+        "title":"Monthly MIS Trained Report",
+        "tooltip":"Monthly MIS Trained Report",
+        "url":"/main/product/mf/mis/monthlyMis/report",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       }

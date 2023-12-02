@@ -184,7 +184,13 @@ export class MailbackMismatchComponent implements OnInit {
        break;
       case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field)); break;
       case 'F': this.TrxnClm = [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))]; break;
-      case 'P/O': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !scm_clm.includes(item.field)) : (this.index == 2 ? [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))] : []) ;break;
+      case 'P/O': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !scm_clm.includes(item.field))
+      : (this.index == 2 ?
+        [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),
+        ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag)),
+         ...MailbackMismatchPlanOptionColumnForSIPSTPSWP.column
+      ]
+        : []) ;break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;
     }
 
@@ -228,7 +234,12 @@ export class MailBackMismatchCommonColumn {
     { field: 'bu_type_link', header: 'Business Type Link', width: '20rem', isVisible: ['B'] },
     { field: 'freq_link', header: 'Frequency Link', width: '20rem', isVisible: ['F'] },
     {field:'plan_opt',header:'Plan Option Link',width:"16rem", isVisible: ['P/O'] },
+  ]
+}
 
+export class MailbackMismatchPlanOptionColumnForSIPSTPSWP{
+  static column: column[] = [
+    {field:'plan_opt_map',header:'Plan Option Map',width:"16rem", isVisible: ['P/O'] },
   ]
 }
 

@@ -27,3 +27,12 @@
       td{
         word-break: break-all!important;
       }
+
+      :host ::ng-deep .p-button-link{
+        padding:0px!important;
+      }
+.icons >mat-icon{
+   font-size: 12px;
+   height: 12px;
+   width: 12px;
+}

@@ -199,6 +199,18 @@ trxn['divident_option'] ? (
           </ng-container>
 
 
+          <ng-container *ngSwitchCase="col.field == 'plan_opt_map'">
+
+              <p-button label="Map"
+              (click)="MapISIN(trxn,i)"
+              icon="pi pi-plus"
+              [disabled]="!trxn.scheme_name"
+              [ngStyle]="{'cursor':!trxn.scheme_name ? 'not-allowed' : 'pointer'}"
+              styleClass="p-button-link">
+            </p-button>
+          </ng-container>
+
+
           <ng-container *ngSwitchCase="col.field == 'bu_type_link'">
 
             <p-button [label]="'Map Business Type'"

@@ -140,7 +140,7 @@ buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrum
        //there will be more children to look after, to build our breadcumb
        return this.buildBreadCrumb(route.firstChild, nextUrl, newBreadcrumbs);
    }
-   console.log(newBreadcrumbs);
+  //  console.log(newBreadcrumbs);
    return newBreadcrumbs;
 }
 }

@@ -11,7 +11,12 @@ const routes:Routes = [
     children:[
       {
         path:'',
-        loadChildren:()=> import('./monthly--mis/monthly--mis.module').then(m => m.MonthlyMisModule)
+        loadChildren:() => import('./monthlyMisMenus/monthly-mis-menus.module').then(m => m.MonthlyMisMenusModule)
+      },
+      {
+        path:'report',
+        loadChildren:()=> import('./monthly--mis/monthly--mis.module').then(m => m.MonthlyMisModule),
+        data:{breadcrumb:'Monthly MIS Report',pageTitle:'Monthly MIS Report',title:'Monthly MIS Report'},
       }
     ]
   }]

@@ -13,6 +13,7 @@ import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
 import { BusinessTypeComponent } from '../entry_dialog/business-type/business-type.component';
 import { FrequencyComponent } from '../entry_dialog/frequency/frequency.component';
 import { pluck } from 'rxjs/operators';
+import { MapPlanOptionComponent } from '../entry_dialog/map-plan-option/map-plan-option.component';
 @Component({
   selector: 'mailBack-trxn-rpt-without-scm',
   templateUrl: './trxn-rpt-without-scm.component.html',
@@ -164,6 +165,50 @@ export class TrxnRptWithoutScmComponent implements OnInit {
     this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => item.amc_code != amc_code)
     this.primeTbl.reset();
     this.filter.nativeElement.value = '';
+  }
+  MapISIN = (trxn,index:number) =>{
+    if(trxn.scheme_name){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = true;
+    dialogConfig.disableClose = false;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.width = '40%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      flag: 'MAPPLANOPTION_' + trxn.id,
+      id: 0,
+      transaction_dtls: trxn,
+      title: 'Map Plan Option',
+      product_id:'1', /** For Mutual Fund */
+      right: global.randomIntFromInterval(1, 60),
+      file_type:this.file_type,
+      sub_file_type:this.sub_file_type
+    };
+    dialogConfig.id = 'MAPPLANOPTION_' + trxn.id;
+    try {
+      const dialogref = this.__dialog.open(
+        MapPlanOptionComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe((dt) => {
+        if(dt){
+          if(dt.suc == 1){
+            this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item.folio_no != trxn.folio_no))
+          }
+        }
+      });
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.addPanelClass('mat_dialog');
+      this.utility.getmenuIconVisible({
+        id: Number(dialogConfig.id),
+        isVisible: false,
+        flag: 'MAPPLANOPTION_' + trxn.id,
+      });
+    }
+  }
+
   }
 
   openISIN = (trxn,index:number) =>{

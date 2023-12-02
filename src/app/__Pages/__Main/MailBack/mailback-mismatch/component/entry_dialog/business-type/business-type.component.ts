@@ -8,7 +8,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { global } from '../../../../../../../__Utility/globalFunc';
 import { responseDT } from '../../../../../../../__Model/__responseDT';
-import { ADD_MESSAGE, ERROR_MESSAGE } from 'src/app/strings/message';
+import { ADD_MESSAGE, ERROR_MESSAGE, MAP_BU_TYPE } from 'src/app/strings/message';
 
 @Component({
   selector: 'app-business-type',
@@ -235,7 +235,7 @@ export class BusinessTypeComponent implements OnInit {
        if (res.suc == 1) {
          this.dialogRef.close(res);
        }
-      this.__utility.showSnackbar(res.suc == 1 ? `Business Type ${ADD_MESSAGE}` : ERROR_MESSAGE,res.suc);
+      this.__utility.showSnackbar(res.suc == 1 ? MAP_BU_TYPE : ERROR_MESSAGE,res.suc);
      })
 
   }

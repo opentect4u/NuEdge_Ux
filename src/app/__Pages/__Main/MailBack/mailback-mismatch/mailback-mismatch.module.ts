@@ -17,6 +17,7 @@ import { SchemeComponent } from './component/entry_dialog/scheme/scheme.componen
 import {MatBadgeModule} from '@angular/material/badge';
 import { BusinessTypeComponent } from './component/entry_dialog/business-type/business-type.component';
 import { FrequencyComponent } from './component/entry_dialog/frequency/frequency.component';
+import { MapPlanOptionComponent } from './component/entry_dialog/map-plan-option/map-plan-option.component';
 /******End ***************/
 
 
@@ -29,7 +30,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MailbackMismatchComponent, TrxnRptWithoutScmComponent, IsinComponent, SchemeComponent, BusinessTypeComponent, FrequencyComponent],
+  declarations: [MailbackMismatchComponent, TrxnRptWithoutScmComponent, IsinComponent, SchemeComponent, BusinessTypeComponent, FrequencyComponent, MapPlanOptionComponent],
   imports: [CommonModule,RouterModule.forChild(routes),
     SharedModule,
     TabModule,

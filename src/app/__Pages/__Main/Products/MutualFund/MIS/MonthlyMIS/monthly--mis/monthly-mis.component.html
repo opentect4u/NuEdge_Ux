@@ -1,1 +1,58 @@
-<p>monthly-mis works!</p>
+<!-- Filter Criteria -->
+<div class="row flexSec">
+  <div class="col-sm-12">
+      <h5 class="customBorder">Monthly MIS Report</h5>
+  </div>
+  <div class="col-sm-12 mt-3">
+    <mat-card>
+        <mat-card-content class="p-3">
+          <div class="row">
+              <div class="col-sm-3">
+                <label for="mis_month">MIS Month</label>
+                <select class="form-control" id="mis_month" formControlname="mis_month">
+                  <option value="">Select MIS Month</option>
+                </select>
+              </div>
+          </div>
+        </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<!-- END -->
+<!-- Monthly MIS REPORT calculation for TOTAL MONTHLY INFLOW,
+     TOTAL MONTHLY OUTFLOW,
+     NET MONTHLY INFLOW -->
+     <div class="row my-4">
+      <div class="col-sm-12">
+        <h5 class="customBorder">MIS Summary For OCT-2023 (<small>Monthly</small>)</h5>
+      </div>
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-4">
+            <mat-card>
+              <mat-card-content class="p-5">
+                <h5 class="text-center">TOTAL MONTHLY INFLOW</h5>
+                <p class="OutFlow__InFlow">$204515.00</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div class="col-sm-4">
+            <mat-card>
+              <mat-card-content class="p-5">
+               <h5 class="text-center">TOTAL MONTHLY OUTFLOW</h5>
+               <p class="OutFlow__InFlow">$204515.00</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div class="col-sm-4">
+            <mat-card>
+              <mat-card-content class="p-5">
+                <h5 class="text-center">NET MONTHLY INFLOW</h5>
+                <p class="OutFlow__InFlow">$204515.00</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- END -->

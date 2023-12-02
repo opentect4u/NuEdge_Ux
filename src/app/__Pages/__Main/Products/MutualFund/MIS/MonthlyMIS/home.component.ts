@@ -1,5 +1,10 @@
+
+/********************************************************************
+ *   This is Monthly MIS Home Page
+ *    Every routes of monthly MIS will be gone thorught it
+ *
+*/
 import { Component, OnInit } from '@angular/core';
-import Menus from '../../../../../../../assets/json/Product/MF/MIS/misMenu.json'
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -11,7 +16,6 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(Menus);
   }
 
 }
