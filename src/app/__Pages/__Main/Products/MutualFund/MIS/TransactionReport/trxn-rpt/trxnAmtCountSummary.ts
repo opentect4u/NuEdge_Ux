@@ -399,8 +399,8 @@ export class trxnCountSummary{
       reject: trxn.filter((item: TrxnRpt) => (
         TRANSFER_OUT_REJECTION.indexOf(item.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (TRANSFER_IN.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (TRANSFER_OUT.indexOf(item.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(TRANSFER_OUT_REJECTION.indexOf(item.transaction_subtype) >= 0))
     };
     this.transfer_out_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (

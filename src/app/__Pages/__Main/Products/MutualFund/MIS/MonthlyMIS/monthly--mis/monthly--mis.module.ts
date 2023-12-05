@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MonthlyMisComponent } from './monthly-mis.component';
 import { RouterModule, Routes } from '@angular/router';
-import { SharedModule } from 'src/app/shared/shared.module';
-
+import { TabModule } from 'src/app/__Core/tab/tab.module';
+import { MisCoreModule } from '../core/mis-core.module';
   const routes:Routes = [{path:'',component:MonthlyMisComponent}]
 
 @NgModule({
@@ -13,7 +13,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    SharedModule
+    TabModule,
+    MisCoreModule
   ]
 })
 export class MonthlyMisModule { }

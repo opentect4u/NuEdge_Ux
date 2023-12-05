@@ -73,6 +73,7 @@ export class RegisteredSwpComponent implements OnInit {
       this.sub_type = data.tabDtls.flag;
       this.setTitle(data.tabDtls.tab_name);
       this.reset_data = 'Y';
+      this.column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes(this.sub_type == 'RR' ? 'LS-3' : 'U2'));
     }
 
     setTitle = (title:string) =>{

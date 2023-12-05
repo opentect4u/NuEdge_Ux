@@ -840,3 +840,63 @@ textarea:focus {
 .invalid-feedback{
   width:auto!important;
 }
+
+/**MONTHLY MIS REPORT*/
+.customBorder{
+  font-weight: 500;
+   margin:10px 0px;
+   /* mix-blend-mode: multiply; */
+ }
+ .OutFlow__InFlow__Text{
+   font-weight: 500;
+   margin: 20px 0px;
+   font-size: 20px;
+   text-align: left;
+   color: #10486b;
+   font-family: 'Montserrat';
+
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+ }
+ .outFlow__inflow>mat-card-content>h5{
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+ }
+ .monthly__outflow:before{
+   background-image: url('../../../../../../../../assets/images/monthlyMIS/OutFlow.png');
+
+ }
+
+ .monthly__inflow:before{
+   background-image: url('../../../../../../../../assets/images/monthlyMIS/InFlow.png');
+ }
+
+ .outFlow__inflow{
+     position: relative;
+ }
+ .outFlow__inflow:before{
+   content: ' ';
+   display: block;
+   position: absolute;
+   right: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+   opacity: 0.1;
+   background-repeat: no-repeat;
+   background-position: 100%;
+   background-size: contain;
+   background-color: #0051851f;
+ }
+ /* mat-card:last-child{
+   border: none!important;
+ } */
+
+ .marginCard{
+   background: #004875;
+   border-radius: 7px;
+ }
+
+/**** END**/

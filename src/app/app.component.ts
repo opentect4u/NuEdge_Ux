@@ -48,8 +48,6 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.__utility.screenResoluation(Number(window.screen.height),Number(window.screen.width),
-    Number(window.innerHeight),Number(window.innerWidth));
     this.__router.events.pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd),
       distinctUntilChanged(),

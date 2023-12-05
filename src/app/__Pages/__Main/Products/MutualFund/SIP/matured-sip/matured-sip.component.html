@@ -103,7 +103,7 @@
                           <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
                           </ng-container>
                           <ng-container *ngSwitchCase="col.field == 'remarks'">
-                            <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
+                            <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30 | titlecase):
                               'N/A'}}</p>
                           </ng-container>
                     <ng-container *ngSwitchDefault>

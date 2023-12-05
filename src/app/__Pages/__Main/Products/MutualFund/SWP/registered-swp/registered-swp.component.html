@@ -58,7 +58,7 @@
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="10"
     [showCurrentPageReport]="true"
-    [tableStyle]="{ 'min-width': '369rem' }"
+    [tableStyle]="{ 'min-width': sub_type == 'RR' ? '369rem' : '382rem' }"
     >
       <ng-template pTemplate="header">
           <tr>
@@ -82,7 +82,7 @@
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
                 <p class="m-0">{{i + 1}}</p>
              </ng-container>
-             <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">
+             <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'terminated_date' || col.field == 'to_date' || col.field == 'reg_date'">
                 <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
              </ng-container>
 
@@ -107,7 +107,7 @@
               <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'remarks'">
-                <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
+                <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30 | titlecase):
                   'N/A'}}</p>
               </ng-container>
               <ng-container *ngSwitchDefault>

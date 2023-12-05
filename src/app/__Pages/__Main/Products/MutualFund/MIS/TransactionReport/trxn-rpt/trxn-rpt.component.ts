@@ -33,7 +33,7 @@ import clientType from '../../../../../../../../assets/json/view_type.json';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { trxnCountAmtSummaryColumn, trxnCountSummary } from './trxnAmtCountSummary';
 
- type TrxnType = {
+ export type TrxnType = {
    reject:Partial<TrxnRpt[]>;
    process:Partial<TrxnRpt[]>;
    total:Partial<TrxnRpt[]>

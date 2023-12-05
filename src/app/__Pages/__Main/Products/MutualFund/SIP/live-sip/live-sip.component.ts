@@ -34,7 +34,6 @@ export class LiveSIPComponent implements OnInit {
    total_live_sip_amt:number = 0;
 
 
-
  /**
   * For Holding AMC Master Data
   */
@@ -112,9 +111,6 @@ export class LiveSIPComponent implements OnInit {
         .subscribe((res: IliveSip[]) =>{
              this.live_sip_rpt = res;
              this.total_live_sip_amt = global.calculatAmt(res);
-             console.log(
-              res.filter(item => item.pause_end_date && item.pause_start_date).length
-             );
              this.pause_sip_count = res.filter(item => item.pause_end_date && item.pause_start_date).length;
              this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
             });
@@ -138,7 +134,4 @@ export class LiveSIPComponent implements OnInit {
   changeState = (event) =>{
     this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
   }
-
-
-
 }

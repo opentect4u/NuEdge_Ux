@@ -1,58 +1,108 @@
 <!-- Filter Criteria -->
-<div class="row flexSec">
+<!-- <div class="row flexSec">
   <div class="col-sm-12">
-      <h5 class="customBorder">Monthly MIS Report</h5>
+    <core-mis-report-filter
+    [title]="'Monthly MIS Report'"
+    [flag]="'R'"
+    (searchReport)="searchFilter($event)"
+    ></core-mis-report-filter>
   </div>
-  <div class="col-sm-12 mt-3">
-    <mat-card>
-        <mat-card-content class="p-3">
-          <div class="row">
-              <div class="col-sm-3">
-                <label for="mis_month">MIS Month</label>
-                <select class="form-control" id="mis_month" formControlname="mis_month">
-                  <option value="">Select MIS Month</option>
-                </select>
-              </div>
-          </div>
-        </mat-card-content>
-    </mat-card>
-  </div>
-</div>
+</div> -->
 <!-- END -->
+<!-- <hr class="my-2"/> -->
 <!-- Monthly MIS REPORT calculation for TOTAL MONTHLY INFLOW,
      TOTAL MONTHLY OUTFLOW,
      NET MONTHLY INFLOW -->
+     <!-- <div class="container-fluid py-5 marginCard mat-elevation-z8">
      <div class="row my-4">
       <div class="col-sm-12">
-        <h5 class="customBorder">MIS Summary For OCT-2023 (<small>Monthly</small>)</h5>
-      </div>
-      <div class="col-sm-12">
         <div class="row">
-          <div class="col-sm-4">
-            <mat-card>
-              <mat-card-content class="p-5">
-                <h5 class="text-center">TOTAL MONTHLY INFLOW</h5>
-                <p class="OutFlow__InFlow">$204515.00</p>
-              </mat-card-content>
-            </mat-card>
+          <div class="col-sm-2 d-flex justify-content-center flex-column">
+            <p class="m-0 text-white">(Monthly)</p>
+            <h6 class="m-0 text-white">MIS Summary For DEC-2023</h6>
           </div>
-          <div class="col-sm-4">
-            <mat-card>
-              <mat-card-content class="p-5">
-               <h5 class="text-center">TOTAL MONTHLY OUTFLOW</h5>
-               <p class="OutFlow__InFlow">$204515.00</p>
-              </mat-card-content>
-            </mat-card>
+          <div class="col-sm-10">
+            <div class="row">
+              <div class="col-sm-4">
+                <mat-card matTooltipClass="ToolTip" matTooltip="TOTAL MONTHLY INFLOW:204515.00" class="outFlow__inflow monthly__inflow my-1">
+                  <mat-card-content class="p-5"
+                  >
+                    <h5 class="text-left">TOTAL MONTHLY INFLOW</h5>
+                    <p class="OutFlow__InFlow__Text">{{'204515.00' | currency:'INR'}}</p>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div class="col-sm-4">
+                <mat-card matTooltipClass="ToolTip" matTooltip="TOTAL MONTHLY OUTFLOW:204515.00" class="outFlow__inflow monthly__outflow my-1">
+                  <mat-card-content class="p-5"
+                    >
+                   <h5 class="text-left">TOTAL MONTHLY OUTFLOW</h5>
+                   <p class="OutFlow__InFlow__Text">{{'204515.00' | currency:'INR'}}</p>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div class="col-sm-4">
+                <mat-card matTooltipClass="ToolTip" matTooltip="NET MONTHLY INFLOW:204515.00" class="outFlow__inflow monthly__inflow my-1">
+                  <mat-card-content class="p-5">
+                    <h5 class="text-left">NET MONTHLY INFLOW</h5>
+                    <p class="OutFlow__InFlow__Text">{{'0.00' | currency:'INR'}}</p>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
           </div>
-          <div class="col-sm-4">
-            <mat-card>
-              <mat-card-content class="p-5">
-                <h5 class="text-center">NET MONTHLY INFLOW</h5>
-                <p class="OutFlow__InFlow">$204515.00</p>
-              </mat-card-content>
-            </mat-card>
-          </div>
+
         </div>
       </div>
     </div>
+
+
+<core-tab [Tab]="mis_tab"
+[customClass]="'nav'"
+(GetTabDtls)="TabDetails($event)"></core-tab>
+<mat-card class="navCard">
+  <mat-card-header>
+    <mat-card-title>
+      <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
+        {{transType | titlecase}} Transaction Reports
+        <mat-icon class="inActivebtnIcon">arrow_drop_down</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item class="trxnRptCount"
+          (click)="__monthly_mis_trxn = [] ;__monthly_mis_trxn = item.value; transType = item.key"
+          *ngFor="let item of trxn_count | keyvalue">
+          <span [ngClass]="{'text-danger':item.key == 'reject'}">
+            {{item.key | titlecase}}
+          </span>
+          <span [ngClass]="{'text-danger':item.key == 'reject'}">
+            {{item.value.length}}
+          </span>
+        </button>
+      </mat-menu>
+    </mat-card-title>
+    <div class="w-25 my-auto pr-4">
+      <span class="ml-auto">
+        <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+          placeholder="Search" />
+      </span>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+      <core-mis-tbl
+      #MISTABLE
+      [dataSource]="__monthly_mis_trxn"
+      [column]="__monthly__MIS_Column"
+      [scroll_height]="'324px'"
+      [min_width]="'374rem'"
+      [virtual_scroll]="true"
+      ></core-mis-tbl>
+  </mat-card-content>
+</mat-card>
+    </div> -->
+
 <!-- END -->
+<!-- <hr/> -->
+<!-- TABLE & TAB -->
+<!-- END -->
+Monthly MIS WORKS

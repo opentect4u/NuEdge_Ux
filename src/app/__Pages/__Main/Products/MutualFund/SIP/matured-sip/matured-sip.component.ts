@@ -51,7 +51,7 @@ export class MaturedSIPComponent implements OnInit {
   total_mature_sip_amt:number = 0;
 
     /**
-   * Set Column for LIVE SIP REPORT
+   * Set Column for Matured SIP REPORT
    */
     column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'));
 

@@ -833,3 +833,6 @@ color: #ffffff;
 .mat-button-disabled{
   cursor: not-allowed!important;
 }
+.multiselect-dropdown .dropdown-btn{
+  font-weight: 500!important;
+}

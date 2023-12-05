@@ -230,21 +230,4 @@ export class UtiliService {
 
   //   })
   //   }
-
-
-  screenResoluation =(actual_height:number,actual_width:number,
-    curr_height:number,curr_width:number) =>{
-    //   const availHeight = window.screen.availHeight;
-    //   const availWidth = window.screen.availWidth;
-    //   const current_height = window.innerHeight + (window.screen.height - window.screen.availHeight);
-    //   console.log(current_height);
-
-    // if((current_height != Number(availHeight))){
-    //   this.__router.navigate(['/']);
-    // console.log('Not ok');
-    // }
-    // else{
-    //   alert(`${window.innerHeight +  (window.screen.height - window.screen.availHeight)}`)
-    // }
-  }
 }

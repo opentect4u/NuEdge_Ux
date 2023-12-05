@@ -1,6 +1,6 @@
-import { Component, HostListener, SimpleChanges ,OnInit} from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit} from '@angular/core';
+// import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+// import { filter } from 'rxjs/operators';
 import { Route } from 'src/app/__Model/route';
 import { UtiliService } from 'src/app/__Services/utils.service';
 // import { UtiliService } from 'src/app/__Services/utils.service';
@@ -13,9 +13,9 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 export class MainComponent implements OnInit {
   __rtDt: Route;
   constructor(
-    private __router: Router,
-    private __actRt: ActivatedRoute,
-   private router: Router,
+    // private __router: Router,
+    // private __actRt: ActivatedRoute,
+  //  private router: Router,
     private __utility: UtiliService
   ) {
     this.__utility.__route$.subscribe(res =>{
@@ -25,11 +25,7 @@ export class MainComponent implements OnInit {
     // this.loadDropdownScript();
   }
 
-  ngOnInit() {
-     this.__utility.screenResoluation(window.screen.height,window.screen.width,
-      window.innerHeight,window.innerWidth);
-      console.log('Main Module Loaded');
-  }
+  ngOnInit() {}
 
 
   // ngOnChanges(changes: SimpleChanges): void{
@@ -41,12 +37,4 @@ export class MainComponent implements OnInit {
   // loadDropdownScript() {
   //   this.__utility.addScript();
   // }
-
-  @HostListener('window:resize', ['$event'])
-  onWindowResize() {
-    /*** CHANGE DETECTION SCREEN HEIGHT AND WIDTH */
-      this.__utility.screenResoluation(window.screen.height,window.screen.width,
-        window.innerHeight,window.innerWidth);
-    /*** END */
-  }
 }

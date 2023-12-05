@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { column } from "../__Model/tblClmns";
 import * as XLSX from "xlsx";
 
@@ -84,5 +85,27 @@ export class global{
   public static calculatAmt(arr): number{
     return arr.length > 0 ? Number(arr.map((item) => item.amount).reduce((prev,curr) => prev + curr)) : arr.length;
   }
+
+  /**
+   * calculat future year and month from Jan-1980 populate in dropdown in SIP/STP/SWP Report
+   */
+  public static getMonthYears = ():Promise<string[]> =>{
+    let datePipe = new DatePipe('en-Us');
+    let month_year:string[] = []
+    for(let i = 1980 ; i <= new Date().getFullYear();i++){
+          for(let j=0;j<12;j++){
+            if(new Date(i, j) > new Date()){
+                break;
+            }
+            else{
+                month_year.push(datePipe.transform(new Date(i,j),'MMM-YYYY'));
+            }
+          }
+    }
+    return new  Promise((resolve, reject) => {
+        resolve(month_year);
+        reject('Error')
+    })
+}
 
 }

@@ -1,0 +1,153 @@
+<!-- REPORT FILTER FOR BOTH MIS & TREND -->
+<mat-card>
+  <mat-card-header class="border-bottom">
+    <mat-card-title>
+       <h5 class="customBorder">{{title}}</h5>
+    </mat-card-title>
+    <div class="pr-3 my-auto d-flex align-items-center">
+
+      <p-selectButton [(ngModel)]="btn_type"
+      [options]="selectBtn"
+      optionValue="value"
+      styleClass="p-button-lg"
+      (onOptionClick)="onItemClick($event)" optionLabel="icon">
+        <ng-template let-item>
+          <i [class]="item.icon" [matTooltip]="item.label"></i>
+        </ng-template>
+      </p-selectButton>
+      <button mat-icon-button class="my-auto" [matTooltip]="state == 'collapsed' ? 'EXPAND MORE' : 'EXPAND LESS'"
+        color="primary" (click)="toggle()" class="mx-3">
+        <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
+          keyboard_arrow_up
+        </mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+    <mat-card-content
+    [@bodyExpansion]="state"
+    [ngClass]="{'expandable-content': state == 'collapsed'}"
+    >
+      <ng-template #SearchBtn>
+        <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+      </ng-template>
+      <form [formGroup]="monthly_mis_filter_form"
+      (ngSubmit)="searchFilter()">
+      <div class="row">
+        <div class="col-sm-3">
+          <label [attr.for]="flag == 'R' ? 'mis_month' : 'no_of_month'">{{ flag == 'R' ? 'MIS' : 'No Of'}} Month</label>
+            <select class="form-control"
+            [attr.id]="flag == 'R' ? 'mis_month' : 'mo_of_month'"
+            [formControl]="$any(monthly_mis_filter_form.controls[flag == 'R' ? 'mis_month' : 'no_of_month'])">
+              <option value="">Select {{flag == 'R' ? 'MIS' : 'No Of'}} Month</option>
+            <ng-container *ngIf="flag == 'R';else trend">
+              <option value="{{monthYear}}"
+              *ngFor="let monthYear of month_year">
+              {{monthYear}}
+              </option>
+            </ng-container>
+            <ng-template #trend>
+              <option [value]="12">Last 12 month</option>
+            </ng-template>
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <label for="amc_id">AMC</label>
+            <ng-multiselect-dropdown [attr.id]="'amc_id'" [placeholder]="'Select AMC'"
+              [settings]="settingsforAMCDropdown" [data]="amcMst"
+              formControlName="amc_id">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="cat_id">Category</label>
+            <ng-multiselect-dropdown [id]="'cat_id'" [placeholder]="'Select Category'"
+              [settings]="settingsforCatDropdown" [data]="catMst"
+              formControlName="cat_id">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="sub_cat_id">Sub-Category</label>
+            <ng-multiselect-dropdown [id]="'sub_cat_id'" [placeholder]="'Select Sub-Category'"
+              [settings]="settingsforSubCatDropdown" [data]="subcatMst"
+              formControlName="sub_cat_id">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="scheme_id">Scheme</label>
+            <ng-multiselect-dropdown [id]="'scheme_id'" [placeholder]="'Select Scheme'"
+              [settings]="settingsforSchemeDropdown" [data]="schemeMst" formControlName="scheme_id">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="trans_type">Transaction Type</label>
+            <ng-multiselect-dropdown [id]="'trans_type'"
+            [placeholder]="'Select Transaction Type'"
+              [settings]="settingsforTrxnTypeDropdown"
+               [data]="trxnTypeMst"
+              formControlName="trans_type">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-3">
+            <label for="trans_sub_type">Transaction Sub-Type</label>
+            <ng-multiselect-dropdown [id]="'trans_sub_type'" [placeholder]="'Select Transaction Sub-Type'"
+              [settings]="settingsforTrxnSubTypeDropdown" [data]="trxnSubTypeMst" formControlName="trans_sub_type">
+            </ng-multiselect-dropdown>
+          </div>
+          <ng-container *ngIf="btn_type == 'A';else normalFilter">
+            <div class="col-sm-3">
+              <label for="brn_cd">Branch</label>
+              <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
+                 [settings]="settingsforBrnchDropdown" [data]="__branchMst"
+                formControlName="brn_cd">
+              </ng-multiselect-dropdown>
+            </div>
+          </ng-container>
+          <ng-template #normalFilter>
+            <div class="col-sm-3 d-flex align-items-end justify-content-end">
+              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+            </div>
+          </ng-template>
+
+      </div>
+      <ng-container *ngIf="btn_type == 'A'">
+        <div class="row">
+          <ng-container>
+            <div class="col-sm-3">
+              <label for="bu_type">Business Type</label>
+              <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+                 [settings]="settingsforBuTypeDropdown" [data]="__bu_type"
+                formControlName="bu_type_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="rm_name">Relationship Manager</label>
+              <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                 [settings]="settingsforRMDropdown" [data]="__RmMst"
+                formControlName="rm_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="sub_brk_cd">Sub Broker</label>
+              <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                 [settings]="settingsforSubBrkDropdown"
+                [data]="__subbrkArnMst" formControlName="sub_brk_cd">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="euin_no">EUIN</label>
+              <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
+                [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
+              </ng-multiselect-dropdown>
+            </div>
+
+          </ng-container>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-12 d-flex align-items-end justify-content-end">
+            <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+    </mat-card-content>
+</mat-card>
+<!-- END -->

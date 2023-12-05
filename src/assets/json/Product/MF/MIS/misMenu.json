@@ -200,9 +200,9 @@
       {
         "id":2,
         "accessibility":[],
-        "title":"Monthly MIS Trained Report",
-        "tooltip":"Monthly MIS Trained Report",
-        "url":"/main/product/mf/mis/monthlyMis/report",
+        "title":"Monthly MIS Trend Report",
+        "tooltip":"Monthly MIS Trend Report",
+        "url":"/main/product/mf/mis/monthlyMis/trend",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       }
