@@ -1,0 +1,555 @@
+<div class="bckContainer"></div>
+<div class="row flexSec">
+  <div class="col-sm-12">
+    <mat-card>
+      <mat-card-header class="border-bottom">
+        <mat-card-title>Broker Change</mat-card-title>
+        <div class="pr-3 my-auto d-flex align-items-center">
+
+          <p-selectButton [(ngModel)]="btn_type" [options]="selectBtn" optionValue="value" styleClass="p-button-lg"
+            (onOptionClick)="onItemClick($event)" optionLabel="icon">
+            <ng-template let-item>
+              <i [class]="item.icon" [matTooltip]="item.label"></i>
+            </ng-template>
+          </p-selectButton>
+          <button mat-icon-button class="my-auto" [matTooltip]="state == 'collapsed' ? 'EXPAND MORE' : 'EXPAND LESS'"
+            color="primary" (click)="toggle()" class="mx-3">
+            <mat-icon [ngClass]="{'rotateUp':state == 'collapsed','rotateDown':state == 'expanded'}">
+              keyboard_arrow_up
+            </mat-icon>
+          </button>
+        </div>
+      </mat-card-header>
+      <mat-card-content [@bodyExpansion]="state"
+        [ngClass]="{'expandable-content': state == 'collapsed'}">
+        <ng-template #SearchBtn>
+          <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+        </ng-template>
+        <form [formGroup]="misTrxnRpt" (ngSubmit)="searchTrxnReport()" autocomplete="off">
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="date_periods">Periods</label>
+              <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
+                <option value="">Select All</option>
+                <option [value]="periods.id" *ngFor="let periods of periods_type">{{periods.periods}}</option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <label for="date_range">Date Range (From - To)</label>
+              <p-calendar #dateRng [maxDate]="maxDate" [minDate]="minDate" dateFormat="dd/mm/yy"
+                placeholder="Select Date Range" formControlName="date_range" selectionMode="range"
+                [readonlyInput]="true" [id]="'date_range'" [showIcon]="true" [hideOnDateTimeSelect]="true"
+                [showButtonBar]="true">
+              </p-calendar>
+            </div>
+            <div class="col-sm-3">
+              <label for="client_type">View Type</label>
+              <select name="client_type" id="client_type" class="form-control" formControlName="view_type">
+                <option value="">Select</option>
+                <option [value]="item.id" *ngFor="let item of client_type">{{item.type}}</option>
+              </select>
+            </div>
+
+            <div class="col-sm-3">
+              <app-core-srch [label]="'Investor'"
+                [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+                [isPending]="__isClientPending" [listItems]="__clientMst" [flag]="'C'"
+                [noDataFoundTitle]="'Sorry!! No Records Found'"
+                [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                [propertiesToShow]="['first_client_name','first_client_pan']" formControlName="client_name"
+                [displayMode]="displayMode_forClient" (setDisplayMode)="displayMode_forClient = $event"
+                (selectedItems)="getSelectedItemsFromParent($event)"
+                (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="amc_id">AMC</label>
+              <ng-multiselect-dropdown [attr.id]="'amc_id'" [placeholder]="'Select AMC'"
+                [settings]="settingsforAMCDropdown" (onDeSelect)="onAmcDeSelect($event)" [data]="amcMst"
+                formControlName="amc_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="cat_id">Category</label>
+              <ng-multiselect-dropdown [id]="'cat_id'" [placeholder]="'Select Category'"
+                [settings]="settingsforCatDropdown" (onDeSelect)="onCatDeSelect($event)" [data]="catMst"
+                formControlName="cat_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="sub_cat_id">Sub-Category</label>
+              <ng-multiselect-dropdown [id]="'sub_cat_id'" [placeholder]="'Select Sub-Category'"
+                [settings]="settingsforSubCatDropdown" (onDeSelect)="onSubCatDeSelect($event)" [data]="subcatMst"
+                formControlName="sub_cat_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="scheme_id">Scheme</label>
+              <ng-multiselect-dropdown [id]="'scheme_id'" [placeholder]="'Select Scheme'"
+                [settings]="settingsforSchemeDropdown" [data]="schemeMst" formControlName="scheme_id">
+              </ng-multiselect-dropdown>
+            </div>
+
+
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="trxn_type_id">Transaction Type</label>
+              <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
+                [settings]="settingsforTrxnTypeDropdown" (onDeSelect)="onTrxnTypeDeSelect($event)" [data]="trxnTypeMst"
+                formControlName="trxn_type_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="trxn_sub_type_id">Transaction Sub-Type</label>
+              <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
+                [settings]="settingsforTrxnSubTypeDropdown" [data]="trxnSubTypeMst" formControlName="trxn_sub_type_id">
+              </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="folio_no">Folio No</label>
+              <input type="text" name="folio_no" id="folio_no" class="form-control" placeholder="Enter Folio Number"
+                formControlName="folio_no">
+            </div>
+            <ng-container *ngIf="btn_type == 'A';else normalFilter">
+              <div class="col-sm-3">
+                <label for="brn_cd">Branch</label>
+                <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
+                  (onDeSelect)="onbrnCdDeSelect($event)" [settings]="settingsforBrnchDropdown" [data]="__branchMst"
+                  formControlName="brn_cd">
+                </ng-multiselect-dropdown>
+              </div>
+
+            </ng-container>
+            <ng-template #normalFilter>
+              <div class="col-sm-3 d-flex align-items-end justify-content-end">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+            </ng-template>
+          </div>
+
+          <ng-container *ngIf="btn_type == 'A'">
+            <div class="row">
+              <ng-container>
+                <div class="col-sm-3">
+                  <label for="bu_type">Business Type</label>
+                  <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+                    (onDeSelect)="onbuTypeDeSelect($event)" [settings]="settingsforBuTypeDropdown" [data]="__bu_type"
+                    formControlName="bu_type_id">
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="col-sm-3">
+                  <label for="rm_name">Relationship Manager</label>
+                  <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                    (onDeSelect)="onRmDeSelect($event)" [settings]="settingsforRMDropdown" [data]="__RmMst"
+                    formControlName="rm_id">
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="col-sm-3">
+                  <label for="sub_brk_cd">Sub Broker</label>
+                  <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                    (onDeSelect)="onSubBrkDeSelect($event)" [settings]="settingsforSubBrkDropdown"
+                    [data]="__subbrkArnMst" formControlName="sub_brk_cd">
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="col-sm-3">
+                  <label for="euin_no">EUIN</label>
+                  <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
+                    [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
+                  </ng-multiselect-dropdown>
+                </div>
+
+              </ng-container>
+            </div>
+            <div class="row mt-2">
+              <div class="col-sm-12 d-flex align-items-end justify-content-end">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Transaction main report -->
+    <mat-card class="card my-3">
+      <mat-card-header>
+        <mat-card-title>
+          <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
+            {{transType | titlecase}} Broker Change Reports
+            <mat-icon class="inActivebtnIcon">arrow_drop_down</mat-icon>
+          </button>
+
+          <mat-menu #menu="matMenu">
+
+            <button mat-menu-item class="trxnRptCount"
+              (click)="trxnRpt = [] ;trxnRpt = item.value; transType = item.key"
+              *ngFor="let item of trxn_count | keyvalue">
+              <span [ngClass]="{'text-danger':item.key == 'reject'}">
+                {{item.key | titlecase}}
+              </span>
+              <span [ngClass]="{'text-danger':item.key == 'reject'}">
+                {{item.value.length}}
+              </span>
+            </button>
+
+
+          </mat-menu>
+
+          <!-- <small class="ml-3">Process Transaction: {{trxn_count?.process || 0}}</small>
+              <small  class="text-danger mx-5">Reject Transaction: {{trxn_count?.reject || 0}}</small>
+              <small  class="text-success">Total Transaction: {{trxnRpt.length || 0}}</small> -->
+
+        </mat-card-title>
+        <div class="w-25 my-auto pr-4">
+          <span class="ml-auto">
+            <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+              placeholder="Search" />
+          </span>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- responsiveLayout="scroll" -->
+
+        <p-table #primeTbl id="trxDt" [value]="trxnRpt" [responsive]="true" [rowHover]="true"
+          styleClass="p-datatable-striped p-datatable-lg"
+          [scrollable]="true"
+           [scrollHeight]="'370px'"
+          [virtualScroll]="true"
+          [virtualRowHeight]="34"
+          [columns]="column" [paginator]="true"
+          [autoLayout]="true" [totalRecords]="trxnRpt.length" [pageLinks]="3"
+          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+          [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
+          [tableStyle]="{ 'min-width': '374rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th *ngFor="let col of column" [pSortableColumn]="col.field" [style.max-width]="col.width"
+                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                {{ col.header }}
+                <p-sortIcon [field]="col.field">
+                </p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-trxn let-i="rowIndex">
+            <tr tabindex="999"
+              [ngStyle]="{
+                'height':'34px',
+                'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
+              <td *ngFor="let col of column" [style.max-width]="col.width"
+                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                    <p class="m-0">
+                      {{i + 1}}
+                    </p>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+                    <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" &&
+                      trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
+                      && (trxn[col.field] | titlecase)!="Not Provid"
+                      && (trxn[col.field] | titlecase)!="Notprovided"
+                      ) ? trxn[col.field] :
+                      'N/A' }}</p>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'first_client_name'">
+                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
+                  </ng-container>
+
+
+                  <ng-container *ngSwitchCase="col.field == 'trans_date'">
+                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                    <p class="m-0"
+                      matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name'])) : ''}}">
+                      {{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' +
+                      (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name']))
+                      : 'N/A'
+                      }}</p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'tot_tds'">
+                    <p class="m-0" matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
+                      {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
+                    </p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'remarks'">
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
+                      'N/A'}}</p>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+                <h5>No Records Found</h5>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="loadingbody" let-columns="columns">
+            <tr style="height:34px">
+                <td *ngFor="let col of columns; let even = even">
+                    <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
+                </td>
+            </tr>
+        </ng-template>
+
+          <!-- <ng-template pTemplate="footer">
+            <tr *ngIf="isTotalFooterShow">
+              <td *ngFor="let col of column"
+                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
+                [style.max-width]="col.width">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                    Total
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'tot_amount'">
+                    {{total?.net_amt | number:'1.2-2'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'tot_gross_amount'">
+                    {{total?.gross_amt | number:'1.2-2'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'tot_tds'">
+                    {{total?.tds | number:'1.2-2'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'tot_stamp_duty'">
+                    {{total?.stamp_duity | number:'1.2-2'}}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template> -->
+        </p-table>
+      </mat-card-content>
+    </mat-card>
+    <!-- END -->
+
+
+    <!-- Transaction COUNT AND AMOUNT TABLE -->
+    <mat-card class="my-4">
+      <mat-card-header>
+        <mat-card-title>
+          Broker Change Transaction Summary
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p-table #primeTbl id="trxDt" [value]="transaction_amt_count_summary" [responsive]="true" [rowHover]="true"
+          styleClass="p-datatable-striped p-datatable-lg" responsiveLayout="scroll" [scrollable]="true"
+          [columns]="trxnAmtCountClm" [paginator]="true" [autoLayout]="true"
+          [totalRecords]="transaction_amt_count_summary.length" [pageLinks]="3"
+          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+          [showCurrentPageReport]="true">
+          <ng-template pTemplate="header">
+            <tr>
+              <th *ngFor="let col of trxnAmtCountClm" [style.min-width]="col.width">
+                {{ col.header }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-trxn let-i="rowIndex">
+            <tr tabindex="999">
+              <td *ngFor="let col of trxnAmtCountClm"
+              [ngClass]="{'summaryCnt' :col.field != 'total_amt'}"
+               [style.min-width]="col.width">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                    <p class="m-0">
+                      {{i + 1}}
+                    </p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'cat_name'">
+                    <p class="m-0">
+                      {{trxn[col.field]}}
+                    </p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'total_amt'">
+                    <p class="m-0"
+                    [ngClass]="{'text-danger': trxn[col.field] < 0}"
+                    >
+                      {{trxn[col.field] ? trxn[col.field].toFixed(2) : 0}}
+                     </p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'trxn_type'">
+                    <td class="process w-100">
+                      Process
+                    </td>
+                    <hr class="m-0" />
+                    <td  class="rejection w-100">
+                        Rejection
+                    </td>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field.includes('count')">
+                    <td class="process w-100">
+                    <a class="m-0 p-3" (click)="getTransaction(
+                      col.field,trxn[col.field]['process_trxn'],col.header,trxn['cat_name']
+                      )">
+                     {{trxn[col.field]?.process ? (trxn[col.field]?.process) : 0}}
+                    </a>
+                    </td>
+                    <hr class="m-0" />
+                    <td  class="rejection w-100">
+                    <a class="m-0 p-3" (click)="getTransaction(col.field,trxn[col.field]['reject_trxn'],col.header,trxn['cat_name'])">
+                      {{trxn[col.field]?.reject ? (trxn[col.field]?.reject) : 0}}
+                    </a>
+                  </td>
+                  </ng-container>
+
+                  <ng-container *ngSwitchDefault>
+                    <td class="process w-100">
+                      <p class="m-0">
+                        {{trxn[col.field]?.process ? trxn[col.field]?.process.toFixed(2) : 0}}
+                     </p>
+                      </td>
+                    <hr class="m-0" />
+                    <td class="rejection w-100">
+                      <p class="m-0">
+                        {{trxn[col.field]?.reject ? (trxn[col.field]?.reject.toFixed(2)) : 0}}
+                       </p>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+                <h5>No Records Found</h5>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </mat-card-content>
+    </mat-card>
+    <!-- End -->
+
+  </div>
+</div>
+
+
+<p-dialog header="Header"
+[(visible)]="visible"
+[modal]="true"
+[draggable]="false"
+[maximizable]="true"
+[resizable]="true"
+[style]="{width: '90vw'}">
+<ng-template  pTemplate="header">
+        <h5 class="m-0">{{popup_header_title?.replace('Count', '') | uppercase}} TRANSACTIONS</h5>
+
+        <input id="search" class="form-control rounded w-50" type="text" (input)="filterGlobal_secondary($event)"
+        placeholder="Search" />
+     </ng-template>
+<!-- Table -->
+<p-table #secondaryTbl id="secondary_trxDt" [value]="shwoPopup__trxn"
+[responsive]="true" [rowHover]="true"
+styleClass="p-datatable-striped p-datatable-lg"
+[scrollable]="true"
+[loading]= "isLoader"
+[loadingIcon]="'fa-spinner'"
+[columns]="column" [paginator]="true"
+[autoLayout]="true" [totalRecords]="trxnRpt.length" [pageLinks]="3"
+[rowsPerPageOptions]="[10,50,100]"
+currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+[showCurrentPageReport]="true" [globalFilterFields]="getcolumns_secondary()"
+[tableStyle]="{ 'min-width': '374rem' }">
+<ng-template pTemplate="header">
+  <tr>
+    <th *ngFor="let col of column" [pSortableColumn]="col.field" [style.max-width]="col.width"
+      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+      {{ col.header }}
+      <p-sortIcon [field]="col.field">
+      </p-sortIcon>
+    </th>
+  </tr>
+</ng-template>
+<ng-template pTemplate="body" let-trxn let-i="rowIndex">
+  <tr tabindex="999"
+    [ngStyle]="{
+      'height':'34px',
+      'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
+    <td *ngFor="let col of column" [style.max-width]="col.width"
+      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+      <ng-container [ngSwitch]="true">
+        <ng-container *ngSwitchCase="col.field == 'sl_no'">
+          <p class="m-0">
+            {{i + 1}}
+          </p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+          <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" &&
+            trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
+            && (trxn[col.field] | titlecase)!="Not Provid"
+            && (trxn[col.field] | titlecase)!="Notprovided"
+            ) ? trxn[col.field] :
+            'N/A' }}</p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.field == 'first_client_name'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="col.field == 'trans_date'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+          <p class="m-0"
+            matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name'])) : ''}}">
+            {{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' +
+            (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name']))
+            : 'N/A'
+            }}</p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'tot_tds'">
+          <p class="m-0" matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
+            {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
+          </p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'remarks'">
+          <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
+            'N/A'}}</p>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
+        </ng-container>
+      </ng-container>
+    </td>
+  </tr>
+</ng-template>
+
+<ng-template pTemplate="emptymessage" let-columns>
+  <tr>
+    <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+      <h5>No Records Found</h5>
+    </td>
+  </tr>
+</ng-template>
+<ng-template pTemplate="loadingbody" let-columns="columns">
+  <tr style="height:34px">
+      <td *ngFor="let col of columns; let even = even">
+          <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
+      </td>
+  </tr>
+</ng-template>
+</p-table>
+<!-- End -->
+</p-dialog>
+
+
+

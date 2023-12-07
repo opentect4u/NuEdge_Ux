@@ -201,9 +201,45 @@ export class InvestorStaticReportComponent implements OnInit {
     })
   }
 
+  changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+}
+
   ngAfterViewInit() {
 
-
+    const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+      this.changeWheelSpeed(el, 0.99);
     /**
     * Event Trigger after change Branch
     */
@@ -327,7 +363,7 @@ export class InvestorStaticReportComponent implements OnInit {
     this.filter.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
     this.filter.get('pan_no').reset(searchRlt.item.first_client_pan);
     // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
-
+    this.__isClientPending = false;
     this.searchResultVisibilityForClient('none');
   };
 

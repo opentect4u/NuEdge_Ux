@@ -31,6 +31,10 @@ import { RouterModule, Routes } from '@angular/router';
         loadChildren:()=> import('./MonthlyMIS/home.module').then(m => m.HomeModule)
       },
       {
+        path:'brokerChange',
+        loadChildren:() => import('./broker-change/broker-change.module').then(m => m.BrokerChangeModule)
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

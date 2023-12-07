@@ -47,9 +47,6 @@
 
 
 
-.trxnRptCount{
-  width:220px;
-}
 
 ::ng-deep .mat-menu-item{
   display: flex!important;
@@ -65,10 +62,12 @@
   padding:5px 0px!important;
 
 } */
-.summaryCnt{
-  flex-direction: column!important;
-}
+
 ::ng-deep .p-datatable.p-datatable-lg .p-datatable-tbody > tr > .summaryCnt{
   /* padding:5px 0px!important; */
   padding:0px 0px!important;
+}
+
+.trxnRptCount{
+  width:220px;
 }

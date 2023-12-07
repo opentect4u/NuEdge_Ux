@@ -23,10 +23,10 @@ export class HomeComponent implements OnInit {
 
   /*** For Showing Top Card Value */
   __topValues:any = [
-    {title:"Title-1",value:999,class_name:"blue_Gredient"},
-    {title:"Title-2",value:9999,class_name:"seeGreen_Gredient"},
-    {title:"Title-3",value:9999,class_name:"red_Gredient"},
-    {title:"Title-3",value:9999,class_name:"yellow_Gredient"}
+    {title:"Live SIP",value:999,class_name:"bg-gradient-dark",monthly_trend:-.20},
+    {title:"Live STP",value:9999,class_name:"bg-gradient-pink",monthly_trend: 50.0},
+    {title:"Live SWP",value:9999,class_name:"bg-gradient-success",monthly_trend:-.20},
+    {title:"NAV",value:9999,class_name:"bg-gradient-info",monthly_trend:-.20}
   ]
   /*** End */
   constructor() {}

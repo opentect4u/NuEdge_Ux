@@ -9,7 +9,7 @@
     </div>
     </div>
     <mat-dialog-content class="businessTypeContent">
-      <form [formGroup]="mapPlanOptionForm" [attr.id]="'plan_opt_map_frm'" (ngSubmit)="submitIsin()">
+      <form [formGroup]="mapPlanOptionForm" [attr.id]="'plan_opt_map_frm'+data.id" (ngSubmit)="submitIsin()">
           <div class="row">
             <div class="col-sm-12">
                 <label for="scheme_name">Scheme</label>

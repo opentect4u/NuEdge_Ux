@@ -1,0 +1,65 @@
+<div class="row flexSec">
+  <div class="col-sm-12">
+    <core-mis-report-filter
+    [title]="'Monthly MIS Trend'"
+    [flag]="'T'"
+    (searchReport)="searchFilter($event)"
+    ></core-mis-report-filter>
+  </div>
+</div>
+<hr class="my-2"/>
+<div class="container-fluid py-4 marginCard mat-elevation-z8 ">
+  <mat-card class="my-2">
+    <mat-card-header>
+      <mat-card-title>
+        Graph For Monthly Infow & OutFlow
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+    <core-chart></core-chart>
+    </mat-card-content>
+  </mat-card>
+  <!-- TABLE & TAB -->
+<!-- <core-tab [Tab]="mis_tab"
+[customClass]="'nav'"
+(GetTabDtls)="TabDetails($event)"></core-tab> -->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <!-- <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
+        {{transType | titlecase}} Transaction Reports
+        <mat-icon class="inActivebtnIcon">arrow_drop_down</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item class="trxnRptCount"
+          (click)="__monthly_mis_trxn = [] ;__monthly_mis_trxn = item.value; transType = item.key"
+          *ngFor="let item of trxn_count | keyvalue">
+          <span [ngClass]="{'text-danger':item.key == 'reject'}">
+            {{item.key | titlecase}}
+          </span>
+          <span [ngClass]="{'text-danger':item.key == 'reject'}">
+            {{item.value.length}}
+          </span>
+        </button>
+      </mat-menu> -->
+      <h5>Monthly MIS Trend Report</h5>
+    </mat-card-title>
+    <div class="w-25 my-auto pr-4">
+      <span class="ml-auto">
+        <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+          placeholder="Search" />
+      </span>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+      <core-mis-tbl
+      #MISTABLE
+      [dataSource]="__mis__Trend__Report"
+      [column]="__mis__Trend__Column"
+      [scroll_height]="'324px'"
+      [virtual_scroll]="true"
+      ></core-mis-tbl>
+  </mat-card-content>
+</mat-card>
+</div>

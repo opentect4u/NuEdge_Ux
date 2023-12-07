@@ -749,7 +749,7 @@ textarea:focus {
 }
 .home_pannel{
   margin-top: 35px;
-  height: calc(100vh - 35px);
+  /* height: calc(100vh - 38px); */
 }
 /*Notification CSS*/
 /* .Notification{

@@ -216,7 +216,9 @@
                    [rowHover]="true"
                    styleClass="p-datatable-striped p-datatable-lg"
                    responsiveLayout="scroll"
-                   [scrollable]="true"
+                   [scrollable]="true" [scrollHeight]="'370px'"
+                   [virtualScroll]="true"
+                   [virtualRowHeight]="33"
                    [columns]="column"
                    [paginator]="true"
                    [autoLayout]="true"
@@ -242,7 +244,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-folio_dt let-i="rowIndex">
               <tr tabindex="999"
-              [ngStyle]="{'background-color': folio_dt.folio_status == 'Inactive' ? '#b70a0a30' : ''}"
+              [ngStyle]="{'background-color': folio_dt.folio_status == 'Inactive' ? '#b70a0a30' : '','height':'33px'}"
               >
                 <td *ngFor="let col of column"
                     [style.max-width]="col.width"
@@ -256,6 +258,11 @@
                       <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
                     </ng-container>
 
+
+                    <ng-container *ngSwitchCase="col.field == 'first_client_name' || col.field == 'joint_name_1' || col.field == 'joint_name_2' || col.field == 'guardian_name'">
+                      <p class="m-0">{{ folio_dt[col.field] ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
+                    </ng-container>
+
                     <!-- <ng-container *ngSwitchCase="col.field == 'folio_date'">
                       <p class="m-0">{{folio_dt[col.field] ?
                         (folio_dt[col.field] | date:'dd-MM-YYYY')
@@ -264,7 +271,10 @@
                     </ng-container> -->
 
                     <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                      <p class="m-0">{{ folio_dt[col.field] ? (folio_dt[col.field]  + '-' + folio_dt['plan_name'] + '-' + folio_dt['option_name']) : 'N/A' }}</p>
+                      <p class="m-0">
+                        <!-- {{folio_dt['product_code']}} -  {{folio_dt['folio_no']}} -->
+                        {{ folio_dt[col.field] ? (folio_dt[col.field]  + '-' + folio_dt['plan_name'] + '-' + folio_dt['option_name']) : 'N/A' }}
+                      </p>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
@@ -287,6 +297,10 @@
                         <p class="m-0">{{ (folio_dt[col.field] && (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK"  && folio_dt[col.field]!= ' ') ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
                       </ng-container>
 
+                      <ng-container *ngSwitchCase="col.field == 'email' || col.field == 'email_2nd_holder'
+                      || col.field == 'email_3rd_holder' || col.field == 'guardian_email'">
+                        <p class="m-0">{{ folio_dt[col.field]  ? (folio_dt[col.field] | lowercase) : 'N/A' }}</p>
+                      </ng-container>
 
                     <ng-container *ngSwitchCase="col.field == 'nom_optout_status'">
                         <ng-container *ngIf="folio_dt[col.field];else nonominee__Status">

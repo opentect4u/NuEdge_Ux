@@ -167,7 +167,7 @@
     "accessibility":[],
     "title":"Change Of Broker",
     "tooltip":"Change Of Broker",
-    "url":"/main/product/mf",
+    "url":"/main/product/mf/mis/brokerChange",
     "icon": "fa fa-user-o",
     "has_submenu":[]
   },

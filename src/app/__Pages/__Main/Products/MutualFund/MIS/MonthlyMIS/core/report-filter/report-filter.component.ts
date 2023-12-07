@@ -196,17 +196,17 @@ export class ReportFilterComponent implements OnInit {
   monthly_mis_filter_form = new FormGroup({
     mis_month: new FormControl(''),
     no_of_month: new FormControl(''),
-    amc_id: new FormControl([]),
-    cat_id: new FormControl([]),
-    sub_cat_id: new FormControl([]),
+    amc_id: new FormControl([], { updateOn: 'blur' }),
+    cat_id: new FormControl([], { updateOn: 'blur' }),
+    sub_cat_id: new FormControl([], { updateOn: 'blur' }),
     scheme_id: new FormControl([]),
-    trans_type: new FormControl([]),
+    trans_type: new FormControl([], { updateOn: 'blur' }),
     trans_sub_type: new FormControl([]),
     euin_no: new FormControl([]),
-    brn_cd: new FormControl([]),
-    rm_id: new FormControl([]),
-    bu_type_id: new FormControl([]),
-    sub_brk_cd: new FormControl([])
+    brn_cd: new FormControl([], { updateOn: 'blur' }),
+    rm_id: new FormControl([], { updateOn: 'blur' }),
+    bu_type_id: new FormControl([], { updateOn: 'blur' }),
+    sub_brk_cd: new FormControl([], { updateOn: 'blur' })
   });
 
   @Output() searchReport = new EventEmitter()

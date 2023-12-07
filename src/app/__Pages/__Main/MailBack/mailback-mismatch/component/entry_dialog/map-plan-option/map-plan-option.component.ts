@@ -18,7 +18,9 @@ export class MapPlanOptionComponent implements OnInit {
 
   mapPlanOptionForm = new FormGroup({
         scheme_name:new FormControl({value:'',disabled:true},[Validators.required]),
-        isin_no: new FormControl('',[Validators.required])
+        isin_no: new FormControl('',[Validators.required]),
+        folio_no: new FormControl(this.data.transaction_dtls.folio_no),
+        product_code: new FormControl(this.data.transaction_dtls.product_code),
   })
 
   constructor(
@@ -30,7 +32,7 @@ export class MapPlanOptionComponent implements OnInit {
     private overlay: Overlay
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {console.log(this.data)}
   ngAfterViewInit(){
       this.getIsincorrospondingToProduct_code(this.data.transaction_dtls.product_code);
   }
@@ -39,13 +41,14 @@ export class MapPlanOptionComponent implements OnInit {
       this.__dbIntr.api_call(0,'/showISIN',`product_code=${product_code}`)
       .pipe(pluck('data'))
       .subscribe(res =>{
+        this.mapPlanOptionForm.get('scheme_name').setValue(this.data.transaction_dtls.scheme_name);
         this.isin_no_master_data = res;
       })
   }
 
   submitIsin = () =>{
     const object = {
-      ...this.mapPlanOptionForm.value ,
+      ...this.mapPlanOptionForm.value,
       file_type:this.data.file_type,
       sub_file_type:this.data.sub_file_type,
     }

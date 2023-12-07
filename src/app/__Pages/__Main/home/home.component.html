@@ -2,10 +2,50 @@
 
 
 
-<div class="row flexSec">
-  <home-menuTiles [__items]="__topValues" [__flag]="'TV'" class="homeMenuTiles"></home-menuTiles>  <!--- showing top bar values --->
-</div>
+<!-- <div class="row flexSec">
+  <home-menuTiles [__items]="__topValues" [__flag]="'TV'" class="homeMenuTiles"></home-menuTiles>  - showing top bar values -
+</div> -->
+<div class="row flexSec1">
+ <div class="col-sm-3 my-2" *ngFor="let item of __topValues">
 
+    <div class="card">
+     <div class="card-header p-5 pt-2">
+       <div [class]="'icon icon-lg icon-shape shadow-dark text-center border-radius-xl mt-n4 position-absolute ' + item.class_name">
+          <i class="fa fa-clock-o"></i>
+      </div>
+       <div class="text-end pt-1">
+         <p class="text-sm mb-0 text-capitalize">{{item.title}}</p>
+         <h4 class="mb-0 text-lg">{{item.value | shortNumber}}</h4>
+       </div>
+     </div>
+     <hr class="dark horizontal my-0">
+     <div class="card-footer p-3">
+       <div class="mb-0  d-flex align-items-center">
+         <div class="text-sm font-weight-bolder d-flex align-items-center"
+         [ngClass]="{'text-success':item.monthly_trend > 0,
+         'text-danger':item.monthly_trend < 0}">
+         <!-- <i class="fa"
+         [ngClass]="{'fa-arrow-down':item.monthly_trend < 0,'fa-arrow-up':item.monthly_trend > 0}"
+         aria-hidden="true"></i> -->
+
+         <mat-icon class="material-symbols-outlined">
+          {{item.monthly_trend < 0 ? 'arrow_drop_down' : 'arrow_drop_up'}}</mat-icon>
+           {{item.monthly_trend > 0 ? '+' + (item.monthly_trend | number:'1.2-2') + '% ' : (item.monthly_trend ) + '% '}}
+         </div>&nbsp; <span class="ml-1">MoM</span>
+         <!-- than last week -->
+        </div>
+       <a mat-button class="float-right pr-0">
+        View Trend
+        <mat-icon class="material-symbols-outlined">
+          arrow_drop_down
+          </mat-icon>
+      </a>
+       </div>
+
+    </div>
+
+ </div>
+</div>
 <div class="row flexSec">
    <div class="col-sm-6">
     <div class="row">

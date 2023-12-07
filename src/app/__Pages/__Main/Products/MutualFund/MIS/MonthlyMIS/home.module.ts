@@ -17,7 +17,12 @@ const routes:Routes = [
         path:'report',
         loadChildren:()=> import('./monthly--mis/monthly--mis.module').then(m => m.MonthlyMisModule),
         data:{breadcrumb:'Monthly MIS Report',pageTitle:'Monthly MIS Report',title:'Monthly MIS Report'},
-      }
+      },
+      {
+        path:'trend',
+        loadChildren:()=> import('./monthly-mistrend/monthly-mistrend.module').then(m=> m.MonthlyMISTrendModule),
+        data:{breadcrumb:'Monthly MIS Trend Report',pageTitle:'Monthly MIS Trend Report',title:'Monthly MIS Trend Report'},
+      },
     ]
   }]
 

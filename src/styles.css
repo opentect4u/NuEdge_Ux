@@ -836,3 +836,39 @@ color: #ffffff;
 .multiselect-dropdown .dropdown-btn{
   font-weight: 500!important;
 }
+
+.summaryCnt{
+  flex-direction: column!important;
+}
+.summaryCnt>hr{
+  border-top: 1px solid #d7d7d7!important;
+  height: 0px!important;
+  width: 100%!important;
+  /* margin: 4px 0px!important; */
+
+}
+.summaryCnt>.process>a,
+.summaryCnt>.rejection>a{
+  text-decoration: underline;cursor:pointer
+}
+.process{
+  font-size: 11px!important;
+  text-align: center!important;
+  padding: 4px;
+}
+.rejection{
+  color: rgb(233, 30, 30);
+  font-size: 11px!important;
+  text-align: center!important;
+  padding: 4px;
+}
+
+.highcharts-credits{
+  display:none!important;
+}
+
+.highcharts-root {
+  font-family: 'MontSerrat'!important;
+  font-size: 11px!important;
+  font-weight: 600!important;
+}
