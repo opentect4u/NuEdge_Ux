@@ -12,10 +12,10 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { DOCUMENT } from '@angular/common';
 import { IStaticRpt } from './static-rpt';
 enum TABLE_WIDTH {
-  'F' = '900rem', //FOLIO
-  'K' = '350rem', // KYC
-  'A' = '300rem', // ADHAAR PAN LINK
-  'N' = '200rem', // NOMINEE
+  'F' = '1258rem', //FOLIO
+  'K' = '445rem', // KYC
+  'A' = '350rem', // ADHAAR PAN LINK
+  'N' = '367rem', // NOMINEE
 
 }
 
@@ -164,8 +164,14 @@ export class InvestorStaticReportComponent implements OnInit {
       this.tab_menu = res;
       this.setTitle();
       this.setFlag();
+      console.log(this.column);
     })
     /*** End ***/
+
+    // this.setColumn('F').then(res =>{
+    //   this.column = res;
+    //   this.tble_width = TABLE_WIDTH['F'];
+    // })
   }
 
   setTitle = () => {
@@ -325,12 +331,14 @@ export class InvestorStaticReportComponent implements OnInit {
   }
 
   changeTabDtls = (ev) => {
+    console.log(ev);
     this.index = ev.index;
     this.setTitle();
     this.setFlag();
     this.report_data = [];
     this.filter.get('investor_static_type').setValue(ev.tabDtls.flag);
     this.setColumn(ev.tabDtls.flag).then((res: column[]) => {
+      console.log(res);
       this.tble_width = TABLE_WIDTH[ev.tabDtls.flag];
       this.column = res;
     })
@@ -629,7 +637,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
   static column: column[] = [
     { field: 'sl_no', header: 'Sl No', width: '6rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'bu_type', header: 'Business Type', width: '10rem', isVisible: ['F', 'K', 'A', 'N'] },
-    { field: 'brnach_name', header: 'Branch', width: '10rem', isVisible: ['F', 'K', 'A', 'N'] },
+    { field: 'branch_name', header: 'Branch', width: '10rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'rm_name', header: 'RM', width: '16rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'sub_brk_code', header: 'Sub Broker Code', width: '16rem', isVisible: ['F', 'K', 'A', 'N'] },
     { field: 'euin_no', header: 'EUIN', width: '8rem', isVisible: ['F', 'K', 'A', 'N'] },
@@ -715,7 +723,7 @@ export class Folio_KYC_Adhaar_pan_nominee_Column {
     { field: 'email_3rd_holder', header: '3rd Holder Email', width: '28rem', isVisible: ['F'] },
 
     { field: 'guardian_name', header: 'Guardian Name', width: '28rem', isVisible: ['F'] },
-    { field: 'guardian_pan', header: 'Guardian PAN', width: '9rem', isVisible: ['F', 'K', 'A'] },
+    { field: 'guardian_pan', header: 'Guardian PAN', width: '12rem', isVisible: ['F', 'K', 'A'] },
     { field: 'guardian_ckyc_no', header: 'Guardian CKYC', width: '15rem', isVisible: ['F', 'K'] },
     { field: 'guardian_dob', header: 'Guardian DOB', width: '10rem', isVisible: ['F'] },
     { field: 'guardian_tax_status', header: 'Guardian Tax Status', width: '15rem', isVisible: ['F'] },
