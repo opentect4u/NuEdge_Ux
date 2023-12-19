@@ -159,9 +159,10 @@
             [tableStyle]="{ 'min-width': '120rem' }">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 10rem">
+                <th  *ngFor="let col of columns" pResizableColumn
+                [pSortableColumn]="col.field == 'sl_no' ? '' : col.field" style="width: 10rem">
                   {{ col.header }}
-                  <p-sortIcon  [field]="col.field">
+                  <p-sortIcon  [field]="col.field" *ngIf="col.field != 'sl_no'">
                   </p-sortIcon>
                 </th>
               </tr>
@@ -169,9 +170,21 @@
             <ng-template pTemplate="body" let-geography let-columns="columns" let-i="rowIndex">
               <tr tabindex="999">
                 <td *ngFor="let col of columns" style="width: 10rem">
-                 <p class="m-0">
-                    {{ geography[col.field] ? geography[col.field] : 'N/A' }}
-                 </p>
+                  <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                        <p class="m-0">
+                          {{frm_pg + i}}
+                        </p>
+                      </ng-container>
+
+                      <ng-container *ngSwitchDefault>
+                        <p class="m-0">
+                          {{ geography[col.field] ? geography[col.field] : 'N/A' }}
+                       </p>
+                      </ng-container>
+
+                    </ng-container>
+
                 </td>
               </tr>
             </ng-template>

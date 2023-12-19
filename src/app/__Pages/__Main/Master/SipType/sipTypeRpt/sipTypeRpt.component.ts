@@ -115,7 +115,7 @@ export class SiptyperptComponent implements OnInit {
     this.openDialog(__items.id, __items);
   }
   openDialog(id, __items) {
-    console.log(__items);
+    // console.log(__items);
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -149,7 +149,7 @@ export class SiptyperptComponent implements OnInit {
     } catch (ex) {
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('40%');
-      console.log(ex);
+      // console.log(ex);
       this.__utility.getmenuIconVisible({
         id: Number(dialogConfig.id),
         isVisible: false,

@@ -84,17 +84,23 @@ export class CatUploadComponent implements OnInit {
   populateDT(__items: category) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/category',
-      { queryParams: {
-        id: btoa(__items.id.toString())
-      } }
+      // { queryParams: {
+      //   id: btoa(__items.id.toString())
+      // } }
+      {queryParams: {id: this.__utility.encrypt_dtls(__items.id.toString()) }},
+
     );
   }
   showCorrospondingsubCategory(__rntDtls) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/subcategory',
-      {
+      // {
+      //   queryParams: {
+      //     id: btoa(__rntDtls.id.toString())
+      // },
+        {
         queryParams: {
-          id: btoa(__rntDtls.id.toString())
+          id: this.__utility.encrypt_dtls(__rntDtls.id.toString())
       },
       }
     );

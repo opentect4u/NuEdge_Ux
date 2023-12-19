@@ -42,7 +42,7 @@ export class TransactionComponent implements OnInit {
     }
     catch(ex){
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
-      console.log(dialogRef);
+      // console.log(dialogRef);
        dialogRef.updateSize('50%');
       this.__utility.getmenuIconVisible({
         id: id,

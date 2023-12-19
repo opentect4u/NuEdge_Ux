@@ -785,7 +785,7 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
 
 .topValueBox {
   border-radius: 5px;
-  padding: 15px;
+  /* padding: 15px; */
   color: #fff;
   position: relative;
   /* box-shadow: 0px 0px 5px 5px #e1e0e0; */
@@ -798,17 +798,35 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   font-weight: 700;
   margin: 0 0 31px 0px;
   padding: 0; */
-  font-size: 15px;
+
+
+  /* font-size: 15px;
+  color: #fff;
+  font-weight: 500;
+  margin: 0 0 31px 0px;
+  padding: 0; */
+
+  /* ADDITION */
+  font-size: 24px;
   color: #fff;
   font-weight: 500;
   /* margin: 0 0 10px 0; */
-  margin: 0 0 31px 0px;
+  /* margin: 0 0 31px 0px; */
   padding: 0;
+  text-align: center;
+  /* END */
 }
 
 .topValueBox p {
-  font-size: 16px;
+  /* font-size: 16px;
   color: #fff;
+  margin: 10px 0;
+  margin: 0;
+  padding: 0; */
+
+  font-size: 21px;
+  color: #fff;
+  margin: 2px 0!important;
   margin: 0;
   padding: 0;
 

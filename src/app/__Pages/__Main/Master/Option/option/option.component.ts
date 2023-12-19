@@ -35,7 +35,7 @@ export class OptionComponent implements OnInit {
       .api_call(
         0,
         '/option',
-        'id=' + atob(this.route.snapshot.queryParamMap.get('id'))
+        'id=' + this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('id'))
       )
       .pipe(pluck('data'))
       .subscribe((res: option[]) => {
@@ -46,7 +46,6 @@ export class OptionComponent implements OnInit {
   }
 
   openDialog(__opt: option | null = null, __optId: number) {
-    console.log(__opt);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;

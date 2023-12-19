@@ -88,7 +88,6 @@ export class BenchmarkEntryComponent implements OnInit, IDialogsize {
     /**
      * For Fire Event on change value of category
      */
-    console.log(this.data.benchmark);
      if(this.data.benchmark){
       setTimeout(() => {
         this.benchmarkForm.get('category_id').disable({

@@ -112,10 +112,11 @@ export class UploadBenchmarkComponent implements OnInit {
   }
 
   populateDT = (ev) =>{
-    console.log(ev);
     this.utility.navigatewithqueryparams(
       '/main/master/productwisemenu/benchmark',
-      { queryParams: {dtls: btoa(JSON.stringify(ev))} })
+      // { queryParams: {dtls: btoa(JSON.stringify(ev))} })
+      { queryParams: {dtls: this.utility.encrypt_dtls(JSON.stringify(ev))} })
+
 
   }
   viewAll=()=>{

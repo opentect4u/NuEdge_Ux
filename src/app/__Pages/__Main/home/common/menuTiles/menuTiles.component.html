@@ -13,9 +13,28 @@
     <h2 *ngIf="__flag == 'BM'">{{items.title}}</h2>
 
     <ng-container *ngIf="__flag == 'TV'">
-      <h3>{{items.title}}</h3>
-      <p>{{items.value}}</p>
-      <i class="fa fa-clock-o timerCustom" aria-hidden="true"></i>
+      <div class="w-100 d-flex justify-content-center align-items-center p-3">
+                      <h3>{{items.title}}</h3>
+                      <button mat-icon-button class="titleIcons"  matTooltipClass="ToolTip" matTooltip="View Report">
+                        <mat-icon> visibility</mat-icon>
+                      </button>
+
+
+      </div>
+      <p class="text-center">{{items.value | shortNumber}}</p>
+      <div class="mb-0 w-100 d-flex align-items-center justify-content-center p-3">
+        <div class="text-sm font-weight-bolder
+        d-flex align-items-center">
+        <mat-icon class="text-success">arrow_drop_up</mat-icon>
+         <span class="text-success">0.25% </span><span class="ml-1">MoM</span>
+        </div>
+        <button mat-icon-button  class="titleIcons"  matTooltipClass="ToolTip" matTooltip="View Trend">
+          <mat-icon>signal_cellular_alt</mat-icon>
+        </button>
+       </div>
+
+
+      <!-- <i class="fa fa-clock-o timerCustom" aria-hidden="true"></i> -->
     </ng-container>
   </div>
 </div>

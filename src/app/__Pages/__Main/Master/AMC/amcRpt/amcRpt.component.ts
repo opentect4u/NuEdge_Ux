@@ -81,11 +81,6 @@ export class AmcrptComponent implements OnInit {
     // this.addLevelsCheckBox(amcClmns.LEVELS);
     this.showColumns(2);
     console.log(this.data);
-    setTimeout(() => {
-      this.formValue = this.__detalsSummaryForm.value;
-      this.getAmcMst();
-    }, 500);
-
   }
   setRntCheckBox = (rntId) =>{
             if(rntId){
@@ -99,6 +94,8 @@ export class AmcrptComponent implements OnInit {
     this.__dbIntr.api_call(0,'/rnt',null).pipe(pluck('data')).subscribe((res:rnt[]) =>{
           res.forEach((el:rnt) =>{this.rnt_id.push(this.setRNTForm(el))});
          this.setRntCheckBox(this.data.rnt_id);
+          this.formValue = this.__detalsSummaryForm.value;
+          this.getAmcMst();
     })
   }
   get rnt_id():FormArray{

@@ -23,6 +23,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 import { scheme } from 'src/app/__Model/__schemeMst';
 import { Ibenchmark } from '../../benchmark/home/home.component';
+import { SCM_DTLS } from 'src/app/strings/localStorage_key';
 // import { Ibenchmark } from '../../benchmark/benchmark.component';
 @Component({
   selector: 'app-scmModification',
@@ -32,7 +33,8 @@ import { Ibenchmark } from '../../benchmark/home/home.component';
 export class ScmModificationComponent implements OnInit {
   __benchmark:Ibenchmark[] = [];
   __scmDtls: scheme[] = [];
-  __getPrevScmDT = storage.get_scmDtls ? storage.get_scmDtls : '';
+  // __getPrevScmDT = storage.get_scmDtls ? storage.get_scmDtls : '';
+  __getPrevScmDT = storage.getItemFromLocalStorage(SCM_DTLS) ? JSON.parse(this.__utility.decrypt_dtls(storage.getItemFromLocalStorage(SCM_DTLS))) : '';
   __dates = dateslist;
   __isVisible: boolean = false;
   __amcMaster: amc[];
@@ -69,19 +71,19 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? this.data.items.step_up_min_per
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.step_up_min_per
+        ? this.__getPrevScmDT?.step_up_min_per
         : ''
     ),
     step_up_min_amt: new FormControl(
       this.data.id > 0
         ? this.data.items.step_up_min_amt
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.step_up_min_amt
+        ? this.__getPrevScmDT?.step_up_min_amt
         : ''
     ),
-    // growth_isin: new FormControl(this.data.id > 0 ? this.data.items.growth_isin : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.growth_isin : '')),
-    // idcw_payout_isin: new FormControl(this.data.id > 0 ? this.data.items.idcw_payout_isin : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.idcw_payout_isin : '')),
-    // idcw_reinvestment_isin: new FormControl(this.data.id > 0 ? this.data.items.idcw_reinvestment_isin : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT.idcw_reinvestment_isin : '')),
+    // growth_isin: new FormControl(this.data.id > 0 ? this.data.items.growth_isin : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT?.growth_isin : '')),
+    // idcw_payout_isin: new FormControl(this.data.id > 0 ? this.data.items.idcw_payout_isin : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT?.idcw_payout_isin : '')),
+    // idcw_reinvestment_isin: new FormControl(this.data.id > 0 ? this.data.items.idcw_reinvestment_isin : (global.getActualVal(this.__getPrevScmDT) ? this.__getPrevScmDT?.idcw_reinvestment_isin : '')),
     category_id: new FormControl('', [Validators.required]),
     subcategory_id: new FormControl(
       this.data.id > 0 ? this.data.items.subcategory_id : '',
@@ -100,7 +102,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? JSON.parse(this.data.items.sip_date)
         : global.getActualVal(this.__getPrevScmDT)
-        ? JSON.parse(this.__getPrevScmDT.sip_date)
+        ? JSON.parse(this.__getPrevScmDT?.sip_date)
         : '',
       [Validators.required]
     ),
@@ -109,7 +111,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? global.getActualVal(this.data.items.nfo_entry_date)
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.nfo_entry_date
+        ? this.__getPrevScmDT?.nfo_entry_date
         : '',
       this.data.scheme_type == 'N' ? [Validators.required] : []
     ),
@@ -117,7 +119,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? global.getActualVal(this.data.items.nfo_start_dt)
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.nfo_start_dt
+        ? this.__getPrevScmDT?.nfo_start_dt
         : '',
       this.data.scheme_type == 'N' ? [Validators.required] : []
     ),
@@ -125,7 +127,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? global.getActualVal(this.data.items.nfo_end_dt)
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.nfo_end_dt
+        ? this.__getPrevScmDT?.nfo_end_dt
         : '',
       this.data.scheme_type == 'N' ? [Validators.required] : []
     ),
@@ -133,7 +135,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? global.getActualVal(this.data.items.nfo_reopen_dt)
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.nfo_reopen_dt
+        ? this.__getPrevScmDT?.nfo_reopen_dt
         : '',
       this.data.scheme_type == 'N' ? [Validators.required] : []
     ),
@@ -141,7 +143,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? this.data.items.pip_fresh_min_amt
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.pip_fresh_min_amt
+        ? this.__getPrevScmDT?.pip_fresh_min_amt
         : '',
       [Validators.required, Validators.pattern('^[0-9]*$')]
     ),
@@ -150,7 +152,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? this.data.items.pip_add_min_amt
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.pip_add_min_amt
+        ? this.__getPrevScmDT?.pip_add_min_amt
         : '',
       [Validators.required, Validators.pattern('^[0-9]*$')]
     ),
@@ -162,7 +164,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? JSON.parse(this.data.items.swp_date)
         : global.getActualVal(this.__getPrevScmDT)
-        ? JSON.parse(this.__getPrevScmDT.swp_date)
+        ? JSON.parse(this.__getPrevScmDT?.swp_date)
         : '',
       [Validators.required]
     ),
@@ -172,7 +174,7 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? JSON.parse(this.data.items.stp_date)
         : global.getActualVal(this.__getPrevScmDT)
-        ? JSON.parse(this.__getPrevScmDT.stp_date)
+        ? JSON.parse(this.__getPrevScmDT?.stp_date)
         : '',
       [Validators.required]
     ),
@@ -184,7 +186,7 @@ export class ScmModificationComponent implements OnInit {
           ? true
           : false
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.ava_special_sip == 'true'
+        ? this.__getPrevScmDT?.ava_special_sip == 'true'
           ? true
           : false
         : false
@@ -195,7 +197,7 @@ export class ScmModificationComponent implements OnInit {
           ? true
           : false
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.ava_special_swp == 'true'
+        ? this.__getPrevScmDT?.ava_special_swp == 'true'
           ? true
           : false
         : false
@@ -206,7 +208,7 @@ export class ScmModificationComponent implements OnInit {
           ? true
           : false
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.ava_special_stp == 'true'
+        ? this.__getPrevScmDT?.ava_special_stp == 'true'
           ? true
           : false
         : false
@@ -215,21 +217,21 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? this.data.items.special_sip_name
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.special_sip_name
+        ? this.__getPrevScmDT?.special_sip_name
         : ''
     ),
     special_swp_name: new FormControl(
       this.data.id > 0
         ? this.data.items.special_swp_name
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.special_swp_name
+        ? this.__getPrevScmDT?.special_swp_name
         : ''
     ),
     special_stp_name: new FormControl(
       this.data.id > 0
         ? this.data.items.special_stp_name
         : global.getActualVal(this.__getPrevScmDT)
-        ? this.__getPrevScmDT.special_stp_name
+        ? this.__getPrevScmDT?.special_stp_name
         : ''
     ),
 
@@ -327,21 +329,21 @@ export class ScmModificationComponent implements OnInit {
       this.data.id > 0
         ? JSON.parse(this.data.items.sip_freq_wise_amt)
         : global.getActualVal(this.__getPrevScmDT)
-        ? JSON.parse(this.__getPrevScmDT.sip_freq_wise_amt)
+        ? JSON.parse(this.__getPrevScmDT?.sip_freq_wise_amt)
         : __sipFrequency
     );
     this.setSwpfrequencyAmt(
       this.data.id > 0
         ? JSON.parse(this.data.items.swp_freq_wise_amt)
         : global.getActualVal(this.__getPrevScmDT)
-        ? JSON.parse(this.__getPrevScmDT.swp_freq_wise_amt)
+        ? JSON.parse(this.__getPrevScmDT?.swp_freq_wise_amt)
         : __sipFrequency
     );
     this.setStpFrequency(
       this.data.id > 0
         ? JSON.parse(this.data.items.stp_freq_wise_amt)
         : global.getActualVal(this.__getPrevScmDT)
-        ? JSON.parse(this.__getPrevScmDT.stp_freq_wise_amt)
+        ? JSON.parse(this.__getPrevScmDT?.stp_freq_wise_amt)
         : __sipFrequency
     );
     if (this.data.id > 0) {
@@ -634,9 +636,6 @@ export class ScmModificationComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit() {
-
-
-
     //  console.log(this.__scmForm.value.frequency);
     if (this.__scmForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
@@ -761,7 +760,10 @@ export class ScmModificationComponent implements OnInit {
       .subscribe((res: any) => {
         if (res.suc == 1) {
           this.reset();
-          storage.setScmDtls(res.data);
+          // storage.setScmDtls(res.data);
+          storage.setItemInLocalStorage(SCM_DTLS,
+            this.__utility.encrypt_dtls(JSON.stringify(res.data))
+            );
           this.dialogRef.close({ id: this.data.id, data: res.data });
         }
         this.__utility.showSnackbar(

@@ -32,7 +32,7 @@ export class TrnstypeModificationComponent implements OnInit {
       }
     })
     if (this.data.id > 0) {
-       console.log(this.data);
+      //  console.log(this.data);
 
       this.__trns_type.patchValue({
         product_id: this.data.items.product_id,

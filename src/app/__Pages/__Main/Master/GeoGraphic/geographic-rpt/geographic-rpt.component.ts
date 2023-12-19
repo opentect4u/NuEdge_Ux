@@ -18,6 +18,9 @@ import itemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
   styleUrls: ['./geographic-rpt.component.css']
 })
 export class GeographicRPTComponent implements OnInit {
+
+  frm_pg:number = 0;
+  to_pg:number = 0;
   formValue;
   itemsPerPage=itemsPerPage
  sort = new sort();
@@ -222,11 +225,18 @@ export class GeographicRPTComponent implements OnInit {
     geographic.append('arr_district_id',JSON.stringify(this.geographicForm.value.district_id.map(item => {return item["id"]})));
     geographic.append('arr_city_id',JSON.stringify(this.geographicForm.value.city_id.map(item => {return item["id"]})));
     geographic.append('pincode',global.getActualVal(this.geographicForm.value.pincode) ? this.geographicForm.value.pincode : '');
-    this.__dbIntr.api_call(1,'/geographyDetailSearch',geographic).pipe(pluck("data")).subscribe((res: any) =>{
+    this.__dbIntr.api_call(1,'/geographyDetailSearch',geographic)
+    .pipe(
+      pluck("data")
+    )
+    .subscribe((res: any) =>{
         this.geographicMst = res.data;
         this.__paginate = res.links;
+        this.frm_pg = res.from;
+        this.to_pg = res.to;
+
     });
-    this.exportGeographical(geographic);
+    // this.exportGeographical(geographic);
 
   }
 
@@ -259,6 +269,7 @@ export class GeographicRPTComponent implements OnInit {
         .subscribe((res: any) => {
           this.geographicMst = res.data;
           this.__paginate = res.links;
+          this.frm_pg = res.from;
         });
     }
   }

@@ -1,5 +1,5 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
-  <div mat-dialog-title class="dialog-title">
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".body">
+  <div mat-dialog-title class="dialog-title" cdkDragHandle >
     <h2>Non Financial Reports</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()" >
@@ -19,7 +19,7 @@
 
   </div>
 
-  <mat-dialog-content class="customDialog">
+  <mat-dialog-content class="customDialog" cdkDragHandle>
     <ng-template #SearchBtn>
       <p-button
       type="submit"

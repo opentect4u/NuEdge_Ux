@@ -671,7 +671,7 @@ fetchTransaction = () =>{
    count = this.trxnRpt.length;
   this.trxnRpt = [];
   this.dbIntr
-    .api_call(1, '/showTransDetails', TrxnDt)
+    .api_call(1, '/showBrokerChangeDetails', TrxnDt)
     .pipe(
       pluck('data'),
       tap((item:TrxnRpt[]) => {
@@ -735,6 +735,7 @@ fetchTransaction = () =>{
       })
       )
     .subscribe((res: TrxnRpt[]) => {
+      console.log(res);
       if(res.length > 0){
       this.calculateProcess_Reject(res);
     }

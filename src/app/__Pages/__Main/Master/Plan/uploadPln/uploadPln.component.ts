@@ -58,7 +58,10 @@ export class UploadPlnComponent implements OnInit {
   populateDT(__items: plan) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/plan',
-      { queryParams: {id: btoa(__items.id.toString())} }
+      { queryParams: {
+        id: this.__utility.encrypt_dtls(__items.id.toString()),
+      } }
+      // { queryParams: {id: btoa(__items.id.toString())} }
     );
   }
   viewAll(){

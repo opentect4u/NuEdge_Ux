@@ -119,7 +119,7 @@ populateDT(__items: any) {
   this.openDialog(__items.id, __items);
 }
 openDialog(id, __items) {
-  console.log(__items);
+  // console.log(__items);
   const dialogConfig = new MatDialogConfig();
   dialogConfig.autoFocus = false;
   dialogConfig.closeOnNavigation = false;
@@ -147,7 +147,7 @@ openDialog(id, __items) {
     });
   }
   catch(ex){
-    console.log(ex);
+    // console.log(ex);
 
     const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
     dialogRef.addPanelClass('mat_dialog');

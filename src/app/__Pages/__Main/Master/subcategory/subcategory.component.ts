@@ -40,7 +40,7 @@ export class SubcategoryComponent implements OnInit {
       .api_call(
         0,
         '/subcategory',
-        'id=' + atob(this.route.snapshot.queryParamMap.get('sub_cat_id'))
+        'id=' + this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('sub_cat_id'))
       )
       .pipe(pluck('data'))
       .subscribe((res: subcat[]) => {
@@ -95,8 +95,8 @@ export class SubcategoryComponent implements OnInit {
         case 'R':
           this.openDialogForReports(
             '1',
-            global.getActualVal(this.route.snapshot.queryParamMap.get('id')) ?atob(this.route.snapshot.queryParamMap.get('id')) : '',
-            global.getActualVal(this.route.snapshot.queryParamMap.get('sub_cat_id')) ?atob(this.route.snapshot.queryParamMap.get('sub_cat_id')) : ''
+            global.getActualVal(this.route.snapshot.queryParamMap.get('id')) ? this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('id')) : '',
+            global.getActualVal(this.route.snapshot.queryParamMap.get('sub_cat_id')) ? this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('sub_cat_id')) : ''
             )
           break;
       default:

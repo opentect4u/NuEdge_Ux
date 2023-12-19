@@ -364,7 +364,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
       });
   }
   minimize() {
-    this.dialogRef.updateSize('40%', '60px');
+    this.dialogRef.updateSize('40%', '45px');
     this.dialogRef.updatePosition({ bottom: '0px', right: '0px' });
   }
   maximize() {

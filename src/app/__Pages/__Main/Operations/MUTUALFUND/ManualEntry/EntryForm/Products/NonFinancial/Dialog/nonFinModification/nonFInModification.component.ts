@@ -1685,7 +1685,7 @@ export class NonfinmodificationComponent implements OnInit {
     }
   }
   minimize() {
-    this.dialogRef.updateSize('30%', '55px');
+    this.dialogRef.updateSize('30%', '45px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',

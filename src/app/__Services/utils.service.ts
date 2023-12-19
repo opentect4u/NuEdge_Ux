@@ -14,7 +14,8 @@ import { SnkbarComponent } from '../__Core/snkbar/snkbar.component';
 import { breadCrumb } from '../__Model/brdCrmb';
 import { Route } from '../__Model/route';
 import { global } from '../__Utility/globalFunc';
-
+import * as CryptoJs from '../../assets/js/EnDcrypt.js';
+import { EN_DE, ERRR } from '../strings/localStorage_key';
 @Injectable({
   providedIn: 'root',
 })
@@ -222,6 +223,38 @@ export class UtiliService {
     return columns.map(item => {return item.field});
   }
 
+  /**
+   *
+   * @param msg is to be encrypted
+   * @returns the encrypted string if error happens it will return `ERROR`
+   */
+  encrypt_dtls = (msg:string): string | null =>{
+    try{
+      let encrypted_dt =  CryptoJs.AES.encrypt(msg?.trim(),EN_DE?.trim()).toString();
+      return encrypted_dt;
+    }
+    catch(ex){
+      console.log(ex);
+      return this.decrypt_dtls(ERRR);
+    }
+  }
+
+    /**
+   *
+   * @param msg is to be decrypted
+   * @returns the encrypted string if error happens it will return `ERROR`
+   */
+    decrypt_dtls = (encrypt_msg:string): string =>{
+      try{
+        let dcrypt_dt = CryptoJs.AES.decrypt(encrypt_msg?.trim(), EN_DE?.trim()).toString(CryptoJs.enc.Utf8);
+        return  dcrypt_dt;
+      }
+      catch(ex){
+        console.log(ex);
+        return null;
+      }
+
+    }
 
   // arrayCount<T>(arr: T[], predicate: (elem: T, idx: number) => boolean):Promise<number> {
   //   return new Promise((resolve,reject) =>{

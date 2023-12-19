@@ -7,7 +7,12 @@ import { MenuTilesComponent } from './common/menuTiles/menuTiles.component';
 import { ShortNumberPipe } from 'src/app/__Pipes/short-number.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
+/*********** OVERLAY PANNEL MODULE *****/
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+/************END **********************/
+/******** Material ToolTip */
+import {MatTooltipModule} from '@angular/material/tooltip';
+/**** END*/
 const routes: Routes = [
   { path: '', component: HomeComponent,data:{breadcrumb: null} }
 ]
@@ -17,7 +22,9 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    OverlayPanelModule,
+    MatTooltipModule
   ],
   declarations: [HomeComponent,ViewComponent,MenuTilesComponent,ShortNumberPipe]
 })

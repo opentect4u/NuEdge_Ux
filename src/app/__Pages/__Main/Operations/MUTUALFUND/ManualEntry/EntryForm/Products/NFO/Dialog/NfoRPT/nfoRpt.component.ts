@@ -432,7 +432,7 @@ __exportedClmns: string[] = [];
   minimize() {
     this.dialogRef.removePanelClass('mat_dialog');
     this.dialogRef.removePanelClass('full_screen');
-    this.dialogRef.updateSize('40%', '55px');
+    this.dialogRef.updateSize('40%', '45px');
     this.dialogRef.updatePosition({
       bottom: '0px',
       right: this.data.right + 'px',

@@ -32,13 +32,12 @@ export class CategoryComponent implements OnInit {
   }
 
 
-
   getParticularCategory() {
     this.__dbIntr
       .api_call(
         0,
         '/category',
-        'id=' + atob(this.__rtDt.snapshot.queryParamMap.get('id'))
+        'id=' + this.__utility.decrypt_dtls(this.__rtDt.snapshot.queryParamMap.get('id'))
       )
       .pipe(pluck('data'))
       .subscribe((res: category[]) => {

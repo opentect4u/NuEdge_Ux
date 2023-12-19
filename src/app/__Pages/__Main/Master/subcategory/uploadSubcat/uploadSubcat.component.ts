@@ -60,8 +60,12 @@ export class UploadSubcatComponent implements OnInit {
     // this.__utility.navigate('/main/master/cateModify', btoa(__items.id.toString()));
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/subcategory',
+      // { queryParams: {
+      //   sub_cat_id: btoa(__items.id.toString()),
+      // } }
+
       { queryParams: {
-        sub_cat_id: btoa(__items.id.toString()),
+        sub_cat_id: this.__utility.encrypt_dtls(__items.id.toString()),
       } }
     );
   }

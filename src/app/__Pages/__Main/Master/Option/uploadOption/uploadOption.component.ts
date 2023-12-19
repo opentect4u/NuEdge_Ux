@@ -88,8 +88,11 @@ export class UploadOptionComponent implements OnInit {
   populateDT(__items: option) {
     this.__utility.navigatewithqueryparams(
       '/main/master/productwisemenu/option',
+      // { queryParams: {
+      //   id: btoa(__items.id.toString()),
+      // } }
       { queryParams: {
-        id: btoa(__items.id.toString()),
+        id: this.__utility.encrypt_dtls(__items.id.toString()),
       } }
     );
   }

@@ -1,6 +1,6 @@
 
-<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
-  <div mat-dialog-title class="dialog-title" >
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+  <div mat-dialog-title class="dialog-title" cdkDragHandle>
     <h2 [title]="data.title">{{data.title}}</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()" >
@@ -293,8 +293,8 @@
           </div> -->
         </form>
   </mat-dialog-content>
-  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec" cdkDragHandle>
     <button class="btn addBtn"   [attr.form]="'__rcvForm_Fin' + data.id" [disabled]="this.__rcvForm.invalid">Submit</button>
   </mat-dialog-actions>
-  <br clear="all">
+  <!-- <br clear="all"> -->
   </div>

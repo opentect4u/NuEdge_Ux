@@ -71,7 +71,7 @@ export class AMCComponent implements OnInit {
       .api_call(
         0,
         '/amc',
-        'id=' + atob(this.route.snapshot.queryParamMap.get('amc_id'))
+        'id=' + this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('amc_id'))
       )
       .pipe(pluck('data'))
       .subscribe((res: amc[]) => {
@@ -94,9 +94,9 @@ export class AMCComponent implements OnInit {
       case 'MA':break;
       default: this.openDialogForReports(
         global.getActualVal(this.route.snapshot.queryParamMap.get('id'))
-        ? atob(this.route.snapshot.queryParamMap.get('id')) : '',
+        ? this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('id')) : '',
         global.getActualVal(this.route.snapshot.queryParamMap.get('amc_id')) ?
-        atob(this.route.snapshot.queryParamMap.get('amc_id')) : ''
+        this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('amc_id')) : ''
       );
         break;
     }

@@ -143,7 +143,7 @@ openDialog(id, __items) {
     });
   }
   catch(ex){
-    console.log(ex);
+    // console.log(ex);
 
     const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
     dialogRef.addPanelClass('mat_dialog');

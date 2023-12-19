@@ -5,13 +5,13 @@
       "id":1,
       "flag":"I",
       "tab_name":"Monthly Inflow",
-      "img_src":"InFlow.png"
+      "img_src":"mis.png"
     },
     {
       "id":2,
       "flag":"O",
       "tab_name":"Monthly Outflow",
-      "img_src":"OutFlow.png"
+      "img_src":"mis.png"
     }
    ]
 

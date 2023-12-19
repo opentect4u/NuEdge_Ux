@@ -6,16 +6,15 @@ import {
   HttpInterceptor,
   HttpContextToken,
   HttpErrorResponse,
-  HttpResponse,
   HttpHeaders
 } from '@angular/common/http';
-// import {storage} from '../__Utility/storage';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UtiliService } from '../__Services/utils.service';
-import { AuthService } from '../__Services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
+import { storage } from '../__Utility/storage';
+import { AU_TK } from '../strings/localStorage_key';
 export const BYPASS_LOG = new HttpContextToken(() => false);
 export const IS_CACHE = new HttpContextToken(() => false);
 @Injectable()
@@ -24,14 +23,14 @@ export class NetworkInterceptor implements HttpInterceptor {
   requestsCompleted = 0;
   constructor(private __spinner: NgxSpinnerService,
     private __utility:UtiliService,
-    private auth:AuthService,
     private __dialog: MatDialog
     ) {}
-  private cache = new Map<string, any>();
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+
       const auth =  request.clone({
         headers: new HttpHeaders({
-          'Authorization': this.auth.isAuthenticated() ? `Bearer ${this.auth.isAuthenticated()}` : ''
+          'Authorization': storage.getItemFromLocalStorage(AU_TK)
+          ? `Bearer ${this.__utility.decrypt_dtls(storage.getItemFromLocalStorage(AU_TK))}` : ''
         })
       });
 

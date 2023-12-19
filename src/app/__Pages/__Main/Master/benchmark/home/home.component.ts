@@ -28,11 +28,11 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
 
     this.routeDtls.queryParams
-    .pipe(filter(params => params.dtls ? atob(params.dtls) : params.dtls))
+    .pipe(filter(params => params.dtls ? this.utility.decrypt_dtls(params.dtls) : params.dtls))
     .subscribe(res =>{
          if(res){
-          console.log(JSON.parse(atob(res.dtls)));
-          this.openEntryDialog(JSON.parse(atob(res.dtls)),JSON.parse(atob(res.dtls)).id);
+          let rt_prms = JSON.parse(this.utility.decrypt_dtls(res.dtls));
+          this.openEntryDialog(rt_prms,rt_prms?.id);
          }
     });
   }

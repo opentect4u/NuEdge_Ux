@@ -52,3 +52,27 @@ ________________________  API RESPONSE TYPE  ________________________________
 >   0 - 'Error' (validation + query related error)
 >   10 - 'Ip related Error' (Ip  not Whitelisted)
 _____________________________ END _______________________________________
+
+
+
+----------------------------LOCALSTORAGE KEY DETAILS------------------------------------
+> 4BTgxOlKen ==> (User Token / AUTH_KEY_TOKEN)
+> V1uSoGeR ==> (User Details / US_IN)
+> YSD05CVM ==> Used to store scheme details in localstorage after successfully add scheme 
+----------------------------END---------------------------------------------------
+----------------------------ENCRYPT/DCRYPT---------------------------------------
+## used for encrypt or dcrypt data (URL: https://www.aesencryptiononline.com/2022/03/aes-encryption-function-ontools.html)
+# PASSWORD ENCRYPTION CREDENTIAL #
+# Message: nuEdge
+# Password: !NuEdge@2024#
+# Encryption Method: AES (CBC)
+# Padding: ZeroPadding
+# PBKDF2 : YES
+# Key Size : 256-Bit
+# Iterations : 2
+# END #
+> 0a045a8a6fa68f912251ab856444ff1e76a5867a5eecd892ed1579ab5c5bc415O4p1346FdvPbbNX7jXN4Rg==  (ENCRYTION / DCRYPTION PASSWORD);
+
+> U2FsdGVkX18CXBrvvdQDAbytrZBR5gQDSJdZh8+TbjE= (NULL)
+----------------------------END-----------------------------------------
+

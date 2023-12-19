@@ -4,6 +4,7 @@ import { pluck } from 'rxjs/operators';
 import { IUser } from 'src/app/__Model/user_dtls.model';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { storage } from 'src/app/__Utility/storage';
 
 @Component({
   selector: 'core-list',
@@ -59,7 +60,7 @@ export class ListComponent implements OnInit {
     .pipe(pluck('suc'))
     .subscribe(res =>{
       if(res){
-      localStorage.clear();
+      storage.clearStorage();
       this.dialog.closeAll();
       this.route();
     }

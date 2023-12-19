@@ -45,7 +45,7 @@ export class SiptypeComponent implements OnInit {
     } catch (ex) {
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('40%');
-      console.log(ex);
+      // console.log(ex);
       this.__utility.getmenuIconVisible({
         id: Number(dialogConfig.id),
         isVisible: false,

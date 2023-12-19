@@ -64,7 +64,7 @@ export class PlanComponent implements OnInit {
       .api_call(
         0,
         '/plan',
-        'id=' + atob(this.route.snapshot.queryParamMap.get('id'))
+        'id=' + this.__utility.decrypt_dtls(this.route.snapshot.queryParamMap.get('id'))
       )
       .pipe(pluck('data'))
       .subscribe((res: plan[]) => {
@@ -101,7 +101,6 @@ export class PlanComponent implements OnInit {
     } catch (ex) {
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('40%');
-      console.log(ex);
       this.__utility.getmenuIconVisible({
         id: Number(dialogConfig.id),
         isVisible: false,

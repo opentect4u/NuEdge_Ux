@@ -376,14 +376,16 @@ export class UploadCsvComponent implements OnInit {
 
   populateDT(__items: rnt) {
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/rnt', {
-      queryParams: {id: btoa(__items.id.toString()) },
+      // queryParams: {id: btoa(__items.id.toString()) },
+      queryParams: {id: this.__utility.encrypt_dtls(__items.id.toString()) },
     });
   }
   showCorrospondingAMC(__rntDtls) {
     this.__utility.navigatewithqueryparams('/main/master/productwisemenu/amc', {
-      queryParams: {
-        id: btoa(__rntDtls.id.toString())
-            },
+      // queryParams: {
+      //   id: btoa(__rntDtls.id.toString())
+      //       },
+      queryParams: {id: this.__utility.encrypt_dtls(__rntDtls.id.toString()) },
     });
   }
   viewAll(){

@@ -31,8 +31,7 @@ export class TrnsModificationComponent implements OnInit {
         }
       })
     if (this.data.id > 0) {
-      console.log(this.data);
-
+      // console.log(this.data);
       this.__trnsForm.patchValue({
         trans_id: this.data.items.trans_type_id,
         trns_name: this.data.items.trns_name,

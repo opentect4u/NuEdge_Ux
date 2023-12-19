@@ -1,5 +1,5 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
-  <div mat-dialog-title class="dialog-title" [title]="data.title">
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane"  cdkDragBoundary=".body">
+  <div mat-dialog-title class="dialog-title" [title]="data.title" cdkDragHandle>
     <h2>{{data.title}}</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()">
@@ -2208,16 +2208,16 @@
       <div class="row  my-2">
         <div class="col-sm-12">
           <label for="file">Remarks</label>
-          <textarea name="rmks" id="rmks" cols="30" rows="5" formControlName="remarks" class="form-control"></textarea>
+          <textarea name="rmks" id="rmks" cols="30" rows="5" formControlName="remarks"></textarea>
         </div>
       </div>
 
     </form>
   </mat-dialog-content>
-  <mat-dialog-actions align="end" class="popupBoxSubmitSec">
+  <mat-dialog-actions align="end" class="popupBoxSubmitSec" cdkDragHandle>
     <button class="btn addBtn" [attr.form]="'__NonFIn_'+ data.id"
       [disabled]="__nonfinForm.invalid">Submit</button>
   </mat-dialog-actions>
-  <br clear="all">
+  <!-- <br clear="all"> -->
 
 </div>

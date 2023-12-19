@@ -1,6 +1,6 @@
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle >
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane"  >
 
-<div mat-dialog-title class="dialog-title">
+<div mat-dialog-title class="dialog-title" cdkDragHandle>
   <h2>{{data.title}}</h2>
   <div class="btnIcon">
     <button mat-icon-button title="Minimize" (click)="minimize()" >
@@ -243,7 +243,8 @@
 
       <div class="col-sm-12">
          <label for="remarks">Remarks</label>
-          <textarea cols="12" rows="5" formControlName="remarks" class="form-control"></textarea>
+          <textarea cols="12" rows="5"
+          formControlName="remarks" ></textarea>
       </div>
 
     </div>
@@ -251,8 +252,8 @@
   </form>
 
 </mat-dialog-content>
-<mat-dialog-actions align="end" class="popupBoxSubmitSec" *ngIf="data.mode != 'V'">
+<mat-dialog-actions align="end" class="popupBoxSubmitSec" cdkDragHandle  *ngIf="data.mode != 'V'">
   <button class="btn addBtn" form="__clientForm"   [disabled]="__clientForm.invalid">Submit</button>
 </mat-dialog-actions>
-<br clear="all">
+<!-- <br clear="all"> -->
 </div>

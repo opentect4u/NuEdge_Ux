@@ -688,7 +688,7 @@ export class RcvmodificationComponent implements OnInit {
   //   this.__trans_types[__index].count = this.__trans_types[__index].count + 1
   // }
   minimize() {
-    this.dialogRef.updateSize('40%', '60px');
+    this.dialogRef.updateSize('40%', '45px');
     this.dialogRef.updatePosition({ bottom: '0px', right: '0px' });
   }
   maximize() {

@@ -386,9 +386,10 @@ export class UploadAMCComponent implements OnInit {
 
   populateDT(__items: amc) {
     this.__utility.navigatewithqueryparams('main/master/productwisemenu/amc', {
-      queryParams: {
-        amc_id: btoa(__items.id.toString()),
-      },
+      // queryParams: {
+      //   amc_id: btoa(__items.id.toString()),
+      // },
+      queryParams: {amc_id: this.__utility.encrypt_dtls(__items.id.toString()) },
     });
   }
 
