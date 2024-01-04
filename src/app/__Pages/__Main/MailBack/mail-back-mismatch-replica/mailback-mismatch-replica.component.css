@@ -1,0 +1,33 @@
+:host ::ng-deep .p-datatable  .p-sortable-column-icon{
+  color: #ffffff;
+}
+:host ::ng-deep .p-datatable .p-sortable-column:not(.p-highlight):hover
+.p-sortable-column-icon{
+  color: #ffffff;
+}
+/* :host ::ng-deep .pi-sort-alt:before {
+  content: '\e903 \A \e902';
+}
+:host ::ng-deep .pi-sort-alt-down:before {
+      content: "\02C5"!important;;
+  }
+  :host ::ng-deep .pi-sort-alt-up:before {
+      content: "\e914"!important;;
+  } */
+  :host ::ng-deep .p-datatable-tbody>tr{
+    min-height: 33px;
+  }
+
+  :host ::ng-deep #trxDt .p-datatable-header {
+        display: flex;
+        justify-content:flex-end;
+        border: none!important;
+      }
+
+      td{
+        word-break: break-all!important;
+      }
+
+      :host ::ng-deep .p-button-link{
+        padding:0px!important;
+      }

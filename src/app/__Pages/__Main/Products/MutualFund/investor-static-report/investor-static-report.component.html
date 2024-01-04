@@ -283,9 +283,15 @@
                     <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
                       <p class="m-0">{{ (folio_dt[col.field] && (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK" && folio_dt[col.field]!='0' && folio_dt[col.field]!= ' ') ? folio_dt[col.field] : 'N/A' }}</p>
                       </ng-container>
-                      <ng-container *ngSwitchCase="col.field == 'pa_link_ststus_3rd' || col.field == 'pa_link_ststus_2nd' || col.field == 'pa_link_ststus_1st' || col.field == 'guardian_pa_link_ststus'">
+                      <ng-container *ngSwitchCase="col.field == 'pa_link_ststus_3rd' || col.field == 'pa_link_ststus_2nd' || col.field == 'guardian_pa_link_ststus'">
                         <p class="m-0">{{ (folio_dt[col.field] &&  (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK"  && folio_dt[col.field]!= ' ') ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
                       </ng-container>
+
+                      <ng-container *ngSwitchCase="col.field == 'pa_link_ststus_1st'">
+                        <p class="m-0">{{ (folio_dt[col.field] &&  (folio_dt[col.field] | titlecase)!="Not Provided" && folio_dt[col.field]!="BLANK"  && folio_dt[col.field]!= ' ') ? (folio_dt['pan'] ? (folio_dt[col.field] | titlecase) : 'N/A') : 'N/A' }}</p>
+                      </ng-container>
+
+
 
                       <ng-container *ngSwitchCase="col.field == 'occupation_des' || col.field == 'occupation_des_2nd'
                       || col.field == 'occupation_des_3rd' || col.field == 'guardian_occu_des'">
@@ -300,6 +306,18 @@
                       <ng-container *ngSwitchCase="col.field == 'email' || col.field == 'email_2nd_holder'
                       || col.field == 'email_3rd_holder' || col.field == 'guardian_email'">
                         <p class="m-0">{{ folio_dt[col.field]  ? (folio_dt[col.field] | lowercase) : 'N/A' }}</p>
+                      </ng-container>
+
+
+
+
+                      <ng-container *ngSwitchCase="col.field == 'ckyc_no_1st' || col.field == 'ckyc_no_2nd'
+                      || col.field == 'ckyc_no_3rd' || col.field == 'guardian_ckyc_no'">
+                        <p class="m-0">{{ (folio_dt[col.field] && folio_dt[col.field] != 0)  ? folio_dt[col.field] : 'N/A' }}</p>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="col.field == 'city'">
+                        <p class="m-0">{{ folio_dt[col.field]   ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
                       </ng-container>
 
                     <ng-container *ngSwitchCase="col.field == 'nom_optout_status'">

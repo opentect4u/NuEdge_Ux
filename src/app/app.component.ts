@@ -54,7 +54,7 @@ export class AppComponent {
     ).subscribe(() => {
       this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
       this.__utility.getLatestBrdCrmbs(this.breadcrumbs);
-    })
+    });
   }
 
   /**

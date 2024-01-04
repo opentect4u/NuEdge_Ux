@@ -5,6 +5,12 @@ import mis_tab from '../../../../../../../../assets/json/Product/MF/MIS/monthly_
 import { column } from 'src/app/__Model/tblClmns';
 import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
 import { TrxnType } from '../../TransactionReport/trxn-rpt/trxn-rpt.component';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { pluck} from 'rxjs/operators';
+
+import { fromFetch } from 'rxjs/fetch';
+import { switchMap,  catchError } from 'rxjs/operators';
+import {of} from 'rxjs';
 @Component({
   selector: 'app-monthly-mis',
   templateUrl: './monthly-mis.component.html',
@@ -30,11 +36,19 @@ export class MonthlyMisComponent implements OnInit {
 
   trxn_count: TrxnType;
 
-  constructor(private dbIntr: DbIntrService) { }
+  constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
-    console.log(this.trxn_count);
     this.mis_tab = mis_tab.monthly_mis.map((item) => ({ ...item, img_src: ('../../../../../assets/images/monthlyMIS/' + item.img_src) }))
+  }
+
+
+  getMisReport = (filter__criteria):void =>{
+      // this.dbIntr.api_call(1,'/showTransDetails',this.utility.convertFormData(filter__criteria))
+      // .pipe(pluck('data'))
+      // .subscribe((res:Partial<TrxnRpt[]>) =>{
+      //   this.__monthly_mis_trxn = res;
+      // })
   }
 
   // changeWheelSpeed(container, speedY) {
@@ -79,7 +93,8 @@ export class MonthlyMisComponent implements OnInit {
 
   /***** SEARCH MONTHLY MIS REPORT*/
   searchFilter = (ev) => {
-    // console.log(ev);
+    console.log(ev);
+    this.getMisReport(ev)
   }
   /*******END */
 

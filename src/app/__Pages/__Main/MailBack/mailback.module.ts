@@ -35,6 +35,10 @@ const routes:Routes = [
         loadChildren:() => import('./upload_help/upload-help.module').then(upload_help => upload_help.UploadHelpModule),
       },
       {
+          path:'replica',
+          loadChildren:()=>import('./mail-back-mismatch-replica/mail-back-mismatch-replica.module').then(m => m.MailBackMismatchReplicaModule)
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

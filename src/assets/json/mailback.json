@@ -64,6 +64,17 @@
     "url": "/main/mailback/deleteTrxn",
     "icon": "fa fa-user-o",
     "sub_menu": []
+  },
+  {
+    "id":7,
+    "menu_name":"Mismatch Replica",
+    "title":"Mismatch Replica",
+    "img":"mailbackMismatch.png",
+    "flag":"R",
+    "has_submenu": "N",
+    "url": "/main/mailback/replica",
+    "icon": "",
+    "sub_menu": []
   }
 ]
 

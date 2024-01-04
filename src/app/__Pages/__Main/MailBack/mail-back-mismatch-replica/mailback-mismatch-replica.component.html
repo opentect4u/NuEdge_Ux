@@ -1,0 +1,193 @@
+<div class="bckContainer"></div>
+
+<div class="row flexSec">
+
+  <div class="col-sm-12">
+     <core-tab [Tab]="tab_dt"
+     (GetTabDtls)="changeTabDtls($event,'P')"
+     [index]="index"
+     [customClass]="'nav'"></core-tab>
+     <mat-card class="navCard p-3">
+      <mat-card-content>
+        <core-tab [Tab]="subTab"
+        (GetTabDtls)="changeTabDtls($event,'C')"
+        [customClass]="'second_tab'"
+        [index]="sub_index"
+        ></core-tab>
+
+        <!-- TABLE -->
+        <p-table #primeTbl
+        id="trxDt"
+        [value]="reportMstDt"
+        [responsive]="true"
+        [rowHover]="true"
+        styleClass="p-datatable-striped p-datatable-lg"
+        responsiveLayout="scroll"
+        [scrollable]="true"
+        [columns]="TrxnClm"
+        [paginator]="true"
+        [autoLayout]="true"
+        [totalRecords]="reportMstDt.length"
+        [pageLinks]="3"
+        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        [globalFilterFields]="getColumns()"
+        [tableStyle]="{ 'min-width': file_type == 'N' ? '120rem' : tblminWidth }">
+ <ng-template pTemplate="caption">
+   <div class="w-25">
+     <span class="ml-auto">
+       <input id="search" class="form-control rounded"
+       [autocomplete]="'off'"
+       #searchFilter
+       type="text"
+              (input)="filterGlobal($event)"
+              placeholder="Search" />
+     </span>
+   </div>
+ </ng-template>
+
+ <ng-template pTemplate="header">
+   <tr>
+     <th *ngFor="let col of TrxnClm"
+         [pSortableColumn]="col.field"
+         [style.max-width]="col.width"
+         [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '16rem'">
+       {{ col.header }}
+       <p-sortIcon [field]="col.field" *ngIf="(col.field != 'isin_link'
+           && col.field != 'scheme_link'
+           && col.field != 'lock_trxn'
+           && col.field != 'amc_link'
+           )">
+       </p-sortIcon>
+     </th>
+   </tr>
+ </ng-template>
+ <ng-template pTemplate="body" let-trxn let-i="rowIndex">
+   <tr tabindex="999">
+     <td *ngFor="let col of TrxnClm"
+         [style.max-width]="col.width"
+         [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '16rem'">
+       <ng-container [ngSwitch]="true">
+         <ng-container *ngSwitchCase="col.field == 'sl_no'">
+           <p class="m-0">{{i + 1}}</p>
+         </ng-container>
+
+         <!-- <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+           <p class="m-0">{{(trxn[col.field] && trxn[col.field]!=' ' && (trxn[col.field] | uppercase)!='NOT PROVID' && trxn[col.field] != '0')  ? trxn[col.field] : 'N/A' }}</p>
+         </ng-container> -->
+
+         <!-- <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+           <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" && trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' ') ? trxn[col.field] : 'N/A' }}</p>
+           </ng-container> -->
+           <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+             <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" &&
+               trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
+               && (trxn[col.field] | titlecase)!="Not Provid"
+               && (trxn[col.field] | titlecase)!="Notprovided"
+               && trxn[col.field] !="NOTPROVIDE"
+               ) ? trxn[col.field] :
+               'N/A' }}</p>
+           </ng-container>
+
+         <ng-container *ngSwitchCase="col.field == 'first_client_name'">
+           <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
+         </ng-container>
+
+
+
+         <!-- SIP/STP Report -->
+         <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">
+           <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+         </ng-container>
+         <ng-container *ngSwitchCase="col.field == 'product_code'">
+           <p class="m-0" matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</p>
+         </ng-container>
+         <ng-container *ngSwitchCase="col.field == 'amount'">
+           <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field]) : 0 }}</p>
+         </ng-container>
+         <!-- End -->
+
+
+         <ng-container *ngSwitchCase="col.field == 'trans_date'">
+           <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+         </ng-container>
+         <!-- Scheme Logic -->
+         <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+           <ng-container *ngIf="sub_file_type == 'S';else other">
+             <p class="m-0" [matTooltip]="trxn['product_code']">
+               {{trxn['product_code'] ? trxn['product_code']  : 'N/A'}}</p>
+           </ng-container>
+           <ng-template #other>
+             <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn[col.field] ? trxn[col.field]  : 'N/A'}}</p>
+           </ng-template>
+         </ng-container>
+         <!-- End -->
+         <!-- AMC Logic -->
+         <ng-container *ngSwitchCase="col.field == 'amc_name'">
+           <ng-container *ngIf="sub_file_type == 'A';else other">
+             <p class="m-0" [matTooltip]="trxn['amc_code']">{{trxn['amc_code'] ? trxn['amc_code']  : 'N/A'}}</p>
+           </ng-container>
+           <ng-template #other>
+             <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A'}}</p>
+           </ng-template>
+         </ng-container>
+         <!-- End -->
+         <!-- Remarks Logic -->
+         <ng-container *ngSwitchCase="col.field == 'remarks'">
+           <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30): 'N/A'}}</p>
+         </ng-container>
+         <!-- End -->
+         <!-- Divident Option Logic -->
+         <ng-container *ngSwitchCase="col.field == 'divident_opt'">
+
+           <ng-container *ngIf="trxn['rnt_id'] == 1;else kfIntech">
+             <p class="m-0">
+               {{
+trxn['reinvest_flag'] ? (
+             trxn['reinvest_flag']  == 'Z' ?
+             'Growth' :(trxn['reinvest_flag']  == 'Y' ? 'IDCW Reinvestment' : 'IDCW Payout')
+             ) : (
+               'N/A'
+             )
+               }}
+             </p>
+           </ng-container>
+           <ng-template #kfIntech>
+             <p class="m-0">
+               {{
+trxn['divident_option'] ? (
+             trxn['divident_option']  == 'G' ?
+             'Growth' :(trxn['divident_option']  == 'R' ? 'IDCW Reinvestment' : 'IDCW Payout')
+             ) : (
+               'N/A'
+             )
+               }}
+             </p>
+           </ng-template>
+
+         </ng-container>
+         <!-- End -->
+        <ng-container *ngSwitchDefault>
+           <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
+         </ng-container>
+       </ng-container>
+     </td>
+   </tr>
+ </ng-template>
+
+ <ng-template pTemplate="emptymessage" let-columns>
+   <tr>
+     <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+       <h5>No Records Found</h5>
+     </td>
+   </tr>
+ </ng-template>
+</p-table>
+        <!-- END -->
+        </mat-card-content>
+     </mat-card>
+  </div>
+
+</div>

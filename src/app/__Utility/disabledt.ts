@@ -51,11 +51,10 @@ export class dates {
         break;
       case 'Y':
         dt.setDate(1);
-        dt.setMonth(3);
-        if (dt.getMonth() >= 3) {
-        } else {
+        if (dt.getMonth() < 3) {
           dt.setFullYear(dt.getFullYear() - 1);
         }
+        dt.setMonth(3)
         break;
       case 'D':
         break;

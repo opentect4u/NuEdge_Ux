@@ -104,6 +104,7 @@
               && trxn[col.field]!='0' && trxn[col.field]!= ' '
               && (trxn[col.field] | titlecase)!="Not Provid"
               && (trxn[col.field] | titlecase)!="Notprovided"
+              && trxn[col.field] !="NOTPROVIDE"
               ) ? trxn[col.field] : 'N/A' }}</p>
               </ng-container>
 
@@ -111,7 +112,7 @@
                 <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'remarks'">
-                  <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30 | titlecase):
+                  <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn['remarks'] && trxn['remarks']!= ' ') ? (trxn['remarks'] | lowercase | ellipsis:30):
                     'N/A'}}</p>
                 </ng-container>
 

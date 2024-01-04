@@ -328,8 +328,10 @@ btn_type: 'R' | 'A' = 'R';
  * Form Field for search Transaction
  */
 misTrxnRpt = new FormGroup({
-  date_periods: new FormControl(''),
-  date_range: new FormControl(''),
+  type:new FormControl(''),
+  // date_periods: new FormControl(''),
+  // date_range: new FormControl(''),
+  select_all_client:new FormControl(false),
   view_type:new FormControl(''),
   amc_id: new FormControl([], { updateOn: 'blur' }),
   cat_id: new FormControl([], { updateOn: 'blur' }),
@@ -350,10 +352,13 @@ misTrxnRpt = new FormGroup({
 
 ngOnInit(): void {
   this.misTrxnRpt.get('client_name').disable();
-  setTimeout(() => {
-  this.misTrxnRpt.get('date_periods').setValue('M',{emitEvent:true});
-  this.searchTrxnReport();
-  }, 500);
+  this.misTrxnRpt.get('select_all_client').disable();
+
+  // setTimeout(() => {
+  // this.misTrxnRpt.get('date_periods').setValue('M',{emitEvent:true});
+  // this.searchTrxnReport();
+  // }, 500);
+  // this.searchTrxnReport();
   this.getAmcMst();
   this.getTrxnTypeMst();
   // this.maxDate= dates.calculateDates('T');
@@ -455,34 +460,49 @@ ngAfterViewInit() {
  /**
   *  Event Trigger on change on Date Periods
   */
- this.misTrxnRpt.controls['date_periods'].valueChanges.subscribe((res) => {
-  if(res){
-    this.misTrxnRpt.controls['date_range'].reset(
-      res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
-    );
-  }
-  else{
-    this.misTrxnRpt.controls['date_range'].setValue('');
-    this.misTrxnRpt.controls['date_range'].disable();
-    return;
-  }
+//  this.misTrxnRpt.controls['date_periods'].valueChanges.subscribe((res) => {
+//   if(res){
+//     this.misTrxnRpt.controls['date_range'].reset(
+//       res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
+//     );
+//   }
+//   else{
+//     this.misTrxnRpt.controls['date_range'].setValue('');
+//     this.misTrxnRpt.controls['date_range'].disable();
+//     return;
+//   }
 
-  if (res && res != 'R') {
-    this.misTrxnRpt.controls['date_range'].disable();
-  } else {
-    this.misTrxnRpt.controls['date_range'].enable();
-  }
-});
+//   if (res && res != 'R') {
+//     this.misTrxnRpt.controls['date_range'].disable();
+//   } else {
+//     this.misTrxnRpt.controls['date_range'].enable();
+//   }
+// });
 
 
-this.misTrxnRpt.controls['date_range'].valueChanges.subscribe((res) => {
-  if(res){
-      this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
+// this.misTrxnRpt.controls['date_range'].valueChanges.subscribe((res) => {
+//   if(res){
+//       this.maxDate = dates.calculatMaximumDates('R',6,new Date(res[0]));
+//     }
+//     else{
+//       this.maxDate = dates.calculateDates('T');
+//     }
+// })
+
+/*** Event Trigger when check Select All */
+  this.misTrxnRpt.controls['select_all_client'].valueChanges.subscribe(res =>{
+    this.misTrxnRpt.get('client_name').setValue('',{emitEvent:false});
+    this.misTrxnRpt.get('pan_no').setValue('');
+    if(!res){
+      if(this.misTrxnRpt.value.view_type){
+       this.misTrxnRpt.get('client_name').enable();
+      }
     }
     else{
-      this.maxDate = dates.calculateDates('T');
+      this.misTrxnRpt.get('client_name').disable();
     }
-})
+  })
+/*****END */
 
   /**
    * Event Trigger after change amc
@@ -595,14 +615,17 @@ this.misTrxnRpt.controls['date_range'].valueChanges.subscribe((res) => {
     this.misTrxnRpt.controls['view_type'].valueChanges.subscribe(res =>{
         this.misTrxnRpt.get('client_name').reset('',{emitEvent:false});
         this.misTrxnRpt.get('pan_no').reset('');
+        this.misTrxnRpt.get('select_all_client').setValue(false,{emitEvent:false});
           if(res){
             this.paginate = 1;
             this.__clientMst = [];
             this.misTrxnRpt.get('client_name').enable();
+            this.misTrxnRpt.get('select_all_client').enable();
             this.getClientMst(res,this.paginate);
           }
           else{
             this.misTrxnRpt.get('client_name').disable();
+            this.misTrxnRpt.get('select_all_client').disable();
           }
     })
     /**End */
@@ -612,33 +635,18 @@ this.misTrxnRpt.controls['date_range'].valueChanges.subscribe((res) => {
  *  call API for get transaction according to search result
  */
 searchTrxnReport = () => {
-  if(this.misTrxnRpt.value.date_periods == 'Y'
-  // || this.misTrxnRpt.value.date_periods == 'R'
-  || this.misTrxnRpt.value.date_periods == ''){
-         if(this.misTrxnRpt.value.pan_no
-          || this.misTrxnRpt.value.folio_no
-          || this.misTrxnRpt.value.amc_id.length > 0
-          || this.misTrxnRpt.value.trxn_type_id.length > 0
-          )
-         {}
-         else{
-          this.utility.showSnackbar('Please select one or more filter criteria',2)
-          return;
-         }
-  }
-  else if(this.misTrxnRpt.value.date_periods == 'R'){
-        if(this.misTrxnRpt.value.date_range[0]
-        && this.misTrxnRpt.value.date_range[1]){}
-        else if(!this.misTrxnRpt.value.date_range[0]
-        || !this.misTrxnRpt.value.date_range[1]){
-          this.utility.showSnackbar('Please provide valid date range',2)
-          return;
+    if(this.misTrxnRpt.value.view_type){
+      if(this.misTrxnRpt.value.select_all_client){}
+      else{
+        if(!this.misTrxnRpt.value.client_name){
+          this.utility.showSnackbar('Please select investor',2)
+           return;
         }
-  }
-  // this.primeTbl.clear();
-
+      }
+    }
   this.fetchTransaction();
 };
+
 
 /**
  * Final Call To API After Search
@@ -650,8 +658,10 @@ fetchTransaction = () =>{
   this.primeTbl.reset();
   const TrxnDt = new FormData();
   this.transType = 'Total'
-  TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
+  // TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
   TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
+  TrxnDt.append('type',global.getActualVal(this.misTrxnRpt.value.type));
+  TrxnDt.append('all_client',this.misTrxnRpt.getRawValue().select_all_client);
   // TrxnDt.append('client_id',global.getActualVal(this.misTrxnRpt.value.client_id));
   TrxnDt.append('amc_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.amc_id, 'id'));
   TrxnDt.append('cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.cat_id, 'id'));
@@ -735,13 +745,13 @@ fetchTransaction = () =>{
       })
       )
     .subscribe((res: TrxnRpt[]) => {
-      console.log(res);
-      if(res.length > 0){
-      this.calculateProcess_Reject(res);
-    }
+      // console.log(res);
+    //   if(res.length > 0){
+    //   this.calculateProcess_Reject(res);
+    // }
      this.isTotalFooterShow = (this.misTrxnRpt.value.folio_no != '' || this.misTrxnRpt.value.pan_no != '') ? true : false;
       if(res.length == 0){
-        this.utility.showSnackbar('No transactions are available on this periods',2,true);
+        this.utility.showSnackbar('No transactions are available',2,true);
         return;
       }
     this.state = 'collapsed';
@@ -775,9 +785,10 @@ getSelectedItemsFromParent = (searchRlt: {
   flag: string;
   item: any;
 }) => {
-  this.misTrxnRpt.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
-  this.misTrxnRpt.get('pan_no').reset(searchRlt.item.first_client_pan);
+  this.misTrxnRpt.get('client_name').setValue(searchRlt.item.first_client_name, { emitEvent: false });
+  this.misTrxnRpt.get('pan_no').setValue(searchRlt.item.first_client_pan);
   this.searchResultVisibilityForClient('none');
+  this.__isClientPending = false;
 };
 
 /**
@@ -942,8 +953,9 @@ onItemClick = (ev) => {
         amc_id:[],
         folio_no:'',
         trxn_type_id:[],
-        date_range:'',
-        date_periods:'M',
+        // date_range:'',
+        // date_periods:'M',
+        type:'A',
         view_type:'',
         pan_no:''
        });

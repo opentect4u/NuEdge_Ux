@@ -27,7 +27,7 @@
         </ng-template>
         <form [formGroup]="misTrxnRpt" (ngSubmit)="searchTrxnReport()" autocomplete="off">
           <div class="row">
-            <div class="col-sm-3">
+            <!-- <div class="col-sm-3">
               <label for="date_periods">Periods</label>
               <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
                 <option value="">Select All</option>
@@ -41,6 +41,14 @@
                 [readonlyInput]="true" [id]="'date_range'" [showIcon]="true" [hideOnDateTimeSelect]="true"
                 [showButtonBar]="true">
               </p-calendar>
+            </div> -->
+            <div class="col-sm-3">
+              <label for="type">Type</label>
+              <select class="form-control" id="type" name="type" formControlName="type">
+                <option Value="">Select All</option>
+                <option Value="Transfer In">Transfer In</option>
+                <option Value="Transfer Out">Transfer Out</option>
+              </select>
             </div>
             <div class="col-sm-3">
               <label for="client_type">View Type</label>
@@ -51,6 +59,10 @@
             </div>
 
             <div class="col-sm-3">
+              <section class="selectAllCheckBox">
+                 <mat-checkbox color="primary" class="example-margin"
+                 formControlName="select_all_client">Select All</mat-checkbox>
+                </section>
               <app-core-srch [label]="'Investor'"
                 [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
                 [isPending]="__isClientPending" [listItems]="__clientMst" [flag]="'C'"
@@ -62,8 +74,6 @@
                 (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
             </div>
 
-          </div>
-          <div class="row">
             <div class="col-sm-3">
               <label for="amc_id">AMC</label>
               <ng-multiselect-dropdown [attr.id]="'amc_id'" [placeholder]="'Select AMC'"
@@ -71,6 +81,9 @@
                 formControlName="amc_id">
               </ng-multiselect-dropdown>
             </div>
+          </div>
+          <div class="row">
+
             <div class="col-sm-3">
               <label for="cat_id">Category</label>
               <ng-multiselect-dropdown [id]="'cat_id'" [placeholder]="'Select Category'"
@@ -92,9 +105,6 @@
               </ng-multiselect-dropdown>
             </div>
 
-
-          </div>
-          <div class="row">
             <div class="col-sm-3">
               <label for="trxn_type_id">Transaction Type</label>
               <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
@@ -102,6 +112,10 @@
                 formControlName="trxn_type_id">
               </ng-multiselect-dropdown>
             </div>
+
+          </div>
+          <div class="row">
+
             <div class="col-sm-3">
               <label for="trxn_sub_type_id">Transaction Sub-Type</label>
               <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
@@ -122,9 +136,17 @@
                 </ng-multiselect-dropdown>
               </div>
 
+              <div class="col-sm-3">
+                <label for="bu_type">Business Type</label>
+                <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+                  (onDeSelect)="onbuTypeDeSelect($event)" [settings]="settingsforBuTypeDropdown" [data]="__bu_type"
+                  formControlName="bu_type_id">
+                </ng-multiselect-dropdown>
+              </div>
+
             </ng-container>
             <ng-template #normalFilter>
-              <div class="col-sm-3 d-flex align-items-end justify-content-end">
+              <div class="col-sm-6 d-flex align-items-end justify-content-end">
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
             </ng-template>
@@ -132,14 +154,6 @@
 
           <ng-container *ngIf="btn_type == 'A'">
             <div class="row">
-              <ng-container>
-                <div class="col-sm-3">
-                  <label for="bu_type">Business Type</label>
-                  <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
-                    (onDeSelect)="onbuTypeDeSelect($event)" [settings]="settingsforBuTypeDropdown" [data]="__bu_type"
-                    formControlName="bu_type_id">
-                  </ng-multiselect-dropdown>
-                </div>
                 <div class="col-sm-3">
                   <label for="rm_name">Relationship Manager</label>
                   <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
@@ -160,14 +174,11 @@
                     [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
                   </ng-multiselect-dropdown>
                 </div>
+                <div class="col-sm-3 d-flex align-items-end justify-content-end">
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                </div>
+            </div>
 
-              </ng-container>
-            </div>
-            <div class="row mt-2">
-              <div class="col-sm-12 d-flex align-items-end justify-content-end">
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-              </div>
-            </div>
           </ng-container>
         </form>
       </mat-card-content>
@@ -254,6 +265,7 @@
                       trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
                       && (trxn[col.field] | titlecase)!="Not Provid"
                       && (trxn[col.field] | titlecase)!="Notprovided"
+                      && trxn[col.field] !="NOTPROVIDE"
                       ) ? trxn[col.field] :
                       'N/A' }}</p>
                   </ng-container>
@@ -280,9 +292,12 @@
                     </p>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'remarks'">
-                    <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn['remarks'] && trxn['remarks']!= ' ') ? (trxn['remarks'] | lowercase | ellipsis:30):
                       'N/A'}}</p>
                   </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'bank_name' || col.field == 'acc_no'">
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn[col.field] && trxn[col.field]!= 0) ? (trxn[col.field].toString() | titlecase) : 'N/A'}}</p>
+                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
                   </ng-container>
@@ -338,7 +353,7 @@
 
 
     <!-- Transaction COUNT AND AMOUNT TABLE -->
-    <mat-card class="my-4">
+    <!-- <mat-card class="my-4">
       <mat-card-header>
         <mat-card-title>
           Broker Change Transaction Summary
@@ -434,14 +449,13 @@
           </ng-template>
         </p-table>
       </mat-card-content>
-    </mat-card>
-    <!-- End -->
+    </mat-card> -->
 
   </div>
 </div>
 
 
-<p-dialog header="Header"
+<!-- <p-dialog header="Header"
 [(visible)]="visible"
 [modal]="true"
 [draggable]="false"
@@ -454,7 +468,6 @@
         <input id="search" class="form-control rounded w-50" type="text" (input)="filterGlobal_secondary($event)"
         placeholder="Search" />
      </ng-template>
-<!-- Table -->
 <p-table #secondaryTbl id="secondary_trxDt" [value]="shwoPopup__trxn"
 [responsive]="true" [rowHover]="true"
 styleClass="p-datatable-striped p-datatable-lg"
@@ -496,6 +509,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
             trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
             && (trxn[col.field] | titlecase)!="Not Provid"
             && (trxn[col.field] | titlecase)!="Notprovided"
+            && trxn[col.field] !="NOTPROVIDE"
             ) ? trxn[col.field] :
             'N/A' }}</p>
         </ng-container>
@@ -548,8 +562,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
   </tr>
 </ng-template>
 </p-table>
-<!-- End -->
-</p-dialog>
+</p-dialog> -->
 
 
 
