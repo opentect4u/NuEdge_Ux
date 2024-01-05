@@ -145,7 +145,7 @@
            <ng-container *ngIf="trxn['rnt_id'] == 1;else kfIntech">
              <p class="m-0">
                {{
-trxn['reinvest_flag'] ? (
+            trxn['reinvest_flag'] ? (
              trxn['reinvest_flag']  == 'Z' ?
              'Growth' :(trxn['reinvest_flag']  == 'Y' ? 'IDCW Reinvestment' : 'IDCW Payout')
              ) : (

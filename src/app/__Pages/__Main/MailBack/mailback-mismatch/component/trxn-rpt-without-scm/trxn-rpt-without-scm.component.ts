@@ -124,7 +124,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.hasBackdrop = false;
     dialogConfig.width = '60%';
-    dialogConfig.height = '100%';
+    // dialogConfig.height = '100%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.data = {
       flag: 'A',
@@ -194,7 +194,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       dialogref.afterClosed().subscribe((dt) => {
         if(dt){
           if(dt.suc == 1){
-            this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item.folio_no != trxn.folio_no))
+            this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item.folio_no != trxn.folio_no));
           }
         }
       });

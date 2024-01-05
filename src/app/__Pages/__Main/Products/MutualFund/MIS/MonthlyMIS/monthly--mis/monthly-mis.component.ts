@@ -8,15 +8,17 @@ import { TrxnType } from '../../TransactionReport/trxn-rpt/trxn-rpt.component';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck} from 'rxjs/operators';
 
-import { fromFetch } from 'rxjs/fetch';
-import { switchMap,  catchError } from 'rxjs/operators';
-import {of} from 'rxjs';
+declare type MisFlag = "I" | "O";
+
 @Component({
   selector: 'app-monthly-mis',
   templateUrl: './monthly-mis.component.html',
   styleUrls: ['./monthly-mis.component.css']
 })
 export class MonthlyMisComponent implements OnInit {
+
+
+  form__data:any;
 
   @ViewChild('MISTABLE') __MisTbleComponent;
 
@@ -36,6 +38,8 @@ export class MonthlyMisComponent implements OnInit {
 
   trxn_count: TrxnType;
 
+  flag:MisFlag = "I";
+
   constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
@@ -44,6 +48,8 @@ export class MonthlyMisComponent implements OnInit {
 
 
   getMisReport = (filter__criteria):void =>{
+    console.log({...filter__criteria,flag:this.flag});
+
       // this.dbIntr.api_call(1,'/showTransDetails',this.utility.convertFormData(filter__criteria))
       // .pipe(pluck('data'))
       // .subscribe((res:Partial<TrxnRpt[]>) =>{
@@ -93,13 +99,14 @@ export class MonthlyMisComponent implements OnInit {
 
   /***** SEARCH MONTHLY MIS REPORT*/
   searchFilter = (ev) => {
-    console.log(ev);
+    this.form__data = ev;
     this.getMisReport(ev)
   }
   /*******END */
 
   TabDetails = (ev) => {
-    // console.log(ev);
+    this.flag = ev?.tabDtls?.flag;
+    this.getMisReport(this.form__data)
   }
 
   filterGlobal = ($event) => {

@@ -10,17 +10,13 @@ import { column } from 'src/app/__Model/tblClmns';
 import { NavFinderColumns } from '../../Products/MutualFund/Research/nav-finder/nav-finder.component';
 import { FolioColumn } from '../../Products/MutualFund/PortFolio/Folio/folio.component';
 import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
+import { Subscription } from 'rxjs';
 
-declare type SubFileType = 'A' | 'S' | 'P/O' | 'D';
+declare type SubFileType = 'A' | 'S' | 'P/O' | 'D' | 'B';
 
 declare type ParentFileType = 'T' | 'N' | 'S' | 'F';
 
-enum API{
-  'T' =  'mailbackMismatch', // For Transaction File Mismatch
-  'N' = 'mailbackMismatchNAV', // For NAV File Mismatch
-  'S' = 'mailbackMismatchSipStp',
-  'F' = 'mailbackMismatchFolio'
-}
+
 
 @Component({
   selector: 'mailback-mismatch-replical',
@@ -31,12 +27,14 @@ enum API{
 
 export class MailbackMismatchReplicaComponent implements OnInit {
 
+  api_subscription:Subscription
+
   /**** For Holding Report master data for each file */
   reportMstDt = [];
 
-  tab_dt:Partial<ITab>[] = tabs.map(({ id, tab_name, flag, img_src, sub_menu }) => ({ tab_name: tab_name, img_src: ('../../../../../assets/images/' + img_src), id, flag, sub_menu }));
+  tab_dt:Partial<ITab>[] = tabs.filter(item => item.flag != 'N').map(({ id, tab_name, flag, img_src, sub_menu }) => ({ tab_name: tab_name, img_src: ('../../../../../assets/images/' + img_src), id, flag, sub_menu }));
 
-  subTab:IsubTab[] = tabs[0].sub_menu;
+  subTab:IsubTab[] = tabs[0].sub_menu.filter(item => (item.flag == 'B' || item.flag == 'D'));
 
   TrxnClm:column[] = trxnClm.column.filter(item=> !['option_name','plan_name','scheme_link','isin_link','plan_opt','divident_opt','lock_trxn','amc_link'].includes(item.field));
   /**
@@ -51,9 +49,9 @@ export class MailbackMismatchReplicaComponent implements OnInit {
    */
      sub_index: number = 0;
 
-  sub_file_type: SubFileType = 'A';
+  sub_file_type: SubFileType;
 
-  file_type:ParentFileType = 'T'
+  file_type:ParentFileType
 
   @ViewChild('primeTbl') primeTbl :Table;
 
@@ -63,28 +61,34 @@ export class MailbackMismatchReplicaComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.tab_dt);
-    this.getTrxnRpt("A","T");
+    this.getTrxnRpt("B","T");
   }
 
   changeTabDtls = <T extends {index:number,tabDtls:IsubTab | ITab}>(TabDtls:T,mode:string) => {
-
+       console.log(TabDtls.tabDtls.flag);
       this.tblminWidth = TabDtls.index == 0 ? '350rem' : '150rem'
-
       this.reportMstDt = [];
       let __mode = '';
-      let flag:SubFileType;
-      let file_flag:ParentFileType;
+      var flag:SubFileType;
+      var file_flag:ParentFileType;
       switch(mode){
         case 'P':
           this.index = TabDtls.index;
-          this.sub_index = 0;
-          __mode = this.tab_dt[TabDtls.index].sub_menu[0].flag;
-          this.subTab = this.tab_dt[TabDtls.index].sub_menu;
-          flag = this.tab_dt[this.index].sub_menu[0].flag as SubFileType;
+          if(TabDtls.tabDtls.flag == 'T'){
+            this.subTab = this.tab_dt[TabDtls.index].sub_menu.filter(item => (item.flag == 'B' || item.flag == 'D'));
+          }
+          else if(TabDtls.tabDtls.flag == 'S'){
+            this.subTab = this.tab_dt[TabDtls.index].sub_menu.filter(item => (item.flag == 'B' || item.flag == 'P/O'));
+          }
+          else if(TabDtls.tabDtls.flag == 'F'){
+            this.subTab = this.tab_dt[TabDtls.index].sub_menu.filter(item => item.flag == 'P/O');
+          }
+          __mode = this.subTab[0].flag;
           file_flag = this.tab_dt[this.index].flag as ParentFileType;
+          flag = __mode as SubFileType;
           break;
         case 'C':
-          console.log(TabDtls);
+          console.log(`Child Called`);
           this.sub_index = TabDtls.index;
           // this.getTrxnRpt(TabDtls.tabDtls.flag,this.tab_dt[this.index].flag);
           __mode = TabDtls.tabDtls.flag;
@@ -93,11 +97,18 @@ export class MailbackMismatchReplicaComponent implements OnInit {
           break;
         default:break;
       }
-      console.log(`SUB FILE TYPE : ${flag}`);
-      console.log(`PARENT FILE TYPE : ${file_flag}`);
-      this.getTrxnRpt(flag,file_flag);
       this.tblminWidth = this.index == 0 ? '350rem' : '150rem';
       this.column_manage(__mode);
+      if(mode == 'P' && this.sub_index > 0){
+        /** condition for checking whether the api is not called twice at same time
+          * as the parent & child tabs are changed at same time.
+          * */
+          this.sub_index = 0;
+          return;
+      }
+      else{
+        this.getTrxnRpt(flag,file_flag);
+      }
   }
 
   filterGlobal = ($event) => {
@@ -111,15 +122,26 @@ export class MailbackMismatchReplicaComponent implements OnInit {
    *  need to show those transaction which has no scheme /AMC/Plan/Option/Bussiness Type
    */
   getTrxnRpt = (sub_flag:SubFileType,parent_flag:ParentFileType) => {
-    this.sub_file_type = sub_flag;
-    this.file_type = parent_flag
-    // this.dbIntr
-    //   .api_call(0, `/${API[parent_flag]}`, 'mismatch_flag='+ sub_flag)
-    //   .pipe(
-    //     pluck('data'))
-    //   .subscribe((res: TrxnRpt[]) => {
-    //     this.reportMstDt = res;
-    //   });
+    try{
+      this.sub_file_type = sub_flag;
+      this.file_type = parent_flag;
+      this.api_subscription = this.dbIntr
+        .api_call(0, `/mailbackMismatchReplica`, `mismatch_flag=${sub_flag}&file_type=${parent_flag}`)
+        .pipe(
+          pluck('data'))
+        .subscribe((res: TrxnRpt[]) => {
+          this.reportMstDt = res;
+          this.api_subscription.unsubscribe();
+        },
+        err =>{
+          this.api_subscription.unsubscribe();
+        });
+
+    }
+    catch(ex){
+      this.reportMstDt = [];
+    }
+
   };
 
   getColumns =() =>{
@@ -127,7 +149,6 @@ export class MailbackMismatchReplicaComponent implements OnInit {
   }
 
   column_manage = (flag:string) =>{
-    console.log(this.index);
     console.log(flag);
     const clm_divident:string[] = ['amc_link','scheme_link','isin_link','plan_opt','lock_trxn'];
     const clm: string[] = ['divident_opt', 'scheme_link', 'isin_link', 'option_name', 'plan_name', 'plan_opt', 'lock_trxn','amc_link'];
@@ -135,30 +156,33 @@ export class MailbackMismatchReplicaComponent implements OnInit {
     const opt_clm:string[] = ['amc_link','option_name','plan_name','plan_opt','divident_opt','lock_trxn','scheme_link','isin_link'];
     const bu_clm_toRemove:string[] = ['amc_link','scheme_link','isin_link','divident_opt','lock_trxn','option_name','plan_name','plan_opt'];
     switch(flag){
-      case 'A': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))
-        : (this.index == 1
-          ? NavFinderColumns.column
-          : (this.index == 3
-            ? FolioColumn.column
-            : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
-          ));
-        break;
+      // case 'A': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))
+      //   : (this.index == 1
+      //     ? NavFinderColumns.column
+      //     : (this.index == 3
+      //       ? FolioColumn.column
+      //       : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
+      //     ));
+      //   break;
       case 'B': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !bu_clm_toRemove.includes(item.field)) : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
       break;
-      case 'S': this.TrxnClm = this.index == 0 ?
-       trxnClm.column.filter(item => !opt_clm.includes(item.field))
-       :  (this.index == 1 ? NavFinderColumns.column :  (this.index == 3 ? FolioColumn.column: live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
-        ));
-       break;
+      // case 'S': this.TrxnClm = this.index == 0 ?
+      //  trxnClm.column.filter(item => !opt_clm.includes(item.field))
+      //  :  (this.index == 1 ? NavFinderColumns.column :  (this.index == 3 ? FolioColumn.column: live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
+      //   ));
+      //  break;
       case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field)); break;
-      case 'F': this.TrxnClm = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')); break;
+      // case 'F': this.TrxnClm = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')); break;
       case 'P/O': this.TrxnClm = this.index == 0 ?
       trxnClm.column.filter(item => !scm_clm.includes(item.field))
-      : (this.index == 2 ?
+      : (this.index == 1 ?
         live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
-        : (this.index == 3 ?FolioColumn.column : [])) ;break;
+        : (this.index == 2 ?FolioColumn.column : [])) ;break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;
     }
 
+  }
+  ngOnDestroy(): void{
+    this.api_subscription.unsubscribe();
   }
 }
