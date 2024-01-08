@@ -105,15 +105,28 @@
               </div>
               <!-- End -->
 
-              <!-- For only Transaction Report -->
+              <!-- For only Transaction Report & Process Type  -->
               <ng-container *ngIf="this.file_type_tab == 'T'">
                 <div class="col-sm-3" *ngIf="rntTrxnType.value.rnt_id == 2">
                   <label for="k_divident_flag">Divident Flag</label>
                    <input type="text" placeholder="Enter Divident Flag" name="k_divident_flag" id="k_divident_flag" class="form-control" formControlName="k_divident_flag">
                 </div>
 
+                <div class="col-sm-3">
+                  <label for="process_type">MIS Type</label>
+                  <select
+                  class="form-control"
+                  name="process_type"
+                  id="process_type"
+                  formControlName="process_type"
+                  >
+                    <option value="">Select</option>
+                    <option [value]="item.flag" *ngFor="let item of mis_type">{{item.type}}</option>
+                  </select>
+                </div>
+
                 <div [class]="rntTrxnType.value.rnt_id ?
-               'col-sm-9 d-flex justify-content-end align-items-end'
+               'col-sm-6 d-flex justify-content-end align-items-end'
                : 'col-sm-12 mt-2 d-flex justify-content-end align-items-end'">
                 <p-button
                 type="submit"

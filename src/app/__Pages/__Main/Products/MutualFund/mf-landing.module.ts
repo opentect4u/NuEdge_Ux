@@ -76,11 +76,4 @@ const routes:Routes=[
     RouterModule.forChild(routes)
   ]
 })
-export class MfLandingModule {
-  /**
-   *
-   */
-  constructor() {
-    console.log('MfLandingModule loaded')
-  }
-}
+export class MfLandingModule {}

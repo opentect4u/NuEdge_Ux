@@ -151,9 +151,9 @@ export class MailbackMismatchReplicaComponent implements OnInit {
   column_manage = (flag:string) =>{
     console.log(flag);
     const clm_divident:string[] = ['amc_link','scheme_link','isin_link','plan_opt','lock_trxn'];
-    const clm: string[] = ['divident_opt', 'scheme_link', 'isin_link', 'option_name', 'plan_name', 'plan_opt', 'lock_trxn','amc_link'];
+    // const clm: string[] = ['divident_opt', 'scheme_link', 'isin_link', 'option_name', 'plan_name', 'plan_opt', 'lock_trxn','amc_link'];
     const scm_clm:string[] = ['amc_link','scheme_link','isin_link','divident_opt','lock_trxn','plan_opt'];
-    const opt_clm:string[] = ['amc_link','option_name','plan_name','plan_opt','divident_opt','lock_trxn','scheme_link','isin_link'];
+    // const opt_clm:string[] = ['amc_link','option_name','plan_name','plan_opt','divident_opt','lock_trxn','scheme_link','isin_link'];
     const bu_clm_toRemove:string[] = ['amc_link','scheme_link','isin_link','divident_opt','lock_trxn','option_name','plan_name','plan_opt'];
     switch(flag){
       // case 'A': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))

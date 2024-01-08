@@ -106,6 +106,11 @@ export class global{
         resolve(month_year);
         reject('Error')
     })
-}
+ }
+
+ public static getCurrenctMonth_year():string{
+    let datePipe = new DatePipe('en-Us');
+    return datePipe.transform(new Date(),'MMM-YYYY')
+ }
 
 }

@@ -21,6 +21,14 @@ import { FolioTaxStatus, systamaticFreqClmns, systamaticTransClmns, systamaticUn
 import { DOCUMENT } from '@angular/common';
 import { Table } from 'primeng/table';
 import {SystamaticfileHelp} from '../../../../../Enum/displayMode'
+import { global } from 'src/app/__Utility/globalFunc';
+
+export class MisFlag{
+  public flag:string
+  public type:string
+}
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -41,7 +49,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
   @ViewChild('trxnType') trxnType:ElementRef<HTMLInputElement>;
   @ViewChild('_remarks') _remarks:ElementRef<HTMLInputElement>;
 
-
+   mis_type:MisFlag[] = [{flag:"I",type:"Monthly Inflow"},{flag:"O",type:"Monthly Outflow"}]
 
   @ViewChild('pTableRef') pTableRef: Table;
 
@@ -49,6 +57,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
   rntTrxnType = new FormGroup({
     rnt_id: new FormControl(''),
     id: new FormControl('0'),
+    process_type: new FormControl(''),
     trans_type: new FormControl('', [Validators.required]),
     trans_sub_type: new FormControl('', [Validators.required]),
     c_trans_type_code: new FormControl(''),
@@ -109,6 +118,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     }
     this.setValidators();
     this.rntTrxnType.get('rnt_id').setValue(this.rnt_type_tab);
+    this.rntTrxnType.get('process_type').setValue('');
     this.SetColumns(this.rnt_type_tab);
   }
 
@@ -278,6 +288,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     this.trxnTypeMst = this.trxnTypeMst.filter(
       (items: rntTrxnType, key: number) => {
         if (items.id == row_obj.id) {
+          items.process_type  = row_obj.process_type;
           items.trans_type = row_obj.trans_type;
           items.trans_sub_type = row_obj.trans_sub_type;
           items.c_trans_type_code =
@@ -427,6 +438,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           ? (trxnType?.k_divident_flag ? trxnType?.k_divident_flag : '')
           : ''
         : '',
+      process_type:  trxnType ? global.getActualVal(trxnType?.process_type) : ''
     });
   }
   else if(this.file_type_tab == 'S'){

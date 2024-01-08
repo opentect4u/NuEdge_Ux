@@ -135,6 +135,10 @@
                 <p-button icon="pi pi-pencil" (click)="populateTrxnTypeinForm(file)"
                   styleClass="p-button-rounded p-button-primary"></p-button>
               </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'process_type'">
+                <p class="m-0">{{ file[col.field] ? (file[col.field] == 'I' ? 'Inflow' : 'Outflow')  : 'N/A'}}
+               </p>
+             </ng-container>
               <ng-container *ngSwitchDefault>
                 <p class="m-0">{{ file[col.field] ? file[col.field]  : 'N/A'}}
                </p>

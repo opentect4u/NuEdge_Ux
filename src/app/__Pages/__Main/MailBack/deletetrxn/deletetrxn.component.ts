@@ -105,7 +105,7 @@ export class DeletetrxnComponent implements OnInit {
    * Form for search transaction
    */
   searchTrxn = new FormGroup({
-    folio_no:new FormControl('10442120/81'),
+    folio_no:new FormControl(''),
     trans_no:new FormControl(''),
     file_type:new FormControl(TRXN_TYPE[0].flag)
   })

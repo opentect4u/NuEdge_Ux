@@ -16,8 +16,4 @@ import { MatButtonModule } from '@angular/material/button';
   declarations: [SnkbarComponent],
   entryComponents:[SnkbarComponent]
 })
-export class SnkbarModule { 
-  constructor() {
-    console.log("Snack Bar Module Loaded");
-  }
-}
+export class SnkbarModule { }

@@ -72,11 +72,25 @@
                 'N/A' }}</p>
             </ng-container>
 
-          <ng-container *ngSwitchCase="col.field == 'first_client_name'">
-            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
-          </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'nom_per_3' || col.field == 'nom_per_2' || col.field == 'nom_per_1'">
+              <p class="m-0">{{ trxn[col.field] && trxn[col.field] > 0  ? trxn[col.field] : 'N/A' }}</p>
+            </ng-container>
 
+            <ng-container *ngSwitchCase="col.field == 'first_client_name' || col.field == 'nom_name_1'
+            || col.field == 'nom_name_2' || col.field == 'joint_name_2'
+            ||  col.field == 'joint_name_1'
+            ||  col.field == 'nom_name_3' || col.field == 'guardian_name'">
+              <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
+            </ng-container>
 
+            <ng-container *ngSwitchCase="col.field == 'email' || col.field == 'email_2nd_holder'
+            || col.field == 'email_3rd_holder' || col.field == 'guardian_email'">
+              <p class="m-0">{{ trxn[col.field]  ? (trxn[col.field] | lowercase) : 'N/A' }}</p>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_2nd_holder' ||  col.field == 'dob_3rd_holder' || col.field == 'guardian_dob' || col.field == 'folio_date'">
+              <p class="m-0">{{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+            </ng-container>
 
           <!-- SIP/STP Report -->
           <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">

@@ -62,6 +62,7 @@ interface TrxnRpt{
       divi_lock_flag: string | null,
       isin_no:string | null,
       bu_type_lock_flag:string | null
+      process_type?:string | null
    }
 }
 

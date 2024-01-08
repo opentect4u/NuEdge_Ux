@@ -83,8 +83,4 @@ const routes: Routes = [
     MenuDropdownDirective
   ],
 })
-export class MainModule {
-  constructor() {
-    console.log('Main Module Loaded');
-  }
-}
+export class MainModule {}

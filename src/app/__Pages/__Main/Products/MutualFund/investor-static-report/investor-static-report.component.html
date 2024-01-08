@@ -259,9 +259,7 @@
                     </ng-container>
 
 
-                    <ng-container *ngSwitchCase="col.field == 'first_client_name' || col.field == 'joint_name_1' || col.field == 'joint_name_2' || col.field == 'guardian_name'">
-                      <p class="m-0">{{ folio_dt[col.field] ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
-                    </ng-container>
+
 
                     <!-- <ng-container *ngSwitchCase="col.field == 'folio_date'">
                       <p class="m-0">{{folio_dt[col.field] ?
@@ -308,8 +306,16 @@
                         <p class="m-0">{{ folio_dt[col.field]  ? (folio_dt[col.field] | lowercase) : 'N/A' }}</p>
                       </ng-container>
 
+                      <ng-container *ngSwitchCase="col.field == 'nom_per_3' || col.field == 'nom_per_2' || col.field == 'nom_per_1'">
+                        <p class="m-0">{{ folio_dt[col.field] && folio_dt[col.field] > 0  ? folio_dt[col.field] : 'N/A' }}</p>
+                      </ng-container>
 
-
+                      <ng-container *ngSwitchCase="col.field == 'first_client_name' || col.field == 'nom_name_1'
+                      || col.field == 'nom_name_2' || col.field == 'joint_name_2'
+                      ||  col.field == 'joint_name_1'
+                      ||  col.field == 'nom_name_3' || col.field == 'guardian_name'">
+                        <p class="m-0">{{ folio_dt[col.field] ? (folio_dt[col.field] | titlecase) : 'N/A' }}</p>
+                      </ng-container>
 
                       <ng-container *ngSwitchCase="col.field == 'ckyc_no_1st' || col.field == 'ckyc_no_2nd'
                       || col.field == 'ckyc_no_3rd' || col.field == 'guardian_ckyc_no'">

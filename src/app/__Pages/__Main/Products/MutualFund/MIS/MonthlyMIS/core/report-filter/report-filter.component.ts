@@ -15,6 +15,7 @@ import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { pluck } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { global } from 'src/app/__Utility/globalFunc';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'core-mis-report-filter',
@@ -192,9 +193,10 @@ export class ReportFilterComponent implements OnInit {
    */
   __euinMst: any = [];
 
+  datePipe = new DatePipe('en-Us');
 
   monthly_mis_filter_form = new FormGroup({
-    mis_month: new FormControl(''),
+    mis_month: new FormControl(global.getCurrenctMonth_year()),
     no_of_month: new FormControl(''),
     amc_id: new FormControl([], { updateOn: 'blur' }),
     cat_id: new FormControl([], { updateOn: 'blur' }),
@@ -226,7 +228,7 @@ export class ReportFilterComponent implements OnInit {
       this.month_year = MY;
       this.searchFilter();
     }).catch(err => {
-      console.log(err);
+      // console.log(err);
     })
     /***** END */
 
@@ -482,8 +484,23 @@ export class ReportFilterComponent implements OnInit {
 
   /***** SEARCH MONTHLY MIS REPORT*/
   searchFilter = () => {
-    console.log(this.monthly_mis_filter_form.value);
-    this.searchReport.emit(this.monthly_mis_filter_form.value);
+    // console.log(this.monthly_mis_filter_form.value);
+    let liveSipReportFilter = Object.assign({},this.monthly_mis_filter_form.value,{
+      ...this.monthly_mis_filter_form.value,
+      amc_id:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.amc_id,'id'),
+      brn_cd:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.brn_cd,'id') : '[]',
+      bu_type_id:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.bu_type_id,'bu_code') : '[]',
+      cat_id:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.cat_id,'id'),
+      euin_no:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.euin_no,'euin_no') : '[]',
+      rm_id:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.rm_id,'euin_no') : '[]',
+      scheme_id:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.scheme_id,'id'),
+      sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.sub_brk_cd,'code') : '[]',
+      sub_cat_id:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.sub_cat_id,'id'),
+      trans_type:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.trans_type,'id'),
+      trans_sub_type:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.trans_sub_type,'id'),
+      mis_month:this.datePipe.transform(this.monthly_mis_filter_form.value.mis_month,'MM-YYYY')
+    })
+    this.searchReport.emit(liveSipReportFilter);
   }
   /*******END */
 
