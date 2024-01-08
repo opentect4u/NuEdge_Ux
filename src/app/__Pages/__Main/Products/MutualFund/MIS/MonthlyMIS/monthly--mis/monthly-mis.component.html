@@ -25,7 +25,7 @@
             <div class="row">
               <div class="col-sm-4">
                 <mat-card matTooltipClass="ToolTip"
-                matTooltip="TOTAL MONTHLY INFLOW:{{total_mis_calculation?.tot_inflow_amt}}"
+                matTooltip="TOTAL MONTHLY INFLOW:{{total_mis_calculation ? total_mis_calculation?.tot_inflow_amt : 0}}"
                 class="outFlow__inflow monthly__inflow my-1">
                   <mat-card-content class="p-5"
                   >
@@ -35,7 +35,7 @@
                 </mat-card>
               </div>
               <div class="col-sm-4">
-                <mat-card matTooltipClass="ToolTip" matTooltip="TOTAL MONTHLY OUTFLOW:{{total_mis_calculation?.tot_outflow_amt}}" class="outFlow__inflow monthly__outflow my-1">
+                <mat-card matTooltipClass="ToolTip" matTooltip="TOTAL MONTHLY OUTFLOW:{{total_mis_calculation ? total_mis_calculation?.tot_outflow_amt : 0}}" class="outFlow__inflow monthly__outflow my-1">
                   <mat-card-content class="p-5"
                     >
                    <h5 class="text-center">TOTAL MONTHLY OUTFLOW</h5>
