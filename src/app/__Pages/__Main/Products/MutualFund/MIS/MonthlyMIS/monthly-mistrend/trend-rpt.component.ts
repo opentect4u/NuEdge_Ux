@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { pluck } from 'rxjs/operators';
 import { column } from 'src/app/__Model/tblClmns';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'app-trend-rpt',
@@ -10,7 +13,7 @@ export class TrendRptComponent implements OnInit {
 
   @ViewChild('MISTABLE') __MisTbleComponent;
 
-  constructor() { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   /**** COLUMN */
   __mis__Trend__Column:column[] =  ColumnTrend.column;
@@ -23,8 +26,15 @@ export class TrendRptComponent implements OnInit {
   ngOnInit(): void {}
 
   searchFilter = (ev) =>{
-    console.log(ev);
+    const {mis_month,...rest} = ev /* Object without mis_month */
+    this.dbIntr.api_call(1,'/showMonthlyMisTrandReport',this.utility.convertFormData(rest))
+    // .pipe(pluck('data'))
+    .subscribe(res =>{
+      console.log(res);
+    })
   }
+
+
 
   // TabDetails = (ev) =>{
 

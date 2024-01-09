@@ -197,7 +197,7 @@ export class ReportFilterComponent implements OnInit {
 
   monthly_mis_filter_form = new FormGroup({
     mis_month: new FormControl(global.getCurrenctMonth_year()),
-    no_of_month: new FormControl(''),
+    no_of_month: new FormControl(12),
     amc_id: new FormControl([], { updateOn: 'blur' }),
     cat_id: new FormControl([], { updateOn: 'blur' }),
     sub_cat_id: new FormControl([], { updateOn: 'blur' }),
