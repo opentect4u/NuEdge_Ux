@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import * as HighCharts from 'highcharts/highstock';
 import Accessibility from 'highcharts/modules/accessibility';
+/** For Remove Warning in production server */
 Accessibility(HighCharts);
 @Component({
   selector: 'core-chart',
@@ -13,13 +14,19 @@ export class ChartComponent implements OnInit {
 
   highcharts: typeof HighCharts = HighCharts;
 
+  @Input() set getChartDetails(data:ChartWithCategories){
+    if(data)
+      this.barChart(data.categories,data?.chart_data)
+  }
+
   constructor() { }
 
   ngOnInit(): void {
-    this.barChart();
+    // this.barChart();
   }
 
-  barChart(){
+  barChart(category:string[],data:IChartData[]){
+    console.log(data.map((el:any) => ({y:el,color:el < 0 ? 'red' : ''})));
     this.chartOptions={
       chart:{
           type:'column',
@@ -31,32 +38,23 @@ export class ChartComponent implements OnInit {
         text:'Source nuedgecorporate.co.in'
       },
       xAxis:{
-        categories:[
-          '2016','2017','2018','2019'
-        ],
+        categories:category,
         title: {
           text: 'MIS Trend'
       }
       },
-     series:this.chartdata
+     series:data
     }
   }
 
-  /***** HighChart Data */
-   chartdata = [
-    {
-      name:'Monthly Inflow',
-      data:[6310,72700,3202,7201]
-    },
-    {
-      name:'Monthly Outflow',
-      data:[8140,8401,37140,7140]
-    },
-    {
-      name:'Net Inflow',
-      data:[12750,8400,654,8520]
-    }
-   ]
-  /******End */
+}
 
+export interface IChartData{
+  name:string;
+  data:number[]
+}
+
+export class ChartWithCategories{
+    chart_data:IChartData[]
+    categories:string[]
 }

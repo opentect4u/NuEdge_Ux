@@ -31,6 +31,10 @@ export class MisTblComponent implements OnInit {
    @Input() virtual_scroll:boolean | undefined = true;
    /** END */
 
+   /*** Flag */
+   @Input() flag: string
+   /****End */
+
   constructor(private utility:UtiliService) { }
 
   ngOnInit(): void {}

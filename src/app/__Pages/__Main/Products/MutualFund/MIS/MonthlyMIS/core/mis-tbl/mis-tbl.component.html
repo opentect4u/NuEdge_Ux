@@ -16,8 +16,7 @@
               <th *ngFor="let col of column" [pSortableColumn]="col.field" [style.max-width]="col.width"
                 [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
                 {{ col.header }}
-                <p-sortIcon [field]="col.field">
-                </p-sortIcon>
+                <p-sortIcon [field]="col.field" *ngIf="col.field != 'trend'"></p-sortIcon>
               </th>
             </tr>
           </ng-template>
@@ -25,7 +24,7 @@
             <tr tabindex="999"
               [ngStyle]="{
                 'height':'34px',
-                'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
+                'background-color': flag == 'M' ? (trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : '' ) : ''}">
               <td *ngFor="let col of column"
                 [style.max-width]="col.width"
                 [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
@@ -69,6 +68,20 @@
                   <ng-container *ngSwitchCase="col.field == 'remarks'">
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
                       'N/A'}}</p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'monthly_inflow' || col.field == 'monthly_outflow' || col.field == 'monthly_net_inflow'">
+                    <p class="m-0" [matTooltip]="(trxn[col.field] | number : '1.2-2')">{{trxn[col.field] ? (trxn[col.field] | number : '1.2-2'): 0}}</p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'per_of_growth'">
+                    <p class="m-0" [matTooltip]="trxn[col.field] | number : '1.2-2'">{{trxn[col.field] ? (trxn[col.field] | number : '1.2-2'): 0}}%</p>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'trend'">
+                    <mat-icon
+                    [ngClass]="{'text-success':trxn['per_of_growth'] > 0,'text-danger':trxn['per_of_growth'] <= 0}"
+                    >
+                      arrow_drop_{{trxn['per_of_growth'] <= 0 ? 'down' : 'up'}}
+                    </mat-icon>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
