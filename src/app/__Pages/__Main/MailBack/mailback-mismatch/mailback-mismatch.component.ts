@@ -163,7 +163,7 @@ export class MailbackMismatchComponent implements OnInit {
     const opt_clm:string[] = ['amc_link','option_name','plan_name','plan_opt','divident_opt','lock_trxn'];
     const bu_clm_toRemove:string[] = ['amc_link','scheme_link','isin_link','divident_opt','lock_trxn','option_name','plan_name','plan_opt'];
     switch(flag){
-      case 'A': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !clm.includes(item.field))
+      case 'A': this.TrxnClm = (this.index == 0 || this.index == 4) ? trxnClm.column.filter(item => !clm.includes(item.field))
         : (this.index == 1
           ? [...NavFinderColumns.column, ...NavMismatchColumnForAMCLink.column]
           : (this.index == 3
@@ -171,10 +171,10 @@ export class MailbackMismatchComponent implements OnInit {
             : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...NavMismatchColumnForAMCLink.column]
           ));
         break;
-      case 'B': this.TrxnClm = this.index == 0 ? [...trxnClm.column.filter(item => !bu_clm_toRemove.includes(item.field)), ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))]
+      case 'B': this.TrxnClm = (this.index == 0 || this.index == 4) ? [...trxnClm.column.filter(item => !bu_clm_toRemove.includes(item.field)), ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))]
             : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))];
       break;
-      case 'S': this.TrxnClm = this.index == 0 ?
+      case 'S': this.TrxnClm = (this.index == 0 || this.index == 4) ?
        this.TrxnClm = trxnClm.column.filter(item => !opt_clm.includes(item.field))
        :  (this.index == 1
        ? [...NavFinderColumns.column,...NavMismatchColumnForSchemeLink.column]
@@ -184,7 +184,7 @@ export class MailbackMismatchComponent implements OnInit {
        break;
       case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field)); break;
       case 'F': this.TrxnClm = [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))]; break;
-      case 'P/O': this.TrxnClm = this.index == 0 ?
+      case 'P/O': this.TrxnClm = (this.index == 0 || this.index == 4) ?
       trxnClm.column.filter(item => !scm_clm.includes(item.field))
       : (this.index == 2 ?
         [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),
