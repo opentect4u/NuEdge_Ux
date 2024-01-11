@@ -160,6 +160,7 @@ trxnRpt: Partial<TrxnRpt[]> = [];
 
 /**
  * Hold column for transaction table
+ * {field:'sl_no',header:'Sl No',width:"6rem"},
  */
 column: column[] = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn'));
 
@@ -351,6 +352,7 @@ misTrxnRpt = new FormGroup({
 });
 
 ngOnInit(): void {
+  // console.log(this.column.splice((this.column.length - 1),0,{field:'change_type',header:'Type',width:"12rem"}))
   this.misTrxnRpt.get('client_name').disable();
   this.misTrxnRpt.get('select_all_client').disable();
 
@@ -955,7 +957,7 @@ onItemClick = (ev) => {
         trxn_type_id:[],
         // date_range:'',
         // date_periods:'M',
-        type:'A',
+        type:'',
         view_type:'',
         pan_no:''
        });

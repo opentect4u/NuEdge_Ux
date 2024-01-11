@@ -26,7 +26,6 @@ export class ChartComponent implements OnInit {
   }
 
   barChart(category:string[],data:IChartData[]){
-    console.log(data.map((el:any) => ({y:el,color:el < 0 ? 'red' : ''})));
     this.chartOptions={
       chart:{
           type:'column',
@@ -43,7 +42,7 @@ export class ChartComponent implements OnInit {
           text: 'MIS Trend'
       }
       },
-     series:data
+     series:data.map(item=> ({...item,data:item.data.map(el => ({y:el,color: el < 0 ? '#fe6a35' : (item.name == 'Monthly Inflow' ? '#2caffe' : (item.name == 'Monthly Outflow' ? '#6b8abc' : '#00e272'))}))}))
     }
   }
 

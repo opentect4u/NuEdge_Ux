@@ -317,6 +317,18 @@ export class ReportFilterComponent implements OnInit {
     if (ev.option.value == 'A') {
       this.getBranchMst();
     } else {
+
+      this.monthly_mis_filter_form.patchValue({
+        mis_month: this.flag == 'R' ? global.getCurrenctMonth_year() : '',
+        no_of_month: this.flag == 'R' ? '' : 12,
+        amc_id:[],
+        trxn_type_id:[]
+      });
+       this.monthly_mis_filter_form.get('brn_cd').setValue([],{emitEvent:true});
+       this.__subbrkArnMst = [];
+       this.monthly_mis_filter_form.controls['sub_brk_cd'].setValue([]);
+       this.monthly_mis_filter_form.controls['euin_no'].setValue([]);
+       this.searchFilter();
     }
   };
 

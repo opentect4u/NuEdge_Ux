@@ -38,8 +38,8 @@
             <select class="form-control"
             [attr.id]="flag == 'R' ? 'mis_month' : 'mo_of_month'"
             [formControl]="$any(monthly_mis_filter_form.controls[flag == 'R' ? 'mis_month' : 'no_of_month'])">
-              <option value="">Select {{flag == 'R' ? 'MIS' : 'No Of'}} Month</option>
             <ng-container *ngIf="flag == 'R';else trend">
+              <option value="">Select MIS Month</option>
               <option value="{{monthYear}}"
               *ngFor="let monthYear of month_year">
               {{monthYear}}

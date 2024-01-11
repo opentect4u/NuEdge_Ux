@@ -39,7 +39,6 @@ export class TrendRptComponent implements OnInit {
     this.dbIntr.api_call(1,'/showMonthlyMisTrandReport',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:IActualMISTrend) =>{
-      console.log(res);
       const dt = [];
       this.__chart__data = {
             categories:res.categories.map(el => this.date_pipe.transform(el,'MMM-YYYY')),
@@ -50,7 +49,7 @@ export class TrendRptComponent implements OnInit {
           if(index != (res.table_data.length - 1)){
             let old_monthly_net_inflow = res.table_data[index + 1].monthly_net_inflow
             if( old_monthly_net_inflow > 0 && el.monthly_net_inflow > 0){
-                  perGrowth =  ((el.monthly_net_inflow - old_monthly_net_inflow)) / (old_monthly_net_inflow * 100);
+                  perGrowth =  ((((el.monthly_net_inflow - old_monthly_net_inflow)) / old_monthly_net_inflow) * 100);
               }
         }
         dt.push({...el,per_of_growth:perGrowth})
