@@ -164,7 +164,7 @@ export class MailbackMismatchReplicaComponent implements OnInit {
       //       : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
       //     ));
       //   break;
-      case 'B': this.TrxnClm = this.index == 0 ? trxnClm.column.filter(item => !bu_clm_toRemove.includes(item.field)) : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
+      case 'B': this.TrxnClm = (this.index == 0 || this.index == 3) ? trxnClm.column.filter(item => !bu_clm_toRemove.includes(item.field)) : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
       break;
       // case 'S': this.TrxnClm = this.index == 0 ?
       //  trxnClm.column.filter(item => !opt_clm.includes(item.field))

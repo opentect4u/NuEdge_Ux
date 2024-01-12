@@ -28,8 +28,9 @@ export interface IsubTab{
 enum API{
   'T' =  'mailbackMismatch', // For Transaction File Mismatch
   'N' = 'mailbackMismatchNAV', // For NAV File Mismatch
-  'S' = 'mailbackMismatchSipStp',
-  'F' = 'mailbackMismatchFolio'
+  'S' = 'mailbackMismatchSipStp', // For SIP STP Mismatch
+  'F' = 'mailbackMismatchFolio', // For Folio Mismatch
+  'B' = 'mailbackMismatchBroker' // For Broker Change Mismatch
 }
 
 @Component({
@@ -129,7 +130,7 @@ export class MailbackMismatchComponent implements OnInit {
     switch(mode){
       case 'P':
         this.index = TabDtls.index;
-        this.sub_index = 0;
+        // this.sub_index = 0;
         // this.getTrxnRpt(this.TabMenu[TabDtls.index].sub_menu[0].flag,(TabDtls.tabDtls as ITab).flag);
         __mode = this.TabMenu[TabDtls.index].sub_menu[0].flag;
         // this.getTrxnRpt(this.TabMenu[(this.index + 1)].sub_menu[0].flag);
@@ -149,9 +150,22 @@ export class MailbackMismatchComponent implements OnInit {
         break;
       default:break;
     }
-    this.getTrxnRpt(flag,file_flag);
+
+    // this.getTrxnRpt(flag,file_flag);
     this.tblWidth = this.index == 0 ? '350rem' : '150rem';
     this.column_manage(__mode);
+    if(__mode == 'P' && this.sub_index > 0){
+      /** condition for checking whether the api is not called twice at same time
+        * as the parent & child tabs are changed at same time.
+        * */
+        this.sub_index = 0;
+        return;
+    }
+    else{
+      this.getTrxnRpt(flag,file_flag);
+    }
+
+
   }
 
   column_manage = (flag:string) =>{
@@ -196,6 +210,7 @@ export class MailbackMismatchComponent implements OnInit {
         ] : [])) ;break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;
     }
+    console.log(this.TrxnClm.length);
 
   }
   setTrxnFromChild = (el) =>{

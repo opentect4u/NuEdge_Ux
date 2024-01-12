@@ -16,7 +16,7 @@ export class ChartComponent implements OnInit {
 
   @Input() set getChartDetails(data:ChartWithCategories){
     if(data)
-      this.barChart(data.categories,data?.chart_data)
+      this.barChart(data.categories.reverse(),data?.chart_data.reverse())
   }
 
   constructor() { }

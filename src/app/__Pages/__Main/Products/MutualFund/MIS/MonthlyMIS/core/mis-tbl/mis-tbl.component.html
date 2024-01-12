@@ -76,8 +76,13 @@
                     <p class="m-0" [matTooltip]="trxn[col.field] | number : '1.2-2'">{{trxn[col.field] ? (trxn[col.field] | number : '1.2-2'): 0}}%</p>
                   </ng-container>
 
+                  <ng-container *ngSwitchCase="col.field == 'monthly'">
+                    <p class="m-0">{{trxn[col.field] ? (trxn[col.field] | date:'MMM-YYYY') : 'N/A'}}</p>
+                  </ng-container>
+
                   <ng-container *ngSwitchCase="col.field == 'trend'">
                     <mat-icon
+                    style="font-size:30px!important;height: 30px;width: 30px;"
                     [ngClass]="{'text-success':trxn['per_of_growth'] > 0,'text-danger':trxn['per_of_growth'] <= 0}"
                     >
                       arrow_drop_{{trxn['per_of_growth'] <= 0 ? 'down' : 'up'}}
