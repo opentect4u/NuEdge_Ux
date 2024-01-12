@@ -162,7 +162,7 @@ trxnRpt: Partial<TrxnRpt[]> = [];
  * Hold column for transaction table
  * {field:'sl_no',header:'Sl No',width:"6rem"},
  */
-column: column[] = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn'));
+column: column[] = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn'))
 
 /**
  * Holding AMC Master Data

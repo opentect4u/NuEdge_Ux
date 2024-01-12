@@ -1,3 +1,10 @@
+/**
+ *  Index [0] ==> Transaction File
+ *  Index [1] ==> SIP/SWP/STP File
+ *  Index [2] ==> Folio Master
+ *  Index [3] ==> Broker Change
+ */
+
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ITab, IsubTab } from '../mailback-mismatch/mailback-mismatch.component';
 import tabs from '../../../../../assets/json/MailBack/mailbackMismatchTab.json';
@@ -36,7 +43,7 @@ export class MailbackMismatchReplicaComponent implements OnInit {
 
   subTab:IsubTab[] = tabs[0].sub_menu.filter(item => (item.flag == 'B' || item.flag == 'D'));
 
-  TrxnClm:column[] = trxnClm.column.filter(item=> !['option_name','plan_name','scheme_link','isin_link','plan_opt','divident_opt','lock_trxn','amc_link'].includes(item.field));
+  TrxnClm:column[] = trxnClm.column.filter(item=> !['option_name','plan_name','scheme_link','isin_link','plan_opt','divident_opt','lock_trxn','amc_link'].includes(item.field)).filter(el => el.isVisible.includes('T'));
   /**
    * hold the index number for currenctly active Tab
    * By Default index set to 0 as we need to show the content of currently active Tab
@@ -81,7 +88,7 @@ export class MailbackMismatchReplicaComponent implements OnInit {
             this.subTab = this.tab_dt[TabDtls.index].sub_menu.filter(item => (item.flag == 'B' || item.flag == 'P/O'));
           }
           else if(TabDtls.tabDtls.flag == 'F'){
-            this.subTab = this.tab_dt[TabDtls.index].sub_menu.filter(item => item.flag == 'P/O');
+            this.subTab = this.tab_dt[TabDtls.index].sub_menu.filter(item => (item.flag == 'P/O' || item.flag == 'B'));
           }
           __mode = this.subTab[0].flag;
           file_flag = this.tab_dt[this.index].flag as ParentFileType;
@@ -164,21 +171,22 @@ export class MailbackMismatchReplicaComponent implements OnInit {
       //       : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
       //     ));
       //   break;
-      case 'B': this.TrxnClm = (this.index == 0 || this.index == 3) ? trxnClm.column.filter(item => !bu_clm_toRemove.includes(item.field)) : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
+      case 'B': this.TrxnClm = (this.index == 0 || this.index == 3) ? trxnClm.column.filter(item => !bu_clm_toRemove.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T'))
+                : this.index == 2 ? FolioColumn.column : live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
       break;
       // case 'S': this.TrxnClm = this.index == 0 ?
       //  trxnClm.column.filter(item => !opt_clm.includes(item.field))
       //  :  (this.index == 1 ? NavFinderColumns.column :  (this.index == 3 ? FolioColumn.column: live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
       //   ));
       //  break;
-      case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field)); break;
+      case 'D': this.TrxnClm = trxnClm.column.filter(item => !clm_divident.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T')); break;
       // case 'F': this.TrxnClm = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')); break;
       case 'P/O': this.TrxnClm = this.index == 0 ?
-      trxnClm.column.filter(item => !scm_clm.includes(item.field))
+      trxnClm.column.filter(item => !scm_clm.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T'))
       : (this.index == 1 ?
         live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'))
         : (this.index == 2 ?FolioColumn.column : [])) ;break;
-      default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field));break;
+      default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T'));break;
     }
 
   }
