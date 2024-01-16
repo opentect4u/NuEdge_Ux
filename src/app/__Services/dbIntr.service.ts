@@ -56,7 +56,7 @@ constructor(private __http:HttpClient) {
   }
   else{
        var __data = __dt ? '?' + __dt : '';
-       return this.__http.get(`${environment.apiUrl + __url + __data}`);
+       return this.__http.get(`${environment.apiUrl + __url + __data}`,{ context: new HttpContext().set(BYPASS_LOG,  __bypass_log) });
   }
  }
 

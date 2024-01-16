@@ -12,6 +12,7 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
 /************END **********************/
 /******** Material ToolTip */
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { ChartModule } from 'src/app/__Core/chart/chart.module';
 /**** END*/
 const routes: Routes = [
   { path: '', component: HomeComponent,data:{breadcrumb: null} }
@@ -24,7 +25,8 @@ const routes: Routes = [
     MatIconModule,
     MatButtonModule,
     OverlayPanelModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ChartModule
   ],
   declarations: [HomeComponent,ViewComponent,MenuTilesComponent,ShortNumberPipe]
 })

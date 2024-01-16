@@ -24,14 +24,26 @@
 
 
       </div>
-      <p class="text-center">{{items.value | shortNumber}}</p>
+      <!-- Loader -->
+      <p class="text-center" *ngIf="!items.is_pending;else pending_states">
+          {{items.amount > 0 ? (items.amount | shortNumber) : ('0' | number:'1.2-2')}}
+      </p>
+      <ng-template #pending_states>
+        <div class="tiles_loader"></div>
+      </ng-template>
+      <!-- End -->
       <div class="mb-0 w-100 d-flex align-items-center justify-content-center p-3">
         <div class="text-sm font-weight-bolder
         d-flex align-items-center">
         <mat-icon class="text-success">arrow_drop_up</mat-icon>
          <span class="text-success">0.25% </span><span class="ml-1">MoM</span>
         </div>
-        <button mat-icon-button  class="titleIcons"  matTooltipClass="ToolTip" matTooltip="View Trend">
+        <!-- (click)="sendReport(items)" -->
+
+        <button mat-icon-button
+        (click)="showReport(items);op.toggle($event)"
+        class="titleIcons"
+        matTooltipClass="ToolTip" matTooltip="View Trend">
           <mat-icon>signal_cellular_alt</mat-icon>
         </button>
        </div>
@@ -42,3 +54,16 @@
   </div>
 </div>
 </div>
+
+<p-overlayPanel #op
+[style]="{ width: '450px' }"
+[showCloseIcon]="true"
+[dismissable]="false"
+>
+ <ng-container *ngIf="chart_dtls;else noDataAvailable">
+  <core-chart [getbarChartDetails]="chart_dtls"></core-chart>
+ </ng-container>
+ <ng-template #noDataAvailable>
+  <h4>Loading.....</h4>
+ </ng-template>
+</p-overlayPanel>

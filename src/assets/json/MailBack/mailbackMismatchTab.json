@@ -118,15 +118,15 @@
         },
         {
           "id":3,
-          "tab_name":"Business Type",
-          "img_src":"",
-          "flag":"B"
-        },
-        {
-          "id":4,
           "tab_name":"Plan & Option",
           "img_src":"",
           "flag":"P/O"
+        },
+        {
+          "id":4,
+          "tab_name":"Business Type",
+          "img_src":"",
+          "flag":"B"
         }
       ]
   },

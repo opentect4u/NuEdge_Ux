@@ -35,6 +35,7 @@ export class NetworkInterceptor implements HttpInterceptor {
       });
 
     if (auth.context.get(BYPASS_LOG) === true){
+      // console.log()
       return next.handle(auth);
     }
     this.__spinner.show();

@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import * as HighCharts from 'highcharts/highstock';
 import Accessibility from 'highcharts/modules/accessibility';
@@ -14,10 +15,19 @@ export class ChartComponent implements OnInit {
 
   highcharts: typeof HighCharts = HighCharts;
 
+  date_pipe =  new DatePipe('en-Us')
+
+  /** For Column chart  */
   @Input() set getChartDetails(data:ChartWithCategories){
     if(data)
-      this.barChart(data.categories.reverse(),data?.chart_data.reverse())
+      this.columnChart(data.categories.reverse(),data?.chart_data.reverse())
   }
+  /*****End */
+  @Input() set getbarChartDetails(data:Required<{categories:string[],chart_data:number[]}>){
+        if(data)
+        this.barChart(data.categories.reverse(),data.chart_data.reverse())
+  }
+
 
   constructor() { }
 
@@ -25,7 +35,8 @@ export class ChartComponent implements OnInit {
     // this.barChart();
   }
 
-  barChart(category:string[],data:IChartData[]){
+  /*** Function for column chart */
+  columnChart(category:string[],data:IChartData[]){
     this.chartOptions={
       chart:{
           type:'column',
@@ -43,6 +54,70 @@ export class ChartComponent implements OnInit {
       }
       },
      series:data.map(item=> ({...item,data:item.data.map(el => ({y:el,color: el < 0 ? '#fe6a35' : (item.name == 'Monthly Inflow' ? '#2caffe' : (item.name == 'Monthly Outflow' ? '#6b8abc' : '#00e272'))}))}))
+    }
+  }
+  /**** End */
+
+  barChart(category:string[],data:number[]){
+    this.chartOptions={
+      chart: {
+        type: "bar"
+      },
+      title: {
+        text: "Live SIP Of Last 12 Month"
+      },
+      subtitle: {
+        text:
+          'Data visualisation for Live SIP'
+      },
+      xAxis: {
+        categories: category.map(item => this.date_pipe.transform(item,'MMM-YYYY')),
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        min: 0,
+        // title: {
+          // text: "In Thousand of Rupees",
+          // align: "high"
+        // },
+        labels: {
+          overflow: "justify"
+        }
+      },
+      tooltip: {
+        valuePrefix: "Rs. "
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            enabled: true
+          }
+        }
+      },
+      legend: {
+        layout: "vertical",
+        align: "right",
+        verticalAlign: "top",
+        x: -40,
+        y: 80,
+        floating: true,
+        borderWidth: 1,
+        backgroundColor:
+          HighCharts.defaultOptions.legend.backgroundColor || "#FFFFFF",
+        shadow: true,
+        enabled:false
+      },
+      credits: {
+        enabled: false
+      },
+      series: [
+        {
+          name:'values',
+          data: data,
+        }
+      ]
     }
   }
 

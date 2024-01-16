@@ -45,14 +45,15 @@ export class TrendRptComponent implements OnInit {
             chart_data:res.chart_data.map((el:IChartData) => ({name:el.name,data:el.data.map(item => Number(item.toFixed(2)))}))
       }
       res.table_data.forEach((el:IMisTrend,index:number) =>{
-        let perGrowth = 0;
+        let perGrowth = 0, ratio = 0;
           if(index != (res.table_data.length - 1)){
             let old_monthly_net_inflow = res.table_data[index + 1].monthly_net_inflow
             if( old_monthly_net_inflow > 0 && el.monthly_net_inflow > 0){
                   perGrowth =  ((((el.monthly_net_inflow - old_monthly_net_inflow)) / old_monthly_net_inflow) * 100);
+                  ratio = el.monthly_net_inflow / el.monthly_inflow
               }
         }
-        dt.push({...el,per_of_growth:perGrowth})
+        dt.push({...el,per_of_growth:perGrowth,ratio:ratio})
       })
       this.__mis__Trend__Report = dt;
     })
@@ -96,6 +97,10 @@ export class ColumnTrend{
       header:'Net Inflow'
     },
     {
+      field:'ratio',
+      header:'Inflow Outflow Ratio'
+    },
+    {
       field:'per_of_growth',
       header:'% Of Growth'
     },
@@ -114,6 +119,7 @@ export  interface IMisTrend{
     monthly_net_inflow:number;
     per_of_growth:number;
     trend:string;
+    ratio:number;
 }
 
 export interface IActualMISTrend{

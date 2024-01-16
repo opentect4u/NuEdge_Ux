@@ -121,7 +121,7 @@ export class MailbackMismatchComponent implements OnInit {
       .pipe(
         pluck('data'))
       .subscribe((res: TrxnRpt[]) => {
-        console.log(res);
+        // console.log(res);
         this.trxnTypeRpt = res;
       });
   };
@@ -210,11 +210,11 @@ export class MailbackMismatchComponent implements OnInit {
         ] : [])) ;break;
       default : this.TrxnClm = trxnClm.column.filter(item => !scm_clm.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T' ));break;
     }
-    console.log(this.TrxnClm.length);
+    // console.log(this.TrxnClm.length);
 
   }
   setTrxnFromChild = (el) =>{
-    console.log(el);
+    // console.log(el);
     this.trxnTypeRpt = el;
   }
 
