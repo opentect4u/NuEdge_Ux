@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { of } from 'rxjs';
-import { pluck } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { ChartWithCategories, IChartData } from 'src/app/__Core/chart/chart.component';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -40,6 +40,8 @@ export class TrendRptComponent implements OnInit {
     .pipe(pluck('data'))
     .subscribe((res:IActualMISTrend) =>{
       const dt = [];
+      res.categories.pop();
+      res.chart_data.map((el:IChartData) => ({name:el.name,data:el.data.splice(-1)}))
       this.__chart__data = {
             categories:res.categories.map(el => this.date_pipe.transform(el,'MMM-YYYY')),
             chart_data:res.chart_data.map((el:IChartData) => ({name:el.name,data:el.data.map(item => Number(item.toFixed(2)))}))
@@ -48,13 +50,15 @@ export class TrendRptComponent implements OnInit {
         let perGrowth = 0, ratio = 0;
           if(index != (res.table_data.length - 1)){
             let old_monthly_net_inflow = res.table_data[index + 1].monthly_net_inflow
-            if( old_monthly_net_inflow > 0 && el.monthly_net_inflow > 0){
+            if( old_monthly_net_inflow != 0 && el.monthly_net_inflow != 0){
                   perGrowth =  ((((el.monthly_net_inflow - old_monthly_net_inflow)) / old_monthly_net_inflow) * 100);
                   ratio = el.monthly_net_inflow / el.monthly_inflow
               }
+              console.log(`${index} : ${perGrowth} ${ratio}`)
         }
         dt.push({...el,per_of_growth:perGrowth,ratio:ratio})
       })
+      dt.pop();
       this.__mis__Trend__Report = dt;
     })
 

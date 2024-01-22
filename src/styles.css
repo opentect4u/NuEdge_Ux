@@ -873,3 +873,15 @@ color: #ffffff;
   font-size: 11px!important;
   font-weight: 600!important;
 }
+.p-component-overlay {
+  background-color: rgb(201 201 201 / 40%)!important;
+  transition-duration: 0.2s!important;
+}
+
+
+
+.selectAllCheckBox{
+  position: absolute;
+  right: 15px;
+  z-index: 7;
+}

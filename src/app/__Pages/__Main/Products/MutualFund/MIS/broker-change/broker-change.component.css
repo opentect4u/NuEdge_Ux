@@ -71,9 +71,3 @@
 .trxnRptCount{
   width:220px;
 }
-
-.selectAllCheckBox{
-  position: absolute;
-  right: 15px;
-  z-index: 7;
-}

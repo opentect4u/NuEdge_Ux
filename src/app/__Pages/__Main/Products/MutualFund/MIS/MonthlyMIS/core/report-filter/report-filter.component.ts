@@ -196,6 +196,12 @@ export class ReportFilterComponent implements OnInit {
   datePipe = new DatePipe('en-Us');
 
   monthly_mis_filter_form = new FormGroup({
+    month:new FormControl(''),
+    view_by: new FormControl('M'),
+    duration:new FormControl(''),
+    upto:new FormControl(''),
+    fin_year: new FormControl(''),
+    period_type: new FormControl('M'),
     mis_month: new FormControl(global.getCurrenctMonth_year()),
     no_of_month: new FormControl(12),
     amc_id: new FormControl([], { updateOn: 'blur' }),
@@ -210,7 +216,7 @@ export class ReportFilterComponent implements OnInit {
     bu_type_id: new FormControl([], { updateOn: 'blur' }),
     sub_brk_cd: new FormControl([], { updateOn: 'blur' })
   });
-
+  financial_year: string[] = [];
   @Output() searchReport = new EventEmitter()
   constructor(private utility: UtiliService, private dbIntr: DbIntrService) { }
 
@@ -226,15 +232,41 @@ export class ReportFilterComponent implements OnInit {
     /******** For Getting Month & Year  from Jan-1980 to Till Now */
     global.getMonthYears().then(MY => {
       this.month_year = MY;
-      this.searchFilter();
+      // this.searchFilter();
     }).catch(err => {
       // console.log(err);
     })
     /***** END */
+  }
 
+  getAllFinancialYears(){
+    var fiscalyear = "";
+    var today = new Date();
+    if ((today.getMonth() + 1) <=3) {
+      fiscalyear = (today.getFullYear() - 1) + "-" + today.getFullYear()
+    } else {
+      fiscalyear = today.getFullYear() + "-" + (today.getFullYear() + 1)
+    }
+    this.financial_year.push(fiscalyear);
+    this.monthly_mis_filter_form.get('fin_year').setValue(fiscalyear)
   }
 
   ngAfterViewInit() {
+
+     this.monthly_mis_filter_form.controls['view_by']
+     .valueChanges
+     .subscribe(res =>{
+      console.log(res)
+      if(res == 'Y' && this.financial_year.length == 0){this.getAllFinancialYears();}
+      this.monthly_mis_filter_form.patchValue({
+            upto:'',
+            fin_year:this.financial_year[0],
+            month:'',
+            period_type:'M'
+      })
+     })
+
+
     /**
      * Event Trigger after change amc
      */
@@ -510,7 +542,12 @@ export class ReportFilterComponent implements OnInit {
       sub_cat_id:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.sub_cat_id,'id'),
       trans_type:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.trans_type,'id'),
       trans_sub_type:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.trans_sub_type,'id'),
-      mis_month:this.datePipe.transform(this.monthly_mis_filter_form.value.mis_month,'MM-YYYY')
+      mis_month:this.datePipe.transform(this.monthly_mis_filter_form.value.mis_month,'MM-YYYY'),
+      upto: (this.monthly_mis_filter_form.value.view_by == 'D' || this.monthly_mis_filter_form.value.view_by == 'F') ? global.getActualVal(this.monthly_mis_filter_form.value.upto) : '',
+      month: this.monthly_mis_filter_form.value.view_by == 'M' ? global.getActualVal(this.monthly_mis_filter_form.value.month) : '',
+      fin_year:this.monthly_mis_filter_form.value.view_by == 'Y' ? global.getActualVal(this.monthly_mis_filter_form.value.fin_year) : '',
+      period_type:this.monthly_mis_filter_form.value.view_by == 'Y' ? global.getActualVal(this.monthly_mis_filter_form.value.period_type) : ''
+
     })
     this.searchReport.emit(liveSipReportFilter);
   }
@@ -640,6 +677,10 @@ export class ReportFilterComponent implements OnInit {
       this.__RmMst = [];
       this.monthly_mis_filter_form.controls['rm_id'].setValue([], { emitEvent: true });
     }
+  }
+
+  setEndDate = () =>{
+    console.log('imm!! Manku Khaichilo')
   }
 
 }

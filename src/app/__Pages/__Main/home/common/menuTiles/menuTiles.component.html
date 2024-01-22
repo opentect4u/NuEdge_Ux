@@ -35,8 +35,25 @@
       <div class="mb-0 w-100 d-flex align-items-center justify-content-center p-3">
         <div class="text-sm font-weight-bolder
         d-flex align-items-center">
-        <mat-icon class="text-success">arrow_drop_up</mat-icon>
-         <span class="text-success">0.25% </span><span class="ml-1">MoM</span>
+         <ng-container *ngIf="!items.is_pending;else pending_states_mom">
+          <div
+          class="d-flex align-items-center"
+          [ngClass]="{
+            'text-danger':items.mom_percentage.toString().includes('-'),
+            'text-success':!items.mom_percentage.toString().includes('-')
+            }"
+          >
+            <mat-icon style="font-size:30px!important;height: 30px;width: 30px;">
+              arrow_drop_{{items.mom_percentage.toString().includes('-') ? 'down' : 'up'}}
+            </mat-icon>
+            <span>{{items.mom_percentage | number:'1.2-2'}}%</span>
+          </div>
+          &nbsp;
+          <span class="ml-1">MoM</span>
+         </ng-container>
+         <ng-template #pending_states_mom>
+          <span class="text-sm font-weight-light">Calculating MOM....</span>
+         </ng-template>
         </div>
         <!-- (click)="sendReport(items)" -->
 
@@ -64,6 +81,9 @@
   <core-chart [getbarChartDetails]="chart_dtls"></core-chart>
  </ng-container>
  <ng-template #noDataAvailable>
-  <h4>Loading.....</h4>
+  <div class="container">
+    <div class="tiles_loader my-4 mx-auto"></div>
+    <h5 class="text-center">Loading.....</h5>
+  </div>
  </ng-template>
 </p-overlayPanel>

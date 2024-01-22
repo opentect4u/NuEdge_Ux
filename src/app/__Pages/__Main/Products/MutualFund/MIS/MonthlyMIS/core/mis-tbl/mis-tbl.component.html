@@ -69,11 +69,18 @@
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
                       'N/A'}}</p>
                   </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'monthly_inflow' || col.field == 'monthly_outflow' || col.field == 'monthly_net_inflow' || col.field == 'ratio'">
+                  <ng-container *ngSwitchCase="col.field == 'monthly_inflow' || col.field == 'monthly_outflow' || col.field == 'monthly_net_inflow'">
                     <p class="m-0" [matTooltip]="(trxn[col.field] | number : '1.2-2')">{{trxn[col.field] ? (trxn[col.field] | number : '1.2-2'): 0}}</p>
                   </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'ratio'">
+                    <p class="m-0"
+                    [ngClass]="{'text-danger':trxn?.ratio.toString().includes('-')}"
+                    [matTooltip]="trxn[col.field] | number : '1.2-2'">{{trxn[col.field] ? (trxn[col.field]?.toFixed(2)): 0}}</p>
+                  </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'per_of_growth'">
-                    <p class="m-0" [matTooltip]="trxn[col.field] | number : '1.2-2'">{{trxn[col.field] ? (trxn[col.field] | number : '1.2-2'): 0}}%</p>
+                    <p class="m-0"
+                    [ngClass]="{'text-danger':trxn?.per_of_growth.toString().includes('-')}"
+                    [matTooltip]="trxn[col.field] | number : '1.2-2'">{{trxn[col.field] ? (trxn[col.field]?.toFixed(2)): 0}}%</p>
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'monthly'">

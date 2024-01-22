@@ -1,0 +1,68 @@
+/**
+DIVIDER CSSS
+**/
+
+
+#progress {
+  padding: 0;
+  list-style-type: none;
+  font-size: 12px;
+  clear: both;
+  line-height: 1em;
+  margin: 0 -1px;
+  text-align: center;
+  width:calc(100% - 40%)
+}
+
+#progress li {
+  float: left;
+  padding: 10px 30px 10px 40px;
+  background: #333;
+  color: #fff;
+  position: relative;
+  /* border-top: 1px solid #666;
+  border-bottom: 1px solid #666; */
+  width: auto;
+  margin: 0 1px;
+}
+
+#progress li:before {
+  content: '';
+  border-left: 16px solid #fff;
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+}
+#progress li:after {
+  content: '';
+  border-left: 16px solid #333;
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid transparent;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  /* z-index: 20; */
+}
+
+#progress li.progess_active {
+  background: #555;
+}
+
+#progress li.progess_active:after {
+  border-left-color: #555;
+}
+
+.input__container{
+  width:40%;
+}
+
+.PrimeInput{
+  font-size: 14px!important;
+  font-weight: 500!important;
+}
+
+
+

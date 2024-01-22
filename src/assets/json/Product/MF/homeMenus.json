@@ -487,7 +487,26 @@
         "flag": "K",
         "icon": "",
         "img": "/PortFolio/liveMfPortFolio.png",
-        "sub_menu": []
+        "sub_menu": [
+                  {
+                    "id": 1,
+                    "url": "",
+                    "title": "Investor wise",
+                    "flag": "IW",
+                    "icon": "",
+                    "img": "",
+                    "sub_menu":[]
+                  },
+                  {
+                    "id": 2,
+                    "url": "",
+                    "title": "KYC Not Verified",
+                    "flag": "KNV",
+                    "icon": "",
+                    "img": "",
+                    "sub_menu":[]
+                  }
+        ]
       },
       {
         "id": 3,
@@ -496,7 +515,26 @@
         "flag": "N",
         "icon": "",
         "img": "/PortFolio/liveMfPortFolio.png",
-        "sub_menu": []
+        "sub_menu": [
+                  {
+                    "id": 1,
+                    "url": "",
+                    "title": "Investor wise",
+                    "flag": "IW",
+                    "icon": "",
+                    "img": "",
+                    "sub_menu":[]
+                  },
+                  {
+                    "id": 2,
+                    "url": "",
+                    "title": "Opt-In/Opt-Out Pending",
+                    "flag": "IOP",
+                    "icon": "",
+                    "img": "",
+                    "sub_menu":[]
+                  }
+        ]
       },
       {
         "id": 4,
@@ -505,7 +543,26 @@
         "flag": "A",
         "icon": "",
         "img": "/PortFolio/liveMfPortFolio.png",
-        "sub_menu": []
+        "sub_menu": [
+          {
+            "id": 1,
+            "url": "",
+            "title": "Investor Wise",
+            "flag": "IW",
+            "icon": "",
+            "img": "",
+            "sub_menu":[]
+          },
+          {
+            "id": 2,
+            "url": "",
+            "title": "Not Linked",
+            "flag": "NL",
+            "icon": "",
+            "img": "",
+            "sub_menu":[]
+          }
+        ]
       }
     ],
     "img": "/product_mf/kyc_report.png"

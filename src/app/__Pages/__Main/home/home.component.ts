@@ -35,11 +35,11 @@ export class HomeComponent implements OnInit {
 
 
     /*** For Showing Top Card Value */
-    __topValues:Partial<ITileValue>[] = [
-      {title:"Current AUM",amount:0,class_name:"seeGreen_Gredient",flag:"C",is_pending:false},
-      {title:"Live SIP",amount:0,class_name:"blue_Gredient",flag:"L",is_pending:true},
-      {title:"Monthly MIS",amount:0,class_name:"red_Gredient",flag:"M",is_pending:false},
-      {title:"Title-4",amount:0,class_name:"yellow_Gredient",flag:'T',is_pending:false}
+    __topValues:Required<ITileValue>[] = [
+      {title:"Current AUM",amount:0,class_name:"seeGreen_Gredient",flag:"C",is_pending:false,mom_percentage:0},
+      {title:"Live SIP",amount:0,class_name:"blue_Gredient",flag:"L",is_pending:true,mom_percentage:0},
+      {title:"Monthly MIS",amount:0,class_name:"red_Gredient",flag:"M",is_pending:false,mom_percentage:0},
+      {title:"Title-4",amount:0,class_name:"yellow_Gredient",flag:'T',is_pending:false,mom_percentage:0}
     ]
     /*** End */
   constructor(private dbIntr:DbIntrService) {}
@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
       console.log(this.__topValues)
       this.dbIntr.api_call(0,'/showLiveSIPAmount','flag=L',true)
       .pipe(pluck("data")).
-      subscribe((res:Required<{total_amount:number,flag:string}>) =>{
+      subscribe((res:Required<ITilesAPIResonse>) =>{
         this.setAmountInTiles(res);
       },
       err => {
@@ -64,10 +64,12 @@ export class HomeComponent implements OnInit {
    * set amount in the array of tiles
    * @param res
    */
-  setAmountInTiles = (res:Required<{total_amount:number,flag:string}>) =>{
+  setAmountInTiles = (res:Required<ITilesAPIResonse>) =>{
     const index = this.__topValues.findIndex(item => item.flag == res.flag);
     try{
       this.__topValues[index].amount = res.total_amount;
+      const momPercentage__calculation = ((res.total_amount - res.prev_total_amount) / res.prev_total_amount) * 100
+      this.__topValues[index].mom_percentage = momPercentage__calculation
     }
     catch(ex){
         console.log(ex)
@@ -87,4 +89,12 @@ export interface ITileValue{
      class_name:string;
      flag:string;
      is_pending:boolean;
+     mom_percentage:number
+}
+
+export interface ITilesAPIResonse{
+  curr_total_amount: number;
+  flag: string;
+  prev_total_amount: number;
+  total_amount: number;
 }

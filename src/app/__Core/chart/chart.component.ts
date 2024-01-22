@@ -20,7 +20,7 @@ export class ChartComponent implements OnInit {
   /** For Column chart  */
   @Input() set getChartDetails(data:ChartWithCategories){
     if(data)
-      this.columnChart(data.categories.reverse(),data?.chart_data.reverse())
+      this.columnChart(data.categories.reverse(),data?.chart_data)
   }
   /*****End */
   @Input() set getbarChartDetails(data:Required<{categories:string[],chart_data:number[]}>){
@@ -53,7 +53,7 @@ export class ChartComponent implements OnInit {
           text: 'MIS Trend'
       }
       },
-     series:data.map(item=> ({...item,data:item.data.map(el => ({y:el,color: el < 0 ? '#fe6a35' : (item.name == 'Monthly Inflow' ? '#2caffe' : (item.name == 'Monthly Outflow' ? '#6b8abc' : '#00e272'))}))}))
+     series:data.map(item=> ({...item,data:item.data.reverse().map(el => ({y:el,color: el < 0 ? '#fe6a35' : (item.name == 'Monthly Inflow' ? '#2caffe' : (item.name == 'Monthly Outflow' ? '#6b8abc' : '#00e272'))}))}))
     }
   }
   /**** End */

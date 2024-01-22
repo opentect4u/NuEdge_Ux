@@ -3,21 +3,26 @@
      "id":"F",
      "relation":"Father"
   },
-  {
-    "id":"M",
-    "relation":"Mother"
- },
- {
-  "id":"GF",
-  "relation":"Grandfather"
-},{
-  "id":"GM",
-  "relation":"Grandmother"
-},{
-  "id":"U",
-  "relation":"Uncle"
-},{
-  "id":"A",
-  "relation":"Aunty"
-}
+      {
+        "id":"M",
+        "relation":"Mother"
+    },
+    {
+      "id":"GF",
+      "relation":"Grandfather"
+    },{
+      "id":"GM",
+      "relation":"Grandmother"
+    },{
+      "id":"U",
+      "relation":"Uncle"
+    },
+    {
+      "id":"S",
+      "relation":"Son"
+    },
+    {
+      "id":"D",
+      "relation":"Daughter"
+    }
 ]

@@ -1,0 +1,189 @@
+
+<div class="row flexSec">
+  <div class="col-sm-12">
+     <mat-card>
+        <mat-card-content class="p-3">
+          <div class="d-flex align-items-center justify-content-between">
+              <ul id="progress"><li class="progess_active">Step-1  (Select Family Head) </li></ul>
+               <div class="input__container">
+                <form [formGroup]="search_family_form">
+
+                  <!-- <div class="p-inputgroup">
+                      <span class="p-inputgroup-addon p-0">
+                        <button mat-button [matMenuTriggerFor]="menu">
+                          Search By {{search_family_form.get('family_head_search_by').value}}&nbsp;<mat-icon>arrow_drop_down</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu" xPosition="before">
+                           <button mat-menu-item (click)="getMenuItem(item)" *ngFor="let item of search_by">
+                            <mat-icon>{{item.icon}}</mat-icon>
+                            <span>{{item.name}}</span>
+                          </button>
+                        </mat-menu>
+                      </span>
+                        <input type="text"
+                        formControlName="family_head_name"
+                        pInputText
+                        placeholder="Search..."
+                        class="PrimeInput">
+                  </div> -->
+                  <input type="text"
+                  formControlName="family_head_name"
+                  placeholder="Search family head by Name or Pan"
+                  class="form-control">
+                </form>
+               </div>
+
+          </div>
+          <div class="row mt-3">
+            <div class="col-sm-12">
+              <!-- TABLE -->
+
+              <p-table #dt [value]="family_head" [rows]="10" [paginator]="true"
+               [autoLayout]="true"
+               [selectionMode]="'single'"
+             [scrollable]="true"
+             loadingIcon="pi pi-spinner pi-spin"
+             [loading]="__is__spinner_family_head"
+              [(selection)]="selectedFamily_header" [rowHover]="true" dataKey="id"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              styleClass="p-datatable-lg"
+              [tableStyle]="{ 'min-width': '130rem' }"
+
+               [showCurrentPageReport]="true">
+              <ng-template pTemplate="header">
+                  <tr>
+                      <th [style]="'max-width:4rem'"></th>
+                      <th *ngFor="let col of family_tbl_column"
+                          pSortableColumn="{{col.field}}"
+                          [style.max-width]="col.width"
+                          [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                        {{col.header}}
+                        <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                      </th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-family_header>
+                  <tr>
+                      <td [style]="'max-width:4rem'">
+                          <p-tableCheckbox [value]="family_header"></p-tableCheckbox>
+                      </td>
+
+                      <td *ngFor="let col of family_tbl_column"
+                      [style.max-width]="col.width"
+                      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                        <p class="m-0">
+                        {{ family_header[col.field] ? family_header[col.field] : 'N/A' }}</p>
+                       </td>
+
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage" let-family_header>
+                <tr>
+                  <td [attr.colspan]="(family_tbl_column.length + 1)">
+                    <h4>No Records Found</h4>
+                  </td>
+                </tr>
+              </ng-template>
+          </p-table>
+              <!-- END -->
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+  </div>
+
+</div>
+
+
+<!-- STEP 2 -->
+<div class="row flexSec mb-5">
+  <div class="col-sm-12">
+     <mat-card>
+        <mat-card-content class="p-3 m-0">
+          <div class="d-flex align-items-center justify-content-between">
+              <ul id="progress"><li class="progess_active">Step-2 (Select Family Members) </li></ul>
+               <div class="input__container">
+                <form [formGroup]="search_family_form">
+                  <input type="text"
+                  formControlName="family_member_name"
+                  placeholder="Search family member by Name or Pan"
+                  class="form-control">
+                </form>
+               </div>
+
+          </div>
+          <div class="row mt-3">
+            <div class="col-sm-12">
+              <!-- TABLE -->
+
+              <p-table #dt [value]="family_member" [rows]="10" [paginator]="true"
+               [autoLayout]="true"
+               [selectionMode]="'single'"
+               [responsiveLayout]="'scroll'"
+               [responsive]="true"
+             [scrollable]="true"
+             loadingIcon="pi pi-spinner pi-spin"
+             [loading]="__is__spinner_family_member"
+              [(selection)]="selectedFamily_member" [rowHover]="true" dataKey="id"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              styleClass="p-datatable-lg"
+              [tableStyle]="{ 'min-width': '126rem' }"
+               [showCurrentPageReport]="true">
+              <ng-template pTemplate="header">
+                  <tr>
+                      <th [style]="'max-width:4rem'"></th>
+                      <th *ngFor="let col of family_member_tbl_column"
+                          pSortableColumn="{{col.field}}"
+                          [style.max-width]="col.width"
+                          [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                        {{col.header}}
+                        <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                      </th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-family_member let-i="rowIndex">
+                  <tr>
+                      <td [style]="'max-width:4rem'">
+                          <p-tableCheckbox [value]="family_member"></p-tableCheckbox>
+                      </td>
+
+                      <td *ngFor="let col of family_member_tbl_column"
+                      [style.max-width]="col.width"
+                      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                      <ng-container [ngSwitch]="true">
+                        <ng-container *ngSwitchCase="col.field == 'relation_ship'">
+                                <select class="form-control" (change)="changeRelation($event,family_member,i)">
+                                      <option value="">Select</option>
+                                       <option value="{{dt.id}}" *ngFor="let dt of relation">{{dt.relation}}</option>
+                                </select>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                                <p class="m-0">
+                                  {{ family_member[col.field] ? family_member[col.field] : 'N/A' }}
+                                </p>
+                        </ng-container>
+                        </ng-container>
+                       </td>
+
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage" let-family_header>
+                <tr>
+                  <td [attr.colspan]="(family_tbl_column.length + 1)">
+                    <h4>No Records Found</h4>
+                  </td>
+                </tr>
+              </ng-template>
+          </p-table>
+              <!-- END -->
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-footer align="end" class="w-100 p-3">
+            <p-button label="Create Family"></p-button>
+        </mat-card-footer>
+      </mat-card>
+  </div>
+
+</div>
+<!-- END -->

@@ -55,6 +55,10 @@ const routes: Routes = [
         data:{id:11,title:'NuEdge - Profile',pageTitle:'NuEdge - Profile',breadcrumb:'Profile'}
       },
       {
+        path:'crm',
+        loadChildren:()=> import('./CRM/crm.module').then(crm => crm.CrmModule),
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'

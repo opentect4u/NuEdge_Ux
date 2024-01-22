@@ -1,6 +1,6 @@
 <div class="progressMainSec" appClOutsideClick (appOutsideClick)="outsideClickforClient($event)">
   <div class="searchDiv">
-    <label [for]="label">
+    <label [for]="label" *ngIf="label">
       <mat-icon
       class="errorIcon"
       #tooltip="matTooltip"

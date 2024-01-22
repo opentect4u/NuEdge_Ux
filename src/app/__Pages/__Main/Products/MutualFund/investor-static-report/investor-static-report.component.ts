@@ -1,3 +1,20 @@
+/**
+ * Flag is used for maintaining Parent Tab
+ * F => Folio Master (index : 0)
+ * K => KYC Report (index: 1)
+ * N => Nomination Report (index: 2)
+ * A => Aadhar Pan Linki Report (index: 3)
+ * *******************************************
+ * *******************************************
+ * sub_flag is used for maintaining Sub Tab
+ * IW => Investor Wise (subIndex: 0)
+ * KNV => KYC Not Verified (subIndex: 1, parent Tab: KYC Report)
+ * IOP => Opt-In/Opt-Out Pending (subIndex: 1, parent Tab: Nomination Report)
+ * NL  =>  Not Linked (subIndex: 1, parent Tab: Aadhar Pan Link Report)
+ */
+
+
+
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import Menu from '../../../../../../assets/json/Product/MF/homeMenus.json';
 import { column } from '../../../../../__Model/tblClmns';
@@ -115,11 +132,17 @@ export class InvestorStaticReportComponent implements OnInit {
 
   tab_menu: ITab[] = [];
 
+  sub_tab: Partial<ITab[]> = [];
+
   title: string | undefined = '';
 
   index: number = 0;
 
+  subIndex: number = 0;
+
   flag: string | undefined = '';
+
+  sub_flag:string | undefined = ''
 
   column: column[] = [];
 
@@ -136,6 +159,7 @@ export class InvestorStaticReportComponent implements OnInit {
   displayMode_forClient: string = 'none';
 
   filter = new FormGroup({
+    is_all_client:new FormControl(false),
     view_type: new FormControl(''),
     client_name: new FormControl(''),
     pan_no: new FormControl(''),
@@ -162,11 +186,13 @@ export class InvestorStaticReportComponent implements OnInit {
     /*** get TAB Details **/
     this.setTab().then((res: ITab[]) => {
       this.tab_menu = res;
-      this.setTitle();
-      this.setFlag();
-      console.log(this.column);
+      this.filter.get('is_all_client').disable();
+      // this.setTitle();
+      // this.setFlag();
+      // console.log(this.column);
     })
     /*** End ***/
+
 
     // this.setColumn('F').then(res =>{
     //   this.column = res;
@@ -190,7 +216,8 @@ export class InvestorStaticReportComponent implements OnInit {
           id:res.id,
           tab_name: res.title,
           flag:res.flag,
-          img_src: ''
+          img_src: '',
+          sub_menu:res.sub_menu
         }))
       ),
         reject([])
@@ -243,6 +270,18 @@ export class InvestorStaticReportComponent implements OnInit {
 }
 
   ngAfterViewInit() {
+    this.filter.get('is_all_client')
+    .valueChanges
+    .subscribe(res =>{
+      this.filter.get('client_name').setValue('',{onlySelf:true,emitEvent:false});
+      this.filter.get('pan_no').setValue('',{onlySelf:true,emitEvent:false});
+      if(res){
+          this.filter.get('client_name').disable({onlySelf:true,emitEvent:false});
+        }
+        else{
+          this.filter.get('client_name').enable({onlySelf:true,emitEvent:false});
+        }
+    })
 
     const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
       this.changeWheelSpeed(el, 0.99);
@@ -315,6 +354,13 @@ export class InvestorStaticReportComponent implements OnInit {
 
     /**view_type Change*/
     this.filter.controls['view_type'].valueChanges.subscribe(res => {
+      this.filter.get('is_all_client').reset(false, { emitEvent: false });
+      if(res != 'C'){
+        this.filter.get('is_all_client').disable()
+      }
+      else{
+          this.filter.get('is_all_client').enable()
+      }
       this.filter.get('client_name').reset('', { emitEvent: false });
       this.filter.get('pan_no').reset('');
       if (res) {
@@ -331,14 +377,13 @@ export class InvestorStaticReportComponent implements OnInit {
   }
 
   changeTabDtls = (ev) => {
-    console.log(ev);
+    this.sub_tab = [];
     this.index = ev.index;
     this.setTitle();
     this.setFlag();
     this.report_data = [];
     this.filter.get('investor_static_type').setValue(ev.tabDtls.flag);
     this.setColumn(ev.tabDtls.flag).then((res: column[]) => {
-      console.log(res);
       this.tble_width = TABLE_WIDTH[ev.tabDtls.flag];
       this.column = res;
     })
@@ -346,8 +391,25 @@ export class InvestorStaticReportComponent implements OnInit {
     if (this.state == 'collapsed') {
       this.toggle();
     }
-    this.resetForm();
+
+    this.subIndex = 0;
+    setTimeout(() => {
+      this.sub_tab =  ev.tabDtls.sub_menu.map(res =>({
+        id:res.id,
+        tab_name: res.title,
+        flag:res.flag,
+        img_src: '',
+      }));
+      this.changeSubTab({index : this.subIndex,tabDtls:this.sub_tab.length > 0 ? this.sub_tab[this.subIndex] : null})
+    }, 100);
+
   }
+
+  changeSubTab = (event) =>{
+      this.sub_flag = event.tabDtls?.flag;
+      console.log(this.sub_flag);
+      this.resetForm();
+    }
 
   filterGlobal = (ev) => {
     let value = ev.target.value;
@@ -455,22 +517,27 @@ export class InvestorStaticReportComponent implements OnInit {
 
   getfolioMaster = (fb) => {
     this.report_data = [];
+console.log(this.filter.getRawValue().is_all_client);
     if(
-      this.filter.value.client_name != '' ||
-      this.filter.value.folio_no != ''
+      this.filter.getRawValue().client_name != '' || this.filter.value.folio_no != ''
+      || this.filter.getRawValue().is_all_client
     ){
+      console.log(`PASS`);
       this.toggle();
       let object = Object.assign({}, fb, {
         ...fb,
+        select_all_client:this.filter.getRawValue().is_all_client,
         brn_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.brn_cd, 'id') : '[]',
         bu_type_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.bu_type_id, 'bu_code') : '[]',
         euin_no: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.euin_no, 'euin_no') : '[]',
         rm_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.rm_id, 'euin_no') : '[]',
         sub_brk_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.sub_brk_cd, 'code') : '[]',
-        kyc_status: (this.flag == 'K' || this.flag == 'A') ? fb.kyc_status : '',
-        nominee_status: (this.flag == 'N') ? fb.nominee_status : '',
-        adhaar_pan_link_status: (this.flag == 'A') ? fb.adhaar_pan_link_status : ''
+        kyc_status: this.flag == 'K' ? (this.sub_flag == 'IW' ? fb.kyc_status : 'N') : (this.flag == 'A' ? fb.kyc_status : ''),
+        nominee_status: this.flag == 'N' ? (this.sub_flag == 'IW' ? fb.nominee_status : 'Pending') : '',
+        adhaar_pan_link_status: this.flag == 'A' ? (this.sub_flag == 'IW' ? fb.adhaar_pan_link_status : 'N') : ''
       })
+      console.log(object);
+      // return;
       this.dbIntr
         .api_call(1, '/showFolioDetails', this.utility.convertFormData(object))
         .pipe(pluck('data'))
@@ -480,6 +547,7 @@ export class InvestorStaticReportComponent implements OnInit {
         });
     }
     else{
+      console.log(`ERRRO`);
       this.utility.showSnackbar('Please either select client or enter folio no',0);
     }
 
@@ -627,7 +695,8 @@ export interface ITab {
   tab_name: string,
   id: number,
   img_src: string,
-  flag: string
+  flag: string,
+  sub_menu:any[]
 }
 
 

@@ -33,7 +33,63 @@
       <form [formGroup]="monthly_mis_filter_form"
       (ngSubmit)="searchFilter()">
       <div class="row">
-        <div class="col-sm-3">
+        <!-- Only For Monthly Mis Trend-->
+        <ng-container *ngIf="flag == 'T';else mis">
+            <div class="col-sm-3">
+              <label for="view_by">View By</label>
+              <select class="form-control" formControlName="view_by">
+                    <option value="M">Monthly</option>
+                    <option value="D">Duration</option>
+                    <option value="Y">Yearly</option>
+                    <option value="F">Financial Year</option>
+              </select>
+            </div>
+            <ng-container  *ngIf="monthly_mis_filter_form.value.view_by == 'M'">
+              <div class="col-sm-3">
+                <label for="month">Month-Year </label>
+                <p-calendar
+                #MYCalendar
+                [view]="'month'"
+                [dateFormat]="'mm/yy'"
+                [readonlyInput]="true"
+                inputId="pickmonth"
+                selectionMode="range"
+                formControlName="month"
+                [showButtonBar]="true"
+                [placeholder]="'MM-YYYY - MM-YYYY'">
+              </p-calendar>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="monthly_mis_filter_form.value.view_by == 'D' || monthly_mis_filter_form.value.view_by == 'F'">
+               <div class="col-sm-3">
+                <label for="upto">Upto</label>
+                    <select class="form-control" formControlName="upto">
+                        <option value="">Select</option>
+                        <option value="{{item}}" *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12]">{{item}} {{monthly_mis_filter_form.value.view_by == 'D' ? 'Month' : 'Financial year'}}</option>
+                    </select>
+               </div>
+            </ng-container>
+            <ng-container *ngIf="monthly_mis_filter_form.value.view_by == 'Y'">
+              <div class="col-sm-3">
+                <label for="upto">Financial year</label>
+                    <select class="form-control" formControlName="fin_year">
+                        <option [value]="finYear" *ngFor="let finYear of financial_year">{{finYear}}</option>
+                    </select>
+               </div>
+               <div class="col-sm-3">
+                <label for="upto">Period Type</label>
+                    <select class="form-control" formControlName="period_type">
+                        <option value="M">Monthly</option>
+                        <option value="Q">Quarterly</option>
+                        <option value="H">Half Yearly</option>
+                    </select>
+               </div>
+            </ng-container>
+         </ng-container>
+         <!-- End -->
+         <!-- Only For Monthly Mis -->
+         <ng-template #mis>
+          <div class="col-sm-3">
           <label [attr.for]="flag == 'R' ? 'mis_month' : 'no_of_month'">{{ flag == 'R' ? 'MIS' : 'No Of'}} Month</label>
             <select class="form-control"
             [attr.id]="flag == 'R' ? 'mis_month' : 'mo_of_month'"
@@ -50,6 +106,9 @@
             </ng-template>
             </select>
           </div>
+         </ng-template>
+         <!-- End -->
+
           <div class="col-sm-3">
             <label for="amc_id">AMC</label>
             <ng-multiselect-dropdown [attr.id]="'amc_id'" [placeholder]="'Select AMC'"
@@ -100,9 +159,39 @@
                 formControlName="brn_cd">
               </ng-multiselect-dropdown>
             </div>
+              <ng-container *ngIf="flag == 'T'">
+                  <div class="col-sm-3">
+                    <label for="bu_type">Business Type</label>
+                    <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+                       [settings]="settingsforBuTypeDropdown" [data]="__bu_type"
+                      formControlName="bu_type_id">
+                    </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="rm_name">Relationship Manager</label>
+                    <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                       [settings]="settingsforRMDropdown" [data]="__RmMst"
+                      formControlName="rm_id">
+                    </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="sub_brk_cd">Sub Broker</label>
+                    <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                      [settings]="settingsforSubBrkDropdown"
+                      [data]="__subbrkArnMst" formControlName="sub_brk_cd">
+                    </ng-multiselect-dropdown>
+                  </div>
+              </ng-container>
           </ng-container>
           <ng-template #normalFilter>
-            <div class="col-sm-3 d-flex align-items-end justify-content-end">
+            <div
+            class="d-flex my-2 align-items-end justify-content-end"
+            [ngClass]="{
+              'col-sm-12':(monthly_mis_filter_form.value.view_by != 'Y' && flag != 'R'),
+               'col-sm-9': (monthly_mis_filter_form.value.view_by == 'Y' && flag != 'R'),
+               'col-sm-3': flag == 'R'
+            }"
+            >
               <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
             </div>
           </ng-template>
@@ -110,7 +199,7 @@
       </div>
       <ng-container *ngIf="btn_type == 'A'">
         <div class="row">
-          <ng-container>
+            <ng-container *ngIf= "flag == 'R'">
             <div class="col-sm-3">
               <label for="bu_type">Business Type</label>
               <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
@@ -132,20 +221,25 @@
                 [data]="__subbrkArnMst" formControlName="sub_brk_cd">
               </ng-multiselect-dropdown>
             </div>
+            </ng-container>
             <div class="col-sm-3">
               <label for="euin_no">EUIN</label>
               <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
                 [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
               </ng-multiselect-dropdown>
             </div>
-
-          </ng-container>
+            <div
+            class="d-flex align-items-end justify-content-end"
+            [ngClass]="{'col-sm-12 my-2': flag == 'R','col-sm-9':flag == 'T'}"
+            >
+              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+            </div>
         </div>
-        <div class="row mt-2">
+        <!-- <div class="row mt-2">
           <div class="col-sm-12 d-flex align-items-end justify-content-end">
             <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
           </div>
-        </div>
+        </div> -->
       </ng-container>
     </form>
     </mat-card-content>
