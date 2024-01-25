@@ -19,7 +19,7 @@
         "id":1,
         "accessibility":[],
         "title":"Live MF Portfolio",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/portfolio/liveMfPortFolio",
         "icon": "",
         "img":"/PortFolio/liveMfPortFolio.png"
       },

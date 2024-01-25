@@ -5,6 +5,7 @@ import { client } from 'src/app/__Model/__clientMst';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import relationship from '../../../../../../../assets/json/Master/relationShip.json'
+import { UtiliService } from 'src/app/__Services/utils.service';
 @Component({
   selector: 'app-create-family',
   templateUrl: './create-family.component.html',
@@ -41,7 +42,7 @@ export class CreateFamilyComponent implements OnInit {
   /**
    *
    */
-  selectedFamily_header:client[]= []
+  selectedFamily_header:client
   selectedFamily_member:client[]= []
 
 
@@ -64,7 +65,7 @@ export class CreateFamilyComponent implements OnInit {
       family_member_pan: new FormControl(''),
   })
 
-    constructor(private __dbIntr: DbIntrService) { }
+    constructor(private __dbIntr: DbIntrService,private utilty:UtiliService) { }
 
   ngOnInit(): void {}
 
@@ -74,7 +75,7 @@ export class CreateFamilyComponent implements OnInit {
         this.__is__spinner_family_head =  this.search_family_form.get('family_head_name').value ? true : false,
         this.search_family_form.get('family_head_pan').setValue(''),
         this.family_head = [],
-        this.selectedFamily_header = []
+        this.selectedFamily_header = null
         )),
       debounceTime(200),
       distinctUntilChanged(),
@@ -86,7 +87,7 @@ export class CreateFamilyComponent implements OnInit {
     .subscribe({
       next: (value) => {
         console.log(value)
-        this.selectedFamily_header = []
+        this.selectedFamily_header = null
         this.family_head = value.data;
         // this.searchResultVisibilityForClient('block');
         this.search_family_form.patchValue({
@@ -146,6 +147,23 @@ export class CreateFamilyComponent implements OnInit {
       console.log(client);
       console.log(index);
       console.log(event.target.value);
+  }
+
+
+  createFamily = () =>{
+  //  console.log(this.selectedFamily_member);
+  //  console.log(Object.values(this.selectedFamily_header));
+   if(this.selectedFamily_member.length == 0){
+        //... show Error message
+        this.utilty.showSnackbar(`Please select family head in step-1`,0);
+   }
+   else if(this.selectedFamily_header != null){
+      //... show Error message
+      this.utilty.showSnackbar(`Please select family member in step-2`,0);
+   }
+   else{
+    //... code
+   }
   }
 
 }

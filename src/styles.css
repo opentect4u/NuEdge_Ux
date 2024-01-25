@@ -793,7 +793,8 @@ color: #ffffff;
 
 .p-checkbox .p-checkbox-box {
   border: 2px solid #10486b;
-  border-radius: 13px;
+  /* border-radius: 13px; */
+  border-radius: 0px;
 }
 
 .marque__tag{
@@ -884,4 +885,18 @@ color: #ffffff;
   position: absolute;
   right: 15px;
   z-index: 7;
+}
+
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item{
+  font-size: 13px!important;
+}
+.p-dropdown .p-dropdown-label{
+  font-size: 16px;
+  font-weight: 400!important;
+}
+
+.p-radiobutton .p-radiobutton-box.p-highlight {
+  border-color: #10486b!important;
+  background: #10486b!important;
 }

@@ -65,13 +65,13 @@
               <ng-template pTemplate="body" let-family_header>
                   <tr>
                       <td [style]="'max-width:4rem'">
-                          <p-tableCheckbox [value]="family_header"></p-tableCheckbox>
+                          <p-tableRadioButton [value]="family_header"></p-tableRadioButton>
                       </td>
 
                       <td *ngFor="let col of family_tbl_column"
                       [style.max-width]="col.width"
                       [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
-                        <p class="m-0">
+                      <p class="m-0">
                         {{ family_header[col.field] ? family_header[col.field] : 'N/A' }}</p>
                        </td>
 
@@ -144,18 +144,35 @@
               <ng-template pTemplate="body" let-family_member let-i="rowIndex">
                   <tr>
                       <td [style]="'max-width:4rem'">
-                          <p-tableCheckbox [value]="family_member"></p-tableCheckbox>
+                          <p-tableCheckbox  [value]="family_member"></p-tableCheckbox>
                       </td>
 
                       <td *ngFor="let col of family_member_tbl_column"
                       [style.max-width]="col.width"
-                      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'"
+                      [pEditableColumn]="family_member.relation" pEditableColumnField="relation_ship"
+                      >
                       <ng-container [ngSwitch]="true">
                         <ng-container *ngSwitchCase="col.field == 'relation_ship'">
-                                <select class="form-control" (change)="changeRelation($event,family_member,i)">
+                                <!-- <select class="form-control" (change)="changeRelation($event,family_member,i)">
                                       <option value="">Select</option>
                                        <option value="{{dt.id}}" *ngFor="let dt of relation">{{dt.relation}}</option>
-                                </select>
+                                </select> -->
+                                <p-cellEditor
+                                style="width:100%!important"
+                                >
+                                  <ng-template pTemplate="input">
+                                      <p-dropdown [options]="relation"
+                                      [filter]="true" filterBy="relation" [showClear]="true" placeholder="Select Relation"
+                                      appendTo="body" [(ngModel)]="family_member.relation"
+                                      optionLabel="relation"
+                                      optionValue="relation"
+                                      [style]="{'width':'100%'}"></p-dropdown>
+                                  </ng-template>
+                                  <ng-template pTemplate="output">
+                                      {{family_member.relation ? family_member.relation : 'N/A'}}
+                                  </ng-template>
+                              </p-cellEditor>
                         </ng-container>
                         <ng-container *ngSwitchDefault>
                                 <p class="m-0">
@@ -180,7 +197,7 @@
           </div>
         </mat-card-content>
         <mat-card-footer align="end" class="w-100 p-3">
-            <p-button label="Create Family"></p-button>
+            <p-button label="Create Family" class="p-button-lg" (click)="createFamily()"></p-button>
         </mat-card-footer>
       </mat-card>
   </div>
