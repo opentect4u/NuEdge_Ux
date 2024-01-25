@@ -6,6 +6,7 @@ import  ClientType  from '../../../../../../../assets/json/view_type.json';
 import { client } from 'src/app/__Model/__clientMst';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
+import { UtiliService } from 'src/app/__Services/utils.service';
 @Component({
   selector: 'app-live-mf-port-folio',
   templateUrl: './live-mf-port-folio.component.html',
@@ -58,7 +59,8 @@ export class LiveMfPortFolioComponent implements OnInit {
   })
 
   constructor(private __dbIntr:DbIntrService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private utility:UtiliService
     ) { }
 
   ngOnInit(): void {
@@ -179,7 +181,12 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.searchResultVisibilityForClient('none');
   };
   showReport = () =>{
-    console.log(this.filter_criteria.value)
+    // console.log(this.filter_criteria.value)
+    this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(this.filter_criteria.value))
+    .pipe(pluck('data'))
+    .subscribe((res:ILivePortFolio[]) => {
+          this.dataSource = res;
+    })
   }
 
 }
