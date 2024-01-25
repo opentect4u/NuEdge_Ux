@@ -176,9 +176,20 @@ export class CreateFamilyComponent implements OnInit {
       })
       console.log(dt.family_members)
         this.__dbIntr.api_call(1,'/clientFamilyAddEdit',this.utilty.convertFormData(dt))
-        .pipe(pluck('data'))
+        .pipe(pluck('suc'))
         .subscribe(res =>{
-          console.log(res);
+          // console.log(res);
+          if(res == 1){
+            this.selectedFamily_header = null;
+            this.selectedFamily_member = [];
+            this.family_head = [];
+            this.family_member = [];
+            this.search_family_form.get('family_head_name').setValue('',{emitEvent:false})
+            this.search_family_form.get('family_member_name').setValue('',{emitEvent:false})
+            this.search_family_form.get('family_head_pan').setValue('',{emitEvent:false})
+            this.search_family_form.get('family_member_pan').setValue('',{emitEvent:false})
+          }
+          this.utilty.showSnackbar(res == 1 ? 'Success!! Family created successfully' : 'Error!! Something went wrong',res)
         })
    }
   }
