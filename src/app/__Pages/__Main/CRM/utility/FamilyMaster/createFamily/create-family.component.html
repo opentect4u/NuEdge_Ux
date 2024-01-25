@@ -38,18 +38,19 @@
             <div class="col-sm-12">
               <!-- TABLE -->
 
-              <p-table #dt [value]="family_head" [rows]="10" [paginator]="true"
+              <p-table #dt [value]="family_head"
+              [rows]="10" [paginator]="true"
                [autoLayout]="true"
                [selectionMode]="'single'"
-             [scrollable]="true"
-             loadingIcon="pi pi-spinner pi-spin"
-             [loading]="__is__spinner_family_head"
-              [(selection)]="selectedFamily_header" [rowHover]="true" dataKey="id"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-              styleClass="p-datatable-lg"
-              [tableStyle]="{ 'min-width': '130rem' }"
+                [scrollable]="true"
+                loadingIcon="pi pi-spinner pi-spin"
+                [loading]="__is__spinner_family_head"
+                [(selection)]="selectedFamily_header" [rowHover]="true" dataKey="id"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                styleClass="p-datatable-lg"
+                [tableStyle]="{ 'min-width': '130rem' }"
 
-               [showCurrentPageReport]="true">
+                [showCurrentPageReport]="true">
               <ng-template pTemplate="header">
                   <tr>
                       <th [style]="'max-width:4rem'"></th>
@@ -65,7 +66,9 @@
               <ng-template pTemplate="body" let-family_header>
                   <tr>
                       <td [style]="'max-width:4rem'">
-                          <p-tableRadioButton [value]="family_header"></p-tableRadioButton>
+                          <p-tableRadioButton
+                          [value]="family_header"
+                          ></p-tableRadioButton>
                       </td>
 
                       <td *ngFor="let col of family_tbl_column"
@@ -116,7 +119,7 @@
             <div class="col-sm-12">
               <!-- TABLE -->
 
-              <p-table #dt [value]="family_member" [rows]="10" [paginator]="true"
+              <p-table #dt [value]="family_member | clientFltr:selectedFamily_header" [rows]="10" [paginator]="true"
                [autoLayout]="true"
                [selectionMode]="'single'"
                [responsiveLayout]="'scroll'"

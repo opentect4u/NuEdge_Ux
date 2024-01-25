@@ -5,6 +5,7 @@ import { CreateFamilyComponent } from './create-family.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { DropdownModule } from 'primeng/dropdown';
+import { ClientFilterPipe } from 'src/app/__Pipes/clientFilter.pipe';
 
 const routes:Routes =[
    {
@@ -16,7 +17,8 @@ const routes:Routes =[
 
 @NgModule({
   declarations: [
-    CreateFamilyComponent
+    CreateFamilyComponent,
+    ClientFilterPipe
   ],
   imports: [
     CommonModule,

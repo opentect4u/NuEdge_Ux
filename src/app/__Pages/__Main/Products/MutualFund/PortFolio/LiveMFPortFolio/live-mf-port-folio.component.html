@@ -1,1 +1,202 @@
-<p>live-mf-port-folio works!</p>
+
+<div class="bckContainer"></div>
+
+<div class="row flexSec">
+    <div class="col-sm-12">
+        <mat-card>
+          <mat-card-header class="border-bottom">
+            <mat-card-title>
+                 Live MF PortFolio Filter
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="p-3">
+            <form [formGroup]="filter_criteria" (ngSubmit)="showReport()" autocomplete="off">
+              <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5">
+                      <div class="row">
+                        <!-- <label for="valuation_as_on" class="col-sm-4 col-form-label m-0 m-auto">Valuation As On</label> -->
+                        <div class="col-sm-12">
+                        <label for="valuation_as_on">Valuation As On</label>
+                          <input
+                          type="date"
+                          class="form-control"
+                          formControlName="valuation_as_on"
+                          id="valuation_as_on"
+                          name="valuation_as_on"
+                          />
+                        </div>
+
+                        <!-- <label for="view_type" class="col-sm-4 col-form-label m-0 m-auto">Select View By</label> -->
+                        <div class="col-sm-12">
+                        <label for="view_type" >Select View By</label>
+                          <select
+                          name="view_type"
+                          id="view_type"
+                          class="form-control"
+                          formControlName="view_type"
+                          >
+                            <option value="">Select</option>
+                            <option
+                              *ngFor="let item of view_by"
+                              [value]="item.id"
+                            >
+                              {{item.type}}
+                            </option>
+                          </select>
+                        </div>
+                      <!-- </div>
+                      <div class="form-group row"> -->
+                        <div class="col-sm-12">
+
+                        <app-core-srch [label]="'Investor'"
+                        [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+                        [isPending]="__isClientPending"
+                        [listItems]="__clientMst"
+                        [flag]="'C'"
+                        [noDataFoundTitle]="'Sorry!! No Records Found'"
+                        [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                        [propertiesToShow]="['first_client_name','first_client_pan']"
+                        formControlName="client_name"
+                        [displayMode]="displayMode_forClient"
+                        (setDisplayMode)="displayMode_forClient = $event"
+                        (selectedItems)="getSelectedItemsFromParent($event)"
+                        (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-sm-12">
+                          <label for="trans_type">View Transaction : </label> &nbsp; &nbsp;
+                          <mat-radio-group color="primary" formControlName="trans_type" id="trans_type" aria-label="Select an option">
+                            <mat-radio-button value="L">live Transactions</mat-radio-button>
+                            <mat-radio-button value="A" class="mx-2">All transactions</mat-radio-button>
+                          </mat-radio-group>
+                        </div>
+                        <div class="col-sm-12">
+                          <label for="view_funds_type">View Funds : </label> &nbsp; &nbsp;
+                          <mat-radio-group color="primary" formControlName="view_funds_type" id="view_funds_type" aria-label="Select an option">
+                            <mat-radio-button value="A">All Funds</mat-radio-button>
+                            <mat-radio-button value="F" class="mx-2">Selected Funds</mat-radio-button>
+                            <mat-radio-button value="T">Selected Types</mat-radio-button>
+                          </mat-radio-group>
+                        </div>
+                        <div class="col-sm-12">
+                          <label for="view_mf_report">View MF Report : </label> &nbsp; &nbsp;
+                          <mat-radio-group color="primary" formControlName="view_mf_report" id="view_mf_report" aria-label="Select an option">
+                            <mat-radio-button value="F">Fund Type </mat-radio-button>
+                            <mat-radio-button value="T" class="mx-2">Tag Wise</mat-radio-button>
+                          </mat-radio-group>
+                        </div>
+                        <div class="col-sm-12">
+                            <label for="trans_duration">Transaction Duration</label>
+                            <select name="trans_duration" id="trans_duration" class="form-control">
+                              <option value="">All</option>
+                              <option value="1">Below 1 Year</option>
+                              <option value="">Above 2 Year</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-12 text-center my-3">
+                  <button pButton type="reset" class="p-button-lg p-button-danger mx-3" iconPos="left" icon="pi pi-refresh" label="Reset" ></button>
+                  <button pButton type="submit" class="p-button-lg" iconPos="left" icon="pi pi-eye" label="Show" ></button>
+                </div>
+                </div>
+              </form>
+          </mat-card-content>
+        </mat-card>
+
+        <p-card styleClass="my-4">
+
+        <p-table
+        [value]="dataSource"
+        dataKey="id"
+
+        responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+              <tr>
+                  <th style="width: 3rem"></th>
+                  <th [pSortableColumn]="item.field"
+                  [style]="'min-width : '+item.width"
+                  *ngFor="let item of parent_column">
+                    {{item.header}}
+                    <p-sortIcon [field]="item.field"></p-sortIcon>
+                  </th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-liveMfPortFolio let-expanded="expanded">
+              <tr>
+                  <td>
+                      <button type="button" pButton pRipple [pRowToggler]="liveMfPortFolio"
+                      class="p-button-text p-button-rounded p-button-plain"
+                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                  </td>
+                  <td  *ngFor="let col of parent_column">
+                      <p class="m-0">
+                        {{liveMfPortFolio[col.field]}}
+                      </p>
+                  </td>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+                <td [attr.colspan]="(parent_column.length + 1)">
+                  <h5 class="p-3 text-left">
+                    There are no Transaction available.
+                  </h5>
+                </td>
+            </tr>
+        </ng-template>
+          <ng-template pTemplate="rowexpansion" let-liveMfPortFolio>
+              <tr>
+                  <td colspan="7">
+                      <div class="p-3">
+                          <p-table [value]="liveMfPortFolio.data" dataKey="id">
+                              <ng-template pTemplate="header">
+                                  <tr>
+                                       <th
+                                        [pSortableColumn]="col.field"
+                                        *ngFor="let col of child_column">
+                                          {{col.header}}
+                                          <p-sortIcon [field]="col.field"></p-sortIcon>
+                                       </th>
+                                      <!-- <th pSortableColumn="id">Id <p-sortIcon field="price"></p-sortIcon></th>
+                                      <th pSortableColumn="customer">Customer <p-sortIcon field="customer"></p-sortIcon></th>
+                                      <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon></th>
+                                      <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon></th>
+                                      <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+                                      <th style="width: 4rem"></th> -->
+                                  </tr>
+                              </ng-template>
+                              <ng-template pTemplate="body" let-data>
+                                  <tr>
+                                      <td *ngFor="let col of child_column">
+                                        <p class="m-0">
+                                          {{data[col.field]}}
+                                        </p>
+                                      </td>
+                                      <!-- <td>{{order.id}}</td>
+                                      <td>{{order.customer}}</td>
+                                      <td>{{order.id}}</td>
+                                      <td>{{order.amount | currency:'USD'}}</td>
+                                      <td><span [class]="'order-badge order-' + order.status.toLowerCase()">{{order.status}}</span></td>
+                                      <td><p-button type="button" icon="pi pi-search"></p-button></td> -->
+                                  </tr>
+                              </ng-template>
+                              <ng-template pTemplate="emptymessage">
+                                  <tr>
+                                      <td [attr.colspan]="child_column.length">There are no Transaction available.</td>
+                                  </tr>
+                              </ng-template>
+                          </p-table>
+                      </div>
+                  </td>
+              </tr>
+          </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</div>

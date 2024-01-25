@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -105,9 +105,9 @@ export class CreateFamilyComponent implements OnInit {
     this.search_family_form.get('family_member_name').valueChanges.pipe(
       tap(() => (
         this.__is__spinner_family_member =  this.search_family_form.get('family_member_name').value ? true : false,
-        this.search_family_form.get('family_member_pan').setValue(''),
-        this.family_member = [],
-        this.selectedFamily_member = []
+        this.search_family_form.get('family_member_pan').setValue('')
+        // this.family_member = []
+        // this.selectedFamily_member = []
         )),
       debounceTime(200),
       distinctUntilChanged(),
@@ -119,8 +119,8 @@ export class CreateFamilyComponent implements OnInit {
     .subscribe({
       next: (value) => {
         console.log(value)
-        this.selectedFamily_member = []
-        this.family_member = value.data;
+        // this.selectedFamily_member = this.selectedFamily_member;
+        this.family_member = [...this.selectedFamily_member,...value.data];
         // this.searchResultVisibilityForClient('block');
         this.search_family_form.patchValue({
             family_member_pan:''
@@ -153,19 +153,40 @@ export class CreateFamilyComponent implements OnInit {
   createFamily = () =>{
   //  console.log(this.selectedFamily_member);
   //  console.log(Object.values(this.selectedFamily_header));
+  console.log(this.selectedFamily_member);
+  console.log(this.selectedFamily_header);
    if(this.selectedFamily_member.length == 0){
         //... show Error message
-        this.utilty.showSnackbar(`Please select family head in step-1`,0);
+        this.utilty.showSnackbar(`Please select family member in step-2`,0);
    }
-   else if(this.selectedFamily_header != null){
+   else if(this.selectedFamily_header == null){
       //... show Error message
-      this.utilty.showSnackbar(`Please select family member in step-2`,0);
+      this.utilty.showSnackbar(`Please select family head in step-1`,0);
+   }
+   else if(!this.selectedFamily_member.every(item => item.relation)){
+    this.utilty.showSnackbar(`Please select relationship of selected members with family head in step-2`,0);
    }
    else{
-    //... code
+    const dt = Object.assign({},
+      {
+        family_head_id:this.selectedFamily_header?.id,
+        family_members:JSON.stringify(
+          this.selectedFamily_member.filter(item => item.id != this.selectedFamily_header?.id).map((item) => ({id:item.id,relationship:item.relation}))
+        )
+      })
+      console.log(dt.family_members)
+        this.__dbIntr.api_call(1,'/clientFamilyAddEdit',this.utilty.convertFormData(dt))
+        .pipe(pluck('data'))
+        .subscribe(res =>{
+          console.log(res);
+        })
    }
   }
+  checkSelected = (family_head) =>{
+    console.log(family_head);
 
+      console.log(this.selectedFamily_header);
+  }
 }
 
 export interface ISearchBy{
