@@ -34,8 +34,10 @@ export class TrendRptComponent implements OnInit {
   ngOnInit(): void {}
 
   searchFilter = (ev) =>{
-    const {mis_month,...rest} = ev /* destructuring Object*/
+    const {mis_month,month,...rest} = ev /* destructuring Object*/
     this.__mis__Trend__Report = [];
+    console.log(rest);
+    return;
     this.dbIntr.api_call(1,'/showMonthlyMisTrandReport',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:IActualMISTrend) =>{

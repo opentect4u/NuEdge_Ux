@@ -2,7 +2,7 @@
  *  FLAG == `R` => Monthly MIS Report
  *  FLAG == `T` => Monthly MIS Trend Report
  */
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import filterOpt from '../../../../../../../../../assets/json/filterOption.json';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -16,6 +16,7 @@ import { pluck } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { global } from 'src/app/__Utility/globalFunc';
 import { DatePipe } from '@angular/common';
+import { Calendar } from 'primeng/calendar';
 
 @Component({
   selector: 'core-mis-report-filter',
@@ -40,6 +41,11 @@ export class ReportFilterComponent implements OnInit {
   /*** FOR MAINTAINING CARD HEADER SHOW HIDE ANIMATION */
   state: string | undefined = 'expanded';
   /****END */
+
+  /**
+   *  getAccess of Prime Ng Calendar
+   */
+  @ViewChild('MYCalendar') date_range:Calendar;
 
   /****  Showing Title on the card header */
   @Input() title: string;
@@ -349,7 +355,6 @@ export class ReportFilterComponent implements OnInit {
     if (ev.option.value == 'A') {
       this.getBranchMst();
     } else {
-
       this.monthly_mis_filter_form.patchValue({
         mis_month: this.flag == 'R' ? global.getCurrenctMonth_year() : '',
         no_of_month: this.flag == 'R' ? '' : 12,
@@ -544,10 +549,9 @@ export class ReportFilterComponent implements OnInit {
       trans_sub_type:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.trans_sub_type,'id'),
       mis_month:this.datePipe.transform(this.monthly_mis_filter_form.value.mis_month,'MM-YYYY'),
       upto: (this.monthly_mis_filter_form.value.view_by == 'D' || this.monthly_mis_filter_form.value.view_by == 'F') ? global.getActualVal(this.monthly_mis_filter_form.value.upto) : '',
-      month: this.monthly_mis_filter_form.value.view_by == 'M' ? global.getActualVal(this.monthly_mis_filter_form.value.month) : '',
+      month_year: this.monthly_mis_filter_form.value.view_by == 'M' ? global.getActualVal(this.date_range.inputFieldValue) : '',
       fin_year:this.monthly_mis_filter_form.value.view_by == 'Y' ? global.getActualVal(this.monthly_mis_filter_form.value.fin_year) : '',
       period_type:this.monthly_mis_filter_form.value.view_by == 'Y' ? global.getActualVal(this.monthly_mis_filter_form.value.period_type) : ''
-
     })
     this.searchReport.emit(liveSipReportFilter);
   }
