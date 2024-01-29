@@ -26,7 +26,7 @@ export class LiveMfPortFolioComponent implements OnInit {
       'pan',
       'client_name',
       'Search Family members',
-      1
+      3
     );
 
 
@@ -206,6 +206,7 @@ export class LiveMfPortFolioComponent implements OnInit {
        .subscribe((res:client[]) =>{
         console.log(res);
         this.family_members = res;
+        this.filter_criteria.get('family_members').setValue(res.map((item:client) => ({pan:item.pan,client_name:item.client_name})))
        })
     }
     else{
@@ -216,6 +217,18 @@ export class LiveMfPortFolioComponent implements OnInit {
   }
 
   showReport = () =>{
+    if(this.filter_criteria.value.pan_no){
+            if(this.filter_criteria.value.view_type == 'F'){
+                if(this.filter_criteria.value.family_members.length == 0) {
+                    this.utility.showSnackbar(`Please select at least one family member`,2);
+                    return;
+                }
+            }
+    }
+    else{
+        this.utility.showSnackbar(`Please select ${this.filter_criteria.value.view_type == 'F' ? 'family head' : ' investor'}`,2);
+        return;
+    }
     const {family_members,...rest} = Object.assign({},{
       ...this.filter_criteria.value,
       family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
