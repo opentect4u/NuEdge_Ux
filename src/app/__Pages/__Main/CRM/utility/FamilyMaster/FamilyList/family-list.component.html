@@ -1,6 +1,130 @@
 <div class="bckContainer"></div>
 <div class="row flexSec">
     <div class="col-sm-12">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+                <h5>Family List</h5>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+      <p-table
+      [value]="dataSource"
+      dataKey="family_head_code"
+      responsiveLayout="scroll"
+      [rowExpandMode]="'single'"
+      expandableRows="true"
+      styleClass="p-datatable-striped p-datatable-lg"
+      #pTable
+      (onRowExpand) = "onRowExpand($event)"
+      [paginator]="true" [rows]="10"
+      [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]"
+      >
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem"></th>
+                <th [pSortableColumn]="col.field"
+                [style.max-width]="col.width"
+                [style.min-width]="col.width"
+                *ngFor="let col of parent_column">
+                       {{col.header}}
+                       <p-sortIcon
+                       [field]="col.field">
+                      </p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-family_head let-expanded="expanded" let-i="rowIndex">
+            <tr>
+                <td>
+                    <button type="button" pButton pRipple
+                    [pRowToggler]="family_head" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                </td>
+                <td *ngFor="let col of parent_column">
+                  <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                      {{ i + 1}}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'add_line_1'">
+                        {{ family_head[col.field]}}
+                        {{family_head.addr_line_2 ? ',' +family_head.addr_line_2 : ''}}
+                        {{family_head.city_name ? ',' +family_head.city_name : ''}}
+                        {{family_head.district_name ? ',' +family_head.district_name : ''}}
+                        {{family_head.state_name ? ',' +family_head.state_name : ''}}
+                        {{family_head.pincode ? ','+family_head.pincode : ''}}
+                        </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        {{family_head[col.field] ? family_head[col.field] : 'N/A'}}
+                      </ng-container>
+                      </ng-container>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+              <td class="noDatAvailable" [attr.colspan]="(parent_column.length + 1)">There are no family heads available yet.</td>
+          </tr>
+       </ng-template>
+        <ng-template pTemplate="rowexpansion" let-family_head>
+            <tr>
+                <td [attr.colspan]="(parent_column.length + 1)">
+                    <div class="p-3">
+                        <p-table
+                        responsiveLayout="scroll"
+                        [value]="family_head.family_member"
+                        dataKey="family_member_code"
 
+                        >
+                            <ng-template pTemplate="header">
+                                <tr>
+                                  <th
+                                  [pSortableColumn]="col.field"
+                                  [style.max-width]="col.width"
+                                  [style.min-width]="col.width"
+                                  *ngFor="let col of sub_column">
+                                    {{col.header}}
+                                    <p-sortIcon
+                                    [field]="col.field">
+                                   </p-sortIcon>
+                                  </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-family_member let-i="rowIndex">
+                                <tr>
+                                    <td *ngFor="let sub_col of sub_column">
+                                      <ng-container [ngSwitch]="true">
+                                        <ng-container *ngSwitchCase="sub_col.field == 'sl_no'">
+                                          {{ i + 1}}
+                                          </ng-container>
+                                          <ng-container *ngSwitchCase="sub_col.field == 'add_line_1'">
+                                            {{ family_member[sub_col.field]}}
+                                            {{family_member.addr_line_2 ? ',' +family_member.addr_line_2 : ''}}
+                                            {{family_member.city_name ? ',' +family_member.city_name : ''}}
+                                            {{family_member.district_name ? ',' +family_member.district_name : ''}}
+                                            {{family_member.state_name ? ',' +family_member.state_name : ''}}
+                                            {{family_member.pincode ? ','+family_member.pincode : ''}}
+                                            </ng-container>
+                                          <ng-container *ngSwitchDefault>
+                                            {{family_member[sub_col.field] ? family_member[sub_col.field] : 'N/A'}}
+                                          </ng-container>
+                                          </ng-container>
+
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr >
+                                    <td class="p-5" [attr.colspan]="sub_column.length">There are no family member available yet.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+  </mat-card-content>
+</mat-card>
     </div>
 </div>

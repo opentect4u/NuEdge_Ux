@@ -18,7 +18,11 @@
     <ng-container *ngIf="__flag == 'TV'">
       <div class="w-100 d-flex justify-content-center align-items-center p-3">
                       <h3>{{items.title}}</h3>
-                      <button mat-icon-button class="titleIcons"  matTooltipClass="ToolTip" matTooltip="View Report">
+                      <button mat-icon-button
+                      class="titleIcons"
+                      [routerLink]="items.route_url"
+                      matTooltipClass="ToolTip"
+                      matTooltip="View Report">
                         <mat-icon> visibility</mat-icon>
                       </button>
 

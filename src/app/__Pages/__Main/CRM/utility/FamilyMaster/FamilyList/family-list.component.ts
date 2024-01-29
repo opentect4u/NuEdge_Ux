@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Table } from 'primeng/table';
 import { pluck } from 'rxjs/operators';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -9,6 +10,8 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
   styleUrls: ['./family-list.component.css']
 })
 export class FamilyListComponent implements OnInit {
+
+  @ViewChild('pTable') pTable:Table
 
   constructor(private __dbIntr:DbIntrService) { }
 
@@ -21,105 +24,137 @@ export class FamilyListComponent implements OnInit {
   ngOnInit(): void {this.getFamilyList();}
 
   getFamilyList = () =>{
-      this.__dbIntr.api_call(0,'/familyList',null)
+      this.__dbIntr.api_call(0,'/clientFamilyDetailSearch',null)
       .pipe(pluck('data'))
       .subscribe((res:IFamilyList[]) =>{
-          console.log(res);
+          this.dataSource = res.map((item: IFamilyList) => ({...item,family_member:[]}));
+          console.log(this.dataSource);
+      })
+  }
+
+  onRowExpand = (ev:Required<{originalEvent:PointerEvent,data:IFamilyList}>) =>{
+      // console.log(ev);
+      this.__dbIntr.api_call(0,'/clientFamilyDetail','family_head_id='+ev.data.client_id)
+      .pipe(pluck('data'))
+      .subscribe((res:IFamilyList[]) =>{
+              try{
+                const index = this.dataSource.map(item => item.id).indexOf(ev.data.id);
+                this.dataSource[index].family_member.length = 0;
+                this.dataSource[index].family_member = res;
+              }
+              catch(ex){
+                  console.log(ex);
+              }
+
       })
   }
 
 }
 export interface IFamilyList{
-  id:number;
-  family_head:string;
-  family_head_code:number;
-  pan:string;
-  mobile:number;
-  email:string;
-  address:string;
-  login_status:string;
-  family_member:IFamilymember[]
-}
-
-export interface IFamilymember{
-      id:number;
-      family_member:string;
-      family_member_code:number;
-      pan:string;
-      mobile:number;
-      email:string;
-      address:string;
-      login_status:string;
+  id: number
+  client_id: number
+  family_id: number
+  relationship: string
+  client_name: string
+  client_code: string
+  pan: string
+  mobile: number
+  email: string
+  add_line_1: string
+  add_line_2: any
+  city_name: string
+  district_name: string
+  state_name: string
+  type_name: string
+  pincode: number
+  family_member:IFamilyList[]
 }
 
 export class FamilyListClm{
   public static column:column[] = [
     {
       field:"sl_no",
-      header:'Sl No.'
+      header:'Sl No.',
+      width:'5rem'
     },
     {
-      field:"family_heads",
-      header:'Family Heads'
+      field:"client_name",
+      header:'Family Head',
+      width:'18rem'
     },
     {
-      field:"family_head_code",
-      header:'Family Head Code'
+      field:"client_code",
+      header:'Family Head Code',
+      width:'7rem'
     },
     {
       field:"pan",
-      header:'PAN'
+      header:'PAN',
+      width:'7rem'
     },
     {
       field:"mobile",
-      header:'Mobile'
+      header:'Mobile',
+      width:'7rem'
     },
     {
       field:"email",
-      header:'Email'
+      header:'Email',
+      width:'15rem'
     },
     {
-      field:"address",
-      header:'Address'
+      field:"add_line_1",
+      header:'Address',
+      width:'23rem'
     },
     {
       field:"login_status",
-      header:'Login Status'
+      header:'Login Status',
+      width:'5rem'
     },
   ];
 
   public static sub_column:column[] = [
     {
       field:"sl_no",
-      header:'Sl No.'
+      header:'Sl No.',
+      width:'5rem'
     },
     {
-      field:"family_member",
-      header:'Family Member'
+      field:"client_name",
+      header:'Family Member',
+      width:'18rem'
     },
     {
-      field:"family_member_code",
-      header:'Family Member Code'
+      field:"client_code",
+      header:'Family Member Code',
+      width:'7rem'
+
     },
     {
       field:"pan",
-      header:'PAN'
+      header:'PAN',
+      width:'7rem'
     },
     {
       field:"mobile",
-      header:'Mobile'
+      header:'Mobile',
+      width:'7rem'
     },
     {
       field:"email",
-      header:'Email'
+      header:'Email',
+      width:'15rem'
     },
     {
       field:"address",
-      header:'Address'
+      header:'Address',
+      width:'23rem'
     },
     {
       field:"login_status",
-      header:'Login Status'
+      header:'Login Status',
+      width:'5rem'
     }
   ]
 }

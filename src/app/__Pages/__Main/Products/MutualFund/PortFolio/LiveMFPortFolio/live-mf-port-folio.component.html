@@ -49,20 +49,32 @@
                       <div class="form-group row"> -->
                         <div class="col-sm-12">
 
-                        <app-core-srch [label]="'Investor'"
-                        [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+                        <app-core-srch [label]="filter_criteria.value.view_type == 'F' ? 'Family Head' : 'Investor'"
+                        [placeholder]="'Search By' + (filter_criteria.value.view_type == 'F' ? ' Family Head ' : ' Investor ') + 'Name, Code, Email, Mobile, PAN'"
                         [isPending]="__isClientPending"
                         [listItems]="__clientMst"
                         [flag]="'C'"
                         [noDataFoundTitle]="'Sorry!! No Records Found'"
                         [noDataFoundSubTitle]="'If your result match,they will appear here'"
-                        [propertiesToShow]="['first_client_name','first_client_pan']"
+                        [propertiesToShow]="['client_name','pan']"
                         formControlName="client_name"
                         [displayMode]="displayMode_forClient"
                         (setDisplayMode)="displayMode_forClient = $event"
                         (selectedItems)="getSelectedItemsFromParent($event)"
                         (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
                       </div>
+                      <ng-container *ngIf="filter_criteria.value.view_type == 'F'">
+                        <div class="col-sm-12">
+                        <label for="family_members">Select family Members</label>
+                        <ng-multiselect-dropdown
+                        [id]="'family_members'"
+                        [placeholder]="'Select Family Members'"
+                        [settings]="settingsforFamilyMembers"
+                        [data]="family_members"
+                        formControlName="family_members">
+                        </ng-multiselect-dropdown>
+                        </div>
+                      </ng-container>
                   </div>
                 </div>
                 <div class="col-sm-4">

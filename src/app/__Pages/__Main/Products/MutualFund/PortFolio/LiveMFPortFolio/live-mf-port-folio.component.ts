@@ -19,6 +19,22 @@ export class LiveMfPortFolioComponent implements OnInit {
   /** Holding client details in array format after search */
   __clientMst:client[] = [];
 
+    /**
+   * Setting of multiselect dropdown
+   */
+    settingsforFamilyMembers = this.utility.settingsfroMultiselectDropdown(
+      'pan',
+      'client_name',
+      'Search Family members',
+      1
+    );
+
+
+  /**
+   * Holding family members details in array format after select a family head
+   */
+  family_members:client[]= [];
+
   /**
    * showing loader when search cliient
    */
@@ -55,7 +71,7 @@ export class LiveMfPortFolioComponent implements OnInit {
         family_members: new FormControl([]),
         trans_type:new FormControl('L'),
         view_funds_type: new FormControl('A'),
-        view_mf_report:new FormControl('')
+        view_mf_report:new FormControl(''),
   })
 
   constructor(private __dbIntr:DbIntrService,
@@ -71,20 +87,16 @@ export class LiveMfPortFolioComponent implements OnInit {
 
       /**view_type Change*/
       this.filter_criteria.controls['view_type'].valueChanges.subscribe(res => {
-        // this.filter_criteria.get('is_all_client').reset(false, { emitEvent: false });
-        // if(res != 'C'){
-        //   this.filter_criteria.get('is_all_client').disable()
-        // }
-        // else{
-        //     this.filter_criteria.get('is_all_client').enable()
-        // }
+        if(this.family_members.length > 0){
+          this.getFamilyMembers();
+        }
         this.filter_criteria.get('client_name').reset('', { emitEvent: false });
         this.filter_criteria.get('pan_no').reset('');
         if (res) {
           this.filter_criteria.get('client_name').enable();
           this.paginate = 1;
           this.__clientMst = [];
-          this.getClientMst(res, this.paginate);
+          // this.getClientMst(res, this.paginate);
         }
         else{
           this.filter_criteria.get('client_name').disable();
@@ -96,11 +108,16 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.filter_criteria.controls['client_name'].valueChanges
       .pipe(
         tap(() => this.filter_criteria.get('pan_no').setValue('')),
-        tap(() => (this.__isClientPending = true)),
+        tap(() =>  {
+          this.__isClientPending = true;
+           if(this.family_members.length > 0){
+            this.getFamilyMembers();
+           }
+        }),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/searchClient',
+          dt?.length > 1 ? this.__dbIntr.searchItems('/searchWithClient',
             dt + '&view_type=' + this.filter_criteria.value.view_type
           ) : []
 
@@ -173,20 +190,43 @@ export class LiveMfPortFolioComponent implements OnInit {
     flag: string;
     item: any;
   }) => {
-
-    this.filter_criteria.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
-    this.filter_criteria.get('pan_no').reset(searchRlt.item.first_client_pan);
-    // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
+    this.filter_criteria.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
+    this.filter_criteria.get('pan_no').reset(searchRlt.item.pan);
     this.__isClientPending = false;
     this.searchResultVisibilityForClient('none');
+    if(this.filter_criteria.value.view_type == 'F'){
+            this.getFamilyMembers(searchRlt.item.id)
+    }
   };
+
+  getFamilyMembers = (id:number | undefined = undefined) =>{
+    if(id){
+       this.__dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.filter_criteria.value.view_type}`)
+       .pipe(pluck('data'))
+       .subscribe((res:client[]) =>{
+        console.log(res);
+        this.family_members = res;
+       })
+    }
+    else{
+        this.family_members = [];
+        this.filter_criteria.get('family_members').setValue([]);
+
+    }
+  }
+
   showReport = () =>{
-    // console.log(this.filter_criteria.value)
-    this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(this.filter_criteria.value))
+    const {family_members,...rest} = Object.assign({},{
+      ...this.filter_criteria.value,
+      family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
+      family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
+    })
+    this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:ILivePortFolio[]) => {
           this.dataSource = res;
     })
+    ;
   }
 
 }
