@@ -315,7 +315,7 @@
                             "sub_menu":[]
                          },
                          {
-                            "id": 1,
+                            "id": 2,
                             "menu_name": "Update Family",
                             "has_submenu": "N",
                             "url": "/main/crm/utility",
@@ -338,7 +338,7 @@
                             "id": 4,
                             "menu_name": "Family List",
                             "has_submenu": "N",
-                            "url": "/main/crm/utility",
+                            "url": "/main/crm/utility/family/list",
                             "title":"Family List",
                             "icon": "grade",
                             "img":"",

@@ -15,6 +15,11 @@ const routes:Routes =[{
           {
             path:'create',
             loadChildren:()=> import('./createFamily/create-family.module').then(family_create => family_create.CreateFamilyModule)
+          },
+          {
+             path:'list',
+             loadChildren:()=> import('./FamilyList/family-list.module').then(family_list => family_list.FamilyListModule),
+
           }
         ]
     }]

@@ -37,7 +37,7 @@ export class TrendRptComponent implements OnInit {
     const {mis_month,month,...rest} = ev /* destructuring Object*/
     this.__mis__Trend__Report = [];
     console.log(rest);
-    return;
+    // return;
     this.dbIntr.api_call(1,'/showMonthlyMisTrandReport',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:IActualMISTrend) =>{
