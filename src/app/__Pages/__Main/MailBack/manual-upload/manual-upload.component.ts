@@ -192,7 +192,7 @@ export class ManualUploadComponent implements OnInit {
       return;
     }
     let start_count = 1;
-    let end_count = 300;
+    let end_count = this.manualUpldFrm.value.file_type_id == 4  ? 150 : 300;
     // let start_count = 20101;
     // let end_count = 20400;
     const dt: rec_response = {
@@ -204,8 +204,7 @@ export class ManualUploadComponent implements OnInit {
   };
 
   reccursiveUpload = (dt: rec_response) => {
-    // this.resetForm();
-    // console.log(this.manualUpldFrm.value);
+    let end_count = this.manualUpldFrm.value.file_type_id == 4  ? 150 : 300;
     this.dbIntr
       .api_call(1, '/mailbackProcess', this.utility.convertFormData(dt))
       .pipe(pluck('data'))
@@ -223,9 +222,9 @@ export class ManualUploadComponent implements OnInit {
         dt.row_id = res?.row_id;
         dt.start_count = Number(dt.end_count) + 1;
         dt.end_count =
-          Number(res.end_count) + 300 > Number(res.total_count)
+          Number(res.end_count) + end_count > Number(res.total_count)
             ? Number(res.total_count)
-            : Number(res.end_count) + 300;
+            : Number(res.end_count) + end_count;
         dt.total_count = res.total_count;
         this.reccursiveUpload(dt);
       });
