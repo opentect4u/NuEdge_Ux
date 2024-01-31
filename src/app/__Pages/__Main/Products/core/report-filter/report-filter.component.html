@@ -126,8 +126,8 @@
         </div>
 
         <div class="col-sm-3">
-          <app-core-srch [label]="'Investor'"
-                         [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+          <app-core-srch [label]="Rpt.value.view_type == 'F' ? 'Family Head' : 'Investor'"
+                         [placeholder]="'Search By' + (Rpt.value.view_type == 'F' ? 'Family Head ' : 'Investor ') + 'Name, Code, Email, Mobile, PAN & DOB'"
                          [isPending]="__isClientPending"
                          [listItems]="__clientMst"
                          [flag]="'C'"
@@ -140,6 +140,19 @@
                          (selectedItems)="getSelectedItemsFromParent($event)"
                          (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
         </div>
+        <ng-container *ngIf="Rpt.value.view_type == 'F'">
+            <div class="col-sm-3">
+                <label for="family_members">Select Family Members</label>
+                <ng-multiselect-dropdown
+                [id]="'family_members'"
+                [placeholder]="'Select Family Members'"
+                [settings]="settingsforFamilyMembers"
+                [data]="family_members"
+                formControlName="family_members">
+                </ng-multiselect-dropdown>
+            </div>
+        </ng-container>
+
 
         <div class="col-sm-3">
           <label for="amc_id">AMC</label>
@@ -226,20 +239,49 @@
           </div>
 
           <div class="d-flex align-items-end justify-content-end"
-          [class]="(sub_type == 'RR' || this.sub_type == 'MT') ? 'col-sm-3  ' : 'col-sm-9 mt-2'">
+          [class]="(sub_type == 'RR' || sub_type == 'MT') ? 'col-sm-3  ' : 'col-sm-9 mt-2'">
             <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
           </div>
 
         </ng-container>
         <ng-template #normalFilter>
-          <!-- (sub_type == 'RR' || this.sub_type == 'MT') ? 'col-sm-6' : 'col-sm-12 mt-2' -->
-          <div class=" d-flex align-items-end justify-content-end"
-          [ngClass]="{'col-sm-6':(sub_type == 'RR' ||  Rpt.value.view_by == 'D'),
-          'col-sm-3':(sub_type == 'MT' && Rpt.value.view_by == 'M'),
-          'col-sm-12 mt-2':(sub_type != 'RR' && sub_type != 'MT')
-        }">
-            <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-          </div>
+          <!-- For View Type Client -->
+          <ng-container *ngIf="Rpt.value.view_type != 'F';else FamilyFilter">
+            <div class=" d-flex align-items-end justify-content-end"
+            [ngClass]="{'col-sm-6':(sub_type == 'RR' ||  Rpt.value.view_by == 'D'),
+            'col-sm-3':(sub_type == 'MT' && Rpt.value.view_by == 'M'),
+            'col-sm-12 mt-2':(sub_type != 'RR' && sub_type != 'MT'),
+            'col-sm-9':(sub_type == 'MT' && Rpt.value.view_by == '')
+             }">
+              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+            </div>
+          </ng-container>
+          <!-- End -->
+          <!-- For View Type Family-->
+          <ng-template #FamilyFilter>
+            <!-- For Parent Tab Registered SIP / STP / SWP & child Tab To be Registered-->
+            <ng-container *ngIf="(sub_type == 'RR' && type == 'R');else otherFilter">
+              <div class="d-flex align-items-end justify-content-end col-sm-3">
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+            </ng-container>
+            <!-- End -->
+            <!-- For all Parent Tab except Registered SIP / STP / SWP & child Tab except To be Registered-->
+            <ng-template #otherFilter>
+              <div
+              class=" d-flex align-items-end justify-content-end"
+              [ngClass]="{
+                 'col-sm-9': (sub_type != 'RR' && sub_type != 'MT'),
+                 'col-sm-12 my-2': (sub_type == 'MT' && type == 'M' && Rpt.value.view_by == 'M'),
+                 'col-sm-3': (sub_type == 'MT' && type == 'M' && Rpt.value.view_by == 'D'),
+                 'col-sm-6': (sub_type == 'MT' && type == 'M' && Rpt.value.view_by == '')
+              }">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+            </ng-template>
+            <!-- End -->
+          </ng-template>
+          <!-- End -->
         </ng-template>
       </div>
     </form>

@@ -781,7 +781,21 @@ export class TrxnRptComponent implements OnInit {
     this.misTrxnRpt.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
     this.misTrxnRpt.get('pan_no').reset(searchRlt.item.first_client_pan);
     this.searchResultVisibilityForClient('none');
+    // if(this.misTrxnRpt.value.view_type == 'F'){
+    //   this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.id)
+    // }
   };
+
+  /**
+   *
+   */
+  getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
+            this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.misTrxnRpt.value.view_type}`)
+            .pipe(pluck('data'))
+            .subscribe((res:client[]) =>{
+              this.family_members = res;
+            })
+  }
 
   /**
    *  evnt trigger on search particular client & after select client

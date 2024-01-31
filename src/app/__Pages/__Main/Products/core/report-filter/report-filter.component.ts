@@ -173,6 +173,16 @@ export class ReportFilterComponent implements OnInit {
    * END
    */
 
+     /**
+   * Setting of multiselect dropdown
+   */
+     settingsforFamilyMembers = this.utility.settingsfroMultiselectDropdown(
+      'pan',
+      'client_name',
+      'Search Family members',
+      3
+    );
+
 
   @ViewChild('dateRng') dt_range:Calendar;
 
@@ -220,6 +230,11 @@ export class ReportFilterComponent implements OnInit {
    * For Holding Sub-Category Master Data
   */
   subcatMst:subcat[] = [];
+
+  /**
+   * Holding Family member Details
+   */
+  family_members:client[] = [];
 
  /**
    * For Holding Scheme Master Data
@@ -305,7 +320,8 @@ export class ReportFilterComponent implements OnInit {
     trxn_type_id: new FormControl([], { updateOn: 'blur' }),
     trxn_sub_type_id: new FormControl([], { updateOn: 'blur' }),
     view_type:new FormControl(''),
-    sip_stp_swp_type: new FormControl('')
+    sip_stp_swp_type: new FormControl(''),
+    family_members:new FormControl([])
   });
 
   constructor(private utility:UtiliService,private dbIntr:DbIntrService,
@@ -314,6 +330,9 @@ export class ReportFilterComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    console.log(this.type);
+    console.log(this.sub_type);
+
     this.Rpt.get('client_name').disable();
     /***** Previous Logic */
     // this.month = this.setMonthAccordingToYear(
@@ -597,7 +616,7 @@ export class ReportFilterComponent implements OnInit {
         if(res){
           this.paginate = 1;
           this.__clientMst = [];
-          this.getClientMst(res,this.paginate);
+          // this.getClientMst(res,this.paginate);
           this.Rpt.get('client_name').enable();
         }
         else{
@@ -857,7 +876,7 @@ export class ReportFilterComponent implements OnInit {
   }
 
 
-    /**
+  /**
    * event trigger after select particular result from search list
    * @param searchRlt
    */
@@ -869,9 +888,19 @@ export class ReportFilterComponent implements OnInit {
       this.Rpt.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
       this.Rpt.get('pan_no').reset(searchRlt.item.first_client_pan);
       // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
-
       this.searchResultVisibilityForClient('none');
+      // if(this.Rpt.value.view_type == 'F'){
+      //   this.getFamilyMembersAccordingTo_Id(searchRlt.item.id);
+      // }
     };
+
+    getFamilyMembersAccordingTo_Id = (__id: number | undefined = undefined) => {
+          this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${__id}&view_type=${this.Rpt.value.view_type}`)
+          .pipe(pluck('data'))
+          .subscribe((res:client[]) =>{
+                this.family_members = res;
+          })
+    }
 
    /**
    *  evnt trigger on search particular client & after select client
