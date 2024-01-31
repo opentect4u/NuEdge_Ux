@@ -235,16 +235,6 @@ export class TrxnRptComponent implements OnInit {
   /**
    * Setting of multiselect dropdown
    */
-  settingsforClient = this.utility.settingsfroMultiselectDropdown(
-    'first_client_pan',
-    'first_client_name',
-    'Search Investor',
-    1
-  );
-
-  /**
-   * Setting of multiselect dropdown
-   */
   settingsforSubCatDropdown = this.utility.settingsfroMultiselectDropdown(
     'id',
     'subcategory_name',
@@ -320,6 +310,19 @@ export class TrxnRptComponent implements OnInit {
    */
 
   /**
+   * Setting of multiselect dropdown
+   */
+    settingsforFamilyMembers = this.utility.settingsfroMultiselectDropdown(
+      'pan',
+      'client_name',
+      'Search Family members',
+      3
+    );
+
+    family_members:client[] = [];
+
+
+  /**
    * hold Button Type Advance Filter / Normal Filter
    */
   btn_type: 'R' | 'A' = 'R';
@@ -346,6 +349,7 @@ export class TrxnRptComponent implements OnInit {
     client_name: new FormControl(''),
     trxn_type_id: new FormControl([], { updateOn: 'blur' }),
     trxn_sub_type_id: new FormControl([], { updateOn: 'blur' }),
+    family_members: new FormControl([])
   });
 
   ngOnInit(): void {
@@ -599,7 +603,7 @@ export class TrxnRptComponent implements OnInit {
               this.paginate = 1;
               this.__clientMst = [];
               this.misTrxnRpt.get('client_name').enable();
-              this.getClientMst(res,this.paginate);
+              // this.getClientMst(res,this.paginate);
             }
             else{
               this.misTrxnRpt.get('client_name').disable();
@@ -1096,12 +1100,10 @@ export class TrxnRptComponent implements OnInit {
     return this.utility.getColumns(this.column);
   }
   loadInvestorOnScrollToEnd = (ev) =>{
-    // console.log(this.misTrxnRpt.value.client_name);
-    if(this.misTrxnRpt.value.client_name == ''){
-      // console.log('adasd')
-      this.paginate+=1;
-    this.getClientMst(this.misTrxnRpt.value.view_type,this.paginate);
-    }
+    // if(this.misTrxnRpt.value.client_name == ''){
+    //   this.paginate+=1;
+    // this.getClientMst(this.misTrxnRpt.value.view_type,this.paginate);
+    // }
   }
   onAmcDeSelect = (ev) =>{
   //  this.misTrxnRpt.get('amc_id').setValue(this.misTrxnRpt.value.amc_id.filter(item => item.id != ev.id));

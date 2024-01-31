@@ -9,6 +9,7 @@
 .titleIcons{
   position: absolute;
   right: 0;
+  color: #1f4584;
 }
 
 ::ng-deep .ToolTip{

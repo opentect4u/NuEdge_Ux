@@ -13,10 +13,10 @@
       dataKey="family_head_code"
       responsiveLayout="scroll"
       [rowExpandMode]="'single'"
-      expandableRows="true"
       styleClass="p-datatable-striped p-datatable-lg"
       #pTable
       (onRowExpand) = "onRowExpand($event)"
+      expandableRows="true"
       [paginator]="true" [rows]="10"
       [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]"

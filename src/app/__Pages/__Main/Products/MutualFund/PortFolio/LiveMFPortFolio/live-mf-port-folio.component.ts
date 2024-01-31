@@ -217,6 +217,7 @@ export class LiveMfPortFolioComponent implements OnInit {
   }
 
   showReport = () =>{
+    this.dataSource = [];
     if(this.filter_criteria.value.pan_no){
             if(this.filter_criteria.value.view_type == 'F'){
                 if(this.filter_criteria.value.family_members.length == 0) {
@@ -237,62 +238,186 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:ILivePortFolio[]) => {
-          this.dataSource = res;
+          this.dataSource = res.map((item: ILivePortFolio) => ({...item,data:[]}));;
     })
     ;
+  }
+
+  onRowExpand = (ev:{originalEvent:PointerEvent,data:ILivePortFolio}) =>{
+      this.__dbIntr.api_call(
+        0,
+        '/clients/liveMFPortfolioDetails',
+        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}`)
+      .pipe(pluck('data'))
+      .subscribe((res: ISubDataSource[]) =>{
+        try{
+          const index = this.dataSource.map(item => item.id).indexOf(ev.data.id);
+          this.dataSource[index].data.length = 0;
+          this.dataSource[index].data = res.filter((item:ISubDataSource) => !item.transaction_type.toLowerCase().includes('rejection'));
+
+        }
+        catch(ex){
+            console.log(ex);
+        }
+      })
   }
 
 }
 
 export interface ILivePortFolio{
-      scheme_name:string;
-      isin_no:string;
-      folio_no:string;
-      inv_since:Date | string;
-      sen_sex:string;
-      nifty_50:string;
-      inv_cost:number;
-      idcwr:string;
-      pur_nav:number;
-      units:number;
-      cur_nav:number;
-      cur_value:number;
-      idcwr_reinv:string;
-      idcwp:string;
-      gain_loss:number;
-      ret_abs:number;
-      ret_cagr:number;
-      xirr:number;
-      trans_mode:string;
-      data:Partial<ISubDataSource>[]
+  id: number;
+  mailback_process_id: number;
+  rnt_id: number;
+  arn_no: string;
+  sub_brk_cd: string;
+  euin_no: string;
+  old_euin_no?: any;
+  first_client_name: string;
+  first_client_pan: string;
+  amc_code: string;
+  folio_no: string;
+  product_code: string;
+  trans_no: number;
+  trans_mode: string;
+  trans_status: string;
+  user_trans_no: number;
+  trans_date: string;
+  post_date: string;
+  pur_price: string;
+  units: string;
+  amount: string;
+  rec_date: string;
+  trxn_type?: any;
+  trxn_type_flag?: any;
+  trxn_nature?: any;
+  trans_desc: string;
+  kf_trans_type: string;
+  trans_flag: string;
+  te_15h?: any;
+  micr_code?: any;
+  sw_flag?: any;
+  old_folio?: any;
+  seq_no?: any;
+  stt: string;
+  stamp_duty: string;
+  tds: string;
+  acc_no: string;
+  bank_name: string;
+  remarks: string;
+  reinvest_flag?: any;
+  dividend_option: string;
+  isin_no: string;
+  bu_type_flag: string;
+  bu_type_lock_flag: string;
+  amc_flag: string;
+  scheme_flag: string;
+  plan_option_flag: string;
+  divi_mismatch_flag: string;
+  divi_lock_flag: string;
+  delete_flag: string;
+  deleted_at?: any;
+  deleted_date?: any;
+  created_at: string;
+  updated_at: string;
+  scheme_name: string;
+  cat_name: string;
+  subcat_name: string;
+  amc_name: string;
+  plan_name: string;
+  option_name: string;
+  rm_name: string;
+  branch: string;
+  bu_type_id: string;
+  branch_id: number;
+  tot_amount: string;
+  tot_stamp_duty: string;
+  tot_tds: number;
+  tot_rows: number;
+  bu_type: string;
+  gross_amount: string;
+  tot_gross_amount: string;
+  transaction_type: string;
+  transaction_subtype: string;
+  data:Partial<ISubDataSource>[]
 }
 
 export interface ISubDataSource{
-      scheme_name:string;
-      isin_no:string;
-      folio_no:string;
-      trans_type:string;
-      trans_date:Date;
-      sensex:number;
-      nift_50:string;
-      gross_amt:number;
-      tds:number;
-      stamp_duty:number;
-      net_amt:number;
-      idcwr:string;
-      pur_nav:number;
-      unit:number;
-      cuml_unit:number;
-      cur_nav:number;
-      cur_value:number;
-      idcw_reinv:string;
-      idcwp:string;
-      days:number;
-      gain_loss:number;
-      ret_abs:number;
-      ret_cagr:number;
-      xirr:number;
-      trans_mode:string;
+  id: number;
+  mailback_process_id: number;
+  rnt_id: number;
+  arn_no: string;
+  sub_brk_cd: string;
+  euin_no: string;
+  old_euin_no?: any;
+  first_client_name: string;
+  first_client_pan: string;
+  amc_code: string;
+  folio_no: string;
+  product_code: string;
+  trans_no: number;
+  trans_mode: string;
+  trans_status: string;
+  user_trans_no: number;
+  trans_date: string;
+  post_date: string;
+  pur_price: string;
+  units: string;
+  amount: string;
+  rec_date: string;
+  trxn_type?: any;
+  trxn_type_flag?: any;
+  trxn_nature?: any;
+  trans_desc: string;
+  kf_trans_type: string;
+  trans_flag: string;
+  te_15h?: any;
+  micr_code?: any;
+  sw_flag?: any;
+  old_folio?: any;
+  seq_no?: any;
+  stt: string;
+  stamp_duty: string;
+  tds: string;
+  acc_no: string;
+  bank_name: string;
+  remarks: string;
+  reinvest_flag?: any;
+  dividend_option: string;
+  isin_no: string;
+  bu_type_flag: string;
+  bu_type_lock_flag: string;
+  amc_flag: string;
+  scheme_flag: string;
+  plan_option_flag: string;
+  divi_mismatch_flag: string;
+  divi_lock_flag: string;
+  delete_flag: string;
+  deleted_at?: any;
+  deleted_date?: any;
+  created_at: string;
+  updated_at: string;
+  scheme_name: string;
+  cat_name: string;
+  subcat_name: string;
+  amc_name: string;
+  plan_name: string;
+  option_name: string;
+  rm_name: string;
+  branch: string;
+  bu_type_id: string;
+  branch_id: number;
+  tot_amount: string;
+  tot_stamp_duty: string;
+  tot_tds: number;
+  tot_rows: number;
+  bu_type: string;
+  gross_amount: string;
+  tot_gross_amount: string;
+  transaction_type: string;
+  transaction_subtype: string;
+  idcwp:string;
+  idcw_reinv:string;
+  idcwr:string;
 }
 
 
@@ -340,8 +465,8 @@ export class LiveMFPortFolioColumn{
       width:'200px'
     },
     {
-      field:'pur_nav',
-      header:'PUR. NAV',
+      field:'pur_price',
+      header:'Pur. NAV',
       width:'120px'
     },
     {
@@ -415,7 +540,7 @@ export class LiveMFPortFolioColumn{
       field:'folio_no',header:'Folio'
     },
     {
-      field:'trans_type',header:'Transaction Type'
+      field:'transaction_type',header:'Transaction Type'
     },
     {
       field:'trans_date',header:'Transaction Date'
@@ -427,25 +552,22 @@ export class LiveMFPortFolioColumn{
       field:'nifty_50',header:'NIFTY50'
     },
     {
-      field:'gross_amt',header:'Gross Amount'
-    },
-    {
-      field:'gross_amt',header:'Gross Amount'
+      field:'tot_gross_amount',header:'Gross Amount'
     },
     {
       field:'tds',header:'TDS'
     },
     {
-      field:'stamp_duty',header:'Stamp Duty'
+      field:'tot_stamp_duty',header:'Stamp Duty'
     },
     {
-      field:'net_amt',header:'Net Amount'
+      field:'tot_amount',header:'Net Amount'
     },
     {
       field:'idcwr',header:'IDCWR'
     },
     {
-      field:'pur_nav',header:'Pur. NAV'
+      field:'pur_price',header:'Pur. NAV'
     },
     {
       field:'cuml_unit',header:'Cuml. Unit'

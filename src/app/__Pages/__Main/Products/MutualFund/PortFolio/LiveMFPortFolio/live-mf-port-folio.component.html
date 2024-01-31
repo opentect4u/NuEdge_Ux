@@ -121,12 +121,14 @@
           </mat-card-content>
         </mat-card>
 
-        <p-card styleClass="my-4">
+  <p-card styleClass="my-4">
 
         <p-table
         [value]="dataSource"
         dataKey="id"
-
+        [rowExpandMode]="'single'"
+        (onRowExpand) = "onRowExpand($event)"
+        expandableRows="true"
         responsiveLayout="scroll">
           <ng-template pTemplate="header">
               <tr>
@@ -147,9 +149,23 @@
                       [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                   </td>
                   <td  *ngFor="let col of parent_column">
-                      <p class="m-0">
-                        {{liveMfPortFolio[col.field]}}
-                      </p>
+                    <ng-container [ngSwitch]="true">
+                      <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                        <p class="m-0">
+                          {{liveMfPortFolio[col.field] ? (liveMfPortFolio[col.field] +'-'+ liveMfPortFolio.plan_name +'-'+liveMfPortFolio.option_name) : 'N/A'}}
+                        </p>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'inv'">
+                        <p class="m-0">
+                          {{liveMfPortFolio[col.field] ? (liveMfPortFolio[col.field] | date:'dd-MM-YYYY') : 'N/A'}}
+                        </p>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <p class="m-0">
+                          {{liveMfPortFolio[col.field] ? liveMfPortFolio[col.field] : 'N/A'}}
+                        </p>
+                      </ng-container>
+                      </ng-container>
                   </td>
               </tr>
           </ng-template>
@@ -164,38 +180,46 @@
         </ng-template>
           <ng-template pTemplate="rowexpansion" let-liveMfPortFolio>
               <tr>
-                  <td colspan="7">
+                  <td [attr.colspan]="(parent_column.length + 1)">
                       <div class="p-3">
-                          <p-table [value]="liveMfPortFolio.data" dataKey="id">
+                          <p-table responsiveLayout="scroll" [value]="liveMfPortFolio.data" dataKey="id">
                               <ng-template pTemplate="header">
-                                  <tr>
-                                       <th
+                                  <tr><th
                                         [pSortableColumn]="col.field"
                                         *ngFor="let col of child_column">
                                           {{col.header}}
                                           <p-sortIcon [field]="col.field"></p-sortIcon>
                                        </th>
-                                      <!-- <th pSortableColumn="id">Id <p-sortIcon field="price"></p-sortIcon></th>
-                                      <th pSortableColumn="customer">Customer <p-sortIcon field="customer"></p-sortIcon></th>
-                                      <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon></th>
-                                      <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon></th>
-                                      <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
-                                      <th style="width: 4rem"></th> -->
                                   </tr>
                               </ng-template>
-                              <ng-template pTemplate="body" let-data>
+                              <ng-template pTemplate="body" let-data let-i="rowIndex">
                                   <tr>
                                       <td *ngFor="let col of child_column">
                                         <p class="m-0">
-                                          {{data[col.field]}}
+                                          <ng-container [ngSwitch]="true">
+                                            <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                                              <p class="m-0">
+                                                {{i + 1}}
+                                              </p>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                                              <p class="m-0">
+                                                {{data[col.field] ? (data[col.field] +'-'+ data.plan_name +'-'+data.option_name) : 'N/A'}}
+                                              </p>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="col.field == 'trans_date'">
+                                              <p class="m-0">
+                                                {{data[col.field] ? (data[col.field] | date:'dd-MM-YYYY') : 'N/A'}}
+                                              </p>
+                                            </ng-container>
+                                            <ng-container *ngSwitchDefault>
+                                              <p class="m-0">
+                                                {{data[col.field] ? data[col.field] : 'N/A'}}
+                                              </p>
+                                            </ng-container>
+                                            </ng-container>
                                         </p>
                                       </td>
-                                      <!-- <td>{{order.id}}</td>
-                                      <td>{{order.customer}}</td>
-                                      <td>{{order.id}}</td>
-                                      <td>{{order.amount | currency:'USD'}}</td>
-                                      <td><span [class]="'order-badge order-' + order.status.toLowerCase()">{{order.status}}</span></td>
-                                      <td><p-button type="button" icon="pi pi-search"></p-button></td> -->
                                   </tr>
                               </ng-template>
                               <ng-template pTemplate="emptymessage">

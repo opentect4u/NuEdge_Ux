@@ -51,8 +51,8 @@
             </div>
 
             <div class="col-sm-3">
-              <app-core-srch [label]="'Investor'"
-                [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+              <app-core-srch [label]="misTrxnRpt.value.view_type == 'F' ? 'Family Head' : 'Investor'"
+                [placeholder]="'Search By ' + (misTrxnRpt.value.view_type == 'F' ? 'Family Member ' : 'Investor ') + ' Name, Code, Email, Mobile, PAN'"
                 [isPending]="__isClientPending" [listItems]="__clientMst" [flag]="'C'"
                 [noDataFoundTitle]="'Sorry!! No Records Found'"
                 [noDataFoundSubTitle]="'If your result match,they will appear here'"
@@ -62,8 +62,21 @@
                 (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
             </div>
 
-          </div>
-          <div class="row">
+            <ng-container *ngIf="misTrxnRpt.value.view_type == 'F'">
+                <div class="col-sm-3">
+                  <label for="family_members">Select family Members</label>
+                  <ng-multiselect-dropdown
+                  [id]="'family_members'"
+                  [placeholder]="'Select Family Members'"
+                  [settings]="settingsforFamilyMembers"
+                  [data]="family_members"
+                  formControlName="family_members">
+                  </ng-multiselect-dropdown>
+                </div>
+            </ng-container>
+
+          <!-- </div>
+          <div class="row"> -->
             <div class="col-sm-3">
               <label for="amc_id">AMC</label>
               <ng-multiselect-dropdown [attr.id]="'amc_id'" [placeholder]="'Select AMC'"
@@ -91,10 +104,8 @@
                 [settings]="settingsforSchemeDropdown" [data]="schemeMst" formControlName="scheme_id">
               </ng-multiselect-dropdown>
             </div>
-
-
-          </div>
-          <div class="row">
+          <!-- </div>
+          <div class="row"> -->
             <div class="col-sm-3">
               <label for="trxn_type_id">Transaction Type</label>
               <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
@@ -113,7 +124,7 @@
               <input type="text" name="folio_no" id="folio_no" class="form-control" placeholder="Enter Folio Number"
                 formControlName="folio_no">
             </div>
-            <ng-container *ngIf="btn_type == 'A';else normalFilter">
+            <!-- <ng-container *ngIf="btn_type == 'A';else normalFilter">
               <div class="col-sm-3">
                 <label for="brn_cd">Branch</label>
                 <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
@@ -121,18 +132,29 @@
                   formControlName="brn_cd">
                 </ng-multiselect-dropdown>
               </div>
-
             </ng-container>
-            <ng-template #normalFilter>
-              <div class="col-sm-3 d-flex align-items-end justify-content-end">
+            <ng-template #normalFilter> -->
+              <!-- <div
+              ngIf="btn_type != 'A'"
+              class="d-flex align-items-end justify-content-end"
+              [ngClass]="{
+                'col-sm-3':misTrxnRpt.value.view_type != 'F',
+                'col-sm-12 mt-2':misTrxnRpt.value.view_type == 'F'}">
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-              </div>
-            </ng-template>
-          </div>
+              </div> -->
+            <!-- </ng-template> -->
+          <!-- </div> -->
 
-          <ng-container *ngIf="btn_type == 'A'">
-            <div class="row">
-              <ng-container>
+          <ng-container *ngIf="btn_type == 'A';else normalFilter">
+            <!-- <div class="row"> -->
+              <!-- <ng-container> -->
+                <div class="col-sm-3">
+                  <label for="brn_cd">Branch</label>
+                  <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
+                    (onDeSelect)="onbrnCdDeSelect($event)" [settings]="settingsforBrnchDropdown" [data]="__branchMst"
+                    formControlName="brn_cd">
+                  </ng-multiselect-dropdown>
+                </div>
                 <div class="col-sm-3">
                   <label for="bu_type">Business Type</label>
                   <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
@@ -161,14 +183,29 @@
                   </ng-multiselect-dropdown>
                 </div>
 
-              </ng-container>
-            </div>
-            <div class="row mt-2">
-              <div class="col-sm-12 d-flex align-items-end justify-content-end">
+              <!-- </ng-container> -->
+            <!-- </div>
+            <div class="row mt-2"> -->
+              <div
+              class="d-flex align-items-end justify-content-end"
+              [ngClass]="{
+                'col-sm-12 mt-2':misTrxnRpt.value.view_type != 'F',
+                'col-sm-9' : misTrxnRpt.value.view_type == 'F'}"
+              >
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
-            </div>
+            <!-- </div> -->
           </ng-container>
+            <ng-template #normalFilter>
+              <div
+              class="d-flex align-items-end justify-content-end"
+              [ngClass]="{
+                'col-sm-3':misTrxnRpt.value.view_type != 'F',
+                'col-sm-12 mt-2':misTrxnRpt.value.view_type == 'F'}">
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+            </ng-template>
+        </div>
         </form>
       </mat-card-content>
     </mat-card>
