@@ -108,10 +108,11 @@ export class dates {
     return new Date(dt.toISOString().split('T')[0]);
   }
 
-  public static calculatMaximumDates = (mode:string,calculat_number:number,date:Date) =>{
-        switch(mode){
+  public static calculatMaximumDates = (mode:string,calculat_number:number | undefined = 6,date:Date) =>{
+    // console.log(date.getMonth());
+    switch(mode){
           case 'R':
-                date.setMonth(date.getMonth() + 6);
+                date.setMonth(date.getMonth() + calculat_number);
                 return date;
                 break;
           default:break;

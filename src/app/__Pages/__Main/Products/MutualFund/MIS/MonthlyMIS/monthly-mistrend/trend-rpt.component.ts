@@ -34,10 +34,20 @@ export class TrendRptComponent implements OnInit {
   ngOnInit(): void {}
 
   searchFilter = (ev) =>{
+    if(ev.view_by == 'M'){
+        if(!ev.month_year){
+          this.utility.showSnackbar('Month & year can not be empty',2);
+          return;
+        }
+        else{
+          if(ev.month_year.split('-').length < 2){
+            this.utility.showSnackbar('Please select vaild month & year range',2);
+            return;
+          }
+        }
+    }
     const {mis_month,month,...rest} = ev /* destructuring Object*/
     this.__mis__Trend__Report = [];
-    console.log(rest);
-    // return;
     this.dbIntr.api_call(1,'/showMonthlyMisTrandReport',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:IActualMISTrend) =>{

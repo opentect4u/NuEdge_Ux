@@ -56,6 +56,7 @@
                 selectionMode="range"
                 formControlName="month"
                 [showButtonBar]="true"
+                [maxDate]="max_dt"
                 [placeholder]="'MM-YYYY - MM-YYYY'">
               </p-calendar>
               </div>
@@ -64,7 +65,7 @@
                <div class="col-sm-3">
                 <label for="upto">Upto</label>
                     <select class="form-control" formControlName="upto">
-                        <option value="">Select</option>
+                        <!-- <option value="">Select</option> -->
                         <option value="{{item}}" *ngFor="let item of [2,3,4,5,6,7,8,9,10,11,12]">{{item}} {{monthly_mis_filter_form.value.view_by == 'D' ? 'Month' : 'FY'}}</option>
                     </select>
                </div>

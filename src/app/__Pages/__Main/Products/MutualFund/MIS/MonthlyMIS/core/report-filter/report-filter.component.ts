@@ -17,6 +17,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { global } from 'src/app/__Utility/globalFunc';
 import { DatePipe } from '@angular/common';
 import { Calendar } from 'primeng/calendar';
+import { dates } from 'src/app/__Utility/disabledt';
 
 @Component({
   selector: 'core-mis-report-filter',
@@ -201,11 +202,13 @@ export class ReportFilterComponent implements OnInit {
 
   datePipe = new DatePipe('en-Us');
 
+  max_dt:Date
+
   monthly_mis_filter_form = new FormGroup({
     month:new FormControl(''),
     view_by: new FormControl('M'),
     duration:new FormControl(''),
-    upto:new FormControl(''),
+    upto:new FormControl(2),
     fin_year: new FormControl(''),
     period_type: new FormControl('M'),
     mis_month: new FormControl(global.getCurrenctMonth_year()),
@@ -224,9 +227,12 @@ export class ReportFilterComponent implements OnInit {
   });
   financial_year: string[] = [];
   @Output() searchReport = new EventEmitter()
-  constructor(private utility: UtiliService, private dbIntr: DbIntrService) { }
+  constructor(private utility: UtiliService, private dbIntr: DbIntrService) {
+   }
 
   ngOnInit(): void {
+    this.max_dt = dates.calculateDates('T');
+    // console.log(new Date())
     /*******
     * disable mis_month if flag == `T`;
     * disable no_of_month if flag == `R`
@@ -265,7 +271,7 @@ export class ReportFilterComponent implements OnInit {
       console.log(res)
       if(res == 'Y' && this.financial_year.length == 0){this.getAllFinancialYears();}
       this.monthly_mis_filter_form.patchValue({
-            upto:'',
+            upto:(res == 'D' || res == 'F') ? 2 : '',
             fin_year:this.financial_year[0],
             month:'',
             period_type:'M'
@@ -349,6 +355,27 @@ export class ReportFilterComponent implements OnInit {
     this.monthly_mis_filter_form.controls['sub_brk_cd'].valueChanges.subscribe((res) => {
       this.setEuinDropdown(res, this.monthly_mis_filter_form.value.rm_id);
     });
+
+    this.monthly_mis_filter_form.controls['month'].valueChanges.subscribe(res =>{
+      if(res){
+          const  dt = new Date(res[0]);
+          dt.setFullYear(res[0].getFullYear() + 1);
+          if(dt > new Date()){
+            this.max_dt = dates.calculateDates('T');
+          }
+          else{
+            this.max_dt = dt;
+          }
+      }
+      else{
+        this.max_dt =dates.calculateDates('T');
+      }
+    })
+  }
+
+  setEndDateFormonthly_yearly = () =>{
+    // this.max_dt = dates.calculateDates('T');
+
   }
 
   onItemClick = (ev) => {
@@ -365,7 +392,12 @@ export class ReportFilterComponent implements OnInit {
        this.__subbrkArnMst = [];
        this.monthly_mis_filter_form.controls['sub_brk_cd'].setValue([]);
        this.monthly_mis_filter_form.controls['euin_no'].setValue([]);
-       this.searchFilter();
+       if(this.flag == 'R'){
+          this.searchFilter();
+       }
+       else{
+        this.monthly_mis_filter_form.controls['view_by'].setValue('M',{emitEvent:true});
+       }
     }
   };
 

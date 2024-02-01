@@ -324,10 +324,7 @@ export class ReportFilterComponent implements OnInit {
     family_members:new FormControl([])
   });
 
-  constructor(private utility:UtiliService,private dbIntr:DbIntrService,
-    @Inject(DOCUMENT) private document: Document
-
-    ) { }
+  constructor(private utility:UtiliService,private dbIntr:DbIntrService,@Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit(): void {
     console.log(this.type);
@@ -380,7 +377,7 @@ export class ReportFilterComponent implements OnInit {
       let dt = new Date();
       if (changes.Reset.currentValue == 'Y') {
         this.btn_type = 'R';
-        console.log('RESET FORM');
+        // console.log('RESET FORM');
         // this.Rpt.get('month').setValue(this.sub_type == 'MM'? ((new Date().getMonth() + 1)) : '');
         // this.Rpt.get('year').setValue(this.sub_type == 'MM' ? new Date().getFullYear() : '');
         this.reset();
