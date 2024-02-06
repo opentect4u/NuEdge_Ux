@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -7,6 +7,7 @@ import { client } from 'src/app/__Model/__clientMst';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'app-live-mf-port-folio',
   templateUrl: './live-mf-port-folio.component.html',
@@ -58,6 +59,8 @@ export class LiveMfPortFolioComponent implements OnInit {
    * Holding Main data for Live MF Port Folio
    */
   dataSource:ILivePortFolio[] = [];
+
+  @ViewChild('primeTble') primeTbl :Table;
 
 
   /** Paginate : for holding how many result tobe fetched */
@@ -260,6 +263,10 @@ export class LiveMfPortFolioComponent implements OnInit {
             console.log(ex);
         }
       })
+  }
+  filterGlobal($event){
+      let value = $event.target.value;
+      this.primeTbl.filterGlobal(value,'contains')
   }
 
 }

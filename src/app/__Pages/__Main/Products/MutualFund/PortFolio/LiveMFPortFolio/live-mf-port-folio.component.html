@@ -124,12 +124,21 @@
   <p-card styleClass="my-4">
 
         <p-table
+        #primeTble
         [value]="dataSource"
         dataKey="id"
         [rowExpandMode]="'single'"
         (onRowExpand) = "onRowExpand($event)"
         expandableRows="true"
         responsiveLayout="scroll">
+        <!-- <ng-template pTemplate="caption">
+          <div class="flex">
+              <span class="p-input-icon-left ml-auto">
+                  <i class="pi pi-search"></i>
+                  <input pInputText class="form-control rounded w-50" type="text" (input)="filterGlobal($event)" placeholder="Search" />
+              </span>
+          </div>
+          </ng-template> -->
           <ng-template pTemplate="header">
               <tr>
                   <th style="width: 3rem"></th>

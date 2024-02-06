@@ -569,11 +569,16 @@ export class TrxnRptComponent implements OnInit {
       this.misTrxnRpt.controls['client_name'].valueChanges
       .pipe(
         tap(()=> this.misTrxnRpt.get('pan_no').setValue('')),
-        tap(() => (this.__isClientPending = true)),
+        tap(() => {
+          this.__isClientPending = true
+          if(this.family_members.length > 0){
+            this.getFamilymemberAccordingToFamilyHead_Id();
+          }
+        }),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
-          dt?.length > 1 ? this.dbIntr.searchItems('/searchClient',
+          dt?.length > 1 ? this.dbIntr.searchItems('/searchWithClient',
           dt+'&view_type='+this.misTrxnRpt.value.view_type
           ) : []
 
@@ -597,6 +602,9 @@ export class TrxnRptComponent implements OnInit {
 
       /**view_type Change*/
       this.misTrxnRpt.controls['view_type'].valueChanges.subscribe(res =>{
+          if(this.family_members.length > 0){
+            this.getFamilymemberAccordingToFamilyHead_Id();
+          }
           this.misTrxnRpt.get('client_name').reset('',{emitEvent:false});
           this.misTrxnRpt.get('pan_no').reset('');
             if(res){
@@ -619,15 +627,33 @@ export class TrxnRptComponent implements OnInit {
     if(this.misTrxnRpt.value.date_periods == 'Y'
     // || this.misTrxnRpt.value.date_periods == 'R'
     || this.misTrxnRpt.value.date_periods == ''){
-           if(this.misTrxnRpt.value.pan_no
-            || this.misTrxnRpt.value.folio_no
-            || this.misTrxnRpt.value.amc_id.length > 0
-            || this.misTrxnRpt.value.trxn_type_id.length > 0
-            )
-           {}
+           if(this.misTrxnRpt.value.view_type == 'F'){
+              if(!this.misTrxnRpt.value.pan_no){
+                this.utility.showSnackbar('Please select family head',2)
+                return;
+              }
+              else if(this.misTrxnRpt.value.family_members.length == 0){
+                this.utility.showSnackbar('Please select atleast one family member',2)
+                return;
+              }
+            }
+          else if(this.misTrxnRpt.value.view_type == 'C'){
+            if(!this.misTrxnRpt.value.pan_no){
+                  this.utility.showSnackbar('Please select investor',2)
+                  return;
+            }
+           }
            else{
-            this.utility.showSnackbar('Please select one or more filter criteria',2)
-            return;
+            if(this.misTrxnRpt.value.pan_no
+              || this.misTrxnRpt.value.folio_no
+              || this.misTrxnRpt.value.amc_id.length > 0
+              || this.misTrxnRpt.value.trxn_type_id.length > 0
+              || this.misTrxnRpt.value.family_members.length > 0
+              ){}
+             else{
+              this.utility.showSnackbar('Please select one or more filter criteria',2)
+              return;
+             }
            }
     }
     else if(this.misTrxnRpt.value.date_periods == 'R'){
@@ -640,7 +666,7 @@ export class TrxnRptComponent implements OnInit {
           }
     }
     // this.primeTbl.clear();
-
+    console.log('assda')
     this.fetchTransaction();
   };
 
@@ -653,7 +679,11 @@ export class TrxnRptComponent implements OnInit {
     this.isTotalFooterShow = false;
     this.primeTbl.reset();
     const TrxnDt = new FormData();
-    this.transType = 'Total'
+    this.transType = 'Total';
+    TrxnDt.append('view_type',this.misTrxnRpt.value.view_type);
+    TrxnDt.append('client_name',this.misTrxnRpt.getRawValue().client_name);
+    TrxnDt.append('family_members_pan',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => item.pan),'pan') : '[]');
+    TrxnDt.append('family_members_name',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => !item.pan),'client_name') : '[]');
     TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
     TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
     // TrxnDt.append('client_id',global.getActualVal(this.misTrxnRpt.value.client_id));
@@ -781,20 +811,30 @@ export class TrxnRptComponent implements OnInit {
     this.misTrxnRpt.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
     this.misTrxnRpt.get('pan_no').reset(searchRlt.item.first_client_pan);
     this.searchResultVisibilityForClient('none');
-    // if(this.misTrxnRpt.value.view_type == 'F'){
-    //   this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.id)
-    // }
+    if(this.misTrxnRpt.value.view_type == 'F'){
+      this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.id)
+    }
   };
+
 
   /**
    *
    */
   getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
-            this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.misTrxnRpt.value.view_type}`)
-            .pipe(pluck('data'))
-            .subscribe((res:client[]) =>{
-              this.family_members = res;
-            })
+            if(id){
+              this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.misTrxnRpt.value.view_type}`)
+              .pipe(pluck('data'))
+              .subscribe((res:client[]) =>{
+               console.log(res);
+               this.family_members = res;
+               this.misTrxnRpt.get('family_members').setValue(res.map((item:client) => ({pan:item.pan,client_name:item.client_name})))
+              })
+           }
+           else{
+               this.family_members = [];
+               this.misTrxnRpt.get('family_members').setValue([]);
+
+           }
   }
 
   /**

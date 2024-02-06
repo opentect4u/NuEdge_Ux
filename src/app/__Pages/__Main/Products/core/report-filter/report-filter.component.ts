@@ -404,6 +404,27 @@ export class ReportFilterComponent implements OnInit {
   // }
 
 
+   checkInvestor_Family_Selection(): string {
+    if(this.Rpt.value.view_type){
+      if(this.Rpt.value.view_type == 'F'){
+        if(!this.Rpt.value.pan_no){
+          this.utility.showSnackbar('Please select family head',2)
+          return 'INVALID';
+        }
+        else if(this.Rpt.value.family_members.length == 0){
+          this.utility.showSnackbar('Please select atleast one family member',2)
+          return 'INVALID';
+        }
+        }
+      else if(this.Rpt.value.view_type == 'C'){
+        if(!this.Rpt.value.pan_no){
+              this.utility.showSnackbar('Please select investor',2)
+              return 'INVALID';
+        }
+      }
+    }
+    return 'VALID';
+  }
 
   /**
    * Event trigger after form submit
@@ -429,22 +450,32 @@ export class ReportFilterComponent implements OnInit {
           }
       }
     }
+    /**** this part is for checking whether the view type is selected or not
+     * if selected , then check whether client is empty of not for view type `client`
+     * for view type `Family` check whether family head & family members both are empty or not
+     */
+    if(this.checkInvestor_Family_Selection() == 'INVALID')
+                return;
+    /** End */
 
     let liveSipReportFilter = Object.assign({}, this.Rpt.value, {
       ...this.Rpt.value,
-     amc_id:this.utility.mapIdfromArray(this.Rpt.value.amc_id,'id'),
-     brn_cd:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.brn_cd,'id') : '[]',
-     bu_type_id:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.bu_type_id,'bu_code') : '[]',
-     cat_id:this.utility.mapIdfromArray(this.Rpt.value.cat_id,'id'),
-     euin_no:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.euin_no,'euin_no') : '[]',
-     rm_id:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.rm_id,'euin_no') : '[]',
-     scheme_id:this.utility.mapIdfromArray(this.Rpt.value.scheme_id,'id'),
-     sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.value.sub_brk_cd,'code') : '[]',
-     sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
-    month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.month) : (this.Rpt.value.view_by == 'M' ? global.getActualVal(this.Rpt.value.month) : '')),
-    year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.year) : (this.Rpt.value.view_by == 'M' ? global.getActualVal(this.Rpt.value.year) : '')),
-    view_by:this.sub_type == 'MT' ? global.getActualVal(this.Rpt.value.view_by) : '',
-    upto:this.sub_type == 'MT' ? (this.Rpt.value.view_by == 'D' ? global.getActualVal(this.Rpt.value.upto) : '') : '',
+      family_members_pan:this.Rpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.Rpt.value.family_members.filter(item => item.pan),'pan') : '[]',
+      family_members_name:this.Rpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.Rpt.value.family_members.filter(item => !item.pan),'client_name') : '[]',
+      client_name:this.Rpt.getRawValue().client_name,
+      amc_id:this.utility.mapIdfromArray(this.Rpt.value.amc_id,'id'),
+      brn_cd:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.brn_cd,'id') : '[]',
+      bu_type_id:this.btn_type == 'A' ? this.utility.mapIdfromArray(this.Rpt.value.bu_type_id,'bu_code') : '[]',
+      cat_id:this.utility.mapIdfromArray(this.Rpt.value.cat_id,'id'),
+      euin_no:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.euin_no,'euin_no') : '[]',
+      rm_id:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.rm_id,'euin_no') : '[]',
+      scheme_id:this.utility.mapIdfromArray(this.Rpt.value.scheme_id,'id'),
+      sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.value.sub_brk_cd,'code') : '[]',
+      sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
+      month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.month) : (this.Rpt.value.view_by == 'M' ? global.getActualVal(this.Rpt.value.month) : '')),
+      year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.year) : (this.Rpt.value.view_by == 'M' ? global.getActualVal(this.Rpt.value.year) : '')),
+      view_by:this.sub_type == 'MT' ? global.getActualVal(this.Rpt.value.view_by) : '',
+      upto:this.sub_type == 'MT' ? (this.Rpt.value.view_by == 'D' ? global.getActualVal(this.Rpt.value.upto) : '') : '',
     });
     this.getsearchValues.emit(liveSipReportFilter);
   }
@@ -608,6 +639,9 @@ export class ReportFilterComponent implements OnInit {
 
        /**view_type Change*/
        this.Rpt.controls['view_type'].valueChanges.subscribe(res =>{
+        if(this.family_members.length > 0){
+          this.getFamilyMembersAccordingTo_Id();
+        }
         this.Rpt.get('client_name').reset('',{emitEvent:false});
         this.Rpt.get('pan_no').reset('');
         if(res){
@@ -626,7 +660,12 @@ export class ReportFilterComponent implements OnInit {
       this.Rpt.controls['client_name'].valueChanges
       .pipe(
         tap(()=> this.Rpt.get('pan_no').setValue('')),
-        tap(() => (this.__isClientPending = true)),
+        tap(() => {
+          this.__isClientPending = true
+          if(this.family_members.length > 0){
+            this.getFamilyMembersAccordingTo_Id();
+          }
+        }),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
@@ -886,18 +925,29 @@ export class ReportFilterComponent implements OnInit {
       this.Rpt.get('pan_no').reset(searchRlt.item.first_client_pan);
       // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
       this.searchResultVisibilityForClient('none');
-      // if(this.Rpt.value.view_type == 'F'){
-      //   this.getFamilyMembersAccordingTo_Id(searchRlt.item.id);
-      // }
+      if(this.Rpt.value.view_type == 'F'){
+        this.getFamilyMembersAccordingTo_Id(searchRlt.item.id);
+      }
     };
 
-    getFamilyMembersAccordingTo_Id = (__id: number | undefined = undefined) => {
-          this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${__id}&view_type=${this.Rpt.value.view_type}`)
-          .pipe(pluck('data'))
-          .subscribe((res:client[]) =>{
-                this.family_members = res;
-          })
-    }
+    /**
+   *
+   */
+    getFamilyMembersAccordingTo_Id = (id:number | undefined = undefined) =>{
+    if(id){
+      this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.Rpt.value.view_type}`)
+      .pipe(pluck('data'))
+      .subscribe((res:client[]) =>{
+       console.log(res);
+       this.family_members = res;
+       this.Rpt.get('family_members').setValue(res.map((item:client) => ({pan:item.pan,client_name:item.client_name})))
+      })
+   }
+   else{
+       this.family_members = [];
+       this.Rpt.get('family_members').setValue([]);
+   }
+  }
 
    /**
    *  evnt trigger on search particular client & after select client

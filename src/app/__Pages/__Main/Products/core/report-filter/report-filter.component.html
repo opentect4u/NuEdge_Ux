@@ -127,7 +127,7 @@
 
         <div class="col-sm-3">
           <app-core-srch [label]="Rpt.value.view_type == 'F' ? 'Family Head' : 'Investor'"
-                         [placeholder]="'Search By' + (Rpt.value.view_type == 'F' ? 'Family Head ' : 'Investor ') + 'Name, Code, Email, Mobile, PAN & DOB'"
+                         [placeholder]="'Search By' + (Rpt.value.view_type == 'F' ? ' Family Head ' : ' Investor ') + 'Name, Code, Email, Mobile, PAN & DOB'"
                          [isPending]="__isClientPending"
                          [listItems]="__clientMst"
                          [flag]="'C'"
@@ -142,7 +142,7 @@
         </div>
         <ng-container *ngIf="Rpt.value.view_type == 'F'">
             <div class="col-sm-3">
-                <label for="family_members">Select Family Members</label>
+                <label for="family_members">Family Members</label>
                 <ng-multiselect-dropdown
                 [id]="'family_members'"
                 [placeholder]="'Select Family Members'"
