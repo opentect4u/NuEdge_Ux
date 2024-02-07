@@ -40,7 +40,17 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
       this.tiles__api__subscription = this.dbIntr.api_call(0,'/showLiveSIPTrend','flag='+item.flag,true)
       .pipe(pluck('data'))
       .subscribe((res:Required<{categories:string[],chart_data:number[]}>) =>{
-        this.chart_dtls = res;
+          let val = 0;
+          let dt = {
+            categories: res.categories.reverse(),
+            chart_data:res.chart_data.reverse().map((item:number) =>{
+              console.log(item)
+               val = val + item
+               console.log(val)
+               return val
+          })}
+          console.log(dt);
+          this.chart_dtls = res;
       },
        err =>{
         this.chart_dtls = {
