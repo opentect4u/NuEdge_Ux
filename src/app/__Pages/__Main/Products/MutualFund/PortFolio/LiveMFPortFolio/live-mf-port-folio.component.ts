@@ -295,8 +295,11 @@ export class LiveMfPortFolioComponent implements OnInit {
             redem_arr.forEach((el,i) =>{
               let pur_price = el.pur_price;
               const ___index = res.findIndex((trnx:ISubDataSource) => trnx.id == el.id);
+              console.log(___index);
               with_out_redem_arr = with_out_redem_arr.filter((item,j) => {
                             if(___index > j && item.pur_price > 0){
+                              console.log(___index);
+                              console.log(item.pur_price);
                                 pur_price  = item.pur_price - Math.abs(pur_price);
                                if(pur_price < 0){
                                   item.pur_price = pur_price
@@ -573,7 +576,7 @@ export class LiveMFPortFolioColumn{
       width:'50px'
     },
     {
-      field:'units',
+      field:'tot_units',
       header:'Units',
       width:'50px'
     },
@@ -603,7 +606,7 @@ export class LiveMFPortFolioColumn{
       width:'70px'
     },
     {
-      field:'total',
+      field:'curr_val',
       header:'Total',
       width:'70px'
     },
@@ -623,7 +626,7 @@ export class LiveMFPortFolioColumn{
       width:'50px'
     },
     {
-      field:'tran_mode',
+      field:'trans_mode',
       header:'Tran. Mode',
       width:'70px'
     }
@@ -655,7 +658,7 @@ export class LiveMFPortFolioColumn{
       field:'pur_price',header:'Pur. NAV',width:"4rem"
     },
     {
-      field:'cumml_nav',header:'Cumml. NAV',width:"4rem"
+      field:'cumml_unit',header:'Cumml. Unit',width:"4rem"
     },
     {
       field:'sensex',header:'SENSEX',width:"4rem"

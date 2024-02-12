@@ -246,9 +246,14 @@
                           {{liveMfPortFolio[col.field] ? (liveMfPortFolio[col.field] | date:'dd-MM-YYYY') : 'N/A'}}
                         </p>
                       </ng-container>
-                      <ng-container *ngSwitchCase="col.field == 'gain_loss' || col.field == 'ret_abs' || col.field == 'units' || col.field == 'curr_val'">
+                      <ng-container *ngSwitchCase="col.field == 'gain_loss' || col.field == 'ret_abs'
+                      || col.field == 'units' || col.field == 'curr_val'
+                      || col.field == 'curr_nav' || col.field == 'idcw_reinv'
+                      || col.field == 'idcwp'
+                      || col.field == 'idcwr'
+                      ">
                         <p class="m-0">
-                          {{liveMfPortFolio[col.field] ? (liveMfPortFolio[col.field] | number:'1.2-2') : 'N/A'}} {{col.field =='ret_abs' ? '%' : ''}}
+                          {{liveMfPortFolio[col.field] ? (liveMfPortFolio[col.field] | number:'1.2-2') : (liveMfPortFolio[col.field] == 0 ? liveMfPortFolio[col.field] : 'N/A')}} {{col.field =='ret_abs' ? '%' : ''}}
                         </p>
                       </ng-container>
                       <ng-container *ngSwitchDefault>
