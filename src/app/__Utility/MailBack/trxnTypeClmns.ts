@@ -9,7 +9,9 @@ export class trxnTypeClmns{
                           {field:'c_k_trans_type',header:'File Trxn Type',isVisible:[1,2]},
                           {field:'c_k_trans_sub_type',header:'File Trxn Sub Type',isVisible:[1,2]},
                           {field:'k_divident_flag',header:'Divident Flag',isVisible:[2]},
-                          {field:'process_type',header:"MIS Type",isVisible:[1,2]}
+                          {field:'process_type',header:"MIS Type",isVisible:[1,2]},
+                          {field:'xirr_process_type',header:"XIRR Process Type",isVisible:[1,2]},
+
         ]
 }
 

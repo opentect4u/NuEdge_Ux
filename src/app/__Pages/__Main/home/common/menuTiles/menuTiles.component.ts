@@ -42,15 +42,15 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
       .subscribe((res:Required<{categories:string[],chart_data:number[]}>) =>{
           let val = 0;
           let dt = {
-            categories: res.categories.reverse(),
+            categories: res.categories,
             chart_data:res.chart_data.reverse().map((item:number) =>{
-              console.log(item)
+              console.log(`Before Add : ${item}`)
                val = val + item
-               console.log(val)
+               console.log(`After Add: ${val}`)
                return val
-          })}
+          }).reverse()}
           console.log(dt);
-          this.chart_dtls = res;
+          this.chart_dtls = dt;
       },
        err =>{
         this.chart_dtls = {

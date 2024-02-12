@@ -28,6 +28,7 @@ import filterOpt from '../../../../../../assets/json/filterOption.json';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
 import { IStaticRpt } from './static-rpt';
+import { client } from 'src/app/__Model/__clientMst';
 enum TABLE_WIDTH {
   'F' = '1258rem', //FOLIO
   'K' = '445rem', // KYC
@@ -93,6 +94,18 @@ export class InvestorStaticReportComponent implements OnInit {
     'Search Employee',
     1
   );
+
+    /**
+   * Setting of multiselect dropdown
+   */
+    settingsforFamilyMembers = this.utility.settingsfroMultiselectDropdown(
+      'pan',
+      'client_name',
+      'Search Family members',
+      3
+    );
+
+    family_members:client[] = [];
 
   /*** END****/
 
@@ -172,6 +185,7 @@ export class InvestorStaticReportComponent implements OnInit {
     rm_id: new FormControl([], { updateOn: 'blur' }),
     sub_brk_cd: new FormControl([], { updateOn: 'blur' }),
     euin_no: new FormControl([]),
+    family_members: new FormControl([]),
     folio_no: new FormControl(''),
     investor_static_type: new FormControl('')
   })
@@ -365,9 +379,9 @@ export class InvestorStaticReportComponent implements OnInit {
       this.filter.get('pan_no').reset('');
       if (res) {
         this.filter.get('client_name').enable();
-        this.paginate = 1;
+        // this.paginate = 1;
         this.__clientMst = [];
-        this.getClientMst(res, this.paginate);
+        // this.getClientMst(res, this.paginate);
       }
       else{
         this.filter.get('client_name').disable();

@@ -58,6 +58,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     rnt_id: new FormControl(''),
     id: new FormControl('0'),
     process_type: new FormControl(''),
+    xirr_process_type: new FormControl(''),
     trans_type: new FormControl('', [Validators.required]),
     trans_sub_type: new FormControl('', [Validators.required]),
     c_trans_type_code: new FormControl(''),
@@ -70,7 +71,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     tax_status:new FormGroup({
          code:new FormControl(''),
          status:new FormControl('')
-    })
+    }),
   });
 
   constructor(private utility: UtiliService, private dbIntr: DbIntrService,
@@ -119,11 +120,11 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     this.setValidators();
     this.rntTrxnType.get('rnt_id').setValue(this.rnt_type_tab);
     this.rntTrxnType.get('process_type').setValue('');
+    this.rntTrxnType.get('xirr_process_type').setValue('');
     this.SetColumns(this.rnt_type_tab);
   }
 
   submitTransactionType(): void {
-  console.log(this.sub_tab);
     let api_name:string;
     let formdata = new FormData();
     if(this.file_type_tab == 'T'){
@@ -289,6 +290,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
       (items: rntTrxnType, key: number) => {
         if (items.id == row_obj.id) {
           items.process_type  = row_obj.process_type;
+          items.xirr_process_type = row_obj.xirr_process_type;
           items.trans_type = row_obj.trans_type;
           items.trans_sub_type = row_obj.trans_sub_type;
           items.c_trans_type_code =
@@ -369,6 +371,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
   }
 
   getTransactionMst(flag){
+    console.log('sasaa')
     if(flag){
       this.dbIntr.api_call(0,'/rntTransTypeSubtype','rnt_id=' + flag)
       .pipe(pluck('data'))
@@ -379,8 +382,9 @@ export class HomeComponent implements OnInit, IFileHelpHome {
   }
 
   getSystamaticTransactionType(rnt_id:string,sub_tab_type:string){
+
       if(rnt_id && sub_tab_type){
-        console.log(SystamaticfileHelp[sub_tab_type]);
+        // console.log(SystamaticfileHelp[sub_tab_type]);
         // const api_name =  sub_tab_type == 'T' ? '/rntSystematicTransType' : '/rntSystematicFrequency';
         this.dbIntr.api_call(0,`/${SystamaticfileHelp[sub_tab_type]}`,'rnt_id=' + rnt_id)
           .pipe(pluck('data'))
@@ -438,7 +442,9 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           ? (trxnType?.k_divident_flag ? trxnType?.k_divident_flag : '')
           : ''
         : '',
-      process_type:  trxnType ? global.getActualVal(trxnType?.process_type) : ''
+      process_type:  trxnType ? global.getActualVal(trxnType?.process_type) : '',
+      xirr_process_type:  trxnType ? global.getActualVal(trxnType?.xirr_process_type) : '',
+
     });
   }
   else if(this.file_type_tab == 'S'){

@@ -1,0 +1,46 @@
+.heading_title{
+  font-size: 12px;
+  margin: 0 7px;
+  color: #3a5076;
+  font-weight: 500;
+}
+.titles__value{
+  font-weight: 500;
+  font-size: 11px;
+  color: gray;
+}
+
+
+.details__icon{
+  border-radius: 27%;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
+}
+.infoIcon{
+  background: #27bad229;
+  color: #13a7c0;
+}
+.warningIcon{
+  background: #e09d0b29;
+  color: #ffb637;
+}
+.successIcon{
+  background: #a5a5a530;
+  color: #959595;
+}
+
+textarea{
+  height:86px;
+  min-height:86px;
+  max-height:86px;
+}
+
+.show__More > a{
+  color:blue;
+  text-decoration: underline;
+  cursor: pointer;
+}

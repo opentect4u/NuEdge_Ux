@@ -33,7 +33,6 @@ export class NetworkInterceptor implements HttpInterceptor {
           ? `Bearer ${this.__utility.decrypt_dtls(storage.getItemFromLocalStorage(AU_TK))}` : ''
         })
       });
-
     if (auth.context.get(BYPASS_LOG) === true){
       // console.log()
       return next.handle(auth);

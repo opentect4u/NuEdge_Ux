@@ -808,8 +808,8 @@ export class TrxnRptComponent implements OnInit {
     flag: string;
     item: any;
   }) => {
-    this.misTrxnRpt.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
-    this.misTrxnRpt.get('pan_no').reset(searchRlt.item.first_client_pan);
+    this.misTrxnRpt.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
+    this.misTrxnRpt.get('pan_no').reset(searchRlt.item.pan);
     this.searchResultVisibilityForClient('none');
     if(this.misTrxnRpt.value.view_type == 'F'){
       this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.id)

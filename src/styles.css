@@ -519,7 +519,8 @@ mat-card {
   font-weight: 500; */
   text-align: center !important;
   border: 0.2px solid #dadada !important;
-  padding: 2px 1rem !important;
+  /* padding: 2px 1rem !important; */
+  padding: 2px 2px !important;
   font-size: 11px !important;
   font-weight: 500;
   min-height: 33px;
@@ -899,4 +900,28 @@ color: #ffffff;
 .p-radiobutton .p-radiobutton-box.p-highlight {
   border-color: #10486b!important;
   background: #10486b!important;
+}
+
+.custom__badge{
+  display: inline-block;
+  min-width: 10px;
+  padding: 6px 7px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  /* border-radius: 10px; */
+  font-family: 'Montserrat';
+  cursor: pointer;
+}
+.parentTD{
+  padding: 2px 0px!important
+}
+
+.p-dialog .p-dialog-content {
+background: #ededed!important;
+padding: 2rem 1.5rem 2rem 1.5rem!important;
 }

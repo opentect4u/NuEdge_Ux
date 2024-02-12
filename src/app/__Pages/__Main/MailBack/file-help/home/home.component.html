@@ -125,8 +125,22 @@
                   </select>
                 </div>
 
+                <div class="col-sm-3">
+                  <label for="xirr_process_type">XIRR Flow Type</label>
+                  <select
+                  class="form-control"
+                  name="xirr_process_type"
+                  id="xirr_process_type"
+                  formControlName="xirr_process_type"
+                  >
+                  <option value="">Select</option>
+                  <option value="I">Cash Inflow</option>
+                  <option value="O">Cash Outflow</option>
+                  </select>
+                </div>
+
                 <div [class]="rntTrxnType.value.rnt_id ?
-               'col-sm-6 d-flex justify-content-end align-items-end'
+               'col-sm-3 d-flex justify-content-end align-items-end'
                : 'col-sm-12 mt-2 d-flex justify-content-end align-items-end'">
                 <p-button
                 type="submit"

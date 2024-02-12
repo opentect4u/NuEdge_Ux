@@ -56,7 +56,7 @@
                 [isPending]="__isClientPending" [listItems]="__clientMst" [flag]="'C'"
                 [noDataFoundTitle]="'Sorry!! No Records Found'"
                 [noDataFoundSubTitle]="'If your result match,they will appear here'"
-                [propertiesToShow]="['first_client_name','first_client_pan']" formControlName="client_name"
+                [propertiesToShow]="['client_name','pan']" formControlName="client_name"
                 [displayMode]="displayMode_forClient" (setDisplayMode)="displayMode_forClient = $event"
                 (selectedItems)="getSelectedItemsFromParent($event)"
                 (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>

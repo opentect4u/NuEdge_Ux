@@ -139,6 +139,10 @@
                 <p class="m-0">{{ file[col.field] ? (file[col.field] == 'I' ? 'Inflow' : 'Outflow')  : 'N/A'}}
                </p>
              </ng-container>
+             <ng-container *ngSwitchCase="col.field == 'xirr_process_type'">
+              <p class="m-0">{{ file[col.field] ? (file[col.field] == 'I' ? 'Cash Inflow' : 'Cash Outflow')  : 'N/A'}}
+             </p>
+           </ng-container>
               <ng-container *ngSwitchDefault>
                 <p class="m-0">{{ file[col.field] ? file[col.field]  : 'N/A'}}
                </p>

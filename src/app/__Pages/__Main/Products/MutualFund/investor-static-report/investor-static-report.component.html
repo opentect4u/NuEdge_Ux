@@ -71,8 +71,8 @@
                 <mat-checkbox color="primary" class="example-margin"
                 formControlName="is_all_client">Select All</mat-checkbox>
                </section>
-              <app-core-srch [label]="'Investor'"
-                             [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+              <app-core-srch [label]="filter.value.view_type == 'F' ? 'Family Head' : 'Investor' "
+                             [placeholder]="'Search By' + (filter.value.view_type == 'F' ? ' Family Head ' : ' Investor ') +'Name, Code, Email, Mobile, PAN & DOB'"
                              [isPending]="__isClientPending"
                              [listItems]="__clientMst"
                              [flag]="'C'"
@@ -85,6 +85,18 @@
                              (selectedItems)="getSelectedItemsFromParent($event)"
                              (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
             </div>
+            <ng-container *ngIf="filter.value.view_type == 'F'">
+              <div class="col-sm-3">
+                <label for="family_members">Family Members&nbsp;<i class="pi pi-info-circle" matTooltip="Search & select family head to get family members" style="font-size: 1rem" ></i></label>
+                <ng-multiselect-dropdown
+                [id]="'family_members'"
+                [placeholder]="'Select Family Members'"
+                [settings]="settingsforFamilyMembers"
+                [data]="family_members"
+                formControlName="family_members">
+                </ng-multiselect-dropdown>
+              </div>
+          </ng-container>
             <div class="col-sm-3">
               <label for="folio_status"> Folio Status</label>
               <select class="form-control"
@@ -162,19 +174,42 @@
             <ng-container *ngIf="btn_type == 'R';else advanceFilter">
               <!-- Visible only when sub_flag not equals to NL -->
               <ng-container  *ngIf="sub_flag != 'NL';else NotLinked">
-                <div class="d-flex justify-content-end align-items-end"
-                [ngClass]="{
-                'col-sm-12 mt-3':flag == 'F' || sub_flag == 'KNV' || sub_flag == 'IOP',
-                'col-sm-9 mt-2':((flag == 'K' && sub_flag == 'IW') || (flag == 'N' && sub_flag == 'IW')),
-                'col-sm-6':flag == 'A' && sub_flag == 'IW'}"
-                >
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                <!-- Visible only When View By is selected as `Family Head`  -->
+                <ng-container *ngIf="filter.value.view_type == 'F';else Client">
+                  <div
+                  class="d-flex justify-content-end align-items-end"
+                  [ngClass]="{
+                      'col-sm-9':flag == 'F' || sub_flag == 'KNV' || sub_flag == 'IOP',
+                      'col-sm-6':flag == 'K' || flag == 'N',
+                      'col-sm-3':flag == 'A'
+                  }"
+                  ><ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
                 </div>
+                </ng-container>
+                <!-- End -->
+                <!-- Visible only When View By is selected as `Client`  -->
+                <ng-template #Client>
+                  <div class="d-flex justify-content-end align-items-end"
+                  [ngClass]="{
+                  'col-sm-12 mt-3':flag == 'F' || sub_flag == 'KNV' || sub_flag == 'IOP',
+                  'col-sm-9 mt-2':((flag == 'K' && sub_flag == 'IW') || (flag == 'N' && sub_flag == 'IW')),
+                  'col-sm-6':flag == 'A' && sub_flag == 'IW'}"
+                  >
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                  </div>
+                </ng-template>
+                <!-- End -->
+
               </ng-container>
               <!-- End -->
               <!-- Else Visible only when sub_flag equals to NL -->
               <ng-template #NotLinked>
-                <div class="d-flex justify-content-end align-items-end col-sm-9">
+                <div class="d-flex justify-content-end align-items-end"
+                [ngClass]="{
+                  'col-sm-6':  filter.value.view_type == 'F',
+                  'col-sm-9':  filter.value.view_type != 'F'
+                }"
+                >
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
                 </div>
               </ng-template>
@@ -217,6 +252,19 @@
                                          [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
                 </ng-multiselect-dropdown>
               </div>
+              <ng-container *ngIf="filter.value.view_type == 'F';else Client">
+                <div
+                class="d-flex justify-content-end align-items-end"
+                [ngClass]="{
+                'col-sm-6':flag == 'F',
+                'col-sm-3':sub_flag == 'IW' && (flag == 'K' || flag == 'N'),
+                'col-sm-12 mt-2':sub_flag == 'IW' && flag == 'A'
+              }"
+                >
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
+              </ng-container>
+              <ng-template #Client>
               <ng-container *ngIf="sub_flag == 'KNV' || sub_flag == 'IOP' || sub_flag == 'NL';else OtherSubFlag">
                 <div
                 class="d-flex justify-content-end align-items-end"
@@ -234,7 +282,7 @@
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
               </ng-template>
-
+              </ng-template>
             </ng-template>
           </div>
 

@@ -8,7 +8,8 @@ export interface rntTrxnType {
   trans_sub_type: string | null;
   trans_type: string | null;
   rnt_name: string;
-  process_type:string
+  process_type:string;
+  xirr_process_type:string
 }
 
 export interface ISystematicTransaction {

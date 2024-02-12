@@ -12,7 +12,7 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
 
   @ViewChildren(ListItemComponent) items: QueryList<ListItemComponent>;
   private keyManager: ActiveDescendantKeyManager<ListItemComponent>;
-
+  @Input() isTopDefined:string;
   @Input() label: string; /** For Label */
   @Input() placeholder: string; /** For Placeholder */
   @ViewChild('searchList') search: ElementRef;
