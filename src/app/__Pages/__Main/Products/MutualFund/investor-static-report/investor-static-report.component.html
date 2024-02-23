@@ -45,248 +45,252 @@
 
       </mat-card-header>
       <mat-card-content  [@bodyExpansion]="state" [ngClass]="{'expandable-content': state == 'collapsed','px-3 py-3':state == 'expanded'}">
+          <ng-template #SearchBtn>
+            <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+          </ng-template>
 
-        <ng-template #SearchBtn>
-          <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
-        </ng-template>
-
-        <form [formGroup]="filter" autocomplete="off" (ngSubmit)="searchInvestorReport()">
-          <div class="row">
-            <div class="col-sm-3">
-              <label for="view_type">View By</label>
-              <select class="form-control"
-                      id="view_type" name="view_type"
-                      formControlName="view_type">
-                <option value="">Select</option>
-                <option [value]="item.id"
-                        *ngFor="let item of view_type">
-                  {{item.type}}
-                </option>
-              </select>
-            </div>
-            <div class="col-sm-3">
-              <section
-              class="selectAllCheckBox"
-              *ngIf=" flag!= 'F' && sub_flag!='IW'">
-                <mat-checkbox color="primary" class="example-margin"
-                formControlName="is_all_client">Select All</mat-checkbox>
-               </section>
-              <app-core-srch [label]="filter.value.view_type == 'F' ? 'Family Head' : 'Investor' "
-                             [placeholder]="'Search By' + (filter.value.view_type == 'F' ? ' Family Head ' : ' Investor ') +'Name, Code, Email, Mobile, PAN & DOB'"
-                             [isPending]="__isClientPending"
-                             [listItems]="__clientMst"
-                             [flag]="'C'"
-                             [noDataFoundTitle]="'Sorry!! No Records Found'"
-                             [noDataFoundSubTitle]="'If your result match,they will appear here'"
-                             [propertiesToShow]="['first_client_name','first_client_pan']"
-                             formControlName="client_name"
-                             [displayMode]="displayMode_forClient"
-                             (setDisplayMode)="displayMode_forClient = $event"
-                             (selectedItems)="getSelectedItemsFromParent($event)"
-                             (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
-            </div>
-            <ng-container *ngIf="filter.value.view_type == 'F'">
+          <form [formGroup]="filter" autocomplete="off" (ngSubmit)="searchInvestorReport()">
+            <div class="row">
               <div class="col-sm-3">
-                <label for="family_members">Family Members&nbsp;<i class="pi pi-info-circle" matTooltip="Search & select family head to get family members" style="font-size: 1rem" ></i></label>
-                <ng-multiselect-dropdown
-                [id]="'family_members'"
-                [placeholder]="'Select Family Members'"
-                [settings]="settingsforFamilyMembers"
-                [data]="family_members"
-                formControlName="family_members">
-                </ng-multiselect-dropdown>
+                <label for="view_type">View By</label>
+                <select class="form-control"
+                        id="view_type" name="view_type"
+                        formControlName="view_type">
+                  <option value="">Select</option>
+                  <option [value]="item.id"
+                          *ngFor="let item of view_type">
+                    {{item.type}}
+                  </option>
+                </select>
               </div>
-          </ng-container>
-            <div class="col-sm-3">
-              <label for="folio_status"> Folio Status</label>
-              <select class="form-control"
-                      formControlName="folio_status"
-                      id="folio_status"
-                      name="folio_status">
-                <option value="">Select All</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-
-              </select>
-            </div>
-            <div class="col-sm-3">
-              <label for="folio_no">Folio</label>
-              <input type="text" name="folio_no"
-              placeholder="Enter Folio Number"
-              id="folio_no" class="form-control" formControlName="folio_no">
-            </div>
-            <ng-container [ngSwitch]="true">
-
-              <!-- Visible Only For KYC Report (Investor Wise) && Aadhar Pan Link Report  -->
-              <ng-container *ngSwitchCase="(flag == 'K' || flag == 'A') && sub_flag != 'KNV'">
+              <div class="col-sm-3">
+                <section
+                class="selectAllCheckBox"
+                *ngIf=" flag!= 'F' && sub_flag!='IW'">
+                  <mat-checkbox color="primary" class="example-margin"
+                  formControlName="is_all_client">Select All</mat-checkbox>
+                </section>
+                <app-core-srch [label]="filter.value.view_type == 'F' ? 'Family Head' : 'Investor' "
+                              [placeholder]="'Search By' + (filter.value.view_type == 'F' ? ' Family Head ' : ' Investor ') +'Name, Code, Email, Mobile, PAN & DOB'"
+                              [isPending]="__isClientPending"
+                              [listItems]="__clientMst"
+                              [flag]="'C'"
+                              [noDataFoundTitle]="'Sorry!! No Records Found'"
+                              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                              [propertiesToShow]="['client_name','pan']"
+                              formControlName="client_name"
+                              [displayMode]="displayMode_forClient"
+                              (setDisplayMode)="displayMode_forClient = $event"
+                              (selectedItems)="getSelectedItemsFromParent($event)"
+                              (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
+              </div>
+              <ng-container *ngIf="filter.value.view_type == 'F'">
                 <div class="col-sm-3">
-                  <label for="kyc_status"> KYC Status</label>
-                  <select class="form-control"
-                          formControlName="kyc_status"
-                          id="kyc_status"
-                          name="kyc_status">
-                    <option value="">Select All</option>
-                    <option value="Y">KYC Verified</option>
-                    <option value="N">KYC Not Verified</option>
-
-                  </select>
+                  <label for="family_members">Family Members&nbsp;
+                    <ng-container *ngIf="!filter.get('family_members').disabled">
+                      <i class="pi pi-info-circle" matTooltip="Search & select family head to get family members" style="font-size: 1rem" ></i>
+                    </ng-container>
+                  </label>
+                  <ng-multiselect-dropdown
+                  [id]="'family_members'"
+                  [placeholder]="'Select Family Members'"
+                  [settings]="settingsforFamilyMembers"
+                  [data]="family_members"
+                  [disabled]="filter.get('family_members').disabled"
+                  formControlName="family_members">
+                  </ng-multiselect-dropdown>
                 </div>
-              </ng-container>
-              <!-- End -->
-
-              <!-- Visible Only For Nominee Report (Investor Wise)-->
-              <ng-container *ngSwitchCase="flag == 'N' && sub_flag == 'IW'">
-                <div class="col-sm-3">
-                  <label for="nominee_status"> Nominee Status</label>
-                  <select class="form-control"
-                          formControlName="nominee_status"
-                          id="nominee_status"
-                          name="nominee_status">
-                    <option value="">Select All</option>
-                    <option value="Opt-In">Opt-In</option>
-                    <option value="Opt-Out">Opt-Out</option>
-                    <option value="Pending">Opt-In / Opt-Out  Pending</option>
-                  </select>
-                </div>
-              </ng-container>
-              <!-- End -->
-
-              <!-- Visible Only For Aadhar Pan Link Report (Investor Wise) -->
-              <ng-container *ngSwitchCase="flag == 'A' && sub_flag == 'IW'">
-                <div class="col-sm-3">
-                  <label for="adhaar_pan_link_status"> Adhaar PAN Link Status</label>
-                  <select class="form-control"
-                          formControlName="adhaar_pan_link_status"
-                          id="adhaar_pan_link_status"
-                          name="adhaar_pan_link_status">
-                    <option value="">Select All</option>
-                    <option value="Y">Linked</option>
-                    <option value="N">Not Linked</option>
-                    <option value="N/A">Not Applicable</option>
-                  </select>
-                </div>
-              </ng-container>
-              <!-- End -->
-
             </ng-container>
+              <div class="col-sm-3">
+                <label for="folio_status"> Folio Status</label>
+                <select class="form-control"
+                        formControlName="folio_status"
+                        id="folio_status"
+                        name="folio_status">
+                  <option value="">Select All</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
 
-            <!-- LOGIC FOR ADVANCE FILTER / Reset -->
-            <ng-container *ngIf="btn_type == 'R';else advanceFilter">
-              <!-- Visible only when sub_flag not equals to NL -->
-              <ng-container  *ngIf="sub_flag != 'NL';else NotLinked">
-                <!-- Visible only When View By is selected as `Family Head`  -->
-                <ng-container *ngIf="filter.value.view_type == 'F';else Client">
-                  <div
-                  class="d-flex justify-content-end align-items-end"
-                  [ngClass]="{
-                      'col-sm-9':flag == 'F' || sub_flag == 'KNV' || sub_flag == 'IOP',
-                      'col-sm-6':flag == 'K' || flag == 'N',
-                      'col-sm-3':flag == 'A'
-                  }"
-                  ><ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-                </div>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <label for="folio_no">Folio</label>
+                <input type="text" name="folio_no"
+                placeholder="Enter Folio Number"
+                id="folio_no" class="form-control" formControlName="folio_no">
+              </div>
+              <ng-container [ngSwitch]="true">
+
+                <!-- Visible Only For KYC Report (Investor Wise) && Aadhar Pan Link Report  -->
+                <ng-container *ngSwitchCase="(flag == 'K' || flag == 'A') && sub_flag != 'KNV'">
+                  <div class="col-sm-3">
+                    <label for="kyc_status"> KYC Status</label>
+                    <select class="form-control"
+                            formControlName="kyc_status"
+                            id="kyc_status"
+                            name="kyc_status">
+                      <option value="">Select All</option>
+                      <option value="Y">KYC Verified</option>
+                      <option value="N">KYC Not Verified</option>
+
+                    </select>
+                  </div>
                 </ng-container>
                 <!-- End -->
-                <!-- Visible only When View By is selected as `Client`  -->
-                <ng-template #Client>
+
+                <!-- Visible Only For Nominee Report (Investor Wise)-->
+                <ng-container *ngSwitchCase="flag == 'N' && sub_flag == 'IW'">
+                  <div class="col-sm-3">
+                    <label for="nominee_status"> Nominee Status</label>
+                    <select class="form-control"
+                            formControlName="nominee_status"
+                            id="nominee_status"
+                            name="nominee_status">
+                      <option value="">Select All</option>
+                      <option value="Opt-In">Opt-In</option>
+                      <option value="Opt-Out">Opt-Out</option>
+                      <option value="Pending">Opt-In / Opt-Out  Pending</option>
+                    </select>
+                  </div>
+                </ng-container>
+                <!-- End -->
+
+                <!-- Visible Only For Aadhar Pan Link Report (Investor Wise) -->
+                <ng-container *ngSwitchCase="flag == 'A' && sub_flag == 'IW'">
+                  <div class="col-sm-3">
+                    <label for="adhaar_pan_link_status"> Adhaar PAN Link Status</label>
+                    <select class="form-control"
+                            formControlName="adhaar_pan_link_status"
+                            id="adhaar_pan_link_status"
+                            name="adhaar_pan_link_status">
+                      <option value="">Select All</option>
+                      <option value="Y">Linked</option>
+                      <option value="N">Not Linked</option>
+                      <option value="N/A">Not Applicable</option>
+                    </select>
+                  </div>
+                </ng-container>
+                <!-- End -->
+
+              </ng-container>
+
+              <!-- LOGIC FOR ADVANCE FILTER / Reset -->
+              <ng-container *ngIf="btn_type == 'R';else advanceFilter">
+                <!-- Visible only when sub_flag not equals to NL -->
+                <ng-container  *ngIf="sub_flag != 'NL';else NotLinked">
+                  <!-- Visible only When View By is selected as `Family Head`  -->
+                  <ng-container *ngIf="filter.value.view_type == 'F';else Client">
+                    <div
+                    class="d-flex justify-content-end align-items-end"
+                    [ngClass]="{
+                        'col-sm-9':flag == 'F' || sub_flag == 'KNV' || sub_flag == 'IOP',
+                        'col-sm-6':flag == 'K' || flag == 'N',
+                        'col-sm-3':flag == 'A'
+                    }"
+                    ><ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                  </div>
+                  </ng-container>
+                  <!-- End -->
+                  <!-- Visible only When View By is selected as `Client`  -->
+                  <ng-template #Client>
+                    <div class="d-flex justify-content-end align-items-end"
+                    [ngClass]="{
+                    'col-sm-12 mt-3':flag == 'F' || sub_flag == 'KNV' || sub_flag == 'IOP',
+                    'col-sm-9 mt-2':((flag == 'K' && sub_flag == 'IW') || (flag == 'N' && sub_flag == 'IW')),
+                    'col-sm-6':flag == 'A' && sub_flag == 'IW'}"
+                    >
+                    <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                    </div>
+                  </ng-template>
+                  <!-- End -->
+
+                </ng-container>
+                <!-- End -->
+                <!-- Else Visible only when sub_flag equals to NL -->
+                <ng-template #NotLinked>
                   <div class="d-flex justify-content-end align-items-end"
                   [ngClass]="{
-                  'col-sm-12 mt-3':flag == 'F' || sub_flag == 'KNV' || sub_flag == 'IOP',
-                  'col-sm-9 mt-2':((flag == 'K' && sub_flag == 'IW') || (flag == 'N' && sub_flag == 'IW')),
-                  'col-sm-6':flag == 'A' && sub_flag == 'IW'}"
+                    'col-sm-6':  filter.value.view_type == 'F',
+                    'col-sm-9':  filter.value.view_type != 'F'
+                  }"
                   >
                   <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
                   </div>
                 </ng-template>
                 <!-- End -->
-
               </ng-container>
-              <!-- End -->
-              <!-- Else Visible only when sub_flag equals to NL -->
-              <ng-template #NotLinked>
-                <div class="d-flex justify-content-end align-items-end"
-                [ngClass]="{
-                  'col-sm-6':  filter.value.view_type == 'F',
-                  'col-sm-9':  filter.value.view_type != 'F'
-                }"
-                >
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              <ng-template #advanceFilter>
+                <div class="col-sm-3">
+                  <label for="brn_cd">Branch</label>
+                  <ng-multiselect-dropdown #multiSelect id="brn_cd"
+                                          [placeholder]="'Select Branch'"
+                                          [settings]="settingsforBrnchDropdown"
+                                          [data]="__branchMst"
+                                          formControlName="brn_cd">
+                  </ng-multiselect-dropdown>
                 </div>
+                <div class="col-sm-3">
+                  <label for="bu_type">Business Type</label>
+                  <ng-multiselect-dropdown #multiSelect
+                                          id="bu_type"
+                                          [placeholder]="'Select Business Type'"
+                                          [settings]="settingsforBuTypeDropdown" [data]="__bu_type" formControlName="bu_type_id">
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="col-sm-3">
+                  <label for="rm_name">Relationship Manager</label>
+                  <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                                          [settings]="settingsforRMDropdown" [data]="__RmMst" formControlName="rm_id">
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="col-sm-3">
+                  <label for="sub_brk_cd">Sub Broker</label>
+                  <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                                          [settings]="settingsforSubBrkDropdown" [data]="__subbrkArnMst"
+                                          formControlName="sub_brk_cd">
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="col-sm-3">
+                  <label for="euin_no">EUIN</label>
+                  <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
+                                          [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
+                  </ng-multiselect-dropdown>
+                </div>
+                <ng-container *ngIf="filter.value.view_type == 'F';else Client">
+                  <div
+                  class="d-flex justify-content-end align-items-end"
+                  [ngClass]="{
+                  'col-sm-6':flag == 'F',
+                  'col-sm-3':sub_flag == 'IW' && (flag == 'K' || flag == 'N'),
+                  'col-sm-12 mt-2':sub_flag == 'IW' && flag == 'A'
+                }"
+                  >
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                </div>
+                </ng-container>
+                <ng-template #Client>
+                <ng-container *ngIf="sub_flag == 'KNV' || sub_flag == 'IOP' || sub_flag == 'NL';else OtherSubFlag">
+                  <div
+                  class="d-flex justify-content-end align-items-end"
+                  [ngClass]="{'col-sm-9':sub_flag == 'KNV' || sub_flag == 'IOP',
+                  'col-sm-6':sub_flag == 'NL'}">
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                </div>
+                </ng-container>
+                <ng-template #OtherSubFlag>
+                  <div
+                  class="d-flex justify-content-end align-items-end"
+                  [ngClass]="{'col-sm-9':flag == 'F',
+                  'col-sm-6':(flag == 'K' || flag == 'N'),
+                  'col-sm-3':flag == 'A'}">
+                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+                </div>
+                </ng-template>
+                </ng-template>
               </ng-template>
-              <!-- End -->
-            </ng-container>
-            <ng-template #advanceFilter>
-              <div class="col-sm-3">
-                <label for="brn_cd">Branch</label>
-                <ng-multiselect-dropdown #multiSelect id="brn_cd"
-                                         [placeholder]="'Select Branch'"
-                                         [settings]="settingsforBrnchDropdown"
-                                         [data]="__branchMst"
-                                         formControlName="brn_cd">
-                </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="bu_type">Business Type</label>
-                <ng-multiselect-dropdown #multiSelect
-                                         id="bu_type"
-                                         [placeholder]="'Select Business Type'"
-                                         [settings]="settingsforBuTypeDropdown" [data]="__bu_type" formControlName="bu_type_id">
-                </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="rm_name">Relationship Manager</label>
-                <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
-                                         [settings]="settingsforRMDropdown" [data]="__RmMst" formControlName="rm_id">
-                </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="sub_brk_cd">Sub Broker</label>
-                <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
-                                         [settings]="settingsforSubBrkDropdown" [data]="__subbrkArnMst"
-                                         formControlName="sub_brk_cd">
-                </ng-multiselect-dropdown>
-              </div>
-              <div class="col-sm-3">
-                <label for="euin_no">EUIN</label>
-                <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
-                                         [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
-                </ng-multiselect-dropdown>
-              </div>
-              <ng-container *ngIf="filter.value.view_type == 'F';else Client">
-                <div
-                class="d-flex justify-content-end align-items-end"
-                [ngClass]="{
-                'col-sm-6':flag == 'F',
-                'col-sm-3':sub_flag == 'IW' && (flag == 'K' || flag == 'N'),
-                'col-sm-12 mt-2':sub_flag == 'IW' && flag == 'A'
-              }"
-                >
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-              </div>
-              </ng-container>
-              <ng-template #Client>
-              <ng-container *ngIf="sub_flag == 'KNV' || sub_flag == 'IOP' || sub_flag == 'NL';else OtherSubFlag">
-                <div
-                class="d-flex justify-content-end align-items-end"
-                [ngClass]="{'col-sm-9':sub_flag == 'KNV' || sub_flag == 'IOP',
-                'col-sm-6':sub_flag == 'NL'}">
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-              </div>
-              </ng-container>
-              <ng-template #OtherSubFlag>
-                <div
-                class="d-flex justify-content-end align-items-end"
-                [ngClass]="{'col-sm-9':flag == 'F',
-                'col-sm-6':(flag == 'K' || flag == 'N'),
-                'col-sm-3':flag == 'A'}">
-                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-              </div>
-              </ng-template>
-              </ng-template>
-            </ng-template>
-          </div>
+            </div>
 
-        </form>
+          </form>
 
       </mat-card-content>
     </mat-card>

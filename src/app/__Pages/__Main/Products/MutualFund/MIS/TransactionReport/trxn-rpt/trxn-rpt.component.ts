@@ -39,6 +39,43 @@ import { trxnCountAmtSummaryColumn, trxnCountSummary } from './trxnAmtCountSumma
    total:Partial<TrxnRpt[]>
  }
 
+export type totaltrxnSummaryFooterTotal = {
+          pur_amt:{process:number | undefined , rejection:number | undefined}
+          pur_count:{process:number | undefined , rejection:number | undefined}
+          redemp_amt:{process:number | undefined , rejection:number | undefined}
+          redemp_count:{process:number | undefined , rejection:number | undefined}
+          switch_in_amt:{process:number | undefined , rejection:number | undefined}
+          switch_in_count:{process:number | undefined , rejection:number | undefined}
+          switch_in_merger_amt:{process:number | undefined , rejection:number | undefined}
+          switch_in_merger_count:{process:number | undefined , rejection:number | undefined}
+          switch_out_merger_amt:{process:number | undefined , rejection:number | undefined}
+          switch_out_merger_count:{process:number | undefined , rejection:number | undefined}
+          switch_out_count:{process:number | undefined , rejection:number | undefined}
+          switch_out_amt:{process:number | undefined , rejection:number | undefined}
+          sip_amt:{process:number | undefined , rejection:number | undefined}
+          sip_count:{process:number | undefined , rejection:number | undefined}
+          stp_in_amt:{process:number | undefined , rejection:number | undefined}
+          stp_in_count:{process:number | undefined , rejection:number | undefined}
+          stp_out_amt:{process:number | undefined , rejection:number | undefined}
+          stp_out_count:{process:number | undefined , rejection:number | undefined}
+          swp_amt:{process:number | undefined , rejection:number | undefined}
+          swp_count:{process:number | undefined , rejection:number | undefined}
+          nfo_amt:{process:number | undefined , rejection:number | undefined}
+          nfo_count:{process:number | undefined , rejection:number | undefined}
+          transfer_in_amt:{process:number | undefined , rejection:number | undefined}
+          transfer_in_count:{process:number | undefined , rejection:number | undefined}
+          transfer_out_count:{process:number | undefined , rejection:number | undefined}
+          transfer_out_amt:{process:number | undefined , rejection:number | undefined}
+          divi_payout_amt:{process:number | undefined , rejection:number | undefined}
+          divi_payout_count:{process:number | undefined , rejection:number | undefined}
+          divi_reinv_amt:{process:number | undefined , rejection:number | undefined}
+          divi_reinv_count:{process:number | undefined , rejection:number | undefined}
+          other_amt:{process:number | undefined , rejection:number | undefined}
+          other_count:{process:number | undefined , rejection:number | undefined}
+          net_amt:{process:number | undefined , rejection:number | undefined}
+          total_amt:number;
+ }
+
 @Component({
   selector: 'app-trxn-rpt',
   templateUrl: './trxn-rpt.component.html',
@@ -60,6 +97,8 @@ import { trxnCountAmtSummaryColumn, trxnCountSummary } from './trxnAmtCountSumma
 
 })
 export class TrxnRptComponent implements OnInit {
+
+  total__transaction_summary:Partial<totaltrxnSummaryFooterTotal> = {};
 
   /**** showing transaction details on popup */
   shwoPopup__trxn:TrxnRpt[]= [];
@@ -353,6 +392,7 @@ export class TrxnRptComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    console.log(this.total__transaction_summary)
     this.misTrxnRpt.get('client_name').disable();
     setTimeout(() => {
     this.misTrxnRpt.get('date_periods').setValue('M',{emitEvent:true});
@@ -739,33 +779,8 @@ export class TrxnRptComponent implements OnInit {
                     ? (item.tot_stamp_duty ?
                       (Number(item.tot_stamp_duty) * ((Number(item.tot_stamp_duty) > 0) ? -1 : 1)).toString()
                       : '0') :  item.tot_stamp_duty;
-
-                // net_amt+= Number(item.tot_amount ? item.tot_amount : 0);
-                // gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
-                // tds+=Number(item.tot_tds ? item.tot_tds : 0);
-                // stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
-                // this.total = {
-                //         net_amt:net_amt,
-                //         stamp_duity:stamp_duity,
-                //         tds:tds,
-                //         gross_amt:gross_amt
-                //   };
-
                 return item;
             });
-
-          //  item.map( item => {
-          //     net_amt+=Number(item.tot_amount ? item.tot_amount : 0);
-          //     gross_amt+=Number(item.tot_gross_amount ? item.tot_gross_amount : 0);
-          //     tds+=Number(item.tot_tds ? item.tot_tds : 0);
-          //     stamp_duity+=Number(item.tot_stamp_duty ? item.tot_stamp_duty : 0);
-          //     this.total = {
-          //             net_amt:net_amt,
-          //             stamp_duity:stamp_duity,
-          //             tds:tds,
-          //             gross_amt:gross_amt
-          //       };
-          //   });
         })
         )
       .subscribe((res: TrxnRpt[]) => {
@@ -783,6 +798,7 @@ export class TrxnRptComponent implements OnInit {
   }
 
   async calculateProcess_Reject(res:TrxnRpt[]){
+    this.total__transaction_summary = {}
     /*** Group by Category */
     const groupByCategory = await res.reduce((group, trxn) => {
       const { cat_name } = trxn; /*** Destructure `cat_name` from trxn */
@@ -792,12 +808,43 @@ export class TrxnRptComponent implements OnInit {
       return group;
     }, {});
     /****** END */
-   Object.keys(groupByCategory).forEach((key:string,index:number) => {
-      // let dt = {};
+   Object.keys(groupByCategory).forEach(async (key:string,index:number) => {
+      const dt = new trxnCountSummary(groupByCategory[key])
       this.transaction_amt_count_summary.push({
-        cat_name: key, ...new trxnCountSummary(groupByCategory[key])
+        cat_name: key, ...dt
       })
-    });
+      await this.calculateTotal(dt)
+      })
+      console.log(this.total__transaction_summary);
+  }
+
+   calculateTotal = async (obj) =>{
+     try{
+       await Object.keys(obj).forEach(key =>{
+          if(key != 'cat_name'){
+            if(key != 'total_amt'){
+              const hasKey = Object.keys(this.total__transaction_summary).length === 0;
+              let process = !hasKey ? (this.total__transaction_summary[key]?.process ? this.total__transaction_summary[key]?.process : 0) : 0;
+              let rejection = !hasKey ? (this.total__transaction_summary[key]?.rejection ? this.total__transaction_summary[key]?.rejection : 0) : 0;
+              Object.assign(this.total__transaction_summary,{
+                [key]:{
+                      process: Number(process) + Number(obj[key].process),
+                      rejection:Number(rejection) + Number(obj[key].reject),
+                }
+            });
+            }
+            else{
+                Object.assign(this.total__transaction_summary,{
+                  [key]:(this.total__transaction_summary[key] ? this.total__transaction_summary[key] : 0) + Number(obj[key]),
+              });
+            }
+            }
+        })
+      }
+      catch(err){
+          console.log(err);
+
+      }
   }
 
   /**
@@ -812,7 +859,7 @@ export class TrxnRptComponent implements OnInit {
     this.misTrxnRpt.get('pan_no').reset(searchRlt.item.pan);
     this.searchResultVisibilityForClient('none');
     if(this.misTrxnRpt.value.view_type == 'F'){
-      this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.id)
+      this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.client_id)
     }
   };
 

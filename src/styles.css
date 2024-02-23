@@ -531,8 +531,11 @@ mat-card {
 .p-datatable-scrollable .p-datatable-tbody>tr>td,
 .p-datatable-scrollable .p-datatable-tfoot>tr>td {
   justify-content: center;
-
 }
+.p-datatable-scrollable .p-datatable-tfoot>tr>td{
+  flex-direction: column;
+}
+
 
 .p-datatable-scrollable>
 .p-datatable-wrapper>.p-datatable-table>
@@ -704,9 +707,12 @@ color: #ffffff;
 }
 
 .p-datatable .p-datatable-tbody > tr:focus {
-  outline: 0.2rem solid #3f51b5!important;
+  /* outline: 0.2rem solid #3f51b5!important;
   outline-offset: 0.11rem!important;
-  background: #3f51b538!important;
+  background: #3f51b538!important; */
+  outline: 0.19rem solid #10486b!important;
+  outline-offset: -0.1rem!important;
+  background: #ffffff!important;
 }
 
 .row__sticky{
@@ -924,4 +930,21 @@ color: #ffffff;
 .p-dialog .p-dialog-content {
 background: #ededed!important;
 padding: 2rem 1.5rem 2rem 1.5rem!important;
+}
+
+
+.p-datatable .p-datatable-tfoot > tr > td{
+  border: 1px solid #11405eeb!important;
+  border-width: 1px!important;
+  font-weight: 500!important;
+  color: #d9d1d1!important;
+  background: #10486b!important;
+  font-size: 11px!important;
+  text-align: center!important;
+}
+.p-dropdown-panel{
+  z-index: 99999!important;
+}
+.p-dropdown .p-dropdown-label{
+  padding: 3px 7px!important;
 }

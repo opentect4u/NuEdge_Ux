@@ -64,30 +64,15 @@ export class ExchangeReportComponent implements OnInit {
    })
   }
   fullScreen() {
-    // this.dialogRef.removePanelClass('mat_dialog');
-    // this.dialogRef.addPanelClass('full_screen');
-    // this.dialogRef.updatePosition({ top: '0px' });
     this.dialogRef.updateSize("80%");
     this.__isVisible = !this.__isVisible;
   }
   minimize() {
-    // this.dialogRef.removePanelClass('mat_dialog');
-    // this.dialogRef.removePanelClass('full_screen');
-    // this.dialogRef.updateSize('40%', '55px');
-    // this.dialogRef.updatePosition({
-    //   bottom: '0px',
-    //   right: this.data.right + 'px',
-    // });
-    // this.__isVisible = !this.__isVisible;
     this.dialogRef.updateSize("30%",'47px');
     this.dialogRef.updatePosition({bottom: "0px" ,right: this.data.right+'px' });
   }
   maximize() {
     this.fullScreen();
-    // this.dialogRef.removePanelClass('full_screen');
-    // this.dialogRef.addPanelClass('mat_dialog');
-    // this.dialogRef.updatePosition({ top: '0px' });
-    // this.__isVisible = !this.__isVisible;
   }
 
   getColumns = () =>{

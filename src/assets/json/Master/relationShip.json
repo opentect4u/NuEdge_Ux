@@ -1,28 +1,49 @@
 [
-  {
-     "id":"F",
-     "relation":"Father"
-  },
-      {
-        "id":"M",
-        "relation":"Mother"
-    },
     {
-      "id":"GF",
-      "relation":"Grandfather"
-    },{
-      "id":"GM",
-      "relation":"Grandmother"
-    },{
-      "id":"U",
-      "relation":"Uncle"
-    },
-    {
-      "id":"S",
-      "relation":"Son"
+      "id":"FR",
+      "relation":"Friend"
     },
     {
       "id":"D",
       "relation":"Daughter"
+    },
+    {
+      "id":"GD",
+      "relation":"Granddaughter"
+    }, {
+      "id":"GS",
+      "relation":"Grandson"
+    },
+    {
+        "id":"S",
+        "relation":"Spouse"
+    },
+   {
+      "id":"B",
+      "relation":"Brother In Law"
+    },
+    {
+      "id":"S",
+      "relation":"Sister In Law"
+    },
+    {
+      "id":"M",
+      "relation":"Mother In Law"
+    },
+    {
+      "id":"F",
+      "relation":"Father In Law"
+    },
+    {
+      "id":"N",
+      "relation":"Nephew"
+    },
+    {
+      "id":"NE",
+      "relation":"Niece"
+    },
+    {
+      "id":"O",
+      "relation":"Others"
     }
 ]

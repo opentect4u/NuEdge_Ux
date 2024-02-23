@@ -108,7 +108,11 @@ const routes: Routes = [
       {
         path:'mrgRplcAcq',
         loadChildren:()=> import('../Merge_Rplc_Acq/merge-rplc-acq.module').then(m => m.MergeRplcAcqModule)
-      }
+      },
+      {
+        path:'mftrax',
+        loadChildren:()=> import('../MFTrax/mftrax.module').then(mftrax => mftrax.MFTraxModule)
+      },
     ],
   },
 ];

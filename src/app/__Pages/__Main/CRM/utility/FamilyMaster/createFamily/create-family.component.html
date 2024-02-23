@@ -161,21 +161,21 @@
                                       <option value="">Select</option>
                                        <option value="{{dt.id}}" *ngFor="let dt of relation">{{dt.relation}}</option>
                                 </select> -->
-                                <p-cellEditor
+                                <!-- <p-cellEditor
                                 style="width:100%!important"
-                                >
-                                  <ng-template pTemplate="input">
+                                > -->
+                                  <!-- <ng-template pTemplate="input"> -->
                                       <p-dropdown [options]="relation"
                                       [filter]="true" filterBy="relation" [showClear]="true" placeholder="Select Relation"
                                       appendTo="body" [(ngModel)]="family_member.relation"
                                       optionLabel="relation"
                                       optionValue="relation"
                                       [style]="{'width':'100%'}"></p-dropdown>
-                                  </ng-template>
+                                  <!-- </ng-template>
                                   <ng-template pTemplate="output">
                                       {{family_member.relation ? family_member.relation : 'N/A'}}
                                   </ng-template>
-                              </p-cellEditor>
+                              </p-cellEditor> -->
                         </ng-container>
                         <ng-container *ngSwitchDefault>
                                 <p class="m-0">

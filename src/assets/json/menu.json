@@ -262,6 +262,13 @@
         "has_submenu":"N",
         "url":"/main/master/productwisemenu/mrgRplcAcq",
         "icon": "stars"
+      },
+      {
+        "id":49,
+        "menu_name":"MF Trax",
+        "has_submenu":"N",
+        "url":"/main/master/productwisemenu/mftrax",
+        "icon": "stars"
       }
     ]
   },

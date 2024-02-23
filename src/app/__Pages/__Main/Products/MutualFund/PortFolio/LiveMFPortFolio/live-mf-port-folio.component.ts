@@ -9,17 +9,54 @@ import { DatePipe } from '@angular/common';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { Table } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Calendar } from 'primeng/calendar';
+
+/*** Display Footer data on Raw Expand Inside Inner Table*/
+type TotalsubLiveMFPortFolio = {
+  tot_amount:number | undefined,
+  tot_tds:number| undefined,
+  tot_stamp_duty:number | undefined,
+  tot_idcwr:number | undefined,
+  pur_price:number | undefined,
+  tot_units:number | undefined,
+  cumml_units:number | undefined,
+  curr_val:number | undefined,
+  gain_loss:number | undefined,
+  ret_abs:number | undefined,
+  ret_cagr:number | undefined
+}
+/*** End */
+/**** Display Footer Data On Parent Table*/
+type TotalparentLiveMfPortFolio = {
+    inv_cost: number | undefined;
+    idcwr: number | undefined;
+    tot_units: number | undefined;
+    curr_val:number | undefined;
+    total:number | undefined;
+    gain_loss: number | undefined;
+    ret_abs: number | undefined;
+    pur_price:number | undefined
+}
+/*** End */
+
 @Component({
   selector: 'app-live-mf-port-folio',
   templateUrl: './live-mf-port-folio.component.html',
   styleUrls: ['./live-mf-port-folio.component.css']
 })
+
 export class LiveMfPortFolioComponent implements OnInit {
 
 
   truncated_val : number = 10;
 
+  __selectedRow:ILivePortFolio;
+
   __isDisplay__modal:boolean = false;
+
+  subLiveMfPortFolio: Partial<TotalsubLiveMFPortFolio>;
+
+  parentLiveMfPortFolio: Partial<TotalparentLiveMfPortFolio>;
 
   view_by = ClientType
 
@@ -73,6 +110,8 @@ export class LiveMfPortFolioComponent implements OnInit {
   @ViewChild('primeTble') primeTbl :Table;
 
   @ViewChild('detailedTbl') secondaryTbl :Table;
+
+  @ViewChild('dateRng') date__rng:Calendar;
 
   valuation_as_on:string;
 
@@ -129,6 +168,7 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   ngAfterViewInit(){
 
+    this.date__rng.maxDate = new Date();
 
       /**view_type Change*/
       this.filter_criteria.controls['view_type'].valueChanges.subscribe(res => {
@@ -227,7 +267,13 @@ export class LiveMfPortFolioComponent implements OnInit {
   }
 
   showReport = () =>{
+    if(this.__selectedRow){
+      this.primeTbl.toggleRow(this.__selectedRow);
+    }
+    this.__selectedRow = null;
     this.dataSource = [];
+    this.parentLiveMfPortFolio = null;
+    this.subLiveMfPortFolio = null;
     if(this.filter_criteria.value.valuation_as_on){
     if(this.filter_criteria.value.pan_no || this.filter_criteria.value.client_name){
             if(this.filter_criteria.value.view_type == 'F'){
@@ -264,6 +310,15 @@ export class LiveMfPortFolioComponent implements OnInit {
     .subscribe((res:Required<{data,client_details:client}>) => {
           this.dataSource = res.data.map((item: ILivePortFolio) => ({...item,inv_since:item.inv_since?.trans_date,pur_nav:item.pur_nav?.pur_price,data:[]}));
           this.clientDtls = res.client_details;
+          this.parentLiveMfPortFolio = {
+            inv_cost: this.Total__Count(this.dataSource,x => Number(x.inv_cost)),
+            pur_price:(this.Total__Count(this.dataSource,x => Number(x.pur_price)) / this.dataSource.length),
+            tot_units:this.Total__Count(this.dataSource,x => Number(x.tot_units)),
+            curr_val:this.Total__Count(this.dataSource,x => x.curr_val),
+            total:this.Total__Count(this.dataSource,x => x.curr_val),
+            ret_abs: (this.Total__Count(this.dataSource,x => x.ret_abs) / this.dataSource.length),
+            gain_loss:this.Total__Count(this.dataSource,x => x.gain_loss),
+          }
      })
     ;
     }
@@ -271,46 +326,25 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
     try{
+    this.subLiveMfPortFolio = null;
+    this.__selectedRow = ev.data;
     this.truncated_val = 0;
     const index = this.dataSource.map(item => item.id).indexOf(ev.data.id);
     this.dataSource[index].data.length = 0;
       this.__dbIntr.api_call(
         0,
         '/clients/liveMFShowDetails',
-        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}`)
+        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}`)
       .pipe(
         pluck('data'),
-        tap((item:ISubDataSource[]) => {
-
+        map((item:ISubDataSource[]) => {
           return item.filter(el => !el.transaction_type.toLowerCase().includes('rejection'))
-
         }),
         )
       .subscribe((res: ISubDataSource[]) =>{
-          // this.dataSource[index].data = res.filter((item:ISubDataSource) => !item.transaction_type.toLowerCase().includes('rejection'));
-          // this.show_more('M',index);
-            console.log(res)
-            let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'))
-            let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'))
-            redem_arr.forEach((el,i) =>{
-              let pur_price = el.pur_price;
-              const ___index = res.findIndex((trnx:ISubDataSource) => trnx.id == el.id);
-              console.log(___index);
-              with_out_redem_arr = with_out_redem_arr.filter((item,j) => {
-                            if(___index > j && item.pur_price > 0){
-                              console.log(___index);
-                              console.log(item.pur_price);
-                                pur_price  = item.pur_price - Math.abs(pur_price);
-                               if(pur_price < 0){
-                                  item.pur_price = pur_price
-                                }
-                            }
-                            return item
-              });
-            });
-            console.log(with_out_redem_arr.filter(item => item.pur_price > 0))
-            this.dataSource[index].data = with_out_redem_arr.length > 0 ?  with_out_redem_arr.filter(item => item.pur_price > 0) : with_out_redem_arr;
-            this.show_more('M',index);
+            let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
+            let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'));
+            this.calculateTransaction(redem_arr,with_out_redem_arr,index);
         })
       }
     catch(ex){
@@ -318,6 +352,99 @@ export class LiveMfPortFolioComponent implements OnInit {
         console.log(`ERROR`)
     }
   }
+
+  calculateTransaction = (redem_arr:ISubDataSource[],with_out_redem_arr:ISubDataSource[],index:number) =>{
+        redem_arr.forEach((el,i) =>{
+          let pur_price = el.pur_price;
+          with_out_redem_arr = with_out_redem_arr.filter((item,j) => {
+                      /****** CALCULATE PURCHASE NAV */
+                      if(item.pur_price > 0){
+                        if(pur_price > 0){
+                              if(j > 0){
+                                if(Number(with_out_redem_arr[j-1].pur_price) < 0){
+                                    pur_price  = item.pur_price - Math.abs(pur_price);
+                                    item.pur_price = pur_price
+                                }
+                              }
+                              else{
+                                    pur_price  = item.pur_price - Math.abs(pur_price);
+                                    item.pur_price = pur_price
+                              }
+                        }
+                        else{
+                              pur_price  = item.pur_price - Math.abs(pur_price);
+                              item.pur_price = pur_price
+                          }
+                      }
+                      /**** END */
+                    return item
+          });
+        });
+        this.dataSource[index].data = this.filterTransactions(with_out_redem_arr.length > 0 ? with_out_redem_arr.filter(item => Number(item.pur_price) > 0) : with_out_redem_arr);
+        this.show_more('M',index);
+  }
+
+  filterTransactions = (liveMFPortFolio:ISubDataSource[]): ISubDataSource[] => {
+      let cummulativeSum= 0;
+      let nper = 0;
+      let FinalTransactions =  liveMFPortFolio.map(((element:ISubDataSource) =>{
+            cummulativeSum = cummulativeSum +  Number(element.tot_units);
+            element.cumml_units = cummulativeSum;
+            element.curr_val = (Number(element.tot_units) * Number(element.curr_nav));
+            element.gain_loss = (element.curr_val - Number(element.tot_amount));
+            element.ret_abs = (element.gain_loss / Number(element.tot_amount)) * 100;
+            nper = element.days / 365;
+            element.ret_cagr = (Math.pow((element.curr_val/Number(element.tot_amount)),(1/nper)) - 1) * 100;
+            return element;
+      }))
+      this.calculat_Total_Value_For_Table_Footer(FinalTransactions);
+      return FinalTransactions;
+  }
+
+  calculat_Total_Value_For_Table_Footer(arr:Partial<ISubDataSource>[]){
+          try{
+                  this.subLiveMfPortFolio = {
+                    tot_amount: this.Total__Count(arr,item => Number(item.tot_amount)),
+                    tot_tds:this.Total__Count(arr,item => item.tot_tds),
+                    tot_stamp_duty:this.Total__Count(arr,item => Number(item.tot_stamp_duty)),
+                    pur_price:this.Total__Count(arr,item => Number(item.pur_price)) / arr.length,
+                    tot_units:this.Total__Count(arr,item => Number(item.tot_units)),
+                    curr_val:this.Total__Count(arr,item=> item.curr_val),
+                    gain_loss:this.Total__Count(arr,item=> item.gain_loss),
+                    ret_abs: this.Total__Count(arr,item=> item.ret_abs) / arr.length,
+                    cumml_units:arr.length > 0 ? arr.slice(-1)[0].cumml_units : 0,
+                  }
+
+          }
+          catch(ex){
+            console.log(ex)
+          }
+  }
+  /**
+   * For Counting Number of locked and unlocked transactions
+   * @param arr
+   * @param predicate
+   * @returns
+   */
+  Total__Count<T>(arr: T[], predicate: (elem: T, idx: number) => number) {
+    return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx)), 0)
+    }
+
+    Reset(){
+      this.filter_criteria.patchValue({
+          valuation_as_on:new Date(),
+          pan_no: new FormControl(''),
+          view_type: '',
+          family_members: [],
+          trans_type:'L',
+          view_funds_type: 'A',
+          view_mf_report:'',
+          is_new_tab:false
+      });
+      this.filter_criteria.get('client_name').reset('',{emitEvent:false});
+    }
+
+
   filterGlobal($event){
       let value = $event.target.value;
       this.primeTbl.filterGlobal(value,'contains')
@@ -331,7 +458,7 @@ export class LiveMfPortFolioComponent implements OnInit {
     return this.utility.getColumns(this.detailedColumn);
   }
 
-  OpenDialog = (liveMFPortFolio) => {
+  OpenDialog = (liveMFPortFolio:ILivePortFolio) => {
     this.__isDisplay__modal = true;
     this.details__transaction_details = [];
     this.__dbIntr.api_call(
@@ -356,6 +483,7 @@ export class LiveMfPortFolioComponent implements OnInit {
                  else{
                     this.truncated_val+=10
                  }
+                 console.log(this.truncated_val)
               }
   }
 
@@ -367,163 +495,81 @@ export class LiveMfPortFolioComponent implements OnInit {
 
 export interface ILivePortFolio{
   id: number
-  mailback_process_id: number
   rnt_id: number
-  arn_no: string
-  sub_brk_cd: string
-  euin_no: string
-  old_euin_no: any
-  first_client_name: string
-  first_client_pan: string
-  amc_code: string
-  folio_no: string
   product_code: string
-  trans_no: number
-  trans_mode: string
-  trans_status: string
-  user_trans_no: number
-  trans_date: string
-  post_date: string
-  pur_price: number
-  units: string
-  amount: string
-  rec_date: string
-  trxn_type: string
-  trxn_type_flag: string
-  trxn_nature: string
-  trans_desc: any
-  kf_trans_type: any
-  trans_flag: any
-  te_15h: string
-  micr_code: string
-  sw_flag: string
-  old_folio: string
-  seq_no: string
-  stt: string
-  stamp_duty: string
-  tds: any
-  acc_no: string
-  bank_name: string
-  remarks: string
-  reinvest_flag: string
-  dividend_option: any
-  isin_no: string
-  bu_type_flag: string
-  bu_type_lock_flag: string
-  amc_flag: string
-  scheme_flag: string
-  plan_option_flag: string
-  divi_mismatch_flag: string
-  divi_lock_flag: string
-  delete_flag: string
-  deleted_at: any
-  deleted_date: any
-  created_at: string
-  updated_at: string
-  scheme_name: string
-  cat_name: string
-  subcat_name: string
-  amc_name: string
   plan_name: string
   option_name: string
-  nifty50: string
-  sensex: string
-  curr_nav: string
-  tot_units: string
-  inv_cost: string
-  tot_stamp_duty: string
-  tot_tds: any
-  tot_rows: number
-  gross_amount: string
-  tot_gross_amount: string
   transaction_type: string
   transaction_subtype: string
+  scheme_name: string
+  isin_no: string
+  folio_no: string
   inv_since: any
+  sensex: string
+  nifty50: string
+  inv_cost: string
+  idcwr:number;
+  pur_price: number
   pur_nav: any
+  tot_units: string
   nav_date: string
+  curr_nav: string
+  idcw_reinv:string;
+  idcwp:string
   curr_val: number
   gain_loss: number
   ret_abs: number
+  xirr:number
+  trans_mode: string
   data:Partial<ISubDataSource>[]
 }
 
+/** Use both for Details Transaction & row expand transactions */
 export interface ISubDataSource{
   id: number;
-  mailback_process_id: number;
   rnt_id: number;
-  arn_no: string;
-  sub_brk_cd: string;
-  euin_no: string;
-  old_euin_no?: any;
-  first_client_name: string;
-  first_client_pan: string;
-  amc_code: string;
-  folio_no: string;
   product_code: string;
-  trans_no: number;
-  trans_mode: string;
-  trans_status: string;
-  user_trans_no: number;
-  trans_date: string;
-  post_date: string;
-  pur_price: number;
   units: string;
   amount: string;
-  rec_date: string;
-  trxn_type?: any;
-  trxn_type_flag?: any;
-  trxn_nature?: any;
-  trans_desc: string;
-  kf_trans_type: string;
-  trans_flag: string;
-  te_15h?: any;
-  micr_code?: any;
-  sw_flag?: any;
-  old_folio?: any;
-  seq_no?: any;
   stt: string;
   stamp_duty: string;
   tds: string;
+  curr_nav: string;
   acc_no: string;
   bank_name: string;
   remarks: string;
-  reinvest_flag?: any;
   dividend_option: string;
-  isin_no: string;
-  bu_type_flag: string;
-  bu_type_lock_flag: string;
-  amc_flag: string;
-  scheme_flag: string;
-  plan_option_flag: string;
-  divi_mismatch_flag: string;
-  divi_lock_flag: string;
-  delete_flag: string;
-  deleted_at?: any;
-  deleted_date?: any;
-  created_at: string;
-  updated_at: string;
   scheme_name: string;
+  isin_no: string;
+  folio_no: string;
+  transaction_type: string;
+  transaction_subtype: string;
+  trans_no: number;
+  trans_date: string;
   cat_name: string;
   subcat_name: string;
   amc_name: string;
   plan_name: string;
   option_name: string;
-  rm_name: string;
-  branch: string;
-  bu_type_id: string;
-  branch_id: number;
-  tot_amount: string;
-  tot_stamp_duty: string;
-  tot_tds: number;
-  tot_rows: number;
-  bu_type: string;
   gross_amount: string;
   tot_gross_amount: string;
-  transaction_type: string;
-  transaction_subtype: string;
-  idcwp:string;
-  idcw_reinv:string;
-  idcwr:string;
+  tot_amount: string;
+  idcwr:number;
+  tot_tds: number;
+  tot_stamp_duty: string;
+  pur_price: number;
+  tot_units:string;
+  cumml_units: number;
+  sensex: string
+  nifty50: number;
+  curr_val:number;
+  idcw_reinv:number;
+  idcwp:number;
+  gain_loss: number;
+  days:number;
+  ret_abs: number;
+  ret_cagr: number;
+  trans_mode: string;
 }
 
 
@@ -643,13 +689,13 @@ export class LiveMFPortFolioColumn{
       field:'trans_date',header:'Trans Date',width:"4rem"
     },
     {
-      field:'amount',header:'Amount',width:"5rem"
+      field:'tot_amount',header:'Amount',width:"5rem"
     },
     {
-      field:'tds',header:'TDS',width:"3rem"
+      field:'tot_tds',header:'TDS',width:"3rem"
     },
     {
-      field:'stamp_duty',header:'S. Duty',width:"3rem"
+      field:'tot_stamp_duty',header:'S. Duty',width:"3rem"
     },
     {
       field:'idcwr',header:'IDCWR',width:"3rem"
@@ -658,7 +704,10 @@ export class LiveMFPortFolioColumn{
       field:'pur_price',header:'Pur. NAV',width:"4rem"
     },
     {
-      field:'cumml_unit',header:'Cumml. Unit',width:"4rem"
+      field:'tot_units',header:'Units',width:"3rem"
+    },
+    {
+      field:'cumml_units',header:'Cumml. Unit',width:"4rem"
     },
     {
       field:'sensex',header:'SENSEX',width:"4rem"

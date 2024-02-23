@@ -59,6 +59,7 @@ enum TABLE_WIDTH {
 export class InvestorStaticReportComponent implements OnInit {
 
 
+
   state: string | undefined = 'expanded';
 
   /*** Settings for Advance Filter Options */
@@ -136,6 +137,7 @@ export class InvestorStaticReportComponent implements OnInit {
   __euinMst: any = [];
 
   @ViewChild('primeTbl') primeTbl: Table;
+
 
   filter_type = filterOpt;
 
@@ -223,6 +225,7 @@ export class InvestorStaticReportComponent implements OnInit {
     console.log(this.flag);
   }
 
+
   setTab = (): Promise<ITab[]> => {
     return new Promise((resolve, reject) => {
       resolve( Menu.filter(item => item.id == 7)[0].sub_menu
@@ -291,9 +294,15 @@ export class InvestorStaticReportComponent implements OnInit {
       this.filter.get('pan_no').setValue('',{onlySelf:true,emitEvent:false});
       if(res){
           this.filter.get('client_name').disable({onlySelf:true,emitEvent:false});
+          if(this.filter.value.view_type == 'F'){
+            this.filter.controls.family_members.disable();
+          }
         }
         else{
           this.filter.get('client_name').enable({onlySelf:true,emitEvent:false});
+          if(this.filter.value.view_type == 'F'){
+            this.filter.get('family_members').enable();
+          }
         }
     })
 
@@ -341,11 +350,16 @@ export class InvestorStaticReportComponent implements OnInit {
     this.filter.controls['client_name'].valueChanges
       .pipe(
         tap(() => this.filter.get('pan_no').setValue('')),
-        tap(() => (this.__isClientPending = true)),
+        tap(() => {
+          this.__isClientPending = true;
+          if(this.family_members.length > 0){
+            this.getFamilymemberAccordingToFamilyHead_Id()
+          }
+        }),
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
-          dt?.length > 1 ? this.dbIntr.searchItems('/searchClient',
+          dt?.length > 1 ? this.dbIntr.searchItems('/searchWithClient',
             dt + '&view_type=' + this.filter.value.view_type
           ) : []
 
@@ -368,22 +382,19 @@ export class InvestorStaticReportComponent implements OnInit {
 
     /**view_type Change*/
     this.filter.controls['view_type'].valueChanges.subscribe(res => {
-      this.filter.get('is_all_client').reset(false, { emitEvent: false });
-      if(res != 'C'){
-        this.filter.get('is_all_client').disable()
+      if(this.family_members.length > 0){
+        this.getFamilymemberAccordingToFamilyHead_Id();
       }
-      else{
-          this.filter.get('is_all_client').enable()
-      }
+      this.filter.get('is_all_client').reset(false, { onlySelf:true,emitEvent: false });
       this.filter.get('client_name').reset('', { emitEvent: false });
       this.filter.get('pan_no').reset('');
       if (res) {
+        this.filter.get('is_all_client').enable({emitEvent:false})
         this.filter.get('client_name').enable();
-        // this.paginate = 1;
         this.__clientMst = [];
-        // this.getClientMst(res, this.paginate);
       }
       else{
+        this.filter.get('is_all_client').disable({emitEvent:false})
         this.filter.get('client_name').disable();
       }
     })
@@ -395,17 +406,12 @@ export class InvestorStaticReportComponent implements OnInit {
     this.index = ev.index;
     this.setTitle();
     this.setFlag();
-    this.report_data = [];
     this.filter.get('investor_static_type').setValue(ev.tabDtls.flag);
     this.setColumn(ev.tabDtls.flag).then((res: column[]) => {
       this.tble_width = TABLE_WIDTH[ev.tabDtls.flag];
       this.column = res;
     })
     this.btn_type = 'R';
-    if (this.state == 'collapsed') {
-      this.toggle();
-    }
-
     this.subIndex = 0;
     setTimeout(() => {
       this.sub_tab =  ev.tabDtls.sub_menu.map(res =>({
@@ -421,8 +427,11 @@ export class InvestorStaticReportComponent implements OnInit {
 
   changeSubTab = (event) =>{
       this.sub_flag = event.tabDtls?.flag;
-      console.log(this.sub_flag);
       this.resetForm();
+      this.report_data = [];
+      if (this.state == 'collapsed') {
+        this.toggle();
+      }
     }
 
   filterGlobal = (ev) => {
@@ -444,12 +453,35 @@ export class InvestorStaticReportComponent implements OnInit {
     item: any;
   }) => {
 
-    this.filter.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
-    this.filter.get('pan_no').reset(searchRlt.item.first_client_pan);
+    this.filter.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
+    this.filter.get('pan_no').reset(searchRlt.item.pan);
     // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
     this.__isClientPending = false;
     this.searchResultVisibilityForClient('none');
+    if(this.filter.value.view_type == 'F'){
+      this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.client_id)
+    }
   };
+
+
+  /**
+   *
+   */
+  getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
+    if(id){
+      this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.filter.value.view_type}`)
+      .pipe(pluck('data'))
+      .subscribe((res:client[]) =>{
+       this.family_members = res;
+       this.filter.get('family_members').setValue(res.map((item:client) => ({pan:item.pan,client_name:item.client_name})))
+      })
+   }
+   else{
+       this.family_members = [];
+       this.filter.get('family_members').setValue([]);
+
+   }
+}
 
   /**
   *  evnt trigger on search particular client & after select client
@@ -525,31 +557,35 @@ export class InvestorStaticReportComponent implements OnInit {
   }
 
   searchInvestorReport = () => {
-    this.getfolioMaster(this.filter.value);
+    this.getfolioMaster(this.filter.getRawValue());
   }
 
 
   getfolioMaster = (fb) => {
     this.report_data = [];
-console.log(this.filter.getRawValue().is_all_client);
     if(
       this.filter.getRawValue().client_name != '' || this.filter.value.folio_no != ''
       || this.filter.getRawValue().is_all_client
     ){
-      console.log(`PASS`);
-      this.toggle();
-      let object = Object.assign({}, fb, {
-        ...fb,
-        select_all_client:this.filter.getRawValue().is_all_client,
-        brn_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.brn_cd, 'id') : '[]',
-        bu_type_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.bu_type_id, 'bu_code') : '[]',
-        euin_no: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.euin_no, 'euin_no') : '[]',
-        rm_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.rm_id, 'euin_no') : '[]',
-        sub_brk_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.sub_brk_cd, 'code') : '[]',
-        kyc_status: this.flag == 'K' ? (this.sub_flag == 'IW' ? fb.kyc_status : 'N') : (this.flag == 'A' ? fb.kyc_status : ''),
-        nominee_status: this.flag == 'N' ? (this.sub_flag == 'IW' ? fb.nominee_status : 'Pending') : '',
-        adhaar_pan_link_status: this.flag == 'A' ? (this.sub_flag == 'IW' ? fb.adhaar_pan_link_status : 'N') : ''
-      })
+       if(fb.view_type == 'F' && fb.client_name && fb.family_members.length == 0){
+          this.utility.showSnackbar(`Please Select family members`,2)
+          return
+       }
+        this.toggle();
+        const{family_members,...object}  = Object.assign({}, fb, {
+          ...fb,
+          family_members_pan:this.filter.value.view_type == 'F' ? this.utility.mapIdfromArray(fb.family_members.filter(item => item.pan),'pan') : '[]',
+          family_members_name:this.filter.value.view_type == 'F' ? this.utility.mapIdfromArray(fb.family_members.filter(item => !item.pan),'client_name') : '[]',
+          select_all_client:this.filter.getRawValue().is_all_client,
+          brn_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.brn_cd, 'id') : '[]',
+          bu_type_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.bu_type_id, 'bu_code') : '[]',
+          euin_no: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.euin_no, 'euin_no') : '[]',
+          rm_id: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.rm_id, 'euin_no') : '[]',
+          sub_brk_cd: this.btn_type == 'A' ? this.utility.mapIdfromArray(fb.sub_brk_cd, 'code') : '[]',
+          kyc_status: this.flag == 'K' ? (this.sub_flag == 'IW' ? fb.kyc_status : 'N') : (this.flag == 'A' ? fb.kyc_status : ''),
+          nominee_status: this.flag == 'N' ? (this.sub_flag == 'IW' ? fb.nominee_status : 'Pending') : '',
+          adhaar_pan_link_status: this.flag == 'A' ? (this.sub_flag == 'IW' ? fb.adhaar_pan_link_status : 'N') : ''
+        })
       console.log(object);
       // return;
       this.dbIntr

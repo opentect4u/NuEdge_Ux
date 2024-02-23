@@ -387,8 +387,10 @@
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p-table #primeTbl id="trxDt" [value]="transaction_amt_count_summary" [responsive]="true" [rowHover]="true"
-          styleClass="p-datatable-striped p-datatable-lg" responsiveLayout="scroll" [scrollable]="true"
+        <p-table #primeTbl id="trxDt" [value]="transaction_amt_count_summary"
+          [tableStyle]="{ 'min-width': '374rem' }"
+          styleClass="p-datatable-striped p-datatable-lg"
+          [scrollable]="true" [responsive]=true  responsiveLayout="scroll"
           [columns]="trxnAmtCountClm" [paginator]="true" [autoLayout]="true"
           [totalRecords]="transaction_amt_count_summary.length" [pageLinks]="3"
           [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
@@ -396,16 +398,26 @@
           [showCurrentPageReport]="true">
           <ng-template pTemplate="header">
             <tr>
-              <th *ngFor="let col of trxnAmtCountClm" [style.min-width]="col.width">
+              <th
+              pFrozenColumn
+              [frozen]="col.isFrozen"
+              *ngFor="let col of trxnAmtCountClm"
+              [style.max-width]="col.width"
+             >
                 {{ col.header }}
               </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-trxn let-i="rowIndex">
             <tr tabindex="999">
-              <td *ngFor="let col of trxnAmtCountClm"
+              <td
+              [style.max-width]="col.width"
+
+              *ngFor="let col of trxnAmtCountClm"
+              pFrozenColumn
+              [frozen]="col.isFrozen"
               [ngClass]="{'summaryCnt' :col.field != 'total_amt'}"
-               [style.min-width]="col.width">
+               >
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
                     <p class="m-0">
@@ -466,6 +478,66 @@
               </td>
             </tr>
           </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td *ngFor="let col of trxnAmtCountClm"
+                  pFrozenColumn
+                  [frozen]="col.isFrozen"
+                  class="p-0 flex-col"
+                  [style.max-width]="col.width"
+                  >
+                  <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="col.field == 'sl_no'"></ng-container>
+                    <!-- Category Name -->
+                    <ng-container *ngSwitchCase="col.field == 'cat_name'">
+                      <p class="m-0">Total</p>
+                    </ng-container>
+                    <!-- End -->
+                    <!-- Transaction Type -->
+                    <ng-container *ngSwitchCase="col.field == 'trxn_type'">
+                      <td class="process w-100">Process</td>
+                      <hr class="m-0 footerHR" />
+                      <td  class="rejection w-100">Rejection</td>
+                    </ng-container>
+                    <!-- End -->
+                    <!-- For Total Amount -->
+                    <ng-container *ngSwitchCase="col.field == 'total_amt'">
+                      <p class="m-0"
+                      [ngClass]="{'text-danger': total__transaction_summary[col.field] < 0}"
+                      >{{total__transaction_summary[col.field] ? total__transaction_summary[col.field].toFixed(2) : 0}}</p>
+                    </ng-container>
+                    <!-- End -->
+                      <!-- For Count-->
+                      <ng-container *ngSwitchCase="col.field.includes('count')">
+                        <td class="process w-100">
+                          <p class="m-0">
+                           {{total__transaction_summary[col.field]?.process ? (total__transaction_summary[col.field]?.process) : 0}}
+                          </p>
+                          </td>
+                          <hr class="m-0 footerHR" />
+                          <td  class="rejection w-100">
+                          <p class="m-0">
+                            {{total__transaction_summary[col.field]?.reject ? (total__transaction_summary[col.field]?.reject) : 0}}
+                          </p>
+                        </td>
+                      </ng-container>
+                      <!-- End -->
+                      <ng-container *ngSwitchDefault>
+                        <td class="process w-100">
+                          <p class="m-0">
+                            {{total__transaction_summary[col.field]?.process ? total__transaction_summary[col.field]?.process.toFixed(2) : 0}}
+                         </p>
+                          </td>
+                        <hr class="m-0 footerHR" />
+                        <td class="rejection w-100">
+                          <p class="m-0">
+                            {{total__transaction_summary[col.field]?.reject ? (total__transaction_summary[col.field]?.reject.toFixed(2)) : 0}}
+                           </p>
+                      </ng-container>
+                  </ng-container>
+                </td>
+            </tr>
+          </ng-template>
 
           <ng-template pTemplate="emptymessage" let-columns>
             <tr>
@@ -511,7 +583,9 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
 [tableStyle]="{ 'min-width': '374rem' }">
 <ng-template pTemplate="header">
   <tr>
-    <th *ngFor="let col of column" [pSortableColumn]="col.field" [style.max-width]="col.width"
+    <th *ngFor="let col of column"
+
+    [pSortableColumn]="col.field" [style.max-width]="col.width"
       [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
       {{ col.header }}
       <p-sortIcon [field]="col.field">

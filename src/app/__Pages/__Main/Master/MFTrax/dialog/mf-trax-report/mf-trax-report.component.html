@@ -2,7 +2,7 @@
 
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
   <div mat-dialog-title class="dialog-title">
-    <h2>Exchange Reports</h2>
+    <h2>MF Trax Reports</h2>
     <div class="btnIcon">
       <button mat-icon-button title="Minimize" (click)="minimize()">
         <mat-icon>remove</mat-icon>
@@ -21,25 +21,37 @@
 
   </div>
   <mat-dialog-content  class="p-5 d-flex justify-content-center align-item-center">
-    <p-card
-    header="Exchange Details Report">
+    <p-card>
+    <ng-template pTemplate="header">
+      <div class="d-flex
+      pt-4 px-4
+      align-items-center
+      justify-content-between">
+      <div>
+        <h5>MF Trax Report</h5>
+      </div>
+      <span class="p-input-icon-left ml-auto w-25">
+        <input pInputText class="form-control" type="text" (input)="filterGlobal($event)" placeholder="Search..." />
+    </span>
+    </div>
+    </ng-template>
 
     <p-table
     #primeTbl
     id="excDt"
-    [value]="exchangeMstData"
+    [value]="__mfTrx"
     [responsive]="true"
     [rowHover]="true"
     styleClass="p-datatable-striped p-datatable-lg"
     responsiveLayout="scroll"
     [scrollable]="true"
-    [columns]="column"
+    [columns]="__mfTraxColumn"
     [paginator]="true"
     columnResizeMode="expand"
       id="branchDt"
     scrollHeight="200px"
     [autoLayout]="true"
-    [totalRecords]="exchangeMstData.length"
+    [totalRecords]="__mfTrx.length"
     [pageLinks]="3"
     [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -52,7 +64,7 @@
     >
       <ng-template pTemplate="header">
           <tr >
-              <th  *ngFor="let col of column"
+              <th  *ngFor="let col of __mfTraxColumn"
               [pSortableColumn]="col.field !='delete' ? col.field : ''"
               [style.max-width]="col.width"
               pResizableColumn
@@ -63,9 +75,9 @@
               </th>
           </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-exchange  let-i="rowIndex">
+      <ng-template pTemplate="body" let-mf_trax  let-i="rowIndex">
         <tr tabindex="999">
-          <td *ngFor="let col of column"
+          <td *ngFor="let col of __mfTraxColumn"
           [style.max-width]="col.width"
           >
             <ng-container [ngSwitch]="true">
@@ -73,14 +85,14 @@
                 <b>{{i + 1}}</b>
              </ng-container>
               <ng-container *ngSwitchDefault>
-                <b [matTooltip]="exchange[col.field]">{{ exchange[col.field] ? exchange[col.field] : 'N/A' }}</b>
+                <b [matTooltip]="mf_trax[col.field]">{{ mf_trax[col.field] ? mf_trax[col.field] : 'N/A' }}</b>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'edit'">
-                <p-button icon="pi pi-pencil" (click)="populateDT(exchange)"
+                <p-button icon="pi pi-pencil" (click)="populateDT(mf_trax)"
                   styleClass="p-button-rounded p-button-primary"></p-button>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'delete'">
-                <p-button icon="pi pi-trash" (click)="delete(exchange,i)"
+                <p-button icon="pi pi-trash" (click)="delete(mf_trax,i)"
                   styleClass="p-button-rounded p-button-danger"></p-button>
               </ng-container>
             </ng-container>

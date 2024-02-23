@@ -116,7 +116,7 @@
 
                 </div>
                 <div class="col-sm-12 text-center my-3">
-                  <button pButton type="reset" class="p-button-lg p-button-danger mx-3" iconPos="left" icon="pi pi-refresh" label="Reset" ></button>
+                  <button pButton type="button" (click)="Reset()" class="p-button-lg p-button-danger mx-3" iconPos="left" icon="pi pi-refresh" label="Reset" ></button>
                   <button pButton type="submit" class="p-button-lg" iconPos="left" icon="pi pi-eye" label="Show" ></button>
                 </div>
                 </div>
@@ -247,13 +247,13 @@
                         </p>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'gain_loss' || col.field == 'ret_abs'
-                      || col.field == 'units' || col.field == 'curr_val'
+                      || col.field == 'tot_units' || col.field == 'curr_val'
                       || col.field == 'curr_nav' || col.field == 'idcw_reinv'
                       || col.field == 'idcwp'
                       || col.field == 'idcwr'
                       ">
                         <p class="m-0">
-                          {{liveMfPortFolio[col.field] ? (liveMfPortFolio[col.field] | number:'1.2-2') : (liveMfPortFolio[col.field] == 0 ? liveMfPortFolio[col.field] : 'N/A')}} {{col.field =='ret_abs' ? '%' : ''}}
+                          {{liveMfPortFolio[col.field] ? (liveMfPortFolio[col.field] | number:'1.2-2') : (liveMfPortFolio[col.field] == 0 ? liveMfPortFolio[col.field] : '0')}} {{col.field =='ret_abs' ? '%' : ''}}
                         </p>
                       </ng-container>
                       <ng-container *ngSwitchDefault>
@@ -264,6 +264,26 @@
                       </ng-container>
                   </td>
               </tr>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td *ngFor="let col of parent_column"
+                  [style]="'min-width : '+col.width"
+                  >
+                  <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                      <p class="m-0">Grand Total</p>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'inv_cost'
+                    || col.field == 'pur_price' || col.field == 'tot_units' || col.field == 'curr_val'
+                    || col.field == 'gain_loss' || col.field == 'ret_abs'">
+                      <p class="m-0">{{parentLiveMfPortFolio ? (parentLiveMfPortFolio[col.field] | number: '1.2-2') : '0.00'}} {{col.field == 'ret_abs' ? '%' : ''}}</p>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      </ng-container>
+                  </ng-container>
+              </td>
+            </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
@@ -314,6 +334,17 @@
                                                 {{data[col.field] ? (data[col.field] | date:'dd-MM-YYYY') : 'N/A'}}
                                               </span>
                                             </ng-container>
+                                            <ng-container *ngSwitchCase="col.field == 'pur_price'|| col.field == 'curr_val' || col.field == 'ret_cagr' || col.field == 'cumml_units'">
+                                              <span class="m-0">
+                                                {{data[col.field] ? (data[col.field] | number:'1.4-4') : '0'}}
+                                              </span>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="col.field == 'tot_tds' || col.field == 'tot_units'
+                                              || col.field == 'idcwr'|| col.field == 'idcw_reinv' || col.field == 'gain_loss' || col.field == 'ret_abs' || col.field == 'idcwp'">
+                                              <span class="m-0">
+                                                {{data[col.field] ? (data[col.field] | number:'1.4-4')  : '0'}} {{col.field == 'ret_abs' ? '%' : ''}}
+                                              </span>
+                                            </ng-container>
                                             <ng-container *ngSwitchDefault>
                                               <p class="m-0">
                                                 {{data[col.field] ? data[col.field] : 'N/A'}}
@@ -323,6 +354,27 @@
                                         <!-- </p> -->
                                       </td>
                                   </tr>
+                              </ng-template>
+                              <ng-template pTemplate="footer">
+                                <tr>
+                                  <td *ngFor="let col of child_column"
+                                      [style.min-width]="col.width"
+                                      [style.max-width]="col.width"
+                                      >
+                                      <ng-container [ngSwitch]="true">
+                                        <ng-container *ngSwitchCase="col.field == 'transaction_type'">
+                                          <p class="m-0">Total</p>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="col.field == 'tot_amount' || col.field == 'tot_tds' || col.field == 'cumml_units'
+                                        || col.field == 'tot_stamp_duty' || col.field == 'pur_price' || col.field == 'tot_units'
+                                        || col.field == 'curr_val' || col.field == 'gain_loss' || col.field == 'ret_abs'">
+                                          <p class="m-0">{{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | number: '1.2-2') : '0.00'}} {{col.field == 'ret_abs' ? '%' : ''}}</p>
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                          </ng-container>
+                                      </ng-container>
+                                  </td>
+                                </tr>
                               </ng-template>
                               <ng-template pTemplate="emptymessage">
                                   <tr>

@@ -243,8 +243,10 @@ export class ReportFilterComponent implements OnInit {
     this.getTrxnTypeMst(); // Holding AMC Master Data...
     /******** For Getting Month & Year  from Jan-1980 to Till Now */
     global.getMonthYears().then(MY => {
-      this.month_year = MY;
-      // this.searchFilter();
+      this.month_year = MY.reverse();
+      // if(this.flag == 'R'){
+      //   this.searchFilter();
+      // }
     }).catch(err => {
       // console.log(err);
     })
@@ -252,18 +254,24 @@ export class ReportFilterComponent implements OnInit {
   }
 
   getAllFinancialYears(){
-    var fiscalyear = "";
-    var today = new Date();
-    if ((today.getMonth() + 1) <=3) {
-      fiscalyear = (today.getFullYear() - 1) + "-" + today.getFullYear()
-    } else {
-      fiscalyear = today.getFullYear() + "-" + (today.getFullYear() + 1)
+    try{
+      const thisYear = (new Date()).getFullYear();
+      this.financial_year = [0, 1, 2, 3, 4,5,6,7,8,9,10,11].map((count) => `${(thisYear - count - 1).toString()}-${thisYear - count}`);
+      this.monthly_mis_filter_form.get('fin_year').setValue(this.financial_year[0])
     }
-    this.financial_year.push(fiscalyear);
-    this.monthly_mis_filter_form.get('fin_year').setValue(fiscalyear)
+    catch(err){
+        this.monthly_mis_filter_form.get('fin_year').setValue('');
+        this.financial_year=[]
+    }
+
+    // return yearArray.join();
   }
 
   ngAfterViewInit() {
+
+    if(this.flag == 'R'){
+      this.searchFilter();
+    }
 
      this.monthly_mis_filter_form.controls['view_by']
      .valueChanges
@@ -565,7 +573,7 @@ export class ReportFilterComponent implements OnInit {
 
   /***** SEARCH MONTHLY MIS REPORT*/
   searchFilter = () => {
-    // console.log(this.monthly_mis_filter_form.value);
+    console.log(this.monthly_mis_filter_form.value);
     let liveSipReportFilter = Object.assign({},this.monthly_mis_filter_form.value,{
       ...this.monthly_mis_filter_form.value,
       amc_id:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.amc_id,'id'),
@@ -581,7 +589,7 @@ export class ReportFilterComponent implements OnInit {
       trans_sub_type:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.trans_sub_type,'id'),
       mis_month:this.datePipe.transform(this.monthly_mis_filter_form.value.mis_month,'MM-YYYY'),
       upto: (this.monthly_mis_filter_form.value.view_by == 'D' || this.monthly_mis_filter_form.value.view_by == 'F') ? global.getActualVal(this.monthly_mis_filter_form.value.upto) : '',
-      month_year: this.monthly_mis_filter_form.value.view_by == 'M' ? global.getActualVal(this.date_range.inputFieldValue) : '',
+      month_year: this.monthly_mis_filter_form.value.view_by == 'M' ? global.getActualVal(this.date_range?.inputFieldValue) : '',
       fin_year:this.monthly_mis_filter_form.value.view_by == 'Y' ? global.getActualVal(this.monthly_mis_filter_form.value.fin_year) : '',
       period_type:this.monthly_mis_filter_form.value.view_by == 'Y' ? global.getActualVal(this.monthly_mis_filter_form.value.period_type) : ''
     })

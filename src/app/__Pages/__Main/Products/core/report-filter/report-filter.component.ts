@@ -926,7 +926,7 @@ export class ReportFilterComponent implements OnInit {
       // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
       this.searchResultVisibilityForClient('none');
       if(this.Rpt.value.view_type == 'F'){
-        this.getFamilyMembersAccordingTo_Id(searchRlt.item.id);
+        this.getFamilyMembersAccordingTo_Id(searchRlt.item.client_id);
       }
     };
 

@@ -4,5 +4,6 @@ export interface column{
     width?:string;
     "max-width"?:string;
   "min-width"?: string;
-    isVisible?:any
+    isVisible?:any;
+    isFrozen?:boolean;
 }

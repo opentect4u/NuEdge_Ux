@@ -480,183 +480,218 @@ export class trxnCountAmtSummaryColumn{
       {
         field:'sl_no',
         header:'Sl No',
-        width:"6rem"
+        width:"6rem",
+        isFrozen:true,
       },
       {
         field:'cat_name',
         header: 'Category',
-        width:"12rem"
+        width:"12rem",
+        isFrozen:true,
       },
       {
         field:'trxn_type',
         header: 'Trxn Type',
-        width:"10rem"
+        width:"10rem",
+        isFrozen:true,
       },
       {
         field:'pur_amt',
         header: 'Purchase Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'pur_count',
         header: 'Purchase Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'redemp_amt',
         header: 'Redemption Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'redemp_count',
         header: 'Redemption Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'switch_in_amt',
         header: 'Switch In Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'switch_in_count',
         header: 'Switch In Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'switch_out_amt',
         header: 'Switch Out Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'switch_out_count',
         header: 'Switch Out Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
 
 
       {
         field:'switch_in_merger_amt',
         header: 'Switch In Merger Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'switch_in_merger_count',
         header: 'Switch In Merger Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'switch_out_merger_amt',
         header: 'Switch Out Merger Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'switch_out_merger_count',
         header: 'Switch Out Merger Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
 
       {
         field:'sip_amt',
         header: 'SIP Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'sip_count',
         header: 'SIP Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
 
       {
         field:'stp_in_amt',
         header: 'STP In Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'stp_in_count',
         header: 'STP In Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'stp_out_amt',
         header: 'STP Out Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'stp_out_count',
         header: 'STP Out Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
 
       {
         field:'swp_amt',
         header: 'SWP Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'swp_count',
         header: 'SWP Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
 
       {
         field:'nfo_amt',
         header: 'NFO Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'nfo_count',
         header: 'NFO Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'transfer_in_amt',
         header: 'Transfer In Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'transfer_in_count',
         header: 'Transfer In Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'transfer_out_amt',
         header: 'Transfer Out Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'transfer_out_count',
         header: 'Transfer Out Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'divi_payout_amt',
         header: 'IDCW Payout Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'divi_payout_count',
         header: 'IDCW Payout Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'divi_reinv_amt',
         header: 'IDCW Reinv. Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'divi_reinv_count',
         header: 'IDCW Reinv. Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'other_amt',
         header: 'NFT Amount',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'other_count',
         header: 'NFT Count',
-        width:"15rem"
+        width:"15rem",
+        isFrozen:false,
       },
       {
         field:'total_amt',

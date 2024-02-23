@@ -99,15 +99,15 @@ export class ColumnTrend{
     },
     {
       field:'monthly',
-      header:'Monthly'
+      header:'Duration'
     },
     {
       field:'monthly_inflow',
-      header:'Monthly Inflow'
+      header:'Gross Inflow'
     },
     {
       field:'monthly_outflow',
-      header:'Monthly Outflow'
+      header:'Outflow'
     },
     {
       field:'monthly_net_inflow',

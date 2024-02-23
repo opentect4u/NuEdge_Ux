@@ -72,7 +72,7 @@
             </ng-container>
             <ng-container *ngIf="monthly_mis_filter_form.value.view_by == 'Y'">
               <div class="col-sm-3">
-                <label for="upto">Financial year</label>
+                <label for="upto">Financial Year</label>
                     <select class="form-control" formControlName="fin_year">
                         <option [value]="finYear" *ngFor="let finYear of financial_year">{{finYear}}</option>
                     </select>
