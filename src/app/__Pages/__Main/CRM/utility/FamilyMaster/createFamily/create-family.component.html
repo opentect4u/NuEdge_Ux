@@ -3,36 +3,16 @@
   <div class="col-sm-12">
      <mat-card>
         <mat-card-content class="p-3">
-          <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center justify-content-between border-bottom py-2">
               <ul id="progress"><li class="progess_active">Step-1  (Select Family Head) </li></ul>
                <div class="input__container">
                 <form [formGroup]="search_family_form">
-
-                  <!-- <div class="p-inputgroup">
-                      <span class="p-inputgroup-addon p-0">
-                        <button mat-button [matMenuTriggerFor]="menu">
-                          Search By {{search_family_form.get('family_head_search_by').value}}&nbsp;<mat-icon>arrow_drop_down</mat-icon>
-                        </button>
-                        <mat-menu #menu="matMenu" xPosition="before">
-                           <button mat-menu-item (click)="getMenuItem(item)" *ngFor="let item of search_by">
-                            <mat-icon>{{item.icon}}</mat-icon>
-                            <span>{{item.name}}</span>
-                          </button>
-                        </mat-menu>
-                      </span>
-                        <input type="text"
-                        formControlName="family_head_name"
-                        pInputText
-                        placeholder="Search..."
-                        class="PrimeInput">
-                  </div> -->
                   <input type="text"
                   formControlName="family_head_name"
                   placeholder="Search family head by Name or Pan"
                   class="form-control">
                 </form>
                </div>
-
           </div>
           <div class="row mt-3">
             <div class="col-sm-12">
@@ -99,7 +79,7 @@
 
 
 <!-- STEP 2 -->
-<div class="row flexSec mb-5">
+<div class="row flexSec">
   <div class="col-sm-12">
      <mat-card>
         <mat-card-content class="p-3 m-0">
@@ -119,7 +99,7 @@
             <div class="col-sm-12">
               <!-- TABLE -->
 
-              <p-table #dt [value]="family_member | clientFltr:selectedFamily_header" [rows]="10" [paginator]="true"
+              <p-table #pTble [value]="family_member | clientFltr:selectedFamily_header" [rows]="10" [paginator]="true"
                [autoLayout]="true"
                [selectionMode]="'single'"
                [responsiveLayout]="'scroll'"
@@ -199,11 +179,127 @@
             </div>
           </div>
         </mat-card-content>
-        <mat-card-footer align="end" class="w-100 p-3">
+        <!-- <mat-card-footer align="end" class="w-100 p-3">
             <p-button label="Create Family" class="p-button-lg" (click)="createFamily()"></p-button>
-        </mat-card-footer>
+        </mat-card-footer> -->
       </mat-card>
   </div>
 
 </div>
 <!-- END -->
+
+
+<!-- For Showing Selecting Members  -->
+    <div class="row">
+      <div class="col-sm-7">
+            <mat-card class="my-5">
+              <mat-card-header>
+                <mat-card-title>Selected Family Members</mat-card-title>
+
+              </mat-card-header>
+              <mat-card-content style="overflow-x:auto;">
+                <table style="width:100%" id="FamilyMembers">
+                  <thead>
+                    <tr>
+                        <th *ngFor="let clmn of selected_family_member_column">
+                            {{clmn.header}}
+                        </th>
+                        <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngIf="selectedFamily_member.length > 0;else noMembers_selected">
+                      <tr *ngFor="let members of selectedFamily_member;let i=index">
+                        <td *ngFor="let clmn of selected_family_member_column">
+                          <ng-container *ngIf="clmn.field != 'sl_no';else sl_no">
+                                <p class="m-0">{{members[clmn.field] ? members[clmn.field] : 'N/A'}}</p>
+                          </ng-container>
+                          <ng-template #sl_no>
+                            {{i + 1}}
+                          </ng-template>
+                        </td>
+                        <td>
+                          <button mat-icon-button align="end" (click)="deleteMembers(members,i)">
+                            <mat-icon class="text-danger">delete</mat-icon>
+                          </button>
+                        </td>
+                    </tr>
+                    </ng-container>
+                    <ng-template #noMembers_selected>
+                        <tr>
+                           <td [attr.colspan]="(selected_family_member_column.length + 1)" class="p-3 text-center">
+                              <p class="text-center m-0">No Members Selected</p>
+                           </td>
+                        </tr>
+                    </ng-template>
+
+                  </tbody>
+
+                </table>
+
+
+              </mat-card-content>
+            </mat-card>
+      </div>
+      <div class="col-sm-5 d-flex align-items-end justify-content-end">
+        <p-button label="Create Family" class="p-button-lg my-5" (click)="createFamily()"></p-button>
+      </div>
+    </div>
+<!-- End -->
+
+<!-- Confirm Submission of Create Family Members -->
+<p-dialog
+[(visible)]="visible"
+[modal]="true"
+[draggable]="false"
+[maximizable]="false"
+[resizable]="false"
+[style]="{width: '80vw'}">
+<ng-template  pTemplate="header">
+  <h5>Family members &  Family head Details</h5>
+</ng-template>
+
+    <table style="width:100%" id="FamilyMembers">
+      <thead>
+        <tr>
+            <th *ngFor="let clmn of selected_family_member_column">
+                {{clmn.header}}
+            </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="confirm_selected_family_members.length > 0;else noMembers_selected">
+          <tr *ngFor="let members of confirm_selected_family_members;let i=index">
+            <td *ngFor="let clmn of selected_family_member_column">
+              <ng-container *ngIf="clmn.field != 'sl_no';else sl_no">
+                    <p class="m-0"
+                    [ngClass]="{'text-success': i == 0}"
+                    [ngStyle]="{'font-weight': i == 0 ? 600 : 500}"
+                    >{{members[clmn.field] ? members[clmn.field] : 'N/A'}}</p>
+              </ng-container>
+              <ng-template #sl_no>
+                {{i + 1}}
+              </ng-template>
+            </td>
+
+        </tr>
+        </ng-container>
+        <ng-template #noMembers_selected>
+            <tr>
+               <td [attr.colspan]="(selected_family_member_column.length + 1)" class="p-3 text-center">
+                  <p class="text-center m-0">No Members Selected</p>
+               </td>
+            </tr>
+        </ng-template>
+
+      </tbody>
+
+    </table>
+    <ng-template  pTemplate="footer">
+      <!-- <h5>Family members &  Family head Details</h5>
+       -->
+        <p-button label="Confirm" class="p-button-lg"></p-button>
+
+    </ng-template>
+</p-dialog>
+<!-- End -->

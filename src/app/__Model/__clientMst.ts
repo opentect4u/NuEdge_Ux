@@ -36,4 +36,6 @@ export interface client {
     pertner_dtls?:any;
     identification_number?:string;
     country?:any;
+    family_count?:number;
+    client_addr?:string;
   }

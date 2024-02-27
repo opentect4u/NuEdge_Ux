@@ -66,3 +66,44 @@ DIVIDER CSSS
 
 
 
+
+/* Start  */
+#FamilyMembers {
+  font-family: 'Montserrat', sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#FamilyMembers td, #FamilyMembers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+
+}
+
+#FamilyMembers tr:nth-child(even){background-color: #f2f2f2;}
+
+#FamilyMembers tr:hover {background-color: #ddd;}
+
+#FamilyMembers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+  text-align: center !important;
+    font-weight: 400;
+    border: 1px solid #54b08e;
+    font-size:11px!important
+}
+#FamilyMembers td{
+  text-align: center!important;
+  font-size:11px!important
+
+}
+
+#FamilyMembers td>p{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/*** End*/

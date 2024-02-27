@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
@@ -6,6 +6,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import relationship from '../../../../../../../assets/json/Master/relationShip.json'
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'app-create-family',
   templateUrl: './create-family.component.html',
@@ -28,16 +29,26 @@ export class CreateFamilyComponent implements OnInit {
   family_tbl_column:column[] = FamilyClientColumn.column.filter(item => item.isVisible.includes('H'))
   family_member_tbl_column:column[] = FamilyClientColumn.column.filter(item => item.isVisible.includes('M'))
 
+  /**** Family Members Column */
+   selected_family_member_column:column[] = FamilyClientColumn.family_member_clm;
+   confirm_selected_family_members = [];
+  /***** END */
+
+  @ViewChild('pTble') primeTable:Table
+
   /**
    * Holding Family Head Details
    */
-  family_head:client[] = [];
+  family_head = [];
 
  /**
    * Holding Family Member Details
    */
     family_member:client[] = [];
 
+    /** For Dialog Visibility */
+    visible:boolean = false;
+    /*** End */
 
   /**
    *
@@ -80,15 +91,23 @@ export class CreateFamilyComponent implements OnInit {
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((dt) =>
-        dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+        dt?.length > 1 ? this.__dbIntr.searchItems('/searchClientWithoutFamily', dt) : []
       ),
-      map((x: any) => x.data)
+      map(
+        (x: any) => x.data.filter((item:client) => item.family_count == 0)
+      )
     )
     .subscribe({
       next: (value) => {
         console.log(value)
+        const dt = value.map((item:client) =>{
+              const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
+              console.log(arr);
+              item.client_addr = arr.toString();
+              return item;
+        })
         this.selectedFamily_header = null
-        this.family_head = value.data;
+        this.family_head = dt;
         // this.searchResultVisibilityForClient('block');
         this.search_family_form.patchValue({
             family_head_pan:''
@@ -112,15 +131,21 @@ export class CreateFamilyComponent implements OnInit {
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((dt) =>
-        dt?.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+        dt?.length > 1 ? this.__dbIntr.searchItems('/searchClientWithoutFamily', `${dt}`) : []
       ),
-      map((x: any) => x.data)
+      map((x: any) => x.data.filter((item:client) => item.family_count == 0))
     )
     .subscribe({
       next: (value) => {
         console.log(value)
+        const dt = value.map((item:client) =>{
+          const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
+          console.log(arr);
+          item.client_addr = arr.toString();
+          return item;
+        })
         // this.selectedFamily_member = this.selectedFamily_member;
-        this.family_member = [...this.selectedFamily_member,...value.data];
+        this.family_member = [...this.selectedFamily_member,...dt];
         // this.searchResultVisibilityForClient('block');
         this.search_family_form.patchValue({
             family_member_pan:''
@@ -151,22 +176,46 @@ export class CreateFamilyComponent implements OnInit {
 
 
   createFamily = () =>{
-  //  console.log(this.selectedFamily_member);
-  //  console.log(Object.values(this.selectedFamily_header));
-  console.log(this.selectedFamily_member);
-  console.log(this.selectedFamily_header);
-   if(this.selectedFamily_member.length == 0){
-        //... show Error message
-        this.utilty.showSnackbar(`Please select family member in step-2`,0);
-   }
-   else if(this.selectedFamily_header == null){
-      //... show Error message
+    this.confirm_selected_family_members = [];
+   if(this.selectedFamily_header == null){
       this.utilty.showSnackbar(`Please select family head in step-1`,0);
+      return;
    }
-   else if(!this.selectedFamily_member.every(item => item.relation)){
-    this.utilty.showSnackbar(`Please select relationship of selected members with family head in step-2`,0);
+   else if(this.selectedFamily_member.length == 0){
+    this.utilty.showSnackbar(`Please select family member in step-2`,0);
+    return;
    }
-   else{
+    this.confirm_selected_family_members = [...[this.selectedFamily_header],...this.selectedFamily_member]
+    this.visible = true;
+    // console.log(this.selectedFamily_member);
+    // const dt = Object.assign({},
+    //   {
+    //     family_head_id:this.selectedFamily_header?.id,
+    //     family_members:JSON.stringify(
+    //       this.selectedFamily_member.filter(item => item.id != this.selectedFamily_header?.id).map((item) => ({id:item.id,relationship:item.relation}))
+    //     )
+    //   })
+    //   // console.log(dt.family_members)
+    //   return;
+    //     this.__dbIntr.api_call(1,'/clientFamilyAddEdit',this.utilty.convertFormData(dt))
+    //     .pipe(pluck('suc'))
+    //     .subscribe(res =>{
+    //       if(res == 1){
+    //         this.selectedFamily_header = null;
+    //         this.selectedFamily_member = [];
+    //         this.family_head = [];
+    //         this.family_member = [];
+    //         this.search_family_form.get('family_head_name').setValue('',{emitEvent:false})
+    //         this.search_family_form.get('family_member_name').setValue('',{emitEvent:false})
+    //         this.search_family_form.get('family_head_pan').setValue('',{emitEvent:false})
+    //         this.search_family_form.get('family_member_pan').setValue('',{emitEvent:false})
+    //       }
+    //       this.utilty.showSnackbar(res == 1 ? 'Success!! Family created successfully' : 'Error!! Something went wrong',res)
+    //     })
+  }
+
+
+  confirmaddFamilyMembers = () =>{
     const dt = Object.assign({},
       {
         family_head_id:this.selectedFamily_header?.id,
@@ -174,29 +223,39 @@ export class CreateFamilyComponent implements OnInit {
           this.selectedFamily_member.filter(item => item.id != this.selectedFamily_header?.id).map((item) => ({id:item.id,relationship:item.relation}))
         )
       })
-      console.log(dt.family_members)
-        this.__dbIntr.api_call(1,'/clientFamilyAddEdit',this.utilty.convertFormData(dt))
-        .pipe(pluck('suc'))
-        .subscribe(res =>{
-          // console.log(res);
-          if(res == 1){
-            this.selectedFamily_header = null;
-            this.selectedFamily_member = [];
-            this.family_head = [];
-            this.family_member = [];
-            this.search_family_form.get('family_head_name').setValue('',{emitEvent:false})
-            this.search_family_form.get('family_member_name').setValue('',{emitEvent:false})
-            this.search_family_form.get('family_head_pan').setValue('',{emitEvent:false})
-            this.search_family_form.get('family_member_pan').setValue('',{emitEvent:false})
-          }
-          this.utilty.showSnackbar(res == 1 ? 'Success!! Family created successfully' : 'Error!! Something went wrong',res)
-        })
-   }
+    this.__dbIntr.api_call(1,'/clientFamilyAddEdit',this.utilty.convertFormData(dt))
+    .pipe(pluck('suc'))
+    .subscribe(res =>{
+      if(res == 1){
+        this.selectedFamily_header = null;
+        this.selectedFamily_member = [];
+        this.family_head = [];
+        this.family_member = [];
+        this.search_family_form.get('family_head_name').setValue('',{emitEvent:false})
+        this.search_family_form.get('family_member_name').setValue('',{emitEvent:false})
+        this.search_family_form.get('family_head_pan').setValue('',{emitEvent:false})
+        this.search_family_form.get('family_member_pan').setValue('',{emitEvent:false})
+      }
+      this.utilty.showSnackbar(res == 1 ? 'Success!! Family created successfully' : 'Error!! Something went wrong',res)
+    })
   }
+
+
   checkSelected = (family_head) =>{
     console.log(family_head);
 
       console.log(this.selectedFamily_header);
+  }
+
+  deleteMembers = (members:client,index:number) =>{
+      // console.log(members);
+      console.log(index);
+      this.selectedFamily_member.splice(index,1);
+      // console.log(this.selectedFamily_member)
+      this.primeTable.clearState();
+      this.primeTable.reset();
+
+
   }
 }
 
@@ -272,6 +331,29 @@ export class FamilyClientColumn{
       header:"Addres",
       width:'28rem',
       isVisible:['M']
+    },
+  ]
+
+  public static family_member_clm:column[] = [
+    {
+      field:'sl_no',
+      header:"Sl No.",
+    },
+    {
+      field:'client_name',
+      header:"Members",
+    },
+    {
+      field:'relation',
+      header:"Relation",
+    },
+    {
+      field:'client_code',
+      header:"Client ID",
+    },
+    {
+      field:'pan',
+      header:"PAN",
     },
   ]
 

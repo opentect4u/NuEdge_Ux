@@ -336,7 +336,7 @@
                             "menu_name": "Delete Family",
                             "has_submenu": "N",
                             "url": "/main/crm/utility",
-                            "title":"Update Family",
+                            "title":"Delete Family",
                             "icon": "grade",
                             "img":"",
                             "sub_menu":[]

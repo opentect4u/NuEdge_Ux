@@ -669,7 +669,7 @@ export class ReportFilterComponent implements OnInit {
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
-          dt?.length > 1 ? this.dbIntr.searchItems('/searchClient',
+          dt?.length > 1 ? this.dbIntr.searchItems('/searchWithClient',
           dt+'&view_type='+this.Rpt.value.view_type
           ) : []
 

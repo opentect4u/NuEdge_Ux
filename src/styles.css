@@ -582,6 +582,10 @@ mat-card {
   background: #10486b;
   border: 1px solid #10486b;
   border: none!important;
+  padding: 1rem 1.25rem!important;
+  font-size: 2rem!important;
+  border-radius: 3px!important;
+
 }
 /* .p-panel .p-panel-header {
   border: 1px solid #dee2e6;
@@ -882,7 +886,8 @@ color: #ffffff;
   font-weight: 600!important;
 }
 .p-component-overlay {
-  background-color: rgb(201 201 201 / 40%)!important;
+  /* background-color: rgb(201 201 201 / 40%)!important; */
+  background-color: rgb(8 8 8 / 40%) !important;
   transition-duration: 0.2s!important;
 }
 
@@ -928,7 +933,7 @@ color: #ffffff;
 }
 
 .p-dialog .p-dialog-content {
-background: #ededed!important;
+/* background: #ededed!important; */
 padding: 2rem 1.5rem 2rem 1.5rem!important;
 }
 

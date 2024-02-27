@@ -6,7 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 import { DropdownModule } from 'primeng/dropdown';
 import { ClientFilterPipe } from 'src/app/__Pipes/clientFilter.pipe';
-
+import { DialogModule } from 'primeng/dialog';
 const routes:Routes =[
    {
      path:'',
@@ -24,7 +24,9 @@ const routes:Routes =[
     CommonModule,
     RouterModule.forChild(routes),
     SharedModule,
-    DropdownModule
+    DropdownModule,
+    DialogModule,
+
   ]
 })
 export class CreateFamilyModule { }
