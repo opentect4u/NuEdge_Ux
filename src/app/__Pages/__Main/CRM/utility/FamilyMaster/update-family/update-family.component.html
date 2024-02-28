@@ -1,0 +1,263 @@
+<div class="row flexSec">
+  <div class="col-sm-12">
+    <mat-card>
+      <mat-card-header class="border-bottom">
+        <mat-card-title>Update Family</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-2 px-3">
+        <form autocomplete="off" [formGroup]="family_head_search" (ngSubmit)="searchFamilyMembers()" class="w-100">
+          <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-6 my-2">
+              <div class="formGroup row">
+                <div class="col-sm-3">
+                  <label for="family_head_name">Search Family Head</label>
+                </div>
+                <div class="col-sm-9">
+                  <app-core-srch [label]="" [placeholder]="'Search By Name Or PAN'"
+                  [isTopDefined]="'32%'"
+                    [isPending]="__is__spinner_family_head" [listItems]="family_head_mst" [flag]="'C'"
+                    [noDataFoundTitle]="'Sorry!! No Records Found'"
+                    [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                    [propertiesToShow]="['client_name','pan']" formControlName="family_head_name"
+                    [displayMode]="displayMode_forClient" (setDisplayMode)="displayMode_forClient = $event"
+                    (selectedItems)="getSelectedItemsFromParent($event)"></app-core-srch>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3 d-flex align-items-center justify-content-start">
+                   <p-button type="submit" class="p-button-lg" label="Show"></p-button>
+            </div>
+            <div class="col-sm-1"></div>
+          </div>
+        </form>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-sm-12 my-2">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+                Selected Existing Family Members
+          </mat-card-title>
+      </mat-card-header>
+        <mat-card-content>
+          <p-table #dt [value]="getFamilyMemberMstDT"
+          [rows]="10" [paginator]="true"
+           [autoLayout]="true"
+           [selectionMode]="'single'"
+            [scrollable]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            styleClass="p-datatable-lg"
+            [showCurrentPageReport]="true">
+          <ng-template pTemplate="header">
+              <tr>
+                  <th *ngFor="let col of family_tbl_column"
+                      pSortableColumn="{{col.field}}">
+                    {{col.header}}
+                    <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                  </th>
+                  <th style="max-width:5rem">Delete</th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-family_header let-i="rowIndex">
+              <tr>
+                  <td *ngFor="let col of family_tbl_column">
+                     <p class="m-0"
+                      [ngClass]="{'text-success':(i == 0 && col.field == 'client_name')}"
+                      [ngStyle]="{'font-weight': (i == 0 && col.field == 'client_name')  ? 600 : 500}"
+                     > {{ family_header[col.field] ? family_header[col.field] : 'N/A' }}</p>
+                  </td>
+                  <td  style="max-width:5rem">
+                    <button pButton icon="pi pi-trash" *ngIf="i > 0" class="p-button-danger p-button-text"></button>
+                  </td>
+
+              </tr>
+
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-family_header>
+            <tr>
+              <td [attr.colspan]="(family_tbl_column.length + 1)">
+                <h4>No Records Found</h4>
+              </td>
+            </tr>
+          </ng-template>
+      </p-table>
+        </mat-card-content>
+      </mat-card>
+      <div class="my-2 d-flex align-items-center">
+        <p class="m-0">Do you want to add members?&nbsp;</p> <button (click)="toggle_family_members= !toggle_family_members" pButton type="button" label="Click Here"
+        class="p-button-link"></button>
+      </div>
+
+  </div>
+  <div class="col-sm-12 mb-2" *ngIf="toggle_family_members">
+      <mat-card>
+        <mat-card-header class="border-bottom">
+          <mat-card-title>Select Family Members</mat-card-title>
+        </mat-card-header>
+            <mat-card-content>
+
+              <div class="row">
+                <div class="col-sm-12">
+                  <form autocomplete="off" [formGroup]="family_head_search" class="w-100">
+                    <div class="row">
+                      <div class="col-sm-2"></div>
+                      <div class="col-sm-6 my-2">
+                        <div class="formGroup row">
+                          <div class="col-sm-3">
+                            <label for="family_head_name">Search Family Members</label>
+                          </div>
+                          <div class="col-sm-9">
+                            <input type="text"
+                            formControlName="family_member_name"
+                            placeholder="Search family member by Name or Pan"
+                            class="form-control">
+                            <!-- <app-core-srch [label]="" [placeholder]="'Search By Name Or PAN'"
+                            [isTopDefined]="'32%'"
+                              [isPending]="__is__spinner_family_member" [listItems]="family_head_mst" [flag]="'C'"
+                              [noDataFoundTitle]="'Sorry!! No Records Found'"
+                              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                              [propertiesToShow]="['client_name','pan']" formControlName="family_member_name"
+                              [displayMode]="displayMode_forMember" (setDisplayMode)="displayMode_forMember = $event"
+                              (selectedItems)="getSelectedMembersFromParent($event)"></app-core-srch> -->
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 d-flex align-items-center justify-content-start">
+                             <!-- <p-button type="submit" class="p-button-lg" label="Show"></p-button> -->
+                      </div>
+                      <div class="col-sm-1"></div>
+                    </div>
+                  </form>
+                </div>
+                <div class="col-sm-12">
+                  <p-table #pTble [value]="newMembersList" [rows]="10" [paginator]="true"
+                  [autoLayout]="true"
+                  loadingIcon="pi pi-spinner pi-spin"
+                  [loading]="__is__spinner_family_member"
+                  [selectionMode]="'single'"
+                  [responsiveLayout]="'scroll'"
+                  [responsive]="true"
+                 [scrollable]="true"
+                   [(selection)]="selectedFamily_member" [rowHover]="true" dataKey="id"
+                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                   styleClass="p-datatable-lg"
+                   [tableStyle]="{ 'min-width': '126rem' }"
+                   [showCurrentPageReport]="true">
+                 <ng-template pTemplate="header">
+                     <tr>
+                         <th [style]="'max-width:4rem'"></th>
+                         <th *ngFor="let col of family_tbl_column"
+                             pSortableColumn="{{col.field}}">
+                           {{col.header}}
+                           <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                         </th>
+                     </tr>
+                 </ng-template>
+                 <ng-template pTemplate="body" let-family_member let-i="rowIndex">
+                     <tr>
+                         <td [style]="'max-width:4rem'">
+                             <p-tableCheckbox  [value]="family_member"></p-tableCheckbox>
+                         </td>
+
+                         <td *ngFor="let col of family_tbl_column"
+                         [pEditableColumn]="family_member.relation" pEditableColumnField="relation_ship"
+                         >
+                         <ng-container [ngSwitch]="true">
+                           <ng-container *ngSwitchCase="col.field == 'relation_ship'">
+                                         <p-dropdown [options]="relation"
+                                         [filter]="true" filterBy="relation" [showClear]="true" placeholder="Select Relation"
+                                         appendTo="body" [(ngModel)]="family_member.relation"
+                                         optionLabel="relation"
+                                         optionValue="relation"
+                                         [style]="{'width':'100%'}"></p-dropdown>
+                           </ng-container>
+                           <ng-container *ngSwitchDefault>
+                                   <p class="m-0">
+                                     {{ family_member[col.field] ? family_member[col.field] : 'N/A' }}
+                                   </p>
+                           </ng-container>
+                           </ng-container>
+                          </td>
+
+                     </tr>
+                 </ng-template>
+                 <ng-template pTemplate="emptymessage" let-family_header>
+                   <tr>
+                     <td [attr.colspan]="(family_tbl_column.length + 1)">
+                       <h4>No Records Found</h4>
+                     </td>
+                   </tr>
+                 </ng-template>
+             </p-table>
+                </div>
+              </div>
+
+            </mat-card-content>
+      </mat-card>
+
+  </div>
+</div>
+
+<!-- For Showing Selecting Members  -->
+<div class="row" *ngIf="toggle_family_members">
+  <div class="col-sm-7">
+        <mat-card class="my-5">
+          <mat-card-header>
+            <mat-card-title>Selected Family Members</mat-card-title>
+
+          </mat-card-header>
+          <mat-card-content style="overflow-x:auto;">
+            <table style="width:100%" id="FamilyMembers">
+              <thead>
+                <tr>
+                    <th *ngFor="let clmn of selected_family_member_column">
+                        {{clmn.header}}
+                    </th>
+                    <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="selectedFamily_member.length > 0;else noMembers_selected">
+                  <tr *ngFor="let members of selectedFamily_member;let i=index">
+                    <td *ngFor="let clmn of selected_family_member_column">
+                      <ng-container *ngIf="clmn.field != 'sl_no';else sl_no">
+                            <p class="m-0">{{members[clmn.field] ? members[clmn.field] : 'N/A'}}</p>
+                      </ng-container>
+                      <ng-template #sl_no>
+                        {{i + 1}}
+                      </ng-template>
+                    </td>
+                    <td>
+                      <button mat-icon-button align="end" (click)="deleteMembers(members,i)">
+                        <mat-icon class="text-danger">delete</mat-icon>
+                      </button>
+                    </td>
+                </tr>
+                </ng-container>
+                <ng-template #noMembers_selected>
+                    <tr>
+                       <td [attr.colspan]="(selected_family_member_column.length + 1)" class="p-3 text-center">
+                          <p class="text-center m-0">No Members Selected</p>
+                       </td>
+                    </tr>
+                </ng-template>
+
+              </tbody>
+
+            </table>
+
+
+          </mat-card-content>
+        </mat-card>
+  </div>
+</div>
+
+<div class="row my-2">
+  <div class="col-sm-5">
+    <p-button label="Update Family" class="p-button-lg my-5" (click)="UpdateFamily()"></p-button>
+  </div>
+</div>
+<!-- End -->

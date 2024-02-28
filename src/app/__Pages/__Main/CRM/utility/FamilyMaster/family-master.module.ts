@@ -19,7 +19,14 @@ const routes:Routes =[{
           {
              path:'list',
              loadChildren:()=> import('./FamilyList/family-list.module').then(family_list => family_list.FamilyListModule),
-
+          },
+          {
+            path:'deleteFamily',
+            loadChildren:() => import('./delete-family/delete-family.module').then(m => m.DeleteFamilyModule)
+          },
+          {
+            path:'updateFamily',
+            loadChildren:()=> import('./update-family/update-family.module').then(updateFamily => updateFamily.UpdateFamilyModule)
           }
         ]
     }]

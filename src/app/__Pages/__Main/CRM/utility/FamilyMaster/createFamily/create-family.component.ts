@@ -34,7 +34,8 @@ export class CreateFamilyComponent implements OnInit {
    confirm_selected_family_members = [];
   /***** END */
 
-  @ViewChild('pTble') primeTable:Table
+  @ViewChild('pTble') primeTable:Table;
+
 
   /**
    * Holding Family Head Details
@@ -102,7 +103,6 @@ export class CreateFamilyComponent implements OnInit {
         console.log(value)
         const dt = value.map((item:client) =>{
               const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
-              console.log(arr);
               item.client_addr = arr.toString();
               return item;
         })
@@ -140,7 +140,6 @@ export class CreateFamilyComponent implements OnInit {
         console.log(value)
         const dt = value.map((item:client) =>{
           const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
-          console.log(arr);
           item.client_addr = arr.toString();
           return item;
         })
@@ -242,20 +241,21 @@ export class CreateFamilyComponent implements OnInit {
 
 
   checkSelected = (family_head) =>{
-    console.log(family_head);
-
-      console.log(this.selectedFamily_header);
+    // console.log(family_head);
+    // console.log(this.selectedFamily_header);
   }
 
   deleteMembers = (members:client,index:number) =>{
-      // console.log(members);
-      console.log(index);
-      this.selectedFamily_member.splice(index,1);
-      // console.log(this.selectedFamily_member)
-      this.primeTable.clearState();
-      this.primeTable.reset();
-
-
+    // this.selectedFamily_member.splice(index,1);
+    // this.primeTable.clearState();
+    // this.primeTable.reset();
+    // console.log(this.selectedFamily_member.splice(index,1));
+    // const selectedMembers =
+    // const dt  = this.selectedFamily_member.splice(index,1);
+    // const dt = this.selectedFamily_member;
+    this.selectedFamily_member = this.selectedFamily_member.filter((item:client) => item.id != members.id)
+    // const td
+    // this.primeTable
   }
 }
 

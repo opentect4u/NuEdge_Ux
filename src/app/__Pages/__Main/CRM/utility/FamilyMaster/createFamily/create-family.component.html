@@ -104,14 +104,14 @@
                [selectionMode]="'single'"
                [responsiveLayout]="'scroll'"
                [responsive]="true"
-             [scrollable]="true"
-             loadingIcon="pi pi-spinner pi-spin"
-             [loading]="__is__spinner_family_member"
-              [(selection)]="selectedFamily_member" [rowHover]="true" dataKey="id"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-              styleClass="p-datatable-lg"
-              [tableStyle]="{ 'min-width': '126rem' }"
-               [showCurrentPageReport]="true">
+              [scrollable]="true"
+              loadingIcon="pi pi-spinner pi-spin"
+              [loading]="__is__spinner_family_member"
+                [(selection)]="selectedFamily_member" [rowHover]="true" dataKey="id"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                styleClass="p-datatable-lg"
+                [tableStyle]="{ 'min-width': '126rem' }"
+                [showCurrentPageReport]="true">
               <ng-template pTemplate="header">
                   <tr>
                       <th [style]="'max-width:4rem'"></th>

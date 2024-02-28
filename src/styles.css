@@ -350,6 +350,7 @@ tr.mat-header-row {
 
 .mat-card-header {
   justify-content: space-between !important;
+  align-items: center!important;
 }
 
 .mat-list-item .mat-list-item-content,
