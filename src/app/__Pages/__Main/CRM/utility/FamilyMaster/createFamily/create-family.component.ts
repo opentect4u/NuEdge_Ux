@@ -102,8 +102,8 @@ export class CreateFamilyComponent implements OnInit {
       next: (value) => {
         console.log(value)
         const dt = value.map((item:client) =>{
-              const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
-              item.client_addr = arr.toString();
+              const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+              item.client_addr = arr.filter(item => {return item}).toString();
               return item;
         })
         this.selectedFamily_header = null
@@ -139,8 +139,8 @@ export class CreateFamilyComponent implements OnInit {
       next: (value) => {
         console.log(value)
         const dt = value.map((item:client) =>{
-          const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
-          item.client_addr = arr.toString();
+          const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+          item.client_addr = arr.filter(item => {return item}).toString();
           return item;
         })
         // this.selectedFamily_member = this.selectedFamily_member;
@@ -186,31 +186,6 @@ export class CreateFamilyComponent implements OnInit {
    }
     this.confirm_selected_family_members = [...[this.selectedFamily_header],...this.selectedFamily_member]
     this.visible = true;
-    // console.log(this.selectedFamily_member);
-    // const dt = Object.assign({},
-    //   {
-    //     family_head_id:this.selectedFamily_header?.id,
-    //     family_members:JSON.stringify(
-    //       this.selectedFamily_member.filter(item => item.id != this.selectedFamily_header?.id).map((item) => ({id:item.id,relationship:item.relation}))
-    //     )
-    //   })
-    //   // console.log(dt.family_members)
-    //   return;
-    //     this.__dbIntr.api_call(1,'/clientFamilyAddEdit',this.utilty.convertFormData(dt))
-    //     .pipe(pluck('suc'))
-    //     .subscribe(res =>{
-    //       if(res == 1){
-    //         this.selectedFamily_header = null;
-    //         this.selectedFamily_member = [];
-    //         this.family_head = [];
-    //         this.family_member = [];
-    //         this.search_family_form.get('family_head_name').setValue('',{emitEvent:false})
-    //         this.search_family_form.get('family_member_name').setValue('',{emitEvent:false})
-    //         this.search_family_form.get('family_head_pan').setValue('',{emitEvent:false})
-    //         this.search_family_form.get('family_member_pan').setValue('',{emitEvent:false})
-    //       }
-    //       this.utilty.showSnackbar(res == 1 ? 'Success!! Family created successfully' : 'Error!! Something went wrong',res)
-    //     })
   }
 
 
@@ -279,9 +254,9 @@ export class FamilyClientColumn{
       isVisible:['M']
     },
     {
-      field:'relation_ship',
-      header:"Relationship With Head",
-      width:'20rem',
+      field:'relationship',
+      header:"Relation",
+      width:'10rem',
       isVisible:['M']
     },
     {
@@ -299,13 +274,13 @@ export class FamilyClientColumn{
     {
       field:"pan",
       header:"PAN",
-      width:'12rem',
+      width:'9rem',
       isVisible:['M']
     },
     {
       field:"mobile",
       header:"Mobile",
-      width:'15rem',
+      width:'9rem',
       isVisible:['H','M']
     },
     {
@@ -317,7 +292,7 @@ export class FamilyClientColumn{
     {
       field:"email",
       header:"Email",
-      width:'20rem',
+      width:'25rem',
       isVisible:['M']
     },
     {
@@ -328,8 +303,8 @@ export class FamilyClientColumn{
     },
     {
       field:"client_addr",
-      header:"Addres",
-      width:'28rem',
+      header:"Address",
+      width:'36rem',
       isVisible:['M']
     },
   ]
@@ -344,7 +319,7 @@ export class FamilyClientColumn{
       header:"Members",
     },
     {
-      field:'relation',
+      field:'relationship',
       header:"Relation",
     },
     {

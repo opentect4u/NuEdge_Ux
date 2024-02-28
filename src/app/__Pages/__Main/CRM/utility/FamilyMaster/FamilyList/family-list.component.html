@@ -6,6 +6,12 @@
           <mat-card-title>
                 <h5>Family List</h5>
           </mat-card-title>
+          <div class="w-25 my-auto pr-4">
+            <span class="ml-auto">
+              <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+                placeholder="Search" />
+            </span>
+          </div>
         </mat-card-header>
         <mat-card-content>
       <p-table
@@ -16,6 +22,7 @@
       styleClass="p-datatable-striped p-datatable-lg"
       #pTable
       (onRowExpand) = "onRowExpand($event)"
+      [globalFilterFields]="getColumns()"
       expandableRows="true"
       [paginator]="true" [rows]="10"
       [showCurrentPageReport]="true"
@@ -39,7 +46,7 @@
             <tr>
                 <td>
                     <button type="button" pButton pRipple
-                    [pRowToggler]="family_head" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                    [pRowToggler]="family_head" class="p-button-text p-button-success p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                 </td>
                 <td *ngFor="let col of parent_column">
                   <ng-container [ngSwitch]="true">

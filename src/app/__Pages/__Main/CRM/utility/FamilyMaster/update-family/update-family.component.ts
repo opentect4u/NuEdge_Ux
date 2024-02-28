@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { client } from 'src/app/__Model/__clientMst';
 import { FamilyClientColumn } from '../createFamily/create-family.component';
@@ -7,6 +7,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import relationship from '../../../../../../../assets/json/Master/relationShip.json'
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-update-family',
@@ -18,6 +19,9 @@ export class UpdateFamilyComponent implements OnInit {
   relation = relationship
 
   toggle_family_members:boolean  = false;
+
+  @ViewChild('primeTbl') primeTbl :Table;
+
 
   constructor(private dbIntr:DbIntrService,private utility:UtiliService,
     ) { }
@@ -80,7 +84,7 @@ export class UpdateFamilyComponent implements OnInit {
      next: (value) => {
        const dt = value.map((item:client) =>{
              const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
-             item.client_addr = arr.toString();
+             item.client_addr = arr.filter(item => {return item}).toString();
              return item;
        })
        this.family_head_search.patchValue({family_head_pan:'',family_head_id:''})
@@ -163,6 +167,19 @@ searchnewFamilyMembers = () =>{
 }
 
 
+filterGlobal = ($event) => {
+  let value = $event.target.value;
+  this.primeTbl.filterGlobal(value,'contains')
+}
+
+// deleteMembers = (members:client) =>{
+//     console.log(members);
+// }
+
+getColumns = () =>{
+  return this.utility.getColumns(this.family_tbl_column);
+}
+
  /**
   *
   *  get Family Member with client Id
@@ -174,8 +191,8 @@ searchnewFamilyMembers = () =>{
        .subscribe((res:client[]) =>{
          console.log(res);
         this.getFamilyMemberMstDT = res.map((item:client) =>{
-         const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
-         item.client_addr = arr.toString();
+         const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+         item.client_addr = arr.filter(item => {return item}).toString();
          return item;
    });
        })
@@ -197,8 +214,45 @@ deleteMembers = (members:client,index:number) =>{
   this.selectedFamily_member = this.selectedFamily_member.filter((item:client) => item.id != members.id)
 }
 
+deleteExistingMembers = (members:client,index:number) =>{
+       if(this.getFamilyMemberMstDT.length > 2){
+        this.getFamilyMemberMstDT =   this.getFamilyMemberMstDT.filter((item:client)=> item.id != members.id)
+       }
+       else{
+        this.utility.showSnackbar(`Can't delete!! Must be two members in family`,2);
+       }
+}
+
 UpdateFamily =() =>{
-  console.log(`UPDATE FAMILY`)
+  if(this.getFamilyMemberMstDT.length == 0){
+    this.utility.showSnackbar(`Please search & select family head`,2)
+  }
+  else{
+    try{
+      const dt = {
+        existing_members:JSON.stringify(this.getFamilyMemberMstDT),
+        new_members:this.toggle_family_members ? JSON.stringify(this.selectedFamily_member) : [],
+        head_id:this.getFamilyMemberMstDT.filter((item) => item.relationship == 'Head')[0]?.id
+      }
+      this.dbIntr.api_call(1,'/updateFamilymembers',this.utility.convertFormData(dt))
+      .subscribe((res: any) => {
+            if(res?.suc == 1){
+                this.getFamilyMemberMstDT = [];
+                this.selectedFamily_member = [];
+                this.newMembersList = [];
+                this.family_head_search.reset();
+            }
+            this.utility.showSnackbar(res.suc == 1 ? 'Family Updated Successfully' : res.msg,2)
+      })
+    }
+    catch(err){
+        console.log(err);
+        this.utility.showSnackbar('Something went wrong',2)
+    }
+
+
+  }
+
 }
 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
@@ -14,6 +14,7 @@ import {
 } from '@angular/material/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-delete-family',
@@ -21,6 +22,8 @@ import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component
   styleUrls: ['./delete-family.component.css']
 })
 export class DeleteFamilyComponent implements OnInit {
+
+  @ViewChild('primeTbl') primeTbl :Table;
 
   constructor(private dbIntr:DbIntrService,private utility:UtiliService,
     private __dialog: MatDialog,
@@ -71,8 +74,8 @@ export class DeleteFamilyComponent implements OnInit {
     .subscribe({
       next: (value) => {
         const dt = value.map((item:client) =>{
-              const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
-              item.client_addr = arr.toString();
+              const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+              item.client_addr = arr.filter(item => {return item}).toString();
               return item;
         })
         this.family_head_search.patchValue({family_head_pan:'',family_head_id:''})
@@ -107,8 +110,8 @@ export class DeleteFamilyComponent implements OnInit {
         .subscribe((res:client[]) =>{
           console.log(res);
          this.getFamilyMemberMstDT = res.map((item:client) =>{
-          const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
-          item.client_addr = arr.toString();
+          const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+          item.client_addr = arr.filter(item => {return item}).toString();
           return item;
     });
         })
@@ -123,7 +126,14 @@ export class DeleteFamilyComponent implements OnInit {
     this.displayMode_forClient = display_mode;
   };
 
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
 
+  getColumns = () =>{
+    return this.utility.getColumns(this.family_tbl_column);
+  }
 
   searchFamilyMembers = () =>{
     if(this.family_head_search.value.family_head_id || this.family_head_search.value.family_head_pan){

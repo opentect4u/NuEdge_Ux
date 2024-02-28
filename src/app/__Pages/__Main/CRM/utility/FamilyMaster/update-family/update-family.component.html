@@ -41,36 +41,54 @@
           <mat-card-title>
                 Selected Existing Family Members
           </mat-card-title>
+          <div class="w-25 my-auto pr-4">
+            <span class="ml-auto">
+              <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+                placeholder="Search" />
+            </span>
+          </div>
       </mat-card-header>
         <mat-card-content>
-          <p-table #dt [value]="getFamilyMemberMstDT"
+          <p-table #primeTbl [value]="getFamilyMemberMstDT"
           [rows]="10" [paginator]="true"
            [autoLayout]="true"
            [selectionMode]="'single'"
             [scrollable]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             styleClass="p-datatable-lg"
+            [globalFilterFields]="getColumns()"
             [showCurrentPageReport]="true">
           <ng-template pTemplate="header">
               <tr>
                   <th *ngFor="let col of family_tbl_column"
-                      pSortableColumn="{{col.field}}">
+                    [style.max-width]="(col.field == 'client_addr' || col.field == 'email' || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'relationship' ) ? col.width : ''"
+                    [style.min-width]="(col.field == 'client_addr' || col.field == 'email' || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'relationship') ? col.width : ''"
+                     >
                     {{col.header}}
-                    <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                    <!--
+                      <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                      pSortableColumn="{{col.field}}"
+                    -->
                   </th>
                   <th style="max-width:5rem">Delete</th>
               </tr>
           </ng-template>
           <ng-template pTemplate="body" let-family_header let-i="rowIndex">
               <tr>
-                  <td *ngFor="let col of family_tbl_column">
+                  <td *ngFor="let col of family_tbl_column"
+                  [style.max-width]="(col.field == 'client_addr' || col.field == 'email'  || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'relationship') ? col.width : ''"
+                  [style.min-width]="(col.field == 'client_addr' || col.field == 'email'  || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'relationship') ? col.width : ''"
+                  >
                      <p class="m-0"
-                      [ngClass]="{'text-success':(i == 0 && col.field == 'client_name')}"
-                      [ngStyle]="{'font-weight': (i == 0 && col.field == 'client_name')  ? 600 : 500}"
+                      [ngClass]="{'text-success':(family_header['relationship'] == 'Head')}"
                      > {{ family_header[col.field] ? family_header[col.field] : 'N/A' }}</p>
                   </td>
                   <td  style="max-width:5rem">
-                    <button pButton icon="pi pi-trash" *ngIf="i > 0" class="p-button-danger p-button-text"></button>
+                    <button mat-icon-button align="end"
+                     *ngIf="family_header['relationship'] !== 'Head'"
+                    (click)="deleteExistingMembers(family_header,i)">
+                      <mat-icon class="text-danger">delete</mat-icon>
+                    </button>
                   </td>
 
               </tr>
@@ -86,12 +104,22 @@
       </p-table>
         </mat-card-content>
       </mat-card>
-      <div class="my-2 d-flex align-items-center">
-        <p class="m-0">Do you want to add members?&nbsp;</p> <button (click)="toggle_family_members= !toggle_family_members" pButton type="button" label="Click Here"
-        class="p-button-link"></button>
+      <div class="my-2 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <p class="m-0">Do you want to add members?</p>&nbsp;
+          <button (click)="toggle_family_members= !toggle_family_members" pButton type="button" label="Click Here"
+          class="p-button-link"></button>
+        </div>
+        <ng-container *ngIf="!toggle_family_members">
+          <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+        </ng-container>
       </div>
 
   </div>
+
+  <ng-template #SearchBtn>
+    <p-button type="submit" label="Update Family"  styleClass="p-button-lg" (click)="UpdateFamily()"></p-button>
+  </ng-template>
   <div class="col-sm-12 mb-2" *ngIf="toggle_family_members">
       <mat-card>
         <mat-card-header class="border-bottom">
@@ -114,14 +142,6 @@
                             formControlName="family_member_name"
                             placeholder="Search family member by Name or Pan"
                             class="form-control">
-                            <!-- <app-core-srch [label]="" [placeholder]="'Search By Name Or PAN'"
-                            [isTopDefined]="'32%'"
-                              [isPending]="__is__spinner_family_member" [listItems]="family_head_mst" [flag]="'C'"
-                              [noDataFoundTitle]="'Sorry!! No Records Found'"
-                              [noDataFoundSubTitle]="'If your result match,they will appear here'"
-                              [propertiesToShow]="['client_name','pan']" formControlName="family_member_name"
-                              [displayMode]="displayMode_forMember" (setDisplayMode)="displayMode_forMember = $event"
-                              (selectedItems)="getSelectedMembersFromParent($event)"></app-core-srch> -->
                           </div>
                         </div>
                       </div>
@@ -138,21 +158,22 @@
                   loadingIcon="pi pi-spinner pi-spin"
                   [loading]="__is__spinner_family_member"
                   [selectionMode]="'single'"
-                  [responsiveLayout]="'scroll'"
-                  [responsive]="true"
                  [scrollable]="true"
                    [(selection)]="selectedFamily_member" [rowHover]="true" dataKey="id"
                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                    styleClass="p-datatable-lg"
-                   [tableStyle]="{ 'min-width': '126rem' }"
                    [showCurrentPageReport]="true">
                  <ng-template pTemplate="header">
                      <tr>
                          <th [style]="'max-width:4rem'"></th>
                          <th *ngFor="let col of family_tbl_column"
-                             pSortableColumn="{{col.field}}">
+                         [style.max-width]="(col.field == 'client_addr' || col.field == 'email'  || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'client_name') ? col.width : ''"
+                         [style.min-width]="(col.field == 'client_addr' || col.field == 'email'  || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'client_name') ? col.width : ''"
+                            >
                            {{col.header}}
-                           <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                           <!-- <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                           pSortableColumn="{{col.field}}"
+                          -->
                          </th>
                      </tr>
                  </ng-template>
@@ -163,16 +184,17 @@
                          </td>
 
                          <td *ngFor="let col of family_tbl_column"
-                         [pEditableColumn]="family_member.relation" pEditableColumnField="relation_ship"
+                         [pEditableColumn]="family_member.relation" pEditableColumnField="relationship"
+                         [style.max-width]="(col.field == 'client_addr' || col.field == 'email'  || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'client_name') ? col.width : ''"
+                         [style.min-width]="(col.field == 'client_addr' || col.field == 'email'  || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'client_name') ? col.width : ''"
                          >
                          <ng-container [ngSwitch]="true">
-                           <ng-container *ngSwitchCase="col.field == 'relation_ship'">
+                           <ng-container *ngSwitchCase="col.field == 'relationship'">
                                          <p-dropdown [options]="relation"
                                          [filter]="true" filterBy="relation" [showClear]="true" placeholder="Select Relation"
                                          appendTo="body" [(ngModel)]="family_member.relation"
                                          optionLabel="relation"
-                                         optionValue="relation"
-                                         [style]="{'width':'100%'}"></p-dropdown>
+                                         optionValue="relation"></p-dropdown>
                            </ng-container>
                            <ng-container *ngSwitchDefault>
                                    <p class="m-0">
@@ -202,14 +224,14 @@
 </div>
 
 <!-- For Showing Selecting Members  -->
-<div class="row" *ngIf="toggle_family_members">
+<div class="row my-2" *ngIf="toggle_family_members">
   <div class="col-sm-7">
         <mat-card class="my-5">
           <mat-card-header>
             <mat-card-title>Selected Family Members</mat-card-title>
 
           </mat-card-header>
-          <mat-card-content style="overflow-x:auto;">
+          <mat-card-content style="overflow-x:auto;" class="mb-0">
             <table style="width:100%" id="FamilyMembers">
               <thead>
                 <tr>
@@ -251,13 +273,15 @@
 
 
           </mat-card-content>
+          <mat-card-actions align="end">
+            <div class="mx-5 my-3">
+              <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+            </div>
+          </mat-card-actions>
         </mat-card>
   </div>
-</div>
-
-<div class="row my-2">
-  <div class="col-sm-5">
-    <p-button label="Update Family" class="p-button-lg my-5" (click)="UpdateFamily()"></p-button>
-  </div>
+  <!-- <div class="col-sm-5 d-flex justify-content-end align-items-center">
+    <p-button label="Update Family" class="p-button-lg" (click)="UpdateFamily()"></p-button>
+  </div> -->
 </div>
 <!-- End -->

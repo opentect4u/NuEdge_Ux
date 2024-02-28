@@ -493,7 +493,7 @@ mat-card {
 /*** Prime NG Data table**/
 .p-datatable .p-datatable-thead>tr>th {
   text-align: center !important;
-  padding: 1rem 1rem;
+  padding: 1rem 1rem!important;
   border: 1px solid #6a6a6a;
   border-width: 0px !important;
   font-weight: 600;
@@ -905,8 +905,12 @@ color: #ffffff;
   font-size: 13px!important;
 }
 .p-dropdown .p-dropdown-label{
-  font-size: 16px;
-  font-weight: 400!important;
+  /* font-size: 16px;
+  font-weight: 400!important; */
+
+  font-size: 12px;
+  font-weight: 500 !important;
+  font-family: 'Montserrat';
 }
 
 .p-radiobutton .p-radiobutton-box.p-highlight {
@@ -952,5 +956,30 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
   z-index: 99999!important;
 }
 .p-dropdown .p-dropdown-label{
-  padding: 3px 7px!important;
+  /* padding: 3px 7px!important; */
+  padding: 10px 7px !important;
 }
+
+.p-datatable .p-sortable-column:focus{
+  box-shadow: none!important;
+}
+
+/**** CUSTOMIZING SORTING ICON ***/
+.pi-sort-alt:before {
+  content: '\e903 \A \e902';
+}
+
+.pi-sort-amount-up-alt:before {
+  content: '\e903';
+}
+
+.pi-sort-amount-down:before {
+  content: '\e902';
+}
+
+.p-datatable .p-sortable-column .p-column-title, .p-datatable .p-sortable-column .p-sortable-column-icon, .p-datatable .p-sortable-column .p-sortable-column-badge{
+  font-size: 7px!important;
+    font-weight: 600!important;
+}
+
+/***** END ****/

@@ -41,23 +41,37 @@
           <mat-card-title>
                 Selected Existing Family Members
           </mat-card-title>
+
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="my-auto pr-4">
+              <span class="ml-auto">
+                <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+                  placeholder="Search" />
+              </span>
+            </div>
             <button pButton [disabled]="getFamilyMemberMstDT.length == 0" icon="pi pi-trash"class="p-button-danger mr-2"
             (click)="deleteFamily()"
             label="Delete Family"></button>
+          </div>
+
       </mat-card-header>
         <mat-card-content>
-          <p-table #dt [value]="getFamilyMemberMstDT"
+          <p-table #primeTbl [value]="getFamilyMemberMstDT"
           [rows]="10" [paginator]="true"
            [autoLayout]="true"
            [selectionMode]="'single'"
-            [scrollable]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             styleClass="p-datatable-lg"
+            [globalFilterFields]="getColumns()"
+
             [showCurrentPageReport]="true">
           <ng-template pTemplate="header">
               <tr>
                   <th *ngFor="let col of family_tbl_column"
-                      pSortableColumn="{{col.field}}">
+                      pSortableColumn="{{col.field}}"
+                      [style.max-width]="(col.field == 'client_addr' || col.field == 'email' || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'relationship' ) ? col.width : ''"
+                      [style.min-width]="(col.field == 'client_addr' || col.field == 'email' || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'relationship') ? col.width : ''"
+                      >
                     {{col.header}}
                     <p-sortIcon field="{{col.field}}"></p-sortIcon>
                   </th>
@@ -65,10 +79,13 @@
           </ng-template>
           <ng-template pTemplate="body" let-family_header let-i="rowIndex">
               <tr>
-                  <td *ngFor="let col of family_tbl_column">
+                  <td
+                  *ngFor="let col of family_tbl_column"
+                  [style.max-width]="(col.field == 'client_addr' || col.field == 'email' || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'relationship' ) ? col.width : ''"
+                      [style.min-width]="(col.field == 'client_addr' || col.field == 'email' || col.field == 'pan' || col.field == 'mobile' || col.field == 'client_code' || col.field == 'relationship') ? col.width : ''"
+                  >
                      <p class="m-0"
-                      [ngClass]="{'text-success':(i == 0 && col.field == 'client_name')}"
-                      [ngStyle]="{'font-weight': (i == 0 && col.field == 'client_name')  ? 600 : 500}"
+                      [ngClass]="{'text-success':family_header['relationship'] === 'Head'}"
                      > {{ family_header[col.field] ? family_header[col.field] : 'N/A' }}</p>
                   </td>
 

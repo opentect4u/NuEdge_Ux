@@ -12,7 +12,10 @@ export interface client {
     add_line_1?: string
     add_line_2?: string
     city?: string
-    dist?: string
+    city_name?:string;
+    dist?: string;
+    district_name?:string;
+    state_name?:string;
     state?: string
     pincode?: number
     id: number
@@ -38,4 +41,5 @@ export interface client {
     country?:any;
     family_count?:number;
     client_addr?:string;
+    relationship?:string;
   }
