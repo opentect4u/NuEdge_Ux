@@ -63,16 +63,34 @@
                  <mat-checkbox color="primary" class="example-margin"
                  formControlName="select_all_client">Select All</mat-checkbox>
                 </section>
-              <app-core-srch [label]="'Investor'"
-                [placeholder]="'Search By Investor Name, Code, Email, Mobile, PAN & DOB'"
+              <app-core-srch [label]="misTrxnRpt.value.view_type == 'F' ? 'Family Head' : 'Investor'"
+                [placeholder]="'Search By '+ (misTrxnRpt.value.view_type == 'F' ? 'Family Head' : 'Investor') +' Name, Code, Email, Mobile, PAN & DOB'"
                 [isPending]="__isClientPending" [listItems]="__clientMst" [flag]="'C'"
                 [noDataFoundTitle]="'Sorry!! No Records Found'"
                 [noDataFoundSubTitle]="'If your result match,they will appear here'"
-                [propertiesToShow]="['first_client_name','first_client_pan']" formControlName="client_name"
+                [propertiesToShow]="['client_name','pan']" formControlName="client_name"
                 [displayMode]="displayMode_forClient" (setDisplayMode)="displayMode_forClient = $event"
                 (selectedItems)="getSelectedItemsFromParent($event)"
                 (scrollToEnd)="loadInvestorOnScrollToEnd($event)"></app-core-srch>
             </div>
+
+            <ng-container *ngIf="misTrxnRpt.value.view_type == 'F'">
+              <div class="col-sm-3">
+                <label for="family_members">Family Members&nbsp;
+                  <ng-container *ngIf="!misTrxnRpt.get('family_members').disabled">
+                    <i class="pi pi-info-circle" matTooltip="Search & select family head to get family members" style="font-size: 1rem" ></i>
+                  </ng-container>
+                </label>
+                <ng-multiselect-dropdown
+                [id]="'family_members'"
+                [placeholder]="'Select Family Members'"
+                [settings]="settingsforFamilyMembers"
+                [data]="family_members"
+                [disabled]="misTrxnRpt.get('family_members').disabled"
+                formControlName="family_members">
+                </ng-multiselect-dropdown>
+              </div>
+          </ng-container>
 
             <div class="col-sm-3">
               <label for="amc_id">AMC</label>
@@ -81,8 +99,6 @@
                 formControlName="amc_id">
               </ng-multiselect-dropdown>
             </div>
-          </div>
-          <div class="row">
 
             <div class="col-sm-3">
               <label for="cat_id">Category</label>
@@ -113,9 +129,6 @@
               </ng-multiselect-dropdown>
             </div>
 
-          </div>
-          <div class="row">
-
             <div class="col-sm-3">
               <label for="trxn_sub_type_id">Transaction Sub-Type</label>
               <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
@@ -143,43 +156,46 @@
                   formControlName="bu_type_id">
                 </ng-multiselect-dropdown>
               </div>
-
+              <div class="col-sm-3">
+                <label for="rm_name">Relationship Manager</label>
+                <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                  (onDeSelect)="onRmDeSelect($event)" [settings]="settingsforRMDropdown" [data]="__RmMst"
+                  formControlName="rm_id">
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="sub_brk_cd">Sub Broker</label>
+                <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                  (onDeSelect)="onSubBrkDeSelect($event)" [settings]="settingsforSubBrkDropdown"
+                  [data]="__subbrkArnMst" formControlName="sub_brk_cd">
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="euin_no">EUIN</label>
+                <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
+                  [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
+                </ng-multiselect-dropdown>
+              </div>
+              <div
+              class="d-flex align-items-end justify-content-end"
+              [ngClass]="{
+                'col-sm-3':misTrxnRpt.value.view_type != 'F',
+                'col-sm-12 my-2':misTrxnRpt.value.view_type == 'F'}"
+              >
+                <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
+              </div>
             </ng-container>
             <ng-template #normalFilter>
-              <div class="col-sm-6 d-flex align-items-end justify-content-end">
+              <div
+              class="d-flex align-items-end justify-content-end"
+              [ngClass]="{
+                'col-sm-6':misTrxnRpt.value.view_type != 'F',
+                'col-sm-3':misTrxnRpt.value.view_type == 'F'}"
+              >
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
             </ng-template>
           </div>
-
-          <ng-container *ngIf="btn_type == 'A'">
-            <div class="row">
-                <div class="col-sm-3">
-                  <label for="rm_name">Relationship Manager</label>
-                  <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
-                    (onDeSelect)="onRmDeSelect($event)" [settings]="settingsforRMDropdown" [data]="__RmMst"
-                    formControlName="rm_id">
-                  </ng-multiselect-dropdown>
-                </div>
-                <div class="col-sm-3">
-                  <label for="sub_brk_cd">Sub Broker</label>
-                  <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
-                    (onDeSelect)="onSubBrkDeSelect($event)" [settings]="settingsforSubBrkDropdown"
-                    [data]="__subbrkArnMst" formControlName="sub_brk_cd">
-                  </ng-multiselect-dropdown>
-                </div>
-                <div class="col-sm-3">
-                  <label for="euin_no">EUIN</label>
-                  <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
-                    [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
-                  </ng-multiselect-dropdown>
-                </div>
-                <div class="col-sm-3 d-flex align-items-end justify-content-end">
-                  <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
-                </div>
-            </div>
-
-          </ng-container>
         </form>
       </mat-card-content>
     </mat-card>

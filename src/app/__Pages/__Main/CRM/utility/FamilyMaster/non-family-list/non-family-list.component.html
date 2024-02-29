@@ -1,0 +1,64 @@
+<div class="row flexSec">
+        <div class="col-sm-12">
+                <mat-card>
+                  <mat-card-header class="border-bottom">
+                       <mat-card-title>Non Family List</mat-card-title>
+                       <div class="w-25 my-auto pr-4">
+                        <span class="ml-auto">
+                          <input id="search" class="form-control rounded" type="text"
+                           (input)="filterGlobal($event)"
+                            placeholder="Search" />
+                        </span>
+                      </div>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <p-table
+                    #primeTbl
+                    [value]="non_family_mst_dt"
+                    [rows]="10" [paginator]="true"
+                    [autoLayout]="true"
+                    [selectionMode]="'single'"
+                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                     styleClass="p-datatable-lg"
+                     [globalFilterFields]="getColumns()"
+                     [showCurrentPageReport]="true"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                              <th
+                              [pSortableColumn]="col.field"
+                              [style.max-width]="col.width"
+                              [style.min-width]="col.width"
+                              *ngFor="let col of nonFamilyClmn">
+                                {{col.header}}
+                                <p-sortIcon
+                                [field]="col.field">
+                               </p-sortIcon>
+                              </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-family_member let-i="rowIndex">
+                            <tr>
+                                <td *ngFor="let sub_col of nonFamilyClmn">
+                                  <ng-container [ngSwitch]="true">
+                                    <ng-container *ngSwitchCase="sub_col.field == 'sl_no'">
+                                      {{ i + 1}}
+                                      </ng-container>
+                                      <ng-container *ngSwitchDefault>
+                                        {{family_member[sub_col.field] ? family_member[sub_col.field] : 'N/A'}}
+                                      </ng-container>
+                                      </ng-container>
+
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr >
+                                <td class="p-5" [attr.colspan]="nonFamilyClmn.length">There are no record available yet.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                  </mat-card-content>
+                </mat-card>
+        </div>
+</div>

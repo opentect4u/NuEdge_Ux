@@ -158,7 +158,7 @@
                   loadingIcon="pi pi-spinner pi-spin"
                   [loading]="__is__spinner_family_member"
                   [selectionMode]="'single'"
-                 [scrollable]="true"
+
                    [(selection)]="selectedFamily_member" [rowHover]="true" dataKey="id"
                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                    styleClass="p-datatable-lg"
@@ -192,8 +192,9 @@
                            <ng-container *ngSwitchCase="col.field == 'relationship'">
                                          <p-dropdown [options]="relation"
                                          [filter]="true" filterBy="relation" [showClear]="true" placeholder="Select Relation"
-                                         appendTo="body" [(ngModel)]="family_member.relation"
+                                         appendTo="body" [(ngModel)]="family_member.relationship"
                                          optionLabel="relation"
+                                         [style]="{'width':'100%'}"
                                          optionValue="relation"></p-dropdown>
                            </ng-container>
                            <ng-container *ngSwitchDefault>

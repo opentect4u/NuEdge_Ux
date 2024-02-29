@@ -32,9 +32,9 @@
 
                 <span *ngFor = "let props of propertiesToShow;let i=index">
                   <ng-container *ngIf="flag == 'C';else others">
-                    <span *ngIf="i>0">[</span>
+                    <span *ngIf="i>0 && items[props]">[</span>
                     {{items[props]}}
-                    <span *ngIf="i>0">]</span>
+                    <span *ngIf="i>0 && items[props]">]</span>
                      </ng-container>
                     <ng-template #others>
                       {{items[props]}}

@@ -130,7 +130,7 @@ export class FamilyListClm {
     },
     {
       field: 'client_code',
-      header: 'Family Head Code',
+      header: 'Code',
       width: '7rem',
     },
     {

@@ -27,14 +27,26 @@ const routes:Routes =[{
           {
             path:'updateFamily',
             loadChildren:()=> import('./update-family/update-family.module').then(updateFamily => updateFamily.UpdateFamilyModule)
+          },
+          {
+            path:'relationship',
+            loadChildren:() => import('./family-relationship/family-relationship.module').then(fam_rel => fam_rel.FamilyRelationshipModule)
+          },
+          {
+            path:'nonfamilyList',
+            loadChildren:()=> import('./non-family-list/non-family-list.module').then(nonFamily => nonFamily.NonFamilyListModule)
+          },
+          {
+            path:'memberSrch',
+            loadChildren:()=> import('./member-srch/member-srch.module').then(memberSrch => memberSrch.MemberSrchModule)
           }
         ]
     }]
 
 @NgModule({
   declarations: [
-    FamilyMasterComponent
-  ],
+    FamilyMasterComponent,
+ ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes)

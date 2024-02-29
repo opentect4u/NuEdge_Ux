@@ -1,0 +1,102 @@
+<!-- <div class="bckContainer"></div> -->
+
+<div class="row flexSec">
+          <div class="col-sm-12">
+              <mat-card>
+                <mat-card-header class="border-bottom">
+                  <mat-card-title>Member Search</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="p-2">
+                  <form autocomplete="off" [formGroup]="membersearchFrm"  class="w-100">
+                    <div class="row">
+                      <div class="col-sm-6 my-2 col-sm-offset-2">
+                        <div class="formGroup row">
+                          <div class="col-sm-3">
+                            <label for="family_head_name">Search Members</label>
+                          </div>
+                          <div class="col-sm-9">
+                            <app-core-srch [label]="" [placeholder]="'Search By Name Or PAN'"
+                            [isTopDefined]="'32%'"
+                              [isPending]="__is__spinner_member" [listItems]="member_mst" [flag]="'C'"
+                              [noDataFoundTitle]="'Sorry!! No Records Found'"
+                              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                              [propertiesToShow]="['client_name','pan']" formControlName="member_name"
+                              [displayMode]="displayMode_forMembers" (setDisplayMode)="displayMode_forMembers = $event"
+                              (selectedItems)="getSelectedItemsFromParent($event)"></app-core-srch>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </mat-card-content>
+              </mat-card>
+          </div>
+          <div class="col-sm-12 my-3">
+              <mat-card>
+                <mat-card-header>
+                  <mat-card-title>All Family Members</mat-card-title>
+                  <div class="w-25 my-auto pr-4">
+                    <span class="ml-auto">
+                      <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+                        placeholder="Search" />
+                    </span>
+                  </div>
+                </mat-card-header>
+                <mat-card-content>
+                  <p-table
+                  #primeTbl
+                  [value]="getFamilyMemberMstDT"
+                  [rows]="10" [paginator]="true"
+                  [autoLayout]="true"
+                  [selectionMode]="'single'"
+                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                   styleClass="p-datatable-lg"
+                   [globalFilterFields]="getColumns()"
+                   [showCurrentPageReport]="true"
+                  >
+                      <ng-template pTemplate="header">
+                          <tr>
+                            <th
+                            [pSortableColumn]="col.field"
+                            [style.max-width]="col.width"
+                            [style.min-width]="col.width"
+                            *ngFor="let col of members_clmn">
+                              {{col.header}}
+                              <p-sortIcon
+                              [field]="col.field">
+                             </p-sortIcon>
+                            </th>
+                          </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-family_member let-i="rowIndex">
+                          <tr>
+                              <td *ngFor="let sub_col of members_clmn">
+                                <ng-container [ngSwitch]="true">
+                                  <ng-container *ngSwitchCase="sub_col.field == 'sl_no'">
+                                    {{ i + 1}}
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                      <p class="m-0"
+                                      [ngClass]="{
+                                        'text-success':family_member['relationship'] == 'Head'
+                                    }"
+                                    [ngStyle]="{
+                                      'font-weight':family_member['relationship'] == 'Head' ? 600 : 500
+                                    }"
+                                      >{{family_member[sub_col.field] ? family_member[sub_col.field] : 'N/A'}}</p>
+                                    </ng-container>
+                                    </ng-container>
+
+                              </td>
+                          </tr>
+                      </ng-template>
+                      <ng-template pTemplate="emptymessage">
+                          <tr >
+                              <td class="p-5" [attr.colspan]="members_clmn.length">There are no record available yet.</td>
+                          </tr>
+                      </ng-template>
+                  </p-table>
+                </mat-card-content>
+              </mat-card>
+          </div>
+</div>

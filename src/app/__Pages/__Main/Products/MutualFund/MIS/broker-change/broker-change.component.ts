@@ -80,7 +80,8 @@ first:number = 0;
 
 // subscribe:Subscription;
 
-trxn_count:TrxnType;
+trxn_count:TrxnType = { reject:[],total:[],process:[]}
+
 
 @ViewChild('primeTbl') primeTbl :Table;
 
@@ -325,6 +326,19 @@ settingsforTrxnSubTypeDropdown = this.utility.settingsfroMultiselectDropdown(
  */
 btn_type: 'R' | 'A' = 'R';
 
+family_members:client[] = [];
+
+    /**
+   * Setting of multiselect dropdown
+   */
+    settingsforFamilyMembers = this.utility.settingsfroMultiselectDropdown(
+      'pan',
+      'client_name',
+      'Search Family members',
+      3
+    );
+
+
 /**
  * Form Field for search Transaction
  */
@@ -349,6 +363,7 @@ misTrxnRpt = new FormGroup({
   client_name: new FormControl(''),
   trxn_type_id: new FormControl([], { updateOn: 'blur' }),
   trxn_sub_type_id: new FormControl([], { updateOn: 'blur' }),
+  family_members: new FormControl([]),
 });
 
 ngOnInit(): void {
@@ -493,16 +508,30 @@ ngAfterViewInit() {
 
 /*** Event Trigger when check Select All */
   this.misTrxnRpt.controls['select_all_client'].valueChanges.subscribe(res =>{
-    this.misTrxnRpt.get('client_name').setValue('',{emitEvent:false});
-    this.misTrxnRpt.get('pan_no').setValue('');
-    if(!res){
-      if(this.misTrxnRpt.value.view_type){
-       this.misTrxnRpt.get('client_name').enable();
+    // this.misTrxnRpt.get('client_name').setValue('',{emitEvent:false});
+    // this.misTrxnRpt.get('pan_no').setValue('');
+    // if(!res){
+    //   if(this.misTrxnRpt.value.view_type){
+    //    this.misTrxnRpt.get('client_name').enable();
+    //   }
+    // }
+    // else{
+    //   this.misTrxnRpt.get('client_name').disable();
+    // }
+    this.misTrxnRpt.get('client_name').setValue('',{onlySelf:true,emitEvent:false});
+    this.misTrxnRpt.get('pan_no').setValue('',{onlySelf:true,emitEvent:false});
+    if(res){
+        this.misTrxnRpt.get('client_name').disable({onlySelf:true,emitEvent:false});
+        if(this.misTrxnRpt.value.view_type == 'F'){
+          this.misTrxnRpt.controls.family_members.disable();
+        }
       }
-    }
-    else{
-      this.misTrxnRpt.get('client_name').disable();
-    }
+      else{
+        this.misTrxnRpt.get('client_name').enable({onlySelf:true,emitEvent:false});
+        if(this.misTrxnRpt.value.view_type == 'F'){
+          this.misTrxnRpt.get('family_members').enable();
+        }
+      }
   })
 /*****END */
 
@@ -587,7 +616,13 @@ ngAfterViewInit() {
     this.misTrxnRpt.controls['client_name'].valueChanges
     .pipe(
       tap(()=> this.misTrxnRpt.get('pan_no').setValue('')),
-      tap(() => (this.__isClientPending = true)),
+      tap(() => {
+        this.__isClientPending = true;
+          if(this.family_members.length > 0){
+            this.getFamilymemberAccordingToFamilyHead_Id()
+          }
+        }
+        ),
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((dt) =>
@@ -623,7 +658,7 @@ ngAfterViewInit() {
             this.__clientMst = [];
             this.misTrxnRpt.get('client_name').enable();
             this.misTrxnRpt.get('select_all_client').enable();
-            this.getClientMst(res,this.paginate);
+            // this.getClientMst(res,this.paginate);
           }
           else{
             this.misTrxnRpt.get('client_name').disable();
@@ -633,6 +668,24 @@ ngAfterViewInit() {
     /**End */
 
 }
+
+
+getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
+  if(id){
+    this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.misTrxnRpt.value.view_type}`)
+    .pipe(pluck('data'))
+    .subscribe((res:client[]) =>{
+     this.family_members = res;
+     this.misTrxnRpt.get('family_members').setValue(res.map((item:client) => ({pan:item.pan,client_name:item.client_name})))
+    })
+ }
+ else{
+     this.family_members = [];
+     this.misTrxnRpt.get('family_members').setValue([]);
+
+ }
+}
+
 /**
  *  call API for get transaction according to search result
  */
@@ -641,7 +694,11 @@ searchTrxnReport = () => {
       if(this.misTrxnRpt.value.select_all_client){}
       else{
         if(!this.misTrxnRpt.value.client_name){
-          this.utility.showSnackbar('Please select investor',2)
+          this.utility.showSnackbar(`Please select ${this.misTrxnRpt.value.view_type == 'F' ? 'family head' : 'investor'}`,2)
+           return;
+        }
+        else if(this.misTrxnRpt.value.family_members.length == 0 && this.misTrxnRpt.value.view_type == 'F'){
+          this.utility.showSnackbar(`Please select at least one family member`,2)
            return;
         }
       }
@@ -658,9 +715,12 @@ fetchTransaction = () =>{
   this.total = new totalAmt();
   this.isTotalFooterShow = false;
   this.primeTbl.reset();
+  const family_members_pan = this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.getRawValue().family_members.filter(item => item.pan),'pan') : '[]';
+  const family_members_name = this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.getRawValue().family_members.filter(item => !item.pan),'client_name') : '[]';
   const TrxnDt = new FormData();
   this.transType = 'Total'
-  // TrxnDt.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
+  TrxnDt.append('family_members_pan',family_members_pan);
+  TrxnDt.append('family_members_name',family_members_name);
   TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
   TrxnDt.append('type',global.getActualVal(this.misTrxnRpt.value.type));
   TrxnDt.append('all_client',this.misTrxnRpt.getRawValue().select_all_client);
@@ -669,6 +729,7 @@ fetchTransaction = () =>{
   TrxnDt.append('cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.cat_id, 'id'));
   TrxnDt.append('sub_cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_cat_id, 'id'));
   TrxnDt.append('pan_no',this.misTrxnRpt.value.pan_no);
+  TrxnDt.append('client_name',this.misTrxnRpt.value.client_name);
   TrxnDt.append('scheme_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.scheme_id, 'id'));
   TrxnDt.append('trans_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_type_id,'trans_type'));
   TrxnDt.append('trans_sub_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_sub_type_id,'trans_sub_type'));
@@ -787,10 +848,13 @@ getSelectedItemsFromParent = (searchRlt: {
   flag: string;
   item: any;
 }) => {
-  this.misTrxnRpt.get('client_name').setValue(searchRlt.item.first_client_name, { emitEvent: false });
-  this.misTrxnRpt.get('pan_no').setValue(searchRlt.item.first_client_pan);
+  this.misTrxnRpt.get('client_name').setValue(searchRlt.item.client_name, { emitEvent: false });
+  this.misTrxnRpt.get('pan_no').setValue(searchRlt.item.client_pan);
   this.searchResultVisibilityForClient('none');
   this.__isClientPending = false;
+  if(this.misTrxnRpt.value.view_type == 'F'){
+    this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.client_id)
+  }
 };
 
 /**
@@ -955,8 +1019,6 @@ onItemClick = (ev) => {
         amc_id:[],
         folio_no:'',
         trxn_type_id:[],
-        // date_range:'',
-        // date_periods:'M',
         type:'',
         view_type:'',
         pan_no:''
@@ -967,7 +1029,7 @@ onItemClick = (ev) => {
        this.misTrxnRpt.controls['sub_brk_cd'].setValue([]);
        this.misTrxnRpt.controls['euin_no'].setValue([]);
        this.misTrxnRpt.controls['client_name'].setValue('',{emitEvent:false});
-       this.searchTrxnReport();
+      //  this.searchTrxnReport();
   }
 };
 

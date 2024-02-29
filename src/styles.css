@@ -492,18 +492,27 @@ mat-card {
 
 /*** Prime NG Data table**/
 .p-datatable .p-datatable-thead>tr>th {
-  text-align: center !important;
+  /* text-align: center !important;
   padding: 1rem 1rem!important;
   border: 1px solid #6a6a6a;
   border-width: 0px !important;
   font-weight: 600;
   color: #495057;
-  /* background: #222f3f; */
   background: #10486b;
   transition: box-shadow 0.2s;
-  /* font-size: 14px !important; */
   font-size: 11px !important;
   font-weight: 400;
+  color: #fff; */
+  text-align: center !important;
+  padding: 1rem 1rem !important;
+  border: 1px solid #6a6a6a;
+  border-width: 0px !important;
+  font-weight: 600;
+  color: #495057;
+  background: #10486b;
+  transition: box-shadow 0.2s;
+  font-size: 12px !important;
+  font-weight: 100;
   color: #fff;
 }
 
@@ -633,8 +642,10 @@ color: #ffffff;
 }
 
 .p-paginator .p-paginator-current {
-  font-size: 14px !important;
-  font-weight: 700 !important;
+  /* font-size: 14px !important;
+  font-weight: 700 !important; */
+  font-size: 12px !important;
+  font-weight: 500 !important;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page {
@@ -707,7 +718,8 @@ color: #ffffff;
 
 
 .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
-  background: #3f51b533!important;
+  /* background: #3f51b533!important; */
+  background:#dadada !important;
   color: #495057!important;
 }
 
@@ -715,7 +727,7 @@ color: #ffffff;
   /* outline: 0.2rem solid #3f51b5!important;
   outline-offset: 0.11rem!important;
   background: #3f51b538!important; */
-  outline: 0.19rem solid #10486b!important;
+  outline: 0.19rem solid #a2a3a5!important;
   outline-offset: -0.1rem!important;
   background: #ffffff!important;
 }
@@ -980,6 +992,18 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
 .p-datatable .p-sortable-column .p-column-title, .p-datatable .p-sortable-column .p-sortable-column-icon, .p-datatable .p-sortable-column .p-sortable-column-badge{
   font-size: 7px!important;
     font-weight: 600!important;
+}
+
+
+.multiselect-dropdown .dropdown-btn .selected-item-container .selected-item {
+  border: 1px solid rgb(252 252 252) !important;
+  background: rgb(16 72 107 / 25%) !important;
+  color: #14374d !important;
+  font-weight: 500;
+}
+
+.multiselect-dropdown .dropdown-btn .selected-item:hover{
+    box-shadow: none!important;
 }
 
 /***** END ****/

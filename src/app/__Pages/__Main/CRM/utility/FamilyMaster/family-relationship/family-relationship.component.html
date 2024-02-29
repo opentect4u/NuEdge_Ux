@@ -1,0 +1,120 @@
+<div class="row flexSec">
+  <div class="col-sm-12">
+      <mat-card>
+        <mat-card-header class="border-bottom">
+            <mat-card-title>Family Relationship</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="p-3">
+          <div class="row">
+                <div class="col-sm-5 col-sm-offset-3">
+                  <form [formGroup]="family_head_search" autocomplete="off">
+                    <div class="form-group row">
+                      <label for="valuation_as_on" class="col-sm-3 m-auto text-center">Valuation As On</label>
+                      <div class="col-sm-9">
+                        <app-core-srch [label]="" [placeholder]="'Search By Name Or PAN'"
+                          [isTopDefined]="'32%'"
+                            [isPending]="__is__spinner_family_head" [listItems]="family_head_mst" [flag]="'C'"
+                            [noDataFoundTitle]="'Sorry!! No Records Found'"
+                            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                            [propertiesToShow]="['client_name','pan']" formControlName="family_head_name"
+                            [displayMode]="displayMode_forClient" (setDisplayMode)="displayMode_forClient = $event"
+                            (selectedItems)="getSelectedItemsFromParent($event)"></app-core-srch>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+  </div>
+  <div class="col-sm-12 my-3">
+        <mat-card>
+          <mat-card-header class="border-bottom mb-1">
+            <mat-card-title>All Family Members</mat-card-title>
+            <div class="w-25 my-auto pr-4">
+              <span class="ml-auto">
+                <input id="search" class="form-control rounded" type="text"
+                 (input)="filterGlobal($event)"
+                  placeholder="Search" />
+              </span>
+            </div>
+            </mat-card-header>
+          <mat-card-content>
+            <p-table #primeTbl [value]="getFamilyMembersMst"
+            [rows]="10" [paginator]="true"
+             [autoLayout]="true"
+             [selectionMode]="'single'"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              styleClass="p-datatable-lg"
+              [globalFilterFields]="getColumns()"
+              [showCurrentPageReport]="true">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of rel_column"
+                        pSortableColumn="{{col.field}}"
+                        [style.max-width]="col.width"
+                        [style.min-width]="col.width"
+                        >
+                      {{col.header}}
+                      <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-family_header let-i="rowIndex">
+                <tr >
+                    <td
+                    *ngFor="let col of rel_column"
+                    [style.max-width]="col.width"
+                    [style.min-width]="col.width"
+                    >
+                       <ng-container [ngSwitch]="true">
+                        <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                                  {{i + 1}}
+                        </ng-container>
+                        <ng-container *ngSwitchCase="col.field == 'relationship'">
+                          <ng-container *ngIf="family_header.relationship != 'Head'">
+                            <p-dropdown [options]="relation"
+                            [filter]="true" filterBy="relation"
+                            [showClear]="true"
+                             placeholder="Select Relation"
+                            appendTo="body" [(ngModel)]="family_header.relationship"
+                            optionLabel="relation"
+                            [style]="{'width':'100%'}"
+                            optionValue="relation"></p-dropdown>
+                          </ng-container>
+
+                         </ng-container>
+                        <ng-container *ngSwitchDefault>
+                                <p
+                                class="m-0"
+                                [ngClass]="{'text-success':family_header['relationship'] == 'Head'}"
+                                >
+                                  {{ family_header[col.field] ? family_header[col.field] : 'N/A' }}
+                                </p>
+                        </ng-container>
+                        </ng-container>
+                    </td>
+
+                </tr>
+
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-family_header>
+              <tr style="height:50px">
+                <td [attr.colspan]="(rel_column.length + 1)">
+                  <h4>No Records Found</h4>
+                </td>
+              </tr>
+            </ng-template>
+        </p-table>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <div class="mx-5 my-3">
+              <p-button type="button" label="Update Family"  styleClass="p-button-lg" (click)="UpdateRelationShip()"></p-button>
+
+            </div>
+          </mat-card-actions>
+        </mat-card>
+
+  </div>
+</div>

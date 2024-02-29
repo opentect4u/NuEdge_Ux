@@ -260,10 +260,9 @@
                   <div
                   class="d-flex justify-content-end align-items-end"
                   [ngClass]="{
-                  'col-sm-6':flag == 'F',
-                  'col-sm-3':sub_flag == 'IW' && (flag == 'K' || flag == 'N'),
-                  'col-sm-12 mt-2':sub_flag == 'IW' && flag == 'A'
-                }"
+                  'col-sm-6':flag == 'F' || sub_flag == 'KNV' || sub_flag == 'IOP',
+                  'col-sm-3':(sub_flag == 'IW' || sub_flag == 'NL') && (flag == 'K' || flag == 'N' || flag == 'A'),
+                  'col-sm-12 mt-2':sub_flag == 'IW' && flag == 'A'}"
                   >
                   <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
                 </div>
