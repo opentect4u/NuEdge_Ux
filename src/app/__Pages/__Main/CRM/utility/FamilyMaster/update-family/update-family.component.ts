@@ -231,7 +231,7 @@ UpdateFamily =() =>{
     try{
       const dt = {
         existing_members:JSON.stringify(this.getFamilyMemberMstDT),
-        new_members:this.toggle_family_members ? JSON.stringify(this.selectedFamily_member) : [],
+        new_members:this.toggle_family_members ? JSON.stringify(this.selectedFamily_member) : '[]',
         family_head_id:this.getFamilyMemberMstDT.filter((item) => item.relationship == 'Head')[0]?.family_id
       }
       this.dbIntr.api_call(1,'/updateFamilymembers',this.utility.convertFormData(dt))
@@ -241,8 +241,9 @@ UpdateFamily =() =>{
                 this.selectedFamily_member = [];
                 this.newMembersList = [];
                 this.family_head_search.reset();
+                this.toggle_family_members = false;
             }
-            this.utility.showSnackbar(res.suc == 1 ? 'Family Updated Successfully' : res.msg,2)
+            this.utility.showSnackbar(res.suc == 1 ? 'Family Updated Successfully' : res.msg,res.suc)
       })
     }
     catch(err){
