@@ -174,7 +174,6 @@ export class HomeComponent implements OnInit {
       });
     } catch (ex) {
       console.log(ex);
-
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('60%');
       console.log(ex);
