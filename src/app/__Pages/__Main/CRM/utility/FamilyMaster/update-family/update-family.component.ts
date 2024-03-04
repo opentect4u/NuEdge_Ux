@@ -232,7 +232,7 @@ UpdateFamily =() =>{
       const dt = {
         existing_members:JSON.stringify(this.getFamilyMemberMstDT),
         new_members:this.toggle_family_members ? JSON.stringify(this.selectedFamily_member) : [],
-        head_id:this.getFamilyMemberMstDT.filter((item) => item.relationship == 'Head')[0]?.id
+        family_head_id:this.getFamilyMemberMstDT.filter((item) => item.relationship == 'Head')[0]?.family_id
       }
       this.dbIntr.api_call(1,'/updateFamilymembers',this.utility.convertFormData(dt))
       .subscribe((res: any) => {

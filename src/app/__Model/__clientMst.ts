@@ -43,4 +43,5 @@ export interface client {
     client_addr?:string;
     relationship?:string;
     client_id?:number;
+    family_id?:number;
   }

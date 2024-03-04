@@ -1,31 +1,52 @@
 [
-    {
-        "id": 41,
-        "menu_name": "Create Client Code",
-         "title": "Create Client Code",
-        "has_submenu": "N",
-        "url": "/main/master/mstOperations/clntMst/clOption",
-        "icon": "fa fa-user-o",
-        "sub_menu": [
-        ]
-    },
-    {
-        "id": 18,
-        "menu_name": "Document Master",
-         "title": "Document Master",
-        "has_submenu": "N",
-        "url": "/main/master/mstOperations/clntMst/docs",
-        "icon": "fa fa-user-o",
-
-        "sub_menu": []
-    },
-    {
-        "id": 29,
-        "menu_name": "Reports",
-         "title": "Reports",
-        "has_submenu": "N",
-        "url": "/main/master/mstOperations/clntMst/report",
-        "icon": "fa fa-user-o",
-        "sub_menu": []
-    }
+  {
+    "id": 41,
+    "menu_name": "Create Client Code",
+    "title": "Create Client Code",
+    "has_submenu": "N",
+    "url": "/main/master/mstOperations/clntMst/clOption",
+    "icon": "fa fa-user-o",
+    "sub_menu": [],
+    "flag":"C"
+  },
+  {
+    "id": 42,
+    "menu_name": "Upload CSV",
+    "title": "Upload CSV",
+    "has_submenu": "N",
+    "url": "/main/master/mstOperations/clntMst/docs",
+    "icon": "fa fa-user-o",
+    "sub_menu": [],
+    "flag":"U"
+  },
+  {
+    "id": 18,
+    "menu_name": "Document Master",
+    "title": "Document Master",
+    "has_submenu": "N",
+    "url": "/main/master/mstOperations/clntMst/docs",
+    "icon": "fa fa-user-o",
+    "sub_menu": [],
+    "flag":"D"
+  },
+  {
+    "id": 29,
+    "menu_name": "Auto Upload",
+    "title": "Auto Upload",
+    "has_submenu": "N",
+    "url": "/main/master/mstOperations/clntMst/report",
+    "icon": "fa fa-user-o",
+    "sub_menu": [],
+    "flag":"A"
+  },
+  {
+    "id": 29,
+    "menu_name": "Reports",
+    "title": "Reports",
+    "has_submenu": "N",
+    "url": "/main/master/mstOperations/clntMst/report",
+    "icon": "fa fa-user-o",
+    "sub_menu": [],
+    "flag":"R"
+  }
 ]

@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
   getItems(event){
-     this.utility.navigate(event.url)
+    //  this.utility.navigate(event.url)
+    console.log(event.flag);
   }
 }
