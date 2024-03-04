@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 // const url = "http://192.168.1.245/nuedge/"; // Local URL
 // const url = "http://192.168.161.228/nuedge/";
-const url = "http://192.168.1.4/nuedge/";
+const url = "http://192.168.1.6/nuedge/";
 // const url = "https://opentech4u.co.in/nuedge_api/"; //Server URL
 // const url = "http://localhost/nuedge/"; //Own Machine
 //  const url = "http://nuedge.opentech4u.co.in/nuedge_api/"; // Live Server URL

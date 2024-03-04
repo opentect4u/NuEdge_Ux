@@ -861,6 +861,7 @@ color: #ffffff;
 }
 .multiselect-dropdown .dropdown-btn{
   font-weight: 500!important;
+  background: #fff!important;
 }
 
 .summaryCnt{

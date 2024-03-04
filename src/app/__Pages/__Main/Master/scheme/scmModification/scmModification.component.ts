@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
   MatDialog,
   MatDialogRef,
@@ -53,7 +53,7 @@ export class ScmModificationComponent implements OnInit {
     limitSelection: -1,
     clearSearchFilter: true,
     maxHeight: 197,
-    itemsShowLimit: 18,
+    itemsShowLimit: 10,
     searchPlaceholderText: 'Search',
     noDataAvailablePlaceholderText: 'No recors found',
     closeDropDownOnSelection: false,
@@ -62,11 +62,20 @@ export class ScmModificationComponent implements OnInit {
   };
 
   __scmForm = new FormGroup({
+    exit_load: new FormControl(''),
+    /*** Newly Created */
+    sip_allowed: new FormControl('',[Validators.required]),
+    swp_allowed: new FormControl('',[Validators.required]),
+    stp_allowed: new FormControl('',[Validators.required]),
+    switch_allowed: new FormControl('',[Validators.required]),
+    purchase_allowed: new FormControl('',[Validators.required]),
+    /*** End */
     benchmark: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.benchmark_id) : ''),
     same_as_sip_dates: new FormControl(false),
     same_as_stp_dates: new FormControl(false),
     same_as_swp_dates: new FormControl(false),
-
+    minimum_switch_in_amt:new FormControl(''),
+    multiple_switch_in_amt:new FormControl(''),
     step_up_min_per: new FormControl(
       this.data.id > 0
         ? this.data.items.step_up_min_per
@@ -103,8 +112,8 @@ export class ScmModificationComponent implements OnInit {
         ? JSON.parse(this.data.items.sip_date)
         : global.getActualVal(this.__getPrevScmDT)
         ? JSON.parse(this.__getPrevScmDT?.sip_date)
-        : '',
-      [Validators.required]
+        : ''
+        // ,[Validators.required]
     ),
     id: new FormControl(this.data.id),
     nfo_entry_date: new FormControl(
@@ -145,7 +154,7 @@ export class ScmModificationComponent implements OnInit {
         : global.getActualVal(this.__getPrevScmDT)
         ? this.__getPrevScmDT?.pip_fresh_min_amt
         : '',
-      [Validators.required, Validators.pattern('^[0-9]*$')]
+      // [Validators.required, Validators.pattern('^[0-9]*$')]
     ),
     // sip_fresh_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_fresh_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
     pip_add_min_amt: new FormControl(
@@ -154,8 +163,17 @@ export class ScmModificationComponent implements OnInit {
         : global.getActualVal(this.__getPrevScmDT)
         ? this.__getPrevScmDT?.pip_add_min_amt
         : '',
-      [Validators.required, Validators.pattern('^[0-9]*$')]
+      // [Validators.required, Validators.pattern('^[0-9]*$')]
     ),
+    /*** Newly Added */
+    pip_multiple_amount: new FormControl(
+      this.data.id > 0
+      ? this.data.items?.pip_multiple_amount
+      : global.getActualVal(this.__getPrevScmDT)
+      ? this.__getPrevScmDT?.pip_multiple_amount
+      : '',
+    ),
+    /****End */
     // sip_add_min_amt: new FormControl(this.data.id > 0 ? this.data.items.sip_add_min_amt : '',[Validators.required,Validators.pattern("^[0-9]*$")]),
     gstin_no: new FormControl(this.data.id > 0 ? this.data.items.gstin_no : ''),
     frequency: new FormArray([]),
@@ -165,8 +183,8 @@ export class ScmModificationComponent implements OnInit {
         ? JSON.parse(this.data.items.swp_date)
         : global.getActualVal(this.__getPrevScmDT)
         ? JSON.parse(this.__getPrevScmDT?.swp_date)
-        : '',
-      [Validators.required]
+        : ''
+        // ,[Validators.required]
     ),
     swp_frequency: new FormArray([]),
     is_selectall_for_swp: new FormControl(false),
@@ -175,8 +193,8 @@ export class ScmModificationComponent implements OnInit {
         ? JSON.parse(this.data.items.stp_date)
         : global.getActualVal(this.__getPrevScmDT)
         ? JSON.parse(this.__getPrevScmDT?.stp_date)
-        : '',
-      [Validators.required]
+        : ''
+        // ,[Validators.required]
     ),
     stp_frequency: new FormArray([]),
     is_selectall_for_stp: new FormControl(false),
@@ -214,25 +232,31 @@ export class ScmModificationComponent implements OnInit {
         : false
     ),
     special_sip_name: new FormControl(
-      this.data.id > 0
+      {value:this.data.id > 0
         ? this.data.items.special_sip_name
         : global.getActualVal(this.__getPrevScmDT)
         ? this.__getPrevScmDT?.special_sip_name
-        : ''
+        : '',
+        disabled:this.data?.items?.ava_special_sip != 'true'
+      }
     ),
     special_swp_name: new FormControl(
-      this.data.id > 0
+      {value:this.data.id > 0
         ? this.data.items.special_swp_name
         : global.getActualVal(this.__getPrevScmDT)
         ? this.__getPrevScmDT?.special_swp_name
-        : ''
+        : '',
+        disabled:this.data?.items?.ava_special_swp != 'true'
+      }
     ),
     special_stp_name: new FormControl(
-      this.data.id > 0
+      {value:this.data.id > 0
         ? this.data.items.special_stp_name
         : global.getActualVal(this.__getPrevScmDT)
         ? this.__getPrevScmDT?.special_stp_name
-        : ''
+        : '',
+        disabled:this.data?.items?.ava_special_stp != 'true'
+      }
     ),
 
     nfo_one_pager_upload: new FormControl(
@@ -360,6 +384,7 @@ export class ScmModificationComponent implements OnInit {
       this.getamcMasterbyproductId(this.data.product_id);
       this.getcatMasterbyproductId(this.data.product_id);
     }
+
   }
 
   get others(): FormArray {
@@ -422,7 +447,131 @@ export class ScmModificationComponent implements OnInit {
       this.addStpFrequency(freqDtls);
     });
   }
+
+  setValidationOnChange_On_SIP_SWP_STP_allowed = (res:string,formControlName:{date:string,
+    special:string,
+    select_all:string,
+    special_sip_stp_swp:string,
+  }) =>{
+    if(res === 'Yes'){
+      this.__scmForm.controls[formControlName.date].setValidators([Validators.required]);
+      if( this.__scmForm.controls[formControlName.select_all].value){
+        this.__scmForm.controls[formControlName.special_sip_stp_swp].setValidators([Validators.required])
+      }
+    }
+    else{
+      if(this.__scmForm.controls[formControlName.date].hasValidator(Validators.required)){
+          this.__scmForm.controls[formControlName.date].removeValidators([Validators.required]);
+      }
+      if(this.__scmForm.controls[formControlName.special_sip_stp_swp].hasValidator(Validators.required)){
+        this.__scmForm.controls[formControlName.special_sip_stp_swp].removeValidators([Validators.required])
+      }
+    }
+    this.__scmForm.controls[formControlName.date].updateValueAndValidity({emitEvent:false,onlySelf:true})
+    this.__scmForm.controls[formControlName.special_sip_stp_swp].updateValueAndValidity({emitEvent:false,onlySelf:true})
+
+  }
+
+  disabled_special_sip_stp_swp_depend(res:boolean, formControlName:string){
+      if(res){
+        this.__scmForm.controls[formControlName].setValidators([Validators.required]);
+        this.__scmForm.controls[formControlName].enable();
+      }
+      else{
+        if(this.__scmForm.controls[formControlName].hasValidator(Validators.required)){
+            this.__scmForm.controls[formControlName].removeValidators([Validators.required]);
+        }
+        this.__scmForm.controls[formControlName].setValue('');
+        this.__scmForm.controls[formControlName].disable();
+      }
+      this.__scmForm.controls[formControlName].updateValueAndValidity({emitEvent: false,});
+  }
+
+  /*** Set Validation of `minimum_switch_in_amt`, `multiple_switch_in_amt`,`pip_fresh_min_amt`,`pip_add_min_amt`,`pip_multiple_amount`
+   *  onchange on `purchase_allowed` & `switch_allowed`
+   * ***/
+  setValidationOnChangeOnpurchase_switch_sip_stp_swp_allowed(res,formControlName:string[],validation:ValidatorFn[]){
+     formControlName.forEach(el =>{
+          if(res === 'Yes'){
+            this.__scmForm.controls[el].setValidators(validation);
+          }
+          else{
+            this.__scmForm.controls[el].removeValidators(validation);
+          }
+          this.__scmForm.controls[el].updateValueAndValidity({onlySelf:true})
+     })
+  }
+  /*** END */
+
   ngAfterViewInit() {
+
+    /******* PURCHASE ALLOWED */
+    this.__scmForm.controls['purchase_allowed'].valueChanges.subscribe(res =>{
+      this.setValidationOnChangeOnpurchase_switch_sip_stp_swp_allowed(res,['pip_fresh_min_amt','pip_add_min_amt','pip_multiple_amount'],[Validators.required, Validators.pattern('^[0-9]*$')])
+    })
+    /*** END */
+
+    /******** SWITCH ALLOWED */
+    this.__scmForm.controls['switch_allowed'].valueChanges.subscribe(res =>{
+      this.setValidationOnChangeOnpurchase_switch_sip_stp_swp_allowed(res,['minimum_switch_in_amt','multiple_switch_in_amt'],[Validators.pattern('^[0-9]*$')])
+      this.__scmForm.patchValue({minimum_switch_in_amt:'',multiple_switch_in_amt:''})
+    })
+    /***** END */
+
+
+    /***** SIP ALLOWED CHANGE EVENT */
+    this.__scmForm.controls['sip_allowed'].valueChanges.subscribe(res =>{
+      this.setValidationOnChange_On_SIP_SWP_STP_allowed(res,{
+        date:'sip_date',
+        special:'ava_special_sip',
+        select_all:'is_selectall',
+        special_sip_stp_swp:'special_sip_name',
+      });
+      this.frequency.controls.forEach((el,index) =>{
+            if(el.value.is_checked){
+              this.setFormControldependOnCheckbox(index, res === 'Yes')
+            }
+      })
+    })
+    /***** END */
+
+    /*** SWP Allowed change event */
+    this.__scmForm.controls['swp_allowed'].valueChanges.subscribe(res =>{
+      this.setValidationOnChange_On_SIP_SWP_STP_allowed(res,{
+        date:'swp_date',
+        special:'ava_special_swp',
+        select_all:'is_selectall_for_swp',
+        special_sip_stp_swp:'special_swp_name',
+      });
+      this.swp_frequency.controls.forEach((el,index) =>{
+          if(el.value.is_checked){
+            this.setSwpFormControldependOnCheckbox(index, res === 'Yes')
+          }
+      })
+  // this.setSwpFormControldependOnCheckbox(i, checked);
+      // this.swp_frequency.controls[i].patchValue({sip_add_min_amt:''})
+    })
+    /**** END */
+
+     /*** SWP Allowed change event */
+     this.__scmForm.controls['stp_allowed'].valueChanges.subscribe(res =>{
+
+      this.setValidationOnChange_On_SIP_SWP_STP_allowed(res,{
+        date:'stp_date',
+        special:'ava_special_stp',
+        select_all:'is_selectall_for_stp',
+        special_sip_stp_swp:'special_stp_name',
+      });
+
+      /****  */
+      this.stp_frequency.controls.forEach((el,index) =>{
+        if(el.value.is_checked){
+          this.setStpFormControldependOnCheckbox(index, res === 'Yes');
+        }
+      })
+    })
+    /**** END */
+
     this.__scmForm.controls['is_selectall_for_stp'].valueChanges.subscribe(
       (res) => {
         this.stp_frequency.controls.map((value, index) => {
@@ -492,41 +641,17 @@ export class ScmModificationComponent implements OnInit {
 
     // Available Special SIP
     this.__scmForm.controls['ava_special_sip'].valueChanges.subscribe((res) => {
-      this.__scmForm.controls['special_sip_name'].setValidators(
-        res ? [Validators.required] : null
-      );
-      this.__scmForm.controls['special_sip_name'].updateValueAndValidity({
-        emitEvent: false,
-      });
-      if (!res) {
-        this.__scmForm.controls['special_sip_name'].setValue('');
-      }
+      this.disabled_special_sip_stp_swp_depend(res,'special_sip_name');
     });
 
     // Available Special SWP
     this.__scmForm.controls['ava_special_swp'].valueChanges.subscribe((res) => {
-      this.__scmForm.controls['special_swp_name'].setValidators(
-        res ? [Validators.required] : null
-      );
-      this.__scmForm.controls['special_swp_name'].updateValueAndValidity({
-        emitEvent: false,
-      });
-      if (!res) {
-        this.__scmForm.controls['special_swp_name'].setValue('');
-      }
+      this.disabled_special_sip_stp_swp_depend(res,'special_swp_name');
     });
 
     // Available Special STP
     this.__scmForm.controls['ava_special_stp'].valueChanges.subscribe((res) => {
-      this.__scmForm.controls['special_stp_name'].setValidators(
-        res ? [Validators.required] : null
-      );
-      this.__scmForm.controls['special_stp_name'].updateValueAndValidity({
-        emitEvent: false,
-      });
-      if (!res) {
-        this.__scmForm.controls['special_stp_name'].setValue('');
-      }
+      this.disabled_special_sip_stp_swp_depend(res,'special_stp_name');
     });
 
     //Same As SIP DATES
@@ -636,12 +761,37 @@ export class ScmModificationComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit() {
-    //  console.log(this.__scmForm.value.frequency);
+    // console.log(this.__scmForm.value);
+    // return;
     if (this.__scmForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
       return;
     }
     const __scm = new FormData();
+
+    __scm.append('pip_fresh_min_amt',this.__scmForm.value.purchase_allowed === 'Yes' ? this.__scmForm.value.pip_fresh_min_amt : '');
+    __scm.append('pip_add_min_amt',this.__scmForm.value.purchase_allowed === 'Yes' ? this.__scmForm.value.pip_add_min_amt : '');
+    __scm.append('pip_multiple_amount',this.__scmForm.value.purchase_allowed === 'Yes' ? this.__scmForm.value.pip_multiple_amount : '');
+    __scm.append('exit_load',this.__scmForm.value.exit_load);
+    __scm.append('sip_allowed', this.__scmForm.value.sip_allowed);
+    __scm.append('sip_date', this.__scmForm.value.sip_allowed === 'Yes' ? JSON.stringify(this.__scmForm.value.sip_date) : '[]');
+
+    __scm.append('frequency', JSON.stringify(this.__scmForm.value.frequency.map(item => {
+      return {...item,is_checked:this.__scmForm.value.sip_allowed === 'Yes' ? item.is_checked.toString() : 'false',
+      sip_add_min_amt:(item.sip_add_min_amt && this.__scmForm.value.sip_allowed === 'Yes') ? item.sip_add_min_amt.toString() : '',
+      sip_fresh_min_amt:(item.sip_fresh_min_amt && this.__scmForm.value.sip_allowed === 'Yes') ? item.sip_fresh_min_amt.toString() : ''}})));
+
+    __scm.append('ava_special_sip',this.__scmForm.value.sip_allowed === 'Yes' ? this.__scmForm.value.ava_special_sip : false);
+    __scm.append('special_sip_name',(this.__scmForm.value.ava_special_sip && this.__scmForm.value.sip_allowed === 'Yes') ? this.__scmForm.getRawValue().special_sip_name: '');
+
+    __scm.append('stp_allowed', this.__scmForm.value.stp_allowed);
+    __scm.append('swp_allowed', this.__scmForm.value.swp_allowed);
+    __scm.append('switch_allowed', this.__scmForm.value.switch_allowed);
+    __scm.append('minimum_switch_in_amt',this.__scmForm.value.switch_allowed === 'Yes' ? this.__scmForm.value.minimum_switch_in_amt : '');
+    __scm.append('multiple_switch_in_amt',this.__scmForm.value.switch_allowed === 'No' ?  this.__scmForm.value.multiple_switch_in_amt : '');
+
+
+    __scm.append('purchase_allowed', this.__scmForm.value.purchase_allowed);
 
     if (this.data.scheme_type == 'N') {
       __scm.append(
@@ -703,26 +853,20 @@ export class ScmModificationComponent implements OnInit {
       global.getActualVal(this.__scmForm.value.step_up_min_per)
     );
 
-    __scm.append('ava_special_sip', this.__scmForm.value.ava_special_sip);
-    __scm.append(
-      'special_sip_name',
-      this.__scmForm.value.ava_special_sip
-        ? this.__scmForm.value.special_sip_name
-        : ''
-    );
 
-    __scm.append('ava_special_swp', this.__scmForm.value.ava_special_swp);
+
+    __scm.append('ava_special_swp', this.__scmForm.value.swp_allowed === 'Yes' ? this.__scmForm.value.ava_special_swp : 'false');
     __scm.append(
       'special_swp_name',
-      this.__scmForm.value.ava_special_swp
+      (this.__scmForm.value.ava_special_swp && this.__scmForm.value.swp_allowed === 'Yes')
         ? this.__scmForm.value.special_swp_name
         : ''
     );
 
-    __scm.append('ava_special_stp', this.__scmForm.value.ava_special_stp);
+    __scm.append('ava_special_stp', this.__scmForm.value.stp_allowed === 'Yes' ? this.__scmForm.value.ava_special_stp : 'false');
     __scm.append(
       'special_stp_name',
-      this.__scmForm.value.ava_special_stp
+      (this.__scmForm.value.ava_special_stp && this.__scmForm.value.stp_allowed === 'Yes')
         ? this.__scmForm.value.special_stp_name
         : ''
     );
@@ -737,15 +881,19 @@ export class ScmModificationComponent implements OnInit {
     __scm.append('nfo_start_dt', this.__scmForm.value.nfo_start_dt);
     __scm.append('nfo_end_dt', this.__scmForm.value.nfo_end_dt);
     __scm.append('nfo_reopen_dt', this.__scmForm.value.nfo_reopen_dt);
-    __scm.append('pip_fresh_min_amt', this.__scmForm.value.pip_fresh_min_amt);
-    __scm.append('pip_add_min_amt', this.__scmForm.value.pip_add_min_amt);
-    __scm.append('frequency', JSON.stringify(this.__scmForm.value.frequency.map(item => {return {...item,is_checked:item.is_checked.toString(),
-      sip_add_min_amt:item.sip_add_min_amt ? item.sip_add_min_amt.toString() : '',sip_fresh_min_amt:item.sip_fresh_min_amt ? item.sip_fresh_min_amt.toString() : ''}})));
-    __scm.append('swp_freq_wise_amt',JSON.stringify(this.__scmForm.value.swp_frequency.map(item => {return {...item,is_checked:item.is_checked.toString(),sip_add_min_amt:item.sip_add_min_amt ? item.sip_add_min_amt.toString(): ''}})));
-    __scm.append('stp_freq_wise_amt',JSON.stringify(this.__scmForm.value.stp_frequency.map(item => {return {...item,is_checked:item.is_checked.toString(),sip_add_min_amt:item.sip_add_min_amt ? item.sip_add_min_amt.toString(): ''}})));
-    __scm.append('sip_date', JSON.stringify(this.__scmForm.value.sip_date));
+
+
+    __scm.append('swp_freq_wise_amt',JSON.stringify(this.__scmForm.value.swp_frequency.map(item => {return {...item,
+      is_checked:this.__scmForm.value.swp_allowed === 'Yes' ? item.is_checked.toString() : 'false',
+      sip_add_min_amt:(item.sip_add_min_amt && this.__scmForm.value.swp_allowed === 'Yes') ? item.sip_add_min_amt.toString(): ''
+    }
+    })));
+    __scm.append('stp_freq_wise_amt',JSON.stringify(this.__scmForm.value.stp_frequency.map(item => {return {...item,
+      is_checked:this.__scmForm.value.stp_allowed === 'Yes' ? item.is_checked.toString() : 'false',
+      sip_add_min_amt:(item.sip_add_min_amt && this.__scmForm.value.stp_allowed === 'Yes') ? item.sip_add_min_amt.toString(): ''
+    }})));
     __scm.append('swp_date', JSON.stringify(this.__scmForm.value.swp_date));
-    __scm.append('stp_date', JSON.stringify(this.__scmForm.value.stp_date));
+    __scm.append('stp_date', this.__scmForm.value.stp_allowed === 'Yes' ?  JSON.stringify(this.__scmForm.value.stp_date) : '[]');
     __scm.append('gstin_no', global.getActualVal(this.__scmForm.value.gstin_no));
     __scm.append(
       'nfo_entry_date',
@@ -756,7 +904,7 @@ export class ScmModificationComponent implements OnInit {
       global.getActualVal(this.__scmForm.value.benchmark)
     );
     this.__dbIntr
-      .api_call(1, '/schemeAddEdit', __scm, true)
+      .api_call(1, '/schemeAddEdits', __scm)
       .subscribe((res: any) => {
         if (res.suc == 1) {
           this.reset();
@@ -833,54 +981,45 @@ export class ScmModificationComponent implements OnInit {
     switch (__id) {
       case '1':
         this.setFormControldependOnCheckbox(i, checked);
+        this.frequency.controls[i].patchValue({
+          sip_fresh_min_amt:'',
+          sip_add_min_amt:'',
+        })
         break;
       case '2':
         this.setSwpFormControldependOnCheckbox(i, checked);
+        this.swp_frequency.controls[i].patchValue({sip_add_min_amt:''})
         break;
       default:
         this.setStpFormControldependOnCheckbox(i, checked);
+        this.stp_frequency.controls[i].patchValue({sip_add_min_amt:''})
         break;
     }
   }
   setFormControldependOnCheckbox(i, __res) {
-    this.frequency.controls[i]
-      .get('sip_fresh_min_amt')
-      .setValidators(
+    this.frequency.controls[i].get('sip_fresh_min_amt').setValidators(
         __res ? [Validators.required, Validators.pattern('^[0-9]*$')] : null
       );
-    this.frequency.controls[i]
-      .get('sip_add_min_amt')
-      .setValidators(
+    this.frequency.controls[i].get('sip_add_min_amt').setValidators(
         __res ? [Validators.required, Validators.pattern('^[0-9]*$')] : null
       );
-    this.frequency.controls[i]
-      .get('sip_fresh_min_amt')
-      .updateValueAndValidity();
+    this.frequency.controls[i].get('sip_fresh_min_amt').updateValueAndValidity();
     this.frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
+
+
   }
   setSwpFormControldependOnCheckbox(i, __res) {
-    // this.swp_frequency.controls[i].get('sip_fresh_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
-    this.swp_frequency.controls[i]
-      .get('sip_add_min_amt')
-      .setValidators(
+    this.swp_frequency.controls[i].get('sip_add_min_amt').setValidators(
         __res ? [Validators.required, Validators.pattern('^[0-9]*$')] : null
       );
-    // this.swp_frequency.controls[i].get('sip_fresh_min_amt').updateValueAndValidity();
-    this.swp_frequency.controls[i]
-      .get('sip_add_min_amt')
-      .updateValueAndValidity();
+    this.swp_frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
+
   }
   setStpFormControldependOnCheckbox(i, __res) {
-    // this.stp_frequency.controls[i].get('sip_fresh_min_amt').setValidators(__res ? [Validators.required,Validators.pattern("^[0-9]*$")] : null);
-    this.stp_frequency.controls[i]
-      .get('sip_add_min_amt')
-      .setValidators(
+    this.stp_frequency.controls[i].get('sip_add_min_amt').setValidators(
         __res ? [Validators.required, Validators.pattern('^[0-9]*$')] : null
       );
-    // this.stp_frequency.controls[i].get('sip_fresh_min_amt').updateValueAndValidity();
-    this.stp_frequency.controls[i]
-      .get('sip_add_min_amt')
-      .updateValueAndValidity();
+    this.stp_frequency.controls[i].get('sip_add_min_amt').updateValueAndValidity();
   }
 
   getFile(__ev, mode) {
