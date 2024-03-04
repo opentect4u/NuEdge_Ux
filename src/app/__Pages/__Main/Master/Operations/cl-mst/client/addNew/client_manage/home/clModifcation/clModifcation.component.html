@@ -26,6 +26,18 @@
 
     <form [formGroup]="__clientForm" (ngSubmit)="submit()" id="__clientForm_{{data.id}}" autocomplete="off"
       ngNativeValidate>
+
+      <!-- Addition of Client Type -->
+      <div class="row">
+          <div class="col-sm-12">
+                <label for="type">Type</label>
+                <select formControlName="type" class="form-control">
+                    <option value="">Select</option>
+                </select>
+          </div>
+      </div>
+      <!-- End -->
+
       <div class="row" *ngIf="this.data.cl_type != 'M' && this.data.cl_type != 'N'">
         <div class="col-sm-12 my-2">
           <label for="panNo">PAN <span class="text-danger">*</span></label>

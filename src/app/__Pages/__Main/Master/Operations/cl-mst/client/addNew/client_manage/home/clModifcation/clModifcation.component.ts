@@ -36,6 +36,7 @@ export class ClModifcationComponent implements OnInit {
   __maxDt = dates.disabeldDates();
   __stateMaster: any = [];
   __clientForm = new FormGroup({
+    type: new FormControl('',[Validators.required]),
     mar_status: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items?.mar_status) : ''),
     anniversary_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.anniversary_date) : ''),
     client_name: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.client_name) : '', [Validators.required]),

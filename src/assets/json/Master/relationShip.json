@@ -8,6 +8,10 @@
       "relation":"Daughter"
     },
     {
+      "id":"Son",
+      "relation":"Son"
+    },
+    {
       "id":"GD",
       "relation":"Granddaughter"
     }, {
@@ -45,5 +49,13 @@
     {
       "id":"O",
       "relation":"Others"
+    },
+    {
+      "id":"Mother",
+      "relation":"Mother"
+    },
+    {
+      "id":"Father",
+      "relation":"Father"
     }
 ]
