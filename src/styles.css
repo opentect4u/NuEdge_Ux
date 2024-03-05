@@ -1012,3 +1012,31 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
 }
 
 /***** END ****/
+span.custom__badge.badge-warning:hover {
+  background: #bdbdbd;
+}
+span.custom__badge.badge-success:hover {
+  background: #afe6ef;
+}
+span.custom__badge.badge-secondary:hover {
+  background: #ffe1a3;
+}
+span.custom__badge.badge-primary:hover {
+  background: #bccdd7;
+}
+span.badge-primary {
+  color: #10486b !important;
+  background-color: #10486b29;
+}
+span.badge-secondary {
+  color: #FF9800 !important;
+  background-color: #faefd8;
+}
+span.badge-success {
+  color: #13a7c0 !important;
+  background-color: #dcf4f8;
+}
+span.badge-warning {
+  color: #353333 !important;
+  background-color: #79797940;
+}
