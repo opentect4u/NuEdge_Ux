@@ -946,6 +946,9 @@ color: #ffffff;
   /* border-radius: 10px; */
   font-family: 'Montserrat';
   cursor: pointer;
+  margin: 2px 1px;
+  border-radius: 4px;
+  float: left;
 }
 .parentTD{
   padding: 2px 0px!important

@@ -23,7 +23,7 @@ import { client } from 'src/app/__Model/__clientMst';
 })
 export class ClModifcationComponent implements OnInit {
 
-  CL_TYPE = CLIENTTYPE.filter((el) => el.type != 'E');
+  CL_TYPE = CLIENTTYPE.filter((el) => (el.type != 'E' && el.type != 'MC' && el.type != 'PHWC'));
   countryMst:any =[];
   pincodeMst: any=[];
   MaritialStatus = maritialStatus

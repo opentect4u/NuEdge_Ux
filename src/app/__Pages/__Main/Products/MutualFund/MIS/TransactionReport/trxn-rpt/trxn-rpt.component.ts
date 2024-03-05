@@ -678,13 +678,15 @@ export class TrxnRptComponent implements OnInit {
               }
             }
           else if(this.misTrxnRpt.value.view_type == 'C'){
-            if(!this.misTrxnRpt.value.pan_no){
-                  this.utility.showSnackbar('Please select investor',2)
+            if(this.misTrxnRpt.value.pan_no || this.misTrxnRpt.getRawValue().client_name){}
+            else{
+                this.utility.showSnackbar('Please select investor',2)
                   return;
             }
            }
            else{
             if(this.misTrxnRpt.value.pan_no
+              ||this.misTrxnRpt.getRawValue().client_name
               || this.misTrxnRpt.value.folio_no
               || this.misTrxnRpt.value.amc_id.length > 0
               || this.misTrxnRpt.value.trxn_type_id.length > 0

@@ -212,7 +212,12 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.clientFrm.get('client_name').setValue('',{emitEvent:false});
     this.sort = new sort();
     this.__pageNumber.setValue('10');
-    this.searchClient();
+    if(this.clientFrm.value.client_type != 'MC' && this.clientFrm.value.client_type != 'PHWC'){
+      this.searchClient();
+    }
+    else{
+      this.clientMst = [];
+    }
   }
 
   getSelectedItemsFromParent = (items) => {

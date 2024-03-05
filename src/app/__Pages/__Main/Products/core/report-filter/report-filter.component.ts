@@ -921,8 +921,8 @@ export class ReportFilterComponent implements OnInit {
       item: any;
     }) => {
 
-      this.Rpt.get('client_name').reset(searchRlt.item.first_client_name, { emitEvent: false });
-      this.Rpt.get('pan_no').reset(searchRlt.item.first_client_pan);
+      this.Rpt.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
+      this.Rpt.get('pan_no').reset(searchRlt.item.pan);
       // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
       this.searchResultVisibilityForClient('none');
       if(this.Rpt.value.view_type == 'F'){

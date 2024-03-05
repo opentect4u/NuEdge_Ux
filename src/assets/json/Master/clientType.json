@@ -23,5 +23,15 @@
     "type":"N",
     "tab_name":"Non PAN Holder",
     "img_src":"../../../assets/images/nonpanHolder.png"
+  },{
+    "id":5,
+    "type":"PHWC",
+    "tab_name":"PAN Holder Without Client",
+    "img_src":"../../../assets/images/nonpanHolder.png"
+  },{
+    "id":6,
+    "type":"MC",
+    "tab_name":"Merge Client",
+    "img_src":"../../../assets/images/mergeClient.png"
   }
 ]

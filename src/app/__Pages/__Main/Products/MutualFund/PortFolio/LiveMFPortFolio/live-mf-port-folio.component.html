@@ -233,7 +233,7 @@
                   <td  *ngFor="let col of parent_column" class="parentTD">
                     <ng-container [ngSwitch]="true">
                       <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                        <p class="m-0"  pRipple [pRowToggler]="liveMfPortFolio">
+                        <p class="m-0 text-left"  pRipple [pRowToggler]="liveMfPortFolio">
                           {{liveMfPortFolio[col.field] ? (liveMfPortFolio[col.field] +'-'+ liveMfPortFolio.plan_name +'-'+liveMfPortFolio.option_name) : 'N/A'}}
                         </p>
                         <span class="custom__badge badge-primary">online</span>
