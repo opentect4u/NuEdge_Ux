@@ -13,7 +13,7 @@ const url = "http://192.168.1.6/nuedge/";
 export const environment = {
   production: false,
   /****** NuEdge  Start*****/
-  nav_url : "http://192.168.1.6:8000/",
+  nav_url : "http://192.168.1.6:8000",
   apiUrl:url + "api/v1",
   clientdocUrl:url + "public/client-doc/",
 

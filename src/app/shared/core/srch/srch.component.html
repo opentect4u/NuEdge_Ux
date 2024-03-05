@@ -29,8 +29,10 @@
         <ul *ngIf="listItems.length > 0;else noData">
           <core-list-item *ngFor="let items of listItems" (click)="getItems(items)" [items]="items">
             <li>
-
-                <span *ngFor = "let props of propertiesToShow;let i=index">
+                <span
+                  *ngFor = "let props of propertiesToShow;let i=index"
+                  [matTooltip]="items[props]"
+                  [matTooltipPosition]="'right'">
                   <ng-container *ngIf="flag == 'C';else others">
                     <span *ngIf="i>0 && items[props]">[</span>
                     {{items[props]}}

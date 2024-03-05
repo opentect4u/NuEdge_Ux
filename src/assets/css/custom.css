@@ -519,11 +519,18 @@ table {
 }
 
 .serachresult_client ul li {
+  /* padding: 3px 15px;
+  border-bottom: 1px solid #ebebeb; */
+ /** MAY BE REMOVE LATER**/
+  /* line-height: 14px; */
+  /*** END ***/
+
   padding: 3px 15px;
   border-bottom: 1px solid #ebebeb;
- /** MAY BE REMOVE LATER**/
   line-height: 14px;
-  /*** END ***/
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* .serachresult_client ul.keyNavigateHover li{
