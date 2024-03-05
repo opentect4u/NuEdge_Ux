@@ -30,19 +30,30 @@
       <!-- Addition of Client Type -->
       <div class="row">
           <div class="col-sm-12">
-                <label for="type">Type</label>
-                <select formControlName="type" class="form-control">
+                <label for="type">Type <span class="text-danger">*</span></label>
+                <select
+                formControlName="type"
+                class="form-control">
                     <option value="">Select</option>
+                    <option value="{{clType.type}}" *ngFor="let clType of CL_TYPE">
+                      {{clType.tab_name}}
+                    </option>
                 </select>
+                <div class="invalid-feedback"
+                *ngIf="__clientForm.get('type').invalid && (__clientForm.get('type').dirty || __clientForm.get('type').touched)">
+                <span class="invalid-feedback" *ngIf="(__clientForm.get('type')).errors?.required">*Please provide type</span>
+                  </div>
           </div>
       </div>
       <!-- End -->
 
-      <div class="row" *ngIf="this.data.cl_type != 'M' && this.data.cl_type != 'N'">
+      <div class="row" *ngIf=" __clientForm.value.type != 'M' &&  __clientForm.value.type != 'N'">
         <div class="col-sm-12 my-2">
           <label for="panNo">PAN <span class="text-danger">*</span></label>
           <input type="text" name="pan" id="panNo" class="form-control" placeholder="eg. XXXXX1234X"
-            formControlName="pan" minlength="10" maxlength="10" (change)="checkPanExistornot($event)">
+            formControlName="pan" minlength="10" maxlength="10"
+            >
+
           <div class="invalid-feedback"
             *ngIf="__clientForm.get('pan').invalid && (__clientForm.get('pan').dirty || __clientForm.get('pan').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).errors?.required">*Please provide PAN
@@ -53,10 +64,12 @@
               number must be 10 characters long</span>
             <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).hasError('maxlength')">*PAN
               number must be 10 characters long</span>
+              <span class="invalid-feedback" *ngIf="(__clientForm.get('pan')).hasError('panExists')">*PAN
+                already exists</span>
           </div>
         </div>
       </div>
-      <ng-container *ngIf="((this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'P' || this.data.cl_type == 'M' || this.data.cl_type == 'N')">
+      <ng-container *ngIf="(( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'P' ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N')">
         <div class="row" >
           <div class="col-sm-12">
             <label for="cl_type">Client Type <span class="text-danger">*</span></label>
@@ -355,7 +368,7 @@
         </ng-container>
         <!-- End -->
 
-        <ng-container *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        <ng-container *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
           <div class="col-sm-12 my-2"
           *ngIf="__clientForm.get('client_type').value == 7
           ||__clientForm.get('client_type').value == 2
@@ -412,7 +425,7 @@
         </div>
         </ng-container>
 
-        <ng-container *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'N'||this.data.cl_type == 'P' ">
+        <ng-container *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P' ">
           <div class="col-sm-12" *ngIf="__clientForm.get('client_type').value == 1
         || __clientForm.get('client_type').value == 3
         || __clientForm.get('client_type').value == 30
@@ -447,7 +460,7 @@
         </ng-container>
       </div>
 
-      <div class="row" *ngIf="this.data.cl_type == 'M'">
+      <div class="row" *ngIf=" __clientForm.value.type == 'M'">
         <div class="col-sm-12 my-2">
           <label for="gur_pan">Gurdians PAN <span class="text-danger">*</span></label>
           <input type="text" name="gur_pan" id="gur_pan" class="form-control" placeholder="eg. XXXXX1234X"
@@ -477,24 +490,24 @@
         </div>
         <div class="col-sm-12 my-2">
           <label for="relations">
-            {{this.data.cl_type =='M' ? 'Relationship With Minor' : 'Relationship'}}
+            {{ __clientForm.value.type =='M' ? 'Relationship With Minor' : 'Relationship'}}
             <span class="text-danger">*</span></label>
           <select class="form-control" formControlName="relations">
-            <option value="">Select {{this.data.cl_type =='M' ? ' Relationship With Minor' : ' Relationship'}}</option>
+            <option value="">Select {{ __clientForm.value.type =='M' ? ' Relationship With Minor' : ' Relationship'}}</option>
             <option [value]="rel.id" *ngFor="let rel of __relation">{{rel.relation}}</option>
           </select>
           <!-- <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea> -->
           <div class="invalid-feedback"
             *ngIf="__clientForm.get('relations').invalid && (__clientForm.get('relations').dirty || __clientForm.get('relations').touched)">
             <span class="invalid-feedback" *ngIf="(__clientForm.get('relations')).errors?.required">*Please provide
-              {{this.data.cl_type =='M' ? 'relationship with minor' : 'relationship'}}</span>
+              {{ __clientForm.value.type =='M' ? 'relationship with minor' : 'relationship'}}</span>
           </div>
         </div>
       </div>
 
 
       <div class="row"
-        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <div class="col-sm-12 my-2">
           <label for="mblNumber">Mobile Number <span class="text-danger">*</span></label>
           <input (keypress)="preventNonumeric($event)" maxlength="10" minlength="10" type="text" name="mobile"
@@ -527,7 +540,7 @@
         </div>
       </div>
       <div class="row"
-        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <div class="col-sm-12 my-2">
           <label for="email">Email <span class="text-danger">*</span></label>
           <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email"
@@ -551,7 +564,7 @@
         </div>
       </div>
       <div class="row"
-        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <div class="col-sm-12 my-2">
           <label for="addr">Address Line 1 <span class="text-danger">*</span></label>
           <input placeholder="Enter Address 1" type="text" name="add_line_1" id="addr" class="form-control"
@@ -568,7 +581,7 @@
             formControlName="add_line_2">
         </div>
       </div>
-       <div class="row"  *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+       <div class="row"  *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <div class="col-sm-12">
             <label for="country">Country <span class="text-danger">*</span></label>
             <select
@@ -586,7 +599,7 @@
         </div>
        </div>
       <div class="row"
-        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <div class="col-sm-12 my-2">
           <label for="__state">State <span class="text-danger">*</span></label>
           <select name="state" id="__state" class="form-control" formControlName="state">
@@ -613,7 +626,7 @@
         </div>
       </div>
       <div class="row"
-        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <div class="col-sm-12 my-2">
           <label for="__city">City / Village <span class="text-danger">*</span></label>
           <select name="__city" id="__city" class="form-control" formControlName="city">
@@ -641,12 +654,12 @@
       </div>
 
       <div class="divider"
-        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <span>Upload Documents</span>
         <hr class="line" />
       </div>
       <table class="my-2"
-        *ngIf="(this.data.cl_type == 'E' && this.data.id > 0) || this.data.cl_type == 'M' || this.data.cl_type == 'N'||this.data.cl_type == 'P'">
+        *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <thead>
           <tr>
             <th>
@@ -721,7 +734,9 @@
     </form>
   </mat-dialog-content>
   <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
-    <button class="btn addBtn" [attr.form]="'__clientForm_'+data.id" [disabled]="__clientForm.invalid">Submit</button>
+    <button class="btn addBtn" [attr.form]="'__clientForm_'+data.id"
+    [disabled]="__clientForm.invalid"
+    >Submit</button>
   </mat-dialog-actions>
   <!-- <br clear="all"> -->
 </div>

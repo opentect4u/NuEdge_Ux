@@ -194,7 +194,7 @@ export class CreateFamilyComponent implements OnInit {
       {
         family_head_id:this.selectedFamily_header?.id,
         family_members:JSON.stringify(
-          this.selectedFamily_member.filter(item => item.id != this.selectedFamily_header?.id).map((item) => ({id:item.id,relationship:item.relation}))
+          this.selectedFamily_member.filter(item => item.id != this.selectedFamily_header?.id).map((item) => ({id:item.id,relationship:item.relationship}))
         )
       })
     this.__dbIntr.api_call(1,'/clientFamilyAddEdit',this.utilty.convertFormData(dt))
@@ -209,6 +209,7 @@ export class CreateFamilyComponent implements OnInit {
         this.search_family_form.get('family_member_name').setValue('',{emitEvent:false})
         this.search_family_form.get('family_head_pan').setValue('',{emitEvent:false})
         this.search_family_form.get('family_member_pan').setValue('',{emitEvent:false})
+        this.visible = !this.visible;
       }
       this.utilty.showSnackbar(res == 1 ? 'Success!! Family created successfully' : 'Error!! Something went wrong',res)
     })
@@ -221,16 +222,7 @@ export class CreateFamilyComponent implements OnInit {
   }
 
   deleteMembers = (members:client,index:number) =>{
-    // this.selectedFamily_member.splice(index,1);
-    // this.primeTable.clearState();
-    // this.primeTable.reset();
-    // console.log(this.selectedFamily_member.splice(index,1));
-    // const selectedMembers =
-    // const dt  = this.selectedFamily_member.splice(index,1);
-    // const dt = this.selectedFamily_member;
     this.selectedFamily_member = this.selectedFamily_member.filter((item:client) => item.id != members.id)
-    // const td
-    // this.primeTable
   }
 }
 

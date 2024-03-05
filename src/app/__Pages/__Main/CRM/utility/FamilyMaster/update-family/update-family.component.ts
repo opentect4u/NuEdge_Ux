@@ -8,6 +8,8 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import relationship from '../../../../../../../assets/json/Master/relationShip.json'
 import { Table } from 'primeng/table';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 
 @Component({
   selector: 'app-update-family',
@@ -24,7 +26,7 @@ export class UpdateFamilyComponent implements OnInit {
 
 
   constructor(private dbIntr:DbIntrService,private utility:UtiliService,
-    ) { }
+    private __dialog: MatDialog) { }
 
  /** Showing Loader */
  __is__spinner_family_head:boolean = false;
@@ -211,12 +213,35 @@ getColumns = () =>{
 };
 
 deleteMembers = (members:client,index:number) =>{
-  this.selectedFamily_member = this.selectedFamily_member.filter((item:client) => item.id != members.id)
+            this.selectedFamily_member = this.selectedFamily_member.filter((item:client) => item.id != members.id)
 }
 
 deleteExistingMembers = (members:client,index:number) =>{
        if(this.getFamilyMemberMstDT.length > 2){
-        this.getFamilyMemberMstDT =   this.getFamilyMemberMstDT.filter((item:client)=> item.id != members.id)
+        const dialogConfig = new MatDialogConfig();
+              dialogConfig.autoFocus = false;
+              dialogConfig.role = "alertdialog";
+              dialogConfig.data = {
+                flag: 'A',
+                id: members.id,
+                title: 'Delete Family Member',
+                api_name:'/familyDelete'
+              };
+              const dialogref = this.__dialog.open(
+                DeletemstComponent,
+                dialogConfig
+              );
+              dialogref.afterClosed().subscribe((dt) => {
+                if(dt){
+                  if(dt.suc == 1){
+                      // this.family_head_search.reset();
+                      // this.getFamilyMemberMstDT = [];
+                      this.getFamilyMemberMstDT =   this.getFamilyMemberMstDT.filter((item:client)=> item.id != members.id)
+                  }
+                  this.utility.showSnackbar(dt.suc == 1 ? `Member deleted successfully` : dt.msg,dt.suc);
+                }
+
+              })
        }
        else{
         this.utility.showSnackbar(`Can't delete!! Must be two members in family`,2);
@@ -226,6 +251,9 @@ deleteExistingMembers = (members:client,index:number) =>{
 UpdateFamily =() =>{
   if(this.getFamilyMemberMstDT.length == 0){
     this.utility.showSnackbar(`Please search & select family head`,2)
+  }
+  else if(this.selectedFamily_member.length === 0){
+    this.utility.showSnackbar(`Please search & select new family members`,2)
   }
   else{
     try{

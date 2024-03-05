@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-import { map, pluck, skip } from 'rxjs/operators';
+import { catchError, delay, map, pluck, skip, tap } from 'rxjs/operators';
 import { docType } from 'src/app/__Model/__docTypeMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -13,12 +13,17 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { environment } from 'src/environments/environment';
 import relation from '../../../../../../../../../../../assets/json/Master/relationShip.json';
 import maritialStatus from '../../../../../../../../../../../assets/json/Master/maritialStatus.json';
+import CLIENTTYPE from '../../../../../../../../../../../assets/json/Master/clientType.json';
+import { Observable, of } from 'rxjs';
+import { client } from 'src/app/__Model/__clientMst';
 @Component({
   selector: 'app-clModifcation',
   templateUrl: './clModifcation.component.html',
   styleUrls: ['./clModifcation.component.css']
 })
 export class ClModifcationComponent implements OnInit {
+
+  CL_TYPE = CLIENTTYPE.filter((el) => el.type != 'E');
   countryMst:any =[];
   pincodeMst: any=[];
   MaritialStatus = maritialStatus
@@ -41,35 +46,64 @@ export class ClModifcationComponent implements OnInit {
     anniversary_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.anniversary_date) : ''),
     client_name: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.client_name) : '', [Validators.required]),
     dob: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.dob) : ''),
-    pan: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.pan) : '', [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]
+    pan: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.pan) : '',
+      {
+          validators:[Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'),
+          Validators.minLength(10),
+          Validators.maxLength(10)],
+          updateOn:'blur'
+      },
     ),
     dob_actual: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dob_actual) : ''),
-    mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.mobile) : '',
-      this.data?.cl_type == 'E' ? [] : [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]
-    ),
+    // mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.mobile) : '',
+    //   this.data?.cl_type == 'E' ? [] : [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]
+    // ),
+    mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.mobile) : ''),
     same_as_above: new FormControl(this.data.id > 0 ?  (this.data.items.dob == this.data.items.dob_actual) : false),
-    sec_mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_mobile) : '', this.data?.cl_type == 'E' ? [] : [Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]),
-    email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.email) : '', this.data?.cl_type == 'E' ? [] : [Validators.email]),
-    sec_email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_email) : '', this.data?.cl_type == 'E' ? [] : [Validators.email]),
-    add_line_1: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_1) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
+    // sec_mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_mobile) : '', this.data?.cl_type == 'E' ? [] : [Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]),
+    sec_mobile: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_mobile) : ''),
+    email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.email) : ''),
+    // email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.email) : '', this.data?.cl_type == 'E' ? [] : [Validators.email]),
+    // sec_email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_email) : '', this.data?.cl_type == 'E' ? [] : [Validators.email]),
+    sec_email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_email) : ''),
+    add_line_1: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_1) : ''),
+
+    // add_line_1: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_1) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
     add_line_2: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_2) : ''),
-    state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
-    dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
-    city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
-    pincode: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pincode) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
+    // state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
+    state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : ''),
+
+    dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : ''),
+    city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : ''),
+    pincode: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pincode) : ''),
+
+    // dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
+    // city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
+    // pincode: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pincode) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
     id: new FormControl(this.data.id),
-    gurdians_pan: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.guardians_pan) : '', this.data?.cl_type == 'E' ? [] : [Validators.required, Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)]),
-    gurdians_name: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.guardians_name) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
-    relations: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.relation)  : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
+    // gurdians_pan: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.guardians_pan) : '', this.data?.cl_type == 'E' ? [] : [Validators.required,
+    //   Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'),
+    //   Validators.minLength(10),
+    //   Validators.maxLength(10)]),
+    gurdians_pan: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.guardians_pan) : ''),
+    gurdians_name: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.guardians_name) : ''),
+    // gurdians_name: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.guardians_name) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
+    // relations: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.relation)  : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
+    relations: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.relation)  : ''),
+
     doc_dtls: new FormArray([]),
-    client_type: new FormControl((this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ?  global.getActualVal(this.data.items?.client_type_mode) : '',(this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ? [Validators.required] : []),
+    client_type: new FormControl((this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ?  global.getActualVal(this.data.items?.client_type_mode) : ''),
+
+    // client_type: new FormControl((this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ?  global.getActualVal(this.data.items?.client_type_mode) : '',(this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ? [Validators.required] : []),
     proprietor_name: new FormControl(global.getActualVal(this.data.items?.proprietor_name)),
     date_of_incorporation: new FormControl(global.getActualVal(this.data.items?.date_of_incorporation)),
     karta_name: new FormControl(global.getActualVal(this.data.items?.karta_name)),
     inc_date: new FormControl(global.getActualVal(this.data.items?.inc_date)),
     pertner_dtls: new FormArray([]),
     identification_number: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.identification_number)  : ''),
-    country: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.country_id)  : '',(this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ? [Validators.required] : [])
+    // country: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.country_id)  : '',(this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ? [Validators.required] : [])
+    country: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.country_id)  : '')
+
   })
   constructor(
     private sanitizer: DomSanitizer,
@@ -89,7 +123,7 @@ export class ClModifcationComponent implements OnInit {
   ngOnInit() {
     console.log(this.data);
 
-    this.getClientType();
+    // this.getClientType();
     this.setfrmCtrlValidatior();
     this.getCountryMaster();
     this.getDocumnetTypeMaster();
@@ -133,10 +167,21 @@ export class ClModifcationComponent implements OnInit {
       this.countryMst = res;
     })
   }
-  getClientType(){
-    this.__dbIntr.api_call(0,'/clientType','flag=' + (this.data?.cl_type == 'M' ? this.data?.cl_type : 'P')).pipe(pluck("data")).subscribe(res =>{
-    this.__clTypeMst = res;
-    })
+  getClientType(cl_type:string | null = 'P'){
+    if(cl_type){
+      // this.__dbIntr.api_call(0,'/clientType','flag=' + (this.data?.cl_type == 'M' ? this.data?.cl_type : 'P')).pipe(pluck("data")).subscribe(res =>{
+      //   console.log(res);
+      // this.__clTypeMst = res;
+      // })
+        this.__dbIntr.api_call(0,'/clientType',`flag=${cl_type == 'N' ? 'P' : cl_type}`).pipe(pluck("data")).subscribe(res =>{
+          console.log(res);
+        this.__clTypeMst = res;
+        })
+    }
+    else{
+      this.__clTypeMst = []
+    }
+
   }
   getDistrict_city(){
     if(this.data.id > 0 && this.data.client_type != 'E'){
@@ -147,7 +192,61 @@ export class ClModifcationComponent implements OnInit {
     }
   }
 
+  setValidatorsDependOnType = (formControls:{formControlName:string,validators:ValidatorFn[],asyncValidators?:AsyncValidatorFn[]}[],type:string) =>{
+        formControls.forEach(element => {
+          if(type == 'P' || type == 'N' || type == 'M'){
+            if(element.formControlName === 'pan' && (type == 'M' || type == 'N')){
+                  this.__clientForm.get(element.formControlName).removeValidators(element.validators);
+                  this.__clientForm.get(element.formControlName).clearAsyncValidators();
+            }
+            else if((element.formControlName === 'gurdians_name' || element.formControlName === 'gurdians_pan' || element.formControlName === 'relations') && type != 'M'){
+              this.__clientForm.get(element.formControlName).removeValidators(element.validators);
+            }
+            else{
+              this.__clientForm.get(element.formControlName).setValidators(element.validators)
+                if(element.asyncValidators.length > 0){
+                  this.__clientForm.get(element.formControlName).setAsyncValidators(element.asyncValidators);
+                }
+            }
+          }
+          else{
+            this.__clientForm.get(element.formControlName).removeValidators(element.validators);
+            if(element.asyncValidators.length > 0){
+              this.__clientForm.get(element.formControlName).removeAsyncValidators(element.asyncValidators);
+            }
+          }
+          this.__clientForm.get(element.formControlName).updateValueAndValidity({emitEvent:false});
+        });
+  }
+
   ngAfterViewInit() {
+  this.__clientForm.get('type').valueChanges.subscribe(res =>{
+        this.getClientType(res);
+        this.__clientForm.get('client_type').setValue('',{emitEvent:true});
+        this.setValidatorsDependOnType(
+          [
+            {formControlName:'pan',
+            validators:[Validators.required,Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'),
+            Validators.minLength(10), Validators.maxLength(10)],
+            asyncValidators:[this.PANValidators()],
+          },
+            {formControlName:'client_type',validators: [Validators.required],asyncValidators:[]},
+            {formControlName:'country',validators: [Validators.required],asyncValidators:[]},
+            {formControlName:'relations',validators: [Validators.required],asyncValidators:[]},
+            {formControlName:'gurdians_name',validators: [Validators.required],asyncValidators:[]},
+            {formControlName:'gurdians_pan',validators: [Validators.required,
+              Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'), Validators.minLength(10), Validators.maxLength(10)],asyncValidators:[]},
+            {formControlName:'state',validators:[Validators.required],asyncValidators:[]},
+            {formControlName:'dist',validators:[Validators.required],asyncValidators:[]},
+            {formControlName:'city',validators:[Validators.required],asyncValidators:[]},
+            {formControlName:'pincode',validators:[Validators.required],asyncValidators:[]},
+            {formControlName:'add_line_1',validators:[Validators.required],asyncValidators:[]},
+            {formControlName:'email',validators:[Validators.email],asyncValidators:[]},
+            {formControlName:'sec_email',validators:[Validators.email],asyncValidators:[]},
+            {formControlName:'mobile',validators:[Validators.minLength(10),Validators.maxLength(10),Validators.pattern("^[0-9]*$")],asyncValidators:[]},
+            {formControlName:'sec_mobile',validators:[Validators.minLength(10),Validators.maxLength(10),Validators.pattern("^[0-9]*$")],asyncValidators:[]},
+          ],res);
+  })
 
   /** Trigger on Change on Country  */
   this.__clientForm.get('country').valueChanges.subscribe(res =>{
@@ -268,7 +367,8 @@ export class ClModifcationComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   submit(){
-
+    console.log(this.__clientForm);
+    return;
     if (this.__clientForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
       return;
@@ -552,4 +652,21 @@ export class ClModifcationComponent implements OnInit {
     this.pertner_dtls.removeAt(index);
 
   }
+
+
+   /**** checkIf Pan Exist or not */
+    PANValidators(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+       if(control.value){
+          return  this.__dbIntr.api_call(0,'/client',`pan=${control.value}`,true).pipe(
+                    map((res: any) =>
+                      res?.data?.find(
+                        (client: client) => client.pan === control.value
+                      ) ? { panExists: true } : null
+                      )
+                  )
+            }
+          return null;
+          }
+    }
 }

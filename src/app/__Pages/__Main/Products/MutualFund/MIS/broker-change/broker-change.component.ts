@@ -335,7 +335,7 @@ family_members:client[] = [];
       'pan',
       'client_name',
       'Search Family members',
-      3
+      1
     );
 
 
@@ -518,8 +518,10 @@ ngAfterViewInit() {
     // else{
     //   this.misTrxnRpt.get('client_name').disable();
     // }
+
     this.misTrxnRpt.get('client_name').setValue('',{onlySelf:true,emitEvent:false});
     this.misTrxnRpt.get('pan_no').setValue('',{onlySelf:true,emitEvent:false});
+    this.getFamilymemberAccordingToFamilyHead_Id()
     if(res){
         this.misTrxnRpt.get('client_name').disable({onlySelf:true,emitEvent:false});
         if(this.misTrxnRpt.value.view_type == 'F'){

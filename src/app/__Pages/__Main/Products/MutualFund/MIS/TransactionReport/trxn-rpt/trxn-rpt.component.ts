@@ -355,7 +355,7 @@ export class TrxnRptComponent implements OnInit {
       'pan',
       'client_name',
       'Search Family members',
-      3
+      1
     );
 
     family_members:client[] = [];

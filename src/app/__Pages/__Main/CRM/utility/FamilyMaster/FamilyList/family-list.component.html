@@ -30,7 +30,7 @@
       >
         <ng-template pTemplate="header">
             <tr>
-                <th style="width: 3rem"></th>
+                <!-- <th style="width: 3rem"></th> -->
                 <th [pSortableColumn]="col.field"
                 [style.max-width]="col.width"
                 [style.min-width]="col.width"
@@ -44,14 +44,21 @@
         </ng-template>
         <ng-template pTemplate="body" let-family_head let-expanded="expanded" let-i="rowIndex">
             <tr>
-                <td>
+                <!-- <td>
                     <button type="button" pButton pRipple
                     [pRowToggler]="family_head" class="p-button-text p-button-success p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                </td>
+                </td> -->
                 <td *ngFor="let col of parent_column">
                   <ng-container [ngSwitch]="true">
                     <ng-container *ngSwitchCase="col.field == 'sl_no'">
                       {{ i + 1}}
+                      </ng-container>
+                      <ng-container *ngSwitchCase='col.field == "client_name"'>
+                        <button type="button" pButton
+                        [pRowToggler]="family_head"
+                        class="p-button-link"
+                        [label]="family_head[col.field]"
+                        ></button>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'add_line_1'">
                         {{ family_head[col.field]}}

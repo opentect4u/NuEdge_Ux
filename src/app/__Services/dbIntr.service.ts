@@ -37,8 +37,8 @@ constructor(private __http:HttpClient) {
   __url:string,
    __dt: any,
   __bypass_log: any | undefined = false,
-  rptProgress:boolean | undefined = false
-
+  rptProgress:boolean | undefined = false,
+  is_nav: boolean | undefined = false
   ){
   if(__flag > 0){
         // return this.__http.post(`${environment.apiUrl + __url}`,
@@ -47,7 +47,7 @@ constructor(private __http:HttpClient) {
         //   context: new HttpContext().set(IS_CACHE,  __bypass_log),
         //   reportProgress: rptProgress
         // });
-        return this.__http.post(`${environment.apiUrl + __url}`,
+        return this.__http.post(`${(!is_nav ? environment.apiUrl : environment.nav_url) + __url}`,
         __dt,
         {
           context: new HttpContext().set(BYPASS_LOG,  __bypass_log),
@@ -56,7 +56,7 @@ constructor(private __http:HttpClient) {
   }
   else{
        var __data = __dt ? '?' + __dt : '';
-       return this.__http.get(`${environment.apiUrl + __url + __data}`,{ context: new HttpContext().set(BYPASS_LOG,  __bypass_log) });
+       return this.__http.get(`${(!is_nav ? environment.apiUrl : environment.nav_url) + __url + __data}`,{ context: new HttpContext().set(BYPASS_LOG,  __bypass_log) });
   }
  }
 

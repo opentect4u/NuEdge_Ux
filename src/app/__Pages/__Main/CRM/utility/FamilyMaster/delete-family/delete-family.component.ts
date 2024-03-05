@@ -149,7 +149,7 @@ export class DeleteFamilyComponent implements OnInit {
     dialogConfig.autoFocus = false;
     dialogConfig.role = "alertdialog";
     dialogConfig.data = {
-      flag: 'A',
+      flag: 'F',
       id: this.family_head_search.get('family_head_id').value,
       title: 'Delete Family',
       api_name:'/familyDelete'

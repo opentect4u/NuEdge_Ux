@@ -109,17 +109,26 @@ export class FamilyRelationshipComponent implements OnInit {
   }
 
   UpdateRelationShip = () =>{
-          const dt = {
-            family_head_id:this.getFamilyMembersMst.filter((item:client) => item.relationship == 'Head')[0]?.client_id,
-            other_members_relationship:JSON.stringify(this.getFamilyMembersMst.filter((item:client) => item.relationship != 'Head')),
+          try{
+            const dt = {
+              existing_members:JSON.stringify(this.getFamilyMembersMst),
+              new_members:'[]',
+              family_head_id:this.getFamilyMembersMst.filter((item) => item.relationship == 'Head')[0]?.family_id
+            }
+            this.dbIntr.api_call(1,'/updateFamilymembers',this.utility.convertFormData(dt))
+            .subscribe((res: any) => {
+                  if(res?.suc == 1){
+                    this.getFamilyMembersMst = [];
+                    this.family_head_search.get('family_head_name').setValue('',{emitEvent:false});
+                  }
+                 this.utility.showSnackbar(res.suc == 1 ? `Relationship Updated Successfull` : res.msg,res.suc)
+            })
           }
-          this.dbIntr.api_call(1,'/updateFamilyrelationShip',this.utility.convertFormData(dt))
-          .subscribe((res: any) =>{
-          if(res?.suc == 1){
-              this.family_head_search.get('family_head_name').setValue('',{emitEvent:false});
+          catch(err){
+              console.log(err);
+              this.utility.showSnackbar('Something went wrong',2)
           }
-          this.utility.showSnackbar(res.suc == 1 ? `Relationship Updated Successfull` : res.msg,2)
-          })
+
   }
 
 }

@@ -514,6 +514,7 @@ mat-card {
   font-size: 12px !important;
   font-weight: 100;
   color: #fff;
+  white-space:normal!important
 }
 
 

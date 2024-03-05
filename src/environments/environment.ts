@@ -8,10 +8,12 @@ const url = "http://192.168.1.6/nuedge/";
 // const url = "http://localhost/nuedge/"; //Own Machine
 //  const url = "http://nuedge.opentech4u.co.in/nuedge_api/"; // Live Server URL
 // const url = "https://nuedgecorporate.co.in/nuedge_api/";
+
+// const nav_url = "http://127.0.0.1:8000";
 export const environment = {
   production: false,
   /****** NuEdge  Start*****/
-
+  nav_url : "http://192.168.1.6:8000/",
   apiUrl:url + "api/v1",
   clientdocUrl:url + "public/client-doc/",
 
