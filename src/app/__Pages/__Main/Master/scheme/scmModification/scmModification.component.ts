@@ -904,7 +904,7 @@ export class ScmModificationComponent implements OnInit {
       global.getActualVal(this.__scmForm.value.benchmark)
     );
     this.__dbIntr
-      .api_call(1, '/schemeAddEdits', __scm)
+      .api_call(1, '/schemeAddEdit', __scm)
       .subscribe((res: any) => {
         if (res.suc == 1) {
           this.reset();
