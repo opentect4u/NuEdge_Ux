@@ -368,7 +368,7 @@ export class ClModifcationComponent implements OnInit {
   }
   submit(){
     console.log(this.__clientForm);
-    return;
+    // return;
     if (this.__clientForm.invalid) {
       this.__utility.showSnackbar('Submition failed due to some error', 0);
       return;
