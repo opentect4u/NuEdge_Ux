@@ -721,6 +721,7 @@ fetchTransaction = () =>{
   const family_members_name = this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.getRawValue().family_members.filter(item => !item.pan),'client_name') : '[]';
   const TrxnDt = new FormData();
   this.transType = 'Total'
+  TrxnDt.append('view_type',this.misTrxnRpt.value.view_type);
   TrxnDt.append('family_members_pan',family_members_pan);
   TrxnDt.append('family_members_name',family_members_name);
   TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
@@ -730,7 +731,7 @@ fetchTransaction = () =>{
   TrxnDt.append('amc_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.amc_id, 'id'));
   TrxnDt.append('cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.cat_id, 'id'));
   TrxnDt.append('sub_cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_cat_id, 'id'));
-  TrxnDt.append('pan_no',this.misTrxnRpt.value.pan_no);
+  TrxnDt.append('pan_no',this.misTrxnRpt.value.pan_no ? this.misTrxnRpt.value.pan_no : '');
   TrxnDt.append('client_name',this.misTrxnRpt.value.client_name);
   TrxnDt.append('scheme_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.scheme_id, 'id'));
   TrxnDt.append('trans_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_type_id,'trans_type'));

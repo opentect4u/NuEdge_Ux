@@ -62,20 +62,20 @@ export class ScmModificationComponent implements OnInit {
   };
 
   __scmForm = new FormGroup({
-    exit_load: new FormControl(''),
+    exit_load: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.exit_load) : global.getActualVal(this.__getPrevScmDT)? this.__getPrevScmDT?.exit_load : ''),
     /*** Newly Created */
-    sip_allowed: new FormControl('',[Validators.required]),
-    swp_allowed: new FormControl('',[Validators.required]),
-    stp_allowed: new FormControl('',[Validators.required]),
-    switch_allowed: new FormControl('',[Validators.required]),
-    purchase_allowed: new FormControl('',[Validators.required]),
+    sip_allowed: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.sip_allowed) : global.getActualVal(this.__getPrevScmDT)? this.__getPrevScmDT?.sip_allowed : '',[Validators.required]),
+    swp_allowed: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.swp_allowed) : global.getActualVal(this.__getPrevScmDT)? this.__getPrevScmDT?.swp_allowed : '',[Validators.required]),
+    stp_allowed: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.stp_allowed) : global.getActualVal(this.__getPrevScmDT)? this.__getPrevScmDT?.stp_allowed : '',[Validators.required]),
+    switch_allowed: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.switch_allowed) : global.getActualVal(this.__getPrevScmDT)? this.__getPrevScmDT?.switch_allowed : '',[Validators.required]),
+    purchase_allowed: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.purchase_allowed) : global.getActualVal(this.__getPrevScmDT)? this.__getPrevScmDT?.purchase_allowed : '',[Validators.required]),
     /*** End */
     benchmark: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.benchmark_id) : ''),
     same_as_sip_dates: new FormControl(false),
     same_as_stp_dates: new FormControl(false),
     same_as_swp_dates: new FormControl(false),
-    minimum_switch_in_amt:new FormControl(''),
-    multiple_switch_in_amt:new FormControl(''),
+    minimum_switch_in_amt:new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.switch_min_amt) : global.getActualVal(this.__getPrevScmDT)? this.__getPrevScmDT?.switch_min_amt : ''),
+    multiple_switch_in_amt:new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.switch_mul_amt) : global.getActualVal(this.__getPrevScmDT)? this.__getPrevScmDT?.switch_mul_amt : ''),
     step_up_min_per: new FormControl(
       this.data.id > 0
         ? this.data.items.step_up_min_per

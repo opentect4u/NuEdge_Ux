@@ -431,6 +431,15 @@ export class ScmRptComponent implements OnInit {
           value.W_sip_min_F_amount = row_obj.W_sip_min_F_amount;
           value.W_stp_min_amount = row_obj.W_stp_min_amount;
           value.W_swp_min_amount = row_obj.W_swp_min_amount;
+          value.sip_allowed = row_obj.sip_allowed;
+          value.stp_allowed = row_obj.stp_allowed;
+          value.swp_allowed = row_obj.swp_allowed;
+          value.switch_allowed = row_obj.switch_allowed;
+          value.purchase_allowed = row_obj.purchase_allowed;
+          value.switch_min_amt = row_obj.switch_min_amt;
+          value.switch_mul_amt = row_obj.switch_mul_amt;
+          value.exit_load = row_obj.exit_load;
+          value.pip_multiple_amount = row_obj.pip_multiple_amount;
         }
         return true;
       }
@@ -497,6 +506,15 @@ export class ScmRptComponent implements OnInit {
           value.W_sip_min_F_amount = row_obj.W_sip_min_F_amount;
           value.W_stp_min_amount = row_obj.W_stp_min_amount;
           value.W_swp_min_amount = row_obj.W_swp_min_amount;
+          value.sip_allowed = row_obj.sip_allowed;
+          value.stp_allowed = row_obj.stp_allowed;
+          value.swp_allowed = row_obj.swp_allowed;
+          value.switch_allowed = row_obj.switch_allowed;
+          value.purchase_allowed = row_obj.purchase_allowed;
+          value.switch_min_amt = row_obj.switch_min_amt;
+          value.switch_mul_amt = row_obj.switch_mul_amt;
+          value.exit_load = row_obj.exit_load;
+          value.pip_multiple_amount = row_obj.pip_multiple_amount;
       }
       return true;
     });

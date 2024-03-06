@@ -375,10 +375,10 @@ export class ClModifcationComponent implements OnInit {
     }
     const __client = new FormData();
 
-    if(this.data?.cl_type == 'P'){
+    if(this.__clientForm.value.type == 'P'){
       __client.append("pan", this.__clientForm.value.pan);
     }
-    else if(this.data?.cl_type == 'M'){
+    else if(this.__clientForm.value.type == 'M'){
       __client.append("relation", this.__clientForm.value.relations ? this.__clientForm.value.relations : '');
       __client.append("guardians_pan", this.__clientForm.value.gurdians_pan ? this.__clientForm.value.gurdians_pan : '');
       __client.append("guardians_name", this.__clientForm.value.gurdians_name ? this.__clientForm.value.gurdians_name : '');
@@ -396,8 +396,10 @@ export class ClModifcationComponent implements OnInit {
     __client.append("country_id", this.__clientForm.value.country);
 
     __client.append("id", this.__clientForm.value.id);
-    __client.append("client_type", this.data?.cl_type);
-        if(this.data?.cl_type == 'P'  || this.data?.cl_type == 'M' ||  this.data?.cl_type == 'N'){
+    // __client.append("client_type", this.data?.cl_type);
+    __client.append("client_type", this.__clientForm.value.type);
+
+        if(this.__clientForm.value.type == 'P'  || this.__clientForm.value.type == 'M' ||  this.__clientForm.value.type == 'N'){
           __client.append("client_type_mode", this.__clientForm.value.client_type);
         }
     for (let i = 0; i < this.__clientForm.value.doc_dtls.length; i++) {
@@ -483,7 +485,7 @@ export class ClModifcationComponent implements OnInit {
 
     this.__dbIntr.api_call(1, '/clientAddEdit', __client).subscribe((res: any) => {
       if (res.suc == 1) {
-          if (this.data?.cl_type == 'E' && this.data.id > 0) {this.dialogRef.close({id : this.data.id,cl_type:this.data?.cl_type});}
+          if (this.__clientForm.value.type == 'E' && this.data.id > 0) {this.dialogRef.close({id : this.data.id,cl_type:this.__clientForm.value.type});}
           else {this.dialogRef.close({id:this.data.id,data:res.data});}
           this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Client updated successfully' : 'Client added successfully') : res.msg, res.suc);
       }

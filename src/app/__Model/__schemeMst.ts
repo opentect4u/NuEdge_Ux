@@ -66,6 +66,15 @@ export interface scheme {
   W_sip_min_F_amount?:string | null;
   W_stp_min_amount?:string | null;
   W_swp_min_amount?:string | null;
+  switch_min_amt?: any;
+  switch_mul_amt?: any;
+  exit_load?: string | null;
+  sip_allowed?: string;
+  swp_allowed?: string;
+  stp_allowed?: string;
+  purchase_allowed?: string;
+  switch_allowed?: string;
+  pip_multiple_amount?:number
   }
 
 
