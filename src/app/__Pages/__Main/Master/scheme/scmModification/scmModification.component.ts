@@ -112,7 +112,7 @@ export class ScmModificationComponent implements OnInit {
         ? JSON.parse(this.data.items.sip_date)
         : global.getActualVal(this.__getPrevScmDT)
         ? JSON.parse(this.__getPrevScmDT?.sip_date)
-        : ''
+        : []
         // ,[Validators.required]
     ),
     id: new FormControl(this.data.id),
@@ -183,7 +183,7 @@ export class ScmModificationComponent implements OnInit {
         ? JSON.parse(this.data.items.swp_date)
         : global.getActualVal(this.__getPrevScmDT)
         ? JSON.parse(this.__getPrevScmDT?.swp_date)
-        : ''
+        : []
         // ,[Validators.required]
     ),
     swp_frequency: new FormArray([]),
@@ -193,7 +193,7 @@ export class ScmModificationComponent implements OnInit {
         ? JSON.parse(this.data.items.stp_date)
         : global.getActualVal(this.__getPrevScmDT)
         ? JSON.parse(this.__getPrevScmDT?.stp_date)
-        : ''
+        : []
         // ,[Validators.required]
     ),
     stp_frequency: new FormArray([]),
@@ -892,7 +892,7 @@ export class ScmModificationComponent implements OnInit {
       is_checked:this.__scmForm.value.stp_allowed === 'Yes' ? item.is_checked.toString() : 'false',
       sip_add_min_amt:(item.sip_add_min_amt && this.__scmForm.value.stp_allowed === 'Yes') ? item.sip_add_min_amt.toString(): ''
     }})));
-    __scm.append('swp_date', JSON.stringify(this.__scmForm.value.swp_date));
+    __scm.append('swp_date', this.__scmForm.value.swp_allowed === 'Yes' ?  JSON.stringify(this.__scmForm.value.swp_date) : '[]');
     __scm.append('stp_date', this.__scmForm.value.stp_allowed === 'Yes' ?  JSON.stringify(this.__scmForm.value.stp_date) : '[]');
     __scm.append('gstin_no', global.getActualVal(this.__scmForm.value.gstin_no));
     __scm.append(
