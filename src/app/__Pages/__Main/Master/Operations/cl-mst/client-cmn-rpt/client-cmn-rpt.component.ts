@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import {
   ICmnRptDef,
@@ -37,6 +37,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { RPTService } from 'src/app/__Services/RPT.service';
 import { Overlay } from '@angular/cdk/overlay';
 import { ClModifcationComponent } from '../client/addNew/client_manage/home/clModifcation/clModifcation.component';
+import { Table } from 'primeng/table';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 @Component({
   selector: 'app-client-cmn-rpt',
   templateUrl: './client-cmn-rpt.component.html',
@@ -63,6 +65,9 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       'Select State',
       1
     );
+
+    @ViewChild('dt') primeTble:Table;
+
  __pageNumber = new FormControl('10');
  sort = new sort();
  __paginate:any=[];
@@ -110,7 +115,44 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.getstate();
   }
 
+  changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+}
+
   ngAfterViewInit() {
+    const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+    this.changeWheelSpeed(el, 0.99);
     this.clientFrm
       .get('client_name')
       .valueChanges.pipe(
@@ -172,11 +214,19 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     __client.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
     __client.append('client_type',this.formvalue.client_type);
        this.dbIntr.api_call(1,'/clientDetailSearch',__client)
-      .pipe(pluck("data")).subscribe((res: any) =>{
-         this.clientMst = res.data;
-         this.__paginate = res.links;
-         this.tableExport(__client);
+      .pipe(pluck("data")).subscribe((res:client[]) =>{
+        try{
+          this.clientMst = res;
+          this.__exportClient = new MatTableDataSource(res);
+        }
+        catch(ex){
+          console.log(ex);
+          this.clientMst = [];
+          this.__exportClient = new MatTableDataSource([]);
+        }
+
     })
+
   };
 
   tableExport = (__client : FormData) =>{
@@ -184,17 +234,29 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.dbIntr.api_call(1,'/clientExport',__client)
     .pipe(pluck("data")).subscribe((res: client[]) =>{
        this.__exportClient = new MatTableDataSource(res);
-       console.log(this.__exportClient.data);
 
   })
+  }
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
+  }
 
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTble.filterGlobal(value,'contains')
   }
 
   TabDetails = (tabDtls) => {
-    this.clientFrm.get('client_type').setValue(tabDtls.tabDtls.type);
-    this.sort = new sort();
-    this.reset();
-    this.setColumns(this.clientFrm.value.options);
+    try{
+      this.clientFrm.get('client_type').setValue(tabDtls.tabDtls.type);
+      this.sort = new sort();
+      this.reset();
+      this.setColumns(this.clientFrm.value.options);
+    }
+    catch(ex){
+        console.log(ex);
+    }
+
   };
   onItemClick = (ev) => {
     console.log(ev);
@@ -205,6 +267,8 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     }
   };
   reset = () =>{
+    this.clientMst = [];
+    this.__exportClient = new MatTableDataSource([]);
     this.clientFrm.patchValue({
       dob_as_per_month:'',
       doa_as_per_month:'',
@@ -302,6 +366,9 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     // this.__exportedClmns = this.__columns.map((item) => {return item['field']}).filter((x: any) => !__columnToRemove.includes(x));
     // this.SelectedClms = this.__columns.map(x => x.field);
 
+    // this.primeTble.reset();
+    // this.primeTble.columns = [];
+    try{
     const __columnToRemove =  ['upload_details','client_type'];
     const columns = this.clientFrm.value.client_type == 'M' ?
     clientColumns.Minor_Client
@@ -309,6 +376,7 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     :(this.clientFrm.value.client_type == 'N'
       ? clientColumns.pan_holder_client.filter(x => !['pan'].includes(x.field))
       :  clientColumns.pan_holder_client));
+
      if(res == 2){
       this.__columns =this.clientFrm.value.client_type == 'M' ?
       clientColumns.initial_column_for_minor
@@ -321,10 +389,14 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
      else{
       this.__columns =columns;
      }
+     console.log(this.__columns);
     this.ClmnList = clientColumns.column_selector.filter((x: any) => columns.map((item) => {return item['field']}).includes(x.field));
     this.__exportedClmns = this.__columns.map((item) => {return item['field']}).filter((x: any) => !['edit','delete','upload_details','client_type'].includes(x));
     this.SelectedClms = this.__columns.map(x => x.field);
-
+    }
+    catch(ex){
+      console.log(ex);
+    }
   }
 
   exportPdf = () => {
@@ -412,14 +484,45 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     // const clm =  ['edit','delete','upload_details','client_type'];
     // this.__columns = columns.map(({ field, header }) => ({field, header}))
     // this.__exportedClmns =  columns.map(item => {return item['field']}).filter(x => !clm.includes(x));
+    try{
+      const clm =  ['edit','delete','upload_details','client_type'];
+      this.__columns = columns.map(({ field, header }) => ({field, header}))
+      this.__exportedClmns =  columns.map(item => {return item['field']}).filter(x => !clm.includes(x));
+    }
+    catch(ex){
+        console.log(ex);
+    }
 
-    const clm =  ['edit','delete','upload_details','client_type'];
-    this.__columns = columns.map(({ field, header }) => ({field, header}))
-    this.__exportedClmns =  columns.map(item => {return item['field']}).filter(x => !clm.includes(x));
   }
 
   EditClient = (__client:client) =>{
     this.openDialog(__client, __client.id, __client.client_type);
+  }
+
+  deleteClient = (__client:client) =>{
+      console.log(__client);
+      const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'CL',
+      id: __client.id,
+      title: 'Delete '  + __client.client_name,
+      api_name:'/clientDelete'
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.clientMst = this.clientMst.filter((el:client) => el.id != __client.id);
+          this.__exportClient = new MatTableDataSource(this.clientMst);
+        }
+      }
+
+    })
   }
 
   removeArray(id:number){
@@ -467,6 +570,9 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
       dialogref.afterClosed().subscribe((dt) => {
         if (dt) {
           if (dt?.id > 0) {
+            console.log(`Previous Client Type: ${dt?.cl_type}`)
+            console.log(`Current Client Type: ${dt?.data.client_type}`)
+
             if (dt.cl_type == 'E') {
               // this.clientMst.splice(this.clientMst.findIndex((x: client) => x.id == dt.id),1);
               // this.__exportClient.data.splice(this.__exportClient.data.findIndex((x: client) => x.id == dt.id),1);
@@ -502,6 +608,7 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
 
   updateRow(row_obj){
       this.clientMst = this.clientMst.filter((value: client, key) => {
+        if(value.id === row_obj.id){
         value.client_name = row_obj.client_name
         value.client_code = row_obj.client_code
         value.dob = row_obj.dob;
@@ -535,8 +642,11 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
         value.pertner_dtls = row_obj.pertner_dtls;
         value.identification_number = row_obj.identification_number;
         value.country = row_obj.country;
+      }
+      return true;
       });
       this.__exportClient.data = this.__exportClient.data.filter((value: client, key) => {
+        if(value.id === row_obj.id){
         value.client_name = row_obj.client_name
         value.client_code = row_obj.client_code
         value.dob = row_obj.dob;
@@ -570,6 +680,8 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
         value.pertner_dtls = row_obj.pertner_dtls;
         value.identification_number = row_obj.identification_number;
         value.country = row_obj.country;
+        }
+        return true;
       })
   }
 }

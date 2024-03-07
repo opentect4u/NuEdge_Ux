@@ -494,7 +494,7 @@
             <span class="text-danger">*</span></label>
           <select class="form-control" formControlName="relations">
             <option value="">Select {{ __clientForm.value.type =='M' ? ' Relationship With Minor' : ' Relationship'}}</option>
-            <option [value]="rel.id" *ngFor="let rel of __relation">{{rel.relation}}</option>
+            <option [value]="rel.relation" *ngFor="let rel of __relation">{{rel.relation}}</option>
           </select>
           <!-- <textarea class="form-control" formControlName="relations" rows="2" cols="12"></textarea> -->
           <div class="invalid-feedback"

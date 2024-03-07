@@ -585,9 +585,9 @@ mat-card {
 .p-button.p-button-lg {
   /* padding: 8px 16px !important; */
   padding: 9px 16px !important;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+    /* box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
     0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12); */
 }
 .p-button {
   background: #10486b;
@@ -616,6 +616,9 @@ color: #ffffff;
 
   /* background: #2563eb;
   border-color: #2563eb; */
+}
+.p-button:focus{
+  box-shadow:none !important;
 }
 
 .p-scrolltop.p-link {
@@ -973,8 +976,8 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
   z-index: 99999!important;
 }
 .p-dropdown .p-dropdown-label{
-  /* padding: 3px 7px!important; */
-  padding: 10px 7px !important;
+  padding: 6px 7px!important;
+  /* padding: 10px 7px !important; */
 }
 
 .p-datatable .p-sortable-column:focus{

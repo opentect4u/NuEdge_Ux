@@ -71,11 +71,16 @@ export class ClModifcationComponent implements OnInit {
     // add_line_1: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_1) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
     add_line_2: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_2) : ''),
     // state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
-    state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : ''),
+    state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : '',{
+      updateOn:'blur'
+    }),
 
-    dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : ''),
-    city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : ''),
-    pincode: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.pincode) : ''),
+    dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : '',{
+      updateOn:'blur'
+    }),
+    city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : '',{
+      updateOn:'blur'
+    }),
 
     // dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
     // city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
@@ -102,8 +107,12 @@ export class ClModifcationComponent implements OnInit {
     pertner_dtls: new FormArray([]),
     identification_number: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.identification_number)  : ''),
     // country: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.country_id)  : '',(this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ? [Validators.required] : [])
-    country: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.country_id)  : '')
-
+    country: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.country_id)  : '',
+    {
+      updateOn:'blur'
+    }
+    ),
+    pincode: new FormControl('')
   })
   constructor(
     private sanitizer: DomSanitizer,
@@ -121,7 +130,7 @@ export class ClModifcationComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    console.log(this.data);
     this.setfrmCtrlValidatior();
     this.getCountryMaster();
     this.getDocumnetTypeMaster();
@@ -137,6 +146,7 @@ export class ClModifcationComponent implements OnInit {
       }
       this.getPertnerDtls(this.data.items.pertner_details);
       this.getClientType(this.data?.cl_type);
+        this.__clientForm.get('pincode').setValue(this.data.items.pincode);
     }
     else{
       this.addItem();
@@ -184,10 +194,14 @@ export class ClModifcationComponent implements OnInit {
   }
   getDistrict_city(){
     if(this.data.id > 0 && this.data.client_type != 'E'){
+
       this.getDistrict(this.data.items.state);
       this.getCity(this.data.items.dist);
       this.getStateMaster(this.data.items.country_id);
-      this.getPinCode(this.data.items.city)
+
+      setTimeout(() => {
+        this.getPinCode(this.data.items.city);
+      }, 500);
     }
   }
 
@@ -380,6 +394,7 @@ export class ClModifcationComponent implements OnInit {
       __client.append("pan", this.__clientForm.value.pan);
     }
     else if(this.__clientForm.value.type == 'M'){
+      __client.append("client_name", this.__clientForm.value.client_name);
       __client.append("relation", this.__clientForm.value.relations ? this.__clientForm.value.relations : '');
       __client.append("guardians_pan", this.__clientForm.value.gurdians_pan ? this.__clientForm.value.gurdians_pan : '');
       __client.append("guardians_name", this.__clientForm.value.gurdians_name ? this.__clientForm.value.gurdians_name : '');
@@ -519,6 +534,7 @@ export class ClModifcationComponent implements OnInit {
     })
   }
   getPinCode(city_id){
+    console.log(city_id);
     this.__dbIntr.api_call(0, '/pincode', 'city_id=' + city_id).pipe(pluck("data")).subscribe(res => {
       this.pincodeMst = res;
     })

@@ -239,6 +239,7 @@ export class ManualUploadComponent implements OnInit {
       // .pipe(pluck('data'))
       .subscribe(res =>{
           console.log(res);
+          this.resetForm();
       })
     }
 

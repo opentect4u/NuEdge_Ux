@@ -2,7 +2,11 @@
 
 <div class="row flexSec">
   <div class="col-sm-12 mb-3">
-    <core-tab [customClass]="'nav'" [Tab]="clientTypeMst" (GetTabDtls)="TabDetails($event)"></core-tab>
+    <div class="">
+      <core-tab [customClass]="'nav'"
+      [Tab]="clientTypeMst"
+      (GetTabDtls)="TabDetails($event)"></core-tab>
+    </div>
     <mat-card class="navCard p-3">
       <ng-template #SearchBtn>
         <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
@@ -49,38 +53,87 @@
               (selectedItems)="getSelectedItemsFromParent($event)"
               ></app-core-srch>
         </div>
-        <div class="col-sm-3">
-          <label for="dob_as_per_month">Date Of Birth As Per Month</label>
-            <select name="dob_as_per_month" id="dob_as_per_month" class="form-control" formControlName="dob_as_per_month">
-              <option value="">Select</option>
-              <option [value]="month.id" *ngFor="let month of dob_doa_month">{{month.month}}</option>
-            </select>
-        </div>
-        <div class="col-sm-3">
-          <label for="doa_as_per_month">Date Of Anniversary As Per Month</label>
-            <select name="doa_as_per_month" id="doa_as_per_month" class="form-control" formControlName="doa_as_per_month">
-              <option value="">Select</option>
-              <option [value]="month.id" *ngFor="let month of dob_doa_month">{{month.month}}</option>
-            </select>
-        </div>
-        <ng-container *ngIf="clientFrm.value.btn_type == 'A';else noAdv">
+        <ng-container *ngIf="clientFrm.value.client_type != 'E'">
+          <div class="col-sm-3" >
+            <label for="dob_as_per_month">Date Of Birth As Per Month</label>
+              <select name="dob_as_per_month" id="dob_as_per_month" class="form-control" formControlName="dob_as_per_month">
+                <option value="">Select</option>
+                <option [value]="month.id" *ngFor="let month of dob_doa_month">{{month.month}}</option>
+              </select>
+          </div>
           <div class="col-sm-3">
-            <label for="state_id">State </label>
-            <ng-multiselect-dropdown
-            id="state_id"
-            [placeholder]="'Select State'"
-            [settings]="stateOptForMultiselectDropDown"
-            [data]="stateMst"
-            formControlName="state_id">
+            <label for="doa_as_per_month">Date Of Anniversary As Per Month</label>
+              <select name="doa_as_per_month" id="doa_as_per_month" class="form-control" formControlName="doa_as_per_month">
+                <option value="">Select</option>
+                <option [value]="month.id" *ngFor="let month of dob_doa_month">{{month.month}}</option>
+              </select>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="clientFrm.value.btn_type == 'A';else noAdv">
+              <div class="col-sm-3">
+                <label for="state_id">State </label>
+                <ng-multiselect-dropdown
+                id="state_id"
+                [placeholder]="'Select State'"
+                [settings]="stateOptForMultiselectDropDown"
+                [data]="stateMst"
+                formControlName="state_id">
+              </ng-multiselect-dropdown>
+              </div>
+              <div class="col-sm-3">
+                <label for="dist_id">District </label>
+                <ng-multiselect-dropdown
+              id="dist_id"
+              [placeholder]="'Select District'"
+              [settings]="distOptForMultiselectDropDown"
+              [data]="distMst"
+              formControlName="dist_id">
+            </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="city_id">City </label>
+              <ng-multiselect-dropdown
+            id="city_id"
+            [placeholder]="'Select City'"
+            [settings]="cityOptForMultiselectDropDown"
+            [data]="cityMst"
+            formControlName="city_id">
           </ng-multiselect-dropdown>
+            </div>
+            <div class="col-sm-3">
+              <label for="pincode">Pincode </label>
+              <input type="text" placeholder="Enter Pincode" name="pincode" id="pincode" class="form-control"
+                formControlName="pincode">
+            </div>
+            <div class="col-sm-3">
+              <label for="city_type">City Type </label>
+              <select name="city_type" class="form-control" id="city_type" formControlName="city_type_id">
+                <option value="">Select</option>
+                <option [value]="cityType.id" *ngFor="let cityType of citytype">{{cityType.city_type}}</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-end align-items-end"
+            [ngClass]="{
+              'col-sm-12 mt-2':clientFrm.value.client_type != 'E',
+              'col-sm-6':clientFrm.value.client_type == 'E'
+            }"
+            >
+            <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
           </div>
         </ng-container>
         <ng-template #noAdv>
-          <div class="col-sm-3 d-flex justify-content-end align-items-end">
+          <div class="d-flex justify-content-end align-items-end"
+          [ngClass]="{
+            'col-sm-3':clientFrm.value.client_type != 'E',
+            'col-sm-9':clientFrm.value.client_type == 'E'
+
+          }"
+          >
           <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container></div>
         </ng-template>
       </div>
-      <ng-container *ngIf="clientFrm.value.btn_type == 'A'">
+      <!-- <ng-container *ngIf="clientFrm.value.btn_type == 'A'">
       <div class="row">
         <div class="col-sm-3">
           <label for="dist_id">District </label>
@@ -120,7 +173,7 @@
           <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
         </div>
       </div>
-    </ng-container>
+    </ng-container> -->
     </form>
     </mat-card>
 
@@ -129,7 +182,14 @@
               <mat-card-title>
                 {{this.clientFrm.value.client_type == 'P' ? 'PAN Holder' : (this.clientFrm.value.client_type == 'N' ? 'NON PAN Holder' : (this.clientFrm.value.client_type == 'M' ? 'Minor' : 'Existing'))}} Client Report
               </mat-card-title>
-              <div class="btnGrp my-auto">
+              <div class="btnGrp my-auto d-flex justify-content-between">
+                <div class="w-100 pr-4">
+                  <span class="ml-auto">
+                    <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+                      placeholder="Search" />
+                  </span>
+                </div>
+                <div class="d-flex justify-center items-center">
                 <p-button type="button" icon="pi pi-server"
                   #tooltip="matTooltip"
                   *ngIf="this.clientFrm.value.client_type != 'E'"
@@ -156,21 +216,36 @@
                   </button>
                 </mat-menu>
               </div>
+              </div>
         </mat-card-header>
         <mat-card-content>
+        <!-- [customSort]="true" -->
+        <!-- (onLazyLoad)="customSort($event)" -->
+        <!-- sortMode="single" -->
+        <!-- [lazy]="true" -->
+
+        <!-- selectionMode="multiple" -->
+
         <p-table
         #dt
-        (onLazyLoad)="customSort($event)"
-        [customSort]="true"
-          sortMode="single"
-          [lazy]="true"
+        [rowHover]="true"
+        styleClass="p-datatable-striped p-datatable-lg"
+        [virtualScroll]="true"
+        [virtualRowHeight]="40"
         [value]="clientMst"
+          [paginator]="true"
+          [totalRecords]="clientMst.length"
+          [pageLinks]="3"
+          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          [rows]="10"
+          [showCurrentPageReport]="true"
         [columns]="__columns" [resizableColumns]="true"
-          selectionMode="multiple"
           columnResizeMode="expand" [scrollable]="true"
-          [scrollHeight]="clientMst.length > 7 ? '300px' : ''"
+          [scrollHeight]="'370px'"
+          [globalFilterFields]="getColumns()"
           [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-          [tableStyle]="{ 'min-width': clientFrm.value.options == '1' ? '200rem' : '120rem' }">
+          [tableStyle]="{ 'min-width': ((clientFrm.value.options == '1' || __columns.length === ClmnList.length) && clientFrm.value.client_type !== 'E') ? '300rem' : '120rem' }">
           <ng-template pTemplate="header" let-columns>
             <tr>
               <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]=" clientFrm.value.options == '1' ? '15rem' : '10rem'">
@@ -181,25 +256,16 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-client let-columns="columns" let-i="rowIndex">
-            <tr tabindex="999">
+            <tr tabindex="999"
+            [ngStyle]="{'height':'40px'}">
               <td *ngFor="let col of columns" style="width: 10rem">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
                     {{i+1}}
                   </ng-container>
-                  <!-- <ng-container *ngSwitchCase="col.field == 'edit'">
-                    <p-button icon="pi pi-pencil" (click)="populateDT(client)"
-                      styleClass="p-button-rounded p-button-primary">
-                    </p-button>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'delete'">
-                    <p-button icon="pi pi-trash" (click)="deleteClient(client,i)"
-                      styleClass="p-button-rounded p-button-danger">
-                    </p-button>
-                  </ng-container> -->
                   <ng-container *ngSwitchCase="col.field == 'upload_details'">
                     <p-button icon="pi pi-eye" (click)="PreviewDocs(client)"
-                      styleClass="p-button-rounded p-button-text"></p-button>
+                      styleClass="p-button-rounded p-button-text p-button-lg"></p-button>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_actual' || col.field == 'anniversary_date'">
                     <p class="m-0" #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-YYYY')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
@@ -207,8 +273,8 @@
                     <ng-container *ngSwitchCase="col.field == 'relation'">
                       <ng-container *ngIf="client[col.field];else noRelationship">
                         <p class="m-0" #tooltip="matTooltip"
-                         [matTooltip]="(client[col.field] | relationship)">
-                          {{(client[col.field] | relationship)}}</p>
+                         [matTooltip]="client[col.field]">
+                          {{client[col.field]}}</p>
                       </ng-container>
                       <ng-template #noRelationship>
                           N/A
@@ -216,11 +282,29 @@
 
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'edit'">
-                        <button pButton type="button" icon="pi pi-pencil" (click)="EditClient(client)" class="p-button-text"></button>
+                        <button pButton type="button" icon="pi pi-pencil" (click)="EditClient(client)" class="p-button-text p-button-lg"></button>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="col.field == 'client_type'">
+                        <ng-container [ngSwitch]="true">
+                          <ng-container *ngSwitchCase="client[col.field] == 'E'">
+                            <p class="m-0">Existing</p>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="client[col.field] == 'P'">
+                            <p class="m-0">PAN Holder</p>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="client[col.field] == 'N'">
+                            <p class="m-0">Non PAN Holder</p>
+                          </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            <p class="m-0">Minor</p>
+                          </ng-container>
+                        </ng-container>
+
                       </ng-container>
 
                       <ng-container *ngSwitchCase="col.field == 'delete'">
-                        <button pButton type="button" icon="pi pi-trash" (click)="EditClient(client)" class="p-button-text"></button>
+                        <button pButton type="button" icon="pi pi-trash" (click)="deleteClient(client)" class="p-button-text p-button-lg"></button>
                       </ng-container>
 
                       <ng-container *ngSwitchCase="col.field == 'client_name'">
@@ -250,11 +334,11 @@
         </p-table>
 
          <!-- For Paginate and Show Item Per page -->
-         <shared-paginate [__paginate]="__paginate"
+         <!-- <shared-paginate [__paginate]="__paginate"
          [btn_type]="clientFrm.value.btn_type"
          (itemPerpageShow)="onSelectItem($event)"
          (PaginateFn)="getPaginate($event)"
-         ></shared-paginate>
+         ></shared-paginate> -->
          <!-- End -->
         <!-- Meage Menu For Check box -->
         <core-mega-menu-for-column [isOpenMegaMenu]="isOpenMegaMenu" [ColumnList]="ClmnList"
@@ -333,7 +417,7 @@
             </ng-container>
               <ng-container matColumnDef="relation">
                 <th mat-header-cell *matHeaderCellDef>Relationship</th>
-                <td mat-cell *matCellDef="let element">{{element.relation ? (element.relation | relationship ) : 'N/A'}}</td>
+                <td mat-cell *matCellDef="let element">{{element.relation ? element.relation : 'N/A'}}</td>
               </ng-container>
               <ng-container matColumnDef="maritial_status">
                 <th mat-header-cell *matHeaderCellDef>Maritial Status</th>
