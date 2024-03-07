@@ -12,7 +12,7 @@ export class clientColumns {
   public static Existing_Client=[
     { field: 'edit', header: 'Edit' },
     { field: 'delete', header: 'Delete' },
-    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_type', header: 'Client Type' },
     { field: 'client_name', header: 'Client Name' },
     { field: 'pan', header: 'PAN' }
   ]
@@ -22,7 +22,7 @@ export class clientColumns {
     { field: 'edit', header: 'Edit' },
     { field: 'delete', header: 'Delete' },
     { field: 'client_code', header: 'Client Code' },
-    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_type', header: 'Client Type' },
     { field: 'client_name', header: 'Client Name' },
     { field: 'pan', header: 'PAN' },
     { field: 'mobile', header: 'Mobile' },
@@ -34,7 +34,7 @@ export class clientColumns {
     { field: 'edit', header: 'Edit' },
     { field: 'delete', header: 'Delete' },
     { field: 'client_code', header: 'Client Code' },
-    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_type', header: 'Client Type' },
     { field: 'client_name', header: 'Client Name' },
     { field: 'pan', header: 'PAN' },
     { field: 'dob', header: 'Date Of Birth' },
@@ -57,7 +57,7 @@ export class clientColumns {
   public static initial_column_for_minor=[
     { field: 'edit', header: 'Edit' },
     { field: 'delete', header: 'Delete' },
-    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_type', header: 'Client Type' },
     { field: 'client_name', header: 'Client Name' },
     { field: 'dob', header: 'Date Of Birth' },
     { field: 'guardians_name', header: 'Gurdians Name' },
@@ -70,7 +70,7 @@ export class clientColumns {
   public static Minor_Client:column[] = [
     { field: 'edit', header: 'Edit' },
     { field: 'delete', header: 'Delete' },
-    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_type', header: 'Client Type' },
     { field: 'client_code', header: 'Client Code' },
     { field: 'client_name', header: 'Client Name' },
     { field: 'dob', header: 'Date Of Birth' },
@@ -96,7 +96,7 @@ export class clientColumns {
     { field: 'edit', header: 'Edit' },
     { field: 'delete', header: 'Delete' },
     { field: 'client_code', header: 'Client Code' },
-    { field: 'type_name', header: 'Client Type' },
+    { field: 'client_type', header: 'Client Type' },
     { field: 'client_name', header: 'Client Name' },
     { field: 'pan', header: 'PAN' },
     { field: 'dob', header: 'Date Of Birth' },

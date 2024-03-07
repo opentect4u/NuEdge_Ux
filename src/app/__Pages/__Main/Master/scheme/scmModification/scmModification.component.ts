@@ -825,9 +825,10 @@ export class ScmModificationComponent implements OnInit {
 
       for (let i = 0; i < this.__scmForm.value.others.length; i++) {
         if (typeof this.__scmForm.value.others[i].file != 'string') {
+            console.log(this.__scmForm.value.others[i].form_upload);
           __scm.append(
             'form_upload[]',
-            global.getActualVal(this.__scmForm.value.others[i].form_upload)
+            this.__scmForm.value.others[i].form_upload ? global.getActualVal(this.__scmForm.value.others[i].form_upload) : ""
           );
           __scm.append(
             'row_id[]',
@@ -925,7 +926,7 @@ export class ScmModificationComponent implements OnInit {
       });
   }
   reset() {
-    this.__scmForm.reset();
+    // this.__scmForm.reset();
   }
   get frequency(): FormArray {
     return this.__scmForm.get('frequency') as FormArray;
@@ -1203,10 +1204,10 @@ export class ScmModificationComponent implements OnInit {
         );
       this.others.controls[index]
         .get('form_upload')
-        ?.patchValue(__ev.target.files[0]);
+        ?.patchValue(__ev.target.files ? __ev.target.files[0] : '');
     } else {
-      this.others.controls[index].get('file_preview')?.reset();
-      this.others.controls[index].get('form_upload')?.reset();
+      this.others.controls[index].get('file_preview')?.reset('');
+      this.others.controls[index].get('form_upload')?.reset('');
     }
   }
 

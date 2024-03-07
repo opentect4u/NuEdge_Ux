@@ -199,7 +199,7 @@
                   </ng-container> -->
                   <ng-container *ngSwitchCase="col.field == 'upload_details'">
                     <p-button icon="pi pi-eye" (click)="PreviewDocs(client)"
-                      styleClass="p-button-rounded p-button-primary"></p-button>
+                      styleClass="p-button-rounded p-button-text"></p-button>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_actual' || col.field == 'anniversary_date'">
                     <p class="m-0" #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-YYYY')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
@@ -214,6 +214,13 @@
                           N/A
                       </ng-template>
 
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'edit'">
+                        <button pButton type="button" icon="pi pi-pencil" (click)="EditClient(client)" class="p-button-text"></button>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="col.field == 'delete'">
+                        <button pButton type="button" icon="pi pi-trash" (click)="EditClient(client)" class="p-button-text"></button>
                       </ng-container>
 
                       <ng-container *ngSwitchCase="col.field == 'client_name'">

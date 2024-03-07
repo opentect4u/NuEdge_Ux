@@ -293,26 +293,26 @@
                 </p-button>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'nfo_start_dt' || col.field == 'nfo_end_dt' || col.field == 'nfo_reopen_dt'">
-                <b>{{scheme[col.field] ? (scheme[col.field] | date : 'dd-MM-YYYY') : 'N/A' }}</b>
+                <p class="m-0">{{scheme[col.field] ? (scheme[col.field] | date : 'dd-MM-YYYY') : 'N/A' }}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'pip_fresh_min_amt' || col.field == 'pip_add_min_amt'">
-                <b>{{scheme[col.field] ? (scheme[col.field] | currency : 'INR') : 'N/A' }}</b>
+                <p class="m-0">{{scheme[col.field] ? (scheme[col.field] | currency : 'INR') : 'N/A' }}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'scheme_type'">
-                <b>{{scheme[col.field] ? (scheme[col.field] == 'O' ? 'Ongoing Scheme' : 'NFO') : 'N/A' }}</b>
+                <p class="m-0">{{scheme[col.field] ? (scheme[col.field] == 'O' ? 'Ongoing Scheme' : 'NFO') : 'N/A' }}</p>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'sip_date'
               || col.field == 'stp_date'
               || col.field == 'swp_date'">
                 <span class="dates" *ngFor="let SipDt of (scheme[col.field] | dates:scheme[col.field])">
-                  <b>{{SipDt}},</b>
+                  <p class="m-0">{{SipDt}},</p>
                </span>
               </ng-container>
               <ng-container *ngSwitchDefault>
                 <span   matTooltip="{{scheme[col.field]}}">
-                  <b>{{ scheme[col.field] ? scheme[col.field] : 'N/A' }}</b>
+                  <p class="m-0">{{ scheme[col.field] ? scheme[col.field] : 'N/A' }}</p>
                 </span>
               </ng-container>
 

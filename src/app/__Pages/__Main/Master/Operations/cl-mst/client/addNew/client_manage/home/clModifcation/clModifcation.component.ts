@@ -41,7 +41,7 @@ export class ClModifcationComponent implements OnInit {
   __maxDt = dates.disabeldDates();
   __stateMaster: any = [];
   __clientForm = new FormGroup({
-    type: new FormControl('',[Validators.required]),
+    type: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items?.client_type) : '',[Validators.required]),
     mar_status: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items?.mar_status) : ''),
     anniversary_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.anniversary_date) : ''),
     client_name: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.client_name) : '', [Validators.required]),
@@ -121,9 +121,7 @@ export class ClModifcationComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.data);
 
-    // this.getClientType();
     this.setfrmCtrlValidatior();
     this.getCountryMaster();
     this.getDocumnetTypeMaster();
@@ -137,8 +135,8 @@ export class ClModifcationComponent implements OnInit {
       else{
         this.addItem();
       }
-
-        this.getPertnerDtls(this.data.items.pertner_details);
+      this.getPertnerDtls(this.data.items.pertner_details);
+      this.getClientType(this.data?.cl_type);
     }
     else{
       this.addItem();
@@ -168,6 +166,7 @@ export class ClModifcationComponent implements OnInit {
     })
   }
   getClientType(cl_type:string | null = 'P'){
+    console.log(cl_type)
     if(cl_type){
       // this.__dbIntr.api_call(0,'/clientType','flag=' + (this.data?.cl_type == 'M' ? this.data?.cl_type : 'P')).pipe(pluck("data")).subscribe(res =>{
       //   console.log(res);
@@ -222,13 +221,15 @@ export class ClModifcationComponent implements OnInit {
   ngAfterViewInit() {
   this.__clientForm.get('type').valueChanges.subscribe(res =>{
         this.getClientType(res);
+
         this.__clientForm.get('client_type').setValue('',{emitEvent:true});
         this.setValidatorsDependOnType(
           [
             {formControlName:'pan',
             validators:[Validators.required,Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'),
             Validators.minLength(10), Validators.maxLength(10)],
-            asyncValidators:[this.PANValidators()],
+            // asyncValidators:[this.PANValidators()],
+            asyncValidators:[],
           },
             {formControlName:'client_type',validators: [Validators.required],asyncValidators:[]},
             {formControlName:'country',validators: [Validators.required],asyncValidators:[]},
@@ -485,10 +486,16 @@ export class ClModifcationComponent implements OnInit {
 
     this.__dbIntr.api_call(1, '/clientAddEdit', __client).subscribe((res: any) => {
       if (res.suc == 1) {
-          if (this.__clientForm.value.type == 'E' && this.data.id > 0) {this.dialogRef.close({id : this.data.id,cl_type:this.__clientForm.value.type});}
-          else {this.dialogRef.close({id:this.data.id,data:res.data});}
-          this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Client updated successfully' : 'Client added successfully') : res.msg, res.suc);
+          if (this.data.id > 0) {
+            this.dialogRef.close({
+              id : this.data.id,
+              cl_type:res.data.previous_type,
+              data:res.data.data
+            })
+          }
+          else {this.dialogRef.close({id:this.data.id,data:res.data.data});}
       }
+      this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Client updated successfully' : 'Client added successfully') : res.msg, res.suc);
     })
   }
   checkPanExistornot(_pan){

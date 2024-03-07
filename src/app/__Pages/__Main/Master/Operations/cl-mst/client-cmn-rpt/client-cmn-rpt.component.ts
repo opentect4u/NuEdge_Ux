@@ -35,6 +35,8 @@ import { DocumentsComponent } from 'src/app/shared/documents/documents.component
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { RPTService } from 'src/app/__Services/RPT.service';
+import { Overlay } from '@angular/cdk/overlay';
+import { ClModifcationComponent } from '../client/addNew/client_manage/home/clModifcation/clModifcation.component';
 @Component({
   selector: 'app-client-cmn-rpt',
   templateUrl: './client-cmn-rpt.component.html',
@@ -97,7 +99,8 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   constructor(private dbIntr: DbIntrService,
     private __utility: UtiliService,
     private __dialog: MatDialog,
-    private __Rpt:RPTService
+    private __Rpt:RPTService,
+    private overlay: Overlay,
     ) {}
 
   ngOnInit(): void {
@@ -276,27 +279,50 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   };
 
   setColumns = (res) => {
-    const __columnToRemove =  ['edit','delete','upload_details','client_type'];
+    // const __columnToRemove =  ['edit','delete','upload_details','client_type'];
+    // const columns = this.clientFrm.value.client_type == 'M' ?
+    // clientColumns.Minor_Client.filter(item => !['edit','delete'].includes(item.field))
+    // : (this.clientFrm.value.client_type == 'E' ? clientColumns.Existing_Client.filter(item => !['edit','delete'].includes(item.field))
+    // :(this.clientFrm.value.client_type == 'N'
+    //   ? clientColumns.pan_holder_client.filter(x => !['edit','delete','pan'].includes(x.field))
+    //   :  clientColumns.pan_holder_client.filter(item => !['edit','delete'].includes(item.field))));
+    //  if(res == 2){
+    //   this.__columns =this.clientFrm.value.client_type == 'M' ?
+    //   clientColumns.initial_column_for_minor.filter(item => !['edit','delete'].includes(item.field))
+    //   : (this.clientFrm.value.client_type == 'E'
+    //   ? clientColumns.Existing_Client.filter(item => !['edit','delete'].includes(item.field))
+    //   :(this.clientFrm.value.client_type == 'N'
+    //   ? clientColumns.initial_column_for_pan.filter(x => !['edit','delete','pan'].includes(x.field))
+    //   : clientColumns.initial_column_for_pan.filter(x => !['edit','delete'].includes(x.field))));
+    //  }
+    //  else{
+    //   this.__columns =columns;
+    //  }
+    // this.ClmnList = clientColumns.column_selector.filter((x: any) => columns.map((item) => {return item['field']}).includes(x.field));
+    // this.__exportedClmns = this.__columns.map((item) => {return item['field']}).filter((x: any) => !__columnToRemove.includes(x));
+    // this.SelectedClms = this.__columns.map(x => x.field);
+
+    const __columnToRemove =  ['upload_details','client_type'];
     const columns = this.clientFrm.value.client_type == 'M' ?
-    clientColumns.Minor_Client.filter(item => !['edit','delete'].includes(item.field))
-    : (this.clientFrm.value.client_type == 'E' ? clientColumns.Existing_Client.filter(item => !['edit','delete'].includes(item.field))
+    clientColumns.Minor_Client
+    : (this.clientFrm.value.client_type == 'E' ? clientColumns.Existing_Client
     :(this.clientFrm.value.client_type == 'N'
-      ? clientColumns.pan_holder_client.filter(x => !['edit','delete','pan'].includes(x.field))
-      :  clientColumns.pan_holder_client.filter(item => !['edit','delete'].includes(item.field))));
+      ? clientColumns.pan_holder_client.filter(x => !['pan'].includes(x.field))
+      :  clientColumns.pan_holder_client));
      if(res == 2){
       this.__columns =this.clientFrm.value.client_type == 'M' ?
-      clientColumns.initial_column_for_minor.filter(item => !['edit','delete'].includes(item.field))
+      clientColumns.initial_column_for_minor
       : (this.clientFrm.value.client_type == 'E'
-      ? clientColumns.Existing_Client.filter(item => !['edit','delete'].includes(item.field))
+      ? clientColumns.Existing_Client
       :(this.clientFrm.value.client_type == 'N'
-      ? clientColumns.initial_column_for_pan.filter(x => !['edit','delete','pan'].includes(x.field))
-      : clientColumns.initial_column_for_pan.filter(x => !['edit','delete'].includes(x.field))));
+      ? clientColumns.initial_column_for_pan.filter(x => !['pan'].includes(x.field))
+      : clientColumns.initial_column_for_pan));
      }
      else{
       this.__columns =columns;
      }
     this.ClmnList = clientColumns.column_selector.filter((x: any) => columns.map((item) => {return item['field']}).includes(x.field));
-    this.__exportedClmns = this.__columns.map((item) => {return item['field']}).filter((x: any) => !__columnToRemove.includes(x));
+    this.__exportedClmns = this.__columns.map((item) => {return item['field']}).filter((x: any) => !['edit','delete','upload_details','client_type'].includes(x));
     this.SelectedClms = this.__columns.map(x => x.field);
 
   }
@@ -383,8 +409,167 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     }
   }
   getSelectedColumns = (columns)  =>{
+    // const clm =  ['edit','delete','upload_details','client_type'];
+    // this.__columns = columns.map(({ field, header }) => ({field, header}))
+    // this.__exportedClmns =  columns.map(item => {return item['field']}).filter(x => !clm.includes(x));
+
     const clm =  ['edit','delete','upload_details','client_type'];
     this.__columns = columns.map(({ field, header }) => ({field, header}))
     this.__exportedClmns =  columns.map(item => {return item['field']}).filter(x => !clm.includes(x));
+  }
+
+  EditClient = (__client:client) =>{
+    this.openDialog(__client, __client.id, __client.client_type);
+  }
+
+  removeArray(id:number){
+    console.log(id);
+
+    // this.clientMst.splice(this.clientMst.findIndex((x: client) => x.id == id),1);
+    this.clientMst = this.clientMst.filter((x: client) => x.id != id);
+    console.log(this.clientMst);
+
+    // this.__exportClient.data.splice(this.__exportClient.data.findIndex((x: client) => x.id == id),1);
+    this.__exportClient.data = this.__exportClient.data.filter((x: client) => x.id != id);
+    this.__exportClient._updateChangeSubscription();
+  }
+
+  openDialog(__clDtls: client, __clid: number, __clType: string) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = false;
+    dialogConfig.disableClose = true;
+    dialogConfig.hasBackdrop = false;
+    dialogConfig.width = '60%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      flag: 'CL',
+      id: __clid,
+      items: __clDtls,
+      title:
+        (__clid == 0 ? 'Add ' : 'Update ') +
+        (__clType == 'M'
+          ? 'Minor'
+          : __clType == 'P'
+          ? 'PAN Holder'
+          : __clType == 'N'
+          ? 'Non Pan Holder'
+          : 'Existing'),
+      right: global.randomIntFromInterval(1, 60),
+      cl_type: __clType,
+    };
+    dialogConfig.id = (__clid > 0 ? __clid.toString() : '0') + '_' + __clType;
+    try {
+      const dialogref = this.__dialog.open(
+        ClModifcationComponent,
+        dialogConfig
+      );
+      dialogref.afterClosed().subscribe((dt) => {
+        if (dt) {
+          if (dt?.id > 0) {
+            if (dt.cl_type == 'E') {
+              // this.clientMst.splice(this.clientMst.findIndex((x: client) => x.id == dt.id),1);
+              // this.__exportClient.data.splice(this.__exportClient.data.findIndex((x: client) => x.id == dt.id),1);
+              // this.__exportClient._updateChangeSubscription();
+              this.removeArray(dt.id);
+            }
+            else {
+              if(dt.cl_type == dt.data.client_type){
+                this.updateRow(dt.data);
+              }
+              else{
+                this.removeArray(dt.id);
+              }
+            }
+          } else {
+            this.clientMst.unshift(dt.data);
+            this.__exportClient.data.unshift(dt.data);
+            this.__exportClient._updateChangeSubscription();
+          }
+        }
+      });
+    } catch (ex) {
+      const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+      dialogRef.updateSize('60%');
+      console.log(ex);
+      this.__utility.getmenuIconVisible({
+        id: Number(dialogConfig.id),
+        isVisible: false,
+        flag: 'CL',
+      });
+    }
+  }
+
+  updateRow(row_obj){
+      this.clientMst = this.clientMst.filter((value: client, key) => {
+        value.client_name = row_obj.client_name
+        value.client_code = row_obj.client_code
+        value.dob = row_obj.dob;
+        value.pan = row_obj.pan
+        value.mobile = row_obj.mobile
+        value.sec_mobile = row_obj.sec_mobile
+        value.email = row_obj.email
+        value.sec_email = row_obj.sec_email
+        value.add_line_1 = row_obj.add_line_1
+        value.add_line_2 = row_obj.add_line_2
+        value.city = row_obj.city
+        value.dist = row_obj.dist
+        value.state = row_obj.state
+        value.pincode = row_obj.pincode
+        value.id = row_obj.id
+        value.created_by = row_obj.created_by
+        value.created_at = row_obj.created_at
+        value.updated_by = row_obj.updated_by
+        value.updated_at = row_obj.updated_at
+        value.gurdians_name = row_obj.gurdians_name
+        value.gurdians_pan = row_obj.gurdians_pan
+        value.relation = row_obj.relation
+        value.client_doc = row_obj.client_doc
+        value.client_type = row_obj.client_type
+        value.anniversary_date = row_obj.anniversary_date
+        value.dob_actual = row_obj.dob_actual
+        value.proprietor_name = row_obj.proprietor_name;
+        value.date_of_incorporation = row_obj.date_of_incorporation;
+        value.karta_name = row_obj.karta_name;
+        value.inc_date = row_obj.inc_date;
+        value.pertner_dtls = row_obj.pertner_dtls;
+        value.identification_number = row_obj.identification_number;
+        value.country = row_obj.country;
+      });
+      this.__exportClient.data = this.__exportClient.data.filter((value: client, key) => {
+        value.client_name = row_obj.client_name
+        value.client_code = row_obj.client_code
+        value.dob = row_obj.dob;
+        value.pan = row_obj.pan
+        value.mobile = row_obj.mobile
+        value.sec_mobile = row_obj.sec_mobile
+        value.email = row_obj.email
+        value.sec_email = row_obj.sec_email
+        value.add_line_1 = row_obj.add_line_1
+        value.add_line_2 = row_obj.add_line_2
+        value.city = row_obj.city
+        value.dist = row_obj.dist
+        value.state = row_obj.state
+        value.pincode = row_obj.pincode
+        value.id = row_obj.id
+        value.created_by = row_obj.created_by
+        value.created_at = row_obj.created_at
+        value.updated_by = row_obj.updated_by
+        value.updated_at = row_obj.updated_at
+        value.gurdians_name = row_obj.gurdians_name
+        value.gurdians_pan = row_obj.gurdians_pan
+        value.relation = row_obj.relation
+        value.client_doc = row_obj.client_doc
+        value.client_type = row_obj.client_type,
+        value.anniversary_date = row_obj.anniversary_date,
+        value.dob_actual = row_obj.dob_actual,
+        value.proprietor_name = row_obj.proprietor_name;
+        value.date_of_incorporation = row_obj.date_of_incorporation;
+        value.karta_name = row_obj.karta_name;
+        value.inc_date = row_obj.inc_date;
+        value.pertner_dtls = row_obj.pertner_dtls;
+        value.identification_number = row_obj.identification_number;
+        value.country = row_obj.country;
+      })
   }
 }
