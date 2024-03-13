@@ -41,37 +41,37 @@ import { trxnCountAmtSummaryColumn, trxnCountSummary } from './trxnAmtCountSumma
 
 export type totaltrxnSummaryFooterTotal = {
           pur_amt:{process:number | undefined , rejection:number | undefined}
-          pur_count:{process:number | undefined , rejection:number | undefined}
+          pur_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           redemp_amt:{process:number | undefined , rejection:number | undefined}
-          redemp_count:{process:number | undefined , rejection:number | undefined}
+          redemp_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           switch_in_amt:{process:number | undefined , rejection:number | undefined}
-          switch_in_count:{process:number | undefined , rejection:number | undefined}
+          switch_in_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           switch_in_merger_amt:{process:number | undefined , rejection:number | undefined}
-          switch_in_merger_count:{process:number | undefined , rejection:number | undefined}
+          switch_in_merger_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           switch_out_merger_amt:{process:number | undefined , rejection:number | undefined}
-          switch_out_merger_count:{process:number | undefined , rejection:number | undefined}
-          switch_out_count:{process:number | undefined , rejection:number | undefined}
+          switch_out_merger_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
+          switch_out_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           switch_out_amt:{process:number | undefined , rejection:number | undefined}
           sip_amt:{process:number | undefined , rejection:number | undefined}
-          sip_count:{process:number | undefined , rejection:number | undefined}
+          sip_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           stp_in_amt:{process:number | undefined , rejection:number | undefined}
-          stp_in_count:{process:number | undefined , rejection:number | undefined}
+          stp_in_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           stp_out_amt:{process:number | undefined , rejection:number | undefined}
-          stp_out_count:{process:number | undefined , rejection:number | undefined}
+          stp_out_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           swp_amt:{process:number | undefined , rejection:number | undefined}
-          swp_count:{process:number | undefined , rejection:number | undefined}
+          swp_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           nfo_amt:{process:number | undefined , rejection:number | undefined}
-          nfo_count:{process:number | undefined , rejection:number | undefined}
+          nfo_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           transfer_in_amt:{process:number | undefined , rejection:number | undefined}
-          transfer_in_count:{process:number | undefined , rejection:number | undefined}
-          transfer_out_count:{process:number | undefined , rejection:number | undefined}
+          transfer_in_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
+          transfer_out_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           transfer_out_amt:{process:number | undefined , rejection:number | undefined}
           divi_payout_amt:{process:number | undefined , rejection:number | undefined}
-          divi_payout_count:{process:number | undefined , rejection:number | undefined}
+          divi_payout_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           divi_reinv_amt:{process:number | undefined , rejection:number | undefined}
-          divi_reinv_count:{process:number | undefined , rejection:number | undefined}
+          divi_reinv_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           other_amt:{process:number | undefined , rejection:number | undefined}
-          other_count:{process:number | undefined , rejection:number | undefined}
+          other_count:{process:number | undefined , rejection:number | undefined,process_trxn:TrxnRpt[],reject_trxn:TrxnRpt[]}
           net_amt:{process:number | undefined , rejection:number | undefined}
           total_amt:number;
  }
@@ -400,6 +400,7 @@ export class TrxnRptComponent implements OnInit {
     }, 500);
     this.getAmcMst();
     this.getTrxnTypeMst();
+    // console.log(this.column);
     // this.maxDate= dates.calculateDates('T');
     // this.minDate= dates.calculateDates('P');
   }
@@ -708,7 +709,7 @@ export class TrxnRptComponent implements OnInit {
           }
     }
     // this.primeTbl.clear();
-    console.log('assda')
+    // console.log('assda')
     this.fetchTransaction();
   };
 
@@ -717,6 +718,8 @@ export class TrxnRptComponent implements OnInit {
    */
   fetchTransaction = () =>{
     this.transaction_amt_count_summary = [];
+    this.total__transaction_summary = {};
+
     this.total = new totalAmt();
     this.isTotalFooterShow = false;
     this.primeTbl.reset();
@@ -800,7 +803,7 @@ export class TrxnRptComponent implements OnInit {
   }
 
   async calculateProcess_Reject(res:TrxnRpt[]){
-    this.total__transaction_summary = {}
+
     /*** Group by Category */
     const groupByCategory = await res.reduce((group, trxn) => {
       const { cat_name } = trxn; /*** Destructure `cat_name` from trxn */
@@ -817,7 +820,7 @@ export class TrxnRptComponent implements OnInit {
       })
       await this.calculateTotal(dt)
       })
-      console.log(this.total__transaction_summary);
+      // console.log(this.total__transaction_summary);
   }
 
    calculateTotal = async (obj) =>{
@@ -828,12 +831,26 @@ export class TrxnRptComponent implements OnInit {
               const hasKey = Object.keys(this.total__transaction_summary).length === 0;
               let process = !hasKey ? (this.total__transaction_summary[key]?.process ? this.total__transaction_summary[key]?.process : 0) : 0;
               let rejection = !hasKey ? (this.total__transaction_summary[key]?.rejection ? this.total__transaction_summary[key]?.rejection : 0) : 0;
-              Object.assign(this.total__transaction_summary,{
-                [key]:{
-                      process: Number(process) + Number(obj[key].process),
-                      rejection:Number(rejection) + Number(obj[key].reject),
-                }
-            });
+              if(key.includes('amt')){
+                  Object.assign(this.total__transaction_summary,{
+                    [key]:{
+                          process: Number(process) + Number(obj[key].process),
+                          rejection:Number(rejection) + Number(obj[key].reject),
+                    }
+                  });
+              }
+              else{
+                let process_trxn = !hasKey ? (this.total__transaction_summary[key]?.hasOwnProperty('process_trxn') ? this.total__transaction_summary[key]['process_trxn'] : [])   : [];
+                let reject_trxn = !hasKey ? (this.total__transaction_summary[key]?.hasOwnProperty('reject_trxn') ? this.total__transaction_summary[key]['reject_trxn'] : []) : [];
+                  Object.assign(this.total__transaction_summary,{
+                    [key]:{
+                          process: Number(process) + Number(obj[key].process),
+                          rejection:Number(rejection) + Number(obj[key].reject),
+                          process_trxn:[...process_trxn,...obj[key].process_trxn],
+                          reject_trxn:[...reject_trxn,...obj[key].reject_trxn]
+                    }
+                  });
+              }
             }
             else{
                 Object.assign(this.total__transaction_summary,{
@@ -1242,6 +1259,7 @@ export class TrxnRptComponent implements OnInit {
   }
   getTransaction = async (column:string,trxn:TrxnRpt[],header:string,category:string) =>{
     this.utility.closeSnackBar();
+    this.shwoPopup__trxn = [];
     if(trxn.length > 0){
       this.secondaryTbl.reset();
       this.popup_header_title =  header;
@@ -1254,4 +1272,5 @@ export class TrxnRptComponent implements OnInit {
         this.utility.showSnackbar(`There are no data available under ${category} in ${header.replace('Count', '') } transaction`,0,true);
       }
     }
+
 }

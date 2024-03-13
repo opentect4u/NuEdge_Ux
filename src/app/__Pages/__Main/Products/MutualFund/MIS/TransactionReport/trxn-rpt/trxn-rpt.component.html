@@ -464,7 +464,8 @@
 
                   <ng-container *ngSwitchDefault>
                     <td class="process w-100">
-                      <p class="m-0">
+                      <p class="m-0"
+                      >
                         {{trxn[col.field]?.process ? trxn[col.field]?.process.toFixed(2) : 0}}
                      </p>
                       </td>
@@ -478,7 +479,7 @@
               </td>
             </tr>
           </ng-template>
-          <ng-template pTemplate="footer">
+          <ng-template pTemplate="footer"  let-trxn>
             <tr>
               <td *ngFor="let col of trxnAmtCountClm"
                   pFrozenColumn
@@ -510,15 +511,22 @@
                       <!-- For Count-->
                       <ng-container *ngSwitchCase="col.field.includes('count')">
                         <td class="process w-100">
-                          <p class="m-0">
+                          <a class="m-0 p-3"
+                          (click)="getTransaction(
+                            col.field,total__transaction_summary[col.field]['process_trxn'],col.header,''
+                            )">
                            {{total__transaction_summary[col.field]?.process ? (total__transaction_summary[col.field]?.process) : 0}}
-                          </p>
+                          </a>
                           </td>
                           <hr class="m-0 footerHR" />
                           <td  class="rejection w-100">
-                          <p class="m-0">
-                            {{total__transaction_summary[col.field]?.reject ? (total__transaction_summary[col.field]?.reject) : 0}}
-                          </p>
+                          <a class="m-0 p-3"
+                          (click)="getTransaction(
+                            col.field,total__transaction_summary[col.field]['reject_trxn'],col.header,''
+                            )"
+                          >
+                            {{total__transaction_summary[col.field]?.rejection ? (total__transaction_summary[col.field]?.rejection) : 0}}
+                          </a>
                         </td>
                       </ng-container>
                       <!-- End -->
@@ -531,7 +539,7 @@
                         <hr class="m-0 footerHR" />
                         <td class="rejection w-100">
                           <p class="m-0">
-                            {{total__transaction_summary[col.field]?.reject ? (total__transaction_summary[col.field]?.reject.toFixed(2)) : 0}}
+                            {{total__transaction_summary[col.field]?.rejection ? (total__transaction_summary[col.field]?.rejection.toFixed(2)) : 0}}
                            </p>
                       </ng-container>
                   </ng-container>
@@ -569,6 +577,7 @@
         placeholder="Search" />
      </ng-template>
 <!-- Table -->
+
 <p-table #secondaryTbl id="secondary_trxDt" [value]="shwoPopup__trxn"
 [responsive]="true" [rowHover]="true"
 styleClass="p-datatable-striped p-datatable-lg"
@@ -596,7 +605,6 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
 <ng-template pTemplate="body" let-trxn let-i="rowIndex">
   <tr tabindex="999"
     [ngStyle]="{
-      'height':'34px',
       'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
     <td *ngFor="let col of column" [style.max-width]="col.width"
       [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">

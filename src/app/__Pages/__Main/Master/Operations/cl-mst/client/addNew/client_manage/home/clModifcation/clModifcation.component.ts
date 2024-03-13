@@ -67,6 +67,7 @@ export class ClModifcationComponent implements OnInit {
     // sec_email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_email) : '', this.data?.cl_type == 'E' ? [] : [Validators.email]),
     sec_email: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.sec_email) : ''),
     add_line_1: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_1) : ''),
+    add_line_3: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items?.add_line_3) : ''),
 
     // add_line_1: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_1) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
     add_line_2: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_2) : ''),
@@ -405,6 +406,7 @@ export class ClModifcationComponent implements OnInit {
     __client.append("sec_email", this.__clientForm.value.sec_email);
     __client.append("add_line_1", this.__clientForm.value.add_line_1);
     __client.append("add_line_2", this.__clientForm.value.add_line_2);
+    __client.append("add_line_3", this.__clientForm.value.add_line_3);
     __client.append("city", this.__clientForm.value.city);
     __client.append("dist", this.__clientForm.value.dist);
     __client.append("state", this.__clientForm.value.state);
@@ -497,8 +499,6 @@ export class ClModifcationComponent implements OnInit {
       __client.append("dob", this.__clientForm.value.dob);
       __client.append("dob_actual", this.__clientForm.value.dob_actual);
     }
-
-
     this.__dbIntr.api_call(1, '/clientAddEdit', __client).subscribe((res: any) => {
       if (res.suc == 1) {
           if (this.data.id > 0) {

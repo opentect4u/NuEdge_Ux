@@ -879,8 +879,10 @@ color: #ffffff;
 
 }
 .summaryCnt>.process>a,
-.summaryCnt>.rejection>a{
-  text-decoration: underline;cursor:pointer
+.summaryCnt>.rejection>a,
+.process>a,
+.rejection>a{
+  text-decoration: underline!important;cursor:pointer!important;
 }
 .process{
   font-size: 11px!important;

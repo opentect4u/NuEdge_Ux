@@ -56,9 +56,13 @@ export class MonthlyMisComponent implements OnInit {
 
 
   getMisReport = (filter__criteria):void =>{
+    // console.log(filter__criteria);
     const {view_by,fin_year,month,upto,duration,...rest} = filter__criteria
-    const dt = {...rest,flag:this.flag}
-    console.log(dt);
+    const dt = {
+      ...rest,
+      flag:this.flag,
+      mis_month:filter__criteria?.mis_month?.actual
+    }
       this.dbIntr.api_call(1,'/showMonthlyMisReport',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
       .subscribe((res:Partial<TrxnRpt[]>) =>{

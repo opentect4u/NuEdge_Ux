@@ -1,5 +1,5 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,6 +17,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 /**<=== End ==> */
 // import localeFr from '@angular/common/locales/fr';
 // registerLocaleData(localeFr);
+import { registerLocaleData } from '@angular/common';
+
+import localeIn from '@angular/common/locales/en-IN';
+registerLocaleData(localeIn);
+
 @NgModule({
   declarations: [
     AppComponent],
@@ -34,7 +39,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     { provide: HTTP_INTERCEPTORS, useClass: NetworkInterceptor, multi: true },
     // {provide:LocationStrategy, useClass:HashLocationStrategy},
     {provide:LocationStrategy, useClass:PathLocationStrategy},
-    // { provide: LOCALE_ID, useValue: 'fr-FR'},
+    { provide: LOCALE_ID, useValue: 'en-IN'},
 
   ],
   bootstrap: [AppComponent]

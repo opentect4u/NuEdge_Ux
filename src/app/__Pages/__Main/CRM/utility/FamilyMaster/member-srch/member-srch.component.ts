@@ -43,7 +43,7 @@ export class MemberSrchComponent implements OnInit {
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((dt) =>
-        dt?.length > 1 ? this.dbIntr.searchItems('/searchWithClient', dt) : []
+        dt?.length > 1 ? this.dbIntr.searchItems('/searchWithClient', `${dt}&view_type=C`) : []
       ),
       map(
         (x: any) => x.data
@@ -78,7 +78,7 @@ export class MemberSrchComponent implements OnInit {
     console.log(searchRlt)
     this.membersearchFrm.get('member_name').reset(searchRlt.item.client_name, { emitEvent: false });
     this.searchResultVisibilityForClient('none');
-    this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.client_id);
+    this.getFamilymemberAccordingToFamilyHead_Id(searchRlt.item.id);
   }
 
     /**
@@ -87,12 +87,14 @@ export class MemberSrchComponent implements OnInit {
   **/
     getFamilymemberAccordingToFamilyHead_Id = (id:number | undefined = undefined) =>{
       if(id){
-        this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=F`)
+        this.dbIntr.api_call(0,'/searchWithClientMem',`id=${id}`)
         .pipe(pluck('data'))
         .subscribe((res:client[]) =>{
           console.log(res);
          this.getFamilyMemberMstDT = res.map((item:client) =>{
-          const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+          const arr = [item.add_line_1,item.add_line_2,
+            item.add_line_3,
+            item.city_name,item.state_name,item.district_name,item.pincode]
           item.client_addr = arr.filter(item => {return item}).toString();
           return item;
     });

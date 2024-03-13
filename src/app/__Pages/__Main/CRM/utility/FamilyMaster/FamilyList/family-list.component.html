@@ -16,7 +16,7 @@
         <mat-card-content>
       <p-table
       [value]="dataSource"
-      dataKey="family_head_code"
+      dataKey="client_code"
       responsiveLayout="scroll"
       [rowExpandMode]="'single'"
       styleClass="p-datatable-striped p-datatable-lg"
@@ -26,7 +26,8 @@
       expandableRows="true"
       [paginator]="true" [rows]="10"
       [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+         [rowsPerPageOptions]="[10,25,50]"
       >
         <ng-template pTemplate="header">
             <tr>

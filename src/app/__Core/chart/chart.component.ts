@@ -45,7 +45,8 @@ export class ChartComponent implements OnInit {
         text:'Monthly MIS Trend'
       },
       subtitle:{
-        text:'Source nuedgecorporate.co.in'
+        // text:'Source nuedgecorporate.co.in'
+        text:''
       },
       xAxis:{
         categories:category,

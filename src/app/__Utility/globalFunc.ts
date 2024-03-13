@@ -89,16 +89,19 @@ export class global{
   /**
    * calculat future year and month from Jan-1980 populate in dropdown in SIP/STP/SWP Report
    */
-  public static getMonthYears = ():Promise<string[]> =>{
+  public static getMonthYears = ():Promise<{month:string,actual:string}[]> =>{
     let datePipe = new DatePipe('en-Us');
-    let month_year:string[] = []
+    let month_year:{month:string,actual:string}[] = []
     for(let i = 1980 ; i <= new Date().getFullYear();i++){
           for(let j=0;j<12;j++){
             if(new Date(i, j) > new Date()){
                 break;
             }
             else{
-                month_year.push(datePipe.transform(new Date(i,j),'MMM-YYYY'));
+                month_year.push({
+                  month:datePipe.transform(new Date(i,j),'MMM-YYYY'),
+                  actual:datePipe.transform(new Date(i,j),'MM-YYYY')
+                });
             }
           }
     }
@@ -108,9 +111,12 @@ export class global{
     })
  }
 
- public static getCurrenctMonth_year():string{
+ public static getCurrenctMonth_year():{month:string,actual:string}{
     let datePipe = new DatePipe('en-Us');
-    return datePipe.transform(new Date(),'MMM-YYYY')
+    return {
+      month:datePipe.transform(new Date(),'MMM-YYYY'),
+      actual:datePipe.transform(new Date(),'MM-YYYY')
+    }
  }
 
 }

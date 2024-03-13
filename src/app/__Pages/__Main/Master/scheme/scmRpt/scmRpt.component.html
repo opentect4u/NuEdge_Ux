@@ -268,7 +268,7 @@
       selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
       scrollHeight="300px"
       [autoLayout]="true" [responsive]="true" styleClass="p-datatable-striped p-datatable-gridlines"
-      [tableStyle]="{ 'min-width': __scmForm.value.options == '2' ? '100rem' : '400rem' }">
+      [tableStyle]="{ 'min-width': __scmForm.value.options == '2' ? '100rem' : '300rem' }">
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="__scmForm.value.options == '1' ? '40rem' : '16rem'">
@@ -297,7 +297,7 @@
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'pip_fresh_min_amt' || col.field == 'pip_add_min_amt'">
-                <p class="m-0">{{scheme[col.field] ? (scheme[col.field] | currency : 'INR') : 'N/A' }}</p>
+                <p class="m-0">{{scheme[col.field] ? scheme[col.field]  : 'N/A' }}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'scheme_type'">
@@ -382,7 +382,30 @@
           <th mat-header-cell *matHeaderCellDef>Sl No</th>
           <td mat-cell *matCellDef="let element;let i = index">{{i + 1}}</td>
         </ng-container>
+        <ng-container matColumnDef="purchase_allowed">
+          <th mat-header-cell *matHeaderCellDef>Purchase Allowed</th>
+          <td mat-cell *matCellDef="let element">{{element.purchase_allowed ? element.purchase_allowed : 'N/A'}}</td>
+        </ng-container>
 
+        <ng-container matColumnDef="sip_allowed">
+          <th mat-header-cell *matHeaderCellDef>SIP Allowed</th>
+          <td mat-cell *matCellDef="let element">{{element.sip_allowed ? element.sip_allowed : 'N/A'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="stp_allowed">
+          <th mat-header-cell *matHeaderCellDef>STP Allowed</th>
+          <td mat-cell *matCellDef="let element">{{element.stp_allowed ? element.stp_allowed : 'N/A'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="swp_allowed">
+          <th mat-header-cell *matHeaderCellDef>SWP Allowed</th>
+          <td mat-cell *matCellDef="let element">{{element.swp_allowed ? element.swp_allowed : 'N/A'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="switch_allowed">
+          <th mat-header-cell *matHeaderCellDef>Switch Allowed</th>
+          <td mat-cell *matCellDef="let element">{{element.switch_allowed ? element.switch_allowed : 'N/A'}}</td>
+        </ng-container>
 
         <ng-container matColumnDef="scheme_name">
           <th mat-header-cell *matHeaderCellDef>Scheme</th>
@@ -486,6 +509,34 @@
           <th  mat-header-cell *matHeaderCellDef>Daily SIP Fresh Minimum Amount</th>
           <td mat-cell *matCellDef="let element">
             {{element.D_sip_min_F_amount}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="pip_multiple_amount">
+          <th  mat-header-cell *matHeaderCellDef>PIP Multiple Amount</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.pip_multiple_amount}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="switch_min_amt">
+          <th  mat-header-cell *matHeaderCellDef>Switch In Minimum Amount</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.switch_min_amt}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="switch_mul_amt">
+          <th  mat-header-cell *matHeaderCellDef>Switch In Multiple Amount</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.switch_mul_amt}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="exit_load">
+          <th  mat-header-cell *matHeaderCellDef>Exit Load</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.exit_load ? element.exit_load : 'N/A'}}
           </td>
         </ng-container>
 

@@ -17,9 +17,9 @@
      <div class="row my-4">
       <div class="col-sm-12">
         <div class="row">
-          <div class="col-sm-2 d-flex justify-content-center flex-column">
+          <div class="col-sm-2 d-flex justify-content-center flex-column" *ngIf="form__data">
             <p class="m-0 text-white">(Monthly)</p>
-            <h6 class="m-0 text-white">MIS Summary For DEC-2023</h6>
+            <h6 class="m-0 text-white">MIS Summary For {{form__data?.mis_month?.month}}</h6>
           </div>
           <div class="col-sm-10">
             <div class="row">

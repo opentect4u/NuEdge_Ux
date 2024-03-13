@@ -11,13 +11,13 @@
         <mat-card class="navCard">
           <mat-card-content class="p-3 px-4">
             <form [formGroup]="searchNavForm" (ngSubmit)="searchNav()">
-              <div class="row">
+              <!-- <div class="row">
                 <div class="col-sm-3">
                   <mat-radio-group color="primary" aria-label="Select an option" formControlName="plan_type">
                     <mat-radio-button [value]="item.id" *ngFor="let item of md_plan" class="mr-3">{{item.plan_name}}</mat-radio-button>
                   </mat-radio-group>
                 </div>
-              </div>
+              </div> -->
               <div class="row">
 
               <div class="col-sm-3">
@@ -148,17 +148,24 @@
       </mat-card-header>
       <mat-card-content>
 
+        <!--
+          responsiveLayout="scroll"
+        [tableStyle]="{ 'min-width': '130rem' }"
+        -->
+
 
         <p-table #primeTbl
                  id="navDt"
                  [value]="navDt"
-                 [responsive]="true"
-                 [rowHover]="true"
-                 styleClass="p-datatable-striped"
-                 responsiveLayout="scroll"
-                 [scrollable]="true"
-                 [columns]="navClmns"
+                 [scrollHeight]="'320px'"
+                 [virtualScroll]="true"
+                 [virtualRowHeight]="34"
                  [autoLayout]="true"
+                 [responsive]="true"
+                 styleClass="p-datatable-striped p-datatable-lg"
+                 [scrollable]="true"
+                 [rowHover]="true"
+                 [columns]="navClmns"
                  [paginator]="true"
                  [totalRecords]="navDt.length"
                  [pageLinks]="3"
@@ -167,13 +174,14 @@
                  [rows]="10"
                  [showCurrentPageReport]="true"
                  [globalFilterFields]="getColumnsForFilter()"
-                 [tableStyle]="{ 'min-width': '130rem' }">
+                 [tableStyle]="{ 'min-width': '132rem' }"
+                 >
           <ng-template pTemplate="header">
             <tr>
               <th *ngFor="let col of navClmns"
                   [pSortableColumn]="col.field"
                   [style.max-width]="col.width"
-                  [style.min-width]="col.field">
+                  [style.min-width]="col.width">
                 {{ col.header }}
                 <p-sortIcon [field]="col.field">
                 </p-sortIcon>
@@ -182,10 +190,12 @@
           </ng-template>
 
           <ng-template pTemplate="body" let-nav let-i="rowIndex">
-            <tr tabindex="999">
+            <tr tabindex="999"
+            [ngStyle]="{'height':'34px'}"
+            >
               <td *ngFor="let col of navClmns"
                   [style.max-width]="col.width"
-                  [style.min-width]="col.field">
+                  [style.min-width]="col.width">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
 
@@ -244,7 +254,9 @@ nav.change_percentage?.toString().includes('-') ?
           </ng-template>
 
           <ng-template pTemplate="emptymessage" let-columns>
-            <tr>
+            <tr
+            [ngStyle]="{'height':'34px'}"
+            >
               <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
                 <h5>No Records Found</h5>
               </td>

@@ -11,6 +11,7 @@ export interface client {
     sec_email?: string
     add_line_1?: string
     add_line_2?: string
+    add_line_3?: string
     city?: string
     city_name?:string;
     dist?: string;

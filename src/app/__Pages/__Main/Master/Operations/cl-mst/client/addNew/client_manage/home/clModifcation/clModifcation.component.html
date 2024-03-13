@@ -580,6 +580,12 @@
           <input type="text" placeholder="Enter Address 2" name="add_line_2" id="addr2" class="form-control"
             formControlName="add_line_2">
         </div>
+
+        <div class="col-sm-12 my-2">
+          <label for="addr3">Address Line 3</label>
+          <input type="text" placeholder="Enter Address 3" name="add_line_3" id="addr3" class="form-control"
+            formControlName="add_line_3">
+        </div>
       </div>
        <div class="row"  *ngIf="( __clientForm.value.type == 'E' && this.data.id > 0) ||  __clientForm.value.type == 'M' ||  __clientForm.value.type == 'N'|| __clientForm.value.type == 'P'">
         <div class="col-sm-12">

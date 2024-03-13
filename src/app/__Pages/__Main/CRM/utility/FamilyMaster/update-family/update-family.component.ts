@@ -85,7 +85,9 @@ export class UpdateFamilyComponent implements OnInit {
    .subscribe({
      next: (value) => {
        const dt = value.map((item:client) =>{
-             const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
+             const arr = [item.add_line_1,item.add_line_2,
+              item.add_line_3,
+              item.city,item.state,item.dist,item.pincode]
              item.client_addr = arr.filter(item => {return item}).toString();
              return item;
        })
@@ -119,7 +121,9 @@ export class UpdateFamilyComponent implements OnInit {
   .subscribe({
     next: (value) => {
       const dt = value.map((item:client) =>{
-            const arr = [item.add_line_1,item.add_line_2,item.city,item.state,item.dist,item.pincode]
+            const arr = [item.add_line_1,item.add_line_2,
+              item.add_line_3,
+              item.city,item.state,item.dist,item.pincode]
             item.client_addr = arr.toString();
             return item;
       })
@@ -193,7 +197,9 @@ getColumns = () =>{
        .subscribe((res:client[]) =>{
          console.log(res);
         this.getFamilyMemberMstDT = res.map((item:client) =>{
-         const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+         const arr = [item.add_line_1,item.add_line_2,
+          item.add_line_3,
+          item.city_name,item.state_name,item.district_name,item.pincode]
          item.client_addr = arr.filter(item => {return item}).toString();
          return item;
    });

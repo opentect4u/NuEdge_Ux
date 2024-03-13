@@ -420,8 +420,8 @@ export class NavFinderComponent implements OnInit, Nav {
 
 export class NavFinderColumns {
   static column: column[] = [
-    { field: 'sl_no', header: 'Sl No', width: '5rem' },
-    { field: 'amc_short_name', header: 'AMC', width: '25rem' },
+    { field: 'sl_no', header: 'Sl No', width: '6rem' },
+    { field: 'amc_short_name', header: 'AMC', width: '22rem' },
     { field: 'scheme_name', header: 'Scheme', width: '32rem' },
     { field: 'cat_name', header: 'Category', width: '10rem' },
     { field: 'subcat_name', header: 'Sub category', width: '20rem' },

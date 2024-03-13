@@ -35,6 +35,7 @@ export class FamilyListComponent implements OnInit {
             const arr = [
               item.add_line_1,
               item.add_line_2,
+              item.add_line_3,
               item.city_name,
               item.state_name,
               item.district_name,
@@ -57,6 +58,9 @@ export class FamilyListComponent implements OnInit {
     ev: Required<{ originalEvent: PointerEvent; data: IFamilyList }>
   ) => {
     // console.log(ev);
+    try {
+    const index = this.dataSource.map((item) => item.id).indexOf(ev.data.id);
+    this.dataSource[index].family_member.length = 0;
     this.__dbIntr
       .api_call(0, '/clientFamilyDetail', 'family_head_id=' + ev.data.client_id)
       .pipe(
@@ -66,6 +70,7 @@ export class FamilyListComponent implements OnInit {
             const arr = [
               item.add_line_1,
               item.add_line_2,
+              item.add_line_3,
               item.city_name,
               item.state_name,
               item.district_name,
@@ -77,16 +82,11 @@ export class FamilyListComponent implements OnInit {
         })
       )
       .subscribe((res: IFamilyList[]) => {
-        try {
-          const index = this.dataSource
-            .map((item) => item.id)
-            .indexOf(ev.data.id);
-          this.dataSource[index].family_member.length = 0;
           this.dataSource[index].family_member = res;
-        } catch (ex) {
-          console.log(ex);
-        }
       });
+    } catch (ex) {
+      console.log(ex);
+    }
   };
   filterGlobal = ($event) => {
     let value = $event.target.value;
@@ -107,7 +107,8 @@ export interface IFamilyList {
   mobile: number;
   email: string;
   add_line_1: string;
-  add_line_2: any;
+  add_line_2: string;
+  add_line_3: string;
   city_name: string;
   district_name: string;
   state_name: string;

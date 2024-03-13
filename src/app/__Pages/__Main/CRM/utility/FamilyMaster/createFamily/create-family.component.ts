@@ -102,7 +102,7 @@ export class CreateFamilyComponent implements OnInit {
       next: (value) => {
         console.log(value)
         const dt = value.map((item:client) =>{
-              const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+              const arr = [item.add_line_1,item.add_line_2,item.add_line_3,item.city_name,item.state_name,item.district_name,item.pincode]
               item.client_addr = arr.filter(item => {return item}).toString();
               return item;
         })
@@ -139,7 +139,7 @@ export class CreateFamilyComponent implements OnInit {
       next: (value) => {
         console.log(value)
         const dt = value.map((item:client) =>{
-          const arr = [item.add_line_1,item.add_line_2,item.city_name,item.state_name,item.district_name,item.pincode]
+          const arr = [item.add_line_1,item.add_line_2,item.add_line_3,item.city_name,item.state_name,item.district_name,item.pincode]
           item.client_addr = arr.filter(item => {return item}).toString();
           return item;
         })

@@ -6,7 +6,8 @@ import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { MisCoreModule } from '../core/mis-core.module';
 import {FilterByStatusPipe} from 'src/app/__Pipes/filter.pipe'
   const routes:Routes = [{path:'',component:MonthlyMisComponent}]
-
+  // import localePt from '@angular/common/locales/pt';
+  // import { registerLocaleData } from '@angular/common';
 @NgModule({
   declarations: [
     MonthlyMisComponent,
@@ -17,6 +18,12 @@ import {FilterByStatusPipe} from 'src/app/__Pipes/filter.pipe'
     RouterModule.forChild(routes),
     TabModule,
     MisCoreModule
-  ]
+  ],
+  // providers:[
+  //   {
+  //     provide: LOCALE_ID,
+  //     useValue: 'en-IN'
+  //    },
+  // ]
 })
 export class MonthlyMisModule { }

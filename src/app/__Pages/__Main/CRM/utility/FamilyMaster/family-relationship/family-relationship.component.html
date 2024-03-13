@@ -6,7 +6,7 @@
         </mat-card-header>
         <mat-card-content class="p-3">
           <div class="row">
-                <div class="col-sm-5 col-sm-offset-3">
+                <div class="col-sm-5 col-sm-offset-2">
                   <form [formGroup]="family_head_search" autocomplete="off">
                     <div class="form-group row">
                       <label for="valuation_as_on" class="col-sm-3 m-auto text-center">Search Family Head</label>
@@ -73,7 +73,7 @@
                                   {{i + 1}}
                         </ng-container>
                         <ng-container *ngSwitchCase="col.field == 'relationship'">
-                          <ng-container *ngIf="family_header.relationship != 'Head'">
+                          <ng-container *ngIf="family_header.relationship != 'Head';else family_head">
                             <p-dropdown [options]="relation"
                             [filter]="true" filterBy="relation"
                             [showClear]="true"
@@ -83,6 +83,12 @@
                             [style]="{'width':'100%'}"
                             optionValue="relation"></p-dropdown>
                           </ng-container>
+                          <ng-template #family_head>
+                              <p
+                              class="m-0 text-success">
+                                {{family_header.relationship ? family_header.relationship : 'N/A'}}
+                              </p>
+                          </ng-template>
 
                          </ng-container>
                         <ng-container *ngSwitchDefault>

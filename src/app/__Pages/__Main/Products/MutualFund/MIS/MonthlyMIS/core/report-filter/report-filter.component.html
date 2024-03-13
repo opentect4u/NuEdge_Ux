@@ -31,7 +31,7 @@
         <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
       </ng-template>
       <form [formGroup]="monthly_mis_filter_form"
-      (ngSubmit)="searchFilter()">
+      (ngSubmit)="searchFilter()" autocomplete="off">
       <div class="row">
         <!-- Only For Monthly Mis Trend-->
         <ng-container *ngIf="flag == 'T';else mis">
@@ -93,13 +93,19 @@
           <div class="col-sm-3">
           <label [attr.for]="flag == 'R' ? 'mis_month' : 'no_of_month'">{{ flag == 'R' ? 'MIS' : 'No Of'}} Month</label>
             <select class="form-control"
+            [compareWith]="compareWith"
             [attr.id]="flag == 'R' ? 'mis_month' : 'mo_of_month'"
             [formControl]="$any(monthly_mis_filter_form.controls[flag == 'R' ? 'mis_month' : 'no_of_month'])">
-            <ng-container *ngIf="flag == 'R';else trend">
+            <ng-container *ngIf="flag == 'R';else trend"
+            >
               <option value="">Select MIS Month</option>
-              <option value="{{monthYear}}"
+              <!-- <option value="{{monthYear.actual}}"
               *ngFor="let monthYear of month_year">
-              {{monthYear}}
+              {{monthYear.month}}
+              </option> -->
+              <option [ngValue]="monthYear"
+              *ngFor="let monthYear of month_year">
+              {{monthYear.month}}
               </option>
             </ng-container>
             <ng-template #trend>

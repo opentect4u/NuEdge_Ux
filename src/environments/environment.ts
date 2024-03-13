@@ -14,7 +14,7 @@ export const environment = {
   production: false,
   /****** NuEdge  Start*****/
   nav_url : "http://192.168.1.6:8000", // local
-  // nav_url:'http://pyapi.nuedgecorporate.co.in', // server
+  // nav_url:'https://pyapi.nuedgecorporate.co.in', // server
   apiUrl:url + "api/v1",
   clientdocUrl:url + "public/client-doc/",
 

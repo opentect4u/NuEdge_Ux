@@ -699,7 +699,7 @@ searchTrxnReport = () => {
           this.utility.showSnackbar(`Please select ${this.misTrxnRpt.value.view_type == 'F' ? 'family head' : 'investor'}`,2)
            return;
         }
-        else if(this.misTrxnRpt.value.family_members.length == 0 && this.misTrxnRpt.value.view_type == 'F'){
+        else if(this.misTrxnRpt.getRawValue().family_members.length == 0 && this.misTrxnRpt.value.view_type == 'F'){
           this.utility.showSnackbar(`Please select at least one family member`,2)
            return;
         }
@@ -732,7 +732,7 @@ fetchTransaction = () =>{
   TrxnDt.append('cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.cat_id, 'id'));
   TrxnDt.append('sub_cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_cat_id, 'id'));
   TrxnDt.append('pan_no',this.misTrxnRpt.value.pan_no ? this.misTrxnRpt.value.pan_no : '');
-  TrxnDt.append('client_name',this.misTrxnRpt.value.client_name);
+  TrxnDt.append('client_name',this.misTrxnRpt.getRawValue().client_name ? this.misTrxnRpt.getRawValue().client_name : '');
   TrxnDt.append('scheme_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.scheme_id, 'id'));
   TrxnDt.append('trans_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_type_id,'trans_type'));
   TrxnDt.append('trans_sub_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_sub_type_id,'trans_sub_type'));
@@ -747,7 +747,7 @@ fetchTransaction = () =>{
    count = this.trxnRpt.length;
   this.trxnRpt = [];
   this.dbIntr
-    .api_call(1, '/showBrokerChangeDetails', TrxnDt)
+    .api_call(1, '/showBrokerChangeDetailss', TrxnDt)
     .pipe(
       pluck('data'),
       tap((item:TrxnRpt[]) => {

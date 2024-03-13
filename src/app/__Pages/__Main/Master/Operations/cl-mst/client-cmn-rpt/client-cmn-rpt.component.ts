@@ -13,7 +13,7 @@ import {
 } from './index';
 import { client } from 'src/app/__Model/__clientMst';
 import clientType from '../../../../../../../assets/json/Master/clientType.json';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 // import { pluck } from 'rxjs/operators';
 import MonthDT from '../../../../../../../assets/json/Master/month.json';
 import filterDT from '../../../../../../../assets/json/filterOption.json';
@@ -39,6 +39,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { ClModifcationComponent } from '../client/addNew/client_manage/home/clModifcation/clModifcation.component';
 import { Table } from 'primeng/table';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
+import { pipe } from 'rxjs';
 @Component({
   selector: 'app-client-cmn-rpt',
   templateUrl: './client-cmn-rpt.component.html',
@@ -67,6 +68,10 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     );
 
     @ViewChild('dt') primeTble:Table;
+    @ViewChild('mClientTble') mergeClientTble:Table;
+
+
+
 
  __pageNumber = new FormControl('10');
  sort = new sort();
@@ -101,11 +106,26 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     pincode: new FormControl(''),
     city_type_id: new FormControl([]),
   });
+
+  /*** Holding Column for Merge Client */
+  merge_client_column:column[] = mergeClientClmn.column;
+  /*** End */
+  /** Holding Merge CLient Details */
+  mergeClient:client[] = [];
+  selectedMergeClient:client[] = [];
+  mergeClientForm = new FormGroup({
+    m_client:new FormArray([])
+  })
+  display_merge_client:boolean = false;
+  /***End */
+
+
   constructor(private dbIntr: DbIntrService,
     private __utility: UtiliService,
     private __dialog: MatDialog,
     private __Rpt:RPTService,
     private overlay: Overlay,
+    private readonly fb: FormBuilder
     ) {}
 
   ngOnInit(): void {
@@ -246,18 +266,44 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     this.primeTble.filterGlobal(value,'contains')
   }
 
+  filterGlobal_merge = ($event) => {
+    let value = $event.target.value;
+    this.mergeClientTble.filterGlobal(value,'contains')
+  }
+
+
+
   TabDetails = (tabDtls) => {
     try{
+      this.mergeClient = [];
       this.clientFrm.get('client_type').setValue(tabDtls.tabDtls.type);
-      this.sort = new sort();
-      this.reset();
-      this.setColumns(this.clientFrm.value.options);
+      if(tabDtls.tabDtls.type === 'MC'){
+        this.getMergeClient();
+      }
+      else{
+        this.sort = new sort();
+        this.reset();
+        this.setColumns(this.clientFrm.value.options);
+      }
     }
     catch(ex){
         console.log(ex);
     }
-
   };
+
+  getMergeClient = () =>{
+    this.dbIntr.api_call(0,'/mergeClient',null)
+    .pipe(pluck('data'))
+    .subscribe((res:client[]) =>{
+      console.log(res);
+        this.mergeClient = res.map((item:client) =>{
+          const arr = [item.add_line_1,item.add_line_2,item.add_line_3,item.city_name,item.state_name,item.district_name,item.pincode]
+          item.client_addr = arr.filter(item => {return item}).toString();
+          return item;
+    })
+    })
+  }
+
   onItemClick = (ev) => {
     console.log(ev);
     if(ev.option.value == 'A'){
@@ -618,6 +664,7 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
         value.email = row_obj.email
         value.sec_email = row_obj.sec_email
         value.add_line_1 = row_obj.add_line_1
+        value.add_line_3 = row_obj.add_line_3
         value.add_line_2 = row_obj.add_line_2
         value.city = row_obj.city
         value.dist = row_obj.dist
@@ -657,6 +704,7 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
         value.sec_email = row_obj.sec_email
         value.add_line_1 = row_obj.add_line_1
         value.add_line_2 = row_obj.add_line_2
+        value.add_line_3 = row_obj.add_line_3
         value.city = row_obj.city
         value.dist = row_obj.dist
         value.state = row_obj.state
@@ -684,4 +732,74 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
         return true;
       })
   }
+  getcolumns = () =>{
+    return this.__utility.getColumns(this.merge_client_column);
+  }
+
+  handleSelect = (ev) =>{
+
+      this.display_merge_client = this.selectedMergeClient.length == 2;
+      if(this.selectedMergeClient.length == 2){
+          this.selectedMergeClient.forEach((el:client) =>{
+            this.m_client.clear();
+                    this.m_client.push(
+                        this.fb.group({
+                        ...el,
+                         is_checked:new FormControl(true),
+                       }
+                     )
+                    )
+          })
+          console.log(this.m_client)
+      }
+  }
+
+  get m_client() {
+    return this.mergeClientForm.get('m_client') as FormArray;
+  }
+
+  addclientInMergeClientFOrm = (client:client) =>{
+        this.m_client.push(
+              new FormGroup({
+                id: new FormControl(''),
+
+              })
+        )
+  }
+
+}
+
+export class mergeClientClmn{
+  static column:column[] = [
+    {
+      field:'sl_no',
+      header:'Sl No.',
+      width:'5rem'
+    },
+    {
+      field:'client_name',
+      header:'Client',
+      width:'20rem'
+    },
+    {
+      field:'client_code',
+      header:'Code',
+      width:'10rem'
+    },
+    {
+      field:'pan',
+      header:'PAN',
+      width:'7rem'
+    },
+    {
+      field:'email',
+      header:'Email',
+      width:'30rem'
+    },
+    {
+      field:'client_addr',
+      header:'Address',
+      width:'50rem'
+    }
+  ]
 }

@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { SharedClModuleModule } from '../sharedClientModule/shared-cl-module.module';
-
+import {SidebarModule} from 'primeng/sidebar';
  const routes:Routes = [{path:'',component:ClientCmnRptComponent}]
 
 @NgModule({
@@ -18,7 +18,8 @@ import { SharedClModuleModule } from '../sharedClientModule/shared-cl-module.mod
     RouterModule.forChild(routes),
     // SharedModule,
     SharedClModuleModule,
-    TabModule
+    TabModule,
+    SidebarModule
   ]
 })
 export class ClientCmnRptModule { }

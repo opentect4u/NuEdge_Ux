@@ -87,7 +87,9 @@ export class HomeComponent implements OnInit {
   setAmountInTiles = (res:Required<ITilesAPIResonse>) =>{
     const index = this.__topValues.findIndex(item => item.flag == res.flag);
     try{
-      this.__topValues[index].amount = res.total_amount;
+      // this.__topValues[index].amount = res.total_amount;
+      this.__topValues[index].amount = 99999;
+
       const momPercentage__calculation = ((res.total_amount - res.prev_total_amount) / res.prev_total_amount) * 100
       this.__topValues[index].mom_percentage = momPercentage__calculation
     }

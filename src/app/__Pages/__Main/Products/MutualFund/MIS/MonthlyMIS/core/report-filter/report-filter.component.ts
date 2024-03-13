@@ -62,7 +62,7 @@ export class ReportFilterComponent implements OnInit {
  */
   selectBtn = filterOpt;
 
-  month_year: string[] = [];
+  month_year: {month:string,actual:string}[] = [];
 
   /**
   * Setting of multiselect dropdown
@@ -243,6 +243,7 @@ export class ReportFilterComponent implements OnInit {
     this.getTrxnTypeMst(); // Holding AMC Master Data...
     /******** For Getting Month & Year  from Jan-1980 to Till Now */
     global.getMonthYears().then(MY => {
+      // console.log(MY);
       this.month_year = MY.reverse();
       // if(this.flag == 'R'){
       //   this.searchFilter();
@@ -276,7 +277,7 @@ export class ReportFilterComponent implements OnInit {
      this.monthly_mis_filter_form.controls['view_by']
      .valueChanges
      .subscribe(res =>{
-      console.log(res)
+      // console.log(res)
       if(res == 'Y' && this.financial_year.length == 0){this.getAllFinancialYears();}
       this.monthly_mis_filter_form.patchValue({
             upto:(res == 'D' || res == 'F') ? 2 : '',
@@ -573,7 +574,12 @@ export class ReportFilterComponent implements OnInit {
 
   /***** SEARCH MONTHLY MIS REPORT*/
   searchFilter = () => {
-    console.log(this.monthly_mis_filter_form.value);
+
+    if(this.flag === 'R' && !this.monthly_mis_filter_form.value.mis_month) {
+      this.utility.showSnackbar('Please Select Mis Month',2);
+      return;
+    }
+
     let liveSipReportFilter = Object.assign({},this.monthly_mis_filter_form.value,{
       ...this.monthly_mis_filter_form.value,
       amc_id:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.amc_id,'id'),
@@ -587,7 +593,7 @@ export class ReportFilterComponent implements OnInit {
       sub_cat_id:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.sub_cat_id,'id'),
       trans_type:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.trans_type,'id'),
       trans_sub_type:this.utility.mapIdfromArray(this.monthly_mis_filter_form.value.trans_sub_type,'id'),
-      mis_month:this.datePipe.transform(this.monthly_mis_filter_form.value.mis_month,'MM-YYYY'),
+      mis_month:this.monthly_mis_filter_form.value.mis_month,
       upto: (this.monthly_mis_filter_form.value.view_by == 'D' || this.monthly_mis_filter_form.value.view_by == 'F') ? global.getActualVal(this.monthly_mis_filter_form.value.upto) : '',
       month_year: this.monthly_mis_filter_form.value.view_by == 'M' ? global.getActualVal(this.date_range?.inputFieldValue) : '',
       fin_year:this.monthly_mis_filter_form.value.view_by == 'Y' ? global.getActualVal(this.monthly_mis_filter_form.value.fin_year) : '',
@@ -724,7 +730,14 @@ export class ReportFilterComponent implements OnInit {
   }
 
   setEndDate = () =>{
-    console.log('imm!! Manku Khaichilo')
+    // console.log('imm!! Manku Khaichilo')
+  }
+
+  compareWith(existing_mis_month, toCheckAgainst) {
+    if (!toCheckAgainst) {
+      return false;
+    }
+    return existing_mis_month.actual === toCheckAgainst.actual;
   }
 
 }
