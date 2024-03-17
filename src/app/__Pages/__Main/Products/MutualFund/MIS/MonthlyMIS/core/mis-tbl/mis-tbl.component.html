@@ -86,9 +86,7 @@
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'monthly'">
-                    <!-- <p class="m-0">{{trxn[col.field] ? (trxn[col.field] | date:'MMM-YYYY') : 'N/A'}}</p> -->
                     <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
-
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'trend'">

@@ -1,4 +1,5 @@
 export const PUR_PROCESS = [`fresh`,
+`fresh purchase`,
 `additional`,
 `additional purchase`];
 export const PUR_REJ = [
@@ -41,6 +42,7 @@ export const TRANSFER_IN_REJECTION = [`Transfer In Rejection`];
 export const TRANSFER_OUT = [`Transfer Out`];
 export const TRANSFER_OUT_REJECTION = [`Transfer Out Rejection`];
 export const NFT = [
+  `Fresh Purchase`,
   `Additional Purchase Pre-Rejection`,
   `SIP Purchase Installment - NFO`,
   `Transfer In`,
@@ -95,6 +97,7 @@ export const NET_PROCESS_AMT =[
   `SIP Purchase Installment`,
   `Fresh`,
   `Additional`,
+  `Fresh Purchase`,
   `Additional Purchase`,
   `Additional Purchase Pre-Rejection`,
   `Fresh Pre-Rejection`,

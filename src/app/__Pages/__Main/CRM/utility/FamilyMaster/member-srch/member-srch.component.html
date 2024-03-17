@@ -80,9 +80,7 @@
                                       [ngClass]="{
                                         'text-success':family_member['relationship'] == 'Head'
                                     }"
-                                    [ngStyle]="{
-                                      'font-weight':family_member['relationship'] == 'Head' ? 600 : 500
-                                    }"
+
                                       >{{family_member[sub_col.field] ? family_member[sub_col.field] : 'N/A'}}</p>
                                     </ng-container>
                                     </ng-container>

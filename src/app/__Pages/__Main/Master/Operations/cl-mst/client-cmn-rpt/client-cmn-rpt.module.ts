@@ -19,7 +19,7 @@ import {SidebarModule} from 'primeng/sidebar';
     // SharedModule,
     SharedClModuleModule,
     TabModule,
-    SidebarModule
+    SidebarModule,
   ]
 })
 export class ClientCmnRptModule { }

@@ -143,7 +143,7 @@ export class MemberColumn{
         header:'Mobile',
         width:'10rem'
       },{
-        field:'add_line_1',
+        field:'client_addr',
         header:'Address',
         width:'25rem'
       }

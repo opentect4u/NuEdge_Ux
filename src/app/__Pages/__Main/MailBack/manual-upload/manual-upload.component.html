@@ -211,6 +211,16 @@
                     [matTooltipPosition]="'after'"
                     #tooltip="matTooltip"
                     matTooltip="Download"
+                    (click)="download(file[col.field])"
+                    styleClass="p-button-rounded p-button-danger p-button-text"
+                    >
+
+                    <i class="pi pi-download" style="font-size:2rem"></i>
+                  </a>
+                    <!-- <a
+                    [matTooltipPosition]="'after'"
+                    #tooltip="matTooltip"
+                    matTooltip="Download"
                     [href]="file[col.field]"
                     target="_blank"
                     download
@@ -218,7 +228,7 @@
                     >
 
                     <i class="pi pi-download" style="font-size:2rem"></i>
-                  </a>
+                  </a> -->
                   </ng-container>
                     <ng-container *ngSwitchDefault>
                       <span>{{ file[col.field] ? file[col.field]  : 'N/A'}}

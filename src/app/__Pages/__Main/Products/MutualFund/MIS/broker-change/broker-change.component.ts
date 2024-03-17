@@ -747,7 +747,7 @@ fetchTransaction = () =>{
    count = this.trxnRpt.length;
   this.trxnRpt = [];
   this.dbIntr
-    .api_call(1, '/showBrokerChangeDetailss', TrxnDt)
+    .api_call(1, '/showBrokerChangeDetails', TrxnDt)
     .pipe(
       pluck('data'),
       tap((item:TrxnRpt[]) => {

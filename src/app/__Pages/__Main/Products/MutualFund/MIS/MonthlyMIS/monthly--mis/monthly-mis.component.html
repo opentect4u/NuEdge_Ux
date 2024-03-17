@@ -30,7 +30,11 @@
                   <mat-card-content class="inFlow__outFlow_card_content"
                   >
                     <h5 class="text-center">TOTAL MONTHLY INFLOW</h5>
-                    <p class="OutFlow__InFlow__Text text-center">₹{{(total_mis_calculation ? total_mis_calculation?.tot_inflow_amt : 0)?.toFixed(2)}}</p>
+                    <p class="OutFlow__InFlow__Text text-center">
+                      ₹{{(total_mis_calculation ? (total_mis_calculation?.tot_inflow_amt | currency:"symbol":"") : '0.00')}}
+                    </p>
+
+
                   </mat-card-content>
                 </mat-card>
               </div>
@@ -39,7 +43,7 @@
                   <mat-card-content class="inFlow__outFlow_card_content"
                     >
                    <h5 class="text-center">TOTAL MONTHLY OUTFLOW</h5>
-                   <p class="OutFlow__InFlow__Text text-center">₹{{(total_mis_calculation ? total_mis_calculation?.tot_outflow_amt : 0)?.toFixed(2)}}</p>
+                   <p class="OutFlow__InFlow__Text text-center">₹{{(total_mis_calculation ? (total_mis_calculation?.tot_outflow_amt | currency:"symbol":"") : '0.00')}}</p>
                   </mat-card-content>
                 </mat-card>
               </div>
@@ -47,7 +51,7 @@
                 <mat-card matTooltipClass="ToolTip" matTooltip="NET MONTHLY INFLOW:₹{{(total_mis_calculation?.tot_inflow_amt - total_mis_calculation?.tot_outflow_amt)?.toFixed(2)}}" class="outFlow__inflow monthly__inflow my-1">
                   <mat-card-content class="inFlow__outFlow_card_content">
                     <h5 class="text-center">NET MONTHLY INFLOW</h5>
-                    <p class="OutFlow__InFlow__Text text-center">₹{{(total_mis_calculation?.tot_inflow_amt - total_mis_calculation?.tot_outflow_amt)?.toFixed(2)}}</p>
+                    <p class="OutFlow__InFlow__Text text-center">₹{{(total_mis_calculation?.tot_inflow_amt - total_mis_calculation?.tot_outflow_amt) | currency:"symbol":""}}</p>
                   </mat-card-content>
                 </mat-card>
               </div>

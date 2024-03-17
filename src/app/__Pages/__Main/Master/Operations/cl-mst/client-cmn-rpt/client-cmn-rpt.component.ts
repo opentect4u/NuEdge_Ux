@@ -113,8 +113,8 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   /** Holding Merge CLient Details */
   mergeClient:client[] = [];
   selectedMergeClient:client[] = [];
-  mergeClientForm = new FormGroup({
-    m_client:new FormArray([])
+  mergeClientForm = this.fb.group({
+    m_client:this.fb.array([])
   })
   display_merge_client:boolean = false;
   /***End */
@@ -302,6 +302,14 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
           return item;
     })
     })
+  }
+
+  getDetails = (index:number,clientDtls) =>{
+      console.log(index);
+      console.log(clientDtls);
+      this.m_client.controls.forEach((el,i) =>{
+        el.get('is_checked').setValue(index == i);
+      })
   }
 
   onItemClick = (ev) => {
@@ -738,34 +746,35 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
 
   handleSelect = (ev) =>{
 
-      this.display_merge_client = this.selectedMergeClient.length == 2;
       if(this.selectedMergeClient.length == 2){
-          this.selectedMergeClient.forEach((el:client) =>{
-            this.m_client.clear();
+        try{
+          this.m_client.clear();
+
+          this.selectedMergeClient.forEach((el:client,index:number) =>{
                     this.m_client.push(
                         this.fb.group({
                         ...el,
-                         is_checked:new FormControl(true),
+                         is_checked:[index == 0],
                        }
                      )
                     )
           })
-          console.log(this.m_client)
+          this.display_merge_client = this.selectedMergeClient.length == 2;
+        }
+        catch(ex){
+          this.display_merge_client = this.selectedMergeClient.length == 2;
+        }
+
+
       }
   }
-
+  makeMainClient = () =>{
+    console.log(this.m_client)
+  }
   get m_client() {
     return this.mergeClientForm.get('m_client') as FormArray;
   }
 
-  addclientInMergeClientFOrm = (client:client) =>{
-        this.m_client.push(
-              new FormGroup({
-                id: new FormControl(''),
-
-              })
-        )
-  }
 
 }
 

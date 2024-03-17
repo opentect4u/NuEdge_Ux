@@ -11,6 +11,7 @@ import { uploadManual } from 'src/app/__Utility/MailBack/upload';
 import { column } from 'src/app/__Model/tblClmns';
 import { manualUpload } from 'src/app/__Model/MailBack/manualUpload';
 import { environment } from 'src/environments/environment';
+import XLSX from 'xlsx';
 
 export interface rec_response {
   start_count: number;
@@ -252,6 +253,20 @@ export class ManualUploadComponent implements OnInit {
       upload_file:'',
       file:'',
      })
+  }
+
+  download = (url:string) =>{
+      console.log(url);
+      // const txt = xlsx.readFile(url)
+      // xlsx.writeFile(txt,'output.xlsx');
+      var workbook = XLSX.readFile(url, { type:'binary'});
+      var wsname = workbook.SheetNames[0];
+      const ws = workbook.Sheets[wsname];
+      var data = XLSX.utils.sheet_to_csv(ws);
+      // this.dbIntr.api_call(0,url,null).subscribe(res =>{
+      //   console.log(res);
+      // })
+
   }
 
   updateRow = (row_obj) => {

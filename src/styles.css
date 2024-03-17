@@ -428,6 +428,7 @@ mat-card {
 
 .multiselect-item-checkbox input[type=checkbox]+div {
   color: #3a5076 !important;
+  font-weight: 600;
 }
 
 /***** End **/

@@ -10,3 +10,36 @@
   background: #5454541f;
 
 }
+
+
+.custom_container>ul{
+  padding: 16px;
+  list-style: none;
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  margin: 14px 0px;
+  background: #f6f6f6;
+}
+
+.custom_container>ul>li>h4,
+.custom_container>ul>li>p
+{
+    font-size: 13px;
+}
+
+.custom_container>ul:hover{
+  cursor: pointer;
+  background: #1616d630;
+  color: #141458;
+  font-weight: 500;
+  border: 1px solid #54548e7d;
+  transition: all .5s;
+}
+.custom_container>ul.active{
+  cursor: pointer;
+  background: #1616d630!important;
+  color: #141458!important;
+  font-weight: 500;
+  border: 1px solid #54548e7d;
+}
+
