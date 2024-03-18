@@ -13,9 +13,4 @@ const routes: Routes = [{ path: '', component: LoginComponent }]
   ],
   declarations: [LoginComponent]
 })
-export class LoginModule {
-  constructor(){
-    console.log("Login Module Loaded");
-    
-  }
-}
+export class LoginModule {}

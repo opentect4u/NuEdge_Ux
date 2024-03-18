@@ -22,15 +22,11 @@ export class LoginComponent implements OnInit {
     private __utils: UtiliService,
     private dbIntr:DbIntrService) { }
 
-  ngOnInit() {
-    console.log(window.outerHeight);
-    console.log(window.innerHeight);
-  }
+  ngOnInit() {}
   signIn() {
      if(this.loginForm.invalid){
       return;
      }
-
     try{
       this.dbIntr.api_call(1,'/login',this.__utils.convertFormData(this.loginForm.value))
      .pipe(pluck('data')).subscribe(async (res:{token:string,user:IUser}) =>{
