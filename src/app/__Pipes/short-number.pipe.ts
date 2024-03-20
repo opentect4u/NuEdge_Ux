@@ -27,7 +27,7 @@ export class ShortNumberPipe implements PipeTransform {
 
   const val = Math.abs(number)
   if (val >= 10000000) return `${Number(number / 10000000).toLocaleString("en-IN", { maximumFractionDigits:2, minimumFractionDigits:2 })} Cr`
-  if (val >= 100000) return `${(number / 100000).toLocaleString("en-IN", { maximumFractionDigits:2, minimumFractionDigits:2 })} Lac`
+  if (val >= 100000) return `${(number / 100000).toLocaleString("en-IN", { maximumFractionDigits:2, minimumFractionDigits:2 })} Lakh`
   if (val >= 1000) return `${(number / 1000).toLocaleString("en-IN", { maximumFractionDigits:2, minimumFractionDigits:2 })} K`
 
   return number;

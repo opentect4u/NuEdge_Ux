@@ -203,7 +203,6 @@
             </mat-card-title>
           </mat-card-header>
           <mat-card-content class="p-3">
-            <!-- Outer table -->
         <p-table
         #primeTble
         [value]="dataSource"
@@ -215,7 +214,6 @@
         responsiveLayout="scroll">
           <ng-template pTemplate="header">
               <tr>
-                  <!-- [style]="'max-width : '+ item.field != 'scheme _name' ? item.width : '' " -->
                   <th
                   [style]="'min-width : '+item.width"
                   *ngFor="let item of parent_column">
@@ -225,11 +223,6 @@
           </ng-template>
           <ng-template pTemplate="body" let-liveMfPortFolio let-expanded="expanded">
               <tr>
-                  <!-- <td>
-                      <button type="button" pButton pRipple [pRowToggler]="liveMfPortFolio"
-                      class="p-button-text p-button-rounded p-button-plain"
-                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                  </td> -->
                   <td  *ngFor="let col of parent_column" class="parentTD">
                     <ng-container [ngSwitch]="true">
                       <ng-container *ngSwitchCase="col.field == 'scheme_name'">
@@ -275,7 +268,7 @@
                       <p class="m-0">Grand Total</p>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'inv_cost'
-                    || col.field == 'pur_price' || col.field == 'tot_units' || col.field == 'curr_val'
+                    || col.field == 'pur_nav' || col.field == 'tot_units' || col.field == 'curr_val'
                     || col.field == 'gain_loss' || col.field == 'ret_abs'">
                       <p class="m-0">{{parentLiveMfPortFolio ? (parentLiveMfPortFolio[col.field] | number: '1.2-2') : '0.00'}} {{col.field == 'ret_abs' ? '%' : ''}}</p>
                     </ng-container>
@@ -298,7 +291,6 @@
               <tr>
                   <td [attr.colspan]="(parent_column.length + 1)">
                       <div class="p-1">
-                        <!-- Inner Table -->
                           <p-table responsiveLayout="scroll"
                           [value]="liveMfPortFolio.data | slice:0:truncated_val"
                           dataKey="id">
@@ -317,7 +309,6 @@
                                       [style.min-width]="col.width"
                                       [style.max-width]="col.width"
                                       >
-                                        <!-- <p class="m-0"> -->
                                           <ng-container [ngSwitch]="true">
                                             <ng-container *ngSwitchCase="col.field == 'sl_no'">
                                               <p class="m-0">
@@ -351,7 +342,6 @@
                                               </p>
                                             </ng-container>
                                             </ng-container>
-                                        <!-- </p> -->
                                       </td>
                                   </tr>
                               </ng-template>
@@ -382,7 +372,6 @@
                                   </tr>
                               </ng-template>
                           </p-table>
-                          <!-- End -->
                           <div class="px-0 py-2 text-left show__More" *ngIf="(truncated_val != liveMfPortFolio.data.length) && liveMfPortFolio.data.length > 0">
                               <a (click)="show_more('M',i)">Show More Transactions</a>
                               &nbsp;<span>|</span>&nbsp;
@@ -393,10 +382,8 @@
               </tr>
           </ng-template>
       </p-table>
-      <!-- End -->
-    <!-- </p-card> -->
     </mat-card-content>
-    </mat-card>
+         </mat-card>
   </div>
 </div>
 

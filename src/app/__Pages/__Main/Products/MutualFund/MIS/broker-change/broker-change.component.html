@@ -251,11 +251,11 @@
           [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
           [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
-          [tableStyle]="{ 'min-width': '374rem' }">
+          [tableStyle]="{ 'min-width': '390rem' }">
           <ng-template pTemplate="header">
             <tr>
               <th *ngFor="let col of column" [pSortableColumn]="col.field" [style.max-width]="col.width"
-                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '18rem'">
                 {{ col.header }}
                 <p-sortIcon [field]="col.field">
                 </p-sortIcon>
@@ -268,7 +268,7 @@
                 'height':'34px',
                 'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
               <td *ngFor="let col of column" [style.max-width]="col.width"
-                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '18rem'">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
                     <p class="m-0">

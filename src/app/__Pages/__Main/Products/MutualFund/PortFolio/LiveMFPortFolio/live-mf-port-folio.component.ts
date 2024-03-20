@@ -35,7 +35,7 @@ type TotalparentLiveMfPortFolio = {
     total:number | undefined;
     gain_loss: number | undefined;
     ret_abs: number | undefined;
-    pur_price:number | undefined
+    pur_nav:number | undefined
 }
 /*** End */
 
@@ -308,11 +308,20 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:Required<{data,client_details:client}>) => {
-          this.dataSource = res.data.map((item: ILivePortFolio) => ({...item,inv_since:item.inv_since?.trans_date,pur_nav:item.pur_nav?.pur_price,data:[]}));
+          this.dataSource = res.data.map((item: ILivePortFolio) => (
+            {
+              ...item,
+              id:(Math.random() + Number(item.product_code)),
+              // inv_since:item.inv_since?.trans_date,
+              // pur_nav:item.pur_nav?.pur_price,
+              inv_since:item.inv_since,
+              pur_nav:item.pur_nav,
+              data:[]
+            }));
           this.clientDtls = res.client_details;
           this.parentLiveMfPortFolio = {
             inv_cost: this.Total__Count(this.dataSource,x => Number(x.inv_cost)),
-            pur_price:(this.Total__Count(this.dataSource,x => Number(x.pur_price)) / this.dataSource.length),
+            pur_nav:(this.Total__Count(this.dataSource,x => Number(x.pur_nav)) / this.dataSource.length),
             tot_units:this.Total__Count(this.dataSource,x => Number(x.tot_units)),
             curr_val:this.Total__Count(this.dataSource,x => x.curr_val),
             total:this.Total__Count(this.dataSource,x => x.curr_val),
@@ -326,11 +335,12 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
     try{
+      console.log(ev.data);
     this.subLiveMfPortFolio = null;
-    this.__selectedRow = ev.data;
+    this.__selectedRow = ev?.data;
     this.truncated_val = 0;
-    const index = this.dataSource.map(item => item.id).indexOf(ev.data.id);
-    this.dataSource[index].data.length = 0;
+    const index = this.dataSource.map(item => item.id).indexOf(ev?.data.id);
+    // this.dataSource[index].data.length = 0;
       this.__dbIntr.api_call(
         0,
         '/clients/liveMFShowDetails',
@@ -348,8 +358,8 @@ export class LiveMfPortFolioComponent implements OnInit {
         })
       }
     catch(ex){
-        // console.log(ex);
-        console.log(`ERROR`)
+        console.log(ex);
+        // console.log(`ERROR`)
     }
   }
 
@@ -504,7 +514,7 @@ export interface ILivePortFolio{
   scheme_name: string
   isin_no: string
   folio_no: string
-  inv_since: any
+  inv_since?: any
   sensex: string
   nifty50: string
   inv_cost: string
@@ -617,7 +627,7 @@ export class LiveMFPortFolioColumn{
       width:'70px'
     },
     {
-      field:'pur_price',
+      field:'pur_nav',
       header:'Pur. NAV',
       width:'50px'
     },
