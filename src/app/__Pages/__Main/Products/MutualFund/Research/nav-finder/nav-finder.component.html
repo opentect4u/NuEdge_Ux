@@ -160,12 +160,10 @@
                  [scrollHeight]="'320px'"
                  [virtualScroll]="true"
                  [virtualRowHeight]="34"
-                 [autoLayout]="true"
-                 [responsive]="true"
                  styleClass="p-datatable-striped p-datatable-lg"
-                 [scrollable]="true"
                  [rowHover]="true"
                  [columns]="navClmns"
+                 [responsive]="true"
                  [paginator]="true"
                  [totalRecords]="navDt.length"
                  [pageLinks]="3"
@@ -174,7 +172,7 @@
                  [rows]="10"
                  [showCurrentPageReport]="true"
                  [globalFilterFields]="getColumnsForFilter()"
-                 [tableStyle]="{ 'min-width': '132rem' }"
+                 [tableStyle]="{ 'min-width': '130rem' }"
                  >
           <ng-template pTemplate="header">
             <tr>

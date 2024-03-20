@@ -70,7 +70,7 @@ export class NavFinderComponent implements OnInit, Nav {
 
   minDt:Date = null;
 
-  navClmns: column[] = NavFinderColumns.column;
+  navClmns: column[] = NavFinderColumns.column.filter(item => item.field !== 'delete');
 
   navDt: nav[] = [];
 
@@ -428,7 +428,9 @@ export class NavFinderColumns {
     { field: 'nav_date', header: 'Nav Date', width: '10rem' },
     { field: 'nav', header: 'Nav', width: '10rem' },
     { field: 'change_nav', header: 'Change', width: '10rem' },
-    { field: 'change_percentage', header: '% of change from prv', width: '12rem' }
+    { field: 'change_percentage', header: '% of change from prv', width: '12rem' },
+    // { field: 'delete', header: 'Delete', width: '4rem' }
+
   ];
 }
 

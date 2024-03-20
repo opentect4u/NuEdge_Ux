@@ -308,16 +308,18 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:Required<{data,client_details:client}>) => {
+
           this.dataSource = res.data.map((item: ILivePortFolio) => (
             {
               ...item,
-              id:(Math.random() + Number(item.product_code)),
+              id:`${Math.random()}_${item.product_code}`,
               // inv_since:item.inv_since?.trans_date,
               // pur_nav:item.pur_nav?.pur_price,
               inv_since:item.inv_since,
               pur_nav:item.pur_nav,
               data:[]
             }));
+            console.log( this.dataSource);
           this.clientDtls = res.client_details;
           this.parentLiveMfPortFolio = {
             inv_cost: this.Total__Count(this.dataSource,x => Number(x.inv_cost)),
@@ -339,8 +341,10 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.subLiveMfPortFolio = null;
     this.__selectedRow = ev?.data;
     this.truncated_val = 0;
+    console.log(this.dataSource.map(item => item.id));
     const index = this.dataSource.map(item => item.id).indexOf(ev?.data.id);
-    // this.dataSource[index].data.length = 0;
+    console.log(this.dataSource[index]);
+    this.dataSource[index].data.length = 0;
       this.__dbIntr.api_call(
         0,
         '/clients/liveMFShowDetails',
@@ -643,7 +647,7 @@ export class LiveMFPortFolioColumn{
     },
     {
       field:'curr_nav',
-      header:'Curr. NAV',
+      header:'Curr.NAV',
       width:'70px'
     },
     {
@@ -699,13 +703,16 @@ export class LiveMFPortFolioColumn{
       field:'trans_date',header:'Trans Date',width:"4rem"
     },
     {
-      field:'tot_amount',header:'Amount',width:"5rem"
+      field:'gross_amount',header:'Gross Amount',width:"5rem"
+    },
+    {
+      field:'tot_stamp_duty',header:'S.Duty',width:"3rem"
     },
     {
       field:'tot_tds',header:'TDS',width:"3rem"
     },
     {
-      field:'tot_stamp_duty',header:'S. Duty',width:"3rem"
+      field:'tot_amount',header:'Net. Amount',width:"5rem"
     },
     {
       field:'idcwr',header:'IDCWR',width:"3rem"
@@ -717,13 +724,16 @@ export class LiveMFPortFolioColumn{
       field:'tot_units',header:'Units',width:"3rem"
     },
     {
-      field:'cumml_units',header:'Cumml. Unit',width:"4rem"
+      field:'cumml_units',header:'Cumml.Unit',width:"5rem"
     },
     {
       field:'sensex',header:'SENSEX',width:"4rem"
     },
     {
       field:'nifty50',header:'Nifty50',width:"4rem"
+    },
+    {
+      field:'curr_nav',header:'Curr.NAV',width:"4rem"
     },
     {
       field:'curr_val',header:'Curr. Value',width:"6rem"
@@ -744,7 +754,7 @@ export class LiveMFPortFolioColumn{
       field:'ret_abs',header:'Ret.ABS',width:"4rem"
     },
     {
-      field:'ret_cagr',header:'Ret. CAGR',width:"4rem"
+      field:'ret_xirr',header:'Ret.XIRR',width:"4rem"
     },
     {
       field:'trans_mode',header:'Tran. Mode',width:"6rem"

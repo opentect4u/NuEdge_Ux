@@ -1,0 +1,77 @@
+[
+  {
+      "id":1,
+      "name":"Details",
+      "icon":null,
+      "img":null,
+      "flag":"D"
+  },
+  {
+    "id":2,
+    "name":"Summary",
+    "icon":null,
+    "img":null,
+    "flag":"S"
+  },
+  {
+    "id":3,
+    "name":"Analysis",
+    "icon":null,
+    "img":null,
+    "flag":"A"
+  },
+  {
+    "id":4,
+    "name":"SIP",
+    "icon":null,
+    "img":null
+  },
+  {
+    "id":5,
+    "name":"STP",
+    "icon":null,
+    "img":null
+  },
+  {
+    "id":6,
+    "name":"SWP",
+    "icon":null,
+    "img":null
+  },
+  {
+    "id":7,
+    "name":"Gold Tracker",
+    "icon":null,
+    "img":null
+  },
+  {
+    "id":8,
+    "name":"Capital Gain/Loss",
+    "icon":null,
+    "img":null
+  },
+  {
+    "id":9,
+    "name":"P&L",
+    "icon":null,
+    "img":null
+  },
+  {
+    "id":10,
+    "name":"Div History",
+    "icon":null,
+    "img":null
+  },
+  {
+    "id":11,
+    "name":"Recent Transaction",
+    "icon":null,
+    "img":null
+  },
+  {
+    "id":12,
+    "name":"Upcomming Transaction",
+    "icon":null,
+    "img":null
+  }
+]

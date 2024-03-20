@@ -58,6 +58,8 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
     month:new FormControl(''),
   });
 
+  submittedDT;
+
   minDate: Date;
 
   maxDate: Date;
@@ -264,7 +266,8 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
   }
 
   getschemebenchmarkReport = () => {
-
+    this.submittedDT  = null;
+    this.scmbrnchMstDt= [];
      if(this.scmbenchmarkFrm.getRawValue().date_periods == 'M'
      || this.scmbenchmarkFrm.getRawValue().date_periods == 'Y'){
          if(!this.scmbenchmarkFrm.getRawValue().month){
@@ -300,9 +303,9 @@ export class ScmBenchMarkRptComponent implements OnInit, Ischemebenchmarkdtls {
          map((item: Partial<IschemeBenchmark>[]) => {
            this.toggle();
           this.scmbrnchMstDt = item;
+          this.submittedDT = this.scmbenchmarkFrm.getRawValue();
           // this.populateNav(item);
          })
-
         )
        .subscribe((res)=>{console.log(res);})
     }

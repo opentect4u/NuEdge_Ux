@@ -56,6 +56,8 @@ export class TrxnRptWithoutScmComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    console.log(this.sub_file_type);
+    console.log(this.file_type);
   }
   getColumns = () =>{
     return this.utility.getColumns(this.TrxnClm);

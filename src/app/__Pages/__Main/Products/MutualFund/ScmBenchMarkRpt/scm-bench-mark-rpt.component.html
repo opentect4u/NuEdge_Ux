@@ -43,9 +43,9 @@
               </select>
             </div>
             <ng-container *ngIf="(
-              (scmbenchmarkFrm.getRawValue().date_periods == 'D'
-              || scmbenchmarkFrm.getRawValue().date_periods == 'F'
-              || scmbenchmarkFrm.getRawValue().date_periods == 'W')
+              (scmbenchmarkFrm.getRawValue()?.date_periods == 'D'
+              || scmbenchmarkFrm.getRawValue()?.date_periods == 'F'
+              || scmbenchmarkFrm.getRawValue()?.date_periods == 'W')
             );else month_year">
 
               <div class="col-sm-3">
@@ -108,16 +108,18 @@
             <mat-card-title>
              Scheme Benchmark Reports
               <br/>
-              <span *ngIf="scmbrnchMstDt.length > 0">
+              <span *ngIf="submittedDT">
                 Period :
-                <ng-container *ngIf="scmbenchmarkFrm.getRawValue().date_periods == 'D';else other">
-                  <ng-container *ngIf="scmbenchmarkFrm.getRawValue().date_range.length > 1">
-                    {{scmbenchmarkFrm.getRawValue().date_range[0] | date:'dd-MMM-YYYY'}} -  {{scmbenchmarkFrm.getRawValue().date_range[1] | date:'dd-MMM-YYYY'}}
+                <ng-container *ngIf="submittedDT?.date_periods == 'D';else other">
+                <ng-container *ngIf="submittedDT?.date_range">
+                  <ng-container *ngIf="submittedDT?.date_range.length > 1">
+                    {{submittedDT.date_range[0] | date:'dd-MMM-YYYY'}} -  {{submittedDT.date_range[1] | date:'dd-MMM-YYYY'}}
                   </ng-container>
                 </ng-container>
+                </ng-container>
                 <ng-template #other>
-                  <ng-container *ngIf="scmbenchmarkFrm.getRawValue().month.length > 1">
-                  {{scmbenchmarkFrm.getRawValue().month[0] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}} -  {{scmbenchmarkFrm.getRawValue().month[1] | date:scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}}
+                  <ng-container *ngIf="submittedDT?.month.length > 1">
+                  {{submittedDT?.month[0] | date:submittedDT?.date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}} -  {{submittedDT?.month[1] | date:submittedDT?.date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}}
                   </ng-container>
                 </ng-template>
               </span>
