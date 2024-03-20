@@ -583,6 +583,7 @@ export interface ISubDataSource{
   days:number;
   ret_abs: number;
   ret_cagr: number;
+  ret_xirr:number;
   trans_mode: string;
 }
 
