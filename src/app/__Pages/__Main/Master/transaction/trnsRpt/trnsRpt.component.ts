@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject} from '@angular/core';
+import { Component, OnInit,Inject, ViewChild} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,13 +16,14 @@ import { transClmns } from 'src/app/__Utility/Master/trans';
 import { sort } from 'src/app/__Model/sort';
 // import { TrnstypeModificationComponent } from '../trnstypeModification/trnstypeModification.component';
 import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
+import { Table } from 'primeng/table';
 @Component({
 selector: 'trnsRpt-component',
 templateUrl: './trnsRpt.component.html',
 styleUrls: ['./trnsRpt.component.css']
 })
 export class TrnsrptComponent implements OnInit {
-
+  @ViewChild('dt') primeTbl :Table;
   formValue;
   itemsPerPage = ItemsPerPage
   sort =new sort();
@@ -52,6 +53,7 @@ constructor(
 ngOnInit(){
   this.formValue = this.__trnsType.value;
   this.getTransactionTypeMst();
+  this.getTransMst();
 }
 
 getTransMst(){
@@ -63,10 +65,19 @@ getTransMst(){
   __tranSearch.append('trns_name',this.formValue?.trns_name ? this.formValue?.trns_name : '');
   __tranSearch.append('trns_type_id',this.formValue?.trans_type_id ? this.formValue?.trans_type_id : '');
    this.__dbIntr.api_call(1,'/transctionSearch',__tranSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-    this.__paginate =res.links;
-    this.setPaginator(res.data);
+    // this.__paginate =res.links;
+    // this.setPaginator(res.data);
+    this.setPaginator(res);
      this.tableExport(__tranSearch);
    })
+}
+
+filterGlobal = ($event) => {
+  let value = $event.target.value;
+  this.primeTbl.filterGlobal(value,'contains')
+}
+getColumns = () =>{
+  return this.__utility.getColumns(this.__columns);
 }
 
 getTransactionTypeMst(){

@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit , Inject} from '@angular/core';
+import { Component, OnInit , Inject, ViewChild} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -13,6 +13,7 @@ import { sort } from 'src/app/__Model/sort';
 import { global } from 'src/app/__Utility/globalFunc';
 import { column } from 'src/app/__Model/tblClmns';
 import { swpTypeClmns } from 'src/app/__Utility/Master/trans';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'app-rpt',
   templateUrl: './rpt.component.html',
@@ -34,6 +35,8 @@ export class RptComponent implements OnInit {
   __paginate: any = [];
   __selecSwpType = new MatTableDataSource<any>([]);
   __isVisible: boolean = true;
+  @ViewChild('dt') primeTbl :Table;
+
   constructor(
     private __Rpt: RPTService,
     public dialogRef: MatDialogRef<RptComponent>,
@@ -45,7 +48,7 @@ export class RptComponent implements OnInit {
   ) { }
   ngOnInit(): void {
     this.formValue = this.__SwpType.value;
-
+    this.getSWPTypeMst();
   }
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
@@ -75,6 +78,14 @@ export class RptComponent implements OnInit {
       this.__sortColumnsAscOrDsc.direction ? this.__sortColumnsAscOrDsc.direction : 'asc'
      )
   }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
+  }
   getSWPTypeMst(column_name: string | null = '',sort_by: string | null | '' = 'asc') {
     const __SWPTypeSearch = new FormData();
     __SWPTypeSearch.append('swp_type_name',this.formValue?.swp_type_name);
@@ -100,8 +111,8 @@ export class RptComponent implements OnInit {
       });
   }
   setPaginator(res){
-     this.__selecSwpType = new MatTableDataSource(res.data);
-     this.__paginate = res.links;
+     this.__selecSwpType = new MatTableDataSource(res);
+    //  this.__paginate = res.links;
   }
   getPaginate(__paginate) {
     if (__paginate.url) {

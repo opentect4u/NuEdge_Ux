@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject } from '@angular/core';
+import { Component, OnInit,Inject, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -13,6 +13,7 @@ import { sort } from 'src/app/__Model/sort';
 import { global } from 'src/app/__Utility/globalFunc';
 import { stpTypeClmns } from 'src/app/__Utility/Master/trans';
 import { column } from 'src/app/__Model/tblClmns';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'app-rpt',
   templateUrl: './rpt.component.html',
@@ -32,6 +33,8 @@ export class RPTComponent implements OnInit {
   __paginate: any = [];
   __selecStpType = new MatTableDataSource<any>([]);
   __isVisible: boolean = true;
+  @ViewChild('dt') primeTbl :Table;
+
   constructor(
     private __Rpt: RPTService,
     public dialogRef: MatDialogRef<RPTComponent>,
@@ -43,7 +46,7 @@ export class RPTComponent implements OnInit {
   ) { }
   ngOnInit(): void {
     this.formValue = this.__StpType.value;
-
+    this.getSTPTypeMst();
   }
   fullScreen() {
     this.dialogRef.removePanelClass('mat_dialog');
@@ -80,9 +83,18 @@ export class RPTComponent implements OnInit {
       .api_call(1, '/stpTypeSearch', __STPTypeSearch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
+        // console.log(res);
         this.setPaginator(res);
         this.tableExport(__STPTypeSearch);
       });
+  }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
+  getColumns = () =>{
+    return this.utility.getColumns(this.__columns);
   }
 
   tableExport(__STPTypeExport: FormData){
@@ -95,8 +107,9 @@ export class RPTComponent implements OnInit {
       });
   }
   setPaginator(res){
-     this.__selecStpType = new MatTableDataSource(res.data);
-     this.__paginate = res.links;
+     this.__selecStpType = new MatTableDataSource(res);
+    //  console.log(this.__selecStpType);
+    //  this.__paginate = res.links;
   }
 
   getPaginate(__paginate) {

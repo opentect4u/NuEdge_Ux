@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject} from '@angular/core';
+import { Component, OnInit,Inject, ViewChild} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -15,6 +15,7 @@ import { sort } from 'src/app/__Model/sort';
 import { global } from 'src/app/__Utility/globalFunc';
 import { column } from 'src/app/__Model/tblClmns';
 import { transClmns, trnsTypeClmns } from 'src/app/__Utility/Master/trans';
+import { Table } from 'primeng/table';
 
 
 @Component({
@@ -40,6 +41,7 @@ export class TrnstyperptComponent implements OnInit {
   __paginate: any= [];
   __selecttrnsType = new MatTableDataSource<any>([]);
   __isVisible: boolean = true;
+  @ViewChild('dt') primeTbl :Table;
 
 constructor(
   private __Rpt: RPTService,
@@ -54,6 +56,7 @@ constructor(
 
 ngOnInit(){
   this.formValue = this.__trnsType.value;
+  this.gettransTypeMst();
 }
 gettransTypeMst(){
   const __trnsTypeSearch = new FormData();
@@ -63,12 +66,20 @@ gettransTypeMst(){
   __trnsTypeSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
   __trnsTypeSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : ''));
    this.__dbIntr.api_call(1,'/transctiontypeSearch',__trnsTypeSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-    this.__paginate =res.links;
-    this.setPaginator(res.data);
+    // this.__paginate =res.links;
+    // this.setPaginator(res.data);
+    this.setPaginator(res);
+
      this.tableExport(__trnsTypeSearch);
    })
 }
-
+filterGlobal = ($event) => {
+  let value = $event.target.value;
+  this.primeTbl.filterGlobal(value,'contains')
+}
+getColumns = () =>{
+  return this.__utility.getColumns(this.__columns);
+}
 tableExport(__trnsTypeExport){
   __trnsTypeExport.delete('paginate')
   this.__dbIntr.api_call(1,'/transctiontypeExport',__trnsTypeExport).pipe(map((x: any) => x.data)).subscribe((res: any[]) =>{

@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   MatDialog,
@@ -21,6 +21,7 @@ import { sort } from 'src/app/__Model/sort';
 import ItemPerPage from '../../../../../../assets/json/itemsPerPage.json';
 import { column } from 'src/app/__Model/tblClmns';
 import { optClmns } from 'src/app/__Utility/Master/optionClmns';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'optRpt-component',
   templateUrl: './optRpt.component.html',
@@ -57,8 +58,11 @@ export class OptrptComponent implements OnInit {
     private __utility: UtiliService
   ) {}
 
+  @ViewChild('dt') primeTbl :Table;
+
   ngOnInit() {
     this.formValue = this.__catForm.value;
+    this.getoptionMst();
   }
   getoptionMst() {
     const __optionSrch = new FormData();
@@ -70,12 +74,19 @@ export class OptrptComponent implements OnInit {
       .api_call(1, '/optionDetailSearch', __optionSrch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
+        // this.__paginate = res.links;
+        // this.setPaginator(res.data);
+        this.setPaginator(res);
         this.tableExport(__optionSrch);
       });
   }
-
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
+  }
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
   tableExport(__optionSrch) {
     __optionSrch.delete('paginate');
     this.__dbIntr

@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject} from '@angular/core';
+import { Component, OnInit,Inject, ViewChild} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -15,6 +15,7 @@ import { sort } from 'src/app/__Model/sort';
 import { column } from 'src/app/__Model/tblClmns';
 import { docTypeClmns } from 'src/app/__Utility/Master/docTypeClmns';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
+import { Table } from 'primeng/table';
 
 @Component({
 selector: 'docTypeRpt-component',
@@ -24,6 +25,8 @@ styleUrls: ['./docTypeRpt.component.css']
 export class DoctyperptComponent implements OnInit {
   formValue;
   itemsPerPage=ItemsPerPage;
+  @ViewChild('dt') primeTbl :Table;
+
   sort=new sort();
   __catForm = new FormGroup({
     doc_type: new FormControl(''),
@@ -49,6 +52,7 @@ constructor(
 
 ngOnInit(){
   this.formValue = this.__catForm.value;
+  this.getDocumnetTypeMst();
 }
 
  getDocumnetTypeMst(){
@@ -58,8 +62,10 @@ ngOnInit(){
   __docTypeSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
   __docTypeSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : '1'));
    this.__dbIntr.api_call(1,'/documenttypeDetailSearch',__docTypeSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-    this.__paginate =res.links;
-    this.setPaginator(res.data);
+    // this.__paginate =res.links;
+    // this.setPaginator(res.data);
+    this.setPaginator(res);
+
      this.tableExport(__docTypeSearch);
    })
  }
@@ -70,6 +76,14 @@ tableExport(__docTypeExport){
      console.log(res);
     this.__export = new MatTableDataSource(res);
   })
+}
+
+filterGlobal = ($event) => {
+  let value = $event.target.value;
+  this.primeTbl.filterGlobal(value,'contains')
+}
+getColumns = () =>{
+  return this.__utility.getColumns(this.__columns);
 }
 private setPaginator(__res) {
   this.__selectdocType = new MatTableDataSource(__res);

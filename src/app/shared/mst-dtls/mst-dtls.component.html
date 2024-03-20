@@ -39,9 +39,11 @@
 
           </div>
 
-          <button mat-icon-button (click)="populateDT(item)" align="end">
+          <!-- <button mat-icon-button (click)="populateDT(item)" align="end">
             <mat-icon class="edit_icon">edit</mat-icon>
-          </button>
+          </button> -->
+          <button pButton type="button" icon="pi pi-pencil" align="end" (click)="populateDT(item)"
+          class="p-button-text p-button-lg"></button>
           <mat-divider></mat-divider>
         </mat-list-item>
       </mat-list>

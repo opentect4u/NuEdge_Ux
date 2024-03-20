@@ -31,8 +31,7 @@ export class MftraxModificationComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   minimize = () => {
     this.__isVisible = !this.__isVisible;

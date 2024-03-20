@@ -126,9 +126,12 @@
                       <input placeholder="Enter Product Code" type="text" name="product_code_{{i}}" id="product_code_{{i}}" class="form-control" formControlName="product_code">
                     </td>
                     <td class="lastChild" >
-                      <button  (click)="removeAt(i,isin_dtls.controls[i].get('row_id')?.value,isin_dtls.controls[i].get('isin_no')?.value)" color="accent" type="button" mat-icon-button>
+                      <!-- <button  (click)="removeAt(i,isin_dtls.controls[i].get('row_id')?.value,isin_dtls.controls[i].get('isin_no')?.value)" color="accent" type="button" mat-icon-button>
                         <mat-icon>delete</mat-icon>
-                      </button>
+                      </button> -->
+
+                      <button pButton type="button" icon="pi pi-trash"  (click)="removeAt(i,isin_dtls.controls[i].get('row_id')?.value,isin_dtls.controls[i].get('isin_no')?.value)"
+                      class="p-button-text p-button-lg p-button-danger"></button>
                     </td>
                     </ng-container>
                 </tr>

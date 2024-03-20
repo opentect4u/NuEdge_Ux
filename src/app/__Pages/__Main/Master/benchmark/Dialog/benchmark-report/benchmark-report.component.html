@@ -77,7 +77,13 @@
         <mat-card-title>
           Benchmark Report
         </mat-card-title>
-        <div class="btnGrp my-auto">
+        <div class="btnGrp d-flex my-auto">
+          <div class="w-100 my-auto pr-4">
+            <span class="ml-auto">
+              <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+                placeholder="Search" />
+            </span>
+          </div>
           <p-button icon="pi pi-file-export"
           [matMenuTriggerFor]="menu"
           [matTooltipPosition]="'after'"
@@ -96,29 +102,27 @@
           </div>
       </mat-card-header>
       <mat-card-content>
-
+        <!-- (onSort)="customSort($event)"
+        [lazy]="true" -->
       <p-table
       #primeTbl
-      (onSort)="customSort($event)"
-      [lazy]="true"
       id="benchmarkDt"
       [value]="benchmarkMstDt"
       [responsive]="true"
       [rowHover]="true"
       styleClass="p-datatable-striped p-datatable-lg"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       responsiveLayout="scroll"
+
       [scrollable]="true"
-      [customSort]="true"
-        sortMode="single"
       [columns]="column"
-      [paginator]="false"
+      [paginator]="true"
       columnResizeMode="expand"
       [scrollHeight]="benchmarkMstDt.length > 5 ? '300px' : ''"
       [autoLayout]="true"
       [resizableColumns]="true"
       [totalRecords]="benchmarkMstDt.length"
       [pageLinks]="3"
-      [paginatorPosition]="'top'"
       [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       [rows]="10"
@@ -156,11 +160,11 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'edit'">
                   <p-button icon="pi pi-pencil" (click)="populateDT(benchmark)"
-                    styleClass="p-button-rounded p-button-primary"></p-button>
+                    styleClass="p-button-rounded p-button-primary p-button-text"></p-button>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'delete'">
                   <p-button icon="pi pi-trash" (click)="delete(benchmark,i)"
-                    styleClass="p-button-rounded p-button-danger"></p-button>
+                    styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
                 </ng-container>
               </ng-container>
             </td>
@@ -177,13 +181,13 @@
     </p-table>
 
    <!-- Paginator -->
-      <div class="container-fluid p-0">
+      <!-- <div class="container-fluid p-0">
         <shared-paginate
         [__paginate]="pagination"
         (itemPerpageShow)="onSelectItem($event)"
         (PaginateFn)="getPaginate($event)"
         ></shared-paginate>
-      </div>
+      </div> -->
    <!-- End -->
   </mat-card-content>
     </mat-card>

@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   MatDialog,
@@ -20,6 +20,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { planClms } from 'src/app/__Utility/Master/planClms';
 import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
 import { sort } from 'src/app/__Model/sort';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'planRpt-component',
   templateUrl: './planRpt.component.html',
@@ -30,6 +31,7 @@ export class PlanrptComponent implements OnInit {
    * holding Form data after submit
    */
   formValue;
+  @ViewChild('dt') primeTbl :Table;
 
    itemsPerPage=ItemsPerPage;
   __iscatspinner: boolean = false;
@@ -58,6 +60,7 @@ export class PlanrptComponent implements OnInit {
   ngOnInit() {
     this.setColumns();
     this.formValue = this.__catForm.value;
+    this.getPlanMst();
   }
   setColumns(){
    const  clmToRemove:string[] = ['edit','delete'];
@@ -75,12 +78,15 @@ export class PlanrptComponent implements OnInit {
       .api_call(1, '/planDetailSearch', __planExport)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
+        // this.__paginate = res.links;
+        // this.setPaginator(res.data);
+        this.setPaginator(res);
         this.tableExport(__planExport);
       });
   }
-
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
+  }
   tableExport(__planExport) {
     __planExport.delete('paginate');
     this.__dbIntr
@@ -89,6 +95,10 @@ export class PlanrptComponent implements OnInit {
       .subscribe((res: plan[]) => {
         this.__export = new MatTableDataSource(res);
       });
+  }
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
   }
 
   private setPaginator(__res) {

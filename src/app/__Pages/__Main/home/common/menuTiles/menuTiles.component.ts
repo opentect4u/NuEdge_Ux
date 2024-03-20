@@ -43,12 +43,12 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
           let val = 0;
           let dt = {
             categories: res.categories,
-            chart_data:res.chart_data.reverse().map((item:number) =>{
-              console.log(`Before Add : ${item}`)
-               val = val + item
-               console.log(`After Add: ${val}`)
-               return val
-          }).reverse()}
+          //   chart_data:res.chart_data.reverse().map((item:number) =>{
+          //      val = val + item
+          //      return val
+          // }).reverse()
+            chart_data:res.chart_data
+        }
           console.log(dt);
           this.chart_dtls = dt;
       },

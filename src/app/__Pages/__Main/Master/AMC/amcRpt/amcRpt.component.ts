@@ -20,6 +20,7 @@ import { sort } from 'src/app/__Model/sort';
 import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
 import { column } from 'src/app/__Model/tblClmns';
 import { AMCEntryComponent } from 'src/app/shared/amcentry/amcentry.component';
+import { Table } from 'primeng/table';
 
 type selectBtn ={
   label:string,
@@ -41,6 +42,8 @@ export class AmcrptComponent implements OnInit {
   itemsPerPage = ItemsPerPage;
   amcLogoUrl = environment.amc_logo_url;
   sort=new sort();
+
+  @ViewChild('dt') primeTbl :Table;
 
   __sortColumnsAscOrDsc: any= {active: '',direction:'asc'};
   __levels = amcClmns.LEVELS;
@@ -119,14 +122,21 @@ export class AmcrptComponent implements OnInit {
    __amcSearch.append('contact_person',this.formValue?.contact_per ? this.formValue?.contact_per : '');
    __amcSearch.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete'  ? this.sort.field : '') : ''));
    __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete'? this.sort.order : '') : '1'));
-     this.__dbIntr.api_call(1,'/amcDetailSearch',__amcSearch).pipe(map((x: any) => x.data)).subscribe(res => {
-      this.__paginate = res.links;
-      this.setPaginator(res.data);
+     this.__dbIntr.api_call(1,'/amcDetailSearch',__amcSearch)
+     .pipe(map((x: any) => x.data))
+     .subscribe(res => {
+      // this.__paginate = res.links;
+      // this.setPaginator(res.data);
+       this.setPaginator(res);
        this.tableExport(__amcSearch);
      })
 
    }
 
+   filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
 
   private getAMCMasterForDropDown() {
     this.__dbIntr
@@ -401,6 +411,9 @@ export class AmcrptComponent implements OnInit {
     this.sort= new sort();
     this.formValue = this.__detalsSummaryForm.value;
     this.getAmcMst();
+  }
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
   }
 
   delete(__el,index){

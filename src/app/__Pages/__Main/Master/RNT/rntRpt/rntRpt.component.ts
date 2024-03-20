@@ -31,6 +31,7 @@ import { LazyLoadEvent } from 'primeng/api';
 import { environment } from 'src/environments/environment';
 import itemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
 import { column } from 'src/app/__Model/tblClmns';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'Rnt-rntRpt',
@@ -42,6 +43,9 @@ export class RntrptComponent implements OnInit {
    * Holding form value after submit
    */
   formValue;
+
+  @ViewChild('dt') primeTbl :Table;
+
   itemsPerPage=itemsPerPage;
   url = environment.commonURL + 'rnt-logo/';
   sort = new sort();
@@ -77,7 +81,8 @@ export class RntrptComponent implements OnInit {
   ngOnInit() {
     this.formValue = this.__rntSearchForm.value;
     this.getRntMstForDrpDown();
-    this.setColumnsforRNT(this.__rntSearchForm.value.options)
+    this.setColumnsforRNT(this.__rntSearchForm.value.options);
+    this.getRntMst();
   }
 
   setColumnsforRNT(res){
@@ -115,6 +120,14 @@ export class RntrptComponent implements OnInit {
       bottom: '0px',
       right: this.data.right + 'px',
     });
+  }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
   }
   maximize() {
     this.dialogRef.removePanelClass('full_screen');
@@ -263,8 +276,9 @@ export class RntrptComponent implements OnInit {
       .api_call(1, '/rntDetailSearch', __rntSearch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
+        console.log(res);
+        // this.__paginate = res.links;
+        this.setPaginator(res);
         this.tableExport(__rntSearch);
       });
   }

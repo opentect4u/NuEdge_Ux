@@ -28,6 +28,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { categoryClmn} from 'src/app/__Utility/Master/categoryClmns';
 import ItemsPerPage from '../../../../../../assets/json/itemsPerPage.json';
 import { sort } from 'src/app/__Model/sort';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'Category-catRpt',
   templateUrl: './catRpt.component.html',
@@ -37,6 +38,7 @@ export class CatrptComponent implements OnInit {
 
 
   formValue;
+  @ViewChild('dt') primeTbl :Table;
 
   itemsPerPage = ItemsPerPage;
   sort = new sort();
@@ -66,6 +68,7 @@ export class CatrptComponent implements OnInit {
 
   ngOnInit() {
     this.formValue = this.__catForm.value;
+    this.getcatMst();
   }
 
   getcatMst() {
@@ -78,10 +81,16 @@ export class CatrptComponent implements OnInit {
       .api_call(1, '/categoryDetailSearch', __catExport)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
+        // this.__paginate = res.links;
+        // this.setPaginator(res.data);
+        this.setPaginator(res);
         this.tableExport(__catExport);
       });
+  }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
   }
 
   tableExport(__catExport) {
@@ -130,6 +139,9 @@ export class CatrptComponent implements OnInit {
       }
     );
 
+  }
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
   }
   openDialog(__category: category | null = null, __catId: number) {
     const dialogConfig = new MatDialogConfig();

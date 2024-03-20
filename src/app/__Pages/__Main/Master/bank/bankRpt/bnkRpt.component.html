@@ -107,21 +107,28 @@
     </mat-card-header>
 
     <mat-card-content>
+      <!-- [resizableColumns]="true" -->
       <p-table
       (onLazyLoad)="customSort($event)"
         [customSort]="true"
           sortMode="single"
           [lazy]="true"
       [value]="__selectPLN.data"
-      [columns]="__columns" [resizableColumns]="true"
+      [columns]="__columns"
         selectionMode="multiple"
         columnResizeMode="expand" [scrollable]="true"
-        scrollHeight="280px"
+        scrollHeight="300px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '130rem' }">
+        [tableStyle]="{ 'min-width':'130rem' }">
         <ng-template pTemplate="header" let-columns>
+
           <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 10rem">
+            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field"
+
+            [ngStyle]="{
+              'min-width': __catForm.value.options != 2 ? col.width : '',
+            'max-width':  __catForm.value.options != 2 ? col.width : ''}"
+            >
               {{ col.header }}
               <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'delete'" [field]="col.field">
               </p-sortIcon>
@@ -129,16 +136,23 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-bank let-columns="columns" let-i="rowIndex">
-          <tr tabindex="999">
-            <td *ngFor="let col of columns">
+          <tr tabindex="999"
+
+          >
+            <td *ngFor="let col of columns"
+            [ngStyle]="{
+              'min-width': __catForm.value.options != 2 ? col.width : '',
+              'max-width':  __catForm.value.options != 2 ? col.width : ''
+            }"
+            >
               <ng-container [ngSwitch]="true">
                 <ng-container *ngSwitchCase="col.field == 'edit'">
                   <p-button icon="pi pi-pencil" (click)="populateDT(bank)"
-                    styleClass="p-button-rounded p-button-primary"></p-button>
+                    styleClass="p-button-rounded p-button-primary p-button-text"></p-button>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'delete'">
                   <p-button icon="pi pi-trash" (click)="delete(bank,i)"
-                    styleClass="p-button-rounded p-button-danger"></p-button>
+                    styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
                 </ng-container>
 
                 <ng-container *ngSwitchDefault>

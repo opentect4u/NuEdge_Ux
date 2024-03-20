@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit,Inject } from '@angular/core';
+import { Component, OnInit,Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -15,6 +15,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { sort } from 'src/app/__Model/sort';
 import { Ibenchmark, benchmarkClmns } from '../../home/home.component';
 import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-benchmark-report',
@@ -79,6 +80,7 @@ export class BenchmarkReportComponent implements OnInit {
      subcategory_id: new FormControl([],{updateOn:'blur'}),
      benchmark_id:new FormControl([])
    })
+   @ViewChild('primeTbl') primeTbl :Table;
 
    constructor(
     public dialogRef: MatDialogRef<BenchmarkReportComponent>,
@@ -111,12 +113,15 @@ export class BenchmarkReportComponent implements OnInit {
     this.__dbIntr.api_call(1,'/benchmarkDetailSearch',benchmark)
      .pipe(pluck('data'))
      .subscribe((res: any) =>{
-      this.benchmarkMstDt = res.data;
-      this.pagination = res.links;
+      // this.benchmarkMstDt = res.data;
+      this.benchmarkMstDt = res;
+      // this.pagination = res.links;
      })
   }
 
-
+  getColumns = () =>{
+    return this.__utility.getColumns(this.column);
+  }
   getbenchmarkaccordingcat_subcat = (cat:category[],subcat:subcat[]) =>{
 
     if(cat.length > 0 && subcat.length > 0){
@@ -207,9 +212,14 @@ export class BenchmarkReportComponent implements OnInit {
     this.benchmarkfilterForm.get('benchmark_id').setValue(this.benchmarkfilterForm.value.benchmark_id.filter(item => item.id != ev.id));
    }
 
-   getColumns = () =>{
-    return this.__utility.getColumns(this.column);
+  //  getColumns = () =>{
+  //   return this.__utility.getColumns(this.column);
+  // }
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
   }
+
 
   populateDT = (benchmark:Ibenchmark) =>{
     // console.log(benchmark);

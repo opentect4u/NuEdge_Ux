@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   MatDialog,
@@ -20,6 +20,7 @@ import { sort } from 'src/app/__Model/sort';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { column } from 'src/app/__Model/tblClmns';
 import { sipTypeClmns } from 'src/app/__Utility/Master/trans';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'sipTypeRpt-component',
   templateUrl: './sipTypeRpt.component.html',
@@ -40,6 +41,8 @@ export class SiptyperptComponent implements OnInit {
   __paginate: any = [];
   __selecttrnsType = new MatTableDataSource<any>([]);
   __isVisible: boolean = true;
+  @ViewChild('dt') primeTbl :Table;
+
   constructor(
     private __Rpt: RPTService,
     public dialogRef: MatDialogRef<SiptyperptComponent>,
@@ -52,6 +55,7 @@ export class SiptyperptComponent implements OnInit {
 
   ngOnInit() {
     this.formValue = this.__trnsType.value;
+    this.getSIPTypeMst();
   }
 
   getSIPTypeMst() {
@@ -64,10 +68,19 @@ export class SiptyperptComponent implements OnInit {
       .api_call(1, '/sipTypeSearch', __SIPTypeSearch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
+        // this.__paginate = res.links;
+        // this.setPaginator(res.data);
+        this.setPaginator(res);
         this.tableExport(__SIPTypeSearch);
       });
+  }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
   }
 
   tableExport(

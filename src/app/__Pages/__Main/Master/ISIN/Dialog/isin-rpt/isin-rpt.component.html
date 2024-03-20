@@ -164,13 +164,12 @@
           <ng-container [ngSwitch]="true">
 
             <ng-container *ngSwitchCase="col.field == 'edit'">
-              <p-button icon="pi pi-pencil" (click)="populateDT(isin)"
-                styleClass="p-button-rounded p-button-primary"></p-button>
+                <button pButton type="button" icon="pi pi-pencil" (click)="populateDT(isin)"
+                      class="p-button-text p-button-lg"></button>
             </ng-container>
             <ng-container *ngSwitchCase="col.field == 'delete'">
-              <p-button icon="pi pi-trash"
-              (click)="deleteISIN(isin,i)"
-                styleClass="p-button-rounded p-button-danger"></p-button>
+                <button pButton type="button" icon="pi pi-trash"  (click)="deleteISIN(isin,i)"
+                      class="p-button-text p-button-lg p-button-danger"></button>
             </ng-container>
 
 

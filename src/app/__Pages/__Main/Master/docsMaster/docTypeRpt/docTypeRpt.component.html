@@ -52,7 +52,13 @@
       <mat-card-title>
         Document Types Report
       </mat-card-title>
-      <div class="btnGrp my-auto">
+      <div class="btnGrp d-flex my-auto">
+        <div class="w-100 my-auto pr-4">
+          <span class="ml-auto">
+            <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+              placeholder="Search" />
+          </span>
+        </div>
         <p-button icon="pi pi-file-export"
         [matMenuTriggerFor]="menu"
         [matTooltipPosition]="'after'"
@@ -71,16 +77,23 @@
         </div>
     </mat-card-header>
     <mat-card-content>
+      <!-- (onLazyLoad)="customSort($event)"
+      [customSort]="true"
+        sortMode="single"
+        [lazy]="true" -->
       <p-table
-      (onLazyLoad)="customSort($event)"
-        [customSort]="true"
-          sortMode="single"
-          [lazy]="true"
+      #dt
+      [paginator]="true"
+      [totalRecords]="__selectdocType.data.length"
+      [pageLinks]="3"
+      [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+      [showCurrentPageReport]="true"
+      [globalFilterFields]="getColumns()"
       [value]="__selectdocType.data"
       [columns]="__columns" [resizableColumns]="true"
         selectionMode="multiple"
         columnResizeMode="expand" [scrollable]="true"
-        scrollHeight="250px"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
         [tableStyle]="{ 'min-width': '100rem' }">
         <ng-template pTemplate="header" let-columns>
@@ -98,10 +111,10 @@
               <ng-container [ngSwitch]="true">
                 <ng-container *ngSwitchCase="col.field == 'edit'">
                   <p-button icon="pi pi-pencil" (click)="populateDT(docType)"
-                    styleClass="p-button-rounded p-button-primary"></p-button>
+                    styleClass="p-button-rounded p-button-primary p-button-text"></p-button>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'delete'">
-                  <p-button icon="pi pi-trash" (click)="delete(docType,i)" styleClass="p-button-rounded p-button-danger"></p-button>
+                  <p-button icon="pi pi-trash" (click)="delete(docType,i)" styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
                 </ng-container>
 
                 <ng-container *ngSwitchDefault>
@@ -123,7 +136,7 @@
           </tr>
         </ng-template>
       </p-table>
-      <div class="paginator">
+      <!-- <div class="paginator">
         <div class="itemsPerPage d-flex">
           <label class="mr-3">Items per page: </label>
           <p-selectButton
@@ -154,7 +167,7 @@
           </ul>
           </div>
 
-      </div>
+      </div> -->
       <table id="DocumentType"
       hidden mat-table
       [dataSource]="__export"

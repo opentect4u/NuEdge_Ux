@@ -35,6 +35,7 @@ import ItepPerPage from '../../../../../../assets/json/itemsPerPage.json';
 import { sort } from 'src/app/__Model/sort';
 import { column } from 'src/app/__Model/tblClmns';
 import { subcatClmns } from 'src/app/__Utility/Master/subcatClmns';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'subcatRpt-component',
   templateUrl: './subcatRpt.component.html',
@@ -46,6 +47,8 @@ export class SubcatrptComponent implements OnInit {
    * For Holding form data after submit
    */
   formValue;
+
+  @ViewChild('dt') primeTbl :Table;
 
   settings = this.__utility.settingsfroMultiselectDropdown('id','cat_name','Search Category');
   itemsPerPage = ItepPerPage;
@@ -95,6 +98,7 @@ export class SubcatrptComponent implements OnInit {
 
   ngOnInit() {
     this.getCategoryMst();
+    this.getSubcatMst();
   }
 
   getSubcatMst() {
@@ -123,10 +127,19 @@ __amcSearch.append('order', (global.getActualVal(this.sort.order) ? (this.sort.f
       .api_call(1, '/subcategoryDetailSearch', __amcSearch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
+        // this.__paginate = res.links;
+        // this.setPaginator(res.data);
+        this.setPaginator(res);
         this.tableExport(__amcSearch);
       });
+  }
+
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
   }
   getSubCategorymaster(
     params: string | null = null,

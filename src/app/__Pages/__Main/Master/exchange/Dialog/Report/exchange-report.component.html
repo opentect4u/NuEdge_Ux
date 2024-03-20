@@ -77,11 +77,11 @@
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'edit'">
                 <p-button icon="pi pi-pencil" (click)="populateDT(exchange)"
-                  styleClass="p-button-rounded p-button-primary"></p-button>
+                  styleClass="p-button-rounded p-button-primary p-button-text"></p-button>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'delete'">
                 <p-button icon="pi pi-trash" (click)="delete(exchange,i)"
-                  styleClass="p-button-rounded p-button-danger"></p-button>
+                  styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
               </ng-container>
             </ng-container>
           </td>
