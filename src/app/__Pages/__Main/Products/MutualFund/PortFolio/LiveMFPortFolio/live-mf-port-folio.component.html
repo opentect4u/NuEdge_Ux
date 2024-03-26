@@ -1,18 +1,18 @@
 
-<div class="bckContainer"></div>
+<!-- <div class="bckContainer"></div> -->
 
 <div class="row flexSec">
     <div class="col-sm-12">
         <mat-card>
           <mat-card-header class="border-bottom">
             <mat-card-title>
-                 Live MF PortFolio Filter
+                 Live MF PortFolio
             </mat-card-title>
           </mat-card-header>
           <mat-card-content class="p-3">
             <form [formGroup]="filter_criteria" (ngSubmit)="showReport()" autocomplete="off">
               <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                   <div class="form-group row">
                     <label for="valuation_as_on" class="col-sm-3 m-auto text-center">Valuation As On</label>
                     <div class="col-sm-9">
@@ -67,14 +67,14 @@
                       </div>
                     </div>
                   </ng-container>
-                  <div class="form-group row">
+                  <!-- <div class="form-group row">
                       <div class="col-sm-3 m-auto text-center">
                         <mat-checkbox formControlName="is_new_tab" color="primary">New Tab</mat-checkbox>
                       </div>
                       <div class="col-sm-9"></div>
-                  </div>
+                  </div> -->
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                   <div class="form-group row">
                     <label for="trans_type" class="col-sm-3 m-auto text-center">View Transaction </label>
                     <div class="col-sm-9">
@@ -114,6 +114,14 @@
                     </div>
                   </div>
 
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group row">
+                    <label for="valuation_as_on" class="col-sm-3 m-auto text-center">Show Valuation With</label>
+                    <div class="col-sm-9">
+
+                    </div>
+                  </div>
                 </div>
                 <div class="col-sm-12 text-center my-3">
                   <button pButton type="button" (click)="Reset()" class="p-button-lg p-button-danger mx-3" iconPos="left" icon="pi pi-refresh" label="Reset" ></button>
@@ -196,7 +204,45 @@
           </p-card>
 
 
-        <mat-card [ngClass]="{'my-4':!clientDtls}">
+          <!-- CUSTOM Tab -->
+            <div class="container-fluid px-0 mt-4">
+                <ul >
+                    <li *ngFor="let tabs of __portFolioTab" (click)="getTabsDtls(tabs)">
+                      <ng-container *ngIf="tabs.items.length > 0;else noMenu">
+                        <div class="position-relative">
+                          <span class="dot" *ngIf="selected_id > 6"></span>
+                          <a [matMenuTriggerFor]="menu"
+                          icon="{{tabs.icon}}"
+                          pButton class="p-button-lg p-button-text p-button-primary"
+                          ></a>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item
+                            [ngClass]="{'activeMenus': subMenu.id === selected_id}"
+                            *ngFor="let subMenu of tabs.items" (click)="getTabsDtls(subMenu)">
+                              <span>{{subMenu.label}}</span>
+                            </button>
+                          </mat-menu>
+                        </div>
+
+                      </ng-container>
+                      <ng-template #noMenu>
+                        <span
+                        [ngClass]="{'activeSpan': tabs.id == selected_id}">
+                          {{tabs.label}}
+                        </span>
+                        <div
+                        class="underlineBorder"
+                        [ngClass]="{'activeBoder': tabs.id == selected_id}"
+                        ></div>
+                      </ng-template>
+
+                    </li>
+                </ul>
+            </div>
+          <!-- End -->
+
+<!-- [ngClass]="{'my-4':!clientDtls}" -->
+        <mat-card >
           <mat-card-header class="border-bottom">
             <mat-card-title>
                  Live MF PortFolio Report

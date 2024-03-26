@@ -13,6 +13,7 @@ import {
   NavigationError,
   ActivatedRoute
 } from '@angular/router'
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 /**<== End ==> */
 
@@ -36,6 +37,7 @@ export class AppComponent {
     private __title: Title,
     private __utility: UtiliService,
     private meta:Meta,
+    private observer: BreakpointObserver
   ) {
     this.setTitle();
     // this.breadcrumbs = this.buildBreadCrumb(this.__actRoute.root);
@@ -44,7 +46,14 @@ export class AppComponent {
       this.navigationInterceptor(e);
       this.__utility.cancelPendingRequests(); // Cancel all Pending request on route change
     })
+    this.matchBreakpointObserver();
+  }
 
+  matchBreakpointObserver = () =>{
+    this.observer.observe(['(min-width: 1024px)','(max-width: 768px)', '(max-width: 500px)']).subscribe(result => {
+      // console.log(result);
+      this.__utility.getBreakpoinStatus(result);
+  });
   }
 
   ngOnInit() {

@@ -10,7 +10,8 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { Table } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Calendar } from 'primeng/calendar';
-
+import portfolioFilter from '../../../../../../../assets/json/Product/Portfolio/liveMFPortfolioFilter.json';
+import portFolioTab from '../../../../../../../assets/json/Product/Portfolio/liveMfPortfolioTab.json'
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
   tot_amount:number | undefined,
@@ -47,6 +48,13 @@ type TotalparentLiveMfPortFolio = {
 
 export class LiveMfPortFolioComponent implements OnInit {
 
+
+  __portfolioFiter = portfolioFilter;
+
+  /*** Holding Tab details for liveMFPortfolio */
+  __portFolioTab = portFolioTab;
+
+  selected_id:number = 1;
 
   truncated_val : number = 10;
 
@@ -137,9 +145,15 @@ export class LiveMfPortFolioComponent implements OnInit {
     private utility:UtiliService,
     private router:Router,
     private activateRoute:ActivatedRoute
-    ) { }
+    ) {
+
+      utility.__breakPointObserver$.subscribe(res =>{
+        console.log(res);
+      })
+    }
 
   ngOnInit(): void {
+    console.log(this.__portFolioTab);
     if(this.activateRoute.snapshot.queryParams.id){
       let rt_prms = JSON.parse(this.utility.decrypt_dtls(atob(this.activateRoute.snapshot.queryParams.id)));
       try{
@@ -348,7 +362,7 @@ export class LiveMfPortFolioComponent implements OnInit {
       this.__dbIntr.api_call(
         0,
         '/clients/liveMFShowDetails',
-        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}`)
+        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${this.filter_criteria.value.valuation_as_on}`)
       .pipe(
         pluck('data'),
         map((item:ISubDataSource[]) => {
@@ -485,6 +499,7 @@ export class LiveMfPortFolioComponent implements OnInit {
     })
   }
 
+
   show_more = (mode:string,index:number) =>{
               if(mode == 'A'){
                     this.setTrancated_val(this.dataSource[index].data.length)
@@ -503,6 +518,20 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   setTrancated_val = (length_of_actual_array:number) => {
     this.truncated_val = length_of_actual_array
+  }
+
+  getTabsDtls = (tabs) => {
+        if(tabs.items.length == 0){
+          this.seleActivaTab(tabs);
+        }
+  }
+
+  getSubTabDtls = (tabs) =>{
+    this.seleActivaTab(tabs);
+  }
+
+  seleActivaTab = (tabs) =>{
+    this.selected_id = tabs.id
   }
 
 }

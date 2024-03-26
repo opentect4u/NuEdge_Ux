@@ -1,77 +1,97 @@
 [
   {
       "id":1,
-      "name":"Details",
+      "label":"Details",
       "icon":null,
       "img":null,
-      "flag":"D"
+      "flag":"D",
+      "items":[]
   },
   {
     "id":2,
-    "name":"Summary",
+    "label":"Summary",
     "icon":null,
     "img":null,
-    "flag":"S"
+    "flag":"S",
+    "items":[]
   },
   {
     "id":3,
-    "name":"Analysis",
+    "label":"Analysis",
     "icon":null,
     "img":null,
-    "flag":"A"
+    "flag":"A",
+    "items":[]
   },
   {
     "id":4,
-    "name":"SIP",
+    "label":"SIP",
     "icon":null,
-    "img":null
+    "img":null,
+    "items":[]
   },
   {
     "id":5,
-    "name":"STP",
+    "label":"STP",
     "icon":null,
-    "img":null
+    "img":null,
+    "items":[]
   },
   {
     "id":6,
-    "name":"SWP",
+    "label":"SWP",
     "icon":null,
-    "img":null
+    "img":null,
+    "items":[]
   },
   {
     "id":7,
-    "name":"Gold Tracker",
-    "icon":null,
-    "img":null
-  },
-  {
-    "id":8,
-    "name":"Capital Gain/Loss",
-    "icon":null,
-    "img":null
-  },
-  {
-    "id":9,
-    "name":"P&L",
-    "icon":null,
-    "img":null
-  },
-  {
-    "id":10,
-    "name":"Div History",
-    "icon":null,
-    "img":null
-  },
-  {
-    "id":11,
-    "name":"Recent Transaction",
-    "icon":null,
-    "img":null
-  },
-  {
-    "id":12,
-    "name":"Upcomming Transaction",
-    "icon":null,
-    "img":null
+    "label":"items",
+    "icon":"pi pi-ellipsis-h",
+    "img":null,
+    "items":[
+      {
+        "id":8,
+        "label":"Gold Tracker",
+        "icon":null,
+        "img":null,
+        "items":[]
+      },
+      {
+        "id":9,
+        "label":"Capital Gain/Loss",
+        "icon":null,
+        "img":null,
+        "items":[]
+      },
+      {
+        "id":10,
+        "label":"P&L",
+        "icon":null,
+        "img":null,
+        "items":[]
+      },
+      {
+        "id":11,
+        "label":"Div History",
+        "icon":null,
+        "img":null,
+        "items":[]
+      },
+      {
+        "id":12,
+        "label":"Recent Transaction",
+        "icon":null,
+        "img":null,
+        "items":[]
+      },
+      {
+        "id":13,
+        "label":"Upcomming Transaction",
+        "icon":null,
+        "img":null,
+        "items":[]
+      }
+    ]
   }
 ]

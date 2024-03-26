@@ -26,7 +26,6 @@ export class NetworkInterceptor implements HttpInterceptor {
     private __dialog: MatDialog
     ) {}
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-
       const auth =  request.clone({
         headers: new HttpHeaders({
           'Authorization': storage.getItemFromLocalStorage(AU_TK)

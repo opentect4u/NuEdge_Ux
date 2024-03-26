@@ -168,12 +168,12 @@ export class NavFinderComponent implements OnInit, Nav {
               this.maxDt = dates.calculateDates('T');
            }
            else{
-            console.log(this.searchNavForm.value.date_range[0]);
+            // console.log(this.searchNavForm.value.date_range[0]);
             let dt = new Date(this.searchNavForm.value.date_range[0]);
             dt.setFullYear(dt.getFullYear() + 1);
             this.minDt = this.searchNavForm.value.date_range[0];
             this.setMaxDate(this.minDt);
-            console.log(this.searchNavForm.value.date_range[1])
+            // console.log(this.searchNavForm.value.date_range[1])
             if(this.searchNavForm.value.date_range[1] > this.maxDt){
               this.searchNavForm.get('date_range').setValue(
                 this.searchNavForm.value.date_range[0],
@@ -212,7 +212,7 @@ export class NavFinderComponent implements OnInit, Nav {
 
   getPlan = () =>{
     this.dbIntr.api_call(0,'/plan',null).pipe(pluck('data')).subscribe((res:plan[]) =>{
-     this.md_plan = res;
+     this.md_plan = res.filter(p => p.id === 1);
      this.searchNavForm.controls['plan_type'].setValue(res.length > 0 ? res[0]?.id : res.length);
      this.getNav();
     })
@@ -229,6 +229,15 @@ export class NavFinderComponent implements OnInit, Nav {
         .pipe(pluck('data'))
         .subscribe((res: category[]) => {
           this.cat_dtls = res;
+          if(this.searchNavForm.get('cat_id').value.length > 0) {
+              const catDtls =  this.searchNavForm.value.cat_id.filter((item) => {
+                if(res.map(item => item.id).includes(item.id)){
+                      return {id:item.id,category_name:item.category_name}
+                }
+                return false;
+              })
+              this.searchNavForm.get('cat_id').setValue(catDtls,{emitEvent:false});
+          }
         });
     } else {
       this.cat_dtls = [];
@@ -250,6 +259,15 @@ export class NavFinderComponent implements OnInit, Nav {
         .pipe(pluck('data'))
         .subscribe((res: subcat[]) => {
           this.subcat_dtls = res;
+          if(this.searchNavForm.get('subcat_id').value.length > 0) {
+              const sub_cat =  this.searchNavForm.value.subcat_id.filter((item) => {
+                if(res.map(item => item.id).includes(item.id)){
+                      return {id:item.id,subcategory_name:item.subcategory_name}
+                }
+                return false;
+              })
+              this.searchNavForm.get('subcat_id').setValue(sub_cat,{emitEvent:false});
+          }
         });
     } else {
       this.subcat_dtls = [];
@@ -273,6 +291,15 @@ export class NavFinderComponent implements OnInit, Nav {
         .pipe(pluck('data'))
         .subscribe((res: scheme[]) => {
           this.scheme_dtls = res;
+          if(this.searchNavForm.get('scheme_id').value.length > 0) {
+            const schemeDtls =  this.searchNavForm.value.scheme_id.filter((item) => {
+              if(res.map(item => item.id).includes(item.id)){
+                    return {id:item.id,scheme_name:item.scheme_name}
+              }
+              return false;
+            });
+            this.searchNavForm.get('scheme_id').setValue(schemeDtls,{emitEvent:false});
+        }
         });
     } else {
       this.scheme_dtls = [];

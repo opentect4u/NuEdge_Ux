@@ -177,10 +177,10 @@ export class MailbackMismatchComponent implements OnInit {
     switch(flag){
       case 'A': this.TrxnClm = (this.index == 0 || this.index == 4) ? trxnClm.column.filter(item => !clm.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T' ))
         : (this.index == 1
-          ? [...NavFinderColumns.column, ...NavMismatchColumnForAMCLink.column]
+          ? [...NavFinderColumns.column, ...NavMismatchColumnForAMCLink.column.filter(items => items.isVisible.includes(this.index))]
           : (this.index == 3
-            ? [...FolioColumn.column, ...NavMismatchColumnForAMCLink.column]
-            : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...NavMismatchColumnForAMCLink.column]
+            ? [...FolioColumn.column, ...NavMismatchColumnForAMCLink.column.filter(items => items.isVisible.includes(this.index))]
+            : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...NavMismatchColumnForAMCLink.column.filter(items => items.isVisible.includes(this.index))]
           ));
         break;
       case 'B': this.TrxnClm = (this.index == 0 || this.index == 4) ? [...trxnClm.column.filter(item => !bu_clm_toRemove.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T' )), ...MailBackMismatchCommonColumn.column.filter((item: column) => item.isVisible.includes(flag))]
@@ -240,11 +240,42 @@ export class MailbackMismatchComponent implements OnInit {
 }
 
 export class NavMismatchColumnForAMCLink{
- static column:column[] = [{field:'amc_link',header:'AMC Link',width: '20rem'}]
+ static column:column[] = [
+  {
+    field:'amc_link',
+    header:'AMC Link',
+    width: '20rem',
+    isVisible:[1,2,3]
+  },
+  {
+    field:'delete',
+    header:'Delete',
+    width: '7rem',
+    isVisible:[1]
+  }
+]
 }
 
 export class NavMismatchColumnForSchemeLink{
-  static column:column[] = [{field:'scheme_link',header:'Scheme Link',width: '20rem'},{field:'isin_link',header:'ISIN Link',width: '20rem'}]
+  static column:column[] = [{
+    field:'scheme_link',
+    header:'Scheme Link',
+    width: '20rem',
+    isVisible:[1,2,3]
+   },
+   {
+    field:'isin_link',
+    header:'ISIN Link',
+    width: '20rem',
+    isVisible:[1,2,3]
+    },
+    {
+      field:'delete',
+      header:'Delete',
+      width: '7rem',
+      isVisible:[1]
+    }
+  ]
 }
 
 export class MailBackMismatchCommonColumn {

@@ -32,6 +32,9 @@ export class UtiliService {
   private __isvisibleMenuIcon = new BehaviorSubject<any>(null);
   public readonly __isvisibleMenuIcon$ = this.__isvisibleMenuIcon.asObservable().pipe(delay(1));
 
+  private breakPointObserver = new BehaviorSubject<any>(null);
+  public readonly __breakPointObserver$ = this.breakPointObserver.asObservable().pipe(delay(1));
+
   private __route = new BehaviorSubject<Route>(null);
   private __renderer: Renderer2;
   public readonly __route$ = this.__route.asObservable().pipe(delay(1));
@@ -70,8 +73,12 @@ export class UtiliService {
 
   getLatestBrdCrmbs(__brdCrmbs){
     this.__latestBrdCrmbs.next(__brdCrmbs);
-
   }
+
+   getBreakpoinStatus = (breakpoints) =>{
+    this.breakPointObserver.next(breakpoints);
+   }
+
   //Adding Dropdown Script
   addScript() {
     let __script = this.__renderer.createElement('script');

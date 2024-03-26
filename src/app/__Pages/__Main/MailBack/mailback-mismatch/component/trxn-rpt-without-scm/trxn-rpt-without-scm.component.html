@@ -37,7 +37,7 @@
           [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '16rem'">
         {{ col.header }}
         <p-sortIcon [field]="col.field" *ngIf="(col.field != 'isin_link'
-            && col.field != 'scheme_link'
+            && col.field != 'scheme_link' && col.field != 'delete'
             && col.field != 'lock_trxn'
             && col.field != 'amc_link'
             )">
@@ -101,6 +101,12 @@
           </ng-container>
           <ng-container *ngSwitchCase="col.field == 'amount'">
             <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field]) : 0 }}</p>
+          </ng-container>
+          <!-- End -->
+          <!-- Delete -->
+          <ng-container *ngSwitchCase="col.field == 'delete'">
+            <button pButton type="button" icon="pi pi-trash" (click)="deleteNav(trxn)"
+            class="p-button-text p-button-lg"></button>
           </ng-container>
           <!-- End -->
 

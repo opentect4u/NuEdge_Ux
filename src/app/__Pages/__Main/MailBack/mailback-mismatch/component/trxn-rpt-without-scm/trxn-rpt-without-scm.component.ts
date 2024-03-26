@@ -118,6 +118,10 @@ export class TrxnRptWithoutScmComponent implements OnInit {
     )
   }
 
+  deleteNav = (nav) =>{
+        console.log(nav);
+  }
+
   openAMC = (trxn,index:number) =>{
 
     const dialogConfig = new MatDialogConfig();

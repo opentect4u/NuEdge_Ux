@@ -596,7 +596,7 @@ mat-card {
   border: none!important;
   padding: 1rem 1.25rem!important;
   font-size: 2rem!important;
-  border-radius: 3px!important;
+  /* border-radius: 3px!important; */
 
 }
 /* .p-panel .p-panel-header {

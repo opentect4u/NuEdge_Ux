@@ -1,0 +1,113 @@
+{
+  "val_with":[
+    {
+      "id":1,
+      "name":"Fund Details",
+      "flag":"F"
+    },
+    {
+      "id":2,
+      "name":"Summary",
+      "flag":"S"
+    },
+    {
+      "id":3,
+      "name":"Graph",
+      "flag":"G"
+    },
+    {
+      "id":4,
+      "name":"P&L Summary",
+      "flag":"PL"
+    },
+    {
+      "id":5,
+      "name":"SIP",
+      "flag":"SIP"
+    },
+    {
+      "id":6,
+      "name":"Non SIP",
+      "flag":"N"
+    },
+    {
+      "id":7,
+      "name":"ELSS",
+      "flag":"E"
+    },
+    {
+      "id":8,
+      "name":"Recomanded Scheme",
+      "flag":"R"
+    }
+  ],
+  "trans_with":[
+    {
+      "id":1,
+      "name":"NuEdge",
+      "flag":"N"
+    },
+    {
+      "id":2,
+      "name":"Other Code",
+      "flag":"O"
+    },
+    {
+      "id":3,
+      "name":"All",
+      "flag":"O"
+    }
+  ],
+  "clm_chooser":[
+    {
+      "id":1,
+      "name":"Inv. Since",
+      "flag":"inv_sinc"
+    },
+    {
+      "id":2,
+      "name":"SENSEX",
+      "flag":"sensex"
+    },
+    {
+      "id":3,
+      "name":"NIFTY50",
+      "flag":"nifty50"
+    },
+    {
+      "id":4,
+      "name":"TDS",
+      "flag":"tds"
+    },
+    {
+      "id":5,
+      "name":"Stamp Duty",
+      "flag":"stamp_duty"
+    },
+    {
+      "id":6,
+      "name":"Days",
+      "flag":"days"
+    },
+    {
+      "id":7,
+      "name":"31st Jan 2018",
+      "flag":"31st_jan2018"
+    },
+    {
+      "id":8,
+      "name":"Tran. Mode",
+      "flag":"trans_mode"
+    },
+    {
+      "id":9,
+      "name":"Gain/Loss",
+      "flag":"gain_loss"
+    },
+    {
+      "id":10,
+      "name":"Ret.ABS",
+      "flag":"ret_abs"
+    }
+  ]
+}

@@ -20,6 +20,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { registerLocaleData } from '@angular/common';
 
 import localeIn from '@angular/common/locales/en-IN';
+import { LayoutModule } from '@angular/cdk/layout';
 registerLocaleData(localeIn);
 
 @NgModule({
@@ -33,7 +34,8 @@ registerLocaleData(localeIn);
     NgxSpinnerModule,
     SnkbarModule,
     MatProgressBarModule,
-    MatDialogModule
+    MatDialogModule,
+    LayoutModule
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: NetworkInterceptor, multi: true },
