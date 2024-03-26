@@ -81,6 +81,16 @@ export class LiveMfPortFolioComponent implements OnInit {
       3
     );
 
+     /**
+     * Setting of multiselect dropdown of `show_valuaton_with`,`Transaction_with`,`column_chooser`
+     */
+      settings = this.utility.settingsfroMultiselectDropdown(
+        'id',
+        'name',
+        'Search',
+        3
+      );
+
     /**
      * Holding Client Details & display in middle card
      */
@@ -138,7 +148,10 @@ export class LiveMfPortFolioComponent implements OnInit {
         trans_type:new FormControl('L'),
         view_funds_type: new FormControl('A'),
         view_mf_report:new FormControl(''),
-        is_new_tab:new FormControl(false)
+        is_new_tab:new FormControl(false),
+        show_valuation_with:new FormControl(this.__portfolioFiter?.val_with),
+        trans_with:new FormControl(this.__portfolioFiter?.trans_with.filter(item => item.id ==1)),
+        clmn_chooser: new FormControl([])
   })
 
   constructor(private __dbIntr:DbIntrService,
@@ -362,7 +375,7 @@ export class LiveMfPortFolioComponent implements OnInit {
       this.__dbIntr.api_call(
         0,
         '/clients/liveMFShowDetails',
-        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${this.filter_criteria.value.valuation_as_on}`)
+        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${this.filter_criteria.value.valuation_as_on?.toISOString().substring(0,10)}`)
       .pipe(
         pluck('data'),
         map((item:ISubDataSource[]) => {
