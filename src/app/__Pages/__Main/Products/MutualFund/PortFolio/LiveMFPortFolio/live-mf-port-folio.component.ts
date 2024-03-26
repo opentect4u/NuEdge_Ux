@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Calendar } from 'primeng/calendar';
 import portfolioFilter from '../../../../../../../assets/json/Product/Portfolio/liveMFPortfolioFilter.json';
 import portFolioTab from '../../../../../../../assets/json/Product/Portfolio/liveMfPortfolioTab.json'
+import { global } from 'src/app/__Utility/globalFunc';
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
   tot_amount:number | undefined,
@@ -137,7 +138,7 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   detailedColumn:column[] = LiveMFPortFolioColumn.details_column;
 
-  datePipe:DatePipe;
+  // datePipe:DatePipe;
 
   filter_criteria = new FormGroup({
         valuation_as_on: new FormControl((new Date())),
@@ -157,7 +158,8 @@ export class LiveMfPortFolioComponent implements OnInit {
   constructor(private __dbIntr:DbIntrService,
     private utility:UtiliService,
     private router:Router,
-    private activateRoute:ActivatedRoute
+    private activateRoute:ActivatedRoute,
+    private datePipe:DatePipe
     ) {
 
       utility.__breakPointObserver$.subscribe(res =>{
@@ -328,7 +330,7 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     const {family_members,...rest} = Object.assign({},{
       ...this.filter_criteria.value,
-      valuation_as_on:this.filter_criteria.value.valuation_as_on?.toISOString().substring(0,10),
+      valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
       family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
       family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
     })
@@ -375,7 +377,7 @@ export class LiveMfPortFolioComponent implements OnInit {
       this.__dbIntr.api_call(
         0,
         '/clients/liveMFShowDetails',
-        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${this.filter_criteria.value.valuation_as_on?.toISOString().substring(0,10)}`)
+        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd'))}`)
       .pipe(
         pluck('data'),
         map((item:ISubDataSource[]) => {
