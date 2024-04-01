@@ -1,6 +1,9 @@
 <p-table #primeTbl
          id="trxDt"
          [value]="trxnRptWithOutScm"
+         [scrollHeight]="'370px'"
+          [virtualScroll]="true"
+          [virtualRowHeight]="34"
          [responsive]="true"
          [rowHover]="true"
          styleClass="p-datatable-striped p-datatable-lg"
@@ -30,7 +33,7 @@
   </ng-template>
 
   <ng-template pTemplate="header">
-    <tr>
+    <tr >
       <th *ngFor="let col of TrxnClm"
           [pSortableColumn]="col.field"
           [style.max-width]="col.width"
@@ -46,7 +49,9 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-trxn let-i="rowIndex">
-    <tr tabindex="999">
+    <tr tabindex="999"
+    [ngStyle]="{'height':'34px'}"
+    >
       <td *ngFor="let col of TrxnClm"
           [style.max-width]="col.width"
           [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '16rem'">

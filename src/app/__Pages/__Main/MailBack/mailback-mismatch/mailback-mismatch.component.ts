@@ -154,7 +154,7 @@ export class MailbackMismatchComponent implements OnInit {
       default:break;
     }
 
-    this.tblWidth = this.index == 0 ? '350rem' : '150rem';
+    this.tblWidth = this.index == 0 ? '350rem' : (this.index == 1 ? '137rem' : '150rem');
     this.column_manage(__mode);
     if(mode == 'P' && this.sub_index > 0){
       /** condition for checking whether the api is not called twice at same time
@@ -177,7 +177,7 @@ export class MailbackMismatchComponent implements OnInit {
     switch(flag){
       case 'A': this.TrxnClm = (this.index == 0 || this.index == 4) ? trxnClm.column.filter(item => !clm.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T' ))
         : (this.index == 1
-          ? [...NavFinderColumns.column, ...NavMismatchColumnForAMCLink.column.filter(items => items.isVisible.includes(this.index))]
+          ? [...NavFinderColumns.column.filter(el => el.field != 'change_nav' && el.field != 'change_percentage'), ...NavMismatchColumnForAMCLink.column.filter(items => items.isVisible.includes(this.index))]
           : (this.index == 3
             ? [...FolioColumn.column, ...NavMismatchColumnForAMCLink.column.filter(items => items.isVisible.includes(this.index))]
             : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')), ...NavMismatchColumnForAMCLink.column.filter(items => items.isVisible.includes(this.index))]
@@ -191,7 +191,7 @@ export class MailbackMismatchComponent implements OnInit {
       case 'S': this.TrxnClm = (this.index == 0 || this.index == 4) ?
        this.TrxnClm = trxnClm.column.filter(item => !opt_clm.includes(item.field) && item.isVisible.includes(this.index > 0 ? 'B' : 'T' ))
        :  (this.index == 1
-       ? [...NavFinderColumns.column,...NavMismatchColumnForSchemeLink.column]
+       ? [...NavFinderColumns.column.filter(el => el.field != 'change_nav' && el.field != 'change_percentage'),...NavMismatchColumnForSchemeLink.column]
        :  (this.index == 3 ? [...FolioColumn.column,...NavMismatchColumnForSchemeLink.column]
         : [...live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1')),...NavMismatchColumnForSchemeLink.column]
         ));

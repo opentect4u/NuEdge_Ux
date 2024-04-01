@@ -28,6 +28,12 @@ delete(){
       __fb.append('client_id',this.data.id);
       /********** End */
     }
+    else if(this.data.flag === 'N'){
+      __fb.append('id',this.data.id);
+      __fb.append('isin_no',this.data.isin_no);
+      __fb.append('product_code',this.data.product_code);
+      __fb.append('rnt_id',this.data.rnt_id);
+    }
     else{
       __fb.append('id',this.data.id);
 

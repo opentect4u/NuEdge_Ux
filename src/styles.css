@@ -54,9 +54,10 @@ th {
 }
 
 label {
-  color: #3a5076;
+  /* color: #3a5076; */
+  color:#10486b;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 10px;
   margin: 10px 0px;
   font-family: 'Montserrat'!important;
 }
@@ -406,12 +407,10 @@ mat-card {
 
 }
 
-.multiselect-dropdown .dropdown-btn .selected-item-container .selected-item {
-  /* border: 1px solid #3a5076 !important;
-  background: #3a5076 !important; */
+/* .multiselect-dropdown .dropdown-btn .selected-item-container .selected-item {
   border: 1px solid #10486b !important;
     background: #10486b !important;
-}
+} */
 
 .multiselect-dropdown .dropdown-btn .selected-item-container .selected-item > a {
  display:none!important;
@@ -707,7 +706,8 @@ color: #ffffff;
   font-size: 15px;
 }
 .p-datepicker-prev-icon, .p-datepicker-next-icon{
-  font-size: 15px!important;
+  /* font-size: 15px!important; */
+  font-size: 14px !important;
   color: #fff!important;
 }
 .p-datepicker-prev:hover .p-datepicker-prev-icon,
@@ -719,7 +719,10 @@ color: #ffffff;
 .p-datepicker{
   z-index: 1000000!important;
 }
-
+.p-datepicker .p-datepicker-buttonbar {
+  padding: .5rem 0;
+  border-top: 1px solid #f9f9f9;
+}
 
 
 .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
@@ -1007,9 +1010,15 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
 
 
 .multiselect-dropdown .dropdown-btn .selected-item-container .selected-item {
-  border: 1px solid rgb(252 252 252) !important;
+  /* border: 1px solid rgb(252 252 252) !important;
   background: rgb(16 72 107 / 25%) !important;
   color: #14374d !important;
+  font-weight: 500; */
+  border: 1px solid #10486b4f !important;
+  background: #10486b21 !important;
+  /* color: #14374d !important; */
+  color: #186393 !important;
+  border-radius: 18px!important;
   font-weight: 500;
 }
 
@@ -1045,4 +1054,31 @@ span.badge-success {
 span.badge-warning {
   color: #353333 !important;
   background-color: #79797940;
+}
+
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle , .mat-radio-outer-circle {
+  border-color: #10486b !important;
+}
+
+.mat-radio-checked .mat-radio-inner-circle{
+  background-color: #10486b !important;
+}
+.mat-checkbox-indeterminate.mat-primary .mat-checkbox-background, .mat-checkbox-checked.mat-primary .mat-checkbox-background{
+  background-color: #10486b;
+}
+
+.p-datepicker table td.p-datepicker-today > span.p-highlight,
+.p-datepicker table td>span.p-highlight
+{
+  color: #ffffff;
+  background: #10486b;
+}
+
+
+.p-datepicker table td.p-datepicker-today > span{
+  color: #10486b;
+    background: #10486b12;
+}
+.p-datepicker table td>span{
+  border-radius:0px
 }

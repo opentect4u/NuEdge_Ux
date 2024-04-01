@@ -14,6 +14,7 @@ import { BusinessTypeComponent } from '../entry_dialog/business-type/business-ty
 import { FrequencyComponent } from '../entry_dialog/frequency/frequency.component';
 import { pluck } from 'rxjs/operators';
 import { MapPlanOptionComponent } from '../entry_dialog/map-plan-option/map-plan-option.component';
+import { DeletemstComponent } from 'src/app/shared/deleteMst/deleteMst.component';
 @Component({
   selector: 'mailBack-trxn-rpt-without-scm',
   templateUrl: './trxn-rpt-without-scm.component.html',
@@ -119,7 +120,31 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   }
 
   deleteNav = (nav) =>{
-        console.log(nav);
+    console.log(nav);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.role = "alertdialog";
+    dialogConfig.data = {
+      flag: 'N',
+      id: nav.id,
+      title: 'Delete NAV',
+      api_name:'/misMatchNAVDelete',
+      isin_no: nav.isin_no,
+      rnt_id:nav.rnt_id,
+      product_code: nav.product_code
+    };
+    const dialogref = this.__dialog.open(
+      DeletemstComponent,
+      dialogConfig
+    );
+    dialogref.afterClosed().subscribe((dt) => {
+      if(dt){
+        if(dt.suc == 1){
+          this.delete_ISIN_Transaction(nav)
+        }
+      }
+
+    })
   }
 
   openAMC = (trxn,index:number) =>{
@@ -276,7 +301,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code))
     }
     else{ //KFINTECH
-      this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item.isin_no != trxn.isin_no));
+      this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item?.isin_no != trxn?.isin_no));
     }
   }
 

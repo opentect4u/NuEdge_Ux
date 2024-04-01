@@ -77,6 +77,7 @@ list-style: none;
 span.activeSpan {
   font-weight: 600;
   transition: font-weight 250ms;
+  color:#10486b
 }
 .container-fluid>ul>li:hover{
   cursor: pointer;
@@ -86,17 +87,14 @@ span.activeSpan {
 .underlineBorder{
     height: 2px;
     width: 0%;
-    background: #10486b;
+    /* background: #10486b; */
+    background-color: #d25c12;
     border-radius: 20px;
     position: absolute;
     bottom: 0px;
     left: 50%;
     right: 0px;
     transform: translateX(-50%);
-}
-.container-fluid{
-  margin: 8px 0px;
-  border-bottom: 1px solid #d9d9d9;
 }
 .activeBoder{
   width:100%;
@@ -114,15 +112,57 @@ span.activeSpan {
 .activeMenus{
   background: #10486b0a !important;
   color: #10486b !important;
-  border-left: 3px solid #10486b;
+  border-left: 3px solid #d25c12;
   font-weight: 600 !important;
 }
 .dot {
   height: 5px;
   width: 5px;
-  background-color: #10486b;
+  background-color: #d25c12;
   border-radius: 50%;
   display: inline-block;
   position: absolute;
   right: 0;
 }
+
+label{
+  font-size: 10px!important;
+}
+
+.cardTitle{
+  color: #fff;
+  font-size: 20px;
+}
+.cardSubTitle{
+  margin: 11px 0px;
+    color: #fff;
+    font-size: 11px;
+}
+
+
+.line-1{
+  /* position: relative;
+  top: 50%; */
+  margin: 16px auto;
+  /* border-right: 2px solid rgba(255,255,255,.75); */
+  /* font-size: 180%; */
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  /* transform: translateY(-50%); */
+}
+
+/* Animation */
+.anim-typewriter{
+animation: typewriter 4s steps(44) 1ms 1 normal both,
+           blinkTextCursor 500ms steps(44) infinite normal;
+}
+@keyframes typewriter{
+from{width: 0;}
+to{width: 100%;}
+}
+/* @keyframes blinkTextCursor{
+from{border-right-color: rgba(255,255,255,.75);}
+to{border-right-color: transparent;}
+} */
+

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -79,7 +79,7 @@ export class LiveMfPortFolioComponent implements OnInit {
       'pan',
       'client_name',
       'Search Family members',
-      3
+      2
     );
 
      /**
@@ -89,7 +89,7 @@ export class LiveMfPortFolioComponent implements OnInit {
         'id',
         'name',
         'Search',
-        3
+        1
       );
 
     /**
@@ -548,6 +548,31 @@ export class LiveMfPortFolioComponent implements OnInit {
   seleActivaTab = (tabs) =>{
     this.selected_id = tabs.id
   }
+  @HostListener('window:scroll', ['$event']) // for window scroll events
+  onScroll(event) {
+    const element1 = document.getElementById('bck__Container');
+    const element2 = document.getElementById('container_Tab');
+    const rect1 = element1.getBoundingClientRect();
+    const rect2 = element2.getBoundingClientRect();
+    if (
+      rect1.x < rect2.x + rect2.width &&
+      rect1.x + rect1.width > rect2.x &&
+      rect1.y < rect2.y + rect2.height &&
+      rect1.y + rect1.height > rect2.y
+    ) {
+      document.getElementById('container_Tab').style.backgroundColor = 'white';
+      // document.getElementById('container_Tab').style.marginBottom = '0px';
+      document.getElementById('container_Tab').style.borderRadius = '5px 5px 0px 0px';
+      document.getElementById('matCard').style.boxShadow = 'none';
+      document.getElementById('matCard').style.borderRadius = '0px';
+    } else {
+      document.getElementById('container_Tab').style.backgroundColor = 'transparent';
+      // document.getElementById('container_Tab').style.marginBottom = '8px';
+      document.getElementById('matCard').style.boxShadow = '0px 2px 1px -1px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 1px 3px 0px rgba(0, 0, 0, 0.12)';
+      document.getElementById('matCard').style.borderRadius = '4px';
+    }
+  }
+
 
 }
 
