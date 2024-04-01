@@ -69,7 +69,7 @@ export class MailbackMismatchComponent implements OnInit {
 
   parent_mismatch_type:string;
 
-  tblWidth:string | undefined;
+  tblWidth:string | undefined = '394rem';
 
   TrxnClm:column[] = trxnClm.column.filter(item=> !['option_name','plan_name','scheme_link','isin_link','plan_opt','divident_opt','lock_trxn'].includes(item.field)).filter((el) => el.isVisible.includes('T'));
 
@@ -154,7 +154,7 @@ export class MailbackMismatchComponent implements OnInit {
       default:break;
     }
 
-    this.tblWidth = this.index == 0 ? '350rem' : (this.index == 1 ? '137rem' : '150rem');
+    // this.tblWidth = this.index == 0 ? '350rem' : (this.index == 1 ? '137rem' : '150rem');
     this.column_manage(__mode);
     if(mode == 'P' && this.sub_index > 0){
       /** condition for checking whether the api is not called twice at same time
@@ -166,6 +166,29 @@ export class MailbackMismatchComponent implements OnInit {
     else{
       this.getTrxnRpt(flag,file_flag);
     }
+    this.setTableWidth(this.index,this.sub_index)
+  }
+
+  setTableWidth(index:number,sub_index:number) : void{
+
+      if(index == 1){
+          this.tblWidth = (this.sub_index == 0 ? '137rem' : '143rem');
+      }
+      else if(index == 0 || index == 4) {
+          if(sub_index != 2){
+            this.tblWidth = sub_index <= 3 ? '394rem' : '419rem'
+          }
+          else{
+            this.tblWidth = index == 0 ? '394rem' : '409rem'
+          }
+      }
+      else if(index == 2){
+        this.tblWidth = sub_index == 0 ? '426rem' : (sub_index == 1 ? '453rem' : (sub_index == 2 ? '438rem' : '413rem'));
+      }
+      else if(index == 3){
+        this.tblWidth = sub_index == 0 ? '1103rem' : (sub_index == 1 ? '1138rem' : (sub_index == 2 ? '1121rem' : '1102rem'));
+      }
+      console.log(this.tblWidth)
   }
 
   column_manage = (flag:string) =>{

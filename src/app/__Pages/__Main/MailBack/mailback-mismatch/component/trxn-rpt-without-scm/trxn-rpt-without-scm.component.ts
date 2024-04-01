@@ -30,7 +30,8 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   @Input() file_type:string;
 
 
-  @Input() tblminWidth: string | undefined = '350rem';
+  // @Input() tblminWidth: string | undefined = '350rem';
+  @Input() tblminWidth: string | undefined = '394rem';
 
   form_type: string | undefined = '';
   /**
