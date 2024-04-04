@@ -511,8 +511,8 @@ mat-card {
   color: #495057;
   background: #10486b;
   transition: box-shadow 0.2s;
-  font-size: 12px !important;
-  font-weight: 100;
+  font-size: 11px !important;
+  font-weight: 500;
   color: #fff;
   white-space:normal!important
 }
@@ -1082,3 +1082,10 @@ span.badge-warning {
 .p-datepicker table td>span{
   border-radius:0px
 }
+
+/**Responsive*/
+/* @media screen and (max-width: 600px) {
+  .arrow-left{
+    display:block
+  }
+} */

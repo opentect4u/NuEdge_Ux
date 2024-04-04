@@ -911,4 +911,83 @@ textarea:focus {
    border-radius: 7px;
  }
 
+ /* Style the tab content */
+.arrow-left {
+  position: absolute!important;;
+  top: 50%;
+  left:0;
+  transform: translate(0, -50%);
+  display: none!important;
+}
+
+.arrow-right {
+  position: absolute!important;
+  right:0;
+  top: 50%;
+  transform: translate(0, -50%);
+  display: none!important
+}
+
+.cus__tab {
+  overflow-x: hidden;
+  white-space: nowrap;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+/***End**/
+
 /**** END**/
+
+
+@media (min-width: 991.98px) and (max-width: 1024px) {
+  .arrow-left,.arrow-right {
+    display: block!important
+  }
+  .cus__tab {
+    margin-left: 33px;
+    margin-right: 33px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+        .border-right{
+              border-right:0px solid #fff !important;
+        }
+        .arrow-left,.arrow-right {
+          display: block!important
+        }
+        .cus__tab {
+          margin-left: 33px;
+          margin-right: 33px;
+        }
+
+ }
+@media (min-width: 575.98px) and (max-width:768px) {
+  .border-right{
+    border-right:0px solid #fff !important;
+  }
+  .arrow-left,.arrow-right{
+    display:block!important
+  }
+  .cus__tab {
+    margin-left: 33px;
+    margin-right: 33px;
+  }
+
+}
+
+/*** Xs*/
+@media (max-width:575.98px) {
+  .border-right{
+    border-right:0px solid #fff !important;
+  }
+  .arrow-left,
+  .arrow-right{
+    display: block!important;
+  }
+  .cus__tab {
+    margin-left: 33px;
+    margin-right: 33px;
+  }
+}
+

@@ -146,7 +146,7 @@ export class LiveMfPortFolioComponent implements OnInit {
         pan_no: new FormControl(''),
         view_type: new FormControl(''),
         family_members: new FormControl([]),
-        trans_type:new FormControl('L'),
+        trans_type:new FormControl('A'),
         view_funds_type: new FormControl('A'),
         view_mf_report:new FormControl(''),
         is_new_tab:new FormControl(false),
@@ -385,9 +385,11 @@ export class LiveMfPortFolioComponent implements OnInit {
         }),
         )
       .subscribe((res: ISubDataSource[]) =>{
-            let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
-            let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'));
-            this.calculateTransaction(redem_arr,with_out_redem_arr,index);
+            this.dataSource[index].data = res
+            this.show_more('M',index);
+            // let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
+            // let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'));
+            // this.calculateTransaction(redem_arr,with_out_redem_arr,index);
         })
       }
     catch(ex){
@@ -548,31 +550,32 @@ export class LiveMfPortFolioComponent implements OnInit {
   seleActivaTab = (tabs) =>{
     this.selected_id = tabs.id
   }
-  @HostListener('window:scroll', ['$event']) // for window scroll events
-  onScroll(event) {
-    const element1 = document.getElementById('bck__Container');
-    const element2 = document.getElementById('container_Tab');
-    const rect1 = element1.getBoundingClientRect();
-    const rect2 = element2.getBoundingClientRect();
-    if (
-      rect1.x < rect2.x + rect2.width &&
-      rect1.x + rect1.width > rect2.x &&
-      rect1.y < rect2.y + rect2.height &&
-      rect1.y + rect1.height > rect2.y
-    ) {
-      document.getElementById('container_Tab').style.backgroundColor = 'white';
-      // document.getElementById('container_Tab').style.marginBottom = '0px';
-      document.getElementById('container_Tab').style.borderRadius = '5px 5px 0px 0px';
-      document.getElementById('matCard').style.boxShadow = 'none';
-      document.getElementById('matCard').style.borderRadius = '0px';
-    } else {
-      document.getElementById('container_Tab').style.backgroundColor = 'transparent';
-      // document.getElementById('container_Tab').style.marginBottom = '8px';
-      document.getElementById('matCard').style.boxShadow = '0px 2px 1px -1px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 1px 3px 0px rgba(0, 0, 0, 0.12)';
-      document.getElementById('matCard').style.borderRadius = '4px';
-    }
+  // @HostListener('window:scroll', ['$event'])
+  // onScroll(event) {
+  //   const element1 = document.getElementById('bck__Container');
+  //   const element2 = document.getElementById('container_Tab');
+  //   const rect1 = element1.getBoundingClientRect();
+  //   const rect2 = element2.getBoundingClientRect();
+  //   if (
+  //     rect1.x < rect2.x + rect2.width &&
+  //     rect1.x + rect1.width > rect2.x &&
+  //     rect1.y < rect2.y + rect2.height &&
+  //     rect1.y + rect1.height > rect2.y
+  //   ) {
+  //     document.getElementById('container_Tab').style.backgroundColor = 'white';
+  //     document.getElementById('container_Tab').style.borderRadius = '5px 5px 0px 0px';
+  //     document.getElementById('matCard').style.boxShadow = 'none';
+  //     document.getElementById('matCard').style.borderRadius = '0px';
+  //   } else {
+  //     document.getElementById('container_Tab').style.backgroundColor = 'transparent';
+  //     document.getElementById('matCard').style.boxShadow = '0px 2px 1px -1px rgba(0, 0, 0, 0.2),0px 1px 1px 0px rgba(0, 0, 0, 0.14),0px 1px 3px 0px rgba(0, 0, 0, 0.12)';
+  //     document.getElementById('matCard').style.borderRadius = '4px';
+  //   }
+  // }
+  moveNavigation(byX) {
+    var navigation= document.getElementsByClassName("cus__tab")[0];
+    navigation.scrollLeft= navigation.scrollLeft + byX;
   }
-
 
 }
 
@@ -713,7 +716,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'nav_date',
       header:'NAV Date',
-      width:'70px'
+      width:'75px'
     },
     {
       field:'curr_nav',
@@ -782,13 +785,13 @@ export class LiveMFPortFolioColumn{
       field:'tot_tds',header:'TDS',width:"3rem"
     },
     {
-      field:'tot_amount',header:'Net. Amount',width:"5rem"
+      field:'tot_amount',header:'Net Amt',width:"5rem"
     },
     {
       field:'idcwr',header:'IDCWR',width:"3rem"
     },
     {
-      field:'pur_price',header:'Pur. NAV',width:"4rem"
+      field:'pur_price',header:'Pur. NAV',width:"6rem"
     },
     {
       field:'tot_units',header:'Units',width:"3rem"
@@ -827,7 +830,7 @@ export class LiveMFPortFolioColumn{
       field:'ret_xirr',header:'Ret.XIRR',width:"4rem"
     },
     {
-      field:'trans_mode',header:'Tran. Mode',width:"6rem"
+      field:'trans_mode',header:'Trans. Mode',width:"6rem"
     }
   ]
 
@@ -845,7 +848,7 @@ export class LiveMFPortFolioColumn{
     {field:'tot_gross_amount',header:'Gross Amount',width:"12rem"},
     {field:'stamp_duty',header:'Stamp Duty',width:"8rem"},
     {field:'tds',header:'TDS',width:"6rem"},
-    {field:'tot_amount',header:'Net Amount',width:"12rem"},
+    {field:'tot_amount',header:'Net Amt',width:"12rem"},
     {field:'units',header:'Unit',width:"12rem"},
     {field:'nav',header:'NAV',width:"8rem"},
     {field:'idcwr',header:'IDCWR',width:"8rem"},

@@ -248,7 +248,6 @@ export class ScmRptComponent implements OnInit {
           );
     if (option == 2) {
       this.__columns = schemeClmns.Summary;
-      console.log(this.__columns);
     } else {
       this.__columns = this.ClmnList;
     }
@@ -307,7 +306,6 @@ export class ScmRptComponent implements OnInit {
         map((x: any) => x.data)
       )
       .subscribe((res: any) => {
-        console.log(res)
         this.setPaginator(res.data);
         this.__paginate = res.links
         // this.tableExport(__scmExport);
@@ -322,7 +320,6 @@ export class ScmRptComponent implements OnInit {
     __scmId: number,
     __scmType: string
   ) {
-    console.log(__scheme);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -356,7 +353,6 @@ export class ScmRptComponent implements OnInit {
         }
       });
     } catch (ex) {
-      console.log(ex);
       const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
       dialogRef.updateSize('60%');
       this.__utility.getmenuIconVisible({
@@ -370,7 +366,6 @@ export class ScmRptComponent implements OnInit {
     this.__selectScm.data = this.__selectScm.data.filter(
       (value: scheme, key) => {
         if (value.id == row_obj.id) {
-          console.log(row_obj);
           (value.product_id = row_obj.product_id),
             (value.amc_id = row_obj.amc_id),
             (value.category_id = row_obj.category_id),
@@ -627,8 +622,6 @@ export class ScmRptComponent implements OnInit {
       .api_call(0, '/scheme', 'paginate=' + __paginate)
       .pipe(map((x: responseDT) => x.data))
       .subscribe((res: any) => {
-        console.log(res);
-
         this.setPaginator(res.data);
         this.__paginate = res.links;
       });
@@ -867,8 +860,6 @@ export class ScmRptComponent implements OnInit {
     }
   }
   getItems(__items, __type) {
-    console.log(__type);
-
     switch (__type) {
       case 'S':
         this.__scmForm.controls['subcat_id'].setValue(__items.id);
@@ -891,9 +882,6 @@ export class ScmRptComponent implements OnInit {
     }
   }
   searchResultVisibility(display_mode, __type) {
-    console.log(__type);
-    console.log(display_mode);
-
     switch (__type) {
       case 'S':
         this.searchsubcat.nativeElement.style.display = display_mode;
@@ -965,4 +953,51 @@ export class ScmRptComponent implements OnInit {
     });
     this.searchSchemeVisibility('none');
   };
+
+  /*** Addition Later */
+  exportCsv = () =>{
+    const refinedData = []
+    const props =  this.__columns.filter(el => el.field != 'edit' && el.field != 'delete');
+    const dt = this.__selectScm.data.map((value,index) => {
+            let obj = {};
+            props.forEach((el) =>{
+                obj ={...obj,
+                  [el.header]: this.getModifiedValueFromArr(el.field,value[el.field])
+                }
+            })
+            if(index == 0){
+              refinedData.push(Object.keys(obj))
+            }
+            refinedData.push(Object.values(obj))
+            return obj;
+      });
+      this.downloadCsv(refinedData)
+  }
+  /***End */
+
+  getModifiedValueFromArr =  (field,values) =>{
+        switch(field){
+          case 'scheme_type': return values == 'O' ? 'Ongoing' : "NFO"
+          default: return values ? values : 'N/A'
+        }
+  }
+
+  downloadCsv = (data) =>{
+    try{
+      let csvContent = ''
+      data.forEach(row => {
+        csvContent += row.join(',') + '\n'
+      })
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8,' })
+      const objUrl = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = objUrl;
+      link.download = 'scheme.csv';
+      link.click();
+    }
+    catch(err){
+        console.log(err)
+    }
+
+  }
 }

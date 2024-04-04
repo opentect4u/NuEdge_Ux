@@ -249,7 +249,10 @@
           <button mat-menu-item (click)="exportPdf()">
             <mat-icon>download</mat-icon> Export Pdf
           </button>
-          <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SchemeReport'})" >
+          <!-- <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'SchemeReport'})" >
+            <mat-icon>download</mat-icon> Export Excel
+          </button> -->
+          <button mat-menu-item (click)="exportCsv()" >
             <mat-icon>download</mat-icon> Export Excel
           </button>
         </mat-menu>

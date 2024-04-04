@@ -46,52 +46,44 @@
   },
   {
     "id":7,
-    "label":"items",
-    "icon":"pi pi-ellipsis-h",
+    "label":"Gold Tracker",
+    "icon":null,
     "img":null,
-    "items":[
-      {
-        "id":8,
-        "label":"Gold Tracker",
-        "icon":null,
-        "img":null,
-        "items":[]
-      },
-      {
-        "id":9,
-        "label":"Capital Gain/Loss",
-        "icon":null,
-        "img":null,
-        "items":[]
-      },
-      {
-        "id":10,
-        "label":"P&L",
-        "icon":null,
-        "img":null,
-        "items":[]
-      },
-      {
-        "id":11,
-        "label":"Div History",
-        "icon":null,
-        "img":null,
-        "items":[]
-      },
-      {
-        "id":12,
-        "label":"Recent Transaction",
-        "icon":null,
-        "img":null,
-        "items":[]
-      },
-      {
-        "id":13,
-        "label":"Upcomming Transaction",
-        "icon":null,
-        "img":null,
-        "items":[]
-      }
-    ]
+    "items":[]
+  },
+  {
+    "id":8,
+    "label":"Capital Gain/Loss",
+    "icon":null,
+    "img":null,
+    "items":[]
+  },
+  {
+    "id":9,
+    "label":"P&L",
+    "icon":null,
+    "img":null,
+    "items":[]
+  },
+  {
+    "id":10,
+    "label":"Div History",
+    "icon":null,
+    "img":null,
+    "items":[]
+  },
+  {
+    "id":11,
+    "label":"Recent Transaction",
+    "icon":null,
+    "img":null,
+    "items":[]
+  },
+  {
+    "id":12,
+    "label":"Upcomming Transaction",
+    "icon":null,
+    "img":null,
+    "items":[]
   }
 ]

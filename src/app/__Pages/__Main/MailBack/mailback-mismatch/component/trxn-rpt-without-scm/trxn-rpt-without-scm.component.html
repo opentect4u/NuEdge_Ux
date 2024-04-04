@@ -116,7 +116,7 @@
           <!-- End -->
 
 
-          <ng-container *ngSwitchCase="col.field == 'trans_date'">
+          <ng-container *ngSwitchCase="col.field == 'trans_date' || col.field == 'nav_date'">
             <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
           </ng-container>
           <!-- Scheme Logic -->

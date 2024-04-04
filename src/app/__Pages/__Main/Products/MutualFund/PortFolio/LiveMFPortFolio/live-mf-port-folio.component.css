@@ -10,6 +10,9 @@
   color: gray;
 }
 
+tr,td{
+  min-height: 100px !important;
+}
 
 .details__icon{
   border-radius: 27%;
@@ -50,6 +53,7 @@ textarea{
 .container-fluid>ul{
   display: flex;
   align-items: center;
+
 }
 ul > li{
   /* display: inline-block; */
@@ -101,7 +105,16 @@ span.activeSpan {
   transition: width 300ms;
 }
 /****End******/
+.container-fluid{
+  position: relative;
+  background: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+#matCard{
+  border-radius:0px!important;
 
+}
 ::ng-deep .mat-menu-item {
   font-size: 11px !important;
   font-weight: 500 !important;
@@ -159,7 +172,10 @@ animation: typewriter 4s steps(44) 1ms 1 normal both,
 }
 @keyframes typewriter{
 from{width: 0;}
-to{width: 100%;}
+to{
+  width: 100%;
+  white-space:'break-word';
+}
 }
 /* @keyframes blinkTextCursor{
 from{border-right-color: rgba(255,255,255,.75);}
@@ -169,4 +185,43 @@ to{border-right-color: transparent;}
 .Portfolio__flexSec{
   display: flex;
   padding-top: 2px;
+}
+
+
+/* For Displaying responsive tab */
+
+/* Style the tab */
+.tab-navigation {
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+
+
+/* Style the buttons inside the tab */
+.tab button,
+.tab-control {
+  background-color: inherit;
+  display: inline-block;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+
+.subTblLiveMfPortFolio{
+  background-color: #ccc!important;
 }
