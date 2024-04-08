@@ -504,14 +504,16 @@ mat-card {
   font-weight: 400;
   color: #fff; */
   text-align: center !important;
-  padding: 1rem 1rem !important;
+  /* padding: 1rem 1rem; */
+  padding: 6px;
+
   border: 1px solid #6a6a6a;
   border-width: 0px !important;
   font-weight: 600;
   color: #495057;
   background: #10486b;
   transition: box-shadow 0.2s;
-  font-size: 11px !important;
+  font-size: 10px !important;
   font-weight: 500;
   color: #fff;
   white-space:normal!important
@@ -955,7 +957,8 @@ color: #ffffff;
   /* border-radius: 10px; */
   font-family: 'Montserrat';
   cursor: pointer;
-  margin: 2px 1px;
+  /* margin: 2px 1px; */
+  margin:17px 1px 2px 1px;
   border-radius: 4px;
   float: left;
 }
@@ -970,12 +973,12 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
 
 
 .p-datatable .p-datatable-tfoot > tr > td{
-  border: 1px solid #11405eeb!important;
+  border: 1px solid #11405eeb;
   border-width: 1px!important;
   font-weight: 500!important;
   color: #d9d1d1!important;
-  background: #10486b!important;
-  font-size: 11px!important;
+  background: #10486b;
+  font-size: 10px!important;
   text-align: center!important;
 }
 .p-dropdown-panel{
@@ -1089,3 +1092,8 @@ span.badge-warning {
     display:block
   }
 } */
+.subTblLiveMfPortFolio{
+  background-color: #10486bba !important;
+  padding: 5px!important;
+  border:1px solid #919191 !important
+}

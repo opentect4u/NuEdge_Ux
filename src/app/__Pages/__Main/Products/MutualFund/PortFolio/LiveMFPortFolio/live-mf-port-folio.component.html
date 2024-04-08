@@ -311,11 +311,11 @@
 
 <!-- [ngClass]="{'my-4':!clientDtls}" -->
         <mat-card id="matCard" class="mat-elevation-z0">
-          <mat-card-header class="border-bottom">
+          <!-- <mat-card-header class="border-bottom">
             <mat-card-title>
                  Live MF PortFolio Report
             </mat-card-title>
-          </mat-card-header>
+          </mat-card-header> -->
           <mat-card-content class="p-3">
         <p-table
         #primeTble
@@ -418,10 +418,15 @@
                                   </tr>
                               </ng-template>
                               <ng-template pTemplate="body" let-data let-i="rowIndex">
-                                  <tr>
+                                  <tr
+                                  [ngStyle]="{
+                                    'background-color': data.transaction_subtype.includes('Redemption') ?  '#b70a0a30' : ''
+                                  }"
+                                  >
                                       <td *ngFor="let col of child_column"
                                       [style.min-width]="col.width"
                                       [style.max-width]="col.width"
+
                                       >
                                           <ng-container [ngSwitch]="true">
                                             <ng-container *ngSwitchCase="col.field == 'sl_no'">
@@ -439,13 +444,25 @@
                                                 {{data[col.field] ? (data[col.field] | date:'dd-MM-YYYY') : 'N/A'}}
                                               </span>
                                             </ng-container>
-                                            <ng-container *ngSwitchCase="col.field == 'pur_price'|| col.field == 'curr_val' || col.field == 'ret_cagr' || col.field == 'cumml_units'">
+                                            <ng-container *ngSwitchCase="col.field == 'pur_price' || col.field == 'ret_cagr'">
                                               <span class="m-0">
                                                 {{data[col.field] ? (data[col.field] | number:'1.4-4') : '0'}}
                                               </span>
                                             </ng-container>
+                                            <ng-container *ngSwitchCase="col.field == 'cumml_units'">
+                                              <span class="m-0">
+                                                {{data[col.field] ? (data[col.field] | number:'1.4-4') : '0'}}
+                                              </span>
+                                            </ng-container>
+
+                                            <ng-container *ngSwitchCase="col.field == 'gain_loss' || col.field == 'curr_val'">
+                                              <span class="m-0">
+                                                {{data[col.field] ? (data[col.field] | number:'1.2-2') : '0'}}
+                                              </span>
+                                            </ng-container>
+
                                             <ng-container *ngSwitchCase="col.field == 'tot_tds' || col.field == 'tot_units'
-                                              || col.field == 'idcwr'|| col.field == 'idcw_reinv' || col.field == 'gain_loss' || col.field == 'ret_abs' || col.field == 'idcwp'">
+                                              || col.field == 'idcwr'|| col.field == 'idcw_reinv'  || col.field == 'ret_abs' || col.field == 'idcwp'">
                                               <span class="m-0">
                                                 {{data[col.field] ? (data[col.field] | number:'1.4-4')  : '0'}} {{col.field == 'ret_abs' ? '%' : ''}}
                                               </span>
@@ -461,7 +478,7 @@
                               </ng-template>
                               <ng-template pTemplate="footer">
                                 <tr>
-                                  <td *ngFor="let col of child_column"
+                                  <td class="subTblLiveMfPortFolio"  *ngFor="let col of child_column"
                                       [style.min-width]="col.width"
                                       [style.max-width]="col.width"
                                       >

@@ -366,13 +366,10 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
     try{
-      console.log(ev.data);
     this.subLiveMfPortFolio = null;
     this.__selectedRow = ev?.data;
     this.truncated_val = 0;
-    console.log(this.dataSource.map(item => item.id));
     const index = this.dataSource.map(item => item.id).indexOf(ev?.data.id);
-    console.log(this.dataSource[index]);
     this.dataSource[index].data.length = 0;
       this.__dbIntr.api_call(
         0,
@@ -385,11 +382,61 @@ export class LiveMfPortFolioComponent implements OnInit {
         }),
         )
       .subscribe((res: ISubDataSource[]) =>{
-            this.dataSource[index].data = res
-            this.show_more('M',index);
-            // let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
-            // let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'));
-            // this.calculateTransaction(redem_arr,with_out_redem_arr,index);
+            let cummulativeSum = 0;
+            let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
+            let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption')).map(el => {
+                    cummulativeSum = cummulativeSum + Number(el.tot_units)
+                    el.cumml_units = cummulativeSum
+                    return el
+                }
+            );
+            let final_arr = [];
+            /**** For All Transaction */
+            if(this.filter_criteria.value.trans_type === 'A'){
+                let full_dt = res.map(el => { return {...el ,cumml_units:0}});
+
+                let __index = 0;
+                let cumml_units;
+                redem_arr.forEach((el,i) => {
+                    let tot_units = Number(el.tot_units);
+                    with_out_redem_arr = with_out_redem_arr.filter((item,j) =>{
+                      //  if(item.cumml_units > 0){
+                          cumml_units = item.cumml_units - tot_units
+                          if(cumml_units > 0){
+                            item.cumml_units = 0;
+                            final_arr.push(
+                              {
+                                ...item,
+                                cumml_units:cumml_units
+                              },
+                              {
+                                ...item,
+                                transaction_type:'Remaining',
+                                tot_units:cumml_units,
+                                cumml_units:cumml_units
+                              })
+                            }
+                            else{
+                              final_arr.push(
+                                {
+                                  ...item
+                                })
+                            }
+                      return item
+                    })
+                });
+                console.log(final_arr)
+
+              this.dataSource[index].data = this.filterTransactions(full_dt);
+            }
+            else{
+                  /******* For Live Transactions */
+
+                  this.calculateTransaction(redem_arr,with_out_redem_arr,index);
+                  /******** End ******************/
+            }
+              this.show_more('M',index);
+            /**** End */
         })
       }
     catch(ex){
@@ -402,7 +449,6 @@ export class LiveMfPortFolioComponent implements OnInit {
         redem_arr.forEach((el,i) =>{
           let pur_price = el.pur_price;
           with_out_redem_arr = with_out_redem_arr.filter((item,j) => {
-                      /****** CALCULATE PURCHASE NAV */
                       if(item.pur_price > 0){
                         if(pur_price > 0){
                               if(j > 0){
@@ -430,16 +476,21 @@ export class LiveMfPortFolioComponent implements OnInit {
   }
 
   filterTransactions = (liveMFPortFolio:ISubDataSource[]): ISubDataSource[] => {
-      let cummulativeSum= 0;
+      // let getLastpositiveCummlDigitDtlsIndex = liveMFPortFolio.findIndex(el => el.cumml_units >= 0);
       let nper = 0;
-      let FinalTransactions =  liveMFPortFolio.map(((element:ISubDataSource) =>{
-            cummulativeSum = cummulativeSum +  Number(element.tot_units);
-            element.cumml_units = cummulativeSum;
-            element.curr_val = (Number(element.tot_units) * Number(element.curr_nav));
-            element.gain_loss = (element.curr_val - Number(element.tot_amount));
-            element.ret_abs = (element.gain_loss / Number(element.tot_amount)) * 100;
-            nper = element.days / 365;
-            element.ret_cagr = (Math.pow((element.curr_val/Number(element.tot_amount)),(1/nper)) - 1) * 100;
+      let cummulativeSum = liveMFPortFolio.find(el => el.cumml_units >=0)?.cumml_units;
+      let FinalTransactions =  liveMFPortFolio.map(((element:ISubDataSource,i) =>{
+                if(!element.transaction_type.toLowerCase().includes('redemption')){
+                  if(element.cumml_units == 0){
+                    cummulativeSum = cummulativeSum + Number(element.tot_units)
+                    element.cumml_units = cummulativeSum
+                  }
+                  element.curr_val = element.cumml_units >= 0 ?  (Number(element.tot_units) * Number(element.curr_nav)) : 0;
+                  element.gain_loss =element.cumml_units >= 0 ? (element.curr_val - Number(element.tot_amount)) : 0;
+                  element.ret_abs = element.cumml_units >= 0 ? (element.gain_loss / Number(element.tot_amount)) * 100 : 0;
+                  nper = element.cumml_units >= 0 ? (element.days / 365) : 0;
+                  element.ret_cagr = element.cumml_units >= 0 ? ((Math.pow((element.curr_val/Number(element.tot_amount)),(1/nper)) - 1) * 100) : 0;
+                }
             return element;
       }))
       this.calculat_Total_Value_For_Table_Footer(FinalTransactions);
@@ -681,7 +732,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'inv_since',
       header:'Inv. Since',
-      width:'70px'
+      width:'74px'
     },
     {
       field:'sensex',
@@ -751,7 +802,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'ret_abs',
       header:'Ret.ABS',
-      width:'50px'
+      width:'55px'
     },
     {
       field:'xirr',
@@ -827,7 +878,7 @@ export class LiveMFPortFolioColumn{
       field:'ret_abs',header:'Ret.ABS',width:"4rem"
     },
     {
-      field:'ret_xirr',header:'Ret.XIRR',width:"4rem"
+      field:'ret_cagr',header:'Ret.Cagr',width:"4rem"
     },
     {
       field:'trans_mode',header:'Trans. Mode',width:"6rem"

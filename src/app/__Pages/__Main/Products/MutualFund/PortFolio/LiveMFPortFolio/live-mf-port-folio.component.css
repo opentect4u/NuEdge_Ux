@@ -10,9 +10,9 @@
   color: gray;
 }
 
-tr,td{
+/* tr,td{
   min-height: 100px !important;
-}
+} */
 
 .details__icon{
   border-radius: 27%;
@@ -222,6 +222,3 @@ to{border-right-color: transparent;}
 }
 
 
-.subTblLiveMfPortFolio{
-  background-color: #ccc!important;
-}
