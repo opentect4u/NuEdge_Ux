@@ -20,6 +20,8 @@ export class TrendRptComponent implements OnInit {
 
   date_pipe =  new DatePipe('en-Us');
 
+  __view_by:string = 'M'
+
   /**** COLUMN */
   __mis__Trend__Column:column[] =  ColumnTrend.column;
   /*****END */
@@ -34,6 +36,9 @@ export class TrendRptComponent implements OnInit {
   ngOnInit(): void {}
 
   searchFilter = (ev) =>{
+    console.log(ev)
+    this.__view_by = ev.view_by
+    // return ;
     if(ev.view_by == 'M'){
         if(!ev.month_year){
           this.utility.showSnackbar('Month & year can not be empty',2);

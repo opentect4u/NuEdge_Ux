@@ -374,9 +374,13 @@
     </table>
     </ng-container>
     <ng-template #MergeClient>
-        <mat-card>
+        <mat-card class="mb-2">
+          <!-- [scrollable]="true" -->
+          <!-- loadingIcon="pi pi-spinner pi-spin" -->
+          <!-- (onRowSelect)="handleSelect($event)" -->
+
             <mat-card-header class="border-bottom">
-              <mat-card-title>Select client to merge</mat-card-title>
+              <mat-card-title>Select Main Client</mat-card-title>
               <input id="search"
               (input)="filterGlobal_merge($event)"
               class="form-control rounded w-25 mr-2"
@@ -385,9 +389,10 @@
             </mat-card-header>
             <mat-card-content>
               <p-table #mClientTble [value]="mergeClient"
-              (onRowSelect)="handleSelect($event)"
+              [selectionMode]="'single'"
+              [(selection)]="selected_main"
               [autoLayout]="true"
-              [scrollHeight]="'370px'"
+              [scrollHeight]="'250px'"
               [virtualScroll]="true"
               [virtualRowHeight]="40"
               [globalFilterFields]="getcolumns()"
@@ -397,8 +402,7 @@
               [paginator]="true"
               [responsive]="true"
               [scrollable]="true"
-              [selectionMode]="'single'"
-               [(selection)]="selectedMergeClient" [rowHover]="true" dataKey="id"
+              [rowHover]="true" dataKey="id"
                styleClass="p-datatable-lg"
                >
              <ng-template pTemplate="header">
@@ -422,7 +426,10 @@
                      [style]="'max-width:4rem'"
                      [style]="'min-width:2rem'"
                      >
-                         <p-tableCheckbox  [value]="m_client"></p-tableCheckbox>
+                         <!-- <p-tableCheckbox  [value]="m_client"></p-tableCheckbox> -->
+                         <p-tableRadioButton
+                         [value]="m_client"
+                         ></p-tableRadioButton>
                      </td>
 
                      <td *ngFor="let col of merge_client_column"
@@ -453,14 +460,210 @@
                  </td>
                </tr>
              </ng-template>
-         </p-table>
+             </p-table>
             </mat-card-content>
+        </mat-card>
+
+        <p-card *ngIf="selected_main"
+        header="Selected main client"
+        styleClass="p-1">
+          <div class="row">
+              <div class="col-md-6 col-sm-12 col-lg-4 border-right">
+                <div class="d-flex align-items-center">
+                  <mat-icon class="details__icon infoIcon">person</mat-icon>
+                  <span class="heading_title">Client Name:&nbsp; <span class="titles__value">
+                    {{selected_main?.client_name}}
+                  </span></span>
+
+                </div>
+
+                <div class="d-flex align-items-center my-2">
+                  <mat-icon class="details__icon  infoIcon">badge</mat-icon>
+                  <span class="heading_title">PAN:&nbsp;<span class="titles__value">
+                    {{selected_main?.pan ? selected_main?.pan : 'N/A'}}
+                  </span> </span>
+
+                </div>
+
+              </div>
+              <div class="col-md-6 col-sm-12 col-lg-4  border-right ">
+                <div class="d-flex align-items-center">
+                  <mat-icon class="details__icon warningIcon">location_on</mat-icon>
+                  <span class="heading_title">Address:&nbsp;
+                    <span class="titles__value">
+                      {{selected_main?.add_line_1 ? selected_main?.add_line_1 : 'N/A'}}
+                    </span>
+                  </span>
+                </div>
+                <div class="my-2 d-flex align-items-center">
+                  <mat-icon class="details__icon warningIcon">call</mat-icon>
+                  <span class="heading_title">Contact:&nbsp;
+                    <span class="titles__value">
+                      {{selected_main?.mobile ? selected_main?.mobile : 'N/A'}}
+                    </span>
+                  </span>
+                </div>
+
+              </div>
+
+              <div class="col-md-6 col-sm-12 col-lg-4 ">
+                <div class="d-flex align-items-center">
+                  <mat-icon class="details__icon successIcon">calendar_month</mat-icon>
+                  <span class="heading_title">DOB:&nbsp; <span class="titles__value">
+                    {{selected_main.dob ? (selected_main.dob | date:'dd-MM-YYYY') : 'N/A'}}
+                  </span></span>
+
+                </div>
+                <div class="my-2 d-flex align-items-center">
+                  <mat-icon class="details__icon successIcon">mail</mat-icon>
+                  <span class="heading_title">Email:&nbsp;
+                    <span class="titles__value">
+                      {{selected_main.email ? selected_main.email : "N/A"}}
+                    </span>
+                  </span>
+                </div>
+              </div>
+          </div>
+    </p-card>
+
+        <mat-card class="my-2">
+          <mat-card-content class="p-2">
+            <div class="row">
+              <div class="col-sm-12">
+                <form (ngSubmit) = "searchClientToMerge()" autocomplete="off" [formGroup]="mergeClSrch">
+
+                  <div class="row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-6 my-2">
+                      <div class="formGroup row">
+                        <div class="col-sm-3">
+                          <!-- <label for="family_head_name">Search Client</label> -->
+                        </div>
+                        <div class="col-sm-9">
+                          <input type="text"
+                           name="search_client_name"
+                           placeholder="Search By Client Name,Client Code, Email, Mobile, PAN & DOB"
+                           id="search_client_name"
+                           formControlName="search_client_name"
+                           class="form-control">
+                            <!-- <app-core-srch [label]="''"
+                            [isTopDefined]="'32%'"
+                            [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+                            [isPending]="isMergeClientPending" [listItems]="searchedMergeClientMst" [flag]="'C'"
+                            [noDataFoundTitle]="'Sorry!! No Records Found'"
+                            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                            [propertiesToShow]="['client_name','client_code']" formControlName="search_client_name"
+                            [displayMode]="displayMode_formergeClient" (setDisplayMode)="displayMode_formergeClient = $event"
+                            (selectedItems)="getSelectedItemsFromParentForMergeClient($event)"></app-core-srch> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 d-flex align-items-center justify-content-start">
+                           <!-- <p-button type="submit" class="p-button-lg" label="Show"></p-button> -->
+                    </div>
+                    <div class="col-sm-1"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+
+
+        <mat-card >
+          <mat-card-header>
+            <mat-card-title>
+              Select clients to merge with main client
+            </mat-card-title>
+            <input id="search"
+              (input)="filterGlobal_merge($event)"
+              class="form-control rounded w-25 mr-2"
+              type="text"
+              placeholder="Search" />
+          </mat-card-header>
+          <mat-card-content class="p-2 m-0">
+            <p-table #mClientTble [value]="searchedMergeClientMst"
+            [autoLayout]="true"
+            [loading]="isMergeClientPending"
+            [globalFilterFields]="getcolumns()"
+            [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+            [showCurrentPageReport]="true"
+            [paginator]="true"
+            [responsive]="true"
+            [scrollable]="true"
+            [selectionMode]="'single'"
+             [(selection)]="selectedMergeClient" [rowHover]="true" dataKey="id"
+             styleClass="p-datatable-lg"
+             >
+           <ng-template pTemplate="header">
+               <tr >
+                   <th
+                   [style]="'max-width:4rem'"
+                   [style]="'min-width:2rem'"
+                   ></th>
+                   <th *ngFor="let col of merge_client_column"
+                       pSortableColumn="{{col.field}}"
+                       [style.max-width]="col.width"
+                       [style.min-width]="col.width">
+                     {{col.header}}
+                     <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                   </th>
+               </tr>
+           </ng-template>
+           <ng-template pTemplate="body" let-m_client let-i="rowIndex">
+               <tr [ngStyle]="{'height':'40px'}">
+                   <td
+                   [style]="'max-width:4rem'"
+                   [style]="'min-width:2rem'"
+                   >
+                       <p-tableCheckbox  [value]="m_client"></p-tableCheckbox>
+                   </td>
+
+                   <td *ngFor="let col of merge_client_column"
+                   [style.max-width]="col.width"
+                   [style.min-width]="col.width"
+                   >
+                   <ng-container [ngSwitch]="true">
+
+                    <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                      {{i+1}}
+                    </ng-container>
+                     <ng-container *ngSwitchDefault>
+                             <p class="m-0">
+                               {{ m_client[col.field] ? m_client[col.field] : 'N/A' }}
+                             </p>
+                     </ng-container>
+                     </ng-container>
+                    </td>
+
+               </tr>
+           </ng-template>
+           <ng-template pTemplate="emptymessage" let-m_client>
+             <tr
+             [ngStyle]="{'height':'40px'}"
+             >
+               <td [attr.colspan]="(merge_client_column.length + 1)">
+                 <p class="m-0">No Records Found</p>
+               </td>
+             </tr>
+           </ng-template>
+       </p-table>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <div class="mx-5 my-3">
+              <p-button type="button" (click)="mergeClientWithMain()" class="p-button-lg" label="Merge Client"></p-button>
+            </div>
+          </mat-card-actions>
+
         </mat-card>
 
     </ng-template>
   </div>
 </div>
-<p-sidebar
+
+<!-- <p-sidebar
 [(visible)]="display_merge_client"
 [style]="{width:'30em'}"
 appendTo="body"
@@ -470,7 +673,6 @@ appendTo="body"
 [closeOnEscape]="true"
 [showCloseIcon]="false"
 position="right">
-<!-- <h5>Merge Client</h5> -->
 <ng-template pTemplate="headless">
 
   <div class="d-flex justify-content-between align-items-center">
@@ -518,4 +720,4 @@ position="right">
 
  </div>
 </ng-template>
-</p-sidebar>
+</p-sidebar> -->

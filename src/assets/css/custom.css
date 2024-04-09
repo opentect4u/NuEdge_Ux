@@ -516,6 +516,7 @@ table {
   font-weight: 500;
   font-size: 11px;
   list-style-type: none;
+  text-align: left;
 }
 
 .serachresult_client ul li {

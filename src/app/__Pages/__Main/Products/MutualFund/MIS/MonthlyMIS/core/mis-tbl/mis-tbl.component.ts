@@ -15,6 +15,8 @@ export class MisTblComponent implements OnInit {
   @Input() column:column[];
   /***End */
 
+  @Input() view_by:string;
+
   /** Holding Report Data */
   @Input() dataSource = [];
   /***End */
@@ -35,9 +37,14 @@ export class MisTblComponent implements OnInit {
    @Input() flag: string
    /****End */
 
-  constructor(private utility:UtiliService) { }
+  constructor(private utility:UtiliService) {
 
-  ngOnInit(): void {}
+
+  }
+
+  ngOnInit(): void {
+
+  }
 
   getColumns = () => {
     return this.utility.getColumns(this.column);
@@ -79,6 +86,7 @@ export class MisTblComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    console.log(this.flag)
     // const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
     // this.changeWheelSpeed(el, 0.99);
   }

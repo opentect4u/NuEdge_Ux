@@ -13,6 +13,7 @@ import { Calendar } from 'primeng/calendar';
 import portfolioFilter from '../../../../../../../assets/json/Product/Portfolio/liveMFPortfolioFilter.json';
 import portFolioTab from '../../../../../../../assets/json/Product/Portfolio/liveMfPortfolioTab.json'
 import { global } from 'src/app/__Utility/globalFunc';
+import { IPLTrxn } from './pl-trxn-dtls/pl-trxn-dtls.component';
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
   tot_amount:number | undefined,
@@ -96,6 +97,10 @@ export class LiveMfPortFolioComponent implements OnInit {
      * Holding Client Details & display in middle card
      */
     clientDtls:Partial<client>;
+
+    /*** Holding P&L transaction details */
+    plTrxnDtls:Partial<IPLTrxn[]> = [];
+    /*** End */
 
   /**
    * Holding family members details in array format after select a family head
@@ -377,61 +382,55 @@ export class LiveMfPortFolioComponent implements OnInit {
         `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd'))}`)
       .pipe(
         pluck('data'),
-        map((item:ISubDataSource[]) => {
-          return item.filter(el => !el.transaction_type.toLowerCase().includes('rejection'))
-        }),
+        // map((item:ISubDataSource[]) => {
+        //   return item.filter(el => !el.transaction_type.toLowerCase().includes('rejection'))
+        // }),
         )
       .subscribe((res: ISubDataSource[]) =>{
             let cummulativeSum = 0;
             let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
-            let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption')).map(el => {
-                    cummulativeSum = cummulativeSum + Number(el.tot_units)
-                    el.cumml_units = cummulativeSum
-                    return el
-                }
-            );
+            let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'))
             let final_arr = [];
             /**** For All Transaction */
             if(this.filter_criteria.value.trans_type === 'A'){
-                let full_dt = res.map(el => { return {...el ,cumml_units:0}});
+                // let full_dt = res.map(el => { return {...el ,cumml_units:0}});
 
-                let __index = 0;
-                let cumml_units;
-                redem_arr.forEach((el,i) => {
-                    let tot_units = Number(el.tot_units);
-                    with_out_redem_arr = with_out_redem_arr.filter((item,j) =>{
-                      //  if(item.cumml_units > 0){
-                          cumml_units = item.cumml_units - tot_units
-                          if(cumml_units > 0){
-                            item.cumml_units = 0;
-                            final_arr.push(
-                              {
-                                ...item,
-                                cumml_units:cumml_units
-                              },
-                              {
-                                ...item,
-                                transaction_type:'Remaining',
-                                tot_units:cumml_units,
-                                cumml_units:cumml_units
-                              })
-                            }
-                            else{
-                              final_arr.push(
-                                {
-                                  ...item
-                                })
-                            }
-                      return item
-                    })
-                });
-                console.log(final_arr)
+                // let __index = 0;
+                // let cumml_units;
+                // redem_arr.forEach((el,i) => {
+                //     let tot_units = Number(el.tot_units);
+                //     with_out_redem_arr = with_out_redem_arr.filter((item,j) =>{
+                //           cumml_units = item.cumml_units - tot_units
+                //           if(cumml_units > 0){
+                //             item.cumml_units = 0;
+                //             final_arr.push(
+                //               {
+                //                 ...item,
+                //                 cumml_units:cumml_units
+                //               },
+                //               {
+                //                 ...item,
+                //                 transaction_type:'Remaining',
+                //                 tot_units:cumml_units,
+                //                 cumml_units:cumml_units
+                //               })
+                //             }
+                //             else{
+                //               final_arr.push(
+                //                 {
+                //                   ...item
+                //                 })
+                //             }
+                //       return item
+                //     })
+                // });
+                // console.log(final_arr)
 
-              this.dataSource[index].data = this.filterTransactions(full_dt);
+              // this.dataSource[index].data = this.filterTransactions(full_dt);
+              this.dataSource[index].data = res
             }
             else{
                   /******* For Live Transactions */
-
                   this.calculateTransaction(redem_arr,with_out_redem_arr,index);
                   /******** End ******************/
             }
@@ -592,6 +591,12 @@ export class LiveMfPortFolioComponent implements OnInit {
         if(tabs.items.length == 0){
           this.seleActivaTab(tabs);
         }
+  }
+
+  getPLTransactions = () =>{
+    this.__dbIntr.api_call(0,'/plTrxn',null).subscribe(res =>{
+
+    })
   }
 
   getSubTabDtls = (tabs) =>{
@@ -914,3 +919,5 @@ export class LiveMFPortFolioColumn{
   ]
 
 }
+
+

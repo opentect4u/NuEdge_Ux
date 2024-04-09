@@ -89,7 +89,11 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   clientTypeMst: clType[] = clientType;
   filterType: filterType[] = filterDT;
   isClientPending: boolean = false;
+  isMergeClientPending: boolean = false;
+
   displayMode_forClient: string;
+  displayMode_formergeClient: string;
+
   dob_doa_month: month[] = MonthDT;
   __exportClient = new MatTableDataSource<client>([]);
   clientFrm = new FormGroup({
@@ -107,16 +111,25 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     city_type_id: new FormControl([]),
   });
 
+  mergeClSrch = new FormGroup(
+    {
+      search_client_name: new FormControl(''),
+      search_client_id:new FormControl('')
+    }
+  )
+
   /*** Holding Column for Merge Client */
   merge_client_column:column[] = mergeClientClmn.column;
   /*** End */
   /** Holding Merge CLient Details */
   mergeClient:client[] = [];
   selectedMergeClient:client[] = [];
-  mergeClientForm = this.fb.group({
-    m_client:this.fb.array([])
-  })
+  // mergeClientForm = this.fb.group({
+  //   m_client:this.fb.array([])
+  // })
+  selected_main:client
   display_merge_client:boolean = false;
+  searchedMergeClientMst:client[] = []
   /***End */
 
 
@@ -199,6 +212,37 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
         },
       });
 
+
+      /*** Search Merge Client */
+      this.mergeClSrch
+      .get('search_client_name')
+      .valueChanges.pipe(
+        tap(() => {
+          this.isMergeClientPending =this.mergeClSrch.get('search_client_name').value ?  true : false;
+          this.mergeClSrch.get('search_client_id').setValue('');
+          this.searchedMergeClientMst = [...this.selectedMergeClient]
+        }),
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap((dt) =>
+          dt?.length > 1 ? this.dbIntr.searchItems('/client', dt + '&client_type='+this.clientFrm.value.client_type) : []
+        ),
+        map((x: any) => x.data)
+      )
+      .subscribe({
+        next: (value) => {
+          this.searchedMergeClientMst = [...this.selectedMergeClient,...value.data];
+          this.searchResultVisibilityForMergeClient('block');
+          this.isMergeClientPending = false;
+          this.mergeClSrch.get('search_client_id').setValue('');
+        },
+        complete: () => console.log(''),
+        error: (err) => {
+          this.isMergeClientPending = false;
+        },
+      });
+      /**** End */
+
     this.clientFrm.controls['options'].valueChanges.subscribe((res) => {
      this.setColumns(res);
     });
@@ -212,6 +256,9 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   }
   searchResultVisibilityForClient = (display_mode: string) => {
     this.displayMode_forClient = display_mode;
+  };
+  searchResultVisibilityForMergeClient = (display_mode: string) => {
+    this.displayMode_formergeClient = display_mode;
   };
   searchClient = () =>{
     this.formvalue = this.clientFrm.value;
@@ -304,13 +351,13 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     })
   }
 
-  getDetails = (index:number,clientDtls) =>{
-      console.log(index);
-      console.log(clientDtls);
-      this.m_client.controls.forEach((el,i) =>{
-        el.get('is_checked').setValue(index == i);
-      })
-  }
+  // getDetails = (index:number,clientDtls) =>{
+  //     console.log(index);
+  //     console.log(clientDtls);
+  //     this.m_client.controls.forEach((el,i) =>{
+  //       el.get('is_checked').setValue(index == i);
+  //     })
+  // }
 
   onItemClick = (ev) => {
     console.log(ev);
@@ -344,6 +391,15 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
   getSelectedItemsFromParent = (items) => {
     this.getItems(items.item, items.flag);
   };
+
+  getSelectedItemsFromParentForMergeClient = (items) =>{
+      console.log(items)
+      this.mergeClSrch
+      .get('search_client_name')
+      .reset(items.item.client_name, { emitEvent: false });
+    this.mergeClSrch.patchValue({ search_client_id: items.item.id });
+      this.searchResultVisibilityForMergeClient('none');
+  }
 
   getItems = (items: client, flag: string) => {
     this.clientFrm
@@ -744,35 +800,13 @@ export class ClientCmnRptComponent implements OnInit, ICmnRptDef {
     return this.__utility.getColumns(this.merge_client_column);
   }
 
-  handleSelect = (ev) =>{
+  searchClientToMerge = () =>{
 
-      if(this.selectedMergeClient.length == 2){
-        try{
-          this.m_client.clear();
-
-          this.selectedMergeClient.forEach((el:client,index:number) =>{
-                    this.m_client.push(
-                        this.fb.group({
-                        ...el,
-                         is_checked:[index == 0],
-                       }
-                     )
-                    )
-          })
-          this.display_merge_client = this.selectedMergeClient.length == 2;
-        }
-        catch(ex){
-          this.display_merge_client = this.selectedMergeClient.length == 2;
-        }
-
-
-      }
   }
-  makeMainClient = () =>{
-    console.log(this.m_client)
-  }
-  get m_client() {
-    return this.mergeClientForm.get('m_client') as FormArray;
+
+  mergeClientWithMain = () =>{
+      console.log(this.selected_main)
+      console.log(this.selectedMergeClient)
   }
 
 
@@ -783,7 +817,7 @@ export class mergeClientClmn{
     {
       field:'sl_no',
       header:'Sl No.',
-      width:'5rem'
+      width:'7rem'
     },
     {
       field:'client_name',
@@ -798,7 +832,7 @@ export class mergeClientClmn{
     {
       field:'pan',
       header:'PAN',
-      width:'7rem'
+      width:'10rem'
     },
     {
       field:'email',

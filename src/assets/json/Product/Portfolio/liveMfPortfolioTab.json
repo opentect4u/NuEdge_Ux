@@ -85,5 +85,12 @@
     "icon":null,
     "img":null,
     "items":[]
+  },
+  {
+    "id":13,
+    "label":"Reject Transaction",
+    "icon":null,
+    "img":null,
+    "items":[]
   }
 ]

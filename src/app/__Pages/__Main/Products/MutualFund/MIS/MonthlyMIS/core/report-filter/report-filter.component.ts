@@ -257,7 +257,12 @@ export class ReportFilterComponent implements OnInit {
   getAllFinancialYears(){
     try{
       const thisYear = (new Date()).getFullYear();
-      this.financial_year = [0, 1, 2, 3, 4,5,6,7,8,9,10,11].map((count) => `${(thisYear - count - 1).toString()}-${thisYear - count}`);
+      let fiscal_year = (new Date().getMonth() + 1 >= 4) ? (thisYear + 1) : thisYear
+      console.log(fiscal_year)
+      this.financial_year = [0, 1, 2, 3, 4,5,6,7,8,9,10,11].map((count) =>{
+        return `${(fiscal_year - count - 1).toString()}-${fiscal_year - count}`
+      }
+    );
       this.monthly_mis_filter_form.get('fin_year').setValue(this.financial_year[0])
     }
     catch(err){

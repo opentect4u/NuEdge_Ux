@@ -309,13 +309,8 @@
             </div>
           <!-- End -->
 
-<!-- [ngClass]="{'my-4':!clientDtls}" -->
+        <ng-container *ngIf="selected_id == 1">
         <mat-card id="matCard" class="mat-elevation-z0">
-          <!-- <mat-card-header class="border-bottom">
-            <mat-card-title>
-                 Live MF PortFolio Report
-            </mat-card-title>
-          </mat-card-header> -->
           <mat-card-content class="p-3">
         <p-table
         #primeTble
@@ -420,7 +415,7 @@
                               <ng-template pTemplate="body" let-data let-i="rowIndex">
                                   <tr
                                   [ngStyle]="{
-                                    'background-color': data.transaction_subtype.includes('Redemption') ?  '#b70a0a30' : ''
+                                    'background-color': (data.transaction_subtype.includes('Redemption') ?  '#b70a0a30' : data.transaction_subtype.includes('Remaining') ? '#FFA500' : '')
                                   }"
                                   >
                                       <td *ngFor="let col of child_column"
@@ -515,6 +510,10 @@
       </p-table>
     </mat-card-content>
          </mat-card>
+        </ng-container>
+        <ng-container *ngIf="selected_id == 9">
+              <pl-trxn-dtls [pl_trxn]="plTrxnDtls"></pl-trxn-dtls>
+        </ng-container>
   </div>
 </div>
 

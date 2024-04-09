@@ -86,7 +86,14 @@
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'monthly'">
-                    <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
+
+                    <ng-container *ngIf="view_by == 'M' || view_by == 'D';else others_trends">
+                      <p class="m-0">{{trxn[col.field] ? (trxn[col.field] | date:'MMM-YYYY') : 'N/A'}}</p>
+                    </ng-container>
+                    <ng-template #others_trends>
+                      <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
+                    </ng-template>
+
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'trend'">
