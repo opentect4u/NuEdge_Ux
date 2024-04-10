@@ -49,7 +49,21 @@ type TotalparentLiveMfPortFolio = {
 @Component({
   selector: 'app-live-mf-port-folio',
   templateUrl: './live-mf-port-folio.component.html',
-  styleUrls: ['./live-mf-port-folio.component.css']
+  styleUrls: ['./live-mf-port-folio.component.css'],
+  styles: [`
+        :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0px;
+            z-index:999999
+        }
+
+        @media screen and (max-width: 64em) {
+            :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+                top: 0px;
+            }
+        }
+  `]
 })
 
 export class LiveMfPortFolioComponent implements OnInit {
