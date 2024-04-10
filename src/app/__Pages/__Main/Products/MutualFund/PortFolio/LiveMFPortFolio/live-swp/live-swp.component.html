@@ -1,0 +1,53 @@
+
+<div class="row form-group my-2">
+  <div class="col-sm-12 d-flex justify-content-end ">
+    <input id="search" class="form-control rounded w-25 pr-4" type="text" (input)="filterGlobal_secondary($event)"
+    placeholder="Search" />
+  </div>
+</div>
+
+<p-table #dt [value]="liveSWP"
+[rows]="10" [paginator]="true"
+[scrollable]="true"
+[rowHover]="true"
+[columns]="column"
+currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+styleClass="p-datatable-lg"
+[pageLinks]="3"
+[globalFilterFields]="getColumns()"
+  [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+[showCurrentPageReport]="true"
+>
+<ng-template pTemplate="header">
+  <tr>
+      <th *ngFor="let col of column"
+          pSortableColumn="{{col.field}}"
+          [style]="'min-width : '+col.width"
+         >
+        {{col.header}}
+        <p-sortIcon field="{{col.field}}"></p-sortIcon>
+      </th>
+  </tr>
+</ng-template>
+<ng-template pTemplate="body" let-live_swp>
+  <tr>
+      <td *ngFor="let col of column"
+      [style]="'min-width : '+col.width"
+     >
+      <p class="m-0">
+        {{ live_swp[col.field] ? live_swp[col.field] : 'N/A' }}</p>
+       </td>
+
+  </tr>
+</ng-template>
+<ng-template pTemplate="emptymessage" let-live_swp>
+<tr>
+  <td [attr.colspan]="column.length">
+    <p class="m-0">No Records Found</p>
+  </td>
+</tr>
+</ng-template>
+</p-table>
+
+

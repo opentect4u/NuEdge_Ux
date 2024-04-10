@@ -41,7 +41,7 @@ export class HeaderComponent implements OnInit {
   //   }
   // }
   openSidePannel(items){
-    console.log(items);
+    // console.log(items);
      if(items.id == 3){
       this.sidebarVisible = true;
      }

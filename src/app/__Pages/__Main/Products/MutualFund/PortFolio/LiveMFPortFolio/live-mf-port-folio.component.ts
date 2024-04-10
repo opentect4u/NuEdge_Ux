@@ -14,6 +14,10 @@ import portfolioFilter from '../../../../../../../assets/json/Product/Portfolio/
 import portFolioTab from '../../../../../../../assets/json/Product/Portfolio/liveMfPortfolioTab.json'
 import { global } from 'src/app/__Utility/globalFunc';
 import { IPLTrxn } from './pl-trxn-dtls/pl-trxn-dtls.component';
+import { IRecentTrxn } from './recent-trxn/recent-trxn.component';
+import { ILiveSIP } from './live-sip/live-sip.component';
+import { ILiveSTP } from './live-stp/live-stp.component';
+import { ILiveSWP } from './live-swp/live-swp.component';
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
   tot_amount:number | undefined,
@@ -52,6 +56,12 @@ export class LiveMfPortFolioComponent implements OnInit {
 
 
   __portfolioFiter = portfolioFilter;
+
+  __live_sip_stp_swp_form = new FormGroup({
+      live_sip:new FormControl(''),
+      live_stp:new FormControl(''),
+      live_swp:new FormControl('')
+  })
 
   /*** Holding Tab details for liveMFPortfolio */
   __portFolioTab = portFolioTab;
@@ -99,8 +109,26 @@ export class LiveMfPortFolioComponent implements OnInit {
     clientDtls:Partial<client>;
 
     /*** Holding P&L transaction details */
-    plTrxnDtls:Partial<IPLTrxn[]> = [];
+
+    plTrxnDtls:Partial<IPLTrxn>[] = [];
+
     /*** End */
+
+    /** Holding Recent transaction details */
+    recent_trxn:Partial<IRecentTrxn>[] = []
+    /*** End */
+
+     /** Holding Recent transaction details */
+     liveSipPortFolio:Partial<ILiveSIP>[] = []
+     /*** End */
+
+     /** Holding Live SWP Transaction details */
+     liveStpPortFolio:Partial<ILiveSTP>[] = []
+     /*** End */
+
+     /** Holding Live SWP Transaction details */
+     liveSwpPortFolio:Partial<ILiveSWP>[] = []
+     /***End */
 
   /**
    * Holding family members details in array format after select a family head
@@ -167,13 +195,11 @@ export class LiveMfPortFolioComponent implements OnInit {
     private datePipe:DatePipe
     ) {
 
-      utility.__breakPointObserver$.subscribe(res =>{
-        console.log(res);
-      })
+
     }
 
   ngOnInit(): void {
-    console.log(this.__portFolioTab);
+    // console.log(this.__portFolioTab);
     if(this.activateRoute.snapshot.queryParams.id){
       let rt_prms = JSON.parse(this.utility.decrypt_dtls(atob(this.activateRoute.snapshot.queryParams.id)));
       try{
@@ -191,7 +217,7 @@ export class LiveMfPortFolioComponent implements OnInit {
       }
       catch(ex){
         // console.log(ex);
-        console.log(`ERROR`)
+        // console.log(`ERROR`)
       }
     }
     else{
@@ -200,8 +226,8 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   }
 
-  ngAfterViewInit(){
 
+  ngAfterViewInit(){
     this.date__rng.maxDate = new Date();
 
       /**view_type Change*/
@@ -279,7 +305,7 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.__isClientPending = false;
     this.searchResultVisibilityForClient('none');
     if(this.filter_criteria.value.view_type == 'F'){
-            this.getFamilyMembers(searchRlt.item.id)
+            this.getFamilyMembers(searchRlt.item.client_id)
     }
   };
 
@@ -331,7 +357,11 @@ export class LiveMfPortFolioComponent implements OnInit {
     }
     else{
     this.clientDtls = null;
-    this.dataSource = [];
+    this.plTrxnDtls=[];
+    this.liveSipPortFolio = [];
+    this.liveSwpPortFolio = [];
+    this.liveStpPortFolio = [];
+    this.recent_trxn = []
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     const {family_members,...rest} = Object.assign({},{
       ...this.filter_criteria.value,
@@ -339,35 +369,25 @@ export class LiveMfPortFolioComponent implements OnInit {
       family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
       family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
     })
-    this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(rest))
-    .pipe(pluck('data'))
-    .subscribe((res:Required<{data,client_details:client}>) => {
-
-          this.dataSource = res.data.map((item: ILivePortFolio) => (
-            {
-              ...item,
-              id:`${Math.random()}_${item.product_code}`,
-              // inv_since:item.inv_since?.trans_date,
-              // pur_nav:item.pur_nav?.pur_price,
-              inv_since:item.inv_since,
-              pur_nav:item.pur_nav,
-              data:[]
-            }));
-            console.log( this.dataSource);
-          this.clientDtls = res.client_details;
-          this.parentLiveMfPortFolio = {
-            inv_cost: this.Total__Count(this.dataSource,x => Number(x.inv_cost)),
-            pur_nav:(this.Total__Count(this.dataSource,x => Number(x.pur_nav)) / this.dataSource.length),
-            tot_units:this.Total__Count(this.dataSource,x => Number(x.tot_units)),
-            curr_val:this.Total__Count(this.dataSource,x => x.curr_val),
-            total:this.Total__Count(this.dataSource,x => x.curr_val),
-            ret_abs: (this.Total__Count(this.dataSource,x => x.ret_abs) / this.dataSource.length),
-            gain_loss:this.Total__Count(this.dataSource,x => x.gain_loss),
-          }
-     })
-    ;
+    this.call_corrosponding_api(this.selected_id,rest)
     }
   }
+
+  call_func_tab_change = () =>{
+    if(this.__selectedRow){
+      this.primeTbl.toggleRow(this.__selectedRow);
+      this.__selectedRow = null
+    }
+    this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
+    const {family_members,...rest} = Object.assign({},{
+      ...this.filter_criteria.value,
+      valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
+      family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
+      family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
+    })
+    this.call_corrosponding_api(this.selected_id,rest)
+  }
+
 
   onRowExpand = (ev:{originalEvent:Partial<PointerEvent>,data:ILivePortFolio}) =>{
     try{
@@ -387,59 +407,22 @@ export class LiveMfPortFolioComponent implements OnInit {
         // }),
         )
       .subscribe((res: ISubDataSource[]) =>{
-            let cummulativeSum = 0;
-            let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
-            let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'))
-            let final_arr = [];
-            /**** For All Transaction */
-            if(this.filter_criteria.value.trans_type === 'A'){
-                // let full_dt = res.map(el => { return {...el ,cumml_units:0}});
-
-                // let __index = 0;
-                // let cumml_units;
-                // redem_arr.forEach((el,i) => {
-                //     let tot_units = Number(el.tot_units);
-                //     with_out_redem_arr = with_out_redem_arr.filter((item,j) =>{
-                //           cumml_units = item.cumml_units - tot_units
-                //           if(cumml_units > 0){
-                //             item.cumml_units = 0;
-                //             final_arr.push(
-                //               {
-                //                 ...item,
-                //                 cumml_units:cumml_units
-                //               },
-                //               {
-                //                 ...item,
-                //                 transaction_type:'Remaining',
-                //                 tot_units:cumml_units,
-                //                 cumml_units:cumml_units
-                //               })
-                //             }
-                //             else{
-                //               final_arr.push(
-                //                 {
-                //                   ...item
-                //                 })
-                //             }
-                //       return item
-                //     })
-                // });
-                // console.log(final_arr)
-
-              // this.dataSource[index].data = this.filterTransactions(full_dt);
-              this.dataSource[index].data = res
-            }
-            else{
-                  /******* For Live Transactions */
-                  this.calculateTransaction(redem_arr,with_out_redem_arr,index);
-                  /******** End ******************/
-            }
+            // let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
+            // let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'))
+            // if(this.filter_criteria.value.trans_type === 'A'){
+            //   this.dataSource[index].data = res
+            // }
+            // else{
+            //     this.calculateTransaction(redem_arr,with_out_redem_arr,index);
+            // }
+              this.dataSource[index].data = res;
+              this.calculat_Total_Value_For_Table_Footer(res)
               this.show_more('M',index);
             /**** End */
         })
       }
     catch(ex){
-        console.log(ex);
+        // console.log(ex);
         // console.log(`ERROR`)
     }
   }
@@ -512,7 +495,7 @@ export class LiveMfPortFolioComponent implements OnInit {
 
           }
           catch(ex){
-            console.log(ex)
+            // console.log(ex)
           }
   }
   /**
@@ -579,7 +562,7 @@ export class LiveMfPortFolioComponent implements OnInit {
                  else{
                     this.truncated_val+=10
                  }
-                 console.log(this.truncated_val)
+                //  console.log(this.truncated_val)
               }
   }
 
@@ -591,13 +574,110 @@ export class LiveMfPortFolioComponent implements OnInit {
         if(tabs.items.length == 0){
           this.seleActivaTab(tabs);
         }
+        this.call_func_tab_change()
   }
 
-  getPLTransactions = () =>{
-    this.__dbIntr.api_call(0,'/plTrxn',null).subscribe(res =>{
+  call_corrosponding_api = (id:number,fb) =>{
+      switch(id){
+        case 1:
+        case 2:
 
-    })
+          this.call_api_for_detail_summary_func(fb)
+          break; // call summary & details
+        case 3: break;
+        case 4: this.call_api_for_sip_func(fb);break; // call SIP
+        case 5: this.call_api_for_stp_func(fb);break; // call STP
+        case 6: this.call_api_for_swp_func(fb);break; // call SWP
+        case 9: this.call_api_for_pL_func(fb); break; // call P&L
+        case 11: this.call_api_for_recent_trxn_func(fb); break; // call P&L
+
+        default: break;
+      }
   }
+
+  call_api_for_detail_summary_func(formData) {
+    if(this.dataSource.length == 0){
+      this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
+      .pipe(pluck('data'))
+      .subscribe((res:Required<{data,client_details:client}>) => {
+            this.dataSource = res.data.map((item: ILivePortFolio) => (
+              {
+                ...item,
+                id:`${Math.random()}_${item.product_code}`,
+                inv_since:item.inv_since,
+                pur_nav:item.pur_nav,
+                data:[]
+              }));
+              // console.log( this.dataSource);
+            this.clientDtls = res.client_details;
+            this.parentLiveMfPortFolio = {
+              inv_cost: this.Total__Count(this.dataSource,x => Number(x.inv_cost)),
+              pur_nav:(this.Total__Count(this.dataSource,x => Number(x.pur_nav)) / this.dataSource.length),
+              tot_units:this.Total__Count(this.dataSource,x => Number(x.tot_units)),
+              curr_val:this.Total__Count(this.dataSource,x => x.curr_val),
+              total:this.Total__Count(this.dataSource,x => x.curr_val),
+              ret_abs: (this.Total__Count(this.dataSource,x => x.ret_abs) / this.dataSource.length),
+              gain_loss:this.Total__Count(this.dataSource,x => x.gain_loss),
+            }
+      })
+    }
+    }
+
+  /** call api for p&l */
+  call_api_for_pL_func = (formData) =>{
+    if(this.plTrxnDtls.length == 0){
+      this.__dbIntr.api_call(0,'/pl',null)
+      .pipe(pluck('data')).subscribe((result:Partial<IPLTrxn>[]) =>{
+            this.plTrxnDtls = result
+      })
+   }
+  }
+  /*** End */
+
+  /** call api for sip */
+  call_api_for_sip_func = (formData) =>{
+    if(this.liveSipPortFolio.length == 0){
+      this.__dbIntr.api_call(0,'/liveSipPortfolio',null)
+      .pipe(pluck('data')).subscribe((result:Partial<ILiveSIP>[]) =>{
+            this.liveSipPortFolio = result
+      })
+   }
+  }
+  /** end */
+
+   /** call api for stp */
+   call_api_for_stp_func = (formData) =>{
+    if(this.liveStpPortFolio.length == 0){
+      this.__dbIntr.api_call(0,'/liveStpPortFolio',null)
+      .pipe(pluck('data')).subscribe((result:Partial<ILiveSTP>[]) =>{
+            this.liveStpPortFolio = result
+      })
+   }
+  }
+  /** end */
+
+  /** call api for stp */
+  call_api_for_swp_func = (formData) =>{
+    if(this.liveSwpPortFolio.length == 0){
+      this.__dbIntr.api_call(0,'/liveSwpPortFolio',null)
+      .pipe(pluck('data')).subscribe((result:Partial<ILiveSWP>[]) =>{
+            this.liveSwpPortFolio = result
+      })
+   }
+  }
+  /** end */
+
+  /** call api for recent_trxn */
+  call_api_for_recent_trxn_func = (formData) =>{
+    if(this.recent_trxn.length == 0){
+      this.__dbIntr.api_call(0,'/recentTrxn',null)
+      .pipe(pluck('data')).subscribe((result:Partial<IRecentTrxn>[]) =>{
+            this.recent_trxn = result
+      })
+   }
+  }
+  /** End */
+
 
   getSubTabDtls = (tabs) =>{
     this.seleActivaTab(tabs);

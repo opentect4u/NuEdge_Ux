@@ -1,25 +1,23 @@
+    <div class="row form-group my-2">
+        <div class="col-sm-12 d-flex justify-content-end ">
+          <input id="search" class="form-control rounded w-25 pr-4" type="text" (input)="filterGlobal_secondary($event)"
+          placeholder="Search" />
+        </div>
+    </div>
 
-
-
-<mat-card id="matCard"  class="mat-elevation-z0">
-  <mat-card-header class="px-3">
-    <mat-card-title></mat-card-title>
-    <input id="search" class="form-control rounded w-25" type="text" (input)="filterGlobal_secondary($event)"
-    placeholder="Search" />
-  </mat-card-header>
-  <mat-card-content>
-    <p-table #dt [value]="pl_trxn"
+    <p-table #dt [value]="liveSIP"
     [rows]="10" [paginator]="true"
       [scrollable]="true"
       [rowHover]="true"
+      [columns]="column"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       styleClass="p-datatable-lg"
       [pageLinks]="3"
       [globalFilterFields]="getColumns()"
         [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
-
-      [showCurrentPageReport]="true">
+      [showCurrentPageReport]="true"
+      >
     <ng-template pTemplate="header">
         <tr>
             <th *ngFor="let col of column"
@@ -31,22 +29,18 @@
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-pl_trxn>
-        <tr
-        [ngStyle]="{
-          'background-color': pl_trxn.curr_val == 0 ? '#b70a0a30' : ''
-        }"
-        >
+    <ng-template pTemplate="body" let-recent_trxn>
+        <tr>
             <td *ngFor="let col of column"
             [style]="'min-width : '+col.width"
            >
             <p class="m-0">
-              {{ pl_trxn[col.field] ? pl_trxn[col.field] : 'N/A' }}</p>
+              {{ recent_trxn[col.field] ? recent_trxn[col.field] : 'N/A' }}</p>
              </td>
 
         </tr>
     </ng-template>
-    <ng-template pTemplate="emptymessage" let-pl_trxn>
+    <ng-template pTemplate="emptymessage" let-recent_trxn>
       <tr>
         <td [attr.colspan]="column.length">
           <p class="m-0">No Records Found</p>
@@ -54,8 +48,5 @@
       </tr>
     </ng-template>
     </p-table>
-  </mat-card-content>
-
-</mat-card>
 
 

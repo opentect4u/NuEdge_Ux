@@ -12,7 +12,7 @@ export class PlTrxnDtlsComponent implements OnInit {
 
   constructor(private utility:UtiliService) { }
 
-  @Input() pl_trxn:Partial<IPLTrxn[]> = [];
+  @Input() pl_trxn:Partial<IPLTrxn>[] = [];
 
   @ViewChild('dt') primaryTbl :Table;
 
@@ -46,7 +46,7 @@ export class PLTransaction{
       {
         field:'purchase',
         header:'Purchase',
-        width:'10rem'
+        width:'7rem'
       },
       {
         field:'switch_in',
@@ -61,37 +61,37 @@ export class PLTransaction{
       {
         field:'redemption',
         header:'Redemption',
-        width:'15rem'
+        width:'10rem'
       },
       {
         field:'switch_out',
         header:'Switch Out',
-        width:'15rem'
+        width:'10rem'
       },
       {
         field:'tot_outflow',
         header:'Total Inflow',
-        width:'15rem'
+        width:'10rem'
       },
       {
         field:'curr_val',
-        header:'Curr. Value',
-        width:'13rem'
+        header:'Curr. Val',
+        width:'10rem'
       },
       {
         field:'gain_loss',
         header:'Gain/Loss',
-        width:'13rem'
+        width:'10rem'
       },
       {
         field:'abs_ret',
-        header:'Abs. Return',
-        width:'13rem'
+        header:'Abs. Ret',
+        width:'10rem'
       },
       {
         field:'xirr',
         header:'XIRR',
-        width:'13rem'
+        width:'4rem'
       }
   ]
 }
