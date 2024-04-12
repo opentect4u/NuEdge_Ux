@@ -939,6 +939,15 @@ textarea:focus {
 
 /**** END**/
 
+@media (min-width: 1024px) and (max-width: 1115px) {
+  .arrow-left,.arrow-right {
+    display: block!important
+  }
+  .cus__tab {
+    margin-left: 33px;
+    margin-right: 33px;
+  }
+}
 
 @media (min-width: 991.98px) and (max-width: 1024px) {
   .arrow-left,.arrow-right {

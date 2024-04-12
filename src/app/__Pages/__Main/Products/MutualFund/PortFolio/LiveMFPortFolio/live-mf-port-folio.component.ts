@@ -49,21 +49,7 @@ type TotalparentLiveMfPortFolio = {
 @Component({
   selector: 'app-live-mf-port-folio',
   templateUrl: './live-mf-port-folio.component.html',
-  styleUrls: ['./live-mf-port-folio.component.css'],
-  styles: [`
-        :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0px;
-            z-index:999999
-        }
-
-        @media screen and (max-width: 64em) {
-            :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-                top: 0px;
-            }
-        }
-  `]
+  styleUrls: ['./live-mf-port-folio.component.css']
 })
 
 export class LiveMfPortFolioComponent implements OnInit {
@@ -494,18 +480,21 @@ export class LiveMfPortFolioComponent implements OnInit {
   }
 
   calculat_Total_Value_For_Table_Footer(arr:Partial<ISubDataSource>[]){
+          var tot_arr = arr.filter(row => (!row.transaction_type.toLowerCase().includes('redemption') && row.cumml_units >= 0));
           try{
                   this.subLiveMfPortFolio = {
-                    tot_amount: this.Total__Count(arr,item => Number(item.tot_amount)),
-                    tot_tds:this.Total__Count(arr,item => item.tot_tds),
-                    tot_stamp_duty:this.Total__Count(arr,item => Number(item.tot_stamp_duty)),
-                    pur_price:this.Total__Count(arr,item => Number(item.pur_price)) / arr.length,
-                    tot_units:this.Total__Count(arr,item => Number(item.tot_units)),
-                    curr_val:this.Total__Count(arr,item=> item.curr_val),
-                    gain_loss:this.Total__Count(arr,item=> item.gain_loss),
-                    ret_abs: this.Total__Count(arr,item=> item.ret_abs) / arr.length,
-                    cumml_units:arr.length > 0 ? arr.slice(-1)[0].cumml_units : 0,
+                    tot_amount: this.Total__Count(tot_arr,item => Number(item.tot_amount)),
+                    tot_tds:this.Total__Count(tot_arr,item => item.tot_tds),
+                    tot_stamp_duty:this.Total__Count(tot_arr,item => Number(item.tot_stamp_duty)),
+                    pur_price:this.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
+                    tot_units:this.Total__Count(tot_arr,item => Number(item.tot_units)),
+                    curr_val:this.Total__Count(tot_arr,item=> Number(item.curr_val)),
+                    gain_loss:this.Total__Count(tot_arr,item=> Number(item.gain_loss)),
+                    ret_abs: this.Total__Count(tot_arr,item=> Number(item.ret_abs)) / tot_arr.length,
+                    cumml_units:tot_arr.length > 0 ? tot_arr.slice(-1)[0].cumml_units : 0,
                   }
+
+                  console.log(this.subLiveMfPortFolio)
 
           }
           catch(ex){
@@ -628,7 +617,7 @@ export class LiveMfPortFolioComponent implements OnInit {
               inv_cost: this.Total__Count(this.dataSource,x => Number(x.inv_cost)),
               pur_nav:(this.Total__Count(this.dataSource,x => Number(x.pur_nav)) / this.dataSource.length),
               tot_units:this.Total__Count(this.dataSource,x => Number(x.tot_units)),
-              curr_val:this.Total__Count(this.dataSource,x => x.curr_val),
+              curr_val:this.Total__Count(this.dataSource,x => Number(x.curr_val)),
               total:this.Total__Count(this.dataSource,x => x.curr_val),
               ret_abs: (this.Total__Count(this.dataSource,x => x.ret_abs) / this.dataSource.length),
               gain_loss:this.Total__Count(this.dataSource,x => x.gain_loss),
