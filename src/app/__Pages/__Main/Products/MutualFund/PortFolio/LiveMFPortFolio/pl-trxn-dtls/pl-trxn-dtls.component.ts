@@ -34,9 +34,9 @@ export class PlTrxnDtlsComponent implements OnInit {
 export class PLTransaction{
   public static column:column[] = [
       {
-        field:'scheme',
+        field:'scheme_name',
         header:'Scheme',
-        width:'30rem'
+        width:'28rem'
       },
       {
         field:'folio_no',
@@ -84,7 +84,7 @@ export class PLTransaction{
         width:'10rem'
       },
       {
-        field:'abs_ret',
+        field:'ret_abs',
         header:'Abs. Ret',
         width:'10rem'
       },
@@ -97,7 +97,7 @@ export class PLTransaction{
 }
 
 export interface IPLTrxn{
-    scheme:string;
+    scheme_name:string;
     xirr:number;
     abs_ret:number;
     gain_loss:number;
@@ -109,4 +109,7 @@ export interface IPLTrxn{
     switch_in:string,
     purchase:string;
     folio_no:number;
+    plan_name:string;
+    option_name:string;
+
 }

@@ -53,12 +53,20 @@ export class HomeComponent implements OnInit, IFileHelpHome {
 
   @ViewChild('pTableRef') pTableRef: Table;
 
+  lmf_pl_flag = [
+    {id:"PL_SI",name:"Switch In"},
+    {id:"PL_SO",name:"Switch Out"},
+    {id:"PL_R",name:"Redemption"},
+    {id:"PL_P",name:"Purchase"}
+  ]
+
 
   rntTrxnType = new FormGroup({
     rnt_id: new FormControl(''),
     id: new FormControl('0'),
     process_type: new FormControl(''),
     xirr_process_type: new FormControl(''),
+    lmf_pl: new FormControl(''),
     trans_type: new FormControl('', [Validators.required]),
     trans_sub_type: new FormControl('', [Validators.required]),
     c_trans_type_code: new FormControl(''),
@@ -121,10 +129,12 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     this.rntTrxnType.get('rnt_id').setValue(this.rnt_type_tab);
     this.rntTrxnType.get('process_type').setValue('');
     this.rntTrxnType.get('xirr_process_type').setValue('');
+    this.rntTrxnType.get('lmf_pl').setValue('');
     this.SetColumns(this.rnt_type_tab);
   }
 
   submitTransactionType(): void {
+    // return;
     let api_name:string;
     let formdata = new FormData();
     if(this.file_type_tab == 'T'){
@@ -174,9 +184,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         1,
         api_name,
         this.file_type_tab == 'T' ?
-        this.utility.convertFormData(this.rntTrxnType.value)
-        : formdata
-
+        this.utility.convertFormData(this.rntTrxnType.value) : formdata
       )
       .subscribe((res: any) => {
         this.utility.showSnackbar(
@@ -291,14 +299,13 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         if (items.id == row_obj.id) {
           items.process_type  = row_obj.process_type;
           items.xirr_process_type = row_obj.xirr_process_type;
+          items.lmf_pl = row_obj.lmf_pl;
           items.trans_type = row_obj.trans_type;
           items.trans_sub_type = row_obj.trans_sub_type;
-          items.c_trans_type_code =
-            row_obj.rnt_id == 2 ? '' : row_obj.c_trans_type_code;
+          items.c_trans_type_code = row_obj.rnt_id == 2 ? '' : row_obj.c_trans_type_code;
           items.c_k_trans_type = row_obj.c_k_trans_type;
           items.c_k_trans_sub_type = row_obj.c_k_trans_sub_type;
-          items.k_divident_flag =
-            row_obj.rnt_id == 2 ? row_obj.k_divident_flag : '';
+          items.k_divident_flag =row_obj.rnt_id == 2 ? row_obj.k_divident_flag : '';
         }
         return true;
       }
@@ -444,7 +451,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         : '',
       process_type:  trxnType ? global.getActualVal(trxnType?.process_type) : '',
       xirr_process_type:  trxnType ? global.getActualVal(trxnType?.xirr_process_type) : '',
-
+      lmf_pl :  trxnType ? global.getActualVal(trxnType?.lmf_pl) : ''
     });
   }
   else if(this.file_type_tab == 'S'){

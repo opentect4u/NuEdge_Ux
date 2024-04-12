@@ -33,7 +33,7 @@ export class LiveSTPComponent implements OnInit {
 
 export interface ILiveSTP{
     client_name:string;
-    scheme:string;
+    scheme_name:string;
     active_status:string;
     folio_no:string;
     stp_freq:string;
@@ -46,6 +46,8 @@ export interface ILiveSTP{
     remaining_inv:number;
     bank_name:string;
     xirr:number;
+    plan_name:string;
+    option_name:string
 }
 
 
@@ -62,7 +64,7 @@ export class LiveSTPColumn{
       width:'15rem'
     },
     {
-      field:'scheme',
+      field:'scheme_name',
       header:'Scheme',
       width:'30rem'
     },

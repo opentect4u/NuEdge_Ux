@@ -33,7 +33,7 @@ export class LiveSIPComponent implements OnInit {
 
 export interface ILiveSIP{
     client_name:string;
-    scheme:string;
+    scheme_name:string;
     active_status:string;
     folio_no:string;
     sip_freq:string;
@@ -46,6 +46,8 @@ export interface ILiveSIP{
     remaining_inv:number;
     bank_name:string;
     xirr:number;
+    plan_name:string;
+    option_name:string
 }
 
 
@@ -62,7 +64,7 @@ export class LiveSIPColumn{
       width:'15rem'
     },
     {
-      field:'scheme',
+      field:'scheme_name',
       header:'Scheme',
       width:'30rem'
     },

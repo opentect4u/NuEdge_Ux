@@ -11,7 +11,7 @@ export class trxnTypeClmns{
                           {field:'k_divident_flag',header:'Divident Flag',isVisible:[2]},
                           {field:'process_type',header:"MIS Type",isVisible:[1,2]},
                           {field:'xirr_process_type',header:"XIRR Process Type",isVisible:[1,2]},
-
+                          {field:'lmf_pl',header:"P&l Calc. Flag",isVisible:[1,2]},
         ]
 }
 

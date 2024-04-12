@@ -34,13 +34,15 @@ export class RecentTrxnComponent implements OnInit {
 
 export  interface IRecentTrxn{
   trans_date:Date;
-  arn_code:string;
-  scheme:string;
+  // arn_code:string;
+  scheme_name:string;
   folio_no:string;
   transaction_type:string;
   tot_amount:number;
   tot_units:number;
-  pur_price:number
+  pur_price:number;
+  plan_name:string;
+  option_name:string;
 }
 
 export class RecentTrxnClmn{
@@ -50,13 +52,13 @@ export class RecentTrxnClmn{
       header:'Trans date',
       width:'4rem'
     },
+    // {
+    //   field:'arn_code',
+    //   header:'ARN code',
+    //   width:'4rem'
+    // },
     {
-      field:'arn_code',
-      header:'ARN code',
-      width:'4rem'
-    },
-    {
-      field:'scheme',
+      field:'scheme_name',
       header:'Scheme',
       width:'30rem'
     },

@@ -337,6 +337,7 @@
       </mat-card-content>
     </mat-card>
 
+
     <p-card styleClass="my-4" *ngIf="clientDtls">
       <div class="row">
         <div class="col-md-6 col-sm-12 col-lg-3 my-2 border-right">
@@ -431,6 +432,8 @@
         </div>
       </div>
     </p-card>
+
+    <!-- <ng-container *ngIf="dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 "> -->
 
     <!-- CUSTOM Tab -->
     <!-- <div class="container-fluid px-0 mt-4" id="container_Tab">
@@ -893,7 +896,60 @@
     </ng-container>
 
     <ng-container *ngIf="selected_id == 11">
-      <recent-trxn [recent_trxn]="recent_trxn"></recent-trxn>
+      <mat-card id="matCard"  class="mat-elevation-z0">
+        <mat-card-content class="px-4 py-2">
+        <div class="row">
+          <div class="col-sm-12">
+            <form [formGroup]="recent_trxn_frm" (ngSubmit)="searchRecentTrxn()">
+              <div class="row form-group">
+                <label
+                for="date_range"
+                class="col-md-1 col-sm-1 col-xs-1 col-lg-1 text-center"
+                > Date(From-To) </label
+                >
+                <div class="col-md-3 col-sm-3 col-lg-3 col-xs-3">
+                  <p-calendar dateFormat="dd/mm/yy"  [showIcon]="true" #recentdateRng
+                  formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
+                </div>
+
+
+                <label
+                for="date_range"
+                class="col-md-1 col-sm-1 col-xs-1 col-lg-1 text-center"
+                > Flow Type </label
+                >
+                <div class="col-md-3 col-sm-3 col-lg-3 col-xs-3">
+                  <ng-multiselect-dropdown
+
+                  [id]="'flow_type'"
+                  [placeholder]="'Select Flow Type'"
+                  [settings]="settingsforFlow_type"
+                  [data]="flowType"
+                  formControlName="flow_type"
+                  >
+                   </ng-multiselect-dropdown>
+
+                 </div>
+
+                 <div class="col-md-4 col-sm-4 col-lg-4 col-xs-4">
+                   <button
+                    pButton
+                    type="submit"
+                    class="p-button-lg mx-3"
+                    iconPos="left"
+                    icon="pi pi-eye"
+                    label="Show"
+                  ></button>
+                 </div>
+                </div>
+            </form>
+
+          </div>
+        </div>
+        </mat-card-content>
+      </mat-card>
+        <recent-trxn [recent_trxn]="recent_trxn"></recent-trxn>
+
     </ng-container>
 
     <ng-container
@@ -909,7 +965,10 @@
                   <mat-radio-button value="L">
                     Live SIP
                   </mat-radio-button>
-                  <mat-radio-button value="A" class="mx-3">
+                  <mat-radio-button value="I" class="mx-3">
+                    Inactive SIP
+                  </mat-radio-button>
+                  <mat-radio-button value="A">
                     All SIP
                   </mat-radio-button>
                 </mat-radio-group>
@@ -918,10 +977,13 @@
               <ng-container  *ngIf="selected_id == 5">
                 <mat-radio-group [formControlName]="'live_stp'">
                   <mat-radio-button value="L">
-                    Live SIP
+                    Live STP
+                  </mat-radio-button>
+                  <mat-radio-button value="I" class="mx-3">
+                    Inactive STP
                   </mat-radio-button>
                   <mat-radio-button value="A" class="mx-3">
-                    All SIP
+                    All STP
                   </mat-radio-button>
                 </mat-radio-group>
               </ng-container>
@@ -929,10 +991,13 @@
               <ng-container  *ngIf="selected_id == 6">
                 <mat-radio-group [formControlName]="'live_swp'">
                   <mat-radio-button value="L">
-                    Live SIP
+                    Live SWP
+                  </mat-radio-button>
+                  <mat-radio-button value="I" class="mx-3">
+                    Inactive SWP
                   </mat-radio-button>
                   <mat-radio-button value="A" class="mx-3">
-                    All SIP
+                    All SWP
                   </mat-radio-button>
                 </mat-radio-group>
               </ng-container>
@@ -959,6 +1024,8 @@
         </mat-card-content>
       </mat-card>
     </ng-container>
+
+  <!-- </ng-container> -->
   </div>
 </div>
 
