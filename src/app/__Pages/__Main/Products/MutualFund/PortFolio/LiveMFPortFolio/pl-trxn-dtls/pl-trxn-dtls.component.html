@@ -37,10 +37,17 @@
             <td *ngFor="let col of column"
             [style]="'min-width : '+col.width"
            >
-            <p class="m-0">
-              {{pl_trxn[col.field]}}</p>
-             </td>
-
+           <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'folio_no'">
+              <p class="m-0">
+                {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}</p>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <p class="m-0">
+                {{pl_trxn[col.field] | number : "1.2-2"}}</p>
+            </ng-container>
+           </ng-container>
+          </td>
         </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage" let-pl_trxn>

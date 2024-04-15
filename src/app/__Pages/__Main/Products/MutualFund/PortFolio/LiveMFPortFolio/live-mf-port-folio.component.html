@@ -433,7 +433,7 @@
       </div>
     </p-card>
 
-    <!-- <ng-container *ngIf="dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 "> -->
+    <ng-container *ngIf="dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 ">
 
     <!-- CUSTOM Tab -->
     <!-- <div class="container-fluid px-0 mt-4" id="container_Tab">
@@ -472,7 +472,7 @@
                 </ul>
             </div> -->
 
-    <div class="container-fluid px-0 mt-4" id="container_Tab">
+    <div class="container-fluid px-0 mt-4 border-bottom" id="container_Tab">
       <button class="arrow-left" mat-icon-button (click)="moveNavigation(-100)">
         <mat-icon>chevron_left</mat-icon>
       </button>
@@ -897,8 +897,8 @@
 
     <ng-container *ngIf="selected_id == 11">
       <mat-card id="matCard"  class="mat-elevation-z0">
-        <mat-card-content class="px-4 py-2">
-        <div class="row">
+        <mat-card-content class="px-4 py-4 border-bottom">
+        <div class="row ">
           <div class="col-sm-12">
             <form [formGroup]="recent_trxn_frm" (ngSubmit)="searchRecentTrxn()">
               <div class="row form-group">
@@ -908,7 +908,7 @@
                 > Date(From-To) </label
                 >
                 <div class="col-md-3 col-sm-3 col-lg-3 col-xs-3">
-                  <p-calendar dateFormat="dd/mm/yy"  [showIcon]="true" #recentdateRng
+                  <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date"
                   formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
                 </div>
 
@@ -931,7 +931,7 @@
 
                  </div>
 
-                 <div class="col-md-4 col-sm-4 col-lg-4 col-xs-4">
+                 <div class="col-md-4 col-sm-4 col-lg-4 col-xs-4 d-flex align-items-center">
                    <button
                     pButton
                     type="submit"
@@ -1025,7 +1025,7 @@
       </mat-card>
     </ng-container>
 
-  <!-- </ng-container> -->
+  </ng-container>
   </div>
 </div>
 

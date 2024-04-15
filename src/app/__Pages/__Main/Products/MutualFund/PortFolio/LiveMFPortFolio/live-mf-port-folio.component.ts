@@ -211,9 +211,11 @@ export class LiveMfPortFolioComponent implements OnInit {
         clmn_chooser: new FormControl([])
   })
 
+  max_date :Date = new Date()
+
   recent_trxn_frm = new FormGroup({
     date_range:new FormControl(''),
-    flow_type: new FormControl([])
+    flow_type: new FormControl(this.flowType)
   })
 
   constructor(private __dbIntr:DbIntrService,
@@ -222,8 +224,11 @@ export class LiveMfPortFolioComponent implements OnInit {
     private activateRoute:ActivatedRoute,
     private datePipe:DatePipe
     ) {
-
-
+      const dt = new Date();
+      dt.setDate(dt.getDate() - 1)
+      this.recent_trxn_frm.patchValue({
+        date_range: [dt,this.max_date]
+      })
     }
 
   ngOnInit(): void {
@@ -405,7 +410,12 @@ export class LiveMfPortFolioComponent implements OnInit {
     this.liveSipPortFolio = [];
     this.liveSwpPortFolio = [];
     this.liveStpPortFolio = [];
-    this.recent_trxn = []
+    this.recent_trxn = [];
+    this.__live_sip_stp_swp_form.reset('',{
+      emitEvent:false,
+      onlySelf:true
+    });
+    this.selected_id = this.__portFolioTab[0].id;
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     const {family_members,...rest} = Object.assign({},{
       ...this.filter_criteria.value,
@@ -629,16 +639,9 @@ export class LiveMfPortFolioComponent implements OnInit {
   call_corrosponding_api = (id:number,fb) =>{
       switch(id){
         case 1:
-        case 2:
-
-          this.call_api_for_detail_summary_func(fb)
-          break; // call summary & details
+        case 2:this.call_api_for_detail_summary_func(fb);break;
         case 3: break;
-        // case 4: this.call_api_for_sip_func(fb);break; // call SIP
-        // case 5: this.call_api_for_stp_func(fb);break; // call STP
-        // case 6: this.call_api_for_swp_func(fb);break; // call SWP
         case 9: this.call_api_for_pL_func(fb); break; // call P&L
-        // case 11: this.call_api_for_recent_trxn_func(); break; // call Recent Transaction
         default: break;
       }
   }
@@ -691,7 +694,7 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   /** call api for sip */
   call_api_for_sip_func = (formData,val) =>{
-    // if(this.liveSipPortFolio.length == 0){
+    if(val){
       this.__dbIntr.api_call(1,'/clients/liveMFSIP',
       this.utility.convertFormData(
         {
@@ -710,18 +713,13 @@ export class LiveMfPortFolioComponent implements OnInit {
                 this.clientDtls = result.client_details
               }
       })
-  //  }
+    }
   }
   /** end */
 
    /** call api for stp */
    call_api_for_stp_func = (formData,val) =>{
-    // if(this.liveStpPortFolio.length == 0){
-      // this.__dbIntr.api_call(0,'/liveStpPortFolio',null)
-      // .pipe(pluck('data')).subscribe((result:Partial<ILiveSTP>[]) =>{
-      //       this.liveStpPortFolio = result
-      // })
-
+    if(val){
       this.__dbIntr.api_call(1,'/clients/liveMFSTP',
       this.utility.convertFormData(
         {
@@ -740,12 +738,13 @@ export class LiveMfPortFolioComponent implements OnInit {
                 this.clientDtls = result.client_details
               }
       })
-  //  }
+    }
   }
   /** end */
 
   /** call api for stp */
   call_api_for_swp_func = (formData,val) =>{
+    if(val){
   this.__dbIntr.api_call(1,'/clients/liveMFSWP',
       this.utility.convertFormData({...formData,swp_type:val}))
       .pipe(pluck('data')).subscribe(
@@ -759,6 +758,7 @@ export class LiveMfPortFolioComponent implements OnInit {
                 this.clientDtls = result.client_details
               }
       })
+    }
   }
   /** end */
 

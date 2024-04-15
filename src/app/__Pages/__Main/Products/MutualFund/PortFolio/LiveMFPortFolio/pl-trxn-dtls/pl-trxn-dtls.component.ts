@@ -70,7 +70,7 @@ export class PLTransaction{
       },
       {
         field:'tot_outflow',
-        header:'Total Inflow',
+        header:'Total Outflow',
         width:'10rem'
       },
       {

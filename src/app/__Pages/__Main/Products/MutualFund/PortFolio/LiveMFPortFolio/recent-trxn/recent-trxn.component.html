@@ -37,8 +37,15 @@
             <td *ngFor="let col of recent_trxn_clmn"
             [style]="'min-width : '+col.width"
            >
-            <p class="m-0">
-              {{ recent_trxn[col.field] ? recent_trxn[col.field] : 'N/A' }}</p>
+           <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                <p class="m-0">{{ recent_trxn[col.field] ? recent_trxn[col.field] : 'N/A' }}</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'trans_date'">
+                <p class="m-0">{{ recent_trxn[col.field] ? (recent_trxn[col.field] | date:'dd-mm-yyyy') : 'N/A' }}</p>
+              </ng-container>
+            </ng-container>
+
              </td>
 
         </tr>
