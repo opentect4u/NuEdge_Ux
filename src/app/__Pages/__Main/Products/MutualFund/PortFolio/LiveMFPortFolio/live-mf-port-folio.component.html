@@ -199,7 +199,10 @@
                     <option value="{{item}}" *ngFor="let item of [1,2,3,4,5,7,10,'D']">
                       <span *ngIf="item == 'D';else above_year">Date Range</span>
                       <ng-template #above_year>
-                        <span>Above {{item}} Year</span>
+                        <ng-container *ngIf="item == 1">
+                          <p class="m-0">Below {{item}} Year</p>
+                        </ng-container>
+                        <p class="m-0">Above {{item}} Year</p>
                       </ng-template>
                     </option>
 
@@ -433,7 +436,7 @@
       </div>
     </p-card>
 
-    <ng-container *ngIf="dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 ">
+    <!-- <ng-container *ngIf="dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 "> -->
 
     <!-- CUSTOM Tab -->
     <!-- <div class="container-fluid px-0 mt-4" id="container_Tab">
@@ -534,10 +537,11 @@
                     <ng-container *ngIf="selected_id == 1;else summary">
                         <p
                         class="m-0 text-left"
-                        role="button"
+                        style="cursor:pointer"
                         pRipple
                         [pRowToggler]="liveMfPortFolio"
                       >
+                      <span role="button">
                         {{
                           liveMfPortFolio[col.field]
                             ? liveMfPortFolio[col.field] +
@@ -547,6 +551,8 @@
                               liveMfPortFolio.option_name
                             : "N/A"
                         }}
+                      </span>
+
                       </p>
                     </ng-container>
                     <ng-template #summary>
@@ -567,14 +573,30 @@
                     </p>
                     </ng-template>
 
-                      <span class="custom__badge badge-primary">online</span>
-                      <span class="custom__badge badge-secondary">SOA</span>
-                      <span class="custom__badge badge-success">Fact</span>
+                      <span class="custom__badge badge-primary" #tooltip="matTooltip"
+                      matTooltip="online">
+                        <!-- online -->
+                        <i class="pi pi-globe " style="font-size: 1.5rem;"></i>
+                      </span>
+                      <span class="custom__badge badge-secondary" #tooltip="matTooltip"
+                      matTooltip="SOA">
+                        <!-- SOA -->
+                        <i class="pi pi-file-pdf" style="font-size: 1.5rem"></i>
+                      </span>
+                      <span class="custom__badge badge-success"  #tooltip="matTooltip"
+                      matTooltip="Fact">
+                        <!-- Fact -->
+                        <i class="pi pi-file" style="font-size: 1.5rem"></i>
+                      </span>
                       <span
+                        #tooltip="matTooltip"
+                        matTooltip="Details"
                         class="custom__badge badge-warning"
                         (click)="OpenDialog(liveMfPortFolio)"
                         >
-                        Details
+                        <!-- Details -->
+                        <i class="pi pi-info-circle" style="font-size: 1.5rem"></i>
+
                         </span
                       >
                     </ng-container>
@@ -591,13 +613,28 @@
                         }}
                       </p>
                     </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'xirr'">
+                      <p class="m-0">
+                        {{liveMfPortFolio[col.field] | percent:'1.2-2'}}
+                      </p>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'inv_cost'">
+                      <p class="m-0">
+                        {{
+                          liveMfPortFolio[col.field]
+                            ? (liveMfPortFolio[col.field] | number : "1.2-2")
+                            : liveMfPortFolio[col.field] == 0
+                            ?  (liveMfPortFolio[col.field] | number : "1.2-2")
+                            : "0.00"
+                        }}
+                      </p>
+                    </ng-container>
                     <ng-container
                       *ngSwitchCase="
                         col.field == 'gain_loss' ||
                         col.field == 'ret_abs' ||
                         col.field == 'tot_units' ||
                         col.field == 'curr_val' ||
-                        col.field == 'curr_nav' ||
                         col.field == 'idcw_reinv' ||
                         col.field == 'idcwp' ||
                         col.field == 'idcwr'
@@ -608,8 +645,8 @@
                           liveMfPortFolio[col.field]
                             ? (liveMfPortFolio[col.field] | number : "1.2-2")
                             : liveMfPortFolio[col.field] == 0
-                            ? liveMfPortFolio[col.field]
-                            : "0"
+                            ? (liveMfPortFolio[col.field] | number : "1.2-2")
+                            : "0.00"
                         }}
                         {{ col.field == "ret_abs" ? "%" : "" }}
                       </p>
@@ -678,7 +715,7 @@
             >
               <tr>
                 <td [attr.colspan]="parent_column.length + 1"
-                style="background-color:'#bcbcbc'"
+                style="background-color:'#e0e0e0'"
                 >
                   <div class="p-1">
                     <p-table
@@ -901,37 +938,41 @@
         <div class="row ">
           <div class="col-sm-12">
             <form [formGroup]="recent_trxn_frm" (ngSubmit)="searchRecentTrxn()">
-              <div class="row form-group">
-                <label
-                for="date_range"
-                class="col-md-1 col-sm-1 col-xs-1 col-lg-1 text-center"
-                > Date(From-To) </label
-                >
-                <div class="col-md-3 col-sm-3 col-lg-3 col-xs-3">
-                  <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date"
-                  formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
+              <div class="row d-flex align-items-center">
+                <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12">
+                  <div class="row form-group m-0">
+                    <label
+                    for="date_range"
+                    class="col-md-3 col-sm-3 col-xs-3 col-lg-3 text-center"
+                    > Date(From-To) </label
+                    >
+                    <div class="col-md-9 col-sm-9 col-lg-9 col-xs-9">
+                      <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date"
+                      formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
+                    </div>
+                  </div>
                 </div>
-
-
-                <label
-                for="date_range"
-                class="col-md-1 col-sm-1 col-xs-1 col-lg-1 text-center"
-                > Flow Type </label
-                >
-                <div class="col-md-3 col-sm-3 col-lg-3 col-xs-3">
-                  <ng-multiselect-dropdown
-
-                  [id]="'flow_type'"
-                  [placeholder]="'Select Flow Type'"
-                  [settings]="settingsforFlow_type"
-                  [data]="flowType"
-                  formControlName="flow_type"
+                <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12 my-3">
+                  <div class="row form-group  m-0">
+                  <label
+                  for="date_range"
+                  class="col-md-3 col-sm-3 col-xs-3 col-lg-3 text-center"
+                  > Flow Type </label
                   >
-                   </ng-multiselect-dropdown>
+                  <div class="col-md-9 col-sm-9 col-lg-9 col-xs-9">
+                    <ng-multiselect-dropdown
 
-                 </div>
-
-                 <div class="col-md-4 col-sm-4 col-lg-4 col-xs-4 d-flex align-items-center">
+                    [id]="'flow_type'"
+                    [placeholder]="'Select Flow Type'"
+                    [settings]="settingsforFlow_type"
+                    [data]="flowType"
+                    formControlName="flow_type"
+                    >
+                     </ng-multiselect-dropdown>
+                   </div>
+                   </div>
+                </div>
+                 <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12 d-flex justify-content-end">
                    <button
                     pButton
                     type="submit"
@@ -1025,7 +1066,7 @@
       </mat-card>
     </ng-container>
 
-  </ng-container>
+  <!-- </ng-container> -->
   </div>
 </div>
 

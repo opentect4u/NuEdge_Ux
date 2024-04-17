@@ -221,3 +221,27 @@ to{border-right-color: transparent;}
   background-color: #ccc;
 }
 
+
+span.mat-tooltip-trigger.custom__badge.badge-warning:hover {
+  background-color: #1d4ed8 !important;
+  transition: all 1s;
+  color: #fff !important;
+}
+
+
+span.mat-tooltip-trigger.custom__badge.badge-success:hover {
+  background-color: #13a7c0 !important;
+  transition: all 1s;
+  color: #fff !important;
+}
+
+span.mat-tooltip-trigger.custom__badge.badge-secondary:hover {
+  background-color: #FF9800  !important;
+  transition: all 1s;
+  color: #fff !important;
+}
+span.mat-tooltip-trigger.custom__badge.badge-primary:hover {
+  background-color: #10486b  !important;
+  transition: all 1s;
+  color: #fff !important;
+}

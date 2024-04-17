@@ -22,6 +22,8 @@ export class TrendRptComponent implements OnInit {
 
   __view_by:string = 'M'
 
+  __period_type:string;
+
   /**** COLUMN */
   __mis__Trend__Column:column[] =  ColumnTrend.column;
   /*****END */
@@ -37,7 +39,8 @@ export class TrendRptComponent implements OnInit {
 
   searchFilter = (ev) =>{
     console.log(ev)
-    this.__view_by = ev.view_by
+    this.__view_by = ev.view_by;
+    this.__period_type = ev.period_type
     // return ;
     if(ev.view_by == 'M'){
         if(!ev.month_year){

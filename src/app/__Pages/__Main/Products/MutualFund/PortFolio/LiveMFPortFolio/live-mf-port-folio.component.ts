@@ -18,6 +18,7 @@ import { IRecentTrxn } from './recent-trxn/recent-trxn.component';
 import { ILiveSIP } from './live-sip/live-sip.component';
 import { ILiveSTP } from './live-stp/live-stp.component';
 import { ILiveSWP } from './live-swp/live-swp.component';
+import { NgxSpinnerService } from 'ngx-spinner';
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
   tot_amount:number | undefined,
@@ -222,7 +223,8 @@ export class LiveMfPortFolioComponent implements OnInit {
     private utility:UtiliService,
     private router:Router,
     private activateRoute:ActivatedRoute,
-    private datePipe:DatePipe
+    private datePipe:DatePipe,
+    private spinner:NgxSpinnerService
     ) {
       const dt = new Date();
       dt.setDate(dt.getDate() - 1)
@@ -472,7 +474,7 @@ export class LiveMfPortFolioComponent implements OnInit {
             //     this.calculateTransaction(redem_arr,with_out_redem_arr,index);
             // }
               this.dataSource[index].data = res;
-              this.calculat_Total_Value_For_Table_Footer(res)
+              this.calculat_Total_Value_For_Table_Footer(res,this.dataSource[index])
               this.show_more('M',index);
             /**** End */
         })
@@ -531,26 +533,37 @@ export class LiveMfPortFolioComponent implements OnInit {
                 }
             return element;
       }))
-      this.calculat_Total_Value_For_Table_Footer(FinalTransactions);
+      // this.calculat_Total_Value_For_Table_Footer(FinalTransactions);
       return FinalTransactions;
   }
 
-  calculat_Total_Value_For_Table_Footer(arr:Partial<ISubDataSource>[]){
-          var tot_arr = arr.filter(row => (!row.transaction_type.toLowerCase().includes('redemption') && row.cumml_units >= 0));
+  calculat_Total_Value_For_Table_Footer(arr:Partial<ISubDataSource>[],final_arr){
+          var tot_arr = arr.filter(row => (!row.transaction_type.toLowerCase().includes('redemption') && row.cumml_units > 0));
           try{
+                  // this.subLiveMfPortFolio = {
+                  //   tot_amount: this.Total__Count(tot_arr,item => Number(item.tot_amount)),
+                  //   tot_tds:this.Total__Count(tot_arr,item => item.tot_tds),
+                  //   tot_stamp_duty:this.Total__Count(tot_arr,item => Number(item.tot_stamp_duty)),
+                  //   pur_price:this.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
+                  //   tot_units:this.Total__Count(tot_arr,item => Number(item.tot_units)),
+                  //   curr_val:this.Total__Count(tot_arr,item=> Number(item.curr_val)),
+                  //   gain_loss:this.Total__Count(tot_arr,item=> Number(item.gain_loss)),
+                  //   ret_abs: this.Total__Count(tot_arr,item=> Number(item.ret_abs)) / tot_arr.length,
+                  //   cumml_units:tot_arr.length > 0 ? tot_arr.slice(-1)[0].cumml_units : 0,
+                  // }
                   this.subLiveMfPortFolio = {
                     tot_amount: this.Total__Count(tot_arr,item => Number(item.tot_amount)),
                     tot_tds:this.Total__Count(tot_arr,item => item.tot_tds),
                     tot_stamp_duty:this.Total__Count(tot_arr,item => Number(item.tot_stamp_duty)),
                     pur_price:this.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
                     tot_units:this.Total__Count(tot_arr,item => Number(item.tot_units)),
-                    curr_val:this.Total__Count(tot_arr,item=> Number(item.curr_val)),
-                    gain_loss:this.Total__Count(tot_arr,item=> Number(item.gain_loss)),
-                    ret_abs: this.Total__Count(tot_arr,item=> Number(item.ret_abs)) / tot_arr.length,
+                    curr_val:final_arr ? final_arr?.curr_val : 0.00,
+                    gain_loss:final_arr ? final_arr?.gain_loss : 0.00,
+                    ret_abs: final_arr ? final_arr?.ret_abs : 0.00,
                     cumml_units:tot_arr.length > 0 ? tot_arr.slice(-1)[0].cumml_units : 0,
                   }
 
-                  console.log(this.subLiveMfPortFolio)
+                  // console.log(this.subLiveMfPortFolio)
 
           }
           catch(ex){
@@ -610,6 +623,8 @@ export class LiveMfPortFolioComponent implements OnInit {
 
 
   show_more = (mode:string,index:number) =>{
+            // console.log('aass')
+            this.spinner.show()
               if(mode == 'A'){
                     this.setTrancated_val(this.dataSource[index].data.length)
               }
@@ -623,6 +638,8 @@ export class LiveMfPortFolioComponent implements OnInit {
                  }
                 //  console.log(this.truncated_val)
               }
+            this.spinner.hide();
+
   }
 
   setTrancated_val = (length_of_actual_array:number) => {
@@ -651,28 +668,52 @@ export class LiveMfPortFolioComponent implements OnInit {
       this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
       .pipe(pluck('data'))
       .subscribe((res:Required<{data,client_details:client}>) => {
-            this.dataSource = res.data.map((item: ILivePortFolio) => (
-              {
-                ...item,
-                id:`${Math.random()}_${item.product_code}`,
-                inv_since:item.inv_since,
-                pur_nav:item.pur_nav,
-                data:[]
-              }));
-              // console.log( this.dataSource);
-            this.clientDtls = res.client_details;
-            this.parentLiveMfPortFolio = {
-              inv_cost: this.Total__Count(this.dataSource,x => Number(x.inv_cost)),
-              pur_nav:(this.Total__Count(this.dataSource,x => Number(x.pur_nav)) / this.dataSource.length),
-              tot_units:this.Total__Count(this.dataSource,x => Number(x.tot_units)),
-              curr_val:this.Total__Count(this.dataSource,x => Number(x.curr_val)),
-              total:this.Total__Count(this.dataSource,x => x.curr_val),
-              ret_abs: (this.Total__Count(this.dataSource,x => x.ret_abs) / this.dataSource.length),
-              gain_loss:this.Total__Count(this.dataSource,x => x.gain_loss),
+            // this.dataSource = res.data.map((item: ILivePortFolio) => (
+            //   {
+            //     ...item,
+            //     id:`${Math.random()}_${item.product_code}`,
+            //     inv_since:item.inv_since,
+            //     pur_nav:item.pur_nav,
+            //     data:[],
+            //   }));
+
+            try{
+              this.dataSource = res.data.filter((item: ILivePortFolio) => {
+
+                item.id = `${Math.random()}_${item.product_code}`;
+                item.data=[];
+                if(item.mydata){
+                  const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                  const dt = item?.mydata.all_date_arr;
+
+                  item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                }
+                else{
+                  item.xirr =0
+                }
+                return item
+            });
+          this.clientDtls = res.client_details;
+          this.parentLiveMfPortFolio = {
+            inv_cost: this.Total__Count(this.dataSource,x => Number(x.inv_cost)),
+            pur_nav:(this.Total__Count(this.dataSource,x => Number(x.pur_nav)) / this.dataSource.length),
+            tot_units:this.Total__Count(this.dataSource,x => Number(x.tot_units)),
+            curr_val:this.Total__Count(this.dataSource,x => Number(x.curr_val)),
+            total:this.Total__Count(this.dataSource,x => x.curr_val),
+            ret_abs: (this.Total__Count(this.dataSource,x => x.ret_abs) / this.dataSource.length),
+            gain_loss:this.Total__Count(this.dataSource,x => x.gain_loss),
+          }
             }
+            catch(ex){
+                // console.log(ex)
+            }
+
       })
     }
     }
+
+
+
 
   /** call api for p&l */
   call_api_for_pL_func = (formData) =>{
@@ -788,6 +829,7 @@ export class LiveMfPortFolioComponent implements OnInit {
   /** End */
 
   searchRecentTrxn =() =>{
+    this.recent_trxn = [];
     this.call_api_for_recent_trxn_func()
   }
 
@@ -828,7 +870,7 @@ export class LiveMfPortFolioComponent implements OnInit {
 }
 
 export interface ILivePortFolio{
-  id: number
+  id: any
   rnt_id: number
   product_code: string
   plan_name: string
@@ -856,6 +898,7 @@ export interface ILivePortFolio{
   xirr:number
   trans_mode: string
   data:Partial<ISubDataSource>[]
+  mydata:any
 }
 
 /** Use both for Details Transaction & row expand transactions */

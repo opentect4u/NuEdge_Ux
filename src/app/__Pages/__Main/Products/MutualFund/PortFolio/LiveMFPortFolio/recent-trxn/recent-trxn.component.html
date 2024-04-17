@@ -12,6 +12,8 @@
     [rows]="10" [paginator]="true"
       [scrollable]="true"
       [rowHover]="true"
+      [autoLayout]="true"
+            responsiveLayout="scroll"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       styleClass="p-datatable-lg"
       [pageLinks]="3"
@@ -38,11 +40,14 @@
             [style]="'min-width : '+col.width"
            >
            <ng-container [ngSwitch]="true">
-              <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                <p class="m-0">{{ recent_trxn[col.field] ? recent_trxn[col.field] : 'N/A' }}</p>
+              <ng-container *ngSwitchCase="col.field == 'tot_amount' || col.field == 'tot_units' || col.field == 'pur_price'">
+                <p class="m-0">{{recent_trxn[col.field] }}</p>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'trans_date'">
-                <p class="m-0">{{ recent_trxn[col.field] ? (recent_trxn[col.field] | date:'dd-mm-yyyy') : 'N/A' }}</p>
+                <p class="m-0">{{ recent_trxn[col.field] ? (recent_trxn[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <p class="m-0">{{ recent_trxn[col.field] ? recent_trxn[col.field] : 'N/A' }}</p>
               </ng-container>
             </ng-container>
 

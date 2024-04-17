@@ -17,6 +17,8 @@ export class MisTblComponent implements OnInit {
 
   @Input() view_by:string;
 
+  @Input() period_type:string;
+
   /** Holding Report Data */
   @Input() dataSource = [];
   /***End */

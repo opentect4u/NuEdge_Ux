@@ -1,6 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { column } from "../__Model/tblClmns";
 import * as XLSX from "xlsx";
+import moment from "moment";
 
 export class global{
 
@@ -118,5 +119,98 @@ export class global{
       actual:datePipe.transform(new Date(),'MM-YYYY')
     }
  }
+
+
+  // public static XIRR(values, dates, guess) {
+  //   // Initialize guess and resultRate
+  //   var guess = (typeof guess === 'undefined') ? 0.1 : guess;
+  //   var resultRate = guess;
+
+  //   // Set maximum epsilon for end of iteration
+  //   var epsMax = 1e-10;
+
+  //   // Set maximum number of iterations
+  //   var iterMax = 20;
+
+  //   // Implement Newton's method
+  //   var newRate, epsRate, resultValue;
+  //   var iteration = 0;
+  //   var contLoop = true;
+  //   do {
+  //     resultValue = this.irrResult(values, dates, resultRate);
+  //     newRate = resultRate - resultValue / this.irrResultDeriv(values, dates, resultRate);
+  //     epsRate = Math.abs(newRate - resultRate);
+  //     resultRate = newRate;
+  //     contLoop = (epsRate > epsMax) && (Math.abs(resultValue) > epsMax);
+  //   } while(contLoop && (++iteration < iterMax));
+  //   if(contLoop)return 0;
+
+  //   // Return internal rate of return
+  //   return resultRate ;
+  // }
+
+  // private static irrResult = (values, dates, rate) => {
+  //   var r = rate + 1;
+  //   var result = values[0];
+  //   values.forEach((el,i) =>{
+  //     result += values[i] / Math.pow(r, moment(dates[i]).diff(moment(dates[0]), 'days') / 365);
+  //   })
+  //   return result;
+  // }
+
+
+  // private static irrResultDeriv = (values, dates, rate) => {
+  //   var r = rate + 1;
+  //   var result = 0;
+  //   values.forEach((el,i) =>{
+  //     var frac = moment(dates[i]).diff(moment(dates[0]), 'days') / 365;
+  //     result -= frac * values[i] / Math.pow(r, frac + 1);
+  //   })
+  //   return result;
+  // }
+
+   public static XIRR(values, dates, guess) {
+    var irrResult = function(values, dates, rate) {
+      var r = rate + 1;
+      var result = values[0];
+      values.forEach((el,i) =>{
+        if(i>0){
+         result += values[i] / Math.pow(r, moment(dates[i]).diff(moment(dates[0]), 'days') / 365);
+       }
+      })
+      return result;
+    }
+
+    // Calculates the first derivation
+    var irrResultDeriv = function(values, dates, rate) {
+      var r = rate + 1;
+      var result = 0;
+      values.forEach((el,i) =>{
+        if(i>0){
+        var frac = moment(dates[i]).diff(moment(dates[0]), 'days') / 365;
+        result -= frac * values[i] / Math.pow(r, frac + 1);
+      }
+      })
+      return result;
+    }
+
+    var guess = (typeof guess === 'undefined') ? 0.1 : guess;
+    var resultRate = guess;
+    var epsMax = 1e-10;
+    var iterMax = 20;
+    var newRate, epsRate, resultValue;
+    var iteration = 0;
+    var contLoop = true;
+    do {
+      resultValue = irrResult(values, dates, resultRate);
+      newRate = resultRate - resultValue / irrResultDeriv(values, dates, resultRate);
+      epsRate = Math.abs(newRate - resultRate);
+      resultRate = newRate;
+      contLoop = (epsRate > epsMax) && (Math.abs(resultValue) > epsMax);
+    } while(contLoop && (++iteration < iterMax));
+    if(contLoop)return 0;
+    console.log(resultRate)
+    return resultRate;
+  }
 
 }

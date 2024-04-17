@@ -550,13 +550,13 @@ mat-card {
 }
 
 
-.p-datatable-scrollable>
+/* .p-datatable-scrollable>
 .p-datatable-wrapper>.p-datatable-table>
 .p-datatable-tfoot>tr>td{
   background-color: #9b9b9b2b;
   color: #5a5a5a;
   font-size: 13px!important;
-}
+} */
 
 /* End */
 /* For Material Checkbox Style */
@@ -728,18 +728,15 @@ color: #ffffff;
 
 
 .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
-  /* background: #3f51b533!important; */
-  background:#dadada !important;
-  color: #495057!important;
+  background: #1f458414 !important;
+  color: #10486b !important;
 }
 
 .p-datatable .p-datatable-tbody > tr:focus {
-  /* outline: 0.2rem solid #3f51b5!important;
-  outline-offset: 0.11rem!important;
-  background: #3f51b538!important; */
-  outline: 0.19rem solid #a2a3a5!important;
+  outline:0.19rem solid #ebebeb !important;
   outline-offset: -0.1rem!important;
-  background: #ffffff!important;
+  background: #10486b1a !important;
+  color: #10486b!important;
 }
 
 .row__sticky{
@@ -944,7 +941,7 @@ color: #ffffff;
 }
 
 .custom__badge{
-  display: inline-block;
+  /* display: inline-block;
   min-width: 10px;
   padding: 6px 7px;
   font-size: 11px;
@@ -954,13 +951,29 @@ color: #ffffff;
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
-  /* border-radius: 10px; */
   font-family: 'Montserrat';
   cursor: pointer;
-  /* margin: 2px 1px; */
   margin:17px 1px 2px 1px;
   border-radius: 4px;
+  float: left; */
+  display: inline-block;
+  min-width: 10px;
+  padding: 6px 7px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  font-family: 'Montserrat';
+  cursor: pointer;
+  margin: 17px 1px 2px 1px;
+  border-radius: 5px;
   float: left;
+  background: transparent !important;
+  border: 1px solid #ececec;
+  box-shadow: 0px -1px 2px 1px #fafafa;
 }
 .parentTD{
   padding: 2px 0px!important
@@ -976,7 +989,8 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
   border: 1px solid #11405eeb;
   border-width: 1px!important;
   font-weight: 500!important;
-  color: #d9d1d1!important;
+  /* color: #d9d1d1!important; */
+  color:#ffffff !important;
   background: #10486b;
   font-size: 10px!important;
   text-align: center!important;
@@ -1013,16 +1027,18 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
 
 
 .multiselect-dropdown .dropdown-btn .selected-item-container .selected-item {
-  /* border: 1px solid rgb(252 252 252) !important;
-  background: rgb(16 72 107 / 25%) !important;
-  color: #14374d !important;
-  font-weight: 500; */
-  border: 1px solid #10486b4f !important;
+
+  /* border: 1px solid #10486b4f !important;
   background: #10486b21 !important;
-  /* color: #14374d !important; */
   color: #186393 !important;
   border-radius: 18px!important;
-  font-weight: 500;
+  font-weight: 500; */
+
+  border: 1px solid #01010133 !important;
+    background: #eaeaea !important;
+    color: #6c6c6c !important;
+    border-radius: 4px !important;
+    font-weight: 500;
 }
 
 .multiselect-dropdown .dropdown-btn .selected-item:hover{
@@ -1043,7 +1059,7 @@ span.custom__badge.badge-primary:hover {
   background: #bccdd7;
 }
 span.badge-primary {
-  color: #10486b !important;
+  color: #3670b2 !important;
   background-color: #10486b29;
 }
 span.badge-secondary {
