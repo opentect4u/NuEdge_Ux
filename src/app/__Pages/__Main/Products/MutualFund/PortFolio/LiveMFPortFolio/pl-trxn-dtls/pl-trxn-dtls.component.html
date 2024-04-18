@@ -10,21 +10,18 @@
   <mat-card-content>
     <p-table #dt [value]="pl_trxn"
     [rows]="10" [paginator]="true"
-      [scrollable]="true"
       [rowHover]="true"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       styleClass="p-datatable-lg"
       [pageLinks]="3"
       [globalFilterFields]="getColumns()"
         [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
-
       [showCurrentPageReport]="true">
     <ng-template pTemplate="header">
-        <tr>
+        <tr class="stickyHeader">
             <th *ngFor="let col of column"
                 pSortableColumn="{{col.field}}"
-                [style]="'min-width : '+col.width"
+                [style]="'width : '+col.width"
                >
               {{col.header}}
               <p-sortIcon field="{{col.field}}"></p-sortIcon>
@@ -35,12 +32,20 @@
         <tr
         >
             <td *ngFor="let col of column"
-            [style]="'min-width : '+col.width"
+            [style]="'width : '+col.width"
            >
            <ng-container [ngSwitch]="true">
-            <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'folio_no'">
-              <p class="m-0">
+            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+              <p class="m-0 text-left">
                 {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'folio_no'">
+              <p class="m-0 ">
+                {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+              <p class="m-0 text-center">
+                {{(pl_trxn[col.field] && pl_trxn[col.field] > 0) ? (pl_trxn[col.field] | percent) : "0.00%" }}</p>
             </ng-container>
             <ng-container *ngSwitchDefault>
               <p class="m-0">

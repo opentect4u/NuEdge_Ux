@@ -194,18 +194,14 @@
                     name="trans_duration"
                     id="trans_duration"
                     class="form-control"
+                    formControlName="trans_duration"
                   >
-                    <option value="">All</option>
-                    <option value="{{item}}" *ngFor="let item of [1,2,3,4,5,7,10,'D']">
-                      <span *ngIf="item == 'D';else above_year">Date Range</span>
+                    <option value="{{item.act_value}}" *ngFor="let item of trans_duration">
+                      <span *ngIf="item.act_value == 'D';else above_year">Date Range</span>
                       <ng-template #above_year>
-                        <ng-container *ngIf="item == 1">
-                          <p class="m-0">Below {{item}} Year</p>
-                        </ng-container>
-                        <p class="m-0">Above {{item}} Year</p>
+                        <span class="m-0">{{item?.value}}</span>
                       </ng-template>
                     </option>
-
                   </select>
                 </div>
               </div>
@@ -325,7 +321,7 @@
                 icon="pi pi-eye"
                 label="Show"
               ></button>
-              <button
+              <!-- <button
                 pButton
                 type="button"
                 (click)="Reset()"
@@ -333,7 +329,7 @@
                 iconPos="left"
                 icon="pi pi-refresh"
                 label="Reset"
-              ></button>
+              ></button> -->
             </div>
           </div>
         </form>
@@ -436,7 +432,7 @@
       </div>
     </p-card>
 
-    <!-- <ng-container *ngIf="dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 "> -->
+    <ng-container *ngIf="dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 ">
 
     <!-- CUSTOM Tab -->
     <!-- <div class="container-fluid px-0 mt-4" id="container_Tab">
@@ -500,11 +496,8 @@
     </div>
     <!-- End -->
     <ng-container *ngIf="selected_id == 1 || selected_id == 2">
-      <!-- <mat-card id="matCard" class="mat-elevation-z0">
+      <mat-card id="matCard" class="mat-elevation-z0">
         <mat-card-content class="p-3">
-                    [autoLayout]="true"
-            responsiveLayout="scroll"
-        -->
           <p-table
             #primeTble
             [value]="dataSource"
@@ -512,13 +505,13 @@
             [rowExpandMode]="'single'"
             (onRowExpand)="onRowExpand($event)"
             expandableRows="true"
-            [autoLayout]="true"
-            responsiveLayout="scroll"
+            [columns]="parent_column"
+            [responsive]="true"
           >
             <ng-template pTemplate="header">
-              <tr>
+              <tr class="stickyHeader">
                 <th class="stk"
-                  [style]="'min-width : ' + item.width"
+                 [style]="'width : ' + item.width"
                   *ngFor="let item of parent_column"
                 >
                   {{ item.header }}
@@ -537,12 +530,12 @@
                     <ng-container *ngIf="selected_id == 1;else summary">
                         <p
                         class="m-0 text-left"
-                        style="cursor:pointer"
                         pRipple
                         [pRowToggler]="liveMfPortFolio"
+                        style="cursor:pointer"
                       >
-                      <span role="button">
-                        {{
+                      <strong role="button"  style="font-size:11px"
+                        [matTooltip]='
                           liveMfPortFolio[col.field]
                             ? liveMfPortFolio[col.field] +
                               "-" +
@@ -550,8 +543,18 @@
                               "-" +
                               liveMfPortFolio.option_name
                             : "N/A"
+                        '
+                      >
+                        {{
+                          liveMfPortFolio[col.field]
+                            ? (liveMfPortFolio[col.field] | titlecase) +
+                              "-" +
+                              liveMfPortFolio.plan_name +
+                              "-" +
+                              liveMfPortFolio.option_name
+                            : "N/A"
                         }}
-                      </span>
+                      </strong>
 
                       </p>
                     </ng-container>
@@ -563,7 +566,7 @@
                     >
                       {{
                         liveMfPortFolio[col.field]
-                          ? liveMfPortFolio[col.field] +
+                          ? (liveMfPortFolio[col.field] | titlecase) +
                             "-" +
                             liveMfPortFolio.plan_name +
                             "-" +
@@ -572,7 +575,14 @@
                       }}
                     </p>
                     </ng-template>
+                    <div>
+                      <p style="font-size:11px" class="text-left my-3">Folio- <strong>{{liveMfPortFolio.folio_no}}
 
+                         {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : '(Others)')}}
+
+                      </strong></p>
+                      <p style="font-size:11px" class="text-left m-0">ISIN- <strong>{{liveMfPortFolio.isin_no}}</strong></p>
+                    </div>
                       <span class="custom__badge badge-primary" #tooltip="matTooltip"
                       matTooltip="online">
                         <!-- online -->
@@ -608,7 +618,7 @@
                       <p class="m-0">
                         {{
                           liveMfPortFolio[col.field]
-                            ? (liveMfPortFolio[col.field] | date : "dd-MM-YYYY")
+                            ? (liveMfPortFolio[col.field] | date : "dd-MM-YY")
                             : "N/A"
                         }}
                       </p>
@@ -668,7 +678,7 @@
               <tr>
                 <td
                   *ngFor="let col of parent_column"
-                  [style]="'min-width : ' + col.width"
+                  [style]="'width : ' + col.width"
                 >
                   <ng-container [ngSwitch]="true">
                     <ng-container *ngSwitchCase="col.field == 'scheme_name'">
@@ -714,12 +724,11 @@
               let-i="rowIndex"
             >
               <tr>
-                <td [attr.colspan]="parent_column.length + 1"
+                <td [attr.colspan]="parent_column.length"
                 style="background-color:'#e0e0e0'"
                 >
                   <div class="p-1">
                     <p-table
-                      responsiveLayout="scroll"
                       [value]="liveMfPortFolio.data | slice : 0 : truncated_val"
                       dataKey="id"
                     >
@@ -727,8 +736,7 @@
                         <tr>
                           <th
                             class="subTblLiveMfPortFolio"
-                            [style.min-width]="col.width"
-                            [style.max-width]="col.width"
+                            [style.width]="col.width"
                             *ngFor="let col of child_column"
                           >
                             {{ col.header }}
@@ -737,6 +745,7 @@
                       </ng-template>
                       <ng-template pTemplate="body" let-data let-i="rowIndex">
                         <tr
+                          class="inr_tble"
                           [ngStyle]="{
                             'background-color':
                               data.transaction_subtype.includes('Redemption')
@@ -748,8 +757,7 @@
                         >
                           <td
                             *ngFor="let col of child_column"
-                            [style.min-width]="col.width"
-                            [style.max-width]="col.width"
+                            [style.width]="col.width"
                           >
                             <ng-container [ngSwitch]="true">
                               <ng-container
@@ -759,46 +767,30 @@
                                   {{ i + 1 }}
                                 </p>
                               </ng-container>
-                              <ng-container
-                                *ngSwitchCase="col.field == 'scheme_name'"
-                              >
-                                <p class="m-0">
-                                  {{
-                                    data[col.field]
-                                      ? data[col.field] +
-                                        "-" +
-                                        data.plan_name +
-                                        "-" +
-                                        data.option_name
-                                      : "N/A"
-                                  }}
-                                </p>
-                              </ng-container>
-                              <ng-container
-                                *ngSwitchCase="
-                                  col.field == 'trans_date' ||
-                                  col.field == 'inv_since'
-                                "
-                              >
+                              <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'inv_since'">
                                 <span class="m-0">
                                   {{
                                     data[col.field]
-                                      ? (data[col.field] | date : "dd-MM-YYYY")
+                                      ? (data[col.field] | date : "dd-MM-YY")
                                       : "N/A"
                                   }}
                                 </span>
                               </ng-container>
-                              <ng-container
-                                *ngSwitchCase="
-                                  col.field == 'pur_price' ||
-                                  col.field == 'ret_cagr'
-                                "
-                              >
+                              <ng-container *ngSwitchCase="col.field == 'pur_price'">
                                 <span class="m-0">
                                   {{
                                     data[col.field]
                                       ? (data[col.field] | number : "1.4-4")
-                                      : "0"
+                                      : "0.0000"
+                                  }}
+                                </span>
+                              </ng-container>
+                              <ng-container *ngSwitchCase="col.field == 'ret_cagr'">
+                                <span class="m-0">
+                                  {{
+                                    data.cumml_units > 0 ? (data[col.field]
+                                      ? (data[col.field] | number : "1.4-4")
+                                      : "0.0000") : "0.0000"
                                   }}
                                 </span>
                               </ng-container>
@@ -807,9 +799,9 @@
                               >
                                 <span class="m-0">
                                   {{
-                                    data[col.field]
+                                    (data[col.field] && data[col.field] > 0)
                                       ? (data[col.field] | number : "1.4-4")
-                                      : "0"
+                                      : "0.0000"
                                   }}
                                 </span>
                               </ng-container>
@@ -822,12 +814,18 @@
                               >
                                 <span class="m-0">
                                   {{
-                                    data[col.field]
+                                    data.cumml_units > 0 ? (data[col.field]
                                       ? (data[col.field] | number : "1.2-2")
-                                      : "0"
+                                      : "0.00") : "0.00"
                                   }}
                                 </span>
                               </ng-container>
+                              <ng-container
+                              *ngSwitchCase="col.field == 'ret_abs'">
+                              <span class="m-0">
+                                {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number : "1.2-2") : "0.00") : "0.00"}} %
+                              </span>
+                            </ng-container>
 
                               <ng-container
                                 *ngSwitchCase="
@@ -835,7 +833,6 @@
                                   col.field == 'tot_units' ||
                                   col.field == 'idcwr' ||
                                   col.field == 'idcw_reinv' ||
-                                  col.field == 'ret_abs' ||
                                   col.field == 'idcwp'
                                 "
                               >
@@ -845,7 +842,6 @@
                                       ? (data[col.field] | number : "1.4-4")
                                       : "0"
                                   }}
-                                  {{ col.field == "ret_abs" ? "%" : "" }}
                                 </span>
                               </ng-container>
                               <ng-container *ngSwitchDefault>
@@ -873,13 +869,22 @@
                               >
                                 <p class="m-0">Total</p>
                               </ng-container>
+                              <ng-container  *ngSwitchCase="col.field == 'pur_price'">
+                                <p class="m-0">
+                                  {{
+                                    subLiveMfPortFolio
+                                      ? (subLiveMfPortFolio[col.field]
+                                        | number : "1.4-4")
+                                      : "0.0000"
+                                  }}
+                                </p>
+                              </ng-container>
                               <ng-container
                                 *ngSwitchCase="
                                   col.field == 'tot_amount' ||
                                   col.field == 'tot_tds' ||
                                   col.field == 'cumml_units' ||
                                   col.field == 'tot_stamp_duty' ||
-                                  col.field == 'pur_price' ||
                                   col.field == 'tot_units' ||
                                   col.field == 'curr_val' ||
                                   col.field == 'gain_loss' ||
@@ -901,13 +906,13 @@
                           </td>
                         </tr>
                       </ng-template>
-                      <ng-template pTemplate="emptymessage">
+                      <!-- <ng-template pTemplate="emptymessage">
                         <tr>
                           <td [attr.colspan]="child_column.length">
                             There are no transaction available.
                           </td>
                         </tr>
-                      </ng-template>
+                      </ng-template> -->
                     </p-table>
                     <div
                       class="px-0 py-2 text-left show__More"
@@ -925,8 +930,8 @@
               </tr>
             </ng-template>
           </p-table>
-        <!-- </mat-card-content>
-      </mat-card> -->
+        </mat-card-content>
+      </mat-card>
     </ng-container>
     <ng-container *ngIf="selected_id == 9">
       <pl-trxn-dtls [pl_trxn]="plTrxnDtls"></pl-trxn-dtls>
@@ -939,40 +944,50 @@
           <div class="col-sm-12">
             <form [formGroup]="recent_trxn_frm" (ngSubmit)="searchRecentTrxn()">
               <div class="row d-flex align-items-center">
-                <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12">
-                  <div class="row form-group m-0">
+                <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
+                  <label
+                    for="date_range"> Date(From-To) </label
+                    >
+                    <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date"
+                    formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
+                  <!-- <div class="row form-group m-0">
                     <label
                     for="date_range"
-                    class="col-md-3 col-sm-3 col-xs-3 col-lg-3 text-center"
+                    class="col-md-3 col-sm-3 col-xs-3 col-lg-4 text-center"
                     > Date(From-To) </label
                     >
-                    <div class="col-md-9 col-sm-9 col-lg-9 col-xs-9">
+                    <div class="col-md-9 col-sm-9 col-lg-8 col-xs-9">
                       <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date"
                       formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
-                <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12 my-3">
-                  <div class="row form-group  m-0">
-                  <label
-                  for="date_range"
-                  class="col-md-3 col-sm-3 col-xs-3 col-lg-3 text-center"
-                  > Flow Type </label
-                  >
-                  <div class="col-md-9 col-sm-9 col-lg-9 col-xs-9">
-                    <ng-multiselect-dropdown
+                <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
+                   <label for="trxn_type_id">Transaction Type</label>
+                   <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
+                     [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst"
+                     formControlName="trxn_type_id">
+                   </ng-multiselect-dropdown>
+                </div>
 
-                    [id]="'flow_type'"
-                    [placeholder]="'Select Flow Type'"
-                    [settings]="settingsforFlow_type"
-                    [data]="flowType"
-                    formControlName="flow_type"
-                    >
-                     </ng-multiselect-dropdown>
-                   </div>
-                   </div>
+                <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
+                  <label for="trxn_sub_type_id">Transaction Sub-Type</label>
+                  <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
+                    [settings]="settingsforTrxnSubTypeDropdown" [data]="trxnSubTypeMst" formControlName="trxn_sub_type_id">
+                  </ng-multiselect-dropdown>
                 </div>
-                 <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12 d-flex justify-content-end">
+
+                <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 my-3">
+                  <label for="flow_type"> Cash Flow </label> <br/>
+                <mat-radio-group formControlName="flow_type" aria-label="Select an option" id="flow_type">
+                  <mat-radio-button value="{{item.id}}" color="primary"
+                  [ngClass]="{'mx-3': item.id == 'I'}"
+                  *ngFor="let item of flowType">{{item.name}}</mat-radio-button>
+                </mat-radio-group>
+                </div>
+
+                <!-- Button -->
+                 <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 d-flex justify-content-end align-items-center">
                    <button
                     pButton
                     type="submit"
@@ -982,6 +997,7 @@
                     label="Show"
                   ></button>
                  </div>
+                 <!-- End -->
                 </div>
             </form>
 
@@ -1066,7 +1082,7 @@
       </mat-card>
     </ng-container>
 
-  <!-- </ng-container> -->
+  </ng-container>
   </div>
 </div>
 

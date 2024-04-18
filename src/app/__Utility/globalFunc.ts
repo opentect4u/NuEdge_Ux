@@ -209,7 +209,6 @@ export class global{
       contLoop = (epsRate > epsMax) && (Math.abs(resultValue) > epsMax);
     } while(contLoop && (++iteration < iterMax));
     if(contLoop)return 0;
-    console.log(resultRate)
     return resultRate;
   }
 

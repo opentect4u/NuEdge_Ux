@@ -6,7 +6,8 @@
 }
 .titles__value{
   font-weight: 500;
-  font-size: 11px;
+  /* font-size: 11px; */
+  font-size: 10px;
   color: gray;
 }
 
@@ -24,15 +25,15 @@
   font-size: 21px;
 }
 .infoIcon{
-  background: #27bad229;
+  /* background: #27bad229; */
   color: #13a7c0;
 }
 .warningIcon{
-  background: #e09d0b29;
+  /* background: #e09d0b29; */
   color: #ffb637;
 }
 .successIcon{
-  background: #a5a5a530;
+  /* background: #a5a5a530; */
   color: #959595;
 }
 

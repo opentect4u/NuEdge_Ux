@@ -75,7 +75,6 @@ export class TrendRptComponent implements OnInit {
                   perGrowth =  ((((el.monthly_net_inflow - old_monthly_net_inflow)) / old_monthly_net_inflow) * 100);
                   ratio = el.monthly_net_inflow / el.monthly_inflow
               }
-              console.log(`${index} : ${perGrowth} ${ratio}`)
         }
         dt.push({...el,per_of_growth:perGrowth,ratio:ratio})
       })

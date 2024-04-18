@@ -534,7 +534,8 @@ mat-card {
   border: 0.2px solid #dadada !important;
   /* padding: 2px 1rem !important; */
   padding: 2px 2px !important;
-  font-size: 11px !important;
+  /* font-size: 11px !important; */
+  font-size:10px !important;
   font-weight: 500;
   min-height: 33px;
 }
@@ -968,7 +969,7 @@ color: #ffffff;
   vertical-align: baseline;
   font-family: 'Montserrat';
   cursor: pointer;
-  margin: 17px 1px 2px 1px;
+  margin: 11px 1px 2px 1px;
   border-radius: 5px;
   float: left;
   background: transparent !important;
@@ -1021,8 +1022,8 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
 }
 
 .p-datatable .p-sortable-column .p-column-title, .p-datatable .p-sortable-column .p-sortable-column-icon, .p-datatable .p-sortable-column .p-sortable-column-badge{
-  font-size: 7px!important;
-    font-weight: 600!important;
+  font-size: 6px!important;
+    font-weight: 500!important;
 }
 
 
@@ -1109,7 +1110,29 @@ span.badge-warning {
   }
 } */
 .subTblLiveMfPortFolio{
-  background-color: #10486bba !important;
-  padding: 5px!important;
-  border:1px solid #919191 !important
+  background-color: #1f5c83 !important;
+  padding: 5px !important;
+  border: 1px solid #818181 !important;
+}
+
+.p-datatable .p-datatable-thead > tr.stickyHeader > th {
+  position: -webkit-sticky!important;
+  position: sticky!important;
+  top: 99px!important;
+  z-index:999
+}
+
+@media screen and (max-width: 64em) {
+  .p-datatable .p-datatable-thead > tr.stickyHeader > th {
+      top: 0px!important;
+  }
+}
+
+
+.p-datatable.p-datatable-lg .p-datatable-thead > tr > th {
+  padding: 6px!important;
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-icon{
+  margin-left: 0rem!important;
 }

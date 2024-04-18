@@ -36,12 +36,12 @@ export class PLTransaction{
       {
         field:'scheme_name',
         header:'Scheme',
-        width:'28rem'
+        width:'30rem'
       },
       {
         field:'folio_no',
         header:'Folio',
-        width:'7rem'
+        width:'9rem'
       },
       {
         field:'purchase',
@@ -99,7 +99,7 @@ export class PLTransaction{
 export interface IPLTrxn{
     scheme_name:string;
     xirr:number;
-    abs_ret:number;
+    ret_abs:number;
     gain_loss:number;
     curr_val:number;
     tot_outflow:number;
