@@ -10,15 +10,15 @@
       [rowHover]="true"
       [columns]="column"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      styleClass="p-datatable-lg"
+      styleClass="p-datatable-lg p-datatable-striped"
       [pageLinks]="3"
+      [responsive]="true"
       [globalFilterFields]="getColumns()"
-        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"  [rows]="10"
       [showCurrentPageReport]="true"
       >
     <ng-template pTemplate="header">
-        <tr>
+        <tr class="stickyHeader">
             <th *ngFor="let col of column"
                 pSortableColumn="{{col.field}}"
                 [style]="'width : '+col.width"
@@ -28,14 +28,33 @@
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-recent_trxn>
+    <ng-template pTemplate="body" let-recent_trxn let-i="rowIndex">
         <tr>
             <td *ngFor="let col of column"
             [style]="'width : '+col.width"
            >
-            <p class="m-0">
-              {{ recent_trxn[col.field] ? recent_trxn[col.field] : 'N/A' }}</p>
-             </td>
+           <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <p class="m-0">{{ i + 1}}</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'first_client_name' || col.field == 'bank_name'">
+                <p class="m-0">
+                  {{ recent_trxn[col.field] | titlecase}}</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'from_date'
+              || col.field == 'to_date'
+              || col.field == 'terminated_date'
+              "
+              >
+                <p class="m-0">
+                  {{ recent_trxn[col.field] ? (recent_trxn[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <p class="m-0">
+                  {{ recent_trxn[col.field]  ? recent_trxn[col.field] : 'N/A'}}</p>
+              </ng-container>
+            </ng-container>
+
 
         </tr>
     </ng-template>

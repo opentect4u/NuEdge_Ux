@@ -32,17 +32,17 @@ export class LiveSIPComponent implements OnInit {
 
 
 export interface ILiveSIP{
-    client_name:string;
+    first_client_name:string;
     scheme_name:string;
     active_status:string;
     folio_no:string;
-    sip_freq:string;
-    sip_trxn_no:string;
-    sip_start_date:Date;
-    sip_end_date:Date;
-    terminate_date:Date;
+    freq:string;
+    reg_no:string;
+    from_date:Date;
+    to_date:Date;
+    terminated_date:Date;
     sip_date:Date;
-    sip_amount:number;
+    amount:number;
     remaining_inv:number;
     bank_name:string;
     xirr:number;
@@ -56,77 +56,77 @@ export class LiveSIPColumn{
     {
       field:'sl_no',
       header:'Sl No',
-      width:'10px'
+      width:'5rem'
     },
     {
-      field:'client_name',
+      field:'first_client_name',
       header:'Client',
-      width:'25px'
+      width:'15rem'
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'30px'
+      width:'23rem'
     },
     {
       field:'activate_status',
       header:'Active Status',
-      width:'10px'
+      width:'5rem'
     },
     {
       field:'folio_no',
       header:'Folio',
-      width:'10px'
+      width:'8rem'
     },
     {
-      field:'sip_freq',
+      field:'freq',
       header:'SIP Frq',
-      width:'15px'
+      width:'7rem'
     },
     {
-      field:'sip_trxn_no',
-      header:'SIP Txn No.',
-      width:'15px'
+      field:'reg_no',
+      header:'Txn No.',
+      width:'7rem'
     },
     {
-      field:'sip_start_date',
-      header:'SIP Start Date',
-      width:'15px'
+      field:'from_date',
+      header:'Start Date',
+      width:'7rem'
     },
     {
-      field:'sip_end_date',
-      header:'SIP End Date',
-      width:'15px'
+      field:'to_date',
+      header:'End Date',
+      width:'7rem'
     },
     {
-      field:'terminate_date',
+      field:'terminated_date',
       header:'Term. Date',
-      width:'15px'
+      width:'7rem'
     },
     {
       field:'sip_date',
       header:'SIP Date',
-      width:'15px'
+      width:'5rem'
     },
     {
-      field:'sip_amount',
-      header:'SIP Amt',
-      width:'20px'
+      field:'amount',
+      header:'Amount',
+      width:'6rem'
     },
     {
       field:'remaining_inv',
       header:'Rem. Inst',
-      width:'20px'
+      width:'8rem'
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'20px'
+      width:'12rem'
     },
     {
       field:'xirr',
       header:'XIRR',
-      width:'7px'
+      width:'5rem'
     }
   ]
 }

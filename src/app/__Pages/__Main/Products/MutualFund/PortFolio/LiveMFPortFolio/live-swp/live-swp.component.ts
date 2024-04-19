@@ -32,17 +32,17 @@ export class LiveSWPComponent implements OnInit {
 
 
 export interface ILiveSWP{
-    client_name:string;
+    first_client_name:string;
     scheme_name:string;
     active_status:string;
     folio_no:string;
-    swp_freq:string;
-    swp_trxn_no:string;
-    swp_start_date:Date;
-    swp_end_date:Date;
-    terminate_date:Date;
+    freq:string;
+    reg_no:string;
+    from_date:Date;
+    to_date:Date;
+    terminated_date:Date;
     swp_date:Date;
-    swp_amount:number;
+    amount:number;
     remaining_inv:number;
     bank_name:string;
     xirr:number;
@@ -56,22 +56,22 @@ export class LiveSWPColumn{
     {
       field:'sl_no',
       header:'Sl No',
-      width:'5rem'
+      width:'4rem'
     },
     {
-      field:'client_name',
+      field:'first_client_name',
       header:'Client',
       width:'15rem'
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'30rem'
+      width:'23rem'
     },
     {
       field:'activate_status',
       header:'Active Status',
-      width:'8rem'
+      width:'5rem'
     },
     {
       field:'folio_no',
@@ -79,49 +79,49 @@ export class LiveSWPColumn{
       width:'8rem'
     },
     {
-      field:'swp_freq',
+      field:'freq',
       header:'SWP Frq',
       width:'7rem'
     },
     {
-      field:'swp_trxn_no',
-      header:'SWP Txn No.',
+      field:'reg_no',
+      header:'Txn No.',
       width:'8rem'
     },
     {
-      field:'swp_start_date',
-      header:'SWP Start Date',
-      width:'10rem'
+      field:'from_date',
+      header:'Start Date',
+      width:'7rem'
     },
     {
-      field:'swp_end_date',
-      header:'SWP End Date',
-      width:'10rem'
+      field:'to_date',
+      header:'End Date',
+      width:'7rem'
     },
     {
-      field:'terminate_date',
-      header:'Termination Date',
-      width:'10rem'
+      field:'terminated_date',
+      header:'Term. Date',
+      width:'7rem'
     },
     {
       field:'swp_date',
       header:'SWP Date',
-      width:'10rem'
+      width:'5rem'
     },
     {
-      field:'swp_amount',
-      header:'SWP Amount',
-      width:'10rem'
+      field:'amount',
+      header:'Amount',
+      width:'6rem'
     },
     {
       field:'remaining_inv',
       header:'Rem. Inst',
-      width:'7rem'
+      width:'8rem'
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'10rem'
+      width:'12rem'
     },
     {
       field:'xirr',

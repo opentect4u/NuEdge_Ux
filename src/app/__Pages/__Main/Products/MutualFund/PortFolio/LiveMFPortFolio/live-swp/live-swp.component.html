@@ -30,14 +30,32 @@ styleClass="p-datatable-lg"
       </th>
   </tr>
 </ng-template>
-<ng-template pTemplate="body" let-live_swp>
+<ng-template pTemplate="body" let-live_swp let-i="rowIndex">
   <tr>
       <td *ngFor="let col of column"
       [style]="'min-width : '+col.width"
      >
-      <p class="m-0">
-        {{ live_swp[col.field] ? live_swp[col.field] : 'N/A' }}</p>
-       </td>
+     <ng-container [ngSwitch]="true">
+      <ng-container *ngSwitchCase="col.field == 'sl_no'">
+        <p class="m-0">{{ i + 1}}</p>
+      </ng-container>
+      <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'first_client_name' || col.field == 'bank_name'">
+        <p class="m-0">
+          {{ live_swp[col.field] | titlecase}}</p>
+      </ng-container>
+      <ng-container *ngSwitchCase="col.field == 'from_date'
+      || col.field == 'to_date'
+      || col.field == 'terminated_date'
+      "
+      >
+        <p class="m-0">
+          {{ live_swp[col.field] ? (live_swp[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <p class="m-0">
+          {{ live_swp[col.field]  ? live_swp[col.field] : 'N/A'}}</p>
+      </ng-container>
+    </ng-container>
 
   </tr>
 </ng-template>

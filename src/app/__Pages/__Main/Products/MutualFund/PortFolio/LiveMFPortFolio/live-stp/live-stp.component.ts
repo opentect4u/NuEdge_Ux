@@ -32,15 +32,15 @@ export class LiveSTPComponent implements OnInit {
 
 
 export interface ILiveSTP{
-    client_name:string;
+    first_client_name:string;
     scheme_name:string;
-    active_status:string;
+    activate_status:string;
     folio_no:string;
-    stp_freq:string;
-    stp_trxn_no:string;
-    stp_start_date:Date;
-    stp_end_date:Date;
-    terminate_date:Date;
+    freq:string;
+    reg_no:string;
+    from_date:Date;
+    to_date:Date;
+    terminated_date:Date;
     stp_date:Date;
     stp_amount:number;
     remaining_inv:number;
@@ -59,14 +59,14 @@ export class LiveSTPColumn{
       width:'5rem'
     },
     {
-      field:'client_name',
+      field:'first_client_name',
       header:'Client',
       width:'15rem'
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'30rem'
+      width:'23rem'
     },
     {
       field:'activate_status',
@@ -79,39 +79,39 @@ export class LiveSTPColumn{
       width:'8rem'
     },
     {
-      field:'stp_freq',
+      field:'freq',
       header:'STP Frq',
       width:'7rem'
     },
     {
-      field:'stp_trxn_no',
+      field:'reg_no',
       header:'STP Txn No.',
-      width:'8rem'
+      width:'7rem'
     },
     {
-      field:'stp_start_date',
+      field:'from_date',
       header:'STP Start Date',
-      width:'10rem'
+      width:'7rem'
     },
     {
-      field:'stp_end_date',
+      field:'to_date',
       header:'STP End Date',
-      width:'10rem'
+      width:'7rem'
     },
     {
       field:'terminate_date',
-      header:'Termination Date',
-      width:'10rem'
+      header:'Term. Date',
+      width:'7rem'
     },
     {
       field:'stp_date',
       header:'STP Date',
-      width:'10rem'
+      width:'5rem'
     },
     {
-      field:'stp_amount',
-      header:'StP Amount',
-      width:'10rem'
+      field:'amount',
+      header:'Amount',
+      width:'6rem'
     },
     {
       field:'remaining_inv',
@@ -121,7 +121,7 @@ export class LiveSTPColumn{
     {
       field:'bank_name',
       header:'Bank',
-      width:'10rem'
+      width:'13rem'
     },
     {
       field:'xirr',

@@ -324,6 +324,7 @@ mappings between `act_value` and `value` for transition durations. */
     });
 
    this.__live_sip_stp_swp_form.controls['live_sip'].valueChanges.subscribe(value =>{
+      this.liveSipPortFolio = []
       this.call_api_for_sip_func(this.main_frm_dt,value)
    })
 
@@ -853,11 +854,12 @@ mappings between `act_value` and `value` for transition durations. */
   /** call api for sip */
   call_api_for_sip_func = (formData,val) =>{
     if(val){
-      this.__dbIntr.api_call(1,'/clients/liveMFSIP',
+      this.__dbIntr.api_call(1,'/clients/liveMFSTW',
       this.utility.convertFormData(
         {
           ...formData,
-          sip_type:val
+          sip_type:val,
+          report_type:'P'
         })
       )
       .pipe(pluck('data')).subscribe(
@@ -876,11 +878,12 @@ mappings between `act_value` and `value` for transition durations. */
    /** call api for stp */
    call_api_for_stp_func = (formData,val) =>{
     if(val){
-      this.__dbIntr.api_call(1,'/clients/liveMFSTP',
+      this.__dbIntr.api_call(1,'/clients/liveMFSTW',
       this.utility.convertFormData(
         {
           ...formData,
-          stp_type:val
+          stp_type:val,
+          report_type:'SO'
         })
       )
       .pipe(pluck('data')).subscribe(
@@ -899,8 +902,8 @@ mappings between `act_value` and `value` for transition durations. */
   /** call api for stp */
   call_api_for_swp_func = (formData,val) =>{
     if(val){
-  this.__dbIntr.api_call(1,'/clients/liveMFSWP',
-      this.utility.convertFormData({...formData,swp_type:val}))
+  this.__dbIntr.api_call(1,'/clients/liveMFSTW',
+      this.utility.convertFormData({...formData,swp_type:val,report_type:'R'}))
       .pipe(pluck('data')).subscribe(
         (result:Required<{data:Partial<ILiveSWP>[],client_details:client}>) =>{
             this.liveSwpPortFolio = result.data.map((item:ILiveSWP) => (
@@ -923,8 +926,8 @@ mappings between `act_value` and `value` for transition durations. */
         ...this.recent_trxn_frm.value,
         date_range:global.getActualVal(this.recent_date_range.inputFieldValue),
         flow_type:this.recent_trxn_frm.value.flow_type == 'A' ? '' : this.recent_trxn_frm.value.flow_type,
-        trans_sub_type:this.utility.mapIdfromArray(this.recent_trxn_frm.value.trxn_sub_type_id,'id'),
-        trans_type:this.utility.mapIdfromArray(this.recent_trxn_frm.value.trxn_type_id,'id'),
+        trans_sub_type:this.utility.mapIdfromArray(this.recent_trxn_frm.value.trxn_sub_type_id,'trans_sub_type'),
+        trans_type:this.utility.mapIdfromArray(this.recent_trxn_frm.value.trxn_type_id,'trans_type'),
        })
       )
       .pipe(pluck('data')).subscribe((result:Required<{data:Partial<IRecentTrxn>[],client_details:client}>)  =>{

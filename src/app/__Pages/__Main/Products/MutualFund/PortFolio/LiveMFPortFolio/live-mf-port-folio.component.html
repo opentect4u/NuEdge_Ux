@@ -1035,7 +1035,7 @@
             <form [formGroup]="__live_sip_stp_swp_form">
 
               <ng-container  *ngIf="selected_id == 4">
-                <mat-radio-group [formControlName]="'live_sip'">
+                <mat-radio-group [formControlName]="'live_sip'" color="primary">
                   <mat-radio-button value="L">
                     Live SIP
                   </mat-radio-button>
@@ -1049,7 +1049,7 @@
               </ng-container>
 
               <ng-container  *ngIf="selected_id == 5">
-                <mat-radio-group [formControlName]="'live_stp'">
+                <mat-radio-group [formControlName]="'live_stp'" color="primary">
                   <mat-radio-button value="L">
                     Live STP
                   </mat-radio-button>
@@ -1063,7 +1063,7 @@
               </ng-container>
 
               <ng-container  *ngIf="selected_id == 6">
-                <mat-radio-group [formControlName]="'live_swp'">
+                <mat-radio-group [formControlName]="'live_swp'" color="primary">
                   <mat-radio-button value="L">
                     Live SWP
                   </mat-radio-button>
