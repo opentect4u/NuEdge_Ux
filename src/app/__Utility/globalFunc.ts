@@ -203,9 +203,12 @@ export class global{
     var contLoop = true;
     do {
       resultValue = irrResult(values, dates, resultRate);
+      console.log(resultValue);
       newRate = resultRate - resultValue / irrResultDeriv(values, dates, resultRate);
+      console.log(newRate);
       epsRate = Math.abs(newRate - resultRate);
       resultRate = newRate;
+      console.log(resultRate);
       contLoop = (epsRate > epsMax) && (Math.abs(resultValue) > epsMax);
     } while(contLoop && (++iteration < iterMax));
     if(contLoop)return 0;

@@ -7,22 +7,20 @@
 
 <p-table #dt [value]="liveSTP"
 [rows]="10" [paginator]="true"
-[scrollable]="true"
 [rowHover]="true"
 [columns]="column"
 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
 styleClass="p-datatable-lg"
 [pageLinks]="3"
 [globalFilterFields]="getColumns()"
-  [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+  [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]" [rows]="10"
 [showCurrentPageReport]="true"
 >
 <ng-template pTemplate="header">
   <tr>
       <th *ngFor="let col of column"
           pSortableColumn="{{col.field}}"
-          [style]="'min-width : '+col.width"
+          [style]="'width : '+col.width"
          >
         {{col.header}}
         <p-sortIcon field="{{col.field}}"></p-sortIcon>
@@ -32,7 +30,7 @@ styleClass="p-datatable-lg"
 <ng-template pTemplate="body" let-live_stp>
   <tr>
       <td *ngFor="let col of column"
-      [style]="'min-width : '+col.width"
+      [style]="'width : '+col.width"
      >
       <p class="m-0">
         {{ live_stp[col.field] ? live_stp[col.field] : 'N/A' }}</p>

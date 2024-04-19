@@ -564,6 +564,17 @@
                       role="button"
                       pRipple
                     >
+                    <strong role="button"  style="font-size:11px"
+                    [matTooltip]='
+                      liveMfPortFolio[col.field]
+                        ? liveMfPortFolio[col.field] +
+                          "-" +
+                          liveMfPortFolio.plan_name +
+                          "-" +
+                          liveMfPortFolio.option_name
+                        : "N/A"
+                    '
+                  >
                       {{
                         liveMfPortFolio[col.field]
                           ? (liveMfPortFolio[col.field] | titlecase) +
@@ -573,12 +584,13 @@
                             liveMfPortFolio.option_name
                           : "N/A"
                       }}
+                      </strong>
                     </p>
                     </ng-template>
                     <div>
-                      <p style="font-size:11px" class="text-left my-3">Folio- <strong>{{liveMfPortFolio.folio_no}}
+                      <p style="font-size:11px" class="text-left my-2">Folio- <strong>{{liveMfPortFolio.folio_no}}
 
-                         {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : '(Others)')}}
+                         {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : '')}}
 
                       </strong></p>
                       <p style="font-size:11px" class="text-left m-0">ISIN- <strong>{{liveMfPortFolio.isin_no}}</strong></p>
@@ -635,7 +647,7 @@
                             ? (liveMfPortFolio[col.field] | number : "1.2-2")
                             : liveMfPortFolio[col.field] == 0
                             ?  (liveMfPortFolio[col.field] | number : "1.2-2")
-                            : "0.00"
+                            : "0"
                         }}
                       </p>
                     </ng-container>
@@ -643,7 +655,6 @@
                       *ngSwitchCase="
                         col.field == 'gain_loss' ||
                         col.field == 'ret_abs' ||
-                        col.field == 'tot_units' ||
                         col.field == 'curr_val' ||
                         col.field == 'idcw_reinv' ||
                         col.field == 'idcwp' ||
@@ -656,11 +667,18 @@
                             ? (liveMfPortFolio[col.field] | number : "1.2-2")
                             : liveMfPortFolio[col.field] == 0
                             ? (liveMfPortFolio[col.field] | number : "1.2-2")
-                            : "0.00"
+                            : "0"
                         }}
                         {{ col.field == "ret_abs" ? "%" : "" }}
                       </p>
                     </ng-container>
+
+                    <ng-container *ngSwitchCase="col.field == 'tot_units'">
+                      <p class="m-0">
+                        {{liveMfPortFolio[col.field] > 0 ? liveMfPortFolio[col.field] : 0}}
+                      </p>
+                    </ng-container>
+
                     <ng-container *ngSwitchDefault>
                       <p class="m-0">
                         {{
@@ -685,10 +703,20 @@
                       <p class="m-0">Grand Total</p>
                     </ng-container>
                     <ng-container
+                      *ngSwitchCase=" col.field == 'tot_units'">
+                      <p class="m-0">
+                        {{
+                          parentLiveMfPortFolio
+                            ? (parentLiveMfPortFolio[col.field]
+                              | number : "1.4-4")
+                            : "0"
+                        }}
+                      </p>
+                      </ng-container>
+                    <ng-container
                       *ngSwitchCase="
                         col.field == 'inv_cost' ||
                         col.field == 'pur_nav' ||
-                        col.field == 'tot_units' ||
                         col.field == 'curr_val' ||
                         col.field == 'gain_loss' ||
                         col.field == 'ret_abs'
@@ -699,7 +727,7 @@
                           parentLiveMfPortFolio
                             ? (parentLiveMfPortFolio[col.field]
                               | number : "1.2-2")
-                            : "0.00"
+                            : "0"
                         }}
                         {{ col.field == "ret_abs" ? "%" : "" }}
                       </p>
@@ -781,17 +809,17 @@
                                   {{
                                     data[col.field]
                                       ? (data[col.field] | number : "1.4-4")
-                                      : "0.0000"
+                                      : "0"
                                   }}
                                 </span>
                               </ng-container>
-                              <ng-container *ngSwitchCase="col.field == 'ret_cagr'">
+                              <ng-container *ngSwitchCase="col.field == 'xirr'">
                                 <span class="m-0">
                                   {{
                                     data.cumml_units > 0 ? (data[col.field]
-                                      ? (data[col.field] | number : "1.4-4")
-                                      : "0.0000") : "0.0000"
-                                  }}
+                                      ? (data[col.field] | number : "1.2-2")
+                                      : "0") : "0"
+                                  }}%
                                 </span>
                               </ng-container>
                               <ng-container
@@ -801,7 +829,7 @@
                                   {{
                                     (data[col.field] && data[col.field] > 0)
                                       ? (data[col.field] | number : "1.4-4")
-                                      : "0.0000"
+                                      : "0"
                                   }}
                                 </span>
                               </ng-container>
@@ -816,14 +844,14 @@
                                   {{
                                     data.cumml_units > 0 ? (data[col.field]
                                       ? (data[col.field] | number : "1.2-2")
-                                      : "0.00") : "0.00"
+                                      : "0") : "0"
                                   }}
                                 </span>
                               </ng-container>
                               <ng-container
                               *ngSwitchCase="col.field == 'ret_abs'">
                               <span class="m-0">
-                                {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number : "1.2-2") : "0.00") : "0.00"}} %
+                                {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number : "1.2-2") : "0") : "0"}} %
                               </span>
                             </ng-container>
 
@@ -869,13 +897,13 @@
                               >
                                 <p class="m-0">Total</p>
                               </ng-container>
-                              <ng-container  *ngSwitchCase="col.field == 'pur_price'">
+                              <ng-container  *ngSwitchCase="col.field == 'pur_price' || col.field == 'tot_units'">
                                 <p class="m-0">
                                   {{
                                     subLiveMfPortFolio
                                       ? (subLiveMfPortFolio[col.field]
                                         | number : "1.4-4")
-                                      : "0.0000"
+                                      : "0"
                                   }}
                                 </p>
                               </ng-container>
@@ -885,7 +913,7 @@
                                   col.field == 'tot_tds' ||
                                   col.field == 'cumml_units' ||
                                   col.field == 'tot_stamp_duty' ||
-                                  col.field == 'tot_units' ||
+
                                   col.field == 'curr_val' ||
                                   col.field == 'gain_loss' ||
                                   col.field == 'ret_abs'
@@ -896,7 +924,7 @@
                                     subLiveMfPortFolio
                                       ? (subLiveMfPortFolio[col.field]
                                         | number : "1.2-2")
-                                      : "0.00"
+                                      : "0"
                                   }}
                                   {{ col.field == "ret_abs" ? "%" : "" }}
                                 </p>
@@ -948,19 +976,8 @@
                   <label
                     for="date_range"> Date(From-To) </label
                     >
-                    <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date"
+                    <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date" [showButtonBar]="true"
                     formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
-                  <!-- <div class="row form-group m-0">
-                    <label
-                    for="date_range"
-                    class="col-md-3 col-sm-3 col-xs-3 col-lg-4 text-center"
-                    > Date(From-To) </label
-                    >
-                    <div class="col-md-9 col-sm-9 col-lg-8 col-xs-9">
-                      <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date"
-                      formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
-                    </div>
-                  </div> -->
                 </div>
                 <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
                    <label for="trxn_type_id">Transaction Type</label>
@@ -987,7 +1004,7 @@
                 </div>
 
                 <!-- Button -->
-                 <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 d-flex justify-content-end align-items-center">
+                 <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 d-flex justify-content-end align-items-end">
                    <button
                     pButton
                     type="submit"
@@ -1157,7 +1174,7 @@
               <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                 <p class="m-0">
                   {{
-                    data[col.field]
+                    (data[col.field] | titlecase)
                       ? data[col.field] +
                         "-" +
                         data.plan_name +

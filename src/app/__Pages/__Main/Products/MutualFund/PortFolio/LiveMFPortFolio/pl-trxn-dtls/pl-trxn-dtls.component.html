@@ -36,16 +36,25 @@
            >
            <ng-container [ngSwitch]="true">
             <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-              <p class="m-0 text-left">
-                {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}</p>
+              <p class="m-0 text-left ellipsiisTxt"
+              [ngClass]="{'text-danger':pl_trxn.curr_val == 0}"
+              [matTooltip]='pl_trxn[col.field]'
+              >
+                {{pl_trxn[col.field] ? ( pl_trxn[col.field] | titlecase) : "N/A" }}</p>
             </ng-container>
+
+            <ng-container *ngSwitchCase="col.field == 'xirr'">
+              <p class="m-0 ">
+                {{pl_trxn[col.field] ? (pl_trxn[col.field] | percent : "1.2-2") : '0%' }}</p>
+            </ng-container>
+
             <ng-container *ngSwitchCase="col.field == 'folio_no'">
               <p class="m-0 ">
                 {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}</p>
             </ng-container>
             <ng-container *ngSwitchCase="col.field == 'ret_abs'">
               <p class="m-0 text-center">
-                {{(pl_trxn[col.field] && pl_trxn[col.field] > 0) ? (pl_trxn[col.field] | percent) : "0.00%" }}</p>
+                {{(pl_trxn[col.field] && pl_trxn[col.field] > 0) ? (pl_trxn[col.field] | percent) : '0%' }}</p>
             </ng-container>
             <ng-container *ngSwitchDefault>
               <p class="m-0">

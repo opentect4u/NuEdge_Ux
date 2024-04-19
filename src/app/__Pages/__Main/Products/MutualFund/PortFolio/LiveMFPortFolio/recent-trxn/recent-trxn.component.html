@@ -10,16 +10,12 @@
   <mat-card-content>
     <p-table #dt [value]="recent_trxn"
     [rows]="10" [paginator]="true"
-      [scrollable]="true"
       [rowHover]="true"
-      [autoLayout]="true"
-            responsiveLayout="scroll"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       styleClass="p-datatable-lg"
       [pageLinks]="3"
       [globalFilterFields]="getColumns()"
-        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]" [rows]="10"
       [showCurrentPageReport]="true"
 
       >
@@ -27,7 +23,7 @@
         <tr>
             <th *ngFor="let col of recent_trxn_clmn"
                 pSortableColumn="{{col.field}}"
-                [style]="'min-width : '+col.width"
+                [style]="'width : '+col.width"
                >
               {{col.header}}
               <p-sortIcon field="{{col.field}}"></p-sortIcon>
@@ -35,11 +31,19 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-recent_trxn>
-        <tr>
+        <tr
+        [ngStyle]="{
+          'background-color': recent_trxn.transaction_subtype.includes('Rejection') ? '#b70a0a30' : ''}"
+        >
             <td *ngFor="let col of recent_trxn_clmn"
-            [style]="'min-width : '+col.width"
+            [style]="'width : '+col.width"
            >
            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                <p class="m-0 text-left">
+                  {{recent_trxn[col.field] ? ( recent_trxn[col.field] | titlecase) : "N/A" }}
+                </p>
+              </ng-container>
               <ng-container *ngSwitchCase="col.field == 'tot_amount' || col.field == 'tot_units' || col.field == 'pur_price'">
                 <p class="m-0">{{recent_trxn[col.field] }}</p>
               </ng-container>

@@ -513,7 +513,7 @@ mat-card {
   color: #495057;
   background: #10486b;
   transition: box-shadow 0.2s;
-  font-size: 10px !important;
+  font-size: 11px !important;
   font-weight: 500;
   color: #fff;
   white-space:normal!important
@@ -533,9 +533,9 @@ mat-card {
   text-align: center !important;
   border: 0.2px solid #dadada !important;
   /* padding: 2px 1rem !important; */
-  padding: 2px 2px !important;
+  padding: 6px 2px !important;
   /* font-size: 11px !important; */
-  font-size:10px !important;
+  font-size:11px !important;
   font-weight: 500;
   min-height: 33px;
 }
@@ -925,7 +925,8 @@ color: #ffffff;
 
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item{
-  font-size: 13px!important;
+  /* font-size: 13px!important; */
+   font-size: 11px!important;
 }
 .p-dropdown .p-dropdown-label{
   /* font-size: 16px;
@@ -1130,7 +1131,7 @@ span.badge-warning {
 
 
 .p-datatable.p-datatable-lg .p-datatable-thead > tr > th {
-  padding: 6px!important;
+  padding: 9px!important;
 }
 
 .p-datatable .p-sortable-column .p-sortable-column-icon{

@@ -56,77 +56,77 @@ export class LiveSIPColumn{
     {
       field:'sl_no',
       header:'Sl No',
-      width:'5rem'
+      width:'10px'
     },
     {
       field:'client_name',
       header:'Client',
-      width:'15rem'
+      width:'25px'
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'30rem'
+      width:'30px'
     },
     {
       field:'activate_status',
       header:'Active Status',
-      width:'8rem'
+      width:'10px'
     },
     {
       field:'folio_no',
       header:'Folio',
-      width:'8rem'
+      width:'10px'
     },
     {
       field:'sip_freq',
       header:'SIP Frq',
-      width:'7rem'
+      width:'15px'
     },
     {
       field:'sip_trxn_no',
       header:'SIP Txn No.',
-      width:'8rem'
+      width:'15px'
     },
     {
       field:'sip_start_date',
       header:'SIP Start Date',
-      width:'10rem'
+      width:'15px'
     },
     {
       field:'sip_end_date',
       header:'SIP End Date',
-      width:'10rem'
+      width:'15px'
     },
     {
       field:'terminate_date',
-      header:'Termination Date',
-      width:'10rem'
+      header:'Term. Date',
+      width:'15px'
     },
     {
       field:'sip_date',
       header:'SIP Date',
-      width:'10rem'
+      width:'15px'
     },
     {
       field:'sip_amount',
-      header:'SIP Amount',
-      width:'10rem'
+      header:'SIP Amt',
+      width:'20px'
     },
     {
       field:'remaining_inv',
       header:'Rem. Inst',
-      width:'7rem'
+      width:'20px'
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'10rem'
+      width:'20px'
     },
     {
       field:'xirr',
       header:'XIRR',
-      width:'5rem'
+      width:'7px'
     }
   ]
 }

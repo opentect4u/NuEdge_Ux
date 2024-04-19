@@ -248,7 +248,7 @@ mappings between `act_value` and `value` for transition durations. */
         pan_no: new FormControl(''),
         view_type: new FormControl(''),
         family_members: new FormControl([]),
-        trans_type:new FormControl('A'),
+        trans_type:new FormControl('L'),
         view_funds_type: new FormControl('A'),
         view_mf_report:new FormControl(''),
         is_new_tab:new FormControl(false),
@@ -472,6 +472,15 @@ mappings between `act_value` and `value` for transition durations. */
     this.liveSwpPortFolio = [];
     this.liveStpPortFolio = [];
     this.recent_trxn = [];
+    const dt = new Date();
+    dt.setDate(dt.getDate() - 1)
+    this.recent_trxn_frm.patchValue({
+      trxn_type_id:[],
+      trxn_sub_type_id:[],
+      flow_type:'A',
+      date_range:[dt,this.max_date]
+
+    })
     this.__live_sip_stp_swp_form.reset('',{
       emitEvent:false,
       onlySelf:true
@@ -532,7 +541,29 @@ mappings between `act_value` and `value` for transition durations. */
             // else{
             //     this.calculateTransaction(redem_arr,with_out_redem_arr,index);
             // }
-              this.dataSource[index].data = res;
+            let dates = [this.dataSource[index].nav_date];
+            let amt = [this.dataSource[index].curr_val];
+            let _index = 0;
+            let nper = 0;
+              this.dataSource[index].data = res.filter((item:ISubDataSource,i:number) =>{
+                    try{
+
+                      if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
+                            amt.splice(_index,0,(Number(item.tot_gross_amount) * -1));
+                            dates.splice(_index,0,item.trans_date);
+                            _index += 1;
+                            // item.xirr = global.XIRR(amt,dates,0);
+                            nper = item.cumml_units >= 0 ? (item.days / 365) : 0;
+                            item.xirr = item.cumml_units >= 0 ? ((Math.pow((item.curr_val/Number(item.tot_amount)),(1/nper)) - 1) * 100) : 0;
+                      }
+                    }
+                    catch(err){
+                        console.log(err);
+                        item.xirr = 0;
+                    }
+                    return item;
+              });
+              console.log(this.dataSource[index].data)
               this.calculat_Total_Value_For_Table_Footer(res,this.dataSource[index])
               this.show_more('M',index);
             /**** End */
@@ -729,20 +760,43 @@ mappings between `act_value` and `value` for transition durations. */
       .pipe(pluck('data'))
       .subscribe((res:Required<{data,client_details:client}>) => {
             try{
-              this.dataSource = res.data.filter((item: ILivePortFolio) => {
+              if(this.main_frm_dt?.trans_type == 'A'){
+                    this.dataSource = res.data.filter((item: ILivePortFolio) => {
+                      item.id = `${Math.random()}_${item.product_code}`;
+                      item.data=[];
+                      if(item.mydata){
+                        const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                        const dt = item?.mydata.all_date_arr;
+                        item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                      }
+                      else{
+                        item.xirr =0
+                      }
+                      return item
+                });
+              }
+              else{
+                this.dataSource = res.data.filter((item: ILivePortFolio) => {
+                  if(item.curr_val > 0 ){
+                    item.id = `${Math.random()}_${item.product_code}`;
+                    item.data=[];
+                    if(item.mydata){
+                      const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                      const dt = item?.mydata.all_date_arr;
+                      item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                    }
+                    else{
+                      item.xirr =0
+                    }
+                    return true
+                   }
+                   return false
+                });
+                console.log(this.dataSource)
+              }
 
-                item.id = `${Math.random()}_${item.product_code}`;
-                item.data=[];
-                if(item.mydata){
-                  const amt = item?.mydata.all_amt_arr.map(item => Number(item));
-                  const dt = item?.mydata.all_date_arr;
-                  item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
-                }
-                else{
-                  item.xirr =0
-                }
-                return item
-            });
+
+
           // this.clientDtls = res.client_details;
           this.setClientDtls(res.client_details)
           this.parentLiveMfPortFolio = {
@@ -775,8 +829,16 @@ mappings between `act_value` and `value` for transition durations. */
             this.plTrxnDtls = result.data.filter((item: IPLTrxn) =>
               {
                 item.scheme_name= `${item.scheme_name} - ${item.plan_name} - ${item.option_name}`,
-                item.gain_loss= ((Number(item.curr_val) + Number(item.tot_outflow)) - Number(item.tot_inflow)),
-                item.ret_abs = item.tot_inflow > 0 ?  (Number(item.gain_loss) / Number(item.tot_inflow)): 0
+                item.gain_loss= ((Number(item.curr_val) + Number(item.tot_outflow)) - Number(item.tot_inflow));
+                item.ret_abs = item.tot_inflow > 0 ?  (Number(item.gain_loss) / Number(item.tot_inflow)): 0;
+                if(item.mydata){
+                  const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                  const dt = item?.mydata.all_date_arr;
+                  item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                }
+                else{
+                  item.xirr =0
+                }
                 return item
               }
 
@@ -860,7 +922,9 @@ mappings between `act_value` and `value` for transition durations. */
         ...this.main_frm_dt,
         ...this.recent_trxn_frm.value,
         date_range:global.getActualVal(this.recent_date_range.inputFieldValue),
-        flow_type:this.utility.mapIdfromArray(this.recent_trxn_frm.value.flow_type,'id')
+        flow_type:this.recent_trxn_frm.value.flow_type == 'A' ? '' : this.recent_trxn_frm.value.flow_type,
+        trans_sub_type:this.utility.mapIdfromArray(this.recent_trxn_frm.value.trxn_sub_type_id,'id'),
+        trans_type:this.utility.mapIdfromArray(this.recent_trxn_frm.value.trxn_type_id,'id'),
        })
       )
       .pipe(pluck('data')).subscribe((result:Required<{data:Partial<IRecentTrxn>[],client_details:client}>)  =>{
@@ -1040,7 +1104,7 @@ export interface ISubDataSource{
   days:number;
   ret_abs: number;
   ret_cagr: number;
-  ret_xirr:number;
+  xirr:number;
   trans_mode: string;
 }
 
@@ -1066,12 +1130,12 @@ export class LiveMFPortFolioColumn{
     {
       field:'inv_since',
       header:'Inv. Since',
-      width:'60px'
+      width:'55px'
     },
     {
       field:'sensex',
       header:'SENSEX',
-      width:'70px'
+      width:'60px'
     },
     {
       field:'nifty50',
@@ -1091,22 +1155,22 @@ export class LiveMFPortFolioColumn{
     {
       field:'pur_nav',
       header:'Pur. NAV',
-      width:'50px'
+      width:'55px'
     },
     {
       field:'tot_units',
       header:'Units',
-      width:'50px'
+      width:'60px'
     },
     {
       field:'nav_date',
       header:'NAV Date',
-      width:'60px'
+      width:'55px'
     },
     {
       field:'curr_nav',
       header:'Curr.NAV',
-      width:'50px'
+      width:'55px'
     },
     {
       field:'curr_val',
@@ -1121,7 +1185,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'idcwp',
       header:'IDCWP',
-      width:'40px'
+      width:'45px'
     },
     {
       field:'curr_val',
@@ -1155,7 +1219,7 @@ export class LiveMFPortFolioColumn{
       field:"sl_no",header:'Sl No',width:'18px',
     },
     {
-      field:'transaction_type',header:'Trans Type',width:'47px'
+      field:'transaction_type',header:'Trans Type',width:'55px'
     },
     {
       field:'trans_date',header:'Trans Date',width:"37px"
@@ -1206,13 +1270,13 @@ export class LiveMFPortFolioColumn{
       field:'gain_loss',header:'Gain/Loss',width:"40px"
     },
     {
-      field:'days',header:'Days',width:"30px"
+      field:'days',header:'Days',width:"22px"
     },
     {
       field:'ret_abs',header:'Ret.ABS',width:"35px"
     },
     {
-      field:'ret_cagr',header:'XIRR',width:"35px"
+      field:'xirr',header:'XIRR',width:"35px"
     },
     {
       field:'trans_mode',header:'Trans. Mode',width:"32px"

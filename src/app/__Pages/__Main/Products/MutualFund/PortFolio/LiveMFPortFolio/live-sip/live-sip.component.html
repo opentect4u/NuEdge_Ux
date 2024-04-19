@@ -7,7 +7,6 @@
 
     <p-table #dt [value]="liveSIP"
     [rows]="10" [paginator]="true"
-      [scrollable]="true"
       [rowHover]="true"
       [columns]="column"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -22,7 +21,7 @@
         <tr>
             <th *ngFor="let col of column"
                 pSortableColumn="{{col.field}}"
-                [style]="'min-width : '+col.width"
+                [style]="'width : '+col.width"
                >
               {{col.header}}
               <p-sortIcon field="{{col.field}}"></p-sortIcon>
@@ -32,7 +31,7 @@
     <ng-template pTemplate="body" let-recent_trxn>
         <tr>
             <td *ngFor="let col of column"
-            [style]="'min-width : '+col.width"
+            [style]="'width : '+col.width"
            >
             <p class="m-0">
               {{ recent_trxn[col.field] ? recent_trxn[col.field] : 'N/A' }}</p>

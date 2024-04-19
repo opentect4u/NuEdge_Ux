@@ -50,13 +50,8 @@ export class RecentTrxnClmn{
     {
       field:'trans_date',
       header:'Trans date',
-      width:'4rem'
+      width:'5rem'
     },
-    // {
-    //   field:'arn_code',
-    //   header:'ARN code',
-    //   width:'4rem'
-    // },
     {
       field:'scheme_name',
       header:'Scheme',
@@ -65,12 +60,12 @@ export class RecentTrxnClmn{
     {
       field:'folio_no',
       header:'Folio',
-      width:'10rem'
+      width:'5rem'
     },
     {
       field:'transaction_type',
       header:'Trans. Type',
-      width:'20rem'
+      width:'10rem'
     },
     {
       field:'tot_amount',

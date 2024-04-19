@@ -46,7 +46,7 @@ export class PLTransaction{
       {
         field:'purchase',
         header:'Purchase',
-        width:'7rem'
+        width:'9rem'
       },
       {
         field:'switch_in',
@@ -55,13 +55,13 @@ export class PLTransaction{
       },
       {
         field:'tot_inflow',
-        header:'Total Inflow',
+        header:'Tot. Inflow',
         width:'10rem'
       },
       {
         field:'redemption',
         header:'Redemption',
-        width:'10rem'
+        width:'8rem'
       },
       {
         field:'switch_out',
@@ -70,7 +70,7 @@ export class PLTransaction{
       },
       {
         field:'tot_outflow',
-        header:'Total Outflow',
+        header:'Tot. Outflow',
         width:'10rem'
       },
       {
@@ -86,12 +86,12 @@ export class PLTransaction{
       {
         field:'ret_abs',
         header:'Abs. Ret',
-        width:'10rem'
+        width:'9rem'
       },
       {
         field:'xirr',
         header:'XIRR',
-        width:'4rem'
+        width:'6rem'
       }
   ]
 }
@@ -111,5 +111,7 @@ export interface IPLTrxn{
     folio_no:number;
     plan_name:string;
     option_name:string;
+    mydata:any;
+    nav_date:Date;
 
 }
