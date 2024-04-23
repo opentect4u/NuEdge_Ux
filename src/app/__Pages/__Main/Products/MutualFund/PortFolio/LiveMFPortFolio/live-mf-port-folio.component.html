@@ -32,6 +32,7 @@
                     placeholder="Select Date Range"
                     formControlName="valuation_as_on"
                     [readonlyInput]="true"
+                    [maxDate]="max_date"
                     [id]="'valuation_as_on'"
                     [showIcon]="true"
                     [hideOnDateTimeSelect]="true"
@@ -205,7 +206,23 @@
                   </select>
                 </div>
               </div>
+              <div class="form-group row" *ngIf="filter_criteria.value.trans_duration == 'D'">
+                <label
+                  for="trans_date_range"
+                  class="col-sm-4 col-xs-3 col-md-4 col-lg-3 text-center"
+                  >Date(From-To)</label
+                >
+                <div class="col-sm-8 col-md-8 col-xs-9 col-lg-9">
+                  <p-calendar #calendar  dateFormat="dd/mm/yy"
+                  placeholder="Select Date Range" formControlName="trans_date_range" selectionMode="range"
+                    [maxDate]="max_date"
+                    [readonlyInput]="true"  [id]="'trans_date_range'" [showIcon]="true" [hideOnDateTimeSelect]="true"
+                  [showButtonBar]="true">
+                </p-calendar>
+                </div>
+              </div>
             </div>
+
             <div class="col-md-12 col-sm-12 col-lg-4">
               <div class="form-group row">
                 <label

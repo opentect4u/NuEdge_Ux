@@ -23,6 +23,7 @@ import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { IUpcommingTrxn } from './upcomming-trxn/upcomming-trxn.component';
 import { ISystematicMissedTrxn } from './systematic-missed-trxn/systematic-missed-trxn.component';
 import { Observable, Subscription, fromEvent } from 'rxjs';
+
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
   tot_amount:number | undefined,
@@ -58,6 +59,9 @@ type TotalparentLiveMfPortFolio = {
 })
 
 export class LiveMfPortFolioComponent implements OnInit {
+
+
+  @ViewChild("calendar", { static: false }) private TrnsDateRange: Calendar;
 
   resizeObservable$: Observable<Event>;
   resizeSubscription$: Subscription;
@@ -276,7 +280,7 @@ mappings between `act_value` and `value` for transition durations. */
         view_funds_type: new FormControl('A'),
         view_mf_report:new FormControl(''),
         is_new_tab:new FormControl(false),
-
+        trans_date_range:new FormControl(''),
         trans_duration: new FormControl('A'),
         show_valuation_with:new FormControl(this.__portfolioFiter?.val_with),
         trans_with:new FormControl(this.__portfolioFiter?.trans_with.filter(item => item.id ==1)),
@@ -371,6 +375,17 @@ mappings between `act_value` and `value` for transition durations. */
   ngAfterViewInit(){
 
     this.getwindowresizeEVent()
+
+     /**
+     * Event Trigger after change Transaction Duration
+     */
+    this.recent_trxn_frm.controls['trans_duration'].valueChanges.subscribe((res) => {
+      if(res != 'D'){
+        this.recent_trxn_frm.controls['trans_date_range'].setValue('')
+      }
+    });
+    /** End */
+
 
      /**
      * Event Trigger after change Transaction Type
@@ -562,6 +577,7 @@ mappings between `act_value` and `value` for transition durations. */
       valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
       family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
       family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
+      trans_date_range:this.filter_criteria.value.trans_duration == 'D' ? global.getActualVal(this.TrnsDateRange.inputFieldValue) : ''
     })
     this.main_frm_dt = rest;
     this.call_corrosponding_api(this.selected_id,rest)
