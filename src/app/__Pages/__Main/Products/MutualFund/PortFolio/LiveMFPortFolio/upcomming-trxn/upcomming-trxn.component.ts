@@ -83,7 +83,7 @@ export class UpcommingColumns {
     },
     {
       field:'freq',
-      header:'SIP Frq',
+      header:'Frq',
       width:'7rem'
     },
     {

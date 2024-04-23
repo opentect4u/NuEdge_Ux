@@ -11,6 +11,7 @@ import { LiveSTPComponent } from './live-stp/live-stp.component';
 import { LiveSWPComponent } from './live-swp/live-swp.component';
 import { UpcommingTrxnComponent } from './upcomming-trxn/upcomming-trxn.component';
 import { SystematicMissedTrxnComponent } from './systematic-missed-trxn/systematic-missed-trxn.component';
+import { RejectTrxnComponent } from './reject-trxn/reject-trxn.component';
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
 @NgModule({
@@ -23,6 +24,7 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     LiveSWPComponent,
     UpcommingTrxnComponent,
     SystematicMissedTrxnComponent,
+    RejectTrxnComponent,
   ],
   imports: [
     CommonModule,

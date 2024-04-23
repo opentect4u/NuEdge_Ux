@@ -644,9 +644,9 @@
                       <p class="m-0">
                         {{
                           liveMfPortFolio[col.field]
-                            ? (liveMfPortFolio[col.field] | number : "1.2-2")
+                            ? liveMfPortFolio[col.field]
                             : liveMfPortFolio[col.field] == 0
-                            ?  (liveMfPortFolio[col.field] | number : "1.2-2")
+                            ?  liveMfPortFolio[col.field]
                             : "0"
                         }}
                       </p>
@@ -664,9 +664,9 @@
                       <p class="m-0">
                         {{
                           liveMfPortFolio[col.field]
-                            ? (liveMfPortFolio[col.field] | number : "1.2-2")
+                            ? liveMfPortFolio[col.field]
                             : liveMfPortFolio[col.field] == 0
-                            ? (liveMfPortFolio[col.field] | number : "1.2-2")
+                            ? liveMfPortFolio[col.field]
                             : "0"
                         }}
                         {{ col.field == "ret_abs" ? "%" : "" }}
@@ -708,7 +708,7 @@
                         {{
                           parentLiveMfPortFolio
                             ? (parentLiveMfPortFolio[col.field]
-                              | number : "1.4-4")
+                              | number : "1.2-2")
                             : "0"
                         }}
                       </p>
@@ -1156,6 +1156,12 @@
         </mat-card-content>
       </mat-card>
       <upcomming-trxn [upcommingTrxn]="upcomming_trxn"></upcomming-trxn>
+    </ng-container>
+
+    <ng-container *ngIf="selected_id == 13">
+      <mat-card id="matCard"  class="mat-elevation-z0">
+            <reject-trxn [rejectTrxn]="[]"></reject-trxn>
+      </mat-card>
     </ng-container>
 
     <ng-container *ngIf="selected_id == 14">

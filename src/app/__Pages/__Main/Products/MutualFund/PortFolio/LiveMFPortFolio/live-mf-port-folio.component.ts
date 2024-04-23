@@ -143,7 +143,11 @@ mappings between `act_value` and `value` for transition durations. */
 
   /** Holding  Systematic Missed Transaction Master Data*/
     systematicMissedTrxn:ISystematicMissedTrxn[] = []
-  /**** ENd */
+  /**** End */
+
+  /** Holding Reject Transaction Master Data */
+    rejectTrxn:TrxnRpt[] = []
+  /** End */
 
     /**
    * Setting of multiselect dropdown
@@ -533,6 +537,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.liveStpPortFolio = [];
     this.systematicMissedTrxn = [];
     this.recent_trxn = [];
+    this.rejectTrxn = [];
     const dt = new Date();
     dt.setDate(dt.getDate() - 1)
     this.recent_trxn_frm.patchValue({
@@ -815,14 +820,24 @@ mappings between `act_value` and `value` for transition durations. */
         case 9: this.call_api_for_pL_func(fb); break; // call P&L
         case 11:
         case 12: this.getTrxnTypeMst();break
+        case 13: this.call_api_for_reject_transactions(fb);break
         case 14: this.call_api_for_systematicMissedTransaction(fb);break;
         default: break;
       }
 
   }
 
+  call_api_for_reject_transactions = (formData) =>{
+        if(this.rejectTrxn.length == 0){
+          this.__dbIntr.api_call(1,'/clients/rejectTransactions',this.utility.convertFormData(formData)).pipe(pluck('data')).   subscribe((res:Required<{data:TrxnRpt[],client_details:client}>) =>{
+            this.rejectTrxn = res.data;
+            this.setClientDtls(res.client_details);
+          })
+        }
+  }
+
   call_api_for_systematicMissedTransaction = (formData) =>{
-      if(this.systematicMissedTrxn.length > 0){
+      if(this.systematicMissedTrxn.length == 0){
         this.__dbIntr.api_call(1,'/clients/systematicMissedTransaction',this.utility.convertFormData(formData)).pipe(pluck('data')).subscribe((res:Required<{data:ISystematicMissedTrxn[],client_details:client}>) =>{
                 this.systematicMissedTrxn = res.data;
                 this.setClientDtls(res.client_details);
@@ -877,9 +892,9 @@ mappings between `act_value` and `value` for transition durations. */
             pur_nav:(this.Total__Count(this.dataSource,x => Number(x.pur_nav)) / this.dataSource.length),
             tot_units:this.Total__Count(this.dataSource,x => Number(x.tot_units)),
             curr_val:this.Total__Count(this.dataSource,x => Number(x.curr_val)),
-            total:this.Total__Count(this.dataSource,x => x.curr_val),
+            total:this.Total__Count(this.dataSource,x => Number(x.curr_val)),
             ret_abs: (this.Total__Count(this.dataSource,x => Number(x.ret_abs)) / this.dataSource.length),
-            gain_loss:this.Total__Count(this.dataSource,x => x.gain_loss),
+            gain_loss:this.Total__Count(this.dataSource,x =>  Number(x.gain_loss)),
           }
           setTimeout(() => {
             this.isOverflown(document.getElementById('cus___tab'));
@@ -1263,7 +1278,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'idcwr',
       header:'IDCWR',
-      width:'70px'
+      width:'42px'
     },
     {
       field:'pur_nav',
@@ -1273,7 +1288,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'tot_units',
       header:'Units',
-      width:'60px'
+      width:'63px'
     },
     {
       field:'nav_date',
@@ -1371,7 +1386,7 @@ export class LiveMFPortFolioColumn{
       field:'curr_nav',header:'Curr.NAV',width:"50px"
     },
     {
-      field:'curr_val',header:'Curr. Value',width:"42px"
+      field:'curr_val',header:'Curr. Value',width:"45px"
     },
     {
       field:'idcw_reinv',header:'IDCW Reinv',width:"34px"

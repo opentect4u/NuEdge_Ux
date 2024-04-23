@@ -996,6 +996,7 @@ padding: 2rem 1.5rem 2rem 1.5rem!important;
   background: #10486b;
   font-size: 10px!important;
   text-align: center!important;
+  padding: 1rem 0!important;
 }
 .p-dropdown-panel{
   z-index: 99999!important;
@@ -1135,5 +1136,5 @@ span.badge-warning {
 }
 
 .p-datatable .p-sortable-column .p-sortable-column-icon{
-  margin-left: 0rem!important;
+  margin-left: 2px!important;
 }
