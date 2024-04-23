@@ -1,0 +1,94 @@
+<mat-card id="matCard" class="mat-elevation-z0">
+  <mat-card-header class="px-3">
+    <mat-card-title></mat-card-title>
+    <!-- <input id="search" class="form-control rounded w-25" type="text" (input)="filterGlobal_secondary($event)"
+    placeholder="Search" /> -->
+    <input
+      id="search"
+      class="form-control rounded w-25 pr-4"
+      type="text"
+      (input)="filterGlobal_secondary($event)"
+      placeholder="Search"
+    />
+  </mat-card-header>
+  <mat-card-content>
+    <p-table
+      #dt
+      [value]="upcommingTrxn"
+      [rows]="10"
+      [paginator]="true"
+      [rowHover]="true"
+      [columns]="column"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      styleClass="p-datatable-lg p-datatable-striped"
+      [pageLinks]="3"
+      [responsive]="true"
+      [globalFilterFields]="getColumns()"
+      [rowsPerPageOptions]="[10, 50, 100, { showAll: 'All' }]"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr class="stickyHeader">
+          <th
+            *ngFor="let col of column"
+            pSortableColumn="{{ col.field }}"
+            [style]="'width : ' + col.width"
+          >
+            {{ col.header }}
+            <p-sortIcon field="{{ col.field }}"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-recent_trxn let-i="rowIndex">
+        <tr>
+          <td *ngFor="let col of column" [style]="'width : ' + col.width">
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <p class="m-0">{{ i + 1 }}</p>
+              </ng-container>
+              <ng-container
+                *ngSwitchCase="
+                  col.field == 'scheme_name' ||
+                  col.field == 'first_client_name' ||
+                  col.field == 'bank_name'
+                "
+              >
+                <p class="m-0">
+                  {{ recent_trxn[col.field] | titlecase }}
+                </p>
+              </ng-container>
+              <ng-container
+                *ngSwitchCase="
+                  col.field == 'from_date' ||
+                  col.field == 'to_date' ||
+                  col.field == 'terminated_date'
+                "
+              >
+                <p class="m-0">
+                  {{
+                    recent_trxn[col.field]
+                      ? (recent_trxn[col.field] | date : "dd-MM-YYYY")
+                      : "N/A"
+                  }}
+                </p>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <p class="m-0">
+                  {{ recent_trxn[col.field] ? recent_trxn[col.field] : "N/A" }}
+                </p>
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-recent_trxn>
+        <tr>
+          <td [attr.colspan]="column.length">
+            <p class="m-0">No Records Found</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </mat-card-content>
+</mat-card>

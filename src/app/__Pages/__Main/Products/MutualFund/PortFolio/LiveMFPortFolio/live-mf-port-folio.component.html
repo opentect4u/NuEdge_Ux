@@ -369,7 +369,7 @@
           </div>
         </div>
         <div class="col-md-6 col-sm-12 col-lg-3 my-2 border-right">
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-start">
             <mat-icon class="details__icon infoIcon">location_on</mat-icon>
             <span class="heading_title"
               >Address:&nbsp;
@@ -472,10 +472,10 @@
             </div> -->
 
     <div class="container-fluid px-0 mt-4 border-bottom" id="container_Tab">
-      <button class="arrow-left" mat-icon-button (click)="moveNavigation(-100)">
+      <button class="arrow-left" id="arrow-left" mat-icon-button (click)="moveNavigation(-100)">
         <mat-icon>chevron_left</mat-icon>
       </button>
-      <button class="arrow-right" mat-icon-button (click)="moveNavigation(100)">
+      <button class="arrow-right" id="arrow-right" mat-icon-button (click)="moveNavigation(100)">
         <mat-icon>chevron_right</mat-icon>
       </button>
       <ul class="cus__tab" id="cus___tab">
@@ -1075,7 +1075,6 @@
                   </mat-radio-button>
                 </mat-radio-group>
               </ng-container>
-
             </form>
           </mat-card-title>
         </mat-card-header>
@@ -1097,6 +1096,75 @@
           </ng-container>
         </mat-card-content>
       </mat-card>
+    </ng-container>
+
+    <ng-container *ngIf="selected_id == 12">
+      <mat-card id="matCard"  class="mat-elevation-z0">
+        <mat-card-content class="px-4 py-0 border-bottom">
+        <div class="row ">
+          <div class="col-sm-12">
+            <form [formGroup]="upcomming_trxn_frm" (ngSubmit)="searchUpcommingTrxn()">
+              <div class="row d-flex align-items-end">
+                <!-- <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
+                  <label
+                    for="date_range"> Date(From-To) </label
+                    >
+                    <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [minDate]="max_date" [showButtonBar]="true"
+                    formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
+                </div> -->
+                <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
+                   <label for="trxn_type_id">Transaction Type</label>
+                   <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
+                     [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst"
+                     formControlName="trxn_type_id">
+                   </ng-multiselect-dropdown>
+                </div>
+
+                <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
+                  <label for="trxn_sub_type_id">Transaction Sub-Type</label>
+                  <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
+                    [settings]="settingsforTrxnSubTypeDropdown" [data]="UpComming_trxnSubTypeMst" formControlName="trxn_sub_type_id">
+                  </ng-multiselect-dropdown>
+                </div>
+
+                <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 my-3">
+                  <label for="flow_type"> Cash Flow </label> <br/>
+                <mat-radio-group formControlName="flow_type" aria-label="Select an option" id="flow_type">
+                  <mat-radio-button value="{{item.id}}" color="primary"
+                  [ngClass]="{'mx-3': item.id == 'I'}"
+                  *ngFor="let item of flowType">{{item.name}}</mat-radio-button>
+                </mat-radio-group>
+                </div>
+
+                <!-- Button -->
+                 <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12 d-flex justify-content-end my-3 align-items-end">
+                   <button
+                    pButton
+                    type="submit"
+                    class="p-button-lg mx-3"
+                    iconPos="left"
+                    icon="pi pi-eye"
+                    label="Show"
+                  ></button>
+                 </div>
+                 <!-- End -->
+                </div>
+            </form>
+
+          </div>
+        </div>
+        </mat-card-content>
+      </mat-card>
+      <upcomming-trxn [upcommingTrxn]="upcomming_trxn"></upcomming-trxn>
+    </ng-container>
+
+    <ng-container *ngIf="selected_id == 14">
+         <mat-card id="matCard"  class="mat-elevation-z0">
+            <mat-card-content class="px-4 py-2">
+                  <systematic-missed-trxn [systematicMissedTrxn]="systematicMissedTrxn" [transId]="selected_id"></systematic-missed-trxn>
+            </mat-card-content>
+        </mat-card>
+
     </ng-container>
 
   </ng-container>

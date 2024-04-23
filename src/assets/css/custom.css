@@ -918,7 +918,7 @@ textarea:focus {
   top: 50%;
   left:0;
   transform: translate(0, -50%);
-  display: none!important;
+  /* display: none!important; */
 }
 
 .arrow-right {
@@ -926,14 +926,14 @@ textarea:focus {
   right:0;
   top: 50%;
   transform: translate(0, -50%);
-  display: none!important
+  /* display: none!important; */
 }
 
 .cus__tab {
   overflow-x: hidden;
   white-space: nowrap;
-  margin-left: 0px;
-  margin-right: 0px;
+  /* margin-left: 0px;
+  margin-right: 0px; */
 }
 /***End**/
 

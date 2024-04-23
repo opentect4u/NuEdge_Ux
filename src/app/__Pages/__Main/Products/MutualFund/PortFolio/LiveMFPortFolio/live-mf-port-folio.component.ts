@@ -20,6 +20,9 @@ import { ILiveSTP } from './live-stp/live-stp.component';
 import { ILiveSWP } from './live-swp/live-swp.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
+import { IUpcommingTrxn } from './upcomming-trxn/upcomming-trxn.component';
+import { ISystematicMissedTrxn } from './systematic-missed-trxn/systematic-missed-trxn.component';
+import { Observable, Subscription, fromEvent } from 'rxjs';
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
   tot_amount:number | undefined,
@@ -55,6 +58,10 @@ type TotalparentLiveMfPortFolio = {
 })
 
 export class LiveMfPortFolioComponent implements OnInit {
+
+  resizeObservable$: Observable<Event>;
+  resizeSubscription$: Subscription;
+
 /* The above code is defining an array of objects in TypeScript. Each object in the array has two
 properties: `act_value` and `value`. The `act_value` property represents an actual value, while the
 `value` property represents a corresponding label. The array appears to be defining different
@@ -123,11 +130,20 @@ mappings between `act_value` and `value` for transition durations. */
    */
   trxnSubTypeMst: rntTrxnType[] = [];
 
+  /**
+    * Holding Transaction SubType Master Data for Upcomming Transaction
+    */
+  UpComming_trxnSubTypeMst: rntTrxnType[] = [];
+
 
   view_by = ClientType
 
   /** Holding client details in array format after search */
   __clientMst:client[] = [];
+
+  /** Holding  Systematic Missed Transaction Master Data*/
+    systematicMissedTrxn:ISystematicMissedTrxn[] = []
+  /**** ENd */
 
     /**
    * Setting of multiselect dropdown
@@ -184,6 +200,10 @@ mappings between `act_value` and `value` for transition durations. */
     /** Holding Recent transaction details */
     recent_trxn:Partial<IRecentTrxn>[] = []
     /*** End */
+
+    /** Holding Upcomming Transaction Details*/
+    upcomming_trxn:Partial<IUpcommingTrxn>[] = []
+    /** End */
 
      /** Holding Recent transaction details */
      liveSipPortFolio:Partial<ILiveSIP>[] = []
@@ -270,6 +290,14 @@ mappings between `act_value` and `value` for transition durations. */
     trxn_sub_type_id:new FormControl([]),
   })
 
+  upcomming_trxn_frm = new FormGroup({
+    flow_type: new FormControl('A'),
+    trxn_type_id:new FormControl([],{
+      updateOn:'blur'
+    }),
+    trxn_sub_type_id:new FormControl([]),
+  })
+
   constructor(private __dbIntr:DbIntrService,
     private utility:UtiliService,
     private router:Router,
@@ -286,7 +314,6 @@ mappings between `act_value` and `value` for transition durations. */
 
   ngOnInit(): void {
 
-    // console.log(this.__portFolioTab);
     if(this.activateRoute.snapshot.queryParams.id){
       let rt_prms = JSON.parse(this.utility.decrypt_dtls(atob(this.activateRoute.snapshot.queryParams.id)));
       try{
@@ -312,15 +339,44 @@ mappings between `act_value` and `value` for transition durations. */
     }
 
   }
+  /** To check whether the li of the ul has been overflowed or not  */
+   isOverflown(element){
+    try{
+      let cus__tab:any  = document.getElementById('cus___tab');
+      let arrow_left:any = document.getElementById('arrow-left');
+      let arrow_right:any = document.getElementById('arrow-right');
+      let isOverflowed = element?.scrollHeight > element?.clientHeight || element?.scrollWidth > element?.clientWidth;
+      if(arrow_left && arrow_right && cus__tab){
+      arrow_left.style.display = isOverflowed ? 'block' : 'none';
+      arrow_right.style.display = isOverflowed ? 'block' : 'none';
+      cus__tab.style.margin = isOverflowed ? '0px 33px' : '0px 0px';
+    }
+    }
+    catch(err){
+    }
 
+  }
+
+  getwindowresizeEVent = () =>{
+    this.resizeObservable$ = fromEvent(window, 'resize');
+    this.resizeSubscription$ = this.resizeObservable$.subscribe(e => {
+        this.isOverflown(document.getElementById('cus___tab'));
+    });
+  }
 
   ngAfterViewInit(){
+
+    this.getwindowresizeEVent()
 
      /**
      * Event Trigger after change Transaction Type
      */
      this.recent_trxn_frm.controls['trxn_type_id'].valueChanges.subscribe((res) => {
       this.getTrxnSubTypeMst(res);
+    });
+
+    this.upcomming_trxn_frm.controls['trxn_type_id'].valueChanges.subscribe((res) => {
+      this.getTrxnSubTypeMstForUpcomming(res);
     });
 
    this.__live_sip_stp_swp_form.controls['live_sip'].valueChanges.subscribe(value =>{
@@ -393,6 +449,9 @@ mappings between `act_value` and `value` for transition durations. */
     /** End */
   }
 
+  ngOnDestroy() {
+    this.resizeSubscription$.unsubscribe();
+  }
 
   /**
   *  evnt trigger on search particular client & after select client
@@ -472,6 +531,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.liveSipPortFolio = [];
     this.liveSwpPortFolio = [];
     this.liveStpPortFolio = [];
+    this.systematicMissedTrxn = [];
     this.recent_trxn = [];
     const dt = new Date();
     dt.setDate(dt.getDate() - 1)
@@ -480,7 +540,11 @@ mappings between `act_value` and `value` for transition durations. */
       trxn_sub_type_id:[],
       flow_type:'A',
       date_range:[dt,this.max_date]
-
+    })
+    this.upcomming_trxn_frm.patchValue({
+      trxn_type_id:[],
+      trxn_sub_type_id:[],
+      flow_type:'A',
     })
     this.__live_sip_stp_swp_form.reset('',{
       emitEvent:false,
@@ -559,12 +623,10 @@ mappings between `act_value` and `value` for transition durations. */
                       }
                     }
                     catch(err){
-                        console.log(err);
                         item.xirr = 0;
                     }
                     return item;
               });
-              console.log(this.dataSource[index].data)
               this.calculat_Total_Value_For_Table_Footer(res,this.dataSource[index])
               this.show_more('M',index);
             /**** End */
@@ -747,11 +809,24 @@ mappings between `act_value` and `value` for transition durations. */
   call_corrosponding_api = (id:number,fb) =>{
       switch(id){
         case 1:
-        case 2:this.call_api_for_detail_summary_func(fb);break;
+        case 2:this.call_api_for_detail_summary_func(fb);
+        break;
         case 3: break;
         case 9: this.call_api_for_pL_func(fb); break; // call P&L
-        case 11: this.getTrxnTypeMst();break
+        case 11:
+        case 12: this.getTrxnTypeMst();break
+        case 14: this.call_api_for_systematicMissedTransaction(fb);break;
         default: break;
+      }
+
+  }
+
+  call_api_for_systematicMissedTransaction = (formData) =>{
+      if(this.systematicMissedTrxn.length > 0){
+        this.__dbIntr.api_call(1,'/clients/systematicMissedTransaction',this.utility.convertFormData(formData)).pipe(pluck('data')).subscribe((res:Required<{data:ISystematicMissedTrxn[],client_details:client}>) =>{
+                this.systematicMissedTrxn = res.data;
+                this.setClientDtls(res.client_details);
+        })
       }
   }
 
@@ -778,7 +853,7 @@ mappings between `act_value` and `value` for transition durations. */
               }
               else{
                 this.dataSource = res.data.filter((item: ILivePortFolio) => {
-                  if(item.curr_val > 0 ){
+                  if(Number(item.curr_val) > 0 ){
                     item.id = `${Math.random()}_${item.product_code}`;
                     item.data=[];
                     if(item.mydata){
@@ -793,10 +868,7 @@ mappings between `act_value` and `value` for transition durations. */
                    }
                    return false
                 });
-                console.log(this.dataSource)
               }
-
-
 
           // this.clientDtls = res.client_details;
           this.setClientDtls(res.client_details)
@@ -809,7 +881,11 @@ mappings between `act_value` and `value` for transition durations. */
             ret_abs: (this.Total__Count(this.dataSource,x => Number(x.ret_abs)) / this.dataSource.length),
             gain_loss:this.Total__Count(this.dataSource,x => x.gain_loss),
           }
-          console.log(this.parentLiveMfPortFolio.ret_abs)
+          setTimeout(() => {
+            this.isOverflown(document.getElementById('cus___tab'));
+
+          }, 1000);
+
             }
             catch(ex){
                 // console.log(ex)
@@ -989,9 +1065,43 @@ mappings between `act_value` and `value` for transition durations. */
     }
   };
 
+  getTrxnSubTypeMstForUpcomming = <T extends rntTrxnType[]>(trxnType: T) => {
+    if(trxnType.length > 0){
+      this.__dbIntr
+        .api_call(
+          0,
+          '/rntTransTypeSubtypeShow',
+          'arr_trans_type=' + this.utility.mapIdfromArray(trxnType, 'trans_type')
+        )
+        .pipe(pluck('data'))
+        .subscribe((res: rntTrxnType[]) => {
+          this.UpComming_trxnSubTypeMst = res;
+        });
+    }
+    else{
+      this.UpComming_trxnSubTypeMst = [];
+      this.upcomming_trxn_frm.get('trxn_sub_type_id').setValue([]);
+    }
+  };
+
   searchRecentTrxn =() =>{
     this.recent_trxn = [];
     this.call_api_for_recent_trxn_func()
+  }
+
+  searchUpcommingTrxn = () =>{
+      this.__dbIntr.api_call(1,'/clients/upcommingTransactions',
+        this.utility.convertFormData({
+          ...this.main_frm_dt,
+          ...this.recent_trxn_frm.value,
+          flow_type:this.upcomming_trxn_frm.value.flow_type == 'A' ? '' : this.recent_trxn_frm.value.flow_type,
+          trans_sub_type:this.utility.mapIdfromArray(this.upcomming_trxn_frm.value.trxn_sub_type_id,'trans_sub_type'),
+          trans_type:this.utility.mapIdfromArray(this.upcomming_trxn_frm.value.trxn_type_id,'trans_type'),
+         }))
+         .pipe(pluck('data'))
+         .subscribe(res =>{
+            console.log(res)
+         })
   }
 
   getSubTabDtls = (tabs) =>{
@@ -1246,7 +1356,7 @@ export class LiveMFPortFolioColumn{
       field:'pur_price',header:'Pur. NAV',width:"42px"
     },
     {
-      field:'tot_units',header:'Units',width:"42px"
+      field:'tot_units',header:'Units',width:"50px"
     },
     {
       field:'cumml_units',header:'Cumml.Unit',width:"50px"

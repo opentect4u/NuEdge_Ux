@@ -9,6 +9,8 @@ import { RecentTrxnComponent } from './recent-trxn/recent-trxn.component';
 import { LiveSIPComponent } from './live-sip/live-sip.component';
 import { LiveSTPComponent } from './live-stp/live-stp.component';
 import { LiveSWPComponent } from './live-swp/live-swp.component';
+import { UpcommingTrxnComponent } from './upcomming-trxn/upcomming-trxn.component';
+import { SystematicMissedTrxnComponent } from './systematic-missed-trxn/systematic-missed-trxn.component';
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
 @NgModule({
@@ -19,6 +21,8 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     LiveSIPComponent,
     LiveSTPComponent,
     LiveSWPComponent,
+    UpcommingTrxnComponent,
+    SystematicMissedTrxnComponent,
   ],
   imports: [
     CommonModule,

@@ -24,8 +24,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 registerLocaleData(localeIn);
 
 @NgModule({
-  declarations: [
-    AppComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
