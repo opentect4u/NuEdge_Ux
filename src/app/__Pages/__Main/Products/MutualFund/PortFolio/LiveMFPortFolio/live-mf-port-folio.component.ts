@@ -325,6 +325,8 @@ mappings between `act_value` and `value` for transition durations. */
     if(this.activateRoute.snapshot.queryParams.id){
       let rt_prms = JSON.parse(this.utility.decrypt_dtls(atob(this.activateRoute.snapshot.queryParams.id)));
       try{
+
+          console.log(rt_prms)
           this.filter_criteria.get('client_name').setValue(rt_prms ? rt_prms?.client_name : '' ,{emitEvent:false});
           this.filter_criteria.patchValue({
             valuation_as_on:rt_prms ? new Date(rt_prms?.valuation_as_on) : '',
@@ -334,8 +336,13 @@ mappings between `act_value` and `value` for transition durations. */
             view_funds_type: rt_prms ? rt_prms?.view_funds_type : '',
             view_mf_report: rt_prms ? rt_prms?.view_mf_report : '',
             view_type: rt_prms ? rt_prms?.view_type : '',
+            trans_duration:rt_prms ? rt_prms?.trans_duration : '',
+            trans_date_range:rt_prms ? (rt_prms?.trans_date_range ? [new Date(rt_prms?.trans_date_range[0]),new Date(rt_prms?.trans_date_range[1])] : '') : '',
           });
-          this.showReport();
+
+          setTimeout(() => {
+            this.showReport()
+        }, 1000);
       }
       catch(ex){
         // console.log(ex);
@@ -379,7 +386,7 @@ mappings between `act_value` and `value` for transition durations. */
      /**
      * Event Trigger after change Transaction Duration
      */
-    this.recent_trxn_frm.controls['trans_duration'].valueChanges.subscribe((res) => {
+    this.filter_criteria.controls['trans_duration'].valueChanges.subscribe((res) => {
       if(res != 'D'){
         this.recent_trxn_frm.controls['trans_date_range'].setValue('')
       }
@@ -580,24 +587,28 @@ mappings between `act_value` and `value` for transition durations. */
       trans_date_range:this.filter_criteria.value.trans_duration == 'D' ? global.getActualVal(this.TrnsDateRange.inputFieldValue) : ''
     })
     this.main_frm_dt = rest;
-    this.call_corrosponding_api(this.selected_id,rest)
+    this.call_corrosponding_api(this.selected_id,rest);
     }
   }
+
 
   call_func_tab_change = () =>{
     if(this.__selectedRow){
       this.primeTbl.toggleRow(this.__selectedRow);
       this.__selectedRow = null
     }
-    this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
-    const {family_members,...rest} = Object.assign({},{
-      ...this.filter_criteria.value,
-      valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
-      family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
-      family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
-    })
-    this.main_frm_dt = rest;
-    this.call_corrosponding_api(this.selected_id,rest)
+    this.call_corrosponding_api(this.selected_id,this.main_frm_dt)
+
+    // this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
+    // const {family_members,...rest} = Object.assign({},{
+    //   ...this.filter_criteria.value,
+    //   valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
+    //   family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
+    //   family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
+    // })
+    // this.main_frm_dt = rest;
+    // this.call_corrosponding_api(this.selected_id,rest)
+
   }
 
 
@@ -862,6 +873,7 @@ mappings between `act_value` and `value` for transition durations. */
   }
 
   call_api_for_detail_summary_func(formData) {
+    console.log(formData)
     if(this.dataSource.length == 0){
       this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
       .pipe(pluck('data'))
