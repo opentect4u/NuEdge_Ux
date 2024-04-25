@@ -1133,6 +1133,13 @@ span.badge-warning {
   z-index:999
 }
 
+.p-datatable .p-datatable-thead > tr.stickyHeader__innerTbl > th {
+  position: -webkit-sticky!important;
+  position: sticky!important;
+  top: 137px!important;
+  z-index:1
+}
+
 @media screen and (max-width: 64em) {
   .p-datatable .p-datatable-thead > tr.stickyHeader > th {
       top: 0px!important;

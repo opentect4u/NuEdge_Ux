@@ -36,7 +36,7 @@ export class PLTransaction{
       {
         field:'scheme_name',
         header:'Scheme',
-        width:'30rem'
+        width:'32rem'
       },
       {
         field:'folio_no',
@@ -51,7 +51,7 @@ export class PLTransaction{
       {
         field:'switch_in',
         header:'Switch In',
-        width:'10rem'
+        width:'8rem'
       },
       {
         field:'tot_inflow',
@@ -61,17 +61,17 @@ export class PLTransaction{
       {
         field:'redemption',
         header:'Redemption',
-        width:'8rem'
+        width:'9rem'
       },
       {
         field:'switch_out',
         header:'Switch Out',
-        width:'10rem'
+        width:'8rem'
       },
       {
         field:'tot_outflow',
         header:'Tot. Outflow',
-        width:'8rem'
+        width:'9rem'
       },
       {
         field:'curr_val',
@@ -81,7 +81,7 @@ export class PLTransaction{
       {
         field:'gain_loss',
         header:'Gain/Loss',
-        width:'10rem'
+        width:'8rem'
       },
       {
         field:'ret_abs',
@@ -91,7 +91,7 @@ export class PLTransaction{
       {
         field:'xirr',
         header:'XIRR',
-        width:'5rem'
+        width:'6rem'
       }
   ]
 }

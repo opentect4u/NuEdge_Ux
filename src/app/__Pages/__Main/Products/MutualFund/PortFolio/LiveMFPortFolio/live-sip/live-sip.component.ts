@@ -62,12 +62,12 @@ export interface ILiveSIP{
 
 export class LiveSIPColumn{
   public static column:column[] = [
-    {
-      field:'sl_no',
-      header:'Sl No',
-      width:'5rem',
-      isVisible:['A','L','I']
-    },
+    // {
+    //   field:'sl_no',
+    //   header:'Sl No',
+    //   width:'4rem',
+    //   isVisible:['A','L','I']
+    // },
     {
       field:'first_client_name',
       header:'Client',
@@ -82,26 +82,26 @@ export class LiveSIPColumn{
     },
     {
       field:'activate_status',
-      header:'Active Status',
+      header:'Status',
       width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'folio_no',
       header:'Folio',
-      width:'8rem',
+      width:'7rem',
       isVisible:['A','L','I']
     },
     {
       field:'freq',
-      header:'SIP Frq',
-      width:'7rem',
+      header:'Frq',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'reg_no',
       header:'Txn No.',
-      width:'7rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
@@ -137,13 +137,13 @@ export class LiveSIPColumn{
     {
       field:'remaining_inv',
       header:'Rem. Inst',
-      width:'8rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'12rem',
+      width:'8rem',
       isVisible:['A','L','I']
     },
     {

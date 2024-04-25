@@ -36,7 +36,9 @@ type TotalsubLiveMFPortFolio = {
   curr_val:number | undefined,
   gain_loss:number | undefined,
   ret_abs:number | undefined,
-  ret_cagr:number | undefined
+  ret_cagr:number | undefined,
+  xirr:number | undefined,
+  gross_amount:number | undefined
 }
 /*** End */
 /**** Display Footer Data On Parent Table*/
@@ -718,15 +720,18 @@ mappings between `act_value` and `value` for transition durations. */
                   //   cumml_units:tot_arr.length > 0 ? tot_arr.slice(-1)[0].cumml_units : 0,
                   // }
                   this.subLiveMfPortFolio = {
-                    tot_amount: this.Total__Count(tot_arr,item => Number(item.tot_amount)),
-                    tot_tds:this.Total__Count(tot_arr,item => item.tot_tds),
-                    tot_stamp_duty:this.Total__Count(tot_arr,item => Number(item.tot_stamp_duty)),
-                    pur_price:this.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
-                    tot_units:this.Total__Count(tot_arr,item => Number(item.tot_units)),
-                    curr_val:final_arr ? final_arr?.curr_val : 0.00,
-                    gain_loss:final_arr ? final_arr?.gain_loss : 0.00,
-                    ret_abs: final_arr ? final_arr?.ret_abs : 0.00,
+                    tot_amount: final_arr ? final_arr?.tot_amount : 0,
+                    tot_tds:this.Total__Count(tot_arr,item => Number(item.tot_tds)),
+                    tot_stamp_duty:this.Total__Count(tot_arr,item => item.tot_stamp_duty ? Number(item.tot_stamp_duty) : 0),
+                    // pur_price:this.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
+                    pur_price:final_arr ? final_arr?.pur_nav : 0,
+                    tot_units:final_arr ? final_arr?.tot_units : 0,
+                    curr_val:final_arr ? final_arr?.curr_val : 0,
+                    gain_loss:final_arr ? final_arr?.gain_loss : 0,
+                    ret_abs: final_arr ? final_arr?.ret_abs : 0,
                     cumml_units:tot_arr.length > 0 ? tot_arr.slice(-1)[0].cumml_units : 0,
+                    xirr:final_arr ? final_arr?.xirr : 0,
+                    gross_amount: final_arr ? final_arr?.tot_amount : 0
                   }
 
                   // console.log(this.subLiveMfPortFolio)
@@ -875,6 +880,7 @@ mappings between `act_value` and `value` for transition durations. */
                     this.dataSource = res.data.filter((item: ILivePortFolio) => {
                       item.id = `${Math.random()}_${item.product_code}`;
                       item.data=[];
+                      item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
                       if(item.mydata){
                         const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                         const dt = item?.mydata.all_date_arr;
@@ -887,10 +893,11 @@ mappings between `act_value` and `value` for transition durations. */
                 });
               }
               else{
-                this.dataSource = res.data.filter((item: ILivePortFolio) => {
+                this.dataSource = res.data.filter((item: ILivePortFolio,index:number) => {
                   if(Number(item.curr_val) > 0 ){
                     item.id = `${Math.random()}_${item.product_code}`;
                     item.data=[];
+                    item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
                     if(item.mydata){
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
@@ -1227,6 +1234,7 @@ export interface ILivePortFolio{
   trans_mode: string
   data:Partial<ISubDataSource>[]
   mydata:any
+  custom_trans_type:string | null
 }
 
 /** Use both for Details Transaction & row expand transactions */
@@ -1319,8 +1327,8 @@ export class LiveMFPortFolioColumn{
     },
     {
       field:'idcwr',
-      header:'IDCWR',
-      width:'36px'
+      header:'IDCW R',
+      width:'34px'
     },
     {
       field:'pur_nav',
@@ -1330,7 +1338,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'tot_units',
       header:'Units',
-      width:'51px'
+      width:'50px'
     },
     {
       field:'nav_date',
@@ -1354,7 +1362,7 @@ export class LiveMFPortFolioColumn{
     },
     {
       field:'idcwp',
-      header:'IDCWP',
+      header:'IDCW P',
       width:'37px'
     },
     {
@@ -1398,22 +1406,22 @@ export class LiveMFPortFolioColumn{
       field:'gross_amount',header:'Gross Amount',width:"45px"
     },
     {
-      field:'tot_stamp_duty',header:'S.Duty',width:"30px"
+      field:'tot_stamp_duty',header:'S. Duty',width:"26px"
     },
     {
-      field:'tot_tds',header:'TDS',width:"30px"
+      field:'tot_tds',header:'TDS',width:"25px"
     },
     {
       field:'tot_amount',header:'Net Amt',width:"42px"
     },
     {
-      field:'idcwr',header:'IDCWR',width:"30px"
+      field:'idcwr',header:'IDCW R',width:"24px"
     },
     {
       field:'pur_price',header:'Pur. NAV',width:"42px"
     },
     {
-      field:'tot_units',header:'Units',width:"50px"
+      field:'tot_units',header:'Units',width:"43px"
     },
     {
       field:'cumml_units',header:'Cumml.Unit',width:"50px"
@@ -1431,13 +1439,13 @@ export class LiveMFPortFolioColumn{
       field:'curr_val',header:'Curr. Value',width:"45px"
     },
     {
-      field:'idcw_reinv',header:'IDCW Reinv',width:"34px"
+      field:'idcw_reinv',header:'IDCW Reinv',width:"30px"
     },
     {
-      field:'idcwp',header:'IDCWP',width:"30px"
+      field:'idcwp',header:'IDCW P',width:"24px"
     },
     {
-      field:'gain_loss',header:'Gain/Loss',width:"40px"
+      field:'gain_loss',header:'Gain/Loss',width:"42px"
     },
     {
       field:'days',header:'Days',width:"22px"

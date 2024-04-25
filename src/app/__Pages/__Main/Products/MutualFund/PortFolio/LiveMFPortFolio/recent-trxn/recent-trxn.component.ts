@@ -49,7 +49,7 @@ export class RecentTrxnClmn{
    public static column:column[] = [
     {
       field:'trans_date',
-      header:'Trans date',
+      header:'Trans Date',
       width:'5rem'
     },
     {
@@ -60,27 +60,27 @@ export class RecentTrxnClmn{
     {
       field:'folio_no',
       header:'Folio',
-      width:'5rem'
+      width:'4rem'
     },
     {
       field:'transaction_type',
       header:'Trans. Type',
-      width:'10rem'
+      width:'4rem'
     },
     {
       field:'tot_amount',
       header:'Amount',
-      width:'5rem'
+      width:'3rem'
     },
     {
       field:'tot_units',
       header:'Unit',
-      width:'5rem'
+      width:'3rem'
     },
     {
       field:'pur_price',
       header:'Nav',
-      width:'5rem'
+      width:'4rem'
     }
    ]
 }

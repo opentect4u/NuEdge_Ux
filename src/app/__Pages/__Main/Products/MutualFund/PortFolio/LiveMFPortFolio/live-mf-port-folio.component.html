@@ -607,7 +607,8 @@
                     <div>
                       <p style="font-size:11px" class="text-left my-2">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
 
-                         {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : (liveMfPortFolio?.transaction_type == 'Switch In' ? '(Switch In)' : ''))}}
+                         <!-- {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : (liveMfPortFolio?.transaction_type == 'Switch In' ? '(Switch In)' : ''))}} -->
+                         {{liveMfPortFolio?.custom_trans_type}}
 
                       </strong></p>
                       <p style="font-size:11px" class="text-left m-0">ISIN- <strong class="folio_isin">{{liveMfPortFolio.isin_no}}</strong></p>
@@ -778,7 +779,7 @@
                       dataKey="id"
                     >
                       <ng-template pTemplate="header">
-                        <tr>
+                        <tr class="stickyHeader__innerTbl">
                           <th
                             class="subTblLiveMfPortFolio"
                             [style.width]="col.width"
@@ -814,29 +815,7 @@
                               </ng-container>
                               <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'inv_since'">
                                 <span class="m-0">
-                                  {{
-                                    data[col.field]
-                                      ? (data[col.field] | date : "dd-MM-YY")
-                                      : "N/A"
-                                  }}
-                                </span>
-                              </ng-container>
-                              <ng-container *ngSwitchCase="col.field == 'pur_price'">
-                                <span class="m-0">
-                                  {{
-                                    data[col.field]
-                                      ? (data[col.field] | number : "1.4-4")
-                                      : "0"
-                                  }}
-                                </span>
-                              </ng-container>
-                              <ng-container *ngSwitchCase="col.field == 'xirr'">
-                                <span class="m-0">
-                                  {{
-                                    data.cumml_units > 0 ? (data[col.field]
-                                      ? (data[col.field] | number : "1.2-2")
-                                      : "0") : "0"
-                                  }}%
+                                  {{data[col.field] ? (data[col.field] | date : "dd-MM-YY") : "N/A"}}
                                 </span>
                               </ng-container>
                               <ng-container
@@ -845,55 +824,43 @@
                                 <span class="m-0">
                                   {{
                                     (data[col.field] && data[col.field] > 0)
-                                      ? (data[col.field] | number : "1.4-4")
+                                      ? data[col.field]
                                       : "0"
                                   }}
                                 </span>
                               </ng-container>
 
-                              <ng-container
-                                *ngSwitchCase="
-                                  col.field == 'gain_loss' ||
-                                  col.field == 'curr_val'
-                                "
-                              >
+                              <ng-container *ngSwitchCase="col.field == 'curr_val'">
                                 <span class="m-0">
-                                  {{
-                                    data.cumml_units > 0 ? (data[col.field]
-                                      ? (data[col.field] | number : "1.2-2")
-                                      : "0") : "0"
-                                  }}
+                                  {{data.cumml_units > 0 ? data[col.field] : "0"}}
+                                </span>
+                              </ng-container>
+                              <ng-container *ngSwitchCase="col.field == 'gain_loss'">
+                                <span class="m-0">
+                                  {{(data.cumml_units > 0 || data.transaction_type?.includes('Redemption')) ? data[col.field] : "0"}}
                                 </span>
                               </ng-container>
                               <ng-container
-                              *ngSwitchCase="col.field == 'ret_abs'">
+                              *ngSwitchCase="col.field == 'ret_abs' || col.field == 'xirr'">
                               <span class="m-0">
-                                {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number : "1.2-2") : "0") : "0"}} %
+                                {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number: '1.2-2') : "0") : "0"}} %
                               </span>
                             </ng-container>
 
                               <ng-container
                                 *ngSwitchCase="
-                                  col.field == 'tot_tds' ||
-                                  col.field == 'tot_units' ||
                                   col.field == 'idcwr' ||
                                   col.field == 'idcw_reinv' ||
                                   col.field == 'idcwp'
                                 "
                               >
                                 <span class="m-0">
-                                  {{
-                                    data[col.field]
-                                      ? (data[col.field] | number : "1.4-4")
-                                      : "0"
-                                  }}
+                                  {{ data[col.field] ? data[col.field] : '0'}}
                                 </span>
                               </ng-container>
                               <ng-container *ngSwitchDefault>
                                 <p class="m-0">
-                                  {{
-                                    data[col.field] ? data[col.field] : "N/A"
-                                  }}
+                                  {{data[col.field]}}
                                 </p>
                               </ng-container>
                             </ng-container>
@@ -916,37 +883,40 @@
                               </ng-container>
                               <ng-container  *ngSwitchCase="col.field == 'pur_price' || col.field == 'tot_units'">
                                 <p class="m-0">
-                                  {{
-                                    subLiveMfPortFolio
-                                      ? (subLiveMfPortFolio[col.field]
-                                        | number : "1.4-4")
-                                      : "0"
-                                  }}
+                                  {{subLiveMfPortFolio ? subLiveMfPortFolio[col.field]: "0"}}
                                 </p>
+                              </ng-container>
+                              <ng-container *ngSwitchCase="col.field == 'xirr'">
+                                <p class="m-0">
+                                  {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | percent:'1.2-2') : "0%"}}
+                                </p>
+
+
                               </ng-container>
                               <ng-container
                                 *ngSwitchCase="
                                   col.field == 'tot_amount' ||
-                                  col.field == 'tot_tds' ||
+                                  col.field == 'gross_amount' ||
                                   col.field == 'cumml_units' ||
-                                  col.field == 'tot_stamp_duty' ||
-
                                   col.field == 'curr_val' ||
                                   col.field == 'gain_loss' ||
                                   col.field == 'ret_abs'
                                 "
                               >
                                 <p class="m-0">
-                                  {{
-                                    subLiveMfPortFolio
-                                      ? (subLiveMfPortFolio[col.field]
-                                        | number : "1.2-2")
-                                      : "0"
-                                  }}
+                                  {{subLiveMfPortFolio ? subLiveMfPortFolio[col.field] : "0"}}
                                   {{ col.field == "ret_abs" ? "%" : "" }}
                                 </p>
                               </ng-container>
-                              <ng-container *ngSwitchDefault> </ng-container>
+
+                              <ng-container
+                              *ngSwitchCase="col.field == 'tot_tds' || col.field == 'tot_stamp_duty'"
+                                >
+                              <p class="m-0">
+                                {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | number:'1.2-2') : "0"}}
+                              </p>
+                            </ng-container>
+
                             </ng-container>
                           </td>
                         </tr>

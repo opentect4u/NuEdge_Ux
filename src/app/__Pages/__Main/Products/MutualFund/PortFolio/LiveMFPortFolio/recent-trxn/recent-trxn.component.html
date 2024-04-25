@@ -40,7 +40,7 @@
            >
            <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                <p class="m-0 text-left">
+                <p class="m-0 text-center">
                   {{recent_trxn[col.field] ? ( recent_trxn[col.field] | titlecase) : "N/A" }}
                 </p>
               </ng-container>
