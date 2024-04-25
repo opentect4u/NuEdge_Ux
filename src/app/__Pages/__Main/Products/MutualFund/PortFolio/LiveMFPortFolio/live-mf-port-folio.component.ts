@@ -415,10 +415,12 @@ mappings between `act_value` and `value` for transition durations. */
    })
 
    this.__live_sip_stp_swp_form.controls['live_stp'].valueChanges.subscribe(value =>{
+    this.liveStpPortFolio = []
     this.call_api_for_stp_func(this.main_frm_dt,value)
  })
 
  this.__live_sip_stp_swp_form.controls['live_swp'].valueChanges.subscribe(value =>{
+  this.liveSwpPortFolio = []
   this.call_api_for_swp_func(this.main_frm_dt,value)
  })
 
@@ -616,7 +618,7 @@ mappings between `act_value` and `value` for transition durations. */
       this.__dbIntr.api_call(
         0,
         '/clients/liveMFShowDetails',
-        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd'))}`)
+        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd'))}&trans_type=${this.filter_criteria.value.trans_type}`)
       .pipe(
         pluck('data')
         )

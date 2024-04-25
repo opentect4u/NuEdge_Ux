@@ -8,7 +8,6 @@
 
 <p-table #dt [value]="liveSWP"
 [rows]="10" [paginator]="true"
-[scrollable]="true"
 [rowHover]="true"
 [columns]="column"
 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -20,10 +19,10 @@ styleClass="p-datatable-lg"
 [showCurrentPageReport]="true"
 >
 <ng-template pTemplate="header">
-  <tr>
+  <tr  class="stickyHeader">
       <th *ngFor="let col of column"
           pSortableColumn="{{col.field}}"
-          [style]="'min-width : '+col.width"
+          [style]="'width : '+col.width"
 
          >
         {{col.header}}
@@ -34,7 +33,7 @@ styleClass="p-datatable-lg"
 <ng-template pTemplate="body" let-live_swp let-i="rowIndex">
   <tr>
       <td *ngFor="let col of column"
-      [style]="'min-width : '+col.width"
+      [style]="'width : '+col.width"
       [ngStyle]="{'background-color':(live_swp['activate_status'] == 'Inactive' && swp_type == 'A') ? '#b70a0a30' : '#ffffff'}"
 
      >
@@ -52,7 +51,7 @@ styleClass="p-datatable-lg"
       "
       >
         <p class="m-0">
-          {{ live_swp[col.field] ? (live_swp[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+          {{ live_swp[col.field] ? (live_swp[col.field] | date:'dd-MM-YY') : 'N/A'}}</p>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <p class="m-0">

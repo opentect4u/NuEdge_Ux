@@ -71,25 +71,25 @@ export class LiveSIPColumn{
     {
       field:'first_client_name',
       header:'Client',
-      width:'15rem',
+      width:'14rem',
       isVisible:['A','L','I']
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'23rem',
+      width:'27rem',
       isVisible:['A','L','I']
     },
     {
       field:'activate_status',
       header:'Status',
-      width:'5rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'folio_no',
       header:'Folio',
-      width:'7rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
@@ -101,55 +101,55 @@ export class LiveSIPColumn{
     {
       field:'reg_no',
       header:'Txn No.',
-      width:'6rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'from_date',
       header:'Start Date',
-      width:'7rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
       field:'to_date',
       header:'End Date',
-      width:'7rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'terminated_date',
       header:'Term. Date',
-      width:'7rem',
+      width:'4rem',
       isVisible:['A','I']
     },
     {
       field:'sip_date',
       header:'SIP Date',
-      width:'5rem',
+      width:'3rem',
       isVisible:['A','L','I']
     },
     {
       field:'amount',
       header:'Amount',
-      width:'6rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'remaining_inv',
       header:'Rem. Inst',
-      width:'5rem',
+      width:'3rem',
       isVisible:['A','L','I']
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'8rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
       field:'xirr',
       header:'XIRR',
-      width:'5rem',
+      width:'4rem',
       isVisible:['A','L','I']
     }
   ]

@@ -62,12 +62,12 @@ export interface ILiveSTP{
 
 export class LiveSTPColumn{
   public static column:column[] = [
-    {
-      field:'sl_no',
-      header:'Sl No',
-      width:'5rem',
-      isVisible:['A','L','I']
-    },
+    // {
+    //   field:'sl_no',
+    //   header:'Sl No',
+    //   width:'5rem',
+    //   isVisible:['A','L','I']
+    // },
     {
       field:'first_client_name',
       header:'Client',
@@ -82,68 +82,68 @@ export class LiveSTPColumn{
     },
     {
       field:'activate_status',
-      header:'Active Status',
+      header:'Status',
       width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'folio_no',
       header:'Folio',
-      width:'8rem',
+      width:'7rem',
       isVisible:['A','L','I']
     },
     {
       field:'freq',
-      header:'STP Frq',
-      width:'7rem',
+      header:'Frq',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'reg_no',
-      header:'STP Txn No.',
-      width:'7rem',
+      header:'Txn No.',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'from_date',
-      header:'STP Start Date',
-      width:'7rem',
+      header:'Start Date',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'to_date',
-      header:'STP End Date',
-      width:'7rem',
+      header:'End Date',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'terminate_date',
       header:'Term. Date',
-      width:'7rem',
+      width:'4rem',
       isVisible:['A','I']
     },
     {
       field:'stp_date',
       header:'STP Date',
-      width:'5rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'amount',
       header:'Amount',
-      width:'6rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'remaining_inv',
       header:'Rem. Inst',
-      width:'7rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'13rem',
+      width:'8rem',
       isVisible:['A','L','I']
     },
     {

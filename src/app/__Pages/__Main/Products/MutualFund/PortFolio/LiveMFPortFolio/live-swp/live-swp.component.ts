@@ -62,12 +62,12 @@ export interface ILiveSWP{
 
 export class LiveSWPColumn{
   public static column:column[] = [
-    {
-      field:'sl_no',
-      header:'Sl No',
-      width:'4rem',
-      isVisible:['A','L','I']
-    },
+    // {
+    //   field:'sl_no',
+    //   header:'Sl No',
+    //   width:'4rem',
+    //   isVisible:['A','L','I']
+    // },
     {
       field:'first_client_name',
       header:'Client',
@@ -82,68 +82,68 @@ export class LiveSWPColumn{
     },
     {
       field:'activate_status',
-      header:'Active Status',
+      header:'Status',
       width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'folio_no',
       header:'Folio',
-      width:'8rem',
+      width:'7rem',
       isVisible:['A','L','I']
     },
     {
       field:'freq',
-      header:'SWP Frq',
-      width:'7rem',
+      header:'Frq',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'reg_no',
       header:'Txn No.',
-      width:'8rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {
       field:'from_date',
       header:'Start Date',
-      width:'7rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'to_date',
       header:'End Date',
-      width:'7rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'terminated_date',
       header:'Term. Date',
-      width:'7rem',
+      width:'4rem',
       isVisible:['A','I']
     },
     {
       field:'swp_date',
       header:'SWP Date',
-      width:'5rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'amount',
       header:'Amount',
-      width:'6rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'remaining_inv',
       header:'Rem. Inst',
-      width:'8rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'12rem',
+      width:'8rem',
       isVisible:['A','L','I']
     },
     {

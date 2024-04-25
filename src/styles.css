@@ -1148,9 +1148,10 @@ span.badge-warning {
 
 
 .p-datatable.p-datatable-lg .p-datatable-thead > tr > th {
-  padding: 9px!important;
-}
+  /* padding: 9px!important; */
+  padding: 9px 3px !important;
 
+}
 .p-datatable .p-sortable-column .p-sortable-column-icon{
   margin-left: 2px!important;
 }
