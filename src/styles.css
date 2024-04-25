@@ -59,7 +59,8 @@ label {
   font-weight: 700;
   font-size: 10px;
   margin: 10px 0px;
-  font-family: 'Montserrat'!important;
+  /* font-family: 'Montserrat'!important; */
+  font-family: "Roboto", sans-serif!important;
 }
 
 .dialog-title {
@@ -120,7 +121,9 @@ button:focus {
   font-size: 13px !important;
   font-weight: 600 !important;
   color: #1f4584 !important;
-  font-family: 'Montserrat';
+  /* font-family: 'Montserrat'; */
+  font-family: "Roboto", sans-serif!important;
+
 }
 
 .mat_dialog {
@@ -684,7 +687,9 @@ color: #ffffff;
   overflow: hidden !important;
 }
 .p-component{
-  font-family: 'Montserrat', sans-serif!important;
+  /* font-family: 'Montserrat', sans-serif!important; */
+  font-family: "Roboto", sans-serif!important;
+
 }
 
 .form-control:focus{
@@ -905,7 +910,8 @@ color: #ffffff;
 }
 
 .highcharts-root {
-  font-family: 'MontSerrat'!important;
+  /* font-family: 'MontSerrat'!important; */
+  font-family: "Roboto", sans-serif!important;
   font-size: 11px!important;
   font-weight: 600!important;
 }
@@ -934,7 +940,9 @@ color: #ffffff;
 
   font-size: 12px;
   font-weight: 500 !important;
-  font-family: 'Montserrat';
+  /* font-family: 'Montserrat'; */
+  font-family: "Roboto", sans-serif!important;
+
 }
 
 .p-radiobutton .p-radiobutton-box.p-highlight {
@@ -968,7 +976,8 @@ color: #ffffff;
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
-  font-family: 'Montserrat';
+  /* font-family: 'Montserrat'; */
+  font-family: "Roboto", sans-serif!important;
   cursor: pointer;
   margin: 11px 1px 2px 1px;
   border-radius: 5px;
@@ -1137,4 +1146,16 @@ span.badge-warning {
 
 .p-datatable .p-sortable-column .p-sortable-column-icon{
   margin-left: 2px!important;
+}
+.ellipsiisTxt{
+  white-space: nowrap;
+  width: 27rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.liveMf_portfolio_scm>strong{
+   font-size: 11px;
+    font-weight: 700;
+    color: black;
 }

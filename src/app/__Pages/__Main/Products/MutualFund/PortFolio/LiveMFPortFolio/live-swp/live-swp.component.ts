@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -12,9 +12,13 @@ export class LiveSWPComponent implements OnInit {
 
   @Input() liveSWP:Partial<ILiveSWP>[] = []
 
-  column:column[] = LiveSWPColumn.column
+  // column:column[] = LiveSWPColumn.column
+  column:column[] = []
+
 
   @ViewChild('dt') primaryTbl :Table;
+
+  @Input() swp_type:string;
 
 
   constructor(private utility:UtiliService) { }
@@ -27,6 +31,11 @@ export class LiveSWPComponent implements OnInit {
   }
   getColumns = () =>{
     return this.utility.getColumns(this.column);
+  }
+  ngOnChanges(changes: SimpleChanges){
+    if(changes.swp_type){
+      this.column =  LiveSWPColumn.column.filter((column:column) => column.isVisible.includes(this.swp_type))
+    }
   }
 }
 
@@ -56,77 +65,92 @@ export class LiveSWPColumn{
     {
       field:'sl_no',
       header:'Sl No',
-      width:'4rem'
+      width:'4rem',
+      isVisible:['A','L','I']
     },
     {
       field:'first_client_name',
       header:'Client',
-      width:'15rem'
+      width:'15rem',
+      isVisible:['A','L','I']
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'23rem'
+      width:'23rem',
+      isVisible:['A','L','I']
     },
     {
       field:'activate_status',
       header:'Active Status',
-      width:'5rem'
+      width:'5rem',
+      isVisible:['A','L','I']
     },
     {
       field:'folio_no',
       header:'Folio',
-      width:'8rem'
+      width:'8rem',
+      isVisible:['A','L','I']
     },
     {
       field:'freq',
       header:'SWP Frq',
-      width:'7rem'
+      width:'7rem',
+      isVisible:['A','L','I']
     },
     {
       field:'reg_no',
       header:'Txn No.',
-      width:'8rem'
+      width:'8rem',
+      isVisible:['A','L','I']
     },
     {
       field:'from_date',
       header:'Start Date',
-      width:'7rem'
+      width:'7rem',
+      isVisible:['A','L','I']
     },
     {
       field:'to_date',
       header:'End Date',
-      width:'7rem'
+      width:'7rem',
+      isVisible:['A','L','I']
     },
     {
       field:'terminated_date',
       header:'Term. Date',
-      width:'7rem'
+      width:'7rem',
+      isVisible:['A','I']
     },
     {
       field:'swp_date',
       header:'SWP Date',
-      width:'5rem'
+      width:'5rem',
+      isVisible:['A','L','I']
     },
     {
       field:'amount',
       header:'Amount',
-      width:'6rem'
+      width:'6rem',
+      isVisible:['A','L','I']
     },
     {
       field:'remaining_inv',
       header:'Rem. Inst',
-      width:'8rem'
+      width:'8rem',
+      isVisible:['A','L','I']
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'12rem'
+      width:'12rem',
+      isVisible:['A','L','I']
     },
     {
       field:'xirr',
       header:'XIRR',
-      width:'5rem'
+      width:'5rem',
+      isVisible:['A','L','I']
     }
   ]
 }

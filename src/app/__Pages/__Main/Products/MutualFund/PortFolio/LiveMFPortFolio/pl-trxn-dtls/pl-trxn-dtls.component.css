@@ -2,9 +2,4 @@
   border-radius:0px!important;
 }
 
-.ellipsiisTxt{
-  white-space: nowrap;
-  width: 29rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+

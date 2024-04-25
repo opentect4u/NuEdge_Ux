@@ -4,7 +4,7 @@
     placeholder="Search" />
   </div>
 </div>
-
+<!--
 <p-table #dt [value]="systematicMissedTrxn"
 [rows]="10" [paginator]="true"
 [rowHover]="true"
@@ -65,6 +65,91 @@ styleClass="p-datatable-lg p-datatable-striped"
   </td>
 </tr>
 </ng-template>
-</p-table>
+</p-table> -->
+<p-table #primeTbl id="trxDt" [value]="systematicMissedTrxn" [responsive]="true" [rowHover]="true"
+          styleClass="p-datatable-striped p-datatable-lg"
+          [scrollable]="true"
+          [columns]="columns" [paginator]="true"
+          [autoLayout]="true" [totalRecords]="systematicMissedTrxn.length" [pageLinks]="3"
+          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+          [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
+          [tableStyle]="{ 'min-width': '374rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columns" [pSortableColumn]="col.field"
+              [style.max-width]="col.width"
+                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                {{ col.header }}
+                <p-sortIcon [field]="col.field">
+                </p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-trxn let-i="rowIndex">
+            <tr tabindex="999">
+              <td *ngFor="let col of columns" [style.max-width]="col.width"
+                [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                    <p class="m-0">
+                      {{i + 1}}
+                    </p>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+                    <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" &&
+                      trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
+                      && (trxn[col.field] | titlecase)!="Not Provid"
+                      && (trxn[col.field] | titlecase)!="Notprovided"
+                      && trxn[col.field] !== 'NOTPROVIDE'
+                      ) ? trxn[col.field] :
+                      'N/A' }}</p>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'first_client_name'">
+                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
+                  </ng-container>
+
+
+                  <ng-container *ngSwitchCase="col.field == 'trans_date'">
+                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'tot_tds'">
+                    <p class="m-0" matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
+                      {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
+                    </p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'remarks'">
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn['remarks'] && trxn['remarks']!= ' ') ? (trxn['remarks'] | lowercase | ellipsis:30):
+                      'N/A'}}</p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'bank_name' || col.field == 'acc_no'">
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn[col.field] && trxn[col.field]!= 0) ? (trxn[col.field].toString() | titlecase) : 'N/A'}}</p>
+                   </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+                <h5>No Records Found</h5>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="loadingbody" let-columns="columns">
+            <tr style="height:34px">
+                <td *ngFor="let col of columns; let even = even">
+                    <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
+                </td>
+            </tr>
+        </ng-template>
+        </p-table>
 
 

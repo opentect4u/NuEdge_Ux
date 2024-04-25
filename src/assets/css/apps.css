@@ -4,8 +4,8 @@ html {
 
 body {
   /*  font-family: 'Lato', sans-serif;*/
-  /* font-family: 'Roboto', sans-serif !important; */
-  font-family: 'Montserrat', sans-serif!important;
+  font-family: 'Roboto', sans-serif !important;
+  /* font-family: 'Montserrat', sans-serif!important; */
   font-size: 14px;
   color: #444444;
   background: #f2f4f6;
@@ -13,7 +13,7 @@ body {
   margin: 0;
   padding: 0;
   line-height: normal;
-  font-weight: 400;
+  font-weight: 500;
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -52,14 +52,16 @@ input,
 select,
 div,
 textarea {
-  font-family: 'Montserrat', sans-serif!important;
+  /* font-family: 'Montserrat', sans-serif!important; */
+  font-family: "Roboto", sans-serif!important;
   padding: 0;
   margin: 0
 }
 
 
 .mat-button, .mat-raised-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button, .mat-fab, .mat-mini-fab{
-  font-family: 'Montserrat', sans-serif!important;
+  /* font-family: 'Montserrat', sans-serif!important; */
+  font-family: "Roboto", sans-serif!important;
 }
 
 
@@ -1139,7 +1141,8 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   font-size: 11px;
   color: #2b9926;
   font-weight: 700;
-  font-family: 'Montserrat';
+  /* font-family: 'Montserrat'; */
+  font-family: "Roboto", sans-serif!important;
 }
 
 

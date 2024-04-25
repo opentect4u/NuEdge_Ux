@@ -33,6 +33,7 @@ interface TrxnRpt{
       units:string | null
       amount:string | null
       rec_date:string | null
+      transaction_type:string | null;
       trans_type:string | null
       trans_sub_type:string | null
       transaction_subtype:string | null

@@ -146,7 +146,9 @@ mappings between `act_value` and `value` for transition durations. */
   __clientMst:client[] = [];
 
   /** Holding  Systematic Missed Transaction Master Data*/
-    systematicMissedTrxn:ISystematicMissedTrxn[] = []
+    // systematicMissedTrxn:ISystematicMissedTrxn[] = []
+    systematicMissedTrxn:TrxnRpt[] = []
+
   /**** End */
 
   /** Holding Reject Transaction Master Data */
@@ -558,6 +560,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.liveSwpPortFolio = [];
     this.liveStpPortFolio = [];
     this.systematicMissedTrxn = [];
+    this.upcomming_trxn = [];
     this.recent_trxn = [];
     this.rejectTrxn = [];
     const dt = new Date();
@@ -597,18 +600,7 @@ mappings between `act_value` and `value` for transition durations. */
       this.primeTbl.toggleRow(this.__selectedRow);
       this.__selectedRow = null
     }
-    this.call_corrosponding_api(this.selected_id,this.main_frm_dt)
-
-    // this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
-    // const {family_members,...rest} = Object.assign({},{
-    //   ...this.filter_criteria.value,
-    //   valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
-    //   family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
-    //   family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
-    // })
-    // this.main_frm_dt = rest;
-    // this.call_corrosponding_api(this.selected_id,rest)
-
+    this.call_corrosponding_api(this.selected_id,this.main_frm_dt);
   }
 
 
@@ -624,20 +616,9 @@ mappings between `act_value` and `value` for transition durations. */
         '/clients/liveMFShowDetails',
         `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd'))}`)
       .pipe(
-        pluck('data'),
-        // map((item:ISubDataSource[]) => {
-        //   return item.filter(el => !el.transaction_type.toLowerCase().includes('rejection'))
-        // }),
+        pluck('data')
         )
       .subscribe((res: ISubDataSource[]) =>{
-            // let redem_arr = res.filter((item:ISubDataSource) =>  item.transaction_type.toLowerCase().includes('redemption'));
-            // let with_out_redem_arr = res.filter((item:ISubDataSource) =>  !item.transaction_type.toLowerCase().includes('redemption'))
-            // if(this.filter_criteria.value.trans_type === 'A'){
-            //   this.dataSource[index].data = res
-            // }
-            // else{
-            //     this.calculateTransaction(redem_arr,with_out_redem_arr,index);
-            // }
             let dates = [this.dataSource[index].nav_date];
             let amt = [this.dataSource[index].curr_val];
             let _index = 0;
@@ -856,8 +837,11 @@ mappings between `act_value` and `value` for transition durations. */
 
   call_api_for_reject_transactions = (formData) =>{
         if(this.rejectTrxn.length == 0){
-          this.__dbIntr.api_call(1,'/clients/rejectTransactions',this.utility.convertFormData(formData)).pipe(pluck('data')).   subscribe((res:Required<{data:TrxnRpt[],client_details:client}>) =>{
-            this.rejectTrxn = res.data;
+          this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData(formData)).pipe(pluck('data')).subscribe((res:Required<{data:TrxnRpt[],client_details:client}>) =>{
+            this.rejectTrxn = res.data.filter((el:TrxnRpt) =>{
+                    el.scheme_name = `${el.scheme_name}-${el.plan_name}-${el.divi_lock_flag == 'L' ? 'IDCW Reinvestment' :  el.option_name}`;
+                    return true;
+            })
             this.setClientDtls(res.client_details);
           })
         }
@@ -865,8 +849,16 @@ mappings between `act_value` and `value` for transition durations. */
 
   call_api_for_systematicMissedTransaction = (formData) =>{
       if(this.systematicMissedTrxn.length == 0){
-        this.__dbIntr.api_call(1,'/clients/systematicMissedTransaction',this.utility.convertFormData(formData)).pipe(pluck('data')).subscribe((res:Required<{data:ISystematicMissedTrxn[],client_details:client}>) =>{
-                this.systematicMissedTrxn = res.data;
+        this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData(formData)).pipe(pluck('data'))
+        // .subscribe((res:Required<{data:ISystematicMissedTrxn[],client_details:client}>) =>{
+        .subscribe((res:Required<{data:TrxnRpt[],client_details:client}>) =>{
+                this.systematicMissedTrxn = res.data.filter((el:TrxnRpt) =>{
+                    if(el.transaction_type.toLowerCase().includes('sip') || el.transaction_type.toLowerCase().includes('stp') ||  el.transaction_type.toLowerCase().includes('swp')){
+                      el.scheme_name = `${el.scheme_name}-${el.plan_name}-${el.divi_lock_flag == 'L' ? 'IDCW Reinvestment' :  el.option_name}`;
+                      return true;
+                    }
+                    return false;
+                })
                 this.setClientDtls(res.client_details);
         })
       }
@@ -1133,7 +1125,7 @@ mappings between `act_value` and `value` for transition durations. */
   }
 
   searchUpcommingTrxn = () =>{
-      this.__dbIntr.api_call(1,'/clients/upcommingTransactions',
+      this.__dbIntr.api_call(1,'/clients/liveMFUpcoming',
         this.utility.convertFormData({
           ...this.main_frm_dt,
           ...this.recent_trxn_frm.value,
@@ -1142,9 +1134,31 @@ mappings between `act_value` and `value` for transition durations. */
           trans_type:this.utility.mapIdfromArray(this.upcomming_trxn_frm.value.trxn_type_id,'trans_type'),
          }))
          .pipe(pluck('data'))
-         .subscribe(res =>{
-            console.log(res)
+         .subscribe((res:Required<{data:Partial<IUpcommingTrxn>[],client_details:client}>) =>{
+            const freq = ['Daily', 'Weekly', 'Fortnightly'];
+            const check_valuation_date = new Date(this.valuation_as_on).getDate();
+            this.upcomming_trxn = res.data.filter((el: IUpcommingTrxn) => {
+                    el.scheme_name = `${el.scheme_name}-${el.plan_name}-${el.option_name}`;
+                    el.trans_type =  el.trans_type.toLowerCase().includes('stp') ? 'STP' : (el.trans_type.toLowerCase().includes('swp') ? 'SWP' : "SIP")
+                    if(freq.indexOf(el.freq) === -1){
+                       el.date = this.setDateinUpcommingTrxn(
+                        el.trans_type.toLowerCase().includes('stp') ? el.stp_date : (el.trans_type.toLowerCase().includes('swp') ? el.swp_date : el.sip_date),
+                        check_valuation_date,
+                        new Date()
+                      )
+                    }
+                    else{
+                      el.date = el.freq;
+                    }
+                  return true;
+            })
          })
+  }
+
+  setDateinUpcommingTrxn = (date,valuation_as_on_date,currDate) =>{
+        currDate.setDate(date);
+        currDate.setMonth(valuation_as_on_date > Number(date) ? (currDate.getMonth() + 1) : currDate.getMonth());
+        return currDate
   }
 
   getSubTabDtls = (tabs) =>{
@@ -1286,17 +1300,17 @@ export class LiveMFPortFolioColumn{
     {
       field:'inv_since',
       header:'Inv. Since',
-      width:'55px'
+      width:'52px'
     },
     {
       field:'sensex',
       header:'SENSEX',
-      width:'60px'
+      width:'51px'
     },
     {
       field:'nifty50',
       header:'NIFTY50',
-      width:'60px'
+      width:'48px'
     },
     {
       field:'inv_cost',
@@ -1306,7 +1320,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'idcwr',
       header:'IDCWR',
-      width:'42px'
+      width:'36px'
     },
     {
       field:'pur_nav',
@@ -1316,12 +1330,12 @@ export class LiveMFPortFolioColumn{
     {
       field:'tot_units',
       header:'Units',
-      width:'63px'
+      width:'51px'
     },
     {
       field:'nav_date',
       header:'NAV Date',
-      width:'55px'
+      width:'47px'
     },
     {
       field:'curr_nav',
@@ -1341,7 +1355,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'idcwp',
       header:'IDCWP',
-      width:'45px'
+      width:'37px'
     },
     {
       field:'curr_val',
@@ -1356,7 +1370,7 @@ export class LiveMFPortFolioColumn{
     {
       field:'ret_abs',
       header:'Ret.ABS',
-      width:'55px'
+      width:'49px'
     },
     {
       field:'xirr',

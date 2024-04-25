@@ -9,7 +9,7 @@
       with NuEdge's web.
     </p>
   </div>
-  <div class="col-sm-12">
+  <div class="col-sm-12 px-5">
     <mat-card>
       <mat-card-content class="px-3 py-5">
         <form
@@ -122,7 +122,7 @@
               <div class="form-group row">
                 <label
                   for="trans_type"
-                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center"
+                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
                   >View Trans.
                 </label>
                 <div class="col-sm-8 col-md-8 col-lg-9 col-xs-9">
@@ -144,7 +144,7 @@
               <div class="form-group row">
                 <label
                   for="view_funds_type"
-                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center"
+                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
                   >View Funds
                 </label>
                 <div class="col-sm-8 col-md-8 col-lg-9 col-xs-9">
@@ -167,7 +167,7 @@
               <div class="form-group row">
                 <label
                   for="view_funds_type"
-                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center"
+                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
                   >MF Report
                 </label>
                 <div class="col-sm-8 col-md-8 col-lg-9 col-xs-9">
@@ -187,7 +187,7 @@
               <div class="form-group row">
                 <label
                   for="trans_duration"
-                  class="col-sm-4 col-xs-3 col-md-4 col-lg-3 text-center"
+                  class="col-sm-4 col-xs-3 col-md-4 col-lg-3 text-center d-flex justify-content-center align-items-center"
                   >Trans. Duration</label
                 >
                 <div class="col-sm-8 col-md-8 col-xs-9 col-lg-9">
@@ -361,50 +361,50 @@
             <mat-icon class="details__icon infoIcon">person</mat-icon>
             <span class="heading_title"
               >Client Name:&nbsp;
-              <span class="titles__value">{{
+              <p class="titles__value m-0">{{
                 clientDtls.client_name
-              }}</span></span
+              }}</p></span
             >
           </div>
 
           <div class="d-flex align-items-center my-4">
             <mat-icon class="details__icon warningIcon">badge</mat-icon>
             <span class="heading_title"
-              >PAN:&nbsp;<span class="titles__value">{{ clientDtls.pan }}</span>
+              >PAN:&nbsp;<p class="titles__value m-0">{{ clientDtls.pan }}</p>
             </span>
           </div>
           <div class="d-flex align-items-center">
             <mat-icon class="details__icon successIcon">schedule</mat-icon>
             <span class="heading_title"
               >Valuation As On:&nbsp;
-              <span class="titles__value">{{
+              <p class="titles__value m-0">{{
                 valuation_as_on
                   ? (this.valuation_as_on | date : "mediumDate")
                   : "N/A"
-              }}</span></span
+              }}</p></span
             >
           </div>
         </div>
         <div class="col-md-6 col-sm-12 col-lg-3 my-2 border-right">
           <div class="d-flex align-items-start">
             <mat-icon class="details__icon infoIcon">location_on</mat-icon>
-            <span class="heading_title"
+            <span class="heading_title address_title"
               >Address:&nbsp;
-              <span class="titles__value">{{ clientDtls.add_line_1 }}</span>
+              <p class="titles__value m-0">{{ clientDtls.add_line_1 | titlecase}}</p>
             </span>
           </div>
           <div class="my-4 d-flex align-items-center">
             <mat-icon class="details__icon warningIcon">call</mat-icon>
             <span class="heading_title"
               >Contact:&nbsp;
-              <span class="titles__value">{{ clientDtls.mobile }}</span>
+              <p class="titles__value m-0">{{ clientDtls.mobile }}</p>
             </span>
           </div>
           <div class="my-2 d-flex align-items-center">
             <mat-icon class="details__icon successIcon">mail</mat-icon>
             <span class="heading_title"
               >Email:&nbsp;
-              <span class="titles__value">{{ clientDtls.email }}</span>
+              <p class="titles__value m-0">{{ clientDtls.email }}</p>
             </span>
           </div>
         </div>
@@ -546,7 +546,7 @@
                     <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                     <ng-container *ngIf="selected_id == 1;else summary">
                         <p
-                        class="m-0 text-left"
+                        class="m-0 text-left liveMf_portfolio_scm"
                         pRipple
                         [pRowToggler]="liveMfPortFolio"
                         style="cursor:pointer"
@@ -605,12 +605,12 @@
                     </p>
                     </ng-template>
                     <div>
-                      <p style="font-size:11px" class="text-left my-2">Folio- <strong>{{liveMfPortFolio.folio_no}}
+                      <p style="font-size:11px" class="text-left my-2">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
 
-                         {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : '')}}
+                         {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : (liveMfPortFolio?.transaction_type == 'Switch In' ? '(Switch In)' : ''))}}
 
                       </strong></p>
-                      <p style="font-size:11px" class="text-left m-0">ISIN- <strong>{{liveMfPortFolio.isin_no}}</strong></p>
+                      <p style="font-size:11px" class="text-left m-0">ISIN- <strong class="folio_isin">{{liveMfPortFolio.isin_no}}</strong></p>
                     </div>
                       <span class="custom__badge badge-primary" #tooltip="matTooltip"
                       matTooltip="online">
@@ -1046,7 +1046,7 @@
     <ng-container
       *ngIf="selected_id == 4 || selected_id == 5 || selected_id == 6"
     >
-      <mat-card id="matCard" class="mat-elevation-z0">
+      <mat-card id="matCard" class="mat-elevation-z0 mb-2">
         <mat-card-header class="px-3 border-bottom">
           <mat-card-title>
             <form [formGroup]="__live_sip_stp_swp_form">
@@ -1099,16 +1099,19 @@
           <ng-container *ngIf="selected_id == 4">
             <portfolio-live-sip
               [liveSIP]="liveSipPortFolio"
+              [sip_type]="__live_sip_stp_swp_form.value.live_sip"
             ></portfolio-live-sip>
           </ng-container>
           <ng-container *ngIf="selected_id == 5">
             <portfolio-live-stp
               [liveSTP]="liveStpPortFolio"
+              [stp_type]="__live_sip_stp_swp_form.value.live_stp"
             ></portfolio-live-stp>
           </ng-container>
           <ng-container *ngIf="selected_id == 6">
             <portfolio-live-swp
               [liveSWP]="liveSwpPortFolio"
+              [swp_type]="__live_sip_stp_swp_form.value.live_swp"
             ></portfolio-live-swp>
           </ng-container>
         </mat-card-content>
@@ -1177,7 +1180,7 @@
 
     <ng-container *ngIf="selected_id == 13">
       <mat-card id="matCard"  class="mat-elevation-z0">
-            <reject-trxn [rejectTrxn]="[]"></reject-trxn>
+            <reject-trxn [rejectTrxn]="rejectTrxn"></reject-trxn>
       </mat-card>
     </ng-container>
 

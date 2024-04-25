@@ -30,7 +30,8 @@ p-datepicker .p-datepicker-header {
   font-weight: 500 !important;
   margin: 0;
   font-size: 14px !important;
-  font-family: 'Montserrat';
+  /* font-family: 'Montserrat'; */
+  font-family: "Roboto", sans-serif!important;
 }
 
 /* .p-datepicker table td.p-datepicker-today > span{

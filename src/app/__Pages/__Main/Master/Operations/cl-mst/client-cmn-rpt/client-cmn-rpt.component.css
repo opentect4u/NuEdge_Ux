@@ -75,7 +75,10 @@
   font-weight: 500;
 }
 .titles__value{
-  font-weight: 500;
+  /* font-weight: 500;
   font-size: 11px;
-  color: gray;
+  color: gray; */
+  font-weight: 500;
+    font-size: 12px;
+    color: black;
 }

@@ -54,7 +54,10 @@
                   col.field == 'bank_name'
                 "
               >
-                <p class="m-0">
+                <p class="m-0"
+                [matTooltip]="col.field == 'scheme_name' ? recent_trxn[col.field] : ''"
+                [ngClass]="{'text-left ellipsiisTxt':col.field == 'scheme_name'}"
+                >
                   {{ recent_trxn[col.field] | titlecase }}
                 </p>
               </ng-container>
@@ -62,7 +65,7 @@
                 *ngSwitchCase="
                   col.field == 'from_date' ||
                   col.field == 'to_date' ||
-                  col.field == 'terminated_date'
+                  col.field == 'date'
                 "
               >
                 <p class="m-0">

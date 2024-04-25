@@ -1,3 +1,4 @@
+<ng-container *ngIf="column.length > 0">
 <div class="row form-group my-2">
   <div class="col-sm-12 d-flex justify-content-end ">
     <input id="search" class="form-control rounded w-25 pr-4" type="text" (input)="filterGlobal_secondary($event)"
@@ -31,6 +32,7 @@ styleClass="p-datatable-lg p-datatable-striped"
   <tr>
       <td *ngFor="let col of column"
       [style]="'width : '+col.width"
+      [ngStyle]="{'background-color':(live_stp['activate_status'] == 'Inactive' && stp_type == 'A') ? '#b70a0a30' : '#ffffff'}"
      >
        <ng-container [ngSwitch]="true">
         <ng-container *ngSwitchCase="col.field == 'sl_no'">
@@ -66,3 +68,4 @@ styleClass="p-datatable-lg p-datatable-striped"
 </p-table>
 
 
+</ng-container>

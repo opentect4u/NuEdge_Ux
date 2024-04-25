@@ -26,7 +26,8 @@
 .tiles__loader {
   width: fit-content;
   /* font-weight: bold; */
-  font-family: 'Montserrat';
+  /* font-family: 'Montserrat'; */
+  font-family: "Roboto", sans-serif!important;
   font-size: 16px;
   clip-path: inset(0 3ch 0 0);
   animation: l4 1s steps(4) infinite;

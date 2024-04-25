@@ -29,9 +29,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-trxn let-i="rowIndex">
-            <tr tabindex="999"
-              [ngStyle]="{
-                'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
+            <tr tabindex="999">
               <td *ngFor="let col of column" [style.max-width]="col.width"
                 [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
                 <ng-container [ngSwitch]="true">
@@ -58,14 +56,6 @@
 
                   <ng-container *ngSwitchCase="col.field == 'trans_date'">
                     <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                    <p class="m-0"
-                      matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name'])) : ''}}">
-                      {{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' +
-                      (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name']))
-                      : 'N/A'
-                      }}</p>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'tot_tds'">
                     <p class="m-0" matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">

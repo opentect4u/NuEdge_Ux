@@ -64,7 +64,8 @@
 
 .percentage {
   fill: #666;
-  font-family: 'Montserrat';
+  /* font-family: 'Montserrat'; */
+  font-family: "Roboto", sans-serif!important;
   font-size: 0.5em;
   text-anchor: middle;
 }

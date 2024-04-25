@@ -56,7 +56,7 @@ export class PLTransaction{
       {
         field:'tot_inflow',
         header:'Tot. Inflow',
-        width:'10rem'
+        width:'8rem'
       },
       {
         field:'redemption',
@@ -71,7 +71,7 @@ export class PLTransaction{
       {
         field:'tot_outflow',
         header:'Tot. Outflow',
-        width:'10rem'
+        width:'8rem'
       },
       {
         field:'curr_val',
@@ -86,12 +86,12 @@ export class PLTransaction{
       {
         field:'ret_abs',
         header:'Abs. Ret',
-        width:'9rem'
+        width:'7rem'
       },
       {
         field:'xirr',
         header:'XIRR',
-        width:'6rem'
+        width:'5rem'
       }
   ]
 }

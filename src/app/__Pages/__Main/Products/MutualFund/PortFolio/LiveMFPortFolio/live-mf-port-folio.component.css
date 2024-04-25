@@ -4,11 +4,17 @@
   color: #3a5076;
   font-weight: 500;
 }
+.address_title{
+  margin: 0 15px!important;
+
+}
 .titles__value{
-  font-weight: 500;
-  /* font-size: 11px; */
+  /* font-weight: 500;
   font-size: 10px;
-  color: gray;
+  color: gray; */
+  font-weight: 500;
+    font-size: 11px;
+    color: black;
 }
 
 /* tr,td{
@@ -245,4 +251,10 @@ span.mat-tooltip-trigger.custom__badge.badge-primary:hover {
   background-color: #10486b  !important;
   transition: all 1s;
   color: #fff !important;
+}
+
+.folio_isin{
+  font-weight: 700;
+  font-size: 11px;
+  color: black;
 }

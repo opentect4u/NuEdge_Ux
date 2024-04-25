@@ -1,3 +1,4 @@
+  <ng-container *ngIf="column.length > 0">
     <div class="row form-group my-2">
         <div class="col-sm-12 d-flex justify-content-end ">
           <input id="search" class="form-control rounded w-25 pr-4" type="text" (input)="filterGlobal_secondary($event)"
@@ -30,8 +31,11 @@
     </ng-template>
     <ng-template pTemplate="body" let-recent_trxn let-i="rowIndex">
         <tr>
+          <!-- [ngStyle]="{'background-color':recent_trxn['activate_status'] == 'Inactive' ? '#b70a0a30' : '#ffffff'}" -->
+
             <td *ngFor="let col of column"
             [style]="'width : '+col.width"
+            [ngStyle]="{'background-color':(recent_trxn['activate_status'] == 'Inactive' && sip_type == 'A') ? '#b70a0a30' : '#ffffff'}"
            >
            <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
@@ -66,5 +70,4 @@
       </tr>
     </ng-template>
     </p-table>
-
-
+  </ng-container>
