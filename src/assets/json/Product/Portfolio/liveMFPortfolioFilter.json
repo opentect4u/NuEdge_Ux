@@ -62,7 +62,7 @@
     {
       "id":1,
       "name":"Inv. Since",
-      "flag":"inv_sinc"
+      "flag":"inv_since"
     },
     {
       "id":2,
@@ -77,12 +77,12 @@
     {
       "id":4,
       "name":"TDS",
-      "flag":"tds"
+      "flag":"tot_tds"
     },
     {
       "id":5,
       "name":"Stamp Duty",
-      "flag":"stamp_duty"
+      "flag":"tot_stamp_duty"
     },
     {
       "id":6,

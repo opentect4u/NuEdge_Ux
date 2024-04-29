@@ -48,7 +48,11 @@ styleClass="p-datatable-lg p-datatable-striped"
         "
         >
           <p class="m-0">
-            {{ live_stp[col.field] ? (live_stp[col.field] | date:'dd-MM-YY') : 'N/A'}}</p>
+            {{ live_stp[col.field] ? (live_stp[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'xirr'">
+          <p class="m-0">
+            {{ live_stp[col.field] ? (live_stp[col.field] | percent:'1.2-2') : '0%'}}</p>
         </ng-container>
         <ng-container *ngSwitchDefault>
           <p class="m-0">

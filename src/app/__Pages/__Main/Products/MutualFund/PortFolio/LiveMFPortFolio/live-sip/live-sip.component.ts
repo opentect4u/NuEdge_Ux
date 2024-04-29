@@ -43,7 +43,7 @@ export class LiveSIPComponent implements OnInit {
 export interface ILiveSIP{
     first_client_name:string;
     scheme_name:string;
-    active_status:string;
+    activate_status:string;
     folio_no:string;
     freq:string;
     reg_no:string;
@@ -56,28 +56,32 @@ export interface ILiveSIP{
     bank_name:string;
     xirr:number;
     plan_name:string;
-    option_name:string
+    option_name:string;
+    folio_data:any;
+    curr_val:string;
+    nav_date:string;
+    duration:string;
 }
 
 
 export class LiveSIPColumn{
   public static column:column[] = [
-    // {
-    //   field:'sl_no',
-    //   header:'Sl No',
-    //   width:'4rem',
-    //   isVisible:['A','L','I']
-    // },
+    {
+      field:'sl_no',
+      header:'Sl No',
+      width:'3rem',
+      isVisible:['A','L','I']
+    },
     {
       field:'first_client_name',
       header:'Client',
-      width:'14rem',
+      width:'9rem',
       isVisible:['A','L','I']
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'27rem',
+      width:'25rem',
       isVisible:['A','L','I']
     },
     {
@@ -89,7 +93,7 @@ export class LiveSIPColumn{
     {
       field:'folio_no',
       header:'Folio',
-      width:'6rem',
+      width:'7rem',
       isVisible:['A','L','I']
     },
     {
@@ -113,19 +117,19 @@ export class LiveSIPColumn{
     {
       field:'to_date',
       header:'End Date',
-      width:'5rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
       field:'terminated_date',
       header:'Term. Date',
-      width:'4rem',
+      width:'6rem',
       isVisible:['A','I']
     },
     {
       field:'sip_date',
       header:'SIP Date',
-      width:'3rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
@@ -135,22 +139,22 @@ export class LiveSIPColumn{
       isVisible:['A','L','I']
     },
     {
-      field:'remaining_inv',
+      field:'duration',
       header:'Rem. Inst',
       width:'3rem',
-      isVisible:['A','L','I']
+      isVisible:['A','L']
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'6rem',
+      width:'8rem',
       isVisible:['A','L','I']
     },
     {
       field:'xirr',
       header:'XIRR',
       width:'4rem',
-      isVisible:['A','L','I']
+      isVisible:['A','L']
     }
   ]
 }

@@ -22,10 +22,10 @@
               <div class="form-group row">
                 <label
                   for="valuation_as_on"
-                  class="col-md-4 col-sm-4 col-xs-3 col-lg-4 text-center"
+                  class="col-md-2 col-sm-4 col-xs-3 col-lg-4 text-center d-flex justify-content-center align-items-center"
                   >Valuation On</label
                 >
-                <div class="col-md-8 col-sm-8 col-lg-8 col-xs-9">
+                <div class="col-md-10 col-sm-8 col-lg-8 col-xs-9">
                   <p-calendar
                     #dateRng
                     dateFormat="dd/mm/yy"
@@ -44,10 +44,10 @@
               <div class="form-group row">
                 <label
                   for="view_type"
-                  class="col-md-4 col-sm-4 col-xs-3 col-lg-4 text-center"
+                  class="col-md-2 col-sm-4 col-xs-3 col-lg-4 text-center d-flex justify-content-center align-items-center"
                   >View By</label
                 >
-                <div class="col-md-8 col-sm-8 col-lg-8 col-xs-9">
+                <div class="col-md-10 col-sm-8 col-lg-8 col-xs-9">
                   <select
                     name="view_type"
                     id="view_type"
@@ -64,7 +64,7 @@
               <div class="form-group row">
                 <label
                   for="client_name"
-                  class="col-md-4 col-sm-4 col-xs-3 col-lg-4 text-center"
+                  class="col-md-2 col-sm-4 col-xs-3 col-lg-4 text-center d-flex justify-content-center align-items-center"
                 >
                   {{
                     filter_criteria.value.view_type == "F"
@@ -72,7 +72,7 @@
                       : "Investor"
                   }}
                 </label>
-                <div class="col-md-8 col-sm-8 col-lg-8 col-xs-9">
+                <div class="col-md-10 col-sm-8 col-lg-8 col-xs-9">
                   <app-core-srch
                     [placeholder]="
                       'Search By' +
@@ -102,10 +102,10 @@
                 <div class="form-group row">
                   <label
                     for="family_members"
-                    class="col-md-4 col-sm-4 col-xs-3 col-lg-4 text-center"
+                    class="col-md-2 col-sm-4 col-xs-3 col-lg-4 text-center d-flex justify-content-center align-items-center"
                     >Family Members</label
                   >
-                  <div class="col-md-8 col-sm-8 col-lg-8 col-xs-9">
+                  <div class="col-md-10 col-sm-8 col-lg-8 col-xs-9">
                     <ng-multiselect-dropdown
                       [id]="'family_members'"
                       [placeholder]="'Select Family Members'"
@@ -122,10 +122,10 @@
               <div class="form-group row">
                 <label
                   for="trans_type"
-                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
+                  class="col-sm-4 col-md-2 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
                   >View Trans.
                 </label>
-                <div class="col-sm-8 col-md-8 col-lg-9 col-xs-9">
+                <div class="col-sm-8 col-md-10 col-lg-9 col-xs-9">
                   <mat-radio-group
                     color="primary"
                     formControlName="trans_type"
@@ -144,10 +144,10 @@
               <div class="form-group row">
                 <label
                   for="view_funds_type"
-                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
+                  class="col-sm-4 col-md-2 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
                   >View Funds
                 </label>
-                <div class="col-sm-8 col-md-8 col-lg-9 col-xs-9">
+                <div class="col-sm-8 col-md-10 col-lg-9 col-xs-9">
                   <mat-radio-group
                     color="primary"
                     formControlName="view_funds_type"
@@ -167,10 +167,10 @@
               <div class="form-group row">
                 <label
                   for="view_funds_type"
-                  class="col-sm-4 col-md-4 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
+                  class="col-sm-4 col-md-2 col-lg-3 col-xs-3 text-center d-flex justify-content-center align-items-center"
                   >MF Report
                 </label>
-                <div class="col-sm-8 col-md-8 col-lg-9 col-xs-9">
+                <div class="col-sm-8 col-md-10 col-lg-9 col-xs-9">
                   <mat-radio-group
                     color="primary"
                     formControlName="view_mf_report"
@@ -187,10 +187,10 @@
               <div class="form-group row">
                 <label
                   for="trans_duration"
-                  class="col-sm-4 col-xs-3 col-md-4 col-lg-3 text-center d-flex justify-content-center align-items-center"
+                  class="col-sm-4 col-xs-3 col-md-2 col-lg-3 text-center d-flex justify-content-center align-items-center"
                   >Trans. Duration</label
                 >
-                <div class="col-sm-8 col-md-8 col-xs-9 col-lg-9">
+                <div class="col-sm-8 col-md-10 col-xs-9 col-lg-9">
                   <select
                     name="trans_duration"
                     id="trans_duration"
@@ -209,7 +209,7 @@
               <div class="form-group row" *ngIf="filter_criteria.value.trans_duration == 'D'">
                 <label
                   for="trans_date_range"
-                  class="col-sm-4 col-xs-3 col-md-4 col-lg-3 text-center"
+                  class="col-sm-4 col-xs-3 col-md-4 col-lg-3 text-center d-flex justify-content-center align-items-center"
                   >Date(From-To)</label
                 >
                 <div class="col-sm-8 col-md-8 col-xs-9 col-lg-9">
@@ -227,10 +227,10 @@
               <div class="form-group row">
                 <label
                   for="show_valuation_with"
-                  class="col-md-4 col-sm-4 col-xs-3 col-lg-4 text-center"
+                  class="col-md-2 col-sm-4 col-xs-3 col-lg-4 text-center d-flex justify-content-center align-items-center"
                   >Valuation With</label
                 >
-                <div class="col-md-8 col-sm-8 col-lg-8 col-xs-9">
+                <div class="col-md-10 col-sm-8 col-lg-8 col-xs-9">
                   <ng-multiselect-dropdown
                     #multiSelect
                     id="show_valuation_with"
@@ -245,10 +245,10 @@
               <div class="form-group row">
                 <label
                   for="trans_with"
-                  class="col-md-4 col-sm-4 col-xs-3 col-lg-4 text-center"
+                  class="col-md-2 col-sm-4 col-xs-3 col-lg-4 text-center d-flex justify-content-center align-items-center"
                   >Trans. With</label
                 >
-                <div class="col-md-8 col-sm-8 col-lg-8 col-xs-9">
+                <div class="col-md-10 col-sm-8 col-lg-8 col-xs-9">
                   <ng-multiselect-dropdown
                     #multiSelect
                     id="trans_with"
@@ -263,10 +263,10 @@
               <div class="form-group row">
                 <label
                   for="clmn_chooser"
-                  class="col-md-4 col-sm-4 col-xs-3 col-lg-4 text-center"
+                  class="col-md-2 col-sm-4 col-xs-3 col-lg-4 text-center d-flex justify-content-center align-items-center"
                   >Column Chooser</label
                 >
-                <div class="col-md-8 col-sm-8 col-lg-8 col-xs-9">
+                <div class="col-md-10 col-sm-8 col-lg-8 col-xs-9">
                   <ng-multiselect-dropdown
                     #multiSelect
                     id="clmn_chooser"
@@ -281,10 +281,10 @@
               <div class="form-group row">
                 <label
                   for="outputIn"
-                  class="col-md-4 col-sm-4 col-xs-3 col-lg-4 text-center"
+                  class="col-md-2 col-sm-4 col-xs-3 col-lg-4 text-center d-flex justify-content-center align-items-center"
                   >Output In</label
                 >
-                <div class="col-md-8 col-sm-8 col-lg-8 col-xs-9">
+                <div class="col-md-10 col-sm-8 col-lg-8 col-xs-9">
                   <mat-button-toggle-group #group="matButtonToggleGroup">
                     <mat-button-toggle
                       value="left"
@@ -370,7 +370,7 @@
           <div class="d-flex align-items-center my-4">
             <mat-icon class="details__icon warningIcon">badge</mat-icon>
             <span class="heading_title"
-              >PAN:&nbsp;<p class="titles__value m-0">{{ clientDtls.pan }}</p>
+              >PAN:&nbsp;<p class="titles__value m-0">{{ clientDtls.pan ? clientDtls.pan : 'N/A' }}</p>
             </span>
           </div>
           <div class="d-flex align-items-center">
@@ -397,14 +397,14 @@
             <mat-icon class="details__icon warningIcon">call</mat-icon>
             <span class="heading_title"
               >Contact:&nbsp;
-              <p class="titles__value m-0">{{ clientDtls.mobile }}</p>
+              <p class="titles__value m-0">{{ clientDtls.mobile ? clientDtls.mobile : 'N/A'}}</p>
             </span>
           </div>
           <div class="my-2 d-flex align-items-center">
             <mat-icon class="details__icon successIcon">mail</mat-icon>
             <span class="heading_title"
               >Email:&nbsp;
-              <p class="titles__value m-0">{{ clientDtls.email }}</p>
+              <p class="titles__value m-0">{{ clientDtls.email ? clientDtls.email : 'N/A'}}</p>
             </span>
           </div>
         </div>
@@ -500,6 +500,7 @@
           class="tablinks"
           *ngFor="let tabs of __portFolioTab"
           (click)="getTabsDtls(tabs)"
+          [ngClass]="{ activeList: tabs.id == selected_id }"
         >
           <span [ngClass]="{ activeSpan: tabs.id == selected_id }">
             {{ tabs.label }}
@@ -958,7 +959,7 @@
         <div class="row ">
           <div class="col-sm-12">
             <form [formGroup]="recent_trxn_frm" (ngSubmit)="searchRecentTrxn()">
-              <div class="row d-flex align-items-center">
+              <div class="row d-flex align-items-end">
                 <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
                   <label
                     for="date_range"> Date(From-To) </label
@@ -966,7 +967,7 @@
                     <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date" [showButtonBar]="true"
                     formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
                 </div>
-                <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
+                <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12">
                    <label for="trxn_type_id">Transaction Type</label>
                    <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
                      [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst"
@@ -974,18 +975,18 @@
                    </ng-multiselect-dropdown>
                 </div>
 
-                <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
+                <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12">
                   <label for="trxn_sub_type_id">Transaction Sub-Type</label>
                   <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
                     [settings]="settingsforTrxnSubTypeDropdown" [data]="trxnSubTypeMst" formControlName="trxn_sub_type_id">
                   </ng-multiselect-dropdown>
                 </div>
 
-                <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 my-3">
+                <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
                   <label for="flow_type"> Cash Flow </label> <br/>
                 <mat-radio-group formControlName="flow_type" aria-label="Select an option" id="flow_type">
                   <mat-radio-button value="{{item.id}}" color="primary"
-                  [ngClass]="{'mx-3': item.id == 'I'}"
+                  [ngClass]="{'mx-2': item.id == 'I'}"
                   *ngFor="let item of flowType">{{item.name}}</mat-radio-button>
                 </mat-radio-group>
                 </div>

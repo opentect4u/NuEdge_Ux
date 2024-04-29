@@ -51,7 +51,11 @@ styleClass="p-datatable-lg"
       "
       >
         <p class="m-0">
-          {{ live_swp[col.field] ? (live_swp[col.field] | date:'dd-MM-YY') : 'N/A'}}</p>
+          {{ live_swp[col.field] ? (live_swp[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+      </ng-container>
+      <ng-container *ngSwitchCase="col.field == 'xirr'">
+        <p class="m-0">
+          {{ live_swp[col.field] ? (live_swp[col.field] | percent:'1.2-2') : '0%'}}</p>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <p class="m-0">

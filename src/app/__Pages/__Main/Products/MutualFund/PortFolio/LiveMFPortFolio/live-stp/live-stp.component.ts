@@ -56,34 +56,37 @@ export interface ILiveSTP{
     bank_name:string;
     xirr:number;
     plan_name:string;
-    option_name:string
+    option_name:string;
+    folio_data:any;
+    curr_val:string;
+    nav_date:string;
+    duration:string;
 }
-
 
 export class LiveSTPColumn{
   public static column:column[] = [
-    // {
-    //   field:'sl_no',
-    //   header:'Sl No',
-    //   width:'5rem',
-    //   isVisible:['A','L','I']
-    // },
+    {
+      field:'sl_no',
+      header:'Sl No',
+      width:'3rem',
+      isVisible:['A','L','I']
+    },
     {
       field:'first_client_name',
       header:'Client',
-      width:'15rem',
+      width:'9rem',
       isVisible:['A','L','I']
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'23rem',
+      width:'25rem',
       isVisible:['A','L','I']
     },
     {
       field:'activate_status',
       header:'Status',
-      width:'5rem',
+      width:'4rem',
       isVisible:['A','L','I']
     },
     {
@@ -107,38 +110,38 @@ export class LiveSTPColumn{
     {
       field:'from_date',
       header:'Start Date',
-      width:'4rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
       field:'to_date',
       header:'End Date',
-      width:'4rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
-      field:'terminate_date',
+      field:'terminated_date',
       header:'Term. Date',
-      width:'4rem',
+      width:'6rem',
       isVisible:['A','I']
     },
     {
       field:'stp_date',
       header:'STP Date',
-      width:'4rem',
+      width:'6rem',
       isVisible:['A','L','I']
     },
     {
       field:'amount',
       header:'Amount',
-      width:'4rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {
-      field:'remaining_inv',
+      field:'duration',
       header:'Rem. Inst',
-      width:'4rem',
-      isVisible:['A','L','I']
+      width:'3rem',
+      isVisible:['A','L']
     },
     {
       field:'bank_name',
@@ -149,8 +152,8 @@ export class LiveSTPColumn{
     {
       field:'xirr',
       header:'XIRR',
-      width:'5rem',
-      isVisible:['A','L','I']
+      width:'4rem',
+      isVisible:['A','L']
     }
   ]
 }
