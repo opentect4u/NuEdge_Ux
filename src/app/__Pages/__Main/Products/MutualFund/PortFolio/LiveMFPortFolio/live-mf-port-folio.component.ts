@@ -126,10 +126,15 @@ mappings between `act_value` and `value` for transition durations. */
 
   parentLiveMfPortFolio: Partial<TotalparentLiveMfPortFolio>;
 
-    /**
+  /**
    * Holding Transaction Type  Master Data
    */
     trxnTypeMst: rntTrxnType[] = [];
+
+  /**
+   * Holding Transaction Type  Master Data
+   */
+    trxnTypeMst_upcomming:rntTrxnType[] = [];
 
   /**
    * Holding Transaction Sub-Type  Master Data
@@ -866,8 +871,8 @@ mappings between `act_value` and `value` for transition durations. */
         break;
         case 3: break;
         case 9: this.call_api_for_pL_func(fb); break; // call P&L
-        case 11:
-        case 12: this.getTrxnTypeMst();break
+        case 11:  this.getTrxnTypeMst();break
+        case 12:  this.getTrxnTypeMst_forUpcomming();break;
         case 13: this.call_api_for_reject_transactions(fb);break
         case 14: this.call_api_for_systematicMissedTransaction(fb);break;
         default: break;
@@ -1150,6 +1155,19 @@ mappings between `act_value` and `value` for transition durations. */
   };
   /** End */
 
+    /*** Get Transaction Type From Master*/
+    getTrxnTypeMst_forUpcomming = () => {
+      if(this.trxnTypeMst_upcomming.length == 0){
+        this.__dbIntr
+          .api_call(0, `/rntSystematicTransType`, `rnt_id=1`)
+          .pipe(pluck('data'))
+          .subscribe((res: rntTrxnType[]) => {
+            this.trxnTypeMst_upcomming = res;
+          });
+       }
+    };
+    /** End */
+
   /** Get Transaction SubType against Transaction Type */
   getTrxnSubTypeMst = <T extends rntTrxnType[]>(trxnType: T) => {
     if(trxnType.length > 0){
@@ -1199,7 +1217,7 @@ mappings between `act_value` and `value` for transition durations. */
         this.utility.convertFormData({
           ...this.main_frm_dt,
           ...this.recent_trxn_frm.value,
-          flow_type:this.upcomming_trxn_frm.value.flow_type == 'A' ? '' : this.recent_trxn_frm.value.flow_type,
+          flow_type:this.upcomming_trxn_frm.value.flow_type == 'A' ? '' : this.upcomming_trxn_frm.value.flow_type,
           trans_sub_type:this.utility.mapIdfromArray(this.upcomming_trxn_frm.value.trxn_sub_type_id,'trans_sub_type'),
           trans_type:this.utility.mapIdfromArray(this.upcomming_trxn_frm.value.trxn_type_id,'trans_type'),
          }))

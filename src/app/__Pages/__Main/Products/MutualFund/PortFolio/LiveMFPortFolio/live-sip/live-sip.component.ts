@@ -129,7 +129,7 @@ export class LiveSIPColumn{
     {
       field:'sip_date',
       header:'SIP Date',
-      width:'6rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {

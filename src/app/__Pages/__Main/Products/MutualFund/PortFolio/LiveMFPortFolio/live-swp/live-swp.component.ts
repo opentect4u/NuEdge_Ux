@@ -129,7 +129,7 @@ export class LiveSWPColumn{
     {
       field:'swp_date',
       header:'SWP Date',
-      width:'6rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {

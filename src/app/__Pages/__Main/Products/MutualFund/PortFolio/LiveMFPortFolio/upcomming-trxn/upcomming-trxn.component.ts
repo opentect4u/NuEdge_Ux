@@ -126,12 +126,12 @@ export class UpcommingColumns {
     {
       field:'sl_no',
       header:'Sl No',
-      width:'4rem'
+      width:'3rem'
     },
     {
       field:'first_client_name',
       header:'Client',
-      width:'10rem'
+      width:'8rem'
     },
     {
       field:'scheme_name',
@@ -141,7 +141,7 @@ export class UpcommingColumns {
     {
       field:'trans_type',
       header:'Trans. type',
-      width:'4rem'
+      width:'3rem'
     },
     {
       field:'folio_no',
@@ -156,7 +156,7 @@ export class UpcommingColumns {
     {
       field:'reg_no',
       header:'Txn No.',
-      width:'5rem'
+      width:'4rem'
     },
     {
       field:'from_date',
@@ -176,12 +176,12 @@ export class UpcommingColumns {
     {
       field:'amount',
       header:'Amount',
-      width:'5rem'
+      width:'4rem'
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'7rem'
+      width:'6rem'
     }
   ]
 }

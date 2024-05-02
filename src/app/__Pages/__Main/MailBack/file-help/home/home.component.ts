@@ -80,6 +80,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
          code:new FormControl(''),
          status:new FormControl('')
     }),
+    sys_process_type: new FormControl('')
   });
 
   constructor(private utility: UtiliService, private dbIntr: DbIntrService,
@@ -130,6 +131,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     this.rntTrxnType.get('process_type').setValue('');
     this.rntTrxnType.get('xirr_process_type').setValue('');
     this.rntTrxnType.get('lmf_pl').setValue('');
+    this.rntTrxnType.get('sys_process_type').setValue('');
     this.SetColumns(this.rnt_type_tab);
   }
 
@@ -166,6 +168,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         formdata.append('trans_type',this.rntTrxnType.value.trans_type);
         formdata.append('trans_sub_type',this.rntTrxnType.value.trans_sub_type);
         formdata.append('trans_type_code',this.rntTrxnType.value.c_k_trans_type);
+        formdata.append('process_type',this.rntTrxnType.value.sys_process_type);
       }
       else{
         api_name = '/rntSystematicUnregisterAddEdit';
@@ -221,6 +224,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
           this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
           this.rntTrxnType.get('remarks').removeValidators([Validators.required]);
+          this.rntTrxnType.get('sys_process_type').removeValidators([Validators.required]);
           this.rntTrxnType.get(['tax_status','status']).removeValidators([Validators.required]);
           this.rntTrxnType.get(['tax_status','code']).removeValidators([Validators.required]);
     }
@@ -232,6 +236,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         this.rntTrxnType.get('trans_sub_type').setValidators([Validators.required]);
         this.rntTrxnType.get('trans_type').setValidators([Validators.required]);
         this.rntTrxnType.get('c_k_trans_type').setValidators([Validators.required]);
+        this.rntTrxnType.get('sys_process_type').setValidators([Validators.required]);
         this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
         this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
         this.rntTrxnType.get('remarks').removeValidators([Validators.required]);
@@ -247,6 +252,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         this.rntTrxnType.get('freq_code').setValidators([Validators.required]);
         this.rntTrxnType.get('trans_sub_type').removeValidators([Validators.required]);
         this.rntTrxnType.get('remarks').removeValidators([Validators.required]);
+        this.rntTrxnType.get('sys_process_type').removeValidators([Validators.required]);
         this.rntTrxnType.get(['tax_status','status']).removeValidators([Validators.required]);
           this.rntTrxnType.get(['tax_status','code']).removeValidators([Validators.required]);
       }
@@ -258,6 +264,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         this.rntTrxnType.get('freq_name').removeValidators([Validators.required]);
         this.rntTrxnType.get('freq_code').removeValidators([Validators.required]);
         this.rntTrxnType.get('trans_sub_type').removeValidators([Validators.required]);
+        this.rntTrxnType.get('sys_process_type').removeValidators([Validators.required]);
         this.rntTrxnType.get('remarks').setValidators([Validators.required]);
         this.rntTrxnType.get(['tax_status','status']).removeValidators([Validators.required]);
         this.rntTrxnType.get(['tax_status','code']).removeValidators([Validators.required]);
@@ -319,6 +326,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
             items.trans_type = row_obj.trans_type;
             items.trans_type_code = row_obj.trans_type_code;
             items.trans_sub_type = row_obj.trans_sub_type;
+            items.process_type = row_obj.process_type;
           }
           return true;
         }
@@ -461,6 +469,7 @@ export class HomeComponent implements OnInit, IFileHelpHome {
         trans_type: trxnType ? (trxnType.trans_type ? trxnType.trans_type : '') : '',
         c_k_trans_type: trxnType ? (trxnType.trans_type_code ? trxnType.trans_type_code : '') : '',
         trans_sub_type: trxnType ? (trxnType.trans_sub_type ? trxnType.trans_sub_type : '') : '',
+        sys_process_type: trxnType ? (trxnType.process_type ? trxnType.process_type : '') : '',
       })
     }
     else if(this.sub_tab == 'F'){
@@ -508,12 +517,12 @@ export class HomeComponent implements OnInit, IFileHelpHome {
           }
           else if(this.sub_tab == 'F'){
             this.columns = systamaticFreqClmns.columns.filter((item) =>
-            item.isVisible.includes(rnt_id)
+            item.isVisible.includes(rnt_id) && item.field != 'process_type'
           );
           }
           else{
             this.columns = systamaticUnregisteredRemarksClmns.columns.filter((item) =>
-            item.isVisible.includes(rnt_id)
+            item.isVisible.includes(rnt_id) && item.field != 'process_type'
           );
           }
       }

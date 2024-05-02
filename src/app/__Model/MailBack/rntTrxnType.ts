@@ -20,6 +20,7 @@ export interface ISystematicTransaction {
   trans_type: string;
   trans_sub_type:string;
   trans_type_code: string;
+  process_type:string;
 }
 
 export interface ISystematiceFrequency {

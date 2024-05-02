@@ -91,13 +91,10 @@
   <mat-card-content>
     <p-table
     #pTableRef
-    responsiveLayout="scroll"
     [value]="trxnTypeMst"
     [responsive]="true"
     [rowHover]="true"
     styleClass="p-datatable-striped"
-    [autoLayout]="true"
-    [scrollable]="true"
     [paginator]="true"
     [totalRecords]="trxnTypeMst.length"
     [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
@@ -107,11 +104,10 @@
     >
 
       <ng-template pTemplate="header">
-        <tr>
+        <tr class="stickyHeader">
           <th  *ngFor="let col of column"
           [pSortableColumn]="col.field"
-          [style.max-width]="col.width"
-          [style.min-width]="col.width"
+          [style.width]="col.width"
           >
             {{ col.header }}
             <p-sortIcon *ngIf="col.field!='edit'" [field]="col.field">
@@ -122,8 +118,7 @@
       <ng-template pTemplate="body" let-file let-index="rowIndex">
         <tr>
           <td *ngFor="let col of column"
-          [style.max-width]="col.width"
-          [style.min-width]="col.width"
+          [style.width]="col.width"
           >
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
@@ -159,7 +154,7 @@
       <ng-template pTemplate="emptymessage" let-file>
         <!-- [style.height]="'309px'" -->
         <tr >
-          <td [attr.colspan]="5">
+          <td [attr.colspan]="column.length">
              <h6>No Records Found</h6>
           </td>
         </tr>

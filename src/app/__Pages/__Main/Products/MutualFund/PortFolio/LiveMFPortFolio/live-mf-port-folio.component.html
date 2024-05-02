@@ -1027,7 +1027,7 @@
                   <mat-radio-button value="L">
                     Live SIP
                   </mat-radio-button>
-                  <mat-radio-button value="I" class="mx-3">
+                  <mat-radio-button value="I" class="mx-2">
                     Inactive SIP
                   </mat-radio-button>
                   <mat-radio-button value="A">
@@ -1041,10 +1041,10 @@
                   <mat-radio-button value="L">
                     Live STP
                   </mat-radio-button>
-                  <mat-radio-button value="I" class="mx-3">
+                  <mat-radio-button value="I" class="mx-2">
                     Inactive STP
                   </mat-radio-button>
-                  <mat-radio-button value="A" class="mx-3">
+                  <mat-radio-button value="A" class="">
                     All STP
                   </mat-radio-button>
                 </mat-radio-group>
@@ -1055,10 +1055,10 @@
                   <mat-radio-button value="L">
                     Live SWP
                   </mat-radio-button>
-                  <mat-radio-button value="I" class="mx-3">
+                  <mat-radio-button value="I" class="mx-2">
                     Inactive SWP
                   </mat-radio-button>
-                  <mat-radio-button value="A" class="mx-3">
+                  <mat-radio-button value="A" class="">
                     All SWP
                   </mat-radio-button>
                 </mat-radio-group>
@@ -1106,7 +1106,7 @@
                 <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
                    <label for="trxn_type_id">Transaction Type</label>
                    <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
-                     [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst"
+                     [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst_upcomming"
                      formControlName="trxn_type_id">
                    </ng-multiselect-dropdown>
                 </div>
@@ -1122,7 +1122,7 @@
                   <label for="flow_type"> Cash Flow </label> <br/>
                 <mat-radio-group formControlName="flow_type" aria-label="Select an option" id="flow_type">
                   <mat-radio-button value="{{item.id}}" color="primary"
-                  [ngClass]="{'mx-3': item.id == 'I'}"
+                  [ngClass]="{'mx-2': item.id == 'I'}"
                   *ngFor="let item of flowType">{{item.name}}</mat-radio-button>
                 </mat-radio-group>
                 </div>

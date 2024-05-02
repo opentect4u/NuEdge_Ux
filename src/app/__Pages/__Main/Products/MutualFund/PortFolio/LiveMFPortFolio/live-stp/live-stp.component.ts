@@ -128,7 +128,7 @@ export class LiveSTPColumn{
     {
       field:'stp_date',
       header:'STP Date',
-      width:'6rem',
+      width:'5rem',
       isVisible:['A','L','I']
     },
     {

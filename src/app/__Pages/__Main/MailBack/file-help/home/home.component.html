@@ -94,6 +94,25 @@
               </div>
 
               </div>
+              <ng-container *ngIf="file_type_tab == 'S'">
+                <div class="col-sm-3" *ngIf="sub_tab!= 'F' && sub_tab!= 'U'">
+                  <label for="sys_process_type">Process Type <span class="text-danger">*</span></label>
+                  <select
+                  class="form-control"
+                  name="sys_process_type"
+                  id="sys_process_type"
+                  formControlName="sys_process_type"
+                  >
+                    <option value="">Select</option>
+                    <option value="I" >Inflow</option>
+                    <option value="O" >Outflow</option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="rntTrxnType.get('sys_process_type').invalid && (rntTrxnType.get('sys_process_type').dirty || rntTrxnType.get('sys_process_type').touched)">
+                    <span class="invalid-feedback" *ngIf="(rntTrxnType.get('sys_process_type')).errors?.required">*Please provide process type</span>
+                  </div>
+                </div>
+              </ng-container>
+
 
             <!-- </div>
             <div class="row"> -->
@@ -176,7 +195,9 @@
                 <div
                 class="d-flex justify-content-end align-items-end"
                 [ngClass]="{'col-sm-6':this.sub_tab == 'F',
-                'col-sm-3':(this.sub_tab == 'T' || this.sub_tab == 'U')}"
+                'col-sm-3':this.sub_tab == 'U',
+                'col-sm-12 mt-1':sub_tab == 'T'
+                }"
                 >
                 <p-button
                 type="submit"
