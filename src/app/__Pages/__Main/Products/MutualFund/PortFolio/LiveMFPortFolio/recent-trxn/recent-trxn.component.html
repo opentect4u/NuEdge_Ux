@@ -20,7 +20,7 @@
 
       >
     <ng-template pTemplate="header">
-        <tr>
+        <tr class="stickyHeader">
             <th *ngFor="let col of recent_trxn_clmn"
                 pSortableColumn="{{col.field}}"
                 [style]="'width : '+col.width"

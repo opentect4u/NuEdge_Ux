@@ -131,12 +131,12 @@ export class UpcommingColumns {
     {
       field:'first_client_name',
       header:'Client',
-      width:'8rem'
+      width:'7rem'
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'22rem'
+      width:'21rem'
     },
     {
       field:'trans_type',
@@ -176,12 +176,12 @@ export class UpcommingColumns {
     {
       field:'amount',
       header:'Amount',
-      width:'4rem'
+      width:'3rem'
     },
     {
       field:'bank_name',
       header:'Bank',
-      width:'6rem'
+      width:'5rem'
     }
   ]
 }
