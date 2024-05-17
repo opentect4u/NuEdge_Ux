@@ -3,6 +3,7 @@ import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
+import { RejectTrxnClmn } from '../reject-trxn/reject-trxn.component';
 
 @Component({
   selector: 'systematic-missed-trxn',
@@ -12,14 +13,16 @@ import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
 export class SystematicMissedTrxnComponent implements OnInit {
 
   /** Holding Systematic Missed Transaction master Data */
-    // @Input() systematicMissedTrxn:Partial<ISystematicMissedTrxn>[] = []
-    @Input() systematicMissedTrxn:Partial<TrxnRpt>[] = []
+    @Input() systematicMissedTrxn:Partial<ISystematicMissedTrxn>[] = []
+    // @Input() systematicMissedTrxn:Partial<TrxnRpt>[] = []
 
   /** End */
 
   /** Holding the column for systematic missed transaction */
     // columns:column[] = SystematicMissedTrxnClmn.columns;
-    columns:column[] = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn')).filter((el) => el.isVisible.includes('T'));;
+    // columns:column[] = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn')).filter((el) => el.isVisible.includes('T'));;
+
+    columns:column[] = RejectTrxnClmn.column
 
   /** End */
 
@@ -59,6 +62,7 @@ export class ISystematicMissedTrxn{
   transaction_type:string;
   bank_name:string;
   xirr:number;
+  divi_lock_flag:string;
 }
 
 export class SystematicMissedTrxnClmn{

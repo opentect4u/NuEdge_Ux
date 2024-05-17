@@ -1,7 +1,8 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'recent-trxn',
@@ -16,10 +17,19 @@ export class RecentTrxnComponent implements OnInit {
 
   @ViewChild('dt') primaryTbl :Table;
 
+  totalAmt:number = 0;
 
   constructor(private utility:UtiliService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
+
+  ngOnChanges(changes: SimpleChanges){
+       queueMicrotask(()=>{
+          this.totalAmt = global.Total__Count(this.recent_trxn,item => Number(item.tot_amount));
+        })
+  }
 
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
@@ -47,6 +57,11 @@ export  interface IRecentTrxn{
 
 export class RecentTrxnClmn{
    public static column:column[] = [
+    {
+      field:'sl_no',
+      header:'Sl No.',
+      width:'3rem'
+    },
     {
       field:'trans_date',
       header:'Trans Date',

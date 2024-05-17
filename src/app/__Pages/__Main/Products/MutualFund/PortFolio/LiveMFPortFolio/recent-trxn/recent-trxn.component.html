@@ -30,7 +30,7 @@
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-recent_trxn>
+    <ng-template pTemplate="body" let-recent_trxn let-i="rowIndex">
         <tr
         [ngStyle]="{
           'background-color': recent_trxn.transaction_subtype.includes('Rejection') ? '#b70a0a30' : ''}"
@@ -39,6 +39,9 @@
             [style]="'width : '+col.width"
            >
            <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <p class="m-0">{{ i + 1}}</p>
+              </ng-container>
               <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                 <p class="m-0 text-center">
                   {{recent_trxn[col.field] ? ( recent_trxn[col.field] | titlecase) : "N/A" }}
@@ -63,6 +66,29 @@
       <tr>
         <td [attr.colspan]="recent_trxn_clmn.length">
           <p class="m-0">No Records Found</p>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <tr>
+        <td
+          *ngFor="let col of recent_trxn_clmn"
+          [style]="'width : ' + col.width"
+        >
+          <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="col.field == 'sl_no'">
+              <p class="m-0">Total</p>
+            </ng-container>
+            <ng-container
+              *ngSwitchCase=" col.field == 'tot_amount'">
+              <p class="m-0">
+                {{
+                  totalAmt > 0 ?  (totalAmt | number:'1.2-2') : 0.00
+                }}
+              </p>
+              </ng-container>
+            <ng-container *ngSwitchDefault> </ng-container>
+          </ng-container>
         </td>
       </tr>
     </ng-template>

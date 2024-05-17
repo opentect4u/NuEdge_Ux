@@ -2,6 +2,7 @@ import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/cor
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'portfolio-live-sip',
@@ -10,19 +11,35 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 })
 export class LiveSIPComponent implements OnInit {
 
-  @Input() liveSIP:Partial<ILiveSIP>[] = []
+  // @Input() liveSIP:Partial<ILiveSIP>[] = [];
+
+  private _liveSIP:Partial<ILiveSIP>[] = [];
+
+  @Input()
+  public get liveSIP():Partial<ILiveSIP>[]{
+   return this._liveSIP;
+  }
+
+  public set liveSIP(liveSip:Partial<ILiveSIP>[]){
+    this._liveSIP = liveSip;
+    this.totalAmt = global.Total__Count(liveSip,(item:ILiveSIP) => Number(item.amount));
+  }
 
   // column:column[] = LiveSIPColumn.column;
   column:column[] = []
+
+  @Input() selected_sip_type:string;
 
   @ViewChild('dt') primaryTbl :Table;
 
   @Input() sip_type:string;
 
+  totalAmt:number = 0.00;
 
   constructor(private utility:UtiliService) { }
 
   ngOnInit(): void {}
+
 
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
@@ -34,8 +51,9 @@ export class LiveSIPComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges){
     if(changes.sip_type){
-      this.column =  LiveSIPColumn.column.filter((column:column) => column.isVisible.includes(this.sip_type))
+      this.column =  LiveSIPColumn.column.filter((column:column) => column.isVisible.includes(this.sip_type));
     }
+    // this.totalAmt = global.Total__Count(changes.liveSIP.currentValue,(item:ILiveSIP) => Number(item.amount));
   }
 }
 
@@ -98,13 +116,13 @@ export class LiveSIPColumn{
     },
     {
       field:'freq',
-      header:'Frq',
+      header:'Freq',
       width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'reg_no',
-      header:'Txn No.',
+      header:'Reg No.',
       width:'5rem',
       isVisible:['A','L','I']
     },

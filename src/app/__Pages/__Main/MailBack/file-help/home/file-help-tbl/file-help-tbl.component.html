@@ -139,7 +139,8 @@
              </p>
            </ng-container>
            <ng-container *ngSwitchCase="col.field == 'lmf_pl'">
-            <p class="m-0">{{ file[col.field] ? (file[col.field] == 'PL_SI' ? 'Switch In' : (file[col.field] == 'PL_SO' ? 'Switch Out' : (file[col.field] == 'PL_R' ? 'Redemption' : 'Purchase')) )  : 'N/A'}}
+            <p class="m-0">{{ file[col.field] ? (file[col.field] == 'PL_SI' ? 'Switch In' : (file[col.field] == 'PL_SO' ? 'Switch Out' :
+               (file[col.field] == 'PL_R' ? 'Redemption' : (file[col.field] == 'PL_IR' ? 'IDCW Reinvestment' :  (file[col.field] == 'PL_IP' ? 'IDCW Payout' : 'Purchase')))) )  : 'N/A'}}
            </p>
          </ng-container>
               <ng-container *ngSwitchDefault>

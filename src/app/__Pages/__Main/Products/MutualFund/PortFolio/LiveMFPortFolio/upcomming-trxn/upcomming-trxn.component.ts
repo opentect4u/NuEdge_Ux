@@ -2,6 +2,7 @@ import { Component, OnInit,Input, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'upcomming-trxn',
@@ -11,8 +12,21 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 export class UpcommingTrxnComponent implements OnInit {
 
   /*** Holding Upcomming Transactions */
-  @Input() upcommingTrxn:Partial<IUpcommingTrxn>[] = [];
-  /*** End */
+    private _upcommingtrxn:Partial<IUpcommingTrxn>[] = [];
+  /***end */
+
+  total_amount_in_footer:number = 0.00;
+
+  @Input()
+  public get upcommingtrxn():Partial<IUpcommingTrxn>[]{
+    return this._upcommingtrxn
+  }
+
+  public set upcommingtrxn(transDtls:Partial<IUpcommingTrxn>[]){
+    this._upcommingtrxn = transDtls;
+    this.total_amount_in_footer = global.Total__Count(transDtls, (item:Partial<IUpcommingTrxn>) => Number(item.amount));
+  }
+
 
   /** reference of primengTable */
   @ViewChild('dt') primaryTbl :Table;
@@ -119,6 +133,7 @@ export interface IUpcommingTrxn{
   calculation_day: number
   duration: number
   date:string;
+  cust_id:number;
 }
 
 export class UpcommingColumns {
@@ -128,11 +143,11 @@ export class UpcommingColumns {
       header:'Sl No',
       width:'3rem'
     },
-    {
-      field:'first_client_name',
-      header:'Client',
-      width:'7rem'
-    },
+    // {
+    //   field:'first_client_name',
+    //   header:'Client',
+    //   width:'7rem'
+    // },
     {
       field:'scheme_name',
       header:'Scheme',
@@ -146,37 +161,38 @@ export class UpcommingColumns {
     {
       field:'folio_no',
       header:'Folio',
-      width:'5rem'
+      width:'4rem'
     },
     {
       field:'freq',
-      header:'Frq',
-      width:'4rem'
+      header:'Freq',
+      width:'3rem'
     },
-    {
-      field:'reg_no',
-      header:'Txn No.',
-      width:'4rem'
-    },
-    {
-      field:'from_date',
-      header:'Start Date',
-      width:'4rem'
-    },
-    {
-      field:'to_date',
-      header:'End Date',
-      width:'4rem'
-    },
-    {
-      field:'date',
-      header:'Date',
-      width:'4rem'
-    },
+    // {
+    //   field:'reg_no',
+    //   header:'Txn No.',
+    //   width:'4rem'
+    // },
+    // {
+    //   field:'from_date',
+    //   header:'Start Date',
+    //   width:'4rem'
+    // },
+    // {
+    //   field:'to_date',
+    //   header:'End Date',
+    //   width:'4rem'
+    // },
+
     {
       field:'amount',
       header:'Amount',
       width:'3rem'
+    },
+    {
+      field:'date',
+      header:'Propose Trans Date',
+      width:'5rem'
     },
     {
       field:'bank_name',

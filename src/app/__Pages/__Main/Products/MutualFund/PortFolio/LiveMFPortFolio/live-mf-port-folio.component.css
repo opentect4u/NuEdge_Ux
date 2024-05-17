@@ -76,9 +76,9 @@ list-style: none;
   border-radius: 2px;
   position: relative; */
 
-  padding: 9px 8px;
-    font-size: 11px;
-    font-weight: 600;
+    padding: 9px 8px;
+    font-size: 11.5px;
+    font-weight: 500;
     margin: 0px 1px;
     text-align: center;
     border-radius: 0px;
@@ -99,7 +99,7 @@ span.activeSpan {
   color:#10486b */
   font-weight: 500;
   transition: font-weight 250ms;
-  color: #ebebeb;
+  color: #fff;
 }
 .container-fluid>ul>li:hover{
   cursor: pointer;
@@ -109,8 +109,7 @@ span.activeSpan {
 .underlineBorder{
     height: 2px;
     width: 0%;
-    /* background: #10486b; */
-    background-color: #d25c12;
+    background-color: #10486b;
     border-radius: 20px;
     position: absolute;
     bottom: 0px;
@@ -272,5 +271,6 @@ span.mat-tooltip-trigger.custom__badge.badge-primary:hover {
 }
 
 .activeList{
-  background: #0c5887 !important;
+  /* background: #0c5887 !important; */
+  background: #f29459 !important;
 }

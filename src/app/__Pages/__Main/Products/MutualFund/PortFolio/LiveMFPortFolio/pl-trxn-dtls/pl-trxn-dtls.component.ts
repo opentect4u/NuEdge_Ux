@@ -1,7 +1,26 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { global } from 'src/app/__Utility/globalFunc';
+
+/*** Display Footer data on P&L */
+export type TotalPLportfolio = {
+  purchase: number | undefined,
+  switch_in: number | undefined,
+  idcw_reinv:number | undefined,
+  tot_inflow:number | undefined,
+  redemption:number | undefined,
+  switch_out:number | undefined,
+  idcwp:number | undefined,
+  tot_outflow:number | undefined,
+  scheme_name:number | undefined,
+  curr_val:number | undefined,
+  gain_loss:number | undefined,
+  xirr:number | undefined,
+  ret_abs:number | undefined,
+}
+/**  End */
 
 @Component({
   selector: 'pl-trxn-dtls',
@@ -12,7 +31,15 @@ export class PlTrxnDtlsComponent implements OnInit {
 
   constructor(private utility:UtiliService) { }
 
+  /** Footer Table */
+   footerDtls: Partial<TotalPLportfolio>;
+  /** End */
+
   @Input() pl_trxn:Partial<IPLTrxn>[] = [];
+
+  @Input() folio_type:string;
+
+  @Output() getTransactionDetailsFromPL: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('dt') primaryTbl :Table;
 
@@ -28,6 +55,23 @@ export class PlTrxnDtlsComponent implements OnInit {
     return this.utility.getColumns(this.column);
   }
 
+  getRowDtls =(rows:Partial<IPLTrxn>) =>{
+      this.getTransactionDetailsFromPL.emit(rows)
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    queueMicrotask(()=>{
+      this.footerDtls = {
+        purchase:global.Total__Count(this.primaryTbl.value,item => Number(item.purchase)),
+        switch_in:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_in)),
+        idcw_reinv:global.Total__Count(this.primaryTbl.value,item => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
+        tot_inflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_inflow)),
+        redemption:global.Total__Count(this.primaryTbl.value,item => Number(item.redemption)),
+        switch_out:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_out)),
+        idcwp:global.Total__Count(this.primaryTbl.value,item => item.idcwp ? Number(item.idcwp) : 0),
+        tot_outflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_outflow)),
+      }
+      })
+  }
 }
 
 
@@ -36,7 +80,7 @@ export class PLTransaction{
       {
         field:'scheme_name',
         header:'Scheme',
-        width:'32rem'
+        width:'30rem'
       },
       {
         field:'folio_no',
@@ -46,12 +90,15 @@ export class PLTransaction{
       {
         field:'purchase',
         header:'Purchase',
-        width:'9rem'
+        width:'7rem'
       },
       {
         field:'switch_in',
         header:'Switch In',
         width:'8rem'
+      },
+      {
+        field:'idcw_reinv',header:'IDCW Reinv',width:"7rem"
       },
       {
         field:'tot_inflow',
@@ -61,12 +108,15 @@ export class PLTransaction{
       {
         field:'redemption',
         header:'Redemption',
-        width:'9rem'
+        width:'8rem'
       },
       {
         field:'switch_out',
         header:'Switch Out',
         width:'8rem'
+      },
+      {
+        field:'idcwp',header:'IDCW P',width:"4rem"
       },
       {
         field:'tot_outflow',
@@ -76,8 +126,9 @@ export class PLTransaction{
       {
         field:'curr_val',
         header:'Curr. Val',
-        width:'10rem'
+        width:'7rem'
       },
+
       {
         field:'gain_loss',
         header:'Gain/Loss',
@@ -113,5 +164,7 @@ export interface IPLTrxn{
     option_name:string;
     mydata:any;
     nav_date:Date;
-
+    tot_units:number;
+    idcw_reinv:string;
+    idcwp:string
 }

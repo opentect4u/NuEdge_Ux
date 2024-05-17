@@ -1,6 +1,6 @@
   <ng-container *ngIf="column.length > 0">
     <div class="row form-group my-2">
-        <div class="col-sm-12 d-flex justify-content-end ">
+        <div class="col-sm-12 d-flex justify-content-end">
           <input id="search" class="form-control rounded w-25 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
           placeholder="Search" />
         </div>
@@ -71,6 +71,29 @@
       <tr>
         <td [attr.colspan]="column.length">
           <p class="m-0">No Records Found</p>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <tr>
+        <td
+          *ngFor="let col of column"
+          [style]="'width : ' + col.width"
+        >
+          <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="col.field == 'sl_no'">
+              <p class="m-0">Total</p>
+            </ng-container>
+            <ng-container
+              *ngSwitchCase=" col.field == 'amount'">
+              <p class="m-0">
+                {{
+                  totalAmt | number:'1.2-2'
+                }}
+              </p>
+              </ng-container>
+            <ng-container *ngSwitchDefault> </ng-container>
+          </ng-container>
         </td>
       </tr>
     </ng-template>

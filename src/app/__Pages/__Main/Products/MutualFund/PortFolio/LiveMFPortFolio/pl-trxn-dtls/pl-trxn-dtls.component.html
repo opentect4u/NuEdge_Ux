@@ -1,13 +1,20 @@
 
 
 
-<mat-card id="matCard"  class="mat-elevation-z0">
+<!-- <mat-card id="matCard"  class="mat-elevation-z0">
   <mat-card-header class="px-3">
-    <mat-card-title></mat-card-title>
-    <input id="search" class="form-control rounded w-25" type="text" (input)="filterGlobal_secondary($event)"
-    placeholder="Search" />
-  </mat-card-header>
-  <mat-card-content>
+    <mat-card-title></mat-card-title> -->
+
+    <div class="row form-group my-2">
+      <div class="col-sm-12 d-flex justify-content-end">
+        <input id="search" class="form-control rounded w-25 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
+          placeholder="Search" />
+      </div>
+  </div>
+
+
+  <!-- </mat-card-header>
+  <mat-card-content> -->
     <p-table #dt [value]="pl_trxn"
     [rows]="10" [paginator]="true"
       [rowHover]="true"
@@ -33,18 +40,40 @@
         >
             <td *ngFor="let col of column"
             [style]="'width : '+col.width"
+            [ngClass]="{
+              'inflow':col.field === 'purchase' || col.field === 'switch_in' || col.field === 'tot_inflow' || col.field === 'idcw_reinv',
+              'outflow':col.field === 'redemption' || col.field === 'switch_out' || col.field === 'tot_outflow' || col.field === 'idcwp'
+            }"
            >
            <ng-container [ngSwitch]="true">
             <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-              <p class="m-0 text-center"
-              [ngClass]="{'text-danger':pl_trxn.curr_val == 0}"
-              >
-                {{pl_trxn[col.field] ? ( pl_trxn[col.field] | titlecase) : "N/A" }}</p>
+              <ng-container *ngIf="folio_type == 'N';else others">
+                  <a type="button" role="button"
+                  (click)="getRowDtls(pl_trxn)"
+                  class="text-primary"
+                  >
+                    {{pl_trxn[col.field] ? ( pl_trxn[col.field] | titlecase) : "N/A" }}
+                  </a>
+              </ng-container>
+              <ng-template #others>
+                <p class="m-0 text-center"
+                [ngClass]="{
+                  'text-danger':pl_trxn.curr_val == 0
+                }"
+                >
+                  {{pl_trxn[col.field] ? ( pl_trxn[col.field] | titlecase) : "N/A" }}</p>
+              </ng-template>
+
             </ng-container>
 
             <ng-container *ngSwitchCase="col.field == 'xirr'">
               <p class="m-0 ">
                 {{pl_trxn[col.field] ? (pl_trxn[col.field] | percent : "1.2-2") : '0%' }}</p>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="col.field == 'idcw_reinv' || col.field == 'idcwp'">
+              <p class="m-0 ">
+                {{pl_trxn[col.field] ? (pl_trxn[col.field] | number : "1.2-2") : '0' }}</p>
             </ng-container>
 
             <ng-container *ngSwitchCase="col.field == 'folio_no'">
@@ -70,9 +99,30 @@
         </td>
       </tr>
     </ng-template>
+    <ng-template pTemplate="footer">
+      <tr>
+        <td
+          *ngFor="let col of column"
+          [style]="'width : ' + col.width"
+        >
+          <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+              <p class="m-0">Total</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'folio_no' || col.field == 'curr_val'
+            || col.field == 'ret_abs' || col.field == 'xirr'
+            || col.field == 'gain_loss'
+            "></ng-container>
+            <ng-container *ngSwitchDefault>
+              {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | number:'1.2-2') : 0.00) : 0.00}}
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
     </p-table>
-  </mat-card-content>
+  <!-- </mat-card-content>
 
-</mat-card>
+</mat-card> -->
 
 

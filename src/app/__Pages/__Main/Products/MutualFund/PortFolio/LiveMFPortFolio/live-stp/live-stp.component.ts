@@ -20,6 +20,7 @@ export class LiveSTPComponent implements OnInit {
 
   @Input() stp_type:string;
 
+  totalAmt:number = 0;
 
   constructor(private utility:UtiliService) { }
 
@@ -36,6 +37,10 @@ export class LiveSTPComponent implements OnInit {
     if(changes.stp_type){
       this.column =  LiveSTPColumn.column.filter((column:column) => column.isVisible.includes(this.stp_type))
     }
+    this.totalAmt = this.Total__Count(changes.liveSTP.currentValue,(item:ILiveSTP) => Number(item.amount));
+  }
+  Total__Count<T>(arr: T[], predicate: (elem: T, idx: number) => number) {
+    return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx)), 0)
   }
 }
 
@@ -59,6 +64,7 @@ export interface ILiveSTP{
     option_name:string;
     folio_data:any;
     curr_val:string;
+    amount:number;
     nav_date:string;
     duration:string;
 }
@@ -97,13 +103,13 @@ export class LiveSTPColumn{
     },
     {
       field:'freq',
-      header:'Frq',
+      header:'Freq',
       width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'reg_no',
-      header:'Txn No.',
+      header:'Reg No.',
       width:'5rem',
       isVisible:['A','L','I']
     },

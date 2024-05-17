@@ -14,7 +14,7 @@
   <mat-card-content>
     <p-table
       #dt
-      [value]="upcommingTrxn"
+      [value]="upcommingtrxn"
       [rows]="10"
       [paginator]="true"
       [rowHover]="true"
@@ -89,6 +89,29 @@
         <tr>
           <td [attr.colspan]="column.length">
             <p class="m-0">No Records Found</p>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <tr>
+          <td
+            *ngFor="let col of column"
+            [style]="'width : ' + col.width"
+          >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <p class="m-0">Total</p>
+              </ng-container>
+              <ng-container
+                *ngSwitchCase=" col.field == 'amount'">
+                <p class="m-0">
+                  {{
+                    total_amount_in_footer > 0 ?  (total_amount_in_footer | number:'1.2-2') : 0.00
+                  }}
+                </p>
+                </ng-container>
+              <ng-container *ngSwitchDefault> </ng-container>
+            </ng-container>
           </td>
         </tr>
       </ng-template>

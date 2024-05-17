@@ -842,11 +842,17 @@
                                 </span>
                               </ng-container>
                               <ng-container
-                              *ngSwitchCase="col.field == 'ret_abs' || col.field == 'xirr'">
+                              *ngSwitchCase="col.field == 'xirr'">
                               <span class="m-0">
-                                {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number: '1.2-2') : "0") : "0"}} %
+                                {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | percent: '1.2-2') : "0") : "0"}}
                               </span>
                             </ng-container>
+                            <ng-container
+                            *ngSwitchCase="col.field == 'ret_abs'">
+                            <span class="m-0">
+                              {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number: '1.2-2') : "0") : "0"}} %
+                            </span>
+                          </ng-container>
 
                               <ng-container
                                 *ngSwitchCase="
@@ -882,9 +888,14 @@
                               >
                                 <p class="m-0">Total</p>
                               </ng-container>
-                              <ng-container  *ngSwitchCase="col.field == 'pur_price' || col.field == 'tot_units'">
+                              <ng-container  *ngSwitchCase="col.field == 'tot_units'">
                                 <p class="m-0">
                                   {{subLiveMfPortFolio ? subLiveMfPortFolio[col.field]: "0"}}
+                                </p>
+                              </ng-container>
+                              <ng-container  *ngSwitchCase="col.field == 'pur_price'">
+                                <p class="m-0">
+                                  {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | number:'1.4-4'): "0"}}
                                 </p>
                               </ng-container>
                               <ng-container *ngSwitchCase="col.field == 'xirr'">
@@ -950,7 +961,26 @@
       </mat-card>
     </ng-container>
     <ng-container *ngIf="selected_id == 9">
-      <pl-trxn-dtls [pl_trxn]="plTrxnDtls"></pl-trxn-dtls>
+      <mat-card id="matCard"  class="mat-elevation-z0 mb-2">
+        <mat-card-header class="px-3 border-bottom">
+          <mat-card-title>
+            <form [formGroup]="__pl_trxn_form">
+                <mat-radio-group [formControlName]="'pl_folio_type'" color="primary">
+                  <mat-radio-button value="L">Live Folio</mat-radio-button>
+                  <mat-radio-button value="N" class="mx-2">Non Live Folio</mat-radio-button>
+                  <mat-radio-button value="A">All Folio</mat-radio-button>
+                </mat-radio-group>
+                </form>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <pl-trxn-dtls
+          [folio_type]="__pl_trxn_form.value.pl_folio_type"
+          [pl_trxn]="plTrxnDtls | plFilter:__pl_trxn_form.value.pl_folio_type"
+          (getTransactionDetailsFromPL)="OpenDialog($event)"
+          ></pl-trxn-dtls>
+        </mat-card-content>
+        </mat-card>
     </ng-container>
 
     <ng-container *ngIf="selected_id == 11">
@@ -1068,6 +1098,7 @@
         </mat-card-header>
         <mat-card-content>
           <ng-container *ngIf="selected_id == 4">
+            <!-- [liveSIP]="liveSipPortFolio" -->
             <portfolio-live-sip
               [liveSIP]="liveSipPortFolio"
               [sip_type]="__live_sip_stp_swp_form.value.live_sip"
@@ -1146,19 +1177,57 @@
         </div>
         </mat-card-content>
       </mat-card>
-      <upcomming-trxn [upcommingTrxn]="upcomming_trxn"></upcomming-trxn>
+      <!-- [upcommingTrxn]="upcomming_trxn" -->
+
+      <upcomming-trxn
+       [upcommingtrxn]="upcomming_trxn"
+       ></upcomming-trxn>
     </ng-container>
 
     <ng-container *ngIf="selected_id == 13">
-      <mat-card id="matCard"  class="mat-elevation-z0">
+      <mat-card id="matCard"  class="mat-elevation-z0 mb-2">
+          <mat-card-header class="px-3 border-bottom">
+            <mat-card-title>
+              <form [formGroup]="__reject_trxm_form">
+                  <mat-radio-group [formControlName]="'reject_trxn_type'" color="primary">
+                    <mat-radio-button
+                    [ngClass]="{'mx-2':flow_type.id == 'I'}"
+                    [value]="flow_type.id" *ngFor="let flow_type of flowType">
+                      {{flow_type.name}}
+                    </mat-radio-button>
+
+                  </mat-radio-group>
+                  </form>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+
             <reject-trxn [rejectTrxn]="rejectTrxn"></reject-trxn>
+          </mat-card-content>
       </mat-card>
     </ng-container>
 
     <ng-container *ngIf="selected_id == 14">
          <mat-card id="matCard"  class="mat-elevation-z0">
-            <mat-card-content class="px-4 py-2">
-                  <systematic-missed-trxn [systematicMissedTrxn]="systematicMissedTrxn" [transId]="selected_id"></systematic-missed-trxn>
+          <mat-card-header class="px-3 border-bottom">
+            <mat-card-title>
+              <form [formGroup]="__systematicMissedTrxn_Frm">
+                  <mat-radio-group [formControlName]="'report_type'" color="primary">
+                    <mat-radio-button value="P">
+                     SIP
+                    </mat-radio-button>
+                    <mat-radio-button value="SO" class="mx-2">
+                     STP
+                    </mat-radio-button>
+                    <mat-radio-button value="R">
+                     SWP
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </form>
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="py-2">
+                  <systematic-missed-trxn [systematicMissedTrxn]="systematicMissedTrxn | systamaticMissedTransFilter:__systematicMissedTrxn_Frm.value.report_type" [transId]="selected_id"></systematic-missed-trxn>
             </mat-card-content>
         </mat-card>
 

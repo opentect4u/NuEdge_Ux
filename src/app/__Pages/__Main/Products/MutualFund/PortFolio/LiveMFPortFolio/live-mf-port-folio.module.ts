@@ -12,6 +12,8 @@ import { LiveSWPComponent } from './live-swp/live-swp.component';
 import { UpcommingTrxnComponent } from './upcomming-trxn/upcomming-trxn.component';
 import { SystematicMissedTrxnComponent } from './systematic-missed-trxn/systematic-missed-trxn.component';
 import { RejectTrxnComponent } from './reject-trxn/reject-trxn.component';
+import { plFilterPipe } from 'src/app/__Pipes/plTrxnFilter.pipe';
+import { systamaticMissedTransFilterPipe } from 'src/app/__Pipes/systematicMissedTrans.pipe';
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
 @NgModule({
@@ -25,6 +27,8 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     UpcommingTrxnComponent,
     SystematicMissedTrxnComponent,
     RejectTrxnComponent,
+    plFilterPipe,
+    systamaticMissedTransFilterPipe
   ],
   imports: [
     CommonModule,

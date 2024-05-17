@@ -13,7 +13,7 @@ import { Calendar } from 'primeng/calendar';
 import portfolioFilter from '../../../../../../../assets/json/Product/Portfolio/liveMFPortfolioFilter.json';
 import portFolioTab from '../../../../../../../assets/json/Product/Portfolio/liveMfPortfolioTab.json'
 import { global } from 'src/app/__Utility/globalFunc';
-import { IPLTrxn } from './pl-trxn-dtls/pl-trxn-dtls.component';
+import { IPLTrxn, TotalPLportfolio } from './pl-trxn-dtls/pl-trxn-dtls.component';
 import { IRecentTrxn } from './recent-trxn/recent-trxn.component';
 import { ILiveSIP } from './live-sip/live-sip.component';
 import { ILiveSTP } from './live-stp/live-stp.component';
@@ -23,6 +23,8 @@ import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { IUpcommingTrxn } from './upcomming-trxn/upcomming-trxn.component';
 import { ISystematicMissedTrxn } from './systematic-missed-trxn/systematic-missed-trxn.component';
 import { Observable, Subscription, fromEvent } from 'rxjs';
+
+
 
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
@@ -50,7 +52,8 @@ type TotalparentLiveMfPortFolio = {
     total:number | undefined;
     gain_loss: number | undefined;
     ret_abs: number | undefined;
-    pur_nav:number | undefined
+    pur_nav:number | undefined;
+    xirr:number | undefined;
 }
 /*** End */
 
@@ -106,6 +109,19 @@ mappings between `act_value` and `value` for transition durations. */
       live_swp:new FormControl('')
   })
 
+  __reject_trxm_form = new FormGroup({
+    reject_trxn_type:new FormControl(''),
+  })
+
+  __pl_trxn_form = new FormGroup({
+     pl_folio_type:new FormControl(''),
+  })
+
+  __systematicMissedTrxn_Frm = new FormGroup({
+      report_type: new FormControl('')
+    }
+  )
+
    /**
    *  getAccess of Prime Ng Calendar
    */
@@ -153,8 +169,8 @@ mappings between `act_value` and `value` for transition durations. */
   __clientMst:client[] = [];
 
   /** Holding  Systematic Missed Transaction Master Data*/
+    systematicMissedTrxn:ISystematicMissedTrxn[] = []
     // systematicMissedTrxn:ISystematicMissedTrxn[] = []
-    systematicMissedTrxn:TrxnRpt[] = []
 
   /**** End */
 
@@ -362,6 +378,8 @@ mappings between `act_value` and `value` for transition durations. */
       this.filter_criteria.get('client_name').disable();
     }
 
+    console.log(this.__live_sip_stp_swp_form)
+
   }
   /** To check whether the li of the ul has been overflowed or not  */
    isOverflown(element){
@@ -412,6 +430,11 @@ mappings between `act_value` and `value` for transition durations. */
 
     this.upcomming_trxn_frm.controls['trxn_type_id'].valueChanges.subscribe((res) => {
       this.getTrxnSubTypeMstForUpcomming(res);
+    });
+
+    this.__reject_trxm_form.controls['reject_trxn_type'].valueChanges.subscribe((res) => {
+        this.rejectTrxn = []
+        this.call_api_for_reject_transactions({...this.main_frm_dt,flow_type:res == 'A' ? '' : res})
     });
 
    this.__live_sip_stp_swp_form.controls['live_sip'].valueChanges.subscribe(value =>{
@@ -610,10 +633,10 @@ mappings between `act_value` and `value` for transition durations. */
       trxn_sub_type_id:[],
       flow_type:'A',
     })
-    this.__live_sip_stp_swp_form.reset('',{
-      emitEvent:false,
-      onlySelf:true
-    });
+    this.__reject_trxm_form.reset('',{emitEvent:false,onlySelf:true});
+    this.__pl_trxn_form.reset('',{emitEvent:false,onlySelf:true});
+    this.__systematicMissedTrxn_Frm.reset('',{emitEvent:false,onlySelf:true});
+    this.__live_sip_stp_swp_form.reset('',{emitEvent:false,onlySelf:true});
     this.selected_id = this.__portFolioTab[0].id;
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     const {family_members,...rest} = Object.assign({},{
@@ -654,18 +677,21 @@ mappings between `act_value` and `value` for transition durations. */
         pluck('data')
         )
       .subscribe((res: ISubDataSource[]) =>{
-            let dates = [this.dataSource[index].nav_date];
-            let amt = [this.dataSource[index].curr_val];
-            let _index = 0;
-            let nper = 0;
+            // let dates = [this.dataSource[index].nav_date];
+            // let amt = [this.dataSource[index].curr_val];
+            // let _index = 0;
+            // let nper = 0;
               this.dataSource[index].data = res.filter((item:ISubDataSource,i:number) =>{
                     try{
-
                       if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
-                            amt.splice(_index,0,(Number(item.tot_gross_amount) * -1));
-                            dates.splice(_index,0,item.trans_date);
-                            _index += 1;
-                            item.xirr = global.XIRR(amt,dates,0);
+                            // amt.splice(_index,0,(Number(item.tot_gross_amount) * -1));
+                            // console.log(amt)
+                            // dates.splice(_index,0,item.trans_date);
+                            // _index += 1;
+                            const amt = [(Number(item.tot_amount) * -1),Number(item.curr_val)]
+                            const dates = [item.trans_date,this.dataSource[index].nav_date]
+                            const xirr = global.XIRR(amt,dates,0);
+                            item.xirr = isFinite(xirr) ? xirr : 0;
                             // nper = item.cumml_units >= 0 ? (item.days / 365) : 0;
                             // item.xirr = item.cumml_units >= 0 ? ((Math.pow((item.curr_val/Number(item.tot_amount)),(1/nper)) - 1) * 100) : 0;
                       }
@@ -756,8 +782,8 @@ mappings between `act_value` and `value` for transition durations. */
                     tot_amount: final_arr ? final_arr?.inv_cost : 0,
                     tot_tds:this.Total__Count(tot_arr,item => Number(item.tot_tds)),
                     tot_stamp_duty:this.Total__Count(tot_arr,item => item.tot_stamp_duty ? Number(item.tot_stamp_duty) : 0),
-                    // pur_price:this.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
-                    pur_price:final_arr ? final_arr?.pur_nav : 0,
+                    pur_price:this.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
+                    // pur_price:final_arr ? final_arr?.pur_nav : 0,
                     tot_units:final_arr ? final_arr?.tot_units : 0,
                     curr_val:final_arr ? final_arr?.curr_val : 0,
                     gain_loss:final_arr ? final_arr?.gain_loss : 0,
@@ -812,7 +838,7 @@ mappings between `act_value` and `value` for transition durations. */
     return this.utility.getColumns(this.detailedColumn);
   }
 
-  OpenDialog = (liveMFPortFolio:ILivePortFolio) => {
+  OpenDialog = (liveMFPortFolio) => {
     this.__isDisplay__modal = true;
     this.details__transaction_details = [];
     this.__dbIntr.api_call(
@@ -870,11 +896,35 @@ mappings between `act_value` and `value` for transition durations. */
         case 2:this.call_api_for_detail_summary_func(fb);
         break;
         case 3: break;
-        case 9: this.call_api_for_pL_func(fb); break; // call P&L
-        case 11:  this.getTrxnTypeMst();break
-        case 12:  this.getTrxnTypeMst_forUpcomming();break;
-        case 13: this.call_api_for_reject_transactions(fb);break
-        case 14: this.call_api_for_systematicMissedTransaction(fb);break;
+        case 9:if(!this.__pl_trxn_form.value.pl_folio_type){
+          this.__pl_trxn_form.get('pl_folio_type').setValue('L');
+          this.call_api_for_pL_func(fb);
+        };
+
+        break;
+        case 4: if(!this.__live_sip_stp_swp_form.value.live_sip){
+                  this.__live_sip_stp_swp_form.get('live_sip').setValue('L')
+                }
+                break;
+        case 5: if(!this.__live_sip_stp_swp_form.value.live_stp){
+                  this.__live_sip_stp_swp_form.get('live_stp').setValue('L')
+                }
+                break;
+        case 6: if(!this.__live_sip_stp_swp_form.value.live_swp){
+          this.__live_sip_stp_swp_form.get('live_swp').setValue('L')
+        }
+        break;
+        case 11: this.getTrxnTypeMst();break
+        case 12: this.getTrxnTypeMst_forUpcomming();break;
+        case 13: if(!this.__reject_trxm_form.value.reject_trxn_type){
+          this.__reject_trxm_form.get('reject_trxn_type').setValue('A')
+        }
+        break
+        case 14: if(!this.__systematicMissedTrxn_Frm.value.report_type){
+          this.__systematicMissedTrxn_Frm.get('report_type').setValue('P');
+          this.call_api_for_systematicMissedTransaction(fb)
+        }
+        break;
         default: break;
       }
 
@@ -882,6 +932,7 @@ mappings between `act_value` and `value` for transition durations. */
 
   call_api_for_reject_transactions = (formData) =>{
         if(this.rejectTrxn.length == 0){
+          console.log(formData);
           this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData(formData)).pipe(pluck('data')).subscribe((res:Required<{data:TrxnRpt[],client_details:client}>) =>{
             this.rejectTrxn = res.data.filter((el:TrxnRpt) =>{
                     el.scheme_name = `${el.scheme_name}-${el.plan_name}-${el.divi_lock_flag == 'L' ? 'IDCW Reinvestment' :  el.option_name}`;
@@ -894,16 +945,17 @@ mappings between `act_value` and `value` for transition durations. */
 
   call_api_for_systematicMissedTransaction = (formData) =>{
       if(this.systematicMissedTrxn.length == 0){
-        this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData(formData)).pipe(pluck('data'))
+        this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData({...formData,flow_type:''})).pipe(pluck('data'))
         // .subscribe((res:Required<{data:ISystematicMissedTrxn[],client_details:client}>) =>{
-        .subscribe((res:Required<{data:TrxnRpt[],client_details:client}>) =>{
-                this.systematicMissedTrxn = res.data.filter((el:TrxnRpt) =>{
+        .subscribe((res:Required<{data:ISystematicMissedTrxn[],client_details:client}>) =>{
+                this.systematicMissedTrxn = res.data.filter((el:ISystematicMissedTrxn) =>{
                     if(el.transaction_type.toLowerCase().includes('sip') || el.transaction_type.toLowerCase().includes('stp') ||  el.transaction_type.toLowerCase().includes('swp')){
                       el.scheme_name = `${el.scheme_name}-${el.plan_name}-${el.divi_lock_flag == 'L' ? 'IDCW Reinvestment' :  el.option_name}`;
                       return true;
                     }
                     return false;
                 })
+                console.log(this.systematicMissedTrxn);
                 this.setClientDtls(res.client_details);
         })
       }
@@ -919,10 +971,12 @@ mappings between `act_value` and `value` for transition durations. */
                     this.dataSource = res.data.filter((item: ILivePortFolio) => {
                       item.id = `${Math.random()}_${item.product_code}`;
                       item.data=[];
-                      item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
+                      // item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
+                      item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
                       if(item.mydata){
                         const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                         const dt = item?.mydata.all_date_arr;
+                        console.log(global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0))
                         item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
                       }
                       else{
@@ -936,11 +990,14 @@ mappings between `act_value` and `value` for transition durations. */
                   if(Number(item.curr_val) > 0 ){
                     item.id = `${Math.random()}_${item.product_code}`;
                     item.data=[];
-                    item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
+                    // item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
+                    item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : ''
                     if(item.mydata){
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
-                      item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                      // console.log(global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0))
+                      const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                      item.xirr = (item.curr_val == 0 || isNaN(xirr)) ? 0 : xirr
                     }
                     else{
                       item.xirr =0
@@ -969,7 +1026,7 @@ mappings between `act_value` and `value` for transition durations. */
          curr_val:this.Total__Count(arr,x => Number(x.curr_val)),
          total:this.Total__Count(arr,x => Number(x.curr_val)),
          ret_abs: (this.Total__Count(arr,x => Number(x.ret_abs)) / arr.length),
-         gain_loss:this.Total__Count(arr,x =>  Number(x.gain_loss)),
+         gain_loss:this.Total__Count(arr,x =>  Number(x.gain_loss))
         }
          setTimeout(() => {
              this.isOverflown(document.getElementById('cus___tab'));
@@ -990,23 +1047,25 @@ mappings between `act_value` and `value` for transition durations. */
       .pipe(pluck('data')).subscribe((result:Required<{data:Partial<IPLTrxn>[],client_details:client}>) =>{
             this.plTrxnDtls = result.data.filter((item: IPLTrxn) =>
               {
-                item.scheme_name= `${item.scheme_name} - ${item.plan_name} - ${item.option_name}`,
-                item.gain_loss= ((Number(item.curr_val) + Number(item.tot_outflow)) - Number(item.tot_inflow));
-                item.ret_abs = item.tot_inflow > 0 ?  (Number(item.gain_loss) / Number(item.tot_inflow)): 0;
-                if(item.mydata){
-                  const amt = item?.mydata.all_amt_arr.map(item => Number(item));
-                  const dt = item?.mydata.all_date_arr;
-                  item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                if(item.tot_inflow == 0 && item.tot_outflow == 0){}else{
+                    item.scheme_name= `${item.scheme_name} - ${item.plan_name} - ${item.option_name}`,
+                    item.gain_loss= ((Number(item.curr_val) + Number(item.tot_outflow)) - Number(item.tot_inflow));
+                    item.ret_abs = item.tot_inflow > 0 ?  (Number(item.gain_loss) / Number(item.tot_inflow)): 0;
+                    if(item.mydata){
+                      const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                      const dt = item?.mydata.all_date_arr;
+                      item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                    }
+                    else{
+                      item.xirr =0
+                    }
+                    return true
+                  }
+                  return false
                 }
-                else{
-                  item.xirr =0
-                }
-                return item
-              }
-
             );
-              console.log(this.plTrxnDtls)
-              this.setClientDtls(result.client_details)
+            // console.log(this.plTrxnDtls)
+            this.setClientDtls(result.client_details);
       })
    }
   }
@@ -1225,21 +1284,39 @@ mappings between `act_value` and `value` for transition durations. */
          .subscribe((res:Required<{data:Partial<IUpcommingTrxn>[],client_details:client}>) =>{
             const freq = ['Daily', 'Weekly', 'Fortnightly'];
             const check_valuation_date = new Date(this.valuation_as_on).getDate();
-            this.upcomming_trxn = res.data.filter((el: IUpcommingTrxn) => {
+            try{
+              let arr = Array.from({length:3},() => res.data).flat().map((el:IUpcommingTrxn) => {return {...el,cust_id:new Date().getTime()}});
+              this.upcomming_trxn = arr.filter((el:IUpcommingTrxn,index:number) =>{
                     el.scheme_name = `${el.scheme_name}-${el.plan_name}-${el.option_name}`;
-                    el.trans_type =  el.trans_type.toLowerCase().includes('stp') ? 'STP' : (el.trans_type.toLowerCase().includes('swp') ? 'SWP' : "SIP")
+                    el.trans_type =  el.trans_type.toLowerCase().includes('stp') ? 'STP' : (el.trans_type.toLowerCase().includes('swp') ? 'SWP' : "SIP");
                     if(freq.indexOf(el.freq) === -1){
-                       el.date = this.setDateinUpcommingTrxn(
-                        el.trans_type.toLowerCase().includes('stp') ? el.stp_date : (el.trans_type.toLowerCase().includes('swp') ? el.swp_date : el.sip_date),
-                        check_valuation_date,
-                        new Date()
-                      )
+                      const slice_arr = arr.slice(0,(index+1));
+                      const dt1 = slice_arr.filter(item =>
+                        {
+                            if(item.id == el.id){return true;}
+                            return false;
+                        })
+                        const rows = dt1[(dt1.length-2) > 0 ? dt1.length-2 : 0];
+                        if(dt1.length == 1){
+                          const get_date_according_to_trans_type = el.trans_type.toLowerCase().includes('stp') ? rows?.stp_date : (el.trans_type.toLowerCase().includes('swp') ? rows?.swp_date : rows?.sip_date);
+                          el.date = this.setDateinUpcommingTrxn(get_date_according_to_trans_type,check_valuation_date,new Date());
+                        }
+                        else{
+                          const date = rows?.date
+                          let get_date = new Date(date);
+                          get_date.setMonth(get_date.getMonth() + 1);
+                          el.date = get_date.toString()
+                        }
                     }
                     else{
                       el.date = el.freq;
                     }
-                  return true;
-            })
+                    return el;
+              }).sort((a,b) => (a.scheme_name > b.scheme_name) ? 1 : ((b.scheme_name > a.scheme_name) ? -1 : 0))
+            }
+            catch(err){
+                console.log(err)
+            }
          })
   }
 

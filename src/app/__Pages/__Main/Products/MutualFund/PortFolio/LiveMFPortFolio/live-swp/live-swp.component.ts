@@ -20,6 +20,7 @@ export class LiveSWPComponent implements OnInit {
 
   @Input() swp_type:string;
 
+  totalAmt:number = 0;
 
   constructor(private utility:UtiliService) { }
 
@@ -36,6 +37,10 @@ export class LiveSWPComponent implements OnInit {
     if(changes.swp_type){
       this.column =  LiveSWPColumn.column.filter((column:column) => column.isVisible.includes(this.swp_type))
     }
+    this.totalAmt = this.Total__Count(changes.liveSWP.currentValue,(item:ILiveSWP) => Number(item.amount));
+  }
+  Total__Count<T>(arr: T[], predicate: (elem: T, idx: number) => number) {
+    return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx)), 0)
   }
 }
 
@@ -98,13 +103,13 @@ export class LiveSWPColumn{
     },
     {
       field:'freq',
-      header:'Frq',
+      header:'Freq',
       width:'4rem',
       isVisible:['A','L','I']
     },
     {
       field:'reg_no',
-      header:'Txn No.',
+      header:'Reg No.',
       width:'5rem',
       isVisible:['A','L','I']
     },

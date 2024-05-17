@@ -57,7 +57,10 @@ export class HomeComponent implements OnInit, IFileHelpHome {
     {id:"PL_SI",name:"Switch In"},
     {id:"PL_SO",name:"Switch Out"},
     {id:"PL_R",name:"Redemption"},
-    {id:"PL_P",name:"Purchase"}
+    {id:"PL_P",name:"Purchase"},
+    {id:"PL_IR",name:"IDCW Reinvestment"},
+    {id:"PL_IP",name:"IDCW Payout"}
+
   ]
 
 

@@ -212,4 +212,14 @@ export class global{
     return resultRate;
   }
 
+    /**
+   * For Counting Number of locked and unlocked transactions
+   * @param arr
+   * @param predicate
+   * @returns
+   */
+    public static Total__Count<T>(arr: T[], predicate: (elem: T, idx: number) => number) {
+      return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx)), 0)
+      }
+
 }

@@ -72,6 +72,29 @@ styleClass="p-datatable-lg"
   </td>
 </tr>
 </ng-template>
+<ng-template pTemplate="footer">
+  <tr>
+    <td
+      *ngFor="let col of column"
+      [style]="'width : ' + col.width"
+    >
+      <ng-container [ngSwitch]="true">
+        <ng-container *ngSwitchCase="col.field == 'sl_no'">
+          <p class="m-0">Total</p>
+        </ng-container>
+        <ng-container
+          *ngSwitchCase=" col.field == 'amount'">
+          <p class="m-0">
+            {{
+              totalAmt | number:'1.2-2'
+            }}
+          </p>
+          </ng-container>
+        <ng-container *ngSwitchDefault> </ng-container>
+      </ng-container>
+    </td>
+  </tr>
+</ng-template>
 </p-table>
 </ng-container>
 
