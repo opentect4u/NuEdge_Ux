@@ -82,9 +82,13 @@
             <ng-container
               *ngSwitchCase=" col.field == 'tot_amount'">
               <p class="m-0">
-                {{
-                  totalAmt > 0 ?  (totalAmt | number:'1.2-2') : 0.00
-                }}
+                {{totalAmt | number:'1.2-2'}}
+              </p>
+              </ng-container>
+              <ng-container
+              *ngSwitchCase=" col.field == 'tot_units'">
+              <p class="m-0">
+                {{totalUnit | number:'1.2-2'}}
               </p>
               </ng-container>
             <ng-container *ngSwitchDefault> </ng-container>

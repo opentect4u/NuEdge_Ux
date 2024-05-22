@@ -79,7 +79,7 @@ list-style: none;
     padding: 9px 8px;
     font-size: 11.5px;
     font-weight: 500;
-    margin: 0px 1px;
+    /* margin: 0px 1px; */
     text-align: center;
     border-radius: 0px;
     position: relative;
@@ -131,7 +131,6 @@ span.activeSpan {
 }
 #matCard{
   border-radius:0px!important;
-
 }
 ::ng-deep .mat-menu-item {
   font-size: 11px !important;
@@ -273,4 +272,9 @@ span.mat-tooltip-trigger.custom__badge.badge-primary:hover {
 .activeList{
   /* background: #0c5887 !important; */
   background: #f29459 !important;
+}
+
+
+ul>li:first-child{
+  border-top-left-radius: 8px!important;
 }

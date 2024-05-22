@@ -23,6 +23,7 @@ import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { IUpcommingTrxn } from './upcomming-trxn/upcomming-trxn.component';
 import { ISystematicMissedTrxn } from './systematic-missed-trxn/systematic-missed-trxn.component';
 import { Observable, Subscription, fromEvent } from 'rxjs';
+import { borderTopLeftRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
 
 
 
@@ -331,6 +332,15 @@ mappings between `act_value` and `value` for transition durations. */
     trxn_sub_type_id:new FormControl([]),
   })
 
+
+  /*** Holding Div history Form */
+  div_history_frm = new FormGroup({
+      divhistory_type: new FormControl('')
+  })
+
+  div_history:any = [];
+  /**** End */
+
   constructor(private __dbIntr:DbIntrService,
     private utility:UtiliService,
     private router:Router,
@@ -388,11 +398,21 @@ mappings between `act_value` and `value` for transition durations. */
       let arrow_left:any = document.getElementById('arrow-left');
       let arrow_right:any = document.getElementById('arrow-right');
       let isOverflowed = element?.scrollHeight > element?.clientHeight || element?.scrollWidth > element?.clientWidth;
+      let first_child:any = document.querySelectorAll(('ul>li:first-child.activeList'));
+      let last_child:any = document.querySelectorAll(('ul>li:last-child.activeList'));
       if(arrow_left && arrow_right && cus__tab){
-      arrow_left.style.display = isOverflowed ? 'block' : 'none';
-      arrow_right.style.display = isOverflowed ? 'block' : 'none';
-      cus__tab.style.margin = isOverflowed ? '0px 33px' : '0px 0px';
-    }
+        arrow_left.style.display = isOverflowed ? 'block' : 'none';
+        arrow_right.style.display = isOverflowed ? 'block' : 'none';
+        cus__tab.style.margin = isOverflowed ? '0px 33px' : '0px 0px';
+        first_child.style.borderTopLeftRadius = isOverflowed ? '0px' : '8px'
+        last_child.style.borderTopRightRadius = isOverflowed ? '0px' : '8px'
+
+      }
+      console.log(first_child)
+      // else{
+      //   first_child.style.borderTopLeftRadius ='8px!important';
+      //   last_child.style.borderTopRightRadius ='8px!important';
+      // }
     }
     catch(err){
     }
@@ -418,6 +438,16 @@ mappings between `act_value` and `value` for transition durations. */
         this.recent_trxn_frm.controls['trans_date_range'].setValue('')
       }
     });
+    /** End */
+
+    /***
+     * Event Trigger after change Div History Radio Button
+     */
+      this.div_history_frm.controls['divhistory_type'].valueChanges.subscribe((res) =>{
+        console.log(res);
+            // this.call_api_div_history(this.main_frm_dt,res)
+      })
+
     /** End */
 
 
@@ -779,10 +809,11 @@ mappings between `act_value` and `value` for transition durations. */
                   //   cumml_units:tot_arr.length > 0 ? tot_arr.slice(-1)[0].cumml_units : 0,
                   // }
                   this.subLiveMfPortFolio = {
-                    tot_amount: final_arr ? final_arr?.inv_cost : 0,
-                    tot_tds:this.Total__Count(tot_arr,item => Number(item.tot_tds)),
-                    tot_stamp_duty:this.Total__Count(tot_arr,item => item.tot_stamp_duty ? Number(item.tot_stamp_duty) : 0),
-                    pur_price:this.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
+                    // tot_amount: final_arr ? final_arr?.inv_cost : 0,
+                    tot_amount: global.Total__Count(tot_arr,item => Number(item.tot_amount)),
+                    tot_tds:global.Total__Count(tot_arr,item => Number(item.tot_tds)),
+                    tot_stamp_duty:global.Total__Count(tot_arr,item => item.tot_stamp_duty ? Number(item.tot_stamp_duty) : 0),
+                    pur_price:global.Total__Count(tot_arr,item => Number(item.pur_price)) / tot_arr.length,
                     // pur_price:final_arr ? final_arr?.pur_nav : 0,
                     tot_units:final_arr ? final_arr?.tot_units : 0,
                     curr_val:final_arr ? final_arr?.curr_val : 0,
@@ -790,7 +821,7 @@ mappings between `act_value` and `value` for transition durations. */
                     ret_abs: final_arr ? final_arr?.ret_abs : 0,
                     cumml_units:tot_arr.length > 0 ? tot_arr.slice(-1)[0].cumml_units : 0,
                     xirr:final_arr ? final_arr?.xirr : 0,
-                    gross_amount: final_arr ? final_arr?.inv_cost : 0
+                    gross_amount: global.Total__Count(tot_arr,item => Number(item.tot_gross_amount)),
                   }
 
                   // console.log(this.subLiveMfPortFolio)
@@ -900,8 +931,8 @@ mappings between `act_value` and `value` for transition durations. */
           this.__pl_trxn_form.get('pl_folio_type').setValue('L');
           this.call_api_for_pL_func(fb);
         };
-
         break;
+
         case 4: if(!this.__live_sip_stp_swp_form.value.live_sip){
                   this.__live_sip_stp_swp_form.get('live_sip').setValue('L')
                 }
@@ -912,6 +943,10 @@ mappings between `act_value` and `value` for transition durations. */
                 break;
         case 6: if(!this.__live_sip_stp_swp_form.value.live_swp){
           this.__live_sip_stp_swp_form.get('live_swp').setValue('L')
+        }
+        break;
+        case 10: if(!this.div_history_frm.value.divhistory_type){
+            this.div_history_frm.get('divhistory_type').setValue('')
         }
         break;
         case 11: this.getTrxnTypeMst();break
@@ -1069,6 +1104,17 @@ mappings between `act_value` and `value` for transition durations. */
       })
    }
   }
+  /*** End */
+
+
+  /*** Div History api call */
+    call_api_div_history(formData,val) {
+        this.__dbIntr.api_call(1,'/clients/div_history',{...formData,type:val})
+        .pipe(pluck('data'))
+        .subscribe(res =>{
+              this.div_history = res;
+        })
+    }
   /*** End */
 
   /** call api for sip */

@@ -902,13 +902,9 @@
                                 <p class="m-0">
                                   {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | percent:'1.2-2') : "0%"}}
                                 </p>
-
-
                               </ng-container>
                               <ng-container
                                 *ngSwitchCase="
-                                  col.field == 'tot_amount' ||
-                                  col.field == 'gross_amount' ||
                                   col.field == 'cumml_units' ||
                                   col.field == 'curr_val' ||
                                   col.field == 'gain_loss' ||
@@ -922,8 +918,8 @@
                               </ng-container>
 
                               <ng-container
-                              *ngSwitchCase="col.field == 'tot_tds' || col.field == 'tot_stamp_duty'"
-                                >
+                              *ngSwitchCase="col.field == 'tot_tds' || col.field == 'tot_stamp_duty'
+                              || col.field == 'tot_amount' ||col.field == 'gross_amount'">
                               <p class="m-0">
                                 {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | number:'1.2-2') : "0"}}
                               </p>
@@ -1044,9 +1040,7 @@
 
     </ng-container>
 
-    <ng-container
-      *ngIf="selected_id == 4 || selected_id == 5 || selected_id == 6"
-    >
+    <ng-container *ngIf="selected_id == 4 || selected_id == 5 || selected_id == 6">
       <mat-card id="matCard" class="mat-elevation-z0 mb-2">
         <mat-card-header class="px-3 border-bottom">
           <mat-card-title>
@@ -1232,6 +1226,20 @@
         </mat-card>
 
     </ng-container>
+
+    <!-- <ng-container *ngIf="selected_id == 10">
+          <div-history [divHistory]="div_history">
+            <div form>
+              <form [formGroup]="div_history_frm">
+                <mat-radio-group formControlName="divhistory_type" aria-label="Select an option" id="divhistory_type">
+                  <mat-radio-button [value]="'R'">IDCW R</mat-radio-button>
+                  <mat-radio-button [value]="'P'" class="mx-2">IDCW Payout</mat-radio-button>
+                  <mat-radio-button [value]="''">All</mat-radio-button>
+                </mat-radio-group>
+              </form>
+            </div>
+          </div-history>
+    </ng-container> -->
 
   </ng-container>
   </div>

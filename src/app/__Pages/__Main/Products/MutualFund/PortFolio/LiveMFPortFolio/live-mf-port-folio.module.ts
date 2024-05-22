@@ -14,6 +14,7 @@ import { SystematicMissedTrxnComponent } from './systematic-missed-trxn/systemat
 import { RejectTrxnComponent } from './reject-trxn/reject-trxn.component';
 import { plFilterPipe } from 'src/app/__Pipes/plTrxnFilter.pipe';
 import { systamaticMissedTransFilterPipe } from 'src/app/__Pipes/systematicMissedTrans.pipe';
+import { DivHistoryComponent } from './div-history/div-history.component';
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
 @NgModule({
@@ -28,7 +29,8 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     SystematicMissedTrxnComponent,
     RejectTrxnComponent,
     plFilterPipe,
-    systamaticMissedTransFilterPipe
+    systamaticMissedTransFilterPipe,
+    DivHistoryComponent
   ],
   imports: [
     CommonModule,

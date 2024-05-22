@@ -938,6 +938,15 @@ textarea:focus {
 }
 /***End**/
 
+ul>li:first-child.activeList{
+  border-top-left-radius: 8px!important;
+}
+
+ul>li:last-child.activeList{
+border-top-right-radius: 8px!important;
+}
+
+
 /**** END**/
 
 @media (min-width: 1024px) and (max-width: 1115px) {
@@ -948,6 +957,12 @@ textarea:focus {
     margin-left: 33px;
     margin-right: 33px;
   }
+  ul>li:first-child.activeList{
+    border-top-left-radius: 0px!important;
+  }
+  ul>li:last-child.activeList{
+    border-top-right-radius: 0px!important;
+  }
 }
 
 @media (min-width: 991.98px) and (max-width: 1024px) {
@@ -957,6 +972,12 @@ textarea:focus {
   .cus__tab {
     margin-left: 33px;
     margin-right: 33px;
+  }
+  ul>li:first-child.activeList{
+    border-top-left-radius: 0px!important;
+  }
+  ul>li:last-child.activeList{
+    border-top-right-radius: 0px!important;
   }
 }
 
@@ -971,6 +992,12 @@ textarea:focus {
           margin-left: 33px;
           margin-right: 33px;
         }
+        ul>li:first-child.activeList{
+          border-top-left-radius: 0px!important;
+        }
+        ul>li:last-child.activeList{
+          border-top-right-radius: 0px!important;
+        }
 
  }
 @media (min-width: 575.98px) and (max-width:768px) {
@@ -983,6 +1010,12 @@ textarea:focus {
   .cus__tab {
     margin-left: 33px;
     margin-right: 33px;
+  }
+  ul>li:first-child.activeList{
+    border-top-left-radius: 0px!important;
+  }
+  ul>li:last-child.activeList{
+    border-top-right-radius: 0px!important;
   }
 
 }
@@ -999,6 +1032,12 @@ textarea:focus {
   .cus__tab {
     margin-left: 33px;
     margin-right: 33px;
+  }
+  ul>li:first-child.activeList{
+    border-top-left-radius: 0px!important;
+  }
+  ul>li:last-child.activeList{
+    border-top-right-radius: 0px!important;
   }
 }
 

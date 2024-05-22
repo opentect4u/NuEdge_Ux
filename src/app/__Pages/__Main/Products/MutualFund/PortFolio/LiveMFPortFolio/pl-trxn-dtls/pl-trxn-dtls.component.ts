@@ -98,7 +98,7 @@ export class PLTransaction{
         width:'8rem'
       },
       {
-        field:'idcw_reinv',header:'IDCW Reinv',width:"7rem"
+        field:'idcw_reinv',header:'IDCW Reinv',width:"6rem"
       },
       {
         field:'tot_inflow',

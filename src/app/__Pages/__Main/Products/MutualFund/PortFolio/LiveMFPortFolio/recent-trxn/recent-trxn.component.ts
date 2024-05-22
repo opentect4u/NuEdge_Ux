@@ -19,6 +19,8 @@ export class RecentTrxnComponent implements OnInit {
 
   totalAmt:number = 0;
 
+  totalUnit:number = 0;
+
   constructor(private utility:UtiliService) { }
 
   ngOnInit(): void {
@@ -28,6 +30,7 @@ export class RecentTrxnComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges){
        queueMicrotask(()=>{
           this.totalAmt = global.Total__Count(this.recent_trxn,item => Number(item.tot_amount));
+          this.totalUnit = global.Total__Count(this.recent_trxn,item => Number(item.tot_units))
         })
   }
 

@@ -23,12 +23,11 @@
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       styleClass="p-datatable-lg p-datatable-striped"
       [pageLinks]="3"
-      [responsive]="true"
       [globalFilterFields]="getColumns()"
         [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
       [showCurrentPageReport]="true">
           <ng-template pTemplate="header">
-            <tr  class="stickyHeader">
+            <tr class="stickyHeader">
               <th *ngFor="let col of column" [pSortableColumn]="col.field" [style]="'width : '+col.width">
                 {{ col.header }}
                 <p-sortIcon [field]="col.field">
@@ -49,7 +48,7 @@
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field]}}</p>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'trans_date'">
-                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ (trxn[col.field] | date:'dd-MM-YYYY')}}</p>
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ (trxn[col.field] | date:'dd-MM-YY')}}</p>
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'bank_name'">
@@ -79,6 +78,30 @@
                     <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
                 </td>
             </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr>
+            <td
+              *ngFor="let col of column"
+              [style]="'width : ' + col.width"
+            >
+              <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                  <p class="m-0">Total</p>
+                </ng-container>
+                <ng-container
+                  *ngSwitchCase=" col.field == 'tot_amount'
+                  || col.field == 'tot_gross_amount' || col.field == 'tot_tds'
+                  || col.field == 'tot_stamp_duty'">
+                  <p class="m-0">{{RejectTrxnFooterTrxnCacl ? (RejectTrxnFooterTrxnCacl[col.field] | number:'1.2-2') : 0}}</p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'units'">
+                  <p class="m-0">{{RejectTrxnFooterTrxnCacl ? (RejectTrxnFooterTrxnCacl[col.field] | number:'1.3-3') : 0}}</p>
+                  </ng-container>
+                <ng-container *ngSwitchDefault></ng-container>
+              </ng-container>
+            </td>
+          </tr>
         </ng-template>
         </p-table>
 <!-- </mat-card-content> -->
