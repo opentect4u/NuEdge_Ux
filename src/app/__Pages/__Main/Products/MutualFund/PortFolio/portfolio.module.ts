@@ -20,6 +20,11 @@ import { RouterModule, Routes } from '@angular/router';
          data:{title:'PortFolio - Live MF Portfolio',pageTitle:'Live MF Portfolio',breadcrumb:'Live MF Portfolio'}
       },
       {
+        path:'realisedCapitalGain',
+        loadChildren:()=> import('./relcapitalgain/relcapitalgain.module').then(m => m.RelcapitalgainModule),
+        data:{title:'Realised Capital Gain',pageTitle:'Realised Capital Gain',breadcrumb:'Realised Capital Gain'}
+      },
+      {
          path:'folio',
          loadChildren:()=> import('./Folio/folio.module').then(m => m.FolioModule),
          data:{title:'PortFolio - Folio Master',pageTitle:'Folio Master',breadcrumb:'Folio Master'}

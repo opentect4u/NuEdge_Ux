@@ -1228,10 +1228,12 @@
     </ng-container>
 
     <!-- <ng-container *ngIf="selected_id == 10">
-          <div-history [divHistory]="div_history">
+          <div-history [divHistory]="div_history | divHistory:div_history_frm.value.divhistory_type">
             <div form>
               <form [formGroup]="div_history_frm">
-                <mat-radio-group formControlName="divhistory_type" aria-label="Select an option" id="divhistory_type">
+                <mat-radio-group
+                color="primary"
+                formControlName="divhistory_type" aria-label="Select an option" id="divhistory_type">
                   <mat-radio-button [value]="'R'">IDCW R</mat-radio-button>
                   <mat-radio-button [value]="'P'" class="mx-2">IDCW Payout</mat-radio-button>
                   <mat-radio-button [value]="''">All</mat-radio-button>

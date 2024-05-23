@@ -15,6 +15,7 @@
     [name]="label"
     [id]="label"
     class="form-control"
+    autocomplete="off"
     (keydown)="onKeyUp($event)"
     [formControl]="$any(ngControl.control)"
     [placeholder]="placeholder">

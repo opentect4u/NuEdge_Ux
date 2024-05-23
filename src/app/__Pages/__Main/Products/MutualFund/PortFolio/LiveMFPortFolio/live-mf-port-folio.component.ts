@@ -338,7 +338,7 @@ mappings between `act_value` and `value` for transition durations. */
       divhistory_type: new FormControl('')
   })
 
-  div_history:any = [];
+  div_history:Partial<ILivePortFolio>[] = [];
   /**** End */
 
   constructor(private __dbIntr:DbIntrService,
@@ -443,10 +443,9 @@ mappings between `act_value` and `value` for transition durations. */
     /***
      * Event Trigger after change Div History Radio Button
      */
-      this.div_history_frm.controls['divhistory_type'].valueChanges.subscribe((res) =>{
-        console.log(res);
-            // this.call_api_div_history(this.main_frm_dt,res)
-      })
+      // this.div_history_frm.controls['divhistory_type'].valueChanges.subscribe((res) =>{
+      //       // this.call_api_div_history(this.main_frm_dt,res)
+      // })
 
     /** End */
 
@@ -1042,7 +1041,8 @@ mappings between `act_value` and `value` for transition durations. */
                    return false
                 });
               }
-              this.setParentTableFooter_ClientDtls(this.dataSource,res.client_details)
+              this.setParentTableFooter_ClientDtls(this.dataSource,res.client_details);
+              this.div_history = this.dataSource.filter(item => item.curr_val > 0)
               }
             catch(ex){
                 // console.log(ex)
@@ -1108,13 +1108,13 @@ mappings between `act_value` and `value` for transition durations. */
 
 
   /*** Div History api call */
-    call_api_div_history(formData,val) {
-        this.__dbIntr.api_call(1,'/clients/div_history',{...formData,type:val})
-        .pipe(pluck('data'))
-        .subscribe(res =>{
-              this.div_history = res;
-        })
-    }
+    // call_api_div_history(formData,val) {
+    //     this.__dbIntr.api_call(1,'/clients/div_history',{...formData,type:val})
+    //     .pipe(pluck('data'))
+    //     .subscribe(res =>{
+    //           this.div_history = res;
+    //     })
+    // }
   /*** End */
 
   /** call api for sip */

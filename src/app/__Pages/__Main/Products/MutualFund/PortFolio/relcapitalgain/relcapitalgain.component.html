@@ -1,0 +1,108 @@
+<div class="bckContainer"></div>
+<div class="row flexSec">
+    <div class="col-sm-12">
+      <mat-card>
+        <mat-card-header class="border-bottom">
+            <mat-card-title>Realised Capital Gain</mat-card-title>
+        </mat-card-header>
+          <mat-card-content class="px-3 py-3">
+            <form [formGroup]="released_capital_gain_form" (ngSubmit)="getReleasedCapitalGainLoss()">
+                  <div class="row form-group">
+                      <div class="col-sm-3">
+                        <label for="view_type">View Type</label>
+                        <select name="view_type" id="view_type" class="form-control" formControlName="view_type">
+                          <option value="">Select</option>
+                          <option [value]="item.id" *ngFor="let item of client_type">{{item.type}}</option>
+                        </select>
+                      </div>
+                      <div class="col-sm-3">
+                        <app-core-srch [label]="released_capital_gain_form.value.view_type == 'F' ? 'Family Head' : 'Investor'"
+                        [placeholder]="'Search By ' + (released_capital_gain_form.value.view_type == 'F' ? 'Family Member ' : 'Investor ') + ' Name, Code, Email, Mobile, PAN'"
+                        [isPending]="__isClientPending" [listItems]="__clientMst" [flag]="'C'"
+                        [noDataFoundTitle]="'Sorry!! No Records Found'"
+                        [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                        [propertiesToShow]="['client_name','pan']" formControlName="client_name"
+                        [displayMode]="displayMode_forClient" (setDisplayMode)="displayMode_forClient = $event"
+                        (selectedItems)="getSelectedItemsFromParent($event)"></app-core-srch>
+                      </div>
+                      <ng-container *ngIf="released_capital_gain_form.value.view_type == 'F'">
+                        <div class="col-sm-3">
+                          <label for="family_members">Family Members&nbsp;<i class="pi pi-info-circle" matTooltip="Search & select family head to get family members" style="font-size: 1rem" ></i></label>
+                          <ng-multiselect-dropdown
+                          [id]="'family_members'"
+                          [placeholder]="'Select Family Members'"
+                          [settings]="settingsforFamilyMembers"
+                          [data]="family_members"
+                          formControlName="family_members">
+                          </ng-multiselect-dropdown>
+                        </div>
+                    </ng-container>
+
+                    <div class="col-sm-3">
+                      <label for="asset_type">Asset Type</label>
+                      <select name="asset_type" id="asset_type" class="form-control" formControlName="asset_type">
+                        <option value="A">All</option>
+                        <option value="E">Equity</option>
+                        <option value="D">Debt</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-3"
+                    [ngClass]="{
+                      'd-flex align-items-start flex-column justify-content-end':released_capital_gain_form.value.view_type == 'F'
+                    }"
+                    >
+                      <label for="trans_periods">Transaction Periods</label>
+                      <select name="trans_periods" id="trans_periods" class="form-control" formControlName="trans_periods">
+                        <option value="">Select</option>
+                        <option value="S">Short Term</option>
+                        <option value="L">Long Term</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-3">
+                      <mat-radio-group
+                      color="primary"
+                      formControlName="date_type"
+                      id="date_type"
+                      aria-label="Select an option">
+                        <mat-radio-button value="F" class="mr-2">Financial Year</mat-radio-button>
+                        <mat-radio-button value="D" >Between Date</mat-radio-button>
+                    </mat-radio-group>
+                      <ng-container *ngIf="released_capital_gain_form.value.date_type == 'F';else between_date">
+                        <select class="form-control" formControlName="fin_year">
+                          <option [value]="finYear" *ngFor="let finYear of financial_year">{{finYear}}</option>
+                          </select>
+                      </ng-container>
+                      <ng-template #between_date>
+                        <p-calendar #dateRng [maxDate]="max_date" dateFormat="dd/mm/yy"
+                        placeholder="Select Date Range" formControlName="date_range" selectionMode="range"
+                        [readonlyInput]="true" [id]="'date_range'" [showIcon]="true" [hideOnDateTimeSelect]="true"
+                        [showButtonBar]="true">
+                      </p-calendar>
+                      </ng-template>
+                    </div>
+                    <div class="col-sm-3 d-flex align-items-start flex-column justify-content-end">
+                      <label for="report_type">Report Type</label>
+                      <select name="report_type" id="report_type" class="form-control" formControlName="report_type">
+                        <option value="S">Summary</option>
+                        <option value="D">Details</option>
+                        <option value="A">As Per ITD</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-3 d-flex align-items-start flex-column justify-content-end">
+                      <mat-checkbox color="primary" formControlName="opt1">Show Financial Year Wise Transaction Report</mat-checkbox>
+                      <mat-checkbox color="primary" formControlName="opt2">Show Dividend History</mat-checkbox>
+                    </div>
+                    <div class="d-flex flex-column justify-content-end align-items-end"
+                    [ngClass]="{
+                       'col-sm-3':released_capital_gain_form.value.view_type != 'F',
+                       'col-sm-12':released_capital_gain_form.value.view_type == 'F'
+                    }"
+                    >
+                     <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+                    </div>
+                  </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+    </div>
+</div>

@@ -222,4 +222,22 @@ export class global{
       return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx)), 0)
       }
 
+    public static getAllFinancialYears():string[]{
+      try{
+        const thisYear = (new Date()).getFullYear();
+        let fiscal_year = (new Date().getMonth() + 1 >= 4) ? (thisYear + 1) : thisYear
+        const financial_year = [0, 1, 2, 3, 4,5,6,7,8,9,10,11].map((count) =>{
+          return `${(fiscal_year - count - 1).toString()}-${fiscal_year - count}`
+        }
+      );
+        return financial_year;
+      }
+      catch(err){
+        console.log(err)
+         return []
+      }
+
+      // return yearArray.join();
+    }
+
 }
