@@ -24,6 +24,7 @@ import { environment } from 'src/environments/environment';
 import { scheme } from 'src/app/__Model/__schemeMst';
 import { Ibenchmark } from '../../benchmark/home/home.component';
 import { SCM_DTLS } from 'src/app/strings/localStorage_key';
+import { IAssetType } from 'src/app/__Model/assetType';
 // import { Ibenchmark } from '../../benchmark/benchmark.component';
 @Component({
   selector: 'app-scmModification',
@@ -31,6 +32,7 @@ import { SCM_DTLS } from 'src/app/strings/localStorage_key';
   styleUrls: ['./scmModification.component.css'],
 })
 export class ScmModificationComponent implements OnInit {
+  md_asset_type:Required<IAssetType>[] = [];
   __benchmark:Ibenchmark[] = [];
   __scmDtls: scheme[] = [];
   // __getPrevScmDT = storage.get_scmDtls ? storage.get_scmDtls : '';
@@ -323,6 +325,8 @@ export class ScmModificationComponent implements OnInit {
     stp_reg_filePreview: new FormControl(''),
 
     others: new FormArray([]),
+    // tax_impication: new FormControl(''),
+    tax_implication_id: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items?.tax_implication_id) : '',[Validators.required])
   });
 
   constructor(
@@ -384,7 +388,15 @@ export class ScmModificationComponent implements OnInit {
       this.getamcMasterbyproductId(this.data.product_id);
       this.getcatMasterbyproductId(this.data.product_id);
     }
+    this.getAssetType();
+  }
 
+  getAssetType = () =>{
+    this.__dbIntr.api_call(0,'/taxImplication',null)
+    .pipe(pluck('data'))
+    .subscribe((res:Required<IAssetType>[]) =>{
+        this.md_asset_type = res;
+    })
   }
 
   get others(): FormArray {
@@ -768,7 +780,7 @@ export class ScmModificationComponent implements OnInit {
       return;
     }
     const __scm = new FormData();
-
+    __scm.append('tax_implication_id',global.getActualVal(this.__scmForm.value.tax_implication_id));
     __scm.append('pip_fresh_min_amt',this.__scmForm.value.purchase_allowed === 'Yes' ? this.__scmForm.value.pip_fresh_min_amt : '');
     __scm.append('pip_add_min_amt',this.__scmForm.value.purchase_allowed === 'Yes' ? this.__scmForm.value.pip_add_min_amt : '');
     __scm.append('pip_multiple_amount',this.__scmForm.value.purchase_allowed === 'Yes' ? this.__scmForm.value.pip_multiple_amount : '');

@@ -55,7 +55,8 @@ export class schemeClmns{
     {field:'switch_mul_amt',header:'Switch In Multiple Amount'},
     {field:'switch_min_amt',header:'Switch In Minimum Amount'},
     {field:'exit_load',header:'Exit Load'},
-    {field:'benchmark',header:'Benchmark'}
+    {field:'benchmark',header:'Benchmark'},
+    {field:'tax_implication',header:'Tax Implication'}
   ]
   public static Summary:column[] = [
     {field: "edit",header:"Edit"},

@@ -1,0 +1,96 @@
+<mat-card class="my-4">
+  <mat-card-content class="p-5">
+    <div class="row">
+      <div class="col-md-6 col-sm-12 col-lg-3 my-2 border-right">
+        <div class="d-flex align-items-center">
+          <mat-icon class="details__icon infoIcon">person</mat-icon>
+          <span class="heading_title"
+            >Client Name:&nbsp;
+            <p class="titles__value m-0">{{
+              clientDtls?.client_name
+            }}</p></span
+          >
+        </div>
+
+        <div class="d-flex align-items-center my-4">
+          <mat-icon class="details__icon warningIcon">badge</mat-icon>
+          <span class="heading_title"
+            >PAN:&nbsp;<p class="titles__value m-0">{{ clientDtls?.pan ? clientDtls?.pan : 'N/A' }}</p>
+          </span>
+        </div>
+        <div class="d-flex align-items-center">
+          <mat-icon class="details__icon successIcon">schedule</mat-icon>
+          <span class="heading_title"
+            >Valuation As On:&nbsp;
+            <p class="titles__value m-0">{{
+              date
+                ? (date | date : "mediumDate")
+                : "N/A"
+            }}</p></span
+          >
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12 col-lg-3 my-2 border-right">
+        <div class="d-flex align-items-start">
+          <mat-icon class="details__icon infoIcon">location_on</mat-icon>
+          <span class="heading_title address_title"
+            >Address:&nbsp;
+            <p class="titles__value m-0">{{ clientDtls?.add_line_1 | titlecase}}</p>
+          </span>
+        </div>
+        <div class="my-4 d-flex align-items-center">
+          <mat-icon class="details__icon warningIcon">call</mat-icon>
+          <span class="heading_title"
+            >Contact:&nbsp;
+            <p class="titles__value m-0">{{ clientDtls?.mobile ? clientDtls?.mobile : 'N/A'}}</p>
+          </span>
+        </div>
+        <div class="my-2 d-flex align-items-center">
+          <mat-icon class="details__icon successIcon">mail</mat-icon>
+          <span class="heading_title"
+            >Email:&nbsp;
+            <p class="titles__value m-0">{{ clientDtls?.email ? clientDtls?.email : 'N/A'}}</p>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12 col-lg-3 my-2 border-right">
+        <div class="text-center">
+          <p class="heading_title">Current Sensex:</p>
+          <p class="titles__value">
+            72, 186.09 <mat-icon class="text-success">north</mat-icon> 454.67
+            (0.63%)
+          </p>
+        </div>
+        <div class="my-2 text-center">
+          <mat-button-toggle-group #group="matButtonToggleGroup">
+            <mat-button-toggle value="left" aria-label="Text align left">
+              <i class="pi pi-print text-info" style="font-size: 2rem"></i>
+            </mat-button-toggle>
+            <mat-button-toggle value="center" aria-label="Text align center">
+              <i
+                class="pi pi-file-pdf text-danger"
+                style="font-size: 2rem"
+              ></i>
+            </mat-button-toggle>
+            <mat-button-toggle value="right" aria-label="Text align right">
+              <i
+                class="pi pi-file-excel text-success"
+                style="font-size: 2rem"
+              ></i>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12 col-lg-3 my-2">
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">Note</label>
+          <textarea
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            rows="3"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+</mat-card-content>
+</mat-card>

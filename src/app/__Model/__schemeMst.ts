@@ -74,7 +74,9 @@ export interface scheme {
   stp_allowed?: string;
   purchase_allowed?: string;
   switch_allowed?: string;
-  pip_multiple_amount?:number
+  pip_multiple_amount?:number;
+  tax_implication_id:Partial<number>;
+  tax_implication:Partial<string>
   }
 
 

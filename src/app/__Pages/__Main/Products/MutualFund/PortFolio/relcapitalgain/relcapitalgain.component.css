@@ -1,3 +1,18 @@
 :host ::ng-deep  .mat-checkbox-layout {
   margin: 0px 0px !important;
 }
+
+
+:host ::ng-deep .p-datatable .p-datatable-thead>tr>th{
+  border: 1px solid #33576e;
+  border-width: 1px !important;
+  font-size:10.3px!important
+}
+
+textarea{
+  height:86px;
+  min-height:86px;
+  max-height:86px;
+}
+
+

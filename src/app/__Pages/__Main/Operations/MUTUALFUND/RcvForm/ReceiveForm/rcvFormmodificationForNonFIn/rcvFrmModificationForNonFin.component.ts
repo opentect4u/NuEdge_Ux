@@ -67,7 +67,7 @@ export class RcvfrmmodificationfornonfinComponent implements OnInit {
   __euinMst: any = [];
   __isCldtlsEmpty: boolean = false;
   __dialogDtForClient: any;
-  __schemeMst: scheme[] = [];
+  __schemeMst: Partial<scheme>[] = [];
   __subbrkArnMst: any = [];
   __isVisible: boolean = true;
   __rcvFormForNonFin = new FormGroup({

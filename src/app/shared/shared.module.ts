@@ -56,6 +56,7 @@ import { ListItemComponent } from './core/list-item/list-item.component';
 import { MailBckfilePipe } from '../__Pipes/mail-bckfile.pipe';
 import { ScrollDirective } from '../__Directives/scroll.directive';
 import { AMCEntryComponent } from './amcentry/amcentry.component';
+import { ClientDtlsComponent } from './core/client-dtls/client-dtls.component';
 
 @NgModule({
   imports: [
@@ -118,6 +119,7 @@ import { AMCEntryComponent } from './amcentry/amcentry.component';
     PaginateComponent,
     ListItemComponent,
     AMCEntryComponent,
+    ClientDtlsComponent,
   ],
   exports:[
     MailBckfilePipe,
@@ -153,6 +155,7 @@ import { AMCEntryComponent } from './amcentry/amcentry.component';
     AMCEntryComponent,
     NoDataComponent,
     UploadCsvComponent,
+    ClientDtlsComponent,
     RptFilterComponent,
     MstDtlsComponent,
     BtnWithMenuComponent,

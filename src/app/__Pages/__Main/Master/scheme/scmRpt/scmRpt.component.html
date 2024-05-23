@@ -420,6 +420,11 @@
           <th mat-header-cell *matHeaderCellDef>AMC</th>
           <td mat-cell *matCellDef="let element">{{element.amc_short_name ? element.amc_short_name : 'N/A'}}</td>
         </ng-container>
+
+        <ng-container matColumnDef="tax_implication">
+          <th mat-header-cell *matHeaderCellDef>Tax Implication</th>
+          <td mat-cell *matCellDef="let element">{{element.tax_implication ? element.tax_implication : 'N/A'}}</td>
+        </ng-container>
         <ng-container matColumnDef="cat_name">
           <th mat-header-cell *matHeaderCellDef>Category</th>
           <td mat-cell *matCellDef="let element">{{element.cat_name ? element.cat_name : 'N/A'}}</td>

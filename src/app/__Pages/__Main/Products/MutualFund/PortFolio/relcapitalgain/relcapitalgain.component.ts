@@ -48,7 +48,9 @@ export class RelcapitalgainComponent implements OnInit {
 
     financial_year:string[] = [];
 
-    max_date :Date = new Date()
+    max_date :Date = new Date();
+
+    client_dtls:client;
 
      /**
    *  getAccess of Prime Ng Calendar
@@ -74,26 +76,33 @@ export class RelcapitalgainComponent implements OnInit {
     pan_no: new FormControl('')
   })
 
+  relisedCapitalGain = [];
+
+  relised_capital_gain_column = realisedCapitalGainColumn.column
+
   constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
     this.released_capital_gain_form.get('client_name').disable();
     this.financial_year = global.getAllFinancialYears();
-    this.released_capital_gain_form.get('fin_year').setValue(this.financial_year.length > 0 ? this.financial_year[0] : '')
+    this.released_capital_gain_form.get('fin_year').setValue(this.financial_year.length > 0 ? this.financial_year[0] : '');
+
+    console.log(this.relised_capital_gain_column);
   }
 
   getReleasedCapitalGainLoss = () =>{
-      console.log(this.released_capital_gain_form.value);
+      // console.log(this.released_capital_gain_form.value);
       const dt = Object.assign({},this.released_capital_gain_form.value,
         {
           ...this.released_capital_gain_form.value,
           date_range:this.released_capital_gain_form.value.date_type === 'D' ? global.getActualVal(this.date_range.inputFieldValue) : '',
-          fin_year:this.released_capital_gain_form.value.date_type === 'D' ? global.getActualVal(this.released_capital_gain_form.value.fin_year) : ''
+          fin_year:this.released_capital_gain_form.value.date_type === 'F' ? global.getActualVal(this.released_capital_gain_form.value.fin_year) : ''
         }
       )
       this.dbIntr.api_call(1,'/clients/realisedCapitalGain',this.utility.convertFormData(dt))
-      .pipe(pluck('data')).subscribe(res =>{
-        console.log(res);
+      .pipe(pluck('data')).subscribe((res:Required<{data,client_details:client}>) =>{
+        this.relisedCapitalGain = res.data;
+        this.client_dtls = res.client_details;
       })
   }
 
@@ -203,4 +212,144 @@ export class RelcapitalgainComponent implements OnInit {
 
 }
 
+
+export class realisedCapitalGainColumn{
+      public static column = [
+        {
+          field:'trans_date',
+          header:'Trxn. Date',
+          width:'6rem',
+          sub_row:[],
+          row_span:2
+        },
+        {
+          field:'transaction_type',
+          header:'Trxn. Type',
+          width:'6rem',
+          sub_row:[],
+          row_span:2
+        },
+        {
+          field:'pur_dtls',
+          header:'Purchase Details',
+          col_span:7,
+          row_span:1,
+          sub_row:[
+            {
+              field:'pur_div_reinv',
+              header:'Purchase / Devidend Reinvest ment',
+              width:'6rem'
+            },
+            {
+              field:'pur_nav',
+              header:'Purchase Nav',
+              width:'3rem'
+            },
+            {
+              field:'tot_units',
+              header:'Units',
+              width:'2rem'
+            },
+            {
+              field:'pur_before',
+              header:'Purchase Before 31-01-18',
+              width:'5rem'
+            },
+            {
+              field:'debt_31_01_2023',
+              header:'Debt - 31-01-18',
+              width:'5rem'
+            },
+            {
+              field:'nav_as_on_31/01/2018',
+              header:'Nav as on 31-01-18',
+              width:'5rem'
+            },
+            {
+              field:'amount_as_on_31/01/2018',
+              header:'Amount as on 31-01-18',
+              width:'4rem'
+            }
+          ]
+        },
+        {
+          field:'sell_dtls',
+          header:'Sell Details',
+          col_span:7,
+          width:'40rem',
+          row_span:1,
+          sub_row:[
+            {
+              field:'sell_type',
+              header:'Sell Type',
+              width:'6rem'
+            },
+            {
+              field:'sell_date',
+              header:'Sell Date',
+              width:'3rem'
+            },
+            {
+              field:'sell_nav',
+              header:'Sell Nav',
+              width:'3rem'
+            },
+            {
+              field:'redemp_amount',
+              header:'Redemp tion Amt',
+              width:'4rem'
+            },
+            {
+              field:'tot_tds',
+              header:'TDS',
+              width:'3rem'
+            },
+            {
+              field:'stt',
+              header:'STT',
+              width:'2rem'
+            },
+            {
+              field:'net_sell_proceed',
+              header:'Net Sell Proced',
+              width:'4rem'
+            }
+          ]
+        },
+        {
+          field:'gain_loss_related',
+          header:'Gain Loss Related',
+          width:'27rem',
+          col_span:5,
+          row_span:1,
+          sub_row:[
+            {
+              field:'div_amount',
+              header:'Devidend Amount',
+              width:'3rem'
+            },
+            {
+              field:'days',
+              header:'Days',
+              width:'3rem'
+            },
+            {
+              field:'stcg',
+              header:'STCG',
+              width:'3rem'
+            },
+            {
+              field:'ltcg',
+              header:'LTCG',
+              width:'3rem'
+            },
+            {
+              field:'index_ltcg',
+              header:'INDEX LTCG',
+              width:'3rem'
+            },
+          ]
+        }
+      ]
+}
 

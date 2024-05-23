@@ -863,10 +863,6 @@
     <div class="row mb-2">
       <div class="col-sm-12">
         <label for="benchmark">Benchmark</label>
-        <!-- <input type="text" name="benchmark" id="benchmark"
-        class="form-control"
-        placeholder="Enter Benchmark"
-        formControlName="benchmark"> -->
         <select class="form-control"
         id="benchmark"
         name="benchmark"
@@ -875,6 +871,21 @@
       <option value="">Select</option>
       <option [value]="benchmark.id" *ngFor="let benchmark of __benchmark">{{benchmark.benchmark}}</option>
       </select>
+      </div>
+
+      <div class="col-sm-12">
+        <label for="tax_impication">Tax Implication <span class="text-danger">*</span></label>
+        <select class="form-control"
+        id="tax_impication"
+        name="tax_impication"
+        formControlName="tax_implication_id"
+        >
+      <option value="">Select</option>
+      <option [value]="tax_implications.id" *ngFor="let tax_implications of md_asset_type">{{tax_implications.tax_type}}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="__scmForm.get('tax_implication_id').invalid && (__scmForm.get('tax_implication_id').dirty || __scmForm.get('tax_implication_id').touched)">
+        <span class="invalid-feedback" *ngIf="(__scmForm.get('tax_implication_id')).errors?.required">*Please provide tax implication</span>
+      </div>
       </div>
     </div>
 

@@ -435,6 +435,8 @@ export class ScmRptComponent implements OnInit {
           value.switch_mul_amt = row_obj.switch_mul_amt;
           value.exit_load = row_obj.exit_load;
           value.pip_multiple_amount = row_obj.pip_multiple_amount;
+          value.tax_implication = row_obj.tax_implication;
+          value.tax_implication_id = row_obj.tax_implication_id;
         }
         return true;
       }
@@ -510,6 +512,8 @@ export class ScmRptComponent implements OnInit {
           value.switch_mul_amt = row_obj.switch_mul_amt;
           value.exit_load = row_obj.exit_load;
           value.pip_multiple_amount = row_obj.pip_multiple_amount;
+          value.tax_implication = row_obj.tax_implication;
+          value.tax_implication_id = row_obj.tax_implication_id;
       }
       return true;
     });

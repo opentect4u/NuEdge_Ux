@@ -161,7 +161,7 @@ export class NonfinmodificationComponent implements OnInit {
   __euinMst: any = [];
   __clientMst: client[] = [];
   __transType: any = [];
-  __schemeMst: scheme[] = [];
+  __schemeMst: Partial<scheme>[] = [];
   __schemeMstTo: scheme[] = [];
 
   __bnkMst: bank[] = [];
