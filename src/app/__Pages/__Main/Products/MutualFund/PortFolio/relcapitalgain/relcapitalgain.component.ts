@@ -3,10 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import clientType from '../../../../../../../assets/json/view_type.json';
 import { client } from 'src/app/__Model/__clientMst';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
-import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, groupBy, map, mergeMap, pluck, switchMap, tap, toArray } from 'rxjs/operators';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { Calendar } from 'primeng/calendar';
+import { from, of, zip } from 'rxjs';
 @Component({
   selector: 'portfolio-relcapitalgain',
   templateUrl: './relcapitalgain.component.html',
@@ -101,8 +102,24 @@ export class RelcapitalgainComponent implements OnInit {
       )
       this.dbIntr.api_call(1,'/clients/realisedCapitalGain',this.utility.convertFormData(dt))
       .pipe(pluck('data')).subscribe((res:Required<{data,client_details:client}>) =>{
-        this.relisedCapitalGain = res.data;
+        console.log(res.data);
+        // this.relisedCapitalGain = res.data;
         this.client_dtls = res.client_details;
+        from(res.data)
+        .pipe(
+          groupBy((data:any) => data.cat_name),
+          mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+        ).subscribe(dt =>{
+          console.log(dt);
+          this.relisedCapitalGain.push(
+            {
+              cat_name:dt[0],
+              data:dt[1]
+            }
+          )
+        })
+        console.log(this.relisedCapitalGain)
+
       })
   }
 
@@ -218,14 +235,14 @@ export class realisedCapitalGainColumn{
         {
           field:'trans_date',
           header:'Trxn. Date',
-          width:'6rem',
+          width:'7rem',
           sub_row:[],
           row_span:2
         },
         {
           field:'transaction_type',
           header:'Trxn. Type',
-          width:'6rem',
+          width:'8rem',
           sub_row:[],
           row_span:2
         },
@@ -352,4 +369,6 @@ export class realisedCapitalGainColumn{
         }
       ]
 }
+
+
 

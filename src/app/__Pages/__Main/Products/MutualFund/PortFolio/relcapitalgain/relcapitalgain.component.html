@@ -209,7 +209,7 @@
         </div>
       </p-card> -->
     </div>
-    <div class="col-sm-12">
+    <div class="col-sm-12 mb-5">
         <mat-card>
           <mat-card-content class="">
                 <p-table
@@ -218,7 +218,7 @@
                 [responsive]="true"
                 styleClass="p-datatable-gridlines"
                 >
-                <ng-template pTemplate="header" class="stickyHeader">
+                <ng-template pTemplate="header">
                     <tr class="stickyHeader">
                       <th
                       *ngFor="let col of relised_capital_gain_column"
@@ -230,7 +230,7 @@
                           {{col.header}}
                       </th>
                     </tr>
-                    <tr>
+                    <tr class="stickyHeaderInnerTH">
                       <ng-container  *ngFor="let col of relised_capital_gain_column">
                           <th
                           *ngFor="let col of col.sub_row"
@@ -242,11 +242,19 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-realisedCapitalGain>
                   <tr>
-                    <td *ngFor="let col of relised_capital_gain_column"
-                        [style]="'width : '+col.width">
-                        {{realisedCapitalGain[col.field]}}
-                   </td>
-                </tr>
+                    <td [attr.colspan]="21" class="table__header">
+                        <h6 class="m-0">{{realisedCapitalGain?.cat_name}} Fund</h6>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let dtls of realisedCapitalGain?.data">
+                    <td>{{dtls?.trans_date | date:'dd-MM-YYYY'}}</td>
+                    <td>{{dtls?.transaction_type}}</td>
+                    <ng-container *ngFor="let col of relised_capital_gain_column">
+                        <td  *ngFor="let col of col.sub_row" [style]="'width : '+col.width">
+                            {{dtls[col.field] ? dtls[col.field] : 'N/A'}}
+                        </td>
+                    </ng-container>
+                  </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage" let-realisedCapitalGain>
                   <tr>

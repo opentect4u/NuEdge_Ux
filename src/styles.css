@@ -1135,6 +1135,14 @@ span.badge-warning {
   z-index:999
 }
 
+.p-datatable .p-datatable-thead > tr.stickyHeaderInnerTH > th {
+  position: -webkit-sticky!important;
+  position: sticky!important;
+  top: 131px!important;
+  z-index:999
+}
+
+
 .p-datatable .p-datatable-thead > tr.stickyHeader__innerTbl > th {
   position: -webkit-sticky!important;
   position: sticky!important;
