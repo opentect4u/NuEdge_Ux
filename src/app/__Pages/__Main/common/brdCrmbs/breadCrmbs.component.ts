@@ -15,6 +15,7 @@ export class BreadcrmbsComponent implements OnInit {
     this.__utility.__latestBrdCrmbs$.pipe(skip(1)).subscribe((res) => {
       if (res.length > 0) {
         this.breadcrumbs = res;
+        console.log(res);
       }
     });
   }
