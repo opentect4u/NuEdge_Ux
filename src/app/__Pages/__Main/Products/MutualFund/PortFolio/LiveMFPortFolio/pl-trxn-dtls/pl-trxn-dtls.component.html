@@ -109,10 +109,12 @@
             <ng-container *ngSwitchCase="col.field == 'scheme_name'">
               <p class="m-0">Total</p>
             </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'folio_no' || col.field == 'curr_val'
-            || col.field == 'ret_abs' || col.field == 'xirr'
-            || col.field == 'gain_loss'
+            <ng-container *ngSwitchCase="col.field == 'folio_no'
+            || col.field == 'xirr'
             "></ng-container>
+            <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+             {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | percent:'1.2-2') : 0.00) : 0.00}}%
+            </ng-container>
             <ng-container *ngSwitchDefault>
               {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | number:'1.2-2') : 0.00) : 0.00}}
             </ng-container>

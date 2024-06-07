@@ -1,6 +1,10 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { client } from 'src/app/__Model/__clientMst';
 
+export enum ScheduleType{
+  VALUATION = 'Valuation',
+  REPORT = 'Report'
+}
 @Component({
   selector: 'client-dtls',
   templateUrl: './client-dtls.component.html',
@@ -19,7 +23,11 @@ export class ClientDtlsComponent implements OnInit {
     this._clientDtls = values
   }
 
+  @Input() ScheduleType:string | undefined = ScheduleType.VALUATION
+
   @Input() date: any;
+
+  @Input() isDateRange:boolean | undefined = false;
 
   constructor() { }
 

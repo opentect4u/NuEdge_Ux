@@ -53,7 +53,7 @@
                     >
                       <label for="trans_periods">Transaction Periods</label>
                       <select name="trans_periods" id="trans_periods" class="form-control" formControlName="trans_periods">
-                        <option value="">Select</option>
+                        <option value="">All</option>
                         <option value="S">Short Term</option>
                         <option value="L">Long Term</option>
                       </select>
@@ -106,7 +106,12 @@
         </mat-card>
     </div>
     <div class="col-sm-12 my-3">
-      <client-dtls [clientDtls]="client_dtls" *ngIf="client_dtls"></client-dtls>
+      <client-dtls
+      [clientDtls]="client_dtls"
+      [ScheduleType]="'Report'"
+      [isDateRange]="true"
+      [date]="dateRange"
+      *ngIf="client_dtls"></client-dtls>
       <!-- <p-card>
         <div class="row">
           <div class="col-md-6 col-sm-12 col-lg-3 my-2 border-right">
@@ -215,7 +220,6 @@
                 <p-table
                 [value]="relisedCapitalGain"
                 [paginator]="false"
-                [responsive]="true"
                 styleClass="p-datatable-gridlines"
                 >
                 <ng-template pTemplate="header">
@@ -227,7 +231,7 @@
                       [attr.rowspan]="col.row_span"
                       class="py-3"
                       >
-                          {{col.header}}
+                        {{col.header}}
                       </th>
                     </tr>
                     <tr class="stickyHeaderInnerTH">
@@ -236,6 +240,7 @@
                           *ngFor="let col of col.sub_row"
                           [style]="'width : '+col.width">
                           {{col.header}}
+
                         </th>
                       </ng-container>
                     </tr>
@@ -247,13 +252,16 @@
                     </td>
                   </tr>
                   <tr *ngFor="let dtls of realisedCapitalGain?.data">
-                    <td>{{dtls?.trans_date | date:'dd-MM-YYYY'}}</td>
+                    <!-- <td>{{dtls?.trans_date | date:'dd-MM-YYYY'}}</td>
                     <td>{{dtls?.transaction_type}}</td>
                     <ng-container *ngFor="let col of relised_capital_gain_column">
                         <td  *ngFor="let col of col.sub_row" [style]="'width : '+col.width">
                             {{dtls[col.field] ? dtls[col.field] : 'N/A'}}
                         </td>
-                    </ng-container>
+                    </ng-container> -->
+                    <td colspan="21" class="table_scheme_style">
+                      {{dtls?.scheme_name}}-{{dtls?.plan_name}}-{{dtls?.option_name}} # ISIN - {{dtls?.isin_no}} # FOLIO - {{dtls?.folio_no}}
+                    </td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage" let-realisedCapitalGain>

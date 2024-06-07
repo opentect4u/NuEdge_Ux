@@ -69,6 +69,9 @@ export class PlTrxnDtlsComponent implements OnInit {
         switch_out:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_out)),
         idcwp:global.Total__Count(this.primaryTbl.value,item => item.idcwp ? Number(item.idcwp) : 0),
         tot_outflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_outflow)),
+        curr_val:global.Total__Count(this.primaryTbl.value,item => Number(item.curr_val)),
+        gain_loss:global.Total__Count(this.primaryTbl.value,item => Number(item.gain_loss)),
+        ret_abs:(global.Total__Count(this.primaryTbl.value,item => Number(item.ret_abs)) / this.primaryTbl.value.length),
       }
       })
   }

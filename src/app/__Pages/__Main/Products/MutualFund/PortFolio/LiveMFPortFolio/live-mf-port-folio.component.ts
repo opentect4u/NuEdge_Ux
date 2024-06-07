@@ -408,7 +408,7 @@ mappings between `act_value` and `value` for transition durations. */
         last_child.style.borderTopRightRadius = isOverflowed ? '0px' : '8px'
 
       }
-      console.log(first_child)
+      // console.log(first_child)
       // else{
       //   first_child.style.borderTopLeftRadius ='8px!important';
       //   last_child.style.borderTopRightRadius ='8px!important';
@@ -443,9 +443,9 @@ mappings between `act_value` and `value` for transition durations. */
     /***
      * Event Trigger after change Div History Radio Button
      */
-      // this.div_history_frm.controls['divhistory_type'].valueChanges.subscribe((res) =>{
-      //       // this.call_api_div_history(this.main_frm_dt,res)
-      // })
+      this.div_history_frm.controls['divhistory_type'].valueChanges.subscribe((res) =>{
+            // this.call_api_div_history(this.main_frm_dt,res)
+      })
 
     /** End */
 
@@ -1053,6 +1053,8 @@ mappings between `act_value` and `value` for transition durations. */
 
     setParentTableFooter_ClientDtls(arr:ILivePortFolio[],client_details:client){
       if(arr.length > 0){
+        const date:string[] = arr.filter((x:ILivePortFolio) => x.curr_val > 0).map((el:ILivePortFolio) => el.inv_since);
+        console.log(date);
         this.setClientDtls(client_details)
         this.parentLiveMfPortFolio = {
          inv_cost: this.Total__Count(arr,x => Number(x.inv_cost)),
@@ -1108,13 +1110,14 @@ mappings between `act_value` and `value` for transition durations. */
 
 
   /*** Div History api call */
-    // call_api_div_history(formData,val) {
-    //     this.__dbIntr.api_call(1,'/clients/div_history',{...formData,type:val})
-    //     .pipe(pluck('data'))
-    //     .subscribe(res =>{
-    //           this.div_history = res;
-    //     })
-    // }
+    call_api_div_history(formData,val) {
+        this.__dbIntr.api_call(1,'/clients/div_history',{...formData,type:val})
+        .pipe(pluck('data'))
+        .subscribe(res =>{
+              // this.div_history = res;
+              console.log(res)
+        })
+    }
   /*** End */
 
   /** call api for sip */

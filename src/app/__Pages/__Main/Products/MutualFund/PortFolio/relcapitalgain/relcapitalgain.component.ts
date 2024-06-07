@@ -8,6 +8,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { Calendar } from 'primeng/calendar';
 import { from, of, zip } from 'rxjs';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'portfolio-relcapitalgain',
   templateUrl: './relcapitalgain.component.html',
@@ -24,6 +25,10 @@ export class RelcapitalgainComponent implements OnInit {
     'Search Family members',
     1
   );
+
+  /*** Holding Either Financial Year Or Between Dates  */
+  dateRange;
+  /**** End */
 
   /***
    * Get Client Type from json file
@@ -81,7 +86,7 @@ export class RelcapitalgainComponent implements OnInit {
 
   relised_capital_gain_column = realisedCapitalGainColumn.column
 
-  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService,private datePipe:DatePipe) { }
 
   ngOnInit(): void {
     this.released_capital_gain_form.get('client_name').disable();
@@ -92,7 +97,8 @@ export class RelcapitalgainComponent implements OnInit {
   }
 
   getReleasedCapitalGainLoss = () =>{
-      // console.log(this.released_capital_gain_form.value);
+    this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
+      this.relisedCapitalGain = [];
       const dt = Object.assign({},this.released_capital_gain_form.value,
         {
           ...this.released_capital_gain_form.value,
@@ -102,15 +108,16 @@ export class RelcapitalgainComponent implements OnInit {
       )
       this.dbIntr.api_call(1,'/clients/realisedCapitalGain',this.utility.convertFormData(dt))
       .pipe(pluck('data')).subscribe((res:Required<{data,client_details:client}>) =>{
-        console.log(res.data);
+        // console.log(res.data);
         // this.relisedCapitalGain = res.data;
         this.client_dtls = res.client_details;
+        this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
         from(res.data)
         .pipe(
           groupBy((data:any) => data.cat_name),
           mergeMap(group => zip(of(group.key), group.pipe(toArray())))
         ).subscribe(dt =>{
-          console.log(dt);
+
           this.relisedCapitalGain.push(
             {
               cat_name:dt[0],
@@ -121,6 +128,30 @@ export class RelcapitalgainComponent implements OnInit {
         console.log(this.relisedCapitalGain)
 
       })
+  }
+
+
+  setDateInClientDetailsCard(date_type:string){
+      let date_rng;
+      let start_date,end_date;
+      if(date_type == 'F'){
+          if(this.financial_year[0] == this.released_capital_gain_form.value.fin_year){
+            start_date =new Date(Number(this.financial_year[0].split('-')[0]),3,1);
+            end_date =new Date();
+          }
+          else{
+            start_date =new Date(Number(this.released_capital_gain_form.value.fin_year.split('-')[0]),0,1);
+            end_date =new Date(Number(this.released_capital_gain_form.value.fin_year.split('-')[1]),3,31);
+          }
+          date_rng = `${this.datePipe.transform(start_date,'longDate')} TO ${this.datePipe.transform(end_date,'longDate')}`
+      }
+      else{
+        start_date = this.datePipe.transform(this.date_range.inputFieldValue.split('-')[0],'longDate');
+        end_date = this.datePipe.transform(this.date_range.inputFieldValue.split('-')[1],'longDate');
+        date_rng = `${start_date} TO ${end_date}`;
+      }
+      console.log(date_rng);
+      return date_rng;
   }
 
   /**
@@ -254,12 +285,12 @@ export class realisedCapitalGainColumn{
           sub_row:[
             {
               field:'pur_div_reinv',
-              header:'Purchase / Devidend Reinvest ment',
+              header:'Purchase / Dividend Reinvestment',
               width:'6rem'
             },
             {
               field:'pur_nav',
-              header:'Purchase Nav',
+              header:'Pur. NAV',
               width:'3rem'
             },
             {
@@ -269,31 +300,31 @@ export class realisedCapitalGainColumn{
             },
             {
               field:'pur_before',
-              header:'Purchase Before 31-01-18',
-              width:'5rem'
-            },
-            {
-              field:'debt_31_01_2023',
-              header:'Debt - 31-01-18',
+              header:'Equity Purchase Before 31-01-18',
               width:'5rem'
             },
             {
               field:'nav_as_on_31/01/2018',
-              header:'Nav as on 31-01-18',
+              header:'NAV as on 31-01-18',
               width:'5rem'
             },
             {
               field:'amount_as_on_31/01/2018',
-              header:'Amount as on 31-01-18',
+              header:'Value as on 31-01-18',
               width:'4rem'
-            }
+            },
+            {
+              field:'debt_31_03_2023',
+              header:'Debt Purchase Before 31-03-23',
+              width:'5rem'
+            },
           ]
         },
         {
           field:'sell_dtls',
           header:'Sell Details',
           col_span:7,
-          width:'40rem',
+          // width:'40rem',
           row_span:1,
           sub_row:[
             {
@@ -308,18 +339,18 @@ export class realisedCapitalGainColumn{
             },
             {
               field:'sell_nav',
-              header:'Sell Nav',
+              header:'Sell NAV',
               width:'3rem'
             },
             {
               field:'redemp_amount',
-              header:'Redemp tion Amt',
-              width:'4rem'
+              header:'Redemption Amount',
+              width:'5rem'
             },
             {
               field:'tot_tds',
               header:'TDS',
-              width:'3rem'
+              width:'2rem'
             },
             {
               field:'stt',
@@ -336,7 +367,7 @@ export class realisedCapitalGainColumn{
         {
           field:'gain_loss_related',
           header:'Gain Loss Related',
-          width:'27rem',
+          // width:'27rem',
           col_span:5,
           row_span:1,
           sub_row:[

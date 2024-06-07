@@ -21,12 +21,24 @@
         <div class="d-flex align-items-center">
           <mat-icon class="details__icon successIcon">schedule</mat-icon>
           <span class="heading_title"
-            >Valuation As On:&nbsp;
-            <p class="titles__value m-0">{{
-              date
-                ? (date | date : "mediumDate")
-                : "N/A"
-            }}</p></span
+            >
+            {{ScheduleType}} As On:&nbsp;
+            <ng-container *ngIf="!isDateRange;else dateRng" >
+              <p class="titles__value m-0">{{
+                date
+                  ? (date | date : "mediumDate")
+                  : "N/A"
+              }}</p>
+            </ng-container>
+            <ng-template  #dateRng>
+              <p class="titles__value m-0">{{
+                date
+                  ? date
+                  : "N/A"
+              }}</p>
+            </ng-template>
+
+            </span
           >
         </div>
       </div>

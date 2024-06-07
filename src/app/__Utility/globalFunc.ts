@@ -240,4 +240,16 @@ export class global{
       // return yearArray.join();
     }
 
+    /*** Get Current Funnacial Year */
+    public static getCurrentFinancialYear():string {
+      var fiscalyear = "";
+      var today = new Date();
+      if ((today.getMonth() + 1) <= 4) {
+        fiscalyear = (today.getFullYear() - 1) + "-" + today.getFullYear()
+      } else {
+        fiscalyear = today.getFullYear() + "-" + (today.getFullYear() + 1)
+      }
+      return fiscalyear
+    }
+    /*** End */
 }
