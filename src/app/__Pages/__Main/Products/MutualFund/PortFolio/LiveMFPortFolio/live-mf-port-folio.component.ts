@@ -451,11 +451,14 @@ mappings between `act_value` and `value` for transition durations. */
     this.filter_criteria.controls['view_funds_type'].valueChanges.subscribe((res) =>{
         if(res == 'S'){
           console.log( this.__isDisplay__modal__selected_funds)
-          if(this.filter_criteria.value.client_name){
+          if(this.filter_criteria.value.client_name && this.filter_criteria.value.valuation_as_on){
+              if(this.selectedFunds.length == 0){
+                this.getFundsAccordingtoClient();
+              }
               this.__isDisplay__modal__selected_funds = true
           }
           else{
-              this.utility.showSnackbar('Please select a client',0);
+              this.utility.showSnackbar(!this.filter_criteria.value.client_name ? 'Please select a client' : 'Please select valuation as on',0);
           }
         }
         else{
@@ -572,6 +575,14 @@ mappings between `act_value` and `value` for transition durations. */
       });
 
     /** End */
+
+    /** Valuation as on change */
+      this.filter_criteria.controls['valuation_as_on'].valueChanges.subscribe(res =>{
+        this.selectedFunds = [];
+        this.selected_funds = [];
+        this.filter_criteria.controls['view_funds_type'].setValue('A',{emitEvent:false});
+      })
+    /** End */
   }
 
   ngOnDestroy() {
@@ -601,7 +612,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.selectedFunds = [];
     this.selected_funds = [];
     this.filter_criteria.controls['view_funds_type'].setValue('A',{emitEvent:false});
-    this.getFundsAccordingtoClient();
+    // this.getFundsAccordingtoClient();
     this.searchResultVisibilityForClient('none');
     if(this.filter_criteria.value.view_type == 'F'){
             this.getFamilyMembers(searchRlt.item.client_id)
@@ -710,7 +721,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     const {family_members,...rest} = Object.assign({},{
       ...this.filter_criteria.value,
-      selected_funds:this.filter_criteria.value.view_funds_type == 'S' ? this.selected_funds.map(el => ({product_code:el.product_code,folio_no:el.folio_no,isin_no:el.isin_no})) : [],
+      selected_funds:this.filter_criteria.value.view_funds_type == 'S' ? JSON.stringify(this.selected_funds.map(el => ({product_code:el.product_code,folio_no:el.folio_no,isin_no:el.isin_no}))) : [],
       valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
       family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
       family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
