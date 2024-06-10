@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import  ClientType  from '../../../../../../../assets/json/view_type.json';
@@ -314,7 +314,8 @@ mappings between `act_value` and `value` for transition durations. */
         trans_duration: new FormControl('A'),
         show_valuation_with:new FormControl(this.__portfolioFiter?.val_with),
         trans_with:new FormControl(this.__portfolioFiter?.trans_with.filter(item => item.id ==1)),
-        clmn_chooser: new FormControl(this.__portfolioFiter?.clm_chooser.map(item =>  ({name: item.name,flag:item.flag})))
+        clmn_chooser: new FormControl(this.__portfolioFiter?.clm_chooser.map(item =>  ({name: item.name,flag:item.flag}))),
+        funds: new FormArray([])
   })
 
   max_date :Date = new Date()
@@ -337,6 +338,9 @@ mappings between `act_value` and `value` for transition durations. */
   })
 
 
+
+
+
   /*** Holding Div history Form */
   div_history_frm = new FormGroup({
       divhistory_type: new FormControl('')
@@ -350,7 +354,8 @@ mappings between `act_value` and `value` for transition durations. */
     private router:Router,
     private activateRoute:ActivatedRoute,
     private datePipe:DatePipe,
-    private spinner:NgxSpinnerService
+    private spinner:NgxSpinnerService,
+    private fb:FormBuilder
     ) {
       const dt = new Date();
       dt.setDate(dt.getDate() - 1)
@@ -358,6 +363,57 @@ mappings between `act_value` and `value` for transition durations. */
         date_range: [dt,this.max_date]
       })
     }
+
+  funds() : FormArray {
+    return this.filter_criteria.get("funds") as FormArray
+  }
+
+  subcategory(cat_index:number){
+    return this.funds().at(cat_index).get('sub_menu') as FormArray
+  }
+
+  addSubCategory = (index:number,dtls:any) =>{
+    this.subcategory(index).push(this.newSubCategory(dtls))
+  }
+
+  scheme(cat_index:number,sub_cat_index:number){
+    return this.subcategory(cat_index).at(sub_cat_index).get('sub_menu') as FormArray
+  }
+
+  addScheme  (cat_index:number,sub_cat_index:number,sub_dtls:any){
+    this.scheme(cat_index,sub_cat_index).push(this.newScheme(sub_dtls))
+  }
+
+  newFunds(fund_dtls:any): FormGroup {
+      return  this.fb.group({
+      id:fund_dtls?.cat_id,
+      cat_name: fund_dtls?.cat_name,
+      is_checked:false,
+      sub_menu: this.fb.array([])
+      })
+  }
+
+  newSubCategory(subCatDtls:any): FormGroup{
+    return  this.fb.group({
+      id:subCatDtls?.subcat_id,
+      subcat_name: subCatDtls?.subcat_name,
+      is_checked:false,
+      sub_menu:this.fb.array([])
+    })
+   }
+
+  newScheme(scheme_dtls:any){
+    return  this.fb.group({
+      rnt_id:scheme_dtls?.rnt_id,
+      scheme_name: scheme_dtls?.scheme_name,
+      is_checked:false,
+      product_code:scheme_dtls?.product_code,
+      folio_no:scheme_dtls?.folio_no,
+      isin_no:scheme_dtls?.isin_no
+    })
+   }
+
+
 
   ngOnInit(): void {
     if(this.activateRoute.snapshot.queryParams.id){
@@ -442,14 +498,61 @@ mappings between `act_value` and `value` for transition durations. */
     this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(rest))
     .pipe(pluck('data'))
     .subscribe((res:Required<{data,client_details:client}>) => {
-          this.selectedFunds = res.data.filter(el => Number(el.curr_val) > 0);
+          const dt = res.data.filter(el => Number(el.curr_val) > 0)
+          this.selectedFunds = dt;
+          const groupedBycategory = dt.reduce((acc, funds) => {
+            const category = funds.cat_name;
+            (acc[category] = acc[category] || []).push(funds);
+            return acc;
+          }, {});
+        let mod_arr = this.convertSelectedTypes(groupedBycategory);
+        mod_arr.forEach((el,index)=>{
+            console.log(el.sub_menu)
+            this.funds().push(this.newFunds(el));
+            Object.keys(el.sub_menu).forEach((element,i) =>{
+              this.addSubCategory(index,el.sub_menu[element][0]);
+              el.sub_menu[element].forEach(final_res =>{
+                this.addScheme(index,i,final_res)
+            })
+            })
+        })
+        console.log(this.filter_criteria.value.funds)
     })
   }
+
+  convertSelectedTypes(object){
+    let dtls = [];
+    Object.keys(object).forEach(el =>{
+      const arr = object[el].reduce((unique, o) => {
+          if(!unique.some(obj => obj.cat_name === o.cat_name)) {
+            unique.push({...o,sub_menu:[]});
+          }
+          return unique;
+      },[]);
+      const sub_cat = object[el].reduce((acc, funds) => {
+                const subcat = funds.subcat_name;
+                (acc[subcat] = acc[subcat] || []).push(
+                    funds
+                );
+                return acc;
+            }, {});
+       [...arr].forEach((item,index) =>{
+          dtls.push({
+              ...item,
+              sub_menu:sub_cat
+          })
+      })
+    })
+    return dtls;
+  }
+
+
+
 
   ngAfterViewInit(){
 
     this.filter_criteria.controls['view_funds_type'].valueChanges.subscribe((res) =>{
-        if(res == 'S'){
+        if(res == 'S' || res == 'T'){
           console.log( this.__isDisplay__modal__selected_funds)
           if(this.filter_criteria.value.client_name && this.filter_criteria.value.valuation_as_on){
               if(this.selectedFunds.length == 0){
@@ -719,9 +822,20 @@ mappings between `act_value` and `value` for transition durations. */
     this.__live_sip_stp_swp_form.reset('',{emitEvent:false,onlySelf:true});
     this.selected_id = this.__portFolioTab[0].id;
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
+    let funds:any[] = [];
+    this.filter_criteria.value.funds?.forEach((el:any) =>{
+      el.sub_menu.forEach((item:any) =>{
+         item.sub_menu.forEach((element:any) => {
+          if(element.is_checked){
+            funds.push(element)
+          }
+         });
+      });
+    })
     const {family_members,...rest} = Object.assign({},{
       ...this.filter_criteria.value,
-      selected_funds:this.filter_criteria.value.view_funds_type == 'S' ? JSON.stringify(this.selected_funds.map(el => ({product_code:el.product_code,folio_no:el.folio_no,isin_no:el.isin_no}))) : [],
+      selected_funds:this.filter_criteria.value.view_funds_type == 'S' ? JSON.stringify(this.selected_funds.map(el => ({product_code:el.product_code,folio_no:el.folio_no,isin_no:el.isin_no,rnt_id:el.rnt_id}))) : [],
+      selected_type:this.filter_criteria.value.view_funds_type == 'T' ? JSON.stringify(funds) : [],
       valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
       family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
       family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
@@ -1467,6 +1581,31 @@ mappings between `act_value` and `value` for transition durations. */
     var navigation= document.getElementsByClassName("cus__tab")[0];
     navigation.scrollLeft= navigation.scrollLeft + byX;
   }
+
+  categoryChange = (ev:boolean,cat_index:number) =>{
+    this.subcategory(cat_index).controls.map((el,index) =>{
+       el.get('is_checked')?.setValue(ev);
+       this.scheme(cat_index,index).controls.forEach(item =>{
+        item.get('is_checked')?.setValue(ev);
+       })
+    })
+   }
+
+   subcategoryChange(ev:boolean,cat_index:number,sub_cat_index:number){
+    this.scheme(cat_index,sub_cat_index).controls.forEach(item =>{
+        item.get('is_checked')?.setValue(ev);
+    })
+    const is_all_subcategory_chacked = this.subcategory(cat_index).controls.length == this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length
+    this.funds().at(cat_index).get('is_checked')?.setValue(is_all_subcategory_chacked)
+   }
+   FundChange(ev:any,cat_index:number,sub_cat_index:number,fund_index:number){
+          const check_cond = this.scheme(cat_index,sub_cat_index).controls.filter(el => el.get('is_checked')?.value).length == this.scheme(cat_index,sub_cat_index).controls.length;
+          this.subcategory(cat_index).at(sub_cat_index).get('is_checked')?.setValue(check_cond);
+          const check_cat_cond = this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length ==  this.subcategory(cat_index).controls.length;
+          this.funds().at(cat_index).get('is_checked')?.setValue(check_cat_cond);
+  }
+
+
 
 }
 

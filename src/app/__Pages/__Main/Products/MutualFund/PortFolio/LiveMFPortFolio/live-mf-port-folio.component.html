@@ -158,7 +158,7 @@
                     <mat-radio-button value="S" class="mx-2">
                       Selected Funds
                       </mat-radio-button>
-                    <mat-radio-button valued="T"
+                    <mat-radio-button value="T"
                       >Selected Types</mat-radio-button
                     >
                   </mat-radio-group>
@@ -1282,6 +1282,8 @@
           SELECT FUNDS
         </h5>
     </ng-template>
+    <ng-container *ngIf="filter_criteria.value.view_funds_type == 'S';else fundWiseSearch">
+
     <p-table
     #tableref
     [(selection)]="selected_funds"
@@ -1289,7 +1291,7 @@
     [value]="selectedFunds"
     [paginator]="false"
     >
-
+      <!-- <p>ssss</p> -->
     <ng-template pTemplate="header" >
       <tr class="stickyHeader_forDialog">
           <th style="width:5rem">
@@ -1313,7 +1315,71 @@
           </td>
           </tr>
       </ng-template>
+
 </p-table>
+    </ng-container>
+  <ng-template #fundWiseSearch>
+    <form  [formGroup]="filter_criteria">
+    <ng-container formArrayName="funds">
+      <table class="min-w-[500px]">
+        <tbody>
+          <!-- @for(fund of funds().controls;track fund;let cat_index = $index) { -->
+            <ng-container *ngFor="let fund of funds().controls;let cat_index = index">
+
+            <tr [formGroupName]="cat_index">
+              <td>
+              <div class="checkbox-wrapper-29 ">
+                <label class="checkbox subcat_header">
+                  <input type="checkbox" formControlName="is_checked" class="checkbox__input"   (change)="categoryChange($any($event.target)?.checked,cat_index)"/>
+                  <!-- (change)="categoryChange($any($event.target)?.checked,cat_index)" -->
+                  <!-- <span class="checkbox__label"></span> -->
+                  {{fund.value.cat_name}}
+                </label>
+              </div>
+
+              </td>
+              <td colspan="10" formArrayName="sub_menu">
+                  <!-- @for (subcat of subcategory(cat_index).controls;track subcat;let sub_cat_index = $index){ -->
+                  <ng-container *ngFor="let subcat of subcategory(cat_index).controls;let sub_cat_index = index">
+                      <div [formGroupName]="sub_cat_index">
+                        <div class="checkbox-wrapper-29">
+                          <label class="checkbox subcat_header">
+                            <input type="checkbox" formControlName="is_checked" class="checkbox__input " (change)="subcategoryChange($any($event.target)?.checked,cat_index,sub_cat_index)"/>
+                            <!-- (change)="subcategoryChange($any($event.target)?.checked,cat_index,sub_cat_index)" -->
+                            <!-- <span class="checkbox__label"></span> -->
+                            {{subcat.value.subcat_name}}
+                          </label>
+                        </div>
+
+
+                        <div formArrayName="sub_menu" class="mx-6">
+                          <!-- @for (schemes of scheme(cat_index,sub_cat_index).controls;track schemes;let fund_index = $index){ -->
+                          <ng-container *ngFor="let schemes of scheme(cat_index,sub_cat_index).controls;let fund_index = index">
+                            <div [formGroupName]="fund_index"
+                            class="flex align-items-center justify-content-start my-2 px-2">
+                                <div class="checkbox-wrapper-29 mx-4">
+                                  <label class="checkbox fundHeaderTitle">
+                                    <!-- <input type="checkbox" formControlName="is_checked" class="checkbox__input"   (change)="FundChange($event,cat_index,sub_cat_index,fund_index)"/> -->
+                                    <input type="checkbox" formControlName="is_checked" class="checkbox__input" (change)="FundChange($event,cat_index,sub_cat_index,fund_index)"/>
+                                    <!-- <span class="checkbox__label"></span> -->
+                                    {{schemes.value.scheme_name}}
+                                  </label>
+                                </div>
+
+                            </div>
+                          </ng-container>
+                        </div>
+
+                      </div>
+                  </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </ng-container>
+    </form>
+  </ng-template>
 <ng-template pTemplate="footer">
 <p-button
   label="Save"
