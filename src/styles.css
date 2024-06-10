@@ -824,12 +824,15 @@ color: #ffffff;
 .p-checkbox .p-checkbox-box.p-highlight,
 .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:hover
 {
-  border-color: #10486b!important;
-  background: #10486b!important;
+  /* border-color: #10486b!important;
+  background: #10486b!important; */
+  border-color: #032f91 !important;
+  background: #032f91 !important;
 }
 
 .p-checkbox .p-checkbox-box {
-  border: 2px solid #10486b;
+  /* border: 2px solid #10486b; */
+  border: 1px solid #ced4da;
   /* border-radius: 13px; */
   border-radius: 0px;
 }
@@ -1176,4 +1179,11 @@ span.badge-warning {
    font-size: 12px;
     font-weight: 700;
     color: black;
+}
+
+.p-datatable .p-datatable-thead > tr.stickyHeader_forDialog > th {
+  position: -webkit-sticky!important;
+  position: sticky!important;
+  top:0px!important;
+  z-index:999
 }

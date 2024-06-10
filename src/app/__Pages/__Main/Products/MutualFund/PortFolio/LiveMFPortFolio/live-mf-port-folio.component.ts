@@ -67,8 +67,8 @@ type TotalparentLiveMfPortFolio = {
 
 export class LiveMfPortFolioComponent implements OnInit {
 
-  selectedFunds:Required<{scheme_name:string,folio:string,}>[] = [];
-  selected_funds:Required<{scheme_name:string,folio:string,}>[] = [];
+  selectedFunds:Partial<ILivePortFolio>[] = [];
+  selected_funds:Partial<ILivePortFolio>[] = [];
 
   __isDisplay__modal__selected_funds:boolean = false;
   @ViewChild("calendar", { static: false }) private TrnsDateRange: Calendar;
@@ -429,34 +429,38 @@ mappings between `act_value` and `value` for transition durations. */
     });
   }
 
+  /*** For getting selected client fund after search and select client */
   getFundsAccordingtoClient(){
-    const fb = new FormData();
-    fb.append('client_name',this.filter_criteria.value.client_name);
-    fb.append('pan_no',this.filter_criteria.value.pan_no);
-    fb.append('family_members_pan',this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan'));
-    fb.append('family_members_name',this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'));
-    this.__dbIntr.api_call(1,'/clients/funds',fb).pipe(pluck('data')).subscribe((res:Required<{scheme_name:string,folio:string,}>[]) =>{
-            this.selectedFunds = res;
+    const {family_members,...rest} = Object.assign({},{
+      ...this.filter_criteria.value,
+      trans_type:'L',
+      valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
+      family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
+      family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
+      trans_date_range:this.filter_criteria.value.trans_duration == 'D' ? global.getActualVal(this.TrnsDateRange.inputFieldValue) : ''
+    })
+    this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(rest))
+    .pipe(pluck('data'))
+    .subscribe((res:Required<{data,client_details:client}>) => {
+          this.selectedFunds = res.data.filter(el => Number(el.curr_val) > 0);
     })
   }
 
   ngAfterViewInit(){
 
     this.filter_criteria.controls['view_funds_type'].valueChanges.subscribe((res) =>{
-        if(res == 'F'){
+        if(res == 'S'){
+          console.log( this.__isDisplay__modal__selected_funds)
           if(this.filter_criteria.value.client_name){
-            if(this.selectedFunds.length == 0){
-              this.getFundsAccordingtoClient()
               this.__isDisplay__modal__selected_funds = true
-            }
           }
           else{
               this.utility.showSnackbar('Please select a client',0);
           }
         }
         else{
-           this.selected_funds = [];
-           this.selectedFunds = [];
+          //  this.selected_funds = [];
+          //  this.selectedFunds = [];
         }
     })
 
@@ -594,7 +598,10 @@ mappings between `act_value` and `value` for transition durations. */
     this.filter_criteria.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
     this.filter_criteria.get('pan_no').reset(searchRlt.item.pan);
     this.__isClientPending = false;
-    this.filter_criteria.controls['view_funds_type'].setValue('A',{emitEvent:true});
+    this.selectedFunds = [];
+    this.selected_funds = [];
+    this.filter_criteria.controls['view_funds_type'].setValue('A',{emitEvent:false});
+    this.getFundsAccordingtoClient();
     this.searchResultVisibilityForClient('none');
     if(this.filter_criteria.value.view_type == 'F'){
             this.getFamilyMembers(searchRlt.item.client_id)
@@ -703,6 +710,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     const {family_members,...rest} = Object.assign({},{
       ...this.filter_criteria.value,
+      selected_funds:this.filter_criteria.value.view_funds_type == 'S' ? this.selected_funds.map(el => ({product_code:el.product_code,folio_no:el.folio_no,isin_no:el.isin_no})) : [],
       valuation_as_on:global.getActualVal(this.datePipe.transform(new Date(this.filter_criteria.value.valuation_as_on),'YYYY-MM-dd')),
       family_members_pan:this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan') ,
       family_members_name: this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'),
