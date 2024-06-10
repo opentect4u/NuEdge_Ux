@@ -82,7 +82,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="col.field == 'ret_abs'">
               <p class="m-0 text-center">
-                {{(pl_trxn[col.field] && pl_trxn[col.field] > 0) ? (pl_trxn[col.field] | percent:'1.2-2') : '0%' }}</p>
+                {{(pl_trxn[col.field] && pl_trxn[col.field] > 0) ? (pl_trxn[col.field] | number:'1.2-2') : '0' }}%</p>
             </ng-container>
             <ng-container *ngSwitchDefault>
               <p class="m-0">
@@ -109,14 +109,15 @@
             <ng-container *ngSwitchCase="col.field == 'scheme_name'">
               <p class="m-0">Total</p>
             </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'folio_no'
-            || col.field == 'xirr'
-            "></ng-container>
-            <ng-container *ngSwitchCase="col.field == 'ret_abs'">
-             {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | percent:'1.2-2') : 0.00) : 0.00}}%
+            <ng-container *ngSwitchCase="col.field == 'folio_no'"></ng-container>
+            <ng-container *ngSwitchCase="col.field == 'xirr'">
+             {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | percent:'1.2-2') : '0.00%') : '0.00%'}}
             </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+              {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | number:'1.2-2') : '0.00') : '0.00'}}%
+             </ng-container>
             <ng-container *ngSwitchDefault>
-              {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | number:'1.2-2') : 0.00) : 0.00}}
+              {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
             </ng-container>
           </ng-container>
         </td>

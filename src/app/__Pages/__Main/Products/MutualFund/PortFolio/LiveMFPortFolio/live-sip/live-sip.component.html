@@ -41,7 +41,7 @@
               <ng-container *ngSwitchCase="col.field == 'sl_no'">
                 <p class="m-0">{{ i + 1}}</p>
               </ng-container>
-              <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'first_client_name' || col.field == 'bank_name'">
+              <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'first_client_name' || col.field == 'bank_name' || col.field == 'freq'">
                 <p class="m-0">
                   {{ recent_trxn[col.field] | titlecase}}</p>
               </ng-container>

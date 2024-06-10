@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
@@ -29,11 +30,13 @@ export type TotalPLportfolio = {
 })
 export class PlTrxnDtlsComponent implements OnInit {
 
-  constructor(private utility:UtiliService) { }
+  constructor(private utility:UtiliService,private datePipe:DatePipe) { }
 
   /** Footer Table */
    footerDtls: Partial<TotalPLportfolio>;
   /** End */
+
+  @Input() valuation_as_on
 
   @Input() pl_trxn:Partial<IPLTrxn>[] = [];
 
@@ -44,7 +47,6 @@ export class PlTrxnDtlsComponent implements OnInit {
   @ViewChild('dt') primaryTbl :Table;
 
   column:column[] = PLTransaction.column
-
   ngOnInit(): void {}
 
   filterGlobal_secondary = ($event) =>{
@@ -59,21 +61,35 @@ export class PlTrxnDtlsComponent implements OnInit {
       this.getTransactionDetailsFromPL.emit(rows)
   }
   ngOnChanges(changes: SimpleChanges): void {
-    queueMicrotask(()=>{
-      this.footerDtls = {
-        purchase:global.Total__Count(this.primaryTbl.value,item => Number(item.purchase)),
-        switch_in:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_in)),
-        idcw_reinv:global.Total__Count(this.primaryTbl.value,item => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
-        tot_inflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_inflow)),
-        redemption:global.Total__Count(this.primaryTbl.value,item => Number(item.redemption)),
-        switch_out:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_out)),
-        idcwp:global.Total__Count(this.primaryTbl.value,item => item.idcwp ? Number(item.idcwp) : 0),
-        tot_outflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_outflow)),
-        curr_val:global.Total__Count(this.primaryTbl.value,item => Number(item.curr_val)),
-        gain_loss:global.Total__Count(this.primaryTbl.value,item => Number(item.gain_loss)),
-        ret_abs:(global.Total__Count(this.primaryTbl.value,item => Number(item.ret_abs)) / this.primaryTbl.value.length),
-      }
-      })
+    try{
+      queueMicrotask(()=>{
+        const array_without_negative_curr_val = this.primaryTbl.value.filter((x) => x.curr_val > 0);
+        let date:string[] = array_without_negative_curr_val.map((el) => el?.mydata?.inv_since);
+        let inv_amt:number[] = array_without_negative_curr_val.map((el) => (Number(el?.mydata?.inv_cost) * -1));
+        const current_value:number = global.Total__Count(this.primaryTbl.value,x => Number(x.curr_val))
+        date.push(this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd'));
+        inv_amt.push(current_value);
+        this.footerDtls = {
+          purchase:global.Total__Count(this.primaryTbl.value,item => Number(item.purchase)),
+          switch_in:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_in)),
+          idcw_reinv:global.Total__Count(this.primaryTbl.value,item => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
+          tot_inflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_inflow)),
+          redemption:global.Total__Count(this.primaryTbl.value,item => Number(item.redemption)),
+          switch_out:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_out)),
+          idcwp:global.Total__Count(this.primaryTbl.value,item => item.idcwp ? Number(item.idcwp) : 0),
+          tot_outflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_outflow)),
+          curr_val:global.Total__Count(this.primaryTbl.value,item => Number(item.curr_val)),
+          gain_loss:global.Total__Count(this.primaryTbl.value,item => Number(item.gain_loss)),
+          ret_abs:(global.Total__Count(this.primaryTbl.value,item => Number(item.ret_abs)) / this.primaryTbl.value.length),
+          xirr:global.XIRR(inv_amt,date,0)
+        }
+        console.log(this.footerDtls)
+        })
+    }
+    catch(err){
+      console.log(err);
+    }
+
   }
 }
 

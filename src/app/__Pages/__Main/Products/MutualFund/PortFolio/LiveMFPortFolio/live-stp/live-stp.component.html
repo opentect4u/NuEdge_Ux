@@ -38,7 +38,7 @@ styleClass="p-datatable-lg p-datatable-striped"
         <ng-container *ngSwitchCase="col.field == 'sl_no'">
           <p class="m-0">{{ i + 1}}</p>
         </ng-container>
-        <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'first_client_name' || col.field == 'bank_name'">
+        <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'first_client_name' || col.field == 'bank_name' || col.field == 'freq'">
           <p class="m-0">
             {{ live_stp[col.field] | titlecase}}</p>
         </ng-container>

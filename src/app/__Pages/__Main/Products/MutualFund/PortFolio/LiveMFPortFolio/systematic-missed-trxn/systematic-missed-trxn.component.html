@@ -46,7 +46,7 @@ styleClass="p-datatable-lg p-datatable-striped"
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{  trxn[col.field] ? (trxn[col.field] | titlecase | ellipsis:50) : 'N/A'}}</p>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'remarks'">
-                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] | titlecase | ellipsis:15}}</p>
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | titlecase | ellipsis:15) : 'N/A'}}</p>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>

@@ -24,6 +24,7 @@ import { IUpcommingTrxn } from './upcomming-trxn/upcomming-trxn.component';
 import { ISystematicMissedTrxn } from './systematic-missed-trxn/systematic-missed-trxn.component';
 import { Observable, Subscription, fromEvent } from 'rxjs';
 import { borderTopLeftRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 
 
@@ -66,7 +67,10 @@ type TotalparentLiveMfPortFolio = {
 
 export class LiveMfPortFolioComponent implements OnInit {
 
+  selectedFunds:Required<{scheme_name:string,folio:string,}>[] = [];
+  selected_funds:Required<{scheme_name:string,folio:string,}>[] = [];
 
+  __isDisplay__modal__selected_funds:boolean = false;
   @ViewChild("calendar", { static: false }) private TrnsDateRange: Calendar;
 
   resizeObservable$: Observable<Event>;
@@ -356,7 +360,6 @@ mappings between `act_value` and `value` for transition durations. */
     }
 
   ngOnInit(): void {
-
     if(this.activateRoute.snapshot.queryParams.id){
       let rt_prms = JSON.parse(this.utility.decrypt_dtls(atob(this.activateRoute.snapshot.queryParams.id)));
       try{
@@ -426,7 +429,36 @@ mappings between `act_value` and `value` for transition durations. */
     });
   }
 
+  getFundsAccordingtoClient(){
+    const fb = new FormData();
+    fb.append('client_name',this.filter_criteria.value.client_name);
+    fb.append('pan_no',this.filter_criteria.value.pan_no);
+    fb.append('family_members_pan',this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => item.pan),'pan'));
+    fb.append('family_members_name',this.utility.mapIdfromArray(this.filter_criteria.value.family_members.filter(item => !item.pan),'client_name'));
+    this.__dbIntr.api_call(1,'/clients/funds',fb).pipe(pluck('data')).subscribe((res:Required<{scheme_name:string,folio:string,}>[]) =>{
+            this.selectedFunds = res;
+    })
+  }
+
   ngAfterViewInit(){
+
+    this.filter_criteria.controls['view_funds_type'].valueChanges.subscribe((res) =>{
+        if(res == 'F'){
+          if(this.filter_criteria.value.client_name){
+            if(this.selectedFunds.length == 0){
+              this.getFundsAccordingtoClient()
+              this.__isDisplay__modal__selected_funds = true
+            }
+          }
+          else{
+              this.utility.showSnackbar('Please select a client',0);
+          }
+        }
+        else{
+           this.selected_funds = [];
+           this.selectedFunds = [];
+        }
+    })
 
     this.getwindowresizeEVent()
 
@@ -562,6 +594,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.filter_criteria.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
     this.filter_criteria.get('pan_no').reset(searchRlt.item.pan);
     this.__isClientPending = false;
+    this.filter_criteria.controls['view_funds_type'].setValue('A',{emitEvent:true});
     this.searchResultVisibilityForClient('none');
     if(this.filter_criteria.value.view_type == 'F'){
             this.getFamilyMembers(searchRlt.item.client_id)
@@ -970,6 +1003,7 @@ mappings between `act_value` and `value` for transition durations. */
           this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData(formData)).pipe(pluck('data')).subscribe((res:Required<{data:TrxnRpt[],client_details:client}>) =>{
             this.rejectTrxn = res.data.filter((el:TrxnRpt) =>{
                     el.scheme_name = `${el.scheme_name}-${el.plan_name}-${el.divi_lock_flag == 'L' ? 'IDCW Reinvestment' :  el.option_name}`;
+                    el.remarks = el.remarks.trim();
                     return true;
             })
             this.setClientDtls(res.client_details);
@@ -1041,6 +1075,7 @@ mappings between `act_value` and `value` for transition durations. */
                    return false
                 });
               }
+              console.log(this.dataSource);
               this.setParentTableFooter_ClientDtls(this.dataSource,res.client_details);
               this.div_history = this.dataSource.filter(item => item.curr_val > 0)
               }
@@ -1053,8 +1088,12 @@ mappings between `act_value` and `value` for transition durations. */
 
     setParentTableFooter_ClientDtls(arr:ILivePortFolio[],client_details:client){
       if(arr.length > 0){
-        const date:string[] = arr.filter((x:ILivePortFolio) => x.curr_val > 0).map((el:ILivePortFolio) => el.inv_since);
-        console.log(date);
+        const array_without_negative_curr_val = arr.filter((x:ILivePortFolio) => x.curr_val > 0);
+        let date:string[] = array_without_negative_curr_val.map((el:ILivePortFolio) => el.inv_since);
+        let inv_amt:number[] = array_without_negative_curr_val.map((el:ILivePortFolio) => (Number(el.inv_cost) * -1));
+        const current_value:number = this.Total__Count(arr,x => Number(x.curr_val))
+        date.push(this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd'));
+        inv_amt.push(current_value);
         this.setClientDtls(client_details)
         this.parentLiveMfPortFolio = {
          inv_cost: this.Total__Count(arr,x => Number(x.inv_cost)),
@@ -1063,8 +1102,10 @@ mappings between `act_value` and `value` for transition durations. */
          curr_val:this.Total__Count(arr,x => Number(x.curr_val)),
          total:this.Total__Count(arr,x => Number(x.curr_val)),
          ret_abs: (this.Total__Count(arr,x => Number(x.ret_abs)) / arr.length),
-         gain_loss:this.Total__Count(arr,x =>  Number(x.gain_loss))
+         gain_loss:this.Total__Count(arr,x =>  Number(x.gain_loss)),
+         xirr:global.XIRR(inv_amt,date,0)
         }
+        console.log(this.parentLiveMfPortFolio);
          setTimeout(() => {
              this.isOverflown(document.getElementById('cus___tab'));
          }, 1000);
@@ -1085,9 +1126,9 @@ mappings between `act_value` and `value` for transition durations. */
             this.plTrxnDtls = result.data.filter((item: IPLTrxn) =>
               {
                 if(item.tot_inflow == 0 && item.tot_outflow == 0){}else{
-                    item.scheme_name= `${item.scheme_name} - ${item.plan_name} - ${item.option_name}`,
-                    item.gain_loss= ((Number(item.curr_val) + Number(item.tot_outflow)) - Number(item.tot_inflow));
-                    item.ret_abs = item.tot_inflow > 0 ?  (Number(item.gain_loss) / Number(item.tot_inflow)): 0;
+                    item.scheme_name= `${item.scheme_name} - ${item.plan_name} - ${item.option_name}`;
+                    // item.gain_loss= ((Number(item.curr_val) + Number(item.tot_outflow)) - Number(item.tot_inflow));
+                    // item.ret_abs = item.tot_inflow > 0 ?  (Number(item.gain_loss) / Number(item.tot_inflow)): 0;
                     if(item.mydata){
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
@@ -1194,7 +1235,6 @@ mappings between `act_value` and `value` for transition durations. */
             this.liveSwpPortFolio = result.data.filter((item: ILiveSWP) => {
               item.scheme_name=`${item.scheme_name} - ${item.plan_name} - ${item.option_name}`;
               item.duration = item.activate_status == 'Inactive' ? '0' : item.duration;
-
               if(item.folio_data && val != 'I'){
                 const amt = item?.folio_data.all_amt_arr.map(item => Number(item));
                 const dt = item?.folio_data.all_date_arr;
