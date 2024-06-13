@@ -11,3 +11,71 @@
 }
 
 
+/** pdf css **/
+
+.valuation-date-label {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  background-color: #f5f5f5;
+  box-sizing: border-box;
+  padding: 4px 10px 5px;
+  margin-bottom: 8px;
+  line-height: 12px;
+  font-size: 12px;
+  /* background: rgba(19, 67, 175, 0.1); */
+  justify-content: space-between;
+  align-items: center;
+}
+
+p.report-label {
+  margin: 0px;
+  padding: 11px;
+}
+
+.container {
+  border: 1px solid #dddddd;
+  max-width: 1220px;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  overflow: hidden;
+}
+
+.nc-pdf-logo-cotainer {
+  max-height: 145px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+
+table {
+  border-collapse: collapse;
+/* width: 100%; */
+}
+
+td, th {
+  border: 1px solid #c1c1c1;
+  text-align: left;
+  padding: 8px;
+
+  font-weight: 500;
+}
+th{
+  font-size: 13px;
+}
+td{
+  font-size: 11px;
+
+}
+thead,tfoot{
+  background-color: #10486b;
+  color: #ffff;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}

@@ -9,6 +9,20 @@
       <div class="col-sm-12 d-flex justify-content-end">
         <input id="search" class="form-control rounded w-25 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
           placeholder="Search" />
+          <mat-button-toggle-group #group="matButtonToggleGroup" [formControl]="btnType" class="mx-3">
+            <mat-button-toggle value="pdf" aria-label="Text align center">
+              <i
+                class="pi pi-file-pdf text-danger"
+                style="font-size: 2rem"
+              ></i>
+            </mat-button-toggle>
+            <mat-button-toggle value="xlsx" aria-label="Text align right">
+              <i
+                class="pi pi-file-excel text-success"
+                style="font-size: 2rem"
+              ></i>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
       </div>
   </div>
 
@@ -16,7 +30,7 @@
   <!-- </mat-card-header>
   <mat-card-content> -->
     <p-table #dt [value]="pl_trxn"
-    [rows]="10" [paginator]="true"
+    [rows]="10" [paginator]="false"
       [rowHover]="true"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       styleClass="p-datatable-lg"
@@ -124,7 +138,10 @@
       </tr>
     </ng-template>
     </p-table>
+
   <!-- </mat-card-content>
+
+
 
 </mat-card> -->
 

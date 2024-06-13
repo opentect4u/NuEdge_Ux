@@ -117,7 +117,7 @@ export class RelcapitalgainComponent implements OnInit {
           groupBy((data:any) => data.cat_name),
           mergeMap(group => zip(of(group.key), group.pipe(toArray())))
         ).subscribe(dt =>{
-
+          console.log(dt);
           this.relisedCapitalGain.push(
             {
               cat_name:dt[0],
@@ -284,12 +284,12 @@ export class realisedCapitalGainColumn{
           row_span:1,
           sub_row:[
             {
-              field:'pur_div_reinv',
+              field:'tot_amount',
               header:'Purchase / Dividend Reinvestment',
               width:'6rem'
             },
             {
-              field:'pur_nav',
+              field:'pur_price',
               header:'Pur. NAV',
               width:'3rem'
             },

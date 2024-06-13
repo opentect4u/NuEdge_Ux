@@ -25,6 +25,7 @@ import { ISystematicMissedTrxn } from './systematic-missed-trxn/systematic-misse
 import { Observable, Subscription, fromEvent } from 'rxjs';
 import { borderTopLeftRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 
 
@@ -715,7 +716,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.selectedFunds = [];
     this.selected_funds = [];
     this.filter_criteria.controls['view_funds_type'].setValue('A',{emitEvent:false});
-    // this.getFundsAccordingtoClient();
+    this.funds().clear({emitEvent:false});
     this.searchResultVisibilityForClient('none');
     if(this.filter_criteria.value.view_type == 'F'){
             this.getFamilyMembers(searchRlt.item.client_id)
@@ -1582,30 +1583,43 @@ mappings between `act_value` and `value` for transition durations. */
     navigation.scrollLeft= navigation.scrollLeft + byX;
   }
 
-  categoryChange = (ev:boolean,cat_index:number) =>{
+  categoryChange = (ev:MatCheckboxChange,cat_index:number) =>{
+    // console.log(ev)
     this.subcategory(cat_index).controls.map((el,index) =>{
-       el.get('is_checked')?.setValue(ev);
+       el.get('is_checked')?.setValue(ev.checked);
        this.scheme(cat_index,index).controls.forEach(item =>{
-        item.get('is_checked')?.setValue(ev);
+        item.get('is_checked')?.setValue(ev.checked);
        })
     })
    }
 
-   subcategoryChange(ev:boolean,cat_index:number,sub_cat_index:number){
+  //  subcategoryChange(ev:boolean,cat_index:number,sub_cat_index:number){
+  //   this.scheme(cat_index,sub_cat_index).controls.forEach(item =>{
+  //       item.get('is_checked')?.setValue(ev);
+  //   })
+  //   const is_all_subcategory_chacked = this.subcategory(cat_index).controls.length == this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length
+  //   this.funds().at(cat_index).get('is_checked')?.setValue(is_all_subcategory_chacked)
+  //  }
+  subcategoryChange(ev:MatCheckboxChange,cat_index:number,sub_cat_index:number){
     this.scheme(cat_index,sub_cat_index).controls.forEach(item =>{
-        item.get('is_checked')?.setValue(ev);
+        item.get('is_checked')?.setValue(ev.checked);
     })
     const is_all_subcategory_chacked = this.subcategory(cat_index).controls.length == this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length
     this.funds().at(cat_index).get('is_checked')?.setValue(is_all_subcategory_chacked)
    }
-   FundChange(ev:any,cat_index:number,sub_cat_index:number,fund_index:number){
-          const check_cond = this.scheme(cat_index,sub_cat_index).controls.filter(el => el.get('is_checked')?.value).length == this.scheme(cat_index,sub_cat_index).controls.length;
-          this.subcategory(cat_index).at(sub_cat_index).get('is_checked')?.setValue(check_cond);
-          const check_cat_cond = this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length ==  this.subcategory(cat_index).controls.length;
-          this.funds().at(cat_index).get('is_checked')?.setValue(check_cat_cond);
+  //  FundChange(ev:any,cat_index:number,sub_cat_index:number,fund_index:number){
+  //         const check_cond = this.scheme(cat_index,sub_cat_index).controls.filter(el => el.get('is_checked')?.value).length == this.scheme(cat_index,sub_cat_index).controls.length;
+  //         this.subcategory(cat_index).at(sub_cat_index).get('is_checked')?.setValue(check_cond);
+  //         const check_cat_cond = this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length ==  this.subcategory(cat_index).controls.length;
+  //         this.funds().at(cat_index).get('is_checked')?.setValue(check_cat_cond);
+  // }
+
+  FundChange(ev:MatCheckboxChange,cat_index:number,sub_cat_index:number,fund_index:number){
+    const check_cond = this.scheme(cat_index,sub_cat_index).controls.filter(el => el.get('is_checked')?.value).length == this.scheme(cat_index,sub_cat_index).controls.length;
+    this.subcategory(cat_index).at(sub_cat_index).get('is_checked')?.setValue(check_cond);
+    const check_cat_cond = this.subcategory(cat_index).controls.filter(el => el.get('is_checked')?.value).length ==  this.subcategory(cat_index).controls.length;
+    this.funds().at(cat_index).get('is_checked')?.setValue(check_cat_cond);
   }
-
-
 
 }
 

@@ -879,6 +879,7 @@
           [folio_type]="__pl_trxn_form.value.pl_folio_type"
           [pl_trxn]="plTrxnDtls | plFilter:__pl_trxn_form.value.pl_folio_type"
           (getTransactionDetailsFromPL)="OpenDialog($event)"
+          [client_dtls]="clientDtls"
           ></pl-trxn-dtls>
         </mat-card-content>
         </mat-card>
@@ -1279,7 +1280,7 @@
 >
     <ng-template pTemplate="header">
         <h5>
-          SELECT FUNDS
+          SELECT {{filter_criteria.value.view_funds_type == 'S' ? 'FUNDS' : 'TYPES'}}
         </h5>
     </ng-template>
     <ng-container *ngIf="filter_criteria.value.view_funds_type == 'S';else fundWiseSearch">
@@ -1329,12 +1330,16 @@
             <tr [formGroupName]="cat_index">
               <td>
               <div class="checkbox-wrapper-29 ">
-                <label class="checkbox subcat_header">
+                <!-- <label class="checkbox subcat_header">
                   <input type="checkbox" formControlName="is_checked" class="checkbox__input"   (change)="categoryChange($any($event.target)?.checked,cat_index)"/>
-                  <!-- (change)="categoryChange($any($event.target)?.checked,cat_index)" -->
-                  <!-- <span class="checkbox__label"></span> -->
                   {{fund.value.cat_name}}
-                </label>
+                </label> -->
+                <mat-checkbox formControlName="is_checked" class="cat_subcat_style" color="primary"
+                (change)="categoryChange($event,cat_index)"
+                >
+                  {{fund.value.cat_name}}
+                </mat-checkbox
+              >
               </div>
 
               </td>
@@ -1343,12 +1348,16 @@
                   <ng-container *ngFor="let subcat of subcategory(cat_index).controls;let sub_cat_index = index">
                       <div [formGroupName]="sub_cat_index">
                         <div class="checkbox-wrapper-29">
-                          <label class="checkbox subcat_header">
+                          <!-- <label class="checkbox subcat_header">
                             <input type="checkbox" formControlName="is_checked" class="checkbox__input " (change)="subcategoryChange($any($event.target)?.checked,cat_index,sub_cat_index)"/>
-                            <!-- (change)="subcategoryChange($any($event.target)?.checked,cat_index,sub_cat_index)" -->
-                            <!-- <span class="checkbox__label"></span> -->
                             {{subcat.value.subcat_name}}
-                          </label>
+                          </label> -->
+                          <mat-checkbox formControlName="is_checked" class="cat_subcat_style" color="primary"
+                          (change)="subcategoryChange($event,cat_index,sub_cat_index)"
+                          >
+                          {{subcat.value.subcat_name}}
+                          </mat-checkbox
+                        >
                         </div>
 
 
@@ -1358,12 +1367,16 @@
                             <div [formGroupName]="fund_index"
                             class="flex align-items-center justify-content-start my-2 px-2">
                                 <div class="checkbox-wrapper-29 mx-4">
-                                  <label class="checkbox fundHeaderTitle">
-                                    <!-- <input type="checkbox" formControlName="is_checked" class="checkbox__input"   (change)="FundChange($event,cat_index,sub_cat_index,fund_index)"/> -->
+                                  <!-- <label class="checkbox fundHeaderTitle">
                                     <input type="checkbox" formControlName="is_checked" class="checkbox__input" (change)="FundChange($event,cat_index,sub_cat_index,fund_index)"/>
-                                    <!-- <span class="checkbox__label"></span> -->
                                     {{schemes.value.scheme_name}}
-                                  </label>
+                                  </label> -->
+                                  <mat-checkbox formControlName="is_checked" class="fundDtls" color="primary"
+                                  (change)="FundChange($event,cat_index,sub_cat_index,fund_index)"
+                                  >
+                                  {{schemes.value.scheme_name}}
+                                  </mat-checkbox
+                                >
                                 </div>
 
                             </div>
@@ -1382,7 +1395,7 @@
   </ng-template>
 <ng-template pTemplate="footer">
 <p-button
-  label="Save"
+  label="Submit"
   class="p-button-text p-button-lg"
   icon="pi pi-check"
   (click)="__isDisplay__modal__selected_funds = false"

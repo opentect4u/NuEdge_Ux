@@ -3,7 +3,7 @@ import { docs } from "./docs"
 export interface client {
     client_name: string
     client_code: string
-    dob?: number
+    dob?: string
     pan?: string
     mobile?: number
     sec_mobile?: number

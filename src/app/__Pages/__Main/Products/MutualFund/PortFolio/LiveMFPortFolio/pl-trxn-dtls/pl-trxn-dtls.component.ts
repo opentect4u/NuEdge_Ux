@@ -1,10 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
-
+import { FormControl } from '@angular/forms';
+import { client } from 'src/app/__Model/__clientMst';
+import jsPDF from 'jspdf';
 /*** Display Footer data on P&L */
 export type TotalPLportfolio = {
   purchase: number | undefined,
@@ -23,6 +25,11 @@ export type TotalPLportfolio = {
 }
 /**  End */
 
+export enum BTNTYPE {
+   PDF='pdf',
+    XLSX='xlsx',
+}
+
 @Component({
   selector: 'pl-trxn-dtls',
   templateUrl: './pl-trxn-dtls.component.html',
@@ -31,6 +38,10 @@ export type TotalPLportfolio = {
 export class PlTrxnDtlsComponent implements OnInit {
 
   constructor(private utility:UtiliService,private datePipe:DatePipe) { }
+
+  btnType = new FormControl();
+
+  @ViewChild('printPdf') elementRf:ElementRef
 
   /** Footer Table */
    footerDtls: Partial<TotalPLportfolio>;
@@ -41,6 +52,8 @@ export class PlTrxnDtlsComponent implements OnInit {
   @Input() pl_trxn:Partial<IPLTrxn>[] = [];
 
   @Input() folio_type:string;
+
+  @Input() client_dtls:Partial<client>;
 
   @Output() getTransactionDetailsFromPL: EventEmitter<any> = new EventEmitter();
 
@@ -90,6 +103,25 @@ export class PlTrxnDtlsComponent implements OnInit {
       console.log(err);
     }
 
+  }
+  ngAfterViewInit() {
+    this.btnType.valueChanges.subscribe((changes) => {
+        switch(changes){
+          case BTNTYPE.PDF:this.generatePDF();break;
+          case BTNTYPE.XLSX:this.primaryTbl.exportCSV();break;
+          default:break;
+        }
+    })
+  }
+
+  generatePDF = () =>{
+
+    var doc = new jsPDF()
+    console.log(doc.getFontList());
+    doc.setFont("helvetica",'normal', 600);
+    doc.setFontSize(11);
+    doc.text(`P&L Valuation Report as on Date - ${this.datePipe.transform(new Date(),'longDate')}`, 10, 10)
+    doc.output('dataurlnewwindow')
   }
 }
 

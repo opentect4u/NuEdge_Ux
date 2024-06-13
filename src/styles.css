@@ -9,11 +9,11 @@
 @import './assets/css/tab_material.css';
 /** End */
 
-td,
+/* td,
 th {
   text-align: left !important;
   font-size: 15px !important;
-}
+} */
 
 .cdk-overlay-container {
   z-index: 99999 !important;
@@ -565,7 +565,8 @@ mat-card {
 /* End */
 /* For Material Checkbox Style */
 .mat-checkbox-layout {
-  margin: 6px 0px !important;
+  /* margin: 6px 0px !important; */
+  margin: 2px 0px !important;
 }
 
 /* End */
@@ -995,7 +996,7 @@ color: #ffffff;
 
 .p-dialog .p-dialog-content {
 /* background: #ededed!important; */
-padding: 2rem 1.5rem 2rem 1.5rem!important;
+padding: 0 1.5rem 2rem 1.5rem!important;
 }
 
 
@@ -1186,4 +1187,14 @@ span.badge-warning {
   position: sticky!important;
   top:0px!important;
   z-index:999
+}
+.p-dialog .p-dialog-footer{
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+}
+.mat-checkbox-frame{
+  border-width: 1px!important;
+  border-color: rgb(118 118 118 / 54%);
+}
+.mat-checkbox-background, .mat-checkbox-frame{
+  border-radius: 1px!important;
 }
