@@ -304,12 +304,12 @@ export class realisedCapitalGainColumn{
               width:'5rem'
             },
             {
-              field:'nav_as_on_31/01/2018',
+              field:'nav_as_on_31_01_2018',
               header:'NAV as on 31-01-18',
               width:'5rem'
             },
             {
-              field:'amount_as_on_31/01/2018',
+              field:'amount_as_on_31_01_2018',
               header:'Value as on 31-01-18',
               width:'4rem'
             },

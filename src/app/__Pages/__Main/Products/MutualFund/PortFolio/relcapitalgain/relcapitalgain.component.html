@@ -253,7 +253,7 @@
                   <ng-container *ngFor="let dtls of realisedCapitalGain?.data">
                     <tr >
                       <td colspan="21" class="table_scheme_style">
-                        {{dtls?.scheme_name | titlecase}}-{{dtls?.plan_name | titlecase}}-{{dtls?.option_name | titlecase}} # ISIN - {{dtls?.isin_no}} # FOLIO - {{dtls?.folio_no}}
+                        <span>{{dtls?.scheme_name | titlecase}} - {{dtls?.plan_name | titlecase}} - {{dtls?.option_name | titlecase}} # ISIN - {{dtls?.isin_no}} # FOLIO - {{dtls?.folio_no}}</span>
                       </td>
                     </tr>
                     <tr  *ngFor="let innerDT of dtls?.calculation_arr">
@@ -270,8 +270,16 @@
                             >
                             {{innerDT[col.field] ? (innerDT[col.field] | date:'dd-MM-YY') : 'N/A'}}
                             </ng-container>
+                            <ng-container
+                              *ngSwitchCase="col.field == 'pur_before'
+                              || col.field == 'amount_as_on_31_01_2018'
+                              || col.field == 'nav_as_on_31_01_2018'
+                              || col.field == 'debt_31_03_2023'
+                              ">
+                            {{innerDT[col.field] ? innerDT[col.field] : 'N/A'}}
+                            </ng-container>
                             <ng-container  *ngSwitchDefault>
-                              {{innerDT[col.field] ? innerDT[col.field] : 'N/A'}}
+                              {{(innerDT[col.field] || innerDT[col.field]?.toString() == '0') ? innerDT[col.field] : 'N/A'}}
                             </ng-container>
                             </ng-container>
                           </td>
