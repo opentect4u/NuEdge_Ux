@@ -247,7 +247,7 @@
                 <ng-template pTemplate="body" let-realisedCapitalGain>
                   <tr>
                     <td [attr.colspan]="21" class="table__header">
-                        <h6 class="m-0">{{realisedCapitalGain?.cat_name}} Fund</h6>
+                        <h6 class="m-0">{{realisedCapitalGain?.tax_type}}</h6>
                     </td>
                   </tr>
                   <ng-container *ngFor="let dtls of realisedCapitalGain?.data">

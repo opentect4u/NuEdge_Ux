@@ -114,13 +114,13 @@ export class RelcapitalgainComponent implements OnInit {
         this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
         from(res.data)
         .pipe(
-          groupBy((data:any) => data.cat_name),
+          groupBy((data:any) => data.tax_type),
           mergeMap(group => zip(of(group.key), group.pipe(toArray())))
         ).subscribe(dt =>{
           console.log(dt);
           this.relisedCapitalGain.push(
             {
-              cat_name:dt[0],
+              tax_type:dt[0],
               data:dt[1]
             }
           )
