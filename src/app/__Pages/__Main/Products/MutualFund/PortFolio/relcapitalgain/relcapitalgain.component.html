@@ -41,9 +41,9 @@
                     <div class="col-sm-3">
                       <label for="asset_type">Asset Type</label>
                       <select name="asset_type" id="asset_type" class="form-control" formControlName="asset_type">
-                        <option value="A">All</option>
-                        <option value="E">Equity</option>
-                        <option value="D">Debt</option>
+                        <option value="Equity Fund / Debt Fund / Debt Oriented Hybrid Fund">All</option>
+                        <option value="Equity Fund">Equity</option>
+                        <option value="Debt Fund">Debt</option>
                       </select>
                     </div>
                     <div class="col-sm-3"
@@ -251,7 +251,7 @@
                     </td>
                   </tr>
                   <ng-container *ngFor="let dtls of realisedCapitalGain?.data">
-                    <tr >
+                    <tr *ngIf="dtls.calculation_arr.length > 0">
                       <td colspan="21" class="table_scheme_style">
                         <span>{{dtls?.scheme_name | titlecase}} - {{dtls?.plan_name | titlecase}} - {{dtls?.option_name | titlecase}} # ISIN - {{dtls?.isin_no}} # FOLIO - {{dtls?.folio_no}}</span>
                       </td>

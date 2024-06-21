@@ -81,5 +81,14 @@
       "url":"/main/master/company",
       "icon":"",
       "img":"/company.png"
+    },
+    {
+      "id":14,
+      "menu_name":"Disclaimer",
+      "title":"Disclaimer",
+      "flag":"N",
+      "url":"/main/master/disclaimer",
+      "icon":"",
+      "img":"/disclaimer.png"
     }
 ]

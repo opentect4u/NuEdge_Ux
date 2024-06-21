@@ -70,7 +70,7 @@ export class RelcapitalgainComponent implements OnInit {
     view_type:new FormControl(''),
     client_name: new FormControl(''),
     // client_id: new FormControl(''),
-    asset_type: new FormControl('A'),
+    asset_type: new FormControl('Equity Fund / Debt Fund / Debt Oriented Hybrid Fund'),
     trans_periods: new FormControl(''),
     date_type: new FormControl('F'),
     fin_year: new FormControl(''),
@@ -99,9 +99,10 @@ export class RelcapitalgainComponent implements OnInit {
   getReleasedCapitalGainLoss = () =>{
     this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
       this.relisedCapitalGain = [];
-      const dt = Object.assign({},this.released_capital_gain_form.value,
+      const {asset_type,...rest} = this.released_capital_gain_form.value
+      const dt = Object.assign({},rest,
         {
-          ...this.released_capital_gain_form.value,
+          ...rest,
           date_range:this.released_capital_gain_form.value.date_type === 'D' ? global.getActualVal(this.date_range.inputFieldValue) : '',
           fin_year:this.released_capital_gain_form.value.date_type === 'F' ? global.getActualVal(this.released_capital_gain_form.value.fin_year) : ''
         }
@@ -112,20 +113,41 @@ export class RelcapitalgainComponent implements OnInit {
         // this.relisedCapitalGain = res.data;
         this.client_dtls = res.client_details;
         this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
-        from(res.data)
+        let filter_data_by_asset_type = res.data.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type));
+        // if(this.released_capital_gain_form.value.trans_periods != ''){
+        //   if(this.released_capital_gain_form.value.trans_periods == 'S'){
+        //     filter_data_by_asset_type = filter_data_by_asset_type.filter(item => item.stcg != '')
+        //   }
+        //   else{
+        //     filter_data_by_asset_type = filter_data_by_asset_type.filter(item => item.ltcg != '')
+        //   }
+        // }
+        from(filter_data_by_asset_type.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
         .pipe(
           groupBy((data:any) => data.tax_type),
           mergeMap(group => zip(of(group.key), group.pipe(toArray())))
         ).subscribe(dt =>{
-          console.log(dt);
-          this.relisedCapitalGain.push(
-            {
-              tax_type:dt[0],
-              data:dt[1]
-            }
-          )
+
+          let final_realised_capital_gain = dt[1].filter(element =>{
+              if(this.released_capital_gain_form.value.trans_periods != ''){
+                if(this.released_capital_gain_form.value.trans_periods == 'S'){
+                  element.calculation_arr = element.calculation_arr.filter(item => item.stcg != '')
+                }
+                else{
+                  element.calculation_arr = element.calculation_arr.filter(item => item.ltcg != '')
+                }
+              }
+              return element
+            })
+          if(!final_realised_capital_gain.every(el => el.calculation_arr.length == 0)){
+            this.relisedCapitalGain.push(
+              {
+                tax_type:dt[0],
+                data:final_realised_capital_gain
+              }
+            );
+          }
         })
-        console.log(this.relisedCapitalGain)
 
       })
   }
@@ -146,8 +168,9 @@ export class RelcapitalgainComponent implements OnInit {
           date_rng = `${this.datePipe.transform(start_date,'longDate')} TO ${this.datePipe.transform(end_date,'longDate')}`
       }
       else{
-        start_date = this.datePipe.transform(this.date_range.inputFieldValue.split('-')[0],'longDate');
-        end_date = this.datePipe.transform(this.date_range.inputFieldValue.split('-')[1],'longDate');
+        start_date = this.datePipe.transform(this.released_capital_gain_form.get('date_range').value[0],'longDate');
+        // console.log(start_date)
+        end_date = this.datePipe.transform(this.released_capital_gain_form.get('date_range').value[1],'longDate');
         date_rng = `${start_date} TO ${end_date}`;
       }
       console.log(date_rng);

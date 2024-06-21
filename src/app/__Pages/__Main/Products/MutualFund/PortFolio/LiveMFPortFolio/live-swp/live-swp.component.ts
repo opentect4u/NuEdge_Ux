@@ -144,7 +144,7 @@ export class LiveSWPColumn{
       isVisible:['A','L','I']
     },
     {
-      field:'remaining_inv',
+      field:'rem_inst',
       header:'Rem. Inst',
       width:'3rem',
       isVisible:['A','L']

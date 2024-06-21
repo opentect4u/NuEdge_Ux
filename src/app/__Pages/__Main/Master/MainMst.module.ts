@@ -100,6 +100,11 @@ const routes: Routes = [
       },
       /** End */
       {
+        path:'disclaimer',
+        loadChildren:() => import('./disclaimer/disclaimer.module').then(m => m.DisclaimerModule),
+        data:{breadcrumb:'Disclaimer'}
+      },
+      {
         path: '',
         redirectTo: 'products',
         pathMatch: 'full',

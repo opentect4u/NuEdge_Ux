@@ -1,8 +1,140 @@
 
-<div class="row flexSec">
-  <div class="col-sm-8">
-    <div class="row">
-      <shared-menu-item [items]="mailBackMenu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
+<!-- <div class="bckContainer"></div> -->
+<!-- <div class="container mx-auto"> -->
+  <div class="row flexSec">
+    <div class="col-sm-8"
+      [ngClass]="{
+        'col-sm-12':merquee_mailbackUpload.length == 0,
+        'col-sm-8':merquee_mailbackUpload.length > 0
+      }"
+    >
+      <div class="row">
+        <shared-menu-item [items]="mailBackMenu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
+        <div class="col-sm-12 my-1">
+          <mat-card>
+            <mat-card-header class="border-bottom">
+              <mat-card-title>Mailback Uploaded</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="p-2">
+              <div class="row form-group">
+                <div class="col-sm-5">
+                  <form [formGroup]="mailbackuploaded_frm" (ngSubmit)="searchMailbackuploaded()">
+                    <p-calendar
+                    #dateRng
+                    dateFormat="dd/mm/yy"
+                    placeholder="Select Date Range"
+                    formControlName="date_range"
+                    selectionMode="range"
+                    [readonlyInput]="true"
+                    id="date_range"
+                    [maxDate]="maxDate" [minDate]="minDate"
+                    [showIcon]="true"
+                    [hideOnDateTimeSelect]="true"
+                    [showButtonBar]="true">
+                    </p-calendar>
+                  </form>
+                </div>
+                <div class="col-sm-7 d-flex justify-content-start align-items-start my-1">
+                  <button pButton type="submit"
+                        label="Search"
+                        icon="pi pi-search"
+                        class="p-button-lg p-button-primary">
+                </button>
+                </div>
+                
+              </div>
+              <div class="row">
+                  <div class="col-sm-12">
+                      <p-table [value]="mailbackuploaded_record"
+                      #primeTbl
+                      [columns]="column"
+                      [autoLayout]="true"
+                      [paginator]="true"
+                      [totalRecords]="mailbackuploaded_record.length"
+                      [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+                      [rows]="10"
+                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                      [showCurrentPageReport]="true"
+                      [globalFilterFields]="getColumns()"
+                      styleClass="p-datatable-lg">
+               <ng-template pTemplate="header" let-columns>
+                 <tr>
+                   <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                     {{ col.header }} 
+                     <p-sortIcon [field]="col.field"></p-sortIcon>
+                   </th>
+                 </tr>
+               </ng-template>
+               <ng-template pTemplate="body" let-trxnDT let-i="rowIndex">
+                 <tr>
+                   <td *ngFor="let col of column">
+                       <ng-container [ngSwitch]="true">
+                        <ng-container *ngSwitchCase="col.field == 'process_date'">
+                          <p class="m-0">{{ trxnDT[col.field] ? (trxnDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="col.field == 'doc'">
+                            <span class="p-buttonset">
+                              <button pButton type="button" #tooltip="matTooltip"
+                              matTooltip="Export As PDF" class="p-button-danger p-button-text p-button-text p-button-rounded"  icon="pi pi-file-pdf"></button>
+                              <button pButton type="button" #tooltip="matTooltip"
+                              matTooltip="Export As Excel"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded"  icon="pi pi-file-excel" ></button>
+                              <button pButton type="button" #tooltip="matTooltip"
+                              matTooltip="Export As Text" class="p-button-secondary p-button-text p-button-text p-button-rounded"  icon="pi pi-file"></button>
+                          </span>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                          <p class="m-0">{{ trxnDT[col.field] ? trxnDT[col.field] : 'N/A' }}</p>
+                        </ng-container>
+                       </ng-container>
+                   </td>
+         
+                 </tr>
+               </ng-template>
+               <ng-template pTemplate="emptymessage" let-trxnDT>
+                 <tr>
+                   <td [attr.colspan]="trxnDT.length">
+                     <p class="m-0">No Records Found</p>
+                   </td>
+                 </tr>
+               </ng-template>
+                        </p-table>
+                  </div>
+              </div>
+                  
+            </mat-card-content>
+          </mat-card>
+      </div>
+      </div>
     </div>
+    <div class="col-sm-4" *ngIf="merquee_mailbackUpload.length > 0">
+         <div class="mailBackMismatchauto mx-5">
+              <div class="mailBackMismatchauto_header">
+                    <h5>MISSED MAILBACK FILE (AUTO)</h5>
+                    <!-- <small>Previewing automatic missed mailback file</small> -->
+              </div>
+              <div class="mailBackMismatchauto_body">
+                <!-- <marquee class="marq" direction="up"  behavior="scroll"> -->
+                  <!-- onmouseover="this.parentNode.stop();" onmouseout="this.parentNode.start();" -->
+                    <ng-container *ngIf="merquee_mailbackUpload.length > 0;else no_file_available">
+                        <ng-container *ngFor="let item of merquee_mailbackUpload">
+                          <div class="p-3 border-bottom" >
+                            <a class="body_title" href="/main/mailback/manualupload" target="_blank">{{item.process_date | date:'longDate'}} - <b>{{item.file_name}}</b> ({{item.file_type_name}})</a>
+                          </div>
+                        </ng-container>
+                    </ng-container>
+
+                    <ng-template #no_file_available>
+                      <!-- <p class="text-center">Loading ......</p> -->
+                      <div class="marq d-flex justify-content-center align-items-center flex-column">
+                        <h5 class="text-center fs-5">No Missed Mailback file is available</h5>
+                      </div>
+                    </ng-template>
+                    
+              <!-- </marquee> -->
+              </div>
+         </div>
+    </div>
+   
   </div>
-</div>
+  
+<!-- </div> -->

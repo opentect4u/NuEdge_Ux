@@ -1,0 +1,41 @@
+.mailBackMismatchauto{
+    max-height: 448px;
+    background-color: #fff;
+    min-height: 448px;
+    border: 1px solid #cfcfcf;
+    border-radius: 8px;
+}
+.mailBackMismatchauto_header{
+    height: 40px;
+    padding: 0px 12px;
+    width: 100%;
+    background: #fdfdfd;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom: 1px solid #efefef;
+    display: flex;
+    align-items: center;
+}
+
+.mailBackMismatchauto_header>h5,
+a.body_title
+{
+    font-size: 13px;
+    font-weight: 400;
+    color: #10486b;
+}
+.mailBackMismatchauto_body,
+.marq
+{
+    height: calc(448px - 40px);
+}
+a.body_title:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+a.body_title:nth-child(){
+    background-color: gray;
+}
+::ng-deep .p-button-icon{
+    font-size: 1.5rem !important;
+}

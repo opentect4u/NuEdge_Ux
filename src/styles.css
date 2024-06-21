@@ -578,6 +578,13 @@ mat-card {
 .p-calendar .p-inputtext {
   font-size: 10px !important;
   font-weight: 700 !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.p-calendar-w-btn .p-datepicker-trigger {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
 }
 
 /**** End **/
@@ -600,10 +607,12 @@ mat-card {
   background: #10486b;
   border: 1px solid #10486b;
   border: none!important;
-  padding: 1rem 1.25rem!important;
+  /* padding: 1rem 1.25rem!important; */
+  
+  padding: 0.8rem 1.25rem !important;
   font-size: 2rem!important;
   /* border-radius: 3px!important; */
-
+  border-radius: 3px!important;
 }
 /* .p-panel .p-panel-header {
   border: 1px solid #dee2e6;
@@ -638,14 +647,18 @@ color: #ffffff;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  /* background: #222f3f !important;
-  border-color: #EFF6FF !important; */
-  background: #10486b !important;
+  /* background: #10486b !important;
   border-color: #10486b !important;
   color: #ffffff !important;
   font-size: 11px !important;
   font-weight: 700 !important;
-  border-radius: 20% !important;
+  border-radius: 20% !important; */
+  background: #ffffff !important;
+    border: 1px solid #e1e1e1 !important;
+    color: #10486b !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    border-radius: 20% !important;
 }
 
 .p-paginator {
@@ -703,11 +716,6 @@ color: #ffffff;
 
 .p-datatable .p-sortable-column .p-sortable-column-icon {
   color: #ffffff!important;
-}
-
-.form-control:hover{
-  border: 2px solid #3F51B5;
-  transition: ease-in .2s;
 }
 
 .p-datepicker-header .p-datepicker-title {
@@ -1197,4 +1205,53 @@ span.badge-warning {
 }
 .mat-checkbox-background, .mat-checkbox-frame{
   border-radius: 1px!important;
+}
+
+
+
+/* Loader css */
+/* HTML: <div class="loader"></div> */
+.tiles__loader {
+  width: fit-content;
+  /* font-weight: bold; */
+  /* font-family: 'Montserrat'; */
+  font-family: "Roboto", sans-serif!important;
+  font-size: 16px;
+  clip-path: inset(0 3ch 0 0);
+  animation: l4 1s steps(4) infinite;
+  margin: auto;
+}
+.tiles__loader:before {
+  content:"Loading..."
+}
+@keyframes l4 {to{clip-path: inset(0 -1ch 0 0)}}
+/* End */
+
+
+/* HTML: <div class="loader"></div> */
+
+
+/* HTML: <div class="loader"></div> */
+.tiles_loader {
+  width: 22px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid #514b82;
+  animation: l20-1 0.8s infinite linear alternate, l20-2 1.6s infinite linear;
+  margin: auto;
+}
+@keyframes l20-1{
+   0%    {clip-path: polygon(50% 50%,0       0,  50%   0%,  50%    0%, 50%    0%, 50%    0%, 50%    0% )}
+   12.5% {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100%   0%, 100%   0%, 100%   0% )}
+   25%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 100% 100%, 100% 100% )}
+   50%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+   62.5% {clip-path: polygon(50% 50%,100%    0, 100%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+   75%   {clip-path: polygon(50% 50%,100% 100%, 100% 100%,  100% 100%, 100% 100%, 50%  100%, 0%   100% )}
+   100%  {clip-path: polygon(50% 50%,50%  100%,  50% 100%,   50% 100%,  50% 100%, 50%  100%, 0%   100% )}
+}
+@keyframes l20-2{
+  0%    {transform:scaleY(1)  rotate(0deg)}
+  49.99%{transform:scaleY(1)  rotate(135deg)}
+  50%   {transform:scaleY(-1) rotate(0deg)}
+  100%  {transform:scaleY(-1) rotate(-135deg)}
 }

@@ -27,6 +27,7 @@ export class RejectTrxnComponent implements OnInit {
 
   set rejectTrxn(value:TrxnRpt[]) {
     this._rejectTrxn = value;
+    console.log(this.rejectTrxn)
     this.RejectTrxnFooterTrxnCacl = {
       tot_amount:global.Total__Count(value, item => Number(item.tot_amount)),
       tot_gross_amount:global.Total__Count(value, item => Number(item.tot_gross_amount)),

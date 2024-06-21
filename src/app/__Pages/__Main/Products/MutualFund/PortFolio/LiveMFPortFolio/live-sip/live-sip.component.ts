@@ -157,7 +157,7 @@ export class LiveSIPColumn{
       isVisible:['A','L','I']
     },
     {
-      field:'duration',
+      field:'rem_inst',
       header:'Rem. Inst',
       width:'3rem',
       isVisible:['A','L']
