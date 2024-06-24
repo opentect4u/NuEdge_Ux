@@ -305,3 +305,9 @@ input[type="radio"], input[type="checkbox"] {
 /* ::ng-deep .fundDtls>label.mat-checkbox-layout>.mat-checkbox-label{
   font-size: 10px !important;
 } */
+
+.disclaimer{
+  font-size: 12px;
+  font-weight: 400;
+  color: #656565;
+}

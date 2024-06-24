@@ -22,6 +22,8 @@ export class MailbackhomeComponent implements OnInit {
 
   merquee_mailbackUpload:Required<manualUpload>[] = [];
 
+  __is_loading:boolean = true;
+
 
    /**
    *  getAccess of Prime Ng Calendar
@@ -44,11 +46,15 @@ export class MailbackhomeComponent implements OnInit {
 
 
   getMissedMailback = () =>{
-    this.dbIntr.api_call(0,'/mailbackProcessDetails',`flag=F`)
+    this.dbIntr.callApiOnChange('/mailbackProcessDetails',`flag=F`)
     .pipe(pluck('data'))
     .subscribe((res:Required<manualUpload>[]) =>{
+      console.log(res)
       this.merquee_mailbackUpload = res;
-    })
+      this.__is_loading = !this.__is_loading;
+    },error =>{
+    this.__is_loading = !this.__is_loading;
+  })
   }
 
 
@@ -60,12 +66,14 @@ export class MailbackhomeComponent implements OnInit {
               el.process_type =  el.process_type == 'A' ? 'Auto' : 'Manual';
               return el
          })
+      this.getMissedMailback();
+    },err => {
+      this.getMissedMailback();
     })
   }
 
   ngAfterViewInit(){
     this.getMissedMailbackUpload();
-    this.getMissedMailback();
 
     this.mailbackuploaded_frm.controls['date_range'].valueChanges.subscribe((res) => {
       if(res){

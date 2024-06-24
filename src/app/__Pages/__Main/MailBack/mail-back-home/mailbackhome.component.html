@@ -2,12 +2,7 @@
 <!-- <div class="bckContainer"></div> -->
 <!-- <div class="container mx-auto"> -->
   <div class="row flexSec">
-    <div class="col-sm-8"
-      [ngClass]="{
-        'col-sm-12':merquee_mailbackUpload.length == 0,
-        'col-sm-8':merquee_mailbackUpload.length > 0
-      }"
-    >
+    <div class="col-sm-8">
       <div class="row">
         <shared-menu-item [items]="mailBackMenu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
         <div class="col-sm-12 my-1">
@@ -106,8 +101,8 @@
       </div>
       </div>
     </div>
-    <div class="col-sm-4" *ngIf="merquee_mailbackUpload.length > 0">
-         <div class="mailBackMismatchauto mx-5">
+    <div class="col-sm-4" >
+         <div class="mailBackMismatchauto ">
               <div class="mailBackMismatchauto_header">
                     <h5>MISSED MAILBACK FILE (AUTO)</h5>
                     <!-- <small>Previewing automatic missed mailback file</small> -->
@@ -115,20 +110,26 @@
               <div class="mailBackMismatchauto_body">
                 <!-- <marquee class="marq" direction="up"  behavior="scroll"> -->
                   <!-- onmouseover="this.parentNode.stop();" onmouseout="this.parentNode.start();" -->
-                    <ng-container *ngIf="merquee_mailbackUpload.length > 0;else no_file_available">
-                        <ng-container *ngFor="let item of merquee_mailbackUpload">
-                          <div class="p-3 border-bottom" >
-                            <a class="body_title" href="/main/mailback/manualupload" target="_blank">{{item.process_date | date:'longDate'}} - <b>{{item.file_name}}</b> ({{item.file_type_name}})</a>
-                          </div>
-                        </ng-container>
-                    </ng-container>
+                   <ng-container *ngIf="!__is_loading;else loading">
+                      <ng-container *ngIf="merquee_mailbackUpload.length > 0;else no_file_available">
+                          <ng-container *ngFor="let item of merquee_mailbackUpload">
+                            <div class="p-3 border-bottom" >
+                              <a class="body_title" href="/main/mailback/manualupload" target="_blank">{{item.process_date | date:'longDate'}} - <b>{{item.file_name}}</b> ({{item.file_type_name}})</a>
+                            </div>
+                          </ng-container>
+                      </ng-container>
 
-                    <ng-template #no_file_available>
-                      <!-- <p class="text-center">Loading ......</p> -->
-                      <div class="marq d-flex justify-content-center align-items-center flex-column">
-                        <h5 class="text-center fs-5">No Missed Mailback file is available</h5>
-                      </div>
-                    </ng-template>
+                      <ng-template #no_file_available>
+                        <div class="marq d-flex justify-content-center align-items-center flex-column">
+                          <h5 class="text-center noMailbackMissmatch">No Missed Mailback file is available</h5>
+                        </div>
+                      </ng-template>
+                   </ng-container>
+                   <ng-template #loading>
+                    <div class="marq d-flex justify-content-center align-items-center flex-column">
+                      <div class="tiles_loader my-4 mx-auto"></div>
+                    </div>
+                   </ng-template>
                     
               <!-- </marquee> -->
               </div>

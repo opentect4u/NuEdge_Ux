@@ -39,3 +39,9 @@ a.body_title:nth-child(){
 ::ng-deep .p-button-icon{
     font-size: 1.5rem !important;
 }
+
+.noMailbackMissmatch{
+    font-size: 10px;
+    font-weight: 600;
+    color: #878787;
+}

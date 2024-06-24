@@ -1233,10 +1233,10 @@ span.badge-warning {
 
 /* HTML: <div class="loader"></div> */
 .tiles_loader {
-  width: 22px;
+  width: 40px;
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 2px solid #514b82;
+  border: 2px solid #858585;
   animation: l20-1 0.8s infinite linear alternate, l20-2 1.6s infinite linear;
   margin: auto;
 }

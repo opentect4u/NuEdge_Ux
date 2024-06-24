@@ -77,6 +77,14 @@ export class LiveMfPortFolioComponent implements OnInit {
   resizeObservable$: Observable<Event>;
   resizeSubscription$: Subscription;
 
+  /*** Holding disclaimer*/
+  disclaimer:string | null = '';
+  /*** End */
+
+  selected_tab_for_family:string | null = null;
+
+  parent_family_holder_for_tab:Partial<client>[] = [];
+
 /* The above code is defining an array of objects in TypeScript. Each object in the array has two
 properties: `act_value` and `value`. The `act_value` property represents an actual value, while the
 `value` property represents a corresponding label. The array appears to be defining different
@@ -796,6 +804,9 @@ mappings between `act_value` and `value` for transition durations. */
     }
     else{
     this.clientDtls = null;
+    this.parent_family_holder_for_tab = [];
+    this.selected_tab_for_family = null;
+    this.disclaimer = '';
     this.plTrxnDtls=[];
     this.liveSipPortFolio = [];
     this.liveSwpPortFolio = [];
@@ -1163,11 +1174,15 @@ mappings between `act_value` and `value` for transition durations. */
       }
   }
 
+  setDisclaimer = (dis_des:string) => {
+    this.disclaimer = dis_des;
+  }
+
   call_api_for_detail_summary_func(formData) {
     if(this.dataSource.length == 0){
       this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
       .pipe(pluck('data'))
-      .subscribe((res:Required<{data,client_details:client}>) => {
+      .subscribe((res:Required<{data,client_details:client,disclaimer:string}>) => {
             try{
               if(this.main_frm_dt?.trans_type == 'A'){
                     this.dataSource = res.data.filter((item: ILivePortFolio) => {
@@ -1209,13 +1224,11 @@ mappings between `act_value` and `value` for transition durations. */
                    return false
                 });
               }
-              console.log(this.dataSource);
               this.setParentTableFooter_ClientDtls(this.dataSource,res.client_details);
               this.div_history = this.dataSource.filter(item => item.curr_val > 0)
+              this.setDisclaimer(res.disclaimer);
               }
-            catch(ex){
-                // console.log(ex)
-            }
+            catch(ex){}
       })
     }
     }
