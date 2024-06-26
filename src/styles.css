@@ -1255,3 +1255,17 @@ span.badge-warning {
   50%   {transform:scaleY(-1) rotate(0deg)}
   100%  {transform:scaleY(-1) rotate(-135deg)}
 }
+
+.p-datatable .p-datatable-header{
+      background: #ffffff !important;
+      border-width:0px!important;
+}
+.p-datatable.p-datatable-lg .p-datatable-header{
+  padding: 5px !important;
+}
+
+.clientName_pan{
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+}

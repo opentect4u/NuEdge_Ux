@@ -946,6 +946,14 @@ ul>li:last-child.activeList{
 border-top-right-radius: 8px!important;
 }
 
+ul>li:first-child.activeList_Family{
+  border-top-left-radius: 8px!important;
+}
+
+ul>li:last-child.activeList_Family{
+border-top-right-radius: 8px!important;
+}
+
 
 
 .details__icon{

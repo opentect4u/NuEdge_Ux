@@ -60,5 +60,39 @@ constructor(private __http:HttpClient) {
   }
  }
 
+ call_promise(__flag: number,
+  __url:string,
+   __dt: any,
+  __bypass_log: any | undefined = false,
+  rptProgress:boolean | undefined = false,
+  is_nav: boolean | undefined = false){
+    let promise = new Promise<any>((resolve, reject) => {
+                if(__flag > 0){
+                  return this.__http.post(`${(!is_nav ? environment.apiUrl : environment.nav_url) + __url}`,
+                  __dt,
+                  {
+                    context: new HttpContext().set(BYPASS_LOG,  __bypass_log),
+                    reportProgress: rptProgress
+                  }).toPromise().then(
+                    res => { // Success
+                      // let result = res.json()
+                      resolve(res);
+                    }
+                  );
+            }
+            else{
+                var __data = __dt ? '?' + __dt : '';
+                return this.__http.get(`${(!is_nav ? environment.apiUrl : environment.nav_url) + __url + __data}`,
+                { context: new HttpContext().set(BYPASS_LOG,  __bypass_log) }).toPromise().then(
+                  res => { // Success
+                    // console.log(res.json());
+                    resolve(res);
+                  }
+                );
+            }
+    });
+    return promise;
+  }
+
 
 }

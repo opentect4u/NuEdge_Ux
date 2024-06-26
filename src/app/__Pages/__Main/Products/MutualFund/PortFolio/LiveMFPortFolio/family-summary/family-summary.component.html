@@ -1,0 +1,86 @@
+<p-table #dt [value]="familySummary"
+    [rows]="10" [paginator]="true"
+      [rowHover]="true"
+      [columns]="column"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      styleClass="p-datatable-lg p-datatable-striped"
+      [pageLinks]="3"
+      [responsive]="true"
+      [globalFilterFields]="getColumns()"
+        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"  [rows]="10"
+      [showCurrentPageReport]="true"
+      >
+      <ng-template pTemplate="caption">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="text-uppercase">Family's Portfolio Summary</h5>
+            <input id="search" class="form-control rounded w-25 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
+            placeholder="Search" />
+          </div>
+      </ng-template>
+    <ng-template pTemplate="header">
+        <tr class="stickyHeader">
+            <th *ngFor="let col of column"
+                pSortableColumn="{{col.field}}"
+                [style]="'width : '+col.width"
+               >
+              {{col.header}}
+              <p-sortIcon field="{{col.field}}"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-recent_trxn let-i="rowIndex">
+        <tr>
+          <!-- [ngStyle]="{'background-color':recent_trxn['activate_status'] == 'Inactive' ? '#b70a0a30' : '#ffffff'}" -->
+
+            <td *ngFor="let col of column"[style]="'width : '+col.width">
+           <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                <p class="m-0">{{ i + 1}}</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'client_name'">
+                <p class="m-0 clientName_pan">
+                  {{ recent_trxn[col.field] | titlecase}} [Pan: {{recent_trxn['pan'] ? recent_trxn['pan'] : 'N/A'}}]</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'xirr'">
+                <p class="m-0">
+                  {{ recent_trxn[col.field] ? (recent_trxn[col.field] | percent:'1.2-2') : '0%'}}</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+                <p class="m-0">
+                  {{ recent_trxn[col.field] ? (recent_trxn[col.field] | number: '1.2-2') : '0'}}%</p>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <p class="m-0">
+                  {{ recent_trxn[col.field]  ? (recent_trxn[col.field] | number: '1.2-2') : '0.00'}}</p>
+              </ng-container>
+            </ng-container>
+
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage" let-recent_trxn>
+      <tr>
+        <td [attr.colspan]="column.length">
+          <p class="m-0">No Records Found</p>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <tr>
+        <td
+          *ngFor="let col of column"
+          [style]="'width : ' + col.width"
+        >
+          <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase=" col.field == 'client_name'">Grand Total</ng-container>
+            <ng-container *ngSwitchCase="col.field == 'idcw_reinv' || col.field == 'idcwp'"></ng-container>
+            <ng-container *ngSwitchCase="col.field == 'ret_abs'">{{footerDtls[col.field] ? (footerDtls[col.field] | number:'1.2-2') : '0'}}%</ng-container>
+            <ng-container *ngSwitchCase="col.field == 'xirr'">{{footerDtls[col.field] ? (footerDtls[col.field] | percent:'1.2-2') : '0%'}}</ng-container>
+
+
+            <ng-container *ngSwitchDefault>{{footerDtls[col.field] ? (footerDtls[col.field] | number:'1.2-2') : '0'}}</ng-container>
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+    </p-table>

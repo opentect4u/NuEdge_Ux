@@ -224,7 +224,9 @@ span.mat-tooltip-trigger.custom__badge.badge-primary:hover {
   color: black;
 }
 
-.activeList{
+.activeList,
+.activeList_Family
+{
   /* background: #0c5887 !important; */
   background: #f29459 !important;
 }

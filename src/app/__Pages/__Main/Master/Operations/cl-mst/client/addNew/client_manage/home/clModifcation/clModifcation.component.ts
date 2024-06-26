@@ -51,7 +51,7 @@ export class ClModifcationComponent implements OnInit {
           validators:[Validators.pattern('^[A-Z]{5}[0-9]{4}[A-Z]{1}'),
           Validators.minLength(10),
           Validators.maxLength(10)],
-          updateOn:'blur'
+          // updateOn:'blur'
       },
     ),
     dob_actual: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dob_actual) : ''),
@@ -72,14 +72,14 @@ export class ClModifcationComponent implements OnInit {
     // add_line_1: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_1) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
     add_line_2: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.add_line_2) : ''),
     // state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : '', this.data?.cl_type == 'E' ? [] : [Validators.required]),
-    state: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.state) : '',{
+    state: new FormControl(this.data.id > 0 ?  (this.data.items.state && Number(this.data.items.state) > 0 ? this.data.items.state : '') : '',{
       updateOn:'blur'
     }),
 
-    dist: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.dist) : '',{
+    dist: new FormControl(this.data.id > 0 ?  (this.data.items.dist && Number(this.data.items.dist) > 0 ? this.data.items.dist : '') : '',{
       updateOn:'blur'
     }),
-    city: new FormControl(this.data.id > 0 ?  global.getActualVal(this.data.items.city) : '',{
+    city: new FormControl(this.data.id > 0 ?  (this.data.items.city && Number(this.data.items.city) > 0 ? this.data.items.city : '') : '',{
       updateOn:'blur'
     }),
 
@@ -131,12 +131,14 @@ export class ClModifcationComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.data);
     this.setfrmCtrlValidatior();
     this.getCountryMaster();
     this.getDocumnetTypeMaster();
     if(this.data.id > 0 ){
-      this.getDistrict_city();
+      console.log(this.data.items)
+      if(Number(this.data.items.country_id) > 0 && this.data.items.country_id){
+        this.getDistrict_city();
+      }
       if(this.data.items.client_doc.length > 0){
         this.data.items.client_doc.forEach(element => {
             this.__docs.push(this.setItem(element.id, element.doc_type_id, element.doc_name, element.client_id));
@@ -147,7 +149,7 @@ export class ClModifcationComponent implements OnInit {
       }
       this.getPertnerDtls(this.data.items.pertner_details);
       this.getClientType(this.data?.cl_type);
-        this.__clientForm.get('pincode').setValue(this.data.items.pincode);
+      this.__clientForm.get('pincode').setValue((this.data.items.pincode || Number(this.data.items.pincode) > 0) ? this.data.items.pincode.toString() : '');
     }
     else{
       this.addItem();
@@ -195,7 +197,6 @@ export class ClModifcationComponent implements OnInit {
   }
   getDistrict_city(){
     if(this.data.id > 0 && this.data.client_type != 'E'){
-
       this.getDistrict(this.data.items.state);
       this.getCity(this.data.items.dist);
       this.getStateMaster(this.data.items.country_id);
@@ -524,20 +525,34 @@ export class ClModifcationComponent implements OnInit {
     dates.numberOnly(__ev)
   }
   getDistrict(__state_id) {
-    this.__dbIntr.api_call(0, '/districts', 'state_id=' + __state_id).pipe(pluck("data")).subscribe(res => {
-      this.__district = res;
-    })
+    if(__state_id && Number(__state_id) > 0){
+      this.__dbIntr.api_call(0, '/districts', 'state_id=' + __state_id).pipe(pluck("data")).subscribe(res => {
+        this.__district = res;
+      })
+    }
+    else{
+      this.__district = [];
+    }
   }
   getCity(__district_id) {
-    this.__dbIntr.api_call(0, '/city', 'district_id=' + __district_id).pipe(pluck("data")).subscribe(res => {
-      this.__city = res;
-    })
+    if(__district_id && Number(__district_id) > 0){
+      this.__dbIntr.api_call(0, '/city', 'district_id=' + __district_id).pipe(pluck("data")).subscribe(res => {
+        this.__city = res;
+      })
+    }
+    else{
+      this.__city = [];
+    }
   }
   getPinCode(city_id){
-    console.log(city_id);
-    this.__dbIntr.api_call(0, '/pincode', 'city_id=' + city_id).pipe(pluck("data")).subscribe(res => {
-      this.pincodeMst = res;
-    })
+    if(city_id && Number(city_id) > 0){
+      this.__dbIntr.api_call(0, '/pincode', 'city_id=' + city_id).pipe(pluck("data")).subscribe(res => {
+        this.pincodeMst = res;
+      })
+    }
+    else{
+      this.pincodeMst = [];
+    }
   }
   addItem(): void {
     this.__docs.push(this.createItem());

@@ -49,6 +49,8 @@ export class PlTrxnDtlsComponent implements OnInit {
 
   @Input() valuation_as_on
 
+  @Input() form_data;
+
   @Input() pl_trxn:Partial<IPLTrxn>[] = [];
 
   @Input() folio_type:string;
@@ -76,25 +78,47 @@ export class PlTrxnDtlsComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     try{
       queueMicrotask(()=>{
-        const array_without_negative_curr_val = this.primaryTbl.value.filter((x) => x.curr_val > 0);
-        let date:string[] = array_without_negative_curr_val.map((el) => el?.mydata?.inv_since);
-        let inv_amt:number[] = array_without_negative_curr_val.map((el) => (Number(el?.mydata?.inv_cost) * -1));
-        const current_value:number = global.Total__Count(this.primaryTbl.value,x => Number(x.curr_val))
-        date.push(this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd'));
-        inv_amt.push(current_value);
+        // const array_without_negative_curr_val = this.primaryTbl.value.filter((x) => x.curr_val > 0);
+        // let date:string[] = array_without_negative_curr_val.map((el) => el?.mydata?.inv_since);
+        // let inv_amt:number[] = array_without_negative_curr_val.map((el) => (Number(el?.mydata?.inv_cost) * -1));
+        // const current_value:number = global.Total__Count(this.primaryTbl.value,x => Number(x.curr_val))
+        // date.push(this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd'));
+        // inv_amt.push(current_value);
+        // console.log(this.primaryTbl.value)
+        // let array_without_negative_curr_val = [];
+        // if(this.form_data?.trans_type == 'L'){
+        //   array_without_negative_curr_val = this.primaryTbl.value.filter((x) => x.curr_val > 0);
+        // }
+        // else{
+          let array_without_negative_curr_val = this.primaryTbl.value;
+        // }
+        let total_amt = [];
+        let total_date = [];
+        array_without_negative_curr_val.forEach(el =>{
+          if(el.mydata.all_amt_arr.length > 0 && el.mydata.all_date_arr.length > 0){
+            total_amt=[...total_amt,...el.mydata.all_amt_arr.map(item => Number(item))];
+            total_date=[...total_date,...el.mydata.all_date_arr];
+          }
+        })
+        const curr_val = global.Total__Count(array_without_negative_curr_val,item => Number(item.curr_val));
+        total_amt.push(curr_val);
+        total_date.push(this.datePipe.transform(this.form_data?.valuation_as_on,'YYYY-MM-dd'))
+        console.log(total_amt);
+        console.log(total_date);
+
         this.footerDtls = {
-          purchase:global.Total__Count(this.primaryTbl.value,item => Number(item.purchase)),
-          switch_in:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_in)),
-          idcw_reinv:global.Total__Count(this.primaryTbl.value,item => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
-          tot_inflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_inflow)),
-          redemption:global.Total__Count(this.primaryTbl.value,item => Number(item.redemption)),
-          switch_out:global.Total__Count(this.primaryTbl.value,item => Number(item.switch_out)),
-          idcwp:global.Total__Count(this.primaryTbl.value,item => item.idcwp ? Number(item.idcwp) : 0),
-          tot_outflow:global.Total__Count(this.primaryTbl.value,item => Number(item.tot_outflow)),
-          curr_val:global.Total__Count(this.primaryTbl.value,item => Number(item.curr_val)),
-          gain_loss:global.Total__Count(this.primaryTbl.value,item => Number(item.gain_loss)),
-          ret_abs:(global.Total__Count(this.primaryTbl.value,item => Number(item.ret_abs)) / this.primaryTbl.value.length),
-          xirr:global.XIRR(inv_amt,date,0)
+          purchase:global.Total__Count(array_without_negative_curr_val,item => Number(item.purchase)),
+          switch_in:global.Total__Count(array_without_negative_curr_val,item => Number(item.switch_in)),
+          idcw_reinv:global.Total__Count(array_without_negative_curr_val,item => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
+          tot_inflow:global.Total__Count(array_without_negative_curr_val,item => Number(item.tot_inflow)),
+          redemption:global.Total__Count(array_without_negative_curr_val,item => Number(item.redemption)),
+          switch_out:global.Total__Count(array_without_negative_curr_val,item => Number(item.switch_out)),
+          idcwp:global.Total__Count(array_without_negative_curr_val,item => item.idcwp ? Number(item.idcwp) : 0),
+          tot_outflow:global.Total__Count(array_without_negative_curr_val,item => Number(item.tot_outflow)),
+          curr_val:global.Total__Count(array_without_negative_curr_val,item => Number(item.curr_val)),
+          gain_loss:global.Total__Count(array_without_negative_curr_val,item => Number(item.gain_loss)),
+          ret_abs:(global.Total__Count(array_without_negative_curr_val,item => Number(item.ret_abs)) / array_without_negative_curr_val.length),
+          xirr:global.XIRR(total_amt,total_date,0)
         }
         console.log(this.footerDtls)
         })

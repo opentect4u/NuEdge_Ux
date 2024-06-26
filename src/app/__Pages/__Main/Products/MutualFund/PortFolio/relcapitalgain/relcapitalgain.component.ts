@@ -97,7 +97,6 @@ export class RelcapitalgainComponent implements OnInit {
   }
 
   getReleasedCapitalGainLoss = () =>{
-    this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
       this.relisedCapitalGain = [];
       const {asset_type,...rest} = this.released_capital_gain_form.value
       const dt = Object.assign({},rest,
@@ -109,19 +108,9 @@ export class RelcapitalgainComponent implements OnInit {
       )
       this.dbIntr.api_call(1,'/clients/realisedCapitalGain',this.utility.convertFormData(dt))
       .pipe(pluck('data')).subscribe((res:Required<{data,client_details:client}>) =>{
-        // console.log(res.data);
-        // this.relisedCapitalGain = res.data;
         this.client_dtls = res.client_details;
         this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
         let filter_data_by_asset_type = res.data.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type));
-        // if(this.released_capital_gain_form.value.trans_periods != ''){
-        //   if(this.released_capital_gain_form.value.trans_periods == 'S'){
-        //     filter_data_by_asset_type = filter_data_by_asset_type.filter(item => item.stcg != '')
-        //   }
-        //   else{
-        //     filter_data_by_asset_type = filter_data_by_asset_type.filter(item => item.ltcg != '')
-        //   }
-        // }
         from(filter_data_by_asset_type.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
         .pipe(
           groupBy((data:any) => data.tax_type),
@@ -157,13 +146,14 @@ export class RelcapitalgainComponent implements OnInit {
       let date_rng;
       let start_date,end_date;
       if(date_type == 'F'){
+         start_date =new Date(Number(this.released_capital_gain_form.value.fin_year.split('-')[0]),3,1);
           if(this.financial_year[0] == this.released_capital_gain_form.value.fin_year){
-            start_date =new Date(Number(this.financial_year[0].split('-')[0]),3,1);
+            // start_date =new Date(Number(this.financial_year[0].split('-')[0]),3,1);
             end_date =new Date();
           }
           else{
-            start_date =new Date(Number(this.released_capital_gain_form.value.fin_year.split('-')[0]),0,1);
-            end_date =new Date(Number(this.released_capital_gain_form.value.fin_year.split('-')[1]),3,31);
+            // start_date =new Date(Number(this.released_capital_gain_form.value.fin_year.split('-')[0]),0,1);
+            end_date =new Date(Number(this.released_capital_gain_form.value.fin_year.split('-')[1]),2,31);
           }
           date_rng = `${this.datePipe.transform(start_date,'longDate')} TO ${this.datePipe.transform(end_date,'longDate')}`
       }

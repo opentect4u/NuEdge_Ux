@@ -81,9 +81,15 @@ export class LiveMfPortFolioComponent implements OnInit {
   disclaimer:string | null = '';
   /*** End */
 
-  selected_tab_for_family:string | null = null;
+  selected_tab_index_for_family:number = 0;
 
-  parent_family_holder_for_tab:Partial<client>[] = [];
+  parent_family_holder_for_tab:any[] = [];
+
+   selected_tab_dtls:any;
+
+  family_summary:any[] = [];
+
+  family_summary_column:column[] = LiveMFPortFolioColumn.family_summry_column;
 
 /* The above code is defining an array of objects in TypeScript. Each object in the array has two
 properties: `act_value` and `value`. The `act_value` property represents an actual value, while the
@@ -267,7 +273,7 @@ mappings between `act_value` and `value` for transition durations. */
   /**
    * Holding family members details in array format after select a family head
    */
-  family_members:client[]= [];
+  family_members:any[]= [];
 
   /**
    * showing loader when search cliient
@@ -614,22 +620,26 @@ mappings between `act_value` and `value` for transition durations. */
 
     this.__reject_trxm_form.controls['reject_trxn_type'].valueChanges.subscribe((res) => {
         this.rejectTrxn = []
-        this.call_api_for_reject_transactions({...this.main_frm_dt,flow_type:res == 'A' ? '' : res})
+        const pay_load = this.main_frm_dt?.view_type == 'F' ? this.getPayLoadForFamily(this.main_frm_dt) : this.main_frm_dt
+        this.call_api_for_reject_transactions({...pay_load,flow_type:res == 'A' ? '' : res})
     });
 
    this.__live_sip_stp_swp_form.controls['live_sip'].valueChanges.subscribe(value =>{
       this.liveSipPortFolio = []
-      this.call_api_for_sip_func(this.main_frm_dt,value)
+      const pay_load = this.main_frm_dt?.view_type == 'F' ? this.getPayLoadForFamily(this.main_frm_dt) : this.main_frm_dt
+      this.call_api_for_sip_func(pay_load,value)
    })
 
    this.__live_sip_stp_swp_form.controls['live_stp'].valueChanges.subscribe(value =>{
     this.liveStpPortFolio = []
-    this.call_api_for_stp_func(this.main_frm_dt,value)
+    const pay_load = this.main_frm_dt?.view_type == 'F' ? this.getPayLoadForFamily(this.main_frm_dt) : this.main_frm_dt
+    this.call_api_for_stp_func(pay_load,value)
  })
 
  this.__live_sip_stp_swp_form.controls['live_swp'].valueChanges.subscribe(value =>{
   this.liveSwpPortFolio = []
-  this.call_api_for_swp_func(this.main_frm_dt,value)
+  const pay_load = this.main_frm_dt?.view_type == 'F' ? this.getPayLoadForFamily(this.main_frm_dt) : this.main_frm_dt
+  this.call_api_for_swp_func(pay_load,value)
  })
 
 
@@ -803,9 +813,11 @@ mappings between `act_value` and `value` for transition durations. */
         window.open(`${this.router.url}?id=${btoa(this.utility.encrypt_dtls(JSON.stringify(this.filter_criteria.value)))}`, '_blank');
     }
     else{
+    this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     this.clientDtls = null;
     this.parent_family_holder_for_tab = [];
-    this.selected_tab_for_family = null;
+    this.selected_tab_index_for_family = 0;
+    this.family_summary = [];
     this.disclaimer = '';
     this.plTrxnDtls=[];
     this.liveSipPortFolio = [];
@@ -832,8 +844,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.__pl_trxn_form.reset('',{emitEvent:false,onlySelf:true});
     this.__systematicMissedTrxn_Frm.reset('',{emitEvent:false,onlySelf:true});
     this.__live_sip_stp_swp_form.reset('',{emitEvent:false,onlySelf:true});
-    this.selected_id = this.__portFolioTab[0].id;
-    this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
+    this.selected_id = this.filter_criteria.value.view_type == 'F' ? 0 : this.__portFolioTab[0].id;
     let funds:any[] = [];
     this.filter_criteria.value.funds?.forEach((el:any) =>{
       el.sub_menu.forEach((item:any) =>{
@@ -854,7 +865,13 @@ mappings between `act_value` and `value` for transition durations. */
       trans_date_range:this.filter_criteria.value.trans_duration == 'D' ? global.getActualVal(this.TrnsDateRange.inputFieldValue) : ''
     })
     this.main_frm_dt = rest;
-    this.call_corrosponding_api(this.selected_id,rest);
+    console.log(this.main_frm_dt)
+    if(this.main_frm_dt?.view_type === 'F'){
+      this.call_api_for_family_summary(rest);
+    }
+    else{
+      this.call_corrosponding_api(this.selected_id,rest);
+    }
     }
   }
 
@@ -891,16 +908,11 @@ mappings between `act_value` and `value` for transition durations. */
               this.dataSource[index].data = res.filter((item:ISubDataSource,i:number) =>{
                     try{
                       if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
-                            // amt.splice(_index,0,(Number(item.tot_gross_amount) * -1));
-                            // console.log(amt)
-                            // dates.splice(_index,0,item.trans_date);
-                            // _index += 1;
                             const amt = [(Number(item.tot_amount) * -1),Number(item.curr_val)]
+                            console.log(amt)
                             const dates = [item.trans_date,this.dataSource[index].nav_date]
                             const xirr = global.XIRR(amt,dates,0);
                             item.xirr = isFinite(xirr) ? xirr : 0;
-                            // nper = item.cumml_units >= 0 ? (item.days / 365) : 0;
-                            // item.xirr = item.cumml_units >= 0 ? ((Math.pow((item.curr_val/Number(item.tot_amount)),(1/nper)) - 1) * 100) : 0;
                       }
                     }
                     catch(err){
@@ -1099,14 +1111,17 @@ mappings between `act_value` and `value` for transition durations. */
   }
 
   call_corrosponding_api = (id:number,fb) =>{
-      switch(id){
+
+        const pay_load = this.main_frm_dt?.view_type == 'C' ? fb : this.getPayLoadForFamily(this.main_frm_dt)
+
+        switch(id){
         case 1:
-        case 2:this.call_api_for_detail_summary_func(fb);
+        case 2:this.call_api_for_detail_summary_func(pay_load);
         break;
         case 3: break;
         case 9:if(!this.__pl_trxn_form.value.pl_folio_type){
           this.__pl_trxn_form.get('pl_folio_type').setValue('L');
-          this.call_api_for_pL_func(fb);
+          this.call_api_for_pL_func(pay_load);
         };
         break;
 
@@ -1134,7 +1149,7 @@ mappings between `act_value` and `value` for transition durations. */
         break
         case 14: if(!this.__systematicMissedTrxn_Frm.value.report_type){
           this.__systematicMissedTrxn_Frm.get('report_type').setValue('P');
-          this.call_api_for_systematicMissedTransaction(fb)
+          this.call_api_for_systematicMissedTransaction(pay_load)
         }
         break;
         default: break;
@@ -1178,11 +1193,65 @@ mappings between `act_value` and `value` for transition durations. */
     this.disclaimer = dis_des;
   }
 
+  call_api_for_family_summary(formData){
+      if(this.family_summary.length == 0){
+        this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
+        .pipe(pluck('data'))
+        .subscribe((res:Required<{data,client_details:client[],disclaimer:string}>) => {
+          try{
+            this.parent_family_holder_for_tab.push({tab_name:'FAMILY SUMMARY',id:new Date().getTime(),flag:'FS',img:''})
+            res.client_details.forEach(el =>{
+                let total_amt = [];
+                let total_date = [];
+                let  dt = [];
+                this.parent_family_holder_for_tab.push({tab_name:el.client_name.toUpperCase(),id:el.id,flag:el.pan,img:'',pan:el.pan})
+                if(this.main_frm_dt?.trans_type == 'L'){
+                  dt = res.data[el.client_name.toUpperCase()].filter(item => Number(item.curr_val) > 0);
+                }
+                else{
+                  dt = res.data[el.client_name.toUpperCase()];
+                }
+                // const dt_with_curr_val_zero = res.data[el.client_name.toUpperCase()]
+                dt.forEach((element) => {
+                    if(element?.mydata.all_amt_arr.length > 0 && element?.mydata.all_date_arr.length > 0){
+                    total_amt = [...total_amt,...(element.mydata ? element.mydata?.all_amt_arr.map(el => Number(el)) : [])]
+                    total_date = [...total_date,...(element.mydata ? element.mydata?.all_date_arr: [])]
+                  }
+                })
+                const tot_curr_val = global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.curr_val))
+                this.family_summary.push(
+                  {
+                    id:el.id,
+                    client_name:el.client_name,
+                    pan:el.pan,
+                    inv_cost:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.inv_cost)),
+                    tot_units:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.tot_units)),
+                    curr_val:tot_curr_val,
+                    idcw_reinv:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.idcw_reinv)),
+                    idcwp:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.idcwp)),
+                    gain_loss:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.gain_loss)),
+                    ret_abs:(global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.ret_abs)) / dt.length),
+                    total_dates: total_date,
+                    total_amount:total_amt,
+                    xirr:global.XIRR([...total_amt,tot_curr_val],[...total_date,this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd')],0),
+                    valuation_as_on:this.valuation_as_on
+                  }
+                )
+             })
+            this.setClientDtls(res.client_details.filter((el:client) => el.pan === this.main_frm_dt?.pan_no)[0])
+          }
+          catch(err){
+            this.clientDtls = null;
+          }
+        })
+      }
+  }
+
   call_api_for_detail_summary_func(formData) {
     if(this.dataSource.length == 0){
       this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
       .pipe(pluck('data'))
-      .subscribe((res:Required<{data,client_details:client,disclaimer:string}>) => {
+      .subscribe((res:Required<{data,client_details,disclaimer:string}>) => {
             try{
               if(this.main_frm_dt?.trans_type == 'A'){
                     this.dataSource = res.data.filter((item: ILivePortFolio) => {
@@ -1190,11 +1259,10 @@ mappings between `act_value` and `value` for transition durations. */
                       item.data=[];
                       // item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
                       item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
-                      if(item.mydata){
-                        const amt = item?.mydata.all_amt_arr.map(item => Number(item));
-                        const dt = item?.mydata.all_date_arr;
-                        console.log(global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0))
-                        item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                      if(item.mydata?.all_amt_arr.length > 0 && item.mydata?.all_date_arr.length > 0){
+                          const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                          const dt = item?.mydata.all_date_arr;
+                          item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
                       }
                       else{
                         item.xirr =0
@@ -1207,12 +1275,10 @@ mappings between `act_value` and `value` for transition durations. */
                   if(Number(item.curr_val) > 0 ){
                     item.id = `${Math.random()}_${item.product_code}`;
                     item.data=[];
-                    // item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
                     item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : ''
                     if(item.mydata){
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
-                      // console.log(global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0))
                       const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
                       item.xirr = (item.curr_val == 0 || isNaN(xirr)) ? 0 : xirr
                     }
@@ -1224,33 +1290,47 @@ mappings between `act_value` and `value` for transition durations. */
                    return false
                 });
               }
-              this.setParentTableFooter_ClientDtls(this.dataSource,res.client_details);
+              this.setParentTableFooter_ClientDtls(this.dataSource);
               this.div_history = this.dataSource.filter(item => item.curr_val > 0)
               this.setDisclaimer(res.disclaimer);
+              this.setClientDtls(res.client_details);
               }
             catch(ex){}
       })
     }
     }
 
-    setParentTableFooter_ClientDtls(arr:ILivePortFolio[],client_details:client){
+    setParentTableFooter_ClientDtls(arr:ILivePortFolio[]){
       if(arr.length > 0){
-        const array_without_negative_curr_val = arr.filter((x:ILivePortFolio) => x.curr_val > 0);
-        let date:string[] = array_without_negative_curr_val.map((el:ILivePortFolio) => el.inv_since);
-        let inv_amt:number[] = array_without_negative_curr_val.map((el:ILivePortFolio) => (Number(el.inv_cost) * -1));
+        let total_amt = [];
+        let total_date = [];
+        let xirr,gain_loss = 0;
+        let selected_tab;
         const current_value:number = this.Total__Count(arr,x => Number(x.curr_val))
-        date.push(this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd'));
-        inv_amt.push(current_value);
-        this.setClientDtls(client_details)
+        if(this.main_frm_dt?.view_type == 'C'){
+          arr.forEach((element) =>{
+            if(element?.mydata.all_amt_arr.length > 0 && element?.mydata.all_date_arr.length > 0){
+              total_amt = [...total_amt,...element?.mydata.all_amt_arr.map(item => Number(item))];
+              total_date = [...total_date,...element?.mydata.all_date_arr.map(item => this.datePipe.transform(item,'YYYY-MM-dd'))];
+            }
+          })
+          total_amt.push(current_value);
+          total_date.push(this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd'))
+        }
+        else{
+          selected_tab = this.family_summary.filter(el => el.id == this.selected_tab_dtls?.id)[0]
+          // xirr = this.family_summary.filter(el => el.id == this.selected_tab_dtls?.id)[0].xirr;
+        }
+       
         this.parentLiveMfPortFolio = {
          inv_cost: this.Total__Count(arr,x => Number(x.inv_cost)),
          pur_nav:(this.Total__Count(arr,x => Number(x.pur_nav)) / arr.length),
-         tot_units:this.Total__Count(arr,x => Number(x.tot_units)),
-         curr_val:this.Total__Count(arr,x => Number(x.curr_val)),
-         total:this.Total__Count(arr,x => Number(x.curr_val)),
-         ret_abs: (this.Total__Count(arr,x => Number(x.ret_abs)) / arr.length),
-         gain_loss:this.Total__Count(arr,x =>  Number(x.gain_loss)),
-         xirr:global.XIRR(inv_amt,date,0)
+         tot_units:this.main_frm_dt?.view_type == 'C' ? this.Total__Count(arr,x => Number(x.tot_units)) : selected_tab.tot_units,
+         curr_val:current_value,
+         total:current_value,
+         ret_abs: this.main_frm_dt?.view_type == 'C' ? (this.Total__Count(arr,x => Number(x.ret_abs)) / arr.length) : selected_tab.ret_abs,
+         gain_loss:this.main_frm_dt?.view_type == 'C' ? this.Total__Count(arr,x =>  Number(x.gain_loss)) : selected_tab.gain_loss,
+         xirr:this.main_frm_dt?.view_type == 'C' ? global.XIRR(total_amt,total_date,0) : selected_tab.xirr
         }
         console.log(this.parentLiveMfPortFolio);
          setTimeout(() => {
@@ -1272,14 +1352,16 @@ mappings between `act_value` and `value` for transition durations. */
       .pipe(pluck('data')).subscribe((result:Required<{data:Partial<IPLTrxn>[],client_details:client}>) =>{
             this.plTrxnDtls = result.data.filter((item: IPLTrxn) =>
               {
-                if(item.tot_inflow == 0 && item.tot_outflow == 0){}else{
+                if(item.tot_inflow == 0 && item.tot_outflow == 0){
+                  
+                }
+                else{
                     item.scheme_name= `${item.scheme_name} - ${item.plan_name} - ${item.option_name}`;
-                    // item.gain_loss= ((Number(item.curr_val) + Number(item.tot_outflow)) - Number(item.tot_inflow));
-                    // item.ret_abs = item.tot_inflow > 0 ?  (Number(item.gain_loss) / Number(item.tot_inflow)): 0;
-                    if(item.mydata){
+                    if(item.mydata.all_amt_arr.length > 0 && item.mydata.all_date_arr.length > 0){
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
-                      item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                      // item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
+                      item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
                     }
                     else{
                       item.xirr =0
@@ -1401,9 +1483,10 @@ mappings between `act_value` and `value` for transition durations. */
   /** call api for recent_trxn */
   call_api_for_recent_trxn_func = () =>{
     // if(this.recent_trxn.length == 0){
+      const pay_load = this.main_frm_dt?.view_type == 'F' ? this.getPayLoadForFamily(this.main_frm_dt) : this.main_frm_dt
       this.__dbIntr.api_call(1,'/clients/liveMFRecentTrans',
        this.utility.convertFormData({
-        ...this.main_frm_dt,
+        ...pay_load,
         ...this.recent_trxn_frm.value,
         date_range:global.getActualVal(this.recent_date_range.inputFieldValue),
         flow_type:this.recent_trxn_frm.value.flow_type == 'A' ? '' : this.recent_trxn_frm.value.flow_type,
@@ -1424,15 +1507,24 @@ mappings between `act_value` and `value` for transition durations. */
   /** End */
 
   /*** setting client details */
-  setClientDtls = (clients:client) =>{
-    if(!this.clientDtls){
+  setClientDtls = (clients) =>{
+    if(this.main_frm_dt?.view_type != 'F'){
+      if(!this.clientDtls){
+        this.clientDtls = Object.assign(clients,
+          {
+            ...clients,
+            add_line_1:[clients.add_line_1,clients.add_line_2,clients.add_line_3,clients.city_name,clients.state_name,clients.district_name,clients.pincode].filter(item => {return item}).toString()
+          }
+        );
+       }
+    }
+    else{
       this.clientDtls = Object.assign(clients,
         {
           ...clients,
-           add_line_1:[clients.add_line_1,clients.add_line_2,clients.add_line_3,clients.city_name,clients.state_name,clients.district_name,clients.pincode].filter(item => {return item}).toString()
+          add_line_1:[clients.add_line_1,clients.add_line_2,clients.add_line_3,clients.city_name,clients.state_name,clients.district_name,clients.pincode].filter(item => {return item}).toString()
         }
       );
-      console.log( this.clientDtls)
     }
   }
   /** End */
@@ -1508,9 +1600,10 @@ mappings between `act_value` and `value` for transition durations. */
   }
 
   searchUpcommingTrxn = () =>{
+    const pay_load = this.main_frm_dt?.view_type == 'F' ? this.getPayLoadForFamily(this.main_frm_dt) : this.main_frm_dt
       this.__dbIntr.api_call(1,'/clients/liveMFUpcoming',
         this.utility.convertFormData({
-          ...this.main_frm_dt,
+          ...pay_load,
           ...this.recent_trxn_frm.value,
           flow_type:this.upcomming_trxn_frm.value.flow_type == 'A' ? '' : this.upcomming_trxn_frm.value.flow_type,
           trans_sub_type:this.utility.mapIdfromArray(this.upcomming_trxn_frm.value.trxn_sub_type_id,'trans_sub_type'),
@@ -1634,6 +1727,100 @@ mappings between `act_value` and `value` for transition durations. */
     this.funds().at(cat_index).get('is_checked')?.setValue(check_cat_cond);
   }
 
+
+  TabDetails = (ev) =>{
+    if(ev.index > 0){
+          this.selected_tab_dtls = ev.tabDtls;
+          // this.dataSource = [];
+          // this.selected_id = 0;
+          this.plTrxnDtls=[];
+          this.liveSipPortFolio = [];
+          this.liveSwpPortFolio = [];
+          this.liveStpPortFolio = [];
+          this.systematicMissedTrxn = [];
+          this.upcomming_trxn = [];
+          this.recent_trxn = [];
+          this.rejectTrxn = [];
+          const dt = new Date();
+          dt.setDate(dt.getDate() - 1)
+          this.recent_trxn_frm.patchValue({trxn_type_id:[],trxn_sub_type_id:[],flow_type:'A',date_range:[dt,this.max_date]})
+          this.upcomming_trxn_frm.patchValue({trxn_type_id:[],trxn_sub_type_id:[],flow_type:'A'})
+          this.__reject_trxm_form.reset('',{emitEvent:false,onlySelf:true});
+          this.__systematicMissedTrxn_Frm.reset('',{emitEvent:false,onlySelf:true});
+          this.__live_sip_stp_swp_form.reset('',{emitEvent:false,onlySelf:true});
+          this.__pl_trxn_form.get('pl_folio_type').setValue('');
+          this.call_api_for_detail_summary_func_as_promise(this.getPayLoadForFamily(this.main_frm_dt),ev.index)
+        }
+        else{
+          this.selected_tab_index_for_family = ev.index;
+        }
+  }
+
+  call_api_for_detail_summary_func_as_promise(formData,index) {
+      // if(this.dataSource.length == 0){
+        this.__dbIntr.call_promise(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
+        .then(res =>{
+          try{
+                  if(this.main_frm_dt?.trans_type == 'A'){
+                        this.dataSource = res.data.data.filter((item: ILivePortFolio) => {
+                          item.id = `${Math.random()}_${item.product_code}`;
+                          item.data=[];
+                          item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
+                          if(item.mydata?.all_amt_arr.length > 0 && item.mydata?.all_date_arr.length > 0){
+                            const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                            const dt = item?.mydata.all_date_arr;
+                            item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                          }
+                          else{
+                            item.xirr =0
+                          }
+                          return item
+                    });
+                  }
+                  else{
+                    this.dataSource = res.data.data.filter((item: ILivePortFolio,index:number) => {
+                      if(Number(item.curr_val) > 0 ){
+                        item.id = `${Math.random()}_${item.product_code}`;
+                        item.data=[];
+                        item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : ''
+                        if(item.mydata){
+                          const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                          const dt = item?.mydata.all_date_arr;
+                          const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                          item.xirr = (item.curr_val == 0 || isNaN(xirr)) ? 0 : xirr
+                        }
+                        else{
+                          item.xirr =0
+                        }
+                        return true
+                      }
+                      return false
+                    });
+                  }
+                  this.setParentTableFooter_ClientDtls(this.dataSource);
+                  this.div_history = this.dataSource.filter(item => item.curr_val > 0)
+                  this.setDisclaimer(res.data.disclaimer);
+                  this.setClientDtls(res.data.client_details);
+                  this.selected_tab_index_for_family = index;
+                  this.selected_id = 1
+              }
+              catch(ex){}
+        })
+      // }
+  }
+
+
+  
+
+  getPayLoadForFamily(formData){
+    const pay_load =Object.assign({},{
+      ...formData,
+      view_type:'C',
+      pan_no:this.selected_tab_dtls?.pan ? this.selected_tab_dtls?.pan : '',
+      client_name:this.selected_tab_dtls?.tab_name
+    })
+    return pay_load;
+  }
 }
 
 export interface ILivePortFolio{
@@ -1937,6 +2124,65 @@ export class LiveMFPortFolioColumn{
     {field:'stt',header:'STT',width:"6rem"},
     {field:'trans_mode',header:'Transaction Mode',width:"12rem"},
     {field:'remarks',header:'Remarks',width:"16rem"},
+  ]
+
+
+  public static family_summry_column:column[] = [
+    {
+      field:'client_name',
+      header:'Client',
+      width:'230px',
+      isVisible:true,
+    },
+    
+    {
+      field:'inv_cost',
+      header:'Inv. Amt',
+      width:'70px',
+      isVisible:true,
+    },
+    {
+      field:'tot_units',
+      header:'Units',
+      width:'50px',
+      isVisible:true,
+    },
+    {
+      field:'curr_val',
+      header:'Curr. Value',
+      width:'70px',
+      isVisible:true
+    },
+    {
+      field:'idcw_reinv',
+      header:'IDCW Reinv.',
+      width:'53px',
+      isVisible:true
+    },
+    {
+      field:'idcwp',
+      header:'IDCWP',
+      width:'42px',
+      isVisible:true
+    },
+    {
+      field:'gain_loss',
+      header:'Gain/Loss',
+      width:'70px',
+      isVisible:true
+    },
+    {
+      field:'ret_abs',
+      header:'Ret.ABS',
+      width:'49px',
+      isVisible:true
+    },
+    {
+      field:'xirr',
+      header:'XIRR',
+      width:'50px',
+      isVisible:true
+    }
   ]
 
 }

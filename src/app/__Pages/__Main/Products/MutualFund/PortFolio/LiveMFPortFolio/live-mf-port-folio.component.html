@@ -354,385 +354,250 @@
       </mat-card-content>
     </mat-card>
 
-    <client-dtls [clientDtls]="clientDtls" *ngIf="clientDtls" [date]="valuation_as_on"></client-dtls>
+    <!-- Client Detlais -->
+      <client-dtls [clientDtls]="clientDtls" *ngIf="clientDtls" [date]="valuation_as_on"></client-dtls>
+    <!-- End -->
+    
+    <ng-container *ngIf="parent_family_holder_for_tab.length > 0 || dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 ">
+      <mat-card class="mat-elevation-z0">
+        <mat-card-content>
+          <ng-container *ngIf="main_frm_dt?.view_type == 'F'">
+            <core-tab [Tab]="parent_family_holder_for_tab"
+            (GetTabDtls)="TabDetails($event)"
+            [customClass]="'border-bottom'"
+            [index]="selected_tab_index_for_family"></core-tab>
+          </ng-container>
+          <ng-container *ngIf="main_frm_dt?.view_type == 'F' && selected_tab_index_for_family == 0;else others_trans">
+            <mat-card id="matCard" class="mat-elevation-z0">
+              <!-- <mat-card-header>
+                <mat-card-title>Family's Portfolio Summary</mat-card-title>
+              </mat-card-header> -->
+              <mat-card-content class="p-1">
+                <family-summary [column]="family_summary_column" 
+                  [familySummary]="family_summary"
+                ></family-summary>
+              </mat-card-content>
+            </mat-card>
+          </ng-container>
+          <ng-template #others_trans>
 
-    <ng-container *ngIf="dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 ">
-        <div class="container-fluid px-0 mt-4 border-bottom" id="container_Tab">
-          <button class="arrow-left" id="arrow-left" mat-icon-button (click)="moveNavigation(-100)">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-          <button class="arrow-right" id="arrow-right" mat-icon-button (click)="moveNavigation(100)">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-          <ul class="cus__tab" id="cus___tab">
-            <li
-              class="tablinks"
-              *ngFor="let tabs of __portFolioTab"
-              (click)="getTabsDtls(tabs)"
-              [ngClass]="{ activeList: tabs.id == selected_id }"
-            >
-              <span [ngClass]="{ activeSpan: tabs.id == selected_id }">
-                {{ tabs.label }}
-              </span>
-              <div
-                class="underlineBorder"
-                [ngClass]="{ activeBoder: tabs.id == selected_id }"
-              ></div>
-            </li>
-          </ul>
-        </div>
-        <ng-container *ngIf="selected_id == 1 || selected_id == 2">
-          <mat-card id="matCard" class="mat-elevation-z0">
-            <mat-card-content class="p-3">
-              <p-table
-                #primeTble
-                [value]="dataSource"
-                dataKey="id"
-                [rowExpandMode]="'single'"
-                (onRowExpand)="onRowExpand($event)"
-                expandableRows="true"
-                [columns]="parent_column"
-                [responsive]="true"
-              >
-                <ng-template pTemplate="header">
-                  <tr class="stickyHeader">
-                    <th class="stk"
-                    [style]="'width : ' + item.width"
-                      *ngFor="let item of parent_column"
-                    >
-                      {{ item.header }}
-                    </th>
-                  </tr>
-                </ng-template>
-                <ng-template
-                  pTemplate="body"
-                  let-liveMfPortFolio
-                  let-expanded="expanded"
-                >
-                  <tr>
-                    <td *ngFor="let col of parent_column" class="parentTD">
-                      <ng-container [ngSwitch]="true">
-                        <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                        <ng-container *ngIf="selected_id == 1;else summary">
-                            <p
-                            class="m-0 text-left liveMf_portfolio_scm"
-                            pRipple
-                            [pRowToggler]="liveMfPortFolio"
-                            style="cursor:pointer"
-                          >
-                          <strong role="button"  style="font-size:11px"
-                            [matTooltip]='
-                              liveMfPortFolio[col.field]
-                                ? liveMfPortFolio[col.field] +
-                                  "-" +
-                                  liveMfPortFolio.plan_name +
-                                  "-" +
-                                  liveMfPortFolio.option_name
-                                : "N/A"
-                            '
-                          >
-                            {{
-                              liveMfPortFolio[col.field]
-                                ? (liveMfPortFolio[col.field] | titlecase) +
-                                  "-" +
-                                  liveMfPortFolio.plan_name +
-                                  "-" +
-                                  liveMfPortFolio.option_name
-                                : "N/A"
-                            }}
-                          </strong>
-
-                          </p>
-                        </ng-container>
-                        <ng-template #summary>
-                          <p
-                          class="m-0 text-left"
-                          role="button"
-                          pRipple
-                        >
-                        <strong role="button"  style="font-size:11px"
-                        [matTooltip]='
-                          liveMfPortFolio[col.field]
-                            ? liveMfPortFolio[col.field] +
-                              "-" +
-                              liveMfPortFolio.plan_name +
-                              "-" +
-                              liveMfPortFolio.option_name
-                            : "N/A"
-                        '
+                  <div class="container-fluid px-0 mt-4 border-bottom" id="container_Tab">
+                    <button class="arrow-left" id="arrow-left" mat-icon-button (click)="moveNavigation(-100)">
+                      <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <button class="arrow-right" id="arrow-right" mat-icon-button (click)="moveNavigation(100)">
+                      <mat-icon>chevron_right</mat-icon>
+                    </button>
+                    <ul class="cus__tab" id="cus___tab">
+                      <li
+                        class="tablinks"
+                        *ngFor="let tabs of __portFolioTab"
+                        (click)="getTabsDtls(tabs)"
+                        [ngClass]="{ 
+                          'activeList': tabs.id == selected_id && main_frm_dt?.view_type != 'F',
+                          'activeList_Family': tabs.id == selected_id && main_frm_dt?.view_type== 'F'
+                        }"
                       >
-                          {{
-                            liveMfPortFolio[col.field]
-                              ? (liveMfPortFolio[col.field] | titlecase) +
-                                "-" +
-                                liveMfPortFolio.plan_name +
-                                "-" +
-                                liveMfPortFolio.option_name
-                              : "N/A"
-                          }}
-                          </strong>
-                        </p>
-                        </ng-template>
-                        <div>
-                          <p style="font-size:11px" class="text-left my-2">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
-
-                            <!-- {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : (liveMfPortFolio?.transaction_type == 'Switch In' ? '(Switch In)' : ''))}} -->
-                            {{liveMfPortFolio?.custom_trans_type}}
-
-                          </strong></p>
-                          <p style="font-size:11px" class="text-left m-0">ISIN- <strong class="folio_isin">{{liveMfPortFolio.isin_no}}</strong></p>
-                        </div>
-                          <span class="custom__badge badge-primary" #tooltip="matTooltip"
-                          matTooltip="online">
-                            <!-- online -->
-                            <i class="pi pi-globe " style="font-size: 1.5rem;"></i>
-                          </span>
-                          <span class="custom__badge badge-secondary" #tooltip="matTooltip"
-                          matTooltip="SOA">
-                            <!-- SOA -->
-                            <i class="pi pi-file-pdf" style="font-size: 1.5rem"></i>
-                          </span>
-                          <span class="custom__badge badge-success"  #tooltip="matTooltip"
-                          matTooltip="Fact">
-                            <!-- Fact -->
-                            <i class="pi pi-file" style="font-size: 1.5rem"></i>
-                          </span>
-                          <span
-                            #tooltip="matTooltip"
-                            matTooltip="Details"
-                            class="custom__badge badge-warning"
-                            (click)="OpenDialog(liveMfPortFolio)"
-                            >
-                            <!-- Details -->
-                            <i class="pi pi-info-circle" style="font-size: 1.5rem"></i>
-
-                            </span
-                          >
-                        </ng-container>
-                        <ng-container
-                          *ngSwitchCase="
-                            col.field == 'inv_since' || col.field == 'nav_date'
-                          "
-                        >
-                          <p class="m-0">
-                            {{
-                              liveMfPortFolio[col.field]
-                                ? (liveMfPortFolio[col.field] | date : "dd-MM-YY")
-                                : "N/A"
-                            }}
-                          </p>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="col.field == 'xirr'">
-                          <p class="m-0">{{liveMfPortFolio[col.field] | percent:'1.2-2'}}</p>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="col.field == 'inv_cost'">
-                          <p class="m-0">
-                            {{
-                              liveMfPortFolio[col.field]
-                                ? liveMfPortFolio[col.field]
-                                : liveMfPortFolio[col.field] == 0
-                                ?  liveMfPortFolio[col.field]
-                                : "0"
-                            }}
-                          </p>
-                        </ng-container>
-                        <ng-container
-                          *ngSwitchCase="
-                            col.field == 'gain_loss' ||
-                            col.field == 'ret_abs' ||
-                            col.field == 'curr_val' ||
-                            col.field == 'idcw_reinv' ||
-                            col.field == 'idcwp' ||
-                            col.field == 'idcwr'
-                          "
-                        >
-                          <p class="m-0">
-                            {{
-                              liveMfPortFolio[col.field]
-                                ? liveMfPortFolio[col.field]
-                                : liveMfPortFolio[col.field] == 0
-                                ? liveMfPortFolio[col.field]
-                                : "0"
-                            }}
-                            {{ col.field == "ret_abs" ? "%" : "" }}
-                          </p>
-                        </ng-container>
-
-                        <ng-container *ngSwitchCase="col.field == 'tot_units'">
-                          <p class="m-0">
-                            {{liveMfPortFolio[col.field] > 0 ? liveMfPortFolio[col.field] : 0}}
-                          </p>
-                        </ng-container>
-
-                        <ng-container *ngSwitchDefault>
-                          <p class="m-0">
-                            {{
-                              liveMfPortFolio[col.field]
-                                ? liveMfPortFolio[col.field]
-                                : "N/A"
-                            }}
-                          </p>
-                        </ng-container>
-                      </ng-container>
-                    </td>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="footer">
-                  <tr>
-                    <td
-                      *ngFor="let col of parent_column"
-                      [style]="'width : ' + col.width"
-                    >
-                      <ng-container [ngSwitch]="true">
-                        <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                          <p class="m-0">Grand Total</p>
-                        </ng-container>
-                        <ng-container
-                          *ngSwitchCase=" col.field == 'tot_units'">
-                          <p class="m-0">
-                            {{
-                              parentLiveMfPortFolio
-                                ? (parentLiveMfPortFolio[col.field]
-                                  | number : "1.2-2")
-                                : "0"
-                            }}
-                          </p>
-                          </ng-container>
-                        <ng-container *ngSwitchCase="col.field == 'xirr'">
-                        <p class="m-0">
-                          {{parentLiveMfPortFolio ? (parentLiveMfPortFolio[col.field] | percent : "1.2-2") : "0"}}
-                        </p>
-                        </ng-container>
-                        <ng-container
-                          *ngSwitchCase=" col.field == 'inv_cost' || col.field == 'pur_nav' || col.field == 'curr_val' || col.field == 'gain_loss' || col.field == 'ret_abs'"
-                        >
-                          <p class="m-0">
-                            {{
-                              parentLiveMfPortFolio
-                                ? (parentLiveMfPortFolio[col.field]
-                                  | number : "1.2-2")
-                                : "0"
-                            }}
-                            {{ col.field == "ret_abs" ? "%" : "" }}
-                          </p>
-                        </ng-container>
-                        <ng-container *ngSwitchDefault> </ng-container>
-                      </ng-container>
-                    </td>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                  <tr>
-                    <td [attr.colspan]="parent_column.length + 1">
-                      <h5 class="p-3 text-left">
-                        There are no Transaction available.
-                      </h5>
-                    </td>
-                  </tr>
-                </ng-template>
-                <ng-template
-                  pTemplate="rowexpansion"
-                  let-liveMfPortFolio
-                  let-i="rowIndex"
-                >
-                  <tr>
-                    <td [attr.colspan]="parent_column.length"
-                    style="background-color:'#e0e0e0'"
-                    >
-                      <div class="p-1">
+                        <span [ngClass]="{ activeSpan: tabs.id == selected_id }">
+                          {{ tabs.label }}
+                        </span>
+                        <div
+                          class="underlineBorder"
+                          [ngClass]="{ activeBoder: tabs.id == selected_id }"
+                        ></div>
+                      </li>
+                    </ul>
+                  </div>
+                  <ng-container *ngIf="selected_id == 1 || selected_id == 2">
+                    <mat-card id="matCard" class="mat-elevation-z0">
+                      <mat-card-content class="p-3">
                         <p-table
-                          [value]="liveMfPortFolio.data | slice : 0 : truncated_val"
+                          #primeTble
+                          [value]="dataSource"
                           dataKey="id"
+                          [rowExpandMode]="'single'"
+                          (onRowExpand)="onRowExpand($event)"
+                          expandableRows="true"
+                          [columns]="parent_column"
+                          [responsive]="true"
                         >
                           <ng-template pTemplate="header">
-                            <tr class="stickyHeader__innerTbl">
-                              <th
-                                class="subTblLiveMfPortFolio"
-                                [style.width]="col.width"
-                                *ngFor="let col of child_column"
+                            <tr class="stickyHeader">
+                              <th class="stk"
+                              [style]="'width : ' + item.width"
+                                *ngFor="let item of parent_column"
                               >
-                                {{ col.header }}
+                                {{ item.header }}
                               </th>
                             </tr>
                           </ng-template>
-                          <ng-template pTemplate="body" let-data let-i="rowIndex">
-                            <tr
-                              class="inr_tble"
-                              [ngStyle]="{
-                                'background-color':
-                                  data.transaction_subtype.includes('Redemption')
-                                    ? '#b70a0a30'
-                                    : data.transaction_subtype.includes('Remaining')
-                                    ? '#FFA500'
-                                    : ''
-                              }"
-                            >
-                              <td
-                                *ngFor="let col of child_column"
-                                [style.width]="col.width"
-                              >
+                          <ng-template
+                            pTemplate="body"
+                            let-liveMfPortFolio
+                            let-expanded="expanded"
+                          >
+                            <tr>
+                              <td *ngFor="let col of parent_column" class="parentTD">
                                 <ng-container [ngSwitch]="true">
-                                  <ng-container
-                                    *ngSwitchCase="col.field == 'sl_no'"
-                                  >
-                                    <p class="m-0">
-                                      {{ i + 1 }}
+                                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                                  <ng-container *ngIf="selected_id == 1;else summary">
+                                      <p
+                                      class="m-0 text-left liveMf_portfolio_scm"
+                                      pRipple
+                                      [pRowToggler]="liveMfPortFolio"
+                                      style="cursor:pointer"
+                                    >
+                                    <strong role="button"  style="font-size:11px"
+                                      [matTooltip]='
+                                        liveMfPortFolio[col.field]
+                                          ? liveMfPortFolio[col.field] +
+                                            "-" +
+                                            liveMfPortFolio.plan_name +
+                                            "-" +
+                                            liveMfPortFolio.option_name
+                                          : "N/A"
+                                      '
+                                    >
+                                      {{
+                                        liveMfPortFolio[col.field]
+                                          ? (liveMfPortFolio[col.field] | titlecase) +
+                                            "-" +
+                                            liveMfPortFolio.plan_name +
+                                            "-" +
+                                            liveMfPortFolio.option_name
+                                          : "N/A"
+                                      }}
+                                    </strong>
+
                                     </p>
                                   </ng-container>
-                                  <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'inv_since'">
-                                    <span class="m-0">
-                                      {{data[col.field] ? (data[col.field] | date : "dd-MM-YY") : "N/A"}}
-                                    </span>
-                                  </ng-container>
-                                  <ng-container
-                                    *ngSwitchCase="col.field == 'cumml_units'"
+                                  <ng-template #summary>
+                                    <p
+                                    class="m-0 text-left"
+                                    role="button"
+                                    pRipple
                                   >
-                                    <span class="m-0">
-                                      {{
-                                        (data[col.field] && data[col.field] > 0)
-                                          ? data[col.field]
-                                          : "0"
-                                      }}
-                                    </span>
-                                  </ng-container>
+                                  <strong role="button"  style="font-size:11px"
+                                  [matTooltip]='
+                                    liveMfPortFolio[col.field]
+                                      ? liveMfPortFolio[col.field] +
+                                        "-" +
+                                        liveMfPortFolio.plan_name +
+                                        "-" +
+                                        liveMfPortFolio.option_name
+                                      : "N/A"
+                                  '
+                                >
+                                    {{
+                                      liveMfPortFolio[col.field]
+                                        ? (liveMfPortFolio[col.field] | titlecase) +
+                                          "-" +
+                                          liveMfPortFolio.plan_name +
+                                          "-" +
+                                          liveMfPortFolio.option_name
+                                        : "N/A"
+                                    }}
+                                    </strong>
+                                  </p>
+                                  </ng-template>
+                                  <div>
+                                    <p style="font-size:11px" class="text-left my-2">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
 
-                                  <ng-container *ngSwitchCase="col.field == 'curr_val'">
-                                    <span class="m-0">
-                                      {{data.cumml_units > 0 ? data[col.field] : "0"}}
-                                    </span>
-                                  </ng-container>
-                                  <ng-container *ngSwitchCase="col.field == 'gain_loss'">
-                                    <span class="m-0">
-                                      {{(data.cumml_units > 0 || data.transaction_type?.includes('Redemption')) ? data[col.field] : "0"}}
-                                    </span>
-                                  </ng-container>
-                                  <ng-container
-                                  *ngSwitchCase="col.field == 'xirr'">
-                                  <span class="m-0">
-                                    {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | percent: '1.2-2') : "0") : "0"}}
-                                  </span>
-                                </ng-container>
-                                <ng-container
-                                *ngSwitchCase="col.field == 'ret_abs'">
-                                <span class="m-0">
-                                  {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number: '1.2-2') : "0") : "0"}} %
-                                </span>
-                              </ng-container>
+                                      <!-- {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : (liveMfPortFolio?.transaction_type == 'Switch In' ? '(Switch In)' : ''))}} -->
+                                      {{liveMfPortFolio?.custom_trans_type}}
 
+                                    </strong></p>
+                                    <p style="font-size:11px" class="text-left m-0">ISIN- <strong class="folio_isin">{{liveMfPortFolio.isin_no}}</strong></p>
+                                  </div>
+                                    <span class="custom__badge badge-primary" #tooltip="matTooltip"
+                                    matTooltip="online">
+                                      <!-- online -->
+                                      <i class="pi pi-globe " style="font-size: 1.5rem;"></i>
+                                    </span>
+                                    <span class="custom__badge badge-secondary" #tooltip="matTooltip"
+                                    matTooltip="SOA">
+                                      <!-- SOA -->
+                                      <i class="pi pi-file-pdf" style="font-size: 1.5rem"></i>
+                                    </span>
+                                    <span class="custom__badge badge-success"  #tooltip="matTooltip"
+                                    matTooltip="Fact">
+                                      <!-- Fact -->
+                                      <i class="pi pi-file" style="font-size: 1.5rem"></i>
+                                    </span>
+                                    <span
+                                      #tooltip="matTooltip"
+                                      matTooltip="Details"
+                                      class="custom__badge badge-warning"
+                                      (click)="OpenDialog(liveMfPortFolio)"
+                                      >
+                                      <!-- Details -->
+                                      <i class="pi pi-info-circle" style="font-size: 1.5rem"></i>
+
+                                      </span
+                                    >
+                                  </ng-container>
                                   <ng-container
                                     *ngSwitchCase="
-                                      col.field == 'idcwr' ||
-                                      col.field == 'idcw_reinv' ||
-                                      col.field == 'idcwp'
+                                      col.field == 'inv_since' || col.field == 'nav_date'
                                     "
                                   >
-                                    <span class="m-0">
-                                      {{ data[col.field] ? data[col.field] : '0'}}
-                                    </span>
+                                    <p class="m-0">
+                                      {{
+                                        liveMfPortFolio[col.field]
+                                          ? (liveMfPortFolio[col.field] | date : "dd-MM-YY")
+                                          : "N/A"
+                                      }}
+                                    </p>
                                   </ng-container>
+                                  <ng-container *ngSwitchCase="col.field == 'xirr'">
+                                    <p class="m-0">{{liveMfPortFolio[col.field] | percent:'1.2-2'}}</p>
+                                  </ng-container>
+                                  <ng-container *ngSwitchCase="col.field == 'inv_cost'">
+                                    <p class="m-0">
+                                      {{
+                                        liveMfPortFolio[col.field]
+                                          ? liveMfPortFolio[col.field]
+                                          : liveMfPortFolio[col.field] == 0
+                                          ?  liveMfPortFolio[col.field]
+                                          : "0"
+                                      }}
+                                    </p>
+                                  </ng-container>
+                                  <ng-container
+                                    *ngSwitchCase="
+                                      col.field == 'gain_loss' ||
+                                      col.field == 'ret_abs' ||
+                                      col.field == 'curr_val' ||
+                                      col.field == 'idcw_reinv' ||
+                                      col.field == 'idcwp' ||
+                                      col.field == 'idcwr'
+                                    "
+                                  >
+                                    <p class="m-0">
+                                      {{
+                                        liveMfPortFolio[col.field]
+                                          ? liveMfPortFolio[col.field]
+                                          : liveMfPortFolio[col.field] == 0
+                                          ? liveMfPortFolio[col.field]
+                                          : "0"
+                                      }}
+                                      {{ col.field == "ret_abs" ? "%" : "" }}
+                                    </p>
+                                  </ng-container>
+
+                                  <ng-container *ngSwitchCase="col.field == 'tot_units'">
+                                    <p class="m-0">
+                                      {{liveMfPortFolio[col.field] > 0 ? liveMfPortFolio[col.field] : 0}}
+                                    </p>
+                                  </ng-container>
+
                                   <ng-container *ngSwitchDefault>
                                     <p class="m-0">
-                                      {{data[col.field]}}
+                                      {{
+                                        liveMfPortFolio[col.field]
+                                          ? liveMfPortFolio[col.field]
+                                          : "N/A"
+                                      }}
                                     </p>
                                   </ng-container>
                                 </ng-container>
@@ -742,374 +607,541 @@
                           <ng-template pTemplate="footer">
                             <tr>
                               <td
-                                class="subTblLiveMfPortFolio"
-                                *ngFor="let col of child_column"
-                                [style.min-width]="col.width"
-                                [style.max-width]="col.width"
+                                *ngFor="let col of parent_column"
+                                [style]="'width : ' + col.width"
                               >
                                 <ng-container [ngSwitch]="true">
+                                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                                    <p class="m-0">Grand Total</p>
+                                  </ng-container>
                                   <ng-container
-                                    *ngSwitchCase="col.field == 'transaction_type'"
-                                  >
-                                    <p class="m-0">Total</p>
-                                  </ng-container>
-                                  <ng-container  *ngSwitchCase="col.field == 'tot_units'">
+                                    *ngSwitchCase=" col.field == 'tot_units'">
                                     <p class="m-0">
-                                      {{subLiveMfPortFolio ? subLiveMfPortFolio[col.field]: "0"}}
+                                      {{
+                                        parentLiveMfPortFolio
+                                          ? (parentLiveMfPortFolio[col.field]
+                                            | number : "1.2-2")
+                                          : "0"
+                                      }}
                                     </p>
-                                  </ng-container>
-                                  <ng-container  *ngSwitchCase="col.field == 'pur_price'">
-                                    <p class="m-0">
-                                      {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | number:'1.4-4'): "0"}}
-                                    </p>
-                                  </ng-container>
+                                    </ng-container>
                                   <ng-container *ngSwitchCase="col.field == 'xirr'">
-                                    <p class="m-0">
-                                      {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | percent:'1.2-2') : "0%"}}
-                                    </p>
+                                  <p class="m-0">
+                                    {{parentLiveMfPortFolio ? (parentLiveMfPortFolio[col.field] | percent : "1.2-2") : "0"}}
+                                  </p>
                                   </ng-container>
                                   <ng-container
-                                    *ngSwitchCase="
-                                      col.field == 'cumml_units' ||
-                                      col.field == 'curr_val' ||
-                                      col.field == 'gain_loss' ||
-                                      col.field == 'ret_abs'
-                                    "
+                                    *ngSwitchCase=" col.field == 'inv_cost' || col.field == 'pur_nav' || col.field == 'curr_val' || col.field == 'gain_loss' || col.field == 'ret_abs'"
                                   >
                                     <p class="m-0">
-                                      {{subLiveMfPortFolio ? subLiveMfPortFolio[col.field] : "0"}}
+                                      {{
+                                        parentLiveMfPortFolio
+                                          ? (parentLiveMfPortFolio[col.field]
+                                            | number : "1.2-2")
+                                          : "0"
+                                      }}
                                       {{ col.field == "ret_abs" ? "%" : "" }}
                                     </p>
                                   </ng-container>
-
-                                  <ng-container
-                                  *ngSwitchCase="col.field == 'tot_tds' || col.field == 'tot_stamp_duty'
-                                  || col.field == 'tot_amount' ||col.field == 'gross_amount'">
-                                  <p class="m-0">
-                                    {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | number:'1.2-2') : "0"}}
-                                  </p>
-                                </ng-container>
-
+                                  <ng-container *ngSwitchDefault> </ng-container>
                                 </ng-container>
                               </td>
                             </tr>
                           </ng-template>
-                          <!-- <ng-template pTemplate="emptymessage">
+                          <ng-template pTemplate="emptymessage">
                             <tr>
-                              <td [attr.colspan]="child_column.length">
-                                There are no transaction available.
+                              <td [attr.colspan]="parent_column.length + 1">
+                                <h5 class="p-3 text-left">
+                                  There are no Transaction available.
+                                </h5>
                               </td>
                             </tr>
-                          </ng-template> -->
+                          </ng-template>
+                          <ng-template
+                            pTemplate="rowexpansion"
+                            let-liveMfPortFolio
+                            let-i="rowIndex"
+                          >
+                            <tr>
+                              <td [attr.colspan]="parent_column.length"
+                              style="background-color:'#e0e0e0'"
+                              >
+                                <div class="p-1">
+                                  <p-table
+                                    [value]="liveMfPortFolio.data | slice : 0 : truncated_val"
+                                    dataKey="id"
+                                  >
+                                    <ng-template pTemplate="header">
+                                      <tr class="stickyHeader__innerTbl">
+                                        <th
+                                          class="subTblLiveMfPortFolio"
+                                          [style.width]="col.width"
+                                          *ngFor="let col of child_column"
+                                        >
+                                          {{ col.header }}
+                                        </th>
+                                      </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-data let-i="rowIndex">
+                                      <tr
+                                        class="inr_tble"
+                                        [ngStyle]="{
+                                          'background-color':
+                                            data.transaction_subtype.includes('Redemption')
+                                              ? '#b70a0a30'
+                                              : data.transaction_subtype.includes('Remaining')
+                                              ? '#FFA500'
+                                              : ''
+                                        }"
+                                      >
+                                        <td
+                                          *ngFor="let col of child_column"
+                                          [style.width]="col.width"
+                                        >
+                                          <ng-container [ngSwitch]="true">
+                                            <ng-container
+                                              *ngSwitchCase="col.field == 'sl_no'"
+                                            >
+                                              <p class="m-0">
+                                                {{ i + 1 }}
+                                              </p>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'inv_since'">
+                                              <span class="m-0">
+                                                {{data[col.field] ? (data[col.field] | date : "dd-MM-YY") : "N/A"}}
+                                              </span>
+                                            </ng-container>
+                                            <ng-container
+                                              *ngSwitchCase="col.field == 'cumml_units'"
+                                            >
+                                              <span class="m-0">
+                                                {{
+                                                  (data[col.field] && data[col.field] > 0)
+                                                    ? data[col.field]
+                                                    : "0"
+                                                }}
+                                              </span>
+                                            </ng-container>
+
+                                            <ng-container *ngSwitchCase="col.field == 'curr_val'">
+                                              <span class="m-0">
+                                                {{data.cumml_units > 0 ? data[col.field] : "0"}}
+                                              </span>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="col.field == 'gain_loss'">
+                                              <span class="m-0">
+                                                {{(data.cumml_units > 0 || data.transaction_type?.includes('Redemption')) ? data[col.field] : "0"}}
+                                              </span>
+                                            </ng-container>
+                                            <ng-container
+                                            *ngSwitchCase="col.field == 'xirr'">
+                                            <span class="m-0">
+                                              {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | percent: '1.2-2') : "0") : "0"}}
+                                            </span>
+                                          </ng-container>
+                                          <ng-container
+                                          *ngSwitchCase="col.field == 'ret_abs'">
+                                          <span class="m-0">
+                                            {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number: '1.2-2') : "0") : "0"}} %
+                                          </span>
+                                        </ng-container>
+
+                                            <ng-container
+                                              *ngSwitchCase="
+                                                col.field == 'idcwr' ||
+                                                col.field == 'idcw_reinv' ||
+                                                col.field == 'idcwp'
+                                              "
+                                            >
+                                              <span class="m-0">
+                                                {{ data[col.field] ? data[col.field] : '0'}}
+                                              </span>
+                                            </ng-container>
+                                            <ng-container *ngSwitchDefault>
+                                              <p class="m-0">
+                                                {{data[col.field]}}
+                                              </p>
+                                            </ng-container>
+                                          </ng-container>
+                                        </td>
+                                      </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="footer">
+                                      <tr>
+                                        <td
+                                          class="subTblLiveMfPortFolio"
+                                          *ngFor="let col of child_column"
+                                          [style.min-width]="col.width"
+                                          [style.max-width]="col.width"
+                                        >
+                                          <ng-container [ngSwitch]="true">
+                                            <ng-container
+                                              *ngSwitchCase="col.field == 'transaction_type'"
+                                            >
+                                              <p class="m-0">Total</p>
+                                            </ng-container>
+                                            <ng-container  *ngSwitchCase="col.field == 'tot_units'">
+                                              <p class="m-0">
+                                                {{subLiveMfPortFolio ? subLiveMfPortFolio[col.field]: "0"}}
+                                              </p>
+                                            </ng-container>
+                                            <ng-container  *ngSwitchCase="col.field == 'pur_price'">
+                                              <p class="m-0">
+                                                {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | number:'1.4-4'): "0"}}
+                                              </p>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="col.field == 'xirr'">
+                                              <p class="m-0">
+                                                {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | percent:'1.2-2') : "0%"}}
+                                              </p>
+                                            </ng-container>
+                                            <ng-container
+                                              *ngSwitchCase="
+                                                col.field == 'cumml_units' ||
+                                                col.field == 'curr_val' ||
+                                                col.field == 'gain_loss' ||
+                                                col.field == 'ret_abs'
+                                              "
+                                            >
+                                              <p class="m-0">
+                                                {{subLiveMfPortFolio ? subLiveMfPortFolio[col.field] : "0"}}
+                                                {{ col.field == "ret_abs" ? "%" : "" }}
+                                              </p>
+                                            </ng-container>
+
+                                            <ng-container
+                                            *ngSwitchCase="col.field == 'tot_tds' || col.field == 'tot_stamp_duty'
+                                            || col.field == 'tot_amount' ||col.field == 'gross_amount'">
+                                            <p class="m-0">
+                                              {{subLiveMfPortFolio ? (subLiveMfPortFolio[col.field] | number:'1.2-2') : "0"}}
+                                            </p>
+                                          </ng-container>
+
+                                          </ng-container>
+                                        </td>
+                                      </tr>
+                                    </ng-template>
+                                    <!-- <ng-template pTemplate="emptymessage">
+                                      <tr>
+                                        <td [attr.colspan]="child_column.length">
+                                          There are no transaction available.
+                                        </td>
+                                      </tr>
+                                    </ng-template> -->
+                                  </p-table>
+                                  <div
+                                    class="px-0 py-2 text-left show__More"
+                                    *ngIf="
+                                      truncated_val != liveMfPortFolio.data.length &&
+                                      liveMfPortFolio.data.length > 0
+                                    "
+                                  >
+                                    <a (click)="show_more('M', i)">Show More Transactions</a>
+                                    &nbsp;<span>|</span>&nbsp;
+                                    <a (click)="show_more('A', i)">Show All Transactions</a>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          </ng-template>
                         </p-table>
-                        <div
-                          class="px-0 py-2 text-left show__More"
-                          *ngIf="
-                            truncated_val != liveMfPortFolio.data.length &&
-                            liveMfPortFolio.data.length > 0
-                          "
-                        >
-                          <a (click)="show_more('M', i)">Show More Transactions</a>
-                          &nbsp;<span>|</span>&nbsp;
-                          <a (click)="show_more('A', i)">Show All Transactions</a>
+                      </mat-card-content>
+                    </mat-card>
+                  </ng-container>
+                  <ng-container *ngIf="selected_id == 9">
+                    <mat-card id="matCard"  class="mat-elevation-z0 mb-2">
+                      <mat-card-header class="px-3 border-bottom">
+                        <mat-card-title>
+                          <form [formGroup]="__pl_trxn_form">
+                              <mat-radio-group [formControlName]="'pl_folio_type'" color="primary">
+                                <mat-radio-button value="L">Live Folio</mat-radio-button>
+                                <mat-radio-button value="N" class="mx-2">Non Live Folio</mat-radio-button>
+                                <mat-radio-button value="A">All Folio</mat-radio-button>
+                              </mat-radio-group>
+                              </form>
+                        </mat-card-title>
+                      </mat-card-header>
+                      <mat-card-content>
+                        <pl-trxn-dtls
+                        [valuation_as_on]="valuation_as_on"
+                        [folio_type]="__pl_trxn_form.value.pl_folio_type"
+                        [pl_trxn]="plTrxnDtls | plFilter:__pl_trxn_form.value.pl_folio_type"
+                        (getTransactionDetailsFromPL)="OpenDialog($event)"
+                        [client_dtls]="clientDtls"
+                        [form_data]="main_frm_dt"
+                        ></pl-trxn-dtls>
+                      </mat-card-content>
+                      </mat-card>
+                  </ng-container>
+
+                  <ng-container *ngIf="selected_id == 11">
+                    <mat-card id="matCard"  class="mat-elevation-z0">
+                      <mat-card-content class="px-4 py-4 border-bottom">
+                      <div class="row ">
+                        <div class="col-sm-12">
+                          <form [formGroup]="recent_trxn_frm" (ngSubmit)="searchRecentTrxn()">
+                            <div class="row d-flex align-items-end">
+                              <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
+                                <label
+                                  for="date_range"> Date(From-To) </label
+                                  >
+                                  <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date" [showButtonBar]="true"
+                                  formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
+                              </div>
+                              <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12">
+                                <label for="trxn_type_id">Transaction Type</label>
+                                <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
+                                  [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst"
+                                  formControlName="trxn_type_id">
+                                </ng-multiselect-dropdown>
+                              </div>
+
+                              <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12">
+                                <label for="trxn_sub_type_id">Transaction Sub-Type</label>
+                                <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
+                                  [settings]="settingsforTrxnSubTypeDropdown" [data]="trxnSubTypeMst" formControlName="trxn_sub_type_id">
+                                </ng-multiselect-dropdown>
+                              </div>
+
+                              <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
+                                <label for="flow_type"> Cash Flow </label> <br/>
+                              <mat-radio-group formControlName="flow_type" aria-label="Select an option" id="flow_type">
+                                <mat-radio-button value="{{item.id}}" color="primary"
+                                [ngClass]="{'mx-2': item.id == 'I'}"
+                                *ngFor="let item of flowType">{{item.name}}</mat-radio-button>
+                              </mat-radio-group>
+                              </div>
+
+                              <!-- Button -->
+                              <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 d-flex justify-content-end align-items-end">
+                                <button
+                                  pButton
+                                  type="submit"
+                                  class="p-button-lg mx-3"
+                                  iconPos="left"
+                                  icon="pi pi-eye"
+                                  label="Show"
+                                ></button>
+                              </div>
+                              <!-- End -->
+                              </div>
+                          </form>
+
                         </div>
                       </div>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </mat-card-content>
-          </mat-card>
-        </ng-container>
-        <ng-container *ngIf="selected_id == 9">
-          <mat-card id="matCard"  class="mat-elevation-z0 mb-2">
-            <mat-card-header class="px-3 border-bottom">
-              <mat-card-title>
-                <form [formGroup]="__pl_trxn_form">
-                    <mat-radio-group [formControlName]="'pl_folio_type'" color="primary">
-                      <mat-radio-button value="L">Live Folio</mat-radio-button>
-                      <mat-radio-button value="N" class="mx-2">Non Live Folio</mat-radio-button>
-                      <mat-radio-button value="A">All Folio</mat-radio-button>
-                    </mat-radio-group>
-                    </form>
-              </mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <pl-trxn-dtls
-              [valuation_as_on]="valuation_as_on"
-              [folio_type]="__pl_trxn_form.value.pl_folio_type"
-              [pl_trxn]="plTrxnDtls | plFilter:__pl_trxn_form.value.pl_folio_type"
-              (getTransactionDetailsFromPL)="OpenDialog($event)"
-              [client_dtls]="clientDtls"
-              ></pl-trxn-dtls>
-            </mat-card-content>
-            </mat-card>
-        </ng-container>
+                      </mat-card-content>
+                    </mat-card>
+                    <recent-trxn [recent_trxn]="recent_trxn"></recent-trxn>
 
-        <ng-container *ngIf="selected_id == 11">
-          <mat-card id="matCard"  class="mat-elevation-z0">
-            <mat-card-content class="px-4 py-4 border-bottom">
-            <div class="row ">
-              <div class="col-sm-12">
-                <form [formGroup]="recent_trxn_frm" (ngSubmit)="searchRecentTrxn()">
-                  <div class="row d-flex align-items-end">
-                    <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
-                      <label
-                        for="date_range"> Date(From-To) </label
-                        >
-                        <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [maxDate]="max_date" [showButtonBar]="true"
-                        formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
-                    </div>
-                    <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12">
-                      <label for="trxn_type_id">Transaction Type</label>
-                      <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
-                        [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst"
-                        formControlName="trxn_type_id">
-                      </ng-multiselect-dropdown>
-                    </div>
-
-                    <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12">
-                      <label for="trxn_sub_type_id">Transaction Sub-Type</label>
-                      <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
-                        [settings]="settingsforTrxnSubTypeDropdown" [data]="trxnSubTypeMst" formControlName="trxn_sub_type_id">
-                      </ng-multiselect-dropdown>
-                    </div>
-
-                    <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
-                      <label for="flow_type"> Cash Flow </label> <br/>
-                    <mat-radio-group formControlName="flow_type" aria-label="Select an option" id="flow_type">
-                      <mat-radio-button value="{{item.id}}" color="primary"
-                      [ngClass]="{'mx-2': item.id == 'I'}"
-                      *ngFor="let item of flowType">{{item.name}}</mat-radio-button>
-                    </mat-radio-group>
-                    </div>
-
-                    <!-- Button -->
-                    <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 d-flex justify-content-end align-items-end">
-                      <button
-                        pButton
-                        type="submit"
-                        class="p-button-lg mx-3"
-                        iconPos="left"
-                        icon="pi pi-eye"
-                        label="Show"
-                      ></button>
-                    </div>
-                    <!-- End -->
-                    </div>
-                </form>
-
-              </div>
-            </div>
-            </mat-card-content>
-          </mat-card>
-          <recent-trxn [recent_trxn]="recent_trxn"></recent-trxn>
-
-        </ng-container>
-
-        <ng-container *ngIf="selected_id == 4 || selected_id == 5 || selected_id == 6">
-          <mat-card id="matCard" class="mat-elevation-z0 mb-2">
-            <mat-card-header class="px-3 border-bottom">
-              <mat-card-title>
-                <form [formGroup]="__live_sip_stp_swp_form">
-
-                  <ng-container  *ngIf="selected_id == 4">
-                    <mat-radio-group [formControlName]="'live_sip'" color="primary">
-                      <mat-radio-button value="L">
-                        Live SIP
-                      </mat-radio-button>
-                      <mat-radio-button value="I" class="mx-2">
-                        Inactive SIP
-                      </mat-radio-button>
-                      <mat-radio-button value="A">
-                        All SIP
-                      </mat-radio-button>
-                    </mat-radio-group>
                   </ng-container>
 
-                  <ng-container  *ngIf="selected_id == 5">
-                    <mat-radio-group [formControlName]="'live_stp'" color="primary">
-                      <mat-radio-button value="L">
-                        Live STP
-                      </mat-radio-button>
-                      <mat-radio-button value="I" class="mx-2">
-                        Inactive STP
-                      </mat-radio-button>
-                      <mat-radio-button value="A" class="">
-                        All STP
-                      </mat-radio-button>
-                    </mat-radio-group>
+                  <ng-container *ngIf="selected_id == 4 || selected_id == 5 || selected_id == 6">
+                    <mat-card id="matCard" class="mat-elevation-z0">
+                      <mat-card-header class="px-3 border-bottom">
+                        <mat-card-title>
+                          <form [formGroup]="__live_sip_stp_swp_form">
+
+                            <ng-container  *ngIf="selected_id == 4">
+                              <mat-radio-group [formControlName]="'live_sip'" color="primary">
+                                <mat-radio-button value="L">
+                                  Live SIP
+                                </mat-radio-button>
+                                <mat-radio-button value="I" class="mx-2">
+                                  Inactive SIP
+                                </mat-radio-button>
+                                <mat-radio-button value="A">
+                                  All SIP
+                                </mat-radio-button>
+                              </mat-radio-group>
+                            </ng-container>
+
+                            <ng-container  *ngIf="selected_id == 5">
+                              <mat-radio-group [formControlName]="'live_stp'" color="primary">
+                                <mat-radio-button value="L">
+                                  Live STP
+                                </mat-radio-button>
+                                <mat-radio-button value="I" class="mx-2">
+                                  Inactive STP
+                                </mat-radio-button>
+                                <mat-radio-button value="A" class="">
+                                  All STP
+                                </mat-radio-button>
+                              </mat-radio-group>
+                            </ng-container>
+
+                            <ng-container  *ngIf="selected_id == 6">
+                              <mat-radio-group [formControlName]="'live_swp'" color="primary">
+                                <mat-radio-button value="L">
+                                  Live SWP
+                                </mat-radio-button>
+                                <mat-radio-button value="I" class="mx-2">
+                                  Inactive SWP
+                                </mat-radio-button>
+                                <mat-radio-button value="A" class="">
+                                  All SWP
+                                </mat-radio-button>
+                              </mat-radio-group>
+                            </ng-container>
+                          </form>
+                        </mat-card-title>
+                      </mat-card-header>
+                      <mat-card-content>
+                        <ng-container *ngIf="selected_id == 4">
+                          <!-- [liveSIP]="liveSipPortFolio" -->
+                          <portfolio-live-sip
+                            [liveSIP]="liveSipPortFolio"
+                            [sip_type]="__live_sip_stp_swp_form.value.live_sip"
+                          ></portfolio-live-sip>
+                        </ng-container>
+                        <ng-container *ngIf="selected_id == 5">
+                          <portfolio-live-stp
+                            [liveSTP]="liveStpPortFolio"
+                            [stp_type]="__live_sip_stp_swp_form.value.live_stp"
+                          ></portfolio-live-stp>
+                        </ng-container>
+                        <ng-container *ngIf="selected_id == 6">
+                          <portfolio-live-swp
+                            [liveSWP]="liveSwpPortFolio"
+                            [swp_type]="__live_sip_stp_swp_form.value.live_swp"
+                          ></portfolio-live-swp>
+                        </ng-container>
+                      </mat-card-content>
+                    </mat-card>
                   </ng-container>
 
-                  <ng-container  *ngIf="selected_id == 6">
-                    <mat-radio-group [formControlName]="'live_swp'" color="primary">
-                      <mat-radio-button value="L">
-                        Live SWP
-                      </mat-radio-button>
-                      <mat-radio-button value="I" class="mx-2">
-                        Inactive SWP
-                      </mat-radio-button>
-                      <mat-radio-button value="A" class="">
-                        All SWP
-                      </mat-radio-button>
-                    </mat-radio-group>
+                  <ng-container *ngIf="selected_id == 12">
+                    <mat-card id="matCard"  class="mat-elevation-z0">
+                      <mat-card-content class="px-4 py-0 border-bottom">
+                      <div class="row ">
+                        <div class="col-sm-12">
+                          <form [formGroup]="upcomming_trxn_frm" (ngSubmit)="searchUpcommingTrxn()">
+                            <div class="row d-flex align-items-end">
+                              <!-- <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
+                                <label
+                                  for="date_range"> Date(From-To) </label
+                                  >
+                                  <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [minDate]="max_date" [showButtonBar]="true"
+                                  formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
+                              </div> -->
+                              <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
+                                <label for="trxn_type_id">Transaction Type</label>
+                                <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
+                                  [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst_upcomming"
+                                  formControlName="trxn_type_id">
+                                </ng-multiselect-dropdown>
+                              </div>
+
+                              <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
+                                <label for="trxn_sub_type_id">Transaction Sub-Type</label>
+                                <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
+                                  [settings]="settingsforTrxnSubTypeDropdown" [data]="UpComming_trxnSubTypeMst" formControlName="trxn_sub_type_id">
+                                </ng-multiselect-dropdown>
+                              </div>
+
+                              <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 my-3">
+                                <label for="flow_type"> Cash Flow </label> <br/>
+                              <mat-radio-group formControlName="flow_type" aria-label="Select an option" id="flow_type">
+                                <mat-radio-button value="{{item.id}}" color="primary"
+                                [ngClass]="{'mx-2': item.id == 'I'}"
+                                *ngFor="let item of flowType">{{item.name}}</mat-radio-button>
+                              </mat-radio-group>
+                              </div>
+
+                              <!-- Button -->
+                              <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12 d-flex justify-content-end my-3 align-items-end">
+                                <button
+                                  pButton
+                                  type="submit"
+                                  class="p-button-lg mx-3"
+                                  iconPos="left"
+                                  icon="pi pi-eye"
+                                  label="Show"
+                                ></button>
+                              </div>
+                              <!-- End -->
+                              </div>
+                          </form>
+
+                        </div>
+                      </div>
+                      </mat-card-content>
+                    </mat-card>
+                    <!-- [upcommingTrxn]="upcomming_trxn" -->
+
+                    <upcomming-trxn
+                    [upcommingtrxn]="upcomming_trxn"
+                    ></upcomming-trxn>
                   </ng-container>
-                </form>
-              </mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <ng-container *ngIf="selected_id == 4">
-                <!-- [liveSIP]="liveSipPortFolio" -->
-                <portfolio-live-sip
-                  [liveSIP]="liveSipPortFolio"
-                  [sip_type]="__live_sip_stp_swp_form.value.live_sip"
-                ></portfolio-live-sip>
-              </ng-container>
-              <ng-container *ngIf="selected_id == 5">
-                <portfolio-live-stp
-                  [liveSTP]="liveStpPortFolio"
-                  [stp_type]="__live_sip_stp_swp_form.value.live_stp"
-                ></portfolio-live-stp>
-              </ng-container>
-              <ng-container *ngIf="selected_id == 6">
-                <portfolio-live-swp
-                  [liveSWP]="liveSwpPortFolio"
-                  [swp_type]="__live_sip_stp_swp_form.value.live_swp"
-                ></portfolio-live-swp>
-              </ng-container>
-            </mat-card-content>
-          </mat-card>
-        </ng-container>
 
-        <ng-container *ngIf="selected_id == 12">
-          <mat-card id="matCard"  class="mat-elevation-z0">
-            <mat-card-content class="px-4 py-0 border-bottom">
-            <div class="row ">
-              <div class="col-sm-12">
-                <form [formGroup]="upcomming_trxn_frm" (ngSubmit)="searchUpcommingTrxn()">
-                  <div class="row d-flex align-items-end">
-                    <!-- <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12">
-                      <label
-                        for="date_range"> Date(From-To) </label
-                        >
-                        <p-calendar dateFormat="dd/mm/yy" placeholder="Select Date Range"  [showIcon]="true" #recentdateRng [minDate]="max_date" [showButtonBar]="true"
-                        formControlName="date_range" selectionMode="range" [readonlyInput]="true"></p-calendar>
-                    </div> -->
-                    <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
-                      <label for="trxn_type_id">Transaction Type</label>
-                      <ng-multiselect-dropdown [id]="'trxn_type_id'" [placeholder]="'Select Transaction Type'"
-                        [settings]="settingsforTrxnTypeDropdown"  [data]="trxnTypeMst_upcomming"
-                        formControlName="trxn_type_id">
-                      </ng-multiselect-dropdown>
-                    </div>
+                  <ng-container *ngIf="selected_id == 13">
+                    <mat-card id="matCard"  class="mat-elevation-z0 mb-2">
+                        <mat-card-header class="px-3 border-bottom">
+                          <mat-card-title>
+                            <form [formGroup]="__reject_trxm_form">
+                                <mat-radio-group [formControlName]="'reject_trxn_type'" color="primary">
+                                  <mat-radio-button
+                                  [ngClass]="{'mx-2':flow_type.id == 'I'}"
+                                  [value]="flow_type.id" *ngFor="let flow_type of flowType">
+                                    {{flow_type.name}}
+                                  </mat-radio-button>
 
-                    <div class="col-md-12 col-sm-12 col-lg-3 col-xs-12 my-3">
-                      <label for="trxn_sub_type_id">Transaction Sub-Type</label>
-                      <ng-multiselect-dropdown [id]="'trxn_sub_type_id'" [placeholder]="'Select Transaction Sub-Type'"
-                        [settings]="settingsforTrxnSubTypeDropdown" [data]="UpComming_trxnSubTypeMst" formControlName="trxn_sub_type_id">
-                      </ng-multiselect-dropdown>
-                    </div>
+                                </mat-radio-group>
+                                </form>
+                          </mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content>
 
-                    <div class="col-md-12 col-sm-12 col-lg-2 col-xs-12 my-3">
-                      <label for="flow_type"> Cash Flow </label> <br/>
-                    <mat-radio-group formControlName="flow_type" aria-label="Select an option" id="flow_type">
-                      <mat-radio-button value="{{item.id}}" color="primary"
-                      [ngClass]="{'mx-2': item.id == 'I'}"
-                      *ngFor="let item of flowType">{{item.name}}</mat-radio-button>
-                    </mat-radio-group>
-                    </div>
+                          <reject-trxn [rejectTrxn]="rejectTrxn"></reject-trxn>
+                        </mat-card-content>
+                    </mat-card>
+                  </ng-container>
 
-                    <!-- Button -->
-                    <div class="col-md-12 col-sm-12 col-lg-4 col-xs-12 d-flex justify-content-end my-3 align-items-end">
-                      <button
-                        pButton
-                        type="submit"
-                        class="p-button-lg mx-3"
-                        iconPos="left"
-                        icon="pi pi-eye"
-                        label="Show"
-                      ></button>
-                    </div>
-                    <!-- End -->
-                    </div>
-                </form>
+                  <ng-container *ngIf="selected_id == 14">
+                      <mat-card id="matCard"  class="mat-elevation-z0">
+                        <mat-card-header class="px-3 border-bottom">
+                          <mat-card-title>
+                            <form [formGroup]="__systematicMissedTrxn_Frm">
+                                <mat-radio-group [formControlName]="'report_type'" color="primary">
+                                  <mat-radio-button value="P">
+                                  SIP
+                                  </mat-radio-button>
+                                  <mat-radio-button value="SO" class="mx-2">
+                                  STP
+                                  </mat-radio-button>
+                                  <mat-radio-button value="R">
+                                  SWP
+                                  </mat-radio-button>
+                                </mat-radio-group>
+                              </form>
+                              </mat-card-title>
+                          </mat-card-header>
+                          <mat-card-content class="py-2">
+                                <systematic-missed-trxn [systematicMissedTrxn]="systematicMissedTrxn | systamaticMissedTransFilter:__systematicMissedTrxn_Frm.value.report_type" [transId]="selected_id"></systematic-missed-trxn>
+                          </mat-card-content>
+                      </mat-card>
 
-              </div>
-            </div>
-            </mat-card-content>
-          </mat-card>
-          <!-- [upcommingTrxn]="upcomming_trxn" -->
+                  </ng-container>
 
-          <upcomming-trxn
-          [upcommingtrxn]="upcomming_trxn"
-          ></upcomming-trxn>
-        </ng-container>
+                  <ng-container *ngIf="selected_id == 10">
+                        <div-history [divHistory]="div_history | divHistory:div_history_frm.value.divhistory_type">
+                          <div form>
+                            <form [formGroup]="div_history_frm">
+                              <mat-radio-group
+                              color="primary"
+                              formControlName="divhistory_type" aria-label="Select an option" id="divhistory_type">
+                                <mat-radio-button [value]="'R'">IDCW R</mat-radio-button>
+                                <mat-radio-button [value]="'P'" class="mx-2">IDCW Payout</mat-radio-button>
+                                <mat-radio-button [value]="''">All</mat-radio-button>
+                              </mat-radio-group>
+                            </form>
+                          </div>
+                        </div-history>
+                  </ng-container>
+          </ng-template>
 
-        <ng-container *ngIf="selected_id == 13">
-          <mat-card id="matCard"  class="mat-elevation-z0 mb-2">
-              <mat-card-header class="px-3 border-bottom">
-                <mat-card-title>
-                  <form [formGroup]="__reject_trxm_form">
-                      <mat-radio-group [formControlName]="'reject_trxn_type'" color="primary">
-                        <mat-radio-button
-                        [ngClass]="{'mx-2':flow_type.id == 'I'}"
-                        [value]="flow_type.id" *ngFor="let flow_type of flowType">
-                          {{flow_type.name}}
-                        </mat-radio-button>
-
-                      </mat-radio-group>
-                      </form>
-                </mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-
-                <reject-trxn [rejectTrxn]="rejectTrxn"></reject-trxn>
-              </mat-card-content>
-          </mat-card>
-        </ng-container>
-
-        <ng-container *ngIf="selected_id == 14">
-            <mat-card id="matCard"  class="mat-elevation-z0">
-              <mat-card-header class="px-3 border-bottom">
-                <mat-card-title>
-                  <form [formGroup]="__systematicMissedTrxn_Frm">
-                      <mat-radio-group [formControlName]="'report_type'" color="primary">
-                        <mat-radio-button value="P">
-                        SIP
-                        </mat-radio-button>
-                        <mat-radio-button value="SO" class="mx-2">
-                        STP
-                        </mat-radio-button>
-                        <mat-radio-button value="R">
-                        SWP
-                        </mat-radio-button>
-                      </mat-radio-group>
-                    </form>
-                    </mat-card-title>
-                </mat-card-header>
-                <mat-card-content class="py-2">
-                      <systematic-missed-trxn [systematicMissedTrxn]="systematicMissedTrxn | systamaticMissedTransFilter:__systematicMissedTrxn_Frm.value.report_type" [transId]="selected_id"></systematic-missed-trxn>
-                </mat-card-content>
-            </mat-card>
-
-        </ng-container>
-
-        <ng-container *ngIf="selected_id == 10">
-              <div-history [divHistory]="div_history | divHistory:div_history_frm.value.divhistory_type">
-                <div form>
-                  <form [formGroup]="div_history_frm">
-                    <mat-radio-group
-                    color="primary"
-                    formControlName="divhistory_type" aria-label="Select an option" id="divhistory_type">
-                      <mat-radio-button [value]="'R'">IDCW R</mat-radio-button>
-                      <mat-radio-button [value]="'P'" class="mx-2">IDCW Payout</mat-radio-button>
-                      <mat-radio-button [value]="''">All</mat-radio-button>
-                    </mat-radio-group>
-                  </form>
-                </div>
-              </div-history>
-        </ng-container>
-  </ng-container>
+        </mat-card-content>
+        </mat-card>
+    </ng-container>
   </div>
   <div class="col-sm-12 px-5" *ngIf="disclaimer">
     <mat-card id="matCard"  class="mat-elevation-z0 mb-4">

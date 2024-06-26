@@ -16,6 +16,8 @@ import { plFilterPipe } from 'src/app/__Pipes/plTrxnFilter.pipe';
 import { systamaticMissedTransFilterPipe } from 'src/app/__Pipes/systematicMissedTrans.pipe';
 import { DivHistoryComponent } from './div-history/div-history.component';
 import { divHistoryPipe } from 'src/app/__Pipes/div_history.pipe';
+import { TabModule } from 'src/app/__Core/tab/tab.module';
+import { FamilySummaryComponent } from './family-summary/family-summary.component';
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
 @NgModule({
@@ -32,12 +34,14 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     plFilterPipe,
     divHistoryPipe,
     systamaticMissedTransFilterPipe,
-    DivHistoryComponent
+    DivHistoryComponent,
+    FamilySummaryComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     DialogModule,
+    TabModule,
     RouterModule.forChild(routes),
   ]
 })
