@@ -9,12 +9,19 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { Calendar } from 'primeng/calendar';
 import { from, of, zip } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { Table } from 'primeng/table';
+import { column } from 'src/app/__Model/tblClmns';
+
+
 @Component({
   selector: 'portfolio-relcapitalgain',
   templateUrl: './relcapitalgain.component.html',
   styleUrls: ['./relcapitalgain.component.css']
 })
 export class RelcapitalgainComponent implements OnInit {
+
+  @ViewChild('relise_capital_gain_summary') primaryTbl :Table;
+
 
   /**
    * Setting of multiselect dropdown
@@ -82,9 +89,22 @@ export class RelcapitalgainComponent implements OnInit {
     pan_no: new FormControl('')
   })
 
+  main_frm_dt;
+
   relisedCapitalGain = [];
 
   relised_capital_gain_column = realisedCapitalGainColumn.column
+
+  relised_capital_gain_summary_column=realisedCapitalGainColumn.column_summary;
+
+  relised_capital_gain_summary:Partial<IsummaryReport>[] = []
+
+  relised_capital_gain_summary_footer:Partial<IsummaryReport>;
+
+  relised_capital_gain_as_per_ITD_OverAll_Summary = [];
+
+  relised_capital_gain_as_per_ITD_column:column[] = realisedCapitalGainColumn.column_As_Per_ITD;
+
 
   constructor(private dbIntr:DbIntrService,private utility:UtiliService,private datePipe:DatePipe) { }
 
@@ -92,13 +112,15 @@ export class RelcapitalgainComponent implements OnInit {
     this.released_capital_gain_form.get('client_name').disable();
     this.financial_year = global.getAllFinancialYears();
     this.released_capital_gain_form.get('fin_year').setValue(this.financial_year.length > 0 ? this.financial_year[0] : '');
-
-    console.log(this.relised_capital_gain_column);
   }
 
   getReleasedCapitalGainLoss = () =>{
       this.relisedCapitalGain = [];
+      this.relised_capital_gain_summary = [];
+      this.client_dtls = null
+      this.relised_capital_gain_summary_footer = null;
       const {asset_type,...rest} = this.released_capital_gain_form.value
+      this.main_frm_dt = null;
       const dt = Object.assign({},rest,
         {
           ...rest,
@@ -109,8 +131,15 @@ export class RelcapitalgainComponent implements OnInit {
       this.dbIntr.api_call(1,'/clients/realisedCapitalGain',this.utility.convertFormData(dt))
       .pipe(pluck('data')).subscribe((res:Required<{data,client_details:client}>) =>{
         this.client_dtls = res.client_details;
+        this.client_dtls = Object.assign(res.client_details,
+          {
+            ...res.client_details,
+            add_line_1:[res.client_details.add_line_1,res.client_details.add_line_2,res.client_details.add_line_3,res.client_details.city_name,res.client_details.state_name,res.client_details.district_name,res.client_details.pincode].filter(item => {return item}).toString()
+          }
+        );
         this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
         let filter_data_by_asset_type = res.data.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type));
+        this.relised_capital_gain_summary = [];
         from(filter_data_by_asset_type.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
         .pipe(
           groupBy((data:any) => data.tax_type),
@@ -126,19 +155,79 @@ export class RelcapitalgainComponent implements OnInit {
                   element.calculation_arr = element.calculation_arr.filter(item => item.ltcg != '')
                 }
               }
+              element.total = this.getGrandTotal(element.calculation_arr);
+              const long_term_gain = element.total?.index_ltcg > 0 ? element.total?.index_ltcg  : 0;
+              const long_term_loss = element.total?.index_ltcg < 0 ? element.total?.index_ltcg  : 0;
+              const net_long_term_gain_loss = (long_term_gain + long_term_loss);
+              const short_term_gain = element.total?.stcg > 0 ? element.total?.stcg  : 0;
+              const short_term_loss = element.total?.stcg < 0 ? element.total?.stcg  : 0;
+              const net_short_term_gain_loss = (short_term_gain + short_term_loss)
+              this.relised_capital_gain_summary.push({
+                id:new Date().getTime(),
+                folio:element.folio_no,
+                scheme_name:`${element.scheme_name}-${element.plan_name}-${element.option_name}`,
+                short_term_gain:element.total?.stcg > 0 ? element.total?.stcg  : 0,
+                short_term_loss:element.total?.stcg < 0 ? element.total?.stcg  : 0,
+                long_term_gain:long_term_gain,
+                long_term_loss:long_term_loss,
+                net_long_term_gain_loss:net_long_term_gain_loss,
+                net_short_term_gain_loss:net_short_term_gain_loss,
+                stt: element?.total.stt,
+                tds: element?.total.tot_tds,
+                total_gain_loss:(net_long_term_gain_loss + net_short_term_gain_loss)
+              })
               return element
             })
-          if(!final_realised_capital_gain.every(el => el.calculation_arr.length == 0)){
-            this.relisedCapitalGain.push(
-              {
-                tax_type:dt[0],
-                data:final_realised_capital_gain
+            if(rest.report_type === 'D'){
+              if(!final_realised_capital_gain.every(el => el.calculation_arr.length == 0)){
+                this.relisedCapitalGain.push(
+                  {
+                    tax_type:dt[0],
+                    data:final_realised_capital_gain,
+                    total: this.getGrandTotal(final_realised_capital_gain.map(el => el.total))
+                  }
+                );
               }
-            );
-          }
+            }
         })
-
+        this.main_frm_dt = rest;
+        if(this.relisedCapitalGain.length == 0 && this.relised_capital_gain_summary.length == 0){
+          this.utility.showSnackbar('No Records Found!!',0)
+        }
+        else{
+            this.relised_capital_gain_summary_footer = {
+              short_term_gain:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.short_term_gain),
+              short_term_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.short_term_loss),
+              long_term_gain:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.long_term_gain),
+              long_term_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.long_term_loss),
+              net_long_term_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.net_long_term_gain_loss),
+              net_short_term_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.net_short_term_gain_loss),
+              total_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.total_gain_loss),
+              tds:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.tds),
+              stt:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<IsummaryReport>) => item.stt)
+            }
+        }
       })
+  }
+
+  getGrandTotal = (arr) =>{
+     return {
+      tot_amount: global.Total__Count(arr,(item:any) => Number(item.tot_amount)),
+      pur_price: global.Total__Count(arr,(item:any) => Number(item.pur_price)),
+      tot_units: global.Total__Count(arr,(item:any) => Number(item.tot_units)),
+      nav_as_on_31_01_2018: global.Total__Count(arr,(item:any) => Number(item.nav_as_on_31_01_2018)),
+      amount_as_on_31_01_2018: global.Total__Count(arr,(item:any) => Number(item.amount_as_on_31_01_2018)),
+      sell_nav: global.Total__Count(arr,(item:any) => Number(item.sell_nav)),
+      redemp_amount: global.Total__Count(arr,(item:any) => Number(item.redemp_amount)),
+      tot_tds: global.Total__Count(arr,(item:any) => Number(item.tot_tds)),
+      stt: global.Total__Count(arr,(item:any) => Number(item.stt)),
+      net_sell_proceed: global.Total__Count(arr,(item:any) => Number(item.net_sell_proceed)),
+      div_amount: global.Total__Count(arr,(item:any) => Number(item.div_amount)),
+      // days: global.Total__Count(arr,(item:any) => Number(item.days)),
+      index_ltcg: global.Total__Count(arr,(item:any) => Number(item.index_ltcg ? item.index_ltcg : 0)),
+      stcg: global.Total__Count(arr,(item:any) => Number(item.stcg ? item.stcg : 0)),
+      ltcg: global.Total__Count(arr,(item:any) => Number(item.ltcg ? item.ltcg : 0))
+     }
   }
 
 
@@ -163,7 +252,6 @@ export class RelcapitalgainComponent implements OnInit {
         end_date = this.datePipe.transform(this.released_capital_gain_form.get('date_range').value[1],'longDate');
         date_rng = `${start_date} TO ${end_date}`;
       }
-      console.log(date_rng);
       return date_rng;
   }
 
@@ -200,7 +288,6 @@ export class RelcapitalgainComponent implements OnInit {
       this.dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.released_capital_gain_form.value.view_type}`)
       .pipe(pluck('data'))
       .subscribe((res:client[]) =>{
-       console.log(res);
        this.family_members = res;
        this.released_capital_gain_form.get('family_members').setValue(res.map((item:client) => ({pan:item.pan,client_name:item.client_name})))
       })
@@ -271,6 +358,15 @@ export class RelcapitalgainComponent implements OnInit {
   /*** End */
  }
 
+ getColumns = () =>{
+    return this.utility.getColumns(this.relised_capital_gain_summary_column);
+  }
+
+  filterGlobal_secondary = ($event) =>{
+    let value = $event.target.value;
+    this.primaryTbl.filterGlobal(value,'contains')
+  }
+
 }
 
 
@@ -295,6 +391,7 @@ export class realisedCapitalGainColumn{
           header:'Purchase Details',
           col_span:7,
           row_span:1,
+          // width:'47rem',
           sub_row:[
             {
               field:'tot_amount',
@@ -337,7 +434,7 @@ export class realisedCapitalGainColumn{
           field:'sell_dtls',
           header:'Sell Details',
           col_span:7,
-          // width:'40rem',
+          // width:'45rem',
           row_span:1,
           sub_row:[
             {
@@ -412,6 +509,119 @@ export class realisedCapitalGainColumn{
           ]
         }
       ]
+
+      public static column_summary =[
+        {
+          field:'scheme_name',
+          header:'Scheme',
+          width:'27rem'
+        },
+        {
+          field:'folio',
+          header:'Folio',
+          // width:'5rem'
+        },
+        {
+          field:'short_term_gain',
+          header:'Short Term Gain',
+          // width:'10rem'
+        },
+        {
+          field:'short_term_loss',
+          header:'Short Term Loss',
+          // width:'10rem'
+        },
+        {
+          field:'net_short_term_gain_loss',
+          header:'Net Short Term Gain Loss',
+          width:'14rem'
+
+        },
+        {
+          field:'long_term_gain',
+          header:'Long Term Gain',
+          // width:'10rem'
+        },
+        {
+          field:'long_term_loss',
+          header:'Long Term Loss',
+          // width:'10rem'
+        },
+        {
+          field:'net_long_term_gain_loss',
+          header:'Net Long Term Gain Loss',
+          width:'14rem'
+
+        },
+        {
+          field:'stt',
+          header:'STT',
+          // width:'3rem'
+        },
+        {
+          field:'tds',
+          header:'TDS',
+          // width:'3rem'
+        },
+        {
+          field:'total_gain_loss',
+          header:'Total Gain Loss',
+          width:''
+        }
+      ]
+
+      public static column_As_Per_ITD:column[] = [
+        {
+            field:'summary_of_capital_gain',
+            header:'Summary of Capital Gains',
+            width:'40rem'
+        },
+        {
+          field:'01/04_15/06',
+          header:'01/04 to 15/06',
+          width:''
+        },
+        {
+          field:'16/06_15/09',
+          header:'16/06 to 15/09',
+          width:''
+        },
+        {
+          field:'16/09_15/12',
+          header:'16/09 to 15/12',
+          width:''
+        },
+        {
+          field:'16/12_15/03',
+          header:'16/12 to 15/03',
+          width:''
+        },
+        {
+          field:'16/03_31/03',
+          header:'16/03 to 31/03',
+          width:''
+        },
+        {
+          field:'total',
+          header:'Total',
+          width:''
+        },
+      ]
+}
+
+export interface IsummaryReport{
+  id:number;
+  scheme_name:string | undefined;
+  folio:string | undefined;
+  short_term_gain:number;
+  short_term_loss:number;
+  long_term_gain:number;
+  long_term_loss:number;
+  net_short_term_gain_loss:number;
+  net_long_term_gain_loss:number;
+  tds:number;
+  stt:number;
+  total_gain_loss:number;
 }
 
 

@@ -4,6 +4,7 @@
   {"id":3,"name":"Contact Details Modification"},
   {"id":4,"name":"Status Modification"},
   {"id":5,"name":"Other Modification"},
-  {"id":6,"name":"Modified KYC Modification"}
+  {"id":6,"name":"Modified KYC Modification"},
+  {"id":7,"name":"Registered To Validate"}
 ]
 

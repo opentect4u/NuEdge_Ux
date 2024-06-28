@@ -252,4 +252,46 @@ export class global{
       return fiscalyear
     }
     /*** End */
+
+    /*** Get Last date of every month from year range */
+    public static getLastDate = (month:number,range:number):Promise<string[]> =>{
+      return new Promise((resolve, reject) =>{
+        try{
+            let start_year = new Date().getFullYear();
+            let end_year = start_year - range;
+            let date = [];
+            for(let i = start_year;i >= end_year;i--){
+                for(let j = month; j >= 0;j--){
+                  var dt = new Date();  
+                  if(i == end_year){
+                    if(j > 2){
+                      date.push(moment(new Date(i,(j + 1),0)).format('YYYY-MM-DD'));
+                    }
+                  }
+                  else{
+                    var actual_date = new Date(i,(j+1),0) 
+                    if(dt > actual_date){
+                      date.push(moment(new Date(i,(j + 1),0)).format('YYYY-MM-DD'));
+                    }
+                    else{
+                      if(actual_date.getMonth() == month){
+                        date.push(moment(new Date()).format('YYYY-MM-DD'));
+                      }
+                    }
+                  }
+                }
+            }
+            resolve(date);
+
+        }
+        catch(err){
+            console.log(err);
+            reject([])
+        }
+        
+      })
+      
+    }
+
+    /**** End */
 }

@@ -20,9 +20,12 @@ th {
 }
 
 .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
-  line-height: 38px !important;
+  /* line-height: 38px !important; */
+  line-height: 32px !important;
 }
-
+.mat-button-toggle-checked{
+  background-color: rgba(19, 67, 175, 0.1)!important;
+}
 
 .fullscreen-dialog {
   max-width: 100% !important;
@@ -263,7 +266,8 @@ tr.mat-header-row {
   border-radius: 0px !important;
   position: fixed;
   width: 100%;
-  z-index: 8;
+  /* z-index: 8; */
+  z-index: 1000;
 }
 
 .customDialog {
@@ -340,11 +344,14 @@ tr.mat-header-row {
 
 .mat-card-title {
   margin-bottom: 0 !important;
-  font-size: 14px !important;
+  /* font-size: 14px !important; */
+  font-size: 12px !important;
+    font-weight: 500;
 }
 
 .mat-card-header {
-  height: 50px !important;
+  /* height: 50px !important; */
+     height: 40px !important;
 }
 
 .mat-card-header-text {
@@ -828,6 +835,9 @@ color: #ffffff;
 
 .p-datatable.p-datatable-lg .p-datatable-tbody > tr > td>p{
   word-break: break-all;
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
 }
 
 .p-checkbox .p-checkbox-box.p-highlight,
@@ -1155,6 +1165,8 @@ span.badge-warning {
 }
 
 
+
+
 .p-datatable .p-datatable-thead > tr.stickyHeader__innerTbl > th {
   position: -webkit-sticky!important;
   position: sticky!important;
@@ -1171,7 +1183,8 @@ span.badge-warning {
 
 .p-datatable.p-datatable-lg .p-datatable-thead > tr > th {
   /* padding: 9px!important; */
-  padding: 9px 3px !important;
+  /* padding: 9px 3px !important; */
+  padding: 9px 1px!important;
 
 }
 .p-datatable .p-sortable-column .p-sortable-column-icon{

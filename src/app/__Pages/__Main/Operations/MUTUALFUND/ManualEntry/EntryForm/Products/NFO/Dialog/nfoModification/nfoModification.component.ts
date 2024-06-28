@@ -1137,6 +1137,7 @@ export class NfomodificationComponent implements OnInit {
 
     //Kyc_status Change
     this.__traxForm.get('kyc_status').valueChanges.subscribe((res) => {
+      console.log(res)
       this.__kycMst = res == 'Y' ? KycMst : withoutKycMst;
     });
 
@@ -1738,12 +1739,13 @@ export class NfomodificationComponent implements OnInit {
     fb.append('remarks', this.__traxForm.value.remarks);
     fb.append('kyc_status', this.__traxForm.value.kyc_status);
     fb.append('first_client_id', this.__traxForm.value.client_id);
-    fb.append(
-      'first_kyc',
-      this.__traxForm.value.kyc_status == 'Y'
-        ? this.__traxForm.value.first_kyc
-        : ''
-    );
+    // fb.append(
+    //   'first_kyc',
+    //   this.__traxForm.value.kyc_status == 'Y'
+    //     ? this.__traxForm.value.first_kyc
+    //     : ''
+    // );
+    fb.append('first_kyc',this.__traxForm.value.first_kyc);
     if (this.__traxForm.value.mode_of_holding != 'S') {
       fb.append(
         'second_client_id',

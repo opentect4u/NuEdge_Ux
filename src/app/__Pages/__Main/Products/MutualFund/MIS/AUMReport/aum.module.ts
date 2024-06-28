@@ -14,6 +14,11 @@ const routes: Routes = [{
       data:{title:"NuEdge - AUM Report",pageTitle:"AUM Report"}
     },
     {
+      path:'fund-house',
+      loadChildren:() => import('./fund-house/fund-house.module').then(m => m.FundHouseModule),
+      data:{title:"NuEdge - AUM Report By Fund House", pageTitle:'AUM Report By Fund House'}
+    },
+    {
       path:'',
       redirectTo:'home',
       pathMatch:'full'

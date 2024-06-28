@@ -30,7 +30,7 @@
         "accessibility":[],
         "title":"AUM By Fund House",
         "tooltip":"AUM By Fund House",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/mis/aum/fund-house",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },
