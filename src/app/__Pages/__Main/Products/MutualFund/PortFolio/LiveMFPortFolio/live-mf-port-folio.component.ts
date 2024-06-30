@@ -27,7 +27,10 @@ import { borderTopLeftRadius } from 'html2canvas/dist/types/css/property-descrip
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 
-
+export enum ExpnadMode{
+   SINGLE = 'single',
+   MULTIPLE = 'multiple'
+}
 
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 type TotalsubLiveMFPortFolio = {
@@ -80,6 +83,8 @@ export class LiveMfPortFolioComponent implements OnInit {
   /*** Holding disclaimer*/
   disclaimer:string | null = '';
   /*** End */
+
+  expnad_mode : 'single' | 'multiple' = 'single';
 
   selected_tab_index_for_family:number = 0;
 
@@ -300,6 +305,9 @@ mappings between `act_value` and `value` for transition durations. */
   dataSource:ILivePortFolio[] = [];
 
   @ViewChild('primeTble') primeTbl :Table;
+  @ViewChild('primeTble_toExport') primeTble_toExport :Table;
+
+
 
   @ViewChild('detailedTbl') secondaryTbl :Table;
 
@@ -565,7 +573,6 @@ mappings between `act_value` and `value` for transition durations. */
 
 
   ngAfterViewInit(){
-
     this.filter_criteria.controls['view_funds_type'].valueChanges.subscribe((res) =>{
         if(res == 'S' || res == 'T'){
           console.log( this.__isDisplay__modal__selected_funds)
@@ -1809,7 +1816,11 @@ mappings between `act_value` and `value` for transition durations. */
       // }
   }
 
-
+  onExport = (ev: 'single' | 'multiple') =>{
+      const table = this.primeTble_toExport.el.nativeElement.querySelector('table');
+      table.setAttribute('id', 'primeTable');
+      this.expnad_mode = ev;
+  }
   
 
   getPayLoadForFamily(formData){

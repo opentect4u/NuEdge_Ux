@@ -3,3 +3,20 @@ textarea{
   min-height:86px;
   max-height:86px;
 }
+
+
+
+.btn
+{
+  background: #fff!important;
+  border: 1px solid #00000017!important;
+}
+
+.btn-outline-danger:hover,
+.btn-outline-success:hover,
+.btn-outline-info:hover,
+.btn-outline-danger:active,
+.btn-outline-success:active,
+.btn-outline-info:active{
+  background-color: #fff!important;
+}
