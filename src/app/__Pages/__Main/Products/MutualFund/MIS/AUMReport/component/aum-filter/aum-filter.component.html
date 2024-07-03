@@ -1,73 +1,60 @@
-
-<mat-card class="mat-elevation-z0 py-3 border">
+<mat-card class="mat-elevation-z0 py-3 border mat_card">
     <mat-card-content class="p-3">
         <form [formGroup]="aum_report_filter_frm" (ngSubmit)="clickToSend()">
-   
-        <div class="row">
-                <div 
-                [ngClass]="{
+
+            <div class="row">
+                <div [ngClass]="{
                     'col-sm-3 col-12': aum_type === 'Clients',
                     'col-sm-4 col-12': aum_type != 'Clients'
-                }"
-                > 
-                           <label for="date_aum">AUM Report For Date</label> 
-                           <select id="date_aum" class="form-control" formControlName="date">
-                                    <option value="">SELECT</option>
-                                    <option *ngFor="let item of date_range"  [value]="item">{{item}}</option>
-                           </select>
-                </div>
-                <div  [ngClass]="{
-                    'col-sm-3 col-12': aum_type === 'Clients',
-                    'col-sm-4 col-12': aum_type != 'Clients'
-                    }"> 
-                    <label for="date_aum">Select ARN</label> 
-                    <select id="date_aum" class="form-control" formControlName="arn_no">
-                             <option value="">ALL</option>
-                             <option *ngFor="let item of md_arn" [value]="item">{{item}}</option>
+                }">
+                    <label for="date_aum">AUM Report For Date</label>
+                    <select id="date_aum" class="form-control" formControlName="date">
+                        <option value="">SELECT</option>
+                        <option *ngFor="let item of date_range" [value]="item">{{item}}</option>
                     </select>
                 </div>
-                <div *ngIf="aum_type === 'Clients'" class="col-sm-4 col-12 d-flex align-items-end justify-content-start">
-                    <mat-radio-group
-                    color="primary"
-                    formControlName="folio_type"
-                    id="folio_type"
-                    aria-label="Select an option">
-                    <mat-radio-button value="C">Folio Consolidation Mode</mat-radio-button>
-                    <mat-radio-button value="S" class="mx-2">Folio Split Mode</mat-radio-button>
-                  </mat-radio-group>
+                <div [ngClass]="{
+                    'col-sm-3 col-12': aum_type === 'Clients',
+                    'col-sm-4 col-12': aum_type != 'Clients'
+                    }">
+                    <label for="date_aum">Select ARN</label>
+                    <select id="date_aum" class="form-control" formControlName="arn_no">
+                        <option value="">ALL</option>
+                        <option *ngFor="let item of md_arn" [value]="item">{{item}}</option>
+                    </select>
+                </div>
+                <div *ngIf="aum_type === 'Clients'"
+                    class="col-sm-4 col-12 d-flex align-items-end justify-content-start">
+                    <mat-radio-group color="primary" formControlName="folio_type" id="folio_type"
+                        aria-label="Select an option">
+                        <mat-radio-button value="C">Folio Consolidation Mode</mat-radio-button>
+                        <mat-radio-button value="S" class="mx-2">Folio Split Mode</mat-radio-button>
+                    </mat-radio-group>
                 </div>
 
                 <div class="col-sm-2 col-12 d-flex align-items-start justify-content-start flex-column">
                     <label>Output In</label>
                     <mat-button-toggle-group #group="matButtonToggleGroup" formControlName="export_type">
                         <mat-button-toggle value="W" aria-label="Click to open Web">
-                          <i class="pi pi-globe text-primary" style="font-size: 2rem"></i>
+                            <i class="pi pi-globe text-primary" style="font-size: 2rem"></i>
                         </mat-button-toggle>
                         <mat-button-toggle value="E" aria-label="Click to open Excel">
-                          <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+                            <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
                         </mat-button-toggle>
-                      </mat-button-toggle-group>
+                    </mat-button-toggle-group>
                 </div>
 
-                <div class="d-flex justify-content-end align-items-end"
-                    [ngClass]="{
+                <div class="d-flex justify-content-end align-items-end" [ngClass]="{
                         'col-sm-2 col-12': aum_type != 'Clients',
-                        'col-12' : aum_type == 'Clients'}"
-                >
-                        <button
-                        pButton
-                        type="submit"
-                        class="p-button-lg mx-3"
-                        iconPos="left"
-                        icon="pi pi-eye"
-                        label="Show"
-                    ></button>
+                        'col-12' : aum_type == 'Clients'}">
+                    <button pButton type="submit" class="p-button-lg mx-3" iconPos="left" icon="pi pi-eye"
+                        label="Show"></button>
                 </div>
-  
-        </div>
-    </form>
+
+            </div>
+        </form>
 
     </mat-card-content>
 </mat-card>
 
-<aum-report-total-calc></aum-report-total-calc>
+<!-- <aum-report-total-calc [aum_type]="aum_type" [aum_report_for_date]="aum_report_filter_frm.get('date').value"></aum-report-total-calc> -->

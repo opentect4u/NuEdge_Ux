@@ -10,7 +10,7 @@ export enum AUTMTYPE{
     "Fund House" = 'Fund House',
     Families = 'Families',
     Clients = 'Clients',
-    Schemes = 'Schemes'
+    Schemes = 'Scheme'
 }
 
 @Component({
@@ -21,7 +21,7 @@ export enum AUTMTYPE{
 export class AumFilterComponent implements OnInit {
 
 
- aum_type: 'Fund House' | 'Families' | 'Clients' = 'Fund House';
+ aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' = 'Fund House';
 
  aum_report_filter_frm = new FormGroup({
     date: new FormControl(''),
@@ -41,6 +41,7 @@ export class AumFilterComponent implements OnInit {
     switch(res?.type){
       case AUTMTYPE['Fund House']: this.aum_type = AUTMTYPE['Fund House'];break;
       case AUTMTYPE.Families: this.aum_type = AUTMTYPE.Families;break;
+      case AUTMTYPE.Schemes: this.aum_type = AUTMTYPE.Schemes;break;
       default: break;
     }
   })
@@ -73,8 +74,25 @@ export class AumFilterComponent implements OnInit {
   /* END */
 
   clickToSend = () =>{
-      console.log(this.aum_report_filter_frm.value);
+      // console.log(this.aum_report_filter_frm.value);
       this.onPress.emit(this.aum_report_filter_frm.value)
   }
+
+  // clickToSend = () =>{
+  //   var formdata = new FormData();
+  //   for(let key in this.aum_report_filter_frm.value){
+  //     formdata.append(key,this.aum_report_filter_frm.value[key])
+  //   }
+  //   this.dbIntr.api_call(1,`/clients/${this.getApiName()}`,formdata)
+  //   .pipe(pluck('data')).subscribe(res =>{
+  //     this.onPress.emit(res)
+  //   })
+  // }
+
+  // getApiName = () =>{
+  //   const key = Object.getOwnPropertyNames(AUM_API).find(el => el == this.aum_type);
+  //   return AUM_API[key];
+  // }
+
 
 }

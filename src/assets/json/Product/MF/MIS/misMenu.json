@@ -39,7 +39,7 @@
         "accessibility":[],
         "title":"AUM By Scheme",
         "tooltip":"AUM By Scheme",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/mis/aum/aum-scheme",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },

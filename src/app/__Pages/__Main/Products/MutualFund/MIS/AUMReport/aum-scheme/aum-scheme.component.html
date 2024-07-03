@@ -1,0 +1,10 @@
+<div class="flexSec">
+    <div class="container">
+        <aum-filter (onPress)="getFormData($event)"></aum-filter>
+        <ng-container *ngIf="md_aum_scheme.length > 0">
+            <aum-table [dataSource]="md_aum_scheme" 
+            [column]="aum_scheme_Column"></aum-table>
+        </ng-container>
+       
+    </div>
+</div>

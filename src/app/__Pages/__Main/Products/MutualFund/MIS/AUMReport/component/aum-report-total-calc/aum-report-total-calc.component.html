@@ -5,14 +5,22 @@
                 </div>
     </mat-card-content>
 </mat-card> -->
-
-<mat-card class="my-3 mat-elevation-z0 border">
+<!-- *ngIf="aum_reports_tiles" -->
+<mat-card class="my-3 mat-elevation-z0 border mat_card" >
         <mat-card-header>
             <mat-card-title>
-                    <h6>AUM REPORTS BY {{aum_type | uppercase}} AS ON: 28/06/2024</h6>
+                    <h6 class="summary-heading">AUM REPORTS BY {{aum_type | uppercase}} AS ON: {{aum_report_for_date | date:'dd-MM-YYYY'}}</h6>
             </mat-card-title>
         </mat-card-header>    
-<mat-card-content class="p-3">
-            
+    <mat-card-content class="p-3">
+        <div class="d-flex align-items-center justify-content-between w-full">
+            <ng-container *ngFor="let item of aum_reports_tiles | keyvalue" >
+                <div class="summer-bx">
+                       <div class="hint-bx">{{item.key | uppercase}}</div>
+                       <div class="num-bx">{{item.value | number:'1.2-2'}}</div>
+                </div>
+           </ng-container>
+        </div>
+       
     </mat-card-content>
 </mat-card>

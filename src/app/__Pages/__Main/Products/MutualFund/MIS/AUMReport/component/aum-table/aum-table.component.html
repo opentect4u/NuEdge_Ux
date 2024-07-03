@@ -1,0 +1,164 @@
+
+<aum-report-total-calc [aum_type]="aum_type"
+[aum_report_for_date]="__formDate"
+[aum_reports_tiles]="footerDT"
+></aum-report-total-calc>
+
+<mat-card class="mat-elevation-z0  border mat_card">
+    <mat-card-content >
+        <p-table #dt [value]="dataSource"
+        [rows]="10" [paginator]="true"
+          [rowHover]="false"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          styleClass="p-datatable-sm p-datatable-striped"
+          [pageLinks]="3"
+          [globalFilterFields]="getColumns()"
+            [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+            dataKey="amc_code"
+            [rowExpandMode]="'single'"
+            (onRowExpand)="onRowExpand($event)"
+            expandableRows="true"
+            [columns]="column"
+          [showCurrentPageReport]="true">
+          <ng-template pTemplate="caption">
+            <div class="d-flex align-items-center justify-content-end">
+              <!-- <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(dt1)"></button> -->
+              <div>
+                
+              </div>
+              <div>
+                <input class="form-control" type="text" 
+                (input)="filterGlobal($event)" 
+                placeholder="Search" />
+              </div>    
+             
+          </div>
+          </ng-template>
+        <ng-template pTemplate="header">
+            <tr class="stickyHeader">
+                <th style="width: 5rem" *ngIf="has_sub_column"></th>
+                <th *ngFor="let col of column"
+                    pSortableColumn="{{col?.field}}"
+                    [style]="'width : '+col?.width"
+                   >
+                  {{col?.header}}
+                  <p-sortIcon field="{{col?.field}}"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-aumDtls let-expanded="expanded">
+            <tr>
+                <td style="width: 5rem" *ngIf="has_sub_column">
+                    <button type="button" pButton 
+                    pRipple [pRowToggler]="aumDtls" 
+                    class="p-button-text p-button-rounded p-button-outline" 
+                    [icon]="expanded ? 'pi pi-minus' : 'pi pi-plus'"></button>
+                </td>
+                <td *ngFor="let col of column"
+                class="{{col.field}}"
+                [style]="'width : '+col.width">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'amc_name'">
+                    <p class="m-0">
+                      {{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}
+                    </p>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    {{aumDtls ? (aumDtls[col.field] ? (aumDtls[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
+                  </ng-container>
+                </ng-container>
+                
+              </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-aumDtls let-i="rowIndex">
+            <tr>
+                <td [attr.colspan]="(column.length + 1)" style="background-color:'#d5d5d53b'">
+                    <div>
+                        <p-table [value]="aumDtls.schemes" dataKey="product_code" 
+                        styleClass="p-datatable-sm p-datatable-striped"
+                        >
+                          <ng-template pTemplate="header">
+                            <tr class="stickyHeader__innerTbl">
+                              <th
+                                class="subTblLiveMfPortFolio py-2"
+                                [style.width]="subcolumn.width"
+                                *ngFor="let subcolumn of subColumn"
+                                pSortableColumn="{{subcolumn.field}}"
+                              >
+                                {{ subcolumn.header }}
+                                <p-sortIcon field="{{subcolumn.field}}"></p-sortIcon>
+                              </th>
+                            </tr>
+                          </ng-template>
+                          <ng-template pTemplate="body" let-data>
+                            <tr class="inr_tble">
+                              <td
+                                *ngFor="let col of subColumn"
+                                [style.width]="col.width"
+                                class="{{col.field}}"
+                              >
+                              <ng-container [ngSwitch]="true">
+                                <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                                    <a class="m-0">{{data[col.field]}}-{{data.plan_name}}-{{data.option_name}}</a>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <p class="m-0">{{data[col.field] ? (data[col.field] | number:'1.2-2') : '0.00'}}</p>
+                                </ng-container>
+
+                              </ng-container>
+                              </td>
+                            </tr>
+                          </ng-template>
+                          <ng-template pTemplate="footer">
+                            <tr>
+                              <td
+                                *ngFor="let subCol of subColumn"
+                                [style.width]="subCol.width"
+                                class="{{subCol.field}}">
+                                <ng-container [ngSwitch]="true">
+                                    <ng-container *ngSwitchCase="subCol.field == 'scheme_name'">
+                                      <p class="m-0">TOTAL</p>
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                      {{aumDtls[i]?.total ? (aumDtls[i]?.total[subCol.field] | number:'1.2-2') : '0.00'}}
+                                    </ng-container>
+                                  </ng-container>
+                              </td>
+                            </tr>
+                          </ng-template>
+
+                        </p-table>
+                      </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-aumDtls>
+          <tr>
+            <td [attr.colspan]="has_sub_column ? (column.length + 1) : (column.length)">
+              <p class="m-0 text-uppercase">No Records Found</p>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr>
+            <td></td>
+            <td
+              *ngFor="let col of column"
+              [style]="'width : ' + col.width"
+            >
+              <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="col.field == 'amc_name'">
+                  <p class="m-0">GRAND TOTAL</p>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'amc_weightage'"></ng-container>
+                <ng-container *ngSwitchDefault>
+                  {{footerDT ? (footerDT[col.header] ? (footerDT[col.header] | number:'1.2-2') : '0.00') : '0.00'}}
+                </ng-container>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+        </p-table>    
+    </mat-card-content>
+</mat-card>

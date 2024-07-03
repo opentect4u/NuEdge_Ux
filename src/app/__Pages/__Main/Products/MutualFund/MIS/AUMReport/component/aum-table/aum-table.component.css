@@ -1,0 +1,33 @@
+::ng-deep .p-datatable.p-datatable-lg .p-datatable-tbody > tr > td>p {
+    font-size: 11px!important;
+    /* font-weight: 500; */
+    margin: 0;
+}
+tr.inr_tble>td.scheme_name
+{
+    text-align: left !important;
+    font-size: 11px !important;
+    font-weight: 500;
+}
+tr>td.amc_name>p{
+    text-align: left !important;
+    font-size: 10px !important;
+    font-weight: 600;
+    padding: 5px!important;
+}
+tr.inr_tble>td.scheme_name>a{
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+    cursor: pointer;
+
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline!important;
+}
+::ng-deep .p-button.p-button-icon-only{
+    height: 2.5rem!important;
+    width: 2rem!important;
+}

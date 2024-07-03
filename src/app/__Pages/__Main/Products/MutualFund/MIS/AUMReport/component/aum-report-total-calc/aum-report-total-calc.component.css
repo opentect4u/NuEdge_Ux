@@ -1,0 +1,26 @@
+.summer-bx{
+    width: 10%;
+    display: inline-block;
+    margin-left: .5%;
+    border-right: 1px solid #ccc;
+    line-height: 18px;
+    text-align: center;
+}
+.summer-bx:last-child{
+    border-width: 0px!important;
+}
+.num-bx{
+    font-size: 11px;
+    font-weight: 500;
+}
+.hint-bx{
+    font-size: 12px;
+    font-weight: 700;
+    color: #000;
+    text-transform: uppercase;
+}
+.summary-heading{
+    font-size: 14px;
+    color: #2a3646;
+    font-weight: 700;
+}
