@@ -178,9 +178,9 @@
                     id="view_mf_report"
                     aria-label="Select an option"
                   >
-                    <mat-radio-button value="F">Fund Type </mat-radio-button>
+                    <mat-radio-button value="F">Category Wise </mat-radio-button>
                     <mat-radio-button value="T" class="mx-2"
-                      >Tag Wise</mat-radio-button
+                      >Subcategory Wise</mat-radio-button
                     >
                   </mat-radio-group>
                 </div>
@@ -420,6 +420,8 @@
                           expandableRows="true"
                           [columns]="parent_column"
                           [responsive]="true"
+                          [globalFilterFields]="getColumnsForDetails()"
+                          
                         >
                           <ng-template pTemplate="header">
                             <tr class="stickyHeader">
@@ -430,6 +432,21 @@
                                 {{ item.header }}
                               </th>
                             </tr>
+                          </ng-template>
+                          <ng-template pTemplate="caption">
+                            <div class="d-flex align-items-center justify-content-between">
+                              <div>
+                                <h6 class="m-0" *ngIf="dataSource.length > 0">
+                                  Showing 1 to {{dataSource.length}} of {{dataSource.length}} 
+                                </h6>
+                              </div>
+                              <div>
+                                <input class="form-control w-full" type="text" 
+                                (input)="filterGlobal($event)" 
+                                placeholder="Search" />
+                              </div>    
+                             
+                          </div>
                           </ng-template>
                           <ng-template
                             pTemplate="body"
@@ -460,7 +477,7 @@
                                     >
                                       {{
                                         liveMfPortFolio[col.field]
-                                          ? (liveMfPortFolio[col.field] | titlecase) +
+                                          ? liveMfPortFolio[col.field] +
                                             "-" +
                                             liveMfPortFolio.plan_name +
                                             "-" +
@@ -490,7 +507,7 @@
                                 >
                                     {{
                                       liveMfPortFolio[col.field]
-                                        ? (liveMfPortFolio[col.field] | titlecase) +
+                                        ? liveMfPortFolio[col.field] +
                                           "-" +
                                           liveMfPortFolio.plan_name +
                                           "-" +
@@ -531,8 +548,7 @@
                                       (click)="OpenDialog(liveMfPortFolio)"
                                       >
                                       <!-- Details -->
-                                      <i class="pi pi-info-circle" style="font-size: 1.5rem"></i>
-
+                                      <i class="pi pi-eye" style="font-size: 1.5rem"></i>
                                       </span
                                     >
                                   </ng-container>
@@ -868,6 +884,7 @@
                         [pl_trxn]="plTrxnDtls | plFilter:__pl_trxn_form.value.pl_folio_type"
                         (getTransactionDetailsFromPL)="OpenDialog($event)"
                         [client_dtls]="clientDtls"
+                        [footerDtls]="plTableFooter"
                         [form_data]="main_frm_dt"
                         ></pl-trxn-dtls>
                       </mat-card-content>
@@ -1290,6 +1307,7 @@
     selectionMode="multiple"
     [value]="selectedFunds"
     [paginator]="false"
+    [globalFilterFields]="['scheme_name','folio_no']"
     >
       <!-- <p>ssss</p> -->
     <ng-template pTemplate="header" >
@@ -1301,9 +1319,19 @@
           <th style="width:9rem">Folio</th>
       </tr>
     </ng-template>
+    <ng-template pTemplate="caption">
+        <div class="d-flex justify-content-between align-items-center">
+          <div></div>
+          <div>
+            <input class="form-control w-full" type="text" 
+            (input)="filterGlobal_dialogBox($event)" 
+            placeholder="Search" />
+          </div> 
+        </div>
+    </ng-template>
 
       <ng-template pTemplate="body" let-selectFnds>
-          <tr >
+          <tr class="dialogTR">
             <td style="width:5rem">
               <p-tableCheckbox [value]="selectFnds"></p-tableCheckbox>
           </td>

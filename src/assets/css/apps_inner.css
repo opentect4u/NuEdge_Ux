@@ -81,9 +81,9 @@ table.table_Custome thead{
 }
 table.table_Custome thead tr th{color: #fff;}
 
-  tr:nth-child(even) {
+  /* tr:nth-child(even) {
     background-color: #fbfbfb;
-  }
+  } */
 
 .editeCustom_table{font-size: 18px;}
 

@@ -5,7 +5,7 @@
   <mat-card-header class="px-3">
     <mat-card-title></mat-card-title> -->
 
-    <div class="row form-group mt-2">
+    <!-- <div class="row form-group mt-2">
       <div class="col-sm-12 d-flex justify-content-end">
         <input id="search" class="form-control rounded w-25 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
           placeholder="Search" />
@@ -24,7 +24,7 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
       </div>
-  </div>
+  </div> -->
 
 
   <!-- </mat-card-header>
@@ -45,9 +45,36 @@
                 [style]="'width : '+col.width"
                >
               {{col.header}}
-              <p-sortIcon field="{{col.field}}"></p-sortIcon>
+              <p-sortIcon field="{{col.field}}" *ngIf="col.field != 'trans_details'"></p-sortIcon>
             </th>
         </tr>
+    </ng-template>
+    <ng-template pTemplate="caption">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="m-0" *ngIf="pl_trxn.length > 0">
+                Showing 1 to {{pl_trxn.length}} of {{pl_trxn.length}} Entries
+              </h6>
+            </div>
+              <div class="w-50 d-flex justify-content-end align-items-center">
+                <input id="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
+                placeholder="Search" />
+                <mat-button-toggle-group #group="matButtonToggleGroup" [formControl]="btnType" class="mx-3">
+                  <mat-button-toggle value="pdf" aria-label="Text align center">
+                    <i
+                      class="pi pi-file-pdf text-danger"
+                      style="font-size: 2rem"
+                    ></i>
+                  </mat-button-toggle>
+                  <mat-button-toggle value="xlsx" aria-label="Text align right">
+                    <i
+                      class="pi pi-file-excel text-success"
+                      style="font-size: 2rem"
+                    ></i>
+                  </mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+          </div>
     </ng-template>
     <ng-template pTemplate="body" let-pl_trxn>
         <tr
@@ -66,7 +93,7 @@
                   (click)="getRowDtls(pl_trxn)"
                   class="text-primary"
                   >
-                    {{pl_trxn[col.field] ? ( pl_trxn[col.field] | titlecase) : "N/A" }}
+                    {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}
                   </a>
               </ng-container>
               <ng-template #others>
@@ -75,7 +102,7 @@
                   'text-danger':pl_trxn.curr_val == 0
                 }"
                 >
-                  {{pl_trxn[col.field] ? ( pl_trxn[col.field] | titlecase) : "N/A" }}</p>
+                  {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}</p>
               </ng-template>
 
             </ng-container>
@@ -97,6 +124,11 @@
             <ng-container *ngSwitchCase="col.field == 'ret_abs'">
               <p class="m-0 text-center">
                 {{(pl_trxn[col.field] && pl_trxn[col.field] > 0) ? (pl_trxn[col.field] | number:'1.2-2') : '0' }}%</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'trans_details'">
+              <span role="button" (click)="getRowDtls(pl_trxn)">
+               <i class="pi pi-eye" style="font-size: 1.5rem"></i>
+              </span>
             </ng-container>
             <ng-container *ngSwitchDefault>
               <p class="m-0">
@@ -123,7 +155,7 @@
             <ng-container *ngSwitchCase="col.field == 'scheme_name'">
               <p class="m-0">Total</p>
             </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'folio_no'"></ng-container>
+            <ng-container *ngSwitchCase="col.field == 'folio_no' || col.field == 'trans_details'"></ng-container>
             <ng-container *ngSwitchCase="col.field == 'xirr'">
              {{footerDtls ? (footerDtls[col.field] ? (footerDtls[col.field] | percent:'1.2-2') : '0.00%') : '0.00%'}}
             </ng-container>

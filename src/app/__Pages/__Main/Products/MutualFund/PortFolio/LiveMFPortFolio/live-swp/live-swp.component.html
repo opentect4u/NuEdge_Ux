@@ -41,11 +41,14 @@ styleClass="p-datatable-lg"
       <ng-container *ngSwitchCase="col.field == 'sl_no'">
         <p class="m-0">{{ i + 1}}</p>
       </ng-container>
-      <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'first_client_name'
+      <ng-container *ngSwitchCase="col.field == 'first_client_name'
       || col.field == 'freq'
       || col.field == 'bank_name'">
         <p class="m-0">
           {{ live_swp[col.field] | titlecase}}</p>
+      </ng-container>
+      <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+        <p class="m-0">{{ live_swp[col.field]}}</p>
       </ng-container>
       <ng-container *ngSwitchCase="col.field == 'from_date'
       || col.field == 'to_date'

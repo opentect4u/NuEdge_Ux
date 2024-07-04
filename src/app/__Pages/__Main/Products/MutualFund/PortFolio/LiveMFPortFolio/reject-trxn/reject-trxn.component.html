@@ -52,8 +52,11 @@
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ (trxn[col.field] | date:'dd-MM-YY')}}</p>
                   </ng-container>
 
-                  <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'bank_name'">
+                  <ng-container *ngSwitchCase="col.field == 'bank_name'">
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{  trxn[col.field] ? (trxn[col.field] | titlecase | ellipsis:50) : 'N/A'}}</p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                    <p class="m-0" [matTooltip]="trxn[col.field]">{{  trxn[col.field] ? (trxn[col.field] | ellipsis:50) : 'N/A'}}</p>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'remarks'">
                     <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? (trxn[col.field] | titlecase | ellipsis:15) : 'N/A'}}</p>

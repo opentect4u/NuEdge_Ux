@@ -251,9 +251,9 @@ td, th {
   padding: 8px;
 }
 
-tr:nth-child(even) {
+/* tr:nth-child(even) {
   background-color: #f9f9f9;
-}
+} */
 
 
 /*** Checkbox **/
@@ -299,7 +299,8 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 ::ng-deep .cat_subcat_style>label.mat-checkbox-layout>.mat-checkbox-label{
-  color: #404040 !important;
+  /* color: #404040 !important; */
+  color: #2135c1 !important;
   font-weight: 500 !important;
   font-size: 13px;
 }
@@ -312,4 +313,16 @@ input[type="radio"], input[type="checkbox"] {
   font-size: 12px;
   font-weight: 400;
   color: #656565;
+}
+::ng-deep .p-checkbox .p-checkbox-box{
+  width: 17px!important;
+  height: 17px!important;
+}
+::ng-deep .p-checkbox{
+  width: 17px!important;
+  height: 17px!important;
+}
+tr.stickyHeader_forDialog>th,
+tr.dialogTR>td{
+  padding: 4px 2px!important;
 }

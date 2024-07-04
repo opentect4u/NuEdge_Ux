@@ -49,18 +49,22 @@
               </ng-container>
               <ng-container
                 *ngSwitchCase="
-                  col.field == 'scheme_name' ||
                   col.field == 'first_client_name' ||
                   col.field == 'bank_name'
                 "
               >
+                <p class="m-0">
+                  {{ recent_trxn[col.field] | titlecase }}
+                </p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                 <p class="m-0"
                 [matTooltip]="col.field == 'scheme_name' ? recent_trxn[col.field] : ''"
                 [ngClass]="{'text-center':col.field == 'scheme_name'}"
                 >
-                  {{ recent_trxn[col.field] | titlecase }}
+                  {{ recent_trxn[col.field]}}
                 </p>
-              </ng-container>
+            </ng-container>
               <ng-container
                 *ngSwitchCase="
                   col.field == 'from_date' ||

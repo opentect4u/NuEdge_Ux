@@ -11,9 +11,10 @@ tr.inr_tble>td.scheme_name
 }
 tr>td.amc_name>p{
     text-align: left !important;
-    font-size: 10px !important;
-    font-weight: 600;
-    padding: 5px!important;
+    font-size: 11px !important;
+    font-weight: 700;
+    padding: 2px !important;
+    color: #505050;
 }
 tr.inr_tble>td.scheme_name>a{
     color: #007bff;

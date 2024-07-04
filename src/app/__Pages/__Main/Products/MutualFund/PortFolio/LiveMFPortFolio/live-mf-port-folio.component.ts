@@ -26,6 +26,7 @@ import { Observable, Subscription, fromEvent } from 'rxjs';
 import { borderTopLeftRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { plFilterPipe } from 'src/app/__Pipes/plTrxnFilter.pipe';
 
 
 
@@ -67,6 +68,9 @@ type TotalparentLiveMfPortFolio = {
 })
 
 export class LiveMfPortFolioComponent implements OnInit {
+
+
+  plTableFooter:Partial<TotalPLportfolio>
 
   selectedFunds:Partial<ILivePortFolio>[] = [];
   selected_funds:Partial<ILivePortFolio>[] = [];
@@ -148,7 +152,9 @@ mappings between `act_value` and `value` for transition durations. */
    @ViewChild('recentdateRng') recent_date_range:Calendar;
 
   /*** Holding Tab details for liveMFPortfolio */
-  __portFolioTab = portFolioTab;
+  // __portFolioTab = portFolioTab;
+  __portFolioTab = [];
+
 
   selected_id:number = 1;
 
@@ -305,6 +311,8 @@ mappings between `act_value` and `value` for transition durations. */
 
   @ViewChild('dateRng') date__rng:Calendar;
 
+  @ViewChild('tableref') TableRef:Table;
+
   valuation_as_on:string;
 
   details__transaction_details:ISubDataSource[] = [];
@@ -327,7 +335,7 @@ mappings between `act_value` and `value` for transition durations. */
         is_new_tab:new FormControl(false),
         trans_date_range:new FormControl(''),
         trans_duration: new FormControl('A'),
-        show_valuation_with:new FormControl(this.__portfolioFiter?.val_with),
+        show_valuation_with:new FormControl(this.__portfolioFiter?.val_with.filter(el => el.flag == 'SIP' || el.flag == 'N' || el.flag == 'E')),
         trans_with:new FormControl(this.__portfolioFiter?.trans_with.filter(item => item.id ==1)),
         clmn_chooser: new FormControl(this.__portfolioFiter?.clm_chooser.map(item =>  ({name: item.name,flag:item.flag}))),
         funds: new FormArray([])
@@ -435,7 +443,6 @@ mappings between `act_value` and `value` for transition durations. */
       let rt_prms = JSON.parse(this.utility.decrypt_dtls(atob(this.activateRoute.snapshot.queryParams.id)));
       try{
 
-          console.log(rt_prms)
           this.filter_criteria.get('client_name').setValue(rt_prms ? rt_prms?.client_name : '' ,{emitEvent:false});
           this.filter_criteria.patchValue({
             valuation_as_on:rt_prms ? new Date(rt_prms?.valuation_as_on) : '',
@@ -461,9 +468,6 @@ mappings between `act_value` and `value` for transition durations. */
     else{
       this.filter_criteria.get('client_name').disable();
     }
-
-    console.log(this.__live_sip_stp_swp_form)
-
   }
   /** To check whether the li of the ul has been overflowed or not  */
    isOverflown(element){
@@ -482,7 +486,6 @@ mappings between `act_value` and `value` for transition durations. */
         last_child.style.borderTopRightRadius = isOverflowed ? '0px' : '8px'
 
       }
-      // console.log(first_child)
       // else{
       //   first_child.style.borderTopLeftRadius ='8px!important';
       //   last_child.style.borderTopRightRadius ='8px!important';
@@ -522,7 +525,6 @@ mappings between `act_value` and `value` for transition durations. */
           }, {});
         let mod_arr = this.convertSelectedTypes(groupedBycategory);
         mod_arr.forEach((el,index)=>{
-            console.log(el.sub_menu)
             this.funds().push(this.newFunds(el));
             Object.keys(el.sub_menu).forEach((element,i) =>{
               this.addSubCategory(index,el.sub_menu[element][0]);
@@ -531,7 +533,6 @@ mappings between `act_value` and `value` for transition durations. */
             })
             })
         })
-        console.log(this.filter_criteria.value.funds)
     })
   }
 
@@ -561,14 +562,48 @@ mappings between `act_value` and `value` for transition durations. */
     return dtls;
   }
 
-
+ 
+  setFooterOfPlTransaction(arr:Partial<IPLTrxn>[],pl_folio_type:string){
+    if(pl_folio_type){
+    const filterPipe = new plFilterPipe();
+    let array_without_negative_curr_val = filterPipe.transform(arr,pl_folio_type)
+    let total_amt = [];
+    let total_date = [];
+    array_without_negative_curr_val.forEach((el,index) =>{
+      if(el.mydata.all_amt_arr.length > 0 && el.mydata.all_date_arr.length > 0){
+        total_amt=[...total_amt,...el.mydata.all_amt_arr.map(item => Number(item))];
+        total_date=[...total_date,...el.mydata.all_date_arr];
+      }
+    })
+    const curr_val = global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.curr_val));
+    total_amt.push(curr_val);
+    total_date.push(this.datePipe.transform(this.main_frm_dt?.valuation_as_on,'YYYY-MM-dd'))
+     this.plTableFooter = {
+      purchase:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.purchase)),
+      switch_in:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_in)),
+      idcw_reinv:global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
+      tot_inflow:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_inflow)),
+      redemption:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.redemption)),
+      switch_out:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_out)),
+      idcwp:global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcwp ? Number(item.idcwp) : 0),
+      tot_outflow:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_outflow)),
+      curr_val:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.curr_val)),
+      gain_loss:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.gain_loss)),
+      ret_abs:(global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.ret_abs)) / array_without_negative_curr_val.length),
+      xirr:global.XIRR(total_amt,total_date,0)
+    }}
+  }
 
 
   ngAfterViewInit(){
 
+
+    this.__pl_trxn_form.controls['pl_folio_type'].valueChanges.subscribe(res =>{
+            this.setFooterOfPlTransaction(this.plTrxnDtls,res);
+    })
+
     this.filter_criteria.controls['view_funds_type'].valueChanges.subscribe((res) =>{
         if(res == 'S' || res == 'T'){
-          console.log( this.__isDisplay__modal__selected_funds)
           if(this.filter_criteria.value.client_name && this.filter_criteria.value.valuation_as_on){
               if(this.selectedFunds.length == 0){
                 this.getFundsAccordingtoClient();
@@ -746,7 +781,6 @@ mappings between `act_value` and `value` for transition durations. */
        this.__dbIntr.api_call(0,'/clientFamilyDetail',`family_head_id=${id}&view_type=${this.filter_criteria.value.view_type}`)
        .pipe(pluck('data'))
        .subscribe((res:client[]) =>{
-        // console.log(res);
         this.family_members = res;
         this.filter_criteria.get('family_members').setValue(res.map((item:client) => ({pan:item.pan,client_name:item.client_name})))
        })
@@ -813,6 +847,14 @@ mappings between `act_value` and `value` for transition durations. */
         window.open(`${this.router.url}?id=${btoa(this.utility.encrypt_dtls(JSON.stringify(this.filter_criteria.value)))}`, '_blank');
     }
     else{
+    this.__portFolioTab = [];
+    console.log(this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'S').length)
+    if(this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'S').length == 0){
+      this.__portFolioTab = portFolioTab.filter(el => el.flag != 'S');
+    }
+    else{
+      this.__portFolioTab = portFolioTab
+    }
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     this.clientDtls = null;
     this.parent_family_holder_for_tab = [];
@@ -865,7 +907,6 @@ mappings between `act_value` and `value` for transition durations. */
       trans_date_range:this.filter_criteria.value.trans_duration == 'D' ? global.getActualVal(this.TrnsDateRange.inputFieldValue) : ''
     })
     this.main_frm_dt = rest;
-    console.log(this.main_frm_dt)
     if(this.main_frm_dt?.view_type === 'F'){
       this.call_api_for_family_summary(rest);
     }
@@ -909,7 +950,6 @@ mappings between `act_value` and `value` for transition durations. */
                     try{
                       if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
                             const amt = [(Number(item.tot_amount) * -1),Number(item.curr_val)]
-                            console.log(amt)
                             const dates = [item.trans_date,this.dataSource[index].nav_date]
                             const xirr = global.XIRR(amt,dates,0);
                             item.xirr = isFinite(xirr) ? xirr : 0;
@@ -1017,7 +1057,6 @@ mappings between `act_value` and `value` for transition durations. */
 
           }
           catch(ex){
-            // console.log(ex)
           }
   }
   /**
@@ -1049,6 +1088,10 @@ mappings between `act_value` and `value` for transition durations. */
       let value = $event.target.value;
       this.primeTbl.filterGlobal(value,'contains')
   }
+  filterGlobal_dialogBox($event){
+    let value = $event.target.value;
+    this.TableRef.filterGlobal(value,'contains')
+  }
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.secondaryTbl.filterGlobal(value,'contains')
@@ -1056,6 +1099,9 @@ mappings between `act_value` and `value` for transition durations. */
 
   getColumns = () =>{
     return this.utility.getColumns(this.detailedColumn);
+  }
+  getColumnsForDetails = () =>{
+    return [...this.utility.getColumns(this.detailedColumn),'folio_no','plan_name','option_name','isin_no'];
   }
 
   OpenDialog = (liveMFPortFolio) => {
@@ -1080,7 +1126,6 @@ mappings between `act_value` and `value` for transition durations. */
 
 
   show_more = (mode:string,index:number) =>{
-            // console.log('aass')
             this.spinner.show()
               if(mode == 'A'){
                     this.setTrancated_val(this.dataSource[index].data.length)
@@ -1093,7 +1138,6 @@ mappings between `act_value` and `value` for transition durations. */
                  else{
                     this.truncated_val+=10
                  }
-                //  console.log(this.truncated_val)
               }
             this.spinner.hide();
 
@@ -1159,7 +1203,6 @@ mappings between `act_value` and `value` for transition durations. */
 
   call_api_for_reject_transactions = (formData) =>{
         if(this.rejectTrxn.length == 0){
-          console.log(formData);
           this.__dbIntr.api_call(1,'/clients/liveMFRejectTrans',this.utility.convertFormData(formData)).pipe(pluck('data')).subscribe((res:Required<{data:TrxnRpt[],client_details:client}>) =>{
             this.rejectTrxn = res.data.filter((el:TrxnRpt) =>{
                     el.scheme_name = `${el.scheme_name}-${el.plan_name}-${el.divi_lock_flag == 'L' ? 'IDCW Reinvestment' :  el.option_name}`;
@@ -1183,7 +1226,6 @@ mappings between `act_value` and `value` for transition durations. */
                     }
                     return false;
                 })
-                console.log(this.systematicMissedTrxn);
                 this.setClientDtls(res.client_details);
         })
       }
@@ -1249,15 +1291,20 @@ mappings between `act_value` and `value` for transition durations. */
 
   call_api_for_detail_summary_func(formData) {
     if(this.dataSource.length == 0){
+      const dt = this.filter_criteria.get('show_valuation_with').value.map(el => el.flag)
       this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
-      .pipe(pluck('data'))
+      .pipe(
+        pluck('data'),
+        tap((x:any) =>{
+             this.setClientDtls(x.client_details);
+        })
+      )
       .subscribe((res:Required<{data,client_details,disclaimer:string}>) => {
             try{
               if(this.main_frm_dt?.trans_type == 'A'){
                     this.dataSource = res.data.filter((item: ILivePortFolio) => {
                       item.id = `${Math.random()}_${item.product_code}`;
                       item.data=[];
-                      // item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : (item.transaction_type.toLowerCase().includes('purchase') ? '(PIP)' : (item.transaction_type.toLowerCase().includes('switch') ? '(Switch In)' : ''))
                       item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
                       if(item.mydata?.all_amt_arr.length > 0 && item.mydata?.all_date_arr.length > 0){
                           const amt = item?.mydata.all_amt_arr.map(item => Number(item));
@@ -1293,7 +1340,7 @@ mappings between `act_value` and `value` for transition durations. */
               this.setParentTableFooter_ClientDtls(this.dataSource);
               this.div_history = this.dataSource.filter(item => item.curr_val > 0)
               this.setDisclaimer(res.disclaimer);
-              this.setClientDtls(res.client_details);
+              // this.setClientDtls(res.client_details);
               }
             catch(ex){}
       })
@@ -1304,18 +1351,17 @@ mappings between `act_value` and `value` for transition durations. */
       if(arr.length > 0){
         let total_amt = [];
         let total_date = [];
-        let xirr,gain_loss = 0;
         let selected_tab;
         const current_value:number = this.Total__Count(arr,x => Number(x.curr_val))
         if(this.main_frm_dt?.view_type == 'C'){
-          arr.forEach((element) =>{
+          arr.forEach((element,index) =>{
             if(element?.mydata.all_amt_arr.length > 0 && element?.mydata.all_date_arr.length > 0){
               total_amt = [...total_amt,...element?.mydata.all_amt_arr.map(item => Number(item))];
-              total_date = [...total_date,...element?.mydata.all_date_arr.map(item => this.datePipe.transform(item,'YYYY-MM-dd'))];
+              total_date = [...total_date,...element?.mydata.all_date_arr];
             }
           })
           total_amt.push(current_value);
-          total_date.push(this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd'))
+          total_date.push(this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd'));
         }
         else{
           selected_tab = this.family_summary.filter(el => el.id == this.selected_tab_dtls?.id)[0]
@@ -1332,7 +1378,6 @@ mappings between `act_value` and `value` for transition durations. */
          gain_loss:this.main_frm_dt?.view_type == 'C' ? this.Total__Count(arr,x =>  Number(x.gain_loss)) : selected_tab.gain_loss,
          xirr:this.main_frm_dt?.view_type == 'C' ? global.XIRR(total_amt,total_date,0) : selected_tab.xirr
         }
-        console.log(this.parentLiveMfPortFolio);
          setTimeout(() => {
              this.isOverflown(document.getElementById('cus___tab'));
          }, 1000);
@@ -1350,29 +1395,28 @@ mappings between `act_value` and `value` for transition durations. */
     if(this.plTrxnDtls.length == 0){
       this.__dbIntr.api_call(1,'/clients/liveMFPL',this.utility.convertFormData(formData))
       .pipe(pluck('data')).subscribe((result:Required<{data:Partial<IPLTrxn>[],client_details:client}>) =>{
-            this.plTrxnDtls = result.data.filter((item: IPLTrxn) =>
+        this.plTrxnDtls = result.data.filter((item: IPLTrxn) =>
               {
-                if(item.tot_inflow == 0 && item.tot_outflow == 0){
-                  
-                }
-                else{
                     item.scheme_name= `${item.scheme_name} - ${item.plan_name} - ${item.option_name}`;
                     if(item.mydata.all_amt_arr.length > 0 && item.mydata.all_date_arr.length > 0){
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
-                      // item.xirr = item.curr_val == 0 ? 0 : global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
                       item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
                     }
                     else{
                       item.xirr =0
                     }
                     return true
-                  }
-                  return false
                 }
             );
-            // console.log(this.plTrxnDtls)
             this.setClientDtls(result.client_details);
+           this.setFooterOfPlTransaction(this.plTrxnDtls,this.__pl_trxn_form.get('pl_folio_type').value);
+            // this.dataSource.forEach(el =>{
+            //     if(element?.mydata.all_amt_arr.length > 0 && element?.mydata.all_date_arr.length > 0){
+            //   total_amt = [...total_amt,...element?.mydata.all_amt_arr.map(item => Number(item))];
+            //   total_date = [...total_date,...element?.mydata.all_date_arr.map(item => this.datePipe.transform(item,'YYYY-MM-dd'))];
+            // }
+            // })
       })
    }
   }
@@ -1644,7 +1688,6 @@ mappings between `act_value` and `value` for transition durations. */
               }).sort((a,b) => (a.scheme_name > b.scheme_name) ? 1 : ((b.scheme_name > a.scheme_name) ? -1 : 0))
             }
             catch(err){
-                console.log(err)
             }
          })
   }
