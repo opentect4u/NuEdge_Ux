@@ -18,6 +18,9 @@ import { DivHistoryComponent } from './div-history/div-history.component';
 import { divHistoryPipe } from 'src/app/__Pipes/div_history.pipe';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { FamilySummaryComponent } from './family-summary/family-summary.component';
+import { SummaryReportComponent } from './summary-report/summary-report.component';
+import { ChartModule } from 'src/app/__Core/chart/chart.module';
+import { LiveMfChartSummaryPipe } from 'src/app/__Pipes/liveMfPortfolio_Summary_chart.pipe';
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
 @NgModule({
@@ -32,16 +35,19 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     SystematicMissedTrxnComponent,
     RejectTrxnComponent,
     plFilterPipe,
+    LiveMfChartSummaryPipe,
     divHistoryPipe,
     systamaticMissedTransFilterPipe,
     DivHistoryComponent,
-    FamilySummaryComponent
+    FamilySummaryComponent,
+    SummaryReportComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     DialogModule,
     TabModule,
+    ChartModule,
     RouterModule.forChild(routes),
   ]
 })

@@ -16,13 +16,11 @@
     [autoLayout]="true" [totalRecords]="divHistory.length" [pageLinks]="3"
     [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
-    [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
-    [tableStyle]="{ 'min-width': '374rem' }">
+    [showCurrentPageReport]="true" [globalFilterFields]="getColumns()">
     <ng-template pTemplate="header">
       <tr>
         <th *ngFor="let col of column" [pSortableColumn]="col.field"
-        [style.max-width]="col.width"
-          [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+        [style.width]="col.width">
           {{ col.header }}
           <p-sortIcon [field]="col.field">
           </p-sortIcon>
@@ -30,58 +28,19 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-trxn let-i="rowIndex">
-      <tr tabindex="999"
-        [ngStyle]="{
-          'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
-        <td *ngFor="let col of column" [style.max-width]="col.width"
-          [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+      <tr tabindex="999">
+        <td *ngFor="let col of column" [style.width]="col.width">
           <ng-container [ngSwitch]="true">
-            <ng-container *ngSwitchCase="col.field == 'sl_no'">
-              <p class="m-0">
-                {{i + 1}}
-              </p>
+            <ng-container *ngSwitchCase="col.field == 'idcwp' || col.field == 'idcw_reinv'">
+              <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | number:'1.2-2') : '0.00' }}</p>
             </ng-container>
 
-            <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
-              <p class="m-0">{{ (trxn[col.field] && (trxn[col.field] | titlecase)!="Not Provided" &&
-                trxn[col.field]!="BLANK" && trxn[col.field]!='0' && trxn[col.field]!= ' '
-                && (trxn[col.field] | titlecase)!="Not Provid"
-                && (trxn[col.field] | titlecase)!="Notprovided"
-                && trxn[col.field] !== 'NOTPROVIDE'
-                ) ? trxn[col.field] :
-                'N/A' }}</p>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="col.field == 'first_client_name'">
-              <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
-            </ng-container>
-
-
-            <ng-container *ngSwitchCase="col.field == 'trans_date'">
+            <ng-container *ngSwitchCase="col.field == 'idcwp_date' || col.field == 'idcw_reinv_date'">
               <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
             </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-              <p class="m-0"
-                matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name'])) : ''}}">
-                {{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' +
-                (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name']))
-                : 'N/A'
-                }}</p>
-            </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'tot_tds'">
-              <p class="m-0" matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
-                {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
-              </p>
-            </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'remarks'">
-              <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn['remarks'] && trxn['remarks']!= ' ') ? (trxn['remarks'] | lowercase | ellipsis:30):
-                'N/A'}}</p>
-            </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'bank_name' || col.field == 'acc_no'">
-              <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn[col.field] && trxn[col.field]!= 0) ? (trxn[col.field].toString() | titlecase) : 'N/A'}}</p>
-             </ng-container>
+
             <ng-container *ngSwitchDefault>
-              <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
+              <p class="m-0">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
             </ng-container>
           </ng-container>
         </td>

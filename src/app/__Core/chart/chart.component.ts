@@ -28,6 +28,12 @@ export class ChartComponent implements OnInit {
         this.barChart(data.categories.reverse(),data.chart_data.reverse())
   }
 
+  @Input() set getPieChartDetails(chart_details:{title:string,data:Partial<{name:string,y:number}>[],name:string}){
+      if(chart_details.data){
+        this.pieChart(chart_details)
+      }
+  }
+
 
   constructor() { }
 
@@ -121,6 +127,52 @@ export class ChartComponent implements OnInit {
       ]
     }
   }
+
+  /*** Function For Pie Chart*/
+    pieChart(chart:{title:string,data:Partial<{name:string,y:number}>[],name:string}){
+      this.chartOptions={
+        chart: {
+          type: "pie"
+        },
+        title: {
+          text: chart.title,
+          style: {
+            fontSize: '12px' 
+          }
+        },
+        
+        tooltip:{
+            style:{
+              fontSize:'12px'
+            },
+            pointFormat: '{series.name}: <b>{point.y:.2f}</b><br/>',
+        },
+        subtitle: {
+          text:
+            ''
+        },
+        series:[{
+            name:chart.name,
+            colorByPoint: true,
+            data:chart.data
+        }],
+        plotOptions: {
+          series: {
+            dataLabels: {
+              enabled: true,
+              style: {
+                fontWeight: 700,
+                fontSize:10
+              }
+            }
+          }
+        },
+        credits: {
+          enabled: false
+        },
+      }
+    }
+  /*** End */
 
 }
 

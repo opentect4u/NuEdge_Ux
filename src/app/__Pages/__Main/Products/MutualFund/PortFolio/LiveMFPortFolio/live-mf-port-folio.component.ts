@@ -4,7 +4,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import  ClientType  from '../../../../../../../assets/json/view_type.json';
 import { client } from 'src/app/__Model/__clientMst';
-import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, groupBy, map, mergeMap, pluck, switchMap, tap, toArray } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { Table } from 'primeng/table';
@@ -22,11 +22,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { rntTrxnType } from 'src/app/__Model/MailBack/rntTrxnType';
 import { IUpcommingTrxn } from './upcomming-trxn/upcomming-trxn.component';
 import { ISystematicMissedTrxn } from './systematic-missed-trxn/systematic-missed-trxn.component';
-import { Observable, Subscription, fromEvent } from 'rxjs';
+import { Observable, Subscription, from, fromEvent, of, zip } from 'rxjs';
 import { borderTopLeftRadius } from 'html2canvas/dist/types/css/property-descriptors/border-radius';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { plFilterPipe } from 'src/app/__Pipes/plTrxnFilter.pipe';
+import { IcategoryWiseInvestment, IFoundHouseInvestment, IsubcategoryWiseInvestment } from './summary-report/summary-report.component';
 
 
 
@@ -71,9 +72,13 @@ export class LiveMfPortFolioComponent implements OnInit {
 
 
   plTableFooter:Partial<TotalPLportfolio>
-
+  fundHouse:Required<IFoundHouseInvestment>[] = [];
+  categoryWiseSummary:Required<IcategoryWiseInvestment>[] = [];
+  subCategoryWise:Required<IsubcategoryWiseInvestment>[] = [];
   selectedFunds:Partial<ILivePortFolio>[] = [];
   selected_funds:Partial<ILivePortFolio>[] = [];
+
+  __isGraphShow:boolean = false;
 
   __isDisplay__modal__selected_funds:boolean = false;
   @ViewChild("calendar", { static: false }) private TrnsDateRange: Calendar;
@@ -826,18 +831,18 @@ mappings between `act_value` and `value` for transition durations. */
     this.parentLiveMfPortFolio = null;
     this.subLiveMfPortFolio = null;
     if(this.filter_criteria.value.valuation_as_on){
-    if(this.filter_criteria.value.pan_no || this.filter_criteria.value.client_name){
-            if(this.filter_criteria.value.view_type == 'F'){
-                if(this.filter_criteria.value.family_members.length == 0) {
-                    this.utility.showSnackbar(`Please select at least one family member`,2);
-                    return;
-                }
-            }
-    }
-    else{
-        this.utility.showSnackbar(`Please select ${this.filter_criteria.value.view_type == 'F' ? 'family head' : ' investor'}`,2);
-        return;
-    }
+      if(this.filter_criteria.value.pan_no || this.filter_criteria.value.client_name){
+              if(this.filter_criteria.value.view_type == 'F'){
+                  if(this.filter_criteria.value.family_members.length == 0) {
+                      this.utility.showSnackbar(`Please select at least one family member`,2);
+                      return;
+                  }
+              }
+      }
+      else{
+          this.utility.showSnackbar(`Please select ${this.filter_criteria.value.view_type == 'F' ? 'family head' : ' investor'}`,2);
+          return;
+      }
     }
     else{
       this.utility.showSnackbar('Please select date',2);
@@ -848,13 +853,19 @@ mappings between `act_value` and `value` for transition durations. */
     }
     else{
     this.__portFolioTab = [];
-    console.log(this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'S').length)
-    if(this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'S').length == 0){
-      this.__portFolioTab = portFolioTab.filter(el => el.flag != 'S');
-    }
-    else{
-      this.__portFolioTab = portFolioTab
-    }
+     if(this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'SIP' || el.flag == 'E' || el.flag == 'N').length == 0){
+      this.utility.showSnackbar(`Please select valuation with atleast one (SIP, NON SIP or ELSS)`,2)  
+      return;
+      }
+     else{
+      if(this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'S').length == 0){
+        this.__portFolioTab = portFolioTab.filter(el => el.flag != 'S');
+      }
+      else{
+        this.__portFolioTab = portFolioTab
+      }
+     }
+    this.__isGraphShow =  this.filter_criteria.value.show_valuation_with.filter(el => el.flag === 'G').length > 0;
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     this.clientDtls = null;
     this.parent_family_holder_for_tab = [];
@@ -862,6 +873,10 @@ mappings between `act_value` and `value` for transition durations. */
     this.family_summary = [];
     this.disclaimer = '';
     this.plTrxnDtls=[];
+    this.div_history = [];
+    this.fundHouse = [];
+    this.categoryWiseSummary = [];
+    this.subCategoryWise = []
     this.liveSipPortFolio = [];
     this.liveSwpPortFolio = [];
     this.liveStpPortFolio = [];
@@ -1154,13 +1169,119 @@ mappings between `act_value` and `value` for transition durations. */
         this.call_func_tab_change()
   }
 
+  call_api_for_summary_func(){
+    if(this.fundHouse.length == 0 && 
+      this.categoryWiseSummary.length === 0 && 
+      this.subCategoryWise.length === 0){
+      // this.spinner.show();
+
+      this.setFundWiseData(this.dataSource);
+      this.setCategoryWiseData(this.dataSource);
+      this.setSubcategoryWiseData(this.dataSource);
+
+      // setTimeout(()=>{
+      //     this.spinner.show();
+      // },2000)
+    }
+  }
+
+  setCategoryWiseData(arr:Partial<ILivePortFolio>[]){
+    this.categoryWiseSummary = [];
+    from(arr)
+    .pipe(
+      groupBy((data:Required<ILivePortFolio>) => data.cat_name),
+      mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+    ).subscribe((dt) =>{
+      let total_amount = [];
+      let total_date = [];
+      dt[1].forEach((element) =>{
+          total_date = [...total_date,...element.mydata?.all_date_arr]
+          total_amount = [...total_amount,...element.mydata?.all_amt_arr.map(el => Number(el))]
+      })
+      const curr_val =  global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.curr_val));
+      const xirr = global.XIRR([...total_amount,curr_val],[...total_date,this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd')],0)
+        this.categoryWiseSummary.push(
+          {
+            cat_name:dt[0],
+            inv_cost:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.inv_cost)),
+            curr_val: curr_val,
+            gain_loss: global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.gain_loss)),
+            idcw:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            ret_abs:global.Total__Count(dt[1],(item:ILivePortFolio) => Number(item.ret_abs)) / dt[1].length,
+            xirr:xirr
+          }
+        )
+    })
+  }
+
+  setSubcategoryWiseData(arr:Partial<ILivePortFolio>[]){
+    this.subCategoryWise = [];
+    from(arr)
+    .pipe(
+      groupBy((data:Required<ILivePortFolio>) => data.subcat_name),
+      mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+    ).subscribe((dt) =>{
+      let total_amount = [];
+      let total_date = [];
+      dt[1].forEach((element) =>{
+          total_date = [...total_date,...element.mydata?.all_date_arr]
+          total_amount = [...total_amount,...element.mydata?.all_amt_arr.map(el => Number(el))]
+      })
+      const curr_val =  global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.curr_val));
+      const xirr = global.XIRR([...total_amount,curr_val],[...total_date,this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd')],0)
+        this.subCategoryWise.push(
+          {
+            subcat_name:dt[0],
+            inv_cost:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.inv_cost)),
+            curr_val: curr_val,
+            gain_loss: global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.gain_loss)),
+            idcw:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            ret_abs:global.Total__Count(dt[1],(item:ILivePortFolio) => Number(item.ret_abs)) / dt[1].length,
+            xirr:xirr,
+          }
+        )
+    })
+  }
+
+  setFundWiseData(arr:Partial<ILivePortFolio>[]){
+    this.fundHouse =[];
+    from(arr)
+    .pipe(
+      groupBy((data:Required<ILivePortFolio>) => data.amc_name),
+      mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+    ).subscribe((dt) =>{
+      let total_amount = [];
+      let total_date = [];
+        dt[1].forEach((element) =>{
+            total_date = [...total_date,...element.mydata?.all_date_arr]
+            total_amount = [...total_amount,...element.mydata?.all_amt_arr.map(el => Number(el))]
+        })
+        const curr_val =  global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.curr_val));
+        const xirr = global.XIRR([...total_amount,curr_val],[...total_date,this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd')],0)
+        this.fundHouse.push(
+          {
+            fund_name:dt[0],
+            inv_cost:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.inv_cost)),
+            curr_val: curr_val,
+            gain_loss: global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.gain_loss)),
+            idcw:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            ret_abs:global.Total__Count(dt[1],(item:ILivePortFolio) => Number(item.ret_abs)) / dt[1].length,
+            xirr:xirr,
+            // total_amt:total_amount,
+            // total_date:total_date,
+            // valuation_as_on:this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd')
+          }
+        )
+    })
+  }
+
   call_corrosponding_api = (id:number,fb) =>{
 
         const pay_load = this.main_frm_dt?.view_type == 'C' ? fb : this.getPayLoadForFamily(this.main_frm_dt)
 
         switch(id){
-        case 1:
-        case 2:this.call_api_for_detail_summary_func(pay_load);
+        case 1:this.call_api_for_detail_summary_func(pay_load);break;
+        case 2:this.call_api_for_summary_func();break;
         break;
         case 3: break;
         case 9:if(!this.__pl_trxn_form.value.pl_folio_type){
@@ -1183,6 +1304,7 @@ mappings between `act_value` and `value` for transition durations. */
         break;
         case 10: if(!this.div_history_frm.value.divhistory_type){
             this.div_history_frm.get('divhistory_type').setValue('')
+            this.call_api_div_history(pay_load,'')
         }
         break;
         case 11: this.getTrxnTypeMst();break
@@ -1295,8 +1417,24 @@ mappings between `act_value` and `value` for transition durations. */
       this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
       .pipe(
         pluck('data'),
-        tap((x:any) =>{
-             this.setClientDtls(x.client_details);
+        map((x:any) =>{
+            var valuation_with = this.filter_criteria.get('show_valuation_with').value.map(el => el.name.toLowerCase())
+             return {
+              client_details:x.client_details,
+              disclaimer:x.disclaimer,
+              data: x.data.filter((el:any,index:number) => {
+                if((valuation_with.findIndex(item => el.transaction_type.toLowerCase().includes(item)) > -1) || (valuation_with.findIndex(item => el.subcat_name.toLowerCase().includes(item)) > -1)){                
+                  return true;
+                }
+                else if(valuation_with.filter(el => el.toLowerCase() === 'non sip').length > 0){
+                   
+                  // && (valuation_with.findIndex(item => el.subcat_name.toLowerCase().includes('elss')) == -1)
+                      if((valuation_with.findIndex(item => el.transaction_type.toLowerCase().includes('sip')) == -1)){return true;}
+                }
+              return false
+            })
+
+             }
         })
       )
       .subscribe((res:Required<{data,client_details,disclaimer:string}>) => {
@@ -1338,9 +1476,9 @@ mappings between `act_value` and `value` for transition durations. */
                 });
               }
               this.setParentTableFooter_ClientDtls(this.dataSource);
-              this.div_history = this.dataSource.filter(item => item.curr_val > 0)
+              // this.div_history = this.dataSource.filter(item => item.curr_val > 0)
               this.setDisclaimer(res.disclaimer);
-              // this.setClientDtls(res.client_details);
+              this.setClientDtls(res.client_details);
               }
             catch(ex){}
       })
@@ -1425,12 +1563,15 @@ mappings between `act_value` and `value` for transition durations. */
 
   /*** Div History api call */
     call_api_div_history(formData,val) {
+      if(this.div_history.length ==  0){
         this.__dbIntr.api_call(1,'/clients/div_history',{...formData,type:val})
         .pipe(pluck('data'))
-        .subscribe(res =>{
-              // this.div_history = res;
-              console.log(res)
+        .subscribe((res:any) =>{
+              this.div_history = res;
+              // console.log(res)
         })
+      }
+     
     }
   /*** End */
 
@@ -1841,7 +1982,7 @@ mappings between `act_value` and `value` for transition durations. */
                     });
                   }
                   this.setParentTableFooter_ClientDtls(this.dataSource);
-                  this.div_history = this.dataSource.filter(item => item.curr_val > 0)
+                  // this.div_history = this.dataSource.filter(item => item.curr_val > 0)
                   this.setDisclaimer(res.data.disclaimer);
                   this.setClientDtls(res.data.client_details);
                   this.selected_tab_index_for_family = index;
@@ -1868,6 +2009,9 @@ mappings between `act_value` and `value` for transition durations. */
 
 export interface ILivePortFolio{
   id: any
+  amc_name:string,
+  cat_name:string;
+  subcat_name:string;
   rnt_id: number
   product_code: string
   plan_name: string

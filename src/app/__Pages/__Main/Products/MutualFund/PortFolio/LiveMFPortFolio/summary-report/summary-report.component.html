@@ -1,0 +1,291 @@
+<mat-card>
+        <mat-card-content>
+
+<p-table [value]="FoundHouseInvestment" #fundHouse [rows]="10" [paginator]="true"
+    [rowHover]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    styleClass="p-datatable-lg" [pageLinks]="3" [globalFilterFields]="getColumnsForFundHouse()"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]" [showCurrentPageReport]="true">
+
+    <ng-template pTemplate="header">
+        <tr class="stickyHeader">
+            <th *ngFor="let col of FundHouseColumn"
+                pSortableColumn="{{col.field}}"
+                [style]="'width : '+col.width"
+               >
+              {{col.header}}
+              <p-sortIcon field="{{col.field}}"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="caption">
+        <div class="d-flex justify-content-between align-items-center px-3 mt-2">
+          <div>
+            <h6 class="m-0 fundHouseH6">{{fund_title}}</h6>
+            <p class="m-0" >
+              Showing 1 to {{FoundHouseInvestment.length}} of {{FoundHouseInvestment.length}} Entries
+            </p>
+          </div>
+            <div class="w-50 d-flex justify-content-end align-items-center">
+              <input id="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_FundHouse($event)"
+              placeholder="Search" />
+            </div>
+        </div>
+  </ng-template>
+  <ng-template pTemplate="body" let-fundHouse>
+    <tr
+    >
+        <td *ngFor="let col of FundHouseColumn"
+        [style]="'width : '+col.width"
+       >
+       <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="col.field == 'fund_name'">
+                <p class="m-0">{{fundHouse[col.field]}}</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'xirr'">
+                <p class="m-0">{{fundHouse[col.field] | percent:'1.2-2'}}</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+                <p class="m-0">{{fundHouse[col.field] | number:'1.2-2'}}%</p>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+                <p class="m-0">{{fundHouse[col.field] | number:'1.2-2'}}</p>
+            </ng-container>
+       </ng-container>
+       </td>
+    </tr>
+</ng-template>
+<ng-template pTemplate="emptymessage" let-fundHouse>
+    <tr>
+      <td [attr.colspan]="FundHouseColumn.length">
+        <p class="m-0">No Records Found</p>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <tr>
+      <td
+        *ngFor="let col of FundHouseColumn"
+        [style]="'width : ' + col.width"
+      >
+        <ng-container [ngSwitch]="true">
+          <ng-container *ngSwitchCase="col.field == 'fund_name'">
+            <p class="m-0">Total</p>
+          </ng-container>
+          <ng-container *ngSwitchCase="col.field == 'xirr'">
+           {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | percent:'1.2-2') : '0.00%') : '0.00%'}}
+          </ng-container>
+          <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+            {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | number:'1.2-2') : '0.00') : '0.00'}}%
+           </ng-container>
+          <ng-container *ngSwitchDefault>
+            {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
+          </ng-container>
+        </ng-container>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<div class="row my-5">
+    <div class="col-sm-12">
+        <p-table [value]="CategoryWiseInvestment" #cat [rows]="10" [paginator]="true"
+        [rowHover]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        styleClass="p-datatable-lg" [pageLinks]="3" [globalFilterFields]="getColumnsForCategory()"
+        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]" [showCurrentPageReport]="true">
+    
+        <ng-template pTemplate="header">
+            <tr class="stickyHeader">
+                <th *ngFor="let col of CategoryWiseColumn"
+                    pSortableColumn="{{col.field}}"
+                    [style]="'width : '+col.width"
+                   >
+                  {{col.header}}
+                  <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="caption">
+            <div class="d-flex justify-content-between align-items-center px-3">
+              <div>
+                <h6 class="m-0 fundHouseH6">Category Wise Investment Summary</h6>
+                <p class="m-0" >
+                  Showing 1 to {{CategoryWiseInvestment.length}} of {{CategoryWiseInvestment.length}} Entries
+                </p>
+              </div>
+                <div class="w-50 d-flex justify-content-end align-items-center">
+                  <input id="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_Category($event)"
+                  placeholder="Search" />
+                </div>
+            </div>
+      </ng-template>
+      <ng-template pTemplate="body" let-cateWiseSUmmary>
+        <tr
+        >
+            <td *ngFor="let col of CategoryWiseColumn"
+            [style]="'width : '+col.width"
+           >
+           <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="col.field == 'cat_name'">
+                    <p class="m-0">{{cateWiseSUmmary[col.field]}}</p>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'xirr'">
+                    <p class="m-0">{{cateWiseSUmmary[col.field] | percent:'1.2-2'}}</p>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+                    <p class="m-0">{{cateWiseSUmmary[col.field] | number:'1.2-2'}}%</p>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    <p class="m-0">{{cateWiseSUmmary[col.field] | number:'1.2-2'}}</p>
+                </ng-container>
+           </ng-container>
+           </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage" let-cateWiseSUmmary>
+        <tr>
+          <td [attr.colspan]="CategoryWiseColumn.length">
+            <p class="m-0">No Records Found</p>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <tr>
+          <td
+            *ngFor="let col of CategoryWiseColumn"
+            [style]="'width : ' + col.width"
+          >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'cat_name'">
+                <p class="m-0">Total</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'xirr'">
+               {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | percent:'1.2-2') : '0.00%') : '0.00%'}}
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+                {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | number:'1.2-2') : '0.00') : '0.00'}}%
+               </ng-container>
+              <ng-container *ngSwitchDefault>
+                {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    </div>
+</div>
+<div class="row"
+[ngClass]="{
+    'mb-2':__isGraphShow
+}"
+>
+    <div class="col-sm-12">
+        <p-table [value]="subcategoryWiseInvestment" #subcat [rows]="10" [paginator]="true"
+        [rowHover]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        styleClass="p-datatable-lg" [pageLinks]="3" [globalFilterFields]="getColumnsForSubcategory()"
+        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]" [showCurrentPageReport]="true">
+    
+        <ng-template pTemplate="header">
+            <tr class="stickyHeader">
+                <th *ngFor="let col of SubcategoryColumn"
+                    pSortableColumn="{{col.field}}"
+                    [style]="'width : '+col.width"
+                   >
+                  {{col.header}}
+                  <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="caption">
+            <div class="d-flex justify-content-between align-items-center px-3">
+              <div>
+                <h6 class="m-0 fundHouseH6">Subcategory Wise Investment Summary</h6>
+                <p class="m-0" >
+                  Showing 1 to {{subcategoryWiseInvestment.length}} of {{subcategoryWiseInvestment.length}} Entries
+                </p>
+              </div>
+                <div class="w-50 d-flex justify-content-end align-items-center">
+                  <input id="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_Subcategory($event)"
+                  placeholder="Search" />
+                </div>
+            </div>
+      </ng-template>
+      <ng-template pTemplate="body" let-subcateWiseSUmmary>
+        <tr
+        >
+            <td *ngFor="let col of SubcategoryColumn"
+            [style]="'width : '+col.width"
+           >
+           <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase="col.field == 'subcat_name'">
+                    <p class="m-0">{{subcateWiseSUmmary[col.field]}}</p>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'xirr'">
+                    <p class="m-0">{{subcateWiseSUmmary[col.field] | percent:'1.2-2'}}</p>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+                    <p class="m-0">{{subcateWiseSUmmary[col.field] | number:'1.2-2'}}%</p>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    <p class="m-0">{{subcateWiseSUmmary[col.field] | number:'1.2-2'}}</p>
+                </ng-container>
+           </ng-container>
+           </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage" let-subcateWiseSUmmary>
+        <tr>
+          <td [attr.colspan]="SubcategoryColumn.length">
+            <p class="m-0">No Records Found</p>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <tr>
+          <td
+            *ngFor="let col of SubcategoryColumn"
+            [style]="'width : ' + col.width"
+          >
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'subcat_name'">
+                <p class="m-0">Total</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'xirr'">
+               {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | percent:'1.2-2') : '0.00%') : '0.00%'}}
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'ret_abs'">
+                {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | number:'1.2-2') : '0.00') : '0.00'}}%
+               </ng-container>
+              <ng-container *ngSwitchDefault>
+                {{_totalFundHouse ? (_totalFundHouse[col.field] ? (_totalFundHouse[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    </div>
+</div>
+
+<div class="row" *ngIf="__isGraphShow">
+    <div class="col-12 col-sm-12">
+        <core-chart
+        [getPieChartDetails]="FoundHouseInvestment | liveMfChartSummary: fund_title : 'Current Value':'fund_name':'curr_val'"
+        ></core-chart>
+    </div>
+    <div class="col-12 col-sm-6 border-right">
+        <core-chart
+        [getPieChartDetails]="CategoryWiseInvestment | liveMfChartSummary: cat_title : 'Current Value':'cat_name':'curr_val'"
+        ></core-chart>
+    </div>
+    <div class="col-12 col-sm-6">
+        <core-chart
+        [getPieChartDetails]="subcategoryWiseInvestment | liveMfChartSummary: subcat_title : 'Current Value':'subcat_name':'curr_val'"
+        ></core-chart>
+    </div>
+
+</div>
+            
+</mat-card-content>
+</mat-card>
