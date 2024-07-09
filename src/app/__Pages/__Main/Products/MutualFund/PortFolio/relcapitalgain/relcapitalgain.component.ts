@@ -11,7 +11,7 @@ import { from, of, zip } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
-
+import Tabs from '../../../../../../../assets/json/Product/Portfolio/realisedCapitalGain/tab.json';
 
 @Component({
   selector: 'portfolio-relcapitalgain',
@@ -22,6 +22,11 @@ export class RelcapitalgainComponent implements OnInit {
 
   @ViewChild('relise_capital_gain_summary') primaryTbl: Table;
 
+
+  realisedcapital_gain_tab:Required<{id:number,tab_name:string,sub_menu:any,img_src:string,flag:string}>[] = []
+
+  realised_capital_gain_sub_tab:Required<{id:number,tab_name:string,sub_menu:any,img_src:string,flag:string}>[] = []
+  
 
   /**
    * Setting of multiselect dropdown
@@ -115,10 +120,20 @@ export class RelcapitalgainComponent implements OnInit {
   }
 
   getReleasedCapitalGainLoss = () => {
+    this.realisedcapital_gain_tab = [];
     this.relisedCapitalGain = [];
     this.relised_capital_gain_summary = [];
     this.client_dtls = null
     this.relised_capital_gain_summary_footer = null;
+    this.realisedcapital_gain_tab = Tabs.filter(el =>{
+        if(el.flag == 'F'){
+          return this.released_capital_gain_form.value.opt1
+        }
+        else if(el.flag == 'D'){
+          return this.released_capital_gain_form.value.opt2
+        }
+        return true;
+    })
     const { asset_type, ...rest } = this.released_capital_gain_form.value
     this.main_frm_dt = null;
     const dt = Object.assign({}, rest,
@@ -397,6 +412,11 @@ export class RelcapitalgainComponent implements OnInit {
   filterGlobal_secondary = ($event) => {
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value, 'contains')
+  }
+
+  TabDetails =(ev) =>{
+      console.log(ev);
+      // this.realised_capital_gain_sub_tab = 
   }
 
 }

@@ -27,12 +27,12 @@ export class plFilterPipe implements PipeTransform {
         // return value.filter(el => Number(el.tot_units) <= 0)
         // return value.filter(el => Number(el.curr_val) <= 0);
           return value.filter(el => {
-            if(el.tot_inflow == 0 && el.tot_outflow == 0){}
-            else{
-                  if(Number(el.curr_val) <= 0){
-                    return true
-                  }
-            }
+            // if(el.tot_inflow == 0 && el.tot_outflow == 0){}
+            // else{
+              if(Number(el.curr_val) <= 0){
+                return true
+              }
+            // }
             return false
           });
       }

@@ -21,6 +21,7 @@ import { FamilySummaryComponent } from './family-summary/family-summary.componen
 import { SummaryReportComponent } from './summary-report/summary-report.component';
 import { ChartModule } from 'src/app/__Core/chart/chart.module';
 import { LiveMfChartSummaryPipe } from 'src/app/__Pipes/liveMfPortfolio_Summary_chart.pipe';
+import { MfReportwisePoretfolioComponent } from './mf-reportwise-poretfolio/mf-reportwise-poretfolio.component';
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
 @NgModule({
@@ -40,7 +41,8 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     systamaticMissedTransFilterPipe,
     DivHistoryComponent,
     FamilySummaryComponent,
-    SummaryReportComponent
+    SummaryReportComponent,
+    MfReportwisePoretfolioComponent
   ],
   imports: [
     CommonModule,

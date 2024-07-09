@@ -1,20 +1,29 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ILivePortFolio } from '../__Pages/__Main/Products/MutualFund/PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
+import { IDivHistory } from '../__Pages/__Main/Products/MutualFund/PortFolio/LiveMFPortFolio/div-history/div-history.component';
 
 @Pipe({
   name: 'divHistory'
 })
 export class divHistoryPipe implements PipeTransform {
 
-  transform(value:Partial<ILivePortFolio>[], args: string) {
+  transform(value:Partial<IDivHistory>[], args: string) {
        if(args === 'R'){
-          return value.filter((item:Required<ILivePortFolio>) => Number(item.idcw_reinv) > 0);
+          return value.filter((item:Required<IDivHistory>) => item.transaction_subtype.includes('Dividend Reinvestment')).map(el =>{
+             el.scheme_name =`${el.scheme_name}-${el.plan_name}-${el.option_name}`;
+             return el;
+          })
        }
        else if(args === 'P'){
-        return value.filter((item:Required<ILivePortFolio>) => Number(item.idcwp) > 0);
+        return value.filter((item:Required<IDivHistory>) => item.transaction_subtype.includes('Dividend Payout')).map(el =>{
+          el.scheme_name =`${el.scheme_name}-${el.plan_name}-${el.option_name}`;
+          return el;
+       })
        }
        else{
-        return value.filter((item:Required<ILivePortFolio>) => (Number(item.idcw_reinv) > 0 || Number(item.idcwp) > 0));
+        return value.map(el =>{
+          el.scheme_name =`${el.scheme_name}-${el.plan_name}-${el.option_name}`;
+          return el;
+       })
        }
   }
 }

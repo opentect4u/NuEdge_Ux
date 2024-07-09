@@ -1,0 +1,53 @@
+[
+      {
+        "id":1,
+        "tab_name":"REALISED CAPITAL GAIN/LOSS",
+        "sub_menu":[],
+        "img_src":"",
+        "flag":"R"
+      },
+      {
+        "id":2,
+        "tab_name":"DIVIDEND REPORT",
+        "sub_menu":[
+            {
+                "id":1,
+                "tab_name":"DIVIDEND SUMMARY",
+                "sub_menu":[],
+                "img_src":"",
+                "flag":"DS"  
+            },
+            {
+                "id":2,
+                "tab_name":"DIVIDEND DETAIL",
+                "sub_menu":[],
+                "img_src":"",
+                "flag":"DD"  
+            }
+        ],
+        "img_src":"",
+        "flag":"D"
+      },
+      {
+        "id":3,
+        "tab_name":"FINANCIAL YEAR WISE REPORT",
+        "sub_menu":[
+            {
+                "id":1,
+                "tab_name":"LONG SUMMARY",
+                "sub_menu":[],
+                "img_src":"",
+                "flag":"LS"  
+            },
+            {
+                "id":2,
+                "tab_name":"VIEW COMPLETE DETAILS",
+                "sub_menu":[],
+                "img_src":"",
+                "flag":"VCD"  
+            }
+        ],
+        "img_src":"",
+        "flag":"F"
+      }
+]
