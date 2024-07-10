@@ -152,7 +152,10 @@ setTrancated_val = (length_of_actual_array:number) => {
   }
 
   getColumnsForDetails = () =>{
-    return [...this.utility.getColumns(this.parent_column),'report.folio_no','report.plan_name','report.option_name','report.isin_no'];
+    return [...this.utility.getColumns(this.parent_column),
+      'group_by','report.folio_no','report.plan_name',
+      'report.option_name','report.isin_no'
+    ];
   }
 
   filterGlobal($event){

@@ -28,76 +28,90 @@
     "label":"SIP",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"SIP"
   },
   {
     "id":5,
     "label":"STP",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"STP"
   },
   {
     "id":6,
     "label":"SWP",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"SWP"
   },
   {
     "id":7,
     "label":"Gold Tracker",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"GT"
+
   },
   {
     "id":8,
     "label":"Capital Gain/Loss",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"CGL"
   },
   {
     "id":9,
     "label":"P&L",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"P&L"
   },
   {
     "id":10,
     "label":"Div History",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"DH"
+
   },
   {
     "id":11,
     "label":"Recent Transaction",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"RT"
   },
   {
     "id":12,
     "label":"Upcomming Transaction",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"UT"
   },
   {
     "id":13,
     "label":"Reject Transaction",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"REJT"
   },
   {
     "id":14,
     "label":"Systematic Missed Transaction",
     "icon":null,
     "img":null,
-    "items":[]
+    "items":[],
+    "flag":"SMT"
+
   }
 ]

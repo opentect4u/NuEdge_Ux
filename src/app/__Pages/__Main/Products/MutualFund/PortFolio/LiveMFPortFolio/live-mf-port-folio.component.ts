@@ -868,12 +868,37 @@ mappings between `act_value` and `value` for transition durations. */
       return;
       }
      else{
-      if(this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'S').length == 0){
-        this.__portFolioTab = portFolioTab.filter(el => el.flag != 'S');
-      }
-      else{
-        this.__portFolioTab = portFolioTab
-      }
+      console.log(this.filter_criteria.get('show_valuation_with').value)
+      const visible_tab = this.filter_criteria.get('show_valuation_with').value.filter(el => {
+          if(el.flag == 'S'){
+                return true
+          }
+          else if(el.flag == 'SIP'){
+              return true
+          }
+          return false;
+      });
+      let tab = portFolioTab;
+      // if(visible_tab.length == 0){
+      //   // if(visible_tab.filter(item => item.flag == 'S').length == 0){
+      //   //   this.__portFolioTab = tab.filter(item => item.flag != 'S')
+      //   // }
+      //   // if(visible_tab.filter(item => item.flag == 'SIP').length == 0){
+      //   //   this.__portFolioTab = tab.filter(item => item.flag != 'SIP')
+      //   // }
+         this.__portFolioTab = tab.filter(el =>{
+            if(el.flag == 'S'){
+                    return (visible_tab.filter(item => item.flag == 'S').length == 0);
+            }
+            else if(el.flag == 'SIP'){
+              return (visible_tab.filter(item => item.flag == 'SIP').length == 0);
+            }
+            return true;
+         })
+      // }
+      // else{
+      //   this.__portFolioTab = tab
+      // }
      }
     this.__isGraphShow =  this.filter_criteria.value.show_valuation_with.filter(el => el.flag === 'G').length > 0;
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
