@@ -1,0 +1,89 @@
+<p-table #primeTbl id="trxDt" [value]="idcwRpt"      
+[rows]="10" [paginator]="true"
+[rowHover]="true"
+currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+styleClass="p-datatable-lg"
+[pageLinks]="3"
+[globalFilterFields]="getColumns()"
+  [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+[showCurrentPageReport]="true">
+<ng-template pTemplate="header">
+  <tr class="stickyHeader">
+    <th *ngFor="let col of column" [pSortableColumn]="col.field"
+    [style.width]="col.width">
+      {{ col.header }}
+      <p-sortIcon [field]="col.field">
+      </p-sortIcon>
+    </th>
+  </tr>
+</ng-template>
+<ng-template pTemplate="caption">
+    <div class="d-flex justify-content-between align-items-center">
+      <div></div>
+        <div class="w-50 d-flex justify-content-end align-items-center">
+          <input id="search" type="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
+          placeholder="Search" />
+        </div>
+    </div>
+</ng-template>
+<ng-template pTemplate="body" let-trxn let-i="rowIndex">
+  <tr tabindex="999">
+    <td *ngFor="let col of column" [style.width]="col.width">
+      <ng-container [ngSwitch]="true">
+        <ng-container *ngSwitchCase="col.header == 'IDCWP'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | number:'1.2-2') : '0.00' }}</p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.header == 'trans_date'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn.trans_date | date:'dd-MM-YYYY') : 'N/A' }}</p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.header == 'IDCW Reinv.'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | number:'1.2-2') : '0.00' }}</p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.field == 'sl_no'">
+          <p class="m-0">{{ i + 1}}</p>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <p class="m-0">{{ trxn[col.field] ? trxn[col.field] : '0.00' }}</p>
+        </ng-container>
+      </ng-container>
+    </td>
+  </tr>
+</ng-template>
+
+<ng-template pTemplate="emptymessage" let-columns>
+  <tr>
+    <td [attr.colSpan]="column.length" class="noHistoryAvailable">
+      <p class="m-0">NO RECORDS FOUND</p>
+    </td>
+  </tr>
+</ng-template>
+<ng-template pTemplate="loadingbody" let-columns="columns">
+  <tr style="height:34px">
+      <td *ngFor="let col of columns; let even = even">
+          <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
+      </td>
+  </tr>
+</ng-template>
+<ng-template pTemplate="footer">
+<tr>
+  <td
+    *ngFor="let col of column"
+    [style]="'width : ' + col.width"
+  >
+    <ng-container [ngSwitch]="true">
+      <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+        <p class="m-0">Total</p>
+      </ng-container>
+      <ng-container *ngSwitchCase="col.field == 'idcwp' || col.field == 'idcw_reinv' 
+      || col.field == 'idcw_sweep_in' || col.field == 'idcw_sweep_out' || col.field == 'tot_tds'">
+        <p class="m-0">{{total_idcw_summary ? (total_idcw_summary[col.header] ? (total_idcw_summary[col.header] | number:'1.2-2') : '0.00'): '0.00'}}</p>
+      </ng-container>
+      <ng-container *ngSwitchDefault></ng-container>
+    </ng-container>
+  </td>
+</tr>
+</ng-template>
+</p-table>

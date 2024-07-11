@@ -5,7 +5,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import  ClientType  from '../../../../../../../assets/json/view_type.json';
 import { client } from 'src/app/__Model/__clientMst';
 import { debounceTime, distinctUntilChanged, groupBy, map, mergeMap, pluck, switchMap, tap, toArray } from 'rxjs/operators';
-import { DatePipe } from '@angular/common';
+import { DatePipe, KeyValue } from '@angular/common';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { Table } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -64,6 +64,23 @@ export type TotalparentLiveMfPortFolio = {
 }
 /*** End */
 
+
+export type TotalRealisedUnrealisedPL = {
+    "purchase": number | undefined,
+    "Switch In": number | undefined,
+    "IDCW Reinv.":number | undefined,
+    "Inflow":number | undefined,
+    "Redemp.":number | undefined,
+    "Switch Out":number | undefined,
+    "IDCWP":number | undefined,
+    "Outflow":number | undefined,
+    "Scheme":number | undefined,
+    "Curr. Val":number | undefined,
+    "Gain/Loss":number | undefined,
+    "xirr":number | undefined,
+    "Abs.Ret":number | undefined,
+}
+
 @Component({
   selector: 'app-live-mf-port-folio',
   templateUrl: './live-mf-port-folio.component.html',
@@ -72,7 +89,10 @@ export type TotalparentLiveMfPortFolio = {
 
 export class LiveMfPortFolioComponent implements OnInit {
 
-
+  keepOrder = 
+  (x: KeyValue<string, any>, y: KeyValue<string, any>): number => { 
+  return 0 
+  }
   plTableFooter:Partial<TotalPLportfolio>
   fundHouse:Required<IFoundHouseInvestment>[] = [];
   categoryWiseSummary:Required<IcategoryWiseInvestment>[] = [];
@@ -167,6 +187,9 @@ mappings between `act_value` and `value` for transition durations. */
   // __portFolioTab = portFolioTab;
   __portFolioTab = [];
 
+  PLSummary_realised_unrealised:Partial<TotalRealisedUnrealisedPL>;
+
+  __isPLSUmmary_Realised_Unrealised_Visble:boolean = false;
 
   selected_id:number = 1;
 
@@ -579,7 +602,6 @@ mappings between `act_value` and `value` for transition durations. */
 
  
   setFooterOfPlTransaction(arr:Partial<IPLTrxn>[],pl_folio_type:string){
-    if(pl_folio_type){
     const filterPipe = new plFilterPipe();
     let array_without_negative_curr_val = filterPipe.transform(arr,pl_folio_type)
     let total_amt = [];
@@ -606,7 +628,42 @@ mappings between `act_value` and `value` for transition durations. */
       gain_loss:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.gain_loss)),
       ret_abs:(global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.ret_abs)) / array_without_negative_curr_val.length),
       xirr:global.XIRR(total_amt,total_date,0)
-    }}
+     }
+  }
+
+  // setTableFooterForPL(array_without_negative_curr_val:Partial<IPLTrxn>[],total_amount,total_date){
+
+  // }
+
+  setFooterOfPlTransaction_forUnrealised(arr:Partial<IPLTrxn>[],pl_folio_type:string){
+    const filterPipe = new plFilterPipe();
+    let array_without_negative_curr_val = filterPipe.transform(arr,pl_folio_type)
+    let total_amt = [];
+    let total_date = [];
+    array_without_negative_curr_val.forEach((el,index) =>{
+      if(el.mydata.all_amt_arr.length > 0 && el.mydata.all_date_arr.length > 0){
+        total_amt=[...total_amt,...el.mydata.all_amt_arr.map(item => Number(item))];
+        total_date=[...total_date,...el.mydata.all_date_arr];
+      }
+    })
+    const curr_val = global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.curr_val));
+    total_amt.push(curr_val);
+    total_date.push(this.datePipe.transform(this.main_frm_dt?.valuation_as_on,'YYYY-MM-dd'))
+     this.PLSummary_realised_unrealised = {
+      purchase:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.purchase)),
+      "Switch In":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_in)),
+      "IDCW Reinv.":global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
+      "Inflow":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_inflow)),
+      "Redemp.":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.redemption)),
+      "Switch Out":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_out)),
+      "IDCWP":global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcwp ? Number(item.idcwp) : 0),
+      "Outflow":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_outflow)),
+      "Curr. Val":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.curr_val)),
+      "Gain/Loss":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.gain_loss)),
+      "Abs.Ret":(global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.ret_abs)) / array_without_negative_curr_val.length),
+      "xirr":global.XIRR(total_amt,total_date,0)
+     }
+     console.log(this.PLSummary_realised_unrealised);
   }
 
 
@@ -868,7 +925,6 @@ mappings between `act_value` and `value` for transition durations. */
       return;
       }
      else{
-      console.log(this.filter_criteria.get('show_valuation_with').value)
       const visible_tab = this.filter_criteria.get('show_valuation_with').value.filter(el => {
           if(el.flag == 'S'){
                 return true
@@ -879,30 +935,21 @@ mappings between `act_value` and `value` for transition durations. */
           return false;
       });
       let tab = portFolioTab;
-      // if(visible_tab.length == 0){
-      //   // if(visible_tab.filter(item => item.flag == 'S').length == 0){
-      //   //   this.__portFolioTab = tab.filter(item => item.flag != 'S')
-      //   // }
-      //   // if(visible_tab.filter(item => item.flag == 'SIP').length == 0){
-      //   //   this.__portFolioTab = tab.filter(item => item.flag != 'SIP')
-      //   // }
+          console.log(visible_tab)
          this.__portFolioTab = tab.filter(el =>{
             if(el.flag == 'S'){
-                    return (visible_tab.filter(item => item.flag == 'S').length == 0);
+                    return (visible_tab.filter(item => item.flag == 'S').length > 0);
             }
             else if(el.flag == 'SIP'){
-              return (visible_tab.filter(item => item.flag == 'SIP').length == 0);
+              return (visible_tab.filter(item => item.flag == 'SIP').length > 0);
             }
             return true;
          })
-      // }
-      // else{
-      //   this.__portFolioTab = tab
-      // }
      }
     this.__isGraphShow =  this.filter_criteria.value.show_valuation_with.filter(el => el.flag === 'G').length > 0;
     this.valuation_as_on = this.filter_criteria.value.valuation_as_on;
     this.clientDtls = null;
+    this.PLSummary_realised_unrealised = null;
     this.parent_family_holder_for_tab = [];
     this.selected_tab_index_for_family = 0;
     this.__dataSource_for_mf_report_segregrated = [];
@@ -948,6 +995,7 @@ mappings between `act_value` and `value` for transition durations. */
          });
       });
     })
+    this.__isPLSUmmary_Realised_Unrealised_Visble = this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'PL').length > 0
     const {family_members,...rest} = Object.assign({},{
       ...this.filter_criteria.value,
       selected_funds:this.filter_criteria.value.view_funds_type == 'S' ? JSON.stringify(this.selected_funds.map(el => ({product_code:el.product_code,folio_no:el.folio_no,isin_no:el.isin_no,rnt_id:el.rnt_id}))) : [],
@@ -1002,7 +1050,6 @@ mappings between `act_value` and `value` for transition durations. */
         }
       )  
     })
-    console.log(this.__dataSource_for_mf_report_segregrated)
   }
 
   call_func_tab_change = () =>{
@@ -1523,7 +1570,6 @@ mappings between `act_value` and `value` for transition durations. */
 
   call_api_for_detail_summary_func(formData) {
     if(this.dataSource.length == 0 && this.__dataSource_for_mf_report_segregrated.length == 0){
-      // const dt = this.filter_criteria.get('show_valuation_with').value.map(el => el.flag)
       this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
       .pipe(
         pluck('data'),
@@ -1583,6 +1629,10 @@ mappings between `act_value` and `value` for transition durations. */
               }
             catch(ex){}
       })
+
+      if(this.__isPLSUmmary_Realised_Unrealised_Visble){
+        this.call_corrosponding_api(9,formData);
+      }
     }
     }
 
@@ -1633,7 +1683,7 @@ mappings between `act_value` and `value` for transition durations. */
   /** call api for p&l */
   call_api_for_pL_func = (formData) =>{
     if(this.plTrxnDtls.length == 0){
-      this.__dbIntr.api_call(1,'/clients/liveMFPL',this.utility.convertFormData(formData))
+      this.__dbIntr.api_call(1,'/clients/liveMFPL',this.utility.convertFormData(formData),this.__isPLSUmmary_Realised_Unrealised_Visble)
       .pipe(
         pluck('data'),
         map((x:any) =>{
@@ -1657,12 +1707,9 @@ mappings between `act_value` and `value` for transition durations. */
             );
             this.setClientDtls(result.client_details);
            this.setFooterOfPlTransaction(this.plTrxnDtls,this.__pl_trxn_form.get('pl_folio_type').value);
-            // this.dataSource.forEach(el =>{
-            //     if(element?.mydata.all_amt_arr.length > 0 && element?.mydata.all_date_arr.length > 0){
-            //   total_amt = [...total_amt,...element?.mydata.all_amt_arr.map(item => Number(item))];
-            //   total_date = [...total_date,...element?.mydata.all_date_arr.map(item => this.datePipe.transform(item,'YYYY-MM-dd'))];
-            // }
-            // })
+           if(this.__isPLSUmmary_Realised_Unrealised_Visble){
+                this.setFooterOfPlTransaction_forUnrealised(this.plTrxnDtls,'A');
+           }
       })
    }
   }
@@ -2128,7 +2175,15 @@ mappings between `act_value` and `value` for transition durations. */
       // }
   }
 
-
+  letter(i){
+    try{
+      return String.fromCharCode(65+i);
+    }
+    catch(err){
+      console.log(err);
+      return '';
+    }
+  }
   
 
   getPayLoadForFamily(formData){

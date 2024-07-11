@@ -1,0 +1,51 @@
+<ng-container *ngIf="tab_type == 'LS';else view_capital_details">
+    <p-table #dt [value]="financial_year_wise_report"
+    [rows]="10" [paginator]="true"
+      [rowHover]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      styleClass="p-datatable-lg"
+      [pageLinks]="3"
+      [globalFilterFields]="getColumns()"
+        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+      [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr class="stickyHeader">
+                <th *ngFor="let col of long_summary_column"
+                    pSortableColumn="{{col.field}}"
+                    [style]="'width : '+col.width"
+                >
+                {{col.header}}
+                <p-sortIcon field="{{col.field}}" *ngIf="col.field != 'trans_details'"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+            <ng-template pTemplate="caption">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div></div>
+                    <div class="w-50 d-flex justify-content-end align-items-center">
+                        <input id="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
+                        placeholder="Search" />
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="body" let-pl_trxn>
+
+                <tr>
+                    <td *ngFor="let col of long_summary_column" [style]="'width : '+col.width">
+                        <p class="m-0">N/A</p>
+                   </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage" let-pl_trxn>
+                <tr>
+                  <td [attr.colspan]="long_summary_column.length">
+                    <p class="m-0">NO RECORDS FOUND</p>
+                  </td>
+                </tr>
+              </ng-template>
+
+            </p-table>
+</ng-container>
+<ng-template #view_capital_details>
+            <p>View Complete Details Work</p>
+</ng-template>

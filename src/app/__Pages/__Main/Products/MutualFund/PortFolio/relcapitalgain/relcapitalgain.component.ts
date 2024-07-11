@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import clientType from '../../../../../../../assets/json/view_type.json';
 import { client } from 'src/app/__Model/__clientMst';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
-import { debounceTime, distinctUntilChanged, groupBy, map, mergeMap, pluck, switchMap, tap, toArray } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, groupBy, map, mergeMap, pluck, switchMap, tap, toArray } from 'rxjs/operators';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { Calendar } from 'primeng/calendar';
@@ -27,7 +27,11 @@ export class RelcapitalgainComponent implements OnInit {
 
   realised_capital_gain_sub_tab:Required<{id:number,tab_name:string,sub_menu:any,img_src:string,flag:string}>[] = []
   
+  parent_tab_id:string = 'R';
 
+  selected_index:number = 0;
+
+  sub_tab_id:string;
   /**
    * Setting of multiselect dropdown
    */
@@ -98,9 +102,17 @@ export class RelcapitalgainComponent implements OnInit {
 
   relisedCapitalGain = [];
 
+  idcw_summary = [];
+
+  total_idcw_summary;
+
+  financial_year_wise_trans_report = [];
+
   relised_capital_gain_column = realisedCapitalGainColumn.column
 
   relised_capital_gain_summary_column = realisedCapitalGainColumn.column_summary;
+
+  idcw_column:column[] = DividendColumn.column;
 
   relised_capital_gain_summary: Partial<ISummaryTbleData>[] = []
 
@@ -120,7 +132,12 @@ export class RelcapitalgainComponent implements OnInit {
   }
 
   getReleasedCapitalGainLoss = () => {
+    this.selected_index = 0;
+    this.parent_tab_id = null;
+    this.idcw_summary = [];
+    
     this.realisedcapital_gain_tab = [];
+    this.realised_capital_gain_sub_tab = [];
     this.relisedCapitalGain = [];
     this.relised_capital_gain_summary = [];
     this.client_dtls = null
@@ -143,105 +160,153 @@ export class RelcapitalgainComponent implements OnInit {
         fin_year: this.released_capital_gain_form.value.date_type === 'F' ? global.getActualVal(this.released_capital_gain_form.value.fin_year) : ''
       }
     )
-    this.dbIntr.api_call(1, '/clients/realisedCapitalGain', this.utility.convertFormData(dt))
-      .pipe(pluck('data')).subscribe((res: Required<{ data, client_details: client }>) => {
-        // this.client_dtls = res.client_details;
-        this.client_dtls = Object.assign(res.client_details,
-          {
-            ...res.client_details,
-            add_line_1: [res.client_details.add_line_1, res.client_details.add_line_2, res.client_details.add_line_3, res.client_details.city_name, res.client_details.state_name, res.client_details.district_name, res.client_details.pincode].filter(item => { return item }).toString()
-          }
-        );
-        this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
-        let filter_data_by_asset_type = res.data.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type));
-        this.relised_capital_gain_summary = [];
-        from(filter_data_by_asset_type.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
-          .pipe(
-            groupBy((data: any) => data.tax_type),
-            mergeMap(group => zip(of(group.key), group.pipe(toArray())))
-          ).subscribe(dt => {
-            let summary_data: Partial<IsummaryReport>[] = [];
-            let final_realised_capital_gain = dt[1].filter(element => {
-              if (this.released_capital_gain_form.value.trans_periods != '') {
-                if (this.released_capital_gain_form.value.trans_periods == 'S') {
-                  element.calculation_arr = element.calculation_arr.filter(item => item.stcg != '')
-                }
-                else {
-                  element.calculation_arr = element.calculation_arr.filter(item => item.ltcg != '')
-                }
-              }
-              if (element.calculation_arr.length > 0) {
-
-                element.total = this.getGrandTotal(element.calculation_arr);
-                /*** Calaculation For Summary Table */
-                const long_term_gain = element.total?.index_ltcg > 0 ? element.total?.index_ltcg : 0;
-                const long_term_loss = element.total?.index_ltcg < 0 ? element.total?.index_ltcg : 0;
-                const net_long_term_gain_loss = (long_term_gain + long_term_loss);
-                const short_term_gain = element.total?.stcg > 0 ? element.total?.stcg : 0;
-                const short_term_loss = element.total?.stcg < 0 ? element.total?.stcg : 0;
-                const net_short_term_gain_loss = (short_term_gain + short_term_loss)
-                summary_data.push({
-                  id: new Date().getTime(),
-                  folio: element.folio_no,
-                  scheme_name: `${element.scheme_name}-${element.plan_name}-${element.option_name}`,
-                  short_term_gain: short_term_gain,
-                  short_term_loss: short_term_loss,
-                  long_term_gain: long_term_gain,
-                  long_term_loss: long_term_loss,
-                  net_long_term_gain_loss: net_long_term_gain_loss,
-                  net_short_term_gain_loss: net_short_term_gain_loss,
-                  stt: element?.total.stt,
-                  tds: element?.total.tot_tds,
-                  total_gain_loss: (net_long_term_gain_loss + net_short_term_gain_loss)
-                })
-                /**** End */
-                return element
-              }
-              return false
-            })
-            /*** For Summary Table Data */
-            this.relised_capital_gain_summary.push({
-              tax_type: dt[0],
-              summary: summary_data,
-              total: this.getGrandSummaryTotal(summary_data)
-            })
-            /*** End */
-
-            /**** For Details Report */
-            if (rest.report_type === 'D') {
-              // if(!final_realised_capital_gain.every(el => el.calculation_arr.length == 0)){
-              this.relisedCapitalGain.push(
-                {
-                  tax_type: dt[0],
-                  data: final_realised_capital_gain,
-                  total: this.getGrandTotal(final_realised_capital_gain.map(el => el.total))
-                }
-              );
-              // }
-            }
-            /**** End */
-          })
-        this.main_frm_dt = rest;
-        if (this.relisedCapitalGain.length == 0 && this.relised_capital_gain_summary.length == 0) {
-          this.utility.showSnackbar('No Records Found!!', 0)
-        }
-        else {
-
-          this.relised_capital_gain_summary_footer = {
-            short_term_gain:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.short_term_gain),
-            short_term_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.short_term_loss),
-            long_term_gain:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.long_term_gain),
-            long_term_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.long_term_loss),
-            net_long_term_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.net_long_term_gain_loss),
-            net_short_term_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.net_short_term_gain_loss),
-            total_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.total_gain_loss),
-            tds:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.tds),
-            stt:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.stt)
-          }
-        }
-      })
+    this.main_frm_dt = dt;
+    this.realisedCapitalGain(dt)
   }
 
+  /** For Getting Realised capital Gain */
+  realisedCapitalGain = (rest) =>{
+    if( this.relised_capital_gain_summary.length == 0 && this.relisedCapitalGain.length == 0){
+      this.dbIntr.api_call(1, '/clients/realisedCapitalGain', this.utility.convertFormData(rest))
+      .pipe(pluck('data')).subscribe((res: Required<{ data, client_details: client }>) => {
+          this.client_dtls = Object.assign(res.client_details,
+            {
+              ...res.client_details,
+              add_line_1: [res.client_details.add_line_1, res.client_details.add_line_2, res.client_details.add_line_3, res.client_details.city_name, res.client_details.state_name, res.client_details.district_name, res.client_details.pincode].filter(item => { return item }).toString()
+            }
+          );
+          this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
+          let filter_data_by_asset_type = res.data.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type));
+          this.relised_capital_gain_summary = [];
+          from(filter_data_by_asset_type.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
+            .pipe(
+              groupBy((data: any) => data.tax_type),
+              mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+            ).subscribe(dt => {
+              let summary_data: Partial<IsummaryReport>[] = [];
+              let final_realised_capital_gain = dt[1].filter(element => {
+                if (this.released_capital_gain_form.value.trans_periods != '') {
+                  if (this.released_capital_gain_form.value.trans_periods == 'S') {
+                    element.calculation_arr = element.calculation_arr.filter(item => item.stcg != '')
+                  }
+                  else {
+                    element.calculation_arr = element.calculation_arr.filter(item => item.ltcg != '')
+                  }
+                }
+                if (element.calculation_arr.length > 0) {
+
+                  element.total = this.getGrandTotal(element.calculation_arr);
+                  /*** Calaculation For Summary Table */
+                  const long_term_gain = element.total?.index_ltcg > 0 ? element.total?.index_ltcg : 0;
+                  const long_term_loss = element.total?.index_ltcg < 0 ? element.total?.index_ltcg : 0;
+                  const net_long_term_gain_loss = (long_term_gain + long_term_loss);
+                  const short_term_gain = element.total?.stcg > 0 ? element.total?.stcg : 0;
+                  const short_term_loss = element.total?.stcg < 0 ? element.total?.stcg : 0;
+                  const net_short_term_gain_loss = (short_term_gain + short_term_loss)
+                  summary_data.push({
+                    id: new Date().getTime(),
+                    folio: element.folio_no,
+                    scheme_name: `${element.scheme_name}-${element.plan_name}-${element.option_name}`,
+                    short_term_gain: short_term_gain,
+                    short_term_loss: short_term_loss,
+                    long_term_gain: long_term_gain,
+                    long_term_loss: long_term_loss,
+                    net_long_term_gain_loss: net_long_term_gain_loss,
+                    net_short_term_gain_loss: net_short_term_gain_loss,
+                    stt: element?.total.stt,
+                    tds: element?.total.tot_tds,
+                    total_gain_loss: (net_long_term_gain_loss + net_short_term_gain_loss)
+                  })
+                  /**** End */
+                  return element
+                }
+                return false
+              })
+              /*** For Summary Table Data */
+              this.relised_capital_gain_summary.push({
+                tax_type: dt[0],
+                summary: summary_data,
+                total: this.getGrandSummaryTotal(summary_data)
+              })
+              /*** End */
+
+              /**** For Details Report */
+              if (rest.report_type === 'D') {
+                // if(!final_realised_capital_gain.every(el => el.calculation_arr.length == 0)){
+                this.relisedCapitalGain.push(
+                  {
+                    tax_type: dt[0],
+                    data: final_realised_capital_gain,
+                    total: this.getGrandTotal(final_realised_capital_gain.map(el => el.total))
+                  }
+                );
+                // }
+              }
+              /**** End */
+            })
+            if (this.relisedCapitalGain.length == 0 && this.relised_capital_gain_summary.length == 0) {
+                // this.utility.showSnackbar('No Records Found!!', 0)
+            }
+            else {
+                this.relised_capital_gain_summary_footer = {
+                  short_term_gain:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.short_term_gain),
+                  short_term_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.short_term_loss),
+                  long_term_gain:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.long_term_gain),
+                  long_term_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.long_term_loss),
+                  net_long_term_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.net_long_term_gain_loss),
+                  net_short_term_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.net_short_term_gain_loss),
+                  total_gain_loss:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.total_gain_loss),
+                  tds:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.tds),
+                  stt:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.stt)
+                }
+            }
+      })
+    }
+  }
+  /** End */
+
+  /*** For Getting Dividend History */
+  getIDCWHistory(rest){
+    if(this.idcw_summary.length == 0){
+    this.dbIntr.api_call(1,'/clients/realisedDivHistory',rest)
+    .pipe(pluck('data'))
+    .subscribe((res:any) => {
+        this.idcw_summary = res.data;
+       let idcwp = res.data.filter(item => item.transaction_subtype.toLowerCase().includes('dividend payout'))
+       let idcw_reinv = res.data.filter(item => item.transaction_subtype.toLowerCase().includes('dividend reinvestment'))
+       this.total_idcw_summary = {
+           "IDCWP":global.Total__Count(idcwp,(item:any) => Number(item.amount)),
+           "IDCW Reinv.":global.Total__Count(idcw_reinv,(item:any) => Number(item.amount)),
+           "IDCW Sweep In":0.00,
+           "IDCW Sweep Out":0.00,
+           "TDS":global.Total__Count(res.data,(item:any) => Number(item.tot_tds))
+        }
+    })
+  }
+  }
+
+  /*** For Getting FinancialWise Report */
+  getfinancialWiseReport(rest){
+    this.dbIntr.api_call(1,'/clients/finYearWiseTrans',rest)
+    .pipe(pluck('data'))
+    .subscribe((res:any) => {
+      // console.log(res);
+      this.financial_year_wise_trans_report = res;
+      this.segregrateFinancialYearWiseReport(res);
+    })
+  }
+  /*** End */
+
+  segregrateFinancialYearWiseReport(arr){
+    from(arr)
+    .pipe(
+      groupBy((data:any) => data['scheme_name']),
+      mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+    ).subscribe((dt) =>{
+          console.log(dt)
+          // const purchase = global.Total__Count(dt[1],)
+    })
+  }
 
   getGrandSummaryTotal = (summary_data: Partial<IsummaryReport>[]): Partial<IsummaryReport> => {
     return {
@@ -415,8 +480,24 @@ export class RelcapitalgainComponent implements OnInit {
   }
 
   TabDetails =(ev) =>{
-      console.log(ev);
-      // this.realised_capital_gain_sub_tab = 
+      
+      this.parent_tab_id = ev?.tabDtls?.flag; 
+      this.realised_capital_gain_sub_tab = ev?.tabDtls?.sub_menu;
+      switch(this.parent_tab_id){
+        case 'D': this.getIDCWHistory(this.main_frm_dt);this.setSubTabIdOnSelectParentId(ev?.tabDtls?.sub_menu);break;
+        case 'F':this.getfinancialWiseReport(this.main_frm_dt);this.setSubTabIdOnSelectParentId( ev?.tabDtls?.sub_menu);break;
+        default: break;
+      }
+  }
+
+  setSubTabIdOnSelectParentId = (sub_menu) =>{
+    if(sub_menu.filter(el => el.flag == this.sub_tab_id).length > 0){}
+    else{this.sub_tab_id = sub_menu.length > 0 ? sub_menu[0].flag : '';this.selected_index = 0;}
+  }
+
+  subTabDetails = (ev) =>{
+      this.sub_tab_id = ev.tabDtls.flag;
+      this.selected_index = ev.index;
   }
 
 }
@@ -684,4 +765,63 @@ export interface ISummaryTbleData {
   total: Partial<IsummaryReport>
 }
 
+
+export class DividendColumn{
+  public static column:column[] = [
+    {
+      field:'sl_no',
+      header:'Sl No.',
+      width:'5rem',
+      isVisible:['DD']
+    },
+    {
+      field:'trans_date',
+      header:'IDCW Date',
+      width:'7rem',
+      isVisible:['DD']
+    },
+    {
+      field:'folio_no',
+      header:'Folio',
+      width:'10rem',
+      isVisible:['DD','DS']
+    },
+    {
+      field:'scheme_name',
+      header:'Scheme',
+      width:'40rem',
+      isVisible:['DD','DS']
+    },
+    {
+      field:'idcwp',
+      header:'IDCWP',
+      width:'',
+      isVisible:['DD','DS']
+    },
+    {
+      field:'idcw_reinv',
+      header:'IDCW Reinv.',
+      width:'',
+      isVisible:['DD','DS']
+    },
+    {
+      field:'idcw_sweep_in',
+      header:'IDCW Sweep In',
+      width:'',
+      isVisible:['DD','DS']
+    },
+    {
+      field:'idcw_sweep_out',
+      header:'IDCW Sweep Out',
+      width:'',
+      isVisible:['DD','DS']
+    },
+    {
+      field:'tot_tds',
+      header:'TDS',
+      width:'',
+      isVisible:['DD','DS']
+    }
+  ]
+}
 

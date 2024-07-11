@@ -63,7 +63,7 @@ export class MailbackhomeComponent implements OnInit {
     .pipe(pluck('data'))
     .subscribe((res:manualUpload[]) =>{
         this.mailbackuploaded_record = res.map(el => {
-              el.process_type =  el.process_type == 'A' ? 'Auto' : 'Manual';
+              el.process_type =  el.process_type == 'A' ? 'Automatic' : 'Manual';
               return el
          })
       this.getMissedMailback();
