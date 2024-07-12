@@ -120,7 +120,9 @@
             <mat-card-content>
               <core-tab [Tab]="realisedcapital_gain_tab"
                       (GetTabDtls)="TabDetails($event)"
-                      [customClass]="'border-bottom'"></core-tab>
+                      [customClass]="'border-bottom'"
+                      [index]="selected_parent_index"
+                      ></core-tab>
               <ng-container *ngIf="realised_capital_gain_sub_tab.length > 0">
                 <div class="my-3 row">
                   <div class="col-sm-12">
@@ -398,7 +400,7 @@
 
                   <!-- Dividend Report -->
                   <ng-container *ngSwitchCase="parent_tab_id == 'D'">
-                    <div class="row my-5" *ngIf="total_idcw_summary">
+                    <!-- <div class="row my-5" *ngIf="total_idcw_summary">
                       <div class="col-sm-12">
                         <div class="d-flex align-items-center justify-content-around">
                             <ng-container *ngFor="let item of total_idcw_summary | keyvalue" >
@@ -415,8 +417,32 @@
                           </div>
                         </div>
                       </div>
-                    </div>
-                     
+                    </div> -->
+
+                        <div class="row my-3" *ngIf="total_idcw_summary">
+                          <div class="col-sm-12">
+                                <ul class="w-full d-flex justify-content-center align-items-center px-5">  
+                                  <ng-container *ngFor="let item of total_idcw_summary | keyvalue:keepOrder; let i=index">
+                                      <li class="plSummaryRptBlock" style='width:20%'>
+                                        <div>
+                                          <p class="m-0 text-uppercase">{{item.key}}</p>
+                                          <ng-container [ngSwitch]="true">
+                                              <ng-container *ngSwitchCase="item.key === 'xirr'">
+                                                <p class="m-0 mt-2 text-uppercase values">{{item ? (item.value | percent:'1.2-2') : '0.00'}}</p>
+                                              </ng-container>
+                                              <ng-container *ngSwitchDefault>
+                                                <p class="m-0 mt-2 text-uppercase values">
+                                                  {{item ? (item.value | number:'1.2-2') : '0.00'}}
+                                                    <span *ngIf="item.key === 'Abs.Ret'">%</span>
+                                                </p>
+                                              </ng-container>
+                                          </ng-container>
+                                        </div>
+                                      </li>
+                                  </ng-container>
+                                </ul>
+                          </div>
+                        </div>
                       <div-report 
                       [total_idcw_summary]="total_idcw_summary"
                       [column]="idcw_column | columnfilter:sub_tab_id" 

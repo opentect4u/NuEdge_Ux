@@ -558,33 +558,58 @@ export class NfomodificationComponent implements OnInit {
         },
       });
 
-    //Scheme Search
+    //Scheme Search Duplicate
+    // this.__traxForm.controls['scheme_name'].valueChanges
+    //   .pipe(
+    //     tap(() => (this.__isschemeSpinner = true)),
+    //     debounceTime(200),
+    //     distinctUntilChanged(),
+    //     switchMap(
+    //       (dt) =>
+    //         dt?.length > 1
+    //           ? this.__dbIntr.searchItems('/scheme', dt + (this.__traxForm.value.trans_id == 35 ? '' : '&scheme_type=N'))
+    //           : []
+    //       // dt?.length > 1 ? this.__dbIntr.searchItems('/scheme', (dt + '&scheme_type='+ (this.data.trans_type_id == '4' ? 'N' : 'O'))) : []
+    //       // dt?.length > 1 ? this.__dbIntr.searchItems('/scheme', dt) : []
+    //     ),
+    //     map((x: any) => x.data)
+    //   )
+    //   .subscribe({
+    //     next: (value) => {
+    //       this.__schemeMst = value;
+    //       this.searchResultVisibilityForScheme('block');
+    //       this.__isschemeSpinner = false;
+    //     },
+    //     complete: () => console.log(''),
+    //     error: (err) => {
+    //       this.__isschemeSpinner = false;
+    //     },
+    //   });
+
     this.__traxForm.controls['scheme_name'].valueChanges
-      .pipe(
-        tap(() => (this.__isschemeSpinner = true)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap(
-          (dt) =>
-            dt?.length > 1
-              ? this.__dbIntr.searchItems('/scheme', dt + (this.__traxForm.value.trans_id == 35 ? '' : '&scheme_type=N'))
-              : []
-          // dt?.length > 1 ? this.__dbIntr.searchItems('/scheme', (dt + '&scheme_type='+ (this.data.trans_type_id == '4' ? 'N' : 'O'))) : []
-          // dt?.length > 1 ? this.__dbIntr.searchItems('/scheme', dt) : []
-        ),
-        map((x: any) => x.data)
-      )
-      .subscribe({
-        next: (value) => {
-          this.__schemeMst = value;
-          this.searchResultVisibilityForScheme('block');
-          this.__isschemeSpinner = false;
-        },
-        complete: () => console.log(''),
-        error: (err) => {
-          this.__isschemeSpinner = false;
-        },
-      });
+    .pipe(
+      tap(() => (this.__isschemeSpinner = true)),
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(
+        (dt) =>
+          dt?.length > 1
+            ? this.__dbIntr.searchItems('/scheme', dt)
+            : []
+      ),
+      map((x: any) => x.data)
+    )
+    .subscribe({
+      next: (value) => {
+        this.__schemeMst = value;
+        this.searchResultVisibilityForScheme('block');
+        this.__isschemeSpinner = false;
+      },
+      complete: () => console.log(''),
+      error: (err) => {
+        this.__isschemeSpinner = false;
+      },
+    });
 
     //scheme To Search
     this.__traxForm.controls['switch_scheme_to'].valueChanges
@@ -596,7 +621,7 @@ export class NfomodificationComponent implements OnInit {
           dt?.length > 1
             ? this.__dbIntr.searchItems(
                 '/scheme',
-                dt + '&amc_id=' + this.__dialogDtForScheme?.amc_id
+                dt + '&amc_id=' + this.__dialogDtForScheme?.amc_id + (this.__traxForm.value.trans_id == 35 ? '' : '&scheme_type=N')
               )
             : []
         ),

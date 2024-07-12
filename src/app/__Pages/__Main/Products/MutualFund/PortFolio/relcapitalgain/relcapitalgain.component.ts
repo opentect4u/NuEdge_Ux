@@ -8,7 +8,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import { Calendar } from 'primeng/calendar';
 import { from, of, zip } from 'rxjs';
-import { DatePipe } from '@angular/common';
+import { DatePipe, KeyValue } from '@angular/common';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import Tabs from '../../../../../../../assets/json/Product/Portfolio/realisedCapitalGain/tab.json';
@@ -21,7 +21,12 @@ import Tabs from '../../../../../../../assets/json/Product/Portfolio/realisedCap
 export class RelcapitalgainComponent implements OnInit {
 
   @ViewChild('relise_capital_gain_summary') primaryTbl: Table;
+  keepOrder = 
+  (x: KeyValue<string, any>, y: KeyValue<string, any>): number => { 
+  return 0 
+  }
 
+  objectKeys = Object.keys;
 
   realisedcapital_gain_tab:Required<{id:number,tab_name:string,sub_menu:any,img_src:string,flag:string}>[] = []
 
@@ -30,6 +35,8 @@ export class RelcapitalgainComponent implements OnInit {
   parent_tab_id:string = 'R';
 
   selected_index:number = 0;
+
+  selected_parent_index:number = 0;
 
   sub_tab_id:string;
   /**
@@ -133,11 +140,14 @@ export class RelcapitalgainComponent implements OnInit {
 
   getReleasedCapitalGainLoss = () => {
     this.selected_index = 0;
-    this.parent_tab_id = null;
+    this.selected_parent_index = 0;
+    this.parent_tab_id = 'R';
+    this.sub_tab_id ='';
     this.idcw_summary = [];
-    
-    this.realisedcapital_gain_tab = [];
-    this.realised_capital_gain_sub_tab = [];
+    this.total_idcw_summary = null;
+    // this.realisedcapital_gain_tab = [];
+    // this.realised_capital_gain_sub_tab = [];
+    this.financial_year_wise_trans_report = [];
     this.relisedCapitalGain = [];
     this.relised_capital_gain_summary = [];
     this.client_dtls = null
@@ -281,6 +291,7 @@ export class RelcapitalgainComponent implements OnInit {
            "IDCW Sweep Out":0.00,
            "TDS":global.Total__Count(res.data,(item:any) => Number(item.tot_tds))
         }
+        console.log(this.total_idcw_summary.length);
     })
   }
   }
@@ -480,9 +491,9 @@ export class RelcapitalgainComponent implements OnInit {
   }
 
   TabDetails =(ev) =>{
-      
       this.parent_tab_id = ev?.tabDtls?.flag; 
       this.realised_capital_gain_sub_tab = ev?.tabDtls?.sub_menu;
+      this.selected_parent_index = ev.index;
       switch(this.parent_tab_id){
         case 'D': this.getIDCWHistory(this.main_frm_dt);this.setSubTabIdOnSelectParentId(ev?.tabDtls?.sub_menu);break;
         case 'F':this.getfinancialWiseReport(this.main_frm_dt);this.setSubTabIdOnSelectParentId( ev?.tabDtls?.sub_menu);break;
@@ -499,6 +510,17 @@ export class RelcapitalgainComponent implements OnInit {
       this.sub_tab_id = ev.tabDtls.flag;
       this.selected_index = ev.index;
   }
+
+  letter(i){
+    try{
+      return String.fromCharCode(65+i);
+    }
+    catch(err){
+      console.log(err);
+      return '';
+    }
+  }
+  
 
 }
 
