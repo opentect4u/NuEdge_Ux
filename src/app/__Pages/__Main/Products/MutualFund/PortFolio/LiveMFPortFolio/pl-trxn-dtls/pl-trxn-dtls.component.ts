@@ -7,6 +7,8 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { FormControl } from '@angular/forms';
 import { client } from 'src/app/__Model/__clientMst';
 import jsPDF from 'jspdf';
+import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
+import autoTable from 'jspdf-autotable';
 /*** Display Footer data on P&L */
 export type TotalPLportfolio = {
   purchase: number | undefined,
@@ -115,27 +117,101 @@ export class PlTrxnDtlsComponent implements OnInit {
 
   // }
   ngAfterViewInit() {
-    this.btnType.valueChanges.subscribe((changes) => {
-        switch(changes){
-          case BTNTYPE.PDF:this.generatePDF();break;
-          case BTNTYPE.XLSX:this.primaryTbl.exportCSV();break;
-          default:break;
-        }
-    })
+    // this.btnType.valueChanges.subscribe((changes) => {
+    //     switch(changes){
+    //       case BTNTYPE.PDF:this.generatePDF();break;
+    //       case BTNTYPE.XLSX:this.primaryTbl.exportCSV();break;
+    //       default:break;
+    //     }
+    // })
   }
 
-  exportAs(mode:string){
-      console.log(mode);
-  }
 
-  generatePDF = () =>{
+  generatePDF = (mode:string) =>{
 
-    var doc = new jsPDF()
-    // console.log(doc.getFontList());
-    doc.setFont("helvetica",'normal', 600);
-    doc.setFontSize(11);
-    doc.text(`P&L Valuation Report as on Date - ${this.datePipe.transform(new Date(),'longDate')}`, 10, 10)
-    doc.output('dataurlnewwindow')
+    var pdf = new jsPDF('l','pt','a4');
+    const html_element = document.getElementById('client_container');
+    pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+    pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+    pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+    pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold')
+    console.log(pdf.getFontList())
+    pdf.html(
+      html_element.innerHTML,
+      {
+        html2canvas:{
+          width:pdf.internal.pageSize.getWidth() - 20,
+        },
+        width:pdf.internal.pageSize.getWidth() - 20,
+        windowWidth:pdf.internal.pageSize.getWidth() - 20,
+        margin:5,
+        x:5,
+        y:5,
+        callback(doc) {
+          autoTable(
+            pdf,
+            {
+              tableLineColor: [189, 195, 199],
+              tableLineWidth: 0.75,
+              theme:'grid',
+              showHead:true,
+              showFoot:true,
+              html:'#primeTable',
+              margin:{
+                top:5,
+                left:10,
+                right:10,
+                bottom:5
+              },
+               pageBreak:'auto',
+               rowPageBreak:'avoid',
+               styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                cellPadding: 3,valign:'middle',halign:'center'},
+                headStyles:{
+                    fillColor:'#08567c',
+                    textColor:'#fff',
+                    fontSize:8,
+                    cellPadding:{
+                      vertical:5,
+                      horizontal:3
+                    },
+                    lineColor:'#fff',
+                    font:'RobotoCondensed-Bold'
+                },
+                footStyles:{
+                    fillColor:'#08567c',
+                    textColor:'#fff',
+                    fontSize:7,
+                    font:'RobotoCondensed-Bold',
+                    lineColor:'#fff',
+                    cellPadding:{
+                      vertical:5,
+                      horizontal:2
+                    },
+                },
+                bodyStyles:{
+                  fontSize:8,
+                  cellPadding:2,
+                  font:'RobotoCondensed-Regular'
+                },
+                startY:230,
+                columnStyles:{
+                      0:{cellWidth:100,halign:'left'},
+                      11:{cellWidth:30.64,halign:'center'},
+                      12:{cellWidth:30.64,halign:'center'},
+                      17:{cellWidth:30.64,halign:'center'},
+                },
+              tableWidth:pdf.internal.pageSize.getWidth() - 20
+            }
+          )
+          // if(export_mode === 'Print'){
+          //   pdf.autoPrint();
+          // }
+          pdf.output('dataurlnewwindow');
+        },
+        autoPaging:true
+      }
+    );
   }
 }
 
