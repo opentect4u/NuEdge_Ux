@@ -28,15 +28,17 @@
                     </div>
                 </div>
             </ng-template>
-            <ng-template pTemplate="body" let-pl_trxn>
+            <ng-template pTemplate="body" let-fin_yr_wise_capital_gain>
 
                 <tr>
                     <td *ngFor="let col of long_summary_column" [style]="'width : '+col.width">
-                        <p class="m-0">N/A</p>
+                        <p class="m-0">
+                          {{fin_yr_wise_capital_gain[col.field]}}
+                        </p>
                    </td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="emptymessage" let-pl_trxn>
+            <ng-template pTemplate="emptymessage" let-fin_yr_wise_capital_gain>
                 <tr>
                   <td [attr.colspan]="long_summary_column.length">
                     <p class="m-0">NO RECORDS FOUND</p>

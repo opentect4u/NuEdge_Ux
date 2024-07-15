@@ -328,7 +328,7 @@
                     && __traxForm.get('second_client_name').value">
                     <button type="button" mat-button color="primary"
                       (click)="openDialogForAdditionalApplicant('FC')">
-                      <mat-icon>visibility</mat-icon> View Details
+                      <mat-icon>visibility</mat-icon> View
                     </button>
                   </ng-container>
                   <ng-container *ngIf="__issecCldtlsEmpty || __traxForm.get('second_client_code').value == ''">
@@ -524,9 +524,6 @@
             (selectedItems)="getSelectedItemsFromParent($event)"
             [isClientExistMsg]="'Scheme does not exists'"
             ></app-core-srch>
-            <div class="invalid-feedback"
-            *ngIf="__traxForm.get('scheme_name').errors?.__isDateGreater"
-            >* Entry Date Expired for this scheme</div>
           </div>
           <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
             <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')" mat-button
@@ -590,11 +587,14 @@
             (selectedItems)="getSelectedItemsFromParent($event)"
             [isClientExistMsg]="'Scheme does not exists'"
             ></app-core-srch>
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('switch_scheme_to').errors?.__isDateGreater"
+            >* Entry Date Expired for this scheme</div>
           </div>
           <div class="col-sm-3 clientCode" *ngIf="__dialogDtForSchemeTo">
             <button color="primary" *ngIf="this.__dialogDtForSchemeTo" (click)="openDialog('ST')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
               <mat-icon>remove_red_eye</mat-icon>
-              View Details
+              View
             </button>
           </div>
         </div>
@@ -1020,7 +1020,7 @@
         <div class="col-sm-4 clientCode" *ngIf="__dialogDtForSchemeToForNfoCombo">
           <button color="primary" *ngIf="this.__dialogDtForSchemeToForNfoCombo" (click)="openDialog('NST')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
             <mat-icon>remove_red_eye</mat-icon>
-            View Details
+            View
           </button>
         </div>
       </div>

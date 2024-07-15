@@ -298,27 +298,39 @@ export class RelcapitalgainComponent implements OnInit {
 
   /*** For Getting FinancialWise Report */
   getfinancialWiseReport(rest){
+    if(this.financial_year_wise_trans_report.length == 0){
     this.dbIntr.api_call(1,'/clients/finYearWiseTrans',rest)
     .pipe(pluck('data'))
     .subscribe((res:any) => {
       // console.log(res);
-      this.financial_year_wise_trans_report = res;
+      // this.financial_year_wise_trans_report = res;
       this.segregrateFinancialYearWiseReport(res);
     })
+    }
   }
   /*** End */
 
   segregrateFinancialYearWiseReport(arr){
+    console.log(arr)
     from(arr)
     .pipe(
       groupBy((data:any) => data['scheme_name']),
       mergeMap(group => zip(of(group.key), group.pipe(toArray())))
     ).subscribe((dt) =>{
           console.log(dt)
-          // const purchase = global.Total__Count(dt[1],)
+          this.financial_year_wise_trans_report.push(
+            {
+              scheme_name: `${dt[0]}-${dt[1][0].plan_name}-${dt[1][0].option_name}`,
+              folio_no:dt[1][0].folio_no,
+              inflow:'0.00',
+              outflow:'0.00',
+              div_sweep_in:'0.00',
+              div_reinv:'0.00',
+              idcwp:'0.00'
+            }
+          )
     })
   }
-
   getGrandSummaryTotal = (summary_data: Partial<IsummaryReport>[]): Partial<IsummaryReport> => {
     return {
       tds: global.Total__Count(summary_data, (item: Partial<IsummaryReport>) => Number(item.tds)),

@@ -33,7 +33,7 @@ a.body_title:hover{
     text-decoration: underline;
     cursor: pointer;
 }
-a.body_title:nth-child(){
+a.body_title:nth-child(2){
     background-color: gray;
 }
 ::ng-deep .p-button-icon{

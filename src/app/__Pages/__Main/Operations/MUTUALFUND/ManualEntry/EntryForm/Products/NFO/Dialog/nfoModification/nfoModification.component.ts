@@ -312,10 +312,33 @@ export class NfomodificationComponent implements OnInit {
     setTimeout(() => {
       if(this.data.nfoData){
         this.setNFOForm(this.data.nfoData);
+        if(this.data.nfoData.mode_of_holding != 'S'){
+            const second_client_code = {
+              client_code: global.getActualVal(this.data.nfoData.second_client_code),
+              id:global.getActualVal(this.data.nfoData.second_client_code),
+              client_name: global.getActualVal(this.data.nfoData.second_client_name),
+              pan: global.getActualVal(this.data.nfoData.second_client_pan),
+              client_type:global.getActualVal(this.data.nfoData.second_client_type)
+            }
+            this.getadditionalApplicant(second_client_code,'FC');
+            this.__traxForm.get('second_kyc_status').setValue(this.data.nfoData.second_kyc ? this.data.nfoData.second_kyc : '')
+            if(global.getActualVal(this.data.nfoData?.third_client_name)) {
+                this.__isSHowAdditionalTble = !this.__isSHowAdditionalTble;
+                const third_client_code = {
+                  client_code: global.getActualVal(this.data.nfoData?.third_client_code),
+                  id:global.getActualVal(this.data.nfoData?.third_client_code),
+                  client_name: global.getActualVal(this.data.nfoData?.third_client_name),
+                  pan: global.getActualVal(this.data.nfoData?.third_client_pan),
+                  client_type:global.getActualVal(this.data.nfoData?.third_client_type)
+                }
+                this.getadditionalApplicant(third_client_code,'TC');
+            }
+        }
       }
     }, 200);
   }
   setNFOForm(res){
+    console.log(res)
     this.__temp_tinMst.length = 0;
     this.__temp_tinMst.push(res)
     this.getItems(res);
@@ -594,7 +617,7 @@ export class NfomodificationComponent implements OnInit {
       switchMap(
         (dt) =>
           dt?.length > 1
-            ? this.__dbIntr.searchItems('/scheme', dt)
+            ? this.__dbIntr.searchItems('/scheme', dt + (this.__traxForm.value.trans_id == 6 ? '&scheme_type=O' : ''))
             : []
       ),
       map((x: any) => x.data)
@@ -621,7 +644,7 @@ export class NfomodificationComponent implements OnInit {
           dt?.length > 1
             ? this.__dbIntr.searchItems(
                 '/scheme',
-                dt + '&amc_id=' + this.__dialogDtForScheme?.amc_id + (this.__traxForm.value.trans_id == 35 ? '' : '&scheme_type=N')
+                dt + '&amc_id=' + this.__dialogDtForScheme?.amc_id + '&scheme_type=N'
               )
             : []
         ),
@@ -630,7 +653,6 @@ export class NfomodificationComponent implements OnInit {
       .subscribe({
         next: (value) => {
           this.__schemeMstforSwitchTo = value;
-          console.log(this.__schemeMstforSwitchTo);
           this.searchResultVisibilityForSchemeSwicthTo('block');
           this.__isschemeSpinnerTo = false;
         },
@@ -801,7 +823,7 @@ export class NfomodificationComponent implements OnInit {
               !this.__traxForm.controls['switch_scheme_to'].hasValidator(Validators.required) &&
               !this.__traxForm.controls['switch_scheme_to'].asyncValidator){
               this.__traxForm.controls['switch_scheme_to'].setValidators([Validators.required]);
-              this.__traxForm.controls['switch_scheme_to'].setAsyncValidators([this.SchemeToValidators()]);
+              this.__traxForm.controls['switch_scheme_to'].setAsyncValidators([this.SchemeToValidators(),this.EntryDateExpiredValidators()]);
               this.__traxForm.controls['switch_scheme_to'].updateValueAndValidity({emitEvent:false});
             }
             // this.__traxForm.get('chq_bank').removeAsyncValidators([this.MICRValidators()]);
@@ -837,125 +859,8 @@ export class NfomodificationComponent implements OnInit {
           this.removeSIPValidators();
           this.set_Common_Validators_For_SIP_PIP_NFO_COMBO();
        }
-
-
-
-      // if (res == '5') {
-      //   this.getSipTypeMst();
-      //   this.__traxForm.get('sip_date').setAsyncValidators([this.sipDateValidators()]);
-      //   this.setValidations([
-      //     { name: 'sip_type', valid: [Validators.required] },
-      //     { name: 'sip_frequency', valid: [Validators.required] },
-      //     { name: 'sip_duration', valid: [Validators.required] },
-      //     { name: 'duration', valid: [Validators.required] },
-      //     { name: 'sip_date', valid: [Validators.required] },
-      //     { name: 'sip_start_date', valid: [Validators.required] },
-      //     { name: 'sip_end_date', valid: [Validators.required] },
-      //   ]);
-      //   this.__traxForm.get('sip_type').setAsyncValidators(this.sipSipTypeExistValidators());
-      //   this.__traxForm.get('sip_type').updateValueAndValidity({ emitEvent: false });
-      // } else {
-      //   this.__traxForm
-      //     .get('sip_date')
-      //     .removeAsyncValidators([this.sipDateValidators()]);
-      //   this.removeValidations([
-      //     { name: 'sip_type', valid: [Validators.required] },
-      //     { name: 'sip_frequency', valid: [Validators.required] },
-      //     { name: 'inv_type', valid: [Validators.required] },
-      //     { name: 'sip_duration', valid: [Validators.required] },
-      //     { name: 'duration', valid: [Validators.required] },
-      //     { name: 'sip_date', valid: [Validators.required] },
-      //     { name: 'sip_start_date', valid: [Validators.required] },
-      //     { name: 'sip_end_date', valid: [Validators.required] },
-      //   ]);
-      //   this.__traxForm.patchValue(
-      //     {
-      //       sip_frequency: '',
-      //       sip_duration: '',
-      //       duration: '',
-      //       period: '',
-      //       sip_start_date: '',
-      //       sip_end_date: '',
-      //       sip_date: '',
-      //     },
-      //     { emitEvent: false }
-      //   );
-      //   this.__traxForm
-      //     .get('sip_type')
-      //     .removeAsyncValidators(this.sipSipTypeExistValidators());
-      //   this.__traxForm
-      //     .get('sip_type')
-      //     .updateValueAndValidity({ emitEvent: false });
-      // }
       this.__checkAmt = res == '6' ? false : this.__checkAmt;
       this.__chkInvAmt = res == '5' ? true : false;
-      // if (res == '6') {
-      //   this.__traxForm
-      //     .get('amount')
-      //     .removeAsyncValidators([this.AmountValidators()]);
-      //   this.__traxForm.controls['switch_scheme_to'].setAsyncValidators([
-      //     this.SchemeToValidators(),
-      //   ]);
-      //   this.__traxForm.get('chq_bank').removeAsyncValidators([this.MICRValidators()]);
-      //   this.removeValidations([
-      //     { name: 'amount', valid: [Validators.required] },
-      //     {
-      //       name: 'chq_no',
-      //       valid: [
-      //         Validators.required,
-      //         Validators.minLength(6),
-      //         Validators.maxLength(6),
-      //         Validators.pattern('^[0-9]*$'),
-      //       ],
-      //     },
-      //     { name: 'chq_bank', valid: [Validators.required] },
-      //     { name: 'bank_id', valid: [Validators.required] },
-      //   ]);
-      //   this.setValidations([
-      //     { name: 'switch_scheme_to', valid: [Validators.required] },
-      //     { name: 'switch_by', valid: [Validators.required] },
-      //     { name: 'plan_to', valid: [Validators.required] },
-      //     { name: 'option_to', valid: [Validators.required] },
-      //     { name: 'folio_number', valid: [Validators.required] },
-      //     { name: 'scheme_id_to', valid: [Validators.required] },
-      //   ]);
-      // } else {
-      //   this.setValidations([
-      //     { name: 'amount', valid: [Validators.required] },
-      //     {
-      //       name: 'chq_no',
-      //       valid: [
-      //         Validators.required,
-      //         Validators.minLength(6),
-      //         Validators.maxLength(6),
-      //         Validators.pattern('^[0-9]*$'),
-      //       ],
-      //     },
-      //     { name: 'chq_bank', valid: [Validators.required] },
-      //     { name: 'bank_id', valid: [Validators.required] },
-      //   ]);
-      //   this.__traxForm
-      //     .get('chq_bank')
-      //     .setAsyncValidators([this.MICRValidators()]);
-      //   this.__traxForm
-      //     .get('amount')
-      //     .setAsyncValidators([this.AmountValidators()]);
-      //   this.__traxForm.controls['switch_scheme_to'].removeAsyncValidators([
-      //     this.SchemeToValidators(),
-      //   ]);
-      //   this.removeValidations([
-      //     { name: 'switch_scheme_to', valid: [Validators.required] },
-      //     { name: 'switch_by', valid: [Validators.required] },
-      //     { name: 'plan_to', valid: [Validators.required] },
-      //     { name: 'switch_amt', valid: [Validators.required] },
-      //     { name: 'unit', valid: [Validators.required] },
-      //     { name: 'option_to', valid: [Validators.required] },
-      //     { name: 'scheme_id_to', valid: [Validators.required] },
-      //   ]);
-      //   this.__traxForm
-      //     .get('inv_type')
-      //     .updateValueAndValidity({ emitEvent: true });
-      // }
       this.__traxForm.get('amount').updateValueAndValidity({ emitEvent: true });
       this.__traxForm.get('chq_bank').updateValueAndValidity({ emitEvent: false });
 
@@ -1063,9 +968,7 @@ export class NfomodificationComponent implements OnInit {
         this.__traxForm
           .get('temp_tin_no')
           .setAsyncValidators([this.TemporaryTINValidators()]);
-        this.__traxForm
-          .get('scheme_name')
-          .removeAsyncValidators([this.EntryDateExpiredValidators()]);
+        // this.__traxForm.get('scheme_name').removeAsyncValidators([this.EntryDateExpiredValidators()]);
       } else {
         this.removeValidations([
           { name: 'temp_tin_no', valid: [Validators.required] },
@@ -1073,16 +976,16 @@ export class NfomodificationComponent implements OnInit {
         this.__traxForm
           .get('temp_tin_no')
           .removeAsyncValidators([this.TemporaryTINValidators()]);
-        this.__traxForm
-          .get('scheme_name')
-          .setAsyncValidators([
-            this.EntryDateExpiredValidators(),
-            this.SchemeValidators(),
-          ]);
+        // this.__traxForm
+        //   .get('scheme_name')
+        //   .setAsyncValidators([
+        //     this.EntryDateExpiredValidators(),
+        //     this.SchemeValidators()
+        //   ]);
       }
-      this.__traxForm
-        .get('scheme_name')
-        .updateValueAndValidity({ emitEvent: false });
+      // this.__traxForm
+      //   .get('scheme_name')
+      //   .updateValueAndValidity({ emitEvent: false });
       this.__traxForm
         .get('temp_tin_no')
         .updateValueAndValidity({ emitEvent: false });
@@ -1438,7 +1341,6 @@ export class NfomodificationComponent implements OnInit {
       this.__clientMst.length = 0;
       this.__schemeMst.length = 0;
       this.__schemeMstforSwitchTo.length = 0;
-      this.__schemeMstforSwitchTo.length = 0;
       this.__bnkMst.length = 0;
       this.__clientMst.push({
         client_code:global.getActualVal( __items.first_client_code),
@@ -1551,34 +1453,6 @@ export class NfomodificationComponent implements OnInit {
         this.setStartDateAgainstScheme(res[0].sip_date);
         this.__sipdtRng_amtRng = res[0];
         this.__traxForm.get('sip_name').setValue(res[0].special_sip_name);
-
-        // var date = new Date();
-        // date.setDate(date.getDate() + 30);
-        // if(JSON.parse(res[0].sip_date).findIndex((x:any) => x.date ==  (date.getDate()).toString()) != -1)
-        // {
-        //     this.__traxForm.patchValue({
-        //       sip_start_date: date.toISOString().slice(0, 10),
-        //     })
-        // }
-        // else{
-        //   var found = JSON.parse(res[0]?.sip_date).find(function(element) {return Number(element.date) > Number(date.getDate())});
-        //    if(found){
-        //           this.__traxForm.get('sip_start_date').setValue(date.getFullYear()+'-'+(date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+date.getMonth())+'-'+found.date);
-        //    }
-        //    else{
-        //      date.setDate(date.getDate() + 60);
-        //     this.__traxForm.get('sip_start_date').setValue(
-        //       date.getFullYear()
-        //       +'-'+
-        //       (date.getMonth().toString().length > 1 ?  date.getMonth() : '0'+
-        //       date.getMonth())
-        //       +'-'+
-        //        (JSON.parse(res[0]?.sip_date)[0].date.length > 1 ? JSON.parse(res[0]?.sip_date)[0].date
-        //        :'0'+JSON.parse(res[0]?.sip_date)[0].date));
-        //      console.log( this.__traxForm.get('sip_start_date').value);
-
-        //   }
-        // }
       });
   }
 
@@ -1633,7 +1507,8 @@ export class NfomodificationComponent implements OnInit {
         break;
 
       case 'SC':
-        this.__isEntryDTGreater = __euinDtls.nfo_entry_date;
+        // console.log(__euinDtls.nfo_entry_date)
+        // this.__isEntryDTGreater = __euinDtls.nfo_entry_date;
         this.__dialogDtForScheme = __euinDtls;
         this.__traxForm.controls['scheme_name'].reset(__euinDtls.scheme_name, {
           onlySelf: true,
@@ -1655,11 +1530,9 @@ export class NfomodificationComponent implements OnInit {
         break;
 
       case 'ST':
+        this.__isEntryDTGreater = __euinDtls?.nfo_entry_date;
         this.__dialogDtForSchemeTo = __euinDtls;
-        this.__traxForm.controls['switch_scheme_to'].reset(
-          __euinDtls.scheme_name,
-          { emitEvent: false }
-        );
+        this.__traxForm.controls['switch_scheme_to'].reset(__euinDtls.scheme_name,{ emitEvent: false });
         this.__traxForm.patchValue({ scheme_id_to: __euinDtls.id });
         this.searchResultVisibilityForSchemeSwicthTo('none');
         break;
@@ -1725,7 +1598,6 @@ export class NfomodificationComponent implements OnInit {
       );
       return;
     }
-
     const fb = new FormData();
     fb.append(
       'first_inv_amt',
@@ -1874,7 +1746,7 @@ export class NfomodificationComponent implements OnInit {
       fb.append('sip_start_date', this.__traxForm.value.sip_start_date);
       fb.append('sip_end_date', this.__traxForm.value.sip_end_date);
       fb.append('sip_duration_type', this.__traxForm.value.sip_duration);
-      fb.append('duration', this.__traxForm.value.duration);
+      fb.append('duration', this.__traxForm.value.sip_duration == 'M' ?  this.__traxForm.value.duration : '');
       fb.append('sip_date', this.__traxForm.value.sip_date);
       // fb.append('period', this.__traxForm.value.period);
       fb.append('sip_frequency', this.__traxForm.value.sip_frequency);

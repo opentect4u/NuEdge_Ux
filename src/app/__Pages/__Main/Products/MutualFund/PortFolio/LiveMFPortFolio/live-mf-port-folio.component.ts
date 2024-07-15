@@ -2107,7 +2107,8 @@ mappings between `act_value` and `value` for transition durations. */
           this.__systematicMissedTrxn_Frm.reset('',{emitEvent:false,onlySelf:true});
           this.__live_sip_stp_swp_form.reset('',{emitEvent:false,onlySelf:true});
           this.__pl_trxn_form.get('pl_folio_type').setValue('');
-          this.call_api_for_detail_summary_func_as_promise(this.getPayLoadForFamily(this.main_frm_dt),ev.index)
+          this.call_api_for_detail_summary_func_as_promise(this.getPayLoadForFamily(this.main_frm_dt),ev.index);
+          
         }
         else{
           this.selected_tab_index_for_family = ev.index;
@@ -2116,6 +2117,9 @@ mappings between `act_value` and `value` for transition durations. */
 
   call_api_for_detail_summary_func_as_promise(formData,index) {
       // if(this.dataSource.length == 0){
+        if(this.__isPLSUmmary_Realised_Unrealised_Visble){
+          this.call_corrosponding_api(9,formData);
+        }
         this.__dbIntr.call_promise(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
         .then(res =>{
           try{
@@ -2169,8 +2173,8 @@ mappings between `act_value` and `value` for transition durations. */
                   this.setClientDtls(res.data.client_details);
                   this.selected_tab_index_for_family = index;
                   this.selected_id = 1
-              }
-              catch(ex){}
+            }
+            catch(ex){}
         })
       // }
   }
