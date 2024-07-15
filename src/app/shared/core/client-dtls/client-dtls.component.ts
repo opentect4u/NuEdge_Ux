@@ -1,5 +1,6 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { client } from 'src/app/__Model/__clientMst';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 
 export enum ScheduleType{
   VALUATION = 'Valuation',
@@ -13,6 +14,9 @@ export enum ScheduleType{
 export class ClientDtlsComponent implements OnInit {
 
   private _clientDtls:Partial<client>;
+
+  @Output() export:EventEmitter<string> = new EventEmitter();
+
 
   @Input()
   get clientDtls(){
@@ -29,9 +33,11 @@ export class ClientDtlsComponent implements OnInit {
 
   @Input() isDateRange:boolean | undefined = false;
 
-  constructor() { }
+  constructor(private dbIntr:DbIntrService) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  exportAs(mode:string){
+    this.export.emit(mode)
   }
-
 }

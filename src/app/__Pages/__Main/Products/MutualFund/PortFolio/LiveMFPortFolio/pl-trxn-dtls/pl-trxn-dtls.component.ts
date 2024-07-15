@@ -124,6 +124,10 @@ export class PlTrxnDtlsComponent implements OnInit {
     })
   }
 
+  exportAs(mode:string){
+      console.log(mode);
+  }
+
   generatePDF = () =>{
 
     var doc = new jsPDF()

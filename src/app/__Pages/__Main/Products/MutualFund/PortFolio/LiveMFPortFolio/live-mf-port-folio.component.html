@@ -359,7 +359,7 @@
     </mat-card>
 
     <!-- Client Detlais -->
-      <client-dtls [clientDtls]="clientDtls" *ngIf="clientDtls" [date]="valuation_as_on"></client-dtls>
+      <client-dtls [clientDtls]="clientDtls" (export)="exportAs($event)" *ngIf="clientDtls" [date]="valuation_as_on"></client-dtls>
     <!-- End -->
     
     <ng-container *ngIf="__dataSource_for_mf_report_segregrated.length > 0 || parent_family_holder_for_tab.length > 0 || dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 ">
@@ -470,6 +470,7 @@
                         </ng-container>
                         <ng-template #details_rpt>
                           <p-table
+                            id="pTable"
                             #primeTble
                             [value]="dataSource"
                             dataKey="id"

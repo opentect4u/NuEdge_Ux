@@ -2189,6 +2189,13 @@ mappings between `act_value` and `value` for transition durations. */
     }
   }
   
+  exportAs(mode){
+      console.log(mode)
+      const dt = btoa(document.getElementById('pTable').innerHTML);
+      this.__dbIntr.api_call(1,'/clients/testgenpdf',{payload:dt}).subscribe(res =>{
+        console.log(res);
+      })
+  }
 
   getPayLoadForFamily(formData){
     const pay_load =Object.assign({},{

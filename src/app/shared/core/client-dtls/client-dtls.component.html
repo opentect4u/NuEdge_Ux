@@ -73,8 +73,29 @@
             (0.63%)
           </p>
         </div>
-        <div class="my-2 text-center">
-          <mat-button-toggle-group #group="matButtonToggleGroup">
+        <div class="my-2 text-center d-flex items-center justify-content-center">
+          <button
+          pButton 
+          (click)="exportAs('Print')"
+          type="button"
+          class="p-button-outlined"> 
+          <i class="pi pi-print text-info" style="font-size: 2rem"></i>
+         </button> 
+         <button
+         pButton 
+         type="button"
+         (click)="exportAs('Pdf')"
+         class="p-button-outlined mx-2"> 
+         <i class="pi pi-file-pdf text-danger" style="font-size: 2rem"></i>
+        </button> 
+        <button
+        pButton 
+        type="button"
+        (click)="exportAs('xlsx')"
+        class="p-button-outlined"> 
+        <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+       </button> 
+          <!-- <mat-button-toggle-group #group="matButtonToggleGroup">
             <mat-button-toggle value="left" aria-label="Text align left">
               <i class="pi pi-print text-info" style="font-size: 2rem"></i>
             </mat-button-toggle>
@@ -90,7 +111,7 @@
                 style="font-size: 2rem"
               ></i>
             </mat-button-toggle>
-          </mat-button-toggle-group>
+          </mat-button-toggle-group> -->
         </div>
       </div>
       <div class="col-md-6 col-sm-12 col-lg-3 my-2">
