@@ -30,6 +30,9 @@ import { plFilterPipe } from 'src/app/__Pipes/plTrxnFilter.pipe';
 import { IcategoryWiseInvestment, IFoundHouseInvestment, IsubcategoryWiseInvestment } from './summary-report/summary-report.component';
 import { IDivHistory } from './div-history/div-history.component';
 import { IMfReport } from './mf-reportwise-poretfolio/mf-reportwise-poretfolio.component';
+import jsPDF from 'jspdf';
+import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
+import autoTable from 'jspdf-autotable';
 
 
 
@@ -668,7 +671,6 @@ mappings between `act_value` and `value` for transition durations. */
 
 
   ngAfterViewInit(){
-
     this.filter_criteria.get('view_mf_report').get('cat_wise').valueChanges.subscribe(res =>{
       this.filter_criteria.get('view_mf_report').get('subcat_wise').setValue(false,{emitEvent:false});
     })
@@ -2190,11 +2192,92 @@ mappings between `act_value` and `value` for transition durations. */
   }
   
   exportAs(mode){
-      console.log(mode)
-      const dt = btoa(document.getElementById('pTable').innerHTML);
-      this.__dbIntr.api_call(1,'/clients/testgenpdf',{payload:dt}).subscribe(res =>{
-        console.log(res);
-      })
+    if(mode === 'xlsx'){
+        this.primeTbl.exportCSV();
+    }
+    else{
+      const table = this.primeTbl.el.nativeElement.querySelector('table');
+      table.setAttribute('id', 'primeng__tble');
+      var pdf = new jsPDF('l','pt','a4');
+      const html_element = document.getElementById('client_container');
+      pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+      pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+      pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+      pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+      pdf.html(
+        html_element.innerHTML,
+        {
+          html2canvas:{
+            width:pdf.internal.pageSize.getWidth() - 20,
+          },
+          width:pdf.internal.pageSize.getWidth() - 20,
+          windowWidth:pdf.internal.pageSize.getWidth() - 20,
+          margin:5,
+          x:5,
+          y:5,
+          callback(doc) {
+            autoTable(
+              pdf,
+              {
+                tableLineColor: [189, 195, 199],
+                tableLineWidth: 0.75,
+                theme:'grid',
+                showHead:true,
+                showFoot:true,
+                html:'#primeng__tble',
+                margin:{
+                  top:5,
+                  left:10,
+                  right:10,
+                  bottom:5
+                },
+                 pageBreak:'auto',
+                 rowPageBreak:'avoid',
+                 styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                  cellPadding: 3,valign:'middle',halign:'center'},
+                  headStyles:{
+                      fillColor:'#08567c',
+                      textColor:'#fff',
+                      fontSize:8,
+                      cellPadding:{
+                        vertical:5,
+                        horizontal:3
+                      },
+                      lineColor:'#fff',
+                      font:'RobotoCondensed-Bold'
+                  },
+                  footStyles:{
+                      fillColor:'#08567c',
+                      textColor:'#fff',
+                      fontSize:7,
+                      font:'RobotoCondensed-Bold',
+                      lineColor:'#fff',
+                      cellPadding:{
+                        vertical:5,
+                        horizontal:2
+                      },
+                  },
+                  bodyStyles:{
+                    fontSize:8,
+                    cellPadding:2,
+                    font:'RobotoCondensed-Regular'
+                  },
+                  startY:175,
+                  columnStyles:{
+                      0:{cellWidth:120.64,halign:'left'}
+                  },
+                tableWidth:pdf.internal.pageSize.getWidth() - 20
+              }
+            )
+            if(mode === 'Print'){
+              pdf.autoPrint();
+            }
+            pdf.output('dataurlnewwindow');
+          },
+          autoPaging:true
+        }
+      );
+    }
   }
 
   getPayLoadForFamily(formData){

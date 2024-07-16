@@ -9,6 +9,7 @@ import { client } from 'src/app/__Model/__clientMst';
 import jsPDF from 'jspdf';
 import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
 import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 /*** Display Footer data on P&L */
 export type TotalPLportfolio = {
   purchase: number | undefined,
@@ -128,14 +129,12 @@ export class PlTrxnDtlsComponent implements OnInit {
 
 
   generatePDF = (mode:string) =>{
-
     var pdf = new jsPDF('l','pt','a4');
     const html_element = document.getElementById('client_container');
     pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
     pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
     pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
     pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold')
-    console.log(pdf.getFontList())
     pdf.html(
       html_element.innerHTML,
       {
@@ -156,7 +155,7 @@ export class PlTrxnDtlsComponent implements OnInit {
               theme:'grid',
               showHead:true,
               showFoot:true,
-              html:'#primeTable',
+              html:'#printTable',
               margin:{
                 top:5,
                 left:10,
@@ -194,12 +193,9 @@ export class PlTrxnDtlsComponent implements OnInit {
                   cellPadding:2,
                   font:'RobotoCondensed-Regular'
                 },
-                startY:230,
+                startY:175,
                 columnStyles:{
-                      0:{cellWidth:100,halign:'left'},
-                      11:{cellWidth:30.64,halign:'center'},
-                      12:{cellWidth:30.64,halign:'center'},
-                      17:{cellWidth:30.64,halign:'center'},
+                      0:{halign:'left'}
                 },
               tableWidth:pdf.internal.pageSize.getWidth() - 20
             }

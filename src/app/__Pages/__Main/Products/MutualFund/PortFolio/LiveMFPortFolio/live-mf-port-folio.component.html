@@ -545,16 +545,11 @@
                                       </strong>
 
                                       </p>
-
-                                    <div>
-                                      <p style="font-size:11px" class="text-left my-2">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
-
+                                      <p style="font-size:11px;margin:5px 0px!important;width: 100% !important;" class="text-left">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
                                         <!-- {{liveMfPortFolio?.transaction_type?.includes('SIP') ? '(SIP)' : (liveMfPortFolio?.transaction_type?.includes('Purchase') ? '(PIP)' : (liveMfPortFolio?.transaction_type == 'Switch In' ? '(Switch In)' : ''))}} -->
                                         {{liveMfPortFolio?.custom_trans_type}}
-
                                       </strong></p>
                                       <p style="font-size:11px" class="text-left m-0">ISIN- <strong class="folio_isin">{{liveMfPortFolio.isin_no}}</strong></p>
-                                    </div>
                                       <span class="custom__badge badge-primary" #tooltip="matTooltip"
                                       matTooltip="online">
                                         <!-- online -->
