@@ -345,6 +345,9 @@ mappings between `act_value` and `value` for transition durations. */
 
   @ViewChild('primeTble') primeTbl :Table;
 
+  @ViewChild('inner_tble',{static:true}) inner_tble :Table;
+
+  
   @ViewChild('detailedTbl') secondaryTbl :Table;
 
   @ViewChild('dateRng') date__rng:Calendar;
@@ -2192,8 +2195,10 @@ mappings between `act_value` and `value` for transition durations. */
   }
   
   exportAs(mode){
-
-    this.__dbIntr.api_call(1,'/clients/testgenpdf',{dataSource:btoa(JSON.stringify(this.dataSource))}).subscribe(res =>{
+    const fb = new FormData();
+    fb.append('dataSource',JSON.stringify(this.dataSource))
+    this.__dbIntr.api_call(1,'/clients/testgenpdf',fb)
+      .subscribe(res =>{
       console.log(res);
     })
     // if(mode === 'xlsx'){
@@ -2223,6 +2228,11 @@ mappings between `act_value` and `value` for transition durations. */
     //         autoTable(
     //           pdf,
     //           {
+    //             didDrawCell: function (data) {
+    //               if(data.section == 'body'){
+    //                 console.log(data)
+    //               }
+    //             },
     //             tableLineColor: [189, 195, 199],
     //             tableLineWidth: 0.75,
     //             theme:'grid',
