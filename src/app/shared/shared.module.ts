@@ -57,7 +57,6 @@ import { MailBckfilePipe } from '../__Pipes/mail-bckfile.pipe';
 import { ScrollDirective } from '../__Directives/scroll.directive';
 import { AMCEntryComponent } from './amcentry/amcentry.component';
 import { ClientDtlsComponent } from './core/client-dtls/client-dtls.component';
-
 @NgModule({
   imports: [
     CommonModule,
@@ -88,7 +87,7 @@ import { ClientDtlsComponent } from './core/client-dtls/client-dtls.component';
     ButtonModule,
     CardModule,
     CalendarModule,
-    SelectButtonModule
+    SelectButtonModule,
   ],
   declarations: [
     MailBckfilePipe,

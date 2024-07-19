@@ -200,6 +200,12 @@ export class PlTrxnDtlsComponent implements OnInit {
               tableWidth:pdf.internal.pageSize.getWidth() - 20
             }
           )
+        //   finalY = data1.cursor.y + 20;
+        //   let width = pdf.internal.pageSize.getWidth() - 20
+        //   let textlines = pdf.setFontSize(8).setFont(
+        //    "RobotoCondensed-Regular",'','400'
+        //  ).splitTextToSize(`Disclaimer:${disclaimer}`,width);
+        //   pdf.text(textlines,10,finalY)
           // if(export_mode === 'Print'){
           //   pdf.autoPrint();
           // }

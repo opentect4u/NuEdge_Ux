@@ -15,7 +15,9 @@ export class ClientDtlsComponent implements OnInit {
 
   private _clientDtls:Partial<client>;
 
-  @Output() export:EventEmitter<string> = new EventEmitter();
+  @Output() export:EventEmitter<{mode:string,export_type:'Pdf' | 'Print' | 'xlsx'}> = new EventEmitter();
+
+  export__type:'Pdf' | 'Print' | 'xlsx';;
 
 
   @Input()
@@ -35,9 +37,16 @@ export class ClientDtlsComponent implements OnInit {
 
   constructor(private dbIntr:DbIntrService) { }
 
-  ngOnInit(): void {}
+  ngOnInit() {
 
-  exportAs(mode:string){
-    this.export.emit(mode)
-  }
+}
+
+    itemClick(Mode:string){
+          this.export.emit({
+            mode:Mode,
+            export_type:this.export__type
+          })
+    } 
+
+
 }

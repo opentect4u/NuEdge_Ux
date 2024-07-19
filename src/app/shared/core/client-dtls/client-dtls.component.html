@@ -73,28 +73,54 @@
             (0.63%)
           </p>
         </div>
+        <!-- (click)="exportAs('Print')" -->
+        <!-- (click)="exportAs('Pdf')" -->
+        <!-- (click)="exportAs('xlsx')" -->
         <div class="my-2 text-center d-flex items-center justify-content-center">
-          <button
-          pButton 
-          (click)="exportAs('Print')"
-          type="button"
-          class="p-button-outlined"> 
-          <i class="pi pi-print text-info" style="font-size: 2rem"></i>
-         </button> 
-         <button
-         pButton 
-         type="button"
-         (click)="exportAs('Pdf')"
-         class="p-button-outlined mx-2"> 
-         <i class="pi pi-file-pdf text-danger" style="font-size: 2rem"></i>
-        </button> 
-        <button
-        pButton 
-        type="button"
-        (click)="exportAs('xlsx')"
-        class="p-button-outlined"> 
-        <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
-       </button> 
+          <div>
+            <button
+            pButton 
+            type="button"
+            (click)="export__type='Print'"
+            [matMenuTriggerFor]="menu"
+            class="p-button-outlined"> 
+            <i class="pi pi-print text-info" style="font-size: 2rem"></i>
+           </button> 
+
+          </div>
+          <div>
+            <button
+            pButton 
+            (click)="export__type='Pdf'"
+            type="button"
+            [matMenuTriggerFor]="menu"
+            class="p-button-outlined mx-2"> 
+            <i class="pi pi-file-pdf text-danger" style="font-size: 2rem"></i>
+           </button> 
+
+          </div>
+          <div>
+            <button
+            pButton 
+            type="button"
+            (click)="export__type='xlsx'"
+
+            [matMenuTriggerFor]="menu"
+            class="p-button-outlined"> 
+            <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+           </button> 
+          </div>
+
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="itemClick('D')">
+              <span>Details</span>
+            </button>
+            <button mat-menu-item (click)="itemClick('S')">
+              <span>Summary</span>
+            </button>
+          </mat-menu>
+       
+
           <!-- <mat-button-toggle-group #group="matButtonToggleGroup">
             <mat-button-toggle value="left" aria-label="Text align left">
               <i class="pi pi-print text-info" style="font-size: 2rem"></i>

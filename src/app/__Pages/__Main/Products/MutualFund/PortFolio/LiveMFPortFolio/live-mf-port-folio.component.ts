@@ -33,6 +33,7 @@ import { IMfReport } from './mf-reportwise-poretfolio/mf-reportwise-poretfolio.c
 import jsPDF from 'jspdf';
 import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
 import autoTable from 'jspdf-autotable';
+import { ExportAs } from 'src/app/__Utility/exportFunc';
 
 
 
@@ -91,6 +92,9 @@ export type TotalRealisedUnrealisedPL = {
 })
 
 export class LiveMfPortFolioComponent implements OnInit {
+
+
+  export__mode: 'D' | 'S';
 
   keepOrder = 
   (x: KeyValue<string, any>, y: KeyValue<string, any>): number => { 
@@ -1072,42 +1076,38 @@ mappings between `act_value` and `value` for transition durations. */
     this.__selectedRow = ev?.data;
     this.truncated_val = 0;
     const index = this.dataSource.map(item => item.id).indexOf(ev?.data.id);
-    this.dataSource[index].data.length = 0;
-    this.child_column = this.setcolumns(LiveMFPortFolioColumn.sub_column);
-      this.__dbIntr.api_call(
-        0,
-        '/clients/liveMFShowDetails',
-        `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${global.getActualVal(this.datePipe.transform(new Date(this.main_frm_dt?.valuation_as_on),'YYYY-MM-dd'))}&trans_type=${this.main_frm_dt?.trans_type}`)
-      .pipe(
-        pluck('data')
-        )
-      .subscribe((res: ISubDataSource[]) =>{
-            // let dates = [this.dataSource[index].nav_date];
-            // let amt = [this.dataSource[index].curr_val];
-            // let _index = 0;
-            // let nper = 0;
-              this.dataSource[index].data = res.filter((item:ISubDataSource,i:number) =>{
-                    try{
-                      if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
-                            const amt = [(Number(item.tot_amount) * -1),Number(item.curr_val)]
-                            const dates = [item.trans_date,this.dataSource[index].nav_date]
-                            const xirr = global.XIRR(amt,dates,0);
-                            item.xirr = isFinite(xirr) ? xirr : 0;
-                      }
-                    }
-                    catch(err){
-                        item.xirr = 0;
-                    }
-                    return item;
-              });
-              this.calculat_Total_Value_For_Table_Footer(res,this.dataSource[index])
-              this.show_more('M',index);
-            /**** End */
-        })
+    this.calculat_Total_Value_For_Table_Footer(this.dataSource[index].data,this.dataSource[index])
+    this.show_more('M',index);
+    // const index = this.dataSource.map(item => item.id).indexOf(ev?.data.id);
+    // this.dataSource[index].data.length = 0;
+    // this.child_column = this.setcolumns(LiveMFPortFolioColumn.sub_column);
+    //   this.__dbIntr.api_call(
+    //     0,
+    //     '/clients/liveMFShowDetails',
+    //     `rnt_id=${ev.data.rnt_id}&product_code=${ev.data.product_code}&isin_no=${ev.data.isin_no}&folio_no=${ev.data.folio_no}&nav_date=${ev.data.nav_date}&valuation_as_on=${global.getActualVal(this.datePipe.transform(new Date(this.main_frm_dt?.valuation_as_on),'YYYY-MM-dd'))}&trans_type=${this.main_frm_dt?.trans_type}`)
+    //   .pipe(
+    //     pluck('data')
+    //     )
+    //   .subscribe((res: ISubDataSource[]) =>{
+    //           this.dataSource[index].data = res.filter((item:ISubDataSource,i:number) =>{
+    //                 try{
+    //                   if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
+    //                         const amt = [(Number(item.tot_amount) * -1),Number(item.curr_val)]
+    //                         const dates = [item.trans_date,this.dataSource[index].nav_date]
+    //                         const xirr = global.XIRR(amt,dates,0);
+    //                         item.xirr = isFinite(xirr) ? xirr : 0;
+    //                   }
+    //                 }
+    //                 catch(err){
+    //                     item.xirr = 0;
+    //                 }
+    //                 return item;
+    //           });
+    //           this.calculat_Total_Value_For_Table_Footer(res,this.dataSource[index])
+    //           this.show_more('M',index);
+    //     })
       }
     catch(ex){
-        // console.log(ex);
-        // console.log(`ERROR`)
     }
   }
 
@@ -1623,7 +1623,26 @@ mappings between `act_value` and `value` for transition durations. */
                     return false
                   });
                 }
-                this.dataSource = modify_dt
+
+                // this.dataSource = modify_dt
+                this.dataSource = modify_dt.filter((el,index) =>{
+                    el.data = el.mydata.cal_purchase_data.filter((item:ISubDataSource,i:number) =>{
+                      try{
+                        if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
+                              const amt = [(Number(item.tot_amount) * -1),Number(item.curr_val)]
+                              const dates = [item.trans_date,el.nav_date]
+                              const xirr = global.XIRR(amt,dates,0);
+                              item.xirr = isFinite(xirr) ? xirr : 0;
+                        }
+                      }
+                      catch(err){
+                          item.xirr = 0;
+                      }
+                      return item;
+                    });
+                    return el
+                })
+                // console.log(this.dataSource);
                 if(mf_report?.cat_wise || mf_report?.subcat_wise){
                   this.getLiveMfPortFolioByMfReportWise(modify_dt,mf_report)
                 }
@@ -2194,105 +2213,47 @@ mappings between `act_value` and `value` for transition durations. */
     }
   }
   
-  exportAs(mode){
-    const fb = new FormData();
-    fb.append('dataSource',JSON.stringify(this.dataSource))
-    this.__dbIntr.api_call(1,'/clients/testgenpdf',fb)
-      .subscribe(res =>{
-      console.log(res);
-    })
-    // if(mode === 'xlsx'){
-    //     this.primeTbl.exportCSV();
-    // }
-    // else{
-    //   const table = this.primeTbl.el.nativeElement.querySelector('table');
-    //   table.setAttribute('id', 'primeng__tble');
-    //   var pdf = new jsPDF('l','pt','a4');
-    //   const html_element = document.getElementById('client_container');
-    //   pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
-    //   pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
-    //   pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
-    //   pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
-    //   pdf.html(
-    //     html_element.innerHTML,
-    //     {
-    //       html2canvas:{
-    //         width:pdf.internal.pageSize.getWidth() - 20,
-    //       },
-    //       width:pdf.internal.pageSize.getWidth() - 20,
-    //       windowWidth:pdf.internal.pageSize.getWidth() - 20,
-    //       margin:5,
-    //       x:5,
-    //       y:5,
-    //       callback(doc) {
-    //         autoTable(
-    //           pdf,
-    //           {
-    //             didDrawCell: function (data) {
-    //               if(data.section == 'body'){
-    //                 console.log(data)
-    //               }
-    //             },
-    //             tableLineColor: [189, 195, 199],
-    //             tableLineWidth: 0.75,
-    //             theme:'grid',
-    //             showHead:true,
-    //             showFoot:true,
-    //             html:'#primeng__tble',
-    //             margin:{
-    //               top:5,
-    //               left:10,
-    //               right:10,
-    //               bottom:5
-    //             },
-    //              pageBreak:'auto',
-    //              rowPageBreak:'avoid',
-    //              styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
-    //               cellPadding: 3,valign:'middle',halign:'center'},
-    //               headStyles:{
-    //                   fillColor:'#08567c',
-    //                   textColor:'#fff',
-    //                   fontSize:8,
-    //                   cellPadding:{
-    //                     vertical:5,
-    //                     horizontal:3
-    //                   },
-    //                   lineColor:'#fff',
-    //                   font:'RobotoCondensed-Bold'
-    //               },
-    //               footStyles:{
-    //                   fillColor:'#08567c',
-    //                   textColor:'#fff',
-    //                   fontSize:7,
-    //                   font:'RobotoCondensed-Bold',
-    //                   lineColor:'#fff',
-    //                   cellPadding:{
-    //                     vertical:5,
-    //                     horizontal:2
-    //                   },
-    //               },
-    //               bodyStyles:{
-    //                 fontSize:8,
-    //                 cellPadding:2,
-    //                 font:'RobotoCondensed-Regular'
-    //               },
-    //               startY:175,
-    //               columnStyles:{
-    //                   0:{cellWidth:120.64,halign:'left'}
-    //               },
-    //             tableWidth:pdf.internal.pageSize.getWidth() - 20
-    //           }
-    //         )
-    //         if(mode === 'Print'){
-    //           pdf.autoPrint();
-    //         }
-    //         pdf.output('dataurlnewwindow');
-    //       },
-    //       autoPaging:true
-    //     }
-    //   );
-    // }
+  exportAs(exportDtls){
+    this.export__mode = exportDtls.mode
+    let mode = exportDtls.export_type;
+    if(exportDtls.export_type === 'xlsx'){
+        this.primeTbl.exportCSV();
+    }
+    else{
+      var pdf = new jsPDF('l','pt','a4',true);
+      const html_element = document.getElementById('client_container');
+      pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+      pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+      pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+      pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+      const disclaimer = this.disclaimer
+      const final_data = this.dataSource;
+      let finalY = 170;
+      let file;
+      if(exportDtls.mode == 'D'){
+      ExportAs.exportAsDtls(
+          mode,pdf,finalY,html_element,final_data,this.disclaimer,'primeng__tble_','inr__tble_'
+         )
+        //  this.sentInEmail(file)
+      }
+      else{
+        ExportAs.exportAsSummary(
+            mode,pdf,finalY,html_element,'primeng__tble',this.disclaimer
+          ).then(res =>{
+            this.sentInEmail(res);
+          })
+      }
+    }
   }
+
+  sentInEmail(file){
+        const fb = new FormData();
+      fb.append('file',file)
+      this.__dbIntr.api_call(1,'/clients/sendEmailWithLink',fb,true).subscribe(res =>{
+        console.log(res);
+      })
+  }
+
 
   getPayLoadForFamily(formData){
     const pay_load =Object.assign({},{

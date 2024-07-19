@@ -1465,3 +1465,402 @@
 </ng-template>
 </p-dialog>
 <!-- End -->
+
+
+<!-- <table hidden id="primeng__tble">
+  <thead>
+    <tr >
+      <th *ngFor="let item of parent_column">
+        {{ item.header }}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let liveMfPortFolio of dataSource">
+      <tr>
+        <td *ngFor="let col of parent_column" class="parentTD">
+          <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                <p
+                class="m-0 text-left liveMf_portfolio_scm">
+                  <strong style="font-size:11px">
+                    {{
+                      liveMfPortFolio[col.field]
+                        ? liveMfPortFolio[col.field] +
+                          "-" +
+                          liveMfPortFolio.plan_name +
+                          "-" +
+                          liveMfPortFolio.option_name
+                        : "N/A"
+                    }}
+                  </strong>
+              </p>
+              <p style="font-size:11px;margin:5px 0px!important;width: 100% !important;" class="text-left">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
+                {{liveMfPortFolio?.custom_trans_type}}
+              </strong></p>
+              <p style="font-size:11px" class="text-left m-0">ISIN- <strong class="folio_isin">{{liveMfPortFolio.isin_no}}</strong></p>
+            </ng-container>
+            <ng-container
+              *ngSwitchCase="col.field == 'inv_since' || col.field == 'nav_date'">
+              <p class="m-0">
+                {{
+                  liveMfPortFolio[col.field]
+                    ? (liveMfPortFolio[col.field] | date : "dd-MM-YY")
+                    : "N/A"
+                }}
+              </p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'xirr'">
+              <p class="m-0">{{liveMfPortFolio[col.field] | percent:'1.2-2'}}</p>
+            </ng-container>
+            <ng-container *ngSwitchCase="col.field == 'inv_cost'">
+              <p class="m-0">
+                {{
+                  liveMfPortFolio[col.field]
+                    ? liveMfPortFolio[col.field]
+                    : liveMfPortFolio[col.field] == 0
+                    ?  liveMfPortFolio[col.field]
+                    : "0"
+                }}
+              </p>
+            </ng-container>
+            <ng-container
+              *ngSwitchCase="
+                col.field == 'gain_loss' ||
+                col.field == 'ret_abs' ||
+                col.field == 'curr_val' ||
+                col.field == 'idcw_reinv' ||
+                col.field == 'idcwp' ||
+                col.field == 'idcwr'
+              "
+            >
+              <p class="m-0">
+                {{
+                  liveMfPortFolio[col.field]
+                    ? liveMfPortFolio[col.field]
+                    : liveMfPortFolio[col.field] == 0
+                    ? liveMfPortFolio[col.field]
+                    : "0"
+                }}
+                {{ col.field == "ret_abs" ? "%" : "" }}
+              </p>
+            </ng-container>
+  
+            <ng-container *ngSwitchCase="col.field == 'tot_units'">
+              <p class="m-0">
+                {{liveMfPortFolio[col.field] > 0 ? liveMfPortFolio[col.field] : 0}}
+              </p>
+            </ng-container>
+  
+            <ng-container *ngSwitchDefault>
+              <p class="m-0">
+                {{
+                  liveMfPortFolio[col.field]
+                    ? liveMfPortFolio[col.field]
+                    : "N/A"
+                }}
+              </p>
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+
+      
+    </ng-container>
+
+  </tbody>
+</table> -->
+
+<ng-container *ngIf="export__mode == 'D';else Summary">
+    <ng-container *ngFor="let liveMfPortFolio of dataSource;let i=index">
+    <!-- </ng-container> -->
+        <table id="primeng__tble_{{i}}" hidden>
+            <thead>
+              <tr >
+                <th *ngFor="let item of parent_column">
+                  {{ item.header }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td *ngFor="let col of parent_column" class="parentTD">
+                    <ng-container [ngSwitch]="true">
+                      <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                          <p
+                          class="m-0 text-left liveMf_portfolio_scm">
+                            <strong style="font-size:11px">
+                              {{
+                                liveMfPortFolio[col.field]
+                                  ? liveMfPortFolio[col.field] +
+                                    "-" +
+                                    liveMfPortFolio.plan_name +
+                                    "-" +
+                                    liveMfPortFolio.option_name
+                                  : "N/A"
+                              }}
+                            </strong>
+                        </p>
+                        <p style="font-size:11px;margin:5px 0px!important;width: 100% !important;" class="text-left">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
+                          {{liveMfPortFolio?.custom_trans_type}}
+                        </strong></p>
+                        <p style="font-size:11px" class="text-left m-0">ISIN- <strong class="folio_isin">{{liveMfPortFolio.isin_no}}</strong></p>
+                      </ng-container>
+                      <ng-container
+                        *ngSwitchCase="col.field == 'inv_since' || col.field == 'nav_date'">
+                        <p class="m-0">
+                          {{
+                            liveMfPortFolio[col.field]
+                              ? (liveMfPortFolio[col.field] | date : "dd-MM-YY")
+                              : "N/A"
+                          }}
+                        </p>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'xirr'">
+                        <p class="m-0">{{liveMfPortFolio[col.field] | percent:'1.2-2'}}</p>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'inv_cost'">
+                        <p class="m-0">
+                          {{
+                            liveMfPortFolio[col.field]
+                              ? liveMfPortFolio[col.field]
+                              : liveMfPortFolio[col.field] == 0
+                              ?  liveMfPortFolio[col.field]
+                              : "0"
+                          }}
+                        </p>
+                      </ng-container>
+                      <ng-container
+                        *ngSwitchCase="
+                          col.field == 'gain_loss' ||
+                          col.field == 'ret_abs' ||
+                          col.field == 'curr_val' ||
+                          col.field == 'idcw_reinv' ||
+                          col.field == 'idcwp' ||
+                          col.field == 'idcwr'
+                        "
+                      >
+                        <p class="m-0">
+                          {{
+                            liveMfPortFolio[col.field]
+                              ? liveMfPortFolio[col.field]
+                              : liveMfPortFolio[col.field] == 0
+                              ? liveMfPortFolio[col.field]
+                              : "0"
+                          }}
+                          {{ col.field == "ret_abs" ? "%" : "" }}
+                        </p>
+                      </ng-container>
+            
+                      <ng-container *ngSwitchCase="col.field == 'tot_units'">
+                        <p class="m-0">
+                          {{liveMfPortFolio[col.field] > 0 ? liveMfPortFolio[col.field] : 0}}
+                        </p>
+                      </ng-container>
+            
+                      <ng-container *ngSwitchDefault>
+                        <p class="m-0">
+                          {{
+                            liveMfPortFolio[col.field]
+                              ? liveMfPortFolio[col.field]
+                              : "N/A"
+                          }}
+                        </p>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </tr>
+            </tbody>
+          </table>
+          <!-- <tbody>
+                <tr>
+                    <th *ngFor="let col of child_column" [style.width]="col.width">
+                          {{col.header}}
+                    </th>
+                </tr>
+          </tbody> -->
+          <table id="inr__tble_{{i}}" hidden>
+            <thead>
+                <tr>
+                    <th *ngFor="let col of child_column" [style.width]="col.width">
+                          {{col.header}}
+                    </th>
+                </tr>
+            </thead>
+          <tbody>
+            <tr *ngFor="let data of liveMfPortFolio.data;let j=index">
+                <td
+                  *ngFor="let col of child_column"
+                  [style.width]="col.width"
+                >
+                  <ng-container [ngSwitch]="true">
+                    <ng-container
+                      *ngSwitchCase="col.field == 'sl_no'"
+                    >
+                      <p class="m-0">
+                        {{ j + 1 }}
+                      </p>
+                    </ng-container>
+                    <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'inv_since'">
+                      <span class="m-0">
+                        {{data[col.field] ? (data[col.field] | date : "dd-MM-YY") : "N/A"}}
+                      </span>
+                    </ng-container>
+                    <ng-container
+                      *ngSwitchCase="col.field == 'cumml_units'"
+                    >
+                      <span class="m-0">
+                        {{
+                          (data[col.field] && data[col.field] > 0)
+                            ? data[col.field]
+                            : "0"
+                        }}
+                      </span>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="col.field == 'curr_val'">
+                      <span class="m-0">
+                        {{data.cumml_units > 0 ? data[col.field] : "0"}}
+                      </span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'gain_loss'">
+                      <span class="m-0">
+                        {{(data.cumml_units > 0 || data.transaction_type?.includes('Redemption')) ? data[col.field] : "0"}}
+                      </span>
+                    </ng-container>
+                    <ng-container
+                    *ngSwitchCase="col.field == 'xirr'">
+                    <span class="m-0">
+                      {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | percent: '1.2-2') : "0") : "0"}}
+                    </span>
+                  </ng-container>
+                  <ng-container
+                  *ngSwitchCase="col.field == 'ret_abs'">
+                  <span class="m-0">
+                    {{data.cumml_units > 0 ? (data[col.field]? (data[col.field] | number: '1.2-2') : "0") : "0"}} %
+                  </span>
+                </ng-container>
+
+                    <ng-container
+                      *ngSwitchCase="
+                        col.field == 'idcwr' ||
+                        col.field == 'idcw_reinv' ||
+                        col.field == 'idcwp'
+                      "
+                    >
+                      <span class="m-0">
+                        {{ data[col.field] ? data[col.field] : '0'}}
+                      </span>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <p class="m-0">
+                        {{data[col.field]}}
+                      </p>
+                    </ng-container>
+                  </ng-container>
+                </td>
+              </tr>
+          </tbody>
+          </table>
+    </ng-container>
+</ng-container>
+<ng-template #Summary>
+  <table id="primeng__tble" hidden>
+      <thead>
+        <tr >
+          <th *ngFor="let item of parent_column">
+            {{ item.header }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let liveMfPortFolio of dataSource;let i=index">
+          <td *ngFor="let col of parent_column">
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                  <p
+                  class="m-0 text-left liveMf_portfolio_scm">
+                    <strong style="font-size:11px">
+                      {{
+                        liveMfPortFolio[col.field]
+                          ? liveMfPortFolio[col.field] +
+                            "-" +
+                            liveMfPortFolio.plan_name +
+                            "-" +
+                            liveMfPortFolio.option_name
+                          : "N/A"
+                      }}
+                    </strong>
+                </p>
+                <p style="font-size:11px;margin:5px 0px!important;width: 100% !important;" class="text-left">Folio- <strong class="folio_isin">{{liveMfPortFolio.folio_no}}
+                  {{liveMfPortFolio?.custom_trans_type}}
+                </strong></p>
+                <p style="font-size:11px" class="text-left m-0">ISIN- <strong class="folio_isin">{{liveMfPortFolio.isin_no}}</strong></p>
+              </ng-container>
+              <ng-container
+                *ngSwitchCase="col.field == 'inv_since' || col.field == 'nav_date'">
+                <p class="m-0">
+                  {{
+                    liveMfPortFolio[col.field]
+                      ? (liveMfPortFolio[col.field] | date : "dd-MM-YY")
+                      : "N/A"
+                  }}
+                </p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'xirr'">
+                <p class="m-0">{{liveMfPortFolio[col.field] | percent:'1.2-2'}}</p>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'inv_cost'">
+                <p class="m-0">
+                  {{
+                    liveMfPortFolio[col.field]
+                      ? liveMfPortFolio[col.field]
+                      : liveMfPortFolio[col.field] == 0
+                      ?  liveMfPortFolio[col.field]
+                      : "0"
+                  }}
+                </p>
+              </ng-container>
+              <ng-container
+                *ngSwitchCase="
+                  col.field == 'gain_loss' ||
+                  col.field == 'ret_abs' ||
+                  col.field == 'curr_val' ||
+                  col.field == 'idcw_reinv' ||
+                  col.field == 'idcwp' ||
+                  col.field == 'idcwr'
+                "
+              >
+                <p class="m-0">
+                  {{
+                    liveMfPortFolio[col.field]
+                      ? liveMfPortFolio[col.field]
+                      : liveMfPortFolio[col.field] == 0
+                      ? liveMfPortFolio[col.field]
+                      : "0"
+                  }}
+                  {{ col.field == "ret_abs" ? "%" : "" }}
+                </p>
+              </ng-container>
+    
+              <ng-container *ngSwitchCase="col.field == 'tot_units'">
+                <p class="m-0">
+                  {{liveMfPortFolio[col.field] > 0 ? liveMfPortFolio[col.field] : 0}}
+                </p>
+              </ng-container>
+    
+              <ng-container *ngSwitchDefault>
+                <p class="m-0">
+                  {{
+                    liveMfPortFolio[col.field]
+                      ? liveMfPortFolio[col.field]
+                      : "N/A"
+                  }}
+                </p>
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</ng-template>
