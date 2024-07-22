@@ -371,6 +371,7 @@ mappings between `act_value` and `value` for transition durations. */
   view_mf_report:boolean;
 
   filter_criteria = new FormGroup({
+        outputIn:new FormControl('We'),
         valuation_as_on: new FormControl((new Date())),
         client_name: new FormControl(''),
         pan_no: new FormControl(''),
@@ -678,6 +679,10 @@ mappings between `act_value` and `value` for transition durations. */
      console.log(this.PLSummary_realised_unrealised);
   }
 
+  sentPdfToClient(){
+
+  }
+
 
   ngAfterViewInit(){
     this.filter_criteria.get('view_mf_report').get('cat_wise').valueChanges.subscribe(res =>{
@@ -686,7 +691,10 @@ mappings between `act_value` and `value` for transition durations. */
 
     this.filter_criteria.get('view_mf_report').get('subcat_wise').valueChanges.subscribe(res =>{
       this.filter_criteria.get('view_mf_report').get('cat_wise').setValue(false,{emitEvent:false});
+    })
 
+    this.filter_criteria.get('outputIn').valueChanges.subscribe(res =>{
+      console.log(res);
     })
 
 
@@ -2196,7 +2204,23 @@ mappings between `act_value` and `value` for transition durations. */
                     if(mf_report?.cat_wise || mf_report?.subcat_wise){
                       this.getLiveMfPortFolioByMfReportWise(modify_dt,mf_report)
                     }
-                    this.dataSource = modify_dt
+                    this.dataSource = modify_dt.filter((el,index) =>{
+                      el.data = el.mydata.cal_purchase_data.filter((item:ISubDataSource,i:number) =>{
+                        try{
+                          if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
+                                const amt = [(Number(item.tot_amount) * -1),Number(item.curr_val)]
+                                const dates = [item.trans_date,el.nav_date]
+                                const xirr = global.XIRR(amt,dates,0);
+                                item.xirr = isFinite(xirr) ? xirr : 0;
+                          }
+                        }
+                        catch(err){
+                            item.xirr = 0;
+                        }
+                        return item;
+                      });
+                      return el
+                    })
                   this.setParentTableFooter_ClientDtls(modify_dt);
                   // this.div_history = this.dataSource.filter(item => item.curr_val > 0)
                   this.setDisclaimer(res.data.disclaimer);
@@ -2255,6 +2279,11 @@ mappings between `act_value` and `value` for transition durations. */
   sentInEmail(file){
         const fb = new FormData();
       fb.append('file',file)
+      fb.append('pan_no',this.main_frm_dt.pan_no);
+      fb.append('dob',this.clientDtls.dob);
+      fb.append('flag',this.filter_criteria.get('outputIn').value);
+      fb.append('email',this.clientDtls.email);
+      fb.append('phone',this.clientDtls.mobile.toString());
       this.__dbIntr.api_call(1,'/clients/sendEmailWithLink',fb,true).subscribe(res =>{
         console.log(res);
       })

@@ -18,6 +18,7 @@ export class ExportAs{
             return new Promise((resolve,reject) =>{
                 try{
                     pdf.html(
+                        
                         element_to_print_as.innerHTML,
                         {
                           html2canvas:{
@@ -29,163 +30,169 @@ export class ExportAs{
                           x:5,
                           y:5,
                           callback(doc) {
-                            final_data.forEach((el,index) =>{
-                            autoTable(
-                              pdf,
-                              {
-                                useCss:false,
-                                didDrawPage: function(data){
+                            if(mode === 'Print'){
+                              pdf.autoPrint();
+                            }
+                            pdf.output('dataurlnewwindow');
+                            const dataUrl = pdf.output('datauristring');
+                            resolve(ExportAs.dataURLtoFile(dataUrl,'report.pdf'))
+                            // final_data.forEach((el,index) =>{
+                            // autoTable(
+                            //   pdf,
+                            //   {
+                            //     useCss:false,
+                            //     didDrawPage: function(data){
                                   
-                                  const body_height = global.Total__Count(data.table.body,(item)=> item.height);
-                                  const head_height = global.Total__Count(data.table.head,(item)=> item.height);
-                                  let calculate_height = finalY + body_height + head_height;
-                                  if(calculate_height >= doc.internal.pageSize.height){
-                                    finalY = data.cursor.y;
-                                  }
-                                  else{
-                                    finalY = calculate_height;
-                                  }
+                            //       const body_height = global.Total__Count(data.table.body,(item)=> item.height);
+                            //       const head_height = global.Total__Count(data.table.head,(item)=> item.height);
+                            //       let calculate_height = finalY + body_height + head_height;
+                            //       if(calculate_height >= doc.internal.pageSize.height){
+                            //         finalY = data.cursor.y;
+                            //       }
+                            //       else{
+                            //         finalY = calculate_height;
+                            //       }
 
-                                  autoTable(
-                                    pdf,
-                                    {
-                                      useCss:false,
-                                      didDrawPage: function(data1){
+                            //       autoTable(
+                            //         pdf,
+                            //         {
+                            //           useCss:false,
+                            //           didDrawPage: function(data1){
 
-                                            const body_height = global.Total__Count(data1.table.body,(item)=> item.height);
-                                            const head_height = global.Total__Count(data1.table.head,(item)=> item.height);
-                                            let calculate_height_inr = finalY + body_height + head_height;
-                                            const tble_finalY = data1.cursor.y;
-                                            if(calculate_height_inr >= doc.internal.pageSize.height){
-                                                finalY = tble_finalY;
-                                            }
-                                            else{
-                                            finalY = calculate_height_inr;
-                                            }
-                                            if(index == (final_data.length - 1)){
-                                            finalY = data1.cursor.y + 20;
-                                            let width = pdf.internal.pageSize.getWidth() - 20
-                                            let textlines = pdf.setFontSize(8).setFont(
-                                            "RobotoCondensed-Regular",'','400'
-                                            ).splitTextToSize(`Disclaimer:${disclaimer}`,width);
-                                            pdf.text(textlines,10,finalY)
-                                            }
-                                      },
-                                      includeHiddenHtml:false,
-                                      tableLineColor: [189, 195, 199],
-                                      tableLineWidth: 0.75,
-                                      theme:'grid',
-                                      showHead:true,
-                                      showFoot:true,
-                                      tableId:`${subtable_id}${index}`,
-                                      html:`#${subtable_id}${index}`,
-                                      margin:{
-                                        top:5,
-                                        left:10,
-                                        right:10,
-                                        bottom:5
-                                      },
-                                       pageBreak:'auto',
-                                       rowPageBreak:'avoid',
-                                       styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
-                                        cellPadding: 3,valign:'middle',halign:'center'},
-                                        headStyles:{
-                                            fillColor:'#1d4ed8',
-                                            textColor:'#fff',
-                                            fontSize:8,
-                                            cellPadding:{
-                                              vertical:5,
-                                              horizontal:3
-                                            },
-                                            lineColor:'#fff',
-                                            font:'RobotoCondensed-Bold'
-                                        },
-                                        footStyles:{
-                                            fillColor:'#08567c',
-                                            textColor:'#fff',
-                                            fontSize:7,
-                                            font:'RobotoCondensed-Bold',
-                                            lineColor:'#fff',
-                                            cellPadding:{
-                                              vertical:5,
-                                              horizontal:2
-                                            },
-                                        },
-                                        bodyStyles:{
-                                          fontSize:8,
-                                          cellPadding:2,
-                                          font:'RobotoCondensed-Regular'
-                                        },
-                                        startY:finalY,
-                                        columnStyles:{
-                                            0:{cellWidth:15.64,halign:'left'}
-                                        },
-                                      tableWidth:pdf.internal.pageSize.getWidth() - 20
-                                        }
-                                    )
-                                    if(index == (final_data.length - 1)){
-                                      if(mode === 'Print'){
-                                        pdf.autoPrint();
-                                      }
-                                      pdf.output('dataurlnewwindow');
-                                      const dataUrl = pdf.output('datauristring');
-                                      resolve(ExportAs.dataURLtoFile(dataUrl,'report.pdf')) 
-                                    }
+                            //                 const body_height = global.Total__Count(data1.table.body,(item)=> item.height);
+                            //                 const head_height = global.Total__Count(data1.table.head,(item)=> item.height);
+                            //                 let calculate_height_inr = finalY + body_height + head_height;
+                            //                 const tble_finalY = data1.cursor.y;
+                            //                 if(calculate_height_inr >= doc.internal.pageSize.height){
+                            //                     finalY = tble_finalY;
+                            //                 }
+                            //                 else{
+                            //                 finalY = calculate_height_inr;
+                            //                 }
+                            //                 if(index == (final_data.length - 1)){
+                            //                 finalY = data1.cursor.y + 20;
+                            //                 let width = pdf.internal.pageSize.getWidth() - 20
+                            //                 let textlines = pdf.setFontSize(8).setFont(
+                            //                 "RobotoCondensed-Regular",'','400'
+                            //                 ).splitTextToSize(`Disclaimer:${disclaimer}`,width);
+                            //                 pdf.text(textlines,10,finalY)
+                            //                 }
+                            //           },
+                            //           includeHiddenHtml:false,
+                            //           tableLineColor: [189, 195, 199],
+                            //           tableLineWidth: 0.75,
+                            //           theme:'grid',
+                            //           showHead:true,
+                            //           showFoot:true,
+                            //           tableId:`${subtable_id}${index}`,
+                            //           html:`#${subtable_id}${index}`,
+                            //           margin:{
+                            //             top:5,
+                            //             left:10,
+                            //             right:10,
+                            //             bottom:5
+                            //           },
+                            //            pageBreak:'auto',
+                            //            rowPageBreak:'avoid',
+                            //            styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                            //             cellPadding: 3,valign:'middle',halign:'center'},
+                            //             headStyles:{
+                            //                 fillColor:'#1d4ed8',
+                            //                 textColor:'#fff',
+                            //                 fontSize:8,
+                            //                 cellPadding:{
+                            //                   vertical:5,
+                            //                   horizontal:3
+                            //                 },
+                            //                 lineColor:'#fff',
+                            //                 font:'RobotoCondensed-Bold'
+                            //             },
+                            //             footStyles:{
+                            //                 fillColor:'#08567c',
+                            //                 textColor:'#fff',
+                            //                 fontSize:7,
+                            //                 font:'RobotoCondensed-Bold',
+                            //                 lineColor:'#fff',
+                            //                 cellPadding:{
+                            //                   vertical:5,
+                            //                   horizontal:2
+                            //                 },
+                            //             },
+                            //             bodyStyles:{
+                            //               fontSize:8,
+                            //               cellPadding:2,
+                            //               font:'RobotoCondensed-Regular'
+                            //             },
+                            //             startY:finalY,
+                            //             columnStyles:{
+                            //                 0:{cellWidth:15.64,halign:'left'}
+                            //             },
+                            //           tableWidth:pdf.internal.pageSize.getWidth() - 20
+                            //             }
+                            //         )
+                            //         if(index == (final_data.length - 1)){
+                            //           if(mode === 'Print'){
+                            //             pdf.autoPrint();
+                            //           }
+                            //           pdf.output('dataurlnewwindow');
+                            //           const dataUrl = pdf.output('datauristring');
+                            //           resolve(ExportAs.dataURLtoFile(dataUrl,'report.pdf')) 
+                            //         }
                                     
-                                },
-                                includeHiddenHtml:false,
-                                tableLineColor: [189, 195, 199],
-                                tableLineWidth: 0.75,
-                                theme:'grid',
-                                showHead:true,
-                                showFoot:false,
-                                tableId:`${parenttable_id}${index}`,
-                                html:`#${parenttable_id}${index}`,
-                                margin:{
-                                  top:5,
-                                  left:10,
-                                  right:10,
-                                  bottom:5
-                                },
-                                 pageBreak:'auto',
-                                 rowPageBreak:'avoid',
-                                 styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
-                                  cellPadding: 3,valign:'middle',halign:'center'},
-                                  headStyles:{
-                                      fillColor:'#08567c',
-                                      textColor:'#fff',
-                                      fontSize:8,
-                                      cellPadding:{
-                                        vertical:5,
-                                        horizontal:3
-                                      },
-                                      lineColor:'#fff',
-                                      font:'RobotoCondensed-Bold'
-                                  },
-                                  footStyles:{
-                                      fillColor:'#08567c',
-                                      textColor:'#fff',
-                                      fontSize:7,
-                                      font:'RobotoCondensed-Bold',
-                                      lineColor:'#fff',
-                                      cellPadding:{
-                                        vertical:5,
-                                        horizontal:2
-                                      },
-                                  },
-                                  bodyStyles:{
-                                    fontSize:8,
-                                    cellPadding:2,
-                                    font:'RobotoCondensed-Regular'
-                                  },
-                                  startY:finalY,
-                                  columnStyles:{
-                                      0:{cellWidth:120.64,halign:'left'}
-                                  },
-                                tableWidth:pdf.internal.pageSize.getWidth() - 20
-                              }
-                            )
-                            })
+                            //     },
+                            //     includeHiddenHtml:false,
+                            //     tableLineColor: [189, 195, 199],
+                            //     tableLineWidth: 0.75,
+                            //     theme:'grid',
+                            //     showHead:true,
+                            //     showFoot:false,
+                            //     tableId:`${parenttable_id}${index}`,
+                            //     html:`#${parenttable_id}${index}`,
+                            //     margin:{
+                            //       top:5,
+                            //       left:10,
+                            //       right:10,
+                            //       bottom:5
+                            //     },
+                            //      pageBreak:'auto',
+                            //      rowPageBreak:'avoid',
+                            //      styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                            //       cellPadding: 3,valign:'middle',halign:'center'},
+                            //       headStyles:{
+                            //           fillColor:'#08567c',
+                            //           textColor:'#fff',
+                            //           fontSize:8,
+                            //           cellPadding:{
+                            //             vertical:5,
+                            //             horizontal:3
+                            //           },
+                            //           lineColor:'#fff',
+                            //           font:'RobotoCondensed-Bold'
+                            //       },
+                            //       footStyles:{
+                            //           fillColor:'#08567c',
+                            //           textColor:'#fff',
+                            //           fontSize:7,
+                            //           font:'RobotoCondensed-Bold',
+                            //           lineColor:'#fff',
+                            //           cellPadding:{
+                            //             vertical:5,
+                            //             horizontal:2
+                            //           },
+                            //       },
+                            //       bodyStyles:{
+                            //         fontSize:8,
+                            //         cellPadding:2,
+                            //         font:'RobotoCondensed-Regular'
+                            //       },
+                            //       startY:finalY,
+                            //       columnStyles:{
+                            //           0:{cellWidth:120.64,halign:'left'}
+                            //       },
+                            //     tableWidth:pdf.internal.pageSize.getWidth() - 20
+                            //   }
+                            // )
+                            // })
                           },
                           autoPaging:true
                         }

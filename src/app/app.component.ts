@@ -128,7 +128,7 @@ buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: IBreadCrum
    if(isDynamicRoute && !!route.snapshot) {
      const paramName = lastRoutePart.split(':')[1];
      path = path.replace(lastRoutePart, route.snapshot.params[paramName]);
-     label = route.snapshot.data.data.breadcrumb;
+     label = route.snapshot.data.data?.breadcrumb;
    }
 
    //In the routeConfig the complete path is not available,
