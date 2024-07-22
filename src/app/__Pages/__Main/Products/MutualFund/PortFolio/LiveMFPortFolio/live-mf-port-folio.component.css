@@ -229,7 +229,7 @@ span.mat-tooltip-trigger.custom__badge.badge-primary:hover {
 
 
 ul>li:first-child{
-  border-top-left-radius: 8px!important;
+  border-top-left-radius: 4px!important;
 }
 :host ::ng-deep .p-dialog .p-dialog-content{
   padding: 0 1.5rem 2rem 1.5rem!important;

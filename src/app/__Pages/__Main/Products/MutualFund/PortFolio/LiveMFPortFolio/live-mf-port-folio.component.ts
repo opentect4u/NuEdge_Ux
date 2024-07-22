@@ -1196,7 +1196,7 @@ mappings between `act_value` and `value` for transition durations. */
                     ret_abs: final_arr ? final_arr?.ret_abs : 0,
                     cumml_units:tot_arr.length > 0 ? tot_arr.slice(-1)[0].cumml_units : 0,
                     xirr:final_arr ? final_arr?.xirr : 0,
-                    gross_amount: global.Total__Count(tot_arr,item => Number(item.tot_gross_amount)),
+                    gross_amount: global.Total__Count(tot_arr,item => Number(item.gross_amount)),
                   }
 
                   // console.log(this.subLiveMfPortFolio)
