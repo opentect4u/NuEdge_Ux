@@ -456,7 +456,7 @@
                               </div>
                         </div>
 
-                        <ng-container *ngIf="(filter_criteria.get('view_mf_report').get('cat_wise').value || filter_criteria.get('view_mf_report').get('subcat_wise').value);else details_rpt">
+                        <ng-container *ngIf="view_mf_report;else details_rpt">
                             <mf-reportwise-poretfolio 
                             [report]="__dataSource_for_mf_report_segregrated"
                             [parent_column]="parent_column"

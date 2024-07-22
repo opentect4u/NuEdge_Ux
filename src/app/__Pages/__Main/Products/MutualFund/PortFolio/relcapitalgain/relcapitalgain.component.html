@@ -112,6 +112,7 @@
       [clientDtls]="client_dtls"
       [ScheduleType]="'Report'"
       [isDateRange]="true"
+      (export)="exportAs($event)"
       [date]="dateRange"
       *ngIf="client_dtls"></client-dtls>
     </div>

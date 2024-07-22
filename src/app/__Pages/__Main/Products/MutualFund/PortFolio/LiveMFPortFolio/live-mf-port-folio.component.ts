@@ -368,6 +368,8 @@ mappings between `act_value` and `value` for transition durations. */
 
   main_frm_dt;
 
+  view_mf_report:boolean;
+
   filter_criteria = new FormGroup({
         valuation_as_on: new FormControl((new Date())),
         client_name: new FormControl(''),
@@ -906,6 +908,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.dataSource = [];
     this.parentLiveMfPortFolio = null;
     this.subLiveMfPortFolio = null;
+    this.view_mf_report = false;
     if(this.filter_criteria.value.valuation_as_on){
       if(this.filter_criteria.value.pan_no || this.filter_criteria.value.client_name){
               if(this.filter_criteria.value.view_type == 'F'){
@@ -929,6 +932,9 @@ mappings between `act_value` and `value` for transition durations. */
     }
     else{
     this.__portFolioTab = [];
+    let viewMfReport  = this.filter_criteria.get('view_mf_report').value;
+    // console.log(this.view_mf_report)
+     this.view_mf_report =  (viewMfReport.cat_wise ||  viewMfReport.subcat_wise)  ? true : false;
      if(this.filter_criteria.get('show_valuation_with').value.filter(el => el.flag == 'SIP' || el.flag == 'E' || el.flag == 'N').length == 0){
       this.utility.showSnackbar(`Please select valuation with atleast one (SIP, NON SIP or ELSS)`,2)  
       return;

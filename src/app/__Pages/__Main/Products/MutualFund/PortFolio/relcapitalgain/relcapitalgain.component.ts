@@ -533,6 +533,9 @@ export class RelcapitalgainComponent implements OnInit {
     }
   }
   
+  exportAs(event){
+    console.log(event)
+  }
 
 }
 
