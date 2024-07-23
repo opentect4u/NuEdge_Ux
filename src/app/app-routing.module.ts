@@ -7,7 +7,7 @@ const routes: Routes = [
   loadChildren: () => import('./__Pages/__Main/main.module').then(m => m.MainModule)},
   {path:'',redirectTo:'auth',pathMatch:'full'},
   {
-    path:'donwloadLink/:token',
+    path:'downloadLink/:token',
     loadChildren:() => import('./__Pages/__DownloadLink/valuation-rpt-download-link/valuation-rpt-download-link.module').then(m => m.ValuationRptDownloadLinkModule)
   },
   {

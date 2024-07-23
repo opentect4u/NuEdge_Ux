@@ -301,6 +301,7 @@
                       ></i>
                     </mat-button-toggle>
                     <mat-button-toggle
+                      (click)="op.toggle($event)"
                       value="S"
                       aria-label="Text align center"
                     >
@@ -310,6 +311,7 @@
                       ></i>
                     </mat-button-toggle>
                     <mat-button-toggle
+                    (click)="op.toggle($event)"
                       value="E"
                       aria-label="Text align right"
                     >
@@ -319,6 +321,7 @@
                       ></i>
                     </mat-button-toggle>
                     <mat-button-toggle
+                    (click)="op.toggle($event)"
                       value="W"
                       aria-label="Text align right"
                     >
@@ -328,6 +331,37 @@
                       ></i>
                     </mat-button-toggle>
                   </mat-button-toggle-group>
+                  <p-overlayPanel #op>
+                    <ng-template pTemplate>
+                      <!-- *ngIf="filter_criteria.value.outputIn == 'E'" -->
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <mat-radio-group [formControlName]="'report_type'" color="primary">
+                              <mat-radio-button value="S">Summary</mat-radio-button>
+                              <mat-radio-button value="D" class="mx-2">Details</mat-radio-button>
+                            </mat-radio-group>
+                          </div>
+                            <div class="col-sm-9">
+                              <ng-container *ngIf="filter_criteria.get('outputIn').value === 'E'">
+                                <input type="email" placeholder="Enter Email" formControlName="email" class="form-control"/>
+                              </ng-container>
+                              <ng-container *ngIf="filter_criteria.get('outputIn').value === 'S' || filter_criteria.get('outputIn').value === 'W'">
+                                <input type="text" placeholder="Enter Mobile Number"  formControlName="mobile" class="form-control"/>
+                              </ng-container>
+                            </div>
+                            <div class="col-sm-3">
+                              <button
+                              pButton
+                              (click)="SentDocuments()"
+                              [disabled]="filter_criteria.invalid"
+                              type="button"
+                              class="p-button-sm mx-3"
+                              label="submit"
+                            ></button>
+                          </div>
+                        </div>
+                    </ng-template>
+                </p-overlayPanel>
                 </div>
               </div>
             </div>

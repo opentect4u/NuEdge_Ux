@@ -12,6 +12,7 @@ import { DatePipe, KeyValue } from '@angular/common';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import Tabs from '../../../../../../../assets/json/Product/Portfolio/realisedCapitalGain/tab.json';
+import moment from 'moment';
 
 @Component({
   selector: 'portfolio-relcapitalgain',
@@ -172,7 +173,9 @@ export class RelcapitalgainComponent implements OnInit {
     )
     this.main_frm_dt = dt;
     this.realisedCapitalGain(dt)
+    
   }
+
 
   /** For Getting Realised capital Gain */
   realisedCapitalGain = (rest) =>{
@@ -186,6 +189,7 @@ export class RelcapitalgainComponent implements OnInit {
             }
           );
           this.dateRange = this.setDateInClientDetailsCard(this.released_capital_gain_form.value.date_type);
+          if(this.main_frm_dt?.report_type != 'A'){
           let filter_data_by_asset_type = res.data.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type));
           this.relised_capital_gain_summary = [];
           from(filter_data_by_asset_type.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
@@ -270,10 +274,219 @@ export class RelcapitalgainComponent implements OnInit {
                   stt:global.Total__Count(this.relised_capital_gain_summary,(item:Partial<ISummaryTbleData>) => item.total.stt)
                 }
             }
+          } 
+          else{
+            console.log(res.data)
+            this.populateAsPerITD(res.data);
+          }
+
       })
     }
   }
   /** End */
+
+  populateAsPerITD = (res) =>{
+    let as_per_itd = [
+      {
+        fund_type:'Equity',
+        fund_dtls:[
+            {
+            title:"Short Term Capital Gain",
+            data:[
+              {
+                title: "Full Value Of Consideration",
+                "01/04_15/06":0.00,
+                "16/06_15/09":0.00,
+                "16/09_15/12":0.00,
+                "16/12_15/03":0.00,
+                "16/03_31/03":0.00
+              },{
+                title: "Cost of acquisition",
+                "01/04_15/06":0.00,
+                "16/06_15/09":0.00,
+                "16/09_15/12":0.00,
+                "16/12_15/03":0.00,
+                "16/03_31/03":0.00
+              },{
+                title: "Full Value Of Consideration",
+                "01/04_15/06":0.00,
+                "16/06_15/09":0.00,
+                "16/09_15/12":0.00,
+                "16/12_15/03":0.00,
+                "16/03_31/03":0.00
+              },{
+                title: "Full Value Of Consideration",
+                "01/04_15/06":0.00,
+                "16/06_15/09":0.00,
+                "16/09_15/12":0.00,
+                "16/12_15/03":0.00,
+                "16/03_31/03":0.00
+              },
+            ]
+            },
+            {
+              title:"Long Term Capital Gain with indexation",
+              data:[
+                {
+                  title: "Fair Market Value of capital asset",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },
+                {
+                  title: "Full Value Of Consideration",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Cost of acquisition",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Full Value Of Consideration",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Full Value Of Consideration",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },
+              ]
+            },
+            {
+              title:"Long Term Capital Gain without indexation",
+              data:[
+                {
+                  title: "Fair Market Value of capital",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },
+                {
+                  title: "Full Value Of Consideration",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Cost of acquisition",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Full Value Of Consideration",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Full Value Of Consideration",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },
+              ]
+            }
+        ]
+      },
+      {
+        fund_type:'Non Equity)',
+        fund_dtls:[{
+            title:"Short Term Capital Gain",
+            data:[]
+          },
+          {
+            title:"Long Term Capital Gain with indexation",
+            data:[]
+          },
+          {
+            title:"Long Term Capital Gain without indexation",
+            data:[]
+          }
+        ]
+      }
+      
+    ];
+    let filter_data_by_asset_type = res.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type));
+    //       this.relised_capital_gain_summary = [];
+    //       // console.log(filter_data_by_asset_type.map(el => el.calculation_arr));
+    //       // console.log(filter_data_by_asset_type.map(el => el.calculation_arr).flat(1));
+    //       const filtered_array = filter_data_by_asset_type.map(el => el.calculation_arr).flat(1);
+    //       filtered_array.forEach(el =>{
+
+    //       })
+    from(filter_data_by_asset_type.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
+      .pipe(
+        groupBy((data: any) => data.tax_type),
+        mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+      ).subscribe(dt => {
+        console.log(dt[0]);
+        const filtered_array = dt[1].map(el => el.calculation_arr).flat(1);
+        const short_term_capital_gain = filtered_array.filter(el => el.stcg);
+        const long_term_capital_gain_without_index = filtered_array.filter(el => el.index_ltcg);
+        const long_term_capital_gain_with_index = filtered_array.filter(el => el.ltcg);
+        // console.log(short_term_capital_gain);
+        // console.log(long_term_capital_gain_without_index);
+        // console.log(long_term_capital_gain_with_index);
+        // filtered_array.forEach(el =>{
+        //   var check = moment(el.trans_date, 'YYYY/MM/DD');
+        //   var month = check.format('M');
+        //   var day   = check.format('D');
+        //   const full_dt = `${day}/${month}`;
+        //   as_per_itd = as_per_itd.filter(element =>{
+        //          if(element.fund_type == 'Equity Fund'){
+        //            element.fund_dtls = element.fund_dtls.filter(item =>{
+        //                  item.title:
+        //            })
+        //          }
+        //          else{
+
+        //          }
+        //          return element
+        //   })
+
+        // })
+        console.log(dt[0]);
+        as_per_itd = as_per_itd.filter(element =>{
+           if(element.fund_type == 'Equity Fund'){
+                   element.fund_dtls = element.fund_dtls.filter(el =>{
+                           el.title = ""
+                   })
+           }      
+          return element
+        })
+
+
+        // if(dt[0] == 'Equity Fund'){
+       
+        // }
+        // else{
+
+        // }
+      }
+    )
+  }
 
   /*** For Getting Dividend History */
   getIDCWHistory(rest){

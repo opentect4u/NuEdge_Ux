@@ -138,264 +138,274 @@
               <ng-container [ngSwitch]="true">
                   <!-- Div Open Only For Realised Capital Gain / Loss Report -->
                     <ng-container *ngSwitchCase="parent_tab_id == 'R'">
-                      <div class="row">
-                        <div class="col-sm-12" *ngIf="main_frm_dt?.report_type == 'D'">
-                          <mat-card>
-                            <mat-card-header>
-                                <mat-card-title>
-                                  CAPITAL GAIN LOSS DETAILS REPORT
-                                </mat-card-title>
-                            </mat-card-header>
-                            <mat-card-content class="p-2">
-                                  <p-table
-                                  [value]="relisedCapitalGain"
-                                  [paginator]="false"
-                                  styleClass="p-datatable-gridlines p-datatable-lg p-datatable-striped"
-                                  >
-                                  <ng-template pTemplate="header">
-                                      <tr class="stickyHeader">
-                                        <th
-                                        *ngFor="let col of relised_capital_gain_column"
-                                        [style]="'width : '+col.width"
-                                        [attr.colspan]="col.col_span"
-                                        [attr.rowspan]="col.row_span"
-                                        class="py-3"
-                                        >
-                                          {{col.header}}
-                                        </th>
-                                      </tr>
-                                      <tr class="stickyHeaderInnerTH">
-                                        <ng-container  *ngFor="let col of relised_capital_gain_column">
-                                            <th
-                                            *ngFor="let col of col.sub_row"
-                                            [style]="'width : '+col.width">
+                      <ng-container *ngIf="main_frm_dt?.report_type != 'A';else as_perITD">
+                        <div class="row">
+                          <div class="col-sm-12" *ngIf="main_frm_dt?.report_type == 'D'">
+                            <mat-card>
+                              <mat-card-header>
+                                  <mat-card-title>
+                                    CAPITAL GAIN LOSS DETAILS REPORT
+                                  </mat-card-title>
+                              </mat-card-header>
+                              <mat-card-content class="p-2">
+                                    <p-table
+                                    [value]="relisedCapitalGain"
+                                    [paginator]="false"
+                                    styleClass="p-datatable-gridlines p-datatable-lg p-datatable-striped"
+                                    >
+                                    <ng-template pTemplate="header">
+                                        <tr class="stickyHeader">
+                                          <th
+                                          *ngFor="let col of relised_capital_gain_column"
+                                          [style]="'width : '+col.width"
+                                          [attr.colspan]="col.col_span"
+                                          [attr.rowspan]="col.row_span"
+                                          class="py-3"
+                                          >
                                             {{col.header}}
                                           </th>
-                                        </ng-container>
-                                      </tr>
-                                  </ng-template>
-                                  <ng-template pTemplate="body" let-realisedCapitalGain>
-                                    <tr class="stickyHeaderInnerTH">
-                                      <td [attr.colspan]="21" class="table__header">
-                                          <h6 class="m-0">{{realisedCapitalGain?.tax_type}}</h6>
-                                      </td>
-                                    </tr>
-                                    <ng-container *ngFor="let dtls of realisedCapitalGain?.data">
-                                      <tr *ngIf="dtls.calculation_arr.length > 0">
-                                        <td colspan="21" class="table_scheme_style">
-                                          <span>{{dtls?.scheme_name}} - {{dtls?.plan_name}} - {{dtls?.option_name}} # ISIN - {{dtls?.isin_no}} # FOLIO - {{dtls?.folio_no}}</span>
-                                        </td>
-                                      </tr>
-                                      <tr  *ngFor="let innerDT of dtls?.calculation_arr">
-                                        <td>{{innerDT.trans_date | date:'dd-MM-YY'}}</td>
-                                        <td>{{innerDT.transaction_type}}</td>
+                                        </tr>
+                                        <tr class="stickyHeaderInnerTH">
                                           <ng-container  *ngFor="let col of relised_capital_gain_column">
-                
-                                              <td
+                                              <th
                                               *ngFor="let col of col.sub_row"
                                               [style]="'width : '+col.width">
-                                              <ng-container [ngSwitch]="true">
-                                                <ng-container
-                                                *ngSwitchCase="col.field == 'sell_date'"
-                                              >
-                                              {{innerDT[col.field] ? (innerDT[col.field] | date:'dd-MM-YY') : 'N/A'}}
-                                              </ng-container>
-                                              <ng-container
-                                                *ngSwitchCase="col.field == 'pur_before'
-                                                || col.field == 'amount_as_on_31_01_2018'
-                                                || col.field == 'nav_as_on_31_01_2018'
-                                                || col.field == 'debt_31_03_2023'
-                                                ">
-                                              {{innerDT[col.field] ? innerDT[col.field] : 'N/A'}}
-                                              </ng-container>
-                                              <ng-container  *ngSwitchCase="col.field == 'tot_units'">
-                                                {{(innerDT[col.field] || innerDT[col.field]?.toString() == '0') ? (innerDT[col.field] | number:'1.2-2') : '0.00'}}
-                                              </ng-container>
-                                              <ng-container  *ngSwitchDefault>
-                                                {{(innerDT[col.field] || innerDT[col.field]?.toString() == '0') ? innerDT[col.field] : 'N/A'}}
-                                              </ng-container>
-                                              </ng-container>
-                                            </td>
+                                              {{col.header}}
+                                            </th>
                                           </ng-container>
-                                      </tr>
-                                      <tr class="eachTbleFooter">
-                                          <td colspan="2">TOTAL</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.tot_amount | number:'1.2-2'">{{dtls?.total ? (dtls?.total.tot_amount | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.pur_price | number:'1.2-2'">{{dtls?.total ? (dtls?.total.pur_price | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.tot_units | number:'1.2-2'">
-                                            {{dtls?.total ? (dtls?.total.tot_units | number:'1.2-2') : '0.00'}}</td>
-                                          <td></td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.nav_as_on_31_01_2018 | number:'1.2-2'">{{dtls?.total ? (dtls?.total.nav_as_on_31_01_2018 | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.amount_as_on_31_01_2018 | number:'1.2-2'">{{dtls?.total ? (dtls?.total.amount_as_on_31_01_2018 | number:'1.2-2') : '0.00'}}</td>
-                                          <td colspan="3"></td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.sell_nav | number:'1.2-2'">{{dtls?.total ? (dtls?.total.sell_nav | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.redemp_amount | number:'1.2-2'">{{dtls?.total ? (dtls?.total.redemp_amount | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.tot_tds | number:'1.2-2'">{{dtls?.total ? (dtls?.total.tot_tds | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.stt | number:'1.2-2'">{{dtls?.total ? (dtls?.total.stt | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.net_sell_proceed | number:'1.2-2'">{{dtls?.total ? (dtls?.total.net_sell_proceed | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.div_amount | number:'1.2-2'">{{dtls?.total ? (dtls?.total.div_amount | number:'1.2-2') : '0.00'}}</td>
-                                          <td></td> 
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.stcg | number:'1.2-2'">{{dtls?.total ? (dtls?.total.stcg | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.ltcg | number:'1.2-2'">{{dtls?.total ? (dtls?.total.ltcg | number:'1.2-2') : '0.00'}}</td>
-                                          <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.index_ltcg | number:'1.2-2'">{{dtls?.total ? (dtls?.total.index_ltcg | number:'1.2-2') : '0.00'}}</td>
-                                          <!-- <td colspan="18"></td> -->
-                                      </tr>
-                                    </ng-container>
-                                    <tr class="FundTbleFooter">
-                                      <td colspan="2">GRAND TOTAL</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.tot_amount | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.tot_amount | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.pur_price | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.pur_price | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.tot_units | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.tot_units | number:'1.2-2') : '0.00'}}</td>
-                                      <td></td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.nav_as_on_31_01_2018 | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.nav_as_on_31_01_2018 | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.amount_as_on_31_01_2018 | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.amount_as_on_31_01_2018 | number:'1.2-2') : '0.00'}}</td>
-                                      <td colspan="3"></td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.sell_nav | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.sell_nav | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.redemp_amount | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.redemp_amount | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.tot_tds | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.tot_tds | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.stt | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.stt | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.net_sell_proceed | number:'1.2-2'">
-                                        {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.net_sell_proceed | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.div_amount | number:'1.2-2'">
-                                        {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.div_amount | number:'1.2-2') : '0.00'}}</td>
-                                      <td></td> 
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.stcg | number:'1.2-2'">
-                                        {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.stcg | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.ltcg | number:'1.2-2'">
-                                        {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.ltcg | number:'1.2-2') : '0.00'}}</td>
-                                      <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.index_ltcg | number:'1.2-2'">
-                                        {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.index_ltcg | number:'1.2-2') : '0.00'}}</td>
-                                    </tr>
-                
-                                  </ng-template>
-                                  <ng-template pTemplate="emptymessage" let-realisedCapitalGain>
-                                    <tr>
-                                      <td [attr.colspan]="21">
-                                        <p class="m-0">No Records Found</p>
-                                      </td>
-                                    </tr>
-                                  </ng-template>
-                                  </p-table>
-                            </mat-card-content>
-                          </mat-card>
-                        </div>
-                        <div class="col-sm-12"
-                        [ngClass]="{
-                            'my-5': main_frm_dt?.report_type == 'D'
-                        }"
-                        *ngIf="main_frm_dt?.report_type == 'S' || main_frm_dt?.report_type == 'D'"
-                        
-                        >
-                          <mat-card>
-                            <mat-card-header class="py-2">
-                              <mat-card-title>CAPITAL GAIN LOSS SUMMARY REPORT</mat-card-title>
-                                <input id="search" class="form-control rounded w-25 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
-                                  placeholder="Search" />
-                            </mat-card-header>
-                            <mat-card-content class="p-2">
-                                  <p-table
-                                  #relise_capital_gain_summary
-                                  [value]="relised_capital_gain_summary"
-                                  [paginator]="true"
-                                  [responsive]="true"
-                                  [globalFilterFields]="getColumns()"
-                                  styleClass="p-datatable-lg p-datatable-striped"
-                                  [rows]="10" 
-                                  [rowHover]="false"
-                                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                                  [pageLinks]="3"
-                                  [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-                                  [showCurrentPageReport]="true"
-                                  >
-                                  <ng-template pTemplate="header">
-                                      <tr class="stickyHeader">
-                                        <th
-                                        *ngFor="let col of relised_capital_gain_summary_column"
-                                        class="py-3"
-                                        [style]="'width : '+col.width"
-                                        class="summary_Report"
-                                        >
-                                          {{col.header}}
-                                          <!-- pSortableColumn="{{col.field}}"
-                                          <p-sortIcon field="{{col.field}}"></p-sortIcon> -->
-                                        </th>
-                                      </tr>
-                                  </ng-template>
-                                  <ng-template pTemplate="body" let-realisedCapitalGain_summary>
-                                    <tr class="stickyHeaderInnerTH">
-                                      <td [attr.colspan]="relised_capital_gain_summary_column.length" class="table__header__Summary">
-                                          <h6 class="m-0">{{realisedCapitalGain_summary?.tax_type}}</h6>
-                                      </td>
-                                    </tr>
-                                    <ng-container *ngFor="let dtls of realisedCapitalGain_summary?.summary">
-                                      <tr>
-                                        <td *ngFor="let col of relised_capital_gain_summary_column"
-                                        [style]="'width : '+col.width"
-                                        class="{{col.field}}"
-                                        >
-                                        <ng-container [ngSwitch]="true">
-                                          <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                                            {{dtls[col.field]}}
-                                          </ng-container>
-                                          <ng-container *ngSwitchCase="col.field == 'folio'">
-                                            {{dtls[col.field]}}
-                                          </ng-container>
-                                          <ng-container  *ngSwitchDefault>
-                                            {{(dtls[col.field] || dtls[col.field]?.toString() == '0') ? (dtls[col.field] | number:'1.2-2') : 'N/A'}}
-                                          </ng-container>
-                                        </ng-container>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-realisedCapitalGain>
+                                      <tr class="stickyHeaderInnerTH">
+                                        <td [attr.colspan]="21" class="table__header">
+                                            <h6 class="m-0">{{realisedCapitalGain?.tax_type}}</h6>
                                         </td>
                                       </tr>
-                                    </ng-container>
+                                      <ng-container *ngFor="let dtls of realisedCapitalGain?.data">
+                                        <tr *ngIf="dtls.calculation_arr.length > 0">
+                                          <td colspan="21" class="table_scheme_style">
+                                            <span>{{dtls?.scheme_name}} - {{dtls?.plan_name}} - {{dtls?.option_name}} # ISIN - {{dtls?.isin_no}} # FOLIO - {{dtls?.folio_no}}</span>
+                                          </td>
+                                        </tr>
+                                        <tr  *ngFor="let innerDT of dtls?.calculation_arr">
+                                          <td>{{innerDT.trans_date | date:'dd-MM-YY'}}</td>
+                                          <td>{{innerDT.transaction_type}}</td>
+                                            <ng-container  *ngFor="let col of relised_capital_gain_column">
                   
-                                    <tr class="eachTbleFooter">
-                                      <td *ngFor="let footer_col of relised_capital_gain_summary_column">
-                                      <ng-container [ngSwitch]="true">
-                                        <ng-container *ngSwitchCase="footer_col.field != 'scheme_name' && footer_col.field != 'folio'">
-                                            {{realisedCapitalGain_summary?.total ? (realisedCapitalGain_summary?.total[footer_col.field] | number:'1.2-2') : '0.00'}}
-                                        </ng-container>
-                                        <ng-container *ngSwitchCase="footer_col.field == 'scheme_name'">
-                                              GRAND TOTAL
-                                        </ng-container>
-                                        <ng-container  *ngSwitchDefault>
-                                        </ng-container>
+                                                <td
+                                                *ngFor="let col of col.sub_row"
+                                                [style]="'width : '+col.width">
+                                                <ng-container [ngSwitch]="true">
+                                                  <ng-container
+                                                  *ngSwitchCase="col.field == 'sell_date'"
+                                                >
+                                                {{innerDT[col.field] ? (innerDT[col.field] | date:'dd-MM-YY') : 'N/A'}}
+                                                </ng-container>
+                                                <ng-container
+                                                  *ngSwitchCase="col.field == 'pur_before'
+                                                  || col.field == 'amount_as_on_31_01_2018'
+                                                  || col.field == 'nav_as_on_31_01_2018'
+                                                  || col.field == 'debt_31_03_2023'
+                                                  ">
+                                                {{innerDT[col.field] ? innerDT[col.field] : 'N/A'}}
+                                                </ng-container>
+                                                <ng-container  *ngSwitchCase="col.field == 'tot_units'">
+                                                  {{(innerDT[col.field] || innerDT[col.field]?.toString() == '0') ? (innerDT[col.field] | number:'1.2-2') : '0.00'}}
+                                                </ng-container>
+                                                <ng-container  *ngSwitchDefault>
+                                                  {{(innerDT[col.field] || innerDT[col.field]?.toString() == '0') ? innerDT[col.field] : 'N/A'}}
+                                                </ng-container>
+                                                </ng-container>
+                                              </td>
+                                            </ng-container>
+                                        </tr>
+                                        <tr class="eachTbleFooter">
+                                            <td colspan="2">TOTAL</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.tot_amount | number:'1.2-2'">{{dtls?.total ? (dtls?.total.tot_amount | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.pur_price | number:'1.2-2'">{{dtls?.total ? (dtls?.total.pur_price | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.tot_units | number:'1.2-2'">
+                                              {{dtls?.total ? (dtls?.total.tot_units | number:'1.2-2') : '0.00'}}</td>
+                                            <td></td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.nav_as_on_31_01_2018 | number:'1.2-2'">{{dtls?.total ? (dtls?.total.nav_as_on_31_01_2018 | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.amount_as_on_31_01_2018 | number:'1.2-2'">{{dtls?.total ? (dtls?.total.amount_as_on_31_01_2018 | number:'1.2-2') : '0.00'}}</td>
+                                            <td colspan="3"></td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.sell_nav | number:'1.2-2'">{{dtls?.total ? (dtls?.total.sell_nav | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.redemp_amount | number:'1.2-2'">{{dtls?.total ? (dtls?.total.redemp_amount | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.tot_tds | number:'1.2-2'">{{dtls?.total ? (dtls?.total.tot_tds | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.stt | number:'1.2-2'">{{dtls?.total ? (dtls?.total.stt | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.net_sell_proceed | number:'1.2-2'">{{dtls?.total ? (dtls?.total.net_sell_proceed | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.div_amount | number:'1.2-2'">{{dtls?.total ? (dtls?.total.div_amount | number:'1.2-2') : '0.00'}}</td>
+                                            <td></td> 
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.stcg | number:'1.2-2'">{{dtls?.total ? (dtls?.total.stcg | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.ltcg | number:'1.2-2'">{{dtls?.total ? (dtls?.total.ltcg | number:'1.2-2') : '0.00'}}</td>
+                                            <td matTooltipClass="ToolTip" [matTooltip]="dtls?.total.index_ltcg | number:'1.2-2'">{{dtls?.total ? (dtls?.total.index_ltcg | number:'1.2-2') : '0.00'}}</td>
+                                            <!-- <td colspan="18"></td> -->
+                                        </tr>
                                       </ng-container>
+                                      <tr class="FundTbleFooter">
+                                        <td colspan="2">GRAND TOTAL</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.tot_amount | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.tot_amount | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.pur_price | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.pur_price | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.tot_units | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.tot_units | number:'1.2-2') : '0.00'}}</td>
+                                        <td></td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.nav_as_on_31_01_2018 | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.nav_as_on_31_01_2018 | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.amount_as_on_31_01_2018 | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.amount_as_on_31_01_2018 | number:'1.2-2') : '0.00'}}</td>
+                                        <td colspan="3"></td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.sell_nav | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.sell_nav | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.redemp_amount | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.redemp_amount | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.tot_tds | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.tot_tds | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.stt | number:'1.2-2'">{{realisedCapitalGain?.total ? (realisedCapitalGain?.total.stt | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.net_sell_proceed | number:'1.2-2'">
+                                          {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.net_sell_proceed | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.div_amount | number:'1.2-2'">
+                                          {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.div_amount | number:'1.2-2') : '0.00'}}</td>
+                                        <td></td> 
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.stcg | number:'1.2-2'">
+                                          {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.stcg | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.ltcg | number:'1.2-2'">
+                                          {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.ltcg | number:'1.2-2') : '0.00'}}</td>
+                                        <td matTooltipClass="ToolTip" [matTooltip]="realisedCapitalGain?.total.index_ltcg | number:'1.2-2'">
+                                          {{realisedCapitalGain?.total ? (realisedCapitalGain?.total.index_ltcg | number:'1.2-2') : '0.00'}}</td>
+                                      </tr>
                   
-                                      </td>
-                                    </tr>
-                              
-                                  </ng-template>
-                                  <ng-template pTemplate="emptymessage" let-realisedCapitalGain_summary>
-                                    <tr>
-                                      <td [attr.colspan]="relised_capital_gain_summary_column.length">
-                                        <p class="m-0">No Records Found</p>
-                                      </td>
-                                    </tr>
-                                  </ng-template>
-                                    <ng-template pTemplate="footer">
+                                    </ng-template>
+                                    <ng-template pTemplate="emptymessage" let-realisedCapitalGain>
                                       <tr>
-                                        <td
-                                          *ngFor="let col of relised_capital_gain_summary_column"
-                                          [style]="'width : ' + col.width"
-                                        >
-                                          <ng-container [ngSwitch]="true">
-                                            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                                              <p class="m-0">GRAND TOTAL</p>
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="col.field == 'folio_no'"></ng-container>
-                                            
-                                            <ng-container *ngSwitchDefault>
-                                              {{relised_capital_gain_summary_footer ? (relised_capital_gain_summary_footer[col.field] ? (relised_capital_gain_summary_footer[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
-                                            </ng-container>
-                                          </ng-container>
+                                        <td [attr.colspan]="21">
+                                          <p class="m-0">No Records Found</p>
                                         </td>
                                       </tr>
                                     </ng-template>
-                                  </p-table>
-                            </mat-card-content>
-                          </mat-card>
+                                    </p-table>
+                              </mat-card-content>
+                            </mat-card>
+                          </div>
+                          <div class="col-sm-12"
+                          [ngClass]="{
+                              'my-5': main_frm_dt?.report_type == 'D'
+                          }"
+                          *ngIf="main_frm_dt?.report_type == 'S' || main_frm_dt?.report_type == 'D'"
+                          
+                          >
+                            <mat-card>
+                              <mat-card-header class="py-2">
+                                <mat-card-title>CAPITAL GAIN LOSS SUMMARY REPORT</mat-card-title>
+                                  <input id="search" class="form-control rounded w-25 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
+                                    placeholder="Search" />
+                              </mat-card-header>
+                              <mat-card-content class="p-2">
+                                    <p-table
+                                    #relise_capital_gain_summary
+                                    [value]="relised_capital_gain_summary"
+                                    [paginator]="true"
+                                    [responsive]="true"
+                                    [globalFilterFields]="getColumns()"
+                                    styleClass="p-datatable-lg p-datatable-striped"
+                                    [rows]="10" 
+                                    [rowHover]="false"
+                                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                    [pageLinks]="3"
+                                    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+                                    [showCurrentPageReport]="true"
+                                    >
+                                    <ng-template pTemplate="header">
+                                        <tr class="stickyHeader">
+                                          <th
+                                          *ngFor="let col of relised_capital_gain_summary_column"
+                                          class="py-3"
+                                          [style]="'width : '+col.width"
+                                          class="summary_Report"
+                                          >
+                                            {{col.header}}
+                                            <!-- pSortableColumn="{{col.field}}"
+                                            <p-sortIcon field="{{col.field}}"></p-sortIcon> -->
+                                          </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-realisedCapitalGain_summary>
+                                      <tr class="stickyHeaderInnerTH">
+                                        <td [attr.colspan]="relised_capital_gain_summary_column.length" class="table__header__Summary">
+                                            <h6 class="m-0">{{realisedCapitalGain_summary?.tax_type}}</h6>
+                                        </td>
+                                      </tr>
+                                      <ng-container *ngFor="let dtls of realisedCapitalGain_summary?.summary">
+                                        <tr>
+                                          <td *ngFor="let col of relised_capital_gain_summary_column"
+                                          [style]="'width : '+col.width"
+                                          class="{{col.field}}"
+                                          >
+                                          <ng-container [ngSwitch]="true">
+                                            <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                                              {{dtls[col.field]}}
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="col.field == 'folio'">
+                                              {{dtls[col.field]}}
+                                            </ng-container>
+                                            <ng-container  *ngSwitchDefault>
+                                              {{(dtls[col.field] || dtls[col.field]?.toString() == '0') ? (dtls[col.field] | number:'1.2-2') : 'N/A'}}
+                                            </ng-container>
+                                          </ng-container>
+                                          </td>
+                                        </tr>
+                                      </ng-container>
+                    
+                                      <tr class="eachTbleFooter">
+                                        <td *ngFor="let footer_col of relised_capital_gain_summary_column">
+                                        <ng-container [ngSwitch]="true">
+                                          <ng-container *ngSwitchCase="footer_col.field != 'scheme_name' && footer_col.field != 'folio'">
+                                              {{realisedCapitalGain_summary?.total ? (realisedCapitalGain_summary?.total[footer_col.field] | number:'1.2-2') : '0.00'}}
+                                          </ng-container>
+                                          <ng-container *ngSwitchCase="footer_col.field == 'scheme_name'">
+                                                GRAND TOTAL
+                                          </ng-container>
+                                          <ng-container  *ngSwitchDefault>
+                                          </ng-container>
+                                        </ng-container>
+                    
+                                        </td>
+                                      </tr>
+                                
+                                    </ng-template>
+                                    <ng-template pTemplate="emptymessage" let-realisedCapitalGain_summary>
+                                      <tr>
+                                        <td [attr.colspan]="relised_capital_gain_summary_column.length">
+                                          <p class="m-0">No Records Found</p>
+                                        </td>
+                                      </tr>
+                                    </ng-template>
+                                      <ng-template pTemplate="footer">
+                                        <tr>
+                                          <td
+                                            *ngFor="let col of relised_capital_gain_summary_column"
+                                            [style]="'width : ' + col.width"
+                                          >
+                                            <ng-container [ngSwitch]="true">
+                                              <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                                                <p class="m-0">GRAND TOTAL</p>
+                                              </ng-container>
+                                              <ng-container *ngSwitchCase="col.field == 'folio_no'"></ng-container>
+                                              
+                                              <ng-container *ngSwitchDefault>
+                                                {{relised_capital_gain_summary_footer ? (relised_capital_gain_summary_footer[col.field] ? (relised_capital_gain_summary_footer[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
+                                              </ng-container>
+                                            </ng-container>
+                                          </td>
+                                        </tr>
+                                      </ng-template>
+                                    </p-table>
+                              </mat-card-content>
+                            </mat-card>
+                          </div>
                         </div>
-                      </div>
+                    </ng-container>
+                    <ng-template #as_perITD>
+                      <div class="row">
+                          <div class="col-sm-12">
+
+                          </div>
+                        </div>
+                    </ng-template>
+
                     </ng-container>
                   <!-- End -->
 

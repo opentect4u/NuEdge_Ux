@@ -323,3 +323,7 @@ tr.dialogTR>td{
   padding: 4px 2px!important;
 }
 
+::ng-deep .p-overlaypanel{
+  width: 364px!important;
+}
+

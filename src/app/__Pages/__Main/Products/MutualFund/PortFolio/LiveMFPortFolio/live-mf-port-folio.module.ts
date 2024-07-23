@@ -22,6 +22,8 @@ import { SummaryReportComponent } from './summary-report/summary-report.componen
 import { ChartModule } from 'src/app/__Core/chart/chart.module';
 import { LiveMfChartSummaryPipe } from 'src/app/__Pipes/liveMfPortfolio_Summary_chart.pipe';
 import { MfReportwisePoretfolioComponent } from './mf-reportwise-poretfolio/mf-reportwise-poretfolio.component';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
 @NgModule({
@@ -50,6 +52,7 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     DialogModule,
     TabModule,
     ChartModule,
+    OverlayPanelModule,
     RouterModule.forChild(routes),
   ]
 })

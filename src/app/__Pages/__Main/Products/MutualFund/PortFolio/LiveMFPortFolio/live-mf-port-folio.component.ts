@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import  ClientType  from '../../../../../../../assets/json/view_type.json';
@@ -34,7 +34,6 @@ import jsPDF from 'jspdf';
 import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
 import autoTable from 'jspdf-autotable';
 import { ExportAs } from 'src/app/__Utility/exportFunc';
-
 
 
 /*** Display Footer data on Raw Expand Inside Inner Table*/
@@ -88,7 +87,7 @@ export type TotalRealisedUnrealisedPL = {
 @Component({
   selector: 'app-live-mf-port-folio',
   templateUrl: './live-mf-port-folio.component.html',
-  styleUrls: ['./live-mf-port-folio.component.css'],
+  styleUrls: ['./live-mf-port-folio.component.css']
 })
 
 export class LiveMfPortFolioComponent implements OnInit {
@@ -371,6 +370,9 @@ mappings between `act_value` and `value` for transition durations. */
   view_mf_report:boolean;
 
   filter_criteria = new FormGroup({
+        report_type:new FormControl('S'),
+        mobile:new FormControl('',[Validators.required]),
+        email:new FormControl('',[Validators.required,Validators.email]),
         outputIn:new FormControl('We'),
         valuation_as_on: new FormControl((new Date())),
         client_name: new FormControl(''),
@@ -423,7 +425,8 @@ mappings between `act_value` and `value` for transition durations. */
   div_history:Partial<IDivHistory>[] = [];
   /**** End */
 
-  constructor(private __dbIntr:DbIntrService,
+  constructor(
+    private __dbIntr:DbIntrService,
     private utility:UtiliService,
     private router:Router,
     private activateRoute:ActivatedRoute,
@@ -475,6 +478,7 @@ mappings between `act_value` and `value` for transition durations. */
       sub_menu:this.fb.array([])
     })
    }
+
 
   newScheme(scheme_dtls:any){
     return  this.fb.group({
@@ -871,6 +875,8 @@ mappings between `act_value` and `value` for transition durations. */
     this.filter_criteria.controls['view_funds_type'].setValue('A',{emitEvent:false});
     this.funds().clear({emitEvent:false});
     this.searchResultVisibilityForClient('none');
+    this.filter_criteria.get('email').setValue(searchRlt.item.email);
+    this.filter_criteria.get('mobile').setValue(searchRlt.item.mobile);
     if(this.filter_criteria.value.view_type == 'F'){
             this.getFamilyMembers(searchRlt.item.client_id)
     }
@@ -2270,20 +2276,63 @@ mappings between `act_value` and `value` for transition durations. */
         ExportAs.exportAsSummary(
             mode,pdf,finalY,html_element,'primeng__tble',this.disclaimer
           ).then(res =>{
-            this.sentInEmail(res);
+            // this.sentInEmail(res);
+            this.sentInEmail(
+              res,
+              this.clientDtls.email,
+              this.clientDtls.mobile,
+              this.filter_criteria.get('outputIn').value,
+              this.clientDtls.dob,
+              this.main_frm_dt.pan_no
+            );
           })
       }
     }
   }
+  SentDocuments(){
+      var pdf = new jsPDF('l','pt','a4',true);
+      const html_element = document.getElementById('client_container');
+      pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+      pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+      pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+      pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+      const disclaimer = this.disclaimer
+      const final_data = this.dataSource;
+      let finalY = 170;
+      let file;
+      if(this.filter_criteria.get('report_type').value == 'D'){
+      ExportAs.exportAsDtls(
+        this.filter_criteria.get('report_type').value,pdf,finalY,html_element,final_data,this.disclaimer,'primeng__tble_','inr__tble_'
+         )
+        //  this.sentInEmail(file)
+      }
+      else{
+        ExportAs.exportAsSummary(
+          this.filter_criteria.get('report_type').value,pdf,finalY,html_element,'primeng__tble',this.disclaimer
+          ).then(res =>{
+            this.sentInEmail(
+              res,
+              this.filter_criteria.get('email').value,
+              this.filter_criteria.get('mobile').value,
+              this.filter_criteria.get('outputIn').value,
+              this.clientDtls.dob,
+              this.main_frm_dt.pan_no
+            );
+          })
+      }
 
-  sentInEmail(file){
-        const fb = new FormData();
+      // console.log('sasasasaas')
+    
+  }
+
+  sentInEmail(file,email,mobile,outputIn,dob,pan_no){
+      const fb = new FormData();
       fb.append('file',file)
-      fb.append('pan_no',this.main_frm_dt.pan_no);
-      fb.append('dob',this.clientDtls.dob);
-      fb.append('flag',this.filter_criteria.get('outputIn').value);
-      fb.append('email',this.clientDtls.email);
-      fb.append('phone',this.clientDtls.mobile.toString());
+      fb.append('pan_no',pan_no);
+      fb.append('dob',dob);
+      fb.append('flag',outputIn);
+      fb.append('email',email);
+      fb.append('phone',mobile.toString());
       this.__dbIntr.api_call(1,'/clients/sendEmailWithLink',fb,true).subscribe(res =>{
         console.log(res);
       })
