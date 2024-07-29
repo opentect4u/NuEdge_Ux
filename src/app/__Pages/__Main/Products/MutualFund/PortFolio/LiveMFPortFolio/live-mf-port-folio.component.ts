@@ -391,7 +391,7 @@ mappings between `act_value` and `value` for transition durations. */
         }),
         is_new_tab:new FormControl(false),
         trans_date_range:new FormControl(''),
-        trans_duration: new FormControl('A'),
+        trans_duration: new FormControl(''),
         show_valuation_with:new FormControl(this.__portfolioFiter?.val_with.filter(el => el.flag == 'SIP' || el.flag == 'N' || el.flag == 'E')),
         trans_with:new FormControl(this.__portfolioFiter?.trans_with.filter(item => item.id ==1)),
         clmn_chooser: new FormControl(this.__portfolioFiter?.clm_chooser.map(item =>  ({name: item.name,flag:item.flag}))),
@@ -1765,6 +1765,7 @@ mappings between `act_value` and `value` for transition durations. */
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
                       const xirr =  global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
+                      console.log('xirr:' + xirr);
                       console.log(isNaN(xirr))
                       item.xirr = xirr;
                     }
