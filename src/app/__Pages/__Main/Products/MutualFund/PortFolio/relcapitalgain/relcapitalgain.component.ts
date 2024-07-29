@@ -276,7 +276,7 @@ export class RelcapitalgainComponent implements OnInit {
             }
           } 
           else{
-            console.log(res.data)
+            // console.log(res.data)
             this.populateAsPerITD(res.data);
           }
 
@@ -286,9 +286,10 @@ export class RelcapitalgainComponent implements OnInit {
   /** End */
 
   populateAsPerITD = (res) =>{
+    console.log(res)
     let as_per_itd = [
       {
-        fund_type:'Equity',
+        fund_type:'Equity Fund',
         fund_dtls:[
             {
             title:"Short Term Capital Gain",
@@ -308,20 +309,13 @@ export class RelcapitalgainComponent implements OnInit {
                 "16/12_15/03":0.00,
                 "16/03_31/03":0.00
               },{
-                title: "Full Value Of Consideration",
+                title: "Capital Gain / Loss",
                 "01/04_15/06":0.00,
                 "16/06_15/09":0.00,
                 "16/09_15/12":0.00,
                 "16/12_15/03":0.00,
                 "16/03_31/03":0.00
-              },{
-                title: "Full Value Of Consideration",
-                "01/04_15/06":0.00,
-                "16/06_15/09":0.00,
-                "16/09_15/12":0.00,
-                "16/12_15/03":0.00,
-                "16/03_31/03":0.00
-              },
+              }
             ]
             },
             {
@@ -350,20 +344,13 @@ export class RelcapitalgainComponent implements OnInit {
                   "16/12_15/03":0.00,
                   "16/03_31/03":0.00
                 },{
-                  title: "Full Value Of Consideration",
+                  title: "Capital Gain / Loss",
                   "01/04_15/06":0.00,
                   "16/06_15/09":0.00,
                   "16/09_15/12":0.00,
                   "16/12_15/03":0.00,
                   "16/03_31/03":0.00
-                },{
-                  title: "Full Value Of Consideration",
-                  "01/04_15/06":0.00,
-                  "16/06_15/09":0.00,
-                  "16/09_15/12":0.00,
-                  "16/12_15/03":0.00,
-                  "16/03_31/03":0.00
-                },
+                }
               ]
             },
             {
@@ -392,14 +379,7 @@ export class RelcapitalgainComponent implements OnInit {
                   "16/12_15/03":0.00,
                   "16/03_31/03":0.00
                 },{
-                  title: "Full Value Of Consideration",
-                  "01/04_15/06":0.00,
-                  "16/06_15/09":0.00,
-                  "16/09_15/12":0.00,
-                  "16/12_15/03":0.00,
-                  "16/03_31/03":0.00
-                },{
-                  title: "Full Value Of Consideration",
+                  title: "Capital Gain / Loss",
                   "01/04_15/06":0.00,
                   "16/06_15/09":0.00,
                   "16/09_15/12":0.00,
@@ -411,81 +391,331 @@ export class RelcapitalgainComponent implements OnInit {
         ]
       },
       {
-        fund_type:'Non Equity)',
-        fund_dtls:[{
+        fund_type:'Non Equity Fund',
+        fund_dtls:[
+            {
             title:"Short Term Capital Gain",
-            data:[]
-          },
-          {
-            title:"Long Term Capital Gain with indexation",
-            data:[]
-          },
-          {
-            title:"Long Term Capital Gain without indexation",
-            data:[]
-          }
+            data:[
+              {
+                title: "Full Value Of Consideration",
+                "01/04_15/06":0.00,
+                "16/06_15/09":0.00,
+                "16/09_15/12":0.00,
+                "16/12_15/03":0.00,
+                "16/03_31/03":0.00
+              },{
+                title: "Cost of acquisition",
+                "01/04_15/06":0.00,
+                "16/06_15/09":0.00,
+                "16/09_15/12":0.00,
+                "16/12_15/03":0.00,
+                "16/03_31/03":0.00
+              },{
+                title: "Capital Gain / Loss",
+                "01/04_15/06":0.00,
+                "16/06_15/09":0.00,
+                "16/09_15/12":0.00,
+                "16/12_15/03":0.00,
+                "16/03_31/03":0.00
+              }
+            ]
+            },
+            {
+              title:"Long Term Capital Gain with indexation",
+              data:[
+                {
+                  title: "Fair Market Value of capital asset",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },
+                {
+                  title: "Full Value Of Consideration",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Cost of acquisition",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Capital Gain / Loss",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                }
+              ]
+            },
+            {
+              title:"Long Term Capital Gain without indexation",
+              data:[
+                {
+                  title: "Fair Market Value of capital",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },
+                {
+                  title: "Full Value Of Consideration",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Cost of acquisition",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },{
+                  title: "Capital Gain / Loss",
+                  "01/04_15/06":0.00,
+                  "16/06_15/09":0.00,
+                  "16/09_15/12":0.00,
+                  "16/12_15/03":0.00,
+                  "16/03_31/03":0.00
+                },
+              ]
+            }
         ]
-      }
+      },
       
     ];
     let filter_data_by_asset_type = res.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type));
-    //       this.relised_capital_gain_summary = [];
-    //       // console.log(filter_data_by_asset_type.map(el => el.calculation_arr));
-    //       // console.log(filter_data_by_asset_type.map(el => el.calculation_arr).flat(1));
-    //       const filtered_array = filter_data_by_asset_type.map(el => el.calculation_arr).flat(1);
-    //       filtered_array.forEach(el =>{
-
-    //       })
     from(filter_data_by_asset_type.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
       .pipe(
         groupBy((data: any) => data.tax_type),
         mergeMap(group => zip(of(group.key), group.pipe(toArray())))
       ).subscribe(dt => {
-        console.log(dt[0]);
+        console.log(dt);
         const filtered_array = dt[1].map(el => el.calculation_arr).flat(1);
         const short_term_capital_gain = filtered_array.filter(el => el.stcg);
         const long_term_capital_gain_without_index = filtered_array.filter(el => el.index_ltcg);
         const long_term_capital_gain_with_index = filtered_array.filter(el => el.ltcg);
-        // console.log(short_term_capital_gain);
-        // console.log(long_term_capital_gain_without_index);
-        // console.log(long_term_capital_gain_with_index);
-        // filtered_array.forEach(el =>{
-        //   var check = moment(el.trans_date, 'YYYY/MM/DD');
-        //   var month = check.format('M');
-        //   var day   = check.format('D');
-        //   const full_dt = `${day}/${month}`;
-        //   as_per_itd = as_per_itd.filter(element =>{
-        //          if(element.fund_type == 'Equity Fund'){
-        //            element.fund_dtls = element.fund_dtls.filter(item =>{
-        //                  item.title:
-        //            })
-        //          }
-        //          else{
+        as_per_itd = as_per_itd.filter((el,index) =>{
+            if(index == 0){
+             if(dt[0] == 'Equity Fund'){
+                el.fund_dtls = el.fund_dtls.filter(element =>{
+                    if(element.title == 'Short Term Capital Gain'){
+                        element.data = element.data.filter(item => {
+                          const dt = this.getSTCGAccordingToMonth_for_full_Equity(short_term_capital_gain,item.title,element.title);
+                          item.title = dt.title;
+                          item['01/04_15/06']=dt['01/04_15/06'];
+                          item['16/03_31/03']=dt['16/03_31/03'];
+                          item['16/06_15/09']=dt['16/06_15/09'];
+                          item['16/09_15/12']=dt['16/09_15/12'];
+                          item['16/12_15/03']=dt['16/12_15/03'];
+                          return item;  
+                        })
+                    }
+                    else if(element.title == 'Long Term Capital Gain with indexation'){
+                        element.data = element.data.filter(item => {
+                          const dt = this.getSTCGAccordingToMonth_for_full_Equity(long_term_capital_gain_with_index,item.title,element.title);
+                          item.title = dt.title;
+                          item['01/04_15/06']=dt['01/04_15/06'];
+                          item['16/03_31/03']=dt['16/03_31/03'];
+                          item['16/06_15/09']=dt['16/06_15/09'];
+                          item['16/09_15/12']=dt['16/09_15/12'];
+                          item['16/12_15/03']=dt['16/12_15/03'];
+                          return item;  
+                        })
+                    }
+                    else{
+                      element.data = element.data.filter(item => {
+                        const dt = this.getSTCGAccordingToMonth_for_full_Equity(long_term_capital_gain_without_index,item.title,element.title);
+                        item.title = dt.title;
+                        item['01/04_15/06']=dt['01/04_15/06'];
+                        item['16/03_31/03']=dt['16/03_31/03'];
+                        item['16/06_15/09']=dt['16/06_15/09'];
+                        item['16/09_15/12']=dt['16/09_15/12'];
+                        item['16/12_15/03']=dt['16/12_15/03'];
+                        return item;  
+                      })
+                    }
+                    return element;
+                })
+             }
+             else{
+              el.fund_dtls = el.fund_dtls.filter(element =>{
+                  if(element.title == 'Short Term Capital Gain'){
+                      element.data = element.data.filter(item => {
+                        const dt = this.getSTCGAccordingToMonth_for_full__Non_Equity(short_term_capital_gain,item.title,element.title,item);
+                        item.title = dt.title;
+                        item['01/04_15/06']=dt['01/04_15/06'];
+                        item['16/03_31/03']=dt['16/03_31/03'];
+                        item['16/06_15/09']=dt['16/06_15/09'];
+                        item['16/09_15/12']=dt['16/09_15/12'];
+                        item['16/12_15/03']=dt['16/12_15/03'];
+                        return item;  
+                      })
+                  }
+                  else if(element.title == 'Long Term Capital Gain with indexation'){
+                    console.log(long_term_capital_gain_with_index);
 
-        //          }
-        //          return element
-        //   })
+                      element.data = element.data.filter(item => {
+                        const dt = this.getSTCGAccordingToMonth_for_full__Non_Equity(long_term_capital_gain_with_index,item.title,element.title,item);
+                        item.title = dt.title;
+                        item['01/04_15/06']=dt['01/04_15/06'];
+                        item['16/03_31/03']=dt['16/03_31/03'];
+                        item['16/06_15/09']=dt['16/06_15/09'];
+                        item['16/09_15/12']=dt['16/09_15/12'];
+                        item['16/12_15/03']=dt['16/12_15/03'];
+                        return item;  
+                      })
+                  }
+                  else{
+                    console.log(long_term_capital_gain_without_index);
 
-        // })
-        console.log(dt[0]);
-        as_per_itd = as_per_itd.filter(element =>{
-           if(element.fund_type == 'Equity Fund'){
-                   element.fund_dtls = element.fund_dtls.filter(el =>{
-                           el.title = ""
-                   })
-           }      
-          return element
-        })
-
-
-        // if(dt[0] == 'Equity Fund'){
-       
-        // }
-        // else{
-
-        // }
+                    element.data = element.data.filter(item => {
+                      const dt = this.getSTCGAccordingToMonth_for_full__Non_Equity(long_term_capital_gain_without_index,item.title,element.title,item);
+                      item.title = dt.title;
+                      item['01/04_15/06']=dt['01/04_15/06'];
+                      item['16/03_31/03']=dt['16/03_31/03'];
+                      item['16/06_15/09']=dt['16/06_15/09'];
+                      item['16/09_15/12']=dt['16/09_15/12'];
+                      item['16/12_15/03']=dt['16/12_15/03'];
+                      return item;  
+                    })
+                  }
+                  return element;
+              })
+             } 
+            }
+             return el
+        });
+        console.log(as_per_itd);
       }
     )
+  }
+
+  getSTCGAccordingToMonth_for_full__Non_Equity(data,title,parent_title,as_per_itd_data){
+        let firstQuarter = as_per_itd_data['01/04_15/06']; 
+        let secondQurter = as_per_itd_data['16/06_15/09'];
+        let thirdQurter = as_per_itd_data['16/09_15/12'];
+        let fourthQuarter = as_per_itd_data['16/12_15/03'];
+        let fifthQuarter = as_per_itd_data['16/03_31/03'];
+        console.log(data);
+        data.forEach(el => {
+            const day = new Date(el.trans_date);
+            const cal_year = day.getFullYear();
+            const first_quarter_is_between =moment(el.trans_date).isBetween(
+              `${cal_year}-04-01`,`${cal_year}-06-15`,undefined,"[]"
+            );
+            const second_quarter_is_between =moment(el.trans_date).isBetween(
+              `${cal_year}-06-16`,`${cal_year}-09-15`,undefined,"[]"
+            );
+            const third_quarter_is_between = moment(el.trans_date).isBetween(
+              `${cal_year}-09-16`,`${cal_year}-12-15`,undefined,"[]"
+            );
+            const fourth_quarter_is_between =moment(el.trans_date).isBetween(
+              `${cal_year}-12-16`,`${cal_year+1}-03-15`,undefined,"[]"
+            );
+            const fifth_quarter_is_between =moment(el.trans_date).isBetween(
+              `${cal_year}-03-16`,`${cal_year}-03-31`,undefined,"[]"
+            );
+            console.log(el.trans_date);
+
+            if(first_quarter_is_between){
+              console.log(el.trans_date);
+              firstQuarter += Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount);
+              console.log(title + ':' + firstQuarter);
+            }
+            else if(second_quarter_is_between){
+              console.log(el.trans_date);
+              secondQurter+=  Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount)
+              console.log(title + ':' + secondQurter);
+            }
+            else if(third_quarter_is_between){
+              console.log(el.trans_date);
+              // console.log(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount);
+              thirdQurter+= Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount)
+              console.log(title + ':' + thirdQurter);
+            }
+            else if(fourth_quarter_is_between){
+              console.log(el.trans_date);
+              fourthQuarter+= Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount);
+              console.log(title + ':' + fourthQuarter);
+            }
+            else if(fifth_quarter_is_between){
+              console.log(el.trans_date);
+              fifthQuarter += Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount);
+              console.log(title + ':' + fifthQuarter);
+            }
+        });
+        return {
+          "title":title,
+          "01/04_15/06":firstQuarter,
+          "16/06_15/09":secondQurter,
+          "16/09_15/12":thirdQurter,
+          "16/12_15/03":fourthQuarter,
+          "16/03_31/03":fifthQuarter
+        }
+
+  }
+
+  getSTCGAccordingToMonth_for_full_Equity(short_term_capital_gain,title,parent_title){
+      let firstQuarter = 0; 
+      let secondQurter = 0;
+      let thirdQurter = 0;
+      let fourthQuarter = 0;
+      let fifthQuarter = 0;
+      short_term_capital_gain.forEach(el => {
+              const day = new Date(el.trans_date);
+              const cal_year = day.getFullYear();
+              const first_quarter_is_between =moment(el.trans_date).isBetween(
+                `${cal_year}-04-01`,`${cal_year}-06-15`,undefined,"[]"
+              );
+              const second_quarter_is_between =moment(el.trans_date).isBetween(
+                `${cal_year}-06-16`,`${cal_year}-09-15`,undefined,"[]"
+              );
+              const third_quarter_is_between =moment(el.trans_date).isBetween(
+                `${cal_year}-09-16`,`${cal_year}-12-15`,undefined,"[]"
+              );
+              const fourth_quarter_is_between =moment(el.trans_date).isBetween(
+                `${cal_year}-12-16`,`${cal_year+1}-03-15`,undefined,"[]"
+              );
+              const fifth_quarter_is_between =moment(el.trans_date).isBetween(
+                `${cal_year}-03-16`,`${cal_year}-03-31`,undefined,"[]"
+              );
+              if(first_quarter_is_between){
+                firstQuarter += Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount)
+              }
+              else if(second_quarter_is_between){
+                secondQurter+=  Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount)
+              }
+              else if(third_quarter_is_between){
+                // console.log(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount);
+                thirdQurter+= Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount)
+              }
+              else if(fourth_quarter_is_between){
+                fourthQuarter+= Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount)
+              }
+              else if(fifth_quarter_is_between){
+                console.log(el.trans_date);
+                fifthQuarter += Number(title == 'Full Value Of Consideration' ? el.sell_nav : el.tot_amount);
+              }
+      });
+      return {
+        "title":title,
+        "01/04_15/06":firstQuarter,
+        "16/06_15/09":secondQurter,
+        "16/09_15/12":thirdQurter,
+        "16/12_15/03":fourthQuarter,
+        "16/03_31/03":fifthQuarter
+      }
   }
 
   /*** For Getting Dividend History */

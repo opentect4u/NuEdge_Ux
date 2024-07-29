@@ -11,7 +11,9 @@ export class ExportAs{
         final_data,
         disclaimer:string,
         parenttable_id:string,
-        subtable_id:string): Promise<File | null>{
+        subtable_id:string,
+        outputIn:string
+      ): Promise<File | null>{
             // this.spinner.show();
             let ids;
             let parent_id;
@@ -210,10 +212,12 @@ export class ExportAs{
         finalY:number,
         element_to_print_as,
         table_id:string,
-        disclaimer:string
+        disclaimer:string,
+        outputIn:string
     ): Promise<File | null>
     {
         return new Promise((resolve,reject)=>{
+          console.log(element_to_print_as)
              try{
                 pdf.html(
                     element_to_print_as.innerHTML,
@@ -230,6 +234,7 @@ export class ExportAs{
                         autoTable(
                           pdf,
                           {
+                            
                             tableId:table_id,
                             useCss:false,
                             didDrawPage: function(data){
@@ -295,20 +300,25 @@ export class ExportAs{
                         if(mode === 'Print'){
                             pdf.autoPrint();
                           }
-                        pdf.setProperties({
-                            title: "ValuationRPT"
-                        }).output('dataurlnewwindow');
-                        const dataUrl = pdf.output('datauristring');
-                        resolve(ExportAs.dataURLtoFile(dataUrl,'report.pdf')) 
-                        // return file;
+                          if(outputIn == 'We'){
+                            pdf.setProperties({
+                              title: "ValuationRPT"
+                          }).output('dataurlnewwindow');
+                          }
+                          else{
+                            const dataUrl = pdf.output('datauristring');
+                            resolve(ExportAs.dataURLtoFile(dataUrl,'VALUATIONREPORT.pdf')) 
+                          }
                       },
                       autoPaging:true
                     }
                   );
              }
              catch(err){
+                console.log(err)  
                 resolve(null);
              }
+            //  resolve(null);
         })
         // let finalY;
    

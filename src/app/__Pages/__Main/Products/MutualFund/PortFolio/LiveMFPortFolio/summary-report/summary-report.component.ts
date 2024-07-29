@@ -13,7 +13,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 })
 export class SummaryReportComponent implements OnInit {
 
-  fund_title = 'FUND HOUSE WISE INVESTMENT SUMMARY';
+  fund_title = 'AMC WISE INVESTMENT SUMMARY';
   cat_title='CATEGORY WISE INVESTMENT SUMMARY';
   subcat_title = 'SUBCATEGORY WISE INVESTMENT SUMMARY';
   @ViewChild('fundHouse') fundHouseTble:Table
@@ -137,7 +137,8 @@ export interface IFoundHouseInvestment{
    fund_name:string;
    inv_cost:number;
    curr_val:number;
-   idcw:number;
+   idcwp:number;
+   idcw_reinv:number;
    gain_loss:number;
    ret_abs:number;
    xirr:number;
@@ -147,7 +148,8 @@ export interface IcategoryWiseInvestment{
   cat_name:string;
     inv_cost:number;
     curr_val:number;
-    idcw:number;
+    idcwp:number;
+    idcw_reinv:number;
     gain_loss:number;
     ret_abs:number;
     xirr:number;
@@ -157,7 +159,8 @@ export interface IsubcategoryWiseInvestment{
   subcat_name:string;
   inv_cost:number;
   curr_val:number;
-  idcw:number;
+  idcwp:number;
+  idcw_reinv:number;
   gain_loss:number;
   ret_abs:number;
   xirr:number;
@@ -167,7 +170,7 @@ export class SummaryColumn{
   public static FundHouseColumn:column[] = [
     {
       field:'fund_name',
-      header:'Fund House',
+      header:'AMC',
       width:'40rem'
     },
     {
@@ -179,9 +182,13 @@ export class SummaryColumn{
       header:'Current Value',
       width:'10rem'
     },{
-      field:'idcw',
-      header:'IDCW',
+      field:'idcwp',
+      header:'IDCWP',
       width:'5rem'
+    },{
+      field:'idcw_reinv',
+      header:'IDCW Reinv.',
+      width:'6rem'
     },{
       field:'gain_loss',
       header:'Gain/Loss',
@@ -212,9 +219,13 @@ export class SummaryColumn{
       header:'Current Value',
       width:''
     },{
-      field:'idcw',
-      header:'IDCW',
-      width:''
+      field:'idcwp',
+      header:'IDCWP',
+      width:'5rem'
+    },{
+      field:'idcw_reinv',
+      header:'IDCW Reinv.',
+      width:'6rem'
     },{
       field:'gain_loss',
       header:'Gain/Loss',
@@ -245,9 +256,13 @@ export class SummaryColumn{
       header:'Current Value',
       width:''
     },{
-      field:'idcw',
-      header:'IDCW',
-      width:''
+      field:'idcwp',
+      header:'IDCWP',
+      width:'5rem'
+    },{
+      field:'idcw_reinv',
+      header:'IDCW Reinv.',
+      width:'6rem'
     },{
       field:'gain_loss',
       header:'Gain/Loss',
@@ -267,7 +282,8 @@ export class SummaryColumn{
 export interface ITableFooter{
     inv_cost:number;
     curr_val:number;
-    idcw:number;
+    idcwp:number;
+    idcw_reinv:number;
     gain_loss:number;
     ret_abs:number;
     xirr:number;

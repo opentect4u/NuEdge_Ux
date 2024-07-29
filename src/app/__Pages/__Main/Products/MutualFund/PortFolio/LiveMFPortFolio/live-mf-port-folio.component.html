@@ -392,8 +392,12 @@
       </mat-card-content>
     </mat-card>
 
+    <ng-container *ngIf="main_frm_dt?.outputIn == 'We'">
+
     <!-- Client Detlais -->
-      <client-dtls [clientDtls]="clientDtls" (export)="exportAs($event)" *ngIf="clientDtls" [date]="valuation_as_on"></client-dtls>
+      <client-dtls [clientDtls]="clientDtls" (export)="exportAs($event)" 
+      *ngIf="clientDtls" [date]="valuation_as_on">
+    </client-dtls>
     <!-- End -->
     
     <ng-container *ngIf="__dataSource_for_mf_report_segregrated.length > 0 || parent_family_holder_for_tab.length > 0 || dataSource.length > 0 || plTrxnDtls.length > 0 || recent_trxn.length > 0 || liveSipPortFolio.length > 0 || liveStpPortFolio.length > 0 || liveSwpPortFolio.length > 0 ">
@@ -1228,7 +1232,10 @@
         </mat-card-content>
         </mat-card>
     </ng-container>
+    </ng-container>
+
   </div>
+  <ng-container *ngIf="filter_criteria.get('outputIn').value == 'We'">
   <div class="col-sm-12 px-5" *ngIf="disclaimer">
     <mat-card id="matCard"  class="mat-elevation-z0 mb-4">
       <mat-card-content class="p-3">
@@ -1236,6 +1243,7 @@
       </mat-card-content>
     </mat-card>
   </div>
+  </ng-container>
 </div>
 
 <!-- Table inside dialog box -->
@@ -1605,6 +1613,57 @@
   </tbody>
 </table> -->
 
+<!-- Client DETAILS in PDF -->
+
+<div hidden #client_container id="client_container" >
+  <div class="border">
+      <div class="px-2 py-1 d-flex justify-content-between align-items-center border-bottom" style="background-color:#e7ecf7!important">
+          <p class="m-0" style="font-size: 10px;font-family: RobotoCondensed-Regular!important;" >
+            Valuation Report As On Date - <b class="m-0" style="font-family: RobotoCondensed-Bold!important;">{{clientDtls?.dob | date : "longDate"}}</b></p>
+          <div class="d-flex align-items-center flex-row" style="font-size: 10px;">
+                <b class="m-0" style="font-family: RobotoCondensed-Bold!important;"> Current Sensex :</b>
+                <p class="m-0" style="font-family: RobotoCondensed-Regular!important;">79,032.73</p>
+                <img src="../../../../assets/images/transparent_up.png" height="15" width="15"/>
+                <p class="m-0" style="font-family: RobotoCondensed-Regular!important;">210.45 (-0.27%)</p>
+          </div>
+      </div>
+      <div class="row px-2">
+          <div class="col-sm-4">
+                <p class="m-0"><b style="font-family: RobotoCondensed-Bold!important;font-size: 11px!important;">{{clientDtls?.client_name}}</b></p>
+                <p class="mb-2"><b style="font-family: RobotoCondensed-Bold!important;font-size: 10px!important;">PAN:{{clientDtls?.pan}}</b></p>
+                <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;">
+                  <b style="font-family: RobotoCondensed-Bold!important;">Address:</b>
+                  <span style="font-size: 8px!important;">{{clientDtls?.add_line_1}}</span>
+                </p>
+                <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;">
+                  <b style="font-family: RobotoCondensed-Bold!important;">Mob:</b>{{clientDtls?.mobile}}
+                </p>
+                <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;"><b style="font-family: RobotoCondensed-Bold!important;">Email:</b>{{clientDtls?.email}}</p>
+                <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;">
+                  <b style="font-family: RobotoCondensed-Bold!important;">DOB:</b>{{clientDtls?.dob | date:'dd-MM-YYYY'}}</p>
+
+
+          </div>
+          <div class="col-sm-4">
+            <p class="m-0"><b style="font-family: RobotoCondensed-Bold!important;font-size: 11px!important;">NuEdge Corporate Private Limited</b></p>
+            <p class="mb-1" ><b style="font-family: RobotoCondensed-Bold!important;font-size: 10px!important;">AMFI Registered Mutual Fund Distributor</b></p>
+            <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;">
+              <b style="font-family: RobotoCondensed-Bold!important;">Branch Office:</b>
+              <span style="font-size: 9px!important;">1A, Dr.Sarat Banerjee Rd, Hemanta Mukherjee Sarani, lake Terrace, Kalighat, Kolkata, West Bengal 700029</span>
+            </p>
+            <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;"><b style="font-family: RobotoCondensed-Bold!important;">Tel:</b>033-46026618
+            </p>
+
+            <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;"><b style="font-family: RobotoCondensed-Bold!important;">Email:</b>support@nuedgecorporate.com</p>
+            <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;"><b style="font-family: RobotoCondensed-Bold!important;">Website:</b>nuedgecorporate.co.in</p>
+          </div>
+          <div class="col-sm-4 d-flex justify-content-center align-items-center">
+                <img src="../../../../assets/images/logo.jpg" height="130" width="130"/>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- End -->
 <ng-container *ngIf="export__mode == 'D';else Summary">
     <ng-container *ngFor="let liveMfPortFolio of dataSource;let i=index">
     <!-- </ng-container> -->
@@ -1720,6 +1779,9 @@
                           {{col.header}}
                     </th>
                 </tr>
+                <tr>
+
+                </tr>
             </thead>
           <tbody>
             <tr *ngFor="let data of liveMfPortFolio.data;let j=index">
@@ -1807,8 +1869,8 @@
           </th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let liveMfPortFolio of dataSource;let i=index">
+      <tbody *ngFor="let liveMfPortFolio of dataSource;let i=index">
+        <tr >
           <td *ngFor="let col of parent_column">
             <ng-container [ngSwitch]="true">
               <ng-container *ngSwitchCase="col.field == 'scheme_name'">

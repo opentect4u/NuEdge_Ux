@@ -270,9 +270,39 @@
 
 <div class="row" *ngIf="__isGraphShow">
     <div class="col-12 col-sm-12">
-        <core-chart
-        [getPieChartDetails]="FoundHouseInvestment | liveMfChartSummary: fund_title : 'Current Value':'fund_name':'curr_val'"
-        ></core-chart>
+        <div class="row">
+            <div class="col-sm-12 d-flex align-items-center justify-content-around">
+                <core-chart
+                [getPieChartDetails]="FoundHouseInvestment | liveMfChartSummary: fund_title : 'Current Value':'fund_name':'curr_val'"
+                ></core-chart>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <table id="fund_house">
+                      <thead>
+                          <tr>
+                            <th>AMC</th>
+                            <th>Investment Percentage</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let funds of FoundHouseInvestment | fundWisePercentage: 'inv_cost' : _totalFundHouse?.inv_cost">
+                              <td>
+                                  {{funds.fund_name}}
+                              </td>
+                              <td>
+                                {{funds?.percentage | number:'1.2-2'}}%
+                            </td>
+                        </tr>
+                      </tbody>
+                  </table>
+                  </div>
+                  <div class="col-sm-3"></div>
+
+                </div>
+               
+            </div>
+        </div>
+        
     </div>
     <div class="col-12 col-sm-6 border-right">
         <core-chart

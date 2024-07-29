@@ -34,6 +34,8 @@ import jsPDF from 'jspdf';
 import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
 import autoTable from 'jspdf-autotable';
 import { ExportAs } from 'src/app/__Utility/exportFunc';
+import { HttpHeaders } from '@angular/common/http';
+import { url } from 'src/environments/environment';
 
 
 /*** Display Footer data on Raw Expand Inside Inner Table*/
@@ -56,7 +58,9 @@ export type TotalsubLiveMFPortFolio = {
 /**** Display Footer Data On Parent Table*/
 export type TotalparentLiveMfPortFolio = {
     inv_cost: number | undefined;
-    idcwr: number | undefined;
+    idcwr:number | undefined;
+    idcw_reinv: number | undefined;
+    idcwp:number | undefined;
     tot_units: number | undefined;
     curr_val:number | undefined;
     total:number | undefined;
@@ -93,7 +97,7 @@ export type TotalRealisedUnrealisedPL = {
 export class LiveMfPortFolioComponent implements OnInit {
 
 
-  export__mode: 'D' | 'S';
+  export__mode: 'D' | 'S' = 'S';
 
   keepOrder = 
   (x: KeyValue<string, any>, y: KeyValue<string, any>): number => { 
@@ -139,7 +143,7 @@ properties: `act_value` and `value`. The `act_value` property represents an actu
 mappings between `act_value` and `value` for transition durations. */
 
   trans_duration = [
-    {act_value:'A',value:'All'},
+    {act_value:'A',value:''},
     {act_value:'< 1',value:'Below 1 year'},
     {act_value:'> 1',value:'Above 1 year'},
     {act_value:'> 2',value:'Above 2 year'},
@@ -689,6 +693,12 @@ mappings between `act_value` and `value` for transition durations. */
 
 
   ngAfterViewInit(){
+  
+    this.filter_criteria.get('report_type').valueChanges.subscribe(res =>{
+      console.log(res);
+      this.export__mode = res;
+    })
+
     this.filter_criteria.get('view_mf_report').get('cat_wise').valueChanges.subscribe(res =>{
       this.filter_criteria.get('view_mf_report').get('subcat_wise').setValue(false,{emitEvent:false});
     })
@@ -1041,7 +1051,9 @@ mappings between `act_value` and `value` for transition durations. */
     else{
           this.call_corrosponding_api(this.selected_id,rest);
     }
+    // For Send Email,SMS,or Whats app
     }
+
   }
 
   getLiveMfPortFolioByMfReportWise(data,mf_report){
@@ -1332,7 +1344,8 @@ mappings between `act_value` and `value` for transition durations. */
             inv_cost:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.inv_cost)),
             curr_val: curr_val,
             gain_loss: global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.gain_loss)),
-            idcw:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            idcwp:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            idcw_reinv:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcw_reinv)),
             ret_abs:global.Total__Count(dt[1],(item:ILivePortFolio) => Number(item.ret_abs)) / dt[1].length,
             xirr:xirr
           }
@@ -1361,7 +1374,8 @@ mappings between `act_value` and `value` for transition durations. */
             inv_cost:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.inv_cost)),
             curr_val: curr_val,
             gain_loss: global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.gain_loss)),
-            idcw:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            idcwp:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            idcw_reinv:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcw_reinv)),
             ret_abs:global.Total__Count(dt[1],(item:ILivePortFolio) => Number(item.ret_abs)) / dt[1].length,
             xirr:xirr,
           }
@@ -1376,6 +1390,7 @@ mappings between `act_value` and `value` for transition durations. */
       groupBy((data:Required<ILivePortFolio>) => data.amc_name),
       mergeMap(group => zip(of(group.key), group.pipe(toArray())))
     ).subscribe((dt) =>{
+      console.log(dt[1]);
       let total_amount = [];
       let total_date = [];
         dt[1].forEach((element) =>{
@@ -1390,7 +1405,8 @@ mappings between `act_value` and `value` for transition durations. */
             inv_cost:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.inv_cost)),
             curr_val: curr_val,
             gain_loss: global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.gain_loss)),
-            idcw:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            idcwp:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcwp)),
+            idcw_reinv:global.Total__Count(dt[1],(item:ILivePortFolio)=> Number(item.idcw_reinv)),
             ret_abs:global.Total__Count(dt[1],(item:ILivePortFolio) => Number(item.ret_abs)) / dt[1].length,
             xirr:xirr,
             // total_amt:total_amount,
@@ -1600,11 +1616,14 @@ mappings between `act_value` and `value` for transition durations. */
         pluck('data'),
         map((x:any) =>{
             var valuation_with = this.filter_criteria.get('show_valuation_with').value.map(el => el.name.toLowerCase())
+            this.setClientDtls(x.client_details);
             return this.mappedData(x,valuation_with)
         })
       )
       .subscribe((res:Required<{data,client_details,disclaimer:string}>) => {
             try{
+              
+
               let modify_dt = [];
               const mf_report = this.filter_criteria.get('view_mf_report').value;
                 if(this.main_frm_dt?.trans_type == 'A'){
@@ -1669,7 +1688,9 @@ mappings between `act_value` and `value` for transition durations. */
                 this.setParentTableFooter_ClientDtls(modify_dt);
                 // this.div_history = this.dataSource.filter(item => item.curr_val > 0)
                 this.setDisclaimer(res.disclaimer);
-                this.setClientDtls(res.client_details);
+                if(this.filter_criteria.get('outputIn').value != 'We'){
+                  this.SentDocuments();
+                }
               }
             catch(ex){}
       })
@@ -1706,6 +1727,8 @@ mappings between `act_value` and `value` for transition durations. */
          pur_nav:(this.Total__Count(arr,x => Number(x.pur_nav)) / arr.length),
          tot_units:this.main_frm_dt?.view_type == 'C' ? this.Total__Count(arr,x => Number(x.tot_units)) : selected_tab.tot_units,
          curr_val:current_value,
+         idcw_reinv:global.Total__Count(arr,x => Number(x.idcw_reinv)),
+         idcwp:global.Total__Count(arr,x => Number(x.idcwp)),
          total:current_value,
          ret_abs: this.main_frm_dt?.view_type == 'C' ? (this.Total__Count(arr,x => Number(x.ret_abs)) / arr.length) : selected_tab.ret_abs,
          gain_loss:this.main_frm_dt?.view_type == 'C' ? this.Total__Count(arr,x =>  Number(x.gain_loss)) : selected_tab.gain_loss,
@@ -1741,7 +1764,9 @@ mappings between `act_value` and `value` for transition durations. */
                     if(item.mydata.all_amt_arr.length > 0 && item.mydata.all_date_arr.length > 0){
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
-                      item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
+                      const xirr =  global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
+                      console.log(isNaN(xirr))
+                      item.xirr = xirr;
                     }
                     else{
                       item.xirr =0
@@ -2268,15 +2293,17 @@ mappings between `act_value` and `value` for transition durations. */
       let file;
       if(exportDtls.mode == 'D'){
       ExportAs.exportAsDtls(
-          mode,pdf,finalY,html_element,final_data,this.disclaimer,'primeng__tble_','inr__tble_'
+          mode,pdf,finalY,html_element,final_data,
+          
+          this.disclaimer,'primeng__tble_','inr__tble_',
+          this.filter_criteria.get('outputIn').value
          )
-        //  this.sentInEmail(file)
       }
       else{
         ExportAs.exportAsSummary(
-            mode,pdf,finalY,html_element,'primeng__tble',this.disclaimer
+            mode,pdf,finalY,html_element,'primeng__tble',this.disclaimer,
+            this.filter_criteria.get('outputIn').value
           ).then(res =>{
-            // this.sentInEmail(res);
             this.sentInEmail(
               res,
               this.clientDtls.email,
@@ -2287,11 +2314,29 @@ mappings between `act_value` and `value` for transition durations. */
             );
           })
       }
+      // const html_element = document.getElementById('client_container');
+      // const httpOptions = {
+      //   headers: new HttpHeaders({
+      //       'Accept': 'text/html',
+      //       'Content-Type': 'application/json'
+      //   }),
+      //   responseType: 'text'
+      // };
+      // const url1 = 'http://192.168.1.11:8000/htmltopdf';
+      // // const fb = new FormData()
+      // // fb.append('html',)
+      // this.__dbIntr.sendHtmlRequest({html:html_element.innerHTML.toString()},httpOptions,url1).subscribe(res =>{
+      //   console.log(res);
+      // })
     }
   }
   SentDocuments(){
+      if(!this.clientDtls){
+        this.utility.showSnackbar('Please select a client',2);
+        return;
+      }
+      // this.spinner.show();
       var pdf = new jsPDF('l','pt','a4',true);
-      const html_element = document.getElementById('client_container');
       pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
       pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
       pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
@@ -2300,25 +2345,41 @@ mappings between `act_value` and `value` for transition durations. */
       const final_data = this.dataSource;
       let finalY = 170;
       let file;
+      const html_element = document.getElementById('client_container');
+
       if(this.filter_criteria.get('report_type').value == 'D'){
       ExportAs.exportAsDtls(
-        this.filter_criteria.get('report_type').value,pdf,finalY,html_element,final_data,this.disclaimer,'primeng__tble_','inr__tble_'
+        this.filter_criteria.get('report_type').value,pdf,finalY,html_element,final_data,
+        this.disclaimer,'primeng__tble_','inr__tble_',
+        this.filter_criteria.get('outputIn').value
          )
         //  this.sentInEmail(file)
       }
       else{
+        setTimeout(() => {
+          
         ExportAs.exportAsSummary(
-          this.filter_criteria.get('report_type').value,pdf,finalY,html_element,'primeng__tble',this.disclaimer
+          this.filter_criteria.get('report_type').value,pdf,
+          finalY,html_element,'primeng__tble',this.disclaimer,
+          this.filter_criteria.get('outputIn').value
           ).then(res =>{
-            this.sentInEmail(
-              res,
-              this.filter_criteria.get('email').value,
-              this.filter_criteria.get('mobile').value,
-              this.filter_criteria.get('outputIn').value,
-              this.clientDtls.dob,
-              this.main_frm_dt.pan_no
-            );
+            console.log(res);
+            // if(res){
+              this.sentInEmail(
+                res,
+                this.filter_criteria.get('email').value,
+                this.filter_criteria.get('mobile').value,
+                this.filter_criteria.get('outputIn').value,
+                this.clientDtls.dob,
+                this.main_frm_dt.pan_no
+              );
+            // }
           })
+          .catch(err =>{
+              // this.spinner.hide();
+          })
+        }, 500);
+
       }
 
       // console.log('sasasasaas')
@@ -2334,8 +2395,20 @@ mappings between `act_value` and `value` for transition durations. */
       fb.append('email',email);
       fb.append('phone',mobile.toString());
       this.__dbIntr.api_call(1,'/clients/sendEmailWithLink',fb,true).subscribe(res =>{
-        console.log(res);
-      })
+        // console.log(res);
+        if(this.filter_criteria.get('outputIn').value != 'We'){
+          this.utility.showSnackbar(
+            `${this.filter_criteria.get('outputIn').value == 'E' ? 'Email' : 'SMS'} has been sent successfully`,
+             1
+          )
+        }
+      // this.spinner.hide();
+        
+      },
+    err=>{
+      // this.spinner.hide();
+    }
+    )
   }
 
 

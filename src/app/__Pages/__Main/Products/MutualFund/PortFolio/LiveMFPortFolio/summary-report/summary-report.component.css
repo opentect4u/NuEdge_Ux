@@ -1,6 +1,29 @@
 .fundHouseH6{
-    font-size: 13px;
-    text-transform: uppercase;
+    font-size: 11px;
+    /* text-transform: uppercase; */
     font-weight: 700;
-    color: black;
 }
+
+#fund_house {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  #fund_house td, #fund_house th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  #fund_house tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #fund_house tr:hover {background-color: #ddd;}
+  
+  #fund_house th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    /* background-color: #04AA6D; */
+    /* color: white; */
+  }

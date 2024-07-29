@@ -23,6 +23,7 @@ import { ChartModule } from 'src/app/__Core/chart/chart.module';
 import { LiveMfChartSummaryPipe } from 'src/app/__Pipes/liveMfPortfolio_Summary_chart.pipe';
 import { MfReportwisePoretfolioComponent } from './mf-reportwise-poretfolio/mf-reportwise-poretfolio.component';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
+import { FundWiseInvestmentPercentage } from 'src/app/__Pipes/fundWiseInvestmentPercentage.pipe';
 
 const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
 
@@ -39,6 +40,7 @@ const routes: Routes = [{path:'',component:LiveMfPortFolioComponent}]
     RejectTrxnComponent,
     plFilterPipe,
     LiveMfChartSummaryPipe,
+    FundWiseInvestmentPercentage,
     divHistoryPipe,
     systamaticMissedTransFilterPipe,
     DivHistoryComponent,

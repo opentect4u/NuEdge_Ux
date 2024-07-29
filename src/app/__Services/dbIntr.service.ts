@@ -94,5 +94,14 @@ constructor(private __http:HttpClient) {
     return promise;
   }
 
+  sendHtmlRequest(payload,header,url){
+    console.log('s')
+    return this.__http.post(url,payload,header)
+  }
+
+  public downloadPdf(url) {
+    return this.__http.get(url,{observe:'response',responseType:'blob'});
+  }
+
 
 }
