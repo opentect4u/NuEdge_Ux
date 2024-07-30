@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'app-disclaimer',
@@ -16,7 +17,7 @@ export class DisclaimerComponent implements OnInit {
 
   // disclaimer_arr:Partial<IDisclaimer>[] = [];
 
-  constructor(private __dbIntr:DbIntrService) { }
+  constructor(private __dbIntr:DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
     // this.disclaimer_arr.forEach(element =>{
@@ -69,6 +70,7 @@ export class DisclaimerComponent implements OnInit {
         .subscribe((res:Required<IDisclaimer>) =>{
               this.disclaimer.at(index).patchValue({id:res.id})
               this.disclaimer.at(index).get('dis_for').disable();
+              this.utility.showSnackbar(`Disclaimer ${disclaimer.id > 0 ? 'updated ' : 'added '}successfully`,1);
         })
   }
 

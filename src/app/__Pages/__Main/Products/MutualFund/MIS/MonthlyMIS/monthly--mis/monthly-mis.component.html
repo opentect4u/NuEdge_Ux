@@ -69,6 +69,30 @@
 <mat-card class="navCard">
   <mat-card-header>
     <mat-card-title>
+  
+        <!-- <button
+            pButton 
+            type="button"
+            class="p-button-outlined"> 
+            <i class="pi pi-file-pdf" style="font-size: 2rem"></i>
+           </button> -->
+
+           <button
+            pButton 
+            type="button"
+            (click)="exportAsPdf()"
+            title="Export as pdf"
+            class="p-button-outlined mx-2"> 
+            <i class="pi pi-file-pdf text-danger" style="font-size: 2rem"></i>
+           </button> 
+           <button
+            pButton 
+            type="button"
+            title="Export as excel"
+            class="p-button-outlined mx-2"> 
+            <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+           </button>
+
       <!-- <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
         {{transType | titlecase}} Transaction Reports
         <mat-icon class="inActivebtnIcon">arrow_drop_down</mat-icon>
@@ -112,4 +136,64 @@
 <!-- <hr/> -->
 <!-- TABLE & TAB -->
 <!-- END -->
+<!-- For PDF -->
+<div id="container" hidden 
+style="font-family: RobotoCondensed-Regular!important;">
+        <!-- <div class="title_header" style="border-bottom:1px solid gray;background-color: rgba(0, 0, 255, 0.137);">
+          <div class="d-flex justify-content-center align-items-center flex-row" >
+            <p class="m-0"  style="font-family: RobotoCondensed-Regular!important;">(Monthly)</p>
+            <h6 class="m-0"  style="font-family: RobotoCondensed-Regular!important;">MIS Summary For {{form__data?.mis_month?.month}}</h6>
+          </div>
+        </div>
+        <div class="p-1">
+          <div class="row" style="background-color: #d5d5d5;border-radius: 3px;" >
+            <div class="col-sm-4 d-flex justify-content-center align-items-center flex-column">
+              <h5 class="text-center" style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">TOTAL MONTHLY INFLOW</h5>
+              <p class="OutFlow__InFlow__Text text-center"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">
+                ₹{{(total_mis_calculation ? (total_mis_calculation?.tot_inflow_amt | currency:"symbol":"") : '0.00')}}
+              </p>
 
+            </div>
+            <div class="col-sm-4 d-flex justify-content-center align-items-center flex-column">
+              <h5 class="text-center"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">TOTAL MONTHLY OUTFLOW</h5>
+              <p class="OutFlow__InFlow__Text text-center"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">₹{{(total_mis_calculation ? (total_mis_calculation?.tot_outflow_amt | currency:"symbol":"") : '0.00')}}</p>
+            </div>
+            <div class="col-sm-4 d-flex justify-content-center align-items-center flex-column">
+              <h5 class="text-center"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">NET MONTHLY INFLOW</h5>
+              <p class="OutFlow__InFlow__Text text-center"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">₹{{(total_mis_calculation?.tot_inflow_amt - total_mis_calculation?.tot_outflow_amt) | currency:"symbol":""}}</p>
+            </div>
+        </div>
+        </div> -->
+
+
+        <div class="border">
+          <div class="px-2 py-1 d-flex justify-content-between align-items-center border-bottom" style="background-color:#e7ecf7!important">
+              <p class="m-0" style="font-size: 10px;font-family: RobotoCondensed-Regular!important;" >
+                (Monthly) MIS Summary For - <b class="m-0" style="font-family: RobotoCondensed-Bold!important;">{{form__data?.mis_month?.month}}</b></p>
+          </div>
+          <div class="px-2 py-1 ">
+            <div class="d-flex justify-content-between align-items-center px-5 py-3"  style="border-radius:5px;background-color:#ebebeb!important">
+                <div>
+                  <h5 class="text-center" style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">Total Monthly Inflow</h5>
+                  <p class="OutFlow__InFlow__Text text-center m-0"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">
+                    {{(total_mis_calculation ? (total_mis_calculation?.tot_inflow_amt | currency:"symbol":"") : '0.00')}}
+                  </p>
+                </div>
+                <div>
+                  <h5 class="text-center"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">Total Monthly Outflow</h5>
+                  <p class="OutFlow__InFlow__Text text-center m-0"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">{{(total_mis_calculation ? (total_mis_calculation?.tot_outflow_amt | currency:"symbol":"") : '0.00')}}</p>
+                </div>
+                <div>
+                  <h5 class="text-center"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">Net Monthly Inflow</h5>
+                   <p class="OutFlow__InFlow__Text text-center m-0"  style="font-size: 10px!important;font-family: RobotoCondensed-Regular!important;">{{(total_mis_calculation?.tot_inflow_amt - total_mis_calculation?.tot_outflow_amt) | currency:"symbol":""}}</p>
+                </div>
+              </div>
+          </div>
+        </div>
+       
+</div>
+
+
+
+
+<!-- End -->

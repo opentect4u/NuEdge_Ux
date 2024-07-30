@@ -10,6 +10,7 @@ import jsPDF from 'jspdf';
 import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { ExportAs } from 'src/app/__Utility/exportFunc';
 /*** Display Footer data on P&L */
 export type TotalPLportfolio = {
   purchase: number | undefined,
@@ -51,6 +52,8 @@ export class PlTrxnDtlsComponent implements OnInit {
   /** End */
 
   @Input() valuation_as_on
+
+  @Input() disclaimer:string = ''
 
   @Input() form_data;
 
@@ -130,90 +133,97 @@ export class PlTrxnDtlsComponent implements OnInit {
 
   generatePDF = (mode:string) =>{
     var pdf = new jsPDF('l','pt','a4');
+    let finalY ;
     const html_element = document.getElementById('client_container');
     pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
     pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
     pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
-    pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold')
-    pdf.html(
-      html_element.innerHTML,
-      {
-        html2canvas:{
-          width:pdf.internal.pageSize.getWidth() - 20,
-        },
-        width:pdf.internal.pageSize.getWidth() - 20,
-        windowWidth:pdf.internal.pageSize.getWidth() - 20,
-        margin:5,
-        x:5,
-        y:5,
-        callback(doc) {
-          autoTable(
-            pdf,
-            {
-              tableLineColor: [189, 195, 199],
-              tableLineWidth: 0.75,
-              theme:'grid',
-              showHead:true,
-              showFoot:true,
-              html:'#printTable',
-              margin:{
-                top:5,
-                left:10,
-                right:10,
-                bottom:5
-              },
-               pageBreak:'auto',
-               rowPageBreak:'avoid',
-               styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
-                cellPadding: 3,valign:'middle',halign:'center'},
-                headStyles:{
-                    fillColor:'#08567c',
-                    textColor:'#fff',
-                    fontSize:8,
-                    cellPadding:{
-                      vertical:5,
-                      horizontal:3
-                    },
-                    lineColor:'#fff',
-                    font:'RobotoCondensed-Bold'
-                },
-                footStyles:{
-                    fillColor:'#08567c',
-                    textColor:'#fff',
-                    fontSize:7,
-                    font:'RobotoCondensed-Bold',
-                    lineColor:'#fff',
-                    cellPadding:{
-                      vertical:5,
-                      horizontal:2
-                    },
-                },
-                bodyStyles:{
-                  fontSize:8,
-                  cellPadding:2,
-                  font:'RobotoCondensed-Regular'
-                },
-                startY:175,
-                columnStyles:{
-                      0:{halign:'left'}
-                },
-              tableWidth:pdf.internal.pageSize.getWidth() - 20
-            }
-          )
-        //   finalY = data1.cursor.y + 20;
-        //   let width = pdf.internal.pageSize.getWidth() - 20
-        //   let textlines = pdf.setFontSize(8).setFont(
-        //    "RobotoCondensed-Regular",'','400'
-        //  ).splitTextToSize(`Disclaimer:${disclaimer}`,width);
-        //   pdf.text(textlines,10,finalY)
-          // if(export_mode === 'Print'){
-          //   pdf.autoPrint();
-          // }
-          pdf.output('dataurlnewwindow');
-        },
-        autoPaging:true
-      }
-    );
+    pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+    ExportAs.exportAsSummary('Pdf',pdf,170,html_element,'printTable',this.disclaimer,'We').then(res =>{
+      console.log(res)
+    })
+    // pdf.html(
+    //   html_element.innerHTML,
+    //   {
+    //     html2canvas:{
+    //       width:pdf.internal.pageSize.getWidth() - 20,
+    //     },
+    //     width:pdf.internal.pageSize.getWidth() - 20,
+    //     windowWidth:pdf.internal.pageSize.getWidth() - 20,
+    //     margin:5,
+    //     x:5,
+    //     y:5,
+    //     callback(doc) {
+    //       autoTable(
+    //         pdf,
+    //         {
+    //           didDrawPage: function(data){
+    //             finalY = data.cursor.y + 20;
+    //           },
+    //           tableLineColor: [189, 195, 199],
+    //           tableLineWidth: 0.75,
+    //           theme:'grid',
+    //           showHead:true,
+    //           showFoot:true,
+    //           html:'#printTable',
+    //           margin:{
+    //             top:5,
+    //             left:10,
+    //             right:10,
+    //             bottom:5
+    //           },
+    //            pageBreak:'auto',
+    //            rowPageBreak:'avoid',
+    //            styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+    //             cellPadding: 3,valign:'middle',halign:'center'},
+    //             headStyles:{
+    //                 fillColor:'#08567c',
+    //                 textColor:'#fff',
+    //                 fontSize:8,
+    //                 cellPadding:{
+    //                   vertical:5,
+    //                   horizontal:3
+    //                 },
+    //                 lineColor:'#fff',
+    //                 font:'RobotoCondensed-Bold'
+    //             },
+    //             footStyles:{
+    //                 fillColor:'#08567c',
+    //                 textColor:'#fff',
+    //                 fontSize:7,
+    //                 font:'RobotoCondensed-Bold',
+    //                 lineColor:'#fff',
+    //                 cellPadding:{
+    //                   vertical:5,
+    //                   horizontal:2
+    //                 },
+    //             },
+    //             bodyStyles:{
+    //               fontSize:8,
+    //               cellPadding:2,
+    //               font:'RobotoCondensed-Regular'
+    //             },
+    //             startY:175,
+    //             columnStyles:{
+    //                   0:{halign:'left'}
+    //             },
+    //           tableWidth:pdf.internal.pageSize.getWidth() - 20
+    //         }
+    //       )
+        
+    //       let width = pdf.internal.pageSize.getWidth() - 20
+    //       let textlines = pdf.setFontSize(8).setFont(
+    //        "RobotoCondensed-Regular",'','400'
+    //      ).splitTextToSize(`Disclaimer:${this.disclaimer}`,width);
+    //       pdf.text(textlines,10,finalY)
+    //       // if(export_mode === 'Print'){
+    //       //   pdf.autoPrint();
+    //       // }
+    //       pdf.output('dataurlnewwindow');
+    //     },
+    //     autoPaging:true
+    //   }
+    // );
   }
 }
 

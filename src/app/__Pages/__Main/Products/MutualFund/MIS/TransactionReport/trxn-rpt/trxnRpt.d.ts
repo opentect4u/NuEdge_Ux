@@ -16,6 +16,7 @@ interface TrxnRpt{
      branch:string | null
      rm_name:string | null
       arn_no:string | null
+      amc_name:string | null;
       sub_brk_cd:string | null
       euin_no:string | null
       first_client_name:string | null

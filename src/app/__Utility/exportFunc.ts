@@ -324,6 +324,126 @@ export class ExportAs{
    
     }
 
+
+    public static exportMonthlySummary(mode:string,
+      pdf:jsPDF,
+      finalY:number,
+      element_to_print_as,
+      table_id:string,
+      disclaimer:string,
+      outputIn:string
+  ): Promise<File | null>
+  {
+      return new Promise((resolve,reject)=>{
+        console.log(element_to_print_as)
+           try{
+              pdf.html(
+                  element_to_print_as.innerHTML,
+                  {
+                    html2canvas:{
+                      width:pdf.internal.pageSize.getWidth() - 20,
+                    },
+                    width:pdf.internal.pageSize.getWidth() - 20,
+                    windowWidth:pdf.internal.pageSize.getWidth() - 20,
+                    margin:5,
+                    x:5,
+                    y:5,
+                    callback(doc) {
+                      autoTable(
+                        pdf,
+                        {
+                          
+                          tableId:table_id,
+                          useCss:false,
+                          didDrawPage: function(data){
+                              finalY = data.cursor.y + 20;
+                          },
+                          includeHiddenHtml:false,
+                          tableLineColor: [189, 195, 199],
+                          tableLineWidth: 0.75,
+                          theme:'grid',
+                          showHead:true,
+                          showFoot:true,
+                          html:`#${table_id}`,
+                          margin:{
+                            top:5,
+                            left:10,
+                            right:10,
+                            bottom:5
+                          },
+                           pageBreak:'auto',
+                           rowPageBreak:'avoid',
+                           styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                            cellPadding: 3,valign:'middle',halign:'center'},
+                            headStyles:{
+                                fillColor:'#08567c',
+                                textColor:'#fff',
+                                fontSize:8,
+                                cellPadding:{
+                                  vertical:5,
+                                  horizontal:3
+                                },
+                                lineColor:'#fff',
+                                font:'RobotoCondensed-Bold'
+                            },
+                            footStyles:{
+                                fillColor:'#08567c',
+                                textColor:'#fff',
+                                fontSize:7,
+                                font:'RobotoCondensed-Bold',
+                                lineColor:'#fff',
+                                cellPadding:{
+                                  vertical:5,
+                                  horizontal:2
+                                },
+                            },
+                            bodyStyles:{
+                              fontSize:8,
+                              cellPadding:2,
+                              font:'RobotoCondensed-Regular'
+                            },
+                            startY:20,
+                            // columnStyles:{
+                            //     0:{cellWidth:120.64,halign:'left'}
+                            // },
+                          tableWidth:pdf.internal.pageSize.getWidth() - 20
+                        }
+                      )
+                      let width = pdf.internal.pageSize.getWidth() - 20
+                      let textlines = pdf.setFontSize(8).setFont(
+                      "RobotoCondensed-Regular",'','400'
+                      ).splitTextToSize(`Disclaimer:${disclaimer}`,width);
+                      pdf.text(textlines,10,finalY)
+                      // console.log(export_as)
+                      if(mode === 'Print'){
+                          pdf.autoPrint();
+                        }
+                        if(outputIn == 'We'){
+                          pdf.setProperties({
+                            title: "ValuationRPT"
+                        }).output('dataurlnewwindow');
+                        }
+                        else{
+                          const dataUrl = pdf.output('datauristring');
+                          resolve(ExportAs.dataURLtoFile(dataUrl,'MONTHLYMISRPORT.pdf')) 
+                        }
+                    },
+                    autoPaging:true
+                  }
+                );
+           }
+           catch(err){
+              console.log(err)  
+              resolve(null);
+           }
+          //  resolve(null);
+      })
+      // let finalY;
+ 
+  }
+
+
+
     /***** FOr Converting base64 into File */
     public static dataURLtoFile(dataurl, filename) {
         var arr = dataurl.split(','),

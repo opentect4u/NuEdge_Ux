@@ -143,7 +143,7 @@ properties: `act_value` and `value`. The `act_value` property represents an actu
 mappings between `act_value` and `value` for transition durations. */
 
   trans_duration = [
-    {act_value:'A',value:''},
+    {act_value:'',value:'All'},
     {act_value:'< 1',value:'Below 1 year'},
     {act_value:'> 1',value:'Above 1 year'},
     {act_value:'> 2',value:'Above 2 year'},
@@ -741,7 +741,7 @@ mappings between `act_value` and `value` for transition durations. */
      */
     this.filter_criteria.controls['trans_duration'].valueChanges.subscribe((res) => {
       if(res != 'D'){
-        this.recent_trxn_frm.controls['trans_date_range'].setValue('')
+        this.filter_criteria.controls['trans_date_range'].setValue('')
       }
     });
     /** End */
@@ -1561,18 +1561,19 @@ mappings between `act_value` and `value` for transition durations. */
                   }
                 })
                 const tot_curr_val = global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.curr_val))
+                console.log(dt);
                 this.family_summary.push(
                   {
                     id:el.id,
                     client_name:el.client_name,
                     pan:el.pan,
-                    inv_cost:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.inv_cost)),
-                    tot_units:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.tot_units)),
+                    inv_cost:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.re_cal_purchase_datas?.inv_cost)),
+                    tot_units:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.re_cal_purchase_datas?.tot_units)),
                     curr_val:tot_curr_val,
-                    idcw_reinv:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.idcw_reinv)),
-                    idcwp:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.idcwp)),
-                    gain_loss:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.gain_loss)),
-                    ret_abs:(global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.ret_abs)) / dt.length),
+                    idcw_reinv:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.re_cal_purchase_datas?.idcw_reinv)),
+                    idcwp:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.re_cal_purchase_datas?.idcwp)),
+                    gain_loss:global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.re_cal_purchase_datas?.gain_loss)),
+                    ret_abs:(global.Total__Count(dt,(item:ILivePortFolio) => Number(item?.re_cal_purchase_datas?.ret_abs)) / dt.length),
                     total_dates: total_date,
                     total_amount:total_amt,
                     xirr:global.XIRR([...total_amt,tot_curr_val],[...total_date,this.datePipe.transform(this.valuation_as_on,'YYYY-MM-dd')],0),
@@ -1630,15 +1631,22 @@ mappings between `act_value` and `value` for transition durations. */
                       modify_dt = res.data.filter((item: ILivePortFolio) => {
                         item.id = `${Math.random()}_${item.product_code}`;
                         item.data=[];
-                        item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
                         if(item.mydata?.all_amt_arr.length > 0 && item.mydata?.all_date_arr.length > 0){
-                            const amt = item?.mydata.all_amt_arr.map(item => Number(item));
-                            const dt = item?.mydata.all_date_arr;
-                            item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                          const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                          const dt = item?.mydata.all_date_arr;
+                          item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
                         }
                         else{
                           item.xirr =0
                         }
+                        item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
+                        item.gain_loss = !this.main_frm_dt?.trans_duration ? item.gain_loss : item?.re_cal_purchase_datas?.gain_loss;
+                        item.idcw_reinv = !this.main_frm_dt?.trans_duration ? item.idcw_reinv : item?.re_cal_purchase_datas?.idcw_reinv;
+                        item.idcwp = !this.main_frm_dt?.trans_duration ? item.idcwp : item?.re_cal_purchase_datas?.idcwp;
+                        item.curr_val = !this.main_frm_dt?.trans_duration ? item.curr_val : item?.re_cal_purchase_datas?.curr_val;
+                        item.inv_cost = !this.main_frm_dt?.trans_duration ? item.inv_cost : item?.re_cal_purchase_datas?.inv_cost;
+                        item.ret_abs = !this.main_frm_dt?.trans_duration ? item.ret_abs : item?.re_cal_purchase_datas?.ret_abs;
+                        item.tot_units = !this.main_frm_dt?.trans_duration ? item.tot_units : item?.re_cal_purchase_datas?.tot_units;
                         return item
                       });
                 }
@@ -1647,16 +1655,23 @@ mappings between `act_value` and `value` for transition durations. */
                     if(Number(item.curr_val) > 0 ){
                       item.id = `${Math.random()}_${item.product_code}`;
                       item.data=[];
-                      item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : ''
                       if(item.mydata){
                         const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                         const dt = item?.mydata.all_date_arr;
                         const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
-                        item.xirr = (item.curr_val == 0 || isNaN(xirr)) ? 0 : xirr
+                        item.xirr = (item.curr_val == 0 || isFinite(xirr)) ? 0 : xirr
                       }
                       else{
                         item.xirr =0
                       }
+                      item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
+                      item.gain_loss = !this.main_frm_dt?.trans_duration ? item.gain_loss : item?.re_cal_purchase_datas?.gain_loss;
+                      item.idcw_reinv = !this.main_frm_dt?.trans_duration ? item.idcw_reinv : item?.re_cal_purchase_datas?.idcw_reinv;
+                      item.idcwp = !this.main_frm_dt?.trans_duration ? item.idcwp : item?.re_cal_purchase_datas?.idcwp;
+                      item.curr_val = !this.main_frm_dt?.trans_duration ? item.curr_val : item?.re_cal_purchase_datas?.curr_val;
+                      item.inv_cost = !this.main_frm_dt?.trans_duration ? item.inv_cost : item?.re_cal_purchase_datas?.inv_cost;
+                      item.ret_abs = !this.main_frm_dt?.trans_duration ? item.ret_abs : item?.re_cal_purchase_datas?.ret_abs;
+                      item.tot_units = !this.main_frm_dt?.trans_duration ? item.tot_units : item?.re_cal_purchase_datas?.tot_units;
                       return true
                     }
                     return false
@@ -1665,7 +1680,15 @@ mappings between `act_value` and `value` for transition durations. */
 
                 // this.dataSource = modify_dt
                 this.dataSource = modify_dt.filter((el,index) =>{
-                    el.data = el.mydata.cal_purchase_data.filter((item:ISubDataSource,i:number) =>{
+                    let dt = [];
+                    if(!this.main_frm_dt?.trans_duration){
+                      dt = el.mydata.cal_purchase_data 
+                    }
+                    else{
+                        // console.log(el?.re_cal_purchase_data)
+                        dt = el?.re_cal_purchase_data ? el?.re_cal_purchase_data : []
+                    }
+                    el.data = dt.filter((item:ISubDataSource,i:number) =>{
                       try{
                         if(item.cumml_units > 0 && !item.transaction_type.toLowerCase().includes('redemption')){
                               const amt = [(Number(item.tot_amount) * -1),Number(item.curr_val)]
@@ -1681,7 +1704,7 @@ mappings between `act_value` and `value` for transition durations. */
                     });
                     return el
                 })
-                // console.log(this.dataSource);
+                console.log(this.dataSource);
                 if(mf_report?.cat_wise || mf_report?.subcat_wise){
                   this.getLiveMfPortFolioByMfReportWise(modify_dt,mf_report)
                 }
@@ -1764,10 +1787,8 @@ mappings between `act_value` and `value` for transition durations. */
                     if(item.mydata.all_amt_arr.length > 0 && item.mydata.all_date_arr.length > 0){
                       const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                       const dt = item?.mydata.all_date_arr;
-                      const xirr =  global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
-                      console.log('xirr:' + xirr);
-                      console.log(isNaN(xirr))
-                      item.xirr = xirr;
+                      const xirr =  Number(global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0));
+                      item.xirr = isFinite(xirr) ? xirr : 0;
                     }
                     else{
                       item.xirr =0
@@ -2210,6 +2231,14 @@ mappings between `act_value` and `value` for transition durations. */
                             else{
                               item.xirr =0
                             }
+                            item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
+                            item.gain_loss = !this.main_frm_dt?.trans_duration ? item.gain_loss : item?.re_cal_purchase_datas?.gain_loss;
+                            item.idcw_reinv = !this.main_frm_dt?.trans_duration ? item.idcw_reinv : item?.re_cal_purchase_datas?.idcw_reinv;
+                            item.idcwp = !this.main_frm_dt?.trans_duration ? item.idcwp : item?.re_cal_purchase_datas?.idcwp;
+                            item.curr_val = !this.main_frm_dt?.trans_duration ? item.curr_val : item?.re_cal_purchase_datas?.curr_val;
+                            item.inv_cost = !this.main_frm_dt?.trans_duration ? item.inv_cost : item?.re_cal_purchase_datas?.inv_cost;
+                            item.ret_abs = !this.main_frm_dt?.trans_duration ? item.ret_abs : item?.re_cal_purchase_datas?.ret_abs;
+                            item.tot_units = !this.main_frm_dt?.trans_duration ? item.tot_units : item?.re_cal_purchase_datas?.tot_units;
                             return item
                           });
                     }
@@ -2228,6 +2257,14 @@ mappings between `act_value` and `value` for transition durations. */
                           else{
                             item.xirr =0
                           }
+                          item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : '';
+                          item.gain_loss = !this.main_frm_dt?.trans_duration ? item.gain_loss : item?.re_cal_purchase_datas?.gain_loss;
+                          item.idcw_reinv = !this.main_frm_dt?.trans_duration ? item.idcw_reinv : item?.re_cal_purchase_datas?.idcw_reinv;
+                          item.idcwp = !this.main_frm_dt?.trans_duration ? item.idcwp : item?.re_cal_purchase_datas?.idcwp;
+                          item.curr_val = !this.main_frm_dt?.trans_duration ? item.curr_val : item?.re_cal_purchase_datas?.curr_val;
+                          item.inv_cost = !this.main_frm_dt?.trans_duration ? item.inv_cost : item?.re_cal_purchase_datas?.inv_cost;
+                          item.ret_abs = !this.main_frm_dt?.trans_duration ? item.ret_abs : item?.re_cal_purchase_datas?.ret_abs;
+                          item.tot_units = !this.main_frm_dt?.trans_duration ? item.tot_units : item?.re_cal_purchase_datas?.tot_units;
                           return true
                         }
                         return false
@@ -2425,6 +2462,9 @@ mappings between `act_value` and `value` for transition durations. */
 }
 
 export interface ILivePortFolio{
+  
+  re_cal_purchase_datas?:any
+
   id: any
   amc_name:string,
   cat_name:string;

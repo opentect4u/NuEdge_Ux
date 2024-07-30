@@ -203,10 +203,11 @@
                     formControlName="trans_duration"
                   >
                     <option value="{{item.act_value}}" *ngFor="let item of trans_duration">
-                      <span *ngIf="item.act_value == 'D';else above_year">Date Range</span>
+                      {{item?.value}}
+                      <!-- <span *ngIf="item.act_value == 'D';else above_year">Date Range</span>
                       <ng-template #above_year>
                         <span class="m-0">{{item?.value}}</span>
-                      </ng-template>
+                      </ng-template> -->
                     </option>
                   </select>
                 </div>
@@ -954,6 +955,7 @@
                       </mat-card-header>
                       <mat-card-content>
                         <pl-trxn-dtls
+                        [disclaimer]="disclaimer"
                         [folio_type]="__pl_trxn_form.value.pl_folio_type"
                         [pl_trxn]="plTrxnDtls | plFilter:__pl_trxn_form.value.pl_folio_type"
                         (getTransactionDetailsFromPL)="OpenDialog($event)"
