@@ -588,8 +588,18 @@ ngAfterViewInit() {
    * Event Trigger after Business Type
    */
   this.misTrxnRpt.controls['bu_type_id'].valueChanges.subscribe((res) => {
-    this.disabledSubBroker(res);
-    this.getRelationShipManagerMst(res, this.misTrxnRpt.value.brn_cd);
+    if(res.length > 0){
+        this.disabledSubBroker(res);
+        this.getRelationShipManagerMst(res, this.misTrxnRpt.value.brn_cd);
+    }
+    else{
+        this.__RmMst = [];
+        this.__subbrkArnMst =[];
+        this.__euinMst = [];
+        this.misTrxnRpt.get('euin_no').setValue([]);
+        this.misTrxnRpt.get('sub_brk_cd').setValue([]);
+        this.misTrxnRpt.get('rm_id').setValue([]);
+    }
   });
 
   /**
@@ -741,7 +751,7 @@ fetchTransaction = () =>{
     TrxnDt.append('brn_cd',this.utility.mapIdfromArray(this.misTrxnRpt.value.brn_cd, 'id'));
     TrxnDt.append('rm_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.rm_id, 'euin_no'));
     TrxnDt.append('bu_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.bu_type_id, 'bu_code'));
-    TrxnDt.append('sub_brk_cd',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_brk_cd, 'code'));
+    TrxnDt.append('sub_brk_cd',this.utility.mapIdfromArray(this.misTrxnRpt.getRawValue().sub_brk_cd, 'code'));
   }
    let count = 0;
    count = this.trxnRpt.length;
@@ -1069,6 +1079,9 @@ setEuinDropdown = (sub_brk_cd, rm) => {
           .includes(item.euin_no)
     );
   }
+  const euin_no = this.__euinMst.map(el => el.euin_no);
+  const dt = this.misTrxnRpt.get('euin_no').value.filter(el => euin_no.includes( el.euin_no));
+  this.misTrxnRpt.get('euin_no').setValue(dt,{emitEvent:false});
 };
 disabledSubBroker(bu_type_ids) {
   if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
@@ -1100,6 +1113,9 @@ getSubBrokerMst(arr_euin_no) {
             bro_name: bro_name + '-' + code,
           })
         );
+        const code = this.__subbrkArnMst.map(el => el.code);
+        const dt = this.misTrxnRpt.get('sub_brk_cd').value.filter(el => code.includes( el.code));
+        this.misTrxnRpt.get('sub_brk_cd').setValue(dt,{emitEvent:false});
       });
   } else {
     this.__subbrkArnMst = [];
@@ -1122,6 +1138,9 @@ getBusinessTypeMst(brn_cd) {
       .pipe(pluck('data'))
       .subscribe((res) => {
         this.__bu_type = res;
+        const bu_code = this.__bu_type.map(el => el.bu_code);
+        const dt = this.misTrxnRpt.get('bu_type_id').value.filter(el => bu_code.includes( el.bu_code));
+        this.misTrxnRpt.get('bu_type_id').setValue(dt,{emitEvent:false});
       });
   } else {
     this.misTrxnRpt.controls['bu_type_id'].setValue([], { emitEvent: true });
@@ -1150,6 +1169,9 @@ getRelationShipManagerMst(bu_type_id, arr_branch_id) {
       .pipe(pluck('data'))
       .subscribe((res) => {
         this.__RmMst = res;
+        const euin_no = this.__RmMst.map(el => el.euin_no);
+        const dt = this.misTrxnRpt.get('rm_id').value.filter(el => euin_no.includes( el.euin_no));
+        this.misTrxnRpt.get('rm_id').setValue(dt,{emitEvent:false});
       });
   } else {
     this.__RmMst = [];
