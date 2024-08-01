@@ -1634,7 +1634,8 @@ mappings between `act_value` and `value` for transition durations. */
                         if(item.mydata?.all_amt_arr.length > 0 && item.mydata?.all_date_arr.length > 0){
                           const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                           const dt = item?.mydata.all_date_arr;
-                          item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
+                          const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                          item.xirr = isFinite(xirr) ? 0 : xirr;
                         }
                         else{
                           item.xirr =0
@@ -1659,7 +1660,8 @@ mappings between `act_value` and `value` for transition durations. */
                         const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                         const dt = item?.mydata.all_date_arr;
                         const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
-                        item.xirr = (item.curr_val == 0 || isFinite(xirr)) ? 0 : xirr
+                        console.log(xirr)
+                        item.xirr = (item.curr_val == 0 && isFinite(xirr)) ? 0 : xirr
                       }
                       else{
                         item.xirr =0
@@ -2226,7 +2228,9 @@ mappings between `act_value` and `value` for transition durations. */
                             if(item.mydata?.all_amt_arr.length > 0 && item.mydata?.all_date_arr.length > 0){
                                 const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                                 const dt = item?.mydata.all_date_arr;
-                                item.xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
+                                const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
+                                console.log(isFinite(xirr));
+                                item.xirr =isFinite(xirr) ? 0 :xirr;
                             }
                             else{
                               item.xirr =0
@@ -2251,8 +2255,9 @@ mappings between `act_value` and `value` for transition durations. */
                           if(item.mydata){
                             const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                             const dt = item?.mydata.all_date_arr;
-                            const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
-                            item.xirr = (item.curr_val == 0 || isNaN(xirr)) ? 0 : xirr
+                            const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
+                            console.log(isFinite(xirr));
+                            item.xirr = (item.curr_val == 0 || isFinite(xirr)) ? 0 : xirr
                           }
                           else{
                             item.xirr =0

@@ -319,8 +319,19 @@ export class InvestorStaticReportComponent implements OnInit {
      * Event Trigger after Business Type
      */
     this.filter.controls['bu_type_id'].valueChanges.subscribe((res) => {
+     if(res.length > 0){
       this.disabledSubBroker(res);
       this.getRelationShipManagerMst(res, this.filter.value.brn_cd);
+     }
+    else{
+        this.__RmMst = [];
+        this.__subbrkArnMst =[];
+        this.__euinMst = [];
+        this.filter.get('euin_no').setValue([]);
+        this.filter.get('sub_brk_cd').setValue([]);
+        this.filter.get('rm_id').setValue([]);
+    }
+    
     });
 
     /**
@@ -648,6 +659,9 @@ export class InvestorStaticReportComponent implements OnInit {
             .includes(item.euin_no)
       );
     }
+    const euin_no = this.__euinMst.map(el => el.euin_no);
+    const dt = this.filter.get('euin_no').value.filter(el => euin_no.includes( el.euin_no));
+    this.filter.get('euin_no').setValue(dt,{emitEvent:false});
   };
   disabledSubBroker(bu_type_ids) {
     if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
@@ -679,6 +693,9 @@ export class InvestorStaticReportComponent implements OnInit {
               bro_name: bro_name + '-' + code,
             })
           );
+          const code = this.__subbrkArnMst.map(el => el.code);
+          const dt = this.filter.get('sub_brk_cd').value.filter(el => code.includes( el.code));
+          this.filter.get('sub_brk_cd').setValue(dt,{emitEvent:false});
         });
     } else {
       this.__subbrkArnMst = [];
@@ -701,6 +718,9 @@ export class InvestorStaticReportComponent implements OnInit {
         .pipe(pluck('data'))
         .subscribe((res) => {
           this.__bu_type = res;
+          const bu_code = this.__bu_type.map(el => el.bu_code);
+          const dt = this.filter.get('bu_type_id').value.filter(el => bu_code.includes( el.bu_code));
+          this.filter.get('bu_type_id').setValue(dt,{emitEvent:false});
         });
     } else {
       this.filter.controls['bu_type_id'].setValue([], { emitEvent: true });
@@ -729,6 +749,9 @@ export class InvestorStaticReportComponent implements OnInit {
         .pipe(pluck('data'))
         .subscribe((res) => {
           this.__RmMst = res;
+          const euin_no = this.__RmMst.map(el => el.euin_no);
+          const dt = this.filter.get('rm_id').value.filter(el => euin_no.includes( el.euin_no));
+          this.filter.get('rm_id').setValue(dt,{emitEvent:false});
         });
     } else {
       this.__RmMst = [];

@@ -470,7 +470,7 @@ export class ReportFilterComponent implements OnInit {
       euin_no:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.euin_no,'euin_no') : '[]',
       rm_id:this.btn_type == 'A' ?  this.utility.mapIdfromArray(this.Rpt.value.rm_id,'euin_no') : '[]',
       scheme_id:this.utility.mapIdfromArray(this.Rpt.value.scheme_id,'id'),
-      sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.value.sub_brk_cd,'code') : '[]',
+      sub_brk_cd:this.btn_type == 'A' ?   this.utility.mapIdfromArray(this.Rpt.getRawValue().sub_brk_cd,'code') : '[]',
       sub_cat_id:this.utility.mapIdfromArray(this.Rpt.value.sub_cat_id,'id'),
       month: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.month) : (this.Rpt.value.view_by == 'M' ? global.getActualVal(this.Rpt.value.month) : '')),
       year: (this.sub_type != 'RR' && this.sub_type != 'MT') ? '' : (this.sub_type == 'RR' ? global.getActualVal(this.Rpt.value.year) : (this.Rpt.value.view_by == 'M' ? global.getActualVal(this.Rpt.value.year) : '')),
@@ -609,8 +609,22 @@ export class ReportFilterComponent implements OnInit {
        * Event Trigger after Business Type
        */
       this.Rpt.controls['bu_type_id'].valueChanges.subscribe((res) => {
-        this.disabledSubBroker(res);
-        this.getRelationShipManagerMst(res, this.Rpt.value.brn_cd);
+        console.log(res);
+        if(res.length > 0){
+          this.disabledSubBroker(res);
+          this.getRelationShipManagerMst(res, this.Rpt.value.brn_cd);
+        }
+        else{
+          this.RmMst = [];
+          this.subbrkArnMst =[];
+          this.euinMst = [];
+          this.Rpt.controls['euin_no'].setValue([]);
+          this.Rpt.controls['sub_brk_cd'].setValue([]);
+          this.Rpt.controls['rm_id'].setValue([]);
+          // this.misTrxnRpt.get('euin_no').setValue([]);
+          // this.misTrxnRpt.get('sub_brk_cd').setValue([]);
+          // this.misTrxnRpt.get('rm_id').setValue([]);
+        }
       });
 
       /**
@@ -823,6 +837,9 @@ export class ReportFilterComponent implements OnInit {
             .includes(item.euin_no)
       );
     }
+    const euin_no = this.euinMst.map(el => el.euin_no);
+    const dt = this.Rpt.get('euin_no').value.filter(el => euin_no.includes( el.euin_no));
+    this.Rpt.get('euin_no').setValue(dt,{emitEvent:false});
   };
   disabledSubBroker(bu_type_ids) {
     if (bu_type_ids.findIndex((item) => item.bu_code == 'B') != -1) {
@@ -854,6 +871,9 @@ export class ReportFilterComponent implements OnInit {
               bro_name: bro_name + '-' + code,
             })
           );
+          const code = this.subbrkArnMst.map(el => el.code);
+          const dt = this.Rpt.get('sub_brk_cd').value.filter(el => code.includes( el.code));
+          this.Rpt.get('sub_brk_cd').setValue(dt,{emitEvent:false});
         });
     } else {
       this.subbrkArnMst = [];
@@ -876,6 +896,9 @@ export class ReportFilterComponent implements OnInit {
         .pipe(pluck('data'))
         .subscribe((res) => {
           this.bu_type = res;
+          const bu_code = this.bu_type.map(el => el.bu_code);
+          const dt = this.Rpt.get('bu_type_id').value.filter(el => bu_code.includes( el.bu_code));
+          this.Rpt.get('bu_type_id').setValue(dt,{emitEvent:false});
         });
     } else {
       this.Rpt.controls['bu_type_id'].setValue([], { emitEvent: true });

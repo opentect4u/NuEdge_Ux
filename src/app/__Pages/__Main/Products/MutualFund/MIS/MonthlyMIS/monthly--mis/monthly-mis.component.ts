@@ -84,7 +84,7 @@ export class MonthlyMisComponent implements OnInit {
 
   exportAsPdf(){
     this.is_virtual = !this.is_virtual;
-    var pdf = new jsPDF('l','pt','a4');
+    var pdf = new jsPDF('l','pt','a4',true);
     // let finalY ;
     // const html_element = document.getElementById('container');
     // pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
@@ -113,63 +113,63 @@ export class MonthlyMisComponent implements OnInit {
   //   pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
   //   pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
   //   pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
-  //   autoTable(
-  //     pdf,
-  //     {
-  //         head:[this.__monthly__MIS_Column.map(el => el.header)],
-  //         body:result,
-  //         tableLineColor: [189, 195, 199],
-  //         tableLineWidth: 0.75,
-  //         theme:'grid',
-  //         showHead:true,
-  //         showFoot:true,
-  //         margin:{
-  //           top:5,
-  //           left:10,
-  //           right:10,
-  //           bottom:5
-  //         },
-  //           pageBreak:'auto',
-  //           rowPageBreak:'avoid',
-  //           styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
-  //           cellPadding: 3,valign:'middle',halign:'center'},
-  //           headStyles:{
-  //               fillColor:'#08567c',
-  //               textColor:'#fff',
-  //               fontSize:8,
-  //               cellPadding:{
-  //                 vertical:5,
-  //                 horizontal:3
-  //               },
-  //               lineColor:'#fff',
-  //               font:'RobotoCondensed-Bold'
-  //           },
-  //           footStyles:{
-  //               fillColor:'#08567c',
-  //               textColor:'#fff',
-  //               fontSize:7,
-  //               font:'RobotoCondensed-Bold',
-  //               lineColor:'#fff',
-  //               cellPadding:{
-  //                 vertical:5,
-  //                 horizontal:2
-  //               },
-  //           },
-  //           bodyStyles:{
-  //             fontSize:8,
-  //             cellPadding:2,
-  //             font:'RobotoCondensed-Regular'
-  //           },
-  //           startY:20,
-  //           // columnStyles:{
-  //           //     0:{cellWidth:120.64,halign:'left'}
-  //           // },
-  //         tableWidth:pdf.internal.pageSize.getWidth() - 20
-  //     }
-  //   )
-  //   pdf.setProperties({
-  //     title: "ValuationRPT"
-  // }).output('dataurlnewwindow');
+    autoTable(
+      pdf,
+      {
+          head:[this.__monthly__MIS_Column.map(el => el.header)],
+          body:result,
+          tableLineColor: [189, 195, 199],
+          tableLineWidth: 0.75,
+          theme:'grid',
+          showHead:true,
+          showFoot:true,
+          margin:{
+            top:5,
+            left:10,
+            right:10,
+            bottom:5
+          },
+            pageBreak:'auto',
+            rowPageBreak:'avoid',
+            styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+            cellPadding: 3,valign:'middle',halign:'center'},
+            headStyles:{
+                fillColor:'#08567c',
+                textColor:'#fff',
+                fontSize:8,
+                cellPadding:{
+                  vertical:5,
+                  horizontal:3
+                },
+                lineColor:'#fff',
+                font:'RobotoCondensed-Bold'
+            },
+            footStyles:{
+                fillColor:'#08567c',
+                textColor:'#fff',
+                fontSize:7,
+                font:'RobotoCondensed-Bold',
+                lineColor:'#fff',
+                cellPadding:{
+                  vertical:5,
+                  horizontal:2
+                },
+            },
+            bodyStyles:{
+              fontSize:8,
+              cellPadding:2,
+              font:'RobotoCondensed-Regular'
+            },
+            startY:20,
+            // columnStyles:{
+            //     0:{cellWidth:120.64,halign:'left'}
+            // },
+          tableWidth:pdf.internal.pageSize.getWidth() - 20
+      }
+    )
+    pdf.setProperties({
+      title: "ValuationRPT"
+    }).output('dataurlnewwindow');
     // console.log(
     //   result
     // )
