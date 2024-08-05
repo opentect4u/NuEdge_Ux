@@ -1140,6 +1140,8 @@ export class TrxnRptComponent implements OnInit {
       this.misTrxnRpt.controls['sub_brk_cd'].enable();
     } else {
       this.misTrxnRpt.controls['sub_brk_cd'].disable();
+      this.misTrxnRpt.controls['sub_brk_cd'].setValue([],{emitEvent:false});
+      this.__subbrkArnMst = [];
     }
   }
   getSubBrokerMst(arr_euin_no) {

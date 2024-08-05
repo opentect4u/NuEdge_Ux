@@ -846,6 +846,8 @@ export class ReportFilterComponent implements OnInit {
       this.Rpt.controls['sub_brk_cd'].enable();
     } else {
       this.Rpt.controls['sub_brk_cd'].disable();
+      this.Rpt.controls['sub_brk_cd'].setValue([],{emitEvent:false});
+      this.subbrkArnMst = [];
     }
   }
   getSubBrokerMst(arr_euin_no) {
