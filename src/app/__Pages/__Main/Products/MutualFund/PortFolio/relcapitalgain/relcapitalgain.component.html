@@ -338,7 +338,7 @@
                                             <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                                               {{dtls[col.field]}}
                                             </ng-container>
-                                            <ng-container *ngSwitchCase="col.field == 'folio'">
+                                            <ng-container *ngSwitchCase="col.field == 'folio' || col.field == 'isin_no'">
                                               {{dtls[col.field]}}
                                             </ng-container>
                                             <ng-container  *ngSwitchDefault>
@@ -352,7 +352,7 @@
                                       <tr class="eachTbleFooter">
                                         <td *ngFor="let footer_col of relised_capital_gain_summary_column">
                                         <ng-container [ngSwitch]="true">
-                                          <ng-container *ngSwitchCase="footer_col.field != 'scheme_name' && footer_col.field != 'folio'">
+                                          <ng-container *ngSwitchCase="footer_col.field != 'scheme_name' && footer_col.field != 'folio' && footer_col.field != 'isin_no'">
                                               {{realisedCapitalGain_summary?.total ? (realisedCapitalGain_summary?.total[footer_col.field] | number:'1.2-2') : '0.00'}}
                                           </ng-container>
                                           <ng-container *ngSwitchCase="footer_col.field == 'scheme_name'">
@@ -383,7 +383,7 @@
                                               <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                                                 <p class="m-0">GRAND TOTAL</p>
                                               </ng-container>
-                                              <ng-container *ngSwitchCase="col.field == 'folio_no'"></ng-container>
+                                              <ng-container *ngSwitchCase="col.field == 'folio' || col.field == 'isin_no'"></ng-container>
                                               
                                               <ng-container *ngSwitchDefault>
                                                 {{relised_capital_gain_summary_footer ? (relised_capital_gain_summary_footer[col.field] ? (relised_capital_gain_summary_footer[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
@@ -462,7 +462,8 @@
                   <!-- End -->
                    <!-- FINANCIAL YEAR WISE REPORT -->
                   <ng-container *ngSwitchDefault>
-                    <financialyearwise-report [tab_type]="sub_tab_id" 
+                    <financialyearwise-report [tab_type]="sub_tab_id"
+                    [total_financial_wise_report]="total_financial_wise_report" 
                     [financial_year_wise_report]="financial_year_wise_trans_report"></financialyearwise-report>
                   </ng-container>
                   <!-- End -->

@@ -1344,3 +1344,10 @@ ul>li.plSummaryRptBlock>div{
   padding: 9px 2px;
 
 }
+
+.inflow{
+  background-color: #cbffd7 !important;
+}
+.outflow{
+  background-color: #ffbcc2 !important;
+}

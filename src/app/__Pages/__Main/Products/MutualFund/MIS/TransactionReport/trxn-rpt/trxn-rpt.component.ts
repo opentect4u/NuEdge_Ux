@@ -373,21 +373,21 @@ export class TrxnRptComponent implements OnInit {
     date_periods: new FormControl(''),
     date_range: new FormControl(''),
     view_type:new FormControl(''),
-    amc_id: new FormControl([], { updateOn: 'blur' }),
-    cat_id: new FormControl([], { updateOn: 'blur' }),
-    sub_cat_id: new FormControl([], { updateOn: 'blur' }),
+    amc_id: new FormControl([], { updateOn: 'change' }),
+    cat_id: new FormControl([], { updateOn: 'change' }),
+    sub_cat_id: new FormControl([], { updateOn: 'change' }),
     scheme_id: new FormControl([]),
-    brn_cd: new FormControl([], { updateOn: 'blur' }),
-    bu_type_id: new FormControl([], { updateOn: 'blur' }),
-    rm_id: new FormControl([], { updateOn: 'blur' }),
-    sub_brk_cd: new FormControl([], { updateOn: 'blur' }),
+    brn_cd: new FormControl([], { updateOn: 'change' }),
+    bu_type_id: new FormControl([], { updateOn: 'change' }),
+    rm_id: new FormControl([], { updateOn: 'change' }),
+    sub_brk_cd: new FormControl([], { updateOn: 'change' }),
     euin_no: new FormControl([]),
     folio_no: new FormControl(''),
     // client_id: new FormControl(''),
     pan_no:new FormControl(''),
     client_name: new FormControl(''),
-    trxn_type_id: new FormControl([], { updateOn: 'blur' }),
-    trxn_sub_type_id: new FormControl([], { updateOn: 'blur' }),
+    trxn_type_id: new FormControl([], { updateOn: 'change' }),
+    trxn_sub_type_id: new FormControl([], { updateOn: 'change' }),
     family_members: new FormControl([])
   });
 
@@ -573,6 +573,7 @@ export class TrxnRptComponent implements OnInit {
      * Event Trigger after change Branch
      */
     this.misTrxnRpt.controls['brn_cd'].valueChanges.subscribe((res) => {
+      console.log(res);
       this.getBusinessTypeMst(res);
     });
 
@@ -1174,6 +1175,7 @@ export class TrxnRptComponent implements OnInit {
     }
   }
   getBusinessTypeMst(brn_cd) {
+    console.log(brn_cd)
     if (brn_cd.length > 0) {
       this.dbIntr
         .api_call(

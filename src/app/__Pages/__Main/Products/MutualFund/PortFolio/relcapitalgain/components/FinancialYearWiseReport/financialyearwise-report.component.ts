@@ -16,7 +16,11 @@ export class FinancialyearwiseReportComponent implements OnInit {
 
   @Input() financial_year_wise_report = [];
 
+  @Input() total_financial_wise_report;
+
   @Input() tab_type:string = 'LS';
+
+  @Input() financial_year_wise_detail_report = [];
 
   long_summary_column:column[] = FinancialYearWiseReportColumn.long_summary;
 
@@ -40,8 +44,13 @@ export class FinancialYearWiseReportColumn{
     public static long_summary:column[] = [
       {
         field:'scheme_name',
-        header:'Fund Name',
+        header:'Scheme',
         width:'25rem'
+      },
+      {
+        field:'isin_no',
+        header:'ISIN',
+        width:'6rem'
       },
       {
         field:'folio_no',
@@ -58,24 +67,29 @@ export class FinancialYearWiseReportColumn{
         header:'Out Flow (Red. + Switch Out + Tran. Out)',
         width:'15rem'
       },
+      // {
+      //   field:'div_sweep_in',
+      //   header:'IDCW Sweep In',
+      //   width:'6rem'
+      // },
+      // {
+      //   field:'div_sweep_out',
+      //   header:'IDCW Sweep Out',
+      //   width:'6rem'
+      // },
       {
-        field:'div_sweep_in',
-        header:'IDCW Sweep In',
-        width:'6rem'
-      },
-      {
-        field:'div_sweep_out',
-        header:'IDCW Sweep Out',
-        width:'6rem'
-      },
-      {
-        field:'div_reinv',
+        field:'idcw_reinv',
         header:'IDCW Reinv.',
         width:'5rem'
       },
       {
         field:'idcwp',
         header:'IDCWP',
+        width:'5rem'
+      },
+      {
+        field:'net_flow',
+        header:'Net Flow',
         width:'5rem'
       }
     ]
@@ -97,28 +111,58 @@ export class FinancialYearWiseReportColumn{
         width:''
       },
       {
-        field:'inv_cose',
-        header:'Investment Cost',
+        field:'tot_gross_amount',
+        header:'Gross Amt',
         width:''
       },
       {
-        field:'curr_val',
-        header:'Current Value',
+        field:'tot_stamp_duty',
+        header:'S. Duty',
         width:''
       },
       {
-        field:'pur_price',
-        header:'Nav',
+        field:'tot_tds',
+        header:'TDS',
         width:''
       },
+      {
+        field:'tot_amount',
+        header:'Net Amt.',
+        width:''
+      },
+      // {
+      //   field:'pur_price',
+      //   header:'Nav',
+      //   width:''
+      // },
       {
         field:'tot_units',
         header:'Units',
         width:''
       },
       {
-        field:'bal_units',
-        header:'Balance Units',
+        field:'pur_price',
+        header:'NAV',
+        width:''
+      },
+      {
+        field:'bank_name',
+        header:'Bank',
+        width:''
+      },
+      {
+        field:'account_no',
+        header:'Acc. No',
+        width:''
+      },
+      {
+        field:'stt',
+        header:'STT',
+        width:''
+      },
+      {
+        field:'cur_val',
+        header:'Current Value',
         width:''
       }
     ]

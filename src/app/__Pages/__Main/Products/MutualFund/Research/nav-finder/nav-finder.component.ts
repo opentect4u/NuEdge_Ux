@@ -27,9 +27,9 @@ export class NavFinderComponent implements OnInit, Nav {
   @ViewChild('dateRng') date_range: Calendar;
   @ViewChild('primeTbl') primeTbl: Table;
   searchNavForm = new FormGroup({
-    amc_id: new FormControl([], { updateOn: 'blur' }),
-    cat_id: new FormControl([], { updateOn: 'blur' }),
-    subcat_id: new FormControl([], { updateOn: 'blur' }),
+    amc_id: new FormControl([], { updateOn: 'change' }),
+    cat_id: new FormControl([], { updateOn: 'change' }),
+    subcat_id: new FormControl([], { updateOn: 'change' }),
     scheme_id: new FormControl([]),
     date_periods: new FormControl(''),
     date_range: new FormControl(''),
@@ -448,14 +448,14 @@ export class NavFinderComponent implements OnInit, Nav {
 export class NavFinderColumns {
   static column: column[] = [
     { field: 'sl_no', header: 'Sl No', width: '6rem' },
-    { field: 'amc_short_name', header: 'AMC', width: '22rem' },
+    { field: 'amc_short_name', header: 'AMC', width: '15rem' },
     { field: 'scheme_name', header: 'Scheme', width: '32rem' },
     { field: 'cat_name', header: 'Category', width: '10rem' },
     { field: 'subcat_name', header: 'Sub category', width: '20rem' },
     { field: 'nav_date', header: 'Nav Date', width: '10rem' },
     { field: 'nav', header: 'Nav', width: '10rem' },
-    { field: 'change_nav', header: 'Change', width: '10rem' },
-    { field: 'change_percentage', header: '% of change from prv', width: '12rem' },
+    { field: 'change_nav', header: 'Change', width: '8rem' },
+    { field: 'change_percentage', header: '% of change from prv', width: '8rem' },
     // { field: 'delete', header: 'Delete', width: '4rem' }
 
   ];

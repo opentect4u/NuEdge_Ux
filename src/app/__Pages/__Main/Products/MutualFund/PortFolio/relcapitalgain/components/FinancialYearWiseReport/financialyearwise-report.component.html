@@ -30,8 +30,15 @@
             </ng-template>
             <ng-template pTemplate="body" let-fin_yr_wise_capital_gain>
 
-                <tr>
-                    <td *ngFor="let col of long_summary_column" [style]="'width : '+col.width">
+                <tr
+               
+                >
+                    <td *ngFor="let col of long_summary_column" 
+                    [ngClass]="{
+                      'inflow':col.field == 'inflow',
+                      'outflow':col.field == 'outflow'
+                    }"
+                    [style]="'width : '+col.width">
                         <p class="m-0">
                           {{fin_yr_wise_capital_gain[col.field]}}
                         </p>
@@ -42,6 +49,28 @@
                 <tr>
                   <td [attr.colspan]="long_summary_column.length">
                     <p class="m-0">NO RECORDS FOUND</p>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="footer">
+                <tr>
+                  <td
+                    *ngFor="let col of long_summary_column"
+                    [style]="'width : ' + col.width"
+                  >
+                    <ng-container [ngSwitch]="true">
+                      <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                        <p class="m-0">
+                            GRAND TOTAL
+                        </p>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="col.field == 'folio_no' || col.field == 'isin_no'"></ng-container>
+                     
+                      <ng-container *ngSwitchDefault>
+                        {{total_financial_wise_report ? (total_financial_wise_report[col.field] ? (total_financial_wise_report[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
+                      </ng-container>
+                    </ng-container>
                   </td>
                 </tr>
               </ng-template>

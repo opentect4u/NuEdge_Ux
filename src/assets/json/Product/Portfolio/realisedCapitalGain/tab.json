@@ -34,7 +34,7 @@
         "sub_menu":[
             {
                 "id":1,
-                "tab_name":"LONG SUMMARY",
+                "tab_name":"SUMMARY",
                 "sub_menu":[],
                 "img_src":"",
                 "flag":"LS"  

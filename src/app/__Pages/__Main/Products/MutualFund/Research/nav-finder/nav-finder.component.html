@@ -157,9 +157,9 @@
         <p-table #primeTbl
                  id="navDt"
                  [value]="navDt"
-                 [scrollHeight]="'320px'"
+                 [scrollHeight]="'370px'"
                  [virtualScroll]="true"
-                 [virtualRowHeight]="34"
+                 [virtualRowHeight]="35"
                  styleClass="p-datatable-striped p-datatable-lg"
                  [rowHover]="true"
                  [columns]="navClmns"
@@ -172,14 +172,13 @@
                  [rows]="10"
                  [showCurrentPageReport]="true"
                  [globalFilterFields]="getColumnsForFilter()"
-                 [tableStyle]="{ 'min-width': '130rem' }"
+                
                  >
           <ng-template pTemplate="header">
             <tr>
               <th *ngFor="let col of navClmns"
                   [pSortableColumn]="col.field"
-                  [style.max-width]="col.width"
-                  [style.min-width]="col.width">
+                  [style.width]="col.width">
                 {{ col.header }}
                 <p-sortIcon [field]="col.field">
                 </p-sortIcon>
@@ -189,11 +188,10 @@
 
           <ng-template pTemplate="body" let-nav let-i="rowIndex">
             <tr tabindex="999"
-            [ngStyle]="{'height':'34px'}"
+            [ngStyle]="{'height':'35px'}"
             >
               <td *ngFor="let col of navClmns"
-                  [style.max-width]="col.width"
-                  [style.min-width]="col.width">
+                  [style.width]="col.width">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'sl_no'">
 
@@ -216,7 +214,7 @@
 
                   <!-- Change Price & chnage Percentage -->
                   <ng-container *ngSwitchCase="col.field == 'change_nav'">
-                    <span class='m-0 d-flex align-items-center'>
+                    <span class='m-0 d-flex align-items-center justify-content-center'>
                       {{nav[col.field]}}
                       <mat-icon style="font-size:25px!important"
                                 [ngClass]="{
@@ -253,7 +251,7 @@ nav.change_percentage?.toString().includes('-') ?
 
           <ng-template pTemplate="emptymessage" let-columns>
             <tr
-            [ngStyle]="{'height':'34px'}"
+           
             >
               <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
                 <h5>No Records Found</h5>

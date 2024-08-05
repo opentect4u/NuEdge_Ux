@@ -27,7 +27,11 @@ export class RelcapitalgainComponent implements OnInit {
   return 0 
   }
 
+  total_financial_wise_report;
+
   objectKeys = Object.keys;
+
+  financial_year_wise_detail_report = [];
 
   realisedcapital_gain_tab:Required<{id:number,tab_name:string,sub_menu:any,img_src:string,flag:string}>[] = []
 
@@ -197,6 +201,7 @@ export class RelcapitalgainComponent implements OnInit {
               groupBy((data: any) => data.tax_type),
               mergeMap(group => zip(of(group.key), group.pipe(toArray())))
             ).subscribe(dt => {
+              console.log(dt);
               let summary_data: Partial<IsummaryReport>[] = [];
               let final_realised_capital_gain = dt[1].filter(element => {
                 if (this.released_capital_gain_form.value.trans_periods != '') {
@@ -220,6 +225,7 @@ export class RelcapitalgainComponent implements OnInit {
                   summary_data.push({
                     id: new Date().getTime(),
                     folio: element.folio_no,
+                    isin_no:element.isin_no,
                     scheme_name: `${element.scheme_name}-${element.plan_name}-${element.option_name}`,
                     short_term_gain: short_term_gain,
                     short_term_loss: short_term_loss,
@@ -730,8 +736,8 @@ export class RelcapitalgainComponent implements OnInit {
        this.total_idcw_summary = {
            "IDCWP":global.Total__Count(idcwp,(item:any) => Number(item.amount)),
            "IDCW Reinv.":global.Total__Count(idcw_reinv,(item:any) => Number(item.amount)),
-           "IDCW Sweep In":0.00,
-           "IDCW Sweep Out":0.00,
+          //  "IDCW Sweep In":0.00,
+          //  "IDCW Sweep Out":0.00,
            "TDS":global.Total__Count(res.data,(item:any) => Number(item.tot_tds))
         }
         console.log(this.total_idcw_summary.length);
@@ -747,29 +753,67 @@ export class RelcapitalgainComponent implements OnInit {
     .subscribe((res:any) => {
       // console.log(res);
       // this.financial_year_wise_trans_report = res;
+      this.financial_year_wise_trans_report = [];
       this.segregrateFinancialYearWiseReport(res);
+      this.segregrateFinancialYearWiseDetailsReport(res);
     })
     }
   }
   /*** End */
 
-  segregrateFinancialYearWiseReport(arr){
+  segregrateFinancialYearWiseDetailsReport = (arr) =>{
     console.log(arr)
+    from(arr.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
+    .pipe(
+      groupBy((data:any) => data.tax_type),
+      mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+    ).subscribe((dt) =>{
+        console.log(dt);
+         from(dt[1]).pipe(  groupBy((data:any) => data.scheme_name),
+         mergeMap(group => zip(of(group.key), group.pipe(toArray())))).subscribe((res) =>{
+            // this.financial_year_wise_detail_report.push({
+            //     fund_name:dt[0],
+            //     isin_no:res[1].length > 0 ? res[1][0].isin_no : "N/A",
+            //     folio_no:res[1].length > 0 ? res[1][0].folio_no : 'N/A',
+            //     details:res[1].filter(el => {
+
+            //     })
+            // })
+         })
+    })
+  }
+
+  calculate_total_financial_year_wise_summary_report = () =>{
+      this.total_financial_wise_report = {
+              scheme_name:'GRAND TOTAL',
+              folio_no:'',
+              isin_no:'',
+              inflow:global.Total__Count(this.financial_year_wise_trans_report,(x) => x.inflow ? Number(x.inflow) : 0),
+              outflow:global.Total__Count(this.financial_year_wise_trans_report,(x) => x.outflow ? Number(x.outflow) : 0),
+              idcw_reinv:global.Total__Count(this.financial_year_wise_trans_report,(x) => x.idcw_reinv ? Number(x.idcw_reinv) : 0),
+              idcwp:global.Total__Count(this.financial_year_wise_trans_report,(x) => x.idcwp ? Number(x.idcwp) : 0),
+              net_flow:global.Total__Count(this.financial_year_wise_trans_report,(x) => x.net_flow ? Number(x.net_flow) : 0),
+      }
+
+  }
+
+  segregrateFinancialYearWiseReport(arr){
+    let count = 0;
     from(arr)
     .pipe(
       groupBy((data:any) => data['scheme_name']),
       mergeMap(group => zip(of(group.key), group.pipe(toArray())))
     ).subscribe((dt) =>{
-          console.log(dt)
           this.financial_year_wise_trans_report.push(
             {
               scheme_name: `${dt[0]}-${dt[1][0].plan_name}-${dt[1][0].option_name}`,
               folio_no:dt[1][0].folio_no,
+              isin_no:dt[1][0].isin_no ? dt[1][0].isin_no : "N/A",
               inflow:'0.00',
               outflow:'0.00',
-              div_sweep_in:'0.00',
-              div_reinv:'0.00',
-              idcwp:'0.00'
+              idcw_reinv:'0.00',
+              idcwp:'0.00',
+              net_flow:'0.00'
             }
           )
     })
@@ -1127,7 +1171,12 @@ export class realisedCapitalGainColumn {
     {
       field: 'scheme_name',
       header: 'Scheme',
-      width: '45rem'
+      width: '39rem'
+    },
+    {
+      field: 'isin_no',
+      header: 'ISIN',
+      width: '8rem'
     },
     {
       field: 'folio',
@@ -1227,6 +1276,7 @@ export interface IsummaryReport {
   id: number;
   scheme_name: string | undefined;
   folio: string | undefined;
+  isin_no:string | undefined;
   short_term_gain: number;
   short_term_loss: number;
   long_term_gain: number;
@@ -1252,11 +1302,11 @@ export class DividendColumn{
       field:'sl_no',
       header:'Sl No.',
       width:'5rem',
-      isVisible:['DD']
+      isVisible:['DD','DS']
     },
     {
       field:'trans_date',
-      header:'IDCW Date',
+      header:'Date',
       width:'7rem',
       isVisible:['DD']
     },
@@ -1273,6 +1323,12 @@ export class DividendColumn{
       isVisible:['DD','DS']
     },
     {
+      field:'isin_no',
+      header:'ISIN',
+      width:'8rem',
+      isVisible:['DD','DS']
+    },
+    {
       field:'idcwp',
       header:'IDCWP',
       width:'',
@@ -1284,18 +1340,18 @@ export class DividendColumn{
       width:'',
       isVisible:['DD','DS']
     },
-    {
-      field:'idcw_sweep_in',
-      header:'IDCW Sweep In',
-      width:'',
-      isVisible:['DD','DS']
-    },
-    {
-      field:'idcw_sweep_out',
-      header:'IDCW Sweep Out',
-      width:'',
-      isVisible:['DD','DS']
-    },
+    // {
+    //   field:'idcw_sweep_in',
+    //   header:'IDCW Sweep In',
+    //   width:'',
+    //   isVisible:['DD','DS']
+    // },
+    // {
+    //   field:'idcw_sweep_out',
+    //   header:'IDCW Sweep Out',
+    //   width:'',
+    //   isVisible:['DD','DS']
+    // },
     {
       field:'tot_tds',
       header:'TDS',

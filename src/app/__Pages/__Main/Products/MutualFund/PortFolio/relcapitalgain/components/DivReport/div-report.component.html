@@ -78,7 +78,7 @@ styleClass="p-datatable-lg"
         <p class="m-0">Total</p>
       </ng-container>
       <ng-container *ngSwitchCase="col.field == 'idcwp' || col.field == 'idcw_reinv' 
-      || col.field == 'idcw_sweep_in' || col.field == 'idcw_sweep_out' || col.field == 'tot_tds'">
+       || col.field == 'tot_tds'">
         <p class="m-0">{{total_idcw_summary ? (total_idcw_summary[col.header] ? (total_idcw_summary[col.header] | number:'1.2-2') : '0.00'): '0.00'}}</p>
       </ng-container>
       <ng-container *ngSwitchDefault></ng-container>
