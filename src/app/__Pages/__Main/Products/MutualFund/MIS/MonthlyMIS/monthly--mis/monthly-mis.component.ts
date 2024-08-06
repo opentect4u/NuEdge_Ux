@@ -40,6 +40,7 @@ export class MonthlyMisComponent implements OnInit {
    */
   __monthly__MIS_Column: column[] = trxnClm.column.filter((item: column) => (item.field != 'amc_link' && item.field != 'scheme_link' && item.field != 'isin_link' && item.field != 'plan_name' && item.field != 'option_name' && item.field != 'plan_opt' && item.field != 'divident_opt' && item.field != 'lock_trxn'))
                                     .filter((el) => el.isVisible.includes('T'));
+ 
 
   /**
    * Holding Monthly MIS Master Data
@@ -71,12 +72,12 @@ export class MonthlyMisComponent implements OnInit {
     }
       this.dbIntr.api_call(1,'/showMonthlyMisReport',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<TrxnRpt[]>) =>{
-        console.log(res);
-        this.__monthly_mis_trxn = res;
+      .subscribe((res:Partial<{data:TrxnRpt[],disclaimer:string}>) =>{
+        this.__monthly_mis_trxn = res.data;
+        this.disclaimer = res.disclaimer;
         this.total_mis_calculation = {
-           tot_inflow_amt:res.filter(item => item.process_type == 'I').map(item => Number(item.tot_gross_amount)).reduce((accumulator, currentValue) => accumulator + currentValue, 0),
-           tot_outflow_amt:res.filter(item => item.process_type == 'O').map(item => Number(item.tot_gross_amount)).reduce((accumulator, currentValue) => accumulator + currentValue, 0),
+           tot_inflow_amt:res.data.filter(item => item.process_type == 'I').map(item => Number(item.tot_gross_amount)).reduce((accumulator, currentValue) => accumulator + currentValue, 0),
+           tot_outflow_amt:res.data.filter(item => item.process_type == 'O').map(item => Number(item.tot_gross_amount)).reduce((accumulator, currentValue) => accumulator + currentValue, 0),
         }
 
       })

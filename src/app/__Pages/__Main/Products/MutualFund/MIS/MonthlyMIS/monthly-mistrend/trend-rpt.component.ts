@@ -28,6 +28,8 @@ export class TrendRptComponent implements OnInit {
   __mis__Trend__Column:column[] =  ColumnTrend.column;
   /*****END */
 
+  disclaimer:string | undefined = '';
+
   __chart__data:ChartWithCategories;
 
   /**** Holding Trend Report Master Data */
@@ -60,6 +62,7 @@ export class TrendRptComponent implements OnInit {
     .pipe(pluck('data'))
     .subscribe((res:IActualMISTrend) =>{
       const dt = [];
+      this.disclaimer = res.disclaimer;
       res.categories.pop();
       res.chart_data.map((el:IChartData) => ({name:el.name,data:el.data.splice(-1)}))
       this.__chart__data = {
@@ -149,5 +152,6 @@ export  interface IMisTrend{
 export interface IActualMISTrend{
   categories:string[]
   chart_data:{name:string,data:number[]}[]
-  table_data:IMisTrend[]
+  table_data:IMisTrend[],
+  disclaimer:string | undefined
 }

@@ -201,6 +201,8 @@ export class TrxnRptComponent implements OnInit {
    * Hold column for transaction table
    */
   column: column[] = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn')).filter((el) => el.isVisible.includes('T'));
+ 
+  disclaimer:string | undefined = '';
 
   /**
    * Holding AMC Master Data
@@ -767,15 +769,16 @@ export class TrxnRptComponent implements OnInit {
       .api_call(1, '/showTransDetails', TrxnDt)
       .pipe(
         pluck('data'),
-        tap((item:TrxnRpt[]) => {
+        tap((item:any) => {
+          this.disclaimer = item?.disclaimer;
             let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
           this.trxn_count = {
-            reject:item.filter(res => res.transaction_subtype.includes('Rejection')),
-             process:item.filter(res => !res.transaction_subtype.includes('Rejection')),
-             total: item
+            reject:item.data.filter(res => res.transaction_subtype.includes('Rejection')),
+             process:item.data.filter(res => !res.transaction_subtype.includes('Rejection')),
+             total: item.data
             };
 
-            item.map( item => {
+            item.data.map( item => {
               item.tot_amount = (item.rnt_id == 2
                 && item.transaction_subtype.toLowerCase().includes('rejection'))
                 ? (item.tot_amount ?
@@ -802,17 +805,18 @@ export class TrxnRptComponent implements OnInit {
             });
         })
         )
-      .subscribe((res: TrxnRpt[]) => {
-        if(res.length > 0){
-        this.calculateProcess_Reject(res);
+      .subscribe((res: Partial<{data:TrxnRpt[],disclaimer:string}>) => {
+        console.log(res.data);
+        if(res.data.length > 0){
+        this.calculateProcess_Reject(res.data);
       }
        this.isTotalFooterShow = (this.misTrxnRpt.value.folio_no != '' || this.misTrxnRpt.value.pan_no != '') ? true : false;
-        if(res.length == 0){
+        if(res.data.length == 0){
           this.utility.showSnackbar('No transactions are available on this periods',2,true);
           return;
         }
       this.state = 'collapsed';
-      this.trxnRpt = res;
+      this.trxnRpt = res.data;
       });
   }
 
