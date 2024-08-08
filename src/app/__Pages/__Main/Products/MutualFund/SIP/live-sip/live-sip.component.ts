@@ -49,6 +49,8 @@ export class LiveSIPComponent implements OnInit {
    */
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'));
 
+  disclaimer:string | undefined = '';
+
   /**
    * Hold Sip Report result
    */
@@ -108,11 +110,12 @@ export class LiveSIPComponent implements OnInit {
        }
         this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
         .pipe(pluck('data'))
-        .subscribe((res: IliveSip[]) =>{
-             this.live_sip_rpt = res;
-             this.total_live_sip_amt = global.calculatAmt(res);
-             this.pause_sip_count = res.filter(item => item.pause_end_date && item.pause_start_date).length;
-             this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+        .subscribe((res:Partial<{data:IliveSip[],disclaimer:string}>) =>{
+            this.disclaimer = res.disclaimer;
+             this.live_sip_rpt = res.data;
+             this.total_live_sip_amt = global.calculatAmt(res.data);
+             this.pause_sip_count = res.data.filter(item => item.pause_end_date && item.pause_start_date).length;
+             this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
             });
 
 

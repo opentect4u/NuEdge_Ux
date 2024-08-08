@@ -21,6 +21,8 @@ export class RegisteredSIPComponent implements OnInit {
 
   @Input() sub_tab:ITab[] = [];
 
+  disclaimer:string | undefined = '';
+
   sub_type:string = 'RR';
 
   __title:string = ''
@@ -92,10 +94,11 @@ export class RegisteredSIPComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<IliveSip>[]) =>{
-        this.register_sip = res;
-        this.total_register_sip_amt = global.calculatAmt(res);
-        this.state = res.length > 0 ? displayMode[0] : displayMode[1];
+      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:string}>) =>{
+        this.register_sip = res.data;
+        this.disclaimer = res.disclaimer;
+        this.total_register_sip_amt = global.calculatAmt(res.data);
+        this.state = res.data.length > 0 ? displayMode[0] : displayMode[1];
       })
     }
 

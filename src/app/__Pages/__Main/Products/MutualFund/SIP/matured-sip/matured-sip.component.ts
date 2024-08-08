@@ -50,6 +50,8 @@ export class MaturedSIPComponent implements OnInit {
 
   total_mature_sip_amt:number = 0;
 
+  disclaimer:string | undefined = ''
+
     /**
    * Set Column for Matured SIP REPORT
    */
@@ -94,10 +96,11 @@ export class MaturedSIPComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<IliveSip>[]) =>{
-        this.mature_sip = res;
-        this.total_mature_sip_amt = global.calculatAmt(res);
-        this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:string}>) =>{
+        this.mature_sip = res.data;
+        this.disclaimer = res.disclaimer;
+        this.total_mature_sip_amt = global.calculatAmt(res.data);
+        this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
       })
     }
 

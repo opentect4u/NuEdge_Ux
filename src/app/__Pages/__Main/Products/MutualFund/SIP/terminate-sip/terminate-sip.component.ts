@@ -36,6 +36,8 @@ export class TerminateSIPComponent implements OnInit {
      */
     total_terminate_sip_amt:number = 0;
 
+    disclaimer:string | undefined = '';
+
   /**
    * For holding client those are  present only in transaction.
    */
@@ -65,10 +67,11 @@ export class TerminateSIPComponent implements OnInit {
     this.dbIntr
       .api_call(1, '/showSipStpDetails', this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res: IliveSip[]) => {
-        this.live_sip_rpt = res;
-        this.total_terminate_sip_amt = global.calculatAmt(res);
-        this.state = res.length > 0 ? displayMode[0] : displayMode[1];
+      .subscribe((res:Partial<{data:IliveSip[],disclaimer:string}>) => {
+        this.live_sip_rpt = res.data;
+        this.disclaimer = res.disclaimer;
+        this.total_terminate_sip_amt = global.calculatAmt(res.data);
+        this.state = res.data.length > 0 ? displayMode[0] : displayMode[1];
       });
   };
 

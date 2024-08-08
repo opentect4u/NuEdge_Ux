@@ -41,6 +41,8 @@ export class PauseSIPComponent implements OnInit {
    */
   @Input() report_type: string;
 
+  disclaimer:string | undefined = '';
+
   // column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'));
 
   column = live_sip_stp_swp_rpt.columns.filter((item) =>
@@ -67,10 +69,11 @@ export class PauseSIPComponent implements OnInit {
     this.dbIntr
       .api_call(1, '/showSipStpDetails', this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res: Partial<IliveSip>[]) => {
-        this.pause_sip = res;
-        this.total_pause_sip_amt = global.calculatAmt(res);
-        this.state = res.length > 0 ? displayMode[0] : displayMode[1];
+      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:string}>) => {
+        this.pause_sip = res.data;
+        this.disclaimer = res.disclaimer;
+        this.total_pause_sip_amt = global.calculatAmt(res.data);
+        this.state = res.data.length > 0 ? displayMode[0] : displayMode[1];
       });
   };
 

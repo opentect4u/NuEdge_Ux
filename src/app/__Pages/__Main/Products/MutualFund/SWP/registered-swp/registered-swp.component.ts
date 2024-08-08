@@ -46,6 +46,8 @@ export class RegisteredSwpComponent implements OnInit {
 
   reset_data:string = 'N';
 
+  disclaimer:string | undefined = '';
+
   index:number = 0;
 
   register_swp:Partial<IliveSwp>[] = [];
@@ -96,10 +98,11 @@ export class RegisteredSwpComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<IliveSwp>[]) =>{
-        this.register_swp = res;
-        this.total_registered_swp_amt = global.calculatAmt(res);
-        this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+      .subscribe((res:Partial<{data:Partial<IliveSwp>[],disclaimer:string}>) =>{
+        this.register_swp = res.data;
+        this.total_registered_swp_amt = global.calculatAmt(res.data);
+        this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
+        this.disclaimer =res.disclaimer;
       })
     }
     changeState = (event) =>{

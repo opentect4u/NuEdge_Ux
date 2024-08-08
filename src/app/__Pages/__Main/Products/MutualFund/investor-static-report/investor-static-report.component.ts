@@ -58,7 +58,7 @@ enum TABLE_WIDTH {
 })
 export class InvestorStaticReportComponent implements OnInit {
 
-
+  disclaimer:string | undefined = '';
 
   state: string | undefined = 'expanded';
 
@@ -602,9 +602,10 @@ export class InvestorStaticReportComponent implements OnInit {
       this.dbIntr
         .api_call(1, '/showFolioDetails', this.utility.convertFormData(object))
         .pipe(pluck('data'))
-        .subscribe((res:IStaticRpt[]) => {
+        .subscribe((res:Partial<{data:IStaticRpt[],disclaimer:string}>) => {
           console.log(res);
-          this.report_data = res;
+          this.disclaimer =res.disclaimer;
+          this.report_data = res.data;
         });
     }
     else{

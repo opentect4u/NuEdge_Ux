@@ -215,6 +215,9 @@ __RmMst: any = [];
  */
 __subbrkArnMst: any = [];
 
+
+disclaimer:string | undefined = '';
+
 /**
  * Holding Sub Broker Master Data
  */
@@ -760,15 +763,17 @@ fetchTransaction = () =>{
     .api_call(1, '/showBrokerChangeDetails', TrxnDt)
     .pipe(
       pluck('data'),
-      tap((item:TrxnRpt[]) => {
+      tap((item:Partial<{data:TrxnRpt[],disclaimer:string}>) => {
+        console.log(item)
+        this.disclaimer = item.disclaimer;
           let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
         this.trxn_count = {
-          reject:item.filter(res => res.transaction_subtype.includes('Rejection')),
-           process:item.filter(res => !res.transaction_subtype.includes('Rejection')),
-           total: item
+          reject:item.data.filter(res => res.transaction_subtype.includes('Rejection')),
+           process:item.data.filter(res => !res.transaction_subtype.includes('Rejection')),
+           total: item.data
           };
 
-          item.map( item => {
+          item.data.map( item => {
             item.tot_amount = (item.rnt_id == 2
               && item.transaction_subtype.toLowerCase().includes('rejection'))
               ? (item.tot_amount ?
@@ -820,18 +825,18 @@ fetchTransaction = () =>{
         //   });
       })
       )
-    .subscribe((res: TrxnRpt[]) => {
-      // console.log(res);
+    .subscribe((res) => {
+      console.log(res);
     //   if(res.length > 0){
     //   this.calculateProcess_Reject(res);
     // }
      this.isTotalFooterShow = (this.misTrxnRpt.value.folio_no != '' || this.misTrxnRpt.value.pan_no != '') ? true : false;
-      if(res.length == 0){
+      if(res.data.length == 0){
         this.utility.showSnackbar('No transactions are available',2,true);
         return;
       }
     this.state = 'collapsed';
-    this.trxnRpt = res;
+    this.trxnRpt = res.data;
     });
 }
 

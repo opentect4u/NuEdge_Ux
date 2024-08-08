@@ -30,6 +30,8 @@ export class PauseSwpComponent implements OnInit {
 
   @Input() sip_stp_swp_type_mst = [];
 
+  disclaimer:string |undefined = '';
+
   total_pause_swp_amt:number = 0;
 
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('P3'));
@@ -62,10 +64,11 @@ export class PauseSwpComponent implements OnInit {
     this.dbIntr.api_call(1,'/showSipStpDetails',
     this.utility.convertFormData(dt))
     .pipe(pluck('data'))
-    .subscribe((res: Partial<IliveSwp>[]) =>{
-         this.pause_swp = res;
-         this.total_pause_swp_amt = global.calculatAmt(res);
-         this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+    .subscribe((res:Partial<{data:IliveSwp[],disclaimer:string}>) =>{
+         this.pause_swp = res.data;
+         this.total_pause_swp_amt = global.calculatAmt(res.data);
+         this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
+         this.disclaimer = res.disclaimer;
     })
   }
   changeState = (event) =>{

@@ -20,6 +20,8 @@ export class LiveSwpComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
 
+  disclaimer:string | undefined = '';
+
   @Input() swp_type:string;
 
   @Input() report_type:string;
@@ -73,11 +75,11 @@ export class LiveSwpComponent implements OnInit {
   this.dbIntr.api_call(1,'/showSipStpDetails',
   this.utility.convertFormData(dt))
   .pipe(pluck('data'))
-  .subscribe((res: IliveSwp[]) =>{
-    console.log(res);
-       this.live_swp_rpt = res;
-       this.total_live_swp_amt = global.calculatAmt(res);
-       this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+  .subscribe((res:Partial<{data:IliveSwp[],disclaimer:string}>) =>{
+      this.disclaimer = res.disclaimer;
+       this.live_swp_rpt = res.data;
+       this.total_live_swp_amt = global.calculatAmt(res.data);
+       this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
 
   })
 }

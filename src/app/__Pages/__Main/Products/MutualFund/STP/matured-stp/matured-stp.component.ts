@@ -53,6 +53,7 @@ export class MaturedStpComponent implements OnInit {
 
   mature_stp: Partial<IliveStp>[] = [];
 
+  disclaimer:string | undefined = '';
   column = live_sip_stp_swp_rpt.columns.filter((item) =>
     item.isVisible.includes('LS-2')
   );
@@ -105,10 +106,11 @@ export class MaturedStpComponent implements OnInit {
     }
     this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
     .pipe(pluck('data'))
-    .subscribe((res:Partial<IliveStp>[]) =>{
-      this.mature_stp = res;
-      this.total_mature_stp_amt = global.calculatAmt(res);
-      this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+    .subscribe((res: Partial<{data:Partial<IliveStp>[],disclaimer:string}>) =>{
+      this.mature_stp = res.data;
+      this.disclaimer = res.disclaimer;
+      this.total_mature_stp_amt = global.calculatAmt(res.data);
+      this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
 
     })
   }

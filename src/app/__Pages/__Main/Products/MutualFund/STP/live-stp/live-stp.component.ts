@@ -22,6 +22,8 @@ export class LiveStpComponent implements OnInit {
   @ViewChild('primeTbl') primeTbl: Table;
   @Input() stpType:string;
 
+  disclaimer:string | undefined = '';
+
   @Input() report_type:string;
 
   __title:string = 'Live STP';
@@ -69,10 +71,11 @@ LiveStpReport = (formDt) =>{
   }
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
-  .subscribe((res: IliveStp[]) =>{
-       this.live_stp_rpt = res;
-       this.total_live_stp_report = global.calculatAmt(res);
-       this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+  .subscribe((res: Partial<{data:IliveStp[],disclaimer:string}>) =>{
+       this.live_stp_rpt = res.data;
+       this.disclaimer = res.disclaimer;
+       this.total_live_stp_report = global.calculatAmt(res.data);
+       this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
   })
 }
 

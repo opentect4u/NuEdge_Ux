@@ -53,6 +53,7 @@ index: number = 0;
 
 total_matured_swp_amt:number = 0;
 
+disclaimer:string | undefined = '';
 
 mature_swp: Partial<IliveSwp>[] = [];
 
@@ -100,10 +101,11 @@ getMaturedSwpMasterData(form_data){
   }
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
-  .subscribe((res:Partial<IliveSwp>[]) =>{
-    this.mature_swp = res;
-    this.total_matured_swp_amt = global.calculatAmt(res);
-    this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+  .subscribe((res:Partial<{data:Partial<IliveSwp>[],disclaimer:string}>) =>{
+    this.mature_swp = res.data;
+    this.disclaimer =res.disclaimer;
+    this.total_matured_swp_amt = global.calculatAmt(res.data);
+    this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
   })
 }
 

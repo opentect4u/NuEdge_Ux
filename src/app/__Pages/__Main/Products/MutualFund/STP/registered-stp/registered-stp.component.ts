@@ -37,6 +37,8 @@ export class RegisteredStpComponent implements OnInit {
    */
   @Input() stpType: string;
 
+  disclaimer:string | undefined = '';
+
   /**
    *
    */
@@ -97,10 +99,11 @@ export class RegisteredStpComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<IliveStp>[]) =>{
-        this.register_stp = res;
-        this.total_resgistered_stp_amt = global.calculatAmt(res);
-       this.state =  res.length > 0 ? displayMode[0] : displayMode[1];
+      .subscribe((res: Partial<{data:Partial<IliveStp>[],disclaimer:string}>) =>{
+        this.register_stp = res.data;
+        this.total_resgistered_stp_amt = global.calculatAmt(res.data);
+       this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];
+       this.disclaimer = res.disclaimer;
 
       })
     }
