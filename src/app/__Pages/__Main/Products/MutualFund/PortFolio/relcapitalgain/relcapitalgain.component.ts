@@ -13,7 +13,10 @@ import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import Tabs from '../../../../../../../assets/json/Product/Portfolio/realisedCapitalGain/tab.json';
 import moment from 'moment';
-
+import jsPDF from 'jspdf';
+import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
+import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'portfolio-relcapitalgain',
   templateUrl: './relcapitalgain.component.html',
@@ -22,12 +25,17 @@ import moment from 'moment';
 export class RelcapitalgainComponent implements OnInit {
 
   @ViewChild('relise_capital_gain_summary') primaryTbl: Table;
+  @ViewChild('relise_capital_gain_detail') primaryTbl_details: Table;
+
+  
   keepOrder = 
   (x: KeyValue<string, any>, y: KeyValue<string, any>): number => { 
   return 0 
   }
 
   total_financial_wise_report;
+
+  final_footer_for_detail;
 
   objectKeys = Object.keys;
 
@@ -740,7 +748,7 @@ export class RelcapitalgainComponent implements OnInit {
           //  "IDCW Sweep Out":0.00,
            "TDS":global.Total__Count(res.data,(item:any) => Number(item.tot_tds))
         }
-        console.log(this.total_idcw_summary.length);
+        // console.log(this.total_idcw_summary.length);
     })
   }
   }
@@ -754,6 +762,7 @@ export class RelcapitalgainComponent implements OnInit {
       // console.log(res);
       // this.financial_year_wise_trans_report = res;
       this.financial_year_wise_trans_report = [];
+      this.financial_year_wise_detail_report = [];
       this.segregrateFinancialYearWiseReport(res);
       this.segregrateFinancialYearWiseDetailsReport(res);
     })
@@ -762,25 +771,64 @@ export class RelcapitalgainComponent implements OnInit {
   /*** End */
 
   segregrateFinancialYearWiseDetailsReport = (arr) =>{
-    console.log(arr)
+    // console.log(arr)
+    this.final_footer_for_detail = null;
     from(arr.filter(item => this.released_capital_gain_form.value.asset_type.includes(item.tax_type)))
     .pipe(
       groupBy((data:any) => data.tax_type),
       mergeMap(group => zip(of(group.key), group.pipe(toArray())))
     ).subscribe((dt) =>{
-        console.log(dt);
+      let final_scheme_wise_fin_arr = [];
          from(dt[1]).pipe(  groupBy((data:any) => data.scheme_name),
          mergeMap(group => zip(of(group.key), group.pipe(toArray())))).subscribe((res) =>{
-            // this.financial_year_wise_detail_report.push({
-            //     fund_name:dt[0],
-            //     isin_no:res[1].length > 0 ? res[1][0].isin_no : "N/A",
-            //     folio_no:res[1].length > 0 ? res[1][0].folio_no : 'N/A',
-            //     details:res[1].filter(el => {
-
-            //     })
-            // })
+          const tot_amount = global.Total__Count(res[1],(x)=> Number(x.tot_amount));
+          const tot_stamp_duty = global.Total__Count(res[1],(x)=> Number(x.tot_stamp_duty));
+          const tot_gross_amount = global.Total__Count(res[1],(x)=> (x?.tot_gross_amount ? Number(x.tot_gross_amount) : 0.00));
+          const tot_tds = global.Total__Count(res[1],(x)=> Number(x.tot_tds));
+          const tot_units = global.Total__Count(res[1],(x)=> Number(x.tot_units));
+          this.final_footer_for_detail = {
+            sl_no:'',
+            transaction_type:'TOTAL',
+            trans_date:'',
+            tot_amount:((this.final_footer_for_detail ? this.final_footer_for_detail?.tot_amount : 0) + tot_amount),
+            tot_stamp_duty:((this.final_footer_for_detail ? this.final_footer_for_detail?.tot_stamp_duty : 0) + tot_stamp_duty),
+            tot_gross_amount:((this.final_footer_for_detail ? this.final_footer_for_detail?.tot_amount : 0) + tot_gross_amount),
+            tot_tds:((this.final_footer_for_detail ? this.final_footer_for_detail?.tot_tds : 0) + tot_tds),
+            tot_units:((this.final_footer_for_detail ? this.final_footer_for_detail?.tot_units : 0) + tot_units),
+            pur_price:'',
+            bank_name:'',
+            acc_no:'',
+            stt:0.00,
+            curr_val:0.00
+          }
+          final_scheme_wise_fin_arr.push({
+            scheme_name:`${res[0]}-${res[1][0].plan_name}-${res[1][0].option_name}  #ISIN ${res[1][0]?.isin_no} #FOLIO ${res[1][0]?.folio_no}`,
+            data:res[1],
+            total_financial_year_footer:{
+              sl_no:'',
+              transaction_type:'TOTAL',
+              trans_date:'',
+              tot_amount:global.Total__Count(res[1],(x)=> Number(x.tot_amount)),
+              tot_stamp_duty:global.Total__Count(res[1],(x)=> Number(x.tot_stamp_duty)),
+              tot_gross_amount:global.Total__Count(res[1],(x)=> (x?.tot_gross_amount ? Number(x.tot_gross_amount) : 0.00)),
+              tot_tds:global.Total__Count(res[1],(x)=> Number(x.tot_tds)),
+              tot_units:global.Total__Count(res[1],(x)=> Number(x.tot_units)),
+              pur_price:'',
+              bank_name:'',
+              acc_no:'',
+              stt:0.00,
+              curr_val:0.00
+            }
+          })
          })
+         this.financial_year_wise_detail_report.push({
+            tax_type:dt[0],
+            data:final_scheme_wise_fin_arr
+         });
+         
     })
+    console.log(this.final_footer_for_detail );
+
   }
 
   calculate_total_financial_year_wise_summary_report = () =>{
@@ -799,18 +847,31 @@ export class RelcapitalgainComponent implements OnInit {
 
   segregrateFinancialYearWiseReport(arr){
     let count = 0;
+
+    let outflow_flag = ['PL_R','PL_SO'];
+    let inflow_flag = ['PL_P','PL_SI'];
     from(arr)
     .pipe(
       groupBy((data:any) => data['scheme_name']),
       mergeMap(group => zip(of(group.key), group.pipe(toArray())))
     ).subscribe((dt) =>{
+        let inflow = 0;
+        let outflow = 0;
+          dt[1].forEach(el =>{
+            if(outflow_flag.filter(item => item == el.lmf_pl).length > 0){
+              outflow = outflow + Number(el.tot_amount);
+            }
+            else if(inflow_flag.filter(item => item == el.lmf_pl).length > 0){
+              inflow = inflow + Number(el.tot_amount);
+            }
+          })
           this.financial_year_wise_trans_report.push(
             {
               scheme_name: `${dt[0]}-${dt[1][0].plan_name}-${dt[1][0].option_name}`,
               folio_no:dt[1][0].folio_no,
               isin_no:dt[1][0].isin_no ? dt[1][0].isin_no : "N/A",
-              inflow:'0.00',
-              outflow:'0.00',
+              inflow:inflow,
+              outflow:outflow,
               idcw_reinv:'0.00',
               idcwp:'0.00',
               net_flow:'0.00'
@@ -1006,6 +1067,8 @@ export class RelcapitalgainComponent implements OnInit {
   }
 
   subTabDetails = (ev) =>{
+    this.sub_tab_id = '';
+      console.log(ev)
       this.sub_tab_id = ev.tabDtls.flag;
       this.selected_index = ev.index;
   }
@@ -1021,9 +1084,613 @@ export class RelcapitalgainComponent implements OnInit {
   }
   
   exportAs(event){
-    console.log(event)
+    if(this.parent_tab_id == 'R'){
+      if(event.export_type == 'xlsx'){
+        const table = this.primaryTbl?.el.nativeElement.querySelector('table');
+          table.setAttribute('id', 'summary');
+          let summary = document.getElementById('summary');
+          var ws = XLSX.utils.table_to_sheet(summary);
+          /* create a new blank workbook */
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "CAPITALGAINLOSSSUMMARYREPORT");
+          if(this.released_capital_gain_form.value.report_type == 'D'){
+            const detail_table =this.primaryTbl_details?.el.nativeElement.querySelector('table');
+            detail_table.setAttribute('id', 'detail');
+            let details = document.getElementById('detail');
+            var ws2 = XLSX.utils.table_to_sheet(details);
+            XLSX.utils.book_append_sheet(wb, ws2, "CAPITALGAINLOSSDETAILREPORT");
+          }
+          var wbout = XLSX.write(wb, {
+            bookType: 'xlsx',
+            bookSST: true,
+            type: 'binary'
+          });
+          const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', 'REALISEDGAINREPORT.xlsx');
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+      }
+      else{
+        this.exportRealisedCapitalGainAsPDF(event)
+      }
+    }
+    else if(this.parent_tab_id == 'D'){
+      if(event.export_type == 'xlsx'){
+        let dividend_table = document.getElementById('dividend_table');
+        var ws = XLSX.utils.table_to_sheet(dividend_table);
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "DIVIDENDREPORT");
+        var wbout = XLSX.write(wb, {
+          bookType: 'xlsx',
+          bookSST: true,
+          type: 'binary'
+        });
+        const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'REALISEDGAINREPORT.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+      }
+      else{
+        this.exportDividendTableAsPDF(event);
+      }
+    }
+    else{
+      if(event.export_type == 'xlsx'){
+        let fin_summary_table = document.getElementById('fin_year_summary_table');
+        var ws = XLSX.utils.table_to_sheet(fin_summary_table);
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "FINANCIALYEARWISESUMMARYREPORT");
+
+        if(this.released_capital_gain_form.value.report_type == 'D'){
+          let details = document.getElementById('fin_year_details_table');
+          var ws2 = XLSX.utils.table_to_sheet(details);
+          XLSX.utils.book_append_sheet(wb, ws2, "FINANCIALYEARWISEDETAILREPORT");
+        }
+        var wbout = XLSX.write(wb, {
+          bookType: 'xlsx',
+          bookSST: true,
+          type: 'binary'
+        });
+        const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'FINANCIALYEARWISECAPITALGAINLOSSREPORT.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+      }
+        else{
+            this.exportFinancialYearAsPdf(event);
+        }
+    }
   }
 
+  
+
+  s2ab(s) {
+    var buf = new ArrayBuffer(s.length);
+    var view = new Uint8Array(buf);
+    for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+    return buf;
+  }
+
+  exportFinancialYearAsPdf(event){
+    console.log(event);
+    var pdf = new jsPDF('l','pt','a4',true);
+    let sub_tab_id = this.sub_tab_id;
+    console.log(sub_tab_id)
+    const html_element = document.getElementById('client_container');
+    pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+    pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+    pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+    pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+    let finalY = 170;
+    pdf.html(
+      html_element.innerHTML,
+      {
+        html2canvas:{
+          width:pdf.internal.pageSize.getWidth() - 20,
+        },
+        width:pdf.internal.pageSize.getWidth() - 20,
+        windowWidth:pdf.internal.pageSize.getWidth() - 20,
+        margin:5,
+        x:5,
+        y:5,
+        callback(doc) {
+          if(sub_tab_id == 'VCD'){
+            let width = pdf.internal.pageSize.getWidth() - 20
+            let textlines = pdf.setFontSize(10).setFont(
+            "RobotoCondensed-Regular",'','400'
+            ).splitTextToSize(`FINANCIAL YEAR WISE CAPITAL GAIN LOSS DETAILS REPORT`,width);
+          
+            pdf.text(textlines,10,(finalY + 20));
+            finalY = finalY + pdf.getTextDimensions(`FINANCIAL YEAR WISE CAPITAL GAIN LOSS DETAILS REPORT`).h;
+            autoTable(
+              pdf,
+              {
+                didDrawPage: function(data){
+                  finalY = data.cursor.y + 20;
+                },
+                useCss:false,
+                includeHiddenHtml:false,
+                tableLineColor: [189, 195, 199],
+                tableLineWidth: 0.75,
+                theme:'grid',
+                showHead:true,
+                showFoot:true,
+                html:`#fin_year_details_table`,
+                margin:{
+                  top:5,
+                  left:10,
+                  right:10,
+                  bottom:5
+                },
+                  pageBreak:'auto',
+                  rowPageBreak:'avoid',
+                  styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                  cellPadding: 3,valign:'middle',halign:'center'},
+                  headStyles:{
+                      fillColor:'#08567c',
+                      textColor:'#fff',
+                      fontSize:8,
+                      cellPadding:{
+                        vertical:5,
+                        horizontal:3
+                      },
+                      lineColor:'#fff',
+                      font:'RobotoCondensed-Bold'
+                  },
+                  footStyles:{
+                      fillColor:'#08567c',
+                      textColor:'#fff',
+                      fontSize:7,
+                      font:'RobotoCondensed-Bold',
+                      lineColor:'#fff',
+                      cellPadding:{
+                        vertical:5,
+                        horizontal:2
+                      },
+                  },
+                  bodyStyles:{
+                    fontSize:8,
+                    cellPadding:2,
+                    font:'RobotoCondensed-Regular'
+                  },
+                  startY:finalY + 20,
+                tableWidth:pdf.internal.pageSize.getWidth() - 20
+              }
+            )
+          }
+          let width_details = pdf.internal.pageSize.getWidth() - 20
+          let textlines_details = pdf.setFontSize(10).setFont(
+          "RobotoCondensed-Regular",'','400'
+          ).splitTextToSize(`FINANCIAL YEAR WISE CAPITAL GAIN LOSS SUMMARY REPORT`,width_details);
+          pdf.text(textlines_details,10,(finalY + 20));
+          finalY = finalY + pdf.getTextDimensions(`CAPITAL GAIN LOSS SUMMARY REPORT`).h;
+          autoTable(
+            pdf,
+            { 
+              useCss:false,
+              didDrawPage: function(data){
+                  finalY = data.cursor.y + 20;
+              },
+              includeHiddenHtml:false,
+              tableLineColor: [189, 195, 199],
+              tableLineWidth: 0.75,
+              theme:'grid',
+              showHead:true,
+              showFoot:true,
+              html:`#fin_year_summary_table`,
+              margin:{
+                top:5,
+                left:10,
+                right:10,
+                bottom:5
+              },
+                pageBreak:'auto',
+                rowPageBreak:'avoid',
+                styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                cellPadding: 3,valign:'middle',halign:'center'},
+                headStyles:{
+                    fillColor:'#08567c',
+                    textColor:'#fff',
+                    fontSize:8,
+                    cellPadding:{
+                      vertical:5,
+                      horizontal:3
+                    },
+                    lineColor:'#fff',
+                    font:'RobotoCondensed-Bold'
+                },
+                footStyles:{
+                    fillColor:'#08567c',
+                    textColor:'#fff',
+                    fontSize:7,
+                    font:'RobotoCondensed-Bold',
+                    lineColor:'#fff',
+                    cellPadding:{
+                      vertical:5,
+                      horizontal:2
+                    },
+                },
+                bodyStyles:{
+                  fontSize:8,
+                  cellPadding:2,
+                  font:'RobotoCondensed-Regular'
+                },
+                startY:finalY + 20,
+                // columnStyles:{
+                //     0:{cellWidth:150.64,halign:'center'},
+                // },
+              tableWidth:pdf.internal.pageSize.getWidth() - 20
+            }
+          )  
+        
+          if(event.export_type === 'Print'){
+            pdf.autoPrint();
+          }
+          pdf.setProperties({
+              title: `FINANCIALYEARWISECAPITALGAINLOSSREPORT`
+          }).output('dataurlnewwindow');
+          
+        },
+        autoPaging:true
+      }
+    );
+  }
+
+  exportRealisedCapitalGainAsPDF(event){
+    console.log(event);
+    const table = this.primaryTbl?.el.nativeElement.querySelector('table');
+    table.setAttribute('id', 'summary');
+    let report_type = this.released_capital_gain_form.get('report_type').value;
+    if(report_type == 'D'){
+      const detail_table =this.primaryTbl_details?.el.nativeElement.querySelector('table');
+      detail_table.setAttribute('id', 'detail');
+    }
+
+    var pdf = new jsPDF('l','pt','a4',true);
+    const html_element = document.getElementById('client_container');
+    pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+    pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+    pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+    pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+    let finalY = 170;
+    pdf.html(
+      html_element.innerHTML,
+      {
+        html2canvas:{
+          width:pdf.internal.pageSize.getWidth() - 20,
+        },
+        width:pdf.internal.pageSize.getWidth() - 20,
+        windowWidth:pdf.internal.pageSize.getWidth() - 20,
+        margin:5,
+        x:5,
+        y:5,
+        callback(doc) {
+          if(report_type == 'D'){
+            let width = pdf.internal.pageSize.getWidth() - 20
+            let textlines = pdf.setFontSize(10).setFont(
+            "RobotoCondensed-Regular",'','400'
+            ).splitTextToSize(`CAPITAL GAIN LOSS DETAILS REPORT`,width);
+          
+            pdf.text(textlines,10,(finalY + 20));
+            finalY = finalY + pdf.getTextDimensions(`CAPITAL GAIN LOSS DETAILS REPORT`).h;
+            autoTable(
+              pdf,
+              {
+                didDrawPage: function(data){
+                  finalY = data.cursor.y + 20;
+                },
+                useCss:false,
+                includeHiddenHtml:false,
+                tableLineColor: [189, 195, 199],
+                tableLineWidth: 0.75,
+                theme:'grid',
+                showHead:true,
+                showFoot:true,
+                html:`#detail`,
+                margin:{
+                  top:5,
+                  left:10,
+                  right:10,
+                  bottom:5
+                },
+                  pageBreak:'auto',
+                  rowPageBreak:'avoid',
+                  styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                  cellPadding: 3,valign:'middle',halign:'center'},
+                  headStyles:{
+                      fillColor:'#08567c',
+                      textColor:'#fff',
+                      fontSize:8,
+                      cellPadding:{
+                        vertical:5,
+                        horizontal:3
+                      },
+                      lineColor:'#fff',
+                      font:'RobotoCondensed-Bold'
+                  },
+                  footStyles:{
+                      fillColor:'#08567c',
+                      textColor:'#fff',
+                      fontSize:7,
+                      font:'RobotoCondensed-Bold',
+                      lineColor:'#fff',
+                      cellPadding:{
+                        vertical:5,
+                        horizontal:2
+                      },
+                  },
+                  bodyStyles:{
+                    fontSize:8,
+                    cellPadding:2,
+                    font:'RobotoCondensed-Regular'
+                  },
+                  startY:finalY + 20,
+                tableWidth:pdf.internal.pageSize.getWidth() - 20
+              }
+            )
+          }
+          let width_details = pdf.internal.pageSize.getWidth() - 20
+          let textlines_details = pdf.setFontSize(10).setFont(
+          "RobotoCondensed-Regular",'','400'
+          ).splitTextToSize(`CAPITAL GAIN LOSS SUMMARY REPORT`,width_details);
+          pdf.text(textlines_details,10,(finalY + 20));
+          finalY = finalY + pdf.getTextDimensions(`CAPITAL GAIN LOSS SUMMARY REPORT`).h;
+          autoTable(
+            pdf,
+            { 
+              useCss:false,
+              didDrawPage: function(data){
+                  finalY = data.cursor.y + 20;
+              },
+              includeHiddenHtml:false,
+              tableLineColor: [189, 195, 199],
+              tableLineWidth: 0.75,
+              theme:'grid',
+              showHead:true,
+              showFoot:true,
+              html:`#summary`,
+              margin:{
+                top:5,
+                left:10,
+                right:10,
+                bottom:5
+              },
+                pageBreak:'auto',
+                rowPageBreak:'avoid',
+                styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                cellPadding: 3,valign:'middle',halign:'center'},
+                headStyles:{
+                    fillColor:'#08567c',
+                    textColor:'#fff',
+                    fontSize:8,
+                    cellPadding:{
+                      vertical:5,
+                      horizontal:3
+                    },
+                    lineColor:'#fff',
+                    font:'RobotoCondensed-Bold'
+                },
+                footStyles:{
+                    fillColor:'#08567c',
+                    textColor:'#fff',
+                    fontSize:7,
+                    font:'RobotoCondensed-Bold',
+                    lineColor:'#fff',
+                    cellPadding:{
+                      vertical:5,
+                      horizontal:2
+                    },
+                },
+                bodyStyles:{
+                  fontSize:8,
+                  cellPadding:2,
+                  font:'RobotoCondensed-Regular'
+                },
+                startY:finalY + 20,
+                // columnStyles:{
+                //     0:{cellWidth:150.64,halign:'center'},
+                // },
+              tableWidth:pdf.internal.pageSize.getWidth() - 20
+            }
+          )  
+        
+          if(event.export_type === 'Print'){
+            pdf.autoPrint();
+          }
+          pdf.setProperties({
+              title: `REALISEDCAPITALGAIN`
+          }).output('dataurlnewwindow');
+          
+        },
+        autoPaging:true
+      }
+    );
+  }
+  exportDividendTableAsPDF(event){
+    console.log(event);
+    var pdf = new jsPDF('l','pt','a4',true);
+    const html_element = document.getElementById('client_container');
+    const html_tiles = document.getElementById('tiles_block');
+    pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+    pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+    pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+    pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+    let finalY = 170;
+    pdf.html(
+      html_element.innerHTML,
+      {
+        html2canvas:{
+          width:pdf.internal.pageSize.getWidth() - 20,
+        },
+        width:pdf.internal.pageSize.getWidth() - 20,
+        windowWidth:pdf.internal.pageSize.getWidth() - 20,
+        margin:5,
+        x:5,
+        y:5,
+        callback(doc) {
+          let final_html = finalY - 20
+          pdf.html(
+            html_tiles.innerHTML,
+            {
+              html2canvas:{
+                width:pdf.internal.pageSize.getWidth() - 20,
+              },
+              width:pdf.internal.pageSize.getWidth() - 20,
+              windowWidth:pdf.internal.pageSize.getWidth() - 20,
+              margin:5,
+              x:5,
+              y:final_html,
+              callback(doc) {
+                autoTable(
+                  pdf,
+                  { 
+                    useCss:false,
+                    didDrawPage: function(data){
+                        finalY = data.cursor.y + 20;
+                    },
+                    includeHiddenHtml:false,
+                    tableLineColor: [189, 195, 199],
+                    tableLineWidth: 0.75,
+                    theme:'grid',
+                    showHead:true,
+                    showFoot:true,
+                    html:`#dividend_table`,
+                    margin:{
+                      top:5,
+                      left:10,
+                      right:10,
+                      bottom:5
+                    },
+                      pageBreak:'auto',
+                      rowPageBreak:'avoid',
+                      styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                      cellPadding: 3,valign:'middle',halign:'center'},
+                      headStyles:{
+                          fillColor:'#08567c',
+                          textColor:'#fff',
+                          fontSize:8,
+                          cellPadding:{
+                            vertical:5,
+                            horizontal:3
+                          },
+                          lineColor:'#fff',
+                          font:'RobotoCondensed-Bold'
+                      },
+                      footStyles:{
+                          fillColor:'#08567c',
+                          textColor:'#fff',
+                          fontSize:7,
+                          font:'RobotoCondensed-Bold',
+                          lineColor:'#fff',
+                          cellPadding:{
+                            vertical:5,
+                            horizontal:2
+                          },
+                      },
+                      bodyStyles:{
+                        fontSize:8,
+                        cellPadding:2,
+                        font:'RobotoCondensed-Regular'
+                      },
+                      startY:(final_html + 50),
+                      // columnStyles:{
+                      //     0:{cellWidth:150.64,halign:'center'},
+                      // },
+                    tableWidth:pdf.internal.pageSize.getWidth() - 20
+                  }
+                )  
+                if(event.export_type === 'Print'){
+                  pdf.autoPrint();
+                }
+                pdf.setProperties({
+                    title: `DIVIDENDREPORT`
+                }).output('dataurlnewwindow');
+                
+              },
+              autoPaging:true
+            }
+          );
+          // console.log(doc);
+          // autoTable(
+          //   pdf,
+          //   { 
+          //     useCss:false,
+          //     didDrawPage: function(data){
+          //         finalY = data.cursor.y + 20;
+          //     },
+          //     includeHiddenHtml:false,
+          //     tableLineColor: [189, 195, 199],
+          //     tableLineWidth: 0.75,
+          //     theme:'grid',
+          //     showHead:true,
+          //     showFoot:true,
+          //     html:`#dividend_table`,
+          //     margin:{
+          //       top:5,
+          //       left:10,
+          //       right:10,
+          //       bottom:5
+          //     },
+          //       pageBreak:'auto',
+          //       rowPageBreak:'avoid',
+          //       styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+          //       cellPadding: 3,valign:'middle',halign:'center'},
+          //       headStyles:{
+          //           fillColor:'#08567c',
+          //           textColor:'#fff',
+          //           fontSize:8,
+          //           cellPadding:{
+          //             vertical:5,
+          //             horizontal:3
+          //           },
+          //           lineColor:'#fff',
+          //           font:'RobotoCondensed-Bold'
+          //       },
+          //       footStyles:{
+          //           fillColor:'#08567c',
+          //           textColor:'#fff',
+          //           fontSize:7,
+          //           font:'RobotoCondensed-Bold',
+          //           lineColor:'#fff',
+          //           cellPadding:{
+          //             vertical:5,
+          //             horizontal:2
+          //           },
+          //       },
+          //       bodyStyles:{
+          //         fontSize:8,
+          //         cellPadding:2,
+          //         font:'RobotoCondensed-Regular'
+          //       },
+          //       startY:finalY,
+          //       // columnStyles:{
+          //       //     0:{cellWidth:150.64,halign:'center'},
+          //       // },
+          //     tableWidth:pdf.internal.pageSize.getWidth() - 20
+          //   }
+          // )  
+          // if(event.export_type === 'Print'){
+          //   pdf.autoPrint();
+          // }
+          // pdf.setProperties({
+          //     title: `DIVIDENDREPORT`
+          // }).output('dataurlnewwindow');
+          
+        },
+        autoPaging:true
+      }
+    );
+  
+  }
 }
 
 

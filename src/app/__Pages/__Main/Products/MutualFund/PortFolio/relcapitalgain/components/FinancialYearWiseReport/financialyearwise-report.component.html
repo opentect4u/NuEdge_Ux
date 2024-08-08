@@ -1,82 +1,196 @@
-<ng-container *ngIf="tab_type == 'LS';else view_capital_details">
-    <p-table #dt [value]="financial_year_wise_report"
-    [rows]="10" [paginator]="true"
-      [rowHover]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      styleClass="p-datatable-lg"
-      [pageLinks]="3"
-      [globalFilterFields]="getColumns()"
-        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-      [showCurrentPageReport]="true">
-        <ng-template pTemplate="header">
+
+<div [hidden]="tab_type == 'LS'">
+           <p-table
+            #financial__details_year
+            [value]="financial_year_wise_detail_report"
+            [rows]="10" [paginator]="false"
+            [rowHover]="false"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            styleClass="p-datatable-lg"
+            [pageLinks]="3"
+            [globalFilterFields]="getColumns_for_details_financial_year()"
+              [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+            [showCurrentPageReport]="true"
+           >
+           <ng-template pTemplate="header">
             <tr class="stickyHeader">
-                <th *ngFor="let col of long_summary_column"
+                <th *ngFor="let col of view_complete_details_column"
                     pSortableColumn="{{col.field}}"
                     [style]="'width : '+col.width"
                 >
                 {{col.header}}
-                <p-sortIcon field="{{col.field}}" *ngIf="col.field != 'trans_details'"></p-sortIcon>
                 </th>
             </tr>
         </ng-template>
-            <ng-template pTemplate="caption">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div></div>
-                    <div class="w-50 d-flex justify-content-end align-items-center">
-                        <input id="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
-                        placeholder="Search" />
-                    </div>
-                </div>
-            </ng-template>
-            <ng-template pTemplate="body" let-fin_yr_wise_capital_gain>
-
-                <tr
-               
-                >
-                    <td *ngFor="let col of long_summary_column" 
-                    [ngClass]="{
-                      'inflow':col.field == 'inflow',
-                      'outflow':col.field == 'outflow'
-                    }"
-                    [style]="'width : '+col.width">
-                        <p class="m-0">
-                          {{fin_yr_wise_capital_gain[col.field]}}
-                        </p>
-                   </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage" let-fin_yr_wise_capital_gain>
+        <ng-template pTemplate="caption">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5>FINANCIAL YEAR WISE DETAIL REPORT</h5>
+            </div>
+              <div class="w-50 d-flex justify-content-end align-items-center">
+                  <input id="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_details_financial_year($event)"
+                  placeholder="Search" />
+              </div>
+          </div>
+      </ng-template>
+        <ng-template pTemplate="body" let-fin_yr_wise_capital_gain_details>
+          <tr class="stickyHeaderInnerTH">
+            <td [attr.colspan]="view_complete_details_column.length" class="table__header">
+                <h6 class="m-0">{{fin_yr_wise_capital_gain_details?.tax_type}}</h6>
+            </td>
+          </tr>
+        
+        <ng-container *ngFor="let item of fin_yr_wise_capital_gain_details?.data">
+          <tr>
+            <td [attr.colspan]="view_complete_details_column.length" class="table_scheme_style">
+              {{item?.scheme_name}}
+           </td>
+          </tr>
+            <ng-container *ngFor="let inr_item of item?.data;let i=index">
                 <tr>
-                  <td [attr.colspan]="long_summary_column.length">
-                    <p class="m-0">NO RECORDS FOUND</p>
+                  <td *ngFor="let __col of view_complete_details_column">
+                      <ng-container [ngSwitch]="true">
+                          <ng-container *ngSwitchCase="__col.field == 'sl_no'">
+                                {{i+1}}
+                          </ng-container>
+                          <ng-container *ngSwitchCase="__col.field == 'trans_date'">
+                                {{inr_item[__col.field] ? (inr_item[__col.field] | date:'dd-MM-YYYY') : 'N/A'}}
+                          </ng-container>
+                          <ng-container *ngSwitchCase="__col.field == 'transaction_type' || __col.field == 'bank_name'">
+                            {{inr_item[__col.field] ? inr_item[__col.field] : 'N/A'}}
+                          </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            {{inr_item[__col.field] ? (inr_item[__col.field] | number:'1.2-2') : 'N/A'}}
+                          </ng-container>
+                      </ng-container>
                   </td>
-                </tr>
-              </ng-template>
+              </tr>
+            </ng-container>
+            <tr class="eachTbleFooter">
+              <td *ngFor="let __col of view_complete_details_column">  
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase=" __col.field == 'trans_date' || __col.field == 'transaction_type' || __col.field == 'bank_name'">
+                    {{item?.total_financial_year_footer[__col.field]}}
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    {{item?.total_financial_year_footer[__col.field] | number:'1.2-2'}}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
 
-              <ng-template pTemplate="footer">
-                <tr>
-                  <td
-                    *ngFor="let col of long_summary_column"
-                    [style]="'width : ' + col.width"
-                  >
-                    <ng-container [ngSwitch]="true">
-                      <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                        <p class="m-0">
-                            GRAND TOTAL
-                        </p>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="col.field == 'folio_no' || col.field == 'isin_no'"></ng-container>
-                     
-                      <ng-container *ngSwitchDefault>
-                        {{total_financial_wise_report ? (total_financial_wise_report[col.field] ? (total_financial_wise_report[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
-                      </ng-container>
+        </ng-container>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <tr>
+          <td
+            *ngFor="let col of view_complete_details_column"
+            [style]="'width : ' + col.width"
+          >
+            <ng-container [ngSwitch]="true">
+              <ng-container [ngSwitch]="true">
+                <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'transaction_type' || col.field == 'bank_name' || col.field ==  'acc_no'">
+                 
+                </ng-container>
+                <ng-container *ngSwitchCase=" col.field == 'transaction_type'">
+                  {{final_footer_for__financial_year_wise_detail ? final_footer_for__financial_year_wise_detail[col.field] : "GRAND TOTAL"}}
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  {{final_footer_for__financial_year_wise_detail ? (final_footer_for__financial_year_wise_detail[col.field] | number:'1.2-2') : "0.00"}}
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+      </p-table>
+</div>
+<hr/>
+  <div class="my-5">
+
+  </div>
+<p-table #dt [value]="financial_year_wise_report"
+[rows]="10" [paginator]="true"
+  [rowHover]="true"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  styleClass="p-datatable-lg"
+  [pageLinks]="3"
+  [globalFilterFields]="getColumns()"
+    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+  [showCurrentPageReport]="true">
+    <ng-template pTemplate="header">
+        <tr class="stickyHeader">
+            <th *ngFor="let col of long_summary_column"
+                pSortableColumn="{{col.field}}"
+                [style]="'width : '+col.width"
+            >
+            {{col.header}}
+            <p-sortIcon field="{{col.field}}" *ngIf="col.field != 'trans_details'"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+        <ng-template pTemplate="caption">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h5>FINANCIAL YEAR WISE SUMMARY REPORT</h5>
+              </div>
+              <div class="w-50 d-flex justify-content-end align-items-center">
+                  <input id="search" class="form-control rounded w-50 pr-4 mr-2" type="text" (input)="filterGlobal_secondary($event)"
+                  placeholder="Search" />
+              </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="body" let-fin_yr_wise_capital_gain>
+
+            <tr
+           
+            >
+                <td *ngFor="let col of long_summary_column" 
+                [ngClass]="{
+                  'inflow':col.field == 'inflow',
+                  'outflow':col.field == 'outflow'
+                }"
+                [style]="'width : '+col.width">
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'isin_no' || col.field == 'folio_no'">
+                    {{fin_yr_wise_capital_gain[col.field] ? fin_yr_wise_capital_gain[col.field] : 'N/A'}}
                     </ng-container>
-                  </td>
-                </tr>
-              </ng-template>
+                    <ng-container *ngSwitchDefault>
+                      {{fin_yr_wise_capital_gain[col.field] ? (fin_yr_wise_capital_gain[col.field] | number:'1.2-2') : '0.00'}}
+                    </ng-container>
+                  </ng-container>
 
-            </p-table>
-</ng-container>
-<ng-template #view_capital_details>
-            <p>View Complete Details Work</p>
-</ng-template>
+                   
+               </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-fin_yr_wise_capital_gain>
+            <tr>
+              <td [attr.colspan]="long_summary_column.length">
+                <p class="m-0">NO RECORDS FOUND</p>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="footer">
+            <tr>
+              <td
+                *ngFor="let col of long_summary_column"
+                [style]="'width : ' + col.width"
+              >
+                <ng-container [ngSwitch]="true">
+                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                    <p class="m-0">
+                        GRAND TOTAL
+                    </p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'folio_no' || col.field == 'isin_no'"></ng-container>
+                 
+                  <ng-container *ngSwitchDefault>
+                    {{total_financial_wise_report ? (total_financial_wise_report[col.field] ? (total_financial_wise_report[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-template>
+</p-table>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -8,7 +8,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   templateUrl: './div-report.component.html',
   styleUrls: ['./div-report.component.css']
 })
-export class DivReportComponent implements OnInit {
+export class DivReportComponent implements OnInit,AfterViewInit {
 
   constructor(private utility:UtiliService) { }
 
@@ -31,5 +31,9 @@ export class DivReportComponent implements OnInit {
     let value = $event.target.value;
     this.primaryTbl.filterGlobal(value,'contains')
   }
-
+  ngAfterViewInit(): void{
+    const table = this.primaryTbl?.el.nativeElement.querySelector('table');
+    table.setAttribute('id', 'dividend_table');
+  }
+ 
 }

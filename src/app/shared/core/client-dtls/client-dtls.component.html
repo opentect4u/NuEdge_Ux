@@ -158,8 +158,23 @@
 <div hidden #client_container id="client_container" >
   <div class="border">
       <div class="px-2 py-1 d-flex justify-content-between align-items-center border-bottom" style="background-color:#e7ecf7!important">
-          <p class="m-0" style="font-size: 10px;font-family: RobotoCondensed-Regular!important;" >
-            Valuation Report As On Date - <b class="m-0" style="font-family: RobotoCondensed-Bold!important;">{{date | date : "longDate"}}</b></p>
+          <div class="m-0" style="font-size: 10px;font-family: RobotoCondensed-Regular!important;text-align: left;" class="d-flex justify-content-start align-items-center">
+               {{ScheduleType}} As On: - 
+                <ng-container *ngIf="!isDateRange;else dateRng" >
+                  <p class="m-0" style="font-size: 8px;font-family: RobotoCondensed-Regular!important;text-align: left;"> {{
+                    date
+                      ? (date | date : "mediumDate")
+                      : "N/A"
+                  }}</p>
+                </ng-container>
+                <ng-template  #dateRng>
+                  <p class="m-0" style="font-size: 8px;font-family: RobotoCondensed-Regular!important;text-align: left;">{{
+                    date
+                      ? date
+                      : "N/A"
+                  }}</p>
+                  </ng-template>
+            </div>
           <div class="d-flex align-items-center flex-row" style="font-size: 10px;">
                 <b class="m-0" style="font-family: RobotoCondensed-Bold!important;"> Current Sensex :</b>
                 <p class="m-0" style="font-family: RobotoCondensed-Regular!important;">79,032.73</p>
@@ -173,14 +188,14 @@
                 <p class="mb-2"><b style="font-family: RobotoCondensed-Bold!important;font-size: 10px!important;">PAN:{{clientDtls?.pan}}</b></p>
                 <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;">
                   <b style="font-family: RobotoCondensed-Bold!important;">Address:</b>
-                  <span style="font-size: 8px!important;">{{clientDtls?.add_line_1}}</span>
+                  <span style="font-size: 8px!important;">{{clientDtls?.add_line_1 ? clientDtls?.add_line_1 : 'N/A'}}</span>
                 </p>
                 <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;">
-                  <b style="font-family: RobotoCondensed-Bold!important;">Mob:</b>{{clientDtls?.mobile}}
+                  <b style="font-family: RobotoCondensed-Bold!important;">Mob:</b>{{clientDtls?.mobile ? clientDtls?.mobile : 'N/A'}}
                 </p>
-                <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;"><b style="font-family: RobotoCondensed-Bold!important;">Email:</b>{{clientDtls?.email}}</p>
+                <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;"><b style="font-family: RobotoCondensed-Bold!important;">Email:</b>{{clientDtls?.email ? clientDtls?.email : 'N/A'}}</p>
                 <p class="mb-2" style="font-family: RobotoCondensed-Regular!important;font-size: 10px!important;">
-                  <b style="font-family: RobotoCondensed-Bold!important;">DOB:</b>{{clientDtls?.dob | date:'dd-MM-YYYY'}}</p>
+                  <b style="font-family: RobotoCondensed-Bold!important;">DOB:</b>{{clientDtls?.dob ? (clientDtls?.dob | date:'dd-MM-YYYY') : 'N/A'}}</p>
 
 
           </div>

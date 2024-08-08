@@ -1,0 +1,26 @@
+:host ::ng-deep .p-datatable .p-datatable-tbody>tr>td.table__header{
+    /* background-color: #81818124!important; */
+    /* background-color: #10486b0d !important; */
+    background-color: #f5f5f5 !important;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 127px !important;
+    z-index: 999;
+  }
+
+  
+:host ::ng-deep .p-datatable .p-datatable-tbody>tr>td.table_scheme_style{
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #09377c;
+    background: #f7f7f7f2;
+    text-transform: uppercase;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 155px !important;
+    z-index: 999;
+  }
+  .eachTbleFooter{
+    background: #10486b2e !important;
+  }
+  

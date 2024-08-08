@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -8,11 +8,13 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   templateUrl: './financialyearwise-report.component.html',
   styleUrls: ['./financialyearwise-report.component.css']
 })
-export class FinancialyearwiseReportComponent implements OnInit {
+export class FinancialyearwiseReportComponent implements OnInit,AfterViewInit {
 
   constructor(private utility:UtiliService) { }
 
   @ViewChild('dt') PrimeTable:Table;
+
+  @ViewChild('financial__details_year')  financial__details_yearTable:Table;
 
   @Input() financial_year_wise_report = [];
 
@@ -22,9 +24,11 @@ export class FinancialyearwiseReportComponent implements OnInit {
 
   @Input() financial_year_wise_detail_report = [];
 
+  @Input() final_footer_for__financial_year_wise_detail;
+
   long_summary_column:column[] = FinancialYearWiseReportColumn.long_summary;
 
-  view_complete_details:column[] = FinancialYearWiseReportColumn.view_complete_details;
+  view_complete_details_column:column[] = FinancialYearWiseReportColumn.view_complete_details;
 
   ngOnInit(): void {
   }
@@ -33,9 +37,33 @@ export class FinancialyearwiseReportComponent implements OnInit {
      return this.utility.getColumns(this.long_summary_column)
   }
 
+  getColumns_for_details_financial_year(){
+    return this.utility.getColumns(this.view_complete_details_column)
+  }
+
   filterGlobal_secondary = ($event) =>{
     let value = $event.target.value;
     this.PrimeTable.filterGlobal(value,'contains')
+  }
+
+  filterGlobal_details_financial_year = ($event) =>{
+    let value = $event.target.value;
+    this.financial__details_yearTable.filterGlobal(value,'contains')
+  }
+  ngAfterViewInit(): void {
+
+    const fin_year_Summary_table = this.PrimeTable?.el.nativeElement.querySelector('table');
+    fin_year_Summary_table?.setAttribute('id', 'fin_year_summary_table');
+  }
+
+
+
+  ngOnChanges(changes: SimpleChanges) {
+    setTimeout(() => {
+      const table = this.financial__details_yearTable?.el.nativeElement.querySelector('table');
+      table?.setAttribute('id', 'fin_year_details_table');
+    }, 500);
+
   }
 
 }

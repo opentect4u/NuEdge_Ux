@@ -32,6 +32,8 @@ import { Observable, Subscription, from, of } from 'rxjs';
 import clientType from '../../../../../../../../assets/json/view_type.json';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { trxnCountAmtSummaryColumn, trxnCountSummary } from './trxnAmtCountSummary';
+import autoTable from 'jspdf-autotable';
+import jsPDF from 'jspdf';
 
  export type TrxnType = {
    reject:Partial<TrxnRpt[]>;
@@ -726,7 +728,32 @@ export class TrxnRptComponent implements OnInit {
     }
     // this.primeTbl.clear();
     // console.log('assda')
-    this.fetchTransaction();
+    // this.fetchTransaction();
+    const doc = new jsPDF('landscape','pt','a4')
+    console.log(this.column.map(el => el.header));
+    autoTable(doc, {
+      head: [this.column.map(el => el.header)],
+      body: [
+        ['David', 'david@example.com', 'Sweden'],
+        ['Castille', 'castille@example.com', 'Spain'],
+        // ...
+      ],
+      headStyles:{
+          fontSize:8,
+        
+      },
+     columnStyles:{
+      0:{cellWidth:20.64,halign:'left',fontSize:5},
+      1:{cellWidth:55.64,halign:'left',fontSize:5},
+      2:{cellWidth:30.64,halign:'left',fontSize:5},
+      3:{cellWidth:20.64,halign:'left',fontSize:5},
+     4:{cellWidth:20.64,halign:'left',fontSize:5},
+     5:{cellWidth:20.64,halign:'left',fontSize:5},
+      6:{cellWidth:20.64,halign:'left',fontSize:5},
+    
+    }
+    })
+    doc.output('dataurlnewwindow');
   };
 
   /**
@@ -817,6 +844,7 @@ export class TrxnRptComponent implements OnInit {
         }
       this.state = 'collapsed';
       this.trxnRpt = res.data;
+      console.log(res.data);
       });
   }
 
