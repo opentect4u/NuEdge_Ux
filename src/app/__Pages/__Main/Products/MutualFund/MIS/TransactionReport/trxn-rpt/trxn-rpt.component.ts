@@ -728,32 +728,50 @@ export class TrxnRptComponent implements OnInit {
     }
     // this.primeTbl.clear();
     // console.log('assda')
-    // this.fetchTransaction();
-    const doc = new jsPDF('landscape','pt','a4')
-    console.log(this.column.map(el => el.header));
-    autoTable(doc, {
-      head: [this.column.map(el => el.header)],
-      body: [
-        ['David', 'david@example.com', 'Sweden'],
-        ['Castille', 'castille@example.com', 'Spain'],
-        // ...
-      ],
-      headStyles:{
-          fontSize:8,
-        
-      },
-     columnStyles:{
-      0:{cellWidth:20.64,halign:'left',fontSize:5},
-      1:{cellWidth:55.64,halign:'left',fontSize:5},
-      2:{cellWidth:30.64,halign:'left',fontSize:5},
-      3:{cellWidth:20.64,halign:'left',fontSize:5},
-     4:{cellWidth:20.64,halign:'left',fontSize:5},
-     5:{cellWidth:20.64,halign:'left',fontSize:5},
-      6:{cellWidth:20.64,halign:'left',fontSize:5},
+    this.fetchTransaction();
+    // const doc = new jsPDF('landscape','pt','a4')
+    // console.log(this.column.map(el => el.header));
+    // autoTable(doc, {
+    //   margin:{
+    //     left:5,
+    //     right:5
+    //   },
+    //   tableWidth:doc.internal.pageSize.getWidth() - 10,
+    //   head: [this.column.map(el => el.header)],
+    //   body: [
+    //     ['David', 'david@example.com', 'Sweden'],
+    //     ['Castille', 'castille@example.com', 'Spain'],
+    //     // ...
+    //   ],
+    //   headStyles:{
+    //       fontSize:7,
+    //       halign:'center'
+    //   },
+    //   bodyStyles:{
+    //       fontSize:6,
+    //       halign:'center'
+    //   },
+    //  columnStyles:{
+    //   0:{cellWidth:20.64,halign:'left',fontSize:5},
+    //   1:{cellWidth:55.64,halign:'center',fontSize:5},
+    //   2:{cellWidth:35.64,halign:'center',fontSize:5},
+    //   3:{cellWidth:55.64,halign:'center',fontSize:5},
+    //  4:{cellWidth:60.64,halign:'center',fontSize:5},
+    //  5:{cellWidth:30.64,halign:'center',fontSize:5},
+    //   6:{cellWidth:40.64,halign:'center',fontSize:5},
+    //   7:{cellWidth:40.64,halign:'center',fontSize:5},
+    //   8:{cellWidth:100.64,halign:'center',fontSize:5},
+    //   9:{cellWidth:100.64,halign:'center',fontSize:5},
+    //   10:{cellWidth:100.64,halign:'center',fontSize:5},
+    //   11:{cellWidth:55.64,halign:'center',fontSize:5},
+    //   12:{cellWidth:55.64,halign:'center',fontSize:5},
+
+
+
     
-    }
-    })
-    doc.output('dataurlnewwindow');
+    // }
+    // })
+    // doc.output('dataurlnewwindow');
   };
 
   /**
