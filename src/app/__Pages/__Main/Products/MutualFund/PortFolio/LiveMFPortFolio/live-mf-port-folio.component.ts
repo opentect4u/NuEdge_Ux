@@ -1629,6 +1629,7 @@ mappings between `act_value` and `value` for transition durations. */
               const mf_report = this.filter_criteria.get('view_mf_report').value;
                 if(this.main_frm_dt?.trans_type == 'A'){
                       modify_dt = res.data.filter((item: ILivePortFolio) => {
+                        if(Number(item.inv_cost) > 0){
                         item.id = `${Math.random()}_${item.product_code}`;
                         item.data=[];
                         if(item.mydata?.all_amt_arr.length > 0 && item.mydata?.all_date_arr.length > 0){
@@ -1648,7 +1649,9 @@ mappings between `act_value` and `value` for transition durations. */
                         item.inv_cost = !this.main_frm_dt?.trans_duration ? item.inv_cost : item?.re_cal_purchase_datas?.inv_cost;
                         item.ret_abs = !this.main_frm_dt?.trans_duration ? item.ret_abs : item?.re_cal_purchase_datas?.ret_abs;
                         item.tot_units = !this.main_frm_dt?.trans_duration ? item.tot_units : item?.re_cal_purchase_datas?.tot_units;
-                        return item
+                        return item;
+                        }
+                        return false
                       });
                 }
                 else{

@@ -48,7 +48,7 @@
       [view_by]="__view_by"
       [period_type]="__period_type"
       ></core-mis-tbl>
-      <div class="my-3 p-2">
+      <div class="my-3 p-2" *ngIf="disclaimer">
         <p class="text-danger" style="font-size: 12px;">
           Note - {{disclaimer}}
         </p>

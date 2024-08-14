@@ -113,10 +113,10 @@ export class ScmRptComponent implements OnInit {
   // toppingList: any = [];
   __scmForm = new FormGroup({
     scheme_status: new FormControl('O'),
-    amc_name: new FormControl([], { updateOn: 'blur' }),
-    cat_id: new FormControl([], { updateOn: 'blur' }),
-    subcat_id: new FormControl([], { updateOn: 'blur' }),
-    scheme_id: new FormControl([], { updateOn: 'blur' }),
+    amc_name: new FormControl([], { updateOn: 'change' }),
+    cat_id: new FormControl([], { updateOn: 'change' }),
+    subcat_id: new FormControl([], { updateOn: 'change' }),
+    scheme_id: new FormControl([], { updateOn: 'change' }),
     options: new FormControl('2'),
     alt_scheme_name: new FormControl(''),
     alt_scheme_id: new FormControl(''),
@@ -528,6 +528,7 @@ export class ScmRptComponent implements OnInit {
     });
 
     this.__scmForm.controls['amc_name'].valueChanges.subscribe((res) => {
+      console.log(res);
       this.getcategoryAgainstAmc(res);
       this.getSubcategoryAgainstCategory(
         this.__scmForm.controls['cat_id'].value,

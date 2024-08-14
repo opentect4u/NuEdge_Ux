@@ -213,17 +213,17 @@ export class ReportFilterComponent implements OnInit {
     period_type: new FormControl('M'),
     mis_month: new FormControl(global.getCurrenctMonth_year()),
     no_of_month: new FormControl(12),
-    amc_id: new FormControl([], { updateOn: 'blur' }),
-    cat_id: new FormControl([], { updateOn: 'blur' }),
-    sub_cat_id: new FormControl([], { updateOn: 'blur' }),
+    amc_id: new FormControl([], { updateOn: 'change' }),
+    cat_id: new FormControl([], { updateOn: 'change' }),
+    sub_cat_id: new FormControl([], { updateOn: 'change' }),
     scheme_id: new FormControl([]),
-    trans_type: new FormControl([], { updateOn: 'blur' }),
+    trans_type: new FormControl([], { updateOn: 'change' }),
     trans_sub_type: new FormControl([]),
     euin_no: new FormControl([]),
-    brn_cd: new FormControl([], { updateOn: 'blur' }),
-    rm_id: new FormControl([], { updateOn: 'blur' }),
-    bu_type_id: new FormControl([], { updateOn: 'blur' }),
-    sub_brk_cd: new FormControl([], { updateOn: 'blur' })
+    brn_cd: new FormControl([], { updateOn: 'change' }),
+    rm_id: new FormControl([], { updateOn: 'change' }),
+    bu_type_id: new FormControl([], { updateOn: 'change' }),
+    sub_brk_cd: new FormControl([], { updateOn: 'change' })
   });
   financial_year: string[] = [];
   @Output() searchReport = new EventEmitter()

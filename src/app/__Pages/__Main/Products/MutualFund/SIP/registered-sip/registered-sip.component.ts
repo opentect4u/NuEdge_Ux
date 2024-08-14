@@ -9,7 +9,8 @@ import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
 import { displayMode } from '../../../../../../Enum/displayMode';
-
+import { DatePipe } from '@angular/common';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'registered-sip',
   templateUrl: './registered-sip.component.html',
@@ -56,7 +57,7 @@ export class RegisteredSIPComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
 
-  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService,private datePipe:DatePipe) { }
 
   ngOnInit(): void {
     this.setTitle(this.sub_tab[0].tab_name);
@@ -101,6 +102,64 @@ export class RegisteredSIPComponent implements OnInit {
         this.state = res.data.length > 0 ? displayMode[0] : displayMode[1];
       })
     }
+
+    exportExcel = () =>{
+      const column = this.column.map(el => el.header);
+      let dt = [];
+      this.register_sip.forEach((el,index) =>{
+          dt.push({
+              "Sl No":(index + 1),
+              "Business Type":el.bu_type,
+              "Branch" : el.branch,
+              "RM":el.rm_name,
+              "Sub Broker Code":el.sub_brk_cd,
+              "EUIN":el.euin_no,
+              "Investor Name":el.first_client_name,
+              "PAN":el.first_client_pan,
+              "Reg. Date":  this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+             "Reg. No": el.reg_no,
+              "AMC":el.amc_short_name,
+              "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+              "Category":el.cat_name,
+              "Sub Category":el.subcat_name,
+              "Folio":el.folio_no,
+              "Transaction Type":el.trans_type,
+              "Transaction Sub Type":el.trans_sub_type,
+              "Start Date":el.from_date,
+              "End Date":el.to_date,
+              "SIP Date":el.sip_date,
+              "Amount":el.amount,
+              "Frequency":el.frequency,
+              "Duration (Monthly)":el.duration,
+              "Bank":el.bank_name,
+              "Account No":el.acc_no,
+              "Reg. Mode":el.reg_mode,
+              "Remarks":el.remarks
+          })
+      });
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(dt, { header:column});
+      XLSX.utils.book_append_sheet(wb, ws, 'REGISTEREDSIP');
+      var wbout = XLSX.write(wb, {
+        bookType: 'xlsx',
+        bookSST: true,
+        type: 'binary'
+      });
+      const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'REGISTEREDSIPREPORT.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+    }
+  
+    s2ab(s) {
+      var buf = new ArrayBuffer(s.length);
+      var view = new Uint8Array(buf);
+      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+      }
 
     filterGlobal = ($event) => {
       let value = $event.target.value;

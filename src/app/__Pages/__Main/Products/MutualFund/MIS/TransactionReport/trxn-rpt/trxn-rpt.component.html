@@ -214,11 +214,11 @@
     <mat-card class="card my-3">
       <mat-card-header>
         <mat-card-title>
-          <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
+          <div>
+           <button mat-button [matMenuTriggerFor]="menu" #t="matMenuTrigger">
             {{transType | titlecase}} Transaction Reports
             <mat-icon class="inActivebtnIcon">arrow_drop_down</mat-icon>
           </button>
-
           <mat-menu #menu="matMenu">
 
             <button mat-menu-item class="trxnRptCount"
@@ -232,6 +232,16 @@
               </span>
             </button>
           </mat-menu>
+
+          <button
+          pButton 
+          type="button"
+          (click)="exportExcel()"
+          class="p-button-outlined"> 
+          <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+         </button> 
+          </div>
+
 
         </mat-card-title>
         <div class="w-25 my-auto pr-4">
@@ -381,7 +391,7 @@
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p-table #primeTbl id="trxDt" [value]="transaction_amt_count_summary"
+        <p-table #primeTblsummary id="trxDt" [value]="transaction_amt_count_summary"
           [tableStyle]="{ 'min-width': '374rem' }"
           styleClass="p-datatable-striped p-datatable-lg"
           [scrollable]="true" [responsive]=true  responsiveLayout="scroll"

@@ -15,8 +15,13 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>
-      <i class="fa fa-databse"></i>
-      {{__title}} Reports
+      <button
+      pButton 
+      type="button"
+      (click)="exportExcel()"
+      class="p-button-outlined"> 
+      <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+     </button>
     </mat-card-title>
     <div class="my-auto marque__tag">
       <merque

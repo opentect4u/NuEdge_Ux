@@ -9,9 +9,16 @@ export interface IliveSip{
       first_client_pan:string | null;
       reg_date:Date | null;
       amc_short_name:string | null;
+      scheme_name:string | null;
       cat_name:string | null;
+      plan_name:string | null;
+      transaction_type:string | null;
+      transaction_subtype:string | null;
+      option_name:string | null;
       subcat_name:string | null;
       product_code:string|null;
+      reg_no:string | null;
+      reg_mode:string|null;
       folio_no:string|null;
       trans_type:string|null;
       trans_sub_type:string|null;
@@ -27,7 +34,7 @@ export interface IliveSip{
       acc_no: string | null;
       pause_start_date:string | null;
       pause_end_date:string | null;
-
+      remarks:string | null;
 }
 
 

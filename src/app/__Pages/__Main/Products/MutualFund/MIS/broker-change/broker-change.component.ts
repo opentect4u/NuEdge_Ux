@@ -27,13 +27,13 @@ import { dates } from 'src/app/__Utility/disabledt';
 import { totalAmt } from 'src/app/__Model/TotalAmt';
 import { Table } from 'primeng/table';
 import { Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { DatePipe, DOCUMENT } from '@angular/common';
 // import { Observable, Subscription, from, of } from 'rxjs';
 import clientType from '../../../../../../../assets/json/view_type.json';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { trxnCountAmtSummaryColumn, trxnCountSummary } from '../TransactionReport/trxn-rpt/trxnAmtCountSummary';
 import { TrxnType } from '../TransactionReport/trxn-rpt/trxn-rpt.component';
-
+import * as XLSX from 'xlsx';
 //  export type TrxnType = {
 //    reject:Partial<TrxnRpt[]>;
 //    process:Partial<TrxnRpt[]>;
@@ -233,7 +233,7 @@ clientMst:any = [];
  */
 
 constructor(private dbIntr: DbIntrService, private utility: UtiliService,
-  @Inject(DOCUMENT) private document: Document
+  @Inject(DOCUMENT) private document: Document,private datePipe:DatePipe
   ) {}
 
 
@@ -838,6 +838,64 @@ fetchTransaction = () =>{
     this.state = 'collapsed';
     this.trxnRpt = res.data;
     });
+}
+
+exportExcel = () =>{
+  const column = this.column.map(el => el.header);
+  let dt = [];
+  this.trxnRpt.forEach((el,index) =>{
+      dt.push({
+          "Sl No":(index + 1),
+          "Business Type":el.bu_type,
+          "Branch" : el.branch,
+          "RM Name":el.rm_name,
+          "Sub Broker Code":el.sub_brk_cd,
+          "EUIN":el.euin_no,
+          "Investor Name":el.first_client_name,
+          "PAN":el.first_client_pan,
+          "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+          "AMC":el.amc_name,
+          "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+          "Category":el.cat_name,
+          "Sub-Category":el.subcat_name,
+          "Folio":el.folio_no,
+          "Transaction Type":el.transaction_type,
+          "Transaction Sub Type":el.transaction_subtype,
+          "Transaction No":el.trans_no,
+          "Gross Amount":el.tot_gross_amount,
+          "Stamp Duty":el.tot_stamp_duty,
+          "TDS":el.tot_tds,
+          "Net Amount":el.tot_amount,
+          "Unit":el.units,
+          "Nav":el.pur_price,
+          "Bank":el.bank_name,
+          "Account No":el.acc_no,
+          "STT":el.stt,
+          "Transaction Mode":el.trans_mode,
+          "Remarks":el.remarks
+      })
+  });
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(dt, { header:column});
+  XLSX.utils.book_append_sheet(wb, ws, 'BROKERCHANGE');
+  var wbout = XLSX.write(wb, {
+    bookType: 'xlsx',
+    bookSST: true,
+    type: 'binary'
+  });
+  const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+      const link = this.document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'BROKERCHANGEREPORT.xlsx');
+      this.document.body.appendChild(link);
+      link.click();
+      link.remove();
+}
+s2ab(s) {
+var buf = new ArrayBuffer(s.length);
+var view = new Uint8Array(buf);
+for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+return buf;
 }
 
 async calculateProcess_Reject(res:TrxnRpt[]){

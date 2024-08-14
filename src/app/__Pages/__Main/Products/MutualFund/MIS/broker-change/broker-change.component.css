@@ -71,3 +71,14 @@
 .trxnRptCount{
   width:220px;
 }
+
+
+:host ::ng-deep .p-button.p-button-outlined{
+  background-color: #ffffff!important;
+  border: 1px solid #dfdfdf !important;
+  padding: 5px !important;
+}
+
+:host ::ng-deep .p-button.p-button-outlined:enabled:hover{
+  background-color: #ffffff!important;
+}

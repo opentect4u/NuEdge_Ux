@@ -77,16 +77,17 @@
             <i class="pi pi-file-pdf" style="font-size: 2rem"></i>
            </button> -->
 
-           <button
+           <!-- <button
             pButton 
             type="button"
             (click)="exportAsPdf()"
             title="Export as pdf"
             class="p-button-outlined mx-2"> 
             <i class="pi pi-file-pdf text-danger" style="font-size: 2rem"></i>
-           </button> 
+           </button>  -->
            <button
             pButton 
+            (click)="exportAsExcel()"
             type="button"
             title="Export as excel"
             class="p-button-outlined mx-2"> 
@@ -129,7 +130,11 @@
       [virtual_scroll]="true"
       ></core-mis-tbl>
 
-                                                                                                                 
+      <div class="my-3 p-2" *ngIf="disclaimer">
+        <p class="text-danger" style="font-size: 12px;">
+          Note - {{disclaimer}}
+        </p>
+      </div>                                                                                                       
   </mat-card-content>
 </mat-card>
     </div>

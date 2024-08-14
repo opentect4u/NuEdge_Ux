@@ -225,6 +225,15 @@
 
           </mat-menu>
 
+
+          <button
+          pButton 
+          type="button"
+          (click)="exportExcel()"
+          class="p-button-outlined"> 
+          <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+         </button>
+
           <!-- <small class="ml-3">Process Transaction: {{trxn_count?.process || 0}}</small>
               <small  class="text-danger mx-5">Reject Transaction: {{trxn_count?.reject || 0}}</small>
               <small  class="text-success">Total Transaction: {{trxnRpt.length || 0}}</small> -->

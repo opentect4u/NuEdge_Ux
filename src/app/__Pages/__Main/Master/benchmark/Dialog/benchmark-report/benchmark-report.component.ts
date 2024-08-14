@@ -77,7 +77,7 @@ export class BenchmarkReportComponent implements OnInit {
    benchmarkfilterForm = new FormGroup({
      ex_id:new FormControl([]),
      category_id:new FormControl([],{updateOn:'blur'}),
-     subcategory_id: new FormControl([],{updateOn:'blur'}),
+     subcategory_id: new FormControl([],{updateOn:'change'}),
      benchmark_id:new FormControl([])
    })
    @ViewChild('primeTbl') primeTbl :Table;

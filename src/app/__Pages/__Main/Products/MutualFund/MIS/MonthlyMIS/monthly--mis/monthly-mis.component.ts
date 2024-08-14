@@ -6,12 +6,16 @@ import { column } from 'src/app/__Model/tblClmns';
 import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
 import { TrxnType } from '../../TransactionReport/trxn-rpt/trxn-rpt.component';
 import { UtiliService } from 'src/app/__Services/utils.service';
-import { pluck} from 'rxjs/operators';
+import { groupBy, mergeMap, pluck, toArray} from 'rxjs/operators';
 import jsPDF from 'jspdf';
 import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
 import { ExportAs } from 'src/app/__Utility/exportFunc';
 import autoTable from 'jspdf-autotable';
-
+import { FilterByStatusPipe } from 'src/app/__Pipes/filter.pipe';
+import { DatePipe } from '@angular/common';
+import * as XLSX from 'xlsx';
+import { from, of,zip } from 'rxjs';
+import { global } from 'src/app/__Utility/globalFunc';
 declare type MisFlag = "I" | "O";
 
 export class MonthlyCalculation{
@@ -28,6 +32,8 @@ export class MonthlyMisComponent implements OnInit {
 
 
   form__data:any;
+
+  netFlow:Partial<{"Sl No.":number,Inflow:number,Netflow:number,Outflow:number,"Transaction Type":string}>[] = []
 
   disclaimer:string | undefined = ''
 
@@ -55,7 +61,7 @@ export class MonthlyMisComponent implements OnInit {
 
   total_mis_calculation:MonthlyCalculation;
   is_virtual:boolean = true;
-  constructor(private dbIntr: DbIntrService,private utility:UtiliService) { }
+  constructor(private dbIntr: DbIntrService,private utility:UtiliService,private datePipe:DatePipe) { }
 
   ngOnInit(): void {
     this.mis_tab = mis_tab.monthly_mis.map((item) => ({ ...item, img_src: ('../../../../../assets/images/monthlyMIS/' + item.img_src) }))
@@ -79,8 +85,32 @@ export class MonthlyMisComponent implements OnInit {
            tot_inflow_amt:res.data.filter(item => item.process_type == 'I').map(item => Number(item.tot_gross_amount)).reduce((accumulator, currentValue) => accumulator + currentValue, 0),
            tot_outflow_amt:res.data.filter(item => item.process_type == 'O').map(item => Number(item.tot_gross_amount)).reduce((accumulator, currentValue) => accumulator + currentValue, 0),
         }
+        this.GroupBySchemeNameForNetInflow(res.data);
 
       })
+  }
+
+  GroupBySchemeNameForNetInflow = (arr) =>{
+    let net_Flow = [];
+    let sl_no = 0;
+    from(arr)
+            .pipe(
+              groupBy((data: any) => data.transaction_subtype),
+              mergeMap(group => zip(of(group.key), group.pipe(toArray())))
+            ).subscribe(dt => {
+              sl_no += 1;
+              const inflow = global.Total__Count(dt[1].filter(el => el.process_type == 'I'), (x:TrxnRpt) => Number(x.tot_gross_amount));
+              const outflow = global.Total__Count(dt[1].filter(el => el.process_type == 'O'), (x:TrxnRpt) => Number(x.tot_gross_amount));
+              const netflow = inflow - outflow;
+              net_Flow.push({
+                  "Sl No.":sl_no,
+                  "Transaction Type":dt[0],
+                  Inflow:inflow,
+                  Outflow:outflow,
+                  Netflow:netflow
+              })
+    })
+    this.netFlow = net_Flow;
   }
 
   exportAsPdf(){
@@ -175,6 +205,106 @@ export class MonthlyMisComponent implements OnInit {
     //   result
     // )
   }
+
+
+  exportAsExcel = () =>{
+    const filterPipe = new FilterByStatusPipe();
+    const monthly_inflow = filterPipe.transform(this.__monthly_mis_trxn,'I');
+    const monthly_outflow = filterPipe.transform(this.__monthly_mis_trxn,'O');
+    const column = this.__monthly__MIS_Column.map(el => el.header);
+    let excel_dt_for_monthly_inflow = [];
+    let excel_dt_for_monthly_outflow = [];
+
+    monthly_inflow.forEach((el,index) =>{
+      excel_dt_for_monthly_inflow.push({
+            "Sl No":(index + 1),
+            "Business Type":el.bu_type,
+            "Branch" : el.branch,
+            "RM Name":el.rm_name,
+            "Sub Broker Code":el.sub_brk_cd,
+            "EUIN":el.euin_no,
+            "Investor Name":el.first_client_name,
+            "PAN":el.first_client_pan,
+            "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+            "AMC":el.amc_name,
+            "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+            "Category":el.cat_name,
+            "Sub-Category":el.subcat_name,
+            "Folio":el.folio_no,
+            "Transaction Type":el.transaction_type,
+            "Transaction Sub Type":el.transaction_subtype,
+            "Transaction No":el.trans_no,
+            "Gross Amount":el.tot_gross_amount,
+            "Stamp Duty":el.tot_stamp_duty,
+            "TDS":el.tot_tds,
+            "Net Amount":el.tot_amount,
+            "Unit":el.units,
+            "Nav":el.pur_price,
+            "Bank":el.bank_name,
+            "Account No":el.acc_no,
+            "STT":el.stt,
+            "Transaction Mode":el.trans_mode,
+            "Remarks":el.remarks
+        })
+    });
+    monthly_outflow.forEach((el,index) =>{
+      excel_dt_for_monthly_outflow.push({
+        "Sl No":(index + 1),
+        "Business Type":el.bu_type,
+        "Branch" : el.branch,
+        "RM Name":el.rm_name,
+        "Sub Broker Code":el.sub_brk_cd,
+        "EUIN":el.euin_no,
+        "Investor Name":el.first_client_name,
+        "PAN":el.first_client_pan,
+        "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+        "AMC":el.amc_name,
+        "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+        "Category":el.cat_name,
+        "Sub-Category":el.subcat_name,
+        "Folio":el.folio_no,
+        "Transaction Type":el.transaction_type,
+        "Transaction Sub Type":el.transaction_subtype,
+        "Transaction No":el.trans_no,
+        "Gross Amount":el.tot_gross_amount,
+        "Stamp Duty":el.tot_stamp_duty,
+        "TDS":el.tot_tds,
+        "Net Amount":el.tot_amount,
+        "Unit":el.units,
+        "Nav":el.pur_price,
+        "Bank":el.bank_name,
+        "Account No":el.acc_no,
+        "STT":el.stt,
+        "Transaction Mode":el.trans_mode,
+        "Remarks":el.remarks
+    })
+    })
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(excel_dt_for_monthly_inflow, { header:column});
+    XLSX.utils.book_append_sheet(wb, ws, 'MONTHLYINFLOW');
+    const ws1 = XLSX.utils.json_to_sheet(excel_dt_for_monthly_outflow, { header:column});
+    XLSX.utils.book_append_sheet(wb, ws1, 'MONTHLYOUTFLOW');
+    const netFlowSheet = XLSX.utils.json_to_sheet(this.netFlow,{header:["Sl No.","Transaction Type","Inflow","Outflow","Netflow"]});
+    XLSX.utils.book_append_sheet(wb, netFlowSheet, 'NETFLOW');
+    var wbout = XLSX.write(wb, {
+      bookType: 'xlsx',
+      bookSST: true,
+      type: 'binary'
+    });
+    const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'MISREPORT.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+  }
+s2ab(s) {
+  var buf = new ArrayBuffer(s.length);
+  var view = new Uint8Array(buf);
+  for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+  return buf;
+}
 
 
 
