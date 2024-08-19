@@ -59,6 +59,10 @@ const routes: Routes = [
         loadChildren:()=> import('./CRM/crm.module').then(crm => crm.CrmModule),
       },
       {
+        path:'customer-service',
+        loadChildren:()=> import('./customerService/customer-service.module').then(m => m.CustomerServiceModule)
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'

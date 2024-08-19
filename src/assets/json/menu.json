@@ -33,15 +33,27 @@
     "sub_menu": []
   },
   {
-    "id": 0,
+    "id": 3,
     "title": "Customer Service",
     "mat_icon": "support_agent",
     "icon": "",
     "value": 0,
     "img": "customerService.png",
-    "url": "",
+    "url": "/main/customer-service",
     "class": "iconSec",
-    "sub_menu": []
+    "sub_menu": [
+        {
+          "id": 1,
+          "menu_name": "Transaction Query",
+          "title":"Transaction Query",
+          "has_submenu": "N",
+          "url": "/main/customer-service/transaction-query",
+          "icon": "",
+          "flag":"TQ",
+          "sub_menu": [],
+          "img":"upload_help.png"
+        }
+    ]
   },
   {
     "id": 0,
