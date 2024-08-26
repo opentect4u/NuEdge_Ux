@@ -8,6 +8,7 @@ import { DivReportComponent } from './components/DivReport/div-report.component'
 import { ColumnfilterPipe } from './components/pipe/columnfilter.pipe';
 import { SegregrateDivHistoryPipe } from './components/pipe/segregrate-div-history.pipe';
 import { FinancialyearwiseReportComponent } from './components/FinancialYearWiseReport/financialyearwise-report.component';
+import { AsPerItdComponent } from './components/AsPerItd/as-per-itd.component';
 const routes: Routes = [
   {
     path:'',
@@ -21,7 +22,8 @@ const routes: Routes = [
     DivReportComponent,
     ColumnfilterPipe,
     SegregrateDivHistoryPipe,
-    FinancialyearwiseReportComponent
+    FinancialyearwiseReportComponent,
+    AsPerItdComponent
   ],
   imports: [
     CommonModule,

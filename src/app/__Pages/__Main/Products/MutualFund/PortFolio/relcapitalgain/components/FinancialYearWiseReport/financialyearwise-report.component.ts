@@ -179,7 +179,7 @@ export class FinancialYearWiseReportColumn{
         width:''
       },
       {
-        field:'account_no',
+        field:'acc_no',
         header:'Acc. No',
         width:''
       },

@@ -1241,7 +1241,13 @@
   <div class="col-sm-12 px-5" *ngIf="disclaimer">
     <mat-card id="matCard"  class="mat-elevation-z0 mb-4">
       <mat-card-content class="p-3">
-        <p class="disclaimer">Disclaimer - {{disclaimer}}</p>
+        <p 
+        [ngStyle]="{
+          'font-size':disclaimer ? (disclaimer?.font_size + 'px')  : '',
+          'color':disclaimer ? disclaimer?.color_code : ''
+        }"
+
+        >Disclaimer - {{disclaimer ? disclaimer?.dis_des : ''}}</p>
       </mat-card-content>
     </mat-card>
   </div>

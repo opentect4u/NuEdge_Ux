@@ -11,6 +11,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { displayMode } from '../../../../../../Enum/displayMode';
 import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
   selector: 'registered-sip',
   templateUrl: './registered-sip.component.html',
@@ -22,7 +23,7 @@ export class RegisteredSIPComponent implements OnInit {
 
   @Input() sub_tab:ITab[] = [];
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   sub_type:string = 'RR';
 
@@ -95,7 +96,7 @@ export class RegisteredSIPComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:string}>) =>{
+      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:Partial<IDisclaimer>}>) =>{
         this.register_sip = res.data;
         this.disclaimer = res.disclaimer;
         this.total_register_sip_amt = global.calculatAmt(res.data);

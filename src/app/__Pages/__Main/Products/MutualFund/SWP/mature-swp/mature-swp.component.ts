@@ -9,6 +9,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 
 @Component({
   selector: 'matured-swp',
@@ -53,7 +54,7 @@ index: number = 0;
 
 total_matured_swp_amt:number = 0;
 
-disclaimer:string | undefined = '';
+disclaimer:Partial<IDisclaimer> | undefined;
 
 mature_swp: Partial<IliveSwp>[] = [];
 
@@ -101,7 +102,7 @@ getMaturedSwpMasterData(form_data){
   }
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
-  .subscribe((res:Partial<{data:Partial<IliveSwp>[],disclaimer:string}>) =>{
+  .subscribe((res:Partial<{data:Partial<IliveSwp>[],disclaimer:Partial<IDisclaimer>}>) =>{
     this.mature_swp = res.data;
     this.disclaimer =res.disclaimer;
     this.total_matured_swp_amt = global.calculatAmt(res.data);

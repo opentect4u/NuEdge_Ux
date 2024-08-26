@@ -9,6 +9,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 
 @Component({
   selector: 'registered-stp',
@@ -37,7 +38,7 @@ export class RegisteredStpComponent implements OnInit {
    */
   @Input() stpType: string;
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   /**
    *
@@ -99,7 +100,7 @@ export class RegisteredStpComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res: Partial<{data:Partial<IliveStp>[],disclaimer:string}>) =>{
+      .subscribe((res: Partial<{data:Partial<IliveStp>[],disclaimer:Partial<IDisclaimer>}>) =>{
         this.register_stp = res.data;
         this.total_resgistered_stp_amt = global.calculatAmt(res.data);
        this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];

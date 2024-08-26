@@ -33,11 +33,11 @@ export class DisclaimerComponent implements OnInit {
            res.forEach((element:Partial<IDisclaimer>,index:number) =>{
                 this.disclaimer.push(this.setDisclaimer(element));
                 this.disclaimer.at(index).get('dis_for').disable();
-                console.log(this.disclaimer.at(index))
            })}
            else{
             this.disclaimer.push(this.setDisclaimer(null))
            }
+           console.log(this.disclaimer)
       },
       err =>{
         this.disclaimer.push(this.setDisclaimer(null))
@@ -53,11 +53,14 @@ export class DisclaimerComponent implements OnInit {
     return new FormGroup({
       id:new FormControl(item ? item.id : 0),
       dis_for: new FormControl(item ? item.dis_for : '',[Validators.required]),
-      dis_des: new FormControl(item ? item.dis_des : '',[Validators.required])
+      dis_des: new FormControl(item ? item.dis_des : '',[Validators.required]),
+      font_size: new FormControl(item?.font_size ? item?.font_size : 8),
+      color_code: new FormControl(item?.color_code ? item?.color_code : '#000000')
     })
   }
 
   addDisclaimer =(index:number,disclaimer:Required<IDisclaimer>) =>{
+    // console.log(disclaimer);
    if(this.disclaimer.at(index).invalid){
     return;
    }
@@ -84,4 +87,6 @@ export interface IDisclaimer{
   id:number;
   dis_for:string;
   dis_des:string;
+  font_size:number;
+  color_code:string;
 }

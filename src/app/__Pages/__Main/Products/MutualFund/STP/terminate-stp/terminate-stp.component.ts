@@ -9,6 +9,7 @@ import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 
 @Component({
   selector: 'terminate-stp',
@@ -33,7 +34,7 @@ export class TerminateStpComponent implements OnInit {
  */
 @Input() trxnTypeMst: rntTrxnType[] = [];
 
-disclaimer:string | undefined = '';
+disclaimer:Partial<IDisclaimer> | undefined;
 
 /**
 * For Holding AMC Master Data
@@ -71,7 +72,7 @@ terminateStpReport = (formDt) =>{
   }
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
-  .subscribe((res: Partial<{data:IliveStp[],disclaimer:string}>) =>{
+  .subscribe((res: Partial<{data:IliveStp[],disclaimer:Partial<IDisclaimer>}>) =>{
        this.live_stp_rpt = res.data;
        this.disclaimer =res.disclaimer;
        this.total_terminate_stp_amt = global.calculatAmt(res.data);

@@ -124,7 +124,7 @@ export class LiveMfPortFolioComponent implements OnInit {
   resizeSubscription$: Subscription;
 
   /*** Holding disclaimer*/
-  disclaimer:string | null = '';
+  disclaimer:any;
   /*** End */
 
   selected_tab_index_for_family:number = 0;
@@ -993,7 +993,7 @@ mappings between `act_value` and `value` for transition durations. */
     this.selected_tab_index_for_family = 0;
     this.__dataSource_for_mf_report_segregrated = [];
     this.family_summary = [];
-    this.disclaimer = '';
+    this.disclaimer = null;
     this.plTrxnDtls=[];
     this.div_history = [];
     this.fundHouse = [];
@@ -1510,8 +1510,8 @@ mappings between `act_value` and `value` for transition durations. */
       }
   }
 
-  setDisclaimer = (dis_des:string) => {
-    this.disclaimer = dis_des;
+  setDisclaimer = (res:Partial<IDisclaimer>) => {
+    this.disclaimer = res;
   }
 
   call_api_for_family_summary(formData){
@@ -1621,7 +1621,7 @@ mappings between `act_value` and `value` for transition durations. */
             return this.mappedData(x,valuation_with)
         })
       )
-      .subscribe((res:Required<{data,client_details,disclaimer:string}>) => {
+      .subscribe((res:Required<{data,client_details,disclaimer:Partial<IDisclaimer>}>) => {
             try{
               
 
@@ -2300,7 +2300,7 @@ mappings between `act_value` and `value` for transition durations. */
                     })
                   this.setParentTableFooter_ClientDtls(modify_dt);
                   // this.div_history = this.dataSource.filter(item => item.curr_val > 0)
-                  this.setDisclaimer(res.data.disclaimer);
+                  this.setDisclaimer(res?.data?.disclaimer);
                   this.setClientDtls(res.data.client_details);
                   this.selected_tab_index_for_family = index;
                   this.selected_id = 1
@@ -2340,7 +2340,6 @@ mappings between `act_value` and `value` for transition durations. */
       if(exportDtls.mode == 'D'){
       ExportAs.exportAsDtls(
           mode,pdf,finalY,html_element,final_data,
-          
           this.disclaimer,'primeng__tble_','inr__tble_',
           this.filter_criteria.get('outputIn').value
          )
@@ -2860,4 +2859,8 @@ export class LiveMFPortFolioColumn{
 
 }
 
-
+export interface IDisclaimer{
+  dis_des:string;
+  font_size:number;
+  color_code:string;
+}

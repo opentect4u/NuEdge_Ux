@@ -75,7 +75,7 @@
                 <mat-card-content >
                     <p-table
                     id="pTable"
-                    #primeTble
+                    #primeTbl
                     [value]="transaction_query_dataSource"
                     dataKey="id"
                     [rowExpandMode]="'single'"
@@ -216,6 +216,19 @@
                               </p>
                             </ng-container>
 
+                            <ng-container *ngSwitchCase="col.field == 'action'">
+                              <span role="button" 
+                              [title]="liveMfPortFolio?.portfolio_show_flag == 'Y' ? 'Lock Transaction' : 'Unlock Transaction' "
+                              style="cursor: pointer;"
+                              (click)="getRowDtls(liveMfPortFolio)">
+                              <i class="pi" [ngClass]="{
+                                'pi-lock text-danger':liveMfPortFolio?.portfolio_show_flag == 'Y',
+                                'pi-lock-open text-success':liveMfPortFolio?.portfolio_show_flag == 'N'
+                              
+                              }" style="font-size: 1.5rem"></i>
+                              </span>
+                            </ng-container>
+
                             <ng-container *ngSwitchDefault>
                               <p class="m-0">
                                 {{
@@ -229,7 +242,7 @@
                         </td>
                       </tr>
                     </ng-template>
-                    <ng-template pTemplate="footer">
+                    <!-- <ng-template pTemplate="footer">
                       <tr>
                         <td
                           *ngFor="let col of parent_column"
@@ -272,7 +285,7 @@
                           </ng-container>
                         </td>
                       </tr>
-                    </ng-template>
+                    </ng-template> -->
                     <ng-template pTemplate="emptymessage">
                       <tr>
                         <td [attr.colspan]="parent_column.length + 1">
@@ -465,6 +478,15 @@
                       </tr>
                     </ng-template>
                   </p-table>
+                  <div class="my-3 px-2" *ngIf="disclaimer">
+                    <p 
+                    [ngStyle]="{
+                      'font-size':disclaimer ? (disclaimer?.font_size + 'px')  : '',
+                      'color':disclaimer ? disclaimer?.color_code : ''
+                    }"
+            
+                    >Disclaimer - {{disclaimer ? disclaimer?.dis_des : ''}}</p>
+                  </div>
                 </mat-card-content>
             </mat-card>
         </div>

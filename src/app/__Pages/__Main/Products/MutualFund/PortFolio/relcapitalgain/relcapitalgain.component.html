@@ -402,7 +402,10 @@
                     <ng-template #as_perITD>
                       <div class="row">
                           <div class="col-sm-12">
+                              <as-per-itd
+                              [AsPerITD]="asPerItd">
 
+                              </as-per-itd>
                           </div>
                         </div>
                     </ng-template>
@@ -495,6 +498,18 @@
               </ng-container>
             </mat-card-content>
           </mat-card> 
+          <mat-card *ngIf="disclaimer">
+            <mat-card-content class="p-3">
+                  <p
+                    [ngStyle]="{
+                      'font-size':disclaimer ? (disclaimer?.font_size + 'px')  : '',
+                      'color':disclaimer ? disclaimer?.color_code : ''
+                    }"
+                  >
+                    {{disclaimer?.dis_des}}
+                  </p>
+            </mat-card-content>
+          </mat-card>
     </div>
      
   <!-- </ng-container> -->
@@ -544,5 +559,7 @@
               </mat-card>
         </div>
   </ng-container> -->
+
+
 
 </div>

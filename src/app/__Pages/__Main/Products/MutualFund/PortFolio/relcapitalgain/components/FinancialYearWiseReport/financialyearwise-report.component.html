@@ -15,7 +15,7 @@
            <ng-template pTemplate="header">
             <tr class="stickyHeader">
                 <th *ngFor="let col of view_complete_details_column"
-                    pSortableColumn="{{col.field}}"
+                  
                     [style]="'width : '+col.width"
                 >
                 {{col.header}}
@@ -56,11 +56,11 @@
                           <ng-container *ngSwitchCase="__col.field == 'trans_date'">
                                 {{inr_item[__col.field] ? (inr_item[__col.field] | date:'dd-MM-YYYY') : 'N/A'}}
                           </ng-container>
-                          <ng-container *ngSwitchCase="__col.field == 'transaction_type' || __col.field == 'bank_name'">
+                          <ng-container *ngSwitchCase="__col.field == 'transaction_type' || __col.field == 'bank_name' || __col.field == 'acc_no'">
                             {{inr_item[__col.field] ? inr_item[__col.field] : 'N/A'}}
                           </ng-container>
                           <ng-container *ngSwitchDefault>
-                            {{inr_item[__col.field] ? (inr_item[__col.field] | number:'1.2-2') : 'N/A'}}
+                            {{inr_item[__col.field] ? (inr_item[__col.field] | number:'1.2-2') : '0.00'}}
                           </ng-container>
                       </ng-container>
                   </td>
@@ -155,6 +155,7 @@
                   <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'isin_no' || col.field == 'folio_no'">
                     {{fin_yr_wise_capital_gain[col.field] ? fin_yr_wise_capital_gain[col.field] : 'N/A'}}
                     </ng-container>
+
                     <ng-container *ngSwitchDefault>
                       {{fin_yr_wise_capital_gain[col.field] ? (fin_yr_wise_capital_gain[col.field] | number:'1.2-2') : '0.00'}}
                     </ng-container>

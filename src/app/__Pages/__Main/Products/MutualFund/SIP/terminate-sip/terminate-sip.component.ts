@@ -10,6 +10,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { displayMode } from '../../../../../../Enum/displayMode';
 import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
   selector: 'terminate-sip',
   templateUrl: './terminate-sip.component.html',
@@ -37,7 +38,7 @@ export class TerminateSIPComponent implements OnInit {
      */
     total_terminate_sip_amt:number = 0;
 
-    disclaimer:string | undefined = '';
+    disclaimer:Partial<IDisclaimer> | undefined;
 
   /**
    * For holding client those are  present only in transaction.
@@ -68,7 +69,7 @@ export class TerminateSIPComponent implements OnInit {
     this.dbIntr
       .api_call(1, '/showSipStpDetails', this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<{data:IliveSip[],disclaimer:string}>) => {
+      .subscribe((res:Partial<{data:IliveSip[],disclaimer:Partial<IDisclaimer>}>) => {
         this.live_sip_rpt = res.data;
         this.disclaimer = res.disclaimer;
         this.total_terminate_sip_amt = global.calculatAmt(res.data);

@@ -9,6 +9,7 @@ import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 
 @Component({
   selector: 'live-swp',
@@ -20,7 +21,7 @@ export class LiveSwpComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   @Input() swp_type:string;
 
@@ -75,7 +76,7 @@ export class LiveSwpComponent implements OnInit {
   this.dbIntr.api_call(1,'/showSipStpDetails',
   this.utility.convertFormData(dt))
   .pipe(pluck('data'))
-  .subscribe((res:Partial<{data:IliveSwp[],disclaimer:string}>) =>{
+  .subscribe((res:Partial<{data:IliveSwp[],disclaimer:Partial<IDisclaimer>}>) =>{
       this.disclaimer = res.disclaimer;
        this.live_swp_rpt = res.data;
        this.total_live_swp_amt = global.calculatAmt(res.data);

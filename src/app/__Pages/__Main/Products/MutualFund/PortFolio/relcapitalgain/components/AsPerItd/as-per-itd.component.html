@@ -1,0 +1,73 @@
+<div class="my-2">
+
+<p-table
+#as_per_itd
+[value]="AsPerITD"
+[paginator]="false"
+[responsive]="true"
+[globalFilterFields]="getColumns()"
+styleClass="p-datatable-lg p-datatable-striped"
+[rows]="10" 
+[rowHover]="false"
+currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+[pageLinks]="3"
+[rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+[showCurrentPageReport]="true"
+>
+<ng-template pTemplate="header">
+    <tr class="stickyHeader">
+        <th
+        *ngFor="let col of as_per_itd_column"
+        class="py-3"
+        [style]="'width : '+col.width"
+        class="summary_Report"
+        >
+        {{col.header}}
+        </th>
+    </tr>
+</ng-template>
+<ng-template pTemplate="body" let-as_per_itd>
+
+    <tr  class="stickyHeaderInnerTH">
+        <td [attr.colspan]="as_per_itd_column.length" class="table__header">
+            <h6 class="m-0">
+                Capital Gain / Loss – Overall Summary ({{as_per_itd?.fund_type}})
+            </h6>
+        </td>
+      </tr>
+     <ng-container *ngFor="let fund_dtls of as_per_itd.fund_dtls">
+        <tr >
+            <td [attr.colspan]="as_per_itd_column.length" class="table_title_style">
+                <h6 class="m-0">
+                    {{fund_dtls?.title}}
+                </h6>
+            </td>
+        </tr>
+        <ng-container *ngFor="let data of fund_dtls.data">
+                <tr>
+                    <td *ngFor="let col of as_per_itd_column">
+
+                        <ng-container [ngSwitch]="true">
+                            <ng-container *ngSwitchCase="col.field == 'title'">
+                              <p class="m-0">   {{data[col.field]}}</p>
+                            </ng-container>
+                            
+                            <ng-container *ngSwitchDefault>
+                                {{data[col.field] | number:'1.2-2'}}
+                            </ng-container>
+                          </ng-container>
+                           
+                    </td>
+                </tr>
+        </ng-container>
+     </ng-container>
+</ng-template>
+<ng-template pTemplate="emptymessage" let-as_per_itd>
+    <tr>
+    <td [attr.colspan]="as_per_itd_column.length">
+        <p class="m-0">No Records Found</p>
+    </td>
+    </tr>
+</ng-template>
+</p-table>
+</div>

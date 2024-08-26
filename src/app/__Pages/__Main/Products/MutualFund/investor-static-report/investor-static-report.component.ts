@@ -29,6 +29,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { DOCUMENT } from '@angular/common';
 import { IStaticRpt } from './static-rpt';
 import { client } from 'src/app/__Model/__clientMst';
+import { IDisclaimer } from '../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 enum TABLE_WIDTH {
   'F' = '1258rem', //FOLIO
   'K' = '445rem', // KYC
@@ -58,7 +59,7 @@ enum TABLE_WIDTH {
 })
 export class InvestorStaticReportComponent implements OnInit {
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   state: string | undefined = 'expanded';
 
@@ -602,8 +603,7 @@ export class InvestorStaticReportComponent implements OnInit {
       this.dbIntr
         .api_call(1, '/showFolioDetails', this.utility.convertFormData(object))
         .pipe(pluck('data'))
-        .subscribe((res:Partial<{data:IStaticRpt[],disclaimer:string}>) => {
-          console.log(res);
+        .subscribe((res:Partial<{data:IStaticRpt[],disclaimer:Partial<IDisclaimer>}>) => {
           this.disclaimer =res.disclaimer;
           this.report_data = res.data;
         });

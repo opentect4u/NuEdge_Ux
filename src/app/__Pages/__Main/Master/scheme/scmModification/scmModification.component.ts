@@ -345,6 +345,7 @@ export class ScmModificationComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.data.items);
     this.__scmForm.controls['amc_id'].updateValueAndValidity({
       emitEvent: true,
     });
@@ -800,7 +801,7 @@ export class ScmModificationComponent implements OnInit {
     __scm.append('swp_allowed', this.__scmForm.value.swp_allowed);
     __scm.append('switch_allowed', this.__scmForm.value.switch_allowed);
     __scm.append('switch_min_amt',this.__scmForm.value.switch_allowed === 'Yes' ? this.__scmForm.value.minimum_switch_in_amt : '');
-    __scm.append('switch_mul_amt',this.__scmForm.value.switch_allowed === 'No' ?  this.__scmForm.value.multiple_switch_in_amt : '');
+    __scm.append('switch_mul_amt',this.__scmForm.value.switch_allowed === 'Yes' ?  this.__scmForm.value.multiple_switch_in_amt : '');
 
 
     __scm.append('purchase_allowed', this.__scmForm.value.purchase_allowed);

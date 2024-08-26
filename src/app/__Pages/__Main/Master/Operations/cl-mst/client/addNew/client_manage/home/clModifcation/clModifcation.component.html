@@ -649,7 +649,7 @@
           <label for="__pin">Pincode</label>
             <select name="__pin" id="pin" class="form-control" formControlName="pincode">
               <option value="">Select</option>
-              <option [value]="pincode.id" *ngFor="let pincode of pincodeMst">{{pincode.pincode}}</option>
+              <option [value]="pincode.pincode" *ngFor="let pincode of pincodeMst">{{pincode.pincode}}</option>
             </select>
           <div class="invalid-feedback"
             *ngIf="__clientForm.get('pincode').invalid && (__clientForm.get('pincode').dirty || __clientForm.get('pincode').touched)">

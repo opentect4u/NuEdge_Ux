@@ -11,6 +11,7 @@ import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/string
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { ExportAs } from 'src/app/__Utility/exportFunc';
+import { IDisclaimer } from '../live-mf-port-folio.component';
 /*** Display Footer data on P&L */
 export type TotalPLportfolio = {
   purchase: number | undefined,
@@ -53,7 +54,7 @@ export class PlTrxnDtlsComponent implements OnInit {
 
   @Input() valuation_as_on
 
-  @Input() disclaimer:string = ''
+  @Input() disclaimer:Partial<IDisclaimer>;
 
   @Input() form_data;
 

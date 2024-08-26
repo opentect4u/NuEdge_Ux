@@ -169,9 +169,13 @@
       </ng-template> -->
     </p-table>
     <div class="my-3 p-2" *ngIf="disclaimer">
-      <p class="text-danger" style="font-size: 12px;">
-        Note - {{disclaimer}}
-      </p>
+      <p 
+      [ngStyle]="{
+        'font-size':disclaimer ? (disclaimer?.font_size + 'px')  : '',
+        'color':disclaimer ? disclaimer?.color_code : ''
+      }"
+
+      >{{disclaimer ? disclaimer?.dis_des : ''}}</p>
     </div>
   </mat-card-content>
 

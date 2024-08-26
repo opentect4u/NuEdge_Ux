@@ -2,6 +2,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { global } from "./globalFunc";
 import { DbIntrService } from "../__Services/dbIntr.service";
+import { IDisclaimer } from "../__Pages/__Main/Master/disclaimer/disclaimer.component";
 
 export class ExportAs{
 
@@ -212,7 +213,7 @@ export class ExportAs{
         finalY:number,
         element_to_print_as,
         table_id:string,
-        disclaimer:string,
+        disclaimer:Partial<IDisclaimer>,
         outputIn:string
     ): Promise<File | null>
     {
@@ -292,9 +293,9 @@ export class ExportAs{
                           }
                         )
                         let width = pdf.internal.pageSize.getWidth() - 20
-                        let textlines = pdf.setFontSize(8).setFont(
+                        let textlines = pdf.setTextColor(disclaimer?.color_code).setFontSize(disclaimer?.font_size).setFont(
                         "RobotoCondensed-Regular",'','400'
-                        ).splitTextToSize(`Disclaimer:${disclaimer}`,width);
+                        ).splitTextToSize(`Disclaimer:${disclaimer?.dis_des}`,width);
                         pdf.text(textlines,10,finalY)
                         // console.log(export_as)
                         if(mode === 'Print'){

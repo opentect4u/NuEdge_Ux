@@ -10,6 +10,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { displayMode } from '../../../../../../Enum/displayMode';
 import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
   selector: 'pause-sip',
   templateUrl: './pause-sip.component.html',
@@ -42,7 +43,7 @@ export class PauseSIPComponent implements OnInit {
    */
   @Input() report_type: string;
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   // column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'));
 
@@ -70,7 +71,7 @@ export class PauseSIPComponent implements OnInit {
     this.dbIntr
       .api_call(1, '/showSipStpDetails', this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:string}>) => {
+      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:Partial<IDisclaimer>}>) => {
         this.pause_sip = res.data;
         this.disclaimer = res.disclaimer;
         this.total_pause_sip_amt = global.calculatAmt(res.data);

@@ -8,6 +8,7 @@ import { IliveSwp } from '../live-swp/live_swp.interface';
 import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
   selector: 'pause-swp',
   templateUrl: './pause-swp.component.html',
@@ -30,7 +31,7 @@ export class PauseSwpComponent implements OnInit {
 
   @Input() sip_stp_swp_type_mst = [];
 
-  disclaimer:string |undefined = '';
+  disclaimer:Partial<IDisclaimer> |undefined;
 
   total_pause_swp_amt:number = 0;
 
@@ -64,7 +65,7 @@ export class PauseSwpComponent implements OnInit {
     this.dbIntr.api_call(1,'/showSipStpDetails',
     this.utility.convertFormData(dt))
     .pipe(pluck('data'))
-    .subscribe((res:Partial<{data:IliveSwp[],disclaimer:string}>) =>{
+    .subscribe((res:Partial<{data:IliveSwp[],disclaimer:Partial<IDisclaimer>}>) =>{
          this.pause_swp = res.data;
          this.total_pause_swp_amt = global.calculatAmt(res.data);
          this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];

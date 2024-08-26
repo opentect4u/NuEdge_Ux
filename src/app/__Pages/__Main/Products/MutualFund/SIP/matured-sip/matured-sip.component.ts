@@ -11,6 +11,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
 import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
   selector: 'matured-sip',
   templateUrl: './matured-sip.component.html',
@@ -51,7 +52,7 @@ export class MaturedSIPComponent implements OnInit {
 
   total_mature_sip_amt:number = 0;
 
-  disclaimer:string | undefined = ''
+  disclaimer:Partial<IDisclaimer> | undefined
 
     /**
    * Set Column for Matured SIP REPORT
@@ -97,7 +98,7 @@ export class MaturedSIPComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:string}>) =>{
+      .subscribe((res:Partial<{data:Partial<IliveSip>[],disclaimer:Partial<IDisclaimer>}>) =>{
         this.mature_sip = res.data;
         this.disclaimer = res.disclaimer;
         this.total_mature_sip_amt = global.calculatAmt(res.data);

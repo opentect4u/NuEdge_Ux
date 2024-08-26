@@ -17,6 +17,7 @@ import jsPDF from 'jspdf';
 import { Roboto_condensed_medium, Roboto_condensed_normal } from 'src/app/strings/fonts';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { IDisclaimer } from '../LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
   selector: 'portfolio-relcapitalgain',
   templateUrl: './relcapitalgain.component.html',
@@ -50,6 +51,9 @@ export class RelcapitalgainComponent implements OnInit {
   selected_index:number = 0;
 
   selected_parent_index:number = 0;
+
+
+  asPerItd:any[] = [];
 
   sub_tab_id:string;
   /**
@@ -117,6 +121,8 @@ export class RelcapitalgainComponent implements OnInit {
     family_members: new FormControl([]),
     pan_no: new FormControl('')
   })
+
+  disclaimer:Partial<IDisclaimer>;
 
   main_frm_dt;
 
@@ -193,7 +199,8 @@ export class RelcapitalgainComponent implements OnInit {
   realisedCapitalGain = (rest) =>{
     if( this.relised_capital_gain_summary.length == 0 && this.relisedCapitalGain.length == 0){
       this.dbIntr.api_call(1, '/clients/realisedCapitalGain', this.utility.convertFormData(rest))
-      .pipe(pluck('data')).subscribe((res: Required<{ data, client_details: client }>) => {
+      .pipe(pluck('data')).subscribe((res: Required<{ data, client_details: client,disclaimer:Partial<IDisclaimer> }>) => {
+         this.setDisclaimer(res.disclaimer);
           this.client_dtls = Object.assign(res.client_details,
             {
               ...res.client_details,
@@ -293,14 +300,21 @@ export class RelcapitalgainComponent implements OnInit {
             // console.log(res.data)
             this.populateAsPerITD(res.data);
           }
+          
 
       })
     }
   }
   /** End */
 
+  setDisclaimer = (disclaimer:Partial<IDisclaimer>) =>{
+    console.log(disclaimer)
+      this.disclaimer = disclaimer;
+  }
+
   populateAsPerITD = (res) =>{
     console.log(res)
+    this.asPerItd = [];
     let as_per_itd = [
       {
         fund_type:'Equity Fund',
@@ -610,7 +624,8 @@ export class RelcapitalgainComponent implements OnInit {
             }
              return el
         });
-        console.log(as_per_itd);
+        this.asPerItd = as_per_itd;
+        console.log(as_per_itd)
       }
     )
   }
@@ -738,6 +753,7 @@ export class RelcapitalgainComponent implements OnInit {
     this.dbIntr.api_call(1,'/clients/realisedDivHistory',rest)
     .pipe(pluck('data'))
     .subscribe((res:any) => {
+        this.setDisclaimer(res.disclaimer);
         this.idcw_summary = res.data;
        let idcwp = res.data.filter(item => item.transaction_subtype.toLowerCase().includes('dividend payout'))
        let idcw_reinv = res.data.filter(item => item.transaction_subtype.toLowerCase().includes('dividend reinvestment'))
@@ -758,13 +774,14 @@ export class RelcapitalgainComponent implements OnInit {
     if(this.financial_year_wise_trans_report.length == 0){
     this.dbIntr.api_call(1,'/clients/finYearWiseTrans',rest)
     .pipe(pluck('data'))
-    .subscribe((res:any) => {
+    .subscribe((res:Partial<{data:any,disclaimer:Partial<IDisclaimer>}>) => {
+      this.setDisclaimer(res.disclaimer);
       // console.log(res);
       // this.financial_year_wise_trans_report = res;
       this.financial_year_wise_trans_report = [];
       this.financial_year_wise_detail_report = [];
-      this.segregrateFinancialYearWiseReport(res);
-      this.segregrateFinancialYearWiseDetailsReport(res);
+      this.segregrateFinancialYearWiseReport(res.data);
+      this.segregrateFinancialYearWiseDetailsReport(res.data);
     })
     }
   }
@@ -810,14 +827,14 @@ export class RelcapitalgainComponent implements OnInit {
               trans_date:'',
               tot_amount:global.Total__Count(res[1],(x)=> Number(x.tot_amount)),
               tot_stamp_duty:global.Total__Count(res[1],(x)=> Number(x.tot_stamp_duty)),
-              tot_gross_amount:global.Total__Count(res[1],(x)=> (x?.tot_gross_amount ? Number(x.tot_gross_amount) : 0.00)),
-              tot_tds:global.Total__Count(res[1],(x)=> Number(x.tot_tds)),
+              tot_gross_amount:global.Total__Count(res[1],(x)=> (x?.tot_gross_amount ? Number(x.tot_gross_amount) : 0)),
+              tot_tds:global.Total__Count(res[1],(x)=> x.tot_tds ? Number(x.tot_tds) : 0),
               tot_units:global.Total__Count(res[1],(x)=> Number(x.tot_units)),
-              pur_price:'',
-              bank_name:'',
-              acc_no:'',
-              stt:0.00,
-              curr_val:0.00
+              pur_price:res[1][0]?.pur_price ? res[1][0]?.pur_price : 0,
+              bank_name:res[1][0]?.bank_name ? res[1][0]?.bank_name : '',
+              acc_no:res[1][0]?.acc_no ? res[1][0]?.acc_no : '',
+              stt:res[1][0]?.tot_stt ? res[1][0]?.tot_stt : 0,
+              curr_val: res[1][0]?.curr_val ? res[1][0]?.curr_val : '0',
             }
           })
          })
@@ -827,8 +844,7 @@ export class RelcapitalgainComponent implements OnInit {
          });
          
     })
-    console.log(this.final_footer_for_detail );
-
+   
   }
 
   calculate_total_financial_year_wise_summary_report = () =>{
@@ -855,6 +871,7 @@ export class RelcapitalgainComponent implements OnInit {
       groupBy((data:any) => data['scheme_name']),
       mergeMap(group => zip(of(group.key), group.pipe(toArray())))
     ).subscribe((dt) =>{
+        console.log(dt);
         let inflow = 0;
         let outflow = 0;
           dt[1].forEach(el =>{
@@ -872,12 +889,13 @@ export class RelcapitalgainComponent implements OnInit {
               isin_no:dt[1][0].isin_no ? dt[1][0].isin_no : "N/A",
               inflow:inflow,
               outflow:outflow,
-              idcw_reinv:'0.00',
-              idcwp:'0.00',
-              net_flow:'0.00'
+              idcw_reinv:global.Total__Count(dt[1],(x:any) => (x?.idcw_reinv ? x.idcw_reinv : 0)),
+              idcwp:global.Total__Count(dt[1],(x:any) => (x?.idcwp ? x.idcwp : 0)),
+              net_flow:inflow - outflow
             }
           )
     })
+    this.calculate_total_financial_year_wise_summary_report();
   }
   getGrandSummaryTotal = (summary_data: Partial<IsummaryReport>[]): Partial<IsummaryReport> => {
     return {
@@ -1114,7 +1132,10 @@ export class RelcapitalgainComponent implements OnInit {
               link.remove();
       }
       else{
-        this.exportRealisedCapitalGainAsPDF(event)
+        if(this.released_capital_gain_form.get('report_type').value == 'A'){
+          this.exportRealisedCapitalGainAsPerITDAsPDF(event);
+        }
+        else{this.exportRealisedCapitalGainAsPDF(event);}
       }
     }
     else if(this.parent_tab_id == 'D'){
@@ -1171,6 +1192,111 @@ export class RelcapitalgainComponent implements OnInit {
     }
   }
 
+  exportRealisedCapitalGainAsPerITDAsPDF = (event) =>{
+    console.log(event);
+    var pdf = new jsPDF('l','pt','a4',true);
+    let sub_tab_id = this.sub_tab_id;
+    const html_element = document.getElementById('client_container');
+    pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+    pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+    pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+    pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+    let disclaimer = this.disclaimer;
+    let finalY = 170;
+    pdf.html(
+      html_element.innerHTML,
+      {
+        html2canvas:{
+          width:pdf.internal.pageSize.getWidth() - 20,
+        },
+        width:pdf.internal.pageSize.getWidth() - 20,
+        windowWidth:pdf.internal.pageSize.getWidth() - 20,
+        margin:5,
+        x:5,
+        y:5,
+        callback(doc) {
+          let width = pdf.internal.pageSize.getWidth() - 20
+          let textlines = pdf.setFontSize(10).setFont(
+          "RobotoCondensed-Regular",'','400'
+          ).splitTextToSize(`REALISED CAPITAL GAIN AS PER OTD`,width);
+        
+          pdf.text(textlines,10,(finalY + 20));
+          finalY = finalY + pdf.getTextDimensions(`REALISED CAPITAL GAIN AS PER OTD`).h;
+          autoTable(
+            pdf,
+            { 
+              useCss:true,
+              didDrawPage: function(data){
+                  finalY = data.cursor.y + 20;
+              },
+              includeHiddenHtml:false,
+              tableLineColor: [189, 195, 199],
+              tableLineWidth: 0.75,
+              theme:'grid',
+              showHead:true,
+              showFoot:true,
+              html:`#as_per_itd`,
+              margin:{
+                top:5,
+                left:10,
+                right:10,
+                bottom:5
+              },
+                pageBreak:'auto',
+                rowPageBreak:'avoid',
+                styles: {overflow: 'linebreak', font: 'RobotoCondensed-Bold',  
+                cellPadding: 3,valign:'middle',halign:'center'},
+                headStyles:{
+                    fillColor:'#08567c',
+                    textColor:'#fff',
+                    fontSize:8,
+                    cellPadding:{
+                      vertical:5,
+                      horizontal:3
+                    },
+                    lineColor:'#fff',
+                    font:'RobotoCondensed-Bold'
+                },
+                footStyles:{
+                    fillColor:'#08567c',
+                    textColor:'#fff',
+                    fontSize:7,
+                    font:'RobotoCondensed-Bold',
+                    lineColor:'#fff',
+                    cellPadding:{
+                      vertical:5,
+                      horizontal:2
+                    },
+                },
+                bodyStyles:{
+                  fontSize:8,
+                  cellPadding:2,
+                  font:'RobotoCondensed-Regular'
+                },
+                startY:finalY + 20,
+                // columnStyles:{
+                //     0:{cellWidth:150.64,halign:'center'},
+                // },
+              tableWidth:pdf.internal.pageSize.getWidth() - 20
+            }
+          )  
+          let width_disclaimer = pdf.internal.pageSize.getWidth() - 20;
+          let textlines_disclaimer = pdf.setTextColor(disclaimer?.color_code).setFontSize(disclaimer?.font_size).setFont(
+          "RobotoCondensed-Regular",'','400'
+          ).splitTextToSize(`Disclaimer:${disclaimer?.dis_des}`,width_disclaimer);
+          pdf.text(textlines_disclaimer,10,finalY)
+          if(event.export_type === 'Print'){
+            pdf.autoPrint();
+          }
+          pdf.setProperties({
+              title: `REALISEDCAPITALGAINASPERITD`
+          }).output('dataurlnewwindow');
+          
+        },
+        autoPaging:true
+      }
+    );
+  }
   
 
   s2ab(s) {
@@ -1190,6 +1316,7 @@ export class RelcapitalgainComponent implements OnInit {
     pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
     pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
     pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+    let disclaimer = this.disclaimer;
     let finalY = 170;
     pdf.html(
       html_element.innerHTML,
@@ -1331,7 +1458,11 @@ export class RelcapitalgainComponent implements OnInit {
               tableWidth:pdf.internal.pageSize.getWidth() - 20
             }
           )  
-        
+          let width_disclaimer = pdf.internal.pageSize.getWidth() - 20;
+          let textlines_disclaimer = pdf.setTextColor(disclaimer?.color_code).setFontSize(disclaimer?.font_size).setFont(
+          "RobotoCondensed-Regular",'','400'
+          ).splitTextToSize(`Disclaimer:${disclaimer?.dis_des}`,width_disclaimer);
+          pdf.text(textlines_disclaimer,10,finalY)
           if(event.export_type === 'Print'){
             pdf.autoPrint();
           }
@@ -1346,7 +1477,6 @@ export class RelcapitalgainComponent implements OnInit {
   }
 
   exportRealisedCapitalGainAsPDF(event){
-    console.log(event);
     const table = this.primaryTbl?.el.nativeElement.querySelector('table');
     table.setAttribute('id', 'summary');
     let report_type = this.released_capital_gain_form.get('report_type').value;
@@ -1361,6 +1491,7 @@ export class RelcapitalgainComponent implements OnInit {
     pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
     pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
     pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+    let disclaimer = this.disclaimer;
     let finalY = 170;
     pdf.html(
       html_element.innerHTML,
@@ -1388,7 +1519,7 @@ export class RelcapitalgainComponent implements OnInit {
                 didDrawPage: function(data){
                   finalY = data.cursor.y + 20;
                 },
-                useCss:false,
+                useCss:true,
                 includeHiddenHtml:false,
                 tableLineColor: [189, 195, 199],
                 tableLineWidth: 0.75,
@@ -1447,7 +1578,7 @@ export class RelcapitalgainComponent implements OnInit {
           autoTable(
             pdf,
             { 
-              useCss:false,
+              useCss:true,
               didDrawPage: function(data){
                   finalY = data.cursor.y + 20;
               },
@@ -1502,7 +1633,11 @@ export class RelcapitalgainComponent implements OnInit {
               tableWidth:pdf.internal.pageSize.getWidth() - 20
             }
           )  
-        
+          let width_disclaimer = pdf.internal.pageSize.getWidth() - 20;
+          let textlines_disclaimer = pdf.setTextColor(disclaimer?.color_code).setFontSize(disclaimer?.font_size).setFont(
+          "RobotoCondensed-Regular",'','400'
+          ).splitTextToSize(`Disclaimer:${disclaimer?.dis_des}`,width_disclaimer);
+          pdf.text(textlines_disclaimer,10,finalY)
           if(event.export_type === 'Print'){
             pdf.autoPrint();
           }
@@ -1511,7 +1646,7 @@ export class RelcapitalgainComponent implements OnInit {
           }).output('dataurlnewwindow');
           
         },
-        autoPaging:true
+        autoPaging:true,
       }
     );
   }
@@ -1524,6 +1659,7 @@ export class RelcapitalgainComponent implements OnInit {
     pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
     pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
     pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+    let disclaimer = this.disclaimer;
     let finalY = 170;
     pdf.html(
       html_element.innerHTML,
@@ -1553,7 +1689,7 @@ export class RelcapitalgainComponent implements OnInit {
                 autoTable(
                   pdf,
                   { 
-                    useCss:false,
+                    useCss:true,
                     didDrawPage: function(data){
                         finalY = data.cursor.y + 20;
                     },
@@ -1608,6 +1744,11 @@ export class RelcapitalgainComponent implements OnInit {
                     tableWidth:pdf.internal.pageSize.getWidth() - 20
                   }
                 )  
+                let width_disclaimer = pdf.internal.pageSize.getWidth() - 20;
+                let textlines_disclaimer = pdf.setTextColor(disclaimer?.color_code).setFontSize(disclaimer?.font_size).setFont(
+                "RobotoCondensed-Regular",'','400'
+                ).splitTextToSize(`Disclaimer:${disclaimer?.dis_des}`,width_disclaimer);
+                pdf.text(textlines_disclaimer,10,finalY)
                 if(event.export_type === 'Print'){
                   pdf.autoPrint();
                 }

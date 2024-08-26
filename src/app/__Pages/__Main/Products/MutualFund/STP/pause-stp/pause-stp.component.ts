@@ -8,6 +8,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
   selector: 'pause-stp',
   templateUrl: './pause-stp.component.html',
@@ -32,7 +33,7 @@ export class PauseStpComponent implements OnInit {
 
   total_pause_stp_amt:number = 0;
   
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined ;
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('P2'));
   constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
@@ -53,7 +54,7 @@ export class PauseStpComponent implements OnInit {
     }
     this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
     .pipe(pluck('data'))
-    .subscribe((res: Partial<{data:Partial<IliveStp>[],disclaimer:string}>) =>{
+    .subscribe((res: Partial<{data:Partial<IliveStp>[],disclaimer:Partial<IDisclaimer>}>) =>{
          this.pause_stp = res.data;
          this.total_pause_stp_amt = global.calculatAmt(res.data);
          this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];

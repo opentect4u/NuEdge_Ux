@@ -49,10 +49,15 @@
       [period_type]="__period_type"
       ></core-mis-tbl>
       <div class="my-3 p-2" *ngIf="disclaimer">
-        <p class="text-danger" style="font-size: 12px;">
-          Note - {{disclaimer}}
+        <p
+          [ngStyle]="{
+            'font-size':disclaimer ? (disclaimer?.font_size + 'px')  : '',
+            'color':disclaimer ? disclaimer?.color_code : ''
+          }"
+        >
+          {{disclaimer?.dis_des}}
         </p>
-      </div>
+      </div>     
   </mat-card-content>
 </mat-card>
 </div>

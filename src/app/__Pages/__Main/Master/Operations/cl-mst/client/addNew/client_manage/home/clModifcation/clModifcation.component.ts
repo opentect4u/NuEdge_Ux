@@ -42,7 +42,7 @@ export class ClModifcationComponent implements OnInit {
   __stateMaster: any = [];
   __clientForm = new FormGroup({
     type: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items?.client_type) : '',[Validators.required]),
-    mar_status: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items?.mar_status) : ''),
+    mar_status: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items?.maritial_status) : ''),
     anniversary_date: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.anniversary_date) : ''),
     client_name: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.client_name) : '', [Validators.required]),
     dob: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.dob) : ''),
@@ -98,7 +98,7 @@ export class ClModifcationComponent implements OnInit {
     relations: new FormControl(this.data.id > 0 ? global.getActualVal(this.data.items.relation)  : ''),
 
     doc_dtls: new FormArray([]),
-    client_type: new FormControl((this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ?  global.getActualVal(this.data.items?.client_type_mode) : ''),
+    client_type: new FormControl((this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ?  (this.data.items?.client_type_mode > 0 ? global.getActualVal(this.data.items?.client_type_mode) : '') : ''),
 
     // client_type: new FormControl((this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ?  global.getActualVal(this.data.items?.client_type_mode) : '',(this.data?.cl_type == 'P' || this.data?.cl_type == 'M' || this.data?.cl_type == 'N') ? [Validators.required] : []),
     proprietor_name: new FormControl(global.getActualVal(this.data.items?.proprietor_name)),
@@ -621,7 +621,17 @@ export class ClModifcationComponent implements OnInit {
     switch (this.data?.cl_type) {
       case 'M': this.removeValidators(['pan']); break;
       case 'N': this.removeValidators(['pan', 'gurdians_pan', 'gurdians_name', 'relations']); break;
-      case 'P': this.removeValidators(['gurdians_pan', 'gurdians_name', 'relations']); break;
+      case 'P': 
+      this.removeValidators(['gurdians_pan', 'gurdians_name', 'relations']); 
+      this.setValidators(
+        [
+          {
+            name: "client_type",
+            validators: [Validators.required]
+          }
+        ]
+      )
+      break;
       case 'E': if (this.data.id > 0) {
         this.setValidators(
           [

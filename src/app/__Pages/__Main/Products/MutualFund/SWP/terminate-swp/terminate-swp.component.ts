@@ -9,6 +9,7 @@ import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 
 @Component({
   selector: 'terminate-swp',
@@ -19,7 +20,7 @@ export class TerminateSwpComponent implements OnInit {
 
   state:string = displayMode[1];
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   @Input() swp_type:string;
 
@@ -77,7 +78,7 @@ LiveSwpReport = (formDt) =>{
   this.dbIntr.api_call(1,'/showSipStpDetails',
   this.utility.convertFormData(dt))
   .pipe(pluck('data'))
-  .subscribe((res:Partial<{data:IliveSwp[],disclaimer:string}>) =>{
+  .subscribe((res:Partial<{data:IliveSwp[],disclaimer:Partial<IDisclaimer>}>) =>{
        this.live_swp_rpt = res.data;
        this.total_terminate_swp_amt = global.calculatAmt(res.data);
        this.state =  res.data.length > 0 ? displayMode[0] : displayMode[1];

@@ -6,6 +6,7 @@ import { ChartWithCategories, IChartData } from 'src/app/__Core/chart/chart.comp
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { IDisclaimer } from '../../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 
 @Component({
   selector: 'app-trend-rpt',
@@ -28,7 +29,7 @@ export class TrendRptComponent implements OnInit {
   __mis__Trend__Column:column[] =  ColumnTrend.column;
   /*****END */
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined ;
 
   __chart__data:ChartWithCategories;
 
@@ -153,5 +154,5 @@ export interface IActualMISTrend{
   categories:string[]
   chart_data:{name:string,data:number[]}[]
   table_data:IMisTrend[],
-  disclaimer:string | undefined
+  disclaimer:Partial<IDisclaimer> | undefined
 }

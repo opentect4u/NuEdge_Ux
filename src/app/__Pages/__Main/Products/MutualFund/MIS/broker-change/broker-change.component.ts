@@ -34,6 +34,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { trxnCountAmtSummaryColumn, trxnCountSummary } from '../TransactionReport/trxn-rpt/trxnAmtCountSummary';
 import { TrxnType } from '../TransactionReport/trxn-rpt/trxn-rpt.component';
 import * as XLSX from 'xlsx';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 //  export type TrxnType = {
 //    reject:Partial<TrxnRpt[]>;
 //    process:Partial<TrxnRpt[]>;
@@ -216,7 +217,7 @@ __RmMst: any = [];
 __subbrkArnMst: any = [];
 
 
-disclaimer:string | undefined = '';
+disclaimer:Partial<IDisclaimer> | undefined;
 
 /**
  * Holding Sub Broker Master Data
@@ -763,7 +764,7 @@ fetchTransaction = () =>{
     .api_call(1, '/showBrokerChangeDetails', TrxnDt)
     .pipe(
       pluck('data'),
-      tap((item:Partial<{data:TrxnRpt[],disclaimer:string}>) => {
+      tap((item:Partial<{data:TrxnRpt[],disclaimer:Partial<IDisclaimer>}>) => {
         console.log(item)
         this.disclaimer = item.disclaimer;
           let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;

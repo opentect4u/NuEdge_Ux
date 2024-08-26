@@ -10,6 +10,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
 import * as XLSX from 'xlsx';
 import { DatePipe } from '@angular/common';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
   selector: 'live-sip',
   templateUrl: './live-sip.component.html',
@@ -50,7 +51,7 @@ export class LiveSIPComponent implements OnInit {
    */
   column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes('LS-1'));
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   /**
    * Hold Sip Report result
@@ -111,7 +112,7 @@ export class LiveSIPComponent implements OnInit {
        }
         this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
         .pipe(pluck('data'))
-        .subscribe((res:Partial<{data:IliveSip[],disclaimer:string}>) =>{
+        .subscribe((res:Partial<{data:IliveSip[],disclaimer:Partial<IDisclaimer>}>) =>{
             this.disclaimer = res.disclaimer;
              this.live_sip_rpt = res.data;
              this.total_live_sip_amt = global.calculatAmt(res.data);

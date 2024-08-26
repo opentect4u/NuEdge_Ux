@@ -16,6 +16,7 @@ import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { from, of,zip } from 'rxjs';
 import { global } from 'src/app/__Utility/globalFunc';
+import { IDisclaimer } from '../../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 declare type MisFlag = "I" | "O";
 
 export class MonthlyCalculation{
@@ -35,7 +36,7 @@ export class MonthlyMisComponent implements OnInit {
 
   netFlow:Partial<{"Sl No.":number,Inflow:number,Netflow:number,Outflow:number,"Transaction Type":string}>[] = []
 
-  disclaimer:string | undefined = ''
+  disclaimer:Partial<IDisclaimer>;
 
   @ViewChild('MISTABLE') __MisTbleComponent;
 
@@ -78,7 +79,7 @@ export class MonthlyMisComponent implements OnInit {
     }
       this.dbIntr.api_call(1,'/showMonthlyMisReport',this.utility.convertFormData(dt))
       .pipe(pluck('data'))
-      .subscribe((res:Partial<{data:TrxnRpt[],disclaimer:string}>) =>{
+      .subscribe((res:Partial<{data:TrxnRpt[],disclaimer:Partial<IDisclaimer>}>) =>{
         this.__monthly_mis_trxn = res.data;
         this.disclaimer = res.disclaimer;
         this.total_mis_calculation = {
@@ -281,6 +282,20 @@ export class MonthlyMisComponent implements OnInit {
     })
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(excel_dt_for_monthly_inflow, { header:column});
+    ws['A1'].s = {
+      fill: {
+        patternType: 'solid',
+        fgColor: { rgb: 'FF939393' }
+      },
+      font: {
+        name: 'Times New Roman',
+        sz: 16,
+        color: { rgb: '#FF000000' },
+        bold: false,
+        italic: false,
+        underline: false
+      }
+    };
     XLSX.utils.book_append_sheet(wb, ws, 'MONTHLYINFLOW');
     const ws1 = XLSX.utils.json_to_sheet(excel_dt_for_monthly_outflow, { header:column});
     XLSX.utils.book_append_sheet(wb, ws1, 'MONTHLYOUTFLOW');

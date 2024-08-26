@@ -9,6 +9,7 @@ import { pluck } from 'rxjs/operators';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
+import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 
 @Component({
   selector: 'live-stp',
@@ -22,7 +23,7 @@ export class LiveStpComponent implements OnInit {
   @ViewChild('primeTbl') primeTbl: Table;
   @Input() stpType:string;
 
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   @Input() report_type:string;
 
@@ -71,7 +72,7 @@ LiveStpReport = (formDt) =>{
   }
   this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt))
   .pipe(pluck('data'))
-  .subscribe((res: Partial<{data:IliveStp[],disclaimer:string}>) =>{
+  .subscribe((res: Partial<{data:IliveStp[],disclaimer:Partial<IDisclaimer>}>) =>{
        this.live_stp_rpt = res.data;
        this.disclaimer = res.disclaimer;
        this.total_live_stp_report = global.calculatAmt(res.data);

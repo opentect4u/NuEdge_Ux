@@ -186,7 +186,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="col.field == 'ret_abs'">
               <p class="m-0 text-center">
-                {{(pl_trxn[col.field] && pl_trxn[col.field] > 0) ? (pl_trxn[col.field] | number:'1.2-2') : '0' }}%</p>
+                {{pl_trxn[col.field] ? (pl_trxn[col.field] | number:'1.2-2') : '0' }}%</p>
             </ng-container>
             <ng-container *ngSwitchCase="col.field == 'trans_details'">
               <span role="button" (click)="getRowDtls(pl_trxn)">
@@ -362,7 +362,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="col.field == 'ret_abs'">
               <p class="m-0 text-center">
-                {{(plTrxn[col.field] && plTrxn[col.field] > 0) ? (plTrxn[col.field] | number:'1.2-2') : '0' }}%</p>
+                {{plTrxn[col.field] ? (plTrxn[col.field] | number:'1.2-2') : '0' }}%</p>
             </ng-container>
             <ng-container *ngSwitchDefault>
               <p class="m-0">

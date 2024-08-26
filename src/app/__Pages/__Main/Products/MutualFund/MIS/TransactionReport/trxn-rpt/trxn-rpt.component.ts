@@ -35,6 +35,7 @@ import { trxnCountAmtSummaryColumn, trxnCountSummary } from './trxnAmtCountSumma
 import autoTable from 'jspdf-autotable';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
+import { IDisclaimer } from '../../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
  export type TrxnType = {
    reject:Partial<TrxnRpt[]>;
    process:Partial<TrxnRpt[]>;
@@ -209,7 +210,7 @@ export class TrxnRptComponent implements OnInit {
    */
   column: column[] = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn')).filter((el) => el.isVisible.includes('T'));
  
-  disclaimer:string | undefined = '';
+  disclaimer:Partial<IDisclaimer> | undefined;
 
   /**
    * Holding AMC Master Data
@@ -855,7 +856,7 @@ export class TrxnRptComponent implements OnInit {
             });
         })
         )
-      .subscribe((res: Partial<{data:TrxnRpt[],disclaimer:string}>) => {
+      .subscribe((res: Partial<{data:TrxnRpt[],disclaimer:Partial<IDisclaimer>}>) => {
         console.log(res.data);
         if(res.data.length > 0){
         this.calculateProcess_Reject(res.data);
@@ -908,6 +909,14 @@ export class TrxnRptComponent implements OnInit {
       });
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(dt, { header:column});
+      for(let i = 0; i < column.length; i++) {
+        const cell = ws[XLSX.utils.encode_cell({r: 0, c: i})];
+        // Create new style if cell doesnt have a style yet
+        if(!cell.s) {cell.s = {};}
+        if(!cell.s.font) {cell.s.font = {};}
+        // Set bold
+        cell.s.font.bold = true;
+    }
       XLSX.utils.book_append_sheet(wb, ws, 'TRANSACTIONDETAILS');
       const table = this.primeTblsummary?.el.nativeElement.querySelector('table');
       table.setAttribute('id', 'trans_summary');
