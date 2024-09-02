@@ -301,12 +301,20 @@
         <mat-card-title>
           {{title}} {{index == 0 ? 'Reports' : ''}}
         </mat-card-title>
-        <div class="my-auto w-25 pr-4">
+        <div class="my-auto pr-4 d-flex align-items-center justify-content-between">
+         
           <span class="ml-auto">
             <input id="search" class="form-control rounded" type="text"
                    (input)="filterGlobal($event)"
                    placeholder="Search" />
           </span>
+          <button
+          pButton 
+          type="button"
+          (click)="exportExcel()"
+          class="p-button-outlined mx-3"> 
+          <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+         </button> 
         </div>
       </mat-card-header>
       <mat-card-content>

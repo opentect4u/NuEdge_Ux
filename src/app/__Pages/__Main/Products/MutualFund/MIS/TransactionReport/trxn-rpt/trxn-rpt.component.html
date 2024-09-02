@@ -561,6 +561,7 @@
         </p-table>
         <div class="my-3 p-2" *ngIf="disclaimer">
           <p
+          id="disclaimer"
             [ngStyle]="{
               'font-size':disclaimer ? (disclaimer?.font_size + 'px') : '',
               'color':disclaimer ? disclaimer?.color_code : ''

@@ -30,6 +30,8 @@ import { DOCUMENT } from '@angular/common';
 import { IStaticRpt } from './static-rpt';
 import { client } from 'src/app/__Model/__clientMst';
 import { IDisclaimer } from '../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 enum TABLE_WIDTH {
   'F' = '1258rem', //FOLIO
   'K' = '445rem', // KYC
@@ -614,6 +616,232 @@ export class InvestorStaticReportComponent implements OnInit {
     }
 
   };
+
+  exportExcel = () =>{
+
+    let dt = [];
+    if(this.index == 0){
+        this.report_data.forEach((el:any,index) =>{
+          dt.push([
+            (index + 1),
+            el.bu_type,
+            el.branch_name,
+            el.rm_name,
+            el.sub_brk_cd,
+            el.euin_no,
+            el.folio_no,
+            el.family,
+            el.first_client_name,
+            el.cat_name,
+            el.subcat_name,
+            `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+            el.add_1,
+            el.add_2,
+            el.add_3,
+            el.city,
+            el.state,
+            el.pincode,
+            el.city_type,
+            el.mode_of_holding,
+            el.pan,
+            el.ckyc_no_1st,
+            el.dob,
+            el.tax_status,
+            el.occupation_des,
+            el.mobile,
+            el.email,
+            el.joint_name_1,
+            el.pan_2_holder,
+            el.ckyc_no_2nd,
+            el.dob_2nd_holder,
+            el.tax_status_2nd_holder,
+            el.occupation_des_2nd_holder,
+            el.mobile_2nd_holder,
+            el.email_2nd_holder,
+            el.joint_name_2,
+            el.pan_3rd_holder,
+            el.ckyc_no_3rd,
+            el.dob_3rd_holder,
+            el.tax_status_3rd_holder,
+            el.occupation_des_3rd_holder,
+            el.mobile_3rd_holder,
+            el.email_3rd_holder,
+            el.guardian_name,
+            el.guardian_pan,
+            el.guardian_ckyc_no,
+            el.guardian_dob,
+            el.guardian_tax_status,
+            el.guardian_occu_des,
+            el.guardian_mobile,
+            el.guardian_email,
+            el.guardian_relation,
+            el.pa_link_ststus_1st,
+            el.pa_link_ststus_2nd,
+            el.pa_link_ststus_3rd,
+            el.guardian_pa_link_ststus,
+            el.kyc_status_1st,
+            el.kyc_status_2nd,
+            el.kyc_status_3rd,
+            el.guardian_kyc_status,
+            el.bank_name,
+            el.bank_acc_no,
+            el.acc_type,
+            el.bank_ifsc,
+            el.bank_micr,
+            el.bank_branch,
+            el.nom_optout_status,
+            el.nom_name_1,
+            el.nom_relation_1,
+            el.nom_per_1,
+            el.nom_name_2,
+            el.nom_relation_2,
+            el.nom_per_2,
+            el.nom_name_3,
+            el.nom_relation_3,
+            el.nom_per_3,
+            el.folio_date,
+            el.folio_balance,
+            el.folio_status
+          ])
+        }) 
+    }
+    else if(this.index == 1){
+      this.report_data.forEach((el:any,index) =>{
+        dt.push([
+          (index + 1),
+          el.bu_type,
+          el.branch_name,
+          el.rm_name,
+          el.sub_brk_cd,
+          el.euin_no,
+          el.folio_no,
+          el.first_client_name,
+          el.cat_name,
+          el.subcat_name,
+          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+          el.mode_of_holding,
+          el.pan,
+          el.ckyc_no_1st,
+          el.joint_name_1,
+          el.pan_2_holder,
+          el.ckyc_no_2nd,
+          el.joint_name_2,
+          el.pan_3rd_holder,
+          el.ckyc_no_3rd,
+          el.guardian_pan,
+          el.guardian_ckyc_no,
+          el.kyc_status_1st,
+          el.kyc_status_2nd,
+          el.kyc_status_3rd,
+          el.guardian_kyc_status,
+          el.folio_date,
+          el.folio_balance,
+          el.folio_status
+        ])
+      }) 
+    }
+    else if(this.index == 2){
+      this.report_data.forEach((el:any,index) =>{
+        dt.push([
+          (index + 1),
+          el.bu_type,
+          el.branch_name,
+          el.rm_name,
+          el.sub_brk_cd,
+          el.euin_no,
+          el.folio_no,
+          el.first_client_name,
+          el.cat_name,
+          el.subcat_name,
+          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+          el.nom_optout_status,
+          el.nom_name_1,
+          el.nom_relation_1,
+          el.nom_per_1,
+          el.nom_name_2,
+          el.nom_relation_2,
+          el.nom_per_2,
+          el.nom_name_3,
+          el.nom_relation_3,
+          el.nom_per_3,
+          el.folio_date,
+          el.folio_balance,
+          el.folio_status
+        ])
+      }) 
+    }
+    else{
+      this.report_data.forEach((el:any,index) =>{
+        dt.push([
+          (index + 1),
+          el.bu_type,
+          el.branch_name,
+          el.rm_name,
+          el.sub_brk_cd,
+          el.euin_no,
+          el.folio_no,
+          el.family,
+          el.first_client_name,
+          el.cat_name,
+          el.subcat_name,
+          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+          el.pan,
+          el.guardian_pan,
+          el.pa_link_ststus_1st,
+          el.pa_link_ststus_2nd,
+          el.pa_link_ststus_3rd,
+          el.guardian_pa_link_ststus,
+          el.kyc_status_1st,
+          el.kyc_status_2nd,
+          el.kyc_status_3rd,
+          el.guardian_kyc_status,
+          el.folio_date,
+          el.folio_balance,
+          el.folio_status
+        ])
+      })
+    }
+    this.handleExport(dt)
+  }
+
+
+  handleExport = (dt) =>{
+    let workbook = new ExcelJS.Workbook();
+    let worksheet = workbook.addWorksheet('REPORT',
+      {
+        views:[
+          {state: 'frozen', xSplit: 3, ySplit: 0}
+        ]
+      }
+    );
+    const column = this.column.map(el => el.header);
+    let headerRow = worksheet.addRow(column);
+    headerRow.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    worksheet.addRows(dt);
+    const currentRowIdx = worksheet.rowCount; // Find out how many rows are there currently
+    const endColumnIdx = worksheet.columnCount; // Find out how many columns are in the worksheet
+    let disclaimerRow = worksheet.addRow([
+      `Disclaimer - ${this.disclaimer?.dis_des}`
+    ]);
+    disclaimerRow.eachCell((cell) =>{
+     cell.font = {
+        color :{argb:this.disclaimer?.color_code}
+     }
+     cell.font.size= this.disclaimer?.font_size
+    })
+    worksheet.mergeCells((currentRowIdx + 1), 1, (currentRowIdx + 1), endColumnIdx,'REPORT');
+    workbook.xlsx.writeBuffer().then((data)=>{
+      let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+      saveAs(blob, `${this.title}.xlsx`);
+    })
+  }
 
   /**
     * Get Branch Master Data

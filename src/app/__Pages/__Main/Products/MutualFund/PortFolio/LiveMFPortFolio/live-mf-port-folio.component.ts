@@ -37,7 +37,6 @@ import { ExportAs } from 'src/app/__Utility/exportFunc';
 import { HttpHeaders } from '@angular/common/http';
 import { url } from 'src/environments/environment';
 
-
 /*** Display Footer data on Raw Expand Inside Inner Table*/
 export type TotalsubLiveMFPortFolio = {
   tot_amount:number | undefined,

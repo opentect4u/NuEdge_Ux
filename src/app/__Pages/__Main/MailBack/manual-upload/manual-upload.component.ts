@@ -232,9 +232,19 @@ export class ManualUploadComponent implements OnInit {
       });
     }
     else{
+      // this.dbIntr
+      // .api_call(
+      //   1,'/uploadNavData', this.utility.convertFormData(dt),
+      //   false,false,true
+      //   )
+      // // .pipe(pluck('data'))
+      // .subscribe(res =>{
+      //     console.log(res);
+      //     this.resetForm();
+      // })
       this.dbIntr
       .api_call(
-        1,'/uploadNavData', this.utility.convertFormData(dt),
+        1,'/manualNavUpload', this.utility.convertFormData(dt),
         false,false,true
         )
       // .pipe(pluck('data'))

@@ -115,6 +115,10 @@
                   <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn['remarks'] && trxn['remarks']!= ' ') ? (trxn['remarks'] | lowercase | ellipsis:30):
                     'N/A'}}</p>
                 </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'to_scheme_name'">
+                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['plan_name'] + '-' + trxn['option_name']) : 'N/A' }}</p>
+
+                </ng-container>
 
               <ng-container *ngSwitchDefault>
                 <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>

@@ -32,10 +32,15 @@ import { Observable, Subscription, from, of } from 'rxjs';
 import clientType from '../../../../../../../../assets/json/view_type.json';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { trxnCountAmtSummaryColumn, trxnCountSummary } from './trxnAmtCountSummary';
-import autoTable from 'jspdf-autotable';
-import jsPDF from 'jspdf';
-import * as XLSX from 'xlsx';
+// import autoTable from 'jspdf-autotable';
+// import jsPDF from 'jspdf';
+// import * as XLSX from 'xlsx';
+// import * as Excel from 'exceljs/dist/exceljs.min.js';
+
 import { IDisclaimer } from '../../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
+// import { Workbook } from 'exceljs';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
  export type TrxnType = {
    reject:Partial<TrxnRpt[]>;
    process:Partial<TrxnRpt[]>;
@@ -857,7 +862,6 @@ export class TrxnRptComponent implements OnInit {
         })
         )
       .subscribe((res: Partial<{data:TrxnRpt[],disclaimer:Partial<IDisclaimer>}>) => {
-        console.log(res.data);
         if(res.data.length > 0){
         this.calculateProcess_Reject(res.data);
       }
@@ -868,74 +872,227 @@ export class TrxnRptComponent implements OnInit {
         }
       this.state = 'collapsed';
       this.trxnRpt = res.data;
-      console.log(res.data);
       });
   }
 
+  handleExport = (dt) =>{
+
+    let workbook = new ExcelJS.Workbook();
+    let worksheet = workbook.addWorksheet('TRANSACTIONDETAILSREPORT',
+      {
+        views:[
+          {state: 'frozen', xSplit: 3, ySplit: 0}
+        ]
+      }
+    );
+    const column = this.column.map(el => el.header);
+    let headerRow = worksheet.addRow(column);
+    headerRow.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    worksheet.addRows(dt);
+    let footerRow = worksheet.addRow([
+      'GRAND TOTAL',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     global.Total__Count(this.trxnRpt,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
+     global.Total__Count(this.trxnRpt,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
+     global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+     global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),,
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     ''
+    ])
+    footerRow.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    const currentRowIdx = worksheet.rowCount; // Find out how many rows are there currently
+    const endColumnIdx = worksheet.columnCount; // Find out how many columns are in the worksheet
+    let disclaimerRow = worksheet.addRow([
+      `Disclaimer - ${this.disclaimer.dis_des}`
+    ]);
+    disclaimerRow.eachCell((cell) =>{
+     cell.font = {
+        color :{argb:this.disclaimer.color_code}
+     }
+     cell.font.size= this.disclaimer.font_size
+    })
+    worksheet.mergeCells((currentRowIdx + 1), 1, (currentRowIdx + 1), endColumnIdx,'TRANSACTIONDETAILSREPORT');
+    let worksheet_trans_summary = workbook.addWorksheet('TRANSACTIONSUMMARYREPORT',
+      {
+        views:[
+          {state: 'frozen', xSplit: 3, ySplit: 0}
+        ]
+      }
+    );
+    const trans_summary_header = worksheet_trans_summary.addRow([]);
+    const htmlTable = this.primeTblsummary.el.nativeElement;
+    const headerCells = htmlTable.getElementsByTagName('th');
+    for(let i=0;i<headerCells.length;i++){
+      trans_summary_header.getCell(i+1).value = headerCells[i].innerText;
+      trans_summary_header.getCell(i+1).fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    }
+
+    const rows = htmlTable.getElementsByTagName('tr');
+    for(let i=0;i<rows.length;i++){
+      const WorksheetSummaryHeader = worksheet_trans_summary.addRow([]);
+
+      const cells = rows[i].getElementsByTagName('td');
+      // console.log(cells)
+      // const rowData = [];
+      for(let j=0;j<cells.length;j++){
+        // rowData.push(cells[j].innerHTML);
+        WorksheetSummaryHeader.getCell(j+1).value = cells[j].innerText
+      }
+      // worksheet_trans_summary.addRow(rowData);
+    }
+
+    const currentRowIdx_ = worksheet_trans_summary.rowCount; // Find out how many rows are there currently
+    const endColumnIdx_ = worksheet_trans_summary.columnCount; // Find out how many columns are in the worksheet
+    let disclaimerRow_ = worksheet_trans_summary.addRow([
+     `Disclaimer- ${this.disclaimer.dis_des}`
+    ]);
+    disclaimerRow_.eachCell((cell) =>{
+     cell.font = {
+        color :{argb:this.disclaimer.color_code}
+     }
+     cell.font.size= this.disclaimer.font_size
+    })
+    worksheet_trans_summary.mergeCells((currentRowIdx_ + 1), 1, (currentRowIdx_ + 1), endColumnIdx_,'TRANSACTIONSUMMARYREPORT');
+
+    workbook.xlsx.writeBuffer().then((data)=>{
+      let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+      saveAs(blob, `TRANSACTIONREPORT.xlsx`);
+    })
+  }
+
+
   exportExcel = () =>{
-      const column = this.column.map(el => el.header);
+     
       let dt = [];
       this.trxnRpt.forEach((el,index) =>{
-          dt.push({
-              "Sl No":(index + 1),
-              "Business Type":el.bu_type,
-              "Branch" : el.branch,
-              "RM Name":el.rm_name,
-              "Sub Broker Code":el.sub_brk_cd,
-              "EUIN":el.euin_no,
-              "Investor Name":el.first_client_name,
-              "PAN":el.first_client_pan,
-              "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
-              "AMC":el.amc_name,
-              "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
-              "Category":el.cat_name,
-              "Sub-Category":el.subcat_name,
-              "Folio":el.folio_no,
-              "Transaction Type":el.transaction_type,
-              "Transaction Sub Type":el.transaction_subtype,
-              "Transaction No":el.trans_no,
-              "Gross Amount":el.tot_gross_amount,
-              "Stamp Duty":el.tot_stamp_duty,
-              "TDS":el.tot_tds,
-              "Net Amount":el.tot_amount,
-              "Unit":el.units,
-              "Nav":el.pur_price,
-              "Bank":el.bank_name,
-              "Account No":el.acc_no,
-              "STT":el.stt,
-              "Transaction Mode":el.trans_mode,
-              "Remarks":el.remarks
-          })
+        dt.push([
+          (index + 1),
+          el.bu_type,
+          el.branch,
+          el.rm_name,
+          el.sub_brk_cd,
+          el.euin_no,
+          el.first_client_name,
+          el.first_client_pan,
+          this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+          el.amc_name,
+          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+          el.cat_name,
+          el.subcat_name,
+          el.folio_no,
+          el.transaction_type,
+          el.transaction_subtype,
+          el.trans_no,
+          el.tot_gross_amount,
+          el.tot_stamp_duty,
+          el.tot_tds,
+          el.tot_amount,
+          el.units,
+          el.pur_price,
+          el.bank_name,
+          el.acc_no,
+          el.stt,
+          el.trans_mode,
+          el.remarks
+      ])
+          // dt.push([{
+          //     "Sl No":(index + 1),
+          //     "Business Type":el.bu_type,
+          //     "Branch" : el.branch,
+          //     "RM Name":el.rm_name,
+          //     "Sub Broker Code":el.sub_brk_cd,
+          //     "EUIN":el.euin_no,
+          //     "Investor Name":el.first_client_name,
+          //     "PAN":el.first_client_pan,
+          //     "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+          //     "AMC":el.amc_name,
+          //     "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+          //     "Category":el.cat_name,
+          //     "Sub-Category":el.subcat_name,
+          //     "Folio":el.folio_no,
+          //     "Transaction Type":el.transaction_type,
+          //     "Transaction Sub Type":el.transaction_subtype,
+          //     "Transaction No":el.trans_no,
+          //     "Gross Amount":el.tot_gross_amount,
+          //     "Stamp Duty":el.tot_stamp_duty,
+          //     "TDS":el.tot_tds,
+          //     "Net Amount":el.tot_amount,
+          //     "Unit":el.units,
+          //     "Nav":el.pur_price,
+          //     "Bank":el.bank_name,
+          //     "Account No":el.acc_no,
+          //     "STT":el.stt,
+          //     "Transaction Mode":el.trans_mode,
+          //     "Remarks":el.remarks
+          // }])
       });
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(dt, { header:column});
-      for(let i = 0; i < column.length; i++) {
-        const cell = ws[XLSX.utils.encode_cell({r: 0, c: i})];
-        // Create new style if cell doesnt have a style yet
-        if(!cell.s) {cell.s = {};}
-        if(!cell.s.font) {cell.s.font = {};}
-        // Set bold
-        cell.s.font.bold = true;
-    }
-      XLSX.utils.book_append_sheet(wb, ws, 'TRANSACTIONDETAILS');
-      const table = this.primeTblsummary?.el.nativeElement.querySelector('table');
-      table.setAttribute('id', 'trans_summary');
-      let summary = this.document.getElementById('trans_summary');
-      var ws1 = XLSX.utils.table_to_sheet(summary);
-      XLSX.utils.book_append_sheet(wb, ws1, 'TRANSACTIONSUMMARY');
+      this.handleExport(dt);
+    //   const wb = XLSX.utils.book_new();
+    //   const ws = XLSX.utils.json_to_sheet(dt, { header:column});
+    //   for(let i = 0; i < column.length; i++) {
+    //     const cell = ws[XLSX.utils.encode_cell({r: 0, c: i})];
+    //     if(!cell.s) {cell.s = {};}
+    //     if(!cell.s.font) {cell.s.font = {};}
+    //     cell.s.font.bold = true;
+    // }
+    //   XLSX.utils.book_append_sheet(wb, ws, 'TRANSACTIONDETAILS');
+    //   const table = this.primeTblsummary?.el.nativeElement.querySelector('table');
+    //   table.setAttribute('id', 'trans_summary');
+    //   let summary = this.document.getElementById('trans_summary');
+    //   var ws1 = XLSX.utils.table_to_sheet(summary);
+    //   XLSX.utils.book_append_sheet(wb, ws1, 'TRANSACTIONSUMMARY');
 
-      var wbout = XLSX.write(wb, {
-        bookType: 'xlsx',
-        bookSST: true,
-        type: 'binary'
-      });
-      const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
-          const link = this.document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'TRANSACTIOREPORT.xlsx');
-          this.document.body.appendChild(link);
-          link.click();
-          link.remove();
+    //   var wbout = XLSX.write(wb, {
+    //     bookType: 'xlsx',
+    //     bookSST: true,
+    //     type: 'binary'
+    //   });
+    //   const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+    //       const link = this.document.createElement('a');
+    //       link.href = url;
+    //       link.setAttribute('download', 'TRANSACTIOREPORT.xlsx');
+    //       this.document.body.appendChild(link);
+    //       link.click();
+    //       link.remove();
   }
   s2ab(s) {
     var buf = new ArrayBuffer(s.length);
