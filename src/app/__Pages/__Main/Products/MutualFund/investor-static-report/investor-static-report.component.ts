@@ -810,7 +810,7 @@ export class InvestorStaticReportComponent implements OnInit {
     let worksheet = workbook.addWorksheet('REPORT',
       {
         views:[
-          {state: 'frozen', xSplit: 3, ySplit: 0}
+          {state: 'frozen', xSplit: 0, ySplit: 1}
         ]
       }
     );

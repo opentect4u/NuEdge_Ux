@@ -65,6 +65,7 @@ interface TrxnRpt{
       isin_no:string | null,
       bu_type_lock_flag:string | null
       process_type?:string | null
+      change_type:string | null
    }
 }
 

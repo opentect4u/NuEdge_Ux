@@ -9,6 +9,8 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
+import { saveAs } from 'file-saver';
+
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -40,7 +42,7 @@ import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.
 //    process:Partial<TrxnRpt[]>;
 //    total:Partial<TrxnRpt[]>
 //  }
-
+import * as ExcelJS from 'exceljs';
 @Component({
   selector: 'app-broker-change',
   templateUrl: './broker-change.component.html',
@@ -842,56 +844,173 @@ fetchTransaction = () =>{
 }
 
 exportExcel = () =>{
-  const column = this.column.map(el => el.header);
   let dt = [];
   this.trxnRpt.forEach((el,index) =>{
-      dt.push({
-          "Sl No":(index + 1),
-          "Business Type":el.bu_type,
-          "Branch" : el.branch,
-          "RM Name":el.rm_name,
-          "Sub Broker Code":el.sub_brk_cd,
-          "EUIN":el.euin_no,
-          "Investor Name":el.first_client_name,
-          "PAN":el.first_client_pan,
-          "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
-          "AMC":el.amc_name,
-          "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
-          "Category":el.cat_name,
-          "Sub-Category":el.subcat_name,
-          "Folio":el.folio_no,
-          "Transaction Type":el.transaction_type,
-          "Transaction Sub Type":el.transaction_subtype,
-          "Transaction No":el.trans_no,
-          "Gross Amount":el.tot_gross_amount,
-          "Stamp Duty":el.tot_stamp_duty,
-          "TDS":el.tot_tds,
-          "Net Amount":el.tot_amount,
-          "Unit":el.units,
-          "Nav":el.pur_price,
-          "Bank":el.bank_name,
-          "Account No":el.acc_no,
-          "STT":el.stt,
-          "Transaction Mode":el.trans_mode,
-          "Remarks":el.remarks
-      })
-  });
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.json_to_sheet(dt, { header:column});
-  XLSX.utils.book_append_sheet(wb, ws, 'BROKERCHANGE');
-  var wbout = XLSX.write(wb, {
-    bookType: 'xlsx',
-    bookSST: true,
-    type: 'binary'
-  });
-  const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
-      const link = this.document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'BROKERCHANGEREPORT.xlsx');
-      this.document.body.appendChild(link);
-      link.click();
-      link.remove();
+    dt.push([
+      (index + 1),
+      el.bu_type,
+      el.branch,
+      el.rm_name,
+      el.sub_brk_cd,
+      el.euin_no,
+      el.first_client_name,
+      el.first_client_pan,
+      this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+      el.amc_name,
+      `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+      el.cat_name,
+      el.subcat_name,
+      el.folio_no,
+      el.transaction_type,
+      el.transaction_subtype,
+      el.trans_no,
+      el.tot_gross_amount,
+      el.tot_stamp_duty,
+      el.tot_tds,
+      el.tot_amount,
+      el.units,
+      el.pur_price,
+      el.bank_name,
+      el.acc_no,
+      el.stt,
+      el.trans_mode,
+      el.change_type,
+      el.remarks
+  ])
+ })
+ this.handleExport(dt);
+ 
+  // const column = this.column.map(el => el.header);
+  // let dt = [];
+  // this.trxnRpt.forEach((el,index) =>{
+  //     dt.push({
+  //         "Sl No":(index + 1),
+  //         "Business Type":el.bu_type,
+  //         "Branch" : el.branch,
+  //         "RM Name":el.rm_name,
+  //         "Sub Broker Code":el.sub_brk_cd,
+  //         "EUIN":el.euin_no,
+  //         "Investor Name":el.first_client_name,
+  //         "PAN":el.first_client_pan,
+  //         "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+  //         "AMC":el.amc_name,
+  //         "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+  //         "Category":el.cat_name,
+  //         "Sub-Category":el.subcat_name,
+  //         "Folio":el.folio_no,
+  //         "Transaction Type":el.transaction_type,
+  //         "Transaction Sub Type":el.transaction_subtype,
+  //         "Transaction No":el.trans_no,
+  //         "Gross Amount":el.tot_gross_amount,
+  //         "Stamp Duty":el.tot_stamp_duty,
+  //         "TDS":el.tot_tds,
+  //         "Net Amount":el.tot_amount,
+  //         "Unit":el.units,
+  //         "Nav":el.pur_price,
+  //         "Bank":el.bank_name,
+  //         "Account No":el.acc_no,
+  //         "STT":el.stt,
+  //         "Transaction Mode":el.trans_mode,
+  //         "Remarks":el.remarks
+  //     })
+  // });
+  // const wb = XLSX.utils.book_new();
+  // const ws = XLSX.utils.json_to_sheet(dt, { header:column});
+  // XLSX.utils.book_append_sheet(wb, ws, 'BROKERCHANGE');
+  // var wbout = XLSX.write(wb, {
+  //   bookType: 'xlsx',
+  //   bookSST: true,
+  //   type: 'binary'
+  // });
+  // const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+  //     const link = this.document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute('download', 'BROKERCHANGEREPORT.xlsx');
+  //     this.document.body.appendChild(link);
+  //     link.click();
+  //     link.remove();
 }
+
+handleExport = (dt) =>{
+  console.log(dt);
+  let workbook = new ExcelJS.Workbook();
+  let worksheet = workbook.addWorksheet('BROKERCHANGEREPORT'
+    ,
+    {
+      views:[
+        {state: 'frozen', xSplit: 0, ySplit: 1}
+      ]
+    }
+  );
+  const column = this.column.map(el => el.header);
+  console.log(column)
+  let headerRow = worksheet.addRow(column);
+  headerRow.eachCell((cell) =>{
+    cell.fill={
+      type:'pattern',
+      pattern:'solid',
+      fgColor:{argb:'FFFFFF00'},
+      bgColor:{argb:'FF0000FF'},
+    }
+  })
+  worksheet.addRows(dt);
+  const footerDetails = [
+    'GRAND TOTAL',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   global.Total__Count(this.trxnRpt,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
+   global.Total__Count(this.trxnRpt,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
+   global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+   global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   '',
+   ''
+  ];
+  let footerRow = worksheet.addRow(footerDetails);
+  footerRow.eachCell((cell) =>{
+    cell.fill={
+      type:'pattern',
+      pattern:'solid',
+      fgColor:{argb:'FFFFFF00'},
+      bgColor:{argb:'FF0000FF'},
+    }
+  })
+  const currentRowIdx = worksheet.rowCount; // Find out how many rows are there currently
+  const endColumnIdx = worksheet.columnCount; // Find out how many columns are in the worksheet
+  let disclaimerRow = worksheet.addRow([
+    `Disclaimer - ${this.disclaimer.dis_des}`
+  ]);
+  disclaimerRow.eachCell((cell) =>{
+   cell.font = {
+      color :{argb:this.disclaimer.color_code}
+   }
+   cell.font.size= this.disclaimer.font_size
+  })
+  workbook.xlsx.writeBuffer().then((data)=>{
+    let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+    saveAs(blob, `BROKERCHANGEREPORT.xlsx`);
+  })
+}
+
 s2ab(s) {
 var buf = new ArrayBuffer(s.length);
 var view = new Uint8Array(buf);

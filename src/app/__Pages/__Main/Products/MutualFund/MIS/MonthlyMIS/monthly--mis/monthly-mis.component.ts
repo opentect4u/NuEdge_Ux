@@ -17,6 +17,8 @@ import * as XLSX from 'xlsx';
 import { from, of,zip } from 'rxjs';
 import { global } from 'src/app/__Utility/globalFunc';
 import { IDisclaimer } from '../../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 declare type MisFlag = "I" | "O";
 
 export class MonthlyCalculation{
@@ -217,102 +219,311 @@ export class MonthlyMisComponent implements OnInit {
     let excel_dt_for_monthly_outflow = [];
 
     monthly_inflow.forEach((el,index) =>{
-      excel_dt_for_monthly_inflow.push({
-            "Sl No":(index + 1),
-            "Business Type":el.bu_type,
-            "Branch" : el.branch,
-            "RM Name":el.rm_name,
-            "Sub Broker Code":el.sub_brk_cd,
-            "EUIN":el.euin_no,
-            "Investor Name":el.first_client_name,
-            "PAN":el.first_client_pan,
-            "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
-            "AMC":el.amc_name,
-            "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
-            "Category":el.cat_name,
-            "Sub-Category":el.subcat_name,
-            "Folio":el.folio_no,
-            "Transaction Type":el.transaction_type,
-            "Transaction Sub Type":el.transaction_subtype,
-            "Transaction No":el.trans_no,
-            "Gross Amount":el.tot_gross_amount,
-            "Stamp Duty":el.tot_stamp_duty,
-            "TDS":el.tot_tds,
-            "Net Amount":el.tot_amount,
-            "Unit":el.units,
-            "Nav":el.pur_price,
-            "Bank":el.bank_name,
-            "Account No":el.acc_no,
-            "STT":el.stt,
-            "Transaction Mode":el.trans_mode,
-            "Remarks":el.remarks
-        })
+      excel_dt_for_monthly_inflow.push(
+            [(index + 1),
+            el.bu_type,
+            el.branch,
+            el.rm_name,
+            el.sub_brk_cd,
+            el.euin_no,
+            el.first_client_name,
+            el.first_client_pan,
+            this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+            el.amc_name,
+            `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+            el.cat_name,
+            el.subcat_name,
+            el.folio_no,
+            el.transaction_type,
+            el.transaction_subtype,
+            el.trans_no,
+            el.tot_gross_amount,
+            el.tot_stamp_duty,
+            el.tot_tds,
+            el.tot_amount,
+            el.units,
+            el.pur_price,
+            el.bank_name,
+            el.acc_no,
+            el.stt,
+            el.trans_mode,
+            el.remarks]
+        )
     });
     monthly_outflow.forEach((el,index) =>{
-      excel_dt_for_monthly_outflow.push({
-        "Sl No":(index + 1),
-        "Business Type":el.bu_type,
-        "Branch" : el.branch,
-        "RM Name":el.rm_name,
-        "Sub Broker Code":el.sub_brk_cd,
-        "EUIN":el.euin_no,
-        "Investor Name":el.first_client_name,
-        "PAN":el.first_client_pan,
-        "Transaction Date":  this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
-        "AMC":el.amc_name,
-        "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
-        "Category":el.cat_name,
-        "Sub-Category":el.subcat_name,
-        "Folio":el.folio_no,
-        "Transaction Type":el.transaction_type,
-        "Transaction Sub Type":el.transaction_subtype,
-        "Transaction No":el.trans_no,
-        "Gross Amount":el.tot_gross_amount,
-        "Stamp Duty":el.tot_stamp_duty,
-        "TDS":el.tot_tds,
-        "Net Amount":el.tot_amount,
-        "Unit":el.units,
-        "Nav":el.pur_price,
-        "Bank":el.bank_name,
-        "Account No":el.acc_no,
-        "STT":el.stt,
-        "Transaction Mode":el.trans_mode,
-        "Remarks":el.remarks
+      excel_dt_for_monthly_outflow.push([
+        (index + 1),
+        el.bu_type,
+         el.branch,
+        el.rm_name,
+        el.sub_brk_cd,
+        el.euin_no,
+        el.first_client_name,
+        el.first_client_pan,
+          this.datePipe.transform(el.trans_date,'dd-MM-YYYY'),
+        el.amc_name,
+        `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+        el.cat_name,
+        el.subcat_name,
+        el.folio_no,
+        el.transaction_type,
+        el.transaction_subtype,
+        el.trans_no,
+        el.tot_gross_amount,
+        el.tot_stamp_duty,
+        el.tot_tds,
+        el.tot_amount,
+        el.units,
+        el.pur_price,
+        el.bank_name,
+        el.acc_no,
+        el.stt,
+        el.trans_mode,
+        el.remarks
+    ])
     })
-    })
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(excel_dt_for_monthly_inflow, { header:column});
-    ws['A1'].s = {
-      fill: {
-        patternType: 'solid',
-        fgColor: { rgb: 'FF939393' }
-      },
-      font: {
-        name: 'Times New Roman',
-        sz: 16,
-        color: { rgb: '#FF000000' },
-        bold: false,
-        italic: false,
-        underline: false
+    this.handleExport(excel_dt_for_monthly_inflow,excel_dt_for_monthly_outflow,column,monthly_inflow,monthly_outflow);
+    // const wb = XLSX.utils.book_new();
+    // const ws = XLSX.utils.json_to_sheet(excel_dt_for_monthly_inflow, { header:column});
+    // ws['A1'].s = {
+    //   fill: {
+    //     patternType: 'solid',
+    //     fgColor: { rgb: 'FF939393' }
+    //   },
+    //   font: {
+    //     name: 'Times New Roman',
+    //     sz: 16,
+    //     color: { rgb: '#FF000000' },
+    //     bold: false,
+    //     italic: false,
+    //     underline: false
+    //   }
+    // };
+    // XLSX.utils.book_append_sheet(wb, ws, 'MONTHLYINFLOW');
+    // const ws1 = XLSX.utils.json_to_sheet(excel_dt_for_monthly_outflow, { header:column});
+    // XLSX.utils.book_append_sheet(wb, ws1, 'MONTHLYOUTFLOW');
+    // const netFlowSheet = XLSX.utils.json_to_sheet(this.netFlow,{header:["Sl No.","Transaction Type","Inflow","Outflow","Netflow"]});
+    // XLSX.utils.book_append_sheet(wb, netFlowSheet, 'NETFLOW');
+    // var wbout = XLSX.write(wb, {
+    //   bookType: 'xlsx',
+    //   bookSST: true,
+    //   type: 'binary'
+    // });
+    // const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
+    //     const link = document.createElement('a');
+    //     link.href = url;
+    //     link.setAttribute('download', 'MISREPORT.xlsx');
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     link.remove();
+  }
+
+  handleExport = (monthly_inflow,monthly_outflow,column,inflow,outflow) =>{
+    let workbook = new ExcelJS.Workbook();
+    let worksheet = workbook.addWorksheet('MONTHLYINFLOW'
+      ,
+      {
+        views:[
+          {state: 'frozen', xSplit: 0, ySplit: 0}
+        ]
       }
-    };
-    XLSX.utils.book_append_sheet(wb, ws, 'MONTHLYINFLOW');
-    const ws1 = XLSX.utils.json_to_sheet(excel_dt_for_monthly_outflow, { header:column});
-    XLSX.utils.book_append_sheet(wb, ws1, 'MONTHLYOUTFLOW');
-    const netFlowSheet = XLSX.utils.json_to_sheet(this.netFlow,{header:["Sl No.","Transaction Type","Inflow","Outflow","Netflow"]});
-    XLSX.utils.book_append_sheet(wb, netFlowSheet, 'NETFLOW');
-    var wbout = XLSX.write(wb, {
-      bookType: 'xlsx',
-      bookSST: true,
-      type: 'binary'
-    });
-    const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'MISREPORT.xlsx');
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+    );
+    // const column = this.column.map(el => el.header);
+    // console.log(column)
+    let headerRow = worksheet.addRow(column);
+    headerRow.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    worksheet.addRows(monthly_inflow);
+    const footerDetails = [
+      'GRAND TOTAL',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     global.Total__Count(inflow,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
+     global.Total__Count(inflow,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
+     global.Total__Count(inflow,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+     global.Total__Count(inflow,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     ''
+    ];
+    console.log(footerDetails);
+    let footerRow = worksheet.addRow(footerDetails);
+    footerRow.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    const currentRowIdx = worksheet.rowCount; // Find out how many rows are there currently
+    const endColumnIdx = worksheet.columnCount; // Find out how many columns are in the worksheet
+    let disclaimerRow = worksheet.addRow([
+      `Disclaimer - ${this.disclaimer.dis_des}`
+    ]);
+    disclaimerRow.eachCell((cell) =>{
+     cell.font = {
+        color :{argb:this.disclaimer.color_code}
+     }
+     cell.font.size= this.disclaimer.font_size
+    })
+    worksheet.mergeCells((currentRowIdx + 1), 1, (currentRowIdx + 1), endColumnIdx,'MONTHLYINFLOW');
+    let worksheet_trans_summary = workbook.addWorksheet('MONTHLYOUTFLOW',
+      {
+        views:[
+          {state: 'frozen', xSplit: 0, ySplit: 0}
+        ]
+      }
+    );
+    const trans_summary_header = worksheet_trans_summary.addRow(column);
+    trans_summary_header.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    worksheet_trans_summary.addRows(monthly_outflow);
+    const footerDetails_outflow = [
+      'GRAND TOTAL',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     global.Total__Count(outflow,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
+     global.Total__Count(outflow,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
+     global.Total__Count(outflow,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+     global.Total__Count(outflow,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     ''
+    ];
+    let footerRow_summary = worksheet_trans_summary.addRow(footerDetails);
+    footerRow_summary.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    const currentRowIdx_Outflow = worksheet_trans_summary.rowCount; // Find out how many rows are there currently
+    const endColumnIdx_Outflow = worksheet_trans_summary.columnCount; // Find out how many columns are in the worksheet
+    let disclaimerRow_outflow= worksheet_trans_summary.addRow([
+     `Disclaimer- ${this.disclaimer.dis_des}`
+    ]);
+    disclaimerRow_outflow.eachCell((cell) =>{
+     cell.font = {
+        color :{argb:this.disclaimer.color_code}
+     }
+     cell.font.size= this.disclaimer.font_size
+    })
+    worksheet_trans_summary.mergeCells((currentRowIdx_Outflow + 1), 1, (currentRowIdx_Outflow + 1), endColumnIdx_Outflow,'MONTHLYOUTFLOW');
+    let worksheet_netFlow = workbook.addWorksheet('NETFLOW'
+      ,
+      {
+        views:[
+          {state: 'frozen', xSplit: 0, ySplit: 0}
+        ]
+      }
+    );
+    // const column = this.column.map(el => el.header);
+    // console.log(column)
+    let headerRow_NetFlow = worksheet_netFlow.addRow(["Sl No.","Transaction Type","Inflow","Outflow","Netflow"]);
+    headerRow_NetFlow.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    const net_flow = [];
+    this.netFlow.forEach((el,index) =>{
+        net_flow.push([
+           (index + 1),
+           el['Transaction Type'],
+           el.Inflow,
+           el.Outflow,
+           el.Netflow
+        ])
+    })
+
+    worksheet_netFlow.addRows(net_flow);
+    const footerDetails_netflow = [
+      'GRAND TOTAL',
+      '',
+     global.Total__Count(this.netFlow,(x:any)=> x.Inflow ? Number(x.Inflow) : 0),
+     global.Total__Count(this.netFlow,(x:any)=> x.Outflow ? Number(x.Outflow) : 0),
+     global.Total__Count(this.netFlow,(x:any)=> x.Netflow ? Number(x.Netflow) : 0)
+    ];
+    let footerRow_netFlow = worksheet_netFlow.addRow(footerDetails_netflow);
+    footerRow_netFlow.eachCell((cell) =>{
+      cell.fill={
+        type:'pattern',
+        pattern:'solid',
+        fgColor:{argb:'FFFFFF00'},
+        bgColor:{argb:'FF0000FF'},
+      }
+    })
+    const currentRowIdx_Netflow = worksheet_netFlow.rowCount; // Find out how many rows are there currently
+    const endColumnIdx_Netflow  = worksheet_netFlow.columnCount; // Find out how many columns are in the worksheet
+    let disclaimerRow_netflow= worksheet_netFlow.addRow([
+     `Disclaimer- ${this.disclaimer.dis_des}`
+    ]);
+    disclaimerRow_netflow.eachCell((cell) =>{
+     cell.font = {
+        color :{argb:this.disclaimer.color_code}
+     }
+     cell.font.size= this.disclaimer.font_size
+    })
+    worksheet_netFlow.mergeCells((currentRowIdx_Netflow + 1), 1, (currentRowIdx_Netflow + 1), endColumnIdx_Netflow,'NETFLOW');
+
+    workbook.xlsx.writeBuffer().then((data)=>{
+      let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+      saveAs(blob, `MONTHLYMISREPORT.xlsx`);
+    })
   }
 s2ab(s) {
   var buf = new ArrayBuffer(s.length);

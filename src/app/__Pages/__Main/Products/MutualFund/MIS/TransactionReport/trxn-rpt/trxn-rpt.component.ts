@@ -876,16 +876,18 @@ export class TrxnRptComponent implements OnInit {
   }
 
   handleExport = (dt) =>{
-
+    console.log(dt);
     let workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('TRANSACTIONDETAILSREPORT',
+    let worksheet = workbook.addWorksheet('TRANSACTIONDETAILSREPORT'
+      ,
       {
         views:[
-          {state: 'frozen', xSplit: 3, ySplit: 0}
+          {state: 'frozen', xSplit: 0, ySplit: 1}
         ]
       }
     );
     const column = this.column.map(el => el.header);
+    console.log(column)
     let headerRow = worksheet.addRow(column);
     headerRow.eachCell((cell) =>{
       cell.fill={
@@ -896,7 +898,7 @@ export class TrxnRptComponent implements OnInit {
       }
     })
     worksheet.addRows(dt);
-    let footerRow = worksheet.addRow([
+    const footerDetails = [
       'GRAND TOTAL',
      '',
      '',
@@ -917,15 +919,15 @@ export class TrxnRptComponent implements OnInit {
      global.Total__Count(this.trxnRpt,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
      global.Total__Count(this.trxnRpt,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
      global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
-     global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),,
-     '',
+     global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
      '',
      '',
      '',
      '',
      '',
      ''
-    ])
+    ];
+    let footerRow = worksheet.addRow(footerDetails);
     footerRow.eachCell((cell) =>{
       cell.fill={
         type:'pattern',
@@ -949,7 +951,7 @@ export class TrxnRptComponent implements OnInit {
     let worksheet_trans_summary = workbook.addWorksheet('TRANSACTIONSUMMARYREPORT',
       {
         views:[
-          {state: 'frozen', xSplit: 3, ySplit: 0}
+          {state: 'frozen', xSplit: 0, ySplit: 1}
         ]
       }
     );
