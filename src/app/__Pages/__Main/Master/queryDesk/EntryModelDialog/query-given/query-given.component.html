@@ -1,0 +1,46 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+    <div mat-dialog-title class="dialog-title" cdkDragHandle>
+      <h2 >{{data.title}}</h2>
+        <div class="btnIcon">
+          <button mat-icon-button title="Minimize"  (click)="minimize()" >
+            <mat-icon >remove</mat-icon>
+          </button>
+          <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+            <mat-icon>check_box_outline_blank </mat-icon>
+          </button>
+  
+          <button mat-icon-button title="Close"  [mat-dialog-close]="">
+            <mat-icon >close</mat-icon>
+          </button>
+      </div>
+      </div>
+      <mat-dialog-content>
+        <form [formGroup]="queryGivenByForm" autocomplete="off" (ngSubmit)="submitQueryGivenBy()" [id]="'Query_Given'+data.id">
+            <div class="row my-3">
+              <div class="col-sm-12">
+                <label form="name">Query Given <span class="text-danger">*</span></label>
+                <input type="text"
+                name="name"
+                autocomplete="off" 
+                id="name"
+                placeholder="Enter Query Given By"
+                class="form-control"
+                formControlName="name">
+                <div class="invalid-feedback" *ngIf="queryGivenByForm.get('name').invalid && (queryGivenByForm.get('name').dirty || queryGivenByForm.get('name').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryGivenByForm.get('name')).errors?.required">*Please provide query given by</span>
+                </div>
+              </div>
+            </div>
+      
+           </form>
+      </mat-dialog-content>
+      <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
+        <button class="btn addBtn"   [attr.form]="'Query_Given'+data.id" [disabled]="queryGivenByForm.invalid">Submit</button>
+      </mat-dialog-actions>
+      <!-- <br clear="all"> -->
+  </div>
+  

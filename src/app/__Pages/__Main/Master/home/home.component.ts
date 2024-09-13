@@ -14,6 +14,7 @@ export class HomeComponent implements OnInit {
   __menu:menuBodyList[];
   constructor(private __utility:UtiliService,private __actdt: ActivatedRoute) {
       this.__menu = menu.filter((x: menuBodyList) => x.id == 4);
+      console.log(this.__menu);
    }
   ngOnInit() {}
   navigate(__items){

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { CustomerServiceHomeComponent } from './customer-service-home.component';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TabModule } from 'src/app/__Core/tab/tab.module';
+import { ModifyQueryStatusComponent } from '../modify-query-status/modify-query-status.component';
 
 const routes:Routes = [
   {
@@ -13,12 +15,14 @@ const routes:Routes = [
 
 @NgModule({
   declarations: [
-    CustomerServiceHomeComponent
+    CustomerServiceHomeComponent,
+    ModifyQueryStatusComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
+    TabModule
   ]
 })
 export class CustomerServiceHomeModule { }

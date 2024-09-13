@@ -1,0 +1,338 @@
+<div class="bckContainer"></div>
+
+<div class="row flexSec ">
+    <div class="col-md-10 offset-md-1">
+            <mat-card class="my-2">
+                <mat-card-header class="border-bottom">
+                    <mat-card-title>
+                        <h4>
+                            {{ queryId == 0 ? 'Add' : 'View'}} Query
+                        </h4>
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="p-3">
+                        <div class="container mx-auto ">
+                                <div class="divider">
+                                <span>Investor Details</span>
+                                <hr class="line"/>
+                               </div>
+                                <div class="row">
+                                        <div class="col-md-12">
+                                            <form [formGroup]="queryEntryForm" (ngSubmit)="submitQuery()">
+                                                <!-- <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <label form="emp_name">Employee</label>
+
+                                                        </div>
+                                                </div> -->
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <app-core-srch
+                                                        [label] = "'Investor'"
+                                                        [placeholder]="'Search By Investor Name'"
+                                                        [isPending]="__isInvestorSpinner"
+                                                        [listItems] = "md_client"
+                                                        [flag] = "'C'"
+                                                        [isRequired]="true"
+                                                        [noDataFoundTitle]="'Sorry!! No Records Found'"
+                                                        [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                                                        [propertiesToShow] = "['client_name','client_code','pan']"
+                                                        formControlName="investor_name"
+                                                        [displayMode]="displayMode_forClient"
+                                                        (setDisplayMode)="displayMode_forClient = $event"
+                                                        (selectedItems)="getSelectedItemsFromParent($event)"
+                                                        [isClientExistMsg]="'Sub Broker does not exists'"
+                                                        ></app-core-srch>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('investor_name').invalid && (queryEntryForm.get('investor_name').dirty || queryEntryForm.get('investor_name').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('investor_name').errors?.required)">*Please provide investor</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                         <label for="investor_pan">PAN</label>  
+                                                         <input placeholder="Investor PAN" [attr.disabled]="true" class="form-control" formControlName="investor_pan"/> 
+                                                    </div>
+                                                </div>
+                                                <div class="row my-2">
+                                                    <div class="col-sm-6">
+                                                        <label for="investor_pan">Email</label>  
+                                                        <input placeholder="Investor Email" [attr.disabled]="true" class="form-control" formControlName="investor_email"/> 
+                                                   </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="investor_pan">Mobile</label>  
+                                                        <input placeholder="Investor Mobile" [attr.disabled]="true" class="form-control" formControlName="investor_mobile"/> 
+                                                    </div>
+                                                </div>
+                                                <div class="divider">
+                                                    <span>Other Details</span>
+                                                    <hr class="line"/>
+                                                </div>
+                                                <div class="row my-2">
+                                                    <div class="col-sm-6">
+                                                        <label for="folio_no">Folio <span class="text-danger">*</span></label>  
+                                                        <select class="form-control"  formControlName="folio_no"  id="folio_no">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let folio of md_folio" value="{{folio.folio_no}}">{{folio.folio_no}}</option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('folio_no').invalid && (queryEntryForm.get('folio_no').dirty || queryEntryForm.get('folio_no').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('folio_no').errors?.required)">*Please provide folio</span>
+                                                        </div>
+                                                   </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="application_no">Application No </label>  
+                                                        <input placeholder="Enter Application No"   id="application_no" class="form-control" formControlName="application_no"/> 
+                                                    </div>
+                                                </div>
+                                                <div class="row ">
+                                                    <div class="col-sm-6">
+                                                        <label for="query_given_by_id">Query Given By <span class="text-danger">*</span></label>  
+                                                        <select class="form-control"   formControlName="query_given_by_id"  id="query_given_by_id">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let item of md_QueryGiven_by" value="{{item.id}}">{{item.name}}</option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_given_by_id').invalid && (queryEntryForm.get('query_given_by_id').dirty || queryEntryForm.get('query_given_by_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_given_by_id').errors?.required)">*Please select query given by</span>
+                                                          </div>
+                                                   </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="entry_name">Entry Name <span class="text-danger">*</span> </label>  
+                                                        <input   placeholder="Enter Entry Name" id="entry_name" class="form-control" formControlName="entry_name"/> 
+                                                    </div>
+                                                </div>
+                                                <div class="row my-2">
+                                                    <div class="col-sm-6">
+                                                        <!-- <app-core-srch
+                                                        [label] = "'Scheme'"
+                                                        [placeholder]="'Search By Scheme Name'"
+                                                        [isPending]="__isSchemeSpinner"
+                                                        [listItems] = "md_scheme"
+                                                        [flag] = "'S'"
+                                                        [isRequired]="true"
+                                                        [noDataFoundTitle]="'Sorry!! No Records Found'"
+                                                        [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                                                        [propertiesToShow] = "['scheme_name']"
+                                                        formControlName="scheme_name"
+                                                        [displayMode]="displayMode_forScheme"
+                                                        (setDisplayMode)="displayMode_forScheme = $event"
+                                                        (selectedItems)="getSelectedItemsFromParentForScheme($event)"
+                                                        ></app-core-srch>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('scheme_name').invalid && (queryEntryForm.get('scheme_name').dirty || queryEntryForm.get('scheme_name').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('scheme_name').errors?.required)">*Please provide scheme</span>
+                                                        </div> -->
+                                                        <label for="scheme_id">Scheme</label>
+                                                        <select   class="form-control" formControlName="scheme_id" id="scheme_id" name="scheme_id">
+                                                            <option value="">Select</option>
+                                                            <option value="{{item.id}}" *ngFor="let item of md_scheme">{{item.scheme_name}}-{{item.plan_name}}-{{item.option_name}}</option>
+
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('scheme_id').invalid && (queryEntryForm.get('scheme_id').dirty || queryEntryForm.get('scheme_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('scheme_id').errors?.required)">*Please provide scheme</span>
+                                                        </div> 
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="query_type_id">Query Type <span class="text-danger">*</span></label>  
+                                                        <!-- <select class="form-control" formControlName="query_type_id"  id="query_type_id">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let item of md_queryType" value="{{item.id}}">{{item.query_type}}</option>
+                                                        </select> -->
+                                                        <select
+                                                            name="query_type_id"
+                                                            id="query_type_id"
+                                                            class="form-control"
+                                                            formControlName="query_type_id"
+                                                            [compareWith]="compareWith"  
+                                                            >
+                                                            <option value="">Select</option>
+                                                            <option [ngValue]="item"
+                                                            *ngFor="let item of md_queryType">
+                                                            {{item.query_type}}
+                                                            </option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_type_id').invalid && (queryEntryForm.get('query_type_id').dirty || queryEntryForm.get('query_type_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_type_id').errors?.required)">*Please select query type</span>
+                                                          </div>
+                                                   </div>
+                                                </div>
+                                                <div class="row ">
+                                                    <div class="col-sm-6">
+                                                        <label for="query_subtype_id">Query Subtype <span class="text-danger">*</span></label>  
+                                                        <select class="form-control"   formControlName="query_subtype_id"  id="query_subtype_id">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let item of md_querySubType" value="{{item.id}}">{{item.query_subtype}}</option>
+                                                        </select>
+                                                        
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_subtype_id').invalid && (queryEntryForm.get('query_subtype_id').dirty || queryEntryForm.get('query_subtype_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_subtype_id').errors?.required)">*Please select query subtype</span>
+                                                          </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row my-2">
+                                                        <div class="col-sm-12">
+                                                                <label for="query_details">Query Details <span class="text-danger">*</span></label>
+                                                                <textarea   id="query_details" name="query_details" rows="4" class="form-control" formControlName="query_details" placeholder="Enter Query Details" cols="50"></textarea>
+                                                                <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_details').invalid && (queryEntryForm.get('query_details').dirty || queryEntryForm.get('query_details').touched)">
+                                                                    <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_details').errors?.required)">*Please select query details</span>
+                                                                  </div>
+                                                        </div>
+                                                </div>
+                                                <div class="row ">
+                                                    <div class="col-sm-6">
+                                                        <label for="query_nature_id">Query Nature <span class="text-danger">*</span></label>  
+                                                        <select class="form-control"   formControlName="query_nature_id"  id="query_nature_id">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let item of md_queryNature" value="{{item.id}}">{{item.query_nature}}</option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_nature_id').invalid && (queryEntryForm.get('query_nature_id').dirty || queryEntryForm.get('query_nature_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_nature_id').errors?.required)">*Please select query nature</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <!-- 
+                                                         d-flex align-items-center justify-content-between flex-row
+                                                        <label for="query_given_to_amc_or_company">Query Given to AMC/Company <span class="text-danger">*</span></label>  
+                                                        <mat-radio-group id="query_given_to_amc_or_company" name="query_given_to_amc_or_company" [formControlName]="'query_given_to_amc_or_company'" color="primary">
+                                                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                                                            <mat-radio-button value="No" class="mx-2">No</mat-radio-button>
+                                                          </mat-radio-group> -->
+                                                          <label for="query_given_to_id">Query Given To <span class="text-danger">*</span></label>  
+                                                          <select class="form-control"   formControlName="query_given_to_id"  id="query_given_to_id">
+                                                              <option value="">Select</option>
+                                                              <option *ngFor="let item of md_QueryGiven_by" value="{{item.id}}">{{item.name}}</option>
+                                                          </select>
+                                                          <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_given_to_id').invalid && (queryEntryForm.get('query_given_to_id').dirty || queryEntryForm.get('query_given_to_id').touched)">
+                                                              <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_given_to_id').errors?.required)">*Please select query given to</span>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row my-2">
+                                                    <div class="col-sm-6">
+                                                        <label for="query_receive_through_id">Query Receive Through <span class="text-danger">*</span></label>  
+                                                        <select class="form-control"   formControlName="query_receive_through_id"  id="query_receive_through_id">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let item of md_QueryGivenReceiveThr" value="{{item.id}}">{{item.name}}</option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_receive_through_id').invalid && (queryEntryForm.get('query_receive_through_id').dirty || queryEntryForm.get('query_receive_through_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_receive_through_id').errors?.required)">*Please select query receive through</span>
+                                                          </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="query_given_through_id">Query Given Through <span class="text-danger">*</span></label>  
+                                                        <select class="form-control"   formControlName="query_given_through_id"  id="query_given_through_id">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let item of md_QueryGivenReceiveThr" value="{{item.id}}">{{item.name}}</option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_given_through_id').invalid && (queryEntryForm.get('query_given_through_id').dirty || queryEntryForm.get('query_given_through_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_given_through_id').errors?.required)">*Please select query given through</span>
+                                                          </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row ">
+                                                    <div class="col-sm-6">
+                                                        <label for="concern_person_name">Concern Person Name <span class="text-danger">*</span> </label>  
+                                                        <input   placeholder="Enter Concern Person Name" id="concern_person_name" class="form-control" formControlName="concern_person_name"/> 
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('concern_person_name').invalid && (queryEntryForm.get('concern_person_name').dirty || queryEntryForm.get('concern_person_name').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('concern_person_name').errors?.required)">*Please provide concern person name</span>
+                                                          </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="contact_no">Contact Number <span class="text-danger">*</span> </label>  
+                                                        <input   placeholder="Enter Contact Number" id="contact_no" class="form-control" formControlName="contact_no"/> 
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('contact_no').invalid && (queryEntryForm.get('contact_no').dirty || queryEntryForm.get('contact_no').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('contact_no').errors?.required)">*Please provide contact number</span>
+                                                          </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row my-2">
+                                                    <div class="col-sm-6">
+                                                        <label for="email_id">Email ID <span class="text-danger">*</span> </label>  
+                                                        <input   placeholder="Enter Email" type="email" id="email_id" class="form-control" formControlName="email_id"/> 
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('email_id').invalid && (queryEntryForm.get('email_id').dirty || queryEntryForm.get('email_id').touched)">
+                                                            
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('email_id').errors?.required)">*Please provide email id</span>
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('email_id').errors?.email)">*Please provide valid email</span>
+                                                          </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="query_tat">Query TAT <span class="text-danger">*</span> </label>  
+                                                        <input   [attr.disabled]="true" placeholder="Query TAT" type="text" id="query_tat" class="form-control" formControlName="query_tat"/> 
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_tat').invalid && (queryEntryForm.get('query_tat').dirty || queryEntryForm.get('query_tat').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_tat').errors?.required)">*Please provide query TAT</span>
+                                                          </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row ">
+                                                    <div class="col-sm-6">
+                                                        <label for="expected_close_date">Expected Close Date <span class="text-danger">*</span> </label>  
+                                                        <input   type="date" id="expected_close_date" class="form-control" formControlName="expected_close_date"/> 
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('expected_close_date').invalid && (queryEntryForm.get('expected_close_date').dirty || queryEntryForm.get('expected_close_date').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('expected_close_date').errors?.required)">*Please provide date</span>
+                                                          </div>
+                                                    </div>
+                                                    <!-- <div class="col-sm-6">
+                                                        <label for="actual_close_date">Actual Close Date <span class="text-danger">*</span> </label>  
+                                                        <input type="date" id="actual_close_date" class="form-control" formControlName="actual_close_date"/> 
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('actual_close_date').invalid && (queryEntryForm.get('actual_close_date').dirty || queryEntryForm.get('actual_close_date').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('actual_close_date').errors?.required)">*Please provide actual close date</span>
+
+                                                          </div>
+                                                    </div> -->
+                                                </div>
+                                                <!-- <div class="row my-2">
+                                                    <div class="col-sm-6">
+                                                        <label for="query_status_id">Query Status <span class="text-danger">*</span></label>  
+                                                        <select class="form-control" formControlName="query_status_id"  id="query_status_id">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let item of md_queryStatus" value="{{item.id}}">{{item.status_name}}</option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_status_id').invalid && (queryEntryForm.get('query_status_id').dirty || queryEntryForm.get('query_status_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_status_id').errors?.required)">*Please select query status</span>
+                                                          </div>
+                                                    </div>
+                                                    
+                                                </div> -->
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                            <label for="remarks">Remarks <span class="text-danger">*</span></label>
+                                                            <textarea   id="remarks" name="remarks" rows="4" class="form-control" formControlName="remarks" placeholder="Enter Remarks" cols="12"></textarea>
+                                                            <div class="invalid-feedback" *ngIf="queryEntryForm.get('remarks').invalid && (queryEntryForm.get('remarks').dirty || queryEntryForm.get('remarks').touched)">
+                                                                <span class="invalid-feedback" *ngIf="(queryEntryForm.get('remarks').errors?.required)">*Please provide remarks</span>
+                                                              </div>
+                                                    </div>
+                                                    <!-- <div class="col-sm-6">
+                                                        <label for="query_feedback">Query Feedback <span class="text-danger">*</span></label>
+                                                        <textarea id="query_feedback" name="query_feedback" rows="4" class="form-control" formControlName="query_feedback" placeholder="Enter Query Feedback" cols="12"></textarea>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_feedback').invalid && (queryEntryForm.get('query_feedback').dirty || queryEntryForm.get('query_feedback').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_feedback').errors?.required)">*Please provide query feedback</span>
+                                                          </div>
+                                                    </div> -->
+                                            </div>
+                                            <!-- <div class="row my-2">
+                                                <div class="col-sm-12">
+                                                    <label for="status_overall_feedback">Status Overall Feedback <span class="text-danger">*</span></label>
+                                                    <textarea id="status_overall_feedback" name="status_overall_feedback" rows="4" class="form-control" formControlName="status_overall_feedback" placeholder="Enter Query Feedback" cols="12"></textarea>
+                                                    <div class="invalid-feedback" *ngIf="queryEntryForm.get('status_overall_feedback').invalid && (queryEntryForm.get('status_overall_feedback').dirty || queryEntryForm.get('status_overall_feedback').touched)">
+                                                        <span class="invalid-feedback" *ngIf="(queryEntryForm.get('status_overall_feedback').errors?.required)">*Please provide status overall feedback</span>
+                                                      </div>
+                                                </div>
+                                            </div> -->
+                                            <div class="row my-3" *ngIf="queryId == 0">
+                                                    <div class="col-sm-12 d-flex align-items-center justify-content-end">
+                                                        <button
+                                                        pButton
+                                                        [disabled]="queryEntryForm.invalid"
+                                                        type="submit"
+                                                        class="p-button-lg"
+                                                        iconPos="left"
+                                                        icon="pi pi-check"
+                                                        label="Submit Query"
+                                                    ></button>
+                                                    </div>
+                                            </div>
+                                            </form>
+                                              
+                                        </div>  
+                                </div>
+                        </div>
+                </mat-card-content>
+            </mat-card>
+    </div>
+</div>

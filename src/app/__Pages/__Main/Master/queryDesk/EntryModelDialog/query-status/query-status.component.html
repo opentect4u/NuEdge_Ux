@@ -1,0 +1,58 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+    <div mat-dialog-title class="dialog-title" cdkDragHandle>
+      <h2 >{{data.title}}</h2>
+        <div class="btnIcon">
+          <button mat-icon-button title="Minimize"  (click)="minimize()" >
+            <mat-icon >remove</mat-icon>
+          </button>
+          <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+            <mat-icon>check_box_outline_blank </mat-icon>
+          </button>
+  
+          <button mat-icon-button title="Close"  [mat-dialog-close]="">
+            <mat-icon >close</mat-icon>
+          </button>
+      </div>
+      </div>
+      <mat-dialog-content>
+        <form [formGroup]="queryStatusForm" autocomplete="off" (ngSubmit)="submitQueryStatus()" [id]="'____Query_Status__'+data.id">
+            <div class="row my-3">
+              <div class="col-sm-12">
+                <label form="status_name">Query Status <span class="text-danger">*</span></label>
+                <input type="text"
+                name="status_name"
+                autocomplete="off" 
+                id="status_name"
+                placeholder="Enter Query Nature"
+                class="form-control"
+                formControlName="status_name">
+                <div class="invalid-feedback" *ngIf="queryStatusForm.get('status_name').invalid && (queryStatusForm.get('status_name').dirty || queryStatusForm.get('status_name').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryStatusForm.get('status_name')).errors?.required">*Please provide query status</span>
+                </div>
+              </div>
+              <div class="col-sm-12 my-3">
+                <label form="color_code" class="w-full">Query Status Color <span class="text-danger">*</span></label>
+                <input type="color"
+                name="color_code"
+                autocomplete="off" 
+                id="color_code"
+                class="form-control"
+                formControlName="color_code">
+                <div class="invalid-feedback" *ngIf="queryStatusForm.get('color_code').invalid && (queryStatusForm.get('color_code').dirty || queryStatusForm.get('color_code').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryStatusForm.get('color_code')).errors?.required">*Please provide query status color code</span>
+                </div>
+              </div>
+            </div>
+      
+           </form>
+      </mat-dialog-content>
+      <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
+        <button class="btn addBtn"   [attr.form]="'____Query_Status__'+data.id" [disabled]="queryStatusForm.invalid">Submit</button>
+      </mat-dialog-actions>
+      <!-- <br clear="all"> -->
+  </div>
+  

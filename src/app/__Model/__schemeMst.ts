@@ -7,6 +7,7 @@ export interface scheme {
     category_id?: number
     subcategory_id?: number
     product_id?: number
+    product_code?:string,
     amc_id?: number,
     cat_name?:string;
     subcate_name?:string;
@@ -76,7 +77,9 @@ export interface scheme {
   switch_allowed?: string;
   pip_multiple_amount?:number;
   tax_implication_id:Partial<number>;
-  tax_implication:Partial<string>
+  tax_implication:Partial<string>;
+  plan_name:Partial<string>;
+  option_name:Partial<string>
   }
 
 

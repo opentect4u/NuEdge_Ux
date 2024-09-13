@@ -22,7 +22,7 @@ export class SrchComponent implements OnInit, ControlValueAccessor{
   @Input()  set displayMode(Visibility){
         this.displaySearchReult(Visibility)
   } /** For Show Or Hide the search result on click on outside or click inside the list */
-
+  @Input() disabled:boolean | undefined = false;
 
   @Input() isRequired: boolean = false; /** displaying asterik sign after label */
   @Input() isClientExistMsg: string; /** For Showing does not exist when no item found */

@@ -29,7 +29,7 @@
                     </p-calendar>
                   </form>
                 </div>
-                <div class="col-sm-7 d-flex justify-content-start align-items-start my-1">
+                <div class="col-sm-7 d-flex justify-content-end align-items-end my-1">
                   <button pButton type="submit"
                         label="Search"
                         icon="pi pi-search"
@@ -134,6 +134,21 @@
               <!-- </marquee> -->
               </div>
          </div>
+         <mat-card class="my-4 mat-elevation-z0 border">
+            <mat-card-content class="p-5 text-center">
+                <img src="../../../../../assets/images/cronjob_schedular.svg" height="340" width="340" alt="cronjobSchedular"/>
+                <p style="font-size: 10px;">
+                    Run Schedular to convert all nfo scheme to ongoing scheme
+                </p>
+                <button pButton 
+                 (click)="convertNfoToOngoing()"
+                label="NFO to ongoing scheme"        
+                icon="pi pi-stopwatch"
+                        class="p-button-lg p-button-primary p-button-text">
+
+                </button>
+            </mat-card-content>
+         </mat-card>
     </div>
    
   </div>

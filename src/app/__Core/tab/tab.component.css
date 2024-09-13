@@ -187,4 +187,8 @@ height: 3px!important;
   border:none!important;
 }
 
+
+::ng-deep .mat-tab-list{
+  border-bottom: 1px solid #f8f8f8!important;
+}
 /***END***/

@@ -1,0 +1,57 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+    <div mat-dialog-title class="dialog-title" cdkDragHandle>
+      <h2 >{{data.title}}</h2>
+        <div class="btnIcon">
+          <button mat-icon-button title="Minimize"  (click)="minimize()" >
+            <mat-icon >remove</mat-icon>
+          </button>
+          <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+            <mat-icon>check_box_outline_blank </mat-icon>
+          </button>
+  
+          <button mat-icon-button title="Close"  [mat-dialog-close]="">
+            <mat-icon >close</mat-icon>
+          </button>
+      </div>
+      </div>
+      <mat-dialog-content>
+        <form [formGroup]="StatusForm" (ngSubmit)="submitQuery()" [id]="'__QueryStatus_'+ data?.data?.query_id">
+
+                <div class="row my-2">
+                        <div class="col-sm-12">
+                            <label for="query_status_id">Query Status <span class="text-danger">*</span></label>  
+                            <select class="form-control" formControlName="query_status_id"  id="query_status_id">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of md_queryStatus" value="{{item.id}}">{{item.status_name}}</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="StatusForm.get('query_status_id').invalid && (StatusForm.get('query_status_id').dirty || StatusForm.get('query_status_id').touched)">
+                                <span class="invalid-feedback" *ngIf="(StatusForm.get('query_status_id').errors?.required)">*Please select query status</span>
+                              </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <label for="query_feedback">Query Feedback <span class="text-danger">*</span></label>
+                            <textarea id="query_feedback" name="query_feedback" rows="4" class="form-control" formControlName="query_feedback" placeholder="Enter Query Feedback" cols="12"></textarea>
+                            <div class="invalid-feedback" *ngIf="StatusForm.get('query_feedback').invalid && (StatusForm.get('query_feedback').dirty || StatusForm.get('query_feedback').touched)">
+                                <span class="invalid-feedback" *ngIf="(StatusForm.get('query_feedback').errors?.required)">*Please provide query feedback</span>
+                              </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label for="overall_feedback">Status Overall Feedback <span class="text-danger">*</span></label>
+                            <textarea id="overall_feedback" name="overall_feedback" rows="4" class="form-control" formControlName="overall_feedback" placeholder="Enter Query Feedback" cols="12"></textarea>
+                            <div class="invalid-feedback" *ngIf="StatusForm.get('overall_feedback').invalid && (StatusForm.get('overall_feedback').dirty || StatusForm.get('overall_feedback').touched)">
+                                <span class="invalid-feedback" *ngIf="(StatusForm.get('overall_feedback').errors?.required)">*Please provide status overall feedback</span>
+                              </div>
+                        </div>
+                        
+                </div>
+        </form>
+        </mat-dialog-content>
+        <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
+            <button class="btn addBtn"   [attr.form]="'__QueryStatus_'+ data?.data?.query_id" [disabled]="StatusForm.invalid">Submit</button>
+          </mat-dialog-actions>
+        </div>

@@ -6,7 +6,10 @@
         "flag":"Y",
         "url":"/main/master/productwisemenu/home",
         "icon": "",
-        "img":"/mutualFund.png"
+        "img":"/mutualFund.png",
+        "sub_menu":[
+        
+        ]
     },
     {
         "id": 2,
@@ -15,7 +18,10 @@
         "flag":"N",
         "url":"/main/master/fixedeposit",
         "icon": "",
-        "img":"/fixedDeposit.png"
+        "img":"/fixedDeposit.png",
+        "sub_menu":[
+        
+        ]
     },
     {
         "id": 3,
@@ -24,7 +30,10 @@
         "flag":"Y",
         "url":"/main/master/insurance",
         "icon": "",
-        "img":"/insurance.png"
+        "img":"/insurance.png",
+        "sub_menu":[
+        
+        ]
     },
 
     {
@@ -34,7 +43,10 @@
       "flag": "N",
       "url": "/main/master/bank",
       "icon": "",
-      "img":"/bank.png"
+      "img":"/bank.png",
+      "sub_menu":[
+        
+      ]
     },
     {
       "id": 9,
@@ -43,7 +55,10 @@
       "flag": "N",
       "url": "/main/master/docType",
       "icon": "",
-      "img":"/documentLocker.png"
+      "img":"/documentLocker.png",
+      "sub_menu":[
+        
+      ]
     },
     {
       "id": 10,
@@ -52,7 +67,10 @@
       "flag": "N",
       "url": "/main/master/mstOperations",
       "icon": "",
-      "img":"/operation.png"
+      "img":"/operation.png",
+      "sub_menu":[
+        
+      ]
 
     },
     {
@@ -62,7 +80,10 @@
       "flag":"N",
       "url":"/main/master/emailTemplate",
       "icon":"",
-      "img":"/emailTemplate.png"
+      "img":"/emailTemplate.png",
+      "sub_menu":[
+        
+      ]
     },
     {
       "id":12,
@@ -71,7 +92,10 @@
       "flag":"N",
       "url":"/main/master/geographic",
       "icon":"",
-      "img":"/geographical.png"
+      "img":"/geographical.png",
+      "sub_menu":[
+        
+      ]
     },
     {
       "id":13,
@@ -80,7 +104,10 @@
       "flag":"N",
       "url":"/main/master/company",
       "icon":"",
-      "img":"/company.png"
+      "img":"/company.png",
+      "sub_menu":[
+        
+      ]
     },
     {
       "id":14,
@@ -89,6 +116,83 @@
       "flag":"N",
       "url":"/main/master/disclaimer",
       "icon":"",
-      "img":"/disclaimer.png"
+      "img":"/disclaimer.png",
+      "sub_menu":[
+        
+      ]
+    },
+    {
+      "id":15,
+      "menu_name":"Query Desk",
+      "title":"Query Desk",
+      "flag":"N",
+      "url":"/main/master/queryDesk",
+      "icon":"",
+      "img":"/disclaimer.png",
+      "sub_menu":[
+          {
+            "id":1,
+            "menu_name":"Product",
+            "title":"Product",
+            "flag":"P",
+            "url":"/main/master/queryDesk",
+            "icon":"",
+            "img":"/product.png"
+          },
+          {
+            "id":2,
+            "menu_name":"Query Type & SubType",
+            "title":"Query Type & SubType",
+            "flag":"QTS",
+            "url":"/main/master/queryDesk",
+            "icon":"",
+            "img":"/disclaimer.png"
+          },
+          {
+            "id":3,
+            "menu_name":"Query Nature",
+            "title":"Query Nature",
+            "flag":"N",
+            "url":"/main/master/queryDesk",
+            "icon":"",
+            "img":"/disclaimer.png"
+          },
+          {
+            "id":4,
+            "menu_name":"Query Status",
+            "title":"Query Status",
+            "flag":"S",
+            "url":"/main/master/queryDesk",
+            "icon":"",
+            "img":"/disclaimer.png"
+          },
+          {
+            "id":5,
+            "menu_name":"Query Given By",
+            "title":"Query Given By",
+            "flag":"B",
+            "url":"/main/master/queryDesk",
+            "icon":"",
+            "img":"/disclaimer.png"
+          },
+          {
+            "id":6,
+            "menu_name":"Query Receive/Given Through",
+            "title":"Query Receive/Given Through",
+            "flag":"T",
+            "url":"/main/master/queryDesk",
+            "icon":"",
+            "img":"/disclaimer.png"
+          },
+          {
+            "id":7,
+            "menu_name":"Report",
+            "title":"Report",
+            "flag":"R",
+            "url":"",
+            "icon":"",
+            "img":"/reports.png"
+          }
+      ]
     }
 ]

@@ -105,6 +105,11 @@ const routes: Routes = [
         data:{breadcrumb:'Disclaimer'}
       },
       {
+        path:'queryDesk',
+        loadChildren:() => import('./queryDesk/query-desk-layout.module').then(m => m.QueryDeskLayoutModule),
+        data:{breadcrumb:'Query Desk'}
+      },
+      {
         path: '',
         redirectTo: 'products',
         pathMatch: 'full',

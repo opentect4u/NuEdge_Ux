@@ -1,0 +1,72 @@
+<div class="bckContainer"></div>
+
+<div class="row flexSec">
+    <div class="col-sm-12 mb-3">
+  
+      <!-- Make the Tab Section Common -->
+      <core-tab [Tab]="TabMenu"
+                (GetTabDtls)="changeTabDtls($event,'P')"
+                [customClass]="'nav'"
+                [index]="index"></core-tab>
+                <mat-card class="navCard p-3">
+                    <mat-card-content>
+                    
+                        <p-table [value]="dataSource"
+                        #primeTbl
+                        [columns]="column"
+                        [autoLayout]="true"
+                        [paginator]="true"
+                        [totalRecords]="dataSource.length"
+                        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+                        [rows]="10"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                        [showCurrentPageReport]="true"
+                        [globalFilterFields]="getColumns()"
+                        styleClass="p-datatable-lg">
+                 <ng-template pTemplate="header" let-columns>
+                   <tr>
+                     <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                       {{ col.header }} 
+                       <p-sortIcon [field]="col.field" *ngIf="col.field != 'action'"></p-sortIcon>
+                     </th>
+                   </tr>
+                 </ng-template>
+                 <ng-template pTemplate="body" let-queryDesk let-i="rowIndex">
+                   <tr>
+                     <td *ngFor="let col of column">
+                         <ng-container [ngSwitch]="true">
+                          <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                            <p class="m-0">{{ i + 1 }}</p>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="col.field == 'action'">
+                            <span class="p-buttonset">
+                                <button pButton type="button" #tooltip="matTooltip" (click)="getItems(queryDesk)" 
+                                matTooltip="Edit" class="p-button-success p-button-text p-button-text p-button-rounded"  icon="pi pi-pencil"></button>
+                                <!-- <button pButton type="button" #tooltip="matTooltip"
+                                matTooltip="Delete"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded"  icon="pi pi-trash" ></button> -->
+                             
+                            </span>
+                          </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            <p class="m-0">{{ queryDesk[col.field] ? queryDesk[col.field] : 'N/A' }}</p>
+                          </ng-container>
+                         </ng-container>
+                     </td>
+           
+                   </tr>
+                 </ng-template>
+                 <ng-template pTemplate="emptymessage" let-queryDesk>
+                   <tr>
+                     <td [attr.colspan]="queryDesk.length">
+                       <p class="m-0">No Records Found</p>
+                     </td>
+                   </tr>
+                 </ng-template>
+                          </p-table>
+                    
+                    </mat-card-content>
+                    
+                    
+                    </mat-card>
+        </div>
+</div>

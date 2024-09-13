@@ -10,18 +10,18 @@ const routes:Routes = [
     data: { breadcrumb: 'Customer Service',Title:'Customer Service',pageTitle:'Customer Service' },
     children:[
       {
-        path:'customer-service-options',
+        path:'',
         loadChildren:() => import('./customerServiceHome/customer-service-home.module').then(m => m.CustomerServiceHomeModule),
       },
       {
-        path:'transaction-query',
-        loadChildren:() => import('./transactionQuery/transaction-query.module').then(m => m.TransactionQueryModule)
+        path:':queryId/:productId',
+        loadChildren:() => import('./query-entry-screen/query-entry-screen.module').then(m => m.QueryEntryScreenModule)
       },
-      {
-        path:'',
-        pathMatch:'full',
-        redirectTo:'customer-service-options'
-      }
+      // {
+      //   path:'',
+      //   pathMatch:'full',
+      //   redirectTo:'customer-service-options'
+      // }, customer-service-options
     ]
   }
 ]

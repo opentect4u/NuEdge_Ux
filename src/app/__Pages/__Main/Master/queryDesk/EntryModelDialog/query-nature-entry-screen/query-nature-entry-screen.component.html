@@ -1,0 +1,46 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+    <div mat-dialog-title class="dialog-title" cdkDragHandle>
+      <h2 >{{data.title}}</h2>
+        <div class="btnIcon">
+          <button mat-icon-button title="Minimize"  (click)="minimize()" >
+            <mat-icon >remove</mat-icon>
+          </button>
+          <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+            <mat-icon>check_box_outline_blank </mat-icon>
+          </button>
+  
+          <button mat-icon-button title="Close"  [mat-dialog-close]="">
+            <mat-icon >close</mat-icon>
+          </button>
+      </div>
+      </div>
+      <mat-dialog-content>
+        <form [formGroup]="queryNatureForm" autocomplete="off" (ngSubmit)="submitQueryNature()" [id]="'__Query_Nature__'+data.id">
+            <div class="row my-3">
+              <div class="col-sm-12">
+                <label form="query_nature">Query Nature <span class="text-danger">*</span></label>
+                <input type="text"
+                name="query_nature"
+                autocomplete="off" 
+                id="query_nature"
+                placeholder="Enter Query Nature"
+                class="form-control"
+                formControlName="query_nature">
+                <div class="invalid-feedback" *ngIf="queryNatureForm.get('query_nature').invalid && (queryNatureForm.get('query_nature').dirty || queryNatureForm.get('query_nature').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryNatureForm.get('query_nature')).errors?.required">*Please provide query nature</span>
+                </div>
+              </div>
+            </div>
+      
+           </form>
+      </mat-dialog-content>
+      <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
+        <button class="btn addBtn"   [attr.form]="'__Query_Nature__'+data.id" [disabled]="queryNatureForm.invalid">Submit</button>
+      </mat-dialog-actions>
+      <!-- <br clear="all"> -->
+  </div>
+  

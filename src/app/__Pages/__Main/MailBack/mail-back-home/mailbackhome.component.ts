@@ -99,6 +99,12 @@ export class MailbackhomeComponent implements OnInit {
   searchMailbackuploaded =() =>{
       this.getMissedMailbackUpload();
   }
+
+  convertNfoToOngoing = () =>{
+      this.dbIntr.api_call(0,'/nfoToOngoing',null).subscribe(res =>{
+            this.utility.showSnackbar('Schedular run successfully',1);
+      })
+  }
 }
 
 export class MailBackUploadedColumn{

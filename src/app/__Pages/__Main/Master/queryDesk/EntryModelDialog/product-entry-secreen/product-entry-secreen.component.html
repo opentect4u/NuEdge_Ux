@@ -1,0 +1,46 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+    <div mat-dialog-title class="dialog-title" cdkDragHandle>
+      <h2 >{{data.title}}</h2>
+        <div class="btnIcon">
+          <button mat-icon-button title="Minimize"  (click)="minimize()" >
+            <mat-icon >remove</mat-icon>
+          </button>
+          <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+            <mat-icon>check_box_outline_blank </mat-icon>
+          </button>
+  
+          <button mat-icon-button title="Close"  [mat-dialog-close]="">
+            <mat-icon >close</mat-icon>
+          </button>
+      </div>
+      </div>
+      <mat-dialog-content>
+        <form [formGroup]="productForm" autocomplete="off" (ngSubmit)="submitProduct()" [id]="'__Product_'+data.id">
+            <div class="row my-3">
+              <div class="col-sm-12">
+                <label form="product_name">Product <span class="text-danger">*</span></label>
+                <input type="text"
+                name="product_name"
+                autocomplete="off" 
+                id="product_name"
+                placeholder="Enter Product"
+                class="form-control"
+                formControlName="product_name">
+                <div class="invalid-feedback" *ngIf="productForm.get('product_name').invalid && (productForm.get('product_name').dirty || productForm.get('product_name').touched)">
+                  <span class="invalid-feedback" *ngIf="(productForm.get('product_name')).errors?.required">*Please provide product</span>
+                </div>
+              </div>
+            </div>
+      
+           </form>
+      </mat-dialog-content>
+      <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
+        <button class="btn addBtn"   [attr.form]="'__Product_'+data.id" [disabled]="productForm.invalid">Submit</button>
+      </mat-dialog-actions>
+      <!-- <br clear="all"> -->
+  </div>
+  

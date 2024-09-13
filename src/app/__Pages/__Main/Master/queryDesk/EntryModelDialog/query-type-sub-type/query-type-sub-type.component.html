@@ -1,0 +1,90 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+    <div mat-dialog-title class="dialog-title" cdkDragHandle>
+      <h2 >{{data.title}}</h2>
+        <div class="btnIcon">
+          <button mat-icon-button title="Minimize"  (click)="minimize()" >
+            <mat-icon >remove</mat-icon>
+          </button>
+          <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+            <mat-icon>check_box_outline_blank </mat-icon>
+          </button>
+  
+          <button mat-icon-button title="Close"  [mat-dialog-close]="">
+            <mat-icon >close</mat-icon>
+          </button>
+      </div>
+      </div>
+      <mat-dialog-content>
+            <form [formGroup]="queryTypeSubTypeForm" autocomplete="off" (ngSubmit)="submitQueryTypeSubType()" [id]="'__QueryType_SubType__'+data.id">
+            <div class="row my-3">
+              <div class="col-sm-12">
+                <label form="product_id">Product <span class="text-danger">*</span></label>
+                <select class="form-control" id="product_id" name="product_id" formControlName="product_id">
+                    <option value="">Select</option>
+                    <option [value]="item.id" *ngFor="let item of md_product">{{item.product_name}}</option>
+                  </select>
+                <div class="invalid-feedback" *ngIf="queryTypeSubTypeForm.get('product_id').invalid && (queryTypeSubTypeForm.get('product_id').dirty || queryTypeSubTypeForm.get('product_id').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryTypeSubTypeForm.get('product_id')).errors?.required">*Please select Product</span>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <label form="query_type">Query Type <span class="text-danger">*</span></label>
+                <input type="text"
+                name="query_type"
+                autocomplete="off" 
+                id="query_type"
+                placeholder="Enter Query Type"
+                class="form-control"
+                formControlName="query_type">
+                <div class="invalid-feedback" *ngIf="queryTypeSubTypeForm.get('query_type').invalid && (queryTypeSubTypeForm.get('query_type').dirty || queryTypeSubTypeForm.get('query_type').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryTypeSubTypeForm.get('query_type')).errors?.required">*Please provide query type</span>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <label form="query_subtype">Query SubType <span class="text-danger">*</span></label>
+                <input type="text"
+                name="query_subtype"
+                autocomplete="off" 
+                id="query_subtype"
+                placeholder="Enter Query SubType"
+                class="form-control"
+                formControlName="query_subtype">
+                <div class="invalid-feedback" *ngIf="queryTypeSubTypeForm.get('query_subtype').invalid && (queryTypeSubTypeForm.get('query_subtype').dirty || queryTypeSubTypeForm.get('query_subtype').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryTypeSubTypeForm.get('query_subtype')).errors?.required">*Please provide query subtype</span>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <label form="query_tat">Query TAT <span class="text-danger">*</span></label>
+                <input type="text"
+                name="query_tat"
+                autocomplete="off" 
+                id="query_tat"
+                placeholder="Enter Query TAT"
+                class="form-control"
+                formControlName="query_tat">
+                <!-- <div class="invalid-feedback" *ngIf="queryTypeSubTypeForm.get('query_tat').invalid && (queryTypeSubTypeForm.get('query_tat').dirty || queryTypeSubTypeForm.get('query_tat').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryTypeSubTypeForm.get('query_tat')).errors?.required">*Please provide query TAT</span>
+                </div> -->
+                <div class="invalid-feedback"
+                *ngIf="queryTypeSubTypeForm.get('query_tat').invalid && (queryTypeSubTypeForm.get('query_tat').dirty || queryTypeSubTypeForm.get('query_tat').touched)">
+                <span class="invalid-feedback" *ngIf="(queryTypeSubTypeForm.get('query_tat')).errors?.required">*Please provide query TAT
+                  </span>
+                <span class="invalid-feedback" *ngIf="(queryTypeSubTypeForm.get('query_tat')).hasError('pattern')">*allow only
+                  digits</span>
+  
+              </div>
+              </div>
+            </div>
+      
+           </form>
+      </mat-dialog-content>
+      <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
+        <button class="btn addBtn"   [attr.form]="'__QueryType_SubType__'+data.id" [disabled]="queryTypeSubTypeForm.invalid">Submit</button>
+      </mat-dialog-actions>
+      <!-- <br clear="all"> -->
+  </div>
+  

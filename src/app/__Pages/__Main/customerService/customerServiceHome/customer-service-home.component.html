@@ -1,7 +1,143 @@
-<div class="row flexSec">
+<!-- <div class="row flexSec">
     <div class="col-sm-8">
         <div class="row">
             <shared-menu-item [items]="__menu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
         </div>
+    </div>
+</div> -->
+
+<div class="bckContainer"></div>
+
+<div class="row flexSec">
+    <div class="col-sm-12">
+        <mat-card>
+            <mat-card-content>
+                <core-tab [Tab]="md_product"
+                (GetTabDtls)="TabDetails($event)"></core-tab>
+                <mat-card class="mat-elevation-z0">
+                    <mat-card-header class="border-bottom d-flex justify-content-between align-items-center">
+                        <mat-card-title>
+                            <h5>SEARCH QUERY</h5>
+                        </mat-card-title>
+                        <a pButton 
+                        type="button" icon="pi pi-plus" 
+                        label="Add Query"  target="_blank"
+                        [routerLink]="['/main/customer-service', queryId, productId]"
+                        class="p-button-link"></a>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <form [formGroup]="customerServiceForm" class="p-3" (ngSubmit)="searchQuery()">
+                            <div class="row my-3">
+                                <div class="col-sm-4">
+                                    <label for="queryStatus">Query Status</label>
+                                    <select class="form-control" name="queryStatus" id="queryStatus" formControlName="query_status_id">
+                                        <option value="">Select All</option>
+                                        <option value="{{status.id}}" *ngFor="let status of md_query_status">{{status.status_name}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <!-- <label for="queryMode">Query Mode</label>
+                                    <mat-radio-group id="queryMode" name="queryMode" [formControlName]="'query_mode_id'" color="primary">
+                                        <mat-radio-button value="O">Online</mat-radio-button>
+                                        <mat-radio-button value="F" class="mx-2">Offline</mat-radio-button>
+                                      </mat-radio-group> -->
+                                      <label for="queryMode">Query Mode</label>
+                                      <select class="form-control" name="queryMode" id="queryMode" formControlName="query_mode_id">
+                                          <option value="">Select All</option>
+                                          <option value="O">Online</option>
+                                          <option value="F" >Offline</option>
+                                      </select>
+                                </div>
+                                <div class="col-sm-4 d-flex align-items-end justify-content-end">
+                                    <button
+                                        pButton
+                                        type="submit"
+                                        class="p-button-lg mx-3"
+                                        iconPos="left"
+                                        icon="pi pi-eye"
+                                        label="Show"
+                                    ></button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <p-table #primeTbl id="trxDt" [value]="queryDataSource" [responsive]="true" [rowHover]="true"
+                        styleClass="p-datatable-striped p-datatable-lg"
+                        [scrollable]="true"
+                         [scrollHeight]="'370px'"
+                        [virtualScroll]="true"
+                        [virtualRowHeight]="39"
+                        [columns]="query_column" [paginator]="true"
+                        [autoLayout]="true" [totalRecords]="queryDataSource.length" [pageLinks]="3"
+                        [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+                        [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
+                        [tableStyle]="{ 'min-width': '164rem' }"
+                        >
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th *ngFor="let col of query_column" [pSortableColumn]="col.field"
+                            [style.min-width]="(col.field == 'query_details'  || col.field == 'scheme_name') ? col.width : ''"
+                            >
+                              {{ col.header }}
+                              <p-sortIcon [field]="col.field">
+                              </p-sortIcon>
+                            </th>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-trxn let-i="rowIndex">
+                          <tr tabindex="999"
+                            [ngStyle]="{'min-height':'39px'}">
+                            <td *ngFor="let col of query_column" [style.min-width]="(col.field == 'query_details' || col.field == 'scheme_name') ? col.width : ''">
+                                <ng-container [ngSwitch]="true">
+                                    <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                                            {{i + 1}}
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="col.field == 'status_name'">
+                                        <span [ngStyle]="{
+                                            color: trxn.color_code,
+                                            'border-radius':'3px',
+                                            border:'1px solid' + trxn.color_code   
+                                        }"
+                                                class="p-2"
+                                        >{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</span>
+                                </ng-container>
+                                    <ng-container *ngSwitchCase="col.field == 'date_time'">
+                                            {{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY hh:mm a') : 'N/A'}}
+                                    </ng-container>
+                                      <ng-container *ngSwitchCase="col.field == 'action'">
+                                        <span class="p-buttonset">
+                                           
+                                            <button pButton
+                                            (click)="setQuery(trxn)"
+                                            type="button" #tooltip="matTooltip"
+                                            matTooltip="Change Status" style="font-size: 4rem;" class="p-button-lg p-button-danger p-button-text p-button-text p-button-rounded"  icon="pi pi-replay"></button>
+                                            <a pButton
+                                            [routerLink]="['/main/customer-service', trxn.cust_query_id, productId]"
+                                            target="_blank"
+                                            type="button" #tooltip="matTooltip"
+                                            matTooltip="View Query"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded p-button-lg"  icon="pi pi-eye" ></a>
+                                        </span>
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        {{trxn[col.field] ? trxn[col.field] : 'N/A'}}
+                                    </ng-container>
+                                </ng-container>
+                              </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage" let-columns>
+                            <tr>
+                              <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+                                <h5>No Records Found</h5>
+                              </td>
+                            </tr>
+                          </ng-template>
+                    </p-table>
+                    </mat-card-content>
+                </mat-card>
+            </mat-card-content>
+        </mat-card>
+      
     </div>
 </div>
