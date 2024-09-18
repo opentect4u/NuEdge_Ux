@@ -87,6 +87,22 @@ export type TotalRealisedUnrealisedPL = {
     "Abs.Ret":number | undefined,
 }
 
+export type TotalRealisedUnrealisedPL_ = {
+  "purchase": {value:number | undefined,color:string},
+  "Switch In": {value:number | undefined,color:string},
+  "IDCW Reinv.":{value:number | undefined,color:string},
+  "Inflow":{value:number | undefined,color:string},
+  "Redemp.":{value:number | undefined,color:string},
+  "Switch Out":{value:number | undefined,color:string},
+  "IDCWP":{value:number | undefined,color:string},
+  "Outflow":{value:number | undefined,color:string},
+  "Scheme":{value:number | undefined,color:string},
+  "Curr. Val":{value:number | undefined,color:string},
+  "Gain/Loss":{value:number | undefined,color:string},
+  "xirr":{value:number | undefined,color:string},
+  "Abs.Ret":{value:number | undefined,color:string},
+}
+
 @Component({
   selector: 'app-live-mf-port-folio',
   templateUrl: './live-mf-port-folio.component.html',
@@ -94,6 +110,8 @@ export type TotalRealisedUnrealisedPL = {
 })
 
 export class LiveMfPortFolioComponent implements OnInit {
+
+  hexCharacters = [0,1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F"]; // for generate random color
 
 
   export__mode: 'D' | 'S' = 'S';
@@ -196,7 +214,7 @@ mappings between `act_value` and `value` for transition durations. */
   // __portFolioTab = portFolioTab;
   __portFolioTab = [];
 
-  PLSummary_realised_unrealised:Partial<TotalRealisedUnrealisedPL>;
+  PLSummary_realised_unrealised:Partial<TotalRealisedUnrealisedPL | TotalRealisedUnrealisedPL_>;
 
   __isPLSUmmary_Realised_Unrealised_Visble:boolean = false;
 
@@ -669,19 +687,33 @@ mappings between `act_value` and `value` for transition durations. */
     const curr_val = global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.curr_val));
     total_amt.push(curr_val);
     total_date.push(this.datePipe.transform(this.main_frm_dt?.valuation_as_on,'YYYY-MM-dd'))
-     this.PLSummary_realised_unrealised = {
-      purchase:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.purchase)),
-      "Switch In":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_in)),
-      "IDCW Reinv.":global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
-      "Inflow":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_inflow)),
-      "Redemp.":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.redemption)),
-      "Switch Out":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_out)),
-      "IDCWP":global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcwp ? Number(item.idcwp) : 0),
-      "Outflow":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_outflow)),
-      "Curr. Val":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.curr_val)),
-      "Gain/Loss":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.gain_loss)),
-      "Abs.Ret":(global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.ret_abs)) / array_without_negative_curr_val.length),
-      "xirr":global.XIRR(total_amt,total_date,0)
+    //  this.PLSummary_realised_unrealised = {
+    //   purchase:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.purchase)),
+    //   "Switch In":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_in)),
+    //   "IDCW Reinv.":global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcw_reinv ? Number(item.idcw_reinv) : 0),
+    //   "Inflow":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_inflow)),
+    //   "Redemp.":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.redemption)),
+    //   "Switch Out":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_out)),
+    //   "IDCWP":global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcwp ? Number(item.idcwp) : 0),
+    //   "Outflow":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_outflow)),
+    //   "Curr. Val":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.curr_val)),
+    //   "Gain/Loss":global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.gain_loss)),
+    //   "Abs.Ret":(global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.ret_abs)) / array_without_negative_curr_val.length),
+    //   "xirr":global.XIRR(total_amt,total_date,0)
+    //  }
+    this.PLSummary_realised_unrealised = {
+      purchase:{value:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.purchase)),color:this.generateNewColor()},
+      "Switch In":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_in)),color:this.generateNewColor()},
+      "IDCW Reinv.":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcw_reinv ? Number(item.idcw_reinv) : 0),color:this.generateNewColor()},
+      "Inflow":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_inflow)),color:this.generateNewColor()},
+      "Redemp.":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.redemption)),color:this.generateNewColor()},
+      "Switch Out":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.switch_out)),color:this.generateNewColor()},
+      "IDCWP":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => item.idcwp ? Number(item.idcwp) : 0),color:this.generateNewColor()},
+      "Outflow":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.tot_outflow)),color:this.generateNewColor()},
+      "Curr. Val":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.curr_val)),color:this.generateNewColor()},
+      "Gain/Loss":{value:global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.gain_loss)),color:this.generateNewColor()},
+      "Abs.Ret":{value:(global.Total__Count(array_without_negative_curr_val,(item:any) => Number(item.ret_abs)) / array_without_negative_curr_val.length),color:this.generateNewColor()},
+      "xirr":{value:global.XIRR(total_amt,total_date,0),color:this.generateNewColor()}
      }
      console.log(this.PLSummary_realised_unrealised);
   }
@@ -2454,6 +2486,19 @@ mappings between `act_value` and `value` for transition durations. */
     }
     )
   }
+
+  getCharacter(index) {
+    return this.hexCharacters[index]
+  }
+
+  generateNewColor() {
+    let hexColorRep = "#"
+    for (let index = 0; index < 6; index++){
+        const randomPosition = Math.floor ( Math.random() * this.hexCharacters.length ) 
+        hexColorRep += this.getCharacter( randomPosition )
+    }
+    return hexColorRep
+}
 
 
   getPayLoadForFamily(formData){

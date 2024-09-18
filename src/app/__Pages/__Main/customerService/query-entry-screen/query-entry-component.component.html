@@ -6,14 +6,14 @@
                 <mat-card-header class="border-bottom">
                     <mat-card-title>
                         <h4>
-                            {{ queryId == 0 ? 'Add' : 'View'}} Query
+                            {{ queryId == 0 ? 'Add' : 'View'}} Query In {{productId == 3 ? 'Insurance' : (productId == 4 ? 'FD' : 'Mutual Fund')}}
                         </h4>
                     </mat-card-title>
                 </mat-card-header>
                 <mat-card-content class="p-3">
                         <div class="container mx-auto ">
                                 <div class="divider">
-                                <span>Investor Details</span>
+                                <span>{{productId == 4 ? 'FD Holder Name' : productId == 3 ? 'Policy Holder Name' : 'Investor Name'}} Details</span>
                                 <hr class="line"/>
                                </div>
                                 <div class="row">
@@ -28,8 +28,8 @@
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <app-core-srch
-                                                        [label] = "'Investor'"
-                                                        [placeholder]="'Search By Investor Name'"
+                                                        [label] = "(productId == 4 ? 'FD Holder Name' : (productId == 3 ? 'Policy Holder Name' : 'Investor Name'))"
+                                                        [placeholder]="'Search By ' + (productId == 4 ? 'FD Holder' : (productId == 3 ? 'Policy Holder' : 'Investor')) + ' Name'"
                                                         [isPending]="__isInvestorSpinner"
                                                         [listItems] = "md_client"
                                                         [flag] = "'C'"
@@ -49,17 +49,17 @@
                                                     </div>
                                                     <div class="col-sm-6">
                                                          <label for="investor_pan">PAN</label>  
-                                                         <input placeholder="Investor PAN" [attr.disabled]="true" class="form-control" formControlName="investor_pan"/> 
+                                                         <input [placeholder]="(productId == 4 ? 'FD Holder' : (productId == 3 ? 'Policy Holder' : 'Investor')) + ' PAN'" [attr.disabled]="true" class="form-control" formControlName="investor_pan"/> 
                                                     </div>
                                                 </div>
                                                 <div class="row my-2">
                                                     <div class="col-sm-6">
                                                         <label for="investor_pan">Email</label>  
-                                                        <input placeholder="Investor Email" [attr.disabled]="true" class="form-control" formControlName="investor_email"/> 
+                                                        <input [placeholder]="(productId == 4 ? 'FD Holder' : (productId == 3 ? 'Policy Holder' : 'Investor')) + ' Email'" [attr.disabled]="true" class="form-control" formControlName="investor_email"/> 
                                                    </div>
                                                     <div class="col-sm-6">
                                                         <label for="investor_pan">Mobile</label>  
-                                                        <input placeholder="Investor Mobile" [attr.disabled]="true" class="form-control" formControlName="investor_mobile"/> 
+                                                        <input [placeholder]="(productId == 4 ? 'FD Holder' : (productId == 3 ? 'Policy Holder' : 'Investor')) + ' Mobile'" [attr.disabled]="true" class="form-control" formControlName="investor_mobile"/> 
                                                     </div>
                                                 </div>
                                                 <div class="divider">
@@ -68,14 +68,28 @@
                                                 </div>
                                                 <div class="row my-2">
                                                     <div class="col-sm-6">
-                                                        <label for="folio_no">Folio <span class="text-danger">*</span></label>  
-                                                        <select class="form-control"  formControlName="folio_no"  id="folio_no">
-                                                            <option value="">Select</option>
-                                                            <option *ngFor="let folio of md_folio" value="{{folio.folio_no}}">{{folio.folio_no}}</option>
-                                                        </select>
-                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('folio_no').invalid && (queryEntryForm.get('folio_no').dirty || queryEntryForm.get('folio_no').touched)">
-                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('folio_no').errors?.required)">*Please provide folio</span>
-                                                        </div>
+                                                        <label [for]="productId == 3 ? 'policy_no' : (productId == 4 ? 'fd_no' : 'folio_no')">
+                                                            {{productId == 3 ? 'Policy No' : productId == 4 ? 'FD No' : 'Folio'}} 
+                                                            <span class="text-danger">*</span></label>  
+                                                        <ng-container [ngSwitch]="true">
+                                                            <ng-container *ngSwitchCase="productId == 3 || productId == 4">
+                                                                <input [placeholder]="'Enter ' + (productId == 4 ? 'FD No' : 'Policy No')" 
+                                                                    class="form-control" [formControlName]="productId == 3 ? 'policy_no' : 'fd_no'"/> 
+                                                                    <div class="invalid-feedback" *ngIf="queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').invalid && (queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').dirty || queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').touched)">
+                                                                        <span class="invalid-feedback" *ngIf="(queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').errors?.required)">*Please provide {{productId == 3 ? 'policy no' : 'fd no'}} </span>
+                                                                    </div>
+                                                            </ng-container>
+                                                            <ng-container *ngSwitchDefault>
+                                                                <select class="form-control"  formControlName="folio_no"  id="folio_no">
+                                                                    <option value="">Select</option>
+                                                                    <option *ngFor="let folio of md_folio" value="{{folio.folio_no}}">{{folio.folio_no}}</option>
+                                                                </select>
+                                                                <div class="invalid-feedback" *ngIf="queryEntryForm.get('folio_no').invalid && (queryEntryForm.get('folio_no').dirty || queryEntryForm.get('folio_no').touched)">
+                                                                    <span class="invalid-feedback" *ngIf="(queryEntryForm.get('folio_no').errors?.required)">*Please provide folio</span>
+                                                                </div>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                        
                                                    </div>
                                                     <div class="col-sm-6">
                                                         <label for="application_no">Application No </label>  
@@ -99,7 +113,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="row my-2">
-                                                    <div class="col-sm-6">
+                                                        <div class="col-sm-6">
                                                         <!-- <app-core-srch
                                                         [label] = "'Scheme'"
                                                         [placeholder]="'Search By Scheme Name'"
@@ -118,40 +132,59 @@
                                                         <div class="invalid-feedback" *ngIf="queryEntryForm.get('scheme_name').invalid && (queryEntryForm.get('scheme_name').dirty || queryEntryForm.get('scheme_name').touched)">
                                                             <span class="invalid-feedback" *ngIf="(queryEntryForm.get('scheme_name').errors?.required)">*Please provide scheme</span>
                                                         </div> -->
-                                                        <label for="scheme_id">Scheme</label>
-                                                        <select   class="form-control" formControlName="scheme_id" id="scheme_id" name="scheme_id">
-                                                            <option value="">Select</option>
-                                                            <option value="{{item.id}}" *ngFor="let item of md_scheme">{{item.scheme_name}}-{{item.plan_name}}-{{item.option_name}}</option>
+                                                        <label [for]="productId == 1 ? 'scheme_id' : 'plan_id'">
+                                                            {{productId == 3 || productId == 4 ? 'Plan' : 'Scheme'}}
+                                                            <span class="text-danger">*</span>
+                                                        </label>
+                                                        <ng-container [ngSwitch]="true">
+                                                            <div *ngSwitchCase="productId == 3 || productId == 4">
+                                                                <select   class="form-control" formControlName="plan_id" id="plan_id" name="plan_id">
+                                                                    <option value="">Select</option>
+                                                                    <option value="{{item.id}}" *ngFor="let item of md_plan">{{item.plan_name}}</option>
+                                                                </select>
+                                                                <div class="invalid-feedback" *ngIf="queryEntryForm.get('plan_id').invalid && (queryEntryForm.get('plan_id').dirty || queryEntryForm.get('plan_id').touched)">
+                                                                    <span class="invalid-feedback" *ngIf="(queryEntryForm.get('plan_id').errors?.required)">*Please provide plan</span>
+                                                                </div>
+                                                            </div>
+                                                            <div *ngSwitchDefault>
+                                                                <select   class="form-control" formControlName="scheme_id" id="scheme_id" name="scheme_id">
+                                                                    <option value="">Select</option>
+                                                                    <option value="{{item.id}}" *ngFor="let item of md_scheme">{{item.scheme_name}}-{{item.plan_name}}-{{item.option_name}}</option>
+                                                                </select>
+                                                                <div class="invalid-feedback" *ngIf="queryEntryForm.get('scheme_id').invalid && (queryEntryForm.get('scheme_id').dirty || queryEntryForm.get('scheme_id').touched)">
+                                                                    <span class="invalid-feedback" *ngIf="(queryEntryForm.get('scheme_id').errors?.required)">*Please provide scheme</span>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
 
-                                                        </select>
-                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('scheme_id').invalid && (queryEntryForm.get('scheme_id').dirty || queryEntryForm.get('scheme_id').touched)">
-                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('scheme_id').errors?.required)">*Please provide scheme</span>
-                                                        </div> 
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <label for="query_type_id">Query Type <span class="text-danger">*</span></label>  
+                                                            <!-- <select class="form-control" formControlName="query_type_id"  id="query_type_id">
+                                                                <option value="">Select</option>
+                                                                <option *ngFor="let item of md_queryType" value="{{item.id}}">{{item.query_type}}</option>
+                                                            </select> -->
+                                                            <select
+                                                                name="query_type_id"
+                                                                id="query_type_id"
+                                                                class="form-control"
+                                                                formControlName="query_type_id"
+                                                                [compareWith]="compareWith"  
+                                                                >
+                                                                <option value="">Select</option>
+                                                                <option [ngValue]="item"
+                                                                *ngFor="let item of md_queryType">
+                                                                {{item.query_type}}
+                                                                </option>
+                                                            </select>
+                                                            <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_type_id').invalid && (queryEntryForm.get('query_type_id').dirty || queryEntryForm.get('query_type_id').touched)">
+                                                                <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_type_id').errors?.required)">*Please select query type</span>
+                                                              </div>
+                                                       </div>
+                                                        
                                                     </div>
-                                                    <div class="col-sm-6">
-                                                        <label for="query_type_id">Query Type <span class="text-danger">*</span></label>  
-                                                        <!-- <select class="form-control" formControlName="query_type_id"  id="query_type_id">
-                                                            <option value="">Select</option>
-                                                            <option *ngFor="let item of md_queryType" value="{{item.id}}">{{item.query_type}}</option>
-                                                        </select> -->
-                                                        <select
-                                                            name="query_type_id"
-                                                            id="query_type_id"
-                                                            class="form-control"
-                                                            formControlName="query_type_id"
-                                                            [compareWith]="compareWith"  
-                                                            >
-                                                            <option value="">Select</option>
-                                                            <option [ngValue]="item"
-                                                            *ngFor="let item of md_queryType">
-                                                            {{item.query_type}}
-                                                            </option>
-                                                        </select>
-                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_type_id').invalid && (queryEntryForm.get('query_type_id').dirty || queryEntryForm.get('query_type_id').touched)">
-                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_type_id').errors?.required)">*Please select query type</span>
-                                                          </div>
-                                                   </div>
-                                                </div>
+                                                   
                                                 <div class="row ">
                                                     <div class="col-sm-6">
                                                         <label for="query_subtype_id">Query Subtype <span class="text-danger">*</span></label>  

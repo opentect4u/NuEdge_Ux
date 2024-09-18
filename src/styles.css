@@ -1337,7 +1337,7 @@ ul>li.plSummaryRptBlock>p.values{
 }
 
 ul>li.plSummaryRptBlock>div{
-  border: 1px solid #e8d4bf;
+  /* border: 1px solid #e8d4bf; */
   background: #fff4e961;
   border-radius: 5px;
   word-break: break-all;

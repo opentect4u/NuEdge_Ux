@@ -463,7 +463,8 @@
                                     <ul>  
                                       <ng-container *ngFor="let item of PLSummary_realised_unrealised | keyvalue:keepOrder; let i=index">
                                          
-                                          <li class="plSummaryRptBlock">
+                                          <li class="plSummaryRptBlock" 
+                                          >
                                             <p class="m-1 text-center">
                                               <ng-container [ngSwitch]="true">
                                                   <ng-container *ngSwitchCase="i == 3">
@@ -475,15 +476,19 @@
                                                 <ng-container *ngSwitchDefault>{{letter(i)}}</ng-container>
                                               </ng-container>
                                             </p>
-                                            <div>
+                                            <div
+                                             [ngStyle]="{
+                                              'border':'1px solid '+ item?.value['color']
+                                             }"
+                                            >
                                               <p class="m-0 text-uppercase">{{item.key}}</p>
                                               <ng-container [ngSwitch]="true">
                                                   <ng-container *ngSwitchCase="item.key === 'xirr'">
-                                                    <p class="m-0 mt-2 text-uppercase values">{{item ? (item.value | percent:'1.2-2') : '0.00'}}</p>
+                                                    <p class="m-0 mt-2 text-uppercase values">{{item ? (item?.value['value'] | percent:'1.2-2') : '0.00'}}</p>
                                                   </ng-container>
                                                   <ng-container *ngSwitchDefault>
                                                     <p class="m-0 mt-2 text-uppercase values">
-                                                      {{item ? (item.value | number:'1.2-2') : '0.00'}}
+                                                      {{item ? (item?.value['value'] | number:'1.2-2') : '0.00'}}
                                                         <span *ngIf="item.key === 'Abs.Ret'">%</span>
                                                     </p>
                                                   </ng-container>

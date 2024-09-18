@@ -41,7 +41,7 @@ export class CustomerServiceHomeComponent implements OnInit {
   productId:string | undefined;
   queryId:string | undefined = this.__utility.encrypt_dtls(JSON.stringify(0));
 
-  query_column:column[] = queryColumn.QueryColumn;
+  query_column:column[] = [];
   customerServiceForm = new  FormGroup({
     query_status_id:new FormControl(''),
     query_mode_id: new FormControl('')
@@ -56,10 +56,10 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.fetchQueryStatus();
   }
 
-  // getItems(item){
-  //     console.log(item)
-  //     this.__utility.navigate(item.url);
-  // }
+
+  setColumns = (productId:number) =>{
+      this.query_column = queryColumn.QueryColumn.filter(el => el.isVisible.includes(Number(productId)))
+  }
 
   TabDetails(ev){
       console.log(ev);
@@ -70,6 +70,7 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.queryDataSource = [];
       this.productId = this.__utility.encrypt_dtls(JSON.stringify((ev.tabDtls?.id)));
       this.fetchQuery(ev.tabDtls?.flag);
+      this.setColumns(ev.tabDtls?.id)
   }
  
 
@@ -100,6 +101,9 @@ export class CustomerServiceHomeComponent implements OnInit {
                 flag: this.initialName(el.product_name)
           }
         });
+        this.setColumns(res.length > 0 ? res[0].id : 1)
+        // console.log(this.productId);
+        // console.log()
         // this.fetchQuery(this.md_product[0].flag);
     })
   }
@@ -183,35 +187,49 @@ export class queryColumn{
     {
       field:'query_id',
       header:'Query ID',
-      width:'5rem'
+      width:'5rem',
+      isVisible:[1,2,3,4]
     },
     {
       field:'status_name',
       header:'Query Status',
-      width:'5rem'
+      width:'5rem',
+      isVisible:[1,2,3,4]
     },
     {
       field:'date_time',
       header:'Date & Time',
-      width:'5rem'
+      width:'5rem',
+      isVisible:[1,2,3,4]
     },
     {
       field:'invester_name',
       header:'Invester',
-      width:'5rem'
-
+      width:'5rem',
+      isVisible:[1,2]
+    },
+    {
+      field:'invester_name',
+      header:'Policy Holder',
+      width:'5rem',
+      isVisible:[3]
+    },{
+      field:'invester_name',
+      header:'FD Holder',
+      width:'5rem',
+      isVisible:[4]
     },
     {
       field:'invester_email',
       header:'Email',
-      width:'5rem'
-
+      width:'5rem',
+      isVisible:[1,2,3,4]
     },
     {
       field:'invester_mobile',
       header:'Mobile',
-      width:'5rem'
-
+      width:'5rem',
+      isVisible:[1,2,3,4]
     },
     // {
     //   field:'invester_name',
@@ -220,25 +238,42 @@ export class queryColumn{
     {
       field:'folio_no',
       header:'Folio',
-      width:'5rem'
-
+      width:'5rem',
+      isVisible:[1,2]
+    }, {
+      field:'policy_no',
+      header:'Policy No',
+      width:'5rem',
+      isVisible:[3]
+    }, {
+      field:'fd_no',
+      header:'FD No',
+      width:'5rem',
+      isVisible:[4]
     },
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'20rem'
+      width:'20rem',
+      isVisible:[1,2]
+    },
+    {
+      field:'plan_name',
+      header:'Plan',
+      width:'10rem',
+      isVisible:[3,4]
     },
     {
       field:'query_details',
       header:'Query Details',
-      width:'30rem'
-
+      width:'30rem',
+      isVisible:[1,2,3,4]
     },
     {
       field:'action',
       header:'Action',
-      width:'10rem'
-
+      width:'10rem',
+      isVisible:[1,2,3,4]
     }
   ]
 }

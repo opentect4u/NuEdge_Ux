@@ -9,6 +9,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { IQueryGivenByOrReceiveThrough, IQueryNature, IQueryStatus, IQueryTypeSubType } from '../../Master/queryDesk/query-desk-report/query-desk-report.component';
 import { scheme } from 'src/app/__Model/__schemeMst';
 import { DatePipe } from '@angular/common';
+import { plan } from 'src/app/__Model/plan';
 
 @Component({
   selector: 'app-query-entry-component',
@@ -27,6 +28,7 @@ export class QueryEntryComponentComponent implements OnInit {
   md_client:Partial<client>[] = [];
   md_scheme:Partial<scheme>[] = [];
   md_folio:any = [];
+  md_plan:Partial<plan[]> = [];
   md_queryStatus:Partial<IQueryStatus>[] = [];
   md_QueryGiven_by:Partial<IQueryGivenByOrReceiveThrough>[] = [];
   md_queryType:Partial<IQueryTypeSubType>[] = [];
@@ -41,13 +43,16 @@ export class QueryEntryComponentComponent implements OnInit {
        investor_mobile: new FormControl({value:'',disabled: true}), 
        folio_no: new FormControl('',{
         updateOn:'change',
-        validators:Validators.required
+        // validators:Validators.required
       }),
+        plan_id:new FormControl(''),
+        policy_no:new FormControl(''),
+        fd_no:new FormControl(''),
        application_no: new FormControl(''),
        query_given_by_id: new FormControl('',[Validators.required]),
        entry_name:new FormControl('',[Validators.required]),
        scheme_name:new FormControl(''),
-       scheme_id:new FormControl('',[Validators.required]),
+       scheme_id:new FormControl(''),
        product_code: new FormControl(''),
        isin_no:new FormControl(''),
        query_type_id:new FormControl('',{
@@ -81,7 +86,6 @@ export class QueryEntryComponentComponent implements OnInit {
     this.fetchGivenByQuery();
     this.fetchQueryType();
     this.fetchQueryNature();
-    // this.fetchQueryStatus();
     this.fetchQueryGivenReceiveThr();
     this.productId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.productId));
     this.queryId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.queryId));
@@ -92,6 +96,17 @@ export class QueryEntryComponentComponent implements OnInit {
          this.queryEntryForm.get(el).disable();
       })
     }
+    else{
+       this.setFormControlValidators();
+    }
+  }
+
+  setFormControlValidators = () =>{
+      const first_formControlName = this.productId > 2 ? (this.productId == 3 ? 'policy_no' : 'fd_no') : 'folio_no';
+      const second_formControlName = this.productId > 2 ? 'plan_id' : 'scheme_id';
+      this.queryEntryForm.get(first_formControlName).setValidators([Validators.required]);
+      this.queryEntryForm.get(second_formControlName).setValidators([Validators.required]);
+
   }
 
   fetchQueryDetails = (query_id:number) =>{
@@ -242,6 +257,7 @@ export class QueryEntryComponentComponent implements OnInit {
       this.__dbIntr.api_call(0,'/cusService/getFoliowiseProduct',`folio_no=${folio_no}`)
       .pipe(pluck('data'))
       .subscribe((res:Partial<scheme>[]) =>{
+          console.log(res);
           this.md_scheme = res;
           if(this.queryId > 0 && this.formData){
             const getDtls = this.md_scheme.filter(el => el.product_code == this.formData?.product_code && el.isin_no == this.formData?.isin_no)[0];
@@ -268,8 +284,25 @@ export class QueryEntryComponentComponent implements OnInit {
         investor_mobile:ev.item.mobile
       });
       this.queryEntryForm.get('investor_name').setValue(ev.item.client_name,{emitEvent:false});
-      this.fetchFoliosOfInvestor(ev.item.client_name,ev.item.pan)
+      if(this.productId == 1){
+        this.fetchFoliosOfInvestor(ev.item.client_name,ev.item.pan)
+      }
+      else{
+         // call Plan Mster data
+         if(this.md_plan.length == 0){
+         this.fetchPlanaccordingtoPolicyHolder_fd(ev.item.client_name,ev.item.pan);
+
+         }
+      }
   }
+
+  fetchPlanaccordingtoPolicyHolder_fd = (client_name:string,pan:string) =>{
+        this.__dbIntr.api_call(0, '/plan', null)
+        .pipe(pluck('data'))
+        .subscribe((res: Partial<plan[]>) => {
+          this.md_plan = res;
+        });
+  } 
 
   // getSelectedItemsFromParentForScheme = (ev) =>{
   //   this.searchResultVisibilityForScheme('none')
@@ -327,6 +360,7 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   submitQuery = () =>{
+      // console.log(this.queryEntryForm.getRawValue()); 
       const payload = {
         ...this.queryEntryForm.getRawValue(),
         query_type_id:this.queryEntryForm.getRawValue().query_type_id?.query_type,
