@@ -1,7 +1,13 @@
 
 <div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
     <div mat-dialog-title class="dialog-title" cdkDragHandle>
-      <h2 >{{data.title}}</h2>
+      <div class="d-flex justify-content-start flex-column">
+        <h2 >{{data.title}}</h2>
+        <small>
+          {{data.data.product_id == 4 ? 'FD' : data.data.product_id == 3 ? 'INSURANCE' : (data.data.product_id == 1 ?  'MUTUAL FUND' : 'BOND')}}
+        </small>
+      </div>
+      
         <div class="btnIcon">
           <button mat-icon-button title="Minimize"  (click)="minimize()" >
             <mat-icon >remove</mat-icon>

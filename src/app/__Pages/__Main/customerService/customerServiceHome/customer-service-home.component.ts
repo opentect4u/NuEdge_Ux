@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -10,6 +10,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 import { ModifyQueryStatusComponent } from '../modify-query-status/modify-query-status.component';
+import { Table } from 'primeng/table';
 // import  menu from '../../../../../assets/json/menu.json';
 enum API{
   'MF'='/cusService/MutualFundQuery',
@@ -37,9 +38,11 @@ export class CustomerServiceHomeComponent implements OnInit {
   ) {
     // this.__menu = menu.filter((x: menuBodyList) => x.id == 3)[0].sub_menu;
   }
+  @ViewChild('primeTbl') primeTbl :Table;
 
   productId:string | undefined;
-  queryId:string | undefined = this.__utility.encrypt_dtls(JSON.stringify(0));
+  // queryId:string | undefined = this.__utility.encrypt_dtls(JSON.stringify(0));
+  queryId:string | undefined =   this.__utility.EncryptText('0');
 
   query_column:column[] = [];
   customerServiceForm = new  FormGroup({
@@ -62,28 +65,36 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
 
   TabDetails(ev){
-      console.log(ev);
       this.customerServiceForm.patchValue({
         query_status_id:'',
         query_mode_id: ''
       });
       this.queryDataSource = [];
-      this.productId = this.__utility.encrypt_dtls(JSON.stringify((ev.tabDtls?.id)));
+      // this.productId = this.__utility.encrypt_dtls(JSON.stringify((ev.tabDtls?.id)));
+      this.productId = this.__utility.EncryptText(ev.tabDtls?.id.toString());
       this.fetchQuery(ev.tabDtls?.flag);
       this.setColumns(ev.tabDtls?.id)
   }
- 
+  filterGlobal($event){
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+}
 
   fetchQuery = (flag) =>{
 
       this.dbIntr.api_call(1,'/cusService/queryShow',this.__utility.convertFormData({
         ...this.customerServiceForm.value,
-        product_id: this.__utility.decrypt_dtls(this.productId)
+        // product_id: this.__utility.decrypt_dtls(this.productId)
+        product_id: this.__utility.DcryptText(this.productId)
+
       }))
       .pipe(pluck('data'))
       .subscribe((res:any) =>{
         this.queryDataSource = res.map(el =>{
-          el.cust_query_id = this.__utility.encrypt_dtls(JSON.stringify((el.id)))
+          el.scheme_name = el.product_id == 1 ? `${el.scheme_name}-${el.plan_name}-${el.option_name}` : (el.product_id == 4 ? el.scheme_name : '');
+          // el.cust_query_id = this.__utility.encrypt_dtls(JSON.stringify((el.id)))
+          el.cust_query_id = this.__utility.EncryptText(el.id.toString())
+
           return el
         });
       })
@@ -92,7 +103,8 @@ export class CustomerServiceHomeComponent implements OnInit {
 
   fetchProduct = () =>{
     this.dbIntr.api_call(0,'/product',null).pipe(pluck('data')).subscribe((res:any) => {
-      this.productId =this.__utility.encrypt_dtls(JSON.stringify((res.length > 0 ? res[0].id : 0))) 
+      // this.productId =this.__utility.encrypt_dtls(JSON.stringify((res.length > 0 ? res[0].id : 0))) 
+      this.productId =   this.__utility.EncryptText((res.length > 0 ? res[0].id.toString() : 0));
       this.md_product = res.map(el => {
           return {
                 id:el.id,
@@ -129,13 +141,13 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
 
   searchQuery = () =>{
-    const product_id = this.__utility.decrypt_dtls(this.productId);
+    // const product_id = this.__utility.decrypt_dtls(this.productId);
+    const product_id = this.__utility.DcryptText(this.productId);
     const flag = this.md_product.filter(el => el.id == product_id);
     this.fetchQuery(flag[0].flag)
   }
 
   setQuery = (queryDtls) =>{
-        console.log(queryDtls);
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = false;
         dialogConfig.closeOnNavigation = false;
@@ -156,23 +168,28 @@ export class CustomerServiceHomeComponent implements OnInit {
           );
           dialogref.afterClosed().subscribe((dt) => {
               if(dt){
+                // const product_ID =Number(this.__utility.decrypt_dtls(this.productId));
+                const product_ID =Number(this.__utility.DcryptText(this.productId));
+
                 const response = dt.response;
-                this.queryDataSource = this.queryDataSource.filter(el =>{
-                    if(el.id == queryDtls.id){
-                          el.status_name = response.status_name;
-                          el.color_code = response.color_code;
-                          el.query_status_id = response.query_status_id;
-                          el.overall_feedback =  response.overall_feedback;
-                          el.query_feedback =  response.query_feedback;
-                    }
-                    return el;
-                })
+                if(product_ID == response.product_id){
+                    this.queryDataSource = this.queryDataSource.filter(el =>{
+                      if(el.id == queryDtls.id){
+                            el.status_name = response.status_name;
+                            el.color_code = response.color_code;
+                            el.query_status_id = response.query_status_id;
+                            el.overall_feedback =  response.overall_feedback;
+                            el.query_feedback =  response.query_feedback;
+                      }
+                      return el;
+                    })
+                }
+               
               }
           });
         } catch (ex) {
           const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
           dialogRef.updateSize('40%');
-          console.log(ex);
           this.__utility.getmenuIconVisible({
             id: dialogConfig.id.toString(),
             isVisible: false,
@@ -203,30 +220,30 @@ export class queryColumn{
       isVisible:[1,2,3,4]
     },
     {
-      field:'invester_name',
+      field:'investor_name',
       header:'Invester',
       width:'5rem',
       isVisible:[1,2]
     },
     {
-      field:'invester_name',
+      field:'investor_name',
       header:'Policy Holder',
       width:'5rem',
       isVisible:[3]
     },{
-      field:'invester_name',
+      field:'investor_name',
       header:'FD Holder',
       width:'5rem',
       isVisible:[4]
     },
     {
-      field:'invester_email',
+      field:'investor_email',
       header:'Email',
       width:'5rem',
       isVisible:[1,2,3,4]
     },
     {
-      field:'invester_mobile',
+      field:'investor_mobile',
       header:'Mobile',
       width:'5rem',
       isVisible:[1,2,3,4]
@@ -255,13 +272,13 @@ export class queryColumn{
       field:'scheme_name',
       header:'Scheme',
       width:'20rem',
-      isVisible:[1,2]
+      isVisible:[1,2,4]
     },
     {
-      field:'plan_name',
-      header:'Plan',
+      field:'product_name',
+      header:'Product',
       width:'10rem',
-      isVisible:[3,4]
+      isVisible:[3]
     },
     {
       field:'query_details',

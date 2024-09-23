@@ -27,7 +27,7 @@
                     </mat-card-header>
                     <mat-card-content>
                         <form [formGroup]="customerServiceForm" class="p-3" (ngSubmit)="searchQuery()">
-                            <div class="row my-3">
+                            <div class="row my-3 ">
                                 <div class="col-sm-4">
                                     <label for="queryStatus">Query Status</label>
                                     <select class="form-control" name="queryStatus" id="queryStatus" formControlName="query_status_id">
@@ -60,6 +60,7 @@
                                 </div>
                             </div>
                         </form>
+                        <div class="my-3 border-top">
 
                         <p-table #primeTbl id="trxDt" [value]="queryDataSource" [responsive]="true" [rowHover]="true"
                         styleClass="p-datatable-striped p-datatable-lg"
@@ -74,6 +75,21 @@
                         [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
                         [tableStyle]="{ 'min-width': '164rem' }"
                         >
+                        <ng-template pTemplate="caption">
+                            <div class="d-flex align-items-center justify-content-between">
+                              <div>
+                                <!-- <h6 class="m-0" *ngIf="dataSource.length > 0">
+                                  Showing 1 to {{dataSource.length}} of {{dataSource.length}} 
+                                </h6> -->
+                              </div>
+                              <div>
+                                <input class="form-control w-full" type="text" 
+                                (input)="filterGlobal($event)" 
+                                placeholder="Search" />
+                              </div>    
+                            
+                          </div>
+                          </ng-template>
                         <ng-template pTemplate="header">
                           <tr>
                             <th *ngFor="let col of query_column" [pSortableColumn]="col.field"
@@ -107,7 +123,6 @@
                                     </ng-container>
                                       <ng-container *ngSwitchCase="col.field == 'action'">
                                         <span class="p-buttonset">
-                                           
                                             <button pButton
                                             (click)="setQuery(trxn)"
                                             type="button" #tooltip="matTooltip"
@@ -119,6 +134,7 @@
                                             matTooltip="View Query"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded p-button-lg"  icon="pi pi-eye" ></a>
                                         </span>
                                     </ng-container>
+                                    
                                     <ng-container *ngSwitchDefault>
                                         {{trxn[col.field] ? trxn[col.field] : 'N/A'}}
                                     </ng-container>
@@ -133,7 +149,9 @@
                               </td>
                             </tr>
                           </ng-template>
-                    </p-table>
+                        </p-table>
+                    </div>
+
                     </mat-card-content>
                 </mat-card>
             </mat-card-content>

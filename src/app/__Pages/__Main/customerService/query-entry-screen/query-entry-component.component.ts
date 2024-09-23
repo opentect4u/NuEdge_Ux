@@ -28,7 +28,7 @@ export class QueryEntryComponentComponent implements OnInit {
   md_client:Partial<client>[] = [];
   md_scheme:Partial<scheme>[] = [];
   md_folio:any = [];
-  md_plan:Partial<plan[]> = [];
+  md_plan:any = [];
   md_queryStatus:Partial<IQueryStatus>[] = [];
   md_QueryGiven_by:Partial<IQueryGivenByOrReceiveThrough>[] = [];
   md_queryType:Partial<IQueryTypeSubType>[] = [];
@@ -45,7 +45,9 @@ export class QueryEntryComponentComponent implements OnInit {
         updateOn:'change',
         // validators:Validators.required
       }),
-        plan_id:new FormControl(''),
+        // plan_id:new FormControl(''),
+        ins_product_id:new FormControl(''),
+        fd_scheme_id: new FormControl(''),
         policy_no:new FormControl(''),
         fd_no:new FormControl(''),
        application_no: new FormControl(''),
@@ -59,6 +61,7 @@ export class QueryEntryComponentComponent implements OnInit {
         updateOn:'change',
         validators:Validators.required
       }),
+      query_mode_id: new FormControl('O',[Validators.required]),
        query_subtype_id:new FormControl('',[Validators.required]),
        query_details:new FormControl('',[Validators.required]),
        query_nature_id:new FormControl('',[Validators.required]),
@@ -83,12 +86,18 @@ export class QueryEntryComponentComponent implements OnInit {
     private __dbIntr:DbIntrService, private  utility:UtiliService) {}
 
   ngOnInit(): void {
+    // this.productId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.productId));
+    this.productId = Number(this.utility.DcryptText(this.RtDt.snapshot.params.productId));
+
+    // this.queryId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.queryId));
+    this.queryId = Number(this.utility.DcryptText(this.RtDt.snapshot.params.queryId));
+    console.log(this.queryId);
     this.fetchGivenByQuery();
     this.fetchQueryType();
     this.fetchQueryNature();
     this.fetchQueryGivenReceiveThr();
-    this.productId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.productId));
-    this.queryId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.queryId));
+    this.fetchPlanaccordingtoProductId();
+
     if(this.queryId > 0){
       this.fetchQueryDetails(this.queryId);
       const keys = Object.keys(this.queryEntryForm.getRawValue());
@@ -103,10 +112,9 @@ export class QueryEntryComponentComponent implements OnInit {
 
   setFormControlValidators = () =>{
       const first_formControlName = this.productId > 2 ? (this.productId == 3 ? 'policy_no' : 'fd_no') : 'folio_no';
-      const second_formControlName = this.productId > 2 ? 'plan_id' : 'scheme_id';
+      const second_formControlName = this.productId > 2  ? (this.productId == 3 ? 'ins_product_id' : 'fd_scheme_id') : 'scheme_id';
       this.queryEntryForm.get(first_formControlName).setValidators([Validators.required]);
       this.queryEntryForm.get(second_formControlName).setValidators([Validators.required]);
-
   }
 
   fetchQueryDetails = (query_id:number) =>{
@@ -130,12 +138,15 @@ export class QueryEntryComponentComponent implements OnInit {
       application_no:data ? data?.application_no : '',
       query_given_by_id: data ? data?.query_given_by_id : '',
       entry_name:data ? data?.entry_name : '',
-      // scheme_id:data ? data?.scheme_id : '',
-      // scheme_name:data ? data?.scheme_name : '',
+      policy_no: this.productId == 3 ? (data ? data?.policy_no : '') : '',
+      fd_no: this.productId == 4 ? (data ? data?.fd_no : '') : '',
+      ins_product_id:this.productId == 3 ? (data ? data?.ins_product_id : '') : '',
+      fd_scheme_id:this.productId == 4 ? (data ? data?.fd_scheme_id : '') : '',
       folio_no:data ? data?.folio_no : '',
       product_code:data ? data?.product_code : '',
       isin_no:data ? data?.isin_no : '',
-      query_type_id:data ? data?.query_type_id : '',
+      query_type_id:data ? this.md_queryType.filter(el => el.id == data?.query_type_subtype_id)[0] : '',
+      query_subtype_id:data ? data?.query_type_subtype_id : '',
       query_details:data ? data?.query_details : '',
       query_nature_id:data ? data?.query_nature_id : '',
       query_given_to_id:data ? data?.query_given_to_id : '',
@@ -144,10 +155,12 @@ export class QueryEntryComponentComponent implements OnInit {
       concern_person_name:data ? data?.concern_per_name : '',
       contact_no:data ? data?.contact_no : '',
       email_id:data ? data?.email_id : '',
-      query_tat:data ? data?.query_tat : '',
+      query_tat:data ? this.md_queryType.filter(el => el.id == data?.query_type_subtype_id)[0]?.query_tat : '',
       expected_close_date:data ? this.datePipe.transform(data?.expected_close_date,'yyyy-MM-dd')  : '',
       remarks: data ? data?.remarks : '',
+      query_mode_id:data ? data?.query_mode_id : 'O'
     });
+    
   }
 
   ngAfterViewInit(){
@@ -188,7 +201,6 @@ export class QueryEntryComponentComponent implements OnInit {
       })
 
       this.queryEntryForm.get('query_type_id').valueChanges.subscribe(res =>{
-        console.log(res);
         if(res){
           this.fetchQuerySubType(res)
         }
@@ -210,7 +222,6 @@ export class QueryEntryComponentComponent implements OnInit {
           }
          this.queryEntryForm.get('query_tat').setValue(TAT);
       })
-
       this.queryEntryForm.get('scheme_id').valueChanges.subscribe(res =>{
             if(res){
                 const scheme_dtls = this.md_scheme.filter(el => Number(el.id) == Number(res))[0];
@@ -287,21 +298,29 @@ export class QueryEntryComponentComponent implements OnInit {
       if(this.productId == 1){
         this.fetchFoliosOfInvestor(ev.item.client_name,ev.item.pan)
       }
-      else{
-         // call Plan Mster data
-         if(this.md_plan.length == 0){
-         this.fetchPlanaccordingtoPolicyHolder_fd(ev.item.client_name,ev.item.pan);
+      // else{
+      //    // call Plan Mster data
+      //    if(this.md_plan.length == 0){
+      //    this.fetchPlanaccordingtoPolicyHolder_fd(ev.item.client_name,ev.item.pan);
 
-         }
-      }
+      //    }
+      // }
   }
 
-  fetchPlanaccordingtoPolicyHolder_fd = (client_name:string,pan:string) =>{
-        this.__dbIntr.api_call(0, '/plan', null)
+  fetchPlanaccordingtoProductId= () =>{
+
+    if(Number(this.productId) ==3 || Number(this.productId) ==4){
+      console.log('sasas')
+
+        const api_name = this.productId == 3 ? '/ins/product' : '/fd/scheme'
+        this.__dbIntr.api_call(0, api_name, null)
         .pipe(pluck('data'))
-        .subscribe((res: Partial<plan[]>) => {
+        .subscribe((res: any) => {
+          console.log(res);
           this.md_plan = res;
         });
+    }
+      
   } 
 
   // getSelectedItemsFromParentForScheme = (ev) =>{
@@ -326,19 +345,24 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   fetchQueryType = () =>{
-      this.__dbIntr.api_call(0,'/cusService/queryTypeSubtype','flag=E').pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
+      this.__dbIntr.api_call(0,'/cusService/queryTypeSubtype',this.queryId == 0 ? 'flag=E' : null).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
           this.md_queryType = res;
+          // if(this.queryId > 0){
+          //   this.
+          // }
       })
   }
 
   fetchQuerySubType = (query_type:Partial<IQueryTypeSubType>) =>{
-    this.__dbIntr.api_call(0,'/cusService/queryTypeSubtype',`query_type=${query_type.query_type}`).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
-      this.md_querySubType = res;
-      // if(this.queryId > 0 && this.formData){
-      //   const getDtls = this.md_scheme.filter(el => el.product_code == this.formData?.product_code && el.isin_no == this.formData?.isin_no)[0];
-      //   this.queryEntryForm.get('scheme_id').setValue(getDtls?.id);  
-      // }
-  })
+    if(this.queryId == 0){
+          this.md_querySubType = this.md_queryType.filter(el => el.id == query_type.id);
+    }
+    else{
+      this.__dbIntr.api_call(0,'/cusService/queryTypeSubtype',`query_type=${query_type.query_type}`).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
+        this.md_querySubType = res;
+      })
+    }
+   
   }
 
   fetchQueryNature = () =>{
@@ -360,14 +384,27 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   submitQuery = () =>{
-      // console.log(this.queryEntryForm.getRawValue()); 
       const payload = {
         ...this.queryEntryForm.getRawValue(),
         query_type_id:this.queryEntryForm.getRawValue().query_type_id?.query_type,
         product_id:this.productId,
       }
-      const {scheme_name,...rest} = payload;
-      this.__dbIntr.api_call(1,'/cusService/queryAdd',this.utility.convertFormData(rest))
+      let api_payload ;
+      if(this.productId == 3 || this.productId == 4){
+        if(this.productId == 3){
+          const {scheme_name,folio_no,fd_no,fd_scheme_id,product_code,isin_no,scheme_id,...rest} = payload;
+          api_payload = rest;
+        }
+        else{
+          const {scheme_name,folio_no,policy_no,ins_product_id,product_code,isin_no,scheme_id,...rest} = payload;
+          api_payload = rest;
+        }
+      }
+      else {
+        const {scheme_name,policy_no,ins_product_id,fd_no,fd_scheme_id,...rest} = payload;
+        api_payload = rest;
+      }
+      this.__dbIntr.api_call(1,'/cusService/queryAdd',this.utility.convertFormData(api_payload))
       .pipe(pluck('data')).subscribe((res:any) =>{
         this.setForm();
         this.utility.showSnackbar(`Query with id ${res.query_id} has been registered successfully`,1)

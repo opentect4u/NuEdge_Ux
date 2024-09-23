@@ -56,8 +56,9 @@ export class ModifyQueryStatusComponent implements OnInit {
       this.__dbIntr.api_call(1,'/cusService/queryAdd',this.utils.convertFormData(this.StatusForm.value))
       .subscribe((res:any) =>{
         if(res.suc == 1){
+          const product_name = this.data.data.product_id == 3 ? 'INSURANCE' : (this.data.data.product_id == 4 ? 'FD' : 'MUTUAL FUND')
             this.dialogRef.close({response:res?.data})
-            this.utils.showSnackbar(`Query Status with id ${this.data.data?.query_id} has been updated successfully`,1)
+            this.utils.showSnackbar(`Query Status with id ${this.data.data?.query_id} has been updated successfully for ${product_name}`,1)
           }
       })
   }

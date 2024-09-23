@@ -138,12 +138,13 @@
                                                         </label>
                                                         <ng-container [ngSwitch]="true">
                                                             <div *ngSwitchCase="productId == 3 || productId == 4">
-                                                                <select   class="form-control" formControlName="plan_id" id="plan_id" name="plan_id">
+                                                                <select   class="form-control" [formControlName]="productId == 3 ? 'ins_product_id' : 'fd_scheme_id'"
+                                                                 [id]="productId == 3 ? 'ins_product_id' : 'fd_scheme_id'"  [name]="productId == 3 ? 'ins_product_id' : 'fd_scheme_id'">
                                                                     <option value="">Select</option>
-                                                                    <option value="{{item.id}}" *ngFor="let item of md_plan">{{item.plan_name}}</option>
+                                                                    <option value="{{item.id}}" *ngFor="let item of md_plan">{{productId == 3 ? item.product_name : item.scheme_name }}</option>
                                                                 </select>
-                                                                <div class="invalid-feedback" *ngIf="queryEntryForm.get('plan_id').invalid && (queryEntryForm.get('plan_id').dirty || queryEntryForm.get('plan_id').touched)">
-                                                                    <span class="invalid-feedback" *ngIf="(queryEntryForm.get('plan_id').errors?.required)">*Please provide plan</span>
+                                                                <div class="invalid-feedback" *ngIf="queryEntryForm.get(productId == 3 ? 'ins_product_id' : 'fd_scheme_id').invalid && (queryEntryForm.get(productId == 3 ? 'ins_product_id' : 'fd_scheme_id').dirty || queryEntryForm.get(productId == 3 ? 'ins_product_id' : 'fd_scheme_id').touched)">
+                                                                    <span class="invalid-feedback" *ngIf="(queryEntryForm.get(productId == 3 ? 'ins_product_id' : 'fd_scheme_id').errors?.required)">*Please provide plan</span>
                                                                 </div>
                                                             </div>
                                                             <div *ngSwitchDefault>
@@ -300,14 +301,19 @@
                                                             <span class="invalid-feedback" *ngIf="(queryEntryForm.get('expected_close_date').errors?.required)">*Please provide date</span>
                                                           </div>
                                                     </div>
-                                                    <!-- <div class="col-sm-6">
-                                                        <label for="actual_close_date">Actual Close Date <span class="text-danger">*</span> </label>  
+                                                    <div class="col-sm-6 d-flex align-items-start justify-content-center flex-column">
+                                                        <label for="queryMode" class="mr-3">Query Mode <span class="text-danger">*</span></label>
+                                                        <mat-radio-group id="queryMode" name="queryMode" [formControlName]="'query_mode_id'" color="primary">
+                                                            <mat-radio-button value="O">Online</mat-radio-button>
+                                                            <mat-radio-button value="F" class="mx-2">Offline</mat-radio-button>
+                                                        </mat-radio-group>
+                                                        <!-- <label for="actual_close_date">Actual Close Date <span class="text-danger">*</span> </label>  
                                                         <input type="date" id="actual_close_date" class="form-control" formControlName="actual_close_date"/> 
                                                         <div class="invalid-feedback" *ngIf="queryEntryForm.get('actual_close_date').invalid && (queryEntryForm.get('actual_close_date').dirty || queryEntryForm.get('actual_close_date').touched)">
                                                             <span class="invalid-feedback" *ngIf="(queryEntryForm.get('actual_close_date').errors?.required)">*Please provide actual close date</span>
 
-                                                          </div>
-                                                    </div> -->
+                                                          </div> -->
+                                                    </div>
                                                 </div>
                                                 <!-- <div class="row my-2">
                                                     <div class="col-sm-6">

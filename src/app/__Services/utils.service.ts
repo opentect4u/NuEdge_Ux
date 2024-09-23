@@ -15,7 +15,7 @@ import { breadCrumb } from '../__Model/brdCrmb';
 import { Route } from '../__Model/route';
 import { global } from '../__Utility/globalFunc';
 import * as CryptoJs from '../../assets/js/EnDcrypt.js';
-import { EN_DE, ERRR } from '../strings/localStorage_key';
+import { AES_IV, EN_DE, ERRR, HASH_EN_DE } from '../strings/localStorage_key';
 @Injectable({
   providedIn: 'root',
 })
@@ -270,4 +270,32 @@ export class UtiliService {
 
   //   })
   //   }
+
+    EncryptText = (text) => {
+    try{
+            const key = CryptoJs.PBKDF2(HASH_EN_DE, 'salt', { keySize: 256/32, iterations: 100 });
+            const iv = CryptoJs.enc.Utf8.parse(AES_IV);
+            const encrypted = CryptoJs.AES.encrypt(text, key, { iv: iv, mode: CryptoJs.mode.CBC });
+            return encrypted.ciphertext.toString(CryptoJs.enc.Hex);
+    }
+    catch(err){
+            console.log(err);
+            return 'ERR';
+    }
+
+}
+
+  DcryptText =  (encrypted_text) => {
+    try{
+            const key = CryptoJs.PBKDF2(HASH_EN_DE, 'salt', { keySize: 256/32, iterations: 100 });
+            const iv = CryptoJs.enc.Utf8.parse(AES_IV);
+            const decrypted = CryptoJs.AES.decrypt({ ciphertext: CryptoJs.enc.Hex.parse(encrypted_text) }, key, { iv: iv, mode: CryptoJs.mode.CBC });
+            return decrypted.toString(CryptoJs.enc.Utf8);
+    }
+    catch(err){
+            console.log(err)
+            return 'ERR';
+    }
+   
+}
 }
