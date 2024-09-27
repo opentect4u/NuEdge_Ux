@@ -24,4 +24,7 @@ export interface IliveStp{
   no_of_installment:string|null;
   duration:string | null;
   terminated_date:Date|null;
+  first_client_name:string | null;
+  first_client_pan:string | null;
+
 }

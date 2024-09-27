@@ -780,7 +780,7 @@ export class InvestorStaticReportComponent implements OnInit {
           el.sub_brk_cd,
           el.euin_no,
           el.folio_no,
-          el.family,
+          // el.family,
           el.first_client_name,
           el.cat_name,
           el.subcat_name,

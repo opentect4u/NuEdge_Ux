@@ -53,6 +53,14 @@
                                 <span class="invalid-feedback" *ngIf="(StatusForm.get('overall_feedback').errors?.required)">*Please provide status overall feedback</span>
                               </div>
                         </div>
+
+                        <div class="col-sm-12">
+                          <label for="expected_close_date">Expected Close Date <span class="text-danger">*</span></label>
+                          <input type="date" id="expected_close_date" name="expected_close_date"  class="form-control" formControlName="expected_close_date"/>
+                          <div class="invalid-feedback" *ngIf="StatusForm.get('expected_close_date').invalid && (StatusForm.get('expected_close_date').dirty || StatusForm.get('expected_close_date').touched)">
+                              <span class="invalid-feedback" *ngIf="(StatusForm.get('expected_close_date').errors?.required)">*Please provide expected close date</span>
+                            </div>
+                      </div>
                         
                 </div>
         </form>

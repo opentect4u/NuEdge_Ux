@@ -918,7 +918,7 @@ export class TrxnRptComponent implements OnInit {
      '',
      global.Total__Count(this.trxnRpt,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
      global.Total__Count(this.trxnRpt,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
-     global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+     global.Total__Count(this.trxnRpt,(x:any)=> x.tot_tds ? Number(x.tot_tds) : 0),
      global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
      '',
      '',

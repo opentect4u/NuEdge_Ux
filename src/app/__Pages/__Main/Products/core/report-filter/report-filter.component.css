@@ -3,3 +3,11 @@
   height:auto!important;
 }
 
+.p-button.p-button-outlined {
+  border: 1px solid #28a74b !important;
+  background-color:#fff!important;
+}
+.p-button.p-button-outlined:hover{
+  background-color:#fff!important;
+
+}

@@ -14,11 +14,20 @@ import { dates } from 'src/app/__Utility/disabledt';
 import { Calendar } from 'primeng/calendar';
 import clientType from '../../../../../../assets/json/view_type.json';
 import { client } from 'src/app/__Model/__clientMst';
-import { DOCUMENT } from '@angular/common';
+import { DatePipe, DOCUMENT } from '@angular/common';
 import MonthDT from '../../../../../../assets/json/Master/month.json';
 import { global } from 'src/app/__Utility/globalFunc';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { displayMode } from 'src/app/Enum/displayMode';
+import { ILiveSTP } from '../../MutualFund/PortFolio/LiveMFPortFolio/live-stp/live-stp.component';
+import { ILiveSWP } from '../../MutualFund/PortFolio/LiveMFPortFolio/live-swp/live-swp.component';
+import menu from '../../../../../../assets/json/Product/MF/homeMenus.json';
+import { Subscription } from 'rxjs';
+import { live_sip_stp_swp_rpt } from 'src/app/__Utility/Product/live_sip_stp_swp_rptClmns';
+import { column } from 'src/app/__Model/tblClmns';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+import { NgxSpinnerService } from 'ngx-spinner';
 enum sip_stp_swp_type {
     'P'='/sipType',
     'R' ='/swpType',
@@ -45,7 +54,36 @@ enum sip_stp_swp_type {
   ]
 })
 export class ReportFilterComponent implements OnInit {
+  
+  subscribe:Subscription[] = [];
+  /*** Exel Data */
+    md_liveDt:any = [];
+    md_toBeRegistered:any = [];
+    md_unRegister:any = [];
+    md_terminat:any = [];
+    md_mature:any = [];
+    md_toBeMature:any = [];
+    md_pause:any = [];
+  /***** End */
 
+
+    md_liveDt_footer:any = [];
+    md_toBeRegistered_footer:any = [];
+    md_unRegister_footer:any = [];
+    md_terminat_footer:any = [];
+    md_mature_footer:any = [];
+    md_toBeMature_footer:any = [];
+    md_pause_footer:any = [];
+
+  live_sip_column:column[] = [];
+  toBeRegistered_column:column[] = [];
+  unRegister_column:column[] = [];
+  terminate_column:column[] = [];
+  mature_column:column[] = [];
+  ltoBeMature_column:column[] = [];
+  pause_column:column[] = [];
+
+  disclaimer:any;
   mode = displayMode;
 
    @Input() state: string | undefined;
@@ -92,6 +130,8 @@ export class ReportFilterComponent implements OnInit {
     */
     @Input() report_type:string;
 
+
+    modify_arr:any = [];
 
     /**
      * Foe Getting SIP / STP / SWP Type
@@ -324,12 +364,14 @@ export class ReportFilterComponent implements OnInit {
     family_members:new FormControl([])
   });
 
-  constructor(private utility:UtiliService,private dbIntr:DbIntrService,@Inject(DOCUMENT) private document: Document) { }
+  constructor(private utility:UtiliService,
+    private datePipe:DatePipe,
+    private spinner:NgxSpinnerService,
+    private dbIntr:DbIntrService,@Inject(DOCUMENT) private document: Document) { 
+    console.log(menu);
+  }
 
   ngOnInit(): void {
-    console.log(this.type);
-    console.log(this.sub_type);
-
     this.Rpt.get('client_name').disable();
     /***** Previous Logic */
     // this.month = this.setMonthAccordingToYear(
@@ -346,6 +388,17 @@ export class ReportFilterComponent implements OnInit {
     this.maxDate= this.calculateDates('T');
     this.minDate = this.calculateDates('P');
     this.searchReport();
+    this.fetchtabDetails();
+
+    // Set Columnn
+    this.live_sip_column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes(this.report_type == 'P' ? 'LS-1' : (this.report_type == 'SO' ? 'LS-2' : 'LS-3')));
+    this.toBeRegistered_column =  this.live_sip_column;
+    this.unRegister_column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes(this.report_type == 'P' ? 'U' : (this.report_type == 'SO' ? 'U1' : 'U2')));;
+    this.terminate_column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes(this.report_type == 'P' ? 'TS-1' : (this.report_type == 'SO' ? 'TS-2' : 'TS-3')));
+    this.mature_column = this.live_sip_column;
+    this.ltoBeMature_column = this.live_sip_column;
+    this.pause_column = live_sip_stp_swp_rpt.columns.filter(item => item.isVisible.includes(this.report_type == 'P' ? 'P' : (this.report_type == 'SO' ? 'P2' : 'P3')));
+    // End
   }
 
   changedisabledStatus = (isSet:boolean,sub_type:string) =>{
@@ -1028,5 +1081,2336 @@ export class ReportFilterComponent implements OnInit {
     this.Rpt.controls['euin_no'].setValue([]);
   }
 
+  exportAllExcel(){
+      this.spinner.show();
+      this.subscribe = [];
+      if(this.report_type == 'P'){
+      this.fetchAlltrxn().then(res =>{
+          // console.log(this.md_liveDt  )
+          if(this.subscribe.map(el => el.closed).every(item => item)){
+                let workbook = new ExcelJS.Workbook();
+                let worksheet = workbook.addWorksheet(this.report_type == 'P' ? 'LIVE SIP' : (this.report_type == 'SO' ? 'LIVE STP' : 'LIVE SWP'),
+                  {
+                    views:[
+                      {state: 'frozen', xSplit: 0, ySplit: 1}
+                    ]
+                  }
+                );
+                const column = this.live_sip_column.map(el => el.header);
+                let headerRow = worksheet.addRow(column);
+                headerRow.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                worksheet.addRows(this.md_liveDt);
+                let footerRow_live_sip = worksheet.addRow(this.md_liveDt_footer);
+                footerRow_live_sip.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                const currentRowIdx = worksheet.rowCount; // Find out how many rows are there currently
+                const endColumnIdx = worksheet.columnCount; // Find out how many columns are in the worksheet
+                let disclaimerRow = worksheet.addRow([
+                  `Disclaimer - ${this.disclaimer.dis_des}`
+                ]);
+                disclaimerRow.eachCell((cell) =>{
+                cell.font = {
+                    color :{argb:this.disclaimer.color_code}
+                }
+                cell.font.size= this.disclaimer.font_size
+                })
+                worksheet.mergeCells((currentRowIdx + 1), 1, (currentRowIdx + 1), endColumnIdx,this.report_type == 'P' ? 'LIVE SIP' : (this.report_type == 'SO' ? 'LIVE STP' : 'LIVE SWP'));
+                
+                let worksheet_to_be_registered= workbook.addWorksheet('TOBEREGISTERED',
+                  {
+                    views:[
+                      {state: 'frozen', xSplit: 0, ySplit: 1}
+                    ]
+                  }
+                );
 
+                let toBeRegistered_headerRow = worksheet_to_be_registered.addRow(this.toBeRegistered_column.map(el => el.header));
+                toBeRegistered_headerRow.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                worksheet_to_be_registered.addRows(this.md_toBeRegistered);
+                let footerRow_to_be_registered_sip = worksheet_to_be_registered.addRow(this.md_toBeRegistered_footer);
+                footerRow_to_be_registered_sip.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                const currentRowIdx_toBeRegistered = worksheet_to_be_registered.rowCount; // Find out how many rows are there currently
+                const endColumnIdx_toBeRegistered_ = worksheet_to_be_registered.columnCount; // Find out how many columns are in the worksheet_to_be_registered
+                let disclaimerRow_toBeRegistered = worksheet_to_be_registered.addRow([
+                  `Disclaimer - ${this.disclaimer.dis_des}`
+                ]);
+                disclaimerRow_toBeRegistered.eachCell((cell) =>{
+                cell.font = {
+                    color :{argb:this.disclaimer.color_code}
+                }
+                cell.font.size= this.disclaimer.font_size
+                })
+                worksheet_to_be_registered.mergeCells((currentRowIdx_toBeRegistered + 1), 1, (currentRowIdx_toBeRegistered + 1), endColumnIdx_toBeRegistered_,'TOBEREGISTERED');
+                
+                let worksheet_un_registered= workbook.addWorksheet('UNREGISTER',
+                  {
+                    views:[
+                      {state: 'frozen', xSplit: 0, ySplit: 1}
+                    ]
+                  }
+                );
+
+                let unRegistered_headerRow = worksheet_un_registered.addRow(this.unRegister_column.map(el => el.header));
+                unRegistered_headerRow.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                worksheet_un_registered.addRows(this.md_unRegister);
+                let footerRow_to_un_registered_sip = worksheet_un_registered.addRow(this.md_unRegister_footer);
+                footerRow_to_un_registered_sip.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                const currentRowIdx_unRegister = worksheet_un_registered.rowCount; // Find out how many rows are there currently
+                const endColumnIdx_unRegister_ = worksheet_un_registered.columnCount; // Find out how many columns are in the worksheet_un_registered
+                let disclaimerRow_unRegistered = worksheet_un_registered.addRow([
+                  `Disclaimer - ${this.disclaimer.dis_des}`
+                ]);
+                disclaimerRow_unRegistered.eachCell((cell) =>{
+                cell.font = {
+                    color :{argb:this.disclaimer.color_code}
+                }
+                cell.font.size= this.disclaimer.font_size
+                })
+                worksheet_un_registered.mergeCells((currentRowIdx_unRegister + 1), 1, (currentRowIdx_unRegister + 1), endColumnIdx_unRegister_,'UNREGISTER');
+                
+                let worksheet_terminate= workbook.addWorksheet('TERMINATE',
+                  {
+                    views:[
+                      {state: 'frozen', xSplit: 0, ySplit: 1}
+                    ]
+                  }
+                );
+
+                let terminate_header_row = worksheet_terminate.addRow(this.terminate_column.map(el => el.header));
+                terminate_header_row.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                worksheet_terminate.addRows(this.md_terminat);
+                let footerRow_to_terminate_sip = worksheet_terminate.addRow(this.md_terminat_footer);
+                footerRow_to_terminate_sip.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                const currentRowIdx_terminate = worksheet_terminate.rowCount; // Find out how many rows are there currently
+                const endColumnIdx_terminate_ = worksheet_terminate.columnCount; // Find out how many columns are in the worksheet_terminate
+                let disclaimerRow_terminate = worksheet_terminate.addRow([
+                  `Disclaimer - ${this.disclaimer.dis_des}`
+                ]);
+                disclaimerRow_terminate.eachCell((cell) =>{
+                cell.font = {
+                    color :{argb:this.disclaimer.color_code}
+                }
+                cell.font.size= this.disclaimer.font_size
+                })
+                worksheet_terminate.mergeCells((currentRowIdx_terminate + 1), 1, (currentRowIdx_terminate + 1), endColumnIdx_terminate_,'UNREGISTER');
+                 
+                
+                let worksheet_matured= workbook.addWorksheet('MATURED',
+                  {
+                    views:[
+                      {state: 'frozen', xSplit: 0, ySplit: 1}
+                    ]
+                  }
+                );
+
+                let matured_header_row = worksheet_matured.addRow(this.mature_column.map(el => el.header));
+                matured_header_row.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                worksheet_matured.addRows(this.md_mature);
+                let footerRow_matured_sip = worksheet_matured.addRow(this.md_mature_footer);
+                footerRow_matured_sip.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                const currentRowIdx_mature = worksheet_matured.rowCount; // Find out how many rows are there currently
+                const endColumnIdx_mature_ = worksheet_matured.columnCount; // Find out how many columns are in the worksheet_matured
+                let disclaimerRow_matured = worksheet_matured.addRow([
+                  `Disclaimer - ${this.disclaimer.dis_des}`
+                ]);
+                disclaimerRow_matured.eachCell((cell) =>{
+                cell.font = {
+                    color :{argb:this.disclaimer.color_code}
+                }
+                cell.font.size= this.disclaimer.font_size
+                })
+                worksheet_matured.mergeCells((currentRowIdx_mature + 1), 1, (currentRowIdx_mature + 1), endColumnIdx_mature_,'MATURED');
+
+
+                let worksheet_to_be_matured= workbook.addWorksheet('TOBEMATURED',
+                  {
+                    views:[
+                      {state: 'frozen', xSplit: 0, ySplit: 1}
+                    ]
+                  }
+                );
+
+                let to_be_matured_header_row = worksheet_to_be_matured.addRow(this.mature_column.map(el => el.header));
+                to_be_matured_header_row.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                worksheet_to_be_matured.addRows(this.md_toBeMature);
+                let footerRow_to_bematured_sip = worksheet_to_be_matured.addRow(this.md_toBeMature_footer);
+                footerRow_to_bematured_sip.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                const currentRowIdx_to_be_mature = worksheet_to_be_matured.rowCount; // Find out how many rows are there currently
+                const endColumnIdx_to_be_mature_ = worksheet_to_be_matured.columnCount; // Find out how many columns are in the worksheet_to_be_matured
+                let disclaimerRow_to_be_matured = worksheet_to_be_matured.addRow([
+                  `Disclaimer - ${this.disclaimer.dis_des}`
+                ]);
+                disclaimerRow_to_be_matured.eachCell((cell) =>{
+                cell.font = {
+                    color :{argb:this.disclaimer.color_code}
+                }
+                cell.font.size= this.disclaimer.font_size
+                })
+                worksheet_to_be_matured.mergeCells((currentRowIdx_to_be_mature + 1), 1, (currentRowIdx_to_be_mature + 1), endColumnIdx_to_be_mature_,'TOBEMATURED');
+
+
+                let worksheet_pause= workbook.addWorksheet('PAUSE',
+                  {
+                    views:[
+                      {state: 'frozen', xSplit: 0, ySplit: 1}
+                    ]
+                  }
+                );
+
+                let pause_header_row = worksheet_pause.addRow(this.pause_column.map(el => el.header));
+                pause_header_row.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                worksheet_pause.addRows(this.md_pause);
+                let footerRow_pause_sip = worksheet_pause.addRow(this.md_pause_footer);
+                footerRow_pause_sip.eachCell((cell) =>{
+                  cell.fill={
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{argb:'FFFFFF00'},
+                    bgColor:{argb:'FF0000FF'},
+                  }
+                })
+                const currentRowIdx_pause = worksheet_pause.rowCount; // Find out how many rows are there currently
+                const endColumnIdx_pause_ = worksheet_pause.columnCount; // Find out how many columns are in the worksheet_pause
+                let disclaimerRow_pause = worksheet_pause.addRow([
+                  `Disclaimer - ${this.disclaimer.dis_des}`
+                ]);
+                disclaimerRow_pause.eachCell((cell) =>{
+                cell.font = {
+                    color :{argb:this.disclaimer.color_code}
+                }
+                cell.font.size= this.disclaimer.font_size
+                })
+                worksheet_pause.mergeCells((currentRowIdx_pause + 1), 1, (currentRowIdx_pause + 1), endColumnIdx_pause_,'PAUSE');
+                  
+                
+                workbook.xlsx.writeBuffer().then((data)=>{
+                  let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+                  saveAs(blob, this.report_type == 'P' ? `SIP.xlsx` : (this.report_type == 'SO' ? 'STP.xlsx' : 'SWP.xlsx'));
+                  this.spinner.hide();
+                })
+              }
+      })
+      }
+       else if(this.report_type == 'SO'){
+        this.fetchAllForSTP().then(res =>{
+          console.log(this.subscribe.map(el => el.closed));
+            // console.log(this.md_liveDt  )
+            if(this.subscribe.map(el => el.closed).every(item => item)){
+                  let workbook = new ExcelJS.Workbook();
+                  let worksheet = workbook.addWorksheet(this.report_type == 'P' ? 'LIVE SIP' : (this.report_type == 'SO' ? 'LIVE STP' : 'LIVE SWP'),
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+                  const column = this.live_sip_column.map(el => el.header);
+                  let headerRow = worksheet.addRow(column);
+                  headerRow.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet.addRows(this.md_liveDt);
+                  let footerRow_live_sip = worksheet.addRow(this.md_liveDt_footer);
+                  footerRow_live_sip.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  const currentRowIdx = worksheet.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx = worksheet.columnCount; // Find out how many columns are in the worksheet
+                  let disclaimerRow = worksheet.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet.mergeCells((currentRowIdx + 1), 1, (currentRowIdx + 1), endColumnIdx,this.report_type == 'P' ? 'LIVE SIP' : (this.report_type == 'SO' ? 'LIVE STP' : 'LIVE SWP'));
+                  
+                  let worksheet_to_be_registered= workbook.addWorksheet('TOBEREGISTERED',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let toBeRegistered_headerRow = worksheet_to_be_registered.addRow(this.toBeRegistered_column.map(el => el.header));
+                  toBeRegistered_headerRow.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_to_be_registered.addRows(this.md_toBeRegistered);
+                  let footerRow_to_beRegister_stp = worksheet_to_be_registered.addRow(this.md_toBeRegistered_footer);
+                  footerRow_to_beRegister_stp.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  const currentRowIdx_toBeRegistered = worksheet_to_be_registered.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_toBeRegistered_ = worksheet_to_be_registered.columnCount; // Find out how many columns are in the worksheet_to_be_registered
+                  let disclaimerRow_toBeRegistered = worksheet_to_be_registered.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_toBeRegistered.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_to_be_registered.mergeCells((currentRowIdx_toBeRegistered + 1), 1, (currentRowIdx_toBeRegistered + 1), endColumnIdx_toBeRegistered_,'TOBEREGISTERED');
+                  
+                  let worksheet_un_registered= workbook.addWorksheet('UNREGISTER',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let unRegistered_headerRow = worksheet_un_registered.addRow(this.unRegister_column.map(el => el.header));
+                  unRegistered_headerRow.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_un_registered.addRows(this.md_unRegister);
+                  let footerRow_unRegister_stp = worksheet_un_registered.addRow(this.md_unRegister_footer);
+                  footerRow_unRegister_stp.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  const currentRowIdx_unRegister = worksheet_un_registered.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_unRegister_ = worksheet_un_registered.columnCount; // Find out how many columns are in the worksheet_un_registered
+                  let disclaimerRow_unRegistered = worksheet_un_registered.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_unRegistered.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_un_registered.mergeCells((currentRowIdx_unRegister + 1), 1, (currentRowIdx_unRegister + 1), endColumnIdx_unRegister_,'UNREGISTER');
+                  
+                  let worksheet_terminate= workbook.addWorksheet('TERMINATE',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let terminate_header_row = worksheet_terminate.addRow(this.terminate_column.map(el => el.header));
+                  terminate_header_row.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_terminate.addRows(this.md_terminat);
+                  let footerRow_terminate_stp = worksheet_terminate.addRow(this.md_terminat_footer);
+                  footerRow_terminate_stp.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  const currentRowIdx_terminate = worksheet_terminate.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_terminate_ = worksheet_terminate.columnCount; // Find out how many columns are in the worksheet_terminate
+                  let disclaimerRow_terminate = worksheet_terminate.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_terminate.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_terminate.mergeCells((currentRowIdx_terminate + 1), 1, (currentRowIdx_terminate + 1), endColumnIdx_terminate_,'UNREGISTER');
+                   
+                  
+                  let worksheet_matured= workbook.addWorksheet('MATURED',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let matured_header_row = worksheet_matured.addRow(this.mature_column.map(el => el.header));
+                  matured_header_row.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_matured.addRows(this.md_mature);
+                  let footerRow__matured_sip = worksheet_matured.addRow(this.md_mature_footer);
+                  footerRow__matured_sip.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  const currentRowIdx_mature = worksheet_matured.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_mature_ = worksheet_matured.columnCount; // Find out how many columns are in the worksheet_matured
+                  let disclaimerRow_matured = worksheet_matured.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_matured.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_matured.mergeCells((currentRowIdx_mature + 1), 1, (currentRowIdx_mature + 1), endColumnIdx_mature_,'MATURED');
+  
+  
+                  let worksheet_to_be_matured= workbook.addWorksheet('TOBEMATURED',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let to_be_matured_header_row = worksheet_to_be_matured.addRow(this.mature_column.map(el => el.header));
+                  to_be_matured_header_row.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_to_be_matured.addRows(this.md_toBeMature);
+                  let footerRow_to_be_matured_sip = worksheet_to_be_matured.addRow(this.md_toBeMature_footer);
+                  footerRow_to_be_matured_sip.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  const currentRowIdx_to_be_mature = worksheet_to_be_matured.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_to_be_mature_ = worksheet_to_be_matured.columnCount; // Find out how many columns are in the worksheet_to_be_matured
+                  let disclaimerRow_to_be_matured = worksheet_to_be_matured.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_to_be_matured.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_to_be_matured.mergeCells((currentRowIdx_to_be_mature + 1), 1, (currentRowIdx_to_be_mature + 1), endColumnIdx_to_be_mature_,'TOBEMATURED');
+  
+  
+                  let worksheet_pause= workbook.addWorksheet('PAUSE',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let pause_header_row = worksheet_pause.addRow(this.pause_column.map(el => el.header));
+                  pause_header_row.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_pause.addRows(this.md_pause);
+                  let footerRow_pause_stp = worksheet_pause.addRow(this.md_pause_footer);
+                  footerRow_pause_stp.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  const currentRowIdx_pause = worksheet_pause.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_pause_ = worksheet_pause.columnCount; // Find out how many columns are in the worksheet_pause
+                  let disclaimerRow_pause = worksheet_pause.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_pause.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_pause.mergeCells((currentRowIdx_pause + 1), 1, (currentRowIdx_pause + 1), endColumnIdx_pause_,'PAUSE');
+                    
+                  
+                  workbook.xlsx.writeBuffer().then((data)=>{
+                    let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+                    saveAs(blob, this.report_type == 'P' ? `SIP.xlsx` : (this.report_type == 'SO' ? 'STP.xlsx' : 'SWP.xlsx'));
+                    this.spinner.hide();
+                  })
+                }
+        })
+       }
+      else{
+        this.fetchAllForSWP().then(res =>{
+          console.log(this.subscribe.map(el => el.closed));
+            // console.log(this.md_liveDt  )
+            if(this.subscribe.map(el => el.closed).every(item => item)){
+                  let workbook = new ExcelJS.Workbook();
+                  let worksheet = workbook.addWorksheet(this.report_type == 'P' ? 'LIVE SIP' : (this.report_type == 'SO' ? 'LIVE STP' : 'LIVE SWP'),
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+                  const column = this.live_sip_column.map(el => el.header);
+                  let headerRow = worksheet.addRow(column);
+                  headerRow.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet.addRows(this.md_liveDt);
+                  let footerRow_live_sip = worksheet.addRow(this.md_liveDt_footer);
+                    footerRow_live_sip.eachCell((cell) =>{
+                      cell.fill={
+                        type:'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'FFFFFF00'},
+                        bgColor:{argb:'FF0000FF'},
+                      }
+                    })
+                  const currentRowIdx = worksheet.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx = worksheet.columnCount; // Find out how many columns are in the worksheet
+                  let disclaimerRow = worksheet.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet.mergeCells((currentRowIdx + 1), 1, (currentRowIdx + 1), endColumnIdx,this.report_type == 'P' ? 'LIVE SIP' : (this.report_type == 'SO' ? 'LIVE STP' : 'LIVE SWP'));
+                  
+                  let worksheet_to_be_registered= workbook.addWorksheet('TOBEREGISTERED',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let toBeRegistered_headerRow = worksheet_to_be_registered.addRow(this.toBeRegistered_column.map(el => el.header));
+                  toBeRegistered_headerRow.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_to_be_registered.addRows(this.md_toBeRegistered);
+                  let footerRow_to_be_registered_sip = worksheet_to_be_registered.addRow(this.md_toBeRegistered_footer);
+                  footerRow_to_be_registered_sip.eachCell((cell) =>{
+                      cell.fill={
+                        type:'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'FFFFFF00'},
+                        bgColor:{argb:'FF0000FF'},
+                      }
+                    })
+                  const currentRowIdx_toBeRegistered = worksheet_to_be_registered.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_toBeRegistered_ = worksheet_to_be_registered.columnCount; // Find out how many columns are in the worksheet_to_be_registered
+                  let disclaimerRow_toBeRegistered = worksheet_to_be_registered.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_toBeRegistered.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_to_be_registered.mergeCells((currentRowIdx_toBeRegistered + 1), 1, (currentRowIdx_toBeRegistered + 1), endColumnIdx_toBeRegistered_,'TOBEREGISTERED');
+                  
+                  let worksheet_un_registered= workbook.addWorksheet('UNREGISTER',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let unRegistered_headerRow = worksheet_un_registered.addRow(this.unRegister_column.map(el => el.header));
+                  unRegistered_headerRow.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_un_registered.addRows(this.md_unRegister);
+                  let footerRow_un_registered_sip = worksheet_un_registered.addRow(this.md_unRegister_footer);
+                  footerRow_un_registered_sip.eachCell((cell) =>{
+                      cell.fill={
+                        type:'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'FFFFFF00'},
+                        bgColor:{argb:'FF0000FF'},
+                      }
+                    })
+                  const currentRowIdx_unRegister = worksheet_un_registered.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_unRegister_ = worksheet_un_registered.columnCount; // Find out how many columns are in the worksheet_un_registered
+                  let disclaimerRow_unRegistered = worksheet_un_registered.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_unRegistered.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_un_registered.mergeCells((currentRowIdx_unRegister + 1), 1, (currentRowIdx_unRegister + 1), endColumnIdx_unRegister_,'UNREGISTER');
+                  
+                  let worksheet_terminate= workbook.addWorksheet('TERMINATE',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let terminate_header_row = worksheet_terminate.addRow(this.terminate_column.map(el => el.header));
+                  terminate_header_row.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_terminate.addRows(this.md_terminat);
+                  let footerRow_terminate_sip = worksheet_terminate.addRow(this.md_terminat_footer);
+                  footerRow_terminate_sip.eachCell((cell) =>{
+                      cell.fill={
+                        type:'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'FFFFFF00'},
+                        bgColor:{argb:'FF0000FF'},
+                      }
+                    })
+                  const currentRowIdx_terminate = worksheet_terminate.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_terminate_ = worksheet_terminate.columnCount; // Find out how many columns are in the worksheet_terminate
+                  let disclaimerRow_terminate = worksheet_terminate.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_terminate.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_terminate.mergeCells((currentRowIdx_terminate + 1), 1, (currentRowIdx_terminate + 1), endColumnIdx_terminate_,'UNREGISTER');
+                   
+                  
+                  let worksheet_matured= workbook.addWorksheet('MATURED',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let matured_header_row = worksheet_matured.addRow(this.mature_column.map(el => el.header));
+                  matured_header_row.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_matured.addRows(this.md_mature);
+                  let footerRow_mature_sip = worksheet_matured.addRow(this.md_mature_footer);
+                  footerRow_mature_sip.eachCell((cell) =>{
+                      cell.fill={
+                        type:'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'FFFFFF00'},
+                        bgColor:{argb:'FF0000FF'},
+                      }
+                    })
+                  const currentRowIdx_mature = worksheet_matured.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_mature_ = worksheet_matured.columnCount; // Find out how many columns are in the worksheet_matured
+                  let disclaimerRow_matured = worksheet_matured.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_matured.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_matured.mergeCells((currentRowIdx_mature + 1), 1, (currentRowIdx_mature + 1), endColumnIdx_mature_,'MATURED');
+  
+  
+                  let worksheet_to_be_matured= workbook.addWorksheet('TOBEMATURED',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let to_be_matured_header_row = worksheet_to_be_matured.addRow(this.mature_column.map(el => el.header));
+                  to_be_matured_header_row.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_to_be_matured.addRows(this.md_toBeMature);
+                  let footerRow_toBe_mature_sip = worksheet_to_be_matured.addRow(this.md_toBeMature_footer);
+                  footerRow_toBe_mature_sip.eachCell((cell) =>{
+                      cell.fill={
+                        type:'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'FFFFFF00'},
+                        bgColor:{argb:'FF0000FF'},
+                      }
+                    })
+                  const currentRowIdx_to_be_mature = worksheet_to_be_matured.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_to_be_mature_ = worksheet_to_be_matured.columnCount; // Find out how many columns are in the worksheet_to_be_matured
+                  let disclaimerRow_to_be_matured = worksheet_to_be_matured.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_to_be_matured.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_to_be_matured.mergeCells((currentRowIdx_to_be_mature + 1), 1, (currentRowIdx_to_be_mature + 1), endColumnIdx_to_be_mature_,'TOBEMATURED');
+  
+  
+                  let worksheet_pause= workbook.addWorksheet('PAUSE',
+                    {
+                      views:[
+                        {state: 'frozen', xSplit: 0, ySplit: 1}
+                      ]
+                    }
+                  );
+  
+                  let pause_header_row = worksheet_pause.addRow(this.pause_column.map(el => el.header));
+                  pause_header_row.eachCell((cell) =>{
+                    cell.fill={
+                      type:'pattern',
+                      pattern:'solid',
+                      fgColor:{argb:'FFFFFF00'},
+                      bgColor:{argb:'FF0000FF'},
+                    }
+                  })
+                  worksheet_pause.addRows(this.md_pause);
+                  let footerRow_pause_mature_sip = worksheet_pause.addRow(this.md_pause_footer);
+                  footerRow_pause_mature_sip.eachCell((cell) =>{
+                      cell.fill={
+                        type:'pattern',
+                        pattern:'solid',
+                        fgColor:{argb:'FFFFFF00'},
+                        bgColor:{argb:'FF0000FF'},
+                      }
+                    })
+                  const currentRowIdx_pause = worksheet_pause.rowCount; // Find out how many rows are there currently
+                  const endColumnIdx_pause_ = worksheet_pause.columnCount; // Find out how many columns are in the worksheet_pause
+                  let disclaimerRow_pause = worksheet_pause.addRow([
+                    `Disclaimer - ${this.disclaimer.dis_des}`
+                  ]);
+                  disclaimerRow_pause.eachCell((cell) =>{
+                  cell.font = {
+                      color :{argb:this.disclaimer.color_code}
+                  }
+                  cell.font.size= this.disclaimer.font_size
+                  })
+                  worksheet_pause.mergeCells((currentRowIdx_pause + 1), 1, (currentRowIdx_pause + 1), endColumnIdx_pause_,'PAUSE');
+                    
+                  
+                  workbook.xlsx.writeBuffer().then((data)=>{
+                    let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+                    saveAs(blob, this.report_type == 'P' ? `SIP.xlsx` : (this.report_type == 'SO' ? 'STP.xlsx' : 'SWP.xlsx'));
+                    this.spinner.hide();
+
+                  })
+                }
+        })
+      }
+  }
+  fetchtabDetails = () =>{
+    const id = this.report_type == 'P' ? 3 : (this.report_type == 'SO' ? 5 : 4);
+    console.log(this.type);
+    const arr = menu.filter((item) => item.id == id)[0]?.sub_menu
+    arr.forEach(el =>{
+        console.log(el)
+        if(el.id  == 2 || el.id == 4){
+              // Register && // Matured
+              el.sub_menu.forEach(item =>{
+                  this.modify_arr.push({
+                    ...el,
+                    report_type:this.report_type,
+                    sub_type:item.flag,
+                  })
+              })
+        }
+        else{
+          this.modify_arr.push({
+            ...el,
+            report_type:this.report_type,
+            sub_type:''
+          })
+        }
+    })
+  }
+
+  fetchAlltrxn = () =>{
+    return new Promise((resolve,reject) =>{
+      this.modify_arr.forEach((el,index) =>{
+        let dt;
+        if(el.sub_type == 'MT'){
+          dt ={
+            ...this.Rpt.getRawValue(),
+            report_type:el.report_type,
+            sub_type:el.sub_type ? el.sub_type : '',
+            swp_type:el.report_type == 'R' ? (el.flag ? el.flag : '') : '',
+            sip_type:el.report_type == 'P' ? (el.flag ? el.flag : '') : '',
+            stp_type:el.report_type == 'SO' ? (el.flag ? el.flag : '') : '',
+            upto:6,
+            view_by:'D'
+          }
+        }
+        else{
+          dt ={
+            ...this.Rpt.getRawValue(),
+            report_type:el.report_type,
+            sub_type:el.sub_type ? el.sub_type : '',
+            swp_type:el.report_type == 'R' ? (el.flag ? el.flag : '') : '',
+            sip_type:el.report_type == 'P' ? (el.flag ? el.flag : '') : '',
+            stp_type:el.report_type == 'SO' ? (el.flag ? el.flag : '') : '',
+          }
+        }
+        
+
+          let sub:Subscription;
+         sub =  this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt),true)
+         .pipe(pluck('data'))
+         .subscribe((res:any) => {
+                console.log(res);
+                  this.disclaimer = res.disclaimer;
+                  if(el.flag == 'L'){
+                    this.md_liveDt_footer = [
+                      'GRAND TOTAL',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      ''
+                    ]
+                    console.log(this.md_liveDt_footer)
+                    this.md_liveDt = res.data.map((el:any,index) => { return  [
+                      (index + 1),
+                      el.bu_type,
+                       el.branch_name,
+                      el.rm_name,
+                      (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                      el.euin_no,
+                      el.first_client_name,
+                      el.first_client_pan,
+                      this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                      el.reg_no,
+                      el.amc_short_name,
+                      el.cat_name,
+                      el.subcat_name,
+                      `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                      el.folio_no,
+                      el.trans_type,
+                      el.trans_sub_type,
+                      el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                      el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                      this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                      el.amount,
+                      el.freq,
+                      el.duration,
+                      el.bank_name,
+                      el.acc_no,
+                      el.reg_mode,
+                      el.remarks
+                  ]})
+                  }
+                  else if(el.flag == 'R' || el.flag == 'M'){
+                    if(el.sub_type == 'RR'){
+                      this.md_toBeRegistered_footer = [
+                        'GRAND TOTAL',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                      ]
+                      this.md_toBeRegistered = res.data.map((el:any,index) => { return  [
+                        (index + 1),
+                        el.bu_type,
+                         el.branch_name,
+                        el.rm_name,
+                        (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                        el.euin_no,
+                        el.first_client_name,
+                        el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                        el.reg_no,
+                        el.amc_short_name,
+                        el.cat_name,
+                        el.subcat_name,
+                        `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                        el.folio_no,
+                        el.trans_type,
+                        el.trans_sub_type,
+                        el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                        el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                        this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                        el.amount,
+                        el.freq,
+                        el.duration,
+                        el.bank_name,
+                        el.acc_no,
+                        el.reg_mode,
+                        el.remarks
+                    ]})
+                    }
+                    else if(el.sub_type == 'RU'){
+                      this.md_unRegister_footer = [
+                        'GRAND TOTAL',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                      ]
+                      this.md_unRegister = res.data.map((el:any,index) => { return  [
+                        (index + 1),
+                        el.bu_type,
+                         el.branch_name,
+                        el.rm_name,
+                        (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                        el.euin_no,
+                        el.first_client_name,
+                        el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                        el.reg_no,
+                        el.amc_short_name,
+                        el.cat_name,
+                        el.subcat_name,
+                        `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                        el.folio_no,
+                        el.trans_type,
+                        el.trans_sub_type,
+                        el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                        el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                        this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                        el.amount,
+                        el.freq,
+                        el.duration,
+                        el.bank_name,
+                        el.acc_no,
+                        el.terminated_date ? this.datePipe.transform(el.terminated_date,'dd-MM-YYYY') : '',
+                        el.reg_mode,
+                        el.remarks
+                    ]})
+                    }
+                    else if(el.sub_type == 'MM'){
+                      this.md_mature_footer = [
+                        'GRAND TOTAL',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                      ]
+                      this.md_mature = res.data.map((el,index) =>{
+                        return [
+                          (index + 1),
+                          el.bu_type,
+                          el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.cat_name,
+                          el.subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                          el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.bank_name,
+                          el.acc_no,
+                          el.reg_mode,
+                          el.remarks
+                        ]
+                      });
+                    } 
+                    else if(el.sub_type == 'MT'){
+                      this.md_toBeMature_footer = [
+                        'GRAND TOTAL',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                      ]
+                      this.md_toBeMature = res.data.map((el,index) =>{
+                        return [
+                          (index + 1),
+                          el.bu_type,
+                          el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.cat_name,
+                          el.subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                          el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.bank_name,
+                          el.acc_no,
+                          el.reg_mode,
+                          el.remarks
+                        ]
+                      });
+                    }
+                  }
+                  else if(el.flag == 'T'){
+                      this.md_terminat_footer = [
+                        'GRAND TOTAL',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                      ]
+                    this.md_terminat = res.data.map((el,index) => {
+                      return [
+                          (index + 1),
+                          el.bu_type,
+                           el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.cat_name,
+                          el.subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                          el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.bank_name,
+                          el.acc_no,
+                          el.terminated_date ? this.datePipe.transform(el.terminated_date,'dd-MM-YYYY') : '',
+                          el.reg_mode,
+                          el.remarks
+                      ]
+                    })
+                  }
+                  else{
+                    this.md_pause_footer = [
+                      'GRAND TOTAL',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      ''
+                    ]
+                    this.md_pause = res.data.map((el,index) => {
+                      return [
+                          (index + 1),
+                            el.bu_type,
+                            el.branch_name,
+                            el.rm_name,
+                            (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                            el.euin_no,
+                            el.first_client_name,
+                            el.first_client_pan,
+                            this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                           el.reg_no,
+                            el.amc_short_name,
+                            `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                            el.cat_name,
+                            el.subcat_name,
+                            el.folio_no,
+                            el.trans_type,
+                            el.trans_sub_type,
+                            el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                            el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                            el.pause_start_date ? this.datePipe.transform(el.pause_start_date,'dd-MM-YYYY') : '',
+                            el.pause_end_date ? this.datePipe.transform(el.pause_end_date,'dd-MM-YYYY') : '',
+                            this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                            el.amount,
+                            el.freq,
+                            el.duration,
+                            el.bank_name,
+                            el.acc_no,
+                            el.reg_mode,
+                            el.remarks
+                      ]
+                    })
+                  }
+                  if(index == (this.modify_arr.length - 1)){
+                    setTimeout(() => {
+                    resolve('suc')
+                    }, 3000);
+                  }
+          })
+          this.subscribe.push(sub);
+      })
+    })
+    
+  }   
+
+  fetchAllForSWP = () =>{
+    return new Promise((resolve,reject) =>{
+      this.modify_arr.forEach((el,index) =>{
+        let dt;
+        if(el.sub_type == 'MT'){
+          dt ={
+            ...this.Rpt.getRawValue(),
+            report_type:el.report_type,
+            sub_type:el.sub_type ? el.sub_type : '',
+            swp_type:el.report_type == 'R' ? (el.flag ? el.flag : '') : '',
+            sip_type:el.report_type == 'P' ? (el.flag ? el.flag : '') : '',
+            stp_type:el.report_type == 'SO' ? (el.flag ? el.flag : '') : '',
+            upto:6,
+            view_by:'D'
+          }
+        }
+        else{
+          dt ={
+            ...this.Rpt.getRawValue(),
+            report_type:el.report_type,
+            sub_type:el.sub_type ? el.sub_type : '',
+            swp_type:el.report_type == 'R' ? (el.flag ? el.flag : '') : '',
+            sip_type:el.report_type == 'P' ? (el.flag ? el.flag : '') : '',
+            stp_type:el.report_type == 'SO' ? (el.flag ? el.flag : '') : '',
+          }
+        }
+        
+
+          let sub:Subscription;
+         sub =  this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt),true)
+         .pipe(pluck('data'))
+         .subscribe((res:any) => {
+                  this.disclaimer = res.disclaimer;
+                  if(el.flag == 'L'){
+                    this.md_liveDt_footer = [
+                        'GRAND TOTAL',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                        '',
+                        '',
+                        '',
+                        ''
+                      ]
+                    this.md_liveDt = res.data.map((el:any,index) => { return  [
+                      (index + 1),
+                      el.bu_type,
+                       el.branch_name,
+                      el.rm_name,
+                      (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                      el.euin_no,
+                      el.first_client_name,
+                      el.first_client_pan,
+                      this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                      el.reg_no,
+                      el.amc_short_name,
+                      el.cat_name,
+                      el.subcat_name,
+                      `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                      el.folio_no,
+                      el.trans_type,
+                      el.trans_sub_type,
+                      this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                      this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                      el.swp_date,
+                      el.amount,
+                      el.freq,
+                      el.duration,
+                      el.reg_mode,
+                      el.remarks
+                  ]})
+                 
+                  }
+                  else if(el.flag == 'R' || el.flag == 'M'){
+                    if(el.sub_type == 'RR'){
+                        this.md_toBeRegistered_footer = [
+                          'GRAND TOTAL',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                          '',
+                          '',
+                          '',
+                          ''
+                        ]
+                      this.md_toBeRegistered = res.data.map((el:any,index) => { return  [
+                        (index + 1),
+                        el.bu_type,
+                         el.branch_name,
+                        el.rm_name,
+                        (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                        el.euin_no,
+                        el.first_client_name,
+                        el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                        el.reg_no,
+                        el.amc_short_name,
+                        el.cat_name,
+                        el.subcat_name,
+                        `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                        el.folio_no,
+                        el.trans_type,
+                        el.trans_sub_type,
+                        this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                        this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                        this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                        el.amount,
+                        el.freq,
+                        el.duration,
+                        el.reg_mode,
+                        el.remarks
+                    ]})
+                    }
+                    else if(el.sub_type == 'RU'){
+                        this.md_unRegister_footer = [
+                          'GRAND TOTAL',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                          '',
+                          '',
+                          '',
+                          '',
+                          ''
+                        ]
+                      this.md_unRegister = res.data.map((el:any,index) => { return  [
+                        (index + 1),
+                        el.bu_type,
+                         el.branch_name,
+                        el.rm_name,
+                        (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                        el.euin_no,
+                        el.first_client_name,
+                        el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                        el.reg_no,
+                        el.amc_short_name,
+                        el.cat_name,
+                        el.subcat_name,
+                        `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                        el.folio_no,
+                        el.trans_type,
+                        el.trans_sub_type,
+                        this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                        this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                        this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                        el.amount,
+                        el.freq,
+                        el.duration,
+                        el.terminated_date ? this.datePipe.transform(el.terminated_date,'dd-MM-YYYY') : '',
+                        el.reg_mode,
+                        el.remarks
+                    ]})
+                    }
+                    else if(el.sub_type == 'MM'){
+                          this.md_mature_footer = [
+                            'GRAND TOTAL',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                            '',
+                            '',
+                            '',
+                            ''
+                          ]
+                      this.md_mature = res.data.map((el,index) =>{
+                        return [
+                          (index + 1),
+                          el.bu_type,
+                          el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.cat_name,
+                          el.subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                          el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.reg_mode,
+                          el.remarks
+                        ]
+                      });
+                    } 
+                    else if(el.sub_type == 'MT'){
+                        this.md_toBeMature_footer = [
+                          'GRAND TOTAL',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                          '',
+                          '',
+                          '',
+                          ''
+                        ]
+                      this.md_toBeMature = res.data.map((el,index) =>{
+                        return [
+                          (index + 1),
+                          el.bu_type,
+                          el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.cat_name,
+                          el.subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                          el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.reg_mode,
+                          el.remarks
+                        ]
+                      });
+                    }
+                  }
+                  else if(el.flag == 'T'){
+                      this.md_terminat_footer = [
+                        'GRAND TOTAL',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                      ]
+                    this.md_terminat = res.data.map((el,index) => {
+                      return [
+                          (index + 1),
+                          el.bu_type,
+                           el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.cat_name,
+                          el.subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                          this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.terminated_date ? this.datePipe.transform(el.terminated_date,'dd-MM-YYYY') : '',
+                          el.reg_mode,
+                          el.remarks
+                      ]
+                    })
+                  }
+                  else{
+                    this.md_pause_footer = [
+                      'GRAND TOTAL',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                      '',
+                      '',
+                      '',
+                      ''
+                    ]
+                    this.md_pause = res.data.map((el,index) => {
+                      return [
+                          (index + 1),
+                            el.bu_type,
+                            el.branch_name,
+                            el.rm_name,
+                            (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                            el.euin_no,
+                            el.first_client_name,
+                            el.first_client_pan,
+                            this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                           el.reg_no,
+                            el.amc_short_name,
+                            el.cat_name,
+                            el.subcat_name,
+                            `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                            el.folio_no,
+                            el.trans_type,
+                            el.trans_sub_type,
+                            this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                            this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                            el.pause_start_date ? this.datePipe.transform(el.pause_start_date,'dd-MM-YYYY') : '',
+                            el.pause_end_date ? this.datePipe.transform(el.pause_end_date,'dd-MM-YYYY') : '',
+                            this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                            el.amount,
+                            el.freq,
+                            el.duration,
+                            el.reg_mode,
+                            el.remarks
+                      ]
+                    })
+                  }
+                  if(index == (this.modify_arr.length - 1)){
+                    setTimeout(() => {
+                    resolve('suc')
+                    }, 3000);
+                  }
+          })
+          this.subscribe.push(sub);
+      })
+    })
+  }
+
+  fetchAllForSTP = () =>{
+    return new Promise((resolve,reject) =>{
+      this.modify_arr.forEach((el,index) =>{
+        let dt;
+        if(el.sub_type == 'MT'){
+          dt ={
+            ...this.Rpt.getRawValue(),
+            report_type:el.report_type,
+            sub_type:el.sub_type ? el.sub_type : '',
+            swp_type:el.report_type == 'R' ? (el.flag ? el.flag : '') : '',
+            sip_type:el.report_type == 'P' ? (el.flag ? el.flag : '') : '',
+            stp_type:el.report_type == 'SO' ? (el.flag ? el.flag : '') : '',
+            upto:6,
+            view_by:'D'
+          }
+        }
+        else{
+          dt ={
+            ...this.Rpt.getRawValue(),
+            report_type:el.report_type,
+            sub_type:el.sub_type ? el.sub_type : '',
+            swp_type:el.report_type == 'R' ? (el.flag ? el.flag : '') : '',
+            sip_type:el.report_type == 'P' ? (el.flag ? el.flag : '') : '',
+            stp_type:el.report_type == 'SO' ? (el.flag ? el.flag : '') : '',
+          }
+        }
+        
+
+          let sub:Subscription;
+         sub =  this.dbIntr.api_call(1,'/showSipStpDetails',this.utility.convertFormData(dt),true)
+         .pipe(pluck('data'))
+         .subscribe((res:any) => {
+                console.log(res);
+                  this.disclaimer = res.disclaimer;
+                  if(el.flag == 'L'){
+                      this.md_liveDt_footer = [
+                        'GRAND TOTAL',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                      '',
+                      '',
+                      '',
+                      ''
+                      ]
+                    this.md_liveDt = res.data.map((el:any,index) => { return  [
+                      (index + 1),
+                      el.bu_type,
+                       el.branch_name,
+                      el.rm_name,
+                      (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                      el.euin_no,
+                      el.first_client_name,
+                      el.first_client_pan,
+                      this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                      el.reg_no,
+                      el.amc_short_name,
+                      el.to_cat_name,
+                       el.to_subcat_name,
+                      `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                      `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+                      el.folio_no,
+                      el.trans_type,
+                      el.trans_sub_type,
+                      this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                      this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                      el.stp_date,
+                      el.amount,
+                      el.freq,
+                      el.duration,
+                      el.reg_mode,
+                      el.remarks
+                  ]})
+                  }
+                  else if(el.flag == 'R' || el.flag == 'M'){
+                    if(el.sub_type == 'RR'){
+                      this.md_toBeRegistered_footer=[
+                            'GRAND TOTAL',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                            '',
+                            '',
+                            '',
+                            ''
+                      ]
+                      this.md_toBeRegistered = res.data.map((el:any,index) => { return  [
+                        (index + 1),
+                        el.bu_type,
+                         el.branch_name,
+                        el.rm_name,
+                        (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                        el.euin_no,
+                        el.first_client_name,
+                        el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                        el.reg_no,
+                        el.amc_short_name,
+                        el.to_cat_name,
+                        el.to_subcat_name,
+                        `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                        `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+                        el.folio_no,
+                        el.trans_type,
+                        el.trans_sub_type,
+                        this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                        this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                        this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                        el.amount,
+                        el.freq,
+                        el.duration,
+                        el.reg_mode,
+                        el.remarks
+                    ]})
+                    }
+                    else if(el.sub_type == 'RU'){
+                          this.md_unRegister_footer=[
+                            'GRAND TOTAL',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                            '',
+                            '',
+                            '',
+                            '',
+                            ''
+                      ]
+                      this.md_unRegister = res.data.map((el:any,index) => { return  [
+                        (index + 1),
+                        el.bu_type,
+                         el.branch_name,
+                        el.rm_name,
+                        (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                        el.euin_no,
+                        el.first_client_name,
+                        el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                        el.reg_no,
+                        el.amc_short_name,
+                        el.to_cat_name,
+                        el.to_subcat_name,
+                        `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                        `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+                        el.folio_no,
+                        el.trans_type,
+                        el.trans_sub_type,
+                        this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                        this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                        this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                        el.amount,
+                        el.freq,
+                        el.duration,
+                        el.terminated_date ? this.datePipe.transform(el.terminated_date,'dd-MM-YYYY') : '',
+                        el.reg_mode,
+                        el.remarks
+                    ]})
+                    }
+                    else if(el.sub_type == 'MM'){
+                      this.md_mature_footer=[
+                        'GRAND TOTAL',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                        '',
+                        '',
+                        '',
+                        ''
+                      ]
+                      this.md_mature = res.data.map((el,index) =>{
+                        return [
+                          (index + 1),
+                          el.bu_type,
+                          el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.to_cat_name,
+                          el.to_subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                          el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.reg_mode,
+                          el.remarks
+                        ]
+                      });
+                    } 
+                    else if(el.sub_type == 'MT'){
+                        this.md_toBeMature_footer=[
+                          'GRAND TOTAL',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                          '',
+                          '',
+                          '',
+                          ''
+                        ]
+                      this.md_toBeMature = res.data.map((el,index) =>{
+                        return [
+                          (index + 1),
+                          el.bu_type,
+                          el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.to_cat_name,
+                          el.to_subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+                          el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.reg_mode,
+                          el.remarks
+                        ]
+                      });
+                    }
+                  }
+                  else if(el.flag == 'T'){
+                    this.md_terminat_footer = [
+                      'GRAND TOTAL',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                      '',
+                      '',
+                      '',
+                      '',
+                      ''
+                    ]
+                    this.md_terminat = res.data.map((el,index) => {
+                      return [
+                          (index + 1),
+                          el.bu_type,
+                           el.branch_name,
+                          el.rm_name,
+                          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                          el.euin_no,
+                          el.first_client_name,
+                          el.first_client_pan,
+                          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                          el.reg_no,
+                          el.amc_short_name,
+                          el.to_cat_name,
+                          el.to_subcat_name,
+                          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                          `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+                          el.folio_no,
+                          el.trans_type,
+                          el.trans_sub_type,
+                          this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                          this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                          this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                          el.amount,
+                          el.freq,
+                          el.duration,
+                          el.terminated_date ? this.datePipe.transform(el.terminated_date,'dd-MM-YYYY') : '',
+                          el.reg_mode,
+                          el.remarks
+                      ]
+                    })
+                  }
+                  else{
+                     this.md_pause_footer = [
+                            'GRAND TOTAL',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            global.Total__Count(res.data,(x:any)=> x.amount ? Number(x.amount) : 0),
+                            '',
+                            '',
+                            '',
+                            ''
+                     ]
+                    this.md_pause = res.data.map((el,index) => {
+                      return [
+                          (index + 1),
+                            el.bu_type,
+                            el.branch_name,
+                            el.rm_name,
+                            (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+                            el.euin_no,
+                            el.first_client_name,
+                            el.first_client_pan,
+                            this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+                           el.reg_no,
+                            el.amc_short_name,
+                            el.to_cat_name,
+                            el.to_subcat_name,
+                            `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+                            `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+                            el.folio_no,
+                            el.trans_type,
+                            el.trans_sub_type,
+                            this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+                            this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+                            el.pause_start_date ? this.datePipe.transform(el.pause_start_date,'dd-MM-YYYY') : '',
+                            el.pause_end_date ? this.datePipe.transform(el.pause_end_date,'dd-MM-YYYY') : '',
+                            this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+                            el.amount,
+                            el.freq,
+                            el.duration,
+                            el.reg_mode,
+                            el.remarks
+                      ]
+                    })
+                  }
+                  if(index == (this.modify_arr.length - 1)){
+                    setTimeout(() => {
+                    resolve('suc')
+                    }, 3000);
+                  }
+          })
+          this.subscribe.push(sub);
+      })
+    })
+  }
 }

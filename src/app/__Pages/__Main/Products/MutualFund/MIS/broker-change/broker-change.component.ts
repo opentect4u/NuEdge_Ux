@@ -974,7 +974,7 @@ handleExport = (dt) =>{
    '',
    global.Total__Count(this.trxnRpt,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
    global.Total__Count(this.trxnRpt,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
-   global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+   global.Total__Count(this.trxnRpt,(x:any)=> x.tot_tds ? Number(x.tot_tds) : 0),
    global.Total__Count(this.trxnRpt,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
    '',
    '',
@@ -1005,6 +1005,7 @@ handleExport = (dt) =>{
    }
    cell.font.size= this.disclaimer.font_size
   })
+  worksheet.mergeCells((currentRowIdx + 1), 1, (currentRowIdx + 1), endColumnIdx,'BROKERCHANGEREPORT');
   workbook.xlsx.writeBuffer().then((data)=>{
     let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
     saveAs(blob, `BROKERCHANGEREPORT.xlsx`);

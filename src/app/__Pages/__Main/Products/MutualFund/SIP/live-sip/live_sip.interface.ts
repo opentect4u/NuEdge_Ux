@@ -1,6 +1,8 @@
 export interface IliveSip{
       id:number | undefined;
       bu_type:string | null;
+      branch_name:string | null;
+      barnch_name:string | null;
       branch:string | null;
       rm_name:string|null;
       sub_brk_cd:string | null;
@@ -27,6 +29,7 @@ export interface IliveSip{
       sip_date:Date|null;
       amount:string|null;
       frequency:string|null;
+      freq:string | null;
       no_of_installment:string|null;
       duration:string | null
       terminated_date:Date|null;

@@ -1,6 +1,14 @@
 <mat-card class="navCard mb-3">
   <mat-card-header class="border_bottom py-2">
     <mat-card-title>
+        <button
+        pButton 
+        type="button"
+        (click)="exportAllExcel()"
+        class="p-button-outlined"> 
+        <i class="pi pi-file-excel text-success" style="font-size: 1.5rem"></i>
+        <small class="text-success" style="font-size:13px !important;">Export All</small>
+      </button>
     </mat-card-title>
     <div class="pr-3 my-auto d-flex  align-items-center">
       <button mat-icon-button

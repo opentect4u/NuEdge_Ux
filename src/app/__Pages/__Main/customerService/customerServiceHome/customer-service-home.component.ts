@@ -180,6 +180,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                             el.query_status_id = response.query_status_id;
                             el.overall_feedback =  response.overall_feedback;
                             el.query_feedback =  response.query_feedback;
+                            el.expected_close_date = response.expected_close_date
                       }
                       return el;
                     })

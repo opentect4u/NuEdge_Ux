@@ -324,7 +324,7 @@ export class MonthlyMisComponent implements OnInit {
       ,
       {
         views:[
-          {state: 'frozen', xSplit: 0, ySplit: 0}
+          {state: 'frozen', xSplit: 0, ySplit: 1}
         ]
       }
     );
@@ -360,7 +360,7 @@ export class MonthlyMisComponent implements OnInit {
      '',
      global.Total__Count(inflow,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
      global.Total__Count(inflow,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
-     global.Total__Count(inflow,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+     global.Total__Count(inflow,(x:any)=> x.tot_tds ? Number(x.tot_tds) : 0),
      global.Total__Count(inflow,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
      '',
      '',
@@ -395,7 +395,7 @@ export class MonthlyMisComponent implements OnInit {
     let worksheet_trans_summary = workbook.addWorksheet('MONTHLYOUTFLOW',
       {
         views:[
-          {state: 'frozen', xSplit: 0, ySplit: 0}
+          {state: 'frozen', xSplit: 0, ySplit: 1}
         ]
       }
     );
@@ -429,7 +429,7 @@ export class MonthlyMisComponent implements OnInit {
      '',
      global.Total__Count(outflow,(x:any)=> x.tot_gross_amount ? Number(x.tot_gross_amount) : 0),
      global.Total__Count(outflow,(x:any)=> x.tot_stamp_duty ? Number(x.tot_stamp_duty) : 0),
-     global.Total__Count(outflow,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
+     global.Total__Count(outflow,(x:any)=> x.tot_tds ? Number(x.tot_tds) : 0),
      global.Total__Count(outflow,(x:any)=> x.tot_amount ? Number(x.tot_amount) : 0),
      '',
      '',
@@ -464,7 +464,7 @@ export class MonthlyMisComponent implements OnInit {
       ,
       {
         views:[
-          {state: 'frozen', xSplit: 0, ySplit: 0}
+          {state: 'frozen', xSplit: 0, ySplit: 1}
         ]
       }
     );

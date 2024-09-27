@@ -2,7 +2,8 @@ import { DatePipe } from "@angular/common";
 import { column } from "../__Model/tblClmns";
 import * as XLSX from "xlsx";
 import moment from "moment";
-
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 export class global{
 
     public static randomIntFromInterval(min, max) {
@@ -294,4 +295,54 @@ export class global{
     }
 
     /**** End */
+    static exportExcel = (disclaimer,column,dataSource,fileName,exportFileName,footerDetails:any | undefined = []) =>{
+      console.log(footerDetails)
+      let workbook = new ExcelJS.Workbook();
+      let worksheet= workbook.addWorksheet(fileName,
+        {
+          views:[
+            {state: 'frozen', xSplit: 0, ySplit: 1}
+          ]
+        }
+      );
+
+      let to_be_matured_header_row = worksheet.addRow(column);
+      to_be_matured_header_row.eachCell((cell) =>{
+        cell.fill={
+          type:'pattern',
+          pattern:'solid',
+          fgColor:{argb:'FFFFFF00'},
+          bgColor:{argb:'FF0000FF'},
+        }
+      })
+      worksheet.addRows(dataSource);
+      if(footerDetails){
+        let footerRow = worksheet.addRow(footerDetails);
+        footerRow.eachCell((cell) =>{
+          cell.fill={
+            type:'pattern',
+            pattern:'solid',
+            fgColor:{argb:'FFFFFF00'},
+            bgColor:{argb:'FF0000FF'},
+          }
+        })
+      }
+      const currentRowIdx = worksheet.rowCount; // Find out how many rows are there currently
+      const endColumnIdx = worksheet.columnCount; // Find out how many columns are in the worksheet
+      let disclaimerRow_to_be_matured = worksheet.addRow([
+        `Disclaimer - ${disclaimer.dis_des}`
+      ]);
+      disclaimerRow_to_be_matured.eachCell((cell) =>{
+      cell.font = {
+          color :{argb:disclaimer.color_code}
+      }
+      cell.font.size= disclaimer.font_size
+      })
+      worksheet.mergeCells((currentRowIdx + 1), 1, (currentRowIdx + 1), endColumnIdx,fileName);
+      workbook.xlsx.writeBuffer().then((data)=>{
+        let blob = new Blob([data],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+        saveAs(blob, exportFileName);
+
+      })
+    }
 }

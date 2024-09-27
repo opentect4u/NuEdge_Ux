@@ -21,6 +21,7 @@ export class ModifyQueryStatusComponent implements OnInit {
     query_status_id:new FormControl(this.data.data?.query_status_id ? this.data.data?.query_status_id : '',[Validators.required]),
     query_feedback:new FormControl(this.data.data?.query_feedback ? this.data.data?.query_feedback : '',[Validators.required]),
     overall_feedback:new FormControl(this.data.data?.overall_feedback ? this.data.data?.overall_feedback : '',[Validators.required]),
+    expected_close_date:new FormControl(this.data.data?.expected_close_date ? this.data.data?.expected_close_date : '',[Validators.required]),
   })
 
   constructor(

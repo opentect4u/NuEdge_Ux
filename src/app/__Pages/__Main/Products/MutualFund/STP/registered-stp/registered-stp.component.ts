@@ -10,6 +10,7 @@ import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
 import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'registered-stp',
@@ -57,7 +58,7 @@ export class RegisteredStpComponent implements OnInit {
 
   @ViewChild('primeTbl') primeTbl: Table;
 
-  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService,private datePipe:DatePipe) { }
 
   ngOnInit(): void {
     this.setTitle(this.sub_tab[0].tab_name);
@@ -111,5 +112,138 @@ export class RegisteredStpComponent implements OnInit {
 
     changeState = (event) =>{
       this.state = event == displayMode[0] ? displayMode[1] : displayMode[0];
+    }
+
+    exportExcel = () =>{
+      const column = this.column.map(el => el.header);
+      let dt = [];
+      this.register_stp.forEach((el:any,index) =>{
+        if(this.sub_type == 'RR'){
+          dt.push([
+            (index + 1),
+            el.bu_type,
+             el.branch_name,
+            el.rm_name,
+            (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+            el.euin_no,
+            el.first_client_name,
+            el.first_client_pan,
+              this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+            el.reg_no,
+            el.amc_short_name,
+            el.to_cat_name,
+            el.to_subcat_name,
+            `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+            `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+            el.folio_no,
+            el.trans_type,
+            el.trans_sub_type,
+            this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+            this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+            this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+            el.amount,
+            el.freq,
+            el.duration,
+            el.reg_mode,
+            el.remarks
+        ])
+        }
+        else{
+          dt.push([
+            (index + 1),
+            el.bu_type,
+              el.branch_name,
+            el.rm_name,
+            (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+            el.euin_no,
+            el.first_client_name,
+            el.first_client_pan,
+              this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+            el.reg_no,
+            el.amc_short_name,
+            el.to_cat_name,
+            el.to_subcat_name,
+            `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+            `${el.to_scheme_name}-${el.to_plan_name}-${el.to_option_name}`,
+            el.folio_no,
+            el.trans_type,
+            el.trans_sub_type,
+            this.datePipe.transform(el.from_date,'dd-MM-YYYY'),
+            this.datePipe.transform(el.to_date,'dd-MM-YYYY'),
+            this.report_type == 'P' ? el.sip_date: (this.report_type == 'R' ? el.swp_date : el.stp_date),
+            el.amount,
+            el.freq,
+            el.duration,
+            el.terminated_date ? this.datePipe.transform(el.terminated_date,'dd-MM-YYYY') : '',
+            el.reg_mode,
+            el.remarks
+        ])
+        }
+      });
+        let footerDetails = [];
+       if(this.sub_type == 'RR'){
+        footerDetails=[
+          'GRAND TOTAL',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          global.Total__Count(this.register_stp,(x:any)=> x.amount ? Number(x.amount) : 0),
+          '',
+          '',
+          '',
+          ''
+        ]
+       }
+       else{
+        footerDetails=[
+          'GRAND TOTAL',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          global.Total__Count(this.register_stp,(x:any)=> x.amount ? Number(x.amount) : 0),
+          '',
+          '',
+          '',
+          '',
+          ''
+        ]
+       }
+      global.exportExcel(
+        this.disclaimer,column,dt,this.sub_type != 'RR' ? 'UNREGISTER STP' : 'TO BE REGISTERED',this.sub_type != 'RR' ? 'UNREGISTER_STP.xlsx' : 'TOBEREGISTERED_STP.xlsx',footerDetails
+      )
     }
 }

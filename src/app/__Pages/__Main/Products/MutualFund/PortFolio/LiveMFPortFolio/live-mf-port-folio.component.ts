@@ -338,6 +338,8 @@ mappings between `act_value` and `value` for transition durations. */
      liveSwpPortFolio:Partial<ILiveSWP>[] = []
      /***End */
 
+     payload_dataSource:any = [];
+
   /**
    * Holding family members details in array format after select a family head
    */
@@ -2358,24 +2360,51 @@ mappings between `act_value` and `value` for transition durations. */
         this.primeTbl.exportCSV();
     }
     else{
-      var pdf = new jsPDF('l','pt','a4',true);
-      const html_element = document.getElementById('client_container');
-      pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
-      pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
-      pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
-      pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
-      const disclaimer = this.disclaimer
-      const final_data = this.dataSource;
-      let finalY = 170;
-      let file;
+      // var pdf = new jsPDF('l','pt','a4',true);
+      // const html_element = document.getElementById('client_container');
+      // pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+      // pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+      // pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+      // pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+      // const disclaimer = this.disclaimer
+      // const final_data = this.dataSource;
+      // let finalY = 170;
+      // let file;
+      console.log(this.export__mode)
       if(exportDtls.mode == 'D'){
-      ExportAs.exportAsDtls(
-          mode,pdf,finalY,html_element,final_data,
-          this.disclaimer,'primeng__tble_','inr__tble_',
-          this.filter_criteria.get('outputIn').value
-         )
+        // this.payload_dataSource = this.dataSource;
+      // ExportAs.exportAsDtls(
+      //     mode,pdf,finalY,html_element,final_data,
+      //     this.disclaimer,'primeng__tble_','inr__tble_',
+      //     this.filter_criteria.get('outputIn').value
+      //    )
+      const table = this.primeTbl.el.nativeElement.querySelector('table');
+      table.setAttribute('id', 'myTableId');
+      // console.log(this.primeTbl.);
+
+      // console.log('Details')
+        // const payload = {
+        //   html_content:document.getElementById('myTableId')
+        // }
+        // // // console.log(document.getElementById('liveMFTable').innerHTML);
+        const fd = new FormData();
+        fd.append('html_content',document.getElementById('myTableId').innerHTML)
+        this.__dbIntr.api_call_for_gen_doc(1,'/htmltopdf',fd)
+        .subscribe(res => {
+          console.log(res);
+        })
       }
       else{
+        var pdf = new jsPDF('l','pt','a4',true);
+        const html_element = document.getElementById('client_container');
+        pdf.addFileToVFS('RobotoCondensed-Regular-normal.ttf', Roboto_condensed_normal);
+        pdf.addFileToVFS('RobotoCondensed-Bold-bold.ttf', Roboto_condensed_medium);
+        pdf.addFont('RobotoCondensed-Regular-normal.ttf', 'RobotoCondensed-Regular', 'normal');
+        pdf.addFont('RobotoCondensed-Bold-bold.ttf', 'RobotoCondensed-Bold', 'bold');
+        const disclaimer = this.disclaimer
+        const final_data = this.dataSource;
+        let finalY = 170;
+        let file;
         ExportAs.exportAsSummary(
             mode,pdf,finalY,html_element,'primeng__tble',this.disclaimer,
             this.filter_criteria.get('outputIn').value

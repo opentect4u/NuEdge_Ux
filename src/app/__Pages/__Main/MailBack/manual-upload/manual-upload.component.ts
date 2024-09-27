@@ -249,7 +249,10 @@ export class ManualUploadComponent implements OnInit {
         )
       // .pipe(pluck('data'))
       .subscribe(res =>{
-          console.log(res);
+          this.utility.showSnackbar('File Successfully Uploaded',1);
+          // this.utility.showSnackbar(res.suc == 1 ? 'File Uploaded Successfully' : res.msg,res.suc);
+          // this.updateRow(res.upload_data);
+          // this.updateRow();
           this.resetForm();
       })
     }

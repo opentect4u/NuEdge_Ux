@@ -8,7 +8,6 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { Table } from 'primeng/table';
 import { global } from 'src/app/__Utility/globalFunc';
 import {displayMode} from '../../../../../../Enum/displayMode';
-import * as XLSX from 'xlsx';
 import { DatePipe } from '@angular/common';
 import { IDisclaimer } from '../../PortFolio/LiveMFPortFolio/live-mf-port-folio.component';
 @Component({
@@ -128,51 +127,68 @@ export class LiveSIPComponent implements OnInit {
     const column = this.column.map(el => el.header);
     let dt = [];
     this.live_sip_rpt.forEach((el,index) =>{
-        dt.push({
-            "Sl No":(index + 1),
-            "Business Type":el.bu_type,
-            "Branch" : el.branch,
-            "RM":el.rm_name,
-            "Sub Broker Code":el.sub_brk_cd,
-            "EUIN":el.euin_no,
-            "Investor Name":el.first_client_name,
-            "PAN":el.first_client_pan,
-            "Reg. Date":  this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
-           "Reg. No": el.reg_no,
-            "AMC":el.amc_short_name,
-            "Scheme":`${el.scheme_name}-${el.plan_name}-${el.option_name}`,
-            "Category":el.cat_name,
-            "Sub Category":el.subcat_name,
-            "Folio":el.folio_no,
-            "Transaction Type":el.transaction_type,
-            "Transaction Sub Type":el.transaction_subtype,
-            "Start Date":el.from_date,
-            "End Date":el.to_date,
-            "SIP Date":el.sip_date,
-            "Amount":el.amount,
-            "Frequency":el.frequency,
-            "Duration (Monthly)":el.duration,
-            "Bank":el.bank_name,
-            "Account No":el.acc_no,
-            "Reg. Mode":el.reg_mode,
-            "Remarks":el.remarks
-        })
+        dt.push([
+          (index + 1),
+          el.bu_type,
+           el.branch_name,
+          el.rm_name,
+          (!el.sub_brk_cd.toLowerCase().includes('not') && el.sub_brk_cd && el.sub_brk_cd?.toString() != '0') ? el.sub_brk_cd : '',
+          el.euin_no,
+          el.first_client_name,
+          el.first_client_pan,
+          this.datePipe.transform(el.reg_date,'dd-MM-YYYY'),
+          el.reg_no,
+          el.amc_short_name,
+          el.cat_name,
+          el.subcat_name,
+          `${el.scheme_name}-${el.plan_name}-${el.option_name}`,
+          el.folio_no,
+          el.trans_type,
+          el.trans_sub_type,
+          el.from_date  ? this.datePipe.transform(el.from_date,'dd-MM-YYYY') : '',
+          el.to_date  ? this.datePipe.transform(el.to_date,'dd-MM-YYYY') : '',
+          el.sip_date,
+          el.amount,
+          el.freq,
+          el.duration,
+          el.bank_name,
+          el.acc_no,
+          el.reg_mode,
+          el.remarks
+      ])
     });
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(dt, { header:column});
-    XLSX.utils.book_append_sheet(wb, ws, 'LIVESIP');
-    var wbout = XLSX.write(wb, {
-      bookType: 'xlsx',
-      bookSST: true,
-      type: 'binary'
-    });
-    const url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'LIVESIPREPORT.xlsx');
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+    const footerDetails = [
+      'GRAND TOTAL',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     '',
+     global.Total__Count(this.live_sip_rpt,(x:any)=> x.amount ? Number(x.amount) : 0),
+     '',
+     '',
+     '',
+     '',
+     '',
+     ''
+    ];
+    global.exportExcel(
+      this.disclaimer,column,dt,'LIVE SIP','LIVE_SIP.xlsx',footerDetails
+    )
   }
 
   s2ab(s) {

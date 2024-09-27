@@ -83,6 +83,7 @@ export class SipHomeComponent implements OnInit {
     console.log(data.tabDtls);
     this.tabindex =data.index;
     this.getSubTab(data.tabDtls.flag);
+    console.log(data.tabDtls.flag)
     this.sip_type = data.tabDtls.flag;
   }
 

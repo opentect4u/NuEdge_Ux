@@ -60,6 +60,33 @@ constructor(private __http:HttpClient) {
   }
  }
 
+ api_call_for_gen_doc(__flag: number,
+  __url:string,
+   __dt: any,
+  __bypass_log: any | undefined = false,
+  rptProgress:boolean | undefined = false,
+  is_nav: boolean | undefined = false
+  ){
+  if(__flag > 0){
+        // return this.__http.post(`${environment.apiUrl + __url}`,
+        // __dt,
+        // {
+        //   context: new HttpContext().set(IS_CACHE,  __bypass_log),
+        //   reportProgress: rptProgress
+        // });
+        return this.__http.post(`${(!is_nav ? environment.protfolio_pdf_gen_url : environment.nav_url) + __url}`,
+        __dt,
+        {
+          context: new HttpContext().set(BYPASS_LOG,  __bypass_log),
+          reportProgress: rptProgress
+        });
+  }
+  else{
+       var __data = __dt ? '?' + __dt : '';
+       return this.__http.get(`${(!is_nav ? environment.protfolio_pdf_gen_url : environment.nav_url) + __url + __data}`,{ context: new HttpContext().set(BYPASS_LOG,  __bypass_log) });
+  }
+ }
+
  call_promise(__flag: number,
   __url:string,
    __dt: any,

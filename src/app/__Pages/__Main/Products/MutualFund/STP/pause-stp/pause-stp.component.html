@@ -14,8 +14,13 @@
   <mat-card>
     <mat-card-header>
       <mat-card-title>
-        <i class="fa fa-databse"></i>
-        {{__title}} Reports
+        <button
+          pButton 
+          type="button"
+          (click)="exportExcel()"
+          class="p-button-outlined"> 
+          <i class="pi pi-file-excel text-success" style="font-size: 2rem"></i>
+         </button>
       </mat-card-title>
       <div class="my-auto marque__tag">
         <merque
@@ -105,6 +110,9 @@
                       <p class="m-0" [matTooltip]="trxn[col.field]">{{(trxn['remarks'] && trxn['remarks']!= ' ') ? (trxn['remarks'] | lowercase | ellipsis:30):
                         'N/A'}}</p>
                     </ng-container>
+                    <ng-container *ngSwitchCase="col.field == 'to_scheme_name'">
+                      <p class="m-0">{{ trxn[col.field] ? (trxn[col.field]  + '-' + trxn['to_plan_name'] + '-' + trxn['to_option_name']) : 'N/A' }}</p>
+                  </ng-container>
                 <ng-container *ngSwitchDefault>
                   <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
                 </ng-container>
