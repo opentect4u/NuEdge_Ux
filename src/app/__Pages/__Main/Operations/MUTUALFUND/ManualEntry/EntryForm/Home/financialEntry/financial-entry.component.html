@@ -1,0 +1,1094 @@
+
+    <form ngNativeValidate [formGroup]="__traxForm"  (ngSubmit)="submit()" autocomplete="off">
+      <div class="row">
+        <div class="col-sm-12">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="tin_status">
+                <mat-radio-button value="Y">With TTIN</mat-radio-button>
+                <mat-radio-button value="N" class="ml-5">Without TTIN</mat-radio-button>
+              </mat-radio-group>
+        </div>
+      </div>
+      <ng-container *ngIf="__traxForm.get('tin_status').value == 'Y'">
+      <div class="row my-2">
+        <div class="col-sm-12 ">
+          <app-core-srch
+              [label] = "'Temporary TIN '"
+              [placeholder]="'Search by Temporary TIN '"
+              [isPending]="__istemporaryspinner"
+              [listItems] = "__temp_tinMst"
+              [flag] = "'T'"
+              [isRequired]="true"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'If your result match,they will appear here'"
+              [propertiesToShow] = "['temp_tin_no','client_name','trans_name']"
+              formControlName="temp_tin_no"
+              [isExists]="__traxForm.get('temp_tin_no').errors?.TempTINExists"
+              [displayMode]="displayMode_forTTIN"
+              (setDisplayMode)="displayMode_forTTIN = $event"
+              (selectedItems)="getItems($event.item)"
+              [isClientExistMsg]="'Temporary TIN does not exists'"
+              ></app-core-srch>
+        </div>
+      </div>
+    </ng-container>
+      <div class="row my-2">
+        <div class="col-sm-12 ">
+          <label for="bu_type">Buisness Type <span class="text-danger">*</span></label>
+          <select name="bu_type" id="bu_type" formControlName="bu_type" class="form-control">
+            <option value=""> Select Buisness Type</option>
+            <option *ngFor="let __bu_type of __buisness_type" value="{{__bu_type.id}}">{{__bu_type.bu_type}}
+            </option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__traxForm.get('bu_type').invalid && (__traxForm.get('bu_type').dirty || __traxForm.get('bu_type').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('bu_type')).errors?.required">*Please provide
+              buisness
+              type</span>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="__traxForm.get('bu_type').value == 'B'">
+        <div class="row my-2">
+          <div class="col-sm-12 ">
+            <app-core-srch
+            [label] = "'Sub Broker ARN'"
+            [placeholder]="'Search By Sub Broker ARN'"
+            [isPending]="__isSubBrkArnSpinner"
+            [listItems] = "__subbrkArnMst"
+            [flag] = "'S'"
+            [isRequired]="true"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [propertiesToShow] = "['arn_no','bro_name']"
+            formControlName="sub_arn_no"
+            [isExists]="__traxForm.get('sub_arn_no').errors?.subBrkExists"
+            [displayMode]="displayMode_forSub_arn_no"
+            (setDisplayMode)="displayMode_forSub_arn_no = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            [isClientExistMsg]="'Sub Broker does not exists'"
+            ></app-core-srch>
+          </div>
+        </div>
+        <div class="row my-2">
+          <div class="col-sm-12 ">
+            <label>Sub Broker Code <span class="text-danger">*</span></label>
+            <input type="text" name="sub_brk_cd" id="sub_brk_cd" class="form-control"
+              formControlName="sub_brk_cd" [attr.disabled]="true" placeholder="Sub Broker Code">
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="__traxForm.get('bu_type').value != ''">
+        <div class="row my-2">
+          <div class="col-sm-12">
+            <app-core-srch
+            [label] = "'EUIN'"
+            [placeholder]="'Search By EUIN Number'"
+            [isPending]="__isEuinNumberVisible"
+            [listItems] = "__euinMst"
+            [flag] = "'E'"
+            [isRequired]="true"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [propertiesToShow] = "['euin_no','emp_name']"
+            formControlName="euin_no"
+            [isExists]="__traxForm.get('euin_no').errors?.euinExists"
+            [displayMode]="displayMode_forEuin"
+            (setDisplayMode)="displayMode_forEuin = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            [isClientExistMsg]="'EUIN does not exists'"
+            ></app-core-srch>
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('euin_no').invalid && (__traxForm.get('euin_no').dirty || __traxForm.get('euin_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('euin_no')).errors?.required">*Please
+                provide
+                EUIN number</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- First Client Dtls -->
+      <div class="row my-2">
+        <div [ngClass]="{'col-sm-12':!__isCldtlsEmpty,'col-sm-9':__isCldtlsEmpty}">
+          <app-core-srch
+              [label] = "'Client Code'"
+              [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+              [isPending]="__isclientVisible"
+              [listItems] = "__clientMst"
+              [flag] = "'C'"
+              [isRequired]="true"
+              [noDataFoundTitle]="'Sorry!! No Records Found'"
+              [noDataFoundSubTitle]="'To create a new client .Please click on Create Client'"
+              [propertiesToShow] = "['client_name','client_code','pan']"
+              formControlName="client_code"
+              [isExists]="__traxForm.get('client_code').errors?.ClientExists"
+              [displayMode]="displayMode_forClient"
+              (setDisplayMode)="displayMode_forClient = $event"
+              (selectedItems)="getSelectedItemsFromParent($event)"
+              [isClientExistMsg]="'Client does not exists'"
+              ></app-core-srch>
+        </div>
+        <div class="col-sm-3 clientCode" *ngIf="__isCldtlsEmpty && __traxForm.get('client_code').value">
+           <core-btn-with-menu
+          [menuListItem]="clientTypeMst"
+          [BtnTitle]="'Create Client'"
+          [hasMenu]="true"
+          (sendItem)="openDialogForclientcreation($event,'F')"
+          ></core-btn-with-menu>
+        </div>
+      </div>
+
+      <ng-container *ngIf="__traxForm.get('client_code').value && __traxForm.get('client_name').value">
+        <div class="row my-2">
+          <div class="col-sm-12">
+            <label for="__clName">Client Name</label>
+            <div class="p-inputgroup">
+              <input type="text"  pInputText name="__clName" id="__clName"
+              class="form-control" placeholder="Client Name"
+              formControlName="client_name" [attr.disabled]="true" />
+              <button type="button" label="View" pButton icon="pi pi-eye" styleClass="p-button-warn" (click)="openDialog('C')"></button>
+          </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- KYC Status -->
+      <div class="row my-2">
+        <div class="col-sm-12 ">
+              <mat-radio-group aria-label="Select an option" color="primary" formControlName="kyc_status">
+                <mat-radio-button value="Y">With KYC</mat-radio-button>
+                <mat-radio-button value="N" class="ml-5">Without KYC</mat-radio-button>
+              </mat-radio-group>
+        </div>
+      </div>
+      <!-- End -->
+
+      <!-- First Client KYC Status -->
+      <ng-container>
+        <div class="row my-2">
+          <div class="col-sm-12">
+            <label for="first_kyc_view">Client KYC Status <span class="text-danger">*</span>
+            </label>
+            <select name="first_kyc" id="first_kyc" class="form-control"
+            formControlName="first_kyc">
+              <option value="">Select KYC</option>
+              <option *ngFor="let __kyc of __kycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+            </select>
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('first_kyc').invalid && (__traxForm.get('first_kyc').dirty || __traxForm.get('first_kyc').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('first_kyc')).errors?.required">*Please provide
+              KYC status</span>
+          </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+
+      <!-- Mode Of Holding -->
+      <div class="row my-2">
+        <div class="col-sm-12">
+          <label for="mode_of_holding">Mode Of Holding <span class="text-danger">*</span></label>
+          <select class="form-control" formControlName="mode_of_holding">
+            <option value="">Select mode of holding</option>
+            <option value="A">Anyone Or Survivor</option>
+            <option value="J">Joint</option>
+            <option value="S">Single</option>
+          </select>
+          <div class="invalid-feedback"
+          *ngIf="__traxForm.get('mode_of_holding').invalid && (__traxForm.get('mode_of_holding').dirty || __traxForm.get('mode_of_holding').touched)">
+          <span class="invalid-feedback" *ngIf="(__traxForm.get('mode_of_holding')).errors?.required">*Please provide
+            mode of holding</span>
+        </div>
+        </div>
+      </div>
+      <!-- End -->
+        <!-- Additional Applicant -->
+        <div class="row my-2"
+        *ngIf="__traxForm.get('mode_of_holding').value == 'A' || __traxForm.get('mode_of_holding').value == 'J'">
+        <div class="col-sm-12">
+          <table>
+            <thead>
+              <tr>
+                <th class="text-center">
+                  Second Applicant
+                </th>
+                <th class="text-center">
+                  <button mat-button color="primary" type="button" *ngIf="!__isSHowAdditionalTble"
+                    (click)="__isSHowAdditionalTble=!__isSHowAdditionalTble">
+                    + Add Additional Applicant
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="row my-2">
+                    <div class="col-sm-12 ">
+                      <app-core-srch
+                      [label] = "'Client Code'"
+                      [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+                      [listItems] = "__sec_clientMst"
+                      [flag] = "'FC'"
+                      [isPending]="__issecClientSpinnerPending"
+                      [isRequired]="true"
+                      [noDataFoundTitle]="'Sorry!! No Records Found'"
+                      [noDataFoundSubTitle]="'To create a new client .Please click on Create Client'"
+                      [propertiesToShow] = "['client_name','client_code','pan']"
+                      formControlName="second_client_code"
+                      [displayMode]="displayMode_for_sec_client"
+                      (setDisplayMode)="displayMode_for_sec_client = $event"
+                      (selectedItems)="getSelectedItemsFromParentForSecondOrThirdClient($event)"
+                      ></app-core-srch>
+                    </div>
+                    <div class="col-sm-12 my-2">
+                      <label for="second_cl_name">Client name</label>
+                      <input #secondClName type="text"
+                        [attr.disabled]="__SecondClient && __traxForm.get('second_client_code').value"
+                        name="second_client_name" id="second_client_name"
+                        placeholder="Enter Second Applicant Name" class="form-control"
+                        formControlName="second_client_name" />
+                    </div>
+                    <div class="col-sm-12 ">
+                      <label for="second_cl_name">PAN No</label>
+                      <input type="text" [attr.disabled]="__SecondClient" name="second_client_pan"
+                        id="second_client_pan" placeholder="Enter Second Applicant PAN" class="form-control"
+                        formControlName="second_client_pan" />
+                        <div class="invalid-feedback" *ngIf="__traxForm.get('second_client_pan').invalid && (__traxForm.get('second_client_pan').dirty || __traxForm.get('second_client_pan').touched)">
+                          <span class="invalid-feedback" *ngIf="(__traxForm.get('second_client_pan')).errors?.required">*Please provide PAN number</span>
+                          <span class="invalid-feedback" *ngIf="(__traxForm.get('second_client_pan')).errors?.pattern">*Please provide valid PAN
+                            number</span>
+                            <span class="invalid-feedback" *ngIf="(__traxForm.get('second_client_pan')).hasError('minlength')">*PAN
+                              number must be 10 characters long</span>
+                              <span class="invalid-feedback" *ngIf="(__traxForm.get('second_client_pan')).hasError('maxlength')">*PAN
+                                number must be 10 characters long</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 my-2">
+                      <mat-radio-group
+                      aria-label="Select an option"
+                      color="primary"
+                      formControlName="second_kyc_status">
+                        <mat-radio-button value="Y">With KYC</mat-radio-button>
+                        <mat-radio-button value="N" class="ml-5">Without KYC</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="col-sm-12">
+                      <label for="second_client_kyc">KYC Status
+                      </label>
+                      <select name="second_client_kyc" id="second_client_kyc" class="form-control"
+                        formControlName="second_client_kyc">
+                        <option value="">Select KYC</option>
+                        <option *ngFor="let __kyc of __secondkycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <ng-container
+                    *ngIf="
+                    __SecondClient
+                    &&__traxForm.get('second_client_code').value
+                    && __traxForm.get('second_client_name').value">
+                    <button type="button" mat-button color="primary"
+                      (click)="openDialogForAdditionalApplicant('FC')">
+                      <mat-icon>visibility</mat-icon> View Details
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="!__SecondClient">
+                    <button mat-button color="primary" type="button"
+                      [matMenuTriggerFor]="menu_for_second_applicant">
+                      <mat-icon>add</mat-icon> Create Client Code
+                    </button>
+
+                    <mat-menu #menu_for_second_applicant="matMenu">
+                      <div class="row  p-0 m-0">
+                        <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                          *ngFor="let clOption of __mcOptionMenu"
+                          (click)="openDialogForclientcreation(clOption,'S')">
+                          <mat-icon>{{clOption.icon}}</mat-icon>
+                        </div>
+                      </div>
+                    </mat-menu>
+                    <button mat-button color="primary" type="button" (click)="createClientTemporary('FC')">
+                      <mat-icon>add</mat-icon>Add Existing
+                    </button>
+
+                  </ng-container>
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+          <table *ngIf="__isSHowAdditionalTble" class="mt-2">
+            <thead>
+              <tr>
+                <th class="text-center">Additional Client</th>
+                <th class="text-center">
+                  <button type="button" mat-button color="accent" (click)="cancel()">
+                    <mat-icon> close </mat-icon>
+                    Cancel
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="row my-2">
+                    <div class="col-sm-12 ">
+
+                      <app-core-srch
+                      [label] = "'Client Code'"
+                      [placeholder]="'Search By Client Name,Client Code, Email, Mobile, PAN & DOB'"
+                      [listItems] = "__third_clientMst"
+                      [flag] = "'TC'"
+                      [isPending]="__isthirdClientSpinnerPending"
+                      [isRequired]="true"
+                      [noDataFoundTitle]="'Sorry!! No Records Found'"
+                      [noDataFoundSubTitle]="'To create a new client .Please click on Create Client'"
+                      [propertiesToShow] = "['client_name','client_code','pan']"
+                      formControlName="third_client_code"
+                      [displayMode]="displayMode_for_third_client"
+                      (setDisplayMode)="displayMode_for_third_client = $event"
+                      (selectedItems)="getSelectedItemsFromParentForSecondOrThirdClient($event)"
+                      ></app-core-srch>
+
+                    </div>
+                    <div class="col-sm-12  my-2">
+                      <label for="second_cl_name">Client name</label>
+                      <input #thirdClName type="text" [attr.disabled]="__ThirdClient" name="third_client_name"
+                        placeholder="Enter Additional Applicant Name" id="third_client_name"
+                        class="form-control" formControlName="third_client_name" />
+                    </div>
+                    <div class="col-sm-12 ">
+                      <label for="second_cl_name">PAN No</label>
+                      <input type="text" [attr.disabled]="__ThirdClient" name="third_client_pan"
+                        placeholder="Enter Additional Applicant PAN" id="third_client_pan" class="form-control"
+                        formControlName="third_client_pan" />
+                        <div class="invalid-feedback" *ngIf="__traxForm.get('third_client_pan').invalid && (__traxForm.get('third_client_pan').dirty || __traxForm.get('third_client_pan').touched)">
+                          <span class="invalid-feedback" *ngIf="(__traxForm.get('third_client_pan')).errors?.required">*Please provide PAN number</span>
+                          <span class="invalid-feedback" *ngIf="(__traxForm.get('third_client_pan')).errors?.pattern">*Please provide valid PAN
+                            number</span>
+                            <span class="invalid-feedback" *ngIf="(__traxForm.get('third_client_pan')).hasError('minlength')">*PAN
+                              number must be 10 characters long</span>
+                              <span class="invalid-feedback" *ngIf="(__traxForm.get('third_client_pan')).hasError('maxlength')">*PAN
+                                number must be 10 characters long</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 my-2">
+                      <mat-radio-group
+                      aria-label="Select an option"
+                      color="primary"
+                      formControlName="third_kyc_status">
+                        <mat-radio-button value="Y">With KYC</mat-radio-button>
+                        <mat-radio-button value="N" class="ml-5">Without KYC</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+
+                    <div class="col-sm-12">
+                      <label for="third_client_kyc">KYC Status
+                      </label>
+                      <select name="third_client_kyc" id="third_client_kyc" class="form-control"
+                        formControlName="third_client_kyc">
+                        <option value="">Select KYC</option>
+                        <option *ngFor="let __kyc of __thirdkycMst" [value]="__kyc.id"> {{__kyc.value}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <ng-container
+                    *ngIf="__ThirdClient">
+                    <button type="button" mat-button color="primary"
+                      (click)="openDialogForAdditionalApplicant('TC')">
+                      <mat-icon>visibility</mat-icon> View Details
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="!__ThirdClient">
+                    <button mat-button color="primary" type="button"
+                      [matMenuTriggerFor]="menu_for_third_applicant">
+                      <mat-icon>add</mat-icon>
+                      Create Client Code
+                    </button>
+                    <mat-menu #menu_for_third_applicant="matMenu">
+                      <div class="row my-2 p-0 m-0">
+                        <div title="{{clOption.name}}" class="col-sm-4 d-flex justify-content-center headerMenu"
+                          *ngFor="let clOption of __mcOptionMenu"
+                          (click)="openDialogForclientcreation(clOption,'T')">
+                          <mat-icon>{{clOption.icon}}</mat-icon>
+                        </div>
+                      </div>
+                    </mat-menu>
+
+                    <button type="button" mat-button color="primary" (click)="createClientTemporary('TC')">
+                      <mat-icon>add</mat-icon>
+                      Add Existing
+                    </button>
+                  </ng-container>
+                </td>
+              </tr>
+
+
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- End -->
+    <!-- Transaction Type -->
+      <div class="row my-2">
+        <div class="col-sm-12 ">
+          <label for="trans_id">Transaction <span class="text-danger">*</span></label>
+          <select name="trans_id" class="form-control" id="trans_id" formControlName="trans_id">
+            <option value="">Select Transaction</option>
+            <option *ngFor="let __formType of __transType" value="{{__formType.id}}">{{__formType.trns_name}}
+            </option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__traxForm.get('trans_id').invalid && (__traxForm.get('trans_id').dirty || __traxForm.get('trans_id').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('trans_id')).errors?.required">*Please provide
+              form
+              type</span>
+          </div>
+        </div>
+      </div>
+      <!-- End -->
+        <!-- Scheme From / Scheme  -->
+        <div class="row my-2" >
+          <div [ngClass]="{'col-sm-12': !__dialogDtForScheme,'col-sm-9':__dialogDtForScheme}">
+            <app-core-srch
+            [label] = "__traxForm.get('trans_id').value == '3' ? 'Switch Scheme From' : 'Scheme Name'"
+            [placeholder]="'Search By Scheme Name'"
+            [isPending]="__isschemeSpinner"
+            [listItems] = "__schemeMst"
+            [flag] = "'SC'"
+            [isRequired]="true"
+            [propertiesToShow] = "['scheme_name']"
+            formControlName="scheme_name"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [isExists]="__traxForm.get('scheme_name').errors?.ScmExists"
+            [displayMode]="displayMode_forScm"
+            (setDisplayMode)="displayMode_forScm = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            [isClientExistMsg]="'Scheme does not exists'"
+            ></app-core-srch>
+          </div>
+          <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
+            <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')" mat-button
+              type="button" aria-label="Example icon button with a eye icon" title="View Scheme Details">
+              <mat-icon>remove_red_eye</mat-icon>
+              View Details
+            </button>
+          </div>
+        </div>
+         <!-- End -->
+          <!-- Option & Plan For SWITCH FROM-->
+            <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
+              <div class="row my-2">
+                <div class="col-sm-12">
+                  <label for="plan">Plan For Scheme From <span class="text-danger">*</span></label>
+                  <select name="plan" id="plan" formControlName="plan" class="form-control">
+                    <option value=""> Select Plan</option>
+                    <option *ngFor="let _pln of PlanMst" value="{{_pln.id}}">{{_pln.plan_name}}</option>
+                  </select>
+                  <div class="invalid-feedback"
+                    *ngIf="__traxForm.get('plan').invalid && (__traxForm.get('plan').dirty || __traxForm.get('plan').touched)">
+                    <span class="invalid-feedback" *ngIf="(__traxForm.get('plan')).errors?.required">*Please provide
+                      plan</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row my-2">
+                <div class="col-sm-12 ">
+                  <label for="option">Option For Scheme From<span class="text-danger">*</span></label>
+                  <select name="option" id="option" formControlName="option" class="form-control">
+                    <option value=""> Select Option</option>
+                    <option *ngFor="let _opts of OptionMst" value="{{_opts.id}}">{{_opts.opt_name}}</option>
+                  </select>
+                  <div class="invalid-feedback"
+                    *ngIf="__traxForm.get('option').invalid && (__traxForm.get('option').dirty || __traxForm.get('option').touched)">
+                    <span class="invalid-feedback" *ngIf="(__traxForm.get('option')).errors?.required">*Please provide
+                      option</span>
+                  </div>
+                </div>
+              </div>
+              </ng-container>
+
+        <!-- Scheme To -->
+       <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
+        <div class="row my-2" >
+          <div [ngClass]="{'col-sm-12': !__dialogDtForSchemeTo,'col-sm-9':__dialogDtForSchemeTo}">
+
+            <app-core-srch
+            [label] = "'Switch Scheme To'"
+            [placeholder]="'Search By Scheme Name'"
+            [isPending]="__isschemeToSpinner"
+            [listItems] = "__schemeMstforSwitchTo"
+            [flag] = "'ST'"
+            [isRequired]="true"
+            [propertiesToShow] = "['scheme_name']"
+            formControlName="switch_scheme_to"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'If your result match,they will appear here'"
+            [isExists]="__traxForm.get('switch_scheme_to').errors?.ScmToExists"
+            [displayMode]="displayMode_forScmTo"
+            (setDisplayMode)="displayMode_forScmTo = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            [isClientExistMsg]="'Scheme does not exists'"
+            ></app-core-srch>
+          </div>
+          <div class="col-sm-3 clientCode" *ngIf="__dialogDtForSchemeTo">
+            <button color="primary" *ngIf="this.__dialogDtForSchemeTo" (click)="openDialog('ST')"  mat-button type="button"  aria-label="Example icon button with a eye icon" title="View Scheme Details">
+              <mat-icon>remove_red_eye</mat-icon>
+              View Details
+            </button>
+          </div>
+        </div>
+      </ng-container>
+        <!-- Option & Plan For SWITCH TO-->
+        <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
+          <div class="row my-2">
+              <div class="col-sm-12">
+                <label for="plan_to">Plan For Scheme To <span class="text-danger">*</span></label>
+                <select name="plan_2" id="plan_to" formControlName="plan_to" class="form-control">
+                  <option value=""> Select Plan</option>
+                  <option *ngFor="let _pln of PlanMst" value="{{_pln.id}}">{{_pln.plan_name}}</option>
+                </select>
+                <div class="invalid-feedback"
+                  *ngIf="__traxForm.get('plan_to').invalid && (__traxForm.get('plan_to').dirty || __traxForm.get('plan_to').touched)">
+                  <span class="invalid-feedback" *ngIf="(__traxForm.get('plan_to')).errors?.required">*Please provide
+                    plan</span>
+                </div>
+              </div>
+              </div>
+          <div class="row my-2">
+            <div class="col-sm-12 ">
+              <label for="option_to">Option For Scheme To<span class="text-danger">*</span></label>
+              <select name="option_to" id="option_to" formControlName="option_to" class="form-control">
+                <option value=""> Select Option</option>
+                <option *ngFor="let _opts of OptionMst" value="{{_opts.id}}">{{_opts.opt_name}}</option>
+              </select>
+              <div class="invalid-feedback"
+                *ngIf="__traxForm.get('option_to').invalid && (__traxForm.get('option_to').dirty || __traxForm.get('option_to').touched)">
+                <span class="invalid-feedback" *ngIf="(__traxForm.get('option_to')).errors?.required">*Please provide
+                  option</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- End -->
+      <!-- Investment Type -->
+      <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
+        <div class="row my-2">
+          <div class="col-sm-12">
+            <label for="inv_type">Investment Type <span class="text-danger">*</span></label>
+            <select name="inv_type" id="inv_type" formControlName="inv_type" class="form-control">
+              <option value=""> Select investment type</option>
+              <option value="F"> Fresh</option>
+              <option value="A"> Additional</option>
+            </select>
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('inv_type').invalid && (__traxForm.get('inv_type').dirty || __traxForm.get('inv_type').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('inv_type')).errors?.required">*Please provide
+                investment type</span>
+            </div>
+
+          </div>
+        </div>
+        <div class="row my-2" *ngIf="__traxForm.get('inv_type').value == 'F'">
+          <div class="col-sm-12 ">
+            <label for="appl_number"> Application Number</label>
+            <input type="text" name="appl_number" id="appl_number" formControlName="application_no"
+              class="form-control" placeholder="Enter Application Number">
+          </div>
+        </div>
+      </ng-container>
+      <!-- End -->
+
+      <!-- Folio Number -->
+      <ng-container *ngIf="__traxForm.get('inv_type').value == 'A' || __traxForm.get('trans_id').value == '3'">
+        <div class="row my-2" >
+          <div class="col-sm-12">
+            <label for="folio_number"> Folio Number <span class="text-danger" >*</span></label>
+            <input type="text" name="folio_number" id="folio_number" formControlName="folio_number"
+              class="form-control" placeholder="Enter Folio Number">
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('folio_number').invalid && (__traxForm.get('folio_number').dirty || __traxForm.get('folio_number').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('folio_number')).errors?.required">*Please provide
+                folio number</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- End -->
+
+
+
+      <!-- Option & Plan For SIP/PIP-->
+     <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
+       <!-- Plan -->
+       <div class="row my-2">
+        <div class="col-sm-12">
+          <label for="plan">Plan <span class="text-danger">*</span></label>
+          <select name="plan" id="plan" formControlName="plan" class="form-control">
+            <option value=""> Select Plan</option>
+            <option *ngFor="let _pln of PlanMst" value="{{_pln.id}}">{{_pln.plan_name}}</option>
+          </select>
+          <div class="invalid-feedback"
+            *ngIf="__traxForm.get('plan').invalid && (__traxForm.get('plan').dirty || __traxForm.get('plan').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('plan')).errors?.required">*Please provide
+              plan</span>
+          </div>
+        </div>
+      </div>
+        <!-- Option -->
+        <div class="row my-2">
+          <div class="col-sm-12 ">
+            <label for="option">Option <span class="text-danger">*</span></label>
+            <select name="option" id="option" formControlName="option" class="form-control">
+              <option value=""> Select Option</option>
+              <option *ngFor="let _opts of OptionMst" value="{{_opts.id}}">{{_opts.opt_name}}</option>
+            </select>
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('option').invalid && (__traxForm.get('option').dirty || __traxForm.get('option').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('option')).errors?.required">*Please provide
+                option</span>
+            </div>
+          </div>
+        </div>
+
+     </ng-container>
+     <!-- End -->
+
+
+
+     <!-- End -->
+      <ng-container *ngIf="__traxForm.get('trans_id').value == '3'">
+        <div class="row my-2" >
+          <div class="col-sm-12">
+            <label for="switch_by"> Switch By <span class="text-danger">*</span></label>
+              <select class="form-control" formControlName="switch_by">
+                <option value="">Select Switch By</option>
+                <option value="A">Amount</option>
+                <option value="U">Unit</option>
+                <option value="AU">All Unit</option>
+              </select>
+
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('switch_by').invalid && (__traxForm.get('switch_by').dirty || __traxForm.get('switch_by').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('switch_by')).errors?.required">*Please provide
+                switch by</span>
+            </div>
+          </div>
+        </div>
+        <div class="row my-2"  *ngIf="__traxForm.get('switch_by').value == 'A'">
+          <div class="col-sm-12">
+            <label for="Switch_amt">Amount <span class="text-danger">*</span></label>
+            <input type="text"
+            name="Switch_amt"
+            id="Switch_amt"
+            formControlName="switch_amt"
+            class="form-control"
+              placeholder="Enter Amount">
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('switch_amt').invalid && (__traxForm.get('switch_amt').dirty || __traxForm.get('switch_amt').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('switch_amt')).errors?.required">*Please provide
+                amount</span>
+            </div>
+          </div>
+        </div>
+      <div class="row my-2" *ngIf="__traxForm.get('switch_by').value == 'U' || __traxForm.get('switch_by').value == 'AU'">
+        <div class="col-sm-12">
+          <label for="unit">
+            <!-- {{__traxForm.get('switch_by').value == 'AU' ? 'All Unit' : 'Unit'}}  -->
+            Unit
+            <span class="text-danger">*</span></label>
+          <input type="text" name="unit"
+          id="unit"
+          [readonly]="__traxForm.get('switch_by').value == 'AU'"
+          formControlName="unit"
+          class="form-control"
+            [placeholder]="'Enter Unit'">
+
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('unit').invalid && (__traxForm.get('unit').dirty || __traxForm.get('unit').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('unit')).errors?.required">*Please provide
+                unit
+              </span>
+            </div>
+        </div>
+      </div>
+      </ng-container>
+
+      <!-- SIP -->
+      <ng-container *ngIf="__traxForm.get('trans_id').value == '2'">
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="sip_type">SIP Type <span class="text-danger">*</span></label>
+            <select class="form-control" id="sip_type" formControlName="sip_type">
+              <option value="">Select</option>
+              <option [value]="sip_type.id" *ngFor="let sip_type of __sipType">{{sip_type.sip_type_name}}
+              </option>
+            </select>
+
+            <div class="invalid-feedback"
+              *ngIf="__traxForm.get('sip_type').invalid && (__traxForm.get('sip_type').dirty || __traxForm.get('sip_type').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_type')).errors?.required">*Please provide
+                SIP type</span>
+            </div>
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_type')).errors?.sipTypeExists">*Special sip not available</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="sip_freq">SIP frequency <span class="text-danger">*</span></label>
+            <select class="form-control" id="sip_freq" formControlName="sip_frequency">
+              <option value="">Select SIP Frequency</option>
+              <option [value]="frequency.id" *ngFor="let frequency of __sipfreq">{{frequency.freq_name}}
+              </option>
+            </select>
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_frequency').invalid && (__traxForm.get('sip_frequency').dirty || __traxForm.get('sip_frequency').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_frequency')).errors?.required">*Please provide
+              SIP frequency</span>
+          </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="sip_date">SIP Date <span class="text-danger">*</span></label>
+             <input type="text"
+             placeholder="Enter SIP Date"
+             name="sip_date" id="sip_date" class="form-control" formControlName="sip_date"
+             >
+             <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_date').invalid && (__traxForm.get('sip_date').dirty || __traxForm.get('sip_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_date')).errors?.required">*Please provide
+              SIP date</span>
+          </div>
+             <span class="invalid-feedback" *ngIf="__traxForm.controls['sip_date'].errors?.sipDatesExists">
+              * Date is not available
+            </span>
+       </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="sip_start_date">SIP Start Date <span class="text-danger">*</span></label>
+            <input type="date" formControlName="sip_start_date" name="sip_start_date" id="sip_start_date"
+              class="form-control">
+              <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_start_date').invalid && (__traxForm.get('sip_start_date').dirty || __traxForm.get('sip_start_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_start_date')).errors?.required">*Please provide
+              SIP start date</span>
+          </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="sip_duration">SIP Duration <span class="text-danger">*</span></label>
+            <select class="form-control" id="sip_duration" formControlName="sip_duration">
+              <option value="">Select SIP Duration</option>
+              <option value="M">Manual</option>
+              <option value="P">Perpetual</option>
+            </select>
+            <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_duration').invalid && (__traxForm.get('sip_duration').dirty || __traxForm.get('sip_duration').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_duration')).errors?.required">*Please provide
+              SIP duration</span>
+          </div>
+          </div>
+          <ng-container *ngIf="__traxForm.get('sip_duration').value == 'M'">
+            <div class="col-sm-12 my-2">
+              <!-- (change)="setStartDT($event)" -->
+              <label for="duration">Duration <span class="text-danger">*</span></label>
+              <input type="text" placeholder="Enter Duration" name="duration" id="duration" class="form-control"
+                formControlName="duration" >
+                <div class="invalid-feedback"
+                *ngIf="__traxForm.get('duration').invalid && (__traxForm.get('duration').dirty || __traxForm.get('duration').touched)">
+                <span class="invalid-feedback" *ngIf="(__traxForm.get('duration')).errors?.required">*Please provide
+                  duration</span>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label for="sip_end_date">SIP End Date <span class="text-danger">*</span></label>
+            <input type="date" name="sip_end_date" id="sip_end_date" class="form-control"
+              formControlName="sip_end_date">
+              <div class="invalid-feedback"
+            *ngIf="__traxForm.get('sip_end_date').invalid && (__traxForm.get('sip_end_date').dirty || __traxForm.get('sip_end_date').touched)">
+            <span class="invalid-feedback" *ngIf="(__traxForm.get('sip_end_date')).errors?.required">*Please provide
+              SIP end date</span>
+          </div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- End -->
+
+       <ng-container *ngIf="__traxForm.get('trans_id').value == '2' && __traxForm.get('sip_type').value == '3'">
+        <div class="row my-2">
+          <div class="col-sm-12">
+            <label for="first_inv_amt">First Investment Amount <span class="text-danger">*</span></label>
+            <input type="text"
+            name="first_inv_amt"
+            id="first_inv_amt"
+            formControlName="first_inv_amt"
+            [class.is-invalid]="__chkInvAmt && __traxForm.get('first_inv_amt').value"
+            [class.is-valid]="!__chkInvAmt && __traxForm.get('first_inv_amt').value"
+            class="form-control"
+              placeholder="Enter First Investment Amount">
+              <div class="invalid-feedback" *ngIf="__chkInvAmt && __traxForm.get('first_inv_amt').value">
+                <span class="invalid-feedback"> * Amount must be greater than {{getInvAmt | currency:'INR'}}</span>
+              </div>
+          </div>
+        </div>
+       </ng-container>
+
+      <ng-container *ngIf="__traxForm.get('trans_id').value != '3'">
+        <!-- Amount -->
+        <div class="row my-2">
+          <div class="col-sm-12">
+            <label for="amount">Amount <span class="text-danger">*</span></label>
+            <input type="text"
+            name="amount"
+            id="amount"
+            formControlName="amount"
+            class="form-control"
+              placeholder="Enter Amount">
+              <!-- <div class="invalid-feedback" *ngIf="__checkAmt && __traxForm.get('amount').value">
+                <span class="invalid-feedback"> * Amount must be greater than {{getamttocheckwith  | currency:'INR'}}</span>
+              </div> -->
+
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('amount').invalid && (__traxForm.get('amount').dirty || __traxForm.get('amount').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('amount')).errors?.required">*Please provide
+                amount</span>
+            </div>
+              <span  class="invalid-feedback"  *ngIf="__traxForm.get('amount').errors?.AmtExists">
+                * Amount must be greater than {{getamttocheckwith  | currency:'INR'}}
+              </span>
+          </div>
+        </div>
+        <!-- End -->
+        <!-- Cheque Number -->
+        <div class="row my-2" *ngIf="this.__traxForm.get('sip_type').value != '2'">
+          <div class="col-sm-12">
+            <label for="chq">Cheque Number <span class="text-danger">*</span></label>
+            <input type="text" name="chq"  (keypress)="preventNonumeric($event)" id="chq" maxlength="6" minlength="6" formControlName="chq_no" class="form-control"
+              placeholder="Enter Cheque Number">
+              <div class="invalid-feedback"
+              *ngIf="__traxForm.get('chq_no').invalid && (__traxForm.get('chq_no').dirty || __traxForm.get('chq_no').touched)">
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).errors?.required">*Please provide cheque number
+                </span>
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).hasError('minlength')">*cheque number
+                must be 6 digits</span>
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).hasError('maxlength')">*cheque number
+                must be 6 digits</span>
+              <span class="invalid-feedback" *ngIf="(__traxForm.get('chq_no')).hasError('pattern')">*allow only
+                digits</span>
+
+            </div>
+          </div>
+        </div>
+        <!-- End -->
+        <!-- Bank -->
+        <div class="row my-2">
+          <div [class]="__traxForm.get('chq_bank').errors?.MicrExists ? 'col-sm-10' : 'col-sm-12'">
+            <app-core-srch
+            [label] = "'MICR Code'"
+            [placeholder]="'Search By IFSC ,MICR Code, Branch Name'"
+            [isPending]="__isMicrSpinner"
+            [listItems] = "__bnkMst"
+            [flag] = "'B'"
+            [isRequired]="true"
+            [propertiesToShow] = "['bank_name','ifs_code','branch_name']"
+            formControlName="chq_bank"
+            [noDataFoundTitle]="'Sorry!! No Records Found'"
+            [noDataFoundSubTitle]="'To create a new bank .Please click on Create Bank'"
+            [isExists]="__traxForm.get('chq_bank').errors?.MicrExists"
+            [displayMode]="displayMode_forBnk"
+            (setDisplayMode)="displayMode_forBnk = $event"
+            (selectedItems)="getSelectedItemsFromParent($event)"
+            [isClientExistMsg]="'Bank does not exists'"
+            ></app-core-srch>
+          </div>
+          <div class="col-sm-2 clientCode"  *ngIf="__traxForm.get('chq_bank').errors?.MicrExists">
+            <core-btn-with-menu
+            [BtnTitle]="'Create Bank'"
+            [hasMenu]="false"
+            (btnItem)="openDialogForCreateBnk(0)"
+            [flag]="'B'"
+          ></core-btn-with-menu>
+          </div>
+        </div>
+        <div class="row" *ngIf="__traxForm.get('chq_bank').value && this.__dialogDtForBnk">
+          <div class="col-sm-12">
+            <label for="bnk_name">Bank</label>
+            <div class="p-inputgroup">
+              <input type="text"  pInputText name="bnk_name" id="bnk_name"
+              class="form-control" placeholder="Bank Name"
+              formControlName="bank_name" [attr.disabled]="true" />
+              <button type="button" label="View" pButton icon="pi pi-eye"
+               styleClass="p-button-warn" (click)="openDialog('B')"></button>
+          </div>
+            <!-- <input type="text" name="bnk_name" id="bnk_name" formControlName="bank_name" class="form-control" [attr.disabled]="true"/>
+            <button (click)="openDialog('B')" color="primary" class="viewIconDtls" mat-icon-button type="button"
+            aria-label="Example icon button with a eye icon" #tooltip="matTooltip"
+            matTooltip="View Bank Details">
+            <mat-icon>remove_red_eye</mat-icon>
+          </button> -->
+          </div>
+          <div class="col-sm-12">
+             <label for="ifsc">IFSC</label>
+             <input type="text"  name="ifsc" id="ifsc" formControlName="ifsc" class="form-control" [attr.disabled]="true"/>
+          </div>
+          <div class="col-sm-12">
+            <label for="branch_name">Branch</label>
+            <input type="text"  name="branch_name" id="branch_name" formControlName="branch_name" class="form-control" [attr.disabled]="true"/>
+         </div>
+        </div>
+        <!-- End -->
+    </ng-container>
+
+    <!-- SIP Type Special SIP -->
+     <ng-container *ngIf="__traxForm.get('sip_type').value == '4'">
+
+      <div class="row">
+        <!-- sip_name -->
+        <div class="col-sm-12 my-2">
+          <label class="sip_name">SIP Name</label>
+          <input type="text" [attr.disabled]="true" placeholder="SIP Name" name="sip_name" id="sip_name" class="form-control" formControlName="sip_name">
+        </div>
+        <!-- swp_freq -->
+        <div class="col-sm-12">
+          <label class="swp_freq">SWP Frequency <span class="text-danger">*</span></label>
+          <select class="form-control" id="swp_freq" formControlName="swp_freq">
+            <option value="">Select</option>
+            <option [value]="__swpFreq.id" *ngFor="let __swpFreq of __swp_freq">{{__swpFreq.freq_name}}</option>
+          </select>
+
+        </div>
+         <!-- swp_start_date -->
+        <div class="col-sm-12 my-2">
+          <label class="swp_start_date">SWP Start Date <span class="text-danger">*</span></label>
+          <input type="date" name="swp_start_date" id="swp_start_date" class="form-control" formControlName="swp_start_date">
+
+        </div>
+
+           <!-- swp_duration -->
+          <div class="col-sm-12">
+            <label class="swp_duration">Duration</label>
+            <input type="text"  name="swp_duration" id="swp_duration" class="form-control" formControlName="swp_duration">
+        </div>
+
+           <!-- swp_end_date -->
+           <div class="col-sm-12 my-2">
+            <label class="swp_end_date">SWP End Date </label>
+            <input type="date" name="swp_end_date" id="swp_end_date" class="form-control" formControlName="swp_end_date">
+          </div>
+
+         <!-- swp_installment_amt -->
+         <div class="col-sm-12">
+          <label class="swp_installment_amt">SWP Installment Amount <span class="text-danger">*</span></label>
+          <input type="text"  name="swp_installment_amt" id="swp_installment_amt" class="form-control" formControlName="swp_installment_amt">
+      </div>
+
+      </div>
+
+     </ng-container>
+     <!-- End -->
+
+     <!-- SIP Type STEP-UP -->
+     <ng-container *ngIf="__traxForm.get('sip_type').value == '5'">
+        <div class="row">
+          <div class="col-sm-12 my-2">
+            <label form="step_up_by">STEP-UP By <span class="text-danger">*</span></label>
+            <select class="form-control" id="step_up_by" formControlName="step_up_by">
+            <option value="">Select</option>
+            <option value="A">Amount</option>
+            <option value="P">Percentage</option>
+            </select>
+          </div>
+
+          <div class="col-sm-12" *ngIf="__traxForm.get('step_up_by').value == 'A'">
+            <label form="step_up_amt">Amount <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="step_up_amt" formControlName="step_up_amt"/>
+          </div>
+
+          <div class="col-sm-12" *ngIf="__traxForm.get('step_up_by').value == 'P'">
+            <label form="step_up_percentage">Percentage <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="step_up_percentage" formControlName="step_up_percentage"/>
+          </div>
+        </div>
+     </ng-container>
+
+      <div class="row my-2">
+        <div class="col-sm-12 ">
+          <label for="file">Upload Scan Application Form <span class="text-danger">*</span></label>
+
+          <div class="p-inputgroup">
+            <input type="file"  pInputText
+            (change)="getFIle($event.target)"
+            accept=".pdf"
+            name="upload_scan" id="upload_scan"
+            class="form-control"
+            formControlName="file">
+            <button
+            *ngIf="this.__traxForm.value.filePreview"
+            type="button"
+            icon="pi pi-eye"
+            (click)="openPDF()"
+            pButton label="View"></button>
+          </div>
+
+          <!-- <input type="file" name="file" id="file" formControlName="file" class="form-control" -->
+            <!-- (change)="getFIle($event.target)" accept=".pdf"> -->
+            <mat-hint class="mt-2"><p class="m-0">Allowed format: PDF (size upto: 10MB)</p></mat-hint>
+            <div class="invalid-feedback"
+            *ngIf=" __traxForm.get('file').invalid && ( __traxForm.get('file').dirty ||  __traxForm.get('file').touched)">
+            <span class="invalid-feedback" *ngIf=" __traxForm.get('file').errors?.required">*Please
+              provide file</span>
+            <span class="invalid-feedback" *ngIf="__traxForm.get('file').errors?.inValidExt">*Invalid
+              file extension.</span>
+            <span class="invalid-feedback" *ngIf="__traxForm.get('file').errors?.fileSizeValidator">*File size
+              must
+              not exceed than
+              10MB.</span>
+          </div>
+          <!-- <ng-container *ngIf="this.__traxForm.get('filePreview').value">
+            <br clear="all" />
+            <img  class="imgThumbnail"
+              [src]="this.__traxForm.get('filePreview').value" alt="Application form Image">
+          </ng-container > -->
+
+
+        </div>
+      </div>
+      <div class="row my-2">
+        <div class="col-sm-12">
+          <label for="rnt_login_at">Form Will Be Submitted At <span class="text-danger">*</span></label>
+          <select name="rnt_login_at" id="rnt_login_at" formControlName="rnt_login_at" class="form-control">
+            <option value="">Select form will be submitted at</option>
+            <option [value]="__rnt_login.id" *ngFor="let __rnt_login of __rnt_login_at">{{__rnt_login.rnt_name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 my-3">
+          <label for="file">Remarks</label>
+          <textarea name="rmks" id="rmks" cols="30" rows="5" formControlName="remarks"></textarea>
+        </div>
+        <div class="col-sm-12">
+            <button class="btn addBtn" type="submit" [disabled]="__traxForm.invalid">Submit</button>
+        </div>
+      </div>
+    </form>
+
+

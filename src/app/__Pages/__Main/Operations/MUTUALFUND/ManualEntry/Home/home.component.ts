@@ -7,8 +7,9 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  menu = menu;
-  constructor(private utility: UtiliService) {}
+  menu = menu.filter(el => el.id > 1);
+  constructor(private utility: UtiliService) {
+  }
 
   ngOnInit(): void {}
   getItems(event) {

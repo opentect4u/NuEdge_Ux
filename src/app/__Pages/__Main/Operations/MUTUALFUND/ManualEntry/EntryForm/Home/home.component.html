@@ -1,8 +1,33 @@
 
-<div class="row flexSec">
-  <div class="col-sm-8">
-    <div class="row">
-      <shared-menu-item [items]="menu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
+<div class="row flexSec my-3 container mx-auto" *ngIf="trnsType.length > 0">
+  <div class="col-sm-12">
+      <core-tab [Tab]="trnsType" (GetTabDtls)="TabDetails($event)"></core-tab>
+      <mat-card>
+          <mat-card-content class="p-3">
+               <ng-container *ngIf="trans_type_id == 1">
+                    <app-financial-entry
+                      [__product_type]="trans_type_id"
+                    ></app-financial-entry>
+               </ng-container> 
+               <ng-container *ngIf="trans_type_id == 4">
+                  <app-nfo-entry   [__product_type]="trans_type_id"></app-nfo-entry>
+               </ng-container>
+               <ng-container *ngIf="trans_type_id == 3">
+                      <app-non-financial-entry
+                      [__product_type]="trans_type_id"
+                      ></app-non-financial-entry>
+                </ng-container>
+               
+                <ng-container *ngIf="trans_type_id == 2">
+                  <app-kyc-entry 
+                  [__product_type]="trans_type_id"
+                  >
+                  </app-kyc-entry>
+                </ng-container>
+               
+               
+          </mat-card-content>
+      </mat-card>
     </div>
-  </div>
 </div>
+

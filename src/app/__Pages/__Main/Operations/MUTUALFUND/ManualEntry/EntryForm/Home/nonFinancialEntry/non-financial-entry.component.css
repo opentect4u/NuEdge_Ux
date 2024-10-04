@@ -1,0 +1,11 @@
+td,
+th {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  width: 50%;
+  font-size: 13px!important;
+  text-align: left!important;
+  font-weight: 500;
+}
+
+
