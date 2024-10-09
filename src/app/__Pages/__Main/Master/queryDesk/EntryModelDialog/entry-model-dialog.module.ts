@@ -7,6 +7,7 @@ import { QueryNatureEntryScreenComponent } from './query-nature-entry-screen/que
 import { QueryStatusComponent } from './query-status/query-status.component';
 import { QueryGivenComponent } from './query-given/query-given.component';
 import { QueryRecieveGivenThroughComponent } from './query-recieve-given-through/query-recieve-given-through.component';
+import { QueryTypeComponent } from './query-type/query-type.component';
 
 
 
@@ -17,7 +18,8 @@ import { QueryRecieveGivenThroughComponent } from './query-recieve-given-through
     QueryNatureEntryScreenComponent,
     QueryStatusComponent,
     QueryGivenComponent,
-    QueryRecieveGivenThroughComponent
+    QueryRecieveGivenThroughComponent,
+    QueryTypeComponent
   ],
   imports: [
     CommonModule,

@@ -151,23 +151,12 @@
            >
            <ng-container [ngSwitch]="true">
             <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-              <ng-container *ngIf="folio_type == 'N';else others">
-                  <a type="button" role="button"
-                  (click)="getRowDtls(pl_trxn)"
-                  class="text-primary"
-                  >
-                    {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}
-                  </a>
-              </ng-container>
-              <ng-template #others>
-                <p class="m-0 text-center"
-                [ngClass]="{
-                  'text-danger':pl_trxn.curr_val == 0
-                }"
-                >
-                  {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}</p>
-              </ng-template>
-
+              <p class="m-0 text-center"
+              [ngClass]="{
+                'text-danger':pl_trxn.curr_val == 0 && folio_type != 'N'
+              }"
+              >
+                {{pl_trxn[col.field] ? pl_trxn[col.field] : "N/A" }}</p>
             </ng-container>
 
             <ng-container *ngSwitchCase="col.field == 'xirr'">

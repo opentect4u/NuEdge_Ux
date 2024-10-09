@@ -12,10 +12,12 @@ import { QueryGivenComponent } from '../EntryModelDialog/query-given/query-given
 import { QueryRecieveGivenThroughComponent } from '../EntryModelDialog/query-recieve-given-through/query-recieve-given-through.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Overlay } from '@angular/cdk/overlay';
+import { QueryTypeComponent } from '../EntryModelDialog/query-type/query-type.component';
 
 enum API{
   'P' =  '/product', // For Product
-  'QTS' = '/cusService/queryTypeSubtype', // For Query Type SubType
+  'QT' = '/cusService/queryType', 
+  'QTS' = '/cusService/querySubType', // For Query Type SubType
   'N' = '/cusService/queryNature', // For Query Nature
   'S' = '/cusService/queryStatus', // For Query Status
   'B' = '/cusService/queryGivenBy', // For Query Given By
@@ -85,6 +87,9 @@ export class QueryDeskReportComponent implements OnInit {
     else if(this.flag == 'QTS'){
       compName = QueryTypeSubTypeComponent
     }
+    else if(this.flag == 'QT'){
+      compName = QueryTypeComponent
+    }
     else if(this.flag == 'N'){
       compName = QueryNatureEntryScreenComponent
     }
@@ -131,7 +136,9 @@ export class QueryDeskReportComponent implements OnInit {
                       }
                       else if(this.flag == 'QTS'){
                         el.product_name = response?.product_name;
+                        el.query_type_id = response?.query_type_id,
                         el.query_type = response?.query_type,
+                        el.product_id = response?.product_id,
                         el.query_subtype = response?.query_subtype,
                         el.query_tat = response?.query_tat
                       }
@@ -177,17 +184,17 @@ export class RqueryDeskReportColumn{
           {
               field:'sl_no',
               header:'Sl No.',
-              isVisible:['P','QTS','N','B','S','T']
+              isVisible:['P','QTS','QT','N','B','S','T']
           },
           {
             field:'product_name',
             header:'Product',
-            isVisible:['P','QTS']
+            isVisible:['P','QT']
           },
           {
             field:'query_type',
             header:'Query Type',
-            isVisible:['QTS']
+            isVisible:['QTS','QT']
           },
           {
             field:'query_subtype',
@@ -222,7 +229,7 @@ export class RqueryDeskReportColumn{
           {
             field:'action',
             header:'Action',
-            isVisible:['P','QTS','N','B','S','T']
+            isVisible:['P','QTS','N','B','S','T','QT']
           }
         ]
 }

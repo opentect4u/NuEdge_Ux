@@ -32,17 +32,15 @@
                 </div>
               </div>
               <div class="col-sm-12">
-                <label form="query_type">Query Type <span class="text-danger">*</span></label>
-                <input type="text"
-                name="query_type"
-                autocomplete="off" 
-                id="query_type"
-                placeholder="Enter Query Type"
-                class="form-control"
-                formControlName="query_type">
-                <div class="invalid-feedback" *ngIf="queryTypeSubTypeForm.get('query_type').invalid && (queryTypeSubTypeForm.get('query_type').dirty || queryTypeSubTypeForm.get('query_type').touched)">
-                  <span class="invalid-feedback" *ngIf="(queryTypeSubTypeForm.get('query_type')).errors?.required">*Please provide query type</span>
-                </div>
+                <label form="query_type_id">Query Type <span class="text-danger">*</span></label>
+                <select class="form-control" id="query_type_id" name="query_type_id" formControlName="query_type_id">
+                  <option value="">Select</option>
+                  <option [value]="item.id" *ngFor="let item of md_query">{{item.query_type}}</option>
+                </select>
+              <div class="invalid-feedback" *ngIf="queryTypeSubTypeForm.get('query_type_id').invalid && (queryTypeSubTypeForm.get('query_type_id').dirty || queryTypeSubTypeForm.get('query_type_id').touched)">
+                <span class="invalid-feedback" *ngIf="(queryTypeSubTypeForm.get('query_type_id')).errors?.required">*Please select queryType</span>
+              </div>
+                
               </div>
               <div class="col-sm-12">
                 <label form="query_subtype">Query SubType <span class="text-danger">*</span></label>

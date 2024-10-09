@@ -13,10 +13,11 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 export class QueryTypeSubTypeComponent implements OnInit {
 
   md_product:Required<{id:number,product_name:string}>[] = [];
+  md_query = [];
   queryTypeSubTypeForm = new FormGroup({
     id:new FormControl(this.data.data ? this.data.data?.id : 0),
     product_id: new FormControl(this.data.data ? this.data.data?.product_id : '',[Validators.required]),
-    query_type: new FormControl(this.data.data ? this.data.data?.query_type : '',[Validators.required]),
+    query_type_id: new FormControl(this.data.data ? this.data.data?.query_type_id: '',[Validators.required]),
     query_subtype: new FormControl(this.data.data ? this.data.data?.query_subtype : '',[Validators.required]),
     query_tat: new FormControl(this.data.data ? this.data.data?.query_tat : '',[Validators.required,Validators.pattern('^[0-9]*$')])
   })
@@ -31,6 +32,21 @@ export class QueryTypeSubTypeComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchProduct();
+    if(this.data?.data){
+      this.fetchQueryType(this.data?.data?.product_id);
+    }
+  }
+
+  ngAfterViewOnInit(){
+    this.queryTypeSubTypeForm.get('product_id').valueChanges.subscribe(res =>{
+            if(res){
+              this.fetchQueryType(res);
+            }
+            else{
+              this.md_query = [];
+              this.queryTypeSubTypeForm.get('query_type_id').setValue('');
+            }
+    })
   }
 
   minimize(){
@@ -51,15 +67,22 @@ export class QueryTypeSubTypeComponent implements OnInit {
         this.md_product = res;
       })
   }
+
+  fetchQueryType(product_id){
+    this.DbIntr.api_call(0,`/cusService/queryType?product_id=${product_id}`,null).pipe(pluck('data')).subscribe((res:any) =>{
+      this.md_query = res;
+    })
+}
   submitQueryTypeSubType(){
     const payload = {
       ...this.queryTypeSubTypeForm.value,
       id:this.queryTypeSubTypeForm.value.id.toString()
     }
-    this.DbIntr.api_call(1,'/cusService/queryTypeSubtypeAddEdit',this.utils.convertFormData(payload))
+    // console.log(payload)
+    this.DbIntr.api_call(1,'/cusService/querySubTypeAddEdit',this.utils.convertFormData(payload))
     .subscribe(res =>{
       console.log(res);
-      this.utils.showSnackbar(`Query type & subtype ${this.queryTypeSubTypeForm.value.id > 0 ? 'updated' : 'added'} successfully`,1)
+      this.utils.showSnackbar(`Query subtype ${this.queryTypeSubTypeForm.value.id > 0 ? 'updated' : 'added'} successfully`,1)
       this.dialogRef.close({
         response:res
       })

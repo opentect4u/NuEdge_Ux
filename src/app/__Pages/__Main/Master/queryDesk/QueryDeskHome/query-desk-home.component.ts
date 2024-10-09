@@ -10,6 +10,7 @@ import { QueryStatusComponent } from '../EntryModelDialog/query-status/query-sta
 import { QueryGivenComponent } from '../EntryModelDialog/query-given/query-given.component';
 import { QueryRecieveGivenThroughComponent } from '../EntryModelDialog/query-recieve-given-through/query-recieve-given-through.component';
 import { Router } from '@angular/router';
+import { QueryTypeComponent } from '../EntryModelDialog/query-type/query-type.component';
 @Component({
   selector: 'app-query-desk-home',
   templateUrl: './query-desk-home.component.html',
@@ -31,22 +32,25 @@ export class QueryDeskHomeComponent implements OnInit {
     console.log(item);
     let compName;
     if(item.flag == 'P'){
-      compName = ProductEntrySecreenComponent
+      compName = ProductEntrySecreenComponent;
     }
     else if(item.flag == 'QTS'){
-      compName = QueryTypeSubTypeComponent
+      compName = QueryTypeSubTypeComponent;
+    }
+    else if(item.flag == 'QT'){
+      compName = QueryTypeComponent;
     }
     else if(item.flag == 'N'){
-      compName = QueryNatureEntryScreenComponent
+      compName = QueryNatureEntryScreenComponent;
     }
     else if(item.flag == 'S'){
-      compName = QueryStatusComponent
+      compName = QueryStatusComponent;
     }
     else if(item.flag == 'B'){
-      compName = QueryGivenComponent
+      compName = QueryGivenComponent;
     }
     else if(item.flag == 'T'){
-      compName = QueryRecieveGivenThroughComponent
+      compName = QueryRecieveGivenThroughComponent;
     }
     else{
       this.route.navigate(['/main/master/queryDesk/report']);

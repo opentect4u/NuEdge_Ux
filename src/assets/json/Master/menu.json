@@ -140,9 +140,18 @@
             "img":"/product.png"
           },
           {
+            "id":8,
+            "menu_name":"Query Type",
+            "title":"Query Type",
+            "flag":"QT",
+            "url":"/main/master/queryDesk",
+            "icon":"",
+            "img":"/disclaimer.png"
+          },
+          {
             "id":2,
-            "menu_name":"Query Type & SubType",
-            "title":"Query Type & SubType",
+            "menu_name":"Query SubType",
+            "title":"Query SubType",
             "flag":"QTS",
             "url":"/main/master/queryDesk",
             "icon":"",

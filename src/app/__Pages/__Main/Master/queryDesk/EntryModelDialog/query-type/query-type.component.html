@@ -1,0 +1,56 @@
+
+<div  cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+    <div mat-dialog-title class="dialog-title" cdkDragHandle>
+      <h2 >{{data.title}}</h2>
+        <div class="btnIcon">
+          <button mat-icon-button title="Minimize"  (click)="minimize()" >
+            <mat-icon >remove</mat-icon>
+          </button>
+          <button mat-icon-button title="Restore-down" (click)="maximize()" *ngIf="__isVisible">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button title="Maximize" (click)="fullScreen()" *ngIf="!__isVisible">
+            <mat-icon>check_box_outline_blank </mat-icon>
+          </button>
+  
+          <button mat-icon-button title="Close"  [mat-dialog-close]="">
+            <mat-icon >close</mat-icon>
+          </button>
+      </div>
+      </div>
+      <mat-dialog-content>
+            <form [formGroup]="queryTypeForm" autocomplete="off" (ngSubmit)="submitQueryType()" [id]="'__QueryType__'+data.id">
+            <div class="row my-3">
+              <div class="col-sm-12">
+                <label form="product_id">Product <span class="text-danger">*</span></label>
+                <select class="form-control" id="product_id" name="product_id" formControlName="product_id">
+                    <option value="">Select</option>
+                    <option [value]="item.id" *ngFor="let item of md_product">{{item.product_name}}</option>
+                  </select>
+                <div class="invalid-feedback" *ngIf="queryTypeForm.get('product_id').invalid && (queryTypeForm.get('product_id').dirty || queryTypeForm.get('product_id').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryTypeForm.get('product_id')).errors?.required">*Please select Product</span>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <label form="query_type">Query Type <span class="text-danger">*</span></label>
+                <input type="text"
+                name="query_type"
+                autocomplete="off" 
+                id="query_type"
+                placeholder="Enter Query Type"
+                class="form-control"
+                formControlName="query_type">
+                <div class="invalid-feedback" *ngIf="queryTypeForm.get('query_type').invalid && (queryTypeForm.get('query_type').dirty || queryTypeForm.get('query_type').touched)">
+                  <span class="invalid-feedback" *ngIf="(queryTypeForm.get('query_type')).errors?.required">*Please provide query type</span>
+                </div>
+              </div>
+             
+            </div>
+      
+           </form>
+      </mat-dialog-content>
+      <mat-dialog-actions cdkDragHandle align="end" class="popupBoxSubmitSec">
+        <button class="btn addBtn"   [attr.form]="'__QueryType__'+data.id" [disabled]="queryTypeForm.invalid">Submit</button>
+      </mat-dialog-actions>
+  </div>
+  
