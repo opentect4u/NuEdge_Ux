@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { ModifyQueryStatusComponent } from '../modify-query-status/modify-query-status.component';
+import { DocViewComponent } from './dialog/doc-view.component';
 
 const routes:Routes = [
   {
@@ -16,7 +17,8 @@ const routes:Routes = [
 @NgModule({
   declarations: [
     CustomerServiceHomeComponent,
-    ModifyQueryStatusComponent
+    ModifyQueryStatusComponent,
+    DocViewComponent
   ],
   imports: [
     CommonModule,

@@ -16,7 +16,10 @@ export class QueryTypeSubTypeComponent implements OnInit {
   md_query = [];
   queryTypeSubTypeForm = new FormGroup({
     id:new FormControl(this.data.data ? this.data.data?.id : 0),
-    product_id: new FormControl(this.data.data ? this.data.data?.product_id : '',[Validators.required]),
+    product_id: new FormControl(this.data.data ? this.data.data?.product_id : '',{
+      updateOn:'change',
+      validators:Validators.required
+    }),
     query_type_id: new FormControl(this.data.data ? this.data.data?.query_type_id: '',[Validators.required]),
     query_subtype: new FormControl(this.data.data ? this.data.data?.query_subtype : '',[Validators.required]),
     query_tat: new FormControl(this.data.data ? this.data.data?.query_tat : '',[Validators.required,Validators.pattern('^[0-9]*$')])
@@ -37,7 +40,7 @@ export class QueryTypeSubTypeComponent implements OnInit {
     }
   }
 
-  ngAfterViewOnInit(){
+  ngAfterViewInit(){
     this.queryTypeSubTypeForm.get('product_id').valueChanges.subscribe(res =>{
             if(res){
               this.fetchQueryType(res);
@@ -70,7 +73,12 @@ export class QueryTypeSubTypeComponent implements OnInit {
 
   fetchQueryType(product_id){
     this.DbIntr.api_call(0,`/cusService/queryType?product_id=${product_id}`,null).pipe(pluck('data')).subscribe((res:any) =>{
-      this.md_query = res;
+      if(res.length > 0){
+        this.md_query = res;
+      }  
+      else{
+        this.queryTypeSubTypeForm.get('query_type_id').setValue('');
+      }
     })
 }
   submitQueryTypeSubType(){

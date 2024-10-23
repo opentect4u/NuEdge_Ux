@@ -1,7 +1,7 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-export const url = "http://192.168.1.3/nuedge/";
+export const url = "http://192.168.1.14/nuedge/";
 // export const url = "https://nuedgecorporate.co.in/nuedge_api/";
 
 
@@ -51,6 +51,9 @@ export const environment = {
   ack_formUrl:url + "public/acknowledgement-copy/",
   soa_copy_url:url + "public/soa-copy/",
   reject_memo: url + "public/reject-memo/",
+
+  query_entry_file:url+"public/query-entry/",
+  query_solve_file:url+"public/query-solve/",
   /********************************* End MUTUAL FUND **************************************/
   amc_logo_url:url + "public/amc-logo/",
   scheme_upload_forms:url + "public/application-forms/",

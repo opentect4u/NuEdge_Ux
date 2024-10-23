@@ -7,6 +7,7 @@ import menus from '../../../../../assets/json/menu.json';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { map, pluck } from 'rxjs/operators';
 import { IUser } from 'src/app/__Model/user_dtls.model';
+import { UtiliService } from 'src/app/__Services/utils.service';
 @Component({
   selector: 'common-header',
   templateUrl: './header.component.html',
@@ -20,8 +21,8 @@ export class HeaderComponent implements OnInit {
   __top_menu: any[] = menus;
   user_dtls:IUser;
   constructor(
-    private dbIntr:DbIntrService
-    // private __utility: UtiliService
+    private dbIntr:DbIntrService,
+    private __utility: UtiliService
     ) {
     // this.__utility.__route$.subscribe(res => {
     //   if (res) {
@@ -55,6 +56,7 @@ export class HeaderComponent implements OnInit {
         ).subscribe((res:IUser) =>{
             // this.createInititals(res);
             this.user_dtls = res;
+            this.__utility.getAuthenticatedUserDetails(res);
         })
    }
 }

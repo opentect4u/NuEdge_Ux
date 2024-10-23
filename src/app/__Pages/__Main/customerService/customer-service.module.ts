@@ -17,6 +17,10 @@ const routes:Routes = [
         path:':queryId/:productId',
         loadChildren:() => import('./query-entry-screen/query-entry-screen.module').then(m => m.QueryEntryScreenModule)
       },
+      {
+        path:'viewTrans/:queryId/:productId',
+        loadChildren:() => import('./view-entry/view-entry.module').then(m => m.ViewEntryModule)
+      }
       // {
       //   path:'',
       //   pathMatch:'full',

@@ -35,6 +35,11 @@ export class UtiliService {
   private breakPointObserver = new BehaviorSubject<any>(null);
   public readonly __breakPointObserver$ = this.breakPointObserver.asObservable().pipe(delay(1));
 
+
+  private userDtls  = new BehaviorSubject<any>(null);
+  public readonly __userDtls$ = this.userDtls.asObservable().pipe(delay(1));
+
+
   private __route = new BehaviorSubject<Route>(null);
   private __renderer: Renderer2;
   public readonly __route$ = this.__route.asObservable().pipe(delay(1));
@@ -77,6 +82,10 @@ export class UtiliService {
 
    getBreakpoinStatus = (breakpoints) =>{
     this.breakPointObserver.next(breakpoints);
+   }
+
+   getAuthenticatedUserDetails = (user_details) =>{
+      this.userDtls.next(user_details);
    }
 
   //Adding Dropdown Script

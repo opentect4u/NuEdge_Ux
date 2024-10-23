@@ -19,45 +19,190 @@
                         <mat-card-title>
                             <h5>SEARCH QUERY</h5>
                         </mat-card-title>
-                        <a pButton 
-                        type="button" icon="pi pi-plus" 
-                        label="Add Query"  target="_blank"
-                        [routerLink]="['/main/customer-service', queryId, productId]"
-                        class="p-button-link"></a>
+                        <div class="d-flex align-items-center justify-content-between">
+                          <button mat-icon-button
+                            *ngIf="btn_type == 'A'"
+                            (click)="clearAdvanceFilter()"
+                            [matTooltip]="'Clear Advance Filter'"
+                            class="my-auto material-symbols-outlined"
+                            color="primary"
+                              class="mx-3">
+                            <mat-icon>
+                              filter_alt_off
+                            </mat-icon>
+                            </button>
+                          <p-selectButton [(ngModel)]="btn_type" [options]="selectBtn" optionValue="value" styleClass="p-button-lg"
+                          (onOptionClick)="onItemClick($event)" optionLabel="icon">
+                          <ng-template let-item>
+                            <i [class]="item.icon" [matTooltip]="item.label"></i>
+                          </ng-template>
+                        </p-selectButton>
+                          <a pButton 
+                          type="button" icon="pi pi-plus" 
+                          label="Add Query"  target="_blank"
+                          [routerLink]="['/main/customer-service', queryId, productId]"
+                          class="p-button-link queryBtn"></a>
+                        </div>
+                        
                     </mat-card-header>
                     <mat-card-content>
                         <form [formGroup]="customerServiceForm" class="p-3" (ngSubmit)="searchQuery()">
                             <div class="row my-3 ">
-                                <div class="col-sm-4">
+                              <div class="col-sm-3">
+                                <app-core-srch [label]="'Query ID'"
+                                [placeholder]="'Search By Query ID'"
+                                [isPending]="__isQuery_id_pending"
+                                [listItems]="md_queryId"
+                                [flag]="'Q'"
+                                [noDataFoundTitle]="'Sorry!! No Records Found'"
+                                [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                                [propertiesToShow]="['query_id']"
+                                formControlName="query_id"
+                                [displayMode]="displayMode_forQueryId"
+                                (setDisplayMode)="displayMode_forQueryId = $event"
+                                (selectedItems)="getSelectedItemsFromParent($event)"
+                                ></app-core-srch>
+                              </div>
+
+                              <div class="col-sm-3">
+                                  <app-core-srch [label]="'Investor'"
+                                  [placeholder]="'Search By  Investor Name, Code, Email, Mobile, PAN & DOB'"
+                                  [isPending]="__isClientPending"
+                                  [listItems]="__clientMst"
+                                  [flag]="'C'"
+                                  [noDataFoundTitle]="'Sorry!! No Records Found'"
+                                  [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                                  [propertiesToShow]="['client_name','pan']"
+                                  formControlName="client_name"
+                                  [displayMode]="displayMode_forClient"
+                                  (setDisplayMode)="displayMode_forClient = $event"
+                                  (selectedItems)="getSelectedItemsFromParentForClient($event)"
+                                 ></app-core-srch>
+                              </div>
+                              <div class="col-sm-3">
+                                <label for="query_receive_by">Query Receive By</label>
+                                <select class="form-control" name="query_receive_by" id="query_receive_by" formControlName="query_receive_by">
+                                    <option value="">Select All</option>
+                                    <option value="{{item.id}}" *ngFor="let item of md_employee">{{item.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                  <label for="query_solve_by">Query Solve By</label>
+                                  <select class="form-control" name="query_solve_by" id="query_solve_by" formControlName="query_solve_by">
+                                    <option value="">Select All</option>
+                                    <option value="{{item.id}}" *ngFor="let item of md_employee">{{item.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                              <label for="query_given_by">Query Given By</label>
+                              <select class="form-control" name="query_given_by" id="query_given_by" formControlName="query_given_by">
+                                  <option value="">Select All</option>
+                                  <option value="{{item.id}}" *ngFor="let item of md_query_given_by">{{item.name}}</option>
+                              </select>
+                          </div>
+                              <div class="col-sm-3">
+                                <label for="date_periods">Periods</label>
+                                <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
+                                  <option value="">Select All</option>
+                                  <option [value]="periods.id" *ngFor="let periods of periods_type">{{periods.periods}}</option>
+                                </select>
+                              </div>
+                              
+                              <div class="col-sm-3">
+                                <label for="date_range">Date Range (From - To)</label>
+                                <p-calendar #dateRng [maxDate]="maxDate" [minDate]="minDate" dateFormat="dd/mm/yy"
+                                  placeholder="Select Date Range" formControlName="date_range" selectionMode="range"
+                                  [readonlyInput]="true" [id]="'date_range'" [showIcon]="true" [hideOnDateTimeSelect]="true"
+                                  [showButtonBar]="true">
+                                </p-calendar>
+                              </div>
+                                <div class="col-sm-3">
                                     <label for="queryStatus">Query Status</label>
                                     <select class="form-control" name="queryStatus" id="queryStatus" formControlName="query_status_id">
                                         <option value="">Select All</option>
                                         <option value="{{status.id}}" *ngFor="let status of md_query_status">{{status.status_name}}</option>
                                     </select>
                                 </div>
-                                <div class="col-sm-4">
-                                    <!-- <label for="queryMode">Query Mode</label>
-                                    <mat-radio-group id="queryMode" name="queryMode" [formControlName]="'query_mode_id'" color="primary">
-                                        <mat-radio-button value="O">Online</mat-radio-button>
-                                        <mat-radio-button value="F" class="mx-2">Offline</mat-radio-button>
-                                      </mat-radio-group> -->
-                                      <label for="queryMode">Query Mode</label>
-                                      <select class="form-control" name="queryMode" id="queryMode" formControlName="query_mode_id">
-                                          <option value="">Select All</option>
-                                          <option value="O">Online</option>
-                                          <option value="F" >Offline</option>
-                                      </select>
+                                <div class="col-sm-3">
+                                      <label for="query_receive_given_thrugh">Query Receive & Given Through</label>
+                                      <select class="form-control" name="query_receive_given_thrugh" id="query_receive_given_thrugh" formControlName="query_receive_given_thrugh">
+                                        <option value="">Select All</option>
+                                        <option value="{{item.id}}" *ngFor="let item of md_query_rec_given_through">{{item.name}}</option>
+                                    </select>
                                 </div>
-                                <div class="col-sm-4 d-flex align-items-end justify-content-end">
+                                <div class="col-sm-3">
+                                  <label for="query_excleted_level">Query Escalated Level</label>
+                                  <select class="form-control" name="query_excleted_level" id="query_excleted_level" formControlName="query_excleted_level">
+                                    <option value="">Select All</option>
+                                    <option value="l-1">Level-1</option>
+                                    <option value="l-2">Level-2</option>
+                                    <option value="l-3">Level-3</option>
+                                  </select>
+                              </div>
+                              <!-- Advance Filter -->
+                              <ng-container *ngIf="btn_type == 'A'">
+                                <!-- <div class="row"> -->
+                                  <!-- <ng-container> -->
+                                    <div class="col-sm-3">
+                                      <label for="brn_cd">Branch</label>
+                                      <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
+                                        (onDeSelect)="onbrnCdDeSelect($event)" [settings]="settingsforBrnchDropdown" [data]="__branchMst"
+                                        formControlName="brn_cd">
+                                      </ng-multiselect-dropdown>
+                                    </div>
+                                    <div class="col-sm-3">
+                                      <label for="bu_type">Business Type</label>
+                                      <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+                                        (onDeSelect)="onbuTypeDeSelect($event)" [settings]="settingsforBuTypeDropdown" [data]="__bu_type"
+                                        formControlName="bu_type_id">
+                                      </ng-multiselect-dropdown>
+                                    </div>
+                                    <div class="col-sm-3">
+                                      <label for="rm_name">Relationship Manager</label>
+                                      <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                                        (onDeSelect)="onRmDeSelect($event)" [settings]="settingsforRMDropdown" [data]="__RmMst"
+                                        formControlName="rm_id">
+                                      </ng-multiselect-dropdown>
+                                    </div>
+                                    <div class="col-sm-3">
+                                      <label for="sub_brk_cd">Sub Broker</label>
+                                      <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                                        (onDeSelect)="onSubBrkDeSelect($event)" [settings]="settingsforSubBrkDropdown"
+                                        [data]="__subbrkArnMst" formControlName="sub_brk_cd">
+                                      </ng-multiselect-dropdown>
+                                    </div>
+                                    <div class="col-sm-3">
+                                      <label for="euin_no">EUIN</label>
+                                      <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
+                                        [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
+                                      </ng-multiselect-dropdown>
+                                    </div>
+                    
+                                  <!-- </ng-container> -->
+                                <!-- </div>
+                                <div class="row mt-2"> -->
+                                
+                                <!-- </div> -->
+                              </ng-container>
+                              <!-- End -->
+
+                                <div
+                                class="d-flex align-items-end justify-content-end"
+                                [ngClass]="{
+                                  'col-sm-6':btn_type != 'A',
+                                  'col-sm-3':btn_type == 'A'
+                                }"
+                             >
                                     <button
-                                        pButton
-                                        type="submit"
-                                        class="p-button-lg mx-3"
-                                        iconPos="left"
-                                        icon="pi pi-eye"
-                                        label="Show"
-                                    ></button>
+                                          pButton
+                                          type="submit"
+                                          class="p-button-lg mx-3"
+                                          iconPos="left"
+                                          icon="pi pi-eye"
+                                          label="Show"
+                                      ></button>
                                 </div>
+                       
                             </div>
                         </form>
                         <div class="my-3 border-top">
@@ -69,18 +214,16 @@
                         [virtualScroll]="true"
                         [virtualRowHeight]="39"
                         [columns]="query_column" [paginator]="true"
-                        [autoLayout]="true" [totalRecords]="queryDataSource.length" [pageLinks]="3"
+                        [autoLayout]="true"
+                         [totalRecords]="queryDataSource.length" [pageLinks]="3"
                         [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
                         [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
-                        [tableStyle]="{ 'min-width': '164rem' }"
+                        [tableStyle]="{ 'min-width': '506rem' }"
                         >
                         <ng-template pTemplate="caption">
                             <div class="d-flex align-items-center justify-content-between">
                               <div>
-                                <!-- <h6 class="m-0" *ngIf="dataSource.length > 0">
-                                  Showing 1 to {{dataSource.length}} of {{dataSource.length}} 
-                                </h6> -->
                               </div>
                               <div>
                                 <input class="form-control w-full" type="text" 
@@ -93,7 +236,7 @@
                         <ng-template pTemplate="header">
                           <tr>
                             <th *ngFor="let col of query_column" [pSortableColumn]="col.field"
-                            [style.min-width]="(col.field == 'query_details'  || col.field == 'scheme_name') ? col.width : ''"
+                            [style.min-width]="col.width"
                             >
                               {{ col.header }}
                               <p-sortIcon [field]="col.field">
@@ -104,39 +247,113 @@
                         <ng-template pTemplate="body" let-trxn let-i="rowIndex">
                           <tr tabindex="999"
                             [ngStyle]="{'min-height':'39px'}">
-                            <td *ngFor="let col of query_column" [style.min-width]="(col.field == 'query_details' || col.field == 'scheme_name') ? col.width : ''">
+                            <td *ngFor="let col of query_column" 
+                            [style.min-width]="col.width">
                                 <ng-container [ngSwitch]="true">
                                     <ng-container *ngSwitchCase="col.field == 'sl_no'">
                                             {{i + 1}}
                                     </ng-container>
                                     <ng-container *ngSwitchCase="col.field == 'status_name'">
-                                        <span [ngStyle]="{
-                                            color: trxn.color_code,
-                                            'border-radius':'3px',
-                                            border:'1px solid' + trxn.color_code   
-                                        }"
-                                                class="p-2"
-                                        >{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</span>
-                                </ng-container>
-                                    <ng-container *ngSwitchCase="col.field == 'date_time'">
+                                       <a
+                                       
+                                            [routerLink]="['/main/customer-service', trxn.cust_query_id, productId]"
+                                            target="_blank"
+                                            type="button"
+                                       >
+                                            <span [ngStyle]="{
+                                              color: trxn.color_code,
+                                              'border-radius':'27px',
+                                              border:'1px solid' + trxn.color_code,
+                                              
+                                              'font-weight':600
+                                          }"
+                                                  class="p-1"
+                                          >{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</span>
+                                       </a> 
+                                   </ng-container>
+                                    <ng-container *ngSwitchCase="col.field == 'date_time' || col.field == 'expected_close_date' || col.field == 'actual_close_date'">
                                             {{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY hh:mm a') : 'N/A'}}
                                     </ng-container>
                                       <ng-container *ngSwitchCase="col.field == 'action'">
                                         <span class="p-buttonset">
-                                            <button pButton
+                                            <!-- <button pButton
                                             (click)="setQuery(trxn)"
                                             type="button" #tooltip="matTooltip"
-                                            matTooltip="Change Status" style="font-size: 4rem;" class="p-button-lg p-button-danger p-button-text p-button-text p-button-rounded"  icon="pi pi-replay"></button>
+                                            matTooltip="Change Status" style="font-size: 4rem;" class="p-button-lg p-button-danger p-button-text p-button-text p-button-rounded"  icon="pi pi-replay"></button> -->
                                             <a pButton
                                             [routerLink]="['/main/customer-service', trxn.cust_query_id, productId]"
                                             target="_blank"
                                             type="button" #tooltip="matTooltip"
-                                            matTooltip="View Query"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded p-button-lg"  icon="pi pi-eye" ></a>
+                                            matTooltip="Edit Query"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded p-button-lg"  icon="pi pi-pencil" ></a>
                                         </span>
+                                    </ng-container>
+
+                                    <ng-container *ngSwitchCase="col.field == 'query_inform_through'">
+                                      <span class="p-buttonset">
+                                        <button pButton type="button" 
+                                        class="p-button-text p-button-lg p-button-rounded"
+                                        [ngClass]="{
+                                            'p-button-warning': trxn?.call_flag == 'N',
+                                            'p-button-success': trxn?.call_flag == 'Y'
+                                        }"
+                                        icon="pi pi-phone"></button>
+                                        <button pButton type="button"
+                                        class="p-button-text p-button-lg p-button-rounded"  
+                                        [ngClass]="{
+                                            
+                                            'p-button-warning': trxn?.whats_app_flag == 'N',
+                                            'p-button-success': trxn?.whats_app_flag == 'Y'
+                                        }"
+                                        icon="pi pi-whatsapp" ></button>
+                                        <button pButton type="button"
+                                        class="p-button-text p-button-lg p-button-rounded"  
+                                        [ngClass]="{
+                                            'p-button-warning': trxn?.email_flag == 'N',
+                                            'p-button-success': trxn?.email_flag == 'Y'
+                                        }"
+                                         icon="pi pi-envelope"></button>
+                                        <button pButton type="button"
+                                        [ngClass]="{
+                                            'p-button-warning': trxn?.sms_flag == 'N',
+                                            'p-button-success': trxn?.sms_flag == 'Y'
+                                        }"
+                                        icon="pi pi-comment" class="p-button-text p-button-lg p-button-rounded"></button>
+                                    </span>
+                                    </ng-container>
+                                    <!-- <ng-container *ngSwitchCase="col.field == 'concern_person_name'">
+                                        <ng-container *ngIf="(trxn.query_status_id == 5 || trxn.query_status_id == 7);else others">
+                                              <p class="m-0">
+                                                    {{trxn.concern_person_name}}
+                                              </p>
+                                        </ng-container>
+                                        <ng-template #others>
+                                            <p class="m-0">N/A</p>
+                                        </ng-template>
+                                    </ng-container> -->
+                                      <ng-container   *ngSwitchCase="col.field == 'query_feedback'">
+                                        <a pButton
+                                        [routerLink]="['/main/customer-service/viewTrans', trxn.cust_query_id, productId]"
+                                        target="_blank"
+                                        type="button" #tooltip="matTooltip"
+                                        matTooltip="View Query"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded p-button-lg"  icon="pi pi-eye" ></a>
+                                      </ng-container>
+                                    <ng-container   *ngSwitchCase="col.field == 'view'">
+                                      <button pButton #tooltip="matTooltip"
+                                      matTooltip="View Attachments"  (click)="openAttachments(trxn)" type="button" icon="pi pi-eye" class="p-button-text p-button-lg p-button-rounded"></button>
+                                  </ng-container>
+
+                                    <ng-container *ngSwitchCase="col.field == 'query_inform_date'">
+                                            <div class="d-flex flex-column justify-content-start align-items-start">
+                                              <b class="m-0" *ngIf="trxn.call_flag == 'Y'"><i class="pi pi-phone" style="font-size:1.5rem"></i> - {{trxn.call_date | date:'dd/MM/YYYY hh:mm a'}}</b>
+                                              <b class="m-0" *ngIf="trxn.whats_app_flag == 'Y'"><i class="pi pi-whatsapp" style="font-size:1.5rem"></i> - {{trxn.whats_app_date | date:'dd/MM/YYYY hh:mm a'}}</b>
+                                              <b class="m-0" *ngIf="trxn.email_flag == 'Y'"><i class="pi pi-envelope" style="font-size:1.5rem"></i> - {{trxn.email_date | date:'dd/MM/YYYY hh:mm a'}}</b>
+                                              <b class="m-0" *ngIf="trxn.sms_flag == 'Y'"><i class="pi pi-comment" style="font-size:1.5rem"></i> - {{trxn.sms_date | date:'dd/MM/YYYY hh:mm a'}}</b>
+                                            </div>
+                                           
                                     </ng-container>
                                     
                                     <ng-container *ngSwitchDefault>
-                                        {{trxn[col.field] ? trxn[col.field] : 'N/A'}}
+                                        <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
                                     </ng-container>
                                 </ng-container>
                               </td>

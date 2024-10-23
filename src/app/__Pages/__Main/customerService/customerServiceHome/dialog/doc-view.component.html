@@ -1,0 +1,104 @@
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragBoundary=".cdk-overlay-container">
+    <div mat-dialog-title class="dialog-title" cdkDragHandle>
+        <h2>{{data.title}} - ({{data.query_id}})</h2>
+        <div class="btnIcon">
+            <button mat-icon-button title="Minimize" (click)="minimize()">
+                <mat-icon>remove</mat-icon>
+            </button>
+            <button mat-icon-button title="Restore Down" (click)="maximize()" *ngIf="__isVisible">
+                <mat-icon>check_box_outline_blank</mat-icon>
+            </button>
+            <button mat-icon-button title="Maxiize" (click)="fullScreen()" *ngIf="!__isVisible">
+                <mat-icon>content_copy</mat-icon>
+            </button>
+
+            <button mat-icon-button title="Close" [mat-dialog-close]="">
+                <mat-icon>close</mat-icon>
+            </button>
+
+        </div>
+
+    </div>
+    <mat-dialog-content class="p-5">
+            <ng-container *ngIf="data.trxn?.solveattach.length > 0;else notAvailable">
+                <div class="row">
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe d-flex justify-content-center align-items-center" 
+                    
+                    *ngFor="let pdf of data.trxn?.solveattach">
+                        <a href={{pdf.url}} target="_blank" class="d-block"
+                        >
+                            <ng-container *ngIf="pdf.ext == 'pdf'">
+                                    <img alt={{pdf.name}}  class="img-fluid img-thumbnail" src="../../../../../assets/images/pdf.png"/>
+                            </ng-container>
+                            <ng-container  *ngIf="pdf.ext == 'jpg' || pdf.ext == 'jpeg' || pdf.ext == 'png'">
+                                <img alt={{pdf.name}}  class="img-fluid img-thumbnail" src="{{pdf.url}}"/>
+                            </ng-container>
+                            <ng-container  *ngIf="pdf.ext == 'xlsx' || pdf.ext == 'csv'">
+                                <img alt={{pdf.name}}  class="img-fluid img-thumbnail" src="../../../../../assets/images/image.png"/>
+                            </ng-container>
+                            <p class="my-3" style="
+                                font-size: 13px;
+                                word-wrap: break-word;
+                                text-align: center;
+                            ">
+                                {{pdf.name}}
+                            </p>
+                        </a>
+                    </div>
+                    <!-- <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div> -->
+        
+                    <!-- <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div>
+        
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
+                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
+                    </div> -->
+                    </div>
+
+            </ng-container>
+            <ng-template #notAvailable>
+                        <h4>
+                            No Attachments Available!!
+                        </h4>
+            </ng-template>
+    </mat-dialog-content>
+</div>
