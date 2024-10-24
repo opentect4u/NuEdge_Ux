@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
 import { responseDT } from 'src/app/__Model/__responseDT';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -12,6 +12,7 @@ import { DatePipe } from '@angular/common';
 import { plan } from 'src/app/__Model/plan';
 import { global } from 'src/app/__Utility/globalFunc';
 import { environment, url } from 'src/environments/environment';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-query-entry-component',
@@ -100,7 +101,10 @@ export class QueryEntryComponentComponent implements OnInit {
        query_tat:new FormControl(''),
        query_receive_by_id:new FormControl(''),
        expected_close_date: new FormControl(''),
-       selectAll:new FormControl(false),
+       selectAll:new FormControl({
+        value:false,
+        disabled:true
+       }),
       //  actual_close_date: new FormControl('',[Validators.required]),
       //  query_status_id: new FormControl('',[Validators.required]),
        remarks: new FormControl(''),
@@ -109,7 +113,9 @@ export class QueryEntryComponentComponent implements OnInit {
       //  status_overall_feedback: new FormControl('',[Validators.required])
       // query_feedback:new FormControl(''),
       // suggestion:new FormControl(''),
-      scheme_dtls:new FormArray([])
+      scheme_dtls:new FormArray([],{
+          asyncValidators:this.checkIfAnyOnItemCheckedOrNot()
+      })
   })
 
   constructor(private RtDt:ActivatedRoute,
@@ -162,6 +168,24 @@ export class QueryEntryComponentComponent implements OnInit {
     })
   }
 
+  checkIfchecked(value){
+      console.log(value)
+      console.log(value?.map(el => el.isActive)?.some(item => item))
+      return of(value.map(el => el.isActive).some(item => item)).pipe(
+        delay(1000)
+      );
+  }
+
+  checkIfAnyOnItemCheckedOrNot(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors> => {
+      return this.checkIfchecked(control.value)
+        .pipe(
+          map((result: boolean) =>
+            result ? { checkErr: true } : null
+          )
+        );
+    };
+  }
   get schemeDtls(): FormArray {
     return this.queryEntryForm.get("scheme_dtls") as FormArray;
   }
@@ -292,6 +316,9 @@ export class QueryEntryComponentComponent implements OnInit {
       this.queryEntryForm.get('folio_no').valueChanges.subscribe(res =>{
         // this.queryEntryForm.get('scheme_id').setValue([]);
         this.schemeDtls.clear();
+        this.queryEntryForm.get('selectAll').setValue(false,{emitEvent:false});
+        this.queryEntryForm.get('selectAll').disable();
+
         if(res.length > 0){
           // console.log(res)
           this.fetchSchemeByFolio(res[0].folio_no)
@@ -407,6 +434,23 @@ export class QueryEntryComponentComponent implements OnInit {
       .subscribe((res:Partial<scheme>[]) =>{
           // this.md_scheme = res;
           console.log(res);
+          if(res.length > 0){
+            this.queryEntryForm.get('selectAll').enable(
+              {
+                onlySelf:false,
+                emitEvent:false
+              }
+            )
+          }
+          else{
+            this.queryEntryForm.get('selectAll').disable(
+              {
+                onlySelf:false,
+                emitEvent:false
+              }
+            )
+          }
+         
           res.forEach(el =>{
               this.schemeDtls.push(
                   this.createItem(el)
@@ -421,8 +465,13 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   setSelctAllCheckbox(event){
-      console.log(event);
-      console.log(this.schemeDtls.value.map(el => el.isActve))
+      const isAllSelected = this.schemeDtls.value.map(el => el.isActive).every(item => item);
+      this.getIsAllSelected(isAllSelected);
+  }
+
+  getIsAllSelected(isAllSelected:boolean){
+    this.queryEntryForm.get('selectAll').setValue(isAllSelected,{emitEvent:false});
+
   }
 
   createItem(el): FormGroup {
@@ -430,9 +479,10 @@ export class QueryEntryComponentComponent implements OnInit {
       id: new FormControl(el.id),
       product_code: new FormControl(el.product_code ? el.product_code : 'N/A'),
       isin_no: new FormControl(el.isin_no  ? el.isin_no : 'N/A'),
-      scheme_name: new FormControl(el.scheme_name ? el.scheme_name : 'N/A'),
+      scheme_name: new FormControl(el.scheme_name ? `${el.scheme_name}-${el.plan_name}-${el.option_name}` : 'N/A'),
       isActive:new FormControl(false),
       folio_no:new FormControl(el.folio_no ? el.folio_no : 'N/A'),
+      curr_val:new FormControl(el.curr_val ? (Number(el.curr_val) >= 0 ? Number(el.curr_val) : 0.00) : 0.00),
     });
   }
 
@@ -462,8 +512,7 @@ export class QueryEntryComponentComponent implements OnInit {
         this.queryEntryForm.get('folio_no').setValue([
           {
              "folio_no":ev.item?.folio_no,
-          }
-          ],{emitEvent:false});
+          }],{emitEvent:false});
           // this.fetchSchemeByFolio(ev.item.folio_no);
       }
       // else{
@@ -609,11 +658,11 @@ export class QueryEntryComponentComponent implements OnInit {
       let api_payload ;
       if(this.productId == 3 || this.productId == 4){
         if(this.productId == 3){
-          const {entry_attachment,entry_file,scheme_name,folio_no,fd_no,fd_scheme_id,product_code,isin_no,scheme_id,...rest} = payload;
+          const {entry_attachment,entry_file,scheme_name,folio_no,fd_no,fd_scheme_id,product_code,isin_no,scheme_id,scheme_dtls,...rest} = payload;
           api_payload = rest;
         }
         else{
-          const {entry_attachment,entry_file,scheme_name,folio_no,policy_no,ins_product_id,product_code,isin_no,scheme_id,...rest} = payload;
+          const {entry_attachment,entry_file,scheme_name,folio_no,policy_no,ins_product_id,product_code,isin_no,scheme_id,scheme_dtls,...rest} = payload;
           api_payload = rest;
         }
       }
@@ -623,7 +672,20 @@ export class QueryEntryComponentComponent implements OnInit {
       }
 
       const formData = new FormData();
-      Object.keys(api_payload).forEach((key) => formData.append(key, (api_payload[key] ? api_payload[key] : '')));
+      Object.keys(api_payload).forEach((key) => 
+      {
+        console.log(key);
+        console.log(typeof(api_payload[key]));  
+        if(key == 'scheme_dtls'){
+          formData.append(key, (api_payload[key] ? JSON.stringify(api_payload[key]) : '[]'))
+        }
+        else{
+        formData.append(key, (api_payload[key] ? api_payload[key] : ''))
+      }
+        
+      }
+    
+    );
       for(let file of  this.queryEntryForm.get('entry_attachment').value){
         formData.append("entry_attachment[]", file);
       }

@@ -114,7 +114,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="row my-2">
-                                                        <div class="col-sm-6">
+                                                        <div class="col-sm-12">
                                                         <label [for]="productId == 1 ? 'scheme_id' : 'plan_id'" *ngIf="productId != 1">
                                                             {{productId == 3 || productId == 4 ? 'Plan' : 'Scheme'}}
                                                             <span class="text-danger">*</span>
@@ -131,23 +131,26 @@
                                                                 </div>
                                                             </div>
                                                             <div *ngSwitchDefault>
-                                                                <table class="my-4">
+                                                                <table  class="my-2">
                                                                     <thead>
                                                                       <tr>
                                                                         <th>
-                                                                            <input type="checkbox" formControlName="selectAll"/>
+                                                                            <input
+                                                                              
+                                                                            type="checkbox" formControlName="selectAll"/>
                                                                         </th>
                                                                         <th>
                                                                             Scheme
                                                                         </th>
                                                                         <th>
-                                                                            folio
+                                                                            Folio
                                                                         </th>
                                                                         <th>
                                                                             Current Value
                                                                         </th>
                                                                       </tr>
                                                                     </thead>
+                                                                    <ng-container *ngIf="schemeDtls.value.length > 0;else noData">
                                                                     <tbody formArrayName="scheme_dtls">
                                                                       <tr *ngFor="let item of schemeDtls.controls; let i = index;">
                                                                         <ng-container [formGroupName]="i">
@@ -163,11 +166,24 @@
                                                                                 {{schemeDtls.controls[i].get('folio_no')?.value}}  
                                                                             </td>
                                                                             <td>
-
+                                                                                {{schemeDtls.controls[i].get('curr_val')?.value}}  
                                                                             </td>
                                                                         </ng-container>
                                                                       </tr>
                                                                     </tbody>
+                                                                     </ng-container>
+                                                                     <ng-template #noData>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td colspan="4" class="text-center p-2">
+                                                                                        <p class="m-0">
+                                                                                            No Scheme Available
+                                                                                        </p>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                     </ng-template>
+
                                                                   </table>
                                                                
                                                             </div>
@@ -175,33 +191,31 @@
 
                                                         </div>
 
-                                                        <div class="col-sm-6">
-                                                            <label for="query_type_id">Query Type <span class="text-danger">*</span></label>  
-                                                            <!-- <select class="form-control" formControlName="query_type_id"  id="query_type_id">
-                                                                <option value="">Select</option>
-                                                                <option *ngFor="let item of md_queryType" value="{{item.id}}">{{item.query_type}}</option>
-                                                            </select> -->
-                                                            <select
-                                                                name="query_type_id"
-                                                                id="query_type_id"
-                                                                class="form-control"
-                                                                formControlName="query_type_id"
-                                                                [compareWith]="compareWith"  
-                                                                >
-                                                                <option value="">Select</option>
-                                                                <option [ngValue]="item"
-                                                                *ngFor="let item of md_queryType">
-                                                                {{item.query_type}}
-                                                                </option>
-                                                            </select>
-                                                            <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_type_id').invalid && (queryEntryForm.get('query_type_id').dirty || queryEntryForm.get('query_type_id').touched)">
-                                                                <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_type_id').errors?.required)">*Please select query type</span>
-                                                              </div>
-                                                       </div>
+                                                     
                                                         
                                                 </div>
                                                    
                                                 <div class="row ">
+                                                    <div class="col-sm-6">
+                                                        <label for="query_type_id">Query Type <span class="text-danger">*</span></label>  
+                                             
+                                                        <select
+                                                            name="query_type_id"
+                                                            id="query_type_id"
+                                                            class="form-control"
+                                                            formControlName="query_type_id"
+                                                            [compareWith]="compareWith"  
+                                                            >
+                                                            <option value="">Select</option>
+                                                            <option [ngValue]="item"
+                                                            *ngFor="let item of md_queryType">
+                                                            {{item.query_type}}
+                                                            </option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_type_id').invalid && (queryEntryForm.get('query_type_id').dirty || queryEntryForm.get('query_type_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_type_id').errors?.required)">*Please select query type</span>
+                                                          </div>
+                                                   </div>
                                                     <div class="col-sm-6">
                                                         <label for="query_subtype_id">Query Subtype <span class="text-danger">*</span></label>  
                                                         <select class="form-control"   formControlName="query_subtype_id"  id="query_subtype_id">
