@@ -20,6 +20,7 @@ import filterOpt from '../../../../../assets/json/filterOption.json';
 import { global } from 'src/app/__Utility/globalFunc';
 import { DocViewComponent } from './dialog/doc-view.component';
 import { environment } from 'src/environments/environment';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 enum API{
   'MF'='/cusService/MutualFundQuery',
@@ -38,6 +39,10 @@ enum API{
 
 export class CustomerServiceHomeComponent implements OnInit {
 
+  @ViewChild('op') Overlay__pannel:OverlayPanel;
+
+  
+  md_scheme = [];
   settingsforBrnchDropdown = this.__utility.settingsfroMultiselectDropdown(
     'id',
     'brn_name',
@@ -534,7 +539,13 @@ export class CustomerServiceHomeComponent implements OnInit {
               el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
               return el
            });
-          el.scheme_name = el.product_id == 1 ? `${el.scheme_name}-${el.plan_name}-${el.option_name}` : (el.product_id == 4 ? el.scheme_name : '');
+           const outerDt = el.allscheme.map(el =>{
+              el.scheme_name = el.schemename ? `${el?.schemename?.scheme_name}-${el?.schemename?.plan_name}-${el?.schemename?.option_name}` : 'N/A';
+              return el;
+           });
+          el.scheme_dtls = outerDt;
+
+          el.scheme_name = el.product_id == 1 ? `${outerDt.length > 0 ? outerDt[0]?.scheme_name : ''}` : (el.product_id == 4 ? el.scheme_name : '');
           // el.cust_query_id = this.__utility.encrypt_dtls(JSON.stringify((el.id)))
           el.cust_query_id = this.__utility.EncryptText(el.id.toString())
           if(el.call_flag == 'N' && el.whats_app_flag == 'N' && el.email_flag == 'N' && el.sms_flag == 'N'){
@@ -555,6 +566,7 @@ export class CustomerServiceHomeComponent implements OnInit {
           }
           return el
         });
+        console.log(this.queryDataSource);
       })
   }
 
@@ -794,6 +806,11 @@ export class CustomerServiceHomeComponent implements OnInit {
         flag: 'Q',
       });
     }
+  }
+  showReport(scheme){
+      console.log(scheme);
+      this.md_scheme = [];
+      this.md_scheme = scheme;
   }
 }
 

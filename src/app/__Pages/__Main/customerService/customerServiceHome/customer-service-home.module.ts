@@ -6,7 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { ModifyQueryStatusComponent } from '../modify-query-status/modify-query-status.component';
 import { DocViewComponent } from './dialog/doc-view.component';
-
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 const routes:Routes = [
   {
     path:'',
@@ -24,7 +24,8 @@ const routes:Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     SharedModule,
-    TabModule
+    TabModule,
+    OverlayPanelModule
   ]
 })
 export class CustomerServiceHomeModule { }

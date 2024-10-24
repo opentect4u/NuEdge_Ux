@@ -330,12 +330,20 @@
                                             <p class="m-0">N/A</p>
                                         </ng-template>
                                     </ng-container> -->
+                                    
                                       <ng-container   *ngSwitchCase="col.field == 'query_feedback'">
                                         <a pButton
                                         [routerLink]="['/main/customer-service/viewTrans', trxn.cust_query_id, productId]"
                                         target="_blank"
                                         type="button" #tooltip="matTooltip"
                                         matTooltip="View Query"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded p-button-lg"  icon="pi pi-eye" ></a>
+                                      </ng-container>
+                                      <ng-container   *ngSwitchCase="col.field == 'scheme_name'">
+                                        <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}} 
+                                          <span class="mx-1 badge badge-primary" 
+                                          (click)="showReport(trxn?.scheme_dtls);op.toggle($event)"
+                                          *ngIf="trxn['allscheme'].length > 1">+{{trxn['allscheme'].length - 1}} more</span>
+                                        </p>
                                       </ng-container>
                                     <ng-container   *ngSwitchCase="col.field == 'view'">
                                       <button pButton #tooltip="matTooltip"
@@ -376,3 +384,36 @@
       
     </div>
 </div>
+
+
+
+<p-overlayPanel #op
+[style]="{ width: '450px' }"
+[showCloseIcon]="true"
+[dismissable]="false"
+>
+ <ng-container>
+      <table>
+          <thead>
+                <tr>
+                    <th>
+                        Sl No
+                      </th>
+                      <th>
+                        Scheme
+                      </th>
+                </tr>
+          </thead>
+          <tbody>
+                <tr *ngFor="let schemeDtls of md_scheme;let i=index">
+                    <td>
+                      {{i+1}}
+                    </td>
+                    <td>
+                        {{schemeDtls.scheme_name}}
+                    </td>
+                </tr>
+          </tbody>
+      </table>
+ </ng-container>
+</p-overlayPanel>

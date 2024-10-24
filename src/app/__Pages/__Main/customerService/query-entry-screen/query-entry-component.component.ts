@@ -159,7 +159,6 @@ export class QueryEntryComponentComponent implements OnInit {
        this.setFormControlValidators();
     }
     this.utility.__userDtls$.subscribe(res => {
-        console.log(res);
         this.queryEntryForm.patchValue({
           entry_name:res ? res?.name : '',
           query_receive_by_id:res?.id
@@ -169,10 +168,9 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   checkIfchecked(value){
-      console.log(value)
-      console.log(value?.map(el => el.isActive)?.some(item => item))
-      return of(value.map(el => el.isActive).some(item => item)).pipe(
-        delay(1000)
+
+      return of(!value.map(el => el.isActive).some(item => item)).pipe(
+        delay(200)
       );
   }
 
@@ -229,7 +227,6 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   setForm = (data:any | undefined = null) =>{
-    console.log(data);
     this.queryEntryForm.get('investor_name').setValue(data ? data?.investor_name : '',{emitEvent:false});
     this.queryEntryForm.get('folio_no').setValue(data ? [{folio_no:data?.folio_no}] : [],{emitEvent:false});
     this.queryEntryForm.get('query_nature_id').setValue(data ? global.getActualVal(data?.query_nature_id) : '',{emitEvent:false});
@@ -398,7 +395,6 @@ export class QueryEntryComponentComponent implements OnInit {
       // });
 
             this.queryEntryForm.get('query_nature_id').valueChanges.subscribe(res =>{
-              console.log(res == '4')
             this.queryEntryForm.get('query_given_to_id').setValidators(res == '4' ? [Validators.required] : null);
             this.queryEntryForm.get('level_id').setValidators(res == '4' ? [Validators.required] : null);
             this.queryEntryForm.get('query_given_through_id').setValidators(res == '4' ? [Validators.required] : null);
@@ -428,12 +424,16 @@ export class QueryEntryComponentComponent implements OnInit {
       })
   }
 
+  fetchLevel = (amc_id:number) =>{
+        // this.__dbIntr.api_call(0,'/')
+  }
+
   fetchSchemeByFolio = (folio_no:string) =>{
       this.__dbIntr.api_call(0,'/cusService/getFoliowiseProduct',`folio_no=${folio_no}`)
       .pipe(pluck('data'))
-      .subscribe((res:Partial<scheme>[]) =>{
+      .subscribe((res:any) =>{
           // this.md_scheme = res;
-          console.log(res);
+
           if(res.length > 0){
             this.queryEntryForm.get('selectAll').enable(
               {
@@ -449,14 +449,45 @@ export class QueryEntryComponentComponent implements OnInit {
                 emitEvent:false
               }
             )
+          } 
+          // console.log(this.formData);
+          // console.log(res);
+
+          if(this.queryId?.toString() != '0'){
+                  res.forEach(el =>{
+                        const dt = this.formData?.allscheme.filter(item => item?.product_code == el.product_code && item?.isin_no == el.isin_no);
+                        console.log(dt);
+                        console.log(el);
+
+                        if(dt.length > 0){
+                            this.schemeDtls.push(
+                              new FormGroup({
+                                  id: new FormControl(el.id),
+                                  product_code: new FormControl(el.product_code ? el.product_code : 'N/A'),
+                                  isin_no: new FormControl(el.isin_no  ? el.isin_no : 'N/A'),
+                                  scheme_name: new FormControl(el.scheme_name ? `${el.scheme_name}-${el.plan_name}-${el.option_name}` : 'N/A'),
+                                  isActive:new FormControl({value:true,disabled:true}),
+                                  folio_no:new FormControl(el?.folio_no ? el.folio_no : 'N/A'),
+                                  curr_val:new FormControl(el?.curr_val ? (Number(el.curr_val) >= 0 ? Number(el.curr_val) : 0.00) : 0.00),
+                                })
+                            )
+                        }
+                        
+                  });
+                  
+                  if(this.schemeDtls.value.length == res.length){
+                    this.queryEntryForm.get('selectAll').setValue(this.schemeDtls.value.length == res.length);
+                    this.queryEntryForm.get('selectAll').disable();
+                  }
           }
-         
-          res.forEach(el =>{
+          else{
+            res.forEach(el =>{
               this.schemeDtls.push(
                   this.createItem(el)
               );
-          })
-          console.log(this.schemeDtls.value);
+            })
+          }
+         
           // if(this.queryId > 0 && this.formData){
           //   const getDtls = this.md_scheme.filter(el => el.product_code == this.formData?.product_code && el.isin_no == this.formData?.isin_no)[0];
           //   this.queryEntryForm.get('scheme_id').setValue(getDtls?.id);  
@@ -527,13 +558,11 @@ export class QueryEntryComponentComponent implements OnInit {
   fetchPlanaccordingtoProductId= () =>{
 
     if(Number(this.productId) ==3 || Number(this.productId) ==4){
-      console.log('sasas')
 
         const api_name = this.productId == 3 ? '/ins/product' : '/fd/scheme'
         this.__dbIntr.api_call(0, api_name, null)
         .pipe(pluck('data'))
         .subscribe((res: any) => {
-          console.log(res);
           this.md_plan = res;
         });
     }
@@ -573,11 +602,8 @@ export class QueryEntryComponentComponent implements OnInit {
   fetchQuerySubType = (query_type:Partial<IQueryTypeSubType>) =>{
       this.__dbIntr.api_call(0,'/cusService/querySubType',`query_type_id=${query_type.id}`).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
         this.md_querySubType = res;
-        console.log(this.queryId);
         if(this.queryId.toString() != '0'){
           setTimeout(() => {
-            console.log(this.md_querySubType)
-            console.log(this.queryEntryForm.getRawValue().query_subtype_id);
             const dt =  res.filter((el:any) => el.id == this.queryEntryForm.getRawValue().query_subtype_id);  
             // console.log(dt);
             this.queryEntryForm.get('query_tat').setValue(
@@ -647,12 +673,13 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   submitQuery = () =>{
-      console.log(this.queryEntryForm.controls);
+      // console.log(this.queryEntryForm.controls);
       const payload = {
         ...this.queryEntryForm.getRawValue(),
         query_type_id:this.queryEntryForm.getRawValue().query_type_id?.id,
         product_id:this.productId,
-        folio_no:this.queryEntryForm.getRawValue().folio_no ? this.queryEntryForm.getRawValue().folio_no[0]?.folio_no : ''
+        folio_no:this.queryEntryForm.getRawValue().folio_no ? this.queryEntryForm.getRawValue().folio_no[0]?.folio_no : '',
+        scheme_dtls:this.schemeDtls.value.filter(el => el?.isActive)
       }
       // console.log(payload)
       let api_payload ;
@@ -674,28 +701,38 @@ export class QueryEntryComponentComponent implements OnInit {
       const formData = new FormData();
       Object.keys(api_payload).forEach((key) => 
       {
-        console.log(key);
-        console.log(typeof(api_payload[key]));  
         if(key == 'scheme_dtls'){
           formData.append(key, (api_payload[key] ? JSON.stringify(api_payload[key]) : '[]'))
         }
         else{
         formData.append(key, (api_payload[key] ? api_payload[key] : ''))
-      }
-        
-      }
-    
-    );
+      }});
       for(let file of  this.queryEntryForm.get('entry_attachment').value){
         formData.append("entry_attachment[]", file);
       }
 
-      console.log(api_payload);
-      // this.__dbIntr.api_call(1,'/cusService/queryAdd',formData)
-      // .pipe(pluck('data')).subscribe((res:any) =>{
-      //   this.setForm();
-      //   this.utility.showSnackbar(`Query with id ${res.query_id} has been registered successfully`,1)
-      // })
+      this.__dbIntr.api_call(1,'/cusService/queryAdd',formData)
+      .pipe(pluck('data')).subscribe((res:any) =>{
+        // this.setForm();
+        this.queryEntryForm.get('investor_name').setValue('',{emitEvent:false});
+        this.queryEntryForm.get('folio_no').setValue([]);
+        this.queryEntryForm.get('query_type_id').setValue('');
+        this.queryEntryForm.patchValue({
+          investor_pan:'',
+          investor_email:'',
+          investor_mobile:'',
+          application_no:'',
+          query_given_by_id:'',
+          entry_name:'',
+          query_subtype_id:'',
+          query_details:'',
+          entry_file:null,
+          entry_attachment:[]
+        });
+        this.md_folio = [];
+        
+        this.utility.showSnackbar(`Query with id ${res.query_id} has been registered successfully`,1)
+      })
   } 
 
   compareWith(existing, toCheckAgainst) {
@@ -767,7 +804,6 @@ export class QueryEntryComponentComponent implements OnInit {
           inform_flag:flag[0]
        }
        this.__dbIntr.api_call(1,'/cusService/queryInform',this.utility.convertFormData(payload)).subscribe((res:any) =>{
-        console.log(res)                
         if(res.suc == 1){
                         this.utility.showSnackbar(`Query information through ${flag} has been successfull`,1);
                         const dt = this.formData;

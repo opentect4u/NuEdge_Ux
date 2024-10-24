@@ -43,3 +43,13 @@
     50% { background-color: #10486b; -webkit-box-shadow: 0 0 20px #10486b; }
     100% { background-color: #10486b; -webkit-box-shadow: 0 0 3px #10486b; }
   }
+  .badge{
+    font-size: 9px!important;
+  }
+td,
+th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 4px;
+    /* width: 25%; */
+}
