@@ -16,12 +16,12 @@ import { QueryTypeComponent } from '../EntryModelDialog/query-type/query-type.co
 
 enum API{
   'P' =  '/product', // For Product
-  'QT' = '/cusService/queryType', 
-  'QTS' = '/cusService/querySubType', // For Query Type SubType
-  'N' = '/cusService/queryNature', // For Query Nature
-  'S' = '/cusService/queryStatus', // For Query Status
-  'B' = '/cusService/queryGivenBy', // For Query Given By
-  'T' = '/cusService/queryGivenThrough' // For Query Receive Given Through
+  'QT' = '/cus_service/queryType', 
+  'QTS' = '/cus_service/querySubType', // For Query Type SubType
+  'N' = '/cus_service/queryNature', // For Query Nature
+  'S' = '/cus_service/queryStatus', // For Query Status
+  'B' = '/cus_service/queryGivenBy', // For Query Given By
+  'T' = '/cus_service/queryGivenThrough' // For Query Receive Given Through
 }
 @Component({
   selector: 'app-query-desk-report',

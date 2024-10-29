@@ -44,7 +44,7 @@ export class QueryNatureEntryScreenComponent implements OnInit {
       ...this.queryNatureForm.value,
       id:this.queryNatureForm.value.id.toString()
     }
-    this.DbIntr.api_call(1,'/cusService/queryNatureAddEdit',this.utils.convertFormData(payload))
+    this.DbIntr.api_call(1,'/cus_service/queryNatureAddEdit',this.utils.convertFormData(payload))
     .subscribe(res => {
       this.utils.showSnackbar(`Query nature ${this.queryNatureForm.value.id > 0 ? 'updated' : 'added'} successfully`,1);
         this.dialogRef.close({

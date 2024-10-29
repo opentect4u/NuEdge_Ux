@@ -7,6 +7,7 @@ import { TabModule } from 'src/app/__Core/tab/tab.module';
 import { ModifyQueryStatusComponent } from '../modify-query-status/modify-query-status.component';
 import { DocViewComponent } from './dialog/doc-view.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { DialogModule } from 'primeng/dialog';
 const routes:Routes = [
   {
     path:'',
@@ -25,6 +26,7 @@ const routes:Routes = [
     RouterModule.forChild(routes),
     SharedModule,
     TabModule,
+    DialogModule,
     OverlayPanelModule
   ]
 })

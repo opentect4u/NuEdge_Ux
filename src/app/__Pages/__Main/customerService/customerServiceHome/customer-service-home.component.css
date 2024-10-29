@@ -53,3 +53,10 @@ th {
     padding: 4px;
     /* width: 25%; */
 }
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.link:hover{
+  background-color: #e7e7e7;
+}

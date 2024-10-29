@@ -72,7 +72,7 @@ export class QueryTypeSubTypeComponent implements OnInit {
   }
 
   fetchQueryType(product_id){
-    this.DbIntr.api_call(0,`/cusService/queryType?product_id=${product_id}`,null).pipe(pluck('data')).subscribe((res:any) =>{
+    this.DbIntr.api_call(0,`/cus_service/queryType?product_id=${product_id}`,null).pipe(pluck('data')).subscribe((res:any) =>{
       if(res.length > 0){
         this.md_query = res;
       }  
@@ -87,7 +87,7 @@ export class QueryTypeSubTypeComponent implements OnInit {
       id:this.queryTypeSubTypeForm.value.id.toString()
     }
     // console.log(payload)
-    this.DbIntr.api_call(1,'/cusService/querySubTypeAddEdit',this.utils.convertFormData(payload))
+    this.DbIntr.api_call(1,'/cus_service/querySubTypeAddEdit',this.utils.convertFormData(payload))
     .subscribe(res =>{
       console.log(res);
       this.utils.showSnackbar(`Query subtype ${this.queryTypeSubTypeForm.value.id > 0 ? 'updated' : 'added'} successfully`,1)

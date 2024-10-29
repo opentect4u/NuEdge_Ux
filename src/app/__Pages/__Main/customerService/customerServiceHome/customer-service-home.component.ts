@@ -23,10 +23,10 @@ import { environment } from 'src/environments/environment';
 import { OverlayPanel } from 'primeng/overlaypanel';
 
 enum API{
-  'MF'='/cusService/MutualFundQuery',
-  'B'='/cusService/BondQuery',
-  'I'='/cusService/InsuranceQuery',
-  'FD'='/cusService/FixedDepositQuery'
+  'MF'='/cus_service/MutualFundQuery',
+  'B'='/cus_service/BondQuery',
+  'I'='/cus_service/InsuranceQuery',
+  'FD'='/cus_service/FixedDepositQuery'
 }
 
 @Component({
@@ -41,7 +41,7 @@ export class CustomerServiceHomeComponent implements OnInit {
 
   @ViewChild('op') Overlay__pannel:OverlayPanel;
 
-  
+  index:number = 0;
   md_scheme = [];
   settingsforBrnchDropdown = this.__utility.settingsfroMultiselectDropdown(
     'id',
@@ -76,6 +76,10 @@ export class CustomerServiceHomeComponent implements OnInit {
     1
   );
 
+  md_dialog_data:any = [];
+
+  visible:boolean = false;
+
   /**
    * Holding Buisness type
    */
@@ -85,6 +89,8 @@ export class CustomerServiceHomeComponent implements OnInit {
    * Holding Relationship Manager
    */
   __RmMst: any = [];
+
+  status_id:any;
 
   /**
    * Holding Sub Broker Master Data
@@ -186,34 +192,86 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.fetchQueryReceievGivenThrough();
     this.fetchQueryGivenBy();
     this.fetchEmployee();
+    this.fetchCustomerServiceIndex();
     setTimeout(() => {
       this.customerServiceForm.get('date_periods').setValue('M',{emitEvent:true});
       }, 500);
   }
 
+  fetchCustomerServiceIndex = () =>{
+          this.dbIntr.api_call(0,'/cus_service/index',null).pipe(pluck('data'))
+          .subscribe((res:any) =>{
+                let dt = [];
+                let statusDtls:any = this.md_query_status;
+                this.md_product.forEach(el =>{
+                        statusDtls = statusDtls.map((item:any) =>{
+                            const hasProps = res?.hasOwnProperty(el.id.toString()) ? item?.id in res[el.id.toString()] : false;
+                            item[item.status_name] = hasProps ? res[el.id.toString()][item.id].length : 0;
+                            item[`${item.status_name}_${item.id}`] = item.id;
+                            return  item;
+                        })  
+                      dt.push({
+                        product_name:el.tab_name,
+                        product_id:el.id,
+                        short_name:el.flag,
+                        ...statusDtls.reduce((acc, cur) => ({ ...acc, 
+                          [cur.status_name]: cur[cur.status_name],
+                          [`${cur.status_name}_${cur.id}`]: cur[`${cur.status_name}_${cur.id}`],
+                        }), {})
+                      });
+                });
+                console.log(dt);
+                this.md_dialog_data = dt;
+                this.visible = !this.visible
+          })
+  }
+
   fetchEmployee(){
-    this.dbIntr.api_call(0,'/cusService/users',null)
+    this.dbIntr.api_call(0,'/cus_service/users',null)
     .pipe(pluck('data'))
     .subscribe(res =>{
         this.md_employee = res;
     })
   }
 
+  getItems = (data,item,index) =>{
+      console.log(data);
+      console.log(item);
+      const _index = this.md_product.findIndex(el => el.id == data.product_id);
+      if(this.index == _index){
+        if(this.customerServiceForm?.value.query_status_id != item.id)
+        {
+          this.customerServiceForm.patchValue({
+            query_status_id:this.md_query_status.filter(el => el.id == item.id)[0]?.id,
+          });
+          this.queryDataSource = [];
+          this.productId = this.__utility.EncryptText(data.product_id.toString());
+          this.fetchQuery(data.short_name);
+          this.setColumns(data.product_id)
+        }
+      }
+      else{
+        this.status_id = this.md_query_status.filter(el => el.id == item.id)[0]?.id;
+        this.index = _index
+      }
+      this.visible = !this.visible;
+  }
+
 
   fetchQueryGivenBy(){
-      this.dbIntr.api_call(0,'/cusService/queryGivenBy',null)
+      this.dbIntr.api_call(0,'/cus_service/queryGivenBy',null)
       .pipe(pluck('data'))
       .subscribe(res => {
-        console.log(res);  
+        // console.log(res);  
         this.md_query_given_by = res
       })
   }
 
   fetchQueryReceievGivenThrough(){
-        this.dbIntr.api_call(0,'/cusService/queryGivenThrough',null)
+        this.dbIntr.api_call(0,'/cus_service/queryGivenThrough',null)
         .pipe(pluck('data'))
         .subscribe(res =>{
-              console.log(res)
+              // console.log(res)
               this.md_query_rec_given_through = res;
         })
   }
@@ -379,7 +437,7 @@ export class CustomerServiceHomeComponent implements OnInit {
     )
     .subscribe({
       next: (value) => {
-        console.log(value);
+        // console.log(value);
         this.md_queryId = value;
         this.searchResultVisibilityForQueryID('block');
         this.__isQuery_id_pending = false;
@@ -454,7 +512,7 @@ export class CustomerServiceHomeComponent implements OnInit {
          * Event Trigger after Business Type
          */
         this.customerServiceForm.controls['bu_type_id'].valueChanges.subscribe((res) => {
-          console.log(res);
+          // console.log(res);
           if(res.length > 0){
             this.disabledSubBroker(res);
             this.getRelationShipManagerMst(res, this.customerServiceForm.value.brn_cd);
@@ -489,7 +547,7 @@ export class CustomerServiceHomeComponent implements OnInit {
        * Event Trigger after Rlationship Manager
        */
       this.customerServiceForm.controls['sub_brk_cd'].valueChanges.subscribe((res) => {
-        console.log(res);
+        // console.log(res);
         this.setEuinDropdown(res, this.customerServiceForm.value.rm_id);
       });
       /**** End */
@@ -509,11 +567,10 @@ export class CustomerServiceHomeComponent implements OnInit {
 
   TabDetails(ev){
       this.customerServiceForm.patchValue({
-        query_status_id:'',
+        query_status_id:this.status_id ? this.status_id : '',
         query_mode_id: ''
       });
       this.queryDataSource = [];
-      // this.productId = this.__utility.encrypt_dtls(JSON.stringify((ev.tabDtls?.id)));
       this.productId = this.__utility.EncryptText(ev.tabDtls?.id.toString());
       this.fetchQuery(ev.tabDtls?.flag);
       this.setColumns(ev.tabDtls?.id)
@@ -525,7 +582,7 @@ export class CustomerServiceHomeComponent implements OnInit {
 
   fetchQuery = (flag) =>{
 
-      this.dbIntr.api_call(1,'/cusService/queryShow',this.__utility.convertFormData({
+      this.dbIntr.api_call(1,'/cus_service/queryShow',this.__utility.convertFormData({
         ...this.customerServiceForm.value,
         // product_id: this.__utility.decrypt_dtls(this.productId)
         product_id: this.__utility.DcryptText(this.productId)
@@ -566,7 +623,7 @@ export class CustomerServiceHomeComponent implements OnInit {
           }
           return el
         });
-        console.log(this.queryDataSource);
+        // console.log(this.queryDataSource);
       })
   }
 
@@ -597,7 +654,7 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
 
   fetchQueryStatus = () =>{
-    this.dbIntr.api_call(0,'/cusService/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
+    this.dbIntr.api_call(0,'/cus_service/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
           this.md_query_status = res;
     })
   }
@@ -670,7 +727,7 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
 
   getSelectedItemsFromParent = (ev) =>{
-        console.log(ev);
+        // console.log(ev);
   }
 
     /**
@@ -808,7 +865,7 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
   }
   showReport(scheme){
-      console.log(scheme);
+      // console.log(scheme);
       this.md_scheme = [];
       this.md_scheme = scheme;
   }

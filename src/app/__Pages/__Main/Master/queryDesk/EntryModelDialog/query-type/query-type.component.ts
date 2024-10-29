@@ -50,7 +50,7 @@ export class QueryTypeComponent implements OnInit {
   }
   submitQueryType(){
       // console.log(this.queryTypeForm.value);
-      this.DbIntr.api_call(1,'/cusService/queryTypeAddEdit',this.utils.convertFormData(this.queryTypeForm.value))
+      this.DbIntr.api_call(1,'/cus_service/queryTypeAddEdit',this.utils.convertFormData(this.queryTypeForm.value))
       .subscribe(res =>{
         console.log(res);
         this.utils.showSnackbar(`Query type ${this.queryTypeForm.value.id > 0 ? 'updated' : 'added'} successfully`,1)

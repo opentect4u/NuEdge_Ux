@@ -49,12 +49,12 @@ export class ModifyQueryStatusComponent implements OnInit {
     this.__isVisible = !this.__isVisible;
   }
   fetchQueryStatus = () =>{
-    this.__dbIntr.api_call(0,'/cusService/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
+    this.__dbIntr.api_call(0,'/cus_service/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
       this.md_queryStatus = res;
   })
   }
   submitQuery = () =>{
-      this.__dbIntr.api_call(1,'/cusService/queryAdd',this.utils.convertFormData(this.StatusForm.value))
+      this.__dbIntr.api_call(1,'/cus_service/queryAdd',this.utils.convertFormData(this.StatusForm.value))
       .subscribe((res:any) =>{
         if(res.suc == 1){
           const product_name = this.data.data.product_id == 3 ? 'INSURANCE' : (this.data.data.product_id == 4 ? 'FD' : 'MUTUAL FUND')

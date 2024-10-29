@@ -43,7 +43,7 @@ export class QueryGivenComponent implements OnInit {
       ...this.queryGivenByForm.value,
       id:this.queryGivenByForm.value.id.toString()
     }
-    this.DbIntr.api_call(1,'/cusService/queryGivenByAddEdit',this.utils.convertFormData(payload))
+    this.DbIntr.api_call(1,'/cus_service/queryGivenByAddEdit',this.utils.convertFormData(payload))
     .subscribe(res => {
       this.utils.showSnackbar(`Query given by ${this.queryGivenByForm.value.id > 0 ? 'updated' : 'added'} successfully`,1);
         this.dialogRef.close({

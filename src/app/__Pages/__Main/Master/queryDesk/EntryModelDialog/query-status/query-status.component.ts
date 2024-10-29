@@ -46,7 +46,7 @@ export class QueryStatusComponent implements OnInit {
       id:this.queryStatusForm.value.id.toString()
     }
     console.log(payload)
-    this.DbIntr.api_call(1,'/cusService/queryStatusAddEdit',this.utils.convertFormData(payload))
+    this.DbIntr.api_call(1,'/cus_service/queryStatusAddEdit',this.utils.convertFormData(payload))
     .subscribe(res => {
       this.utils.showSnackbar(`Query status ${this.queryStatusForm.value.id > 0 ? 'updated' : 'added'} successfully`,1);
         this.dialogRef.close({
