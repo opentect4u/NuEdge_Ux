@@ -589,7 +589,7 @@ export class CustomerServiceHomeComponent implements OnInit {
       const fb = new FormData();
       fb.append('query_id',global.getActualVal(this.customerServiceForm.getRawValue().query_id));
       fb.append('client_name',global.getActualVal(this.customerServiceForm.getRawValue().client_name));
-      fb.append('client_id',this.customerServiceForm.getRawValue().client_name ? global.getActualVal(this.customerServiceForm.getRawValue().client_name) : '');
+      fb.append('client_id',this.customerServiceForm.getRawValue().client_name ? global.getActualVal(this.customerServiceForm.getRawValue().client_id) : '');
       fb.append('pan_no',this.customerServiceForm.getRawValue().client_name ? global.getActualVal(this.customerServiceForm.getRawValue().pan_no) : '');
       fb.append('query_rec_by_id',global.getActualVal(this.customerServiceForm.getRawValue().query_receive_by));
       fb.append('query_solve_by_id',global.getActualVal(this.customerServiceForm.getRawValue().query_solve_by));
