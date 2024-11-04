@@ -453,7 +453,10 @@ export class CustomerServiceHomeComponent implements OnInit {
 
     this.customerServiceForm.controls['client_name'].valueChanges
       .pipe(
-        tap(()=> this.customerServiceForm.get('pan_no').setValue('')),
+        tap(()=> this.customerServiceForm.patchValue({
+         pan_no:'',
+         client_id:''
+        })),
         tap(() => {
           this.__isClientPending = true
         }),
@@ -586,15 +589,16 @@ export class CustomerServiceHomeComponent implements OnInit {
       const fb = new FormData();
       fb.append('query_id',global.getActualVal(this.customerServiceForm.getRawValue().query_id));
       fb.append('client_name',global.getActualVal(this.customerServiceForm.getRawValue().client_name));
-      fb.append('pan_no',global.getActualVal(this.customerServiceForm.getRawValue().pan_no));
+      fb.append('client_id',this.customerServiceForm.getRawValue().client_name ? global.getActualVal(this.customerServiceForm.getRawValue().client_name) : '');
+      fb.append('pan_no',this.customerServiceForm.getRawValue().client_name ? global.getActualVal(this.customerServiceForm.getRawValue().pan_no) : '');
       fb.append('query_rec_by_id',global.getActualVal(this.customerServiceForm.getRawValue().query_receive_by));
-      fb.append('query_solve_by',global.getActualVal(this.customerServiceForm.getRawValue().query_solve_by));
-      fb.append('query_given_by',global.getActualVal(this.customerServiceForm.getRawValue().query_given_by));
+      fb.append('query_solve_by_id',global.getActualVal(this.customerServiceForm.getRawValue().query_solve_by));
+      fb.append('query_given_by_id',global.getActualVal(this.customerServiceForm.getRawValue().query_given_by));
       fb.append('date_periods',global.getActualVal(this.customerServiceForm.getRawValue().date_periods));
       fb.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
       fb.append('query_status_id',global.getActualVal(this.customerServiceForm.getRawValue().query_status_id));
-      fb.append('query_receive_given_thrugh',global.getActualVal(this.customerServiceForm.getRawValue().query_receive_given_thrugh));
-      fb.append('query_excleted_level',global.getActualVal(this.customerServiceForm.getRawValue().query_excleted_level));
+      fb.append('query_receive_given_thrugh_id',global.getActualVal(this.customerServiceForm.getRawValue().query_receive_given_thrugh));
+      fb.append('query_excleted_level_id',global.getActualVal(this.customerServiceForm.getRawValue().query_excleted_level));
       fb.append('product_id',global.getActualVal(this.__utility.DcryptText(this.productId)));
       if(this.btn_type == 'A'){
         fb.append('euin_no',this.__utility.mapIdfromArray(this.customerServiceForm.getRawValue().euin_no, 'euin_no'));
@@ -765,7 +769,7 @@ export class CustomerServiceHomeComponent implements OnInit {
 
       this.customerServiceForm.get('client_name').reset(searchRlt.item.client_name, { emitEvent: false });
       this.customerServiceForm.get('pan_no').reset(searchRlt.item.pan);
-      // this.Rpt.get('client_id').reset(searchRlt.item.first_client_pan);
+      this.customerServiceForm.get('client_id').reset(searchRlt.item.id);
       this.searchResultVisibilityForClient('none');
       // if(this.Rpt.value.view_type == 'F'){
       //   this.getFamilyMembersAccordingTo_Id(searchRlt.item.client_id);
