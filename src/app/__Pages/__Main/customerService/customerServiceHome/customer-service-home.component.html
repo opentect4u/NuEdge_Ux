@@ -40,10 +40,14 @@
                           </ng-template>
                         </p-selectButton>
                           <a pButton 
+                          
                           type="button" icon="pi pi-plus" 
                           label="Add Query"  target="_blank"
                           [routerLink]="['/main/customer-service', queryId, productId]"
-                          class="p-button-link queryBtn"></a>
+                          class="p-button-link queryBtn p-button-rounded"></a>
+                          <!-- <div>
+                            <div class="pulse">Add Query</div>
+                            </div> -->
                         </div>
                         
                     </mat-card-header>
@@ -126,7 +130,7 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
-                                      <label for="query_receive_given_thrugh">Query Receive & Given Through</label>
+                                      <label for="query_receive_given_thrugh">Query Given Through</label>
                                       <select class="form-control" name="query_receive_given_thrugh" id="query_receive_given_thrugh" formControlName="query_receive_given_thrugh">
                                         <option value="">Select All</option>
                                         <option value="{{item.id}}" *ngFor="let item of md_query_rec_given_through">{{item.name}}</option>

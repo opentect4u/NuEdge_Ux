@@ -597,7 +597,7 @@ export class CustomerServiceHomeComponent implements OnInit {
       fb.append('date_periods',global.getActualVal(this.customerServiceForm.getRawValue().date_periods));
       fb.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
       fb.append('query_status_id',global.getActualVal(this.customerServiceForm.getRawValue().query_status_id));
-      fb.append('query_receive_given_thrugh_id',global.getActualVal(this.customerServiceForm.getRawValue().query_receive_given_thrugh));
+      fb.append('query_given_thrugh_id',global.getActualVal(this.customerServiceForm.getRawValue().query_receive_given_thrugh));
       fb.append('query_excleted_level_id',global.getActualVal(this.customerServiceForm.getRawValue().query_excleted_level));
       fb.append('product_id',global.getActualVal(this.__utility.DcryptText(this.productId)));
       if(this.btn_type == 'A'){
