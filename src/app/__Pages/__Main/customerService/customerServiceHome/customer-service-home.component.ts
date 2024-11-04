@@ -41,6 +41,7 @@ export class CustomerServiceHomeComponent implements OnInit {
 
   @ViewChild('op') Overlay__pannel:OverlayPanel;
 
+
   index:number = 0;
   md_scheme = [];
   settingsforBrnchDropdown = this.__utility.settingsfroMultiselectDropdown(
@@ -204,6 +205,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                 let dt = [];
                 let statusDtls:any = this.md_query_status;
                 this.md_product.forEach(el =>{
+                        
                         statusDtls = statusDtls.map((item:any) =>{
                             const hasProps = res?.hasOwnProperty(el.id.toString()) ? item?.id in res[el.id.toString()] : false;
                             item[item.status_name] = hasProps ? res[el.id.toString()][item.id].length : 0;
@@ -426,12 +428,12 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.customerServiceForm.controls['query_id'].valueChanges
     .pipe(
       tap(() => {
-        this.__isQuery_id_pending = true
+        this.__isQuery_id_pending =  this.customerServiceForm.getRawValue().query_id?.length > 2 
       }),
       debounceTime(200),
       distinctUntilChanged(),
       switchMap((dt) =>
-        dt?.length > 1 ? this.dbIntr.searchItems('/searchWithClient',dt) : []
+        dt?.length > 2 ? this.dbIntr.searchItems('/cus_service/searchQueryId',`${dt}&product_id=${this.__utility.DcryptText(this.productId)}`) : []
       ),
       map((x: any) => x.data)
     )
@@ -581,13 +583,28 @@ export class CustomerServiceHomeComponent implements OnInit {
 }
 
   fetchQuery = (flag) =>{
+      const fb = new FormData();
+      fb.append('query_id',global.getActualVal(this.customerServiceForm.getRawValue().query_id));
+      fb.append('client_name',global.getActualVal(this.customerServiceForm.getRawValue().client_name));
+      fb.append('pan_no',global.getActualVal(this.customerServiceForm.getRawValue().pan_no));
+      fb.append('query_rec_by_id',global.getActualVal(this.customerServiceForm.getRawValue().query_receive_by));
+      fb.append('query_solve_by',global.getActualVal(this.customerServiceForm.getRawValue().query_solve_by));
+      fb.append('query_given_by',global.getActualVal(this.customerServiceForm.getRawValue().query_given_by));
+      fb.append('date_periods',global.getActualVal(this.customerServiceForm.getRawValue().date_periods));
+      fb.append('date_range',global.getActualVal(this.date_range.inputFieldValue));
+      fb.append('query_status_id',global.getActualVal(this.customerServiceForm.getRawValue().query_status_id));
+      fb.append('query_receive_given_thrugh',global.getActualVal(this.customerServiceForm.getRawValue().query_receive_given_thrugh));
+      fb.append('query_excleted_level',global.getActualVal(this.customerServiceForm.getRawValue().query_excleted_level));
+      fb.append('product_id',global.getActualVal(this.__utility.DcryptText(this.productId)));
+      if(this.btn_type == 'A'){
+        fb.append('euin_no',this.__utility.mapIdfromArray(this.customerServiceForm.getRawValue().euin_no, 'euin_no'));
+        fb.append('brn_cd',this.__utility.mapIdfromArray(this.customerServiceForm.getRawValue().brn_cd, 'id'));
+        fb.append('rm_id',this.__utility.mapIdfromArray(this.customerServiceForm.getRawValue().rm_id, 'euin_no'));
+        fb.append('bu_type',this.__utility.mapIdfromArray(this.customerServiceForm.getRawValue().bu_type_id, 'bu_code'));
+        fb.append('sub_brk_cd',this.__utility.mapIdfromArray(this.customerServiceForm.getRawValue().sub_brk_cd, 'code'));
+      }
 
-      this.dbIntr.api_call(1,'/cus_service/queryShow',this.__utility.convertFormData({
-        ...this.customerServiceForm.value,
-        // product_id: this.__utility.decrypt_dtls(this.productId)
-        product_id: this.__utility.DcryptText(this.productId)
-
-      }))
+      this.dbIntr.api_call(1,'/cus_service/queryShow',fb)
       .pipe(pluck('data'))
       .subscribe((res:any) =>{
         this.queryDataSource = res.map(el =>{
@@ -668,6 +685,7 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
 
   searchQuery = () =>{
+    // console.log(this.customerServiceForm.getRawValue());
     // const product_id = this.__utility.decrypt_dtls(this.productId);
     const product_id = this.__utility.DcryptText(this.productId);
     const flag = this.md_product.filter(el => el.id == product_id);
@@ -726,8 +744,14 @@ export class CustomerServiceHomeComponent implements OnInit {
         }
   }
 
-  getSelectedItemsFromParent = (ev) =>{
+  getSelectedItemsFromParent = (searchRlt: {
+    flag: string;
+    item: any;
+  }) =>{
         // console.log(ev);
+        this.customerServiceForm.get('query_id').reset(searchRlt.item.query_id, { emitEvent: false });
+        // this.customerServiceForm.get('pan_no').reset(searchRlt.item.pan);
+        this.searchResultVisibilityForQueryID('none');
   }
 
     /**

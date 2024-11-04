@@ -46,17 +46,25 @@
   .badge{
     font-size: 9px!important;
   }
-td,
-th {
+td{
     border: 1px solid #dddddd;
     text-align: center;
     padding: 4px;
     /* width: 25%; */
 }
+
+th{
+  text-align: center;
+  padding: 8px;
+  font-size: 10px!important;
+} 
 tr:nth-child(even) {
   background-color: #dddddd;
 }
 
 .link:hover{
   background-color: #e7e7e7;
+}
+.bg-primary{
+  background-color: #10486b!important;
 }

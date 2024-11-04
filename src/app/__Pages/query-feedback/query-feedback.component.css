@@ -1,0 +1,23 @@
+.container{
+    /* background: #fff; */
+    min-height: 100vh;
+    /* min-width: 100%; */
+    position: relative;
+}
+.feedbackHolderContainer{
+    min-height: 364px;
+    max-width: 364px;
+    background: #fff;
+    border-radius: 10px;
+    /* padding: 30px; */
+    margin:10px 0px;
+    /* box-shadow: 20px -20px 3px 5px #e1e9f1; */
+}
+
+.feedbackTypo{
+    font-size: 10px;
+}
+.form-control{
+    background-color: #e0e0e0!important;
+    border: 0px!important;
+}

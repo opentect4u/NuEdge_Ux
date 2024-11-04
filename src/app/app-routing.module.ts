@@ -11,6 +11,14 @@ const routes: Routes = [
     loadChildren:() => import('./__Pages/__DownloadLink/valuation-rpt-download-link/valuation-rpt-download-link.module').then(m => m.ValuationRptDownloadLinkModule)
   },
   {
+      path:'query_dtls/:query_id',
+      loadChildren:() => import('./__Pages/QueryDtls/query-dtls.module').then(m => m.QueryDtlsModule)
+  },
+  {
+    path:'feedback/:query_id',
+    loadChildren:() => import('./__Pages/query-feedback/query-feedback.module').then(m => m.QueryFeedbackModule)
+  },
+  {
     path:'**',
     loadChildren:() => import('./__Pages/__DownloadLink/valuation-rpt-download-link/valuation-rpt-download-link.module').then(m => m.ValuationRptDownloadLinkModule)
   }

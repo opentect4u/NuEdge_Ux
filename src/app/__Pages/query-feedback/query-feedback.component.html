@@ -1,0 +1,52 @@
+<div class="container mx-auto d-flex align-items-center justify-content-center flex-column">
+                    <div class="imgContainer my-3">
+                                       <img src="../../../assets/images/logowithOutbg.png" 
+                                       alt="NuedgLogo"
+                                       />     
+                    </div>
+                    <div class="feedbackHolderContainer mat-elevation-z2 py-5 px-3">
+                            <h4 class="text-center">
+                                How are you feeling?
+                            </h4>
+                            <p class="text-center feedbackTypo my-2">
+                                Customer satisfaction is always a number one priority for us. Your feedback will help us make our services better!
+                            </p>
+                            <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()" class="p-3">
+                                    <div class="row">
+                                            <div class="col-sm-12">
+                                                        <label for="investor_name">Name</label>
+                                                        <input type="text" class="form-control" 
+                                                            placeholder="Your Name"
+                                                        formControlName="investor_name"/>
+                                            </div>
+                                            <div class="col-sm-12 my-2">
+                                                <label for="investor_email">Email</label>
+                                                <input type="text" 
+                                                placeholder="Your Email"
+                                                class="form-control" formControlName="investor_email"/>
+                                            </div>
+                                            <div class="col-sm-12 d-flex justify-content-start align-items-start flex-column">
+                                                <label for="rating">
+                                                    Please Rate our Services
+                                                </label>
+                                                <div class=" d-flex justify-content-start align-items-start">
+                                                    <p style="font-size: 2rem;">😡</p>
+                                                    <p style="font-size: 2rem;" class="mx-3">😠</p>
+                                                    <p style="font-size: 2rem;">🙂</p>
+                                                    <p style="font-size: 2rem;" class="mx-3">😃</p>
+                                                    <p style="font-size: 2rem;">😀</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                               <label>
+                                                Help us to serve you better (Please give your suggestion to improve our customer services).
+                                               </label> 
+                                                <textarea cols="10" rows="10" placeholder="Write Your Feedback"  formControlName="feedback"
+                                                class="form-control">
+                                                </textarea>
+                                                
+                                            </div>
+                                    </div>
+                            </form>
+                    </div>
+</div>
