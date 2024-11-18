@@ -5,6 +5,8 @@ export class MfackClmns {
     {field:'edit',header:'Edit',width:'3rem'},
     {field:'app_frm_view',header:'DOC View',width:'3rem'},
     {field:'entry_date',header:'Entry Date',width:'7rem'},
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+    { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
     {field:'tin_no',header:'TIN',width:'7rem'},
     {field:'branch_name',header:'Branch',width:'7rem'},
      {field:'sub_brk_cd',header:'Sub Broker Code',width:'7rem'},

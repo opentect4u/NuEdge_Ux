@@ -16,11 +16,14 @@
         [index]="subIndex"
         (GetTabDtls)="SubTabDetails($event)"></core-tab> -->
           <ng-container *ngIf="trans_type_id == 3;else nfo_financial">
-        <nonfinancial-acknowledgement></nonfinancial-acknowledgement>
+        <nonfinancial-acknowledgement 
+        [amcMst]="amcMst"
+        [trans_type_id]="trans_type_id"></nonfinancial-acknowledgement>
              
           </ng-container> 
           <ng-template #nfo_financial>
             <financial-acknowledgement
+           [amcMst]="amcMst"
             [trans_type_id]="trans_type_id"
           ></financial-acknowledgement>
           </ng-template>

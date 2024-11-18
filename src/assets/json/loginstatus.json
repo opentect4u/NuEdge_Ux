@@ -1,12 +1,12 @@
 [
   {
-    "id":"A",
-    "value":"L",
-    "name":"Logged"
-  },
-  {
     "id":"P",
     "value":"P",
+    "name":"Process"
+  },
+  {
+    "id":"N",
+    "value":"N",
     "name":"Pending"
   },
   {

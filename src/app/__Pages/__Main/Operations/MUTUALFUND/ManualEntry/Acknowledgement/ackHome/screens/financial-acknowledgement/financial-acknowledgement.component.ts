@@ -107,7 +107,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
   __clientMst: client[] = [];
   // __subbrkArnMst: any = [];
   // __euinMst: any = [];
-  amcMst: amc[] = [];
+  @Input() amcMst: amc[] = [];
   __RmMst: any =[];
 
   settingsforDropdown_forbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
@@ -167,7 +167,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
   __isVisible: boolean = true;
   ngOnInit() {
     this.getRntMst();
-    this.getAMCMst();
+    // this.getAMCMst();
      this.getLoggedinStatus();
   }
   setColumn(trans_id){
@@ -240,6 +240,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
     })
    }
   ngAfterViewInit() {
+    
     this.__ackForm.controls['dt_type'].valueChanges.subscribe((res) => {
       this.__ackForm.controls['date_range'].reset(
          res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
@@ -360,7 +361,10 @@ export class FinancialAcknowledgementComponent implements OnInit {
    //   /** Client Code Change */
      this.__ackForm.controls['client_name'].valueChanges
        .pipe(
-         tap(() => (this.__isClientPending = true)),
+         tap(() => (
+          this.__isClientPending = true,
+          this.__ackForm.get('client_code').setValue('')
+        )),
          debounceTime(200),
          distinctUntilChanged(),
          switchMap((dt) =>
@@ -595,7 +599,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
 
   getAckRpt(){
     const __ack = new FormData();
-    __ack.append('paginate', this.__pageNumber.value);
+    // __ack.append('paginate', this.__pageNumber.value);
     __ack.append('option', this.__ackForm.value.options);
     __ack.append('trans_id',this.transaction_id.toString());
     __ack.append('trans_type_id' ,this.trans_type_id.toString());
