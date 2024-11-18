@@ -111,7 +111,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
   __RmMst: any =[];
 
   settingsforDropdown_forbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
-  settingsforBuTypeDropdown = this.__utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',3);
+  settingsforBuTypeDropdown = this.__utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',1);
  settingsforRMDropdown = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',1);
  settingsforSubBrkDropdown = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',1);
  settingsforEuinDropdown = this.__utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
@@ -471,12 +471,15 @@ export class FinancialAcknowledgementComponent implements OnInit {
       this.getRelationShipManagerMst(res,this.__ackForm.value.brn_cd);
    })
    this.__ackForm.controls['rm_id'].valueChanges.subscribe(res =>{
+    console.log(this.__ackForm.value.bu_type);
      if(this.__ackForm.value.bu_type.findIndex(item => item.bu_code == 'B') != -1){
               this.getSubBrokerMst(res);
      }
      else{
-     this.__euinMst.length = 0;
+      this.__euinMst.length = 0;
        this.__euinMst = res;
+       this.__ackForm.controls['euin_no'].setValue([]);
+       this.__ackForm.controls['sub_brk_cd'].setValue([]);
      }
   })
   this.__ackForm.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
@@ -542,6 +545,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
   }
   }
   getBusinessTypeMst(brn_cd){
+    console.log(brn_cd);
     if(brn_cd.length > 0){
     this.__dbIntr
     .api_call(0,'/businessType','arr_branch_id='+JSON.stringify(brn_cd.map(item => {return item['id']})))

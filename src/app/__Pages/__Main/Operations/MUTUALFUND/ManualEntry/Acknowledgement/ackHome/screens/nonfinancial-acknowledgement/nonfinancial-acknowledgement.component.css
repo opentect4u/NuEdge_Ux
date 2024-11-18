@@ -1,0 +1,6 @@
+::ng-deep .multiselect-dropdown .dropdown-btn .selected-item-container .selected-item{
+    width: 203px!important;
+    white-space: nowrap!important;
+    overflow: hidden!important;
+    text-overflow: ellipsis!important;
+}

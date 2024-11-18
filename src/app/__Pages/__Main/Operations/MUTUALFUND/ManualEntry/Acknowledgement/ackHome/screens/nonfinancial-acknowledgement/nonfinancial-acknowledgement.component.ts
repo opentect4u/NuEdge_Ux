@@ -60,9 +60,9 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
   settingsforDropdown_forscheme = this.__utility.settingsfroMultiselectDropdown('id','scheme_name','Search Scheme',1);
   settingsforDropdown_forbrnch = this.__utility.settingsfroMultiselectDropdown('id','brn_name','Search Branch',1);
   settingsforBuTypeDropdown = this.__utility.settingsfroMultiselectDropdown('bu_code','bu_type','Search Business Type',1);
- settingsforRMDropdown = this.__utility.settingsfroMultiselectDropdown('id','rm_name','Search Relationship Manager',1);
- settingsforSubBrkDropdown = this.__utility.settingsfroMultiselectDropdown('id','sub_brk_cd','Search Sub Broker',1);
- settingsforEuinDropdown = this.__utility.settingsfroMultiselectDropdown('id','emp_name','Search Employee',1);
+ settingsforRMDropdown = this.__utility.settingsfroMultiselectDropdown('euin_no','emp_name','Search Relationship Manager',1);
+ settingsforSubBrkDropdown = this.__utility.settingsfroMultiselectDropdown('code','bro_name','Search Sub Broker',1);
+ settingsforEuinDropdown = this.__utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
   __isTinspinner: boolean = false;
   __isClientPending: boolean = false;
   __isSubArnPending: boolean = false;
@@ -320,8 +320,10 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
                  this.getSubBrokerMst(res);
         }
         else{
-        this.__euinMst.length = 0;
+          this.__euinMst.length = 0;
           this.__euinMst = res;
+          this.__ackForm.controls['euin_no'].setValue([]);
+          this.__ackForm.controls['sub_brk_cd'].setValue([]);
         }
      })
      this.__ackForm.controls['sub_brk_cd'].valueChanges.subscribe(res =>{
