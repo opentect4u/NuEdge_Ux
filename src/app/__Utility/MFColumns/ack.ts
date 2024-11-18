@@ -2,21 +2,21 @@ import { column } from 'src/app/__Model/tblClmns';
 export class MfackClmns {
   public static Summary_common =
   [
-    {field:'edit',header:'Edit'},
-    {field:'app_frm_view',header:'DOC View'},
-    {field:'entry_date',header:'Entry Date'},
-    {field:'tin_no',header:'TIN'},
-    {field:'branch_name',header:'Branch'},
-     {field:'sub_brk_cd',header:'Sub Broker Code'},
-     {field:'euin_no',header:'EUIN'},
-     {field:'first_client_name',header:'First Holder Name'},
-     {field:'first_client_code',header:'First Holder Code'},
-     {field:'first_client_pan',header:'First Holder PAN'},
-     {field:'trans_name',header:'Transction Type'},
-     {field:'scheme_name',header:'Scheme'},
-     {field:'application_no',header:'Application No'},
-     {field:'folio_no',header:'Folio No'},
-     {field:'amount',header:'Amount'},
+    {field:'edit',header:'Edit',width:'3rem'},
+    {field:'app_frm_view',header:'DOC View',width:'3rem'},
+    {field:'entry_date',header:'Entry Date',width:'7rem'},
+    {field:'tin_no',header:'TIN',width:'7rem'},
+    {field:'branch_name',header:'Branch',width:'7rem'},
+     {field:'sub_brk_cd',header:'Sub Broker Code',width:'7rem'},
+     {field:'euin_no',header:'EUIN',width:'7rem'},
+     {field:'first_client_name',header:'First Holder Name',width:'7rem'},
+     {field:'first_client_code',header:'First Holder Code',width:'7rem'},
+     {field:'first_client_pan',header:'First Holder PAN',width:'7rem'},
+     {field:'trans_name',header:'Transction Type',width:'7rem'},
+     {field:'scheme_name',header:'Scheme',width:'20rem'},
+     {field:'application_no',header:'Application No',width:'7rem'},
+     {field:'folio_no',header:'Folio No',width:'7rem'},
+     {field:'amount',header:'Amount',width:'7rem'},
   ]
 
   public static Summary_Sip=[

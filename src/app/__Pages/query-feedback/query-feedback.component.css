@@ -21,3 +21,14 @@
     background-color: #e0e0e0!important;
     border: 0px!important;
 }
+
+::ng-deep .p-rating .p-rating-icon{
+        font-size: 2.143rem!important;
+        color: #FFC107!important;
+}
+::ng-deep .p-rating .p-rating-icon:focus{
+    box-shadow:none!important;
+}
+.form-control:focus{
+    box-shadow: none!important;
+}

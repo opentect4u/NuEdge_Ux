@@ -25,8 +25,32 @@
       <!--  -->
 
       <div class="row">
+        <div class="col-sm-12">
+          <label for="ack_status">Acknowledgement Status
+            <span class="text-danger" *ngIf="!data.isViewMode">*</span>
+          </label>
+          <select name="ack_status"
+          id="ack_status"
+          class="form-control"
+          formControlName="ack_status">
+          <option value="">Select</option>
+          <option [value]="trnStatus.id" *ngFor="let trnStatus of __trns_status">{{trnStatus.name}}</option>
+        </select>
+
+        <div class="invalid-feedback" *ngIf="__ackUpload.get('ack_status').invalid && (__ackUpload.get('ack_status').dirty || __ackUpload.get('ack_status').touched)">
+          <span class="invalid-feedback" *ngIf="(__ackUpload.get('ack_status')).errors?.required">
+            *Please provide status
+          </span>
+        </div>
+        </div>
+
+        <ng-container *ngIf="__ackUpload.value.ack_status == 'P'">
+
         <div class="col-sm-12 my-2" >
-          <label for="rnt_login_dt">Login Date <span class="text-danger">*</span></label>
+          <label for="rnt_login_dt">Login Date 
+            <span class="text-danger" *ngIf="!data.isViewMode">*</span>
+
+          </label>
           <input
           [max]="getcurrenctDatetime()"
           [readonly]="this.data.isViewMode"
@@ -39,7 +63,10 @@
         </div>
 
         <div class="col-sm-12" >
-          <label for="login_time">Login Time <span class="text-danger">*</span></label>
+          <label for="login_time">Login Time 
+            <span class="text-danger" *ngIf="!data.isViewMode">*</span>
+
+          </label>
           <input
           [readonly]="this.data.isViewMode"
           step="1"
@@ -49,17 +76,6 @@
           class="form-control"
           formControlName="rnt_login_time">
         </div>
-
-        <!--
-          <div class="col-sm-12 my-2">
-          <label for="login_date">Login Date <span class="text-danger">*</span></label>
-          <input type="date" name="login_date" id="login_date" formControlName="rnt_login_dt">
-          </div>
-          <div class="col-sm-12 my-2">
-            <label for="login_time">Login Date <span class="text-danger">*</span></label>
-          <input type="time" step="1" name="login_time" id="login_time" class="form-control" formControlName="rnt_login_time">
-          </div>
-        -->
 
         <div class="col-sm-12 my-2" *ngIf="!this.data.isViewMode">
           <label for="ack_file">Upload Acknowledgement <span class="text-danger">*</span></label>
@@ -84,6 +100,8 @@
             </div>
           </div>
         </div>
+      </ng-container>
+
       </div>
       <div class="row mb-3">
         <div class="col-sm-12">

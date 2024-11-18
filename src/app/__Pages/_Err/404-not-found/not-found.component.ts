@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AU_TK } from 'src/app/strings/localStorage_key';
 
 @Component({
   selector: 'app-not-found',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotFoundComponent implements OnInit {
 
+  hasStorage = localStorage.getItem(AU_TK)
+
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
 }

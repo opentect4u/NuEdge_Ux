@@ -11,6 +11,12 @@
                             <p class="text-center feedbackTypo my-2">
                                 Customer satisfaction is always a number one priority for us. Your feedback will help us make our services better!
                             </p>
+
+                            <p class="text-center feedbackTypo" *ngIf="feedbackForm.value.query_id">
+                                 QUERY ID - <span
+                                   
+                                 >{{this.feedbackForm.value.query_id}}</span>
+                            </p>
                             <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()" class="p-3">
                                     <div class="row">
                                             <div class="col-sm-12">
@@ -19,7 +25,7 @@
                                                             placeholder="Your Name"
                                                         formControlName="investor_name"/>
                                             </div>
-                                            <div class="col-sm-12 my-2">
+                                            <div class="col-sm-12 my-3">
                                                 <label for="investor_email">Email</label>
                                                 <input type="text" 
                                                 placeholder="Your Email"
@@ -27,24 +33,38 @@
                                             </div>
                                             <div class="col-sm-12 d-flex justify-content-start align-items-start flex-column">
                                                 <label for="rating">
-                                                    Please Rate our Services
+                                                    Please rate our services
                                                 </label>
                                                 <div class=" d-flex justify-content-start align-items-start">
-                                                    <p style="font-size: 2rem;">😡</p>
+                                                    <!-- <p style="font-size: 2rem;" class="mx-3">😡</p>
                                                     <p style="font-size: 2rem;" class="mx-3">😠</p>
-                                                    <p style="font-size: 2rem;">🙂</p>
+                                                    <p style="font-size: 2rem;" class="mx-3">🙂</p>
                                                     <p style="font-size: 2rem;" class="mx-3">😃</p>
-                                                    <p style="font-size: 2rem;">😀</p>
+                                                    <p style="font-size: 2rem;" class="mx-3">😀</p> -->
+                                                    <p-rating formControlName="rating" [cancel]="false"
+                                                    ></p-rating>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-12 my-3">
                                                <label>
-                                                Help us to serve you better (Please give your suggestion to improve our customer services).
+                                                Feedback
                                                </label> 
-                                                <textarea cols="10" rows="10" placeholder="Write Your Feedback"  formControlName="feedback"
+                                                <textarea cols="10" rows="3" placeholder="Write Your Feedback"  formControlName="query_feedback"
                                                 class="form-control">
                                                 </textarea>
                                                 
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label>
+                                                 Suggestion (Help us to serve you better, please give your suggestion to improve our customer services).
+                                                </label> 
+                                                 <textarea cols="10" rows="5" placeholder="Write Your Suggestion"  formControlName="suggestion"
+                                                 class="form-control">
+                                                 </textarea>
+                                                 
+                                             </div>
+                                            <div class="col-sm-12 mt-3 d-flex align-items-center justify-content-end">
+                                                <p-button type="submit" [disabled]="feedbackForm.invalid" label="Submit" class="p-button-lg"></p-button>
                                             </div>
                                     </div>
                             </form>

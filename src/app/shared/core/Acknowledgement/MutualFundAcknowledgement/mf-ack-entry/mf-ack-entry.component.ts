@@ -7,6 +7,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { fileValidators } from 'src/app/__Utility/fileValidators';
 import { environment } from 'src/environments/environment';
+import fdmanualUpdateTrnstatus from '../../../../../../assets/json/Master/fdmanualUpdateTrnstatus.json';
 
 @Component({
   selector: 'app-mf-ack-entry',
@@ -15,12 +16,13 @@ import { environment } from 'src/environments/environment';
 })
 export class MfAckEntryComponent implements OnInit {
   allowedExtensions = ['pdf'];
-
+  __trns_status = fdmanualUpdateTrnstatus;
   __ackUpload = new FormGroup({
+    ack_status: new FormControl({value:this.data.data.ack_status ? this.data.data.ack_status : '',disabled:this.data.isViewMode},[Validators.required]),
     login_cutt_off: new FormControl(this.data.data.rnt_login_cutt_off ? this.data.data.rnt_login_cutt_off : ''),
-    rnt_login_dt: new FormControl(this.data.data.rnt_login_dt ? this.data.data.rnt_login_dt.split(' ')[0] : '',[Validators.required]),
-    ack_file: new FormControl('',[Validators.required,fileValidators.fileExtensionValidator(this.allowedExtensions)]),
-    rnt_login_time: new FormControl(this.data.data.rnt_login_dt ? this.data.data.rnt_login_dt.split(' ')[1] : '',[Validators.required]),
+    rnt_login_dt: new FormControl(this.data.data.rnt_login_dt ? this.data.data.rnt_login_dt.split(' ')[0] : ''),
+    ack_file: new FormControl(''),
+    rnt_login_time: new FormControl(this.data.data.rnt_login_dt ? this.data.data.rnt_login_dt.split(' ')[1] : ''),
     remarks: new FormControl(this.data.data.ack_remarks ? this.data.data.ack_remarks : ''),
     file: new FormControl(this.data.data.ack_copy_scan ? `${environment.ack_formUrl + this.data.data.ack_copy_scan}` : '')
   })
@@ -36,6 +38,17 @@ export class MfAckEntryComponent implements OnInit {
   ) { }
   ngOnInit(){}
 
+  ngAfterViewInit(){
+        this.__ackUpload.get('ack_status').valueChanges.subscribe(res=> {
+              this.__ackUpload.get('rnt_login_dt').setValidators(res == 'P' ? [Validators.required] : null);
+              this.__ackUpload.get('rnt_login_time').setValidators(res == 'P' ? [Validators.required] : null);
+              this.__ackUpload.get('ack_file').setValidators(res == 'P' ? [Validators.required,fileValidators.fileExtensionValidator(this.allowedExtensions)] : null);
+              this.__ackUpload.get('rnt_login_dt').updateValueAndValidity();
+              this.__ackUpload.get('rnt_login_time').updateValueAndValidity();
+              this.__ackUpload.get('ack_file').updateValueAndValidity();
+        })
+  }
+
   getcurrenctDatetime(){
     var now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -49,6 +62,8 @@ export class MfAckEntryComponent implements OnInit {
       __ackUpload.append('ack_copy_scan',this.__ackUpload.value.file);
       __ackUpload.append('rnt_login_time',this.__ackUpload.value.rnt_login_time);
       __ackUpload.append('ack_remarks',this.__ackUpload.value.remarks);
+      __ackUpload.append('ack_status',this.__ackUpload.value.ack_status);
+
 
       this.__dbIntr.api_call(1,'/ackUpload',__ackUpload).subscribe((res: any) =>{
         this.dialogRef.close({tin_no:this.data.tin_no,data:res.data});

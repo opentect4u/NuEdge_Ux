@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { AckmainComponent } from './ackMain.component';
 import { RouterModule, Routes } from '@angular/router';
-import { ManualEntryResolver } from 'src/app/__Core/Resolver/manual-entry.resolver';
+// import { ManualEntryResolver } from 'src/app/__Core/Resolver/manual-entry.resolver';
 const routes: Routes = [
   {
     path: '',
@@ -15,24 +15,24 @@ const routes: Routes = [
           import('./ackHome/ackhome.module').then((m) => m.AckhomeModule),
         data: { breadcrumb: null },
       },
-      {
-        path: 'ackEntry/:trans_type_id',
-        loadChildren: () =>
-          import('./ackEntryfin/ackEntry.module').then((m) => m.AckentryModule),
-        resolve: {
-          data: ManualEntryResolver,
-        },
-      },
-      {
-        path: 'ackNonFin/:trans_type_id',
-        loadChildren: () =>
-          import('./ackEntryNonFin/ackEntryNonFin.module').then(
-            (m) => m.AckEntryNonFinModule
-          ),
-        resolve: {
-          data: ManualEntryResolver,
-        },
-      },
+      // {
+      //   path: 'ackEntry/:trans_type_id',
+      //   loadChildren: () =>
+      //     import('./ackEntryfin/ackEntry.module').then((m) => m.AckentryModule),
+      //   resolve: {
+      //     data: ManualEntryResolver,
+      //   },
+      // },
+      // {
+      //   path: 'ackNonFin/:trans_type_id',
+      //   loadChildren: () =>
+      //     import('./ackEntryNonFin/ackEntryNonFin.module').then(
+      //       (m) => m.AckEntryNonFinModule
+      //     ),
+      //   resolve: {
+      //     data: ManualEntryResolver,
+      //   },
+      // },
     ],
   },
 ];

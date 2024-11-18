@@ -188,12 +188,11 @@ export class CustomerServiceHomeComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.fetchProduct();
     this.fetchQueryStatus();
+    this.fetchProduct();
     this.fetchQueryReceievGivenThrough();
     this.fetchQueryGivenBy();
     this.fetchEmployee();
-    this.fetchCustomerServiceIndex();
     setTimeout(() => {
       this.customerServiceForm.get('date_periods').setValue('M',{emitEvent:true});
       }, 500);
@@ -205,7 +204,6 @@ export class CustomerServiceHomeComponent implements OnInit {
                 let dt = [];
                 let statusDtls:any = this.md_query_status;
                 this.md_product.forEach(el =>{
-                        
                         statusDtls = statusDtls.map((item:any) =>{
                             const hasProps = res?.hasOwnProperty(el.id.toString()) ? item?.id in res[el.id.toString()] : false;
                             item[item.status_name] = hasProps ? res[el.id.toString()][item.id].length : 0;
@@ -248,6 +246,7 @@ export class CustomerServiceHomeComponent implements OnInit {
           });
           this.queryDataSource = [];
           this.productId = this.__utility.EncryptText(data.product_id.toString());
+          this.customerServiceForm.get('date_periods').setValue('')
           this.fetchQuery(data.short_name);
           this.setColumns(data.product_id)
         }
@@ -677,6 +676,8 @@ export class CustomerServiceHomeComponent implements OnInit {
   fetchQueryStatus = () =>{
     this.dbIntr.api_call(0,'/cus_service/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
           this.md_query_status = res;
+      this.fetchCustomerServiceIndex();
+
     })
   }
 

@@ -17,12 +17,16 @@ export class QueryDtlsComponent implements OnInit {
   }
 
   fetchQueryDetails = (query_id:string) =>{
-      console.log(query_id)
-      this.dbIntr.api_call(1,`/cus_service/queryShow?id=${13}`,null)
+      // console.log(query_id)
+      // eyJpdiI6IlViYk5XRythYjFwVTltTy9KYnJaZ1E9PSIsInZhbHVlIjoiSUlLMFgyY3prL0kvMktRcC93WVFDUmwzMGxCWDcyTU1qWlY0dUVkbTdzMD0iLCJtYWMiOiIxODczYjBjZDQwOGI5Njc1NGMzY2YyYzg2YWM0NmExZGMxMjRmYzA0ZTAzZjA3YTkzOGY3ZGQ5ODc4ZTAwNjVlIiwidGFnIjoiIn0=
+      this.dbIntr.api_call(1,`/cus_service/queryShowDetails?query_id=${query_id}`,null)
       .pipe(pluck('data'))
-      .subscribe(res =>{
-            console.log(res);
-            this.query_dtls = res;
+      .subscribe((res:any) =>{
+            this.query_dtls = {
+              ...res,
+              amc_name:res.allscheme.length > 0 ?  res?.allscheme[0]?.schemename?.amc_name : '',
+              scheme_name:res.allscheme.map(el => el?.schemename?.scheme_name).toString()
+            };
       })
   }
 

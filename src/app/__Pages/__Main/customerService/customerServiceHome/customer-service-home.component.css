@@ -19,7 +19,7 @@
     -moz-animation: glowing 1500ms infinite;
     -o-animation: glowing 1500ms infinite;
     animation: glowing 1500ms infinite; */
-    animation: shadow-pulse 1.5s infinite;
+    animation: shadow-pulse 1s infinite;
   }
   @keyframes shadow-pulse
 {

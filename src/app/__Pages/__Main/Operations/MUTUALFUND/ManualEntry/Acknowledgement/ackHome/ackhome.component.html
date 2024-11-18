@@ -1,7 +1,30 @@
-<div class="row flexSec">
+<!-- <div class="row flexSec">
   <div class="col-sm-8">
     <div class="row">
       <shared-menu-item [items]="menu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
     </div>
   </div>
-</div>
+</div> -->
+<div class="row flexSec my-3">
+  <div class="col-sm-12">
+    <core-tab [Tab]="trnsType" 
+    [index]="index"
+    (GetTabDtls)="TabDetails($event)"></core-tab>
+    <mat-card class="matTab">
+      <mat-card-content class="p-3">
+        <!-- <core-tab [Tab]="__transType"
+        [index]="subIndex"
+        (GetTabDtls)="SubTabDetails($event)"></core-tab> -->
+          <ng-container *ngIf="trans_type_id == 3;else nfo_financial">
+        <nonfinancial-acknowledgement></nonfinancial-acknowledgement>
+             
+          </ng-container> 
+          <ng-template #nfo_financial>
+            <financial-acknowledgement
+            [trans_type_id]="trans_type_id"
+          ></financial-acknowledgement>
+          </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  </div>

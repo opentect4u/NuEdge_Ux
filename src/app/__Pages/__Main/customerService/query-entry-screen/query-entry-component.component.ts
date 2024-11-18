@@ -101,7 +101,7 @@ export class QueryEntryComponentComponent implements OnInit {
        contact_no:new FormControl('',[Validators.pattern("^[0-9]*$")]),
        email_id:new FormControl('',[Validators.email]),
        query_tat:new FormControl(''),
-       query_receive_by_id:new FormControl(''),
+       query_rec_by_id:new FormControl(''),
        expected_close_date: new FormControl(''),
        selectAll:new FormControl({
         value:false,
@@ -172,7 +172,7 @@ export class QueryEntryComponentComponent implements OnInit {
     this.utility.__userDtls$.subscribe(res => {
         this.queryEntryForm.patchValue({
           entry_name:res ? res?.name : '',
-          query_receive_by_id:res?.id
+          query_rec_by_id:res?.id
         });
         this.queryEntryForm.get('entry_name').disable();
     })
@@ -707,7 +707,6 @@ export class QueryEntryComponentComponent implements OnInit {
           investor_mobile:'',
           application_no:'',
           query_given_by_id:'',
-          entry_name:'',
           query_subtype_id:'',
           query_details:'',
           entry_file:null,
@@ -763,7 +762,7 @@ export class QueryEntryComponentComponent implements OnInit {
     this.__dbIntr.api_call(1,'/cus_service/queryAdd',formData)
       .pipe(pluck('data')).subscribe((res:any) =>{
         // this.setForm();
-        this.utility.showSnackbar(`Query with id ${res.query_id} has been registered successfully`,1)
+        this.utility.showSnackbar(`Query with id ${res.query_id} has been updated successfully`,1)
       })
   }
 

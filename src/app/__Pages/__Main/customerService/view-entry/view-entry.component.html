@@ -442,8 +442,8 @@
                                             </a>
                                         </div>
                                         <div class="col-sm-12">
-                                                <label for="remarks">Remarks</label>
-                                                <textarea   id="remarks" name="remarks" rows="4" class="form-control" formControlName="remarks" placeholder="Enter Remarks" cols="12"></textarea>
+                                                <label for="remarks">Reply Description</label>
+                                                <textarea   id="remarks" name="remarks" rows="4" class="form-control" formControlName="remarks" placeholder="Enter Reply Description" cols="12"></textarea>
                                                 <div class="invalid-feedback" *ngIf="queryEntryForm.get('remarks').invalid && (queryEntryForm.get('remarks').dirty || queryEntryForm.get('remarks').touched)">
                                                     <span class="invalid-feedback" *ngIf="(queryEntryForm.get('remarks').errors?.required)">*Please provide remarks</span>
                                                   </div>

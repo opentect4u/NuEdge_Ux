@@ -20,7 +20,7 @@ const routes: Routes = [
   },
   {
     path:'**',
-    loadChildren:() => import('./__Pages/__DownloadLink/valuation-rpt-download-link/valuation-rpt-download-link.module').then(m => m.ValuationRptDownloadLinkModule)
+    loadChildren:() => import('./__Pages/_Err/404-not-found/404-not-found.module').then(m => m.NotFoundModule)
   }
 ];
 
