@@ -1,3 +1,5 @@
+<ng-container *ngIf="__transType.length > 0">
+
 <core-tab [Tab]="__transType" (GetTabDtls)="TabDetails($event)"></core-tab>
 <ng-template #SearchBtn>
     <p-button
@@ -253,7 +255,7 @@
        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
        [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '200rem' }">
+        [tableStyle]="{ 'min-width': '300rem' }">
         <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between">
               <div>
@@ -382,3 +384,4 @@
     </div>
 
   </div>
+</ng-container>

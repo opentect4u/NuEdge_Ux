@@ -42,6 +42,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
   @ViewChild('dt') primeTbl :Table;
   @Input() product_id:number = 1;
   __euinMst: any = [];
+  clmList:column[] = [];
 
   private _trans_type_id:number;
   @Input() 
@@ -52,7 +53,6 @@ export class FinancialAcknowledgementComponent implements OnInit {
   public set trans_type_id(transTypeId:number){
     if(transTypeId){
       this._trans_type_id = transTypeId;
-      console.log('lawra' + transTypeId);
       this.__transType = [];
       this.getTransactionType();
     }
@@ -226,6 +226,10 @@ export class FinancialAcknowledgementComponent implements OnInit {
       .api_call(0, '/transction', ('product_id=' +this.product_id +'&trans_type_id=' + this.trans_type_id))
       .pipe(pluck('data'))
       .subscribe((res: any) => {
+        this.setColumns(res[0].id,1);
+        this.transaction_id = res[0].id;
+        // this.getAckRpt();
+        this.reset();
         this.__transType = res.map(({id,trns_name}) => ({
           id,
           tab_name:trns_name,
@@ -604,7 +608,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
   getAckRpt(){
     const __ack = new FormData();
     // __ack.append('paginate', this.__pageNumber.value);
-    __ack.append('option', this.__ackForm.value.options);
+    // __ack.append('option', this.__ackForm.value.options);
     __ack.append('trans_id',this.transaction_id.toString());
     __ack.append('trans_type_id' ,this.trans_type_id.toString());
     // __ack.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
@@ -873,13 +877,44 @@ export class FinancialAcknowledgementComponent implements OnInit {
     }
   }
   TabDetails(ev){
+    console.log(ev);
     if(ev.index >= 0){
       this.transaction_id = ev.tabDtls.id;
-      this.getAckRpt();
-      this.setColumn(this.transaction_id);
+      this.setColumns(this.transaction_id,1)
+      this.reset();
+
+      // this.getAckRpt();
+      console.log('trsns' + this.transaction_id);
+      // this.setColumn(this.transaction_id);
+      // 
     }
-  
    }
+
+   setColumns(trans_id,option){
+    var clmn;
+    const clmnToRmv = ['edit','app_frm_view']
+    switch(trans_id.toString()){
+      case '4' :
+      case '1' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Pip); break;
+      case '5' :
+      case '2' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Sip); break;
+      case '6' :
+      case '3' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Switch); break;
+      case '35' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_nfoCombo); break;
+    }
+   this.clmList = clmn
+   if(option == 2){
+        this.__columns = (trans_id == 2 || trans_id == 5) ? global.getColumnsAfterMerge(MfackClmns.Summary_common.filter(item => item.field!='edit') ,MfackClmns.Summary_Sip)
+        : global.getColumnsAfterMerge(MfackClmns.Summary_common.filter(item => item.field!='edit') ,MfackClmns.Summary_Pip_Switch)
+   }
+   else{
+    this.__columns = this.clmList;
+   }
+  //  this.__columns = option == '2' ? MfackClmns.Summary.filter(item => item.field!='edit') : this.clmList;
+  //  this.SelectedClms = this.__columns.map(x => x.field);
+  //  this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});
+
+  }
    close(ev){
     this.__ackForm.patchValue({
       frm_dt: this.__ackForm.getRawValue().date_range ? dates.getDateAfterChoose(this.__ackForm.getRawValue().date_range[0]) : '',
@@ -934,6 +969,8 @@ export class FinancialAcknowledgementComponent implements OnInit {
     this.__subbrkArnMst.length = 0;
     this.__euinMst.length = 0;
     this.__bu_type.length = 0;
+    this.__ackForm.get('client_name').setValue('',{emitEvent:false});
+    this.__ackForm.get('tin_no').setValue('',{emitEvent:false});
     this.__ackForm.patchValue({
       options:2,
       date_range:'',
@@ -941,9 +978,8 @@ export class FinancialAcknowledgementComponent implements OnInit {
       frm_dt:'',
       to_dt:'',
       scheme_id:[],
-      tin_no: '',
       client_code: '',
-      client_name:''
+      btnType:'R'
     })
 
     this.__ackForm.get('brn_cd').reset([],{emitEvent:false});

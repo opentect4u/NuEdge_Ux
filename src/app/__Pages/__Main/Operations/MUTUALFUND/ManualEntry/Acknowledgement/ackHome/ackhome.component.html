@@ -5,7 +5,7 @@
     </div>
   </div>
 </div> -->
-<div class="row flexSec my-3">
+<div class="row flexSec my-3" *ngIf="trnsType.length > 0">
   <div class="col-sm-12">
     <core-tab [Tab]="trnsType" 
     [index]="index"

@@ -1,3 +1,5 @@
+<ng-container *ngIf="__transType.length > 0">
+
 <core-tab [Tab]="__transType" (GetTabDtls)="TabDetails($event)"></core-tab>
 <ng-template #SearchBtn>
     <p-button
@@ -385,8 +387,8 @@
          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
          [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
-          [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-          [tableStyle]="{ 'min-width': '200rem' }">
+          [responsive]="true" styleClass="p-datatable-stripped p-datatable-sm"
+          [tableStyle]="{ 'min-width': '374rem' }">
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between">
               <div>
@@ -402,7 +404,7 @@
           <ng-template pTemplate="header" let-columns>
             <tr>
               <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" 
-                [style.min-width]="col.width"
+                [style.min-width]="col.field == 'edit' || col.field == 'app_frm_view' ?'3rem' : col.width"
               >
                 {{ col.header }}
                 <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
@@ -416,7 +418,7 @@
            
             >
 
-              <td *ngFor="let col of columns" [style.min-width]="col.width">
+              <td *ngFor="let col of columns" [style.min-width]="col.field == 'edit' || col.field == 'app_frm_view' ?'3rem' : col.width">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'edit'">
                     <p-button [icon]="finance['form_status'] == 'P' ? 'pi pi-pencil' : 'pi pi-eye'" (click)="populateDT(finance)"
@@ -542,3 +544,5 @@
     </div>
 
 </div>
+</ng-container>
+

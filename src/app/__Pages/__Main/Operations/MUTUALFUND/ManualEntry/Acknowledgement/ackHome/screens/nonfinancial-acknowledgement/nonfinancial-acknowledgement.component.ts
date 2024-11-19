@@ -130,7 +130,7 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
   ) {}
   __isVisible: boolean = true;
   ngOnInit() {
-    this.setColumns();
+    // this.setColumns();
     this.getRntMst();
     // this.getTransactionType();
     // this.getAmcMst();
@@ -183,6 +183,9 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
       .api_call(0, '/showTrans', 'trans_type_id=' + this.trans_type_id)
       .pipe(pluck('data'))
       .subscribe((res: any) => {
+        this.setColumn(res[0]?.id);
+        this.transaction_id = res[0].id;
+        this.submitAck();
         this.__transType = res.map(({id,trns_name}) => ({
           id,
           tab_name:trns_name,
@@ -241,7 +244,9 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
     
         // AMC SEARCH
         this.__ackForm.controls['amc_name'].valueChanges.subscribe(res =>{
-       this.getAMCwiseScheme(res);
+          if(res.length > 0){
+            this.getAMCwiseScheme(res);
+          }
         })
         // End
     
@@ -687,11 +692,55 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
   }
   TabDetails(ev){
     this.transaction_id = ev.tabDtls.id;
-    this.submitAck();
+    this.setColumn( ev.tabDtls.id);
+    // this.submitAck();
+    this.reset();
    }
    setColumns(){
    this.__columns = nonFinAckClms.SUMMARY_COPY;
    }
+   setColumn(trns_id){
+    const clm = ['edit','app_frm_view'];
+    var columnsMst;
+    switch(trns_id){
+      case 32:columnsMst =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.CMOH);
+              break;
+      case 22:columnsMst =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.AC);
+              break;
+      case 18:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.COCD);
+              break;
+      case 23:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.CON);
+      break;
+      case 16:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.CBU);
+      break;
+      case 15:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.COBK);
+      break;
+      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.FCM);
+      break;
+      case 14:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.COB);
+      break;
+      case 11:
+      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.NA_OR_NC);break;
+      case 30: columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.SWPR);break;
+      case 31:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.STP_REGISTRATION);break;
+      case 19:columnsMst =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.TRANSMISSION);break
+      case 29:columnsMst =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.REDEMPTION);break
+      case 36:
+      case 37:
+      case 38:columnsMst = global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.PAUSE)
+              break;
+      case 7:
+      case 8:
+      case 9:columnsMst = global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.CANCELATION)
+              break;
+      default:columnsMst = nonFinAckClms.COLUMN_SELECTOR
+              break;
+    }
+    // this.columns = columnsMst;
+      this.__columns = columnsMst;
+     
+    //  this.Selected nClmns =  this.__columns.map(item => {return item['field']}).filter(x => !clm.includes(x));
+  }
    customSort(ev){
     // this.sort.order = ev.sortOrder;
     // this.sort.field = ev.sortField;
@@ -726,7 +775,8 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
       scheme_id:[],
       frm_dt:'',
       to_dt:'',
-      rm_id:[]
+      rm_id:[],
+       btnType:'R'
     });
     this.__ackForm.get('amc_name').setValue([],{emitEvent:false});
     this.schemeMst.length = 0;
