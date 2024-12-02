@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomerServiceComponent } from './customer-service.component';
 import { RouterModule, Routes } from '@angular/router';
+// import { TatRemarksComponent } from './tat-remarks/tat-remarks.component';
 
 const routes:Routes = [
   {
@@ -32,7 +33,8 @@ const routes:Routes = [
 
 @NgModule({
   declarations: [
-    CustomerServiceComponent
+    CustomerServiceComponent,
+    // TatRemarksComponent
   ],
   imports: [
     CommonModule,

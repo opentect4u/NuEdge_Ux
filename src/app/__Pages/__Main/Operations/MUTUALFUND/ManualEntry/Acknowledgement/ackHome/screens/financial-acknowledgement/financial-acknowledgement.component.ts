@@ -740,12 +740,13 @@ export class FinancialAcknowledgementComponent implements OnInit {
   updateRow(row_obj) {
     this.__ackMst.data = this.__ackMst.data.filter((value: any, key) => {
       if (value.tin_no == row_obj.tin_no) {
-        (value.rnt_login_cutt_off = row_obj.rnt_login_cutt_off),
-          (value.rnt_login_dt = row_obj.rnt_login_dt),
-          (value.rnt_login_time = row_obj.rnt_login_dt?.split(' ')[1]),
-          (value.ack_copy_scan = `${row_obj.ack_copy_scan}`),
-          (value.form_status = row_obj.form_status),
-          (value.ack_remarks = row_obj.ack_remarks);
+        value.rnt_login_cutt_off = row_obj.rnt_login_cutt_off;
+          value.ack_status = row_obj.ack_status;
+          value.rnt_login_dt = row_obj.rnt_login_dt;
+          value.rnt_login_time = row_obj.rnt_login_dt?.split(' ')[1];
+          value.ack_copy_scan = `${row_obj.ack_copy_scan}`;
+          value.form_status = row_obj.form_status;
+          value.ack_remarks = row_obj.ack_remarks
       }
       return true;
     });

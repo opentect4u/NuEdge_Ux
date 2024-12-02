@@ -221,7 +221,7 @@
           <tr>
             <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 20rem">
               {{ col.header }}
-              <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
+              <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view' && col.field!= 'ack_copy_scan'" [field]="col.field">
               </p-sortIcon>
             </th>
           </tr>
@@ -233,6 +233,15 @@
                 <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
                   <p-button icon="pi pi-eye" (click)="DocumentView(finance)"
                     styleClass="p-button-rounded p-button-success"></p-button>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'ack_copy_scan'">
+                  <ng-container *ngIf="finance.ack_copy_scan;else others">
+                    <p-button icon="pi pi-eye" (click)="AckView(finance)"
+                    styleClass="p-button-rounded p-button-success"></p-button>
+                  </ng-container>
+                  <ng-template #others>
+                        <span>N/A</span>
+                  </ng-template>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'bu_type'">
                   <span #tooltip="matTooltip"

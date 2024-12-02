@@ -82,6 +82,8 @@ export class FinancialRPTComponent implements OnInit {
   }
   @Output() sendFinancialFilteredDt =new EventEmitter();
   @Output() viewDocument = new EventEmitter();
+  @Output() viewAckDocument = new EventEmitter();
+
   columns:column[] = []
   __columns:column[] =[];
   SelectedClms:string[] = [];
@@ -194,6 +196,9 @@ export class FinancialRPTComponent implements OnInit {
        this.setColumns(res,this.trnsTypeId,this.transaction);
     })
     /*** End */
+  }
+  AckView(ev){
+    this.viewAckDocument.emit(ev);
   }
 
   setColumns(option,trans_type_id,trns_id){
@@ -379,6 +384,7 @@ export class FinancialRPTComponent implements OnInit {
     }
   }
   DocumentView(ev){
+    console.log(ev);
     this.viewDocument.emit(ev);
   }
   onselectItem(ev){

@@ -143,6 +143,21 @@ export class CmnReportForMFComponent implements OnInit,OnDestroy {
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
    }
   /*** End */
+  viewAckDocument(element){
+      console.log(element);
+      const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = false;
+    dialogConfig.closeOnNavigation = true;
+    dialogConfig.width = '80%';
+    dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+    dialogConfig.data = {
+      title: 'Uploaded Acknowledgement Copy',
+      data: element,
+      copy_url:`${environment.ack_formUrl + element.ack_copy_scan}`,
+      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.ack_formUrl + element.ack_copy_scan}`)
+    };
+    const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
+  }
   ngOnDestroy(){
     let controller = new AbortController();
     controller.abort();

@@ -8,6 +8,7 @@ import { ModifyQueryStatusComponent } from '../modify-query-status/modify-query-
 import { DocViewComponent } from './dialog/doc-view.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
+import { TatRemarksComponent } from './tat-remarks/tat-remarks.component';
 const routes:Routes = [
   {
     path:'',
@@ -19,7 +20,8 @@ const routes:Routes = [
   declarations: [
     CustomerServiceHomeComponent,
     ModifyQueryStatusComponent,
-    DocViewComponent
+    DocViewComponent,
+    TatRemarksComponent
   ],
   imports: [
     CommonModule,

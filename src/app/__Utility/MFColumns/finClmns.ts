@@ -1,9 +1,12 @@
 export class mfFinClmns {
    public static  SUMMARY_COPY = [
-
+      {field:'folio_no',header:'Folio No.'},
+      {field:'ack_copy_scan',header:'ACK. View'},
     {field:'edit',header:'Edit'},
        {field:'app_frm_view',header:'DOC View'},
        {field:'entry_date',header:'Entry Date'},
+       { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+       { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
        {field:'tin_no',header:'TIN'},
        {field:'branch_name',header:'Branch'},
         {field:'sub_brk_cd',header:'Sub Broker Code'},
@@ -14,16 +17,19 @@ export class mfFinClmns {
         {field:'trans_name',header:'Transction Type'},
         {field:'scheme_name',header:'Scheme'},
         {field:'application_no',header:'Application No'},
-        {field:'folio_no',header:'Folio No'},
+      //   {field:'folio_no',header:'Folio No'},
         {field:'amount',header:'Amount'},
         {field:'rnt_name',header:'Form Submitted At'}
    ]
 
    public static  SUMMARY_COPY_SIP = [
-
+      {field:'folio_no',header:'Folio No.'},
+      {field:'ack_copy_scan',header:'ACK. View'},
     {field:'edit',header:'Edit'},
        {field:'app_frm_view',header:'DOC View'},
        {field:'entry_date',header:'Entry Date'},
+       { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+       { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
        {field:'tin_no',header:'TIN'},
        {field:'branch_name',header:'Branch'},
         {field:'sub_brk_cd',header:'Sub Broker Code'},
@@ -34,7 +40,7 @@ export class mfFinClmns {
         {field:'trans_name',header:'Transction Type'},
         {field:'scheme_name',header:'Scheme'},
         {field:'application_no',header:'Application No'},
-        {field:'folio_no',header:'Folio No'},
+      //   {field:'folio_no',header:'Folio No'},
         {field:'amount',header:'Amount'},
         {field:'sip_amount',header:'SIP Amount'},
         {field:'rnt_name',header:'Form Submitted At'}
@@ -44,9 +50,13 @@ export class mfFinClmns {
 
    public static  DETAILS_FOR_PIP_COLUMNS_COPY =
    [
+      {field:'folio_no',header:'Folio No.'},
+      {field:'ack_copy_scan',header:'ACK. View'},
       {field:'edit',header:'Edit'},
       {field:'app_frm_view',header:'DOC View'},
       {field:'entry_date',header:'Entry Date'},
+      { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+      { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
       {field:'tin_no',header:'TIN'},
       {field:'bu_type',header:'Business Type'},
        {field:'branch_name',header:'Branch'},
@@ -75,16 +85,20 @@ export class mfFinClmns {
         {field:'bank_name',header:'Bank'},
         {field:'inv_type',header:'Investment Type'},
         {field:'application_no',header:'Application No'},
-        {field:'folio_no',header:'Folio No'},
+      //   {field:'folio_no',header:'Folio No'},
         {field:'rnt_name',header:'Form Submitted At'},
         {field:'remarks',header:'Remarks'}
    ]
 
    public static  DETAILS_FOR_SIP_COLUMNS_COPY =
    [
+      {field:'folio_no',header:'Folio No.'},
+      {field:'ack_copy_scan',header:'ACK. View'},
       {field:'edit',header:'Edit'},
       {field:'app_frm_view',header:'DOC View'},
       {field:'entry_date',header:'Entry Date'},
+      { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+      { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
       {field:'tin_no',header:'TIN'},
       {field:'bu_type',header:'Business Type'},
        {field:'branch_name',header:'Branch'},
@@ -113,7 +127,7 @@ export class mfFinClmns {
         {field:'bank_name',header:'Bank'},
         {field:'inv_type',header:'Investment Type'},
         {field:'application_no',header:'Application No'},
-        {field:'folio_no',header:'Folio No'},
+      //   {field:'folio_no',header:'Folio No'},
         {field:'sip_type_name',header:'SIP Type'},
         {field:'sip_frequency',header:'SIP Frequency'},
         {field:'sip_date',header:'SIP Date'},
@@ -128,9 +142,13 @@ export class mfFinClmns {
 
    public static  DETAILS_FOR_SWITCH_COLUMNS_COPY =
    [
+      {field:'folio_no',header:'Folio No.'},
+      {field:'ack_copy_scan',header:'ACK. View'},
     {field:'edit',header:'Edit'},
     {field:'app_frm_view',header:'DOC View'},
     {field:'entry_date',header:'Entry Date'},
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+    { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
     {field:'tin_no',header:'TIN'},
     {field:'bu_type',header:'Business Type'},
        {field:'branch_name',header:'Branch'},
@@ -160,16 +178,20 @@ export class mfFinClmns {
         {field:'bank_name',header:'Bank'},
         {field:'inv_type',header:'Investment Type'},
         {field:'application_no',header:'Application No'},
-        {field:'folio_no',header:'Folio No'},
+      //   {field:'folio_no',header:'Folio No'},
         {field:'rnt_name',header:'Form Submitted At'},
         {field:'remarks',header:'Remarks'}
    ]
 
    public static COLUMN_SELECTOR=
     [
+      {field:'folio_no',header:'Folio No.'},
       {field:'edit',header:'Edit'},
+      {field:'ack_copy_scan',header:'ACK. View'},
       {field:'app_frm_view',header:'DOC View'},
       {field:'entry_date',header:'Entry Date'},
+      { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+      { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
       {field:'tin_no',header:'TIN'},
       {field:'bu_type',header:'Business Type'},
       {field:'branch_name',header:'Branch Name'},
@@ -199,7 +221,6 @@ export class mfFinClmns {
         {field:'bank_name',header:'Bank'},
         {field:'inv_type',header:'Investment Type'},
         {field:'application_no',header:'Application No'},
-        {field:'folio_no',header:'Folio No.'},
         {field:'sip_type_name',header:'SIP Type'},
         {field:'sip_frequency',header:'SIP Frequency'},
         {field:'sip_date',header:'SIP Date'},

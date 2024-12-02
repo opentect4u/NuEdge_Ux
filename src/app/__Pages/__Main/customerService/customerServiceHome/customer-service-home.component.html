@@ -39,15 +39,20 @@
                             <i [class]="item.icon" [matTooltip]="item.label"></i>
                           </ng-template>
                         </p-selectButton>
-                          <a pButton 
+                          <!-- <a pButton 
                           
                           type="button" icon="pi pi-plus" 
                           label="Add Query"  target="_blank"
                           [routerLink]="['/main/customer-service', queryId, productId]"
-                          class="p-button-link queryBtn p-button-rounded"></a>
-                          <!-- <div>
-                            <div class="pulse">Add Query</div>
-                            </div> -->
+                          class="p-button-link queryBtn p-button-rounded"></a> -->
+                          <div class="animatedBtn">
+                            <a pButton 
+                          type="button" icon="pi pi-plus" 
+                          label="Add Query"  target="_blank"
+                          [routerLink]="['/main/customer-service', queryId, productId]"
+                          class="p-button-link queryBtn p-button-rounded"></a> 
+                          </div>
+                         
                         </div>
                         
                     </mat-card-header>
@@ -218,15 +223,17 @@
                         [scrollable]="true"
                          [scrollHeight]="'370px'"
                         [virtualScroll]="true"
-                        [virtualRowHeight]="39"
+                        [virtualRowHeight]="80"
                         [columns]="query_column" [paginator]="true"
                         [autoLayout]="true"
                          [totalRecords]="queryDataSource.length" [pageLinks]="3"
                         [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
                         [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
-                        [tableStyle]="{ 'min-width': '506rem' }"
+                        [tableStyle]="{ 'min-width': '464rem' }"
                         >
+                        <!-- [tableStyle]="{ 'min-width': '510rem' }" -->
+
                         <ng-template pTemplate="caption">
                             <div class="d-flex align-items-center justify-content-between">
                               <div>
@@ -245,7 +252,7 @@
                             [style.min-width]="col.width"
                             >
                               {{ col.header }}
-                              <p-sortIcon [field]="col.field">
+                              <p-sortIcon [field]="col.field" *ngIf="col.field!='action' && col.field!='view' && col.field!='query_feedback'">
                               </p-sortIcon>
                             </th>
                           </tr>
@@ -270,12 +277,25 @@
                                               color: trxn.color_code,
                                               'border-radius':'27px',
                                               border:'1px solid' + trxn.color_code,
-                                              
+                                              padding: '4px 10px',
                                               'font-weight':600
                                           }"
-                                                  class="p-1"
+                                                 
                                           >{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</span>
                                        </a> 
+                                   </ng-container>
+                                   <ng-container *ngSwitchCase="col.field == 'tat_expired'">
+                                            <ng-container *ngIf="trxn[col.field] == 'NO';else yes">
+                                                    <span class="text-success">{{trxn[col.field]}}</span>
+                                            </ng-container>
+                                            <ng-template #yes>
+                                                <!-- <a  (click)="openTatRemarks(trxn)">
+                                                    {{trxn[col.field]}}
+                                                </a> -->
+                                                <p-button label="{{trxn[col.field]}}" (click)="openTatRemarks(trxn)" 
+                                                styleClass="p-button-link underline danger"></p-button>
+
+                                            </ng-template>
                                    </ng-container>
                                     <ng-container *ngSwitchCase="col.field == 'date_time' || col.field == 'expected_close_date' || col.field == 'actual_close_date'">
                                             {{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY hh:mm a') : 'N/A'}}
@@ -426,7 +446,7 @@
 
 
 <p-dialog 
-    header="No. Of Query" 
+    header="QUERY SUMMARY REPORT" 
     [(visible)]="visible" 
     [modal]="true" 
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
@@ -436,19 +456,40 @@
     <table>
       <thead>
         <tr class="bg-primary text-white">
-          <th class="text-left ">Product</th>
-          <th *ngFor="let item of md_query_status">
+          <th class="text-left " rowspan="1">Product</th>
+          <th *ngFor="let item of md_query_status" colspan="2">
                 {{item.status_name}}
           </th>
+        </tr>
+        <tr class="bg-primary text-white">
+            <th></th>
+            <th>No.</th>
+            <th>TAT</th>
+            <th>No.</th>
+            <th>TAT</th>
+            <th>No.</th>
+            <th>TAT</th>
+            <th>No.</th>
+            <th>TAT</th>
+            <th>No.</th>
+            <th>TAT</th>
+            <th>No.</th>
+            <th>TAT</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let data of md_dialog_data;let i=index">
-              <td class="text-left">
+              <td 
+              class="text-left ">
                   {{data.product_name}}
               </td>
               <ng-container *ngFor="let item of md_query_status">
-                    <td>
+                    <td
+                   
+                    [ngStyle]="{
+                        'background-color':data[item.status_name + '_color_code']
+                      }"  
+                    >
                             <a
                               class="link"
                               type="button"
@@ -463,6 +504,36 @@
                             >
                               {{data[item.status_name]}}
                             </a>
+                    </td>
+                    <td
+                   
+                    [ngStyle]="{
+                        'background-color':data[item.status_name + '_color_code']
+                      }"  
+                    >
+                          <ng-container *ngIf="data[item.status_name+'_tat_expire'] == 0;else link">
+                            <p class="m-0">
+                              {{data[item.status_name+'_tat_expire']}}
+                            </p>
+
+                          </ng-container>
+                          <ng-template #link>
+                            <a
+                            class="link"
+                            type="button"
+                            style="
+                            cursor: pointer;
+                            padding: 5px 10px;
+                            border-radius: 2px;
+                            color:#0d2e43;
+                            font-weight: 700;  
+                            "
+                            (click)="getItemsAccording_TAT_Expired(data,item,i)"  
+                          >
+                          {{data[item.status_name+'_tat_expire']}}
+                          </a>
+                          </ng-template>
+                            
                     </td>
               </ng-container>
         </tr>

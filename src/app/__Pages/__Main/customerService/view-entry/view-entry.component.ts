@@ -88,6 +88,7 @@ export class ViewEntryComponent implements OnInit {
         updateOn:'change',
         validators:Validators.required
       }),
+      query_rec_through_id:new FormControl(''),
       query_mode_id: new FormControl('O'),
        query_subtype_id:new FormControl('',[Validators.required]),
        query_details:new FormControl('',[Validators.required]),
@@ -112,7 +113,7 @@ export class ViewEntryComponent implements OnInit {
        query_status_id: new FormControl(''),
       //  query_feedback: new FormControl('',[Validators.required]),
       //  status_overall_feedback: new FormControl('',[Validators.required])
-      // query_feedback:new FormControl(''),
+      query_feedback:new FormControl(''),
       // suggestion:new FormControl(''),
       scheme_dtls:new FormArray([],{
           asyncValidators:this.checkIfAnyOnItemCheckedOrNot()
@@ -183,6 +184,8 @@ export class ViewEntryComponent implements OnInit {
     this.queryEntryForm.get('concern_person_name').disable();
     this.queryEntryForm.get('email_id').disable();
     this.queryEntryForm.get('contact_no').disable();
+    this.queryEntryForm.get('query_feedback').disable();
+    this.queryEntryForm.get('query_rec_through_id').disable();
   }
 
   checkIfchecked(value){
@@ -276,6 +279,8 @@ export class ViewEntryComponent implements OnInit {
       level_id:data ? (data?.query_nature_id == 4 ? global.getActualVal(data?.level_id) : '') : '',
       query_given_through_id:data ? (data?.query_nature_id == 4 ? global.getActualVal(data?.query_given_through_id) : '') : '',
       concern_person_name:data ? (data?.query_nature_id == 4 ? global.getActualVal(data?.concern_person_name) : '') : '',
+      query_feedback:data ? global.getActualVal(data?.query_feedback) : '',
+      query_rec_through_id:data ? global.getActualVal(data?.query_rec_through_id) : '',
     });
     setTimeout(() => {
       if(data?.query_tat){

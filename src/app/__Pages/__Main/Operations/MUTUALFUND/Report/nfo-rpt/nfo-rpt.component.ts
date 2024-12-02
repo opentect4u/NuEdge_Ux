@@ -97,6 +97,7 @@ export class NfoRPTComponent implements OnInit {
     return this._trns_id;
   }
   @Input() trnsTypeId:number;
+  @Output() viewAckDocument = new EventEmitter();
 
 
 
@@ -196,6 +197,10 @@ export class NfoRPTComponent implements OnInit {
     })
     /*** End */
   }
+  AckView(ev){
+    this.viewAckDocument.emit(ev);
+  }
+
 
   setColumns(option,trans_type_id,trns_id){
 

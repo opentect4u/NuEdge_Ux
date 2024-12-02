@@ -32,6 +32,24 @@ export class QueryEntryComponentComponent implements OnInit {
     true
   );
 
+  settingsforFdrDropdown = this.utility.settingsfroMultiselectDropdown(
+    'fdr_no',
+    'fdr_no',
+    'Search FDR',
+    1,
+    197,
+    true
+  );
+
+  settingsforPolicyDropdown = this.utility.settingsfroMultiselectDropdown(
+    'policy_no',
+    'policy_no',
+    'Search Policy No.',
+    1,
+    197,
+    true
+  );
+
   settingsforSchemeDropdown = this.utility.settingsfroMultiselectDropdown(
     'id',
     'scheme_name',
@@ -50,6 +68,7 @@ export class QueryEntryComponentComponent implements OnInit {
   md_client:Partial<client>[] = [];
   md_scheme:Partial<scheme>[] = [];
   md_folio:any = [];
+  md_fdr_no:any = [];
   md_plan:any = [];
   md_amc:Partial<amc>[] = [];
   md_queryStatus:Partial<IQueryStatus>[] = [];
@@ -69,15 +88,22 @@ export class QueryEntryComponentComponent implements OnInit {
        investor_pan: new FormControl({value:'',disabled: true}),
        investor_email: new FormControl({value:'',disabled: true}),
        investor_mobile: new FormControl({value:'',disabled: true}), 
-       folio_no: new FormControl('',{
+       folio_no: new FormControl([],{
         updateOn:'change',
         // validators:Validators.required
       }),
         // plan_id:new FormControl(''),
-        ins_product_id:new FormControl(''),
-        fd_scheme_id: new FormControl(''),
-        policy_no:new FormControl(''),
-        fd_no:new FormControl(''),
+        // ins_product_id:new FormControl(''),
+        // fd_scheme_id: new FormControl(''),
+        // ins_product:new FormArray([]),
+        // fd_scheme:new FormArray([]),
+        policy_no:new FormControl([],{
+          updateOn:'change',
+        }),
+        fdr_no:new FormControl([],{
+          updateOn:'change',
+          // validators:Validators.required
+        }),
        application_no: new FormControl(''),
        query_given_by_id: new FormControl('',[Validators.required]),
        entry_name:new FormControl('',[Validators.required]),
@@ -107,6 +133,7 @@ export class QueryEntryComponentComponent implements OnInit {
         value:false,
         disabled:true
        }),
+       query_rec_through_id:new FormControl(''),
       //  actual_close_date: new FormControl('',[Validators.required]),
       //  query_status_id: new FormControl('',[Validators.required]),
        remarks: new FormControl(''),
@@ -128,13 +155,15 @@ export class QueryEntryComponentComponent implements OnInit {
     // console.log(this.utility.DcryptText(this.RtDt.snapshot.params.queryId));
     // this.productId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.productId));
     this.productId = Number(this.utility.DcryptText(this.RtDt.snapshot.params.productId));
-
+    console.log(this.productId);
     // this.queryId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.queryId));
     this.queryId = Number(this.utility.DcryptText(this.RtDt.snapshot.params.queryId));
     this.queryEntryForm.get('query_nature_id').setValidators(this.queryId.toString() != '0' ? [Validators.required] : null)
     this.queryEntryForm.get('remarks').setValidators(this.queryId.toString() != '0' ? [Validators.required] : null)
     this.queryEntryForm.get('query_status_id').setValidators(this.queryId.toString() != '0' ? [Validators.required] : null)
     this.queryEntryForm.get('entry_name').setValidators(this.queryId.toString() != '0' ? [Validators.required] : null)
+    this.queryEntryForm.get('query_rec_through_id').setValidators(this.queryId.toString() == '0' ? [Validators.required] : null)
+
     // this.queryEntryForm.get('query_mode_id').setValidators(this.queryId.toString() != '0' ? [Validators.required] : null)
     // this.queryEntryForm.get('query_details').setValidators(this.queryId.toString() != '0' ? [Validators.required] : null)
     // this.queryEntryForm.get('query_given_to_id').setValidators(this.queryId.toString() != '0' ? [Validators.required] : null);
@@ -189,11 +218,13 @@ export class QueryEntryComponentComponent implements OnInit {
       return this.checkIfchecked(control.value)
         .pipe(
           map((result: boolean) =>
-            result ? { checkErr: true } : null
+            result ? (Number(this.productId) == 1 ? { checkErr: true } : null) : null
           )
         );
     };
   }
+
+  
   get schemeDtls(): FormArray {
     return this.queryEntryForm.get("scheme_dtls") as FormArray;
   }
@@ -203,13 +234,16 @@ export class QueryEntryComponentComponent implements OnInit {
   // }
 
   setFormControlValidators = () =>{
-      const first_formControlName = this.productId > 2 ? (this.productId == 3 ? 'policy_no' : 'fd_no') : 'folio_no';
+      const first_formControlName = this.productId > 2 ? (this.productId == 3 ? 'policy_no' : 'fdr_no') : 'folio_no';
       // const second_formControlName = this.productId > 2  ? (this.productId == 3 ? 'ins_product_id' : 'fd_scheme_id') : 'scheme_id';
       this.queryEntryForm.get(first_formControlName).setValidators([Validators.required]);
-      if(this.productId!= 1){
-        const second_formControlName = this.productId == 3 ? 'ins_product_id' : 'fd_scheme_id';
-        this.queryEntryForm.get(second_formControlName).setValidators([Validators.required]);
-      }
+      
+      /******************* OLD CODE ************/
+      // if(this.productId!= 1){
+      //   const second_formControlName = this.productId == 3 ? 'ins_product_id' : 'fd_scheme_id';
+      //   this.queryEntryForm.get(second_formControlName).setValidators([Validators.required]);
+      // }
+      /******************** END ****************/
 
   }
 
@@ -252,10 +286,10 @@ export class QueryEntryComponentComponent implements OnInit {
       application_no:data ? data?.application_no : '',
       query_given_by_id: data ? data?.query_given_by_id : '',
       entry_name:data ? data?.entry_name : '',
-      policy_no: this.productId == 3 ? (data ? data?.policy_no : '') : '',
-      fd_no: this.productId == 4 ? (data ? data?.fd_no : '') : '',
-      ins_product_id:this.productId == 3 ? (data ? data?.ins_product_id : '') : '',
-      fd_scheme_id:this.productId == 4 ? (data ? data?.fd_scheme_id : '') : '',
+      policy_no: this.productId == 3 ? (data ? data?.policy_no : []) : [],
+      fdr_no: this.productId == 4 ? (data ? data?.fdr_no : []) : [],
+      // ins_product_id:this.productId == 3 ? (data ? data?.ins_product_id : '') : '',
+      // fd_scheme_id:this.productId == 4 ? (data ? data?.fd_scheme_id : '') : '',
       // folio_no:data ? data?.folio_no : '',
       product_code:data ? data?.product_code : '',
       isin_no:data ? data?.isin_no : '',
@@ -269,6 +303,7 @@ export class QueryEntryComponentComponent implements OnInit {
       level_id:data ? (data?.query_nature_id == 4 ? global.getActualVal(data?.level_id) : '') : '',
       query_given_through_id:data ? (data?.query_nature_id == 4 ? global.getActualVal(data?.query_given_through_id) : '') : '',
       concern_person_name:data ? (data?.query_nature_id == 4 ? global.getActualVal(data?.concern_person_name) : '') : '',
+      query_rec_through_id:data ? global.getActualVal(data?.query_rec_through_id) : '',
     });
     setTimeout(() => {
       if(data?.query_tat){
@@ -283,6 +318,7 @@ export class QueryEntryComponentComponent implements OnInit {
     }, 500);
     this.queryEntryForm.get('investor_name').disable({emitEvent:false});
     this.queryEntryForm.get('folio_no').disable({emitEvent:false});
+    this.queryEntryForm.get('fdr_no').disable({emitEvent:false});
     this.queryEntryForm.get('application_no').disable({emitEvent:false});
     this.queryEntryForm.get('query_given_by_id').disable({emitEvent:false});
     this.queryEntryForm.get('scheme_id').disable({emitEvent:false});
@@ -308,7 +344,7 @@ export class QueryEntryComponentComponent implements OnInit {
         debounceTime(200),
         distinctUntilChanged(),
         switchMap((dt) =>
-          dt?.length > 1 ? this.__dbIntr.searchItems('/cus_service/searchClient', dt) : []
+          dt?.length > 1 ? this.__dbIntr.searchItems('/cus_service/searchClient', `${dt}&product_id=${this.productId}`) : []
         ),
         map((x: responseDT) => x.data)
       )
@@ -340,6 +376,38 @@ export class QueryEntryComponentComponent implements OnInit {
           // this.queryEntryForm.get('scheme_id').setValue([]);
         }
       })
+
+      this.queryEntryForm.get('fdr_no').valueChanges.subscribe(res =>{
+          /**** BUSSINESS LOGIC  */
+            this.schemeDtls.clear();
+            this.queryEntryForm.get('selectAll').setValue(false,{emitEvent:false});
+            this.queryEntryForm.get('selectAll').disable();
+
+            if(res.length > 0){
+              // console.log(res)
+              this.fetchSchemeByFDR_no(res[0].fdr_no);
+            }
+            else{
+              this.md_scheme = [];
+            }
+          /****** END */
+      })
+
+      this.queryEntryForm.get('policy_no').valueChanges.subscribe(res =>{
+        /**** BUSSINESS LOGIC  */
+          this.schemeDtls.clear();
+          this.queryEntryForm.get('selectAll').setValue(false,{emitEvent:false});
+          this.queryEntryForm.get('selectAll').disable();
+
+          if(res.length > 0){
+            // console.log(res)
+            this.fetchSchemeByFDR_no(res[0].policy_no);
+          }
+          else{
+            this.md_scheme = [];
+          }
+        /****** END */
+    })
 
       this.queryEntryForm.get('query_type_id').valueChanges.subscribe(res =>{
         if(res){
@@ -404,6 +472,64 @@ export class QueryEntryComponentComponent implements OnInit {
             this.queryEntryForm.get('expected_close_date').setValue(this.datePipe.transform(date,'YYYY-MM-dd'))
       })
   }
+
+  /****** GET SCHEME BY FDR NO FOR BOND & FD  *****/
+  fetchSchemeByFDR_no = (id) =>{
+    const api_name = this.productId == 3 ? `/ins/product?product_id=${id}` : `/fd/scheme?fdr_no=${id}`
+    this.__dbIntr.api_call(0,api_name,null)
+    .pipe(pluck('data'))
+    .subscribe((res:any) =>{
+        if(res.length > 0){
+          this.queryEntryForm.get('selectAll').enable(
+            {
+              onlySelf:false,
+              emitEvent:false
+            }
+          )
+        }
+        else{
+          this.queryEntryForm.get('selectAll').disable(
+            {
+              onlySelf:false,
+              emitEvent:false
+            }
+          )
+        } 
+        // if(this.queryId?.toString() != '0'){
+        //       res.forEach(el =>{
+        //               const dt = this.formData?.allscheme.filter(item => item?.product_code == el.product_code && item?.isin_no == el.isin_no);
+        //               if(dt.length > 0){
+        //                   this.schemeDtls.push(
+        //                     new FormGroup({
+        //                         id: new FormControl(el.id),
+        //                         amc_id:new FormControl(el.amc_id ? el.amc_id : 'N/A'),
+        //                         product_code: new FormControl(el.product_code ? el.product_code : 'N/A'),
+        //                         isin_no: new FormControl(el.isin_no  ? el.isin_no : 'N/A'),
+        //                         scheme_name: new FormControl(el.scheme_name ? `${el.scheme_name}-${el.plan_name}-${el.option_name}` : 'N/A'),
+        //                         isActive:new FormControl({value:true}),
+        //                         folio_no:new FormControl(el?.folio_no ? el.folio_no : 'N/A'),
+        //                         curr_val:new FormControl(el?.curr_val ? (Number(el.curr_val) >= 0 ? Number(el.curr_val) : 0.00) : 0.00),
+        //                       })
+        //                   )
+        //               }
+                      
+        //       });
+        //       if(this.schemeDtls.value.length == res.length){
+        //         this.queryEntryForm.get('selectAll').setValue(this.schemeDtls.value.length == res.length);
+        //         this.queryEntryForm.get('selectAll').disable();
+        //       }
+        //       this.fetchLevel(this.schemeDtls.value[0]?.amc_id);
+        // }
+        // else{
+        //   res.forEach(el =>{
+          // this.schemeDtls.push(
+          //   this.createItem_For_Ins_Fd_Bond(el)
+          // );
+        //   })
+        // }
+    })
+  }
+  /***** END */
 
   setFormControlValue = (name:string,email:string,mobile) =>{
         this.queryEntryForm.patchValue({
@@ -507,6 +633,25 @@ export class QueryEntryComponentComponent implements OnInit {
     });
   }
 
+
+  createItem_For_Ins_Fd_Bond(el): FormGroup {
+    if(this.productId == 2 || this.productId == 4){
+      return new FormGroup({
+        id: new FormControl(el.id),
+        scheme_name: new FormControl(el.scheme_name ? `${el.scheme_name}` : 'N/A'),
+        isActive:new FormControl(false),
+      });
+    }
+    else{
+      return new FormGroup({
+        id: new FormControl(el.id),
+        product_name: new FormControl(el.product_name ? `${el.product_name}` : 'N/A'),
+        isActive:new FormControl(false),
+      });
+    }
+  
+  }
+
   searchResultVisibilityForInvestor(display_mode) {
     // this.__subBrkArn.nativeElement.style.display = display_mode;
     this.displayMode_forClient = display_mode;
@@ -536,6 +681,20 @@ export class QueryEntryComponentComponent implements OnInit {
           }],{emitEvent:false});
           // this.fetchSchemeByFolio(ev.item.folio_no);
       }
+      else if(this.productId == 3){
+          /*******  Insurance */
+
+          this.queryEntryForm.get('folio_no').setValue([
+            {
+               "policy_no":ev.item?.policy_no,
+            }],{emitEvent:false});
+      }
+      else{
+        this.queryEntryForm.get('folio_no').setValue([
+          {
+             "fdr_no":ev.item?.fdr_no,
+          }],{emitEvent:false});
+      }
       // else{
       //    // call Plan Mster data
       //    if(this.md_plan.length == 0){
@@ -545,15 +704,33 @@ export class QueryEntryComponentComponent implements OnInit {
       // }
   }
 
-  fetchPlanaccordingtoProductId= () =>{
+  fetchPlanaccordingtoProductId= (id: any | undefined = '') =>{
 
-    if(Number(this.productId) ==3 || Number(this.productId) ==4){
+    if(Number(this.productId) == 3 || Number(this.productId) == 4 || Number(this.productId) == 2){
 
-        const api_name = this.productId == 3 ? '/ins/product' : '/fd/scheme'
+        // const api_name = this.productId == 3 ? `/ins/product?product_id=${id}` : `/fd/scheme?scheme_id=${id}`
+        // this.__dbIntr.api_call(0, api_name, null)
+        // .pipe(pluck('data'))
+        // .subscribe((res: any) => {
+        //   this.md_plan = res;
+        // });
+        this.queryEntryForm.get('selectAll').enable(
+          {
+            onlySelf:false,
+            emitEvent:false
+          }
+        )
+        const api_name = this.productId == 3 ? `/ins/product` : `/fd/scheme`
         this.__dbIntr.api_call(0, api_name, null)
         .pipe(pluck('data'))
         .subscribe((res: any) => {
-          this.md_plan = res;
+          // this.md_plan = res;
+          res.forEach(element => {
+            // console.log(element);
+            this.schemeDtls.push(
+              this.createItem_For_Ins_Fd_Bond(element)
+            );
+          });
         });
     }
       
@@ -663,22 +840,24 @@ export class QueryEntryComponentComponent implements OnInit {
         query_type_id:this.queryEntryForm.getRawValue().query_type_id?.id,
         product_id:this.productId,
         folio_no:this.queryEntryForm.getRawValue().folio_no ? this.queryEntryForm.getRawValue().folio_no[0]?.folio_no : '',
+        fdr_no:this.queryEntryForm.getRawValue().fdr_no ? this.queryEntryForm.getRawValue().fdr_no[0]?.fdr_no : '',
+        policy_no:this.queryEntryForm.getRawValue().policy_no ? this.queryEntryForm.getRawValue().policy_no[0]?.policy_no : '',
         scheme_dtls:this.schemeDtls.value.filter(el => el?.isActive),
       }
       // console.log(payload)
       let api_payload ;
-      if(this.productId == 3 || this.productId == 4){
+      if(this.productId == 3 || this.productId == 4 || this.productId == 2){
         if(this.productId == 3){
-          const {entry_attachment,entry_file,scheme_name,folio_no,fd_no,fd_scheme_id,product_code,isin_no,scheme_id,scheme_dtls,...rest} = payload;
+          const {entry_attachment,entry_file,scheme_name,folio_no,fdr_no,product_code,isin_no,scheme_id,...rest} = payload;
           api_payload = rest;
         }
         else{
-          const {entry_attachment,entry_file,scheme_name,folio_no,policy_no,ins_product_id,product_code,isin_no,scheme_id,scheme_dtls,...rest} = payload;
+          const {entry_attachment,entry_file,scheme_name,folio_no,policy_no,product_code,isin_no,scheme_id,...rest} = payload;
           api_payload = rest;
         }
       }
       else {
-        const {entry_attachment,scheme_name,policy_no,ins_product_id,fd_no,fd_scheme_id,...rest} = payload;
+        const {entry_attachment,scheme_name,policy_no,fdr_no,...rest} = payload;
         api_payload = rest;
       }
 

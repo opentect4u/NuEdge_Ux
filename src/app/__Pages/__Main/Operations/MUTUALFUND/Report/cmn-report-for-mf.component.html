@@ -26,6 +26,7 @@
               (sendFinancialFilteredDt)="getMstDt($event)"
               (viewDocument)="DocumentView($event)"
               [transaction]="transaction"
+              (viewAckDocument)="viewAckDocument($event)"
               [Title]="headerTitle"
               [financialMst]="MstDt"
               ></report-financial-rpt>
@@ -56,6 +57,7 @@
             [selectBtn]="selectBtn"
             (sendNonFinancialFilteredDt)="getMstDt($event)"
             (viewDocument)="DocumentView($event)"
+            (viewAckDocument)="viewAckDocument($event)"
             [nonfinancialMst]="MstDt"
             [Title]="headerTitle"
             [AMCMst]="amcMst"
@@ -84,6 +86,7 @@
               [itemsPerPage]="itemsPerPage"
               (sendFinancialFilteredDt)="getMstDt($event)"
               (viewDocument)="DocumentView($event)"
+              (viewAckDocument)="viewAckDocument($event)"
               [transaction]="transaction"
               [Title]="headerTitle"
               [financialMst]="MstDt"

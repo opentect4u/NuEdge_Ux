@@ -99,6 +99,8 @@ export class NonFinancialRPTComponent implements OnInit {
   SelectedClms:string[] = [];
 
   @Output() sendNonFinancialFilteredDt = new EventEmitter();
+  @Output() viewAckDocument = new EventEmitter();
+
   constructor(private dbIntr: DbIntrService) {}
 
   ngOnInit(): void {
@@ -238,6 +240,10 @@ export class NonFinancialRPTComponent implements OnInit {
       this.__columns = this.columns;
      }
      this.SelectedClms = this.__columns.map((x) => x.field);
+  }
+
+  AckView(ev){
+    this.viewAckDocument.emit(ev);
   }
 
   /** Rnt Form Array */

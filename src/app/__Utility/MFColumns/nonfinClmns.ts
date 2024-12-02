@@ -1,8 +1,12 @@
 export class nonFinClms {
   public static SUMMARY_COPY = [
+    { field: 'folio_no', header: 'Folio No' },
     { field: 'edit', header: 'Edit' },
+    {field:'ack_copy_scan',header:'ACK. View'},
     { field: 'app_frm_view', header: 'DOC View' },
     { field: 'entry_date', header: 'Entry Date' },
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+    { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
     { field: 'tin_no', header: 'TIN' },
     { field: 'branch_name', header: 'Branch' },
     { field: 'sub_brk_cd', header: 'Sub Broker Code' },
@@ -12,7 +16,7 @@ export class nonFinClms {
     { field: 'first_client_pan', header: 'First Holder PAN' },
     { field: 'trans_name', header: 'Transction Type' },
     { field: 'scheme_name', header: 'Scheme' },
-    { field: 'folio_no', header: 'Folio No' },
+    // { field: 'folio_no', header: 'Folio No' },
     { field: 'rnt_name', header: 'Form Submitted At' },
     { field: 'remarks', header: 'Remarks' }
   ];
@@ -147,9 +151,13 @@ export class nonFinClms {
 
 
   public static COLUMN_SELECTOR=[
+    {field:'folio_no',header:'Folio No.'},
     { field: 'edit', header: 'Edit' },
+    {field:'ack_copy_scan',header:'ACK. View'},
     { field: 'app_frm_view', header: 'DOC View' },
     { field: 'entry_date', header: 'Entry Date' },
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+    { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
     { field: 'tin_no', header: 'TIN' },
     { field: 'bu_type', header: 'Business Type' },
     { field: 'branch_name', header: 'Branch' },
@@ -163,7 +171,7 @@ export class nonFinClms {
     { field: 'scheme_name', header: 'Scheme'},
     { field: 'plan_name', header: 'Plan' },
     { field: 'opt_name', header: 'Option' },
-    { field: 'folio_no', header: 'Folio No' },
+    // { field: 'folio_no', header: 'Folio No' },
     { field: 'amount', header: 'Amount' },
     { field: 'rnt_name', header: 'Form Submitted At'},
     { field: 'remarks', header: 'Remarks'},

@@ -21,6 +21,8 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { DocViewComponent } from './dialog/doc-view.component';
 import { environment } from 'src/environments/environment';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import moment from 'moment';
+import { TatRemarksComponent } from './tat-remarks/tat-remarks.component';
 
 enum API{
   'MF'='/cus_service/MutualFundQuery',
@@ -208,6 +210,9 @@ export class CustomerServiceHomeComponent implements OnInit {
                             const hasProps = res?.hasOwnProperty(el.id.toString()) ? item?.id in res[el.id.toString()] : false;
                             item[item.status_name] = hasProps ? res[el.id.toString()][item.id].length : 0;
                             item[`${item.status_name}_${item.id}`] = item.id;
+                            item[`${item.status_name}_${item.id}_tat_expired`] = hasProps ? 0 : 0;
+                            item[`${item.status_name}_color_code`] = this.hexToRgbA(item.color_code);
+                            item[`${item.status_name}_tat_expire`] = this.getNo_of_tatExp(hasProps ? res[el.id.toString()][item.id] : []);
                             return  item;
                         })  
                       dt.push({
@@ -217,6 +222,8 @@ export class CustomerServiceHomeComponent implements OnInit {
                         ...statusDtls.reduce((acc, cur) => ({ ...acc, 
                           [cur.status_name]: cur[cur.status_name],
                           [`${cur.status_name}_${cur.id}`]: cur[`${cur.status_name}_${cur.id}`],
+                          [`${cur.status_name}_color_code`]:cur[`${cur.status_name}_color_code`],
+                          [`${cur.status_name}_tat_expire`]:cur[`${cur.status_name}_tat_expire`]
                         }), {})
                       });
                 });
@@ -226,6 +233,47 @@ export class CustomerServiceHomeComponent implements OnInit {
           })
   }
 
+  getNo_of_tatExp = (query_dtls) :Number =>{
+      let count_Query_dtls = 0;
+      query_dtls.forEach((el,index) =>{
+              if(el.actual_close_date){
+                const actual_close_date = moment(el.actual_close_date);
+                const expected_close_date = moment(el.expected_close_date);
+                const diff = actual_close_date.diff(expected_close_date);
+                console.log(diff);
+                count_Query_dtls+= diff <= 0 ? 0 : 1;
+              }
+              else{
+                 if(el.expected_close_date){
+                    var expected_close_date = moment(el.expected_close_date,'YYYY-MM-DD');
+                    var to_day =  moment(moment(new Date()).format('YYYY-MM-DD'));
+                    const isAfter = to_day.diff(expected_close_date);
+                    count_Query_dtls+= isAfter <= 0 ? 0 : 1;
+                }
+                else{
+                  var new_date = moment(el.date_time).add(el.query_tat, 'days').format('YYYY-MM-DD');
+                  console.log(new_date);
+                  count_Query_dtls+= moment(moment(new Date()).format('YYYY-MM-DD'),'YYYY-MM-DD').diff(new_date) <= 0 ? 0 : 1;
+                }
+              }
+            
+      })
+      return count_Query_dtls;
+  }
+
+  hexToRgbA(hex){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',0.4)';
+    }
+    throw new Error('Bad Hex');
+}
+
   fetchEmployee(){
     this.dbIntr.api_call(0,'/cus_service/users',null)
     .pipe(pluck('data'))
@@ -234,9 +282,30 @@ export class CustomerServiceHomeComponent implements OnInit {
     })
   }
 
+
+  getItemsAccording_TAT_Expired = (data,item,index) =>{
+    const _index = this.md_product.findIndex(el => el.id == data.product_id);
+    if(this.index == _index){
+      if(this.customerServiceForm?.value.query_status_id != item.id)
+      {
+        this.customerServiceForm.patchValue({
+          query_status_id:this.md_query_status.filter(el => el.id == item.id)[0]?.id,
+        });
+        this.queryDataSource = [];
+        this.productId = this.__utility.EncryptText(data.product_id.toString());
+        this.customerServiceForm.get('date_periods').setValue('')
+        this.fetchQuery(data.short_name,true);
+        this.setColumns(data.product_id);
+      }
+    }
+    else{
+      this.status_id = this.md_query_status.filter(el => el.id == item.id)[0]?.id;
+      this.index = _index
+    }
+    this.visible = !this.visible;
+  }
+
   getItems = (data,item,index) =>{
-      console.log(data);
-      console.log(item);
       const _index = this.md_product.findIndex(el => el.id == data.product_id);
       if(this.index == _index){
         if(this.customerServiceForm?.value.query_status_id != item.id)
@@ -416,7 +485,44 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
   }
 
+  changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+}
+
   ngAfterViewInit(){
+    const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+    this.changeWheelSpeed(el, 0.99);
      /**
        * Event Trigger after change Branch
        */
@@ -584,7 +690,7 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.primeTbl.filterGlobal(value,'contains')
 }
 
-  fetchQuery = (flag) =>{
+  fetchQuery = (flag,isTATClicked:boolean | undefined = false) =>{
       const fb = new FormData();
       fb.append('query_id',global.getActualVal(this.customerServiceForm.getRawValue().query_id));
       fb.append('client_name',global.getActualVal(this.customerServiceForm.getRawValue().client_name));
@@ -610,7 +716,35 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.dbIntr.api_call(1,'/cus_service/queryShow',fb)
       .pipe(pluck('data'))
       .subscribe((res:any) =>{
-        this.queryDataSource = res.map(el =>{
+        this.queryDataSource = res.filter(el =>{
+          let isExpired;
+          if(el.actual_close_date){
+            const actual_close_date = moment(el.actual_close_date);
+            const expected_close_date = moment(el.expected_close_date);
+            const diff = actual_close_date.diff(expected_close_date);
+            isExpired = diff<=0;
+          }
+          else{
+             if(el.expected_close_date){
+                var expected_close_date = moment(el.expected_close_date,'YYYY-MM-DD');
+                var to_day =  moment(moment(new Date()).format('YYYY-MM-DD'),'YYYY-MM-DD');
+                const isAfter = to_day.diff(expected_close_date)
+                isExpired = isAfter <= 0;
+            }
+            else{
+              var new_date = moment(el.date_time).add(el.query_tat, 'days').format('YYYY-MM-DD');
+              console.log(new_date);
+                const isAfter = moment(moment(new Date()).format('YYYY-MM-DD'),'YYYY-MM-DD').diff(new_date)
+                isExpired = isAfter <= 0;
+            }
+          }
+          if(isTATClicked){
+              if(isExpired){
+                 return false
+              }
+          }
+          el.tat_expired = isExpired ? "NO" : "YES"
+          
           el.solveattach = el.solveattach.map(el =>{
               el.url=`${environment.query_solve_file}${el.name}`;
               el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
@@ -621,9 +755,8 @@ export class CustomerServiceHomeComponent implements OnInit {
               return el;
            });
           el.scheme_dtls = outerDt;
-
           el.scheme_name = el.product_id == 1 ? `${outerDt.length > 0 ? outerDt[0]?.scheme_name : ''}` : (el.product_id == 4 ? el.scheme_name : '');
-          // el.cust_query_id = this.__utility.encrypt_dtls(JSON.stringify((el.id)))
+          el.amc_name = el.product_id == 1 ? `${outerDt.length > 0 ? outerDt[0]?.schemename?.amc_name : ''}` :  '';
           el.cust_query_id = this.__utility.EncryptText(el.id.toString())
           if(el.call_flag == 'N' && el.whats_app_flag == 'N' && el.email_flag == 'N' && el.sms_flag == 'N'){
 
@@ -641,6 +774,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                   }
               }
           }
+          // el.tat_expired = 
           return el
         });
         // console.log(this.queryDataSource);
@@ -676,7 +810,8 @@ export class CustomerServiceHomeComponent implements OnInit {
   fetchQueryStatus = () =>{
     this.dbIntr.api_call(0,'/cus_service/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
           this.md_query_status = res;
-      this.fetchCustomerServiceIndex();
+          console.log(res);
+        this.fetchCustomerServiceIndex();
 
     })
   }
@@ -898,6 +1033,49 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.md_scheme = [];
       this.md_scheme = scheme;
   }
+  openTatRemarks(trxn){
+      console.log(trxn);
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.autoFocus = false;
+      dialogConfig.closeOnNavigation = false;
+      dialogConfig.disableClose = true;
+      dialogConfig.hasBackdrop = false;
+      dialogConfig.width = '40%';
+      dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
+      dialogConfig.data = {
+        flag: 'ATR',
+        query_id: trxn.query_id,
+        trxn: trxn,
+        title: 'ADD TAT REMARKS',
+        right: global.randomIntFromInterval(1, 60),
+      };
+      dialogConfig.id = trxn.query_id.toString();
+      try {
+        const dialogref = this.__dialog.open(
+          TatRemarksComponent,
+          dialogConfig
+        );
+        dialogref.afterClosed().subscribe((dt) => {
+          console.log(dt)
+          if(dt){
+            this.queryDataSource = this.queryDataSource.filter(el =>{
+                  if(el.id == dt.id){
+                    el.tat_remarks = dt.tat_remarks;
+                  }
+                  return el;
+            })
+          }
+        });
+      } catch (ex) {
+        const dialogRef = this.__dialog.getDialogById(dialogConfig.id);
+        dialogRef.updateSize('40%');
+        this.__utility.getmenuIconVisible({
+          id: Number(dialogConfig.id),
+          isVisible: false,
+          flag: 'ATR',
+        });
+      }
+  }
 }
 
 export class queryColumn{
@@ -905,25 +1083,25 @@ export class queryColumn{
     {
       field:'status_name',
       header:'Query Status',
-      width:'5rem',
+      width:'10rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'entry_name',
       header:'Query Receive By',
-      width:'5rem',
+      width:'10rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'query_solve_by',
       header:'Query Solve By',
-      width:'5rem',
+      width:'12rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'query_id',
       header:'Query ID',
-      width:'5rem',
+      width:'8rem',
       isVisible:[1,2,3,4]
     },
     // {
@@ -935,37 +1113,43 @@ export class queryColumn{
     {
       field:'date_time',
       header:'Date & Time',
-      width:'5rem',
+      width:'12rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'investor_name',
       header:'Investor',
-      width:'5rem',
-      isVisible:[1,2,3]
+      width:'20rem',
+      isVisible:[1,2]
+    },
+    {
+      field:'investor_name',
+      header:'Policy Holder',
+      width:'20rem',
+      isVisible:[3]
     },
     {
       field:'investor_name',
       header:'FD Holder',
-      width:'5rem',
+      width:'20rem',
       isVisible:[4]
     },
     {
       field:'investor_pan',
       header:'PAN',
-      width:'5rem',
+      width:'8rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'investor_email',
       header:'Email',
-      width:'5rem',
+      width:'20rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'investor_mobile',
       header:'Mobile',
-      width:'5rem',
+      width:'7rem',
       isVisible:[1,2,3,4]
     },
     // {
@@ -975,31 +1159,31 @@ export class queryColumn{
     {
       field:'folio_no',
       header:'Folio',
-      width:'5rem',
-      isVisible:[1,2]
-    }, 
-    {
-      field:'application_no',
-      header:'Application No',
-      width:'5rem',
-      isVisible:[1,2]
+      width:'9rem',
+      isVisible:[1]
     }, 
     {
       field:'policy_no',
       header:'Policy No',
-      width:'5rem',
+      width:'9rem',
       isVisible:[3]
     }, 
     {
-      field:'fd_no',
-      header:'FD No',
-      width:'5rem',
-      isVisible:[4]
+      field:'fdr_no',
+      header:'FDR No',
+      width:'9rem',
+      isVisible:[2,4]
     },
+    {
+      field:'application_no',
+      header:'Application No',
+      width:'9rem',
+      isVisible:[1,2,3,4]
+    }, 
     {
       field:'query_given_by',
       header:'Query Given By',
-      width:'5rem',
+      width:'9rem',
       isVisible:[1,2,3,4]
     },
     {
@@ -1023,13 +1207,13 @@ export class queryColumn{
     {
       field:'query_type',
       header:'Query Type',
-      width:'5rem',
+      width:'17rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'query_subtype',
       header:'Query Subtype',
-      width:'5rem',
+      width:'17rem',
       isVisible:[1,2,3,4]
     },
     {
@@ -1041,43 +1225,43 @@ export class queryColumn{
     {
       field:'query_receive_through',
       header:'Query Receive Through',
-      width:'5rem',
+      width:'12rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'query_nature',
       header:'Query Nature',
-      width:'5rem',
+      width:'11rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'query_given_to_amc_or_company',
       header:'Query Given To AMC/Company',
-      width:'8rem',
+      width:'10rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'query_given_through',
       header:'Query Given Through',
-      width:'5rem',
+      width:'13rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'concern_person_name',
       header:'Concern Person Name',
-      width:'5rem',
+      width:'16rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'contact_no',
       header:'Concern Person Contact No.',
-      width:'5rem',
+      width:'10rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'email_id',
       header:'Concern Person Email',
-      width:'10rem',
+      width:'15rem',
       isVisible:[1,2,3,4]
     },
     {
@@ -1095,14 +1279,26 @@ export class queryColumn{
     {
       field:'expected_close_date',
       header:'Expected Closed Date',
-      width:'5rem',
+      width:'14rem',
       isVisible:[1,2,3,4]
     },
     
     {
       field:'actual_close_date',
       header:'Actual Close Date Time',
-      width:'8rem',
+      width:'14rem',
+      isVisible:[1,2,3,4]
+    },
+    {
+      field:'tat_expired',
+      header:'TAT Expired ',
+      width:'5rem',
+      isVisible:[1,2,3,4]
+    },
+    {
+      field:'tat_remarks',
+      header:'TAT Remarks ',
+      width:'15rem',
       isVisible:[1,2,3,4]
     },
     {
@@ -1114,25 +1310,25 @@ export class queryColumn{
     {
       field:'query_inform_date',
       header:'Query Inform Date Time',
-      width:'20rem',
+      width:'16rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'query_inform_through',
       header:'Query Inform Through',
-      width:'8rem',
+      width:'14rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'query_feedback',
       header:'Query Feedback Receive',
-      width:'8rem',
+      width:'5rem',
       isVisible:[1,2,3,4]
     },
     {
       field:'remarks',
       header:'Remarks',
-      width:'8rem',
+      width:'18rem',
       isVisible:[1,2,3,4]
     },
     {
@@ -1144,7 +1340,7 @@ export class queryColumn{
     {
       field:'action',
       header:'Action',
-      width:'10rem',
+      width:'5rem',
       isVisible:[1,2,3,4]
     }
   ]

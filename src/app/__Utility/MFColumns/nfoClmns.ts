@@ -1,8 +1,13 @@
 export class nfoClmns {
   public static SUMMARY_COPY = [
+    {field:'folio_no',header:'Folio No'},
+    {field:'ack_copy_scan',header:'ACK. View'},
+
     { field: 'edit', header: 'Edit' },
     { field: 'app_frm_view', header: 'DOC View' },
     { field: 'entry_date', header: 'Entry Date' },
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+    { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
     { field: 'tin_no', header: 'TIN' },
     { field: 'branch_name', header: 'Branch' },
     { field: 'sub_brk_cd', header: 'Sub Broker Code' },
@@ -18,9 +23,13 @@ export class nfoClmns {
     { field: 'rnt_name', header: 'Form Submitted At' },
   ];
   public static SUMMARY_COPY_SIP = [
+    {field:'folio_no',header:'Folio No'},
+    {field:'ack_copy_scan',header:'ACK. View'},
     { field: 'edit', header: 'Edit' },
     { field: 'app_frm_view', header: 'DOC View' },
     { field: 'entry_date', header: 'Entry Date' },
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+    { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
     { field: 'tin_no', header: 'TIN' },
     { field: 'branch_name', header: 'Branch' },
     { field: 'sub_brk_cd', header: 'Sub Broker Code' },
@@ -37,9 +46,13 @@ export class nfoClmns {
     { field: 'rnt_name', header: 'Form Submitted At' },
   ];
 public static COLUMN_SELECTOR=[
+  {field:'folio_no',header:'Folio No'},
+  {field:'ack_copy_scan',header:'ACK. View'},
   {field:'edit',header:'Edit'},
   {field:'app_frm_view',header:'DOC View'},
    {field:'entry_date',header:'Entry Date'},
+   { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
+    { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
    {field:'tin_no',header:'TIN'},
    {field:'bu_type',header:'Business Type'},
    {field:'branch_name',header:'Branch'},
@@ -78,7 +91,7 @@ public static DETAILS_SIP=[
   {field:'scheme_name',header:'Scheme'},
   {field:'inv_type',header:'Investment Type'},
   {field:'application_no',header:'Application No'},
-  {field:'folio_no',header:'Folio No'},
+  // {field:'folio_no',header:'Folio No'},
   {field:'plan_name',header:'Plan'},
   {field:'opt_name',header:'Option'},
   {field:'sip_type_name',header:'SIP Type'},
@@ -100,7 +113,7 @@ public static DETAILS_SWITCH = [
   {field:'scheme_name_to',header:'Scheme Name (To Scheme)'},
   {field:'plan_name_to',header:'Plan (To Scheme)'},
   {field:'opt_name_to',header:'Option (To Scheme)'},
-  {field:'folio_no',header:'Folio No'},
+  // {field:'folio_no',header:'Folio No'},
   {field:'amount',header:'Amount/Unit'},
   {field:'rnt_name',header:'Form Submitted At'},
   {field:'remarks',header:'Remarks'}
@@ -109,7 +122,7 @@ public static DETAILS_NFOCOMBO=[
   {field:'scheme_name',header:'Scheme'},
   {field:'inv_type',header:'Investment Type'},
   {field:'application_no',header:'Application No'},
-  {field:'folio_no',header:'Folio No'},
+  // {field:'folio_no',header:'Folio No'},
   {field:'plan_name',header:'Plan'},
   {field:'opt_name',header:'Option'},
   {field:'amount',header:'Amount'},

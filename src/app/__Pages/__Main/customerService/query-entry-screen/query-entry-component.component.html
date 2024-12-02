@@ -1,12 +1,12 @@
 <div class="bckContainer"></div>
 
 <div class="row flexSec ">
-    <div class="col-md-10 offset-md-1">
+    <div class="col-md-10 offset-md-1 container">
             <mat-card class="my-2">
                 <mat-card-header class="border-bottom">
                     <mat-card-title>
                         <h4>
-                            {{ queryId == 0 ? 'Add' : 'View'}} Query In {{productId == 3 ? 'Insurance' : (productId == 4 ? 'FD' : 'Mutual Fund')}}
+                            {{ queryId == 0 ? 'Add' : 'View'}} Query In {{productId == 3 ? 'Insurance' : (productId == 4 ? 'Fixed Deposit' : ((productId == 2 ? 'Bond' : 'Mutual Fund')))}}
                         </h4>
                     </mat-card-title>
                 </mat-card-header>
@@ -29,7 +29,7 @@
                                                     <div class="col-sm-6">
                                                         <app-core-srch
                                                         [label] = "(productId == 4 ? 'FD Holder Name' : (productId == 3 ? 'Policy Holder Name' : 'Investor Name'))"
-                                                        [placeholder]="'Search By ' + (productId == 4 ? 'FD Holder' : (productId == 3 ? 'Policy Holder' : 'Investor Or Folio No'))"
+                                                        [placeholder]="'Search By ' + (productId == 4 ? 'FD Holder Or FDR No' : (productId == 3 ? 'Policy Holder Or Policy No' : (productId == 2 ? 'Investor Or FDR No' : 'Investor Or Folio No')))"
                                                         [isPending]="__isInvestorSpinner"
                                                         [listItems] = "md_client"
                                                         [flag] = "'C'"
@@ -68,16 +68,28 @@
                                                 </div>
                                                 <div class="row my-2">
                                                     <div class="col-sm-6">
-                                                        <label [for]="productId == 3 ? 'policy_no' : (productId == 4 ? 'fd_no' : 'folio_no')">
-                                                            {{productId == 3 ? 'Policy No' : productId == 4 ? 'FD No' : 'Folio'}} 
+                                                        <label [for]="productId == 3 ? 'policy_no' : ((productId == 4 || productId == 2) ? 'fd_no' : 'folio_no')">
+                                                            {{productId == 3 ? 'Policy No' : (productId == 4 || productId == 2) ? 'FDR No' : 'Folio'}} 
                                                             <span class="text-danger" *ngIf="queryId.toString() == '0'">*</span></label>  
                                                         <ng-container [ngSwitch]="true">
-                                                            <ng-container *ngSwitchCase="productId == 3 || productId == 4">
-                                                                <input [placeholder]="'Enter ' + (productId == 4 ? 'FD No' : 'Policy No')" 
+                                                            <ng-container *ngSwitchCase="productId == 2 || productId == 3 || productId == 4">
+                                                                <!-- <input [placeholder]="'Enter ' + (productId == 4 ? 'FD No' : 'Policy No')" 
                                                                     class="form-control" [formControlName]="productId == 3 ? 'policy_no' : 'fd_no'"/> 
                                                                     <div class="invalid-feedback" *ngIf="queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').invalid && (queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').dirty || queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').touched)">
                                                                         <span class="invalid-feedback" *ngIf="(queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').errors?.required)">*Please provide {{productId == 3 ? 'policy no' : 'fd no'}} </span>
-                                                                    </div>
+                                                                    </div> -->
+
+                                                                
+                                                                        <ng-multiselect-dropdown #multiSelect id="fdr_no" 
+                                                                        [disabled]="queryId.toString() != '0'"
+                                                                        [placeholder]="productId == 3 ? 'Select Policy No.' : 'Select FDR NO.'" [settings]="productId == 3 ? settingsforPolicyDropdown : settingsforFdrDropdown" [data]="md_folio"
+                                                                        [formControlName]="productId == 3 ? 'policy_no' : 'fdr_no'">
+                                                                      </ng-multiselect-dropdown>
+                                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get(productId == 3 ? 'policy_no' : 'fdr_no').invalid && (queryEntryForm.get(productId == 3 ? 'policy_no' : 'fdr_no').dirty || queryEntryForm.get(productId == 3 ? 'policy_no' : 'fdr_no').touched)">
+                                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get(productId == 3 ? 'policy_no' : 'fdr_no').errors?.required)">*Please provide {{productId == 3 ? 'Policy No.' : 'FDR No.'}}</span>
+                                                                        </div>
+                                                                
+
                                                             </ng-container>
                                                             <ng-container *ngSwitchDefault>
                                                                 <ng-multiselect-dropdown #multiSelect id="folio_no" 
@@ -115,12 +127,12 @@
                                                 </div>
                                                 <div class="row my-2">
                                                         <div class="col-sm-12">
-                                                        <label [for]="productId == 1 ? 'scheme_id' : 'plan_id'" *ngIf="productId != 1">
-                                                            {{productId == 3 || productId == 4 ? 'Plan' : 'Scheme'}}
+                                                         <!--<label [for]="productId == 1 ? 'scheme_id' : 'plan_id'" *ngIf="productId != 1">
+                                                            {{productId == 3 ? 'Product' : 'Scheme'}}
                                                             <span class="text-danger"  *ngIf="queryId.toString() == '0'">*</span>
                                                         </label>
                                                         <ng-container [ngSwitch]="true">
-                                                            <div *ngSwitchCase="productId == 3 || productId == 4">
+                                                            <div *ngSwitchCase="productId == 3 || productId == 4 || productId == 2">
                                                                 <select   class="form-control" [formControlName]="productId == 3 ? 'ins_product_id' : 'fd_scheme_id'"
                                                                  [id]="productId == 3 ? 'ins_product_id' : 'fd_scheme_id'"  [name]="productId == 3 ? 'ins_product_id' : 'fd_scheme_id'">
                                                                     <option value="">Select</option>
@@ -187,8 +199,61 @@
                                                                   </table>
                                                                
                                                             </div>
-                                                        </ng-container>
+                                                        </ng-container> -->
+                                                        <table  class="my-2">
+                                                            <thead>
+                                                              <tr>
+                                                                <th *ngIf="queryId.toString() == '0'">
+                                                                    <input
+                                                                      
+                                                                    type="checkbox" formControlName="selectAll"/>
+                                                                </th>
+                                                                <th>
+                                                                    {{productId == 2 ? 'Product' : 'Scheme'}}
+                                                                </th>
+                                                                <th *ngIf="this.productId == 1">
+                                                                    Folio
+                                                                </th>
+                                                                <th *ngIf="this.productId == 1">
+                                                                    Current Value
+                                                                </th>
+                                                              </tr>
+                                                            </thead>
+                                                            <ng-container *ngIf="schemeDtls.value.length > 0;else noData">
+                                                            <tbody formArrayName="scheme_dtls">
+                                                              <tr *ngFor="let item of schemeDtls.controls; let i = index;">
+                                                                <ng-container [formGroupName]="i">
+                                                                    <td *ngIf="queryId.toString() == '0'">
+                                                                        <input type="checkbox" 
+                                                                            (change)="setSelctAllCheckbox($event)"
+                                                                        formControlName="isActive"/>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{schemeDtls.controls[i].get(productId == 3 ? 'product_name' : 'scheme_name')?.value}}  
+                                                                    </td>
+                                                                    <td *ngIf="this.productId == 1">
+                                                                        {{schemeDtls.controls[i].get('folio_no')?.value}}  
+                                                                    </td>
+                                                                    <td *ngIf="this.productId == 1">
+                                                                        {{schemeDtls.controls[i].get('curr_val')?.value}}  
+                                                                    </td>
+                                                                </ng-container>
+                                                              </tr>
+                                                            </tbody>
+                                                             </ng-container>
+                                                             <ng-template #noData>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td colspan="4" class="text-center p-2">
+                                                                                <p class="m-0">
+                                                                                    No Scheme Available
+                                                                                </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                             </ng-template>
 
+                                                          </table>
                                                         </div>
 
                                                      
@@ -225,6 +290,19 @@
                                                         
                                                         <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_subtype_id').invalid && (queryEntryForm.get('query_subtype_id').dirty || queryEntryForm.get('query_subtype_id').touched)">
                                                             <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_subtype_id').errors?.required)">*Please select query subtype</span>
+                                                          </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+
+                                                 <label for="query_rec_through_id">Query Receive Through <span class="text-danger">*</span></label>  
+                                                        <select class="form-control"   formControlName="query_rec_through_id"  id="query_rec_through_id">
+                                                            <option value="">Select</option>
+                                                            <option *ngFor="let item of md_QueryGivenReceiveThr" value="{{item.id}}">{{item.name}}</option>
+                                                        </select>
+                                                        <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_rec_through_id').invalid && (queryEntryForm.get('query_rec_through_id').dirty || queryEntryForm.get('query_rec_through_id').touched)">
+                                                            <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_rec_through_id').errors?.required)">*Please select query receive through</span>
                                                           </div>
                                                     </div>
                                                 </div>
