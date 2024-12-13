@@ -181,6 +181,7 @@ export class CustomerServiceHomeComponent implements OnInit {
     euin_no: new FormControl([]),
   })
 
+  sys_info:any = [];
   queryDataSource = [];
   md_query_rec_given_through:any = [];
   md_product = [];
@@ -205,9 +206,13 @@ export class CustomerServiceHomeComponent implements OnInit {
           .subscribe((res:any) =>{
                 let dt = [];
                 let statusDtls:any = this.md_query_status;
+                // let sys_info = [];
+               
                 this.md_product.forEach(el =>{
                         statusDtls = statusDtls.map((item:any) =>{
+
                             const hasProps = res?.hasOwnProperty(el.id.toString()) ? item?.id in res[el.id.toString()] : false;
+                            //console.log(hasProps);
                             item[item.status_name] = hasProps ? res[el.id.toString()][item.id].length : 0;
                             item[`${item.status_name}_${item.id}`] = item.id;
                             item[`${item.status_name}_${item.id}_tat_expired`] = hasProps ? 0 : 0;
@@ -215,6 +220,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                             item[`${item.status_name}_tat_expire`] = this.getNo_of_tatExp(hasProps ? res[el.id.toString()][item.id] : []);
                             return  item;
                         })  
+                        //console.log(statusDtls);
                       dt.push({
                         product_name:el.tab_name,
                         product_id:el.id,
@@ -227,9 +233,37 @@ export class CustomerServiceHomeComponent implements OnInit {
                         }), {})
                       });
                 });
-                console.log(dt);
+                // //console.log(dt);
                 this.md_dialog_data = dt;
                 this.visible = !this.visible
+                Object.keys(res).forEach((el,index) =>{                  
+                  const productDtls = this.md_product.filter(item => item.id == el);
+                  this.sys_info.push({
+                    product_id:el,
+                    product_name:productDtls.length > 0 ? productDtls[0]?.tab_name : '',
+                    queryDtls:[]
+                  })
+                 this.md_query_status.forEach((item:any) =>{
+                  if(item.id != 7 && item.id != 5){
+                    console.log(item.id)
+                    const hasProp = res?.hasOwnProperty(el.toString()) ? item?.id in res[el.toString()] : false;
+                    //console.log(hasProp);
+                    if(hasProp ){
+                      this.sys_info[index].queryDtls.push({
+                              status_name:item.status_name,
+                              status_id:item.id,
+                              color_code:item.color_code,
+                              query_no:res[el.toString()][item.id].length,
+                              innerQueryDtls:res[el.toString()][item.id].map(ele => {
+                                return `${ele.query_subtype}-(${ele.query_id})`
+                              })
+                      })
+                    }
+                  }   
+                  })
+                });
+                console.log(this.sys_info);
+
           })
   }
 
@@ -240,7 +274,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                 const actual_close_date = moment(el.actual_close_date);
                 const expected_close_date = moment(el.expected_close_date);
                 const diff = actual_close_date.diff(expected_close_date);
-                console.log(diff);
+                //console.log(diff);
                 count_Query_dtls+= diff <= 0 ? 0 : 1;
               }
               else{
@@ -252,7 +286,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                 }
                 else{
                   var new_date = moment(el.date_time).add(el.query_tat, 'days').format('YYYY-MM-DD');
-                  console.log(new_date);
+                  //console.log(new_date);
                   count_Query_dtls+= moment(moment(new Date()).format('YYYY-MM-DD'),'YYYY-MM-DD').diff(new_date) <= 0 ? 0 : 1;
                 }
               }
@@ -332,7 +366,7 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.dbIntr.api_call(0,'/cus_service/queryGivenBy',null)
       .pipe(pluck('data'))
       .subscribe(res => {
-        // console.log(res);  
+        // //console.log(res);  
         this.md_query_given_by = res
       })
   }
@@ -341,7 +375,7 @@ export class CustomerServiceHomeComponent implements OnInit {
         this.dbIntr.api_call(0,'/cus_service/queryGivenThrough',null)
         .pipe(pluck('data'))
         .subscribe(res =>{
-              // console.log(res)
+              // //console.log(res)
               this.md_query_rec_given_through = res;
         })
   }
@@ -544,7 +578,7 @@ export class CustomerServiceHomeComponent implements OnInit {
     )
     .subscribe({
       next: (value) => {
-        // console.log(value);
+        // //console.log(value);
         this.md_queryId = value;
         this.searchResultVisibilityForQueryID('block');
         this.__isQuery_id_pending = false;
@@ -622,7 +656,7 @@ export class CustomerServiceHomeComponent implements OnInit {
          * Event Trigger after Business Type
          */
         this.customerServiceForm.controls['bu_type_id'].valueChanges.subscribe((res) => {
-          // console.log(res);
+          // //console.log(res);
           if(res.length > 0){
             this.disabledSubBroker(res);
             this.getRelationShipManagerMst(res, this.customerServiceForm.value.brn_cd);
@@ -657,7 +691,7 @@ export class CustomerServiceHomeComponent implements OnInit {
        * Event Trigger after Rlationship Manager
        */
       this.customerServiceForm.controls['sub_brk_cd'].valueChanges.subscribe((res) => {
-        // console.log(res);
+        // //console.log(res);
         this.setEuinDropdown(res, this.customerServiceForm.value.rm_id);
       });
       /**** End */
@@ -733,7 +767,7 @@ export class CustomerServiceHomeComponent implements OnInit {
             }
             else{
               var new_date = moment(el.date_time).add(el.query_tat, 'days').format('YYYY-MM-DD');
-              console.log(new_date);
+              //console.log(new_date);
                 const isAfter = moment(moment(new Date()).format('YYYY-MM-DD'),'YYYY-MM-DD').diff(new_date)
                 isExpired = isAfter <= 0;
             }
@@ -777,7 +811,7 @@ export class CustomerServiceHomeComponent implements OnInit {
           // el.tat_expired = 
           return el
         });
-        // console.log(this.queryDataSource);
+        // //console.log(this.queryDataSource);
       })
   }
 
@@ -795,8 +829,8 @@ export class CustomerServiceHomeComponent implements OnInit {
           }
         });
         this.setColumns(res.length > 0 ? res[0].id : 1)
-        // console.log(this.productId);
-        // console.log()
+        // //console.log(this.productId);
+        // //console.log()
         // this.fetchQuery(this.md_product[0].flag);
     })
   }
@@ -810,7 +844,7 @@ export class CustomerServiceHomeComponent implements OnInit {
   fetchQueryStatus = () =>{
     this.dbIntr.api_call(0,'/cus_service/queryStatus',null).pipe(pluck('data')).subscribe((res:Partial<IQueryStatus>[]) =>{
           this.md_query_status = res;
-          console.log(res);
+          //console.log(res);
         this.fetchCustomerServiceIndex();
 
     })
@@ -825,7 +859,7 @@ export class CustomerServiceHomeComponent implements OnInit {
   }
 
   searchQuery = () =>{
-    // console.log(this.customerServiceForm.getRawValue());
+    // //console.log(this.customerServiceForm.getRawValue());
     // const product_id = this.__utility.decrypt_dtls(this.productId);
     const product_id = this.__utility.DcryptText(this.productId);
     const flag = this.md_product.filter(el => el.id == product_id);
@@ -888,7 +922,7 @@ export class CustomerServiceHomeComponent implements OnInit {
     flag: string;
     item: any;
   }) =>{
-        // console.log(ev);
+        // //console.log(ev);
         this.customerServiceForm.get('query_id').reset(searchRlt.item.query_id, { emitEvent: false });
         // this.customerServiceForm.get('pan_no').reset(searchRlt.item.pan);
         this.searchResultVisibilityForQueryID('none');
@@ -937,7 +971,7 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
 
     resetForm = () => {
-      // console.log(`SUB TYPE: ${this.sub_type}`);
+      // //console.log(`SUB TYPE: ${this.sub_type}`);
       this.customerServiceForm.patchValue({
               client_id:'',
               pan_no:'',
@@ -991,7 +1025,7 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.customerServiceForm.controls['euin_no'].setValue([]);
   }
   openAttachments(trxn){
-      // console.log(trxn.solveattach)
+      // //console.log(trxn.solveattach)
       this.openDialog(trxn,trxn.query_id)
   }
 
@@ -1029,12 +1063,12 @@ export class CustomerServiceHomeComponent implements OnInit {
     }
   }
   showReport(scheme){
-      // console.log(scheme);
+      // //console.log(scheme);
       this.md_scheme = [];
       this.md_scheme = scheme;
   }
   openTatRemarks(trxn){
-      console.log(trxn);
+      //console.log(trxn);
       const dialogConfig = new MatDialogConfig();
       dialogConfig.autoFocus = false;
       dialogConfig.closeOnNavigation = false;
@@ -1056,7 +1090,7 @@ export class CustomerServiceHomeComponent implements OnInit {
           dialogConfig
         );
         dialogref.afterClosed().subscribe((dt) => {
-          console.log(dt)
+          //console.log(dt)
           if(dt){
             this.queryDataSource = this.queryDataSource.filter(el =>{
                   if(el.id == dt.id){

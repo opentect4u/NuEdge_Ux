@@ -50,7 +50,7 @@
                           type="button" icon="pi pi-plus" 
                           label="Add Query"  target="_blank"
                           [routerLink]="['/main/customer-service', queryId, productId]"
-                          class="p-button-link queryBtn p-button-rounded"></a> 
+                          class="p-button-link queryBtn p-button-rounded color-2"></a> 
                           </div>
                          
                         </div>
@@ -58,163 +58,196 @@
                     </mat-card-header>
                     <mat-card-content>
                         <form [formGroup]="customerServiceForm" class="p-3" (ngSubmit)="searchQuery()">
-                            <div class="row my-3 ">
-                              <div class="col-sm-3">
-                                <app-core-srch [label]="'Query ID'"
-                                [placeholder]="'Search By Query ID'"
-                                [isPending]="__isQuery_id_pending"
-                                [listItems]="md_queryId"
-                                [flag]="'Q'"
-                                [noDataFoundTitle]="'Sorry!! No Records Found'"
-                                [noDataFoundSubTitle]="'If your result match,they will appear here'"
-                                [propertiesToShow]="['query_id']"
-                                formControlName="query_id"
-                                [displayMode]="displayMode_forQueryId"
-                                (setDisplayMode)="displayMode_forQueryId = $event"
-                                (selectedItems)="getSelectedItemsFromParent($event)"
-                                ></app-core-srch>
-                              </div>
+                          <div class="row">
+                              <div [ngClass]="{
+                              'col-sm-9':sys_info.length > 0,
+                              'col-sm-12':sys_info.length == 0
+                            }">
+                                <div class="row my-3 ">
+                                  <div class="col-sm-3">
+                                    <app-core-srch [label]="'Query ID'"
+                                    [placeholder]="'Search By Query ID'"
+                                    [isPending]="__isQuery_id_pending"
+                                    [listItems]="md_queryId"
+                                    [flag]="'Q'"
+                                    [noDataFoundTitle]="'Sorry!! No Records Found'"
+                                    [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                                    [propertiesToShow]="['query_id']"
+                                    formControlName="query_id"
+                                    [displayMode]="displayMode_forQueryId"
+                                    (setDisplayMode)="displayMode_forQueryId = $event"
+                                    (selectedItems)="getSelectedItemsFromParent($event)"
+                                    ></app-core-srch>
+                                  </div>
 
-                              <div class="col-sm-3">
-                                  <app-core-srch [label]="'Investor'"
-                                  [placeholder]="'Search By  Investor Name, Code, Email, Mobile, PAN & DOB'"
-                                  [isPending]="__isClientPending"
-                                  [listItems]="__clientMst"
-                                  [flag]="'C'"
-                                  [noDataFoundTitle]="'Sorry!! No Records Found'"
-                                  [noDataFoundSubTitle]="'If your result match,they will appear here'"
-                                  [propertiesToShow]="['client_name','pan']"
-                                  formControlName="client_name"
-                                  [displayMode]="displayMode_forClient"
-                                  (setDisplayMode)="displayMode_forClient = $event"
-                                  (selectedItems)="getSelectedItemsFromParentForClient($event)"
-                                 ></app-core-srch>
-                              </div>
-                              <div class="col-sm-3">
-                                <label for="query_receive_by">Query Receive By</label>
-                                <select class="form-control" name="query_receive_by" id="query_receive_by" formControlName="query_receive_by">
-                                    <option value="">Select All</option>
-                                    <option value="{{item.id}}" *ngFor="let item of md_employee">{{item.name}}</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-3">
-                                  <label for="query_solve_by">Query Solve By</label>
-                                  <select class="form-control" name="query_solve_by" id="query_solve_by" formControlName="query_solve_by">
-                                    <option value="">Select All</option>
-                                    <option value="{{item.id}}" *ngFor="let item of md_employee">{{item.name}}</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-3">
-                              <label for="query_given_by">Query Given By</label>
-                              <select class="form-control" name="query_given_by" id="query_given_by" formControlName="query_given_by">
-                                  <option value="">Select All</option>
-                                  <option value="{{item.id}}" *ngFor="let item of md_query_given_by">{{item.name}}</option>
-                              </select>
-                          </div>
-                              <div class="col-sm-3">
-                                <label for="date_periods">Periods</label>
-                                <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
-                                  <option value="">Select All</option>
-                                  <option [value]="periods.id" *ngFor="let periods of periods_type">{{periods.periods}}</option>
-                                </select>
-                              </div>
-                              
-                              <div class="col-sm-3">
-                                <label for="date_range">Date Range (From - To)</label>
-                                <p-calendar #dateRng [maxDate]="maxDate" [minDate]="minDate" dateFormat="dd/mm/yy"
-                                  placeholder="Select Date Range" formControlName="date_range" selectionMode="range"
-                                  [readonlyInput]="true" [id]="'date_range'" [showIcon]="true" [hideOnDateTimeSelect]="true"
-                                  [showButtonBar]="true">
-                                </p-calendar>
-                              </div>
-                                <div class="col-sm-3">
-                                    <label for="queryStatus">Query Status</label>
-                                    <select class="form-control" name="queryStatus" id="queryStatus" formControlName="query_status_id">
+                                  <div class="col-sm-3">
+                                      <app-core-srch [label]="'Investor'"
+                                      [placeholder]="'Search By  Investor Name, Code, Email, Mobile, PAN & DOB'"
+                                      [isPending]="__isClientPending"
+                                      [listItems]="__clientMst"
+                                      [flag]="'C'"
+                                      [noDataFoundTitle]="'Sorry!! No Records Found'"
+                                      [noDataFoundSubTitle]="'If your result match,they will appear here'"
+                                      [propertiesToShow]="['client_name','pan']"
+                                      formControlName="client_name"
+                                      [displayMode]="displayMode_forClient"
+                                      (setDisplayMode)="displayMode_forClient = $event"
+                                      (selectedItems)="getSelectedItemsFromParentForClient($event)"
+                                    ></app-core-srch>
+                                  </div>
+                                  <div class="col-sm-3">
+                                    <label for="query_receive_by">Query Receive By</label>
+                                    <select class="form-control" name="query_receive_by" id="query_receive_by" formControlName="query_receive_by">
                                         <option value="">Select All</option>
-                                        <option value="{{status.id}}" *ngFor="let status of md_query_status">{{status.status_name}}</option>
+                                        <option value="{{item.id}}" *ngFor="let item of md_employee">{{item.name}}</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
-                                      <label for="query_receive_given_thrugh">Query Given Through</label>
-                                      <select class="form-control" name="query_receive_given_thrugh" id="query_receive_given_thrugh" formControlName="query_receive_given_thrugh">
+                                      <label for="query_solve_by">Query Solve By</label>
+                                      <select class="form-control" name="query_solve_by" id="query_solve_by" formControlName="query_solve_by">
                                         <option value="">Select All</option>
-                                        <option value="{{item.id}}" *ngFor="let item of md_query_rec_given_through">{{item.name}}</option>
+                                        <option value="{{item.id}}" *ngFor="let item of md_employee">{{item.name}}</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
-                                  <label for="query_excleted_level">Query Escalated Level</label>
-                                  <select class="form-control" name="query_excleted_level" id="query_excleted_level" formControlName="query_excleted_level">
-                                    <option value="">Select All</option>
-                                    <option value="l-1">Level-1</option>
-                                    <option value="l-2">Level-2</option>
-                                    <option value="l-3">Level-3</option>
+                                  <label for="query_given_by">Query Given By</label>
+                                  <select class="form-control" name="query_given_by" id="query_given_by" formControlName="query_given_by">
+                                      <option value="">Select All</option>
+                                      <option value="{{item.id}}" *ngFor="let item of md_query_given_by">{{item.name}}</option>
                                   </select>
                               </div>
-                              <!-- Advance Filter -->
-                              <ng-container *ngIf="btn_type == 'A'">
-                                <!-- <div class="row"> -->
-                                  <!-- <ng-container> -->
+                                  <div class="col-sm-3">
+                                    <label for="date_periods">Periods</label>
+                                    <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
+                                      <option value="">Select All</option>
+                                      <option [value]="periods.id" *ngFor="let periods of periods_type">{{periods.periods}}</option>
+                                    </select>
+                                  </div>
+                                  
+                                  <div class="col-sm-3">
+                                    <label for="date_range">Date Range (From - To)</label>
+                                    <p-calendar #dateRng [maxDate]="maxDate" [minDate]="minDate" dateFormat="dd/mm/yy"
+                                      placeholder="Select Date Range" formControlName="date_range" selectionMode="range"
+                                      [readonlyInput]="true" [id]="'date_range'" [showIcon]="true" [hideOnDateTimeSelect]="true"
+                                      [showButtonBar]="true">
+                                    </p-calendar>
+                                  </div>
                                     <div class="col-sm-3">
-                                      <label for="brn_cd">Branch</label>
-                                      <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
-                                        (onDeSelect)="onbrnCdDeSelect($event)" [settings]="settingsforBrnchDropdown" [data]="__branchMst"
-                                        formControlName="brn_cd">
-                                      </ng-multiselect-dropdown>
+                                        <label for="queryStatus">Query Status</label>
+                                        <select class="form-control" name="queryStatus" id="queryStatus" formControlName="query_status_id">
+                                            <option value="">Select All</option>
+                                            <option value="{{status.id}}" *ngFor="let status of md_query_status">{{status.status_name}}</option>
+                                        </select>
                                     </div>
                                     <div class="col-sm-3">
-                                      <label for="bu_type">Business Type</label>
-                                      <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
-                                        (onDeSelect)="onbuTypeDeSelect($event)" [settings]="settingsforBuTypeDropdown" [data]="__bu_type"
-                                        formControlName="bu_type_id">
-                                      </ng-multiselect-dropdown>
+                                          <label for="query_receive_given_thrugh">Query Given Through</label>
+                                          <select class="form-control" name="query_receive_given_thrugh" id="query_receive_given_thrugh" formControlName="query_receive_given_thrugh">
+                                            <option value="">Select All</option>
+                                            <option value="{{item.id}}" *ngFor="let item of md_query_rec_given_through">{{item.name}}</option>
+                                        </select>
                                     </div>
                                     <div class="col-sm-3">
-                                      <label for="rm_name">Relationship Manager</label>
-                                      <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
-                                        (onDeSelect)="onRmDeSelect($event)" [settings]="settingsforRMDropdown" [data]="__RmMst"
-                                        formControlName="rm_id">
-                                      </ng-multiselect-dropdown>
-                                    </div>
-                                    <div class="col-sm-3">
-                                      <label for="sub_brk_cd">Sub Broker</label>
-                                      <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
-                                        (onDeSelect)="onSubBrkDeSelect($event)" [settings]="settingsforSubBrkDropdown"
-                                        [data]="__subbrkArnMst" formControlName="sub_brk_cd">
-                                      </ng-multiselect-dropdown>
-                                    </div>
-                                    <div class="col-sm-3">
-                                      <label for="euin_no">EUIN</label>
-                                      <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
-                                        [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
-                                      </ng-multiselect-dropdown>
-                                    </div>
-                    
-                                  <!-- </ng-container> -->
-                                <!-- </div>
-                                <div class="row mt-2"> -->
-                                
-                                <!-- </div> -->
-                              </ng-container>
-                              <!-- End -->
+                                      <label for="query_excleted_level">Query Escalated Level</label>
+                                      <select class="form-control" name="query_excleted_level" id="query_excleted_level" formControlName="query_excleted_level">
+                                        <option value="">Select All</option>
+                                        <option value="l-1">Level-1</option>
+                                        <option value="l-2">Level-2</option>
+                                        <option value="l-3">Level-3</option>
+                                        <option value="l-4">Level-4</option>
+                                        <option value="l-5">Level-5</option>
+                                        <option value="l-6">Level-6</option>
+                                      </select>
+                                  </div>
+                                  <!-- Advance Filter -->
+                                  <ng-container *ngIf="btn_type == 'A'">
+                                    <!-- <div class="row"> -->
+                                      <!-- <ng-container> -->
+                                        <div class="col-sm-3">
+                                          <label for="brn_cd">Branch</label>
+                                          <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
+                                            (onDeSelect)="onbrnCdDeSelect($event)" [settings]="settingsforBrnchDropdown" [data]="__branchMst"
+                                            formControlName="brn_cd">
+                                          </ng-multiselect-dropdown>
+                                        </div>
+                                        <div class="col-sm-3">
+                                          <label for="bu_type">Business Type</label>
+                                          <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+                                            (onDeSelect)="onbuTypeDeSelect($event)" [settings]="settingsforBuTypeDropdown" [data]="__bu_type"
+                                            formControlName="bu_type_id">
+                                          </ng-multiselect-dropdown>
+                                        </div>
+                                        <div class="col-sm-3">
+                                          <label for="rm_name">Relationship Manager</label>
+                                          <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                                            (onDeSelect)="onRmDeSelect($event)" [settings]="settingsforRMDropdown" [data]="__RmMst"
+                                            formControlName="rm_id">
+                                          </ng-multiselect-dropdown>
+                                        </div>
+                                        <div class="col-sm-3">
+                                          <label for="sub_brk_cd">Sub Broker</label>
+                                          <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                                            (onDeSelect)="onSubBrkDeSelect($event)" [settings]="settingsforSubBrkDropdown"
+                                            [data]="__subbrkArnMst" formControlName="sub_brk_cd">
+                                          </ng-multiselect-dropdown>
+                                        </div>
+                                        <div class="col-sm-3">
+                                          <label for="euin_no">EUIN</label>
+                                          <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
+                                            [settings]="settingsforEuinDropdown" [data]="__euinMst" formControlName="euin_no">
+                                          </ng-multiselect-dropdown>
+                                        </div>
+                        
+                                      <!-- </ng-container> -->
+                                    <!-- </div>
+                                    <div class="row mt-2"> -->
+                                    
+                                    <!-- </div> -->
+                                  </ng-container>
+                                  <!-- End -->
 
-                                <div
-                                class="d-flex align-items-end justify-content-end"
-                                [ngClass]="{
-                                  'col-sm-6':btn_type != 'A',
-                                  'col-sm-3':btn_type == 'A'
-                                }"
-                             >
-                                    <button
-                                          pButton
-                                          type="submit"
-                                          class="p-button-lg mx-3"
-                                          iconPos="left"
-                                          icon="pi pi-eye"
-                                          label="Show"
-                                      ></button>
+                                    <div
+                                    class="d-flex align-items-end justify-content-end"
+                                    [ngClass]="{
+                                      'col-sm-6':btn_type != 'A',
+                                      'col-sm-3':btn_type == 'A'
+                                    }"
+                                >
+                                        <button
+                                              pButton
+                                              type="submit"
+                                              class="p-button-lg mx-3"
+                                              iconPos="left"
+                                              icon="pi pi-eye"
+                                              label="Show"
+                                          ></button>
+                                    </div>
+                          
                                 </div>
-                       
-                            </div>
+                              </div>
+                              <div class="col-sm-3" *ngIf="sys_info.length > 0">
+                                <div class="card  rounded-sm">
+                                  <div class="card-header">
+                                   <i class="pi pi-info-circle"></i> System Information
+                                  </div>
+                                  <div class="card-body p-3">
+                                    <marquee scrollamount="5"  #merque behavior="scroll"  direction="up" height="200px">
+                                      <ul *ngFor="let sysInfo of sys_info"  onmouseover="this.parentNode.stop();" onmouseout="this.parentNode.start();">
+                                        <li class="mb-3">
+                                          <h5   >{{sysInfo?.product_name}}</h5>
+                                        </li>
+                                        <li *ngFor="let item of sysInfo.queryDtls" class="pl-3" >
+                                          <p   class="merqueText"
+                                            [ngStyle]="{color: item.color_code}"
+                                          >
+                                           You have {{item?.query_no}} {{item.status_name}} Query.
+                                          </p>
+                                        </li>
+                                      </ul>
+                                      </marquee>
+                                  </div>
+                                </div> 
+                              </div>
+                        </div>
                         </form>
                         <div class="my-3 border-top">
 
@@ -358,11 +391,17 @@
                                     </ng-container> -->
                                     
                                       <ng-container   *ngSwitchCase="col.field == 'query_feedback'">
-                                        <a pButton
-                                        [routerLink]="['/main/customer-service/viewTrans', trxn.cust_query_id, productId]"
-                                        target="_blank"
-                                        type="button" #tooltip="matTooltip"
-                                        matTooltip="View Query"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded p-button-lg"  icon="pi pi-eye" ></a>
+                                        <ng-container *ngIf="trxn.query_feedback;else notAvailable">
+                                          <a pButton
+                                          [routerLink]="['/main/customer-service/viewTrans', trxn.cust_query_id, productId]"
+                                          target="_blank"
+                                          type="button" #tooltip="matTooltip"
+                                          matTooltip="View Query"  class="p-button-text p-button-text p-button-success mx-3 p-button-rounded p-button-lg"  icon="pi pi-eye" ></a>
+                                        </ng-container>
+                                        <ng-template #notAvailable>
+                                            <span>N/A</span>
+                                        </ng-template>
+                                       
                                       </ng-container>
                                       <ng-container   *ngSwitchCase="col.field == 'scheme_name'">
                                         <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}} 

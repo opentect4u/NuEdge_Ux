@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
-
 @Component({
   selector: 'app-query-feedback',
   templateUrl: './query-feedback.component.html',
@@ -16,13 +15,55 @@ export class QueryFeedbackComponent implements OnInit {
     investor_name:new FormControl('',[Validators.required]),
     investor_email:new FormControl('',[Validators.email]),
     rating: new FormControl('',[Validators.required]),
-    query_feedback: new FormControl('',[Validators.required]),
+    query_feedback: new FormControl(''),
     query_id:new FormControl(''),
     color_code:new FormControl(''),
     enc_query_id:new FormControl(''),
     suggestion:new FormControl(''),
-
   });
+
+  emojiDtls = [
+    {
+      id:1,
+      emoji_type:"Very Poor",
+      emoji:"VerryPoor.png",
+      emoji_value:1,
+      selected_color:"#c4232f",
+      activeBgColor:"rgb(218 111 84 / 10%)"
+    },
+    {
+      id:2,
+      emoji_type:"Poor",
+      emoji:"Poor.png",
+      emoji_value:2,
+      selected_color:"#bc326e",
+      activeBgColor:"rgb(184 36 105 / 10%)"
+    },
+    {
+      id:3,
+      emoji_type:"Avarage",
+      emoji:"Avarage.png",
+      emoji_value:3,
+      selected_color:"#3d3dfe",
+      activeBgColor:"rgb(0 0 247 / 10%)"
+    },
+    {
+      id:4,
+      emoji_type:"Good",
+      emoji:"Good.png",
+      emoji_value:4,
+      selected_color:"#fcdc01",
+      activeBgColor:"rgb(251 234 13 / 10%)"
+    },
+    {
+      id:5,
+      emoji_type:"Excellent",
+      emoji:"Excellent.png",
+      emoji_value:5,
+      selected_color:"#3ea52a",
+      activeBgColor:"rgb(62 165 42 / 10%)"
+    }
+  ]
 
   constructor(private rtDt: ActivatedRoute,
     private router:Router,
@@ -81,5 +122,11 @@ export class QueryFeedbackComponent implements OnInit {
       this.feedbackForm.get('investor_email').disable();
     })
 }
+
+  selectEmoji(emoji){
+      console.log(emoji);
+      this.feedbackForm.get('rating').setValue(emoji.emoji_value);
+      console.log(this.feedbackForm.get('rating').value);
+  }
 
 }

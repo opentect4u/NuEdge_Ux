@@ -31,19 +31,148 @@
                                                 placeholder="Your Email"
                                                 class="form-control" formControlName="investor_email"/>
                                             </div>
-                                            <div class="col-sm-12 d-flex justify-content-start align-items-start flex-column">
+                                            <div class="col-sm-12 ">
                                                 <label for="rating">
+                                                    Please rate our services <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="d-flex  align-items-center" style="justify-content: space-evenly;">
+                                                    <ng-container *ngFor="let item of emojiDtls">
+                                                        <div class="radio-group row justify-content-between text-center" 
+                                                        (click)="selectEmoji(item)"
+                                                        
+                                                        >
+                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected"
+                                                        [ngStyle]="{
+                                                            'border': feedbackForm.get('rating').value == item.emoji_value ? ('2px solid '+ item.selected_color) : '1px solid #eaeaea',
+                                                            'background': feedbackForm.get('rating').value == item.emoji_value ? item.activeBgColor : '#FAFAFA'
+                                                        }"                                                        
+                                                            
+                                                            >
+                                                                <div class="flex-row">
+                                                                    <div class="col p-0">
+                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/{{item.emoji}}" alt="{{item.emoji_type}}" width="40" height="54"> </div>
+                                                                        <p class="emojiText">{{item.emoji_type}}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>  
+                                                        </div>
+                                                    </ng-container>
+                                                    <!-- <div class="radio-group row justify-content-between text-center">
+                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                            <div class="flex-row">
+                                                                <div class="col p-0">
+                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/VerryPoor.png" width="40" height="54"> </div>
+                                                                    <p class="emojiText">Very Poor</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="radio-group row justify-content-between text-center">
+                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                            <div class="flex-row">
+                                                                <div class="col p-0">
+                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Poor.png" width="40" height="54"> </div>
+                                                                    <p class="emojiText">Poor</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="radio-group row justify-content-between text-center">
+                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                            <div class="flex-row">
+                                                                <div class="col p-0">
+                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Avarage.png" width="40" height="54"> </div>
+                                                                    <p class="emojiText">Avarage</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="radio-group row justify-content-between text-center">
+                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                            <div class="flex-row">
+                                                                <div class="col p-0">
+                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Good.png" width="40" height="54"> </div>
+                                                                    <p class="emojiText">Good</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="radio-group row justify-content-between text-center">
+                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                            <div class="flex-row">
+                                                                <div class="col p-0">
+                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Excellent.png" width="40" height="54"> </div>
+                                                                    <p class="emojiText">Excellent</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div> -->
+                                                </div>
+                                                <!-- <div class="row ">
+                                                  
+                                                    <div class="col-md-3">
+                                                        <div class="radio-group row justify-content-between text-center">
+                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                                <div class="flex-row">
+                                                                    <div class="col p-0">
+                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/VerryPoor.png" width="40" height="54"> </div>
+                                                                        <p class="emojiText">Very Poor</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="radio-group row justify-content-between text-center">
+                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                                <div class="flex-row">
+                                                                    <div class="col p-0">
+                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Poor.png" width="40" height="54"> </div>
+                                                                        <p class="emojiText">Poor</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="col-md-3">
+                                                        <div class="radio-group row justify-content-between text-center">
+                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                                <div class="flex-row">
+                                                                    <div class="col p-0">
+                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Avarage.png" width="40" height="54"> </div>
+                                                                        <p class="emojiText">Avarage</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="radio-group row justify-content-between text-center">
+                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
+                                                                <div class="flex-row">
+                                                                    <div class="col p-0">
+                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Good.png" width="40" height="54"> </div>
+                                                                        <p class="emojiText">Good</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div> -->
+                                                <!-- <label for="rating">
                                                     Please rate our services
                                                 </label>
                                                 <div class=" d-flex justify-content-start align-items-start">
-                                                    <!-- <p style="font-size: 2rem;" class="mx-3">😡</p>
-                                                    <p style="font-size: 2rem;" class="mx-3">😠</p>
-                                                    <p style="font-size: 2rem;" class="mx-3">🙂</p>
-                                                    <p style="font-size: 2rem;" class="mx-3">😃</p>
-                                                    <p style="font-size: 2rem;" class="mx-3">😀</p> -->
                                                     <p-rating formControlName="rating" [cancel]="false"
                                                     ></p-rating>
-                                                </div>
+                                                </div> -->
                                             </div>
                                             <div class="col-sm-12 my-3">
                                                <label>
@@ -64,9 +193,16 @@
                                                  
                                              </div>
                                             <div class="col-sm-12 mt-3 d-flex align-items-center justify-content-end">
-                                                <p-button type="submit" [disabled]="feedbackForm.invalid" label="Submit" class="p-button-lg"></p-button>
+                                                <!-- [disabled]="feedbackForm.invalid" -->
+                                                <p-button type="submit"  label="Submit" class="p-button-lg"></p-button>
                                             </div>
                                     </div>
                             </form>
                     </div>
 </div>
+
+
+<!-- EMOJI SECTION -->
+
+
+<!-- End -->

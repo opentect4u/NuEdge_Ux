@@ -50,8 +50,7 @@ export class ProfileComponent implements OnInit {
     private utility:UtiliService
     ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
   changeTab = (tab) =>{
       this.active_tab = tab.flag;
   }
