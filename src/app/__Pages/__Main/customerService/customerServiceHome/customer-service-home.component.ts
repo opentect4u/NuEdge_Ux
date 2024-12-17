@@ -809,6 +809,7 @@ export class CustomerServiceHomeComponent implements OnInit {
               }
           }
           // el.tat_expired = 
+          // el.rating = 3;
           return el
         });
         // //console.log(this.queryDataSource);
@@ -1212,7 +1213,13 @@ export class queryColumn{
       field:'application_no',
       header:'Application No',
       width:'9rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3]
+    }, 
+    {
+      field:'client_code',
+      header:'Client Code',
+      width:'9rem',
+      isVisible:[4]
     }, 
     {
       field:'query_given_by',
@@ -1356,6 +1363,12 @@ export class queryColumn{
     {
       field:'query_feedback',
       header:'Query Feedback Receive',
+      width:'5rem',
+      isVisible:[1,2,3,4]
+    },
+    {
+      field:'rating',
+      header:'Rating',
       width:'5rem',
       isVisible:[1,2,3,4]
     },

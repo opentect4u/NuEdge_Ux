@@ -6,7 +6,7 @@
                 <mat-card-header class="border-bottom">
                     <mat-card-title>
                         <h4>
-                            {{ queryId == 0 ? 'Add' : 'View'}} Query In {{productId == 3 ? 'Insurance' : (productId == 4 ? 'Fixed Deposit' : ((productId == 2 ? 'Bond' : 'Mutual Fund')))}}
+                            {{ queryId == 0 ? 'Add' : 'View'}} Query In {{productId == 3 ? 'Insurance' : (productId == 4 ? 'Fixed Deposit' : ((productId == 2 ? 'Bond' : (productId == 12 ? 'Nuedge Online' : 'Mutual Fund'))))}}
                         </h4>
                     </mat-card-title>
                 </mat-card-header>
@@ -67,7 +67,7 @@
                                                             <span class="text-danger" *ngIf="queryId.toString() == '0'">*</span></label>  
                                                         <ng-container [ngSwitch]="true">
                                                             <ng-container *ngSwitchCase="productId == 3 || productId == 4">
-                                                                <input [placeholder]="'Enter ' + (productId == 4 ? 'FD No' : 'Policy No')" 
+                                                                <input [placeholder]="' ' + (productId == 4 ? 'FD No' : 'Policy No')" 
                                                                     class="form-control" [formControlName]="productId == 3 ? 'policy_no' : 'fd_no'"/> 
                                                                     <div class="invalid-feedback" *ngIf="queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').invalid && (queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').dirty || queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').touched)">
                                                                         <span class="invalid-feedback" *ngIf="(queryEntryForm.get(productId == 3 ? 'policy_no' : 'fd_no').errors?.required)">*Please provide {{productId == 3 ? 'policy no' : 'fd no'}} </span>
@@ -85,8 +85,12 @@
                                                         
                                                    </div>
                                                     <div class="col-sm-6">
-                                                        <label for="application_no">Application No </label>  
-                                                        <input placeholder="Enter Application No"   id="application_no" class="form-control" formControlName="application_no"/> 
+                                                        <label [for]="productId == 12 ? 'client_code' : 'application_no'">{{productId == 12 ? 'Client Code' : 'Application No'}} </label>  
+                                                        <input placeholder="Enter {{productId == 12 ? 'Client Code' : 'Application No'}}"    [id]="productId == 12 ? 'client_code' : 'application_no'" 
+                                                        class="form-control" 
+                                                        formControlName="{{productId == 12 ? 'client_code' : 'application_no'}}"/> 
+                                                        <!-- <label for="application_no">Application No </label>  
+                                                        <input placeholder=" Application No"   id="application_no" class="form-control" formControlName="application_no"/>  -->
                                                     </div>
                                                 </div>
                                                 <div class="row ">
@@ -100,7 +104,7 @@
                                                    </div>
                                                     <div class="col-sm-6">
                                                         <label for="entry_name">Query Receive By <span class="text-danger"  *ngIf="queryId.toString() == '0'">*</span> </label>  
-                                                        <input   placeholder="Enter Query Receive By" id="entry_name" class="form-control" formControlName="entry_name"/> 
+                                                        <input   placeholder=" Query Receive By" id="entry_name" class="form-control" formControlName="entry_name"/> 
                                                     </div>
                                                 </div>
                                                 <div class="row my-2">
@@ -165,7 +169,7 @@
                                                                      <ng-template #noData>
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td colspan="4" class="text-center p-2">
+                                                                                <td colspan="4" class="text-c p-2">
                                                                                         <p class="m-0">
                                                                                             No Scheme Available
                                                                                         </p>
@@ -249,7 +253,7 @@
                                                 <div class="row my-2">
                                                         <div class="col-sm-12">
                                                                 <label for="query_details">Query Details <span class="text-danger"  *ngIf="queryId.toString() == '0'">*</span></label>
-                                                                <textarea   id="query_details" name="query_details" rows="4" class="form-control" formControlName="query_details" placeholder="Enter Query Details" cols="50"></textarea>
+                                                                <textarea   id="query_details" name="query_details" rows="4" class="form-control" formControlName="query_details" placeholder=" Query Details" cols="50"></textarea>
                                                         
                                                         </div>
                                                 </div>
@@ -325,7 +329,7 @@
                                                 <div class="col-sm-6">
                                                     <label for="concern_person_name">Concern Person Name</label> 
                                                     <div class="p-inputgroup">
-                                                        <input pInputText placeholder="Enter Concern Person Name" id="concern_person_name" class="form-control" formControlName="concern_person_name"/>
+                                                        <input pInputText placeholder=" Concern Person Name" id="concern_person_name" class="form-control" formControlName="concern_person_name"/>
                                                         
                                                     </div> 
                                                     <!--   -->
@@ -336,7 +340,7 @@
                                                 <div class="col-sm-6">
                                                     <label for="contact_no">Contact Number  </label>  
                                                     <div class="p-inputgroup">
-                                                        <input  pInputText placeholder="Enter Contact Number" id="contact_no" class="form-control" formControlName="contact_no"/>
+                                                        <input  pInputText placeholder=" Contact Number" id="contact_no" class="form-control" formControlName="contact_no"/>
                                                         
                                                     </div> 
                                                     <div class="invalid-feedback" *ngIf="queryEntryForm.get('contact_no').invalid && (queryEntryForm.get('contact_no').dirty || queryEntryForm.get('contact_no').touched)">
@@ -346,7 +350,7 @@
                                                 <div class="col-sm-6">
                                                     <label for="email_id">Email ID  </label>  
                                                     <div class="p-inputgroup">
-                                                        <input   placeholder="Enter Email" type="email" id="email_id" class="form-control" formControlName="email_id"/>
+                                                        <input   placeholder=" Email" type="email" id="email_id" class="form-control" formControlName="email_id"/>
                                                     </div> 
                                                     <div class="invalid-feedback" *ngIf="queryEntryForm.get('email_id').invalid && (queryEntryForm.get('email_id').dirty || queryEntryForm.get('email_id').touched)">
                                                         <span class="invalid-feedback" *ngIf="(queryEntryForm.get('email_id').errors?.email)">*Please provide valid email</span>
@@ -441,14 +445,14 @@
                                         </div>
                                         <div class="col-sm-12">
                                                 <label for="remarks">Reply Description</label>
-                                                <textarea   id="remarks" name="remarks" rows="4" class="form-control" formControlName="remarks" placeholder="Enter Reply Description" cols="12"></textarea>
+                                                <textarea   id="remarks" name="remarks" rows="4" class="form-control" formControlName="remarks" placeholder=" Reply Description" cols="12"></textarea>
                                                 <div class="invalid-feedback" *ngIf="queryEntryForm.get('remarks').invalid && (queryEntryForm.get('remarks').dirty || queryEntryForm.get('remarks').touched)">
                                                     <span class="invalid-feedback" *ngIf="(queryEntryForm.get('remarks').errors?.required)">*Please provide remarks</span>
                                                   </div>
                                         </div>
                                         <div class="col-sm-12">
                                             <label for="query_feedback">Feedback</label>
-                                            <textarea   id="query_feedback" name="query_feedback" rows="4" class="form-control" formControlName="query_feedback" placeholder="Enter Reply Description" cols="12"></textarea>
+                                            <textarea   id="query_feedback" name="query_feedback" rows="4" class="form-control" formControlName="query_feedback" placeholder="Feedback" cols="12"></textarea>
                                     </div>
                                     </div>
                                   

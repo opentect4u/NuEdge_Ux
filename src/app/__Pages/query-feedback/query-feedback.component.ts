@@ -67,7 +67,8 @@ export class QueryFeedbackComponent implements OnInit {
 
   constructor(private rtDt: ActivatedRoute,
     private router:Router,
-    private dbIntr:DbIntrService,private utility:UtiliService) { }
+    private dbIntr:DbIntrService,private utility:UtiliService) {
+     }
 
   ngOnInit(): void {
     this.rtDt.params.subscribe(res =>{

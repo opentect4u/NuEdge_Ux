@@ -19,6 +19,10 @@ const routes: Routes = [
     loadChildren:() => import('./__Pages/query-feedback/query-feedback.module').then(m => m.QueryFeedbackModule)
   },
   {
+    path:'cus_service/downloadAttachments/:queryId',
+    loadChildren:() => import('./__Pages/customer-service-attachment-download/customer-service-attachment-download.module').then(m => m.CustomerServiceAttachmentDownloadModule)
+  },
+  {
     path:'**',
     loadChildren:() => import('./__Pages/_Err/404-not-found/404-not-found.module').then(m => m.NotFoundModule)
   }

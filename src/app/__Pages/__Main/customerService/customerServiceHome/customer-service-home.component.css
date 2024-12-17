@@ -195,3 +195,18 @@ th{
   background: linear-gradient(45deg, rgba(255,193,7,1) 0%, rgba(255,87,34,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffc107', endColorstr='#ff5722', GradientType=1 );
 }
+
+/* 
+::ng-deep .rate>.p-rating .p-rating-icon.pi-star-fill{
+    color: #ed0808!important;
+} */
+
+/***** CUSTOM RATING CSS ********/
+.veryPoor_rating{color:#e41b23;}
+.poor_rating{color:#ef8f1e;}
+.avarage_rating{color:#f6c917;}
+.good_rating{color:#a2c738;}
+.excellent_rating{color:#a2c738;}
+.no_rating{color:#272726!important;}
+
+/*******END*******/

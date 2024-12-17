@@ -59,6 +59,7 @@ export class ViewEntryComponent implements OnInit {
   md_QueryGivenReceiveThr:Partial<IQueryGivenByOrReceiveThrough>[] = [];
   md_query_status:any = [];
   queryEntryForm = new FormGroup({
+       client_code: new FormControl(''),
        entry_attachment:new FormControl([]),
        entry_file:new FormControl([]),
        solve_attachment:new FormControl([]),
@@ -255,6 +256,7 @@ export class ViewEntryComponent implements OnInit {
       this.queryEntryForm.get('query_tat').setValue(data?.query_tat,{emitEvent:false});
     }
     this.queryEntryForm.patchValue({
+      client_code: data && this.productId == 12 ? data?.client_code : '',
       investor_code: data ? data?.investor_code : '',
       investor_pan: data ? data?.investor_pan : '',
       investor_email:data ? data?.investor_email : '',

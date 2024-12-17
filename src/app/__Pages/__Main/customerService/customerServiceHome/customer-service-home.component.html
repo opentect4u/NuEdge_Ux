@@ -263,7 +263,7 @@
                         [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
                         [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
-                        [tableStyle]="{ 'min-width': '464rem' }"
+                        [tableStyle]="{ 'min-width': '500rem' }"
                         >
                         <!-- [tableStyle]="{ 'min-width': '510rem' }" -->
 
@@ -424,6 +424,47 @@
                                             </div>
                                            
                                     </ng-container>
+                                    <ng-container *ngSwitchCase="col.field == 'rating'">
+                                        <ng-container *ngIf="trxn.rating;else rate">
+                                       
+                                          <div class="d-flex justify-content-center 
+                                          align-items-center"
+                                          [ngClass]="{
+                                            'veryPoor_rating':trxn.rating == 1,
+                                            'poor_rating':trxn.rating == 2,
+                                            'avarage_rating':trxn.rating == 3,
+                                            'good_rating':trxn.rating == 4,
+                                            'excellent_rating':trxn.rating == 5
+                                          }"
+                                          >
+                                            <i class="pi pi-star"></i>
+                                            <i class="pi pi-star mx-1"
+                                              [ngClass]="{
+                                                'no_rating': trxn.rating < 2
+                                              }"
+                                            ></i>
+                                            <i class="pi pi-star"
+                                            [ngClass]="{
+                                              'no_rating': trxn.rating < 3
+                                            }"
+                                            ></i>
+                                            <i class="pi pi-star mx-1"
+                                            [ngClass]="{
+                                              'no_rating': trxn.rating < 4
+                                            }"
+                                            ></i>
+                                            <i class="pi pi-star"
+                                            [ngClass]="{
+                                              'no_rating': trxn.rating < 5
+                                            }"
+                                            ></i>
+                                          </div>
+                                        </ng-container>
+                                        <ng-template #rate>
+                                          <span>N/A</span>
+                                        </ng-template>
+                                    </ng-container>
+
                                     
                                     <ng-container *ngSwitchDefault>
                                         <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>

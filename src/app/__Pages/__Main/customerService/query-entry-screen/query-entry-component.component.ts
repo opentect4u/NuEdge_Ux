@@ -85,6 +85,7 @@ export class QueryEntryComponentComponent implements OnInit {
        solve_file:new FormControl([]),
        investor_name: new FormControl('',[Validators.required]),
        investor_code: new FormControl(''),
+       client_code:new FormControl(''),
        investor_pan: new FormControl({value:'',disabled: true}),
        investor_email: new FormControl({value:'',disabled: true}),
        investor_mobile: new FormControl({value:'',disabled: true}), 
@@ -152,6 +153,7 @@ export class QueryEntryComponentComponent implements OnInit {
     private __dbIntr:DbIntrService, private  utility:UtiliService) {}
 
   ngOnInit(): void {
+    console.log(this.productId);
     // console.log(this.utility.DcryptText(this.RtDt.snapshot.params.queryId));
     // this.productId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.productId));
     this.productId = Number(this.utility.DcryptText(this.RtDt.snapshot.params.productId));
@@ -279,6 +281,7 @@ export class QueryEntryComponentComponent implements OnInit {
       this.queryEntryForm.get('query_tat').setValue(data?.query_tat,{emitEvent:false});
     }
     this.queryEntryForm.patchValue({
+      client_code: data && this.productId == 12 ? data?.client_code : '',
       investor_code: data ? data?.investor_code : '',
       investor_pan: data ? data?.investor_pan : '',
       investor_email:data ? data?.investor_email : '',
@@ -843,21 +846,27 @@ export class QueryEntryComponentComponent implements OnInit {
         fdr_no:this.queryEntryForm.getRawValue().fdr_no ? this.queryEntryForm.getRawValue().fdr_no[0]?.fdr_no : '',
         policy_no:this.queryEntryForm.getRawValue().policy_no ? this.queryEntryForm.getRawValue().policy_no[0]?.policy_no : '',
         scheme_dtls:this.schemeDtls.value.filter(el => el?.isActive),
+        client_code:this.productId == 12 ? global.getActualVal(this.queryEntryForm.getRawValue()?.client_code) : '',
+        application_no:this.productId != 12 ? '' : global.getActualVal(this.queryEntryForm.getRawValue()?.application_no)
       }
       // console.log(payload)
       let api_payload ;
       if(this.productId == 3 || this.productId == 4 || this.productId == 2){
         if(this.productId == 3){
-          const {entry_attachment,entry_file,scheme_name,folio_no,fdr_no,product_code,isin_no,scheme_id,...rest} = payload;
+          const {entry_attachment,entry_file,scheme_name,folio_no,fdr_no,product_code,isin_no,scheme_id,client_code,...rest} = payload;
           api_payload = rest;
         }
         else{
-          const {entry_attachment,entry_file,scheme_name,folio_no,policy_no,product_code,isin_no,scheme_id,...rest} = payload;
+          const {entry_attachment,entry_file,scheme_name,folio_no,policy_no,product_code,isin_no,scheme_id,client_code,...rest} = payload;
           api_payload = rest;
         }
       }
+      else if(this.productId == 12){
+        const {entry_attachment,scheme_name,policy_no,fdr_no,application_no,...rest} = payload;
+        api_payload = rest;  
+      }
       else {
-        const {entry_attachment,scheme_name,policy_no,fdr_no,...rest} = payload;
+        const {entry_attachment,scheme_name,policy_no,fdr_no,client_code,...rest} = payload;
         api_payload = rest;
       }
 

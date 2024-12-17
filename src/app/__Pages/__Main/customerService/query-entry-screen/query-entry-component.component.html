@@ -6,7 +6,7 @@
                 <mat-card-header class="border-bottom">
                     <mat-card-title>
                         <h4>
-                            {{ queryId == 0 ? 'Add' : 'View'}} Query In {{productId == 3 ? 'Insurance' : (productId == 4 ? 'Fixed Deposit' : ((productId == 2 ? 'Bond' : 'Mutual Fund')))}}
+                            {{ queryId == 0 ? 'Add' : 'View'}} Query In {{productId == 3 ? 'Insurance' : (productId == 4 ? 'Fixed Deposit' : ((productId == 2 ? 'Bond' : (productId == 12 ? 'Nuedge Online' : 'Mutual Fund'))))}}
                         </h4>
                     </mat-card-title>
                 </mat-card-header>
@@ -105,8 +105,10 @@
                                                         
                                                    </div>
                                                     <div class="col-sm-6">
-                                                        <label for="application_no">Application No </label>  
-                                                        <input placeholder="Enter Application No"   id="application_no" class="form-control" formControlName="application_no"/> 
+                                                        <label [for]="productId == 12 ? 'client_code' : 'application_no'">{{productId == 12 ? 'Client Code' : 'Application No'}} </label>  
+                                                        <input placeholder="Enter {{productId == 12 ? 'Client Code' : 'Application No'}}"    [id]="productId == 12 ? 'client_code' : 'application_no'" 
+                                                        class="form-control" 
+                                                        formControlName="{{productId == 12 ? 'client_code' : 'application_no'}}"/> 
                                                     </div>
                                                 </div>
                                                 <div class="row ">
