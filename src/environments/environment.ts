@@ -54,6 +54,8 @@ export const environment = {
 
   query_entry_file:url+"public/query-entry/",
   query_solve_file:url+"public/query-solve/",
+  query_attachments:url+"public/query-attachment/",
+
   /********************************* End MUTUAL FUND **************************************/
   amc_logo_url:url + "public/amc-logo/",
   scheme_upload_forms:url + "public/application-forms/",

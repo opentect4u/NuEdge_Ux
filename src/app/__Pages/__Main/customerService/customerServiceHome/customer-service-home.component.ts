@@ -779,11 +779,12 @@ export class CustomerServiceHomeComponent implements OnInit {
           }
           el.tat_expired = isExpired ? "NO" : "YES"
           
-          el.solveattach = el.solveattach.map(el =>{
-              el.url=`${environment.query_solve_file}${el.name}`;
-              el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
-              return el
-           });
+          // el.solveattach = el.solveattach.map(el =>{
+          //     el.url=`${environment.query_solve_file}${el.name}`;
+          //     el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+          //     return el
+          //  });
+          el.solveattach = [];
            const outerDt = el.allscheme.map(el =>{
               el.scheme_name = el.schemename ? `${el?.schemename?.scheme_name}-${el?.schemename?.plan_name}-${el?.schemename?.option_name}` : 'N/A';
               return el;
@@ -1026,11 +1027,26 @@ export class CustomerServiceHomeComponent implements OnInit {
     this.customerServiceForm.controls['euin_no'].setValue([]);
   }
   openAttachments(trxn){
-      // //console.log(trxn.solveattach)
-      this.openDialog(trxn,trxn.query_id)
+      const modifyAttachment = trxn.allattach.filter(el =>{
+        if(el.query_status_id == 2 || el.query_status_id == trxn.query_status_id){
+          el.url=`${environment.query_attachments}${el.name}`;
+          el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+          return el
+        }
+        // return false
+      })
+      var groupBy = (xs, key) => {
+        return xs.reduce(function(rv, x) {
+          (rv[x[key]] = rv[x[key]] || []).push(x);
+          return rv;
+        }, {});
+      };
+      console.log(modifyAttachment);
+      const attachments =modifyAttachment.length > 0 ? groupBy(modifyAttachment,'query_status_name') : null;
+      this.openDialog(trxn,trxn.query_id,attachments);
   }
 
-  openDialog(transaction, __quertId) {
+  openDialog(transaction, __quertId,attachments) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -1043,7 +1059,8 @@ export class CustomerServiceHomeComponent implements OnInit {
       query_id: __quertId,
       trxn: transaction,
       title: 'Attachments',
-      attachments:transaction.solveattach,
+      // attachments:transaction.solveattach,
+      attachments:attachments,
       right: global.randomIntFromInterval(1, 60),
     };
     dialogConfig.id = __quertId.toString();

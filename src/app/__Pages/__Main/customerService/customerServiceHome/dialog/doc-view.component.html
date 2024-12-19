@@ -20,7 +20,43 @@
 
     </div>
     <mat-dialog-content class="p-5">
-            <ng-container *ngIf="data.trxn?.solveattach.length > 0;else notAvailable">
+            <ul class="list-inline" *ngIf="data.attachments;else notAvailable">
+                <li *ngFor="let item of data.attachments | keyvalue" >
+                           <h5>{{item.key}}</h5>
+                          
+                           <div class="row my-3">
+                            <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe d-flex justify-content-center align-items-center" 
+                            *ngFor="let pdf of $any(item).value">
+                                <a href={{pdf.url}} target="_blank" class="d-block"
+                                >
+                                    <ng-container *ngIf="pdf.ext == 'pdf'">
+                                            <img alt={{pdf.name}}  class="img-fluid img-thumbnail" src="../../../../../assets/images/pdf.png"/>
+                                    </ng-container>
+                                    <ng-container  *ngIf="pdf.ext == 'jpg' || pdf.ext == 'jpeg' || pdf.ext == 'png'">
+                                        <img alt={{pdf.name}}  class="img-fluid img-thumbnail" src="{{pdf.url}}"/>
+                                    </ng-container>
+                                    <ng-container  *ngIf="pdf.ext == 'xlsx' || pdf.ext == 'csv'">
+                                        <img alt={{pdf.name}}  class="img-fluid img-thumbnail" src="../../../../../assets/images/image.png"/>
+                                    </ng-container>
+                                    <p class="my-3" style="
+                                        font-size: 13px;
+                                        word-wrap: break-word;
+                                        text-align: center;
+                                    ">
+                                        {{pdf.name}}
+                                    </p>
+                                </a>
+                            </div>
+                            </div>
+
+                </li>
+            </ul>
+            <ng-template #notAvailable>
+                <h4>
+                    No Attachments Available!!
+                </h4>
+            </ng-template>
+            <!-- <ng-container *ngIf="data.trxn?.solveattach.length > 0;else notAvailable">
                 <div class="row">
                     <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe d-flex justify-content-center align-items-center" 
                     
@@ -45,53 +81,6 @@
                             </p>
                         </a>
                     </div>
-                    <!-- <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div> -->
-        
-                    <!-- <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div>
-        
-                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
-                        <img src="http://fakeimg.pl/365x365/" class="img-responsive">
-                    </div> -->
                     </div>
 
             </ng-container>
@@ -99,6 +88,6 @@
                         <h4>
                             No Attachments Available!!
                         </h4>
-            </ng-template>
+            </ng-template> -->
     </mat-dialog-content>
 </div>

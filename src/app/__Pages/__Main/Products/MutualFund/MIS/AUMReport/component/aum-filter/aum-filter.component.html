@@ -1,8 +1,19 @@
-<mat-card class="mat-elevation-z0 py-3 border mat_card">
+<mat-card class="mat-elevation-z0  border">
+    <mat-card-header class="border-bottom">
+        <mat-card-title><h4>{{aum_type}} Report</h4></mat-card-title>
+        <div class="pr-3 my-auto d-flex align-items-center">
+          <p-selectButton [(ngModel)]="btn_type" [options]="selectBtn" optionValue="value" styleClass="p-button-lg"
+            (onOptionClick)="onItemClick($event)" optionLabel="icon">
+            <ng-template let-item>
+              <i [class]="item.icon" [matTooltip]="item.label"></i>
+            </ng-template>
+          </p-selectButton>
+        </div>
+      </mat-card-header>
     <mat-card-content class="p-3">
         <form [formGroup]="aum_report_filter_frm" (ngSubmit)="clickToSend()">
 
-            <div class="row">
+            <!-- <div class="row">
                 <div [ngClass]="{
                     'col-sm-3 col-12': aum_type === 'Clients',
                     'col-sm-4 col-12': aum_type != 'Clients'
@@ -51,7 +62,94 @@
                         label="Show"></button>
                 </div>
 
+            </div> -->
+        
+            <div class="row">
+                <div class="col-sm-3">
+                    <label for="date">Date</label>
+                    <p-calendar #dateRng dateFormat="dd/mm/yy"
+                      placeholder="Select Date" formControlName="date"
+                      [readonlyInput]="true" [id]="'date'" [showIcon]="true" [hideOnDateTimeSelect]="true"
+                      [showButtonBar]="true">
+                    </p-calendar>
+                  </div>
+                <div class="col-sm-3">
+                    <label for="amc_id">AMC</label>
+                    <ng-multiselect-dropdown [attr.id]="'amc_id'" [placeholder]="'Select AMC'"
+                      [settings]="settingsforAMCDropdown"  [data]="amcMst"
+                      formControlName="amc_id">
+                    </ng-multiselect-dropdown>
+                </div>   
+                <div class="col-sm-3">
+                    <label for="cat_id">Category</label>
+                    <ng-multiselect-dropdown [id]="'cat_id'" [placeholder]="'Select Category'"
+                      [settings]="settingsforCatDropdown"  [data]="catMst"
+                      formControlName="cat_id">
+                    </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="sub_cat_id">Sub-Category</label>
+                    <ng-multiselect-dropdown [id]="'sub_cat_id'" [placeholder]="'Select Sub-Category'"
+                      [settings]="settingsforSubCatDropdown" [data]="subcatMst"
+                      formControlName="sub_cat_id">
+                    </ng-multiselect-dropdown>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="scheme_id">Scheme</label>
+                    <ng-multiselect-dropdown [id]="'scheme_id'" [placeholder]="'Select Scheme'"
+                      [settings]="settingsforSchemeDropdown" [data]="schemeMst" formControlName="scheme_id">
+                    </ng-multiselect-dropdown>
+                  </div>
+                  <ng-container *ngIf="btn_type == 'A'">
+                    <!-- <div class="row"> -->
+                      <!-- <ng-container> -->
+                        <div class="col-sm-3">
+                          <label for="brn_cd">Branch</label>
+                          <ng-multiselect-dropdown #multiSelect id="brn_cd" [placeholder]="'Select Branch'"
+                            [settings]="settingsforBrnchDropdown" [data]="branchMst"
+                            formControlName="brn_cd">
+                          </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-sm-3">
+                          <label for="bu_type">Business Type</label>
+                          <ng-multiselect-dropdown #multiSelect id="bu_type" [placeholder]="'Select Business Type'"
+                             [settings]="settingsforBuTypeDropdown" [data]="bu_type"
+                            formControlName="bu_type_id">
+                          </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-sm-3">
+                          <label for="rm_name">Relationship Manager</label>
+                          <ng-multiselect-dropdown #multiSelect id="rm_name" [placeholder]="'Select Relationship Manager'"
+                           [settings]="settingsforRMDropdown" [data]="RmMst"
+                            formControlName="rm_id">
+                          </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-sm-3">
+                          <label for="sub_brk_cd">Sub Broker</label>
+                          <ng-multiselect-dropdown #multiSelect [id]="'sub_brk_cd'" [placeholder]="'Select Sub Broker'"
+                           [settings]="settingsforSubBrkDropdown"
+                            [data]="subbrkArnMst" formControlName="sub_brk_cd">
+                          </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-sm-3">
+                          <label for="euin_no">EUIN</label>
+                          <ng-multiselect-dropdown #multiSelect id="euin_no" [placeholder]="'Select Employee'"
+                            [settings]="settingsforEuinDropdown" [data]="euinMst" formControlName="euin_no">
+                          </ng-multiselect-dropdown>
+                        </div>
+                  </ng-container>
+                  <div  class="d-flex justify-content-end align-items-end"
+                    [ngClass]="
+                    {
+                        'col-sm-6':btn_type == 'A',
+                        'col-sm-9':btn_type != 'A'
+                    }"
+                  >
+                        <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+
+                  </div>
             </div>
+        
         </form>
 
     </mat-card-content>

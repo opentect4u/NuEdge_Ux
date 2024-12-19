@@ -255,15 +255,19 @@ export class QueryEntryComponentComponent implements OnInit {
         .subscribe((res:any) =>{
               this.formData = {
                 ...res,
-                entryattach:res.entryattach.map(el => {
-                    el.url=`${environment.query_entry_file}${el.name}`;
-                    el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
-                    return el
+                entryattach:res.allattach.filter(el =>{
+                      if(el.query_status_id == 2){
+                          el.url=`${environment.query_attachments}${el.name}`;
+                          el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                          return el
+                      }
                 }),
-                solveattach:res.solveattach.map(el =>{
-                    el.url=`${environment.query_solve_file}${el.name}`;
-                    el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
-                    return el
+                solveattach:res.allattach.filter(el =>{
+                    if(el.query_status_id == res.query_status_id){
+                        el.url=`${environment.query_attachments}${el.name}`;
+                        el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                        return el
+                    }
                 })
               }
 
@@ -897,6 +901,7 @@ export class QueryEntryComponentComponent implements OnInit {
           query_given_by_id:'',
           query_subtype_id:'',
           query_details:'',
+          query_rec_through_id:'',
           entry_file:null,
           entry_attachment:[]
         });

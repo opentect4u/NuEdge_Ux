@@ -230,15 +230,30 @@ export class ViewEntryComponent implements OnInit {
         .subscribe((res:any) =>{
               this.formData = {
                 ...res,
-                entryattach:res.entryattach.map(el => {
-                    el.url=`${environment.query_entry_file}${el.name}`;
-                    el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
-                    return el
+                // entryattach:res.entryattach.map(el => {
+                //     el.url=`${environment.query_entry_file}${el.name}`;
+                //     el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                //     return el
+                // }),
+                // solveattach:res.solveattach.map(el =>{
+                //     el.url=`${environment.query_solve_file}${el.name}`;
+                //     el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                //     return el
+                // })
+                ...res,
+                entryattach:res.allattach.filter(el =>{
+                      if(el.query_status_id == 2){
+                          el.url=`${environment.query_attachments}${el.name}`;
+                          el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                          return el
+                      }
                 }),
-                solveattach:res.solveattach.map(el =>{
-                    el.url=`${environment.query_solve_file}${el.name}`;
-                    el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
-                    return el
+                solveattach:res.allattach.filter(el =>{
+                    if(el.query_status_id == res.query_status_id){
+                        el.url=`${environment.query_attachments}${el.name}`;
+                        el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                        return el
+                    }
                 })
               }
 
