@@ -308,9 +308,19 @@
                                                           </div>
                                                     </div>
                                                 </div>
-                                                <div  *ngIf="formData && formData?.entryattach.length > 0">
-                                                    <label>Attachments</label>
-                                                    <div class="row ">
+                                              
+                                                <div class="row" *ngIf="queryId == 0 || queryEntryForm.getRawValue()?.query_status_id == 6">
+                                                    <div class="col-sm-12">
+                                                             <label for="entry_attachment">Attachments</label>
+                                                             <input class="form-control" type="file" multiple accept=".pdf,.jpg,.jpeg,.png"
+                                                                 formControlName="entry_file"
+                                                                 (change)="onFileSelect($event)"    
+                                                             />
+                                                    </div> 
+                                                </div>
+                                                <div  *ngIf="formData && formData?.entryattach.length > 0" class="my-2">
+                                                    <label *ngIf="queryId > 0 && queryEntryForm.getRawValue()?.query_status_id != 6">Attachments</label>
+                                                    <div class="row">
                                                                
                                                         <div class="col-sm-6 col-md-4 col-lg-1 item" *ngFor="let pdf of formData?.entryattach">
                                                                     <a href={{pdf.url}} target="_blank" class="d-block mb-4 h-20">
@@ -330,24 +340,16 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row" *ngIf="queryId == 0">
-                                                    <div class="col-sm-12">
-                                                             <label for="entry_attachment">Attachments</label>
-                                                             <input class="form-control" type="file" multiple accept=".pdf,.jpg,.jpeg,.png"
-                                                                 formControlName="entry_file"
-                                                                 (change)="onFileSelect($event)"    
-                                                             />
-                                                    </div> 
-                                                </div>
-                                                <div class="row my-2">
+                                                <div class="row ">
                                                         <div class="col-sm-12">
-                                                                <label for="query_details">Query Details <span class="text-danger"  *ngIf="queryId.toString() == '0'">*</span></label>
+                                                                <label for="query_details">Query Details <span class="text-danger" >*</span></label>
                                                                 <textarea   id="query_details" name="query_details" rows="4" class="form-control" formControlName="query_details" placeholder="Enter Query Details" cols="50"></textarea>
                                                                 <div class="invalid-feedback" *ngIf="queryEntryForm.get('query_details').invalid && (queryEntryForm.get('query_details').dirty || queryEntryForm.get('query_details').touched)">
                                                                     <span class="invalid-feedback" *ngIf="(queryEntryForm.get('query_details').errors?.required)">*Please select query details</span>
                                                                   </div>
                                                         </div>
                                                 </div>
+                                            
                                                
                                               
 

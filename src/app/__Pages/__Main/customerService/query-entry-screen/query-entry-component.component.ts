@@ -209,6 +209,7 @@ export class QueryEntryComponentComponent implements OnInit {
     })
   }
 
+
   checkIfchecked(value){
       return of(!value.map(el => el.isActive).some(item => item)).pipe(
         delay(200)
@@ -331,14 +332,12 @@ export class QueryEntryComponentComponent implements OnInit {
     this.queryEntryForm.get('scheme_id').disable({emitEvent:false});
     this.queryEntryForm.get('query_type_id').disable({emitEvent:false});
     this.queryEntryForm.get('query_subtype_id').disable({emitEvent:false});
-    this.queryEntryForm.get('query_details').disable({emitEvent:false});
+    // this.queryEntryForm.get('query_details').disable({emitEvent:false});
+    this.queryEntryForm.get('query_rec_through_id').disable({emitEvent:false});
     this.settingsforFolioDropdown ={
       ...this.settingsforFolioDropdown,
       disabled:true
-    } 
-
-  
-    
+    }
   }
 
   ngAfterViewInit(){
@@ -477,6 +476,15 @@ export class QueryEntryComponentComponent implements OnInit {
             let date = new Date();
             date.setDate(Number(date.getDate()) + Number(res));
             this.queryEntryForm.get('expected_close_date').setValue(this.datePipe.transform(date,'YYYY-MM-dd'))
+      })
+
+      this.queryEntryForm.get('query_status_id').valueChanges.subscribe(res =>{
+              if(res == 6){
+                 this.queryEntryForm.get('query_details').enable(); 
+              }
+              else{
+                this.queryEntryForm.get('query_details').disable(); 
+              }
       })
   }
 
@@ -933,7 +941,8 @@ export class QueryEntryComponentComponent implements OnInit {
           expected_close_date:this.queryEntryForm.getRawValue()?.expected_close_date,
           ...payload,
           id:this.queryId.toString(),
-          product_id:this.productId?.toString()
+          product_id:this.productId?.toString(),
+          query_details:this.queryEntryForm.getRawValue()?.query_details
         }
     }else{
       payload = {
@@ -943,7 +952,8 @@ export class QueryEntryComponentComponent implements OnInit {
         query_tat:this.queryEntryForm.getRawValue()?.query_tat,
         expected_close_date:this.queryEntryForm.getRawValue()?.expected_close_date,
         id:this.queryId.toString(),
-        product_id:this.productId?.toString()
+        product_id:this.productId?.toString(),
+        query_details:this.queryEntryForm.getRawValue()?.query_details
       }
     }
 
@@ -952,6 +962,12 @@ export class QueryEntryComponentComponent implements OnInit {
     for(let file of  this.queryEntryForm.get('solve_attachment').value){
       formData.append("solve_attachment[]", file);
     }
+    if(this.queryEntryForm.getRawValue().query_status_id == 6){
+      for(let file of  this.queryEntryForm.get('entry_attachment').value){
+        formData.append("entry_attachment[]", file);
+      }
+    }
+   
     this.__dbIntr.api_call(1,'/cus_service/queryAdd',formData)
       .pipe(pluck('data')).subscribe((res:any) =>{
         // this.setForm();

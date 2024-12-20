@@ -1,1 +1,4 @@
 <!-- <p>customer-service-attachment-download works!</p> -->
+ <ng-container *ngIf="pdfURL">
+    <iframe [src]="pdfURL" width="100%" height="600" title="Nuedge Client Query Desk Pdf"></iframe>
+ </ng-container>

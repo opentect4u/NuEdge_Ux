@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 
@@ -9,8 +10,10 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 })
 export class CustomerServiceAttachmentDownloadComponent implements OnInit {
 
+  pdfURL:SafeResourceUrl;
   constructor(private rtDt: ActivatedRoute,
      private router:Router,
+    private sanitizer: DomSanitizer,
     private dbIntr:DbIntrService) { }
 
   ngOnInit(): void {
@@ -33,23 +36,23 @@ export class CustomerServiceAttachmentDownloadComponent implements OnInit {
         fd
       ).subscribe((res:any) =>{
         console.log(res);
-        // window.close();
-        fetch(
-          res.data
-        ).then(ele => ele.blob()).then(el => {
-          if(res.data){
-            const ext = res.data.split('.').pop().split(/\#|\?/)[0];
-            const aElement = document.createElement('a');
-            aElement.setAttribute('download', `file.${ext}`);
-            const href = URL.createObjectURL(el);
-            aElement.href = href;
-            aElement.setAttribute('target', '_blank');
-            aElement.click();
-            URL.revokeObjectURL(href);
-            window.close();
-          }
+        this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(res.data);
+        // fetch(
+        //   res.data
+        // ).then(ele => ele.blob()).then(el => {
+        //   if(res.data){
+        //     const ext = res.data.split('.').pop().split(/\#|\?/)[0];
+        //     const aElement = document.createElement('a');
+        //     aElement.setAttribute('download', `file.${ext}`);
+        //     const href = URL.createObjectURL(el);
+        //     aElement.href = href;
+        //     aElement.setAttribute('target', '_blank');
+        //     aElement.click();
+        //     URL.revokeObjectURL(href);
+        //     // window.close();
+        //   }
           
-        })
+        // })
       })
   } 
 
