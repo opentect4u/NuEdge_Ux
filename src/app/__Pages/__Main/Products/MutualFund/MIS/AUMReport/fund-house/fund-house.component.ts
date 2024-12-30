@@ -3,6 +3,7 @@ import { pluck } from 'rxjs/operators';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { AUTMTYPE } from '../component/aum-filter/aum-filter.component';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-fund-house',
@@ -30,7 +31,12 @@ export class FundHouseComponent implements OnInit {
       this.__formDate = ev.date;
       var formdata = new FormData();
       for(let key in ev){
-        formdata.append(key,ev[key])
+        if(Array.isArray(ev[key])){
+          formdata.append(key,JSON.stringify(ev[key]))
+        }
+        else{
+          formdata.append(key,ev[key])
+        }
       }
       this.dbIntr.api_call(1,'/clients/aum',formdata).pipe(pluck('data')).subscribe((res:any) =>{
           this.md_fundHouse = res

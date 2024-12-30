@@ -338,7 +338,7 @@
                                             </ng-template>
                                    </ng-container>
                                     <ng-container *ngSwitchCase="col.field == 'date_time' || col.field == 'expected_close_date' || col.field == 'actual_close_date'">
-                                            {{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY hh:mm a') : 'N/A'}}
+                                            {{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy hh:mm a') : 'N/A'}}
                                     </ng-container>
                                       <ng-container *ngSwitchCase="col.field == 'action'">
                                         <span class="p-buttonset">
@@ -422,7 +422,7 @@
                                               <p class="queryFeedbackRceEllipsis" (click)="copyText(trxn?.query_feedback)" title="{{trxn[col.field]}}">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
                                       </ng-container>
                                       <ng-container  *ngSwitchCase="col.field == 'suggestion'">
-                                        <p class="queryFeedbackRceEllipsis" (click)="copyText(trxn?.suggestion)" title="{{trxn[col.field]}}">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
+                                        <p class="queryFeedbackRceEllipsis m-0" (click)="copyText(trxn?.suggestion)" title="{{trxn[col.field]}}">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
                                       </ng-container>
                                       <ng-container   *ngSwitchCase="col.field == 'scheme_name'">
                                         <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}} 
@@ -438,10 +438,10 @@
 
                                     <ng-container *ngSwitchCase="col.field == 'query_inform_date'">
                                             <div class="d-flex flex-column justify-content-start align-items-start">
-                                              <b class="m-0" *ngIf="trxn.call_flag == 'Y'"><i class="pi pi-phone" style="font-size:1.5rem"></i> - {{trxn.call_date | date:'dd/MM/YYYY hh:mm a'}}</b>
-                                              <b class="m-0" *ngIf="trxn.whats_app_flag == 'Y'"><i class="pi pi-whatsapp" style="font-size:1.5rem"></i> - {{trxn.whats_app_date | date:'dd/MM/YYYY hh:mm a'}}</b>
-                                              <b class="m-0" *ngIf="trxn.email_flag == 'Y'"><i class="pi pi-envelope" style="font-size:1.5rem"></i> - {{trxn.email_date | date:'dd/MM/YYYY hh:mm a'}}</b>
-                                              <b class="m-0" *ngIf="trxn.sms_flag == 'Y'"><i class="pi pi-comment" style="font-size:1.5rem"></i> - {{trxn.sms_date | date:'dd/MM/YYYY hh:mm a'}}</b>
+                                              <b class="m-0" *ngIf="trxn.call_flag == 'Y'"><i class="pi pi-phone" style="font-size:1.5rem"></i> - {{trxn.call_date | date:'dd/MM/yyyy hh:mm a'}}</b>
+                                              <b class="m-0" *ngIf="trxn.whats_app_flag == 'Y'"><i class="pi pi-whatsapp" style="font-size:1.5rem"></i> - {{trxn.whats_app_date | date:'dd/MM/yyyy hh:mm a'}}</b>
+                                              <b class="m-0" *ngIf="trxn.email_flag == 'Y'"><i class="pi pi-envelope" style="font-size:1.5rem"></i> - {{trxn.email_date | date:'dd/MM/yyyy hh:mm a'}}</b>
+                                              <b class="m-0" *ngIf="trxn.sms_flag == 'Y'"><i class="pi pi-comment" style="font-size:1.5rem"></i> - {{trxn.sms_date | date:'dd/MM/yyyy hh:mm a'}}</b>
                                             </div>
                                            
                                     </ng-container>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { pluck } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import filterOpt from '../../../../../../../../../assets/json/filterOption.json';
+import { Calendar } from 'primeng/calendar';
 export enum AUTMTYPE{
     "Fund House" = 'Fund House',
     Families = 'Families',
@@ -27,6 +28,10 @@ export class AumFilterComponent implements OnInit {
 
 
 
+ /**
+ *  getAccess of Prime Ng Calendar
+ */
+  @ViewChild('dateRng') daterRnge:Calendar;
   settingsforSubCatDropdown = this.utility.settingsfroMultiselectDropdown('id','subcategory_name','Search Sub-Category',1);
   settingsforCatDropdown = this.utility.settingsfroMultiselectDropdown('id','cat_name','Search Category',1);
   settingsforAMCDropdown = this.utility.settingsfroMultiselectDropdown('id','amc_short_name','Search AMC',1);
@@ -227,7 +232,12 @@ export class AumFilterComponent implements OnInit {
 
   clickToSend = () =>{
       console.log(this.aum_report_filter_frm.value);
-      // this.onPress.emit(this.aum_report_filter_frm.value)
+      const payload = {
+        ...this.aum_report_filter_frm.value,
+        date:global.getActualVal(this.daterRnge.inputFieldValue),
+        amc_id:this.aum_report_filter_frm.value.amc_id.map(el => el.id)
+      }
+      this.onPress.emit(payload)
 
   }
 

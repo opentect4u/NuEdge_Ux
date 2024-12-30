@@ -11,6 +11,7 @@ constructor() {
 }
 
 ngOnInit(){
+    console.log('asdsadsadsad')
 
 }
 }
