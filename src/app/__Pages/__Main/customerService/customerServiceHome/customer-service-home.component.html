@@ -52,6 +52,13 @@
                           [routerLink]="['/main/customer-service', queryId, productId]"
                           class="p-button-link queryBtn p-button-rounded color-2"></a> 
                           </div>
+                          <!-- <div class="animatedBtn">
+                            <a pButton 
+                          type="button" 
+                          label="Feedback"  target="_blank"
+                          [routerLink]="['/main/customer-service', queryId, productId]"
+                          class="p-button-link queryBtn p-button-rounded color-2"></a> 
+                          </div> -->
                          
                         </div>
                         
@@ -390,7 +397,7 @@
                                         </ng-template>
                                     </ng-container> -->
                                     
-                                      <ng-container   *ngSwitchCase="col.field == 'query_feedback'">
+                                      <!-- <ng-container   *ngSwitchCase="col.field == 'query_feedback'">
                                         <ng-container *ngIf="trxn.query_feedback;else notAvailable">
                                           <a pButton
                                           [routerLink]="['/main/customer-service/viewTrans', trxn.cust_query_id, productId]"
@@ -402,6 +409,20 @@
                                             <span>N/A</span>
                                         </ng-template>
                                        
+                                      </ng-container> -->
+                                      <ng-container   *ngSwitchCase="col.field == 'query_feedback_received'">
+                                        <ng-container *ngIf="trxn.rating;else notAvailable">
+                                          <span>Yes</span>
+                                        </ng-container>
+                                        <ng-template #notAvailable>
+                                            <span>No</span>
+                                        </ng-template>
+                                      </ng-container>
+                                      <ng-container  *ngSwitchCase="col.field == 'query_feedback'">
+                                              <p class="queryFeedbackRceEllipsis" (click)="copyText(trxn?.query_feedback)" title="{{trxn[col.field]}}">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
+                                      </ng-container>
+                                      <ng-container  *ngSwitchCase="col.field == 'suggestion'">
+                                        <p class="queryFeedbackRceEllipsis" (click)="copyText(trxn?.suggestion)" title="{{trxn[col.field]}}">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>
                                       </ng-container>
                                       <ng-container   *ngSwitchCase="col.field == 'scheme_name'">
                                         <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}} 

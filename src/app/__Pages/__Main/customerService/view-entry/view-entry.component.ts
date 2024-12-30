@@ -13,6 +13,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { environment, url } from 'src/environments/environment';
 import { amc } from 'src/app/__Model/amc';
 import { Observable, of } from 'rxjs';
+import moment from 'moment';
 
 @Component({
   selector: 'app-view-entry',
@@ -38,6 +39,7 @@ export class ViewEntryComponent implements OnInit {
     1,
     197
   );
+  md_holiday:any = [];
 
   productId:number | undefined = 0;
   queryId:number | undefined = 0;
@@ -126,6 +128,8 @@ export class ViewEntryComponent implements OnInit {
     private __dbIntr:DbIntrService, private  utility:UtiliService) {}
 
   ngOnInit(): void {
+    this.fetchHoliday();
+
     // console.log(this.utility.DcryptText(this.RtDt.snapshot.params.queryId));
     // this.productId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.productId));
     this.productId = Number(this.utility.DcryptText(this.RtDt.snapshot.params.productId));
@@ -241,20 +245,38 @@ export class ViewEntryComponent implements OnInit {
                 //     return el
                 // })
                 ...res,
+                //    entryattach:res.allattach.filter(el =>{
+                //       if(el.query_status_id == 2){
+                //           el.url=`${environment.query_attachments}${el.name}`;
+                //           el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                //           return el
+                //       }
+                // }),
+                // solveattach:res.allattach.filter(el =>{
+                //     if(el.query_status_id != 2){
+                //       if(el.query_status_id == res.query_status_id){
+                //           el.url=`${environment.query_attachments}${el.name}`;
+                //           el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                //           return el
+                //       }
+                //     }
+                // })
                 entryattach:res.allattach.filter(el =>{
-                      if(el.query_status_id == 2){
-                          el.url=`${environment.query_attachments}${el.name}`;
-                          el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
-                          return el
-                      }
-                }),
-                solveattach:res.allattach.filter(el =>{
+                  if(el.query_status_id == 2){
+                      el.url=`${environment.query_attachments}${el.name}`;
+                      el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                      return el
+                  }
+              }),
+              solveattach:res.allattach.filter(el =>{
+                  if(el.query_status_id != 2){
                     if(el.query_status_id == res.query_status_id){
                         el.url=`${environment.query_attachments}${el.name}`;
                         el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
                         return el
                     }
-                })
+                  }
+              })
               }
 
               this.setForm(res);
@@ -286,7 +308,7 @@ export class ViewEntryComponent implements OnInit {
       // folio_no:data ? data?.folio_no : '',
       product_code:data ? data?.product_code : '',
       isin_no:data ? data?.isin_no : '',
-      expected_close_date:data ? this.datePipe.transform(global.getActualVal(data?.expected_close_date),'yyyy-MM-dd')  : '',
+      expected_close_date:data ? (data?.expected_close_date ? (this.datePipe.transform(global.getActualVal(data?.expected_close_date),'yyyy-MM-dd')) : '')  : '',
       query_details:data ? data?.query_details : '',
       remarks: data ? data?.remarks : '',
       query_status_id:data ? data?.query_status_id : '',
@@ -326,6 +348,32 @@ export class ViewEntryComponent implements OnInit {
   
     
   }
+
+  globalFuncForExpectedCloseDate = (date,query_tat) =>{
+      let  daysAfteradd;
+      if(date){
+        daysAfteradd = moment(date).add(Number(query_tat),'d');
+      }
+      else{
+        daysAfteradd = moment().add(Number(query_tat),'d');
+      }
+      let actualDate = daysAfteradd;
+      this.md_holiday.forEach(element => {
+          if(actualDate.isSame(element)){
+              console.log("SAME")
+              daysAfteradd = daysAfteradd.add(Number(query_tat),'d');
+          }
+          console.log(daysAfteradd);
+          const isweekDay =  daysAfteradd.format('ddd');           
+          if(isweekDay == 'Sat'){
+            actualDate = moment(daysAfteradd,"DD-MM-YYYY").add(2, 'days');
+          }
+          else if(isweekDay == 'Sun'){
+            actualDate = moment(daysAfteradd,"DD-MM-YYYY").add(1, 'days');
+          }
+      })
+      this.queryEntryForm.get('expected_close_date').setValue(actualDate.format('YYYY-MM-DD'))
+    }
 
   ngAfterViewInit(){
     this.queryEntryForm.controls['investor_name'].valueChanges
@@ -427,11 +475,14 @@ export class ViewEntryComponent implements OnInit {
          }
       })
 
+      // this.queryEntryForm.get('query_tat').valueChanges.subscribe(res =>{
+      //       let date = new Date();
+      //       date.setDate(Number(date.getDate()) + Number(res));
+      //       this.queryEntryForm.get('expected_close_date').setValue(this.datePipe.transform(date,'YYYY-MM-dd'))
+      // })
       this.queryEntryForm.get('query_tat').valueChanges.subscribe(res =>{
-            let date = new Date();
-            date.setDate(Number(date.getDate()) + Number(res));
-            this.queryEntryForm.get('expected_close_date').setValue(this.datePipe.transform(date,'YYYY-MM-dd'))
-      })
+        this.globalFuncForExpectedCloseDate(null,res);
+  })
   }
 
   setFormControlValue = (name:string,email:string,mobile) =>{
@@ -524,6 +575,16 @@ export class ViewEntryComponent implements OnInit {
 
   }
 
+  fetchHoliday = () =>{
+    this.__dbIntr.api_call(0,'/cus_service/holiday',null)
+    .pipe(pluck('data'))
+    .subscribe((res:any) =>{
+      this.md_holiday = res.map(el => el.occ_date);
+    })
+  }
+
+
+
   createItem(el): FormGroup {
     return new FormGroup({
       id: new FormControl(el.id),
@@ -615,7 +676,6 @@ export class ViewEntryComponent implements OnInit {
       this.__dbIntr.api_call(0,'/cus_service/querySubType',`query_type_id=${query_type.id}`).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
         this.md_querySubType = res;
         if(this.queryId.toString() != '0'){
-          
           setTimeout(() => {
             let dt = [];
             dt =  res.filter((el:any) => el.id == this.queryEntryForm.getRawValue().query_subtype_id);  
@@ -624,10 +684,7 @@ export class ViewEntryComponent implements OnInit {
             }
             if(!this.queryEntryForm.value.expected_close_date){
               if(dt.length > 0){
-         
-                let date = new Date();
-                date.setDate(Number(date.getDate()) + Number(dt[0]?.query_tat));
-                this.queryEntryForm.get('expected_close_date').setValue(this.datePipe.transform(date,'YYYY-MM-dd'))
+                  this.globalFuncForExpectedCloseDate(null,dt[0]?.query_tat);
               }
             }
           }, 2000);

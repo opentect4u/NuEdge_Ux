@@ -16,7 +16,7 @@
     <h2 *ngIf="__flag == 'BM'">{{items.title}}</h2>
 
     <ng-container *ngIf="__flag == 'TV'">
-      <div class="w-100 d-flex justify-content-center align-items-center p-3">
+      <div class="w-100 d-flex justify-content-center align-items-center p-2">
                       <h3>{{items.title}}</h3>
                       <button mat-icon-button
                       class="titleIcons"
@@ -29,7 +29,7 @@
 
       </div>
       <!-- Loader -->
-      <p class="text-center" *ngIf="!items.is_pending;else pending_states">
+      <p class="text-center" *ngIf="!items.is_pending;else pending_states" style="font-size:15px">
           {{items.amount > 0 ? (items.amount | shortNumber) : ('0' | number:'1.2-2')}}
       </p>
       <ng-template #pending_states>
@@ -48,13 +48,13 @@
             'text-success':!items.mom_percentage.toString().includes('-')
             }"
           >
-            <mat-icon style="font-size:30px!important;height: 30px;width: 30px;">
+            <mat-icon style="font-size:22px!important;height: 23px;width: 23px;">
               arrow_drop_{{items.mom_percentage.toString().includes('-') ? 'down' : 'up'}}
             </mat-icon>
-            <span>{{items.mom_percentage | number:'1.2-2'}}%</span>
+            <span style="font-size:11px">{{items.mom_percentage | number:'1.2-2'}}%</span>
           </div>
           &nbsp;
-          <span class="ml-1">MoM</span>
+          <span class="ml-1" style="font-size:11px">MoM</span>
          </ng-container>
          <ng-template #pending_states_mom>
           <span class="text-sm font-weight-light">Calculating MOM....</span>

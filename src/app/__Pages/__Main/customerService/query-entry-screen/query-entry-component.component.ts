@@ -14,6 +14,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { environment, url } from 'src/environments/environment';
 import { Observable, of } from 'rxjs';
 import { amc } from 'src/app/__Model/amc';
+import moment from 'moment';
 
 @Component({
   selector: 'app-query-entry-component',
@@ -147,13 +148,13 @@ export class QueryEntryComponentComponent implements OnInit {
           asyncValidators:this.checkIfAnyOnItemCheckedOrNot()
       })
   })
-
+  md_holiday:any = [];
   constructor(private RtDt:ActivatedRoute,
     private datePipe:DatePipe,
     private __dbIntr:DbIntrService, private  utility:UtiliService) {}
 
   ngOnInit(): void {
-    console.log(this.productId);
+    this.fetchHoliday();
     // console.log(this.utility.DcryptText(this.RtDt.snapshot.params.queryId));
     // this.productId = Number(this.utility.decrypt_dtls(this.RtDt.snapshot.params.productId));
     this.productId = Number(this.utility.DcryptText(this.RtDt.snapshot.params.productId));
@@ -181,7 +182,7 @@ export class QueryEntryComponentComponent implements OnInit {
     this.fetchQueryType();
     this.fetchQueryNature();
     this.fetchQueryGivenReceiveThr();
-    this.fetchPlanaccordingtoProductId();
+    // this.fetchPlanaccordingtoProductId();
 
     if(this.queryId > 0){
       this.fetchQueryDetails(this.queryId);
@@ -210,6 +211,14 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
 
+  fetchHoliday = () =>{
+    this.__dbIntr.api_call(0,'/cus_service/holiday',null)
+    .pipe(pluck('data'))
+    .subscribe((res:any) =>{
+      this.md_holiday = res.map(el => el.occ_date);
+    })
+  }
+
   checkIfchecked(value){
       return of(!value.map(el => el.isActive).some(item => item)).pipe(
         delay(200)
@@ -221,7 +230,8 @@ export class QueryEntryComponentComponent implements OnInit {
       return this.checkIfchecked(control.value)
         .pipe(
           map((result: boolean) =>
-            result ? (Number(this.productId) == 1 ? { checkErr: true } : null) : null
+            // result ? (Number(this.productId) == 1 ? { checkErr: true } : null) : null
+          result ? { checkErr: true } : null
           )
         );
     };
@@ -264,10 +274,12 @@ export class QueryEntryComponentComponent implements OnInit {
                       }
                 }),
                 solveattach:res.allattach.filter(el =>{
-                    if(el.query_status_id == res.query_status_id){
-                        el.url=`${environment.query_attachments}${el.name}`;
-                        el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
-                        return el
+                    if(el.query_status_id != 2){
+                      if(el.query_status_id == res.query_status_id){
+                          el.url=`${environment.query_attachments}${el.name}`;
+                          el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
+                          return el
+                      }
                     }
                 })
               }
@@ -278,7 +290,8 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   setForm = (data:any | undefined = null) =>{
-    console.log(data);
+
+    
     this.queryEntryForm.get('investor_name').setValue(data ? data?.investor_name : '',{emitEvent:false});
     this.queryEntryForm.get('folio_no').setValue(data ? [{folio_no:data?.folio_no}] : [],{emitEvent:false});
     this.queryEntryForm.get('query_nature_id').setValue(data ? global.getActualVal(data?.query_nature_id) : '',{emitEvent:false});
@@ -301,7 +314,7 @@ export class QueryEntryComponentComponent implements OnInit {
       // folio_no:data ? data?.folio_no : '',
       product_code:data ? data?.product_code : '',
       isin_no:data ? data?.isin_no : '',
-      expected_close_date:data ? this.datePipe.transform(global.getActualVal(data?.expected_close_date),'yyyy-MM-dd')  : '',
+      expected_close_date:data ? (data?.expected_close_date ? (this.datePipe.transform(global.getActualVal(data?.expected_close_date),'yyyy-MM-dd')) : '')  : '',
       query_details:data ? data?.query_details : '',
       remarks: data ? data?.remarks : '',
       query_status_id:data ? data?.query_status_id : '',
@@ -315,9 +328,9 @@ export class QueryEntryComponentComponent implements OnInit {
     });
     setTimeout(() => {
       if(data?.query_tat){
-        const queryTypeDtls = data ? this.md_queryType.filter(el => el.id == data?.query_type_id)[0] : ''
-        this.queryEntryForm.get('query_type_id').setValue(data ? this.md_queryType.filter(el => el.id == data?.query_type_id)[0] : '',{emitEvent:false});
-        this.fetchQuerySubType(queryTypeDtls)
+          const queryTypeDtls = data ? this.md_queryType.filter(el => el.id == data?.query_type_id)[0] : ''
+          this.queryEntryForm.get('query_type_id').setValue(data ? this.md_queryType.filter(el => el.id == data?.query_type_id)[0] : '',{emitEvent:false});
+          this.fetchQuerySubType(queryTypeDtls)
       }
       else{
         this.queryEntryForm.get('query_type_id').setValue(data ? this.md_queryType.filter(el => el.id == data?.query_type_id)[0] : '',{emitEvent:true});
@@ -391,7 +404,8 @@ export class QueryEntryComponentComponent implements OnInit {
 
             if(res.length > 0){
               // console.log(res)
-              this.fetchSchemeByFDR_no(res[0].fdr_no);
+              // this.fetchSchemeByFDR_no(res[0].fdr_no);
+              this.fetchSchemeByFolio(res[0].fdr_no);
             }
             else{
               this.md_scheme = [];
@@ -407,7 +421,8 @@ export class QueryEntryComponentComponent implements OnInit {
 
           if(res.length > 0){
             // console.log(res)
-            this.fetchSchemeByFDR_no(res[0].policy_no);
+            // this.fetchSchemeByFDR_no(res[0].policy_no);
+            this.fetchSchemeByFolio(res[0].policy_no);
           }
           else{
             this.md_scheme = [];
@@ -473,9 +488,16 @@ export class QueryEntryComponentComponent implements OnInit {
       })
 
       this.queryEntryForm.get('query_tat').valueChanges.subscribe(res =>{
-            let date = new Date();
-            date.setDate(Number(date.getDate()) + Number(res));
-            this.queryEntryForm.get('expected_close_date').setValue(this.datePipe.transform(date,'YYYY-MM-dd'))
+            // console.log("QUERY TAT -" + res);
+            // let date = new Date();
+            // date.setDate(Number(date.getDate()) + Number(res));      
+            // this.queryEntryForm.get('expected_close_date').setValue(this.datePipe.transform(date,'YYYY-MM-dd'))
+            // console.log('QUERY TAT : ' + res);
+            this.globalFuncForExpectedCloseDate(null,res);
+            // let actualDate;
+            // const  daysAfteradd = moment().add(1, 'd');
+            // console.log(daysAfteradd.format('DD-MM-YYYY'));
+            // console.log(daysAfteradd.format('ddd'));
       })
 
       this.queryEntryForm.get('query_status_id').valueChanges.subscribe(res =>{
@@ -768,9 +790,6 @@ export class QueryEntryComponentComponent implements OnInit {
   fetchQueryType = () =>{
       this.__dbIntr.api_call(0,'/cus_service/queryType',null).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
           this.md_queryType = res;
-          // if(this.queryId > 0){
-          //   this.
-          // }
       })
   }
 
@@ -787,16 +806,40 @@ export class QueryEntryComponentComponent implements OnInit {
             }
             if(!this.queryEntryForm.value.expected_close_date){
               if(dt.length > 0){
-         
-                let date = new Date();
-                date.setDate(Number(date.getDate()) + Number(dt[0]?.query_tat));
-                this.queryEntryForm.get('expected_close_date').setValue(this.datePipe.transform(date,'YYYY-MM-dd'))
+                  this.globalFuncForExpectedCloseDate(null,dt[0]?.query_tat);
               }
             }
           }, 2000);
         
         }
       })
+  }
+
+
+  globalFuncForExpectedCloseDate = (date,query_tat) =>{
+    let  daysAfteradd;
+    if(date){
+      daysAfteradd = moment(date).add(Number(query_tat),'d');
+    }
+    else{
+      daysAfteradd = moment().add(Number(query_tat),'d');
+    }
+    let actualDate = daysAfteradd;
+    this.md_holiday.forEach(element => {
+        if(actualDate.isSame(element)){
+            console.log("SAME")
+            daysAfteradd = daysAfteradd.add(Number(query_tat),'d');
+        }
+        console.log(daysAfteradd);
+        const isweekDay =  daysAfteradd.format('ddd');           
+        if(isweekDay == 'Sat'){
+          actualDate = moment(daysAfteradd,"DD-MM-YYYY").add(2, 'days');
+        }
+        else if(isweekDay == 'Sun'){
+          actualDate = moment(daysAfteradd,"DD-MM-YYYY").add(1, 'days');
+        }
+    })
+    this.queryEntryForm.get('expected_close_date').setValue(actualDate.format('YYYY-MM-DD'))
   }
 
 

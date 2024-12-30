@@ -10,7 +10,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./query-feedback.component.css']
 })
 export class QueryFeedbackComponent implements OnInit {
-
+  
   feedbackForm = new FormGroup({
     investor_name:new FormControl('',[Validators.required]),
     investor_email:new FormControl('',[Validators.email]),
@@ -21,6 +21,8 @@ export class QueryFeedbackComponent implements OnInit {
     enc_query_id:new FormControl(''),
     suggestion:new FormControl(''),
   });
+  isFeedbackDone:string | undefined;
+  feedbackTxt:string = "Your feedback already submitted"
 
   emojiDtls = [
     {
@@ -82,26 +84,22 @@ export class QueryFeedbackComponent implements OnInit {
     })
   }
   submitFeedback(){
+   
+    
       if(this.feedbackForm.invalid){
         this.utility.showSnackbar(
             'Validation Error',2
         );
         return ;
       }
-      // const {color_code,query_id,rest} = this.feedbackForm.value;
       this.dbIntr.api_call(1,'/cus_service/queryFeedback',this.utility.convertFormData(this.feedbackForm.value))
       .subscribe((res:any) =>{
+          this.feedbackTxt = "Thank you for your valueable feedback!!"
+          this.isFeedbackDone = 'Y';
           this.utility.showSnackbar(
             res.suc == 1 ? 'Thanks for your feedback!!!' : 'Err!!Something went wrong',
             res.suc
           );
-          // if(res.suc == 1){
-          //   this.feedbackForm.patchValue({
-          //     feedback:'',
-          //     rating:'',
-          //     suggestion:''
-          //   })
-          // }
       })
   }
 
@@ -110,17 +108,19 @@ export class QueryFeedbackComponent implements OnInit {
     this.dbIntr.api_call(1,`/cus_service/queryShowDetails?query_id=${query_id}`,null)
     .pipe(pluck('data'))
     .subscribe((res:any) =>{
-      this.feedbackForm.patchValue({
-        query_id:res?.query_id,
-        investor_name:res ? res?.investor_name : '',
-        investor_email:res ? res?.investor_email : '',
-        rating:res ? res?.rating : '',
-        query_feedback:res ? res?.query_feedback : '',
-        color_code:res ? res?.color_code : '',
-        suggestion:res ? res?.suggestion : '',
-      });
-      this.feedbackForm.get('investor_name').disable();
-      this.feedbackForm.get('investor_email').disable();
+        this.isFeedbackDone = res?.rating ? 'Y' : 'N';
+        this.feedbackForm.patchValue({
+          query_id:res?.query_id,
+          investor_name:res ? res?.investor_name : '',
+          investor_email:res ? res?.investor_email : '',
+          rating:res ? res?.rating : '',
+          query_feedback:res ? res?.query_feedback : '',
+          color_code:res ? res?.color_code : '',
+          suggestion:res ? res?.suggestion : '',
+        });
+        this.feedbackForm.get('investor_name').disable();
+        this.feedbackForm.get('investor_email').disable();
+     
     })
 }
 

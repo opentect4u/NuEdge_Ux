@@ -210,3 +210,11 @@ th{
 .no_rating{color:#272726!important;}
 
 /*******END*******/
+
+
+.queryFeedbackRceEllipsis{
+  white-space: nowrap; 
+  width: 15rem; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}

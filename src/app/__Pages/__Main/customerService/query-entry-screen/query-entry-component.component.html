@@ -203,7 +203,7 @@
                                                             </div>
                                                         </ng-container> -->
                                                         <table  class="my-2">
-                                                            <thead>
+                                                            <!-- <thead>
                                                               <tr>
                                                                 <th *ngIf="queryId.toString() == '0'">
                                                                     <input
@@ -213,10 +213,10 @@
                                                                 <th>
                                                                     {{productId == 2 ? 'Product' : 'Scheme'}}
                                                                 </th>
-                                                                <th *ngIf="this.productId == 1">
+                                                                <th *ngIf="this.productId == 1 || this.productId == 12">
                                                                     Folio
                                                                 </th>
-                                                                <th *ngIf="this.productId == 1">
+                                                                <th *ngIf="this.productId == 1 || this.productId == 12">
                                                                     Current Value
                                                                 </th>
                                                               </tr>
@@ -233,10 +233,10 @@
                                                                     <td>
                                                                         {{schemeDtls.controls[i].get(productId == 3 ? 'product_name' : 'scheme_name')?.value}}  
                                                                     </td>
-                                                                    <td *ngIf="this.productId == 1">
+                                                                    <td *ngIf="this.productId == 1 || this.productId == 12">
                                                                         {{schemeDtls.controls[i].get('folio_no')?.value}}  
                                                                     </td>
-                                                                    <td *ngIf="this.productId == 1">
+                                                                    <td *ngIf="this.productId == 1 || this.productId == 12">
                                                                         {{schemeDtls.controls[i].get('curr_val')?.value}}  
                                                                     </td>
                                                                 </ng-container>
@@ -253,8 +253,63 @@
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
-                                                             </ng-template>
+                                                             </ng-template> -->
 
+
+
+
+                                                             <thead>
+                                                                <tr>
+                                                                  <th *ngIf="queryId.toString() == '0'">
+                                                                      <input
+                                                                        
+                                                                      type="checkbox" formControlName="selectAll"/>
+                                                                  </th>
+                                                                  <th>
+                                                                      Scheme
+                                                                  </th>
+                                                                  <th>
+                                                                      Folio
+                                                                  </th>
+                                                                  <th>
+                                                                      Current Value
+                                                                  </th>
+                                                                </tr>
+                                                              </thead>
+                                                              <ng-container *ngIf="schemeDtls.value.length > 0;else noData">
+                                                              <tbody formArrayName="scheme_dtls">
+                                                                <tr *ngFor="let item of schemeDtls.controls; let i = index;">
+                                                                  <ng-container [formGroupName]="i">
+                                                                      <td *ngIf="queryId.toString() == '0'">
+                                                                          <input type="checkbox" 
+                                                                              (change)="setSelctAllCheckbox($event)"
+                                                                          formControlName="isActive"/>
+                                                                      </td>
+                                                                      <td>
+                                                                          {{schemeDtls.controls[i].get('scheme_name')?.value}}  
+                                                                      </td>
+                                                                      <td >
+                                                                          {{schemeDtls.controls[i].get('folio_no')?.value}}  
+                                                                      </td>
+                                                                      <td >
+                                                                          {{schemeDtls.controls[i].get('curr_val')?.value}}  
+                                                                      </td>
+                                                                  </ng-container>
+                                                                </tr>
+                                                              </tbody>
+                                                               </ng-container>
+                                                               <ng-template #noData>
+                                                                  <tbody>
+                                                                      <tr>
+                                                                          <td colspan="4" class="text-center p-2">
+                                                                                  <p class="m-0">
+                                                                                      No Scheme Available
+                                                                                  </p>
+                                                                          </td>
+                                                                      </tr>
+                                                                  </tbody>
+                                                               </ng-template>
+  
                                                           </table>
                                                         </div>
 

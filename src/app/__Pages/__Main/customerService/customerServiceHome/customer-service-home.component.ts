@@ -44,6 +44,8 @@ export class CustomerServiceHomeComponent implements OnInit {
   @ViewChild('op') Overlay__pannel:OverlayPanel;
 
 
+  md_holiday:any = []
+
   index:number = 0;
   md_scheme = [];
   settingsforBrnchDropdown = this.__utility.settingsfroMultiselectDropdown(
@@ -191,6 +193,7 @@ export class CustomerServiceHomeComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.fetchHoliday();
     this.fetchQueryStatus();
     this.fetchProduct();
     this.fetchQueryReceievGivenThrough();
@@ -750,8 +753,9 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.dbIntr.api_call(1,'/cus_service/queryShow',fb)
       .pipe(pluck('data'))
       .subscribe((res:any) =>{
-        this.queryDataSource = res.filter(el =>{
+        this.queryDataSource = res.filter((el,index) =>{
           let isExpired;
+          el.expected_close_date = el?.expected_close_date ? el.expected_close_date : this.globalFuncForExpectedCloseDate(null,el.query_tat);
           if(el.actual_close_date){
             const actual_close_date = moment(el.actual_close_date);
             const expected_close_date = moment(el.expected_close_date);
@@ -759,15 +763,16 @@ export class CustomerServiceHomeComponent implements OnInit {
             isExpired = diff<=0;
           }
           else{
+            //  el.
              if(el.expected_close_date){
-                var expected_close_date = moment(el.expected_close_date,'YYYY-MM-DD');
+                console.log(el.expected_close_date);
+                var expected_close_date1 = moment(el.expected_close_date,'YYYY-MM-DD');
                 var to_day =  moment(moment(new Date()).format('YYYY-MM-DD'),'YYYY-MM-DD');
-                const isAfter = to_day.diff(expected_close_date)
+                const isAfter = to_day.diff(expected_close_date1)
                 isExpired = isAfter <= 0;
             }
             else{
               var new_date = moment(el.date_time).add(el.query_tat, 'days').format('YYYY-MM-DD');
-              //console.log(new_date);
                 const isAfter = moment(moment(new Date()).format('YYYY-MM-DD'),'YYYY-MM-DD').diff(new_date)
                 isExpired = isAfter <= 0;
             }
@@ -778,12 +783,7 @@ export class CustomerServiceHomeComponent implements OnInit {
               }
           }
           el.tat_expired = isExpired ? "NO" : "YES"
-          
-          // el.solveattach = el.solveattach.map(el =>{
-          //     el.url=`${environment.query_solve_file}${el.name}`;
-          //     el.ext = el.name.substr(el.name.lastIndexOf('.') + 1);
-          //     return el
-          //  });
+        
           el.solveattach = [];
            const outerDt = el.allscheme.map(el =>{
               el.scheme_name = el.schemename ? `${el?.schemename?.scheme_name}-${el?.schemename?.plan_name}-${el?.schemename?.option_name}` : 'N/A';
@@ -816,7 +816,34 @@ export class CustomerServiceHomeComponent implements OnInit {
         // //console.log(this.queryDataSource);
       })
   }
+ 
 
+ globalFuncForExpectedCloseDate = (date,query_tat) =>{
+     let  daysAfteradd;
+     if(date){
+       daysAfteradd = moment(date).add(Number(query_tat),'d');
+     }
+     else{
+       daysAfteradd = moment().add(Number(query_tat),'d');
+     }
+     let expected_close_date = daysAfteradd;
+     this.md_holiday.forEach(element => {
+         if(expected_close_date.isSame(element)){
+            //  console.log("SAME")
+             daysAfteradd = daysAfteradd.add(Number(query_tat),'d');
+         }
+        //  console.log(daysAfteradd);
+         const isweekDay =  daysAfteradd.format('ddd');           
+         if(isweekDay == 'Sat'){
+           expected_close_date = moment(daysAfteradd,"DD-MM-YYYY").add(2, 'days');
+         }
+         else if(isweekDay == 'Sun'){
+           expected_close_date = moment(daysAfteradd,"DD-MM-YYYY").add(1, 'days');
+         }
+     })
+    //  console.log(expected_close_date);
+     return expected_close_date.format('YYYY-MM-DD');
+   }
 
   fetchProduct = () =>{
     this.dbIntr.api_call(0,'/product',null).pipe(pluck('data')).subscribe((res:any) => {
@@ -835,6 +862,16 @@ export class CustomerServiceHomeComponent implements OnInit {
         // //console.log()
         // this.fetchQuery(this.md_product[0].flag);
     })
+  }
+
+  fetchHoliday = () =>{
+        this.dbIntr.api_call(0,'/cus_service/holiday',null)
+        .pipe(pluck("data"))
+        .subscribe((res:any) =>{
+            // console.log(res);
+            this.md_holiday = res.map(el => el.occ_date);
+        })
+
   }
 
   
@@ -1046,6 +1083,12 @@ export class CustomerServiceHomeComponent implements OnInit {
       this.openDialog(trxn,trxn.query_id,attachments);
   }
 
+  copyText(text){
+      if(text){
+        navigator.clipboard.writeText(text);
+      }
+  }
+
   openDialog(transaction, __quertId,attachments) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
@@ -1136,37 +1179,37 @@ export class queryColumn{
       field:'status_name',
       header:'Query Status',
       width:'10rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'entry_name',
       header:'Query Receive By',
       width:'10rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_solve_by',
       header:'Query Solve By',
       width:'12rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_id',
       header:'Query ID',
       width:'8rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     // {
     //   field:'status_name',
     //   header:'Query Status',
     //   width:'5rem',
-    //   isVisible:[1,2,3,4]
+    //   isVisible:[1,2,3,4,12]
     // },
     {
       field:'date_time',
       header:'Date & Time',
       width:'12rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'investor_name',
@@ -1190,19 +1233,19 @@ export class queryColumn{
       field:'investor_pan',
       header:'PAN',
       width:'8rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'investor_email',
       header:'Email',
       width:'20rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'investor_mobile',
       header:'Mobile',
       width:'7rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     // {
     //   field:'invester_name',
@@ -1236,19 +1279,19 @@ export class queryColumn{
       field:'client_code',
       header:'Client Code',
       width:'9rem',
-      isVisible:[4]
+      isVisible:[12]
     }, 
     {
       field:'query_given_by',
       header:'Query Given By',
       width:'9rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'amc_name',
       header:'AMC',
       width:'20rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'scheme_name',
@@ -1266,146 +1309,158 @@ export class queryColumn{
       field:'query_type',
       header:'Query Type',
       width:'17rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_subtype',
       header:'Query Subtype',
       width:'17rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_details',
       header:'Query Details',
       width:'30rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_receive_through',
       header:'Query Receive Through',
       width:'12rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_nature',
       header:'Query Nature',
       width:'11rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_given_to_amc_or_company',
       header:'Query Given To AMC/Company',
       width:'10rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_given_through',
       header:'Query Given Through',
       width:'13rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'concern_person_name',
       header:'Concern Person Name',
       width:'16rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'contact_no',
       header:'Concern Person Contact No.',
       width:'10rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'email_id',
       header:'Concern Person Email',
       width:'15rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'level',
       header:'Level',
       width:'5rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_tat',
       header:'Query TAT',
       width:'5rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'expected_close_date',
       header:'Expected Closed Date',
       width:'14rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     
     {
       field:'actual_close_date',
       header:'Actual Close Date Time',
       width:'14rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'tat_expired',
       header:'TAT Expired ',
       width:'5rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'tat_remarks',
       header:'TAT Remarks ',
       width:'15rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_inform_status',
       header:'Query Inform Status',
       width:'8rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_inform_date',
       header:'Query Inform Date Time',
       width:'16rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_inform_through',
       header:'Query Inform Through',
       width:'14rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
+    },
+    {
+      field:'query_feedback_received',
+      header:'Query Feedback Receive',
+      width:'5rem',
+      isVisible:[1,2,3,4,12]
+    },
+    {
+      field:'suggestion',
+      header:'Query Suggestion',
+      width:'15rem',
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'query_feedback',
-      header:'Query Feedback Receive',
-      width:'5rem',
-      isVisible:[1,2,3,4]
+      header:'Query Feedback',
+      width:'15rem',
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'rating',
       header:'Rating',
       width:'5rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'remarks',
       header:'Remarks',
       width:'18rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'view',
       header:'View Attachments',
       width:'3rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     },
     {
       field:'action',
       header:'Action',
       width:'5rem',
-      isVisible:[1,2,3,4]
+      isVisible:[1,2,3,4,12]
     }
   ]
 }

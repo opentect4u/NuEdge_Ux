@@ -1,208 +1,108 @@
-<div class="container mx-auto d-flex align-items-center justify-content-center flex-column">
-                    <div class="imgContainer my-3">
-                                       <img src="../../../assets/images/logowithOutbg.png" 
-                                       alt="NuedgLogo"
-                                       />     
-                    </div>
-                    <div class="feedbackHolderContainer mat-elevation-z2 py-5 px-3">
-                            <h4 class="text-center">
-                                How are you feeling?
-                            </h4>
-                            <p class="text-center feedbackTypo my-2">
-                                Customer satisfaction is always a number one priority for us. Your feedback will help us make our services better!
-                            </p>
+  <ng-container *ngIf="isFeedbackDone;else noData">
+    <ng-container *ngIf="isFeedbackDone == 'N';else done">
+        <div class="container mx-auto d-flex align-items-center justify-content-center flex-column">
+                            <div class="imgContainer my-3">
+                                            <img src="../../../assets/images/logowithOutbg.png" 
+                                            alt="NuedgLogo"
+                                            />     
+                            </div>
+                            <div class="feedbackHolderContainer mat-elevation-z2 py-5 px-3">
+                                    <h4 class="text-center">
+                                        How are you feeling?
+                                    </h4>
+                                    <p class="text-center feedbackTypo my-2">
+                                        Customer satisfaction is always a number one priority for us. Your feedback will help us make our services better!
+                                    </p>
 
-                            <p class="text-center feedbackTypo" *ngIf="feedbackForm.value.query_id">
-                                 QUERY ID - <span
-                                   
-                                 >{{this.feedbackForm.value.query_id}}</span>
-                            </p>
-                            <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()" class="p-3">
-                                    <div class="row">
-                                            <div class="col-sm-12">
-                                                        <label for="investor_name">Name</label>
-                                                        <input type="text" class="form-control" 
-                                                            placeholder="Your Name"
-                                                        formControlName="investor_name"/>
-                                            </div>
-                                            <div class="col-sm-12 my-3">
-                                                <label for="investor_email">Email</label>
-                                                <input type="text" 
-                                                placeholder="Your Email"
-                                                class="form-control" formControlName="investor_email"/>
-                                            </div>
-                                            <div class="col-sm-12 ">
-                                                <label for="rating">
-                                                    Please rate our services <span class="text-danger">*</span>
-                                                </label>
-                                                <div class="d-flex  align-items-center" style="justify-content: space-evenly;">
-                                                    <ng-container *ngFor="let item of emojiDtls">
-                                                        <div class="radio-group row justify-content-between text-center" 
-                                                        (click)="selectEmoji(item)"
+                                    <p class="text-center feedbackTypo" *ngIf="feedbackForm.value.query_id">
+                                        QUERY ID - <span
+                                        
+                                        >{{this.feedbackForm.value.query_id}}</span>
+                                    </p>
+                                    <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()" class="p-3">
+                                            <div class="row">
+                                                    <div class="col-sm-12">
+                                                                <label for="investor_name">Name</label>
+                                                                <input type="text" class="form-control" 
+                                                                    placeholder="Your Name"
+                                                                formControlName="investor_name"/>
+                                                    </div>
+                                                    <div class="col-sm-12 my-3">
+                                                        <label for="investor_email">Email</label>
+                                                        <input type="text" 
+                                                        placeholder="Your Email"
+                                                        class="form-control" formControlName="investor_email"/>
+                                                    </div>
+                                                    <div class="col-sm-12 ">
+                                                        <label for="rating">
+                                                            Please rate our services <span class="text-danger">*</span>
+                                                        </label>
+                                                        <div class="d-flex  align-items-center" style="justify-content: space-evenly;">
+                                                            <ng-container *ngFor="let item of emojiDtls">
+                                                                <div class="radio-group row justify-content-between text-center" 
+                                                                (click)="selectEmoji(item)"
+                                                                
+                                                                >
+                                                                    <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected"
+                                                                [ngStyle]="{
+                                                                    'border': feedbackForm.get('rating').value == item.emoji_value ? ('2px solid '+ item.selected_color) : '1px solid #eaeaea',
+                                                                    'background': feedbackForm.get('rating').value == item.emoji_value ? item.activeBgColor : '#FAFAFA'
+                                                                }"                                                        
+                                                                    
+                                                                    >
+                                                                        <div class="flex-row">
+                                                                            <div class="col p-0">
+                                                                                <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/{{item.emoji}}" alt="{{item.emoji_type}}" width="40" height="54"> </div>
+                                                                                <p class="emojiText">{{item.emoji_type}}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>  
+                                                                </div>
+                                                            </ng-container>
+                                                    
+                                                        </div>
+                                                    
+                                                    </div>
+                                                    <div class="col-sm-12 my-3">
+                                                    <label>
+                                                        Feedback
+                                                    </label> 
+                                                        <textarea cols="10" rows="3" placeholder="Write Your Feedback"  formControlName="query_feedback"
+                                                        class="form-control">
+                                                        </textarea>
                                                         
-                                                        >
-                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected"
-                                                        [ngStyle]="{
-                                                            'border': feedbackForm.get('rating').value == item.emoji_value ? ('2px solid '+ item.selected_color) : '1px solid #eaeaea',
-                                                            'background': feedbackForm.get('rating').value == item.emoji_value ? item.activeBgColor : '#FAFAFA'
-                                                        }"                                                        
-                                                            
-                                                            >
-                                                                <div class="flex-row">
-                                                                    <div class="col p-0">
-                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/{{item.emoji}}" alt="{{item.emoji_type}}" width="40" height="54"> </div>
-                                                                        <p class="emojiText">{{item.emoji_type}}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>  
-                                                        </div>
-                                                    </ng-container>
-                                                    <!-- <div class="radio-group row justify-content-between text-center">
-                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                            <div class="flex-row">
-                                                                <div class="col p-0">
-                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/VerryPoor.png" width="40" height="54"> </div>
-                                                                    <p class="emojiText">Very Poor</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                     </div>
-
-                                                    <div class="radio-group row justify-content-between text-center">
-                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                            <div class="flex-row">
-                                                                <div class="col p-0">
-                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Poor.png" width="40" height="54"> </div>
-                                                                    <p class="emojiText">Poor</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div class="col-sm-12">
+                                                        <label>
+                                                        Suggestion (Help us to serve you better, please give your suggestion to improve our customer services).
+                                                        </label> 
+                                                        <textarea cols="10" rows="5" placeholder="Write Your Suggestion"  formControlName="suggestion"
+                                                        class="form-control">
+                                                        </textarea>
+                                                        
                                                     </div>
-
-                                                    <div class="radio-group row justify-content-between text-center">
-                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                            <div class="flex-row">
-                                                                <div class="col p-0">
-                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Avarage.png" width="40" height="54"> </div>
-                                                                    <p class="emojiText">Avarage</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div class="col-sm-12 mt-3 d-flex align-items-center justify-content-end">
+                                                        <!-- [disabled]="feedbackForm.invalid" -->
+                                                        <p-button type="submit"   label="Submit" class="p-button-lg"></p-button>
                                                     </div>
-
-                                                    <div class="radio-group row justify-content-between text-center">
-                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                            <div class="flex-row">
-                                                                <div class="col p-0">
-                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Good.png" width="40" height="54"> </div>
-                                                                    <p class="emojiText">Good</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="radio-group row justify-content-between text-center">
-                                                        <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                            <div class="flex-row">
-                                                                <div class="col p-0">
-                                                                    <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Excellent.png" width="40" height="54"> </div>
-                                                                    <p class="emojiText">Excellent</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div> -->
-                                                </div>
-                                                <!-- <div class="row ">
-                                                  
-                                                    <div class="col-md-3">
-                                                        <div class="radio-group row justify-content-between text-center">
-                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                                <div class="flex-row">
-                                                                    <div class="col p-0">
-                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/VerryPoor.png" width="40" height="54"> </div>
-                                                                        <p class="emojiText">Very Poor</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3">
-                                                        <div class="radio-group row justify-content-between text-center">
-                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                                <div class="flex-row">
-                                                                    <div class="col p-0">
-                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Poor.png" width="40" height="54"> </div>
-                                                                        <p class="emojiText">Poor</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="col-md-3">
-                                                        <div class="radio-group row justify-content-between text-center">
-                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                                <div class="flex-row">
-                                                                    <div class="col p-0">
-                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Avarage.png" width="40" height="54"> </div>
-                                                                        <p class="emojiText">Avarage</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="radio-group row justify-content-between text-center">
-                                                            <div class="col-auto mr-sm-2 mx-1 card-block  py-0 text-center radio selected ">
-                                                                <div class="flex-row">
-                                                                    <div class="col p-0">
-                                                                        <div class="pic"> <img class="irc_mut img-fluid" src="../../../assets/images/Good.png" width="40" height="54"> </div>
-                                                                        <p class="emojiText">Good</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div> -->
-                                                <!-- <label for="rating">
-                                                    Please rate our services
-                                                </label>
-                                                <div class=" d-flex justify-content-start align-items-start">
-                                                    <p-rating formControlName="rating" [cancel]="false"
-                                                    ></p-rating>
-                                                </div> -->
                                             </div>
-                                            <div class="col-sm-12 my-3">
-                                               <label>
-                                                Feedback
-                                               </label> 
-                                                <textarea cols="10" rows="3" placeholder="Write Your Feedback"  formControlName="query_feedback"
-                                                class="form-control">
-                                                </textarea>
-                                                
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <label>
-                                                 Suggestion (Help us to serve you better, please give your suggestion to improve our customer services).
-                                                </label> 
-                                                 <textarea cols="10" rows="5" placeholder="Write Your Suggestion"  formControlName="suggestion"
-                                                 class="form-control">
-                                                 </textarea>
-                                                 
-                                             </div>
-                                            <div class="col-sm-12 mt-3 d-flex align-items-center justify-content-end">
-                                                <!-- [disabled]="feedbackForm.invalid" -->
-                                                <p-button type="submit"  label="Submit" class="p-button-lg"></p-button>
-                                            </div>
-                                    </div>
-                            </form>
-                    </div>
-</div>
+                                    </form>
+                            </div>
+        </div>
+    </ng-container>
+    <ng-template #done>
+        <div class="d-flex justify-content-center align-items-center downloadBody flex-column"  >
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"> 
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+            <p class="mt-3 header">
+                {{feedbackTxt}}
+            </p> 
+        </div>
 
+    </ng-template>
 
-<!-- EMOJI SECTION -->
+  </ng-container> 
 
-
-<!-- End -->
+<ng-template #noData></ng-template>

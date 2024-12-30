@@ -831,7 +831,7 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   color: #f1820b;
   font-weight: 600; */
 
-  font-size: 17px;
+  font-size: 16px;
     color: #f1820b;
     font-weight: 500;
 
@@ -852,7 +852,8 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   padding: 0; */
   font-size: 16px;
   /* color: #fff; */
-  color: #1f4584;
+  /* color: #1f4584; */
+  color:#00c7bf;
   margin: 2px 0!important;
   margin: 0;
   padding: 0;
