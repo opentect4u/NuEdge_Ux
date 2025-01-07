@@ -169,7 +169,7 @@
                               <p class="m-0">
                                 {{
                                   liveMfPortFolio[col.field]
-                                    ? (liveMfPortFolio[col.field] | date : "dd-MM-YY")
+                                    ? (liveMfPortFolio[col.field] | date : "dd-MM-yy")
                                     : "N/A"
                                 }}
                               </p>
@@ -348,7 +348,7 @@
                                       </ng-container>
                                       <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'inv_since'">
                                         <span class="m-0">
-                                          {{data[col.field] ? (data[col.field] | date : "dd-MM-YY") : "N/A"}}
+                                          {{data[col.field] ? (data[col.field] | date : "dd-MM-yy") : "N/A"}}
                                         </span>
                                       </ng-container>
                                       <ng-container

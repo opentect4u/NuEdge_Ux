@@ -835,10 +835,10 @@ export class CustomerServiceHomeComponent implements OnInit {
         //  console.log(daysAfteradd);
          const isweekDay =  daysAfteradd.format('ddd');           
          if(isweekDay == 'Sat'){
-           expected_close_date = moment(daysAfteradd,"DD-MM-YYYY").add(2, 'days');
+           expected_close_date = moment(daysAfteradd,"DD-MM-yyyy").add(2, 'days');
          }
          else if(isweekDay == 'Sun'){
-           expected_close_date = moment(daysAfteradd,"DD-MM-YYYY").add(1, 'days');
+           expected_close_date = moment(daysAfteradd,"DD-MM-yyyy").add(1, 'days');
          }
      })
     //  console.log(expected_close_date);

@@ -49,7 +49,7 @@ export class UploadSchemeBenchmarkComponent implements OnInit {
   scheme_benchmark = new MatTableDataSource([
     {
       benchmark:'',
-      date:'DD-MM-YYYY',
+      date:'DD-MM-yyyy',
       open:'',
       high:'',
       low:'',

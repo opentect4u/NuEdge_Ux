@@ -199,8 +199,8 @@
 
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'nav_date'">
-                    <span [matTooltip]="nav[col.field] ? (nav[col.field] | date:'dd-MM-YYYY') : ''">
-                      {{nav[col.field] ? (nav[col.field] | date:'dd-MM-YYYY') : 'N/A' }}
+                    <span [matTooltip]="nav[col.field] ? (nav[col.field] | date:'dd-MM-yyyy') : ''">
+                      {{nav[col.field] ? (nav[col.field] | date:'dd-MM-yyyy') : 'N/A' }}
                     </span>
                   </ng-container>
 

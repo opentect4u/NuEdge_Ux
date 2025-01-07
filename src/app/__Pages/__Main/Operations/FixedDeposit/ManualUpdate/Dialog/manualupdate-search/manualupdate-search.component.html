@@ -270,11 +270,11 @@
                       {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'rec_datetime'">
-                    <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                    <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-yyyy hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</span>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="col.field == 'entry_date'">
-                      <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                      <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-yyyy')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</span>
                       </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'edit'">
                       <p-button [icon]="rcvFormDT['form_status']=='A' ? 'pi pi-pencil' : 'pi pi-eye'" (click)="populateDT(rcvFormDT)"

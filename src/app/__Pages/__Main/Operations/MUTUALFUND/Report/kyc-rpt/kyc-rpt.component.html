@@ -79,7 +79,7 @@
                         </ng-container>
 
                         <ng-container *ngSwitchCase="col.field == 'entry_dt'">
-                          <span #tooltip="matTooltip" [matTooltip]="(kyc[col.field] | date:'dd-MM-YYYY')">{{ kyc[col.field] ? (kyc[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                          <span #tooltip="matTooltip" [matTooltip]="(kyc[col.field] | date:'dd-MM-yyyy')">{{ kyc[col.field] ? (kyc[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</span>
                           </ng-container>
                         <ng-container *ngSwitchDefault>
                           <span #tooltip="matTooltip" [matTooltip]="kyc[col.field]">

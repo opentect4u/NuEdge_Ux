@@ -65,7 +65,7 @@
                    <td *ngFor="let col of column">
                        <ng-container [ngSwitch]="true">
                         <ng-container *ngSwitchCase="col.field == 'process_date'">
-                          <p class="m-0">{{ trxnDT[col.field] ? (trxnDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+                          <p class="m-0">{{ trxnDT[col.field] ? (trxnDT[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
                         </ng-container>
                         <ng-container *ngSwitchCase="col.field == 'doc'">
                             <span class="p-buttonset">

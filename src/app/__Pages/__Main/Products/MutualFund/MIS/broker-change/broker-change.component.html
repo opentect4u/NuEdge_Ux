@@ -301,7 +301,7 @@
 
 
                   <ng-container *ngSwitchCase="col.field == 'trans_date'">
-                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                     <p class="m-0"
@@ -555,7 +555,7 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
 
 
         <ng-container *ngSwitchCase="col.field == 'trans_date'">
-          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
         </ng-container>
         <ng-container *ngSwitchCase="col.field == 'scheme_name'">
           <p class="m-0"

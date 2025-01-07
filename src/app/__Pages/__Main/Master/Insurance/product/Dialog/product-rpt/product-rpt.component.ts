@@ -18,6 +18,7 @@ import { column } from 'src/app/__Model/tblClmns';
 import { productClmns } from 'src/app/__Utility/Master/isnClmns';
 import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
 import { sort } from 'src/app/__Model/sort';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-product-rpt',
@@ -25,6 +26,7 @@ import { sort } from 'src/app/__Model/sort';
   styleUrls: ['./product-rpt.component.css']
 })
 export class ProductRPTComponent implements OnInit {
+  @ViewChild('dt') primeTbl :Table;
   formValue;
   itemsPerPage = ItemsPerPage;
   __isAllSpinner:boolean = false;
@@ -113,7 +115,44 @@ export class ProductRPTComponent implements OnInit {
       this.__prdSearchForm.controls['company_id'].setValue([],{emitEvent:true});
     }
   }
+  changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+}
+
   ngAfterViewInit(){
+    const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+    this.changeWheelSpeed(el, 0.99);
 
     // this.__prdSearchForm.controls['search_all'].valueChanges
     // .pipe(
@@ -205,11 +244,20 @@ export class ProductRPTComponent implements OnInit {
     __fb.append('field', (global.getActualVal(this.sort.field) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.field : '') : ''));
     __fb.append('order', (global.getActualVal(this.sort.order) ? (this.sort.field != 'edit' && this.sort.field != 'delete' ? this.sort.order : '') : '1'));
      this.__dbIntr.api_call(1,'/ins/productDetailSearch',__fb).pipe(pluck("data")).subscribe((res: any) =>{
-        this.__selectPrdMst = new MatTableDataSource(res.data);
-        this.__paginate = res.links;
-        this.tableExport(__fb);
+        // this.__selectPrdMst = new MatTableDataSource(res.data);
+        // this.__paginate = res.links;
+        // this.tableExport(__fb);
+        this.__selectPrdMst = new MatTableDataSource(res);
+        // this.__exportPrdMst = new MatTableDataSource(res);
+        // this.__paginate = res.links;
+        // this.tableExport(__fb);
      })
   }
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
+
   tableExport(__fb){
     __fb.delete('paginate');
     this.__dbIntr.api_call(1,'/ins/productExport',__fb) .pipe(pluck("data"))
@@ -368,18 +416,21 @@ export class ProductRPTComponent implements OnInit {
        this.searchProduct();
     }
     customSort(ev){
-      if(ev.sortField!= 'edit' && ev.sortField != 'delete'){
-        this.sort.field =ev.sortField;
-        this.sort.order =ev.sortOrder;
-        if(ev.sortField){
-          this.getproductMst();
-        }
-      }
+      // if(ev.sortField!= 'edit' && ev.sortField != 'delete'){
+      //   this.sort.field =ev.sortField;
+      //   this.sort.order =ev.sortOrder;
+      //   if(ev.sortField){
+      //     this.getproductMst();
+      //   }
+      // }
     }
     onselectItem(ev){
       this.getproductMst();
     }
     getSelectedItemsFromParent(ev){
 
+    }
+    getColumns = () =>{
+      return this.__utility.getColumns(this.__columns);
     }
 }

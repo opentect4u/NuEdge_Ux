@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, OnInit, Inject, QueryList, ElementRef, ViewChildren } from '@angular/core';
+import { Component, OnInit, Inject, QueryList, ElementRef, ViewChildren, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import {
   MatDialog,
@@ -20,6 +20,7 @@ import { sort } from 'src/app/__Model/sort';
 import { column } from 'src/app/__Model/tblClmns';
 import { productTypeClmns } from 'src/app/__Utility/Master/isnClmns';
 import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-prd-type-rpt',
@@ -29,6 +30,7 @@ import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json'
 export class PrdTypeRPTComponent implements OnInit {
 
   formValue;
+  @ViewChild('dt') primeTbl :Table;
 
   sort =new sort();
   itemsPerPage = ItemsPerPage;
@@ -87,10 +89,47 @@ export class PrdTypeRPTComponent implements OnInit {
       });
   }
   ngAfterViewInit(){
+    const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+    this.changeWheelSpeed(el, 0.99);
     this.__prdType.controls['ins_type'].valueChanges.subscribe(res =>{
       this.getProductTypeMstForDropdown(res);
     })
   }
+
+  changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+}
 
   getProductTypeMst() {
     const __prdTypeSearch = new FormData();
@@ -109,9 +148,10 @@ export class PrdTypeRPTComponent implements OnInit {
       .api_call(1, '/ins/productTypeDetailSearch', __prdTypeSearch)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
-        this.tableExport(__prdTypeSearch);
+        this.__prdTypeMst = new MatTableDataSource(res);
+        // this.__paginate = res.links;
+        // this.setPaginator(res.data);
+        // this.tableExport(__prdTypeSearch);
       });
   }
   private setPaginator(__res) {
@@ -271,16 +311,23 @@ export class PrdTypeRPTComponent implements OnInit {
       }
     });
   }
-  customSort(ev){
-    if(ev.sortField !='edit' && ev.sortField !='delete'){
-    this.sort.order=ev.sortOrder;
-    this.sort.field=ev.sortField;
-     if(ev.sortField){
-       this.getProductTypeMst();
-     }
-    }
-  }
+  // customSort(ev){
+  //   if(ev.sortField !='edit' && ev.sortField !='delete'){
+  //   this.sort.order=ev.sortOrder;
+  //   this.sort.field=ev.sortField;
+  //    if(ev.sortField){
+  //      this.getProductTypeMst();
+  //    }
+  //   }
+  // }
   onselectItem(ev){
     this.getProductTypeMst();
+  }
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
+  }
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
   }
 }

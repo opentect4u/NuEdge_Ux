@@ -84,7 +84,7 @@
               (onSelect)="setEndDateFormonthly_yearly()"
               formControlName="month"
               [showButtonBar]="true"
-              [placeholder]="scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MM-YYYY - MM-YYYY' : 'YYYY - YYYY' ">
+              [placeholder]="scmbenchmarkFrm.getRawValue().date_periods == 'M' ? 'MM-yyyy - MM-yyyy' : 'YYYY - YYYY' ">
             </p-calendar>
              </div>
             </ng-container>
@@ -113,13 +113,13 @@
                 <ng-container *ngIf="submittedDT?.date_periods == 'D';else other">
                 <ng-container *ngIf="submittedDT?.date_range">
                   <ng-container *ngIf="submittedDT?.date_range.length > 1">
-                    {{submittedDT.date_range[0] | date:'dd-MMM-YYYY'}} -  {{submittedDT.date_range[1] | date:'dd-MMM-YYYY'}}
+                    {{submittedDT.date_range[0] | date:'dd-MMM-yyyy'}} -  {{submittedDT.date_range[1] | date:'dd-MMM-yyyy'}}
                   </ng-container>
                 </ng-container>
                 </ng-container>
                 <ng-template #other>
                   <ng-container *ngIf="submittedDT?.month.length > 1">
-                  {{submittedDT?.month[0] | date:submittedDT?.date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}} -  {{submittedDT?.month[1] | date:submittedDT?.date_periods == 'M' ? 'MMM-YYYY' : 'YYYY'}}
+                  {{submittedDT?.month[0] | date:submittedDT?.date_periods == 'M' ? 'MMM-yyyy' : 'YYYY'}} -  {{submittedDT?.month[1] | date:submittedDT?.date_periods == 'M' ? 'MMM-yyyy' : 'YYYY'}}
                   </ng-container>
                 </ng-template>
               </span>
@@ -172,7 +172,7 @@
                      <p class="m-0">{{i + 1}}</p>
                    </ng-container>
                    <ng-container *ngSwitchCase="col.field == 'date'">
-                     <p class="m-0">{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+                     <p class="m-0">{{scmBenchmark[col.field] ? (scmBenchmark[col.field] | date:'dd-MM-yyyy') : 'N/A'}}</p>
                    </ng-container>
                    <ng-container *ngSwitchCase="col.field == 'change_price'">
                      <p class='m-0 d-flex align-items-center'>

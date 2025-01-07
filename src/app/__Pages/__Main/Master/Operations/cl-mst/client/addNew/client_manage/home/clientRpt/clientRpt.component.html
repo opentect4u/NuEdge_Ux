@@ -230,7 +230,7 @@
                         styleClass="p-button-rounded p-button-primary"></p-button>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_actual' || col.field == 'anniversary_date'">
-                      <b #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-YYYY')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+                      <b #tooltip="matTooltip" [matTooltip]="(client[col.field] | date:'dd-MM-yyyy')">{{ client[col.field] ? (client[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</b>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'relation'">
                         <ng-container *ngIf="client[col.field];else noRelationship">
@@ -346,11 +346,11 @@
           <th mat-header-cell *matHeaderCellDef>
             {{data.client_type == 'P' ? 'DOB As Per Pan' : 'Date Of Birth'}}
           </th>
-          <td mat-cell *matCellDef="let element">{{element.dob ? (element.dob | date: 'dd-MM-YYYY') : 'N/A'}}</td>
+          <td mat-cell *matCellDef="let element">{{element.dob ? (element.dob | date: 'dd-MM-yyyy') : 'N/A'}}</td>
         </ng-container>
           <ng-container matColumnDef="dob_actual">
             <th mat-header-cell *matHeaderCellDef>Actual Date Of Birth</th>
-            <td mat-cell *matCellDef="let element">{{element.dob_actual ? (element.dob_actual | date:'dd-MM-YYYY') : 'N/A'}}</td>
+            <td mat-cell *matCellDef="let element">{{element.dob_actual ? (element.dob_actual | date:'dd-MM-yyyy') : 'N/A'}}</td>
           </ng-container>
           <ng-container matColumnDef="mobile">
             <th mat-header-cell *matHeaderCellDef>Mobile</th>
@@ -387,7 +387,7 @@
               </ng-container>
               <ng-container matColumnDef="anniversary_date">
                 <th mat-header-cell *matHeaderCellDef>Anniversary Date</th>
-                <td mat-cell *matCellDef="let element">{{element.anniversary_date ? (element.anniversary_date | date:'dd-MM-YYYY') : 'N/A'}}</td>
+                <td mat-cell *matCellDef="let element">{{element.anniversary_date ? (element.anniversary_date | date:'dd-MM-yyyy') : 'N/A'}}</td>
               </ng-container>
 
               <ng-container matColumnDef="add_line_1">

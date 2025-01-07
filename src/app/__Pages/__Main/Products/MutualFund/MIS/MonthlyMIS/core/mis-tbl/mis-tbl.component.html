@@ -50,7 +50,7 @@
 
 
                   <ng-container *ngSwitchCase="col.field == 'trans_date'">
-                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+                    <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                     <p class="m-0"
@@ -88,11 +88,11 @@
                   <ng-container *ngSwitchCase="col.field == 'monthly'">
 
                     <ng-container *ngIf="view_by == 'M' || view_by == 'D';else others_trends">
-                      <p class="m-0">{{trxn[col.field] ? (trxn[col.field] | date:'MMM-YYYY') : 'N/A'}}</p>
+                      <p class="m-0">{{trxn[col.field] ? (trxn[col.field] | date:'MMM-yyyy') : 'N/A'}}</p>
                     </ng-container>
                     <ng-template #others_trends>
                         <ng-container *ngIf="period_type == 'M';else OTHERS">
-                          <p class="m-0">{{trxn[col.field] ?(trxn[col.field] | date:'MMM-YYYY') : 'N/A'}}</p>
+                          <p class="m-0">{{trxn[col.field] ?(trxn[col.field] | date:'MMM-yyyy') : 'N/A'}}</p>
                         </ng-container>
                         <ng-template #OTHERS>
                           <p class="m-0">{{trxn[col.field] ? trxn[col.field] : 'N/A'}}</p>

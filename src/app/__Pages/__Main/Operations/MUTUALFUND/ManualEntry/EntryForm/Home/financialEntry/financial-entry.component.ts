@@ -1420,30 +1420,30 @@ export class FinancialEntryComponent implements OnInit {
     switch (__type) {
       case 'E':
         this.__traxForm.controls['euin_no'].reset(
-          __euinDtls.euin_no + ' - ' + __euinDtls.emp_name,
+          __euinDtls?.euin_no + ' - ' + __euinDtls?.emp_name,
           { onlySelf: true, emitEvent: false }
         );
         this.searchResultVisibilityForEuin('none');
         break;
       case 'S':
-        this.__traxForm.controls['sub_arn_no'].reset(__euinDtls.arn_no, {
+        this.__traxForm.controls['sub_arn_no'].reset(__euinDtls?.arn_no, {
           onlySelf: true,
           emitEvent: false,
         });
-        this.__traxForm.controls['sub_brk_cd'].setValue(__euinDtls.code);
+        this.__traxForm.controls['sub_brk_cd'].setValue(__euinDtls?.code);
         this.searchResultVisibilityForSubBrkArn('none');
         break;
 
       case 'C':
         console.log(__euinDtls);
         this.__dialogDtForClient = __euinDtls;
-        this.__traxForm.controls['client_code'].reset(__euinDtls.client_code, {
+        this.__traxForm.controls['client_code'].reset(__euinDtls?.client_code, {
           onlySelf: true,
           emitEvent: false,
         });
         this.__traxForm.patchValue({
-          client_name: __euinDtls.client_name,
-          client_id: __euinDtls.id,
+          client_name: __euinDtls?.client_name,
+          client_id: __euinDtls?.id,
         });
         this.searchResultVisibilityForClient('none');
         break;
@@ -1454,21 +1454,21 @@ export class FinancialEntryComponent implements OnInit {
           onlySelf: true,
           emitEvent: false,
         });
-        this.__traxForm.patchValue({ scheme_id: __euinDtls ? __euinDtls.id : '' });
+        this.__traxForm.patchValue({ scheme_id: __euinDtls ? __euinDtls?.id : '' });
         this.searchResultVisibilityForScheme('none');
         this.getschemwisedt(__euinDtls ? __euinDtls?.id : '');
         break;
 
       case 'B':
         this.__dialogDtForBnk = __euinDtls;
-        this.__traxForm.controls['chq_bank'].reset(__euinDtls ? __euinDtls.micr_code : '', {
+        this.__traxForm.controls['chq_bank'].reset(__euinDtls ? __euinDtls?.micr_code : '', {
           emitEvent: false
         });
-        this.__traxForm.controls['bank_name'].setValue(__euinDtls ? __euinDtls.bank_name : '');
-        this.__traxForm.controls['bank_id'].setValue(__euinDtls ? __euinDtls.id : '');
-        this.__traxForm.controls['ifsc'].setValue(__euinDtls ? __euinDtls.ifs_code : '');
+        this.__traxForm.controls['bank_name'].setValue(__euinDtls ? __euinDtls?.bank_name : '');
+        this.__traxForm.controls['bank_id'].setValue(__euinDtls ? __euinDtls?.id : '');
+        this.__traxForm.controls['ifsc'].setValue(__euinDtls ? __euinDtls?.ifs_code : '');
         this.__traxForm.controls['branch_name'].setValue(
-          __euinDtls ? __euinDtls.branch_name : ''
+          __euinDtls ? __euinDtls?.branch_name : ''
         );
         this.searchResultVisibilityForBnk('none');
         break;
@@ -1476,10 +1476,10 @@ export class FinancialEntryComponent implements OnInit {
       case 'ST':
         this.__dialogDtForSchemeTo = __euinDtls;
         this.__traxForm.controls['switch_scheme_to'].reset(
-          __euinDtls.scheme_name,
+          __euinDtls?.scheme_name,
           { onlySelf: true, emitEvent: false }
         );
-        this.__traxForm.patchValue({ scheme_id_to: __euinDtls.id });
+        this.__traxForm.patchValue({ scheme_id_to: __euinDtls?.id });
         this.searchResultVisibilityForSchemeSwicthTo('none');
         break;
       default:

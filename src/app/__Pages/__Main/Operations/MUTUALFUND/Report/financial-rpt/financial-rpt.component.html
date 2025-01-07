@@ -283,7 +283,7 @@
 
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'rcv_datetime'">
-                  <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                  <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</span>
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
@@ -293,7 +293,7 @@
                     || col.field == 'sip_date'
                     || col.field == 'sip_end_date'
                     || col.field == 'sip_end_date'">
-                      <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                      <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</span>
                       </ng-container>
                 <ng-container *ngSwitchDefault>
                   <span #tooltip="matTooltip" [matTooltip]="finance[col.field]">

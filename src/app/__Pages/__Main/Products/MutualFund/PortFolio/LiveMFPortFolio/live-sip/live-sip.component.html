@@ -54,7 +54,7 @@
               "
               >
                 <p class="m-0">
-                  {{ recent_trxn[col.field] ? (recent_trxn[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+                  {{ recent_trxn[col.field] ? (recent_trxn[col.field] | date:'dd-MM-yyyy') : 'N/A'}}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'xirr'">

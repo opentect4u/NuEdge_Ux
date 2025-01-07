@@ -366,10 +366,10 @@ export class ViewEntryComponent implements OnInit {
           console.log(daysAfteradd);
           const isweekDay =  daysAfteradd.format('ddd');           
           if(isweekDay == 'Sat'){
-            actualDate = moment(daysAfteradd,"DD-MM-YYYY").add(2, 'days');
+            actualDate = moment(daysAfteradd,"DD-MM-yyyy").add(2, 'days');
           }
           else if(isweekDay == 'Sun'){
-            actualDate = moment(daysAfteradd,"DD-MM-YYYY").add(1, 'days');
+            actualDate = moment(daysAfteradd,"DD-MM-yyyy").add(1, 'days');
           }
       })
       this.queryEntryForm.get('expected_close_date').setValue(actualDate.format('YYYY-MM-DD'))

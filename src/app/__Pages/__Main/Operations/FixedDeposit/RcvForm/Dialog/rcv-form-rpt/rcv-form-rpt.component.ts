@@ -745,7 +745,7 @@ else{
         value.branch_code = row_obj.branch_code;
         value.branch_name = row_obj.branch_name;
         value.bu_type = row_obj.bu_type;
-        value.entry_date = this.dtPipe.transform(row_obj.entry_date,'dd-MM-YYYY');
+        value.entry_date = this.dtPipe.transform(row_obj.entry_date,'dd-MM-yyyy');
         value.dob = row_obj.dob;
         value.euin_no = row_obj.euin_no;
         value.emp_name = row_obj.emp_name;
@@ -773,7 +773,7 @@ else{
         value.branch_code = row_obj.branch_code;
         value.branch_name = row_obj.branch_name;
         value.bu_type = row_obj.bu_type;
-        value.entry_date = this.dtPipe.transform(row_obj.entry_date,'dd-MM-YYYY');
+        value.entry_date = this.dtPipe.transform(row_obj.entry_date,'dd-MM-yyyy');
         value.dob = row_obj.dob;
         value.euin_no = row_obj.euin_no;
         value.emp_name = row_obj.emp_name;

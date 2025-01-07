@@ -67,7 +67,7 @@ export class TrendRptComponent implements OnInit {
       res.categories.pop();
       res.chart_data.map((el:IChartData) => ({name:el.name,data:el.data.splice(-1)}))
       this.__chart__data = {
-            // categories:res.categories.map(el => this.date_pipe.transform(el,'MMM-YYYY')),
+            // categories:res.categories.map(el => this.date_pipe.transform(el,'MMM-yyyy')),
             categories:res.categories,
             chart_data:res.chart_data.map((el:IChartData) => ({name:el.name,data:el.data.map(item => Number(item.toFixed(2)))}))
       }

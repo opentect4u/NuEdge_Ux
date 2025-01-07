@@ -78,7 +78,7 @@ export class ChartComponent implements OnInit {
           'Data visualisation for Live SIP'
       },
       xAxis: {
-        categories: category.map(item => this.date_pipe.transform(item,'MMM-YYYY')),
+        categories: category.map(item => this.date_pipe.transform(item,'MMM-yyyy')),
         title: {
           text: null
         }

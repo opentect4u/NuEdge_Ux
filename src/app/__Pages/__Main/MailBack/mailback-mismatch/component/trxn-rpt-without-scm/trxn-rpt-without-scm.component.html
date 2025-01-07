@@ -94,12 +94,12 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_2nd_holder' ||  col.field == 'dob_3rd_holder' || col.field == 'guardian_dob' || col.field == 'folio_date'">
-              <p class="m-0">{{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+              <p class="m-0">{{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy') : 'N/A'}}</p>
             </ng-container>
 
           <!-- SIP/STP Report -->
           <ng-container *ngSwitchCase="col.field == 'from_date' || col.field == 'to_date' || col.field == 'reg_date'">
-            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
           </ng-container>
           <ng-container *ngSwitchCase="col.field == 'product_code'">
             <p class="m-0" matTooltip="{{trxn[col.field] ? trxn[col.field] : ''}}">{{ trxn[col.field] ? trxn[col.field]  : 'N/A'}}</p>
@@ -117,7 +117,7 @@
 
 
           <ng-container *ngSwitchCase="col.field == 'trans_date' || col.field == 'nav_date'">
-            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+            <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
           </ng-container>
           <!-- Scheme Logic -->
           <ng-container *ngSwitchCase="col.field == 'scheme_name'">

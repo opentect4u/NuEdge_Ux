@@ -993,7 +993,7 @@ export class RPTComponent implements OnInit {
   __euinMst: any = [];
   schemeMst:scheme[]= [];
   brnchMst: any=[];
-  __RmMst;any=[];
+  __RmMst:any=[];
   columns:column[]= [];
   SelectedClms:string[] = [];
 

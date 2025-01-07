@@ -64,10 +64,10 @@
             </div>
 
           </div>
-          <div class="row">
+          <div class="row mt-3">
             <div class="col-sm-3">
-            <label for="search_all">Search By Company ,Product Type,Product</label>
-            <input type="text" placeholder="Search..." name="search_all" id="search_all" class="form-control" formControlName="search_all">
+            <!-- <label for="search_all">Search By Company ,Product Type,Product</label>
+            <input type="text" placeholder="Search..." name="search_all" id="search_all" class="form-control" formControlName="search_all"> -->
             </div>
             <div class="col-sm-9 d-flex justify-content-end align-items-end">
               <p-button type="button" (click)="reset()" label="Reset" icon="pi pi-refresh"
@@ -89,7 +89,13 @@
           <mat-card-title>
             Product Report
           </mat-card-title>
-          <div class="btnGrp my-auto">
+          <div class="btnGrp my-auto d-flex justify-content-between align-items-center">
+            <div class="my-auto pr-4">
+              <span class="ml-auto">
+                <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+                  placeholder="Search" />
+              </span>
+            </div>
             <p-button icon="pi pi-file-export"
             [matMenuTriggerFor]="menu"
             [matTooltipPosition]="'after'"
@@ -108,19 +114,31 @@
             </mat-menu>
             </div>
         </mat-card-header>
+        <!-- (onLazyLoad)="customSort($event)" -->
+          <!-- [customSort]="true" -->
+          <!-- sortMode="single" 
+          [globalFilterFields]="getColumns()" 
+          -->
+
+
         <mat-card-content>
           <p-table #dt
-          (onLazyLoad)="customSort($event)"
-          [customSort]="true"
-            sortMode="single"
-            [lazy]="true"
           [value]="__selectPrdMst.data"
           [columns]="__columns"
-          [resizableColumns]="true"
-          selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
+           columnResizeMode="expand" [scrollable]="true"
           scrollHeight="250px"
           [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-          [tableStyle]="{ 'min-width': '120rem' }">
+          [tableStyle]="{ 'min-width': '120rem' }"
+          [globalFilterFields]="getColumns()" 
+           [rowHover]="true"
+          [virtualScroll]="true"
+          [virtualRowHeight]="34"
+          [paginator]="true"
+          [autoLayout]="true" [totalRecords]="__selectPrdMst.data.length" [pageLinks]="3"
+          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+          [showCurrentPageReport]="true" 
+          >
           <ng-template pTemplate="header" let-columns>
             <tr>
               <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width':(col.field!= 'edit' && col.field!= 'delete') ? '14rem' : '2rem'}">
@@ -131,7 +149,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-scheme let-columns="columns"  let-i="rowIndex">
-            <tr tabindex="999">
+            <tr tabindex="999" [ngStyle]="{'height':'34px'}">
               <td *ngFor="let col of columns" [ngStyle]="{'width':(col.field!= 'edit' && col.field!= 'delete') ? '14rem' : '2rem'}">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'edit'">
@@ -162,8 +180,7 @@
           </ng-template>
         </p-table>
 
-             <!-- Paginator with item per page -->
-             <div class="paginator">
+             <!-- <div class="paginator">
               <div class="itemsPerPage d-flex">
                 <label class="mr-3">Items per page: </label>
                 <p-selectButton
@@ -197,11 +214,10 @@
 
               </div>
 
-            </div>
-            <!-- End -->
+            </div> -->
         </mat-card-content>
     </mat-card>
-      <table id="insProd" hidden mat-table [dataSource]="__exportPrdMst" matTableExporter #exporter="matTableExporter">
+      <table id="insProd" hidden mat-table [dataSource]="__selectPrdMst" matTableExporter #exporter="matTableExporter">
 
 
         <ng-container matColumnDef="sl_no">

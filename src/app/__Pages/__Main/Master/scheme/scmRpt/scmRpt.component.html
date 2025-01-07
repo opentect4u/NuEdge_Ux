@@ -294,7 +294,7 @@
                 class="p-button-text p-button-lg p-button-danger"></button>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'nfo_start_dt' || col.field == 'nfo_end_dt' || col.field == 'nfo_reopen_dt'">
-                <p class="m-0">{{scheme[col.field] ? (scheme[col.field] | date : 'dd-MM-YYYY') : 'N/A' }}</p>
+                <p class="m-0">{{scheme[col.field] ? (scheme[col.field] | date : 'dd-MM-yyyy') : 'N/A' }}</p>
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'pip_fresh_min_amt' || col.field == 'pip_add_min_amt'">

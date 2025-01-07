@@ -231,11 +231,19 @@ export class AumFilterComponent implements OnInit {
   /* END */
 
   clickToSend = () =>{
-      console.log(this.aum_report_filter_frm.value);
+      // console.log(this.aum_report_filter_frm.value);
       const payload = {
         ...this.aum_report_filter_frm.value,
         date:global.getActualVal(this.daterRnge.inputFieldValue),
-        amc_id:this.aum_report_filter_frm.value.amc_id.map(el => el.id)
+        amc_id:this.aum_report_filter_frm.value.amc_id.map(el => el.id),
+        scheme_id:this.aum_report_filter_frm.value.scheme_id.map(el => el.id),
+        sub_cat_id:this.aum_report_filter_frm.value.sub_cat_id.map(el => el.id),
+        cat_id:this.aum_report_filter_frm.value.cat_id.map(el => el.id),
+        bu_type_id:this.btn_type == 'A' ? this.aum_report_filter_frm.value.bu_type_id.map(el => el.bu_code) : [],
+        brn_cd:this.btn_type == 'A' ? this.aum_report_filter_frm.value.brn_cd.map(el => el.id) : [],
+        sub_brk_cd:this.btn_type == 'A' ? this.aum_report_filter_frm.value.sub_brk_cd.map(el => el.code) : [],
+        rm_id:this.btn_type == 'A' ? this.aum_report_filter_frm.value.rm_id.map(el => el.euin_no) : [],
+        euin_no:this.btn_type == 'A' ? this.aum_report_filter_frm.value.euin_no.map(el => el.euin_no) : [],
       }
       this.onPress.emit(payload)
 

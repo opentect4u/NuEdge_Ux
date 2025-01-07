@@ -1,7 +1,43 @@
-<div class="row flexSec">
+<!-- <div class="row flexSec">
   <div class="col-sm-8">
     <div class="row">
       <shared-menu-item [items]="menu" class="w-100" (sendItem)="getItems($event)"></shared-menu-item>
     </div>
+  </div>
+</div> -->
+<div class="row flexSec my-3" *ngIf="trnsType.length > 0">
+  <div class="col-sm-12">
+    <core-tab [Tab]="trnsType" [index]="index" (GetTabDtls)="TabDetails($event)"></core-tab>
+    <mat-card class="matTab">
+      <mat-card-content class="p-3">
+        <ng-container *ngIf="trans_type_id == 3;else nfo_financial">
+              <app-non-financial-manual-update
+              [amcMst]="amcMst"
+              [trans_type_id]="trans_type_id"
+              >
+                
+              </app-non-financial-manual-update>
+            </ng-container> 
+            <ng-template #nfo_financial>
+              <ng-container *ngIf="trans_type_id == 1;else nfo">
+                  <app-financial-manual-update
+                  [trans_type_id]="trans_type_id"
+                  [amcMst]="amcMst"
+                  ></app-financial-manual-update>
+              </ng-container>
+              <ng-template #nfo>
+                  <app-nfo-manual-update
+                  [trans_type_id]="trans_type_id"
+                  [amcMst]="amcMst"
+                  ></app-nfo-manual-update>
+              </ng-template>
+            
+              <!-- <financial-acknowledgement
+             [amcMst]="amcMst"
+              [trans_type_id]="trans_type_id"
+            ></financial-acknowledgement> -->
+            </ng-template>
+      </mat-card-content>
+      </mat-card>
   </div>
 </div>

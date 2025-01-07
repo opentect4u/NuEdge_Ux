@@ -101,8 +101,8 @@ export class global{
             }
             else{
                 month_year.push({
-                  month:datePipe.transform(new Date(i,j),'MMM-YYYY'),
-                  actual:datePipe.transform(new Date(i,j),'MM-YYYY')
+                  month:datePipe.transform(new Date(i,j),'MMM-yyyy'),
+                  actual:datePipe.transform(new Date(i,j),'MM-yyyy')
                 });
             }
           }
@@ -116,8 +116,8 @@ export class global{
  public static getCurrenctMonth_year():{month:string,actual:string}{
     let datePipe = new DatePipe('en-Us');
     return {
-      month:datePipe.transform(new Date(),'MMM-YYYY'),
-      actual:datePipe.transform(new Date(),'MM-YYYY')
+      month:datePipe.transform(new Date(),'MMM-yyyy'),
+      actual:datePipe.transform(new Date(),'MM-yyyy')
     }
  }
 

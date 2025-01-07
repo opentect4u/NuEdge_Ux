@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, ElementRef, OnInit,Inject, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnInit,Inject, QueryList, ViewChildren, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,6 +16,7 @@ import { compClmns } from 'src/app/__Utility/Master/isnClmns';
 import { column } from 'src/app/__Model/tblClmns';
 import ItemsPerPage from '../../../../../../../../assets/json/itemsPerPage.json';
 import { sort } from 'src/app/__Model/sort';
+import { Table } from 'primeng/table';
 type selectBtn ={
   label:string,
   value:string,
@@ -27,6 +28,8 @@ type selectBtn ={
   styleUrls: ['./cmp-rpt.component.css']
 })
 export class CmpRPTComponent implements OnInit {
+  @ViewChild('dt') primeTbl :Table;
+  
   formValue;
   isOpenMegaMenu:boolean = false;
   itemsPerPage = ItemsPerPage;
@@ -110,6 +113,8 @@ export class CmpRPTComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+    this.changeWheelSpeed(el, 0.99);
     this.__rntSearchForm.controls['options'].valueChanges.subscribe((res) => {
       this.setColumns(res);
     });
@@ -120,6 +125,40 @@ export class CmpRPTComponent implements OnInit {
   }
 
 
+  changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+ }
   private setPaginator(__res) {
     this.__selectRNT = new MatTableDataSource(__res);
   }
@@ -297,9 +336,10 @@ export class CmpRPTComponent implements OnInit {
       .api_call(1, '/ins/companyDetailSearch', __insComp)
       .pipe(map((x: any) => x.data))
       .subscribe((res) => {
-        this.__paginate = res.links;
-        this.setPaginator(res.data);
-        this.tableExport(__insComp);
+        this.__selectRNT = new MatTableDataSource(res);
+        // this.__paginate = res.links;
+        // this.setPaginator(res.data);
+        // this.tableExport(__insComp);
       });
   }
 
@@ -445,5 +485,12 @@ export class CmpRPTComponent implements OnInit {
     }
     openURL(URL){
       window.open(URL,'_blank')
+    }
+    getColumns = () =>{
+      return this.__utility.getColumns(this.__columns);
+    }
+    filterGlobal = ($event) => {
+      let value = $event.target.value;
+      this.primeTbl.filterGlobal(value,'contains')
     }
 }

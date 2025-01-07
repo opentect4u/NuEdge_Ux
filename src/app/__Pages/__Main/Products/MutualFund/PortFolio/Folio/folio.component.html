@@ -61,7 +61,7 @@
                </ng-container>
 
                <ng-container *ngSwitchCase="col.field == 'dob' || col.field == 'dob_2nd_holder' ||  col.field == 'dob_3rd_holder' || col.field == 'guardian_dob'">
-                <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] | date:'dd-MM-YYYY') : 'N/A'}}</p>
+                <p class="m-0">{{folio_dt[col.field] ? (folio_dt[col.field] | date:'dd-MM-yyyy') : 'N/A'}}</p>
                </ng-container>
 
                <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">

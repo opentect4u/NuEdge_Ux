@@ -38,7 +38,7 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="col.header == 'IDCWP Date'">
-              <p class="m-0">{{ (trxn[col.field] && trxn.transaction_subtype == 'Dividend Payout') ? (trxn.trans_date | date:'dd-MM-YYYY') : 'N/A' }}</p>
+              <p class="m-0">{{ (trxn[col.field] && trxn.transaction_subtype == 'Dividend Payout') ? (trxn.trans_date | date:'dd-MM-yyyy') : 'N/A' }}</p>
             </ng-container>
 
             <ng-container *ngSwitchCase="col.header == 'IDCW Reinv.'">
@@ -46,7 +46,7 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="col.header == 'IDCW Reinv. Date'">
-              <p class="m-0">{{ (trxn[col.field] && trxn.transaction_subtype == 'Dividend Reinvestment') ? (trxn.trans_date | date:'dd-MM-YYYY') : 'N/A' }}</p>
+              <p class="m-0">{{ (trxn[col.field] && trxn.transaction_subtype == 'Dividend Reinvestment') ? (trxn.trans_date | date:'dd-MM-yyyy') : 'N/A' }}</p>
             </ng-container>
             <ng-container *ngSwitchDefault>
               <p class="m-0">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>

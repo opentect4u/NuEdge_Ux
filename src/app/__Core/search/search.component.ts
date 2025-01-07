@@ -140,7 +140,7 @@ export class SearchComponent implements OnInit {
         : this.__pageTitle?.trans_type_id
         ? __items.tin_no +
           ' | ' +
-          this.__datePipe.transform(__items.entry_date, 'dd/MM-YYYY')
+          this.__datePipe.transform(__items.entry_date, 'dd/MM-yyyy')
         : this.__pageTitle?.id == 33
         ? __items.plan_name
         : this.__pageTitle?.id == 37

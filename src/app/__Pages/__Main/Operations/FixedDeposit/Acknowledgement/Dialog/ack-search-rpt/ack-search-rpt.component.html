@@ -308,7 +308,7 @@
           </ng-container>
           <ng-container matColumnDef="entry_date">
             <th mat-sort-header="entry_date" mat-header-cell *matHeaderCellDef>Entry Date</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-yyyy'}}</td>
           </ng-container>
           <ng-container matColumnDef="certificate_delivery_opt">
             <th mat-sort-header="certificate_delivery_opt" mat-header-cell *matHeaderCellDef>Certificate Delivery Option</th>
@@ -630,13 +630,13 @@
                       {{ rcvFormDT[col.field] == 'D' ? 'B2C - Direct' : (rcvFormDT[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'rec_datetime'">
-                    <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                    <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-yyyy hh:mma')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</span>
                     </ng-container>
 
                     <ng-container *ngSwitchCase="col.field == 'entry_date'
                     || col.field == 'comp_login_cutt_off'
                     || col.field == 'comp_login_dt'">
-                      <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-YYYY')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                      <span #tooltip="matTooltip" [matTooltip]="(rcvFormDT[col.field] | date:'dd-MM-yyyy')">{{ rcvFormDT[col.field] ? (rcvFormDT[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</span>
                       </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'edit'">
                       <p-button [icon]="rcvFormDT['form_status']=='P' ? 'pi pi-pencil' : 'pi pi-eye'" (click)="populateDT(rcvFormDT)"

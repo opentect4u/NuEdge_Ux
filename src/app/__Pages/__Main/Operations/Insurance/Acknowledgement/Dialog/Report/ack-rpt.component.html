@@ -378,14 +378,14 @@
 
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'rcv_datetime' || col.field == 'comp_login_cutt_off'">
-                        <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</span>
+                        <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</span>
                         </ng-container>
 
                         <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
                           <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</span>
                           </ng-container>
                           <ng-container *ngSwitchCase="col.field == 'entry_date' || col.field == 'comp_login_dt'">
-                            <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</span>
+                            <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</span>
                             </ng-container>
                       <ng-container *ngSwitchDefault>
                         <span #tooltip="matTooltip" [matTooltip]="finance[col.field]">
@@ -459,7 +459,7 @@
             #exporter="matTableExporter">
             <ng-container matColumnDef="entry_date">
               <th mat-header-cell *matHeaderCellDef>Entry Date</th>
-              <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
+              <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-yyyy'}}</td>
             </ng-container>
             <ng-container matColumnDef="tin_no">
               <th mat-header-cell *matHeaderCellDef>TIN</th>
@@ -650,13 +650,13 @@
             <ng-container matColumnDef="comp_login_cutt_off">
               <th mat-header-cell *matHeaderCellDef>Login Cut Off</th>
               <td mat-cell *matCellDef="let element;let i = index">
-                {{element.comp_login_cutt_off ? (element.comp_login_cutt_off | date:'dd-MM-YYYY h:mma') : "N/A"}}
+                {{element.comp_login_cutt_off ? (element.comp_login_cutt_off | date:'dd-MM-yyyy h:mma') : "N/A"}}
               </td>
             </ng-container>
             <ng-container matColumnDef="comp_login_dt">
               <th mat-header-cell *matHeaderCellDef>Login Date</th>
               <td mat-cell *matCellDef="let element;let i = index">
-                {{element.comp_login_dt ? (element.comp_login_dt | date:'dd-MM-YYYY') : "N/A"}}
+                {{element.comp_login_dt ? (element.comp_login_dt | date:'dd-MM-yyyy') : "N/A"}}
               </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="__exportedClmns;sticky:true"></tr>
@@ -1101,7 +1101,7 @@
           </ng-container>
           <ng-container matColumnDef="entry_date">
             <th mat-sort-header="entry_date" mat-header-cell *matHeaderCellDef>Entry Date</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-yyyy'}}</td>
           </ng-container>
           <ng-container matColumnDef="policy_term">
             <th mat-sort-header="policy_term" mat-header-cell *matHeaderCellDef>Policy Term</th>
@@ -1367,7 +1367,7 @@
           </ng-container>
           <ng-container matColumnDef="entry_date">
             <th  mat-header-cell *matHeaderCellDef>Entry Date</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-yyyy'}}</td>
           </ng-container>
           <ng-container matColumnDef="policy_term">
             <th  mat-header-cell *matHeaderCellDef>Policy Term</th>

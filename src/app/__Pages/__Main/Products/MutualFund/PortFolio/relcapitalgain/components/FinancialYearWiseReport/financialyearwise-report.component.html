@@ -54,7 +54,7 @@
                                 {{i+1}}
                           </ng-container>
                           <ng-container *ngSwitchCase="__col.field == 'trans_date'">
-                                {{inr_item[__col.field] ? (inr_item[__col.field] | date:'dd-MM-YYYY') : 'N/A'}}
+                                {{inr_item[__col.field] ? (inr_item[__col.field] | date:'dd-MM-yyyy') : 'N/A'}}
                           </ng-container>
                           <ng-container *ngSwitchCase="__col.field == 'transaction_type' || __col.field == 'bank_name' || __col.field == 'acc_no'">
                             {{inr_item[__col.field] ? inr_item[__col.field] : 'N/A'}}

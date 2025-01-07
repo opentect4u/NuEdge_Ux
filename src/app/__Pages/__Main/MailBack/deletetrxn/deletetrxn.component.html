@@ -181,7 +181,7 @@
               </ng-container>
 
               <ng-container *ngSwitchCase="col.field == 'trans_date'">
-                <p class="m-0">{{ trxnDT[col.field] ? (trxnDT[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</p>
+                <p class="m-0">{{ trxnDT[col.field] ? (trxnDT[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                 <p class="m-0" matTooltipClass="ToolTip" matTooltip="{{trxnDT[col.field] ? (trxnDT[col.field]  + ' - ' +  trxnDT['plan_name'] + ' - ' + trxnDT['option_name']) : ''}}">{{ trxnDT[col.field] ? (trxnDT[col.field] + '-' + trxnDT['plan_name'] + '-' + trxnDT['option_name']) : 'N/A'}}</p>

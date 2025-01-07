@@ -401,14 +401,14 @@
 
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'rcv_datetime'">
-                        <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY hh:mma') : 'N/A' }}</b>
+                        <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</b>
                         </ng-container>
 
                         <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
                           <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</b>
                           </ng-container>
                           <ng-container *ngSwitchCase="col.field == 'entry_date'">
-                            <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-YYYY')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}</b>
+                            <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</b>
                             </ng-container>
                       <ng-container *ngSwitchDefault>
                         <b #tooltip="matTooltip" [matTooltip]="finance[col.field]">
@@ -510,7 +510,7 @@
                   {{ finance[col.field] == 'F' ? 'Fresh' : 'Renewal'}}
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'entry_date'">
-                  {{ finance[col.field] ? (finance[col.field] | date:'dd-MM-YYYY') : 'N/A' }}
+                  {{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy') : 'N/A' }}
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'mode_of_payment'">
@@ -538,7 +538,7 @@
         #exporter="matTableExporter">
         <ng-container matColumnDef="entry_date">
           <th mat-header-cell *matHeaderCellDef>Entry Date</th>
-          <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
+          <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-yyyy'}}</td>
         </ng-container>
         <ng-container matColumnDef="tin_no">
           <th mat-header-cell *matHeaderCellDef>TIN</th>
@@ -1185,7 +1185,7 @@
           </ng-container>
           <ng-container matColumnDef="entry_date">
             <th mat-sort-header="entry_date" mat-header-cell *matHeaderCellDef>Entry Date</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-yyyy'}}</td>
           </ng-container>
           <ng-container matColumnDef="policy_term">
             <th mat-sort-header="policy_term" mat-header-cell *matHeaderCellDef>Policy Term</th>
@@ -1450,7 +1450,7 @@
           </ng-container>
           <ng-container matColumnDef="entry_date">
             <th mat-header-cell *matHeaderCellDef>Entry Date</th>
-            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-YYYY'}}</td>
+            <td mat-cell *matCellDef="let element;let i = index">{{element.entry_date | date:'dd-MM-yyyy'}}</td>
           </ng-container>
           <ng-container matColumnDef="policy_term">
             <th mat-header-cell *matHeaderCellDef>Policy Term</th>

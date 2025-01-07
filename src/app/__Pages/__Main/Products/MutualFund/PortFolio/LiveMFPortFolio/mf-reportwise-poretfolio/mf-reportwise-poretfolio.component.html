@@ -121,7 +121,7 @@
                               <p class="m-0">
                               {{
                                   reportsData[col.field]
-                                  ? (reportsData[col.field] | date : "dd-MM-YY")
+                                  ? (reportsData[col.field] | date : "dd-MM-yy")
                                   : "N/A"
                               }}
                               </p>
@@ -273,7 +273,7 @@
                                   </ng-container>
                                   <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'inv_since'">
                                     <span class="m-0">
-                                      {{data[col.field] ? (data[col.field] | date : "dd-MM-YY") : "N/A"}}
+                                      {{data[col.field] ? (data[col.field] | date : "dd-MM-yy") : "N/A"}}
                                     </span>
                                   </ng-container>
                                   <ng-container
@@ -463,7 +463,7 @@
                   <p class="m-0">
                   {{
                       item[col.field]
-                      ? (item[col.field] | date : "dd-MM-YY")
+                      ? (item[col.field] | date : "dd-MM-yy")
                       : "N/A"
                   }}
                   </p>
@@ -664,7 +664,7 @@
                           </ng-container>
                           <ng-container *ngSwitchCase=" col.field == 'trans_date' || col.field == 'inv_since'">
                             <span class="m-0">
-                              {{data[col.field] ? (data[col.field] | date : "dd-MM-YY") : "N/A"}}
+                              {{data[col.field] ? (data[col.field] | date : "dd-MM-yy") : "N/A"}}
                             </span>
                           </ng-container>
                           <ng-container

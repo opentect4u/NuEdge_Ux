@@ -104,7 +104,13 @@
           <mat-card-title>
               Company Report
           </mat-card-title>
-          <div class="btnGrp my-auto">
+          <div class="btnGrp my-auto d-flex justify-content-between align-items-center">
+            <div class="my-auto pr-4">
+              <span class="ml-auto">
+                <input id="search" class="form-control rounded" type="text" (input)="filterGlobal($event)"
+                  placeholder="Search" />
+              </span>
+            </div>
             <p-button type="button" (click)="isOpenMegaMenu = !isOpenMegaMenu"  icon="pi pi-server"
             #tooltip="matTooltip"
             [matTooltipPosition]="'before'"
@@ -123,25 +129,41 @@
                   <mat-icon>download</mat-icon> Export Pdf
                 </button>
                 <!-- (click)="exporter.exportTable('xlsx',{fileName:'FDScheme Report'})" -->
-                <button mat-menu-item>
+                <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'INSScheme Report'})">
                   <mat-icon>download</mat-icon> Export Excel
                 </button>
               </mat-menu>
               </div>
         </mat-card-header>
         <mat-card-content>
-          <p-table #dt
-          (onLazyLoad)="customSort($event)"
+          <!-- (onLazyLoad)="customSort($event)"
           [customSort]="true"
             sortMode="single"
             [lazy]="true"
+             
+            -->
+          
+          <p-table #dt
+          
           [value]="__selectRNT.data"
           [columns]="__columns"
           [resizableColumns]="true"
-          selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
+          [scrollable]="true"
           scrollHeight="250px"
           [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-          [tableStyle]="{ 'min-width': __rntSearchForm.value.options == '2' ? '120rem' : '200rem' }">
+          [tableStyle]="{ 'min-width': __rntSearchForm.value.options == '2' ? '120rem' : '550rem' }"
+          [globalFilterFields]="getColumns()" 
+          selectionMode="multiple" columnResizeMode="expand" [scrollable]="true"
+          scrollHeight="360px"
+          [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
+          [rowHover]="true"
+          [virtualScroll]="true"
+          [virtualRowHeight]="34"
+          [paginator]="true"
+          [totalRecords]="__selectRNT.data.length" [pageLinks]="3"
+          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+          [showCurrentPageReport]="true">
           <ng-template pTemplate="header" let-columns>
             <tr>
               <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.width]="__rntSearchForm.value.options == '2' ? '15rem' : '25rem'">
@@ -152,7 +174,9 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-insComp let-columns="columns"  let-i="rowIndex">
-            <tr tabindex="999">
+            <tr tabindex="999"
+            [ngStyle]="{'height':'34px'}"
+            >
               <td *ngFor="let col of columns">
                 <ng-container [ngSwitch]="true">
                   <ng-container *ngSwitchCase="col.field == 'edit'">
@@ -191,7 +215,7 @@
           </ng-template>
         </p-table>
            <!-- Paginator with item per page -->
-           <div class="paginator">
+           <!-- <div class="paginator">
             <div class="itemsPerPage d-flex">
               <label class="mr-3">Items per page: </label>
               <p-selectButton
@@ -225,7 +249,7 @@
 
             </div>
 
-          </div>
+          </div> -->
           <!-- End -->
             <!-- Meage Menu For Check box -->
             <core-mega-menu-for-column [isOpenMegaMenu]="isOpenMegaMenu" [ColumnList]="ClmnList"
@@ -238,7 +262,7 @@
 
       <table id="comp_rpt"
       style="display:none" mat-table
-      [dataSource]="__export"
+      [dataSource]="__selectRNT"
       matTableExporter
       #exporter="matTableExporter">
 
