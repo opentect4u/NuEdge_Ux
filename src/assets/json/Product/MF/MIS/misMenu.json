@@ -48,7 +48,7 @@
         "accessibility":[],
         "title":"AUM By Client",
         "tooltip":"AUM By Client",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/mis/aum/aum-client",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },
@@ -57,7 +57,7 @@
         "accessibility":[],
         "title":"AUM By Asset Allocation",
         "tooltip":"AUM By Asset Allocation",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/mis/aum/aum-assets-allocation",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },
@@ -73,9 +73,9 @@
       {
         "id":6,
         "accessibility":[],
-        "title":"AUM By Registered",
-        "tooltip":"AUM By Registered",
-        "url":"/main/product/mf",
+        "title":"AUM By Registrar",
+        "tooltip":"AUM By Registrar",
+        "url":"/main/product/mf/mis/aum/aum-registrar",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },

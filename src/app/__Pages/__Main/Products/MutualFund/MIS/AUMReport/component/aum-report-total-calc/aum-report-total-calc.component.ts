@@ -26,10 +26,50 @@ export class AumReportTotalCalcComponent implements OnInit {
 
   @Input() aum_report_for_date:string;
 
-  @Input() aum_reports_tiles: Partial<IAumFooterModel>;
+  // @Input() aum_reports_tiles: Partial<IAumFooterModel>;
 
-  @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' = 'Fund House';
+  private _aum_reports_tiles: Partial<IAumFooterModel>;
+
+  @Input()
+  get aum_reports_tiles(): Partial<IAumFooterModel> {
+    return this._aum_reports_tiles
+  }
+
+  set aum_reports_tiles(value) {
+    if(value){
+      this._aum_reports_tiles = value;
+      setTimeout(() => {
+        Object.keys(value).forEach(el =>{
+          const getElement = document.getElementById(el);
+          getElement.style.border = this.generateBorderColor();
+          getElement.style.borderRadius = "3px";
+          getElement.style.padding = "3px";
+        })
+      }, 500);
+    }
+      
+       
+  }
+
+  @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' = 'Fund House';
 
   ngOnInit(): void {}
 
+  generateBorderColor = () => {
+      try{
+        let r, g, b;
+
+        // Ensure the color is not white or black by generating values between 1 and 254
+        r = Math.floor(Math.random() * 151) + 50; // Range: 50-200
+        g = Math.floor(Math.random() * 151) + 50; // Range: 50-200
+        b = Math.floor(Math.random() * 151) + 50; // Range: 50-200
+    
+        // Return the color in RGB format
+        return `1px solid rgb(${r}, ${g}, ${b})`;
+      }
+      catch(err){
+        console.log(err);
+        return '1px solid #dbdbdb'
+      }
+  }
 }

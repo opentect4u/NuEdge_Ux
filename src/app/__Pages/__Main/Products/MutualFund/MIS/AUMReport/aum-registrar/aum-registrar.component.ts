@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { column } from 'src/app/__Model/tblClmns';
+import { AUTMTYPE } from '../component/aum-filter/aum-filter.component';
 import { IAumFooterModel } from '../component/aum.model';
 import { global } from 'src/app/__Utility/globalFunc';
-import { AUTMTYPE } from '../component/aum-filter/aum-filter.component';
 
 @Component({
-  selector: 'app-aum-scheme',
-  templateUrl: './aum-scheme.component.html',
-  styleUrls: ['./aum-scheme.component.css']
+  selector: 'app-aum-registrar',
+  templateUrl: './aum-registrar.component.html',
+  styleUrls: ['./aum-registrar.component.css']
 })
-export class AumSchemeComponent implements OnInit {
+export class AumRegistrarComponent implements OnInit {
 
   constructor() { }
 
-  aum_scheme_Column:column[] = AumSchemeColumn.column;
-  md_aum_scheme = [];
-  aum_type:'Scheme' = AUTMTYPE['Scheme'];
+  aum_registrar_Column:column[] = AumRegistrarColumn.column;
+  md_aum_registrar = [];
+  aum_type:'Registrar' = AUTMTYPE['Registrar'];
   /*** Table Footer Details */
     footerDT:Partial<IAumFooterModel>;
   /*** End */
@@ -25,8 +25,9 @@ export class AumSchemeComponent implements OnInit {
 
   getFormData =(ev) =>{
     // this.md_aum_scheme = ev;
-    this.md_aum_scheme = [
+   const dt = [
       {
+        "registrar_name":"KARVY",
         "amc_name": "Bajaj Finserv Mutual Fund",
         "amc_code": "189",
         "product_code": "189FXRG",
@@ -59,6 +60,7 @@ export class AumSchemeComponent implements OnInit {
         "abs_rtn": "39.11"
       },
       {
+        "registrar_name":"CAMS",
         "amc_name": "360 ONE Mutual Fund",
         "amc_code": "IF",
         "product_code": "IFIGRG",
@@ -91,6 +93,7 @@ export class AumSchemeComponent implements OnInit {
         "abs_rtn": "2.08"
       },
       {
+        "registrar_name":"CAMS",
         "amc_name": "360 ONE Mutual Fund",
         "amc_code": "IF",
         "product_code": "IFIQRG",
@@ -123,17 +126,69 @@ export class AumSchemeComponent implements OnInit {
         "abs_rtn": "-4.04"
       }
     ];
+
+
+          let originalDt = [];
+          const groupByAMC = this.groupBy(dt, 'registrar_name');
+          Object.keys(groupByAMC).forEach((key,index) =>{
+                  /***** CALUCLATION OF UPPER TABLE */
+                      const totInvCost = groupByAMC[key].map(el => Number(el.inv_cost)).reduce((totSum, a) => totSum + a, 0);
+                      const totIdcwPaid = groupByAMC[key].map(el => Number(el.idcw_paid)).reduce((totSum, a) => totSum + a, 0);
+                      const totIdcwReinv = groupByAMC[key].map(el => Number(el.idcw_reinv)).reduce((totSum, a) => totSum + a, 0);
+                      const totAUM = groupByAMC[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
+                      const totAbsRtn = groupByAMC[key].map(el => Number(el.abs_rtn)).reduce((totSum, a) => totSum + a, 0);
+                  /****** END */
+    
+                  /**** DISPLAY AMOUNT CATEGORY WISE */
+                    originalDt.push({
+                      registrar_name:groupByAMC[key][0].registrar_name,
+                      amc_name:groupByAMC[key][0].amc_name,
+                      amc_code:groupByAMC[key][0].amc_code,
+                      cat_name:groupByAMC[key][0].cat_name,
+                      inv_cost:totInvCost,
+                      Investment:totInvCost,
+                      idcw_paid:totIdcwPaid,
+                      IDCWP:totIdcwPaid,
+                      idcw_reinv:totIdcwReinv,
+                      "IDCW Reinv.":totIdcwReinv,
+                      curr_aum:totAUM,
+                      AUM:totAUM,
+                      ret_abs:totAbsRtn,
+                      "Abs. Return":totAbsRtn,
+                      "AMC Weightage in (%)":0,
+                      amc_weightage_in:0,
+                      schemes:groupByAMC[key],
+                      total:{
+                        inv_cost:totInvCost,
+                        idcw_paid:totIdcwPaid,
+                        curr_aum:totAUM,
+                        abs_rtn:totAbsRtn,
+                        registrar_name:"TOTAL"
+                      }
+                    })
+                  /**** END */
+          })
+          this.md_aum_registrar = originalDt;
+          this.createParentFooter(originalDt);
     this.footerDT = {
-        Investment: global.Total__Count(this.md_aum_scheme,((item) => item.inv_cost ? Number(item.inv_cost) : 0)),
-        IDCW: global.Total__Count(this.md_aum_scheme,((item) => item.idcw_paid ? Number(item.idcw_paid) : 0)),
-        "IDCW Reinv": global.Total__Count(this.md_aum_scheme,((item) => item.idcw_reinv ? Number(item.idcw_reinv) : 0)),
-        "Abs. Return": global.Total__Count(this.md_aum_scheme,((item) => item.inv_cost ? Number(item.inv_cost) : 0))
-    }
+        Investment: global.Total__Count(this.md_aum_registrar,((item) => item.inv_cost ? Number(item.inv_cost) : 0)),
+        IDCW: global.Total__Count(this.md_aum_registrar,((item) => item.idcw_paid ? Number(item.idcw_paid) : 0)),
+        "IDCW Reinv": global.Total__Count(this.md_aum_registrar,((item) => item.idcw_reinv ? Number(item.idcw_reinv) : 0)),
+        "Abs. Return": global.Total__Count(this.md_aum_registrar,((item) => item.ret_abs ? Number(item.ret_abs) : 0)),
+        "AMC Weightage in (%)":global.Total__Count(this.md_aum_registrar,((item) => item.amc_weightage_in ? Number(item.amc_weightage_in) : 0))
+      }
   }
+
+  groupBy(xs, key) {
+    return xs.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
 
   createParentFooter = (value) =>{
         let obj = {}
-        const dt = value.map(({total,schemes,cat_name,amc_weightage_in,amc_name,amc_code,inv_cost,idcw_paid,idcw_reinv,curr_aum,ret_abs,...rest}) => {return {...rest}})
+        const dt = value.map(({total,registrar_name,schemes,cat_name,amc_weightage_in,amc_name,amc_code,inv_cost,idcw_paid,idcw_reinv,curr_aum,ret_abs,...rest}) => {return {...rest}})
         for(let object of dt) {Object.assign(obj, object)}
         Object.keys(obj).forEach(el =>{
           console.log(el)
@@ -147,42 +202,13 @@ export class AumSchemeComponent implements OnInit {
 
 }
 
-export class AumSchemeColumn{
+
+export class AumRegistrarColumn{
   public static column:column[] = [
     {
-      field:'scheme_name',
-      header:'Scheme',
+      field:'registrar_name',
+      header:'Registrar Name',
       width:'32rem'
-    },
-    {
-      field:'3mth',
-      header:'3Mth',
-      width:'5rem'
-    },
-    {
-      field:'6mth',
-      header:'6Mth',
-      width:'5rem'
-    },
-    {
-      field:'1yr',
-      header:'1Yr',
-      width:'5rem'
-    },
-    {
-      field:'3yr',
-      header:'3Yr',
-      width:'5rem'
-    },
-    {
-      field:'5yr',
-      header:'5Yr',
-      width:'6rem'
-    },
-    {
-      field:'si',
-      header:'SI',
-      width:'5rem'
     },
     {
       field:'inv_cost',
@@ -208,6 +234,11 @@ export class AumSchemeColumn{
       field:'ret_abs',
       header:'Abs. Return',
       width:''
-    }
+    },
+    {
+      field:'amc_weightage',
+      header:'AMC Weightage in (%)',
+      width:'9rem'
+    },
   ]
 }

@@ -427,7 +427,7 @@ export class NonFinancialEntryComponent implements OnInit {
           debounceTime(200),
           distinctUntilChanged(),
           switchMap((dt) =>
-            dt.length > 1 ? this.__dbIntr.searchItems('/client', dt) : []
+           (dt && dt?.length > 1) ? this.__dbIntr.searchItems('/client', dt) : []
           ),
           map((x: any) => x.data)
         )
@@ -1364,18 +1364,11 @@ export class NonFinancialEntryComponent implements OnInit {
     this.__nonfinForm.controls['redemp_type'].valueChanges.subscribe((res) => {
       console.log(res);
       if (this.__nonfinForm.controls['trans_id'].value == '29') {
-        this.__nonfinForm.controls['redemp_unit'].removeValidators([
-          Validators.required,
-        ]);
+        this.__nonfinForm.controls['redemp_unit'].removeValidators([Validators.required]);
         this.__nonfinForm.controls['redemp_unit'].updateValueAndValidity();
-        this.__nonfinForm.controls['unit_type'].setValidators(
-          res == 'U' ? [Validators.required] : null
-        );
+        this.__nonfinForm.controls['unit_type'].setValidators(res == 'U' ? [Validators.required] : null);
         this.__nonfinForm.controls['unit_type'].updateValueAndValidity();
-
-        this.__nonfinForm.controls['redemp_amount'].setValidators(
-          res == 'A' ? [Validators.required] : null
-        );
+        this.__nonfinForm.controls['redemp_amount'].setValidators(res == 'A' ? [Validators.required] : null);
         this.__nonfinForm.controls['redemp_amount'].updateValueAndValidity();
       }
     });
@@ -1550,7 +1543,8 @@ export class NonFinancialEntryComponent implements OnInit {
       .setValue(dt.toISOString().slice(0, 10));
   }
   getdetailsbyFolio(__folioDtls) {
-    this.__dbIntr
+    if(__folioDtls){
+      this.__dbIntr
       .api_call(0, '/mfTraxFolioDetails', 'folio_no=' + __folioDtls)
       .pipe(pluck('data'))
       .subscribe((res) => {
@@ -1558,6 +1552,8 @@ export class NonFinancialEntryComponent implements OnInit {
 
         this.setClients(res[0]);
       });
+    }
+ 
   }
 
   setClients(res) {
@@ -1681,6 +1677,7 @@ export class NonFinancialEntryComponent implements OnInit {
   }
  
   submitnonFinForm() {
+
     if (this.__nonfinForm.invalid) {
       this.__utility.showSnackbar(
         'Error!! Form submition failed due to some error',
@@ -1969,18 +1966,39 @@ export class NonFinancialEntryComponent implements OnInit {
     }
 
     this.__dbIntr.api_call(1, '/mfTraxCreate', fb).subscribe((res: any) => {
-      // if (res.suc == 1) {
-      //   // this.__nonfinForm.reset();
-      //   this.__nonfinForm.controls['tin_status'].patchValue('Y');
-      //   this.__dialogDtForClient = null;
-      //   this.__dialogDtForScheme = null;
-      //   this.__dialogDtForScheme_to = null;
-      //   this.dialogRef.close({ data: res.data });
-      // }
       this.__utility.showSnackbar(
         res.suc == 1 ? 'Form Submitted Successfully' : res.msg,
         res.suc
       );
+      if(res.suc == 1){
+        this.__nonfinForm.reset();
+        this.__temp_tinMst = [];
+        this.__subbrkArnMst = [];
+        this.__euinMst = [];
+        this.__clientMst = [];
+        this.__isCldtlsEmpty = false;
+        this.__dialogDtForScheme = null;
+        this.__schemeMst = [];
+        this.__dialogDtForScheme_to = null;
+        this.__schemeMstTo = [];
+        this.__countryMst = [];
+        this.__stateMst = [];
+        this.__distMst = [];
+        this.__cityMst = [];
+        this.__pincodeMst = [];
+        this.__oldBnkMst = [];
+        this.__bnkMst = [];
+        this.__swpMst = [];
+        this.__frequency = [];
+        this.__sec_clientMst = [];
+        this.__third_clientMst = [];
+        this.__ex_sec_client = [];
+        this.__ex_third_client = [];
+        this.__claimant_first = [];
+        this.__new_sec_client = [];
+        this.__new_third_client = [];
+        this.__claimantMst = [];
+      }
     });
   }
 

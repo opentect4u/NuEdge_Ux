@@ -28,7 +28,12 @@ a:hover {
     color: #0056b3;
     text-decoration: underline!important;
 }
-::ng-deep .p-button.p-button-icon-only{
+/* ::ng-deep .p-button.p-button-icon-only{
     height: 2.5rem!important;
     width: 2rem!important;
+} */
+
+.textContent{
+    font-size: 11px !important;
+    font-weight: 600;
 }

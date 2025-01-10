@@ -1,0 +1,13 @@
+
+<div class="flexSec">
+    <div class="container">
+        <aum-filter (onPress)="getFormData($event)"></aum-filter>
+        <ng-container *ngIf="md_aum_assets_allocation.length > 0">
+            <aum-table [dataSource]="md_aum_assets_allocation" 
+            [footerDT]="footerDT"  
+            [dataKey]="'subcat_name'"
+            [column]="aum_assets_allocation_Column"
+            [subColumn]="aum_assets_allocation_sub_column"></aum-table>
+        </ng-container>
+    </div>
+</div>

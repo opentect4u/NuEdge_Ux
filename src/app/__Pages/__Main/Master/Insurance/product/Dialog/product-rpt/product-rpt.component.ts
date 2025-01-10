@@ -295,7 +295,8 @@ export class ProductRPTComponent implements OnInit {
     dialogref.afterClosed().subscribe((dt) => {
       if(dt){
         if(dt.suc == 1){
-          this.__selectPrdMst.data.splice(index,1);
+          // this.__selectPrdMst.data.splice(index,1);
+          this.__selectPrdMst = new MatTableDataSource(this.__selectPrdMst.data.filter(el => el.id != dt?.id))
           this.__selectPrdMst._updateChangeSubscription();
           this.__exportPrdMst.data.splice(this.__exportPrdMst.data.findIndex((x: any) => x.id == __el.id),1);
           this.__exportPrdMst._updateChangeSubscription();

@@ -15,7 +15,9 @@ export enum AUTMTYPE{
     "Fund House" = 'Fund House',
     Families = 'Families',
     Clients = 'Clients',
-    Schemes = 'Scheme'
+    Schemes = 'Scheme',
+    "Assets Allocation"="Assets Allocation",
+    Registrar="Registrar"
 }
 
 @Component({
@@ -43,7 +45,7 @@ export class AumFilterComponent implements OnInit {
   settingsforEuinDropdown = this.utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
 
 
-  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' = 'Fund House';
+  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' = 'Fund House';
 
   aum_report_filter_frm = new FormGroup({
       date: new FormControl(''),
@@ -112,11 +114,12 @@ export class AumFilterComponent implements OnInit {
 
   constructor(private utility:UtiliService,private RouteData:ActivatedRoute,private dbIntr:DbIntrService) {
     RouteData.data.subscribe(res =>{
+      console.log(res);
       switch(res?.type){
         case AUTMTYPE['Fund House']: this.aum_type = AUTMTYPE['Fund House'];break;
         case AUTMTYPE.Families: this.aum_type = AUTMTYPE.Families;break;
         case AUTMTYPE.Schemes: this.aum_type = AUTMTYPE.Schemes;break;
-        default: break;
+        default: this.aum_type = res?.type;break;
       }
     })
   }

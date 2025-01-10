@@ -449,7 +449,8 @@ export class CmpRPTComponent implements OnInit {
     dialogref.afterClosed().subscribe((dt) => {
       if(dt){
         if(dt.suc == 1){
-          this.__selectRNT.data.splice(index,1);
+          // this.__selectRNT.data.splice(index,1);
+          this.__selectRNT = new MatTableDataSource(this.__selectRNT.data.filter(el => el.id != dt?.id))
           this.__selectRNT._updateChangeSubscription();
           this.__export.data.splice(this.__export.data.findIndex((x: any) => x.id == __el.id),1);
           this.__export._updateChangeSubscription();

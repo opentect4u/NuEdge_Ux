@@ -298,9 +298,12 @@ export class PrdTypeRPTComponent implements OnInit {
     };
     const dialogref = this.__dialog.open(DeletemstComponent, dialogConfig);
     dialogref.afterClosed().subscribe((dt) => {
+      console.log(dt)
       if (dt) {
         if (dt.suc == 1) {
-          this.__prdTypeMst.data.splice(index, 1);
+          console.log
+          // this.__prdTypeMst.data.splice(index, 1);
+          this.__prdTypeMst = new MatTableDataSource(this.__prdTypeMst.data.filter(el => el.id != dt?.id))
           this.__prdTypeMst._updateChangeSubscription();
           this.__export.data.splice(
             this.__export.data.findIndex((x: any) => x.id == __el.id),

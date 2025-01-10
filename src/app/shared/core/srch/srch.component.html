@@ -21,7 +21,7 @@
     [placeholder]="placeholder">
     <span class="spinner-border"
     [style]="'top:' + isTopDefined"
-    *ngIf="isPending && ($any(ngControl.control))?.value.length > 1"
+    *ngIf="isPending && ($any(ngControl?.control))?.value?.length > 1"
   ></span>
     <div class="processMain_2"
     __searchResVisibility

@@ -1,6 +1,6 @@
 <mat-card class="mat-elevation-z0  border">
     <mat-card-header class="border-bottom">
-        <mat-card-title><h4>{{aum_type}} Report</h4></mat-card-title>
+        <mat-card-title><h4 class="filterHeader">AUM By {{aum_type}} Report</h4></mat-card-title>
         <div class="pr-3 my-auto d-flex align-items-center">
           <p-selectButton [(ngModel)]="btn_type" [options]="selectBtn" optionValue="value" styleClass="p-button-lg"
             (onOptionClick)="onItemClick($event)" optionLabel="icon">

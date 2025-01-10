@@ -3,7 +3,9 @@ import { pluck } from 'rxjs/operators';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { AUTMTYPE } from '../component/aum-filter/aum-filter.component';
-import { of } from 'rxjs';
+import { category } from 'src/app/__Model/__category';
+import { IAumFooterModel } from '../component/aum.model';
+import { global } from 'src/app/__Utility/globalFunc';
 
 @Component({
   selector: 'app-fund-house',
@@ -24,25 +26,276 @@ export class FundHouseComponent implements OnInit {
 
   __formDate:string;
 
+  
+  /*** Table Footer Details */
+    footerDT:Partial<IAumFooterModel>;
+  /*** End */
+
+  md_category:category[] = [];
+
   ngOnInit(): void {
+      this.getCategory();
   }
+
+
+  getCategory = () =>{
+      this.dbIntr.api_call(0,'/category',null)
+      .pipe(pluck('data'))
+      .subscribe((res:category[]) =>{
+            this.md_category = res;
+            const catColumn = res.map(el => {return {field:el.cat_name,header:el.cat_name,width:''}})
+            this.fund_House_Column = [...this.fund_House_Column,...catColumn.sort((a,b) => a.field.localeCompare(b.field))]
+      })
+  }
+
 
   getFormData =(ev) =>{
-      this.__formDate = ev.date;
-      var formdata = new FormData();
-      for(let key in ev){
-        if(Array.isArray(ev[key])){
-          formdata.append(key,JSON.stringify(ev[key]))
-        }
-        else{
-          formdata.append(key,ev[key])
-        }
-      }
-      this.dbIntr.api_call(1,'/clients/aum',formdata).pipe(pluck('data')).subscribe((res:any) =>{
-          this.md_fundHouse = res
-      })
 
+      /****** FOR DUMMY PURPOSE */
+      this.footerDT = null;
+      this.md_fundHouse = [];
+      const dt = [
+        {
+          "amc_name": "Bajaj Finserv Mutual Fund",
+          "amc_code": "189",
+          "product_code": "189FXRG",
+          "scheme_name": "Bajaj Finserv Flexi Cap Fund",
+          "cat_name": "Equity",
+          "subcat_name": "Flexi Cap",
+          "plan_name": "Regular ",
+          "option_name": "Growth",
+          "new": {
+            "product_code": "189FXRG",
+            "isin_no": "INF0QA701383",
+            "nav_date": "2025-01-08",
+            "nav": "13.911"
+          },
+          "curr_nav": "13.911",
+          "nav_date": "2025-01-08",
+          "calculate_mydata": {
+            "inv_cost": 24998.75,
+            "tot_units": "2499.8750",
+            "idcw_reinv": 0,
+            "idcw_paid": 0
+          },
+          "inv_cost": 24998.75,
+          "tot_units": "2499.8750",
+          "idcw_reinv": 0,
+          "idcw_paid": 0,
+          "idcwr": 0,
+          "curr_aum": "34775.76",
+          "gain_loss": "9777.01",
+          "abs_rtn": "39.11"
+        },
+        {
+          "amc_name": "360 ONE Mutual Fund",
+          "amc_code": "IF",
+          "product_code": "IFIGRG",
+          "scheme_name": "360 ONE Focused Equity Fund",
+          "cat_name": "Equity",
+          "subcat_name": "Focused",
+          "plan_name": "Regular ",
+          "option_name": "Growth",
+          "new": {
+            "product_code": "IFIGRG",
+            "isin_no": "INF579M01878",
+            "nav_date": "2025-01-08",
+            "nav": "44.9181"
+          },
+          "curr_nav": "44.9181",
+          "nav_date": "2025-01-08",
+          "calculate_mydata": {
+            "inv_cost": 91205.38,
+            "tot_units": "2072.6280",
+            "idcw_reinv": 0,
+            "idcw_paid": 0
+          },
+          "inv_cost": 91205.38,
+          "tot_units": "2072.6280",
+          "idcw_reinv": 0,
+          "idcw_paid": 0,
+          "idcwr": 0,
+          "curr_aum": "93098.51",
+          "gain_loss": "1893.13",
+          "abs_rtn": "2.08"
+        },
+        {
+          "amc_name": "360 ONE Mutual Fund",
+          "amc_code": "IF",
+          "product_code": "IFIQRG",
+          "scheme_name": "360 ONE Quant Fund",
+          "cat_name": "Equity",
+          "subcat_name": "Sectoral/Thematic",
+          "plan_name": "Regular ",
+          "option_name": "Growth",
+          "new": {
+            "product_code": "IFIQRG",
+            "isin_no": "INF579M01AF8",
+            "nav_date": "2025-01-08",
+            "nav": "18.1827"
+          },
+          "curr_nav": "18.1827",
+          "nav_date": "2025-01-08",
+          "calculate_mydata": {
+            "inv_cost": 2619369.0799999996,
+            "tot_units": "138239.6480",
+            "idcw_reinv": 0,
+            "idcw_paid": 0
+          },
+          "inv_cost": 2619369.0799999996,
+          "tot_units": "138239.6480",
+          "idcw_reinv": 0,
+          "idcw_paid": 0,
+          "idcwr": 0,
+          "curr_aum": "2513570.05",
+          "gain_loss": "-105799.03",
+          "abs_rtn": "-4.04"
+        }
+      ]
+      let originalDt = [];
+      const groupByAMC = this.groupBy(dt, 'amc_code');
+      Object.keys(groupByAMC).forEach((key,index) =>{
+              /***** CALUCLATION OF UPPER TABLE */
+                  const totInvCost = groupByAMC[key].map(el => Number(el.inv_cost)).reduce((totSum, a) => totSum + a, 0);
+                  const totIdcwPaid = groupByAMC[key].map(el => Number(el.idcw_paid)).reduce((totSum, a) => totSum + a, 0);
+                  const totIdcwReinv = groupByAMC[key].map(el => Number(el.idcw_reinv)).reduce((totSum, a) => totSum + a, 0);
+                  const totAUM = groupByAMC[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
+                  const totAbsRtn = groupByAMC[key].map(el => Number(el.abs_rtn)).reduce((totSum, a) => totSum + a, 0);
+              /****** END */
+
+              /**** DISPLAY AMOUNT CATEGORY WISE */
+                let categories = this.md_category.map((el:category) => el.cat_name);
+                let mdCategoryKeys = null;
+                let groupByCategory = this.groupBy(groupByAMC[key], 'cat_name');
+                categories.forEach((catKeys) =>{
+                  const totCategoryWiseAUM = groupByCategory[catKeys]?.map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0)
+                  mdCategoryKeys = {
+                    ...mdCategoryKeys,
+                    [catKeys]: catKeys in groupByCategory ? totCategoryWiseAUM : 0
+                  }
+                })
+                originalDt.push({
+                  amc_name:groupByAMC[key][0].amc_name,
+                  amc_code:groupByAMC[key][0].amc_code,
+                  cat_name:groupByAMC[key][0].cat_name,
+                  inv_cost:totInvCost,
+                  Investment:totInvCost,
+                  idcw_paid:totIdcwPaid,
+                  IDCWP:totIdcwPaid,
+                  idcw_reinv:totIdcwReinv,
+                  "IDCW Reinv.":totIdcwReinv,
+                  curr_aum:totAUM,
+                  AUM:totAUM,
+                  ret_abs:totAbsRtn,
+                  "Abs. Return":totAbsRtn,
+                  amc_weightage_in:0,
+                  ...mdCategoryKeys,
+                  schemes:groupByAMC[key],
+                  total:{
+                    inv_cost:totInvCost,
+                    idcw_paid:totIdcwPaid,
+                    curr_aum:totAUM,
+                    abs_rtn:totAbsRtn,
+                    scheme_name:"TOTAL"
+                  }
+                })
+              /**** END */
+      })
+      this.md_fundHouse = originalDt;
+      this.createParentFooter(originalDt);
+      /****** END */
+
+
+      /***** FOR REAL WORLD  */
+      // this.__formDate = ev.date;
+      // var formdata = new FormData();
+      // for(let key in ev){
+      //   if(Array.isArray(ev[key])){
+      //     formdata.append(key,JSON.stringify(ev[key]))
+      //   }
+      //   else{
+      //     formdata.append(key,ev[key])
+      //   }
+      // }
+      // this.dbIntr.api_call(1,'/clients/aumFundHouse',formdata).pipe(pluck('data')).subscribe((res:any) =>{
+      //   this.footerDT = null;
+      //   this.md_fundHouse = [];
+      //   let originalDt = [];
+      //   const groupByAMC = this.groupBy(res, 'amc_code');
+      //   Object.keys(groupByAMC).forEach((key,index) =>{
+      //           /***** CALUCLATION OF UPPER TABLE */
+      //               const totInvCost = groupByAMC[key].map(el => Number(el.inv_cost)).reduce((totSum, a) => totSum + a, 0);
+      //               const totIdcwPaid = groupByAMC[key].map(el => Number(el.idcw_paid)).reduce((totSum, a) => totSum + a, 0);
+      //               const totIdcwReinv = groupByAMC[key].map(el => Number(el.idcw_reinv)).reduce((totSum, a) => totSum + a, 0);
+      //               const totAUM = groupByAMC[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
+      //               const totAbsRtn = groupByAMC[key].map(el => Number(el.abs_rtn)).reduce((totSum, a) => totSum + a, 0);
+      //           /****** END */
+  
+      //           /**** DISPLAY AMOUNT CATEGORY WISE */
+      //             let categories = this.md_category.map((el:category) => el.cat_name);
+      //             let mdCategoryKeys = null;
+      //             let groupByCategory = this.groupBy(groupByAMC[key], 'cat_name');
+      //             categories.forEach((catKeys) =>{
+      //               const totCategoryWiseAUM = groupByCategory[catKeys]?.map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0)
+      //               mdCategoryKeys = {
+      //                 ...mdCategoryKeys,
+      //                 [catKeys]: catKeys in groupByCategory ? totCategoryWiseAUM : 0
+      //               }
+      //             })
+      //             originalDt.push({
+      //               amc_name:groupByAMC[key][0].amc_name,
+      //               amc_code:groupByAMC[key][0].amc_code,
+      //               cat_name:groupByAMC[key][0].cat_name,
+      //               inv_cost:totInvCost,
+      //               Investment:totInvCost,
+      //               idcw_paid:totIdcwPaid,
+      //               IDCWP:totIdcwPaid,
+      //               idcw_reinv:totIdcwReinv,
+      //               "IDCW Reinv.":totIdcwReinv,
+      //               curr_aum:totAUM,
+      //               AUM:totAUM,
+      //               ret_abs:totAbsRtn,
+      //               "Abs. Return":totAbsRtn,
+      //               amc_weightage_in:0,
+      //               ...mdCategoryKeys,
+      //               schemes:groupByAMC[key],
+      //               total:{
+      //                 inv_cost:totInvCost,
+      //                 idcw_paid:totIdcwPaid,
+      //                 curr_aum:totAUM,
+      //                 abs_rtn:totAbsRtn,
+      //                 scheme_name:"TOTAL"
+      //               }
+      //             })
+      //           /**** END */
+      //   })
+      //   this.md_fundHouse = originalDt;
+      //   this.createParentFooter(originalDt);
+      // })
+
+      /***** END */
   }
+
+  createParentFooter = (value) =>{
+      let obj = {}
+      const dt = value.map(({total,schemes,cat_name,amc_weightage_in,amc_name,amc_code,inv_cost,idcw_paid,idcw_reinv,curr_aum,ret_abs,...rest}) => {return {...rest}})
+      for(let object of dt) {Object.assign(obj, object)}
+      Object.keys(obj).forEach(el =>{
+        console.log(el)
+        this.footerDT = {
+          ...this.footerDT,
+          [el]:global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)),
+        }
+      })
+      console.log(this.footerDT);
+  }
+
+  groupBy(xs, key) {
+    return xs.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
 
 }
 
@@ -59,7 +312,7 @@ export class FundHouseColumn{
       width:'8rem'
     },
     {
-      field:'idcwp',
+      field:'idcw_paid',
       header:'IDCW',
       width:'5rem'
     },
@@ -69,13 +322,13 @@ export class FundHouseColumn{
       width:'6rem'
     },
     {
-      field:'aum',
+      field:'curr_aum',
       header:'AUM',
-      width:'5rem'
+      width:'8rem'
     },
     {
       field:'ret_abs',
-      header:'Abs. Return in(%)',
+      header:'Abs. Return',
       width:'8rem'
     },
     {
@@ -83,38 +336,38 @@ export class FundHouseColumn{
       header:'AMC Weightage in (%)',
       width:'9rem'
     },
-    {
-      field:'equity',
-      header:'Equity',
-      width:''
-    },
-    {
-      field:'debt',
-      header:'Debt',
-      width:''
-    },
-    {
-      field:'hybrid',
-      header:'Hybrid',
-      width:''
-    },
-    {
-      field:'sol_oriented',
-      header:'Sol Oriented',
-      width:''
-    },
-    {
-      field:'others',
-      header:'Others',
-      width:''
-    },
+    // {
+    //   field:'equity',
+    //   header:'Equity',
+    //   width:''
+    // },
+    // {
+    //   field:'debt',
+    //   header:'Debt',
+    //   width:''
+    // },
+    // {
+    //   field:'hybrid',
+    //   header:'Hybrid',
+    //   width:''
+    // },
+    // {
+    //   field:'sol_oriented',
+    //   header:'Sol Oriented',
+    //   width:''
+    // },
+    // {
+    //   field:'others',
+    //   header:'Others',
+    //   width:''
+    // },
   ]
 
   public static sub_column:column[] = [
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'48rem'
+      width:'32rem'
     },
     {
       field:'inv_cost',
@@ -122,17 +375,17 @@ export class FundHouseColumn{
       width:''
     },
     {
-      field:'idcwp',
+      field:'idcw_paid',
       header:'IDCWP',
       width:''
     },
     {
-      field:'aum',
+      field:'curr_aum',
       header:'AUM',
       width:''
     },
     {
-      field:'ret_abs',
+      field:'abs_rtn',
       header:'Abs. Return',
       width:''
     }

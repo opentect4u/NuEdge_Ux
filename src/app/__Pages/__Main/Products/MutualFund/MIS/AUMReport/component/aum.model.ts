@@ -4,12 +4,13 @@ export interface IAumFooterModel{
     AUM:number | undefined;
     "IDCW Reinv":number | undefined;
     IDCW:number | undefined;
-    "Abs.Return":number | undefined;
+    "Abs. Return":number | undefined;
     Equity:number| undefined;
     Debt:number | undefined;
     Hybrid:number | undefined;
     "Sol Oriented":number | undefined;
     "Others":number | undefined;
+    "AMC Weightage in (%)":number | undefined
 }
 
 export const AUM_API ={

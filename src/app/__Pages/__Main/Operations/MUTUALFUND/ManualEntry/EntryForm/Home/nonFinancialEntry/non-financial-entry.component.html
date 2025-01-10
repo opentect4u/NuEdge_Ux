@@ -645,7 +645,7 @@ autocomplete="off">
       <label for="pincode">Pincode <span class="text-danger">*</span></label>
       <!-- <input type="text" name="pincode" placeholder="Enter Pincode" (keypress)="preventNonumeric($event)"
         maxlength="6" minlength="6" id="pincode" class="form-control" formControlName="pincode"> -->
-        <select class="form-control" formControlName="pincode" id="state">
+        <select class="form-control" formControlName="pincode" id="pincode">
           <option value="">Select</option>
           <option [value]="pincode.id" *ngFor="let pincode of __pincodeMst">{{pincode.pincode}}</option>
           <div class="invalid-feedback"

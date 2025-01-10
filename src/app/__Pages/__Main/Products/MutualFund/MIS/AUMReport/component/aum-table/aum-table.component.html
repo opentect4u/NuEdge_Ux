@@ -14,10 +14,10 @@
           [pageLinks]="3"
           [globalFilterFields]="getColumns()"
             [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
-            dataKey="amc_code"
+            dataKey="{{dataKey}}"
             [rowExpandMode]="'single'"
             (onRowExpand)="onRowExpand($event)"
-            expandableRows="true"
+            expandableRows="has_sub_column"
             [columns]="column"
           [showCurrentPageReport]="true">
           <ng-template pTemplate="caption">
@@ -58,9 +58,19 @@
                 class="{{col.field}}"
                 [style]="'width : '+col.width">
                 <ng-container [ngSwitch]="true">
-                  <ng-container *ngSwitchCase="col.field == 'amc_name'">
-                    <p class="m-0">
+                  <ng-container *ngSwitchCase="col.field == 'amc_name' || col.field == 'client_name' || col.field == 'pan' || col.field == 'subcat_name' || col.field == 'cat_name'">
+                    <p class="m-0 textContent">
                       {{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}
+                    </p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'registrar_name'">
+                    <a class="m-0" href="#">
+                      {{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}
+                    </a>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'xirr'">
+                    <p class="m-0">
+                      {{aumDtls[col.field] ? aumDtls[col.field] : '0'}}%
                     </p>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
@@ -73,7 +83,7 @@
         </ng-template>
         <ng-template pTemplate="rowexpansion" let-aumDtls let-i="rowIndex">
             <tr>
-                <td [attr.colspan]="(column.length + 1)" style="background-color:'#d5d5d53b'">
+                <td [attr.colspan]="(column.length + 1)" style="background-color:'#d5d5d53b'" class="p-3">
                     <div>
                         <p-table [value]="aumDtls.schemes" dataKey="product_code" 
                         styleClass="p-datatable-sm p-datatable-striped"
@@ -102,6 +112,12 @@
                                 <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                                     <a class="m-0">{{data[col.field]}}-{{data.plan_name}}-{{data.option_name}}</a>
                                 </ng-container>
+                                <ng-container *ngSwitchCase="col.field == 'folio_no'">
+                                  <p class="m-0">{{data[col.field] ? data[col.field] : 'N/A'}}</p>
+                              </ng-container>
+                                <ng-container *ngSwitchCase="col.field == 'abs_rtn' || col.field == 'xirr'">
+                                  <p class="m-0">{{data[col.field] ? data[col.field] : '0'}}%</p>
+                              </ng-container>
                                 <ng-container *ngSwitchDefault>
                                     <p class="m-0">{{data[col.field] ? (data[col.field] | number:'1.2-2') : '0.00'}}</p>
                                 </ng-container>
@@ -115,13 +131,17 @@
                               <td
                                 *ngFor="let subCol of subColumn"
                                 [style.width]="subCol.width"
-                                class="{{subCol.field}}">
+                                class="{{subCol.field}} subTblLiveMfPortFolio">
                                 <ng-container [ngSwitch]="true">
                                     <ng-container *ngSwitchCase="subCol.field == 'scheme_name'">
-                                      <p class="m-0">TOTAL</p>
+                                      {{aumDtls?.total ? aumDtls?.total[subCol.field] : 'TOTAL'}}
                                     </ng-container>
+                                    <ng-container *ngSwitchCase="subCol.field == 'abs_rtn' || subCol.field == 'xirr'">
+                                      {{aumDtls?.total ? aumDtls?.total[subCol.field] : '0'}}%
+                                    </ng-container>
+                                    
                                     <ng-container *ngSwitchDefault>
-                                      {{aumDtls[i]?.total ? (aumDtls[i]?.total[subCol.field] | number:'1.2-2') : '0.00'}}
+                                      {{aumDtls?.total ? (aumDtls?.total[subCol.field] | number:'1.2-2') : '0.00'}}
                                     </ng-container>
                                   </ng-container>
                               </td>
@@ -142,16 +162,23 @@
         </ng-template>
         <ng-template pTemplate="footer">
           <tr>
-            <td></td>
+            <td *ngIf="has_sub_column"></td>
             <td
               *ngFor="let col of column"
               [style]="'width : ' + col.width"
             >
               <ng-container [ngSwitch]="true">
-                <ng-container *ngSwitchCase="col.field == 'amc_name'">
+                <ng-container *ngSwitchCase="col.field == 'amc_name' || col.field == 'scheme_name' || col.field == 'registrar_name' || col.field == 'client_name' || col.field == 'subcat_name'">
                   <p class="m-0">GRAND TOTAL</p>
                 </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'amc_weightage'"></ng-container>
+                <!-- col.field == 'amc_weightage' ||  -->
+                <ng-container *ngSwitchCase="col.field == 'pan' || col.field == 'cat_name'"></ng-container>
+                <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'amc_weightage'">
+                  {{footerDT ? (footerDT[col.header] ? footerDT[col.header] : '0') : '0'}}%
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'xirr'">
+                  {{footerDT ? (footerDT[col.field] ? footerDT[col.field] : '0') : '0'}}%
+                </ng-container>
                 <ng-container *ngSwitchDefault>
                   {{footerDT ? (footerDT[col.header] ? (footerDT[col.header] | number:'1.2-2') : '0.00') : '0.00'}}
                 </ng-container>
