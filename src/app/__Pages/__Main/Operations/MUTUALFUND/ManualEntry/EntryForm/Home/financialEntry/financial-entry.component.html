@@ -693,6 +693,7 @@
             id="Switch_amt"
             formControlName="switch_amt"
             class="form-control"
+            (keypress)="preventNonumeric($event)"
               placeholder="Enter Amount">
               <div class="invalid-feedback"
               *ngIf="__traxForm.get('switch_amt').invalid && (__traxForm.get('switch_amt').dirty || __traxForm.get('switch_amt').touched)">
@@ -838,7 +839,8 @@
             <label for="first_inv_amt">First Investment Amount <span class="text-danger">*</span></label>
             <input type="text"
             name="first_inv_amt"
-            id="first_inv_amt"
+            (keypress)="preventNonumeric($event)"
+            id="first_inv_amt" 
             formControlName="first_inv_amt"
             [class.is-invalid]="__chkInvAmt && __traxForm.get('first_inv_amt').value"
             [class.is-valid]="!__chkInvAmt && __traxForm.get('first_inv_amt').value"
@@ -858,7 +860,8 @@
             <label for="amount">Amount <span class="text-danger">*</span></label>
             <input type="text"
             name="amount"
-            id="amount"
+            (keypress)="preventNonumeric($event)"
+            id="amount" 
             formControlName="amount"
             class="form-control"
               placeholder="Enter Amount">
@@ -997,7 +1000,9 @@
          <!-- swp_installment_amt -->
          <div class="col-sm-12">
           <label class="swp_installment_amt">SWP Installment Amount <span class="text-danger">*</span></label>
-          <input type="text"  name="swp_installment_amt" id="swp_installment_amt" class="form-control" formControlName="swp_installment_amt">
+          <input type="text"  name="swp_installment_amt" id="swp_installment_amt"  
+          (keypress)="preventNonumeric($event)"
+          class="form-control" formControlName="swp_installment_amt">
       </div>
 
       </div>
@@ -1019,7 +1024,9 @@
 
           <div class="col-sm-12" *ngIf="__traxForm.get('step_up_by').value == 'A'">
             <label form="step_up_amt">Amount <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="step_up_amt" formControlName="step_up_amt"/>
+            <input type="text" 
+            (keypress)="preventNonumeric($event)"
+             class="form-control" id="step_up_amt" formControlName="step_up_amt"/>
           </div>
 
           <div class="col-sm-12" *ngIf="__traxForm.get('step_up_by').value == 'P'">

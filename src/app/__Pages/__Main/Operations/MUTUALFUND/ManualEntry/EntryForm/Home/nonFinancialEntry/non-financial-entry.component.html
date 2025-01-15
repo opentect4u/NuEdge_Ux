@@ -371,7 +371,7 @@ autocomplete="off">
     <input type="text"
     name="pause_amt"
     id="pause_amt"
-    class="form-control"
+    class="form-control" (keypress)="preventNonumeric($event)"
     placeholder="Enter Amount"
     formControlName="pause_amt">
     <div class="invalid-feedback"
@@ -470,7 +470,8 @@ autocomplete="off">
   <div class="row">
     <div class="col-sm-12">
       <label for="installment_amt">Amount<span class="text-danger">*</span></label>
-      <input type="text" placeholder="Enter Amount" name="installment_amt" id="installment_amt"
+      <input type="text" placeholder="Enter Amount" name="installment_amt" 
+      (keypress)="preventNonumeric($event)" id="installment_amt"
         class="form-control" formControlName="installment_amt">
       <div class="invalid-feedback"
         *ngIf="__nonfinForm.get('installment_amt').invalid && (__nonfinForm.get('installment_amt').dirty || __nonfinForm.get('installment_amt').touched)">
@@ -812,7 +813,8 @@ autocomplete="off">
     <div class="row  my-2">
       <div class="col-sm-12">
         <label for="redemp_amount">Amount<span class="text-danger">*</span></label>
-        <input type="text" class="form-control" placeholder="Enter Amount" formControlName="redemp_amount"
+        <input type="text" class="form-control" placeholder="Enter Amount" 
+        (keypress)="preventNonumeric($event)" formControlName="redemp_amount"
           name="redemp_amount" id="redemp_amount">
         <div class="invalid-feedback"
           *ngIf="__nonfinForm.get('redemp_amount').invalid && (__nonfinForm.get('redemp_amount').dirty || __nonfinForm.get('redemp_amount').touched)">
@@ -1107,7 +1109,9 @@ autocomplete="off">
       <label for="swp_amount">
         {{__nonfinForm.get('trans_id').value == '30' ? 'SWP' : 'STP'}} Amount
         <span class="text-danger">*</span></label>
-      <input type="text" name="swp_amount" id="swp_amount" class="form-control" formControlName="swp_amount">
+      <input type="text" name="swp_amount" id="swp_amount" class="form-control" 
+      (keypress)="preventNonumeric($event)"
+      formControlName="swp_amount">
       <!-- <span class="invalid-feedback" *ngIf="__isAmtcheck">
        {{'Amount must be greater than ' + (__checkedAmt | currency: 'INR')}}
       </span> -->
@@ -1950,7 +1954,9 @@ autocomplete="off">
   <div class="row  my-2">
     <div class="col-sm-12">
       <label for="warrant_amt">Warrant Amount <span class="text-danger">*</span></label>
-      <input type="text" placeholder="Enter Warrant Amount" name="warrant_amt" id="warrant_amt"
+      <input type="text" placeholder="Enter Warrant Amount" 
+      (keypress)="preventNonumeric($event)"
+      name="warrant_amt" id="warrant_amt"
         class="form-control" formControlName="warrant_amt">
       <div class="invalid-feedback"
         *ngIf="__nonfinForm.get('warrant_amt').invalid && (__nonfinForm.get('warrant_amt').dirty || __nonfinForm.get('warrant_amt').touched)">

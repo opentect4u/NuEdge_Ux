@@ -1786,6 +1786,32 @@ export class NfoEntryComponent implements OnInit {
       fb.append('step_up_by', this.__traxForm.value.step_up_by);
     }
     this.__dbIntr.api_call(1, '/mfTraxCreate', fb).subscribe((res: any) => {
+      if(res.suc == 1){
+        this.__temp_tinMst = [];
+        this.__subbrkArnMst = [];
+        this.__euinMst = [];
+        this.__clientMst = [];
+        this.__sec_clientMst = [];
+        this.__third_clientMst = [];
+        this.__schemeMst = [];
+        this.__schemeMstforSwitchTo = [];
+        this.__sipType = [];
+        this.__sipfreq = [];
+        this.__swp_freq = [];
+        this.__bnkMst = [];
+        this.__nfoSchemeSwitchTo = [];
+        this.__isCldtlsEmpty = false;
+        this.__isSHowAdditionalTble = false;
+        this.__issecCldtlsEmpty = false;
+        this.__isthirdCldtlsEmpty = false;
+        this.__chkInvAmt = true;
+        this.__dialogDtForScheme = null;
+        this.__dialogDtForClient = null;
+        this.__dialogDtForSchemeTo = null;
+        this.__dialogDtForSchemeToForNfoCombo = null;
+        this.__dialogDtForBnk = null;
+        this.__traxForm.reset();    
+      }
       this.__utility.showSnackbar(
         res.suc == 1 ? 'Form Submitted Successfully' : res.msg,
         res.suc

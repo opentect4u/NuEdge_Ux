@@ -84,6 +84,9 @@ export class AumTableComponent implements OnInit {
    }
 
   ngOnInit(): void {
+
+    
+
   }
 
   getColumns(){

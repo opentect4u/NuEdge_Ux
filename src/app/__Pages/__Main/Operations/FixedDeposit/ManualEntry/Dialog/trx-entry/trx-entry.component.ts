@@ -108,13 +108,13 @@ export class TrxEntryComponent implements OnInit {
      sub_option: new FormControl('',[Validators.required]),
      tenure_type: new FormControl('',[Validators.required]),
      tenure: new FormControl('',{
-      validators:[Validators.required,Validators.pattern("^[0-9]*$")],
+      validators:[Validators.required,Validators.pattern("^[0-9.]*$")],
       updateOn:'blur'
     }),
      maturity_dt: new FormControl('',[Validators.required]),
-     int_rate: new FormControl('',[Validators.required,Validators.pattern("^[0-9]*$")]),
+     int_rate: new FormControl('',[Validators.required,Validators.pattern("^[0-9.]*$")]),
      mat_instr: new FormControl('',[Validators.required]),
-     amount: new FormControl('',[Validators.required,Validators.pattern("^[0-9]*$")]),
+     amount: new FormControl('',[Validators.required,Validators.pattern("^[0-9.]*$")]),
      trns_mode: new FormControl('',[Validators.required]),
      chq_bank: new FormControl(''),
      micr_code: new FormControl(''),

@@ -159,8 +159,10 @@ export class TraxEntryComponent implements OnInit {
     }),
     third_party_premium: new FormControl(''),
     od_premium: new FormControl(''),
-    policy_term: new FormControl('', {validators:[Validators.required],updateOn:'blur'}),
-    policy_pre_pay_term: new FormControl('', [Validators.required]),
+    policy_term: new FormControl('', {updateOn:'blur'}),
+    // validators:[Validators.required],
+    // , [Validators.required]
+    policy_pre_pay_term: new FormControl(''),
     ack_filePreview: new FormControl(''),
     filePreview: new FormControl(
       this.data.data ? `${environment.ins_app_form_url + this.data.data.ins_application_form}` : ''

@@ -723,7 +723,9 @@
           <label for="Switch_amt">
             Amount
           </label>
-          <input type="text" name="Switch_amt" id="Switch_amt" formControlName="switch_amt" class="form-control"
+          <input type="text" name="Switch_amt" 
+          (keypress)="preventNonumeric($event)"
+          id="Switch_amt" formControlName="switch_amt" class="form-control"
             placeholder="Enter Amount">
         </div>
       </div>
@@ -840,7 +842,8 @@
           <label for="first_inv_amt">First Investment Amount</label>
           <input type="text"
           name="first_inv_amt"
-          id="first_inv_amt"
+          (keypress)="preventNonumeric($event)"
+          id="first_inv_amt" 
           formControlName="first_inv_amt"
           [class.is-invalid]="__chkInvAmt && __traxForm.get('first_inv_amt').value"
           [class.is-valid]="!__chkInvAmt && __traxForm.get('first_inv_amt').value"
@@ -862,7 +865,8 @@
             <span class="text-danger">*</span></label>
           <input type="text"
           name="amount"
-          id="amount"
+          (keypress)="preventNonumeric($event)"
+          id="amount" 
           formControlName="amount"
           class="form-control"
             [placeholder]="__traxForm.get('sip_type').value == '3' ? 'Enter SIP Amount' : 'Enter Amount'">
@@ -1052,7 +1056,9 @@
         <label for="switch_amount">
           Amount <span class="text-danger">*</span>
         </label>
-        <input type="text" name="switch_amount" id="switch_amount" formControlName="switch_amount" class="form-control"
+        <input type="text" name="switch_amount" 
+        (keypress)="preventNonumeric($event)"
+        id="switch_amount" formControlName="switch_amount" class="form-control"
           placeholder="Enter Amount">
           <div class="invalid-feedback"
           *ngIf="__traxForm.get(['nfo_combo','switch_amount']).invalid && (__traxForm.get(['nfo_combo','switch_amount']).dirty || __traxForm.get(['nfo_combo','switch_amount']).touched)">
@@ -1122,7 +1128,10 @@
            <!-- swp_installment_amt -->
            <div class="col-sm-12">
             <label class="swp_installment_amt">SWP Installment Amount <span class="text-danger">*</span></label>
-            <input type="text"  name="swp_installment_amt" id="swp_installment_amt" class="form-control" formControlName="swp_installment_amt">
+            <input type="text"  name="swp_installment_amt" id="swp_installment_amt" class="form-control"
+          (keypress)="preventNonumeric($event)"
+            
+            formControlName="swp_installment_amt">
         </div>
 
         </div>
@@ -1146,12 +1155,16 @@
 
         <div class="col-sm-12" *ngIf="__traxForm.get('step_up_by').value == 'A'">
           <label form="step_up_amt">Amount <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" id="step_up_amt" placeholder="Enter Amount" formControlName="step_up_amt"/>
+          <input type="text" class="form-control"
+          (keypress)="preventNonumeric($event)"
+          id="step_up_amt" placeholder="Enter Amount" formControlName="step_up_amt"/>
         </div>
 
         <div class="col-sm-12" *ngIf="__traxForm.get('step_up_by').value == 'P'">
           <label form="step_up_percentage">Percentage <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" placeholder="Enter Percentage" id="step_up_percentage" formControlName="step_up_percentage"/>
+          <input type="text" class="form-control" placeholder="Enter Percentage"
+          (keypress)="preventNonumeric($event)"
+          id="step_up_percentage" formControlName="step_up_percentage"/>
         </div>
       </div>
    </ng-container>

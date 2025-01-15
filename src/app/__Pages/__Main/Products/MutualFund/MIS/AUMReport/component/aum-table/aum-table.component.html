@@ -8,7 +8,7 @@
     <mat-card-content >
         <p-table #dt [value]="dataSource"
         [rows]="10" [paginator]="true"
-          [rowHover]="false"
+          [rowHover]="true" [responsive]="true"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           styleClass="p-datatable-sm p-datatable-striped"
           [pageLinks]="3"
@@ -51,7 +51,7 @@
                 <td style="width: 5rem" *ngIf="has_sub_column">
                     <button type="button" pButton 
                     pRipple [pRowToggler]="aumDtls" 
-                    class="p-button-text p-button-rounded p-button-outline" 
+                    class="p-button-outline customExpandedIcon" 
                     [icon]="expanded ? 'pi pi-minus' : 'pi pi-plus'"></button>
                 </td>
                 <td *ngFor="let col of column"
@@ -85,8 +85,8 @@
             <tr>
                 <td [attr.colspan]="(column.length + 1)" style="background-color:'#d5d5d53b'" class="p-3">
                     <div>
-                        <p-table [value]="aumDtls.schemes" dataKey="product_code" 
-                        styleClass="p-datatable-sm p-datatable-striped"
+                        <p-table [value]="aumDtls.schemes" dataKey="product_code"  [responsive]="true"
+                        styleClass="p-datatable-sm p-datatable-striped" [rowHover]="false"
                         >
                           <ng-template pTemplate="header">
                             <tr class="stickyHeader__innerTbl">

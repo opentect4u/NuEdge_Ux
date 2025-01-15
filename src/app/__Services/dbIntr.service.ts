@@ -60,6 +60,8 @@ constructor(private __http:HttpClient) {
   }
  }
 
+
+
  api_call_for_gen_doc(__flag: number,
   __url:string,
    __dt: any,
@@ -129,6 +131,9 @@ constructor(private __http:HttpClient) {
   public downloadPdf(url) {
     return this.__http.get(url,{observe:'response',responseType:'blob'});
   }
+
+
+
 
 
 }

@@ -708,27 +708,31 @@
 
       <div class="row my-1">
         <div class="col-sm-12">
-          <label for="policy_term">Policy Term <span class="text-danger">*</span></label>
+          <label for="policy_term">Policy Term 
+            <!-- <span class="text-danger">*</span> -->
+          </label>
           <input type="text" placeholder="Enter Policy Term" name="policy_term" id="policy_term" class="form-control"
             formControlName="policy_term">
-          <div class="invalid-feedback"
+          <!-- <div class="invalid-feedback"
             *ngIf="__insTrax.get('policy_term').invalid && (__insTrax.get('policy_term').dirty || __insTrax.get('policy_term').touched)">
             <span class="invalid-feedback" *ngIf="(__insTrax.get('policy_term')).errors?.required">*Please provide
               policy term</span>
-          </div>
+          </div> -->
 
         </div>
       </div>
       <div class="row ">
         <div class="col-sm-12">
-          <label for="policy_pre_pay_term">Premium Paying Term <span class="text-danger">*</span></label>
+          <label for="policy_pre_pay_term">Premium Paying Term 
+            <!-- <span class="text-danger">*</span> -->
+          </label>
           <input type="text" placeholder="Enter Policy Premium Paying Term" name="policy_pre_pay_term"
             id="policy_pre_pay_term" class="form-control" formControlName="policy_pre_pay_term">
-          <div class="invalid-feedback"
+          <!-- <div class="invalid-feedback"
             *ngIf="__insTrax.get('policy_pre_pay_term').invalid && (__insTrax.get('policy_pre_pay_term').dirty || __insTrax.get('policy_pre_pay_term').touched)">
             <span class="invalid-feedback" *ngIf="(__insTrax.get('policy_pre_pay_term')).errors?.required">*Please
               provide premium paying term</span>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="row my-1">

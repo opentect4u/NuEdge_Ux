@@ -48,7 +48,7 @@ export class AumFilterComponent implements OnInit {
   aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' = 'Fund House';
 
   aum_report_filter_frm = new FormGroup({
-      date: new FormControl(''),
+      date: new FormControl(new Date()),
       arn_no: new FormControl(''),
       folio_type: new FormControl('C'),
       export_type: new FormControl('W'),
