@@ -45,5 +45,5 @@ a:hover {
     border-radius: 0px !important;
 }
 .customExpandedIcon:hover{
-    background: #ffffff;
+    background: #ffffff; border: 1px solid #d9d9d9 !important;
     color: black;}

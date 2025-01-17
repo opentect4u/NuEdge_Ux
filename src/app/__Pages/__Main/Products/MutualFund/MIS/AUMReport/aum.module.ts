@@ -39,6 +39,11 @@ const routes: Routes = [{
       data:{title:"NuEdge - AUM Report By Registrar", pageTitle:'AUM Report By Registrar'}
     },
     {
+      path:'aum-by-scheme-code/:pCode_date_arnNo',
+      loadChildren:() => import('./aum-by-scheme-code/aum-by-scheme-code.module').then(m => m.AumBySchemeCodeModule),
+      data:{title:"NuEdge - AUM Report By Client For Scheme", pageTitle:'AUM Report By Client For Scheme'}
+    },
+    {
       path:'',
       redirectTo:'home',
       pathMatch:'full'

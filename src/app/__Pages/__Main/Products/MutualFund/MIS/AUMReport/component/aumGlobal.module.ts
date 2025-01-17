@@ -4,6 +4,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AumFilterComponent } from './aum-filter/aum-filter.component';
 import { AumReportTotalCalcComponent } from './aum-report-total-calc/aum-report-total-calc.component';
 import { AumTableComponent } from './aum-table/aum-table.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,7 @@ import { AumTableComponent } from './aum-table/aum-table.component';
     AumReportTotalCalcComponent,
     AumTableComponent
   ],
-  imports: [CommonModule,SharedModule],
+  imports: [CommonModule,SharedModule,RouterModule],
   exports:[SharedModule,AumFilterComponent,AumReportTotalCalcComponent,AumTableComponent]
 
 })

@@ -1,0 +1,37 @@
+<div class="flexSec">
+    <div class="container">
+        <ng-container *ngIf="aum_tiles">
+            <mat-card class="my-3 mat-elevation-z0 border mat_card">
+                <mat-card-header>
+                    <mat-card-title>
+                            <h6 class="summary-heading">
+                                AUM Reports By Clients For Scheme : AdityaBSL Equity Hyb 95- Reg (G) as on : {{date}}
+                                <!-- {{aum_type | uppercase}} AS ON: {{aum_report_for_date ? aum_report_for_date : 'N/A'}} -->
+                            </h6>
+                    </mat-card-title>
+                </mat-card-header>    
+            <mat-card-content class="px-2 py-3">
+                <div class="d-flex align-items-center justify-content-between w-full">
+                    <ng-container *ngFor="let item of aum_tiles | keyvalue;let i = index" >
+                        
+                        <div class="summer-bx" id="{{item.key}}">
+                            <div class="hint-bx" style="font-size: 10px;">{{item?.key | uppercase}}</div>
+                            <div class="num-bx">{{item.value | number:'1.2-2'}} 
+                                        <span *ngIf="item.key == 'Abs. Return' || item.key == 'xirr'">%</span>
+        
+                            </div>
+                        </div>
+                </ng-container>
+                </div>
+            
+            </mat-card-content>
+            </mat-card>
+        </ng-container>
+
+        <ng-container *ngIf="md_aum_by_scheme_code.length > 0">
+            <aum-table [isShowTotalCalc]="false" [dataSource]="md_aum_by_scheme_code" [footerDT]="footerDT"  
+            [column]="column"></aum-table>
+        </ng-container>
+       
+    </div>
+</div>

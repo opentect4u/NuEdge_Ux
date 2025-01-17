@@ -6,6 +6,7 @@ import { AUTMTYPE } from '../component/aum-filter/aum-filter.component';
 import { category } from 'src/app/__Model/__category';
 import { IAumFooterModel } from '../component/aum.model';
 import { global } from 'src/app/__Utility/globalFunc';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'app-fund-house',
@@ -14,7 +15,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 })
 export class FundHouseComponent implements OnInit {
 
-  constructor(private dbIntr:DbIntrService) { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   md_fundHouse = [];
 
@@ -207,6 +208,9 @@ export class FundHouseComponent implements OnInit {
 
 
       /***** FOR REAL WORLD  */
+      this.footerDT = null;
+      this.md_fundHouse = [];
+      let originalDt = []; 
       this.__formDate = ev.date;
       // console.log()
       var formdata = new FormData();
@@ -219,9 +223,7 @@ export class FundHouseComponent implements OnInit {
         }
       }
       this.dbIntr.api_call(1,'/clients/aumFundHouse',formdata).pipe(pluck('data')).subscribe((res:any) =>{
-        this.footerDT = null;
-        this.md_fundHouse = [];
-        let originalDt = [];
+
         const groupByAMC = this.groupBy(res, 'amc_code');
         Object.keys(groupByAMC).forEach((key,index) =>{
                 /***** CALUCLATION OF UPPER TABLE */
@@ -229,7 +231,9 @@ export class FundHouseComponent implements OnInit {
                     const totIdcwPaid = groupByAMC[key].map(el => Number(el.idcw_paid)).reduce((totSum, a) => totSum + a, 0);
                     const totIdcwReinv = groupByAMC[key].map(el => Number(el.idcw_reinv)).reduce((totSum, a) => totSum + a, 0);
                     const totAUM = groupByAMC[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
-                    const totAbsRtn = groupByAMC[key].map(el => Number(el.abs_rtn)).reduce((totSum, a) => totSum + a, 0);
+                    const totGainLoss = groupByAMC[key].map(el => Number(el.gain_loss)).reduce((totSum, a) => totSum + a, 0);
+                    const totAbsRtn = (totGainLoss / totInvCost)*100;
+
                 /****** END */
   
                 /**** DISPLAY AMOUNT CATEGORY WISE */
@@ -249,6 +253,7 @@ export class FundHouseComponent implements OnInit {
                     cat_name:groupByAMC[key][0].cat_name,
                     inv_cost:totInvCost,
                     Investment:totInvCost,
+                    gain_loss:totGainLoss,
                     idcw_paid:totIdcwPaid,
                     IDCWP:totIdcwPaid,
                     idcw_reinv:totIdcwReinv,
@@ -259,7 +264,10 @@ export class FundHouseComponent implements OnInit {
                     "Abs. Return":totAbsRtn.toFixed(2),
                     amc_weightage_in:0,
                     ...mdCategoryKeys,
-                    schemes:groupByAMC[key],
+                    schemes:groupByAMC[key].map(el => {
+                      const encryptedTxt = this.utility.EncryptText(JSON.stringify({date:this.__formDate,pCode:el?.product_code}));
+                      return {...el,routeUrl: encryptedTxt}
+                    }),
                     total:{
                       inv_cost:totInvCost,
                       idcw_paid:totIdcwPaid,
@@ -271,6 +279,7 @@ export class FundHouseComponent implements OnInit {
                 /**** END */
         })
         this.md_fundHouse = originalDt.sort((a, b) => a.amc_name.localeCompare(b.amc_name));
+
         this.createParentFooter(originalDt);
       })
 
@@ -278,17 +287,21 @@ export class FundHouseComponent implements OnInit {
   }
 
   createParentFooter = (value) =>{
+      const tot_gain_loss = global.Total__Count(value,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
+      const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
+      // console.log((tot_gain_loss / tot_inv_cost) * 100);
+      const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
       let obj = {}
-      const dt = value.map(({total,schemes,cat_name,amc_weightage_in,amc_name,amc_code,inv_cost,idcw_paid,idcw_reinv,curr_aum,ret_abs,...rest}) => {return {...rest}})
+      const dt = value.map(({total,schemes,cat_name,amc_weightage_in,amc_name,amc_code,inv_cost,idcw_paid,idcw_reinv,curr_aum,ret_abs,gain_loss,...rest}) => {return {...rest}})
       for(let object of dt) {Object.assign(obj, object)}
       Object.keys(obj).forEach(el =>{
-        console.log(el)
+        console.log(el);
         this.footerDT = {
           ...this.footerDT,
-          [el]:global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2),
+          [el]:el == 'Abs. Return' ? tot_ret_abs.toFixed(2) : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2),
         }
       })
-      console.log(this.footerDT);
+
   }
 
   groupBy(xs, key) {
@@ -368,7 +381,7 @@ export class FundHouseColumn{
     {
       field:'scheme_name',
       header:'Scheme',
-      width:'32rem'
+      width:'36rem'
     },
     {
       field:'inv_cost',

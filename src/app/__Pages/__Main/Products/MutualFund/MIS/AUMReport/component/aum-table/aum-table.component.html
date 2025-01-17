@@ -1,8 +1,10 @@
+<ng-container *ngIf=isShowTotalCalc>
+  <aum-report-total-calc [aum_type]="aum_type"
+  [aum_report_for_date]="__formDate"
+  [aum_reports_tiles]="footerDT"
+  ></aum-report-total-calc>
+</ng-container>
 
-<aum-report-total-calc [aum_type]="aum_type"
-[aum_report_for_date]="__formDate"
-[aum_reports_tiles]="footerDT"
-></aum-report-total-calc>
 
 <mat-card class="mat-elevation-z0  border mat_card">
     <mat-card-content >
@@ -110,7 +112,9 @@
                               >
                               <ng-container [ngSwitch]="true">
                                 <ng-container *ngSwitchCase="col.field == 'scheme_name'">
-                                    <a class="m-0">{{data[col.field]}}-{{data.plan_name}}-{{data.option_name}}</a>
+                                    <a class="m-0" target="_blank"
+                                      [routerLink]="['/main/product/mf/mis/aum/aum-by-scheme-code',data?.routeUrl]"
+                                    >{{data[col.field]}}-{{data.plan_name}}-{{data.option_name}}</a>
                                 </ng-container>
                                 <ng-container *ngSwitchCase="col.field == 'folio_no'">
                                   <p class="m-0">{{data[col.field] ? data[col.field] : 'N/A'}}</p>

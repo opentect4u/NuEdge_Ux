@@ -750,7 +750,8 @@ color: #ffffff;
 
 
 .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
-  background: #1f458414 !important;
+  /* background: #1f458414 !important; */
+  background: #f6f6f6 !important;
   color: #10486b !important;
 }
 

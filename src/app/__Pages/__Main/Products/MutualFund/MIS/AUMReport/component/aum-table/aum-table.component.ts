@@ -5,6 +5,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { ActivatedRoute } from '@angular/router';
 import { global } from 'src/app/__Utility/globalFunc';
 import { Table } from 'primeng/table';
+import moment from 'moment';
 @Component({
   selector: 'aum-table',
   templateUrl: './aum-table.component.html',
@@ -64,6 +65,8 @@ export class AumTableComponent implements OnInit {
 
   @Input() __formDate:string;
 
+  @Input() isShowTotalCalc:boolean = true;
+
   // @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' = 'Fund House';
   aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar';
 
@@ -100,6 +103,10 @@ export class AumTableComponent implements OnInit {
   filterGlobal = ($event) => {
     let value = $event.target.value;
     this.primeTbl.filterGlobal(value,'contains')
+  }
+
+  getRouteData = (data) =>{
+
   }
 
 }
