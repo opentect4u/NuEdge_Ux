@@ -11,6 +11,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 import { global } from 'src/app/__Utility/globalFunc';
 import filterOpt from '../../../../../../../../../assets/json/filterOption.json';
 import { Calendar } from 'primeng/calendar';
+import moment from 'moment';
 export enum AUTMTYPE{
     "Fund House" = 'Fund House',
     Families = 'Families',
@@ -234,10 +235,10 @@ export class AumFilterComponent implements OnInit {
   /* END */
 
   clickToSend = () =>{
-      // console.log(this.aum_report_filter_frm.value);
+      console.log(this.aum_report_filter_frm.value.date);
       const payload = {
         ...this.aum_report_filter_frm.value,
-        date:global.getActualVal(this.daterRnge.inputFieldValue),
+        date:this.aum_report_filter_frm.value.date ? moment(this.aum_report_filter_frm.value.date).format('YYYY-MM-DD') : '',
         amc_id:this.aum_report_filter_frm.value.amc_id.map(el => el.id),
         scheme_id:this.aum_report_filter_frm.value.scheme_id.map(el => el.id),
         sub_cat_id:this.aum_report_filter_frm.value.sub_cat_id.map(el => el.id),

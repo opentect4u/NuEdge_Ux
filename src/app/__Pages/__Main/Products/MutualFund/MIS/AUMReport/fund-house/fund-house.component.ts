@@ -224,7 +224,7 @@ export class FundHouseComponent implements OnInit {
       }
       this.dbIntr.api_call(1,'/clients/aumFundHouse',formdata).pipe(pluck('data')).subscribe((res:any) =>{
 
-        const groupByAMC = this.groupBy(res, 'amc_code');
+        const groupByAMC = this.groupBy(res.filter(el => Number(el.inv_cost) > 0), 'amc_code');
         Object.keys(groupByAMC).forEach((key,index) =>{
                 /***** CALUCLATION OF UPPER TABLE */
                     const totInvCost = groupByAMC[key].map(el => Number(el.inv_cost)).reduce((totSum, a) => totSum + a, 0);

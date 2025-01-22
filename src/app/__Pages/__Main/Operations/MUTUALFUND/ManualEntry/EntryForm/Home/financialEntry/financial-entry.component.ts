@@ -160,6 +160,7 @@ export class FinancialEntryComponent implements OnInit {
     filePreview: new FormControl(''),
     app_form_scan: new FormControl(''),
     file: new FormControl('', [
+      Validators.required,
       fileValidators.fileExtensionValidator(this.allowedExtensions),
     ]),
     remarks: new FormControl(''),
@@ -217,6 +218,7 @@ export class FinancialEntryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+   
     this.getnumberofdaystobeadded();
     this.getrntMst();
     this.getOptionMst();
@@ -1037,10 +1039,12 @@ export class FinancialEntryComponent implements OnInit {
   }
 
   resetForm = () =>{
+    this.getItemsDtls(null,'C')
     this.__traxForm.get('euin_no').setValue('',{emitEvent:false});
     this.__traxForm.get('temp_tin_no').setValue('',{emitEvent:false});
     this.__traxForm.get('sub_arn_no').setValue('',{emitEvent:false});
-    this.__traxForm.get('client_code').setValue('',{emitEvent:false});
+    // this.__traxForm.get('client_code').setValue('',{emitEvent:false});
+    this.__traxForm.get('second_client_code').setValue('',{emitEvent:false});
     this.__traxForm.get('kyc_status').setValue('',{emitEvent:false});
     this.__traxForm.get('trans_id').setValue('',{emitEvent:false});
     this.__traxForm.get('folio_number').setValue('',{emitEvent:false});
@@ -1059,10 +1063,11 @@ export class FinancialEntryComponent implements OnInit {
     this.__traxForm.patchValue({
       bu_type:'',
       sub_brk_cd:'',
-      client_name: '',
-      client_id: '',
+      // client_name: '',
+      // client_id: '',
       first_kyc:'',
       mode_of_holding:'',
+      second_client_name:'',
       inv_type:'',
       plan:'',
       option:'',
@@ -1084,7 +1089,8 @@ export class FinancialEntryComponent implements OnInit {
       sip_duration:'',
       duration:'',
       sip_end_date:'',
-      first_inv_amt:''
+      first_inv_amt:'',
+      second_client_pan:''
     });
     this.getItemsDtls(null,'SC');
     this.getItemsDtls(null,'B');
@@ -1096,10 +1102,18 @@ export class FinancialEntryComponent implements OnInit {
     this.__schemeMst = [];
     this.__sipType = [];
     this.__sipfreq = [];
+    this.__clientMst = [];
+    this.__isclientVisible = false;
+    this.__isCldtlsEmpty = false;
+    this.__sec_clientMst = [];
+    this.__issecClientSpinnerPending = false;
+    this.__isSHowAdditionalTble = false;
+    this.__third_clientMst = [];
+    this.__isthirdClientSpinnerPending = false;
   } 
   submit() {
-      console.log(this.__traxForm.value);
-    if (this.__traxForm.invalid) {
+      return;
+     if (this.__traxForm.invalid) {
       this.__utility.showSnackbar(
         'Error!! Form submition failed due to some error',
         0
@@ -1437,13 +1451,13 @@ export class FinancialEntryComponent implements OnInit {
       case 'C':
         console.log(__euinDtls);
         this.__dialogDtForClient = __euinDtls;
-        this.__traxForm.controls['client_code'].reset(__euinDtls?.client_code, {
+        this.__traxForm.controls['client_code'].reset(__euinDtls ? __euinDtls?.client_code : '', {
           onlySelf: true,
           emitEvent: false,
         });
         this.__traxForm.patchValue({
-          client_name: __euinDtls?.client_name,
-          client_id: __euinDtls?.id,
+          client_name: __euinDtls ? __euinDtls?.client_name : "",
+          client_id: __euinDtls ? __euinDtls?.id : '',
         });
         this.searchResultVisibilityForClient('none');
         break;
