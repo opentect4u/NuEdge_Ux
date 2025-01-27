@@ -796,6 +796,8 @@ export class FinancialAcknowledgementComponent implements OnInit {
   finalSubmitAck() {
     const __finalSubmit = new FormData();
     __finalSubmit.append('trans_type_id', this.trans_type_id.toString());
+    __finalSubmit.append('trans_id', this.transaction_id.toString());
+
     this.__dbIntr
       .api_call(1, '/ackFinalSubmit', __finalSubmit)
       .subscribe((res: any) => {
