@@ -158,7 +158,7 @@
     "accessibility":[],
     "title":"Rejection Report",
     "tooltip":"Rejection Report",
-    "url":"/main/product/mf",
+    "url":"/main/product/mf/mis/reject-transaction",
     "icon": "fa fa-user-o",
     "has_submenu":[]
   },

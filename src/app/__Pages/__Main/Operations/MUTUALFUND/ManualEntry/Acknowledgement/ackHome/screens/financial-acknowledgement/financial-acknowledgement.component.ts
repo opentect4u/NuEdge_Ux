@@ -243,7 +243,46 @@ export class FinancialAcknowledgementComponent implements OnInit {
       this.schemeMst = res;
     })
    }
+
+
+   changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+}
+
   ngAfterViewInit() {
+    const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+    this.changeWheelSpeed(el, 0.99);
     
     this.__ackForm.controls['dt_type'].valueChanges.subscribe((res) => {
       this.__ackForm.controls['date_range'].reset(
@@ -740,6 +779,9 @@ export class FinancialAcknowledgementComponent implements OnInit {
   updateRow(row_obj) {
     this.__ackMst.data = this.__ackMst.data.filter((value: any, key) => {
       if (value.tin_no == row_obj.tin_no) {
+        // if(row_obj?.ack_status == 'P'){
+        //   return false;
+        // }
         value.rnt_login_cutt_off = row_obj.rnt_login_cutt_off;
           value.ack_status = row_obj.ack_status;
           value.rnt_login_dt = row_obj.rnt_login_dt;

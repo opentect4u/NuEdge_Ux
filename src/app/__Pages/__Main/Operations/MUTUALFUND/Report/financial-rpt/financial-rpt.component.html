@@ -197,7 +197,7 @@
           Financial Report For
           {{Title}}</h4>
       </div>
-      <div class="btnGrp">
+      <!-- <div class="btnGrp">
       <p-button type="button" icon="pi pi-server"
       #tooltip="matTooltip"
       [matTooltipPosition]="'before'"
@@ -205,33 +205,40 @@
       matTooltip="Column Selector"
       styleClass="p-button-primary p-button-lg p-button-outlined">
       </p-button>
-        </div>
+        </div> -->
       </div>
      <div class="container_body">
+      <!-- pResizableColumn columnResizeMode="expand" [resizableColumns]="true"-->
       <p-table
       (onLazyLoad)="customSort($event)"
         [customSort]="true"
           sortMode="single"
           [lazy]="true"
       [value]="finMst"
-      [columns]="__columns" [resizableColumns]="true"
+      [columns]="__columns" 
         selectionMode="multiple"
-        columnResizeMode="expand" [scrollable]="true"
+         [scrollable]="true"
         scrollHeight="358px"
-        [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '180rem' }">
-        <ng-template pTemplate="header" let-columns>
+        [autoLayout]="true" styleClass="p-datatable-gridlines"
+        >
+        <ng-template pTemplate="header">
           <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" style="width: 20rem">
+            <th  *ngFor="let col of __columns" 
+            [style.max-width]="col.width"
+            [style.min-width]="col.width"
+            [pSortableColumn]="col.field" 
+            >
               {{ col.header }}
               <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view' && col.field!= 'ack_copy_scan'" [field]="col.field">
               </p-sortIcon>
             </th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-finance let-columns="columns">
+        <ng-template pTemplate="body" let-finance >
           <tr tabindex="999">
-            <td *ngFor="let col of columns" style="width: 10rem">
+            <td   
+            [style.max-width]="col.width"
+            [style.min-width]="col.width" *ngFor="let col of __columns">
               <ng-container [ngSwitch]="true">
                 <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
                   <p-button icon="pi pi-eye" (click)="DocumentView(finance)"
@@ -255,8 +262,8 @@
                 <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
                  <span
                  #tooltip="matTooltip"
-                 [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')">
-                 {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')}}
+                 [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')">
+                 {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
                 </span>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'inv_type'">
@@ -282,14 +289,14 @@
                   </ng-template>
 
                 </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'rcv_datetime'">
+                <ng-container *ngSwitchCase="col.field == 'rcv_datetime'|| col.field=='rnt_login_dt'">
                   <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</span>
                   </ng-container>
 
                   <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
                     <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</span>
                     </ng-container>
-                    <ng-container *ngSwitchCase="col.field == 'entry_date'
+                    <ng-container *ngSwitchCase="col.field == 'entry_date' || col.field == 'rnt_login_cutt_off'
                     || col.field == 'sip_date'
                     || col.field == 'sip_end_date'
                     || col.field == 'sip_end_date'">

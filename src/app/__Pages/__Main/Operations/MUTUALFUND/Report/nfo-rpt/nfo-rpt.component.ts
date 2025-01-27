@@ -219,7 +219,7 @@ export class NfoRPTComponent implements OnInit {
     else{
       this.__columns =this.columns;
     }
-    this.SelectedClms = this.__columns.map((x) => x.field);
+    // this.SelectedClms = this.__columns.map((x) => x.field);
   }
 
   /** Function to call api for getting Scheme Master Data  against selected amc*/
@@ -449,7 +449,7 @@ export class NfoRPTComponent implements OnInit {
     }
     SelectedColumns(column){
       const clm = ['edit'];
-       this.__columns = column.map(({ field, header }) => ({field, header})).filter(x => !clm.includes(x))
+       this.__columns = column.map(({ field, header ,width}) => ({field, header,width})).filter(x => !clm.includes(x))
     }
     customSort(ev){
       this.sort.field = ev.sortField;

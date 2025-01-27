@@ -338,8 +338,8 @@
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
                      <b
                      #tooltip="matTooltip"
-                     [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')">
-                     {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')}}
+                     [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')">
+                     {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
                     </b>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'inv_type'">
@@ -612,7 +612,7 @@
               <ng-container matColumnDef="mode_of_holding">
                 <th mat-header-cell *matHeaderCellDef>Mode Of Holding</th>
                 <td mat-cell *matCellDef="let element;let i = index">
-                  {{element.mode_of_holding == 'S' ? 'Single' : element.mode_of_holding == 'J' ? 'Joint' : 'Any Or Survivor'}}
+                  {{element.mode_of_holding == 'S' ? 'Single' : element.mode_of_holding == 'J' ? 'Joint' : 'Anyone Or Survivor'}}
                 </td>
               </ng-container>
 

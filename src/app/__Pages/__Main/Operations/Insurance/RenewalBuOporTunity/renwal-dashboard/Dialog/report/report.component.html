@@ -264,8 +264,8 @@
                       <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
                        <span
                        #tooltip="matTooltip"
-                       [matTooltip]="renewal_bu[col.field] == 'S' ? 'Single' : (renewal_bu[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')">
-                       {{ renewal_bu[col.field] == 'S' ? 'Single' : (renewal_bu[col.field] == 'J' ? 'Joint' : 'Any Or Survivor')}}
+                       [matTooltip]="renewal_bu[col.field] == 'S' ? 'Single' : (renewal_bu[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')">
+                       {{ renewal_bu[col.field] == 'S' ? 'Single' : (renewal_bu[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
                       </span>
                       </ng-container>
                       <ng-container *ngSwitchCase="col.field == 'inv_type'">

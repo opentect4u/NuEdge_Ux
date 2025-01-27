@@ -212,7 +212,6 @@ export class FinancialRPTComponent implements OnInit {
     : mfFinClmns.COLUMN_SELECTOR.filter(x => !clmToRemoveForPIP.includes(x.field)))
 
     if(option == 2){
-
       this.__columns = trns_id == 2 ? mfFinClmns.SUMMARY_COPY_SIP.filter(x => x.field != 'edit')
       : mfFinClmns.SUMMARY_COPY.filter(x => x.field != 'edit');
     }
@@ -222,7 +221,8 @@ export class FinancialRPTComponent implements OnInit {
            :  (trns_id == 1 ? mfFinClmns.DETAILS_FOR_PIP_COLUMNS_COPY.filter(x => x.field != 'edit')
             : mfFinClmns.DETAILS_FOR_SIP_COLUMNS_COPY.filter(x => x.field != 'edit'))
     }
-    this.SelectedClms = this.__columns.map((x) => x.field);
+    // this.SelectedClms = this.__columns.map((x) => x.field);
+    console.log(this.__columns)
   }
 
   /** Function to call api for getting Scheme Master Data  against selected amc*/
@@ -453,7 +453,7 @@ export class FinancialRPTComponent implements OnInit {
     }
     SelectedColumns(column){
       const clm = ['edit'];
-       this.__columns = column.map(({ field, header }) => ({field, header})).filter(x => !clm.includes(x))
+       this.__columns = column.map(({ field, header,width }) => ({field, header,width})).filter(x => !clm.includes(x))
     }
     customSort(ev){
       this.sort.field = ev.sortField;

@@ -1369,9 +1369,9 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="comp_login_dt">
-          <th  mat-header-cell *matHeaderCellDef>Login Date</th>
+          <th  mat-header-cell *matHeaderCellDef>Login DateTime</th>
           <td mat-cell *matCellDef="let element;let i = index">
-            {{element.rnt_login_dt ? (element.rnt_login_dt | date:'dd-MM-yyyy') : 'N/A'}}
+            {{element.rnt_login_dt ? (element.rnt_login_dt | date:'dd-MM-yyyy hh:mm a') : 'N/A'}}
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="__exportedClmns;sticky:true"></tr>

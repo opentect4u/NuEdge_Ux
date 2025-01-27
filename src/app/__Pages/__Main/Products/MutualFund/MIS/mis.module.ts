@@ -35,6 +35,10 @@ import { RouterModule, Routes } from '@angular/router';
         loadChildren:() => import('./broker-change/broker-change.module').then(m => m.BrokerChangeModule)
       },
       {
+        path:'reject-transaction',
+        loadChildren:() =>import('./reject-transaction/reject-transaction.module').then(m => m.RejectTransactionModule)
+      },
+      {
         path:'',
         redirectTo:'home',
         pathMatch:'full'

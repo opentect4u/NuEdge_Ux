@@ -239,7 +239,7 @@ export class NonFinancialRPTComponent implements OnInit {
      else{
       this.__columns = this.columns;
      }
-     this.SelectedClms = this.__columns.map((x) => x.field);
+    //  this.SelectedClms = this.__columns.map((x) => x.field);
   }
 
   AckView(ev){
@@ -420,7 +420,7 @@ DocumentView(document){
 }
 SelectedColumns(column){
   const clm = ['edit'];
-  this.__columns = column.map(({ field, header }) => ({field, header})).filter(x => !clm.includes(x))
+  this.__columns = column.map(({ field, header ,width}) => ({field, header,width})).filter(x => !clm.includes(x))
 }
 onselectItem(ev){
   // this.__pageNumber = ev.option.value;

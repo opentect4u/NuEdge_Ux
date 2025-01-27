@@ -77,7 +77,7 @@ export class fdCertificateClm {
         {field:'collected_from_comp',header:'Collected From Company',isVisible:[1,2]},
         {field:'delivery_by',header:'Delivery By',isVisible:[1,2]},
         {field:'received_by',header:'Received By',isVisible:[1,2]},
-        {field:'app_form_scan',header:'DOC View',isVisible:[1,2]},
+        {field:'app_form_scan',header:'APP View',isVisible:[1,2]},
         {field:'entry_date',header:'Entry Date',isVisible:[1,2,3]},
         {field:'comp_login_cutt_off',header:'Login Cut Off',isVisible:[1,2]},
         {field:'comp_login_dt',header:'Login Date',isVisible:[1,2]},

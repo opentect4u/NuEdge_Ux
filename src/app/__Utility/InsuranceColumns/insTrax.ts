@@ -82,7 +82,7 @@ export class insTraxClm {
 
   public static Columns = [
     {field:'edit',header:'Edit',isVisible:[1,2]},
-    {field:'ins_application_form',header:'DOC View',isVisible:[1,2]},
+    {field:'ins_application_form',header:'APP View',isVisible:[1,2]},
     {field:'entry_date',header:'Entry Date',isVisible:[1,2,3]},
     {field:'comp_login_cutt_off',header:'Login Cut Off',isVisible:[1]},
     {field:'comp_login_dt',header:'Login Date',isVisible:[1]},
@@ -123,7 +123,7 @@ export class insTraxClm {
 
   public static renewal_Columns:column[]= [
     {field:"edit",header: 'Edit'},
-    {field:'upload_file',header:'DOC View'},
+    {field:'upload_file',header:'APP View'},
     {field:'temp_tin_no',header:'Temporary TIN'},
     {field:"bu_type",header: 'business Type'},
     {field:'branch_name',header:'Branch'},

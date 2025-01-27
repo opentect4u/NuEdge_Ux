@@ -788,7 +788,7 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   fetchQueryType = () =>{
-      this.__dbIntr.api_call(0,'/cus_service/queryType',null).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
+      this.__dbIntr.api_call(0,`/cus_service/queryType?product_id=${this.productId}`,null).pipe(pluck('data')).subscribe((res:Partial<IQueryTypeSubType>[]) =>{
           this.md_queryType = res;
       })
   }

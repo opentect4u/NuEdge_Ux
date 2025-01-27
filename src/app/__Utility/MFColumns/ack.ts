@@ -3,10 +3,10 @@ export class MfackClmns {
   public static Summary_common =
   [
     {field:'edit',header:'Edit',width:'3rem'},
-    {field:'app_frm_view',header:'DOC View',width:'3rem'},
+    {field:'app_frm_view',header:'APP View',width:'3rem'},
     {field:'entry_date',header:'Entry Date',width:'7rem'},
     { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
-    { field: 'rnt_login_dt', header: 'Login Date',width:'7rem'},
+    { field: 'rnt_login_dt', header: 'Login DateTime',width:'7rem'},
     {field:'tin_no',header:'TIN',width:'7rem'},
     {field:'branch_name',header:'Branch',width:'7rem'},
      {field:'sub_brk_cd',header:'Sub Broker Code',width:'7rem'},
@@ -30,10 +30,10 @@ export class MfackClmns {
   ]
   public static Deatils: column[] = [
     { field: 'edit', header: 'Edit',width:'1rem' },
-    { field: 'app_frm_view', header: 'DOC View',width:'1rem' },
+    { field: 'app_frm_view', header: 'APP View',width:'1rem' },
     { field: 'entry_date', header: 'Entry Date',width:'3rem' },
     { field: 'rnt_login_cutt_off', header: 'Login Cut Off',width:'3rem' },
-    { field: 'rnt_login_dt', header: 'Login Date',width:'3rem' },
+    { field: 'rnt_login_dt', header: 'Login DateTime',width:'3rem' },
     { field: 'tin_no', header: 'TIN',width:'3rem' },
     { field: 'bu_type', header: 'Business Type',width:'3rem' },
     { field: 'first_client_name', header: 'First Holder Name',width:'15rem' },
@@ -118,10 +118,10 @@ export class MfackClmns {
 export class nonFinAckClms {
   public static SUMMARY_COPY = [
     { field: 'edit', header: 'Edit' },
-    { field: 'app_frm_view', header: 'DOC View' },
+    { field: 'app_frm_view', header: 'APP View' },
     { field: 'entry_date', header: 'Entry Date' },
     { field: 'rnt_login_cutt_off', header: 'Login Cut Off' },
-    { field: 'rnt_login_dt', header: 'Login Date' },
+    { field: 'rnt_login_dt', header: 'Login DateTime' },
     { field: 'tin_no', header: 'TIN' },
     { field: 'branch_name', header: 'Branch' },
     { field: 'sub_brk_cd', header: 'Sub Broker Code' },
@@ -267,10 +267,10 @@ export class nonFinAckClms {
 
   public static COLUMN_SELECTOR=[
     { field: 'edit', header: 'Edit',width:'1rem'},
-    { field: 'app_frm_view', header: 'DOC View' ,width:'1rem'},
+    { field: 'app_frm_view', header: 'APP View' ,width:'1rem'},
     { field: 'entry_date', header: 'Entry Date' ,width:'5rem'},
     { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'5rem'},
-    { field: 'rnt_login_dt', header: 'Login Date' ,width:'5rem'},
+    { field: 'rnt_login_dt', header: 'Login DateTime' ,width:'5rem'},
     { field: 'tin_no', header: 'TIN' ,width:'5rem'},
     { field: 'bu_type', header: 'Business Type' ,width:'5rem'},
     { field: 'branch_name', header: 'Branch' ,width:'10rem'},

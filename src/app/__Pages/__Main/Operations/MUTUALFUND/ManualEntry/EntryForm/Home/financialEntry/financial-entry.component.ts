@@ -1112,7 +1112,7 @@ export class FinancialEntryComponent implements OnInit {
     this.__isthirdClientSpinnerPending = false;
   } 
   submit() {
-      return;
+      // return;
      if (this.__traxForm.invalid) {
       this.__utility.showSnackbar(
         'Error!! Form submition failed due to some error',

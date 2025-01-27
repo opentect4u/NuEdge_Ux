@@ -199,7 +199,45 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
       this.schemeMst = res;
     })
    }
+
+   changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
+}
+
   ngAfterViewInit() {
+          const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+          this.changeWheelSpeed(el, 0.99);
             /** Change event occur when all rnt checkbox has been changed  */
             this.__ackForm.controls['is_all_status'].valueChanges.subscribe(res =>{
               this.logged_status.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});

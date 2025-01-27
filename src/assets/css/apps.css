@@ -831,7 +831,8 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   color: #f1820b;
   font-weight: 600; */
 
-  font-size: 16px;
+  /* font-size: 16px; */
+   font-size:25px;
     color: #f1820b;
     font-weight: 500;
 
@@ -850,10 +851,11 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   margin: 10px 0;
   margin: 0;
   padding: 0; */
-  font-size: 16px;
+  /* font-size: 16px; */
+   font-size: 22px!important;
   /* color: #fff; */
   /* color: #1f4584; */
-  color:#00c7bf;
+  color:#1f4584;
   margin: 2px 0!important;
   margin: 0;
   padding: 0;
@@ -961,9 +963,10 @@ li.searchBox .serachBoxTop label.button input[type="submit"] {
   font-weight: 500; */
   color: #1f4584;
     /* font-size: 13px; */
-    font-size: 11px;
-    font-weight: 600;
-  text-transform: uppercase;
+    /* font-size: 11px; */
+    font-size: 16px;
+    font-weight: 500;
+  /* text-transform: uppercase; */
 }
 
 .smallBox:hover {

@@ -3,7 +3,7 @@ import { column } from "../tblClmns";
 export class kycClm {
   public static Summary_copy:column[] = [
     {field:'edit',header:'Edit'},
-    {field:'app_form_view',header:'DOC View'},
+    {field:'app_form_view',header:'APP View'},
     {field:'ack_form_view',header:'ACK View'},
     // {field:'mu_frm_view',header:'Manual Update View'},
     {field:'tin_no',header:'TIN'},
@@ -18,7 +18,7 @@ export class kycClm {
 
   public static Details:column[] = [
     {field:'edit',header:'Edit'},
-    {field:'app_form_view',header:'DOC View'},
+    {field:'app_form_view',header:'APP View'},
     {field:'entry_dt',header:'Entry Date'},
     {field:'ack_form_view',header:'ACK View'},
     // {field:'mu_frm_view',header:'Manual Update View'},
@@ -39,7 +39,7 @@ export class kycClm {
   public static clmSelector =[
     {id:'edit',text:'Edit'},
     {id:'sl_no',text:'Sl No.'},
-    {id:'app_form_view',text:'DOC View'},
+    {id:'app_form_view',text:'APP View'},
     {id:'entry_dt',text:'Entry Date'},
     {id:'ack_form_view',text:'ACK View'},
     // {id:'mu_frm_view',text:'Manual Update View'},
