@@ -1310,10 +1310,10 @@ export class NfoEntryComponent implements OnInit {
       this.__schemeMstforSwitchTo.length = 0;
       this.__bnkMst.length = 0;
       this.__clientMst.push({
-        client_code:global.getActualVal( __items.first_client_code),
-        id:global.getActualVal( __items.first_client_id),
-        client_name:global.getActualVal( __items.first_client_name),
-        client_type:global.getActualVal( __items.first_client_type),
+        client_code:global.getActualVal( __items?.client_code),
+        id:global.getActualVal( __items?.client_id),
+        client_name:global.getActualVal( __items?.client_name),
+        client_type:global.getActualVal( __items?.client_type),
       });
       this.__euinMst.push({
         euin_no: __items.euin_no,

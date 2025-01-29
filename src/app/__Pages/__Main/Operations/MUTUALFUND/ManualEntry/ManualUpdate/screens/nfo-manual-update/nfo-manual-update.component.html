@@ -207,7 +207,9 @@
       <div class="container_body">
          <!-- PrimeNg Table with column resize,
           column sorting etc  [reorderableColumns]="true"
-          pReorderableColumn-->
+          pReorderableColumn [resizableColumns]="true"
+            selectionMode="multiple"  [responsive]="true"
+            columnResizeMode="expand"  [tableStyle]="{ 'min-width': __ackForm.value.options == '2' ? '120rem' : '200rem' }"-->
           <p-table
           #dt
           (onLazyLoad)="customSort($event)"
@@ -216,15 +218,17 @@
             styleClass="p-datatable-md p-datatable-gridlines"
             [lazy]="true"
           [value]="__financMst.data"
-          [columns]="__columns" [resizableColumns]="true"
-            selectionMode="multiple"
-            columnResizeMode="expand" [scrollable]="true"
+          [columns]="__columns"  [scrollable]="true"
             scrollHeight="358px"
-            [autoLayout]="true" [responsive]="true"
-            [tableStyle]="{ 'min-width': __ackForm.value.options == '2' ? '120rem' : '200rem' }">
+            [autoLayout]="true"
+           >
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': __ackForm.value.options == '2' ? '20rem' : '25rem'}">
+                <th  *ngFor="let col of __columns"
+                [style.max-width]="col.width"
+                [style.min-width]="col.width"  
+                
+               [pSortableColumn]="col.field" >
                   {{ col.header }}
                   <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
                   </p-sortIcon>
@@ -234,7 +238,10 @@
             <ng-template pTemplate="body" let-finance let-columns="columns">
               <tr tabindex="999">
 
-                <td *ngFor="let col of columns">
+                <td *ngFor="let col of __columns"
+                [style.max-width]="col.width"
+                [style.min-width]="col.width"
+                >
                   <ng-container [ngSwitch]="true">
                     <ng-container *ngSwitchCase="col.field == 'edit'">
                       <p-button [icon]="finance['form_status'] == 'A' ? 'pi pi-pencil' : 'pi pi-edit'" (click)="populateDT(finance)"

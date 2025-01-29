@@ -532,7 +532,7 @@ __euinMst: any = [];
       setColumns(trans_id,option){
         this.__columns =  trans_id == 2  ? global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Sip)
         : global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Pip_Switch)
-     
+        console.log(this.__columns)
        }
         DocumentView(element){
            const dialogConfig = new MatDialogConfig();

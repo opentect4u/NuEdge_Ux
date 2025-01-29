@@ -12,20 +12,20 @@
       <div class="transTypeCount"></div>
         <div class="btnGrp">
           <!-- (click)="isOpenMegaMenu = !isOpenMegaMenu" -->
-          <p-button type="button" icon="pi pi-server"
+          <!-- <p-button type="button" icon="pi pi-server"
           #tooltip="matTooltip"
           (click)="isOpenMegaMenu = !isOpenMegaMenu"
           [matTooltipPosition]="'before'"
           matTooltip="Column Selector"
           styleClass="p-button-primary p-button-lg p-button-outlined mr-2">
-          </p-button>
+          </p-button> -->
        </div>
        </div>
       <div class="container_body">
 
                <!-- PrimeNg Table with column resize,
               column sorting etc  [reorderableColumns]="true"
-              pReorderableColumn-->
+              pReorderableColumn  [tableStyle]="{ 'min-width': this.__getKycFormData.options == '2' ? '150rem' :  '200rem' }"-->
               <p-table
               #dt
               (onLazyLoad)="customSort($event)"
@@ -35,14 +35,17 @@
               [value]="__kycMst"
               [columns]="__columns" [resizableColumns]="true"
                 selectionMode="multiple"
-                columnResizeMode="expand" [scrollable]="true"
-                scrollHeight="300px"
-                [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-                [tableStyle]="{ 'min-width': this.__getKycFormData.options == '2' ? '150rem' :  '200rem' }">
+                [scrollable]="true"
+                scrollHeight="358px"
+                [autoLayout]="true" 
+              styleClass="p-datatable-gridlines"
+                >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
-
-                    <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [style.swidth]="this.__getKycFormData.options == '2' ? '15rem' :  '20rem'">
+                    <!--  -->
+                    <th  *ngFor="let col of __columns"
+                    [style.max-width]="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete' ? '' : col.width"
+                    [style.min-width]="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete' ? '' : col.width "    [pSortableColumn]="col.field" >
                       {{ col.header }}
                       <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete'" [field]="col.field">
                       </p-sortIcon>
@@ -51,8 +54,11 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-kyc let-columns="columns">
                   <tr tabindex="999">
-
-                    <td *ngFor="let col of columns">
+                    <!-- [style.max-width]="col.width"
+                    [style.min-width]="col.width" -->
+                    <td *ngFor="let col of __columns" 
+                    [style.max-width]="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete' ? '' : col.width"
+                    [style.min-width]="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete' ? '' : col.width">
                       <ng-container [ngSwitch]="true">
                         <!-- <ng-container *ngSwitchCase="col.field == 'edit'">
                           <p-button icon="pi pi-pencil" (click)="populateDT(kyc,'E')"

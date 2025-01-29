@@ -260,46 +260,54 @@ export class KycEntryComponent implements OnInit {
     })
   }
   submit() {
-      this.__clientForm.reset();
-    // if (this.__clientForm.invalid) {
-    //   this.__utility.showSnackbar('Submition failed due to some error', 0);
-    //   return;
-    // }
-    //   const __kyc = new FormData();
-    //   __kyc.append("euin_no",this.__clientForm.value.euin_no.split(' ')[0]);
-    //   __kyc.append("sub_arn_no",this.__clientForm.value.sub_arn_no ? this.__clientForm.value.sub_arn_no.split(' ')[0] : '');
-    //   __kyc.append("sub_brk_cd",this.__clientForm.value.sub_brk_cd ? this.__clientForm.value.sub_brk_cd : '');
-    // __kyc.append("client_id",this.__clientForm.value.client_id);
-    // __kyc.append("client_code",this.__clientForm.value.client_code);
-    // // __kyc.append("pan_no",this.__clientForm.value.pan_no);
-    // // __kyc.append("_client_code",this.__clientForm.value._client_code);
-    // // __kyc.append("_pan_no",this.__clientForm.value._pan_no);
-    // // __kyc.append("mobile",this.__clientForm.value.mobile);
-    // __kyc.append("client_name",this.__clientForm.value.client_name);
-    // // __kyc.append("email",this.__clientForm.value.email);
-    // // __kyc.append("doc_dtls",this.__clientForm.value.doc_dtls);
-    // // __kyc.append("temp_tin_id",this.__clientForm.value.temp_tin_id);
-    // __kyc.append("kyc_type",this.__clientForm.value.kyc_type);
-    // __kyc.append("kyc_login_type",this.__clientForm.value.kyc_login_type);
-    // __kyc.append("kyc_login_at",this.__clientForm.value.kyc_login_at);
-    // // __kyc.append("amc_id",this.__clientForm.value.amc_id);
-    // __kyc.append("bu_type",this.__clientForm.value.bu_type);
-    // __kyc.append("remarks",this.__clientForm.value.remarks);
-    // __kyc.append("scaned_form",this.__clientForm.value.scaned_file);
-    //   __kyc.append("present_kyc_status",this.__clientForm.value.kyc_fresh_modification);
+    if (this.__clientForm.invalid) {
+      this.__utility.showSnackbar('Submition failed due to some error', 0);
+      return;
+    }
+      const __kyc = new FormData();
+      __kyc.append("euin_no",this.__clientForm.value.euin_no.split(' ')[0]);
+      __kyc.append("sub_arn_no",this.__clientForm.value.sub_arn_no ? this.__clientForm.value.sub_arn_no.split(' ')[0] : '');
+      __kyc.append("sub_brk_cd",this.__clientForm.value.sub_brk_cd ? this.__clientForm.value.sub_brk_cd : '');
+    __kyc.append("client_id",this.__clientForm.value.client_id);
+    __kyc.append("client_code",this.__clientForm.value.client_code);
+    __kyc.append("client_name",this.__clientForm.value.client_name);
+    __kyc.append("kyc_type",this.__clientForm.value.kyc_type);
+    __kyc.append("kyc_login_type",this.__clientForm.value.kyc_login_type);
+    __kyc.append("kyc_login_at",this.__clientForm.value.kyc_login_at);
+    __kyc.append("bu_type",this.__clientForm.value.bu_type);
+    __kyc.append("remarks",this.__clientForm.value.remarks);
+    __kyc.append("scaned_form",this.__clientForm.value.scaned_file);
+    __kyc.append("remarks",this.__clientForm.value.remarks);
+      __kyc.append("present_kyc_status",this.__clientForm.value.kyc_fresh_modification);
+    this.__dbIntr.api_call(1, '/kycAddEdit', __kyc).subscribe((res: any) => {
+        if (res.suc == 1) {
+          this.resetForm()
+        }
+        this.__utility.showSnackbar(res.suc == 1 ? 'Kyc submitted Successfully' : res.msg, res.suc);
+    })
+  }
 
-    // // if(this.__clientForm.value.kyc_type == '13'){
-    // //   __kyc.append("fresh_type",this.__clientForm.value.kyc_fresh_modification);
-    // // }
-    // // else{
-    // //   __kyc.append("modification_type",this.__clientForm.value.kyc_fresh_modification);
-    // // }
-    // this.__dbIntr.api_call(1, '/kycAddEdit', __kyc).subscribe((res: any) => {
-    //   // if (res == 1) {
-    //   //   this.dialogRef.close(res.suc);
-    //   // }
-    //   this.__utility.showSnackbar(res.suc == 1 ? 'Kyc submitted Successfully' : res.msg, res.suc);
-    // })
+  resetForm = () =>{
+    this.__isCldtlsEmpty = false;
+    this.__isEuinVisible = false;
+    this.__issubBrkArnVisible = false;
+    this.__isclientVisible = false;
+    this.__subbrkArnMst = [];
+    this.__clientMst = [];
+    this.__euinMst = []
+    this.getItems(null,'S');
+    this.getItems(null,'E');
+    this.getItems(null,'C');
+    this.__clientForm.patchValue({
+      bu_type:'',
+      kyc_type:'',
+      kyc_fresh_modification:'',
+      kyc_login_type:'',
+      kyc_login_at:'',
+      scaned_form:null,
+      preview_scaned_file:null,
+      remarks:''
+    })
   }
 
   setItem(id, type_id, doc) {
@@ -343,9 +351,16 @@ export class KycEntryComponent implements OnInit {
   }
 
   getKycLoginAtMaster(kyc_login_type) {
-    this.__dbIntr.api_call(0, kyc_login_type == 'A' ? '/amc' : '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe(res => {
-      this.setKycLoginAtAccordingToKycLogin(kyc_login_type,res)
-    })
+    if(kyc_login_type){
+      this.__dbIntr.api_call(0, kyc_login_type == 'A' ? '/amc' : '/rnt', null).pipe(map((x: responseDT) => x.data)).subscribe(res => {
+        this.setKycLoginAtAccordingToKycLogin(kyc_login_type,res)
+      })
+    }
+    else{
+      this.setKycLoginAtAccordingToKycLogin(kyc_login_type,[])
+
+    }
+   
   }
   setKycLoginAtAccordingToKycLogin(kyc_login_type,res){
       if(res.length > 0){
@@ -387,21 +402,21 @@ export class KycEntryComponent implements OnInit {
     console.log(__items);
 
     switch(mode){
-      case 'S':this.__clientForm.controls['sub_arn_no'].reset(__items.arn_no,{ onlySelf: true, emitEvent: false });
-               this.__clientForm.controls['sub_brk_cd'].setValue(__items.code);
+      case 'S':this.__clientForm.controls['sub_arn_no'].reset(__items ? __items.arn_no : '',{ onlySelf: true, emitEvent: false });
+               this.__clientForm.controls['sub_brk_cd'].setValue(__items ? __items.code : '');
                this.searchResultVisibilityForSubBrkArn('none');
                break;
-      case 'E':this.__clientForm.controls['euin_no'].reset(__items.euin_no+' - '+__items.emp_name,{ onlySelf: true, emitEvent: false });
+      case 'E':this.__clientForm.controls['euin_no'].reset(__items ? (__items.euin_no+' - '+__items.emp_name) : '',{ onlySelf: true, emitEvent: false });
                this.searchResultVisibility('none');
                break;
       case 'C':this.__dialogDtForClient = __items;
-        this.__clientForm.controls['client_code'].reset(__items.client_code, {
+        this.__clientForm.controls['client_code'].reset(__items ? __items.client_code : '', {
           onlySelf: true,
           emitEvent: false,
         });
         this.__clientForm.patchValue({
-          client_name: __items.client_name,
-          client_id: __items.id,
+          client_name: __items ? __items.client_name : '',
+          client_id: __items ? __items.id : '',
         });
         this.searchResultVisibilityForClient('none');
         break;

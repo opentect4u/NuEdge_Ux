@@ -33,6 +33,7 @@
           </ng-container>
           <ng-container *ngIf="trnsTypeId == 2">
                 <report-kyc-rpt
+                (viewDocument)="DocumentView($event)"
                 [transaction]="transaction"
                 [selectBtn]="selectBtn"
               [__pageNumber]="__pageNumber"

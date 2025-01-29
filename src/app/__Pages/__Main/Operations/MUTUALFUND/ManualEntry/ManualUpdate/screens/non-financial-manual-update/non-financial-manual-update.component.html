@@ -11,10 +11,10 @@
 <form [formGroup]="__rcvForms" (ngSubmit)="submit()" autocomplete="off">
     <div class="row">
     <div class="col-sm-8 d-flex justify-content-start align-items-center">
-        <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
+        <!-- <mat-radio-group aria-label="Select an option" color="primary" formControlName="options">
         <mat-radio-button value="2">Summary</mat-radio-button>
         <mat-radio-button value="1" class="mx-5">Detail</mat-radio-button>
-        </mat-radio-group>
+        </mat-radio-group> -->
     </div>
     <div class="col-sm-4 d-flex justify-content-end align-items-center">
         <p-selectButton
@@ -232,7 +232,9 @@
           <button mat-menu-item (click)="exporter.exportTable('xlsx',{fileName:'NonFinancialManualUpdateReport'})">
             <mat-icon>download</mat-icon> Export Excel
           </button>
-        </mat-menu> -->
+        </mat-menu>  [resizableColumns]="true"
+        selectionMode="multiple"
+        columnResizeMode="expand" [tableStyle]="{ 'min-width': __rcvForms.value.options == '2' ? '120rem' : '200rem' }" -->
       </div>
 
     </div>
@@ -243,16 +245,17 @@
           sortMode="single"
           [lazy]="true"
       [value]="__financMst.data"
-      [columns]="__columns" [resizableColumns]="true"
-        selectionMode="multiple"
-        columnResizeMode="expand" [scrollable]="true"
+      [columns]="__columns" [scrollable]="true"
         scrollHeight="358px"
-        [autoLayout]="true" [responsive]="true" styleClass="p-datatable-md p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': __rcvForms.value.options == '2' ? '120rem' : '200rem' }"
+        [autoLayout]="true" styleClass="p-datatable-md p-datatable-gridlines"
+
         >
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': __rcvForms.value.options == '2' ? '20rem' : '25rem'}">
+            <th  *ngFor="let col of __columns"
+            [style.max-width]="col.width"
+            [style.min-width]="col.width" 
+            pResizableColumn [pSortableColumn]="col.field" [ngStyle]="{'width': __rcvForms.value.options == '2' ? '20rem' : '25rem'}">
               {{ col.header }}
               <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
               </p-sortIcon>
@@ -261,7 +264,9 @@
         </ng-template>
         <ng-template pTemplate="body" let-finance let-columns="columns">
           <tr tabindex="999">
-            <td *ngFor="let col of columns">
+            <td *ngFor="let col of __columns"
+            [style.max-width]="col.width"
+            [style.min-width]="col.width" >
 
               <ng-container [ngSwitch]="true">
                 <ng-container *ngSwitchCase="col.field == 'edit'">
@@ -309,7 +314,7 @@
                   </ng-template>
 
                 </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'rcv_datetime' || col.field == 'rnt_login_cutt_off'">
+                <ng-container *ngSwitchCase="col.field == 'rcv_datetime' || col.field == 'rnt_login_dt'">
                   <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</b>
                   </ng-container>
 
@@ -320,7 +325,7 @@
                     || col.field == 'sip_date'
                     || col.field == 'sip_end_date'
                     || col.field == 'sip_end_date'
-                    || col.field == 'rnt_login_dt'">
+                    || col.field == 'rnt_login_cutt_off'">
                       <b #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</b>
                       </ng-container>
                 <ng-container *ngSwitchDefault>

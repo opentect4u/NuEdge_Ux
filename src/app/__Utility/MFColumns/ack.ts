@@ -2,43 +2,43 @@ import { column } from 'src/app/__Model/tblClmns';
 export class MfackClmns {
   public static Summary_common =
   [
-    {field:'edit',header:'Edit',width:'3rem'},
-    {field:'app_frm_view',header:'APP View',width:'3rem'},
+    {field:'edit',header:'Edit',width:'7rem'},
+    {field:'app_frm_view',header:'APP View',width:'7rem'},
     {field:'entry_date',header:'Entry Date',width:'7rem'},
-    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'7rem'},
-    { field: 'rnt_login_dt', header: 'Login DateTime',width:'7rem'},
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'12rem'},
+    { field: 'rnt_login_dt', header: 'Login DateTime',width:'12rem'},
     {field:'tin_no',header:'TIN',width:'7rem'},
     {field:'branch_name',header:'Branch',width:'7rem'},
-     {field:'sub_brk_cd',header:'Sub Broker Code',width:'7rem'},
+     {field:'sub_brk_cd',header:'Sub Broker Code',width:'12rem'},
      {field:'euin_no',header:'EUIN',width:'7rem'},
-     {field:'first_client_name',header:'First Holder Name',width:'7rem'},
-     {field:'first_client_code',header:'First Holder Code',width:'7rem'},
-     {field:'first_client_pan',header:'First Holder PAN',width:'7rem'},
+     {field:'first_client_name',header:'First Holder Name',width:'18rem'},
+     {field:'first_client_code',header:'First Holder Code',width:'10rem'},
+     {field:'first_client_pan',header:'First Holder PAN',width:'10rem'},
      {field:'trans_name',header:'Transction Type',width:'7rem'},
      {field:'scheme_name',header:'Scheme',width:'20rem'},
      {field:'application_no',header:'Application No',width:'7rem'},
      {field:'folio_no',header:'Folio No',width:'7rem'},
-     {field:'amount',header:'Amount',width:'7rem'},
+     {field:'amount',header:'Amount',width:'10rem'},
   ]
 
   public static Summary_Sip=[
-    {field:'sip_amount',header:'SIP Amount'},
-    {field:'rnt_name',header:'Form Submitted At'}
+    {field:'sip_amount',header:'SIP Amount',width:'10rem'},
+    {field:'rnt_name',header:'Form Submitted At',width:'10rem'}
   ]
   public static Summary_Pip_Switch=[
-    {field:'rnt_name',header:'Form Submitted At'}
+    {field:'rnt_name',header:'Form Submitted At',width:'10rem'}
   ]
   public static Deatils: column[] = [
-    { field: 'edit', header: 'Edit',width:'1rem' },
-    { field: 'app_frm_view', header: 'APP View',width:'1rem' },
-    { field: 'entry_date', header: 'Entry Date',width:'3rem' },
-    { field: 'rnt_login_cutt_off', header: 'Login Cut Off',width:'3rem' },
-    { field: 'rnt_login_dt', header: 'Login DateTime',width:'3rem' },
-    { field: 'tin_no', header: 'TIN',width:'3rem' },
-    { field: 'bu_type', header: 'Business Type',width:'3rem' },
-    { field: 'first_client_name', header: 'First Holder Name',width:'15rem' },
-    { field: 'first_client_code', header: 'First Holder Code',width:'5rem' },
-    { field: 'first_client_pan', header: 'First Holder PAN',width:'5rem' },
+    { field: 'edit', header: 'Edit',width:'7rem' },
+    { field: 'app_frm_view', header: 'APP View',width:'7rem' },
+    { field: 'entry_date', header: 'Entry Date',width:'7rem' },
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off',width:'12rem' },
+    { field: 'rnt_login_dt', header: 'Login DateTime',width:'12rem' },
+    { field: 'tin_no', header: 'TIN',width:'7rem' },
+    { field: 'bu_type', header: 'Business Type',width:'7rem' },
+    { field: 'first_client_name', header: 'First Holder Name',width:'18rem' },
+    { field: 'first_client_code', header: 'First Holder Code',width:'10rem' },
+    { field: 'first_client_pan', header: 'First Holder PAN',width:'10rem' },
     { field: 'first_client_kyc_status', header: 'First Holder KYC Status',width:'5rem' },
     { field: 'second_client_name', header: 'Second Holder Name',width:'15rem' },
     { field: 'second_client_code', header: 'Second Holder Code',width:'5rem' },
@@ -49,67 +49,67 @@ export class MfackClmns {
     { field: 'third_client_pan', header: 'Third Holder PAN',width:'5rem' },
     { field: 'third_client_kyc_status', header: 'Third Holder KYC Status',width:'5rem' },
     { field: 'scheme_name', header: 'Scheme',width:'21rem' },
-    { field: 'branch_name', header: 'Branch',width:'3rem' },
+    { field: 'branch_name', header: 'Branch',width:'7rem' },
     { field: 'rm_name', header: 'RM Name',width:'12rem' },
-    { field: 'sub_brk_cd', header: 'Sub Broker Code',width:'3rem' },
-    { field: 'euin_no', header: 'EUIN',width:'3rem' },
-    { field: 'mode_of_holding', header: 'Mode Of Holding',width:'3rem' },
+    { field: 'sub_brk_cd', header: 'Sub Broker Code',width:'12rem' },
+    { field: 'euin_no', header: 'EUIN',width:'7rem' },
+    { field: 'mode_of_holding', header: 'Mode Of Holding',width:'7rem' },
     { field: 'trans_name', header: 'Transaction Type',width:'7rem' },
-    { field: 'plan_name', header: 'Plan',width:'3rem' },
+    { field: 'plan_name', header: 'Plan',width:'7rem' },
     { field: 'opt_name', header: 'Option' }
   ];
 
   public static Columns_for_Switch: column[] = [
-    { field: 'scheme_name_to', header: 'Scheme Name (To Scheme)' },
-    { field: 'amount', header: 'Amount' },
-    { field: 'chq_no', header: 'Cheque No' },
-    { field: 'bank', header: 'Bank' },
-    { field: 'inv_type', header: 'Investment Type' },
-    { field: 'application_no', header: 'Application No' },
-    { field: 'folio_no', header: 'Folio No' },
-    { field: 'rnt_name', header: 'Form Submitted At' },
-    { field: 'remarks', header: 'Remarks' },
+    { field: 'scheme_name_to', header: 'Scheme Name (To Scheme)',width:'25rem'},
+    { field: 'amount', header: 'Amount',width:'10rem'},
+    { field: 'chq_no', header: 'Cheque No',width:'10rem'},
+    { field: 'bank', header: 'Bank',width:'12rem'},
+    { field: 'inv_type', header: 'Investment Type',width:'12rem'},
+    { field: 'application_no', header: 'Application No',width:'10rem'},
+    { field: 'folio_no', header: 'Folio No',width:'10rem'},
+    { field: 'rnt_name', header: 'Form Submitted At',width:'10rem'},
+    { field: 'remarks', header: 'Remarks',width:'15rem'},
   ];
 
   public static Columns_for_Sip = [
-    { field: 'amount', header: 'Amount' },
-    { field: 'chq_no', header: 'Cheque No' },
-    { field: 'bank', header: 'Bank' },
-    { field: 'inv_type', header: 'Investment Type' },
-    { field: 'application_no', header: 'Application No' },
-    { field: 'folio_no', header: 'Folio No' },
-    { field: 'sip_type_name', header: 'SIP Type' },
-    { field: 'sip_frequency', header: 'SIP Frequency' },
-    { field: 'sip_date', header: 'SIP Date' },
-    { field: 'sip_start_date', header: 'SIP Start Date' },
-    { field: 'sip_end_date', header: 'SIP End Date' },
-    { field: 'sip_amount', header: 'SIP Amount' },
-    { field: 'rnt_name', header: 'Form Submitted At' },
-    { field: 'remarks', header: 'Remarks' },
+    { field: 'amount', header: 'Amount',width:'10rem'},
+    { field: 'chq_no', header: 'Cheque No',width:'10rem'},
+    { field: 'bank', header: 'Bank',width:'12rem'},
+    { field: 'inv_type', header: 'Investment Type',width:'12rem'},
+    { field: 'application_no', header: 'Application No',width:'10rem'},
+    { field: 'folio_no', header: 'Folio No',width:'10rem'},
+    { field: 'sip_type_name', header: 'SIP Type',width:'10rem'},
+    { field: 'sip_frequency', header: 'SIP Frequency',width:'7rem'},
+    { field: 'sip_date', header: 'SIP Date',width:'10rem'},
+    { field: 'sip_start_date', header: 'SIP Start Date',width:'10rem'},
+    { field: 'sip_end_date', header: 'SIP End Date',width:'10rem'},
+    { field: 'sip_amount', header: 'SIP Amount',width:'10rem'},
+    { field: 'rnt_name', header: 'Form Submitted At',width:'10rem'},
+    { field: 'remarks', header: 'Remarks',width:'12rem'},
   ];
   public static Columns_for_Pip = [
-    { field: 'amount', header: 'Amount' },
-    { field: 'chq_no', header: 'Cheque No' },
-    { field: 'bank', header: 'Bank' },
-    { field: 'inv_type', header: 'Investment Type' },
-    { field: 'application_no', header: 'Application No' },
-    { field: 'folio_no', header: 'Folio No' },
-    { field: 'rnt_name', header: 'Form Submitted At' },
-    { field: 'remarks', header: 'Remarks' },
+    { field: 'amount', header: 'Amount',width:'10rem'},
+    { field: 'chq_no', header: 'Cheque No',width:'10rem'},
+    { field: 'bank', header: 'Bank',width:'12rem'},
+    { field: 'inv_type', header: 'Investment Type',width:'10rem'},
+    { field: 'application_no', header: 'Application No',width:'10rem'},
+    { field: 'folio_no', header: 'Folio No',width:'10rem'},
+    { field: 'rnt_name', header: 'Form Submitted At',width:'10rem'},
+    { field: 'remarks', header: 'Remarks',width:'12rem'},
   ];
 
 
   public static Columns_for_nfoCombo=[
-    {field:'inv_type',header:'Investment Type'},
-    {field:'application_no',header:'Application No'},
-    {field:'folio_no',header:'Folio No'},
-    {field:'amount',header:'Amount'},
-    {field:'chq_no',header:'Cheque No'},
-    {field:'bank',header:'Bank'},
-    {field:'scheme_name_to',header:'Scheme Name (To Scheme)'},
-    {field:'switch_amt',header:'Switch Amount / Unit'},
-    {field:'rnt_name',header:'Form Submitted At'},
-    {field:'remarks',header:'Remarks'}
+    {field:'inv_type',header:'Investment Type',width:'10rem'},
+    {field:'application_no',header:'Application No',width:'10rem'},
+    {field:'folio_no',header:'Folio No',width:'10rem'},
+    {field:'amount',header:'Amount',width:'10rem'},
+    {field:'chq_no',header:'Cheque No',width:'10rem'},
+    {field:'bank',header:'Bank',width:'12rem'},
+    {field:'scheme_name_to',header:'Scheme Name (To Scheme)',width:'25rem'},
+    {field:'switch_amt',header:'Switch Amount / Unit',width:'10rem'},
+    {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
+    {field:'remarks',header:'Remarks',width:'12rem'}
   ]
 }
 
@@ -117,169 +117,169 @@ export class MfackClmns {
 
 export class nonFinAckClms {
   public static SUMMARY_COPY = [
-    { field: 'edit', header: 'Edit' },
-    { field: 'app_frm_view', header: 'APP View' },
-    { field: 'entry_date', header: 'Entry Date' },
-    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' },
-    { field: 'rnt_login_dt', header: 'Login DateTime' },
-    { field: 'tin_no', header: 'TIN' },
-    { field: 'branch_name', header: 'Branch' },
-    { field: 'sub_brk_cd', header: 'Sub Broker Code' },
-    { field: 'euin_no', header: 'EUIN' },
-    { field: 'first_client_name', header: 'First Holder Name' },
-    { field: 'first_client_code', header: 'First Holder Code' },
-    { field: 'first_client_pan', header: 'First Holder PAN' },
-    { field: 'trans_name', header: 'Transction Type' },
-    { field: 'scheme_name', header: 'Scheme' },
-    { field: 'folio_no', header: 'Folio No' },
-    { field: 'rnt_name', header: 'Form Submitted At' },
-    { field: 'remarks', header: 'Remarks' }
+    { field: 'edit', header: 'Edit',width:'7rem'},
+    { field: 'app_frm_view', header: 'APP View',width:'7rem'},
+    { field: 'entry_date', header: 'Entry Date',width:'7rem'},
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off',width:'12rem'},
+    { field: 'rnt_login_dt', header: 'Login DateTime',width:'12rem' },
+    { field: 'tin_no', header: 'TIN',width:'10rem'},
+    { field: 'branch_name', header: 'Branch',width:'10rem'},
+    { field: 'sub_brk_cd', header: 'Sub Broker Code',width:'12rem'},
+    { field: 'euin_no', header: 'EUIN',width:'10rem'},
+    { field: 'first_client_name', header: 'First Holder Name',width:'18rem' },
+    { field: 'first_client_code', header: 'First Holder Code',width:'10rem' },
+    { field: 'first_client_pan', header: 'First Holder PAN',width:'10rem' },
+    { field: 'trans_name', header: 'Transction Type',width:'15rem'},
+    { field: 'scheme_name', header: 'Scheme',width:'25rem'},
+    { field: 'folio_no', header: 'Folio No',width:'7rem'},
+    { field: 'rnt_name', header: 'Form Submitted At',width:'10rem'},
+    { field: 'remarks', header: 'Remarks',width:'7rem'}
   ];
 
   /**** ADDRESS CHANGE (DONE)*/
   public static AC = [
-    { field: 'new_address', header: 'New Address'}
+    { field: 'new_address', header: 'New Address',width:'15rem'}
   ];
   /** END */
 
   /*** CHANGE MODE OF HOLDING (DONE)*/
   public static CMOH = [
-    { field: 'existing_mode_of_holding', header: 'Existing Mode of Holding'},
-    { field: 'new_mode_of_holding', header: 'New Mode of Holding'}
+    { field: 'existing_mode_of_holding', header: 'Existing Mode of Holding',width:'10rem'},
+    { field: 'new_mode_of_holding', header: 'New Mode of Holding',width:'10rem'}
   ];
   /*** END */
 
   /**** CHANGE OF NAME (DONE)*/
   public static CON = [
-    { field: 'reason_for_change', header: 'Reason For Change'},
-    { field: 'new_name', header: 'New Name'}
+    { field: 'reason_for_change', header: 'Reason For Change',width:'15rem'},
+    { field: 'new_name', header: 'New Name',width:'15rem'}
   ];
    /***END */
 
   /***** CORE BANKING UPDATION (DONE)*/
   public static CBU = [
-    { field: 'acc_no', header: 'Account No'},
-    { field: 'bank_name', header: 'Bank'},
-    { field: 'ifsc', header: 'IFSC'},
-    { field: 'micr_code', header: 'MICR'},
-    { field: 'branch_name', header: 'Branch'}
+    { field: 'acc_no', header: 'Account No',width:'7rem'},
+    { field: 'bank_name', header: 'Bank',width:'10rem'},
+    { field: 'ifsc', header: 'IFSC',width:'7rem'},
+    { field: 'micr_code', header: 'MICR',width:'7rem'},
+    { field: 'branch_name', header: 'Branch',width:'7rem'}
   ];
   /**** END */
 
   /**** CHANGE OF BANK (DONE) */
   public static COBK = [
-    { field: 'existing_bank_acc_no', header: 'Existing Bank Account No'},
-    { field: 'existing_bank_name', header: 'Existing Bank'},
-    { field: 'existing_ifsc', header: 'Existing IFSC'},
-    { field: 'existing_micr_code', header: 'Existing MICR'},
-    { field: 'existing_branch_name', header: 'Existing Branch'},
-    { field: 'new_bank_acc_no', header: 'New Bank Account No'},
-    { field: 'new_bank_name', header: 'New Bank'},
-    { field: 'new_ifsc', header: 'New IFSC'},
-    { field: 'new_micr_code', header: 'New MICR'},
-    { field: 'new_branch_name', header: 'New Branch'}
+    { field: 'existing_bank_acc_no', header: 'Existing Bank Account No',width:'7rem'},
+    { field: 'existing_bank_name', header: 'Existing Bank',width:'10rem'},
+    { field: 'existing_ifsc', header: 'Existing IFSC',width:'7rem'},
+    { field: 'existing_micr_code', header: 'Existing MICR',width:'7rem'},
+    { field: 'existing_branch_name', header: 'Existing Branch',width:'7rem'},
+    { field: 'new_bank_acc_no', header: 'New Bank Account No',width:'7rem'},
+    { field: 'new_bank_name', header: 'New Bank',width:'10rem'},
+    { field: 'new_ifsc', header: 'New IFSC',width:'7rem'},
+    { field: 'new_micr_code', header: 'New MICR',width:'7rem'},
+    { field: 'new_branch_name', header: 'New Branch',width:'10rem'}
   ];
   /**** END */
 
   /*** FOLIO CONSOLIDATION MERGE (DONE)*/
   public static FCM = [
-    {field:'targeted_folio',header:'Targeted Folio'},
-    {field:'source_folio',header:'Source Folio'}
+    {field:'targeted_folio',header:'Targeted Folio',width:'7rem'},
+    {field:'source_folio',header:'Source Folio',width:'7rem'}
   ]
   /*** END */
 
   /***CHANGE OF BROKER (DONE)*/
   public static COB =[
-    {field:'new_broker_code',header:'New Sub Broker Code'}
+    {field:'new_broker_code',header:'New Sub Broker Code',width:'12rem'}
   ]
   /**** END */
 
   /** NOMINEE CHANGE OR ADDITION (DONE)*/
   public static NA_OR_NC = [
-      {field:'new_nominee_name',header:'New Nominee Name'},
-      {field:'percentage',header:'Percentage'}
+      {field:'new_nominee_name',header:'New Nominee Name',width:'15rem'},
+      {field:'percentage',header:'Percentage',width:'7rem'}
   ]
   /** END */
 
    /** SWP REGISTRATION (DONE)*/
    public static SWPR = [
-    {field:'swp_type_name',header:'SWP Type'},
-    {field:'swp_frequency',header:'SWP Frequency'},
-    {field:'swp_date',header:'SWP Date'},
-    {field:'start_date',header:'Start Date'},
-    {field:'end_date',header:'End Date'},
-    {field:'swp_amount',header:'SWP Amount'}
+    {field:'swp_type_name',header:'SWP Type',width:'7rem'},
+    {field:'swp_frequency',header:'SWP Frequency',width:'10rem'},
+    {field:'swp_date',header:'SWP Date',width:'10rem'},
+    {field:'start_date',header:'Start Date',width:'10rem'},
+    {field:'end_date',header:'End Date',width:'10rem'},
+    {field:'swp_amount',header:'SWP Amount',width:'10rem'}
 ]
 /** END */
 
    /** Transmission (DONE)*/
    public static TRANSMISSION = [
-    {field:'transmission_type',header:'Transmission Type'},
-    {field:'claiment_name',header:'Claiment Name'},
-    {field:'claiment_code',header:'Claiment Code'},
-    {field:'claiment_pan',header:'PAN'}
+    {field:'transmission_type',header:'Transmission Type',width:'10rem'},
+    {field:'claiment_name',header:'Claiment Name',width:'15rem'},
+    {field:'claiment_code',header:'Claiment Code',width:'10rem'},
+    {field:'claiment_pan',header:'PAN',width:'10rem'}
 ]
 /** END */
 
    /** Redemption (DONE)*/
    public static REDEMPTION = [
-    {field:'redemption_type',header:'Redemption Type'},
-    {field:'redemption_amount',header:'Amount/Unit'}
+    {field:'redemption_type',header:'Redemption Type',width:'10rem'},
+    {field:'redemption_amount',header:'Amount/Unit',width:'10rem'}
     ]
     /** END */
 
   /** Cancelation (DONE)*/
   public static CANCELATION = [
-    {field:'cancelation_effective_date',header:'Cancelation Effective Date'},
-    {field:'amount',header:'Amount'}
+    {field:'cancelation_effective_date',header:'Cancelation Effective Date',width:'10rem'},
+    {field:'amount',header:'Amount',width:'10rem'}
     ]
     /** END */
 
     /** PAUSE (DONE)*/
     public static PAUSE = [
-    {field:'duration',header:'Duration'},
-    {field:'pause_start_date',header:'Pause Start Date'},
-    {field:'pause_end_date',header:'Pause End Date'},
-    {field:'pause_amount',header:'Amount'}
+    {field:'duration',header:'Duration',width:'7rem'},
+    {field:'pause_start_date',header:'Pause Start Date',width:'10rem'},
+    {field:'pause_end_date',header:'Pause End Date',width:'10rem'},
+    {field:'pause_amount',header:'Amount',width:'10rem'}
     ]
     /** END */
 
     /** STP REGISTRATION (DONE)*/
     public static STP_REGISTRATION = [
-      {field:'stp_type',header:'STP Type'},
-      {field:'stp_frequency',header:'STP Frequency'},
-      {field:'stp_date',header:'STP Date'},
-      {field:'scheme_name_to',header:'Scheme Name (To Scheme)'},
-      {field:'stp_start_date',header:'STP Start Date'},
-      {field:'stp_end_date',header:'STP End Date'},
-      {field:'stp_amount',header:'STP Amount'}
+      {field:'stp_type',header:'STP Type',width:'10rem'},
+      {field:'stp_frequency',header:'STP Frequency',width:'12rem'},
+      {field:'stp_date',header:'STP Date',width:'10rem'},
+      {field:'scheme_name_to',header:'Scheme Name (To Scheme)',width:'25rem'},
+      {field:'stp_start_date',header:'STP Start Date',width:'10rem'},
+      {field:'stp_end_date',header:'STP End Date',width:'10rem'},
+      {field:'stp_amount',header:'STP Amount',width:'10rem'}
       ]
       /** END */
 
   /**CHANGE OF CONTACT DETAILS (DONE)*/
   public static COCD =[
-    {field:'new_email',header:'New Email'},
-    {field:'new_mobile',header:'New Mobile'}
+    {field:'new_email',header:'New Email',width:'15rem'},
+    {field:'new_mobile',header:'New Mobile',width:'10rem'}
   ]
   /** END */
 
 
 
   public static COLUMN_SELECTOR=[
-    { field: 'edit', header: 'Edit',width:'1rem'},
-    { field: 'app_frm_view', header: 'APP View' ,width:'1rem'},
+    { field: 'edit', header: 'Edit',width:'7rem'},
+    { field: 'app_frm_view', header: 'APP View' ,width:'7rem'},
     { field: 'entry_date', header: 'Entry Date' ,width:'5rem'},
-    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'5rem'},
-    { field: 'rnt_login_dt', header: 'Login DateTime' ,width:'5rem'},
+    { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'12rem'},
+    { field: 'rnt_login_dt', header: 'Login DateTime' ,width:'12rem'},
     { field: 'tin_no', header: 'TIN' ,width:'5rem'},
     { field: 'bu_type', header: 'Business Type' ,width:'5rem'},
     { field: 'branch_name', header: 'Branch' ,width:'10rem'},
     { field: 'rm_name', header: 'RM Name',width:'12rem'},
     { field: 'sub_brk_cd', header: 'Sub Broker Code',width:'12rem'},
     { field: 'euin_no', header: 'EUIN' ,width:'10rem'},
-    { field: 'first_client_name', header: 'First Holder Name' ,width:'15rem'},
-    { field: 'first_client_code', header: 'First Holder Code' ,width:'7rem'},
-    { field: 'first_client_pan', header: 'First Holder PAN' ,width:'7rem'},
+    { field: 'first_client_name', header: 'First Holder Name' ,width:'18rem'},
+    { field: 'first_client_code', header: 'First Holder Code' ,width:'10rem'},
+    { field: 'first_client_pan', header: 'First Holder PAN' ,width:'10rem'},
     { field: 'trans_name', header: 'Transction Type' ,width:'10rem'},
     { field: 'scheme_name', header: 'Scheme',width:'25rem'},
     { field: 'plan_name', header: 'Plan' ,width:'10rem'},

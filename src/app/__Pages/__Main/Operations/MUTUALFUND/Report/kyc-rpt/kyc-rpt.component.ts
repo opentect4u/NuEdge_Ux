@@ -12,6 +12,8 @@ import { global } from 'src/app/__Utility/globalFunc';
   styleUrls: ['./kyc-rpt.component.css']
 })
 export class KycRptComponent implements OnInit {
+  @Output() viewDocument = new EventEmitter();
+
   __columns: column[] = [];
   selectedColmn:string[] =[];
    ClmList:column[] =(kycClm.Details.filter(x => !['ack_form_view','mu_frm_view','edit'].includes(x.field)));
@@ -109,9 +111,11 @@ setColumns(res){
   const clmToRemoved = ['edit','app_form_view','ack_form_view','mu_frm_view','delete'];
   this.__columns = res.options == 1 ? (kycClm.Details.filter(x => !['ack_form_view','mu_frm_view','edit'].includes(x.field))) : (kycClm.Summary_copy.filter((x: any) => !['ack_form_view','mu_frm_view','edit'].includes(x.field)));
   this.selectedColmn =  this.__columns.map(item => {return item['field']});
+  console.log(this.__columns)
 }
 DocView(kycDtls,mode){
-
+  console.log(kycDtls);
+  this.viewDocument.emit(kycDtls);
 }
 customSort(ev){
   this.sort.order =ev.sortOrder;

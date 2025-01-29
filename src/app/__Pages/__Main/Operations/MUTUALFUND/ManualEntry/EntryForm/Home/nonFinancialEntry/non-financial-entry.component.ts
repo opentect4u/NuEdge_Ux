@@ -2096,6 +2096,7 @@ export class NonFinancialEntryComponent implements OnInit {
     this.displayMode_forSub_arn_no = display_mode;
   }
   getItems(__items) {
+    console.log(__items);
     this.__nonfinForm.controls['temp_tin_no'].reset(__items.temp_tin_no, {
       onlySelf: true,
       emitEvent: false,
@@ -2120,10 +2121,10 @@ export class NonFinancialEntryComponent implements OnInit {
       this.__clientMst.length = 0;
       this.__schemeMst.length = 0;
       this.__clientMst.push({
-        client_name: __items.first_client_name,
-        client_code: __items.first_client_code,
-        id: __items.first_client_id,
-        client_type: __items.first_client_type,
+        client_name: __items.client_name,
+        client_code: __items.client_code,
+        id: __items.client_id,
+        client_type: __items.client_type,
       });
       this.__euinMst.push({
         euin_no: __items.euin_no,
@@ -2256,6 +2257,7 @@ export class NonFinancialEntryComponent implements OnInit {
         this.searchResultVisibilityForBnk('none');
         break;
       case 'C':
+        console.log(__euinDtls)
         this.__dialogDtForClient = __euinDtls;
         this.__nonfinForm.controls['client_code'].reset(
           __euinDtls.client_code,
