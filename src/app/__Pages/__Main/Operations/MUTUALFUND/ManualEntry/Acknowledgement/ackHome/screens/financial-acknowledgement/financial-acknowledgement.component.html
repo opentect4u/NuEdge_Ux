@@ -373,6 +373,7 @@
          
           columnResizeMode="expand" 
           [resizableColumns]="true"
+           [(selection)]="selectedAck" dataKey="tin_no"
         -->
         <p-table
         #dt
@@ -388,8 +389,9 @@
          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
          [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
-          [responsive]="true" styleClass="p-datatable-stripped p-datatable-sm"
-          [tableStyle]="{ 'min-width': '374rem' }">
+           styleClass="p-datatable-stripped p-datatable-sm"
+           [tableStyle]="{ 'min-width': '500rem' }"
+          >
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between">
               <div>
@@ -404,8 +406,11 @@
           </ng-template>
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field" 
-                [style.min-width]="col.field == 'edit' || col.field == 'app_frm_view' ?'3rem' : col.width"
+              <!-- <th style="width: 4rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th> -->
+              <th  *ngFor="let col of __columns" 
+              [style.max-width]="col.width"
+              [style.min-width]="col.width" [pSortableColumn]="col.field" 
+               
               >
                 {{ col.header }}
                 <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
@@ -420,8 +425,13 @@
               'background-color': finance.ack_status == 'R' ?  '#b70a0a30' : ''
             }"
             >
+            <!-- <td>
+              <p-tableCheckbox [value]="finance"></p-tableCheckbox>
+            </td> -->
 
-              <td *ngFor="let col of columns" [style.min-width]="col.field == 'edit' || col.field == 'app_frm_view' ?'3rem' : col.width">
+              <td *ngFor="let col of __columns" 
+              [style.max-width]="col.width"
+              [style.min-width]="col.width">
                 <ng-container [ngSwitch]="true">
                     <!-- 
                       form_status :
@@ -533,6 +543,7 @@
             </div>
             <div class="btnGrp">
               <p-button
+              [disabled]="__ackMst.data.length == 0"
               type="button"
               label="Final Submit"
               (click)="finalSubmitAck()"

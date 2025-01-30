@@ -237,11 +237,12 @@ export class CustomerServiceHomeComponent implements OnInit {
                       });
                 });
                 // //console.log(dt);
+                let sysInfo = [];
                 this.md_dialog_data = dt;
                 this.visible = !this.visible
                 Object.keys(res).forEach((el,index) =>{                  
                   const productDtls = this.md_product.filter(item => item.id == el);
-                  this.sys_info.push({
+                  sysInfo.push({
                     product_id:el,
                     product_name:productDtls.length > 0 ? productDtls[0]?.tab_name : '',
                     queryDtls:[]
@@ -252,7 +253,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                     const hasProp = res?.hasOwnProperty(el.toString()) ? item?.id in res[el.toString()] : false;
                     //console.log(hasProp);
                     if(hasProp ){
-                      this.sys_info[index].queryDtls.push({
+                      sysInfo[index].queryDtls.push({
                               status_name:item.status_name,
                               status_id:item.id,
                               color_code:item.color_code,
@@ -264,6 +265,13 @@ export class CustomerServiceHomeComponent implements OnInit {
                     }
                   }   
                   })
+                });
+                console.log(sysInfo)
+                this.sys_info = sysInfo.filter(el =>{
+                    if(el?.queryDtls.length == 0){
+                      return false;
+                    }
+                    return true
                 });
                 console.log(this.sys_info);
 

@@ -847,8 +847,10 @@ color: #ffffff;
 {
   /* border-color: #10486b!important;
   background: #10486b!important; */
-  border-color: #032f91 !important;
-  background: #032f91 !important;
+  /* border-color: #032f91 !important;
+  background: #032f91 !important; */
+  border-color: #10486b !important;
+  background: #10486b !important;
 }
 
 .p-checkbox .p-checkbox-box {

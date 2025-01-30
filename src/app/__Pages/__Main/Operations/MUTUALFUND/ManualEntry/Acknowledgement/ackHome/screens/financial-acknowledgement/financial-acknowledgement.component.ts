@@ -35,6 +35,7 @@ type selectBtn ={
   styleUrls: ['./financial-acknowledgement.component.css']
 })
 export class FinancialAcknowledgementComponent implements OnInit {
+  // selectedAck:any
   itemsPerPage = ItemsPerPage;
   selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
   brnchMst: any=[];
@@ -794,15 +795,20 @@ export class FinancialAcknowledgementComponent implements OnInit {
     });
   }
   finalSubmitAck() {
-    const __finalSubmit = new FormData();
-    __finalSubmit.append('trans_type_id', this.trans_type_id.toString());
-    __finalSubmit.append('trans_id', this.transaction_id.toString());
-
-    this.__dbIntr
-      .api_call(1, '/ackFinalSubmit', __finalSubmit)
-      .subscribe((res: any) => {
-        this.__utility.showSnackbar(res.msg, res.suc);
-      });
+      // console.log(this.selectedAck);
+    if(this.__ackMst.data.length == 0){}
+    else{
+      const __finalSubmit = new FormData();
+      __finalSubmit.append('trans_type_id', this.trans_type_id.toString());
+      __finalSubmit.append('trans_id', this.transaction_id.toString());
+  
+      this.__dbIntr
+        .api_call(1, '/ackFinalSubmit', __finalSubmit)
+        .subscribe((res: any) => {
+          this.__utility.showSnackbar(res?.data.length > 0 ? 'Mail sent successfully' : 'Mail already sent successfully',res?.data.length > 0 ? res.suc : 2)
+        });
+    }
+    
   }
   // onbuTypeChange(e: any) {
   //   const bu_type: FormArray = this.__ackForm.get('bu_type') as FormArray;

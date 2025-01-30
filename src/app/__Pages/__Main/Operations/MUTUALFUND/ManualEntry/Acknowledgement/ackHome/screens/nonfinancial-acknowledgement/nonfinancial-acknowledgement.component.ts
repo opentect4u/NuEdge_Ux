@@ -678,13 +678,17 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
     });
   }
   finalSubmitAck() {
+    if(this.__ackMst.data.length == 0){}
+    else{
     const __finalSubmit = new FormData();
     __finalSubmit.append('trans_type_id', this.trans_type_id.toString());
     this.__dbIntr
       .api_call(1, '/ackFinalSubmit', __finalSubmit)
       .subscribe((res: any) => {
-        this.__utility.showSnackbar(res.msg, res.suc);
+        this.__utility.showSnackbar(res?.data.length > 0 ? 'Mail sent successfully' : 'Mail already sent successfully',res?.data.length > 0 ? res.suc : 2)
+
       });
+    }
   }
 
   searchResultVisibilityForClient(display_mode) {
