@@ -255,7 +255,7 @@
        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
        [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '300rem' }">
+        [tableStyle]="{ 'min-width': '500rem' }">
         <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between">
               <div>
@@ -310,12 +310,16 @@
                   [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
                     {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
                 </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
+                <ng-container *ngSwitchCase="col.field == 'mode_of_holding' || col.field == 'existing_mode_of_holding' || col.field == 'new_mode_of_holding'">
                  <span
                  #tooltip="matTooltip"
                  [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')">
                  {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
                 </span>
+                </ng-container>
+                <ng-container *ngSwitchCase="col.field == 'sip_swp_stp_frequency'">
+                  {{ finance[col.field] ? (finance[col.field] == 'W' ? 'Weekly' : (finance[col.field] == 'M' ? 'Monthly' : (finance[col.field] == 'Q' ? 'Quarterly' 
+                  : (finance[col.field] == 'F' ? 'Fortnightly' : (finance[col.field] == 'S' ? 'Semi Anually	' : (finance[col.field] == 'A' ? 'Anually	' : 'Daily')))))) : 'N/A'}}
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'inv_type'">
                   <span

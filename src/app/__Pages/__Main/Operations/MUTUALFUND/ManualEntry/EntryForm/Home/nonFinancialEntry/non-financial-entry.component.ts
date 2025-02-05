@@ -1703,7 +1703,6 @@ export class NonFinancialEntryComponent implements OnInit {
     fb.append('app_form_scan', this.__nonfinForm.value.app_form_scan);
     fb.append('tin_status', this.__nonfinForm.value.tin_status);
     fb.append('plan', this.__nonfinForm.value.plan_id);
-
     fb.append('option', this.__nonfinForm.value.option_id);
     fb.append(
       'euin_no',
@@ -1827,6 +1826,11 @@ export class NonFinancialEntryComponent implements OnInit {
     ) {
       fb.append('acc_no', this.__nonfinForm.value.newbnk_accNo);
       fb.append('acc_bank_id', this.__nonfinForm.value.newbnk_id);
+      /*************** EXISTING BANK DETAILS */
+      fb.append('existing_bank_acc_no', this.__nonfinForm.value.oldbnk_accNo);
+      fb.append('existing_acc_bank_id', this.__nonfinForm.value.oldbnk_id);
+      /*************** END */
+
     } else if (
       this.__nonfinForm.value.trans_id == '30' ||
       this.__nonfinForm.value.trans_id == '31'
@@ -1938,7 +1942,7 @@ export class NonFinancialEntryComponent implements OnInit {
     } else if (this.__nonfinForm.value.trans_id == '33') {
       fb.append(
         'merge_folio',
-        JSON.stringify(this.__nonfinForm.controls['merge_folio'].value)
+        JSON.stringify(this.__nonfinForm.controls['merge_folio'].value.filter(el => el.is_checked).map(el => el.folio_no))
       );
     } else if (this.__nonfinForm.value.trans_id == '11') {
       fb.append(

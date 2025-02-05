@@ -70,7 +70,7 @@
                                                     <div class="col-sm-6">
                                                         <label [for]="productId == 3 ? 'policy_no' : ((productId == 4 || productId == 2) ? 'fd_no' : 'folio_no')">
                                                             {{productId == 3 ? 'Policy No' : (productId == 4 || productId == 2) ? 'FDR No' : 'Folio'}} 
-                                                            <span class="text-danger" *ngIf="queryId.toString() == '0'">*</span></label>  
+                                                            <span class="text-danger" *ngIf="queryId.toString() == '0'">*</span></label> 
                                                         <ng-container [ngSwitch]="true">
                                                             <ng-container *ngSwitchCase="productId == 2 || productId == 3 || productId == 4">
                                                                 <!-- <input [placeholder]="'Enter ' + (productId == 4 ? 'FD No' : 'Policy No')" 
@@ -106,7 +106,8 @@
                                                    </div>
                                                     <div class="col-sm-6">
                                                         <label [for]="productId == 12 ? 'client_code' : 'application_no'">{{productId == 12 ? 'Client Code' : 'Application No'}} </label>  
-                                                        <input placeholder="Enter {{productId == 12 ? 'Client Code' : 'Application No'}}"    [id]="productId == 12 ? 'client_code' : 'application_no'" 
+                                                        <input placeholder="Enter {{productId == 12 ? 'Client Code' : 'Application No'}}" 
+                                                        [id]="productId == 12 ? 'client_code' : 'application_no'" 
                                                         class="form-control" 
                                                         formControlName="{{productId == 12 ? 'client_code' : 'application_no'}}"/> 
                                                     </div>

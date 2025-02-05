@@ -584,7 +584,7 @@ export class NfoEntryComponent implements OnInit {
       switchMap(
         (dt) =>
           dt?.length > 1
-            ? this.__dbIntr.searchItems('/scheme', dt + (this.__traxForm.value.trans_id == 6 ? '&scheme_type=O' : ''))
+            ? this.__dbIntr.searchItems('/scheme', dt + ((this.__traxForm.value.trans_id == 6 || this.__traxForm.value.trans_id == 35) ? '&scheme_type=O' : '&scheme_type=N'))
             : []
       ),
       map((x: any) => x.data)

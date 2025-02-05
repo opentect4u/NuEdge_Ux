@@ -220,7 +220,6 @@
        [scrollable]="true"
       scrollHeight="358px"
       [autoLayout]="true" styleClass="p-datatable-gridlines"
-      
         >
         <ng-template pTemplate="header" >
           <tr>
@@ -269,6 +268,14 @@
                   #tooltip="matTooltip"
                   [matTooltip]="finance[col.field] == 'F' ? 'Fresh' : 'Additional'">
                   {{ finance[col.field] == 'F' ? 'Fresh' : 'Additional'}}
+                </span>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="col.field == 'existing_mode_of_holding' || col.field == 'new_mode_of_holding'">
+                <span
+                  #tooltip="matTooltip"
+                  [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')">
+                  {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
                 </span>
                 </ng-container>
 

@@ -1019,11 +1019,11 @@
                         styleClass="p-button-rounded p-button-primary"></p-button>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
-                   <ng-container *ngIf="rcvFormDT['mode_of_holding'];else noModeOfHolding">
-                        {{rcvFormDT[col.field] == 'S' ? 'Survivor' : 'Anyone or survivor'}}
-                    </ng-container>
-                    <ng-template #noModeOfHolding>N/A</ng-template>
-                   </ng-container>
+                      <ng-container *ngIf="rcvFormDT['mode_of_holding'];else noModeOfHolding">
+                          {{rcvFormDT[col.field] == 'S' ? 'Single' : (rcvFormDT[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
+                      </ng-container>
+                      <ng-template #noModeOfHolding>N/A</ng-template>
+                     </ng-container>
                   <ng-container *ngSwitchDefault>
                     <b #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
                       {{ rcvFormDT[col.field] ? rcvFormDT[col.field] : 'N/A' }}
@@ -1111,7 +1111,7 @@
         <ng-container matColumnDef="mode_of_holding">
           <th mat-header-cell *matHeaderCellDef>Mode Of Holding</th>
           <td mat-cell *matCellDef="let element;let i = index">
-            {{element.mode_of_holding ? (element.mode_of_holding == 'S' ? 'Survivor' : 'Anyone or survivor') : 'N/A'}}
+            {{element.mode_of_holding ? (element.mode_of_holding  == 'S' ? 'Single' : element.mode_of_holding == 'J' ? 'Joint' : 'Anyone Or Survivor') : 'N/A'}}
           </td>
         </ng-container>
 

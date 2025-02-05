@@ -316,11 +316,11 @@
                         styleClass="p-button-rounded p-button-primary"></p-button>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
-                   <ng-container *ngIf="rcvFormDT['mode_of_holding'];else noModeOfHolding">
-                        {{rcvFormDT[col.field] == 'S' ? 'Survivor' : 'Anyone or survivor'}}
-                    </ng-container>
-                    <ng-template #noModeOfHolding>N/A</ng-template>
-                   </ng-container>
+                      <ng-container *ngIf="rcvFormDT['mode_of_holding'];else noModeOfHolding">
+                          {{rcvFormDT[col.field] == 'S' ? 'Single' : (rcvFormDT[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
+                      </ng-container>
+                      <ng-template #noModeOfHolding>N/A</ng-template>
+                     </ng-container>
                   <ng-container *ngSwitchDefault>
                     <span #tooltip="matTooltip" [matTooltip]="rcvFormDT[col.field]">
                       {{ rcvFormDT[col.field] ? rcvFormDT[col.field] : 'N/A' }}

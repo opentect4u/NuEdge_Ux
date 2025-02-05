@@ -1263,7 +1263,7 @@ export class queryColumn{
       field:'folio_no',
       header:'Folio',
       width:'9rem',
-      isVisible:[1]
+      isVisible:[1,12]
     }, 
     {
       field:'policy_no',

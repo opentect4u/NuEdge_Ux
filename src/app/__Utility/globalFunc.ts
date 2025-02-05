@@ -29,8 +29,8 @@ export class global{
    }
 
    /*** For Getting Full Column List for NonFinancial for different Transaction */
-   public static getColumnsAfterMerge = (columns,columnsTobeAdd):column[] =>{
-    return  Array.from([...columns,...columnsTobeAdd]
+   public static getColumnsAfterMerge = (columns,columnsTobeAdd,rest = []):column[] =>{
+    return  Array.from([...columns,...columnsTobeAdd,...rest]
       .reduce((m, o) => m.set(o.field, o), new Map)
       .values()
        );

@@ -6,7 +6,7 @@ export class nonFinClms {
     { field: 'app_frm_view', header: 'APP View',width:'8rem'},
     { field: 'entry_date', header: 'Entry Date',width:'10rem'},
     { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'10rem'},
-    { field: 'rnt_login_dt', header: 'Login DateTime',width:'15rem'},
+    { field: 'rnt_login_dt', header: 'Login Date&Time',width:'15rem'},
     { field: 'tin_no', header: 'TIN',width:'8rem'},
     { field: 'branch_name', header: 'Branch',width:'10rem'},
     { field: 'sub_brk_cd', header: 'Sub Broker Code',width:'10rem'},
@@ -17,8 +17,8 @@ export class nonFinClms {
     { field: 'trans_name', header: 'Transction Type',width:'12rem'},
     { field: 'scheme_name', header: 'Scheme',width:'20rem'},
     // { field: 'folio_no', header: 'Folio No',width:'8rem'},
-    { field: 'rnt_name', header: 'Form Submitted At',width:'12rem'},
-    { field: 'remarks', header: 'Remarks',width:'10rem'}
+    // { field: 'rnt_name', header: 'Form Submitted At',width:'12rem'},
+    // { field: 'remarks', header: 'Remarks',width:'10rem'}
   ];
 
   /**** ADDRESS CHANGE (DONE)*/
@@ -43,11 +43,16 @@ export class nonFinClms {
 
   /***** CORE BANKING UPDATION (DONE)*/
   public static CBU = [
-    { field: 'acc_no', header: 'Account No',width:'12rem'},
-    { field: 'bank_name', header: 'Bank',width:'12rem'},
-    { field: 'ifsc', header: 'IFSC',width:'12rem'},
-    { field: 'micr_code', header: 'MICR',width:'12rem'},
-    { field: 'branch_name', header: 'Branch',width:'12rem'}
+    // { field: 'acc_no', header: 'Account No',width:'12rem'},
+    // { field: 'bank_name', header: 'Bank',width:'12rem'},
+    // { field: 'ifsc', header: 'IFSC',width:'12rem'},
+    // { field: 'micr_code', header: 'MICR',width:'12rem'},
+    // { field: 'branch_name', header: 'Branch',width:'12rem'}
+    { field: 'new_bank_acc_no', header: 'New Bank Account No',width:'12rem'},
+    { field: 'new_bank_name', header: 'New Bank',width:'12rem'},
+    { field: 'new_ifsc', header: 'New IFSC',width:'12rem'},
+    { field: 'new_micr_code', header: 'New MICR',width:'12rem'},
+    { field: 'new_branch_name', header: 'New Branch',width:'12rem'}
   ];
   /**** END */
 
@@ -157,7 +162,7 @@ export class nonFinClms {
     { field: 'app_frm_view', header: 'APP View',width:'8rem'},
     { field: 'entry_date', header: 'Entry Date',width:'10rem'},
     { field: 'rnt_login_cutt_off', header: 'Login Cut Off' ,width:'10rem'},
-    { field: 'rnt_login_dt', header: 'Login DateTime',width:'15rem'},
+    { field: 'rnt_login_dt', header: 'Login Date&Time',width:'15rem'},
     { field: 'tin_no', header: 'TIN',width:'8rem'},
     { field: 'bu_type', header: 'Business Type',width:'10rem'},
     { field: 'branch_name', header: 'Branch',width:'10rem'},
@@ -173,8 +178,14 @@ export class nonFinClms {
     { field: 'opt_name', header: 'Option',width:'12rem'},
     // { field: 'folio_no', header: 'Folio No',width:'8rem'},
     { field: 'amount', header: 'Amount',width:'10rem'},
-    { field: 'rnt_name', header: 'Form Submitted At',width:'12rem'},
-    { field: 'remarks', header: 'Remarks',width:'10rem'},
+
 
   ]
+
+  public static COMMON_COLUMN = [
+    { field: 'rnt_name', header: 'Form Submitted At',width:'12rem'},
+    { field: 'remarks', header: 'Remarks',width:'10rem'},
+  ]
+  
 }
+

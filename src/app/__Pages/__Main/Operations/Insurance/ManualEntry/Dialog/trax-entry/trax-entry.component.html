@@ -670,15 +670,17 @@
         <ng-container *ngIf="__insTrax.get('mode_of_payment').value == 'N'">
           <div class="row">
             <div class="col-sm-12">
-              <label for="payment_ref_no">Payment Reference Number <span class="text-danger">*</span></label>
+              <label for="payment_ref_no">Payment Reference Number
+                 <!-- <span class="text-danger">*</span> -->
+                </label>
               <input placeholder="Enter Payment Reference Number" type="text" name="payment_ref_no" id="payment_ref_no"
                 class="form-control" formControlName="payment_ref_no">
-                <div class="invalid-feedback"
+                <!-- <div class="invalid-feedback"
                 *ngIf="__insTrax.get('payment_ref_no').invalid && (__insTrax.get('payment_ref_no').dirty || __insTrax.get('payment_ref_no').touched)">
                 <span class="invalid-feedback" *ngIf="(__insTrax.get('payment_ref_no')).errors?.required">*Please provide
                 payment reference number
                 </span>
-                </div>
+                </div> -->
           </div>
           </div>
         </ng-container>

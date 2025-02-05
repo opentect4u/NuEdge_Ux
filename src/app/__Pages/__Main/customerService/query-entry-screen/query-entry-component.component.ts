@@ -86,7 +86,7 @@ export class QueryEntryComponentComponent implements OnInit {
        solve_file:new FormControl([]),
        investor_name: new FormControl('',[Validators.required]),
        investor_code: new FormControl(''),
-       client_code:new FormControl(''),
+       client_code:new FormControl({value:'',disabled:true}),
        investor_pan: new FormControl({value:'',disabled: true}),
        investor_email: new FormControl({value:'',disabled: true}),
        investor_mobile: new FormControl({value:'',disabled: true}), 
@@ -247,7 +247,10 @@ export class QueryEntryComponentComponent implements OnInit {
   // }
 
   setFormControlValidators = () =>{
-      const first_formControlName = this.productId > 2 ? (this.productId == 3 ? 'policy_no' : 'fdr_no') : 'folio_no';
+      // const first_formControlName = this.productId > 2 ? (this.productId == 3 ? 'policy_no' : 'fdr_no') : 'folio_no';
+      const first_formControlName = (this.productId == 1 ||   this.productId == 12) ? 'folio_no' : ((this.productId == 2 ||   this.productId == 4) ? 'fdr_no' : (this.productId == 3 ? 'policy_no' : 'folio_no'))
+
+      console.log(first_formControlName)
       // const second_formControlName = this.productId > 2  ? (this.productId == 3 ? 'ins_product_id' : 'fd_scheme_id') : 'scheme_id';
       this.queryEntryForm.get(first_formControlName).setValidators([Validators.required]);
       
@@ -709,14 +712,13 @@ export class QueryEntryComponentComponent implements OnInit {
         investor_mobile:ev.item.mobile
       });
       this.queryEntryForm.get('investor_name').setValue(ev.item.client_name,{emitEvent:false});
-      if(this.productId == 1){
-        // this.queryEntryForm.get('folio_no').setValue([],{emitEvent:false});
+      if(this.productId == 1 || this.productId == 12){
         this.fetchFoliosOfInvestor(ev.item.client_name,ev.item.pan);
-        this.queryEntryForm.get('folio_no').setValue([
-          {
-             "folio_no":ev.item?.folio_no,
-          }],{emitEvent:false});
-          // this.fetchSchemeByFolio(ev.item.folio_no);
+        this.queryEntryForm.get('folio_no').setValue([{"folio_no":ev.item?.folio_no,}],{emitEvent:false});
+        if(this.productId == 12){
+          this.queryEntryForm.get('client_code').setValue(ev?.item?.client_code,{emitEvent:false});
+        }
+
       }
       else if(this.productId == 3){
           /*******  Insurance */
@@ -892,7 +894,6 @@ export class QueryEntryComponentComponent implements OnInit {
   }
 
   submitQuery = () =>{
-      // console.log(this.queryEntryForm.controls);
       const payload = {
         ...this.queryEntryForm.getRawValue(),
         query_type_id:this.queryEntryForm.getRawValue().query_type_id?.id,

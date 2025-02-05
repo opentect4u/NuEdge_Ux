@@ -418,12 +418,12 @@ export class TraxEntryComponent implements OnInit {
           : null
       );
       this.__insTrax.controls['acc_no'].setValidators(res == 'O' ? [Validators.required] : null)
-      this.__insTrax.controls['payment_ref_no'].setValidators(res == 'N' ? [Validators.required] : null);
+      // this.__insTrax.controls['payment_ref_no'].setValidators(res == 'N' ? [Validators.required] : null);
       this.__insTrax.controls['bank_name'].setValidators(res == 'O' ? [Validators.required] : null);
       this.__insTrax.controls['chq_bank'].setValidators(res == 'O' ? [Validators.required] : null);
       this.__insTrax.controls['micr_code'].setValidators(res == 'O' ? [Validators.required] : null);
       this.__insTrax.controls['chq_no'].updateValueAndValidity({emitEvent: false,});
-      this.__insTrax.controls['payment_ref_no'].updateValueAndValidity({emitEvent: false,});
+      // this.__insTrax.controls['payment_ref_no'].updateValueAndValidity({emitEvent: false,});
       this.__insTrax.controls['bank_name'].updateValueAndValidity({emitEvent: false,});
       this.__insTrax.controls['chq_bank'].updateValueAndValidity({emitEvent: false,});
       this.__insTrax.controls['micr_code'].updateValueAndValidity({emitEvent: false});

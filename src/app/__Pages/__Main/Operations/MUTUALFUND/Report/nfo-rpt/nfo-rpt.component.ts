@@ -78,7 +78,7 @@ export class NfoRPTComponent implements OnInit {
   @Input() itemsPerPage;
   finMst: any = [];
   @Input() set financialMst(value){
-    this.finMst = value.data;
+    this.finMst = value.data.filter(el => el.ack_status != 'R');;
     this.__paginate = value.links;
   }
   @Output() sendFinancialFilteredDt =new EventEmitter();
@@ -442,7 +442,7 @@ export class NfoRPTComponent implements OnInit {
           )
           .pipe(map((x: any) => x.data))
           .subscribe((res: any) => {
-            this.finMst = res.data;
+            this.finMst = res.data.filter(el => el.ack_status != 'R');
             this.__paginate = res.links;
           });
       }

@@ -56,7 +56,7 @@ export class NonFinancialRPTComponent implements OnInit {
   nonFinMstDT: any = [];
   @Input() trnsTypeId:number;
   @Input() set nonfinancialMst(value){
-   this.nonFinMstDT=value.data;
+   this.nonFinMstDT=value.data.filter(el => el.ack_status != 'R');;
    this.__paginate = value.links;
   }
   __istemporaryspinner:boolean = false;
@@ -198,37 +198,37 @@ export class NonFinancialRPTComponent implements OnInit {
     var columnsMst;
     switch(trns_id){
 
-      case 32:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CMOH);
+      case 32:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CMOH,nonFinClms.COMMON_COLUMN);
               break;
-      case 22:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.AC);
+      case 22:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.AC,nonFinClms.COMMON_COLUMN);
               break;
-      case 18:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COCD);
+      case 18:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COCD,nonFinClms.COMMON_COLUMN);
               break;
-      case 23:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CON);
+      case 23:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CON,nonFinClms.COMMON_COLUMN);
       break;
-      case 16:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CBU);
+      case 16:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CBU,nonFinClms.COMMON_COLUMN);
       break;
-      case 15:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COBK);
+      case 15:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COBK,nonFinClms.COMMON_COLUMN);
       break;
-      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.FCM);
+      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.FCM,nonFinClms.COMMON_COLUMN);
       break;
-      case 14:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COB);
+      case 14:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COB,nonFinClms.COMMON_COLUMN);
       break;
       case 11:
-      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.NA_OR_NC);break;
-      case 30: columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.SWPR);break;
-      case 31:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.STP_REGISTRATION);break;
-      case 19:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.TRANSMISSION);break
-      case 29:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.REDEMPTION);break
+      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.NA_OR_NC,nonFinClms.COMMON_COLUMN);break;
+      case 30: columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);break;
+      case 31:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);break;
+      case 19:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.TRANSMISSION,nonFinClms.COMMON_COLUMN);break
+      case 29:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.REDEMPTION,nonFinClms.COMMON_COLUMN);break
       case 36:
       case 37:
-      case 38:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.PAUSE)
+      case 38:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN)
               break;
       case 7:
       case 8:
-      case 9:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CANCELATION)
+      case 9:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CANCELATION,nonFinClms.COMMON_COLUMN)
               break;
-      default:columnsMst = nonFinClms.COLUMN_SELECTOR
+      default:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COMMON_COLUMN,[])
               break;
     }
     this.columns = columnsMst.filter(x => x.field!= 'edit');
@@ -240,6 +240,7 @@ export class NonFinancialRPTComponent implements OnInit {
       this.__columns = this.columns;
      }
     //  this.SelectedClms = this.__columns.map((x) => x.field);
+    console.log( this.columns)
   }
 
   AckView(ev){
@@ -481,7 +482,7 @@ getPaginate(__paginate){
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
-        this.nonFinMstDT = res.data;
+        this.nonFinMstDT = res.data.filter(el => el.ack_status != 'R');
         this.__paginate = res.links;
       });
   }

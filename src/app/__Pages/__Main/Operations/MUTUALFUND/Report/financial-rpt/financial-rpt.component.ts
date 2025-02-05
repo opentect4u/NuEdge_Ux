@@ -77,7 +77,7 @@ export class FinancialRPTComponent implements OnInit {
   @Input() itemsPerPage;
   finMst: any = [];
   @Input() set financialMst(value){
-    this.finMst = value.data;
+    this.finMst = value.data.filter(el => el.ack_status != 'R');
     this.__paginate = value.links;
   }
   @Output() sendFinancialFilteredDt =new EventEmitter();
@@ -91,6 +91,7 @@ export class FinancialRPTComponent implements OnInit {
     this._trns_id = trans_id;
     this.setColumns(this.transFrm.value.option,this.trnsTypeId,trans_id);
     if(trans_id){
+      this.sort =  new sort()
       this.submitFinReport();
     }
   }
@@ -202,9 +203,9 @@ export class FinancialRPTComponent implements OnInit {
   }
 
   setColumns(option,trans_type_id,trns_id){
-    const clmToRemoveForPIP = ['sip_type_name','scheme_name_to','sip_frequency','sip_date','sip_start_date','sip_end_date','sip_amount','edit']
+    const clmToRemoveForPIP = ['sip_type_name','scheme_name_to','sip_swp_stp_frequency','sip_date','sip_start_date','sip_end_date','sip_amount','edit']
     const clmToRemoveForSIP = ['scheme_name_to','edit'];
-    const clmToRemoveForSwitch = ['sip_type_name','sip_frequency','sip_date','sip_start_date','sip_end_date','sip_amount','edit'];
+    const clmToRemoveForSwitch = ['sip_type_name','sip_swp_stp_frequency','sip_date','sip_start_date','sip_end_date','sip_amount','edit'];
      this.columns = trns_id == 3 ?
       mfFinClmns.COLUMN_SELECTOR.filter(x => !clmToRemoveForSwitch.includes(x.field))
      : (trns_id == 2 ?
@@ -446,7 +447,7 @@ export class FinancialRPTComponent implements OnInit {
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
-          this.finMst = res.data;
+          this.finMst = res.data.filter(el => el.ack_status != 'R');
           this.__paginate = res.links;
         });
     }
