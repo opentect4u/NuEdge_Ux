@@ -282,8 +282,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
 }
 
   ngAfterViewInit() {
-    const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
-    this.changeWheelSpeed(el, 0.99);
+  
     
     this.__ackForm.controls['dt_type'].valueChanges.subscribe((res) => {
       this.__ackForm.controls['date_range'].reset(
@@ -531,6 +530,9 @@ export class FinancialAcknowledgementComponent implements OnInit {
      this.setEuinDropdown(res,this.__ackForm.value.rm_id);
    // }
   })
+
+  const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+  this.changeWheelSpeed(el, 0.99);
   }
   setEuinDropdown(sub_brk_cd,rm){
     // this.__euinMst.length = 0;
