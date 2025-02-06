@@ -793,13 +793,13 @@ export class CustomerServiceHomeComponent implements OnInit {
           el.tat_expired = isExpired ? "NO" : "YES"
         
           el.solveattach = [];
-           const outerDt = el.allscheme.map(el =>{
+           const outerDt = el.allscheme?.map(el =>{
               el.scheme_name = el.schemename ? `${el?.schemename?.scheme_name}-${el?.schemename?.plan_name}-${el?.schemename?.option_name}` : 'N/A';
               return el;
            });
           el.scheme_dtls = outerDt;
-          el.scheme_name = el.product_id == 1 ? `${outerDt.length > 0 ? outerDt[0]?.scheme_name : ''}` : (el.product_id == 4 ? el.scheme_name : '');
-          el.amc_name = el.product_id == 1 ? `${outerDt.length > 0 ? outerDt[0]?.schemename?.amc_name : ''}` :  '';
+          el.scheme_name = (el.product_id == 1 || el.product_id == 12) ? `${outerDt.length > 0 ? outerDt[0]?.scheme_name : ''}` : (el.product_id == 4 ? el.scheme_name : '');
+          el.amc_name = (el.product_id == 1  || el.product_id == 12) ? `${outerDt.length > 0 ? outerDt[0]?.schemename?.amc_name : ''}` :  '';
           el.cust_query_id = this.__utility.EncryptText(el.id.toString())
           if(el.call_flag == 'N' && el.whats_app_flag == 'N' && el.email_flag == 'N' && el.sms_flag == 'N'){
 
@@ -1223,7 +1223,7 @@ export class queryColumn{
       field:'investor_name',
       header:'Investor',
       width:'20rem',
-      isVisible:[1,2]
+      isVisible:[1,2,12]
     },
     {
       field:'investor_name',
@@ -1305,7 +1305,7 @@ export class queryColumn{
       field:'scheme_name',
       header:'Scheme',
       width:'20rem',
-      isVisible:[1,2,4]
+      isVisible:[1,2,4,12]
     },
     {
       field:'product_name',
