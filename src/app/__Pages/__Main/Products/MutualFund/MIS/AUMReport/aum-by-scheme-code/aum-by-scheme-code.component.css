@@ -1,0 +1,9 @@
+
+::ng-deep .summer-bx:last-child{
+    border-width: 1px!important;
+  }
+
+.summer-bx{
+  width:100%!important;
+  word-break: break-all!important;
+}

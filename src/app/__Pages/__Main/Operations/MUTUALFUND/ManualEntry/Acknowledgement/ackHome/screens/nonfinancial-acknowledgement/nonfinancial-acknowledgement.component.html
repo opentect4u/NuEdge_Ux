@@ -255,7 +255,7 @@
        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
        [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
         [autoLayout]="true" [responsive]="true" styleClass="p-datatable-gridlines"
-        [tableStyle]="{ 'min-width': '500rem' }">
+        [tableStyle]="{ 'min-width': tableWidth + 'rem' }">
         <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between">
               <div>
@@ -270,10 +270,11 @@
           </ng-template>
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th  *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field"
+            <th  *ngFor="let col of columns"  [pSortableColumn]="col.field"
+            [style.max-width]="col.width"
             [style.min-width]="col.width">
               {{ col.header }}
-              <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
+              <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view' && col.field!= 'ack_copy_scan'" [field]="col.field">
               </p-sortIcon>
             </th>
           </tr>
@@ -283,7 +284,8 @@
           tabindex="999"
           [ngStyle]="{'min-height':'42px'}"
           >
-            <td *ngFor="let col of columns"  [style.min-width]="col.width">
+            <td *ngFor="let col of columns" [style.max-width]="col.width"
+            [style.min-width]="col.width">
 
               <ng-container [ngSwitch]="true">
                 <!-- <ng-container *ngSwitchCase="col.field == 'edit'">
@@ -301,8 +303,8 @@
                       </ng-container>
                   </ng-container>
               </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
-                  <p-button icon="pi pi-eye" (click)="DocumentView(finance)"
+                <ng-container *ngSwitchCase="col.field == 'app_frm_view' || col.field == 'ack_copy_scan'">
+                  <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
                     styleClass="p-button-rounded p-button-primary"></p-button>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'bu_type'">
@@ -317,7 +319,7 @@
                  {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
                 </span>
                 </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'sip_swp_stp_frequency'">
+                <ng-container *ngSwitchCase="col.field == 'sip_swp_stp_frequency' ||  col.field == 'swp_frequency' || col.field == 'stp_frequency'">
                   {{ finance[col.field] ? (finance[col.field] == 'W' ? 'Weekly' : (finance[col.field] == 'M' ? 'Monthly' : (finance[col.field] == 'Q' ? 'Quarterly' 
                   : (finance[col.field] == 'F' ? 'Fortnightly' : (finance[col.field] == 'S' ? 'Semi Anually	' : (finance[col.field] == 'A' ? 'Anually	' : 'Daily')))))) : 'N/A'}}
                 </ng-container>
@@ -349,13 +351,13 @@
                   <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</span>
                   </ng-container>
 
-                  <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
+                  <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount' || col.field == 'pause_amount' || col.field == 'swp_amount' || col.field == 'stp_amount'">
                     <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</span>
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'entry_date'
-                    || col.field == 'sip_date'
-                    || col.field == 'sip_end_date'
-                    || col.field == 'sip_end_date'|| col.field == 'rnt_login_cutt_off'">
+                    || col.field == 'sip_date' || col.field == 'swp_end_date' || col.field == 'swp_start_date' || col.field == 'stp_end_date' || col.field == 'stp_start_date'
+                    || col.field == 'sip_end_date' || col.field == 'pause_start_date'  || col.field == 'pause_end_date'
+                    || col.field == 'sip_end_date'|| col.field == 'rnt_login_cutt_off' || col.field=='cancel_eff_dt'">
                       <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</span>
                       </ng-container>
                 <ng-container *ngSwitchDefault>

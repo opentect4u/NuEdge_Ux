@@ -214,7 +214,22 @@ export class NfoRPTComponent implements OnInit {
     }
     this.columns = columnsMst.filter(x => x.field!= 'edit');
     if(option == 2){
-      this.__columns = trns_id == 5 ? nfoClmns.SUMMARY_COPY_SIP.filter(x => x.field != 'edit') : nfoClmns.SUMMARY_COPY.filter(x => x.field != 'edit');
+      this.__columns = trns_id == 5 ? nfoClmns.SUMMARY_COPY_SIP.filter(x => x.field != 'edit') : 
+      trns_id == 6 ? nfoClmns.SUMMARY_COPY.filter(x => x.field != 'edit').map(el => {
+        if(el.field == 'scheme_name'){
+          console.log(el.field)
+            el.header = 'Scheme Name (From Scheme)'
+        }
+        else if(el.field == 'plan_name'){
+          el.header = 'Plan (From Plan)'
+        }
+        else if(el.field == 'opt_name'){
+          el.header = 'Option (From Option)'
+        }
+        return el
+      }
+      ) : nfoClmns.SUMMARY_COPY.filter(x => x.field != 'edit');
+      
     }
     else{
       this.__columns =this.columns;

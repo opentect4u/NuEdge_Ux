@@ -326,6 +326,7 @@ export class MfackClmns {
   ]
   public static Deatils: column[] = [
     { field: 'edit', header: 'Edit',width:'7rem' },
+    {field:'ack_copy_scan',header:'ACK. View',width:'7rem'},
     { field: 'app_frm_view', header: 'APP View',width:'7rem' },
     { field: 'entry_date', header: 'Entry Date',width:'7rem' },
     { field: 'rnt_login_cutt_off', header: 'Login Cut Off',width:'12rem' },
@@ -356,6 +357,9 @@ export class MfackClmns {
   ];
 
   public static Columns_for_Switch: column[] = [
+    { field: 'scheme_name', header: 'Scheme Name (From Scheme)',width:'21rem' },
+    { field: 'plan_name', header: 'Plan (From Plan)',width:'10rem' },
+    { field: 'opt_name', header: 'Option (From Option)',width:'10rem' },
     { field: 'scheme_name_to', header: 'Scheme Name (To Scheme)',width:'25rem'},
     { field: 'plan_name_to', header: 'Plan (To Plan)',width:'10rem' },
     { field: 'opt_name_to', header: 'Option (To Option)',width:'10rem' },
@@ -398,6 +402,9 @@ export class MfackClmns {
 
 
   public static Columns_for_nfoCombo=[
+    { field: 'scheme_name', header: 'Scheme Name (From Scheme)',width:'21rem' },
+    { field: 'plan_name', header: 'Plan (From Plan)',width:'10rem' },
+    { field: 'opt_name', header: 'Option (From Option)',width:'10rem' },
     {field:'scheme_name_to',header:'Scheme Name (To Scheme)',width:'25rem'},
     { field: 'plan_name_to', header: 'Plan (To Plan)',width:'10rem' },
     { field: 'opt_name_to', header: 'Option (To Option)',width:'10rem' },
@@ -512,8 +519,8 @@ export class nonFinAckClms {
     {field:'swp_type_name',header:'SWP Type',width:'7rem'},
     {field:'swp_frequency',header:'SWP Frequency',width:'10rem'},
     {field:'swp_date',header:'SWP Date',width:'10rem'},
-    {field:'start_date',header:'Start Date',width:'10rem'},
-    {field:'end_date',header:'End Date',width:'10rem'},
+    {field:'swp_start_date',header:'Start Date',width:'10rem'},
+    {field:'swp_end_date',header:'End Date',width:'10rem'},
     {field:'swp_amount',header:'SWP Amount',width:'10rem'}
 ]
 /** END */
@@ -536,14 +543,15 @@ export class nonFinAckClms {
 
   /** Cancelation (DONE)*/
   public static CANCELATION = [
-    {field:'cancelation_effective_date',header:'Cancelation Effective Date',width:'10rem'},
+    {field:'cancel_eff_dt',header:'Cancelation Effective Date',width:'10rem'},
     {field:'amount',header:'Amount',width:'10rem'}
     ]
     /** END */
 
     /** PAUSE (DONE)*/
     public static PAUSE = [
-    {field:'duration',header:'Duration',width:'7rem'},
+    // {field:'duration',header:'Duration',width:'7rem'},
+    {field:'pause_duration',header:'Duration',width:'7rem'},
     {field:'pause_start_date',header:'Pause Start Date',width:'10rem'},
     {field:'pause_end_date',header:'Pause End Date',width:'10rem'},
     {field:'pause_amount',header:'Amount',width:'10rem'}
@@ -552,7 +560,7 @@ export class nonFinAckClms {
 
     /** STP REGISTRATION (DONE)*/
     public static STP_REGISTRATION = [
-      {field:'stp_type',header:'STP Type',width:'10rem'},
+      {field:'stp_type_name',header:'STP Type',width:'10rem'},
       {field:'stp_frequency',header:'STP Frequency',width:'12rem'},
       {field:'stp_date',header:'STP Date',width:'10rem'},
       {field:'scheme_name_to',header:'Scheme Name (To Scheme)',width:'25rem'},

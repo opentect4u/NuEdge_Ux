@@ -238,6 +238,38 @@ autocomplete="off">
   </div>
 </div>
 
+<!-- plan -->
+<div class="row ">
+  <div class="col-sm-12">
+    <label for="plan">Plan <span class="text-danger">*</span></label>
+    <select class="form-control" id="plan" formControlName="plan_id">
+      <option value="">Select</option>
+      <option [value]="__plnmst.id" *ngFor="let __plnmst of __plnMst">{{__plnmst.plan_name}}</option>
+    </select>
+    <div class="invalid-feedback"
+      *ngIf="__nonfinForm.get('plan_id').invalid && (__nonfinForm.get('plan_id').dirty || __nonfinForm.get('plan_id').touched)">
+      <span class="invalid-feedback" *ngIf="(__nonfinForm.get('plan_id')).errors?.required">*Please provide
+        plan</span>
+    </div>
+  </div>
+</div>
+<!-- Option -->
+<div class="row  my-2">
+  <div class="col-sm-12">
+    <label for="option">Option <span class="text-danger">*</span></label>
+    <select class="form-control" id="option" formControlName="option_id">
+      <option value="">Select</option>
+      <option [value]="__optmst.id" *ngFor="let __optmst of __optionMst">{{__optmst.opt_name}}</option>
+    </select>
+    <div class="invalid-feedback"
+      *ngIf="__nonfinForm.get('option_id').invalid && (__nonfinForm.get('option_id').dirty || __nonfinForm.get('option_id').touched)">
+      <span class="invalid-feedback" *ngIf="(__nonfinForm.get('option_id')).errors?.required">*Please provide
+        option</span>
+    </div>
+  </div>
+</div>
+
+
 <!-- STP TO Scheme -->
 <ng-container *ngIf="__nonfinForm.get('trans_id').value == '31'">
   <div class="row">
@@ -273,41 +305,41 @@ autocomplete="off">
         View Details
       </button>
     </div>
+
+    <!-- PLAN NAME TO -->
+    <div class="col-sm-12">
+      <label for="plan">Plan (TO Plan) <span class="text-danger">*</span></label>
+      <select class="form-control" id="plan" formControlName="plan_to">
+        <option value="">Select</option>
+        <option [value]="__plnmst.id" *ngFor="let __plnmst of __plnMst">{{__plnmst.plan_name}}</option>
+      </select>
+      <div class="invalid-feedback"
+        *ngIf="__nonfinForm.get('plan_to').invalid && (__nonfinForm.get('plan_to').dirty || __nonfinForm.get('plan_to').touched)">
+        <span class="invalid-feedback" *ngIf="(__nonfinForm.get('plan_to')).errors?.required">*Please provide
+          plan</span>
+      </div>
+    </div>
+    <!-- END -->
+
+    <!-- OPTION NAME -->
+    <div class="col-sm-12">
+      <label for="option">Option (TO Option) <span class="text-danger">*</span></label>
+      <select class="form-control" id="option" formControlName="option_to">
+        <option value="">Select</option>
+        <option [value]="__optmst.id" *ngFor="let __optmst of __optionMst">{{__optmst.opt_name}}</option>
+      </select>
+      <div class="invalid-feedback"
+        *ngIf="__nonfinForm.get('option_to').invalid && (__nonfinForm.get('option_to').dirty || __nonfinForm.get('option_to').touched)">
+        <span class="invalid-feedback" *ngIf="(__nonfinForm.get('option_to')).errors?.required">*Please provide
+          option</span>
+      </div>
+    </div>
+    <!-- END -->
   </div>
 
 </ng-container>
 <!-- End -->
 
-<!-- plan -->
-<div class="row ">
-  <div class="col-sm-12">
-    <label for="plan">Plan <span class="text-danger">*</span></label>
-    <select class="form-control" id="plan" formControlName="plan_id">
-      <option value="">Select</option>
-      <option [value]="__plnmst.id" *ngFor="let __plnmst of __plnMst">{{__plnmst.plan_name}}</option>
-    </select>
-    <div class="invalid-feedback"
-      *ngIf="__nonfinForm.get('plan_id').invalid && (__nonfinForm.get('plan_id').dirty || __nonfinForm.get('plan_id').touched)">
-      <span class="invalid-feedback" *ngIf="(__nonfinForm.get('plan_id')).errors?.required">*Please provide
-        plan</span>
-    </div>
-  </div>
-</div>
-<!-- Option -->
-<div class="row  my-2">
-  <div class="col-sm-12">
-    <label for="option">Option <span class="text-danger">*</span></label>
-    <select class="form-control" id="option" formControlName="option_id">
-      <option value="">Select</option>
-      <option [value]="__optmst.id" *ngFor="let __optmst of __optionMst">{{__optmst.opt_name}}</option>
-    </select>
-    <div class="invalid-feedback"
-      *ngIf="__nonfinForm.get('option_id').invalid && (__nonfinForm.get('option_id').dirty || __nonfinForm.get('option_id').touched)">
-      <span class="invalid-feedback" *ngIf="(__nonfinForm.get('option_id')).errors?.required">*Please provide
-        option</span>
-    </div>
-  </div>
-</div>
 
 <!-- SIP / STP / SWP PAUSE -->
  <ng-container formGroupName="pause"

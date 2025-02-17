@@ -96,10 +96,11 @@ export class nonFinClms {
     {field:'swp_type_name',header:'SWP Type',width:'12rem'},
     {field:'swp_frequency',header:'SWP Frequency',width:'12rem'},
     {field:'swp_date',header:'SWP Date',width:'12rem'},
-    {field:'start_date',header:'Start Date',width:'12rem'},
-    {field:'end_date',header:'End Date',width:'12rem'},
+    {field:'swp_start_date',header:'Start Date',width:'12rem'},
+    {field:'swp_end_date',header:'End Date',width:'12rem'},
     {field:'swp_amount',header:'SWP Amount',width:'12rem'}
 ]
+
 /** END */
 
    /** Transmission (DONE)*/
@@ -120,14 +121,15 @@ export class nonFinClms {
 
   /** Cancelation (DONE)*/
   public static CANCELATION = [
-    {field:'cancelation_effective_date',header:'Cancelation Effective Date',width:'15rem'},
+    {field:'cancel_eff_dt',header:'Cancelation Effective Date',width:'15rem'},
     {field:'amount',header:'Amount',width:'12rem'}
     ]
     /** END */
 
     /** PAUSE (DONE)*/
     public static PAUSE = [
-    {field:'duration',header:'Duration',width:'12rem'},
+    // {field:'duration',header:'Duration',width:'12rem'},
+    {field:'pause_duration',header:'Duration',width:'12rem'},
     {field:'pause_start_date',header:'Pause Start Date',width:'12rem'},
     {field:'pause_end_date',header:'Pause End Date',width:'12rem'},
     {field:'pause_amount',header:'Amount',width:'12rem'}
@@ -136,10 +138,12 @@ export class nonFinClms {
 
     /** STP REGISTRATION (DONE)*/
     public static STP_REGISTRATION = [
-      {field:'stp_type',header:'STP Type',width:'12rem'},
+      {field:'stp_type_name',header:'STP Type',width:'12rem'},
       {field:'stp_frequency',header:'STP Frequency',width:'12rem'},
       {field:'stp_date',header:'STP Date',width:'12rem'},
       {field:'scheme_name_to',header:'Scheme Name (To Scheme)',width:'20rem'},
+      { field: 'plan_name_to', header: 'Plan (To Plan)',width:'10rem' },
+      { field: 'opt_name_to', header: 'Option (To Option)',width:'10rem' },
       {field:'stp_start_date',header:'STP Start Date',width:'12rem'},
       {field:'stp_end_date',header:'STP End Date',width:'12rem'},
       {field:'stp_amount',header:'STP Amount',width:'12rem'}

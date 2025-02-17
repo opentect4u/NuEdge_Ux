@@ -257,6 +257,10 @@ export class NonFinancialEntryComponent implements OnInit {
     }),
     plan_id: new FormControl('', [Validators.required]),
     option_id: new FormControl('', [Validators.required]),
+
+    plan_to: new FormControl(''),
+    option_to: new FormControl(''),
+
     scheme_name: new FormControl('', {
       validators: [Validators.required],
       asyncValidators: [this.SchemeValidators()],
@@ -906,9 +910,25 @@ export class NonFinancialEntryComponent implements OnInit {
 
 
       /** VALIDATION FOR STP SCHEME, IF TRANS_ID 31 (STP REGISTRATION)*/
+      console.log("********* TRANSACTION ID *********************");
+      console.log(res);
+      console.log("********* END *********************");
       this.__nonfinForm.controls['scheme_name_to'].setValidators(res == '31' ? [Validators.required] : null);
       this.__nonfinForm.controls['scheme_name_to'].setAsyncValidators(res == '31' ? [this.STPToSchemeValidators()] : null);
       this.__nonfinForm.controls['scheme_name_to'].updateValueAndValidity();
+
+      if(res == 31){
+        this.__nonfinForm.controls['plan_to'].setValidators([Validators.required]);
+        this.__nonfinForm.controls['option_to'].setValidators([Validators.required]);
+      }
+      else{
+        this.__nonfinForm.controls['plan_to'].removeValidators([Validators.required]);
+        this.__nonfinForm.controls['option_to'].removeValidators([Validators.required]);
+      }
+
+      this.__nonfinForm.controls['plan_to'].updateValueAndValidity();
+      this.__nonfinForm.controls['option_to'].updateValueAndValidity();
+      
       /** END */
 
       this.__nonfinForm.controls[
@@ -1839,11 +1859,13 @@ export class NonFinancialEntryComponent implements OnInit {
       if(this.__nonfinForm.value.trans_id == '31'){
         fb.append('stp_type',global.getActualVal(this.__nonfinForm.value.stp_type));
         fb.append('scheme_id_to',global.getActualVal(this.__nonfinForm.value.scheme_id_to));
+        fb.append('plan_to',global.getActualVal(this.__nonfinForm.value.plan_to));
+        fb.append('option_to',global.getActualVal(this.__nonfinForm.value.option_to));
       }
       else{
         fb.append('swp_type',global.getActualVal(this.__nonfinForm.value.swp_type));
       }
-
+      fb.append('swp_stp_date', this.__nonfinForm.value.swp_dates ? this.__nonfinForm.value.swp_dates : '');
       fb.append('swp_stp_frequency', this.__nonfinForm.value.swp_freq);
       fb.append('swp_stp_start_date', this.__nonfinForm.value.swp_start_date);
       fb.append('swp_stp_end_date', this.__nonfinForm.value.swp_end_date);
@@ -2292,7 +2314,14 @@ export class NonFinancialEntryComponent implements OnInit {
         break;
         case 'ST':
         this.__dialogDtForScheme_to = __euinDtls;
-        this.__nonfinForm.controls['scheme_name_to'].reset(
+        // this.__nonfinForm.controls['scheme_name_to'].reset(
+        //   __euinDtls.scheme_name,
+        //   {
+        //     onlySelf: true,
+        //     emitEvent: false,
+        //   }
+        // );
+        this.__nonfinForm.controls['scheme_name_to'].setValue(
           __euinDtls.scheme_name,
           {
             onlySelf: true,
@@ -2965,6 +2994,12 @@ export class NonFinancialEntryComponent implements OnInit {
   }
 
   checkIfscmExist(scm_name: string): Observable<boolean> {
+    console.log('*************************')
+    console.log(scm_name)
+    console.log( this.__schemeMst)
+    console.log('*************************')
+
+
     return of(
       this.__schemeMst.findIndex((x) => x.scheme_name == scm_name) != -1
     );
@@ -2983,14 +3018,18 @@ export class NonFinancialEntryComponent implements OnInit {
   }
 
   checkIfscmToExist(scm_name: string): Observable<boolean> {
+    console.log(this.__schemeMstTo);
+    console.log(scm_name);
+
     return of(
       this.__schemeMstTo.findIndex((x) => x.scheme_name == scm_name) != -1
     );
   }
   STPToSchemeValidators(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return this.checkIfscmExist(control.value).pipe(
+      return this.checkIfscmToExist(control.value).pipe(
         map((res) => {
+          console.log(res);
           if (control.value) {
             return res ? null : { ScmToExists: true };
           }

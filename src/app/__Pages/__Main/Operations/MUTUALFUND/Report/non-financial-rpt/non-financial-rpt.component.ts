@@ -216,14 +216,24 @@ export class NonFinancialRPTComponent implements OnInit {
       break;
       case 11:
       case 21:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.NA_OR_NC,nonFinClms.COMMON_COLUMN);break;
-      case 30: columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);break;
-      case 31:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);break;
+      case 30: const columnsSWPR =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);
+                    columnsMst = columnsSWPR.filter(el => el.field != 'amount')
+                    break;
+      // columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);break;
+      case 31:const columnsSTPR = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);
+              columnsMst = columnsSTPR.filter(el => el.field != 'amount')
+              break; 
+      
+      // columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);break;
       case 19:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.TRANSMISSION,nonFinClms.COMMON_COLUMN);break
       case 29:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.REDEMPTION,nonFinClms.COMMON_COLUMN);break
       case 36:
       case 37:
-      case 38:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN)
-              break;
+      // case 38:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN)
+      //         break;
+      case 38: const columnsPause = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN);
+                    columnsMst = columnsPause.filter(el => el.field != 'amount')
+                    break;
       case 7:
       case 8:
       case 9:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CANCELATION,nonFinClms.COMMON_COLUMN)

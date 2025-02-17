@@ -17,6 +17,9 @@ export class nfoClmns {
     {field:'first_client_pan',header:'First Holder PAN',width:'8rem'},
     {field:'trans_name',header:'Transction Type',width:'12rem'},
     {field:'scheme_name',header:'Scheme',width:'25rem'},
+    {field:'plan_name',header:'Plan',width:'10rem'},
+    {field:'opt_name',header:'Option',width:'10rem'},
+
     {field:'application_no',header:'Application No',width:'10rem'},
     // { field: 'folio_no', header: 'Folio No' },
     {field:'amount',header:'Amount',width:'8rem'},
@@ -76,6 +79,8 @@ public static COLUMN_SELECTOR=[
 ]
 public static DETAILS_PIP=[
   {field:'scheme_name',header:'Scheme',width:'25rem'},
+  {field:'plan_name',header:'Plan',width:'10rem'},
+  {field:'opt_name',header:'Option',width:'10rem'},
   {field:'inv_type',header:'Investment Type',width:'15rem'},
   {field:'application_no',header:'Application No',width:'12rem'},
   {field:'folio_no',header:'Folio No.',width:'8rem'},
@@ -89,6 +94,8 @@ public static DETAILS_PIP=[
 ]
 public static DETAILS_SIP=[
   {field:'scheme_name',header:'Scheme',width:'25rem'},
+  {field:'plan_name',header:'Plan',width:'10rem'},
+  {field:'opt_name',header:'Option',width:'10rem'},
   {field:'inv_type',header:'Investment Type',width:'15rem'},
   {field:'application_no',header:'Application No',width:'12rem'},
   // {field:'folio_no',header:'Folio No.',width:'8rem'},
@@ -114,21 +121,25 @@ public static DETAILS_SWITCH = [
   {field:'plan_name_to',header:'Plan (To Scheme)',width:'10rem'},
   {field:'opt_name_to',header:'Option (To Scheme)',width:'10rem'},
   // {field:'folio_no',header:'Folio No.',width:'8rem'},
-  {field:'amount',header:'Amount/Unit',width:'10rem'},
+  {field:'amount',header:'Amount',width:'10rem'},
+  {field:'unit',header:'Unit',width:'8rem'},
   {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
   {field:'remarks',header:'Remarks',width:'10rem'}
 ]
 public static DETAILS_NFOCOMBO=[
-  {field:'scheme_name',header:'Scheme',width:'25rem'},
+  {field:'scheme_name',header:'Scheme (From Scheme)',width:'25rem'},
+  {field:'plan_name',header:'Plan (From Plan)',width:'10rem'},
+  {field:'opt_name',header:'Option (From Option)',width:'10rem'},
+  {field:'scheme_name_to',header:'Scheme Name (To Scheme)',width:'20rem'},
+  {field:'plan_name_to',header:'Plan (To Plan)',width:'10rem'},
+  {field:'opt_name_to',header:'Option (To Option)',width:'10rem'},
   {field:'inv_type',header:'Investment Type',width:'15rem'},
   {field:'application_no',header:'Application No',width:'12rem'},
   // {field:'folio_no',header:'Folio No.',width:'8rem'},
-  {field:'plan_name',header:'Plan',width:'10rem'},
-  {field:'opt_name',header:'Option',width:'10rem'},
   {field:'amount',header:'Amount',width:'10rem'},
   {field:'chq_no',header:'Cheque No',width:'10rem'},
   {field:'bank_name',header:'Bank',width:'12rem'},
-  {field:'scheme_name_to',header:'Scheme Name (To Scheme)',width:'20rem'},
+  
   {field:'switch_amt',header:'Switch Amount / Unit',width:'12rem'},
   {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
   {field:'remarks',header:'Remarks',width:'10rem'}

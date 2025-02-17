@@ -129,6 +129,7 @@ export class CmnReportForMFComponent implements OnInit,OnDestroy {
 
   /** For Document View  */
    DocumentView(element){
+    console.log(element)
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = true;
@@ -138,7 +139,7 @@ export class CmnReportForMFComponent implements OnInit,OnDestroy {
       title: 'Uploaded Scan Copy',
       data: element,
       copy_url:`${environment.app_formUrl + element.app_form_scan}`,
-      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.app_formUrl + element.app_form_scan}`)
+      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.app_formUrl +(this.trnsTypeId == 2 ? element?.scaned_form : element.app_form_scan)}`)
     };
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
    }

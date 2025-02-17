@@ -25,7 +25,7 @@ export class kycClm {
     {field:'tin_no',header:'TIN',width:'8rem'},
     {field:'bu_type',header:'Business Type',width:'8rem'},
     {field:'branch_name',header:'Branch',width:'10rem'},
-    {field:'arn_no',header:'RM Name',width:'10rem'},
+    {field:'rm_name',header:'RM Name',width:'10rem'},
     {field:'sub_brk_arn',header:'Sub Broker ARN',width:'10rem'},
     {field:'sub_brk_cd',header:'Sub Broker Code',width:'12rem'},
     {field:'euin_no',header:'EUIN',width:'10rem'},
@@ -33,7 +33,7 @@ export class kycClm {
     {field:'client_code',header:'Client Code',width:'8rem'},
     {field:'pan',header:'PAN',width:'10rem'},
     {field:'kyc_type',header:'KYC Type',width:'8rem'},
-    {field:'login_at',header:'KYC Login At',width:'8rem'}
+    {field:'kyc_login_type',header:'KYC Login At',width:'8rem'}
   ]
 
   public static clmSelector =[
@@ -45,7 +45,7 @@ export class kycClm {
     {id:'tin_no',text:'TIN',width:'8rem'},
     {id:'bu_type',text:'Business Type',width:'8rem'},
     {id:'branch_name',text:'Branch',width:'10rem'},
-    {id:'arn_no',text:'RM Name',width:'10rem'},
+    {id:'rm_name',text:'RM Name',width:'10rem'},
     {id:'sub_brk_arn',text:'Sub Broker ARN',width:'10rem'},
     {id:'sub_brk_cd',text:'Sub Broker Code',width:'12rem'},
     {id:'euin_no',text:'EUIN',width:'10rem'},
@@ -53,7 +53,7 @@ export class kycClm {
     {id:'client_code',text:'Client Code',width:'8rem'},
     {id:'pan',text:'PAN',width:'10rem'},
     {id:'kyc_type',text:'KYC Type',width:'8rem'},
-    {id:'login_at',text:'KYC Login At',width:'8rem'}
+    {id:'kyc_login_type',text:'KYC Login At',width:'8rem'}
 
   ]
 }

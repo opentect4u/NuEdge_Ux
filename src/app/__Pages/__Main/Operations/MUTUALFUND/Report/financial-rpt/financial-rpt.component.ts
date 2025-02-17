@@ -203,6 +203,7 @@ export class FinancialRPTComponent implements OnInit {
   }
 
   setColumns(option,trans_type_id,trns_id){
+    console.log(trns_id);
     const clmToRemoveForPIP = ['sip_type_name','scheme_name_to','sip_swp_stp_frequency','sip_date','sip_start_date','sip_end_date','sip_amount','edit']
     const clmToRemoveForSIP = ['scheme_name_to','edit'];
     const clmToRemoveForSwitch = ['sip_type_name','sip_swp_stp_frequency','sip_date','sip_start_date','sip_end_date','sip_amount','edit'];
@@ -214,7 +215,20 @@ export class FinancialRPTComponent implements OnInit {
 
     if(option == 2){
       this.__columns = trns_id == 2 ? mfFinClmns.SUMMARY_COPY_SIP.filter(x => x.field != 'edit')
-      : mfFinClmns.SUMMARY_COPY.filter(x => x.field != 'edit');
+      : (trns_id == 3 ? mfFinClmns.SUMMARY_COPY.filter(x => x.field != 'edit').map(el => {
+        if(el.field == 'scheme_name'){
+          console.log(el.field)
+            el.header = 'Scheme Name (From Scheme)'
+        }
+        else if(el.field == 'plan_name'){
+          el.header = 'Plan (From Plan)'
+        }
+        else if(el.field == 'opt_name'){
+          el.header = 'Option (From Option)'
+        }
+        return el
+      }
+      ) : mfFinClmns.SUMMARY_COPY.filter(x => x.field != 'edit'));
     }
     else{
       this.__columns =  trns_id == 3
@@ -470,5 +484,10 @@ export class FinancialRPTComponent implements OnInit {
           to_dt: this.transFrm.getRawValue().date_range ? (global.getActualVal(this.transFrm.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.transFrm.getRawValue().date_range[1]) : '') : ''
          });
 
+    }
+
+    ngOnDestroy()
+    {
+        this.finMst = [];
     }
 }

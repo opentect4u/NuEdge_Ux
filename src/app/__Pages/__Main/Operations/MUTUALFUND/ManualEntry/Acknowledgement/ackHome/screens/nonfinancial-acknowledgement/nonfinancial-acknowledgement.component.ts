@@ -36,6 +36,8 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
   itemsPerPage = ItemsPerPage;
   @ViewChild('dt') primeTbl :Table;
 
+  tableWidth:number = 264;
+
   // sort = new sort();
   private _trans_type_id:number;
   @Input() 
@@ -534,7 +536,7 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
         // this.__paginate = res.links;
       });
   }
-  DocumentView(element){
+  DocumentView(element,type){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = true;
@@ -544,7 +546,7 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
       title: 'Uploaded Scan Copy',
       data: element,
       copy_url:`${environment.app_formUrl + element.app_form_scan}`,
-      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.app_formUrl + element.app_form_scan}`)
+      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${ type == 'app_frm_view' ? environment.app_formUrl + element.app_form_scan : environment.ack_formUrl + element.ack_copy_scan}`)
     };
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
   }
@@ -764,13 +766,20 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
       break;
       case 11:
       case 21:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.NA_OR_NC,nonFinAckClms.COMMON_COLUMN);break;
-      case 30: columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.SWPR,nonFinAckClms.COMMON_COLUMN);break;
-      case 31:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.STP_REGISTRATION,nonFinAckClms.COMMON_COLUMN);break;
-      case 19:columnsMst =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.TRANSMISSION,nonFinAckClms.COMMON_COLUMN);break
+      case 30: const columnsSWPR =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.SWPR,nonFinAckClms.COMMON_COLUMN);
+              columnsMst = columnsSWPR.filter(el => el.field != 'amount')
+              break;
+      case 31: const columnsSTPR = global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.STP_REGISTRATION,nonFinAckClms.COMMON_COLUMN);
+               columnsMst = columnsSTPR.filter(el => el.field != 'amount')
+                break; 
+      case 19:const columnsTransmission =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.TRANSMISSION,nonFinAckClms.COMMON_COLUMN);
+                    columnsMst = columnsTransmission.filter(el => el.field != 'amount')
+                    break;
       case 29:columnsMst =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.REDEMPTION,nonFinAckClms.COMMON_COLUMN);break
       case 36:
       case 37:
-      case 38:columnsMst = global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.PAUSE,nonFinAckClms.COMMON_COLUMN);
+      case 38: const columnsPause = global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.PAUSE,nonFinAckClms.COMMON_COLUMN);
+              columnsMst = columnsPause.filter(el => el.field != 'amount')
               break;
       case 7:
       case 8:
@@ -781,6 +790,7 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
     }
     // this.columns = columnsMst;
       this.__columns = columnsMst;
+      this.tableWidth = columnsMst.map(el => el.width ? Number(el.width.split('rem')[0]) : 0).reduce(function (x, y) {return x + y;}, 0)
      
     //  this.Selected nClmns =  this.__columns.map(item => {return item['field']}).filter(x => !clm.includes(x));
   }

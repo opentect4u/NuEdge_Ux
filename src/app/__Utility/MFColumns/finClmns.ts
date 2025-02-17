@@ -19,6 +19,8 @@ export class mfFinClmns {
         {field:'application_no',header:'Application No',width:'10rem'},
       //   {field:'folio_no',header:'Folio No'},
         {field:'amount',header:'Amount',width:'8rem'},
+        // {field:'unit',header:'Unit',width:'8rem'},
+
         {field:'rnt_name',header:'Form Submitted At',width:'15rem'}
    ]
 
@@ -169,11 +171,15 @@ export class mfFinClmns {
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
         {field:'third_client_kyc_status',header:'Third Holder KYC Status',width:'10rem'},
         {field:'trans_name',header:'Transaction Type',width:'15rem'},
-        {field:'scheme_name',header:'Scheme',width:'20rem'},
-        {field:'plan_name',header:'Plan',width:'12rem'},
-        {field:'opt_name',header:'Option',width:'12rem'},
+        {field:'scheme_name',header:'Scheme (From Scheme)',width:'20rem'},
+        {field:'plan_name',header:'Plan (From Plan)',width:'12rem'},
+        {field:'opt_name',header:'Option (From Option)',width:'12rem'},
         {field:'scheme_name_to',header:'Scheme Name (To Scheme)',width:'20rem'},
+        {field:'plan_name_to',header:'Plan (To Plan)',width:'12rem'},
+        {field:'opt_name_to',header:'Option (To Option)',width:'12rem'},
         {field:'amount',header:'Amount',width:'8rem'},
+        {field:'unit',header:'Unit',width:'8rem'},
+
         {field:'chq_no',header:'Cheque No',width:'10rem'},
         {field:'bank_name',header:'Bank',width:'15rem'},
         {field:'inv_type',header:'Investment Type',width:'15rem'},

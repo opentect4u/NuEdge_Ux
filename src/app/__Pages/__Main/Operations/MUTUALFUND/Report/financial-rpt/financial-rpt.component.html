@@ -305,6 +305,10 @@
                     || col.field == 'sip_end_date'">
                       <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</span>
                       </ng-container>
+
+                <ng-container *ngSwitchCase="col.field == 'unit'">
+                  {{ finance[col.field] ? finance[col.field] : 'N/A'}}
+                </ng-container>
                 <ng-container *ngSwitchDefault>
                   <span #tooltip="matTooltip" [matTooltip]="finance[col.field]">
                     {{ finance[col.field] ? finance[col.field] : 'N/A' }}

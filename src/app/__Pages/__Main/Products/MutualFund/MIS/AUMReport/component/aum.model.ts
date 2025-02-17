@@ -4,7 +4,7 @@ export interface IAumFooterModel{
     AUM:number | undefined;
     "IDCW Reinv":number | undefined;
     IDCW:number | undefined;
-    "Abs. Return":number | undefined;
+    "Abs. Return":any | undefined;
     Equity:number| undefined;
     Debt:number | undefined;
     Hybrid:number | undefined;

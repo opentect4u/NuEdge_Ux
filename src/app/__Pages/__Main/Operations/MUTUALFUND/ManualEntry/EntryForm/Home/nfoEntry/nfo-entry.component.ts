@@ -1279,7 +1279,7 @@ export class NfoEntryComponent implements OnInit {
     this.__traxForm.patchValue({
       bu_type: __items.bu_type,
       inv_type: __items.inv_type,
-      application_no: __items.inv_type == 'F' ? global.getActualVal(__items.application_no) : '',
+      application_no: __items.inv_type == 'F' ? (__items.application_no ? global.getActualVal(__items.application_no) : '') : '',
       folio_number: (__items.inv_type == 'A' || __items.trans_id == 6) ? global.getActualVal(__items.folio_no) : '',
       mode_of_holding:__items.mode_of_holding ? global.getActualVal(__items.mode_of_holding) : '',
       plan:global.getActualVal(__items.plan_id),
@@ -1699,7 +1699,7 @@ export class NfoEntryComponent implements OnInit {
     fb.append('plan', this.__traxForm.value.plan);
     fb.append('option', this.__traxForm.value.option);
     fb.append('inv_type', this.__traxForm.value.inv_type);
-    fb.append('application_no', (this.__traxForm.value.inv_type == 'F' ? this.__traxForm.value.application_no : ''));
+    fb.append('application_no', (this.__traxForm.value.inv_type == 'F' ? global.getActualVal(this.__traxForm.value.application_no) : ''));
 
 
     fb.append('mode_of_holding', this.__traxForm.value.mode_of_holding);

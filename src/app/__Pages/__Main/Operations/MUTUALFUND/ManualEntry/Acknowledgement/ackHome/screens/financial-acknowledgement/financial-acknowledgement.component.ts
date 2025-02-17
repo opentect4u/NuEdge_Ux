@@ -952,8 +952,12 @@ export class FinancialAcknowledgementComponent implements OnInit {
       case '5' :
       case '2' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Sip); break;
       case '6' :
-      case '3' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Switch); break;
-      case '35' : clmn =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_nfoCombo); break;
+      case '3' : const clmnSwitch =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_Switch); 
+                clmn = clmnSwitch.filter(el => el.header != 'Scheme' && el.header != 'Plan' && el.header != 'Option');
+                break;
+      case '35' : const clmnNfoCombo =  global.getColumnsAfterMerge(MfackClmns.Deatils,MfackClmns.Columns_for_nfoCombo); 
+                  clmn = clmnNfoCombo.filter(el => el.header != 'Scheme' && el.header != 'Plan' && el.header != 'Option');
+                  break;
     }
    this.clmList = clmn
    if(option == 2){
@@ -984,7 +988,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
      this.getAckRpt();
     }
   }
-  DocumentView(element){
+  DocumentView(element,type){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = true;
@@ -994,7 +998,9 @@ export class FinancialAcknowledgementComponent implements OnInit {
       title: 'Uploaded Scan Copy',
       data: element,
       copy_url:`${environment.app_formUrl + element.app_form_scan}`,
-      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.app_formUrl + element.app_form_scan}`)
+      // src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.app_formUrl + element.app_form_scan}`)
+      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${ type == 'app_frm_view' ? environment.app_formUrl + element.app_form_scan : environment.ack_formUrl + element.ack_copy_scan}`)
+
     };
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
   }

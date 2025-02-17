@@ -60,15 +60,18 @@
                 class="{{col.field}}"
                 [style]="'width : '+col.width">
                 <ng-container [ngSwitch]="true">
-                  <ng-container *ngSwitchCase="col.field == 'amc_name' || col.field == 'client_name' || col.field == 'pan' || col.field == 'subcat_name' || col.field == 'cat_name'">
+                  <ng-container *ngSwitchCase="col.field == 'amc_name' || col.field == 'client_name' || col.field == 'pan' || col.field == 'subcat_name' || col.field == 'cat_name' || col.field == 'folio_no'">
                     <p class="m-0 textContent">
                       {{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}
                     </p>
                   </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'scheme_name' || col.field == 'registrar_name'">
-                    <a class="m-0" href="#">
-                      {{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}
-                    </a>
+                  <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+                    <a class="m-0" target="_blank"
+                                      [routerLink]="['/main/product/mf/mis/aum/aum-by-scheme-code',aumDtls?.routeUrl]"
+                          >{{aumDtls[col.field]}}-{{aumDtls.plan_name}}-{{aumDtls.option_name}}</a>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'registrar_name' ">
+                    <a class="m-0" target="_blank" href="#">{{aumDtls[col.field]}}-{{aumDtls.plan_name}}-{{aumDtls.option_name}}</a>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'xirr'">
                     <p class="m-0">
@@ -119,7 +122,7 @@
                                 <ng-container *ngSwitchCase="col.field == 'folio_no'">
                                   <p class="m-0">{{data[col.field] ? data[col.field] : 'N/A'}}</p>
                               </ng-container>
-                                <ng-container *ngSwitchCase="col.field == 'abs_rtn' || col.field == 'xirr'">
+                                <ng-container *ngSwitchCase="col.field == 'abs_rtn' || col.field == 'xirr' ">
                                   <p class="m-0">{{data[col.field] ? data[col.field] : '0'}}%</p>
                               </ng-container>
                                 <ng-container *ngSwitchDefault>
@@ -176,7 +179,7 @@
                   <p class="m-0">GRAND TOTAL</p>
                 </ng-container>
                 <!-- col.field == 'amc_weightage' ||  -->
-                <ng-container *ngSwitchCase="col.field == 'pan' || col.field == 'cat_name'"></ng-container>
+                <ng-container *ngSwitchCase="col.field == 'pan' || col.field == 'cat_name' || col.field == 'folio_no'"></ng-container>
                 <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'amc_weightage'">
                   {{footerDT ? (footerDT[col.header] ? footerDT[col.header] : '0') : '0'}}%
                 </ng-container>

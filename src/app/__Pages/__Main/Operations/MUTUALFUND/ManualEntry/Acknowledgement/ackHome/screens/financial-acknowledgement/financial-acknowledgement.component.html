@@ -389,7 +389,7 @@
          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
          [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
            styleClass="p-datatable-gridlines" [responsive]="true"
-           [tableStyle]="{ 'min-width': (this.transaction_id == 1 || this.transaction_id == 4) ? '404rem' : ((this.transaction_id == 2 || this.transaction_id == 5) ? '463rem' : (this.transaction_id == 35 ? '459rem' : '454rem')) }"
+           [tableStyle]="{ 'min-width': (this.transaction_id == 1 || this.transaction_id == 4) ? '411rem' : ((this.transaction_id == 2 || this.transaction_id == 5) ? '470rem' : (this.transaction_id == 35 ? '466rem' : '461rem')) }"
           >
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between">
@@ -412,7 +412,7 @@
                
               >
                 {{ col.header }}
-                <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view'" [field]="col.field">
+                <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_frm_view' && col.field!= 'ack_copy_scan'" [field]="col.field">
                 </p-sortIcon>
               </th>
             </tr>
@@ -456,8 +456,12 @@
                     </ng-container>
                     
                   </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
+                  <!-- <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
                     <p-button icon="pi pi-eye" (click)="DocumentView(finance)"
+                      styleClass="p-button-rounded p-button-primary"></p-button>
+                  </ng-container> -->
+                  <ng-container *ngSwitchCase="col.field == 'app_frm_view' || col.field == 'ack_copy_scan'">
+                    <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
                       styleClass="p-button-rounded p-button-primary"></p-button>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'bu_type'">

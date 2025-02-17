@@ -37,15 +37,15 @@
                 selectionMode="multiple"
                 [scrollable]="true"
                 scrollHeight="358px"
-                [autoLayout]="true" 
-              styleClass="p-datatable-gridlines"
+                [autoLayout]="true" styleClass="p-datatable-gridlines"
                 >
                 <ng-template pTemplate="header" let-columns>
                   <tr>
                     <!--  -->
                     <th  *ngFor="let col of __columns"
                     [style.max-width]="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete' ? '' : col.width"
-                    [style.min-width]="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete' ? '' : col.width "    [pSortableColumn]="col.field" >
+                    [style.min-width]="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete' ? '' : col.width "    
+                    [pSortableColumn]="col.field" >
                       {{ col.header }}
                       <p-sortIcon *ngIf="col.field!= 'edit' && col.field!= 'app_form_view' && col.field!= 'delete'" [field]="col.field">
                       </p-sortIcon>
@@ -84,6 +84,9 @@
                             {{ kyc[col.field] == 'D' ? 'B2C - Direct' : (kyc[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
                         </ng-container>
 
+                        <ng-container *ngSwitchCase="col.field == 'kyc_login_type'">
+                          <span>{{ kyc[col.field] == 'A' ? 'AMC Office' : (kyc[col.field] == 'R' ? 'R&T' :  'Nuedge Online')}}</span>
+                        </ng-container>
                         <ng-container *ngSwitchCase="col.field == 'entry_dt'">
                           <span #tooltip="matTooltip" [matTooltip]="(kyc[col.field] | date:'dd-MM-yyyy')">{{ kyc[col.field] ? (kyc[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</span>
                           </ng-container>
