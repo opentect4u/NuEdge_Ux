@@ -382,7 +382,7 @@ export class FinancialEntryComponent implements OnInit {
           dt?.length > 1
             ? this.__dbIntr.searchItems(
                 '/scheme',
-                dt + '&amc_id=' + this.__dialogDtForScheme?.amc_id
+                dt + '&amc_id=' + this.__dialogDtForScheme?.amc_id + '&scheme_type=O'
               )
             : []
         ),

@@ -114,8 +114,9 @@ export class nonFinClms {
 
    /** Redemption (DONE)*/
    public static REDEMPTION = [
-    {field:'redemption_type',header:'Redemption Type',width:'12rem'},
-    {field:'redemption_amount',header:'Amount/Unit',width:'12rem'}
+    {field:'redemp_type',header:'Redemption Type',width:'12rem'},
+    {field:'amount',header:'Amount',width:'10rem'},
+    {field:'unit',header:'Unit',width:'10rem'},
     ]
     /** END */
 

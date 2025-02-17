@@ -36,6 +36,8 @@ type selectBtn ={
 })
 export class FinancialAcknowledgementComponent implements OnInit {
   // selectedAck:any
+  tableWidth:number = 264;
+
   itemsPerPage = ItemsPerPage;
   selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
   brnchMst: any=[];
@@ -967,6 +969,8 @@ export class FinancialAcknowledgementComponent implements OnInit {
    else{
     this.__columns = this.clmList;
    }
+   this.tableWidth = this.__columns.map(el => el.width ? Number(el.width.split('rem')[0]) : 0).reduce(function (x, y) {return x + y;}, 0)
+
   //  this.__columns = option == '2' ? MfackClmns.Summary.filter(item => item.field!='edit') : this.clmList;
   //  this.SelectedClms = this.__columns.map(x => x.field);
   //  this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});

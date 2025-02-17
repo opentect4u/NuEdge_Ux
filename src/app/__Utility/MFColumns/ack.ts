@@ -364,6 +364,7 @@ export class MfackClmns {
     { field: 'plan_name_to', header: 'Plan (To Plan)',width:'10rem' },
     { field: 'opt_name_to', header: 'Option (To Option)',width:'10rem' },
     { field: 'amount', header: 'Amount',width:'10rem'},
+    { field: 'unit', header: 'Unit',width:'8rem'},
     { field: 'chq_no', header: 'Cheque No',width:'10rem'},
     { field: 'bank_name', header: 'Bank',width:'12rem'},
     { field: 'inv_type', header: 'Investment Type',width:'12rem'},
@@ -412,6 +413,7 @@ export class MfackClmns {
     {field:'application_no',header:'Application No',width:'10rem'},
     {field:'folio_no',header:'Folio No',width:'10rem'},
     {field:'amount',header:'Amount',width:'10rem'},
+    {field:'unit',header:'Unit',width:'8rem'},
     {field:'chq_no',header:'Cheque No',width:'10rem'},
     {field:'bank_name',header:'Bank',width:'12rem'},
     {field:'switch_amt',header:'Switch Amount / Unit',width:'10rem'},
@@ -536,8 +538,10 @@ export class nonFinAckClms {
 
    /** Redemption (DONE)*/
    public static REDEMPTION = [
-    {field:'redemption_type',header:'Redemption Type',width:'10rem'},
-    {field:'redemption_amount',header:'Amount/Unit',width:'10rem'}
+    {field:'redemp_type',header:'Redemption Type',width:'10rem'},
+    {field:'amount',header:'Amount',width:'10rem'},
+    {field:'unit',header:'Unit',width:'10rem'}
+
     ]
     /** END */
 

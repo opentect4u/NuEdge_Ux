@@ -389,8 +389,9 @@
          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
          [showCurrentPageReport]="true" [globalFilterFields]="getColumns()"
            styleClass="p-datatable-gridlines" [responsive]="true"
-           [tableStyle]="{ 'min-width': (this.transaction_id == 1 || this.transaction_id == 4) ? '411rem' : ((this.transaction_id == 2 || this.transaction_id == 5) ? '470rem' : (this.transaction_id == 35 ? '466rem' : '461rem')) }"
-          >
+           [tableStyle]="{ 'min-width': tableWidth + 'rem' }">
+           <!-- [tableStyle]="{ 'min-width': (this.transaction_id == 1 || this.transaction_id == 4) ? '411rem' : ((this.transaction_id == 2 || this.transaction_id == 5) ? '470rem' : (this.transaction_id == 35 ? '466rem' : '461rem')) }"
+          > -->
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between">
               <div>
@@ -460,9 +461,22 @@
                     <p-button icon="pi pi-eye" (click)="DocumentView(finance)"
                       styleClass="p-button-rounded p-button-primary"></p-button>
                   </ng-container> -->
-                  <ng-container *ngSwitchCase="col.field == 'app_frm_view' || col.field == 'ack_copy_scan'">
-                    <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
+                  <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
+                  
+                      <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
                       styleClass="p-button-rounded p-button-primary"></p-button>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'ack_copy_scan'">
+                    <ng-container *ngIf="finance[col.field];else noackForm">
+                        <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
+                        styleClass="p-button-rounded p-button-primary"></p-button>
+                    </ng-container>
+                    <ng-template #noackForm>
+                        <span>
+                          N/A
+                        </span>
+                    </ng-template>
+                    
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'bu_type'">
                     <span #tooltip="matTooltip"
@@ -481,6 +495,12 @@
                     #tooltip="matTooltip"
                     [matTooltip]="finance[col.field] == 'F' ? 'Fresh' : 'Additional'">
                     {{ finance[col.field] == 'F' ? 'Fresh' : 'Additional'}}
+                  </span>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="col.field == 'switch_amt'">
+                    <span>
+                    {{ finance['switch_by'] == 'A' ? (finance['amount'] ? (finance['amount'] | currency:'INR') : 'N/A') : (finance['unit'] ? finance['unit'] : 'N/A')}}
                   </span>
                   </ng-container>
 

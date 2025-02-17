@@ -457,6 +457,7 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
   }
 
   submitAck() {
+    console.log(this.__ackForm.value)
     // const __ack = new FormData();
     // __ack.append('start_date', this.__ackForm.value.start_date);
     // __ack.append('end_date', this.__ackForm.value.end_date);
@@ -513,8 +514,10 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
     // __ack.append('field', (global.getActualVal(this.sort.field) ? this.sort.field : ''));
     // __ack.append('order', (global.getActualVal(this.sort.order) ? this.sort.order : '1'));
     __ack.append('ack_status',JSON.stringify(this.logged_status.value.filter(item => item.isChecked).map(res => {return res['id']})));
-    __ack.append('from_date',this.__ackForm.getRawValue().start_date? this.__ackForm.getRawValue().start_date: '');
-    __ack.append('to_date',this.__ackForm.getRawValue().end_date? this.__ackForm.getRawValue().end_date: '');
+    // __ack.append('from_date',this.__ackForm.getRawValue().start_date? this.__ackForm.getRawValue().start_date: '');
+    // __ack.append('to_date',this.__ackForm.getRawValue().end_date? this.__ackForm.getRawValue().end_date: '');
+    __ack.append('from_date',this.__ackForm.getRawValue().frm_dt? this.__ackForm.getRawValue().frm_dt: '');
+    __ack.append('to_date',this.__ackForm.getRawValue().to_dt? this.__ackForm.getRawValue().to_dt: '');
     __ack.append('client_code',this.__ackForm.value.client_code? this.__ackForm.value.client_code: '');
     __ack.append('tin_no',this.__ackForm.value.tin_no ? this.__ackForm.value.tin_no : '');
     __ack.append('amc_name',this.__ackForm.value.amc_name ? JSON.stringify(this.__ackForm.value.amc_name.map(item => {return item["id"]})) : '[]');
@@ -775,7 +778,10 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
       case 19:const columnsTransmission =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.TRANSMISSION,nonFinAckClms.COMMON_COLUMN);
                     columnsMst = columnsTransmission.filter(el => el.field != 'amount')
                     break;
-      case 29:columnsMst =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.REDEMPTION,nonFinAckClms.COMMON_COLUMN);break
+      case 29:const columnsRedemp =columnsMst =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR.filter(el => el.field != 'amount'),nonFinAckClms.REDEMPTION,nonFinAckClms.COMMON_COLUMN);
+                    columnsMst = columnsRedemp
+                    break;
+    
       case 36:
       case 37:
       case 38: const columnsPause = global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.PAUSE,nonFinAckClms.COMMON_COLUMN);

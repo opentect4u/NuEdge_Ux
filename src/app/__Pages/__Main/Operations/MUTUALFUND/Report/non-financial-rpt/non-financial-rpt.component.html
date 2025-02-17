@@ -251,6 +251,10 @@
                         <span>N/A</span>
                   </ng-template>
                 </ng-container>
+                <ng-container
+                *ngSwitchCase="col.field == 'redemp_type'">
+                {{ finance[col.field] ? (finance[col.field] == 'A' ? 'Amount' : 'Unit') : 'N/A'}}
+              </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'bu_type'">
                   <span #tooltip="matTooltip"
                   [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">

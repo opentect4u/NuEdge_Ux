@@ -1724,7 +1724,7 @@ export class NfoEntryComponent implements OnInit {
       fb.append('switch_by', this.__traxForm.value.switch_by);
       fb.append(
         'unit',
-        this.__traxForm.value.switch_by == 'U' ? this.__traxForm.value.unit : ''
+        this.__traxForm.value.switch_by == 'U' || this.__traxForm.value.switch_by == 'AU' ? this.__traxForm.getRawValue().unit : ''
       );
     } else if (this.__traxForm.value.trans_id == '35') {
       fb.append(
@@ -1745,8 +1745,8 @@ export class NfoEntryComponent implements OnInit {
       );
       fb.append(
         'unit',
-        this.__traxForm.get(['nfo_combo', 'switch_by']).value == 'U'
-          ? this.__traxForm.get(['nfo_combo', 'switch_unit']).value
+        this.__traxForm.get(['nfo_combo', 'switch_by']).value == 'U' || this.__traxForm.get(['nfo_combo', 'switch_by']).value == 'AU'
+          ? this.__traxForm.getRawValue().nfo_combo.switch_unit
           : ''
       );
     }

@@ -226,7 +226,7 @@ export class NonFinancialRPTComponent implements OnInit {
       
       // columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);break;
       case 19:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.TRANSMISSION,nonFinClms.COMMON_COLUMN);break
-      case 29:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.REDEMPTION,nonFinClms.COMMON_COLUMN);break
+      case 29:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(el => el.field !='amount'),nonFinClms.REDEMPTION,nonFinClms.COMMON_COLUMN);break
       case 36:
       case 37:
       // case 38:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN)

@@ -303,10 +303,27 @@
                       </ng-container>
                   </ng-container>
               </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'app_frm_view' || col.field == 'ack_copy_scan'">
+                <!-- <ng-container *ngSwitchCase="col.field == 'app_frm_view' || col.field == 'ack_copy_scan'">
                   <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
                     styleClass="p-button-rounded p-button-primary"></p-button>
+                </ng-container> -->
+                <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
+                  
+                  <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
+                  styleClass="p-button-rounded p-button-primary"></p-button>
+              </ng-container>
+              <ng-container *ngSwitchCase="col.field == 'ack_copy_scan'">
+                <ng-container *ngIf="finance[col.field];else noackForm">
+                    <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
+                    styleClass="p-button-rounded p-button-primary"></p-button>
                 </ng-container>
+                <ng-template #noackForm>
+                    <span>
+                      N/A
+                    </span>
+                </ng-template>
+                
+              </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'bu_type'">
                   <span #tooltip="matTooltip"
                   [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
@@ -335,6 +352,12 @@
                   *ngSwitchCase="col.field == 'first_client_kyc_status' || col.field == 'second_client_kyc_status' || col.field == 'third_client_kyc_status'">
                   {{ finance[col.field] ? (finance[col.field] == 'Y' ? 'With KYC' : 'Without KYC') : 'N/A'}}
                 </ng-container>
+
+                <ng-container
+                *ngSwitchCase="col.field == 'redemp_type'">
+                {{ finance[col.field] ? (finance[col.field] == 'A' ? 'Amount' : 'Unit') : 'N/A'}}
+              </ng-container>
+
                 <ng-container *ngSwitchCase="col.field == 'remarks'">
                   <ng-container *ngIf="finance[col.field];else noRemarks">
                     <p-button #tooltip="matTooltip" [matTooltip]="finance[col.field]" icon="pi pi-info-circle"
