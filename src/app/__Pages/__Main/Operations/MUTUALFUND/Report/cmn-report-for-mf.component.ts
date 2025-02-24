@@ -10,6 +10,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { environment } from 'src/environments/environment';
 import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
 import { DomSanitizer } from '@angular/platform-browser';
+import KycMst from '../../../../../../assets/json/kyc.json';
+import withoutKycMst from '../../../../../../assets/json/withoutKyc.json';
 type selectBtn ={
   label:string,
   value:string,
@@ -122,8 +124,28 @@ export class CmnReportForMFComponent implements OnInit,OnDestroy {
   }
   /*** End */
   getMstDt(ev){
+    const seen = new Set();
+    const kyc = KycMst.concat(withoutKycMst).filter(el => {
+      const duplicate = seen.has(el.id);
+      seen.add(el.id);
+      return !duplicate;
+    })
     this.dbIntr.api_call(1,'/mfTraxDetailSearch',ev).pipe(pluck("data")).subscribe((res: any) =>{
-     this.MstDt = res;
+     console.log(res?.data)
+      this.MstDt = {
+        ...res,
+        data:res.data.filter(el =>{
+          const first_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+          el.first_kyc = first_kyc.length > 0 ? first_kyc[0]?.value : '';
+          const second_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+          el.second_kyc = second_kyc.length > 0 ? second_kyc[0]?.value : '';
+          const third_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+          el.third_kyc = third_kyc.length > 0 ? third_kyc[0]?.value : '';
+          el.manual_trans_status = el.manual_trans_status ? (el.manual_trans_status == 'P' ? 'Process' : el.manual_trans_status == 'R' ? "Rejected" : 'Pending') : '';
+          return el;
+      })
+       }
+      //  console.log(this.MstDt)
     })
   }
 
@@ -138,8 +160,8 @@ export class CmnReportForMFComponent implements OnInit,OnDestroy {
     dialogConfig.data = {
       title: 'Uploaded Scan Copy',
       data: element,
-      copy_url:`${environment.app_formUrl + element.app_form_scan}`,
-      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.app_formUrl +(this.trnsTypeId == 2 ? element?.scaned_form : element.app_form_scan)}`)
+      copy_url:`${(this.trnsTypeId == 2 ?  environment.kyc_formUrl : environment.app_formUrl) + (this.trnsTypeId == 2 ? element?.scaned_form : element.app_form_scan)}`,
+      src:this.sanitizer.bypassSecurityTrustResourceUrl(`${(this.trnsTypeId == 2 ?  environment.kyc_formUrl : environment.app_formUrl) +(this.trnsTypeId == 2 ? element?.scaned_form : element.app_form_scan)}`)
     };
     const dialogref = this.__dialog.open(PreviewDocumentComponent, dialogConfig);
    }

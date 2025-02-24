@@ -3,7 +3,10 @@
         <aum-filter (onPress)="getFormData($event)"></aum-filter>
         <!-- [aum_type]="aum_type" -->
         <ng-container *ngIf="md_aum_scheme.length > 0">
-            <aum-table [dataSource]="md_aum_scheme" [footerDT]="footerDT"  
+            <aum-table [dataSource]="md_aum_scheme"
+            [__formDate]="__formDate"
+            
+            [footerDT]="footerDT"  
             [column]="aum_scheme_Column"></aum-table>
         </ng-container>
        

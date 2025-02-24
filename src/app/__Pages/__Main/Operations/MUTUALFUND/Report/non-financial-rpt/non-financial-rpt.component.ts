@@ -198,47 +198,47 @@ export class NonFinancialRPTComponent implements OnInit {
     var columnsMst;
     switch(trns_id){
 
-      case 32:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CMOH,nonFinClms.COMMON_COLUMN);
+      case 32:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.CMOH,nonFinClms.COMMON_COLUMN);
               break;
-      case 22:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.AC,nonFinClms.COMMON_COLUMN);
+      case 22:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.AC,nonFinClms.COMMON_COLUMN);
               break;
-      case 18:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COCD,nonFinClms.COMMON_COLUMN);
+      case 18:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.COCD,nonFinClms.COMMON_COLUMN);
               break;
-      case 23:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CON,nonFinClms.COMMON_COLUMN);
+      case 23:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.CON,nonFinClms.COMMON_COLUMN);
       break;
-      case 16:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CBU,nonFinClms.COMMON_COLUMN);
+      case 16:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.CBU,nonFinClms.COMMON_COLUMN);
       break;
-      case 15:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COBK,nonFinClms.COMMON_COLUMN);
+      case 15:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.COBK,nonFinClms.COMMON_COLUMN);
       break;
-      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.FCM,nonFinClms.COMMON_COLUMN);
+      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.FCM,nonFinClms.COMMON_COLUMN);
       break;
-      case 14:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COB,nonFinClms.COMMON_COLUMN);
+      case 14:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.COB,nonFinClms.COMMON_COLUMN);
       break;
       case 11:
-      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.NA_OR_NC,nonFinClms.COMMON_COLUMN);break;
-      case 30: const columnsSWPR =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);
+      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.NA_OR_NC,nonFinClms.COMMON_COLUMN);break;
+      case 30: const columnsSWPR =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);
                     columnsMst = columnsSWPR.filter(el => el.field != 'amount')
                     break;
-      // columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);break;
-      case 31:const columnsSTPR = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);
+      // columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);break;
+      case 31:const columnsSTPR = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);
               columnsMst = columnsSTPR.filter(el => el.field != 'amount')
               break; 
       
-      // columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);break;
-      case 19:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.TRANSMISSION,nonFinClms.COMMON_COLUMN);break
-      case 29:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(el => el.field !='amount'),nonFinClms.REDEMPTION,nonFinClms.COMMON_COLUMN);break
+      // columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);break;
+      case 19:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.TRANSMISSION,nonFinClms.COMMON_COLUMN);break
+      case 29:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status').filter(el => el.field !='amount'),nonFinClms.REDEMPTION,nonFinClms.COMMON_COLUMN);break
       case 36:
       case 37:
-      // case 38:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN)
+      // case 38:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN)
       //         break;
-      case 38: const columnsPause = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN);
+      case 38: const columnsPause = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN);
                     columnsMst = columnsPause.filter(el => el.field != 'amount')
                     break;
       case 7:
       case 8:
-      case 9:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.CANCELATION,nonFinClms.COMMON_COLUMN)
+      case 9:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.CANCELATION,nonFinClms.COMMON_COLUMN)
               break;
-      default:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR,nonFinClms.COMMON_COLUMN,[])
+      default:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.COMMON_COLUMN,[])
               break;
     }
     this.columns = columnsMst.filter(x => x.field!= 'edit');

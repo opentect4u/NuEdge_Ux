@@ -274,11 +274,15 @@
                 </span>
                 </ng-container>
 
-                <ng-container
+                <!-- <ng-container
                   *ngSwitchCase="col.field == 'first_client_kyc_status' || col.field == 'second_client_kyc_status' || col.field == 'third_client_kyc_status'">
                   {{ finance[col.field] ? (finance[col.field] == 'Y' ? 'With KYC' : 'Without KYC') : 'N/A'}}
-                </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'remarks'">
+                </ng-container> -->
+                <!-- <ng-container
+                *ngSwitchCase="col.field == 'first_kyc' || col.field == 'second_kyc' || col.field == 'third_kyc'">
+                {{ finance[col.field] ? (finance[col.field] == 'Y' ? 'With KYC' : 'Without KYC') : 'N/A'}}
+              </ng-container> -->
+                <ng-container *ngSwitchCase="col.field == 'remarks' || col.field == 'manual_update_remarks'">
                   <ng-container *ngIf="finance[col.field];else noRemarks">
                     <p-button #tooltip="matTooltip" [matTooltip]="finance[col.field]" icon="pi pi-info-circle"
                       styleClass="p-button-rounded p-button-success">

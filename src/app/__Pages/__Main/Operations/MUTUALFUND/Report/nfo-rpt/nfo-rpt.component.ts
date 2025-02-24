@@ -203,19 +203,22 @@ export class NfoRPTComponent implements OnInit {
 
 
   setColumns(option,trans_type_id,trns_id){
-
+    console.log(trns_id);
     var columnsMst;
     switch(trns_id){
-      case 4: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR,nfoClmns.DETAILS_PIP);break;
-      case 5: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR,nfoClmns.DETAILS_SIP);break;
-      case 6: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR,nfoClmns.DETAILS_SWITCH);break;
-      case 35: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR,nfoClmns.DETAILS_NFOCOMBO);break;
+      case 4: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nfoClmns.DETAILS_PIP);break;
+      case 5: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nfoClmns.DETAILS_SIP);break;
+      case 6: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nfoClmns.DETAILS_SWITCH);break;
+      case 35: columnsMst = global.getColumnsAfterMerge(nfoClmns.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nfoClmns.DETAILS_NFOCOMBO);break;
 
     }
+    if(columnsMst){
+
     this.columns = columnsMst.filter(x => x.field!= 'edit');
     if(option == 2){
+      const summaryCopy = nfoClmns.SUMMARY_COPY.filter(x => x.field != 'edit')
       this.__columns = trns_id == 5 ? nfoClmns.SUMMARY_COPY_SIP.filter(x => x.field != 'edit') : 
-      trns_id == 6 ? nfoClmns.SUMMARY_COPY.filter(x => x.field != 'edit').map(el => {
+      trns_id == 6 ? summaryCopy.map(el => {
         if(el.field == 'scheme_name'){
           console.log(el.field)
             el.header = 'Scheme Name (From Scheme)'
@@ -228,12 +231,19 @@ export class NfoRPTComponent implements OnInit {
         }
         return el
       }
-      ) : nfoClmns.SUMMARY_COPY.filter(x => x.field != 'edit');
+      ) :  trns_id == 35 ? summaryCopy.map(el =>{
+        if(el.field == 'amount'){
+            el.field = 'first_inv_amount'
+        }
+        return el
+      }) : summaryCopy;
       
     }
     else{
       this.__columns =this.columns;
     }
+  }
+
     // this.SelectedClms = this.__columns.map((x) => x.field);
   }
 

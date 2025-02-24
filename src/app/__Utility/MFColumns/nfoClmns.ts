@@ -23,8 +23,10 @@ export class nfoClmns {
     {field:'application_no',header:'Application No',width:'10rem'},
     // { field: 'folio_no', header: 'Folio No' },
     {field:'amount',header:'Amount',width:'8rem'},
-            {field:'rnt_name',header:'Form Submitted At',width:'15rem'}
-  ];
+            {field:'rnt_name',header:'Form Submitted At',width:'15rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+          ];
   public static SUMMARY_COPY_SIP = [
     {field:'folio_no',header:'Folio No.',width:'8rem'},
     {field:'ack_copy_scan',header:'ACK. View',width:'7rem'},
@@ -46,8 +48,10 @@ export class nfoClmns {
     { field: 'folio_no', header: 'Folio No' },
     {field:'amount',header:'Amount',width:'8rem'},
     { field: 'sip_amount', header: 'SIP Amount' },
-            {field:'rnt_name',header:'Form Submitted At',width:'15rem'}
-  ];
+            {field:'rnt_name',header:'Form Submitted At',width:'15rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+          ];
 public static COLUMN_SELECTOR=[
   {field:'folio_no',header:'Folio No.',width:'8rem'},
   {field:'ack_copy_scan',header:'ACK. View',width:'7rem'},
@@ -65,18 +69,20 @@ public static COLUMN_SELECTOR=[
     {field:'first_client_name',header:'First Holder Name',width:'18rem'},
     {field:'first_client_code',header:'First Holder Code',width:'8rem'},
     {field:'first_client_pan',header:'First Holder PAN',width:'10rem'},
-    {field:'first_client_kyc_status',header:'First Holder KYC Status',width:'10rem'},
+    {field:'first_kyc',header:'First Holder KYC Status',width:'10rem'},
     {field:'mode_of_holding',header:'Mode Of Holding',width:'12rem'},
     {field:'second_client_name',header:'Second Holder Name',width:'18rem'},
     {field:'second_client_code',header:'Second Holder Code',width:'12rem'},
     {field:'second_client_pan',header:'Second Holder PAN',width:'8rem'},
-    {field:'second_client_kyc_status',header:'Second Holder KYC Status',width:'10rem'},
+    {field:'second_kyc',header:'Second Holder KYC Status',width:'10rem'},
     {field:'third_client_name',header:'Third Holder Name',width:'15rem'},
     {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
     {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
-    {field:'third_client_kyc_status',header:'Third Holder KYC Status',width:'10rem'},
+    {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
     {field:'trans_name',header:'Transaction Type',width:'15rem'},
-]
+  {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+  {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+  ]
 public static DETAILS_PIP=[
   {field:'scheme_name',header:'Scheme',width:'25rem'},
   {field:'plan_name',header:'Plan',width:'10rem'},
@@ -90,7 +96,9 @@ public static DETAILS_PIP=[
   {field:'chq_no',header:'Cheque No',width:'10rem'},
   {field:'bank_name',header:'Bank',width:'12rem'},
   {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
-  {field:'remarks',header:'Remarks',width:'10rem'}
+  {field:'remarks',header:'Remarks',width:'10rem'},
+  {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+  {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
 ]
 public static DETAILS_SIP=[
   {field:'scheme_name',header:'Scheme',width:'25rem'},
@@ -111,7 +119,9 @@ public static DETAILS_SIP=[
   {field:'chq_no',header:'Cheque No',width:'12rem'},
   {field:'bank_name',header:'Bank',width:'15rem'},
   {field:'rnt_name',header:'Form Submitted At',width:'12rem'},
-  {field:'remarks',header:'Remarks',width:'10rem'}
+  {field:'remarks',header:'Remarks',width:'10rem'},
+  {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+  {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
 ]
 public static DETAILS_SWITCH = [
   {field:'scheme_name',header:'Scheme Name (From Scheme)',width:'20rem'},
@@ -124,7 +134,9 @@ public static DETAILS_SWITCH = [
   {field:'amount',header:'Amount',width:'10rem'},
   {field:'unit',header:'Unit',width:'8rem'},
   {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
-  {field:'remarks',header:'Remarks',width:'10rem'}
+  {field:'remarks',header:'Remarks',width:'10rem'},
+  {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+  {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
 ]
 public static DETAILS_NFOCOMBO=[
   {field:'scheme_name',header:'Scheme (From Scheme)',width:'25rem'},
@@ -136,12 +148,14 @@ public static DETAILS_NFOCOMBO=[
   {field:'inv_type',header:'Investment Type',width:'15rem'},
   {field:'application_no',header:'Application No',width:'12rem'},
   // {field:'folio_no',header:'Folio No.',width:'8rem'},
-  {field:'amount',header:'Amount',width:'10rem'},
   {field:'chq_no',header:'Cheque No',width:'10rem'},
   {field:'bank_name',header:'Bank',width:'12rem'},
+  {field:'first_inv_amount',header:'Amount',width:'10rem'},
   
   {field:'switch_amt',header:'Switch Amount / Unit',width:'12rem'},
   {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
-  {field:'remarks',header:'Remarks',width:'10rem'}
+  {field:'remarks',header:'Remarks',width:'10rem'},
+  {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+  {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
 ]
 }

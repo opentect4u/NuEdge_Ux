@@ -23,7 +23,8 @@ import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/p
 import { MfAckEntryComponent } from 'src/app/shared/core/Acknowledgement/MutualFundAcknowledgement/mf-ack-entry/mf-ack-entry.component';
 import { MfackClmns } from 'src/app/__Utility/MFColumns/ack';
 import { Table } from 'primeng/table';
-
+import KycMst from '../../../../../../../../../../assets/json/kyc.json';
+import withoutKycMst from '../../../../../../../../../../assets/json/withoutKyc.json';
 type selectBtn ={
   label:string,
   value:string,
@@ -778,7 +779,22 @@ export class FinancialAcknowledgementComponent implements OnInit {
     }
   }
   setPaginator(res) {
-    this.__ackMst = new MatTableDataSource(res);
+  const seen = new Set();
+  const kyc = KycMst.concat(withoutKycMst).filter(el => {
+    const duplicate = seen.has(el.id);
+    seen.add(el.id);
+    return !duplicate;
+  })
+  const main_dt = res.filter(el =>{
+            const first_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+            el.first_kyc = first_kyc.length > 0 ? first_kyc[0]?.value : '';
+            const second_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+            el.second_kyc = second_kyc.length > 0 ? second_kyc[0]?.value : '' 
+            const third_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+            el.third_kyc = third_kyc.length > 0 ? third_kyc[0]?.value : ''
+            return el;
+      })
+    this.__ackMst = new MatTableDataSource(main_dt);
     // this.__paginate = res.links;
   }
   updateRow(row_obj) {

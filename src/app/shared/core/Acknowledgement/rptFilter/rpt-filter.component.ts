@@ -24,7 +24,7 @@ type selectBtn ={
 export class RptFilterComponent implements OnInit {
   UpdateStatus = updateStatus;
   __logggedInStatus =loggedStatus;
-  settings = this.__utility.settingsfroMultiselectDropdown('id','rnt_name','Search');
+  settings = this.__utility.settingsfroMultiselectDropdown('id','rnt_name','Search',1);
   selectBtn:selectBtn[] = [];
   @ViewChildren('buTypeChecked') private __buTypeChecked: QueryList<ElementRef>;
   @ViewChild('searchTin') __searchTin: ElementRef;

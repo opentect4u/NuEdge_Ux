@@ -21,8 +21,10 @@ export class mfFinClmns {
         {field:'amount',header:'Amount',width:'8rem'},
         // {field:'unit',header:'Unit',width:'8rem'},
 
-        {field:'rnt_name',header:'Form Submitted At',width:'15rem'}
-   ]
+        {field:'rnt_name',header:'Form Submitted At',width:'15rem'},
+       {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+       {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+      ]
 
    public static  SUMMARY_COPY_SIP = [
       {field:'folio_no',header:'Folio No.',width:'8rem'},
@@ -45,8 +47,10 @@ export class mfFinClmns {
       //   {field:'folio_no',header:'Folio No'},
         {field:'amount',header:'Amount',width:'8rem'},
         {field:'sip_amount',header:'SIP Amount',width:'8rem'},
-        {field:'rnt_name',header:'Form Submitted At',width:'10rem'}
-   ]
+        {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
+       {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+       {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+      ]
 
 
 
@@ -68,16 +72,16 @@ export class mfFinClmns {
         {field:'first_client_name',header:'First Holder Name',width:'18rem'},
         {field:'first_client_code',header:'First Holder Code',width:'8rem'},
         {field:'first_client_pan',header:'First Holder PAN',width:'10rem'},
-        {field:'first_client_kyc_status',header:'First Holder KYC Status',width:'10rem'},
+        {field:'first_kyc',header:'First Holder KYC Status',width:'10rem'},
         {field:'mode_of_holding',header:'Mode Of Holding',width:'12rem'},
         {field:'second_client_name',header:'Second Holder Name',width:'18rem'},
         {field:'second_client_code',header:'Second Holder Code',width:'12rem'},
         {field:'second_client_pan',header:'Second Holder PAN',width:'8rem'},
-        {field:'second_client_kyc_status',header:'Second Holder KYC Status',width:'10rem'},
+        {field:'second_kyc',header:'Second Holder KYC Status',width:'10rem'},
         {field:'third_client_name',header:'Third Holder Name',width:'15rem'},
         {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
-        {field:'third_client_kyc_status',header:'Third Holder KYC Status',width:'10rem'},
+        {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
         {field:'trans_name',header:'Transaction Type',width:'15rem'},
         {field:'scheme_name',header:'Scheme',width:'20rem'},
         {field:'plan_name',header:'Plan',width:'12rem'},
@@ -89,8 +93,10 @@ export class mfFinClmns {
         {field:'application_no',header:'Application No',width:'10rem'},
       //   {field:'folio_no',header:'Folio No'},
         {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
-        {field:'remarks',header:'Remarks',width:'8rem'}
-   ]
+        {field:'remarks',header:'Remarks',width:'8rem'},
+       {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+       {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+      ]
 
    public static  DETAILS_FOR_SIP_COLUMNS_COPY =
    [
@@ -110,16 +116,16 @@ export class mfFinClmns {
         {field:'first_client_name',header:'First Holder Name',width:'18rem'},
         {field:'first_client_code',header:'First Holder Code',width:'8rem'},
         {field:'first_client_pan',header:'First Holder PAN',width:'10rem'},
-        {field:'first_client_kyc_status',header:'First Holder KYC Status',width:'10rem'},
+        {field:'first_kyc',header:'First Holder KYC Status',width:'10rem'},
         {field:'mode_of_holding',header:'Mode Of Holding',width:'12rem'},
         {field:'second_client_name',header:'Second Holder Name',width:'18rem'},
         {field:'second_client_code',header:'Second Holder Code',width:'12rem'},
         {field:'second_client_pan',header:'Second Holder PAN',width:'8rem'},
-        {field:'second_client_kyc_status',header:'Second Holder KYC Status',width:'10rem'},
+        {field:'second_kyc',header:'Second Holder KYC Status',width:'10rem'},
         {field:'third_client_name',header:'Third Holder Name',width:'15rem'},
         {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
-        {field:'third_client_kyc_status',header:'Third Holder KYC Status',width:'10rem'},
+        {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
         {field:'trans_name',header:'Transaction Type',width:'15rem'},
         {field:'scheme_name',header:'Scheme',width:'20rem'},
         {field:'plan_name',header:'Plan',width:'12rem'},
@@ -137,8 +143,10 @@ export class mfFinClmns {
         {field:'sip_end_date',header:'SIP End Date',width:'10rem'},
         {field:'sip_amount',header:'SIP Amount',width:'10rem'},
         {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
-        {field:'remarks',header:'Remarks',width:'8rem'}
-   ]
+        {field:'remarks',header:'Remarks',width:'8rem'},
+       {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+       {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+      ]
 
 
 
@@ -160,16 +168,16 @@ export class mfFinClmns {
         {field:'first_client_name',header:'First Holder Name',width:'18rem'},
         {field:'first_client_code',header:'First Holder Code',width:'8rem'},
         {field:'first_client_pan',header:'First Holder PAN',width:'10rem'},
-        {field:'first_client_kyc_status',header:'First Holder KYC Status',width:'10rem'},
+        {field:'first_kyc',header:'First Holder KYC Status',width:'10rem'},
         {field:'mode_of_holding',header:'Mode Of Holding',width:'12rem'},
         {field:'second_client_name',header:'Second Holder Name',width:'18rem'},
         {field:'second_client_code',header:'Second Holder Code',width:'12rem'},
         {field:'second_client_pan',header:'Second Holder PAN',width:'8rem'},
-        {field:'second_client_kyc_status',header:'Second Holder KYC Status',width:'10rem'},
+        {field:'second_kyc',header:'Second Holder KYC Status',width:'10rem'},
         {field:'third_client_name',header:'Third Holder Name',width:'15rem'},
         {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
-        {field:'third_client_kyc_status',header:'Third Holder KYC Status',width:'10rem'},
+        {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
         {field:'trans_name',header:'Transaction Type',width:'15rem'},
         {field:'scheme_name',header:'Scheme (From Scheme)',width:'20rem'},
         {field:'plan_name',header:'Plan (From Plan)',width:'12rem'},
@@ -186,8 +194,10 @@ export class mfFinClmns {
         {field:'application_no',header:'Application No',width:'10rem'},
       //   {field:'folio_no',header:'Folio No'},
         {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
-        {field:'remarks',header:'Remarks',width:'8rem'}
-   ]
+        {field:'remarks',header:'Remarks',width:'8rem'},
+       {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+       {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+      ]
 
    public static COLUMN_SELECTOR=
     [
@@ -207,16 +217,16 @@ export class mfFinClmns {
         {field:'first_client_name',header:'First Holder Name',width:'18rem'},
         {field:'first_client_code',header:'First Holder Code',width:'8rem'},
         {field:'first_client_pan',header:'First Holder PAN',width:'10rem'},
-        {field:'first_client_kyc_status',header:'First Holder KYC Status',width:'10rem'},
+        {field:'first_kyc',header:'First Holder KYC Status',width:'10rem'},
         {field:'mode_of_holding',header:'Mode Of Holding',width:'12rem'},
         {field:'second_client_name',header:'Second Holder Name',width:'18rem'},
         {field:'second_client_code',header:'Second Holder Code',width:'12rem'},
         {field:'second_client_pan',header:'Second Holder PAN',width:'8rem'},
-        {field:'second_client_kyc_status',header:'Second Holder KYC Status',width:'10rem'},
+        {field:'second_kyc',header:'Second Holder KYC Status',width:'10rem'},
         {field:'third_client_name',header:'Third Holder Name',width:'15rem'},
         {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
-        {field:'third_client_kyc_status',header:'Third Holder KYC Status',width:'10rem'},
+        {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
         {field:'trans_name',header:'Transaction Type',width:'15rem'},
         {field:'scheme_name',header:'Scheme name',width:'20rem'},
         {field:'plan_name',header:'Plan',width:'12rem'},
@@ -234,8 +244,10 @@ export class mfFinClmns {
         {field:'sip_end_date',header:'SIP End Date',width:'10rem'},
         {field:'sip_amount',header:'SIP Amount',width:'10rem'},
         {field:'rnt_name',header:'Form Submitted At',width:'10rem'},
-        {field:'remarks',header:'Remarks',width:'8rem'}
-    ];
+        {field:'remarks',header:'Remarks',width:'8rem'},
+         {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+         {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+      ];
 
 
 

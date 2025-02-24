@@ -30,11 +30,10 @@
               #dt
               (onLazyLoad)="customSort($event)"
               [customSort]="true"
-                sortMode="single"
                 [lazy]="true"
               [value]="__kycMst"
-              [columns]="__columns" [resizableColumns]="true"
-                selectionMode="multiple"
+              [columns]="__columns" 
+               
                 [scrollable]="true"
                 scrollHeight="358px"
                 [autoLayout]="true" styleClass="p-datatable-gridlines"
@@ -65,13 +64,17 @@
                             styleClass="p-button-rounded p-button-primary">
                           </p-button>
                         </ng-container> -->
-                        <ng-container *ngSwitchCase="col.field == 'kyc_type'">
+                        <!-- <ng-container *ngSwitchCase="col.field == 'kyc_type'">
                          <span #tooltip="matTooltip" [matTooltip]="kyc[col.field] == 'F' ? 'KYC Fresh' : 'KYC Modification'">
                           {{kyc[col.field] == 'F' ? 'KYC Fresh' : 'KYC Modification'}}</span>
-                        </ng-container>
+                        </ng-container> -->
+                        <ng-container *ngSwitchCase="col.field == 'trans_name'">
+                          <span #tooltip="matTooltip" [matTooltip]="kyc[col.field]">
+                           {{kyc[col.field] ? kyc[col.field] : 'N/A'}}</span>
+                         </ng-container>
                         <ng-container *ngSwitchCase="col.field == 'login_at'">
-                         <span #tooltip="matTooltip" [matTooltip]="kyc['kyc_login_type'] == 'A' ? kyc['amc_short_name'] : kyc['rnt_name']">
-                          {{kyc['kyc_login_type'] == 'A' ? kyc['amc_short_name'] : kyc['rnt_name']}}
+                         <span #tooltip="matTooltip" [matTooltip]="kyc['kyc_login_type'] == 'A' ? kyc['amc_name'] ? kyc['amc_name'] : 'N/A' : kyc['rnt_name'] ? kyc['rnt_name'] : 'N/A'">
+                          {{kyc['kyc_login_type'] == 'A' ? (kyc['amc_name'] ? kyc['amc_name'] : 'N/A') : (kyc['rnt_name'] ? kyc['rnt_name'] : "N/A")}}
                          </span>
                          </ng-container>
                         <ng-container *ngSwitchCase="col.field == 'app_form_view'">

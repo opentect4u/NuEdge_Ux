@@ -49,6 +49,7 @@ import { CreateClientComponent } from 'src/app/shared/create-client/create-clien
 import clientType from '../../../../../../../../../assets/json/clientTypeMenu.json';
 import { environment } from 'src/environments/environment';
 import { scheme } from 'src/app/__Model/__schemeMst';
+import moment from 'moment';
 @Component({
   selector: 'app-nfo-entry',
   templateUrl: './nfo-entry.component.html',
@@ -445,7 +446,12 @@ export class NfoEntryComponent implements OnInit {
       )
       .subscribe({
         next: (value) => {
-          this.__nfoSchemeSwitchTo = value;
+          this.__nfoSchemeSwitchTo = value.filter(el => {
+              let dateToCheck = moment(el.nfo_entry_date); 
+              let today = moment().startOf('day');
+              let diffInDays = dateToCheck.diff(today, 'days');
+              return diffInDays >= 0;
+          });
           this.searchResultVisibilityForSchemeSwicthToForNfoCombo('block');
           this.__isNfoSchemeSwitchTo = false;
         },
@@ -1566,11 +1572,16 @@ export class NfoEntryComponent implements OnInit {
       return;
     }
     const fb = new FormData();
+    console.log("****** FIRST INV AMT *****");
+      console.log(this.__traxForm.value.first_inv_amt);
+    console.log("****** END *****");
+    const first_inv_amt = this.__traxForm.value.trans_id == '35' ? (this.__traxForm.value.amount ? this.__traxForm.value.amount : '') 
+    :  (this.__traxForm.value.first_inv_amt
+    ? this.__traxForm.value.first_inv_amt
+    : '');
     fb.append(
-      'first_inv_amt',
-      this.__traxForm.value.first_inv_amt
-        ? this.__traxForm.value.first_inv_amt
-        : ''
+      'first_inv_amount',
+      first_inv_amt
     );
     fb.append(
       'rnt_login_at',

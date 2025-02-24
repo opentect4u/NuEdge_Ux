@@ -22,6 +22,7 @@ export class KycRptComponent implements OnInit {
   @Input() itemsPerPage;
   @Input() trnsTypeId:number;
   isOpenMegaMenu:boolean = false;
+  tableWidth:number;
   sort = new sort();
   __paginate: any = [];
   __getKycFormData:any;
@@ -112,6 +113,8 @@ setColumns(res){
   this.__columns = res.options == 1 ? (kycClm.Details.filter(x => !['ack_form_view','mu_frm_view','edit'].includes(x.field))) : (kycClm.Summary_copy.filter((x: any) => !['ack_form_view','mu_frm_view','edit'].includes(x.field)));
   this.selectedColmn =  this.__columns.map(item => {return item['field']});
   console.log(this.__columns)
+  this.tableWidth = this.__columns.map(el => el.width ? Number(el.width.split('rem')[0]) : 0).reduce(function (x, y) {return x + y;}, 0)
+
 }
 DocView(kycDtls,mode){
   console.log(kycDtls);

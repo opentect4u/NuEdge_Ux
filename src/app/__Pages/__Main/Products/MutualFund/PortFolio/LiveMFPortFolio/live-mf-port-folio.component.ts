@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
@@ -113,6 +113,7 @@ export class LiveMfPortFolioComponent implements OnInit {
 
   hexCharacters = [0,1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F"]; // for generate random color
 
+  @ViewChild('searchTrans') private searchTrans:ElementRef;
 
   export__mode: 'D' | 'S' = 'S';
 
@@ -1296,6 +1297,8 @@ mappings between `act_value` and `value` for transition durations. */
   }
 
   OpenDialog = (liveMFPortFolio) => {
+    // this.searchTrans.
+    this.secondaryTbl?.reset();
     this.__isDisplay__modal = true;
     this.details__transaction_details = [];
     this.__dbIntr.api_call(
@@ -1309,9 +1312,9 @@ mappings between `act_value` and `value` for transition durations. */
             item.idcwr = item.idcwr.toString();
             item.idcw_reinv = item.idcw_reinv.toString();
             item.idcwp = item.idcwp.toString();
-
             return item;
       })
+      console.log(this.details__transaction_details);
     })
   }
 

@@ -19,25 +19,33 @@ export class nonFinClms {
     // { field: 'folio_no', header: 'Folio No',width:'8rem'},
     // { field: 'rnt_name', header: 'Form Submitted At',width:'12rem'},
     // { field: 'remarks', header: 'Remarks',width:'10rem'}
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ];
 
   /**** ADDRESS CHANGE (DONE)*/
   public static AC = [
-    { field: 'new_address', header: 'New Address',width:'15rem'}
+    { field: 'new_address', header: 'New Address',width:'15rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'},
   ];
   /** END */
 
   /*** CHANGE MODE OF HOLDING (DONE)*/
   public static CMOH = [
     { field: 'existing_mode_of_holding', header: 'Existing Mode of Holding',width:'10rem'},
-    { field: 'new_mode_of_holding', header: 'New Mode of Holding',width:'10rem'}
+    { field: 'new_mode_of_holding', header: 'New Mode of Holding',width:'10rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ];
   /*** END */
 
   /**** CHANGE OF NAME (DONE)*/
   public static CON = [
     { field: 'reason_for_change', header: 'Reason For Change',width:'10rem'},
-    { field: 'new_name', header: 'New Name',width:'15rem'}
+    { field: 'new_name', header: 'New Name',width:'15rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ];
    /***END */
 
@@ -52,7 +60,9 @@ export class nonFinClms {
     { field: 'new_bank_name', header: 'New Bank',width:'12rem'},
     { field: 'new_ifsc', header: 'New IFSC',width:'12rem'},
     { field: 'new_micr_code', header: 'New MICR',width:'12rem'},
-    { field: 'new_branch_name', header: 'New Branch',width:'12rem'}
+    { field: 'new_branch_name', header: 'New Branch',width:'12rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ];
   /**** END */
 
@@ -67,28 +77,36 @@ export class nonFinClms {
     { field: 'new_bank_name', header: 'New Bank',width:'12rem'},
     { field: 'new_ifsc', header: 'New IFSC',width:'12rem'},
     { field: 'new_micr_code', header: 'New MICR',width:'12rem'},
-    { field: 'new_branch_name', header: 'New Branch',width:'12rem'}
+    { field: 'new_branch_name', header: 'New Branch',width:'12rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ];
   /**** END */
 
   /*** FOLIO CONSOLIDATION MERGE (DONE)*/
   public static FCM = [
     {field:'targeted_folio',header:'Targeted Folio',width:'8rem'},
-    {field:'source_folio',header:'Source Folio',width:'8rem'}
+    {field:'source_folio',header:'Source Folio',width:'8rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ]
   /*** END */
 
   /***CHANGE OF BROKER (DONE)*/
   public static COB =[
-    {field:'new_broker_code',header:'New Sub Broker Code',width:'12rem'}
+    {field:'new_broker_code',header:'New Sub Broker Code',width:'12rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ]
   /**** END */
 
   /** NOMINEE CHANGE OR ADDITION (DONE)*/
   public static NA_OR_NC = [
       {field:'new_nominee_name',header:'New Nominee Name',width:'15rem'},
-      {field:'percentage',header:'Percentage',width:'10rem'}
-  ]
+      {field:'percentage',header:'Percentage',width:'10rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+    ]
   /** END */
 
    /** SWP REGISTRATION (DONE)*/
@@ -98,8 +116,10 @@ export class nonFinClms {
     {field:'swp_date',header:'SWP Date',width:'12rem'},
     {field:'swp_start_date',header:'Start Date',width:'12rem'},
     {field:'swp_end_date',header:'End Date',width:'12rem'},
-    {field:'swp_amount',header:'SWP Amount',width:'12rem'}
-]
+    {field:'swp_amount',header:'SWP Amount',width:'12rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+  ]
 
 /** END */
 
@@ -108,23 +128,29 @@ export class nonFinClms {
     {field:'transmission_type',header:'Transmission Type',width:'12rem'},
     {field:'claiment_name',header:'Claiment Name',width:'12rem'},
     {field:'claiment_code',header:'Claiment Code',width:'12rem'},
-    {field:'claiment_pan',header:'PAN',width:'8rem'}
-]
+    {field:'claiment_pan',header:'PAN',width:'8rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+  ]
 /** END */
 
    /** Redemption (DONE)*/
    public static REDEMPTION = [
     {field:'redemp_type',header:'Redemption Type',width:'12rem'},
     {field:'amount',header:'Amount',width:'10rem'},
-    {field:'unit',header:'Unit',width:'10rem'},
-    ]
+    {field:'unit',header:'Unit',width:'10rem'},,
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}  
+  ]
     /** END */
 
   /** Cancelation (DONE)*/
   public static CANCELATION = [
     {field:'cancel_eff_dt',header:'Cancelation Effective Date',width:'15rem'},
-    {field:'amount',header:'Amount',width:'12rem'}
-    ]
+    {field:'amount',header:'Amount',width:'12rem'},
+    // {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    // {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}  
+  ]
     /** END */
 
     /** PAUSE (DONE)*/
@@ -133,8 +159,10 @@ export class nonFinClms {
     {field:'pause_duration',header:'Duration',width:'12rem'},
     {field:'pause_start_date',header:'Pause Start Date',width:'12rem'},
     {field:'pause_end_date',header:'Pause End Date',width:'12rem'},
-    {field:'pause_amount',header:'Amount',width:'12rem'}
-    ]
+    {field:'pause_amount',header:'Amount',width:'12rem'},
+      {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+      {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
+  ]
     /** END */
 
     /** STP REGISTRATION (DONE)*/
@@ -147,14 +175,18 @@ export class nonFinClms {
       { field: 'opt_name_to', header: 'Option (To Option)',width:'10rem' },
       {field:'stp_start_date',header:'STP Start Date',width:'12rem'},
       {field:'stp_end_date',header:'STP End Date',width:'12rem'},
-      {field:'stp_amount',header:'STP Amount',width:'12rem'}
-      ]
+      {field:'stp_amount',header:'STP Amount',width:'12rem'},
+      {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+      {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}  
+    ]
       /** END */
 
   /**CHANGE OF CONTACT DETAILS (DONE)*/
   public static COCD =[
     {field:'new_email',header:'New Email',width:'15rem'},
-    {field:'new_mobile',header:'New Mobile',width:'10rem'}
+    {field:'new_mobile',header:'New Mobile',width:'10rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ]
   /** END */
 
@@ -185,11 +217,15 @@ export class nonFinClms {
     { field: 'amount', header: 'Amount',width:'10rem'},
 
 
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ]
 
   public static COMMON_COLUMN = [
     { field: 'rnt_name', header: 'Form Submitted At',width:'12rem'},
     { field: 'remarks', header: 'Remarks',width:'10rem'},
+    {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
+    {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ]
   
 }

@@ -270,11 +270,11 @@
             </span>
             </ng-container>
 
-            <ng-container
+            <!-- <ng-container
               *ngSwitchCase="col.field == 'first_client_kyc_status' || col.field == 'second_client_kyc_status' || col.field == 'third_client_kyc_status'">
               {{ finance[col.field] ? (finance[col.field] == 'Y' ? 'With KYC' : 'Without KYC') : 'N/A'}}
-            </ng-container>
-            <ng-container *ngSwitchCase="col.field == 'remarks'">
+            </ng-container> -->
+            <ng-container *ngSwitchCase="col.field == 'remarks' || col.field == 'manual_update_remarks'">
               <ng-container *ngIf="finance[col.field];else noRemarks">
                 <p-button #tooltip="matTooltip" [matTooltip]="finance[col.field]" icon="pi pi-info-circle"
                   styleClass="p-button-rounded p-button-success">
@@ -286,16 +286,16 @@
             
             </ng-container>
             <ng-container *ngSwitchCase="col.field == 'switch_amt'">
-              <span>
-              {{ finance['switch_by'] == 'A' ? (finance['amount'] ? (finance['amount'] | currency:'INR') : 'N/A') : (finance['unit'] ? finance['unit'] : 'N/A')}}
-            </span>
+                <span>
+                {{ finance['switch_by'] == 'A' ? (finance['amount'] ? (finance['amount'] | currency:'INR') : 'N/A') : (finance['unit'] ? finance['unit'] : 'N/A')}}
+              </span>
             </ng-container>
 
             <ng-container *ngSwitchCase="col.field == 'rcv_datetime'|| col.field=='rnt_login_dt'">
               <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | date:'dd-MM-yyyy hh:mma')">{{ finance[col.field] ? (finance[col.field] | date:'dd-MM-yyyy hh:mma') : 'N/A' }}</span>
               </ng-container>
 
-              <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount'">
+              <ng-container *ngSwitchCase="col.field == 'amount' || col.field == 'sip_amount' || col.field == 'first_inv_amount'">
                 <span #tooltip="matTooltip" [matTooltip]="(finance[col.field] | currency:'INR')">{{ finance[col.field] ? (finance[col.field] | currency:'INR') : 'N/A' }}</span>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'entry_date'  || col.field == 'rnt_login_cutt_off'
