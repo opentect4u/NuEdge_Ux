@@ -37,7 +37,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   /**
    * Holding Transaction Report which has empty scheme
    */
-  @Input() trxnRptWithOutScm: TrxnRpt[];
+  @Input() trxnRptWithOutScm: TrxnRpt[]
 
 
   /**
@@ -348,6 +348,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   }
 
   openModal_for_Form = (modal_type: string,trxn,index:number) => {
+  
     this.form_type = modal_type;
 
     const dialogConfig = new MatDialogConfig();
@@ -364,7 +365,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       file_type:this.file_type,
       sub_file_type: this.sub_file_type,
       title: 'Add Business Type',
-      product_id: '1', /** For Mutual Fund */
+      product_id: '1', 
       right: global.randomIntFromInterval(1, 60),
     };
     dialogConfig.id = 'bu_type' + trxn.id;
@@ -376,7 +377,7 @@ export class TrxnRptWithoutScmComponent implements OnInit {
       dialogref.afterClosed().subscribe((dt) => {
         if (dt) {
           if (dt.suc == 1) {
-            this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item.folio_no != trxn.folio_no));
+            this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code || item.folio_no != trxn.folio_no));
           }
         }
       });

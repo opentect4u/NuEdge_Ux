@@ -22,6 +22,7 @@ import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/p
 import { MatTableDataSource } from '@angular/material/table';
 import { ManualUpdateEntryForMFComponent } from 'src/app/shared/manual-update-entry-for-mf/manual-update-entry-for-mf.component';
 import ItemsPerPage from '../../../../../../../../../assets/json/itemsPerPage.json';
+import moment from 'moment';
 
 type selectBtn ={
   label:string,
@@ -181,7 +182,7 @@ __euinMst: any = [];
         .api_call(1, '/manualUpdateDetailSearch', __mfTrax)
         .pipe(pluck('data'))
         .subscribe((res: any) => {
-          this.__paginate = res.links;
+          // this.__paginate = res.links;
           this.setPaginator(res);
           // this.tableExport(__mfTrax);
         });
@@ -602,15 +603,43 @@ __euinMst: any = [];
             )
             .pipe(map((x: any) => x.data))
             .subscribe((res: any) => {
-              this.__financMst = new MatTableDataSource(res.data);
-              this.__paginate = res.links;
+                this.setPaginator(res);
+              // this.__financMst = new MatTableDataSource(res.data);
+              // this.__paginate = res.links;
             });
         }
       }
       setPaginator(res) {
-        this.__financMst = new MatTableDataSource(res.data);
-        this.__paginate = res.links;
+            const final_dt =   res.data.filter((el) => {
+                if(el.form_status != 'M'){
+                  if(!el.nfo_reopen_dt){
+                    return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                  }
+                  else{
+                      const nfoReopenDt = moment(el.nfo_reopen_dt,'YYYY-MM-DD');
+                      const rntLoginDt =  moment(el.rnt_login_dt,'YYYY-MM-DD');
+                      if(rntLoginDt.isBefore(nfoReopenDt)){
+                        return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                      }
+                      else{
+                        return this.filterManualUpdateByTAT(el.nfo_reopen_dt,el.manual_update_tat)
+                      }
+                  }
+                }
+                else{
+                  return false;
+                }
+            })
+            this.__financMst = new MatTableDataSource(final_dt);
+            this.__paginate = res.links;
       }
+
+      filterManualUpdateByTAT(date,tat) {
+                const dateToCheck = moment(date, "YYYY-MM-DD").add(tat ? tat : 0, 'days');
+                let today = moment().startOf('day');
+                let diffInDays = dateToCheck.diff(today, 'days');
+                return diffInDays > 0; 
+        }
 
       populateDT(__items) {
           const dialogConfig = new MatDialogConfig();

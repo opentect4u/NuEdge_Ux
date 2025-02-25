@@ -30,8 +30,6 @@ export class global{
 
    /*** For Getting Full Column List for NonFinancial for different Transaction */
    public static getColumnsAfterMerge = (columns,columnsTobeAdd,rest = []):column[] =>{
-    console.log(columns);
-    console.log(columnsTobeAdd);
 
     return  Array.from([...columns,...columnsTobeAdd,...rest]
       .reduce((m, o) => m.set(o.field, o), new Map)

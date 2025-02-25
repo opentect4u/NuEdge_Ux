@@ -22,6 +22,7 @@ import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/p
 import { MatTableDataSource } from '@angular/material/table';
 import { ManualUpdateEntryForMFComponent } from 'src/app/shared/manual-update-entry-for-mf/manual-update-entry-for-mf.component';
 import ItemsPerPage from '../../../../../../../../../assets/json/itemsPerPage.json';
+import moment from 'moment';
 
 type selectBtn ={
   label:string,
@@ -123,10 +124,10 @@ __euinMst: any = [];
    }
 
   TabDetails(ev){
-    console.log(ev);
     if(ev.index >= 0){
       this.transaction_id = ev.tabDtls.id;
-      this.setColumns(this.transaction_id,1)
+      this.setColumns(this.transaction_id,1);
+      console.log(this._trans_type_id)
       this.reset();
 
       // this.getAckRpt();
@@ -178,9 +179,12 @@ __euinMst: any = [];
       }
       this.__dbIntr
         .api_call(1, '/manualUpdateDetailSearch', __mfTrax)
-        .pipe(pluck('data'))
+        .pipe(
+          pluck('data')
+          )
         .subscribe((res: any) => {
-          this.__paginate = res.links;
+          // this.__paginate = res.links;
+          console.log(res);
           this.setPaginator(res);
           // this.tableExport(__mfTrax);
         });
@@ -520,8 +524,7 @@ __euinMst: any = [];
 
 
     customSort(ev){
-      console.log("asdsadsadsadadadadad");
-      console.log(ev);
+      console.log(ev)
       this.sort.order = ev.sortOrder;
       this.sort.field = ev.sortField;
       if(ev.sortField){
@@ -532,7 +535,6 @@ __euinMst: any = [];
       setColumns(trans_id,option){
         this.__columns =  trans_id == 2  ? global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Sip)
         : global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Pip_Switch)
-        console.log(this.__columns)
        }
         DocumentView(element){
            const dialogConfig = new MatDialogConfig();
@@ -582,14 +584,44 @@ __euinMst: any = [];
             )
             .pipe(map((x: any) => x.data))
             .subscribe((res: any) => {
-              this.__financMst = new MatTableDataSource(res.data);
-              this.__paginate = res.links;
+              // this.__financMst = new MatTableDataSource(res.data);
+              // this.__paginate = res.links;
+              this.setPaginator(res);
             });
         }
       }
       setPaginator(res) {
-        this.__financMst = new MatTableDataSource(res.data);
+        const final_dt =   res.data.filter((el) => {
+            if(el.form_status != 'M'){
+              if(!el.nfo_reopen_dt){
+                return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+              }
+              else{
+                  const nfoReopenDt = moment(el.nfo_reopen_dt,'YYYY-MM-DD');
+                  const rntLoginDt =  moment(el.rnt_login_dt,'YYYY-MM-DD');
+                  if(rntLoginDt.isBefore(nfoReopenDt)){
+                    return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                  }
+                  else{
+                    return this.filterManualUpdateByTAT(el.nfo_reopen_dt,el.manual_update_tat)
+                  }
+              }
+            }
+            else{
+              return false;
+            }
+        })
+        this.__financMst = new MatTableDataSource(final_dt);
         this.__paginate = res.links;
+      
+      }
+
+      filterManualUpdateByTAT(date,tat) {
+          const dateToCheck = moment(date, "YYYY-MM-DD").add(tat ? tat : 0, 'days');
+          let today = moment().startOf('day');
+          let diffInDays = dateToCheck.diff(today, 'days');
+          return diffInDays > 0;
+          
       }
 
       populateDT(__items) {

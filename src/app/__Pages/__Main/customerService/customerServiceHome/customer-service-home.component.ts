@@ -282,8 +282,8 @@ export class CustomerServiceHomeComponent implements OnInit {
       let count_Query_dtls = 0;
       query_dtls.forEach((el,index) =>{
               if(el.actual_close_date){
-                const actual_close_date = moment(el.actual_close_date);
-                const expected_close_date = moment(el.expected_close_date);
+                const actual_close_date = moment(el.actual_close_date,'YYYY-MM-DD');
+                const expected_close_date = moment(el.expected_close_date,'YYYY-MM-DD');
                 const diff = actual_close_date.diff(expected_close_date);
                 //console.log(diff);
                 count_Query_dtls+= diff <= 0 ? 0 : 1;
@@ -765,7 +765,7 @@ export class CustomerServiceHomeComponent implements OnInit {
           let isExpired;
           el.expected_close_date = el?.expected_close_date ? el.expected_close_date : this.globalFuncForExpectedCloseDate(null,el.query_tat);
           if(el.actual_close_date){
-            const actual_close_date = moment(el.actual_close_date);
+            const actual_close_date = moment(el.actual_close_date,"YYYY-MM-DD");
             const expected_close_date = moment(el.expected_close_date);
             const diff = actual_close_date.diff(expected_close_date);
             isExpired = diff<=0;
@@ -790,6 +790,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                  return false
               }
           }
+          console.log(isExpired)
           el.tat_expired = isExpired ? "NO" : "YES"
         
           el.solveattach = [];

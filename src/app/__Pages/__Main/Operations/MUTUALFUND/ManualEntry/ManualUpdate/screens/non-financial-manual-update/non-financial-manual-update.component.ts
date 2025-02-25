@@ -23,6 +23,7 @@ import { ManualUpdateEntryForMFComponent } from 'src/app/shared/manual-update-en
 import { environment } from 'src/environments/environment';
 import  ItemsPerPage from '../../../../../../../../../assets/json/itemsPerPage.json';
 import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
+import moment from 'moment';
 type selectBtn ={
   label:string,
   value:string,
@@ -225,9 +226,35 @@ export class NonFinancialManualUpdateComponent implements OnInit {
          });
     }
     setPaginator(res) {
-      this.__financMst = new MatTableDataSource(res.data);
-      this.__paginate = res.links;
+       const final_dt =   res.data.filter((el) => {
+                      if(el.form_status != 'M'){
+                        if(!el.nfo_reopen_dt){
+                          return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                        }
+                        else{
+                            const nfoReopenDt = moment(el.nfo_reopen_dt,'YYYY-MM-DD');
+                            const rntLoginDt =  moment(el.rnt_login_dt,'YYYY-MM-DD');
+                            if(rntLoginDt.isBefore(nfoReopenDt)){
+                              return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                            }
+                            else{
+                              return this.filterManualUpdateByTAT(el.nfo_reopen_dt,el.manual_update_tat)
+                            }
+                        }
+                      }
+                      else{
+                        return false;
+                      }
+                  })
+                  this.__financMst = new MatTableDataSource(final_dt);
+                  this.__paginate = res.links;
     }
+     filterManualUpdateByTAT(date,tat) {
+                    const dateToCheck = moment(date, "YYYY-MM-DD").add(tat ? tat : 0, 'days');
+                    let today = moment().startOf('day');
+                    let diffInDays = dateToCheck.diff(today, 'days');
+                    return diffInDays > 0; 
+            }
     setColumns(option,trans_type_id,trns_id){
         const clm = ['edit','app_frm_view'];
         var columnsMst;
@@ -706,8 +733,9 @@ export class NonFinancialManualUpdateComponent implements OnInit {
         )
         .pipe(map((x: any) => x.data))
         .subscribe((res: any) => {
-          this.__financMst = new MatTableDataSource(res.data);
-          this.__paginate = res.links;
+          // this.__financMst = new MatTableDataSource(res.data);
+          // this.__paginate = res.links;
+          this.setPaginator(res);
         });
     } else {}
   }
