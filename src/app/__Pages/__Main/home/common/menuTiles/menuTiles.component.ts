@@ -22,6 +22,7 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
   ngOnInit() {
   }
   navigate(__items){
+    // console.log(this.__flag)
     if(this.__flag == 'BM'){
       if(__items.url){
         this.__utility.navigate(__items.url);
@@ -49,7 +50,6 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
           // }).reverse()
             chart_data:res.chart_data
         }
-          console.log(dt);
           this.chart_dtls = dt;
       },
        err =>{
@@ -59,8 +59,18 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
         }
        })
     }
-    console.log(item);
+    // console.log(item);
+    // if(item.flag == 'C'){
+    //     this.getIpAddress();
+    // }
   }
+
+  // getIpAddress = () =>{
+  //   this.dbIntr.api_call(0,'/getip',null).subscribe(res =>{
+  //         console.log(res);
+  //   })
+  // }
+
   ngOnDestroy(): void {
     // this.tiles__api__subscription.unsubscribe();
   }

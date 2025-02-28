@@ -23,6 +23,7 @@ import {
   MatDialogConfig
 } from '@angular/material/dialog';
 import {
+  catchError,
   debounceTime,
   delay,
   distinctUntilChanged,
@@ -69,6 +70,8 @@ export class NonFinancialEntryComponent implements OnInit {
   displayMode_forSub_arn_no:string;
   displayMode_forEuin:string;
   displayMode_forClient:string;
+  displayMode_forFolio:string;
+
   displayMode_forScm:string;
   displayMode_forScm_to:string;
 
@@ -85,6 +88,7 @@ export class NonFinancialEntryComponent implements OnInit {
   __isAmtcheck: boolean = false;
   __frq = SipFrequency;
   __dates: any = dateslist;
+  selectedFolioDtls:any = null;
   settings = {
     singleSelection: false,
     idField: 'id',
@@ -136,6 +140,7 @@ export class NonFinancialEntryComponent implements OnInit {
   __issubBrkArnspinner: boolean = false;
   __isEuinNumberVisible: boolean = false;
   __isclientVisible: boolean = false;
+  __isfolioVisible:boolean = false;
   __isCldtlsEmpty: boolean = false;
   __isschemeSpinner: boolean = false;
   __isbnkSpinner: boolean = false;
@@ -160,6 +165,7 @@ export class NonFinancialEntryComponent implements OnInit {
   __transType: any = [];
   __schemeMst: Partial<scheme>[] = [];
   __schemeMstTo: scheme[] = [];
+  md_folio:any = [];
 
   __bnkMst: bank[] = [];
   __swpMst: any = [];
@@ -250,10 +256,11 @@ export class NonFinancialEntryComponent implements OnInit {
       validators: [Validators.required],
       asyncValidators: [this.ClientValidators()],
     }),
+    client_pan:new FormControl(''),
     trans_id: new FormControl('', [Validators.required]),
     folio_no: new FormControl('', {
       validators: [Validators.required],
-      updateOn: 'blur',
+      // updateOn: 'blur',
     }),
     plan_id: new FormControl('', [Validators.required]),
     option_id: new FormControl('', [Validators.required]),
@@ -392,11 +399,11 @@ export class NonFinancialEntryComponent implements OnInit {
     this.new_nominee.push(this.createNominee(), { emitEvent: false });
   }
 
-  createNominee<T extends {id:number,nominee_name:string,percentage:number}>(nomineeDtls:T | null = null): FormGroup {
+  createNominee<T extends {id:number,nominee_name:string,percentage:number,isDisabled:Partial<boolean | undefined>}>(nomineeDtls:T | null = null): FormGroup {
     return new FormGroup({
-      id: new FormControl(nomineeDtls? nomineeDtls.id : 0),
-      nominee_name: new FormControl(nomineeDtls? nomineeDtls.nominee_name : ''),
-      percentage: new FormControl(nomineeDtls? nomineeDtls.percentage : '', {
+      id: new FormControl(nomineeDtls? (nomineeDtls?.id ? nomineeDtls?.id : 0) : 0),
+      nominee_name: new FormControl({value:nomineeDtls? nomineeDtls?.nominee_name : '',disabled:nomineeDtls?.isDisabled ?  nomineeDtls?.isDisabled : false}),
+      percentage: new FormControl({value:nomineeDtls? nomineeDtls?.percentage : '',disabled:nomineeDtls?.isDisabled ?  nomineeDtls?.isDisabled : false}, {
         validators: [Validators.maxLength(3), Validators.pattern('^[0-9]*$')],
         asyncValidators: this.checkPercentageValidators(),
         updateOn: 'blur',
@@ -1243,10 +1250,27 @@ export class NonFinancialEntryComponent implements OnInit {
 
     this.__nonfinForm.controls['transmission_type'].valueChanges.subscribe(
       (res) => {
-        this.__nonfinForm.controls['existing_mode_of_holding'].setValue('', {
-          emitEvent: false,
-        });
-        if (res == '4') {
+        this.__nonfinForm.controls['existing_mode_of_holding'].setValue('', {emitEvent: false});
+        let  secondHolderDtls = null;
+        let thirdHolderDtls = null;
+        if(res == '1' || res == '2'){
+          secondHolderDtls = this.selectedFolioDtls ? {
+              client_code:this.selectedFolioDtls ? (res == '2' ? this.selectedFolioDtls?.second_client_code :  this.selectedFolioDtls?.first_client_code) : '',
+              client_name:this.selectedFolioDtls ? (res == '2' ? this.selectedFolioDtls?.joint_name_1 : this.selectedFolioDtls?.first_client_name) : '',
+              pan:this.selectedFolioDtls ? (res == '2' ? this.selectedFolioDtls?.pan_2_holder : this.selectedFolioDtls?.pan) : '',
+              id:this.selectedFolioDtls ? (res == '2' ? this.selectedFolioDtls?.second_client_id : this.selectedFolioDtls?.first_client_id) : '',
+          } : null
+          if(this.selectedFolioDtls?.joint_name_2){
+            this.__isSHowAdditionalTble = true;
+            thirdHolderDtls = this.selectedFolioDtls ? {
+              client_code:this.selectedFolioDtls ? this.selectedFolioDtls?.third_client_code : '',
+              client_name:this.selectedFolioDtls ? this.selectedFolioDtls?.joint_name_2 : '',
+              pan:this.selectedFolioDtls ? this.selectedFolioDtls?.pan_3_holder : '',
+              id:this.selectedFolioDtls ? this.selectedFolioDtls?.third_client_id : '',
+             } : null
+          }
+        }
+        else if (res == '4') {
           this.__nonfinForm.controls['claimant_first_client_code'].reset('', {
             emitEvent: false,
             onlySelf: true,
@@ -1259,6 +1283,8 @@ export class NonFinancialEntryComponent implements OnInit {
           this.__isFirstClaimant = false;
           this.__FirstClaimant = null;
         }
+        this.getadditionalApplicant(secondHolderDtls,'FC') 
+        this.getadditionalApplicant(thirdHolderDtls,'TC')
       }
     );
 
@@ -1406,8 +1432,40 @@ export class NonFinancialEntryComponent implements OnInit {
     });
 
     //Folio Number
-    this.__nonfinForm.controls['folio_no'].valueChanges.subscribe((res) => {
-      this.getdetailsbyFolio(res);
+    // this.__nonfinForm.controls['folio_no'].valueChanges.subscribe((res) => {
+    //   this.getdetailsbyFolio(res);
+    // });
+
+    this.__nonfinForm.controls['folio_no']
+    .valueChanges
+    .pipe(
+      tap(() => (this.__isfolioVisible = true)),
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap((dt) =>
+        dt?.length > 1
+          ? this.__dbIntr.searchByFolio(
+              '/mfTraxFolioDetails',
+               dt + '&client_name='+this.__nonfinForm.value.client_name + '&pan='+ this.__nonfinForm.value.client_pan,
+            ).pipe(
+              catchError(err =>{
+                  this.searchResultVisibilityForFolio('block');
+                  this.__isfolioVisible = false;
+                  return []
+              })
+            )
+          : []
+      ),
+      map((x: any) => x.data)
+    )
+    .subscribe({
+      next: (value) => {
+        this.md_folio = value;
+        this.searchResultVisibilityForFolio('block');
+        this.__isfolioVisible = false;
+      },
+      complete: () => console.log(''),
+      error: (err) => (this.__isfolioVisible = false),
     });
 
     //Swp_duration change
@@ -1493,6 +1551,14 @@ export class NonFinancialEntryComponent implements OnInit {
       /***** END */
   }
 
+  // populateSecondApplicant = (item:any | null = null) =>{
+  //   this.__nonfinForm.patchValue({
+  //     second_client_code:item ? item?.first_client_code : '',
+  //     second_client_name:item ? item?.first_client_name : '',
+  //     second_client_pan:item ? item?.pan : '',
+  //   })
+  // }
+
   setPauseEndDate(pause_start_dt,duration){
     if(pause_start_dt && duration){
       var dt = new Date(pause_start_dt);
@@ -1507,10 +1573,11 @@ export class NonFinancialEntryComponent implements OnInit {
   get merge_folio(): FormArray {
     return this.__nonfinForm.get('merge_folio') as FormArray;
   }
-  createMergeFolios(): FormGroup {
+  createMergeFolios(folioDtls:any | null | undefined = ''): FormGroup {
     return new FormGroup({
-      id: new FormControl(0),
-      folio_no: new FormControl(''),
+      id: new FormControl(folioDtls ? folioDtls?.id : 0),
+      folio_no: new FormControl(folioDtls ? folioDtls?.folio_no : ''),
+      scheme_name:new FormControl(folioDtls ? folioDtls?.scheme_name : ''),
       is_checked: new FormControl(
         this.__nonfinForm.get('is_merge_folio_checked_all').value
       ),
@@ -1967,9 +2034,10 @@ export class NonFinancialEntryComponent implements OnInit {
         JSON.stringify(this.__nonfinForm.controls['merge_folio'].value.filter(el => el.is_checked).map(el => el.folio_no))
       );
     } else if (this.__nonfinForm.value.trans_id == '11') {
+      console.log(this.__nonfinForm.getRawValue().existing_nominee)
       fb.append(
         'existing_nominee',
-        JSON.stringify(this.__nonfinForm.controls['existing_nominee'].value)
+        JSON.stringify(this.__nonfinForm.getRawValue().existing_nominee)
       );
       fb.append(
         'new_nominee',
@@ -2086,6 +2154,11 @@ export class NonFinancialEntryComponent implements OnInit {
     this.displayMode_forScm = display_mode;
   }
 
+  searchResultVisibilityForFolio(display_mode) {
+    this.displayMode_forFolio = display_mode;
+  }
+
+
     //STP To Scheme Search Resullt off
     searchResultVisibilityForScheme_to(display_mode) {
       this.displayMode_forScm_to = display_mode;
@@ -2151,6 +2224,7 @@ export class NonFinancialEntryComponent implements OnInit {
         client_code: __items.client_code,
         id: __items.client_id,
         client_type: __items.client_type,
+        pan: __items?.pan
       });
       this.__euinMst.push({
         euin_no: __items.euin_no,
@@ -2295,6 +2369,7 @@ export class NonFinancialEntryComponent implements OnInit {
         this.__nonfinForm.patchValue({
           client_name: __euinDtls.client_name,
           client_id: __euinDtls.id,
+          client_pan:__euinDtls ? __euinDtls?.pan : ''
         });
         this.searchResultVisibilityForClient('none');
         break;
@@ -2333,18 +2408,18 @@ export class NonFinancialEntryComponent implements OnInit {
         break;
       case 'OB':
         this.__dialogForExistingBank = __euinDtls;
-        this.__nonfinForm.controls['oldbnk_micr'].reset(__euinDtls.micr_code, {
+        this.__nonfinForm.controls['oldbnk_micr'].reset(__euinDtls ? __euinDtls?.micr_code : '', {
           onlySelf: true,
           emitEvent: false,
         });
         this.__nonfinForm.controls['oldbnk_name'].setValue(
-          __euinDtls.bank_name
+          __euinDtls ? __euinDtls?.bank_name : ''
         );
         this.__nonfinForm.patchValue({
-          oldbnk_ifsc:__euinDtls.ifs_code,
-          oldbnk_branch:__euinDtls.branch_name
+          oldbnk_ifsc:__euinDtls ? __euinDtls?.ifs_code : '',
+          oldbnk_branch:__euinDtls ? __euinDtls?.branch_name : ''
         })
-        this.__nonfinForm.controls['oldbnk_id'].setValue(__euinDtls.id);
+        this.__nonfinForm.controls['oldbnk_id'].setValue(__euinDtls ? __euinDtls?.id : '');
         this.searchResultVisibilityForExtBnk('none');
         break;
       default:
@@ -2714,13 +2789,13 @@ export class NonFinancialEntryComponent implements OnInit {
       case 'FC':
         this.__SecondClient = __items;
         this.__nonfinForm.controls['second_client_code'].reset(
-          __items ? __items.client_code : '',
+          __items ? __items?.client_code : '',
           { onlySelf: true, emitEvent: false }
         );
         this.__nonfinForm.patchValue({
-          second_client_name: __items ? __items.client_name : '',
-          second_client_id: __items ? __items.id : '',
-          second_client_pan: __items ? __items.pan : '',
+          second_client_name: __items ? __items?.client_name : '',
+          second_client_id: __items ? __items?.id : '',
+          second_client_pan: __items ? __items?.pan : '',
         });
         this.searchResultVisibilityForSecondClient('none');
         break;
@@ -3091,8 +3166,83 @@ export class NonFinancialEntryComponent implements OnInit {
   getSelectedItemsFromParent(event) {
     this.getItemsDtls(event.item, event.flag);
   }
+  getSelectedItemsFromFolio(event) {
+    // console.log(event)
+    this.selectedFolioDtls = event?.item;
+    this.__schemeMst = [];
+    this.__nonfinForm.get('folio_no').setValue(event?.item?.folio_no,{emitEvent:false});
+    this.searchResultVisibilityForFolio('none');
+    const trans_type_id = this.__nonfinForm.get('trans_id').value;
+    const schemeDtls = {scheme_name:event?.item?.scheme_name,id:event?.item?.scheme_id}
+    this.__schemeMst.push(schemeDtls);
+    this.getItemsDtls(schemeDtls,'SC');
+    this.__nonfinForm.patchValue({
+      plan_id:event?.item?.plan_id ? event?.item?.plan_id : '',
+      option_id:event?.item?.option_id ? event?.item?.option_id : ''
+    })
+     // Change Of Mode Of Holding.....
+    if(trans_type_id == 32){
+        this.__nonfinForm.patchValue({
+          change_existing_mode_of_holding:(event?.item?.mode_of_holding_code ? (event?.item?.mode_of_holding_code == 'S' ? '' : event?.item?.mode_of_holding_code) : ''),
+          change_new_mode_of_holding:event?.item?.mode_of_holding_code == 'J' ? 'A' : (event?.item?.mode_of_holding_code == 'A' ? 'J' : ''),
+        })
+    }
+    // Change Of Bank & Core Banking Updation.....
+    else if(trans_type_id == 15){
+      this.populateBankIfNoMICRNotAvailable(event?.item?.bank_micr ? event?.item?.bank_micr : event?.item?.bank_ifsc)
+      this.__nonfinForm.patchValue({oldbnk_accNo:event?.item?.bank_acc_no ? event?.item?.bank_acc_no : ''});
+    }
+    else if(trans_type_id == 33){
+        this.populateSourceFolioByUsingTargetFolio(event?.item?.folio_no)
+    }
+    else if(trans_type_id == 11){
+      this.existing_nominee.clear();
+      let i = 0;
+      [...Array(10)].forEach(() => {
+        if(event?.item[`nom_name_${i + 1}`] && event?.item[`nom_per_${i + 1}`]){
+          this.existing_nominee.push(this.createNominee(
+            { id:0,
+              nominee_name:event?.item[`nom_name_${i + 1}`],
+              percentage:Number(event?.item[`nom_per_${i + 1}`]),
+              isDisabled:true
+            }
+          ), { emitEvent: false });
+        }
+        i++
+    });
+    }
+
+  }
   openPDF(){
     window.open(this.__nonfinForm.value.filePreview, '_blank');
 
+  }
+
+  populateBankIfNoMICRNotAvailable = (searchItem:string) =>{
+    if(searchItem){
+      this.__dbIntr.searchItems('/depositbank', searchItem).subscribe(res =>{
+        if(res?.data.length > 0){
+          this.getItemsDtls(res?.data[0],'OB')
+        }
+      })
+    }
+    else{
+        this.getItemsDtls(null,'OB')
+    }
+  }
+
+  populateSourceFolioByUsingTargetFolio = (targetFolioNo:string)=>{
+      if(targetFolioNo){
+        this.__dbIntr.searchByFolio('/mfTraxFolioDetails', ''+'&client_name='+this.__nonfinForm.get('client_name').value+'&pan='+this.__nonfinForm.get('client_pan').value +'&source_folio_no='+targetFolioNo).subscribe(res =>{
+          if(res?.data.length > 0){
+            // console.log();
+            this.merge_folio.clear();
+            res.data.filter(el => el.folio_no != targetFolioNo).forEach(el =>{
+              console.log(el)
+              this.merge_folio.push(this.createMergeFolios(el));
+            })
+          }
+        })
+      }
   }
 }

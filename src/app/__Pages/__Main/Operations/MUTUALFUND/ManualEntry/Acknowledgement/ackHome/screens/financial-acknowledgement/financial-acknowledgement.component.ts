@@ -788,9 +788,9 @@ export class FinancialAcknowledgementComponent implements OnInit {
   const main_dt = res.filter(el =>{
             const first_kyc = kyc.filter(ele => ele.id == el.first_kyc);
             el.first_kyc = first_kyc.length > 0 ? first_kyc[0]?.value : '';
-            const second_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+            const second_kyc = kyc.filter(ele => ele.id == el.second_kyc);
             el.second_kyc = second_kyc.length > 0 ? second_kyc[0]?.value : '' 
-            const third_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+            const third_kyc = kyc.filter(ele => ele.id == el.third_kyc);
             el.third_kyc = third_kyc.length > 0 ? third_kyc[0]?.value : ''
             return el;
       })

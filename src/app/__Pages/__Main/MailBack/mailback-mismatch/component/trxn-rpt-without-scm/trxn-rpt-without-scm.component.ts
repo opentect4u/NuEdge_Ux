@@ -285,7 +285,6 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   }
 
   openISIN = (trxn,index:number) =>{
-    console.log(trxn);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -337,14 +336,18 @@ export class TrxnRptWithoutScmComponent implements OnInit {
   }
 
   delete_ISIN_Transaction = (trxn) =>{
-    console.log(trxn);
+    // console.table(this.trxnRptWithOutScm)
+    // console.log(trxn);
     //CAMS
     if(trxn.rnt_id == 1){
       this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code))
     }
     else{ //KFINTECH
-      this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code && item?.isin_no != trxn?.isin_no));
+      this.trxnRptWithOutScm = this.trxnRptWithOutScm.filter((item) => (item.product_code != trxn.product_code || item?.isin_no != trxn?.isin_no));
     }
+
+    // console.table(this.trxnRptWithOutScm)
+    // console.log(trxn);
   }
 
   openModal_for_Form = (modal_type: string,trxn,index:number) => {

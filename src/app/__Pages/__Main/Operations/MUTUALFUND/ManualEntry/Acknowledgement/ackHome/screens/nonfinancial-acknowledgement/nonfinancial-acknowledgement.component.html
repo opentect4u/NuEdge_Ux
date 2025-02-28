@@ -352,6 +352,9 @@
                   *ngSwitchCase="col.field == 'first_client_kyc_status' || col.field == 'second_client_kyc_status' || col.field == 'third_client_kyc_status'">
                   {{ finance[col.field] ? (finance[col.field] == 'Y' ? 'With KYC' : 'Without KYC') : 'N/A'}}
                 </ng-container>
+                <ng-container   *ngSwitchCase="col.field == 'reason_for_change'">
+                  {{ finance[col.field] ? (finance[col.field] == 'O' ? 'Others' : (finance[col.field] == 'D' ? 'Due To Marriage' : 'N/A')) : 'N/A'}}
+                </ng-container>
 
                 <ng-container
                 *ngSwitchCase="col.field == 'redemp_type'">

@@ -6,6 +6,44 @@ th {
   font-size: 13px!important;
   text-align: left!important;
   font-weight: 500;
+  vertical-align: middle !important;
 }
 
 
+
+
+.table thead>tr>th{
+  vertical-align: middle;
+}
+
+.table-sticky-container {
+
+  /* overflow-y: scroll; */
+  /* border-top: 1px solid green;
+  border-bottom: 1px solid green; */
+}
+
+.table-sticky th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.customThead:after,
+.customThead:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+
+.customThead:before {
+  top: -1px;
+  border: 1px solid #dee2e6;
+}
+
+.customThead:after {
+  bottom: -1px;
+  border: 1px solid #dee2e6;
+}

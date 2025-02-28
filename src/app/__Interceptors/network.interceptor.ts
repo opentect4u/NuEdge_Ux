@@ -15,6 +15,7 @@ import { UtiliService } from '../__Services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { storage } from '../__Utility/storage';
 import { AU_TK } from '../strings/localStorage_key';
+import { DbIntrService } from '../__Services/dbIntr.service';
 export const BYPASS_LOG = new HttpContextToken(() => false);
 export const IS_CACHE = new HttpContextToken(() => false);
 @Injectable()
@@ -23,9 +24,18 @@ export class NetworkInterceptor implements HttpInterceptor {
   requestsCompleted = 0;
   constructor(private __spinner: NgxSpinnerService,
     private __utility:UtiliService,
-    private __dialog: MatDialog
+    private __dialog: MatDialog,
+    private dbIntr:DbIntrService
     ) {}
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+      // const ipApi = fetch("https://api.ipify.org?format=json").then(response => response.json())
+      // console.log(ipApi)
+      // let ipAddr = '';
+      // ipApi.then(res =>{
+      //   console.log(res.ip);
+      //   console.log(request.headers);
+
+      // })
       const auth =  request.clone({
         headers: new HttpHeaders({
           'Authorization': storage.getItemFromLocalStorage(AU_TK)
@@ -57,7 +67,7 @@ export class NetworkInterceptor implements HttpInterceptor {
 
               case 403: // Forbidden
                 // console.log(`${error.statusText}`, 'Access Error');
-                this.__utility.showSnackbar("403!! You do't have permisssion to access",0);
+                this.__utility.showSnackbar(error.error?.msg ? error.error?.msg : "403!! You do't have permisssion to access",0);
                 localStorage.clear();
                 this.__dialog.closeAll();
                 this.__utility.navigate('/',null);

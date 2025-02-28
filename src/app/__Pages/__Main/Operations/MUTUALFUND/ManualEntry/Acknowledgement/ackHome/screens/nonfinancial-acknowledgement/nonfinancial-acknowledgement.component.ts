@@ -665,7 +665,16 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
     }
   }
   setPaginator(res) {
-    this.__ackMst = new MatTableDataSource(res);
+    const mainDt = res.filter(el =>{
+      const newNominee = JSON.parse(el?.new_nominee);
+      const mergeFolio = el.merge_folio ? JSON.parse(el.merge_folio) : [];
+      el.source_folio = mergeFolio && mergeFolio.length > 0 ? mergeFolio.join(", ")  : ''
+      el.new_nominee_name = newNominee && newNominee.length > 0 ? newNominee[0]?.nominee_name : '';
+      el.percentage = newNominee && newNominee.length > 0 ? newNominee[0]?.percentage : '';
+      return el;
+    })  
+    this.__ackMst = new MatTableDataSource(mainDt);
+
     // this.__paginate = res.links;
   }
   updateRow(row_obj) {
@@ -767,12 +776,12 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
       break;
       case 15:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.COBK,nonFinAckClms.COMMON_COLUMN);
       break;
-      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.FCM,nonFinAckClms.COMMON_COLUMN);
+      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR.filter(x => x.field != 'amount'),nonFinAckClms.FCM,nonFinAckClms.COMMON_COLUMN);
       break;
       case 14:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.COB,nonFinAckClms.COMMON_COLUMN);
       break;
       case 11:
-      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.NA_OR_NC,nonFinAckClms.COMMON_COLUMN);break;
+      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR.filter(el => el.field != 'amount'),nonFinAckClms.NA_OR_NC,nonFinAckClms.COMMON_COLUMN);break;
       case 30: const columnsSWPR =global.getColumnsAfterMerge(nonFinAckClms.COLUMN_SELECTOR,nonFinAckClms.SWPR,nonFinAckClms.COMMON_COLUMN);
               columnsMst = columnsSWPR.filter(el => el.field != 'amount')
               break;

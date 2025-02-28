@@ -210,12 +210,12 @@ export class NonFinancialRPTComponent implements OnInit {
       break;
       case 15:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.COBK,nonFinClms.COMMON_COLUMN);
       break;
-      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.FCM,nonFinClms.COMMON_COLUMN);
+      case 33:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status' && x.field != 'amount'),nonFinClms.FCM,nonFinClms.COMMON_COLUMN);
       break;
       case 14:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.COB,nonFinClms.COMMON_COLUMN);
       break;
       case 11:
-      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.NA_OR_NC,nonFinClms.COMMON_COLUMN);break;
+      case 21:columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status' && x.field != 'amount'),nonFinClms.NA_OR_NC,nonFinClms.COMMON_COLUMN);break;
       case 30: const columnsSWPR =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.SWPR,nonFinClms.COMMON_COLUMN);
                     columnsMst = columnsSWPR.filter(el => el.field != 'amount')
                     break;

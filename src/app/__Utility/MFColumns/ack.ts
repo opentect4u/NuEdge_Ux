@@ -453,8 +453,8 @@ export class nonFinAckClms {
 
   /*** CHANGE MODE OF HOLDING (DONE)*/
   public static CMOH = [
-    { field: 'existing_mode_of_holding', header: 'Existing Mode of Holding',width:'10rem'},
-    { field: 'new_mode_of_holding', header: 'New Mode of Holding',width:'10rem'}
+    { field: 'change_existing_mode_of_holding', header: 'Existing Mode of Holding',width:'10rem'},
+    { field: 'change_new_mode_of_holding', header: 'New Mode of Holding',width:'10rem'}
   ];
   /*** END */
 
@@ -498,7 +498,7 @@ export class nonFinAckClms {
 
   /*** FOLIO CONSOLIDATION MERGE (DONE)*/
   public static FCM = [
-    {field:'targeted_folio',header:'Targeted Folio',width:'7rem'},
+    {field:'folio_no',header:'Targeted Folio',width:'10rem'},
     {field:'source_folio',header:'Source Folio',width:'7rem'}
   ]
   /*** END */
@@ -586,7 +586,7 @@ export class nonFinAckClms {
 
 
   public static COLUMN_SELECTOR=[
-    {field:'folio_no',header:'Folio No.',width:'8rem'},
+    {field:'folio_no',header:'Folio No.',width:'10rem'},
     { field: 'edit', header: 'Edit',width:'8rem'},
     {field:'ack_copy_scan',header:'ACK. View',width:'8rem'},
     { field: 'app_frm_view', header: 'APP View',width:'8rem'},

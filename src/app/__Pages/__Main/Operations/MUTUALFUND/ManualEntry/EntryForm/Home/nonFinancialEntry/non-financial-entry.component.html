@@ -188,11 +188,26 @@ autocomplete="off">
 <!-- Folio Number -->
 <div class="row">
   <div class="col-sm-12">
-    <label for="folio_no">
+    <!-- <label for="folio_no">
       {{__nonfinForm.get('trans_id').value == '33' ? 'Targeted Folio' : 'Folio Number' }}
       <span class="text-danger">*</span></label>
     <input type="text" placeholder="Enter Folio Number" name="folio_no" id="folio_no" class="form-control"
-      formControlName="folio_no">
+      formControlName="folio_no"> -->
+      <app-core-srch
+        [label] = " __nonfinForm.get('trans_id').value == '33' ? 'Targeted Folio' : 'Folio Number'"
+        [placeholder]="'Search By Folio Number'"
+        [isPending]="__isfolioVisible"
+        [listItems] = "md_folio"
+        [flag] = "'F'"
+        [isRequired]="true"
+        [noDataFoundTitle]="'Sorry!! No Records Found'"
+        [noDataFoundSubTitle]="''"
+        [propertiesToShow] = "['scheme_name','folio_no']"
+        formControlName="folio_no"
+        [displayMode]="displayMode_forFolio"
+        (setDisplayMode)="displayMode_forFolio = $event"
+        (selectedItems)="getSelectedItemsFromFolio($event)"
+        ></app-core-srch>
     <div class="invalid-feedback"
       *ngIf="__nonfinForm.get('folio_no').invalid && (__nonfinForm.get('folio_no').dirty || __nonfinForm.get('folio_no').touched)">
       <span class="invalid-feedback" *ngIf="(__nonfinForm.get('folio_no')).errors?.required">*Please provide
@@ -421,14 +436,22 @@ autocomplete="off">
 <ng-container *ngIf="__nonfinForm.get('trans_id').value == '33'">
   <div class="row mt-5">
     <div class="col-sm-12">
-      <table>
-        <thead>
+      <div class="table-sticky-container"
+        [ngStyle]="{
+            'height':merge_folio.length > 5 ? '350px' : 'auto',
+            'overflow-y':merge_folio.length > 5 ? 'scroll' : 'none'
+        }"
+      >
+
+      <table class="table table-sticky">
+        <thead class="thead-light">
           <tr>
-            <th class="text-center">
+            <th class="text-center customThead" style="width:10%">
               <mat-checkbox color="primary" formControlName="is_merge_folio_checked_all"></mat-checkbox>
             </th>
-            <th class="text-center">Source Folio</th>
-            <th class="text-center">
+            <th class="text-center customThead" style="width:20%">Source Scheme</th>
+            <th class="text-center customThead"  style="width:60%">Source Folio</th>
+            <th class="text-center customThead"  style="width:10%">
               <button mat-icon-button type="button" (click)="addmeregeFolios()">
                 <mat-icon>add</mat-icon>
               </button>
@@ -439,14 +462,17 @@ autocomplete="off">
 
           <tr *ngFor="let item of merge_folio.controls; let i = index;">
             <ng-container [formGroupName]="i">
-              <td class="text-center">
+              <td class="text-center" style="width:10%!important">
                 <mat-checkbox color="primary" formControlName="is_checked"></mat-checkbox>
               </td>
-              <td class="folio_tbl">
-                <input type="text" name="folio_no" id="folio_no" class="form-control" formControlName="folio_no"
+              <td class="folio_tbl" style="width:20%!important">
+                  {{item?.get('scheme_name')?.value ? item?.get('scheme_name')?.value : 'N/A'}}
+              </td>
+              <td class="folio_tbl" style="width:60%!important">
+                <input type="text"  name="folio_no" id="folio_no" class="form-control" formControlName="folio_no"
                   placeholder="Enter Folio Number">
               </td>
-              <td class="text-center">
+              <td class="text-center"  style="width:10%!important">
 
                 <button *ngIf="i > 0" mat-icon-button color="warn" (click)="deletemergeFolio(i)">
                   <mat-icon> delete </mat-icon>
@@ -457,8 +483,12 @@ autocomplete="off">
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
+     </div>
+      </div>
+      </div>
+
+    <!-- </div>
+  </div> -->
 
 
 </ng-container>
@@ -474,7 +504,7 @@ autocomplete="off">
   <div class="row">
     <div class="col-sm-12">
       <label for="installment_dt">Installment Date <span class="text-danger">*</span></label>
-      <input type="text" name="installment_dt" id="installment_dt" class="form-control"
+      <input type="text" name="installment_dt" id="installment_dt" placeholder="Enter Installment date (eg.1,2,3)" class="form-control"
         formControlName="installment_dt">
       <div class="invalid-feedback"
         *ngIf="__nonfinForm.get('installment_dt').invalid && (__nonfinForm.get('installment_dt').dirty || __nonfinForm.get('installment_dt').touched)">
@@ -725,7 +755,7 @@ autocomplete="off">
   <div class="row  my-2">
     <div class="col-sm-12">
       <label for="new_name">New Name <span class="text-danger">*</span></label>
-      <input type="text" name="new_name" id="new_name" class="form-control" formControlName="new_name">
+      <input type="text" name="new_name" id="new_name" class="form-control" placeholder="Enter New Name" formControlName="new_name">
       <div class="invalid-feedback"
         *ngIf="__nonfinForm.get('new_name').invalid && (__nonfinForm.get('new_name').dirty || __nonfinForm.get('new_name').touched)">
         <span class="invalid-feedback" *ngIf="(__nonfinForm.get('new_name')).errors?.required">*Please provide new
@@ -1234,11 +1264,12 @@ autocomplete="off">
               <th class="text-center">
                 Second Applicant
               </th>
-              <th class="text-center">
-                <button mat-button color="primary" type="button" *ngIf="!__isSHowAdditionalTble"
+              <th class="text-center" >
+
+                <!-- <button mat-button color="primary" type="button" *ngIf="!__isSHowAdditionalTble && __nonfinForm.get('transmission_type').value != '1'"
                   (click)="__isSHowAdditionalTble=!__isSHowAdditionalTble">
                   + Add Additional Applicant
-                </button>
+                </button> -->
               </th>
             </tr>
           </thead>
@@ -1304,7 +1335,7 @@ autocomplete="off">
                   </div>
                 </div>
               </td>
-              <td class="text-center">
+              <td class="text-center" >
                 <ng-container *ngIf="
                     __SecondClient
                     &&__nonfinForm.get('second_client_code').value
@@ -1324,11 +1355,11 @@ autocomplete="off">
             <tr>
               <th>Third Applicant</th>
               <th>
-                <button type="button" mat-button color="accent"
+                <!-- <button type="button" mat-button color="accent"
                   (click)="__isSHowAdditionalTble=!__isSHowAdditionalTble">
                   <mat-icon> delete </mat-icon>
                   Remove
-                </button>
+                </button> -->
               </th>
             </tr>
           </thead>

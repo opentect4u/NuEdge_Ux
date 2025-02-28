@@ -260,11 +260,11 @@
                   [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
                     {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
                 </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'mode_of_holding'">
+                <ng-container *ngSwitchCase="col.field == 'mode_of_holding' || col.field ==  'change_existing_mode_of_holding' || col.field ==  'change_new_mode_of_holding'">
                  <span
                  #tooltip="matTooltip"
-                 [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')">
-                 {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
+                 [matTooltip]="finance[col.field] ? (finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')) : ''">
+                 {{  finance[col.field] ? (finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')) : 'N/A'}}
                 </span>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'sip_swp_stp_frequency' ||  col.field == 'swp_frequency' || col.field == 'stp_frequency'">
@@ -286,6 +286,15 @@
                   {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
                 </span>
                 </ng-container>
+
+                <ng-container   *ngSwitchCase="col.field == 'reason_for_change'">
+                  {{ finance[col.field] ? (finance[col.field] == 'O' ? 'Others' : (finance[col.field] == 'D' ? 'Due To Marriage' : 'N/A')) : 'N/A'}}
+                </ng-container>
+
+                <ng-container   *ngSwitchCase="col.field == 'source_folio'">
+                  <span>{{ finance[col.field] ? finance[col.field]  : 'N/A'}}</span>
+                </ng-container>
+
 
                 <ng-container
                   *ngSwitchCase="col.field == 'first_client_kyc_status' || col.field == 'second_client_kyc_status' || col.field == 'third_client_kyc_status'">

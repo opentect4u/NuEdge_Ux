@@ -15,6 +15,9 @@ constructor(private __http:HttpClient) {
  searchItems(__url,__searchTerm):Observable<any>{
   return this.__http.get<any>(`${environment.apiUrl + __url +'?search='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
+ searchByFolio(__url,__searchTerm):Observable<any>{
+  return this.__http.get<any>(`${environment.apiUrl + __url +'?folio_no='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
+ }
  searchTin(__url,__searchTerm):Observable<any>{
   return this.__http.get<any>(`${environment.apiUrl + __url +'?temp_tin_no='+__searchTerm}`, { context: new HttpContext().set(BYPASS_LOG,  true) })
  }
