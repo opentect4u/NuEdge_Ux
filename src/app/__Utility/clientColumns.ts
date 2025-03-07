@@ -51,7 +51,7 @@ export class clientColumns {
     { field: 'state_name', header: 'State',width:'10rem'},
     { field: 'district_name', header: 'District',width:'10rem'},
     { field: 'city_name', header: 'City',width:'10rem'},
-    { field: 'pincode', header: 'Pincode',width:'10rem'},
+    { field: 'pincode_name', header: 'Pincode',width:'10rem'},
     { field: 'upload_details',header:'Document',width:'5rem'}
   ];
 
@@ -89,7 +89,7 @@ export class clientColumns {
     { field: 'state_name', header: 'State',width:'15rem'},
     { field: 'district_name', header: 'District',width:'15rem'},
     { field: 'city_name', header: 'City',width:'15rem'},
-    { field: 'pincode', header: 'Pincode',width:'10rem'},
+    { field: 'pincode_name', header: 'Pincode',width:'10rem'},
     { field: 'upload_details',header:'Upload Details',width:'5rem'}
   ]
   /** END */
@@ -118,7 +118,7 @@ export class clientColumns {
     { field: 'state_name', header: 'State',width:'10rem'},
     { field: 'district_name', header: 'District',width:'10rem'},
     { field: 'city_name', header: 'City',width:'10rem'},
-    { field: 'pincode', header: 'Pincode',width:'7rem'},
+    { field: 'pincode_name', header: 'Pincode',width:'7rem'},
     { field: 'upload_details',header:'Document',width:'5rem'}
   ];
 
@@ -147,7 +147,7 @@ export class clientColumns {
     { id: 'state_name', text: 'State',width:'10rem'},
     { id: 'district_name', text: 'District',width:'10rem'},
     { id: 'city_name', text: 'City',width:'10rem'},
-    { id: 'pincode', text: 'Pincode',width:'10rem'},
+    { id: 'pincode_name', text: 'Pincode',width:'10rem'},
     { id: 'upload_details',text:'Upload Details',width:'5rem'}
   ];
 
@@ -193,7 +193,7 @@ export class clientColumns {
     'state',
     'district',
     'city',
-    'pincode',
+    'pincode_name',
     'upload_details'
   ];
   /** End */
@@ -229,7 +229,7 @@ export class clientColumns {
     'state',
     'district',
     'city',
-    'pincode',
+    'pincode_name',
     'upload_details'
   ];
   /* End */
@@ -269,7 +269,7 @@ export class clientColumns {
     'state',
     'district',
     'city',
-    'pincode',
+    'pincode_name',
     'upload_details'
   ];
 
@@ -298,7 +298,7 @@ export class clientColumns {
     state: '',
     dist: '',
     city: '',
-    pincode: '',
+    pincode_name: '',
     }
    ]
 

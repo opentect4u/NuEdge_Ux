@@ -133,7 +133,7 @@ export class PreviewdtlsDialogComponent implements OnInit {
               karta_name: res[0].karta_name,
               inc_date:res[0].inc_date,
               identification_number: res[0].identification_number,
-              mar_status: res[0].mar_status
+              mar_status: res[0].maritial_status ? (res[0].maritial_status == 'S' ? 'Single' : (res[0].maritial_status == 'W' ? 'Widow' : 'Married')) : ''
             });
             res[0].client_doc.forEach(element =>{
                 this.__docs.push(this.setItem(element.id, element.doc_type_id, element.doc_name, element.client_id));

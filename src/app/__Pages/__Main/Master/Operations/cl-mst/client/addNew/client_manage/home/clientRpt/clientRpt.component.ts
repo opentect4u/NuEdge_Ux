@@ -396,6 +396,7 @@ export class ClientRptComponent implements OnInit {
         value.dist = row_obj.dist
         value.state = row_obj.state
         value.pincode = row_obj.pincode
+        value.pincode_name = row_obj.pincode_name
         value.id = row_obj.id
         value.created_by = row_obj.created_by
         value.created_at = row_obj.created_at
@@ -415,6 +416,7 @@ export class ClientRptComponent implements OnInit {
         value.pertner_dtls = row_obj.pertner_dtls;
         value.identification_number = row_obj.identification_number;
         value.country = row_obj.country;
+        value.maritial_status = row_obj.maritial_status
       });
       this.__export.data = this.__export.data.filter((value: client, key) => {
         value.client_name = row_obj.client_name
@@ -431,6 +433,7 @@ export class ClientRptComponent implements OnInit {
         value.dist = row_obj.dist
         value.state = row_obj.state
         value.pincode = row_obj.pincode
+        value.pincode_name = row_obj.pincode_name
         value.id = row_obj.id
         value.created_by = row_obj.created_by
         value.created_at = row_obj.created_at
@@ -450,6 +453,8 @@ export class ClientRptComponent implements OnInit {
         value.pertner_dtls = row_obj.pertner_dtls;
         value.identification_number = row_obj.identification_number;
         value.country = row_obj.country;
+        value.maritial_status = row_obj.maritial_status
+
       })
   }
 

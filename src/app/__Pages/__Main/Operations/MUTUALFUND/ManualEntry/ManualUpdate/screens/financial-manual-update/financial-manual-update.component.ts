@@ -67,14 +67,14 @@ export class FinancialManualUpdateComponent implements OnInit,OnDestroy  {
     tin_no: new FormControl(''),
     client_code: new FormControl(''),
     client_name: new FormControl(''),
-    // date_range: new FormControl([new Date(dates.calculateDT("W")),new Date(dates.getTodayDate())]),
-    // dt_type: new FormControl('W'),
-    // frm_dt: new FormControl(dates.calculateDT("W")),
-    // to_dt: new FormControl(dates.getTodayDate()),
-    date_range: new FormControl(''),
-    dt_type: new FormControl(''),
-    frm_dt: new FormControl(''),
-    to_dt: new FormControl(''),
+    date_range: new FormControl([new Date(dates.calculateDT("M")),new Date(dates.getTodayDate())]),
+    dt_type: new FormControl('M'),
+    frm_dt: new FormControl(dates.calculateDT("M")),
+    to_dt: new FormControl(dates.getTodayDate()),
+    // date_range: new FormControl(''),
+    // dt_type: new FormControl(''),
+    // frm_dt: new FormControl(''),
+    // to_dt: new FormControl(''),
     rnt_id: new FormArray([]),
     amc_id: new FormControl([],{updateOn:'blur'}),
     brn_cd: new FormControl([],{updateOn:'blur'}),
@@ -224,10 +224,10 @@ __euinMst: any = [];
       this.__bu_type.length = 0;
       this.__ackForm.patchValue({
         client_code:'',
-        date_range:'',
-        dt_type:'',
-        frm_dt:'',
-        to_dt:'',
+        date_range:[new Date(dates.calculateDT("M")),new Date(dates.getTodayDate())],
+        dt_type:'M',
+        frm_dt:dates.calculateDT("M"),
+        to_dt:dates.getTodayDate(),
         scheme_id:[],
         options:'2'
       })
@@ -689,7 +689,7 @@ __euinMst: any = [];
           dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
           dialogConfig.data = {
             flag: 'MUFIN_' + (__items.tin_no ? __items.tin_no.toString() : '0'),
-            isViewMode: __items.form_status == 'A' ? false : true,
+            isViewMode: __items.manual_trans_status != 'R' ? false : true,
             tin: __items.tin_no,
             tin_no: __items.tin_no,
             title: 'Manual Update For Financial',
@@ -722,7 +722,11 @@ __euinMst: any = [];
 
         updateRow(row_obj) {
           this.__financMst.data = this.__financMst.data.filter((value: any, key) => {
+           
             if (value.tin_no == row_obj.tin_no) {
+              if(row_obj.form_status == 'M'){
+                  return false;
+              }
               value.manual_update_remarks = row_obj.manual_update_remarks;
               value.pending_reason = row_obj.pending_reason;
               value.reject_reason_id = row_obj.reject_reason_id;
@@ -730,13 +734,14 @@ __euinMst: any = [];
               value.contact_per_phone = row_obj.contact_per_phone;
               value.contact_per_name = row_obj.contact_per_name;
               value.contact_via = row_obj.contact_via;
-              value.contact_to_comp = row_obj.contact_to_comp;
+              value.contact_to_amc = row_obj.contact_to_amc;
               value.folio_no = row_obj.folio_no;
               value.process_date = row_obj.process_date;
               value.manual_trans_status = row_obj.manual_trans_status;
               value.reject_memo = row_obj.reject_memo;
               value.upload_soa = row_obj.upload_soa;
               value.form_status = row_obj.form_status;
+              // value.manual_trans_status = row_obj.manual_trans_status
             }
             return true;
           });

@@ -266,16 +266,29 @@
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-finance let-columns="columns">
-              <tr tabindex="999">
+              <tr tabindex="999"
+                [ngStyle]="{
+                    'background-color':finance?.manual_trans_status == 'R'? '#b70a0a30' : ''
+              }"
+              >
 
                 <td *ngFor="let col of __columns"   
                 [style.max-width]="col.width"
                 [style.min-width]="col.width">
                   <ng-container [ngSwitch]="true">
                     <ng-container *ngSwitchCase="col.field == 'edit'">
-                      <p-button [icon]="finance['form_status'] == 'A' ? 'pi pi-pencil' : 'pi pi-edit'" (click)="populateDT(finance)"
-                        styleClass="p-button-rounded p-button-primary p-button-sm">
-                      </p-button>
+                       <ng-container *ngIf="finance?.manual_trans_status;else showEdit">
+                          <p-button [icon]="finance?.manual_trans_status == 'N' ? 'pi pi-pencil' : 'pi pi-eye'" (click)="populateDT(finance)"
+                            styleClass="p-button-rounded p-button-primary p-button-sm">
+                          </p-button>
+ 
+                       </ng-container> 
+                       <ng-template #showEdit>
+                            <p-button [icon]="'pi pi-pencil'" (click)="populateDT(finance)"
+                            styleClass="p-button-rounded p-button-primary p-button-sm">
+                          </p-button>
+                       </ng-template>
+                     
                     </ng-container>
                     <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
                       <p-button icon="pi pi-eye" (click)="DocumentView(finance)"

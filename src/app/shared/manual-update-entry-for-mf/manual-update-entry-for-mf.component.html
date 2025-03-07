@@ -105,7 +105,9 @@
               </div>
             </ng-container>
             <ng-template #MutualFund>
-            <label for="upload_soa"> Upload SOA <span class="text-danger">*</span></label>
+            <label for="upload_soa"> Upload SOA 
+              <!-- <span class="text-danger">*</span> -->
+            </label>
             <input type="file"
             (change)="getFIle($event.target,'M')"
               accept=".pdf"
@@ -116,8 +118,8 @@
             <mat-hint><label>Allowed format: PDF (size upto 10MB)</label></mat-hint>
             <div class="invalid-feedback"
               *ngIf=" __manualUpdateForm.get(['process','upload_soa']).invalid && ( __manualUpdateForm.get(['process','upload_soa']).dirty ||  __manualUpdateForm.get(['process','upload_soa']).touched)">
-              <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['process','upload_soa']).errors?.required">*Please
-                provide file</span>
+              <!-- <span class="invalid-feedback" *ngIf=" __manualUpdateForm.get(['process','upload_soa']).errors?.required">*Please
+                provide file</span> -->
               <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','upload_soa']).errors?.inValidExt">*Invalid
                 file extension.</span>
               <span class="invalid-feedback" *ngIf="__manualUpdateForm.get(['process','upload_soa']).errors?.fileSizeValidator">*File size

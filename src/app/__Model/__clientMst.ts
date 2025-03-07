@@ -19,6 +19,7 @@ export interface client {
     state_name?:string;
     state?: string
     pincode?: number
+    pincode_name?:Partial<number>
     id: number
     created_by?:number
     created_at?:string
@@ -45,4 +46,5 @@ export interface client {
     relationship?:string;
     client_id?:number;
     family_id?:number;
+    maritial_status?:Partial<string>
   }
