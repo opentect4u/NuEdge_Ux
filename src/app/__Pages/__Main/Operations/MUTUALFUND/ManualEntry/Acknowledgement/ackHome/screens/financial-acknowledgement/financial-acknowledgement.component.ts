@@ -38,7 +38,7 @@ type selectBtn ={
 export class FinancialAcknowledgementComponent implements OnInit {
   // selectedAck:any
   tableWidth:number = 264;
-
+  @Input() md_pending_transaction = [];
   itemsPerPage = ItemsPerPage;
   selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
   brnchMst: any=[];
@@ -702,6 +702,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
   populateDT(__items) {
     console.log(__items);
 
+    
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = false;
@@ -717,6 +718,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
       title: 'Upload Acknowledgement',
       right: global.randomIntFromInterval(1, 60),
       data: __items,
+      id: 'ACKUPL_' + __items.tin_no ? __items.tin_no.toString() : '0',
     };
     dialogConfig.id =
       'ACKUPL_' + __items.tin_no ? __items.tin_no.toString() : '0';
@@ -803,11 +805,12 @@ export class FinancialAcknowledgementComponent implements OnInit {
         // if(row_obj?.ack_status == 'P'){
         //   return false;
         // }
+        console.log(row_obj)
         value.rnt_login_cutt_off = row_obj.rnt_login_cutt_off;
           value.ack_status = row_obj.ack_status;
           value.rnt_login_dt = row_obj.rnt_login_dt;
           value.rnt_login_time = row_obj.rnt_login_dt?.split(' ')[1];
-          value.ack_copy_scan = `${row_obj.ack_copy_scan}`;
+          value.ack_copy_scan = row_obj.ack_copy_scan;
           value.form_status = row_obj.form_status;
           value.ack_remarks = row_obj.ack_remarks
       }
@@ -819,6 +822,7 @@ export class FinancialAcknowledgementComponent implements OnInit {
     if(this.__ackMst.data.length == 0){}
     else{
       const __finalSubmit = new FormData();
+        console.log(this.transaction_id)
       __finalSubmit.append('trans_type_id', this.trans_type_id.toString());
       __finalSubmit.append('trans_id', this.transaction_id.toString());
   

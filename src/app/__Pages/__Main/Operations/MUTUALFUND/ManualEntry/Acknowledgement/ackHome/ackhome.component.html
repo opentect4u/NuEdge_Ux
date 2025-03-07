@@ -18,11 +18,13 @@
           <ng-container *ngIf="trans_type_id == 3;else nfo_financial">
         <nonfinancial-acknowledgement 
         [amcMst]="amcMst"
+        [md_pending_transaction]="md_pending_transaction"
         [trans_type_id]="trans_type_id"></nonfinancial-acknowledgement>
              
           </ng-container> 
           <ng-template #nfo_financial>
             <financial-acknowledgement
+        [md_pending_transaction]="md_pending_transaction"
            [amcMst]="amcMst"
             [trans_type_id]="trans_type_id"
           ></financial-acknowledgement>

@@ -503,7 +503,11 @@
           (selectedItems)="getSelectedItemsFromParent($event)"
           [isClientExistMsg]="'Scheme does not exists'"
           ></app-core-srch>
+          <div class="invalid-feedback"
+          *ngIf="__traxForm.get('scheme_name').errors?.__isDateGreater"
+          >* Entry Date Expired for this scheme</div>
         </div>
+    
         <div class="col-sm-3 clientCode" *ngIf="__dialogDtForScheme">
           <button color="primary" *ngIf="this.__dialogDtForScheme" (click)="openDialog('S')" mat-button
             type="button" aria-label="Example icon button with a eye icon" title="View Scheme Details">

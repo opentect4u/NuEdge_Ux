@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
@@ -24,6 +24,7 @@ import { environment } from 'src/environments/environment';
 import  ItemsPerPage from '../../../../../../../../../assets/json/itemsPerPage.json';
 import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/preview-document.component';
 import moment from 'moment';
+import { Table } from 'primeng/table';
 type selectBtn ={
   label:string,
   value:string,
@@ -35,6 +36,9 @@ type selectBtn ={
   styleUrls: ['./non-financial-manual-update.component.css']
 })
 export class NonFinancialManualUpdateComponent implements OnInit {
+  tableWidth:number | undefined = 0;
+  @ViewChild('dt') primeTbl :Table;
+
   selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
   itemsPerPage = ItemsPerPage;
   constructor(private __dbIntr: DbIntrService,
@@ -101,6 +105,10 @@ export class NonFinancialManualUpdateComponent implements OnInit {
       dt_type: new FormControl(''),
       frm_dt: new FormControl(''),
       to_dt: new FormControl(''),
+      // date_range: new FormControl([new Date(dates.calculateDT("W")),new Date(dates.getTodayDate())]),
+      // dt_type: new FormControl('W'),
+      // frm_dt: new FormControl(dates.calculateDT("W")),
+      // to_dt: new FormControl(dates.getTodayDate()),
       rm_id:new FormControl([],{updateOn:'blur'})
     });
    __financMst = new MatTableDataSource<any>([]);
@@ -148,6 +156,7 @@ export class NonFinancialManualUpdateComponent implements OnInit {
       })
     }
   getTransactionType() {
+    console.log('RESET');
     this.__dbIntr
       .api_call(0, '/showTrans', 'trans_type_id=' + this._trans_type_id)
       .pipe(pluck('data'))
@@ -164,9 +173,11 @@ export class NonFinancialManualUpdateComponent implements OnInit {
 
   TabDetails(ev){
     this.transaction_id = ev.tabDtls.id;
-    this.sort = new sort();
-    this.__pageNumber.setValue('10')
-    this.submit();
+    // this.sort = new sort();
+    // this.__pageNumber.setValue('10')
+    // this.submit();
+    this.reset();
+
     this.setColumns(this.__rcvForms.value.options,this._trans_type_id,this.transaction_id);
    }
 
@@ -226,33 +237,36 @@ export class NonFinancialManualUpdateComponent implements OnInit {
          });
     }
     setPaginator(res) {
-       const final_dt =   res.data.filter((el) => {
-                      if(el.form_status != 'M'){
-                        if(!el.nfo_reopen_dt){
-                          return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+           const final_dt =   res.filter((el) => {
+                  if(el.form_status != 'M'){
+                    if(!el.nfo_reopen_dt){
+                      return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                    }
+                    else{
+                        const nfoReopenDt = moment(el.nfo_reopen_dt,'YYYY-MM-DD');
+                        const rntLoginDt =  moment(el.rnt_login_dt,'YYYY-MM-DD');
+                        if(rntLoginDt.isBefore(nfoReopenDt)){
+                          return this.filterManualUpdateByTAT(nfoReopenDt,el.manual_update_tat)
                         }
                         else{
-                            const nfoReopenDt = moment(el.nfo_reopen_dt,'YYYY-MM-DD');
-                            const rntLoginDt =  moment(el.rnt_login_dt,'YYYY-MM-DD');
-                            if(rntLoginDt.isBefore(nfoReopenDt)){
-                              return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
-                            }
-                            else{
-                              return this.filterManualUpdateByTAT(el.nfo_reopen_dt,el.manual_update_tat)
-                            }
+                          return this.filterManualUpdateByTAT(rntLoginDt,el.manual_update_tat)
                         }
-                      }
-                      else{
-                        return false;
-                      }
-                  })
+                    }
+                  }
+                  else{
+                    return false;
+                  }
+              })
                   this.__financMst = new MatTableDataSource(final_dt);
-                  this.__paginate = res.links;
+                  // this.__paginate = res.links;
     }
      filterManualUpdateByTAT(date,tat) {
                     const dateToCheck = moment(date, "YYYY-MM-DD").add(tat ? tat : 0, 'days');
                     let today = moment().startOf('day');
-                    let diffInDays = dateToCheck.diff(today, 'days');
+                    let diffInDays = today.diff(dateToCheck, 'days');
+                    console.log(`*************${dateToCheck}********`);
+                    console.log(`*************${today}********`);
+                    console.log(diffInDays);
                     return diffInDays > 0; 
             }
     setColumns(option,trans_type_id,trns_id){
@@ -299,6 +313,8 @@ export class NonFinancialManualUpdateComponent implements OnInit {
          else{
           this.__columns = this.columns;
          }
+        this.tableWidth = this.__columns.map(el => el.width ? Number(el.width.split('rem')[0]) : 0).reduce(function (x, y) {return x + y;}, 0)
+
     }
 
     onItemClick(ev){
@@ -315,6 +331,7 @@ export class NonFinancialManualUpdateComponent implements OnInit {
     })
     }
     reset() {
+      console.log('RESET');
       this.__rcvForms.patchValue({
         date_range:'',
         sub_brk_cd:[],
@@ -377,6 +394,40 @@ export class NonFinancialManualUpdateComponent implements OnInit {
       this.schemeMst = res;
     })
    }
+   changeWheelSpeed(container, speedY) {
+      var scrollY = 0;
+      var handleScrollReset = function() {
+          scrollY = container.scrollTop;
+      };
+      var handleMouseWheel = function(e) {
+          e.preventDefault();
+          scrollY += speedY * e.deltaY
+          if (scrollY < 0) {
+              scrollY = 0;
+          } else {
+              var limitY = container.scrollHeight - container.clientHeight;
+              if (scrollY > limitY) {
+                  scrollY = limitY;
+              }
+          }
+          container.scrollTop = scrollY;
+        };
+
+        var removed = false;
+        container.addEventListener('mouseup', handleScrollReset, false);
+        container.addEventListener('mousedown', handleScrollReset, false);
+        container.addEventListener('mousewheel', handleMouseWheel, false);
+
+        return function() {
+          if (removed) {
+              return;
+          }
+          container.removeEventListener('mouseup', handleScrollReset, false);
+          container.removeEventListener('mousedown', handleScrollReset, false);
+          container.removeEventListener('mousewheel', handleMouseWheel, false);
+          removed = true;
+        };
+     }
 
     ngAfterViewInit() {
   
@@ -514,6 +565,9 @@ export class NonFinancialManualUpdateComponent implements OnInit {
       this.setEuinDropdown(res,this.__rcvForms.value.rm_id);
     // }
    })
+
+   const el = document?.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+   this.changeWheelSpeed(el, 0.99);
   }
 
   getBusinessTypeMst(brn_cd){
@@ -614,9 +668,11 @@ export class NonFinancialManualUpdateComponent implements OnInit {
         title: 'Manual Update For Non Financial',
         right: global.randomIntFromInterval(1, 60),
         data: __items,
+        id :'MUNOFIN_' + (__items.tin_no ? __items.tin_no.toString() : '0')
+
       };
       dialogConfig.id =
-        'FDMUNOFIN_' + (__items.tin_no ? __items.tin_no.toString() : '0');
+        'MUNOFIN_' + (__items.tin_no ? __items.tin_no.toString() : '0');
       try {
         const dialogref = this.__dialog.open(
           ManualUpdateEntryForMFComponent,
@@ -739,4 +795,16 @@ export class NonFinancialManualUpdateComponent implements OnInit {
         });
     } else {}
   }
+
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
+  }
+  filterGlobal = ($event) => {
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
+  }
+
+  ngOnDestroy() {
+            this.__financMst = new MatTableDataSource([]);
+          }
 }

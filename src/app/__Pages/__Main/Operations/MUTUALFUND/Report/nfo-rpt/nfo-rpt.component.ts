@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
@@ -9,17 +9,29 @@ import { amc } from 'src/app/__Model/amc';
 import { sort } from 'src/app/__Model/sort';
 import { column } from 'src/app/__Model/tblClmns';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
-import { mfFinClmns } from 'src/app/__Utility/MFColumns/finClmns';
+// import { mfFinClmns } from 'src/app/__Utility/MFColumns/finClmns';
 import { nfoClmns } from 'src/app/__Utility/MFColumns/nfoClmns';
 import { dates } from 'src/app/__Utility/disabledt';
 import { global } from 'src/app/__Utility/globalFunc';
+import KycMst from '../../../../../../../assets/json/kyc.json';
+import withoutKycMst from '../../../../../../../assets/json/withoutKyc.json';
+import { Table } from 'primeng/table';
+import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import loggedStatus from '../../../../../../../assets/json/loginstatus.json'
+
 @Component({
   selector: 'report-nfo-rpt',
   templateUrl: './nfo-rpt.component.html',
   styleUrls: ['./nfo-rpt.component.css']
 })
 export class NfoRPTComponent implements OnInit {
+    trxn_column = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn')).filter((el) => el.isVisible.includes('T'));
+  
+  @ViewChild('secondaryTbl') secondaryTbl :Table;
+      shwoPopup__trxn:any = [];
   isOpenMegaMenu:boolean = false;
+  visible:boolean = false;
   sort = new sort();
   __paginate: any = [];
   __istemporaryspinner:boolean = false;
@@ -28,7 +40,7 @@ export class NfoRPTComponent implements OnInit {
   displayMode_forClient:string;
   /** Filter Criteria */
   transFrm = new FormGroup({
-    btnType: new FormControl(''),
+    btnType: new FormControl('R'),
     option: new FormControl('2'),
     date_periods_type: new FormControl(''),
     date_range: new FormControl(''),
@@ -45,7 +57,9 @@ export class NfoRPTComponent implements OnInit {
     sub_brk_cd: new FormControl([]),
     euin_no: new FormControl([]),
     frm_dt: new FormControl(''),
-    to_dt: new FormControl('')
+    to_dt: new FormControl(''),
+    is_all_status: new FormControl(false),
+    ack_status: new FormArray([])
   });
   /*** End */
 
@@ -101,11 +115,24 @@ export class NfoRPTComponent implements OnInit {
 
 
 
-  constructor(private dbIntr: DbIntrService) {}
+  constructor(private dbIntr: DbIntrService,private utlity:UtiliService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getAckStatus();
+  }
 
   ngAfterViewInit() {
+    /** Change event occur when all rnt checkbox has been changed  */
+    this.transFrm.controls['is_all_status'].valueChanges.subscribe(res =>{
+      this.ack_status.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+    })
+    /** End */
+
+    /** Change event inside the formArray */
+    this.ack_status.valueChanges.subscribe(res =>{
+    this.transFrm.controls['is_all_status'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+    })
+    /*** End */
     this.transFrm.controls['date_periods_type'].valueChanges.subscribe((res) => {
       this.transFrm.controls['date_range'].reset(
         res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
@@ -200,6 +227,25 @@ export class NfoRPTComponent implements OnInit {
   AckView(ev){
     this.viewAckDocument.emit(ev);
   }
+
+  getAckStatus(){
+    loggedStatus.forEach(el =>{
+      console.log(el)
+    this.ack_status.push(this.addAckStatusForm(el));
+    })
+  }
+
+  addAckStatusForm(ackStatus){
+    return new FormGroup({
+      id:new FormControl(ackStatus ? ackStatus?.id : 0),
+      name:new FormControl(ackStatus ? ackStatus?.name : ''),
+      value:new FormControl(ackStatus ? ackStatus.value : ''),
+      isChecked:new FormControl(false),
+    })
+  }
+  get ack_status(): FormArray{
+    return this.transFrm.get('ack_status') as FormArray
+   }
 
 
   setColumns(option,trans_type_id,trns_id){
@@ -339,6 +385,8 @@ export class NfoRPTComponent implements OnInit {
            this.transFrm.value.bu_type ?
            JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']})): '[]'
          );
+      finFrmDT.append('ack_status',JSON.stringify(this.ack_status.value.filter(item => item.isChecked).map(res => {return res['id']})));
+
         }
     this.sendFinancialFilteredDt.emit(finFrmDT);
   }
@@ -368,6 +416,7 @@ export class NfoRPTComponent implements OnInit {
     this.transFrm.get('client_dtls').setValue('',{emitEvent:false});
     this.transFrm.get('tin_no').setValue('',{emitEvent:false});
     this.transFrm.get('is_all_rnt').setValue(false);
+    this.transFrm.get('is_all_status').setValue(false);
     this.sort = new sort();
     this.__pageNumber = 10;
     this.submitFinReport();
@@ -427,7 +476,7 @@ export class NfoRPTComponent implements OnInit {
                     : '') +
                     ('&rnt_name=' +
                     (this.transFrm.value.rnt_id.length > 0
-                      ? JSON.stringify(this.transFrm.value.rnt_id)
+                      ? JSON.stringify(this.rnt_id.value.filter(x=> x.isChecked).map(item => {return item['id']}))
                       : '')) +
                   ('&tin_no=' +
                     (this.transFrm.value.tin_no
@@ -456,7 +505,8 @@ export class NfoRPTComponent implements OnInit {
                     (this.transFrm.value.brn_cd
                       ? JSON.stringify(this.transFrm.value.brn_cd.map(item => {return item['id']}))
                       : '[]')) +
-
+                      ('&ack_status=' + JSON.stringify(this.ack_status.value.filter(item => item.isChecked).map(res => {return res['id']}))) +
+                      +
                       ('&rm_id='+
                       JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['id']}))
                     )+
@@ -467,7 +517,31 @@ export class NfoRPTComponent implements OnInit {
           )
           .pipe(map((x: any) => x.data))
           .subscribe((res: any) => {
-            this.finMst = res.data.filter(el => el.ack_status != 'R');
+            const seen = new Set();
+            const kyc = KycMst.concat(withoutKycMst).filter(el => {
+              const duplicate = seen.has(el.id);
+              seen.add(el.id);
+              return !duplicate;
+            })
+            this.finMst = res.data.filter(el =>{
+                if(el.ack_status != 'R'){
+                  const newNominee = JSON.parse(el?.new_nominee);
+                  const mergeFolio = el.merge_folio ? JSON.parse(el.merge_folio) : [];
+                  el.source_folio = mergeFolio && mergeFolio.length > 0 ? mergeFolio.join(", ") : ''
+                  el.new_nominee_name = newNominee && newNominee.length > 0 ? newNominee[0]?.nominee_name : '';
+                  el.percentage = newNominee && newNominee.length > 0 ? newNominee[0]?.percentage : '';
+                  const first_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+                  el.first_kyc = first_kyc.length > 0 ? first_kyc[0]?.value : '';
+                  const second_kyc = kyc.filter(ele => ele.id == el.second_kyc);
+                  el.second_kyc = second_kyc.length > 0 ? second_kyc[0]?.value : '';
+                  const third_kyc = kyc.filter(ele => ele.id == el.third_kyc);
+                  el.third_kyc = third_kyc.length > 0 ? third_kyc[0]?.value : '';
+                  el.manual_trans_status = el.manual_trans_status ? (el.manual_trans_status == 'P' ? 'Process' : el.manual_trans_status == 'R' ? "Rejected" : 'Pending') : '';
+                  return el;
+                }
+                return false;
+            })
+            // this.finMst = res.data.filter(el => el.ack_status != 'R');
             this.__paginate = res.links;
           });
       }
@@ -490,6 +564,27 @@ export class NfoRPTComponent implements OnInit {
           to_dt: this.transFrm.getRawValue().date_range ? (global.getActualVal(this.transFrm.getRawValue().date_range[1]) ?  dates.getDateAfterChoose(this.transFrm.getRawValue().date_range[1]) : '') : ''
          });
 
+    }
+
+    openDialog(finance){
+      // console.log(finance);
+      const form_data = new FormData();
+      this.shwoPopup__trxn = [];
+      form_data.append('folio_no',finance.folio_no);
+      this.dbIntr .api_call(1, '/showTransDetails', form_data)
+      .pipe(
+        pluck('data')).subscribe((res:any) =>{
+            this.shwoPopup__trxn = res.data;
+            this.visible = true;
+        })
+      } 
+      filterGlobal_secondary = ($event) =>{
+        let value = $event.target.value;
+        this.secondaryTbl.filterGlobal(value,'contains')
+      }
+      
+    getcolumns_secondary = () =>{
+      return this.utlity.getColumns(this.trxn_column);
     }
 
 }

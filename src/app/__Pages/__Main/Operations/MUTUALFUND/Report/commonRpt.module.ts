@@ -5,6 +5,7 @@ import { NfoRPTComponent } from './nfo-rpt/nfo-rpt.component';
 import { KycRptComponent } from './kyc-rpt/kyc-rpt.component';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { DialogModule } from 'primeng/dialog';
 
 
 @NgModule({
@@ -14,13 +15,14 @@ import { SharedModule } from 'src/app/shared/shared.module';
     NfoRPTComponent,
     KycRptComponent
   ],
-  imports: [ CommonModule,SharedModule],
+  imports: [ CommonModule,SharedModule,DialogModule],
   exports:[
     FinancialRPTComponent,
     NonFinancialRPTComponent,
     NfoRPTComponent,
     KycRptComponent,
-    SharedModule
+    SharedModule,
+    DialogModule
   ]
 })
 export class CommonReportModule { }

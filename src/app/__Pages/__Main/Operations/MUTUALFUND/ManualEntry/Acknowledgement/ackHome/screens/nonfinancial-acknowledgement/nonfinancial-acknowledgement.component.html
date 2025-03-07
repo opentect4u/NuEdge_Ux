@@ -259,6 +259,14 @@
         <ng-template pTemplate="caption">
             <div class="d-flex align-items-center justify-content-between">
               <div>
+                <ul  *ngIf="md_pending_transaction.length > 0">
+                  <li class="float-left list-unstyled mr-3 fs-2">
+                    Pending Acknowledgements - 
+                  </li>
+                  <li *ngFor="let item of md_pending_transaction;let i = index" class="float-left list-unstyled mr-3 fs-2">
+                     {{item?.trns_type_name}}(<b>{{item?.total_count}}</b>) {{ i < (md_pending_transaction.length - 1) ? ',' : ''}}
+                  </li>
+                </ul>
               </div>
               <div>
                 <input class="form-control w-full" type="text" 
@@ -294,7 +302,7 @@
                   </p-button>
                 </ng-container> -->
                 <ng-container *ngSwitchCase="col.field == 'edit'">
-                    <ng-container *ngIf="finance['form_status'] == 'P' || finance['form_status'] == 'A'">
+                    <ng-container *ngIf="finance['form_status'] == 'P' || finance['form_status'] == 'A'  || finance['form_status'] == 'R'">
                       <ng-container *ngIf="finance['ack_status'] == 'N' || finance['ack_status'] == 'P' || !finance['ack_status']">
                         <p-button [icon]="finance['form_status'] == 'P' ? 'pi pi-pencil' : 'pi pi-eye'" (click)="populateDT(finance)" styleClass="p-button-rounded p-button-primary"></p-button>
                       </ng-container>
@@ -309,8 +317,19 @@
                 </ng-container> -->
                 <ng-container *ngSwitchCase="col.field == 'app_frm_view'">
                   
-                  <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
-                  styleClass="p-button-rounded p-button-primary"></p-button>
+                  <!-- <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
+                  styleClass="p-button-rounded p-button-primary"></p-button> -->
+                  <!-- <ng-container *ngIf="finance[col.field];else noForm"> -->
+                    <ng-container *ngIf="finance?.app_form_scan;else noForm">
+
+                    <p-button icon="pi pi-eye" (click)="DocumentView(finance,col.field)"
+                    styleClass="p-button-rounded p-button-primary"></p-button>
+                  </ng-container>
+                  <ng-template #noForm>
+                      <span>
+                        N/A
+                      </span>
+                  </ng-template>
               </ng-container>
               <ng-container *ngSwitchCase="col.field == 'ack_copy_scan'">
                 <ng-container *ngIf="finance[col.field];else noackForm">

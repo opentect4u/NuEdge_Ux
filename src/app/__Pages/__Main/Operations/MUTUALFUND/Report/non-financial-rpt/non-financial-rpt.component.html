@@ -179,7 +179,23 @@
                   formControlName="euin_no">
                 </ng-multiselect-dropdown>
           </div>
-           <div class="col-sm-9  d-flex flex-column justify-content-end align-items-end">
+          <div class="col-sm-4 d-flex  align-items-end">
+            <div class="checkboxes d-flex flex-row align-items-center w-100">
+               <label>Acknowledgement Status:&nbsp;</label>
+              <div>
+                <ng-container formArrayName="ack_status">
+                  <ng-container *ngFor="let ack of ack_status.controls;let i= index">
+                    <ng-container [formGroupName]="i">
+                    <mat-checkbox  color="primary" [class]="'mr-2'"
+                      formControlName="isChecked"> {{ack_status.controls[i].get('name').value}}</mat-checkbox>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <mat-checkbox color="primary" formControlName="is_all_status"> All</mat-checkbox>
+              </div>
+            </div>
+           </div>
+           <div class="col-sm-5  d-flex flex-column justify-content-end align-items-end">
             <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
           </div>
         </div>
@@ -248,7 +264,7 @@
                     styleClass="p-button-rounded p-button-success"></p-button>
                   </ng-container>
                   <ng-template #others>
-                        <span>N/A</span>
+                        <span>Pending</span>
                   </ng-template>
                 </ng-container>
                 <ng-container
@@ -266,6 +282,17 @@
                  [matTooltip]="finance[col.field] ? (finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')) : ''">
                  {{  finance[col.field] ? (finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')) : 'N/A'}}
                 </span>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="col.field == 'folio_no' || col.field == 'source_folio'">
+                    <ng-container *ngIf="finance[col.field];else notAvailable">
+                         <a style="cursor:pointer;color:blue" (click)="openDialog(finance)">
+                          {{finance[col.field]}}
+                         </a>
+                    </ng-container>
+                    <ng-template #notAvailable>
+                        <span>N/A</span>
+                    </ng-template>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'sip_swp_stp_frequency' ||  col.field == 'swp_frequency' || col.field == 'stp_frequency'">
                   {{ finance[col.field] ? (finance[col.field] == 'W' ? 'Weekly' : (finance[col.field] == 'M' ? 'Monthly' : (finance[col.field] == 'Q' ? 'Quarterly' 
@@ -291,9 +318,9 @@
                   {{ finance[col.field] ? (finance[col.field] == 'O' ? 'Others' : (finance[col.field] == 'D' ? 'Due To Marriage' : 'N/A')) : 'N/A'}}
                 </ng-container>
 
-                <ng-container   *ngSwitchCase="col.field == 'source_folio'">
+                <!-- <ng-container   *ngSwitchCase="col.field == 'source_folio'">
                   <span>{{ finance[col.field] ? finance[col.field]  : 'N/A'}}</span>
-                </ng-container>
+                </ng-container> -->
 
 
                 <ng-container
@@ -392,3 +419,119 @@
         </div>
     </div>
   </div>
+
+
+  
+  <p-dialog header="Header"
+[(visible)]="visible"
+[modal]="true"
+[draggable]="false"
+[maximizable]="true"
+[resizable]="true"
+[style]="{width: '90vw'}">
+<ng-template  pTemplate="header">
+        <h5 class="m-0">ALL TRANSACTIONS</h5>
+
+        <input id="search" class="form-control rounded w-50" type="text" (input)="filterGlobal_secondary($event)"
+        placeholder="Search" />
+     </ng-template>
+<!-- Table -->
+
+<p-table #secondaryTbl id="secondary_trxDt" [value]="shwoPopup__trxn"
+[responsive]="true" [rowHover]="true"
+styleClass="p-datatable-striped p-datatable-lg"
+[scrollable]="true"
+[columns]="trxn_column" [paginator]="true"
+[autoLayout]="true" [totalRecords]="shwoPopup__trxn.length" [pageLinks]="3"
+[rowsPerPageOptions]="[10,50,100]"
+currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+[showCurrentPageReport]="true" [globalFilterFields]="getcolumns_secondary()"
+[tableStyle]="{ 'min-width': '374rem' }">
+<ng-template pTemplate="header">
+  <tr>
+    <th *ngFor="let col of trxn_column"
+
+    [pSortableColumn]="col.field" [style.max-width]="col.width"
+      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+      {{ col.header }}
+      <p-sortIcon [field]="col.field">
+      </p-sortIcon>
+    </th>
+  </tr>
+</ng-template>
+<ng-template pTemplate="body" let-trxn let-i="rowIndex">
+  <tr tabindex="999"
+    [ngStyle]="{
+      'background-color': trxn.transaction_subtype.includes('Rejection') ?  '#b70a0a30' : ''}">
+    <td *ngFor="let col of trxn_column" [style.max-width]="col.width"
+      [style.min-width]="(col.field != 'amc_name' && col.field != 'scheme_name') ? col.width : '12rem'">
+      <ng-container [ngSwitch]="true">
+        <ng-container *ngSwitchCase="col.field == 'sl_no'">
+          <p class="m-0">
+            {{i + 1}}
+          </p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.field == 'sub_brk_cd'">
+          <p class="m-0">{{ (trxn[col.field]
+            && (trxn[col.field] | titlecase)!="Not Provided"
+            && trxn[col.field]!="BLANK"
+            && trxn[col.field]!='0'
+            && trxn[col.field]!= ' '
+            && (trxn[col.field] | titlecase)!="Not Provid"
+            && (trxn[col.field] | titlecase)!="Notprovided"
+            && trxn[col.field] !== 'NOTPROVIDE'
+            ) ? trxn[col.field] :
+            'N/A' }}</p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="col.field == 'first_client_name'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | titlecase) : 'N/A' }}</p>
+        </ng-container>
+
+
+        <ng-container *ngSwitchCase="col.field == 'trans_date'">
+          <p class="m-0">{{ trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy') : 'N/A' }}</p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'scheme_name'">
+          <p class="m-0"
+            matTooltip="{{trxn[col.field] ? (trxn[col.field]  + ' - ' +  trxn['plan_name'] + ' - ' + (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name'])) : ''}}">
+            {{ trxn[col.field] ? (trxn[col.field] + '-' + trxn['plan_name'] + '-' +
+            (trxn['divi_lock_flag'] == 'L' ? 'IDCW Reinvestment' : trxn['option_name']))
+            : 'N/A'
+            }}</p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'tot_tds'">
+          <p class="m-0" matTooltip="{{(trxn[col.field] && trxn[col.field] != ' ') ? trxn[col.field] : 0}}">
+            {{ (trxn[col.field] && trxn[col.field] != " ") ? trxn[col.field] : 0}}
+          </p>
+        </ng-container>
+        <ng-container *ngSwitchCase="col.field == 'remarks'">
+          <p class="m-0" [matTooltip]="trxn[col.field]">{{trxn['remarks'] ? (trxn['remarks'] | ellipsis:30):
+            'N/A'}}</p>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <p class="m-0" [matTooltip]="trxn[col.field]">{{ trxn[col.field] ? trxn[col.field] : 'N/A' }}</p>
+        </ng-container>
+      </ng-container>
+    </td>
+  </tr>
+</ng-template>
+
+<ng-template pTemplate="emptymessage" let-columns>
+  <tr>
+    <td [attr.colSpan]="columns.length" class="noHistoryAvailable">
+      <h5>No Records Found</h5>
+    </td>
+  </tr>
+</ng-template>
+<ng-template pTemplate="loadingbody" let-columns="columns">
+  <tr style="height:34px">
+      <td *ngFor="let col of columns; let even = even">
+          <p-skeleton [ngStyle]="{'width': col.width}"></p-skeleton>
+      </td>
+  </tr>
+</ng-template>
+</p-table>
+<!-- End -->
+</p-dialog>

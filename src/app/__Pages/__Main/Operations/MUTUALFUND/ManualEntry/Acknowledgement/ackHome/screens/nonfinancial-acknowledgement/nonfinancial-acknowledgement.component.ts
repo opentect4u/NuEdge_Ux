@@ -35,6 +35,7 @@ type selectBtn ={
 export class NonfinancialAcknowledgementComponent implements OnInit {
   itemsPerPage = ItemsPerPage;
   @ViewChild('dt') primeTbl :Table;
+  @Input() md_pending_transaction = [];
 
   tableWidth:number = 264;
 
@@ -568,6 +569,7 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
       tin_no: __items.tin_no,
       title: 'Upload Acknowledgement',
       right: global.randomIntFromInterval(1, 60),
+      id: 'ACKUPLNONFIN_' + (__items.tin_no ? __items.tin_no.toString() : '0'),
       data: __items,
     };
     dialogConfig.id =
@@ -696,6 +698,9 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
     else{
     const __finalSubmit = new FormData();
     __finalSubmit.append('trans_type_id', this.trans_type_id.toString());
+    __finalSubmit.append('trans_id', this.transaction_id.toString());
+
+
     this.__dbIntr
       .api_call(1, '/ackFinalSubmit', __finalSubmit)
       .subscribe((res: any) => {

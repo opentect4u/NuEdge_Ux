@@ -273,8 +273,8 @@ export class CreateClientComponent implements OnInit {
       return;
     }
     const __client = new FormData();
-
-    if(this.data.cl_type == 'P'){
+    __client.append("client_type", this.data.cl_type);
+    if(this.data.cl_type == 'P' || this.data.cl_type == 'E'){
       __client.append("pan", this.__clientForm.value.pan);
     }
     else if(this.data.cl_type == 'M'){
@@ -282,23 +282,29 @@ export class CreateClientComponent implements OnInit {
       __client.append("guardians_pan", this.__clientForm.value.gurdians_pan ? this.__clientForm.value.gurdians_pan : '');
       __client.append("guardians_name", this.__clientForm.value.gurdians_name ? this.__clientForm.value.gurdians_name : '');
     }
-    __client.append("mobile", this.__clientForm.value.mobile);
-    __client.append("sec_mobile", this.__clientForm.value.sec_mobile);
-    __client.append("email", this.__clientForm.value.email);
-    __client.append("sec_email", this.__clientForm.value.sec_email);
-    __client.append("add_line_1", this.__clientForm.value.add_line_1);
-    __client.append("add_line_2", this.__clientForm.value.add_line_2);
-    __client.append("city", this.__clientForm.value.city);
-    __client.append("dist", this.__clientForm.value.dist);
-    __client.append("state", this.__clientForm.value.state);
-    __client.append("pincode", this.__clientForm.value.pincode);
-    __client.append("country_id", this.__clientForm.value.country);
 
-    __client.append("id", this.__clientForm.value.id);
-    __client.append("client_type", this.data.cl_type);
-        if(this.data.cl_type == 'P'  || this.data.cl_type == 'M' ||  this.data.cl_type == 'N'){
-          __client.append("client_type_mode", this.__clientForm.value.client_type);
-        }
+    if(this.data.cl_type == 'E'){
+      __client.append("client_name", this.__clientForm.value.client_name);
+    }
+ 
+    if(this.data.cl_type == 'P'  || this.data.cl_type == 'M' ||  this.data.cl_type == 'N'){
+      __client.append("client_type_mode", this.__clientForm.value.client_type);
+    }
+    if(this.data.cl_type != 'E'){
+      __client.append("mobile", this.__clientForm.value.mobile);
+      __client.append("sec_mobile", this.__clientForm.value.sec_mobile);
+      __client.append("email", this.__clientForm.value.email);
+      __client.append("sec_email", this.__clientForm.value.sec_email);
+      __client.append("add_line_1", this.__clientForm.value.add_line_1);
+      __client.append("add_line_2", this.__clientForm.value.add_line_2);
+      __client.append("city", this.__clientForm.value.city);
+      __client.append("dist", this.__clientForm.value.dist);
+      __client.append("state", this.__clientForm.value.state);
+      __client.append("pincode", this.__clientForm.value.pincode);
+      __client.append("country_id", this.__clientForm.value.country);
+      __client.append("id", this.__clientForm.value.id);
+     
+    }
     for (let i = 0; i < this.__clientForm.value.doc_dtls.length; i++) {
       if (typeof (this.__clientForm.value.doc_dtls[i].file) != 'string') {
         __client.append("file[]", this.__clientForm.value.doc_dtls[i].file);
@@ -380,19 +386,27 @@ export class CreateClientComponent implements OnInit {
 
 
     this.__dbIntr.api_call(1, '/clientAddEdit', __client).subscribe((res: any) => {
+      console.log(res);
       if (res.suc == 1) {
-          if (this.data.cl_type == 'E' && this.data.id > 0) {this.dialogRef.close({id : this.data.id,cl_type:this.data.cl_type});}
+          if (this.data.cl_type == 'E' && this.data.id > 0) {this.dialogRef.close({id : this.data.id,cl_type:this.data.cl_type,data:res.data});}
           else {this.dialogRef.close({id:this.data.id,data:res.data});}
           this.__utility.showSnackbar(res.suc == 1 ? (this.data.id > 0 ? 'Client updated successfully' : 'Client added successfully') : res.msg, res.suc);
+      }
+      else{
+        this.__utility.showSnackbar(res.msg, res.suc);
+
       }
     })
   }
   checkPanExistornot(_pan){
-    if(_pan.target.value != ''){
-      this.__dbIntr.api_call(0,'/client','pan='+_pan.target.value).subscribe((res: responseDT) =>{
-        if(res.data.length > 0){this.__utility.showSnackbar('Pan Number already exist! please try with another one',0);}
-      })
+    if(this.data.cl_type != 'E'){
+      if(_pan.target.value != ''){
+        this.__dbIntr.api_call(0,'/client','pan='+_pan.target.value).subscribe((res: responseDT) =>{
+          if(res.data.length > 0){this.__utility.showSnackbar('Pan Number already exist! please try with another one',0);}
+        })
+      }
     }
+    
   }
   preventNonumeric(__ev) {
     dates.numberOnly(__ev)

@@ -135,19 +135,23 @@ export class CmnReportForMFComponent implements OnInit,OnDestroy {
       this.MstDt = {
         ...res,
         data:res.data.filter(el =>{
-          const newNominee = JSON.parse(el?.new_nominee);
-          const mergeFolio = el.merge_folio ? JSON.parse(el.merge_folio) : [];
-          el.source_folio = mergeFolio && mergeFolio.length > 0 ? mergeFolio.join(", ") : ''
-          el.new_nominee_name = newNominee && newNominee.length > 0 ? newNominee[0]?.nominee_name : '';
-          el.percentage = newNominee && newNominee.length > 0 ? newNominee[0]?.percentage : '';
-          const first_kyc = kyc.filter(ele => ele.id == el.first_kyc);
-          el.first_kyc = first_kyc.length > 0 ? first_kyc[0]?.value : '';
-          const second_kyc = kyc.filter(ele => ele.id == el.second_kyc);
-          el.second_kyc = second_kyc.length > 0 ? second_kyc[0]?.value : '';
-          const third_kyc = kyc.filter(ele => ele.id == el.third_kyc);
-          el.third_kyc = third_kyc.length > 0 ? third_kyc[0]?.value : '';
-          el.manual_trans_status = el.manual_trans_status ? (el.manual_trans_status == 'P' ? 'Process' : el.manual_trans_status == 'R' ? "Rejected" : 'Pending') : '';
-          return el;
+          if(el?.ack_status != 'R'){
+            const newNominee = JSON.parse(el?.new_nominee);
+            const mergeFolio = el.merge_folio ? JSON.parse(el.merge_folio) : [];
+            el.source_folio = mergeFolio && mergeFolio.length > 0 ? mergeFolio.join(", ") : ''
+            el.new_nominee_name = newNominee && newNominee.length > 0 ? newNominee[0]?.nominee_name : '';
+            el.percentage = newNominee && newNominee.length > 0 ? newNominee[0]?.percentage : '';
+            const first_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+            el.first_kyc = first_kyc.length > 0 ? first_kyc[0]?.value : '';
+            const second_kyc = kyc.filter(ele => ele.id == el.second_kyc);
+            el.second_kyc = second_kyc.length > 0 ? second_kyc[0]?.value : '';
+            const third_kyc = kyc.filter(ele => ele.id == el.third_kyc);
+            el.third_kyc = third_kyc.length > 0 ? third_kyc[0]?.value : '';
+            el.manual_trans_status = el.manual_trans_status ? (el.manual_trans_status == 'P' ? 'Process' : el.manual_trans_status == 'R' ? "Rejected" : 'Pending') : '';
+            return el;
+          }
+          return false;
+         
       })
        }
       //  console.log(this.MstDt)

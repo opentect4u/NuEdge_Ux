@@ -2360,15 +2360,15 @@ export class NonFinancialEntryComponent implements OnInit {
         console.log(__euinDtls)
         this.__dialogDtForClient = __euinDtls;
         this.__nonfinForm.controls['client_code'].reset(
-          __euinDtls.client_code,
+          __euinDtls ? (__euinDtls?.client_code ? __euinDtls?.client_code : __euinDtls?.client_name) : '',
           {
             onlySelf: true,
             emitEvent: false,
           }
         );
         this.__nonfinForm.patchValue({
-          client_name: __euinDtls.client_name,
-          client_id: __euinDtls.id,
+          client_name: __euinDtls?.client_name,
+          client_id: __euinDtls?.id,
           client_pan:__euinDtls ? __euinDtls?.pan : ''
         });
         this.searchResultVisibilityForClient('none');
@@ -2509,7 +2509,7 @@ export class NonFinancialEntryComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = true;
-    dialogConfig.width = '100%';
+    dialogConfig.width = __menu.flag == 'E' ? '50%' : '80%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.panelClass = 'fullscreen-dialog';
     dialogConfig.data = {
@@ -2540,8 +2540,23 @@ export class NonFinancialEntryComponent implements OnInit {
         if (dt) {
           switch (__mode) {
             case 'F':
+              // this.__isCldtlsEmpty = false;
+              this.__clientMst=[];
               this.__isCldtlsEmpty = false;
-              this.getItemsDtls(dt.data, 'C');
+              let client;
+              if(__menu.flag == 'E'){
+                  client = {
+                    ...dt.data,
+                    client_code:dt?.data?.client_name
+                  }
+                  this.__clientMst.push(client);
+              }
+              else{
+                this.__clientMst.push(dt.data);
+                client = dt.data
+              }
+              console.log(client)
+              this.getItemsDtls(client, 'C');
               break;
             // case 'S':
             //   this.__issecCldtlsEmpty = false;
@@ -2603,9 +2618,11 @@ export class NonFinancialEntryComponent implements OnInit {
       this.__nonfinForm.get('file').status == 'VALID' &&
       __ev.files.length > 0
     ) {
-      const reader = new FileReader();
-      reader.onload = (e) => this.setFormControl('filePreview', reader.result);
-      reader.readAsDataURL(__ev.files[0]);
+      // const reader = new FileReader();
+      // reader.onload = (e) => this.setFormControl('filePreview', reader.result);
+      // reader.readAsDataURL(__ev.files[0]);
+      const objectURL = URL.createObjectURL(__ev.files[0]);
+      this.setFormControl('filePreview', objectURL)
       this.setFormControl('app_form_scan', __ev.files[0]);
     } else {
       this.setFormControl('filePreview', '');
@@ -3052,7 +3069,7 @@ export class NonFinancialEntryComponent implements OnInit {
   }
   checkIfclientExist(cl_code: string): Observable<boolean> {
     return of(
-      this.__clientMst.findIndex((x) => x.client_code == cl_code) != -1
+      this.__clientMst.findIndex((x) => x.client_code == cl_code || x.client_name == cl_code) != -1
     );
   }
   ClientValidators(): AsyncValidatorFn {

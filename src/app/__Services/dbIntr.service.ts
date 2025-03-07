@@ -26,7 +26,7 @@ constructor(private __http:HttpClient) {
  }
 
  getpaginationData(url){
-  return this.__http.get<any>(url, { context: new HttpContext().set(BYPASS_LOG,  true) })
+  return this.__http.get<any>(url, { context: new HttpContext().set(BYPASS_LOG,  false) })
  }
 
   callApiOnChange(api_name,dt){

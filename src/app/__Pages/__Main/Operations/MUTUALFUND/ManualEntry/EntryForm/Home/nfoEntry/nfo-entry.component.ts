@@ -70,6 +70,8 @@ export class NfoEntryComponent implements OnInit {
 
   nfo_scheme_switch_to_visibility: string;
   __isEntryDTGreater: string = null;
+  __isEntryDTGreaterForSwitchSchemeFrom: string = null;
+
   __isschemeSpinner: boolean = false;
   __isschemeSpinnerTo: boolean = false;
   __isNfoSchemeSwitchTo: boolean = false;
@@ -188,7 +190,11 @@ export class NfoEntryComponent implements OnInit {
     scheme_id: new FormControl('', [Validators.required]),
     scheme_name: new FormControl('', {
       validators: [Validators.required],
-      asyncValidators: [this.SchemeValidators()],
+      asyncValidators: [
+        this.SchemeValidators(),
+        // this.EntryDateExpiredValidators()
+        this.EntryDateExpiredValidatorsForSwitchSchemeFrom()
+      ],
     }),
     client_id: new FormControl('', [Validators.required]),
     client_name: new FormControl('', [Validators.required]),
@@ -1468,20 +1474,20 @@ export class NfoEntryComponent implements OnInit {
 
       case 'C':
         this.__dialogDtForClient = __euinDtls;
-        this.__traxForm.controls['client_code'].reset(__euinDtls.client_code, {
+        this.__traxForm.controls['client_code'].reset(__euinDtls ? (__euinDtls.client_code ? __euinDtls.client_code : __euinDtls.client_name) : '', {
           onlySelf: true,
           emitEvent: false,
         });
         this.__traxForm.patchValue({
-          client_name: __euinDtls.client_name,
-          client_id: __euinDtls.id,
+          client_name: __euinDtls?.client_name,
+          client_id: __euinDtls?.id,
         });
         this.searchResultVisibilityForClient('none');
         break;
 
       case 'SC':
-        // console.log(__euinDtls.nfo_entry_date)
-        // this.__isEntryDTGreater = __euinDtls.nfo_entry_date;
+        console.log(__euinDtls.nfo_entry_date)
+        this.__isEntryDTGreaterForSwitchSchemeFrom = __euinDtls.nfo_entry_date;
         this.__dialogDtForScheme = __euinDtls;
         this.__traxForm.controls['scheme_name'].reset(__euinDtls.scheme_name, {
           onlySelf: true,
@@ -1551,9 +1557,11 @@ export class NfoEntryComponent implements OnInit {
       this.__traxForm.get('file').status == 'VALID' &&
       __ev.files.length > 0
     ) {
-      const reader = new FileReader();
-      reader.onload = (e) => this.setFormControl('filePreview', reader.result);
-      reader.readAsDataURL(__ev.files[0]);
+      // const reader = new FileReader();
+      // reader.onload = (e) => this.setFormControl('filePreview', reader.result);
+      // reader.readAsDataURL(__ev.files[0]);
+      const objectURL = URL.createObjectURL(__ev.files[0]);
+      this.setFormControl('filePreview', objectURL)
       this.setFormControl('app_form_scan', __ev.files[0]);
     } else {
       this.setFormControl('filePreview', '');
@@ -1915,7 +1923,7 @@ export class NfoEntryComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = true;
-    dialogConfig.width = '100%';
+    dialogConfig.width = __menu.flag == 'E' ? '50%' : '80%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.panelClass = 'fullscreen-dialog';
     dialogConfig.data = {
@@ -1939,8 +1947,21 @@ export class NfoEntryComponent implements OnInit {
         if (dt) {
           switch (__mode) {
             case 'F':
+              this.__clientMst=[];
               this.__isCldtlsEmpty = false;
-              this.getItemsDtls(dt.data, 'C');
+              let client;
+              if(__menu.flag == 'E'){
+                  client = {
+                    ...dt.data,
+                    client_code:dt?.data?.client_name
+                  }
+                  this.__clientMst.push(client);
+              }
+              else{
+                this.__clientMst.push(dt.data);
+                client = dt.data
+              }
+              this.getItemsDtls(client, 'C');
               break;
             case 'S':
               this.__issecCldtlsEmpty = false;
@@ -2064,6 +2085,33 @@ export class NfoEntryComponent implements OnInit {
       );
     };
   }
+
+
+  checkIfEntryDategreaterForSwitchSchemeFrom(): Observable<boolean> {
+    // console.log(
+    //   this.__isEntryDTGreater > new Date().toISOString().substring(0, 10)
+    // );
+    // console.log(new Date().toISOString().substring(0, 10))
+    // console.log(this.__isEntryDTGreaterForSwitchSchemeFrom >= new Date().toISOString().substring(0, 10))
+    if(this.__isEntryDTGreaterForSwitchSchemeFrom){
+      return of(
+        this.__isEntryDTGreaterForSwitchSchemeFrom >= new Date().toISOString().substring(0, 10)
+      );
+    }
+    return of(true);
+  }
+  EntryDateExpiredValidatorsForSwitchSchemeFrom(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.checkIfEntryDategreaterForSwitchSchemeFrom().pipe(
+        map((res) => {
+          if (control.value && this.__traxForm.value.tin_status == 'N') {
+            return res ? null : { __isDateGreater: true };
+          }
+          return null;
+        })
+      );
+    };
+  }
   checkIfscmExist(scm_name: string): Observable<boolean> {
     return of(
       this.__schemeMst.findIndex((x) => x.scheme_name == scm_name) != -1
@@ -2100,7 +2148,7 @@ export class NfoEntryComponent implements OnInit {
   }
   checkIfclientExist(cl_code: string): Observable<boolean> {
     return of(
-      this.__clientMst.findIndex((x) => x.client_code == cl_code) != -1
+      this.__clientMst.findIndex((x) => x.client_code == cl_code || x.client_name == cl_code) != -1
     );
   }
   ClientValidators(): AsyncValidatorFn {

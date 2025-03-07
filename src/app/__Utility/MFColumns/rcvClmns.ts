@@ -67,7 +67,7 @@ export class mfRcvClmns {
     { field: 'euin_no', header: 'EUIN' },
     { field: 'client_name', header: 'First Holder Name' },
     { field: 'client_code', header: 'First Holder Code' },
-    { field: 'trans_name', header: 'Transaction Type' },
+    { field: 'trans_name', header: 'Transaction' },
     {field:'scheme_name',header:'Scheme'},
     { field: 'application_no', header: 'Application Number' },
     { field: 'folio_no', header: 'Folio Number' },

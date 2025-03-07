@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
@@ -23,6 +23,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ManualUpdateEntryForMFComponent } from 'src/app/shared/manual-update-entry-for-mf/manual-update-entry-for-mf.component';
 import ItemsPerPage from '../../../../../../../../../assets/json/itemsPerPage.json';
 import moment from 'moment';
+import { Table } from 'primeng/table';
 
 type selectBtn ={
   label:string,
@@ -36,6 +37,8 @@ type selectBtn ={
 })
 export class NfoManualUpdateComponent implements OnInit {
   __transType: any = [];
+  @ViewChild('dt') primeTbl :Table;
+  
   transaction_id:number;
   @Input() product_id:number = 1;
   private _trans_type_id:number;
@@ -46,6 +49,7 @@ export class NfoManualUpdateComponent implements OnInit {
       @Input() amcMst: amc[] = [];
       itemsPerPage = ItemsPerPage;
   clmList:column[] =[]
+  tableWidth:number | undefined = 0;
     
     selectBtn:selectBtn[] = [{ label: 'Advance Filter', value: 'A',icon:'pi pi-filter' }, { label: 'Reset', value: 'R',icon:'pi pi-refresh' }]
     settingsforDropdown_foramc = this.__utility.settingsfroMultiselectDropdown('id','amc_name','Search AMC',1);
@@ -65,6 +69,10 @@ export class NfoManualUpdateComponent implements OnInit {
     tin_no: new FormControl(''),
     client_code: new FormControl(''),
     client_name: new FormControl(''),
+    // date_range: new FormControl([new Date(dates.calculateDT("W")),new Date(dates.getTodayDate())]),
+    // dt_type: new FormControl('W'),
+    // frm_dt: new FormControl(dates.calculateDT("W")),
+    // to_dt: new FormControl(dates.getTodayDate()),
     date_range: new FormControl(''),
     dt_type: new FormControl(''),
     frm_dt: new FormControl(''),
@@ -297,6 +305,40 @@ __euinMst: any = [];
       this.schemeMst = res;
     })
    }
+    changeWheelSpeed(container, speedY) {
+      var scrollY = 0;
+      var handleScrollReset = function() {
+          scrollY = container.scrollTop;
+      };
+      var handleMouseWheel = function(e) {
+          e.preventDefault();
+          scrollY += speedY * e.deltaY
+          if (scrollY < 0) {
+              scrollY = 0;
+          } else {
+              var limitY = container.scrollHeight - container.clientHeight;
+              if (scrollY > limitY) {
+                  scrollY = limitY;
+              }
+          }
+          container.scrollTop = scrollY;
+        };
+
+        var removed = false;
+        container.addEventListener('mouseup', handleScrollReset, false);
+        container.addEventListener('mousedown', handleScrollReset, false);
+        container.addEventListener('mousewheel', handleMouseWheel, false);
+
+        return function() {
+          if (removed) {
+              return;
+          }
+          container.removeEventListener('mouseup', handleScrollReset, false);
+          container.removeEventListener('mousedown', handleScrollReset, false);
+          container.removeEventListener('mousewheel', handleMouseWheel, false);
+          removed = true;
+        };
+    }
      ngAfterViewInit() {
        this.__ackForm.controls['dt_type'].valueChanges.subscribe((res) => {
          this.__ackForm.controls['date_range'].reset(
@@ -414,6 +456,8 @@ __euinMst: any = [];
          this.setEuinDropdown(res,this.__ackForm.value.rm_id);
        // }
       })
+      const el = document?.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+      this.changeWheelSpeed(el, 0.99);
        }
        getBusinessTypeMst(brn_cd){
         if(brn_cd.length > 0){
@@ -552,6 +596,8 @@ __euinMst: any = [];
       else{
        this.__columns = this.clmList;
       }
+      this.tableWidth = this.__columns.map(el => el.width ? Number(el.width.split('rem')[0]) : 0).reduce(function (x, y) {return x + y;}, 0)
+
       // this.SelectedClms = this.__columns.map(x => x.field);
       // this.__exportedClmns = this.__columns.filter(x => !clmnToRmv.includes(x.field)).map(item => {return item['field']});
     }
@@ -610,7 +656,8 @@ __euinMst: any = [];
         }
       }
       setPaginator(res) {
-            const final_dt =   res.data.filter((el) => {
+            // console.log(res.data);
+            const final_dt =   res.filter((el) => {
                 if(el.form_status != 'M'){
                   if(!el.nfo_reopen_dt){
                     return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
@@ -619,10 +666,11 @@ __euinMst: any = [];
                       const nfoReopenDt = moment(el.nfo_reopen_dt,'YYYY-MM-DD');
                       const rntLoginDt =  moment(el.rnt_login_dt,'YYYY-MM-DD');
                       if(rntLoginDt.isBefore(nfoReopenDt)){
-                        return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                        // return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                        return this.filterManualUpdateByTAT(nfoReopenDt,el.manual_update_tat)
                       }
                       else{
-                        return this.filterManualUpdateByTAT(el.nfo_reopen_dt,el.manual_update_tat)
+                        return this.filterManualUpdateByTAT(rntLoginDt,el.manual_update_tat)
                       }
                   }
                 }
@@ -631,13 +679,13 @@ __euinMst: any = [];
                 }
             })
             this.__financMst = new MatTableDataSource(final_dt);
-            this.__paginate = res.links;
+            // this.__paginate = res.links;
       }
 
       filterManualUpdateByTAT(date,tat) {
-                const dateToCheck = moment(date, "YYYY-MM-DD").add(tat ? tat : 0, 'days');
+               const dateToCheck = moment(date, "YYYY-MM-DD").add(tat ? tat : 0, 'days');
                 let today = moment().startOf('day');
-                let diffInDays = dateToCheck.diff(today, 'days');
+                let diffInDays = today.diff(dateToCheck, 'days');
                 return diffInDays > 0; 
         }
 
@@ -657,9 +705,10 @@ __euinMst: any = [];
             title: 'Manual Update For NFO',
             right: global.randomIntFromInterval(1, 60),
             data: __items,
+            id :'MUNFO_' + (__items.tin_no ? __items.tin_no.toString() : '0')
           };
           dialogConfig.id =
-            'FDMU_' + (__items.tin_no ? __items.tin_no.toString() : '0');
+            'MUNFO_' + (__items.tin_no ? __items.tin_no.toString() : '0');
           try {
             const dialogref = this.__dialog.open(
               ManualUpdateEntryForMFComponent,
@@ -701,6 +750,15 @@ __euinMst: any = [];
             }
             return true;
           });
+        }
+
+        getColumns = () =>{
+          return this.__utility.getColumns(this.__columns);
+        }
+
+        filterGlobal = ($event) => {
+          let value = $event.target.value;
+          this.primeTbl.filterGlobal(value,'contains')
         }
 
 }

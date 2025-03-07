@@ -38,7 +38,7 @@
           </select>
         </div>
         <div class="col-sm-3">
-          <label for="drm_dt">Date Range (From - To)</label>
+          <label for="date_range">Date Range (From - To)</label>
           <p-calendar
           dateFormat="dd/mm/yy"
           placeholder="Select Date Range"
@@ -207,21 +207,52 @@
       <div class="container_body">
          <!-- PrimeNg Table with column resize,
           column sorting etc  [reorderableColumns]="true"
-          pReorderableColumn  pResizableColumn  columnResizeMode="expand"    [tableStyle]="{ 'min-width': __ackForm.value.options == '2' ? '120rem' : '200rem' }"-->
-          <p-table
-          #dt
           (onLazyLoad)="customSort($event)"
-          [customSort]="true"
+            [lazy]="true"
+          [customSort]="true" 
+          pReorderableColumn    pResizableColumn  columnResizeMode="expand"    [tableStyle]="{ 'min-width': __ackForm.value.options == '2' ? '120rem' : '200rem' }"-->
+          <!-- <p-table
+          #dt
             sortMode="single"
             styleClass="p-datatable-md p-datatable-gridlines"
-            [lazy]="true"
           [value]="__financMst.data"
           [columns]="__columns" 
             selectionMode="multiple"
            [scrollable]="true"
-            scrollHeight="358px"
-            [autoLayout]="true" 
+            scrollHeight="358px" [tableStyle]="{ 'min-width': '374rem' }"
+            [autoLayout]="true"  [globalFilterFields]="getColumns()"
+          > -->
+
+          <p-table #dt id="trxDt" [value]="__financMst.data" [responsive]="true" [rowHover]="true"
+          styleClass="p-datatable-striped p-datatable-lg"
+          [scrollable]="true"
+           [scrollHeight]="'370px'"
+          [virtualScroll]="true"
+          [virtualRowHeight]="34"
+          [columns]="__columns" [paginator]="true"
+          [totalRecords]="__financMst.data.length" [pageLinks]="3"
+          [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
+          [showCurrentPageReport]="true" 
+          scrollHeight="358px" 
+          [tableStyle]="{ 'min-width': tableWidth + 'rem'}"
+           [globalFilterFields]="getColumns()"
           >
+          <ng-template pTemplate="caption">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <h5 class="text-uppercase">
+                     Manual Update
+                </h5>
+              </div>
+              <div>
+                <input class="form-control w-full" type="text" 
+                (input)="filterGlobal($event)" 
+                placeholder="Search" />
+              </div>    
+            
+          </div>
+          </ng-template>
             <ng-template pTemplate="header" let-columns>
               <tr>
                 <th *ngFor="let col of __columns"
@@ -324,7 +355,7 @@
           </p-table>
           <!-- End -->
 
-          <div class="paginator">
+          <!-- <div class="paginator">
             <div class="itemsPerPage d-flex">
                 <label class="mr-3">Items per page: </label>
                 <p-selectButton
@@ -356,7 +387,7 @@
 
 
               </div>
-              </div>
+              </div> -->
 
       </div>
 

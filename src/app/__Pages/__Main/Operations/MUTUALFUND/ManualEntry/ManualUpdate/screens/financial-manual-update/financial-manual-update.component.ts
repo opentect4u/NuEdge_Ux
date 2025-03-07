@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit,OnDestroy, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { client } from 'src/app/__Model/__clientMst';
@@ -23,6 +23,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ManualUpdateEntryForMFComponent } from 'src/app/shared/manual-update-entry-for-mf/manual-update-entry-for-mf.component';
 import ItemsPerPage from '../../../../../../../../../assets/json/itemsPerPage.json';
 import moment from 'moment';
+import { Table } from 'primeng/table';
 
 type selectBtn ={
   label:string,
@@ -34,7 +35,9 @@ type selectBtn ={
   templateUrl: './financial-manual-update.component.html',
   styleUrls: ['./financial-manual-update.component.css']
 })
-export class FinancialManualUpdateComponent implements OnInit {
+export class FinancialManualUpdateComponent implements OnInit,OnDestroy  {
+  @ViewChild('dt') primeTbl :Table;
+  tableWidth:number | undefined = 0;
   __transType: any = [];
   transaction_id:number;
   @Input() product_id:number = 1;
@@ -64,6 +67,10 @@ export class FinancialManualUpdateComponent implements OnInit {
     tin_no: new FormControl(''),
     client_code: new FormControl(''),
     client_name: new FormControl(''),
+    // date_range: new FormControl([new Date(dates.calculateDT("W")),new Date(dates.getTodayDate())]),
+    // dt_type: new FormControl('W'),
+    // frm_dt: new FormControl(dates.calculateDT("W")),
+    // to_dt: new FormControl(dates.getTodayDate()),
     date_range: new FormControl(''),
     dt_type: new FormControl(''),
     frm_dt: new FormControl(''),
@@ -299,7 +306,43 @@ __euinMst: any = [];
       this.schemeMst = res;
     })
    }
-     ngAfterViewInit() {
+   changeWheelSpeed(container, speedY) {
+      var scrollY = 0;
+      var handleScrollReset = function() {
+          scrollY = container.scrollTop;
+      };
+      var handleMouseWheel = function(e) {
+          e.preventDefault();
+          scrollY += speedY * e.deltaY
+          if (scrollY < 0) {
+              scrollY = 0;
+          } else {
+              var limitY = container.scrollHeight - container.clientHeight;
+              if (scrollY > limitY) {
+                  scrollY = limitY;
+              }
+          }
+          container.scrollTop = scrollY;
+      };
+
+      var removed = false;
+      container.addEventListener('mouseup', handleScrollReset, false);
+      container.addEventListener('mousedown', handleScrollReset, false);
+      container.addEventListener('mousewheel', handleMouseWheel, false);
+
+      return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+      };
+   }
+   ngAfterViewInit() {
+
+   
        this.__ackForm.controls['dt_type'].valueChanges.subscribe((res) => {
          this.__ackForm.controls['date_range'].reset(
             res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
@@ -416,6 +459,8 @@ __euinMst: any = [];
          this.setEuinDropdown(res,this.__ackForm.value.rm_id);
        // }
       })
+      const el = document?.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+      this.changeWheelSpeed(el, 0.99);
        }
        getBusinessTypeMst(brn_cd){
         if(brn_cd.length > 0){
@@ -534,7 +579,8 @@ __euinMst: any = [];
 
       setColumns(trans_id,option){
         this.__columns =  trans_id == 2  ? global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Sip)
-        : global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Pip_Switch)
+        : global.getColumnsAfterMerge(MfackClmns.Summary_common,MfackClmns.Summary_Pip_Switch);
+        this.tableWidth = this.__columns.map(el => el.width ? Number(el.width.split('rem')[0]) : 0).reduce(function (x, y) {return x + y;}, 0)
        }
         DocumentView(element){
            const dialogConfig = new MatDialogConfig();
@@ -591,7 +637,7 @@ __euinMst: any = [];
         }
       }
       setPaginator(res) {
-        const final_dt =   res.data.filter((el) => {
+        const final_dt =   res.filter((el) => {
             if(el.form_status != 'M'){
               if(!el.nfo_reopen_dt){
                 return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
@@ -600,10 +646,10 @@ __euinMst: any = [];
                   const nfoReopenDt = moment(el.nfo_reopen_dt,'YYYY-MM-DD');
                   const rntLoginDt =  moment(el.rnt_login_dt,'YYYY-MM-DD');
                   if(rntLoginDt.isBefore(nfoReopenDt)){
-                    return this.filterManualUpdateByTAT(el.rnt_login_dt,el.manual_update_tat)
+                    return this.filterManualUpdateByTAT(nfoReopenDt,el.manual_update_tat)
                   }
                   else{
-                    return this.filterManualUpdateByTAT(el.nfo_reopen_dt,el.manual_update_tat)
+                    return this.filterManualUpdateByTAT(rntLoginDt,el.manual_update_tat)
                   }
               }
             }
@@ -612,17 +658,26 @@ __euinMst: any = [];
             }
         })
         this.__financMst = new MatTableDataSource(final_dt);
-        this.__paginate = res.links;
+        // this.__paginate = res.links;
       
       }
 
-      filterManualUpdateByTAT(date,tat) {
-          const dateToCheck = moment(date, "YYYY-MM-DD").add(tat ? tat : 0, 'days');
-          let today = moment().startOf('day');
-          let diffInDays = dateToCheck.diff(today, 'days');
-          return diffInDays > 0;
-          
-      }
+       filterManualUpdateByTAT(date,tat) {
+                      const dateToCheck = moment(date, "YYYY-MM-DD").add(tat ? tat : 0, 'days');
+                      let today = moment().startOf('day');
+                      // let diffInDays = dateToCheck.diff(today, 'days');
+                      let diffInDays = today.diff(dateToCheck, 'days');
+      
+                      // console.log(diffInDays)
+                      return diffInDays > 0; 
+        }
+
+        
+        filterGlobal = ($event) => {
+          let value = $event.target.value;
+          this.primeTbl.filterGlobal(value,'contains')
+        }
+
 
       populateDT(__items) {
           const dialogConfig = new MatDialogConfig();
@@ -639,10 +694,11 @@ __euinMst: any = [];
             tin_no: __items.tin_no,
             title: 'Manual Update For Financial',
             right: global.randomIntFromInterval(1, 60),
+            id: 'MUFIN_' + (__items.tin_no ? __items.tin_no.toString() : '0'),
             data: __items,
           };
           dialogConfig.id =
-            'FDMU_' + (__items.tin_no ? __items.tin_no.toString() : '0');
+            'MUFIN_' + (__items.tin_no ? __items.tin_no.toString() : '0');
           try {
             const dialogref = this.__dialog.open(
               ManualUpdateEntryForMFComponent,
@@ -684,5 +740,13 @@ __euinMst: any = [];
             }
             return true;
           });
+        }
+
+        getColumns = () =>{
+          return this.__utility.getColumns(this.__columns);
+        }
+
+        ngOnDestroy() {
+          this.__financMst = new MatTableDataSource([]);
         }
 }

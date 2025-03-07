@@ -79,7 +79,7 @@ public static COLUMN_SELECTOR=[
     {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
     {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
     {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
-    {field:'trans_name',header:'Transaction Type',width:'15rem'},
+    {field:'trans_name',header:'Transaction',width:'15rem'},
   {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
   {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}
   ]

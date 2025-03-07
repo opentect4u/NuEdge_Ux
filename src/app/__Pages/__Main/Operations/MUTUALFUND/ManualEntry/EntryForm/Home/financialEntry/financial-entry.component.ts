@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { bank } from 'src/app/__Model/__bank';
@@ -912,7 +912,7 @@ export class FinancialEntryComponent implements OnInit {
   }
   checkIfclientExist(cl_code: string): Observable<boolean> {
     return of(
-      this.__clientMst.findIndex((x) => x.client_code == cl_code) != -1
+      this.__clientMst.findIndex((x) => x.client_code == cl_code || x.client_name == cl_code) != -1
     );
   }
   ClientValidators(): AsyncValidatorFn {
@@ -1452,7 +1452,7 @@ export class FinancialEntryComponent implements OnInit {
       case 'C':
         console.log(__euinDtls);
         this.__dialogDtForClient = __euinDtls;
-        this.__traxForm.controls['client_code'].reset(__euinDtls ? __euinDtls?.client_code : '', {
+        this.__traxForm.controls['client_code'].reset(__euinDtls ? (__euinDtls?.client_code ? __euinDtls?.client_code : __euinDtls?.client_name) : '', {
           onlySelf: true,
           emitEvent: false,
         });
@@ -1630,7 +1630,7 @@ export class FinancialEntryComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = false;
     dialogConfig.closeOnNavigation = true;
-    dialogConfig.width = '100%';
+    dialogConfig.width = __menu.flag == 'E' ? '50%' : '80%';
     dialogConfig.scrollStrategy = this.overlay.scrollStrategies.noop();
     dialogConfig.panelClass = 'fullscreen-dialog';
     dialogConfig.data = {
@@ -1655,9 +1655,22 @@ export class FinancialEntryComponent implements OnInit {
         if (dt) {
           switch (__mode) {
             case 'F':
+              this.__clientMst=[];
               this.__isCldtlsEmpty = false;
-              this.__clientMst.push(dt.data);
-              this.getItemsDtls(dt.data, 'C');
+              let client;
+              if(__menu.flag == 'E'){
+                  client = {
+                    ...dt.data,
+                    client_code:dt?.data?.client_name
+                  }
+                  this.__clientMst.push(client);
+              }
+              else{
+                this.__clientMst.push(dt.data);
+                client = dt.data
+              }
+              console.log(client)
+              this.getItemsDtls(client, 'C');
               break;
             case 'S':
               this.getadditionalApplicant(dt.data, 'FC');
@@ -1868,9 +1881,11 @@ export class FinancialEntryComponent implements OnInit {
       this.__traxForm.get('file').status == 'VALID' &&
       __ev.files.length > 0
     ) {
-      const reader = new FileReader();
-      reader.onload = (e) => this.setFormControl('filePreview', reader.result);
-      reader.readAsDataURL(__ev.files[0]);
+      // const reader = new FileReader();
+      // reader.onload = (e) => this.setFormControl('filePreview', reader.result);
+      // reader.readAsDataURL(__ev.files[0]);
+      const objectURL = URL.createObjectURL(__ev.files[0]);
+      this.setFormControl('filePreview', objectURL)
       this.setFormControl('app_form_scan', __ev.files[0]);
     } else {
       this.setFormControl('filePreview', '');

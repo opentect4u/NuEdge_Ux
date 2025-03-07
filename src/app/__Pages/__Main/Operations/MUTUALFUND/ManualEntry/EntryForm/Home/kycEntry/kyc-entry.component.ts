@@ -325,9 +325,11 @@ export class KycEntryComponent implements OnInit {
   getFiles(__ev, index, __type_id) {
     this.__docs.controls[index].get('file')?.patchValue(__ev.target.files[0]);
     const file = __ev.target.files[0];
-    const reader = new FileReader();
-    reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
-    reader.readAsDataURL(file);
+    // const reader = new FileReader();
+    // reader.onload = e => this.__docs.controls[index].get('file_preview')?.patchValue(reader.result);
+    // reader.readAsDataURL(file);
+    const objectURL = URL.createObjectURL(__ev.files[0]);
+    this.__docs.controls[index].get('file_preview')?.patchValue(objectURL)
   }
   get __docs(): FormArray {
     return this.__clientForm.get("doc_dtls") as FormArray;

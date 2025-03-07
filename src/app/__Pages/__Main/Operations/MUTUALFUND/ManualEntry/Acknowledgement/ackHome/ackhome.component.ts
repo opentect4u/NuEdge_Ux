@@ -19,7 +19,7 @@ export class AckhomeComponent implements OnInit {
   subIndex:number = 0;
   amcMst:amc[] = [];
   transaction_id:any;
-
+  md_pending_transaction = [];
   constructor(
     private __utility: UtiliService,
     private __dbIntr:DbIntrService
@@ -28,6 +28,7 @@ export class AckhomeComponent implements OnInit {
     this.getAMCMst();
     // console.log(this.menu)
     this.fetchTransactionType();
+    this.getAllPendingTransactions();
   }
   // getItems(event) {
   //   switch (event.flag) {
@@ -92,6 +93,16 @@ export class AckhomeComponent implements OnInit {
       this.transaction_id = ev.tabDtls.id;
     }
   }
-
+  
+  getAllPendingTransactions = () =>{
+      this.__dbIntr.api_call(0,'/ackPendingDetails',null)
+      .pipe(pluck('data'))
+      .subscribe((res:any[]) =>{
+          // console.log(res);
+          this.md_pending_transaction = res.sort((a, b) => { 
+            return a.trans_type_id - b.trans_type_id;
+          });
+      })
+  }
 
 }

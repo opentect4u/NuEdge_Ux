@@ -4,3 +4,7 @@
     overflow: hidden!important;
     text-overflow: ellipsis!important;
 }
+
+.fs-2{
+    font-size: 15px;
+}

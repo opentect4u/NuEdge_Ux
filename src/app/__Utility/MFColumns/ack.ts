@@ -350,7 +350,7 @@ export class MfackClmns {
     { field: 'third_client_code', header: 'Third Holder Code',width:'15rem' },
     { field: 'third_client_pan', header: 'Third Holder PAN',width:'10rem' },
     { field: 'third_kyc', header: 'Third Holder KYC Status',width:'15rem' },
-    { field: 'trans_name', header: 'Transaction Type',width:'7rem' },
+    { field: 'trans_name', header: 'Transaction',width:'7rem' },
     { field: 'scheme_name', header: 'Scheme',width:'21rem' },
     { field: 'plan_name', header: 'Plan',width:'10rem' },
     { field: 'opt_name', header: 'Option',width:'10rem' }

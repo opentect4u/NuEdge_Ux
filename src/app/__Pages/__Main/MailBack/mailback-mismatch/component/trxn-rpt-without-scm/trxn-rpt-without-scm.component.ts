@@ -62,7 +62,14 @@ export class TrxnRptWithoutScmComponent implements OnInit {
     console.log(this.file_type);
   }
   getColumns = () =>{
-    return this.utility.getColumns(this.TrxnClm);
+    console.log(this.TrxnClm);
+    return this.utility.getColumns([
+      ...this.TrxnClm,
+      {
+        field:'product_code',
+        header:'Product Code'
+      }
+    ]);
   }
 
   filterGlobal = ($event) => {

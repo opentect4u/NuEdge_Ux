@@ -1,6 +1,6 @@
 export class mfFinClmns {
    public static  SUMMARY_COPY = [
-      {field:'folio_no',header:'Folio No.',width:'8rem'},
+      {field:'folio_no',header:'Folio No.',width:'17rem'},
       {field:'ack_copy_scan',header:'ACK. View',width:'7rem'},
     {field:'edit',header:'Edit',width:'3rem'},
        {field:'app_frm_view',header:'APP View',width:'7rem'},
@@ -14,7 +14,7 @@ export class mfFinClmns {
         {field:'first_client_name',header:'First Holder Name',width:'18rem'},
         {field:'first_client_code',header:'First Holder Code',width:'8rem'},
         {field:'first_client_pan',header:'First Holder PAN',width:'8rem'},
-        {field:'trans_name',header:'Transction Type',width:'12rem'},
+        {field:'trans_name',header:'Transction',width:'12rem'},
         {field:'scheme_name',header:'Scheme',width:'20rem'},
         {field:'application_no',header:'Application No',width:'10rem'},
       //   {field:'folio_no',header:'Folio No'},
@@ -27,7 +27,7 @@ export class mfFinClmns {
       ]
 
    public static  SUMMARY_COPY_SIP = [
-      {field:'folio_no',header:'Folio No.',width:'8rem'},
+      {field:'folio_no',header:'Folio No.',width:'17rem'},
       {field:'ack_copy_scan',header:'ACK. View',width:'7rem'},
     {field:'edit',header:'Edit',width:'5rem'},
        {field:'app_frm_view',header:'APP View',width:'7rem'},
@@ -56,7 +56,7 @@ export class mfFinClmns {
 
    public static  DETAILS_FOR_PIP_COLUMNS_COPY =
    [
-      {field:'folio_no',header:'Folio No.',width:'8rem'},
+      {field:'folio_no',header:'Folio No.',width:'17rem'},
       {field:'ack_copy_scan',header:'ACK. View',width:'7rem'},
       {field:'edit',header:'Edit',width:'5rem'},
       {field:'app_frm_view',header:'APP View',width:'7rem'},
@@ -82,7 +82,7 @@ export class mfFinClmns {
         {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
         {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
-        {field:'trans_name',header:'Transaction Type',width:'15rem'},
+        {field:'trans_name',header:'Transaction',width:'15rem'},
         {field:'scheme_name',header:'Scheme',width:'20rem'},
         {field:'plan_name',header:'Plan',width:'12rem'},
         {field:'opt_name',header:'Option',width:'12rem'},
@@ -100,7 +100,7 @@ export class mfFinClmns {
 
    public static  DETAILS_FOR_SIP_COLUMNS_COPY =
    [
-      {field:'folio_no',header:'Folio No.',width:'8rem'},
+      {field:'folio_no',header:'Folio No.',width:'17rem'},
       {field:'ack_copy_scan',header:'ACK. View',width:'7rem'},
       {field:'edit',header:'Edit',width:'5rem'},
       {field:'app_frm_view',header:'APP View',width:'7rem'},
@@ -126,7 +126,7 @@ export class mfFinClmns {
         {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
         {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
-        {field:'trans_name',header:'Transaction Type',width:'15rem'},
+        {field:'trans_name',header:'Transaction',width:'15rem'},
         {field:'scheme_name',header:'Scheme',width:'20rem'},
         {field:'plan_name',header:'Plan',width:'12rem'},
         {field:'opt_name',header:'Option',width:'12rem'},
@@ -152,7 +152,7 @@ export class mfFinClmns {
 
    public static  DETAILS_FOR_SWITCH_COLUMNS_COPY =
    [
-      {field:'folio_no',header:'Folio No.',width:'8rem'},
+      {field:'folio_no',header:'Folio No.',width:'17rem'},
       {field:'ack_copy_scan',header:'ACK. View',width:'5rem'},
     {field:'edit',header:'Edit',width:'5rem'},
     {field:'app_frm_view',header:'APP View',width:'7rem'},
@@ -178,7 +178,7 @@ export class mfFinClmns {
         {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
         {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
-        {field:'trans_name',header:'Transaction Type',width:'15rem'},
+        {field:'trans_name',header:'Transaction',width:'15rem'},
         {field:'scheme_name',header:'Scheme (From Scheme)',width:'20rem'},
         {field:'plan_name',header:'Plan (From Plan)',width:'12rem'},
         {field:'opt_name',header:'Option (From Option)',width:'12rem'},
@@ -201,7 +201,7 @@ export class mfFinClmns {
 
    public static COLUMN_SELECTOR=
     [
-      {field:'folio_no',header:'Folio No.',width:'8rem'},
+      {field:'folio_no',header:'Folio No.',width:'17rem'},
       {field:'edit',header:'Edit',width:'5rem'},
       {field:'ack_copy_scan',header:'ACK. View',width:'5rem'},
       {field:'app_frm_view',header:'APP View',width:'7rem'},
@@ -227,7 +227,7 @@ export class mfFinClmns {
         {field:'third_client_code',header:'Third Holder Code',width:'12rem'},
         {field:'third_client_pan',header:'Third Holder PAN',width:'8rem'},
         {field:'third_kyc',header:'Third Holder KYC Status',width:'10rem'},
-        {field:'trans_name',header:'Transaction Type',width:'15rem'},
+        {field:'trans_name',header:'Transaction',width:'15rem'},
         {field:'scheme_name',header:'Scheme name',width:'20rem'},
         {field:'plan_name',header:'Plan',width:'12rem'},
         {field:'opt_name',header:'Option',width:'12rem'},

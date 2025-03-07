@@ -16,5 +16,11 @@
     "isDisabled":false,
     "title":"Non PAN Holder",
     "icon": "credit_card_off"
+  },
+  {
+    "flag":"E",
+    "isDisabled":false,
+    "title":"Existing",
+    "icon": "credit_card_off"
   }
 ]

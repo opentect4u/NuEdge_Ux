@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { rnt } from 'src/app/__Model/Rnt';
@@ -12,7 +12,12 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { nonFinClms } from 'src/app/__Utility/MFColumns/nonfinClmns';
 import { dates } from 'src/app/__Utility/disabledt';
 import { global } from 'src/app/__Utility/globalFunc';
-
+import KycMst from '../../../../../../../assets/json/kyc.json';
+import withoutKycMst from '../../../../../../../assets/json/withoutKyc.json';
+import { Table } from 'primeng/table';
+import { UtiliService } from 'src/app/__Services/utils.service';
+import { trxnClm } from 'src/app/__Utility/TransactionRPT/trnsClm';
+import loggedStatus from '../../../../../../../assets/json/loginstatus.json'
 
 @Component({
   selector: 'app-non-financial-rpt',
@@ -20,7 +25,10 @@ import { global } from 'src/app/__Utility/globalFunc';
   styleUrls: ['./non-financial-rpt.component.css']
 })
 export class NonFinancialRPTComponent implements OnInit {
+     @ViewChild('secondaryTbl') secondaryTbl :Table;
+      shwoPopup__trxn:any = [];
   isOpenMegaMenu:boolean = false;
+  visible:boolean = false;
   private _trns_id;
   sort = new sort();
   @Input() settingsforDropdown_foramc;
@@ -33,6 +41,7 @@ export class NonFinancialRPTComponent implements OnInit {
   @Input() __pageNumber;
   @Input() itemsPerPage;
   @Output() viewDocument = new EventEmitter();
+  trxn_column = trxnClm.column.filter((item:column) => (item.field!='amc_link' && item.field!='scheme_link' && item.field!='isin_link' && item.field!='plan_name' && item.field!='option_name' && item.field!='plan_opt' && item.field!='divident_opt' && item.field!='lock_trxn')).filter((el) => el.isVisible.includes('T'));
 
   @Input() selectBtn;
   @Input() Title:string;
@@ -75,7 +84,7 @@ export class NonFinancialRPTComponent implements OnInit {
   displayMode_forClient: string;
   /** Filter Criteria */
   transFrm = new FormGroup({
-    btnType: new FormControl(''),
+    btnType: new FormControl('R'),
     option: new FormControl('2'),
     date_periods_type: new FormControl(''),
     date_range: new FormControl(''),
@@ -91,7 +100,9 @@ export class NonFinancialRPTComponent implements OnInit {
     sub_brk_cd: new FormControl([]),
     euin_no: new FormControl([]),
     frm_dt: new FormControl(''),
-    to_dt: new FormControl('')
+    to_dt: new FormControl(''),
+    is_all_status: new FormControl(false),
+    ack_status: new FormArray([])
   });
   /*** End */
   columns:column[] = []
@@ -101,11 +112,23 @@ export class NonFinancialRPTComponent implements OnInit {
   @Output() sendNonFinancialFilteredDt = new EventEmitter();
   @Output() viewAckDocument = new EventEmitter();
 
-  constructor(private dbIntr: DbIntrService) {}
+  constructor(private dbIntr: DbIntrService,private utlity:UtiliService) {}
 
   ngOnInit(): void {
+    this.getAckStatus();
   }
   ngAfterViewInit(){
+     /** Change event occur when all rnt checkbox has been changed  */
+     this.transFrm.controls['is_all_status'].valueChanges.subscribe(res =>{
+      this.ack_status.controls.map(item => {return item.get('isChecked').setValue(res,{emitEvent:false})});
+    })
+    /** End */
+
+    /** Change event inside the formArray */
+    this.ack_status.valueChanges.subscribe(res =>{
+    this.transFrm.controls['is_all_status'].setValue(res.every(item => item.isChecked),{emitEvent:false});
+    })
+    /*** End */
     this.transFrm.controls['date_periods_type'].valueChanges.subscribe((res) => {
       this.transFrm.controls['date_range'].reset(
         res && res != 'R' ? ([new Date(dates.calculateDT(res)),new Date(dates.getTodayDate())]) : ''
@@ -171,13 +194,13 @@ export class NonFinancialRPTComponent implements OnInit {
      debounceTime(200),
      distinctUntilChanged(),
      switchMap((dt) =>
-       dt?.length > 1 ? this.dbIntr.ReportTINSearch('/client', dt) : []
+       dt?.length > 1 ? this.dbIntr.searchItems('/client', dt) : []
      ),
      map((x: responseDT) => x.data)
    )
    .subscribe({
      next: (value) => {
-       this.__clientMst = value;
+       this.__clientMst = value.data;
        this.searchResultVisibilityForClient('block');
        this.__isClientPending = false;
      },
@@ -194,11 +217,30 @@ export class NonFinancialRPTComponent implements OnInit {
    /*** End */
   }
 
+  getAckStatus(){
+    loggedStatus.forEach(el =>{
+      console.log(el)
+    this.ack_status.push(this.addAckStatusForm(el));
+    })
+  }
+
+  addAckStatusForm(ackStatus){
+    return new FormGroup({
+      id:new FormControl(ackStatus ? ackStatus?.id : 0),
+      name:new FormControl(ackStatus ? ackStatus?.name : ''),
+      value:new FormControl(ackStatus ? ackStatus.value : ''),
+      isChecked:new FormControl(false),
+    })
+  }
+  get ack_status(): FormArray{
+    return this.transFrm.get('ack_status') as FormArray
+   }
+
   setColumns(option,trans_type_id,trns_id){
     var columnsMst;
     switch(trns_id){
 
-      case 32:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.CMOH,nonFinClms.COMMON_COLUMN);
+      case 32:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status' && x.field != 'amount'),nonFinClms.CMOH,nonFinClms.COMMON_COLUMN);
               break;
       case 22:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.AC,nonFinClms.COMMON_COLUMN);
               break;
@@ -328,6 +370,8 @@ export class NonFinancialRPTComponent implements OnInit {
         this.transFrm.value.bu_type ?
         JSON.stringify(this.transFrm.value.bu_type.map(item => {return item['id']})): '[]'
       );
+      finFrmDT.append('ack_status',JSON.stringify(this.ack_status.value.filter(item => item.isChecked).map(res => {return res['id']})));
+
      }
       this.sendNonFinancialFilteredDt.emit(finFrmDT);
 }
@@ -358,6 +402,7 @@ reset(){
   this.transFrm.get('client_dtls').setValue('',{emitEvent:false});
   this.transFrm.get('tin_no').setValue('',{emitEvent:false});
   this.transFrm.get('is_all_rnt').setValue(false);
+  this.transFrm.get('is_all_status').setValue(false);
   this.sort = new sort();
   this.__pageNumber = '10';
   this.submitNonFinReport();
@@ -481,7 +526,8 @@ getPaginate(__paginate){
                 (this.transFrm.value.brn_cd
                   ? JSON.stringify(this.transFrm.value.brn_cd.map(item => {return item['id']}))
                   : '[]')) +
-
+                  ('&ack_status=' + JSON.stringify(this.ack_status.value.filter(item => item.isChecked).map(res => {return res['id']}))) +
+                  +
                   ('&rm_id='+
                   JSON.stringify(this.transFrm.value.rm_name.map(item => {return item['id']}))
                 )+
@@ -492,9 +538,54 @@ getPaginate(__paginate){
       )
       .pipe(map((x: any) => x.data))
       .subscribe((res: any) => {
-        this.nonFinMstDT = res.data.filter(el => el.ack_status != 'R');
+        const seen = new Set();
+        const kyc = KycMst.concat(withoutKycMst).filter(el => {
+          const duplicate = seen.has(el.id);
+          seen.add(el.id);
+          return !duplicate;
+        })
+        this.nonFinMstDT = res.data.filter(el =>{
+            if(el.ack_status != 'R'){
+              const newNominee = JSON.parse(el?.new_nominee);
+              const mergeFolio = el.merge_folio ? JSON.parse(el.merge_folio) : [];
+              el.source_folio = mergeFolio && mergeFolio.length > 0 ? mergeFolio.join(", ") : ''
+              el.new_nominee_name = newNominee && newNominee.length > 0 ? newNominee[0]?.nominee_name : '';
+              el.percentage = newNominee && newNominee.length > 0 ? newNominee[0]?.percentage : '';
+              const first_kyc = kyc.filter(ele => ele.id == el.first_kyc);
+              el.first_kyc = first_kyc.length > 0 ? first_kyc[0]?.value : '';
+              const second_kyc = kyc.filter(ele => ele.id == el.second_kyc);
+              el.second_kyc = second_kyc.length > 0 ? second_kyc[0]?.value : '';
+              const third_kyc = kyc.filter(ele => ele.id == el.third_kyc);
+              el.third_kyc = third_kyc.length > 0 ? third_kyc[0]?.value : '';
+              el.manual_trans_status = el.manual_trans_status ? (el.manual_trans_status == 'P' ? 'Process' : el.manual_trans_status == 'R' ? "Rejected" : 'Pending') : '';
+              return el;
+            }
+            return false;
+        })
+        // this.nonFinMstDT = res.data.filter(el => el.ack_status != 'R');
         this.__paginate = res.links;
       });
   }
+}
+
+openDialog(finance){
+  // console.log(finance);
+  this.shwoPopup__trxn = [];
+  const form_data = new FormData();
+  form_data.append('folio_no',finance.folio_no);
+  this.dbIntr .api_call(1, '/showTransDetails', form_data)
+  .pipe(
+    pluck('data')).subscribe((res:any) =>{
+        this.shwoPopup__trxn = res.data;
+        this.visible = true;
+    })
+} 
+filterGlobal_secondary = ($event) =>{
+let value = $event.target.value;
+this.secondaryTbl.filterGlobal(value,'contains')
+}
+
+getcolumns_secondary = () =>{
+return this.utlity.getColumns(this.trxn_column);
 }
 }
