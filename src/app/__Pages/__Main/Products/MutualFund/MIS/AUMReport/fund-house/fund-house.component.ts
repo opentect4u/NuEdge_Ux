@@ -7,6 +7,7 @@ import { category } from 'src/app/__Model/__category';
 import { IAumFooterModel } from '../component/aum.model';
 import { global } from 'src/app/__Utility/globalFunc';
 import { UtiliService } from 'src/app/__Services/utils.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-fund-house',
@@ -15,7 +16,8 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 })
 export class FundHouseComponent implements OnInit {
 
-  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService,
+    private routeData: ActivatedRoute) { }
 
   md_fundHouse = [];
 
@@ -27,6 +29,8 @@ export class FundHouseComponent implements OnInit {
 
   __formDate:string;
 
+  hasParams:boolean | undefined = true;
+
   
   /*** Table Footer Details */
     footerDT:Partial<IAumFooterModel>;
@@ -36,6 +40,25 @@ export class FundHouseComponent implements OnInit {
 
   ngOnInit(): void {
       this.getCategory();
+      this.routeData.queryParams.subscribe(res =>{
+        console.log(res)
+        if(res && Object.keys(res).length > 0){
+          const rnt_id = this.utility.DcryptText(res?.rnt_id);
+          const date = this.utility.DcryptText(res?.date);
+          this.getFundHoseByQueryParameter(rnt_id,date);
+        }
+        this.hasParams  = res && Object.keys(res).length > 0 ? true : false;
+      })
+  }
+
+  getFundHoseByQueryParameter = (rnt_id,date) =>{
+    this.footerDT = null;
+    this.md_fundHouse = [];
+    this.__formDate = date;
+    var formdata = new FormData();
+    formdata.append('rnt_id',rnt_id.toString());
+    formdata.append('date',date);
+    this.populateFuncHouse(formdata)
   }
 
 
@@ -49,12 +72,74 @@ export class FundHouseComponent implements OnInit {
       })
   }
 
+   populateFuncHouse = (formdata) =>{
+    let originalDt = []; 
+
+    this.dbIntr.api_call(1,'/clients/aumFundHouse',formdata).pipe(pluck('data')).subscribe((res:any) =>{
+      const groupByAMC = this.groupBy(res.filter(el => Number(el.inv_cost) > 0), 'amc_code');
+      Object.keys(groupByAMC).forEach((key,index) =>{
+              /***** CALUCLATION OF UPPER TABLE */
+                  const totInvCost = groupByAMC[key].map(el => Number(el.inv_cost)).reduce((totSum, a) => totSum + a, 0);
+                  const totIdcwPaid = groupByAMC[key].map(el => Number(el.idcw_paid)).reduce((totSum, a) => totSum + a, 0);
+                  const totIdcwReinv = groupByAMC[key].map(el => Number(el.idcw_reinv)).reduce((totSum, a) => totSum + a, 0);
+                  const totAUM = groupByAMC[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
+                  const totGainLoss = groupByAMC[key].map(el => Number(el.gain_loss)).reduce((totSum, a) => totSum + a, 0);
+                  const totAbsRtn = (totGainLoss / totInvCost)*100;
+                  console.log(groupByAMC[key].map(el => Number(el.curr_aum)))
+                  console.log(totAUM);
+              /****** END */
+              /**** DISPLAY AMOUNT CATEGORY WISE */
+                let categories = this.md_category.map((el:category) => el.cat_name);
+                let mdCategoryKeys = null;
+                let groupByCategory = this.groupBy(groupByAMC[key], 'cat_name');
+                categories.forEach((catKeys) =>{
+                  const totCategoryWiseAUM = groupByCategory[catKeys]?.map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0)
+                  mdCategoryKeys = {
+                    ...mdCategoryKeys,
+                    [catKeys]: catKeys in groupByCategory ? totCategoryWiseAUM : 0
+                  }
+                })
+                originalDt.push({
+                  amc_name:groupByAMC[key][0].amc_name,
+                  amc_code:groupByAMC[key][0].amc_code,
+                  cat_name:groupByAMC[key][0].cat_name,
+                  inv_cost:totInvCost,
+                  Investment:totInvCost,
+                  gain_loss:totGainLoss,
+                  idcw_paid:totIdcwPaid,
+                  IDCWP:totIdcwPaid,
+                  idcw_reinv:totIdcwReinv,
+                  "IDCW Reinv.":totIdcwReinv,
+                  curr_aum:totAUM,
+                  AUM:totAUM,
+                  ret_abs:totAbsRtn.toFixed(2),
+                  "Abs. Return":totAbsRtn.toFixed(2),
+                  amc_weightage_in:0,
+                  ...mdCategoryKeys,
+                  schemes:groupByAMC[key].map(el => {
+                    const encryptedTxt = this.utility.EncryptText(JSON.stringify({date:this.__formDate,pCode:el?.product_code}));
+                    return {...el,routeUrl: encryptedTxt}
+                  }),
+                  total:{
+                    inv_cost:totInvCost,
+                    idcw_paid:totIdcwPaid,
+                    curr_aum:totAUM,
+                    abs_rtn:totAbsRtn.toFixed(2),
+                    scheme_name:"TOTAL"
+                  }
+                })
+              /**** END */
+      })
+
+      this.md_fundHouse = originalDt.sort((a, b) => a.amc_name.localeCompare(b.amc_name));
+      this.createParentFooter(originalDt);
+    })
+   }
 
   getFormData =(ev) =>{
       /***** FOR REAL WORLD  */
       this.footerDT = null;
       this.md_fundHouse = [];
-      let originalDt = []; 
       this.__formDate = ev.date;
       // console.log()
       var formdata = new FormData();
@@ -66,69 +151,8 @@ export class FundHouseComponent implements OnInit {
           formdata.append(key,ev[key])
         }
       }
-      this.dbIntr.api_call(1,'/clients/aumFundHouse',formdata).pipe(pluck('data')).subscribe((res:any) =>{
-        console.log(res)
-
-        const groupByAMC = this.groupBy(res.filter(el => Number(el.inv_cost) > 0), 'amc_code');
-        Object.keys(groupByAMC).forEach((key,index) =>{
-                /***** CALUCLATION OF UPPER TABLE */
-                    const totInvCost = groupByAMC[key].map(el => Number(el.inv_cost)).reduce((totSum, a) => totSum + a, 0);
-                    const totIdcwPaid = groupByAMC[key].map(el => Number(el.idcw_paid)).reduce((totSum, a) => totSum + a, 0);
-                    const totIdcwReinv = groupByAMC[key].map(el => Number(el.idcw_reinv)).reduce((totSum, a) => totSum + a, 0);
-                    const totAUM = groupByAMC[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
-                    const totGainLoss = groupByAMC[key].map(el => Number(el.gain_loss)).reduce((totSum, a) => totSum + a, 0);
-                    const totAbsRtn = (totGainLoss / totInvCost)*100;
-
-                /****** END */
-  
-                /**** DISPLAY AMOUNT CATEGORY WISE */
-                  let categories = this.md_category.map((el:category) => el.cat_name);
-                  let mdCategoryKeys = null;
-                  let groupByCategory = this.groupBy(groupByAMC[key], 'cat_name');
-                  categories.forEach((catKeys) =>{
-                    const totCategoryWiseAUM = groupByCategory[catKeys]?.map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0)
-                    mdCategoryKeys = {
-                      ...mdCategoryKeys,
-                      [catKeys]: catKeys in groupByCategory ? totCategoryWiseAUM : 0
-                    }
-                  })
-                  originalDt.push({
-                    amc_name:groupByAMC[key][0].amc_name,
-                    amc_code:groupByAMC[key][0].amc_code,
-                    cat_name:groupByAMC[key][0].cat_name,
-                    inv_cost:totInvCost,
-                    Investment:totInvCost,
-                    gain_loss:totGainLoss,
-                    idcw_paid:totIdcwPaid,
-                    IDCWP:totIdcwPaid,
-                    idcw_reinv:totIdcwReinv,
-                    "IDCW Reinv.":totIdcwReinv,
-                    curr_aum:totAUM,
-                    AUM:totAUM,
-                    ret_abs:totAbsRtn.toFixed(2),
-                    "Abs. Return":totAbsRtn.toFixed(2),
-                    amc_weightage_in:0,
-                    ...mdCategoryKeys,
-                    schemes:groupByAMC[key].map(el => {
-                      const encryptedTxt = this.utility.EncryptText(JSON.stringify({date:this.__formDate,pCode:el?.product_code}));
-                      return {...el,routeUrl: encryptedTxt}
-                    }),
-                    total:{
-                      inv_cost:totInvCost,
-                      idcw_paid:totIdcwPaid,
-                      curr_aum:totAUM,
-                      abs_rtn:totAbsRtn.toFixed(2),
-                      scheme_name:"TOTAL"
-                    }
-                  })
-                /**** END */
-        })
-
-        this.md_fundHouse = originalDt.sort((a, b) => a.amc_name.localeCompare(b.amc_name));
-
-        this.createParentFooter(originalDt);
-      })
-
+    
+      this.populateFuncHouse(formdata)
       /***** END */
   }
 

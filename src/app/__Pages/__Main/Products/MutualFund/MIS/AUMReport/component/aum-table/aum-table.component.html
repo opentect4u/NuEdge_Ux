@@ -60,10 +60,23 @@
                 class="{{col.field}}"
                 [style]="'width : '+col.width">
                 <ng-container [ngSwitch]="true">
-                  <ng-container *ngSwitchCase="col.field == 'amc_name' || col.field == 'client_name' || col.field == 'pan' || col.field == 'subcat_name' || col.field == 'cat_name' || col.field == 'folio_no'">
+                  <ng-container *ngSwitchCase="col.field == 'amc_name' || col.field == 'client_name' ||  col.field == 'broker_name'
+                  || col.field == 'pan' || col.field == 'subcat_name'  || col.field == 'cat_name' || col.field == 'folio_no'">
                     <p class="m-0 textContent">
                       {{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}
                     </p>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'family_head_name'">
+                    <a class="m-0" target="_blank"
+                                      [routerLink]="['/main/product/mf/mis/aum/fund-house']"
+                          >{{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}</a>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'rnt_name'">
+                    <a class="m-0" target="_blank"
+                                      [routerLink]="['/main/product/mf/mis/aum/fund-house']"
+                                      [queryParams]="{ rnt_id: aumDtls?.rnt_id,date: aumDtls?.date}"
+                                      queryParamsHandling="merge"
+                          >{{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}</a>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'scheme_name'">
                     <a class="m-0" target="_blank"
@@ -73,7 +86,7 @@
                   <ng-container *ngSwitchCase="col.field == 'registrar_name' ">
                     <a class="m-0" target="_blank" href="#">{{aumDtls[col.field]}}-{{aumDtls.plan_name}}-{{aumDtls.option_name}}</a>
                   </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'xirr'">
+                  <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'xirr' || col.field == 'amc_weightage_in'">
                     <p class="m-0">
                       {{aumDtls[col.field] ? aumDtls[col.field] : '0'}}%
                     </p>
@@ -175,12 +188,12 @@
               [style]="'width : ' + col.width"
             >
               <ng-container [ngSwitch]="true">
-                <ng-container *ngSwitchCase="col.field == 'amc_name' || col.field == 'scheme_name' || col.field == 'registrar_name' || col.field == 'client_name' || col.field == 'subcat_name'">
+                <ng-container *ngSwitchCase="col.field == 'amc_name' || col.field == 'famil_head_name' || col.field == 'scheme_name' || col.field == 'registrar_name' || col.field == 'client_name' || col.field == 'subcat_name'">
                   <p class="m-0">GRAND TOTAL</p>
                 </ng-container>
                 <!-- col.field == 'amc_weightage' ||  -->
-                <ng-container *ngSwitchCase="col.field == 'pan' || col.field == 'cat_name' || col.field == 'folio_no'"></ng-container>
-                <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'amc_weightage'">
+                <ng-container *ngSwitchCase="col.field == 'pan' || col.field == 'cat_name' || col.field == 'folio_no' || col.field == 'broker_name'"></ng-container>
+                <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'amc_weightage_in'">
                   {{footerDT ? (footerDT[col.header] ? footerDT[col.header] : '0') : '0'}}%
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'xirr'">

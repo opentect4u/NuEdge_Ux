@@ -19,7 +19,7 @@
                 <div class="summer-bx" id="{{item.key}}">
                        <div class="hint-bx" style="font-size: 10px;">{{item.key | uppercase}}</div>
                        <div class="num-bx">{{item.value | number:'1.2-2'}} 
-                                <span *ngIf="item.key == 'Abs. Return' || item.key == 'xirr'">%</span>
+                                <span *ngIf="item.key == 'Abs. Return' || item.key == 'xirr' || item.key == 'AMC Weightage in (%)'">%</span>
 
                        </div>
                 </div>

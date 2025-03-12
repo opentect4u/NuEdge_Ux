@@ -163,9 +163,12 @@ export class AumSchemeComponent implements OnInit {
   createParentFooter = (value) =>{
             const tot_gain_loss = global.Total__Count(value,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
             const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
+            const tot_curr_aum = global.Total__Count(value,(x:any) => x?.curr_aum ? Number(x?.curr_aum) : 0);
+
             const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
             this.footerDT = {
                 Investment: tot_inv_cost,
+                AUM:tot_curr_aum,
                 IDCW: global.Total__Count(value,((item:any) => item.idcwp ? Number(item.idcwp) : 0)),
                 "IDCW Reinv": global.Total__Count(value,((item:any) => item.idcw_reinv ? Number(item.idcw_reinv) : 0)),
                 "Abs. Return": tot_ret_abs.toFixed(2)
@@ -228,7 +231,7 @@ export class AumSchemeColumn{
       width:''
     },
     {
-      field:'aum',
+      field:'curr_aum',
       header:'AUM',
       width:''
     },

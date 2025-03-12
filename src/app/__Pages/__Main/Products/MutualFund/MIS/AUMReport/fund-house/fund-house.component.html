@@ -2,8 +2,10 @@
 <div class="flexSec">
     <div class="container">
         <!-- [aum_type]="aum_type" -->
-
-        <aum-filter (onPress)="getFormData($event)"></aum-filter>
+        
+        <ng-container *ngIf="!hasParams">
+            <aum-filter (onPress)="getFormData($event)"></aum-filter>
+        </ng-container>
         <ng-container *ngIf="md_fundHouse.length > 0">
             <aum-table [dataSource]="md_fundHouse" 
             [column]="fund_House_Column"

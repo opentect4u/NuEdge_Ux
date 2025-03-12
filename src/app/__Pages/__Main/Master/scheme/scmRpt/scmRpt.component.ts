@@ -39,6 +39,7 @@ import { amc } from 'src/app/__Model/amc';
 import { sort } from 'src/app/__Model/sort';
 import frequency from '../../../../../../assets/json/SipFrequency.json';
 import trxnType from '../../../../../../assets/json/Master/scmtrxnType.json';
+import { Table } from 'primeng/table';
 type selectBtn = {
   label: string;
   value: string;
@@ -52,6 +53,7 @@ type selectBtn = {
 })
 export class ScmRptComponent implements OnInit {
 
+  @ViewChild('dt') primeTbl :Table;
 
   formValue;
 
@@ -97,6 +99,8 @@ export class ScmRptComponent implements OnInit {
     'Search Scheme',
     1
   );
+  tableWidth:number = 264;
+
   __amcMst: amc[] = [];
   isOpenMegaMenu: boolean = false;
   __isSchemeSpinner: boolean = false;
@@ -128,7 +132,7 @@ export class ScmRptComponent implements OnInit {
   __isVisible: boolean = true;
   displayMode_forScheme: string;
   __paginate: any = [];
-  __pageNumber = new FormControl('10');
+  __pageNumber = new FormControl('A');
   __selectScm = new MatTableDataSource<scheme>([]);
   __exportedClmns: string[] = [];
   __columns: column[] = [];
@@ -161,6 +165,7 @@ export class ScmRptComponent implements OnInit {
       this.__scmForm.value.options
     );
     this.getAmcMst();
+    this.getSchemeMst();
   }
 
   getAmcMst = () => {
@@ -240,23 +245,33 @@ export class ScmRptComponent implements OnInit {
   setColumns(scm_status, option) {
     const clmnsTobeRemoved = ['edit', 'delete'];
     const Clms = ['nfo_start_dt', 'nfo_end_dt', 'nfo_reopen_dt'];
-    this.ClmnList =
-      scm_status == 'N'
-        ? schemeClmns.column_selector
-        : schemeClmns.column_selector.filter(
-            (item) => !Clms.includes(item.field)
-          );
+    // console.log(this.ClmnList)
+    
     if (option == 2) {
       this.__columns = schemeClmns.Summary;
     } else {
-      this.__columns = this.ClmnList;
+      const clmn =scm_status == 'N' ? schemeClmns.column_selector : schemeClmns.column_selector.filter((item) => !Clms.includes(item.field));
+      this.__columns = clmn;
     }
+    console.log(this.__columns);
+    this.tableWidth = this.__columns.map(el => el.width ? Number(el.width.split('rem')[0]) : 0).reduce(function (x, y) {return x + y;}, 0);
+    this.ClmnList = scm_status == 'N' ? schemeClmns.column_selector : schemeClmns.column_selector.filter((item) => !Clms.includes(item.field));
     this.SelectedClms = this.__columns.map((x) => x.field);
-    this.__exportedClmns = this.__columns
-      .filter((x: any) => !clmnsTobeRemoved.includes(x.field))
-      .map((item) => {
-        return item['field'];
-      });
+    // console.log()
+    // this.__exportedClmns = this.__columns
+    //   .filter((x: any) => !clmnsTobeRemoved.includes(x.field))
+    //   .map((item) => {
+    //     return item['field'];
+    //   });
+  }
+
+  getColumns = () =>{
+    return this.__utility.getColumns(this.__columns);
+  }
+
+  filterGlobal($event){
+    let value = $event.target.value;
+    this.primeTbl.filterGlobal(value,'contains')
   }
 
   getSchemeMst(
@@ -306,8 +321,16 @@ export class ScmRptComponent implements OnInit {
         map((x: any) => x.data)
       )
       .subscribe((res: any) => {
-        this.setPaginator(res.data);
-        this.__paginate = res.links
+        console.log(res);
+        // res.data.forEach(el =>{
+        //     console.log(el.sip_date.join())
+        // })
+        const dt = res.data.map(el => {
+             el.scheme_type = el.scheme_type == 'O' ? 'Ongoing Scheme' : "NFO";
+             return el;
+        })
+        this.setPaginator(dt);
+        // this.__paginate = res.links
         // this.tableExport(__scmExport);
       });
   }
@@ -366,23 +389,23 @@ export class ScmRptComponent implements OnInit {
     this.__selectScm.data = this.__selectScm.data.filter(
       (value: scheme, key) => {
         if (value.id == row_obj.id) {
-          (value.product_id = row_obj.product_id),
-            (value.amc_id = row_obj.amc_id),
-            (value.category_id = row_obj.category_id),
-            (value.subcategory_id = row_obj.subcategory_id),
-            (value.scheme_name = row_obj.scheme_name),
-            (value.id = row_obj.id),
-            (value.scheme_type = row_obj.scheme_type),
-            (value.nfo_start_dt = row_obj.nfo_start_dt),
-            (value.nfo_end_dt = row_obj.nfo_end_dt),
-            (value.nfo_reopen_dt = row_obj.nfo_reopen_dt),
-            (value.pip_fresh_min_amt = row_obj.pip_fresh_min_amt),
-            (value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt),
-            (value.pip_add_min_amt = row_obj.pip_add_min_amt),
-            (value.sip_add_min_amt = row_obj.sip_add_min_amt),
-            (value.sip_date = row_obj.sip_date),
-            (value.sip_freq_wise_amt = row_obj.sip_freq_wise_amt),
-            (value.gstin_no = row_obj.gstin_no);
+          value.product_id = row_obj.product_id,
+            value.amc_id = row_obj.amc_id,
+            value.category_id = row_obj.category_id,
+            value.subcategory_id = row_obj.subcategory_id,
+            value.scheme_name = row_obj.scheme_name,
+            value.id = row_obj.id,
+            value.scheme_type = row_obj.scheme_type == 'O' ? 'Ongoing Scheme' : 'NFO',
+            value.nfo_start_dt = row_obj.nfo_start_dt,
+            value.nfo_end_dt = row_obj.nfo_end_dt,
+            value.nfo_reopen_dt = row_obj.nfo_reopen_dt,
+            value.pip_fresh_min_amt = row_obj.pip_fresh_min_amt,
+            value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt,
+            value.pip_add_min_amt = row_obj.pip_add_min_amt,
+            value.sip_add_min_amt = row_obj.sip_add_min_amt,
+            value.sip_date = row_obj.sip_date,
+            value.sip_freq_wise_amt = row_obj.sip_freq_wise_amt,
+            value.gstin_no = row_obj.gstin_no;
           value.stp_date = row_obj.stp_date;
           value.swp_date = row_obj.swp_date;
           value.swp_freq_wise_amt = row_obj.swp_freq_wise_amt;
@@ -441,82 +464,82 @@ export class ScmRptComponent implements OnInit {
         return true;
       }
     );
-    this.__export.data = this.__export.data.filter((value: scheme, key) => {
-      if (value.id == row_obj.id) {
-        (value.product_id = row_obj.product_id),
-          (value.amc_id = row_obj.amc_id),
-          (value.category_id = row_obj.category_id),
-          (value.subcategory_id = row_obj.subcategory_id),
-          (value.scheme_name = row_obj.scheme_name),
-          (value.id = row_obj.id),
-          (value.scheme_type = row_obj.scheme_type),
-          (value.nfo_start_dt = row_obj.nfo_start_dt),
-          (value.nfo_end_dt = row_obj.nfo_end_dt),
-          (value.nfo_reopen_dt = row_obj.nfo_reopen_dt),
-          (value.pip_fresh_min_amt = row_obj.pip_fresh_min_amt),
-          (value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt),
-          (value.pip_add_min_amt = row_obj.pip_add_min_amt),
-          (value.sip_add_min_amt = row_obj.sip_add_min_amt),
-          (value.sip_date = row_obj.sip_date),
-          (value.sip_freq_wise_amt = row_obj.sip_freq_wise_amt),
-          (value.gstin_no = row_obj.gstin_no);
-        value.stp_date = row_obj.stp_date;
-        value.swp_date = row_obj.swp_date;
-        value.swp_freq_wise_amt = row_obj.swp_freq_wise_amt;
-        value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt;
-        value.ava_special_sip = row_obj.ava_special_sip;
-        value.special_sip_name = row_obj.special_sip_name;
-        value.ava_special_swp = row_obj.ava_special_swp;
-        value.special_swp_name = row_obj.special_swp_name;
-        value.ava_special_stp = row_obj.ava_special_stp;
-        value.special_stp_name = row_obj.special_stp_name;
-        value.nfo_entry_date = row_obj.nfo_entry_date;
-        value.step_up_min_amt = row_obj.step_up_min_amt;
-        value.step_up_min_per = row_obj.step_up_min_per;
-        value.benchmark = row_obj.benchmark;
-        value.benchmark_id = row_obj.benchmark_id;
-        value.A_sip_min_A_amount = row_obj.A_sip_min_A_amount;
-          value.A_sip_min_F_amount = row_obj.A_sip_min_F_amount;
-          value.A_stp_min_amount = row_obj.A_stp_min_amount;
-          value.A_swp_min_amount = row_obj.A_swp_min_amount;
-          value.D_sip_min_A_amount = row_obj.D_sip_min_A_amount;
-          value.D_sip_min_F_amount = row_obj.D_sip_min_F_amount;
-          value.D_stp_min_amount = row_obj.D_stp_min_amount;
-          value.D_swp_min_amount = row_obj.D_swp_min_amount;
-          value.F_sip_min_A_amount = row_obj.F_sip_min_A_amount;
-          value.F_sip_min_F_amount = row_obj.F_sip_min_F_amount;
-          value.F_stp_min_amount = row_obj.F_stp_min_amount;
-          value.F_swp_min_amount = row_obj.F_swp_min_amount;
-          value.M_sip_min_A_amount = row_obj.M_sip_min_A_amount;
-          value.M_sip_min_F_amount = row_obj.M_sip_min_F_amount;
-          value.M_stp_min_amount = row_obj.M_stp_min_amount;
-          value.M_swp_min_amount = row_obj.M_swp_min_amount;
-          value.Q_sip_min_A_amount = row_obj.Q_sip_min_A_amount;
-          value.Q_sip_min_F_amount = row_obj.Q_sip_min_F_amount;
-          value.Q_stp_min_amount = row_obj.Q_stp_min_amount;
-          value.Q_swp_min_amount = row_obj.Q_swp_min_amount;
-          value.S_sip_min_A_amount = row_obj.S_sip_min_A_amount;
-          value.S_sip_min_F_amount = row_obj.S_sip_min_F_amount;
-          value.S_stp_min_amount = row_obj.S_stp_min_amount;
-          value.S_swp_min_amount = row_obj.S_swp_min_amount;
-          value.W_sip_min_A_amount = row_obj.W_sip_min_A_amount;
-          value.W_sip_min_F_amount = row_obj.W_sip_min_F_amount;
-          value.W_stp_min_amount = row_obj.W_stp_min_amount;
-          value.W_swp_min_amount = row_obj.W_swp_min_amount;
-          value.sip_allowed = row_obj.sip_allowed;
-          value.stp_allowed = row_obj.stp_allowed;
-          value.swp_allowed = row_obj.swp_allowed;
-          value.switch_allowed = row_obj.switch_allowed;
-          value.purchase_allowed = row_obj.purchase_allowed;
-          value.switch_min_amt = row_obj.switch_min_amt;
-          value.switch_mul_amt = row_obj.switch_mul_amt;
-          value.exit_load = row_obj.exit_load;
-          value.pip_multiple_amount = row_obj.pip_multiple_amount;
-          value.tax_implication = row_obj.tax_implication;
-          value.tax_implication_id = row_obj.tax_implication_id;
-      }
-      return true;
-    });
+    // this.__export.data = this.__export.data.filter((value: scheme, key) => {
+    //   if (value.id == row_obj.id) {
+    //     (value.product_id = row_obj.product_id),
+    //       (value.amc_id = row_obj.amc_id),
+    //       (value.category_id = row_obj.category_id),
+    //       (value.subcategory_id = row_obj.subcategory_id),
+    //       (value.scheme_name = row_obj.scheme_name),
+    //       (value.id = row_obj.id),
+    //       (value.scheme_type = row_obj.scheme_type == 'O' ? 'Ongoing Scheme' : 'NFO'),
+    //       (value.nfo_start_dt = row_obj.nfo_start_dt),
+    //       (value.nfo_end_dt = row_obj.nfo_end_dt),
+    //       (value.nfo_reopen_dt = row_obj.nfo_reopen_dt),
+    //       (value.pip_fresh_min_amt = row_obj.pip_fresh_min_amt),
+    //       (value.sip_fresh_min_amt = row_obj.sip_fresh_min_amt),
+    //       (value.pip_add_min_amt = row_obj.pip_add_min_amt),
+    //       (value.sip_add_min_amt = row_obj.sip_add_min_amt),
+    //       (value.sip_date = row_obj.sip_date),
+    //       (value.sip_freq_wise_amt = row_obj.sip_freq_wise_amt),
+    //       (value.gstin_no = row_obj.gstin_no);
+    //     value.stp_date = row_obj.stp_date;
+    //     value.swp_date = row_obj.swp_date;
+    //     value.swp_freq_wise_amt = row_obj.swp_freq_wise_amt;
+    //     value.stp_freq_wise_amt = row_obj.stp_freq_wise_amt;
+    //     value.ava_special_sip = row_obj.ava_special_sip;
+    //     value.special_sip_name = row_obj.special_sip_name;
+    //     value.ava_special_swp = row_obj.ava_special_swp;
+    //     value.special_swp_name = row_obj.special_swp_name;
+    //     value.ava_special_stp = row_obj.ava_special_stp;
+    //     value.special_stp_name = row_obj.special_stp_name;
+    //     value.nfo_entry_date = row_obj.nfo_entry_date;
+    //     value.step_up_min_amt = row_obj.step_up_min_amt;
+    //     value.step_up_min_per = row_obj.step_up_min_per;
+    //     value.benchmark = row_obj.benchmark;
+    //     value.benchmark_id = row_obj.benchmark_id;
+    //     value.A_sip_min_A_amount = row_obj.A_sip_min_A_amount;
+    //       value.A_sip_min_F_amount = row_obj.A_sip_min_F_amount;
+    //       value.A_stp_min_amount = row_obj.A_stp_min_amount;
+    //       value.A_swp_min_amount = row_obj.A_swp_min_amount;
+    //       value.D_sip_min_A_amount = row_obj.D_sip_min_A_amount;
+    //       value.D_sip_min_F_amount = row_obj.D_sip_min_F_amount;
+    //       value.D_stp_min_amount = row_obj.D_stp_min_amount;
+    //       value.D_swp_min_amount = row_obj.D_swp_min_amount;
+    //       value.F_sip_min_A_amount = row_obj.F_sip_min_A_amount;
+    //       value.F_sip_min_F_amount = row_obj.F_sip_min_F_amount;
+    //       value.F_stp_min_amount = row_obj.F_stp_min_amount;
+    //       value.F_swp_min_amount = row_obj.F_swp_min_amount;
+    //       value.M_sip_min_A_amount = row_obj.M_sip_min_A_amount;
+    //       value.M_sip_min_F_amount = row_obj.M_sip_min_F_amount;
+    //       value.M_stp_min_amount = row_obj.M_stp_min_amount;
+    //       value.M_swp_min_amount = row_obj.M_swp_min_amount;
+    //       value.Q_sip_min_A_amount = row_obj.Q_sip_min_A_amount;
+    //       value.Q_sip_min_F_amount = row_obj.Q_sip_min_F_amount;
+    //       value.Q_stp_min_amount = row_obj.Q_stp_min_amount;
+    //       value.Q_swp_min_amount = row_obj.Q_swp_min_amount;
+    //       value.S_sip_min_A_amount = row_obj.S_sip_min_A_amount;
+    //       value.S_sip_min_F_amount = row_obj.S_sip_min_F_amount;
+    //       value.S_stp_min_amount = row_obj.S_stp_min_amount;
+    //       value.S_swp_min_amount = row_obj.S_swp_min_amount;
+    //       value.W_sip_min_A_amount = row_obj.W_sip_min_A_amount;
+    //       value.W_sip_min_F_amount = row_obj.W_sip_min_F_amount;
+    //       value.W_stp_min_amount = row_obj.W_stp_min_amount;
+    //       value.W_swp_min_amount = row_obj.W_swp_min_amount;
+    //       value.sip_allowed = row_obj.sip_allowed;
+    //       value.stp_allowed = row_obj.stp_allowed;
+    //       value.swp_allowed = row_obj.swp_allowed;
+    //       value.switch_allowed = row_obj.switch_allowed;
+    //       value.purchase_allowed = row_obj.purchase_allowed;
+    //       value.switch_min_amt = row_obj.switch_min_amt;
+    //       value.switch_mul_amt = row_obj.switch_mul_amt;
+    //       value.exit_load = row_obj.exit_load;
+    //       value.pip_multiple_amount = row_obj.pip_multiple_amount;
+    //       value.tax_implication = row_obj.tax_implication;
+    //       value.tax_implication_id = row_obj.tax_implication_id;
+    //   }
+    //   return true;
+    // });
   }
   ngAfterViewInit() {
     this.__scmForm.controls['options'].valueChanges.subscribe((res) => {
@@ -585,6 +608,44 @@ export class ScmRptComponent implements OnInit {
           this.__isSchemeSpinner = false;
         },
       });
+
+      const el = document.querySelector<HTMLElement>('.cdk-virtual-scroll-viewport');
+      this.changeWheelSpeed(el, 0.99);
+  }
+
+  changeWheelSpeed(container, speedY) {
+    var scrollY = 0;
+    var handleScrollReset = function() {
+        scrollY = container.scrollTop;
+    };
+    var handleMouseWheel = function(e) {
+        e.preventDefault();
+        scrollY += speedY * e.deltaY
+        if (scrollY < 0) {
+            scrollY = 0;
+        } else {
+            var limitY = container.scrollHeight - container.clientHeight;
+            if (scrollY > limitY) {
+                scrollY = limitY;
+            }
+        }
+        container.scrollTop = scrollY;
+    };
+
+    var removed = false;
+    container.addEventListener('mouseup', handleScrollReset, false);
+    container.addEventListener('mousedown', handleScrollReset, false);
+    container.addEventListener('mousewheel', handleMouseWheel, false);
+
+    return function() {
+        if (removed) {
+            return;
+        }
+        container.removeEventListener('mouseup', handleScrollReset, false);
+        container.removeEventListener('mousedown', handleScrollReset, false);
+        container.removeEventListener('mousewheel', handleMouseWheel, false);
+        removed = true;
+    };
   }
   searchSchemeVisibility(display_mode) {
     this.displayMode_forScheme = display_mode;
@@ -944,7 +1005,10 @@ export class ScmRptComponent implements OnInit {
   }
   getSelectedColumns(columns) {
     const clm = ['edit', 'delete'];
-    this.__columns = columns.map(({ field, header }) => ({ field, header }));
+    console.log(columns);
+    this.tableWidth = columns.map(el => el.width ? Number(el.width.split('rem')[0]) : 0).reduce(function (x, y) {return x + y;}, 0);
+    this.__columns = columns.map(({ field, header,width }) => ({ field, header,width }));
+    // console.log(this.__columns)
     this.__exportedClmns = this.__columns
       .filter((x: any) => !clm.includes(x.field))
       .map((item) => {
@@ -966,9 +1030,17 @@ export class ScmRptComponent implements OnInit {
     const dt = this.__selectScm.data.map((value,index) => {
             let obj = {};
             props.forEach((el) =>{
-                obj ={...obj,
-                  [el.header]: this.getModifiedValueFromArr(el.field,value[el.field])
+                if(el.header == 'SIP Dates' || el.header == 'STP Dates' || el.header == 'SWP Dates'){
+                  obj ={...obj,
+                    [el.header]: this.getModifiedValueFromArr(el.field,value[el.field])
+                  }
                 }
+                else{
+                  obj ={...obj,
+                    [el.header]: this.getModifiedValueFromArr(el.field,value[el.field])
+                  }
+                }
+              
             })
             if(index == 0){
               refinedData.push(Object.keys(obj))
@@ -976,14 +1048,23 @@ export class ScmRptComponent implements OnInit {
             refinedData.push(Object.values(obj))
             return obj;
       });
+      console.log(refinedData)
       this.downloadCsv(refinedData)
   }
   /***End */
 
   getModifiedValueFromArr =  (field,values) =>{
         switch(field){
-          case 'scheme_type': return values == 'O' ? 'Ongoing' : "NFO"
-          default: return values ? values : 'N/A'
+          case 'sip_date':
+          case 'stp_date':
+          case 'swp_date': 
+          // console.log(values); 
+          return values ? JSON.parse(values).map(el => el.date).join('/') : 'N/A';
+          // break;
+          // case 'scheme_type': return values == 'O' ? 'Ongoing' : "NFO"
+          default: 
+          // console.log(values);
+          return values ? values?.toString()?.replace(',','.') : 'N/A'
         }
   }
 

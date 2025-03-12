@@ -55,7 +55,8 @@ export class AumBySchemeCodeComponent implements OnInit {
   }
   fetchAumBySchemeCode = (routeParams) =>{
     const payLoad = {
-          nav_date:routeParams?.date,
+          // nav_date:routeParams?.date,
+          date:routeParams?.date,
           product_code:routeParams?.pCode
     }
     var formdata = new FormData();
@@ -63,12 +64,14 @@ export class AumBySchemeCodeComponent implements OnInit {
         formdata.append(key,payLoad[key])
     }
     console.log(formdata)
-    this.dbIntr.api_call(1,`/clients/aumScheme`,formdata)
+    // aumScheme
+    this.dbIntr.api_call(1,`/clients/aumClient`,formdata)
     .pipe(pluck('data'))
     .subscribe((res:any) =>{
         this.footerDT = null;
         this.md_aum_by_scheme_code = res.map(el =>{
-            el.client_name = `${el.client_name} ${el.client_pan ? ' ['+el.client_pan+']' : ''}`;
+            el.client_name = `${el.first_client_name} ${el.first_client_pan ? ' ['+el.first_client_pan+']' : ''}`;
+            el.ret_abs= el.abs_rtn;
             return el;
         })
         this.aum_type = this.md_aum_by_scheme_code.length > 0 ? this.md_aum_by_scheme_code[0].scheme_name : '';
@@ -79,7 +82,7 @@ export class AumBySchemeCodeComponent implements OnInit {
        const tot_gain_loss = global.Total__Count(value,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
        const tot_idcwp = global.Total__Count(value,(x:any) => x?.idcwp ? Number(x?.idcwp) : 0);
        const tot_idcw_reinv = global.Total__Count(value,(x:any) => x?.idcw_reinv ? Number(x?.idcw_reinv) : 0);
-       const tot_curr_aum = global.Total__Count(value,(x:any) => x?.aum ? Number(x?.aum) : 0);
+       const tot_curr_aum = global.Total__Count(value,(x:any) => x?.curr_aum ? Number(x?.curr_aum) : 0);
        const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
        const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
        this.footerDT = {
@@ -150,7 +153,7 @@ export class AumBySchemeCodeColumn {
       width: ''
     },
     {
-      field: 'aum',
+      field: 'curr_aum',
       header: 'AUM',
       width: ''
     },

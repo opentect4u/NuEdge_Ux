@@ -204,35 +204,111 @@ export class AumClientComponent implements OnInit {
           // })  
           // this.md_aum_client = originalDt;
           // this.createParentFooter(originalDt);
+          let obj = {};
           const groupByClientPan =  this.groupBy(res.filter(el => !el.first_client_pan), 'first_client_pan');
           const groupByClientName =  this.groupBy(res.filter(el => el.first_client_pan), 'first_client_name');
-          console.log(groupByClientPan);
-          console.log(groupByClientName);
+          Object.keys(groupByClientPan).forEach(el =>{
+            obj =  this.groupBy(groupByClientPan[el], 'first_client_name');
+          })
+          const mergedObj = Object.assign({}, groupByClientName, obj);
+          this.md_aum_client = this.populateDt(mergedObj);
+          this.createParentFooter(this.md_aum_client);
         })
-  
+  }
+
+  populateDt = (grpObj) =>{
+        let dt = [];
+        Object.keys(grpObj).forEach(el =>{
+              // console.log(`*******${el}********`);
+              const inv_cost = global.Total__Count(grpObj[el],(x:any) => x?.total_inv_cost ? Number(x?.total_inv_cost) : 0);
+              const idcw_paid = global.Total__Count(grpObj[el],(x:any) => x?.idcw_paid ? Number(x?.idcw_paid) : 0);
+              const idcw_reinv = global.Total__Count(grpObj[el],(x:any) => x?.idcw_reinv ? Number(x?.idcw_reinv) : 0);
+              const curr_aum = global.Total__Count(grpObj[el],(x:any) => x?.curr_aum ? Number(x?.curr_aum) : 0);
+              const totGainLoss = global.Total__Count(grpObj[el],(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
+              const tot_ret_abs = Number(inv_cost) > 0 ? ((totGainLoss / inv_cost) * 100)?.toFixed(2) : 0;
+              const xirr = 0;
+              dt.push({
+                    id:grpObj[el][0]?.id,
+                   client_name:el,
+                   pan:grpObj[el].length > 0 ? grpObj[el][0].first_client_pan : '',
+                   inv_cost:inv_cost,
+                   idcw_paid:idcw_paid,
+                   idcw_reinv:idcw_reinv,
+                   curr_aum:curr_aum,
+                   gain_loss:totGainLoss,
+                   Investment:inv_cost,
+                   AUM:curr_aum,
+                   "IDCW Reinv.":idcw_reinv,
+                   "IDCWP":idcw_paid,
+                   "Abs. Return":tot_ret_abs,
+                   xirr:xirr,
+                    ret_abs:tot_ret_abs,
+                    schemes:grpObj[el],
+                    total:{
+                      inv_cost:inv_cost,
+                      idcw_paid:idcw_paid,
+                      idcw_reinv:idcw_paid,
+                      curr_aum:curr_aum,
+                      abs_rtn:tot_ret_abs,
+                      scheme_name:"TOTAL",
+                      xirr:0
+                    }
+              })
+        });
+        // console.log(dt);
+        return dt.sort((a, b) => a.client_name.localeCompare(b.client_name));
+  }
+
+
+
+  groupByMultipleProps = (res) =>{
+    const groupedData = res.reduce((acc, item) => {
+        console.log(acc)
+      // Check if the category exists in the accumulator
+      const skuPAN = item.first_client_pan || "NO_PAN";
+      if (!acc[skuPAN]) {
+        acc[skuPAN] = {};
+      }
+      
+      // Check if the type exists in the specific category
+      if (!acc[skuPAN][item.first_client_pan]) {
+        // acc[item.first_client_pan][item.first_client_name] = [];
+        acc[skuPAN][item.first_client_name] = []
+      }
+      // Add the item to the corresponding group
+      acc[skuPAN][item.first_client_name].push(item);
+      
+      return acc;
+    }, {});
+    return groupedData;
   }
 
   createParentFooter = (value) =>{
+    const tot_gain_loss = global.Total__Count(value,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
+    const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
+    // console.log((tot_gain_loss / tot_inv_cost) * 100);
+    const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
     let obj = {}
-    const dt = value.map(({total,schemes,cat_name,amc_weightage_in,amc_name,amc_code,inv_cost,idcw_paid,idcw_reinv,
+    const dt = value.map(({id,total,schemes,cat_name,amc_weightage_in,amc_name,gain_loss,amc_code,inv_cost,idcw_paid,idcw_reinv,
       curr_aum,ret_abs,client_code,client_name,pan,...rest}) => {return {...rest}})
     for(let object of dt) {Object.assign(obj, object)}
     Object.keys(obj).forEach(el =>{
-      console.log( el + ":" + obj[el])
       this.footerDT = {
         ...this.footerDT,
-        [el]:global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)),
+        [el]:el == 'Abs. Return' ? tot_ret_abs.toFixed(2) : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2),
       }
     })
-    console.log(this.footerDT);
+    console.log(  this.footerDT )
   }
   groupBy(xs, key) {
     return xs.reduce(function(rv, x) {
-      (rv[x[key]] = rv[x[key]] || []).push(x);
+      (rv[x[key] || 'NO_PAN'] = rv[x[key]  || 'NO_PAN'] || []).push(x);
       return rv;
     }, {});
   };
 }
+
+
 
 
 export class AumClientColumn{

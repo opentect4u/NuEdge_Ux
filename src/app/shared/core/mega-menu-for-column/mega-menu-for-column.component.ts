@@ -12,6 +12,7 @@ export class MegaMenuForColumnComponent implements OnInit,AfterContentChecked {
   @Input() isOpenMegaMenu: boolean = false; /** For Hide or Show Mega menu for checkbox  */
   @Input() ColumnList: any =[]; /** For Hodling all columns */
   @Input() set selectedClmns(res){
+    console.log(res);
     this.clmItems.clear({emitEvent:false});
     this.addcheckColumn(res);
 }
@@ -27,6 +28,9 @@ export class MegaMenuForColumnComponent implements OnInit,AfterContentChecked {
   }
   ngAfterViewInit(){
     this.clmItems.valueChanges.subscribe(res =>{
+      console.log('***********ASDASDASDASDA***********')
+      console.log(res)
+      console.log('***********END***********')
       this.getSelectedColumns.emit(res.filter((x: any) => x.isChecked));
     })
     this.clmFrm.controls['is_all'].valueChanges.subscribe(res =>{
@@ -42,24 +46,25 @@ export class MegaMenuForColumnComponent implements OnInit,AfterContentChecked {
     return this.clmFrm.controls.clmItems as FormArray;
   }
   addcheckColumn(selectedColumns){
-    console.log(selectedColumns);
-
     this.ColumnList.forEach((el) =>{
       this.clmItems.push(this.setClmCtrl(
         selectedColumns.includes(el.field),
         el.header,
-        el.field
+        el.field,
+        el.width
       ));
     });
     this.clmFrm.get('is_all').setValue((this.ColumnList.length == this.clmItems.value.filter(x => x.isChecked).length),{emitEvent:false});
+      
   }
-  setClmCtrl(isChecked,clmName,id){
+  setClmCtrl(isChecked,clmName,id,width){
    return new FormGroup({
     isChecked:new FormControl(isChecked),
     name:new FormControl(clmName),
     field:new FormControl(id),
     header:new FormControl(clmName),
-    id:new FormControl(id)
+    id:new FormControl(id),
+    width:new FormControl(width)
    })
   }
   hideMenu(){

@@ -11,9 +11,9 @@ export class DateArrayPipe implements PipeTransform {
     if(value){
       // console.log(value)
       // console.log(JSON.parse(value).map(x=> x.date))
-       return JSON.parse(value).map(x=> x.date);
+       return JSON.parse(value).map(x=> x.date).join(', ');
     }
-    return [];
+    return '';
 
   }
 }

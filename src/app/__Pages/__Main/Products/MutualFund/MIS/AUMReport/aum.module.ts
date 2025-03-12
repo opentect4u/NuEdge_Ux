@@ -44,6 +44,11 @@ const routes: Routes = [{
       data:{title:"NuEdge - AUM Report By Client For Scheme", pageTitle:'AUM Report By Client For Scheme'}
     },
     {
+       path:'aum-family',
+       loadChildren:() => import('./aum-family/aum-family.module').then(m => m.AumFamilyModule),
+       data:{title:"NuEdge - AUM Report By Family", pageTitle:'AUM Report By Family'}
+    },
+    {
       path:'',
       redirectTo:'home',
       pathMatch:'full'

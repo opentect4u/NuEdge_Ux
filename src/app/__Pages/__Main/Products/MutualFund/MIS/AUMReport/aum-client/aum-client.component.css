@@ -1,0 +1,5 @@
+::ng-deep .p-datatable .p-datatable-thead > tr.stickyHeader__innerTbl > th {
+    position: sticky !important;
+    top: 117px !important;
+    z-index: 1;
+}
