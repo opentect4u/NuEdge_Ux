@@ -12,6 +12,8 @@ import { PreviewDocumentComponent } from 'src/app/shared/core/preview-document/p
 import { DomSanitizer } from '@angular/platform-browser';
 import KycMst from '../../../../../../assets/json/kyc.json';
 import withoutKycMst from '../../../../../../assets/json/withoutKyc.json';
+import transmissionType from '../../../../../../assets/json/TransmissionType.json';
+
 type selectBtn ={
   label:string,
   value:string,
@@ -136,6 +138,7 @@ export class CmnReportForMFComponent implements OnInit,OnDestroy {
         ...res,
         data:res.data.filter(el =>{
           if(el?.ack_status != 'R'){
+            const trans_type = transmissionType.filter(ele => ele.id == el?.transmission_type);  
             const newNominee = JSON.parse(el?.new_nominee);
             const mergeFolio = el.merge_folio ? JSON.parse(el.merge_folio) : [];
             el.source_folio = mergeFolio && mergeFolio.length > 0 ? mergeFolio.join(", ") : ''
@@ -147,6 +150,7 @@ export class CmnReportForMFComponent implements OnInit,OnDestroy {
             el.second_kyc = second_kyc.length > 0 ? second_kyc[0]?.value : '';
             const third_kyc = kyc.filter(ele => ele.id == el.third_kyc);
             el.third_kyc = third_kyc.length > 0 ? third_kyc[0]?.value : '';
+            el.transmission_type = el?.transmission_type ? (trans_type?.length > 0 ? trans_type[0]?.type : '') : '';
             el.manual_trans_status = el.manual_trans_status ? (el.manual_trans_status == 'P' ? 'Process' : el.manual_trans_status == 'R' ? "Rejected" : 'Pending') : '';
             return el;
           }

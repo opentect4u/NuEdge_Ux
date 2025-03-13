@@ -22,6 +22,8 @@ import { environment } from 'src/environments/environment';
 import loggedStatus from '../../../../../../../../../../assets/json/loginstatus.json'
 import  ItemsPerPage from '../../../../../../../../../../assets/json/itemsPerPage.json';
 import { Table } from 'primeng/table';
+import transmissionType from '../../../../../../../../../../assets/json/TransmissionType.json';
+
 type selectBtn ={
   label:string,
   value:string,
@@ -668,6 +670,8 @@ export class NonfinancialAcknowledgementComponent implements OnInit {
   }
   setPaginator(res) {
     const mainDt = res.filter(el =>{
+      const trans_type = transmissionType.filter(ele => ele.id == el?.transmission_type);
+      el.transmission_type = el?.transmission_type ? (trans_type?.length > 0 ? trans_type[0]?.type : '') : '';
       const newNominee = JSON.parse(el?.new_nominee);
       const mergeFolio = el.merge_folio ? JSON.parse(el.merge_folio) : [];
       el.source_folio = mergeFolio && mergeFolio.length > 0 ? mergeFolio.join(", ")  : ''
