@@ -200,7 +200,7 @@ export class NfoRPTComponent implements OnInit {
      debounceTime(200),
      distinctUntilChanged(),
      switchMap((dt) =>
-       dt?.length > 1 ? this.dbIntr.ReportTINSearch('/client', dt) : []
+       dt?.length > 1 ? this.dbIntr.searchItems('/client', dt) : []
      ),
      map((x: responseDT) => x.data)
    )
