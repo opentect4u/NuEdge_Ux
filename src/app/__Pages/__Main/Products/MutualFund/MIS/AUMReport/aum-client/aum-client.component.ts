@@ -93,17 +93,35 @@ export class AumClientComponent implements OnInit {
   populateDataByFamilyHeadIdInParams = (formdata) =>{
     this.dbIntr.api_call(1,'/clients/aumClient',formdata)
     .pipe(pluck('data')).subscribe((res:any) =>{
-      // console.log(res[0]);
-      let obj = {};
-      const groupByClientPan =  this.groupBy(res.filter(el => !el.first_client_pan), 'first_client_pan');
-      const groupByClientName =  this.groupBy(res.filter(el => el.first_client_pan), 'first_client_name');
-      Object.keys(groupByClientPan).forEach(el =>{
-        obj =  this.groupBy(groupByClientPan[el], 'first_client_name');
-      })
-      const mergedObj = Object.assign({}, groupByClientName, obj);
-      this.md_aum_client = this.populateDt(mergedObj);
-      this.createParentFooter(this.md_aum_client);
+      this.backgroundProcessing(res);
+      // let obj = {};
+      // const groupByClientPan =  this.groupBy(res.filter(el => !el.first_client_pan), 'first_client_pan');
+      // const groupByClientName =  this.groupBy(res.filter(el => el.first_client_pan), 'first_client_name');
+      // Object.keys(groupByClientPan).forEach(el =>{
+      //   obj =  this.groupBy(groupByClientPan[el], 'first_client_name');
+      // })
+      // const mergedObj = Object.assign({}, groupByClientName, obj);
+      // this.md_aum_client = this.populateDt(mergedObj);
+      // this.createParentFooter(this.md_aum_client);
     })
+  }
+
+  backgroundProcessing = (res) =>{
+    if (typeof Worker !== 'undefined') {
+      // Create a new
+      const worker = new Worker(new URL('./aum-by-client-calculations.worker', import.meta.url));
+      worker.onmessage = ({ data }) => {
+        // console.log(`page got message: ${data}`);
+        console.log(data);
+      };
+      worker.postMessage({
+        res:res,
+        date:this.__formDate
+      });
+    } else {
+      // Web Workers are not supported in this environment.
+      // You should add a fallback so that your program still executes correctly.
+    }
   }
 
   populateDt = (grpObj) =>{

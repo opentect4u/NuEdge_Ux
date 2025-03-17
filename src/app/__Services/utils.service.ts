@@ -292,7 +292,7 @@ export class UtiliService {
             return 'ERR';
     }
 
-}
+  }
 
   DcryptText =  (encrypted_text) => {
     try{
@@ -306,5 +306,5 @@ export class UtiliService {
             return 'ERR';
     }
    
-}
+  }
 }
