@@ -348,11 +348,13 @@
                   [matTooltip]="finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')">
                     {{ finance[col.field] == 'D' ? 'B2C - Direct' : (finance[col.field] == 'I' ? 'B2C - Indirect' : 'B2B')}}</span>
                 </ng-container>
-                <ng-container *ngSwitchCase="col.field == 'mode_of_holding' || col.field == 'existing_mode_of_holding' || col.field == 'new_mode_of_holding'">
+                <ng-container *ngSwitchCase="col.field == 'mode_of_holding' || col.field == 'existing_mode_of_holding' || col.field == 'new_mode_of_holding'
+                || col.field == 'change_existing_mode_of_holding' || col.field == 'change_new_mode_of_holding'
+                ">
                  <span
                  #tooltip="matTooltip"
-                 [matTooltip]="finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')">
-                 {{ finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')}}
+                 [matTooltip]="finance[col.field] ? finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor') : ''">
+                 {{ finance[col.field] ? (finance[col.field] == 'S' ? 'Single' : (finance[col.field] == 'J' ? 'Joint' : 'Anyone Or Survivor')) : 'N/A'}}
                 </span>
                 </ng-container>
                 <ng-container *ngSwitchCase="col.field == 'sip_swp_stp_frequency' ||  col.field == 'swp_frequency' || col.field == 'stp_frequency'">

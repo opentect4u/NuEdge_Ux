@@ -68,7 +68,9 @@
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'family_head_name'">
                     <a class="m-0" target="_blank"
-                                      [routerLink]="['/main/product/mf/mis/aum/fund-house']"
+                                      [routerLink]="['/main/product/mf/mis/aum/aum-client']"
+                                      [queryParams]="{ q: aumDtls?.client_id,v: aumDtls?.date}"
+                                      queryParamsHandling="merge"
                           >{{aumDtls[col.field] ? aumDtls[col.field] : 'N/A'}}</a>
                   </ng-container>
                   <ng-container *ngSwitchCase="col.field == 'rnt_name'">

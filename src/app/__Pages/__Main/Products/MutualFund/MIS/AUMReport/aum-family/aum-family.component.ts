@@ -4,6 +4,7 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { IAumFooterModel } from '../component/aum.model';
 import { pluck } from 'rxjs/operators';
 import { global } from 'src/app/__Utility/globalFunc';
+import { UtiliService } from 'src/app/__Services/utils.service';
 
 @Component({
   selector: 'app-aum-family',
@@ -12,7 +13,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 })
 export class AumFamilyComponent implements OnInit {
 
-  constructor(private dbIntr:DbIntrService) { }
+  constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   md_aum_client = [];
 
@@ -42,10 +43,60 @@ export class AumFamilyComponent implements OnInit {
         }
         this.dbIntr.api_call(1,'/clients/aumFamily',formdata)
         .pipe(pluck('data')).subscribe((res:any) =>{
-          let obj = {};
-            const groupByFamily =  this.groupBy(res.filter(el => el.family_head_group_id), 'family_head_group_id');
-            console.log(groupByFamily);
-            this.md_aum_client = this.populateDt(groupByFamily);
+            let modResponse = [];
+            const groupByFamily =  this.groupBy(res, 'client_id');
+            Object.keys(groupByFamily).forEach((el,index) => {
+                  const familyHeadName = groupByFamily[el]?.filter(el => el.type == 'H');
+                  const family_head_name = familyHeadName[0]?.client?.client_name;
+                  const dt = groupByFamily[el].map(ele =>{
+                      const _res = Object.entries(ele.trans_data).map((entry) => entry[1]);
+                      ele.inv_cost = global.Total__Count(_res,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
+                      ele.idcw_paid = global.Total__Count(_res,(x:any) => x?.idcw_paid ? Number(x?.idcw_paid) : 0);
+                      ele.idcw_reinv = global.Total__Count(_res,(x:any) => x?.idcw_reinv ? Number(x?.idcw_reinv) : 0);
+                      ele.curr_aum =  global.Total__Count(_res,(x:any) => x?.curr_aum ? Number(x?.curr_aum) : 0);
+                      ele.gain_loss = global.Total__Count(_res,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
+                      ele.trans_data = _res;
+                      return ele
+                  })
+                  const inv_cost = global.Total__Count(dt,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
+                  const idcw_paid = global.Total__Count(dt,(x:any) => x?.idcw_paid ? Number(x?.idcw_paid) : 0);
+                  const idcw_reinv = global.Total__Count(dt,(x:any) => x?.idcw_reinv ? Number(x?.idcw_reinv) : 0);
+                  const curr_aum = global.Total__Count(dt,(x:any) => x?.curr_aum ? Number(x?.curr_aum) : 0);
+                  const totGainLoss = global.Total__Count(dt,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
+                  const tot_ret_abs = Number(inv_cost) > 0 ? ((totGainLoss / inv_cost) * 100)?.toFixed(2) : 0;
+                  modResponse.push({
+                    family_head_name:`${family_head_name} [${familyHeadName[0]?.client?.pan}]`,
+                    client_id:this.utility.EncryptText(familyHeadName[0].client_id.toString()),
+                    date:this.utility.EncryptText(ev.date),
+                    broker_name:'',
+                    inv_cost:inv_cost.toFixed(2),
+                    idcw_paid:idcw_paid.toFixed(2),
+                    idcw_reinv:idcw_reinv.toFixed(2),
+                    curr_aum:curr_aum.toFixed(2),
+                    gain_loss:totGainLoss,
+                    ret_abs:Number(tot_ret_abs).toFixed(2),
+                    Investment:inv_cost.toFixed(2),
+                    AUM:curr_aum,
+                    "IDCW Reinv.":idcw_reinv,
+                    "IDCWP":idcw_paid,
+                    "Abs. Return":Number(tot_ret_abs).toFixed(2),
+                     total:{
+                        inv_cost:inv_cost,
+                        idcw_paid:idcw_paid,
+                        idcw_reinv:idcw_paid,
+                        curr_aum:curr_aum,
+                        abs_rtn:Number(tot_ret_abs).toFixed(2),
+                        family_head_name:"TOTAL",
+                        xirr:0
+                      }
+                  })
+
+            })
+            // console.log(modResponse);
+            // let obj = {};
+            // const groupByFamily =  this.groupBy(res, 'client_id');
+            // console.log(groupByFamily);
+            this.md_aum_client = modResponse;
             this.createParentFooter(this.md_aum_client)
         })
   }
@@ -96,12 +147,14 @@ export class AumFamilyComponent implements OnInit {
 
 
   createParentFooter = (value) =>{
+    console.log(value);
     const tot_gain_loss = global.Total__Count(value,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
     const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
     // console.log((tot_gain_loss / tot_inv_cost) * 100);
     const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
+    console.log(tot_gain_loss);
     let obj = {}
-    const dt = value.map(({id,total,schemes,cat_name,amc_weightage_in,amc_name,gain_loss,amc_code,inv_cost,idcw_paid,idcw_reinv,family_head_name,broker_name,
+    const dt = value.map(({id,total,schemes,cat_name,amc_weightage_in,amc_name,gain_loss,amc_code,inv_cost,idcw_paid,idcw_reinv,family_head_name,broker_name,client_id,date,
       curr_aum,ret_abs,client_code,client_name,pan,...rest}) => {return {...rest}})
     for(let object of dt) {Object.assign(obj, object)}
     Object.keys(obj).forEach(el =>{
