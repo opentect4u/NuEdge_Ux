@@ -41,7 +41,7 @@ export class FundHouseComponent implements OnInit {
   ngOnInit(): void {
       this.getCategory();
       this.routeData.queryParams.subscribe(res =>{
-        console.log(res)
+        // console.log(res)
         if(res && Object.keys(res).length > 0){
           const rnt_id = this.utility.DcryptText(res?.rnt_id);
           const date = this.utility.DcryptText(res?.date);
@@ -85,8 +85,8 @@ export class FundHouseComponent implements OnInit {
                   const totAUM = groupByAMC[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
                   const totGainLoss = groupByAMC[key].map(el => Number(el.gain_loss)).reduce((totSum, a) => totSum + a, 0);
                   const totAbsRtn = (totGainLoss / totInvCost)*100;
-                  console.log(groupByAMC[key].map(el => Number(el.curr_aum)))
-                  console.log(totAUM);
+                  // console.log(groupByAMC[key].map(el => Number(el.curr_aum)))
+                  // console.log(totAUM);
               /****** END */
               /**** DISPLAY AMOUNT CATEGORY WISE */
                 let categories = this.md_category.map((el:category) => el.cat_name);
@@ -165,13 +165,13 @@ export class FundHouseComponent implements OnInit {
       const dt = value.map(({total,schemes,cat_name,amc_weightage_in,amc_name,amc_code,inv_cost,idcw_paid,idcw_reinv,curr_aum,ret_abs,gain_loss,...rest}) => {return {...rest}})
       for(let object of dt) {Object.assign(obj, object)}
       Object.keys(obj).forEach(el =>{
-        console.log(el);
+        // console.log(el);
         this.footerDT = {
           ...this.footerDT,
           [el]:el == 'Abs. Return' ? tot_ret_abs.toFixed(2) : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2),
         }
       })
-
+      
   }
 
   groupBy(xs, key) {
