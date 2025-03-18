@@ -9,6 +9,8 @@
 <mat-card class="mat-elevation-z0  border mat_card">
     <mat-card-content >
         <p-table #dt [value]="dataSource"
+        loadingIcon="pi pi-spinner pi-spin"
+        [loading]="isLoaderShown"
         [rows]="10" [paginator]="true"
           [rowHover]="true" [responsive]="true"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -88,11 +90,17 @@
                   <ng-container *ngSwitchCase="col.field == 'registrar_name' ">
                     <a class="m-0" target="_blank" href="#">{{aumDtls[col.field]}}-{{aumDtls.plan_name}}-{{aumDtls.option_name}}</a>
                   </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'xirr' || col.field == 'amc_weightage_in'">
+                  <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'amc_weightage_in'">
                     <p class="m-0">
                       {{aumDtls[col.field] ? aumDtls[col.field] : '0'}}%
                     </p>
                   </ng-container>
+                  <ng-container *ngSwitchCase="col.field == 'xirr'">
+                    <p class="m-0">
+                      {{aumDtls[col.field] | percent: '1.2-2'}}
+                    </p>
+                  </ng-container>
+                  
                   <ng-container *ngSwitchDefault>
                     {{aumDtls ? (aumDtls[col.field] ? (aumDtls[col.field] | number:'1.2-2') : '0.00') : '0.00'}}
                   </ng-container>
@@ -137,8 +145,13 @@
                                 <ng-container *ngSwitchCase="col.field == 'folio_no'">
                                   <p class="m-0">{{data[col.field] ? data[col.field] : 'N/A'}}</p>
                               </ng-container>
-                                <ng-container *ngSwitchCase="col.field == 'abs_rtn' || col.field == 'xirr' ">
+                                <ng-container *ngSwitchCase="col.field == 'abs_rtn'">
                                   <p class="m-0">{{data[col.field] ? data[col.field] : '0'}}%</p>
+                              </ng-container>
+                              <ng-container *ngSwitchCase="col.field == 'xirr'">
+                                <p class="m-0">
+                                  {{data[col.field] | percent: '1.2-2'}}
+                                </p>
                               </ng-container>
                                 <ng-container *ngSwitchDefault>
                                     <p class="m-0">{{data[col.field] ? (data[col.field] | number:'1.2-2') : '0.00'}}</p>

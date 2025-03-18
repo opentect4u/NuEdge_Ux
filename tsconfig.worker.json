@@ -11,6 +11,7 @@
     "types": []
   },
   "include": [
-    "src/**/*.worker.ts"
+    "src/**/*.worker.ts",
+    "src/app/__Pages/__Main/Products/MutualFund/MIS/AUMReport/aum-client/*.worker.ts"
   ]
 }

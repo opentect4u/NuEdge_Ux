@@ -6,6 +6,7 @@ import { pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtiliService } from 'src/app/__Services/utils.service';
+// import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-aum-client',
@@ -17,7 +18,8 @@ export class AumClientComponent implements OnInit {
   constructor(private dbIntr:DbIntrService,
     private routeData: ActivatedRoute,
     private utility:UtiliService,
-    private router:Router
+    private router:Router,
+    // private spinner:NgxSpinnerService
   ) { }
 
   md_aum_client = [];
@@ -33,6 +35,10 @@ export class AumClientComponent implements OnInit {
   /*** Table Footer Details */
   footerDT:Partial<IAumFooterModel>;
   /*** End */
+
+  isLoaderShown:boolean | undefined = false;
+
+  duplicateDt = [];
 
   ngOnInit(): void {
     this.routeData.queryParams.subscribe(res =>{
@@ -62,9 +68,11 @@ export class AumClientComponent implements OnInit {
   }
 
   getFormData = (ev) => {
+        this.isLoaderShown = false;
         this.footerDT = null;
         this.md_aum_client = [];
         let originalDt = []; 
+        this.duplicateDt = [];
         this.__formDate = ev.date;
         var formdata = new FormData();
         for(let key in ev){
@@ -93,6 +101,9 @@ export class AumClientComponent implements OnInit {
   populateDataByFamilyHeadIdInParams = (formdata) =>{
     this.dbIntr.api_call(1,'/clients/aumClient',formdata)
     .pipe(pluck('data')).subscribe((res:any) =>{
+      this.duplicateDt = res;
+      console.log('asdasdasd')
+      this.isLoaderShown = true;
       this.backgroundProcessing(res);
       // let obj = {};
       // const groupByClientPan =  this.groupBy(res.filter(el => !el.first_client_pan), 'first_client_pan');
@@ -107,21 +118,32 @@ export class AumClientComponent implements OnInit {
   }
 
   backgroundProcessing = (res) =>{
-    if (typeof Worker !== 'undefined') {
-      // Create a new
-      const worker = new Worker(new URL('./aum-by-client-calculations.worker', import.meta.url));
-      worker.onmessage = ({ data }) => {
-        // console.log(`page got message: ${data}`);
-        console.log(data);
-      };
-      worker.postMessage({
-        res:res,
-        date:this.__formDate
-      });
-    } else {
-      // Web Workers are not supported in this environment.
-      // You should add a fallback so that your program still executes correctly.
+    try{
+      if (typeof Worker !== 'undefined') {
+        // Create a new
+        const worker = new Worker(new URL('./aum-by-client-calculations.worker', import.meta.url));
+        worker.onmessage = ({ data }) => {
+          this.md_aum_client = data;
+          console.log(data);
+          this.createParentFooter(data);
+          this.isLoaderShown = false;
+              // this.spinner.hide();
+          
+        };
+        worker.postMessage({
+          res:res,
+          date:this.__formDate
+        });
+      } else {
+          this.isLoaderShown = false;
+          // this.spinner.hide();
+      }
     }
+    catch(err){
+      this.isLoaderShown = false;
+      // this.spinner.hide();
+    }
+    
   }
 
   populateDt = (grpObj) =>{
@@ -174,7 +196,6 @@ export class AumClientComponent implements OnInit {
                     }
               })
         });
-        console.log(dt[0]);
         return dt.sort((a, b) => a.client_name.localeCompare(b.client_name));
   }
 

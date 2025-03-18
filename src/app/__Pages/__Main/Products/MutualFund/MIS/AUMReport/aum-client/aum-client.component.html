@@ -4,8 +4,9 @@
         <ng-container *ngIf="!hasParams">
             <aum-filter (onPress)="getFormData($event)"></aum-filter>
         </ng-container>
-        <ng-container *ngIf="md_aum_client.length > 0">
+        <ng-container *ngIf="duplicateDt.length > 0">
             <aum-table [dataSource]="md_aum_client" 
+            [isLoaderShown]="isLoaderShown"
             [footerDT]="footerDT"  
             [dataKey]="'id'"
             [__formDate]="__formDate"
