@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { IAumFooterModel } from '../aum.model';
 import { column } from 'src/app/__Model/tblClmns';
 import { UtiliService } from 'src/app/__Services/utils.service';
@@ -16,6 +16,8 @@ export class AumTableComponent implements OnInit {
   @ViewChild('dt') primeTbl:Table
 
   @Input() dataKey:string | undefined = 'amc_code';
+
+  @Output() emitPaginationEvent:EventEmitter<any> = new EventEmitter<any>()
 
   private _dataSource = [];
 
@@ -99,7 +101,11 @@ export class AumTableComponent implements OnInit {
   }
 
   onRowExpand(ev){
-    console.log(ev)
+    console.log(ev);
+    if(this.aum_type.includes('Clients')){
+      console.log(this.aum_type)
+        
+    }
   }
 
   filterGlobal = ($event) => {
@@ -111,4 +117,7 @@ export class AumTableComponent implements OnInit {
 
   }
 
+  onPageChange(event: any){
+      this.emitPaginationEvent.emit(event);
+  }
 }

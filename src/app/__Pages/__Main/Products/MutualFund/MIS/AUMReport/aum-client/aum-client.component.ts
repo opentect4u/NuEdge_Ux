@@ -14,7 +14,8 @@ import { UtiliService } from 'src/app/__Services/utils.service';
   styleUrls: ['./aum-client.component.css']
 })
 export class AumClientComponent implements OnInit {
-
+  private worker: Worker | null = null;
+  private worker_for_footer: Worker | null = null;
   constructor(private dbIntr:DbIntrService,
     private routeData: ActivatedRoute,
     private utility:UtiliService,
@@ -68,6 +69,7 @@ export class AumClientComponent implements OnInit {
   }
 
   getFormData = (ev) => {
+
         this.isLoaderShown = false;
         this.footerDT = null;
         this.md_aum_client = [];
@@ -99,10 +101,16 @@ export class AumClientComponent implements OnInit {
   }
 
   populateDataByFamilyHeadIdInParams = (formdata) =>{
+    if(this.worker_for_footer){
+      this.worker_for_footer.terminate();
+    }
+    if(this.worker){
+      this.worker.terminate();
+    }
+    
     this.dbIntr.api_call(1,'/clients/aumClient',formdata)
     .pipe(pluck('data')).subscribe((res:any) =>{
       this.duplicateDt = res;
-      console.log('asdasdasd')
       this.isLoaderShown = true;
       this.backgroundProcessing(res);
       // let obj = {};
@@ -121,16 +129,16 @@ export class AumClientComponent implements OnInit {
     try{
       if (typeof Worker !== 'undefined') {
         // Create a new
-        const worker = new Worker(new URL('./aum-by-client-calculations.worker', import.meta.url));
-        worker.onmessage = ({ data }) => {
-          this.md_aum_client = data;
-          console.log(data);
+        this.worker = new Worker(new URL('./aum-by-client-calculations.worker', import.meta.url));
+        this.worker.onmessage = ({ data }) => {
           this.createParentFooter(data);
+          // this.worker.terminate();
+          // this.recursiveBackgroundProcess(data);
+          this.md_aum_client = data
           this.isLoaderShown = false;
-              // this.spinner.hide();
           
         };
-        worker.postMessage({
+        this.worker.postMessage({
           res:res,
           date:this.__formDate
         });
@@ -144,6 +152,60 @@ export class AumClientComponent implements OnInit {
       // this.spinner.hide();
     }
     
+  }
+
+  recursiveBackgroundProcess = (data,start:number | undefined = 0,length: number | undefined = 10) =>{
+    try{
+        const from = start;
+        const to = start + length;
+        // const mode = data.length % length;
+        // console.log(mode);
+        // console.log(data.length / length);
+        const totalLen = Math.ceil(data.length / 55);
+        console.log(totalLen)
+        if (typeof Worker !== 'undefined') {
+            this.worker = new Worker(new URL('./aum-by-client-xirr-calculation.worker', import.meta.url));
+                this.worker.onmessage = ({ data }) => {
+                  this.md_aum_client = data;
+                  this.worker.terminate();
+                  // this.recursiveBackgroundProcess(this.md_aum_client,to,length)
+            };
+            this.worker.postMessage({
+                    res:data,
+                    start:start,
+                    length:length
+            });
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
+  }
+
+  changeEvent(event){
+    try{  
+          // console.log(event)
+          // this.worker.terminate();
+          // this.recursiveBackgroundProcess(this.md_aum_client,event.first,(event.first + event.rows))
+    //   if (typeof Worker !== 'undefined') {
+    //   console.log(event);
+    //   this.worker.terminate();
+    //   this.worker = new Worker(new URL('./aum-by-client-xirr-calculation.worker', import.meta.url));
+    //   this.worker.onmessage = ({ data }) => {
+    //    this.md_aum_client = data;
+    //    this.worker.terminate();
+    //  };
+    //   this.worker.postMessage({
+    //     res:this.md_aum_client,
+    //     start:event.first,
+    //     length:(event.first + event.rows)
+    //  });
+    // }
+    }
+    catch(err){
+        console.log(err);
+    }
+   
   }
 
   populateDt = (grpObj) =>{
@@ -226,20 +288,39 @@ export class AumClientComponent implements OnInit {
   createParentFooter = (value) =>{
     const tot_gain_loss = global.Total__Count(value,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
     const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
-    // console.log((tot_gain_loss / tot_inv_cost) * 100);
     const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
     let obj = {}
-    const dt = value.map(({id,total,schemes,cat_name,amc_weightage_in,amc_name,gain_loss,amc_code,inv_cost,idcw_paid,idcw_reinv,
+    const dt = value.map(({id,total,schemes,cat_name,amc_weightage_in,amc_name,gain_loss,amc_code,inv_cost,idcw_paid,idcw_reinv,xirr_amt_arr,xirr_date_arr,
       curr_aum,ret_abs,client_code,client_name,pan,...rest}) => {return {...rest}})
     for(let object of dt) {Object.assign(obj, object)}
     Object.keys(obj).forEach(el =>{
       this.footerDT = {
         ...this.footerDT,
-        [el]:el == 'Abs. Return' ? tot_ret_abs.toFixed(2) : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2),
+        [el]:el == 'Abs. Return' ? tot_ret_abs.toFixed(2) : (el == 'xirr' ? 'Calculating' : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2)),
       }
     })
-    console.log(  this.footerDT )
+    this.calculate_XIRR_For_footer(value)
   }
+
+  calculate_XIRR_For_footer(data){
+    if (typeof Worker !== 'undefined') {
+      // Create a new
+      this.worker_for_footer = new Worker(new URL('./aum-by-client-footer-calculation.worker', import.meta.url));
+      this.worker_for_footer.onmessage = ({ data }) => {
+            this.footerDT = {
+              ...this.footerDT,
+              xirr:data
+            }
+      };
+      this.worker_for_footer.postMessage({
+        res:data,
+        date:this.__formDate,
+        footerDT: this.footerDT
+      });
+    } else {
+    }
+  }
+
   groupBy(xs, key) {
     return xs.reduce(function(rv, x) {
       (rv[x[key] || 'NO_PAN'] = rv[x[key]  || 'NO_PAN'] || []).push(x);

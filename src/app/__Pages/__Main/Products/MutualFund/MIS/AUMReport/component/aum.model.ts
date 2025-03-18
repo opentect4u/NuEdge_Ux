@@ -10,7 +10,8 @@ export interface IAumFooterModel{
     Hybrid:number | undefined;
     "Sol Oriented":number | undefined;
     "Others":number | undefined;
-    "AMC Weightage in (%)":number | undefined
+    "AMC Weightage in (%)":number | undefined;
+     xirr:any | undefined;
 }
 
 export const AUM_API ={

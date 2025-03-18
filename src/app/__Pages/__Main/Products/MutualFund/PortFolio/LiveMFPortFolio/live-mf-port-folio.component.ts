@@ -647,6 +647,7 @@ mappings between `act_value` and `value` for transition durations. */
     let array_without_negative_curr_val = filterPipe.transform(arr,pl_folio_type)
     let total_amt = [];
     let total_date = [];
+    console.log(array_without_negative_curr_val);
     array_without_negative_curr_val.forEach((el,index) =>{
       if(el.mydata.all_amt_arr.length > 0 && el.mydata.all_date_arr.length > 0){
         total_amt=[...total_amt,...el.mydata.all_amt_arr.map(item => Number(item))];
@@ -1665,6 +1666,7 @@ mappings between `act_value` and `value` for transition durations. */
               const mf_report = this.filter_criteria.get('view_mf_report').value;
                 if(this.main_frm_dt?.trans_type == 'A'){
                       modify_dt = res.data.filter((item: ILivePortFolio) => {
+                        console.log(item?.mydata);
                         if(Number(item.inv_cost) > 0){
                         item.id = `${Math.random()}_${item.product_code}`;
                         item.data=[];
@@ -1692,6 +1694,7 @@ mappings between `act_value` and `value` for transition durations. */
                 }
                 else{
                   modify_dt = res.data.filter((item: ILivePortFolio,index:number) => {
+                    console.log(item?.mydata);
                     if(Number(item.curr_val) > 0 ){
                       item.id = `${Math.random()}_${item.product_code}`;
                       item.data=[];

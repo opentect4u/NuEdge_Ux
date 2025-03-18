@@ -8,6 +8,7 @@
             <aum-table [dataSource]="md_aum_client" 
             [isLoaderShown]="isLoaderShown"
             [footerDT]="footerDT"  
+            (emitPaginationEvent)="changeEvent($event)"
             [dataKey]="'id'"
             [__formDate]="__formDate"
             [column]="aum_client_Column"
