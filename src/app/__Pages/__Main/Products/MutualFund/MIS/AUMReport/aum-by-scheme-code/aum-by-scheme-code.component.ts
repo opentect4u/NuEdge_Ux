@@ -118,7 +118,7 @@ export class AumBySchemeCodeComponent implements OnInit {
       return `1px solid rgb(${r}, ${g}, ${b})`;
     }
     catch(err){
-      console.log(err);
+      // console.log(err);
       return '1px solid #dbdbdb'
     }
   }
