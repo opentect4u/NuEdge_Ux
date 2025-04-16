@@ -51,6 +51,7 @@ export class AumAssetsAllocationComponent implements OnInit {
           }
           this.dbIntr.api_call(1,'/clients/aumFundHouse',formdata)
           .pipe(pluck('data')).subscribe((res:any) =>{
+            const total_aum = res.filter((el:any) => Number(el.curr_aum) > 0).map((ele:any) =>  Number(ele.curr_aum)).reduce((totSum, a) => totSum + a, 0)
               let originalDt = [];
               const groupByAMC = this.groupBy(res, 'subcat_name');
               Object.keys(groupByAMC).forEach((key,index) =>{
@@ -62,6 +63,7 @@ export class AumAssetsAllocationComponent implements OnInit {
                           // const totAbsRtn = groupByAMC[key].map(el => Number(el.abs_rtn)).reduce((totSum, a) => totSum + a, 0);
                           const totGainLoss = groupByAMC[key].map(el => Number(el.gain_loss)).reduce((totSum, a) => totSum + a, 0);
                           const totAbsRtn = Number(totInvCost) > 0 ? ((totGainLoss / totInvCost) * 100)?.toFixed(2) : 0;
+                          const tot_contri_to_aum = (totAUM / total_aum) * 100;
                       /****** END */
                       console.log(totAbsRtn);
                       /**** DISPLAY AMOUNT CATEGORY WISE */
@@ -85,8 +87,8 @@ export class AumAssetsAllocationComponent implements OnInit {
                             const encryptedTxt = this.utility.EncryptText(JSON.stringify({date:this.__formDate,pCode:el?.product_code}));
                             return {...el,routeUrl: encryptedTxt}
                           }),
-                          contri_to_aum:0,
-                          "Contri. To AUM":0,
+                          contri_to_aum:tot_contri_to_aum.toFixed(2),
+                          "Contri. To AUM":tot_contri_to_aum.toFixed(2),
                           total:{
                             inv_cost:totInvCost,
                             idcw_paid:totIdcwPaid,
@@ -118,7 +120,7 @@ export class AumAssetsAllocationComponent implements OnInit {
       // console.log( el + ":" + obj[el])
       this.footerDT = {
         ...this.footerDT,
-        [el]:el == "Abs. Return" ? tot_ret_abs.toFixed(2) : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)),
+        [el]:el == "Abs. Return" ? tot_ret_abs.toFixed(2) : el == 'Contri. To AUM' ? '100%' :  global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)),
       }
     })
     console.log(this.footerDT);

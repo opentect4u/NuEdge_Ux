@@ -84,7 +84,7 @@
         "accessibility":[],
         "title":"AUM By Branch",
         "tooltip":"AUM By Branch",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/mis/aum/aum-branch",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },

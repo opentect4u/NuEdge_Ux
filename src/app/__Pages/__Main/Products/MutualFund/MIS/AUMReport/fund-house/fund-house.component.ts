@@ -76,6 +76,7 @@ export class FundHouseComponent implements OnInit {
     let originalDt = []; 
 
     this.dbIntr.api_call(1,'/clients/aumFundHouse',formdata).pipe(pluck('data')).subscribe((res:any) =>{
+      const total_aum = res.filter((el:any) => Number(el.curr_aum) > 0).map((ele:any) =>  Number(ele.curr_aum)).reduce((totSum, a) => totSum + a, 0)
       const groupByAMC = this.groupBy(res.filter(el => Number(el.inv_cost) > 0), 'amc_code');
       Object.keys(groupByAMC).forEach((key,index) =>{
               /***** CALUCLATION OF UPPER TABLE */
@@ -85,6 +86,8 @@ export class FundHouseComponent implements OnInit {
                   const totAUM = groupByAMC[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
                   const totGainLoss = groupByAMC[key].map(el => Number(el.gain_loss)).reduce((totSum, a) => totSum + a, 0);
                   const totAbsRtn = (totGainLoss / totInvCost)*100;
+                  const tot_amc_weightage = (totAUM / total_aum) * 100;
+                  // console.log(totAUM);
                   // console.log(groupByAMC[key].map(el => Number(el.curr_aum)))
                   // console.log(totAUM);
               /****** END */
@@ -93,6 +96,7 @@ export class FundHouseComponent implements OnInit {
                 let mdCategoryKeys = null;
                 let groupByCategory = this.groupBy(groupByAMC[key], 'cat_name');
                 categories.forEach((catKeys) =>{
+
                   const totCategoryWiseAUM = groupByCategory[catKeys]?.map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0)
                   mdCategoryKeys = {
                     ...mdCategoryKeys,
@@ -112,9 +116,10 @@ export class FundHouseComponent implements OnInit {
                   "IDCW Reinv.":totIdcwReinv,
                   curr_aum:totAUM,
                   AUM:totAUM,
+                  "AMC Weightage in (%)":tot_amc_weightage,
                   ret_abs:totAbsRtn.toFixed(2),
                   "Abs. Return":totAbsRtn.toFixed(2),
-                  amc_weightage_in:0,
+                  amc_weightage_in:tot_amc_weightage.toFixed(2),
                   ...mdCategoryKeys,
                   schemes:groupByAMC[key].map(el => {
                     const encryptedTxt = this.utility.EncryptText(JSON.stringify({date:this.__formDate,pCode:el?.product_code}));
@@ -168,7 +173,7 @@ export class FundHouseComponent implements OnInit {
         // console.log(el);
         this.footerDT = {
           ...this.footerDT,
-          [el]:el == 'Abs. Return' ? tot_ret_abs.toFixed(2) : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2),
+          [el]:el == 'Abs. Return' ? tot_ret_abs.toFixed(2) : el == 'AMC Weightage in (%)' ? 100 : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2),
         }
       })
       
@@ -216,7 +221,7 @@ export class FundHouseColumn{
       width:'8rem'
     },
     {
-      field:'amc_weightage',
+      field:'amc_weightage_in',
       header:'AMC Weightage in (%)',
       width:'6rem'
     },

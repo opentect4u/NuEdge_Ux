@@ -40,10 +40,13 @@ export class AumReportTotalCalcComponent implements OnInit {
       this._aum_reports_tiles = value;
       setTimeout(() => {
         Object.keys(value).forEach(el =>{
+          if(el != 'AMC Weightage in (%)'){
           const getElement = document.getElementById(el);
           getElement.style.border = this.generateBorderColor();
           getElement.style.borderRadius = "3px";
           getElement.style.padding = "3px";
+          }
+
         })
       }, 500);
     }
@@ -51,7 +54,7 @@ export class AumReportTotalCalcComponent implements OnInit {
        
   }
 
-  @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' = 'Fund House';
+  @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' = 'Fund House';
 
   ngOnInit(): void {}
 

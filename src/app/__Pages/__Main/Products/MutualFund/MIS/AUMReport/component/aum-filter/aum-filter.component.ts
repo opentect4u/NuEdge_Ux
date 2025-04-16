@@ -18,7 +18,8 @@ export enum AUTMTYPE{
     Clients = 'Clients',
     Schemes = 'Scheme',
     "Assets Allocation"="Assets Allocation",
-    Registrar="Registrar"
+    Registrar="Registrar",
+    Branch="Branch"
 }
 
 @Component({
@@ -46,7 +47,7 @@ export class AumFilterComponent implements OnInit {
   settingsforEuinDropdown = this.utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
 
 
-  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' = 'Fund House';
+  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' = 'Fund House';
 
   aum_report_filter_frm = new FormGroup({
       date: new FormControl(new Date()),

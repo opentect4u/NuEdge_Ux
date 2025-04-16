@@ -90,7 +90,7 @@
                   <ng-container *ngSwitchCase="col.field == 'registrar_name' ">
                     <a class="m-0" target="_blank" href="#">{{aumDtls[col.field]}}-{{aumDtls.plan_name}}-{{aumDtls.option_name}}</a>
                   </ng-container>
-                  <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'amc_weightage_in'">
+                  <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'amc_weightage_in' || col.field == 'contri_to_aum'">
                     <p class="m-0">
                       {{aumDtls[col.field] ? aumDtls[col.field] : '0'}}%
                     </p>
@@ -151,7 +151,7 @@
                                 <ng-container *ngSwitchCase="col.field == 'folio_no'">
                                   <p class="m-0">{{data[col.field] ? data[col.field] : 'N/A'}}</p>
                               </ng-container>
-                                <ng-container *ngSwitchCase="col.field == 'abs_rtn'">
+                                <ng-container *ngSwitchCase="col.field == 'abs_rtn' || col.field == 'contri_to_aum'">
                                   <p class="m-0">{{data[col.field] ? data[col.field] : '0'}}%</p>
                               </ng-container>
                               <ng-container *ngSwitchCase="col.field == 'xirr'">
@@ -216,10 +216,16 @@
                   <p class="m-0">GRAND TOTAL</p>
                 </ng-container>
                 <!-- col.field == 'amc_weightage' ||  -->
-                <ng-container *ngSwitchCase="col.field == 'pan' || col.field == 'cat_name' || col.field == 'folio_no' || col.field == 'broker_name'"></ng-container>
+                <ng-container *ngSwitchCase="col.field == 'pan' || col.field == 'cat_name' 
+                || col.field == 'folio_no' || col.field == 'broker_name'"></ng-container>
                 <ng-container *ngSwitchCase="col.field == 'ret_abs' || col.field == 'amc_weightage_in'">
                   {{footerDT ? (footerDT[col.header] ? footerDT[col.header] : '0') : '0'}}%
                 </ng-container>
+
+                <ng-container *ngSwitchCase="col.field == 'contri_to_aum'">
+                    {{footerDT ? (footerDT['Contri. To AUM'] ? footerDT['Contri. To AUM'] : '0%') : '0%'}}
+                </ng-container>
+
                 <ng-container *ngSwitchCase="col.field == 'xirr'">
                   <!-- {{footerDT ? (footerDT[col.field] ? footerDT[col.field] : '0') : '0'}}% -->
 

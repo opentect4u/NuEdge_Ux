@@ -36,30 +36,10 @@ export class HomeComponent implements OnInit {
 
     /*** For Showing Top Card Value */
     __topValues:Required<ITileValue>[] = [
-      {title:"Current AUM",
-      amount:0,
-      // class_name:"seeGreen_Gredient",
-      class_name:"",
-      flag:"C",
-      is_pending:false,
-      mom_percentage:0,
-      route_url:'/main'
-    },
-      {title:"Live SIP",amount:0,
-      // class_name:"blue_Gredient",
-      class_name:"",
-      flag:"L",is_pending:true,mom_percentage:0,
-      route_url:'/main/product/mf/sipreport'},
-      {title:"Monthly MIS (NS)",amount:0,
-      // class_name:"red_Gredient",
-      class_name:"",
-      flag:"M",is_pending:false,mom_percentage:0,
-      route_url:'/main'},
-      {title:"Monthly MIS (GS)",amount:0,
-      // class_name:"yellow_Gredient",
-      class_name:"",
-      flag:'T',is_pending:false,mom_percentage:0,
-      route_url:'/main'}
+      {title:"Current AUM",amount:0,class_name:"",flag:"C",is_pending:false,mom_percentage:0,route_url:'/main'},
+      {title:"Live SIP",amount:0,class_name:"",flag:"L",is_pending:true,mom_percentage:0,route_url:'/main/product/mf/sipreport'},
+      {title:"Monthly MIS (NS)",amount:0,class_name:"",flag:"M",is_pending:false,mom_percentage:0,route_url:'/main'},
+      {title:"Monthly MIS (GS)",amount:0,class_name:"",flag:'T',is_pending:false,mom_percentage:0,route_url:'/main'}
     ]
     /*** End */
   constructor(private dbIntr:DbIntrService) {}
@@ -71,6 +51,7 @@ export class HomeComponent implements OnInit {
       this.dbIntr.api_call(0,'/showLiveSIPAmount','flag=L',true)
       .pipe(pluck("data")).
       subscribe((res:Required<ITilesAPIResonse>) =>{
+        console.log(res);
         this.setAmountInTiles(res);
       },
       err => {

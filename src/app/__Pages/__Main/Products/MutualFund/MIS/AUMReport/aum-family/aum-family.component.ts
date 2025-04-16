@@ -183,11 +183,11 @@ export class AumFamilyColumn{
       header:'Family Head / Individual',
       width:'24rem'
     },
-    {
-      field:'broker_name',
-      header:'Broker Name',
-      width:'8rem'
-    },
+    // {
+    //   field:'broker_name',
+    //   header:'Broker Name',
+    //   width:'8rem'
+    // },
     {
       field:'inv_cost',
       header:'Investment',

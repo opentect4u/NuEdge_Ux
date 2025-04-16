@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { global } from 'src/app/__Utility/globalFunc';
 import { Table } from 'primeng/table';
 import moment from 'moment';
+import { IBranchFooter } from '../../aum-branch/aum-branch.component';
 @Component({
   selector: 'aum-table',
   templateUrl: './aum-table.component.html',
@@ -58,7 +59,7 @@ export class AumTableComponent implements OnInit {
   /**** END */
 
   /*** Table Footer Details */
-  @Input() footerDT:Partial<IAumFooterModel>;
+  @Input() footerDT:Partial<IAumFooterModel | IBranchFooter>;
   /*** End */
 
   @Input() isLoaderShown:boolean | undefined = false

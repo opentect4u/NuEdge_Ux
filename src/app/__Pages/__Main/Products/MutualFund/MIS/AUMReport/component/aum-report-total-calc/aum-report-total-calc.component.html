@@ -15,20 +15,22 @@
     <mat-card-content class="px-2 py-3">
         <div class="d-flex align-items-center justify-content-between w-full">
             <ng-container *ngFor="let item of aum_reports_tiles | keyvalue;let i = index" >
-                
-                <div class="summer-bx" id="{{item.key}}">
-                       <div class="hint-bx" style="font-size: 10px;">{{item.key | uppercase}}</div>
-                       <div class="num-bx">
-                        <ng-container *ngIf="item.key != 'xirr';else XIRR">
-                            {{item.value | number:'1.2-2'}} 
-                            <span *ngIf="item.key == 'Abs. Return'  || item.key == 'AMC Weightage in (%)'">%</span>
-                        </ng-container>
-                        <ng-template #XIRR>
-                            {{item.value ? (item.value != 'Calculating' ? (item.value | percent:'1.2-2') : 'Calculating...') : '0.00%'}} 
-                        </ng-template>
-                            
-                       </div>
-                </div>
+                <ng-container *ngIf="item.key != 'AMC Weightage in (%)'">
+                    <div class="summer-bx" id="{{item.key}}">
+                        <div class="hint-bx" style="font-size: 10px;">{{item.key | uppercase}}</div>
+                        <div class="num-bx">
+                         <ng-container *ngIf="item.key != 'xirr';else XIRR">
+                                <span>{{item.key == 'Contri. To AUM' ? item.value : item.value | number:'1.2-2'}} </span> 
+                                <span *ngIf="item.key == 'Abs. Return'  || item.key == 'AMC Weightage in (%)'">%</span>
+                         </ng-container>
+                         <ng-template #XIRR>
+                             {{item.value ? (item.value != 'Calculating' ? (item.value | percent:'1.2-2') : 'Calculating...') : '0.00%'}} 
+                         </ng-template>
+                             
+                        </div>
+                 </div>
+                </ng-container>
+               
            </ng-container>
         </div>
        
