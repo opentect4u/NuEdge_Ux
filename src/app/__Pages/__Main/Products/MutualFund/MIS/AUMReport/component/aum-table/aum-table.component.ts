@@ -7,6 +7,7 @@ import { global } from 'src/app/__Utility/globalFunc';
 import { Table } from 'primeng/table';
 import moment from 'moment';
 import { IBranchFooter } from '../../aum-branch/aum-branch.component';
+import { ISegmentFooter } from '../../aum-segment/au-m-segment.component';
 @Component({
   selector: 'aum-table',
   templateUrl: './aum-table.component.html',
@@ -59,7 +60,7 @@ export class AumTableComponent implements OnInit {
   /**** END */
 
   /*** Table Footer Details */
-  @Input() footerDT:Partial<IAumFooterModel | IBranchFooter>;
+  @Input() footerDT:Partial<IAumFooterModel | IBranchFooter | ISegmentFooter>;
   /*** End */
 
   @Input() isLoaderShown:boolean | undefined = false
@@ -73,7 +74,7 @@ export class AumTableComponent implements OnInit {
   @Input() isShowTotalCalc:boolean = true;
 
   // @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' = 'Fund House';
-  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar';
+  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' | 'Segment' | 'City Type';
 
 
   @Input() column:column[] = [];

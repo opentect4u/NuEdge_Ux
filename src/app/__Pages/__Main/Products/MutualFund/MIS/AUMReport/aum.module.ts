@@ -54,6 +54,16 @@ const routes: Routes = [{
         data:{title:"NuEdge - AUM Report By Branch", pageTitle:'AUM Report By Branch'}
     },
     {
+        path:'aum-segment',
+        loadChildren:() => import('./aum-segment/aum-segment.module').then(m => m.AumSegmentModule),
+        data:{title:'Nuedge - AUM Report By Segment',pageTitle:'AUM Report By Segment'}
+    },
+    {
+      path:'city-type-aum',
+      loadChildren:() => import('./aum-city-wise/aum-city-wise.module').then(m => m.AumCityWiseModule),
+      data:{title:'Nuedge - AUM Report By City Type',pageTitle:'AUM Report By City Type'}
+    },
+    {
       path:'',
       redirectTo:'home',
       pathMatch:'full'

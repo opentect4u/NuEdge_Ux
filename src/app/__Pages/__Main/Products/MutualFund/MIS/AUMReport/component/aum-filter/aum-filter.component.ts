@@ -47,10 +47,11 @@ export class AumFilterComponent implements OnInit {
   settingsforEuinDropdown = this.utility.settingsfroMultiselectDropdown('euin_no','euin_no','Search Employee',1);
 
 
-  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' = 'Fund House';
+  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' | 'City Type' = 'Fund House';
 
   aum_report_filter_frm = new FormGroup({
       date: new FormControl(new Date()),
+      city_type_id:new FormControl(''),
       arn_no: new FormControl(''),
       folio_type: new FormControl('C'),
       export_type: new FormControl('W'),

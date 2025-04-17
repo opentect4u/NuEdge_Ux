@@ -1,0 +1,14 @@
+
+<div class="flexSec">
+    <div class="container">
+        <aum-filter (onPress)="getFormData($event)"></aum-filter>
+        <ng-container >
+            <aum-table [dataSource]="md_aum_client" 
+            [footerDT]="footerDT"  
+            [dataKey]="'id'"
+            [__formDate]="__formDate"
+            [column]="aum_client_Column"
+            ></aum-table>
+        </ng-container>
+    </div>
+</div>
