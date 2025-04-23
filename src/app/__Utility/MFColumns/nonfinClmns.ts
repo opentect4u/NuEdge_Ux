@@ -138,7 +138,7 @@ export class nonFinClms {
    public static REDEMPTION = [
     {field:'redemp_type',header:'Redemption Type',width:'12rem'},
     {field:'amount',header:'Amount',width:'10rem'},
-    {field:'unit',header:'Unit',width:'10rem'},,
+    {field:'unit',header:'Unit',width:'10rem'},
     {field:'manual_trans_status',header:'Transaction Status',width:'8rem'},
     {field:'manual_update_remarks',header:'Transaction Remarks',width:'10rem'}  
   ]

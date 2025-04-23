@@ -1,0 +1,109 @@
+
+
+<div class="flexSec">
+    <div class="container">
+        <mat-card class="mat-elevation-z0  border">
+            <mat-card-header class="border-bottom">
+                <mat-card-title><h4 class="filterHeader">AUM Growth Report</h4></mat-card-title>
+                <div class="pr-3 my-auto d-flex align-items-center">
+                </div>
+            </mat-card-header>
+            <mat-card-content class="p-3">
+                <form [formGroup]="aum_report_growth_filter_frm" (ngSubmit)="clickToSend()">
+                    <div class="row">
+                        <div class="col-12 col-sm-5">
+                            <label for="date">Financial Year</label>
+                            <select class="form-control" formControlName="finYear">
+                                    <option *ngFor="let years of finYear" value="{{years}}">{{years}}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-sm-7 d-flex justify-content-end align-items-end">
+                            <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
+                        </div>
+
+                    </div>
+                
+                </form>
+
+            </mat-card-content>
+        </mat-card>
+        <mat-card class="mat-elevation-z0 border my-3" *ngIf="chartData">
+             <mat-card-content>
+                    <core-chart
+                    [getChartDetailsForAumGrothReport]="chartData"
+                    ></core-chart>
+             </mat-card-content>
+        </mat-card>
+
+        <mat-card  class="mat-elevation-z0 border">
+            <mat-card-header class="border-bottom">
+                <mat-card-title><h4 class="filterHeader">AUM Growth Report</h4></mat-card-title>
+                <div class="pr-3 my-auto d-flex align-items-center">
+                </div>
+            </mat-card-header>
+            <mat-card-content>
+                <p-table #dt [value]="dataSource"
+                loadingIcon="pi pi-spinner pi-spin"
+                [rows]="10" [paginator]="true"
+                  [rowHover]="true" [responsive]="true"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                  styleClass="p-datatable-sm p-datatable-striped"
+                  [pageLinks]="3"
+                  [globalFilterFields]="getColumns()"
+                    [rowsPerPageOptions]="[10,50,100,{ showAll: 'All' }]"
+                    [columns]="column"
+                  [showCurrentPageReport]="true">
+                  <ng-template pTemplate="caption">
+                    <div class="d-flex align-items-center justify-content-end">
+                      <div>
+        
+                      </div>
+                      <div>
+                        <input class="form-control" type="text" 
+                        (input)="filterGlobal($event)" 
+                        placeholder="Search" />
+                      </div>    
+                     
+                  </div>
+                  </ng-template>
+                <ng-template pTemplate="header">
+                    <tr class="stickyHeader">
+                        <th *ngFor="let col of column"
+                            pSortableColumn="{{col?.field}}"
+                            [style]="'width : '+col?.width"
+                           >
+                          {{col?.header}}
+                          <p-sortIcon field="{{col?.field}}"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-aumDtlsGrowth let-expanded="expanded">
+                    <tr>
+                        <td *ngFor="let col of column"
+                        class="{{col.field}}"
+                        [style]="'width : '+col.width">
+                        <ng-container [ngSwitch]="true">
+                            <ng-container *ngSwitchCase="col.field == 'trend'">
+                                    N/A
+                            </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            {{aumDtlsGrowth ? (aumDtlsGrowth[col.field] ? aumDtlsGrowth[col.field]: 'N/A') : 'N/A'}}
+                          </ng-container>
+                        </ng-container>
+                        
+                      </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-aumDtlsGrowth>
+                  <tr>
+                    <td [attr.colspan]="column.length">
+                      <p class="m-0 text-uppercase">No Records Found</p>
+                    </td>
+                  </tr>
+                </ng-template>
+                </p-table>  
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

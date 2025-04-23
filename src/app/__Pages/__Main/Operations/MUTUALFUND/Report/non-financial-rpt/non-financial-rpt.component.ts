@@ -65,8 +65,8 @@ export class NonFinancialRPTComponent implements OnInit {
   nonFinMstDT: any = [];
   @Input() trnsTypeId:number;
   @Input() set nonfinancialMst(value){
-   this.nonFinMstDT=value.data.filter(el => el.ack_status != 'R');;
-   this.__paginate = value.links;
+   this.nonFinMstDT=value?.data?.filter(el => el.ack_status != 'R');;
+   this.__paginate = value?.links;
   }
   __istemporaryspinner:boolean = false;
   __isClientPending:boolean = false;
@@ -238,6 +238,7 @@ export class NonFinancialRPTComponent implements OnInit {
 
   setColumns(option,trans_type_id,trns_id){
     var columnsMst;
+    console.log(trns_id)
     switch(trns_id){
 
       case 32:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status' && x.field != 'amount'),nonFinClms.CMOH,nonFinClms.COMMON_COLUMN);
@@ -268,7 +269,13 @@ export class NonFinancialRPTComponent implements OnInit {
       
       // columnsMst  =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.STP_REGISTRATION,nonFinClms.COMMON_COLUMN);break;
       case 19:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.TRANSMISSION,nonFinClms.COMMON_COLUMN);break
-      case 29:columnsMst =global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status').filter(el => el.field !='amount'),nonFinClms.REDEMPTION,nonFinClms.COMMON_COLUMN);break
+      case 29:
+        console.log(nonFinClms.REDEMPTION);
+        columnsMst =global.getColumnsAfterMerge(
+        nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status').filter(el => el.field !='amount'),
+        nonFinClms.REDEMPTION,
+        nonFinClms.COMMON_COLUMN);
+        break
       case 36:
       case 37:
       // case 38:columnsMst = global.getColumnsAfterMerge(nonFinClms.COLUMN_SELECTOR.filter(x => x.field != 'manual_update_remarks'  && x.field != 'manual_trans_status'),nonFinClms.PAUSE,nonFinClms.COMMON_COLUMN)

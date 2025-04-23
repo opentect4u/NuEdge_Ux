@@ -120,7 +120,7 @@
         "accessibility":[],
         "title":"AUM Growth Report",
         "tooltip":"AUM Growth Report",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/mis/aum/growth-aum",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },
@@ -129,7 +129,7 @@
         "accessibility":[],
         "title":"Top Client AUM Report",
         "tooltip":"Top Client AUM Report",
-        "url":"/main/product/mf",
+        "url":"/main/product/mf/mis/aum/aum-top-client",
         "icon": "fa fa-user-o",
         "has_submenu":[]
       },

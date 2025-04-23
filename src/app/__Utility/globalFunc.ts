@@ -30,7 +30,10 @@ export class global{
 
    /*** For Getting Full Column List for NonFinancial for different Transaction */
    public static getColumnsAfterMerge = (columns,columnsTobeAdd,rest = []):column[] =>{
-
+    console.log(columns);
+    console.log(columnsTobeAdd);
+    console.log(rest);
+    console.log([...columns,...columnsTobeAdd,...rest])
     return  Array.from([...columns,...columnsTobeAdd,...rest]
       .reduce((m, o) => m.set(o.field, o), new Map)
       .values()
@@ -67,7 +70,7 @@ export class global{
   }
 
   /**
-   * calcular future year and populate in dropdown in SIP/STP/SWP Report
+   * calculate future year and populate in dropdown in SIP/STP/SWP Report
    */
   public static getYears = ():Promise<number[]> =>{
       let years:number[] = []
@@ -224,11 +227,11 @@ export class global{
       return arr.reduce((prev, curr, idx) => prev + (predicate(curr, idx)), 0)
       }
 
-    public static getAllFinancialYears():string[]{
+    public static getAllFinancialYears(arr:number = 12):string[]{
       try{
         const thisYear = (new Date()).getFullYear();
         let fiscal_year = (new Date().getMonth() + 1 >= 4) ? (thisYear + 1) : thisYear
-        const financial_year = [0, 1, 2, 3, 4,5,6,7,8,9,10,11].map((count) =>{
+        const financial_year = [...Array(arr).keys()].map((count) =>{
           return `${(fiscal_year - count - 1).toString()}-${fiscal_year - count}`
         }
       );

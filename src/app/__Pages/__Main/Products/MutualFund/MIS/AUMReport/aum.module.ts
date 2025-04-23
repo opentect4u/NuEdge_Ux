@@ -64,6 +64,16 @@ const routes: Routes = [{
       data:{title:'Nuedge - AUM Report By City Type',pageTitle:'AUM Report By City Type'}
     },
     {
+      path:'growth-aum',
+      loadChildren:() => import('./aum-growth/aum-growth.module').then(m => m.AumGrowthModule),
+      data:{title:'Nuedge - AUM Growth Report',pageTitle:'AUM Growth Report'}
+    },
+    {
+      path:'aum-top-client',
+      loadChildren:() => import('./aum-top-client/aum-top-client.module').then(m => m.AumTopClientModule),
+      data:{title:'Nuedge - AUM Top Client Report',pageTitle:'AUM Top CLient Report'}
+    },
+    {
       path:'',
       redirectTo:'home',
       pathMatch:'full'

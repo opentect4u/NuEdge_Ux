@@ -790,7 +790,7 @@ export class CustomerServiceHomeComponent implements OnInit {
                  return false
               }
           }
-          console.log(isExpired)
+          // console.log(isExpired)
           el.tat_expired = isExpired ? "NO" : "YES"
         
           el.solveattach = [];
@@ -1180,6 +1180,36 @@ export class CustomerServiceHomeComponent implements OnInit {
         });
       }
   }
+
+  copyToClipboard(textToCopy){
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        console.log('Copied to clipboard:', textToCopy);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+      });
+    } else {
+      // Fallback for older browsers
+      this.fallbackCopyText(textToCopy);
+    }
+  }
+  fallbackCopyText(text: string): void {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+  
+    try {
+      document.execCommand('copy');
+      console.log('Copied using fallback');
+    } catch (err) {
+      console.error('Fallback copy failed', err);
+    }
+  
+    document.body.removeChild(textarea);
+  }
 }
 
 export class queryColumn{
@@ -1430,9 +1460,15 @@ export class queryColumn{
       isVisible:[1,2,3,4,12]
     },
     {
+      field:'feedback_url',
+      header:'Feedback URL',
+      width:'7rem',
+      isVisible:[1,2,3,4,12]
+    },
+    {
       field:'query_feedback_received',
       header:'Query Feedback Receive',
-      width:'5rem',
+      width:'8rem',
       isVisible:[1,2,3,4,12]
     },
     {

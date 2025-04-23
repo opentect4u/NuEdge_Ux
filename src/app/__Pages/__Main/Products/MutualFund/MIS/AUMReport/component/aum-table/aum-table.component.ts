@@ -74,7 +74,7 @@ export class AumTableComponent implements OnInit {
   @Input() isShowTotalCalc:boolean = true;
 
   // @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' = 'Fund House';
-  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' | 'Segment' | 'City Type';
+  aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' | 'Segment' | 'City Type' | 'Top Clients';
 
 
   @Input() column:column[] = [];

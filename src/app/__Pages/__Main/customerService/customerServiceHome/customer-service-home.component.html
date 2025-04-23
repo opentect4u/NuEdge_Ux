@@ -292,7 +292,7 @@
                             [style.min-width]="col.width"
                             >
                               {{ col.header }}
-                              <p-sortIcon [field]="col.field" *ngIf="col.field!='action' && col.field!='view' && col.field!='query_feedback'">
+                              <p-sortIcon [field]="col.field" *ngIf="col.field!='action' && col.field!='view' && col.field!='query_feedback' && col.field != 'feedback_url'">
                               </p-sortIcon>
                             </th>
                           </tr>
@@ -337,6 +337,17 @@
 
                                             </ng-template>
                                    </ng-container>
+                                   <ng-container *ngSwitchCase="col.field == 'feedback_url'">
+                                    <ng-container *ngIf="trxn[col.field];else noShortURL">
+                                        <button pButton type="button" (click)="copyToClipboard(trxn[col.field])"
+                                        class="p-button-text p-button-lg p-button-rounded" 
+                                        icon="pi pi-copy" ></button>
+                                    </ng-container>
+                                    <ng-template #noShortURL>
+                                            <span>N/A</span>
+                                    </ng-template>
+                                  
+                                  </ng-container>
                                     <ng-container *ngSwitchCase="col.field == 'date_time' || col.field == 'expected_close_date' || col.field == 'actual_close_date'">
                                             {{trxn[col.field] ? (trxn[col.field] | date:'dd-MM-yyyy hh:mm a') : 'N/A'}}
                                     </ng-container>

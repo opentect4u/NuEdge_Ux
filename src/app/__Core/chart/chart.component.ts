@@ -22,6 +22,14 @@ export class ChartComponent implements OnInit {
     if(data)
       this.columnChart(data.categories.reverse(),data?.chart_data)
   }
+
+  /** For Column chart  */
+  @Input() set getChartDetailsForAumGrothReport(data:any){
+    if(data)
+      console.log(data.categories)
+      this.columnChartByAumGrowthReport(data.categories.reverse(),data?.chart_data)
+  }
+
   /*****End */
   @Input() set getbarChartDetails(data:Required<{categories:string[],chart_data:number[]}>){
         if(data)
@@ -62,6 +70,52 @@ export class ChartComponent implements OnInit {
       },
      series:data.map(item=> ({...item,data:item.data.reverse().map(el => ({y:el,color: el < 0 ? '#fe6a35' : (item.name == 'Monthly Inflow' ? '#2caffe' : (item.name == 'Monthly Outflow' ? '#6b8abc' : '#00e272'))}))}))
     }
+    console.log(this.chartOptions)
+  }
+  /**** End */
+
+  /***** Function for column chart for AUM Growth Report */
+  columnChartByAumGrowthReport(category:string[],data:any){
+    this.chartOptions={
+      chart:{
+          type:'column',
+      },
+      title:{
+        text:'AUM Growth Report'
+      },
+      subtitle:{
+        // text:'Source nuedgecorporate.co.in'
+        text:''
+      },
+      xAxis:{
+        categories:category,
+        title: {
+          text: ''
+      },
+      labels:{
+        style:{
+          fontSize:11,
+          fontWeight:'400'
+        }
+      }
+      },
+      yAxis:{
+      labels:{
+        style:{
+          fontSize:11,
+          fontWeight:'400'
+        }
+      }
+      },
+     series:[
+      {
+        name:'AUM Growth Report',
+        colorByPoint: false,
+        data:data
+      }
+     ]
+    }
+    // console.log(this.chartOptions)
   }
   /**** End */
 

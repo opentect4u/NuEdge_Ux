@@ -90,8 +90,8 @@ export class FinancialRPTComponent implements OnInit {
   @Input() itemsPerPage;
   finMst: any = [];
   @Input() set financialMst(value){
-    this.finMst = value.data.filter(el => el.ack_status != 'R');
-    this.__paginate = value.links;
+    this.finMst = value?.data?.filter(el => el.ack_status != 'R');
+    this.__paginate = value?.links;
   }
   @Output() sendFinancialFilteredDt =new EventEmitter();
   @Output() viewDocument = new EventEmitter();

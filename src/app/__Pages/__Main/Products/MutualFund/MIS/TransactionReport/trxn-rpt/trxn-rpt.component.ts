@@ -829,31 +829,31 @@ export class TrxnRptComponent implements OnInit {
           this.disclaimer = item?.disclaimer;
             let net_amt = 0,gross_amt=0,tds=0,stamp_duity =0;
           this.trxn_count = {
-            reject:item.data.filter(res => res.transaction_subtype.includes('Rejection')),
-             process:item.data.filter(res => !res.transaction_subtype.includes('Rejection')),
+            reject:item.data.filter(res => res.transaction_subtype?.includes('Rejection')),
+             process:item.data.filter(res => !res.transaction_subtype?.includes('Rejection')),
              total: item.data
             };
 
             item.data.map( item => {
               item.tot_amount = (item.rnt_id == 2
-                && item.transaction_subtype.toLowerCase().includes('rejection'))
+                && item.transaction_subtype?.toLowerCase().includes('rejection'))
                 ? (item.tot_amount ?
                   (Number(item.tot_amount) * ((Number(item.tot_amount) > 0) ? -1 : 1)).toString()
                   : '0') :  item.tot_amount;
 
               item.tot_gross_amount = (item.rnt_id == 2
-                    && item.transaction_subtype.toLowerCase().includes('rejection'))
+                    && item.transaction_subtype?.toLowerCase().includes('rejection'))
                     ? (item.tot_gross_amount ?
                       (Number(item.tot_gross_amount) * ((Number(item.tot_gross_amount) > 0) ? -1 : 1)).toString()
                       : '0') :  item.tot_gross_amount;
 
               item.tot_tds = (item.rnt_id == 2
-                && item.transaction_subtype.toLowerCase().includes('rejection'))
+                && item.transaction_subtype?.toLowerCase().includes('rejection'))
                 ? (item.tot_tds ?
                   (Number(item.tot_tds) * ((Number(item.tot_tds) > 0) ? -1 : 1)).toString()
                   : '0') :  item.tot_tds;
              item.tot_stamp_duty = (item.rnt_id == 2
-                    && item.transaction_subtype.toLowerCase().includes('rejection'))
+                    && item.transaction_subtype?.toLowerCase().includes('rejection'))
                     ? (item.tot_stamp_duty ?
                       (Number(item.tot_stamp_duty) * ((Number(item.tot_stamp_duty) > 0) ? -1 : 1)).toString()
                       : '0') :  item.tot_stamp_duty;

@@ -1628,18 +1628,20 @@ mappings between `act_value` and `value` for transition durations. */
   }
 
   mappedData = (x,valuation_with) =>{
+    console.log(x)
     return {
      client_details:x.client_details,
      disclaimer:x.disclaimer,
      data: x.data.filter((el:any,index:number) => {
-       if((valuation_with.findIndex(item => el.transaction_type.toLowerCase().includes(item)) > -1) || (valuation_with.findIndex(item => el.subcat_name.toLowerCase().includes(item)) > -1)){                
+      console.log(el)
+       if((valuation_with.findIndex(item => el?.transaction_type?.toLowerCase()?.includes(item)) > -1) || (valuation_with.findIndex(item => el.subcat_name.toLowerCase().includes(item)) > -1)){                
          return true;
        }
-       else if(valuation_with.filter(el => el.toLowerCase() === 'non sip').length > 0){
+       else if(valuation_with.filter(el => el?.toLowerCase() === 'non sip').length > 0){
           
          // && (valuation_with.findIndex(item => el.subcat_name.toLowerCase().includes('elss')) == -1)
             //  if((valuation_with.findIndex(item => el.transaction_type.toLowerCase().includes('sip')) == -1)){return true;}
-            if(!el.transaction_type.toLowerCase().includes('sip')){return true}
+            if(!el?.transaction_type?.toLowerCase()?.includes('sip')){return true}
        }
      return false
    })
@@ -1648,12 +1650,14 @@ mappings between `act_value` and `value` for transition durations. */
   }
 
   call_api_for_detail_summary_func(formData) {
+    console.log("call_api_for_detail_summary_func Call")
     if(this.dataSource.length == 0 && this.__dataSource_for_mf_report_segregrated.length == 0){
       this.__dbIntr.api_call(1,'/clients/liveMFPortfolio',this.utility.convertFormData(formData))
       .pipe(
         pluck('data'),
         map((x:any) =>{
-            var valuation_with = this.filter_criteria.get('show_valuation_with').value.map(el => el.name.toLowerCase())
+            var valuation_with = this.filter_criteria.get('show_valuation_with').value.map(el => el.name.toLowerCase());
+            console.log(valuation_with);
             this.setClientDtls(x.client_details);
             return this.mappedData(x,valuation_with)
         })
@@ -1674,7 +1678,7 @@ mappings between `act_value` and `value` for transition durations. */
                           const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                           const dt = item?.mydata.all_date_arr;
                           const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
-                          item.xirr = isFinite(xirr) ? 0 : xirr;
+                          item.xirr = isFinite(xirr) ?  xirr : 0;
                         }
                         else{
                           item.xirr =0
@@ -1701,9 +1705,13 @@ mappings between `act_value` and `value` for transition durations. */
                       if(item.mydata){
                         const amt = item?.mydata.all_amt_arr.map(item => Number(item));
                         const dt = item?.mydata.all_date_arr;
-                        const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0)
-                        console.log(xirr)
-                        item.xirr = (item.curr_val == 0 && isFinite(xirr)) ? 0 : xirr
+                        console.log([...amt,Number(item.curr_val)]);
+                        console.log([...dt,item.nav_date]);
+                        const xirr = global.XIRR([...amt,Number(item.curr_val)],[...dt,item.nav_date],0)
+                        console.log(xirr);
+                        // item.xirr = (item.curr_val == 0 && isFinite(xirr)) ? 0 : xirr
+                        item.xirr = isFinite(xirr) ? xirr : 0
+
                       }
                       else{
                         item.xirr =0
@@ -1769,6 +1777,7 @@ mappings between `act_value` and `value` for transition durations. */
     }
 
     setParentTableFooter_ClientDtls(arr:ILivePortFolio[]){
+      console.log(arr)
       if(arr.length > 0){
         let total_amt = [];
         let total_date = [];
@@ -1788,7 +1797,8 @@ mappings between `act_value` and `value` for transition durations. */
           selected_tab = this.family_summary.filter(el => el.id == this.selected_tab_dtls?.id)[0]
           // xirr = this.family_summary.filter(el => el.id == this.selected_tab_dtls?.id)[0].xirr;
         }
-       
+       console.log(total_amt);
+       console.log(total_date);
         this.parentLiveMfPortFolio = {
          inv_cost: this.Total__Count(arr,x => Number(x.inv_cost)),
          pur_nav:(this.Total__Count(arr,x => Number(x.pur_nav)) / arr.length),
@@ -2251,6 +2261,7 @@ mappings between `act_value` and `value` for transition durations. */
   }
 
   call_api_for_detail_summary_func_as_promise(formData,index) {
+      console.log('call_api_for_detail_summary_func_as_promise Called')
       // if(this.dataSource.length == 0){
         if(this.__isPLSUmmary_Realised_Unrealised_Visble){
           this.call_corrosponding_api(9,formData);
@@ -2272,7 +2283,7 @@ mappings between `act_value` and `value` for transition durations. */
                                 const dt = item?.mydata.all_date_arr;
                                 const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
                                 console.log(isFinite(xirr));
-                                item.xirr =isFinite(xirr) ? 0 :xirr;
+                                item.xirr =isFinite(xirr) ? xirr : 0;
                             }
                             else{
                               item.xirr =0
@@ -2289,17 +2300,19 @@ mappings between `act_value` and `value` for transition durations. */
                           });
                     }
                     else{
+                      console.log(final_dt.data.filter(el => Number(el.curr_val) > 0))
                       modify_dt = final_dt.data.filter((item: ILivePortFolio,index:number) => {
                         if(Number(item.curr_val) > 0 ){
                           item.id = `${Math.random()}_${item.product_code}`;
                           item.data=[];
                           item.custom_trans_type = item.transaction_type.toLowerCase().includes('sip') ? '(SIP)' : ''
                           if(item.mydata){
-                            const amt = item?.mydata.all_amt_arr.map(item => Number(item));
+                            const amt = item?.mydata.all_amt_arr.map(ele => Number(ele));
                             const dt = item?.mydata.all_date_arr;
-                            const xirr = global.XIRR([...amt,item.curr_val],[...dt,item.nav_date],0);
-                            console.log(isFinite(xirr));
-                            item.xirr = (item.curr_val == 0 || isFinite(xirr)) ? 0 : xirr
+                            // debugger;
+                            const xirr = global.XIRR([...amt,Number(item.curr_val)],[...dt,item.nav_date],0);
+                            console.log(xirr);
+                            item.xirr = isFinite(xirr) ? xirr : 0
                           }
                           else{
                             item.xirr =0

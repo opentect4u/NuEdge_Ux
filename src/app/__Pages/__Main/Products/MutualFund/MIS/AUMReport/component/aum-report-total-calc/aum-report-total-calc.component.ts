@@ -54,7 +54,7 @@ export class AumReportTotalCalcComponent implements OnInit {
        
   }
 
-  @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' | 'Segment' | 'City Type' = 'Fund House';
+  @Input() aum_type: 'Fund House' | 'Families' | 'Clients' | 'Scheme' | 'Assets Allocation' | 'Registrar' | 'Branch' | 'Segment' | 'City Type' | 'Top Clients' = 'Fund House';
 
   ngOnInit(): void {}
 

@@ -54,21 +54,21 @@ export class trxnCountSummary{
       process: trxn.filter((item: TrxnRpt) =>
       (
         PUR_PROCESS
-          .indexOf(item.transaction_subtype.toLowerCase()) >= 0)).length,
+          .indexOf(item?.transaction_subtype?.toLowerCase()) >= 0)).length,
       reject: trxn.filter((item: TrxnRpt) =>
       (
         PUR_REJ
-          .indexOf(item.transaction_subtype.toLowerCase()) >= 0)).length,
-       process_trxn:   trxn.filter((item: TrxnRpt) => (PUR_PROCESS.indexOf(item.transaction_subtype.toLowerCase()) >= 0)),
-       reject_trxn:trxn.filter((item: TrxnRpt) =>(PUR_REJ.indexOf(item.transaction_subtype.toLowerCase()) >= 0))
+          .indexOf(item?.transaction_subtype?.toLowerCase()) >= 0)).length,
+       process_trxn:   trxn.filter((item: TrxnRpt) => (PUR_PROCESS.indexOf(item?.transaction_subtype?.toLowerCase()) >= 0)),
+       reject_trxn:trxn.filter((item: TrxnRpt) =>(PUR_REJ.indexOf(item?.transaction_subtype?.toLowerCase()) >= 0))
     };
     this.pur_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
         PUR_PROCESS
-          .indexOf(item.transaction_subtype.toLowerCase()) >= 0))),
+          .indexOf(item?.transaction_subtype?.toLowerCase()) >= 0))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
         PUR_REJ
-          .indexOf(item.transaction_subtype.toLowerCase()) >= 0
+          .indexOf(item?.transaction_subtype?.toLowerCase()) >= 0
       )))
     };
 
@@ -79,21 +79,21 @@ export class trxnCountSummary{
     this.switch_in_count = {
       process: trxn.filter((item: TrxnRpt) =>
       (
-        SWITCH_IN_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWITCH_IN_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )
       ).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        SWITCH_IN_REJ.indexOf(item.transaction_subtype) >= 0
+        SWITCH_IN_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn:   trxn.filter((item: TrxnRpt) => (SWITCH_IN_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWITCH_IN_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn:   trxn.filter((item: TrxnRpt) => (SWITCH_IN_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWITCH_IN_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.switch_in_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWITCH_IN_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWITCH_IN_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWITCH_IN_REJ.indexOf(item.transaction_subtype) >= 0
+        SWITCH_IN_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     };
     tot_amt += (this.switch_in_amt.process + this.switch_in_amt.reject);
@@ -103,21 +103,21 @@ export class trxnCountSummary{
     this.swp_count = {
       process: trxn.filter((item: TrxnRpt) =>
       (
-        SWP_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWP_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )
       ).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        SWP_REJ.indexOf(item.transaction_subtype) >= 0
+        SWP_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn:   trxn.filter((item: TrxnRpt) => (SWP_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWP_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn:   trxn.filter((item: TrxnRpt) => (SWP_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWP_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.swp_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWP_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWP_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWP_REJ.indexOf(item.transaction_subtype) >= 0
+        SWP_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     };
     tot_amt -= (this.swp_amt.process + this.swp_amt.reject);
@@ -125,14 +125,14 @@ export class trxnCountSummary{
 
     /**** Redemption & Redemption Rejection */
     this.redemp_count = {
-      process: trxn.filter((item: TrxnRpt) => (REDEMP_PROCESS.indexOf(item.transaction_subtype) >= 0)).length,
-      reject: trxn.filter((item: TrxnRpt) => (REDEMP_REJ.indexOf(item.transaction_subtype) >= 0)).length,
-      process_trxn:   trxn.filter((item: TrxnRpt) => (REDEMP_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(REDEMP_REJ.indexOf(item.transaction_subtype) >= 0))
+      process: trxn.filter((item: TrxnRpt) => (REDEMP_PROCESS.indexOf(item?.transaction_subtype) >= 0)).length,
+      reject: trxn.filter((item: TrxnRpt) => (REDEMP_REJ.indexOf(item?.transaction_subtype) >= 0)).length,
+      process_trxn:   trxn.filter((item: TrxnRpt) => (REDEMP_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(REDEMP_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.redemp_amt = {
-      process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (REDEMP_PROCESS.indexOf(item.transaction_subtype) >= 0))),
-      reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (REDEMP_REJ.indexOf(item.transaction_subtype) >= 0)))
+      process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (REDEMP_PROCESS.indexOf(item?.transaction_subtype) >= 0))),
+      reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (REDEMP_REJ.indexOf(item?.transaction_subtype) >= 0)))
     };
     tot_amt -= (this.redemp_amt.process + this.redemp_amt.reject);
     /***** End */
@@ -140,20 +140,20 @@ export class trxnCountSummary{
     /***** Switch Out & Switch Out Rejection */
     this.switch_out_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        SWITCH_OUT_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWITCH_OUT_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        SWITCH_OUT_REJ.indexOf(item.transaction_subtype) >= 0
+        SWITCH_OUT_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (SWITCH_OUT_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWITCH_OUT_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (SWITCH_OUT_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWITCH_OUT_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.switch_out_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWITCH_OUT_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWITCH_OUT_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWITCH_OUT_REJ.indexOf(item.transaction_subtype) >= 0
+        SWITCH_OUT_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     };
     tot_amt -= (this.switch_out_amt.process + this.switch_out_amt.reject);
@@ -162,20 +162,20 @@ export class trxnCountSummary{
     /***** Divident Reinvestmnt , Divident Reinvestmnt Rejection */
     this.divi_reinv_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        DIVIDEND_REINV_PROCESS.indexOf(item.transaction_subtype) >= 0
+        DIVIDEND_REINV_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        DIVIDEND_REINV_REJ.indexOf(item.transaction_subtype) >= 0
+        DIVIDEND_REINV_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (DIVIDEND_REINV_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(DIVIDEND_REINV_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (DIVIDEND_REINV_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(DIVIDEND_REINV_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.divi_reinv_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        DIVIDEND_REINV_PROCESS.indexOf(item.transaction_subtype) >= 0
+        DIVIDEND_REINV_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        DIVIDEND_REINV_REJ.indexOf(item.transaction_subtype) >= 0
+        DIVIDEND_REINV_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     // tot_amt += (this.divi_reinv_amt.process + this.divi_reinv_amt.reject);
@@ -184,20 +184,20 @@ export class trxnCountSummary{
     /***** Divident PAYOUT , Divident PAYOUT Rejection */
     this.divi_payout_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        DIVIDEND_PAYOUT_PROCESS.indexOf(item.transaction_subtype) >= 0
+        DIVIDEND_PAYOUT_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        DIVIDEND_PAYOUT_REJ.indexOf(item.transaction_subtype) >= 0
+        DIVIDEND_PAYOUT_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (DIVIDEND_PAYOUT_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(DIVIDEND_PAYOUT_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (DIVIDEND_PAYOUT_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(DIVIDEND_PAYOUT_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.divi_payout_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        DIVIDEND_PAYOUT_PROCESS.indexOf(item.transaction_subtype) >= 0
+        DIVIDEND_PAYOUT_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        DIVIDEND_PAYOUT_REJ.indexOf(item.transaction_subtype) >= 0
+        DIVIDEND_PAYOUT_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     // tot_amt -= (this.divi_payout_amt.process + this.divi_payout_amt.reject);
@@ -212,39 +212,39 @@ export class trxnCountSummary{
      */
     this.switch_out_merger_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        SWITCH_OUT_MERGER_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWITCH_OUT_MERGER_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        SWITCH_OUT_MERGER_REJ.indexOf(item.transaction_subtype) >= 0
+        SWITCH_OUT_MERGER_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (SWITCH_OUT_MERGER_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWITCH_OUT_MERGER_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (SWITCH_OUT_MERGER_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWITCH_OUT_MERGER_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.switch_out_merger_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWITCH_OUT_MERGER_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWITCH_OUT_MERGER_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWITCH_OUT_MERGER_REJ.indexOf(item.transaction_subtype) >= 0
+        SWITCH_OUT_MERGER_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     tot_amt -= (this.switch_out_merger_amt.process + this.switch_out_merger_amt.reject);
     this.switch_in_merger_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        SWITCH_IN_MERGER_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWITCH_IN_MERGER_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        SWITCH_IN_MERGER_REJ.indexOf(item.transaction_subtype) >= 0
+        SWITCH_IN_MERGER_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (SWITCH_IN_MERGER_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWITCH_IN_MERGER_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (SWITCH_IN_MERGER_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(SWITCH_IN_MERGER_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.switch_in_merger_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWITCH_IN_MERGER_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SWITCH_IN_MERGER_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SWITCH_IN_MERGER_REJ.indexOf(item.transaction_subtype) >= 0
+        SWITCH_IN_MERGER_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     tot_amt += (this.switch_in_merger_amt.process + this.switch_in_merger_amt.reject);
@@ -253,41 +253,41 @@ export class trxnCountSummary{
     /******* STP IN , OUT, Rejection */
     this.stp_in_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        STP_IN_PROCESS.indexOf(item.transaction_subtype) >= 0
+        STP_IN_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        STP_IN_REJ.indexOf(item.transaction_subtype) >= 0
+        STP_IN_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (STP_IN_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(STP_IN_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (STP_IN_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(STP_IN_REJ.indexOf(item?.transaction_subtype) >= 0))
     }
     this.stp_in_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        STP_IN_PROCESS.indexOf(item.transaction_subtype) >= 0
+        STP_IN_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        STP_IN_REJ.indexOf(item.transaction_subtype) >= 0
+        STP_IN_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     tot_amt += (this.stp_in_amt.process + this.stp_in_amt.reject);
 
     this.stp_out_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        STP_OUT_PROCESS.indexOf(item.transaction_subtype) >= 0
+        STP_OUT_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        STP_OUT_REJ.indexOf(item.transaction_subtype) >= 0
+        STP_OUT_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (STP_OUT_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(STP_OUT_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (STP_OUT_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(STP_OUT_REJ.indexOf(item?.transaction_subtype) >= 0))
     }
 
     this.stp_out_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        STP_OUT_PROCESS.indexOf(item.transaction_subtype) >= 0
+        STP_OUT_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        STP_OUT_REJ.indexOf(item.transaction_subtype) >= 0
+        STP_OUT_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     tot_amt -= (this.stp_out_amt.process + this.stp_out_amt.reject);
@@ -296,20 +296,20 @@ export class trxnCountSummary{
     /*** NFO , REJECTION */
     this.nfo_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        NFO_PROCEES.indexOf(item.transaction_subtype) >= 0
+        NFO_PROCEES.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        NFO_REJ.indexOf(item.transaction_subtype) >= 0
+        NFO_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (NFO_PROCEES.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(NFO_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (NFO_PROCEES.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(NFO_REJ.indexOf(item?.transaction_subtype) >= 0))
     }
     this.nfo_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        NFO_PROCEES.indexOf(item.transaction_subtype) >= 0
+        NFO_PROCEES.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        NFO_REJ.indexOf(item.transaction_subtype) >= 0
+        NFO_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     tot_amt += (this.nfo_amt.process + this.nfo_amt.reject);
@@ -318,20 +318,20 @@ export class trxnCountSummary{
     /*****  SIP , REJECTION */
     this.sip_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        SIP_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SIP_PROCESS.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        SIP_REJ.indexOf(item.transaction_subtype) >= 0
+        SIP_REJ.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (SIP_PROCESS.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(SIP_REJ.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (SIP_PROCESS.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(SIP_REJ.indexOf(item?.transaction_subtype) >= 0))
     };
     this.sip_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SIP_PROCESS.indexOf(item.transaction_subtype) >= 0
+        SIP_PROCESS.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        SIP_REJ.indexOf(item.transaction_subtype) >= 0
+        SIP_REJ.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     tot_amt += (this.sip_amt.process + this.sip_amt.reject);
@@ -340,26 +340,26 @@ export class trxnCountSummary{
     /****** NFT, REJECTION */
     this.other_count = {
       process:(trxn.filter((item: TrxnRpt) => (
-        (NFT.indexOf(item.transaction_subtype) == -1 && !item.transaction_subtype.toLowerCase().includes('rejection'))
+        (NFT.indexOf(item?.transaction_subtype) == -1 && !item?.transaction_subtype?.toLowerCase().includes('rejection'))
       )).length),
       reject:(trxn.filter((item: TrxnRpt) => (
-        (NFT.indexOf(item.transaction_subtype) == -1 && item.transaction_subtype.toLowerCase().includes('rejection'))
+        (NFT.indexOf(item?.transaction_subtype) == -1 && item?.transaction_subtype?.toLowerCase().includes('rejection'))
       )).length),
 
       process_trxn: trxn.filter((item: TrxnRpt) => (
-          (NFT.indexOf(item.transaction_subtype) == -1 && !item.transaction_subtype.toLowerCase().includes('rejection'))
+          (NFT.indexOf(item?.transaction_subtype) == -1 && !item?.transaction_subtype?.toLowerCase().includes('rejection'))
         ))
       ,
       reject_trxn:trxn.filter((item: TrxnRpt) =>(
-        NFT.indexOf(item.transaction_subtype) == -1 && item.transaction_subtype.toLowerCase().includes('rejection'))
+        NFT.indexOf(item?.transaction_subtype) == -1 && item?.transaction_subtype?.toLowerCase().includes('rejection'))
         )
     };
     this.other_amt = {
       process:this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        (NFT.indexOf(item.transaction_subtype) == -1 && !item.transaction_subtype.toLowerCase().includes('rejection'))
+        (NFT.indexOf(item?.transaction_subtype) == -1 && !item?.transaction_subtype?.toLowerCase().includes('rejection'))
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        (NFT.indexOf(item.transaction_subtype) == -1 && item.transaction_subtype.toLowerCase().includes('rejection'))
+        (NFT.indexOf(item?.transaction_subtype) == -1 && item?.transaction_subtype?.toLowerCase().includes('rejection'))
       )))
     }
 
@@ -370,20 +370,20 @@ export class trxnCountSummary{
 
     this.transfer_in_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        TRANSFER_IN.indexOf(item.transaction_subtype) >= 0
+        TRANSFER_IN.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0
+        TRANSFER_IN_REJECTION.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (TRANSFER_IN.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (TRANSFER_IN.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(TRANSFER_IN_REJECTION.indexOf(item?.transaction_subtype) >= 0))
     };
     this.transfer_in_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        TRANSFER_IN.indexOf(item.transaction_subtype) >= 0
+        TRANSFER_IN.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        TRANSFER_IN_REJECTION.indexOf(item.transaction_subtype) >= 0
+        TRANSFER_IN_REJECTION.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     tot_amt += (this.transfer_in_amt.process + this.transfer_in_amt.reject);
@@ -394,20 +394,20 @@ export class trxnCountSummary{
      /************ Transfer Out *********/
      this.transfer_out_count = {
       process: trxn.filter((item: TrxnRpt) => (
-        TRANSFER_OUT.indexOf(item.transaction_subtype) >= 0
+        TRANSFER_OUT.indexOf(item?.transaction_subtype) >= 0
       )).length,
       reject: trxn.filter((item: TrxnRpt) => (
-        TRANSFER_OUT_REJECTION.indexOf(item.transaction_subtype) >= 0
+        TRANSFER_OUT_REJECTION.indexOf(item?.transaction_subtype) >= 0
       )).length,
-      process_trxn: trxn.filter((item: TrxnRpt) => (TRANSFER_OUT.indexOf(item.transaction_subtype) >= 0)),
-      reject_trxn:trxn.filter((item: TrxnRpt) =>(TRANSFER_OUT_REJECTION.indexOf(item.transaction_subtype) >= 0))
+      process_trxn: trxn.filter((item: TrxnRpt) => (TRANSFER_OUT.indexOf(item?.transaction_subtype) >= 0)),
+      reject_trxn:trxn.filter((item: TrxnRpt) =>(TRANSFER_OUT_REJECTION.indexOf(item?.transaction_subtype) >= 0))
     };
     this.transfer_out_amt = {
       process: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        TRANSFER_OUT.indexOf(item.transaction_subtype) >= 0
+        TRANSFER_OUT.indexOf(item?.transaction_subtype) >= 0
       ))),
       reject: this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-        TRANSFER_OUT_REJECTION.indexOf(item.transaction_subtype) >= 0
+        TRANSFER_OUT_REJECTION.indexOf(item?.transaction_subtype) >= 0
       )))
     }
     tot_amt -= (this.transfer_out_amt.process + this.transfer_out_amt.reject);
@@ -420,10 +420,10 @@ export class trxnCountSummary{
 
       // this.total_amt={
       //   process:this.calculateAmount(trxn.filter((item: TrxnRpt) => (
-      //     (NET_PROCESS_AMT.indexOf(item.transaction_subtype) > 0)
+      //     (NET_PROCESS_AMT.indexOf(item?.transaction_subtype) > 0)
       //   ))),
       //   reject:this.calculateRejectAmount(trxn.filter((item: TrxnRpt) => (
-      //     (NET_REJECTION_AMT.indexOf(item.transaction_subtype) > 0)
+      //     (NET_REJECTION_AMT.indexOf(item?.transaction_subtype) > 0)
       //   )))
       // }
     /********END */
@@ -439,12 +439,12 @@ export class trxnCountSummary{
         trxn.forEach((item) =>
         {
           // debugger;
-          if(NET_PROCESS_AMT.indexOf(item.transaction_subtype) >= 0){
-                // console.log(`${item.transaction_subtype} : ${item.tot_gross_amount} : ${amt}`);
+          if(NET_PROCESS_AMT.indexOf(item?.transaction_subtype) >= 0){
+                // console.log(`${item?.transaction_subtype} : ${item.tot_gross_amount} : ${amt}`);
                   amt+=Number(item.tot_gross_amount);
                 }
-              else if(NET_REJECTION_AMT.indexOf(item.transaction_subtype) >= 0){
-                // console.log(`${item.transaction_subtype} : ${item.tot_gross_amount} : ${amt}`);
+              else if(NET_REJECTION_AMT.indexOf(item?.transaction_subtype) >= 0){
+                // console.log(`${item?.transaction_subtype} : ${item.tot_gross_amount} : ${amt}`);
                 amt-=Number(item.tot_gross_amount);
               }
         }
