@@ -63,6 +63,11 @@ const routes: Routes = [
         loadChildren:()=> import('./customerService/customer-service.module').then(m => m.CustomerServiceModule)
       },
       {
+        path:'nuedge-online',
+        loadChildren:()=> import('./nuedge-online/nuedge-online.module').then(m => m.NuedgeOnlineModule),
+        data:{id:15,title:"NuEdge Online", pageTitle:"Nuedge Online"}
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'

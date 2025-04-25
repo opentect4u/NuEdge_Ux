@@ -763,7 +763,8 @@ export class CustomerServiceHomeComponent implements OnInit {
       .subscribe((res:any) =>{
         this.queryDataSource = res.filter((el,index) =>{
           let isExpired;
-          el.expected_close_date = el?.expected_close_date ? el.expected_close_date : this.globalFuncForExpectedCloseDate(null,el.query_tat);
+          console.log(el);
+          el.expected_close_date = el?.expected_close_date ? el.expected_close_date : this.globalFuncForExpectedCloseDate(el.date_time,el.query_tat);
           if(el.actual_close_date){
             const actual_close_date = moment(el.actual_close_date,"YYYY-MM-DD");
             const expected_close_date = moment(el.expected_close_date);

@@ -56,15 +56,38 @@
     ]
   },
   {
-    "id": 0,
+    "id": 15,
     "title": "Online",
     "mat_icon": "online_prediction",
     "icon": "",
     "value": 0,
     "img": "online.png",
-    "url": "",
+    "url": "/main/nuedge-online",
     "class": "iconSec",
-    "sub_menu": []
+    "sub_menu": [
+      {
+        "id": 1,
+        "menu_name": "NSE",
+        "title":"NSE",
+        "has_submenu": "N",
+        "url": "/main/nuedge-online/nse",
+        "icon": "",
+        "flag":"NSE",
+        "sub_menu": [],
+        "img":"/nuedge-online/nse-logo.png"
+      },
+      {
+        "id": 2,
+        "menu_name": "BSE",
+        "title":"BSE",
+        "has_submenu": "N",
+        "url": "/main/nuedge-online/bse",
+        "icon": "",
+        "flag":"BSE",
+        "sub_menu": [],
+        "img":"/nuedge-online/BSE-Logo.png"
+      }
+    ]
   },
   {
     "id": 0,

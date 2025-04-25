@@ -1,8 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   debounceTime,
-  delay,
   distinctUntilChanged,
   map,
   pluck,
@@ -28,7 +27,7 @@ import { totalAmt } from 'src/app/__Model/TotalAmt';
 import { Table } from 'primeng/table';
 import { Inject } from '@angular/core';
 import { DatePipe, DOCUMENT } from '@angular/common';
-import { Observable, Subscription, from, of } from 'rxjs';
+import {  Subscription} from 'rxjs';
 import clientType from '../../../../../../../assets/json/view_type.json';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { trxnCountAmtSummaryColumn, trxnCountSummary } from '../TransactionReport/trxn-rpt/trxnAmtCountSummary';
