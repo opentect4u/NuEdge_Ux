@@ -78,6 +78,8 @@ export class AumFilterComponent implements OnInit {
 
   schemeMst:scheme[] = [];
 
+  @Input() md_cityTtpe:Partial<{id:number,name:string}>[] = []
+
   /**
    * Holding Branch Master Data
    */

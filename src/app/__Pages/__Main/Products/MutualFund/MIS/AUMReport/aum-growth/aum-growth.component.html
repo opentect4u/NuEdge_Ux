@@ -36,7 +36,7 @@
              </mat-card-content>
         </mat-card>
 
-        <mat-card  class="mat-elevation-z0 border">
+        <mat-card  class="mat-elevation-z0 border" *ngIf="dataSource.length > 0">
             <mat-card-header class="border-bottom">
                 <mat-card-title><h4 class="filterHeader">AUM Growth Report</h4></mat-card-title>
                 <div class="pr-3 my-auto d-flex align-items-center">
@@ -70,22 +70,36 @@
                 <ng-template pTemplate="header">
                     <tr class="stickyHeader">
                         <th *ngFor="let col of column"
-                            pSortableColumn="{{col?.field}}"
+                            pSortableColumn="{{col?.field != 'trend' ? col?.field : ''}}"
                             [style]="'width : '+col?.width"
                            >
                           {{col?.header}}
-                          <p-sortIcon field="{{col?.field}}"></p-sortIcon>
+                          <p-sortIcon *ngIf="col?.field != 'trend'" field="{{col?.field}}"></p-sortIcon>
                         </th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-aumDtlsGrowth let-expanded="expanded">
+                <ng-template pTemplate="body" let-aumDtlsGrowth let-i="rowIndex" let-expanded="expanded">
                     <tr>
                         <td *ngFor="let col of column"
                         class="{{col.field}}"
                         [style]="'width : '+col.width">
                         <ng-container [ngSwitch]="true">
                             <ng-container *ngSwitchCase="col.field == 'trend'">
-                                    N/A
+                              <mat-icon
+                                style="font-size:30px!important;height: 30px;width: 30px;"
+                                [ngClass]="{
+                                  'text-success':aumDtlsGrowth['isPositive'],
+                                  'text-danger':!aumDtlsGrowth['isPositive']
+                                  }"
+                                >
+                                  arrow_drop_{{aumDtlsGrowth['isPositive'] ? 'up' : 'down'}}
+                                </mat-icon>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="col.field == 'sl_no'">
+                              {{i + 1}}
+                            </ng-container>
+                            <ng-container *ngSwitchCase="col.field == 'aum'">
+                              {{aumDtlsGrowth[col.field] ? (aumDtlsGrowth[col.field] | number:'1.2-2') : '0.00'}}
                             </ng-container>
                           <ng-container *ngSwitchDefault>
                             {{aumDtlsGrowth ? (aumDtlsGrowth[col.field] ? aumDtlsGrowth[col.field]: 'N/A') : 'N/A'}}

@@ -1,0 +1,14 @@
+<form [formGroup]="customer_entry_form" (ngSubmit)="submitForm()">
+    <div class="form-group row">
+        <label for="tax_status" class="col-sm-3 col-form-label labelTitle">Tax Status</label>
+        <div class="col-sm-9">
+          <input type="text" placeholder="Enter Tax Status" class="form-control" formControlName="tax_status" id="tax_status">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="mode_of_holding" class="col-sm-3 col-form-label labelTitle">MOH</label>
+        <div class="col-sm-9">
+          <input type="text" id="mode_of_holding" placeholder="Enter Mode Of Holding" class="form-control" formControlName="mode_of_holding" id="tax_status">
+        </div>
+    </div>
+</form>

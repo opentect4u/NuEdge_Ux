@@ -70,12 +70,12 @@
                 </form>
                 <!-- End -->
 
-                <!-- <ng-container *ngIf="md_aum_by_branch.length > 0"> -->
+                <ng-container *ngIf="md_aum_by_branch.length > 0">
                     <aum-table [dataSource]="md_aum_by_branch" 
                     [footerDT]="footerDT"  
                     [column]="aum_branch_Column"
                     [__formDate]="__formDate"></aum-table>
-                <!-- </ng-container> -->
+                </ng-container>
         
             </mat-card-content>
         </mat-card>

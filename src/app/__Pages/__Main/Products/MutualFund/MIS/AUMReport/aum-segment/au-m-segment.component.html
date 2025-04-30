@@ -19,11 +19,13 @@
                           </div>
                           <div class="col-sm-3">
                             <label for="bu_type_id">Segment</label>
-                            <select class="form-control">
+                            <select class="form-control" formControlName="bu_type_id"  id="bu_type_id" name="bu_type_id">
                                 <option value=""> Select Segment</option>
-                                <option value="D">Direct</option>
+                                <option *ngFor="let __bu_type of md_buisnessType" value="{{__bu_type.id}}">{{__bu_type.bu_type}}</option>
+
+                                <!-- <option value="D">Direct</option>
                                 <option value="I">Indirect B2C</option>
-                                <option value="B">Indirect B2B</option>
+                                <option value="B">Indirect B2B</option> -->
                             </select>    
                           </div>
                           <div  class="d-flex col-sm-6 justify-content-end align-items-end">
@@ -33,12 +35,12 @@
                 </form>
                 <!-- End -->
 
-                <!-- <ng-container *ngIf="md_aum_by_branch.length > 0"> -->
+                <ng-container *ngIf="md_aum_by_segment.length > 0">
                     <aum-table [dataSource]="md_aum_by_segment" 
                     [footerDT]="footerDT"  
                     [column]="aum_segment_Column"
                     [__formDate]="__formDate"></aum-table>
-                <!-- </ng-container> -->
+                </ng-container>
         
             </mat-card-content>
         </mat-card>

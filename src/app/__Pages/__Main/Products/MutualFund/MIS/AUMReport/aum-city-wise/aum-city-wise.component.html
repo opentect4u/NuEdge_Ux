@@ -1,9 +1,9 @@
 
 <div class="flexSec">
     <div class="container">
-        <aum-filter (onPress)="getFormData($event)"></aum-filter>
-        <ng-container >
-            <aum-table [dataSource]="md_aum_client" 
+        <aum-filter [md_cityTtpe]="md_cityTtpe" (onPress)="getFormData($event)"></aum-filter>
+        <ng-container *ngIf="md_aum_city_type.length > 0">
+            <aum-table [dataSource]="md_aum_city_type" 
             [footerDT]="footerDT"  
             [dataKey]="'id'"
             [__formDate]="__formDate"

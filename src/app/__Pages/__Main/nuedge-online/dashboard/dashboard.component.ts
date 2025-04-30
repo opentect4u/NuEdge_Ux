@@ -9,7 +9,7 @@ import { UtiliService } from 'src/app/__Services/utils.service';
 })
 export class DashboardComponent implements OnInit {
 
-  menuForNuedgeOnline = menus.filter(el => el.id == 15)[0]?.sub_menu
+  menuForNuedgeOnline = menus.filter(el => el.id == 20)[0]?.sub_menu
 
   constructor(private utility: UtiliService) { }
 

@@ -21,7 +21,7 @@
                         <div class="num-bx">
                          <ng-container *ngIf="item.key != 'xirr';else XIRR">
                                 <span>{{item.key == 'Contri. To AUM' ? item.value : item.value | number:'1.2-2'}} </span> 
-                                <span *ngIf="item.key == 'Abs. Return'  || item.key == 'AMC Weightage in (%)'">%</span>
+                                <span *ngIf="item.key == 'Abs. Return'  || item.key == 'AMC Weightage in (%)' || item.key == 'Branch Weightage In(%)' || item.key == 'Segment Weightage In(%)'">%</span>
                          </ng-container>
                          <ng-template #XIRR>
                              {{item.value ? (item.value != 'Calculating' ? (item.value | percent:'1.2-2') : 'Calculating...') : '0.00%'}} 

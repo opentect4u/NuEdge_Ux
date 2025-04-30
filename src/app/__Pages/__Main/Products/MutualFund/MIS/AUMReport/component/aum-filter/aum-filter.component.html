@@ -13,27 +13,29 @@
     <mat-card-content class="p-3">
         <form [formGroup]="aum_report_filter_frm" (ngSubmit)="clickToSend()">
             <div class="row">
+              <div class="col-sm-3">
+                <label for="date">Date</label>
+                <p-calendar #dateRng dateFormat="dd/mm/yy"
+                  placeholder="Select Date" formControlName="date"
+                  [readonlyInput]="true" [id]="'date'" [showIcon]="true" [hideOnDateTimeSelect]="true"
+                  [showButtonBar]="true">
+                </p-calendar>
+              </div>
               <ng-container *ngIf="aum_type == 'City Type';else other">
                 <div class="col-sm-3">
-                  <label for="date">City Type</label>
+                  <label for="city_type_id">City Type</label>
                   <select name="city_type_id" id="city_type_id" formControlName="city_type_id" class="form-control">
                     <option value=""> Select City Type</option>
-                    <option  value="T-30">T-30</option>
-                    <option  value="B-30">B-30</option>
+                    <!-- <option  value="T-30">T-30</option>
+                    <option  value="B-30">B-30</option> -->
+                    <option *ngFor="let item of md_cityTtpe" value="{{item.id}}">{{item.name}}</option>
                   </select>
                 </div>
                 <div class="col-span-3"></div>
                 <div class="col-span-3"></div>
               </ng-container>
               <ng-template #other>
-                  <div class="col-sm-3">
-                    <label for="date">Date</label>
-                    <p-calendar #dateRng dateFormat="dd/mm/yy"
-                      placeholder="Select Date" formControlName="date"
-                      [readonlyInput]="true" [id]="'date'" [showIcon]="true" [hideOnDateTimeSelect]="true"
-                      [showButtonBar]="true">
-                    </p-calendar>
-                  </div>
+                 
                 <div class="col-sm-3">
                     <label for="amc_id">AMC</label>
                     <ng-multiselect-dropdown [attr.id]="'amc_id'" [placeholder]="'Select AMC'"
@@ -101,12 +103,13 @@
                           </ng-multiselect-dropdown>
                         </div>
                   </ng-container>
-                  <div  class="d-flex justify-content-end align-items-end"
-                    [ngClass]="
-                    {
-                        'col-sm-6':btn_type == 'A' ,
-                        'col-sm-9':btn_type != 'A' || aum_type == 'City Type'
-                    }"
+                  <!--  -->
+                  <div  class="d-flex justify-content-end align-items-end "
+                  [ngClass]="
+                  {
+                      'col-sm-6':btn_type == 'A' || aum_type == 'City Type',
+                      'col-sm-9':btn_type != 'A' && aum_type != 'City Type'
+                  }"
                   >
                         <p-button type="submit" label="Show" icon="pi pi-eye" iconPos="right" styleClass="p-button-lg"></p-button>
 

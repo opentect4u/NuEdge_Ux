@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { UtiliService } from 'src/app/__Services/utils.service';
 import filterOpt from '../../../../../../../../assets/json/filterOption.json';
 import { pluck } from 'rxjs/operators';
 import { column } from 'src/app/__Model/tblClmns';
+import { Calendar } from 'primeng/calendar';
+import { global } from 'src/app/__Utility/globalFunc';
+import moment from 'moment';
 
 
 
@@ -14,6 +17,8 @@ import { column } from 'src/app/__Model/tblClmns';
   styleUrls: ['./aum-branch.component.css']
 })
 export class AumBranchComponent implements OnInit {
+
+    @ViewChild('dateRng') daterRnge:Calendar;
 
   aum_branch_Column:column[] = AumBranchColumn.aum_branch_Column;
   /**
@@ -243,18 +248,102 @@ export class AumBranchComponent implements OnInit {
   }
 
   clickToSend() {
-    console.log(this.aum_report_filter_frm.value);
-    // var formdata = new FormData();
-    // for(let key in this.aum_report_filter_frm.value){
-    //   if(Array.isArray(this.aum_report_filter_frm.value[key])){
-    //     formdata.append(key,JSON.stringify(this.aum_report_filter_frm.value[key]))
-    //   }
-    //   else{
-    //     formdata.append(key,this.aum_report_filter_frm.value[key])
-    //   }
-    // }
-    this.__formDate = this.aum_report_filter_frm.value.date
+
+    var formdata = new FormData();
+    for(let key in this.aum_report_filter_frm.value){
+      if(Array.isArray(this.aum_report_filter_frm.value[key])){
+        formdata.append(key,JSON.stringify(this.aum_report_filter_frm.value[key].map(el => el.id)))
+      }
+      else if(key == 'date'){
+        formdata.append('date',this.daterRnge.inputFieldValue)
+      }
+      else{
+        formdata.append(key,this.aum_report_filter_frm.value[key])
+      }
+    }
+    this.__formDate = moment(this.aum_report_filter_frm.value.date).format('DD/MM/YYYY');
+    this.dbIntr.api_call(1,'/clients/aumBranch',formdata).pipe(pluck('data')).subscribe((res:any) =>{
+        this.calculateAUMByBranch(res)
+    })
   }
+
+  calculateAUMByBranch = (res) =>{
+              let originalDt = [];
+              const filteredByBranchId = res.filter(el => el.branch_id)
+              const groupByBranch = this.groupBy(filteredByBranchId, 'branch_name');
+              const totalInv = global.Total__Count(filteredByBranchId, (x:any) => x?.inv_cost ? Number(x.inv_cost) : 0);
+              console.log(totalInv);
+              Object.keys(groupByBranch).forEach((key,index) =>{
+                      /***** CALUCLATION OF UPPER TABLE */
+                          const totInvCost = groupByBranch[key].map(el => Number(el.inv_cost)).reduce((totSum, a) => totSum + a, 0);
+                          const totIdcwPaid = groupByBranch[key].map(el => Number(el.idcw_paid)).reduce((totSum, a) => totSum + a, 0);
+                          const totIdcwReinv = groupByBranch[key].map(el => Number(el.idcw_reinv)).reduce((totSum, a) => totSum + a, 0);
+                          const totAUM = groupByBranch[key].map(el => Number(el.curr_aum)).reduce((totSum, a) => totSum + a, 0);
+                          // const totAbsRtn = groupByBranch[key].map(el => Number(el.abs_rtn)).reduce((totSum, a) => totSum + a, 0);
+                          const totGainLoss = groupByBranch[key].map(el => Number(el.gain_loss)).reduce((totSum, a) => totSum + a, 0);
+                          const totAbsRtn = (totGainLoss / totInvCost)*100;
+                          const tot_branch_weightage = (totInvCost / totalInv) * 100;
+                      /****** END */
+          
+                      /**** DISPLAY AMOUNT CATEGORY WISE */
+                        originalDt.push({
+                          branch_name:groupByBranch[key][0].branch_name,
+                          inv_cost:totInvCost,
+                          Investment:totInvCost,
+                          idcw_paid:totIdcwPaid,
+                          IDCWP:totIdcwPaid,
+                          idcw_reinv:totIdcwReinv,
+                          "IDCW Reinv.":totIdcwReinv,
+                          gain_loss:totGainLoss,
+                          curr_aum:totAUM,
+                          AUM:totAUM,
+                          ret_abs:totAbsRtn.toFixed(2),
+                          "Abs. Return":totAbsRtn,
+                          "Branch Weightage In(%)":tot_branch_weightage.toFixed(2),
+                          branch_weightage_in:tot_branch_weightage.toFixed(2),
+                          // schemes:groupByBranch[key],
+                          total:{
+                            inv_cost:totInvCost,
+                            idcw_paid:totIdcwPaid,
+                            curr_aum:totAUM,
+                            abs_rtn:totAbsRtn,
+                            branch_name:"TOTAL"
+                          }
+                        })
+                      /**** END */
+              })
+              this.md_aum_by_branch = originalDt;
+              this.createParentFooter(originalDt)
+  }
+
+
+  createParentFooter = (value) =>{
+      const tot_gain_loss = global.Total__Count(value,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
+      const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
+      // console.log((tot_gain_loss / tot_inv_cost) * 100);
+      const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
+      let obj = {}
+      const dt = value.map(({total,schemes,cat_name,branch_weightage_in,
+        amc_name,amc_code,inv_cost,idcw_paid,idcw_reinv,gain_loss,branch_name,
+        curr_aum,ret_abs,subcat_name,contri_to_aum,...rest}) => {return {...rest}})
+      for(let object of dt) {Object.assign(obj, object)}
+      Object.keys(obj).forEach(el =>{
+        // console.log( el + ":" + obj[el])
+        this.footerDT = {
+          ...this.footerDT,
+          [el]:el == "Abs. Return" ? tot_ret_abs.toFixed(2) : el == 'Contri. To AUM' ? '100%' :  global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)),
+        }
+      })
+      console.log(this.footerDT);
+    }
+
+  groupBy(xs, key) {
+    return xs.reduce(function(rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
+
 
   onItemClick = (ev) => {
     if (ev.option.value == 'A') {

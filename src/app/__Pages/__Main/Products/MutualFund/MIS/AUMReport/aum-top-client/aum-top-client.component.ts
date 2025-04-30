@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import filterOpt from '../../../../../../../../assets/json/filterOption.json';
 import { FormControl, FormGroup } from '@angular/forms';
 import periods from '../../../../../../../../assets/json/datePeriods.json';
@@ -15,7 +15,9 @@ import { dates } from 'src/app/__Utility/disabledt';
 import { IAumFooterModel } from '../component/aum.model';
 import { column } from 'src/app/__Model/tblClmns';
 import { AumClientColumn } from '../aum-client/aum-client.component';
-
+import moment from 'moment';
+import { global } from 'src/app/__Utility/globalFunc';
+import { Calendar } from 'primeng/calendar';
 @Component({
   selector: 'app-aum-top-client',
   templateUrl: './aum-top-client.component.html',
@@ -52,12 +54,16 @@ export class AumTopClientComponent implements OnInit {
 
   isLoaderShown:boolean | undefined = false;
 
-
+  /**
+   *  getAccess of Prime Ng Calendar
+   */
+  @ViewChild('dateRng') dateRange:Calendar;
 
   duplicateDt = [];
 
   md_aum_client = [];
-
+  private worker: Worker | null = null;
+  private worker_for_footer: Worker | null = null;
 
   /**
    *  get date Periods from JSON File Located at (assets/json/datePeriods) for populate
@@ -259,8 +265,111 @@ export class AumTopClientComponent implements OnInit {
         });
     };
 
-  searchTrxnReport = () => {}
+  searchTrxnReport = () => {
+    const TrxnDt = new FormData();
+        TrxnDt.append('view_type',this.misTrxnRpt.value.view_type);
+        TrxnDt.append('client_name',this.misTrxnRpt.getRawValue().client_name);
+        TrxnDt.append('family_members_pan',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => item.pan),'pan') : '[]');
+        TrxnDt.append('family_members_name',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => !item.pan),'client_name') : '[]');
+        TrxnDt.append('date_range',global.getActualVal(this.dateRange.inputFieldValue));
+        TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
+        TrxnDt.append('number',global.getActualVal(this.misTrxnRpt.value.number));
+        // TrxnDt.append('client_id',global.getActualVal(this.misTrxnRpt.value.client_id));
+        TrxnDt.append('amc_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.amc_id, 'id'));
+        TrxnDt.append('cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.cat_id, 'id'));
+        TrxnDt.append('sub_cat_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.sub_cat_id, 'id'));
+        TrxnDt.append('pan_no',this.misTrxnRpt.value.pan_no ? this.misTrxnRpt.value.pan_no : '');
+        TrxnDt.append('scheme_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.scheme_id, 'id'));
+        // TrxnDt.append('trans_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_type_id,'trans_type'));
+        // TrxnDt.append('trans_sub_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.trxn_sub_type_id,'trans_sub_type'));
+        if (this.btn_type == 'A') {
+          TrxnDt.append('euin_no',this.utility.mapIdfromArray(this.misTrxnRpt.value.euin_no, 'euin_no'));
+          TrxnDt.append('brn_cd',this.utility.mapIdfromArray(this.misTrxnRpt.value.brn_cd, 'id'));
+          TrxnDt.append('rm_id',this.utility.mapIdfromArray(this.misTrxnRpt.value.rm_id, 'euin_no'));
+          TrxnDt.append('bu_type',this.utility.mapIdfromArray(this.misTrxnRpt.value.bu_type_id, 'bu_code'));
+          TrxnDt.append('sub_brk_cd',this.utility.mapIdfromArray(this.misTrxnRpt.getRawValue().sub_brk_cd, 'code'));
+        }
+        if(this.worker_for_footer){
+          this.worker_for_footer.terminate();
+        }
+        if(this.worker){
+          this.worker.terminate();
+        }
+        this.dbIntr.api_call(1,'/clients/aumClient',TrxnDt)
+        .pipe(pluck('data')).subscribe((res:any) =>{
+          // this.duplicateDt = res;
+          // this.isLoaderShown = true;
+          // this.backgroundProcessing(res);
 
+          this.duplicateDt = res;
+          this.isLoaderShown = true;
+          this.backgroundProcessing(res);
+        })
+  }
+
+    backgroundProcessing = (res) =>{
+      try{
+        if (typeof Worker !== 'undefined') {
+          // Create a new
+          this.worker = new Worker(new URL('../aum-client/aum-by-client-calculations.worker', import.meta.url));
+          this.worker.onmessage = ({ data }) => {
+            this.createParentFooter(data);
+            // this.worker.terminate();
+            // this.recursiveBackgroundProcess(data);
+            this.md_aum_client = data
+            this.isLoaderShown = false;
+            
+          };
+          this.worker.postMessage({
+            res:res,
+            date:this.__formDate
+          });
+        } else {
+            this.isLoaderShown = false;
+            // this.spinner.hide();
+        }
+      }
+      catch(err){
+        this.isLoaderShown = false;
+        // this.spinner.hide();
+      }
+      
+    }
+    createParentFooter = (value) =>{
+      const tot_gain_loss = global.Total__Count(value,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
+      const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
+      const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
+      let obj = {}
+      const dt = value.map(({id,total,schemes,cat_name,amc_weightage_in,amc_name,gain_loss,amc_code,inv_cost,idcw_paid,idcw_reinv,xirr_amt_arr,xirr_date_arr,
+        curr_aum,ret_abs,client_code,client_name,pan,...rest}) => {return {...rest}})
+      for(let object of dt) {Object.assign(obj, object)}
+      Object.keys(obj).forEach(el =>{
+        this.footerDT = {
+          ...this.footerDT,
+          [el]:el == 'Abs. Return' ? tot_ret_abs.toFixed(2) : (el == 'xirr' ? 'Calculating' : global.Total__Count(value,((item) => item[el] ? Number(item[el]) : 0)).toFixed(2)),
+        }
+      })
+      this.calculate_XIRR_For_footer(value)
+    }
+
+    calculate_XIRR_For_footer(data){
+      if (typeof Worker !== 'undefined') {
+        // Create a new
+        this.worker_for_footer = new Worker(new URL('../aum-client/aum-by-client-footer-calculation.worker', import.meta.url));
+        this.worker_for_footer.onmessage = ({ data }) => {
+              this.footerDT = {
+                ...this.footerDT,
+                xirr:data
+              }
+        };
+        this.worker_for_footer.postMessage({
+          res:data,
+          date:this.__formDate,
+          footerDT: this.footerDT
+        });
+      } else {
+      }
+    }
 
   /**
    * event trigger after select particular result from search list

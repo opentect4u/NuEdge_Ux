@@ -56,8 +56,8 @@
     ]
   },
   {
-    "id": 15,
-    "title": "Online",
+    "id": 20,
+    "title": "Nuedge Online",
     "mat_icon": "online_prediction",
     "icon": "",
     "value": 0,
@@ -67,26 +67,117 @@
     "sub_menu": [
       {
         "id": 1,
-        "menu_name": "NSE",
-        "title":"NSE",
-        "has_submenu": "N",
-        "url": "/main/nuedge-online/nse",
+        "menu_name": "Client Onboarding",
+        "title":"Client Onboarding",
+        "has_submenu": "Y",
+        "url": "/main/nuedge-online/client-onboarding",
         "icon": "",
-        "flag":"NSE",
-        "sub_menu": [],
-        "img":"/nuedge-online/nse-logo.png"
+        "flag":"CO",
+        "sub_menu": [
+          {
+            "id": 1,
+            "menu_name": "Create Client",
+            "title":"Create Client",
+            "has_submenu": "Y",
+            "url": "/main/nuedge-online/client-onboarding/create-client",
+            "icon": "",
+            "flag":"CC",
+            "sub_menu": [
+              {
+                "id": 1,
+                "menu_name": "New Client",
+                "title":"New Client",
+                "has_submenu": "Y",
+                "url": "/main/nuedge-online/client-onboarding/create-client/new-client",
+                "icon": "",
+                "flag":"NC",
+                "sub_menu": [],
+                "img":"nuedge-online/client_onboarding.png"
+              },
+              {
+                "id": 2,
+                "menu_name": "Existing Client",
+                "title":"Existing Client",
+                "has_submenu": "Y",
+                "url": "/main/nuedge-online/client-onboarding/create-client/existing-client",
+                "icon": "",
+                "flag":"EC",
+                "sub_menu": [],
+                "img":"nuedge-online/client_onboarding.png"
+              }
+            ],
+            "img":"nuedge-online/client_onboarding.png"
+          },
+          {
+            "id": 2,
+            "menu_name": "Mapping",
+            "title":"Mapping",
+            "has_submenu": "N",
+            "url": "/main/nuedge-online/client-onboarding",
+            "icon": "",
+            "flag":"M",
+            "sub_menu": [],
+            "img":"nuedge-online/client_onboarding.png"
+          },
+          {
+            "id": 3,
+            "menu_name": "Mandate",
+            "title":"Mandate",
+            "has_submenu": "N",
+            "url": "/main/nuedge-online/client-onboarding/create-client",
+            "icon": "",
+            "flag":"MN",
+            "sub_menu": [],
+            "img":"nuedge-online/client_onboarding.png"
+          }
+        ],
+        "img":"nuedge-online/client_onboarding.png"
       },
       {
         "id": 2,
-        "menu_name": "BSE",
-        "title":"BSE",
+        "menu_name": "Transact-Online",
+        "title":"Transact-Online",
         "has_submenu": "N",
-        "url": "/main/nuedge-online/bse",
+        "url": "/main/nuedge-online/transact-online",
         "icon": "",
-        "flag":"BSE",
+        "flag":"TO",
         "sub_menu": [],
-        "img":"/nuedge-online/BSE-Logo.png"
+        "img":"nuedge-online/transact-online.png"
+      },
+      {
+        "id": 3,
+        "menu_name": "Bulk Order",
+        "title":"Bulk Order",
+        "has_submenu": "N",
+        "url": "/main/nuedge-online/bulk-order",
+        "icon": "",
+        "flag":"TO",
+        "sub_menu": [],
+        "img":"nuedge-online/bulk_order.png"
+      },
+      {
+        "id": 4,
+        "menu_name": "Cart",
+        "title":"Cart",
+        "has_submenu": "N",
+        "url": "/main/nuedge-online/cart",
+        "icon": "",
+        "flag":"TO",
+        "sub_menu": [],
+        "img":"nuedge-online/cart.png"
+      },
+      {
+        "id": 5,
+        "menu_name": "Transaction Log",
+        "title":"Transaction Log",
+        "has_submenu": "N",
+        "url": "/main/nuedge-online/transaction-log",
+        "icon": "",
+        "flag":"TO",
+        "sub_menu": [],
+        "img":"nuedge-online/transaction-log.png"
       }
+      
     ]
   },
   {
