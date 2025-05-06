@@ -66,7 +66,7 @@ export class AumTableComponent implements OnInit {
   @Input() isLoaderShown:boolean | undefined = false
 
   /*** Table Has SubColumn */
-  has_sub_column:boolean;
+  @Input() has_sub_column:boolean;
   /*** End */
 
   @Input() __formDate:string;

@@ -10,7 +10,7 @@ const routes:Routes =[
   {
     path:'',
     component:AumTopClientComponent,
-    data:{breadcrumb:'Nuedge - AUM Top Client Report',type:'Top Clients',has_sub_column:true},
+    data:{breadcrumb:'AUM Top Client Report',type:'Top Clients',has_sub_column:true},
   }
 ]
 

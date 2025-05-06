@@ -7,6 +7,7 @@ import EmployeeScores from '../../../../assets/json/EmployeeScores.json';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 import { pipe } from 'rxjs';
 import { pluck } from 'rxjs/operators';
+import moment from 'moment';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -36,22 +37,26 @@ export class HomeComponent implements OnInit {
 
     /*** For Showing Top Card Value */
     __topValues:Required<ITileValue>[] = [
-      {title:"Current AUM",amount:0,class_name:"",flag:"C",is_pending:false,mom_percentage:0,route_url:'/main'},
+      {title:"Current AUM",amount:0,class_name:"",flag:"C",is_pending:true,mom_percentage:0,route_url:'/main'},
       {title:"Live SIP",amount:0,class_name:"",flag:"L",is_pending:true,mom_percentage:0,route_url:'/main/product/mf/sipreport'},
       {title:"Monthly MIS (NS)",amount:0,class_name:"",flag:"M",is_pending:false,mom_percentage:0,route_url:'/main'},
       {title:"Monthly MIS (GS)",amount:0,class_name:"",flag:'T',is_pending:false,mom_percentage:0,route_url:'/main'}
     ]
     /*** End */
   constructor(private dbIntr:DbIntrService) {}
-  ngOnInit() {this.Calculate_Live_SIP()}
+  ngOnInit() {
+    this.Calculate_Live_SIP();
+    this.CalculateLive_Aum();
+  }
 
 
+   /**
+   * For Calculating Live SIP
+   */
   Calculate_Live_SIP(){
-      console.log(this.__topValues)
       this.dbIntr.api_call(0,'/showLiveSIPAmount','flag=L',true)
       .pipe(pluck("data")).
       subscribe((res:Required<ITilesAPIResonse>) =>{
-        console.log(res);
         this.setAmountInTiles(res);
       },
       err => {
@@ -61,6 +66,37 @@ export class HomeComponent implements OnInit {
       )
   }
 
+
+  /**
+   * For Calculating Current AUM
+   */
+  CalculateLive_Aum(){
+    this.dbIntr.api_call(0,'/showCurrAum','flag=C',true)
+    .pipe(pluck("data")).
+    subscribe((res:any) =>{
+      try{
+        const sorted_date_arr = Object.keys(res?.data).sort((a, b) => moment(b).diff(moment(a)));
+        const mainObj = {
+          curr_total_amount: res?.data ? res?.data[sorted_date_arr[0]] : 0,
+          flag: res?.flag,
+          prev_total_amount:  res?.data ? res?.data[sorted_date_arr[sorted_date_arr.length - 1]] : 0,
+          total_amount: res?.data ? res?.data[sorted_date_arr[0]] : 0
+        } 
+        this.setAmountInTiles(mainObj);
+      }
+      catch(err){
+        const index = this.__topValues.findIndex(item => item.flag == 'C');
+        this.checkStatusofTiles(false,index);
+      }
+
+    },
+    err => {
+        const index = this.__topValues.findIndex(item => item.flag == 'C');
+        this.checkStatusofTiles(false,index);
+    }
+    )
+  }
+
   /**
    * set amount in the array of tiles
    * @param res
@@ -68,9 +104,11 @@ export class HomeComponent implements OnInit {
   setAmountInTiles = (res:Required<ITilesAPIResonse>) =>{
     const index = this.__topValues.findIndex(item => item.flag == res.flag);
     try{
+      console.log(res);
       this.__topValues[index].amount = res.total_amount;
       const momPercentage__calculation = ((res.total_amount - res.prev_total_amount) / res.prev_total_amount) * 100
-      this.__topValues[index].mom_percentage = momPercentage__calculation
+      this.__topValues[index].mom_percentage = momPercentage__calculation;
+      console.log(momPercentage__calculation)
     }
     catch(ex){
         console.log(ex)
@@ -80,7 +118,6 @@ export class HomeComponent implements OnInit {
 
   checkStatusofTiles = (is_pending:boolean,index:number) =>{
     this.__topValues[index].is_pending = is_pending;
-    console.log(this.__topValues)
   }
 }
 

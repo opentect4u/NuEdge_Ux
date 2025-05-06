@@ -15,6 +15,7 @@ import { global } from 'src/app/__Utility/globalFunc';
   styleUrls: ['./aum-growth.component.css']
 })
 export class AumGrowthComponent implements OnInit {
+  selectNumber:number[] = [];
   
   @ViewChild('dt') primeTbl:Table
   finYear:string[] = [];
@@ -24,17 +25,22 @@ export class AumGrowthComponent implements OnInit {
  
   aum_report_growth_filter_frm = new FormGroup({
       finYear: new FormControl(""),
+      month_for:new FormControl(''),
   });
   constructor(private utility:UtiliService,private dbIntr:DbIntrService) { }
 
   ngOnInit(): void {
    this.getFinancialYearByNumber();
+   const range = Array.from({ length: 12 }, (_, i) => i + 1);
+   this.selectNumber = range;
   }
+
 
   getFinancialYearByNumber = () =>{
     try{
       const year = global.getAllFinancialYears(5);
       this.finYear = [...year,"Last 5 Year"];
+      this.finYear = [...year,"Last 5 Year",'YTD',"Month"];
       this.aum_report_growth_filter_frm.patchValue({finYear:this.finYear[0]});
     }
     catch(err){
@@ -73,10 +79,16 @@ export class AumGrowthComponent implements OnInit {
 
 
   clickToSend = () =>{
+      if( this.aum_report_growth_filter_frm.value.finYear == 'Month' && !this.aum_report_growth_filter_frm.value.month_for){
+        this.utility.showSnackbar('Please provide month for',2);
+        return;
+      }
+
       const fd = new FormData();
       this.chartData = null;
       this.dataSource = [];
       fd.append('fin_year',this.aum_report_growth_filter_frm.value.finYear);
+      fd.append('month_for',this.aum_report_growth_filter_frm.value.finYear == 'Month' ? this.aum_report_growth_filter_frm.value.month_for : '');
       const finYear  = this.aum_report_growth_filter_frm.value.finYear
       this.dbIntr.api_call(1,'/clients/aumGrowth',fd)
       .pipe(pluck('data'))

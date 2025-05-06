@@ -7,9 +7,14 @@ addEventListener('message', ({ data }) => {
     console.log(data)
     let  all_amount_arr = [...(data.res.map(el => el.xirr_amt_arr))];
     let  all_date_arr = [...data.res.map(el =>el.xirr_date_arr)];
-    const xirr_amt_arr = [...all_amount_arr.reduce((acc, val) => acc.concat(val), []),Number(data.footerDT?.AUM).toFixed(2)];
-    const xirr_date_arr = [...all_date_arr.reduce((acc, val) => acc.concat(val), []),data.date];
-    const xirr = XIRR(xirr_amt_arr,xirr_date_arr,0)
+  
+    // const xirr_amt_arr = [...all_amount_arr.reduce((acc, val) => acc.concat(val), []),Number(data.footerDT?.AUM).toFixed(2)];
+    // const xirr_date_arr = [...all_date_arr.reduce((acc, val) => acc.concat(val), []),data.date];
+    // console.log(all_amount_arr);
+    // console.log(all_date_arr);
+    // const xirr = XIRR(xirr_amt_arr,xirr_date_arr,0);
+    const xirr = XIRR(all_amount_arr.reduce((acc, val) => acc.concat(val), []),all_date_arr.reduce((acc, val) => acc.concat(val), []),0);
+    console.log(xirr)
     postMessage(xirr);
  });
 

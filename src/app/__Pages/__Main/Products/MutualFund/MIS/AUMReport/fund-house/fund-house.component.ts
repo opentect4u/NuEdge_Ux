@@ -76,7 +76,10 @@ export class FundHouseComponent implements OnInit {
     let originalDt = []; 
 
     this.dbIntr.api_call(1,'/clients/aumFundHouse',formdata).pipe(pluck('data')).subscribe((res:any) =>{
-      const total_aum = res.filter((el:any) => Number(el.curr_aum) > 0).map((ele:any) =>  Number(ele.curr_aum)).reduce((totSum, a) => totSum + a, 0)
+      console.log(res.map(el => el.curr_aum))
+      const total_aum = res.filter((el:any) => Number(el.curr_aum) > 0).map((ele:any) =>  Number(ele.curr_aum)).reduce((totSum, a) => totSum + a, 0);
+      console.log(total_aum)
+
       const groupByAMC = this.groupBy(res.filter(el => Number(el.inv_cost) > 0), 'amc_code');
       Object.keys(groupByAMC).forEach((key,index) =>{
               /***** CALUCLATION OF UPPER TABLE */

@@ -27,9 +27,11 @@ export class AumTopClientComponent implements OnInit {
 
   selectNumber:number[] = [];
 
-  __formDate:string;
+  __formDate:any;
 
-    aum_client_Column:column[] = AumClientColumn.column;
+    has_sub_column:boolean = true;
+
+    aum_client_Column:column[] = [];
   
     aum_client_sub_column:column[] = AumClientColumn.sub_column;
 
@@ -208,6 +210,7 @@ export class AumTopClientComponent implements OnInit {
     misTrxnRpt = new FormGroup({
       date_periods: new FormControl(''),
       date_range: new FormControl(''),
+      date: new FormControl(new Date()),
       view_type:new FormControl(''),
       number:new FormControl(''),
       amc_id: new FormControl([], { updateOn: 'change' }),
@@ -266,12 +269,37 @@ export class AumTopClientComponent implements OnInit {
     };
 
   searchTrxnReport = () => {
-    const TrxnDt = new FormData();
+    this.__formDate = moment(this.misTrxnRpt.value.date).format('YYYY-MM-DD');
+    this.md_aum_client = [];
+    this.duplicateDt = [];
+    this.isLoaderShown = false;
+        console.log(this.misTrxnRpt.value.view_type )
+        if(this.misTrxnRpt.value.view_type == 'F'){
+            if(!this.misTrxnRpt.value.pan_no){
+              this.utility.showSnackbar('Please select family head',2)
+              return;
+            }
+            else if(this.misTrxnRpt.value.family_members.length == 0){
+              this.utility.showSnackbar('Please select atleast one family member',2)
+              return;
+            }
+          }
+        else if(this.misTrxnRpt.value.view_type == 'C'){
+          if(this.misTrxnRpt.value.pan_no || this.misTrxnRpt.getRawValue().client_name){}
+          else{
+              this.utility.showSnackbar('Please select investor',2)
+                return;
+          }
+        }
+    this.has_sub_column = this.misTrxnRpt.value.view_type != 'F';
+
+        const TrxnDt = new FormData();
         TrxnDt.append('view_type',this.misTrxnRpt.value.view_type);
         TrxnDt.append('client_name',this.misTrxnRpt.getRawValue().client_name);
         TrxnDt.append('family_members_pan',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => item.pan),'pan') : '[]');
         TrxnDt.append('family_members_name',this.misTrxnRpt.value.view_type == 'F' ? this.utility.mapIdfromArray(this.misTrxnRpt.value.family_members.filter(item => !item.pan),'client_name') : '[]');
-        TrxnDt.append('date_range',global.getActualVal(this.dateRange.inputFieldValue));
+        // TrxnDt.append('date_range',global.getActualVal(this.dateRange.inputFieldValue));
+        TrxnDt.append('date',this.misTrxnRpt.value.date ?  moment(this.misTrxnRpt.value.date).format('YYYY-MM-DD') : '');
         TrxnDt.append('folio_no',global.getActualVal(this.misTrxnRpt.value.folio_no));
         TrxnDt.append('number',global.getActualVal(this.misTrxnRpt.value.number));
         // TrxnDt.append('client_id',global.getActualVal(this.misTrxnRpt.value.client_id));
@@ -295,17 +323,91 @@ export class AumTopClientComponent implements OnInit {
         if(this.worker){
           this.worker.terminate();
         }
-        this.dbIntr.api_call(1,'/clients/aumClient',TrxnDt)
-        .pipe(pluck('data')).subscribe((res:any) =>{
-          // this.duplicateDt = res;
-          // this.isLoaderShown = true;
-          // this.backgroundProcessing(res);
-
-          this.duplicateDt = res;
-          this.isLoaderShown = true;
-          this.backgroundProcessing(res);
-        })
+          
+          this.dbIntr.api_call(1,'/clients/aumClient',TrxnDt)
+          .pipe(pluck('data')).subscribe((res:any) =>{
+            console.log(this.misTrxnRpt.value.view_type);
+            this.aum_client_Column = AumClientColumn.column.map(el =>{
+                if(el.field == 'client_name'){
+                  if(this.misTrxnRpt.value.view_type == 'F'){
+                    el.field =  'family_head_name';
+                    el.header = 'Family Head / Individual';
+                    console.log(el);
+                  }
+                    
+                }
+                return el;
+              })
+            if(this.misTrxnRpt.value.view_type != 'F'){
+              this.duplicateDt = res;
+              this.isLoaderShown = true;
+              this.backgroundProcessing(res);
+            }
+            else{
+              this.populateDtForFamily(res);
+            }
+        
+          })  
+     
+          
   }
+
+
+  populateDtForFamily = (res) =>{
+                console.log(this.misTrxnRpt.getRawValue().client_name)
+                let dt = [];
+                let  all_amount_arr = [...(res.map(el => JSON.parse(el.all_amount_arr)))];
+                let  all_date_arr = [...res.map(el => JSON.parse(el.all_date_arr))];
+                const inv_cost = global.Total__Count(res,(x:any) => x?.total_inv_cost ? Number(x?.total_inv_cost) : 0);
+                const idcw_paid = global.Total__Count(res,(x:any) => x?.idcw_paid ? Number(x?.idcw_paid) : 0);
+                const idcw_reinv = global.Total__Count(res,(x:any) => x?.idcw_reinv ? Number(x?.idcw_reinv) : 0);
+                const curr_aum = global.Total__Count(res,(x:any) => x?.curr_aum ? Number(x?.curr_aum) : 0);
+                const totGainLoss = global.Total__Count(res,(x:any) => x?.gain_loss ? Number(x?.gain_loss) : 0);
+                const tot_ret_abs = Number(inv_cost) > 0 ? ((totGainLoss / inv_cost) * 100)?.toFixed(2) : 0;
+                const xirr = 0;
+                const family_head_name = res.filter(el => el.first_client_name == this.misTrxnRpt.getRawValue().client_name?.toUpperCase());
+                console.log(family_head_name)
+                const xirr_amt_arr = [...all_amount_arr.reduce((acc, val) => acc.concat(val), []),Number(curr_aum.toFixed(2))];
+                const xirr_date_arr = [...all_date_arr.reduce((acc, val) => acc.concat(val), []),moment(this.misTrxnRpt.value.date).format('YYYY-MM-DD')];
+                dt.push({
+                 id:res[0]?.id,
+                 client_id:this.utility.EncryptText(family_head_name[0].client_id.toString()),
+                  date:this.utility.EncryptText( moment(this.misTrxnRpt.value.date).format('YYYY-MM-DD')),
+                 client_name:family_head_name.length > 0 ? `${family_head_name[0]?.first_client_name} [${family_head_name[0]?.first_client_pan}]` : '',
+                 pan:family_head_name.length > 0 ? family_head_name[0]?.first_client_pan : '',
+                 family_head_name:family_head_name.length > 0 ?  `${family_head_name[0]?.first_client_name} [${family_head_name[0]?.first_client_pan}]` : '',
+                 inv_cost:inv_cost,
+                 idcw_paid:idcw_paid,
+                 idcw_reinv:idcw_reinv,
+                 curr_aum:curr_aum,
+                 gain_loss:totGainLoss,
+                 Investment:inv_cost,
+                 AUM:curr_aum,
+                 "IDCW Reinv.":idcw_reinv,
+                 "IDCWP":idcw_paid,
+                 "Abs. Return":tot_ret_abs,
+                 xirr:xirr,
+                 xirr_amt_arr:xirr_amt_arr,
+                 xirr_date_arr:xirr_date_arr,
+                  ret_abs:tot_ret_abs,
+                  schemes:res,
+                  total:{
+                    inv_cost:inv_cost,
+                    idcw_paid:idcw_paid,
+                    idcw_reinv:idcw_paid,
+                    curr_aum:curr_aum,
+                    abs_rtn:tot_ret_abs,
+                    family_head_name:"TOTAL",
+                    xirr:0
+                  }
+                });
+                console.log(dt)
+                this.duplicateDt = res;
+                this.isLoaderShown = false;
+                this.md_aum_client = dt;
+                this.createParentFooter(dt);
+    }
+
 
     backgroundProcessing = (res) =>{
       try{
@@ -313,12 +415,12 @@ export class AumTopClientComponent implements OnInit {
           // Create a new
           this.worker = new Worker(new URL('../aum-client/aum-by-client-calculations.worker', import.meta.url));
           this.worker.onmessage = ({ data }) => {
-            this.createParentFooter(data);
+            const main_res = data.sort((firstEl,secondEl)=> secondEl.curr_aum - firstEl.curr_aum).slice(0,this.misTrxnRpt.value.number ? this.misTrxnRpt.value.number : data.length)
+            this.createParentFooter(main_res);
             // this.worker.terminate();
             // this.recursiveBackgroundProcess(data);
-            this.md_aum_client = data
+            this.md_aum_client = main_res
             this.isLoaderShown = false;
-            
           };
           this.worker.postMessage({
             res:res,
@@ -340,7 +442,9 @@ export class AumTopClientComponent implements OnInit {
       const tot_inv_cost = global.Total__Count(value,(x:any) => x?.inv_cost ? Number(x?.inv_cost) : 0);
       const tot_ret_abs = ((tot_gain_loss / tot_inv_cost) * 100);
       let obj = {}
-      const dt = value.map(({id,total,schemes,cat_name,amc_weightage_in,amc_name,gain_loss,amc_code,inv_cost,idcw_paid,idcw_reinv,xirr_amt_arr,xirr_date_arr,
+      const dt = value.map(({id,total,schemes,cat_name,amc_weightage_in,
+        family_head_name,client_id,date,
+        amc_name,gain_loss,amc_code,inv_cost,idcw_paid,idcw_reinv,xirr_amt_arr,xirr_date_arr,
         curr_aum,ret_abs,client_code,client_name,pan,...rest}) => {return {...rest}})
       for(let object of dt) {Object.assign(obj, object)}
       Object.keys(obj).forEach(el =>{

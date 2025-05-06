@@ -1,14 +1,100 @@
-<form [formGroup]="customer_entry_form" (ngSubmit)="submitForm()">
-    <div class="form-group row">
-        <label for="tax_status" class="col-sm-3 col-form-label labelTitle">Tax Status</label>
-        <div class="col-sm-9">
-          <input type="text" placeholder="Enter Tax Status" class="form-control" formControlName="tax_status" id="tax_status">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="mode_of_holding" class="col-sm-3 col-form-label labelTitle">MOH</label>
-        <div class="col-sm-9">
-          <input type="text" id="mode_of_holding" placeholder="Enter Mode Of Holding" class="form-control" formControlName="mode_of_holding" id="tax_status">
-        </div>
-    </div>
-</form>
+
+
+<div class="card">
+  <div class="card-body p-3">
+      <div class="text-left p-1 " >
+          <span class="cardHeading">Create Client by Entry</span>
+      </div>
+      <div class="bottomBorderLine"></div>
+      <div class="row">
+          <div class="col-7 mx-auto">
+            <form [formGroup]="customer_entry_form" id="createClient" (ngSubmit)="submitForm()">
+              <div class="form-group row">
+                <label for="tax_status" class="col-sm-4 col-form-label m-0 labelTitle">Tax Status</label>
+                <div class="col-sm-8">
+                  <select id="tax_status" name="tax_status" class="js-example-responsive select2 w-100 form-control" formControlName="tax_status">
+                    <option value="">-- Choose Tax Status --</option>
+                    <option class="active-result" value="1">AOP/BOI</option>
+                    <option class="active-result" value="2">Artificial Juridical Person</option>
+                    <option class="active-result" value="3">Bank / Financial Institution</option>
+                    <option class="active-result" value="4">Body Corporate</option>
+                    <option class="active-result" value="5">Company</option>
+                    <option class="active-result" value="6">Foreign Inst. Invest</option>
+                    <option class="active-result" value="7">Global Development Network</option>
+                    <option class="active-result" value="8">Government Body</option>
+                    <option class="active-result" value="9">Gratuity Fund</option>
+                    <option class="active-result" value="10">HUF</option>
+                    <option class="active-result" value="11">Individual</option>
+                    <option class="active-result" value="12">optionmited optionabioptionty Partnership</option>
+                    <option class="active-result" value="13">Local Authority</option>
+                    <option class="active-result" value="14">Mutual Fund</option>
+                    <option class="active-result" value="15">Mutual Fund FOF Scheme</option>
+                    <option class="active-result" value="16">Non-Profit organization [NPO]</option>
+                    <option class="active-result" value="17">NPS Trust</option>
+                    <option class="active-result" value="18">NRE-HUF(NRE)</option>
+                    <option class="active-result" value="19">NRI (MINOR)</option>
+                    <option class="active-result" value="20">NRI - Minor (NRO)</option>
+                    <option class="active-result" value="21">NRI Repatriable</option>
+                    <option class="active-result" value="22">NRI Through NRO A/c</option>
+                    <option class="active-result" value="23">NRO-HUF(NRO)</option>
+                    <option class="active-result" value="24">OCI - Non-Repatriation</option>
+                    <option class="active-result" value="25">OCI - Repatriation</option>
+                    <option class="active-result" value="26">On Behalf Of Minor</option>
+                    <option class="active-result" value="27">Others</option>
+                    <option class="active-result" value="28">Overseas Corp. Body</option>
+                    <option class="active-result" value="29">Partnership Firm</option>
+                    <option class="active-result" value="30">Pension Fund</option>
+                    <option class="active-result" value="31">PIO_NRI</option>
+                    <option class="active-result" value="32">PIO_NRO</option>
+                    <option class="active-result" value="33">Proprietorship</option>
+                    <option class="active-result" value="34">Provident Fund / EPF</option>
+                    <option class="active-result" value="35">QFI - Corporate</option>
+                    <option class="active-result" value="36">QFI - Hedge Funds</option>
+                    <option class="active-result" value="37">QFI - Individual</option>
+                    <option class="active-result" value="38">QFI - Minors</option>
+                    <option class="active-result" value="39">QFI - Mutual Funds</option>
+                    <option class="active-result" value="40">QFI - Pension Funds</option>
+                    <option class="active-result" value="41">Society</option>
+                    <option class="active-result" value="42">Superannuation / Pension Fund</option>
+                    <option class="active-result" value="43">Trust</option>
+                  </select>
+                  <span class="text-danger error_txt"
+                  *ngIf=" customer_entry_form.get('tax_status').invalid && (customer_entry_form.get('tax_status').dirty || customer_entry_form.get('tax_status').touched)">
+                  **Tax status is required**
+              </span>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="mode_of_holding" class="col-sm-4 col-form-label m-0 labelTitle">Holding Nature</label>
+                <div class="col-sm-8">
+                  <select id="mode_of_holding" name="mode_of_holding" class="js-example-responsive select2 w-100 form-control"
+                    formControlName="mode_of_holding">
+                    <option value="">-- Choose Holding Nature --</option>
+                    <option value="A">ANYONE / SURVIVOR</option>
+                    <option value="J">JOINT</option>
+                    <option value="S">SINGLE</option>
+                  </select>
+                  <span class="text-danger error_txt"
+                  *ngIf=" customer_entry_form.get('mode_of_holding').invalid && (customer_entry_form.get('mode_of_holding').dirty || customer_entry_form.get('mode_of_holding').touched)">
+                  **Holding Nature is required**
+              </span>
+                </div>
+              </div>
+            </form>
+
+          </div>
+      </div>
+
+  </div>
+  <div class="card-footer text-center">
+          <button [disabled]="customer_entry_form.invalid" type="submit" form="createClient" class="btn btn-primary mx-3">
+            <i class="pi pi-plus mr-1"></i>
+                  Create
+          </button>
+          <button type="reset" form="createClient" (click)="resetForm()"  class="btn btn-danger">
+            <i class="pi pi-refresh mr-1"></i>
+
+              Reset
+          </button>
+  </div>
+</div>

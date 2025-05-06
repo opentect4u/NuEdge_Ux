@@ -1355,3 +1355,10 @@ ul>li.plSummaryRptBlock>div{
 .outflow{
   background-color: #ffbcc2 !important;
 }
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+  font-size: 10px!important;
+}
+.select2-results__option--selectable{
+  font-size: 10px!important;
+
+}

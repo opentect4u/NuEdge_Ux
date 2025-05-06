@@ -49,10 +49,13 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/select2/dist/css/select2.min.css",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "./node_modules/select2/dist/js/select2.min.js"
+            ],
             "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {

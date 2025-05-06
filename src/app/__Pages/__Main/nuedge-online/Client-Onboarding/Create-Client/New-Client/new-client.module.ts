@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NewClientComponent } from './new-client.component';
 import { RouterModule, Routes } from '@angular/router';
 import { CoreModule } from '../components/core.module';
+import { FieldsetModule } from 'primeng/fieldset';
 
 const routes:Routes = [
   {
@@ -19,7 +20,8 @@ const routes:Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    CoreModule
+    CoreModule,
+    FieldsetModule
   ]
 })
 export class NewClientModule { }

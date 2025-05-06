@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import moment from 'moment';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Observable, Subscribable, Subscription } from 'rxjs';
 import { pluck } from 'rxjs/operators';
@@ -58,6 +59,22 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
           chart_data:[]
         }
        })
+    }
+    else if(item.flag == 'C'){
+      this.tiles__api__subscription = this.dbIntr.api_call(0,'/showCurrAumTrend',
+        'flag='+item.flag,true)
+      .pipe(pluck('data'))
+      .subscribe((res:any) =>{
+          let chart_data = [];
+          const categories = Object.keys(res?.data).map(key => moment(key).format('MMM-YYYY'));
+          Object.keys(res?.data).forEach(key =>{
+              chart_data.push(Number(res?.data[key].toFixed(2)))
+          });
+          this.chart_dtls = {
+            categories:categories.reverse(),
+            chart_data:chart_data.reverse()
+          }
+      })
     }
     // console.log(item);
     // if(item.flag == 'C'){

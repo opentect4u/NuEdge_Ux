@@ -18,7 +18,7 @@
         </ng-template>
         <form [formGroup]="misTrxnRpt" (ngSubmit)="searchTrxnReport()" autocomplete="off">
           <div class="row">
-            <div class="col-sm-3">
+            <!-- <div class="col-sm-3">
               <label for="date_periods">Periods</label>
               <select class="form-control" formControlName="date_periods" id="date_periods" name="date_periods">
                 <option value="">Select All</option>
@@ -30,6 +30,14 @@
               <p-calendar #dateRng [maxDate]="maxDate" [minDate]="minDate" dateFormat="dd/mm/yy"
                 placeholder="Select Date Range" formControlName="date_range" selectionMode="range"
                 [readonlyInput]="true" [id]="'date_range'" [showIcon]="true" [hideOnDateTimeSelect]="true"
+                [showButtonBar]="true">
+              </p-calendar>
+            </div> -->
+            <div class="col-sm-3">
+              <label for="date">Date</label>
+              <p-calendar #dateRng dateFormat="dd/mm/yy"
+                placeholder="Select Date" formControlName="date"
+                [readonlyInput]="true" [id]="'date'" [showIcon]="true" [hideOnDateTimeSelect]="true"
                 [showButtonBar]="true">
               </p-calendar>
             </div>
@@ -169,8 +177,8 @@
               <div
               class="d-flex align-items-end justify-content-end"
               [ngClass]="{
-                'col-sm-6 mt-2':misTrxnRpt.value.view_type != 'F',
-                'col-sm-3' : misTrxnRpt.value.view_type == 'F'}"
+                'col-sm-9 mt-2':misTrxnRpt.value.view_type != 'F',
+                'col-sm-6' : misTrxnRpt.value.view_type == 'F'}"
               >
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
@@ -178,10 +186,11 @@
           </ng-container>
             <ng-template #normalFilter>
               <div
-              class="d-flex align-items-end justify-content-end "
+              class="d-flex align-items-end justify-content-end col-sm-6  mt-2"
               [ngClass]="{
-                'col-sm-9':misTrxnRpt.value.view_type != 'F',
-                'col-sm-6 mt-2':misTrxnRpt.value.view_type == 'F'}">
+                'col-sm-12':misTrxnRpt.value.view_type != 'F',
+                'col-sm-9':misTrxnRpt.value.view_type == 'F'}"
+                >
                 <ng-container [ngTemplateOutlet]="SearchBtn"></ng-container>
               </div>
             </ng-template>
@@ -196,6 +205,7 @@
         [isLoaderShown]="isLoaderShown"
         [footerDT]="footerDT"  
         [dataKey]="'id'"
+        [has_sub_column]="has_sub_column"
         [__formDate]="__formDate"
         [column]="aum_client_Column"
         [subColumn]="aum_client_sub_column"></aum-table>

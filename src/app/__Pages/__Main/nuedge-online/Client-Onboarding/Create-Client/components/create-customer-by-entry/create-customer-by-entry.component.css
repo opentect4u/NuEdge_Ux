@@ -3,3 +3,30 @@
     font-size: 10px;
     text-align: end;
 }
+.cardHeading{
+    font-size: 11px;
+}
+.bottomBorderLine{
+    border: 1px solid #f19343;
+    margin: 10px 2px;
+}
+
+
+.btn-danger{
+    line-height: 15px!important;
+    padding: 7px 28px!important;
+}
+.btn-primary{
+    background: #10486b!important;
+    border: 1px solid #10486b!important;
+}
+.btn{
+    padding: 7px 28px!important;
+    border-radius: 0px!important;
+    font-size: 11px!important;
+    font-weight: 500!important;
+}
+
+.error_txt{
+    font-size: 10px;
+}

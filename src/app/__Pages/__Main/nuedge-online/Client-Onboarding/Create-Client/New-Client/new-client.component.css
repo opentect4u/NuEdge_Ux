@@ -1,7 +1,187 @@
-.cardHeading{
-    font-size: 11px;
+.form-bootstrapWizard {
+    padding-top: 29px;
+    text-align: center;
 }
-.bottomBorderLine{
-    border: 1px solid #f19343;
-    margin: 10px 2px;
+
+.bootstrapWizard {
+    display: inline-block;
+    list-style: none;
+    padding: 0;
 }
+
+.bootstrapWizard li {
+    display: block;
+    float: left;
+    width: 108px;
+    text-align: center;
+    padding-left: 0;
+}
+
+.active:before {
+    left: 50%;
+    border-top: 3px solid #f19548 !important;
+    z-index: 3 !important;
+}
+.bootstrapWizard li.active .step, .bootstrapWizard li.active.complete .step {
+    background: #f19548;
+    color: #fff;
+    font-weight: 700;
+    padding: 14px 18px !important;
+    font-size: 15px;
+    border-radius: 50%;
+}
+
+.bootstrapWizard li .step {
+    background: #afacac;
+    color: #fff;
+    display: inline;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 12px;
+    padding: 12px 16px;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    line-height: normal;
+    position: relative;
+    text-align: center;
+    z-index: 9;
+    transition: all .1s linear 0s;
+}
+.bootstrapWizard li.complete .title, .bootstrapWizard li.active .title {
+    color: #2B3D53;
+}
+
+.bootstrapWizard li .title {
+    color: #989595;
+    display: block;
+    font-size: 9px;
+    line-height: 20px;
+    max-width: 100%;
+    position: relative;
+    table-layout: fixed;
+    text-align: center;
+    top: 20px;
+    word-wrap: break-word;
+    z-index: 104;
+    font-weight: 600;
+}
+
+.bootstrapWizard li:before {
+    border-top: 3px solid #e0e2e4;
+    content: "";
+    display: block;
+    font-size: 0;
+    overflow: hidden;
+    position: relative;
+    top: 11px;
+    left: 77px;
+    width: 69%;
+    z-index: 2;
+}
+.active:before {
+    left: 50%;
+    border-top: 3px solid #f19548 !important;
+    z-index: 3 !important;
+}
+
+.active {
+    background: transparent !important;
+    /* color: #fff !important; */
+}
+
+.removelast:before {
+    max-width: 0%;
+}
+
+.colorLabel{
+    color:#f36565;
+}
+
+.bootstrapWizard li:last-child:before {
+    max-width: 0%;
+}
+
+.headerTitle{
+    font-size:10px;
+}
+
+.card-header{
+    background: linear-gradient(to bottom, #f7f7f7 0%, #c5c5c5 100%);
+    /* border: 1px solid #d0cccc; */
+    padding: 10px 1.25rem;
+}
+
+.labelTitle{
+    /* color:red; */
+    font-size: 9.5px;
+    text-align: end;
+}
+
+.form-control {
+    padding: 4px 11px!important;
+    font-size: 10px!important;
+    border: 1px solid #ddd!important;
+    height: 27px!important;
+    border-radius: 3px !important;
+}
+.error_txt{
+    font-size: 10px;
+}
+
+fieldset 
+{
+    border: 1px solid #ddd !important;
+    margin: 0;
+    min-width: 0;
+    padding: 10px;       
+    position: relative;
+    border-radius:4px;
+    background-color:#f5f5f5;
+    padding-left:10px!important;
+}	
+
+    legend
+    {
+        font-size:14px;
+        font-weight:bold;
+        margin-bottom: 0px; 
+        width: auto; 
+        border: 1px solid #ddd;
+        border-radius: 4px; 
+        padding: 5px 5px 5px 10px; 
+        background-color: #ffffff;
+    }
+
+    .btn-primary{
+        background: #10486b!important;
+        border: 1px solid #10486b!important;
+        border-radius: 5%!important;
+    }
+    .btn{
+        padding: 7px 28px!important;
+        border-radius: 5%!important;
+        font-size: 11px!important;
+        font-weight: 500!important;
+    }
+    .addMoreBank{
+        position: sticky;
+        bottom: 0px;
+        left: 0;
+        background: #ffffff;
+        right: 0;
+        border: 1px solid #f5f5f5;
+        /* border-radius: 5px; */
+    }
+    textarea.form-control{
+        height: auto!important;
+    }
+    .headerCustom{
+        position: sticky;
+        top: 97px;
+        left: 0;
+        right: 0;
+        z-index: 999;
+    }
+    .finalSubmit{
+        margin: 4px 15px!important;
+    }
