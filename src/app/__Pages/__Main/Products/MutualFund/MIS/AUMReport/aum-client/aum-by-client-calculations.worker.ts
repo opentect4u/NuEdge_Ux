@@ -6,7 +6,7 @@ import * as CryptoJs from '../../../../../../../../assets/js/EnDcrypt.js';
 import { AES_IV, HASH_EN_DE } from '../../../../../../../strings/localStorage_key';
 
 addEventListener('message', ({ data }) => {
-    console.log(data);
+    console.log(data.res.filter(el => el.first_client_name == 'AARTI KUMARI'));
     let obj = {};
     const groupByClientPan =  groupBy(data.res.filter(el => !el.first_client_pan), 'first_client_pan');
     const groupByClientName =  groupBy(data.res.filter(el => el.first_client_pan), 'first_client_name');

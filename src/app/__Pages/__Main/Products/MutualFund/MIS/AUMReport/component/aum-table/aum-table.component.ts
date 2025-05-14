@@ -23,6 +23,8 @@ export class AumTableComponent implements OnInit {
 
   private _dataSource = [];
 
+  @Input() virtualScroll:boolean = false
+
   @Input()
   get dataSource() {
     return this._dataSource
@@ -30,6 +32,7 @@ export class AumTableComponent implements OnInit {
 
   set dataSource(value) {
       this._dataSource = value;
+      this.primeTbl?.reset();
       // let obj = {}
       // const dt = value.map(({total,schemes,cat_name,amc_weightage_in,amc_name,amc_code,...rest}) => {return {...rest,}})
       // for(let object of dt) {Object.assign(obj, object)}
@@ -89,6 +92,7 @@ export class AumTableComponent implements OnInit {
         console.log(res);
         this.aum_type = res?.pageTitle;
         this.has_sub_column = res?.has_sub_column
+        console.log(this.aum_type.includes('Clients'))
     })
    }
 

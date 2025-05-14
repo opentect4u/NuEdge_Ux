@@ -71,7 +71,7 @@ const routes: Routes = [{
     {
       path:'aum-top-client',
       loadChildren:() => import('./aum-top-client/aum-top-client.module').then(m => m.AumTopClientModule),
-      data:{title:'Nuedge - AUM Top Client Report',pageTitle:'AUM Top CLient Report'}
+      data:{title:'Nuedge - AUM Top Clients Report',pageTitle:'AUM Top Clients Report'}
     },
     {
       path:'',

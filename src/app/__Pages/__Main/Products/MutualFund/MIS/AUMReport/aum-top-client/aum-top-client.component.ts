@@ -231,6 +231,7 @@ export class AumTopClientComponent implements OnInit {
   constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
 
   ngOnInit(): void {
+    this.getAMCMst();
     const range = Array.from({ length: 100 }, (_, i) => i + 1);
     this.selectNumber = range;
   }
@@ -252,7 +253,7 @@ export class AumTopClientComponent implements OnInit {
          this.misTrxnRpt.controls['sub_brk_cd'].setValue([]);
          this.misTrxnRpt.controls['euin_no'].setValue([]);
          this.misTrxnRpt.controls['client_name'].setValue('',{emitEvent:false});
-         this.searchTrxnReport();
+        //  this.searchTrxnReport();
     }
   };
 
@@ -338,6 +339,7 @@ export class AumTopClientComponent implements OnInit {
                 }
                 return el;
               })
+              console.log(this.aum_client_Column)
             if(this.misTrxnRpt.value.view_type != 'F'){
               this.duplicateDt = res;
               this.isLoaderShown = true;
@@ -407,6 +409,12 @@ export class AumTopClientComponent implements OnInit {
                 this.md_aum_client = dt;
                 this.createParentFooter(dt);
     }
+
+     getAMCMst(){
+       this.dbIntr.api_call(0,'/amc',null).pipe(pluck('data')).subscribe((res: amc[]) =>{
+         this.amcMst = res
+       })
+     }
 
 
     backgroundProcessing = (res) =>{

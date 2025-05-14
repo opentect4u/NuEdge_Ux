@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { pluck } from 'rxjs/operators';
 import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 
@@ -9,37 +9,52 @@ import { DbIntrService } from 'src/app/__Services/dbIntr.service';
   styleUrls: ['./new-client.component.css']
 })
 export class NewClientComponent implements OnInit {
-  step:number = 2
+  custEntry:any;
+  step:number = 0;
+  step_content_name = 'customer_dtls'
   step_wizard = [
     {
-      id:1,
+      id:0,
       name:'Customer Details',
-      value:1
+      value:0,
+      formControlName:'customer_dtls',
+    },
+    {
+      id:1,
+      name:'NRI Details',
+      value:1,
+      formControlName:'foreign_contact_details'
     },
     {
       id:2,
       name:'Contact Details',
-      value:2
+      value:2,
+      formControlName:'contact_dtls'
     },
     {
       id:3,
       name:'Bank Details',
-      value:3
+      value:3,
+      formControlName:'bank_dtls'
     },
     {
       id:4,
       name:'Nominee',
-      value:4
+      value:4,
+      formControlName:'nominee_dtls'
     },
     {
       id:5,
       name:'Additional Details',
-      value:5
+      value:5,
+       formControlName:'additional_dtls'
     },
     {
       id:6,
       name:'Final Submit',
-      value:6
+      value:6,
+       formControlName:'final_submit'
+
     }
   ];
   step_wizard_title:string = 'Customer Details'
@@ -52,37 +67,78 @@ export class NewClientComponent implements OnInit {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   new_client_form = new FormGroup({
       customer_dtls:new FormGroup({
-          title:new FormControl('',[Validators.required]),
-          pan:new FormControl('',[Validators.required]),
-          first_name:new FormControl('',[Validators.required]),
+          client_code:new FormControl(''),
+          title:new FormControl(''),
+          pan:new FormControl({value:'',disabled:true}),
+          first_name:new FormControl(''),
           middle_name:new FormControl(''),
-          last_name:new FormControl('',[Validators.required]),
-          dob:new FormControl('',[Validators.required]),
-          gender:new FormControl('',[Validators.required]),
+          last_name:new FormControl(''),
+          dob:new FormControl(''),
+          gender:new FormControl(''),
           occupation:new FormControl(''),
-          kyc_status:new FormControl('',[Validators.required]),
-          inv_ckyc:new FormControl('',[Validators.required]),
-      
+          // kyc_status:new FormControl(''),
+          // inv_ckyc:new FormControl(''),
+          kyc_type:new FormControl(''),
+          ckyc_number:new FormControl(''),
+          exempt_ref_number:new FormControl(''),
+          aadhaar_updated:new FormControl('No'),
+          joint_holder:new FormArray([]),
+          guardian_first_name:new FormControl(''),
+          guardian_middle_name:new FormControl(''),
+          guardian_last_name:new FormControl(''),
+          guardian_dob:new FormControl(''),
+          guardian_pan_exempt:new FormControl(''),
+          guardian_exempt_category:new FormControl({value:'',disabled:true}),
+          guardian_pan:new FormControl({value:'',disabled:true}),
+          guardian_kyc_type:new FormControl(''),
+          guardian_ckyc_number:new FormControl(''),
+          guardian_exempt_ref_number:new FormControl(''),
+          pan_exempt:new FormControl(''),
+          exempt_category:new FormControl({value:'',disabled:true}),
+          client_type:new FormControl('')
       }),
       contact_dtls:new FormGroup({
-        address:new FormControl('',[Validators.required]),
-        country_id:new FormControl('',{validators:[Validators.required],updateOn:'blur'}),
-        state_id: new FormControl('',{validators:[Validators.required],updateOn:'blur'}),
-        city_id:new FormControl('',{validators:[Validators.required],updateOn:'blur'}),
-        district_id:new FormControl('',{validators:[Validators.required],updateOn:'blur'}),
-        pincode_id:new FormControl('',[Validators.required]),
-        mobile:new FormControl('',[Validators.required]),
-        mobile_rel:new FormControl('',[Validators.required]),
-        email:new FormControl('',[Validators.required]),
-        email_rel:new FormControl('',[Validators.required]),
+         address1:new FormControl(''),
+         address2:new FormControl(''),
+         address3:new FormControl(''),
+        country_id:new FormControl('',{updateOn:'blur'}),
+        state_id: new FormControl('',{updateOn:'blur'}),
+        city_id:new FormControl('',{updateOn:'blur'}),
+        district_id:new FormControl('',{updateOn:'blur'}),
+        pincode_id:new FormControl(''),
+        mobile:new FormControl('',{updateOn:'blur'}),
+        mobile_rel:new FormControl(''),
+        email:new FormControl('',{updateOn:'blur'}),
+        email_rel:new FormControl(''),
+        residential_fax:new FormControl(''),
+        residential_phone:new FormControl(''),
+        office_fax:new FormControl(''),
+        office_phone:new FormControl(''),
+        communication_mode:new FormControl('')
+      }),
+      foreign_contact_details:new FormGroup({
+          foreign_address2:new FormControl(''), 
+          foreign_address3:new FormControl(''), 
+          foreign_address1:new FormControl('',[Validators.required]), 
+          foreign_city:new FormControl('',[Validators.required]), 
+          foreign_state:new FormControl('',[Validators.required]), 
+          sea_fears:new FormControl("No"), 
+          foreign_pincode:new FormControl('',[Validators.required]), 
+          foreign_country:new FormControl('',[Validators.required]), 
+          foreign_address_residential_phone:new FormControl(''), 
+          foreign_address_office_phone:new FormControl(''), 
+          foreign_address_residential_fax:new FormControl(''), 
+          foreign_address_office_fax:new FormControl(''), 
+
       }),
       bank_dtls:new FormGroup({
           bank:new FormArray([])
       }),
       nominee_dtls:new FormGroup({
-        nominee_number:new FormControl(3),
+        nominee_number:new FormControl({value:'',disabled:true}),
         nominee:new FormArray([]),
-        nominee_opted:new FormControl('')
+        nominee_opted:new FormControl(''),
+        authentication_mode:new FormControl('')
       }),
       final_submit_acknowledgemnt:new FormControl(false)
   })
@@ -92,19 +148,142 @@ export class NewClientComponent implements OnInit {
   ngOnInit(): void {}
 
   ngAfterViewInit():void {
-    this.new_client_form.get('nominee_dtls.nominee_opted').valueChanges.subscribe(res => {
-      console.log(res);
+
+     this.new_client_form.get('customer_dtls.kyc_type')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('customer_dtls.ckyc_number').setValue('');
+       if(res == 'C'){
+          this.new_client_form.get('customer_dtls.ckyc_number').setValidators([Validators.required]);
+       }
+       else{
+        this.new_client_form.get('customer_dtls.ckyc_number').removeValidators([Validators.required]);
+       }
+       this.new_client_form.get('customer_dtls.ckyc_number').updateValueAndValidity({emitEvent:false});
     })
 
-    this.new_client_form.get('nominee_dtls.nominee_number').valueChanges.subscribe(res =>{
+     this.new_client_form.get('contact_dtls.email')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('contact_dtls.email_rel').setValue('');
+       if(res){
+          this.new_client_form.get('contact_dtls.email_rel').setValidators([Validators.required]);
+       }
+       else{
+        this.new_client_form.get('contact_dtls.email_rel').removeValidators([Validators.required]);
+       }
+       this.new_client_form.get('contact_dtls.email_rel').updateValueAndValidity({emitEvent:false});
+    })
+
+    this.new_client_form.get('contact_dtls.mobile')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('contact_dtls.mobile_rel').setValue('');
+       if(res){
+          this.new_client_form.get('contact_dtls.mobile_rel').setValidators([Validators.required]);
+       }
+       else{
+        this.new_client_form.get('contact_dtls.mobile_rel').removeValidators([Validators.required]);
+       }
+       this.new_client_form.get('contact_dtls.mobile_rel').updateValueAndValidity({emitEvent:false});
+    })
+
+     this.new_client_form.get('customer_dtls.guardian_kyc_type')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('customer_dtls.guardian_ckyc_number').setValue('');
+       if(res == 'C'){
+          this.new_client_form.get('customer_dtls.guardian_ckyc_number').setValidators([Validators.required]);
+       }
+       else{
+        this.new_client_form.get('customer_dtls.guardian_ckyc_number').removeValidators([Validators.required]);
+       }
+       this.new_client_form.get('customer_dtls.guardian_ckyc_number').updateValueAndValidity({emitEvent:false});
+    })
+
+
+    this.new_client_form.get('nominee_dtls.nominee_opted')
+    .valueChanges.subscribe(res => {
+       if(res == 'Y'){
+        this.new_client_form.get('nominee_dtls.nominee_number').enable();
+        this.new_client_form.get('nominee_dtls.nominee_number').setValidators([Validators.required]);
+       }
+       else{
+        this.new_client_form.get('nominee_dtls.nominee_number').disable();
+        this.new_client_form.get('nominee_dtls.nominee_number').clearValidators();
+        this.new_client_form.get('nominee_dtls.nominee_number').setValue('');
+       }
+       this.new_client_form.get('nominee_dtls.nominee_number').updateValueAndValidity({emitEvent:false});
+    })
+
+
+    this.new_client_form.get('nominee_dtls.nominee_number')
+    .valueChanges.subscribe(res => {
+          console.log("************* NOMINEE CHANGE ******************")
           console.log(res);
           if(res){
-              this.addNominee(res)
+            this.addNominee(res);
           }
           else{
-            this.nominee.clear();
+            this.nominee.clear()
           }
     })
+
+
+    this.new_client_form.get('customer_dtls.guardian_pan_exempt').valueChanges.subscribe(res =>{
+           this.new_client_form.get('customer_dtls.guardian_exempt_category').setValue('');   
+            this.new_client_form.get('customer_dtls.guardian_pan').setValue('');   
+            this.new_client_form.get('customer_dtls.guardian_exempt_ref_number').setValue(''); 
+            this.new_client_form.get('customer_dtls.guardian_exempt_category').disable();  
+            this.new_client_form.get('customer_dtls.guardian_exempt_ref_number').disable();   
+            this.new_client_form.get('customer_dtls.guardian_pan').disable(); 
+          if(res == 'N'){
+              this.new_client_form.get('customer_dtls.guardian_pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+              this.new_client_form.get('customer_dtls.guardian_exempt_category').removeValidators([Validators.required])
+              this.new_client_form.get('customer_dtls.guardian_pan').enable(); 
+          }
+          else if(res == 'Y'){
+            this.new_client_form.get('customer_dtls.guardian_pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+              this.new_client_form.get('customer_dtls.guardian_exempt_category').setValidators([Validators.required]);
+              this.new_client_form.get('customer_dtls.guardian_exempt_ref_number').setValidators([Validators.required]);  
+              this.new_client_form.get('customer_dtls.guardian_exempt_category').enable(); 
+              this.new_client_form.get('customer_dtls.guardian_exempt_ref_number').enable();   
+          }
+          else{
+              this.new_client_form.get('customer_dtls.guardian_pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+              this.new_client_form.get('customer_dtls.guardian_exempt_category').removeValidators([Validators.required]);
+              this.new_client_form.get('customer_dtls.guardian_exempt_ref_number').removeValidators([Validators.required]);  
+          }
+          this.new_client_form.get('customer_dtls.guardian_pan').updateValueAndValidity({emitEvent:false});
+          this.new_client_form.get('customer_dtls.guardian_exempt_category').updateValueAndValidity({emitEvent:false});
+          this.new_client_form.get('customer_dtls.guardian_exempt_ref_number').updateValueAndValidity({emitEvent:false});
+    })
+
+      this.new_client_form.get('customer_dtls.pan_exempt').valueChanges.subscribe(res =>{
+         this.new_client_form.get('customer_dtls.exempt_category').setValue('');   
+         this.new_client_form.get('customer_dtls.pan').setValue('');   
+         this.new_client_form.get('customer_dtls.exempt_ref_number').setValue(''); 
+         this.new_client_form.get('customer_dtls.exempt_category').disable();  
+         this.new_client_form.get('customer_dtls.exempt_ref_number').disable();   
+         this.new_client_form.get('customer_dtls.pan').disable(); 
+        if(res == 'N'){
+                this.new_client_form.get('customer_dtls.pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+                this.new_client_form.get('customer_dtls.exempt_category').removeValidators([Validators.required]);
+                this.new_client_form.get('customer_dtls.exempt_ref_number').removeValidators([Validators.required]);
+                this.new_client_form.get('customer_dtls.pan').enable();   
+            }
+        else if(res == 'Y'){
+          this.new_client_form.get('customer_dtls.pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+            this.new_client_form.get('customer_dtls.exempt_category').setValidators([Validators.required]);
+            this.new_client_form.get('customer_dtls.exempt_ref_number').setValidators([Validators.required]);  
+            this.new_client_form.get('customer_dtls.exempt_category').enable();  
+            this.new_client_form.get('customer_dtls.exempt_ref_number').enable();  
+        }
+        else{
+            this.new_client_form.get('customer_dtls.pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+            this.new_client_form.get('customer_dtls.exempt_category').removeValidators([Validators.required]);
+            this.new_client_form.get('customer_dtls.exempt_ref_number').removeValidators([Validators.required]);
+        }
+        this.new_client_form.get('customer_dtls.pan').updateValueAndValidity({emitEvent:false});
+        this.new_client_form.get('customer_dtls.exempt_category').updateValueAndValidity({emitEvent:false});
+        this.new_client_form.get('customer_dtls.exempt_ref_number').updateValueAndValidity({emitEvent:false});
+      })
 
     this.new_client_form.get('contact_dtls.country_id')
     .valueChanges.subscribe(res =>{
@@ -147,14 +326,42 @@ export class NewClientComponent implements OnInit {
   }
 
   addNominee = (range) =>{
-    this.nominee.clear();
-        for(let i=0;i<range;i++){
-          this.nominee.push(this.setNominee((100 / range)))
+        if(this.nominee.length > 0){
+            const diff = Number(range) - this.nominee.length;
+            // console.log('DIFF:' + diff)
+            if(diff > 0){
+                  for(let i = 0;i<diff;i++){
+                    this.nominee.push(this.setNominee())
+                  }
+            }
+            else if(diff < 0){
+                  const len = this.nominee.length;
+                  for(let i = 1;i<(Math.abs(diff) + 1);i++){
+                    this.nominee.removeAt(len - i);
+                  }
+            }
+          this.setPercentageOfNomineesDependOnNumberOfSelectedNominee(range)
         }
+        else{
+          this.nominee.clear();
+          for(let i=0;i<range;i++){
+            this.nominee.push(this.setNominee((100 / range)))
+          }
+        }
+  }
+
+  setPercentageOfNomineesDependOnNumberOfSelectedNominee = (range) =>{
+      for(let i=0;i<range;i++){
+          this.nominee.at(i).get('nominee_percentage').setValue((100 / range).toFixed(2));
+      }
   }
 
   get nominee(): FormArray {
     return this.new_client_form.get('nominee_dtls.nominee') as FormArray;
+  }
+
+  get joint_holder():FormArray {
+    return this.new_client_form.get('customer_dtls.joint_holder') as FormArray;
   }
 
   get bank(): FormArray {
@@ -162,25 +369,40 @@ export class NewClientComponent implements OnInit {
   }
 
 
-  // setNominee(
-  //   percentage=100,
-  //   title='',first_name='',middle_name='',last_name='',
-  //   pan='',
-  //   dob='',gender='',occupation='',kyc_status='',inv_ckyc=''){
-  //   return new FormGroup({
-  //     title:new FormControl(title ? title : ''),
-  //     pan: new FormControl(pan ? pan : ''),
-  //     first_name: new FormControl(first_name ? first_name : ''),
-  //     last_name: new FormControl(last_name ? last_name : ''),
-  //     middle_name: new FormControl(middle_name ? middle_name : ''),
-  //     dob: new FormControl(dob ? dob : ''),
-  //     gender: new FormControl(gender ? gender : ''),
-  //     occupation: new FormControl(occupation ? occupation : ''),
-  //     kyc_status: new FormControl(kyc_status ? kyc_status : ''),
-  //     inv_ckyc: new FormControl(inv_ckyc ? inv_ckyc : ''),
-  //     percentage:new FormControl(percentage.toFixed(2))
-  //   })
-  // }
+  setJointHolder(
+    title='',first_name='',middle_name='',last_name='',
+    pan='',
+    dob='',gender='',occupation='',kyc_type='',inv_ckyc='',
+    exempt_category='',
+    pan_exempt='',
+    ckyc_number='',
+    exempt_ref_number='',
+    email='',
+    email_dec_flag='',
+    mobile='',
+    mobile_dec_flag='',
+  ){
+    return new FormGroup({
+      title:new FormControl(title ? title : ''),
+      pan: new FormControl({value:pan ? pan : '',disabled:true}),
+      first_name: new FormControl(first_name ? first_name : ''),
+      last_name: new FormControl(last_name ? last_name : ''),
+      middle_name: new FormControl(middle_name ? middle_name : ''),
+      dob: new FormControl(dob ? dob : ''),
+      gender: new FormControl(gender ? gender : ''),
+      occupation: new FormControl(occupation ? occupation : ''),
+      kyc_type: new FormControl(kyc_type ? kyc_type : ''),
+      ckyc_number: new FormControl(ckyc_number ? ckyc_number : ''),
+      exempt_ref_number: new FormControl(exempt_ref_number ? exempt_ref_number : ''),
+      exempt_category:new FormControl({value:exempt_category ? exempt_category : '',disabled:true}),
+      pan_exempt:new FormControl(pan_exempt ? pan_exempt : ''),
+      email:new FormControl(email ? email : '',{updateOn:'blur'}),
+      email_dec_flag:new FormControl(email_dec_flag ? email_dec_flag : ''),
+      mobile:new FormControl(mobile ? mobile : '',{updateOn:'blur'}),
+      mobile_dec_flag:new FormControl(mobile_dec_flag ? mobile_dec_flag : ''),
+    })
+  }
+
   setNominee(
     nominee_percentage=100,
     nominee_type='',
@@ -199,9 +421,9 @@ export class NewClientComponent implements OnInit {
     nominee_gaurdian_rel=''
   ){
     return new FormGroup({
-      nominee_type:new FormControl(nominee_type ? nominee_type : ''),
-      nominee_pan: new FormControl(nominee_pan ? nominee_pan : ''),
-      nominee_name: new FormControl(nominee_name ? nominee_name : ''),
+      nominee_type:new FormControl(nominee_type ? nominee_type : '',[Validators.required]),
+      nominee_pan: new FormControl(nominee_pan ? nominee_pan : '',[Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]),
+      nominee_name: new FormControl(nominee_name ? nominee_name : '',[Validators.required]),
       nominee_dob: new FormControl(nominee_dob ? nominee_dob : ''),
       nominee_address1: new FormControl(nominee_address1 ? nominee_address1 : ''),
       nominee_city: new FormControl(nominee_city ? nominee_city : ''),
@@ -209,11 +431,16 @@ export class NewClientComponent implements OnInit {
       nominee_state: new FormControl(nominee_state ? nominee_state : ''),
       nominee_address3: new FormControl(nominee_address3 ? nominee_address3 : ''),
       nominee_pincode: new FormControl(nominee_pincode ? nominee_pincode : ''),
-      nominee_relationship: new FormControl(nominee_relationship ? nominee_relationship : ''),
-      nominee_percentage:new FormControl(nominee_percentage.toFixed(2)),
-      nominee_gaurdian_name:new FormControl(nominee_gaurdian_name ? nominee_gaurdian_name : ''),
-      nominee_gaurdian_pan:new FormControl(nominee_gaurdian_pan ? nominee_gaurdian_pan : ''),
-      nominee_gaurdian_rel:new FormControl(nominee_gaurdian_rel ? nominee_gaurdian_rel : ''),
+      nominee_relationship: new FormControl(nominee_relationship ? nominee_relationship : '',[Validators.required]),
+      nominee_percentage:new FormControl(nominee_percentage.toFixed(2),[
+        Validators.required,
+        Validators.pattern(/^\d+(\.\d{1,4})?$/),
+        Validators.min(0), 
+        Validators.max(100)
+      ]),
+      nominee_gaurdian_name:new FormControl({value:nominee_gaurdian_name ? nominee_gaurdian_name : '',disabled:true}),
+      nominee_gaurdian_pan:new FormControl({value:nominee_gaurdian_pan ? nominee_gaurdian_pan : '',disabled:true},[Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]),
+      nominee_gaurdian_rel:new FormControl({value:nominee_gaurdian_rel ? nominee_gaurdian_rel : '',disabled:true}),
     })
   }
 
@@ -232,9 +459,14 @@ export class NewClientComponent implements OnInit {
     default_bank_flag:string='',
   ){
     return new FormGroup({
-      ifsc_code:new FormControl(ifsc_code ? ifsc_code : ''),
-      acc_type: new FormControl(acc_type ? acc_type : ''),
-      acc_no: new FormControl(acc_no ? acc_no : ''),
+      ifsc_code:new FormControl(ifsc_code ? ifsc_code : '',[Validators.required]),
+      acc_type: new FormControl(acc_type ? acc_type : '',[Validators.required]),
+      acc_no: new FormControl(acc_no ? acc_no : '',[Validators.required,
+
+         Validators.minLength(6),
+          Validators.maxLength(6),
+          this.numericValidator 
+      ]),
       micr: new FormControl(micr ? micr : ''),
       bank_name: new FormControl(bank_name ? bank_name : ''),
       bank_branch: new FormControl(bank_branch ? bank_branch : ''),
@@ -243,25 +475,38 @@ export class NewClientComponent implements OnInit {
       bank_district: new FormControl(bank_district ? bank_district : ''),
       bank_state: new FormControl(bank_state ? bank_state : ''),
       bank_pincode:new FormControl(bank_pincode ? bank_pincode : ''),
-      default_bank_flag:new FormControl(default_bank_flag ? default_bank_flag : ''),
+      default_bank_flag:new FormControl(default_bank_flag ? default_bank_flag : '',[Validators.required]),
     })
   }
 
+    // Custom validator for numeric input
+  numericValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    const isValid = /^\d+$/.test(value);
+    return isValid ? null : { notNumeric: true };
+  }
 
-  changeStep = (item) => {
-    this.step=item.id;
+  changeStep = (item,index) => {
+    console.log("************CHANGE OF STEP**************** ")
+    this.step=index;
     this.step_wizard_title=item.name;
+    this.step_content_name = item.formControlName;
     if(item.id == 2){
       this.getCountry();
     }
     else if(item.id == 3){
+      if(this.bank.length == 0){
       this.bank.clear();
       this.bank.push(this.setBankDetails())
+      }
+
     }
     else if(item.id == 4){
-      // this.nominee.clear();
-      this.addNominee(3)
+        // if(this.new_client_form.get('nominee_dtls.'))
     }
+    this.setValidationDependOnStep(item)
+    console.log("************END**************** ")
+
   }
 
   getCountry = () => {
@@ -323,4 +568,537 @@ export class NewClientComponent implements OnInit {
   deleteBank(index){
     this.bank.removeAt(index)
   }
+
+  get1stepEntry(ev){
+      this.custEntry = ev;
+      this.joint_holder.clear();
+      if(ev.mode_of_holding == 'A'){
+          this.joint_holder.push(this.setJointHolder())
+      }
+      else if(ev.mode_of_holding == 'J'){
+        this.joint_holder.push(this.setJointHolder())
+        this.joint_holder.push(this.setJointHolder())
+      }
+      if(Number(ev.tax_status) != 21){
+          this.getStepWizardContent();
+      }
+     
+  }
+
+  getStepWizardContent = () =>{
+    this.step_wizard = this.step_wizard.filter(el => el.id != 1);
+    // console.log(this.step_wizard);
+    this.changeStep(this.step_wizard[0],0)
+  }
+
+  addJointHolder(){
+    this.joint_holder.push(this.setJointHolder());
+    console.log(this.joint_holder.length)
+  }
+  goPrev(){
+    const dt = this.step - 1;
+    this.changeStep(this.step_wizard[dt],dt);
+    
+  }
+  goNext(){
+    const dt = this.step + 1;
+    this.changeStep(this.step_wizard[dt],dt);
+  }
+  deleteJointHolder(index){
+    this.joint_holder.removeAt(index)
+  }
+  onChangeNomineeType(ev,index){
+      this.nominee.controls[index].get('nominee_gaurdian_name').setValue('');
+      this.nominee.controls[index].get('nominee_gaurdian_pan').setValue('');
+      this.nominee.controls[index].get('nominee_gaurdian_rel').setValue('');
+      if(ev.target.value == 'Y'){
+          this.nominee.controls[index].get('nominee_gaurdian_name').enable();
+        this.nominee.controls[index].get('nominee_gaurdian_pan').enable();
+        this.nominee.controls[index].get('nominee_gaurdian_rel').enable();
+        this.nominee.controls[index].get('nominee_gaurdian_name').setValidators([Validators.required]);
+        this.nominee.controls[index].get('nominee_dob').clearValidators();
+      }
+      else{
+        this.nominee.controls[index].get('nominee_gaurdian_name').disable();
+        this.nominee.controls[index].get('nominee_gaurdian_pan').disable();
+        this.nominee.controls[index].get('nominee_gaurdian_rel').disable();
+        this.nominee.controls[index].get('nominee_gaurdian_name').clearValidators();
+        this.nominee.controls[index].get('nominee_dob').setValidators([this.minAgeValidator(18)]);
+      }
+        this.nominee.controls[index].get('nominee_gaurdian_name').updateValueAndValidity({emitEvent:false});
+        this.nominee.controls[index].get('nominee_dob').updateValueAndValidity({emitEvent:false});
+
+
+  }
+
+  setValidationDependOnStep = (item) => {
+      // console.log(item);
+      Object.keys(this.new_client_form.controls).forEach(controlName => {
+        const control = this.new_client_form.get(controlName);
+        if(control instanceof FormArray){}
+        else if (control instanceof FormGroup) {
+           Object.keys(control?.value).forEach(key =>{
+            if(control?.get(key) instanceof FormArray){
+                 const nestedControls = control.get(key) as FormArray;
+                  nestedControls.controls.forEach((group) =>{
+                            if (group instanceof FormGroup) {
+                              Object.values(group.controls).forEach(control => {
+                                control.clearValidators();
+                                control.updateValueAndValidity({emitEvent:false});
+                              });
+                            }
+                  })
+            }
+            else{
+                control.get(key).clearValidators();
+                control.get(key).updateValueAndValidity({emitEvent:false});
+            }
+            
+          })
+        }
+        else{}
+      });
+      const form_control_name = Object.keys(this.new_client_form.controls);
+      this.validateField(form_control_name,item?.formControlName);
+    
+  }
+
+    validateField = (form_controls,formControlName) =>{
+      form_controls.forEach(el =>{
+        if(el == formControlName){
+                const control = this.new_client_form.get(formControlName);
+                Object.keys(control.value).forEach(key =>{
+                  if(formControlName == 'customer_dtls'){
+                      if(control.get(key) instanceof FormArray){
+                            const nestedControls = control.get(key) as FormArray;
+                            nestedControls.controls.forEach((el,index) =>{
+                                          this.nestedValidateField(el,formControlName,index);
+                            })
+                      } 
+                      else{
+                            if(key == 'pan'){control.get(key).setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])}
+                            if(key == 'gender'){
+                                const tax_status = Number(this.custEntry?.tax_status);
+                                // if tax status 1,21,22,2(Minor) make gender validation
+                                if(tax_status == 1 
+                                  || tax_status == 21 
+                                  || tax_status == 22 
+                                  || tax_status == 2){
+                                console.log(tax_status)
+                                      control.get(key).setValidators([Validators.required])
+                                }
+                            }
+                            else if(key == 'guardian_first_name' 
+                              || key == 'guardian_pan_exempt' 
+                              || key == 'guardian_pan'
+                              || key == 'guardian_ckyc_number'
+                              || key == 'guardian_exempt_ref_number'  
+                            ){
+                                  const tax_status = Number(this.custEntry?.tax_status);
+                                // if tax status 2 (Minor) make gender validation
+                                if(tax_status == 2){
+                                      if(key == 'guardian_pan'){
+                                      control.get(key).setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+                                      }
+                                      else if(key == 'guardian_ckyc_number'){
+                                          if(control.get('guardian_kyc_type').value == 'C'){
+                                            control.get(key).setValidators([Validators.required])
+                                          }
+                                      }
+                                      else if(key == 'guardian_exempt_ref_number'){
+                                         if(control.get('guardian_pan_exempt').value == 'Y'){
+                                            control.get(key).setValidators([Validators.required])
+                                          }
+                                      }
+                                      else{
+                                      control.get(key).setValidators([Validators.required])
+                                      }
+                                }
+                            }
+                            else if(key == 'dob'){control.get(key).setValidators([Validators.required,this.minAgeValidator(18)])}
+                            else if(key == 'last_name' || key == 'middle_name' 
+                              || key == 'pan' || key == 'dob'
+                              || key == 'exempt_category' 
+                              || key == 'guardian_last_name'
+                              || key == 'guardian_middle_name'
+                              || key == 'guardian_dob' 
+                              || key == 'aadhaar_updated'
+                              || key == 'guardian_kyc_type'
+                              || key == 'guardian_exempt_category'){}
+                            else if(key == 'ckyc_number'){
+                                if(control.get('kyc_type').value == 'C'){
+                                  control.get(key).setValidators([Validators.required])
+                                }
+                            }
+                            else if(key == 'exempt_ref_number'){
+                                 if(control.get('pan_exempt').value == 'Y'){
+                                  control.get(key).setValidators([Validators.required])
+                                }
+                            }
+                            else{control.get(key).setValidators([Validators.required])}
+                      }
+                      
+                  } 
+                  else if(formControlName == 'foreign_contact_details'){
+                        if(key == 'foreign_address2' 
+                          || key == 'foreign_address3'
+                          || key == 'sea_fears'
+                          || key == 'foreign_address_residential_phone'
+                          || key == 'foreign_address_office_phone'
+                          || key == 'foreign_address_residential_fax'
+                          ||  key == 'foreign_address_office_fax'
+                        ){}
+                        else{control.get(key).setValidators([Validators.required])}
+                  }
+                  else if(formControlName == 'bank_dtls'){
+                      if(control.get(key) instanceof FormArray){
+                              const nestedControls = control.get(key) as FormArray;
+                              nestedControls.controls.forEach((el,index) =>{
+                                    this.nestedValidateField(el,formControlName,index);
+                              })
+                      }
+                  }
+                  else if(formControlName == 'contact_dtls'){
+                    if(key == 'communication_mode'){
+                        control.get(key).setValidators([Validators.required])
+                    }
+                    else if(key == 'email'){
+                        control.get(key).setValidators([Validators.required,Validators.email])
+                    }
+                    else if(key == 'mobile'){
+                      control.get(key).setValidators([
+                        Validators.required,
+                        Validators.pattern('^[0-9]*$'), // Digits only
+                        Validators.minLength(10),
+                        Validators.maxLength(10)
+                      ])
+                    }
+                    else if(key == 'email_rel'){
+                            if(control.get('email').value){
+                               control.get(key).setValidators([Validators.required])
+                            }
+                    }
+                     else if(key == 'mobile_rel'){
+                            if(control.get('mobile').value){
+                               control.get(key).setValidators([Validators.required])
+                            }
+                    }
+                    else{
+                        // if(this.custEntry?.tax_status != '21' 
+                        // && this.custEntry?.tax_status != '22'){
+                              if(key == 'address2' 
+                                || key == 'address3' 
+                                || key == 'residential_fax'
+                                || key == 'residential_phone'
+                                || key == 'office_fax'
+                                || key == 'office_phone'
+                              ){}
+                              else{control.get(key).setValidators([Validators.required])}
+                      //  }
+                    }
+                    
+                  }
+                  else if(formControlName == 'nominee_dtls'){
+                                if(control.get(key) instanceof FormArray){
+                                     const nestedControls = control.get(key) as FormArray;
+                                      nestedControls.controls.forEach((el,index) =>{
+                                            // this.nestedValidateField(el,formControlName,index);
+                                            this.nestedValidateField(el,formControlName,index);
+                                      })
+                                }
+                                else{
+                                    if(key == 'authentication_mode'){
+                                      if(this.custEntry?.mode_of_holding == 'S' || this.new_client_form.get('customer_dtls.client_type').value == 'P'){
+                                        control.get(key).setValidators([Validators.required]);
+                                      }
+                                    }
+                                    else{
+                                        control.get(key).setValidators([Validators.required]);
+                                    }
+                                    
+                                    // if(control.get(key).value == 'Y'){
+                                    // control.get('nominee_number').setValidators([Validators.required])
+                                    // }
+                                }
+                       
+                  }
+                  control.get(key).updateValueAndValidity({emitEvent:false}); 
+                })
+        }
+      })
+      console.log(this.new_client_form.controls)
+    }
+
+    nestedValidateField = (control,formControlName,index) => {
+           Object.keys(control.value).forEach(key =>{
+                  if(formControlName == 'customer_dtls'){
+                            if(key == 'pan'){control.get(key).setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])}
+                            else if(key == 'dob'){control.get(key).setValidators([this.minAgeValidator(18)])}
+                            else if(key == 'last_name' || key == 'middle_name' 
+                              || key == 'pan' 
+                              || key == 'occupation' 
+                              || key == 'kyc_type' 
+                              || key == 'gender'
+                              || key == 'exempt_category'){}
+                              else if(key == 'ckyc_number'){
+                                if(control.get('kyc_type').value == 'C'){
+                                  control.get(key).setValidators([Validators.required])
+                                }
+                              }
+                              else if(key == 'exempt_ref_number'){
+                                if(control.get('pan_exempt').value == 'Y'){
+                                  control.get(key).setValidators([Validators.required])
+                                }
+                              }
+                              else if(key == 'email'){
+                                  control.get(key).setValidators([Validators.required,Validators.email])
+                              }
+                              else if(key == 'mobile'){
+                                   control.get(key).setValidators([
+                                    Validators.required,
+                                    Validators.pattern('^[0-9]*$'), // Digits only
+                                    Validators.minLength(10),
+                                    Validators.maxLength(10)
+                                  ])
+                              }
+                            else if(key == 'email_dec_flag'){
+                                  if(control.get('email').value){
+                                    control.get(key).setValidators([Validators.required])
+                                  }
+                            }
+                            else if(key == 'mobile_dec_flag'){
+                                    if(control.get('mobile').value){
+                                      control.get(key).setValidators([Validators.required])
+                                    }
+                            }
+                            else{
+                              if(index == 0){
+                                control.get(key).setValidators([Validators.required])
+                              }
+                              else{
+                                if(key == 'pan_exempt'){
+                                    control.get(key).setValidators([Validators.required])
+                                }
+                              }
+                            
+                            }
+                  } 
+                  else if(formControlName == 'bank_dtls'){
+                      if(key == 'micr' 
+                        || key == 'bank_name'
+                        || key == 'bank_branch'
+                        || key == 'bank_address'
+                        || key == 'bank_city'
+                        || key == 'bank_district'
+                        || key == 'bank_state'
+                        || key == 'bank_pincode'
+                      ){}
+                      else if(key == 'acc_no'){
+                         control.get(key).setValidators([Validators.required,Validators.minLength(6),Validators.maxLength(6),this.numericValidator])
+                      }
+                      else{
+                         control.get(key).setValidators([Validators.required])
+                      }
+                  }
+                  else if(formControlName == 'nominee_dtls'){
+                          if(key == 'nominee_addres1'  
+                            || key == 'nominee_addres2'
+                            || key == 'nominee_addres3'
+                            || key == 'nominee_city'  
+                            || key == 'nominee_state'
+                            || key == 'nominee_pincode'
+                            || key == 'nominee_gaurdian_rel'
+                          ){}
+                          else if(key == 'nominee_type'
+                            || key == 'nominee_name'
+                            || key == 'nominee_relationship'
+                          ){
+                                control.get(key).setValidators([Validators.required])
+                          }
+                          else if(key == 'nominee_percentage'){
+                              control.get(key).setValidators([
+                                  Validators.required,
+                                  Validators.pattern(/^\d+(\.\d{1,4})?$/),
+                                  Validators.min(0), 
+                                  Validators.max(100)
+                                ])
+                          }
+                          else if(key == 'nominee_pan' || key == 'nominee_gaurdian_pan'){
+                              control.get(key).setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+                          }
+                          else if(key == 'nominee_dob'){
+                            if(control.get('nominee_type').value == 'Y'){}
+                            else{
+                              control.get(key).setValidators([this.minAgeValidator(18)]);
+                            }
+                          }
+                          else{
+                              if(control.get('nominee_type').value == 'Y'){
+                                 if(key == 'nominee_gaurdian_name'){
+                                          control.get(key).setValidators([Validators.required])
+                                 }
+                              }
+                          }
+                  }
+                  control.get(key).updateValueAndValidity(); 
+                })
+    }
+    
+
+
+
+     hasRequiredValidator(controlName: string): boolean {
+      try{
+        const control = this.new_client_form.get(controlName);
+        const validator = control?.validator?.({} as FormControl);
+        return !!validator?.['required'];
+        }
+      catch(err){
+        return false
+      }
+     
+    }
+
+    hasRequiredValidatorForJointHolder = (controlName: string,index): boolean =>{
+      try{
+        const control = this.joint_holder.at(index).get(controlName);
+        const validator = control?.validator?.({} as FormControl);
+        return !!validator?.['required'];
+        }
+      catch(err){
+        return false
+      }
+    }
+     hasRequiredValidatorForNominee = (controlName: string,index): boolean =>{
+      try{
+        const control = this.nominee.at(index).get(controlName);
+        const validator = control?.validator?.({} as FormControl);
+        return !!validator?.['required'];
+        }
+      catch(err){
+        return false
+      }
+    }
+
+     hasRequiredValidatorForBankDtls = (controlName: string,index): boolean =>{
+      try{
+        const control = this.bank.at(index).get(controlName);
+        const validator = control?.validator?.({} as FormControl);
+        return !!validator?.['required'];
+        }
+      catch(err){
+        return false
+      }
+    }
+
+    minAgeValidator(minAge: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const dob = new Date(control.value);
+      const today = new Date();
+
+      if (isNaN(dob.getTime())) return null; // skip validation if invalid or empty
+
+      const age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      const dayDiff = today.getDate() - dob.getDate();
+
+      const isOldEnough = 
+        age > minAge || 
+        (age === minAge && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
+
+      return isOldEnough ? null : { underage: true };
+    };
+  }
+
+  handleChangePanOfJointHolder = (ev,index) =>{
+        // if()
+        this.joint_holder.at(index).get('exempt_category').setValue('');   
+         this.joint_holder.at(index).get('pan').setValue('');    
+         this.joint_holder.at(index).get('exempt_ref_number').setValue('');    
+         this.joint_holder.at(index).get('exempt_category').disable();   
+         this.joint_holder.at(index).get('pan').disable(); 
+         this.joint_holder.at(index).get('exempt_ref_number').disable();    
+        if(ev.target.value == 'N'){
+             if( this.joint_holder.at(index).get('first_name').value){
+                      this.joint_holder.at(index).get('pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
+             }
+             else{
+                  this.joint_holder.at(index).get('pan').removeValidators([Validators.required]);
+                  this.joint_holder.at(index).get('pan').setValidators([Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
+             }
+            // this.joint_holder.at(index).get('pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+            this.joint_holder.at(index).get('exempt_category').removeValidators([Validators.required]);
+            this.joint_holder.at(index).get('exempt_ref_number').removeValidators([Validators.required]);
+            this.joint_holder.at(index).get('pan').enable();   
+        }
+        else if(ev.target.value == 'Y'){
+            this.joint_holder.at(index).get('pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+            this.joint_holder.at(index).get('exempt_category').setValidators([Validators.required]);
+            this.joint_holder.at(index).get('exempt_ref_number').setValidators([Validators.required]);
+            this.joint_holder.at(index).get('exempt_category').enable();   
+            this.joint_holder.at(index).get('exempt_ref_number').enable();
+        }
+        else{
+            this.joint_holder.at(index).get('pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+            this.joint_holder.at(index).get('exempt_category').removeValidators([Validators.required])
+            this.joint_holder.at(index).get('exempt_ref_number').setValidators([Validators.required]);
+        }
+        this.joint_holder.at(index).get('pan').updateValueAndValidity({emitEvent:false});
+        this.joint_holder.at(index).get('exempt_category').updateValueAndValidity({emitEvent:false});
+        this.joint_holder.at(index).get('exempt_ref_number').updateValueAndValidity({emitEvent:false});
+
+  }
+
+  handleBlurValidatorForJointHolder = (ev,index) =>{
+    console.log(ev.target.value)
+      if(ev.target.value 
+        && this.joint_holder.at(index).get('pan_exempt').value == 'N'){
+          this.joint_holder.at(index).get('pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)])
+      }
+      else{
+        this.joint_holder.at(index).get('pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
+      }
+  }
+
+  createNewClient(){
+    if(this.new_client_form.invalid){
+      console.log('****** VALIDATION ERROR IN FORM **********')
+      return;
+    }
+    this.goNext();
+    console.log(this.new_client_form.value);
+  }
+
+  handleChangeKycTypeOfJointHolder = (ev,index) =>{
+        this.joint_holder.at(index).get('ckyc_number').setValue('');
+       if(ev.target.value == 'C'){
+          this.joint_holder.at(index).get('ckyc_number').setValidators([Validators.required]);
+       }
+       else{
+        this.joint_holder.at(index).get('ckyc_number').removeValidators([Validators.required]);
+       }
+       this.joint_holder.at(index).get('ckyc_number').updateValueAndValidity({emitEvent:false});
+  }
+  handleBlurForJointHolderMobile = (ev,index) =>{
+       this.joint_holder.at(index).get('mobile_dec_flag').setValue('');
+       if(ev.target.value){
+          this.joint_holder.at(index).get('mobile_dec_flag').setValidators([Validators.required]);
+       }
+       else{
+        this.joint_holder.at(index).get('mobile_dec_flag').removeValidators([Validators.required]);
+       }
+       this.joint_holder.at(index).get('mobile_dec_flag').updateValueAndValidity({emitEvent:false});
+  }
+
+  handleBlurForJointHolderEmail = (ev,index) =>{
+       this.joint_holder.at(index).get('email_dec_flag').setValue('');
+       if(ev.target.value){
+          this.joint_holder.at(index).get('email_dec_flag').setValidators([Validators.required]);
+       }
+       else{
+        this.joint_holder.at(index).get('email_dec_flag').removeValidators([Validators.required]);
+       }
+       this.joint_holder.at(index).get('email_dec_flag').updateValueAndValidity({emitEvent:false});
+  }
+
 }

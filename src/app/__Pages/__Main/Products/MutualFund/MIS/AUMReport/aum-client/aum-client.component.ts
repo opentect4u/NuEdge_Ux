@@ -139,7 +139,7 @@ export class AumClientComponent implements OnInit {
           
         };
         this.worker.postMessage({
-          res:res,
+          res:res.filter(el => Number(el.curr_aum) > 0),
           date:this.__formDate
         });
       } else {

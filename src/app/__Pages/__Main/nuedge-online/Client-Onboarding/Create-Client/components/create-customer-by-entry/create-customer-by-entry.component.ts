@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 declare var $: any;
 @Component({
@@ -8,7 +8,7 @@ declare var $: any;
 })
 export class CreateCustomerByEntryComponent implements OnInit {
 
-
+  @Output() sendEntry = new EventEmitter();
   customer_entry_form: FormGroup;
   constructor(private fb: FormBuilder) { 
     this.customer_entry_form = this.fb.group({
@@ -20,7 +20,8 @@ export class CreateCustomerByEntryComponent implements OnInit {
   ngOnInit(): void {
   }
   submitForm(){
-    console.log(this.customer_entry_form?.value)
+    console.log(this.customer_entry_form?.value);
+    this.sendEntry.emit(this.customer_entry_form?.value);
   }
   ngAfterViewInit(): void {
     const $tax_status = $('#tax_status');
@@ -32,6 +33,21 @@ export class CreateCustomerByEntryComponent implements OnInit {
       $tax_status.on('change', (event: any) => {
         this.customer_entry_form.get('tax_status')?.setValue(event.target.value);
         this.customer_entry_form.get('tax_status')?.markAsTouched();
+        if(event.target.value != '11' 
+          && event.target.value != '21'
+          && event.target.value != '22'
+          && event.target.value != '37'
+          && event.target.value != '1'){
+            // this.customer_entry_form.get('mode_of_holding')?.setValue('S',{emitEvent:true});
+            $moh.prop('disabled',true);
+            $moh.val('S').trigger('change');
+          }
+          else{
+            // this.customer_entry_form.get('mode_of_holding')?.setValue('',{emitEvent:true});
+            $moh.prop('disabled',false);
+            $moh.val('').trigger('change');
+
+          }
       });
   
       this.customer_entry_form.get('tax_status')?.valueChanges.subscribe(value => {

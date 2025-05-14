@@ -96,6 +96,7 @@ export class AumGrowthComponent implements OnInit {
         if(res.length > 0){
           let mainResponse = res;
           const chart_data = mainResponse.slice().reverse().slice(0, -1);
+          console.log(chart_data)
           this.chartData = {
             categories:chart_data.map(el => finYear == 'Last 5 Year' ? el?.date :   moment(el.date).format('MMM YYYY')),
             chart_data:chart_data.map(el => ({name: finYear == 'Last 5 Year' ? el?.date :   moment(el.date).format('MMM YYYY'),y:Number(el.aum.toFixed(2))}))

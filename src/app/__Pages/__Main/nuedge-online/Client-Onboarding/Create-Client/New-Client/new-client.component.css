@@ -94,7 +94,8 @@
 }
 
 .colorLabel{
-    color:#f36565;
+    /* color:#f36565; */
+    color: red;
 }
 
 .bootstrapWizard li:last-child:before {
@@ -102,9 +103,18 @@
 }
 
 .headerTitle{
-    font-size:10px;
+    /* font-size:10px; */
+        font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+label{
+    color:#4d4d4d;
 }
 
+.boxShadow{
+        box-shadow: 1px 0px 15px 0px #dcdcdc;
+}
 .card-header{
     background: linear-gradient(to bottom, #f7f7f7 0%, #c5c5c5 100%);
     /* border: 1px solid #d0cccc; */
@@ -113,8 +123,10 @@
 
 .labelTitle{
     /* color:red; */
-    font-size: 9.5px;
+    /* font-size: 9.5px; */
+    font-size: 10.5px;
     text-align: end;
+    /* text-transform: uppercase; */
 }
 
 .form-control {
@@ -142,14 +154,20 @@ fieldset
 
     legend
     {
-        font-size:14px;
-        font-weight:bold;
-        margin-bottom: 0px; 
-        width: auto; 
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 0px;
+        width: auto;
         border: 1px solid #ddd;
-        border-radius: 4px; 
-        padding: 5px 5px 5px 10px; 
+        border-radius: 4px;
+        padding: 5px 5px 5px 10px;
         background-color: #ffffff;
+        text-transform: uppercase;
+        text-align: justify;
+        color:#535353;
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .btn-primary{
@@ -158,10 +176,15 @@ fieldset
         border-radius: 5%!important;
     }
     .btn{
-        padding: 7px 28px!important;
+        /* padding: 7px 28px!important;
         border-radius: 5%!important;
         font-size: 11px!important;
-        font-weight: 500!important;
+        font-weight: 500!important; */
+        padding: 4px 7px !important;
+        border-radius: 4px !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        text-transform: uppercase;
     }
     .addMoreBank{
         position: sticky;
@@ -184,4 +207,24 @@ fieldset
     }
     .finalSubmit{
         margin: 4px 15px!important;
+    }
+
+    .textHeader{
+        font-size: 9px;
+        text-align: justify;
+    }
+
+    .jointHolderDtls{
+        background: #ffffff;
+        position: sticky;
+        top: 149px;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        border-bottom: 1px solid #eaeaea;
+        /* border-top: 1px solid #e1e1e1; */
+    }
+    .textHeader1{
+        font-size: 12px;
+        text-align: justify;
     }

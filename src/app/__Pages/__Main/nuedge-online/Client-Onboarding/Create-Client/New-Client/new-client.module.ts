@@ -4,6 +4,7 @@ import { NewClientComponent } from './new-client.component';
 import { RouterModule, Routes } from '@angular/router';
 import { CoreModule } from '../components/core.module';
 import { FieldsetModule } from 'primeng/fieldset';
+import { UppercaseDirective } from 'src/app/__Directives/uppercase.directive';
 
 const routes:Routes = [
   {
@@ -16,6 +17,7 @@ const routes:Routes = [
 @NgModule({
   declarations: [
     NewClientComponent,
+    UppercaseDirective
   ],
   imports: [
     CommonModule,

@@ -117,7 +117,7 @@ constructor(private dbIntr:DbIntrService,private utility:UtiliService) { }
           "Abs. Return":Number(tot_ret_abs.toFixed(2)),
           IDCWP:global.Total__Count(value,(x:any) => x?.idcwp ? Number(x?.idcwp) : 0),
           "IDCW Reinv.":global.Total__Count(value,(x:any) => x?.idcw_reinv ? Number(x?.idcw_reinv) : 0),
-          Investment:tot_gain_loss
+          Investment:tot_inv_cost
         }
         console.log(this.footerDT);
       }

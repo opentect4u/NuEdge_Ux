@@ -10,21 +10,29 @@
           <div class="col-7 mx-auto">
             <form [formGroup]="customer_entry_form" id="createClient" (ngSubmit)="submitForm()">
               <div class="form-group row">
-                <label for="tax_status" class="col-sm-4 col-form-label m-0 labelTitle">Tax Status</label>
-                <div class="col-sm-8">
+                <label for="tax_status" class="col-sm-4 col-form-label m-0 labelTitle">Tax Status:</label>
+                <div class="col-sm-5">
                   <select id="tax_status" name="tax_status" class="js-example-responsive select2 w-100 form-control" formControlName="tax_status">
                     <option value="">-- Choose Tax Status --</option>
-                    <option class="active-result" value="1">AOP/BOI</option>
-                    <option class="active-result" value="2">Artificial Juridical Person</option>
+                    <option class="active-result" value="1">Individual</option>
+                    <option class="active-result" value="2">On Behalf Of Minor</option>
+                    <option class="active-result" value="3">HUF</option>
+                    <option class="active-result" value="4">Company</option>
+                    <option class="active-result" value="5">AOP/BOI</option>
+                    <option class="active-result" value="6">Partnership Firm</option>
+                    <option class="active-result" value="7">Body Corporate</option>
+                    <option class="active-result" value="8">Trust</option>
+                    <option class="active-result" value="9">Society</option>
+                    <option class="active-result" value="10">Others</option>
+                    <option class="active-result" value="21">NRI Repatriable</option>
+                    <option class="active-result" value="22">NRI Through NRO A/c</option>
+
+                    <!-- <option class="active-result" value="2">Artificial Juridical Person</option>
                     <option class="active-result" value="3">Bank / Financial Institution</option>
-                    <option class="active-result" value="4">Body Corporate</option>
-                    <option class="active-result" value="5">Company</option>
                     <option class="active-result" value="6">Foreign Inst. Invest</option>
                     <option class="active-result" value="7">Global Development Network</option>
                     <option class="active-result" value="8">Government Body</option>
                     <option class="active-result" value="9">Gratuity Fund</option>
-                    <option class="active-result" value="10">HUF</option>
-                    <option class="active-result" value="11">Individual</option>
                     <option class="active-result" value="12">optionmited optionabioptionty Partnership</option>
                     <option class="active-result" value="13">Local Authority</option>
                     <option class="active-result" value="14">Mutual Fund</option>
@@ -34,15 +42,10 @@
                     <option class="active-result" value="18">NRE-HUF(NRE)</option>
                     <option class="active-result" value="19">NRI (MINOR)</option>
                     <option class="active-result" value="20">NRI - Minor (NRO)</option>
-                    <option class="active-result" value="21">NRI Repatriable</option>
-                    <option class="active-result" value="22">NRI Through NRO A/c</option>
                     <option class="active-result" value="23">NRO-HUF(NRO)</option>
                     <option class="active-result" value="24">OCI - Non-Repatriation</option>
                     <option class="active-result" value="25">OCI - Repatriation</option>
-                    <option class="active-result" value="26">On Behalf Of Minor</option>
-                    <option class="active-result" value="27">Others</option>
                     <option class="active-result" value="28">Overseas Corp. Body</option>
-                    <option class="active-result" value="29">Partnership Firm</option>
                     <option class="active-result" value="30">Pension Fund</option>
                     <option class="active-result" value="31">PIO_NRI</option>
                     <option class="active-result" value="32">PIO_NRO</option>
@@ -54,9 +57,7 @@
                     <option class="active-result" value="38">QFI - Minors</option>
                     <option class="active-result" value="39">QFI - Mutual Funds</option>
                     <option class="active-result" value="40">QFI - Pension Funds</option>
-                    <option class="active-result" value="41">Society</option>
-                    <option class="active-result" value="42">Superannuation / Pension Fund</option>
-                    <option class="active-result" value="43">Trust</option>
+                    <option class="active-result" value="42">Superannuation / Pension Fund</option> -->
                   </select>
                   <span class="text-danger error_txt"
                   *ngIf=" customer_entry_form.get('tax_status').invalid && (customer_entry_form.get('tax_status').dirty || customer_entry_form.get('tax_status').touched)">
@@ -65,8 +66,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label for="mode_of_holding" class="col-sm-4 col-form-label m-0 labelTitle">Holding Nature</label>
-                <div class="col-sm-8">
+                <label for="mode_of_holding" class="col-sm-4 col-form-label m-0 labelTitle">Holding Nature:</label>
+                <div class="col-sm-5">
                   <select id="mode_of_holding" name="mode_of_holding" class="js-example-responsive select2 w-100 form-control"
                     formControlName="mode_of_holding">
                     <option value="">-- Choose Holding Nature --</option>
