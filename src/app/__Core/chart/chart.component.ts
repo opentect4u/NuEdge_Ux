@@ -31,9 +31,9 @@ export class ChartComponent implements OnInit {
   }
 
   /*****End */
-  @Input() set getbarChartDetails(data:Required<{categories:string[],chart_data:number[]}>){
+  @Input() set getbarChartDetails(data:Required<{categories:string[],chart_data:number[],title:string}>){
         if(data)
-        this.barChart(data.categories.reverse(),data.chart_data.reverse())
+        this.barChart(data.categories.reverse(),data.chart_data.reverse(),data.title)
   }
 
   @Input() set getPieChartDetails(chart_details:{title:string,data:Partial<{name:string,y:number}>[],name:string}){
@@ -119,17 +119,17 @@ export class ChartComponent implements OnInit {
   }
   /**** End */
 
-  barChart(category:string[],data:number[]){
+  barChart(category:string[],data:number[],title:string){
     this.chartOptions={
       chart: {
         type: "bar"
       },
       title: {
-        text: "Live SIP Of Last 12 Month"
+        text: `${title} Of Last 12 Month`
       },
       subtitle: {
         text:
-          'Data visualisation for Live SIP'
+          `Data visualisation for ${title}`
       },
       xAxis: {
         categories: category.map(item => this.date_pipe.transform(item,'MMM-yyyy')),

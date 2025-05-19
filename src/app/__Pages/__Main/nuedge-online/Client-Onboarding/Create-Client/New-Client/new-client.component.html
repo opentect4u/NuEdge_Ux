@@ -9,6 +9,7 @@
                         <div class="card-body  p-3">
                             <div class="form-bootstrapWizard">
                                 <ul class="bootstrapWizard form-wizard clearfix">
+                                        <!-- (click)="changeStep(item,i)" -->
 
                                     <li 
                                     
@@ -18,10 +19,11 @@
                                     }" class=" cust_tab" id={{item.name}} *ngFor="let item of step_wizard;let i = index">
                                         <a
                                           
-                                        (click)="changeStep(item,i)"
                                         [attr.data-toggle]="item.name" style="text-decoration: none;" [ngClass]="{
                                             'active':i <= step
-                                        }">
+                                        }"
+                                        
+                                        >
                                             <span class="step">{{i + 1}}</span>
                                             <span class="title text-uppercase">{{item.name}}</span> </a>
                                     </li>
@@ -52,9 +54,8 @@
                                                             <button
 
                                                             title="Next"
-                                                             [disabled]="step == (step_wizard.length - 1)" 
                                                             (click)="goNext()"
-                                                            [disabled]="step == step_wizard.length || new_client_form.invalid" 
+                                                            [disabled]="(step == (step_wizard.length -1)) || new_client_form.invalid" 
                                                             pButton type="button" icon="pi pi-angle-double-right" 
                                                             class="p-button-text p-button-sm p-button-rounded p-button-danger">
                                                             </button>   
@@ -1696,7 +1697,6 @@
                                                                             class="js-example-responsive select2  form-control"
                                                                             formControlName="email_rel">
                                                                                 <option value="">-- Choose Relationship --</option>
-                                                                                <option value="">-- Select Relation --</option>
                                                                                 <option value="SE">SE - Self</option>
                                                                                 <option value="SP">SP - Spouse</option>
                                                                                 <option value="DC">DC - Dependent Children</option>
@@ -2017,8 +2017,7 @@
                                                                                         [ngClass]="{
                                                                                             'colorLabel':hasRequiredValidator('nominee_dtls.authentication_mode')
                                                                                         }"
-                                                                                    >Select
-                                                                                    Nominee: </label>
+                                                                                    >Nomination Auth Mode: </label>
                                                                                     <div class="col-sm-8">
                                                                                         <select id="authentication_mode" name="authentication_mode"
                                                                                         class="js-example-responsive select2  form-control"
@@ -2380,20 +2379,297 @@
             
                                                                 </div>
                                                         </div>
+                                                        <!-- End -->
 
-                                                            <!-- End -->
-                                                            <div class="row" *ngIf="step_content_name == 'final_submit'">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group form-check">
+                                                        <!-- Additional Details -->
+                                                         <div class="row" formGroupName="additional_dtls" *ngIf="step_content_name== 'additional_dtls'">
+
+                                                                <!-- Mapin Id. -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="map_in_id" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.map_in_id')}">Mapin Id.: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                    <input placeholder="Enter Mapin Id." type="text"
+                                                                    id="map_in_id" name="map_in_id" maxLength="16"
+                                                                    class="form-control"
+                                                                    formControlName="map_in_id" />
+                                                                </div>
+                                                                <!-- End -->
+
+
+                                                                 <!-- Paperless Flag. -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="paperless_flag" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.paperless_flag')}">Paperless Flag: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                    <select id="paperless_flag" name="paperless_flag"
+                                                                    class="js-example-responsive select2  form-control"
+                                                                    formControlName="paperless_flag">
+                                                                        <option value="">-- Choose Paperless Flag --</option>
+                                                                        <option value="P" id="P">Paper</option>
+                                                                        <option value="Z" id="Z">Paperless</option>
+                                                                    </select>
+                                                                     <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.paperless_flag')?.invalid && (new_client_form.get('additional_dtls.paperless_flag')?.dirty || new_client_form.get('additional_dtls.paperless_flag')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.paperless_flag'))?.errors?.required">**Please
+                                                                            provide
+                                                                            paperless flag**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+
+                                                                <!-- LEI No. -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="lei_no" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.lei_no')}">LEI No: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                    <input type="text" placeholder="Enter LEI No."
+                                                                    id="lei_no" name="lei_no"
+                                                                    class="form-control" maxLength="20"
+                                                                    formControlName="lei_no" />
+                                                                      <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.lei_no')?.invalid && (new_client_form.get('additional_dtls.lei_no')?.dirty || new_client_form.get('additional_dtls.lei_no')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.lei_no'))?.errors?.required">**Please
+                                                                            provide
+                                                                            LEI No**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+
+                                                                <!-- LEI Validity -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="lei_validity" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.lei_validity')}">LEI Validity: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                    <input type="date"
+                                                                    id="lei_validity" name="lei_validity"
+                                                                    class="form-control"
+                                                                    formControlName="lei_validity" />
+                                                                      <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.lei_validity')?.invalid && (new_client_form.get('additional_dtls.lei_validity')?.dirty || new_client_form.get('additional_dtls.lei_validity')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.lei_validity'))?.errors?.required">**Please
+                                                                            provide
+                                                                            LEI validity**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+
+
+                                                                <!-- Div pay mode -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="div_pay_mode" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.div_pay_mode')}">Div pay mode: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                          <select id="div_pay_mode" name="div_pay_mode"
+                                                                                class="js-example-responsive select2  form-control"
+                                                                                formControlName="div_pay_mode">
+                                                                                    <option value="">-- Choose Div pay mode --</option>
+                                                                                    <option value="01" id="01">Cheque</option>
+                                                                                    <option value="02" id="02">Direct Credit</option>
+                                                                                    <option value="03" id="03">ECS</option>
+                                                                                    <option value="04" id="04">NEFT</option>
+                                                                                    <option value="05" id="05">RTGS</option>
+                                                                                </select>
+                                                                      <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.div_pay_mode')?.invalid && (new_client_form.get('additional_dtls.div_pay_mode')?.dirty || new_client_form.get('additional_dtls.div_pay_mode')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.div_pay_mode'))?.errors?.required">**Please
+                                                                            choose
+                                                                            div pay mode**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+
+                                                                <!-- PMS -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="pms" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.pms')}">PMS: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                    <select id="pms" name="pms"
+                                                                    class="js-example-responsive select2  form-control"
+                                                                    formControlName="pms">
+                                                                        <option value="">-- Choose PMS --</option>
+                                                                        <option value="Y" id="Y">Yes</option>
+                                                                        <option value="N" id="N">No</option>
+                                                                    </select>
+                                                                   
+                                                                </div>
+                                                                <!-- End -->
+
+                                                                <!-- Default DP -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="default_dp" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.default_dp')}">Default DP: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                    <select id="default_dp" name="default_dp"
+                                                                    class="js-example-responsive select2  form-control"
+                                                                    formControlName="default_dp">
+                                                                        <option value="">-- Choose Default DP --</option>
+                                                                        <option value="CDSL" id="CDSL">CDSL</option>
+                                                                        <option value="NSDL" id="NSDL">NSDL</option>
+                                                                    </select>
+                                                                    <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.default_dp')?.invalid && (new_client_form.get('additional_dtls.default_dp')?.dirty || new_client_form.get('additional_dtls.default_dp')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.default_dp'))?.errors?.required">**Please
+                                                                            provide
+                                                                            default DP**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+
+                                                                <ng-container *ngIf="new_client_form.get('additional_dtls.default_dp').value == 'CDSL'">
+
+                                                                 <!-- CDSL DPID -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="cdsl_dpid" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.cdsl_dpid')}">CDSL DPID: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                     <input placeholder="Enter CDSL DPID" type="text"
+                                                                    id="cdsl_dpid" name="cdsl_dpid" maxLength="8"
+                                                                    class="form-control"
+                                                                    formControlName="cdsl_dpid" />
+                                                                    <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.cdsl_dpid')?.invalid && (new_client_form.get('additional_dtls.cdsl_dpid')?.dirty || new_client_form.get('additional_dtls.cdsl_dpid')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.cdsl_dpid'))?.errors?.required">**Please
+                                                                                provide
+                                                                                CDSL DPID**</span>
+                                                                                 <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.cdslclt_id'))?.errors?.maxlength">**
+                                                                                CDSL DPID must be 8 character long maximum**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+
+                                                                <!-- CDSLCLTID -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="cdslclt_id" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.cdslclt_id')}">CDSLCLTID: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                     <input placeholder="Enter CDSLCLTID" type="text"
+                                                                    id="cdslclt_id" name="cdslclt_id" maxLength="16"
+                                                                    class="form-control"
+                                                                    formControlName="cdslclt_id" />
+                                                                    <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.cdslclt_id')?.invalid && (new_client_form.get('additional_dtls.cdslclt_id')?.dirty || new_client_form.get('additional_dtls.cdslclt_id')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.cdslclt_id'))?.errors?.required">**Please
+                                                                                provide
+                                                                                CDSLCLTID**</span>
+                                                                                <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.cdslclt_id'))?.errors?.maxlength">**
+                                                                                CDSLCLTID must be 16 character long maximum**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+                                                                </ng-container>
+
+
+                                                                 <ng-container *ngIf="new_client_form.get('additional_dtls.default_dp').value == 'NSDL' && new_client_form.get('additional_dtls.pms').value == 'Y'">
+                                                                    <!-- CMBP Id -->
+                                                                    <div class="col-sm-2 my-2">
+                                                                            <label for="cmbp_id" class="m-0 labelTitle col-form-label float-right" 
+                                                                            [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.cmbp_id')}">CMBP Id: </label>
+                                                                    </div>
+                                                                    <div class="col-sm-4 my-2">
+                                                                        <input placeholder="Enter CMBP Id" type="text"
+                                                                        id="cmbp_id" name="cmbp_id" maxLength="16"
+                                                                        class="form-control"
+                                                                        formControlName="cmbp_id" />
+                                                                        <div class="invalid-feedback text-left"
+                                                                            *ngIf="new_client_form.get('additional_dtls.cmbp_id')?.invalid && (new_client_form.get('additional_dtls.cmbp_id')?.dirty || new_client_form.get('additional_dtls.cmbp_id')?.touched)">
+                                                                            <span class="invalid-feedback error_txt"
+                                                                                *ngIf="(new_client_form.get('additional_dtls.cmbp_id'))?.errors?.required">**Please
+                                                                                    provide
+                                                                                    CMBP Id**</span>
+                                                                                    <span class="invalid-feedback error_txt"
+                                                                                    *ngIf="(new_client_form.get('additional_dtls.cmbp_id'))?.errors?.pattern">**Only digits allowed.**</span>
+                                                                                    <span class="invalid-feedback error_txt"
+                                                                                    *ngIf="(new_client_form.get('additional_dtls.cmbp_id'))?.errors?.maxLength">**CMBP ID must be 16 digits long**</span> 
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- End -->
+                                                                </ng-container>
+                                                                 <ng-container *ngIf="new_client_form.get('additional_dtls.default_dp').value == 'NSDL'">
+                                                                <!-- NSDLDPID -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="nsdldp_id" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.nsdldp_id')}">NSDLDPID: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                     <input placeholder="Enter NSDLDPID" type="text"
+                                                                    id="nsdldp_id" name="nsdldp_id" maxLength="8"
+                                                                    class="form-control"
+                                                                    formControlName="nsdldp_id" />
+                                                                    <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.nsdldp_id')?.invalid && (new_client_form.get('additional_dtls.nsdldp_id')?.dirty || new_client_form.get('additional_dtls.nsdldp_id')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.nsdldp_id'))?.errors?.required">**Please
+                                                                                provide
+                                                                                NSDLDPID**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+
+                                                                <!-- NSDLCLTID -->
+                                                                <div class="col-sm-2 my-2">
+                                                                        <label for="nsdlclt_id" class="m-0 labelTitle col-form-label float-right" 
+                                                                        [ngClass]="{'colorLabel':hasRequiredValidator('additional_dtls.nsdlclt_id')}">NSDLCLTID: </label>
+                                                                </div>
+                                                                <div class="col-sm-4 my-2">
+                                                                     <input placeholder="Enter NSDLCLTID" type="text"
+                                                                    id="nsdlclt_id" name="nsdlclt_id" maxLength="8"
+                                                                    class="form-control"
+                                                                    formControlName="nsdlclt_id" />
+                                                                    <div class="invalid-feedback text-left"
+                                                                        *ngIf="new_client_form.get('additional_dtls.nsdlclt_id')?.invalid && (new_client_form.get('additional_dtls.nsdlclt_id')?.dirty || new_client_form.get('additional_dtls.nsdlclt_id')?.touched)">
+                                                                        <span class="invalid-feedback error_txt"
+                                                                            *ngIf="(new_client_form.get('additional_dtls.nsdlclt_id'))?.errors?.required">**Please
+                                                                                provide
+                                                                                NSDLCLTID**</span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End -->
+                                                                 </ng-container>
+                                                         </div>
+                                                         <!-- End -->
+                                                            <div class="row" formGroupName="final_submit" *ngIf="step_content_name == 'final_submit'">
+                                                                <div class="col-sm-2 d-flex justify-content-start align-items-center">
+                                                                        <label for="created_by" class="m-0 labelTitle col-form-label" [ngClass]="{'colorLabel':hasRequiredValidator('final_submit.created_by')}">Create By: </label>
+                                                                </div>
+                                                                <div class="col-sm-3 d-flex justify-content-start align-items-center">
+                                                                    <mat-radio-group aria-label="Select an option" formControlName="created_by">
+                                                                    <mat-radio-button value="NSE">NSE</mat-radio-button>
+                                                                    <mat-radio-button value="BSE" class="mx-2">BSE</mat-radio-button>
+                                                                    <mat-radio-button value="BOTH">BOTH</mat-radio-button>
+                                                                    </mat-radio-group>
+                                                                </div>
+                                                                <div class="col-sm-12 my-3 d-flex justify-content-start align-items-center">
+                                                                        <div>
+
                                                                         <input type="checkbox" formControlName="final_submit_acknowledgemnt" class="form-check-input" id="final_submit_acknowledgemnt"/>
                                                                         <label class="form-check-label finalSubmit" for="final_submit_acknowledgemnt">
-                                                                            Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit
+                                                                           All the required details for IIN / FATCA / Additional KYC / UBO / NPO have been updated as applicable. I agree to submit
                                                                         </label>
-                                                                    </div>
-                                                                    <button [disabled]="new_client_form.invalid"
-                                                                    class="btn btn-danger">
-                                                                    Submit
-                                                                </button>
+                                                                        </div>
+                                                                        <div class="invalid-feedback text-left"
+                                                                            *ngIf="new_client_form.get('final_submit.final_submit_acknowledgemnt')?.invalid && (new_client_form.get('fial_submit.final_submit_acknowledgemnt')?.dirty || new_client_form.get('fial_submit.final_submit_acknowledgemnt')?.touched)">
+                                                                            <span class="invalid-feedback error_txt">**You must be agreed to terms and condition**</span>
+                                                                        </div>
+                                                                        
                                                                 </div>
                                                         
                                                             </div>
@@ -2403,7 +2679,7 @@
                                                 <button class="btn btn-danger"
                                                 form="create_new_client"
                                                 [disabled]="new_client_form.invalid"
-                                                >Save & Continue</button>
+                                                >{{step < (step_wizard.length - 1) ? 'Save & Continue' : 'Submit'}}</button>
                                             </div>
                                         </div>
                                         <!-- End -->

@@ -64,6 +64,33 @@ constructor(private __http:HttpClient) {
  }
 
 
+ api_call_for_nuedge_online(__flag: number,
+  __url:string,
+   __dt: any,
+  __bypass_log: any | undefined = false,
+  rptProgress:boolean | undefined = false
+  ){
+  if(__flag > 0){
+        // return this.__http.post(`${environment.apiUrl + __url}`,
+        // __dt,
+        // {
+        //   context: new HttpContext().set(IS_CACHE,  __bypass_log),
+        //   reportProgress: rptProgress
+        // });
+        return this.__http.post(`${environment.nuedge_onlne_api_url + __url}`,
+        __dt,
+        {
+          context: new HttpContext().set(BYPASS_LOG,  __bypass_log),
+          reportProgress: rptProgress
+        });
+  }
+  else{
+       var __data = __dt ? '?' + __dt : '';
+       return this.__http.get(`${environment.nuedge_onlne_api_url + __url + __data}`,{ context: new HttpContext().set(BYPASS_LOG,  __bypass_log) });
+  }
+ }
+
+
 
  api_call_for_gen_doc(__flag: number,
   __url:string,

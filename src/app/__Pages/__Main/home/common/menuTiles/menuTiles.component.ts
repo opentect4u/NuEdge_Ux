@@ -16,7 +16,7 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
   @ViewChild('op') Overlay__pannel:OverlayPanel
   @Input() __items: any = [];
   @Input() __flag:string;
-  chart_dtls:Required<{categories:string[],chart_data:number[]}>;
+  chart_dtls:Required<{categories:string[],chart_data:number[],title:string}>;
   tiles__api__subscription:Subscription;
   constructor(private  __utility: UtiliService,private dbIntr:DbIntrService) { }
 
@@ -49,14 +49,16 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
           //      val = val + item
           //      return val
           // }).reverse()
-            chart_data:res.chart_data
+            chart_data:res.chart_data,
+            title:"Live SIP"
         }
           this.chart_dtls = dt;
       },
        err =>{
         this.chart_dtls = {
           categories:[],
-          chart_data:[]
+          chart_data:[],
+          title:'Live SIP'
         }
        })
     }
@@ -65,16 +67,27 @@ export class MenuTilesComponent implements AfterViewInit, OnDestroy, OnInit {
         'flag='+item.flag,true)
       .pipe(pluck('data'))
       .subscribe((res:any) =>{
+          console.log(res);
           let chart_data = [];
           const categories = Object.keys(res?.data).map(key => moment(key).format('MMM-YYYY'));
           Object.keys(res?.data).forEach(key =>{
-              chart_data.push(Number(res?.data[key].toFixed(2)))
+              console.log(key);
+              chart_data.push(Number(res?.data[key]))
           });
+          console.log(chart_data);
           this.chart_dtls = {
             categories:categories.reverse(),
-            chart_data:chart_data.reverse()
+            chart_data:chart_data.reverse(),
+            title:"AUM"
           }
-      })
+      },
+       err =>{
+        this.chart_dtls = {
+          categories:[],
+          chart_data:[],
+          title:'AUM'
+        }
+       })
     }
     // console.log(item);
     // if(item.flag == 'C'){

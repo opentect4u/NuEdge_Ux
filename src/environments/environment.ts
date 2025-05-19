@@ -1,13 +1,15 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-export const url = "http://192.168.1.27/nuedge/";
+export const url = "http://192.168.1.8/nuedge/";
 // export const url = "https://nuedgecorporate.co.in/nuedge_api/";
+export const nuedge_online_url = "http://192.168.1.8/nuedge_online/"
 
 
 // const nav_url = "http://127.0.0.1:8000";
 export const environment = {
   production: false,
+  nuedge_onlne_api_url:nuedge_online_url+'api/v1',
   /****** NuEdge  Start*****/
   protfolio_pdf_gen_url:"http://192.168.1.17:9000",
   // nav_url : "http://192.168.1.12:8000", // local

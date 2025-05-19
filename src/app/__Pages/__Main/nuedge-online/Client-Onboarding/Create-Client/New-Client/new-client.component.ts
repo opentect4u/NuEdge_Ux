@@ -51,7 +51,7 @@ export class NewClientComponent implements OnInit {
     },
     {
       id:6,
-      name:'Final Submit',
+      name:'Final Submission',
       value:6,
        formControlName:'final_submit'
 
@@ -140,7 +140,25 @@ export class NewClientComponent implements OnInit {
         nominee_opted:new FormControl(''),
         authentication_mode:new FormControl('')
       }),
-      final_submit_acknowledgemnt:new FormControl(false)
+      // final_submit_acknowledgemnt:new FormControl(false),
+      additional_dtls:new FormGroup({
+        map_in_id:new FormControl(''),
+        paperless_flag:new FormControl(''),
+        lei_no:new FormControl('',{updateOn:'blur'}),
+        lei_validity:new FormControl(''),
+        pms:new FormControl(''),
+        default_dp:new FormControl(''),
+        cdsl_dpid:new FormControl(''),
+        cdslclt_id:new FormControl(''),
+        cmbp_id:new FormControl(''),
+        nsdldp_id:new FormControl(''),
+        nsdlclt_id:new FormControl(''),
+        div_pay_mode:new FormControl('')
+      }),
+      final_submit:new FormGroup({
+        final_submit_acknowledgemnt:new FormControl(false),
+        created_by:new FormControl('NSE')
+      })
   })
 
   constructor(private dbIntr:DbIntrService) { }
@@ -198,6 +216,65 @@ export class NewClientComponent implements OnInit {
     })
 
 
+    this.new_client_form.get('additional_dtls.lei_no')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('additional_dtls.lei_validity').setValue('');
+       if(res){
+          this.new_client_form.get('additional_dtls.lei_validity').setValidators([Validators.required]);
+       }
+       else{
+        this.new_client_form.get('additional_dtls.lei_validity').removeValidators([Validators.required]);
+       }
+       this.new_client_form.get('additional_dtls.lei_validity').updateValueAndValidity({emitEvent:false});
+    })
+
+
+     this.new_client_form.get('additional_dtls.pms')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('additional_dtls.cmbp_id').clearValidators();
+
+      if(this.new_client_form.get('additional_dtls.default_dp').value == 'NSDL' && res == 'Y'){
+        this.new_client_form.get('additional_dtls.cmbp_id').setValidators([ Validators.required,Validators.maxLength(16),Validators.pattern('^[0-9]*$')]);
+      }
+      this.new_client_form.get('additional_dtls.cmbp_id').updateValueAndValidity({emitEvent:false})
+    })
+
+     this.new_client_form.get('additional_dtls.default_dp')
+    .valueChanges.subscribe(res => {
+      this.new_client_form.get('additional_dtls.cdsl_dpid').setValue('');
+      this.new_client_form.get('additional_dtls.cdslclt_id').setValue('');
+      this.new_client_form.get('additional_dtls.nsdldp_id').setValue('');
+      this.new_client_form.get('additional_dtls.nsdlclt_id').setValue('');
+      this.new_client_form.get('additional_dtls.nsdldp_id').clearValidators();
+      this.new_client_form.get('additional_dtls.nsdlclt_id').clearValidators();
+      this.new_client_form.get('additional_dtls.cdslclt_id').clearValidators();
+      this.new_client_form.get('additional_dtls.cdsl_dpid').clearValidators();
+       this.new_client_form.get('additional_dtls.cmbp_id').clearValidators();
+       if(res == 'CDSL'){
+          this.new_client_form.get('additional_dtls.cdslclt_id').setValidators([
+            Validators.required,
+            Validators.maxLength(16)
+          ]);
+          this.new_client_form.get('additional_dtls.cdsl_dpid').setValidators([
+            Validators.required,
+            Validators.maxLength(8)
+          ]);
+       }
+       else if(res == 'NSDL'){
+          this.new_client_form.get('additional_dtls.nsdldp_id').setValidators([Validators.required]);
+          this.new_client_form.get('additional_dtls.nsdlclt_id').setValidators([Validators.required]);
+          if(this.new_client_form.get('additional_dtls.pms').value == 'Y'){
+            this.new_client_form.get('additional_dtls.cmbp_id').setValidators([ Validators.required,Validators.maxLength(16),Validators.pattern('^[0-9]*$')]);
+          }
+       }
+      this.new_client_form.get('additional_dtls.nsdldp_id').updateValueAndValidity({emitEvent:false});
+      this.new_client_form.get('additional_dtls.nsdlclt_id').updateValueAndValidity({emitEvent:false});
+      this.new_client_form.get('additional_dtls.cdslclt_id').updateValueAndValidity({emitEvent:false});
+      this.new_client_form.get('additional_dtls.cdsl_dpid').updateValueAndValidity({emitEvent:false});
+      this.new_client_form.get('additional_dtls.cmbp_id').updateValueAndValidity({emitEvent:false})
+    })
+
+
     this.new_client_form.get('nominee_dtls.nominee_opted')
     .valueChanges.subscribe(res => {
        if(res == 'Y'){
@@ -235,7 +312,8 @@ export class NewClientComponent implements OnInit {
             this.new_client_form.get('customer_dtls.guardian_pan').disable(); 
           if(res == 'N'){
               this.new_client_form.get('customer_dtls.guardian_pan').setValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
-              this.new_client_form.get('customer_dtls.guardian_exempt_category').removeValidators([Validators.required])
+              this.new_client_form.get('customer_dtls.guardian_exempt_category').removeValidators([Validators.required]);
+              this.new_client_form.get('customer_dtls.guardian_exempt_ref_number').removeValidators([Validators.required]);  
               this.new_client_form.get('customer_dtls.guardian_pan').enable(); 
           }
           else if(res == 'Y'){
@@ -487,25 +565,29 @@ export class NewClientComponent implements OnInit {
   }
 
   changeStep = (item,index) => {
-    console.log("************CHANGE OF STEP**************** ")
-    this.step=index;
-    this.step_wizard_title=item.name;
-    this.step_content_name = item.formControlName;
-    if(item.id == 2){
-      this.getCountry();
-    }
-    else if(item.id == 3){
-      if(this.bank.length == 0){
-      this.bank.clear();
-      this.bank.push(this.setBankDetails())
-      }
+    // if(this.new_client_form.invalid && index > this.step){}
+    // else{
+        console.log("************CHANGE OF STEP**************** ")
+        this.step=index;
+        this.step_wizard_title=item.name;
+        this.step_content_name = item.formControlName;
+        if(item.id == 2){
+          this.getCountry();
+        }
+        else if(item.id == 3){
+          if(this.bank.length == 0){
+          this.bank.clear();
+          this.bank.push(this.setBankDetails())
+          }
 
-    }
-    else if(item.id == 4){
-        // if(this.new_client_form.get('nominee_dtls.'))
-    }
-    this.setValidationDependOnStep(item)
-    console.log("************END**************** ")
+        }
+        else if(item.id == 4){
+            // if(this.new_client_form.get('nominee_dtls.'))
+        }
+        this.setValidationDependOnStep(item)
+        console.log("************END**************** ")
+    // }
+    
 
   }
 
@@ -822,6 +904,65 @@ export class NewClientComponent implements OnInit {
                                 }
                        
                   }
+                  else if(formControlName == 'additional_dtls'){
+                      if(key == 'map_in_id'  || key == 'pms' || key == 'lei_no'){}
+                      else if(key == 'lei_validity'){
+                          if(control.get('lei_no').value){
+                             control.get(key).setValidators([Validators.required]);
+                          }
+                      }
+                      else if(key == 'default_dp'){
+                          if(this.new_client_form.get('customer_dtls.client_type').value == 'D'){
+                             control.get(key).setValidators([Validators.required]);
+                          }
+                      }
+                      else if(key == 'cdsl_dpid'){
+                          if(control.get('default_dp').value == 'CDSL'){
+                             control.get(key).setValidators([
+                              Validators.required,
+                              Validators.maxLength(8)
+                            ]);
+                          }
+                      }
+                      else if(key == 'cdslclt_id'){
+                         if(control.get('default_dp').value == 'CDSL'){
+                             control.get(key).setValidators([
+                              Validators.required,
+                              Validators.maxLength(16)
+                            ]);
+                          }
+                      }
+                      else if(key == 'cmbp_id'){
+                          if(control.get('default_dp').value == 'NSDL' 
+                          && control.get('pms').value == 'Y'){
+                             control.get(key).setValidators([
+                              Validators.required,
+                              Validators.maxLength(16),
+                              Validators.pattern('^[0-9]*$')
+                            ]);
+                          }
+                      }
+                      else if(key == 'nsdldp_id' || key =='nsdlclt_id'){
+                          if(control.get('default_dp').value == 'NSDL'){
+                             control.get(key).setValidators([
+                              Validators.required,
+                              Validators.maxLength(8)
+                            ]);
+                          }
+                      }
+                      else{
+                        console.log(key)
+                         control.get(key).setValidators([Validators.required]);
+                      }
+                  }
+                  else{
+                    if(key == 'final_submit_acknowledgemnt'){
+                          control.get(key).setValidators([Validators.requiredTrue]);
+                    }
+                    else if(key == 'created_by'){
+                        control.get(key).setValidators([Validators.required]);
+                    }
+                  }
                   control.get(key).updateValueAndValidity({emitEvent:false}); 
                 })
         }
@@ -1062,11 +1203,37 @@ export class NewClientComponent implements OnInit {
 
   createNewClient(){
     if(this.new_client_form.invalid){
-      console.log('****** VALIDATION ERROR IN FORM **********')
+      console.log('****** VALIDATION ERROR IN FORM **********');
       return;
     }
-    this.goNext();
-    console.log(this.new_client_form.value);
+    const formdata = new FormData();
+    console.log('****** VALIDATION SUCCESS IN FORM **********');
+    if(this.step < (this.step_wizard.length - 1)){
+      this.goNext();
+    }
+    else{
+      const formdata = new FormData();
+      Object.keys(this.new_client_form.value).forEach((key) =>{
+              const control = this.new_client_form.get(key);
+                Object.keys(control.value).forEach(nestedkey =>{
+                      if(control.get(nestedkey) instanceof FormArray){
+                            const nestedControls = control.get(nestedkey) as FormArray;
+                            nestedControls.controls.forEach((el,index) =>{
+                                    Object.keys(el.value).forEach((obj) =>{
+                                         formdata.append(`${obj}${index + 1}`,el.value[obj] ? el.value[obj] : '')
+                                    })
+                            })
+                      }
+                      else{
+                          formdata.append(nestedkey,control.get(nestedkey)?.value)
+                      }
+                }) 
+      })
+      this.dbIntr.api_call_for_nuedge_online(1,'/createClient',formdata).subscribe(res =>{
+            console.log(res);
+      })
+    }
+   
   }
 
   handleChangeKycTypeOfJointHolder = (ev,index) =>{
