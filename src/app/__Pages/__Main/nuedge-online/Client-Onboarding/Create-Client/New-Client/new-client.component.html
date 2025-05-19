@@ -1,7 +1,11 @@
 <div class="flexSec">
     <div class="container mx-auto">
         <div class="row">
-            <div class="col-9 mx-auto">
+            <div class="col-12 mx-auto"
+                [ngClass]="{
+                    'col-12':custEntry,
+                    'col-9':!custEntry}"
+                    >
             
                
                 <ng-container *ngIf="custEntry;else showcreateCLientENtryScreen">
@@ -366,8 +370,8 @@
                                                                             class="js-example-responsive select2  form-control"
                                                                             formControlName="aadhaar_updated">
                                                                             <option value="">-- Select --</option>
-                                                                            <option value="Yes">YES</option>
-                                                                            <option value="No">NO</option>
+                                                                            <option value="Y">YES</option>
+                                                                            <option value="N">NO</option>
                                                                         </select>
                                                                     </div>
                                                                       <div class="col-sm-4">
@@ -1929,7 +1933,9 @@
                                                                                             'colorLabel':hasRequiredValidatorForBankDtls('default_bank_flag',i)
                                                                                      }"
                                                                                     >Default Bank FLag: </label>
-                                                                                    <select id="default_bank_flag_{{i}}" name="default_bank_flag_{{i}}"
+                                                                                    <select 
+                                                                                    (change)="changeDefaultBankFlag($event,i)"
+                                                                                    id="default_bank_flag_{{i}}" name="default_bank_flag_{{i}}"
                                                                                     class="js-example-responsive select2  form-control"
                                                                                     formControlName="default_bank_flag">
                                                                                         <option value="">-- Choose Default Bank Flag --</option>

@@ -81,7 +81,7 @@ export class NewClientComponent implements OnInit {
           kyc_type:new FormControl(''),
           ckyc_number:new FormControl(''),
           exempt_ref_number:new FormControl(''),
-          aadhaar_updated:new FormControl('No'),
+          aadhaar_updated:new FormControl('N'),
           joint_holder:new FormArray([]),
           guardian_first_name:new FormControl(''),
           guardian_middle_name:new FormControl(''),
@@ -1206,15 +1206,15 @@ export class NewClientComponent implements OnInit {
       console.log('****** VALIDATION ERROR IN FORM **********');
       return;
     }
-    const formdata = new FormData();
     console.log('****** VALIDATION SUCCESS IN FORM **********');
     if(this.step < (this.step_wizard.length - 1)){
       this.goNext();
     }
     else{
       const formdata = new FormData();
-      Object.keys(this.new_client_form.value).forEach((key) =>{
+      Object.keys({...this.custEntry,...this.new_client_form.getRawValue()}).forEach((key) =>{
               const control = this.new_client_form.get(key);
+              // console.log(control.getRawValue());
                 Object.keys(control.value).forEach(nestedkey =>{
                       if(control.get(nestedkey) instanceof FormArray){
                             const nestedControls = control.get(nestedkey) as FormArray;
@@ -1266,6 +1266,21 @@ export class NewClientComponent implements OnInit {
         this.joint_holder.at(index).get('email_dec_flag').removeValidators([Validators.required]);
        }
        this.joint_holder.at(index).get('email_dec_flag').updateValueAndValidity({emitEvent:false});
+  }
+
+  changeDefaultBankFlag = (ev,index) =>{
+    console.log('********************* CHANGE EVENT OF DEFAULT BANK FLAG ***********************')
+    console.log(index);
+    console.log(ev.target.value);
+    console.log('******************** END ****************************************************');
+    this.bank.controls.forEach((el,j) => {
+      if(j == index){
+
+      }
+      else{
+      this.bank.at(j).get('default_bank_flag').setValue('N');
+      }
+    })
   }
 
 }
