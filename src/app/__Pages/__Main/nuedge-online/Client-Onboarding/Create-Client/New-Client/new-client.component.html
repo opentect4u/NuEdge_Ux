@@ -138,14 +138,7 @@
                                                                             class="js-example-responsive select2  form-control"
                                                                             formControlName="exempt_category">
                                                                             <option value="">-- Select --</option>
-                                                                            <option value="1">SIKKIM Resident</option>
-                                                                            <option value="2">Transactions carried out on behalf of STATE GOVT </option>
-                                                                            <option value="3">Transactions carried out on behalf of CENTRAL GOVT</option>
-                                                                            <option value="4">COURT APPOINTED OFFICIALS </option>
-                                                                            <option value="5">UN Entity/Multilateral agency exempt from paying tax in India </option>
-                                                                            <option value="6">Official Liquidator </option>
-                                                                            <option value="7">Court Receiver </option>
-                                                                            <option value="8">Investment in Mutual Funds Upto Rs. 50,000/- p.a. including SIP </option>                                                                 
+                                                                            <option value="{{exept_cat.id}}" *ngFor="let exept_cat of md_exempt_category">{{exept_cat.name}}</option>                                                          
                                                                         </select>
                                                                         <div class="invalid-feedback text-left"
                                                                             *ngIf="new_client_form.get('customer_dtls.exempt_category')?.invalid && (new_client_form.get('customer_dtls.exempt_category')?.dirty || new_client_form.get('customer_dtls.exempt_category')?.touched)">
@@ -284,26 +277,7 @@
                                                                             formControlName="occupation">
                                                                             <option selected="selected" value="">- Choose
                                                                                 Occupation -</option>
-                                                                            <option value="1">Business</option>
-                                                                            <option value="2">Service</option>
-                                                                            <option value="3">Professional</option>
-                                                                            <option value="4">Agriculturist</option>
-                                                                            <option value="5">Retired</option>
-                                                                            <option value="6">Housewife</option>
-                                                                            <option value="7">Student</option>
-                                                                            <option value="1A">Business Manufacturing</option>
-                                                                            <option value="1B">Business Trading</option>
-                                                                            <option value="43">Forex Dealer</option>
-                                                                            <option value="2A">Government Service</option>
-                                                                            <option value="2B">Non-Government Service</option>
-                                                                            <option value="9">Not Specified</option>
-                                                                            <option value="8">Others</option>
-                                                                            <option value="41">Private Sector Service</option>
-                                                                            <option value="3C">Profession - Engineering</option>
-                                                                            <option value="3B">Profession - Finance</option>
-                                                                            <option value="3D">Profession - Legal</option>
-                                                                            <option value="3A">Profession - Medicine</option>
-                                                                            <option value="42">Public Sector / Government Service</option>
+                                                                                <option value="{{occupation.id}}" *ngFor="let  occupation of md_occupation">{{occupation.name}}</option>
                                                                         </select>
                                                                         <div class="invalid-feedback text-left"
                                                                             *ngIf="new_client_form.get('customer_dtls.occupation')?.invalid && (new_client_form.get('customer_dtls.occupation')?.dirty || new_client_form.get('customer_dtls.occupation')?.touched)">
@@ -493,14 +467,8 @@
                                                                             class="js-example-responsive select2  form-control"
                                                                             formControlName="guardian_exempt_category">
                                                                             <option value="">-- Select --</option>
-                                                                            <option value="1">SIKKIM Resident</option>
-                                                                            <option value="2">Transactions carried out on behalf of STATE GOVT </option>
-                                                                            <option value="3">Transactions carried out on behalf of CENTRAL GOVT</option>
-                                                                            <option value="4">COURT APPOINTED OFFICIALS </option>
-                                                                            <option value="5">UN Entity/Multilateral agency exempt from paying tax in India </option>
-                                                                            <option value="6">Official Liquidator </option>
-                                                                            <option value="7">Court Receiver </option>
-                                                                            <option value="8">Investment in Mutual Funds Upto Rs. 50,000/- p.a. including SIP </option>                                                                 
+                                                                            <option value="{{exept_cat.id}}" *ngFor="let exept_cat of md_gaurdian_exempt_category">{{exept_cat.name}}</option>
+                                                                                                                                
                                                                         </select>
                                                                         <div class="invalid-feedback text-left"
                                                                             *ngIf="new_client_form.get('customer_dtls.guardian_exempt_category')?.invalid && (new_client_form.get('customer_dtls.guardian_exempt_category')?.dirty || new_client_form.get('customer_dtls.guardian_exempt_category')?.touched)">
@@ -702,18 +670,13 @@
                                                                                          [ngClass]="{
                                                                                             'colorLabel':hasRequiredValidatorForJointHolder('exempt_category',i)
                                                                                         }">Exempt Category: </label>
-                                                                                    <select id="exempt_category_{{i}}" name="exempt_category_{{i}}"
+                                                                                    <select id="exempt_category_{{i}}"
+                                                                       
+                                                                                    name="exempt_category_{{i}}"
                                                                                         class="js-example-responsive select2  form-control"
                                                                                         formControlName="exempt_category">
                                                                                         <option value="">-- Select --</option>
-                                                                                        <option value="1">SIKKIM Resident</option>
-                                                                                        <option value="2">Transactions carried out on behalf of STATE GOVT </option>
-                                                                                        <option value="3">Transactions carried out on behalf of CENTRAL GOVT</option>
-                                                                                        <option value="4">COURT APPOINTED OFFICIALS </option>
-                                                                                        <option value="5">UN Entity/Multilateral agency exempt from paying tax in India </option>
-                                                                                        <option value="6">Official Liquidator </option>
-                                                                                        <option value="7">Court Receiver </option>
-                                                                                        <option value="8">Investment in Mutual Funds Upto Rs. 50,000/- p.a. including SIP </option>                                                                 
+                                                                                        <option value="{{exept_cat.id}}" *ngFor="let exept_cat of md_exempt_category">{{exept_cat.name}}</option>
                                                                                     </select>
                                                                                     <div class="invalid-feedback text-left"
                                                                                         *ngIf="item.get('exempt_category')?.invalid && (item.get('exempt_category')?.dirty || item.get('exempt_category')?.touched)">
@@ -785,34 +748,8 @@
                                                                                     <select id="occupation_{{i}}" name="occupation_{{i}}"
                                                                                         class="js-example-responsive select2  form-control"
                                                                                         formControlName="occupation">
-                                                                                        <option selected="selected" value="">- Choose
-                                                                                            Occupation -</option>
-                                                                                        <option value="4">Agriculturist</option>
-                                                                                        <option value="1">Business</option>
-                                                                                        <option value="1A">Business Manufacturing
-                                                                                        </option>
-                                                                                        <option value="1B">Business Trading</option>
-                                                                                        <option value="43">Forex Dealer</option>
-                                                                                        <option value="2A">Government Service</option>
-                                                                                        <option value="6">Housewife</option>
-                                                                                        <option value="2B">Non-Government Service
-                                                                                        </option>
-                                                                                        <option value="9">Not Specified</option>
-                                                                                        <option value="8">Others</option>
-                                                                                        <option value="41">Private Sector Service
-                                                                                        </option>
-                                                                                        <option value="3C">Profession - Engineering
-                                                                                        </option>
-                                                                                        <option value="3B">Profession - Finance</option>
-                                                                                        <option value="3D">Profession - Legal</option>
-                                                                                        <option value="3A">Profession - Medicine
-                                                                                        </option>
-                                                                                        <option value="3">Professional</option>
-                                                                                        <option value="42">Public Sector / Government
-                                                                                            Service</option>
-                                                                                        <option value="5">Retired</option>
-                                                                                        <option value="2">Service</option>
-                                                                                        <option value="7">Student</option>
+                                                                                        <option selected="selected" value="">- Choose Occupation -</option>
+                                                                                        <option value="{{occupation.id}}" *ngFor="let  occupation of md_occupation">{{occupation.name}}</option>
                                                                                     </select>
                                                                                      <div class="invalid-feedback text-left"
                                                                                         *ngIf="item.get('occupation')?.invalid && (item.get('occupation')?.dirty || item.get('occupation')?.touched)">
@@ -901,15 +838,7 @@
                                                                                                     class="js-example-responsive select2  form-control"
                                                                                                     formControlName="mobile_dec_flag">
                                                                                                         <option value="">-- Choose Relationship --</option>
-                                                                                                        <option value="SE">SE - Self</option>
-                                                                                                        <option value="SP">SP - Spouse</option>
-                                                                                                        <option value="DC">DC - Dependent Children</option>
-                                                                                                        <option value="DS">DS - Dependent Siblings</option>
-                                                                                                        <option value="DP">DP - Dependent Parents</option>
-                                                                                                        <option value="GD">GD - Guardian</option>
-                                                                                                        <option value="PM">PM - PMS</option>
-                                                                                                        <option value="CD">CD - Custodian</option>
-                                                                                                        <option value="PO">PO - POA</option>
+                                                                                                        <option value="{{flags.id}}" *ngFor="let flags of mdMobileEmailDecFlag">{{flags.name}}</option>
                                                                                                     </select>
                                                                                                     <div class="invalid-feedback text-left"
                                                                                                         *ngIf="item.get('mobile_dec_flag')?.invalid && (item.get('mobile_dec_flag')?.dirty || item.get('mobile_dec_flag')?.touched)">
@@ -961,16 +890,8 @@
                                                                                             class="js-example-responsive select2  form-control"
                                                                                              formControlName="email_dec_flag">
                                                                                                 <option value="">-- Choose Relationship --</option>
-                                                                                                <option value="">-- Select Relation --</option>
-                                                                                                <option value="SE">SE - Self</option>
-                                                                                                <option value="SP">SP - Spouse</option>
-                                                                                                <option value="DC">DC - Dependent Children</option>
-                                                                                                <option value="DS">DS - Dependent Siblings</option>
-                                                                                                <option value="DP">DP - Dependent Parents</option>
-                                                                                                <option value="GD">GD - Guardian</option>
-                                                                                                <option value="PM">PM - PMS</option>
-                                                                                                <option value="CD">CD - Custodian</option>
-                                                                                                <option value="PO">PO - POA</option>
+                                                                                                <option value="{{flags.id}}" *ngFor="let flags of mdMobileEmailDecFlag">{{flags.name}}</option>
+                                                                                                
                                                                                             </select>
                                                                                             <div class="invalid-feedback text-left"
                                                                                                 *ngIf="item.get('email_dec_flag')?.invalid && (item.get('email_dec_flag')?.dirty || item.get('email_dec_flag')?.touched)">
@@ -1641,7 +1562,7 @@
                                                                                    <span class="invalid-feedback error_txt"
                                                                                 *ngIf="(new_client_form.get('contact_dtls.mobile'))?.errors?.pattern">**Please provide valid mobile no.**</span>
                                                                                  <span class="invalid-feedback error_txt"
-                                                                                *ngIf="(new_client_form.get('contact_dtls.mobile'))?.errors?.minlength || (new_client_form.get('contact_dtls.mobile'))?.errors?.maxLength">**Mobile no must be 10 digits long**</span> 
+                                                                                *ngIf="(new_client_form.get('contact_dtls.mobile'))?.errors?.minlength || (new_client_form.get('contact_dtls.mobile'))?.errors?.maxlength">**Mobile no must be 10 digits long**</span> 
                                                                             
                                                                         </div>
                                                                     </div>
@@ -1653,15 +1574,7 @@
                                                                                 class="js-example-responsive select2  form-control"
                                                                                 formControlName="mobile_rel">
                                                                                     <option value="">-- Choose Relationship --</option>
-                                                                                    <option value="SE">SE - Self</option>
-                                                                                    <option value="SP">SP - Spouse</option>
-                                                                                    <option value="DC">DC - Dependent Children</option>
-                                                                                    <option value="DS">DS - Dependent Siblings</option>
-                                                                                    <option value="DP">DP - Dependent Parents</option>
-                                                                                    <option value="GD">GD - Guardian</option>
-                                                                                    <option value="PM">PM - PMS</option>
-                                                                                    <option value="CD">CD - Custodian</option>
-                                                                                    <option value="PO">PO - POA</option>
+                                                                                    <option value="{{flags.id}}" *ngFor="let flags of mdMobileEmailDecFlag">{{flags.name}}</option>
                                                                                 </select>
                                                                                 <div class="invalid-feedback text-left"
                                                                                     *ngIf="new_client_form.get('contact_dtls.mobile_rel')?.invalid && (new_client_form.get('contact_dtls.mobile_rel')?.dirty || new_client_form.get('contact_dtls.mobile_rel')?.touched)">
@@ -1701,15 +1614,7 @@
                                                                             class="js-example-responsive select2  form-control"
                                                                             formControlName="email_rel">
                                                                                 <option value="">-- Choose Relationship --</option>
-                                                                                <option value="SE">SE - Self</option>
-                                                                                <option value="SP">SP - Spouse</option>
-                                                                                <option value="DC">DC - Dependent Children</option>
-                                                                                <option value="DS">DS - Dependent Siblings</option>
-                                                                                <option value="DP">DP - Dependent Parents</option>
-                                                                                <option value="GD">GD - Guardian</option>
-                                                                                <option value="PM">PM - PMS</option>
-                                                                                <option value="CD">CD - Custodian</option>
-                                                                                <option value="PO">PO - POA</option>
+                                                                             <option value="{{flags.id}}" *ngFor="let flags of mdMobileEmailDecFlag">{{flags.name}}</option>
                                                                             </select>
                                                                             <div class="invalid-feedback text-left"
                                                                                 *ngIf="new_client_form.get('contact_dtls.email_rel')?.invalid && (new_client_form.get('contact_dtls.email_rel')?.dirty || new_client_form.get('contact_dtls.email_rel')?.touched)">
@@ -1729,10 +1634,7 @@
                                                                             class="js-example-responsive select2  form-control"
                                                                             formControlName="communication_mode">
                                                                                 <option value="">-- Choose Communication Mode --</option>
-                                                                                 <option value="E" id="E">EMAIL</option>
-                                                                                <option value="P" id="P">PHYSICAL</option>
-                                                                                <option value="M" id="M">MOBILE</option>
-                                                                               
+                                                                                <option value="{{communications.id}}" *ngFor="let communications of mdCommunicationMode">{{communications.name}}</option>
                                                                             </select>
                                                                             <div class="invalid-feedback text-left"
                                                                                 *ngIf="new_client_form.get('contact_dtls.communication_mode')?.invalid && (new_client_form.get('contact_dtls.communication_mode')?.dirty || new_client_form.get('contact_dtls.communication_mode')?.touched)">
@@ -1769,11 +1671,14 @@
                                                                                             'colorLabel':hasRequiredValidatorForBankDtls('ifsc_code',i)
                                                                                         }"
                                                                                     >IFSC: </label>
-                                                                                    <input placeholder="Enter IFSC" type="text" id="ifsc_{{i}}"
+                                                                                    <input placeholder="Enter IFSC" type="text" id="ifsc_{{i}}" minLength="11" maxLength="11"
                                                                                     name="ifsc_{{i}}" class="form-control"
                                                                                     formControlName="ifsc_code" />
                                                                                      <div class="invalid-feedback text-left" *ngIf="item.get('ifsc_code')?.invalid && (item.get('ifsc_code')?.dirty || item.get('ifsc_code')?.touched)">
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('ifsc_code')?.errors?.['required']">**Please provide ifsc**</span>
+                                                                                       
+                                                                                         <span class="invalid-feedback error_txt"
+                                                                                                    *ngIf="(item.get('ifsc_code'))?.errors?.minlength || (item.get('ifsc_code'))?.errors?.maxlength">**ifsc must be 11 characters long**</span> 
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="col-sm-4">
@@ -1786,10 +1691,11 @@
                                                                                     class="js-example-responsive select2  form-control"
                                                                                     formControlName="acc_type">
                                                                                     <option value="">-- Choose Account Type --</option>
-                                                                                    <option value="SB" id="nuEdgeRgSB">SAVINGS</option>
+                                                                                    <!-- <option value="SB" id="nuEdgeRgSB">SAVINGS</option>
                                                                                     <option value="CB" id="nuEdgeRgCB">CURRENT</option>
                                                                                     <option value="NE" id="nuEdgeRgNE">NON-RESIDENT EXTERNAL</option>
-                                                                                    <option value="NO" id="nuEdgeRgNO">NON-RESIDENT ORDINARY</option>
+                                                                                    <option value="NO" id="nuEdgeRgNO">NON-RESIDENT ORDINARY</option> -->
+                                                                                    <option value="{{accType.id}}" *ngFor="let accType  of md_accountType">{{accType.name}}</option>
                                                                                 </select>
                                                                                  <div class="invalid-feedback text-left" *ngIf="item.get('acc_type')?.invalid && (item.get('acc_type')?.dirty || item.get('acc_type')?.touched)">
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('acc_type')?.errors?.['required']">**Please choose account type**</span>
@@ -1803,7 +1709,7 @@
                                                                                     >Account No.: </label>
                                                                                     <input placeholder="Enter Account No." type="text" id="acc_no_{{i}}"
                                                                                     name="acc_no_{{i}}" class="form-control"
-                                                                                    formControlName="acc_no"  minlength="6" maxlength="6"  />
+                                                                                    formControlName="acc_no"  minLength="6" maxLength="6"  />
                                                                                      <div class="invalid-feedback text-left" *ngIf="item.get('acc_no')?.invalid && (item.get('acc_no')?.dirty || item.get('acc_no')?.touched)">
                                                                                         <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['required']">**Please provide account no**</span>
                                                                                           <span class="invalid-feedback error_txt" *ngIf="item.get('acc_no')?.errors?.['minlength']">Minimum length is 6.</span>
@@ -2258,28 +2164,8 @@
                                                                                     class="js-example-responsive  form-control"
                                                                                     formControlName="nominee_relationship">
                                                                                     <option value="">-- Choose Relationship --</option>
-                                                                                    <option value="AUNT">AUNT</option>
-                                                                                    <option value="BROTHER-IN-LAW">BROTHER-IN-LAW</option>
-                                                                                    <option value="BROTHER">BROTHER</option>
-                                                                                    <option value="DAUGHTER">DAUGHTER</option>
-                                                                                    <option value="DAUGHTER-IN-LAW">DAUGHTER-IN-LAW</option>
-                                                                                    <option value="FATHER">FATHER</option>
-                                                                                    <option value="FATHER-IN-LAW">FATHER-IN-LAW</option>
-                                                                                    <option value="GRAND DAUGHTER">GRAND DAUGHTER</option>
-                                                                                    <option value="GRAND FATHER">GRAND FATHER</option>
-                                                                                    <option value="GRAND MOTHER">GRAND MOTHER</option>
-                                                                                    <option value="GRAND SON">GRAND SON</option>
-                                                                                    <option value="MOTHER-IN-LAW">MOTHER-IN-LAW</option>
-                                                                                    <option value="MOTHER">MOTHER</option>
-                                                                                    <option value="NEPHEW">NEPHEW</option>
-                                                                                    <option value="NIECE">NIECE</option>
-                                                                                    <option value="SISTER">SISTER</option>
-                                                                                    <option value="SISTER-IN-LAW">SISTER-IN-LAW</option>
-                                                                                    <option value="SON">SON</option>
-                                                                                    <option value="SON-IN-LAW">SON-IN-LAW</option>
-                                                                                    <option value="SPOUSE">SPOUSE</option>
-                                                                                    <option value="UNCLE">UNCLE</option>
-                                                                                    <option value="OTHERS">OTHERS</option>                                                                           
+                                                                                    <option value="{{relationships.id}}" *ngFor="let relationships of md_relationship">{{relationships.name}}</option>
+                                                                                  
                                                                                 </select>
                                                                                  <div class="invalid-feedback text-left"
                                                                                         *ngIf="item?.get('nominee_relationship')?.invalid && (item?.get('nominee_relationship')?.dirty || item?.get('nominee_relationship')?.touched)">
@@ -2371,9 +2257,11 @@
                                                                                     class="js-example-responsive  form-control"
                                                                                     formControlName="nominee_gaurdian_rel">
                                                                                     <option value="">-- Choose Gaurdian Relationship --</option>
-                                                                                    <option value="F"> Father </option>
+                                                                                    <option value="{{relationships.id}}" *ngFor="let relationships of md_relationship">{{relationships.name}}</option>
+                                                                                    
+                                                                                    <!-- <option value="F"> Father </option>
                                                                                     <option value="M"> Mother </option>
-                                                                                    <option value="C"> Court Appointed Legal Guardian </option>                                                                     
+                                                                                    <option value="C"> Court Appointed Legal Guardian </option>                                                                      -->
                                                                                 </select>
                                                                                 </div>
                                                                                 <!-- End -->
@@ -2478,11 +2366,7 @@
                                                                                 class="js-example-responsive select2  form-control"
                                                                                 formControlName="div_pay_mode">
                                                                                     <option value="">-- Choose Div pay mode --</option>
-                                                                                    <option value="01" id="01">Cheque</option>
-                                                                                    <option value="02" id="02">Direct Credit</option>
-                                                                                    <option value="03" id="03">ECS</option>
-                                                                                    <option value="04" id="04">NEFT</option>
-                                                                                    <option value="05" id="05">RTGS</option>
+                                                                                    <option *ngFor="let items of md_divPayMode" value="{{items.id}}">{{items.name}}</option>
                                                                                 </select>
                                                                       <div class="invalid-feedback text-left"
                                                                         *ngIf="new_client_form.get('additional_dtls.div_pay_mode')?.invalid && (new_client_form.get('additional_dtls.div_pay_mode')?.dirty || new_client_form.get('additional_dtls.div_pay_mode')?.touched)">
@@ -2604,7 +2488,7 @@
                                                                                     <span class="invalid-feedback error_txt"
                                                                                     *ngIf="(new_client_form.get('additional_dtls.cmbp_id'))?.errors?.pattern">**Only digits allowed.**</span>
                                                                                     <span class="invalid-feedback error_txt"
-                                                                                    *ngIf="(new_client_form.get('additional_dtls.cmbp_id'))?.errors?.maxLength">**CMBP ID must be 16 digits long**</span> 
+                                                                                    *ngIf="(new_client_form.get('additional_dtls.cmbp_id'))?.errors?.maxlength">**CMBP ID must be 16 digits long**</span> 
                                                                         </div>
                                                                     </div>
                                                                     <!-- End -->
@@ -2700,6 +2584,7 @@
                 </ng-container>
                 <ng-template #showcreateCLientENtryScreen>
                     <app-create-customer-by-entry
+                    [md_taxStatus]="md_tax"
                     (sendEntry)="get1stepEntry($event)"
                     ></app-create-customer-by-entry>
                 </ng-template>

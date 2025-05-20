@@ -63,6 +63,15 @@ export class NewClientComponent implements OnInit {
   md_city = [];
   md_district = [];
   md_pincode = [];
+  md_tax = [];
+  md_occupation = [];
+  md_exempt_category = [];
+  md_gaurdian_exempt_category = [];
+  md_accountType=[];
+  md_divPayMode = [];
+  mdMobileEmailDecFlag = [];
+  mdCommunicationMode = [];
+  md_relationship = [];
   private shouldScroll = false;
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   new_client_form = new FormGroup({
@@ -163,7 +172,66 @@ export class NewClientComponent implements OnInit {
 
   constructor(private dbIntr:DbIntrService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {this.fetchTaxStatus();}
+
+    fetchTaxStatus = () =>{
+        this.dbIntr.api_call_for_nuedge_online(0,'/taxStatus',null).pipe(pluck('data'))
+        .subscribe((res:any) =>{
+              this.md_tax = res;
+        })
+    }
+
+    fetchOccupation = () =>{
+      if(this.md_occupation.length == 0){
+        this.dbIntr.api_call_for_nuedge_online(0,'/occupationCode',null)
+          .pipe(pluck('data'))
+          .subscribe((res:any) =>{this.md_occupation = res;})
+      } 
+    }
+
+    fetchExemptCategoryDependOnPanExempt = () =>{
+        if(this.md_exempt_category.length == 0){
+          this.dbIntr.api_call_for_nuedge_online(0,'/panExemptCategory',null)
+            .pipe(pluck('data'))
+            .subscribe((res:any) =>{this.md_exempt_category = res;})
+        } 
+    }
+
+    fetchGaurdianExemptCategoryDependOnGaurdianPanExempt = () =>{
+        if(this.md_gaurdian_exempt_category.length == 0){
+          this.dbIntr.api_call_for_nuedge_online(0,'/panExemptCategory',null)
+            .pipe(pluck('data'))
+            .subscribe((res:any) =>{this.md_gaurdian_exempt_category = res;})
+        } 
+    }
+
+    fetchAccountType = () =>{
+      if(this.md_accountType.length == 0){
+          this.dbIntr.api_call_for_nuedge_online(0,'/accountType',null)
+            .pipe(pluck('data'))
+            .subscribe((res:any) =>{this.md_accountType = res;})
+        } 
+    }
+
+    fetchDividendPayMode = () =>{
+       if(this.md_divPayMode.length == 0){
+        this.dbIntr.api_call_for_nuedge_online(0,'/dividendPaymode',null)
+        .pipe(pluck('data'))
+        .subscribe((res:any) =>{
+            this.md_divPayMode = res;
+        })
+       } 
+    }
+
+    fetchRelationShip = () =>{
+          if(this.md_relationship.length == 0){
+              this.dbIntr.api_call_for_nuedge_online(0,'/relationship',null)
+              .pipe(pluck('data'))
+              .subscribe((res:any) =>{
+                  this.md_relationship = res;
+              })
+          }
+    }
 
   ngAfterViewInit():void {
 
@@ -317,6 +385,7 @@ export class NewClientComponent implements OnInit {
               this.new_client_form.get('customer_dtls.guardian_pan').enable(); 
           }
           else if(res == 'Y'){
+          this.fetchGaurdianExemptCategoryDependOnGaurdianPanExempt();
             this.new_client_form.get('customer_dtls.guardian_pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
               this.new_client_form.get('customer_dtls.guardian_exempt_category').setValidators([Validators.required]);
               this.new_client_form.get('customer_dtls.guardian_exempt_ref_number').setValidators([Validators.required]);  
@@ -347,6 +416,7 @@ export class NewClientComponent implements OnInit {
                 this.new_client_form.get('customer_dtls.pan').enable();   
             }
         else if(res == 'Y'){
+          this.fetchExemptCategoryDependOnPanExempt();
           this.new_client_form.get('customer_dtls.pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
             this.new_client_form.get('customer_dtls.exempt_category').setValidators([Validators.required]);
             this.new_client_form.get('customer_dtls.exempt_ref_number').setValidators([Validators.required]);  
@@ -423,14 +493,16 @@ export class NewClientComponent implements OnInit {
         else{
           this.nominee.clear();
           for(let i=0;i<range;i++){
-            this.nominee.push(this.setNominee((100 / range)))
+            this.nominee.push(this.setNominee(Math.round(100 / range)))
           }
         }
   }
 
   setPercentageOfNomineesDependOnNumberOfSelectedNominee = (range) =>{
       for(let i=0;i<range;i++){
-          this.nominee.at(i).get('nominee_percentage').setValue((100 / range).toFixed(2));
+          // this.nominee.at(i).get('nominee_percentage').setValue((100 / range).toFixed(2));
+          this.nominee.at(i).get('nominee_percentage').setValue(Math.round(100 / range));
+
       }
   }
 
@@ -512,7 +584,8 @@ export class NewClientComponent implements OnInit {
       nominee_relationship: new FormControl(nominee_relationship ? nominee_relationship : '',[Validators.required]),
       nominee_percentage:new FormControl(nominee_percentage.toFixed(2),[
         Validators.required,
-        Validators.pattern(/^\d+(\.\d{1,4})?$/),
+        // Validators.pattern(/^\d+(\.\d{1,4})?$/),
+        Validators.pattern('^[0-9]*$'),
         Validators.min(0), 
         Validators.max(100)
       ]),
@@ -537,7 +610,10 @@ export class NewClientComponent implements OnInit {
     default_bank_flag:string='',
   ){
     return new FormGroup({
-      ifsc_code:new FormControl(ifsc_code ? ifsc_code : '',[Validators.required]),
+      ifsc_code:new FormControl(ifsc_code ? ifsc_code : '',[Validators.required,
+        Validators.minLength(11),
+        Validators.maxLength(11),
+      ]),
       acc_type: new FormControl(acc_type ? acc_type : '',[Validators.required]),
       acc_no: new FormControl(acc_no ? acc_no : '',[Validators.required,
 
@@ -571,24 +647,35 @@ export class NewClientComponent implements OnInit {
         this.step=index;
         this.step_wizard_title=item.name;
         this.step_content_name = item.formControlName;
+
         if(item.id == 2){
           this.getCountry();
+          this.fetchMobileEmailDeclarationFlag();
+          this.fetchCommunicationMode();
+        }
+        else if(item.id == 0){
+          this.fetchOccupation();
+          if(this.custEntry?.tax_status != 'S'){
+            this.fetchMobileEmailDeclarationFlag();
+          }
         }
         else if(item.id == 3){
           if(this.bank.length == 0){
-          this.bank.clear();
-          this.bank.push(this.setBankDetails())
+            this.bank.clear();
+            this.bank.push(this.setBankDetails())
           }
-
+          this.fetchAccountType();
         }
         else if(item.id == 4){
             // if(this.new_client_form.get('nominee_dtls.'))
+            this.fetchRelationShip();
+        }
+        else if(item.id == 5){
+            this.fetchDividendPayMode();
         }
         this.setValidationDependOnStep(item)
         console.log("************END**************** ")
     // }
-    
-
   }
 
   getCountry = () => {
@@ -649,6 +736,16 @@ export class NewClientComponent implements OnInit {
   }
   deleteBank(index){
     this.bank.removeAt(index)
+  }
+
+  fetchCommunicationMode = () =>{
+        if(this.mdCommunicationMode.length == 0){
+              this.dbIntr.api_call_for_nuedge_online(0,'/communicationMode',null)
+           .pipe(pluck('data'))
+           .subscribe((res:any) =>{
+              this.mdCommunicationMode = res;
+           })
+        }
   }
 
   get1stepEntry(ev){
@@ -1037,6 +1134,15 @@ export class NewClientComponent implements OnInit {
                       else if(key == 'acc_no'){
                          control.get(key).setValidators([Validators.required,Validators.minLength(6),Validators.maxLength(6),this.numericValidator])
                       }
+                      else if(key == 'ifsc_code'){
+                         control.get(key).setValidators([
+                           Validators.required,
+                          Validators.minLength(11),
+                          Validators.maxLength(11),
+                         ])
+
+                         
+                      }
                       else{
                          control.get(key).setValidators([Validators.required])
                       }
@@ -1173,6 +1279,7 @@ export class NewClientComponent implements OnInit {
             this.joint_holder.at(index).get('pan').enable();   
         }
         else if(ev.target.value == 'Y'){
+            this.fetchExemptCategoryDependOnPanExempt()
             this.joint_holder.at(index).get('pan').removeValidators([Validators.required,Validators.pattern(/^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/)]);
             this.joint_holder.at(index).get('exempt_category').setValidators([Validators.required]);
             this.joint_holder.at(index).get('exempt_ref_number').setValidators([Validators.required]);
@@ -1201,7 +1308,151 @@ export class NewClientComponent implements OnInit {
       }
   }
 
+  fetchMobileEmailDeclarationFlag = () =>{
+        if(this.mdMobileEmailDecFlag.length == 0){
+           this.dbIntr.api_call_for_nuedge_online(0,'/mobileEmailDeclaration',null)
+           .pipe(pluck('data'))
+           .subscribe((res:any) =>{
+              this.mdMobileEmailDecFlag = res;
+           })
+        }
+  }
+
   createNewClient(){
+    const formdata = new FormData();
+   
+      const tax_status = this.md_tax.find(el => el.id == this.custEntry?.tax_status);
+      formdata.append('tax_status',tax_status ? JSON.stringify(tax_status) : '');
+      formdata.append('mode_of_holding',this.custEntry?.mode_of_holding);
+      Object.keys(this.new_client_form.value).forEach((key) =>{
+              const control = this.new_client_form.get(key);
+                Object.keys(control.value).forEach(nestedkey =>{
+                      if(control.get(nestedkey) instanceof FormArray){
+                            const nestedControls = control.get(nestedkey) as FormArray;
+                            nestedControls.controls.forEach((el,index) =>{
+                                    console.log(nestedkey)
+                                    Object.keys(el.value).forEach((obj,i) =>{
+                                          console.log(obj);
+                                         if(obj == 'exempt_category'){
+                                              if(el.value['pan_exempt'] == 'Y'){
+                                                  const exempt_cat = this.md_exempt_category?.find(ele => ele.id == el.value[obj]);
+                                                  console.log(exempt_cat);
+                                                  formdata.append(`${obj}${index + 1}`,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                                              }
+                                              else{
+                                                formdata.append(`${obj}${index + 1}`,null)
+                                              }
+                                         }
+                                         else if(obj == 'occupation'){
+                                                  const td_occupation = this.md_occupation?.find(ele => ele.id == el.value[obj]);
+                                                  formdata.append(`${obj}${index + 1}`,td_occupation ? JSON.stringify(td_occupation) : null)
+                                         }
+                                         else if(obj == 'acc_type'){
+                                                  const td_accType = this.md_accountType?.find(ele => ele.id == el.value[obj]);
+                                                  formdata.append(`${obj}${index + 1}`,td_accType ? JSON.stringify(td_accType) : null)
+                                         }
+                                         else if(obj == 'mobile_dec_flag'){
+                                                if(el.value['mobile']){
+                                                      const tdMobileFlag = this.mdMobileEmailDecFlag?.find(ele => ele.id == el.value[obj]);
+                                                      formdata.append(`${obj}${index + 1}`,tdMobileFlag ? JSON.stringify(tdMobileFlag) : null)
+                                                }
+                                                else{
+                                                    formdata.append(`${obj}${index + 1}`,null)
+                                                }
+                                         }
+                                        else if(obj == 'email_dec_flag'){
+                                                if(el.value['email']){
+                                                      const tdEmailFlag = this.mdMobileEmailDecFlag?.find(ele => ele.id == el.value[obj]);
+                                                      formdata.append(`${obj}${index + 1}`,tdEmailFlag ? JSON.stringify(tdEmailFlag) : null);
+                                                }
+                                                else{
+                                                    formdata.append(`${obj}${index + 1}`,null)
+                                                }
+                                         }
+                                         else if(obj == 'nominee_relationship'){
+                                              const TDRelationShip = this.md_relationship?.find(ele => ele.id == el.value[obj]);
+                                              formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : null);
+                                         }
+                                         else if(obj == 'nominee_gaurdian_rel'){
+                                                if(el.value['nominee_type'] == 'Y'){
+                                                        const TDRelationShip = this.md_relationship?.find(ele => ele.id == el.value[obj]);
+                                                        formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : null);
+                                                }
+                                                else{
+                                                    formdata.append(`${obj}${index + 1}`,null)
+                                                }
+                                              const TDRelationShip = this.md_relationship?.find(ele => ele.id == el.value[obj]);
+                                              formdata.append(`${obj}${index + 1}`,TDRelationShip ? JSON.stringify(TDRelationShip) : null);
+                                         }
+                                         else{
+                                          formdata.append(`${obj}${index + 1}`,el.value[obj] ? el.value[obj] : '')
+                                         }
+                                    })
+                            })
+                      }
+                      else{
+                          if(nestedkey == 'occupation'){
+                            const occupations = this.md_occupation?.find(el => el.id == control.get(nestedkey)?.value);
+                            formdata.append(nestedkey,occupations ? JSON.stringify(occupations) : null)
+                          }
+                          else if(nestedkey == 'exempt_category'){
+                              if(this.new_client_form.get('customer_dtls.pan_exempt')?.value == 'Y'){
+                                  const exempt_cat = this.md_exempt_category?.find(el => el.id == control.get(nestedkey)?.value);
+                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                              }
+                              else{
+                                 formdata.append(nestedkey,null)
+                              }
+                          }
+                          else if(nestedkey == 'guardian_exempt_category'){
+                              if(this.new_client_form.get('customer_dtls.guardian_pan_exempt')?.value == 'Y'){
+                                  const exempt_cat = this.md_gaurdian_exempt_category?.find(el => el.id == control.get(nestedkey)?.value);
+                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                              }
+                              else{
+                                 formdata.append(nestedkey,null)
+                              }
+                          }
+                           else if(nestedkey == 'email_rel'){
+                              if(this.new_client_form.get('contact_dtls.email')?.value){
+                                  const TDemailFlag = this.mdMobileEmailDecFlag?.find(el => el.id == control.get(nestedkey)?.value);
+                                  formdata.append(nestedkey,TDemailFlag ? JSON.stringify(TDemailFlag) : null)
+                              }
+                              else{
+                                 formdata.append(nestedkey,null)
+                              }
+                          }
+                            else if(nestedkey == 'mobile_rel'){
+                              if(this.new_client_form.get('contact_dtls.mobile')?.value){
+                                  const TDmobileFlag = this.mdMobileEmailDecFlag?.find(el => el.id == control.get(nestedkey)?.value);
+                                  formdata.append(nestedkey,TDmobileFlag ? JSON.stringify(TDmobileFlag) : null)
+                              }
+                              else{
+                                  formdata.append(nestedkey,null)
+                              }
+                          }
+                          else if(nestedkey == 'communication_mode'){
+                                const TDcommunicationMode = this.mdCommunicationMode?.find(el => el.id == control.get(nestedkey)?.value);
+                                formdata.append(nestedkey,TDcommunicationMode ? JSON.stringify(TDcommunicationMode) : null)
+                          }
+                          else if(nestedkey == 'div_pay_mode'){
+                              console.log(nestedkey)
+                              console.log(control.get(nestedkey)?.value)
+                              const divPayMode = this.md_divPayMode?.find(ele => ele.id == control.get(nestedkey)?.value);
+                              console.log(divPayMode);
+                              formdata.append(nestedkey,divPayMode ? JSON.stringify(divPayMode) : null)
+                          }
+                          else{
+                            formdata.append(nestedkey,control.get(nestedkey)?.value)
+                          }
+                      }
+                }) 
+      })
+        this.goNext();
+       this.dbIntr.api_call_for_nuedge_online(1,'/createClientss',formdata).subscribe(res =>{
+            console.log(res);
+      })
+      return;
     if(this.new_client_form.invalid){
       console.log('****** VALIDATION ERROR IN FORM **********');
       return;
@@ -1212,24 +1463,63 @@ export class NewClientComponent implements OnInit {
     }
     else{
       const formdata = new FormData();
-      Object.keys({...this.custEntry,...this.new_client_form.getRawValue()}).forEach((key) =>{
+   
+      const tax_status = this.md_tax.find(el => el.id == this.custEntry?.tax_status);
+      formdata.append('tax_status',tax_status ? JSON.stringify(tax_status) : '');
+      formdata.append('mode_of_holding',this.custEntry?.mode_of_holding);
+      Object.keys(this.new_client_form.value).forEach((key) =>{
               const control = this.new_client_form.get(key);
-              // console.log(control.getRawValue());
                 Object.keys(control.value).forEach(nestedkey =>{
                       if(control.get(nestedkey) instanceof FormArray){
                             const nestedControls = control.get(nestedkey) as FormArray;
                             nestedControls.controls.forEach((el,index) =>{
-                                    Object.keys(el.value).forEach((obj) =>{
-                                         formdata.append(`${obj}${index + 1}`,el.value[obj] ? el.value[obj] : '')
+                                    Object.keys(el.value).forEach((obj,index) =>{
+                                          console.log(nestedkey);
+                                         if(obj == 'exempt_category'){
+                                              if(el.value['pan_exempt'] == 'Y'){
+                                                  const exempt_cat = this.md_exempt_category?.find(ele => ele.id == el.value[obj]);
+                                                  console.log(exempt_cat);
+                                                  formdata.append(`${obj}${index + 1}`,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                                              }
+                                              else{
+                                                formdata.append(`${obj}${index + 1}`,null)
+                                              }
+                                         }
+                                         else{
+                                          formdata.append(`${obj}${index + 1}`,el.value[obj] ? el.value[obj] : '')
+                                         }
                                     })
                             })
                       }
                       else{
-                          formdata.append(nestedkey,control.get(nestedkey)?.value)
+                          if(nestedkey == 'occupation'){
+                            const occupations = this.md_occupation?.find(el => el.id == control.get(nestedkey)?.value);
+                            formdata.append(nestedkey,occupations ? JSON.stringify(occupations) : null)
+                          }
+                          else if(nestedkey == 'exempt_category'){
+                              if(this.new_client_form.get('customer_dtls.pan_exempt')?.value == 'Y'){
+                                  const exempt_cat = this.md_exempt_category?.find(el => el.id == control.get(nestedkey)?.value);
+                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                              }
+                          }
+                          else if(nestedkey == 'guardian_exempt_category'){
+                              if(this.new_client_form.get('customer_dtls.guardian_pan_exempt')?.value == 'Y'){
+                                  const exempt_cat = this.md_gaurdian_exempt_category?.find(el => el.id == control.get(nestedkey)?.value);
+                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : null)
+                              }
+                          }
+                          else if(nestedkey == 'div_pay_mode'){
+                              const divPayMode = this.md_divPayMode?.find(ele => ele.id == control.get(nestedkey)?.value);
+                              console.log(divPayMode);
+                              formdata.append(nestedkey,divPayMode ? JSON.stringify(divPayMode) : null)
+                          }
+                          else{
+                            formdata.append(nestedkey,control.get(nestedkey)?.value)
+                          }
                       }
                 }) 
       })
-      this.dbIntr.api_call_for_nuedge_online(1,'/createClient',formdata).subscribe(res =>{
+      this.dbIntr.api_call_for_nuedge_online(1,'/createClientss',formdata).subscribe(res =>{
             console.log(res);
       })
     }

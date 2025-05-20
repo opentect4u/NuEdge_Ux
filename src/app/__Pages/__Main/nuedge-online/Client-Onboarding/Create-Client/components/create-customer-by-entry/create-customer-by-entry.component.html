@@ -14,7 +14,8 @@
                 <div class="col-sm-5">
                   <select id="tax_status" name="tax_status" class="js-example-responsive select2 w-100 form-control" formControlName="tax_status">
                     <option value="">-- Choose Tax Status --</option>
-                    <option class="active-result" value="1">Individual</option>
+                    <option value="{{status.id}}" *ngFor="let status of md_taxStatus">{{status.tax_name}}</option>
+                    <!-- <option class="active-result" value="1">Individual</option>
                     <option class="active-result" value="2">On Behalf Of Minor</option>
                     <option class="active-result" value="3">HUF</option>
                     <option class="active-result" value="4">Company</option>
@@ -25,7 +26,7 @@
                     <option class="active-result" value="9">Society</option>
                     <option class="active-result" value="10">Others</option>
                     <option class="active-result" value="21">NRI Repatriable</option>
-                    <option class="active-result" value="22">NRI Through NRO A/c</option>
+                    <option class="active-result" value="22">NRI Through NRO A/c</option> -->
 
                     <!-- <option class="active-result" value="2">Artificial Juridical Person</option>
                     <option class="active-result" value="3">Bank / Financial Institution</option>

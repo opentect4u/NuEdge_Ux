@@ -1,5 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output,Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { pluck } from 'rxjs/operators';
+import { DbIntrService } from 'src/app/__Services/dbIntr.service';
 declare var $: any;
 @Component({
   selector: 'app-create-customer-by-entry',
@@ -9,6 +11,9 @@ declare var $: any;
 export class CreateCustomerByEntryComponent implements OnInit {
 
   @Output() sendEntry = new EventEmitter();
+
+  @Input() md_taxStatus:any = []; 
+
   customer_entry_form: FormGroup;
   constructor(private fb: FormBuilder) { 
     this.customer_entry_form = this.fb.group({
@@ -16,9 +21,14 @@ export class CreateCustomerByEntryComponent implements OnInit {
       mode_of_holding: ['', [Validators.required]]
     });
   }
+  
 
   ngOnInit(): void {
   }
+
+
+
+
   submitForm(){
     console.log(this.customer_entry_form?.value);
     this.sendEntry.emit(this.customer_entry_form?.value);
