@@ -1319,8 +1319,16 @@ export class NewClientComponent implements OnInit {
   }
 
   createNewClient(){
-    const formdata = new FormData();
-   
+    if(this.new_client_form.invalid){
+      console.log('****** VALIDATION ERROR IN FORM **********');
+      return;
+    }
+    console.log('****** VALIDATION SUCCESS IN FORM **********');
+    if(this.step < (this.step_wizard.length - 1)){
+      this.goNext();
+    }
+    else{
+      const formdata = new FormData();
       const tax_status = this.md_tax.find(el => el.id == this.custEntry?.tax_status);
       formdata.append('tax_status',tax_status ? JSON.stringify(tax_status) : '');
       formdata.append('mode_of_holding',this.custEntry?.mode_of_holding);
@@ -1438,77 +1446,6 @@ export class NewClientComponent implements OnInit {
                           else if(nestedkey == 'div_pay_mode'){
                               console.log(nestedkey)
                               console.log(control.get(nestedkey)?.value)
-                              const divPayMode = this.md_divPayMode?.find(ele => ele.id == control.get(nestedkey)?.value);
-                              console.log(divPayMode);
-                              formdata.append(nestedkey,divPayMode ? JSON.stringify(divPayMode) : null)
-                          }
-                          else{
-                            formdata.append(nestedkey,control.get(nestedkey)?.value)
-                          }
-                      }
-                }) 
-      })
-        this.goNext();
-       this.dbIntr.api_call_for_nuedge_online(1,'/createClientss',formdata).subscribe(res =>{
-            console.log(res);
-      })
-      return;
-    if(this.new_client_form.invalid){
-      console.log('****** VALIDATION ERROR IN FORM **********');
-      return;
-    }
-    console.log('****** VALIDATION SUCCESS IN FORM **********');
-    if(this.step < (this.step_wizard.length - 1)){
-      this.goNext();
-    }
-    else{
-      const formdata = new FormData();
-   
-      const tax_status = this.md_tax.find(el => el.id == this.custEntry?.tax_status);
-      formdata.append('tax_status',tax_status ? JSON.stringify(tax_status) : '');
-      formdata.append('mode_of_holding',this.custEntry?.mode_of_holding);
-      Object.keys(this.new_client_form.value).forEach((key) =>{
-              const control = this.new_client_form.get(key);
-                Object.keys(control.value).forEach(nestedkey =>{
-                      if(control.get(nestedkey) instanceof FormArray){
-                            const nestedControls = control.get(nestedkey) as FormArray;
-                            nestedControls.controls.forEach((el,index) =>{
-                                    Object.keys(el.value).forEach((obj,index) =>{
-                                          console.log(nestedkey);
-                                         if(obj == 'exempt_category'){
-                                              if(el.value['pan_exempt'] == 'Y'){
-                                                  const exempt_cat = this.md_exempt_category?.find(ele => ele.id == el.value[obj]);
-                                                  console.log(exempt_cat);
-                                                  formdata.append(`${obj}${index + 1}`,exempt_cat ? JSON.stringify(exempt_cat) : null)
-                                              }
-                                              else{
-                                                formdata.append(`${obj}${index + 1}`,null)
-                                              }
-                                         }
-                                         else{
-                                          formdata.append(`${obj}${index + 1}`,el.value[obj] ? el.value[obj] : '')
-                                         }
-                                    })
-                            })
-                      }
-                      else{
-                          if(nestedkey == 'occupation'){
-                            const occupations = this.md_occupation?.find(el => el.id == control.get(nestedkey)?.value);
-                            formdata.append(nestedkey,occupations ? JSON.stringify(occupations) : null)
-                          }
-                          else if(nestedkey == 'exempt_category'){
-                              if(this.new_client_form.get('customer_dtls.pan_exempt')?.value == 'Y'){
-                                  const exempt_cat = this.md_exempt_category?.find(el => el.id == control.get(nestedkey)?.value);
-                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : null)
-                              }
-                          }
-                          else if(nestedkey == 'guardian_exempt_category'){
-                              if(this.new_client_form.get('customer_dtls.guardian_pan_exempt')?.value == 'Y'){
-                                  const exempt_cat = this.md_gaurdian_exempt_category?.find(el => el.id == control.get(nestedkey)?.value);
-                                  formdata.append(nestedkey,exempt_cat ? JSON.stringify(exempt_cat) : null)
-                              }
-                          }
-                          else if(nestedkey == 'div_pay_mode'){
                               const divPayMode = this.md_divPayMode?.find(ele => ele.id == control.get(nestedkey)?.value);
                               console.log(divPayMode);
                               formdata.append(nestedkey,divPayMode ? JSON.stringify(divPayMode) : null)
